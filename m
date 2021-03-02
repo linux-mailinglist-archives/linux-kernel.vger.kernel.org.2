@@ -2,198 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051D132A3C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9A232A3C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382522AbhCBJjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1837943AbhCBJPe (ORCPT
+        id S1379069AbhCBJjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:39:12 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42653 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1837922AbhCBJMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:15:34 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDB1C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:14:37 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id gt32so22294002ejc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:14:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pKsB8xXAte7eLnnt+TkAlNuRDcZqKIjPaWBZfUAhV9w=;
-        b=MLz9oR/tMNKres9w8RtV5LTyjCrrZ8gEfgMLW5gcEYaB3jMdxuh50RQ9R0X1As9joR
-         3AMval8t9cMC7Xnuu8x2GFlfniahFMGLuUWK8lqiW54fVlqRIaXJ3wsZMkntxf+j7aQ9
-         doAdaWaRIdMTj5ttGAVVgMbNZz36r/ZRrJOb3STTmFlOUMOt9K101hU5YMcc0zOXiTCb
-         7FCgv6rw69WZklvLCNVR23YRbt3G+lmONVW1eg81BVy8QHoKq4KXm1uSBb1i9fB/P0z5
-         MuPqbJZnUs0OsFb1IeYYWdzVkANEpii1ZDj3tZ3QsPckoh8XusgCFn+GAyYuPjy2MkPy
-         o0EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pKsB8xXAte7eLnnt+TkAlNuRDcZqKIjPaWBZfUAhV9w=;
-        b=CqLhjPpMTN9T4107Gso6uQhu67FXg4vaAfDs9ARMJwaMvnRp4Ma9/c7xJLnZr5zgvM
-         d9MZlIvVZD2AGG/RsQHNUK/C8ukgIv2Aisex2iAQn9bC/rxzItLalk91sOYUvzXd1e/V
-         wJEgxL8JwArfC1WYgltmhzB/jCbwVqr3S86+uNcu/MyfBEZGdEMxWx5o6JAzhM4llePr
-         aTiySblsvxkN6v2PULF8QB2IL4WB6XDEL2m1Cumsgqt5a3nsGClFLP4YOmJkXQ0z7TZl
-         x5N/Nmbd8ybbOR9hvwlZequAkvSoioXOvSRwIpdXUaX8Pgi4rtPfX92At9x/VxNuShdO
-         IwqA==
-X-Gm-Message-State: AOAM531LY5kztrjxtn+oHkq2m3TflBrmX+6k5gVWAH3kDqJ2AIaCj6lI
-        jInnvLgWj34pbRZStIEpHJ7iMr6IJOI=
-X-Google-Smtp-Source: ABdhPJy4V0lje09bKbN1A86kKUKU/ygta/xtjQnLYWz2oIngTDPjWqgRHROFKA3dLNltr0/uNspDMA==
-X-Received: by 2002:a17:906:801:: with SMTP id e1mr9570167ejd.465.1614676475667;
-        Tue, 02 Mar 2021 01:14:35 -0800 (PST)
-Received: from localhost.localdomain (2a02-a456-df9f-1-7d91-8a91-1a5-83c8.fixed6.kpn.net. [2a02:a456:df9f:1:7d91:8a91:1a5:83c8])
-        by smtp.gmail.com with ESMTPSA id o4sm17294938ejj.45.2021.03.02.01.14.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 01:14:34 -0800 (PST)
-From:   gabriele.modena@gmail.com
-To:     linux-kernel@vger.kernel.org
-Cc:     devel@driverdev.osuosl.org,
-        Gabriele Modena <gabriele.modena@gmail.com>
-Subject: [PATCH] wimax: attempt to address style issues.
-Date:   Tue,  2 Mar 2021 10:11:02 +0100
-Message-Id: <20210302091102.1598-1-gabriele.modena@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 2 Mar 2021 04:12:14 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id F23BC5C00B0;
+        Tue,  2 Mar 2021 04:11:23 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 02 Mar 2021 04:11:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=fxp8Q1ZobdKfv1l/FezgBYXf6NS
+        F8GlosMSO26Vrskg=; b=lEIfGLugw+wra+8DkOmDr1cjDDkZj8/+0Xy2DhvFDWY
+        9bbuaSAiU1h4uRInotU9TUd+d3mJiEyY4WbT3elvP/hZjp/FcWkJ0f2iJjl9bwRg
+        8udsWnov36rM0WfqBg26wttID+r6YmYPQBn8Jujpl5a5Aw7+8p04qZRLAEvSI14Z
+        Os2FPJWtu4IJfUGEdattORmSe2B04CLOGc4n8SxFD9OJw9yMcBWa49vGmaCz3jK3
+        BrL3bd+Js32A9l1rJ2W5CXXNuKhGsJb1wycmxiUnCZ3lko83ddkdFHRfS+ijgKL6
+        sFqlVBPJCXQ2lMDFY7slOiC8o4/ALiCxxACDhHR4F+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fxp8Q1
+        ZobdKfv1l/FezgBYXf6NSF8GlosMSO26Vrskg=; b=qqyD3OiRd/dQPXvIDP36ti
+        G5bV+wtEn9KVfXS+0lsM4MrtdKNYr5QXNS8S+vxfACYF6WH33KPuO7Gs6bC/dPFD
+        bl0zNf/uJtVqeN/3UOZmQ0Dp/e6is+3rhemBz8S6UkMIfBTEQaEA+DTZH2WfuAeb
+        +XgaTzx0d4ZQUT4kdmhBQjPpOWWbAAIhV1UEBoNNM+aIP3ICG7aRQqgAcnvAao2M
+        OaX5sB6pKiH0xhsUZJuBIpTNDHOUWGu56C/VChoDT+tlaHxwq1iYQYEoXiDeWAUm
+        ON/iC3VUU03m3+AQZhjv84vg6HdA3MzwvB2BzlLzgTimd/lfaVmaLXhNnc3lBlMA
+        ==
+X-ME-Sender: <xms:OgE-YJUkZf-Po6tAw_ZEc6Quv4D0vk9wrQsCUID6dBKJi0W9T1Qr-g>
+    <xme:OgE-YLncbAh5l7oalT9TgYPxCyUul3wtVUGcmwFLQu_qkW6KXGjGoyvUNLL12knc3
+    Ps6mkrWsMZe9tujrhM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddttdcutefuodetggdotefrodftvfcurf
+    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgvucft
+    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
+    hnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeguden
+    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:OgE-YOyxqbWFesDNHTRdQSH5iOxSYC7IKdoTMW-2WlTvxaZ2SEo5Hw>
+    <xmx:OgE-YOi-zx1zHO1twSSFTApPpA1j7nrVIq9HmrtMXK56rwtpL2ez8g>
+    <xmx:OgE-YLWlg0YXaiQc7iY320HIjbwMzc2M2g2-Dg6V-2ykpFQXIaSf8w>
+    <xmx:OwE-YGCCu7zkbOgGTQEtQPKmeLWSZMsj0U83cZuF4vhhKQnynvvaFg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6D68A108005C;
+        Tue,  2 Mar 2021 04:11:22 -0500 (EST)
+Date:   Tue, 2 Mar 2021 10:11:19 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Tobias Schramm <t.schramm@manjaro.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] ARM: dts: sun8i: V3s/V3/S3: add dma controller node
+Message-ID: <20210302091119.ckclp2ywjzaz4ivp@gilmour>
+References: <20210226103028.729172-1-t.schramm@manjaro.org>
+ <20210226103028.729172-2-t.schramm@manjaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cmdqmnqtlsaxm5zb"
+Content-Disposition: inline
+In-Reply-To: <20210226103028.729172-2-t.schramm@manjaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriele Modena <gabriele.modena@gmail.com>
 
-When running checkpatch.pl on op-msg.c, op-rfkill.c
-and stack.c I noticed that they contained a few style issues
-at warning level of severity. This patch is both an attempt to
-address the warnings, as well as a way for me to familiarise
-with the linux kernel contribution process, by following
-tasks proposed by a popular online challenge.
+--cmdqmnqtlsaxm5zb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Gabriele Modena <gabriele.modena@gmail.com>
----
- drivers/staging/wimax/op-msg.c    |  8 ++++----
- drivers/staging/wimax/op-rfkill.c |  7 ++++---
- drivers/staging/wimax/stack.c     | 12 ++++++------
- 3 files changed, 14 insertions(+), 13 deletions(-)
+On Fri, Feb 26, 2021 at 11:30:26AM +0100, Tobias Schramm wrote:
+> The V3s, V3 and S3 SoCs have a dma controller. Add it to the dts.
+>=20
+> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
 
-diff --git a/drivers/staging/wimax/op-msg.c b/drivers/staging/wimax/op-msg.c
-index e20ac7d84e82..11da48bf704f 100644
---- a/drivers/staging/wimax/op-msg.c
-+++ b/drivers/staging/wimax/op-msg.c
-@@ -142,8 +142,8 @@ struct sk_buff *wimax_msg_alloc(struct wimax_dev *wimax_dev,
- 	}
- 	result = nla_put(skb, WIMAX_GNL_MSG_DATA, size, msg);
- 	if (result < 0) {
--		dev_err(dev, "no memory to add payload (msg %p size %zu) in "
--			"attribute: %d\n", msg, size, result);
-+		dev_err(dev, "no memory to add payload (msg %p size %zu) in attribute: %d\n",
-+			msg, size, result);
- 		goto error_nla_put;
- 	}
- 	genlmsg_end(skb, genl_msg);
-@@ -260,6 +260,7 @@ int wimax_msg_send(struct wimax_dev *wimax_dev, struct sk_buff *skb)
- 	struct device *dev = wimax_dev_to_dev(wimax_dev);
- 	void *msg = skb->data;
- 	size_t size = skb->len;
-+
- 	might_sleep();
- 
- 	d_printf(1, dev, "CTX: wimax msg, %zu bytes\n", size);
-@@ -340,8 +341,7 @@ int wimax_gnl_doit_msg_from_user(struct sk_buff *skb, struct genl_info *info)
- 	/* Unpack arguments */
- 	result = -EINVAL;
- 	if (info->attrs[WIMAX_GNL_MSG_DATA] == NULL) {
--		dev_err(dev, "WIMAX_GNL_MSG_FROM_USER: can't find MSG_DATA "
--			"attribute\n");
-+		dev_err(dev, "WIMAX_GNL_MSG_FROM_USER: can't find MSG_DATA attribute\n");
- 		goto error_no_data;
- 	}
- 	msg_buf = nla_data(info->attrs[WIMAX_GNL_MSG_DATA]);
-diff --git a/drivers/staging/wimax/op-rfkill.c b/drivers/staging/wimax/op-rfkill.c
-index 78b294481a59..52612ed09183 100644
---- a/drivers/staging/wimax/op-rfkill.c
-+++ b/drivers/staging/wimax/op-rfkill.c
-@@ -294,7 +294,8 @@ int wimax_rfkill(struct wimax_dev *wimax_dev, enum wimax_rf_state state)
- 		/* While initializing, < 1.4.3 wimax-tools versions use
- 		 * this call to check if the device is a valid WiMAX
- 		 * device; so we allow it to proceed always,
--		 * considering the radios are all off. */
-+		 * considering the radios are all off.
-+		 */
- 		if (result == -ENOMEDIUM && state == WIMAX_RF_QUERY)
- 			result = WIMAX_RF_OFF << 1 | WIMAX_RF_OFF;
- 		goto error_not_ready;
-@@ -378,6 +379,7 @@ int wimax_rfkill_add(struct wimax_dev *wimax_dev)
- void wimax_rfkill_rm(struct wimax_dev *wimax_dev)
- {
- 	struct device *dev = wimax_dev_to_dev(wimax_dev);
-+
- 	d_fnstart(3, dev, "(wimax_dev %p)\n", wimax_dev);
- 	rfkill_unregister(wimax_dev->rfkill);
- 	rfkill_destroy(wimax_dev->rfkill);
-@@ -415,8 +417,7 @@ int wimax_gnl_doit_rfkill(struct sk_buff *skb, struct genl_info *info)
- 	dev = wimax_dev_to_dev(wimax_dev);
- 	result = -EINVAL;
- 	if (info->attrs[WIMAX_GNL_RFKILL_STATE] == NULL) {
--		dev_err(dev, "WIMAX_GNL_RFKILL: can't find RFKILL_STATE "
--			"attribute\n");
-+		dev_err(dev, "WIMAX_GNL_RFKILL: can't find RFKILL_STATE attribute\n");
- 		goto error_no_pid;
- 	}
- 	new_state = nla_get_u32(info->attrs[WIMAX_GNL_RFKILL_STATE]);
-diff --git a/drivers/staging/wimax/stack.c b/drivers/staging/wimax/stack.c
-index ace24a6dfd2d..e44158334246 100644
---- a/drivers/staging/wimax/stack.c
-+++ b/drivers/staging/wimax/stack.c
-@@ -51,9 +51,7 @@ static char wimax_debug_params[128];
- module_param_string(debug, wimax_debug_params, sizeof(wimax_debug_params),
- 		    0644);
- MODULE_PARM_DESC(debug,
--		 "String of space-separated NAME:VALUE pairs, where NAMEs "
--		 "are the different debug submodules and VALUE are the "
--		 "initial debug value to set.");
-+		 "String of space-separated NAME:VALUE pairs, where NAMEs are the different debug submodules and VALUE are the initial debug value to set.");
- 
- /*
-  * Authoritative source for the RE_STATE_CHANGE attribute policy
-@@ -62,7 +60,7 @@ MODULE_PARM_DESC(debug,
-  * close to where the data is generated.
-  */
- /*
--static const struct nla_policy wimax_gnl_re_status_change[WIMAX_GNL_ATTR_MAX + 1] = {
-+ * static const struct nla_policy wimax_gnl_re_status_change[WIMAX_GNL_ATTR_MAX + 1] = {
- 	[WIMAX_GNL_STCH_STATE_OLD] = { .type = NLA_U8 },
- 	[WIMAX_GNL_STCH_STATE_NEW] = { .type = NLA_U8 },
- };
-@@ -156,6 +154,7 @@ int wimax_gnl_re_state_change_send(
- {
- 	int result = 0;
- 	struct device *dev = wimax_dev_to_dev(wimax_dev);
-+
- 	d_fnstart(3, dev, "(wimax_dev %p report_skb %p)\n",
- 		  wimax_dev, report_skb);
- 	if (report_skb == NULL) {
-@@ -275,8 +274,8 @@ void __wimax_state_change(struct wimax_dev *wimax_dev, enum wimax_st new_state)
- 	/* Execute the actions of entry to the new state */
- 	switch (new_state) {
- 	case __WIMAX_ST_NULL:
--		dev_err(dev, "SW BUG: wimax_dev %p entering NULL state "
--			"from %u\n", wimax_dev, wimax_dev->state);
-+		dev_err(dev, "SW BUG: wimax_dev %p entering NULL state from %u\n",
-+			wimax_dev, wimax_dev->state);
- 		WARN_ON(1);		/* Nobody can enter this state */
- 		break;
- 	case WIMAX_ST_DOWN:
-@@ -362,6 +361,7 @@ EXPORT_SYMBOL_GPL(wimax_state_change);
- enum wimax_st wimax_state_get(struct wimax_dev *wimax_dev)
- {
- 	enum wimax_st state;
-+
- 	mutex_lock(&wimax_dev->mutex);
- 	state = wimax_dev->state;
- 	mutex_unlock(&wimax_dev->mutex);
--- 
-2.11.0
+Applied, thanks
+Maxime
 
+--cmdqmnqtlsaxm5zb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYD4BNwAKCRDj7w1vZxhR
+xRmEAQDLWf+LCieT+Xnugb19mCcR0hCl8gSeHeSCZJUg+rpADQEAzOrI2+L7svjN
+MM4w6cNlbJYvSTb8/R43q1yfaarSsQ8=
+=WjNb
+-----END PGP SIGNATURE-----
+
+--cmdqmnqtlsaxm5zb--
