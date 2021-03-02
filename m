@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FB132A9FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBC632AA08
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576139AbhCBSs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:48:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        id S1581508AbhCBS5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:57:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839026AbhCBP4M (ORCPT
+        with ESMTP id S1839126AbhCBQFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:56:12 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC17C0617A7;
-        Tue,  2 Mar 2021 06:32:28 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id bd6so12198568edb.10;
-        Tue, 02 Mar 2021 06:32:28 -0800 (PST)
+        Tue, 2 Mar 2021 11:05:44 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5967BC061794
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:56:08 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id h9so5216678qtq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:56:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Am1a6SP1lIBYmPhsqzqN/wdobE8TF1PX/9qBt9ePMdE=;
-        b=qPtUCPCo1olJ3B9E9rwQl3QrypoiL2tKAnbCXopbsVVBvw6fdTNtawzozZGwFXz9iD
-         nkNmfJBtOt0HAx1f5PQcv2NihpNJOlvlihR8p1m/IM3pVH569sQLwLPFCUCuUWsEfdCF
-         O31nNIGaHoyyyg5I1+2lsMGm+JiELOeE5H2FW0FkcMn/ci+wwD+SVB8y2wFXldhx5HAe
-         6tb/a0SLA1S3UHWpp9LA+X+j3o4gsoO5JrDE5aJMhXSeIO3esejgrc4NSgr1TSqbgTPV
-         IWaZOXr1KGhthoVJwBftWZZxkJ0cX8Dr0SZ4gSDW026KtIUbeXWp01oTUl5uGkT7TA2A
-         7eog==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tNdOP429TQBqbFjtRfcboNnC/yDVMr5sai/pD5T/IRg=;
+        b=IlpWwYdHCRDOk3kWpi+d9K5sL2BkH9JZ1CEz1ZKimdPVIRwTuGRq3u8IVkuopTydJj
+         arkp2Jdxkb6AEwpjHEzEBCdWsa3q3RVDDAD6bSnR4o1EyuK4taQfQjgDPmaAJ9E1rc7M
+         d4jHzAyynuq2BzJCokhaQdMM8AN7WuMyNhHQlCWn80oKplc03XM+gFnGwD3Z51x4lbml
+         2TCJwmgtS2OfBFJdEHlD5w8ufPSSU3VTgvHICNQAxeKAsegXHKO2hfv/m04PEbTEcSNF
+         E3mw5ycnDw+JDvecUfy1I1YGGLn5VeegekbNe2l96F37r1kFSVfRi5rflI3VL2KtZugd
+         9xdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Am1a6SP1lIBYmPhsqzqN/wdobE8TF1PX/9qBt9ePMdE=;
-        b=SjK/UYGf7Uib20J2c9Ca4Fsai9QJ0YFnajwFqcKpE104J6cRuOEal1IziaV+6IvSkv
-         l0Ce2oaqVCXSPylJtnHE3ebxxlhgVr+/Z4wUifSeyuBKGEjwPOzW+pihMAHbQ/P59Mvp
-         0IOHq4i28+gaegRRxpz2lUdMk3D4UD2HdNI28vuD2CAi8f8cq2Jxpbewp59sr5J4V6bN
-         iH1tDBbOE8o/knkTtA4MuacQgVSlra/6lg3u4sjlZr76Jyr9OAfTtScjvYTghA86FPvb
-         AzRXsKQBj/0JMIcpLe+ckcEWMvtW01G9ksy6Ru1ijH/o1tQ1i3bN3lq1Xuh9aggImLMJ
-         5qUA==
-X-Gm-Message-State: AOAM532K24Bz8eZyaevVr3tPMwsuU9wjNVMKwLJD+b28CqXMyLkAeoHk
-        hzH00MURrEcjcovK7qOE62M=
-X-Google-Smtp-Source: ABdhPJxTPYjmiTLFJ/xr+8hRvlCShkvbocmTzo0rrgQEVYCzRgTmO4kwRNJxOTG7nk/s8afYethq0w==
-X-Received: by 2002:a50:a086:: with SMTP id 6mr20503152edo.70.1614695547654;
-        Tue, 02 Mar 2021 06:32:27 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id s13sm17250242edr.86.2021.03.02.06.32.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Mar 2021 06:32:27 -0800 (PST)
-Message-ID: <1988de01138118e8361b90acce25332adb2c1e24.camel@gmail.com>
-Subject: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Tue, 02 Mar 2021 15:32:25 +0100
-In-Reply-To: <DM6PR04MB6575372560ACA643845C891CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
-         <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p5>
-         <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
-         <fb70bf48fab65474bf2f15a436852ccf9a3db026.camel@gmail.com>
-         <DM6PR04MB6575372560ACA643845C891CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tNdOP429TQBqbFjtRfcboNnC/yDVMr5sai/pD5T/IRg=;
+        b=r/4aDCrTVu+Qbs6HoQVFUkflkvu4y7whbbO9pbJGWJ6Gq47WvhpjopnrsgBO6cdJuk
+         u00Uuf9A4FEOzKDHwTCD0N1XVwht1zkuN3sKt74I0/OoWFitScQNCjlaqyAF14VuwofI
+         rm8Th+ffOvjGnYnquZZuI+E+74C3VDrYMgiQv4FbJSQXGjZwWqmw6UfzOSQiF+/A/XyC
+         dga8ITD6d7a0arD8vHxwHTS4z0W1QgPeuWZKyWYrF2rTIejRsuyhte732DSGN84iQZtj
+         FAhTn/KkvPI9ZsyR5PQMKKIzm5apvsHkSnIDkZ2Fk/whobbUazKYHT6jLocadSqRoQBo
+         yEFQ==
+X-Gm-Message-State: AOAM532fzuXZxFPH4nWdBjh+2dMZ6BntSl1VtKv9TiJp08hJwCAdRc+k
+        zf5TQHYgWgevLwvzQBFd1CY6Hg==
+X-Google-Smtp-Source: ABdhPJyOfWYuIhZl4tG2VoD6q45/j1mxf/N5hHiy8YupUY6yiNz/e3N1wA6PcoAeeK96MehQQtO/QA==
+X-Received: by 2002:ac8:7392:: with SMTP id t18mr17887295qtp.104.1614700567462;
+        Tue, 02 Mar 2021 07:56:07 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id o7sm1251394qkb.104.2021.03.02.07.56.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 07:56:06 -0800 (PST)
+Date:   Tue, 2 Mar 2021 10:56:05 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     pintu@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
+        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
+        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
+        lokeshgidra@google.com, nigupta@nvidia.com, famzheng@amazon.com,
+        andrew.a.klychkov@gmail.com, bigeasy@linutronix.de,
+        ping.ping@gmail.com, vbabka@suse.cz, yzaikin@google.com,
+        keescook@chromium.org, mcgrof@kernel.org, corbet@lwn.net,
+        pintu.ping@gmail.com
+Subject: Re: [PATCH] mm: introduce clear all vm events counters
+Message-ID: <YD5gFYalXJh0dMLn@cmpxchg.org>
+References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
+ <YD0EOyW3pZXDnuuJ@cmpxchg.org>
+ <419bb403c33b7e48291972df938d0cae@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <419bb403c33b7e48291972df938d0cae@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-02 at 13:15 +0000, Avri Altman wrote:
+On Tue, Mar 02, 2021 at 04:00:34PM +0530, pintu@codeaurora.org wrote:
+> On 2021-03-01 20:41, Johannes Weiner wrote:
+> > On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
+> > > At times there is a need to regularly monitor vm counters while we
+> > > reproduce some issue, or it could be as simple as gathering some
+> > > system
+> > > statistics when we run some scenario and every time we like to start
+> > > from
+> > > beginning.
+> > > The current steps are:
+> > > Dump /proc/vmstat
+> > > Run some scenario
+> > > Dump /proc/vmstat again
+> > > Generate some data or graph
+> > > reboot and repeat again
 > > 
-> > On Fri, 2021-02-26 at 16:35 +0900, Daejun Park wrote:
-> > > +static void ufshpb_set_unmap_cmd(unsigned char *cdb, struct
-> > > ufshpb_region *rgn)
-> > > +{
-> > > +       cdb[0] = UFSHPB_WRITE_BUFFER;
-> > > +       cdb[1] = rgn ? UFSHPB_WRITE_BUFFER_INACT_SINGLE_ID :
-> > > +                         UFSHPB_WRITE_BUFFER_INACT_ALL_ID;
-> > 
-> > Here is wrong,
-> > Valid HPB Region is (0 ~ (Ceiling( Region size calculated by
-> > bHPBRegionSize )- 1) ). how do you know the region==0 is not
-> > a single normal region?
+> > You can subtract the first vmstat dump from the second to get the
+> > event delta for the scenario run. That's what I do, and I'd assume
+> > most people are doing. Am I missing something?
 > 
-> Please note that rgn  here is a ufshpb_region *rgn
+> Thanks so much for your comments.
+> Yes in most cases it works.
 > 
-I see, thanks. 
+> But I guess there are sometimes where we need to compare with fresh data
+> (just like reboot) at least for some of the counters.
+> Suppose we wanted to monitor pgalloc_normal and pgfree.
 
-> Thanks,
-> Avri
+Hopefully these would already be balanced out pretty well before you
+run a test, or there is a risk that whatever outstanding allocations
+there are can cause a large number of frees during your test that
+don't match up to your recorded allocation events. Resetting to zero
+doesn't eliminate the risk of such background noise.
 
+> Or, suppose we want to monitor until the field becomes non-zero..
+> Or, how certain values are changing compared to fresh reboot.
+> Or, suppose we want to reset all counters after boot and start capturing
+> fresh stats.
+
+Again, there simply is no mathematical difference between
+
+	reset events to 0
+	run test
+	look at events - 0
+
+and
+
+	read events baseline
+	run test
+	look at events - baseline
+
+> Some of the counters could be growing too large and too fast. Will there be
+> chances of overflow ?
+> Then resetting using this could help without rebooting.
+
+Overflows are just a fact of life on 32 bit systems. However, they can
+also be trivially handled - you can always subtract a ulong start
+state from a ulong end state and get a reliable delta of up to 2^32
+events, whether the end state has overflowed or not.
+
+The bottom line is that the benefit of this patch adds a minor
+convenience for something that can already be done in userspace. But
+the downside is that there would be one more possible source of noise
+for kernel developers to consider when looking at a bug report. Plus
+the extra code and user interface that need to be maintained.
+
+I don't think we should merge this patch.
