@@ -2,198 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B02332A49A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C12832A498
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446399AbhCBKxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:53:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37520 "EHLO mail.kernel.org"
+        id S1446381AbhCBKxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:53:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:49078 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1578093AbhCBKfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:35:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F64264F0D;
-        Tue,  2 Mar 2021 10:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614681294;
-        bh=ugJHg9cYk74SjXydnucoKS21JJi70MPT/T1tFbGj1Aw=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=XHfzaFb3CI/GV4HUw7gVLbAtfxuEFo8wByxVuPgt7dni1p6zPlFgUXJUUYZc7XMsw
-         LF/76BS7cBXKtfjQ00Vab5i8La+GUupSGypjSfAM/NTc9CJmbV+8Y72hm3il4AC5NJ
-         JN26aE/zppIjV6ZatuVBzv8mjAydhHhwfJCsE/7B5drCPuAw1rDl1oJbY1LNGLBOUh
-         V973vLkV9gGPa6Wjegi71ADKHC+vKJIPCRYDw2yfR0cjV/JlJWatpd/jdiTjMroWS5
-         bNgSSZ1EcpeBoYLS98p/l5UYCC+FI6pPR3IwymQ57gB16cUZRxytQA1xMxIvS3LnLE
-         oFQAa7GOlwrZw==
-Date:   Tue, 2 Mar 2021 11:34:51 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iwlwifi: don't call netif_napi_add() with rxq->lock held
- (was Re: Lockdep warning in iwl_pcie_rx_handle())
-In-Reply-To: <nycvar.YFH.7.76.2103021025410.12405@cbobk.fhfr.pm>
-Message-ID: <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2103012136570.12405@cbobk.fhfr.pm>  (sfid-20210301_215846_256695_15E0D07E) <2db8f779b4b37d4498cfeaed77d5ede54e429a6e.camel@sipsolutions.net> <nycvar.YFH.7.76.2103021025410.12405@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1838377AbhCBKgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:36:10 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8851AED1;
+        Tue,  2 Mar 2021 02:35:24 -0800 (PST)
+Received: from [10.57.48.219] (unknown [10.57.48.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25EFF3F73C;
+        Tue,  2 Mar 2021 02:35:20 -0800 (PST)
+Subject: Re: Aw: Re: Re: [PATCH 09/13] PCI: mediatek: Advertise lack of MSI
+ handling
+To:     Frank Wunderlich <frank-w@public-files.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Chuanjia Liu <chuanjia.liu@mediatek.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Will Deacon <will@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Rob Herring <robh@kernel.org>, Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-tegra@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+References: <20210225151023.3642391-1-maz@kernel.org>
+ <20210225151023.3642391-10-maz@kernel.org>
+ <trinity-b7e2cf18-f0e6-4d88-8a80-de6758b5a91f-1614595396771@3c-app-gmx-bap67>
+ <b7721e2ff751cc9565a662cb713819e3@kernel.org>
+ <trinity-9fa6d24e-f9de-4741-bf44-86f6197b174d-1614600961297@3c-app-gmx-bap67>
+ <5afd1d656299d87c43bdf31b8ced2d5f@kernel.org>
+ <trinity-e6593a34-3e03-4154-a03c-f3aed01e33bf-1614607598428@3c-app-gmx-bap67>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <8b9c013a-b5d5-9b19-f28a-4af543e47fff@arm.com>
+Date:   Tue, 2 Mar 2021 10:35:14 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <trinity-e6593a34-3e03-4154-a03c-f3aed01e33bf-1614607598428@3c-app-gmx-bap67>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+On 2021-03-01 14:06, Frank Wunderlich wrote:
+>> Gesendet: Montag, 01. März 2021 um 14:31 Uhr
+>> Von: "Marc Zyngier" <maz@kernel.org>
+>>
+>> Frank,
+>>
+>>>>> i guess it's a bug in ath10k driver or my r64 board (it is a v1.1
+>>>>> which has missing capacitors on tx lines).
+>>>>
+>>>> No, this definitely looks like a bug in the MTK PCIe driver,
+>>>> where the mutex is either not properly initialised, corrupted,
+>>>> or the wrong pointer is passed.
+>>>
+>>> but why does it happen only with the ath10k-card and not the mt7612 in
+>>> same slot?
+>>
+>> Does mt7612 use MSI? What we have here is a bogus mutex in the
+>> MTK PCIe driver, and the only way not to get there would be
+>> to avoid using MSIs.
+> 
+> i guess this card/its driver does not use MSI. Did not found anything in "datasheet" [1] or driver [2] about msi
 
-We can't call netif_napi_add() with rxq-lock held, as there is a potential
-for deadlock as spotted by lockdep (see below). rxq->lock is not
-protecting anything over the netif_napi_add() codepath anyway, so let's
-drop it just before calling into NAPI.
+FWIW, no need to guess - `lspci -v` (as root) should tell you whether 
+the card has MSI (and/or MSI-X) capability, and whether it is enabled if so.
 
- ========================================================
- WARNING: possible irq lock inversion dependency detected
- 5.12.0-rc1-00002-gbada49429032 #5 Not tainted
- --------------------------------------------------------
- irq/136-iwlwifi/565 just changed the state of lock:
- ffff89f28433b0b0 (&rxq->lock){+.-.}-{2:2}, at: iwl_pcie_rx_handle+0x7f/0x960 [iwlwifi]
- but this lock took another, SOFTIRQ-unsafe lock in the past:
-  (napi_hash_lock){+.+.}-{2:2}
+Robin.
 
- and interrupts could create inverse lock ordering between them.
-
- other info that might help us debug this:
-  Possible interrupt unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(napi_hash_lock);
-                                local_irq_disable();
-                                lock(&rxq->lock);
-                                lock(napi_hash_lock);
-   <Interrupt>
-     lock(&rxq->lock);
-
-  *** DEADLOCK ***
-
- 1 lock held by irq/136-iwlwifi/565:
-  #0: ffff89f2b1440170 (sync_cmd_lockdep_map){+.+.}-{0:0}, at: iwl_pcie_irq_handler+0x5/0xb30
-
- the shortest dependencies between 2nd lock and 1st lock:
-  -> (napi_hash_lock){+.+.}-{2:2} {
-     HARDIRQ-ON-W at:
-                       lock_acquire+0x277/0x3d0
-                       _raw_spin_lock+0x2c/0x40
-                       netif_napi_add+0x14b/0x270
-                       e1000_probe+0x2fe/0xee0 [e1000e]
-                       local_pci_probe+0x42/0x90
-                       pci_device_probe+0x10b/0x1c0
-                       really_probe+0xef/0x4b0
-                       driver_probe_device+0xde/0x150
-                       device_driver_attach+0x4f/0x60
-                       __driver_attach+0x9c/0x140
-                       bus_for_each_dev+0x79/0xc0
-                       bus_add_driver+0x18d/0x220
-                       driver_register+0x5b/0xf0
-                       do_one_initcall+0x5b/0x300
-                       do_init_module+0x5b/0x21c
-                       load_module+0x1dae/0x22c0
-                       __do_sys_finit_module+0xad/0x110
-                       do_syscall_64+0x33/0x80
-                       entry_SYSCALL_64_after_hwframe+0x44/0xae
-     SOFTIRQ-ON-W at:
-                       lock_acquire+0x277/0x3d0
-                       _raw_spin_lock+0x2c/0x40
-                       netif_napi_add+0x14b/0x270
-                       e1000_probe+0x2fe/0xee0 [e1000e]
-                       local_pci_probe+0x42/0x90
-                       pci_device_probe+0x10b/0x1c0
-                       really_probe+0xef/0x4b0
-                       driver_probe_device+0xde/0x150
-                       device_driver_attach+0x4f/0x60
-                       __driver_attach+0x9c/0x140
-                       bus_for_each_dev+0x79/0xc0
-                       bus_add_driver+0x18d/0x220
-                       driver_register+0x5b/0xf0
-                       do_one_initcall+0x5b/0x300
-                       do_init_module+0x5b/0x21c
-                       load_module+0x1dae/0x22c0
-                       __do_sys_finit_module+0xad/0x110
-                       do_syscall_64+0x33/0x80
-                       entry_SYSCALL_64_after_hwframe+0x44/0xae
-     INITIAL USE at:
-                      lock_acquire+0x277/0x3d0
-                      _raw_spin_lock+0x2c/0x40
-                      netif_napi_add+0x14b/0x270
-                      e1000_probe+0x2fe/0xee0 [e1000e]
-                      local_pci_probe+0x42/0x90
-                      pci_device_probe+0x10b/0x1c0
-                      really_probe+0xef/0x4b0
-                      driver_probe_device+0xde/0x150
-                      device_driver_attach+0x4f/0x60
-                      __driver_attach+0x9c/0x140
-                      bus_for_each_dev+0x79/0xc0
-                      bus_add_driver+0x18d/0x220
-                      driver_register+0x5b/0xf0
-                      do_one_initcall+0x5b/0x300
-                      do_init_module+0x5b/0x21c
-                      load_module+0x1dae/0x22c0
-                      __do_sys_finit_module+0xad/0x110
-                      do_syscall_64+0x33/0x80
-                      entry_SYSCALL_64_after_hwframe+0x44/0xae
-   }
-   ... key      at: [<ffffffffae84ef38>] napi_hash_lock+0x18/0x40
-   ... acquired at:
-    _raw_spin_lock+0x2c/0x40
-    netif_napi_add+0x14b/0x270
-    _iwl_pcie_rx_init+0x1f4/0x710 [iwlwifi]
-    iwl_pcie_rx_init+0x1b/0x3b0 [iwlwifi]
-    iwl_trans_pcie_start_fw+0x2ac/0x6a0 [iwlwifi]
-    iwl_mvm_load_ucode_wait_alive+0x116/0x460 [iwlmvm]
-    iwl_run_init_mvm_ucode+0xa4/0x3a0 [iwlmvm]
-    iwl_op_mode_mvm_start+0x9ed/0xbf0 [iwlmvm]
-    _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
-    iwl_opmode_register+0x71/0xe0 [iwlwifi]
-    iwl_mvm_init+0x34/0x1000 [iwlmvm]
-    do_one_initcall+0x5b/0x300
-    do_init_module+0x5b/0x21c
-    load_module+0x1dae/0x22c0
-    __do_sys_finit_module+0xad/0x110
-    do_syscall_64+0x33/0x80
-    entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-[ ... lockdep output trimmed .... ]
-
-Fixes: 25edc8f259c7106 ("iwlwifi: pcie: properly implement NAPI")
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
----
-
-v1->v2: Previous patch was not refreshed against current code-base, sorry.
-
- drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-index 42426e25cac6..2bec97133119 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-@@ -1129,6 +1129,8 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
- 
- 		iwl_pcie_rx_init_rxb_lists(rxq);
- 
-+		spin_unlock_bh(&rxq->lock);
-+
- 		if (!rxq->napi.poll) {
- 			int (*poll)(struct napi_struct *, int) = iwl_pcie_napi_poll;
- 
-@@ -1149,7 +1151,6 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
- 			napi_enable(&rxq->napi);
- 		}
- 
--		spin_unlock_bh(&rxq->lock);
- 	}
- 
- 	/* move the pool to the default queue and allocator ownerships */
-
-
--- 
-Jiri Kosina
-SUSE Labs
-
+>>>
+>>>> This r64 machine is supposed to have working MSIs, right?
+>>>
+>>> imho mt7622 have working MSI
+>>>
+>>>> Do you get the same issue without this series?
+>>>
+>>> tested 5.11.0 [1] without this series (but with your/thomas' patch
+>>> from discussion about my old patch) and got same trace. so this series
+>>> does not break anything here.
+>>
+>> Can you retest without any additional patch on top of 5.11?
+>> These two patches only affect platforms that do *not* have MSIs at all.
+> 
+> i can revert these 2, but still need patches for mt7622 pcie-support [3]...btw. i see that i miss these in 5.11-main...do not see traceback with them (have firmware not installed...)
+> 
+> root@bpi-r64:~# dmesg | grep ath
+> [    6.450765] ath10k_pci 0000:01:00.0: assign IRQ: got 146
+> [    6.661752] ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)
+> [    6.697811] ath10k_pci 0000:01:00.0: enabling bus mastering
+> [    6.721293] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 r
+> eset_mode 0
+> [    6.921030] ath10k_pci 0000:01:00.0: Failed to find firmware-N.bin (N between
+>   2 and 6) from ath10k/QCA988X/hw2.0: -2
+> [    6.931698] ath10k_pci 0000:01:00.0: could not fetch firmware files (-2)
+> [    6.940417] ath10k_pci 0000:01:00.0: could not probe fw (-2)
+> 
+> so traceback was caused by missing changes in mtk pcie-driver not yet upstream, added Chuanjia Liu
+> 
+>>>
+>>>>> Tried with an mt7612e, this seems to work without any errors.
+>>>>>
+>>>>> so for mt7622/mt7623
+>>>>>
+>>>>> Tested-by: Frank Wunderlich <frank-w@public-files.de>
+>>>>
+>>>> We definitely need to understand the above.
+>>>
+>>> there is a hardware-bug which may cause this...afair i saw this with
+>>> the card in r64 with earlier Kernel-versions where other cards work
+>>> (like the mt7612e).
+>>
+>> I don't think a HW bug affecting PCI would cause what we are seeing
+>> here, unless it results in memory corruption.
+> 
+> 
+> [1] https://www.asiarf.com/shop/wifi-wlan/wifi_mini_pcie/ws2433-wifi-11ac-mini-pcie-module-manufacturer/
+> [2] grep -Rni 'msi' drivers/net/wireless/mediatek/mt76/mt76x2/
+> [3] https://patchwork.kernel.org/project/linux-mediatek/list/?series=372885
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
