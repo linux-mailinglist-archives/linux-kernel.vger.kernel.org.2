@@ -2,55 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1423632ABA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B9D32ABEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241197AbhCBUcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:32:39 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:42755 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350063AbhCBRtA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:49:00 -0500
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 902CE3A88B0;
-        Tue,  2 Mar 2021 16:35:58 +0000 (UTC)
-X-Originating-IP: 86.206.8.148
-Received: from xps13.stephanxp.local (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id E999CFF80E;
-        Tue,  2 Mar 2021 16:32:42 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vipin Kumar <vipin.kumar@st.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, Tony Luck <tony.luck@intel.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: fsmc: Fix error code in fsmc_nand_probe()
-Date:   Tue,  2 Mar 2021 17:32:42 +0100
-Message-Id: <20210302163242.23393-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <YCqaOZ83OvPOzLwh@mwanda>
-References: 
+        id S1381290AbhCBUxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:53:03 -0500
+Received: from gecko.sbs.de ([194.138.37.40]:38366 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1575037AbhCBSBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 13:01:42 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 122GcC5A009123
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Mar 2021 17:38:12 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.44.113])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 122GXBHN025192;
+        Tue, 2 Mar 2021 17:33:11 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH 0/4] add device drivers for Siemens Industrial PCs
+Date:   Tue,  2 Mar 2021 17:33:05 +0100
+Message-Id: <20210302163309.25528-1-henning.schild@siemens.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: d49ecd70c82d89c7448f5623ae08d0a4a488dc72
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-15 at 15:58:49 UTC, Dan Carpenter wrote:
-> If dma_request_channel() fails then the probe fails and it should
-> return a negative error code, but currently it returns success.
-> 
-> fixes: 4774fb0a48aa ("mtd: nand/fsmc: Add DMA support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+From: Henning Schild <henning.schild@siemens.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+This series adds support for watchdogs and leds of several x86 devices
+from Siemens.
 
-Miquel
+It is structured with a platform driver that mainly does identification
+of the machines. It might trigger loading of the actual device drivers
+by attaching devices to the platform bus.
+
+The identification is vendor specific, parsing a special binary DMI
+entry. The implementation of that platform identification is applied on
+pmc_atom clock quirks in the final patch.
+
+It is all structured in a way that we can easily add more devices and
+more platform drivers later. Internally we have some more code for
+hardware monitoring, more leds, watchdogs etc. This will follow some
+day.
+
+But the idea here is to share early, and hopefully not fail early.
+
+Henning Schild (4):
+  platform/x86: simatic-ipc: add main driver for Siemens devices
+  leds: simatic-ipc-leds: add new driver for Siemens Industial PCs
+  watchdog: simatic-ipc-wdt: add new driver for Siemens Industrial PCs
+  platform/x86: pmc_atom: improve critclk_systems matching for Siemens
+    PCs
+
+ drivers/leds/Kconfig                          |  11 +
+ drivers/leds/Makefile                         |   1 +
+ drivers/leds/simatic-ipc-leds.c               | 224 +++++++++++++
+ drivers/platform/x86/Kconfig                  |   9 +
+ drivers/platform/x86/Makefile                 |   3 +
+ drivers/platform/x86/pmc_atom.c               |  39 +--
+ drivers/platform/x86/simatic-ipc.c            | 166 ++++++++++
+ drivers/watchdog/Kconfig                      |  11 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/simatic-ipc-wdt.c            | 305 ++++++++++++++++++
+ .../platform_data/x86/simatic-ipc-base.h      |  33 ++
+ include/linux/platform_data/x86/simatic-ipc.h |  68 ++++
+ 12 files changed, 853 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/leds/simatic-ipc-leds.c
+ create mode 100644 drivers/platform/x86/simatic-ipc.c
+ create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+ create mode 100644 include/linux/platform_data/x86/simatic-ipc-base.h
+ create mode 100644 include/linux/platform_data/x86/simatic-ipc.h
+
+-- 
+2.26.2
+
