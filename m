@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66E932AE3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7994432AE4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384604AbhCBWmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:42:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349529AbhCBWKJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:10:09 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F638C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:09:15 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id p15so17094693ljc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:09:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2BdA81m+7VN+qviulnFkbFU7BcgALjMUUHbqorkGRo8=;
-        b=WsYz8n3peJ7kIi0io9tCQIhEuNIC4rbZinEygyAB3gyWr2PbjWuoCnrNcL+oDCkJX4
-         D/AwNIX3pC3siEGIJ/HS0jeoF7dSsAyLDYuTCVG64KzlXlo+5rdrJcfOMHhD1qW7yxQ5
-         EKdPONHWw5wpyRwpUeDxA5Pp8CScLw6TA+vAepMHPU5Xxekm3bJVhrIYNj4sIZcXuzdG
-         iZHEnHzlRXZnn2QhA3nW2l85nhFvGI5IPdO33i8YC4jFDbBdnsKazSPxI5N/B93Txb7C
-         Jv7t/kAwK1my77JPDUuLdIXzmlKXSA6iG4nvQeMFIHJ2UIEwsh7cD5nMpjHBBbZo7UI3
-         Y3Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2BdA81m+7VN+qviulnFkbFU7BcgALjMUUHbqorkGRo8=;
-        b=q5oL0FZUyQDSGQDjDF8UHY2CYVVusTX1p83g/uLWtrUTBOsc6h834zeg0KIqBvzFO8
-         BZNFsbncOZRBt99rQz9hnctS6ThjrBmA4jjYzszwUhHVcLy3bCJZi3DdjmYYXip9wNMU
-         SnE5SQBLDx8EfzCxzx+8tsZwwNiIu7CaPZvLBQoCWblIDD+uf7WtdJ0643tP62vUjs5H
-         IgXXRu/zdpc+rLNQ3ET/7dmp5vSLJOewy3uOCY6usNynqvxDj42vfHvuk8O0WyFZWauN
-         w8jTQb6Kko/amlLsjZW3LPFGFH3KdBIV0OOaYPQA/vHhh2M8Xl16Ay+s0AF6SFHEJ7m5
-         qcjw==
-X-Gm-Message-State: AOAM532cQdwHjsLPgPjIhXnwnGJAaP6lOaUmfydNsPiam25ExSd5TPry
-        BznmSILbh8yzGSLlc8ft2iWE2v++MzARsBmlgVIi0w==
-X-Google-Smtp-Source: ABdhPJzOMRBxvCOCHjHJWr2gSnmjRfJPyHwrPdl/9dG/ul/C330WFSI+UtZGm/U0fn1S1kka1hJi7DGZx/ju6ztdHIw=
-X-Received: by 2002:a2e:92d6:: with SMTP id k22mr984745ljh.244.1614722953496;
- Tue, 02 Mar 2021 14:09:13 -0800 (PST)
+        id S1838111AbhCBXEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 18:04:31 -0500
+Received: from mail.lindev.ch ([5.39.83.55]:48420 "EHLO mail.lindev.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2360342AbhCBWTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 17:19:33 -0500
+X-Greylist: delayed 390 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Mar 2021 17:19:32 EST
+Received: from lindev.ch (unknown [87.122.230.249])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bero@lindev.ch)
+        by mail.lindev.ch (Postfix) with ESMTPSA id A1E5D3FDB5;
+        Tue,  2 Mar 2021 23:12:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lindev.ch; s=dkim;
+        t=1614723132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TUxpnoeeEAmGStcGyZVTJQci34Njw6wuoLazbxteiW8=;
+        b=wtKjSnC3gNfEJtvMAGPqt8lHrnQ0v0rHJvBXa1w87prkCqiFFsKCg54SdVGtGADwzaHzkc
+        FPtel9tRrC9keBhASU94jqII0kk8+IwRiAlCi1aGkUWCMo210Luk54fDHoIaGLvGARXNSY
+        lRGWH64U1+zxlqhUTpEK6NENrj8XyBk=
+From:   =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@lindev.ch>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@lindev.ch>
+Subject: [PATCH] Fix ld-version.sh script if LLD was built with LLD_VENDOR
+Date:   Tue,  2 Mar 2021 23:12:11 +0100
+Message-Id: <20210302221211.1620858-1-bero@lindev.ch>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210302210646.3044738-1-nathan@kernel.org> <20210302210646.3044738-2-nathan@kernel.org>
- <20210302220252.ulvlsfyp4ordwrky@google.com>
-In-Reply-To: <20210302220252.ulvlsfyp4ordwrky@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 2 Mar 2021 14:09:01 -0800
-Message-ID: <CAKwvOdmR_p-zbrTUmbObmCVKBcuNLpg_V3NqLeYsEK4xNHfYOA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Makefile: Only specify '--prefix=' when building with
- clang + GNU as
-To:     Fangrui Song <maskray@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 2:02 PM Fangrui Song <maskray@google.com> wrote:
->
-> On 2021-03-02, Nathan Chancellor wrote:
-> >When building with LLVM_IAS=1, there is no point to specifying
-> >'--prefix=' because that flag is only used to find the cross assembler,
-> >which is clang itself when building with LLVM_IAS=1. All of the other
-> >tools are invoked directly from PATH or a full path specified via the
-> >command line, which does not depend on the value of '--prefix='.
-> >
-> >Sharing commands to reproduce issues becomes a little bit easier without
-> >a '--prefix=' value because that '--prefix=' value is specific to a
-> >user's machine due to it being an absolute path.
-> >
-> >Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->
-> Reviewed-by: Fangrui Song <maskray@google.com>
->
-> clang can spawn GNU as (if -f?no-integrated-as is specified) and GNU
-> objcopy (-f?no-integrated-as and -gsplit-dwarf and -g[123]).
+If LLD was built with -DLLD_VENDOR="xyz", ld.lld --version output
+will prefix LLD_VENDOR. Since LLD_VENDOR can contain spaces, the
+LLD identifier isn't guaranteed to be $2 either.
 
-But -g get's set via CONFIG_DEBUG_INFO and -gsplit-dwarf by
-DEBUG_INFO_SPLIT.  So if we say:
-$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang LLVM_IAS=1
+Adjust the version checker to handle such versions of lld.
 
-So cross compile, use clang, use the integrated assembler (ie. with
-this change, don't set --prefix), with either of the two above
-configs, which objcopy get's exec'd?
+Signed-off-by: Bernhard Rosenkränzer <bero@lindev.ch>
+---
+ scripts/ld-version.sh | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
->
-> With LLVM_IAS=1, these cases are ruled out.
-
-
-
+diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+index a463273509b5..4c042a306e22 100755
+--- a/scripts/ld-version.sh
++++ b/scripts/ld-version.sh
+@@ -49,6 +49,18 @@ elif [ "$1" = LLD ]; then
+ 	min_version=$lld_min_version
+ 	name=LLD
+ 	disp_name=LLD
++elif echo "$@" |grep -q ' LLD '; then
++	# if LLD was built with -DLLD_VENDOR="xyz", it ld.lld --version
++	# says "xyz LLD [...]". Since LLD_VENDOR may contain spaces, we
++	# don't know the exact position of "LLD" and the version info
++	# at this point
++	while [ "$1" != "LLD" ]; do
++		shift
++	done
++	version=$2
++	min_version=$lld_min_version
++	name=LLD
++	disp_name=LLD
+ else
+ 	echo "$orig_args: unknown linker" >&2
+ 	exit 1
 -- 
-Thanks,
-~Nick Desaulniers
+2.30.1
+
