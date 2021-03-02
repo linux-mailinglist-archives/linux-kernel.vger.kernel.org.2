@@ -2,152 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC3F32A657
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9884832A67A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384102AbhCBOhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350742AbhCBMrB (ORCPT
+        id S1448622AbhCBPIl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Mar 2021 10:08:41 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:48615 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1444947AbhCBMvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:47:01 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CB1C0611C1
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 04:45:19 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id u3so1598859otg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 04:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P8t0odw1Ol/O1AJt7AOmSfFmioJI8iKFTJw2MTf4RQk=;
-        b=VZjeLG/VmDpZEhwakOm/C7M36eMfX6VH99FsCxtBHuYibjeDhhGg0cvUo2xWhk1xRl
-         ITnbW5pDNNm56LVLMnz95TVyMZw+4ye6JeNNjAEsfZYQKO/W8vdbJgBitWYG/tebNzPB
-         WYvO2W38Wf26BYXZCc/RMeN2U9HVeGdS/4gwMAuDHuzCcVugyFUQIZ0rscZ7URyxhAxm
-         Q4umHI/3xPuOnfRQLxoQW3coC09JsYLpUsh1IYZWG6H1xOfJXlXLPOoDpMLoWmKsJ3Uh
-         GQtmjfxr++rj1kZyGqmAlts79oqlRgX4Vky41WcNJR816vx2cPIp7u9fPZbLqi3gh9Jy
-         RMPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P8t0odw1Ol/O1AJt7AOmSfFmioJI8iKFTJw2MTf4RQk=;
-        b=VYPT5ryeO8FJiVFM/jc0VVbRoPcjsy892rjz+5e17t20XI6q/PPmR4IgUhPBUA7+3q
-         CXP90HahRLtCnq0jcE8UMNUV6dr0HlgrgSdjWizhDWzZsXJ2kP0+ZI0+EBGq/W3DCUif
-         EQq+cHeLrOu9fICFVQBJo3r1Lrh474b9ydQ6anykNtjM8ylkjNXmhiwBORjTWhcwCY5R
-         1eLbWT4En+bqLBJLqjhC0CsIxIllGOoMBPNUObIux7ekgaF4GeqiNvHsQqAKliZYFVos
-         nOKkvg5GjBy4i/cYgLh9yk7u+iwsc7S59+Hfz8nh0eRn+mfyq7EcYLK4LHBvfhthj0za
-         DeTQ==
-X-Gm-Message-State: AOAM533DPRcBnIZiCX8vwxFncVwSGn67IyBXRp+Fd6unues3McF5lExi
-        /N2oUlcURHkf7EBytUQTnWwnnTswlgEdm1+RFPctgA==
-X-Google-Smtp-Source: ABdhPJyGXDUaQ/MAp0WJLrNiWCaoxAmzqfRb4UmrtY0aYzTzPJlcOYXZsSlIzaZOPMCY5y/NSLo60vriP34sVPMT4NY=
-X-Received: by 2002:a05:6830:1355:: with SMTP id r21mr10547387otq.17.1614689118519;
- Tue, 02 Mar 2021 04:45:18 -0800 (PST)
+        Tue, 2 Mar 2021 07:51:01 -0500
+Received: from relay10.mail.gandi.net (unknown [217.70.178.230])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id CE2FE3A6AA8;
+        Tue,  2 Mar 2021 12:50:05 +0000 (UTC)
+Received: from xps13 (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 537E9240002;
+        Tue,  2 Mar 2021 12:46:19 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 13:46:17 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor.Ambarus@microchip.com
+Subject: Re: [RFC PATCH] mtd: add OTP (one-time-programmable) erase ioctl
+Message-ID: <20210302134617.5aa78cc4@xps13>
+In-Reply-To: <20210302110927.6520-1-michael@walle.cc>
+References: <20210302110927.6520-1-michael@walle.cc>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210214161348.369023-1-timur@kernel.org> <20210214161348.369023-4-timur@kernel.org>
- <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
-In-Reply-To: <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 2 Mar 2021 13:45:07 +0100
-Message-ID: <CANpmjNNm-4s16_KQ1_NqFN4XOESJh4_=33LHQzt+p4V0Cy=Xzw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
- addresses as unhashed
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 12:51, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Hi Timur,
->
-> On Sun, Feb 14, 2021 at 5:17 PM Timur Tabi <timur@kernel.org> wrote:
-> > If the no_hash_pointers command line parameter is set, then
-> > printk("%p") will print pointers as unhashed, which is useful for
-> > debugging purposes.  This change applies to any function that uses
-> > vsprintf, such as print_hex_dump() and seq_buf_printf().
-> >
-> > A large warning message is displayed if this option is enabled.
-> > Unhashed pointers expose kernel addresses, which can be a security
-> > risk.
-> >
-> > Also update test_printf to skip the hashed pointer tests if the
-> > command-line option is set.
-> >
-> > Signed-off-by: Timur Tabi <timur@kernel.org>
->
-> Thanks for your patch, which is now commit 5ead723a20e0447b
-> ("lib/vsprintf: no_hash_pointers prints all addresses as unhashed") in
-> v5.12-rc1.
->
-> > --- a/lib/vsprintf.c
-> > +++ b/lib/vsprintf.c
-> > @@ -2090,6 +2090,32 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
-> >         return widen_string(buf, buf - buf_start, end, spec);
-> >  }
-> >
-> > +/* Disable pointer hashing if requested */
-> > +bool no_hash_pointers __ro_after_init;
-> > +EXPORT_SYMBOL_GPL(no_hash_pointers);
-> > +
-> > +static int __init no_hash_pointers_enable(char *str)
-> > +{
-> > +       no_hash_pointers = true;
-> > +
-> > +       pr_warn("**********************************************************\n");
-> > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > +       pr_warn("**                                                      **\n");
-> > +       pr_warn("** This system shows unhashed kernel memory addresses   **\n");
-> > +       pr_warn("** via the console, logs, and other interfaces. This    **\n");
-> > +       pr_warn("** might reduce the security of your system.            **\n");
-> > +       pr_warn("**                                                      **\n");
-> > +       pr_warn("** If you see this message and you are not debugging    **\n");
-> > +       pr_warn("** the kernel, report this immediately to your system   **\n");
-> > +       pr_warn("** administrator!                                       **\n");
-> > +       pr_warn("**                                                      **\n");
-> > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > +       pr_warn("**********************************************************\n");
-> > +
-> > +       return 0;
-> > +}
-> > +early_param("no_hash_pointers", no_hash_pointers_enable);
->
-> While bloat-o-meter is not smart enough to notice the real size impact,
-> this does add more than 500 bytes of string data to the kernel.
-> Do we really need such a large message?
-> Perhaps the whole no_hash_pointers machinery should be protected by
-> "#ifdef CONFIG_DEBUG_KERNEL"?
+Hi Michael,
 
-We recently stumbled across this, and it appears an increasing number
-of production kernels enable CONFIG_DEBUG_KERNEL [1], so it likely
-isn't the solution (we tried to use CONFIG_DEBUG_KERNEL in similar
-way, and it wasn't reliable). Having no_hash_pointers frees us of
-having to rely on CONFIG_DEBUG_KERNEL. (Perhaps somebody else will
-comment, but I believe there were strong objections to making the
-pointer hashing dependent on more Kconfig options.)
+Michael Walle <michael@walle.cc> wrote on Tue,  2 Mar 2021 12:09:27
++0100:
 
-[1] https://lkml.kernel.org/r/20210223082043.1972742-1-elver@google.com
+> This may sound like a contradiction but some SPI-NOR flashes really
+> support erasing their OTP region until it is finally locked. Having the
+> possibility to erase an OTP region might come in handy during
+> development.
+> 
+> The ioctl argument follows the OTPLOCK style.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> OTP support for SPI-NOR flashes may be merged soon:
+> https://lore.kernel.org/linux-mtd/20210216162807.13509-1-michael@walle.cc/
+> 
+> Tudor suggested to add support for the OTP erase operation most SPI-NOR
+> flashes have:
+> https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
+> 
+> Therefore, this is an RFC to get some feedback on the MTD side, once this
+> is finished, I can post a patch for mtd-utils. Then we'll have a foundation
+> to add the support to SPI-NOR.
+> 
+>  drivers/mtd/mtdchar.c      |  7 ++++++-
+>  drivers/mtd/mtdcore.c      | 12 ++++++++++++
+>  include/linux/mtd/mtd.h    |  3 +++
+>  include/uapi/mtd/mtd-abi.h |  2 ++
+>  4 files changed, 23 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 323035d4f2d0..da423dd031ae 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -661,6 +661,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+>  	case OTPGETREGIONCOUNT:
+>  	case OTPGETREGIONINFO:
+>  	case OTPLOCK:
+> +	case OTPERASE:
+>  	case ECCGETLAYOUT:
+>  	case ECCGETSTATS:
+>  	case MTDFILEMODE:
+> @@ -938,6 +939,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+>  	}
+>  
+>  	case OTPLOCK:
+> +	case OTPERASE:
+>  	{
+>  		struct otp_info oinfo;
+>  
+> @@ -945,7 +947,10 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+>  			return -EINVAL;
+>  		if (copy_from_user(&oinfo, argp, sizeof(oinfo)))
+>  			return -EFAULT;
+> -		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
+> +		if (cmd == OTPLOCK)
+> +			ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
+> +		else
+> +			ret = mtd_erase_user_prot_reg(mtd, oinfo.start, oinfo.length);
+>  		break;
+>  	}
+>  
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 2d6423d89a17..d844d718ef77 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -1918,6 +1918,18 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
+>  
+> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
+> +
+> +	if (!master->_erase_user_prot_reg)
+> +		return -EOPNOTSUPP;
+> +	if (!len)
+> +		return 0;
 
-Would placing the strings into an __initconst array help?
+Should we add a sanity check enforcing that we don't try to access
+beyond the end of the OTP area?
+
+> +	return master->_erase_user_prot_reg(master, from, len);
+> +}
+> +EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
+> +
+>  /* Chip-supported device locking */
+>  int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  {
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 157357ec1441..734ad7a8c353 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -336,6 +336,8 @@ struct mtd_info {
+>  				     size_t len, size_t *retlen, u_char *buf);
+>  	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+>  				    size_t len);
+> +	int (*_erase_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+> +				     size_t len);
+>  	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
+>  			unsigned long count, loff_t to, size_t *retlen);
+>  	void (*_sync) (struct mtd_info *mtd);
+> @@ -517,6 +519,7 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+>  int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+>  			    size_t *retlen, u_char *buf);
+>  int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+>  
+>  int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+>  	       unsigned long count, loff_t to, size_t *retlen);
+> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+> index 65b9db936557..242015f60d10 100644
+> --- a/include/uapi/mtd/mtd-abi.h
+> +++ b/include/uapi/mtd/mtd-abi.h
+> @@ -205,6 +205,8 @@ struct otp_info {
+>   * without OOB, e.g., NOR flash.
+>   */
+>  #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
+> +/* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
+> +#define OTPERASE		_IOR('M', 25, struct otp_info)
+>  
+>  /*
+>   * Obsolete legacy interface. Keep it in order not to break userspace
 
 Thanks,
--- Marco
+Miquèl
