@@ -2,131 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FFF32A97F
+	by mail.lfdr.de (Postfix) with ESMTP id 03D9032A97D
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577155AbhCBSbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:31:42 -0500
-Received: from mga05.intel.com ([192.55.52.43]:13563 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448687AbhCBPhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:37:11 -0500
-IronPort-SDR: DrB8s6oR9pxje8+VdYNVlccTzmzw93PiJkWT3r+kUdZD/DrwbvSzWSZTekFoM5TU2N/i8Yv06n
- /H2P+1AY1e5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="271859602"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="271859602"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:35:07 -0800
-IronPort-SDR: 5vj6m/PZ3I2TO5brj7Ucb832XdB2x8EKteZwSy6Pkv4XobsQuuUq3dkzV97oND/svhTRB4ZpZy
- O+WwFBaQKO0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="595831038"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Mar 2021 07:35:05 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 6894213A; Tue,  2 Mar 2021 17:35:05 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v1 4/4] gpiolib: Reuse device's fwnode to create IRQ domain
-Date:   Tue,  2 Mar 2021 17:34:51 +0200
-Message-Id: <20210302153451.50593-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
-References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
+        id S1577096AbhCBSbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:31:12 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:46959 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1578956AbhCBPgO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:36:14 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id CE368A178A;
+        Tue,  2 Mar 2021 16:35:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=3sXhMOkM8LPe
+        kLQJ3JvWQSiaoISGZyoWfcdIHtOJozw=; b=mzldlBoLn0NX3gqduhq7oHrlZOp4
+        MdnN2j6nmr6SccEt9rMCwx1Fp9sfgTRp2Xe6VfqzGoIFItrsWos7VfFvvhtvRi1z
+        ZVD61qHZQN2ajz0hY0ktQzvf7Xa3HhObJtZJObTvK7V7LmxRu3zsorJh7ssWYK9m
+        D8LrFdlko5HsOJR1tUimCA5eViDiEAc/vnKXjvkd5aGqlN26tU8eZSeoydpk9qm0
+        RMr2dArQLodtJXuUw6Rm6gzeWAmMgNIy/wWdroW2gMDrbADAO9PQLDkohZAvpDSl
+        rZrbXOSx2dpsYLzYPYiaUBSzyz/N+4tphZJkTS6d1NBaW4yeCiR78tCmuA==
+Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume
+ support
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+ <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
+ <s5hpn0kjt31.wl-tiwai@suse.de>
+ <7d4daea0-ed59-e84c-c28a-945c49204c83@opensynergy.com>
+ <s5hwnuqgifa.wl-tiwai@suse.de>
+ <d9853306-2adf-24fe-935c-f7f8a1295dc3@opensynergy.com>
+ <s5hr1kxhqcn.wl-tiwai@suse.de>
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <2479ed0f-4c90-f565-81cd-8d0348cd14bc@opensynergy.com>
+Date:   Tue, 2 Mar 2021 16:35:24 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <s5hr1kxhqcn.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When IRQ domain is created for an ACPI case, the name of it becomes unknown-%d
-since for now it utilizes of_node member only and doesn't consider fwnode case.
-Convert IRQ domain creation code to utilize fwnode instead.
+On 02.03.2021 10:11, Takashi Iwai wrote:
+> On Tue, 02 Mar 2021 09:09:33 +0100,
+> Anton Yakovlev wrote:
+>>
+>> On 02.03.2021 07:48, Takashi Iwai wrote:
+>>> On Tue, 02 Mar 2021 07:29:20 +0100,
+>>> Anton Yakovlev wrote:
+>>>>
+>>>> On 28.02.2021 13:05, Takashi Iwai wrote:
+>>>>> On Sat, 27 Feb 2021 09:59:56 +0100,
+>>>>> Anton Yakovlev wrote:
+>>>>>>
+>>>>
+>>>> [snip]
+>>>>
+>>>>>> --- a/sound/virtio/virtio_pcm.c
+>>>>>> +++ b/sound/virtio/virtio_pcm.c
+>>>>>> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+>>>>>>                  SNDRV_PCM_INFO_BATCH |
+>>>>>>                  SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>>>>>>                  SNDRV_PCM_INFO_INTERLEAVED |
+>>>>>> +             SNDRV_PCM_INFO_RESUME |
+>>>>>>                  SNDRV_PCM_INFO_PAUSE;
+>>>>>
+>>>>> Actually you don't need to set SNDRV_PCM_INFO_RESUME.
+>>>>> This flag means that the driver supports the full resume procedure,
+>>>>> which isn't often the case; with this, the driver is supposed to
+>>>>> resume the stream exactly from the suspended position.
+>>>>>
+>>>>> Most drivers don't set this but implement only the suspend-stop
+>>>>> action.  Then the application (or the sound backend) will re-setup the
+>>>>> stream and restart accordingly.
+>>>>
+>>>> I tried to resume driver without SNDRV_PCM_INFO_RESUME, and alsa-lib
+>>>> called only ops->prepare(). It makes sense for a typical hw, but we have
+>>>> "clean" unconfigured device on resume. And we must set hw parameters as
+>>>> a first step. It means, that code should be more or less the same. And
+>>>> maybe it's better to set SNDRV_PCM_INFO_RESUME, since it allows us to
+>>>> resume substream in any situation (regardless of application behavior).
+>>>> I can refactor code to only send requests from trigger(RESUME) path and
+>>>> not to call ops itself. It should make code more straitforward. What do
+>>>> you say?
+>>>
+>>> How about calling hw_params(NULL) conditionally in the prepare?
+>>
+>> Then the question is that condition. When ops->prepare() is called, the
+>> substream is in SUSPENDED state or not? If not then we need to track
+>> this in some additional field (and it will make logic a little bit
+>> clumsy, since that field is needed to be carefully handled in other
+>> places).
+> 
+> Yes, you'd need to have a suspend/resume PM callback in the driver
+> that flips the internal flag to invalidate the hw_parmas, and in the
+> prepare callback, just call hw_params(NULL) if that flag is set.
+> 
+>>> Doing the full stack work in the trigger callback is bad from the API
+>>> design POV; in general the trigger callback is supposed to be as short
+>>> as possible.
+>>
+>> Yeah, but usually original subsystem design does not take into account
+>> para-virtualized devices, which usually have it's own slightly different
+>> reality. And we need to introduce some tricks.
+> 
+> The hardware drivers do a lot of more things in either suspend/resume
+> PM callbacks or prepare callback for re-setup of the hardware.  We can
+> follow the similar pattern.  Heavy-lifting works in the trigger
+> callbacks is really something to avoid.
 
-Before/After the change on Intel Galileo Gen 2 with two GPIO (IRQ) controllers:
+Ok, I redone this part and now the driver sets parameters for the device
+in ops->prepare() if the substream was suspended. And everything works
+fine. Thanks! I will send a new patch set soon.
 
-  unknown-1	==>	\_SB.PCI0.GIP0.GPO
-  unknown-2	==>	\_SB.NIO3
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpio/gpiolib.c | 32 ++++++++++++--------------------
- 1 file changed, 12 insertions(+), 20 deletions(-)
+> Takashi
+> 
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 6827736ba05c..54cfea4e4a03 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1457,9 +1457,9 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
- 				struct lock_class_key *lock_key,
- 				struct lock_class_key *request_key)
- {
-+	struct fwnode_handle *fwnode = dev_fwnode(&gc->gpiodev->dev);
- 	struct irq_chip *irqchip = gc->irq.chip;
--	const struct irq_domain_ops *ops = NULL;
--	struct device_node *np;
-+	const struct irq_domain_ops *ops;
- 	unsigned int type;
- 	unsigned int i;
- 
-@@ -1471,7 +1471,6 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
- 		return -EINVAL;
- 	}
- 
--	np = gc->gpiodev->dev.of_node;
- 	type = gc->irq.default_type;
- 
- 	/*
-@@ -1479,16 +1478,10 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
- 	 * used to configure the interrupts, as you may end up with
- 	 * conflicting triggers. Tell the user, and reset to NONE.
- 	 */
--	if (WARN(np && type != IRQ_TYPE_NONE,
--		 "%s: Ignoring %u default trigger\n", np->full_name, type))
-+	if (WARN(fwnode && type != IRQ_TYPE_NONE,
-+		 "%pfw: Ignoring %u default trigger\n", fwnode, type))
- 		type = IRQ_TYPE_NONE;
- 
--	if (has_acpi_companion(gc->parent) && type != IRQ_TYPE_NONE) {
--		acpi_handle_warn(ACPI_HANDLE(gc->parent),
--				 "Ignoring %u default trigger\n", type);
--		type = IRQ_TYPE_NONE;
--	}
--
- 	if (gc->to_irq)
- 		chip_warn(gc, "to_irq is redefined in %s and you shouldn't rely on it\n", __func__);
- 
-@@ -1504,15 +1497,14 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
- 			return ret;
- 	} else {
- 		/* Some drivers provide custom irqdomain ops */
--		if (gc->irq.domain_ops)
--			ops = gc->irq.domain_ops;
--
--		if (!ops)
--			ops = &gpiochip_domain_ops;
--		gc->irq.domain = irq_domain_add_simple(np,
--			gc->ngpio,
--			gc->irq.first,
--			ops, gc);
-+		ops = gc->irq.domain_ops ?: &gpiochip_domain_ops;
-+		if (gc->irq.first)
-+			gc->irq.domain = irq_domain_create_legacy(fwnode, gc->ngpio,
-+								  gc->irq.first, 0,
-+								  ops, gc);
-+		else
-+			gc->irq.domain = irq_domain_create_linear(fwnode, gc->ngpio,
-+								  ops, gc);
- 		if (!gc->irq.domain)
- 			return -EINVAL;
- 	}
 -- 
-2.30.1
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
 
