@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1CD32A545
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E192132A59B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244912AbhCBMUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 07:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383618AbhCBL4k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:56:40 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6EEC06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 03:56:00 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id w6so14497698qti.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 03:56:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x2wS74TM4AizfALT8kxd/HMxnjBfALQbmC8anm8d68E=;
-        b=KXElxgfaQy6eVhDGR+xbMcSTry7qKYCP2pOogBHaYAH0871t0KEnkyVTFiVnGCxMNx
-         5Fi6FwslIKtGMdwBZvySZ3WdP9W8cxDCvpzKIv31IDHOE6KE3z2XeAVMQzNNmcejCyRg
-         hs/Q7PGYZMIYcisXNf37dNgntVZrndYOjQWM+7iHYwOmcM8E0vmReRtnaNFdBhP2VY9D
-         3arznmapPSndYNB1iKX6bNqPHAbuIYH1LT+WdOaPbA6BagZfwjPZL0NSLNnqILPiISQg
-         EYIerBPWC1DXOnXWpqrA9o4uBgVrj9pDu7sVsOahKQBhbnJy9eUFNqRfkT+sw3JOYGgV
-         9PnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x2wS74TM4AizfALT8kxd/HMxnjBfALQbmC8anm8d68E=;
-        b=PdNiqHUADyjSIEtYw15uzIDjLG0vU7rZpA0oloBffccoHyp3V37cRIMjc6pn+Y4EkG
-         eA4izf2STbygq0RWLxfyqBQWgLy6jxkJfFgpTDsKrCn3T8Oklgx5xJeXeglrNIVTpirt
-         llZXAf8wVQtAa1/1GESH3s92QziXiOl72Jk1UKAztS5s6Lz74jo/eTZXGUujBwTCMo8A
-         ExcZY+OaV0g8zuu8KsHMA69RN4G0oLbXmrNcIRjrRpDrv1BttSJKRIdBP2pSoC6w8utO
-         J5cCXKNhuKqNVJ1QE3VWRl7BaguDbU186TXDSSUnw4zcBrWv8FH50koGuVI+agMhnpX3
-         dZLQ==
-X-Gm-Message-State: AOAM533g5j/s9KsTWuUFbhoEOg6iZSJC9HwY8ieispQLmPb14SdldWn6
-        WyrX/6t/z1fZyHuwBUFPghPUYO2mtI0imlq6KQl8sA==
-X-Google-Smtp-Source: ABdhPJylDznA6rJTx2enwk+UXwNUHm49QotCLfmKiKlZIn6soRH2Ky1WqNuSdklYHGcVu++rxAk8eYmVzFMRm3OQ/nQ=
-X-Received: by 2002:ac8:3876:: with SMTP id r51mr11965163qtb.43.1614686159085;
- Tue, 02 Mar 2021 03:55:59 -0800 (PST)
+        id S1447204AbhCBMvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:51:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1443528AbhCBMLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:11:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 196DE64F55;
+        Tue,  2 Mar 2021 11:57:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614686224;
+        bh=9YWJ+1JXAXc76m70t+NYEioWgsVUkTmFWZv65T5GDBo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HWU91TYQHu5kb3NFawlrwGhK+mKxzQReJb81HbR51GVK1+k6oassRFrgg+RVzW4mD
+         ozMujFl5KwUiofNoQXGiJksP8vlRaS8XsWi4kLgWUnuRoslMhWLxuOKWyv5bpHdOrf
+         qdAaPQBtpwhWglXYaHKZRaDgenDEjSqUtnKTpTvGfi8mVQPYLJZadYI05aXH51XI1E
+         GTdHwpD1XQoprKHP0m00SeABU1WSwcU4enSdqtbeb6EepEpJbdvyxhKo3qZgDIlcKz
+         xeYOwPiicCEJXmNdaXOas7VDLgFc2Km5bs+QFYrP99cCQXJ8fAdD9tCcJmYiV+eLN5
+         q/+HzsXSx0/bg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 14/47] HID: i2c-hid: Add I2C_HID_QUIRK_NO_IRQ_AFTER_RESET for ITE8568 EC on Voyo Winpad A15
+Date:   Tue,  2 Mar 2021 06:56:13 -0500
+Message-Id: <20210302115646.62291-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
+References: <20210302115646.62291-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210128024316.1425-1-hdanton@sina.com> <20210128105830.7d8aa91d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <60139ef4.1c69fb81.8d2f9.f26bSMTPIN_ADDED_MISSING@mx.google.com>
- <CACT4Y+Z7152DKY=TKOUe17=z=yJmO3oTYmD66Qa-eOmV+XZCsw@mail.gmail.com> <603e0005.1c69fb81.e3eed.6025SMTPIN_ADDED_MISSING@mx.google.com>
-In-Reply-To: <603e0005.1c69fb81.e3eed.6025SMTPIN_ADDED_MISSING@mx.google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 2 Mar 2021 12:55:47 +0100
-Message-ID: <CACT4Y+Zv-p56cbs3P7ZEUXdYaN7jXB4AELG5=S19wVH4kj3a9g@mail.gmail.com>
-Subject: Re: [PATCH] netdevsim: init u64 stats for 32bit hardware
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com" 
-        <syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Simon Horman <simon.horman@netronome.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 10:06 AM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Mar 2, 2021 at 16:40 Dmitry Vyukov wrote:
->
-> >I hoped this would get at least into 5.12. syzbot can't start testing
->
-> >arm32 because of this.
->
->
->
-> Or what is more feasible is you send a fix to Jakub today.
+From: Hans de Goede <hdegoede@redhat.com>
 
-So far I can't figure out how to make git work with my Gmail account
-with 1.5-factor auth enabled, neither password nor asp work...
+[ Upstream commit fc6a31b00739356809dd566e16f2c4325a63285d ]
+
+The ITE8568 EC on the Voyo Winpad A15 presents itself as an I2C-HID
+attached keyboard and mouse (which seems to never send any events).
+
+This needs the I2C_HID_QUIRK_NO_IRQ_AFTER_RESET quirk, otherwise we get
+the following errors:
+
+[ 3688.770850] i2c_hid i2c-ITE8568:00: failed to reset device.
+[ 3694.915865] i2c_hid i2c-ITE8568:00: failed to reset device.
+[ 3701.059717] i2c_hid i2c-ITE8568:00: failed to reset device.
+[ 3707.205944] i2c_hid i2c-ITE8568:00: failed to reset device.
+[ 3708.227940] i2c_hid i2c-ITE8568:00: can't add hid device: -61
+[ 3708.236518] i2c_hid: probe of i2c-ITE8568:00 failed with error -61
+
+Which leads to a significant boot delay.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/hid/hid-ids.h              | 2 ++
+ drivers/hid/i2c-hid/i2c-hid-core.c | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 94180c63571e..bfe443ce50a7 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -638,6 +638,8 @@
+ #define USB_DEVICE_ID_INNEX_GENESIS_ATARI	0x4745
+ 
+ #define USB_VENDOR_ID_ITE               0x048d
++#define I2C_VENDOR_ID_ITE		0x103c
++#define I2C_DEVICE_ID_ITE_VOYO_WINPAD_A15	0x184f
+ #define USB_DEVICE_ID_ITE_LENOVO_YOGA   0x8386
+ #define USB_DEVICE_ID_ITE_LENOVO_YOGA2  0x8350
+ #define I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720	0x837a
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index aeff1ffb0c8b..cb7758d59014 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -171,6 +171,8 @@ static const struct i2c_hid_quirks {
+ 		I2C_HID_QUIRK_SET_PWR_WAKEUP_DEV },
+ 	{ I2C_VENDOR_ID_HANTICK, I2C_PRODUCT_ID_HANTICK_5288,
+ 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
++	{ I2C_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_VOYO_WINPAD_A15,
++		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
+ 	{ I2C_VENDOR_ID_RAYDIUM, I2C_PRODUCT_ID_RAYDIUM_3118,
+ 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
+ 	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
+-- 
+2.30.1
+
