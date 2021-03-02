@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A643632A7FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E1C32A80A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579480AbhCBQ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        id S1579720AbhCBQ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:59:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381966AbhCBO16 (ORCPT
+        with ESMTP id S1384496AbhCBPFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:27:58 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BDDC06178A;
-        Tue,  2 Mar 2021 06:27:09 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id mm21so35294699ejb.12;
-        Tue, 02 Mar 2021 06:27:09 -0800 (PST)
+        Tue, 2 Mar 2021 10:05:19 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163F4C0611C1
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:48:56 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id r25so23265531ljk.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 06:48:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PJEEKD0ZqT1c9UTQN+/5T3c6Vm2BFnBI5jKv2Cyez3c=;
-        b=r7z6GR1P02KelMOnsQBVVnGnNaKtaeGhwwNn1XWKDajbceLrR0tBRQHm0qwfJh/lm3
-         zlOHG4CH16E/ALRPxxWXqAo5tJ04IL6jIvxFoDgEzseJ9d//kQBKCMGqqn14NRxqPESj
-         Z6U68O21ySBf5Zm1F/8R1JgyG995N57jaO9tPw7sm/12Cd+4S6N23/Z6GCCpwZ0xK8kd
-         RRVdagSjEyYU6w64ucK1bILxyRKyx9mOs4Hvyv0+LuFteuPOjk3I4lO/vguUKK23tGh+
-         c14OZ/yg65vVZn0eRmhKVr0d+KddQ/aES4TvOV8jBWUVs1uXEcra4Kqsmnq6dNe356Y3
-         6rJw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nFqgaXSqlQUQdPy3nY8PRtKYz9p0g0esCemDZNz6EmY=;
+        b=fgwMUlhDupxFzSQVAdzZ2MamJBz7SFNsLGCfxSUbrDuDE8RnK9abPwY0MK5BYFz0cf
+         C7wG0fAwq3JcAbCQE0w5Pw57fNibT4Q9i8Ebcl41yqoTSdbtsnveGZD7RWEwwlxGEPn4
+         nikh/0chKEC3oA+CxAXJBOWRnHKRioT/wKveUVvyUCOpUBzgNlmhs/8LOG2jT78AwsWj
+         1HW1RNZjr1FhXr9AQt9eoZJhQt/2/9QI43U23COktxAhYYt5A88aQuI9noST9sFM1PQG
+         HxOHP56gjNA0pVDNl3t0l1NWFH77GvjWtXmy803148z99zvXMBIr0KwWgwniZBlHpdmg
+         2mwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PJEEKD0ZqT1c9UTQN+/5T3c6Vm2BFnBI5jKv2Cyez3c=;
-        b=NThSdo7gM+WAxIqLs+ER1+d5iEYTOzJKrhx7nJeMB0nXG24EbUxS+I1uIFowGMfBxR
-         gkftlfMeWoC10LuAc5g5NG7manrWd8RUU320vi3GuAAXaTJ69Mko1FIp/h77vNv68EdB
-         QIChsRBrjCWPvkvROHB7Q4qxL+psDewd1WqpB+VJUWZSPeGySqSr7SGzvGvRXG99a6Ff
-         PoduvHu6XxuZ0v6GtRu0EYEKXE2i04qYt1O4TDI1AooVJb1aFDEMS3TcfTYjVqdBktqG
-         XrePyGYdxGbawur4hg9wa1q5oNwocLbkYDRSylR9Ct0cNNvmNacqWOD8/wS5WdRj84m4
-         Xbpg==
-X-Gm-Message-State: AOAM532KbXWCwFOHHPp28iQAu6ymE6CkVNXqUGL0QaCN/1/HwcHmA25l
-        cwjV36j4JbrbzRcwcA2P5+k=
-X-Google-Smtp-Source: ABdhPJwpKSWA19gaNSZHH2q1RU452CqqaZ5KOoK21T5yGvYbD1UNFKth8ESBhqu2r7T8AgcdwzcI+A==
-X-Received: by 2002:a17:906:63c2:: with SMTP id u2mr20708201ejk.346.1614695228198;
-        Tue, 02 Mar 2021 06:27:08 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id i17sm20170143ejo.25.2021.03.02.06.27.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Mar 2021 06:27:07 -0800 (PST)
-Message-ID: <c3560201c8dad085b0c5a661256eef837095b24b.camel@gmail.com>
-Subject: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nFqgaXSqlQUQdPy3nY8PRtKYz9p0g0esCemDZNz6EmY=;
+        b=QZWKJNmgADM84Zr1u7ebSWtTpgX8I52TX2rWHLZHQSw2vgfLKcq2x0WbBgviOAXLcI
+         sSPSt3sJIMxsZuIBRtZDaTx1lK4DFPatr6xDyCtD7giuH9iTtz3ztoGlBy7hEQMNPbmA
+         cghseIqpAviUC2aKXdWjfdUbjkQTjwJsCwKWsAcUUu6SFASWwMIBNC47N3ZkqQ/6UWuM
+         UdAldLZ6EwdCs2kyp4NYqEsnWrDqZqGrirjMZG0hqNvP9k81gLcNFeyydAnpFntYoCfB
+         Ur7z4FOPpMnaw+nlh7DDgTUCUGCxwNpNnyVAPW3DoSWBX2KF9E5QYLQl2fFFub9BRcrB
+         XS5A==
+X-Gm-Message-State: AOAM531tMILUsa7AlSAFY0ebYHAM99d447l5IE2+9eZ/aL1AjfyugY4d
+        SKD5kl/QZzHrBB6nj6QzESmFwU8VGiiPKRAqPdg58g==
+X-Google-Smtp-Source: ABdhPJxbxJWuTTRCgvRJT3XIAMjSeAKmqFJ3gfSSoP5sNHsmHmoMyaYsUaYNlfWERaagQf+eQpCP75td8ntOgunSOxk=
+X-Received: by 2002:a2e:700a:: with SMTP id l10mr12395110ljc.368.1614696534389;
+ Tue, 02 Mar 2021 06:48:54 -0800 (PST)
+MIME-Version: 1.0
+References: <20210225163320.71267-1-andriy.shevchenko@linux.intel.com> <20210225163320.71267-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210225163320.71267-2-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 15:48:43 +0100
+Message-ID: <CACRpkdZj4TqOoJmfDhL1MuZCT9quz+5Gj8C6ckZ1i6cYCq9SOA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Tue, 02 Mar 2021 15:27:01 +0100
-In-Reply-To: <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
-References: <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
-         <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p5>
-         <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-26 at 16:35 +0900, Daejun Park wrote:
-> +
-> +/*
-> + * In this driver, WRITE_BUFFER CMD support 36KB (len=9) ~ 512KB
-> (len=128) as
-> + * default. It is possible to change range of transfer_len through
-> sysfs.
-> + */
-> +static inline bool ufshpb_is_required_wb(struct ufshpb_lu *hpb, int
-> len)
-> +{
-> +       return (len >= hpb->pre_req_min_tr_len &&
+On Thu, Feb 25, 2021 at 5:33 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Here is wrong, should be : len > hpb->pre_req_min_tr_len.
+> On some systems the ACPI tables has wrong pin number and instead of
+> having a relative one it provides an absolute one in the global GPIO
+> number space.
+>
+> Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk to cope with such cases.
+>
+> Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
+> Depends-on: 0ea683931adb ("gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+OH THE HORROR!
+However, we discussed it before. It is as it is.
 
-Bean
+It's the right place to fix the problem, so:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-> +               len <= hpb->pre_req_max_tr_len);
->  }
-
-
-
-
+Yours,
+Linus Walleij
