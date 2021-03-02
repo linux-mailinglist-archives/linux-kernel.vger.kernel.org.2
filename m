@@ -2,71 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F4832A376
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D529132A379
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378890AbhCBJFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:05:52 -0500
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:32973 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381800AbhCBIqh (ORCPT
+        id S1378913AbhCBJGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:06:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1382061AbhCBIsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:46:37 -0500
-Received: by mail-wr1-f48.google.com with SMTP id 7so18954494wrz.0;
-        Tue, 02 Mar 2021 00:46:20 -0800 (PST)
+        Tue, 2 Mar 2021 03:48:42 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1ECC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:48:01 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id lr13so33670836ejb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 00:48:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rZpA0b0nZ0oV8tIgjk1GgOPTpGQGWjc3SqFNlF/nAjg=;
+        b=bhpW9YjLtH6WxpffPKs4ftIdB6kEzlPYvMRE4w6u4+Ms/Ybfo4fznsNNQ6IGwkIX1e
+         TeTPAKgZVJ+R1PSMOdd+ehfeP8jW5rRKpVNDlDTv0Pra8HyXgVXz1CJY3EhymmTx2SHX
+         AYo3glejXTHqfpzbBFtBQBh6DTEO8RWbzf9CwJq0V8NMNPuRn2zTnHOlHNlLNGXseX6x
+         chYYJQgKqjiF5uHvxgJcAYb19ErSGKx86BIT5vzycz2u1wJM09USsRRIoKF5bDjM8vAQ
+         kHW8FHKI6s/X2Ftl/o/NqbRaEllxGM6y708QGzRkXjN+kcUuQDhPXLCelc18klyeuZ9h
+         QvuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=69MhIKzfJHQHYQ5oYHVlFUrLycuJ1vsu6Q89RKIZ76I=;
-        b=l1rebV3enwoxgQSRU3dO1WtRjhBJxG5cHJs8DzfWF0VTI1NiFGVkRNZKhnlvfSS7Gj
-         DthO7C3k2MOljT2cxhVoOnkLMrocvxjVUBIlP7OL2nNh+s8in313naKCUs8zTXxtjtie
-         nSyvhX0OwQZr1pkExq+Xsz/F6NOlACjjRGRtBc48Wekoxl6SOD4QkuspGhQn+H3QJAAp
-         XHzwKpoLoNBJQwnpBSUCc59SA9PLUvfQVYCETLfRdWCBkS6YLDQRlikp+xRUK0VjpNJP
-         GdihN1UON2wZWhGev6mku5jc2jIijtndGh0kfXOZRGcvjneEk4Ib49CFJVZ+vxSaIfiX
-         rrSQ==
-X-Gm-Message-State: AOAM531TR3SjGCHPgDhb6NtOaqnPfi63Gy80Ky6pZhVIGkXinIs04UOO
-        9b2/9+s4adtncboHnPHMc7E=
-X-Google-Smtp-Source: ABdhPJyyqHHSdtoEAN4AcW/WmgfTTcbOGrslCOGyXWlQ2d9rGoIu2+0Ei2nXXykyJWO8d4Qr59jNNg==
-X-Received: by 2002:adf:e582:: with SMTP id l2mr21116779wrm.207.1614674755215;
-        Tue, 02 Mar 2021 00:45:55 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id z9sm27555628wrv.56.2021.03.02.00.45.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 00:45:54 -0800 (PST)
-Date:   Tue, 2 Mar 2021 09:45:53 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] memory: tegra: Replace DEFINE_SIMPLE_ATTRIBUTE with
- DEFINE_DEBUGFS_ATTRIBUTE
-Message-ID: <20210302084553.xd4xocoveykv5pm6@kozik-lap>
-References: <1614243958-55847-1-git-send-email-yang.lee@linux.alibaba.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rZpA0b0nZ0oV8tIgjk1GgOPTpGQGWjc3SqFNlF/nAjg=;
+        b=MsavESn4e62HiAIIQo/GUP1NZaEgMQa/pNP0arfkn5wKVDwSTgvtd5UC/X06LSt6t+
+         JOtjjl+OQy/uFBx/AWs3/e1kIq+3siE+4DHVpSw+UmvYXwr0MaFzyPcTvgHekC9+HZ0S
+         EaHA/c0wUBu9tkK9ghIlzxHUNInESyApkEIo2B+wN532AjbCDoO5IYD71NQuItlR5mEN
+         GP7adJlTBuaaFHSykG1T0sU0DUpVfQN7PWd7pknE7VlZB5nJD9pH7eMMD/wtUHdz0p2v
+         Y7PunEaQ6s2MSsOh3T4OQq9imRoHJYq4Wl4xRaJdMDBRoJbkhvGF1ir9GEYgOSh5KR4G
+         WxEg==
+X-Gm-Message-State: AOAM530z1OxSPM1qZ51QE2nuYtwyVTHFTV8OmP8kxafNVWFQdoMiv9Ba
+        c9Ig8BSS/gEwyKTdv19+MFzkguEm1yXG1C6XET+hlpx6oEovgQ==
+X-Google-Smtp-Source: ABdhPJxaIR8R0M2MhfB9/bK+Jw1y7uV2v5sZWjHNnGAWiYXUfoQDjviHdtbcOIZjTVeYqavg7ifapNqB3HMH9XgY9Gg=
+X-Received: by 2002:a17:906:2314:: with SMTP id l20mr20436562eja.178.1614674880504;
+ Tue, 02 Mar 2021 00:48:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1614243958-55847-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <20210215121713.57687-1-marcan@marcan.st> <20210215121713.57687-15-marcan@marcan.st>
+In-Reply-To: <20210215121713.57687-15-marcan@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 09:47:49 +0100
+Message-ID: <CACRpkda_BdcvTamh-=O2ej+OHYVfNmRokCNJ_mJbF1Fr5Gr5wA@mail.gmail.com>
+Subject: Re: [PATCH v2 14/25] dt-bindings: interrupt-controller: Add DT
+ bindings for apple-aic
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 05:05:58PM +0800, Yang Li wrote:
-> Fix the following coccicheck warning:
-> ./drivers/memory/tegra/tegra124-emc.c:1207:0-23: WARNING:
-> tegra_emc_debug_min_rate_fops should be defined with
-> DEFINE_DEBUGFS_ATTRIBUTE
-> ./drivers/memory/tegra/tegra124-emc.c:1237:0-23: WARNING:
-> tegra_emc_debug_max_rate_fops should be defined with
-> DEFINE_DEBUGFS_ATTRIBUTE
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/memory/tegra/tegra124-emc.c | 4 ++--
+On Mon, Feb 15, 2021 at 1:18 PM Hector Martin <marcan@marcan.st> wrote:
 
-Thanks, applied.
+> AIC is the Apple Interrupt Controller found on Apple ARM SoCs, such as
+> the M1.
+>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-Best regards,
-Krzysztof
+I think this looks good and makes for readable device trees
+and similar to how the GIC IRQs look so there is a
+consensus.
 
+I would maybe add an example interrupt consumer but
+no big deal.
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
