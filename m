@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B58A32A40E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD61932A40D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379848AbhCBKFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:05:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36038 "EHLO
+        id S1379839AbhCBKFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:05:52 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36026 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577823AbhCBJza (ORCPT
+        with ESMTP id S1577822AbhCBJz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:55:30 -0500
+        Tue, 2 Mar 2021 04:55:29 -0500
 Date:   Tue, 02 Mar 2021 09:54:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1614678887;
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qD2KF3Gh/cz5SrnuvhtFW1snlvgKZwmJh0dXtKiHyMQ=;
-        b=Cw+T4buaMBfXv0iQ1YlzG9Z9SnskHBWQACY4qGeajFlMWexyLaPmlMU5lRx7gidmLpyytS
-        7HJ16+mdHLtMjU+fgOsGOh/fsa0IM0BhK6T+hm+ZpnI9FErZAJ+2FgX8z16ssLLdHGIwTW
-        F6uJP2K9uk4tD39qL2z4ilPDGxYlZmkSThu0YJLXgmhvbFQFJnp4UJQYMHJM5PEGn98Ikv
-        Gd1BBkqvykUFGtmoUB+OMn9ezqrI//X4zlQucnuV3HIBl+DObxKyd9l85asDFGaOxvJVvZ
-        GfQJ4BHToYm2wp1//SlGoCA7X7R7MgVVu7jNJ0i4W1nscXu/28ldoCVdmdZpEg==
+        bh=FdMwa28/D84xxtnuOLco75KoubU2WJqel+lPTNDm290=;
+        b=ckxgc9o/MxM0GlJMnx8c/17tZqiEWiHlcbR7MzDSH9lOyrKIccQJ/J9+mDmXTjRFlSeZfe
+        nJIUPmRsgLfk1KrwAlQGlJEImyP5j80C+cpUr6ymhPN8etMqtRKAIwzfv08Lk1HdNJnlXp
+        +sZ9UBMCrZBctoDg9uTJ++gVZP8UJIAMnIfzhk0U0/ekYmtATLoGJgp05Q16lzMKryAqVS
+        pWVrT0b3/MqAlPslXd7J9fmjKI3WdpFdFnmA8J9uUEkZq0h9KH8xd9/nCYiA6+t7qceByY
+        F/ptB+DlSu0h+y/hWCAup6NcrbFHvBhwiHyWY3/JKtqNwMRPpqO1yLhXQNSpwA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1614678887;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qD2KF3Gh/cz5SrnuvhtFW1snlvgKZwmJh0dXtKiHyMQ=;
-        b=XLw81wPNwzL25STg8D8CoVNSsrJXRYqPnL8FrIR+svK/32qgqweMVlFTqAws5dua6ECwpo
-        t8GS7yGSPD0WMiAw==
+        bh=FdMwa28/D84xxtnuOLco75KoubU2WJqel+lPTNDm290=;
+        b=Ikcfcigf8UclZGY7il6tLjPf+u1aNaYwi1K48gwgvzc/a533IHgDM4uLHASN07dLVBKrRx
+        kQ7IONZoo4r5gMAg==
 From:   "tip-bot2 for Nadav Amit" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/mm/tlb: Do not make is_lazy dirty for no reason
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210220231712.2475218-7-namit@vmware.com>
-References: <20210220231712.2475218-7-namit@vmware.com>
+Subject: [tip: x86/mm] cpumask: Mark functions as pure
+Cc:     Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210220231712.2475218-8-namit@vmware.com>
+References: <20210220231712.2475218-8-namit@vmware.com>
 MIME-Version: 1.0
-Message-ID: <161467888727.20312.2951422825515894606.tip-bot2@tip-bot2>
+Message-ID: <161467888701.20312.1318725806452977108.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,40 +58,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/mm branch of tip:
 
-Commit-ID:     db73f8099a502be8ed46f6332c91754c74ac76c2
-Gitweb:        https://git.kernel.org/tip/db73f8099a502be8ed46f6332c91754c74ac76c2
+Commit-ID:     1028a5918cbaae6b9d7f0a04b6a200b9e67aec14
+Gitweb:        https://git.kernel.org/tip/1028a5918cbaae6b9d7f0a04b6a200b9e67aec14
 Author:        Nadav Amit <namit@vmware.com>
-AuthorDate:    Sat, 20 Feb 2021 15:17:09 -08:00
+AuthorDate:    Sat, 20 Feb 2021 15:17:10 -08:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 02 Mar 2021 08:01:38 +01:00
 
-x86/mm/tlb: Do not make is_lazy dirty for no reason
+cpumask: Mark functions as pure
 
-Blindly writing to is_lazy for no reason, when the written value is
-identical to the old value, makes the cacheline dirty for no reason.
-Avoid making such writes to prevent cache coherency traffic for no
-reason.
+cpumask_next_and() and cpumask_any_but() are pure, and marking them as
+such seems to generate different and presumably better code for
+native_flush_tlb_multi().
 
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Nadav Amit <namit@vmware.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/r/20210220231712.2475218-7-namit@vmware.com
+Link: https://lore.kernel.org/r/20210220231712.2475218-8-namit@vmware.com
 ---
- arch/x86/mm/tlb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/cpumask.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 345a0af..17ec4bf 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -469,7 +469,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 		__flush_tlb_all();
- 	}
- #endif
--	this_cpu_write(cpu_tlbstate_shared.is_lazy, false);
-+	if (was_lazy)
-+		this_cpu_write(cpu_tlbstate_shared.is_lazy, false);
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 383684e..c53364c 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -235,7 +235,7 @@ static inline unsigned int cpumask_last(const struct cpumask *srcp)
+ 	return find_last_bit(cpumask_bits(srcp), nr_cpumask_bits);
+ }
  
- 	/*
- 	 * The membarrier system call requires a full memory barrier and
+-unsigned int cpumask_next(int n, const struct cpumask *srcp);
++unsigned int __pure cpumask_next(int n, const struct cpumask *srcp);
+ 
+ /**
+  * cpumask_next_zero - get the next unset cpu in a cpumask
+@@ -252,8 +252,8 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
+ 	return find_next_zero_bit(cpumask_bits(srcp), nr_cpumask_bits, n+1);
+ }
+ 
+-int cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
+-int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
++int __pure cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
++int __pure cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
+ unsigned int cpumask_local_spread(unsigned int i, int node);
+ int cpumask_any_and_distribute(const struct cpumask *src1p,
+ 			       const struct cpumask *src2p);
