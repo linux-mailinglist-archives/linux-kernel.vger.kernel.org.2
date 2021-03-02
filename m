@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D035A32A6CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0267132A6C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351461AbhCBPuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:50:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
+        id S1575844AbhCBPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:44:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446130AbhCBNQl (ORCPT
+        with ESMTP id S1446119AbhCBNQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 08:16:41 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDE4C061356;
-        Tue,  2 Mar 2021 05:04:40 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id mj10so14994728ejb.5;
-        Tue, 02 Mar 2021 05:04:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OI5tt0sCGttpQoMssZQT9mgbCLmB50Zsl3yw2ts6M60=;
-        b=CYAZD6EWLrsXDx9AZXRGjCCOSs9xuqFQve4dZPSRucjJLNwGGAb5XVwo45Db2F7i1j
-         9hyavalHcJu+CWOSo05dVMfSXicLOMWSIVU1WYY0h7i/tO62oc7lItFxg66XX6KBRvPq
-         p6qJgLsjsLJ62XehG6tfld7ASPnWb3bhIP7U+fvm+C/Z9eZYEAT3jyrX5Q6VHw0se2p0
-         I3Er9LzBmsQZcsRpK/6l5kz7exE3ZHrDukDknStuAV1owa65AdiqjqVX8GxxlGAvQTwx
-         kMe+wF9Q7DUtQk8E13Bh1GV3inZLw8myiAwnTVp9B6HJuK0YgmG3FhsYWubLts0G+Lwj
-         RDIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OI5tt0sCGttpQoMssZQT9mgbCLmB50Zsl3yw2ts6M60=;
-        b=PhsDtGH4yeezSO9Z3XlbAdohPNt+Wory9KT2NYCV09Q1oKGIcjsLjXNJ51qhRAcKiL
-         dn1JprGBwFMiH1HqEkTBCK28It9xsY09ux98uXBw38V9ltiuLgt/2qivW3qI8NoTW3b4
-         poR1j6EYtr7htwOAgwA8jCKOnSRwnG6weWCnj0HCSOt5gZ9QDy0drH7ZfBXQJk0YRjL3
-         2HYorQ4y3ipovdGodBT1Ki/lj0P4Im8EJMhwEWarbX/XxxyS0LteW+EEWUfDBjpoG4qc
-         cTwuFMmG5b28/vfmPwWMvUy/k97neSoc97/q7TYsKMamtPxiUh8T1B8Fs85yhdmmwFJB
-         0C7g==
-X-Gm-Message-State: AOAM532nKgPK9UJ4M8Y1jKcgEtFzKflaqsFW6bG3BXpWWIee/lCIpGCM
-        9NDLkQt5F/zRoRPB9yXIoAs=
-X-Google-Smtp-Source: ABdhPJxYqJWNJZDziQUK42jJR5CVb/F0FU3Sa+r99rOlEcKP1x4a3bDx+NcPbpP28TqSNGQre9qAMQ==
-X-Received: by 2002:a17:906:38d2:: with SMTP id r18mr13415620ejd.104.1614690279372;
-        Tue, 02 Mar 2021 05:04:39 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id 35sm19304374edp.85.2021.03.02.05.04.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Mar 2021 05:04:38 -0800 (PST)
-Message-ID: <58e8dcea7f3567001c807ca9399f191a4bcaea40.camel@gmail.com>
-Subject: Re: [PATCH] scsi: ufs: Fix incorrect ufshcd_state after
- ufshcd_reset_and_restore()
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Date:   Tue, 02 Mar 2021 14:04:38 +0100
-In-Reply-To: <5fe97f16-406c-c279-b108-d27bb2769ed6@intel.com>
-References: <20210301191940.15247-1-adrian.hunter@intel.com>
-         <DM6PR04MB65753E738C556F035A56F77CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
-         <5fe97f16-406c-c279-b108-d27bb2769ed6@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A7AC061756;
+        Tue,  2 Mar 2021 05:06:35 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id E185F2223E;
+        Tue,  2 Mar 2021 14:06:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1614690394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mTtVJwCrMEqy04BVWxGgfe8sOuG6CbjO06VOyD60coI=;
+        b=N1jbqwuLG9dlRICo7gv/InhS3T3Z95hbPGXGxPecFPDxLjOzwAI+8oh76X1nIWpyGQ2wmh
+        OjSHejnJe9fVnQlH2KmDVlcC0agYzilguPEGV3Cdql6nJfCD+mnu+UXiMaR8uX6lTzbNV1
+        ihERZ3CaUUAkTDmpjPY6Im1R8EIIm9o=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Mar 2021 14:06:33 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor.Ambarus@microchip.com
+Subject: Re: [RFC PATCH] mtd: add OTP (one-time-programmable) erase ioctl
+In-Reply-To: <20210302134617.5aa78cc4@xps13>
+References: <20210302110927.6520-1-michael@walle.cc>
+ <20210302134617.5aa78cc4@xps13>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <05c255e6d9d8d12e8e6af59d9c153981@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-02 at 10:14 +0200, Adrian Hunter wrote:
-> > > That can result in the state being UFSHCD_STATE_ERROR even though
-> > > ufshcd_reset_and_restore() is successful and returns zero.
-> > > 
-> > > Fix by initializing the state to UFSHCD_STATE_RESET in the start
-> > > of each
-> > > loop in ufshcd_reset_and_restore().  If there is an error,
-> > > ufshcd_reset_and_restore() will change the state to
-> > > UFSHCD_STATE_ERROR,
-> > > otherwise ufshcd_probe_hba() will have set the state
-> > > appropriately.
-> > > 
-> > > Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler
-> > > and other
-> > > error recovery paths")
-> > > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> > 
-> > I think that CanG recent series addressed that issue as well, can
-> > you take a look?
-> > 
-https://lore.kernel.org/lkml/1614145010-36079-2-git-send-email-cang@codeaurora.org/
+Hi,
+
+Am 2021-03-02 13:46, schrieb Miquel Raynal:
+> Michael Walle <michael@walle.cc> wrote on Tue,  2 Mar 2021 12:09:27
+> +0100:
 > 
-> Yes, there it is mixed in with other changes.  However it is probably
-> better
-> as a separate patch.  Can Guo, what do you think?
+>> This may sound like a contradiction but some SPI-NOR flashes really
+>> support erasing their OTP region until it is finally locked. Having 
+>> the
+>> possibility to erase an OTP region might come in handy during
+>> development.
+>> 
+>> The ioctl argument follows the OTPLOCK style.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>> OTP support for SPI-NOR flashes may be merged soon:
+>> https://lore.kernel.org/linux-mtd/20210216162807.13509-1-michael@walle.cc/
+>> 
+>> Tudor suggested to add support for the OTP erase operation most 
+>> SPI-NOR
+>> flashes have:
+>> https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
+>> 
+>> Therefore, this is an RFC to get some feedback on the MTD side, once 
+>> this
+>> is finished, I can post a patch for mtd-utils. Then we'll have a 
+>> foundation
+>> to add the support to SPI-NOR.
+>> 
 
-we can firstly take this fixup patch.
+[..]
 
+>> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t 
+>> len)
+>> +{
+>> +	struct mtd_info *master = mtd_get_master(mtd);
+>> +
+>> +	if (!master->_erase_user_prot_reg)
+>> +		return -EOPNOTSUPP;
+>> +	if (!len)
+>> +		return 0;
+> 
+> Should we add a sanity check enforcing that we don't try to access
+> beyond the end of the OTP area?
 
+This is checked in the op itself, as it is done for all the
+other OTP read/write/lock ops.
+
+Right at the moment, I don't see how this could be achieved in
+an elegant way. Without additional changes, you'd have to call
+mtd_get_user_prot_info() and iterate over the returned values
+and figure out whether from and len are valid.
+
+[..]
+
+-michael
