@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A0832ADD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D22E332ADD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1840059AbhCBWP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:15:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28079 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1574550AbhCBUAN (ORCPT
+        id S1840076AbhCBWPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:15:33 -0500
+Received: from mail-vs1-f54.google.com ([209.85.217.54]:35630 "EHLO
+        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240616AbhCBUCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:00:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614715122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TH/kVYUdvKj/aImEpFveijQAwn4b77rjoVCorE44qS8=;
-        b=MPF+qQbUK8SMogZY79TRJGS3vi8gH5y4tOeWYJ85l+75BEL/9peBaYIXSl6L+BOTmrd8ko
-        8ON3zpl3eR74zHPA0drf1tGJRIX81VPhcG0fLDkNpvxHRREtMo76MwiSFnUIQemau1yXrI
-        MjUDJ1zGPVrAoewGKer7UAqUO5Z07dg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-I2eNvxwCPqGyrPIX8ok5BQ-1; Tue, 02 Mar 2021 14:58:32 -0500
-X-MC-Unique: I2eNvxwCPqGyrPIX8ok5BQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23AFC1005501;
-        Tue,  2 Mar 2021 19:58:31 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5542119712;
-        Tue,  2 Mar 2021 19:58:30 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 12:58:29 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede02@gmail.com>
-Subject: Re: RFC: sysfs node for Secondary PCI bus reset (PCIe Hot Reset)
-Message-ID: <20210302125829.216784cd@omen.home.shazbot.org>
-In-Reply-To: <20210301202817.GA201451@bjorn-Precision-5520>
-References: <20210301171221.3d42a55i7h5ubqsb@pali>
-        <20210301202817.GA201451@bjorn-Precision-5520>
+        Tue, 2 Mar 2021 15:02:19 -0500
+Received: by mail-vs1-f54.google.com with SMTP id t23so11295950vsk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 12:01:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lzf9U5TyFr8YSgCYbQV0aCCbWT0MRYgraMrf2J/E5OM=;
+        b=MUIBpGfgoiHEGU8xStahm+ISOYThAi3D01ZDeHRZzZPF4mIXur0dDMfZFBnWhCAs20
+         GWGWwrO74a3BpGmBDsu6PGoV81YFbfPGAiOfmxUW9AYqvNGSyIu4+fddsQPgtxRuefQH
+         JBHmDZUwgFoqC/9Wt/bKhdrF+4tKZdN5tReD7pVSZEppA7HxXpZLaVMYD8jY50uBfF0O
+         lJbZQH40qx/6Wzyj3B6JbP/6uazo8s3kQ5x3jiQWWk23bScPkkqmCmZgGZzd8By2uws0
+         2oEZr+aZnnVDL68/Vylphr2HLG8xc3AQotfFXdLB0q6X+9rcCjXmD0vj9+mRQaDjcMH5
+         xX1A==
+X-Gm-Message-State: AOAM531IN3X5zw8k7upsd5Gc8h8rLydmxxCRnQmUuv+N6bUzBEq6qHbr
+        5iUnc4pw/nt30ajO6lK6YRSIu+ch/NAQTJhkWps=
+X-Google-Smtp-Source: ABdhPJzRCGpW4RCsZEhpYEAn3MR1Q73gbJHqe3CH+KRCFvVBwE5R/NVI0GIx7VbV9hgc+A3Gg/HXK7gUOE34HM0PfoU=
+X-Received: by 2002:a67:fb86:: with SMTP id n6mr3865292vsr.3.1614715282171;
+ Tue, 02 Mar 2021 12:01:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210301104316.2766484-1-geert@linux-m68k.org>
+ <alpine.DEB.2.22.394.2103011342520.710098@ramsan.of.borg> <CADnq5_O-j8EWL+Eb8zK-7WqUuWKWETVWYRQNFdS_ymUSgo1jrg@mail.gmail.com>
+In-Reply-To: <CADnq5_O-j8EWL+Eb8zK-7WqUuWKWETVWYRQNFdS_ymUSgo1jrg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Mar 2021 21:01:10 +0100
+Message-ID: <CAMuHMdVFstnce-WKmj=4h3ZdtSThJNOLz_f1ervcZxE6hg=KsA@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.12-rc1
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 14:28:17 -0600
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+Hi Alex,
 
-> [+cc Alex, reset expert]
->=20
-> On Mon, Mar 01, 2021 at 06:12:21PM +0100, Pali Roh=C3=A1r wrote:
-> > Hello!
-> >=20
-> > PCIe card can be reset via in-band Hot Reset signal which can be
-> > triggered by PCIe bridge via Secondary Bus Reset bit in PCI config
-> > space.
-> >=20
-> > Kernel already exports sysfs node "reset" for triggering Functional
-> > Reset of particular function of PCI device. But in some cases Functional
-> > Reset is not enough and Hot Reset is required.
-> >=20
-> > Following RFC patch exports sysfs node "reset_bus" for PCI bridges which
-> > triggers Secondary Bus Reset and therefore for PCIe bridges it resets
-> > connected PCIe card.
-> >=20
-> > What do you think about it?
-> >=20
-> > Currently there is userspace script which can trigger PCIe Hot Reset by
-> > modifying PCI config space from userspace:
-> >=20
-> > https://alexforencich.com/wiki/en/pcie/hot-reset-linux
-> >=20
-> > But because kernel already provides way how to trigger Functional Reset
-> > it could provide also way how to trigger PCIe Hot Reset.
+On Tue, Mar 2, 2021 at 8:30 PM Alex Deucher <alexdeucher@gmail.com> wrote:
+> On Mon, Mar 1, 2021 at 9:21 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Mon, 1 Mar 2021, Geert Uytterhoeven wrote:
+> > > Below is the list of build error/warning regressions/improvements in
+> > > v5.12-rc1[1] compared to v5.11[2].
+> > >
+> > > Summarized:
+> > >  - build errors: +2/-0
+> >
+> > > [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8/ (all 192 configs)
+> > > [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f40ddce88593482919761f74910f42f4b84c004b/ (all 192 configs)
+> > >
+> > >
+> > > *** ERRORS ***
+> > >
+> > > 2 error regressions:
+> > >  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 674:2
+> > >  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 638:2
+> >
+> > powerpc-gcc4.9/ppc64_book3e_allmodconfig
+> >
+> > This was fixed in v5.11-rc1, but reappeared in v5.12-rc1?
+>
+> Do you know what fixed in for 5.11?  I guess for PPC64 we depend on CONFIG_VSX?
 
-What that script does and what this does, or what the existing reset
-attribute does, are very different.  The script finds the upstream
-bridge for a given device, removes the device (ignoring that more than
-one device might be affected by the bus reset), uses setpci to trigger
-a secondary bus reset, then rescans devices.  The below only triggers
-the secondary bus reset, neither saving and restoring affected device
-state like the existing function level reset attribute, nor removing
-and rescanning as the script does.  It simply leaves an entire
-hierarchy of PCI devices entirely un-programmed yet still has struct
-pci_devs attached to them for untold future misery.
+Looking at the kisskb build logs for v5.11*, it seems compilation never
+got to drivers/gpu/drm/ due to internal compiler errors that weren't caught
+by my scripts.  So the errors listed above were not really fixed.
 
-In fact, for the case of a single device affected by the bus reset, as
-intended by the script, the existing reset attribute will already do
-that if the device supports no other reset mechanism.  There's actually
-a running LFX mentorship project that aims to allow the user to control
-the type of reset performed by the existing reset attribute such that a
-user could force the bus reset behavior over other reset methods.
+Gr{oetje,eeting}s,
 
-There might be some justification for an attribute that actually
-implements the referenced script correctly, perhaps in kernel we could
-avoid races with bus rescans, but simply triggering an SBR to quietly
-de-program all downstream devices with no state restore or device
-rescan is not it.  Any affected device would be unusable.  Was this
-tested?  Thanks,
+                        Geert
 
-Alex
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > index 50fcb62d59b5..f5e11c589498 100644
-> > --- a/drivers/pci/pci-sysfs.c
-> > +++ b/drivers/pci/pci-sysfs.c
-> > @@ -1321,6 +1321,30 @@ static ssize_t reset_store(struct device *dev, s=
-truct device_attribute *attr,
-> > =20
-> >  static DEVICE_ATTR(reset, 0200, NULL, reset_store);
-> > =20
-> > +static ssize_t reset_bus_store(struct device *dev, struct device_attri=
-bute *attr,
-> > +			       const char *buf, size_t count)
-> > +{
-> > +	struct pci_dev *pdev =3D to_pci_dev(dev);
-> > +	unsigned long val;
-> > +	ssize_t result =3D kstrtoul(buf, 0, &val);
-> > +
-> > +	if (result < 0)
-> > +		return result;
-> > +
-> > +	if (val !=3D 1)
-> > +		return -EINVAL;
-> > +
-> > +	pm_runtime_get_sync(dev);
-> > +	result =3D pci_bridge_secondary_bus_reset(pdev);
-> > +	pm_runtime_put(dev);
-> > +	if (result < 0)
-> > +		return result;
-> > +
-> > +	return count;
-> > +}
-> > +
-> > +static DEVICE_ATTR(reset_bus, 0200, NULL, reset_bus_store);
-> > +
-> >  static int pci_create_capabilities_sysfs(struct pci_dev *dev)
-> >  {
-> >  	int retval;
-> > @@ -1332,8 +1356,15 @@ static int pci_create_capabilities_sysfs(struct =
-pci_dev *dev)
-> >  		if (retval)
-> >  			goto error;
-> >  	}
-> > +	if (dev->hdr_type =3D=3D PCI_HEADER_TYPE_BRIDGE) {
-> > +		retval =3D device_create_file(&dev->dev, &dev_attr_reset_bus);
-> > +		if (retval)
-> > +			goto error_reset_bus;
-> > +	}
-> >  	return 0;
-> > =20
-> > +error_reset_bus:
-> > +	device_remove_file(&dev->dev, &dev_attr_reset);
-> >  error:
-> >  	pcie_vpd_remove_sysfs_dev_files(dev);
-> >  	return retval;
-> > @@ -1414,6 +1445,8 @@ static void pci_remove_capabilities_sysfs(struct =
-pci_dev *dev)
-> >  		device_remove_file(&dev->dev, &dev_attr_reset);
-> >  		dev->reset_fn =3D 0;
-> >  	}
-> > +	if (dev->hdr_type =3D=3D PCI_HEADER_TYPE_BRIDGE)
-> > +		device_remove_file(&dev->dev, &dev_attr_reset_bus);
-> >  }
-> > =20
-> >  /** =20
->=20
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
