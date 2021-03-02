@@ -2,165 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5987932AE3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B950D32AE42
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574949AbhCBWnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        id S1575112AbhCBWn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:43:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838010AbhCBWOn (ORCPT
+        with ESMTP id S1838059AbhCBWPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:14:43 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0740C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:14:03 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u11so12831707plg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:14:03 -0800 (PST)
+        Tue, 2 Mar 2021 17:15:06 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38E0C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:14:25 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id h98so21487984wrh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:14:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=XDhLDlA7wOplGFamjT4K7zKlFkgvTAE9QL1XyjFvOsc=;
-        b=sd2FTMkBPXXegbTUNAhOlv9maEhFBJlouq+pp2KidTfWFWPZF0o2RUPEJkZBv9FQxH
-         Fgce1oFciBiQAR84qmTz36B86X7bB3k64odIITSeZicROnt9HDGtdCqvoP4ByMdYszTq
-         6xaDylMzL7bgq8DG4XxjDsPH9ZtDcTKB4WfIPcoANemaEKxCXvrBduAkU+3Y6B1yA5ny
-         U2yMDLjHBv83fjZXg3m+Ugksexc5MKdWPO2lkMdm55tKjHN11+ZvWOMbL03ylOs1JlHK
-         imUkrjtgT3NBKTst2tTduGG7c0fby7CIVCs6om6+0n1ta0I58Vom2AVSKvS1iFIXIMdl
-         oRig==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=M1/m/gd9FGC+n/OV39jRVRgV/wdTA/bprzwjyOWO+Ik=;
+        b=GIB6d97DF+Qq6qu+TXbhAjQDObZROxJLVp+TdNEZUVGR5T/0NqF53IaOnKWOqHmTzx
+         jnxPItI0hKKRgB/vCEbSfd/cUMPprqejrC7iC9lK81l8NIn8wB6RENHbI1ud8aQ+erFT
+         gVmjOhvKgWI/+5weX60PPb1TYnfj3LvYeAWzaAdjz3R58Nms0DSpCeMtxCkeC2czmt5N
+         Txlh9oAj6HEnXNbKQ0tIHJgGa2zxGlN125wvGgTZf4H/wflFr654dq5J4l6CoSPWu1Dn
+         WmS4oqPEk42C/y9XXuG7dMbEaUzZ8EGRrFusvMRTUYiBEKkRgBrAKmhykdIFiq7iW3b/
+         7uBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=XDhLDlA7wOplGFamjT4K7zKlFkgvTAE9QL1XyjFvOsc=;
-        b=KifsuYqh8fKwnB44VJLblXFZwK6W2HO35rppilH7cxrwu+b2Z4WduI7YwWQJ9iYUDn
-         JpUSzIOUBH1+NSVuldSSweDjWp3h/mkAFpARISvkqf+SG0sJdMZLAhSadYPkToY+9yS+
-         Q7YrJ/WiChuPzy6bwNlWUVkKgbe6gQGTtp+YF0vvqlRrFKlFa1GM4xGkEkUQ+yNnd+1D
-         2KoA8jPPWssVIjfn798Lkty5FSMvPFS5fvWtFy8aZQt6szKnzXycFBHhZZqotixViSp5
-         NShnjcZYhScsbCgU1/P/M+VDTNAiPHneLpN89UKjqamKqQaTYq0qiAzM1UosuLOOabDE
-         Pp+A==
-X-Gm-Message-State: AOAM530tl2YHCeawP0CP4Zh47ZuIn9RNxehz4nB2huIwyGrivnoqC36t
-        x4+8v/Gl4LuCioWVTuno41M=
-X-Google-Smtp-Source: ABdhPJyuohi1SRleuhxLWB79FXmAMCrkjWwjAcT21IL23kTWYfb/MdizZ1exA7+4lv0b2Lj8iNaBYw==
-X-Received: by 2002:a17:90a:6393:: with SMTP id f19mr6459601pjj.230.1614723242990;
-        Tue, 02 Mar 2021 14:14:02 -0800 (PST)
-Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id k16sm14944397pfp.161.2021.03.02.14.14.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 14:14:02 -0800 (PST)
-From:   Nadav Amit <nadav.amit@gmail.com>
-Message-Id: <82EE79B6-B29C-41FE-AA81-13C14E7F9D95@gmail.com>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [RFC PATCH v2 0/2] mm: fix races due to deferred TLB flushes
-Date:   Tue, 2 Mar 2021 14:14:00 -0800
-In-Reply-To: <20210302221314.GR397383@xz-x1>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-To:     Peter Xu <peterx@redhat.com>
-References: <20201225092529.3228466-1-namit@vmware.com>
- <20210302221314.GR397383@xz-x1>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=M1/m/gd9FGC+n/OV39jRVRgV/wdTA/bprzwjyOWO+Ik=;
+        b=oTcbkLun2ilpy+YvMLaqdyd92HEylzcum7x7MmI22TKXPZOulPA+34NbTQDpMMzcpn
+         pWdtQvoinnfSVReD8hrNUQqs2ZgYnx1a8jPDxYmeg/zziPGhgY5k9EALLRjtFpC+vNBI
+         aSIgKrRMUvKHhYxeyRj+dpgKljei/M2bdbObgPmIZootQcQFascv7mdRLrOvA1dPil1e
+         b/zAK22IYtqewRdFx6UkQndi6VCdBJztBKlTaoYzuWuLv4aPLWfAw8RW7ai5lMKRqGe0
+         aNoxKmKOE8G/nbyR9phSfCi/KRN7W1fDI1pBgVtW+87H0OCB8f6VUONm63qgTw9BD7oQ
+         nDNg==
+X-Gm-Message-State: AOAM533FjAkBmVacGTYaQspJcGzIBkypnKx0apJZxd0f4LjikSeHqvWZ
+        9SsvevMSmeRf8nGvhmZ8BrpbtQ==
+X-Google-Smtp-Source: ABdhPJxMNHtZ9W5GJwP7uaL12fOHEnJa1tDSkjhHzAB6spwKCJ7cGfD2teG0nf74dKR0qXPLyoIwxQ==
+X-Received: by 2002:adf:e603:: with SMTP id p3mr21234023wrm.360.1614723264090;
+        Tue, 02 Mar 2021 14:14:24 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.googlemail.com with ESMTPSA id z2sm11707388wrm.0.2021.03.02.14.14.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 14:14:23 -0800 (PST)
+Subject: Re: [PATCH v3 07/10] clocksource/drivers/hyper-v: Handle vDSO
+ differences inline
+To:     Michael Kelley <mikelley@microsoft.com>, sthemmin@microsoft.com,
+        kys@microsoft.com, wei.liu@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-arch@vger.kernel.org
+References: <1614721102-2241-1-git-send-email-mikelley@microsoft.com>
+ <1614721102-2241-8-git-send-email-mikelley@microsoft.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <25234414-d905-0f9c-af92-9a9e4cde30c4@linaro.org>
+Date:   Tue, 2 Mar 2021 23:14:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1614721102-2241-8-git-send-email-mikelley@microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/03/2021 22:38, Michael Kelley wrote:
+> While the driver for the Hyper-V Reference TSC and STIMERs is architecture
+> neutral, vDSO is implemented for x86/x64, but not for ARM64.  Current code
+> calls into utility functions under arch/x86 (and coming, under arch/arm64)
+> to handle the difference.
+> 
+> Change this approach to handle the difference inline based on whether
+> VDSO_CLOCK_MODE_HVCLOCK is present.  The new approach removes code under
+> arch/* since the difference is tied more to the specifics of the Linux
+> implementation than to the architecture.
+> 
+> No functional change.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  arch/x86/include/asm/mshyperv.h    |  4 ----
+>  drivers/clocksource/hyperv_timer.c | 10 ++++++++--
+>  2 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index c10dd1c..4f566db 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -27,10 +27,6 @@ static inline u64 hv_get_register(unsigned int reg)
+>  	return value;
+>  }
+>  
+> -#define hv_set_clocksource_vdso(val) \
+> -	((val).vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK)
+> -#define hv_enable_vdso_clocksource() \
+> -	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+>  #define hv_get_raw_timer() rdtsc_ordered()
+>  
+>  /*
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+> index c73c127..06984fa 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -370,11 +370,13 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
+>  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+>  }
+>  
+> +#ifdef VDSO_CLOCKMODE_HVCLOCK
+>  static int hv_cs_enable(struct clocksource *cs)
+>  {
+> -	hv_enable_vdso_clocksource();
+> +	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+>  	return 0;
+>  }
+> +#endif
 
---Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+We had a confusion here. The suggestion was to remove the #ifdef here
+and add the __maybe_unused annotation to the function.
+
+>  static struct clocksource hyperv_cs_tsc = {
+>  	.name	= "hyperv_clocksource_tsc_page",
+> @@ -384,7 +386,12 @@ static int hv_cs_enable(struct clocksource *cs)
+>  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+>  	.suspend= suspend_hv_clock_tsc,
+>  	.resume	= resume_hv_clock_tsc,
+> +#ifdef VDSO_CLOCKMODE_HVCLOCK
+>  	.enable = hv_cs_enable,
+> +	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+> +#else
+> +	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
+> +#endif
+>  };
+>  
+>  static u64 notrace read_hv_clock_msr(void)
+> @@ -442,7 +449,6 @@ static bool __init hv_init_tsc_clocksource(void)
+>  	tsc_msr = tsc_msr | 0x1 | (u64)phys_addr;
+>  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+>  
+> -	hv_set_clocksource_vdso(hyperv_cs_tsc);
+>  	clocksource_register_hz(&hyperv_cs_tsc, NSEC_PER_SEC/100);
+>  
+>  	hv_sched_clock_offset = hv_read_reference_counter();
+> 
 
 
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> On Mar 2, 2021, at 2:13 PM, Peter Xu <peterx@redhat.com> wrote:
->=20
-> On Fri, Dec 25, 2020 at 01:25:27AM -0800, Nadav Amit wrote:
->> From: Nadav Amit <namit@vmware.com>
->>=20
->> This patch-set went from v1 to RFCv2, as there is still an ongoing
->> discussion regarding the way of solving the recently found races due =
-to
->> deferred TLB flushes. These patches are only sent for reference for =
-now,
->> and can be applied later if no better solution is taken.
->>=20
->> In a nutshell, write-protecting PTEs with deferred TLB flushes was =
-mostly
->> performed while holding mmap_lock for write. This prevented =
-concurrent
->> page-fault handler invocations from mistakenly assuming that a page =
-is
->> write-protected when in fact, due to the deferred TLB flush, other =
-CPU
->> could still write to the page. Such a write can cause a memory
->> corruption if it takes place after the page was copied (in
->> cow_user_page()), and before the PTE was flushed (by wp_page_copy()).
->>=20
->> However, the userfaultfd and soft-dirty mechanisms did not take
->> mmap_lock for write, but only for read, which made such races =
-possible.
->> Since commit 09854ba94c6a ("mm: do_wp_page() simplification") these
->> races became more likely to take place as non-COW'd pages are more
->> likely to be COW'd instead of being reused. Both of the races that
->> these patches are intended to resolve were produced on v5.10.
->>=20
->> To avoid the performance overhead some alternative solutions that do =
-not
->> require to acquire mmap_lock for write were proposed, specifically =
-for
->> userfaultfd. So far no better solution that can be backported was
->> proposed for the soft-dirty case.
->>=20
->> v1->RFCv2:
->> - Better (i.e., correct) description of the userfaultfd buggy case =
-[Yu]
->> - Patch for the soft-dirty case
->=20
-> Nadav,
->=20
-> Do you plan to post a new version to fix the tlb corrupt issue that =
-this series
-> wanted to solve?
-
-Yes, yes. Sorry for that. Will do so later today.
-
-Regards,
-Nadav
-
---Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmA+uKgACgkQHaAqSaba
-D1p3Rw/+Onwg67Ys7jPTdP45YUycZqYIZb5Oh/Va0r2uWnSlq7hDx8zgQAFYR8Hu
-vv9Y8KAJYLqrsYbq5XTnP6WQzqT4bILmdVNk7cgE2BSNt6o2BYjfD/Ofaom+v2xz
-TEiJJNG9CdMFQgoCBV16HspSw61xA1gDAj+cqajoWZMXXaddyjf7Mxyw0iGeHudV
-+AD5YvC3bBHiqYrqeyQtRVRKeTC3OjBf8QOG1NoRiIHYxbFojYTt7BDurQdngGne
-b1XIRo9pPY1pXvp1w8r6gIGOElLSLTryq4rXkA7T15T8dO6lrQ6QY29k3axqi4Ma
-oESNusuxwZ+Tbpn92XHpi06Nze4fchj0bJaoGS88tWak5euNx0BoLOiBOYnqqe4D
-fWyqpYTCatYuHpSIPMipCqwC3mW9Eba3np6HSl2jhgYyInw0m8FP5nq61IuQZvqh
-O72k0Bga7Jr5G1/LuwVx9bVqjAGhllJP63hXhGezwBU45bfj1WwoY5YSY2t1Uqe0
-hpmeqD/LyNubXjPdfIReahYvwgU5gKF+n8zGszHYaiWKMwm2YcC5Xwkqje8aErI8
-lZnqRECkQ7KEiOrfOOrKR991RC4ReMAhlKBySIshJrm8mZ3FhsdGjgHTa8NXJ03R
-g1Jn3C+UC0OsdhE9yKPwDHNNGd2povRln9GiA1vaDZiFkBLa0WM=
-=49XM
------END PGP SIGNATURE-----
-
---Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
