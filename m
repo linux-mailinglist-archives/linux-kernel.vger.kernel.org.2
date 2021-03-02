@@ -2,274 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AAB32AA4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F71F32AA4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835593AbhCBTSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:18:17 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:37077 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1579346AbhCBQrL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:47:11 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id EAC371400;
-        Tue,  2 Mar 2021 11:35:11 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 02 Mar 2021 11:35:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=vuIY4u0JZta9sUcBiLwawr0Tdij
-        dW51uliU5N7yOuuo=; b=SiiE0UT/Jp8eV53mNX4Z66LwYb53fRTlwF9yo7exHaj
-        GZ8l86OTUZBqhjruAgwvNtKVN1PQfqd/bgsbLY6YDnsGYAaFNguXoBRPWIMQVHqS
-        719AsWv/ISjB/qEG0MlUaARE45SX4f2UftonuTBclyJv7VjxbWoGdVMgp+Lgai8U
-        BvweBfWWKzd+8IqLy9QGDKf5Y/ag+bBvH4NWr5j8kLVJRQgeyT3XaBBYok5pU3Tb
-        QfBYCtULQnczvXOzd0CRBeLueW8c0TVyJ6hBBj5WI2bu9TD5FJZOMTAmx+dZFsI9
-        8CzogwGPxM3FzqXpol4R/Q2Fba2RB+iYa8n4SpIx5Vw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=vuIY4u
-        0JZta9sUcBiLwawr0TdijdW51uliU5N7yOuuo=; b=HTeRmuM1NDzmmBPiSK8gF3
-        Hry3iDJukX2IedJhmMjJpt53XgArBlWo5hbQdSRlGseyk9MSEEoqnu2oNP8sHtkW
-        QQJOD0W1ZR+uV6jTO5o1NyjT9EakXIzCg+tffjCpgcGsDWYFANwYDgZ0wTeoRQxF
-        Dar9H4/jCVvGC2pmyJWSdU/Ih/FRHUoQ4wIMZG2xN/odUOwReAHqNLar7uA457hq
-        nYeeRDn96pHPd1V2T0jHyCctiArKCLPxSKcbBqNzBtfY2Tfc97gc0JpwXN7KREo/
-        H4xo/Xd/lW48pz5b8Xf4X0LrMfydNblIn/EY4+wEsbqJ0C7seRKNT1eoExiNPKUQ
-        ==
-X-ME-Sender: <xms:PGk-YLDbtZp5OnAJlNfzd0yPLdDqyddIEveFF4RCwH6QMiX2A0rkrw>
-    <xme:PGk-YBjGBLGYNPJu62MqDGc5hZ-1rg0Eb4nOJ1-bxTwLdkJ2CfiCKxRRxOZu8mCA_
-    EGaA4i042QGjIfx5Rk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddttddgkeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:PGk-YGlAgg5KSusc6V9yXE3I8i88tejCcJp-igdloo7-6ARPCw_eqg>
-    <xmx:PGk-YNwuA-cf46mNjvqObZ0vFw9floq3QxTSbF7rsoq87afTiHMJ5A>
-    <xmx:PGk-YARgiG_xt1fj-nczfTEgTl9BhccO2fQy5QPukIGJFlmLG6OGiQ>
-    <xmx:P2k-YFIpZicm13XP16nLylmEHsd9l26rK3DJdVIcbS252hm-QCoLng>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DA2551080066;
-        Tue,  2 Mar 2021 11:35:07 -0500 (EST)
-Date:   Tue, 2 Mar 2021 17:35:05 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-amarula <linux-amarula@amarulasolutions.com>
-Subject: Re: [PATCH v3 6/7] drm: sun4i: dsi: Use drm_panel_bridge, connector
- API
-Message-ID: <20210302163505.2d42x364qsm26jo7@gilmour>
-References: <20210214194102.126146-1-jagan@amarulasolutions.com>
- <20210214194102.126146-7-jagan@amarulasolutions.com>
- <20210226165723.szblbiswz5vgapq2@hendrix>
- <CAMty3ZC0ynvk3qnWDSnpMD-_hJiP-edga6+HfqhRH_g0BkAqgg@mail.gmail.com>
+        id S1835633AbhCBTS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:18:26 -0500
+Received: from mga02.intel.com ([134.134.136.20]:57664 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1579384AbhCBQrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:47:24 -0500
+IronPort-SDR: bYA0YSrq+LdLItA5eqeca4AaKJraG028FSlzDt4gbofaMjrNk8yW8rVKs/r26RfEJ8c9jRjr4m
+ J4ebXZ7UMhgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174022800"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="174022800"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 08:35:52 -0800
+IronPort-SDR: 41xwIflETVnqcb/i9sleajl0rcYzTTQRCtDclrG0dPYLDMLi7foC75wgfWRx95ZyxAGf3dAUrf
+ 7UpcIDyMxW2g==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="506392141"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 08:35:49 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lH7zr-009Qkx-UP; Tue, 02 Mar 2021 18:35:43 +0200
+Date:   Tue, 2 Mar 2021 18:35:43 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v1 1/3] gpiolib: acpi: Add
+ ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk
+Message-ID: <YD5pX2tOano7peGk@smile.fi.intel.com>
+References: <20210225163320.71267-1-andriy.shevchenko@linux.intel.com>
+ <20210225163320.71267-2-andriy.shevchenko@linux.intel.com>
+ <CACRpkdZj4TqOoJmfDhL1MuZCT9quz+5Gj8C6ckZ1i6cYCq9SOA@mail.gmail.com>
+ <YD5VJMDC1TmIN/T8@smile.fi.intel.com>
+ <20210302151430.GY2542@lahna.fi.intel.com>
+ <YD5X7XUrx9AQvaXP@smile.fi.intel.com>
+ <CAMpxmJX5sKwuta_Ws-VLuA_95ji6xaSB-0ZoNtQ-dL5mAwQcpg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ub7ojtsuyl5akr4c"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMty3ZC0ynvk3qnWDSnpMD-_hJiP-edga6+HfqhRH_g0BkAqgg@mail.gmail.com>
+In-Reply-To: <CAMpxmJX5sKwuta_Ws-VLuA_95ji6xaSB-0ZoNtQ-dL5mAwQcpg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 02, 2021 at 05:07:55PM +0100, Bartosz Golaszewski wrote:
+> On Tue, Mar 2, 2021 at 4:21 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 
---ub7ojtsuyl5akr4c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Do you want me to take these, or will you include them in your PR?
 
-On Fri, Feb 26, 2021 at 10:40:24PM +0530, Jagan Teki wrote:
-> On Fri, Feb 26, 2021 at 10:27 PM Maxime Ripard <mripard@kernel.org> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, Feb 15, 2021 at 01:11:01AM +0530, Jagan Teki wrote:
-> > > Use drm_panel_bridge to replace manual panel handling code.
-> > >
-> > > This simplifies the driver to allows all components in the
-> > > display pipeline to be treated as bridges, paving the way
-> > > to generic connector handling.
-> > >
-> > > Use drm_bridge_connector_init to create a connector for display
-> > > pipelines that use drm_bridge.
-> > >
-> > > This allows splitting connector operations across multiple bridges
-> > > when necessary, instead of having the last bridge in the chain
-> > > creating the connector and handling all connector operations
-> > > internally.
-> > >
-> > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> >
-> > Most of the code removed in that patch was actually introduced earlier
-> > which feels a bit weird. Is there a reason we can't do that one first,
-> > and then introduce the bridge support?
->=20
-> This patch adds new bridge API's which requires the driver has to
-> support the bridge first.
+I'll send PR.
+I'm waiting for vger to process the queue (it has some lags).
 
-I'm not sure what you're saying, you can definitely have a bridge
-without support for a downstream bridge.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Anyway, my point is that:
 
-> ---
-> Changes for v3:
-> - new patch
->
->  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 108 +++++++------------------
->  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h |   7 --
->  2 files changed, 27 insertions(+), 88 deletions(-)
->
-> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun=
-4i/sun6i_mipi_dsi.c
-> index 3cdc14daf25c..5e5d3789b3df 100644
-> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-> @@ -20,6 +20,7 @@
->  #include <linux/slab.h>
->
->  #include <drm/drm_atomic_helper.h>
-> +#include <drm/drm_bridge_connector.h>
->  #include <drm/drm_mipi_dsi.h>
->  #include <drm/drm_of.h>
->  #include <drm/drm_panel.h>
-> @@ -769,12 +770,6 @@ static void sun6i_dsi_bridge_pre_enable(struct drm_b=
-ridge *bridge)
->  	phy_set_mode(dsi->dphy, PHY_MODE_MIPI_DPHY);
->  	phy_configure(dsi->dphy, &opts);
->  	phy_power_on(dsi->dphy);
-> -
-> -	if (dsi->panel)
-> -		drm_panel_prepare(dsi->panel);
-> -
-> -	if (dsi->panel_bridge)
-> -		dsi->panel_bridge->funcs->pre_enable(dsi->panel_bridge);
-
-This is added in patch 2
-
->  }
->
->  static void sun6i_dsi_bridge_enable(struct drm_bridge *bridge)
-> @@ -793,12 +788,6 @@ static void sun6i_dsi_bridge_enable(struct drm_bridg=
-e *bridge)
->  	 * ordering on the panels I've tested it with, so I guess this
->  	 * will do for now, until that IP is better understood.
->  	 */
-> -	if (dsi->panel)
-> -		drm_panel_enable(dsi->panel);
-> -
-> -	if (dsi->panel_bridge)
-> -		dsi->panel_bridge->funcs->enable(dsi->panel_bridge);
-> -
-
-This is added in patch 2
-
->  	sun6i_dsi_start(dsi, DSI_START_HSC);
->
->  	udelay(1000);
-> @@ -812,14 +801,6 @@ static void sun6i_dsi_bridge_disable(struct drm_brid=
-ge *bridge)
->
->  	DRM_DEBUG_DRIVER("Disabling DSI output\n");
->
-> -	if (dsi->panel) {
-> -		drm_panel_disable(dsi->panel);
-> -		drm_panel_unprepare(dsi->panel);
-> -	} else if (dsi->panel_bridge) {
-> -		dsi->panel_bridge->funcs->disable(dsi->panel_bridge);
-> -		dsi->panel_bridge->funcs->post_disable(dsi->panel_bridge);
-> -	}
-> -
-
-This is added in patch 2
-
->  	phy_power_off(dsi->dphy);
->  	phy_exit(dsi->dphy);
->
-> @@ -828,63 +809,13 @@ static void sun6i_dsi_bridge_disable(struct drm_bri=
-dge *bridge)
->  	regulator_disable(dsi->regulator);
->  }
->
-> -static int sun6i_dsi_get_modes(struct drm_connector *connector)
-> -{
-> -	struct sun6i_dsi *dsi =3D connector_to_sun6i_dsi(connector);
-> -
-> -	return drm_panel_get_modes(dsi->panel, connector);
-> -}
-> -
-> -static const struct drm_connector_helper_funcs sun6i_dsi_connector_helpe=
-r_funcs =3D {
-> -	.get_modes	=3D sun6i_dsi_get_modes,
-> -};
-> -
-> -static enum drm_connector_status
-> -sun6i_dsi_connector_detect(struct drm_connector *connector, bool force)
-> -{
-> -	struct sun6i_dsi *dsi =3D connector_to_sun6i_dsi(connector);
-> -
-> -	return dsi->panel ? connector_status_connected :
-> -			    connector_status_disconnected;
-> -}
-> -
-> -static const struct drm_connector_funcs sun6i_dsi_connector_funcs =3D {
-> -	.detect			=3D sun6i_dsi_connector_detect,
-> -	.fill_modes		=3D drm_helper_probe_single_connector_modes,
-> -	.destroy		=3D drm_connector_cleanup,
-> -	.reset			=3D drm_atomic_helper_connector_reset,
-> -	.atomic_duplicate_state	=3D drm_atomic_helper_connector_duplicate_state,
-> -	.atomic_destroy_state	=3D drm_atomic_helper_connector_destroy_state,
-> -};
-> -
->  static int sun6i_dsi_bridge_attach(struct drm_bridge *bridge,
->  				   enum drm_bridge_attach_flags flags)
->  {
->  	struct sun6i_dsi *dsi =3D bridge_to_sun6i_dsi(bridge);
-> -	int ret;
-> -
-> -	if (dsi->panel_bridge)
-> -		return drm_bridge_attach(bridge->encoder, dsi->panel_bridge, NULL, 0);
-
-This is added in patch 2
-
-> -	if (dsi->panel) {
-> -		drm_connector_helper_add(&dsi->connector,
-> -					 &sun6i_dsi_connector_helper_funcs);
-> -		ret =3D drm_connector_init(bridge->dev, &dsi->connector,
-> -					 &sun6i_dsi_connector_funcs,
-> -					 DRM_MODE_CONNECTOR_DSI);
-> -		if (ret) {
-> -			dev_err(dsi->dev, "Couldn't initialise the DSI connector\n");
-> -			goto err_cleanup_connector;
-> -		}
-> -
-> -		drm_connector_attach_encoder(&dsi->connector, &dsi->encoder);
-> -	}
-
-This has been added (through a rework) in patch 3
-
-Surely we can do better?
-
-Maxime
-
---ub7ojtsuyl5akr4c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYD5pOQAKCRDj7w1vZxhR
-xfVtAP9wMe7RvNvrSVuQdpWX/DrKN7q5fRUj7rXwkXAIEmLrnAD/Ss+8/iUbeEhs
-DnzERuMkDyrT9yxxKfbDbnnc+4hGTAc=
-=0UGu
------END PGP SIGNATURE-----
-
---ub7ojtsuyl5akr4c--
