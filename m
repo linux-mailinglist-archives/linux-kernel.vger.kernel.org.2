@@ -2,93 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D223032A341
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE4032A34A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378767AbhCBIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:54:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50750 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377938AbhCBIpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:45:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614674683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZBnLGSe1gH0StLLOp+vkB66rJ3ZeBVTb8pfylvStG8Y=;
-        b=U21HVWtfzGlmYBEkQ0M5CXhpoSfBCOeIsn4zdzi9ieIOlJ9hKZ5AO1iKjkv/dnGoCWGINE
-        XLpR/Y8WhZ/iYDJiP71+kEkLhgUNyj8gUcUM0gt9Czm/kdQV4JZiq0zixQN4u5in+R8K3i
-        KcX0zMsZU/tSkbxoKBwLeDuBQyR9RiQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 65777ABF4;
-        Tue,  2 Mar 2021 08:44:43 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 09:44:42 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: memcontrol: fix kernel stack account
-Message-ID: <YD36+i1PZX/CH1jf@dhcp22.suse.cz>
-References: <20210302073733.8928-1-songmuchun@bytedance.com>
+        id S1378819AbhCBIzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:55:14 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13036 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377952AbhCBIpx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:45:53 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DqVyF3N21zMh6R;
+        Tue,  2 Mar 2021 16:43:01 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 2 Mar 2021 16:45:01 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix compile warning
+Date:   Tue, 2 Mar 2021 16:44:58 +0800
+Message-ID: <20210302084458.15077-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302073733.8928-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02-03-21 15:37:33, Muchun Song wrote:
-> The alloc_thread_stack_node() cannot guarantee that allocated stack pages
-> are in the same node when CONFIG_VMAP_STACK. Because we do not specify
-> __GFP_THISNODE to __vmalloc_node_range(). Fix it by caling
-> mod_lruvec_page_state() for each page one by one.
+node.c: In function ‘f2fs_restore_node_summary’:
+./include/linux/minmax.h:18:28: warning: comparison of distinct pointer types lacks a cast
+  (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+                            ^
+./include/linux/minmax.h:32:4: note: in expansion of macro ‘__typecheck’
+   (__typecheck(x, y) && __no_side_effects(x, y))
+    ^
+./include/linux/minmax.h:42:24: note: in expansion of macro ‘__safe_cmp’
+  __builtin_choose_expr(__safe_cmp(x, y), \
+                        ^
+./include/linux/minmax.h:51:19: note: in expansion of macro ‘__careful_cmp’
+ #define min(x, y) __careful_cmp(x, y, <)
+                   ^
+node.c:2750:13: note: in expansion of macro ‘min’
+   nrpages = min(last_offset - i, BIO_MAX_PAGES);
 
-What is the actual problem you are trying to address by this patch?
-991e7673859e has deliberately dropped the per page accounting. Can you
-explain why that was incorrect? There surely is some imprecision
-involved but does it matter and is it even observable?
+Use min_t() rather than min() to do type cast before comparing.
 
-> Fixes: 991e7673859e ("mm: memcontrol: account kernel stack per node")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  kernel/fork.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d66cd1014211..6e2201feb524 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -379,14 +379,19 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
->  	void *stack = task_stack_page(tsk);
->  	struct vm_struct *vm = task_stack_vm_area(tsk);
->  
-> +	if (vm) {
-> +		int i;
->  
-> -	/* All stack pages are in the same node. */
-> -	if (vm)
-> -		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
-> -				      account * (THREAD_SIZE / 1024));
-> -	else
-> +		BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
-> +
-> +		for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
-> +			mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
-> +					      account * (PAGE_SIZE / 1024));
-> +	} else {
-> +		/* All stack pages are in the same node. */
->  		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
->  				      account * (THREAD_SIZE / 1024));
-> +	}
->  }
->  
->  static int memcg_charge_kernel_stack(struct task_struct *tsk)
-> -- 
-> 2.11.0
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/node.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index a8a0fb890e8d..77f9ffaf9b8e 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -2747,7 +2747,8 @@ int f2fs_restore_node_summary(struct f2fs_sb_info *sbi,
+ 	sum_entry = &sum->entries[0];
+ 
+ 	for (i = 0; i < last_offset; i += nrpages, addr += nrpages) {
+-		nrpages = min(last_offset - i, BIO_MAX_PAGES);
++		nrpages = min_t(unsigned long, last_offset - i,
++						BIO_MAX_PAGES);
+ 
+ 		/* readahead node pages */
+ 		f2fs_ra_meta_pages(sbi, addr, nrpages, META_POR, true);
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
