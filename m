@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4699632ADED
+	by mail.lfdr.de (Postfix) with ESMTP id C1E2932ADEE
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360175AbhCBWRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:17:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350878AbhCBUhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:37:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACC7164F21;
-        Tue,  2 Mar 2021 20:36:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614717373;
-        bh=uZjEZpIetpV+hFdhoSnIL5zsoadYNrSIn5ew9suqCwI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AvLC87MaFvnJJDMhXcu0HWBmEd+/EjSjuP7/iApEZOtvzgkYh5Ht+NkWw1ntLbVyk
-         5OHTfW793+crp8lXIeVsIuBb1fod6FO7QEAE/7O/+NXMtObx87O4DCQ2ZH+uvqDeMF
-         K8y5I02VMJpIU75YTlWE25/QEtKIXKQp7agShLTOjCygu9boEpUCJ+eeCUbtKozUfm
-         IRVa7dlArx0xpa/7LSi2mmuL727JLdjxJN3K7wj3RtBgtgDVQHD1jtwACDKiYOP3cf
-         MI+YaSyJL8dOQkRdguYsgoKyBc6B7bOYD85DAYCwb3Fw4dJQ6pIouNRDIE4sI1EabU
-         2RNNC+Q7O4VOQ==
-Received: by mail-ot1-f47.google.com with SMTP id h10so10683376otm.1;
-        Tue, 02 Mar 2021 12:36:13 -0800 (PST)
-X-Gm-Message-State: AOAM532Mabag59bNpUCSYYY7k3uqaHxi7ZHAWfwiSV2onQvWlx+l1cBM
-        wLjznI5ZEcAnVunFU7hd//ewjYoNlIRiF6nX4zc=
-X-Google-Smtp-Source: ABdhPJy5LqwmQdNUTI4GHNVDze0j03fJULS/7XS7Zx7Hn47gzXxK/MeQKRSPDbvcFEEnUcJcg/H/Zhv1RizwMDzcFog=
-X-Received: by 2002:a9d:7f11:: with SMTP id j17mr20154541otq.251.1614717372783;
- Tue, 02 Mar 2021 12:36:12 -0800 (PST)
+        id S2360184AbhCBWRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1837072AbhCBUiX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 15:38:23 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB02C06178B;
+        Tue,  2 Mar 2021 12:38:08 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id o16so4068012wmh.0;
+        Tue, 02 Mar 2021 12:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fVORHvbe3xDrZDTWpaGFZMUL2U3hQMYf826QqnYl9l8=;
+        b=mVH4lIA/ydhx0e37ftXquLx/LtSpEvJvTGdKUgzqQC3cR00TEeQ/IL4f2DAMaRqbJp
+         GpwUL/GLzxeA9vTYYP922fZDkw7wWNrzADMDXtVEURSjppA4WfjG0ujig9FaAsSxKeGe
+         71u+7y9F61lFvYSzl8T1m6cmSZd9w3crWgP07aeDTIKQLQsr0eck8BhrDBX00yRMa7vE
+         y0aXEK3r1BjL4CJqRjdx+ZumzUjmoG9T8dtGdQJEd3aLHt+NOes0XJQOaHMxZmkXFufl
+         FILayTdobcB4YmNEL9Aa9oXkMmkrbJrNv+rjQUTY/0av3ruaLhfv+172xLF1BC+yipid
+         NwxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fVORHvbe3xDrZDTWpaGFZMUL2U3hQMYf826QqnYl9l8=;
+        b=QTjX0MVu6FWCZL4LtIVcarL3y1O5k5W//Zv7RclawMc7JJSkj7Zdkssmj0lwbA64+5
+         NfyNcAXJ8wMm8OBL3C0NJM47rrrX/nqsxCMduiIYUj2RjTJHSDfoS0vPWPBJUMM/rxIA
+         mZOzqF7aS3HcZ0xax3IG4ODCKBsCtgOmKzTpPuGzfH6x7WesS5rq0A04Jc+4amdR0KCN
+         +tehbyU1z5IQHrHd26Kmoi6CdDqO4XnnAOeAidDcNoUbte4WAw0cq7kF10eRCjRJ59QF
+         7dke/RkUxo+RyB0pA8l0pTS0Zyci6KKYwme7jaP1e2dA0OrfsVqAmUCuXRL5KBnoDcgn
+         XGUg==
+X-Gm-Message-State: AOAM532PL/OHH0B4Q1BzQnQEwwsLgzNfWOsj5doYRmNz+batLXZPykCB
+        e9ZZWVrM+sjp3kMC+tk0JCtR2qVWPEPqdL4CspU=
+X-Google-Smtp-Source: ABdhPJyy5pmikjf79y1/GvNaKd4OnksdSm7C5u8BXo2lPqzmEzL2T7Zb6agEX3ppixMKdKvwBNk1Tdpx6f69uoOSWaM=
+X-Received: by 2002:a1c:7312:: with SMTP id d18mr5680637wmb.155.1614717487210;
+ Tue, 02 Mar 2021 12:38:07 -0800 (PST)
 MIME-Version: 1.0
-References: <202103021826.7KKJWxQ2-lkp@intel.com> <CAKwvOdnCq7S68chEwSjFBPv5vsKDuzumOX19peOFDCSBCUm0jg@mail.gmail.com>
- <2e40a84f-15c6-2764-dcfd-9f5aa368b400@gmx.de> <CAKwvOdkXUAfYv415U9aE+ycLKT1rzujrBFfFHmvX47V5xHz1sA@mail.gmail.com>
- <fc099004-dbb4-b9b3-b377-ad459219c7c5@gmx.de> <YD6f2WqmYdJiNyQX@ls3530>
-In-Reply-To: <YD6f2WqmYdJiNyQX@ls3530>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 2 Mar 2021 21:35:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3H2c5-LE_TPkW4s8sHteKSM8FYtVUMCv9qCc20tVrniw@mail.gmail.com>
-Message-ID: <CAK8P3a3H2c5-LE_TPkW4s8sHteKSM8FYtVUMCv9qCc20tVrniw@mail.gmail.com>
-Subject: Re: hppa64-linux-ld: kernel/sched/core.o(.init.text+0x90): cannot
- reach printk
-To:     Helge Deller <deller@gmx.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        John David Anglin <dave.anglin@bell.net>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302195758.GQ2696@paulmck-ThinkPad-P72> <20210302200441.GA3729@paulmck-ThinkPad-P72>
+In-Reply-To: <20210302200441.GA3729@paulmck-ThinkPad-P72>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 2 Mar 2021 21:37:55 +0100
+Message-ID: <CAJ+HfNi1Y16ftJb-Ct3gCUvu71GW6VnEcvibvwyY9nxZMu5nfw@mail.gmail.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+To:     paulmck@kernel.org
+Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 9:28 PM Helge Deller <deller@gmx.de> wrote:
-> * Helge Deller <deller@gmx.de>:
-> > On 3/2/21 7:07 PM, Nick Desaulniers wrote:
-> > > + Arnd
-> > >
-> > > On Tue, Mar 2, 2021 at 10:03 AM Helge Deller <deller@gmx.de> wrote:
-> > > >
-> > > >
-> From: Helge Deller <deller@gmx.de>
-> Date: Tue, 2 Mar 2021 21:07:07 +0100
-> Subject: [PATCH] parisc: Enable -mlong-calls gcc option with
->  CONFIG_COMPILE_TEST
+On Tue, 2 Mar 2021 at 21:04, Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> The kernel test robot reported multiple linkage problems like this:
->
->     hppa64-linux-ld: init/main.o(.init.text+0x56c): cannot reach printk
->     init/main.o: in function `unknown_bootoption':
->     (.init.text+0x56c): relocation truncated to fit: R_PARISC_PCREL22F against
->         symbol `printk' defined in .text.unlikely section in kernel/printk/printk.o
->
-> There are two ways to solve it:
-> a) Enable the -mlong-call compiler option (CONFIG_MLONGCALLS),
-> b) Add long branch stub support in 64-bit linker.
->
-> While b) is the long-term solution, this patch works around the issue by
-> automatically enabling the CONFIG_MLONGCALLS option when
-> CONFIG_COMPILE_TEST is set, which indicates that a non-production kernel
-> (e.g. 0-day kernel) is built.
->
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 00e35f2b0e8a ("parisc: Enable -mlong-calls gcc option by default when !CONFIG_MODULES")
-> Cc: stable@vger.kernel.org # v5.6+
->
-> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-> index 4e53ac46e857..afc3b8d03572 100644
-> --- a/arch/parisc/Kconfig
-> +++ b/arch/parisc/Kconfig
-> @@ -203,9 +203,12 @@ config PREFETCH
->         def_bool y
->         depends on PA8X00 || PA7200
->
-> +config PARISC_HUGE_KERNEL
-> +       def_bool y if !MODULES || UBSAN || FTRACE || COMPILE_TEST
-> +
->  config MLONGCALLS
-> -       def_bool y if !MODULES || UBSAN || FTRACE
-> -       bool "Enable the -mlong-calls compiler option for big kernels" if MODULES && !UBSAN && !FTRACE
-> +       def_bool y if PARISC_HUGE_KERNEL
-> +       bool "Enable the -mlong-calls compiler option for big kernels" if !PARISC_HUGE_KERNEL
->         depends on PA8X00
->         help
->           If you configure the kernel to include many drivers built-in instead
 
+[...]
 
-Looks good to me, we should probably do something similar on arm with
-CONFIG_{ARM,ARM64}_MODULE_PLTS, though that only affects loadable
-modules, as the linker would insert its own trampolines during the final
-link when branch relocations are out of range.
+>
+> And if the answer is "yes", how about this one?
+>
 
-      Arnd
+With the =3D=3D to !=3D change in P1, this is OK!
+
+> P0(int *prod, int *cons, int *data)
+> {
+>     int p;
+>
+>     p =3D READ_ONCE(*prod);
+>     if (p =3D=3D READ_ONCE(*cons)) {
+
+...and now d=3D=3D1 is not a valid state anymore according to herd. If
+think I need some input here! :-D
+
+>         WRITE_ONCE(*data, 1);
+>         smp_wmb();
+>         WRITE_ONCE(*prod, p ^ 1);
+>     }
+> }
+>
+> P1(int *prod, int *cons, int *data)
+> {
+>     int c;
+>     int d =3D -1;
+>
+>     c =3D READ_ONCE(*cons);
+>     if (READ_ONCE(*prod) =3D=3D c) {
+>         smp_rmb();
+>         d =3D READ_ONCE(*data);
+>         smp_mb();
+>         WRITE_ONCE(*cons, c ^ 1);
+>     }
+> }
+>
+
+[...]
+
+Bj=C3=B6rn
