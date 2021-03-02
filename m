@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3403632A52F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF66C32A4ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350112AbhCBLwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:52:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
+        id S1383445AbhCBLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383531AbhCBLgM (ORCPT
+        with ESMTP id S1344060AbhCBLXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:36:12 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3503C061788;
-        Tue,  2 Mar 2021 03:22:05 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id e7so30726912lft.2;
-        Tue, 02 Mar 2021 03:22:05 -0800 (PST)
+        Tue, 2 Mar 2021 06:23:34 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F69C06178A;
+        Tue,  2 Mar 2021 03:22:06 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 2so18912138ljr.5;
+        Tue, 02 Mar 2021 03:22:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UXsyTscw9zuLBva4U3+AGU7LQRHCPXqRCSzHFPwdbsg=;
-        b=MZO0fEml85aBPb+L0zZijvlr73xZelJgEhc1czmKIkPN1WA/Ao2bmG2eEpQn9/5Cnv
-         5gmNhukOhWRqrabru5ZLRuQIe19Ppw7xvec8e8WVtDNcFX2YXjsaC2KTFuDBS9V1HR8A
-         q2i1pBwu3M4Yx/RPucxQRLZb8JTWF/n+Sj3BAiypZKcIHbe/VxT6ElkveIjI5YIc+/Sq
-         95ldH1eekOw0jmoqo6CncpYd7lOJmwl+A2aFdkIzc4avBbz6tjukMFbxvrmgqU6g6YQp
-         p+7yRGMFPKujcTuilLJVt6o0YRGvr4xgMdYCwR/jU1wQP+aK3vfpkWUCxmjOo2tTyiVN
-         SMNw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xg6BAG0aRzJfW3NL7J2fV5y7N6SqjvW9ZuXns5YdGNw=;
+        b=ij6zyyk2aNlnnd0XbYbXxR36/zxdJcr9oByFXbsLlM07fBQJN/XPW5dS0umXVs3XrX
+         dKb1YQ8a0gVCNKjADTd1RstNMz9rp+XjqXRIUUctar5a9uwwyr+8SKiM/O0yBBhcnGom
+         4st8pL5dZxsqRTFfsRm37Hqwsiu2fzBbjPhoJzY+o4MqR9HMilYX6zzPxgy5eAEsoe+F
+         ijahXaj6u45ZWQ4YMnguCdwtluvUK8YMzenP0OmgdLwwkqPxsDPuXhnCMxYZuwR364Ok
+         QIAwqM0Rjfe52bABrP21DXJol2fqr51UgLU5KHILSvm2ERP8ZQV8b17+8kOD6BoClieG
+         A8oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UXsyTscw9zuLBva4U3+AGU7LQRHCPXqRCSzHFPwdbsg=;
-        b=co4w4BK+tYPc7i3YlJwE5NmG0xa5CB9QDnaZtAyI5azSdmPpUxAk2mxj7wgVeusHhU
-         weg+DDy2gXh6+7a/kXcj+PGfES1fP+5iz5+JwtnBFp6z+K0W65t8rPfnew3ZBInvirPR
-         dMNfjyc0z516kdqQFLxSDFCG7yZ2cU9+RbLuSK9F4Q/AAKHZql4X7kUadAxsSucIQ2gm
-         VM5B6JB6fVeXoqoELrEbMZAfQmmqOjE3hQRwGd+nbtjSQrRB9npAtFqIfp0ve1D2As+B
-         j74y8wQwfozRpa6s7E0mhUAkLsQWa7zw2WeBFo+6nXRtzdSXGz3my7A+uMr2qT+V2RPn
-         upkA==
-X-Gm-Message-State: AOAM5335Xi1MJEgz0cV360dSZPFFZyvRS+uZ46tBujSRQkYXB4AWLvW9
-        HaDY8HHwUZmdnkBc5TIpnCo=
-X-Google-Smtp-Source: ABdhPJxRymJixfSpthjYFtxI7AlxBgvrcbqGsXaXA/6qsfInz7jYNSYRX1M8a7spc/pgycwZXoi9BQ==
-X-Received: by 2002:a05:6512:2356:: with SMTP id p22mr11522329lfu.3.1614684124467;
-        Tue, 02 Mar 2021 03:22:04 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xg6BAG0aRzJfW3NL7J2fV5y7N6SqjvW9ZuXns5YdGNw=;
+        b=gnRg4oDTN1ZXBNGGl1lzjB9ypEEYUvdRhHuAVR8jRADkGO8on31UmG7W65pQoE699r
+         XTJiYX58M5f4dKuvumM7PESGusgfzRHSGKnx/C1Nm0QqnPWnx02u2UuYmrJsWVBaS/gr
+         yXkeCvlZ/WGGrk0bM+LKzeBy4EhGW7C5O1aKgGRuzxxwIi+1t98h6sCRqhDCcNN0UMDC
+         lSpRVbgzwuPh9ZedwGPJbT4sB36nj2HU9vIgM25nP+DjYpbTIki7ABuK2YJGBlYhlJH3
+         C86Kdqc5XWsWZ3P2arUyk5sjIlmuVIsSQta+RSInwpBlRbYciy5ZbDe1VimvVsSeVNxf
+         5Rcw==
+X-Gm-Message-State: AOAM533FaYC2emDM6LExR6tIlT58zpKzcdOjBSmW+ox6N3JdBquG89iC
+        z1p66MvAP3SGF0Ygf71r5xg=
+X-Google-Smtp-Source: ABdhPJztqfJKjybeaUExw8rEhx/7K9lWQwQ4Fio3EyS4lLaojOGOfgeTNngjfqdTuKrt1x7E4as3tg==
+X-Received: by 2002:a2e:9908:: with SMTP id v8mr8601266lji.460.1614684125149;
+        Tue, 02 Mar 2021 03:22:05 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.03
+        by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 03:22:03 -0800 (PST)
+        Tue, 02 Mar 2021 03:22:04 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,48 +57,116 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Paul Fertser <fercerpav@gmail.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 0/5] Add missing reset controls to NVIDIA Tegra ASoC drivers
-Date:   Tue,  2 Mar 2021 14:21:18 +0300
-Message-Id: <20210302112123.24161-1-digetx@gmail.com>
+Subject: [PATCH v1 1/5] reset: Allow devm_reset_control_array_get() to get resets in a released state
+Date:   Tue,  2 Mar 2021 14:21:19 +0300
+Message-Id: <20210302112123.24161-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210302112123.24161-1-digetx@gmail.com>
+References: <20210302112123.24161-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Allow devm_reset_control_array_get() to get resets in a released state
+in order to make it possible to extend reset-API with resource-managed
+variants of retrieving resets array in a released state. In particular
+this is needed by NVIDIA Tegra drivers.
 
-This series adds missing hardware reset controls to I2S and AC97 drivers.
-Currently drivers happen to work properly because reset is implicitly
-deasserted by tegra-clk driver, but clk driver shouldn't touch the resets
-and we need to fix it because this breaks other Tegra drivers. Previously
-we fixed the resets of the AHUB and HDMI codec drivers, but turned out
-that we missed the I2C and AC97 drivers.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/reset/core.c  |  8 ++++++--
+ include/linux/reset.h | 14 ++++++++------
+ 2 files changed, 14 insertions(+), 8 deletions(-)
 
-Thanks to Paul Fertser for testing the pending clk patches and finding
-that audio got broken on Tegra20 AC100 netbook because of the missing I2S
-reset.
-
-Dmitry Osipenko (5):
-  reset: Allow devm_reset_control_array_get() to get resets in a
-    released state
-  reset: Add devm_reset_control_array_get_exclusive_released()
-  ASoC: tegra20: ac97: Add reset control
-  ASoC: tegra20: i2s: Add reset control
-  ASoC: tegra30: i2s: Add reset control
-
- drivers/reset/core.c           |  8 ++++++--
- include/linux/reset.h          | 20 +++++++++++++------
- sound/soc/tegra/tegra20_ac97.c | 21 ++++++++++++++++++++
- sound/soc/tegra/tegra20_ac97.h |  1 +
- sound/soc/tegra/tegra20_i2s.c  | 31 +++++++++++++++++++++++++++++
- sound/soc/tegra/tegra20_i2s.h  |  1 +
- sound/soc/tegra/tegra30_ahub.c | 14 ++++++++++---
- sound/soc/tegra/tegra30_i2s.c  | 36 +++++++++++++++++++++++++++++++++-
- sound/soc/tegra/tegra30_i2s.h  |  1 +
- 9 files changed, 121 insertions(+), 12 deletions(-)
-
+diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+index dbf881b586d9..f36de3d3849b 100644
+--- a/drivers/reset/core.c
++++ b/drivers/reset/core.c
+@@ -985,6 +985,8 @@ EXPORT_SYMBOL_GPL(of_reset_control_array_get);
+  * @dev: device that requests the list of reset controls
+  * @shared: whether reset controls are shared or not
+  * @optional: whether it is optional to get the reset controls
++ * @acquired: only one reset control may be acquired for a given controller
++ *            and ID
+  *
+  * The reset control array APIs are intended for a list of resets
+  * that just have to be asserted or deasserted, without any
+@@ -993,7 +995,8 @@ EXPORT_SYMBOL_GPL(of_reset_control_array_get);
+  * Returns pointer to allocated reset_control on success or error on failure
+  */
+ struct reset_control *
+-devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
++devm_reset_control_array_get(struct device *dev, bool shared, bool optional,
++			     bool acquired)
+ {
+ 	struct reset_control **ptr, *rstc;
+ 
+@@ -1002,7 +1005,8 @@ devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
+ 	if (!ptr)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	rstc = of_reset_control_array_get(dev->of_node, shared, optional, true);
++	rstc = of_reset_control_array_get(dev->of_node, shared, optional,
++					  acquired);
+ 	if (IS_ERR_OR_NULL(rstc)) {
+ 		devres_free(ptr);
+ 		return rstc;
+diff --git a/include/linux/reset.h b/include/linux/reset.h
+index b9109efa2a5c..3bee086f1f06 100644
+--- a/include/linux/reset.h
++++ b/include/linux/reset.h
+@@ -33,7 +33,8 @@ struct reset_control *__devm_reset_control_get(struct device *dev,
+ 				     bool optional, bool acquired);
+ 
+ struct reset_control *devm_reset_control_array_get(struct device *dev,
+-						   bool shared, bool optional);
++						   bool shared, bool optional,
++						   bool acquired);
+ struct reset_control *of_reset_control_array_get(struct device_node *np,
+ 						 bool shared, bool optional,
+ 						 bool acquired);
+@@ -105,7 +106,8 @@ static inline struct reset_control *__devm_reset_control_get(
+ }
+ 
+ static inline struct reset_control *
+-devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
++devm_reset_control_array_get(struct device *dev, bool shared, bool optional,
++			     bool acquired)
+ {
+ 	return optional ? NULL : ERR_PTR(-ENOTSUPP);
+ }
+@@ -511,25 +513,25 @@ static inline struct reset_control *devm_reset_control_get_by_index(
+ static inline struct reset_control *
+ devm_reset_control_array_get_exclusive(struct device *dev)
+ {
+-	return devm_reset_control_array_get(dev, false, false);
++	return devm_reset_control_array_get(dev, false, false, true);
+ }
+ 
+ static inline struct reset_control *
+ devm_reset_control_array_get_shared(struct device *dev)
+ {
+-	return devm_reset_control_array_get(dev, true, false);
++	return devm_reset_control_array_get(dev, true, false, true);
+ }
+ 
+ static inline struct reset_control *
+ devm_reset_control_array_get_optional_exclusive(struct device *dev)
+ {
+-	return devm_reset_control_array_get(dev, false, true);
++	return devm_reset_control_array_get(dev, false, true, true);
+ }
+ 
+ static inline struct reset_control *
+ devm_reset_control_array_get_optional_shared(struct device *dev)
+ {
+-	return devm_reset_control_array_get(dev, true, true);
++	return devm_reset_control_array_get(dev, true, true, true);
+ }
+ 
+ static inline struct reset_control *
 -- 
 2.29.2
 
