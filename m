@@ -2,568 +2,622 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5119C32A17A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6631632A17C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577410AbhCBGWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:22:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
+        id S1577427AbhCBGWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:22:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238022AbhCBELq (ORCPT
+        with ESMTP id S239059AbhCBEM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:11:46 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE43C06178B;
-        Mon,  1 Mar 2021 20:09:57 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d8so839363plg.10;
-        Mon, 01 Mar 2021 20:09:57 -0800 (PST)
+        Mon, 1 Mar 2021 23:12:56 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE19C06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 20:11:44 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id m6so12998011pfk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 20:11:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1KJkvbOOudM1oxDYRZzEgcp/1QGBkgSxkkKaz88TmCI=;
-        b=VOGoksLnOyaf4Fbk6JxAFjNeRv6dSQe08aCWtszgUntCI2V7M9Rta8HK0zf50awgbI
-         N4xzTF/a4f/sT3QzNFdwr9oyskdFx4o6OMo/WEWMBBWbQcka8GmkteDT7K4e+YVHPLsE
-         +tTjM/LJYhW1GoZ9JIqvsd3aAe54bXIzDjbfPijZ7pYFFmGfLIsnqIkHE4ixCBVPFbU/
-         Q59AdiKznnrCi75Vy5ddItEq95tJNb6Ex3wq5MHIR6PqqBGhWoWnhglX2b2qd/BZIY6+
-         WyhiC8xFuxSa7nE3gQMb/Se+lBG+15HhJgMMbU1TaNMm3kI/cxuHGx4m8vktqLYNp/n5
-         Sx1Q==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6dTU5hX7dSo+qETQUn1DDmLMvhq5bGDjnaqtqQ3lTy4=;
+        b=qRqJ6bzZrq3wDEpaqKE31ddVUhORa9ffHHo+hMZlo1zzHy2oro2LDfpunQd8FtXF0z
+         o833fopIeTIwDEOOhiEszwjp40I034ZrzAz7zm6KyypmznXRJuRgwa4d5aCRvqXVT3E7
+         dJPq/CPZwOh1ShffR4eGEitb5ssMyB3o20nBzfLR944ri69GWGBjX8bK6He16T9vXUal
+         VjK9RjD21uSzMQ9z83SrNCWs0301hWty5nH4MT8VkP+8JlgQIWJPcoLvfma28MjQEOTP
+         2ehoyHz60W5I8k86mLBm+eAJCxb+VDZ3vn4wnpaQNZMGmJhz9MJv7ytJMNcPX7i15HpY
+         4w0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1KJkvbOOudM1oxDYRZzEgcp/1QGBkgSxkkKaz88TmCI=;
-        b=VlbF2OxhV9iZDcQZnAv1AGccrNA4ZosWcDQnYUBhi4YDa3BV6aAFhbFZVI6/fd8bPm
-         acC2/aLCtjLYVniy0yplf0/WhEaVqFVHPbN3PjAwNdV0bSflQGnsjpJ97EuyoA9byyz+
-         1wFX//XjKXxHmNpJQwzrPezsnQQmEzrpXFje1AIYIU7WlTUwnzcTUkp2L6ngoRpY3EIT
-         tgRQuOV9XIfQ0CE1idvuJNeYfCFNUSjc3ugW6NSHLxydriKSvqlrH70uEOoWg/h48E4z
-         g2iXfYe33gvnHMb7IRa7YzMJoAB+PHjmXIH5HflqeRSZHD+yE16SIfSb4bJcdHiKnmoA
-         WINA==
-X-Gm-Message-State: AOAM533p/gVVVxUPTtiw+psM/A9iHkp96dHAqFno0QvSeL2wlXjC3Kzk
-        vkfuTDyMjcHW0L8LqWSYoKeqk+yV92o=
-X-Google-Smtp-Source: ABdhPJw6HCrQT4PLkbPsoyAFiC9U9w6khMKNsepyF4oRxcM2hqrmrvf1O39SjIDs9kTNC9UUj+Z9Gg==
-X-Received: by 2002:a17:90a:9f4a:: with SMTP id q10mr2337168pjv.129.1614658195890;
-        Mon, 01 Mar 2021 20:09:55 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l15sm1102768pjq.9.2021.03.01.20.09.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 20:09:55 -0800 (PST)
-Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations with
- kernel_end
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, iamjoonsoo.kim@lge.com,
-        riel@surriel.com, Michal Hocko <mhocko@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <linux-mips@vger.kernel.org>
-References: <20201217201214.3414100-1-guro@fb.com>
- <20201217201214.3414100-2-guro@fb.com>
- <23fc1ef9-7342-8bc2-d184-d898107c52b2@gmail.com>
- <20210228090041.GO1447004@kernel.org>
- <8cbafe95-0f8c-a9b7-2dc9-cded846622fd@gmail.com>
- <20210228230811.wdae7oaaf3mbpgwl@mobilestation>
- <2e973fa8-5f2b-6840-0874-9c15fa0ebea0@gmail.com>
- <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <97600bf8-06fd-3d76-8791-c2e3c4eae8a1@gmail.com>
-Date:   Mon, 1 Mar 2021 20:09:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6dTU5hX7dSo+qETQUn1DDmLMvhq5bGDjnaqtqQ3lTy4=;
+        b=HcMiOPQoo8tC5IJnWh7ke8urkAnodn+Gzxzjcy+7dcxDDGoTVPPQajMLD5Xn7OP4kN
+         EvlVTyByH6mC3zib4Au2GuBm+sFud4RPEUC5cfFEcSSC2Q6KgCTYlF+hi/CQe7UAAKA5
+         rGM+R5kGNzSgOnR9cguzN6D1NSVzhoFJXPvgzwdu7M+f5xje53uE+2og2Lo1uud4f8Kh
+         tUTD22HCmw+bbKV8wEOWm2dmbkyn0oJxQqWr0wjkudKi8HGW0d0tML1zIcohHTAY78tL
+         UtvmYVXaA5PLatRvIR5CvATEl1lZdUrbDPzCokdFp1gdBQmZyboyl4RTocMOkG4fME22
+         wzjw==
+X-Gm-Message-State: AOAM532CIFazvGMDe9yL25gu2NY0tzsGH7XOg0T38UP8v07hw9acg/EX
+        IKhgR+PUJTflM9kpwaC7+jW3PuMNnpFxDIR05DMt5Q==
+X-Google-Smtp-Source: ABdhPJzXHPfHik31jsRovP0r1kGurXYWnLx7cNttscZk+8SPwt7O+TozGXumlX5XYg+eB0Mi7p1K0hRPQxEGm7BYQ3k=
+X-Received: by 2002:a63:141e:: with SMTP id u30mr16780185pgl.31.1614658303424;
+ Mon, 01 Mar 2021 20:11:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210301062227.59292-1-songmuchun@bytedance.com>
+ <20210301062227.59292-6-songmuchun@bytedance.com> <YD2U3rfjQ9fhx8pD@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YD2U3rfjQ9fhx8pD@carbon.dhcp.thefacebook.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 2 Mar 2021 12:11:06 +0800
+Message-ID: <CAMZfGtUWQVy7Y9Os7T4e0d0R3G4wt7AOK9Knot8WMGaV02A8-Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 5/5] mm: memcontrol: use object cgroup for
+ remote memory cgroup charging
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 2, 2021 at 9:29 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Mon, Mar 01, 2021 at 02:22:27PM +0800, Muchun Song wrote:
+> > We spent a lot of energy to make slab accounting do not hold a refcount
+> > to memory cgroup, so the dying cgroup can be freed as soon as possible
+> > on cgroup offlined.
+> >
+> > But some users of remote memory cgroup charging (e.g. bpf and fsnotify)
+> > hold a refcount to memory cgroup for charging to it later. Actually,
+> > the slab core use obj_cgroup APIs for memory cgroup charing, so we can
+> > hold a refcount to obj_cgroup instead of memory cgroup. In this case,
+> > the infrastructure of remote meory charging also do not hold a refcount
+> > to memory cgroup.
+>
+> -cc all except mm folks
+>
+> Same here, let's not switch the remote charging infra to objcg to save
+> an ability to use it for user pages. If we have a real problem with bpf/...,
+> let's solve it case by case.
 
+How about rename current->active_memcg to current->active_memcg_data?
+If the lowest bit of active_memcg_data  is one, it points to an object cgroup.
+Otherwise, it points to a memoy cgroup. Just like page->memcg_data.
+In this case, we can charge objects by using obj_cgroup APIs.
+Just my thought.
 
-On 3/1/2021 1:22 AM, Serge Semin wrote:
-> On Sun, Feb 28, 2021 at 07:50:45PM -0800, Florian Fainelli wrote:
->> Hi Serge,
->>
->> On 2/28/2021 3:08 PM, Serge Semin wrote:
->>> Hi folks,
->>> What you've got here seems a more complicated problem than it
->>> could originally look like. Please, see my comments below.
->>>
->>> (Note I've discarded some of the email logs, which of no interest
->>> to the discovered problem. Please also note that I haven't got any
->>> Broadcom hardware to test out a solution suggested below.)
->>>
->>> On Sun, Feb 28, 2021 at 10:19:51AM -0800, Florian Fainelli wrote:
->>>> Hi Mike,
->>>>
->>>> On 2/28/2021 1:00 AM, Mike Rapoport wrote:
->>>>> Hi Florian,
->>>>>
->>>>> On Sat, Feb 27, 2021 at 08:18:47PM -0800, Florian Fainelli wrote:
->>>>>>
->>>
->>>>>> [...]
->>>
->>>>>>
->>>>>> Hi Roman, Thomas and other linux-mips folks,
->>>>>>
->>>>>> Kamal and myself have been unable to boot v5.11 on MIPS since this
->>>>>> commit, reverting it makes our MIPS platforms boot successfully. We do
->>>>>> not see a warning like this one in the commit message, instead what
->>>>>> happens appear to be a corrupted Device Tree which prevents the parsing
->>>>>> of the "rdb" node and leading to the interrupt controllers not being
->>>>>> registered, and the system eventually not booting.
->>>>>>
->>>>>> The Device Tree is built-into the kernel image and resides at
->>>>>> arch/mips/boot/dts/brcm/bcm97435svmb.dts.
->>>>>>
->>>>>> Do you have any idea what could be wrong with MIPS specifically here?
->>>
->>> Most likely the problem you've discovered has been there for quite
->>> some time. The patch you are referring to just caused it to be
->>> triggered by extending the early allocation range. See before that
->>> patch was accepted the early memory allocations had been performed
->>> in the range:
->>> [kernel_end, RAM_END].
->>> The patch changed that, so the early allocations are done within
->>> [RAM_START + PAGE_SIZE, RAM_END].
->>>
->>> In normal situations it's safe to do that as long as all the critical
->>> memory regions (including the memory residing a space below the
->>> kernel) have been reserved. But as soon as a memory with some critical
->>> structures haven't been reserved, the kernel may allocate it to be used
->>> for instance for early initializations with obviously unpredictable but
->>> most of the times unpleasant consequences.
->>>
->>>>>
->>>>> Apparently there is a memblock allocation in one of the functions called
->>>>> from arch_mem_init() between plat_mem_setup() and
->>>>> early_init_fdt_reserve_self().
->>>
->>> Mike, alas according to the log provided by Florian that's not the reason
->>> of the problem. Please, see my considerations below.
->>>
->>>> [...]
->>>>
->>>> [    0.000000] Linux version 5.11.0-g5695e5161974 (florian@localhost)
->>>> (mipsel-linux-gcc (GCC) 8.3.0, GNU ld (GNU Binutils) 2.32) #84 SMP Sun
->>>> Feb 28 10:01:50 PST 2021
->>>> [    0.000000] CPU0 revision is: 00025b00 (Broadcom BMIPS5200)
->>>> [    0.000000] FPU revision is: 00130001
->>>
->>>> [    0.000000] memblock_add: [0x00000000-0x0fffffff]
->>>> early_init_dt_scan_memory+0x160/0x1e0
->>>> [    0.000000] memblock_add: [0x20000000-0x4fffffff]
->>>> early_init_dt_scan_memory+0x160/0x1e0
->>>> [    0.000000] memblock_add: [0x90000000-0xcfffffff]
->>>> early_init_dt_scan_memory+0x160/0x1e0
->>>
->>> Here the memory has been added to the memblock allocator.
->>>
->>>> [    0.000000] MIPS: machine is Broadcom BCM97435SVMB
->>>> [    0.000000] earlycon: ns16550a0 at MMIO32 0x10406b00 (options '')
->>>> [    0.000000] printk: bootconsole [ns16550a0] enabled
->>>
->>>> [    0.000000] memblock_reserve: [0x00aa7600-0x00aaa0a0]
->>>> setup_arch+0x128/0x69c
->>>
->>> Here the fdt memory has been reserved. (Note it's built into the
->>> kernel.)
->>>
->>>> [    0.000000] memblock_reserve: [0x00010000-0x018313cf]
->>>> setup_arch+0x1f8/0x69c
->>>
->>> Here the kernel itself together with built-in dtb have been reserved.
->>> So far so good.
->>>
->>>> [    0.000000] Initrd not found or empty - disabling initrd
->>>
->>>> [    0.000000] memblock_alloc_try_nid: 10913 bytes align=0x40 nid=-1
->>>> from=0x00000000 max_addr=0x00000000
->>>> early_init_dt_alloc_memory_arch+0x40/0x84
->>>> [    0.000000] memblock_reserve: [0x00001000-0x00003aa0]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 32680 bytes align=0x4 nid=-1
->>>> from=0x00000000 max_addr=0x00000000
->>>> early_init_dt_alloc_memory_arch+0x40/0x84
->>>> [    0.000000] memblock_reserve: [0x00003aa4-0x0000ba4b]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>
->>> The log above most likely belongs to the call-chain:
->>> setup_arch()
->>> +-> arch_mem_init()
->>>     +-> device_tree_init() - BMIPS specific method
->>>         +-> unflatten_and_copy_device_tree()
->>>
->>> So to speak here we've copied the fdt from the original space
->>> [0x00aa7600-0x00aaa0a0] into [0x00001000-0x00003aa0] and unflattened
->>> it to [0x00003aa4-0x0000ba4b].
->>>
->>> The problem is that a bit later the next call-chain is performed:
->>> setup_arch()
->>> +-> plat_smp_setup()
->>>     +-> mp_ops->smp_setup(); - registered by prom_init()->register_bmips_smp_ops();
->>>         +-> if (!board_ebase_setup)
->>>                  board_ebase_setup = &bmips_ebase_setup;
->>>
->>> So at the moment of the CPU traps initialization the bmips_ebase_setup()
->>> method is called. What trap_init() does isn't compatible with the
->>> allocation performed by the unflatten_and_copy_device_tree() method.
->>> See the next comment.
->>>
->>>> [    0.000000] memblock_alloc_try_nid: 25 bytes align=0x4 nid=-1
->>>> from=0x00000000 max_addr=0x00000000
->>>> early_init_dt_alloc_memory_arch+0x40/0x84
->>>> [    0.000000] memblock_reserve: [0x0000ba4c-0x0000ba64]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_reserve: [0x0096a000-0x00969fff]
->>>> setup_arch+0x3fc/0x69c
->>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
->>>> [    0.000000] memblock_reserve: [0x0000ba80-0x0000ba9f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
->>>> [    0.000000] memblock_reserve: [0x0000bb00-0x0000bb1f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
->>>> [    0.000000] memblock_reserve: [0x0000bb80-0x0000bb9f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] Primary instruction cache 32kB, VIPT, 4-way, linesize 64
->>>> bytes.
->>>> [    0.000000] Primary data cache 32kB, 4-way, VIPT, no aliases,
->>>> linesize 32 bytes
->>>> [    0.000000] MIPS secondary cache 512kB, 8-way, linesize 128 bytes.
->>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
->>>> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
->>>> [    0.000000] memblock_reserve: [0x0000c000-0x0000cfff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
->>>> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
->>>> [    0.000000] memblock_reserve: [0x0000d000-0x0000dfff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
->>>> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
->>>> [    0.000000] memblock_reserve: [0x0000e000-0x0000efff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] Zone ranges:
->>>> [    0.000000]   Normal   [mem 0x0000000000000000-0x000000000fffffff]
->>>> [    0.000000]   HighMem  [mem 0x0000000010000000-0x00000000cfffffff]
->>>> [    0.000000] Movable zone start for each node
->>>> [    0.000000] Early memory node ranges
->>>> [    0.000000]   node   0: [mem 0x0000000000000000-0x000000000fffffff]
->>>> [    0.000000]   node   0: [mem 0x0000000020000000-0x000000004fffffff]
->>>> [    0.000000]   node   0: [mem 0x0000000090000000-0x00000000cfffffff]
->>>> [    0.000000] Initmem setup node 0 [mem
->>>> 0x0000000000000000-0x00000000cfffffff]
->>>> [    0.000000] memblock_alloc_try_nid: 27262976 bytes align=0x80 nid=0
->>>> from=0x00000000 max_addr=0x00000000
->>>> alloc_node_mem_map.constprop.135+0x6c/0xc8
->>>> [    0.000000] memblock_reserve: [0x01831400-0x032313ff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=0
->>>> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
->>>> [    0.000000] memblock_reserve: [0x0000bc00-0x0000bc1f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 384 bytes align=0x80 nid=0
->>>> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
->>>> [    0.000000] memblock_reserve: [0x0000bc80-0x0000bdff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] MEMBLOCK configuration:
->>>> [    0.000000]  memory size = 0x80000000 reserved size = 0x0322f032
->>>> [    0.000000]  memory.cnt  = 0x3
->>>> [    0.000000]  memory[0x0]     [0x00000000-0x0fffffff], 0x10000000
->>>> bytes flags: 0x0
->>>> [    0.000000]  memory[0x1]     [0x20000000-0x4fffffff], 0x30000000
->>>> bytes flags: 0x0
->>>> [    0.000000]  memory[0x2]     [0x90000000-0xcfffffff], 0x40000000
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved.cnt  = 0xa
->>>> [    0.000000]  reserved[0x0]   [0x00001000-0x00003aa0], 0x00002aa1
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x1]   [0x00003aa4-0x0000ba64], 0x00007fc1
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x2]   [0x0000ba80-0x0000ba9f], 0x00000020
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x3]   [0x0000bb00-0x0000bb1f], 0x00000020
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x4]   [0x0000bb80-0x0000bb9f], 0x00000020
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x5]   [0x0000bc00-0x0000bc1f], 0x00000020
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x6]   [0x0000bc80-0x0000bdff], 0x00000180
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x7]   [0x0000c000-0x0000efff], 0x00003000
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x8]   [0x00010000-0x018313cf], 0x018213d0
->>>> bytes flags: 0x0
->>>> [    0.000000]  reserved[0x9]   [0x01831400-0x032313ff], 0x01a00000
->>>> bytes flags: 0x0
->>>> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 start_kernel+0x12c/0x654
->>>> [    0.000000] memblock_reserve: [0x0000be00-0x0000be1d]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 start_kernel+0x150/0x654
->>>> [    0.000000] memblock_reserve: [0x0000be80-0x0000be9d]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x3b0/0x884
->>>> [    0.000000] memblock_reserve: [0x0000f000-0x0000ffff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x5a4/0x884
->>>> [    0.000000] memblock_reserve: [0x03231400-0x032323ff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 294912 bytes align=0x1000 nid=-1
->>>> from=0x01000000 max_addr=0x00000000 pcpu_dfl_fc_alloc+0x24/0x30
->>>> [    0.000000] memblock_reserve: [0x03233000-0x0327afff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_free: [0x03245000-0x03244fff]
->>>> pcpu_embed_first_chunk+0x7a0/0x884
->>>> [    0.000000] memblock_free: [0x03257000-0x03256fff]
->>>> pcpu_embed_first_chunk+0x7a0/0x884
->>>> [    0.000000] memblock_free: [0x03269000-0x03268fff]
->>>> pcpu_embed_first_chunk+0x7a0/0x884
->>>> [    0.000000] memblock_free: [0x0327b000-0x0327afff]
->>>> pcpu_embed_first_chunk+0x7a0/0x884
->>>> [    0.000000] percpu: Embedded 18 pages/cpu s50704 r0 d23024 u73728
->>>> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x178/0x6ec
->>>> [    0.000000] memblock_reserve: [0x0000bf00-0x0000bf03]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1a8/0x6ec
->>>> [    0.000000] memblock_reserve: [0x0000bf80-0x0000bf83]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1dc/0x6ec
->>>> [    0.000000] memblock_reserve: [0x03232400-0x0323240f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x20c/0x6ec
->>>> [    0.000000] memblock_reserve: [0x03232480-0x0323248f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 128 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x558/0x6ec
->>>> [    0.000000] memblock_reserve: [0x03232500-0x0323257f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 92 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x8c/0x294
->>>> [    0.000000] memblock_reserve: [0x03232580-0x032325db]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 768 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0xe0/0x294
->>>> [    0.000000] memblock_reserve: [0x03232600-0x032328ff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 772 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x124/0x294
->>>> [    0.000000] memblock_reserve: [0x03232900-0x03232c03]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_alloc_try_nid: 192 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x158/0x294
->>>> [    0.000000] memblock_reserve: [0x03232c80-0x03232d3f]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] memblock_free: [0x0000f000-0x0000ffff]
->>>> pcpu_embed_first_chunk+0x838/0x884
->>>> [    0.000000] memblock_free: [0x03231400-0x032323ff]
->>>> pcpu_embed_first_chunk+0x850/0x884
->>>> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 523776
->>>> [    0.000000] Kernel command line: console=ttyS0,115200 earlycon
->>>> [    0.000000] memblock_alloc_try_nid: 131072 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
->>>> [    0.000000] memblock_reserve: [0x0327b000-0x0329afff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072
->>>> bytes, linear)
->>>> [    0.000000] memblock_alloc_try_nid: 65536 bytes align=0x80 nid=-1
->>>> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
->>>> [    0.000000] memblock_reserve: [0x0329b000-0x032aafff]
->>>> memblock_alloc_range_nid+0xf8/0x198
->>>> [    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536
->>>> bytes, linear)
->>>
->>>> [    0.000000] memblock_reserve: [0x00000000-0x000003ff]
->>>> trap_init+0x70/0x4e8
->>>
->>> Most likely someplace here the corruption has happened. The log above
->>> has just reserved a memory for NMI/reset vectors:
->>> arch/mips/kernel/traps.c: trap_init(void): Line 2373.
->>>
->>> But then the board_ebase_setup() pointer is dereferenced and called,
->>> which has been initialized with bmips_ebase_setup() earlier and which
->>> overwrites the ebase variable with: 0x80001000 as this is
->>> CPU_BMIPS5000 CPU. So any further calls of the functions like
->>> set_handler()/set_except_vector()/set_vi_srs_handler()/etc may cause a
->>> corruption of the memory above 0x80001000, which as we have discovered
->>> belongs to fdt and unflattened device tree.
->>>
->>>> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
->>>> [    0.000000] Memory: 2045268K/2097152K available (8226K kernel code,
->>>> 1070K rwdata, 1336K rodata, 13808K init, 260K bss, 51884K reserved, 0K
->>>> cma-reserved, 1835008K highmem)
->>>> [    0.000000] SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
->>>> [    0.000000] rcu: Hierarchical RCU implementation.
->>>> [    0.000000] rcu:     RCU event tracing is enabled.
->>>> [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay
->>>> is 25 jiffies.
->>>> [    0.000000] NR_IRQS: 256
->>>
->>>> [    0.000000] OF: Bad cell count for /rdb
->>>> [    0.000000] irq_bcm7038_l1: failed to remap intc L1 registers
->>>> [    0.000000] OF: of_irq_init: children remain, but no parents
->>>
->>> So here is the first time we have got the consequence of the corruption
->>> popped up. Luckily it's just the "Bad cells count" error. We could have
->>> got much less obvious log here up to getting a crash at some place
->>> further...
->>>
->>>> [    0.000000] random: get_random_bytes called from
->>>> start_kernel+0x444/0x654 with crng_init=0
->>>> [    0.000000] sched_clock: 32 bits at 250 Hz, resolution 4000000ns,
->>>> wraps every 8589934590000000ns
->>>
->>>>
->>>> and with your patch applied which unfortunately did not work we have the
->>>> following:
->>>>
->>>> [...]
->>>
->>> So a patch like this shall workaround the corruption:
->>>
->>> --- a/arch/mips/bmips/setup.c
->>> +++ b/arch/mips/bmips/setup.c
->>> @@ -174,6 +174,8 @@ void __init plat_mem_setup(void)
->>>  
->>>  	__dt_setup_arch(dtb);
->>>  
->>> +	memblock_reserve(0x0, 0x1000 + 0x100*64);
->>> +
->>>  	for (q = bmips_quirk_list; q->quirk_fn; q++) {
->>>  		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
->>>  					     q->compatible)) {
->>
-> 
->> This patch works, thanks a lot for the troubleshooting and analysis! How
->> about the following which would be more generic and works as well and
->> should be more universal since it does not require each architecture to
->> provide an appropriate call to memblock_reserve():
-> 
-> Hm, are you sure it's working?
+Thanks.
 
-I was until I noticed that I was working on top of a revert of Roman's
-patch sorry about the brain fart here.
-
-> If so, my analysis hasn't been quite
-> correct. My suggestion was based on the memory initializations,
-> allocations and reservations trace. So here is the sequence of most
-> crucial of them:
-> 1) Memblock initialization:
->    start_kernel()->setup_arch()->arch_mem_init()->plat_mem_setup()->__dt_setup_arch()
->    (At this point I suggested to place the exceptions memory
->     reservation.)
-> 2) Base FDT memory reservation:
->    start_kernel()->setup_arch()->arch_mem_init()->early_init_fdt_reserve_self()
-> 3) FDT "reserved-memory" nodes parsing and corresponding memory ranges
->    reservation:
->    start_kernel()->setup_arch()->arch_mem_init()->early_init_fdt_scan_reserved_mem()
-> 4) Reserve kernel itself, some critical sections like initrd and
->    crash-kernel:
->    start_kernel()->setup_arch()->arch_mem_init()->bootmem_init()...
-> 5) Copy and unflatten the built-into the kernel device tree
->    (BMIPS-platform code):
->    start_kernel()->setup_arch()->arch_mem_init()->device_tree_init()
->    This is the very first time an allocation from the memblock pool
->    is performed. Since we haven't reserved a memory for the exception
->    vectors yet, the memblock allocator is free to return that memory
->    range for any other use. Needless to say if we try to use that memory
->    later without consulting with memblock, we may and in our case
->    will get into troubles.
-> 6) Many random early memblock allocations for kernel use before
->    buddy and sl*b allocators are up and running...
->    Note if for some fortunate reason the allocations made in 5) didn't
->    overlap the exceptions memory, here we have much more chances to
->    do that with obviously fatal consequences of the ranges independent
->    usage.
-> 7) Trap/exception vectors initialization and !memory reservation! for
->    them:
->    start_kernel()->trap_init()
->    Only at this point we get to reserve the memory for the vectors.
-> 8) Init and run buddy/sl*b allocators:
->    start_kernel()->mm_init()->...mem_init()...
-> 
-> There are a lot of allocations done in 5) and 6) before the
-> trap_init() is called in 7). You can see that in your log. That's why
-> I have doubts that your patch worked well. Most likely you've
-> forgotten to revert the workaround suggested by me in the previous
-> message. Could you make sure that you didn't and re-test your patch
-> again? If it still works then I might have confused something and it's
-> strange that my patch worked in the first place...
-
-I would like to submit a fix for 5.12-rc1 and get it back ported into
-5.11 so we have BMIPS machines boot again, that will be essentially your
-earlier proposed fix.
-
-BMIPS is the only "legacy" MIPS platform that defines an exception base,
-so while this problem may certainly exist with other platforms, I do
-wonder how likely it is there, though?
-
-> 
-> A food for thoughts for everyone (Thomas, Mark, please join the
-> discussion). What we've got here is a bit bigger problem. AFAICS
-> if bottom-up allocation is enabled (it's our case) memblock_find_in_range_node()
-> performs the allocation above the very first PAGE_SIZE memory chunk
-> (see that method code for details). So we are currently on a safe side
-> for some older MIPS platforms. But the platform with VEIC/VINT may get
-> into the same troubles here if they didn't reserve exception memory
-> early enough before the kernel starts random allocations from
-> memblock. So we either need to provide a generic workaround for that
-> or make sure each platform gets to reserve vectors itself for instance
-> in the plat_mem_setup() method.
-> 
-> -Sergey
-> 
->>
->> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
->> index e0352958e2f7..b0a173b500e8 100644
->> --- a/arch/mips/kernel/traps.c
->> +++ b/arch/mips/kernel/traps.c
->> @@ -2367,10 +2367,7 @@ void __init trap_init(void)
->>
->>         if (!cpu_has_mips_r2_r6) {
->>                 ebase = CAC_BASE;
->> -               ebase_pa = virt_to_phys((void *)ebase);
->>                 vec_size = 0x400;
->> -
->> -               memblock_reserve(ebase_pa, vec_size);
->>         } else {
->>                 if (cpu_has_veic || cpu_has_vint)
->>                         vec_size = 0x200 + VECTORSPACING*64;
->> @@ -2410,6 +2407,14 @@ void __init trap_init(void)
->>
->>         if (board_ebase_setup)
->>                 board_ebase_setup();
->> +
->> +       /* board_ebase_setup() can change the exception base address
->> +        * reserve it now after changes were made.
->> +        */
->> +       if (!cpu_has_mips_r2_r6) {
->> +               ebase_pa = virt_to_phys((void *)ebase);
->> +               memblock_reserve(ebase_pa, vec_size);
->> +       }
->>         per_cpu_trap_init(true);
->>         memblock_set_bottom_up(false);
->> -- 
->> Florian
-
--- 
-Florian
+>
+> Thanks!
+>
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  fs/buffer.c                          | 10 ++++--
+> >  fs/notify/fanotify/fanotify.c        |  6 ++--
+> >  fs/notify/fanotify/fanotify_user.c   |  2 +-
+> >  fs/notify/group.c                    |  3 +-
+> >  fs/notify/inotify/inotify_fsnotify.c |  8 ++---
+> >  fs/notify/inotify/inotify_user.c     |  2 +-
+> >  include/linux/bpf.h                  |  2 +-
+> >  include/linux/fsnotify_backend.h     |  2 +-
+> >  include/linux/memcontrol.h           | 15 ++++++++
+> >  include/linux/sched.h                |  4 +--
+> >  include/linux/sched/mm.h             | 28 +++++++--------
+> >  kernel/bpf/syscall.c                 | 35 +++++++++----------
+> >  kernel/fork.c                        |  2 +-
+> >  mm/memcontrol.c                      | 66 ++++++++++++++++++++++++++++--------
+> >  14 files changed, 121 insertions(+), 64 deletions(-)
+> >
+> > diff --git a/fs/buffer.c b/fs/buffer.c
+> > index 591547779dbd..cc99fcf66368 100644
+> > --- a/fs/buffer.c
+> > +++ b/fs/buffer.c
+> > @@ -842,14 +842,16 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
+> >       struct buffer_head *bh, *head;
+> >       gfp_t gfp = GFP_NOFS | __GFP_ACCOUNT;
+> >       long offset;
+> > -     struct mem_cgroup *memcg, *old_memcg;
+> > +     struct mem_cgroup *memcg;
+> > +     struct obj_cgroup *objcg, *old_objcg;
+> >
+> >       if (retry)
+> >               gfp |= __GFP_NOFAIL;
+> >
+> >       /* The page lock pins the memcg */
+> >       memcg = page_memcg(page);
+> > -     old_memcg = set_active_memcg(memcg);
+> > +     objcg = get_obj_cgroup_from_mem_cgroup(memcg);
+> > +     old_objcg = set_active_obj_cgroup(objcg);
+> >
+> >       head = NULL;
+> >       offset = PAGE_SIZE;
+> > @@ -868,7 +870,9 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
+> >               set_bh_page(bh, page, offset);
+> >       }
+> >  out:
+> > -     set_active_memcg(old_memcg);
+> > +     set_active_obj_cgroup(old_objcg);
+> > +     if (objcg)
+> > +             obj_cgroup_put(objcg);
+> >       return head;
+> >  /*
+> >   * In case anything failed, we just free everything we got.
+> > diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+> > index 1192c9953620..04d24acfffc7 100644
+> > --- a/fs/notify/fanotify/fanotify.c
+> > +++ b/fs/notify/fanotify/fanotify.c
+> > @@ -530,7 +530,7 @@ static struct fanotify_event *fanotify_alloc_event(struct fsnotify_group *group,
+> >       struct inode *dirid = fanotify_dfid_inode(mask, data, data_type, dir);
+> >       const struct path *path = fsnotify_data_path(data, data_type);
+> >       unsigned int fid_mode = FAN_GROUP_FLAG(group, FANOTIFY_FID_BITS);
+> > -     struct mem_cgroup *old_memcg;
+> > +     struct obj_cgroup *old_objcg;
+> >       struct inode *child = NULL;
+> >       bool name_event = false;
+> >
+> > @@ -580,7 +580,7 @@ static struct fanotify_event *fanotify_alloc_event(struct fsnotify_group *group,
+> >               gfp |= __GFP_RETRY_MAYFAIL;
+> >
+> >       /* Whoever is interested in the event, pays for the allocation. */
+> > -     old_memcg = set_active_memcg(group->memcg);
+> > +     old_objcg = set_active_obj_cgroup(group->objcg);
+> >
+> >       if (fanotify_is_perm_event(mask)) {
+> >               event = fanotify_alloc_perm_event(path, gfp);
+> > @@ -608,7 +608,7 @@ static struct fanotify_event *fanotify_alloc_event(struct fsnotify_group *group,
+> >               event->pid = get_pid(task_tgid(current));
+> >
+> >  out:
+> > -     set_active_memcg(old_memcg);
+> > +     set_active_obj_cgroup(old_objcg);
+> >       return event;
+> >  }
+> >
+> > diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+> > index 9e0c1afac8bd..055ca36d4e0e 100644
+> > --- a/fs/notify/fanotify/fanotify_user.c
+> > +++ b/fs/notify/fanotify/fanotify_user.c
+> > @@ -985,7 +985,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
+> >       group->fanotify_data.user = user;
+> >       group->fanotify_data.flags = flags;
+> >       atomic_inc(&user->fanotify_listeners);
+> > -     group->memcg = get_mem_cgroup_from_mm(current->mm);
+> > +     group->objcg = get_obj_cgroup_from_current();
+> >
+> >       group->overflow_event = fanotify_alloc_overflow_event();
+> >       if (unlikely(!group->overflow_event)) {
+> > diff --git a/fs/notify/group.c b/fs/notify/group.c
+> > index ffd723ffe46d..fac46b92c16f 100644
+> > --- a/fs/notify/group.c
+> > +++ b/fs/notify/group.c
+> > @@ -24,7 +24,8 @@ static void fsnotify_final_destroy_group(struct fsnotify_group *group)
+> >       if (group->ops->free_group_priv)
+> >               group->ops->free_group_priv(group);
+> >
+> > -     mem_cgroup_put(group->memcg);
+> > +     if (group->objcg)
+> > +             obj_cgroup_put(group->objcg);
+> >       mutex_destroy(&group->mark_mutex);
+> >
+> >       kfree(group);
+> > diff --git a/fs/notify/inotify/inotify_fsnotify.c b/fs/notify/inotify/inotify_fsnotify.c
+> > index 1901d799909b..20835554819a 100644
+> > --- a/fs/notify/inotify/inotify_fsnotify.c
+> > +++ b/fs/notify/inotify/inotify_fsnotify.c
+> > @@ -66,7 +66,7 @@ int inotify_handle_inode_event(struct fsnotify_mark *inode_mark, u32 mask,
+> >       int ret;
+> >       int len = 0;
+> >       int alloc_len = sizeof(struct inotify_event_info);
+> > -     struct mem_cgroup *old_memcg;
+> > +     struct obj_cgroup *old_objcg;
+> >
+> >       if (name) {
+> >               len = name->len;
+> > @@ -81,12 +81,12 @@ int inotify_handle_inode_event(struct fsnotify_mark *inode_mark, u32 mask,
+> >
+> >       /*
+> >        * Whoever is interested in the event, pays for the allocation. Do not
+> > -      * trigger OOM killer in the target monitoring memcg as it may have
+> > +      * trigger OOM killer in the target monitoring objcg as it may have
+> >        * security repercussion.
+> >        */
+> > -     old_memcg = set_active_memcg(group->memcg);
+> > +     old_objcg = set_active_obj_cgroup(group->objcg);
+> >       event = kmalloc(alloc_len, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
+> > -     set_active_memcg(old_memcg);
+> > +     set_active_obj_cgroup(old_objcg);
+> >
+> >       if (unlikely(!event)) {
+> >               /*
+> > diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> > index c71be4fb7dc5..5b4de477fcac 100644
+> > --- a/fs/notify/inotify/inotify_user.c
+> > +++ b/fs/notify/inotify/inotify_user.c
+> > @@ -649,7 +649,7 @@ static struct fsnotify_group *inotify_new_group(unsigned int max_events)
+> >       oevent->name_len = 0;
+> >
+> >       group->max_events = max_events;
+> > -     group->memcg = get_mem_cgroup_from_mm(current->mm);
+> > +     group->objcg = get_obj_cgroup_from_current();
+> >
+> >       spin_lock_init(&group->inotify_data.idr_lock);
+> >       idr_init(&group->inotify_data.idr);
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index cccaef1088ea..b6894e3cd095 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -158,7 +158,7 @@ struct bpf_map {
+> >       u32 btf_value_type_id;
+> >       struct btf *btf;
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -     struct mem_cgroup *memcg;
+> > +     struct obj_cgroup *objcg;
+> >  #endif
+> >       char name[BPF_OBJ_NAME_LEN];
+> >       u32 btf_vmlinux_value_type_id;
+> > diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> > index e5409b83e731..d0303f634da6 100644
+> > --- a/include/linux/fsnotify_backend.h
+> > +++ b/include/linux/fsnotify_backend.h
+> > @@ -220,7 +220,7 @@ struct fsnotify_group {
+> >                                                * notification list is too
+> >                                                * full */
+> >
+> > -     struct mem_cgroup *memcg;       /* memcg to charge allocations */
+> > +     struct obj_cgroup *objcg;       /* objcg to charge allocations */
+> >
+> >       /* groups can define private fields here or use the void *private */
+> >       union {
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 27043478220f..96e63ec7274a 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -1642,6 +1642,7 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+> >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
+> >  void __memcg_kmem_uncharge_page(struct page *page, int order);
+> >
+> > +struct obj_cgroup *get_obj_cgroup_from_mem_cgroup(struct mem_cgroup *memcg);
+> >  struct obj_cgroup *get_obj_cgroup_from_current(void);
+> >
+> >  int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
+> > @@ -1692,6 +1693,20 @@ static inline int memcg_cache_id(struct mem_cgroup *memcg)
+> >  struct mem_cgroup *mem_cgroup_from_obj(void *p);
+> >
+> >  #else
+> > +static inline
+> > +struct obj_cgroup *get_obj_cgroup_from_mem_cgroup(struct mem_cgroup *memcg)
+> > +{
+> > +     return NULL;
+> > +}
+> > +
+> > +static inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+> > +{
+> > +     return NULL;
+> > +}
+> > +
+> > +static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+> > +{
+> > +}
+> >
+> >  static inline int memcg_kmem_charge_page(struct page *page, gfp_t gfp,
+> >                                        int order)
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index c2d488eddf85..75d5b571edcb 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -1317,8 +1317,8 @@ struct task_struct {
+> >  #endif
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -     /* Used by memcontrol for targeted memcg charge: */
+> > -     struct mem_cgroup               *active_memcg;
+> > +     /* Used by memcontrol for targeted object cgroup charge: */
+> > +     struct obj_cgroup               *active_objcg;
+> >  #endif
+> >
+> >  #ifdef CONFIG_BLK_CGROUP
+> > diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> > index 64a72975270e..e713f4290914 100644
+> > --- a/include/linux/sched/mm.h
+> > +++ b/include/linux/sched/mm.h
+> > @@ -295,36 +295,34 @@ static inline void memalloc_nocma_restore(unsigned int flags)
+> >  #endif
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -DECLARE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+> > +DECLARE_PER_CPU(struct obj_cgroup *, int_active_objcg);
+> >  /**
+> > - * set_active_memcg - Starts the remote memcg charging scope.
+> > - * @memcg: memcg to charge.
+> > + * set_active_obj_cgroup - Starts the remote object cgroup charging scope.
+> > + * @objcg: object cgroup to charge.
+> >   *
+> > - * This function marks the beginning of the remote memcg charging scope. All the
+> > - * __GFP_ACCOUNT allocations till the end of the scope will be charged to the
+> > - * given memcg.
+> > + * This function marks the beginning of the remote object cgroup charging scope.
+> > + * All the __GFP_ACCOUNT allocations till the end of the scope will be charged
+> > + * to the given object cgroup.
+> >   *
+> >   * NOTE: This function can nest. Users must save the return value and
+> >   * reset the previous value after their own charging scope is over.
+> >   */
+> > -static inline struct mem_cgroup *
+> > -set_active_memcg(struct mem_cgroup *memcg)
+> > +static inline struct obj_cgroup *set_active_obj_cgroup(struct obj_cgroup *objcg)
+> >  {
+> > -     struct mem_cgroup *old;
+> > +     struct obj_cgroup *old;
+> >
+> >       if (in_interrupt()) {
+> > -             old = this_cpu_read(int_active_memcg);
+> > -             this_cpu_write(int_active_memcg, memcg);
+> > +             old = this_cpu_read(int_active_objcg);
+> > +             this_cpu_write(int_active_objcg, objcg);
+> >       } else {
+> > -             old = current->active_memcg;
+> > -             current->active_memcg = memcg;
+> > +             old = current->active_objcg;
+> > +             current->active_objcg = objcg;
+> >       }
+> >
+> >       return old;
+> >  }
+> >  #else
+> > -static inline struct mem_cgroup *
+> > -set_active_memcg(struct mem_cgroup *memcg)
+> > +static inline struct obj_cgroup *set_active_obj_cgroup(struct obj_cgroup *objcg)
+> >  {
+> >       return NULL;
+> >  }
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index c859bc46d06c..1b078eddf083 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -390,37 +390,38 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
+> >  }
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -static void bpf_map_save_memcg(struct bpf_map *map)
+> > +static void bpf_map_save_objcg(struct bpf_map *map)
+> >  {
+> > -     map->memcg = get_mem_cgroup_from_mm(current->mm);
+> > +     map->objcg = get_obj_cgroup_from_current();
+> >  }
+> >
+> > -static void bpf_map_release_memcg(struct bpf_map *map)
+> > +static void bpf_map_release_objcg(struct bpf_map *map)
+> >  {
+> > -     mem_cgroup_put(map->memcg);
+> > +     if (map->objcg)
+> > +             obj_cgroup_put(map->objcg);
+> >  }
+> >
+> >  void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
+> >                          int node)
+> >  {
+> > -     struct mem_cgroup *old_memcg;
+> > +     struct obj_cgroup *old_objcg;
+> >       void *ptr;
+> >
+> > -     old_memcg = set_active_memcg(map->memcg);
+> > +     old_objcg = set_active_obj_cgroup(map->objcg);
+> >       ptr = kmalloc_node(size, flags | __GFP_ACCOUNT, node);
+> > -     set_active_memcg(old_memcg);
+> > +     set_active_obj_cgroup(old_objcg);
+> >
+> >       return ptr;
+> >  }
+> >
+> >  void *bpf_map_kzalloc(const struct bpf_map *map, size_t size, gfp_t flags)
+> >  {
+> > -     struct mem_cgroup *old_memcg;
+> > +     struct obj_cgroup *old_objcg;
+> >       void *ptr;
+> >
+> > -     old_memcg = set_active_memcg(map->memcg);
+> > +     old_objcg = set_active_obj_cgroup(map->objcg);
+> >       ptr = kzalloc(size, flags | __GFP_ACCOUNT);
+> > -     set_active_memcg(old_memcg);
+> > +     set_active_obj_cgroup(old_objcg);
+> >
+> >       return ptr;
+> >  }
+> > @@ -428,22 +429,22 @@ void *bpf_map_kzalloc(const struct bpf_map *map, size_t size, gfp_t flags)
+> >  void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
+> >                                   size_t align, gfp_t flags)
+> >  {
+> > -     struct mem_cgroup *old_memcg;
+> > +     struct obj_cgroup *old_objcg;
+> >       void __percpu *ptr;
+> >
+> > -     old_memcg = set_active_memcg(map->memcg);
+> > +     old_objcg = set_active_obj_cgroup(map->objcg);
+> >       ptr = __alloc_percpu_gfp(size, align, flags | __GFP_ACCOUNT);
+> > -     set_active_memcg(old_memcg);
+> > +     set_active_obj_cgroup(old_objcg);
+> >
+> >       return ptr;
+> >  }
+> >
+> >  #else
+> > -static void bpf_map_save_memcg(struct bpf_map *map)
+> > +static void bpf_map_save_objcg(struct bpf_map *map)
+> >  {
+> >  }
+> >
+> > -static void bpf_map_release_memcg(struct bpf_map *map)
+> > +static void bpf_map_release_objcg(struct bpf_map *map)
+> >  {
+> >  }
+> >  #endif
+> > @@ -454,7 +455,7 @@ static void bpf_map_free_deferred(struct work_struct *work)
+> >       struct bpf_map *map = container_of(work, struct bpf_map, work);
+> >
+> >       security_bpf_map_free(map);
+> > -     bpf_map_release_memcg(map);
+> > +     bpf_map_release_objcg(map);
+> >       /* implementation dependent freeing */
+> >       map->ops->map_free(map);
+> >  }
+> > @@ -877,7 +878,7 @@ static int map_create(union bpf_attr *attr)
+> >       if (err)
+> >               goto free_map_sec;
+> >
+> > -     bpf_map_save_memcg(map);
+> > +     bpf_map_save_objcg(map);
+> >
+> >       err = bpf_map_new_fd(map, f_flags);
+> >       if (err < 0) {
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index d66718bc82d5..5a800916ad8d 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -943,7 +943,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
+> >  #endif
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -     tsk->active_memcg = NULL;
+> > +     tsk->active_objcg = NULL;
+> >  #endif
+> >       return tsk;
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 092dc4588b43..024a0f377eb7 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -77,8 +77,8 @@ EXPORT_SYMBOL(memory_cgrp_subsys);
+> >  struct mem_cgroup *root_mem_cgroup __read_mostly;
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -/* Active memory cgroup to use from an interrupt context */
+> > -DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+> > +/* Active object cgroup to use from an interrupt context */
+> > +DEFINE_PER_CPU(struct obj_cgroup *, int_active_objcg);
+> >  #endif
+> >
+> >  /* Socket memory accounting disabled? */
+> > @@ -1057,18 +1057,18 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+> >  EXPORT_SYMBOL(get_mem_cgroup_from_mm);
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -static __always_inline struct mem_cgroup *active_memcg(void)
+> > +static __always_inline struct obj_cgroup *active_obj_cgroup(void)
+> >  {
+> >       if (in_interrupt())
+> > -             return this_cpu_read(int_active_memcg);
+> > +             return this_cpu_read(int_active_objcg);
+> >       else
+> > -             return current->active_memcg;
+> > +             return current->active_objcg;
+> >  }
+> >
+> >  static __always_inline bool memcg_kmem_bypass(void)
+> >  {
+> >       /* Allow remote memcg charging from any context. */
+> > -     if (unlikely(active_memcg()))
+> > +     if (unlikely(active_obj_cgroup()))
+> >               return false;
+> >
+> >       /* Memcg to charge can't be determined. */
+> > @@ -2971,26 +2971,47 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+> >       return page_memcg_check(page);
+> >  }
+> >
+> > -__always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+> > +__always_inline
+> > +struct obj_cgroup *get_obj_cgroup_from_mem_cgroup(struct mem_cgroup *memcg)
+> >  {
+> >       struct obj_cgroup *objcg = NULL;
+> > +
+> > +     rcu_read_lock();
+> > +     for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+> > +             objcg = rcu_dereference(memcg->objcg);
+> > +             if (objcg && obj_cgroup_tryget(objcg))
+> > +                     break;
+> > +             objcg = NULL;
+> > +     }
+> > +     rcu_read_unlock();
+> > +
+> > +     return objcg;
+> > +}
+> > +
+> > +__always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+> > +{
+> > +     struct obj_cgroup *objcg;
+> >       struct mem_cgroup *memcg;
+> >
+> >       if (memcg_kmem_bypass())
+> >               return NULL;
+> >
+> >       rcu_read_lock();
+> > -     if (unlikely(active_memcg()))
+> > -             memcg = active_memcg();
+> > -     else
+> > -             memcg = mem_cgroup_from_task(current);
+> > +     objcg = active_obj_cgroup();
+> > +     if (unlikely(objcg)) {
+> > +             /* remote object cgroup must hold a reference. */
+> > +             obj_cgroup_get(objcg);
+> > +             goto out;
+> > +     }
+> >
+> > +     memcg = mem_cgroup_from_task(current);
+> >       for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
+> >               objcg = rcu_dereference(memcg->objcg);
+> >               if (objcg && obj_cgroup_tryget(objcg))
+> >                       break;
+> >               objcg = NULL;
+> >       }
+> > +out:
+> >       rcu_read_unlock();
+> >
+> >       return objcg;
+> > @@ -5296,16 +5317,33 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+> >       return ERR_PTR(error);
+> >  }
+> >
+> > +#ifdef CONFIG_MEMCG_KMEM
+> > +static inline struct obj_cgroup *memcg_obj_cgroup(struct mem_cgroup *memcg)
+> > +{
+> > +     return memcg ? memcg->objcg : NULL;
+> > +}
+> > +#else
+> > +static inline struct obj_cgroup *memcg_obj_cgroup(struct mem_cgroup *memcg)
+> > +{
+> > +     return NULL;
+> > +}
+> > +#endif
+> > +
+> >  static struct cgroup_subsys_state * __ref
+> >  mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+> >  {
+> >       struct mem_cgroup *parent = mem_cgroup_from_css(parent_css);
+> > -     struct mem_cgroup *memcg, *old_memcg;
+> > +     struct mem_cgroup *memcg;
+> > +     struct obj_cgroup *old_objcg;
+> >       long error = -ENOMEM;
+> >
+> > -     old_memcg = set_active_memcg(parent);
+> > +     /*
+> > +      * The @parent cannot be offlined, so @parent->objcg cannot be freed
+> > +      * under us.
+> > +      */
+> > +     old_objcg = set_active_obj_cgroup(memcg_obj_cgroup(parent));
+> >       memcg = mem_cgroup_alloc();
+> > -     set_active_memcg(old_memcg);
+> > +     set_active_obj_cgroup(old_objcg);
+> >       if (IS_ERR(memcg))
+> >               return ERR_CAST(memcg);
+> >
+> > --
+> > 2.11.0
+> >
