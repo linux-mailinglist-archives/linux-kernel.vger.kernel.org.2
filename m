@@ -2,568 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19E132ABF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC08732ABED
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446303AbhCBU5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:57:44 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:54497 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580501AbhCBSD7 (ORCPT
+        id S1381314AbhCBUzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:55:11 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:2330 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1580268AbhCBSBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:03:59 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id BF74CA17B7;
-        Tue,  2 Mar 2021 17:47:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=oloDjkjzKDbw
-        os4MxdLk87O7uGAQKjkxOcMs4YnKOOM=; b=a+R6KRRNEH3yTxu3tysZUYdqF9oy
-        +q3hUWu9E2j9lBgsNMbG7/oWOZ3p8yB1ptgBn/vIkPxSnJm9on+I0gZBVGrSBpE9
-        C9Ox+Njx5AmcDL/wb9zZuZ9FUeuZDrRUx8iadApo/IEoaa6o5g0Z/AAA3mjvMr8l
-        eJU8VA2pra2VHfwstUZ79UGbi1M4kBn6p+0OqMjFK09wvKxC19JRRkRKsd3HbXbM
-        JHaghgUE+GuJuWPLFFHXLuUGo/4uz2UHaiRGpwhKYlYUdVwgKGmNfVX0uxUponTo
-        oDgY6U7HpQkvmqkm6q4ie0PKwE2q/4QPYwI37NqwL/v6FSjPw2ssVj7kdg==
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 6/9] ALSA: virtio: PCM substream operators
-Date:   Tue, 2 Mar 2021 17:47:06 +0100
-Message-ID: <20210302164709.3142702-7-anton.yakovlev@opensynergy.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302164709.3142702-1-anton.yakovlev@opensynergy.com>
-References: <20210302164709.3142702-1-anton.yakovlev@opensynergy.com>
+        Tue, 2 Mar 2021 13:01:49 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122H1sYa016196;
+        Tue, 2 Mar 2021 18:03:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=MPuDgAI8bly3BZ6l6If7B5CFn09WiiZifHi7p1VUgfM=;
+ b=hRHRtutXrKv510SgyVvetOCL3HRxze1NoX5YPPb0qyvX/3dbvcBY2GT79kpPY8IKXfUJ
+ fPnXHH4Kc7tUvmzVAcr07orC1L4+vGm6vNUJKQWPcBxz/HY46YqrMyhcK0EJO+puRYX5
+ WZoj1W5jYEayMKhHLRCxNFEJHPeL18hDHxY4iO2ww/imgUVpSWdBdfwWVjWJ/m/sygRj
+ Spn7wpWcRR7Ydvb4s+QybY5vfsFP4uCOophKl13NftkCSYNc8VhVHF6GWcRHTHps69xg
+ J+9WFb00mfwbIAXWPXXAUA6SL3TeYeFkjUf+KD4vS8553zwD5agCAmj0Fj+CNQpN9Y9r MQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfc3uh6w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Mar 2021 18:03:43 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 858D810002A;
+        Tue,  2 Mar 2021 18:03:42 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 735CA2160F0;
+        Tue,  2 Mar 2021 18:03:42 +0100 (CET)
+Received: from [10.211.13.170] (10.75.127.44) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Mar
+ 2021 18:03:41 +0100
+Subject: Re: [PATCH] counter: stm32-timer-cnt: fix ceiling write max value
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+CC:     <jic23@kernel.org>, <david@lechnology.com>,
+        <alexandre.torgue@foss.st.com>, <mcoquelin.stm32@gmail.com>,
+        <olivier.moysan@foss.st.com>, <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1614696235-24088-1-git-send-email-fabrice.gasnier@foss.st.com>
+ <YD5SLrdttn+95M7N@shinobu>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <e54d1446-b583-9625-1ab3-09e54d6a7456@foss.st.com>
+Date:   Tue, 2 Mar 2021 18:03:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+In-Reply-To: <YD5SLrdttn+95M7N@shinobu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the operators required for the operation of substreams.
+On 3/2/21 3:56 PM, William Breathitt Gray wrote:
+> On Tue, Mar 02, 2021 at 03:43:55PM +0100, Fabrice Gasnier wrote:
+>> The ceiling value isn't checked before writing it into registers. The user
+>> could write a value higher than the counter resolution (e.g. 16 or 32 bits
+>> indicated by max_arr). This makes most significant bits to be truncated.
+>> Fix it by checking the max_arr to report a range error [1] to the user.
+>>
+>> Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
+>>
+>> [1] https://lkml.org/lkml/2021/2/12/358
+>>
+>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> 
+> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> 
+> Side question: if priv->ceiling is tracking the current ceiling
+> configuration, would it make sense to change stm32_count_ceiling_read()
+> to print the value of priv->ceiling instead of doing a regmap_read()
+> call?
 
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
----
- sound/virtio/Makefile         |   3 +-
- sound/virtio/virtio_pcm.c     |   2 +
- sound/virtio/virtio_pcm.h     |   5 +
- sound/virtio/virtio_pcm_ops.c | 445 ++++++++++++++++++++++++++++++++++
- 4 files changed, 454 insertions(+), 1 deletion(-)
- create mode 100644 sound/virtio/virtio_pcm_ops.c
+Hi William,
 
-diff --git a/sound/virtio/Makefile b/sound/virtio/Makefile
-index 626af3cc3ed7..34493226793f 100644
---- a/sound/virtio/Makefile
-+++ b/sound/virtio/Makefile
-@@ -6,5 +6,6 @@ virtio_snd-objs := \
- 	virtio_card.o \
- 	virtio_ctl_msg.o \
- 	virtio_pcm.o \
--	virtio_pcm_msg.o
-+	virtio_pcm_msg.o \
-+	virtio_pcm_ops.o
- 
-diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-index 2dcd763efa29..c10d91fff2fb 100644
---- a/sound/virtio/virtio_pcm.c
-+++ b/sound/virtio/virtio_pcm.c
-@@ -470,6 +470,8 @@ int virtsnd_pcm_build_devs(struct virtio_snd *snd)
- 
- 			for (kss = ks->substream; kss; kss = kss->next)
- 				vs->substreams[kss->number]->substream = kss;
-+
-+			snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_ops);
- 		}
- 
- 		snd_pcm_set_managed_buffer_all(vpcm->pcm,
-diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
-index 6722f1139666..efd0228746cf 100644
---- a/sound/virtio/virtio_pcm.h
-+++ b/sound/virtio/virtio_pcm.h
-@@ -29,6 +29,8 @@ struct virtio_pcm_msg;
-  * @hw_ptr: Substream hardware pointer value in bytes [0 ... buffer_bytes).
-  * @xfer_enabled: Data transfer state (0 - off, 1 - on).
-  * @xfer_xrun: Data underflow/overflow state (0 - no xrun, 1 - xrun).
-+ * @stopped: True if the substream is stopped and must be released on the device
-+ *           side.
-  * @msgs: Allocated I/O messages.
-  * @nmsgs: Number of allocated I/O messages.
-  * @msg_last_enqueued: Index of the last I/O message added to the virtqueue.
-@@ -49,6 +51,7 @@ struct virtio_pcm_substream {
- 	size_t hw_ptr;
- 	bool xfer_enabled;
- 	bool xfer_xrun;
-+	bool stopped;
- 	struct virtio_pcm_msg **msgs;
- 	unsigned int nmsgs;
- 	int msg_last_enqueued;
-@@ -80,6 +83,8 @@ struct virtio_pcm {
- 	struct virtio_pcm_stream streams[SNDRV_PCM_STREAM_LAST + 1];
- };
- 
-+extern const struct snd_pcm_ops virtsnd_pcm_ops;
-+
- int virtsnd_pcm_validate(struct virtio_device *vdev);
- 
- int virtsnd_pcm_parse_cfg(struct virtio_snd *snd);
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-new file mode 100644
-index 000000000000..0682a2df6c8c
---- /dev/null
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -0,0 +1,445 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * virtio-snd: Virtio sound device
-+ * Copyright (C) 2021 OpenSynergy GmbH
-+ */
-+#include <sound/pcm_params.h>
-+
-+#include "virtio_card.h"
-+
-+/*
-+ * I/O messages lifetime
-+ * ---------------------
-+ *
-+ * Allocation:
-+ *   Messages are initially allocated in the ops->hw_params() after the size and
-+ *   number of periods have been successfully negotiated.
-+ *
-+ * Freeing:
-+ *   Messages can be safely freed after the queue has been successfully flushed
-+ *   (RELEASE command in the ops->sync_stop()) and the ops->hw_free() has been
-+ *   called.
-+ *
-+ *   When the substream stops, the ops->sync_stop() waits until the device has
-+ *   completed all pending messages. This wait can be interrupted either by a
-+ *   signal or due to a timeout. In this case, the device can still access
-+ *   messages even after calling ops->hw_free(). It can also issue an interrupt,
-+ *   and the interrupt handler will also try to access message structures.
-+ *
-+ *   Therefore, freeing of already allocated messages occurs:
-+ *
-+ *   - in ops->hw_params(), if this operator was called several times in a row,
-+ *     or if ops->hw_free() failed to free messages previously;
-+ *
-+ *   - in ops->hw_free(), if the queue has been successfully flushed;
-+ *
-+ *   - in dev->release().
-+ */
-+
-+/* Map for converting ALSA format to VirtIO format. */
-+struct virtsnd_a2v_format {
-+	snd_pcm_format_t alsa_bit;
-+	unsigned int vio_bit;
-+};
-+
-+static const struct virtsnd_a2v_format g_a2v_format_map[] = {
-+	{ SNDRV_PCM_FORMAT_IMA_ADPCM, VIRTIO_SND_PCM_FMT_IMA_ADPCM },
-+	{ SNDRV_PCM_FORMAT_MU_LAW, VIRTIO_SND_PCM_FMT_MU_LAW },
-+	{ SNDRV_PCM_FORMAT_A_LAW, VIRTIO_SND_PCM_FMT_A_LAW },
-+	{ SNDRV_PCM_FORMAT_S8, VIRTIO_SND_PCM_FMT_S8 },
-+	{ SNDRV_PCM_FORMAT_U8, VIRTIO_SND_PCM_FMT_U8 },
-+	{ SNDRV_PCM_FORMAT_S16_LE, VIRTIO_SND_PCM_FMT_S16 },
-+	{ SNDRV_PCM_FORMAT_U16_LE, VIRTIO_SND_PCM_FMT_U16 },
-+	{ SNDRV_PCM_FORMAT_S18_3LE, VIRTIO_SND_PCM_FMT_S18_3 },
-+	{ SNDRV_PCM_FORMAT_U18_3LE, VIRTIO_SND_PCM_FMT_U18_3 },
-+	{ SNDRV_PCM_FORMAT_S20_3LE, VIRTIO_SND_PCM_FMT_S20_3 },
-+	{ SNDRV_PCM_FORMAT_U20_3LE, VIRTIO_SND_PCM_FMT_U20_3 },
-+	{ SNDRV_PCM_FORMAT_S24_3LE, VIRTIO_SND_PCM_FMT_S24_3 },
-+	{ SNDRV_PCM_FORMAT_U24_3LE, VIRTIO_SND_PCM_FMT_U24_3 },
-+	{ SNDRV_PCM_FORMAT_S20_LE, VIRTIO_SND_PCM_FMT_S20 },
-+	{ SNDRV_PCM_FORMAT_U20_LE, VIRTIO_SND_PCM_FMT_U20 },
-+	{ SNDRV_PCM_FORMAT_S24_LE, VIRTIO_SND_PCM_FMT_S24 },
-+	{ SNDRV_PCM_FORMAT_U24_LE, VIRTIO_SND_PCM_FMT_U24 },
-+	{ SNDRV_PCM_FORMAT_S32_LE, VIRTIO_SND_PCM_FMT_S32 },
-+	{ SNDRV_PCM_FORMAT_U32_LE, VIRTIO_SND_PCM_FMT_U32 },
-+	{ SNDRV_PCM_FORMAT_FLOAT_LE, VIRTIO_SND_PCM_FMT_FLOAT },
-+	{ SNDRV_PCM_FORMAT_FLOAT64_LE, VIRTIO_SND_PCM_FMT_FLOAT64 },
-+	{ SNDRV_PCM_FORMAT_DSD_U8, VIRTIO_SND_PCM_FMT_DSD_U8 },
-+	{ SNDRV_PCM_FORMAT_DSD_U16_LE, VIRTIO_SND_PCM_FMT_DSD_U16 },
-+	{ SNDRV_PCM_FORMAT_DSD_U32_LE, VIRTIO_SND_PCM_FMT_DSD_U32 },
-+	{ SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE,
-+	  VIRTIO_SND_PCM_FMT_IEC958_SUBFRAME }
-+};
-+
-+/* Map for converting ALSA frame rate to VirtIO frame rate. */
-+struct virtsnd_a2v_rate {
-+	unsigned int rate;
-+	unsigned int vio_bit;
-+};
-+
-+static const struct virtsnd_a2v_rate g_a2v_rate_map[] = {
-+	{ 5512, VIRTIO_SND_PCM_RATE_5512 },
-+	{ 8000, VIRTIO_SND_PCM_RATE_8000 },
-+	{ 11025, VIRTIO_SND_PCM_RATE_11025 },
-+	{ 16000, VIRTIO_SND_PCM_RATE_16000 },
-+	{ 22050, VIRTIO_SND_PCM_RATE_22050 },
-+	{ 32000, VIRTIO_SND_PCM_RATE_32000 },
-+	{ 44100, VIRTIO_SND_PCM_RATE_44100 },
-+	{ 48000, VIRTIO_SND_PCM_RATE_48000 },
-+	{ 64000, VIRTIO_SND_PCM_RATE_64000 },
-+	{ 88200, VIRTIO_SND_PCM_RATE_88200 },
-+	{ 96000, VIRTIO_SND_PCM_RATE_96000 },
-+	{ 176400, VIRTIO_SND_PCM_RATE_176400 },
-+	{ 192000, VIRTIO_SND_PCM_RATE_192000 }
-+};
-+
-+static int virtsnd_pcm_sync_stop(struct snd_pcm_substream *substream);
-+
-+/**
-+ * virtsnd_pcm_open() - Open the PCM substream.
-+ * @substream: Kernel ALSA substream.
-+ *
-+ * Context: Process context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct virtio_pcm *vpcm = snd_pcm_substream_chip(substream);
-+	struct virtio_pcm_stream *vs = &vpcm->streams[substream->stream];
-+	struct virtio_pcm_substream *vss = vs->substreams[substream->number];
-+
-+	substream->runtime->hw = vss->hw;
-+	substream->private_data = vss;
-+
-+	snd_pcm_hw_constraint_integer(substream->runtime,
-+				      SNDRV_PCM_HW_PARAM_PERIODS);
-+
-+	vss->stopped = !!virtsnd_pcm_msg_pending_num(vss);
-+
-+	/*
-+	 * If the substream has already been used, then the I/O queue may be in
-+	 * an invalid state. Just in case, we do a check and try to return the
-+	 * queue to its original state, if necessary.
-+	 */
-+	return virtsnd_pcm_sync_stop(substream);
-+}
-+
-+/**
-+ * virtsnd_pcm_close() - Close the PCM substream.
-+ * @substream: Kernel ALSA substream.
-+ *
-+ * Context: Process context.
-+ * Return: 0.
-+ */
-+static int virtsnd_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_pcm_dev_set_params() - Set the parameters of the PCM substream on
-+ *                                the device side.
-+ * @vss: VirtIO PCM substream.
-+ * @buffer_bytes: Size of the hardware buffer.
-+ * @period_bytes: Size of the hardware period.
-+ * @channels: Selected number of channels.
-+ * @format: Selected sample format (SNDRV_PCM_FORMAT_XXX).
-+ * @rate: Selected frame rate.
-+ *
-+ * Context: Any context that permits to sleep.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_pcm_dev_set_params(struct virtio_pcm_substream *vss,
-+				      unsigned int buffer_bytes,
-+				      unsigned int period_bytes,
-+				      unsigned int channels,
-+				      snd_pcm_format_t format,
-+				      unsigned int rate)
-+{
-+	struct virtio_snd_msg *msg;
-+	struct virtio_snd_pcm_set_params *request;
-+	unsigned int i;
-+	int vformat = -1;
-+	int vrate = -1;
-+
-+	for (i = 0; i < ARRAY_SIZE(g_a2v_format_map); ++i)
-+		if (g_a2v_format_map[i].alsa_bit == format) {
-+			vformat = g_a2v_format_map[i].vio_bit;
-+
-+			break;
-+		}
-+
-+	for (i = 0; i < ARRAY_SIZE(g_a2v_rate_map); ++i)
-+		if (g_a2v_rate_map[i].rate == rate) {
-+			vrate = g_a2v_rate_map[i].vio_bit;
-+
-+			break;
-+		}
-+
-+	if (vformat == -1 || vrate == -1)
-+		return -EINVAL;
-+
-+	msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_SET_PARAMS,
-+					GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	request = virtsnd_ctl_msg_request(msg);
-+	request->buffer_bytes = cpu_to_le32(buffer_bytes);
-+	request->period_bytes = cpu_to_le32(period_bytes);
-+	request->channels = channels;
-+	request->format = vformat;
-+	request->rate = vrate;
-+
-+	if (vss->features & (1U << VIRTIO_SND_PCM_F_MSG_POLLING))
-+		request->features |=
-+			cpu_to_le32(1U << VIRTIO_SND_PCM_F_MSG_POLLING);
-+
-+	if (vss->features & (1U << VIRTIO_SND_PCM_F_EVT_XRUNS))
-+		request->features |=
-+			cpu_to_le32(1U << VIRTIO_SND_PCM_F_EVT_XRUNS);
-+
-+	return virtsnd_ctl_msg_send_sync(vss->snd, msg);
-+}
-+
-+/**
-+ * virtsnd_pcm_hw_params() - Set the parameters of the PCM substream.
-+ * @substream: Kernel ALSA substream.
-+ * @hw_params: Hardware parameters.
-+ *
-+ * Context: Process context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-+	struct virtio_device *vdev = vss->snd->vdev;
-+	int rc;
-+
-+	if (virtsnd_pcm_msg_pending_num(vss)) {
-+		dev_err(&vdev->dev, "SID %u: invalid I/O queue state\n",
-+			vss->sid);
-+		return -EBADFD;
-+	}
-+
-+	rc = virtsnd_pcm_dev_set_params(vss, params_buffer_bytes(hw_params),
-+					params_period_bytes(hw_params),
-+					params_channels(hw_params),
-+					params_format(hw_params),
-+					params_rate(hw_params));
-+	if (rc)
-+		return rc;
-+
-+	/*
-+	 * Free previously allocated messages if ops->hw_params() is called
-+	 * several times in a row, or if ops->hw_free() failed to free messages.
-+	 */
-+	virtsnd_pcm_msg_free(vss);
-+
-+	return virtsnd_pcm_msg_alloc(vss, params_periods(hw_params),
-+				     params_period_bytes(hw_params));
-+}
-+
-+/**
-+ * virtsnd_pcm_hw_free() - Reset the parameters of the PCM substream.
-+ * @substream: Kernel ALSA substream.
-+ *
-+ * Context: Process context.
-+ * Return: 0
-+ */
-+static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-+
-+	/* If the queue is flushed, we can safely free the messages here. */
-+	if (!virtsnd_pcm_msg_pending_num(vss))
-+		virtsnd_pcm_msg_free(vss);
-+
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_pcm_prepare() - Prepare the PCM substream.
-+ * @substream: Kernel ALSA substream.
-+ *
-+ * Context: Process context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-+	struct virtio_device *vdev = vss->snd->vdev;
-+	struct virtio_snd_msg *msg;
-+
-+	if (virtsnd_pcm_msg_pending_num(vss)) {
-+		dev_err(&vdev->dev, "SID %u: invalid I/O queue state\n",
-+			vss->sid);
-+		return -EBADFD;
-+	}
-+
-+	vss->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
-+	vss->hw_ptr = 0;
-+	vss->xfer_xrun = false;
-+	vss->msg_last_enqueued = -1;
-+	vss->msg_count = 0;
-+
-+	msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_PREPARE,
-+					GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	return virtsnd_ctl_msg_send_sync(vss->snd, msg);
-+}
-+
-+/**
-+ * virtsnd_pcm_trigger() - Process command for the PCM substream.
-+ * @substream: Kernel ALSA substream.
-+ * @command: Substream command (SNDRV_PCM_TRIGGER_XXX).
-+ *
-+ * Context: Any context. Takes and releases the VirtIO substream spinlock.
-+ *          May take and release the tx/rx queue spinlock.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
-+{
-+	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-+	struct virtio_snd *snd = vss->snd;
-+	struct virtio_snd_queue *queue;
-+	struct virtio_snd_msg *msg;
-+	unsigned long flags;
-+	int rc;
-+
-+	switch (command) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		queue = virtsnd_pcm_queue(vss);
-+
-+		spin_lock_irqsave(&queue->lock, flags);
-+		spin_lock(&vss->lock);
-+		rc = virtsnd_pcm_msg_send(vss);
-+		if (!rc)
-+			vss->xfer_enabled = true;
-+		spin_unlock(&vss->lock);
-+		spin_unlock_irqrestore(&queue->lock, flags);
-+		if (rc)
-+			return rc;
-+
-+		msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_START,
-+						GFP_KERNEL);
-+		if (!msg) {
-+			spin_lock_irqsave(&vss->lock, flags);
-+			vss->xfer_enabled = false;
-+			spin_unlock_irqrestore(&vss->lock, flags);
-+
-+			return -ENOMEM;
-+		}
-+
-+		return virtsnd_ctl_msg_send_sync(snd, msg);
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		vss->stopped = true;
-+		fallthrough;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		spin_lock_irqsave(&vss->lock, flags);
-+		vss->xfer_enabled = false;
-+		spin_unlock_irqrestore(&vss->lock, flags);
-+
-+		msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_STOP,
-+						GFP_KERNEL);
-+		if (!msg)
-+			return -ENOMEM;
-+
-+		return virtsnd_ctl_msg_send_sync(snd, msg);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+/**
-+ * virtsnd_pcm_sync_stop() - Synchronous PCM substream stop.
-+ * @substream: Kernel ALSA substream.
-+ *
-+ * The function can be called both from the upper level or from the driver
-+ * itself.
-+ *
-+ * Context: Process context. Takes and releases the VirtIO substream spinlock.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_pcm_sync_stop(struct snd_pcm_substream *substream)
-+{
-+	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-+	struct virtio_snd *snd = vss->snd;
-+	struct virtio_snd_msg *msg;
-+	unsigned int js = msecs_to_jiffies(virtsnd_msg_timeout_ms);
-+	int rc;
-+
-+	cancel_work_sync(&vss->elapsed_period);
-+
-+	if (!vss->stopped)
-+		return 0;
-+
-+	msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_RELEASE,
-+					GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	rc = virtsnd_ctl_msg_send_sync(snd, msg);
-+	if (rc)
-+		return rc;
-+
-+	/*
-+	 * The spec states that upon receipt of the RELEASE command "the device
-+	 * MUST complete all pending I/O messages for the specified stream ID".
-+	 * Thus, we consider the absence of I/O messages in the queue as an
-+	 * indication that the substream has been released.
-+	 */
-+	rc = wait_event_interruptible_timeout(vss->msg_empty,
-+					      !virtsnd_pcm_msg_pending_num(vss),
-+					      js);
-+	if (rc <= 0) {
-+		dev_warn(&snd->vdev->dev, "SID %u: failed to flush I/O queue\n",
-+			 vss->sid);
-+
-+		return !rc ? -ETIMEDOUT : rc;
-+	}
-+
-+	vss->stopped = false;
-+
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_pcm_pointer() - Get the current hardware position for the PCM
-+ *                         substream.
-+ * @substream: Kernel ALSA substream.
-+ *
-+ * Context: Any context. Takes and releases the VirtIO substream spinlock.
-+ * Return: Hardware position in frames inside [0 ... buffer_size) range.
-+ */
-+static snd_pcm_uframes_t
-+virtsnd_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-+	snd_pcm_uframes_t hw_ptr = SNDRV_PCM_POS_XRUN;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&vss->lock, flags);
-+	if (!vss->xfer_xrun)
-+		hw_ptr = bytes_to_frames(substream->runtime, vss->hw_ptr);
-+	spin_unlock_irqrestore(&vss->lock, flags);
-+
-+	return hw_ptr;
-+}
-+
-+/* PCM substream operators map. */
-+const struct snd_pcm_ops virtsnd_pcm_ops = {
-+	.open = virtsnd_pcm_open,
-+	.close = virtsnd_pcm_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = virtsnd_pcm_hw_params,
-+	.hw_free = virtsnd_pcm_hw_free,
-+	.prepare = virtsnd_pcm_prepare,
-+	.trigger = virtsnd_pcm_trigger,
-+	.sync_stop = virtsnd_pcm_sync_stop,
-+	.pointer = virtsnd_pcm_pointer,
-+};
--- 
-2.30.1
+Thanks for reviewing.
 
+I'd be fine either way. So no objection to move to the priv->ceiling
+(cached) value. It could also here here.
+By looking at this, I figured out there's probably another thing to fix
+here, for initial conditions.
 
+At probe time priv->ceiling is initialized to max value (ex 65535 for a
+16 bits counter). But the register content is 0 (clear by mfd driver at
+probe time).
+
+- So, reading ceiling from sysfs currently reports 0 (regmap_read())
+after booting and probing.
+
+I see two cases at this point:
+- In case the counter gets enabled without any prior configuration, it
+won't count: ceiling value (e.g. 65535) should be written to register
+before it is enabled, so the counter will actually count. So there's
+room for a fix here.
+
+- In case function gets set (ex: quadrature x4), priv->ceiling (e.g.
+65535) gets written to the register (although it's been read earlier as
+0 from sysfs).
+This could be fixed by reading the priv->ceiling in
+stm32_count_ceiling_read() as you're asking (provided 1st case has been
+fixed as well)
+
+I'll probably prepare one or two patches for the above cases, if you agree ?
+
+Best Regards,
+Fabrice
+
+> 
+>> ---
+>>  drivers/counter/stm32-timer-cnt.c | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+>> index ef2a974..2cf0c05 100644
+>> --- a/drivers/counter/stm32-timer-cnt.c
+>> +++ b/drivers/counter/stm32-timer-cnt.c
+>> @@ -32,6 +32,7 @@ struct stm32_timer_cnt {
+>>  	struct regmap *regmap;
+>>  	struct clk *clk;
+>>  	u32 ceiling;
+>> +	u32 max_arr;
+>>  	bool enabled;
+>>  	struct stm32_timer_regs bak;
+>>  };
+>> @@ -185,6 +186,9 @@ static ssize_t stm32_count_ceiling_write(struct counter_device *counter,
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> +	if (ceiling > priv->max_arr)
+>> +		return -ERANGE;
+>> +
+>>  	/* TIMx_ARR register shouldn't be buffered (ARPE=0) */
+>>  	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
+>>  	regmap_write(priv->regmap, TIM_ARR, ceiling);
+>> @@ -360,6 +364,7 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+>>  	priv->regmap = ddata->regmap;
+>>  	priv->clk = ddata->clk;
+>>  	priv->ceiling = ddata->max_arr;
+>> +	priv->max_arr = ddata->max_arr;
+>>  
+>>  	priv->counter.name = dev_name(dev);
+>>  	priv->counter.parent = dev;
+>> -- 
+>> 2.7.4
+>>
