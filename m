@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8410D32AE13
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1CB32AE18
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360491AbhCBWVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        id S2360515AbhCBWV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383589AbhCBVQ2 (ORCPT
+        with ESMTP id S1383594AbhCBVRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 16:16:28 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A3AC061794
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:11:41 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id i1so5407030qvu.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:11:41 -0800 (PST)
+        Tue, 2 Mar 2021 16:17:00 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2FBC061797
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:11:44 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id a63so24065262yba.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:11:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=ha32Pb8LQarekc1l29yMATX3+MJye2BpgFbjrEa+47o=;
-        b=OnY895K/7pS8uVuh5xN1WbuUXXt1LrnLrKtSlEZafXgfD7nC0rgEpXnKR7lHwkiAJV
-         7nD/VI4XXUOZnYpWDMKM2RNjhL5F10ODPqMqtD1A1xhi4ESH69giqc3Akw1gSu3a+rzq
-         W/FL4ypFBsEuszLO2XsKMurKqWfPawdUJw6tBLTFNZp06Urso/TakpvkiTkh22Gf2ach
-         jHXUGa/QvHQRntFpJKFJUZKeAe4X7RE01AWiv/grMHoQY0o3p4taXeoi0iICipsZU/fn
-         XiVSZ5pVkWp+hBCx5PMbmfNmomEqc2vwebdVEr9Y11SlW0tjPse3q9RiAmRR9wt5fjg5
-         2PJQ==
+        bh=bb06rucpely5yW30WUY4CrrQt38vQ0aV0zDKkwTD8/8=;
+        b=ta3vio6vckCy8usZMNP/oSCED7HFMRKu14VEnPuJzFZx10YFZuqHyQbfx/DTNqGepJ
+         lBoKtjyyIu8hs3LfsddcQhQPZOmit+Bb5swEMxhdquY8EH/oFHjNM3a3spdlquDwGMbs
+         qJCh8CPv7CWEYc+1kQSlTukAnVMcR6Jqf88BLQqiO0dHzJIdngAhn2ZD91z6KpA8n023
+         v+raqioOa0bcDX2coeZ1YxKIYgqpyEha10s6q2G1tfu5ZgABSlgD6vuWV1SNKCMEuu5+
+         68FDbclPQZkyUGW0Pc7e9RkxlFhwG2rzdbjfYX5GgkePe9UBLj66QGnqGoPYQibvcUMu
+         +5Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ha32Pb8LQarekc1l29yMATX3+MJye2BpgFbjrEa+47o=;
-        b=p7JcPYGA0w3ae++8sh3o9/Tmf+Mks4fgT5zBDLZBITCCgOPP2M1Vls3Drd2veq8TaQ
-         M7A/1kNwLybWst2wnjn7IT4CYTNgymIsj/agzfpsphHq/UV3K4V4InS21cAc4dbRY4Bd
-         tUBnH3w43qRk5vKJxTtAsGgabjJ/Ir+F7F8e/HrnWM/CnpO6cqyidfKsqU8d0EMHNz91
-         uiEF6tpPxbIkxpMi2qcdS0WLKGekC9OkPt9ozj2RAxEAJ7HUd6QmRP2qT0DzeLBMj4Q1
-         oH4z3Ej+IrkVkWseRcqv+w8TYFcdrpDYFbf7VEn/c/jOHmTVQwmf0BNTR+ud3caWo5Ru
-         xkIQ==
-X-Gm-Message-State: AOAM533rqgQWicm8qsOYYOpFTIvw2kHdk8hplBqZx98MTqwl4iWIO3HR
-        elb3PBsIEQxB6+ljkzQRfoLid20cXKlM1IY=
-X-Google-Smtp-Source: ABdhPJzTbMYKKSz5Mm8hHKRSrnzQ9BCNkd58dEhtIqC24T8TOWMdFHTwHLcwba8GIZWePxdw2QukihT9qJ4njm8=
+        bh=bb06rucpely5yW30WUY4CrrQt38vQ0aV0zDKkwTD8/8=;
+        b=Fd1BzB41Ga9vK7KQhsfGRsJ0Jrgoohj/Mf+0VvIzTrhkdM4Ro6CU4Yj783VuTIN+VJ
+         VoEtCxfR256CgF8xoVeJPJ8LLCly+3qT4BS2BuD1vfVP9JQrGBPqJjX36zd2jMJ+JlE/
+         55O2bpOibawlSljuoQaDPkaFhRMgRuKv3gXIgiH5NioGJimpxc+ZzIGkJ9A/lWDuvagP
+         veRftq3TU9nlQuanRk9igb5d/DVYg5DYM8Bf2z9RGX3ebB6Kh5Tw3H72rFQvN9uGlFk9
+         S/I3YB0i1QC+ZFPKqj0tDxnPcfYnfe27ikoxZaXcz2Wmrhdefe/W9wH4egCIuzeyXfmF
+         NFeQ==
+X-Gm-Message-State: AOAM533+HQom77VWAhVpayZMwgGWJFerCAZrQbQUf4hRvHAisfdgv70X
+        rZ+ve/VFsHY58B0JwV1f1iRYXgQ4h1pVVTs=
+X-Google-Smtp-Source: ABdhPJwy8Cvxbp0Pt1ShiBQOEjv9X37hC4QysFyc+CjEQ8Ydl8Jq+SSVnO/g29jKzcF1aESQNUnIsBe3LEDIzj8=
 Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:a1ad:fce1:8a40:59b6])
- (user=saravanak job=sendgmr) by 2002:a05:6214:523:: with SMTP id
- x3mr21274886qvw.27.1614719500715; Tue, 02 Mar 2021 13:11:40 -0800 (PST)
-Date:   Tue,  2 Mar 2021 13:11:30 -0800
+ (user=saravanak job=sendgmr) by 2002:a25:1043:: with SMTP id
+ 64mr33913158ybq.141.1614719503619; Tue, 02 Mar 2021 13:11:43 -0800 (PST)
+Date:   Tue,  2 Mar 2021 13:11:31 -0800
 In-Reply-To: <20210302211133.2244281-1-saravanak@google.com>
-Message-Id: <20210302211133.2244281-2-saravanak@google.com>
+Message-Id: <20210302211133.2244281-3-saravanak@google.com>
 Mime-Version: 1.0
 References: <20210302211133.2244281-1-saravanak@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v1 1/3] driver core: Avoid pointless deferred probe attempts
+Subject: [PATCH v1 2/3] driver core: Update device link status properly for device_bind_driver()
 From:   Saravana Kannan <saravanak@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>
@@ -68,77 +68,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no point in adding a device to the deferred probe list if we
-know for sure that it doesn't have a matching driver. So, check if a
-device can match with a driver before adding it to the deferred probe
-list.
+Device link status was not getting updated correctly when
+device_bind_driver() is called on a device. This causes a warning[1].
+Fix this by updating device links that can be updated and dropping
+device links that can't be updated to a sensible state.
 
+[1] - https://lore.kernel.org/lkml/56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com/
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/base/dd.c      | 6 ++++++
- include/linux/device.h | 4 ++++
- 2 files changed, 10 insertions(+)
+ drivers/base/base.h |  1 +
+ drivers/base/core.c | 35 +++++++++++++++++++++++++++++++++++
+ drivers/base/dd.c   |  4 +++-
+ 3 files changed, 39 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index 52b3d7b75c27..1b44ed588f66 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -185,6 +185,7 @@ extern int device_links_read_lock(void);
+ extern void device_links_read_unlock(int idx);
+ extern int device_links_read_lock_held(void);
+ extern int device_links_check_suppliers(struct device *dev);
++extern void device_links_force_bind(struct device *dev);
+ extern void device_links_driver_bound(struct device *dev);
+ extern void device_links_driver_cleanup(struct device *dev);
+ extern void device_links_no_driver(struct device *dev);
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index f29839382f81..45c75cc96fdc 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1153,6 +1153,41 @@ static ssize_t waiting_for_supplier_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(waiting_for_supplier);
+ 
++/**
++ * device_links_force_bind - Prepares device to be force bound
++ * @dev: Consumer device.
++ *
++ * device_bind_driver() force binds a device to a driver without calling any
++ * driver probe functions. So the consumer really isn't going to wait for any
++ * supplier before it's bound to the driver. We still want the device link
++ * states to be sensible when this happens.
++ *
++ * In preparation for device_bind_driver(), this function goes through each
++ * supplier device links and checks if the supplier is bound. If it is, then
++ * the device link status is set to CONSUMER_PROBE. Otherwise, the device link
++ * is dropped. Links without the DL_FLAG_MANAGED flag set are ignored.
++ */
++void device_links_force_bind(struct device *dev)
++{
++	struct device_link *link, *ln;
++
++	device_links_write_lock();
++
++	list_for_each_entry_safe(link, ln, &dev->links.suppliers, c_node) {
++		if (!(link->flags & DL_FLAG_MANAGED))
++			continue;
++
++		if (link->status != DL_STATE_AVAILABLE) {
++			device_link_drop_managed(link);
++			continue;
++		}
++		WRITE_ONCE(link->status, DL_STATE_CONSUMER_PROBE);
++	}
++	dev->links.status = DL_DEV_PROBING;
++
++	device_links_write_unlock();
++}
++
+ /**
+  * device_links_driver_bound - Update device links after probing its driver.
+  * @dev: Device to update the links for.
 diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 9179825ff646..f18963f42e21 100644
+index f18963f42e21..eb201c6d5a6a 100644
 --- a/drivers/base/dd.c
 +++ b/drivers/base/dd.c
-@@ -123,6 +123,9 @@ static DECLARE_WORK(deferred_probe_work, deferred_probe_work_func);
+@@ -460,8 +460,10 @@ int device_bind_driver(struct device *dev)
+ 	int ret;
  
- void driver_deferred_probe_add(struct device *dev)
- {
-+	if (!dev->can_match)
-+		return;
-+
- 	mutex_lock(&deferred_probe_mutex);
- 	if (list_empty(&dev->p->deferred_probe)) {
- 		dev_dbg(dev, "Added to deferred list\n");
-@@ -726,6 +729,7 @@ static int driver_probe_device(struct device_driver *drv, struct device *dev)
- 	if (!device_is_registered(dev))
- 		return -ENODEV;
- 
-+	dev->can_match = true;
- 	pr_debug("bus: '%s': %s: matched device %s with driver %s\n",
- 		 drv->bus->name, __func__, dev_name(dev), drv->name);
- 
-@@ -829,6 +833,7 @@ static int __device_attach_driver(struct device_driver *drv, void *_data)
- 		return 0;
- 	} else if (ret == -EPROBE_DEFER) {
- 		dev_dbg(dev, "Device match requests probe deferral\n");
-+		dev->can_match = true;
- 		driver_deferred_probe_add(dev);
- 	} else if (ret < 0) {
- 		dev_dbg(dev, "Bus failed to match device: %d\n", ret);
-@@ -1064,6 +1069,7 @@ static int __driver_attach(struct device *dev, void *data)
- 		return 0;
- 	} else if (ret == -EPROBE_DEFER) {
- 		dev_dbg(dev, "Device match requests probe deferral\n");
-+		dev->can_match = true;
- 		driver_deferred_probe_add(dev);
- 	} else if (ret < 0) {
- 		dev_dbg(dev, "Bus failed to match device: %d\n", ret);
-diff --git a/include/linux/device.h b/include/linux/device.h
-index ba660731bd25..569932d282c0 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -439,6 +439,9 @@ struct dev_links_info {
-  * @state_synced: The hardware state of this device has been synced to match
-  *		  the software state of this device by calling the driver/bus
-  *		  sync_state() callback.
-+ * @can_match:	The device has matched with a driver at least once or it is in
-+ *		a bus (like AMBA) which can't check for matching drivers until
-+ *		other devices probe successfully.
-  * @dma_coherent: this particular device is dma coherent, even if the
-  *		architecture supports non-coherent devices.
-  * @dma_ops_bypass: If set to %true then the dma_ops are bypassed for the
-@@ -545,6 +548,7 @@ struct device {
- 	bool			offline:1;
- 	bool			of_node_reused:1;
- 	bool			state_synced:1;
-+	bool			can_match:1;
- #if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
-     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
-     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
+ 	ret = driver_sysfs_add(dev);
+-	if (!ret)
++	if (!ret) {
++		device_links_force_bind(dev);
+ 		driver_bound(dev);
++	}
+ 	else if (dev->bus)
+ 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
+ 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
