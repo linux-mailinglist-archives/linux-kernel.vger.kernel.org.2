@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E1F32A889
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBCA32A88B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347292AbhCBRor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:44:47 -0500
-Received: from mga07.intel.com ([134.134.136.100]:1261 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448715AbhCBPNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:13:49 -0500
-IronPort-SDR: keaA+vR6tq2yNCGKefNJV7TSsbN76CVO4JTZvdrNCYafsBK1t0jWmaOOls3frL2kRe1n5/BDVN
- LOfxl5Qag5eA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="250887710"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="250887710"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:09:29 -0800
-IronPort-SDR: lVfOBtI0XRf1nLtDOnmSd7UYXEkI7rAbEV5bvFOlqoHBnNaeMy1WpSb5HlnWqChtKd/RaN6wOL
- VBgAG2Ua0NMA==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="506359838"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:09:27 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lH6eK-009PjA-2I; Tue, 02 Mar 2021 17:09:24 +0200
-Date:   Tue, 2 Mar 2021 17:09:24 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1 1/3] gpiolib: acpi: Add
- ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk
-Message-ID: <YD5VJMDC1TmIN/T8@smile.fi.intel.com>
-References: <20210225163320.71267-1-andriy.shevchenko@linux.intel.com>
- <20210225163320.71267-2-andriy.shevchenko@linux.intel.com>
- <CACRpkdZj4TqOoJmfDhL1MuZCT9quz+5Gj8C6ckZ1i6cYCq9SOA@mail.gmail.com>
+        id S1351756AbhCBRtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:49:10 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50346 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1574196AbhCBPOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:14:10 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6A3241C0B8E; Tue,  2 Mar 2021 16:13:22 +0100 (CET)
+Date:   Tue, 2 Mar 2021 16:13:21 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/247] 4.19.178-rc3 review
+Message-ID: <20210302151321.GA16953@duo.ucw.cz>
+References: <20210302122300.309814713@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
 Content-Disposition: inline
-In-Reply-To: <CACRpkdZj4TqOoJmfDhL1MuZCT9quz+5Gj8C6ckZ1i6cYCq9SOA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210302122300.309814713@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 03:48:43PM +0100, Linus Walleij wrote:
-> On Thu, Feb 25, 2021 at 5:33 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > On some systems the ACPI tables has wrong pin number and instead of
-> > having a relative one it provides an absolute one in the global GPIO
-> > number space.
-> >
-> > Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk to cope with such cases.
-> >
-> > Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
-> > Depends-on: 0ea683931adb ("gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip")
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> OH THE HORROR!
-> However, we discussed it before. It is as it is.
 
-Unfortunately :-( (And recently it seems MS does something really "creative" on
-ARM ACPI platform)
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> It's the right place to fix the problem, so:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Hi!
 
-I am waiting for Mika, but if he keeps silent let's say to the end of the day,
-I will submit it as is to the v5.12-rcX fixes.
+> This is the start of the stable review cycle for the 4.19.178 release.
+> There are 247 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Thu, 04 Mar 2021 12:22:09 +0000.
+> Anything received after that time might be too late.
 
-Thanks!
+CIP testing did not find any problems here (failures are not kernel
+related). Compile problem we saw in -rc2 is gone.
 
--- 
-With Best Regards,
-Andy Shevchenko
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
 
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
+Best regards,
+                                                                Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--yrj/dFKFPuw6o+aM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYD5WEQAKCRAw5/Bqldv6
+8qJWAJ487NYijpcf4r0mzGaBPzaaYvB37gCfZKiv2uTaQsjXqMzxWop65gDnUXA=
+=cWKN
+-----END PGP SIGNATURE-----
+
+--yrj/dFKFPuw6o+aM--
