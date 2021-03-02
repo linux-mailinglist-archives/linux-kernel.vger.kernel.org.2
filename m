@@ -2,171 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C777F32AD71
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9DF32AD80
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837659AbhCBV6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:58:13 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:40345 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1581608AbhCBS7r (ORCPT
+        id S1837799AbhCBV7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1581634AbhCBTBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:59:47 -0500
-Received: by mail-io1-f72.google.com with SMTP id x26so16833489ior.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:59:31 -0800 (PST)
+        Tue, 2 Mar 2021 14:01:16 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E251C0617AA;
+        Tue,  2 Mar 2021 11:00:14 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id b15so2554347pjb.0;
+        Tue, 02 Mar 2021 11:00:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:newsgroups:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pm2aM6FEgY+3tAqdPcwvE3RwWA9gxzo2YpOjuF17cv8=;
+        b=AWkypi6kEjBrXnQanyv1xj1pAvw7NlbLFHxY6hoohSjAaPeKGWIFd3M81Sag8pdaoP
+         +JPVudjBLkVHVlG+41WBpr1mAUV6lkiBp7iT3t6w4tww08wHWhNyK64lATI/D7n9+vJw
+         bnF2U78ssFQ9aCHREawwYrs9s8u4debDn/V6z+uFBNNkupCO1Hyionu886RnqIlACM49
+         DN41Zkwo7XpblLXpV4IBdJ9J7wKMHFhD8VZgYvnd1y9hpQnUjLypc/VnLVavowuLW0J0
+         BnpjwTeHpv3CSASet/dblY2H7nEeeoEH9T2z8v6SohRwU1CueqpUGJmvoOSpmhwjXBW7
+         9qOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=aXStB7B09qi9E7YwxmPgSkz9nQg+89gIu3eYJDouYcI=;
-        b=IOYPobB91dd4pO6JJd04WX+bSOikIXIOys3WkCFg/ngo3/UnpssBHwlki1UI0O33Kl
-         +jKAyyTBvk1O/2mfhGNrsYvnrUDhbuq78zyCRBCsU5WC3wXhMZsvEyW+uHMII7J7giB2
-         YqAA9S3L7KhOOnphSo3o9nb93G0F+94JKZ7nA/viMm9OAhKO9qlg4cVgdZZ08QjUUr83
-         cUukI7V5tWoUg+O6WmZsFoBKbrkfUueZW+1aai30tFwsCACvv3IfrTkxjQEjJ1atDoHY
-         gBTiORZ0qrdkcA8lE+8gI9dZTFXm9LZPJeLsqWf3My4/dsSePJiyc4Yu3pj8AP+/IEQO
-         pWhw==
-X-Gm-Message-State: AOAM530mXqj9DXnC7WQlCxO6TOlzq2pMcQ3RgcaQs9YFFhiH75RcVxWY
-        7Gqi4mjA7QOdCec9DZRJQcEVPXcLmnEAwU4T5/g0nObnoPHX
-X-Google-Smtp-Source: ABdhPJw5P0YOC1MnJxbOWefbMZcH/6MQQV6rrVC2OY+iwxu2F4lsCpEJSBmp5dCCuJMs4qe11rZjIRq4emK2sWH999jwxRtrrUMW
+        h=x-gm-message-state:sender:subject:to:cc:newsgroups:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Pm2aM6FEgY+3tAqdPcwvE3RwWA9gxzo2YpOjuF17cv8=;
+        b=HbvzMIqeSg2ac87sgyjqDrpX+rG63Qc2e2SwTwVRa+SgNT5JjG3J9tn5pV5dJrypp7
+         KrHgtyN729Ou9UEPb+77c8IC3D/O1eo2Dco50CqhGAuunfKwGSmy1E9HM0MLti2E1fhv
+         /74w5fW47fc8HH/VJZ/F/SbqwZTG+reJrHyDJkLr1iwyxx1OVUhm7r5eCRWIvu7Qi8P3
+         3cPP3gQyDc6Xp//MAXNB0prC8J0LH9tffZDjGljvAmxWl51W1kWF0DY0P32l2qrf9LAD
+         e3CLcWlxDlrPR7sCUiUoh+3L+rXdLrYCBdTTum2LVItTaxnrYv1ol+4JacT9gnYC6DRa
+         fawA==
+X-Gm-Message-State: AOAM532GMgUYy9h15Q6jrcMJ2TdKbGdyxQILmKZoQ9MP7DuIaQ9qN3BZ
+        I7ReGFQIkcfmbNoNtrFp8Kw=
+X-Google-Smtp-Source: ABdhPJw6tjn8/TxNf1rBIHrhfEfbfG5tHMVi2iYMOvI69cprxwH+TD8cO83WIZRUx4dqD3JFR7WXMg==
+X-Received: by 2002:a17:90a:a106:: with SMTP id s6mr4897313pjp.146.1614711613646;
+        Tue, 02 Mar 2021 11:00:13 -0800 (PST)
+Received: from [192.168.50.50] (c-24-4-73-83.hsd1.ca.comcast.net. [24.4.73.83])
+        by smtp.gmail.com with ESMTPSA id o5sm4146300pjq.57.2021.03.02.11.00.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 11:00:13 -0800 (PST)
+Sender: Vineet Gupta <vineetg76@gmail.com>
+Subject: Re: [PATCH 10/11] pragma once: delete few backslashes
+To:     Alexey Dobriyan <adobriyan@gmail.com>,
+        torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-snps-arc@lists.infradead.org, jiri@nvidia.com,
+        idosch@nvidia.com, netdev@vger.kernel.org, Jason@zx2c4.com,
+        mchehab@kernel.org
+Newsgroups: gmane.linux.network,gmane.linux.kernel,gmane.linux.kernel.arc
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+ <YDvNSg9OPv7JqfRS@localhost.localdomain>
+From:   Vineet Gupta <vgupta@synopsys.com>
+Message-ID: <5783abae-c7af-0e82-8f28-09f30ff67904@synopsys.com>
+Date:   Tue, 2 Mar 2021 11:00:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3314:: with SMTP id b20mr19581774ioz.78.1614711545606;
- Tue, 02 Mar 2021 10:59:05 -0800 (PST)
-Date:   Tue, 02 Mar 2021 10:59:05 -0800
-In-Reply-To: <586d357d-8c4c-8875-3a1c-0599a0a64da0@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000017349305bc9254f4@google.com>
-Subject: Re: possible deadlock in io_poll_double_wake (2)
-From:   syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YDvNSg9OPv7JqfRS@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2/28/21 9:05 AM, Alexey Dobriyan wrote:
+>  From 251ca5673886b5bb0a42004944290b9d2b267a4a Mon Sep 17 00:00:00 2001
+> From: Alexey Dobriyan <adobriyan@gmail.com>
+> Date: Fri, 19 Feb 2021 13:37:24 +0300
+> Subject: [PATCH 10/11] pragma once: delete few backslashes
+> 
+> Some macros contain one backslash too many and end up being the last
+> macro in a header file. When #pragma once conversion script truncates
+> the last #endif and whitespace before it, such backslash triggers
+> a warning about "OMG file ends up in a backslash-newline".
+> 
+> Needless to say I don't want to handle another case in my script,
+> so delete useless backslashes instead.
+> 
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-possible deadlock in io_poll_double_wake
+Acked-by: Vineet Gupta <vgupta@synopsys.com>   #arch/arc bits
 
-============================================
-WARNING: possible recursive locking detected
-5.12.0-rc1-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.4/10454 is trying to acquire lock:
-ffff8880343cc130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff8880343cc130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4925
+Thx,
+-Vineet
 
-but task is already holding lock:
-ffff888034e3b130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&runtime->sleep);
-  lock(&runtime->sleep);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-4 locks held by syz-executor.4/10454:
- #0: ffff888018cc8128 (&ctx->uring_lock){+.+.}-{3:3}, at: __do_sys_io_uring_enter+0x1146/0x2200 fs/io_uring.c:9113
- #1: ffff888021692440 (&runtime->oss.params_lock){+.+.}-{3:3}, at: snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1087 [inline]
- #1: ffff888021692440 (&runtime->oss.params_lock){+.+.}-{3:3}, at: snd_pcm_oss_make_ready+0xc7/0x1b0 sound/core/oss/pcm_oss.c:1149
- #2: ffff888020273908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
- #3: ffff888034e3b130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
-
-stack backtrace:
-CPU: 0 PID: 10454 Comm: syz-executor.4 Not tainted 5.12.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
- check_deadlock kernel/locking/lockdep.c:2872 [inline]
- validate_chain kernel/locking/lockdep.c:3661 [inline]
- __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
- lock_acquire kernel/locking/lockdep.c:5510 [inline]
- lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4925
- __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
- __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
- snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
- snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
- snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
- dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
- invoke_softirq kernel/softirq.c:221 [inline]
- __irq_exit_rcu kernel/softirq.c:422 [inline]
- irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-RIP: 0010:unwind_next_frame+0xde0/0x2000 arch/x86/kernel/unwind_orc.c:611
-Code: 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 83 0f 00 00 41 3b 2f 0f 84 c1 05 00 00 <bf> 01 00 00 00 e8 16 95 1b 00 b8 01 00 00 00 65 8b 15 ca a8 cf 7e
-RSP: 0018:ffffc9000b447168 EFLAGS: 00000287
-RAX: ffffc9000b448001 RBX: 1ffff92001688e35 RCX: 1ffff92001688e01
-RDX: ffffc9000b447ae8 RSI: ffffc9000b447ab0 RDI: ffffc9000b447250
-RBP: ffffc9000b447ae0 R08: ffffffff8dac0810 R09: 0000000000000001
-R10: 0000000000084087 R11: 0000000000000001 R12: ffffc9000b440000
-R13: ffffc9000b447275 R14: ffffc9000b447290 R15: ffffc9000b447240
- arch_stack_walk+0x7d/0xe0 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
- kasan_slab_free include/linux/kasan.h:199 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x72/0x1b0 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7b0 mm/slub.c:4213
- snd_pcm_hw_param_near.constprop.0+0x7b0/0x8f0 sound/core/oss/pcm_oss.c:438
- snd_pcm_oss_change_params_locked+0x18c6/0x39a0 sound/core/oss/pcm_oss.c:936
- snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1090 [inline]
- snd_pcm_oss_make_ready+0xe7/0x1b0 sound/core/oss/pcm_oss.c:1149
- snd_pcm_oss_set_trigger.isra.0+0x30f/0x6e0 sound/core/oss/pcm_oss.c:2057
- snd_pcm_oss_poll+0x661/0xb10 sound/core/oss/pcm_oss.c:2841
- vfs_poll include/linux/poll.h:90 [inline]
- __io_arm_poll_handler+0x354/0xa20 fs/io_uring.c:5073
- io_arm_poll_handler fs/io_uring.c:5142 [inline]
- __io_queue_sqe+0x6ef/0xc40 fs/io_uring.c:6213
- io_queue_sqe+0x60d/0xf60 fs/io_uring.c:6259
- io_submit_sqe fs/io_uring.c:6423 [inline]
- io_submit_sqes+0x519a/0x6320 fs/io_uring.c:6537
- __do_sys_io_uring_enter+0x1152/0x2200 fs/io_uring.c:9114
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465ef9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f818e00e188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 0000000000465ef9
-RDX: 0000000000000000 RSI: 0000000000002039 RDI: 0000000000000004
-RBP: 00000000004bcd1c R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
-R13: 0000000000a9fb1f R14: 00007f818e00e300 R15: 0000000000022000
-
-
-Tested on:
-
-commit:         c9387501 sound: name fiddling
-git tree:       git://git.kernel.dk/linux-block syzbot-test
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a51856d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa0e4e0c3e0cf6e0
-dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
-compiler:       
+> ---
+>   arch/arc/include/asm/cacheflush.h          | 2 +-
+>   drivers/net/ethernet/mellanox/mlxsw/item.h | 2 +-
+>   include/linux/once.h                       | 2 +-
+>   include/media/drv-intf/exynos-fimc.h       | 2 +-
+>   4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arc/include/asm/cacheflush.h b/arch/arc/include/asm/cacheflush.h
+> index e201b4b1655a..46704c341b17 100644
+> --- a/arch/arc/include/asm/cacheflush.h
+> +++ b/arch/arc/include/asm/cacheflush.h
+> @@ -112,6 +112,6 @@ do {									\
+>   } while (0)
+>   
+>   #define copy_from_user_page(vma, page, vaddr, dst, src, len)		\
+> -	memcpy(dst, src, len);						\
+> +	memcpy(dst, src, len)
+>   
+>   #endif
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/item.h b/drivers/net/ethernet/mellanox/mlxsw/item.h
+> index e92cadc98128..cc0133401dd1 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/item.h
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/item.h
+> @@ -504,6 +504,6 @@ mlxsw_##_type##_##_cname##_##_iname##_set(char *buf, u16 index, u8 val)		\
+>   	return __mlxsw_item_bit_array_set(buf,					\
+>   					  &__ITEM_NAME(_type, _cname, _iname),	\
+>   					  index, val);				\
+> -}										\
+> +}
+>   
+>   #endif
+> diff --git a/include/linux/once.h b/include/linux/once.h
+> index 9225ee6d96c7..0af450ff94a5 100644
+> --- a/include/linux/once.h
+> +++ b/include/linux/once.h
+> @@ -55,6 +55,6 @@ void __do_once_done(bool *done, struct static_key_true *once_key,
+>   #define get_random_once(buf, nbytes)					     \
+>   	DO_ONCE(get_random_bytes, (buf), (nbytes))
+>   #define get_random_once_wait(buf, nbytes)                                    \
+> -	DO_ONCE(get_random_bytes_wait, (buf), (nbytes))                      \
+> +	DO_ONCE(get_random_bytes_wait, (buf), (nbytes))
+>   
+>   #endif /* _LINUX_ONCE_H */
+> diff --git a/include/media/drv-intf/exynos-fimc.h b/include/media/drv-intf/exynos-fimc.h
+> index 6b9ef631d6bb..6c5fbdacf4b5 100644
+> --- a/include/media/drv-intf/exynos-fimc.h
+> +++ b/include/media/drv-intf/exynos-fimc.h
+> @@ -152,6 +152,6 @@ static inline struct exynos_video_entity *vdev_to_exynos_video_entity(
+>   #define fimc_pipeline_call(ent, op, args...)				  \
+>   	((!(ent) || !(ent)->pipe) ? -ENOENT : \
+>   	(((ent)->pipe->ops && (ent)->pipe->ops->op) ? \
+> -	(ent)->pipe->ops->op(((ent)->pipe), ##args) : -ENOIOCTLCMD))	  \
+> +	(ent)->pipe->ops->op(((ent)->pipe), ##args) : -ENOIOCTLCMD))
+>   
+>   #endif /* S5P_FIMC_H_ */
+> 
 
