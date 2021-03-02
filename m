@@ -2,163 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCF432A694
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E6232A697
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578579AbhCBPZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
+        id S1578653AbhCBP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:26:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351021AbhCBNCk (ORCPT
+        with ESMTP id S1351036AbhCBNE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:02:40 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8490DC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:01:27 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id f12so15970478wrx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:01:27 -0800 (PST)
+        Tue, 2 Mar 2021 08:04:57 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8235BC061221;
+        Tue,  2 Mar 2021 05:02:33 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id hs11so35089278ejc.1;
+        Tue, 02 Mar 2021 05:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P88OLgbTkZUMP2F6RxCTDa3UqTL0DvJ/H4h2928AGS0=;
-        b=cWjTZIrPmgrzCItY3GJ2Ad5+F80d27tfXG3ciPRPzu5yFPVx0DuMOJ37cHpyYZ6hJY
-         bDEVAFAwTwf7RBXKlXP9N39xkM0HBhEDsLYqDtJHJG2P1tVspg4k6Ae4+Pbv5B6Inz5D
-         0Qzy7aC3jLZtaOhaanSYazYjwRPcpLkbE33gFT6FhRPqhKsIgIeFzEawFp8gn5B775DU
-         jWnUFkFXK8E1HGlAV+DVB4yXG7JKf0PdINk5QN1sBDFRrBmvtg69qPBc0vdxqeeh19IQ
-         cRKtfemz2MsMUmQ0cueUIaghph4L+iiOg/wlhM2WPPOoEeWqh45c0GM6IK+McsGFomTA
-         2Psg==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=03fMenL1JcVf3REoLCDjJM5wD7/kclW1skBkKJBLspM=;
+        b=qyQ8NZko5e0fbSww/SDJz7zYoihVR2YZ+NQ0eET1ITBoQ2gDtVgbSTlwxTR4co/1mM
+         rC/nNLykdjjbNcQdwqexR8M8GaZV5bcB5E7yuW3gMmGBoMqFvUMgqswWjt12MJNmog4L
+         2+oeC5yXbdnN5P6ttJLvs1zZZrR393kIDwoejSfcS6v+jFL930nP+30Ib8J3UIe2ZJGs
+         HWSJl1T/H5c+t7QiBbMPqZ0tgVDmf7kMwtm5Hlibd5qe1SJgZZzHvqKA8IQL910/NsFw
+         gPU7FNnVthipk5mGshnygFQ+dj28yCjhUsIW5Bm5pr+eE1m9Gfp9Cr7up60f5nT/j67F
+         NCAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P88OLgbTkZUMP2F6RxCTDa3UqTL0DvJ/H4h2928AGS0=;
-        b=FXBdmEpJRXxNK08eOsT7kVD8GCSvvhv/mb8grGrSbiC86X6nyDjkHbsuvdak1iHEne
-         y/Xpj20pRxwX0vGw8DY8iOOwGFLCNdoaL4Fvrrj2pvzB2f0wIpcRHBFo38RlStlp5Ry5
-         dcVptAGe1vwenYlhJ00eRf/2g7N04RotYPHi+7PB3XjzpHbJw1kWJPirozbP3bC8gZvF
-         j/1wl1+wk1LM+WGTYtbTMoXghK0fxpocIAZ5WRCZLCoNhpThkqYR1/Q8HoZpVodHCeXl
-         FbVUIDxyald0OqIBNO5729N7mxPUsC3HrTIQ2KPRc8wIUYC0PFvrOUbkviK731a0S00h
-         QSsA==
-X-Gm-Message-State: AOAM530jAruZx/196cvOjOUczd/SwzsQUmNT4lxA2tmIheuCf7AZTCdQ
-        zxWuhL6OXQPMNDUfWGTOWZY56A==
-X-Google-Smtp-Source: ABdhPJzcyra0YjUAPO03uOeDAoSsXQjMzgxxaxB1srNOV9k4reCns8wKKgldcU0WpK4ycDHxpC0Kgw==
-X-Received: by 2002:adf:eec5:: with SMTP id a5mr6833415wrp.303.1614690086136;
-        Tue, 02 Mar 2021 05:01:26 -0800 (PST)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
-        by smtp.googlemail.com with ESMTPSA id 91sm5782778wrl.20.2021.03.02.05.01.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 05:01:25 -0800 (PST)
-Subject: Re: [PATCH v2 07/10] clocksource/drivers/hyper-v: Handle vDSO
- differences inline
-To:     Michael Kelley <mikelley@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
- <1614561332-2523-8-git-send-email-mikelley@microsoft.com>
- <42dc252a-b09a-afeb-6792-9b77669c16e9@linaro.org>
- <MWHPR21MB15930DD833E49415610C021DD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f09da965-aeda-7edf-722c-dbc9d7daab38@linaro.org>
-Date:   Tue, 2 Mar 2021 14:01:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB15930DD833E49415610C021DD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=03fMenL1JcVf3REoLCDjJM5wD7/kclW1skBkKJBLspM=;
+        b=jK8iOGkSVgAA14+ozisOSoR3qTDYtowA6rpoQU7StXnE+v1S48sSHipIIvprmPVues
+         A3RAFrOsJ7uduq+IvE7sx4J1VXU4G6jgL6Dm0lQkyzPIG843wh6CRdyMdVrVPwEtuWgL
+         gCDEUGhhnLkLBfFxOurlnZVhDuHjwM7AGl6HVqNtx+jREaZAzmCYQzJEZHVE7yunjCD9
+         FVuoRZ3GJcnu81/Lh+HyaoakUrqMUSJWsmw0yu+lxkSevhXMcS4kBSVRb/9Y+racMYOH
+         gwcKmiageO0f2CwoNGl75GS2TWg1tEUBrH8EwcAylCj0Ou+3FytF+WOavWoG8svfkkPP
+         4uVg==
+X-Gm-Message-State: AOAM532wIHuNmFakz2JB86UVVvox+zXvb/+Xgj/BRM/Cbdqf3YbZfBiO
+        RRBV1X9pdEnS+X1ssdkTjr0=
+X-Google-Smtp-Source: ABdhPJz9gdq9wuFle+WX2DcfIqDowLQm8M9JTLewXzkqXffSR3xEchGQoJyEK8JD36+iUD+rTm2/2w==
+X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr20782239ejc.408.1614690152275;
+        Tue, 02 Mar 2021 05:02:32 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id l18sm9486088ejk.86.2021.03.02.05.02.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 02 Mar 2021 05:02:32 -0800 (PST)
+Message-ID: <f5cb5a04dd25984c4ddf7713ce0ffbbbbb969ea4.camel@gmail.com>
+Subject: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Tue, 02 Mar 2021 14:02:29 +0100
+In-Reply-To: <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
+References: <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
+         <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p5>
+         <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/2021 02:29, Michael Kelley wrote:
-> From: Daniel Lezcano <daniel.lezcano@linaro.org> Sent: Monday, March 1, 2021 4:22 AM
->>
->> On 01/03/2021 02:15, Michael Kelley wrote:
->>> While the driver for the Hyper-V Reference TSC and STIMERs is architecture
->>> neutral, vDSO is implemented for x86/x64, but not for ARM64.  Current code
->>> calls into utility functions under arch/x86 (and coming, under arch/arm64)
->>> to handle the difference.
->>>
->>> Change this approach to handle the difference inline based on whether
->>> VDSO_CLOCK_MODE_HVCLOCK is present.  The new approach removes code under
->>> arch/* since the difference is tied more to the specifics of the Linux
->>> implementation than to the architecture.
->>>
->>> No functional change.
->>
->> A suggestion below
->>
->>
->>> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
->>> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
->>> ---
->>>  arch/x86/include/asm/mshyperv.h    |  4 ----
->>>  drivers/clocksource/hyperv_timer.c | 10 ++++++++--
->>>  2 files changed, 8 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
->>> index c73c127..5e5e08aa 100644
->>> --- a/drivers/clocksource/hyperv_timer.c
->>> +++ b/drivers/clocksource/hyperv_timer.c
->>> @@ -372,7 +372,9 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
->>>
->>>  static int hv_cs_enable(struct clocksource *cs)
->>
->> static __maybe_unused int hv_cs_enable(struct clocksource *cs)
->>
->>>  {
->>> -	hv_enable_vdso_clocksource();
->>> +#ifdef VDSO_CLOCKMODE_HVCLOCK
->>> +	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
->>> +#endif
->>>  	return 0;
->>>  }
->>>
->>> @@ -385,6 +387,11 @@ static int hv_cs_enable(struct clocksource *cs)
->>>  	.suspend= suspend_hv_clock_tsc,
->>>  	.resume	= resume_hv_clock_tsc,
->>>  	.enable = hv_cs_enable,
->>> +#ifdef VDSO_CLOCKMODE_HVCLOCK
->>> +	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
->>> +#else
->>> +	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
->>> +#endif
->>
->> #ifdef VDSO_CLOCKMODE_HVCLOCK
->> 	.enable = hv_cs_enable,
->> 	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
->> #else
->> 	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
->> #endif
->>
+On Fri, 2021-02-26 at 16:35 +0900, Daejun Park wrote:
 > 
-> Is there any particular benefit (that I might not be recognizing)
-> to having the .enable function be NULL vs. a function that
-> does nothing?  I can see the handful of places where the
-> .enable function is invoked, and there doesn't seem to be
-> much difference.
 > 
-> In any case, I have no problem with making the change in
-> a v3 of the patch set.
+>  static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
+>  				  struct ufshpb_region *rgn)
+>  {
+> @@ -1209,6 +1579,16 @@ static void ufshpb_lu_parameter_init(struct
+> ufs_hba *hba,
+>  	u32 entries_per_rgn;
+>  	u64 rgn_mem_size, tmp;
+>  
+> +	/* for pre_req */
+> +	if (hpb_dev_info->max_hpb_single_cmd)
+> +		hpb->pre_req_min_tr_len = hpb_dev_info-
+> >max_hpb_single_cmd;
+> +	else
+> +		hpb->pre_req_min_tr_len = HPB_MULTI_CHUNK_LOW;
 
-It is just coding style, it allows to remove a #ifdef in the code.
+
+Here is not correct. according to Spec:
+
+The size is calculated as ( bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD +1 )*4KB.
+00h: 4KB
+01h: 8KB
+02h: 12KB
+03h: 16KB
+...
+FEh: 1020KB
+FFh: 1024KB
+
+so, here if hpb_dev_info->max_hpb_single_cmd is 0x00, means 4KB, not
+36KB.
 
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> +	hpb->pre_req_max_tr_len = max(HPB_MULTI_CHUNK_HIGH,
+> +				      hpb->pre_req_min_tr_len);
+> +
+> 
+>  out:
+>  	/* All LUs are initialized */
+>  	if (atomic_dec_and_test(&hba->ufshpb_dev.slave_conf_cnt))
+> @@ -1812,8 +2307,9 @@ void ufshpb_get_geo_info(struct ufs_hba *hba,
+> u8 *geo_buf)
+>  void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
+>  {
+>  	struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
+> -	int version;
+> +	int version, ret;
+>  	u8 hpb_mode;
+> +	u32 max_hpb_sigle_cmd = 0;
+>  
+>  	hpb_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
+>  	if (hpb_mode == HPB_HOST_CONTROL) {
+> @@ -1824,13 +2320,27 @@ void ufshpb_get_dev_info(struct ufs_hba *hba,
+> u8 *desc_buf)
+>  	}
+>  
+>  	version = get_unaligned_be16(desc_buf +
+> DEVICE_DESC_PARAM_HPB_VER);
+> -	if (version != HPB_SUPPORT_VERSION) {
+> +	if ((version != HPB_SUPPORT_VERSION) &&
+> +	    (version != HPB_SUPPORT_LEGACY_VERSION)) {
+>  		dev_err(hba->dev, "%s: HPB %x version is not
+> supported.\n",
+>  			__func__, version);
+>  		hpb_dev_info->hpb_disabled = true;
+>  		return;
+>  	}
+>  
+> +	if (version == HPB_SUPPORT_LEGACY_VERSION)
+> +		hpb_dev_info->is_legacy = true;
+> +
+> +	pm_runtime_get_sync(hba->dev);
+> +	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+> +		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0,
+> &max_hpb_sigle_cmd);
+> +	pm_runtime_put_sync(hba->dev);
+> +
+> +	if (ret)
+> +		dev_err(hba->dev, "%s: idn: read max size of single hpb
+> cmd query request failed",
+> +			__func__);
+> +	hpb_dev_info->max_hpb_single_cmd = max_hpb_sigle_cmd;
+> +
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Here you didn't add 1, if you read out the
+QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD == 7, means device can support
+maximum HPB Data size for using single HPB command is 7+1
+((7+1)*4=32KB), not 7.
+
+
+Bean
+
+
+
+
