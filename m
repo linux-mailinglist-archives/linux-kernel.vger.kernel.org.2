@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255ED32A26E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45C832A270
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381507AbhCBHxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:53:10 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:55552 "EHLO loongson.cn"
+        id S1446299AbhCBHxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:53:21 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:51070 "EHLO zju.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1381422AbhCBHaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:30:11 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr_AR6T1ggTMTAA--.7754S2;
-        Tue, 02 Mar 2021 15:28:18 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: Return -EFAULT if copy_to_user() failed in signal.c
-Date:   Tue,  2 Mar 2021 15:28:17 +0800
-Message-Id: <1614670097-28536-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxr_AR6T1ggTMTAA--.7754S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wr17Wry3Jry7CF1DGrykXwb_yoW8Jr1DpF
-        4UCa4xKrW8GrnruF9ayw1kW34rJ3saqa4xKr90k3W3AFs0qr45t34vqa4jqF4rJFyrCrs0
-        ka4qkrWYkw48WrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VACjcxG62k0Y48FwI0_Jr0_Gr1lYx0E2Ix0cI8IcVAFwI0_Jr
-        0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0E
-        wIxGrwCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07jV1vsUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1837141AbhCBHex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:34:53 -0500
+Received: by ajax-webmail-mail-app2 (Coremail) ; Tue, 2 Mar 2021 15:33:33
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.192.85.18]
+Date:   Tue, 2 Mar 2021 15:33:33 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Cc:     "Kangjie Lu" <kjlu@umn.edu>, "Jens Axboe" <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: Re: Re: [PATCH] sata_dwc_460ex: Fix missing check in
+ sata_dwc_isr
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <CAHp75VdT04AVzW=C=SubHjUE5_MHBeC0ptHTFSLgKzrSP3HmRQ@mail.gmail.com>
+References: <20210301072842.7410-1-dinghao.liu@zju.edu.cn>
+ <CAHp75Vf86_Ccs7wqzbpWbLDZSSJLbMwZ1TX3dwru9JvXUTMR_Q@mail.gmail.com>
+ <44c09a14.a0cbd.177ed8446ea.Coremail.dinghao.liu@zju.edu.cn>
+ <CAHp75VdT04AVzW=C=SubHjUE5_MHBeC0ptHTFSLgKzrSP3HmRQ@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <56ec2ffd.a3db1.177f1db3d26.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgDnrvBN6j1gv5HiAQ--.64536W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtSkcrQABsq
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-copy_to_user() returns the amount left to copy, it should return -EFAULT
-if copy to user failed.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/riscv/kernel/signal.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index 65942b3..2238fc5 100644
---- a/arch/riscv/kernel/signal.c
-+++ b/arch/riscv/kernel/signal.c
-@@ -67,7 +67,7 @@ static long save_fp_state(struct pt_regs *regs,
- 	fstate_save(current, regs);
- 	err = __copy_to_user(state, &current->thread.fstate, sizeof(*state));
- 	if (unlikely(err))
--		return err;
-+		return -EFAULT;
- 
- 	/* We support no other extension state at this time. */
- 	for (i = 0; i < ARRAY_SIZE(sc_fpregs->q.reserved); i++) {
-@@ -140,8 +140,12 @@ static long setup_sigcontext(struct rt_sigframe __user *frame,
- {
- 	struct sigcontext __user *sc = &frame->uc.uc_mcontext;
- 	long err;
-+
- 	/* sc_regs is structured the same as the start of pt_regs */
- 	err = __copy_to_user(&sc->sc_regs, regs, sizeof(sc->sc_regs));
-+	if (unlikely(err))
-+		return -EFAULT;
-+
- 	/* Save the floating-point state. */
- 	if (has_fpu)
- 		err |= save_fp_state(regs, &sc->sc_fpregs);
--- 
-2.1.0
-
+PiBPbiBNb24sIE1hciAxLCAyMDIxIGF0IDE6MjAgUE0gPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+
+IHdyb3RlOgo+ID4KPiA+ID4gT24gTW9uLCBNYXIgMSwgMjAyMSBhdCA5OjQ0IEFNIERpbmdoYW8g
+TGl1IDxkaW5naGFvLmxpdUB6anUuZWR1LmNuPiB3cm90ZToKPiA+ID4gPgo+ID4gPiA+IGF0YV9x
+Y19mcm9tX3RhZygpIG1heSByZXR1cm4gYSBudWxsIHBvaW50ZXIgYW5kIGZ1cnRoZXIgbGVhZCB0
+bwo+ID4gPiA+IG51bGwtcG9pbnRlci1kZXJlZmVyZW5jZS4gQWRkIGEgcmV0dXJuIHZhbHVlIGNo
+ZWNrIHRvIGF2b2lkIHN1Y2ggY2FzZS4KPiA+ID4KPiA+ID4gQ2FuIHlvdSBlbGFib3JhdGUgbW9y
+ZSBvbiB0aGlzPyBJcyBpdCBhIHJlYWwgY2FzZT8KPiA+ID4gSSBoYXZlIGEgaGFyZHdhcmUsIGhv
+dyBjYW4gSSByZXByb2R1Y2UgdGhpcz8KPiA+ID4KPiA+Cj4gPiBJbiB0aGUgYnJhbmNoICdpZiAo
+aW50cHIgJiBTQVRBX0RXQ19JTlRQUl9ORVdGUCknLCB3ZSBjYWxsIGF0YV9xY19mcm9tX3RhZygp
+Cj4gPiBhbmQgYWNjZXNzIHFjLT5hcC0+bGluay5hY3RpdmVfdGFnIGltbWVkaWF0ZWx5LiBJZiBh
+dGFfcWNfZnJvbV90YWcoKSByZXR1cm5zCj4gPiBhIG51bGwgcG9pbnRlciwgYWNjZXNzaW5nIHFj
+LT5hcC0+bGluay5hY3RpdmVfdGFnIG1heSBjcmFzaCB0aGUgc3lzdGVtLgo+IAo+IFllcywgSSBj
+YW4gc2VlIHRoYXQuIE15IHF1ZXN0aW9uIGlzIGhvdyB0byBnZXQgaW50byB0aGUgY2FzZSB3aGVu
+IHRoaXMKPiB3aWxsIGJlIHRydWUuCj4gCgpJIGNhbm5vdCBhbnN3ZXIgdGhpcyBxdWVzdGlvbiBp
+bW1lZGlhdGVseS4gSSB0aGluayBpdCdzIHBvc3NpYmxlIHRvIGJ1aWxkIAphIGRlc2lnbmVkIGlu
+cHV0IHRvIHRyaWdnZXIgdGhpcyBjYXNlIGZvciBzb21lIHByb2Zlc3Npb25hbCBhdHRhY2tlcnMu
+IAoKPiA+IFRoaXMgaXNzdWUgaXMgcmVwb3J0ZWQgYnkgbXkgc3RhdGljIGFuYWx5c2lzIHRvb2ws
+IHNvIEkgZG9uJ3QgaGF2ZSB0aGUKPiA+IHZ1bG5lcmFibGUgaW5wdXQgY3VycmVudGx5Lgo+IAo+
+IFNob3VsZCB3ZSBibGluZGx5IGZvbGxvdyBldmVyeXRoaW5nIHRoYXQgc29tZSAobm9uLWlkZWFs
+KSB0b29sCj4gcmVwb3J0cz8gSSBkb24ndCB0aGluayBzby4KPiBGb3IgYWxsIG15IGV4cGVyaW1l
+bnRzIHdpdGggdGhhdCBoYXJkd2FyZSwgSSBoYXZlbid0IGhlYXJkIGFib3V0IHRoZQo+IGlzc3Vl
+IHdpdGggTlVMTCBwb2ludGVycy4gVXNlbGVzcyBjaGVja3MgbWFrZSBjb2RlIGhhcmRlciB0byBy
+ZWFkIGFuZAo+IENQVSB0byB3YXN0ZSBjeWNsZXMuIEl0IG1pZ2h0IGJlIG1haW50YWluZXJzIG9m
+IHRoaXMgZHJpdmVyIGNvbnNpZGVyCj4gb3RoZXJ3aXNlLCBzbyBub3QgbXkgY2FsbC4KPiAKClRo
+YW5rcyBmb3IgeW91ciBhZHZpY2UuIEkgYWxzbyBjaGVja2VkIGFsbCB1c2Ugb2YgYXRhX3FjX2Zy
+b21fdGFnKCkgaW4gdGhlIAp3aG9sZSBrZXJuZWwgYW5kIGZvdW5kIGFsbCBvZiB0aGVtIGhhZCBy
+ZXR1cm4gdmFsdWUgY2hlY2tzIGV4Y2VwdCBmb3IgdGhlIApjYWxscyBpbiBzYXRhX2R3Y19pc3Io
+KSwgd2hpY2ggaXMgb2RkLiBUaGVyZSBpcyBubyBpc3N1ZSBjdXJyZW50bHkgZG9lcyBub3QKbWVh
+biBpdCB3aWxsIG5ldmVyIGhhcHBlbiBpbiB0aGUgZnV0dXJlLiBTbyBJIHN1Z2dlc3QgdGhlIG1h
+aW50YWluZXIgb2YgZnVuY3Rpb24Kc2F0YV9kd2NfaXNyKCkgdG8gZml4IHRoaXMgaXNzdWUuCgpS
+ZWdhcmRzLApEaW5naGFvCg==
