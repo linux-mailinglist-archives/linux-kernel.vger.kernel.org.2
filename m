@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A3C32A547
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E30D32A540
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350443AbhCBMVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 07:21:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39616 "EHLO mail.kernel.org"
+        id S1446805AbhCBMNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:13:23 -0500
+Received: from mga14.intel.com ([192.55.52.115]:8741 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244070AbhCBMAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:00:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 505DD64F21;
-        Tue,  2 Mar 2021 11:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686159;
-        bh=ttBSAstuxahvrv6pryYeHwkR2zP2IIvHIkOm3LxkB/Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hDr/PYJHzZTt7ieblGQo/YFcyeKJL2hzxeLCRCMia2uk/rLDIcID7TBuhzv2hJ0Be
-         TYuoCTnqayTRu0Ml3WizNoOD6b/FeqB+ttfTJUUwOddTFl0LbqxkEB4emLEizKJ8aL
-         TCHYGjgsYPJSevPvxY4q898I+xn4Oagvo3ce1gle48x/6qbMeGqXFmVrNLSqqBrVPT
-         im4JPRbA4vJuovT0uogU6oKL676MdIZN1ZnJEifMjwgfeiqfMNZfwB/0d6OYz9ScQp
-         7aegolC8LS2qYeQ/KPK3slgKLKC4EFj4avTA9WntwZUuzsmjpBSNl71IPgivFyEnE3
-         IIpZU6Rli5zLg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.11 18/52] spi: stm32: make spurious and overrun interrupts visible
-Date:   Tue,  2 Mar 2021 06:54:59 -0500
-Message-Id: <20210302115534.61800-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302115534.61800-1-sashal@kernel.org>
-References: <20210302115534.61800-1-sashal@kernel.org>
+        id S1380804AbhCBLzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:55:52 -0500
+IronPort-SDR: HkVqoYUFDbwCmUk3F6HOLjBcOCtB/0UsPWVnZLHRwg75lOvOsW6Qh4D1Zh5de2UyH3MLL9aQsZ
+ 3iwYPL6w+y6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186114316"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="186114316"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 03:55:04 -0800
+IronPort-SDR: sLcrOMnFItxSfzrDMto9cVRjv9+hk9kPFhJ/849M0nvwHUUjLsr9Gv5q7tn7lj4mKJJH0QkWcO
+ e2C5MqfJhGZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="398975519"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Mar 2021 03:55:01 -0800
+Date:   Tue, 2 Mar 2021 19:55:00 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
+        dave.hansen@intel.com, andi.kleen@intel.com, len.brown@intel.com
+Subject: Re: [PATCH] x86/tsc: mark tsc reliable for qualified platforms
+Message-ID: <20210302115500.GA76460@shbuild999.sh.intel.com>
+References: <1614653572-19941-1-git-send-email-feng.tang@intel.com>
+ <YD4B2TG7JPqFChhR@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YD4B2TG7JPqFChhR@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+On Tue, Mar 02, 2021 at 10:14:01AM +0100, Peter Zijlstra wrote:
+> On Tue, Mar 02, 2021 at 10:52:52AM +0800, Feng Tang wrote:
+> > @@ -1193,6 +1193,17 @@ static void __init check_system_tsc_reliable(void)
+> >  #endif
+> >  	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
+> >  		tsc_clocksource_reliable = 1;
+> > +
+> > +	/*
+> > +	 * Ideally the socket number should be checked, but this is called
+> > +	 * by tsc_init() which is in early boot phase and the socket numbers
+> > +	 * may not be available. Use 'nr_online_nodes' as a fallback solution
+> > +	 */
+> > +	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC)
+> > +		&& boot_cpu_has(X86_FEATURE_NONSTOP_TSC)
+> > +		&& boot_cpu_has(X86_FEATURE_TSC_ADJUST)
+> > +		&& nr_online_nodes <= 2)
+> > +		tsc_clocksource_reliable = 1;
+> 
+> Logical operators go at the end of a line and alignment is with the (,
+> not the code block after it.
 
-[ Upstream commit c64e7efe46b7de21937ef4b3594d9b1fc74f07df ]
+Thanks for pointing out and the suggestion! Will change it to
 
-We do not expect to receive spurious interrupts so rise a warning
-if it happens.
+	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
+	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
+	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
+	    nr_online_nodes <= 2)
+		tsc_clocksource_reliable = 1;
 
-RX overrun is an error condition that signals a corrupted RX
-stream both in dma and in irq modes. Report the error and
-abort the transfer in either cases.
-
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1612551572-495-9-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/spi/spi-stm32.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 6017209c6d2f..4bcdad084801 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -928,8 +928,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 		mask |= STM32H7_SPI_SR_RXP;
- 
- 	if (!(sr & mask)) {
--		dev_dbg(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
--			sr, ier);
-+		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
-+			 sr, ier);
- 		spin_unlock_irqrestore(&spi->lock, flags);
- 		return IRQ_NONE;
- 	}
-@@ -956,15 +956,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	}
- 
- 	if (sr & STM32H7_SPI_SR_OVR) {
--		dev_warn(spi->dev, "Overrun: received value discarded\n");
--		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
--			stm32h7_spi_read_rxfifo(spi, false);
--		/*
--		 * If overrun is detected while using DMA, it means that
--		 * something went wrong, so stop the current transfer
--		 */
--		if (spi->cur_usedma)
--			end = true;
-+		dev_err(spi->dev, "Overrun: RX data lost\n");
-+		end = true;
- 	}
- 
- 	if (sr & STM32H7_SPI_SR_EOT) {
--- 
-2.30.1
-
+- Feng
