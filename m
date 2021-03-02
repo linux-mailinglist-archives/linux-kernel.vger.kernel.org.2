@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CF332AE6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C5832AE70
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360984AbhCBXIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 18:08:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1575624AbhCBWsb (ORCPT
+        id S2361000AbhCBXI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 18:08:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1575638AbhCBWuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:48:31 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A80C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:47:50 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id p186so22454015ybg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:47:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+b9bTCBx0GSzfendYvQgfWHriBf8115UYpKdUN5maGI=;
-        b=L8bNH4RgOQKyZI7ULRQT+7/OqFUpnPNuhAHUP5rkEA9KLj9cobpGUDkp+7hVVL/WZC
-         GggzD+6du3+CWUd1BTsbFJ3eH+U48Hdld9+/E5hfbDvy6mJHyK1hOJG2+jOSyLn1DSH/
-         9bhJpu3L/j7wvDmDcDg9/s8dUaRfxLpzNIke9lkyJCfMOJD2cfxiyKoskfgcCkz7gA3E
-         gEY0XsLYe+kACE9q0woVqjceHYqPmuce5/ThSHqLjGPJwYvO8lqAmPqO9sgbCZ9l7a2L
-         3L43Rf6yCoMeg7uR2AxW/DJLYVpeKi0UASwVSfwzGL7duiqBoBhBFpD4flDep9G6AAP4
-         9iUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+b9bTCBx0GSzfendYvQgfWHriBf8115UYpKdUN5maGI=;
-        b=XPDEBx7eG/llmFQklZ34N3/rBSFgnozpYZB+TU/MMxCV3YlqR2izJ8Gg5KSnjMcYbK
-         aT5GWQSquWfwY4G9k4XJKBxYFvs2eAsJRXQ+UbvOeBUwi0X36x3gOwwe3OY8yQjziW7U
-         0abqZbhbCV8YxreVbcnySxB+3zVUpID7DjR25T99IBXztCR4NIdecs2XBdrI+TBfbnzO
-         x3MNnPG9E+LqM1lIwBQC/aFWr/z4OyM9NZOJn8ysxHHQ/v4F7E92pnLWtKeT/ODM1vzf
-         soT24qFsVcikRxZzk0Wvy3ZNGSmIqMlrMgdI9QxZaVdJTW5k6KyETR/kWg/dVSA3ojA+
-         CQSQ==
-X-Gm-Message-State: AOAM530woGzED/3AfHu25fZiwCE8uOE+Q5IkRUwUvinspJ336Uwe0Iq/
-        zEgpx9XaZQFjOJQn8mu33Mf98Vq/TG2A7k3nsnJN5w==
-X-Google-Smtp-Source: ABdhPJyXnqleihf3N6CfJb1ho0f1rGpJ9s3PmnGWAkh0NtC+rFHiozSOjoDle8e4WIbpQIhcLsHI74gj7+iVkCaQkik=
-X-Received: by 2002:a25:2a04:: with SMTP id q4mr36055329ybq.412.1614725269951;
- Tue, 02 Mar 2021 14:47:49 -0800 (PST)
+        Tue, 2 Mar 2021 17:50:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614725339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Jhx9CWMX6eV8IRnARb9NZKuvwk/xzmCaFzQ1tALA8U=;
+        b=F1Ilc3phjIG7Otuu45GCHGIaBUtZ5lI5aCSylGe8YXn2G91WntcVvPSxVkJT0hfMaoi0zL
+        pwdpxCjVFAcoWtUA6MB6NZP8K/WXJkyLba5gNji2nNS+jqQHfsUcIfePjVxZdHK/rVxrEv
+        LpRo+meXeXQoQjggLoBibID0N38qTTo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-Af-lyMbUM7GNPxJvVLykTw-1; Tue, 02 Mar 2021 17:48:48 -0500
+X-MC-Unique: Af-lyMbUM7GNPxJvVLykTw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54B828030D4;
+        Tue,  2 Mar 2021 22:48:47 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 67A156F7E5;
+        Tue,  2 Mar 2021 22:48:44 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210303091608.0ad071f8@canb.auug.org.au>
+References: <20210303091608.0ad071f8@canb.auug.org.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     dhowells@redhat.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the fscache tree
 MIME-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com>
- <b2dd44c2720fb96093fc4feeb64f0f4e@walle.cc> <CAGETcx_xCpid3QW0gQJWLL6ZfT-VJJq-SYX4tG09GRQWucw=qg@mail.gmail.com>
-In-Reply-To: <CAGETcx_xCpid3QW0gQJWLL6ZfT-VJJq-SYX4tG09GRQWucw=qg@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 2 Mar 2021 14:47:14 -0800
-Message-ID: <CAGETcx__oG2XrQ8RwZ57cVgV+Ukfni4qUQCe11kbL8E1U+4a_g@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
-To:     Michael Walle <michael@walle.cc>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1979125.1614725323.1@warthog.procyon.org.uk>
+Date:   Tue, 02 Mar 2021 22:48:43 +0000
+Message-ID: <1979126.1614725323@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 2:42 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Tue, Mar 2, 2021 at 2:24 PM Michael Walle <michael@walle.cc> wrote:
-> >
-> > Am 2021-03-02 22:11, schrieb Saravana Kannan:
-> > > I think Patch 1 should fix [4] without [5]. Can you test the series
-> > > please?
-> >
-> > Mh, I'm on latest linux-next (next-20210302) and I've applied patch 3/3
-> > and
-> > reverted commit 7007b745a508 ("PCI: layerscape: Convert to
-> > builtin_platform_driver()"). I'd assumed that PCIe shouldn't be working,
-> > right? But it is. Did I miss something?
->
-> You need to revert [5].
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-My bad. You did revert it. Ah... I wonder if it was due to
-fw_devlink.strict that I added. To break PCI again, also set
-fw_devlink.strict=1 in the kernel command line.
+> After merging the fscache tree, today's linux-next build (x86_64
+> allmodconfig) produced this warning:
+> 
+> fs/afs/file.c: In function 'afs_req_issue_op':
+> fs/afs/file.c:291:6: warning: unused variable 'ret' [-Wunused-variable]
+>   291 |  int ret;
+>       |      ^~~
+> 
+> Introduced by commit
+> 
+>   799fbdf96cd5 ("afs: Use new fscache read helper API")
 
--Saravana
+I've updated my branch to remove the variable.
+
+David
+
