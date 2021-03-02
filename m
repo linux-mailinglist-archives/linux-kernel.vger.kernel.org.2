@@ -2,75 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B306132AB6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5297432AB74
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446216AbhCBU2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:28:04 -0500
-Received: from alln-iport-5.cisco.com ([173.37.142.92]:15824 "EHLO
-        alln-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347105AbhCBRgp (ORCPT
+        id S1446373AbhCBU2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241549AbhCBRjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:36:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=483; q=dns/txt; s=iport;
-  t=1614706604; x=1615916204;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=i+Gz80jPEL08iRfyqDTBuTMykYMo9F/a3XftoJvNPyg=;
-  b=PFenJ4D5Zf7eFmI3QgO+IZaWCy3Z/iTllvueEx1sMeQA86iM+VKlDzAg
-   7EqxV29LAR47q2Wno/Trasx+AA2BBdS+qcWB4m+RhoX4Y4PJmnuiUz7k8
-   HhJc+03t01Mhl6qejv+O7FFuB0Mpc241Rbsz4VjBK8odlhNEDTyW97SFF
-   g=;
-X-IPAS-Result: =?us-ascii?q?A0AHAAAVdz5gmIoNJK1iGgEBAQEBAQEBAQEDAQEBARIBA?=
- =?us-ascii?q?QEBAgIBAQEBQIE+AgEBAQELAYN2ATkxlh2PehaMOwsBAQENAQE0BAEBhE0Cg?=
- =?us-ascii?q?XoCJTcGDgIDAQEBAwIDAQEBAQUBAQECAQYEFAEBAQEBAQEBhkOGRQEFOj8QC?=
- =?us-ascii?q?xguPBsGE4JwgwitBXSBNIkmgUQigRYBjUImHIFJQoQrPogIgisEpDibe4MGg?=
- =?us-ascii?q?R+acjEQgxWgMbZyAgQGBQIWgWoigVkzGggbFYMkUBkNjjiOUCADLzgCBgoBA?=
- =?us-ascii?q?QMJjBMBAQ?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.81,217,1610409600"; 
-   d="scan'208";a="673161766"
-Received: from alln-core-5.cisco.com ([173.36.13.138])
-  by alln-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 02 Mar 2021 17:35:25 +0000
-Received: from zorba ([10.24.9.198])
-        by alln-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 122HZNSi008144
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 2 Mar 2021 17:35:25 GMT
-Date:   Tue, 2 Mar 2021 09:35:23 -0800
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, robh@kernel.org,
-        daniel@gimpelevich.san-francisco.ca.us,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] Improve boot command line handling
-Message-ID: <20210302173523.GE109100@zorba>
-References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+        Tue, 2 Mar 2021 12:39:01 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCBCC0617A9
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:38:39 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id v3so15381613qtw.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:38:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=NgErhWjVYS40cse08ZsXc39yhag5uGkh43eRrKni6lg=;
+        b=ur8sCkRb3FMUhgW+QJadn9dMy4JISPa7I7yRBZGwGimMjGgjJvScQD944W2s39N1KK
+         5ZwY/Uref8JP5Hz0AoZk7uJej9PkNpVO5lnBNAd1BNMQLDR3FeLf5o3O2/Nl9o52Jz6c
+         Mkl8fwYqr2OqxRunNzd9U2N5r/AG1omvgceB2aliRb5FS4hQJJHBiTYgLL9O1hr5jyqH
+         0mVCAU7VU9tlR+GoEy4FhWqk4WtQr03iwT7iAhKCfE+b/QojvK4/Na3r+NROo6aI6Rqg
+         ZcitjEHBOZg2knRRNRzkoZxcHDVvk3aPSYJBewyYgbapyQ4VkDGgyFlqgXTcEheiJK9j
+         rlCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=NgErhWjVYS40cse08ZsXc39yhag5uGkh43eRrKni6lg=;
+        b=GkDLj1B5SpY3x7OXSK+/H9HUdVo/kytoLoS+PHD0Js1BW16jo5dGMlpU77ytRCZKfm
+         PQeVZFt+4Ygv2owpN3J+keofpjN72EXVfcLagHiNJMepbTyTwvjxmVUqGSIxQdC3qE1x
+         e/xvKdjZuU+ucUlzAxxWBqdVmwOE5oJ7d/Azp6nuAMw3xr8riBOlzSqgL+53p6YmH7QE
+         FLKKtV7ZScA23cxueomdDKYcF60a08ySZ63IRxOpO+UeWZ22sRHWAqUV5HQfrjwd2nHa
+         b5xia9A7LCHelN0Mkh+3yNM3uVt+OUYqgSFrJ/pH4Uw/nIZcZgXR8iEuD4EiOEKPEaOo
+         8GVQ==
+X-Gm-Message-State: AOAM5312FsnAyf4c3mGhp6jKCFoN69vQMtBCgi7JbMWgJyTMa+U7u6d2
+        rpH5t4vLb9PaYP5m3bwq41ibQw==
+X-Google-Smtp-Source: ABdhPJzEX9/PYCZJ0v5bnw+DU56A+H6y1W46NuNaqvaLGR+HDtIUxBzjsqJkyYMBHNTVe1V5W92Okg==
+X-Received: by 2002:ac8:4249:: with SMTP id r9mr18127959qtm.285.1614706718945;
+        Tue, 02 Mar 2021 09:38:38 -0800 (PST)
+Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id t6sm15339867qkd.127.2021.03.02.09.38.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 09:38:38 -0800 (PST)
+Message-ID: <4cb93f828695f7f6307077da466a58ba478c9824.camel@ndufresne.ca>
+Subject: Re: [PATCH v2 3/8] media: add Mediatek's MM21 format
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Date:   Tue, 02 Mar 2021 12:38:37 -0500
+In-Reply-To: <20210225101612.2832444-4-acourbot@chromium.org>
+References: <20210225101612.2832444-1-acourbot@chromium.org>
+         <20210225101612.2832444-4-acourbot@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1614705851.git.christophe.leroy@csgroup.eu>
-X-Outbound-SMTP-Client: 10.24.9.198, [10.24.9.198]
-X-Outbound-Node: alln-core-5.cisco.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:25:16PM +0000, Christophe Leroy wrote:
-> The purpose of this series is to improve and enhance the
-> handling of kernel boot arguments.
+Le jeudi 25 février 2021 à 19:16 +0900, Alexandre Courbot a écrit :
+> Add Mediatek's non-compressed 8 bit block video mode. This format is
+> produced by the MT8183 codec and can be converted to a non-proprietary
+> format by the MDP3 component.
 > 
-> It is first focussed on powerpc but also extends the capability
-> for other arches.
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> ---
+>  Documentation/userspace-api/media/v4l/pixfmt-reserved.rst | 7 +++++++
+>  drivers/media/v4l2-core/v4l2-ioctl.c                      | 1 +
+>  include/uapi/linux/videodev2.h                            | 1 +
+>  3 files changed, 9 insertions(+)
 > 
-> This is based on suggestion from Daniel Walker <danielwa@cisco.com>
-> 
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> index c9231e18859b..187ea89f7a25 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> @@ -242,6 +242,13 @@ please make a proposal on the linux-media mailing list.
+>         It is an opaque intermediate format and the MDP hardware must be
+>         used to convert ``V4L2_PIX_FMT_MT21C`` to ``V4L2_PIX_FMT_NV12M``,
+>         ``V4L2_PIX_FMT_YUV420M`` or ``V4L2_PIX_FMT_YVU420``.
+> +    * .. _V4L2-PIX-FMT-MM21:
+> +
+> +      - ``V4L2_PIX_FMT_MM21``
+> +      - 'MM21'
+> +      - Non-compressed, tiled two-planar format used by Mediatek MT8183.
+> +       This is an opaque intermediate format and the MDP3 hardware can be
+> +       used to convert it to other formats.
+>      * .. _V4L2-PIX-FMT-SUNXI-TILED-NV12:
+
+The SUNXI one was a mistake,  it's linear layout 32x32 tiles. The problem with
+calling this a vendor format, is that other vendor might be using it too. But
+they won't know and the format might endup duplicated, even if it's the same
+one.
+
+So here's my request, have you tried to understand a bit more what the tiling
+layout is ? Could be tiled + SAND, could use zigzag layout like Samsung do. I
+think if we can avoid vendor formats, we can preserve the pixel format list
+sanity here. Most of the HW I've encoutered was very easy to reverse, even if
+undocumented (except the compressed one).
+
+If not possible, I would like to suggest:
+
+  V4L2_PIX_FMT_MTK_NV21
+
+The important part is to add a clear seperation for the vendor name, it easy to
+recognize then.
+
+>  
+>        - ``V4L2_PIX_FMT_SUNXI_TILED_NV12``
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-
+> core/v4l2-ioctl.c
+> index 31d1342e61e8..0b85b2bbc628 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -1384,6 +1384,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+>         case V4L2_PIX_FMT_TM6000:       descr = "A/V + VBI Mux Packet"; break;
+>         case V4L2_PIX_FMT_CIT_YYVYUY:   descr = "GSPCA CIT YYVYUY"; break;
+>         case V4L2_PIX_FMT_KONICA420:    descr = "GSPCA KONICA420"; break;
+> +       case V4L2_PIX_FMT_MM21:         descr = "Mediatek 8-bit block format";
+> break;
+>         case V4L2_PIX_FMT_HSV24:        descr = "24-bit HSV 8-8-8"; break;
+>         case V4L2_PIX_FMT_HSV32:        descr = "32-bit XHSV 8-8-8-8"; break;
+>         case V4L2_SDR_FMT_CU8:          descr = "Complex U8"; break;
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 79dbde3bcf8d..e6890dae76ec 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -731,6 +731,7 @@ struct v4l2_pix_format {
+>  #define V4L2_PIX_FMT_Y12I     v4l2_fourcc('Y', '1', '2', 'I') /* Greyscale
+> 12-bit L/R interleaved */
+>  #define V4L2_PIX_FMT_Z16      v4l2_fourcc('Z', '1', '6', ' ') /* Depth data
+> 16-bit */
+>  #define V4L2_PIX_FMT_MT21C    v4l2_fourcc('M', 'T', '2', '1') /* Mediatek
+> compressed block mode  */
+> +#define V4L2_PIX_FMT_MM21     v4l2_fourcc('M', 'M', '2', '1') /* Mediatek 8-
+> bit block mode, two non-contiguous planes */
+>  #define V4L2_PIX_FMT_INZI     v4l2_fourcc('I', 'N', 'Z', 'I') /* Intel Planar
+> Greyscale 10-bit and Depth 16-bit */
+>  #define V4L2_PIX_FMT_SUNXI_TILED_NV12 v4l2_fourcc('S', 'T', '1', '2') /*
+> Sunxi Tiled NV12 Format */
+>  #define V4L2_PIX_FMT_CNF4     v4l2_fourcc('C', 'N', 'F', '4') /* Intel 4-bit
+> packed depth confidence information */
 
 
-I don't see a point in your changes at this time. My changes are much more
-mature, and you changes don't really make improvements.
-
-Daniel
