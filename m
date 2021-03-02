@@ -2,94 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91DE32A982
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E93032A979
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577190AbhCBScA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:32:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1575712AbhCBPfG (ORCPT
+        id S1352213AbhCBS2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:28:49 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52922 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1448645AbhCBPey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:35:06 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56187C061A27;
-        Tue,  2 Mar 2021 06:52:22 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id m9so20962080ybk.8;
-        Tue, 02 Mar 2021 06:52:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=shDiwtvjxW9HKBgWdxAQV0fG1bxmwZ/h9p6DqNjNEMo=;
-        b=dWHpL1y0kNYGGo6ht640z7wd5SSsFPmb07qyaweFWrWjuSKPVxAwCSIQqjVKLLwvLu
-         YeOsVCoEr9q62JDsFgd0zumEqrWlMoHXg1MuFeBeyEYrB/FR+Lw4QCiMi2KIHCsvIZDW
-         Hn+Ophs64kDgf97ApuyaFJnu7jo+06Sco28BiVOAOThj1zNliq0ZQpWxNAzSfiXx/Q8x
-         IGL5KeKNQuwua70Sqm1itgPnHF0uK/nH1Idw4IH83OL5COjvI02a+MyARqDcxic/68p5
-         pA13KtkFkfuv8sDg8zOQZep9omDlFQq6QTrJTa63hqLTy+eOFbS6F+i4Vimnts4DIzTm
-         TRyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=shDiwtvjxW9HKBgWdxAQV0fG1bxmwZ/h9p6DqNjNEMo=;
-        b=me3a4uJl3c3eaHND3n6ZvSYh0/FxGB4MG6qpuIFLz+7k++fVMfRECq1EN40+BG8OFA
-         0ChajsLLRWGQWKAdVqWpafmxw6Behh8ySOoWnJ5cMDDc3u8b9zSXkrZqc8J5oP59ncw5
-         tKe5yrB20nojs7zg39FWPVgxNZ3X+NnAUa4tEawlxMxGCBamLiq9rZ1d3GIjiEMmPMjn
-         rfgRESMZKyzTdfVfSlVFoU28AeXqzouOLyJYyUDB24jL2mx+Tuur0MFNBveV9ktH46XV
-         +UDo02mcoi5auVhQsAo5sNX+TLgENEZAxaZHXoaPAwjJxgHfV7JjX9QZMrP3/B+GfhfR
-         r0jA==
-X-Gm-Message-State: AOAM530l4+tl1A4vay2bOMUXo4UYkfs8P9yleU9jQiUoEWd7LSRoLyYj
-        Db1ovfE8vCmBvI5pPEVukVhUn6Thbk8a9/o8o7k=
-X-Google-Smtp-Source: ABdhPJw8CACQspkesAmhl91E4AzrDL/incidbLRSAJTbu6ZqbW9GiTp7tpYcPqXNqUYy+MMziYWbGUtbuFFNrpYElOw=
-X-Received: by 2002:a05:6902:701:: with SMTP id k1mr31136319ybt.342.1614696741558;
- Tue, 02 Mar 2021 06:52:21 -0800 (PST)
+        Tue, 2 Mar 2021 10:34:54 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 122FUAeU117081;
+        Tue, 2 Mar 2021 09:30:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614699010;
+        bh=XY9GrYoBtIXthyWuNY6TPQxiQEz+xHQrzqPT/wtKqbw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=UokPXdDqLwE75ptLZwzXmbE+AmnhfCwm9SbRtcDFaVm8ZC/1vf+b5WX5Oky8/XjnA
+         UdRFNDHgxfCWgjpuyDvN0pWcVCfq7t4Aevh6IT00/0kgXzRkj46ZYb5+M9lJbkFKBo
+         xIfhoBxflve5g0d4mNJ5eap+agBsNJNe+su5ZJlw=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 122FUAoN065541
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 2 Mar 2021 09:30:10 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Mar
+ 2021 09:30:09 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 2 Mar 2021 09:30:09 -0600
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 122FU6QY102733;
+        Tue, 2 Mar 2021 09:30:07 -0600
+Subject: Re: [RFC PATCH] mtd: add OTP (one-time-programmable) erase ioctl
+To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <Tudor.Ambarus@microchip.com>
+References: <20210302110927.6520-1-michael@walle.cc>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <b106264e-987f-cecc-28cb-0724d4af1f4c@ti.com>
+Date:   Tue, 2 Mar 2021 21:00:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210216110741.1286-1-andriy.shevchenko@linux.intel.com>
- <YDkpzZ8jL7O9HJuG@smile.fi.intel.com> <YDwmznD58ZtOwHgb@debian> <YDzaC2ahcHCrCI8V@smile.fi.intel.com>
-In-Reply-To: <YDzaC2ahcHCrCI8V@smile.fi.intel.com>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Tue, 2 Mar 2021 14:51:45 +0000
-Message-ID: <CADVatmP7V+pbpUC4xV+BmNzbfudPE5S0tT-6CgUKbQrC-FMrBA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] parport: Introduce module_parport_driver() helper macro
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210302110927.6520-1-michael@walle.cc>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 12:12 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Sun, Feb 28, 2021 at 11:27:10PM +0000, Sudip Mukherjee wrote:
-> > On Fri, Feb 26, 2021 at 07:03:09PM +0200, Andy Shevchenko wrote:
-> > > On Tue, Feb 16, 2021 at 01:07:39PM +0200, Andy Shevchenko wrote:
-> > > > Introduce module_parport_driver() helper macro to reduce boilerplate
-> > > > in the existing and new code.
-> > >
-> > > Sudip, any comments on this?
-> >
-> > Sorry for the delay in reply.
-> > lgtm. I think there are few more drivers which can also use this new helper.
-> > Will you like to do them also?
->
-> Yes, that's the (slow going) plan.
->
-> > Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
->
-> Thanks! I considered that you take it thru parport tree. Do you have something
-> else in mind?
+Hi,
 
-I dont have a separate parport tree (parport is not under active
-development to have a separate tree). I send everything parport
-related to Greg and then he adds it to his tree.
-I guess in this case if Greg agrees it can go via Mark's tree as the
-series will also have SPI related patches.
+On 3/2/21 4:39 PM, Michael Walle wrote:
+> This may sound like a contradiction but some SPI-NOR flashes really
+> support erasing their OTP region until it is finally locked. Having the
+> possibility to erase an OTP region might come in handy during
+> development.
+> 
+> The ioctl argument follows the OTPLOCK style.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> OTP support for SPI-NOR flashes may be merged soon:
+> https://lore.kernel.org/linux-mtd/20210216162807.13509-1-michael@walle.cc/
+> 
+> Tudor suggested to add support for the OTP erase operation most SPI-NOR
+> flashes have:
+> https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
+> 
+> Therefore, this is an RFC to get some feedback on the MTD side, once this
+> is finished, I can post a patch for mtd-utils. Then we'll have a foundation
+> to add the support to SPI-NOR.
+> 
+>  drivers/mtd/mtdchar.c      |  7 ++++++-
+>  drivers/mtd/mtdcore.c      | 12 ++++++++++++
+>  include/linux/mtd/mtd.h    |  3 +++
+>  include/uapi/mtd/mtd-abi.h |  2 ++
+>  4 files changed, 23 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 323035d4f2d0..da423dd031ae 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -661,6 +661,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+>  	case OTPGETREGIONCOUNT:
+>  	case OTPGETREGIONINFO:
+>  	case OTPLOCK:
+> +	case OTPERASE:
 
+This is not a Safe IOCTL. We are destroying OTP data. Need to check for
+write permission before allowing the ioctl right?
 
---
+>  	case ECCGETLAYOUT:
+>  	case ECCGETSTATS:
+>  	case MTDFILEMODE:
+> @@ -938,6 +939,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+>  	}
+>  
+>  	case OTPLOCK:
+> +	case OTPERASE:
+>  	{
+>  		struct otp_info oinfo;
+>  
+> @@ -945,7 +947,10 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+>  			return -EINVAL;
+>  		if (copy_from_user(&oinfo, argp, sizeof(oinfo)))
+>  			return -EFAULT;
+> -		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
+> +		if (cmd == OTPLOCK)
+> +			ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
+> +		else
+> +			ret = mtd_erase_user_prot_reg(mtd, oinfo.start, oinfo.length);
+>  		break;
+>  	}
+>  
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 2d6423d89a17..d844d718ef77 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -1918,6 +1918,18 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
+>  
+> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
+> +
+> +	if (!master->_erase_user_prot_reg)
+> +		return -EOPNOTSUPP;
+> +	if (!len)
+> +		return 0;
+> +	return master->_erase_user_prot_reg(master, from, len);
+> +}
+> +EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
+> +
+>  /* Chip-supported device locking */
+>  int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  {
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 157357ec1441..734ad7a8c353 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -336,6 +336,8 @@ struct mtd_info {
+>  				     size_t len, size_t *retlen, u_char *buf);
+>  	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+>  				    size_t len);
+> +	int (*_erase_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+> +				     size_t len);
+>  	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
+>  			unsigned long count, loff_t to, size_t *retlen);
+>  	void (*_sync) (struct mtd_info *mtd);
+> @@ -517,6 +519,7 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+>  int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+>  			    size_t *retlen, u_char *buf);
+>  int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+>  
+>  int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+>  	       unsigned long count, loff_t to, size_t *retlen);
+> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+> index 65b9db936557..242015f60d10 100644
+> --- a/include/uapi/mtd/mtd-abi.h
+> +++ b/include/uapi/mtd/mtd-abi.h
+> @@ -205,6 +205,8 @@ struct otp_info {
+>   * without OOB, e.g., NOR flash.
+>   */
+>  #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
+> +/* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
+> +#define OTPERASE		_IOR('M', 25, struct otp_info)
+>  
+
+Hmm, shouldn't this be:
+
+#define OTPERASE		_IOW('M', 25, struct otp_info)
+
+Userspace is writing struct otp_info to the driver. OTPLOCK should
+probably be _IOW() as well.
+
+>  /*
+>   * Obsolete legacy interface. Keep it in order not to break userspace
+> 
+
 Regards
-Sudip
+Vignesh
