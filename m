@@ -2,71 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF3632A280
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1E932A283
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376810AbhCBH5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:57:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237977AbhCBHon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:44:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E867C64D74;
-        Tue,  2 Mar 2021 07:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614670943;
-        bh=Sj3t8PWAHUIXJukhWVhODTADibSIRqXDU8iycU0raZw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o7NcM/F2xy/ZRXnh2jMdH/HUE40g/1gNZ02Bi573FhDO4ax91GXmVN8iyp+PJzJ3f
-         NSZasxRtnGj8FRCEZE0bWdC2bW/FHp0kOKop1ykZhP3icXrvfMbD1ijMKmg3tkBsy5
-         3XvPWs9xvG1i8YZUDueRq/+7zhPyjH1br+XqRF7FKWIYTtsfx1E+dlpnU3P1lzFVRu
-         So18lnSyk4i9pcx/w3MrVAcO7bWwoucM8De4fMKfxYw1NcnLh9gccIfn90yTrHS2iI
-         vBXo02YJOWRdVwDO1l4UOdbSrQwO/rodV3jnJOVkvUNj6CLLf8CPM8cLeADJK4idTz
-         6P0d47FxUjfZg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc 2/2] RDMA/uverbs: Fix kernel-doc warning of _uverbs_alloc
-Date:   Tue,  2 Mar 2021 09:42:14 +0200
-Message-Id: <20210302074214.1054299-3-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210302074214.1054299-1-leon@kernel.org>
-References: <20210302074214.1054299-1-leon@kernel.org>
+        id S1381547AbhCBIFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:05:09 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13105 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241317AbhCBHpu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:45:50 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DqTZP1nWGz16FVl;
+        Tue,  2 Mar 2021 15:40:45 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 2 Mar 2021 15:42:18 +0800
+Subject: Re: [RFC PATCH 01/11] iommu/arm-smmu-v3: Add feature detection for
+ HTTU
+To:     Robin Murphy <robin.murphy@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
+        "Will Deacon" <will@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Marc Zyngier" <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <20210128151742.18840-1-zhukeqian1@huawei.com>
+ <20210128151742.18840-2-zhukeqian1@huawei.com>
+ <f8be5718-d4d9-0565-eaf0-b5a128897d15@arm.com>
+CC:     Mark Rutland <mark.rutland@arm.com>, <jiangkunkun@huawei.com>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Cornelia Huck <cohuck@redhat.com>, <lushenming@huawei.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        James Morse <james.morse@arm.com>, <wanghaibin.wang@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <3b347f75-2e53-1f89-a76d-1f328766cf5f@huawei.com>
+Date:   Tue, 2 Mar 2021 15:42:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f8be5718-d4d9-0565-eaf0-b5a128897d15@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hi Robin,
 
-Fix the following W=1 compilation warning:
-drivers/infiniband/core/uverbs_ioctl.c:108: warning: expecting prototype for uverbs_alloc(). Prototype was for _uverbs_alloc() instead
+I am going to send v2 at next week, to addresses these issues reported by you. Many thanks!
+And do you have any further comments on patch #4 #5 and #6?
 
-Fixes: 461bb2eee4e1 ("IB/uverbs: Add a simple allocator to uverbs_attr_bundle")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/uverbs_ioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks,
+Keqian
 
-diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
-index e47c5949013f..3871049a48f7 100644
---- a/drivers/infiniband/core/uverbs_ioctl.c
-+++ b/drivers/infiniband/core/uverbs_ioctl.c
-@@ -90,8 +90,8 @@ void uapi_compute_bundle_size(struct uverbs_api_ioctl_method *method_elm,
- 	WARN_ON_ONCE(method_elm->bundle_size > PAGE_SIZE);
- }
-
--/**
-- * uverbs_alloc() - Quickly allocate memory for use with a bundle
-+/*
-+ * _uverbs_alloc() - Quickly allocate memory for use with a bundle
-  * @bundle: The bundle
-  * @size: Number of bytes to allocate
-  * @flags: Allocator flags
---
-2.29.2
-
+On 2021/2/5 3:50, Robin Murphy wrote:
+> On 2021-01-28 15:17, Keqian Zhu wrote:
+>> From: jiangkunkun <jiangkunkun@huawei.com>
+>>
+>> The SMMU which supports HTTU (Hardware Translation Table Update) can
+>> update the access flag and the dirty state of TTD by hardware. It is
+>> essential to track dirty pages of DMA.
+>>
+>> This adds feature detection, none functional change.
+>>
+>> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 16 ++++++++++++++++
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++++++++
+>>   include/linux/io-pgtable.h                  |  1 +
+>>   3 files changed, 25 insertions(+)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index 8ca7415d785d..0f0fe71cc10d 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -1987,6 +1987,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+>>           .pgsize_bitmap    = smmu->pgsize_bitmap,
+>>           .ias        = ias,
+>>           .oas        = oas,
+>> +        .httu_hd    = smmu->features & ARM_SMMU_FEAT_HTTU_HD,
+>>           .coherent_walk    = smmu->features & ARM_SMMU_FEAT_COHERENCY,
+>>           .tlb        = &arm_smmu_flush_ops,
+>>           .iommu_dev    = smmu->dev,
+>> @@ -3224,6 +3225,21 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+>>       if (reg & IDR0_HYP)
+>>           smmu->features |= ARM_SMMU_FEAT_HYP;
+>>   +    switch (FIELD_GET(IDR0_HTTU, reg)) {
+> 
+> We need to accommodate the firmware override as well if we need this to be meaningful. Jean-Philippe is already carrying a suitable patch in the SVA stack[1].
+> 
+>> +    case IDR0_HTTU_NONE:
+>> +        break;
+>> +    case IDR0_HTTU_HA:
+>> +        smmu->features |= ARM_SMMU_FEAT_HTTU_HA;
+>> +        break;
+>> +    case IDR0_HTTU_HAD:
+>> +        smmu->features |= ARM_SMMU_FEAT_HTTU_HA;
+>> +        smmu->features |= ARM_SMMU_FEAT_HTTU_HD;
+>> +        break;
+>> +    default:
+>> +        dev_err(smmu->dev, "unknown/unsupported HTTU!\n");
+>> +        return -ENXIO;
+>> +    }
+>> +
+>>       /*
+>>        * The coherency feature as set by FW is used in preference to the ID
+>>        * register, but warn on mismatch.
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> index 96c2e9565e00..e91bea44519e 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> @@ -33,6 +33,10 @@
+>>   #define IDR0_ASID16            (1 << 12)
+>>   #define IDR0_ATS            (1 << 10)
+>>   #define IDR0_HYP            (1 << 9)
+>> +#define IDR0_HTTU            GENMASK(7, 6)
+>> +#define IDR0_HTTU_NONE            0
+>> +#define IDR0_HTTU_HA            1
+>> +#define IDR0_HTTU_HAD            2
+>>   #define IDR0_COHACC            (1 << 4)
+>>   #define IDR0_TTF            GENMASK(3, 2)
+>>   #define IDR0_TTF_AARCH64        2
+>> @@ -286,6 +290,8 @@
+>>   #define CTXDESC_CD_0_TCR_TBI0        (1ULL << 38)
+>>     #define CTXDESC_CD_0_AA64        (1UL << 41)
+>> +#define CTXDESC_CD_0_HD            (1UL << 42)
+>> +#define CTXDESC_CD_0_HA            (1UL << 43)
+>>   #define CTXDESC_CD_0_S            (1UL << 44)
+>>   #define CTXDESC_CD_0_R            (1UL << 45)
+>>   #define CTXDESC_CD_0_A            (1UL << 46)
+>> @@ -604,6 +610,8 @@ struct arm_smmu_device {
+>>   #define ARM_SMMU_FEAT_RANGE_INV        (1 << 15)
+>>   #define ARM_SMMU_FEAT_BTM        (1 << 16)
+>>   #define ARM_SMMU_FEAT_SVA        (1 << 17)
+>> +#define ARM_SMMU_FEAT_HTTU_HA        (1 << 18)
+>> +#define ARM_SMMU_FEAT_HTTU_HD        (1 << 19)
+>>       u32                features;
+>>     #define ARM_SMMU_OPT_SKIP_PREFETCH    (1 << 0)
+>> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+>> index ea727eb1a1a9..1a00ea8562c7 100644
+>> --- a/include/linux/io-pgtable.h
+>> +++ b/include/linux/io-pgtable.h
+>> @@ -97,6 +97,7 @@ struct io_pgtable_cfg {
+>>       unsigned long            pgsize_bitmap;
+>>       unsigned int            ias;
+>>       unsigned int            oas;
+>> +    bool                httu_hd;
+> 
+> This is very specific to the AArch64 stage 1 format, not a generic capability - I think it should be a quirk flag rather than a common field.
+> 
+> Robin.
+> 
+> [1] https://jpbrucker.net/git/linux/commit/?h=sva/current&id=1ef7d512fb9082450dfe0d22ca4f7e35625a097b
+> 
+>>       bool                coherent_walk;
+>>       const struct iommu_flush_ops    *tlb;
+>>       struct device            *iommu_dev;
+>>
+> .
+> 
