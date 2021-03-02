@@ -2,248 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB1732AA30
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A0B32AA34
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444864AbhCBTPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:15:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35096 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1576868AbhCBQ1h (ORCPT
+        id S1444889AbhCBTPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:15:55 -0500
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:39602 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1576891AbhCBQ1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:27:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614702364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uQDTZD6aOWiMURqa+q3U34pq64jagkHulsjJuj+2YBU=;
-        b=ZT9xGl97g/sXXq/hwM8zWSS5Ry24pAVekMLGhbWULwpJgSP5bAgp7NWfZdye7PUzkuXPYk
-        BBlH0dgMmMEIf6Attyo47lJOLfpZLT0cnXrCsVtIY9F5Dh9k7+xQTyPTFZzNrlR1zmkTSU
-        GwownLSSMfnGOU9ABVkYa5uKaT/sSD0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-fVq9UChuNJKzzTSwRO_jGQ-1; Tue, 02 Mar 2021 11:26:00 -0500
-X-MC-Unique: fVq9UChuNJKzzTSwRO_jGQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A008100CCC1;
-        Tue,  2 Mar 2021 16:25:59 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-140.rdu2.redhat.com [10.10.114.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CC9910023AE;
-        Tue,  2 Mar 2021 16:25:55 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 8A18622054F; Tue,  2 Mar 2021 11:25:54 -0500 (EST)
-Date:   Tue, 2 Mar 2021 11:25:54 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Subject: Re: [RFC PATCH] fuse: Clear SGID bit when setting mode in setacl
-Message-ID: <20210302162554.GE220334@redhat.com>
-References: <20210226183357.28467-1-lhenriques@suse.de>
- <20210301163324.GC186178@redhat.com>
- <YD0wbmulcBVZ7VZy@suse.de>
- <20210302160033.GD220334@redhat.com>
+        Tue, 2 Mar 2021 11:27:40 -0500
+Received: by mail-pf1-f176.google.com with SMTP id e3so10162511pfj.6;
+        Tue, 02 Mar 2021 08:27:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rhSN6EJUjlxVTEYhX0PMy9XPYvHtkvkyN9nKIz9f20o=;
+        b=YoVGlzjeO1eDA4DGEGUIRhx/CsANqRjZmmV1mtJcCMvhOTaBNc8xeA8Cz273jx7BU4
+         6ae8lUeEwIfd+GGcj1Psnavf4GFPtx5tgpONp/QSbc6J/qbRRoZ5y0RRcE4kEv/I3+Ex
+         wG8/j03pl/jGptI1wzzu6ocZgtasulHi7zHTLc/JBjy/HH/WgLKcICpGo6LI+WVKRhTl
+         KyU6XHUD8omThzHdx/pZiTzuWKohHgfSe/I6fIBy2NabQP/eWoJ3VFKlh0wsZHjO12Ag
+         HAa8iLswP6iSPGqb+B3AfaGjImtL+zlCqoCpEAWcOWDDEz0PGfUeOM6HFQau3mexQzYT
+         9LlQ==
+X-Gm-Message-State: AOAM531YICZjt2t0hkN1aBl3jGtFx2lJDe7PJToM7rb7aYucnA9qj/0M
+        UHFA/2fAo3vTpcKF5Ek2G6o=
+X-Google-Smtp-Source: ABdhPJxHlIacQIDI0Jp1SP0zuONV5jNgKRu1emvm93y9yY7Dyrwvw7WvrPzaO7ylYa5Y+2D2/O0jvA==
+X-Received: by 2002:a65:448c:: with SMTP id l12mr18859525pgq.386.1614702416119;
+        Tue, 02 Mar 2021 08:26:56 -0800 (PST)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id v3sm20806728pff.217.2021.03.02.08.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 08:26:54 -0800 (PST)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id D41AA403DC; Tue,  2 Mar 2021 16:26:53 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 16:26:53 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Borislav Petkov <bp@alien8.de>, Jessica Yu <jeyu@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH/RFC 1/2] init/initramfs.c: allow asynchronous unpacking
+Message-ID: <20210302162653.GO4332@42.do-not-panic.com>
+References: <20210224142909.2092914-1-linux@rasmusvillemoes.dk>
+ <20210224142909.2092914-2-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302160033.GD220334@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210224142909.2092914-2-linux@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 11:00:33AM -0500, Vivek Goyal wrote:
-> On Mon, Mar 01, 2021 at 06:20:30PM +0000, Luis Henriques wrote:
-> > On Mon, Mar 01, 2021 at 11:33:24AM -0500, Vivek Goyal wrote:
-> > > On Fri, Feb 26, 2021 at 06:33:57PM +0000, Luis Henriques wrote:
-> > > > Setting file permissions with POSIX ACLs (setxattr) isn't clearing the
-> > > > setgid bit.  This seems to be CVE-2016-7097, detected by running fstest
-> > > > generic/375 in virtiofs.  Unfortunately, when the fix for this CVE landed
-> > > > in the kernel with commit 073931017b49 ("posix_acl: Clear SGID bit when
-> > > > setting file permissions"), FUSE didn't had ACLs support yet.
-> > > 
-> > > Hi Luis,
-> > > 
-> > > Interesting. I did not know that "chmod" can lead to clearing of SGID
-> > > as well. Recently we implemented FUSE_HANDLE_KILLPRIV_V2 flag which
-> > > means that file server is responsible for clearing of SUID/SGID/caps
-> > > as per following rules.
-> > > 
-> > >     - caps are always cleared on chown/write/truncate
-> > >     - suid is always cleared on chown, while for truncate/write it is cleared
-> > >       only if caller does not have CAP_FSETID.
-> > >     - sgid is always cleared on chown, while for truncate/write it is cleared
-> > >       only if caller does not have CAP_FSETID as well as file has group execute
-> > >       permission.
-> > > 
-> > > And we don't have anything about "chmod" in this list. Well, I will test
-> > > this and come back to this little later.
-> > > 
-> > > I see following comment in fuse_set_acl().
-> > > 
-> > >                 /*
-> > >                  * Fuse userspace is responsible for updating access
-> > >                  * permissions in the inode, if needed. fuse_setxattr
-> > >                  * invalidates the inode attributes, which will force
-> > >                  * them to be refreshed the next time they are used,
-> > >                  * and it also updates i_ctime.
-> > >                  */
-> > > 
-> > > So looks like that original code has been written with intent that
-> > > file server is responsible for updating inode permissions. I am
-> > > assuming this will include clearing of S_ISGID if needed.
-> > > 
-> > > But question is, does file server has enough information to be able
-> > > to handle proper clearing of S_ISGID info. IIUC, file server will need
-> > > two pieces of information atleast.
-> > > 
-> > > - gid of the caller.
-> > > - Whether caller has CAP_FSETID or not.
-> > > 
-> > > I think we have first piece of information but not the second one. May
-> > > be we need to send this in fuse_setxattr_in->flags. And file server
-> > > can drop CAP_FSETID while doing setxattr().
-> > > 
-> > > What about "gid" info. We don't change to caller's uid/gid while doing
-> > > setxattr(). So host might not clear S_ISGID or clear it when it should
-> > > not. I am wondering that can we switch to caller's uid/gid in setxattr(),
-> > > atleast while setting acls.
-> > 
-> > Thank for looking into this.  To be honest, initially I thought that the
-> > fix should be done in the server too, but when I looked into the code I
-> > couldn't find an easy way to get that done (without modifying the data
-> > being passed from the kernel in setxattr).
-> > 
-> > So, what I've done was to look at what other filesystems were doing in the
-> > ACL code, and that's where I found out about this CVE.  The CVE fix for
-> > the other filesystems looked easy enough to be included in FUSE too.
+On Wed, Feb 24, 2021 at 03:29:08PM +0100, Rasmus Villemoes wrote:
+> This is primarily motivated by an embedded ppc target, where unpacking
+> even the rather modest sized initramfs takes 0.6 seconds, which is
+> long enough that the external watchdog becomes unhappy that it doesn't
+> get enough attention soon enough.
 > 
-> Hi Luis,
+> But normal desktops might benefit as well. On my mostly stock Ubuntu
+> kernel, my initramfs is a 26M xz-compressed blob, decompressing to
+> around 126M. That takes almost two seconds.
 > 
-> I still feel that it should probably be fixed in virtiofsd, given fuse client
-> is expecting file server to take care of any change of mode (file
-> permission bits).
-
-Havid said that, there is one disadvantage of relying on server to
-do this. Now idmapped mount patches have been merged. If virtiofs
-were to ever support idmapped mounts, this will become an issue.
-Server does not know about idmapped mounts, and it does not have
-information on how to shift inode gid to determine if SGID should
-be cleared or not.
-
-So if we were to keep possible future support of idmapped mounts in mind,
-then solving it in client makes more sense.  (/me is afraid that there
-might be other dependencies like this elsewhere).
-
-Miklos, WDYT.
-
-Thanks
-Vivek
-
+> So add an initramfs_async= kernel parameter, allowing the main init
+> process to proceed to handling device_initcall()s without waiting for
+> populate_rootfs() to finish.
 > 
-> I wrote a proof of concept patch and this should fix this. But it
-> drop CAP_FSETID always. So I will need to modify kernel to pass
-> this information to file server and that should properly fix
-> generic/375. 
+> Should one of those initcalls need something from the initramfs (say,
+> a kernel module or a firmware blob), it will simply wait for the
+> initramfs unpacking to be done before proceeding, which should in
+> theory make this completely safe to always enable. But if some driver
+> pokes around in the filesystem directly and not via one of the
+> official kernel interfaces (i.e. request_firmware*(),
+> call_usermodehelper*) that theory may not hold - also, I certainly
+> might have missed a spot when sprinkling wait_for_initramfs().
 > 
-> Please have a look. This applies on top of fuse acl support V4 patches
-> I had posted. I have pushed all the patches on a temporary git branch
-> as well.
-> 
-> https://github.com/rhvgoyal/qemu/commits/acl-sgid
-> 
-> Vivek
-> 
-> 
-> Subject: virtiofsd: Switch creds, drop FSETID for system.posix_acl_access xattr
-> 
-> When posix access acls are set on a file, it can lead to adjusting file
-> permissions (mode) as well. If caller does not have CAP_FSETID and it
-> also does not have membership of owner group, this will lead to clearing
-> SGID bit in mode.
-> 
-> Current fuse code is written in such a way that it expects file server
-> to take care of chaning file mode (permission), if there is a need.
-> Right now, host kernel does not clear SGID bit because virtiofsd is
-> running as root and has CAP_FSETID. For host kernel to clear SGID,
-> virtiofsd need to switch to gid of caller in guest and also drop
-> CAP_FSETID (if caller did not have it to begin with).
-> 
-> This is a proof of concept patch which switches to caller's uid/gid
-> and alwasys drops CAP_FSETID in lo_setxattr(system.posix_acl_access).
-> This should fix the xfstest generic/375 test case.
-> 
-> This patch is not complete yet. Kernel should pass information when
-> to drop CAP_FSETID and when not to. I will look into modifying
-> kernel to pass this information to file server.
-> 
-> Reported-by: Luis Henriques <lhenriques@suse.de>
-> Yet-to-be-signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 > ---
->  tools/virtiofsd/passthrough_ll.c |   28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
+>  .../admin-guide/kernel-parameters.txt         | 12 +++++
+>  drivers/base/firmware_loader/main.c           |  2 +
+>  include/linux/initrd.h                        |  7 +++
+>  init/initramfs.c                              | 51 ++++++++++++++++++-
+>  init/main.c                                   |  1 +
+>  kernel/umh.c                                  |  2 +
+>  usr/Kconfig                                   | 10 ++++
+>  7 files changed, 84 insertions(+), 1 deletion(-)
 > 
-> Index: rhvgoyal-qemu/tools/virtiofsd/passthrough_ll.c
-> ===================================================================
-> --- rhvgoyal-qemu.orig/tools/virtiofsd/passthrough_ll.c	2021-03-02 08:06:20.539820330 -0500
-> +++ rhvgoyal-qemu/tools/virtiofsd/passthrough_ll.c	2021-03-02 10:46:40.901334665 -0500
-> @@ -172,7 +172,7 @@ struct lo_data {
->      int user_killpriv_v2, killpriv_v2;
->      /* If set, virtiofsd is responsible for setting umask during creation */
->      bool change_umask;
-> -    int user_posix_acl;
-> +    int user_posix_acl, posix_acl;
->  };
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 0ac883777318..e9aca86d429b 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1820,6 +1820,18 @@
+>  			initcall functions.  Useful for debugging built-in
+>  			modules and initcalls.
 >  
->  static const struct fuse_opt lo_opts[] = {
-> @@ -677,6 +677,7 @@ static void lo_init(void *userdata, stru
->          fuse_log(FUSE_LOG_DEBUG, "lo_init: enabling posix acl\n");
->          conn->want |= FUSE_CAP_POSIX_ACL | FUSE_CAP_DONT_MASK;
->          lo->change_umask = true;
-> +        lo->posix_acl = true;
->      } else {
->          /* User either did not specify anything or wants it disabled */
->          fuse_log(FUSE_LOG_DEBUG, "lo_init: disabling posix_acl\n");
-> @@ -2981,12 +2982,37 @@ static void lo_setxattr(fuse_req_t req,
+> +	initramfs_async= [KNL] Normally, the initramfs image is
+> +			unpacked synchronously, before most devices
+> +			are initialized. When the initramfs is huge,
+> +			or on slow CPUs, this can take a significant
+> +			amount of time. Setting this option means the
+> +			unpacking is instead done in a background
+> +			thread, allowing the main init process to
+> +			begin calling device_initcall()s while the
+> +			initramfs is being unpacked.
+> +			Format: <bool>
+> +			Default set by CONFIG_INITRAMFS_ASYNC.
+> +
+>  	initrd=		[BOOT] Specify the location of the initial ramdisk
 >  
->      sprintf(procname, "%i", inode->fd);
->      if (S_ISREG(inode->filetype) || S_ISDIR(inode->filetype)) {
-> +        bool switched_creds = false;
-> +        struct lo_cred old = {};
-> +
->          fd = openat(lo->proc_self_fd, procname, O_RDONLY);
->          if (fd < 0) {
->              saverr = errno;
->              goto out;
->          }
-> +
-> +        if (lo->posix_acl && !strcmp(name, "system.posix_acl_access")) {
-> +            ret = lo_change_cred(req, &old, false);
-> +            if (ret) {
-> +                saverr = ret;
-> +                goto out;
-> +            }
-> +            ret = drop_effective_cap("FSETID", NULL);
-> +            if (ret != 0) {
-> +                lo_restore_cred(&old, false);
-> +                saverr = ret;
-> +                goto out;
-> +            }
-> +            switched_creds = true;
-> +        }
-> +
->          ret = fsetxattr(fd, name, value, size, flags);
-> +
-> +        if (switched_creds) {
-> +            if (gain_effective_cap("FSETID"))
-> +                fuse_log(FUSE_LOG_ERR, "Failed to gain CAP_FSETID\n");
-> +            lo_restore_cred(&old, false);
-> +        }
->      } else {
->          /* fchdir should not fail here */
->          assert(fchdir(lo->proc_self_fd) == 0);
+>  	initrdmem=	[KNL] Specify a physical address and size from which to
+> diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
+> index 78355095e00d..4fdb8219cd08 100644
+> --- a/drivers/base/firmware_loader/main.c
+> +++ b/drivers/base/firmware_loader/main.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/kernel_read_file.h>
+>  #include <linux/module.h>
+>  #include <linux/init.h>
+> +#include <linux/initrd.h>
+>  #include <linux/timer.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/interrupt.h>
+> @@ -504,6 +505,7 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
+>  	if (!path)
+>  		return -ENOMEM;
+>  
+> +	wait_for_initramfs();
 
+Some folks might want this to not wait, say for folks who use built-in
+firmware, but for such use cases a new API which *purposely* only look
+for builtin-firmware would resolve that. The only case I think think of
+that folks may explicitly want this today is in
+arch/x86/kernel/cpu/microcode/, see get_builtin_firmware() calls, those
+should use a proper API, not a hack-in solution like that.
+I think Boris was working on this long ago, but he's as usual busy.
+
+But since this use the builtin stuff directly it is not affected. And
+even if it was affected by this delay, it would have been before.
+
+Other than what Linus pointed out, I see no reason why folks could
+experiment with this, in fact I welcome it.
+
+  Luis
