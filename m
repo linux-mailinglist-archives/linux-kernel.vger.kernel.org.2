@@ -2,140 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63C932A8E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C8532A966
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580375AbhCBSCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:02:32 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:58389 "EHLO pegase1.c-s.fr"
+        id S1580868AbhCBSVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:21:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1575656AbhCBPYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:24:03 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Dqghb2Clsz9v0tm;
-        Tue,  2 Mar 2021 16:16:47 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id o6ue3sntJFXZ; Tue,  2 Mar 2021 16:16:47 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dqghb193vz9v0td;
-        Tue,  2 Mar 2021 16:16:47 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 75B788B7B5;
-        Tue,  2 Mar 2021 16:16:48 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id NJiP_PO3SpRK; Tue,  2 Mar 2021 16:16:48 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6B32E8B75F;
-        Tue,  2 Mar 2021 16:16:47 +0100 (CET)
-Subject: Re: [PATCH 0/2] Fix CMDLINE_EXTEND handling for FDT "bootargs"
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Daniel Walker <danielwa@cisco.com>, devicetree@vger.kernel.org,
-        Android Kernel Team <kernel-team@android.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Max Uvarov <muvarov@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210225125921.13147-1-will@kernel.org>
- <CAL_JsqJX=TCCs7=gg486r9TN4NYscMTCLNfqJF9crskKPq-bTg@mail.gmail.com>
- <20210301144153.GA16716@willie-the-truck>
- <CAL_JsqJ11D-7a3pwLTVd+rHjqDGBb=b8OU_a6h3Co-at+2qMtQ@mail.gmail.com>
- <bbbf5def-a168-9a4c-1106-b80883dfd389@csgroup.eu>
- <CAL_Jsq+Te5+kQzbAMCzuRCkmoZWBDKGhynUC8BfvOm=R5jT4Jg@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <fe4de021-6bc6-577c-858e-8c79a5ec2340@csgroup.eu>
-Date:   Tue, 2 Mar 2021 16:16:38 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1578832AbhCBP10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:27:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D0A664EFC;
+        Tue,  2 Mar 2021 15:18:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614698288;
+        bh=8soWKlSoVNnPoAkd1PBkbCRz19PnjYruzmRd9uawI4k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cAql3LROA80o+6BbuPrq0OpDbb1VtcJlTGtODpnzz0LSiYJm2ImPp337OWZFMSopa
+         sdj9bFtFwiwxGbAhKvOMf94lUIJ5EXexwluSfcydDbRGg8w0fOIhWLRMgPr2c3adoq
+         xYaWlamsJ9SILroE1anTVnZC7nHe4gtdM4DFUTFCiMXiMghQW1dwHEZh6fndRbTl0/
+         y7Rd3uyoINbXLGF0n3ZVKgaooEprCmZh9OmB3kx9n7V4uzUr2RLXu+qQirofHNegJc
+         J/jnYSbComqBoqnJQu1HwKic82qv2aSpMfw+ZqgRVNvqQbdMG45tAmfgMFwlGNtFyk
+         T88+cpI42tGGQ==
+Date:   Tue, 2 Mar 2021 17:17:58 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH v3 1/2] x86/setup: consolidate early memory reservations
+Message-ID: <YD5XJrtJDgdmMt42@kernel.org>
+References: <20210302100406.22059-1-rppt@kernel.org>
+ <20210302100406.22059-2-rppt@kernel.org>
+ <20210302130409.GA2962@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+Te5+kQzbAMCzuRCkmoZWBDKGhynUC8BfvOm=R5jT4Jg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302130409.GA2962@MiWiFi-R3L-srv>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 02/03/2021 à 15:56, Rob Herring a écrit :
-> On Mon, Mar 1, 2021 at 11:45 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->>
->> Le 01/03/2021 à 18:26, Rob Herring a écrit :
->>> +PPC folks and Daniel W
->>>
->>> On Mon, Mar 1, 2021 at 8:42 AM Will Deacon <will@kernel.org> wrote:
->>>>
->>>> On Mon, Mar 01, 2021 at 08:19:32AM -0600, Rob Herring wrote:
->>>>> On Thu, Feb 25, 2021 at 6:59 AM Will Deacon <will@kernel.org> wrote:
->>>>>> We recently [1] enabled support for CMDLINE_EXTEND on arm64, however
->>>>>> when I started looking at replacing Android's out-of-tree implementation [2]
->>>>>
->>>>> Did anyone go read the common, reworked version of all this I
->>>>> referenced that supports prepend and append. Here it is again[1].
->>>>> Maybe I should have been more assertive there and said 'extend' is
->>>>> ambiguous.
->>>>
->>>> I tried reading that, but (a) most of the series is not in the mailing list
->>>> archives and (b) the patch that _is_ doesn't touch CMDLINE_EXTEND at all.
->>>> Right now the code in mainline does the opposite of what it's documented to
->>>> do.
->>>
->>> Actually, there is a newer version I found:
->>>
->>> https://lore.kernel.org/linuxppc-dev/1551469472-53043-1-git-send-email-danielwa@cisco.com/
->>> https://lore.kernel.org/linuxppc-dev/1551469472-53043-2-git-send-email-danielwa@cisco.com/
->>> https://lore.kernel.org/linuxppc-dev/1551469472-53043-3-git-send-email-danielwa@cisco.com/
->>
->> This was seen as too much intrusive into powerpc.
+On Tue, Mar 02, 2021 at 09:04:09PM +0800, Baoquan He wrote:
+> On 03/02/21 at 12:04pm, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > The early reservations of memory areas used by the firmware, bootloader,
+> > kernel text and data are spread over setup_arch(). Moreover, some of them
+> > happen *after* memblock allocations, e.g trim_platform_memory_ranges() and
+> > trim_low_memory_range() are called after reserve_real_mode() that allocates
+> > memory.
+> > 
+> > There was no corruption of these memory regions because memblock always
+> > allocates memory either from the end of memory (in top-down mode) or above
+> > the kernel image (in bottom-up mode). However, the bottom up mode is going
+> > to be updated to span the entire memory [1] to avoid limitations caused by
+> > KASLR.
+> > 
+> > Consolidate early memory reservations in a dedicated function to improve
+> > robustness against future changes. Having the early reservations in one
+> > place also makes it clearer what memory must be reserved before we allow
+> > memblock allocations.
+> > 
+> > [1] https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Acked-by: Borislav Petkov <bp@suse.de>
+> > ---
+> >  arch/x86/kernel/setup.c | 92 ++++++++++++++++++++---------------------
+> >  1 file changed, 44 insertions(+), 48 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > index d883176ef2ce..3e3c6036b023 100644
+> > --- a/arch/x86/kernel/setup.c
+> > +++ b/arch/x86/kernel/setup.c
+> > @@ -645,18 +645,6 @@ static void __init trim_snb_memory(void)
+> >  	}
+> >  }
+> >  
+> > -/*
+> > - * Here we put platform-specific memory range workarounds, i.e.
+> > - * memory known to be corrupt or otherwise in need to be reserved on
+> > - * specific platforms.
+> > - *
+> > - * If this gets used more widely it could use a real dispatch mechanism.
+> > - */
+> > -static void __init trim_platform_memory_ranges(void)
+> > -{
+> > -	trim_snb_memory();
+> > -}
+> > -
+> >  static void __init trim_bios_range(void)
+> >  {
+> >  	/*
+> > @@ -729,7 +717,38 @@ static void __init trim_low_memory_range(void)
+> >  {
+> >  	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
+> >  }
+> > -	
+> > +
+> > +static void __init early_reserve_memory(void)
+> > +{
+> > +	/*
+> > +	 * Reserve the memory occupied by the kernel between _text and
+> > +	 * __end_of_kernel_reserve symbols. Any kernel sections after the
+> > +	 * __end_of_kernel_reserve symbol must be explicitly reserved with a
+> > +	 * separate memblock_reserve() or they will be discarded.
+> > +	 */
+> > +	memblock_reserve(__pa_symbol(_text),
+> > +			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
+> > +
+> > +	/*
+> > +	 * Make sure page 0 is always reserved because on systems with
+> > +	 * L1TF its contents can be leaked to user processes.
+> > +	 */
+> > +	memblock_reserve(0, PAGE_SIZE);
+> > +
+> > +	early_reserve_initrd();
+> > +
+> > +	if (efi_enabled(EFI_BOOT))
+> > +		efi_memblock_x86_reserve_range();
+> > +
+> > +	memblock_x86_reserve_range_setup_data();
 > 
-> It looked like the main issue was string functions for KASAN?
-
-This is one issue yes,
-
+> This patch looks good to me, thanks for the effort.
 > 
-> As far as being too complex, I think that will be needed if you look
-> at all architectures and non-DT cases.
+> While at it, wondering if we can rename the above function to
+> memblock_reserve_setup_data() just as its e820 counterpart
+> e820__reserve_setup_data(), adding 'x86' to a function under arch/x86
+> seems redundant.
 
-As far as I remember, I could't understand why we absolutely need to define the command line string 
-in the common part of the code, leading to being obliged to use macros in order to allow the 
-architecture to specify in which section it wants the string.
-
-Why not leave the definition of the string to the architecture and just declare it in the common 
-code, allowing the architecture to put it where it suits it and reducing opacity and allowing use of 
-standard static inline functions instead of uggly macros.
-
-
+I'd rather keep these names for now. First, it's easier to dig to them in the git
+history and second, I'm planning more changes in this area and these names
+are as good as FIXME: to remind what still needs to be checked :)
+ 
+> FWIW,
 > 
->> I proposed an alternative at
->> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1554195798.git.christophe.leroy@c-s.fr/ but
->> never got any feedback.
+> Reviewed-by: Baoquan He <bhe@redhat.com>
+
+Thanks!
+ 
+> Thanks
+> Baoquan
 > 
-> Didn't go to a list I subscribe to. In particular, if it had gone to
-> DT list and into PW you would have gotten a reply from me.
+> > +
+> > +	reserve_ibft_region();
+> > +	reserve_bios_regions();
+> > +
+> > +	trim_snb_memory();
+> > +	trim_low_memory_range();
+> > +}
+> > +
+> >  /*
+> >   * Dump out kernel offset information on panic.
+> >   */
+> > @@ -764,29 +783,6 @@ dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
+> >  
+> >  void __init setup_arch(char **cmdline_p)
+> >  {
+> > -	/*
+> > -	 * Reserve the memory occupied by the kernel between _text and
+> > -	 * __end_of_kernel_reserve symbols. Any kernel sections after the
+> > -	 * __end_of_kernel_reserve symbol must be explicitly reserved with a
+> > -	 * separate memblock_reserve() or they will be discarded.
+> > -	 */
+> > -	memblock_reserve(__pa_symbol(_text),
+> > -			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
+> > -
+> > -	/*
+> > -	 * Make sure page 0 is always reserved because on systems with
+> > -	 * L1TF its contents can be leaked to user processes.
+> > -	 */
+> > -	memblock_reserve(0, PAGE_SIZE);
+> > -
+> > -	early_reserve_initrd();
+> > -
+> > -	/*
+> > -	 * At this point everything still needed from the boot loader
+> > -	 * or BIOS or kernel text should be early reserved or marked not
+> > -	 * RAM in e820. All other memory is free game.
+> > -	 */
+> > -
+> >  #ifdef CONFIG_X86_32
+> >  	memcpy(&boot_cpu_data, &new_cpu_data, sizeof(new_cpu_data));
+> >  
+> > @@ -910,8 +906,18 @@ void __init setup_arch(char **cmdline_p)
+> >  
+> >  	parse_early_param();
+> >  
+> > -	if (efi_enabled(EFI_BOOT))
+> > -		efi_memblock_x86_reserve_range();
+> > +	/*
+> > +	 * Do some memory reservations *before* memory is added to
+> > +	 * memblock, so memblock allocations won't overwrite it.
+> > +	 * Do it after early param, so we could get (unlikely) panic from
+> > +	 * serial.
+> > +	 *
+> > +	 * After this point everything still needed from the boot loader or
+> > +	 * firmware or kernel text should be early reserved or marked not
+> > +	 * RAM in e820. All other memory is free game.
+> > +	 */
+> > +	early_reserve_memory();
+> > +
+> >  #ifdef CONFIG_MEMORY_HOTPLUG
+> >  	/*
+> >  	 * Memory used by the kernel cannot be hot-removed because Linux
+> > @@ -938,9 +944,6 @@ void __init setup_arch(char **cmdline_p)
+> >  
+> >  	x86_report_nx();
+> >  
+> > -	/* after early param, so could get panic from serial */
+> > -	memblock_x86_reserve_range_setup_data();
+> > -
+> >  	if (acpi_mps_check()) {
+> >  #ifdef CONFIG_X86_LOCAL_APIC
+> >  		disable_apic = 1;
+> > @@ -1032,8 +1035,6 @@ void __init setup_arch(char **cmdline_p)
+> >  	 */
+> >  	find_smp_config();
+> >  
+> > -	reserve_ibft_region();
+> > -
+> >  	early_alloc_pgt_buf();
+> >  
+> >  	/*
+> > @@ -1054,8 +1055,6 @@ void __init setup_arch(char **cmdline_p)
+> >  	 */
+> >  	sev_setup_arch();
+> >  
+> > -	reserve_bios_regions();
+> > -
+> >  	efi_fake_memmap();
+> >  	efi_find_mirror();
+> >  	efi_esrt_init();
+> > @@ -1081,9 +1080,6 @@ void __init setup_arch(char **cmdline_p)
+> >  
+> >  	reserve_real_mode();
+> >  
+> > -	trim_platform_memory_ranges();
+> > -	trim_low_memory_range();
+> > -
+> >  	init_mem_mapping();
+> >  
+> >  	idt_setup_early_pf();
+> > -- 
+> > 2.28.0
+> > 
 > 
 
-Sorry for that. Original series from Daniel 
-(https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20190319232448.45964-2-danielwa@cisco.com/) 
-was sent only to linuxppc-dev list, and Michael suggested to also send it to linux-arch list, and I 
-also always copy linux-kernel.
-
-If there is new interest for that functionnality, I can try and rebase my series.
-
-Christophe
+-- 
+Sincerely yours,
+Mike.
