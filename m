@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFE632A3F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD9432A3FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349508AbhCBKEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:04:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42508 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1577603AbhCBJp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:45:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614678281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1349525AbhCBKEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:04:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20840 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1379111AbhCBJto (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:49:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614678433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K5EC/lW+d5RI0Djt8pb1SFdBoprOPWC87EKxv3dKexc=;
-        b=FF9HEh/kUpLfyFACCKNp8Yt9tc44VdTh0x86sIwgkdhBFMqYAqajJ0eaFecdsdsKuxmI/z
-        29L3Kr251SxRq4VVQI/TY13Mh0h6ut/R6Qo+XisFznWiU24QsPUYND7QdsrVHsv2dXwLMg
-        4YVQjgwf1/SoXkLF0LjellKxfIa/V74=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 45906ABF4;
-        Tue,  2 Mar 2021 09:44:41 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 10:44:25 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>
-Subject: Re: possible deadlock in sk_clone_lock
-Message-ID: <YD4I+VPr3UNt063H@dhcp22.suse.cz>
-References: <000000000000f1c03b05bc43aadc@google.com>
- <CALvZod4vGj0P6WKncdKpGaVEb1Ui_fyHm+-hbCJTmbvo43CJ=A@mail.gmail.com>
- <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com>
- <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
- <YDzaAWK41K4gD35V@dhcp22.suse.cz>
- <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
- <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
- <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
- <YD0jLTciK0M7P+Hc@dhcp22.suse.cz>
- <122e8c5d-60b8-52d9-c6a1-00cd61b2e1b6@oracle.com>
+        bh=lNvLI1zsChJgnJq9MCR6chFkbHYLQrCmCIxk0IHOWi0=;
+        b=M+dAKLZjSqu6CP/RlZHBwlHFFF16JWR3ETMKb2ZsYxhieXBUWg8rIDCBEYSJCzUXdMM6hI
+        o10FGW6VzC2Le7C8MwuLhHI5I97PuDxRZh51qFLXAEp4/zMlj/C/B7GS235ZbkhawiOx4C
+        wcZSA+xLooZOhZuv+IFKZ6p4xoJLtYk=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-DUXavz2jPAG6EBxC7dYO8A-1; Tue, 02 Mar 2021 04:47:12 -0500
+X-MC-Unique: DUXavz2jPAG6EBxC7dYO8A-1
+Received: by mail-ej1-f69.google.com with SMTP id au15so2760583ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:47:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=lNvLI1zsChJgnJq9MCR6chFkbHYLQrCmCIxk0IHOWi0=;
+        b=Lt4AhefzdyZGP/qOCkhZWKoJUS0ZsUrr/qudk1uL2XY6Sp5k46Dp9Dtc8bHRFT2UWg
+         6SNJ5xTT12gMtPXlojCBOdTPTgwZNbszsu+8t0e3V6aVVzuVuKO1V2qCpYLbhzpFGYsH
+         8U1+HZsEgAtAHiccyKMtxP29UO+q4OQ914OCGXfh+cOsB5WX9STt0f/oH2iZap2p+8vT
+         zS2lwRwGP0vlRK8EAQQXQKr3wjQE6NZYNOOkFPwlY1JxxLPT+UOFjmGlcUdjp1DGJzM6
+         bEraRzQa2KRL1L/MqdCAWgLEn8SUPsJal7mNVeSyxPZtmSuC2byIx0L0tQBkSgk3nc6f
+         QsOw==
+X-Gm-Message-State: AOAM533pj7sePNfShwFEeDv4Ew4yXdrdZyripdPv2gHKQjlcdOiiCgXe
+        A8lI6zKBsFR/p2LM5ooMCjcvwSGaleoFJH3lAnML/IVRZ4bbbKvjernk55tsx5YzfoTfbFnUNoI
+        dGC5vWxkAyw5n+lKBh1AOO87E
+X-Received: by 2002:a17:906:fcb2:: with SMTP id qw18mr3047200ejb.434.1614678431039;
+        Tue, 02 Mar 2021 01:47:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzjMhMEgexNSVGalvHgWj2+Bk230qklneo7u70O2OErqt4IfLk29fQciTb8d95u4L7fIeXDMQ==
+X-Received: by 2002:a17:906:fcb2:: with SMTP id qw18mr3047184ejb.434.1614678430896;
+        Tue, 02 Mar 2021 01:47:10 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id w8sm17455053edd.39.2021.03.02.01.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 01:47:10 -0800 (PST)
+Date:   Tue, 2 Mar 2021 04:47:07 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
+Message-ID: <20210302043419-mutt-send-email-mst@kernel.org>
+References: <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+ <20210222023040-mutt-send-email-mst@kernel.org>
+ <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
+ <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
+ <20210223082536-mutt-send-email-mst@kernel.org>
+ <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
+ <20210224000057-mutt-send-email-mst@kernel.org>
+ <52836a63-4e00-ff58-50fb-9f450ce968d7@oracle.com>
+ <20210228163031-mutt-send-email-mst@kernel.org>
+ <2cb51a6d-afa0-7cd1-d6f2-6b153186eaca@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <122e8c5d-60b8-52d9-c6a1-00cd61b2e1b6@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2cb51a6d-afa0-7cd1-d6f2-6b153186eaca@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 01-03-21 17:16:29, Mike Kravetz wrote:
-> On 3/1/21 9:23 AM, Michal Hocko wrote:
-> > On Mon 01-03-21 08:39:22, Shakeel Butt wrote:
-> >> On Mon, Mar 1, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
-> > [...]
-> >>> Then how come this can ever be a problem? in_task() should exclude soft
-> >>> irq context unless I am mistaken.
-> >>>
-> >>
-> >> If I take the following example of syzbot's deadlock scenario then
-> >> CPU1 is the one freeing the hugetlb pages. It is in the process
-> >> context but has disabled softirqs (see __tcp_close()).
-> >>
-> >>         CPU0                    CPU1
-> >>         ----                    ----
-> >>    lock(hugetlb_lock);
-> >>                                 local_irq_disable();
-> >>                                 lock(slock-AF_INET);
-> >>                                 lock(hugetlb_lock);
-> >>    <Interrupt>
-> >>      lock(slock-AF_INET);
-> >>
-> >> So, this deadlock scenario is very much possible.
+On Mon, Mar 01, 2021 at 11:56:50AM +0800, Jason Wang wrote:
+> 
+> On 2021/3/1 5:34 上午, Michael S. Tsirkin wrote:
+> > On Wed, Feb 24, 2021 at 10:24:41AM -0800, Si-Wei Liu wrote:
+> > > > Detecting it isn't enough though, we will need a new ioctl to notify
+> > > > the kernel that it's a legacy guest. Ugh :(
+> > > Well, although I think adding an ioctl is doable, may I know what the use
+> > > case there will be for kernel to leverage such info directly? Is there a
+> > > case QEMU can't do with dedicate ioctls later if there's indeed
+> > > differentiation (legacy v.s. modern) needed?
+> > BTW a good API could be
 > > 
-> > OK, I see the point now. I was focusing on the IRQ context and hugetlb
-> > side too much. We do not need to be freeing from there. All it takes is
-> > to get a dependency chain over a common lock held here. Thanks for
-> > bearing with me.
+> > #define VHOST_SET_ENDIAN _IOW(VHOST_VIRTIO, ?, int)
+> > #define VHOST_GET_ENDIAN _IOW(VHOST_VIRTIO, ?, int)
 > > 
-> > Let's see whether we can make hugetlb_lock irq safe.
+> > we did it per vring but maybe that was a mistake ...
 > 
-> I may be confused, but it seems like we have a general problem with
-> calling free_huge_page (as a result of put_page) with interrupts
-> disabled.
 > 
-> Consider the current free_huge_page code.  Today, we drop the lock
-> when processing gigantic pages because we may need to block on a mutex
-> in cma code.  If our caller has disabled interrupts, then it doesn't
-> matter if the hugetlb lock is irq safe, when we drop it interrupts will
-> still be disabled we can not block .  Right?  If correct, then making
-> hugetlb_lock irq safe would not help.
+> Actually, I wonder whether it's good time to just not support legacy driver
+> for vDPA. Consider:
 > 
-> Again, I may be missing something.
+> 1) It's definition is no-normative
+> 2) A lot of budren of codes
 > 
-> Note that we also are considering doing more with the hugetlb lock
-> dropped in this path in the 'free vmemmap of hugetlb pages' series.
+> So qemu can still present the legacy device since the config space or other
+> stuffs that is presented by vhost-vDPA is not expected to be accessed by
+> guest directly. Qemu can do the endian conversion when necessary in this
+> case?
 > 
-> Since we need to do some work that could block in this path, it seems
-> like we really need to use a workqueue.  It is too bad that there is not
-> an interface to identify all the cases where interrupts are disabled.
+> Thanks
+> 
 
-Wouldn't something like this help? It is quite ugly but it would be
-simple enough and backportable while we come up with a more rigorous 
-solution. What do you think?
+Overall I would be fine with this approach but we need to avoid breaking
+working userspace, qemu releases with vdpa support are out there and
+seem to work for people. Any changes need to take that into account
+and document compatibility concerns. I note that any hardware
+implementation is already broken for legacy except on platforms with
+strong ordering which might be helpful in reducing the scope.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 4bdb58ab14cb..c9a8b39f678d 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1495,9 +1495,11 @@ static DECLARE_WORK(free_hpage_work, free_hpage_workfn);
- void free_huge_page(struct page *page)
- {
- 	/*
--	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
-+	 * Defer freeing if in non-task context or when put_page is called
-+	 * with IRQ disabled (e.g from via TCP slock dependency chain) to
-+	 * avoid hugetlb_lock deadlock.
- 	 */
--	if (!in_task()) {
-+	if (!in_task() || irqs_disabled()) {
- 		/*
- 		 * Only call schedule_work() if hpage_freelist is previously
- 		 * empty. Otherwise, schedule_work() had been called but the
+
 -- 
-Michal Hocko
-SUSE Labs
+MST
+
