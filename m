@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2F732AE1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04AA32AE1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360550AbhCBWVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:21:46 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:39122 "EHLO
+        id S2360555AbhCBWV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:21:59 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39272 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377876AbhCBVbb (ORCPT
+        with ESMTP id S1378117AbhCBVdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 16:31:31 -0500
+        Tue, 2 Mar 2021 16:33:37 -0500
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 68D8A1C0B8C; Tue,  2 Mar 2021 22:30:00 +0100 (CET)
-Date:   Tue, 2 Mar 2021 22:29:59 +0100
+        id 8C1F71C0B88; Tue,  2 Mar 2021 22:31:59 +0100 (CET)
+Date:   Tue, 2 Mar 2021 22:31:59 +0100
 From:   Pavel Machek <pavel@denx.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
         akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
         patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
         jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/92] 4.4.259-rc2 review
-Message-ID: <20210302212959.GB25395@amd>
-References: <20210302192525.276142994@linuxfoundation.org>
+Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
+Message-ID: <20210302213159.GC25395@amd>
+References: <20210302192700.399054668@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="tjCHc7DPkfUGtrlw"
+        protocol="application/pgp-signature"; boundary="lCAWRPmW1mITcIfM"
 Content-Disposition: inline
-In-Reply-To: <20210302192525.276142994@linuxfoundation.org>
+In-Reply-To: <20210302192700.399054668@linuxfoundation.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---tjCHc7DPkfUGtrlw
+--lCAWRPmW1mITcIfM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> This is the start of the stable review cycle for the 4.4.259 release.
-> There are 92 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 5.10.20 release.
+> There are 657 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 
-CIP testing did not find any problems here:
+CIP testing did not find any problems here (failures are caused by
+unavailable board).
 
 https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+5.10.y
 
 Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
@@ -63,16 +64,16 @@ Best regards,
 DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
 HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
---tjCHc7DPkfUGtrlw
+--lCAWRPmW1mITcIfM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmA+rlcACgkQMOfwapXb+vKNvgCgu51OwF+Mka+NfOBqL06X8piN
-/kIAoLuMsKOpB8wC0MmgxyQqiK3h4xhO
-=pFut
+iEYEARECAAYFAmA+rs8ACgkQMOfwapXb+vJz7gCgjDStM8sqOM8JoUPCEc1/v6vJ
+yWEAn36CD35G+43JDoB2ST9xD0DDCz58
+=wsrs
 -----END PGP SIGNATURE-----
 
---tjCHc7DPkfUGtrlw--
+--lCAWRPmW1mITcIfM--
