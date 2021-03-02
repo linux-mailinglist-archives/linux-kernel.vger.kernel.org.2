@@ -2,127 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6642D32A1B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E5132A26F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345826AbhCBG5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:57:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381338AbhCBFVN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 00:21:13 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFC2C06178A;
-        Mon,  1 Mar 2021 21:20:32 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id b21so13109765pgk.7;
-        Mon, 01 Mar 2021 21:20:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KsTquK6HBVR6gWCGt6Eda/Orp7nGuXw2ak/HYVfr530=;
-        b=mLlFmfHeXvQ/VkA/Wfw2tspq7RS/aGONP8mHoC22l1G0FNA+Si3IPaUoQ1AdtVnXfP
-         XBulWzzgQmGRAJ/+5IcRN16LHpZy4sZQlFwL+/kgjVvJxSQY/drXOMJDwHKjwxb1GLJF
-         a7AgHDM7FOBvZNHGJ5gMZ1Jyom0V31mwvSlxBIjxillR/aS17zTkW6EUoaLUXkQrnpx9
-         HtJpPa3Dijh/Lclb8Sz6JtZNRsGppymd+r/vhxHOEP+y6fRFuRETfLcyzsQgu0XkbXmp
-         abGSD+IqFG7DNonD16cUcKW0hECL4lJ9TvE70wqjsbS5f7zZk8odUgNDjL1/RPHZAm6M
-         iGag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KsTquK6HBVR6gWCGt6Eda/Orp7nGuXw2ak/HYVfr530=;
-        b=Vq+xYtf0JQTVKYQ3sHeJ8TjZoBHktX2od5UAFiB0WeckyoS7XMy/SljWFYRWrdwWvi
-         mskrHhs4SDx7O00FSRZUfBL+t9/nbtoUkv5c4VC4Yxi6NLP7EUc8JbdusTqGkvILH3CP
-         OTHQO1nCZgMg2HZfP6qDNTCGXveUCGKpBjsZZyGipwaUtIN5O05yd8feRkmKQXcup3/0
-         pwA1eHU8zLkVdC4LZI2HW4vQjoYRmuN4oIGpC79IH7LPEFZXRvO6GdtyrMfGF8nA32yR
-         V1V3DViR9olYBWPu58oHPyQYQY40G2CMpdmVgZ4BqJQttp8uOrOWAqEbvLrcM7cqnPDj
-         ofTw==
-X-Gm-Message-State: AOAM530ctiMO7eT9nnU6I0/jfj87QuhIj4p3OwabHy6tamWVVfyxLumS
-        kg7d6HTFqcfSn3qe2w6UmclHKxTiuASG6Y0K
-X-Google-Smtp-Source: ABdhPJxxmn/B65WAfgRf/VRTzB8BCiZPhr+/H/PiDfKC6ie9BUW3FKKNJsJ900xOeHByhwOwTH1o/g==
-X-Received: by 2002:a62:800d:0:b029:1ee:2fc7:b9ee with SMTP id j13-20020a62800d0000b02901ee2fc7b9eemr1808233pfd.34.1614662431914;
-        Mon, 01 Mar 2021 21:20:31 -0800 (PST)
-Received: from localhost.localdomain ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id i13sm18784100pfe.46.2021.03.01.21.20.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Mar 2021 21:20:31 -0800 (PST)
-From:   Hyeongseok Kim <hyeongseok@gmail.com>
-To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hyeongseok Kim <hyeongseok@gmail.com>
-Subject: [PATCH v2] exfat: fix erroneous discard when clear cluster bit
-Date:   Tue,  2 Mar 2021 14:20:20 +0900
-Message-Id: <20210302052020.63598-1-hyeongseok@gmail.com>
-X-Mailer: git-send-email 2.27.0.83.g0313f36
+        id S1442772AbhCBHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:53:14 -0500
+Received: from m12-14.163.com ([220.181.12.14]:50436 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1837146AbhCBHe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:34:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=6+L6S
+        3PF+6atFy4jcL2HpjZWPg77zuao14pJR5Pd/C8=; b=M4IAEP65qhN9uRUtZBpE4
+        er8phBbh0WUyuH6eIuy4+yqBs0rp34D0r3bf6HOHHqK5W7dQsYyWLmGwi0Mg3wZH
+        nn0lxXc2G79me9A0skSg/6isswce54SHbSWwoyjD/AnuAlWOAOvbWB0fxSvjUI7f
+        jsivNSHZxFPLyf5wOC0si4=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp10 (Coremail) with SMTP id DsCowACHnyvHsz1gggkAnQ--.8851S2;
+        Tue, 02 Mar 2021 11:40:57 +0800 (CST)
+From:   dingsenjie@163.com
+To:     geoff@infradead.org, perex@perex.cz, tiwai@suse.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] sound: pps: fix spelling typo of values
+Date:   Tue,  2 Mar 2021 11:40:53 +0800
+Message-Id: <20210302034053.34524-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowACHnyvHsz1gggkAnQ--.8851S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XF4rtrWDur4UWFyUJryxZrb_yoWxCwbE9a
+        ykt3y8Wr95XFsrAr4jyF1rJrWFqas5Aryqgr4xKF4DGw15Zrs5C3y5Cry7Jr97WF4DXFyr
+        ZFnYgrnxKr92kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnzT5PUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiTglJyFUDH86npgAAsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If mounted with discard option, exFAT issues discard command when clear
-cluster bit to remove file. But the input parameter of cluster-to-sector
-calculation is abnormally added by reserved cluster size which is 2,
-leading to discard unrelated sectors included in target+2 cluster.
-With fixing this, remove the wrong comments in set/clear/find bitmap
-functions.
+From: dingsenjie <dingsenjie@yulong.com>
 
-Fixes: 1e49a94cf707 ("exfat: add bitmap operations")
-Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
-Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
+vaules -> values
+
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
 ---
- fs/exfat/balloc.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+ sound/ppc/snd_ps3_reg.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c
-index 761c79c3a4ba..54f1bcbddb26 100644
---- a/fs/exfat/balloc.c
-+++ b/fs/exfat/balloc.c
-@@ -141,10 +141,6 @@ void exfat_free_bitmap(struct exfat_sb_info *sbi)
- 	kfree(sbi->vol_amap);
- }
+diff --git a/sound/ppc/snd_ps3_reg.h b/sound/ppc/snd_ps3_reg.h
+index 566a318..e2212b7 100644
+--- a/sound/ppc/snd_ps3_reg.h
++++ b/sound/ppc/snd_ps3_reg.h
+@@ -308,7 +308,7 @@
+ each interrupt in this register.
+ Writing 1b to a field containing 1b clears field and de-asserts interrupt.
+ Writing 0b to a field has no effect.
+-Field vaules are the following:
++Field values are the following:
+ 0 - Interrupt hasn't occurred.
+ 1 - Interrupt has occurred.
  
--/*
-- * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-- * the cluster heap.
-- */
- int exfat_set_bitmap(struct inode *inode, unsigned int clu)
- {
- 	int i, b;
-@@ -162,10 +158,6 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu)
- 	return 0;
- }
- 
--/*
-- * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-- * the cluster heap.
-- */
- void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
- {
- 	int i, b;
-@@ -186,8 +178,7 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
- 		int ret_discard;
- 
- 		ret_discard = sb_issue_discard(sb,
--			exfat_cluster_to_sector(sbi, clu +
--						EXFAT_RESERVED_CLUSTERS),
-+			exfat_cluster_to_sector(sbi, clu),
- 			(1 << sbi->sect_per_clus_bits), GFP_NOFS, 0);
- 
- 		if (ret_discard == -EOPNOTSUPP) {
-@@ -197,10 +188,6 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
- 	}
- }
- 
--/*
-- * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-- * the cluster heap.
-- */
- unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu)
- {
- 	unsigned int i, map_i, map_b, ent_idx;
 -- 
-2.27.0.83.g0313f36
+1.9.1
+
 
