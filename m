@@ -2,118 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AE732A964
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E51A32A9A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580833AbhCBSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:21:43 -0500
-Received: from mga06.intel.com ([134.134.136.31]:34803 "EHLO mga06.intel.com"
+        id S1581075AbhCBSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:38:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1447268AbhCBPdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:33:18 -0500
-IronPort-SDR: yBONr8JFZIXgcK14onfp8saPU445QnqpqtNWtxA/2+JXLk0XoOyFct/se3gXfJRHEHrPdEIEc/
- J7TtOXIjZRRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="248258123"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="248258123"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:29:58 -0800
-IronPort-SDR: 15rbFgAnk1wAoW7qk1qh3Hjl7Tu8j51q4BNQ81ulINlDE+FX3Och0OoDdI2Pe48lHAUUROIIQu
- U2P/3RJuIUYQ==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="368995015"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:29:52 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lH6y4-009Pvb-Jh; Tue, 02 Mar 2021 17:29:48 +0200
-Date:   Tue, 2 Mar 2021 17:29:48 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
-        Timur Tabi <timur@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
- addresses as unhashed
-Message-ID: <YD5Z7Ax6vcAejoqR@smile.fi.intel.com>
-References: <20210214161348.369023-1-timur@kernel.org>
- <20210214161348.369023-4-timur@kernel.org>
- <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
- <CANpmjNNm-4s16_KQ1_NqFN4XOESJh4_=33LHQzt+p4V0Cy=Xzw@mail.gmail.com>
- <CAMuHMdWWsZ-vTGZCeLtcwLTuBYpeP0STfhrK37wiwmyfsQ798A@mail.gmail.com>
- <YD49x/UGUq6MSE39@alley>
- <8893ff08-1e50-316c-f632-cd37be1690d5@suse.cz>
- <CAMuHMdUB4DZxHo=j1+EsSsoGCdWmDO9mBo0cUtAH4OYHy3sBzw@mail.gmail.com>
- <20210302090811.620ae7d0@gandalf.local.home>
- <CAMuHMdVYJ0ydFEZ+xPLt27J9pBW+B8pJNPBDZ2Vw5g5k1atarg@mail.gmail.com>
+        id S1445518AbhCBPxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:53:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F370564F4D;
+        Tue,  2 Mar 2021 11:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614686219;
+        bh=cIkRF14zPcPSqpWRrh6YRDsCHvdb0fJJdHqgkrmKZvU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vF50CTG2UNOTiCEfRH96BRKfLw+6V5biCJ3LjLGW4YpB535K70+LeYEE8vm3WfJ/f
+         0orodGpno6ZeTxeaIjj8AyIedO9PCDidZ/zFwOUp+/0CY75QVRKUEI6EVkmUZB1VW3
+         AvdoX6ZvymKj8YOJg2xwUuDtccYfAcgWAhK8rPIb3TlEsFtOwni+ez1LnCYdkql05T
+         Lb/Gp/hM1lJ792iyVCZIl/20IAPm2LFpzpe8prg9RZm5dqgmFRmz1uBcuSVoLtyTAm
+         HD96ToggmOUYaQOp0lZbzyTkx3LigIhyxhMahp0RjRqqeinZcUSZaTlKFdeTSpf54n
+         0SVy1TPZeB3Uw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 10/47] mmc: mediatek: fix race condition between msdc_request_timeout and irq
+Date:   Tue,  2 Mar 2021 06:56:09 -0500
+Message-Id: <20210302115646.62291-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
+References: <20210302115646.62291-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVYJ0ydFEZ+xPLt27J9pBW+B8pJNPBDZ2Vw5g5k1atarg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 03:28:09PM +0100, Geert Uytterhoeven wrote:
-> On Tue, Mar 2, 2021 at 3:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > On Tue, 2 Mar 2021 14:49:42 +0100
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > So this is basically a kernel tinyfication issue, right? Is that still pursued
-> > > > today? Are there better config options suitable for this than CONFIG_DEBUG_KERNEL?
-> > >
-> > > As long as I hear about products running Linux on SoCs with 10 MiB of
-> > > SRAM, I think the answer is yes.
-> > > I'm not immediately aware of a better config option.  There are no more
-> > > TINY options left, and EXPERT selects DEBUG_KERNEL.
-> >
-> > Since the trace_printk() uses the same type of notice, I wonder if we could
-> > make this into a helper function and just pass in the top part.
-> >
-> > +       pr_warn("**********************************************************\n");
-> > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > +       pr_warn("**                                                      **\n");
-> >
-> >
-> > +       pr_warn("** This system shows unhashed kernel memory addresses   **\n");
-> > +       pr_warn("** via the console, logs, and other interfaces. This    **\n");
-> > +       pr_warn("** might reduce the security of your system.            **\n");
-> >
-> > Only the above section is really unique. The rest can be a boiler plate.
-> 
-> Good idea. drivers/iommu/iommu-debugfs.c has a third copy.
+From: Chaotian Jing <chaotian.jing@mediatek.com>
 
-+1. Let's keep it in some helper that can be added if we have a corresponding
-functionality.
+[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
 
-> > +       pr_warn("**                                                      **\n");
-> > +       pr_warn("** If you see this message and you are not debugging    **\n");
-> > +       pr_warn("** the kernel, report this immediately to your system   **\n");
-> > +       pr_warn("** administrator!                                       **\n");
-> > +       pr_warn("**                                                      **\n");
-> > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > +       pr_warn("**********************************************************\n");
-> 
-> Fortunately gcc is already smart enough to deduplicate identical strings,
-> but only in the same source file.
+when get request SW timeout, if CMD/DAT xfer done irq coming right now,
+then there is race between the msdc_request_timeout work and irq handler,
+and the host->cmd and host->data may set to NULL in irq handler. also,
+current flow ensure that only one path can go to msdc_request_done(), so
+no need check the return value of cancel_delayed_work().
 
+Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
+Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 004fbfc23672..dc84e2dff408 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -1101,13 +1101,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
+ static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+ {
+ 	unsigned long flags;
+-	bool ret;
+ 
+-	ret = cancel_delayed_work(&host->req_timeout);
+-	if (!ret) {
+-		/* delay work already running */
+-		return;
+-	}
++	/*
++	 * No need check the return value of cancel_delayed_work, as only ONE
++	 * path will go here!
++	 */
++	cancel_delayed_work(&host->req_timeout);
++
+ 	spin_lock_irqsave(&host->lock, flags);
+ 	host->mrq = NULL;
+ 	spin_unlock_irqrestore(&host->lock, flags);
+@@ -1129,7 +1129,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
+ 	bool done = false;
+ 	bool sbc_error;
+ 	unsigned long flags;
+-	u32 *rsp = cmd->resp;
++	u32 *rsp;
+ 
+ 	if (mrq->sbc && cmd == mrq->cmd &&
+ 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
+@@ -1150,6 +1150,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
+ 
+ 	if (done)
+ 		return true;
++	rsp = cmd->resp;
+ 
+ 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
+ 
+@@ -1337,7 +1338,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
+ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
+ 				struct mmc_request *mrq, struct mmc_data *data)
+ {
+-	struct mmc_command *stop = data->stop;
++	struct mmc_command *stop;
+ 	unsigned long flags;
+ 	bool done;
+ 	unsigned int check_data = events &
+@@ -1353,6 +1354,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
+ 
+ 	if (done)
+ 		return true;
++	stop = data->stop;
+ 
+ 	if (check_data || (stop && stop->error)) {
+ 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.1
 
