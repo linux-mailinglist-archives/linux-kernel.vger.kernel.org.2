@@ -2,164 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6041E32A23A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399C332A22C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836849AbhCBHVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:21:17 -0500
-Received: from mail-eopbgr80051.outbound.protection.outlook.com ([40.107.8.51]:7908
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1836136AbhCBGsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:48:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BpUFceYUORD9DbZFfuHNZbV0bh8/vqZEne7xPQT+62nhruqZMP1vyZatY12mgAqoQ223Y23KxE52vLhGJlVZVKUM0OdyUgh0ULGZrKE/FjSxHBFfOzAHlkL8J+dpbhaPjd29jWk9H+lgngZPzddol+DnBJvUaXruHCXFDkWOWnB767qHxq7HoubpI1BmZ2TZ91mecbDJkziZD92AcNfaZu02z38X8vdJtNSTXxUGka93ORZJQNH9rBc2ZjxCzxb8AjPiHjSdXGwfgR55r9xCJUqHx4FpmBu5On1RNg2j8MVCynKBojPVcvFvEjmP+ESFWW+dSXXv58BgynMPhvddig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zhiF++Dsm0f2rn9RfdTs3Gk+Tg71c+wP/7WcnY452T0=;
- b=K2bChBgHbjxzVKcN/u1oyDABoa4VU3mfxFdYAhZodU90rMjjoWR4+qmc6e/z5Du2UdG1OOS2H+9fc6JfxrEcYD8XG5Qdpc5WWfd7kaRteKHI7X8NyXBG2Ym2yx5L8avLXoeo/ui+xNa7QirDYVu8EeL7WTkMpfzFq0Mw1AbO2csF03atWj/PdsZkkr1nFvx1nm0iGX5g1Hq+22UkyWaxOEGrg23+wpz+PEVu+/u2v6GX3yrYVhwCWe08yC1z5YcST7HSfUFY3gWPBZykI6g+rILuNJsJjjMZHeChPGZR47BYlgA2N4EUdh1BzsLkuz/XnxRoGQRCCVENn3QwuOrk2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zhiF++Dsm0f2rn9RfdTs3Gk+Tg71c+wP/7WcnY452T0=;
- b=G/gmma1TYTaoZRUT3Y6SsdjA/FRyhBhbfoDTTQPdTUEvc3sJ0A++M71WLnhdpxMXzFHnpLCKKHrgfs8BUpjxkBdbIMHyZpFKEQPX/EfGpU7/L2/wPF/LkEbRK/d9FNB0inNjQWfw1WsoAc2mPYdaXDy5yJnwyniuxU1p0UCTvnE=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB7117.eurprd04.prod.outlook.com (2603:10a6:800:12f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Tue, 2 Mar
- 2021 06:46:38 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
- 06:46:38 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, laurentiu.palcu@oss.nxp.com,
-        guido.gunther@puri.sm
-Subject: [PATCH v8 6/6] MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
-Date:   Tue,  2 Mar 2021 14:33:16 +0800
-Message-Id: <1614666796-19374-7-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614666796-19374-1-git-send-email-victor.liu@nxp.com>
-References: <1614666796-19374-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2PR02CA0191.apcprd02.prod.outlook.com
- (2603:1096:201:21::27) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by HK2PR02CA0191.apcprd02.prod.outlook.com (2603:1096:201:21::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3890.28 via Frontend Transport; Tue, 2 Mar 2021 06:46:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c2cded1f-def0-431c-24c1-08d8dd46edba
-X-MS-TrafficTypeDiagnostic: VI1PR04MB7117:
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB71170A19D1AB027D49AE730798999@VI1PR04MB7117.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:901;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3N8Az+7LkuuAyj6WKukbcKT5QO65qLaaFhLx+WQYerfEIOzGklfWvnzNXBCGOSNONIHwuK8PEHCdJovyWOKSIMHUVcvYowjDd1Mcbv8s4tJ35uLs4BYCHbBNG+Vh0wRa2GFq12NqP99imd5fuXZxhueqAie2CVKAPCNG5AQRDMhDDhaBXTOUY/f9cIMQfBn+Jk7aJZxF+W9vZYRkncdaEl9k+Ebhax0s7dKJapAdXGLTI8r80Goa4uJ9DOvn4DrQU9fDGWkwBtqCZE+RHenJ7egzbPbJ6HCtRa6tN6uSsob8k1oXHBWGQvIoY6E7G6ql6zCm3oily61a3opQFiZro6pU1q4xtdlvgd64n+Uj7/FmPtgkve2msJvvw46hBuL24oJ7WrYpAWqjaNvuJvAyX0eY8ATxQqv3u2xZkcOdq065uurhKj3wW9BoGNKPeSCydc5snZXodvKh+lauxo/19LTEScLkakoPu1y8QdFtRj+bLwlrzq5gWKzlaK3d/snns5u9XyqSLfUGjiXu02BA2sz8uctG8UhgxFCWp3uYAkWjmzY1mjfy5rc4bIT4+0B8YEJJEBkkvHv7a18vzyMRjw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(136003)(366004)(2906002)(16526019)(186003)(4326008)(478600001)(66476007)(26005)(6486002)(52116002)(316002)(8676002)(66946007)(66556008)(7416002)(2616005)(6506007)(36756003)(6666004)(956004)(6512007)(5660300002)(69590400012)(86362001)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4cB/lI0J73Y2KDPq5nTQnJ1U63c5R0g5tDo/VhMkgQ5x5/GEB/yTxgeIkuqU?=
- =?us-ascii?Q?xk/4Bl1GzJDa65otiS/HSKzzSIuZYHeJYH/68u8GU6y7JhPynJYaM+pInacG?=
- =?us-ascii?Q?XTJVEL6BM2Nq5n2fkZhQuMIZilokP+WKCfg2LyJvrd+ego+FMSxDcShZI8FL?=
- =?us-ascii?Q?QQ5PJymIfhosWVvC3vxZGvYhVY31tpdVyCKet0PPop8MDSVzr+fUv0tWMImh?=
- =?us-ascii?Q?sRdjtYf3qAOv1B4ZZedOk0TUHt2P+wo5A/pQH8hd2CcjzXu6YTk1XQJSHpqS?=
- =?us-ascii?Q?Dfz9XVg2DyB0xVhNTFYUqEvJCIWqgvCb3YCf2A0IUWxnVoxkh6FOE2XR+Ir3?=
- =?us-ascii?Q?vaCIBd3dgFazV1GwwmYVW3U/GlRSHGgimQxqgBanx2lrI8i/zL5VE4zwC4jA?=
- =?us-ascii?Q?5RnfK1mMquoUNVAkpwmSgH9/Irt+ZCsD5umkgQO7HQq7h9BzXhSnATgXjhPw?=
- =?us-ascii?Q?sNpffC2RrIVjWHUtxKDOwbYTVqptRXLVFAEKfdo6jcUIWkhLOYGmHqqHTtX0?=
- =?us-ascii?Q?qyjBABsLX8IRTyJlsIQiVyBhGD7RApMEcN6p/NcoCd4Ve3ID9TipVcNeLxnd?=
- =?us-ascii?Q?2I1pltkx9H0mibHqfXd4Y711wL50ypIYrNfJ3FMytkpyb2oh89GZiRpTat4F?=
- =?us-ascii?Q?OvmPEq8xZ0AK99r56yNYNnMTZsY/wP6R+c+lc8ZMes/c4X3s/Pdy9WbHE45e?=
- =?us-ascii?Q?cx5eGs8C4k/Yv0ZbLagJclMWph1PE45eWOVVgJbGic54ymApZwt3y+koecV2?=
- =?us-ascii?Q?MpSxKnJsza3agjiHggAmvdpsOVSOzKPTUaGFqPHVa3lt8OrFq3/Vc4ymS8XR?=
- =?us-ascii?Q?Rg2vnu/wUIFVqInsGpz6L8HxjhWUrN4hmYdL/SIpUa000Vkbj+DkZ0L006ue?=
- =?us-ascii?Q?QlJXmypVN4JTfTlLGMkV4x3zJtYTpN88BjgpznSj3XtWBZ+A89iNM60/VWEY?=
- =?us-ascii?Q?mCw63l/1FMqZ/csLpdROKF3K7HBT7iwDivsvia8IONWfEMxAAoKr/RJFrRQA?=
- =?us-ascii?Q?CrA4itnsBOWVPS2c4sT/zqXDjJPi2j1yVJZmXURzyUbDwy/wb5RFodmXKy5e?=
- =?us-ascii?Q?xJFGbtAR94PlXOryRNc18QdaYZ86P0tbe+d/YTFDSswxyh4uOaI1lZKyxJQK?=
- =?us-ascii?Q?og7JiwsDPNs0LrqHiwDi0yEzAm+oWygNtDsY0anfJK+k4oh4QyJgik3zNnic?=
- =?us-ascii?Q?Pm0ON5kCms2UQ3lEa4blOvzuNH1Y+R2+oG1J/yO/SnLHkI0PbczzUfkm4dlC?=
- =?us-ascii?Q?Hel2DgfPdFcxxBrwSzt0GwBVM+qMHH3gt5kKroUcD6eY7eJ/+YtM6f727Jco?=
- =?us-ascii?Q?tlS9z56BA8UPrphgDX2gchMe?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2cded1f-def0-431c-24c1-08d8dd46edba
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 06:46:38.2811
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bbnjlipItTHCaZUSs49U2bNur8AE3hjVTQbtyNhZFOPGHFlCjaKbNQ5mvGXCW60MxbNCZl//plF2JtjTVbL4+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7117
+        id S1836737AbhCBHUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:20:33 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:42444 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242631AbhCBGhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:37:38 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UQ3dCZ5_1614667009;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UQ3dCZ5_1614667009)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Mar 2021 14:36:53 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     ryabinin.a.a@gmail.com
+Cc:     glider@google.com, andreyknvl@gmail.com, dvyukov@google.com,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, kasan-dev@googlegroups.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] riscv: kasan: remove unneeded semicolon
+Date:   Tue,  2 Mar 2021 14:36:48 +0800
+Message-Id: <1614667008-22640-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer of the i.MX8qxp DPU DRM driver.
+Fix the following coccicheck warnings:
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
+./arch/riscv/mm/kasan_init.c:217:2-3: Unneeded semicolon.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-v7->v8:
-* No change.
+ arch/riscv/mm/kasan_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v6->v7:
-* No change.
-
-v5->v6:
-* No change.
-
-v4->v5:
-* No change.
-
-v3->v4:
-* No change.
-
-v2->v3:
-* No change.
-
-v1->v2:
-* No change.
-
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 63bd69c..08cd9cd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5892,6 +5892,15 @@ F:	Documentation/devicetree/bindings/display/imx/
- F:	drivers/gpu/drm/imx/
- F:	drivers/gpu/ipu-v3/
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index 3fc18f4..e202cdb 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -214,7 +214,7 @@ void __init kasan_init(void)
+ 			break;
  
-+DRM DRIVERS FOR FREESCALE i.MX8QXP
-+M:	Liu Ying <victor.liu@nxp.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-+F:	drivers/gpu/drm/imx/dpu/
-+
- DRM DRIVERS FOR GMA500 (Poulsbo, Moorestown and derivative chipsets)
- M:	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
- L:	dri-devel@lists.freedesktop.org
+ 		kasan_populate(kasan_mem_to_shadow(start), kasan_mem_to_shadow(end));
+-	};
++	}
+ 
+ 	for (i = 0; i < PTRS_PER_PTE; i++)
+ 		set_pte(&kasan_early_shadow_pte[i],
 -- 
-2.7.4
+1.8.3.1
 
