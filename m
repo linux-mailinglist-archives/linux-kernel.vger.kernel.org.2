@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EC332A07F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12B632A080
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381157AbhCBEVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
+        id S1381167AbhCBEVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:21:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344521AbhCBAUY (ORCPT
+        with ESMTP id S1348006AbhCBAWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:20:24 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1F4C061788;
-        Mon,  1 Mar 2021 16:19:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=T+DlXRF5bBzpgRo6D9piJcBL+4Ne8yKqxm/gj/HQjiY=; b=cQYeaPzjgUUqWKvk+1OtVg8BC2
-        Mv9wiJp0xIGGvGbpLqn4rlobqTpN32KFrM3nG7cgw9gPwwhF+CzAGiUdzhItBf3Bxtw8BOlPPUlzg
-        tBEyfeQId+Nmgb5D5V+Ml4x/TA1yO80Nfewaa0MVzHQhBSbj6vNx7w4dB7EDaNdAqh3viGttaBD9N
-        OVVvbFuc/rCGUwjy6KjoafF8Jv8bSM7s06d7WIuVMyPj9ULLmDlc66vW/8DV+Zd+xrKDHsBm25c7K
-        u8fXUyPBo4TgCf4BvOnZcNGW1r8r63/812Hj43/v+KoGFv3aeKUXbJk8yUZheQ91jyYbjRYqU9jIs
-        5llSPHdA==;
-Received: from [2601:1c0:6280:3f0::3ba4] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lGslF-0007vO-Q6; Tue, 02 Mar 2021 00:19:38 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com,
-        syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, stable@vger.kernel.org
-Subject: [PATCH] NFS: fs_context: validate UDP retrans to prevent shift out-of-bounds
-Date:   Mon,  1 Mar 2021 16:19:30 -0800
-Message-Id: <20210302001930.2253-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 1 Mar 2021 19:22:25 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30FBC061756;
+        Mon,  1 Mar 2021 16:21:39 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DqHqg0Qjgz9sS8;
+        Tue,  2 Mar 2021 11:21:35 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614644495;
+        bh=8OV61hNxQX0O7/OTVI4qBszDlVyPCO8tx8jUIJVD+Oc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YUOQSf4DpL8Xa9EqsjLIKtTubZVkbyrtZL9vHtuFwqSwKioWmwhkvaKWUNAiW5Nhc
+         YZMh8iYq7bmsZ37x/QqLYEHmvo9+m3sJolkfzRuOGfbhwUQ2aDfJsu3b67+JqhwbKY
+         3FFDplwmFDdMSS5Oxyxrs6CjkUkwfYGLUM0UQrjgX2u4v0Q4MwjtTo1QQbF2wmwkfR
+         85mRkL0FweYaHO/gKQs9AOZY1t34WWHWE0sr30pvOBFvgx5rPm/5984Q4S6XY3cW8z
+         291OevBPddj3nEk/f/Fer/SkQhkuw8uK4hG3j/S/3c18ea/Y7u3L/3yZaHpioABJiI
+         TEy6U0nPCeOzA==
+Date:   Tue, 2 Mar 2021 11:21:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the powerpc-fixes tree
+Message-ID: <20210302112131.5bb7b08b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/D4mqAlbm0wq8Ywvog1l6MM/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix shift out-of-bounds in xprt_calc_majortimeo(). This is caused
-by a garbage timeout (retrans) mount option being passed to nfs mount,
-in this case from syzkaller.
+--Sig_/D4mqAlbm0wq8Ywvog1l6MM/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If the protocol is XPRT_TRANSPORT_UDP, then 'retrans' is a shift
-value for a 64-bit long integer, so 'retrans' cannot be >= 64.
-If it is >= 64, fail the mount and return an error.
+Hi all,
 
-Fixes: 9954bf92c0cd ("NFS: Move mount parameterisation bits into their own file")
-Reported-by: syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com
-Reported-by: syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: linux-nfs@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: stable@vger.kernel.org
+After merging the powerpc-fixes tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
+
+drivers/net/ethernet/ibm/ibmvnic.c:5399:13: error: conflicting types for 'i=
+bmvnic_remove'
+ 5399 | static void ibmvnic_remove(struct vio_dev *dev)
+      |             ^~~~~~~~~~~~~~
+drivers/net/ethernet/ibm/ibmvnic.c:81:12: note: previous declaration of 'ib=
+mvnic_remove' was here
+   81 | static int ibmvnic_remove(struct vio_dev *);
+      |            ^~~~~~~~~~~~~~
+
+Caused by commit
+
+  1bdd1e6f9320 ("vio: make remove callback return void")
+
+I have applied the following patch for today:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 2 Mar 2021 11:06:37 +1100
+Subject: [PATCH] vio: fix for make remove callback return void
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- fs/nfs/fs_context.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/net/ethernet/ibm/ibmvnic.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- lnx-512-rc1.orig/fs/nfs/fs_context.c
-+++ lnx-512-rc1/fs/nfs/fs_context.c
-@@ -974,6 +974,15 @@ static int nfs23_parse_monolithic(struct
- 			       sizeof(mntfh->data) - mntfh->size);
- 
- 		/*
-+		 * for proto == XPRT_TRANSPORT_UDP, which is what uses
-+		 * to_exponential, implying shift: limit the shift value
-+		 * to BITS_PER_LONG (majortimeo is unsigned long)
-+		 */
-+		if (!(data->flags & NFS_MOUNT_TCP)) /* this will be UDP */
-+			if (data->retrans >= 64) /* shift value is too large */
-+				goto out_invalid_data;
-+
-+		/*
- 		 * Translate to nfs_fs_context, which nfs_fill_super
- 		 * can deal with.
- 		 */
-@@ -1073,6 +1082,9 @@ out_no_address:
- 
- out_invalid_fh:
- 	return nfs_invalf(fc, "NFS: invalid root filehandle");
-+
-+out_invalid_data:
-+	return nfs_invalf(fc, "NFS: invalid binary mount data");
- }
- 
- #if IS_ENABLED(CONFIG_NFS_V4)
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/=
+ibmvnic.c
+index eb39318766f6..fe3201ba2034 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -78,7 +78,6 @@ MODULE_LICENSE("GPL");
+ MODULE_VERSION(IBMVNIC_DRIVER_VERSION);
+=20
+ static int ibmvnic_version =3D IBMVNIC_INITIAL_VERSION;
+-static int ibmvnic_remove(struct vio_dev *);
+ static void release_sub_crqs(struct ibmvnic_adapter *, bool);
+ static int ibmvnic_reset_crq(struct ibmvnic_adapter *);
+ static int ibmvnic_send_crq_init(struct ibmvnic_adapter *);
+--=20
+2.30.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/D4mqAlbm0wq8Ywvog1l6MM/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA9hQsACgkQAVBC80lX
+0Gw/tgf/X1mjakb6+92nMtN4BKbLQpllmRKdA+xmN2SHAlJhXDviswVeWKBJa2ue
+/wrRfq97m9m28/frwbTrbLd0pemJ0CjP0ZtNVMPgDiDMfSZMe6W3zJ6vAnwxGtuW
+WcgqphbiQyzt30NHOa0kX0DANyeNS54jiZbupaYEYGZcZBLcEshZniaBzji+6JfX
+ev0OdkJiCeyuHk6uyGgbEuGaMMj+CmEjwnTs/9JSKN061I3E4p999PuIzJ/eBxpn
+5z2QraLWK8pqB1B9IHuG8tHSA9OvZtLcnu5hmfKWKN/TwsarBr7ghL+cEcb9OP3P
+tOFf5HNetbZ1Xek+2xyH7aIlUpf5VA==
+=JDVK
+-----END PGP SIGNATURE-----
+
+--Sig_/D4mqAlbm0wq8Ywvog1l6MM/--
