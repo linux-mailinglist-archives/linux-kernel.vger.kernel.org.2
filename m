@@ -2,103 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC5532A401
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A15C32A403
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349560AbhCBKFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:05:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54077 "EHLO
+        id S1349569AbhCBKFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:05:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58737 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1577780AbhCBJw6 (ORCPT
+        by vger.kernel.org with ESMTP id S1577793AbhCBJxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:52:58 -0500
+        Tue, 2 Mar 2021 04:53:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614678690;
+        s=mimecast20190719; t=1614678704;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=taBd6uLnFKceyekg9FzDQkJCAu7LLfUBn3MWlZnlhHs=;
-        b=IfmKUYW3xNCpTp5q2mQ5LBcYedrhhxRLQqYqFI/sy+WUc+7mRLAc3e7laun1wk7Keo7T8/
-        tzZX0hinsoaAP7lpr9tnCOZePy9+pniT6xw/v29CymRcc0u0XEw+Ti9YRtyy/lDzeZFanG
-        hlc/6vZvrliOfKP2rUcvbPfrYFJ43B8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-DrAyiAC8NjSnVp68iP9-aA-1; Tue, 02 Mar 2021 04:51:27 -0500
-X-MC-Unique: DrAyiAC8NjSnVp68iP9-aA-1
-Received: by mail-ej1-f72.google.com with SMTP id fy8so3321064ejb.19
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:51:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=taBd6uLnFKceyekg9FzDQkJCAu7LLfUBn3MWlZnlhHs=;
-        b=fBkPeiUxsCIpiWS1yiiN4bAD+2UU0AT2zLnJyRvXTIqixvja2ZqAFGroBBKvBScg7R
-         oqnSPWtQKCiCIruONQzdPlZlDv264SQ/oFKwUQJrmY8bQfG8nULUU6av/gWhxoMJMbww
-         7GToaTiB+oTH74oAp5J4mNBI6yO/CqJzJxngEH0/mEE+qJqAxQNar5/noySUV0gY0/V3
-         jP0GFW2/NEub+yw/W87fz0nNJ1ok+2DNrfEjB3hUYo604/hK7+gwa1K6uvB96ujpSJC4
-         kYwWFpkRY9fnZaqJgyPQSR9tfTJ+r9eozQvIcAdGh8NkKRQAXwrOwtsbBuXxB3Dres2P
-         QT5Q==
-X-Gm-Message-State: AOAM530zMEHJ+FLXm7K84XpJn7lZg5Dt9WtunUwpQ0d/McnZhUXbiPar
-        6AtgxPeSx3KlUvv7y1ohLLm0iusJZZhc5QuvAi2Hj4t90/q2ZY+6f4g8eC/VcT0hmLVEd1HouVl
-        MuGoBAj6fjMXNEwpQVvAVF12M
-X-Received: by 2002:a50:e183:: with SMTP id k3mr20106118edl.45.1614678686032;
-        Tue, 02 Mar 2021 01:51:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwVGIo5XKn8nNvUOxG42+dGS0VnbP0nQwS9Jyziu/Fx8Ig8UChySv7eaRLgbNCVP6IBt5vl/w==
-X-Received: by 2002:a50:e183:: with SMTP id k3mr20106110edl.45.1614678685903;
-        Tue, 02 Mar 2021 01:51:25 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id v11sm17608252eds.14.2021.03.02.01.51.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 01:51:25 -0800 (PST)
-Date:   Tue, 2 Mar 2021 04:51:23 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vhost-vdpa: honor CAP_IPC_LOCK
-Message-ID: <20210302044918-mutt-send-email-mst@kernel.org>
-References: <20210302091418.7226-1-jasowang@redhat.com>
+        bh=YFm4L6wDlmBpBp9jYOTr6fIaGFcMBM9PSJDWBsVlZjw=;
+        b=eGhRadjpyoWchGXuBvcxa9F69Z4BWW16gKcExenXr7jwG4gavGZnn/GUPV4Ek8eGedgxdv
+        nRFj8LElJJAEARyUcoolCVC15voEGD6t8qFt69bFm01sDpNskmyI4ZLZvZ2nhg8+3RiyZR
+        jtI/KF0l1mALjN/OTMnPj37JwMH+nlM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-NosW96qGP9Gpg8C-jeDm1w-1; Tue, 02 Mar 2021 04:51:40 -0500
+X-MC-Unique: NosW96qGP9Gpg8C-jeDm1w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 601AA801995;
+        Tue,  2 Mar 2021 09:51:36 +0000 (UTC)
+Received: from localhost (ovpn-114-138.ams2.redhat.com [10.36.114.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD0586F991;
+        Tue,  2 Mar 2021 09:51:31 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 09:51:30 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YD4KovxeoNG/c8QC@stefanha-x1.localdomain>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <CAK8P3a1ZXbodV07TTErnQunCLWOBnzRiVdLCxBD743fn-6FbXg@mail.gmail.com>
+ <56fdef9a-b373-32f2-6dac-e687caa813c8@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OcANLzSOtjrbOSo2"
 Content-Disposition: inline
-In-Reply-To: <20210302091418.7226-1-jasowang@redhat.com>
+In-Reply-To: <56fdef9a-b373-32f2-6dac-e687caa813c8@intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 04:14:18AM -0500, Jason Wang wrote:
-> When CAP_IPC_LOCK is set we should not check locked memory against
-> rlimit as what has been implemented in mlock().
-> 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
 
-Indeed and it's not just mlock.
+--OcANLzSOtjrbOSo2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Documentation/admin-guide/perf-security.rst:
+On Tue, Mar 02, 2021 at 10:42:06AM +0800, Jie Deng wrote:
+>=20
+> On 2021/3/1 23:19, Arnd Bergmann wrote:
+> > On Mon, Mar 1, 2021 at 7:41 AM Jie Deng <jie.deng@intel.com> wrote:
+> >=20
+> > > --- /dev/null
+> > > +++ b/include/uapi/linux/virtio_i2c.h
+> > > @@ -0,0 +1,56 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note=
+ */
 
-RLIMIT_MEMLOCK and perf_event_mlock_kb resource constraints are ignored
-for processes with the CAP_IPC_LOCK capability.
+The uapi VIRTIO header files are BSD licensed so they can be easily used
+by other projects (including other operating systems and hypervisors
+that don't use Linux). Please see the license headers in
+<linux/virtio_net.h> or <linux/virtio_blk.h>.
 
-and let's add a Fixes: tag?
+> > > +/*
+> > > + * Definitions for virtio I2C Adpter
+> > > + *
+> > > + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> > > + */
+> > > +
+> > > +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+> > > +#define _UAPI_LINUX_VIRTIO_I2C_H
+> > Why is this a uapi header? Can't this all be moved into the driver
+> > itself?
 
-> ---
->  drivers/vhost/vdpa.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index ef688c8c0e0e..e93572e2e344 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -638,7 +638,8 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->  	mmap_read_lock(dev->mm);
->  
->  	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
-> -	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
-> +	if (!capable(CAP_IPC_LOCK) &&
-> +	    (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit)) {
->  		ret = -ENOMEM;
->  		goto unlock;
->  	}
-> -- 
-> 2.18.1
+Linux VIRTIO drivers provide a uapi header with structs and constants
+that describe the device interface. This allows other software like
+QEMU, other operating systems, etc to reuse these headers instead of
+redefining everything.
+
+These files should contain:
+1. Device-specific feature bits (VIRTIO_<device>_F_<feature>)
+2. VIRTIO Configuration Space layout (struct virtio_<device>_config)
+3. Virtqueue request layout (struct virtio_<device>_<req/resp>)
+
+For examples, see <linux/virtio_net.h> and <linux/virtio_blk.h>.
+
+> > > +/**
+> > > + * struct virtio_i2c_req - the virtio I2C request structure
+> > > + * @out_hdr: the OUT header of the virtio I2C message
+> > > + * @write_buf: contains one I2C segment being written to the device
+> > > + * @read_buf: contains one I2C segment being read from the device
+> > > + * @in_hdr: the IN header of the virtio I2C message
+> > > + */
+> > > +struct virtio_i2c_req {
+> > > +       struct virtio_i2c_out_hdr out_hdr;
+> > > +       u8 *write_buf;
+> > > +       u8 *read_buf;
+> > > +       struct virtio_i2c_in_hdr in_hdr;
+> > > +};
+> > In particular, this structure looks like it is only ever usable between
+> > the transfer functions in the driver itself, it is shared with neither
+> > user space nor the virtio host side.
+
+I agree. This struct is not part of the device interface. It's part of
+the Linux driver implementation. This belongs inside the driver code and
+not in include/uapi/ where public headers are located.
+
+Stefan
+
+--OcANLzSOtjrbOSo2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmA+CqIACgkQnKSrs4Gr
+c8gEYQf/SkwOouoLMamDCEw2Sy3MNu4tjAtBfi8upE6rayO9k9KfFtOUq6S4oct9
+mLjJDftIwDsJpNeTI9qjLqtwLKsyJa4ZIQ9EFCyiY69Fyf28MdcNZ1exQdmvHoKD
+8BdJIsugcZidzDJDSEzU7JMdqXx72rp7x+ZeXdsh6HV74shf2kjNy7aIL3pYT2gN
+M1+VVwD/2tbGO8W5Dza64x/2rbqU+vdFCbSXUZTlOLvhzMstmwimEe5YKjGYgJtD
+oLWHYQtvkd+1rFRcUeFjhewq0XtyQ4XdFOuwHVjukjfFCwUPg9gO21P4wJNNokG2
+K6vKRdDW+3yQzhulzaWhoPS+K6Dh3w==
+=zjby
+-----END PGP SIGNATURE-----
+
+--OcANLzSOtjrbOSo2--
 
