@@ -2,220 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E7D32A892
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC2B32A894
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351895AbhCBRu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:50:28 -0500
-Received: from mail-bn7nam10on2064.outbound.protection.outlook.com ([40.107.92.64]:24869
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1578437AbhCBPQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:16:17 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eejji+A721cdF2ql7OAr1tYoHuKFROI3COZcDqv/KtlGdCTfanAR4C5KtWaJYkRiidzfL+dHQog4ykV4/IrM3IwSxDxPKGTMVCnheDbH8OALtKtK9mBgrU7areECvG3lajEJxhjunV3A4dnhl46nHK6qL7Fr/MWeQzAUCbuCHNEQVnuGDHrwadOtV2uZ897bjxpBn0Ml2/7epV24TvicWNWa6GV6IjOSu3cgWYwmY5n8XFFqN94nKSCQBlnP3SWEASTq7e/EDnSysWsUicoC3Xu8jV/hb5LPabjweChDXnkNo1LpOZBTOMpqA7rFPAh9g5haSa/DFGOOsYCg0UsW8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vu5ir93lfLnc5rhIgOvqqcRJxkoPRN5UHxTwT3LVEU8=;
- b=GSadVlBxPvuaZdi5ZrG6gNZBD/ZLq44D9pXjuR8c+D7zmK+N7+4JzpjyAgxEo7fpptWhmq3BFaa3z0XmPXCz+uvJKkorpSE/RBKEliIug+xqicoyk7Y4/as1m5ow0F9JOYGBjYuxWhJAwuTNG2dheXg/TMc1Wge+wBMvWjzVk12Yo3RKA3518fFKwpoQmbgfMlEdkwpjy5VsWGS9tizz5PIOvoFFOXJP4UEhy5n9h4OOXIOyBb9Y2KehxYrcub8Go+iwHjtrK2rzapGbCbTMJ4S/q1Fpc30fwKiuhwDXISBB/eQMhI1ahgzvpEhY85NnzGXFhybZtynyOLe6XYxXFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vu5ir93lfLnc5rhIgOvqqcRJxkoPRN5UHxTwT3LVEU8=;
- b=BgpRJHvdxF4uM9x+T1O6AIdk9WGfOlfWloIDVG+LmCnG5vyjcEGq5A6pNBIOY/ZXPEE2UrvqRPlkf1NNlS8vapLhMFyael2Mv1nffsmxlBzIHrNfkoUURovdv38Qfrid2wCaao9yyuSX+HYDdyQEJwLdf3dqKxi/TK/y5cufAIQ=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN6PR12MB2688.namprd12.prod.outlook.com (2603:10b6:805:6f::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Tue, 2 Mar
- 2021 15:15:22 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e%7]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
- 15:15:22 +0000
-Date:   Tue, 2 Mar 2021 15:15:16 +0000
-From:   Ashish Kalra <ashish.kalra@amd.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Steve Rutherford <srutherford@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Message-ID: <20210302151516.GA30137@ashkalra_ubuntu_server>
-References: <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
- <YCxrV4u98ZQtInOE@google.com>
- <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
- <20210224175122.GA19661@ashkalra_ubuntu_server>
- <YDaZacLqNQ4nK/Ex@google.com>
- <20210225202008.GA5208@ashkalra_ubuntu_server>
- <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
- <20210226140432.GB5950@ashkalra_ubuntu_server>
- <YDkzibkC7tAYbfFQ@google.com>
- <20210302145543.GA29994@ashkalra_ubuntu_server>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302145543.GA29994@ashkalra_ubuntu_server>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN2PR01CA0047.prod.exchangelabs.com (2603:10b6:800::15) To
- SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+        id S1351934AbhCBRul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:50:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1574580AbhCBPQn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:16:43 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC74C0611C2
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:15:54 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id k66so3126363wmf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:15:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=58mM+iNIpmtGx0uHuLvmdthTB7Yp3r3FASJT+Kdp9fU=;
+        b=I970pbnExNgljvwoPCZHsr/iXTJJV5dc3Ck/R3Df5L/UTmmzkv2ipxFNF2Uo9+asZV
+         F2ZS3fiXavIcgQaQmt2zqiPFnzd2DVReeRUr64eWVMMvEzA2/qEpyEl0vJwBTKlP2fI6
+         uTUv1bxSHDrqeYCRB6dalKcmn78tqIx9rUhJm4KneVcEn1gsEyFIizAEfdMFoyPvObXy
+         dY5HQ/FhWOwGcEoE03bH5dbOupUnaFM+Y2eFC7rkoVir7EP/sGBCIxZBKPT7sdp5/NtK
+         CZtT2txJSX0bnseZZ3iHznGbe6K9JqfPddeecmQLYvfThDePGW3KIXb9GayBk/wGCDYW
+         R1wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=58mM+iNIpmtGx0uHuLvmdthTB7Yp3r3FASJT+Kdp9fU=;
+        b=EwwwTcQCkWGIUIYg+qnGZlga5T+WxKsgrZpYJcVKS1w9ofqTT8OTrt8DEBCVDcz060
+         hy2zVOoypwcIZfVT/+oNnhR+VDXIr7p3TUZx4WhOieECj17pyPTsuhVBaRHMbcPwjL/Q
+         1PcahDWIN0WDWh3FMjT3zuA59dpbz9aQVMqx476or/QbyqNboYC/Qswg1Pj1SlTc4roh
+         CwTF8/1mx6o6J4IhUiRJCPqVsnLrEJO/1mld9EO0aSkrmQec6mxY9k43/uYF3vMIbmoE
+         c+ypZXpW9OlRrtJvnRpzei/gZruuenx99NrPuAOUDnrT7F5sd8Hl3aKIkga5J78heEQC
+         xkmA==
+X-Gm-Message-State: AOAM5329FQ7cQa9Hmi5sJBTHjaW9T5VYrSNahNPd5clJ8CAuy0gKRhVc
+        jy0AERJPjN7+i7/NnGuAug==
+X-Google-Smtp-Source: ABdhPJz5zmy5GeQo7ONi4+1Wpwcs7UdpR1DaPXw0WBFTxebI8BlU7CQ+gn/ekVTQu7oLukszsAf3yQ==
+X-Received: by 2002:a1c:6a12:: with SMTP id f18mr4650223wmc.31.1614698153729;
+        Tue, 02 Mar 2021 07:15:53 -0800 (PST)
+Received: from localhost.localdomain ([46.53.254.123])
+        by smtp.gmail.com with ESMTPSA id j30sm11690839wrj.62.2021.03.02.07.15.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 07:15:53 -0800 (PST)
+Date:   Tue, 2 Mar 2021 18:15:51 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 02/11] pragma once: convert arch/arm/tools/gen-mach-types
+Message-ID: <YD5Wp/ok7aFY7Ff7@localhost.localdomain>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+ <YDvL5H9BLnLYuI2q@localhost.localdomain>
+ <20210301101950.GV1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server (165.204.77.1) by SN2PR01CA0047.prod.exchangelabs.com (2603:10b6:800::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 2 Mar 2021 15:15:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 339e673a-2253-483e-bcf7-08d8dd8dff92
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2688:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB268877B6831B0B1EAB5410CD8E999@SN6PR12MB2688.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6MuqazUq33GVkmPUE+TS/tsXBxoYM+/3Sw8I95sHS+5HWTboI4M5NhieL5reMnv/hOG/zGJO8m80yiUD/i8Xz8JC9f94lt243Zml2NgdDVB9aBi4oY7OJAtnXhCAqLi8nHHdxruyQjsisz+UGDdXI5Gn9JG/zJdGQuK2Z8zgD0KJAVlgib/PlkwA0Cs/xcYNwjGeewbnvyxiTWe1IMzAvoHF0e2E+5b+HohrEa/79cJEDdiN71EblNheZ/naga9eackxY0zNIoJQERHNJ3nOsyZ5jE5I2lXvkJAaAQ+jj6oQsUtk5eGn2PF8irOqU1X2ir3wBWi3gObtHFSbeosd5LJlAcymdNxIBdRa8ftVYkvAbBYPoYA+TQBNPKc2RqCcPZsGgHGBC+0BH4zJdToIWVS94Gp2+wnTqkzF5oPgMPFtUgoYtr5QpdVo+12j8NLBE7444M5YWG9YY16LTw1Ki67FectUf3b0O9Md/aDHHJUK9KKEtjqkYezVGXf9qNYN+6gLfW/oZ0NJgw8uFzE8DA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(9686003)(8936002)(83380400001)(186003)(86362001)(6666004)(16526019)(6916009)(44832011)(316002)(956004)(55016002)(4326008)(1076003)(478600001)(54906003)(5660300002)(8676002)(33656002)(52116002)(66476007)(6496006)(66556008)(66946007)(26005)(33716001)(53546011)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9EZd9GC57AZ0cX4g9lwASLkWTzrqpP5piqK8DMSXc7KrpvqcRcRr/iINSvNC?=
- =?us-ascii?Q?pZaGbSXuCmj3VidNZZWfPmH/OK697kE3oO5HsUqRdO960DpKEl1Ji1X+snQW?=
- =?us-ascii?Q?eEzqyWZyiHJUleR/bl1qkmc8Ag39zxeO8zmQd74MIkF0TO6zL/sgsmudoW97?=
- =?us-ascii?Q?qVYMtD/cC3o4N7uHSXABsOTutbN5BtXiEHV2Tla95meBfu2tRuPZxKurkSok?=
- =?us-ascii?Q?/OcwMlOH2frGs/fmI8rmy0lZ1qKwq8agnQ1F3V9GY8VpQiFzs6fCoHKcjxEe?=
- =?us-ascii?Q?N0N4XfjjjRez7mtCOfYQ/Hnbr84FgSssy/mFfGRZRZdciMixe7fLj45AxDvG?=
- =?us-ascii?Q?k4Va9c2OG8Vh8TKhBdhP4cECgPQLc0i+jH/6V6USPGUxHxlIRueL95RHyQvV?=
- =?us-ascii?Q?M/ji0eYWcdxKYsjjWHjvgwNu4tfbgwqqpbX7TbxQZefDpSUb6SmU740sQ3vu?=
- =?us-ascii?Q?McYJ7AM8paAsDOG9HywmFEq2UTPAfrpS6wcIT5xpO+KKE6K7O6XNhs1wplW7?=
- =?us-ascii?Q?NKXiX/rgWkTAq4R1RsYJCQwRog9SjOBpZwdmVsaLnjAkvvNVYUBG7XFGJaoc?=
- =?us-ascii?Q?Es2gjOinpgI3UWSsYR2BhCg9+Bps6ek5nRdlBDC1Ycrem1ocid2tDXIuh2om?=
- =?us-ascii?Q?OAw+pjq1gpVuxPuY7p6t9+PvyrmwsaYQHeQ0TT5hb1Q+8wyjcuViGwkVpAj2?=
- =?us-ascii?Q?5AQqO94jaU0P/efmtTgejTy12/YIGjwelFEHnXH5mpWBIIGoe8RCd7O0c8uU?=
- =?us-ascii?Q?NKnMAJxwlSI3Z6mKJv28HjhSUTZa12HIlwberGs6znaPyal1dZGe6L6Kqyi4?=
- =?us-ascii?Q?11zhnRKo2v+VjA6z7G7yWENfQHAL/zO5FsBddC0fjTDg7haFI0ysbF4qrq4H?=
- =?us-ascii?Q?Di5n8dPJ70iho0VMwrWLaMnRtd5UGDaioNQPEvUheXr9pFI+1nLrSWmz0obj?=
- =?us-ascii?Q?gOoB9O5xTJiL9ARcpSQcm4Yc382GvRW9yMlcIVSM7E1gnqbcdpxGkxeh04vK?=
- =?us-ascii?Q?ccmGxowJUxZeYELRlmvPRfM3k3J3C2GgAvhumKfykJsKkHDX4qkRIEwaALpy?=
- =?us-ascii?Q?gHrsFdQ+mxbfXmZ9z5tonbFS2wFfE0PqSD2SP7ABAO6/U1HEJZEfMTrRab0R?=
- =?us-ascii?Q?fBSRhcfV15XNtc2IyWUUw+iOsl4tLGSB3pdp8Steqc6nnir0h8dZP/QRxI81?=
- =?us-ascii?Q?zjvFf50JKDomaxPr6B6oWVmIXQJWEOHoxK2V8EnqXvsYezzH16cy+rhfGt7+?=
- =?us-ascii?Q?vGcTGewIZjZbKaPZH/HbC5th6EPqE4tEWTMtVa5+2NUEwb35o1K7tDX2M88Q?=
- =?us-ascii?Q?G/0JVi5yllcu4x0CPYrQWMc1?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 339e673a-2253-483e-bcf7-08d8dd8dff92
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 15:15:22.5356
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JyKG2T1VdD4cgoCpv40EX+ja9YoxTd9e97iC4o5CRdhnwaWuiO8Wps0rDkRAzvh2qBga/1WoUcZQT4VEf9IQvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2688
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210301101950.GV1463@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 02:55:43PM +0000, Ashish Kalra wrote:
-> On Fri, Feb 26, 2021 at 09:44:41AM -0800, Sean Christopherson wrote:
-> > +Will and Quentin (arm64)
+On Mon, Mar 01, 2021 at 10:19:50AM +0000, Russell King - ARM Linux admin wrote:
+> On Sun, Feb 28, 2021 at 07:59:16PM +0300, Alexey Dobriyan wrote:
+> > From 72842f89ae91a4d02ea29604f87c373052bd3f64 Mon Sep 17 00:00:00 2001
+> > From: Alexey Dobriyan <adobriyan@gmail.com>
+> > Date: Tue, 9 Feb 2021 14:37:40 +0300
+> > Subject: [PATCH 02/11] pragma once: convert arch/arm/tools/gen-mach-types
 > > 
-> > Moving the non-KVM x86 folks to bcc, I don't they care about KVM details at this
-> > point.
-> > 
-> > On Fri, Feb 26, 2021, Ashish Kalra wrote:
-> > > On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
-> > > > On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
-> > > > Thanks for grabbing the data!
-> > > > 
-> > > > I am fine with both paths. Sean has stated an explicit desire for
-> > > > hypercall exiting, so I think that would be the current consensus.
-> > 
-> > Yep, though it'd be good to get Paolo's input, too.
-> > 
-> > > > If we want to do hypercall exiting, this should be in a follow-up
-> > > > series where we implement something more generic, e.g. a hypercall
-> > > > exiting bitmap or hypercall exit list. If we are taking the hypercall
-> > > > exit route, we can drop the kvm side of the hypercall.
-> > 
-> > I don't think this is a good candidate for arbitrary hypercall interception.  Or
-> > rather, I think hypercall interception should be an orthogonal implementation.
-> > 
-> > The guest, including guest firmware, needs to be aware that the hypercall is
-> > supported, and the ABI needs to be well-defined.  Relying on userspace VMMs to
-> > implement a common ABI is an unnecessary risk.
-> > 
-> > We could make KVM's default behavior be a nop, i.e. have KVM enforce the ABI but
-> > require further VMM intervention.  But, I just don't see the point, it would
-> > save only a few lines of code.  It would also limit what KVM could do in the
-> > future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to userspace,
-> > then mandatory interception would essentially make it impossible for KVM to do
-> > bookkeeping while still honoring the interception request.
-> > 
-> > However, I do think it would make sense to have the userspace exit be a generic
-> > exit type.  But hey, we already have the necessary ABI defined for that!  It's
-> > just not used anywhere.
-> > 
-> > 	/* KVM_EXIT_HYPERCALL */
-> > 	struct {
-> > 		__u64 nr;
-> > 		__u64 args[6];
-> > 		__u64 ret;
-> > 		__u32 longmode;
-> > 		__u32 pad;
-> > 	} hypercall;
-> > 
-> > 
-> > > > Userspace could also handle the MSR using MSR filters (would need to
-> > > > confirm that).  Then userspace could also be in control of the cpuid bit.
-> > 
-> > An MSR is not a great fit; it's x86 specific and limited to 64 bits of data.
-> > The data limitation could be fudged by shoving data into non-standard GPRs, but
-> > that will result in truly heinous guest code, and extensibility issues.
-> > 
-> > The data limitation is a moot point, because the x86-only thing is a deal
-> > breaker.  arm64's pKVM work has a near-identical use case for a guest to share
-> > memory with a host.  I can't think of a clever way to avoid having to support
-> > TDX's and SNP's hypervisor-agnostic variants, but we can at least not have
-> > multiple KVM variants.
+> > Generate arch/arm/include/generated/asm/mach-types.h without include
+> > guard.
 > 
-> Looking at arm64's pKVM work, i see that it is a recently introduced RFC
-> patch-set and probably relevant to arm64 nVHE hypervisor
-> mode/implementation, and potentially makes sense as it adds guest
-> memory protection as both host and guest kernels are running on the same
-> privilege level ?
-> 
-> Though i do see that the pKVM stuff adds two hypercalls, specifically :
-> 
-> pkvm_create_mappings() ( I assume this is for setting shared memory
-> regions between host and guest) &
-> pkvm_create_private_mappings().
-> 
-> And the use-cases are quite similar to memory protection architectues
-> use cases, for example, use with virtio devices, guest DMA I/O, etc.
-> 
-> But, isn't this patch set still RFC, and though i agree that it adds
-> an infrastructure for standardised communication between the host and
-> it's guests for mutually controlled shared memory regions and
-> surely adds some kind of portability between hypervisor
-> implementations, but nothing is standardised still, right ?
-> 
+> The fundamental question of "why" is missing from this commit message.
+> Are we making this change to all kernel headers?
 
-And to add here, the hypercall implementation is in-HYP mode,
-there is no infrastructure as part of this patch-set to do
-hypercall exiting and handling it in user-space. 
-
-Though arguably, we may able to add a hypercall exiting code path on the
-amd64 implementation for the same hypercall interfaces ?
-
-Alternatively, we implement this in-kernel and then add SET/GET ioctl
-interfaces to export the shared pages/regions list to user-space.
-
-Thanks,
-Ashish
+Apparently, no. Linus doesn't like it.
