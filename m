@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D9032A97D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9904632A98C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577096AbhCBSbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:31:12 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:46959 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1578956AbhCBPgO (ORCPT
+        id S1581008AbhCBScr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:32:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350742AbhCBPq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:36:14 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id CE368A178A;
-        Tue,  2 Mar 2021 16:35:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=3sXhMOkM8LPe
-        kLQJ3JvWQSiaoISGZyoWfcdIHtOJozw=; b=mzldlBoLn0NX3gqduhq7oHrlZOp4
-        MdnN2j6nmr6SccEt9rMCwx1Fp9sfgTRp2Xe6VfqzGoIFItrsWos7VfFvvhtvRi1z
-        ZVD61qHZQN2ajz0hY0ktQzvf7Xa3HhObJtZJObTvK7V7LmxRu3zsorJh7ssWYK9m
-        D8LrFdlko5HsOJR1tUimCA5eViDiEAc/vnKXjvkd5aGqlN26tU8eZSeoydpk9qm0
-        RMr2dArQLodtJXuUw6Rm6gzeWAmMgNIy/wWdroW2gMDrbADAO9PQLDkohZAvpDSl
-        rZrbXOSx2dpsYLzYPYiaUBSzyz/N+4tphZJkTS6d1NBaW4yeCiR78tCmuA==
-Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume
- support
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
- <s5hpn0kjt31.wl-tiwai@suse.de>
- <7d4daea0-ed59-e84c-c28a-945c49204c83@opensynergy.com>
- <s5hwnuqgifa.wl-tiwai@suse.de>
- <d9853306-2adf-24fe-935c-f7f8a1295dc3@opensynergy.com>
- <s5hr1kxhqcn.wl-tiwai@suse.de>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <2479ed0f-4c90-f565-81cd-8d0348cd14bc@opensynergy.com>
-Date:   Tue, 2 Mar 2021 16:35:24 +0100
+        Tue, 2 Mar 2021 10:46:27 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03E9C06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:37:17 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id q25so11701960lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:37:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4MgbZOgNW8uixaX7A/+b9oSIGLPsBpXoCjq0KvgA0Vs=;
+        b=Sh8OBszE7R3d8uy7nbh6mGISl/xCEmQuyh4gsiTAsNoq0BctI45bGAlwpUnecy1kA2
+         7IyIPkl7uPlD9RIGSpEwCItMHd4J1HSMUVEOIfFGWOb1iSQlyd8JBsrwTPeRYNYEwWIL
+         4F0Oiifpjpe4z0u4pT36uIJse9yGuU21a4gqFsTthZKHpVuqyyNxzCku3CVqOvhEgXoE
+         SEIoh2gDqqJBZHlPiZQgS3vgDgHjUakA1AcpsijE7EI52oMQTvx+0qKk0ZdjmFSwKnmk
+         APLEgSd+JFLMwGBh4Pbg5ePTydmtKuUTzi/U75LRZvA8luBff0oR7xz5+PzrwnIK3UAJ
+         Z6zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4MgbZOgNW8uixaX7A/+b9oSIGLPsBpXoCjq0KvgA0Vs=;
+        b=gDBLT5e4JCXFApcjmJhDURk5gkby4BGjGi6LhEeUJySkTU7nGreR8xzamyfa+YQQZP
+         s265qwmpADHlH/yuaihMjynYgxlyH3a52qw+lM9anfOfwGrlr5YfwZ4AldZERDOPB19p
+         /w//xyp2YriFNNyg/dJzZBvMiSd3+vPxXP3KAwsJUiNuwr3/Os+JimO+W4+P3LlZP/6u
+         DPe9d5brtUM5jjxfYLvvi2BPGM1FYkSd3fY9tK8N0Qe+2+jOA598ec99eGQUc7vxARx/
+         8d9WbmFC8mYPjQ68pXxGvh8GahoYyjiE4u6wZtUL44AK+kXAenHw20Q+ogGhbiLwoOI8
+         qQ/A==
+X-Gm-Message-State: AOAM530PrXWJuwzm4LaEQxTV/8fA+ld/lhGyrMyYgpkZryNLclxfqY2X
+        pdLCzGmmc5oIha9kg9giy9rMSHATR6jKo955SuAzmw==
+X-Google-Smtp-Source: ABdhPJw4x/G20E257/e052t5Gg9ElQhvDjsYdCfPJESaXuqZZBAOAPdVPZrOW8Pyw0S1XLAm4uKTuwetVf8NZN0spvM=
+X-Received: by 2002:ac2:5d21:: with SMTP id i1mr12099756lfb.649.1614699436419;
+ Tue, 02 Mar 2021 07:37:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <s5hr1kxhqcn.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+References: <20210208135347.18494-1-o.rempel@pengutronix.de>
+ <20210208135347.18494-3-o.rempel@pengutronix.de> <YCjlPhEtyH+vfSi4@shinobu>
+ <20210215091737.fx6dwiz7tt56wbkr@pengutronix.de> <YDMMJJ985Zq9oEOv@shinobu>
+ <20210223100656.efbshsh5bz66uhj5@pengutronix.de> <20210223174516.wjlh7hnrd5qe5s6w@pengutronix.de>
+ <YDW7Hihg0gGQh8UR@shinobu>
+In-Reply-To: <YDW7Hihg0gGQh8UR@shinobu>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 16:37:05 +0100
+Message-ID: <CACRpkdY7GSPiadVORECLcdK91AORY6LgtWi8BBLNK_Sj0Jc3LA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] counter: add IRQ or GPIO based event counter
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.03.2021 10:11, Takashi Iwai wrote:
-> On Tue, 02 Mar 2021 09:09:33 +0100,
-> Anton Yakovlev wrote:
->>
->> On 02.03.2021 07:48, Takashi Iwai wrote:
->>> On Tue, 02 Mar 2021 07:29:20 +0100,
->>> Anton Yakovlev wrote:
->>>>
->>>> On 28.02.2021 13:05, Takashi Iwai wrote:
->>>>> On Sat, 27 Feb 2021 09:59:56 +0100,
->>>>> Anton Yakovlev wrote:
->>>>>>
->>>>
->>>> [snip]
->>>>
->>>>>> --- a/sound/virtio/virtio_pcm.c
->>>>>> +++ b/sound/virtio/virtio_pcm.c
->>>>>> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
->>>>>>                  SNDRV_PCM_INFO_BATCH |
->>>>>>                  SNDRV_PCM_INFO_BLOCK_TRANSFER |
->>>>>>                  SNDRV_PCM_INFO_INTERLEAVED |
->>>>>> +             SNDRV_PCM_INFO_RESUME |
->>>>>>                  SNDRV_PCM_INFO_PAUSE;
->>>>>
->>>>> Actually you don't need to set SNDRV_PCM_INFO_RESUME.
->>>>> This flag means that the driver supports the full resume procedure,
->>>>> which isn't often the case; with this, the driver is supposed to
->>>>> resume the stream exactly from the suspended position.
->>>>>
->>>>> Most drivers don't set this but implement only the suspend-stop
->>>>> action.  Then the application (or the sound backend) will re-setup the
->>>>> stream and restart accordingly.
->>>>
->>>> I tried to resume driver without SNDRV_PCM_INFO_RESUME, and alsa-lib
->>>> called only ops->prepare(). It makes sense for a typical hw, but we have
->>>> "clean" unconfigured device on resume. And we must set hw parameters as
->>>> a first step. It means, that code should be more or less the same. And
->>>> maybe it's better to set SNDRV_PCM_INFO_RESUME, since it allows us to
->>>> resume substream in any situation (regardless of application behavior).
->>>> I can refactor code to only send requests from trigger(RESUME) path and
->>>> not to call ops itself. It should make code more straitforward. What do
->>>> you say?
->>>
->>> How about calling hw_params(NULL) conditionally in the prepare?
->>
->> Then the question is that condition. When ops->prepare() is called, the
->> substream is in SUSPENDED state or not? If not then we need to track
->> this in some additional field (and it will make logic a little bit
->> clumsy, since that field is needed to be carefully handled in other
->> places).
-> 
-> Yes, you'd need to have a suspend/resume PM callback in the driver
-> that flips the internal flag to invalidate the hw_parmas, and in the
-> prepare callback, just call hw_params(NULL) if that flag is set.
-> 
->>> Doing the full stack work in the trigger callback is bad from the API
->>> design POV; in general the trigger callback is supposed to be as short
->>> as possible.
->>
->> Yeah, but usually original subsystem design does not take into account
->> para-virtualized devices, which usually have it's own slightly different
->> reality. And we need to introduce some tricks.
-> 
-> The hardware drivers do a lot of more things in either suspend/resume
-> PM callbacks or prepare callback for re-setup of the hardware.  We can
-> follow the similar pattern.  Heavy-lifting works in the trigger
-> callbacks is really something to avoid.
+On Wed, Feb 24, 2021 at 3:34 AM William Breathitt Gray
+<vilhelm.gray@gmail.com> wrote:
+> On Tue, Feb 23, 2021 at 06:45:16PM +0100, Oleksij Rempel wrote:
 
-Ok, I redone this part and now the driver sets parameters for the device
-in ops->prepare() if the substream was suspended. And everything works
-fine. Thanks! I will send a new patch set soon.
+> > > to make this possible, i would need hack gpiolib framework and add
+> > > name/label exporter. But after endless rounds of pingponging me for
+> > > renaming the driver and removing interrupt handler, i feel like we are
+> > > not having serious discussion for mainlining this driver.
+> >
+> > Probably for good reason, struct gpio_desc was made local and is located
+> > in the drivers/gpio/gpiolib.h. It feels like additional hack to include
+> > it. I assume, it should be done properly so there is a function to
+> > provide gpio name or label.
+> >
+> > @Linus Walleij are there any good way to get the GPIO name? And which
+> > name will be actually used? A label provided over devicetree?
+>
+> Perhaps one of the GPIO subsystem maintainers can provide more guidance
+> here, but I was under the impression that this name was provided
+> statically by the respective GPIO driver via their struct gpio_chip. I
+> think you can see the array of names via priv->gpio->gdev->chip->names.
 
+These names can be set either through device properties on the
+GPIO chip "line-names" such as through device tree, or as static
+names in the .names array on struct gpio_chip for chips that
+are e.g. hot-pluggable and does not have a hardware
+description associated. These names should be something
+like what the signal is called on the circuit board rail.
 
-> Takashi
-> 
+gpiolib further has a function:
+gpiod_set_consumer_name() that can be used by consumers to
+set their use case for the line, which makes it appear in debugfs
+etc. The consumer name does not need to be unique.
 
--- 
-Anton Yakovlev
-Senior Software Engineer
+These names have no practical use other than debugging or
+userspace representation.
 
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
+I hope this helps.
 
+Yours,
+Linus Walleij
