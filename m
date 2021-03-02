@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B02232A48B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8439932A48A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441921AbhCBKw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        id S1441913AbhCBKwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:52:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379999AbhCBKYn (ORCPT
+        with ESMTP id S1380002AbhCBKYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 05:24:43 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C3DC0617A7;
-        Tue,  2 Mar 2021 02:22:09 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id h4so23053942ljl.0;
-        Tue, 02 Mar 2021 02:22:08 -0800 (PST)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2818AC061788;
+        Tue,  2 Mar 2021 02:23:36 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id t25so13552757pga.2;
+        Tue, 02 Mar 2021 02:23:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ez28sRNxxnA+mFrwwNyOygQjyXiZVskV4841e9M5tTE=;
-        b=Qne4+z/IjF+WaFiDJb7UeJbCSjyzc0cZiYik1OfF0ZBeomFum8Oy+OPGD/u+vc4Z5a
-         F61VhUwcMlrAgb14aJ/rCBxQrfuw1bG3bnd1pxZyIcw1Xr9n5uzPcrhxncDYI9nFmT9X
-         a1wkf1jjFTemTpn85Jcas/KT6LN9kRD7j1IM+cb+lQtobBkEy+bMs5tFoLHu5P7cDlnS
-         56p1VFdhGs+JORQGGl423NIE6djgC/pIplzWsHx0+W/tMdaZrFk9nCc6F0kg7e7Lpq1P
-         b124giCYd641SEGPn1HTCl1LH11rMl5w4VpYBBaSC0kXgt7/OVdktFfDPFKIhZff1VpJ
-         KSJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CqC/YcTGec2wtgTv9MY+9W7rWWO+4UdP1mK6FGLTeFI=;
+        b=MooJHbRjpwShSFWwg8HFB+9S6s6w/jsUh6EqcU3ypubGBDwu5a1ApeG21aL5ZcK1Nb
+         hxJlHcIVO3a5iGI2WeXaJ2g8F45zCPl0rf2apSKmjS3BNs+xMhAKPrZwYEMBg2cxLMXL
+         B4rWGLU1iNoDwPT2qIi2QIFJW1Z/uD20Wm0uFa5wIn6Xsu8qc2kZwVyUNYqwC2z+PXnf
+         6SfFE+MGpt5kk7/vPrJLissmrr8zQnZNVg+g55PH6uKsXIkZvwtLiYih4IrhpTboioD3
+         oOd8DkKja/0Te/bFUaLfJGBDxOfIqHdZJdXsVfJXjrnqA8A7OBaog0D95a5c9bE+SMD8
+         HVcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ez28sRNxxnA+mFrwwNyOygQjyXiZVskV4841e9M5tTE=;
-        b=Q4u2XDtU4MVWpboEq5V7CGneTEw4hOxzYrGRfWXxJ/fpWGa0dhIrDJovgazPNkXxrK
-         xj2eQHZ2y2pkfolL++coDPoLp/grzokqC5qeMFTEvby0wgyKwIbOjlx4ZVFnEMKAbRET
-         tZ9QMqwAKSEC3K0Y5/QOBpwmAPb9flb5ujAcYKTmoF6HWIOBJnD+z0KjBB0yX56c0Zt9
-         xFgpp/CoAZzLEmhgTOopeKb5pGqjR8kuelzNsE6lUQoshMiP5xtrrxZi+xc10nZ6+6pb
-         JaTdZcefhBobjSME/WyMlPK1eyxs5qOpWJdgZ3u/ensJO4TMwQcNbZI4wF4Qdlu4+18f
-         dw7g==
-X-Gm-Message-State: AOAM532rSYREopCI7KTOTjvSuxkomKEtCeRWzLPCoOtzFPnXyuOSYIAM
-        yTLGAws8OFjIgktW0LDqsfM=
-X-Google-Smtp-Source: ABdhPJwacKskz1iscj45Emaav16iDjjJ3zCeIbF8xVQ4y/Zd4xC03VGoBI7nRTwwfmkU1qhhnTWQfA==
-X-Received: by 2002:a2e:b01a:: with SMTP id y26mr11496407ljk.442.1614680526143;
-        Tue, 02 Mar 2021 02:22:06 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id n2sm2586369lfu.274.2021.03.02.02.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 02:22:05 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Nick Dyer <nick@shmanahar.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jiada Wang <jiada_wang@mentor.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] ARM: tegra: acer-a500: Add atmel,wakeup-method property
-Date:   Tue,  2 Mar 2021 13:21:58 +0300
-Message-Id: <20210302102158.10533-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210302102158.10533-1-digetx@gmail.com>
-References: <20210302102158.10533-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CqC/YcTGec2wtgTv9MY+9W7rWWO+4UdP1mK6FGLTeFI=;
+        b=nE2hwh0zUP7G7zHB7LXDsxrcVzFSknA2W9ADRQbos1U8k1r7fBFZ8L5taxKA857R8s
+         U/doGSumry9cLZDDV23XpwsIrYJfldq7wJawfEVd9i1Sq1kPFxNtDqWqqsfbtNcMc3lN
+         DPpTnmtq9PzF524Umbc9mHAiWZ8NLXBsb3oVgtnsTwNZKlHbYS2L3QqFkb/yL05jmaG2
+         w7o0EsPxrqDDiPz2wXwKoz4YdWazIWeq6eBNsZcZEXeYSlC7pqUVeyyZhpTz+GYpWBaE
+         tCmHQ9SDaxiKGly672i6492IomO+ns3U1JLBTvubmLWvxFUb/qUtccaBrvVr9/A96uBS
+         tQAw==
+X-Gm-Message-State: AOAM5317I2kRNHDfWy5pFP5fnPMzfcb2UBCsCESf06CYR6lY57+TmvoB
+        WmgH1ATBtpAsbL3U2dNR/jA8c8kUCcjkQ6g/wYE=
+X-Google-Smtp-Source: ABdhPJyGDk2rvwLfp4t1TmUcUPe68BTF8cNUlRMiiufV4xO4BW+JgtXkDxEtMtSFj2eN0RhoE1L1twRWLA0MaqUqrx4=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr2805274pfk.73.1614680615693; Tue, 02
+ Mar 2021 02:23:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210212223015.727608-1-drew@beagleboard.org> <20210212223015.727608-2-drew@beagleboard.org>
+ <CACRpkdb1-OqZU93nMD+iztPOfLEn3-j+-=uTEo+zbE2TmezmLQ@mail.gmail.com>
+In-Reply-To: <CACRpkdb1-OqZU93nMD+iztPOfLEn3-j+-=uTEo+zbE2TmezmLQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Mar 2021 12:23:19 +0200
+Message-ID: <CAHp75Vcvo8v-emHJZ+9fiTg+Vv26Apotnm8nD8rF550VgY-5gQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] pinctrl: use to octal permissions for debugfs files
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acer A500 uses Atmel Maxtouch 1386 touchscreen controller. This controller
-has WAKE line which could be connected to I2C clock lane, dedicated GPIO
-or fixed to HIGH level. Controller wakes up from a deep sleep when WAKE
-line is asserted low. Acer A500 has WAKE line connected to I2C clock and
-Linux device driver doesn't work property without knowing what wakeup
-method is used by h/w.
+On Tue, Mar 2, 2021 at 10:36 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Fri, Feb 12, 2021 at 11:30 PM Drew Fustini <drew@beagleboard.org> wrote:
+>
+> > Switch over pinctrl debugfs files to use octal permissions as they are
+> > preferred over symbolic permissions. Refer to commit f90774e1fd27
+> > ("checkpatch: look for symbolic permissions and suggest octal instead").
+> >
+> > Note: S_IFREG flag is added to the mode by __debugfs_create_file()
+> > in fs/debugfs/inode.c
+> >
+> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+>
+> Patch applied, thanks for fixing this!
 
-Add atmel,wakeup-method property to the touchscreen node.
+I guess we are at v9 of this.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index d3b99535d755..40c1bab22155 100644
---- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-+++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /dts-v1/;
- 
-+#include <dt-bindings/input/atmel-maxtouch.h>
- #include <dt-bindings/input/gpio-keys.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/thermal/thermal.h>
-@@ -450,6 +451,8 @@ touchscreen@4c {
- 
- 			avdd-supply = <&vdd_3v3_sys>;
- 			vdd-supply  = <&vdd_3v3_sys>;
-+
-+			atmel,wakeup-method = <ATMEL_MXT_WAKEUP_I2C_SCL>;
- 		};
- 
- 		gyroscope@68 {
 -- 
-2.29.2
-
+With Best Regards,
+Andy Shevchenko
