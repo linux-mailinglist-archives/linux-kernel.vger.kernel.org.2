@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB62432ABF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D3332AC20
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 22:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447792AbhCBU6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:58:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580591AbhCBSFH (ORCPT
+        id S1381467AbhCBVKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:10:10 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:40730 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352079AbhCBSK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:05:07 -0500
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4062C061793;
-        Tue,  2 Mar 2021 10:04:27 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 8FD85C800D3;
-        Tue,  2 Mar 2021 19:04:25 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id vsEFdfqi1Tn6; Tue,  2 Mar 2021 19:04:25 +0100 (CET)
-Received: from wsembach-tuxedo.fritz.box (p200300E37f234700CC4188A7f2f8d6b8.dip0.t-ipconnect.de [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id 45C0DC800CE;
-        Tue,  2 Mar 2021 19:04:25 +0100 (CET)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        alsa-devel@vger.kernel.org
-Cc:     Eckhart Mohr <e.mohr@tuxedocomputers.com>, stable@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Intel NUC 10
-Date:   Tue,  2 Mar 2021 19:04:14 +0100
-Message-Id: <20210302180414.23194-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 2 Mar 2021 13:10:57 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122GjDhd068314;
+        Tue, 2 Mar 2021 17:02:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JfHN7bR7XJbye+/fOE8L0CdgtTYsUUluVDX1OIk1+9w=;
+ b=Cl4ZToh7Svl6FMTp0Q1NBZX5PrsoawG24bKigjtCSPUiK2EIFrUs7kxJLGgIYhmu0dnP
+ L9ITCmaDHdDm3ITVSOverds0OzhXpRczfdo1PVG3CC8uuYpUZC9gsf/HchDPR+DxMoaK
+ tv6mWEntMuceuZhL48S7ahJ0x8KYFRrr3fSZ4oKeW0lCZDC06NNdmN7w13DgDFm72czU
+ muTPUthV3AvZ6ylL+JrbFW85oripH2FQjTPp/fUrWA0ozcL9kE0B19xSPt7SYBpfVEEJ
+ zR/fRlw6tLCeZ6DO16bXeg6QUwlGv96AvgG2HDTMAnA6g/CzincVpmAcUYkWLMa5/YFS lA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 36yeqn0bg5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 17:02:01 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122H0xR7036909;
+        Tue, 2 Mar 2021 17:01:59 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 37000x9at5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 17:01:59 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 122H1voH001162;
+        Tue, 2 Mar 2021 17:01:57 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Mar 2021 09:01:57 -0800
+Date:   Tue, 2 Mar 2021 20:01:49 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        kbuild@lists.01.org, kbuild test robot <lkp@intel.com>,
+        kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:458 lpi_config_set()
+ error: uninitialized symbol 'strength'.
+Message-ID: <20210302170149.GX2222@kadam>
+References: <20210227092152.GC2087@kadam>
+ <CACRpkdbWtBA-ptCF7prizoP1D9cshWgpt8r4CGRRfxwcXiX61g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbWtBA-ptCF7prizoP1D9cshWgpt8r4CGRRfxwcXiX61g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103020131
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 malwarescore=0
+ impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ALSA: hda/realtek: Add quirk for Intel NUC 10
+On Tue, Mar 02, 2021 at 04:47:01PM +0100, Linus Walleij wrote:
+> On Sat, Feb 27, 2021 at 10:22 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> 
+> > New smatch warnings:
+> > drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:458 lpi_config_set() error: uninitialized symbol 'strength'.
+> >
+> > Old smatch warnings:
+> > drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:457 lpi_config_set() error: uninitialized symbol 'pullup'.
+> 
+> I don't think these are real problems, but maybe there is some way to explicitly
+> express that so that smatch knows as well?
+> 
 
-This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
-devices. This fixes the issue of the devices not having audio input and
-output on the headset jack because the kernel does not recognize when
-something is plugged in.
+We chould just initialize it to zero.  Eventually, (or maybe already???),
+zero initializing stack variables will be the default for kernels built
+with modern compilers.  So initializing it to zero in that case won't
+change runtime at all.
 
-The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
-it turned out that the NUC 10 uses another pin. This information was
-acquired by black box testing likely pins.
-
-Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
----
-Resend of this patch with git send-email, because last patch got tabs replaced with spaces.
-
-From d281364b8ca6c054a0e5ce20caa599bf7d08160d Mon Sep 17 00:00:00 2001
-From: Werner Sembach <wse@tuxedocomputers.com>
-Date: Fri, 26 Feb 2021 13:54:30 +0100
-Subject: [PATCH] Fix Intel NUC10 no output and input on headset jack
-
----
- sound/pci/hda/patch_realtek.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 290645516313..c14d624dbaf1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6362,6 +6362,7 @@ enum {
- 	ALC269_FIXUP_LEMOTE_A1802,
- 	ALC269_FIXUP_LEMOTE_A190X,
- 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
-+	ALC256_FIXUP_INTEL_NUC10,
- 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
- 	ALC274_FIXUP_HP_MIC,
- 	ALC274_FIXUP_HP_HEADSET_MIC,
-@@ -7744,6 +7745,15 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE
- 	},
-+	[ALC256_FIXUP_INTEL_NUC10] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE
-+	},
- 	[ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
- 		.type = HDA_FIXUP_VERBS,
- 		.v.verbs = (const struct hda_verb[]) {
-@@ -8183,6 +8193,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
- 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
- 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
-+	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
- 
- #if 0
- 	/* Below is a quirk table taken from the old code.
--- 
-2.25.1
+regards,
+dan carpenter
 
