@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5C732ABF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB62432ABF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447359AbhCBU55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:57:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        id S1447792AbhCBU6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:58:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580524AbhCBSEX (ORCPT
+        with ESMTP id S1580591AbhCBSFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:04:23 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBBFC0611C1
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:01:14 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id t29so14312120pfg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:01:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UBInWvC4UtsMqMVlbtixev5AhwLr9Odk/zIdyxeWBVE=;
-        b=gkKGSNWCsOVvAVoe6dY3Z32WGzDgmFBGW2Rdy7IGyI+X06lJHhsUEJnYKADiJ+JwDz
-         KZa4BRTCoHDaMLCWkJ3VXKKsiTKWIDKvMbwuY+xaQ6rzeikYjM4sBUKsNOTFnUMUOsNR
-         o6Qlyjx7EVKBp4wxt/L+lmHVpdomxhCqLVSYVGlAoij6YB1NgtrudvLPLPduMz/06TQX
-         /zXj3i/TR5iMmw/f0irj/FtJLyZUhjeAXxmRB/HDFZ0+hB6yS++YHwHv9NI+SjSpXrD/
-         yFUjZlgvAsbweDBQcQ000ZDcSzfSazOk8QnGzA7XPoc7/gVoJ/gzN85rz06qgjWIiqcR
-         NE0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UBInWvC4UtsMqMVlbtixev5AhwLr9Odk/zIdyxeWBVE=;
-        b=jXMKmmA7CYmkbh8bl8A3hrYLELqAhgLM1j925d2IX19DubZmAtU8UjvHdOLJ6kpxGX
-         P3uIvaa4IHUIXRE4qYj+YNPpsP27EQQcNPDtDkKdLaQpBJKaT1PafTc98F5H7P3VOSIa
-         XGcXQHR/uc6bxJCw+7gzzdwXfaupovDSW4cobzpgEgn7swTFCtVKAGphcPhkayj5hDKt
-         pZfKX6Pmft9S/srJSVSD+sfat6WuBe+IVeKPL+NcSE+onw+3M41Gr8A1Ujn0UB5VR9Zv
-         IK/FoUmUDL5YYmJoS0ITtR5ntnnsIZU1YNVNgPa5QOGQ2JltncmTG2f9Ew+FHm6yGrTL
-         G4sg==
-X-Gm-Message-State: AOAM531Jre8mkZY7nZkGVPCon/fz9jpQo8RcP3qCOJY74I/IbI0JPT7w
-        aHOBGa/nps6FoDyRpVqM8TxDgw==
-X-Google-Smtp-Source: ABdhPJzG0wzLzTI1eJKKGZkec00/EiMDhEKSsK3bDtPIQa/dNEuZiqt855r5ju1GLQpivCBDKuVbsw==
-X-Received: by 2002:a63:585d:: with SMTP id i29mr19092274pgm.10.1614708074117;
-        Tue, 02 Mar 2021 10:01:14 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id q15sm20198751pfk.181.2021.03.02.10.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 10:01:13 -0800 (PST)
-Date:   Tue, 2 Mar 2021 11:01:11 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 05/16] rpmsg: char: dissociate the control device from
- the rpmsg class
-Message-ID: <20210302180111.GB3791957@xps15>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-6-arnaud.pouliquen@foss.st.com>
+        Tue, 2 Mar 2021 13:05:07 -0500
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4062C061793;
+        Tue,  2 Mar 2021 10:04:27 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 8FD85C800D3;
+        Tue,  2 Mar 2021 19:04:25 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id vsEFdfqi1Tn6; Tue,  2 Mar 2021 19:04:25 +0100 (CET)
+Received: from wsembach-tuxedo.fritz.box (p200300E37f234700CC4188A7f2f8d6b8.dip0.t-ipconnect.de [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 45C0DC800CE;
+        Tue,  2 Mar 2021 19:04:25 +0100 (CET)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        alsa-devel@vger.kernel.org
+Cc:     Eckhart Mohr <e.mohr@tuxedocomputers.com>, stable@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Intel NUC 10
+Date:   Tue,  2 Mar 2021 19:04:14 +0100
+Message-Id: <20210302180414.23194-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219111501.14261-6-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:14:50PM +0100, Arnaud Pouliquen wrote:
-> The RPMsg control device is a RPMsg device, it is already
-> referenced in the RPMsg bus. There is only an interest to
-> reference the ept char devices in the rpmsg class.
-> This patch prepares the code split of the control and end point
-> devices in two separate files.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/rpmsg_char.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 78a6d19fdf82..23e369a00531 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -485,7 +485,6 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->  	dev = &ctrldev->dev;
->  	device_initialize(dev);
->  	dev->parent = &rpdev->dev;
-> -	dev->class = rpmsg_class;
+ALSA: hda/realtek: Add quirk for Intel NUC 10
 
-This may break user space...  It has been around for so long that even if the
-information is redundant we have to keep it.
+This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
+devices. This fixes the issue of the devices not having audio input and
+output on the headset jack because the kernel does not recognize when
+something is plugged in.
 
->  
->  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->  	ctrldev->cdev.owner = THIS_MODULE;
-> -- 
-> 2.17.1
-> 
+The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
+it turned out that the NUC 10 uses another pin. This information was
+acquired by black box testing likely pins.
+
+Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: <stable@vger.kernel.org>
+---
+Resend of this patch with git send-email, because last patch got tabs replaced with spaces.
+
+From d281364b8ca6c054a0e5ce20caa599bf7d08160d Mon Sep 17 00:00:00 2001
+From: Werner Sembach <wse@tuxedocomputers.com>
+Date: Fri, 26 Feb 2021 13:54:30 +0100
+Subject: [PATCH] Fix Intel NUC10 no output and input on headset jack
+
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 290645516313..c14d624dbaf1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6362,6 +6362,7 @@ enum {
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
+ 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
++	ALC256_FIXUP_INTEL_NUC10,
+ 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+ 	ALC274_FIXUP_HP_MIC,
+ 	ALC274_FIXUP_HP_HEADSET_MIC,
+@@ -7744,6 +7745,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE
+ 	},
++	[ALC256_FIXUP_INTEL_NUC10] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ 	[ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -8183,6 +8193,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
++	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+ 
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
+-- 
+2.25.1
+
