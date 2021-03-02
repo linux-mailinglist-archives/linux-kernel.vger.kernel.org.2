@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F3632A3C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8844032A3B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379033AbhCBJim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:38:42 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:43872 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1837912AbhCBJKp (ORCPT
+        id S1382514AbhCBJ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:26:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48243 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1378917AbhCBJG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:10:45 -0500
-Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210302091002epoutp02fed549d4a6f1737ae9d49a1dcb5580e7~oe3N95Dth0378803788epoutp02-
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:10:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210302091002epoutp02fed549d4a6f1737ae9d49a1dcb5580e7~oe3N95Dth0378803788epoutp02-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614676202;
-        bh=O31FVF9w9jaxLxUzUwYA/nvnejdGzFszkeQF7lstuOI=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=WC6zzbMVz131or/4bzIVJNDvdKGamYMGVFuXVCE68I+EcKEfdxs2aq+BrE+EV91bi
-         QVTIxBdMWOm6E3hCb61lw0ea7iZGfVVsGNwGGh2io1g+wbTXW3si0MjPt95jAiv0SY
-         6RlVPYQpdRFy1w6zlBjJTQmCKTyaNKgVFS6pHIjo=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
-        20210302091001epcas3p1c8d434a344e81ac45f34b96ab67e0f17~oe3NVbKVU3071630716epcas3p1F;
-        Tue,  2 Mar 2021 09:10:01 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp3.localdomain
-        (Postfix) with ESMTP id 4DqWYP4gyhz4x9Q8; Tue,  2 Mar 2021 09:10:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v4 7/9] scsi: ufshpb: Add "Cold" regions timer
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB657580F9080C31AB5AED1FDBFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <2038148563.21614676201654.JavaMail.epsvc@epcpadp3>
-Date:   Tue, 02 Mar 2021 18:04:29 +0900
-X-CMS-MailID: 20210302090429epcms2p443de88c14298f707577122e6a91b9a82
+        Tue, 2 Mar 2021 04:06:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614675898;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zKR5m0U4Kyxf0YAKbBROA6h6lzGB5mUnbgoPuKmwmCE=;
+        b=H77eztOwAPapHBfK9Nup6cmGWflYz0Xl9h+EFPdKh5ZP6Atls9kNgUbDXTRRL575somxfD
+        yY6rYlEwhqR54ETGZF9AP9qKD0tfFhsAyUpOv5Y1zocVUE6sBBeGtNQOJilBp8m84W62Tm
+        eKqwxo6zQHOQtJilPNEAhi2/Er1qD2k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-DqEAEwDGNXOLgLHqx4u4gA-1; Tue, 02 Mar 2021 04:04:54 -0500
+X-MC-Unique: DqEAEwDGNXOLgLHqx4u4gA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A22750743;
+        Tue,  2 Mar 2021 09:04:52 +0000 (UTC)
+Received: from [10.36.114.189] (ovpn-114-189.ams2.redhat.com [10.36.114.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CF1D457;
+        Tue,  2 Mar 2021 09:04:48 +0000 (UTC)
+Subject: Re: [PATCH v1] microblaze: tag highmem_setup() with __meminit
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel test robot <lkp@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210301114749.47914-1-david@redhat.com>
+ <20210301221846.GA4744@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b38b353b-7138-373b-057a-a4fa4b4ab30e@redhat.com>
+Date:   Tue, 2 Mar 2021 10:04:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210301221846.GA4744@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210226083459epcas2p1862e3e2c18208074336cc9faf14a7139
-References: <DM6PR04MB657580F9080C31AB5AED1FDBFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210226083300.30934-8-avri.altman@wdc.com>
-        <20210226083300.30934-1-avri.altman@wdc.com>
-        <878274034.81614673683390.JavaMail.epsvc@epcpadp4>
-        <CGME20210226083459epcas2p1862e3e2c18208074336cc9faf14a7139@epcms2p4>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
-> > 
-> > Hi Avri,
-> > 
-> > > +static void ufshpb_read_to_handler(struct work_struct *work)
-> > > +{
-> > > +        struct delayed_work *dwork = to_delayed_work(work);
-> > > +        struct ufshpb_lu *hpb;
-> > > +        struct victim_select_info *lru_info;
-> > > +        struct ufshpb_region *rgn;
-> > > +        unsigned long flags;
-> > > +        LIST_HEAD(expired_list);
-> > > +
-> > > +        hpb = container_of(dwork, struct ufshpb_lu, ufshpb_read_to_work);
-> > > +
-> > > +        if (test_and_set_bit(TIMEOUT_WORK_PENDING, &hpb-
-> > >work_data_bits))
-> > > +                return;
-> > > +
-> > > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> > > +
-> > > +        lru_info = &hpb->lru_info;
-> > > +
-> > > +        list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn) {
-> > > +                bool timedout = ktime_after(ktime_get(), rgn->read_timeout);
-> > > +
-> > > +                if (timedout) {
-> > 
-> > It is important not just to check the timeout, but how much time has passed.
-> > If the time exceeded is twice the threshold, the read_timeout_expiries
-> > value should be reduced by 2 instead of 1.
-> Theoretically this shouldn't happened.
-> Please note that POLLING_INTERVAL_MS << READ_TO_MS.
-> Better add appropriate check when making those configurable.
+On 01.03.21 23:18, Oscar Salvador wrote:
+> On Mon, Mar 01, 2021 at 12:47:49PM +0100, David Hildenbrand wrote:
+>> With commit a0cd7a7c4bc0 ("mm: simplify free_highmem_page() and
+>> free_reserved_page()") the kernel test robot complains about a warning:
+>>
+>> WARNING: modpost: vmlinux.o(.text.unlikely+0x23ac): Section mismatch in
+>>    reference from the function highmem_setup() to the function
+>>    .meminit.text:memblock_is_reserved()
+>>
+>> This has been broken ever since microblaze added highmem support,
+>> because memblock_is_reserved() was already tagged with "__init" back then -
+>> most probably the function always got inlined, so we never stumbled over
+>> it.
+> 
+> It might be good to point out that we need __meminit instead of __init
+> because microblaze platform does not define CONFIG_ARCH_KEEP_MEMBLOCK,
+> and __init_memblock fallsback to that.
+> 
+> (I had to go and look as I was puzzled :-) )
+> 
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-OK, I agree.
+Thanks!
 
+Whoever feels like picking this up (@Andrew?) can you add
+
+"We need __meminit because __init_memblock defaults to that without 
+CONFIG_ARCH_KEEP_MEMBLOCK" and __init_memblock is not used outside 
+memblock code.
+
+-- 
 Thanks,
-Daejun
 
->  
-> Thanks,
-> Avri
-> > 
-> > > +                        rgn->read_timeout_expiries--;
-> > 
-> > Thanks,
-> > Daejun
->  
->  
->  
->   
+David / dhildenb
+
