@@ -2,162 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFC432A7C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7018F32A7C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835103AbhCBQfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:35:53 -0500
-Received: from mga04.intel.com ([192.55.52.120]:29561 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241531AbhCBOLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:11:11 -0500
-IronPort-SDR: LVYXljfW42nhnXudPvMS3Nuff+1tgQCL+cpNvd/BbX1xsaQSo1leH4WVMeVz0cCtfSZ+YoZ82Z
- W+l8P8+S2sNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184385851"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="184385851"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 06:03:55 -0800
-IronPort-SDR: tqclDbE7bWfGn2SDDyTZQeIhvsJeBbIJrCJb/fvB99LHfwSKSLHxxLlA82UM1Fo26iBXbodJbX
- O3ilsnUoUM8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="517844199"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 02 Mar 2021 06:03:54 -0800
-Received: from [10.252.140.135] (kliang2-MOBL.ccr.corp.intel.com [10.252.140.135])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id CB9725808BA;
-        Tue,  2 Mar 2021 06:03:53 -0800 (PST)
-Subject: Re: [PATCH] perf test: Test case 27 fails on s390 and non-x86
- platforms
-To:     Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        heiko.carstens@de.ibm.com,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-References: <20210302133119.3325530-1-tmricht@linux.ibm.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <abcf63c1-8a15-14af-b449-77a943c94121@linux.intel.com>
-Date:   Tue, 2 Mar 2021 09:03:52 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1839629AbhCBQh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:37:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351356AbhCBOQx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:16:53 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0FCC0617AB
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:04:40 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id e2so16886098ljo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 06:04:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKIPhQfsZni+86U7eT/CjC/gdypCfwjbiypiFzphvH4=;
+        b=rqOtrilo+88HPgFYhOfQnS1v7z94Lr5BObD2hEuR6ILDox0IoCwksbv4VyYlIaGzeL
+         tvTW5lzVYMwiA+AjpdlIRIiZ+BGgakFUIgcOGS4UJ0p8/E9MKPI9T+QXAcKXgBfKh3hg
+         od4tD3EfJ9UvaaPTIGw47yuhSacH5YrgabNuKiB9zVtTeL+4mEtR1WzVSQtvvIUvIdX9
+         sJ/cwEpuzelFyhe1V5WR1sFlWu/y2xM5WU6/yfhkj3PHl2EzHUyd7AOA3EP7KQ5vtECS
+         fCIKoKxVEXDGTA5YMwC+SAIgrAyVso9925mq8zn7h+MsU+FI6oNNpfQZGxOaA+SmEGU0
+         vE8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKIPhQfsZni+86U7eT/CjC/gdypCfwjbiypiFzphvH4=;
+        b=h26FP7tehwSNRn52MVt4xhYlWLkReipjb2gbAfgeQSB4NimQMbCGRyKLRIoTQbI9NN
+         Ufk9FsalZETtPX9PDzaKIiYG1guBsWqqhMeQc5uELcj4X08Llx2E6sL0tiNbb5ZXxN4b
+         Fy8LqzwK7uZobtWiTv5wP1wxmEw+Z2HIonhSHBVRqreYLOSmlcJHaCjoXPjQcvhX6Mu1
+         El+qOggME2oaBE/rF3vpAlG14Fn9ta6vt+ZLmqxnrptBtuU9ATU+uWAWrKsuhl2+TlM3
+         1AwjdH5ZDlY7Ui0RJ0SibYCr9SjjUhdircAAEURzg+7QPc7VgSAsCzkvjOqWnp2FbNyX
+         ZjZA==
+X-Gm-Message-State: AOAM531CJiE9PwYPQB8Nfd4fLETciVymzFd3R8/apt2zw8nYaNc87Byt
+        UTES75Knuelz0crgHvn3Xfp7LNj1fmP2JXeXUypNxQ==
+X-Google-Smtp-Source: ABdhPJwkuZvjQXJQ91dicLDXjkN3dz8z9r01lux5UTO5tuqK4Be/btKAgKd71suK/IkyBxGZ4e6kDT/v5KR8cw2TH7k=
+X-Received: by 2002:a2e:9cc4:: with SMTP id g4mr3342913ljj.34.1614693878385;
+ Tue, 02 Mar 2021 06:04:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210302133119.3325530-1-tmricht@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210302073733.8928-1-songmuchun@bytedance.com>
+ <YD36+i1PZX/CH1jf@dhcp22.suse.cz> <CAMZfGtX=EmE8iOLfO3duCyMWOmu-OYra9Rk4mKsknds+5MueMg@mail.gmail.com>
+ <YD4GkRnTN6RK5CyG@dhcp22.suse.cz>
+In-Reply-To: <YD4GkRnTN6RK5CyG@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 2 Mar 2021 06:04:25 -0800
+Message-ID: <CALvZod43npnPvsmVSfjEKy3HY-87TRx+jP1cntryUEGp2C47_w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix kernel stack account
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-+ Athira Rajeev
-
-On 3/2/2021 8:31 AM, Thomas Richter wrote:
-> Executing perf test 27 fails on s390:
->   [root@t35lp46 perf]# ./perf test -Fv 27
->   27: Sample parsing
->   --- start ---
->   ---- end ----
->   Sample parsing: FAILED!
->   [root@t35lp46 perf]#
-> 
-> The root cause is
-> commit c7444297fd3769 ("perf test: Support PERF_SAMPLE_WEIGHT_STRUCT")
-> This commit introduced a test case for PERF_SAMPLE_WEIGHT_STRUCT
-> but does not adjust non-x86 weak linkage functions.
-> 
-> The error is in test__sample_parsing() --> do_test()
-> Function do_test() defines two structures of type struct perf_sample named
-> sample and sample_out. The first sets member sample.ins_lat = 117
-> 
-> Structure sample_out is constructed dynamically using functions
-> perf_event__synthesize_sample() and evsel__parse_sample().
-> Both functions have an x86 specific function version which sets member
-> ins_lat. The weak common functions do not set member ins_lat.
+On Tue, Mar 2, 2021 at 1:34 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+[snip]
+> > Yeah, imprecision may
+> > not be a problem. But if this is what we did deliberately, I think that
+> > it is better to add a comment there. Thanks.
+>
+> Yes the comment is quite confusing. I suspect it meant to say
+>         /* All stack pages are accounted to the same node */
 >
 
-I don't think Power supports the instruction latency. As a request from 
-Athira Rajeev, I moved the PERF_SAMPLE_WEIGHT_STRUCT to the X86 specific 
-codes.
-https://lore.kernel.org/lkml/D97FEF4F-DD88-4760-885E-9A6161A9B48B@linux.vnet.ibm.com/
-https://lore.kernel.org/lkml/1612540912-6562-1-git-send-email-kan.liang@linux.intel.com/
-
-I don't think we want to add the ins_lat back in the weak common functions.
-
-Could you please update the perf test and don't apply the 
-PERF_SAMPLE_WEIGHT_STRUCT for the non-X86 platform?
-
-
-> Later in function samples_same() both data in variable sample and sample_out
-> are compared. The comparison fails because sample.ins_lat is 117
-> and samples_out.ins_lat is 0, the weak functions never set member ins_lat.
-> 
-> Output after:
->   [root@t35lp46 perf]# ./perf test -Fv 27
->   27: Sample parsing
->   --- start ---
->   ---- end ----
->   Sample parsing: Ok
-> [root@t35lp46 perf]#
-> 
-> Fixes:
-> commit c7444297fd3769 ("perf test: Support PERF_SAMPLE_WEIGHT_STRUCT")
-
-I think the regression should start from
-commit fbefe9c2f87f ("perf tools: Support arch specific 
-PERF_SAMPLE_WEIGHT_STRUCT processing")
-
-
-Thanks,
-Kan
-> 
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->   tools/perf/util/evsel.c            | 8 +++++---
->   tools/perf/util/synthetic-events.c | 6 +++++-
->   2 files changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 1bf76864c4f2..c9efed5c173d 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2106,10 +2106,12 @@ perf_event__check_size(union perf_event *event, unsigned int sample_size)
->   }
->   
->   void __weak arch_perf_parse_sample_weight(struct perf_sample *data,
-> -					  const __u64 *array,
-> -					  u64 type __maybe_unused)
-> +					  const __u64 *array, u64 type)
->   {
-> -	data->weight = *array;
-> +	if (type & PERF_SAMPLE_WEIGHT)
-> +		data->weight = *array & 0xffffffff;
-> +	if (type & PERF_SAMPLE_WEIGHT_STRUCT)
-> +		data->ins_lat = (*array >> 32) & 0xffff;
->   }
->   
->   int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
-> diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> index b698046ec2db..af7ecbc57cbe 100644
-> --- a/tools/perf/util/synthetic-events.c
-> +++ b/tools/perf/util/synthetic-events.c
-> @@ -1507,9 +1507,13 @@ size_t perf_event__sample_event_size(const struct perf_sample *sample, u64 type,
->   }
->   
->   void __weak arch_perf_synthesize_sample_weight(const struct perf_sample *data,
-> -					       __u64 *array, u64 type __maybe_unused)
-> +					       __u64 *array, u64 type)
->   {
->   	*array = data->weight;
-> +	if (type & PERF_SAMPLE_WEIGHT_STRUCT) {
-> +		*array &= 0xffffffff;
-> +		*array |= ((u64)data->ins_lat << 32);
-> +	}
->   }
->   
->   int perf_event__synthesize_sample(union perf_event *event, u64 type, u64 read_format,
-> 
+Most probably I meant to say "For simplicity let's just assume all
+stack pages are on the same node." but we can easily make this more
+accurate.
