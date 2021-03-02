@@ -2,232 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394BA32AA6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6546B32AA8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581889AbhCBT2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:28:32 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22910 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1579741AbhCBRK6 (ORCPT
+        id S1839825AbhCBToy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1579853AbhCBRLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:10:58 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122H4RAg108274;
-        Tue, 2 Mar 2021 12:08:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=9Khyces1l20ppunsU2xyXsZyy1MOKEeJOAyVl6nvox8=;
- b=daR3Xl1RswXh0/ziRzwuu5vjV0vsdsXPsv/5YtXP2i2E39qR3rX5I+lPO1xLV8NuKh5y
- 36De8EtOTncSeekfEder9/JdtzG6e1bXP5PoNdt3+USxpwYXlZxVPIoN3xo6rpNP23oY
- 9j477IfIclOyGifD1P6QoPQcA1s9QqOBRGrp54YjOraTZhwDV0MJQ4NordNLCPCrx0lk
- uYE2snQTNCDBvK++p67PIRLRkZR4UPLNUn9k4hjPA5a8K/yJuhhbqmZ2RIj6whsPgS6z
- ypTetgMW+vXHF3vF59SM3pRk/dEUv6MqSNwk2Gr6+2u2NAkB3mvT3hzh8iWgelszydha uA== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 371s5k8qq6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 12:08:17 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 122H7ZnS018180;
-        Tue, 2 Mar 2021 17:08:15 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 371162h38m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 17:08:15 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 122H8COV54133224
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Mar 2021 17:08:12 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E85F0A4065;
-        Tue,  2 Mar 2021 17:08:11 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9315DA4053;
-        Tue,  2 Mar 2021 17:08:11 +0000 (GMT)
-Received: from li-e35baacc-2106-11b2-a85c-8f97eb669a6e.ibm.com (unknown [9.145.82.126])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  2 Mar 2021 17:08:11 +0000 (GMT)
-Subject: Re: [PATCH] perf test: Test case 27 fails on s390 and non-x86
- platforms
-To:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        heiko.carstens@de.ibm.com,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-References: <20210302133119.3325530-1-tmricht@linux.ibm.com>
- <abcf63c1-8a15-14af-b449-77a943c94121@linux.intel.com>
- <7a14f6b6-967f-93bf-a030-44e358374502@linux.ibm.com>
- <785fc599-24c5-6eda-2807-2b79a9d89315@linux.intel.com>
-From:   Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-Message-ID: <753a61cb-e331-f91b-a1a9-e2fce2ecba52@linux.ibm.com>
-Date:   Tue, 2 Mar 2021 18:08:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 2 Mar 2021 12:11:05 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B411C061A27
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:10:24 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d11so12382233plo.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:10:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CdMoJcE0m1+Gc862ONew3KTMSSsBSZjEgZBWswhQw2s=;
+        b=mhDJEJLvtrFYrUnEtZAClfLdle7whH352etVUC6MMVnLIGqq3Hbd5GpQY+5JxRkceO
+         Hbr8wqp9p28EpLFHKYklWTAlGUkGuIaJKn5fc7BRHG3lw87qoCicqpznfXKjUYp0eWpi
+         TjUfki2yEtKwMFul0k4b9DDooHwJHTWY9tF8sCmEspQ0fJFIPCcrOWuBtnxl0VwzSI4S
+         d3zqE9VCjpxwf6iSygtjaAkBiWrW9PJkEVSl6TbeyzoPHCZ0o/2vjmHCJirV5F1ZmraX
+         tJT/iIs0kLnYb9zrE4DGrF2pQWeiD1wYeaCfvN8NV8GPcGj9f9dhQkl0+yJ/mPp5fOQv
+         jJLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CdMoJcE0m1+Gc862ONew3KTMSSsBSZjEgZBWswhQw2s=;
+        b=VarZ7vTIb5VoGAujBAY3+hhRzZIr86vRq/OY4aWMLEgtbLWQeamgUXyxXb+oPzb9MK
+         9anOVK16vOcVOpHqv8eCFRd32RR5L6GxF/l+wK+N+lbYp0urqci5paO4dnm9vNnkHONf
+         oN44i9IusKxgHHKjf3CYQk7wNwkE2TsfiTXXVS3BzYuxGKlfDngpmMKLw7E+Rha+JLdl
+         LmC4IlukVA/ceiBNJ6VtAd7Goj7oJJEZMDCqXWU5AikdqRHPxRD+1MgHTVMHheZbzUPy
+         H61TVyHEf8wbaQCjfWP6GeJYvlynTCgsuJztFTtRbSSJSsns/aY4sEIy+zkxeTyjTtZ2
+         q0Gg==
+X-Gm-Message-State: AOAM530MRJVLjD0Q5s+DQs6dvhZYnHmxUYh3jQBndfvooi8Cd/YZXsbc
+        78C6yqtVAIX8sKac9BMC3e1cgg==
+X-Google-Smtp-Source: ABdhPJwS/GLIzqKI6SrB5tX8VcFIEJQfG0WQAgcTI96S8UNSp9dO4Mpm64Bbtj1yZZQCtYzLnlaeSw==
+X-Received: by 2002:a17:902:509:b029:e5:9944:f763 with SMTP id 9-20020a1709020509b02900e59944f763mr4375554plf.35.1614705023680;
+        Tue, 02 Mar 2021 09:10:23 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:a9bd:47d6:c119:b0d5])
+        by smtp.gmail.com with ESMTPSA id g7sm19314501pgb.10.2021.03.02.09.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 09:10:22 -0800 (PST)
+Date:   Tue, 2 Mar 2021 09:10:20 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v5 1/2] pinctrl: use to octal permissions for debugfs
+ files
+Message-ID: <20210302171020.GA1547128@x1>
+References: <20210212223015.727608-1-drew@beagleboard.org>
+ <20210212223015.727608-2-drew@beagleboard.org>
+ <CACRpkdb1-OqZU93nMD+iztPOfLEn3-j+-=uTEo+zbE2TmezmLQ@mail.gmail.com>
+ <CAHp75Vcvo8v-emHJZ+9fiTg+Vv26Apotnm8nD8rF550VgY-5gQ@mail.gmail.com>
+ <CACRpkda8rn94ks+aduvVqQuR4LLEZEKT2ja6rrk8sk_bDNSTRQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <785fc599-24c5-6eda-2807-2b79a9d89315@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 malwarescore=0
- mlxlogscore=999 bulkscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103020131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkda8rn94ks+aduvVqQuR4LLEZEKT2ja6rrk8sk_bDNSTRQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 4:23 PM, Liang, Kan wrote:
+On Tue, Mar 02, 2021 at 05:22:37PM +0100, Linus Walleij wrote:
+> On Tue, Mar 2, 2021 at 11:23 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Tue, Mar 2, 2021 at 10:36 AM Linus Walleij <linus.walleij@linaro.org> wrote:
 > 
+> > > Patch applied, thanks for fixing this!
+> >
+> > I guess we are at v9 of this.
 > 
-> On 3/2/2021 9:48 AM, Thomas Richter wrote:
->> On 3/2/21 3:03 PM, Liang, Kan wrote:
->>>
->>> + Athira Rajeev
->>>
->>> On 3/2/2021 8:31 AM, Thomas Richter wrote:
->>>> Executing perf test 27 fails on s390:
->>>>    [root@t35lp46 perf]# ./perf test -Fv 27
->>>>    27: Sample parsing
->>>>    --- start ---
->>>>    ---- end ----
->>>>    Sample parsing: FAILED!
->>>>    [root@t35lp46 perf]#
->>>>
->>>> The root cause is
->>>> commit c7444297fd3769 ("perf test: Support PERF_SAMPLE_WEIGHT_STRUCT")
->>>> This commit introduced a test case for PERF_SAMPLE_WEIGHT_STRUCT
->>>> but does not adjust non-x86 weak linkage functions.
->>>>
->>>> The error is in test__sample_parsing() --> do_test()
->>>> Function do_test() defines two structures of type struct perf_sample named
->>>> sample and sample_out. The first sets member sample.ins_lat = 117
->>>>
->>>> Structure sample_out is constructed dynamically using functions
->>>> perf_event__synthesize_sample() and evsel__parse_sample().
->>>> Both functions have an x86 specific function version which sets member
->>>> ins_lat. The weak common functions do not set member ins_lat.
->>>>
->>>
->>> I don't think Power supports the instruction latency. As a request from Athira Rajeev, I moved the PERF_SAMPLE_WEIGHT_STRUCT to the X86 specific codes.
->>> https://lore.kernel.org/lkml/D97FEF4F-DD88-4760-885E-9A6161A9B48B@linux.vnet.ibm.com/
->>> https://lore.kernel.org/lkml/1612540912-6562-1-git-send-email-kan.liang@linux.intel.com/
->>>
->>> I don't think we want to add the ins_lat back in the weak common functions.
->>>
->>> Could you please update the perf test and don't apply the PERF_SAMPLE_WEIGHT_STRUCT for the non-X86 platform?
->>
->> I used offical linux git tree
->>   [root@t35lp46 perf]# git tag | fgrep 5.12
->> v5.12-rc1
->> [root@t35lp46 perf]#
->>
->> So this change is in the pipe. I do not plan to revert individual patches.
+> Yeah I took it out again waiting for the waters to settle.
 > 
-> No, we shouldn't revert the patch.
-> I mean can you fix the issue in perf test?
-> Don't test ins_lat or PERF_SAMPLE_WEIGHT_STRUCT for a non-X86 platform.
+> Yours,
+> Linus Walleij
 
-That would be very ugly code. We would end up in conditional compiles like
-#ifdef __s390x__
-#endif
-and other architectes like ARM/POWER etc come along. This is something I want to avoid.
+Sorry for the confusion.
 
-And this fix only touches perf, not the kernel.
+"[PATCH v8 0/3] pinctrl: pinmux: Add pinmux-select debugfs file" [1]
+sent Feb. 20th was in my opinion ready to merge.
 
->>>
->>>
->>>> Later in function samples_same() both data in variable sample and sample_out
->>>> are compared. The comparison fails because sample.ins_lat is 117
->>>> and samples_out.ins_lat is 0, the weak functions never set member ins_lat.
->>>>
->>>> Output after:
->>>>    [root@t35lp46 perf]# ./perf test -Fv 27
->>>>    27: Sample parsing
->>>>    --- start ---
->>>>    ---- end ----
->>>>    Sample parsing: Ok
->>>> [root@t35lp46 perf]#
->>>>
->>>> Fixes:
->>>> commit c7444297fd3769 ("perf test: Support PERF_SAMPLE_WEIGHT_STRUCT")
->>>
->>> I think the regression should start from
->>> commit fbefe9c2f87f ("perf tools: Support arch specific PERF_SAMPLE_WEIGHT_STRUCT processing")
->>>
->>>
->>> Thanks,
->>> Kan
->>
->> Kan,
->>
->> I do not follow you. Your commit c7444297fd3769d10c7ffb52c81d71503b3e268f
->> adds this line
->>
->> @@ -242,6 +245,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
->>                  .cgroup         = 114,
->>                  .data_page_size = 115,
->>                  .code_page_size = 116,
->> +               .ins_lat        = 117,
->>
->> And this assignment 117 breaks the test. As mentioned before, member ins_lat is never touched
->> by the weak functions.
->>
-> 
-> Here is the timeline for the patches.
-> 
-> 1. The commit c7444297fd3769 and other SPR patches are merged at 2021-02-08. At that time, I don't think we have this issue. perf test should work well.
+However, it occured to me yesterday since there had been no replies to
+that thread, then it might be a good idea to add a 4th patch to rename
+pinctl.rst to pin-control.rst. I sent that yesterday as v9 [2] but I am
+fine with that being dropped as renaming pinctl.rst is unrelated to my 
+actual goal of adding pinmux-select to debugfs.
 
-Nope, that line above 'ins_lat = 117.' breaks the test. Comment it out and it works well!!!
-That function do_test() is common code executed on all architectures. Take it out and
-it is tested nowhere.
+thanks,
+drew
 
-The whole purpose of this test test__sample_parsing() --> do_test() is to convert
-a perf_sample structure into the perf_event structure and back again. The test
-checks if this convertion works in both directions. See perf_event__synthesize_sample()
-which flattens an perf_sample structure named sample into an byte stream. Function
-evsel__parse_sample() takes that byte stream and creates a struct perf_sample named
-sample_out.
-perf_event__synthesize_sample() has as input sample.ins_lat with value 117.
-And evsel__parse_sample() creates samples_out with  sample_out.ins_lat value 0.
-So the test breaks. Thats why we need to set ins_lat in both functions.
-
-> 2. Athira Rajeev told me that Power doesn't support instruction latency. So I submitted a patch which create weak functions and move the ins_lat into X86 specific.
-> 3. The patch (commit fbefe9c2f87f) was finally merged at 2021-02-18. We should observe the perf test at this time.
-> 
-I just looked at this patch.
-As far I as understand the code, the weak functions just set sample member weight and
-do not touch member ins_lat. Sample member weight is a 64 bit value. 
-It is used when sample_type has bit PERF_SAMPLE_WEIGHT set.
-
-What we need is sample member ins_lat being set. This is the case when sample_type
-has bit PERF_SAMPLE_WEIGHT_STRUCT set. On x86 the sample member weight
-is split into a lower 32bit value containing weight value and an upper 32 bit
-value containing ins_lat value. x86 hardware obviously does not provide larger values.
-
-We need to do the same for non_x86 platforms. Otherwise member ins_lat is never set
-and the test fails. Since the weak functions are only called when architecture specific
-functions are not available, that hardware is not there to support this. 
-So why don't we use this
-procedure when we run into the weak functions where is is no hardware support anyway???
-
-> As my understanding, "Fixes" should log the commit where an issue starts to be observed. If someone tries to backport the fix later, they have an idea where to put it.
-> 
-> Thanks,
-> Kan
-> 
-
-Thanks Thomas
-
--- 
-Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
---
-Vorsitzender des Aufsichtsrats: Gregor Pillen
-Geschäftsführung: Dirk Wittkopp
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+[1] https://lore.kernel.org/linux-gpio/20210220202750.117421-1-drew@beagleboard.org/
+[2] https://lore.kernel.org/lkml/20210302053059.1049035-1-drew@beagleboard.org/
