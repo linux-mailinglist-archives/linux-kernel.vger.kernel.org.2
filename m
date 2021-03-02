@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF66C32A4ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E59AE32A502
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383445AbhCBLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
+        id S1442218AbhCBLqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344060AbhCBLXe (ORCPT
+        with ESMTP id S1344065AbhCBLXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 06:23:34 -0500
 Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F69C06178A;
-        Tue,  2 Mar 2021 03:22:06 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 2so18912138ljr.5;
-        Tue, 02 Mar 2021 03:22:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED7AC06178B;
+        Tue,  2 Mar 2021 03:22:07 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id u4so23439525ljh.6;
+        Tue, 02 Mar 2021 03:22:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xg6BAG0aRzJfW3NL7J2fV5y7N6SqjvW9ZuXns5YdGNw=;
-        b=ij6zyyk2aNlnnd0XbYbXxR36/zxdJcr9oByFXbsLlM07fBQJN/XPW5dS0umXVs3XrX
-         dKb1YQ8a0gVCNKjADTd1RstNMz9rp+XjqXRIUUctar5a9uwwyr+8SKiM/O0yBBhcnGom
-         4st8pL5dZxsqRTFfsRm37Hqwsiu2fzBbjPhoJzY+o4MqR9HMilYX6zzPxgy5eAEsoe+F
-         ijahXaj6u45ZWQ4YMnguCdwtluvUK8YMzenP0OmgdLwwkqPxsDPuXhnCMxYZuwR364Ok
-         QIAwqM0Rjfe52bABrP21DXJol2fqr51UgLU5KHILSvm2ERP8ZQV8b17+8kOD6BoClieG
-         A8oQ==
+        bh=6Pw3GTr/GjOIi01Z3q0PpRjgmUtwICxpPYij6S5wwcI=;
+        b=rAeqU7sAJzvubjRxRBvRPb0Xflif2/Ah/bGNEHgWmu+/qMN17futs5w/h0G2v5btvR
+         ulRQ7DirUjesXRkGzZfp1Lho3KVLbwvkKQlo+3su/+lWoKp+Zs5L7Bdx/8dLlSBUnPOl
+         8wxQV4GfyCy/19GKbdc1SZ1VEYOqAtNT8iUtBaK8pDQramHT1kYhKejtTATwZe1lVaO5
+         +CW1jzinKThVdFaH9ZUGdojzZMdg39nlbrJkz/Io/LT+0XHkJ9rZj28tclXXmFyyc0iv
+         l87aJSmd2WUZmHX0WYuh+jXeG9hl1Ao+eLoEg6JZp5tSObo5bWGeJbYkARntYkvYVgkd
+         FNig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xg6BAG0aRzJfW3NL7J2fV5y7N6SqjvW9ZuXns5YdGNw=;
-        b=gnRg4oDTN1ZXBNGGl1lzjB9ypEEYUvdRhHuAVR8jRADkGO8on31UmG7W65pQoE699r
-         XTJiYX58M5f4dKuvumM7PESGusgfzRHSGKnx/C1Nm0QqnPWnx02u2UuYmrJsWVBaS/gr
-         yXkeCvlZ/WGGrk0bM+LKzeBy4EhGW7C5O1aKgGRuzxxwIi+1t98h6sCRqhDCcNN0UMDC
-         lSpRVbgzwuPh9ZedwGPJbT4sB36nj2HU9vIgM25nP+DjYpbTIki7ABuK2YJGBlYhlJH3
-         C86Kdqc5XWsWZ3P2arUyk5sjIlmuVIsSQta+RSInwpBlRbYciy5ZbDe1VimvVsSeVNxf
-         5Rcw==
-X-Gm-Message-State: AOAM533FaYC2emDM6LExR6tIlT58zpKzcdOjBSmW+ox6N3JdBquG89iC
-        z1p66MvAP3SGF0Ygf71r5xg=
-X-Google-Smtp-Source: ABdhPJztqfJKjybeaUExw8rEhx/7K9lWQwQ4Fio3EyS4lLaojOGOfgeTNngjfqdTuKrt1x7E4as3tg==
-X-Received: by 2002:a2e:9908:: with SMTP id v8mr8601266lji.460.1614684125149;
+        bh=6Pw3GTr/GjOIi01Z3q0PpRjgmUtwICxpPYij6S5wwcI=;
+        b=ZzhRQazQhS0O8yuc5P2u+BtDcMALFVebSL3zcj6q7eU3npJ770kaBsahxo9f1z8mnl
+         7ZkLDh1hXhmziGTYiTrwwfxJpcrz335CEBImnhLChVLMVBudBsZ2TgvmbyJEH5JK5Ipg
+         qib7siFya+3tTXJzaqIzQ9mTWsZSmWHgpXju+kAv22bNBahoXVF6rhIFfN0LQ96vUJxt
+         EVqqWiG+YraA6TVdkmo8AGJS+UcGr+7un3FoAjSQyr4MSM7PpdD+owV0FLvXe647pMam
+         D+u5pLoXOrx6a0VP7IU4cNYiKSrVnyOvrFvleeZkiBahmjptRllojUeLuSvyWoM238fF
+         u1vQ==
+X-Gm-Message-State: AOAM532SapOO54adJLTU0VzYjmAsZLt6+2m4JqhANHNXpTjrkk27xvpV
+        AK6mXCfVLfHx9NBfLUtGK/A=
+X-Google-Smtp-Source: ABdhPJz+HoWgkAqzXnvMEVoBpss7bHPZEO+Q5RCteeV43AIfK/+skRujNOfzl7jNkdQpdps0XG12ng==
+X-Received: by 2002:a2e:9f08:: with SMTP id u8mr7152270ljk.50.1614684125824;
         Tue, 02 Mar 2021 03:22:05 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.04
+        by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 03:22:04 -0800 (PST)
+        Tue, 02 Mar 2021 03:22:05 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Paul Fertser <fercerpav@gmail.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/5] reset: Allow devm_reset_control_array_get() to get resets in a released state
-Date:   Tue,  2 Mar 2021 14:21:19 +0300
-Message-Id: <20210302112123.24161-2-digetx@gmail.com>
+Subject: [PATCH v1 2/5] reset: Add devm_reset_control_array_get_exclusive_released()
+Date:   Tue,  2 Mar 2021 14:21:20 +0300
+Message-Id: <20210302112123.24161-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210302112123.24161-1-digetx@gmail.com>
 References: <20210302112123.24161-1-digetx@gmail.com>
@@ -69,104 +69,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow devm_reset_control_array_get() to get resets in a released state
-in order to make it possible to extend reset-API with resource-managed
-variants of retrieving resets array in a released state. In particular
-this is needed by NVIDIA Tegra drivers.
+Add devm_reset_control_array_get_exclusive_released() which is wanted by
+NVIDIA Tegra drivers.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/reset/core.c  |  8 ++++++--
- include/linux/reset.h | 14 ++++++++------
- 2 files changed, 14 insertions(+), 8 deletions(-)
+ include/linux/reset.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index dbf881b586d9..f36de3d3849b 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
-@@ -985,6 +985,8 @@ EXPORT_SYMBOL_GPL(of_reset_control_array_get);
-  * @dev: device that requests the list of reset controls
-  * @shared: whether reset controls are shared or not
-  * @optional: whether it is optional to get the reset controls
-+ * @acquired: only one reset control may be acquired for a given controller
-+ *            and ID
-  *
-  * The reset control array APIs are intended for a list of resets
-  * that just have to be asserted or deasserted, without any
-@@ -993,7 +995,8 @@ EXPORT_SYMBOL_GPL(of_reset_control_array_get);
-  * Returns pointer to allocated reset_control on success or error on failure
-  */
- struct reset_control *
--devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
-+devm_reset_control_array_get(struct device *dev, bool shared, bool optional,
-+			     bool acquired)
- {
- 	struct reset_control **ptr, *rstc;
- 
-@@ -1002,7 +1005,8 @@ devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
- 	if (!ptr)
- 		return ERR_PTR(-ENOMEM);
- 
--	rstc = of_reset_control_array_get(dev->of_node, shared, optional, true);
-+	rstc = of_reset_control_array_get(dev->of_node, shared, optional,
-+					  acquired);
- 	if (IS_ERR_OR_NULL(rstc)) {
- 		devres_free(ptr);
- 		return rstc;
 diff --git a/include/linux/reset.h b/include/linux/reset.h
-index b9109efa2a5c..3bee086f1f06 100644
+index 3bee086f1f06..ab240a8648ee 100644
 --- a/include/linux/reset.h
 +++ b/include/linux/reset.h
-@@ -33,7 +33,8 @@ struct reset_control *__devm_reset_control_get(struct device *dev,
- 				     bool optional, bool acquired);
- 
- struct reset_control *devm_reset_control_array_get(struct device *dev,
--						   bool shared, bool optional);
-+						   bool shared, bool optional,
-+						   bool acquired);
- struct reset_control *of_reset_control_array_get(struct device_node *np,
- 						 bool shared, bool optional,
- 						 bool acquired);
-@@ -105,7 +106,8 @@ static inline struct reset_control *__devm_reset_control_get(
+@@ -534,6 +534,12 @@ devm_reset_control_array_get_optional_shared(struct device *dev)
+ 	return devm_reset_control_array_get(dev, true, true, true);
  }
  
++static inline struct reset_control *
++devm_reset_control_array_get_exclusive_released(struct device *dev)
++{
++	return devm_reset_control_array_get(dev, false, false, false);
++}
++
  static inline struct reset_control *
--devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
-+devm_reset_control_array_get(struct device *dev, bool shared, bool optional,
-+			     bool acquired)
+ of_reset_control_array_get_exclusive(struct device_node *node)
  {
- 	return optional ? NULL : ERR_PTR(-ENOTSUPP);
- }
-@@ -511,25 +513,25 @@ static inline struct reset_control *devm_reset_control_get_by_index(
- static inline struct reset_control *
- devm_reset_control_array_get_exclusive(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, false, false);
-+	return devm_reset_control_array_get(dev, false, false, true);
- }
- 
- static inline struct reset_control *
- devm_reset_control_array_get_shared(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, true, false);
-+	return devm_reset_control_array_get(dev, true, false, true);
- }
- 
- static inline struct reset_control *
- devm_reset_control_array_get_optional_exclusive(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, false, true);
-+	return devm_reset_control_array_get(dev, false, true, true);
- }
- 
- static inline struct reset_control *
- devm_reset_control_array_get_optional_shared(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, true, true);
-+	return devm_reset_control_array_get(dev, true, true, true);
- }
- 
- static inline struct reset_control *
 -- 
 2.29.2
 
