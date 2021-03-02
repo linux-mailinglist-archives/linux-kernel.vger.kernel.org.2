@@ -2,112 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF9232A693
+	by mail.lfdr.de (Postfix) with ESMTP id EFCF432A694
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578555AbhCBPZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:25:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351007AbhCBNCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1578579AbhCBPZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351021AbhCBNCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 08:02:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFB3B64F15;
-        Tue,  2 Mar 2021 13:01:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614690070;
-        bh=NGPA082Dlx8vneZtl53YoiOOzh33VotGWrJL+0PbHyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j/vynjlOMTVeGvv9xba32RIEdlcDo0ax7KeJ4DiRsKLHj+RYPXzj43VWGsavW34Al
-         zj3ufFl+gH/JyGwt7/qM9kdyRX1UkAY6xvVZSZN1/vfMG/jGT34/N19EirfefQY0Hm
-         seX9dX3vyafXaa1soUjFW7gw0yJyacHDgi62GYoOYW9kY7WcTUOGuPCKwjedvKActC
-         EpEuSIoZaX2tUxNcylPYRCdCi+GHubQfXccXLznZp+oG23w/0IbVFUg2qb54r+Qy9d
-         zJz9Um3U/O/hDBDuqR9FwzJ8mo9QXWF2YUbT73vyXZMCMjJ8+5/KOvijoD5C1r/hh9
-         DLny/rYT+C4cw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D0FEC40CD9; Tue,  2 Mar 2021 10:01:06 -0300 (-03)
-Date:   Tue, 2 Mar 2021 10:01:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH] perf tools: Fix event's pmu name parsing
-Message-ID: <YD43EnqkAKmN0Q4f@kernel.org>
-References: <20210301122315.63471-1-jolsa@kernel.org>
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8490DC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:01:27 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id f12so15970478wrx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=P88OLgbTkZUMP2F6RxCTDa3UqTL0DvJ/H4h2928AGS0=;
+        b=cWjTZIrPmgrzCItY3GJ2Ad5+F80d27tfXG3ciPRPzu5yFPVx0DuMOJ37cHpyYZ6hJY
+         bDEVAFAwTwf7RBXKlXP9N39xkM0HBhEDsLYqDtJHJG2P1tVspg4k6Ae4+Pbv5B6Inz5D
+         0Qzy7aC3jLZtaOhaanSYazYjwRPcpLkbE33gFT6FhRPqhKsIgIeFzEawFp8gn5B775DU
+         jWnUFkFXK8E1HGlAV+DVB4yXG7JKf0PdINk5QN1sBDFRrBmvtg69qPBc0vdxqeeh19IQ
+         cRKtfemz2MsMUmQ0cueUIaghph4L+iiOg/wlhM2WPPOoEeWqh45c0GM6IK+McsGFomTA
+         2Psg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P88OLgbTkZUMP2F6RxCTDa3UqTL0DvJ/H4h2928AGS0=;
+        b=FXBdmEpJRXxNK08eOsT7kVD8GCSvvhv/mb8grGrSbiC86X6nyDjkHbsuvdak1iHEne
+         y/Xpj20pRxwX0vGw8DY8iOOwGFLCNdoaL4Fvrrj2pvzB2f0wIpcRHBFo38RlStlp5Ry5
+         dcVptAGe1vwenYlhJ00eRf/2g7N04RotYPHi+7PB3XjzpHbJw1kWJPirozbP3bC8gZvF
+         j/1wl1+wk1LM+WGTYtbTMoXghK0fxpocIAZ5WRCZLCoNhpThkqYR1/Q8HoZpVodHCeXl
+         FbVUIDxyald0OqIBNO5729N7mxPUsC3HrTIQ2KPRc8wIUYC0PFvrOUbkviK731a0S00h
+         QSsA==
+X-Gm-Message-State: AOAM530jAruZx/196cvOjOUczd/SwzsQUmNT4lxA2tmIheuCf7AZTCdQ
+        zxWuhL6OXQPMNDUfWGTOWZY56A==
+X-Google-Smtp-Source: ABdhPJzcyra0YjUAPO03uOeDAoSsXQjMzgxxaxB1srNOV9k4reCns8wKKgldcU0WpK4ycDHxpC0Kgw==
+X-Received: by 2002:adf:eec5:: with SMTP id a5mr6833415wrp.303.1614690086136;
+        Tue, 02 Mar 2021 05:01:26 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.googlemail.com with ESMTPSA id 91sm5782778wrl.20.2021.03.02.05.01.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 05:01:25 -0800 (PST)
+Subject: Re: [PATCH v2 07/10] clocksource/drivers/hyper-v: Handle vDSO
+ differences inline
+To:     Michael Kelley <mikelley@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
+ <1614561332-2523-8-git-send-email-mikelley@microsoft.com>
+ <42dc252a-b09a-afeb-6792-9b77669c16e9@linaro.org>
+ <MWHPR21MB15930DD833E49415610C021DD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f09da965-aeda-7edf-722c-dbc9d7daab38@linaro.org>
+Date:   Tue, 2 Mar 2021 14:01:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301122315.63471-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <MWHPR21MB15930DD833E49415610C021DD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Mar 01, 2021 at 01:23:15PM +0100, Jiri Olsa escreveu:
-> Jin Yao reported parser error for software event:
+On 02/03/2021 02:29, Michael Kelley wrote:
+> From: Daniel Lezcano <daniel.lezcano@linaro.org> Sent: Monday, March 1, 2021 4:22 AM
+>>
+>> On 01/03/2021 02:15, Michael Kelley wrote:
+>>> While the driver for the Hyper-V Reference TSC and STIMERs is architecture
+>>> neutral, vDSO is implemented for x86/x64, but not for ARM64.  Current code
+>>> calls into utility functions under arch/x86 (and coming, under arch/arm64)
+>>> to handle the difference.
+>>>
+>>> Change this approach to handle the difference inline based on whether
+>>> VDSO_CLOCK_MODE_HVCLOCK is present.  The new approach removes code under
+>>> arch/* since the difference is tied more to the specifics of the Linux
+>>> implementation than to the architecture.
+>>>
+>>> No functional change.
+>>
+>> A suggestion below
+>>
+>>
+>>> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+>>> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+>>> ---
+>>>  arch/x86/include/asm/mshyperv.h    |  4 ----
+>>>  drivers/clocksource/hyperv_timer.c | 10 ++++++++--
+>>>  2 files changed, 8 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+>>> index c73c127..5e5e08aa 100644
+>>> --- a/drivers/clocksource/hyperv_timer.c
+>>> +++ b/drivers/clocksource/hyperv_timer.c
+>>> @@ -372,7 +372,9 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
+>>>
+>>>  static int hv_cs_enable(struct clocksource *cs)
+>>
+>> static __maybe_unused int hv_cs_enable(struct clocksource *cs)
+>>
+>>>  {
+>>> -	hv_enable_vdso_clocksource();
+>>> +#ifdef VDSO_CLOCKMODE_HVCLOCK
+>>> +	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+>>> +#endif
+>>>  	return 0;
+>>>  }
+>>>
+>>> @@ -385,6 +387,11 @@ static int hv_cs_enable(struct clocksource *cs)
+>>>  	.suspend= suspend_hv_clock_tsc,
+>>>  	.resume	= resume_hv_clock_tsc,
+>>>  	.enable = hv_cs_enable,
+>>> +#ifdef VDSO_CLOCKMODE_HVCLOCK
+>>> +	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+>>> +#else
+>>> +	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
+>>> +#endif
+>>
+>> #ifdef VDSO_CLOCKMODE_HVCLOCK
+>> 	.enable = hv_cs_enable,
+>> 	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+>> #else
+>> 	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
+>> #endif
+>>
 > 
->   # perf stat -e software/r1a/ -a -- sleep 1
->   event syntax error: 'software/r1a/'
->                        \___ parser error
+> Is there any particular benefit (that I might not be recognizing)
+> to having the .enable function be NULL vs. a function that
+> does nothing?  I can see the handful of places where the
+> .enable function is invoked, and there doesn't seem to be
+> much difference.
 > 
-> This happens after commit 8c3b1ba0e7ea, where new
-> software-gt-awake-time event's non-pmu-event-style
-> makes event parser conflict with software pmu.
-> 
-> If we allow PE_PMU_EVENT_PRE to be parsed as pmu name,
-> we fix the conflict and the following character '/' for
-> pmu or '-' for non-pmu-event-style event allows parser
-> to decide what even is specified.
+> In any case, I have no problem with making the change in
+> a v3 of the patch set.
 
-Thanks, applied.
+It is just coding style, it allows to remove a #ifdef in the code.
 
-- Arnaldo
 
- 
-> Cc: Chris Wilson <chris@chris-wilson.co.uk>
-> Fixes: 8c3b1ba0e7ea ("drm/i915/gt: Track the overall awake/busy time") # 1
-> Reported-by: Jin Yao <yao.jin@linux.intel.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/parse-events.y | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index d5b6aff82f21..d57ac86ce7ca 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -89,6 +89,7 @@ static void inc_group_count(struct list_head *list,
->  %type <str> PE_EVENT_NAME
->  %type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
->  %type <str> PE_DRV_CFG_TERM
-> +%type <str> event_pmu_name
->  %destructor { free ($$); } <str>
->  %type <term> event_term
->  %destructor { parse_events_term__delete ($$); } <term>
-> @@ -272,8 +273,11 @@ event_def: event_pmu |
->  	   event_legacy_raw sep_dc |
->  	   event_bpf_file
->  
-> +event_pmu_name:
-> +PE_NAME | PE_PMU_EVENT_PRE
-> +
->  event_pmu:
-> -PE_NAME opt_pmu_config
-> +event_pmu_name opt_pmu_config
->  {
->  	struct parse_events_state *parse_state = _parse_state;
->  	struct parse_events_error *error = parse_state->error;
-> -- 
-> 2.29.2
-> 
 
 -- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-- Arnaldo
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
