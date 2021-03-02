@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B91A32ABC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD3E32ABC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839926AbhCBUoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:44:06 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:15600 "EHLO
+        id S1837216AbhCBUmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:42:12 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:65178 "EHLO
         mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1347727AbhCBRym (ORCPT
+        by vger.kernel.org with ESMTP id S1574631AbhCBRv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:54:42 -0500
+        Tue, 2 Mar 2021 12:51:27 -0500
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122H1q3G022910;
-        Tue, 2 Mar 2021 11:05:02 -0600
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122H1q3K022910;
+        Tue, 2 Mar 2021 11:05:03 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=rzifAY4WtIuj8Vr9pTj8WR2zSkYWxbixXv5RE7lp+Mc=;
- b=FpmHujhYVy5dHcEQysWOtE8zyK0nXJh3Wy4bzjtSuamCd0/sX+Af2/Kl8C1/ZKgggR8T
- Mbbrl+vhT0GuH3hAGLFeFP4QMkBD6KPDAqnhmCIBTuIbbxyEYliY33DmaCU2smNmWOpW
- U2hXsoQzJvNskP5iEgbYwiFaa3s43oVomnx3+E3pFFilME6G2tV1ckXQ5w02V6N5+jW9
- XZBQBuQo+s5jUhoXlTpuhEQ5hBfZc2EwiEICAE6TP0hq6+iBLAgHM6nX/v2y9yQWAqGY
- UeHS3v3naU3VQYQGpjOZEvMDXYRv867qDMX1kGqkJ2nAzZMzYD7iQVUXjW95HzPIsiNb QA== 
+ bh=uEj5ZIOlpg1j1E+0wNPoMN6JX9ZzpCiLBva1l5WJfi0=;
+ b=LgqRDF7oP0vY9IddZ4OOK3xwpsATiNz5htV3JAu70ewNljcCFVwcFZBTOrT35xVX47DM
+ XCIXFJ1GDj2FRMM50+UgnredR9Tvf8i/Ud+6u8piwBlYNzZkC2E+phWWVz+m0zZw4tCR
+ XeApij4CgVvRoBoEbkzW/UuYKMWzE/c3BN0M+XH9l7g06IF9fQPMQAJWcR++fVpVP8ZK
+ pC9HdbmuDZbiNnQ4uS1Cq7hlbMBJdMxgKdjdAD8uZuch3gdG4bvFJkSoz+C+87F2syio
+ MaoY/BzNuT31q5tihogCaCFOgXVMSixysZF/qAd47Gt3UcawizpvJq2oBBwqIVZt3jAi IA== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg9-2
+        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg9-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 02 Mar 2021 11:05:02 -0600
+        Tue, 02 Mar 2021 11:05:03 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 2 Mar 2021
@@ -36,8 +36,8 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
  Transport; Tue, 2 Mar 2021 17:05:00 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 02AE011D6;
-        Tue,  2 Mar 2021 17:04:59 +0000 (UTC)
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8DB4411D6;
+        Tue,  2 Mar 2021 17:05:00 +0000 (UTC)
 From:   Lucas Tanure <tanureal@opensource.cirrus.com>
 To:     James Schulman <james.schulman@cirrus.com>,
         David Rhodes <david.rhodes@cirrus.com>,
@@ -47,9 +47,9 @@ CC:     Richard Fitzgerald <rf@opensource.cirrus.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         Lucas Tanure <tanureal@opensource.cirrus.com>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 04/15] ASoC: cs42l42: Disable regulators if probe fails
-Date:   Tue, 2 Mar 2021 17:04:43 +0000
-Message-ID: <20210302170454.39679-5-tanureal@opensource.cirrus.com>
+Subject: [PATCH 06/15] ASoC: cs42l42: Provide finer control on playback path
+Date:   Tue, 2 Mar 2021 17:04:45 +0000
+Message-ID: <20210302170454.39679-7-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
 References: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
@@ -58,62 +58,122 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1015 suspectscore=0
  adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=773 bulkscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103020131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of cs42l42_i2c_probe() fail, the regulators were left enabled.
+Removing cs42l42_hpdrv_evt that enables the entire chain and replace by
+a set of widgets that can better define the codec
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 65 +++++++++++++-------------------------
+ sound/soc/codecs/cs42l42.h |  8 ++---
+ 2 files changed, 26 insertions(+), 47 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 00e303c711ddc..a567d38af8d3f 100644
+index 834b702fe4297..663a6a8104171 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -1756,8 +1756,10 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 	/* Reset the Device */
- 	cs42l42->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
- 		"reset", GPIOD_OUT_LOW);
--	if (IS_ERR(cs42l42->reset_gpio))
--		return PTR_ERR(cs42l42->reset_gpio);
-+	if (IS_ERR(cs42l42->reset_gpio)) {
-+		ret = PTR_ERR(cs42l42->reset_gpio);
-+		goto err_disable;
-+	}
+@@ -461,54 +461,33 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				0x3e, 1, mixer_tlv)
+ };
  
- 	if (cs42l42->reset_gpio) {
- 		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
-@@ -1791,13 +1793,13 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 		dev_err(&i2c_client->dev,
- 			"CS42L42 Device ID (%X). Expected %X\n",
- 			devid, CS42L42_CHIP_ID);
--		return ret;
-+		goto err_disable;
- 	}
+-static int cs42l42_hpdrv_evt(struct snd_soc_dapm_widget *w,
+-				struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+-
+-	if (event & SND_SOC_DAPM_POST_PMU) {
+-		/* Enable the channels */
+-		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_EN,
+-				CS42L42_ASP_RX0_CH_EN_MASK,
+-				(CS42L42_ASP_RX0_CH1_EN |
+-				CS42L42_ASP_RX0_CH2_EN) <<
+-				CS42L42_ASP_RX0_CH_EN_SHIFT);
+-
+-		/* Power up */
+-		snd_soc_component_update_bits(component, CS42L42_PWR_CTL1,
+-			CS42L42_ASP_DAI_PDN_MASK | CS42L42_MIXER_PDN_MASK |
+-				CS42L42_HP_PDN_MASK, 0);
+-	} else if (event & SND_SOC_DAPM_PRE_PMD) {
+-		/* Disable the channels */
+-		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_EN,
+-				CS42L42_ASP_RX0_CH_EN_MASK, 0);
+-
+-		/* Power down */
+-		snd_soc_component_update_bits(component, CS42L42_PWR_CTL1,
+-			CS42L42_ASP_DAI_PDN_MASK | CS42L42_MIXER_PDN_MASK |
+-				CS42L42_HP_PDN_MASK,
+-			CS42L42_ASP_DAI_PDN_MASK | CS42L42_MIXER_PDN_MASK |
+-				CS42L42_HP_PDN_MASK);
+-	} else {
+-		dev_err(component->dev, "Invalid event 0x%x\n", event);
+-	}
+-	return 0;
+-}
+-
+ static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
++	/* Playback Path */
+ 	SND_SOC_DAPM_OUTPUT("HP"),
+-	SND_SOC_DAPM_AIF_IN("SDIN", NULL, 0, CS42L42_ASP_CLK_CFG,
+-					CS42L42_ASP_SCLK_EN_SHIFT, false),
+-	SND_SOC_DAPM_OUT_DRV_E("HPDRV", SND_SOC_NOPM, 0,
+-					0, NULL, 0, cs42l42_hpdrv_evt,
+-					SND_SOC_DAPM_POST_PMU |
+-					SND_SOC_DAPM_PRE_PMD)
++	SND_SOC_DAPM_DAC("DAC", NULL, CS42L42_PWR_CTL1, CS42L42_HP_PDN_SHIFT, 1),
++	SND_SOC_DAPM_MIXER("MIXER", CS42L42_PWR_CTL1, CS42L42_MIXER_PDN_SHIFT, 1, NULL, 0),
++	SND_SOC_DAPM_AIF_IN("SDIN1", NULL, 0, CS42L42_ASP_RX_DAI0_EN, CS42L42_ASP_RX0_CH1_SHIFT, 0),
++	SND_SOC_DAPM_AIF_IN("SDIN2", NULL, 1, CS42L42_ASP_RX_DAI0_EN, CS42L42_ASP_RX0_CH2_SHIFT, 0),
++
++	/* Playback Requirements */
++	SND_SOC_DAPM_SUPPLY("ASP DAI0", CS42L42_PWR_CTL1, CS42L42_ASP_DAI_PDN_SHIFT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("SCLK", CS42L42_ASP_CLK_CFG, CS42L42_ASP_SCLK_EN_SHIFT, 0, NULL, 0),
+ };
  
- 	ret = regmap_read(cs42l42->regmap, CS42L42_REVID, &reg);
- 	if (ret < 0) {
- 		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
--		return ret;
-+		goto err_disable;
- 	}
+ static const struct snd_soc_dapm_route cs42l42_audio_map[] = {
+-	{"SDIN", NULL, "Playback"},
+-	{"HPDRV", NULL, "SDIN"},
+-	{"HP", NULL, "HPDRV"}
++	/* Playback Path */
++	{"HP", NULL, "DAC"},
++	{"DAC", NULL, "MIXER"},
++	{"MIXER", NULL, "SDIN1"},
++	{"MIXER", NULL, "SDIN2"},
++	{"SDIN1", NULL, "Playback"},
++	{"SDIN2", NULL, "Playback"},
++
++	/* Playback Requirements */
++	{"SDIN1", NULL, "ASP DAI0"},
++	{"SDIN2", NULL, "ASP DAI0"},
++	{"SDIN1", NULL, "SCLK"},
++	{"SDIN2", NULL, "SCLK"},
+ };
  
- 	dev_info(&i2c_client->dev,
-@@ -1823,7 +1825,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 	if (i2c_client->dev.of_node) {
- 		ret = cs42l42_handle_device_data(i2c_client, cs42l42);
- 		if (ret != 0)
--			return ret;
-+			goto err_disable;
- 	}
+ static int cs42l42_component_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 2bd370b184e1d..e17a0c0aeb4a0 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -695,10 +695,10 @@
+ #define CS42L42_ASP_RX_DAI0_EN		(CS42L42_PAGE_2A + 0x01)
+ #define CS42L42_ASP_RX0_CH_EN_SHIFT	2
+ #define CS42L42_ASP_RX0_CH_EN_MASK	(0xf << CS42L42_ASP_RX0_CH_EN_SHIFT)
+-#define CS42L42_ASP_RX0_CH1_EN		1
+-#define CS42L42_ASP_RX0_CH2_EN		2
+-#define CS42L42_ASP_RX0_CH3_EN		4
+-#define CS42L42_ASP_RX0_CH4_EN		8
++#define CS42L42_ASP_RX0_CH1_SHIFT	2
++#define CS42L42_ASP_RX0_CH2_SHIFT	3
++#define CS42L42_ASP_RX0_CH3_SHIFT	4
++#define CS42L42_ASP_RX0_CH4_SHIFT	5
  
- 	/* Setup headset detection */
+ #define CS42L42_ASP_RX_DAI0_CH1_AP_RES	(CS42L42_PAGE_2A + 0x02)
+ #define CS42L42_ASP_RX_DAI0_CH1_BIT_MSB	(CS42L42_PAGE_2A + 0x03)
 -- 
 2.30.1
 
