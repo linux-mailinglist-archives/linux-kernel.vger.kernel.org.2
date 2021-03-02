@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F9632A96D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AE732A964
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835199AbhCBSXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1448709AbhCBPeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:34:22 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D25C0611C0
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:29:40 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 18so23328308lff.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:29:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sWSzaWWbzyPyu6uykYAaJrqhSOJqXcp+xt3SDSKUiT4=;
-        b=qCx1lcWswuw5DoTlpkHcllQN1I0UiiKbKHGIch77U8NidsjWcZ/WYscKhg+8gJQk7b
-         A+Aw4T9iYXS+hD8ZWVr/ylo6w7TpxVpXDL0BVxQm8ZAAAifYYBKShIBeLghuVjbVE+MK
-         zSSd1Yd0kiXBRNNyRc6X900oPd18UrslVtJ506N4CFYk+dG2ealuCagpqV8sPZ4X6/82
-         oFgwvXoWtsRwzfksjLccHfJRHrLg5T9DpPZTfbQ8VtJgQAP8wAwK+fRRatbNxTzSTaid
-         OPtWLlfw7G4PomP2Y9Mawa3+sCs8d5TrczolOh1FyTHeXrRdZXzthYBTmF31G7m4gg2r
-         CyyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sWSzaWWbzyPyu6uykYAaJrqhSOJqXcp+xt3SDSKUiT4=;
-        b=IDh/qr4Eb+QN2QIhRJpbdhdqyqGecO3asmUU/De/LZpt84+VBieWkPhP3Ck2dV4868
-         QLkRogvjN4TnddXjFlrqFQ0vrE5KfxdodlSadrmYgzSLB8CL+xgW0Ur5t0sEy80z09aF
-         XUn4En0faHKExz6JafX54IOMw49NPBZYbEmkK6l3XKbmjc5d+EnK1z6Nw/TUHX2eDXeX
-         3kF9Sbu90dLMl8Ga3ReSY+sbRAFReUI8gX4iuwG3nn4xZ//7bUsQSD8LL8QWY7ahXTJp
-         ryCa4HR18l3G2QgHaJf2E2oS48xouQi/0U6/p1EzU2cI2evn4LVLwdXzkaLqsri0tq//
-         YhoQ==
-X-Gm-Message-State: AOAM531WbfaaZHDyERHojmSkPeUulvVt76z63pb0GHYuQmZVLx8uxwek
-        fr+j9dM9yP5FwZDbxPeOBL9qSRvldAgdYxhHsEecNA==
-X-Google-Smtp-Source: ABdhPJyaRDfvOXcbXwWIQg1BVpvxTAXseyBY7XMxnAuyhRJ/4QjBxTR7Kl6thFN4h7FWAkpFrwbEtu+nWwX56vMBeBI=
-X-Received: by 2002:a05:6512:74a:: with SMTP id c10mr12813240lfs.586.1614698979488;
- Tue, 02 Mar 2021 07:29:39 -0800 (PST)
+        id S1580833AbhCBSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:21:43 -0500
+Received: from mga06.intel.com ([134.134.136.31]:34803 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1447268AbhCBPdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:33:18 -0500
+IronPort-SDR: yBONr8JFZIXgcK14onfp8saPU445QnqpqtNWtxA/2+JXLk0XoOyFct/se3gXfJRHEHrPdEIEc/
+ J7TtOXIjZRRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="248258123"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="248258123"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:29:58 -0800
+IronPort-SDR: 15rbFgAnk1wAoW7qk1qh3Hjl7Tu8j51q4BNQ81ulINlDE+FX3Och0OoDdI2Pe48lHAUUROIIQu
+ U2P/3RJuIUYQ==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="368995015"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:29:52 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lH6y4-009Pvb-Jh; Tue, 02 Mar 2021 17:29:48 +0200
+Date:   Tue, 2 Mar 2021 17:29:48 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
+        Timur Tabi <timur@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
+ addresses as unhashed
+Message-ID: <YD5Z7Ax6vcAejoqR@smile.fi.intel.com>
+References: <20210214161348.369023-1-timur@kernel.org>
+ <20210214161348.369023-4-timur@kernel.org>
+ <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
+ <CANpmjNNm-4s16_KQ1_NqFN4XOESJh4_=33LHQzt+p4V0Cy=Xzw@mail.gmail.com>
+ <CAMuHMdWWsZ-vTGZCeLtcwLTuBYpeP0STfhrK37wiwmyfsQ798A@mail.gmail.com>
+ <YD49x/UGUq6MSE39@alley>
+ <8893ff08-1e50-316c-f632-cd37be1690d5@suse.cz>
+ <CAMuHMdUB4DZxHo=j1+EsSsoGCdWmDO9mBo0cUtAH4OYHy3sBzw@mail.gmail.com>
+ <20210302090811.620ae7d0@gandalf.local.home>
+ <CAMuHMdVYJ0ydFEZ+xPLt27J9pBW+B8pJNPBDZ2Vw5g5k1atarg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210225164216.21124-1-noltari@gmail.com> <20210225164216.21124-12-noltari@gmail.com>
-In-Reply-To: <20210225164216.21124-12-noltari@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 16:29:28 +0100
-Message-ID: <CACRpkdbnNEE_c5VHv=42rvKzYz9rMw6JpnbWqnK0mLeAy656=g@mail.gmail.com>
-Subject: Re: [PATCH 11/12] Documentation: add BCM6318 pincontroller binding documentation
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVYJ0ydFEZ+xPLt27J9pBW+B8pJNPBDZ2Vw5g5k1atarg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 5:42 PM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
+On Tue, Mar 02, 2021 at 03:28:09PM +0100, Geert Uytterhoeven wrote:
+> On Tue, Mar 2, 2021 at 3:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > On Tue, 2 Mar 2021 14:49:42 +0100
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > So this is basically a kernel tinyfication issue, right? Is that still pursued
+> > > > today? Are there better config options suitable for this than CONFIG_DEBUG_KERNEL?
+> > >
+> > > As long as I hear about products running Linux on SoCs with 10 MiB of
+> > > SRAM, I think the answer is yes.
+> > > I'm not immediately aware of a better config option.  There are no more
+> > > TINY options left, and EXPERT selects DEBUG_KERNEL.
+> >
+> > Since the trace_printk() uses the same type of notice, I wonder if we could
+> > make this into a helper function and just pass in the top part.
+> >
+> > +       pr_warn("**********************************************************\n");
+> > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > +       pr_warn("**                                                      **\n");
+> >
+> >
+> > +       pr_warn("** This system shows unhashed kernel memory addresses   **\n");
+> > +       pr_warn("** via the console, logs, and other interfaces. This    **\n");
+> > +       pr_warn("** might reduce the security of your system.            **\n");
+> >
+> > Only the above section is really unique. The rest can be a boiler plate.
+> 
+> Good idea. drivers/iommu/iommu-debugfs.c has a third copy.
 
-> Add binding documentation for the pincontrol core found in BCM6318 SoCs.
->
-> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
++1. Let's keep it in some helper that can be added if we have a corresponding
+functionality.
 
-> +  interrupts-extended:
-> +    description:
-> +      One interrupt per each of the 2 GPIO ports supported by the contro=
-ller,
-> +      sorted by port number ascending order.
-> +    minItems: 2
-> +    maxItems: 2
+> > +       pr_warn("**                                                      **\n");
+> > +       pr_warn("** If you see this message and you are not debugging    **\n");
+> > +       pr_warn("** the kernel, report this immediately to your system   **\n");
+> > +       pr_warn("** administrator!                                       **\n");
+> > +       pr_warn("**                                                      **\n");
+> > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > +       pr_warn("**********************************************************\n");
+> 
+> Fortunately gcc is already smart enough to deduplicate identical strings,
+> but only in the same source file.
 
-Same comment, hierarchical.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Yours,
-Linus Walleij
+
