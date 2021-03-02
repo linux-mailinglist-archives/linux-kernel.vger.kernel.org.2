@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D9732ACE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA72832AD08
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383756AbhCBVR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:17:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S1837335AbhCBVTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:19:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580756AbhCBSVK (ORCPT
+        with ESMTP id S244199AbhCBS06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:21:10 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EB5C0617A7;
-        Tue,  2 Mar 2021 10:19:23 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 0F0B22223E;
-        Tue,  2 Mar 2021 19:16:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614708977;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f1o1gnNWlC/NUtDWxWJeDtEym9UtbhEVjLxvEBdBC2k=;
-        b=b6erdFrmE04Jmxg6LNKxUmw4U3GdXeLpLqt0J0FwK4Qui+KQdy0FiuRTezzE76+7npughH
-        Z2UIBUiRtY+tNDO2opH0zfTRLRCZLGsEuFcxco8cx9wRNRcadivkWpegmeX24S5JyQujIJ
-        HNqomz7cXV1wEL0JxfJqSNZTDPKk1aI=
+        Tue, 2 Mar 2021 13:26:58 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0FAC061797
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:17:55 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id l7so10138871pfd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:17:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xjoxtDeZVJmNWTGHn0H0lCFPaR4VqFxzOXXzxPha6EE=;
+        b=rhf3oxsfGGo53nh4GOrvv+Y0oL6pgnfzdfDpSwL7grZyiEvJt5I8RnPJS5gLORMQB0
+         tRi7n2bU9MDbNOfjCGBZkGIxHX6BEDDZIy2lDJYe8a1Tm1roXPMLfVn0AOeWh8LZeZeU
+         FqWXR1qCpf4FZiIQaY5P2nzD1yAKZaB9Uz+eDvyM/DJ8zlkRRaaQfYAopSSW/tPdEp1Q
+         22RfhArWksh0wudozmgGGspI4Y5Xovj21C16DjDxn2UQSJPfFbYD0FczMShFUuKe5zzZ
+         v5KMNSX/rRFjJZ80FDpwSg3GNJcrcVIGQiAqVHhe86EohH18ykIYcMmy1+kzLFGSShj7
+         xTcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xjoxtDeZVJmNWTGHn0H0lCFPaR4VqFxzOXXzxPha6EE=;
+        b=ERi14X/5Ya4H22IxBvbrMrkyPfBHB2sUCnHnZ4apB2ARXBBiac/BUYVVkwsyDYqETd
+         LzHQMubSJMzt5iuNqbJjGqIXGlOmE8n0o3oDJImiD7R+id/Zc38LAw3cl8CsNHC/QSX7
+         DeOWkI9lI2pfWQDwX/8mYNm/8ZRPWc9uLa00Qu+SapPq5YuViJWl04CyPpSbbqPnlk/0
+         U9Um037/kOjJrK2deAkSAyRYmjBvVVFSEPxZrnd6OVMVbbCPrDEjXl0XdGjAbM2+XWbl
+         c3YAzmI6QT2h4Mu3+/IuYIsgi0NvCIxQvW6XjNUgF2wxxHjj4ufMX4FCSAvB1Gdwuvat
+         dhkA==
+X-Gm-Message-State: AOAM533M53zkLzoIXDr9pzh9K2IpU4roTWdWC8DZbll/cunIyQXDxPC2
+        sBA9mM3jweLK25IjLImQ1mXoCg==
+X-Google-Smtp-Source: ABdhPJyir8Hi4ETXFhsFfHVZO9TJ7tP2YR7BNYQHcZZJV1WrhVCyOwHfDk/SeDwYG/5ICfDidf0ZYw==
+X-Received: by 2002:aa7:948d:0:b029:1ed:a489:dd7a with SMTP id z13-20020aa7948d0000b02901eda489dd7amr4446965pfk.29.1614709074340;
+        Tue, 02 Mar 2021 10:17:54 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
+        by smtp.gmail.com with ESMTPSA id o127sm21816244pfg.202.2021.03.02.10.17.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 10:17:53 -0800 (PST)
+Date:   Tue, 2 Mar 2021 10:17:47 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [PATCH 0/2] KVM: x86: Emulate L2 triple fault without killing L1
+Message-ID: <YD6BS0PR/+d6iC5Q@google.com>
+References: <20210302174515.2812275-1-seanjc@google.com>
+ <04aa253c-9708-d707-3ee9-7595da4029ad@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 02 Mar 2021 19:16:16 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gpio: regmap: fix direction register check
-In-Reply-To: <20210302180621.12301-1-noltari@gmail.com>
-References: <20210302180621.12301-1-noltari@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <c05bf9228206786a09f4f17160a2edf9@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04aa253c-9708-d707-3ee9-7595da4029ad@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-02 19:06, schrieb Álvaro Fernández Rojas:
-> If there's a direction register, we should also have dat or set 
-> registers.
-> However, we only need one of them, not both.
-
-Can you give some more context or an example? If there is a direction
-register, we'd need to set and get the value, no?
-
--michael
-
-> Fixes: ebe363197e52 ("gpio: add a reusable generic gpio_chip using 
-> regmap")
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  drivers/gpio/gpio-regmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Mar 02, 2021, Paolo Bonzini wrote:
+> On 02/03/21 18:45, Sean Christopherson wrote:
+> > If KVM (L0) intercepts #GP, but L1 does not, then L2 can kill L1 by
+> > triggering triple fault.  On both VMX and SVM, if the CPU hits a fault
+> > while vectoring an injected #DF (or I supposed any #DF), any intercept
+> > from the hypervisor takes priority over triple fault.  #PF is unlikely to
+> > be intercepted by L0 but not L1.  The bigger problem is #GP, which is
+> > intercepted on both VMX and SVM if enable_vmware_backdoor=1, and is also
+> > now intercepted for the lovely VMRUN/VMLOAD/VMSAVE errata.
+> > 
+> > Based on kvm/queue, commit fe5f0041c026 ("KVM/SVM: Move vmenter.S exception
+> > fixups out of line").  x86.c and svm/nested.c conflict with kvm/master.
+> > They are minor and straighforward, but let me know if you want me to post
+> > a version based on kvm/master for easier inclusion into 5.12.
 > 
-> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
-> index 23b0a8572f53..5a9fca00b5e8 100644
-> --- a/drivers/gpio/gpio-regmap.c
-> +++ b/drivers/gpio/gpio-regmap.c
-> @@ -194,7 +194,7 @@ struct gpio_regmap *gpio_regmap_register(const
-> struct gpio_regmap_config *config
-> 
->  	/* if we have a direction register we need both input and output */
->  	if ((config->reg_dir_out_base || config->reg_dir_in_base) &&
-> -	    (!config->reg_dat_base || !config->reg_set_base))
-> +	    (!config->reg_dat_base && !config->reg_set_base))
->  		return ERR_PTR(-EINVAL);
-> 
->  	/* we don't support having both registers simultaneously for now */
+> I think it would be too intrusive.  Let's stick this in 5.13 only.
+
+Hmm, agreed, especially since most of the paths are not properly tested.  In
+that case, probably best to also drop stable@kernel.org?
