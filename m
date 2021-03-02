@@ -2,187 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12E232ADE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8D232ADE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360081AbhCBWQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:16:28 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:57552 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347035AbhCBUVf (ORCPT
+        id S2360090AbhCBWQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:16:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350730AbhCBUZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:21:35 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122KF4iM061553;
-        Tue, 2 Mar 2021 20:20:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=MySXm0Dugl+sP25rrPs2V0sxZ1PfMnqZsXjwK8peeOg=;
- b=JURshcwlAS1pVWjY2DLPHN1MQbBxulHVFZ3wT9zfKX9qOxRWjm/AEqx6sqBxhkDCn5KX
- /FtP0KguBt+wbkyrkmeDKix9y1XwD78QiM5lSOFui97u3yUghGfAdCI3tMFshYLZ7QwZ
- cd14wXIq/xs7Z6yq30YMNIuxnotyi7YxGfPT6KGXeobMZc5UkbQ0s8V/dnA7i7LIXCRx
- OQncyIZeFlRWf/nRs8RsHyt8wmvozbYXH3aSuHsSegT59D1e5ElEq6xMXhmvqQRxfnQR
- LFzpGO43y/90Rv85ezh5sDJUrDvpIkpsANwu2fKEajGu3q+jB0Hwb2cdYajCHkeoMxhS WA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36ybkb95e4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Mar 2021 20:20:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122KF3a1009505;
-        Tue, 2 Mar 2021 20:20:14 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-        by aserp3020.oracle.com with ESMTP id 370000cnrt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Mar 2021 20:20:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ou3dN8J29r1YxdTHTSOu24yx9MS2ka//xg9qMqmMIBRUdaQEQazQd7chSE4A0I8mxUd9PRx0j1gX/9HGEAEh1pwCg5669iRQtoKIDGueLGz6ltHRGklnNdqs6bNBTHWpl+2onowb+fHlNviUN9CBz+K5pAaljf9gAzATHgD7HIBFJcSYP4xctR9DJtUp4ieZXPGmxcDJmkLuOMV9MUK2JaZwd1UGa42g+eii4lytNcG1ekVUe1eLpiQkihAKhsu/l9oP+Ziik/yxGph3nq3kABCxKOicO98N0Jts+Z8cnDB9t4zLfEb6kUfRgFL7qod8kd3Gmka6QqK3ZLbHYqeTEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MySXm0Dugl+sP25rrPs2V0sxZ1PfMnqZsXjwK8peeOg=;
- b=aN0FrIq8HmlFaOmCrdNXxeoYltf/iiqqMiyzLnsc4PC+0G8vRBZXCdCGvOTRQOSK2Dm9wKrvqeTxjiKGEpJGRO+N3vp3VAwI16G/r4+pEifFEu4jOgHxMVPZcFc8be5w1wFL4cRf8FK9P20v6moleAe1EsuojGStt7w1fOFB4HIMsaoUJdPGVU1KDw8Bs296rtVxTf2pb26tihoeKJfYe21yjv0e/eRxeyuMtBIskmHYTjBlbAXwrLX89T999g+ruu2zbDrmWDXCV0GGhlMjLEBz0tygKW2d6zDCiGdgTQKgyJVGnEr3hqOa2idW2rBKXGHyiyVXgGm9cIoZUhVV8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 2 Mar 2021 15:25:36 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC65C06178B;
+        Tue,  2 Mar 2021 12:24:18 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id k12so16655560ljg.9;
+        Tue, 02 Mar 2021 12:24:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MySXm0Dugl+sP25rrPs2V0sxZ1PfMnqZsXjwK8peeOg=;
- b=nxt4kqWsnaewjduBnlFnLHCz4ecN+1fJo7Q1WRCcsFjIfyUew4S9zH59MjmzwyKW+cS9DUi0q+Ai61xjAgDMTpWfI1k06/r9K0SjmyoSZgd9hupK4BPirDFIsMNpc1FxxK8+uPfnTLY6fYmxgBxQ3Tlgc77odfA3YAW+z5DRScU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from SN6PR10MB3006.namprd10.prod.outlook.com (2603:10b6:805:cf::13)
- by SA2PR10MB4411.namprd10.prod.outlook.com (2603:10b6:806:116::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 2 Mar
- 2021 20:20:12 +0000
-Received: from SN6PR10MB3006.namprd10.prod.outlook.com
- ([fe80::607a:91ec:c8b0:af82]) by SN6PR10MB3006.namprd10.prod.outlook.com
- ([fe80::607a:91ec:c8b0:af82%3]) with mapi id 15.20.3890.029; Tue, 2 Mar 2021
- 20:20:12 +0000
-Subject: Re: [PATCH] swiotlb: Fix type of max_slot
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jianxiong Gao <jxgao@google.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <1614705688-10567-1-git-send-email-hayashi.kunihiko@socionext.com>
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Message-ID: <436bf276-5b16-62af-6a32-70f91fce7557@oracle.com>
-Date:   Tue, 2 Mar 2021 15:20:08 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
-In-Reply-To: <1614705688-10567-1-git-send-email-hayashi.kunihiko@socionext.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [209.6.208.110]
-X-ClientProxiedBy: SJ0PR03CA0250.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::15) To SN6PR10MB3006.namprd10.prod.outlook.com
- (2603:10b6:805:cf::13)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ULh96LV2OaSrxc6KmEsgLrWL5YvhH8PzX4MGi2t/P9s=;
+        b=kwsrfJN4Qao4f75TPpRIUagrPr3NR40CDupm4idWUUtBseExEDxxZN7wHPeENSwVn4
+         j3A4BYkK0H2dTCsddMKXFx//mI2qcdU0LUymO+E7CVRwr2LTsePmtin5nlvvJKq3nsMO
+         bFG6pzmxppMeYlF1U9N2Pgg44FVWorzn2laVHUWXlT8fGTdVkAAw/Sc7SkTH6AQLAezH
+         kf2VjRbGeZjqvQzVkVWMWiTUM5ClWy0wtCQ+wSgyMzpRQEIMlejzWqWAnpiqMtfIVvo0
+         CEZp+gYsOaEWjuu4N/sbyJopv6SyHTpTcV6as7BcnziZI6Oqclp11Up7wie0gL/A1SLc
+         8ZpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ULh96LV2OaSrxc6KmEsgLrWL5YvhH8PzX4MGi2t/P9s=;
+        b=VyH046xD1HJr75CbZ32q0yzaNAIk/Rm9IbIHtdIp46u2P92BglbZX79nuQrquUhZK+
+         KVpKnJXPX4tpm7CKZuQaJwZwIgvZs4W9FJh60/2XABi8kQN6d0gn+kqkmZaZ2X0bEAEy
+         HaYg6p0sZxqFPVs7742DvgFlSPmiDGnTY0FrbH+vnzlaw7fb83/5yLcgaVMAzIbVMGRU
+         3nXN4nuTJSdfTiJWvcpCb1BwXgVu4EcJwID6bzhUPHMgS7mRS2tiZNmJNGZkToFSBxV2
+         vPuS38+psedDnqg+SlgMw4hSlXlIHL1oveddQlRBU3VOdH67iUtLtoM3DmZdj+XQmgiP
+         5cFw==
+X-Gm-Message-State: AOAM531P1dllHc1Dsdh2gTPuVhm/LRHcjkVVIUdo4DGHs+xzqvRXGEeg
+        MkRO7mj+PU5XqGm+7sVfE40XlcA7en97MXKFfhU=
+X-Google-Smtp-Source: ABdhPJx+uYmzLCyoFtxXeh/VC48g3NbZNITdjfoEpLPTTR8Z4jCpxJ6KDaebYgxmCwzV40VzRs50tuFwMl1bgbGmz3k=
+X-Received: by 2002:a2e:9704:: with SMTP id r4mr12697751lji.486.1614716657058;
+ Tue, 02 Mar 2021 12:24:17 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Konrads-MacBook-Pro.local (209.6.208.110) by SJ0PR03CA0250.namprd03.prod.outlook.com (2603:10b6:a03:3a0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 2 Mar 2021 20:20:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20748b9a-153a-45ee-40d7-08d8ddb89520
-X-MS-TrafficTypeDiagnostic: SA2PR10MB4411:
-X-Microsoft-Antispam-PRVS: <SA2PR10MB4411BF8939CB123D11BFB07E89999@SA2PR10MB4411.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iu2vC3pTRQnDLq6AR38/9+crCZsLjkDXQLh7IgftT4KFiJqcDWIzCne8/twn9p0oKyUMoWAufWi++lmT8WQ6qk4Mr9Kq7FmWugSSn6Hjbx2O7xsywjbrJxBaXZi/dJwvPWeopgBin/q9CqV1fuhw4M1mEfJP1ZEC9FPdac45Z58aBsAV/YdaDJzs5+kgBm5JycXtS0lNYK69zQ9Ql9VVcdN8eJPEw8XyTjDO75UXu+Vt0FxYahyJvn8e+VyacsWpzi8kWXLjZtR7n3N7ZEc+SLa7OJ45OnhY/TZglL5tAIwa4v7cQXOlKppcF/3PMpkuJNAnXAzj17Ibi2Gx4VD40UiJ/hau0s4lWj8W82EZrfVP7tbAtLyGB8MaP7cL8LMa57VrxjOlJqunLEt4qbCXkuoe+lIoosksqlSxc0Q43TeIpKGZ7ea1bO8bf8cn86dJA/J02czXPClyqSlOxcCboEr3qty5j3fXwP7ENirjILYk7MbHrvFaziUjkb483YCXqPKet7nH4/PNmJMw0xNS8D2hq8I2mN1CzEdH8pWXiN8g0MVOAJBjmG/oZPhMPDEdYrngVWFbdijfFXRZvBZe2OMdNximzQp13Jwj7bwTGWU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3006.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(39860400002)(396003)(376002)(2906002)(31696002)(5660300002)(36756003)(186003)(6512007)(83380400001)(86362001)(31686004)(16526019)(8936002)(316002)(26005)(53546011)(2616005)(66556008)(66946007)(6486002)(4326008)(66476007)(478600001)(8676002)(956004)(6506007)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QVZDV1FDd2JzS1I2ZWVkVEh6U1ppUkhoWUVOTzNyVVhsam5RWDhyMm1FVk02?=
- =?utf-8?B?Q0NRVnFueWx6RnpuWHFGU0pkYjZneFFZaUowWFl6aWtKUFNBdmZEZHJKbEJr?=
- =?utf-8?B?a29zVUpJdDV1KzVFd3ExWTBoWEhWRHN0bFo1aW5FamRONnF0U0d3d3BsYlRC?=
- =?utf-8?B?VGczN1dWa0pKVHBRcWNPQ2hQK2R0WlJPaFdHY0J6NFJFbGQwenZzZThuZ2J0?=
- =?utf-8?B?d1J6VWtqdHJGN01EZThsaCtrTFUxd3NIQlZJam5KVytlUEhXeUVKVkNrYy9U?=
- =?utf-8?B?SFZBZDJ5OEllSnpvU0VjMFlzc08yNUdKbmNxejVyUnVIdEpqUWd6NThNQU9D?=
- =?utf-8?B?MUlDd2svRExTZnk1QktjNFhtVVpCNXNrN2trR1RkUnk2RGRVS1lHOUUwTURo?=
- =?utf-8?B?SldxQU9Hd1R6UGpMRmtabnFCZDR5ak40aHQ4TEZqOWY0ZkdEVGNHbW9XUkVX?=
- =?utf-8?B?M0duS0ZpUzdTV290WVJ2Wk0wcGtXakVqdFlSSXdmMFJRYmJ1Mnhxa0xtdmJF?=
- =?utf-8?B?V3hSSWNCZ0J6cisxbDNWTEp3Zk9hYjg2UUhEWHl5U1FOZU1SbU13ZGtiRFJo?=
- =?utf-8?B?QUJIQThlK2FsUG84RmhFOUJQSzFVU3FlZFpTV0d0dm1oZEJVazZFM1FPZEdm?=
- =?utf-8?B?TzdLR2xxVlJLVlN0WHZnYk1zbWNVY1JKKzZ1SFNFRnRZbE9Vd0R4T2lXSlNL?=
- =?utf-8?B?WXI0cVRHdHFpRW84MGJWQXc1MWY0eTY1b0VNa1pBaWhsZEhPWDRKU2cybGZ2?=
- =?utf-8?B?L2l2bmd5alRFL1M5dmN0eFJLSmhWdFJObS9MNlB0QkI2emVRaHFJbWFwOHZs?=
- =?utf-8?B?T1g4U1pSR0xmZDVaWXVqc3NHTWxYMVRZQzlzbVpLODRoZFpSejQwY1h4SlJz?=
- =?utf-8?B?czVnYjRKcVpBUjFUcThnWTJIa1NZTzlRTjBNenZTUEhXUlQ0dGZhU2g0SFRi?=
- =?utf-8?B?blBPeFdEYVltNWphZDRoQnBOQXE0c3ZvcWdFUVhuK2FRNHlhK0tMeTVPZncr?=
- =?utf-8?B?bmlHRU1tL2d1dkpMRUV0blF3d1NnbHBtL2tZOUtSRDhJSEFheFhHWnZWRHM2?=
- =?utf-8?B?NXczbjBLNThBREVQQklVUjhkSjYxOEV6RjgzZ3Q3OE1EOEZNeDZ3c25NVHdE?=
- =?utf-8?B?SUN4YlJ4VmpvamhIbHhaNnNoNU4vYmk0Y1NWZ21KYlMwUXU1NEthcmxHTy9B?=
- =?utf-8?B?NmhsSkJmMmtaeGdLQ1BHa0FzNjBQU3I3bkRkV3VWbVZGVW0xc2pQM2orTWZK?=
- =?utf-8?B?NVVscUpReithV0t5RVY2MXdZaDlmVzI5NzNNM0pFajJvUGhTVW5qSzNYMU5r?=
- =?utf-8?B?UklrQXhlbWt4aVViOXEzT0VoUnFEQ1NweVNkbUwrbEkyd29LblA4ZEIxdXJv?=
- =?utf-8?B?bjV5d1JuM1ZGTExvUENxd0taSkVWZGVBbzRwLzNJd1RzVURnWEltVXZPS0ZG?=
- =?utf-8?B?eEtZSGZVbkIxUmZqOEl3eVk2RlRNaTQyM0tYU3JPTW92M0h3blZTS3hwS05B?=
- =?utf-8?B?S0tDZXF4SDlTSCt6cUY4TTdRSmM5aWlsbXp0d2pldzdoOW1BdFBFQit5a2hM?=
- =?utf-8?B?em5aKzA2T2dENE5HWk1aU1JLV1ZGdHhUYU01YlRoOGZEQ0JydDFvTEl4L2FC?=
- =?utf-8?B?VmJLbkk2SEkvdFRVSFl4M2xGeHcxQm1ublhGeFh4eklrSTBhOVhEQzNkR0Rq?=
- =?utf-8?B?QW0wRlFTOVhqd3pQTHplQlY4c0REMDU4bnNrcHplbkczT05zam13S2x1K2Fu?=
- =?utf-8?Q?bB80lSorLzjn2bfH6l9vC96hu9U9qfGSZ1MPGeG?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20748b9a-153a-45ee-40d7-08d8ddb89520
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3006.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 20:20:12.1013
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r9TMxRsNL6sYXQsgyScmQu6lvT1qkUrJjvYdy2g4ezeKnXRZk3cdo5TditgTx8BlNo33VoLY+lMqxwf2lqSWAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4411
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103020153
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 mlxlogscore=999 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103020153
+References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
+ <20210301165130.GA5351@redhat.com> <CALCETrU2Rc4ejSoYyWgbk00U8tSc=aZDaj0mm+Ep62wOirZG7g@mail.gmail.com>
+In-Reply-To: <CALCETrU2Rc4ejSoYyWgbk00U8tSc=aZDaj0mm+Ep62wOirZG7g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 2 Mar 2021 12:24:04 -0800
+Message-ID: <CAADnVQ+czV6u4CM-A+o5U+WhApkocunZXiCMJBB_Zbs0mvNSwQ@mail.gmail.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+To:     Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 12:21 PM, Kunihiko Hayashi wrote:
-> After the refactoring phase, the type of max_slot has changed from unsigned
-> long to unsigned int. The return type of the function get_max_slots() and
-> the 4th argument type of iommu_is_span_boundary() are different from the
-> type of max_slot. Finally, asserts BUG_ON in iommu_is_span_boundary().
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Fixes: 567d877f9a7d ("swiotlb: refactor swiotlb_tbl_map_single")
-> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+On Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> Is there something like a uprobe test suite?  How maintained /
+> actively used is uprobe?
 
-I think this is all good. Looking at Linus's master I see:
+uprobe+bpf is heavily used in production.
+selftests/bpf has only one test for it though.
 
-
-537         unsigned long max_slots = get_max_slots(boundary_mask);
-
-?
-
-> ---
->   kernel/dma/swiotlb.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 369e4c3..c10e855 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -534,7 +534,7 @@ static int find_slots(struct device *dev, phys_addr_t orig_addr,
->   	unsigned long boundary_mask = dma_get_seg_boundary(dev);
->   	dma_addr_t tbl_dma_addr =
->   		phys_to_dma_unencrypted(dev, io_tlb_start) & boundary_mask;
-> -	unsigned int max_slots = get_max_slots(boundary_mask);
-> +	unsigned long max_slots = get_max_slots(boundary_mask);
->   	unsigned int iotlb_align_mask =
->   		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
->   	unsigned int nslots = nr_slots(alloc_size), stride;
-> 
-
+Why are you asking?
