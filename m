@@ -2,85 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB9F32A14C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CD532A143
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576970AbhCBFfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:35:20 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:38622 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241666AbhCBDpK (ORCPT
+        id S1347547AbhCBFdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:33:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1574441AbhCBDfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:45:10 -0500
-X-UUID: 6b60a1727ea7474a98c3eb43c446b254-20210302
-X-UUID: 6b60a1727ea7474a98c3eb43c446b254-20210302
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <biao.huang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1007115575; Tue, 02 Mar 2021 11:33:31 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Mar 2021 11:33:30 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Mar 2021 11:33:28 +0800
-From:   Biao Huang <biao.huang@mediatek.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-CC:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <biao.huang@mediatek.com>,
-        <srv_heupstream@mediatek.com>
-Subject: [PATCH] net: ethernet: mtk-star-emac: fix wrong unmap in RX handling
-Date:   Tue, 2 Mar 2021 11:33:23 +0800
-Message-ID: <20210302033323.25830-1-biao.huang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 1 Mar 2021 22:35:51 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC34EC061794
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:33:38 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id s8so23517770edd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:33:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QHkKhS85lTO/1ZkryMnHdjoXWEHU3orWJwuliOPijEg=;
+        b=un1zylhUbUa9CBvR67wBcwPZvQL0x4JmNFowwQWRDdGYxu6J0OgWJEqn+3PtBd+4QC
+         cqbNNIeSXYA8G6vSnR2uWbYjsgGQb5v/h7oL7jXxuD/VBFphR/pct3mB6r/X2pupGg/4
+         SX0eqVTO0JkgI1bmn9LswXNbdaya2hfY4NIFZphT51UPaWZdFK1euP4fmMjsJ/0gWvHH
+         5MQKmxtzMf+qFdDzOGUkl/xaAxZrFsRaD+xCnHywqcc6II2p9p2dKXMlqjkktBRuwj7O
+         L/YYyNBuR6P8AD/3Fbh94FYwxPajGC5dQCIpOaLmcM/6zN0em2h1wm4dnam+wALgryIF
+         VUzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QHkKhS85lTO/1ZkryMnHdjoXWEHU3orWJwuliOPijEg=;
+        b=dFzxmtVPk+PLFAgcuV9A3I/fyUZW2ilN6KwL9XEQFalV55LdtiMfC7Yw8LV/Mnd66R
+         XYgqr0mLnSdy3eWbRmGs0vA5UzKTbfYlkJ9TfspDg0Kk0PJ6ZpTnYvjElUWwBPV1kBv9
+         xSgu3KuFkyIiCu9al0+I9Gp5LrJgVfxzqlpIZe/79wKgy+1S9Cj888G1k66pZeKInTf3
+         0J2W6cM80sAPshLVKCVG5mEIqDACeJn/Z4V/RTgT343matWwGFb8pVjgMrggPGiAHvnn
+         qa2Pcaq8jZ1zxnEXZNZPv9U8RxSV7HyS1e2oxeZSgVgqw8Xb343AKoUXgAwwRxfQb6bS
+         Vdmg==
+X-Gm-Message-State: AOAM5320htKgus2jpt19cUelnBtAizk1MOF7Si7tmhMTMEhy9+P/RiEk
+        y9Nikaxn/mRaV9RtB9+1jtHBSoMJyRUpx44SCJBeoA==
+X-Google-Smtp-Source: ABdhPJy6/ka8tGagcwE2L5RBcYi+8/lqcA+6OxdF6mdgjEfsgOsYpbXmbns7gGEU/XAr64+OyUVXGqCAa0atgxuU9hs=
+X-Received: by 2002:a05:6402:1152:: with SMTP id g18mr19307291edw.18.1614656017366;
+ Mon, 01 Mar 2021 19:33:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210226205126.GX4662@dread.disaster.area> <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
+ <20210226212748.GY4662@dread.disaster.area> <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
+ <20210227223611.GZ4662@dread.disaster.area> <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
+ <20210228223846.GA4662@dread.disaster.area> <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
+ <20210301224640.GG4662@dread.disaster.area> <CAPcyv4iTqDJApZY0o_Q0GKn93==d2Gta2NM5x=upf=3JtTia7Q@mail.gmail.com>
+ <20210302024227.GH4662@dread.disaster.area>
+In-Reply-To: <20210302024227.GH4662@dread.disaster.area>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Mar 2021 19:33:28 -0800
+Message-ID: <CAPcyv4ja8gnTR1E-Ge5etm+y69cHwdWN6Bg79wPPF4M=C-w79A@mail.gmail.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtk_star_dma_unmap_rx() should unmap the dma_addr of old skb rather than
-that of new skb.
-Assign new_dma_addr to desc_data.dma_addr after all handling of old skb
-ends to avoid unexpected receive side error.
+On Mon, Mar 1, 2021 at 6:42 PM Dave Chinner <david@fromorbit.com> wrote:
+[..]
+> We do not need a DAX specific mechanism to tell us "DAX device
+> gone", we need a generic block device interface that tells us "range
+> of block device is gone".
 
-Fixes: f96e9641e92b ("net: ethernet: mtk-star-emac: fix error path in RX handling")
-Signed-off-by: Biao Huang <biao.huang@mediatek.com>
----
- drivers/net/ethernet/mediatek/mtk_star_emac.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+This is the crux of the disagreement. The block_device is going away
+*and* the dax_device is going away. The dax_device removal implies one
+set of actions (direct accessed pfns invalid) the block device removal
+implies another (block layer sector access offline). corrupted_range
+is blurring the notification for 2 different failure domains. Look at
+the nascent idea to mount a filesystem on dax sans a block device.
+Look at the existing plumbing for DM to map dax_operations through a
+device stack. Look at the pushback Ruan got for adding a new
+block_device operation for corrupted_range().
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-index a8641a407c06..96d2891f1675 100644
---- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-+++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-@@ -1225,8 +1225,6 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
- 		goto push_new_skb;
- 	}
- 
--	desc_data.dma_addr = new_dma_addr;
--
- 	/* We can't fail anymore at this point: it's safe to unmap the skb. */
- 	mtk_star_dma_unmap_rx(priv, &desc_data);
- 
-@@ -1236,6 +1234,9 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
- 	desc_data.skb->dev = ndev;
- 	netif_receive_skb(desc_data.skb);
- 
-+	/* update dma_addr for new skb */
-+	desc_data.dma_addr = new_dma_addr;
-+
- push_new_skb:
- 	desc_data.len = skb_tailroom(new_skb);
- 	desc_data.skb = new_skb;
--- 
-2.18.0
+> The reason that the block device is gone is irrelevant to the
+> filesystem. The type of block device is also irrelevant. If the
+> filesystem isn't using DAX (e.g. dax=never mount option) even when
+> it is on a DAX capable device, then it just doesn't care about
+> invalidating DAX mappings because it has none. But it still may care
+> about shutting down the filesystem because the block device is gone.
 
+Sure, let's have a discussion about a block_device gone notification,
+and a dax_device gone notification.
+
+> This is why we need to communicate what error occurred, not what
+> action a device driver thinks needs to be taken.
+
+The driver is only an event producer in this model, whatever the
+consumer does at the other end is not its concern. There may be a
+generic consumer and a filesystem specific consumer.
+
+> The error is
+> important to the filesystem, the action might be completely
+> irrelevant. And, as we know now, shutdown on DAX enable filesystems
+> needs to imply DAX mapping invalidation in all cases, not just when
+> the device disappears from under the filesystem.
+
+Sure.
