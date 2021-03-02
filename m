@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E607732A0C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B1632A0CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576575AbhCBEbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:31:12 -0500
-Received: from ozlabs.org ([203.11.71.1]:48077 "EHLO ozlabs.org"
+        id S1576624AbhCBEbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:31:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241661AbhCBCJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:09:50 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DqLCl0gdqz9s1l;
-        Tue,  2 Mar 2021 13:09:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1614650947;
-        bh=43rR5Zp4k5I4zGrVf/+RiKC5vErMo3wYmtY4bmcRmsA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=HpZ+Oh2iNxKicmC1PzodQXqkyHpjRTYDNBRIJMEmpSjqqcp/CRqCahnUFZ4qMV7nu
-         CdY9REoh5BBo15+ot1ixnH3s/uIPcX3e1qLi9ZB1bgpIIEILc1JQ/1Boue0nYfV5ET
-         IGZC61B8sHEsrSFswrLhjNvDaNeRqCBfhpMtRp7PRFRSqQf3lDlHsagyz73snTg18/
-         6N4nYjAspa4DML1rw2Q9xm0xCWN/E/vSbEMPrmWCrBGKdc7l2b8w3+umg83e2ixVGd
-         NAszUP8NPrPNzwRGVuZg0+EK/TJEUe8JataAJin7GaInqTqkGF6fQwUl/ZjA19s7ht
-         eyYp85nTV0fiA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the powerpc-fixes tree
-In-Reply-To: <20210302112131.5bb7b08b@canb.auug.org.au>
-References: <20210302112131.5bb7b08b@canb.auug.org.au>
-Date:   Tue, 02 Mar 2021 13:09:03 +1100
-Message-ID: <87pn0is3wg.fsf@mpe.ellerman.id.au>
+        id S1349111AbhCBCLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 21:11:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC5361606;
+        Tue,  2 Mar 2021 02:11:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614651066;
+        bh=vwyUtDxwiNKk+ynoP3q+QLEEjbm/rJVYSWUVbdibiKU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rbKRB3kUrCgw5NeYHrpMgzimtGvCrWXkFsibJcBZjZ3NlolKoBurfLrbqEpwKjUg1
+         R3kpc1bIDqVJCviwFqlDOItVDd9kydfT5xsVQkEk0lc2lrLKY+p1xjm8ZFzxe+eTRP
+         Q6n4HpeWZb3ItmmT8bFNC92yxnAz55rcqxeuSqg/nQNGwuDbPBEkcXADYJjBS1GNDT
+         WQUGO3AvpyeOexLYUTAqM5PzsT5mp9XBYjZj0ObV82NVE0m4hnm8OrBBTwrHwanDYW
+         /BswQDCK3RgIBmWJkcrl7+5LM6xY7GGGfOiGwmtt84AF6Y9bizxyBs4Dle8/ap/xJd
+         aMqiGN5Thv79w==
+Received: by mail-ed1-f41.google.com with SMTP id p1so18849298edy.2;
+        Mon, 01 Mar 2021 18:11:05 -0800 (PST)
+X-Gm-Message-State: AOAM533mlzcgJYA5ZR/5ktUZR6kMBX24dJrifFDEyFC3vOTQAaMofQJE
+        9hCzB1OZTAi65tdV69rlKXXQnm66u9x+SrDh3Q==
+X-Google-Smtp-Source: ABdhPJyWebOHWQP7njU4m2dvQglQXnk4r5eZJ4pcMx2WhPXBWc0SlmoYi4n8+GWICYKhfnpGtYXlrCdIRZMY5g5sG20=
+X-Received: by 2002:aa7:c991:: with SMTP id c17mr18868381edt.165.1614651064202;
+ Mon, 01 Mar 2021 18:11:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1614276364-13655-1-git-send-email-spujar@nvidia.com> <1614276364-13655-4-git-send-email-spujar@nvidia.com>
+In-Reply-To: <1614276364-13655-4-git-send-email-spujar@nvidia.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 1 Mar 2021 20:10:52 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+9esDGw7ZCLnZS_KLmLUFyVenz83ohgNKFK3bdPD2ouQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+9esDGw7ZCLnZS_KLmLUFyVenz83ohgNKFK3bdPD2ouQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/5] ASoC: audio-graph-card: Add bindings for sysclk
+ and pll
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     Mark Brown <broonie@kernel.org>, Jon Hunter <jonathanh@nvidia.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> Hi all,
+On Thu, Feb 25, 2021 at 12:06 PM Sameer Pujar <spujar@nvidia.com> wrote:
 >
-> After merging the powerpc-fixes tree, today's linux-next build (powerpc
-> allyesconfig) failed like this:
+> ASoC core provides callbacks snd_soc_dai_set_sysclk() and
+> snd_soc_dai_set_pll() for system clock (sysclk) and pll configurations
+> respectively. Add bindings for flexible sysclk or pll configurations
+> which can be driven from CPU/Codec DAI or endpoint subnode from DT.
+> This in turn helps to avoid hard codings in driver and makes it more
+> generic.
 >
-> drivers/net/ethernet/ibm/ibmvnic.c:5399:13: error: conflicting types for 'ibmvnic_remove'
->  5399 | static void ibmvnic_remove(struct vio_dev *dev)
->       |             ^~~~~~~~~~~~~~
-> drivers/net/ethernet/ibm/ibmvnic.c:81:12: note: previous declaration of 'ibmvnic_remove' was here
->    81 | static int ibmvnic_remove(struct vio_dev *);
->       |            ^~~~~~~~~~~~~~
->
-> Caused by commit
->
->   1bdd1e6f9320 ("vio: make remove callback return void")
+> Also add system-clock related bindings, "system-clock-direction-out"
+> and "system-clock-frequency", which are already supported.
 
-Gah, is IBMVNIC in any of our defconfigs?! ... no it's not.
+This all looks like duplication of what the clock binding can provide.
+We don't need 2 ways to describe clocks in DT.
 
-> I have applied the following patch for today:
-
-Thanks, I'll squash it in.
-
-cheers
-
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 2 Mar 2021 11:06:37 +1100
-> Subject: [PATCH] vio: fix for make remove callback return void
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/net/ethernet/ibm/ibmvnic.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-> index eb39318766f6..fe3201ba2034 100644
-> --- a/drivers/net/ethernet/ibm/ibmvnic.c
-> +++ b/drivers/net/ethernet/ibm/ibmvnic.c
-> @@ -78,7 +78,6 @@ MODULE_LICENSE("GPL");
->  MODULE_VERSION(IBMVNIC_DRIVER_VERSION);
->  
->  static int ibmvnic_version = IBMVNIC_INITIAL_VERSION;
-> -static int ibmvnic_remove(struct vio_dev *);
->  static void release_sub_crqs(struct ibmvnic_adapter *, bool);
->  static int ibmvnic_reset_crq(struct ibmvnic_adapter *);
->  static int ibmvnic_send_crq_init(struct ibmvnic_adapter *);
-> -- 
-> 2.30.0
->
-> -- 
-> Cheers,
-> Stephen Rothwell
+Rob
