@@ -2,194 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E93032A979
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0555632A978
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352213AbhCBS2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:28:49 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52922 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1448645AbhCBPey (ORCPT
+        id S244029AbhCBS0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:26:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1575709AbhCBPe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:34:54 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 122FUAeU117081;
-        Tue, 2 Mar 2021 09:30:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614699010;
-        bh=XY9GrYoBtIXthyWuNY6TPQxiQEz+xHQrzqPT/wtKqbw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UokPXdDqLwE75ptLZwzXmbE+AmnhfCwm9SbRtcDFaVm8ZC/1vf+b5WX5Oky8/XjnA
-         UdRFNDHgxfCWgjpuyDvN0pWcVCfq7t4Aevh6IT00/0kgXzRkj46ZYb5+M9lJbkFKBo
-         xIfhoBxflve5g0d4mNJ5eap+agBsNJNe+su5ZJlw=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 122FUAoN065541
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 2 Mar 2021 09:30:10 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Mar
- 2021 09:30:09 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 2 Mar 2021 09:30:09 -0600
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 122FU6QY102733;
-        Tue, 2 Mar 2021 09:30:07 -0600
-Subject: Re: [RFC PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>
-CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        <Tudor.Ambarus@microchip.com>
-References: <20210302110927.6520-1-michael@walle.cc>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <b106264e-987f-cecc-28cb-0724d4af1f4c@ti.com>
-Date:   Tue, 2 Mar 2021 21:00:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 2 Mar 2021 10:34:57 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAADC0698C5
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:30:26 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id h4so24258492ljl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:30:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=W834NQ1vAh6LWdXU80aAvj1G8P2ffq4WwVKe01ihhOs=;
+        b=gKyg1Muwq2lNtJ5GXY+ygyJPb/wwpaaAi1kBGRe7mFZmw8B8tViDhbynkysd4lYarJ
+         RnUJwn+JNLRcoX2ZYOJQuYMcmTFTmrV9vKERejJTkso//LWx0ulfjhBrT2wygnU5sDA6
+         hyzYxssPd9sN3sCntg5mSL47i7uY5gAMqhbxROdUrtN8i27FYVZk+1QtDJ/cSnv/3mE2
+         d82H/xfJJXjX4PXAGc4q8my3bF/LseKJNkuG/knSItT5dXHE420CrWGxLWaqgwBy+xfl
+         tlIENx5fwOJ3pgfoDAJXaqnVXblnxySTj9Dqep3d4zUXwJmNb8UOccIT9G594r3i9t42
+         F9hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=W834NQ1vAh6LWdXU80aAvj1G8P2ffq4WwVKe01ihhOs=;
+        b=HagZcQt9FLySkiBWQ1qPBdvua6DFIkrN6a95aW0IC/gmAkZDMWuL4l/wAj8TubOrgf
+         e7Gu+wzjGxHe9TwzQrOPmXiwsiynm/SSlCAD6MLExlLdKd0X1hXxyIbvqskwEbGylem8
+         xS4Fl4AxnJnGQgLltbaEYUSOcAQCQnzSeiNooef1rSHv7aI7k+Xbgatr02YZaXQl+XB3
+         7LUjfVKWOSTGtXoIxzuMoZHfVEp8qL6g9zJmSKSEPunw4ZjBRAyDfQ5lKp/N9xGWECZY
+         1ksUUzPj56wX5T1k/eRdwDqFLy1r8ochBP1gTTzZte5pb/LUtC/3f3HkY2tg0yTYm29n
+         j7rQ==
+X-Gm-Message-State: AOAM532lm4ZB8+4MbRddz7TK6GXYRf/9Ss9RzXuioBxQcps+Twx9ahsy
+        C5Jvv4vKbukBAy8rctgPiKNPgtzny7/p85cTEIF/ow==
+X-Google-Smtp-Source: ABdhPJybFFwipXyQWZHYVEaekG+qg6cTGcIeBxjc1+hy1oZItqJ7bLzKK82xiAtjTPHwPwKPsZRGK6FA4Brq8Mg7bXk=
+X-Received: by 2002:a2e:700a:: with SMTP id l10mr12496829ljc.368.1614699023063;
+ Tue, 02 Mar 2021 07:30:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210302110927.6520-1-michael@walle.cc>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210225164216.21124-1-noltari@gmail.com> <20210225164216.21124-13-noltari@gmail.com>
+In-Reply-To: <20210225164216.21124-13-noltari@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 16:30:12 +0100
+Message-ID: <CACRpkdamVjNOua1ZVriPnhb6GDerpchMFepqekx_NP40_KH9Ew@mail.gmail.com>
+Subject: Re: [PATCH 12/12] pinctrl: add a pincontrol driver for BCM6318
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Feb 25, 2021 at 5:42 PM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
 
-On 3/2/21 4:39 PM, Michael Walle wrote:
-> This may sound like a contradiction but some SPI-NOR flashes really
-> support erasing their OTP region until it is finally locked. Having the
-> possibility to erase an OTP region might come in handy during
-> development.
-> 
-> The ioctl argument follows the OTPLOCK style.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-> OTP support for SPI-NOR flashes may be merged soon:
-> https://lore.kernel.org/linux-mtd/20210216162807.13509-1-michael@walle.cc/
-> 
-> Tudor suggested to add support for the OTP erase operation most SPI-NOR
-> flashes have:
-> https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
-> 
-> Therefore, this is an RFC to get some feedback on the MTD side, once this
-> is finished, I can post a patch for mtd-utils. Then we'll have a foundation
-> to add the support to SPI-NOR.
-> 
->  drivers/mtd/mtdchar.c      |  7 ++++++-
->  drivers/mtd/mtdcore.c      | 12 ++++++++++++
->  include/linux/mtd/mtd.h    |  3 +++
->  include/uapi/mtd/mtd-abi.h |  2 ++
->  4 files changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index 323035d4f2d0..da423dd031ae 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -661,6 +661,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->  	case OTPGETREGIONCOUNT:
->  	case OTPGETREGIONINFO:
->  	case OTPLOCK:
-> +	case OTPERASE:
+> Add a pincontrol driver for BCM6318. BCM6318 allows muxing most GPIOs
+> to different functions. BCM6318 is similar to BCM6328 with the addition
+> of a pad register, and the GPIO meaning of the mux register changes
+> based on the GPIO number.
+>
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 
-This is not a Safe IOCTL. We are destroying OTP data. Need to check for
-write permission before allowing the ioctl right?
+Same comments as the other drivers.
 
->  	case ECCGETLAYOUT:
->  	case ECCGETSTATS:
->  	case MTDFILEMODE:
-> @@ -938,6 +939,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->  	}
->  
->  	case OTPLOCK:
-> +	case OTPERASE:
->  	{
->  		struct otp_info oinfo;
->  
-> @@ -945,7 +947,10 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->  			return -EINVAL;
->  		if (copy_from_user(&oinfo, argp, sizeof(oinfo)))
->  			return -EFAULT;
-> -		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
-> +		if (cmd == OTPLOCK)
-> +			ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
-> +		else
-> +			ret = mtd_erase_user_prot_reg(mtd, oinfo.start, oinfo.length);
->  		break;
->  	}
->  
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 2d6423d89a17..d844d718ef77 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1918,6 +1918,18 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
->  }
->  EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
->  
-> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
-> +{
-> +	struct mtd_info *master = mtd_get_master(mtd);
-> +
-> +	if (!master->_erase_user_prot_reg)
-> +		return -EOPNOTSUPP;
-> +	if (!len)
-> +		return 0;
-> +	return master->_erase_user_prot_reg(master, from, len);
-> +}
-> +EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
-> +
->  /* Chip-supported device locking */
->  int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  {
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 157357ec1441..734ad7a8c353 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -336,6 +336,8 @@ struct mtd_info {
->  				     size_t len, size_t *retlen, u_char *buf);
->  	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
->  				    size_t len);
-> +	int (*_erase_user_prot_reg) (struct mtd_info *mtd, loff_t from,
-> +				     size_t len);
->  	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
->  			unsigned long count, loff_t to, size_t *retlen);
->  	void (*_sync) (struct mtd_info *mtd);
-> @@ -517,6 +519,7 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
->  int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
->  			    size_t *retlen, u_char *buf);
->  int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
-> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
->  
->  int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
->  	       unsigned long count, loff_t to, size_t *retlen);
-> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-> index 65b9db936557..242015f60d10 100644
-> --- a/include/uapi/mtd/mtd-abi.h
-> +++ b/include/uapi/mtd/mtd-abi.h
-> @@ -205,6 +205,8 @@ struct otp_info {
->   * without OOB, e.g., NOR flash.
->   */
->  #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
-> +/* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
-> +#define OTPERASE		_IOR('M', 25, struct otp_info)
->  
+Looking forward to the next iteration of these drivers!
 
-Hmm, shouldn't this be:
-
-#define OTPERASE		_IOW('M', 25, struct otp_info)
-
-Userspace is writing struct otp_info to the driver. OTPLOCK should
-probably be _IOW() as well.
-
->  /*
->   * Obsolete legacy interface. Keep it in order not to break userspace
-> 
-
-Regards
-Vignesh
+Yours,
+Linus Walleij
