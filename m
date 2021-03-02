@@ -2,188 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BADF32A536
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D8632A537
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446574AbhCBML4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 07:11:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349617AbhCBLv0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:51:26 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766ADC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 03:39:24 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id h22so19650880otr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 03:39:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Awszz/knFkSmYzdRRUyEmKjIRZ+f0H/e4tpJCA3RU4E=;
-        b=iBhA66Cxg23wOsfcdwMy15/pGeHKmWxWBtnrognin+Gbjcw/rO49bKoczbvs4vQ6Ch
-         C/PT/JvTva0UPczgQ30s9iGCznwtsFb9JmKlLXcBer9NHDCneium9raiqwARd+v1lvN5
-         8ZQpIWwM8O0sQKitNXBXU5hX+KdBYqVNLpRp6P1YTUDunswnQIUWDTgo99gEsQacmi0V
-         xdwjcZF9oBW46YetIHjuLScFtHq+WQ22S1/nH9cA5ufZqJFmFtTWkOKyKdJecE4r85VH
-         M9mNJheRK4341KjdpWsVSZzQJ0zU80h8WiPlc/o9EY46SAheF4wnI6J6NI4VShho44Rx
-         aqCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Awszz/knFkSmYzdRRUyEmKjIRZ+f0H/e4tpJCA3RU4E=;
-        b=m3ARRS0hhCrBmG2Axi4J0vfsOVpddIm8sioRQJM5wNyx6VBHMPDS8f5fhDJVB6g62O
-         lbtFWsB6u7GWNlNzoUyXPyjgW0gXc+/DLeEZ/2Sv9iOJRG9eCLUFi2TZ/qQsyS+9dq9z
-         nkekZIx8nw0PSTg7bIU8OtwfuoSfZZqstNwHeCyGLzNYD+/epGBQQqMvjAvEcjgDcqML
-         6rZzVUCkOTriMcKF9t5teb/Z8NXq9LsHwc8UQWdHryodtxhk/HCXiClzlTjCBcTWc1S+
-         C0XagOg/YkSmAil2/RLYBg7iTbRAQqobLCPHmHzZWAZQ1WGMQYJiZSvoOtvgCWIAHKbu
-         mOBg==
-X-Gm-Message-State: AOAM531zPGzE9YyNPKBIt2PyQzP1y9cHk/HyOFaSugiTKKFLTtTNCbG2
-        hyhUSJUtJ8D+guCG/BjVssKHV9bJdl5YmCz+fC1ZZg==
-X-Google-Smtp-Source: ABdhPJz2v7sceHM/XgV8W6hy42SjEr7jDNzCwy5D2aAzX26SvjSwaX5eE8U45FAcQiVnegNgzv9NQi6tHIv9d8GDwK0=
-X-Received: by 2002:a9d:644a:: with SMTP id m10mr17823761otl.233.1614685163647;
- Tue, 02 Mar 2021 03:39:23 -0800 (PST)
+        id S1446599AbhCBMMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:12:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:50148 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350137AbhCBLx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:53:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0905106F;
+        Tue,  2 Mar 2021 03:41:00 -0800 (PST)
+Received: from [10.57.48.219] (unknown [10.57.48.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C1933FA00;
+        Tue,  2 Mar 2021 03:40:58 -0800 (PST)
+Subject: Re: [RFC 10/13] iommu/arm-smmu-impl: Get rid of Marvell's
+ implementation details
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     f.fainelli@gmail.com, robh+dt@kernel.org, ardb@kernel.org,
+        hch@infradead.org, narmstrong@baylibre.com, dwmw2@infradead.org,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, arnd@arndb.de,
+        will@kernel.org
+References: <20210226140305.26356-1-nsaenzjulienne@suse.de>
+ <20210226140305.26356-11-nsaenzjulienne@suse.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <96b6c3e4-d9d3-270e-6d8e-7c826ae11827@arm.com>
+Date:   Tue, 2 Mar 2021 11:40:53 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
- <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
- <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu> <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu> <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
-In-Reply-To: <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 2 Mar 2021 12:39:12 +0100
-Message-ID: <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210226140305.26356-11-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 12:21, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-[...]
-> >> Booting with 'no_hash_pointers" I get the following. Does it helps ?
-> >>
-> >> [   16.837198] ==================================================================
-> >> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
-> >> [   16.848521]
-> >> [   16.857158] Invalid read at 0xdf98800a:
-> >> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
-> >> [   16.865731]  kunit_try_run_case+0x5c/0xd0
-> >> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
-> >> [   16.875199]  kthread+0x15c/0x174
-> >> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
-> >> [   16.882847]
-> >> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
-> >> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
-> >> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
-> >> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
-> >> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
-> >> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
-> >> [   16.918153] DAR: df98800a DSISR: 20000000
-> >> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
-> >> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
-> >> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
-> >> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
-> >> [   16.947292] Call Trace:
-> >> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
-> >
-> > The "(unreliable)" might be a clue that it's related to ppc32 stack
-> > unwinding. Any ppc expert know what this is about?
-> >
-> >> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
-> >> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
-> >> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
-> >> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
-> >> [   16.981896] Instruction dump:
-> >> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
-> >> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
-> >> [   17.000711] ==================================================================
-> >> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
-> >> [   17.008223]     Expected report_matches(&expect) to be true, but is false
-> >> [   17.023243]     not ok 21 - test_invalid_access
-> >
-> > On a fault in test_invalid_access, KFENCE prints the stack trace based
-> > on the information in pt_regs. So we do not think there's anything we
-> > can do to improve stack printing pe-se.
->
-> stack printing, probably not. Would be good anyway to mark the last level [unreliable] as the ppc does.
+On 2021-02-26 14:03, Nicolas Saenz Julienne wrote:
+> arm-smmu can now deal with integrations on buses that don't support
+> 64bit MMIO accesses. No need to create a special case for that on
+> Marvell's integration.
 
-We use stack_trace_save_regs() + stack_trace_print().
+This breaks compatibility with existing DTs.
 
-> IIUC, on ppc the address in the stack frame of the caller is written by the caller. In most tests,
-> there is some function call being done before the fault, for instance
-> test_kmalloc_aligned_oob_read() does a call to kunit_do_assertion which populates the address of the
-> call in the stack. However this is fragile.
+Robin.
 
-Interesting, this might explain it.
-
-> This works for function calls because in order to call a subfunction, a function has to set up a
-> stack frame in order to same the value in the Link Register, which contains the address of the
-> function's parent and that will be clobbered by the sub-function call.
->
-> However, it cannot be done by exceptions, because exceptions can happen in a function that has no
-> stack frame (because that function has no need to call a subfunction and doesn't need to same
-> anything on the stack). If the exception handler was writting the caller's address in the stack
-> frame, it would in fact write it in the parent's frame, leading to a mess.
->
-> But in fact the information is in pt_regs, it is in regs->nip so KFENCE should be able to use that
-> instead of the stack.
-
-Perhaps stack_trace_save_regs() needs fixing for ppc32? Although that
-seems to use arch_stack_walk().
-
-> > What's confusing is that it's only this test, and none of the others.
-> > Given that, it might be code-gen related, which results in some subtle
-> > issue with stack unwinding. There are a few things to try, if you feel
-> > like it:
-> >
-> > -- Change the unwinder, if it's possible for ppc32.
->
-> I don't think it is possible.
->
-> >
-> > -- Add code to test_invalid_access(), to get the compiler to emit
-> > different code. E.g. add a bunch (unnecessary) function calls, or add
-> > barriers, etc.
->
-> The following does the trick
->
-> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> index 4acf4251ee04..22550676cd1f 100644
-> --- a/mm/kfence/kfence_test.c
-> +++ b/mm/kfence/kfence_test.c
-> @@ -631,8 +631,11 @@ static void test_invalid_access(struct kunit *test)
->                 .addr = &__kfence_pool[10],
->                 .is_write = false,
->         };
-> +       char *buf;
->
-> +       buf = test_alloc(test, 4, GFP_KERNEL, ALLOCATE_RIGHT);
->         READ_ONCE(__kfence_pool[10]);
-> +       test_free(buf);
->         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 21 ---------------------
+>   1 file changed, 21 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> index 136872e77195..55d40e37e144 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> @@ -145,25 +145,6 @@ static const struct arm_smmu_impl arm_mmu500_impl = {
+>   	.reset = arm_mmu500_reset,
+>   };
+>   
+> -static u64 mrvl_mmu500_readq(struct arm_smmu_device *smmu, int page, int off)
+> -{
+> -	/*
+> -	 * Marvell Armada-AP806 erratum #582743.
+> -	 * Split all the readq to double readl
+> -	 */
+> -	return hi_lo_readq_relaxed(arm_smmu_page(smmu, page) + off);
+> -}
+> -
+> -static void mrvl_mmu500_writeq(struct arm_smmu_device *smmu, int page, int off,
+> -			       u64 val)
+> -{
+> -	/*
+> -	 * Marvell Armada-AP806 erratum #582743.
+> -	 * Split all the writeq to double writel
+> -	 */
+> -	hi_lo_writeq_relaxed(val, arm_smmu_page(smmu, page) + off);
+> -}
+> -
+>   static int mrvl_mmu500_cfg_probe(struct arm_smmu_device *smmu)
+>   {
+>   
+> @@ -181,8 +162,6 @@ static int mrvl_mmu500_cfg_probe(struct arm_smmu_device *smmu)
 >   }
->
->
-> But as I said above, this is fragile. If for some reason one day test_alloc() gets inlined, it may
-> not work anymore.
-
-Yeah, obviously that's hack, but interesting nevertheless.
-
-Based on what you say above, however, it seems that
-stack_trace_save_regs()/arch_stack_walk() don't exactly do what they
-should? Can they be fixed for ppc32?
-
-Thanks,
--- Marco
+>   
+>   static const struct arm_smmu_impl mrvl_mmu500_impl = {
+> -	.read_reg64 = mrvl_mmu500_readq,
+> -	.write_reg64 = mrvl_mmu500_writeq,
+>   	.cfg_probe = mrvl_mmu500_cfg_probe,
+>   	.reset = arm_mmu500_reset,
+>   };
+> 
