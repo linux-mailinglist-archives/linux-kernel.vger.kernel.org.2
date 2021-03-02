@@ -2,165 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA2332A0D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A38732A0DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576724AbhCBEcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:32:15 -0500
-Received: from mga03.intel.com ([134.134.136.65]:23438 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1444059AbhCBCjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:39:16 -0500
-IronPort-SDR: 2BPF5kkcLNzUlhNxnq9uIWwgef91geM3GGorrZJ8cOzNg/quZoDMoDf0TITu/0QB7vgjTtzNTa
- yX/aa1b88A4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186719522"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="186719522"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 18:38:34 -0800
-IronPort-SDR: Jo07MNHNQKDQJ98SaZk2Bkv3NPf3y9DeZuEn7H8IEeAX4mEzjAUKG95oizCEnQzvGG+gwmX7H9
- ePUtqRbJTcjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="398026381"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Mar 2021 18:38:32 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lGuvf-0004wy-Uw; Tue, 02 Mar 2021 02:38:31 +0000
-Date:   Tue, 02 Mar 2021 10:37:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 87246c319da5db38d74d239c3cffce49942dd5a8
-Message-ID: <603da4fa.vxASeJ6IzNVh7DlF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1576750AbhCBEcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1444369AbhCBClX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 21:41:23 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA124C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 18:40:38 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d12so10309649pfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 18:40:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wKdwd3EXr+qvpaNjnApPgsZ1TqeT6YoEl+a2s3Vhn8E=;
+        b=YLHSoiLWPHQmyEziMFZ16E0wMzPhXE5clX+FEfrB+iWvQUJbgPYIcXQaAm+BJi24DM
+         rfnprmnCSGouek1FuZnLUJ/F0dT7Xs3/3ZPlxjFM41iHJliWQfYjyV94mJjlKofORkzG
+         7z5svMOIcJnXfMsIyidc+My/DbzTsm+DUw6jG8J1VLfXhOFvyBJg+SwwSLhn1N7XAbz0
+         OePa2vq1nTFXKuFsernooCHMZeblpl4TUluZ3mJ5Cso/bIroVYhmIZWwj+CbOg2b20p9
+         IjHWWUQrxLLjjxl+gUmEIITNXHOKHRLwRGSmnT5eD4rsYlFyeK3wV5RNOrw+eb+8tPvr
+         4INA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wKdwd3EXr+qvpaNjnApPgsZ1TqeT6YoEl+a2s3Vhn8E=;
+        b=moy7a2IjsT9+xmEtKs+L1YtvX66PaiPTx+3LufR3xsMJqepIn2z2Af0sIY2Z4GRW0J
+         cLBE4/TLkLS6GdzPck9Mxqsmbec4STqxNpAOBbRZYjGukIl8IJi132wbNvpQzzSaeTYa
+         b0YbXY+5YEzt0TaWfluNegt2BovOVZmfL75cB3bUcZrEvKHdsR8dbq/42bTeDlE/82K/
+         1K7scuu14Kvj7/vs76E00iwQAYGJJlALD1R1HyFyy2MrsVzlZryGrP3Exqg0t0ro8iaa
+         vBNL3Pqea+GYg7XC0P3nSgezuoVyBPlPKjSPCfEbebhVsGhOntFlvOlaa2yNewPjKVI9
+         0Gyw==
+X-Gm-Message-State: AOAM531/CQaLxEWoLgDyFFlxs8j48F5h4qvhhW/sFAWnzM7jtNVzhaAc
+        jtlstX+C85WrJfPt6QxfuygqZA==
+X-Google-Smtp-Source: ABdhPJyCbgfEJFceqNMao5ob7MSKXqnTjEuUCVngShm+uQB228TBN4s1f2hgMsTg4qi2bVs96rCJEg==
+X-Received: by 2002:a63:389:: with SMTP id 131mr16203398pgd.316.1614652838045;
+        Mon, 01 Mar 2021 18:40:38 -0800 (PST)
+Received: from google.com ([2620:15c:201:2:85f9:f0dd:5527:51b4])
+        by smtp.gmail.com with ESMTPSA id o21sm795708pjp.42.2021.03.01.18.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 18:40:37 -0800 (PST)
+Date:   Mon, 1 Mar 2021 18:40:32 -0800
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [x86, build] 6dafca9780:
+ WARNING:at_arch/x86/kernel/ftrace.c:#ftrace_verify_code
+Message-ID: <YD2loOkd/AYqKPB6@google.com>
+References: <20210301074027.GD12822@xsang-OptiPlex-9020>
+ <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
+ <20210301184524.7aa05ac1@gandalf.local.home>
+ <CABCJKudQme=bcNJtNCORUpBnVA_Pkr2Zk_3Nu2EsfnuoE7LJ3g@mail.gmail.com>
+ <20210301201526.65ce7f1c@oasis.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210301201526.65ce7f1c@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 87246c319da5db38d74d239c3cffce49942dd5a8  Merge branch 'locking/core'
+On Mon, Mar 01, 2021 at 08:15:26PM -0500, Steven Rostedt wrote:
+> On Mon, 1 Mar 2021 16:03:51 -0800
+> Sami Tolvanen <samitolvanen@google.com> wrote:
+> > 
+> > >                 ret = ftrace_verify_code(rec->ip, old);
+> > > +
+> > > +               if (__is_defined(CC_USING_NOP_MCOUNT) && ret && old_nop) {
+> > > +                       /* Compiler could have put in P6_NOP5 */
+> > > +                       old = P6_NOP5;
+> > > +                       ret = ftrace_verify_code(rec->ip, old);
+> > > +               }
+> > > +  
+> > 
+> > Wouldn't that still hit WARN(1) in the initial ftrace_verify_code()
+> > call if ideal_nops doesn't match?
+> 
+> That was too quickly written ;-)
+> 
+> Take 2:
+> 
+> [ with fixes for setting p6_nop ]
 
-elapsed time: 723m
+Thanks, I tested this with the config from the build bot, and I can
+confirm that it fixes the issue for me.
 
-configs tested: 103
-configs skipped: 2
+I also tested a quick patch to disable the __fentry__ conversion in
+objtool, and it seems to work too, but it's probably a good idea to
+fix the issue with CC_USING_NOP_MCOUNT in any case.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+diff --git a/Makefile b/Makefile
+index f9b54da2fca0..536fea073d5b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -863,9 +863,6 @@ ifdef CONFIG_FTRACE_MCOUNT_USE_CC
+     endif
+   endif
+ endif
+-ifdef CONFIG_FTRACE_MCOUNT_USE_OBJTOOL
+-  CC_FLAGS_USING	+= -DCC_USING_NOP_MCOUNT
+-endif
+ ifdef CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
+   ifdef CONFIG_HAVE_C_RECORDMCOUNT
+     BUILD_C_RECORDMCOUNT := y
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 068cdb41f76f..497e00c1cb69 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1047,21 +1047,9 @@ static int add_call_destinations(struct objtool_file *file)
+ 			insn->type = INSN_NOP;
+ 		}
+ 
+-		if (mcount && !strcmp(insn->call_dest->name, "__fentry__")) {
+-			if (reloc) {
+-				reloc->type = R_NONE;
+-				elf_write_reloc(file->elf, reloc);
+-			}
+-
+-			elf_write_insn(file->elf, insn->sec,
+-				       insn->offset, insn->len,
+-				       arch_nop_insn(insn->len));
+-
+-			insn->type = INSN_NOP;
+-
++		if (mcount && !strcmp(insn->call_dest->name, "__fentry__"))
+ 			list_add_tail(&insn->mcount_loc_node,
+ 				      &file->mcount_loc_list);
+-		}
+ 
+ 		/*
+ 		 * Whatever stack impact regular CALLs have, should be undone
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                           se7724_defconfig
-mips                           xway_defconfig
-arm                        realview_defconfig
-mips                        vocore2_defconfig
-s390                       zfcpdump_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                      katmai_defconfig
-sparc                       sparc32_defconfig
-arm                            zeus_defconfig
-arc                         haps_hs_defconfig
-arm                       cns3420vb_defconfig
-powerpc                     tqm8555_defconfig
-mips                      fuloong2e_defconfig
-sh                        edosk7760_defconfig
-riscv                    nommu_virt_defconfig
-mips                         rt305x_defconfig
-arm                         axm55xx_defconfig
-sparc                            alldefconfig
-arm                            hisi_defconfig
-m68k                        stmark2_defconfig
-sh                           se7750_defconfig
-ia64                                defconfig
-sh                   sh7770_generic_defconfig
-arm                              alldefconfig
-sparc                               defconfig
-sparc64                             defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                 canyonlands_defconfig
-sh                     sh7710voipgw_defconfig
-mips                 decstation_r4k_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210301
-i386                 randconfig-a003-20210301
-i386                 randconfig-a002-20210301
-i386                 randconfig-a004-20210301
-i386                 randconfig-a006-20210301
-i386                 randconfig-a001-20210301
-x86_64               randconfig-a013-20210301
-x86_64               randconfig-a016-20210301
-x86_64               randconfig-a015-20210301
-x86_64               randconfig-a014-20210301
-x86_64               randconfig-a012-20210301
-x86_64               randconfig-a011-20210301
-i386                 randconfig-a016-20210301
-i386                 randconfig-a012-20210301
-i386                 randconfig-a014-20210301
-i386                 randconfig-a013-20210301
-i386                 randconfig-a011-20210301
-i386                 randconfig-a015-20210301
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210301
-x86_64               randconfig-a001-20210301
-x86_64               randconfig-a004-20210301
-x86_64               randconfig-a002-20210301
-x86_64               randconfig-a005-20210301
-x86_64               randconfig-a003-20210301
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Sami
