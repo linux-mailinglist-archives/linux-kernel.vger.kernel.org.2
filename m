@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B43332A53F
+	by mail.lfdr.de (Postfix) with ESMTP id F013C32A541
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446780AbhCBMNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 07:13:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38456 "EHLO mail.kernel.org"
+        id S1446825AbhCBMNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:13:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350181AbhCBLzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:55:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E06764EE8;
-        Tue,  2 Mar 2021 11:54:04 +0000 (UTC)
+        id S1383596AbhCBL4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:56:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C703661477;
+        Tue,  2 Mar 2021 11:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686045;
-        bh=59Aeg6OTLh229SBR1rNKkTBiOuHLf36ku/68ZypnqAk=;
+        s=k20201202; t=1614686136;
+        bh=+7LclTKHzIOR90r+KzUvTzXCGvGArJVXRmP2usOJ2Ok=;
         h=From:To:Cc:Subject:Date:From;
-        b=UDyGdT4syejp/m8NVdGmv/+iaVXkOZ1ks/joz3+euk3cSNgAXYo0DTYTsqdAvJLsG
-         VlMNEq5T1aVvVpkvJHvunkOv1+X217N2WuBogoeIdtIPBXlaw4Y30Nd6MwRJa95LBT
-         VX6LtlWRI631Q9vAk81v6PDA6pwqkhxS1XjsGHKlWhn/i5JmGtxPaHW2V7mNO2HpBd
-         9kNZCBQ/Hl3+kt50epQQMIta1DNuDEINuBxyZ49UekO7EV331UgDmgI56FjWGy7/0P
-         bipa+CnH2K8jLKpMWMC2cHYStlxv2MGMv0QDMD5+LhYIoJkOl9efbnr4Ujeu789Jnu
-         prBph6x9/ncUQ==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     dinguyen@kernel.org, tglx@linutronix.de, p.zabel@pengutronix.de,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] clocksource: dw_apb_timer_of: add handling for potential memory leak
-Date:   Tue,  2 Mar 2021 05:53:58 -0600
-Message-Id: <20210302115358.1259268-1-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.30.0
+        b=iUb5IrY/SkX6o8A+LOAE/pGNluVtKakeZYd/P1XmBO4UEPbaWVTHzz+F8eaH1qhUQ
+         Mi0rMV5xY19yzb/Mtqi4nXstBcPDl9i9izuG2p44fZ/e5LsN/Kpvv6MSrCXBtc2D7t
+         UZLMcHxHl3Rg/ahE8xHa0YO3ARs2oBi1AJCbIk5nxYOcCAAkw6CplIj05GfrmowCYm
+         ICC2oNCpz7a2ROr1junRFu52ZofaGgs0TOwkeKQrsaEVF0NgJtL/1Rwogc1nbHU2jS
+         yFDYoUY3ms59B9k8x9NoM57KwsT/J/7fcBEONKOMcjg9sXB1gThWnIxFVlFCIPwjN9
+         8Fv6xgmHdhf3Q==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-i2c@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 01/52] i2c: rcar: faster irq code to minimize HW race condition
+Date:   Tue,  2 Mar 2021 06:54:42 -0500
+Message-Id: <20210302115534.61800-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add calls to disable the clock and unmap the timer base address in case
-of any failures.
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+[ Upstream commit c7b514ec979e23a08c411f3d8ed39c7922751422 ]
+
+To avoid the HW race condition on R-Car Gen2 and earlier, we need to
+write to ICMCR as soon as possible in the interrupt handler. We can
+improve this by writing a static value instead of masking out bits.
+
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/dw_apb_timer_of.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+ drivers/i2c/busses/i2c-rcar.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
-index 42e7e43b8fcd..b1e2b697b21b 100644
---- a/drivers/clocksource/dw_apb_timer_of.c
-+++ b/drivers/clocksource/dw_apb_timer_of.c
-@@ -52,18 +52,34 @@ static int __init timer_get_base_and_rate(struct device_node *np,
- 		return 0;
+diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
+index 217def2d7cb4..824586d7ee56 100644
+--- a/drivers/i2c/busses/i2c-rcar.c
++++ b/drivers/i2c/busses/i2c-rcar.c
+@@ -91,7 +91,6 @@
  
- 	timer_clk = of_clk_get_by_name(np, "timer");
--	if (IS_ERR(timer_clk))
--		return PTR_ERR(timer_clk);
-+	if (IS_ERR(timer_clk)) {
-+		ret = PTR_ERR(timer_clk);
-+		goto out_pclk_disable;
-+	}
+ #define RCAR_BUS_PHASE_START	(MDBS | MIE | ESG)
+ #define RCAR_BUS_PHASE_DATA	(MDBS | MIE)
+-#define RCAR_BUS_MASK_DATA	(~(ESG | FSB) & 0xFF)
+ #define RCAR_BUS_PHASE_STOP	(MDBS | MIE | FSB)
  
- 	ret = clk_prepare_enable(timer_clk);
- 	if (ret)
--		return ret;
-+		goto out_timer_clk_put;
+ #define RCAR_IRQ_SEND	(MNR | MAL | MST | MAT | MDE)
+@@ -621,7 +620,7 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
+ /*
+  * This driver has a lock-free design because there are IP cores (at least
+  * R-Car Gen2) which have an inherent race condition in their hardware design.
+- * There, we need to clear RCAR_BUS_MASK_DATA bits as soon as possible after
++ * There, we need to switch to RCAR_BUS_PHASE_DATA as soon as possible after
+  * the interrupt was generated, otherwise an unwanted repeated message gets
+  * generated. It turned out that taking a spinlock at the beginning of the ISR
+  * was already causing repeated messages. Thus, this driver was converted to
+@@ -630,13 +629,11 @@ static bool rcar_i2c_slave_irq(struct rcar_i2c_priv *priv)
+ static irqreturn_t rcar_i2c_irq(int irq, void *ptr)
+ {
+ 	struct rcar_i2c_priv *priv = ptr;
+-	u32 msr, val;
++	u32 msr;
  
- 	*rate = clk_get_rate(timer_clk);
--	if (!(*rate))
--		return -EINVAL;
-+	if (!(*rate)) {
-+		ret = -EINVAL;
-+		goto out_timer_clk_disable;
-+	}
+ 	/* Clear START or STOP immediately, except for REPSTART after read */
+-	if (likely(!(priv->flags & ID_P_REP_AFTER_RD))) {
+-		val = rcar_i2c_read(priv, ICMCR);
+-		rcar_i2c_write(priv, ICMCR, val & RCAR_BUS_MASK_DATA);
+-	}
++	if (likely(!(priv->flags & ID_P_REP_AFTER_RD)))
++		rcar_i2c_write(priv, ICMCR, RCAR_BUS_PHASE_DATA);
  
- 	return 0;
-+
-+out_timer_clk_disable:
-+	clk_disable_unprepare(timer_clk);
-+out_timer_clk_put:
-+	clk_put(timer_clk);
-+out_pclk_disable:
-+	if (!IS_ERR(pclk)) {
-+		clk_disable_unprepare(pclk);
-+		clk_put(pclk);
-+	}
-+	iounmap(*base);
-+	return ret;
- }
+ 	msr = rcar_i2c_read(priv, ICMSR);
  
- static int __init add_clockevent(struct device_node *event_timer)
 -- 
-2.30.0
+2.30.1
 
