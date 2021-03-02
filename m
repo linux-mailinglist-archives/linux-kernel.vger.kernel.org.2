@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3404132A3DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DECB432A3DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382652AbhCBJkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:40:36 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13759 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838106AbhCBJ2P (ORCPT
+        id S1382677AbhCBJkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:40:52 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55848 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1838142AbhCBJ3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:28:15 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603e05070000>; Tue, 02 Mar 2021 01:27:35 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 09:27:34 +0000
-Received: from moonraker.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Mar 2021 09:27:32 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] ASoC: soc-core: Prevent warning if no DMI table is present
-Date:   Tue, 2 Mar 2021 09:27:12 +0000
-Message-ID: <20210302092712.310705-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 2 Mar 2021 04:29:15 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1229RZbM117601;
+        Tue, 2 Mar 2021 03:27:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614677255;
+        bh=VKa9ZLInAy2XzS1IUg7DGYoE6OxMM/zNE7tI2sgufOA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=nBxjVUfBlRsYk2MpVi97OJS/jowTlC6jCid6bRscRLGZNrHe9wRt63lIkr+MNtN2/
+         mqpHAEBGhvoT+ATAls/rEJsUrJKGrwFzUwUkHVVPQ772inAhNxvcin5ohos0G17bEg
+         fCGWJqE0kk3NsU8vEwXtP+cQ/zMx7skQSzb/+OpU=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1229RZtZ004151
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 2 Mar 2021 03:27:35 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Mar
+ 2021 03:27:34 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 2 Mar 2021 03:27:34 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1229RVZf054243;
+        Tue, 2 Mar 2021 03:27:32 -0600
+Subject: Re: [PATCH] gpio: omap: Honor "aliases" node
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        <linux-omap@vger.kernel.org>
+CC:     Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210302011813.2331879-1-alexander.sverdlin@gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <eb34f303-4d05-4fcd-fb18-e304d06e6e2d@ti.com>
+Date:   Tue, 2 Mar 2021 11:27:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614677255; bh=zevSqHxMC5QGrkWCFYq/EsEdVzaCU5yAoPM8ypRlfpc=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=PwzcV7EQg1C4LN4dDshBu7voQLeGRdGDb6knwc3i0aY7pbulXizZEPzlimEwg7Auz
-         VyCtp7G0k4NgkqvA8LdSckC+FiRgJZzf8v6n+GdryuQo+zooc5z/05b0HG1WeM2Zv6
-         KWxbt/lVD4psbsSinv2GrJHw/PxDccMzTpgyDAvK62w1jsa7YlXbA8cpkPYV+ArgPS
-         DHZrLuhn1zkEGvAATCWeTk2ZoG6WA+JiFp1SfBhig/pn9squbzWLKsuAT8KzkqjJ5S
-         Y3vu4l5jGPPFoaJpzyAStdtikSWK7J5ZLpepSTbc+4XwxN/Pny1TRaCIXB+8HoS9Jo
-         wmxINcR98iacw==
+In-Reply-To: <20210302011813.2331879-1-alexander.sverdlin@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many systems do not provide a DMI table and on these systems a warning,
-such as the following, is printed on boot ...
 
- WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
 
-If DMI support is enabled in the kernel, there is no simple way to
-detect if a DMI table is table or not. Note that the variable
-'dmi_available' is not exported and so cannot be used by kernel modules.
-It could be possible to have every ASoC sound card driver set the long
-name to avoid the above message, but it might be intentional for the
-long name, that we fall back to using the sound card name. Therefore,
-make this a debug print by default to avoid the warning.
+On 02/03/2021 03:18, Alexander Sverdlin wrote:
+> Currently the naming of the GPIO chips depends on their order in the DT,
+> but also on the kernel version (I've noticed the change from v5.10.x to
+> v5.11). Honor the persistent enumeration in the "aliases" node like other
+> GPIO drivers do.
+> 
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> ---
+> Yes, I noticed checkpatch "WARNING: DT binding docs and includes should be
+> a separate patch."
+> However, the parts below are tiny and barely make sense separately.
+> 
+>   Documentation/devicetree/bindings/gpio/gpio-omap.txt | 6 ++++++
+>   drivers/gpio/gpio-omap.c                             | 5 +++++
+>   2 files changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-omap.txt b/Documentation/devicetree/bindings/gpio/gpio-omap.txt
+> index e57b2cb28f6c..6050db3fd84e 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-omap.txt
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-omap.txt
+> @@ -30,9 +30,15 @@ OMAP specific properties:
+>   - ti,gpio-always-on: 	Indicates if a GPIO bank is always powered and
+>   			so will never lose its logic state.
+>   
+> +Note: GPIO ports can have an alias correctly numbered in "aliases" node for
+> +persistent enumeration.
+>   
+>   Example:
+>   
+> +aliases {
+> +	gpio0 = &gpio0;
+> +};
+> +
+>   gpio0: gpio@44e07000 {
+>       compatible = "ti,omap4-gpio";
+>       reg = <0x44e07000 0x1000>;
+> diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
+> index 41952bb818ad..dd2a8f6d920f 100644
+> --- a/drivers/gpio/gpio-omap.c
+> +++ b/drivers/gpio/gpio-omap.c
+> @@ -1014,6 +1014,11 @@ static int omap_gpio_chip_init(struct gpio_bank *bank, struct irq_chip *irqc)
+>   			bank->chip.parent = &omap_mpuio_device.dev;
+>   		bank->chip.base = OMAP_MPUIO(0);
+>   	} else {
+> +#ifdef CONFIG_OF_GPIO
+> +		ret = of_alias_get_id(bank->chip.of_node, "gpio");
+> +		if (ret >= 0)
+> +			gpio = ret * bank->width;
+> +#endif
+>   		label = devm_kasprintf(bank->chip.parent, GFP_KERNEL, "gpio-%d-%d",
+>   				       gpio, gpio + bank->width - 1);
+>   		if (!label)
+> 
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You're not the first one, this was not accepted. See [1]
+[1] https://patchwork.kernel.org/project/linux-omap/patch/1465898604-16294-1-git-send-email-u.kleine-koenig@pengutronix.de/
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f6d4e99b590c..f1189e7c1fcc 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1576,7 +1576,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, c=
-onst char *flavour)
- 	/* make up dmi long name as: vendor-product-version-board */
- 	vendor =3D dmi_get_system_info(DMI_BOARD_VENDOR);
- 	if (!vendor || !is_dmi_valid(vendor)) {
--		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
-+		dev_dbg(card->dev, "ASoC: no DMI vendor name!\n");
- 		return 0;
- 	}
-=20
---=20
-2.25.1
 
+-- 
+Best regards,
+grygorii
