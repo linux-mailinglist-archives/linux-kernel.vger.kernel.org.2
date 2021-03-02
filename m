@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D0C32A783
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76D732A761
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449253AbhCBQRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:17:00 -0500
-Received: from mga01.intel.com ([192.55.52.88]:42598 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1443736AbhCBNkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:40:09 -0500
-IronPort-SDR: rWj1AbbLZNH62JPn2Gx/jOq+5rWadgKPSfOGzoGiWz59DxmBMQyBrLPMTAf6P9cnRWWCD5LVwT
- wG3xQ7kDXxMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="206447801"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="206447801"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 05:37:55 -0800
-IronPort-SDR: G1fW5sdk4Dy1+HAokgZG1kozWLuckxJ8i2tjnXBSimIgEi9PvOr7fs9MDtXKm8AtgD8Mu97OUX
- 6BalTeVuOV4w==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="368962687"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 05:37:53 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 81F082011B;
-        Tue,  2 Mar 2021 15:37:21 +0200 (EET)
-Date:   Tue, 2 Mar 2021 15:37:21 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1 1/1] ACPI: bus: Constify is_acpi_node() and friends
- (part 2)
-Message-ID: <20210302133721.GG3@paasikivi.fi.intel.com>
-References: <20210302133548.88230-1-andriy.shevchenko@linux.intel.com>
+        id S1449132AbhCBQPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:15:25 -0500
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:37156 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376817AbhCBNin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:38:43 -0500
+Received: by mail-vs1-f45.google.com with SMTP id l27so3091683vsj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:38:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S83xpZrRO2vsmOHrKP4fYqAMwPLcdiuf0B6CB48W+1Y=;
+        b=Qqq0lxrPNbVREq8FLdC5r1JWdR83RWDmBt0vo3F+Lmiw5VaVbvyZcqXscXOkTfYOpv
+         vbD48eb+5sZR03qdFuHhqfFPSuSmfU6DZuyCT1HBl2IOvb/i1KytXptJSuQTyhFdzwu5
+         c4K+mszoGjaQAaPpeKZKfnvTs9VBj46o9njmU8QjrxjYgBw5XmOs8vlFjjHnsOsDhY0f
+         kCOTXqqhXLCp3D8u5YDm8k3hTxNTEEhMW8iLeoAvqhn+X7CmeX4MLe8vqt4eUzEEpGiB
+         lddITGy5Sb3kXPhT64v0VU/DS2bD5dNoPzlWElm1ePs8HNZ3mkiWaUAXiS/0pQR5E6DH
+         v+tg==
+X-Gm-Message-State: AOAM530Ud0cxkI+oFEutWNtsMrB94/ZwfTIY/9AelKfYR+N+pPVueAsk
+        xBxKNk1ziD6kcKXIeJA5ZMgq0pKzu0FxM0/kR056gP4X
+X-Google-Smtp-Source: ABdhPJwF1CH14dyYdQNyF0S76UdIAbCyxS08yhx/MaBD+X5Om8NSEqFnrUJiw9WD0G45PsGWhQNBQ4Xitb1TOVPdJkE=
+X-Received: by 2002:a67:fe90:: with SMTP id b16mr2294947vsr.40.1614692274640;
+ Tue, 02 Mar 2021 05:37:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302133548.88230-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210301142112.342909-1-masahiroy@kernel.org>
+In-Reply-To: <20210301142112.342909-1-masahiroy@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Mar 2021 14:37:43 +0100
+Message-ID: <CAMuHMdWyxwqYp_xV17ESJtRZ19iGT1Bsm8YrxpGuXcRQiBiSEQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] m68k: syscalls: switch to generic syscalltbl.sh
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 03:35:48PM +0200, Andy Shevchenko wrote:
-> The commit 8b9d6802583a ("ACPI: Constify acpi_bus helper functions,
-> switch to macros") only changed functions for CONFIG_ACPI=y case.
-> This part adjusts the rest.
-> 
-> Fixes: 8b9d6802583a ("ACPI: Constify acpi_bus helper functions, switch to macros")
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Mon, Mar 1, 2021 at 3:21 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> Many architectures duplicate similar shell scripts.
+>
+> This commit converts m68k to use scripts/syscalltbl.sh.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Thanks!
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.13 branch.
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Sakari Ailus
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
