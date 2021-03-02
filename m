@@ -2,48 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8227832A25D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 910B832A25A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376733AbhCBHvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:51:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1836962AbhCBHWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:22:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE825600CD;
-        Tue,  2 Mar 2021 07:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614669125;
-        bh=8ZGZj7lA/oqjsED7NDnEXxCTiWvydjonx05aZ8XsYeQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UlK6wHuZqXuDEH3q5JqFXz4keZEWKovPRX871XFQIyYTaFK7b+Q/x2TXxEE0dvkwN
-         jo/Nun+8CJJMNY3Ojaz2N85eghfVBTO3Auc4ILM/l8MYQnaC1w4o5zMEYkxvSd565H
-         vtDBUu21dMJZrDrD3SME1C1HPDtHDCIsfilzJRTg=
-Date:   Tue, 2 Mar 2021 08:12:02 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] usb: typec: tcpm: Export partner Source Capabilities
-Message-ID: <YD3lQv5PCcz7gCEp@kroah.com>
-References: <20210214111730.1436506-1-kyletso@google.com>
+        id S1376702AbhCBHtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:49:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1836816AbhCBHVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:21:03 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3489C06178A;
+        Mon,  1 Mar 2021 23:12:36 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id g3so23834854edb.11;
+        Mon, 01 Mar 2021 23:12:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AFPfuv+YOm+k4DkSctX34qa+OTvzsdZXK2vjFfw1Tm0=;
+        b=S+JgmgnHbH90N1HKUqeQ8Ew6otkHcSonG1aR/anE8nDB8d+/JSrnIw0cAhBEC8BVq/
+         kMjmMdEUwb5hPNJKX8x3iXHlplNGC4CvUuOTaleLTBpTGngbrTgMIAMbs8IP2qW4Jkck
+         GKec9aQBiT1xpE8kX7CaZ0Ibp85vzRvpkobBvQtWrAJ67WdZZFDEfHXKI1AtuPIPuSoc
+         CnKdgAOmn8VuruQPAtWpv1ZAEBz3Asako335glZHIoToRXkTcUp04EMNF9D8xb9dcdvc
+         HQxzZUB1mTXJXYeP0z7UZ6bGTRdykeNYwaIKxJiO0bjqGDFbRu71FXnZs8jeusysVsPJ
+         X0tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AFPfuv+YOm+k4DkSctX34qa+OTvzsdZXK2vjFfw1Tm0=;
+        b=olDccLxc1bHG/n0APMv1VaTiyiFFupESqyvOm0tohbgz5cW2e+xt1wP3zsp3/E7r82
+         UgoL5MxGSIdv0Ksz8lSZPUBxaM0WFaDyPsF+1nza8nzxT1fBEWTSlRRyzMswpMrf9B+W
+         1+Bo6+j2h+1fLPx9bxTuyUsfTICwaOeyOAvwJIBZlBHr+UBwA485Coj3P+b60sHtlB+i
+         6uBqAs7t+tKoGfusIrIom2meo+5eRqgKFByVMeghBSOl7UrXM7y0+m7xJgY2sL5T+YG5
+         VIEJn0kLTm3//tgRD50ZNzaKsjJa53lTtQ0nL/i7yB8TEJA+Zu5c2ZMgB7hRPK7UkjdC
+         AIDA==
+X-Gm-Message-State: AOAM530c8OMFNqTWRmzSdXlYKY2iuAxtEi0f21TovfkvRsK8IO8N3cPQ
+        hCiraZ8rWfN2z+dNx5Nz3fZbuZqxiCm++E9h/YE=
+X-Google-Smtp-Source: ABdhPJy7opFJLI5d73Hqpi8Cv4/3I+seAygBh3QYLYVMuD5pEdzAuf6uvBUmy2PBrlAtB7jJvHh88gZ9YwZuW7j1DH0=
+X-Received: by 2002:a05:6402:888:: with SMTP id e8mr11730080edy.51.1614669155407;
+ Mon, 01 Mar 2021 23:12:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210214111730.1436506-1-kyletso@google.com>
+References: <20210302062214.29627-1-jslaby@suse.cz> <20210302062214.29627-30-jslaby@suse.cz>
+In-Reply-To: <20210302062214.29627-30-jslaby@suse.cz>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Mon, 1 Mar 2021 23:12:24 -0800
+Message-ID: <CAMo8BfL0Frrd6A=j+LXmExAkcKRLBm5a_3rM1hyz+W6p9i91xQ@mail.gmail.com>
+Subject: Re: [PATCH 30/44] tty: xtensa/iss, don't reassign to tty->port
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 07:17:30PM +0800, Kyle Tso wrote:
-> Export a function for other drivers to get the partner Source
-> Capabilities.
+On Mon, Mar 1, 2021 at 10:22 PM Jiri Slaby <jslaby@suse.cz> wrote:
+>
+> We already do tty_port_link_device in rs_init, so we don't need to
+> reassign a port to tty->port. It would be too late in tty::ops::open
+> anyway.
+>
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: linux-xtensa@linux-xtensa.org
+> ---
+>  arch/xtensa/platforms/iss/console.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-What driver?  We need a user of new functions in the kernel, otherwise
-they are ripe for removal.
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
-thanks,
-
-greg k-h
+-- 
+Thanks.
+-- Max
