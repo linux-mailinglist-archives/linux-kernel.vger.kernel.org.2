@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D4E32A24F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B531C32A24C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837128AbhCBHeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:34:00 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:41177 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347607AbhCBHHN (ORCPT
+        id S1381456AbhCBHdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238075AbhCBHFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:07:13 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lGz4z-00043R-4L; Tue, 02 Mar 2021 08:04:25 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lGz4x-0001Ps-Gy; Tue, 02 Mar 2021 08:04:23 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 0AE98240041;
-        Tue,  2 Mar 2021 08:04:23 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 5CD2C240040;
-        Tue,  2 Mar 2021 08:04:22 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id DE26A20043;
-        Tue,  2 Mar 2021 08:04:20 +0100 (CET)
+        Tue, 2 Mar 2021 02:05:52 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E7BC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 23:05:06 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id mj10so13086403ejb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 23:05:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=66TYp+n2vdORrHIy8yY1LGpfAbTwn2i4pgNuMUqrSkg=;
+        b=ovf3jTvfuiCTGX7H74d433zOHZ4X8oDxTY7nlinIE3vYPgRkKbuo2Vj1GNbFWJqj89
+         ei5FT/YVK741o8vc0gF+BiqboQEk9xfFTpohI+3mvGf9RXprwerEEdI3/NVjYz+m/e2Q
+         YmerzYedZRjBTPB6WUH506lA4b6MKADiDsKeEv/juvLO4UhIdCOeeMy7fnRWb+aP7KMf
+         lWsbsEc/YkDC2Mmy78j/dYo9eokXbJaTFDs0dt85Bqpfc2XdquSGrgAwVIFzVxE28xMf
+         CdKeFwmmwD5gM1UxTb3msvoXVHaln1zXpFB7lAoBBxxhx/sbuMy3yQJviIhhOtrT6ewX
+         vP0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=66TYp+n2vdORrHIy8yY1LGpfAbTwn2i4pgNuMUqrSkg=;
+        b=TdrvvaK+vgvwA9rx4c9lSRPmnU3TA75oR9c1/WkJo7ps1JnV4mhdZhaiXl2k7NtqLd
+         JFXjrZOuX2rGDFEF0BD+vkeDLS6r460BakYKEXGaS8t8EG1Tsx3mJTbziBl6+/lPC8JH
+         YWeazcQ+5WQ5+m0rx4ey6+d8M9NzcJwKqFKUQrEK+/Hk03iAvVlGQhNxvrAgP3XaZoV8
+         V8t86rVvw1K4/7OAi0119Bqwb82jCu+rVq6Pc/6s66p+eca9CIhYYZoHsT5cPDbL0g95
+         rIm1KzOaxPrguWqxBiNh+INkcjlD4UOxhadVMEj0fZzWzyIbZXBYs245Pc4jemcnwykk
+         q1Mw==
+X-Gm-Message-State: AOAM531KHvfHx5lsXpFDTPcRoXgBEX5NiWqd+gwIjNMtIjPkyzVAotBg
+        fnK5vMJD/vyUzkuHSnNGu1E=
+X-Google-Smtp-Source: ABdhPJzDXME+iX279QfQEjOXL4N6p/Epv+FljgUkFlePlsJQbMKaj/8Wo2bCWNlkwJEi1q9rCc+hWw==
+X-Received: by 2002:a17:907:2d93:: with SMTP id gt19mr19239222ejc.246.1614668704901;
+        Mon, 01 Mar 2021 23:05:04 -0800 (PST)
+Received: from gmail.com (20014C4E1C864000F9B8756A94F10216.dsl.pool.telekom.hu. [2001:4c4e:1c86:4000:f9b8:756a:94f1:216])
+        by smtp.gmail.com with ESMTPSA id s2sm8795897ejn.112.2021.03.01.23.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 23:05:04 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 2 Mar 2021 08:05:02 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nadav Amit <nadav.amit@gmail.com>, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nadav Amit <namit@vmware.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] smp: Micro-optimize smp_call_function_many_cond()
+Message-ID: <20210302070502.GA2809110@gmail.com>
+References: <20210220231712.2475218-1-namit@vmware.com>
+ <20210220231712.2475218-2-namit@vmware.com>
+ <YD0gF9VuqKyVUgVS@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Mar 2021 08:04:20 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-Organization: TDT AG
-In-Reply-To: <CAJht_EMG27YU+Jxtb2qeq1nXwu8uV8FXQPr62OcNHsE7DozD1g@mail.gmail.com>
-References: <20210216201813.60394-1-xie.he.0141@gmail.com>
- <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal>
- <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
- <YC7GHgYfGmL2wVRR@unreal>
- <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
- <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
- <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
- <906d8114f1965965749f1890680f2547@dev.tdt.de>
- <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
- <e1750da4179aca52960703890e985af3@dev.tdt.de>
- <CAJht_ENP3Y98jgj1peGa3fGpQ-qPaF=1gtyYwMcawRFW_UCpeA@mail.gmail.com>
- <ff200b159ef358494a922a676cbef8a6@dev.tdt.de>
- <CAJht_EMG27YU+Jxtb2qeq1nXwu8uV8FXQPr62OcNHsE7DozD1g@mail.gmail.com>
-Message-ID: <41b77b1c3cf1bb7a51b750faf23900ef@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate: clean
-X-purgate-ID: 151534::1614668664-00002CDB-8FE715EC/0/0
-X-purgate-type: clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YD0gF9VuqKyVUgVS@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-01 09:56, Xie He wrote:
-> On Sun, Feb 28, 2021 at 10:56 PM Martin Schiller <ms@dev.tdt.de> wrote:
->> 
->> >> Also, I have a hard time assessing if such a wrap is really
->> >> enforceable.
->> >
->> > Sorry. I don't understand what you mean. What "wrap" are you referring
->> > to?
->> 
->> I mean the change from only one hdlc<x> interface to both hdlc<x> and
->> hdlc<x>_x25.
->> 
->> I can't estimate how many users are out there and how their setup 
->> looks
->> like.
+
+* Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Sat, Feb 20, 2021 at 03:17:04PM -0800, Nadav Amit wrote:
+> > +		/*
+> > +		 * Choose the most efficient way to send an IPI. Note that the
+> > +		 * number of CPUs might be zero due to concurrent changes to the
+> > +		 * provided mask.
+> > +		 */
+> > +		if (nr_cpus == 1)
+> > +			arch_send_call_function_single_ipi(last_cpu);
+> > +		else if (likely(nr_cpus > 1))
+> > +			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
 > 
-> I'm also thinking about solving this issue by adding new APIs to the
-> HDLC subsystem (hdlc_stop_queue / hdlc_wake_queue) for hardware
-> drivers to call instead of netif_stop_queue / netif_wake_queue. This
-> way we can preserve backward compatibility.
+> I just ran into conflicts with another patch set, and noticed that the
+> above should probably be:
 > 
-> However I'm reluctant to change the code of all the hardware drivers
-> because I'm afraid of introducing bugs, etc. When I look at the code
-> of "wan/lmc/lmc_main.c", I feel I'm not able to make sure there are no
-> bugs (related to stop_queue / wake_queue) after my change (and even
-> before my change, actually). There are even serious style problems:
-> the majority of its lines are indented by spaces.
+> 		if (nr_cpus == 1)
+> 			send_call_function_single_ipi(last_cpu);
+> 		else if (likely(nr_cpus > 1))
+> 			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
 > 
-> So I don't want to mess with all the hardware drivers. Hardware driver
-> developers (if they wish to properly support hdlc_x25) should do the
-> change themselves. This is not a problem for me, because I use my own
-> out-of-tree hardware driver. However if I add APIs with no user code
-> in the kernel, other developers may think these APIs are not
-> necessary.
+> Which will avoid the IPI when @last_cpu is idle.
 
-I don't think a change that affects the entire HDLC subsystem is
-justified, since the actual problem only affects the hdlc_x25 area.
+I turned this into the additional patch below, on top of Nadav's series.
 
-The approach with the additional hdlc<x>_x25 is clean and purposeful and
-I personally could live with it.
+Thanks,
 
-I just don't see myself in the position to decide such a change at the
-moment.
+	Ingo
 
-@Jakub: What is your opinion on this.
+===============>
+From: Ingo Molnar <mingo@kernel.org>
+Date: Tue, 2 Mar 2021 08:02:43 +0100
+Subject: [PATCH] smp: Micro-optimize smp_call_function_many_cond()
+
+Call the generic send_call_function_single_ipi() function, which
+will avoid the IPI when @last_cpu is idle.
+
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/smp.c b/kernel/smp.c
+index b6375d775e93..af0d51da84a2 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -694,7 +694,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 		 * provided mask.
+ 		 */
+ 		if (nr_cpus == 1)
+-			arch_send_call_function_single_ipi(last_cpu);
++			send_call_function_single_ipi(last_cpu);
+ 		else if (likely(nr_cpus > 1))
+ 			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
+ 	}
+
