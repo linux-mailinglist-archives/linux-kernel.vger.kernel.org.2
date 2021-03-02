@@ -2,144 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226EF32AAD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2696232AAC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839911AbhCBTzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:55:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574095AbhCBRVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:21:19 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB647C0611C0;
-        Tue,  2 Mar 2021 09:20:17 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id hs11so36732631ejc.1;
-        Tue, 02 Mar 2021 09:20:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zK+KKzHDy96fD8Ado48n+v2+h+rSyFj7Z9Ecpa/L53g=;
-        b=bxQ9hcxmqpIQuIT7HyUiBmiowbUr5yoAQwzUJ0yLJmKWH3dxtzvsEx3Who38HjGxMV
-         sYn9UCQYWptvrBB+IrMJpvc+fu6cyrJzjxxkkjQlmBAt3fydztEECovNw6d+Wfx+EuLF
-         kXlIE+6aC3EtvNiSeo7/i5NlCQdJ4a4peSR2jc6QzTYAYoy9VKxG3SKUKNrSumnC03jZ
-         lOmv3gHVYafr5kKIKjg6qyZMeVgQLQpDCrcLnz4MTgMl1LeS3Jo02ak05MMsi6yb588z
-         fiSQIT+yRuEjLdHs6tm+RJB9E2EA9fdyvq7/FrUcQV7kYF6yvEjYdVdjiS5Cl+tB3ezU
-         XZyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zK+KKzHDy96fD8Ado48n+v2+h+rSyFj7Z9Ecpa/L53g=;
-        b=ANDY+NI1MHSqREeleU2CZS81rmkZL4Fa9+j9n49SEFu21MEPKtYTk1OyIk9usBfWXP
-         oeqeitdIw+k7dJymo6NSlHOYtOuDbp5FyEn649k+fdQOGHzm+/ngY/VHT4zcNZIn6O5x
-         dTdddK18OpOc8OW3A6UsNm/lja2X82e39V7zMD9yv2/VhOPqLOjnuXBDNDPRZNo/FT4V
-         pqVLflXLBbWuexKGPgAKolscfF6zIgqcI7gN6gR/DvM3ilfBYr9nhtnID19ySMsf9Llb
-         3Z/gezhR19SPNy/bu00o06x3J2nxoEmLo+aDORPo9mqAbchM/3xUyrbJGJRowoNkEq/F
-         FzSw==
-X-Gm-Message-State: AOAM5327Ojs9B890ni178TxJGVlfXstUeZLTcgkl13m+qybpDt5LmjOn
-        cgl92PByUVCIjqGBP3/GXaNKTIrTjp8=
-X-Google-Smtp-Source: ABdhPJw8v7voB0M6C4fWLSnzAXN/gXoc7QDPY/Irgd8F0TkInhF7apTUHh+FcZ0/2d+GalG1n5WEQw==
-X-Received: by 2002:a17:907:9e6:: with SMTP id ce6mr21277639ejc.207.1614705616358;
-        Tue, 02 Mar 2021 09:20:16 -0800 (PST)
-Received: from Ansuel-xps.localdomain (host-87-10-16-239.retail.telecomitalia.it. [87.10.16.239])
-        by smtp.gmail.com with ESMTPSA id a9sm218574edt.82.2021.03.02.09.20.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 09:20:15 -0800 (PST)
-Date:   Tue, 2 Mar 2021 05:50:07 +0100
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2 1/3] mtd: partitions: ofpart: skip subnodes parse with
- compatible
-Message-ID: <YD3D/zwfLlRITdHj@Ansuel-xps.localdomain>
-References: <20210216212638.28382-1-ansuelsmth@gmail.com>
- <20210216212638.28382-2-ansuelsmth@gmail.com>
- <d504a4df-b1f7-b7c9-e62a-599d114d8a18@gmail.com>
+        id S1839843AbhCBTy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:54:58 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:17725 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1580063AbhCBRWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:22:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614705725; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=i6HWitAvfuibUOrEhE9hWqjcYM7rHuJywCh3nQMG6cA=; b=P75gxfee+KISkKX+PZOFiiOXExoVsZKAIrb60kOGrIpSWi/2M+lVQlcDcVfpyZzmA7jaLXx7
+ OxFCLiIkhHrjD16hLyzxb22RZnJVqij+na/mKSQo01eTCaX/AxS4HbNyJiQr/qBLtJLb+iui
+ eTwNWuKCAJHyt7AHHVfzmXNy61Y=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 603e65bf4fd7814d5f8c7566 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 16:20:15
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC0CCC4346F; Tue,  2 Mar 2021 16:20:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1E9ACC433C6;
+        Tue,  2 Mar 2021 16:20:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1E9ACC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Date:   Tue, 2 Mar 2021 08:20:10 -0800
+From:   Asutosh Das <asutoshd@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     cang@codeaurora.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v9 1/2] scsi: ufs: Enable power management for wlun
+Message-ID: <20210302162010.GH12147@stor-presley.qualcomm.com>
+References: <cover.1614655058.git.asutoshd@codeaurora.org>
+ <b291bb65fadc9c828cbcb4ffb81cfa1ee47b82be.1614655058.git.asutoshd@codeaurora.org>
+ <d17e52e0-cb50-50ee-accb-458b318014e5@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d504a4df-b1f7-b7c9-e62a-599d114d8a18@gmail.com>
+In-Reply-To: <d17e52e0-cb50-50ee-accb-458b318014e5@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:53:54PM +0100, Rafał Miłecki wrote:
-> On 16.02.2021 22:26, Ansuel Smith wrote:
-> > If a partitions structure is not used, parse direct subnodes as
-> > fixed-partitions only if a compatible is not found or is of type
-> > fixed-partition. A parser can be used directly on the subnode and
-> > subnodes should not be parsed as fixed-partitions by default.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >   drivers/mtd/parsers/ofpart.c | 5 +++++
-> >   1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/parsers/ofpart.c b/drivers/mtd/parsers/ofpart.c
-> > index daf507c123e6..4b363dd0311c 100644
-> > --- a/drivers/mtd/parsers/ofpart.c
-> > +++ b/drivers/mtd/parsers/ofpart.c
-> > @@ -50,6 +50,11 @@ static int parse_fixed_partitions(struct mtd_info *master,
-> >   			 master->name, mtd_node);
-> >   		ofpart_node = mtd_node;
-> >   		dedicated = false;
-> > +
-> > +		/* Skip parsing direct subnodes if a compatible is found and is not fixed-partitions */
-> > +		if (node_has_compatible(ofpart_node) &&
-> > +		    !of_device_is_compatible(ofpart_node, "fixed-partitions"))
-> > +			return 0;
-> >   	} else if (!of_device_is_compatible(ofpart_node, "fixed-partitions")) {
-> >   		/* The 'partitions' subnode might be used by another parser */
-> >   		return 0;
-> 
-> I admit I'm not familiar with the old binding, so let me know if my
-> understanding is incorrect.
-> 
-> It seems to me however that your change will break parsing in cases
-> like:
-> 
-> spi-flash@0 {
-> 	compatible = "jedec,spi-nor";
-> 	reg = <0x0>;
-> 
-> 	partition@0 {
-> 		label = "bootloader";
-> 		reg = <0x0 0x100000>;
-> 	};
-> };
-> 
-> nandcs@0 {
-> 	compatible = "brcm,nandcs";
-> 	reg = <0>;
-> 
-> 	partition@0 {
-> 		label = "bootloader";
-> 		reg = <0x0000000 0x10000>;
-> 	};
-> };
-> 
-> Did we ever use "fixed-partitions" without partitions { } subnode?
+On Tue, Mar 02 2021 at 06:14 -0800, Adrian Hunter wrote:
+>On 2/03/21 5:21 am, Asutosh Das wrote:
+>> During runtime-suspend of ufs host, the scsi devices are
+>> already suspended and so are the queues associated with them.
+>> But the ufs host sends SSU to wlun during its runtime-suspend.
+>> During the process blk_queue_enter checks if the queue is not in
+>> suspended state. If so, it waits for the queue to resume, and never
+>> comes out of it.
+>> The commit
+>> (d55d15a33: scsi: block: Do not accept any requests while suspended)
+>> adds the check if the queue is in suspended state in blk_queue_enter().
+>>
+>> Call trace:
+>>  __switch_to+0x174/0x2c4
+>>  __schedule+0x478/0x764
+>>  schedule+0x9c/0xe0
+>>  blk_queue_enter+0x158/0x228
+>>  blk_mq_alloc_request+0x40/0xa4
+>>  blk_get_request+0x2c/0x70
+>>  __scsi_execute+0x60/0x1c4
+>>  ufshcd_set_dev_pwr_mode+0x124/0x1e4
+>>  ufshcd_suspend+0x208/0x83c
+>>  ufshcd_runtime_suspend+0x40/0x154
+>>  ufshcd_pltfrm_runtime_suspend+0x14/0x20
+>>  pm_generic_runtime_suspend+0x28/0x3c
+>>  __rpm_callback+0x80/0x2a4
+>>  rpm_suspend+0x308/0x614
+>>  rpm_idle+0x158/0x228
+>>  pm_runtime_work+0x84/0xac
+>>  process_one_work+0x1f0/0x470
+>>  worker_thread+0x26c/0x4c8
+>>  kthread+0x13c/0x320
+>>  ret_from_fork+0x10/0x18
+>>
+>> Fix this by registering ufs device wlun as a scsi driver and
+>> registering it for block runtime-pm. Also make this as a
+>> supplier for all other luns. That way, this device wlun
+>> suspends after all the consumers and resumes after
+>> hba resumes.
+>>
+>> Co-developed-by: Can Guo <cang@codeaurora.org>
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>> ---
+>
+>Now we need either to move the suspend/resume vops from
+>ufshcd_suspend/resume to __ufshcd_wl_suspend/resume, assuming that
+>would work for existing implementations of those callbacks,
+>or otherwise create new vops ->wl_suspend() / ->wl_resume(), and
+>then split the existing implementations of those callbacks.
+>
+>ufs_intel_resume() now needs to be invoked from __ufshcd_wl_resume().
+>I am not sure about the others:
+>
+>	exynos_ufs_suspend()
+>	exynos_ufs_resume()
+>	ufs_hisi_suspend()
+>	ufs_hisi_resume()
+>	ufs_mtk_suspend()
+>	ufs_mtk_resume()
+>	ufs_qcom_suspend()
+>	ufs_qcom_resume()
+>
 
-Hi, very good point. You are right and I didin't think about this case.
-I don't want to assume false statement, but since the ofpart parser and
-the partitions structure should have been pushed at the same time, there
-shouldn't be any use of "fixed-partitions" without partitions { }
-subnodes. With this assumtion, the current implementation looks to be the 
-cleanest way to skip parsing. (if the parsing is dubious, don't parse at
-all... The idea was that)
-The hacky and IMHO dirty way to solve this is add a bool to directly
-skip the subnode parsing and check for that. Something like
-"no-fixed-partition" that would disable the ofnode parser with no
-partitions { } subnode would accomplish the same result of this patch
-and keep compatibility with nodes scheme you pointed out.
+Thanks. I'll change this in the next version.
 
+-asd
