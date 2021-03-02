@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD59632A2E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4752E32A2FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377886AbhCBIkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:40:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45890 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235703AbhCBIVI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:21:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614673162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9zKjm3eQ7NiVum4dqopzeJFlLmqcjV5S2gllw6JZT34=;
-        b=hqw01NcqecoAkX88HK+gulujXCG1OoHGLe9f4ZdI5RjeoTQmV/flS7lrs8DEjdkNMcWM8L
-        OIfrl7PZI2fwEhqATs4daSth5o700hST5iBW22lWEctMcUCOcb8TNWipvPVq4nTNUkBYt/
-        FQI89IUfn+fpce2NHd9+7mxFIWDwjP4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-3KMuztsBP56cC614y1Nj7g-1; Tue, 02 Mar 2021 03:19:18 -0500
-X-MC-Unique: 3KMuztsBP56cC614y1Nj7g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 763CC1966320;
-        Tue,  2 Mar 2021 08:19:16 +0000 (UTC)
-Received: from localhost (ovpn-12-78.pek2.redhat.com [10.72.12.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D2F910013DB;
-        Tue,  2 Mar 2021 08:19:12 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 16:19:09 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH 7/7] kdump: Use vmlinux_build_id() to simplify
-Message-ID: <20210302081909.GA28599@MiWiFi-R3L-srv>
-References: <20210301174749.1269154-1-swboyd@chromium.org>
- <20210301174749.1269154-8-swboyd@chromium.org>
+        id S1377935AbhCBIpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:45:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349458AbhCBIZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:25:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E01326148E;
+        Tue,  2 Mar 2021 08:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614673441;
+        bh=CpzI4Qq3HpAUm+Ff4gmctdpIRhmEXGG9TE6ucokTozY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qYL67jtv2Q77JAOc80jZRkCXt1bfXU0wzM8OLiKhzyPd8un1t1a6G8aEs4tSzw5qG
+         8yH6NQoWIUi7R1FC1LTn+nmsJd0bPXWAFKej1MDxtf8YY3AJWZf2d8mCLqcDKBm8sG
+         3ru9kMH8gSZHSNNSwNhQB5u47MARpQm0ql5A2EUELSMJyIXSj6+QQXXpfQaOPmhR9l
+         7Fbvn41n9w4MBw07B/74PTimC/tZxnL7FlqAVr5XSo9GUymkhnj7YJ8o3cVjZnIWY+
+         gE7bNRb09QH382MlgBTu9lG7JgrIUOSRLlJCytW/Ft8OQJ6iwoiySWzkrEIx0MZnI+
+         qyEqqHyMoyYlA==
+Date:   Tue, 2 Mar 2021 16:23:55 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Pawel Laszczak <pawell@cadence.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jacob Wen <jian.w.wen@oracle.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
+ from trace events
+Message-ID: <20210302082355.GA8633@nchen>
+References: <20210226185909.100032746@goodmis.org>
+ <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
+ <20210227141802.5c9aca91@oasis.local.home>
+ <20210227190831.56956c80@oasis.local.home>
+ <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210301174749.1269154-8-swboyd@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/01/21 at 09:47am, Stephen Boyd wrote:
-> We can use the vmlinux_build_id() helper here now instead of open coding
-> it. This consolidates code and possibly avoids calculating the build ID
-> twice in the case of a crash with a stacktrace.
+On 21-03-01 05:27:04, Pawel Laszczak wrote:
 > 
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Jessica Yu <jeyu@kernel.org>
-> Cc: Evan Green <evgreen@chromium.org>
-> Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-> Cc: Dave Young <dyoung@redhat.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Vivek Goyal <vgoyal@redhat.com>
-> Cc: <kexec@lists.infradead.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  kernel/crash_core.c | 46 ++++++++-------------------------------------
->  1 file changed, 8 insertions(+), 38 deletions(-)
+> + Peter Chen - Maintainer of CDNS3 driver
 > 
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 825284baaf46..07d3e1109a8c 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -4,6 +4,7 @@
->   * Copyright (C) 2002-2004 Eric Biederman  <ebiederm@xmission.com>
->   */
->  
-> +#include <linux/buildid.h>
->  #include <linux/crash_core.h>
->  #include <linux/utsname.h>
->  #include <linux/vmalloc.h>
-> @@ -378,51 +379,20 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
->  }
->  EXPORT_SYMBOL(paddr_vmcoreinfo_note);
->  
-> -#define NOTES_SIZE (&__stop_notes - &__start_notes)
-> -#define BUILD_ID_MAX SHA1_DIGEST_SIZE
-> -#define NT_GNU_BUILD_ID 3
-> -
-> -struct elf_note_section {
-> -	struct elf_note	n_hdr;
-> -	u8 n_data[];
-> -};
-> -
->  /*
->   * Add build ID from .notes section as generated by the GNU ld(1)
->   * or LLVM lld(1) --build-id option.
->   */
->  static void add_build_id_vmcoreinfo(void)
->  {
-> -	char build_id[BUILD_ID_MAX * 2 + 1];
-> -	int n_remain = NOTES_SIZE;
-> -
-> -	while (n_remain >= sizeof(struct elf_note)) {
-> -		const struct elf_note_section *note_sec =
-> -			&__start_notes + NOTES_SIZE - n_remain;
-> -		const u32 n_namesz = note_sec->n_hdr.n_namesz;
-> -
-> -		if (note_sec->n_hdr.n_type == NT_GNU_BUILD_ID &&
-> -		    n_namesz != 0 &&
-> -		    !strcmp((char *)&note_sec->n_data[0], "GNU")) {
-> -			if (note_sec->n_hdr.n_descsz <= BUILD_ID_MAX) {
-> -				const u32 n_descsz = note_sec->n_hdr.n_descsz;
-> -				const u8 *s = &note_sec->n_data[n_namesz];
-> -
-> -				s = PTR_ALIGN(s, 4);
-> -				bin2hex(build_id, s, n_descsz);
-> -				build_id[2 * n_descsz] = '\0';
-> -				VMCOREINFO_BUILD_ID(build_id);
-> -				return;
-> -			}
-> -			pr_warn("Build ID is too large to include in vmcoreinfo: %u > %u\n",
-> -				note_sec->n_hdr.n_descsz,
-> -				BUILD_ID_MAX);
-> -			return;
-> -		}
-> -		n_remain -= sizeof(struct elf_note) +
-> -			ALIGN(note_sec->n_hdr.n_namesz, 4) +
-> -			ALIGN(note_sec->n_hdr.n_descsz, 4);
-> +	const char *build_id = vmlinux_build_id();
+> >
+> >[ Resending with an address that should work for Felipe ]
+> >
+> >On Sat, 27 Feb 2021 14:18:02 -0500
+> >Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> >> On Fri, 26 Feb 2021 14:21:00 -0800
+> >> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> >>
+> >> > On Fri, Feb 26, 2021 at 11:07 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >> > >
+> >> > > The first patch scans the print fmts of the trace events looking for
+> >> > > dereferencing pointers from %p*, and making sure that they refer back
+> >> > > to the trace event itself.
+> >> > >
+> >> > > The second patch handles strings "%s" [..]
+> >> >
+> >> > Doing this at runtime really feels like the wrong thing to do.
+> >> >
+> >> > It won't even protect us from what happened - people like me and
+> >> > Andrew won't even run those tracepoints in the first place, so we
+> >> > won't notice.
+> >> >
+> >> > It really would be much better in every respect to have this done by
+> >> > checkpatch, I think.
+> >>
+> >> And after fixing the parsing to not trigger false positives, an
+> >> allyesconfig boot found this:
+> >>
+> >> event cdns3_gadget_giveback has unsafe dereference of argument 11
+> >> print_fmt: "%s: req: %p, req buff %p, length: %u/%u %s%s%s, status: %d, trb: [start:%d, end:%d: virt addr %pa], flags:%x SID: %u",
+> >__get_str(name), REC->req, REC->buf,
+> >>  REC->actual, REC->length, REC->zero ? "Z" : "z", REC->short_not_ok ? "S" : "s", REC->no_interrupt ? "I" : "i", REC->status, REC-
+> >>start_trb, REC->end_trb, REC->start_trb_addr, REC->flags, RE
+> >> C->stream_id
+> >>
+> >> (as the above is from a trace event class, it triggered for every event
+> >> in that class).
+> >>
+> >> As it looks like it uses %pa which IIUC from the printk code, it
+> >> dereferences the pointer to find it's virtual address. The event has
+> >> this as the field:
+> >>
+> >>                 __field(struct cdns3_trb *, start_trb_addr)
+> >>
+> >> Assigns it with:
+> >>
+> >>                 __entry->start_trb_addr = req->trb;
+> >>
+> >> And prints that with %pa, which will dereference pointer at the time of
+> >> reading, where the address in question may no longer be around. That
+> >> looks to me as a potential bug.
 
-It's strange that I can only see the cover letter and this patch 7,
-couldn't find the patch where vmlinux_build_id() is introduced in lkml.
+Steven, thanks for reporting. Do you mind sending patch to fix it?
+If you have no time to do it, I will do it later.
 
-> +
-> +	if (build_id[0] == '\0') {
-> +		pr_warn("Build ID cannot be included in vmcoreinfo\n");
-> +		return;
->  	}
-> +
-> +	VMCOREINFO_BUILD_ID(build_id);
->  }
->  
->  static int __init crash_save_vmcoreinfo_init(void)
-> -- 
-> https://chromeos.dev
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
-> 
+-- 
+
+Thanks,
+Peter Chen
 
