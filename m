@@ -2,145 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10D432A7CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A475E32A7D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839650AbhCBQhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351310AbhCBOPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:15:17 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E12BC06121D
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:12:06 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id u18so10467737ljd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 06:12:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FYb7g69Q0S9UsKHByH7hMr9k6tWP4qu2tZDkFJoG0tM=;
-        b=G+uutoapwSZWV779FqAhTz3xP8N7wFsDQ5uvwDaB8qke9uuQ62RmrK27+IbwDKzVts
-         ic4rLiHcWcMmPqBZ88LB9yD1w09dSOaX829srODh+nGKhR6VHvvo6MsDyfaQtqBPcj8z
-         Y16MEdrgn8q9Ht1pZRQEk90VyQDAm1QEHNidD+vgrcoMlou7XrQTYAco/BOUtomMX7pr
-         R2vpEtZ/7HP16/t3eidN9EqgCBG8H2+i27h38iR1S6+4nyXHqbM/wSpyK4d/b7lp7UWy
-         43RzNQao5xO18M59yQR14zxZf7iyDtVRzXTxujCXYTWWnK+WUhAMsHAT5mxoGeKWAQJn
-         UEZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FYb7g69Q0S9UsKHByH7hMr9k6tWP4qu2tZDkFJoG0tM=;
-        b=qnyeSDedm2jPEPNCZ1joa5O1zoErrEZ3YL9tu5FJx+4YoZuCtjkWTVdhpSPlJ1Q9ar
-         /NeOH548GOi9Z/hfXRHD5K1ezImB7XSuMpNyqMXodnZBLY7H+v0T7OVXAiLbdlgjXj6c
-         zA1Y+S8pStg37YdjyqLTcK0f8IqtF69Pz17DqVERho9yioKjtQeDBNLriXzYbsYAjjtI
-         6xp/w0dHktAVNvzkwfXBmBfNndj0qKeoyWJFG2/Zv1YaV6NNJwagPVFHLrJzX0BThGmN
-         XNgDF2SL40qEo0FZQTlYBOxTjsfD8PBiaU9xVPnhL9TZsd43VIh6+FCaoExMI/0FGkA3
-         JbUA==
-X-Gm-Message-State: AOAM532s3in/0yd3EIxc5jYasXCm/vMNeDPR9/U1xMVkEAMc+AB+YHw/
-        w+h+zojxVpwYTOg/EVPU3XHhHO19qY9bnuoS3f6QKQ==
-X-Google-Smtp-Source: ABdhPJyVRNEFpFpX/SuhVlD9Ppnl2Fau87w3eqhkeKtx6mOvlNT3LfnPO0guMPr4mCILZi6TYELnwSgU5llsAcinhTY=
-X-Received: by 2002:a2e:7d03:: with SMTP id y3mr10563012ljc.0.1614694323839;
- Tue, 02 Mar 2021 06:12:03 -0800 (PST)
+        id S1839790AbhCBQie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:38:34 -0500
+Received: from mga02.intel.com ([134.134.136.20]:44613 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1448250AbhCBOTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:19:02 -0500
+IronPort-SDR: pMHKt0AAko+IUB3LODBkcdV1Kj17ZuZz3QB2U6Q/VlxuZy+MyFW16N8jRhTKWlUo/Kfb1Eaht7
+ PJEbDI915WSQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="173964363"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="173964363"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 06:14:19 -0800
+IronPort-SDR: XsTTl1bvinkrhr7HkvJW8Mx35RMJU4Z9LNHPZV1ptjWnpLJg2E517DX3NDo03/LbzpRIqg94RZ
+ tEFORZFpH4ZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="399037378"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Mar 2021 06:14:10 -0800
+Subject: Re: [PATCH v9 1/2] scsi: ufs: Enable power management for wlun
+To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1614655058.git.asutoshd@codeaurora.org>
+ <b291bb65fadc9c828cbcb4ffb81cfa1ee47b82be.1614655058.git.asutoshd@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d17e52e0-cb50-50ee-accb-458b318014e5@intel.com>
+Date:   Tue, 2 Mar 2021 16:14:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <000000000000f1c03b05bc43aadc@google.com> <CALvZod4vGj0P6WKncdKpGaVEb1Ui_fyHm+-hbCJTmbvo43CJ=A@mail.gmail.com>
- <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com> <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
- <YDzaAWK41K4gD35V@dhcp22.suse.cz> <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
- <YD0OzXTmYm8M58Vo@dhcp22.suse.cz> <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
- <YD0jLTciK0M7P+Hc@dhcp22.suse.cz> <122e8c5d-60b8-52d9-c6a1-00cd61b2e1b6@oracle.com>
- <YD4I+VPr3UNt063H@dhcp22.suse.cz>
-In-Reply-To: <YD4I+VPr3UNt063H@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 2 Mar 2021 06:11:51 -0800
-Message-ID: <CALvZod7XHbjfoGGVH=h17u8-FruMaiPMWxXJz5JBmeJkNHBqNQ@mail.gmail.com>
-Subject: Re: possible deadlock in sk_clone_lock
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b291bb65fadc9c828cbcb4ffb81cfa1ee47b82be.1614655058.git.asutoshd@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 1:44 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 01-03-21 17:16:29, Mike Kravetz wrote:
-> > On 3/1/21 9:23 AM, Michal Hocko wrote:
-> > > On Mon 01-03-21 08:39:22, Shakeel Butt wrote:
-> > >> On Mon, Mar 1, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > [...]
-> > >>> Then how come this can ever be a problem? in_task() should exclude soft
-> > >>> irq context unless I am mistaken.
-> > >>>
-> > >>
-> > >> If I take the following example of syzbot's deadlock scenario then
-> > >> CPU1 is the one freeing the hugetlb pages. It is in the process
-> > >> context but has disabled softirqs (see __tcp_close()).
-> > >>
-> > >>         CPU0                    CPU1
-> > >>         ----                    ----
-> > >>    lock(hugetlb_lock);
-> > >>                                 local_irq_disable();
-> > >>                                 lock(slock-AF_INET);
-> > >>                                 lock(hugetlb_lock);
-> > >>    <Interrupt>
-> > >>      lock(slock-AF_INET);
-> > >>
-> > >> So, this deadlock scenario is very much possible.
-> > >
-> > > OK, I see the point now. I was focusing on the IRQ context and hugetlb
-> > > side too much. We do not need to be freeing from there. All it takes is
-> > > to get a dependency chain over a common lock held here. Thanks for
-> > > bearing with me.
-> > >
-> > > Let's see whether we can make hugetlb_lock irq safe.
-> >
-> > I may be confused, but it seems like we have a general problem with
-> > calling free_huge_page (as a result of put_page) with interrupts
-> > disabled.
-> >
-> > Consider the current free_huge_page code.  Today, we drop the lock
-> > when processing gigantic pages because we may need to block on a mutex
-> > in cma code.  If our caller has disabled interrupts, then it doesn't
-> > matter if the hugetlb lock is irq safe, when we drop it interrupts will
-> > still be disabled we can not block .  Right?  If correct, then making
-> > hugetlb_lock irq safe would not help.
-> >
-> > Again, I may be missing something.
-> >
-> > Note that we also are considering doing more with the hugetlb lock
-> > dropped in this path in the 'free vmemmap of hugetlb pages' series.
-> >
-> > Since we need to do some work that could block in this path, it seems
-> > like we really need to use a workqueue.  It is too bad that there is not
-> > an interface to identify all the cases where interrupts are disabled.
->
-> Wouldn't something like this help? It is quite ugly but it would be
-> simple enough and backportable while we come up with a more rigorous
-> solution. What do you think?
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 4bdb58ab14cb..c9a8b39f678d 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1495,9 +1495,11 @@ static DECLARE_WORK(free_hpage_work, free_hpage_workfn);
->  void free_huge_page(struct page *page)
->  {
->         /*
-> -        * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
-> +        * Defer freeing if in non-task context or when put_page is called
-> +        * with IRQ disabled (e.g from via TCP slock dependency chain) to
-> +        * avoid hugetlb_lock deadlock.
->          */
-> -       if (!in_task()) {
-> +       if (!in_task() || irqs_disabled()) {
+On 2/03/21 5:21 am, Asutosh Das wrote:
+> During runtime-suspend of ufs host, the scsi devices are
+> already suspended and so are the queues associated with them.
+> But the ufs host sends SSU to wlun during its runtime-suspend.
+> During the process blk_queue_enter checks if the queue is not in
+> suspended state. If so, it waits for the queue to resume, and never
+> comes out of it.
+> The commit
+> (d55d15a33: scsi: block: Do not accept any requests while suspended)
+> adds the check if the queue is in suspended state in blk_queue_enter().
+> 
+> Call trace:
+>  __switch_to+0x174/0x2c4
+>  __schedule+0x478/0x764
+>  schedule+0x9c/0xe0
+>  blk_queue_enter+0x158/0x228
+>  blk_mq_alloc_request+0x40/0xa4
+>  blk_get_request+0x2c/0x70
+>  __scsi_execute+0x60/0x1c4
+>  ufshcd_set_dev_pwr_mode+0x124/0x1e4
+>  ufshcd_suspend+0x208/0x83c
+>  ufshcd_runtime_suspend+0x40/0x154
+>  ufshcd_pltfrm_runtime_suspend+0x14/0x20
+>  pm_generic_runtime_suspend+0x28/0x3c
+>  __rpm_callback+0x80/0x2a4
+>  rpm_suspend+0x308/0x614
+>  rpm_idle+0x158/0x228
+>  pm_runtime_work+0x84/0xac
+>  process_one_work+0x1f0/0x470
+>  worker_thread+0x26c/0x4c8
+>  kthread+0x13c/0x320
+>  ret_from_fork+0x10/0x18
+> 
+> Fix this by registering ufs device wlun as a scsi driver and
+> registering it for block runtime-pm. Also make this as a
+> supplier for all other luns. That way, this device wlun
+> suspends after all the consumers and resumes after
+> hba resumes.
+> 
+> Co-developed-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> ---
 
-Does irqs_disabled() also check softirqs?
+Now we need either to move the suspend/resume vops from
+ufshcd_suspend/resume to __ufshcd_wl_suspend/resume, assuming that
+would work for existing implementations of those callbacks,
+or otherwise create new vops ->wl_suspend() / ->wl_resume(), and
+then split the existing implementations of those callbacks.
+
+ufs_intel_resume() now needs to be invoked from __ufshcd_wl_resume().
+I am not sure about the others:
+
+	exynos_ufs_suspend()
+	exynos_ufs_resume()
+	ufs_hisi_suspend()
+	ufs_hisi_resume()
+	ufs_mtk_suspend()
+	ufs_mtk_resume()
+	ufs_qcom_suspend()
+	ufs_qcom_resume()
