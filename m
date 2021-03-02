@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAB532A074
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 097B232A075
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381089AbhCBEUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
+        id S1381098AbhCBEUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235441AbhCBAEb (ORCPT
+        with ESMTP id S239716AbhCBAGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:04:31 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B351EC061222
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:01:47 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id p136so20822291ybc.21
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:01:47 -0800 (PST)
+        Mon, 1 Mar 2021 19:06:04 -0500
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A01C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:04:03 -0800 (PST)
+Received: by mail-vk1-xa35.google.com with SMTP id k191so4031422vke.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Ykwv7UPOg2gnv7U6N4+XsXv4MVQdTbl3lFORivTI5qU=;
-        b=Ike7yisTth4MPXILsDu/yWLMoEt9B+Ui8PttQAbq3inRV2gVHSVxandNIzZpd5ZqDG
-         yTzLI6fh7QLGqwwBZzvml3GG4wf8k4furX6FEBBT5/pscBRVuCf1bHOjj+18ezm3sO+y
-         BqRXkF6w+rmlczom6l9qwgJloIYYoBPtB+krv83i3eij0jETbsJDKTVGUQeLmEL5wt41
-         BC0zJ/5ipdyI68rlqEtHjblDSX6sLqucKcS4j7LGMiDOnL1HVnDJUqvRC6T/VQT5h+wZ
-         A+ezDf0lPKYbc4quZ5oy3GxsVg2cbSZh6nVcGeYr6UNw8HpPCKw+Bx8wrOWJfFoAyFTA
-         7Dlw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1XIh7gShiN//tKrunNkN4L88i2M+YGwifuTELwFc6LE=;
+        b=RlEPeQvM7w3v3jo/GZf62qKNSqZjAqW8q/W60ZiLmdY7BqXdXk8y6j2Gjb195dJWTU
+         kvRFSqOHrabfVq0LNCErRyl3i2tg9kzH/gx3RbyQKvwbO1uEY2SeorKqOzp2qtblfL+u
+         Zaraz6NSI9aKQtn1gKYyJO8h6oH3fveRi2EXfOgWfdkj0ECa2V20Vwk4CpGjft022BBY
+         xY2aAlwwjwpOyTjkA14JU2hVBUvG6Yn+5sLL6YIKHr1w4wq16LpAc4gzVM0eRXRBgTb1
+         Jc7em+a22T08rKQVVoS8qsJdaT2MwJff34Wl9LKvyehISEfDOngVxnlzqfGmO4zS5vLo
+         D/7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Ykwv7UPOg2gnv7U6N4+XsXv4MVQdTbl3lFORivTI5qU=;
-        b=RjvqxZsJiPv1dgUhVbqJ1f4pyqUk6FSJmwFWTKrD/yyu2RAaYo0KPxsCaVH8QbamDP
-         arw9m/oE86ILl7uIYr44Yc/k46c7VOFkO/57dTzAjGrBEfBfKHOUd/+xJYOsi7srhK9K
-         ObZTPvvyqq2T40d7C3E6AgqaiFPATlo1uGJG4susFh3tNmOGKLFQNzXL32B++NCC5O0N
-         p+CVcLq3LZ6lxax8ZZT+Q0bHtm5OEpCRgbpfoQFLQTX1F48BDvV+Yc/leeodja8LK+XF
-         mSw9EYBWojWlpbUBvy6NGyuYmtmEGWNTiQOFye1J0L6Lr1B6dFYnK1zPwCNUR74U4oYK
-         PVkw==
-X-Gm-Message-State: AOAM533vLqJ4zKWELAFrf+NA9ez0uTD2BFPiSWVt9zp9iOzFMljzNymD
-        lkw7wWBCX8hg1200lvmsryLLlwFVv8oiAHw3Hpik
-X-Google-Smtp-Source: ABdhPJw+SgNIXkt4ryxrzUm5ivUNXVG5tdt4ortQaA1qH8YQMU1a/tSZgm1uL1DTR5qkBDiLx57yLwrv3CYpsnXapASo
-Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:1998:8165:ca50:ab8d])
- (user=axelrasmussen job=sendgmr) by 2002:a25:e08b:: with SMTP id
- x133mr26514883ybg.138.1614643306922; Mon, 01 Mar 2021 16:01:46 -0800 (PST)
-Date:   Mon,  1 Mar 2021 16:01:33 -0800
-In-Reply-To: <20210302000133.272579-1-axelrasmussen@google.com>
-Message-Id: <20210302000133.272579-6-axelrasmussen@google.com>
-Mime-Version: 1.0
-References: <20210302000133.272579-1-axelrasmussen@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2 5/5] userfaultfd/selftests: exercise minor fault handling
- shmem support
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1XIh7gShiN//tKrunNkN4L88i2M+YGwifuTELwFc6LE=;
+        b=SHfdVjpbOmw56KunSvXICw/si5wZhe7RDxjcXKhw7cyyOd8PNyTGIrC/UXLnuyx5MR
+         +kg/yrPmlmsaaJZNE7MCyuVaKTFK81572xCw0I2Qk/iOluNIliHrVsF49keoy5Hb/yS5
+         +XyCaOCIsKUH4cm61O5TpszBYuDMEb9FnLPoTEJmFyhjsEtInX2A9Rap2Rz9X5Jch0oE
+         lfEd6bLuR0Fto7KCuAbCLQ8IQu6LDJi8SgYfKncpXptSkumZydrRxGqzcPQHlpZDdeK4
+         IpTnyhIjcwqMGW98wAd2VCIRrGW48ehgmkExFejEebYU06cbqnIZGpivbqjiWib2GyDL
+         A/ww==
+X-Gm-Message-State: AOAM533P+uBoIqBjUVoLfnPWBty2deH98V1rBObPLhZJIEuC9HfER/ow
+        1+lLBoV1sXuQiREYDr89W0l68MgERQl3nnraLo7blw==
+X-Google-Smtp-Source: ABdhPJxs4Dm8IV02FQpD6xaKHVoTVlyR3Rk97EFV3wxndnjWBCnYE8bxp+cmHy+nmGVvN19ShFtbl2MS1XYboW8jrZY=
+X-Received: by 2002:a1f:a9c9:: with SMTP id s192mr972306vke.22.1614643442327;
+ Mon, 01 Mar 2021 16:04:02 -0800 (PST)
+MIME-Version: 1.0
+References: <20210301074027.GD12822@xsang-OptiPlex-9020> <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
+ <20210301184524.7aa05ac1@gandalf.local.home>
+In-Reply-To: <20210301184524.7aa05ac1@gandalf.local.home>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 1 Mar 2021 16:03:51 -0800
+Message-ID: <CABCJKudQme=bcNJtNCORUpBnVA_Pkr2Zk_3Nu2EsfnuoE7LJ3g@mail.gmail.com>
+Subject: Re: [x86, build] 6dafca9780: WARNING:at_arch/x86/kernel/ftrace.c:#ftrace_verify_code
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable test_uffdio_minor for test_type == TEST_SHMEM, and modify the
-test slightly to pass in / check for the right feature flags.
+On Mon, Mar 1, 2021 at 3:45 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon, 1 Mar 2021 14:14:51 -0800
+> Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> > Basically, the problem is that ftrace_replace_code() expects to find
+> > ideal_nops[NOP_ATOMIC5] here, which in this case is 66:66:66:66:90,
+> > while objtool has replaced the __fentry__ call with 0f:1f:44:00:00.
+> >
+> > As ideal_nops changes depending on kernel config and hardware, when
+> > CC_USING_NOP_MCOUNT is defined we could either change
+> > ftrace_nop_replace() to always use P6_NOP5, or skip
+> > ftrace_verify_code() in ftrace_replace_code() for
+> > FTRACE_UPDATE_MAKE_CALL.
+>
+> So I hacked up the code to get -mnop-record to work on x86, and checked the
+> vmlinux and it gives me:
+>
+> ffffffff81bc6120 <schedule>:
+> ffffffff81bc6120:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+> ffffffff81bc6125:       55                      push   %rbp
+> ffffffff81bc6126:       65 48 8b 2c 25 c0 7d 01 00      mov    %gs:0x17dc0,%rbp ffffffff81bc612b: R_X86_64_32S  current_task
+> ffffffff81bc612f:       53                      push   %rbx
+> ffffffff81bc6130:       48 8b 45 18             mov    0x18(%rbp),%rax
+>
+>
+> Which is the 0f:1f:44:00:00, and it works fine for me.
+>
+> Now, that could be because the ideal_nops[NOP_ATOMIC5] is the same, which
+> would explain this.
+>
+> No, we should *not* change ftrace_nop_replace() to always use any P6_NOP5,
+> as there was a reason we did this. Because not all nops are the same, and
+> this gets called for *every* function that is traced.
+>
+> No, we should not skip ftrace_verify_code() *ever*. (/me was just
+> referencing on twitter the scenario where ftrace bricked e1000e cards).
+>
+> This is probably why I never was much for the compiler conversion into nops,
+> because it may chose the wrong one for the architecture.
 
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+Sure, makes sense. Should we just skip the conversion in objtool then
+and let the kernel deal with it?
 
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 5183ddb3080d..f31e9a4edc55 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -1410,7 +1410,7 @@ static int userfaultfd_minor_test(void)
- 	void *expected_page;
- 	char c;
- 	struct uffd_stats stats = { 0 };
--	uint64_t features = UFFD_FEATURE_MINOR_HUGETLBFS;
-+	uint64_t req_features, features_out;
- 
- 	if (!test_uffdio_minor)
- 		return 0;
-@@ -1418,10 +1418,18 @@ static int userfaultfd_minor_test(void)
- 	printf("testing minor faults: ");
- 	fflush(stdout);
- 
--	if (uffd_test_ctx_clear() || uffd_test_ctx_init_ext(&features))
-+	if (test_type == TEST_HUGETLB)
-+		req_features = UFFD_FEATURE_MINOR_HUGETLBFS;
-+	else if (test_type == TEST_SHMEM)
-+		req_features = UFFD_FEATURE_MINOR_SHMEM;
-+	else
-+		return 1;
-+
-+	features_out = req_features;
-+	if (uffd_test_ctx_clear() || uffd_test_ctx_init_ext(&features_out))
- 		return 1;
--	/* If kernel reports the feature isn't supported, skip the test. */
--	if (!(features & UFFD_FEATURE_MINOR_HUGETLBFS)) {
-+	/* If kernel reports required features aren't supported, skip test. */
-+	if ((features_out & req_features) != req_features) {
- 		printf("skipping test due to lack of feature support\n");
- 		fflush(stdout);
- 		return 0;
-@@ -1431,7 +1439,7 @@ static int userfaultfd_minor_test(void)
- 	uffdio_register.range.len = nr_pages * page_size;
- 	uffdio_register.mode = UFFDIO_REGISTER_MODE_MINOR;
- 	if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register)) {
--		fprintf(stderr, "register failure\n");
-+		perror("register failure");
- 		exit(1);
- 	}
- 
-@@ -1695,6 +1703,7 @@ static void set_test_type(const char *type)
- 		map_shared = true;
- 		test_type = TEST_SHMEM;
- 		uffd_test_ops = &shmem_uffd_test_ops;
-+		test_uffdio_minor = true;
- 	} else {
- 		fprintf(stderr, "Unknown test type: %s\n", type); exit(1);
- 	}
--- 
-2.30.1.766.gb4fecdf3b7-goog
+> What we could do, is if the nop chosen by the compiler is not the ideal
+> nop, to go back and modify all the nops added by the compiler to the ideal
+> one, which would keep it using the most efficient one.
+>
+> Or, add something like this:
+>
 
+[...]
+
+>                 ret = ftrace_verify_code(rec->ip, old);
+> +
+> +               if (__is_defined(CC_USING_NOP_MCOUNT) && ret && old_nop) {
+> +                       /* Compiler could have put in P6_NOP5 */
+> +                       old = P6_NOP5;
+> +                       ret = ftrace_verify_code(rec->ip, old);
+> +               }
+> +
+
+Wouldn't that still hit WARN(1) in the initial ftrace_verify_code()
+call if ideal_nops doesn't match?
+
+Sami
