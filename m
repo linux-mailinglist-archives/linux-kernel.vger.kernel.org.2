@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E118332AE52
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBA632AE53
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838146AbhCBXFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 18:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2360743AbhCBWZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:25:04 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14E6C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:24:23 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        id S1838154AbhCBXF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 18:05:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2360748AbhCBW00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 17:26:26 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 752A32223E;
-        Tue,  2 Mar 2021 23:24:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614723862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3BXk5OjeZ5be3liNaRPLwWtNWLtlvE8ZWsXsaChkDQ=;
-        b=E61EL1rWt50NIZLzNwkFK0QggdDHNrhLl7CjmsyBUfcNPgYaxpxn07wPOKyLLgEgI8GSVX
-        FMNZXdFVhnzijgm97NkWU9yvrRtKqmNC/luJypQhwztlz774U+h9GC5cEbJx0KW7PBCt8B
-        f1O63gUZ7yS/iqiJhUd/sfNtue2u7KY=
+        by mail.kernel.org (Postfix) with ESMTPSA id D234A64F1D;
+        Tue,  2 Mar 2021 22:25:43 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 17:25:42 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v5 19/19] virtio/vsock: update trace event for
+ SEQPACKET
+Message-ID: <20210302172542.605b3795@gandalf.local.home>
+In-Reply-To: <20210218054219.1069224-1-arseny.krasnov@kaspersky.com>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+        <20210218054219.1069224-1-arseny.krasnov@kaspersky.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Mar 2021 23:24:21 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
-In-Reply-To: <20210302211133.2244281-1-saravanak@google.com>
-References: <20210302211133.2244281-1-saravanak@google.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <b2dd44c2720fb96093fc4feeb64f0f4e@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-02 22:11, schrieb Saravana Kannan:
-> I think Patch 1 should fix [4] without [5]. Can you test the series 
-> please?
+On Thu, 18 Feb 2021 08:42:15 +0300
+Arseny Krasnov <arseny.krasnov@kaspersky.com> wrote:
 
-Mh, I'm on latest linux-next (next-20210302) and I've applied patch 3/3 
-and
-reverted commit 7007b745a508 ("PCI: layerscape: Convert to
-builtin_platform_driver()"). I'd assumed that PCIe shouldn't be working,
-right? But it is. Did I miss something?
+Not sure if this was pulled in yet, but I do have a small issue with this
+patch.
 
-Anyway, I've also applied Patch 1/3 and 2/3 and it still works. But I
-guess that doesn't say much.
+> @@ -69,14 +82,19 @@ TRACE_EVENT(virtio_transport_alloc_pkt,
+>  		__entry->type = type;
+>  		__entry->op = op;
+>  		__entry->flags = flags;
+> +		__entry->msg_len = msg_len;
+> +		__entry->msg_cnt = msg_cnt;
+>  	),
+> -	TP_printk("%u:%u -> %u:%u len=%u type=%s op=%s flags=%#x",
+> +	TP_printk("%u:%u -> %u:%u len=%u type=%s op=%s flags=%#x "
+> +		  "msg_len=%u msg_cnt=%u",
 
--michael
+It's considered poor formatting to split strings like the above. This is
+one of the exceptions for the 80 character limit. Do not break strings just
+to keep it within 80 characters.
+
+-- Steve
+
+
+>  		  __entry->src_cid, __entry->src_port,
+>  		  __entry->dst_cid, __entry->dst_port,
+>  		  __entry->len,
+>  		  show_type(__entry->type),
+>  		  show_op(__entry->op),
+> -		  __entry->flags)
+> +		  __entry->flags,
+> +		  __entry->msg_len,
+> +		  __entry->msg_cnt)
+>  );
