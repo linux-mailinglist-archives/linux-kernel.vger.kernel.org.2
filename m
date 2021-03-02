@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D16B32A2C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F98132A2C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381764AbhCBIcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376871AbhCBIQj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:16:39 -0500
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D548DC061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:15:42 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 65DF81C0B88; Tue,  2 Mar 2021 09:11:25 +0100 (CET)
-Date:   Tue, 2 Mar 2021 09:11:24 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, linux-leds@vger.kernel.org,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: drivers/leds/blink/leds-lgm-sso.c:123:19: error: field has
- incomplete type 'struct gpio_chip'
-Message-ID: <20210302081124.GA10699@amd>
-References: <202102280329.hv7RoHLA-lkp@intel.com>
- <20210228082913.GA27151@amd>
- <c4071c07-e882-96ca-a8fb-34ad1525305f@infradead.org>
+        id S1381714AbhCBIbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:31:51 -0500
+Received: from mga02.intel.com ([134.134.136.20]:56672 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1376850AbhCBIPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:15:40 -0500
+IronPort-SDR: 5w1DZeJlsOW4YQb8Xmwz9ydz0LtQsmy4nsvooLC9e2M8jef5Pmt2km0u3o3HP+vjXUnn4HjKut
+ WgrTaRT0Wp+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="173868697"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="173868697"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 00:14:32 -0800
+IronPort-SDR: 2GxtmNGV3uMj/YVMpE11TbS3n2Qx84HRH7u3pRZAvxX6XDZ78+pJ/srDjbaB5GO/NzPUgL49WD
+ wrBQ7v3YzCgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="585812058"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by orsmga005.jf.intel.com with ESMTP; 02 Mar 2021 00:14:29 -0800
+Subject: Re: [PATCH] scsi: ufs: Fix incorrect ufshcd_state after
+ ufshcd_reset_and_restore()
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+References: <20210301191940.15247-1-adrian.hunter@intel.com>
+ <DM6PR04MB65753E738C556F035A56F77CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <5fe97f16-406c-c279-b108-d27bb2769ed6@intel.com>
+Date:   Tue, 2 Mar 2021 10:14:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
-In-Reply-To: <c4071c07-e882-96ca-a8fb-34ad1525305f@infradead.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <DM6PR04MB65753E738C556F035A56F77CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/03/21 9:01 am, Avri Altman wrote:
+>  
+>> If ufshcd_probe_hba() fails it sets ufshcd_state to UFSHCD_STATE_ERROR,
+>> however, if it is called again, as it is within a loop in
+>> ufshcd_reset_and_restore(), and succeeds, then it will not set the state
+>> back to UFSHCD_STATE_OPERATIONAL unless the state was
+>> UFSHCD_STATE_RESET.
+>>
+>> That can result in the state being UFSHCD_STATE_ERROR even though
+>> ufshcd_reset_and_restore() is successful and returns zero.
+>>
+>> Fix by initializing the state to UFSHCD_STATE_RESET in the start of each
+>> loop in ufshcd_reset_and_restore().  If there is an error,
+>> ufshcd_reset_and_restore() will change the state to UFSHCD_STATE_ERROR,
+>> otherwise ufshcd_probe_hba() will have set the state appropriately.
+>>
+>> Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and other
+>> error recovery paths")
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> I think that CanG recent series addressed that issue as well, can you take a look?
+> https://lore.kernel.org/lkml/1614145010-36079-2-git-send-email-cang@codeaurora.org/
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, there it is mixed in with other changes.  However it is probably better
+as a separate patch.  Can Guo, what do you think?
 
-Hi!
+> 
+> 
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 77161750c9fb..91a403afe038 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -7031,6 +7031,8 @@ static int ufshcd_reset_and_restore(struct ufs_hba
+>> *hba)
+>>         spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>
+>>         do {
+>> +               hba->ufshcd_state = UFSHCD_STATE_RESET;
+>> +
+>>                 /* Reset the attached device */
+>>                 ufshcd_device_reset(hba);
+>>
+>> --
+>> 2.17.1
+> 
 
-> >>>> drivers/leds/blink/leds-lgm-sso.c:263:3: error: implicit declaration=
- of function 'gpiod_set_value' [-Werror,-Wimplicit-function-declaration]
-> >>                    gpiod_set_value(led->gpiod, val);
-> >>                    ^
-> >>    drivers/leds/blink/leds-lgm-sso.c:263:3: note: did you mean
-> >>                    'gpio_set_value'?
-> >=20
-> >=20
-> > It looks like missing #include?
-> >=20
-> > While at it, can you do something with Kconfig help text? Move
-> > existing one into comment in the driver, add something useful for end-u=
-sers.
->=20
-> The .config file does not set/enable GPIOLIB nor OF.
->=20
-> AFAICT, this driver needs the addition of:
->=20
-> #include <linux/gpio/consumer.h>
-> #include <linux/gpio/driver.h>
-> #include <linux/of.h>
->=20
-> and the reference to
-> 	gc->of_node           =3D dev->of_node;
-> needs to be inside an
-> #ifdef CONFIG_GPIO/#endif block.
->=20
-> Also, <linux/gpio/driver.h> needs a stub for gpiochip_get_data().
->=20
-> I have most of that ready (it's in the margin) but I can't
-> send it tonight. Feel free to fix it up however you want to.
-
-Looking forward. I may be confused, but it looks like original
-author's email bounces, which is a bad sign.
-
-What I meant... if you take a look at Kconfig help test, it is really
-useless.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmA98ywACgkQMOfwapXb+vIiowCfeHP1kO+yiHNCiS1h/Vt4ADQ/
-S4kAoMFlF0dR2l3F5Fb9DAVHFEI05cl3
-=4l87
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
