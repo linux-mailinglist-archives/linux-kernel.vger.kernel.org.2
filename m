@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E192132A59B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCBD32A5A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447204AbhCBMvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 07:51:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42424 "EHLO mail.kernel.org"
+        id S1447291AbhCBMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:51:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1443528AbhCBMLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1443551AbhCBMLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 07:11:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 196DE64F55;
-        Tue,  2 Mar 2021 11:57:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C50464F5D;
+        Tue,  2 Mar 2021 11:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686224;
-        bh=9YWJ+1JXAXc76m70t+NYEioWgsVUkTmFWZv65T5GDBo=;
+        s=k20201202; t=1614686228;
+        bh=Zu8fV2dqIQMQ4wUfffc4Cb70bWD8fWMChTJTi7DlsNI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HWU91TYQHu5kb3NFawlrwGhK+mKxzQReJb81HbR51GVK1+k6oassRFrgg+RVzW4mD
-         ozMujFl5KwUiofNoQXGiJksP8vlRaS8XsWi4kLgWUnuRoslMhWLxuOKWyv5bpHdOrf
-         qdAaPQBtpwhWglXYaHKZRaDgenDEjSqUtnKTpTvGfi8mVQPYLJZadYI05aXH51XI1E
-         GTdHwpD1XQoprKHP0m00SeABU1WSwcU4enSdqtbeb6EepEpJbdvyxhKo3qZgDIlcKz
-         xeYOwPiicCEJXmNdaXOas7VDLgFc2Km5bs+QFYrP99cCQXJ8fAdD9tCcJmYiV+eLN5
-         q/+HzsXSx0/bg==
+        b=DTdS7QBRGIHZQTnnei5/bEYEevYMcD1efdVMQQYUa7TcOUn7YTY3IkEcc39YkySyY
+         TE9FNDi4/tnQn/6C/v+47ctpVBlsVy48nyN1pXzcYYp+l3lRcdDCenCbvcAlHFiihu
+         Wbwp6K08sOnJ6+SHteKC8H1PABnQEDLtwUvLidn+BXFEDIP4cOFPPZIN1Vb5EnPKxn
+         /H7Qyd98upS4065p0twMPIcHe2F3a3Y51fHWMzN6mnre1Z9qVHIlEG70FDmwmhqbCl
+         kDgmWmoLhtbVyXoUIujJ6au3cIF45fPFN24oyL/7JUQ4yOqyp3iiftNSFAOCWSftGB
+         dgA8xi9q6uMxA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 14/47] HID: i2c-hid: Add I2C_HID_QUIRK_NO_IRQ_AFTER_RESET for ITE8568 EC on Voyo Winpad A15
-Date:   Tue,  2 Mar 2021 06:56:13 -0500
-Message-Id: <20210302115646.62291-14-sashal@kernel.org>
+Cc:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.10 17/47] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
+Date:   Tue,  2 Mar 2021 06:56:16 -0500
+Message-Id: <20210302115646.62291-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
 References: <20210302115646.62291-1-sashal@kernel.org>
@@ -41,59 +42,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 
-[ Upstream commit fc6a31b00739356809dd566e16f2c4325a63285d ]
+[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
 
-The ITE8568 EC on the Voyo Winpad A15 presents itself as an I2C-HID
-attached keyboard and mouse (which seems to never send any events).
+While sampling for marked events, currently we record the sample only
+if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
+set. SIAR_VALID bit is used for fetching the instruction address from
+Sampled Instruction Address Register(SIAR). But there are some
+usecases, where the user is interested only in the PMU stats at each
+counter overflow and the exact IP of the overflow event is not
+required. Dropping SIAR invalid samples will fail to record some of
+the counter overflows in such cases.
 
-This needs the I2C_HID_QUIRK_NO_IRQ_AFTER_RESET quirk, otherwise we get
-the following errors:
+Example of such usecase is dumping the PMU stats (event counts) after
+some regular amount of instructions/events from the userspace (ex: via
+ptrace). Here counter overflow is indicated to userspace via signal
+handler, and captured by monitoring and enabling I/O signaling on the
+event file descriptor. In these cases, we expect to get
+sample/overflow indication after each specified sample_period.
 
-[ 3688.770850] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3694.915865] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3701.059717] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3707.205944] i2c_hid i2c-ITE8568:00: failed to reset device.
-[ 3708.227940] i2c_hid i2c-ITE8568:00: can't add hid device: -61
-[ 3708.236518] i2c_hid: probe of i2c-ITE8568:00 failed with error -61
+Perf event attribute will not have PERF_SAMPLE_IP set in the
+sample_type if exact IP of the overflow event is not requested. So
+while profiling if SAMPLE_IP is not set, just record the counter
+overflow irrespective of SIAR_VALID check.
 
-Which leads to a significant boot delay.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+[mpe: Reflow comment and if formatting]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h              | 2 ++
- drivers/hid/i2c-hid/i2c-hid-core.c | 2 ++
- 2 files changed, 4 insertions(+)
+ arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 94180c63571e..bfe443ce50a7 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -638,6 +638,8 @@
- #define USB_DEVICE_ID_INNEX_GENESIS_ATARI	0x4745
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index 43599e671d38..d84ab867b986 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -2112,7 +2112,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+ 			left += period;
+ 			if (left <= 0)
+ 				left = period;
+-			record = siar_valid(regs);
++
++			/*
++			 * If address is not requested in the sample via
++			 * PERF_SAMPLE_IP, just record that sample irrespective
++			 * of SIAR valid check.
++			 */
++			if (event->attr.sample_type & PERF_SAMPLE_IP)
++				record = siar_valid(regs);
++			else
++				record = 1;
++
+ 			event->hw.last_period = event->hw.sample_period;
+ 		}
+ 		if (left < 0x80000000LL)
+@@ -2130,9 +2140,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+ 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
+ 	 * these cases.
+ 	 */
+-	if (event->attr.exclude_kernel && record)
+-		if (is_kernel_addr(mfspr(SPRN_SIAR)))
+-			record = 0;
++	if (event->attr.exclude_kernel &&
++	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
++	    is_kernel_addr(mfspr(SPRN_SIAR)))
++		record = 0;
  
- #define USB_VENDOR_ID_ITE               0x048d
-+#define I2C_VENDOR_ID_ITE		0x103c
-+#define I2C_DEVICE_ID_ITE_VOYO_WINPAD_A15	0x184f
- #define USB_DEVICE_ID_ITE_LENOVO_YOGA   0x8386
- #define USB_DEVICE_ID_ITE_LENOVO_YOGA2  0x8350
- #define I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720	0x837a
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index aeff1ffb0c8b..cb7758d59014 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -171,6 +171,8 @@ static const struct i2c_hid_quirks {
- 		I2C_HID_QUIRK_SET_PWR_WAKEUP_DEV },
- 	{ I2C_VENDOR_ID_HANTICK, I2C_PRODUCT_ID_HANTICK_5288,
- 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
-+	{ I2C_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_VOYO_WINPAD_A15,
-+		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
- 	{ I2C_VENDOR_ID_RAYDIUM, I2C_PRODUCT_ID_RAYDIUM_3118,
- 		I2C_HID_QUIRK_NO_IRQ_AFTER_RESET },
- 	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
+ 	/*
+ 	 * Finally record data if requested.
 -- 
 2.30.1
 
