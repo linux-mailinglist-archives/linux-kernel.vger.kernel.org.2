@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417D632A09B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D5532A09D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576171AbhCBEZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:25:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhCBAvS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:51:18 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D75C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:50:35 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id u12so768961pjr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:50:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RSk/i7LihPUCGvs0fe8j5KOh0UoL+rVl096m60ttlfI=;
-        b=XcA2HeHkdlRJhBBTrj95utHG/mHngOp+0KZEukC07mMXUy1NTaTpH1oVvUXY/feiFp
-         kmqmqMQHNLIQcFJ/aMFPauBtzCnXp3NjkuPrGqM7VbKCWSHY/kuvPubri/cBp35Ft7gt
-         UdFO2dFzA0LsYdhdehgjoJyQsS/UCbhsbSD/k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RSk/i7LihPUCGvs0fe8j5KOh0UoL+rVl096m60ttlfI=;
-        b=m2z6PIpCLrxutAfSsx0zZAJeclQhe1XVzNa9wN7KcNbSNJ99karUKraU/gYn1k1vEi
-         SrBPYnmGf2qedv+M8MltvuPr/BzozCLrKpHG6yjVIAgeU0KCQmArNdLRtujg3LEkUHkE
-         SEo5oPMJzlEm03yZohUhDW/AHd8WvzNGxEeqoaBK46+UWLoI2sabglKXzlt4BHtXRS0m
-         103D6AMCGoEiEJH8Z5Q60XNdUZJSgP+kDt9nBfJXrKRBInMArTqxvZ5v9SczcsXMKKMW
-         LZrLkSALQTIODCjErifuD5QmZFvNKtvvxBIiVx7oEXdY8yuXNVTTP/ATdhDa37hegi8N
-         ytFg==
-X-Gm-Message-State: AOAM53077z5pBVH/jcra6hoIoCCCe2Hl2S/GL6/lfqvH2y3iOfNxNpI8
-        DzAZEtLai9njzb/isLjUfeJZvA==
-X-Google-Smtp-Source: ABdhPJwwVmHCJgEiK88Fg3jmUL0H8okuGLr9qBFQuj3J242W2G6ogapRiPORMcapjE+IPvQVN09t6Q==
-X-Received: by 2002:a17:902:bb97:b029:e3:99a6:741d with SMTP id m23-20020a170902bb97b02900e399a6741dmr18022555pls.48.1614646235564;
-        Mon, 01 Mar 2021 16:50:35 -0800 (PST)
-Received: from google.com ([2409:10:2e40:5100:d5d7:1a61:2cdf:273c])
-        by smtp.gmail.com with ESMTPSA id j26sm18155895pfa.35.2021.03.01.16.50.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 16:50:35 -0800 (PST)
-Date:   Tue, 2 Mar 2021 09:50:30 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] v4l-compliance: re-introduce NON_COHERENT and cache
- hints tests
-Message-ID: <YD2L1sbDikrTt9Qx@google.com>
-References: <20210302004624.31294-1-senozhatsky@chromium.org>
- <20210302004922.32052-1-senozhatsky@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302004922.32052-1-senozhatsky@chromium.org>
+        id S1576190AbhCBEZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:25:59 -0500
+Received: from mga09.intel.com ([134.134.136.24]:29278 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232759AbhCBAvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:51:35 -0500
+IronPort-SDR: BHq/Bw+iF7q/iC9AindFVLDZ23eCswXmh6KRj7oZCwH3P2eUy/RLI7YWPvpMMQlPpeRJ+2dM1k
+ +Hvm+9nGr2ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186760064"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="186760064"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:50:37 -0800
+IronPort-SDR: dqy3hV9UQna8YMyFddiYA90+14nnlnjcQpuU1sF7AyhwRQa6//MPQQCA9FjHlxDwOOCJKc3FCM
+ 110kEtkz034g==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="397992096"
+Received: from yueliu2-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.139.111])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:50:33 -0800
+Date:   Tue, 2 Mar 2021 13:50:31 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com
+Subject: Re: [PATCH 19/25] KVM: VMX: Add basic handling of VM-Exit from SGX
+ enclave
+Message-Id: <20210302135031.afc28d2efc2d5ead57983d21@intel.com>
+In-Reply-To: <YD0bvUPfTRsxnTfT@google.com>
+References: <cover.1614590788.git.kai.huang@intel.com>
+        <918aaa770de5d98cf81cce8b6cdb6faad32cbeb7.1614590788.git.kai.huang@intel.com>
+        <YD0bvUPfTRsxnTfT@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/02 09:49), Sergey Senozhatsky wrote:
-> This returns back non-coherent (previously known as NON_COHERENT)
-							^^^
-							NON_CONSISTENT...
+On Mon, 1 Mar 2021 08:52:13 -0800 Sean Christopherson wrote:
+> On Mon, Mar 01, 2021, Kai Huang wrote:
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 50810d471462..df8e338267aa 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -1570,12 +1570,18 @@ static int vmx_rtit_ctl_check(struct kvm_vcpu *vcpu, u64 data)
+> >  
+> >  static bool vmx_can_emulate_instruction(struct kvm_vcpu *vcpu, void *insn, int insn_len)
+> >  {
+> > +	if (to_vmx(vcpu)->exit_reason.enclave_mode) {
+> > +		kvm_queue_exception(vcpu, UD_VECTOR);
+> 
+> Rereading my own code, I think it would be a good idea to add a comment here
+> explaining that injecting #UD is technically wrong, but avoids giving guest
+> userspace an easy way to DoS the guest.  The EPT misconfig is a good example;
+> guest userspace could have executed a simple MOV <reg>, <mem> instruction, in
+> which case injecting a #UD is bizarre behavior.  But, the alternative is exiting
+> to userspace with KVM_INTERNAL_ERROR_EMULATION, which is all but guaranteed to
+> kill the guest.
+> 
+> If KVM, specifically handle_emulation_failure(), ever gains a more sophisticated
+> mechanism for handling userspace emulation errors, this should be updated too.
+> 
+> 	/*
+> 	 * Emulation of instructions in SGX enclaves is impossible as RIP does
+> 	 * not point  tthe failing instruction, and even if it did, the code
+> 	 * stream is inaccessible.  Inject #UD instead of exiting to userspace
+> 	 * so that guest userspace can't DoS the guest simply by triggering
+> 	 * emulation (enclaves are CPL3 only).
+> 	 */
 
-> memory flag and buffer cache management hints testing (for VB2_MEMORY_MMAP
-> buffers).
+Agreed. Will add above comment.
+
+> 
+> > +		return false;
+> > +	}
+> >  	return true;
+> >  }
+> 
+> ...
+> 
+> > @@ -5384,6 +5415,9 @@ static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
+> >  {
+> >  	gpa_t gpa;
+> >  
+> > +	if (!vmx_can_emulate_instruction(vcpu, NULL, 0))
+> > +		return 1;
+> > +
+> >  	/*
+> >  	 * A nested guest cannot optimize MMIO vmexits, because we have an
+> >  	 * nGPA here instead of the required GPA.
+> > -- 
+> > 2.29.2
+> > 
