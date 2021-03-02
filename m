@@ -2,315 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7059532A9AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581C832A9B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581313AbhCBSl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:41:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
+        id S245179AbhCBSmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:42:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577708AbhCBPxx (ORCPT
+        with ESMTP id S1838897AbhCBPzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:53:53 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBC8C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:53:10 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id mm21so35851209ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:53:10 -0800 (PST)
+        Tue, 2 Mar 2021 10:55:11 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E6FC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:54:27 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id e7so18400187ile.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:54:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QMwRcyglOwLZ35Davd21RnBIqDoikSKOqFigf1wF08Q=;
-        b=vF+08XRd3O0EMKMnWLzOFjBDhyu0U0YQMMn6uibbs9fwIhYc7oDRjHVJuflkeA2jZt
-         7mFG8VvthTdY2gz7Ziib7zZ5Dal2egH2bWiMetZQZ+tXpLvsbKZxMqNNyMUV6/8pgfl5
-         Qk8EKfQ0xXIftHmFCTum6tih+zxs0KJibj2BZSc9owX916KVh5Ha/GNtOu4m1opw0vrA
-         HbmCgHxthB+7rscJIW6O0v9DWGQuaWHL1RgUaIuYJIG/aa2OXz9Uq+1DJONixZBE14gK
-         wc2xHaXUeVSoh/3BBLz4uAml7n/KZ35qn7A/n8YgBgOpuH0oRHKvMsVdQi/rynRJGcp7
-         n/5A==
+        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4YmTDrctAKsG8cdbZH7XiMulPHMmL+Exyv4xwBQWD5M=;
+        b=x2eE6P8J5KaO4DD0hNyzGz7Bru3WjGacf4IWFcF96JbCi3uflZJ3KWwSD3mb8vBH8Y
+         a+6uictKWrojWO3H0XIV7GkIWxXJj8H/PIPNZorNQlkt6nuV7LxoNdwPgRDoAI/Gs6k/
+         vltvTCdwZe0e8BxrWARFh4IgpX5RvemqQjmiLruck622jgL4pwslhEMGk8nrZ+T7bVaH
+         j90QXNGuFzpXHZCd5Z/KHbfqh5zk14zaSDsGL+aCNySc+X9JAtxAwpSF32Dmozx8TFS4
+         cGaxFEfZ245lWW5UEgzedysJtgECdzW7klS6VkJoGydEc00k/b3sBm0j7V/JHYD4iRes
+         JH+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QMwRcyglOwLZ35Davd21RnBIqDoikSKOqFigf1wF08Q=;
-        b=h3iAP3SfrrF5tMIrlWyFFEiaYZBL4CDHJDXyJ/0waE0ZGnXkAFDKuEcqtAObiUANY6
-         jNAc8EEeQk2E8YNhhn+SZeWm+iAjps3j+wgZr8KhHUcp0BnAkwZZIVvyZ5WYFDVdMOXK
-         SXgxNiEU8VucYvUcXmr+pbJs/PO6i6qXqsmGHUsugZkHWVA2BkS3GmDGQk9E0SprYXJn
-         fUB+xBJGizIqZU4k93v0FcNAOR4fLhssBmEcivIV5tmpPJMsutg322UEIYlGtVP2ZG2c
-         EM8f8fw983VNNGJA+ZLEAaLw0Mjx/CB4px1zDQHjC3ebwT6vyarnP+ud5IEbG9zCgYzB
-         WUzQ==
-X-Gm-Message-State: AOAM531o1YFjBcSFdsqikPZkpoJZzltrvv3l6Ua625zkW/dsWfgpQUgM
-        SjKQg9YXrSNodY/wU7SgtK7/YHvpnwH/v+ndMXPkDg==
-X-Google-Smtp-Source: ABdhPJzyhmpnqBy3XKn1hwrSV1trimEFqFxnbtTfVuFXM8I7/TDmAeNMHfvwDQJtspg8hkYOWgY/y/V3WPuuERZUBNE=
-X-Received: by 2002:a17:906:444d:: with SMTP id i13mr20892006ejp.170.1614700389087;
- Tue, 02 Mar 2021 07:53:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=4YmTDrctAKsG8cdbZH7XiMulPHMmL+Exyv4xwBQWD5M=;
+        b=VjGS2x6QGcAar047D7kCaltjhLTtdgN/RGLvZrgZHH9ciRQgO/9cSxFiHow6lCk+vO
+         Q0Mhf1F5GtOceLbRToQeU0lOCnut8o+0XzJgfBrFW0WMosbXDnD4fNeYbJR8nQ8c2+9o
+         M+hv8gc4QxEhZa1MG8rhJMYrrKnSZ209YFbJVGFLPtrhsiFra2ZGhY2jn5xSzDGaPt/B
+         tcR3wQIFbiQ9LpUAywmrVUjqMy7/NWokK1kUXu26XeBKxtMbOrAnyw4Qj9HsuBJzQAJU
+         sadtd5tXGubFH7K/L9Frv/0Uk8lV4r3a7+seer8GPVZChhVzDcwO4oVPPz145k5cCrou
+         VXuw==
+X-Gm-Message-State: AOAM533OM8uufzZssXPnMWrHy/mRlxPN7XPTUvhuFcHi9vhUX+obeP8X
+        10qbQBt/tCI1suSoSy7sfdkKiAIMmIcW+N8g
+X-Google-Smtp-Source: ABdhPJxklLSBBngic8Uzfbl/eBdoqe4frY99R/xM56OTzhIiYdli7cBeVq1FMv0i41nQlHiUfRCgwg==
+X-Received: by 2002:a92:c54e:: with SMTP id a14mr18413282ilj.285.1614700465998;
+        Tue, 02 Mar 2021 07:54:25 -0800 (PST)
+Received: from cosmicpenguin.net (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
+        by smtp.gmail.com with ESMTPSA id k23sm11935810iol.36.2021.03.02.07.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 07:54:25 -0800 (PST)
+Date:   Tue, 2 Mar 2021 08:54:23 -0700
+From:   Jordan Crouse <jordan@cosmicpenguin.net>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] iommu/arm-smmu: Add support for driver IOMMU
+ fault handlers
+Message-ID: <20210302155423.3e7xlal3phcz26bh@cosmicpenguin.net>
+Mail-Followup-To: Robin Murphy <robin.murphy@arm.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210225175135.91922-1-jcrouse@codeaurora.org>
+ <20210225175135.91922-2-jcrouse@codeaurora.org>
+ <2d3c7595-0186-7231-96dc-ae52414480ee@arm.com>
 MIME-Version: 1.0
-References: <20210301161006.881950696@linuxfoundation.org>
-In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Mar 2021 21:22:56 +0530
-Message-ID: <CA+G9fYtkJB+1woED8Lu6UVK3zqRbqTJ1Y+gbjTx32H03FkdR=Q@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/93] 4.4.259-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d3c7595-0186-7231-96dc-ae52414480ee@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 at 21:47, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.259 release.
-> There are 93 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.259-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Mar 02, 2021 at 12:17:24PM +0000, Robin Murphy wrote:
+> On 2021-02-25 17:51, Jordan Crouse wrote:
+> > Call report_iommu_fault() to allow upper-level drivers to register their
+> > own fault handlers.
+> > 
+> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > ---
+> > 
+> >   drivers/iommu/arm/arm-smmu/arm-smmu.c | 9 +++++++--
+> >   1 file changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > index d8c6bfde6a61..0f3a9b5f3284 100644
+> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> > @@ -408,6 +408,7 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+> >   	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+> >   	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> >   	int idx = smmu_domain->cfg.cbndx;
+> > +	int ret;
+> >   	fsr = arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
+> >   	if (!(fsr & ARM_SMMU_FSR_FAULT))
+> > @@ -417,8 +418,12 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+> >   	iova = arm_smmu_cb_readq(smmu, idx, ARM_SMMU_CB_FAR);
+> >   	cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(idx));
+> > -	dev_err_ratelimited(smmu->dev,
+> > -	"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+> > +	ret = report_iommu_fault(domain, dev, iova,
+> 
+> Beware that "dev" here is not a struct device, so this isn't right. I'm not
+> entirely sure what we *should* be passing here, since we can't easily
+> attribute a context fault to a specific client device, and passing the IOMMU
+> device seems a bit dubious too, so maybe just NULL?
 
+Agreed. The GPU doesn't use it and I doubt anything else would either since the
+SMMU device is opaque to the leaf driver.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Jordan
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.259-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 9c6543652027bdd932b512863425cee455274d83
-git describe: v4.4.258-94-g9c6543652027
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.258-94-g9c6543652027
-
-No regressions (compared to build v4.4.258)
-
-
-No fixes (compared to build v4.4.258)
-
-
-Ran 17073 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-r2 - arm64
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* network-basic-tests
-* perf
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-controllers-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* v4l2-compliance
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* install-android-platform-tools-r2600
-* fwts
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.259-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git tag: 4.4.259-rc1-hikey-20210301-944
-git commit: 12d629517b548857827a6d2c13ae8ba6c8708c63
-git describe: 4.4.259-rc1-hikey-20210301-944
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.259-rc1-hikey-20210301-944
-
-
-No regressions (compared to build 4.4.259-rc1-hikey-20210228-942)
-
-
-No fixes (compared to build 4.4.259-rc1-hikey-20210228-942)
-
-
-Ran 1897 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+> Robin.
+> 
+> > +		fsynr & ARM_SMMU_FSYNR0_WNR ? IOMMU_FAULT_WRITE : IOMMU_FAULT_READ);
+> > +
+> > +	if (ret == -ENOSYS)
+> > +		dev_err_ratelimited(smmu->dev,
+> > +		"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+> >   			    fsr, iova, fsynr, cbfrsynra, idx);
+> >   	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
+> > 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
