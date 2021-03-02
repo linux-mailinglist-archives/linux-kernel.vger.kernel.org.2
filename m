@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A13932A50E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739B932A51A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442663AbhCBLqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:46:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347523AbhCBLbg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:31:36 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1D8C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 03:30:32 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id t25so13641588pga.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 03:30:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TKcFkhM8Mf5DiRPH37Ng7ifpctLWMXPxIAc63q2YCdc=;
-        b=STh1OiHiN3RIX3HBgcV9cNh+gyrXDrSjs+yTS/x+kts2F/gPdGop3OxANQsWwz1PTv
-         JTnRE9eMpVVbVq9og+Q5gdkjwX+2PuRATcx+sYWgU5KIYCnXmtL52ehxz79ifFORxLgs
-         eYUjOtMlD8m+37T0fPp+NqB1Qcq07p8BTq5gI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TKcFkhM8Mf5DiRPH37Ng7ifpctLWMXPxIAc63q2YCdc=;
-        b=YHJsjC18ASedCDoSEFZG3KjSKb6p9RmVqVJdQm2rHrtAXbExGivwQbr3gKqcAFnJ+i
-         snMRl0NJMw0EA+y+h1jd/PpRYviI7bcrfwa2R0Bw5j6BgP7uyOlPGmtmwZ0jAbjIeRB0
-         Ud2mpEjCKuXYU6oP+ObIRjDQaScbTVcRd36scvQYKOqPr/UzIGA5iPMotOyil9FJIeT9
-         iTVvjKe765hdofg6VrrmEBk0UabI/cSXnS/I0eZtGdNlhAnNmRbf6aS96CyFhvW0AncD
-         xkopqvjmAdXVSfHzP7O/ktRfSc5xFNmCvv1O9EZi5y6+/a9kOeXg3f/pqqxf7avr6TLD
-         KKAg==
-X-Gm-Message-State: AOAM531uEiHduyYf5Ob4Gu8FUfXBmKynme/aE9heZ7S+VadYbmprMkrC
-        fN1ip8n6/GpSsU96x8b35ZRZzP/kRophl4sdUqGtig==
-X-Google-Smtp-Source: ABdhPJwBgRaP7xzFKc8KjHOOHQlUJLofabevE4D9pSBMT3XRudmsTh+IeR6puUqZDyGDZajOd3aOQ/x6HgQHHW5CLqc=
-X-Received: by 2002:a63:515a:: with SMTP id r26mr17916655pgl.257.1614684632012;
- Tue, 02 Mar 2021 03:30:32 -0800 (PST)
-MIME-Version: 1.0
-References: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
-In-Reply-To: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Tue, 2 Mar 2021 19:30:21 +0800
-Message-ID: <CAATdQgCoLB-iOcxN2ptDmqD69FnyUen5XeRTq=LCCfXmWkBeWw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: mediatek: Get device clock-stretch time via dts
-To:     qii.wang@mediatek.com
-Cc:     wsa@the-dreams.de, srv_heupstream <srv_heupstream@mediatek.com>,
-        leilk.liu@mediatek.com, open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-i2c@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1443381AbhCBLrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:47:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349765AbhCBLdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:33:36 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE37864F11;
+        Tue,  2 Mar 2021 11:32:14 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lH3G8-00Gghx-Co; Tue, 02 Mar 2021 11:32:12 +0000
+Date:   Tue, 02 Mar 2021 11:32:11 +0000
+Message-ID: <87v9a9zt8k.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     <tglx@linutronix.de>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <nicolas.ferre@microchip.com>
+Subject: Re: [PATCH 1/2] dt-bindings: mchp-eic: add bindings
+In-Reply-To: <20210302102846.619980-2-claudiu.beznea@microchip.com>
+References: <20210302102846.619980-1-claudiu.beznea@microchip.com>
+        <20210302102846.619980-2-claudiu.beznea@microchip.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: claudiu.beznea@microchip.com, tglx@linutronix.de, robh+dt@kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nicolas.ferre@microchip.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qii,
-
-On Wed, Feb 3, 2021 at 6:43 PM <qii.wang@mediatek.com> wrote:
->
-> From: Qii Wang <qii.wang@mediatek.com>
->
-> tSU,STA/tHD,STA/tSU,STOP maybe out of spec due to device
-> clock-stretching or circuit loss, we could get device
-> clock-stretch time from dts to adjust these parameters
-> to meet the spec via EXT_CONF register.
->
-> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+On Tue, 02 Mar 2021 10:28:45 +0000,
+Claudiu Beznea <claudiu.beznea@microchip.com> wrote:
+> 
+> Add DT bindings for Microchip External Interrupt Controller.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  drivers/i2c/busses/i2c-mt65xx.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-> index 2ffd2f3..47c7255 100644
-> --- a/drivers/i2c/busses/i2c-mt65xx.c
-> +++ b/drivers/i2c/busses/i2c-mt65xx.c
-> @@ -245,6 +245,7 @@ struct mtk_i2c {
->         u16 irq_stat;                   /* interrupt status */
->         unsigned int clk_src_div;
->         unsigned int speed_hz;          /* The speed in transfer */
-> +       unsigned int clock_stretch_ns;
->         enum mtk_trans_op op;
->         u16 timing_reg;
->         u16 high_speed_reg;
-> @@ -607,7 +608,8 @@ static int mtk_i2c_check_ac_timing(struct mtk_i2c *i2c,
->         else
->                 clk_ns = sample_ns / 2;
->
-> -       su_sta_cnt = DIV_ROUND_UP(spec->min_su_sta_ns, clk_ns);
-> +       su_sta_cnt = DIV_ROUND_UP(spec->min_su_sta_ns + i2c->clock_stretch_ns,
-> +                                 clk_ns);
->         if (su_sta_cnt > max_sta_cnt)
->                 return -1;
->
-> @@ -1171,6 +1173,8 @@ static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c)
->         if (i2c->clk_src_div == 0)
->                 return -EINVAL;
->
-> +       of_property_read_u32(np, "clock-stretch-ns", &i2c->clock_stretch_ns);
+>  .../interrupt-controller/mchp,eic.yaml        | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml b/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+> new file mode 100644
+> index 000000000000..5a927817aa7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/mchp,eic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
+> +title: Microchip External Interrupt Controller
+> +
+> +maintainers:
+> +  - Claudiu Beznea <claudiu.beznea@microchip.com>
+> +
+> +description:
+> +  This interrupt controller is found in Microchip SoCs (SAMA7G5) and provides
+> +  support for handling up to 2 external interrupt lines.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,sama7g5-eic
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    const: 3
+> +    description:
+> +      The first cell is the input IRQ number (between 0 and 1), the second cell
+> +      is the trigger type as defined in interrupt.txt present in this directory
+> +      and the third cell is the glitch filter (1, 2, 4, 8) in clock cycles
 
-I think this new property "clock-stretch-ns" is for the same purpose of
-"i2c-scl-falling-time-ns" + "i2c-scl-rising-time-ns" defined in
-Documentation/devicetree/bindings/i2c/i2c.txt?
+This last parameter looks like a very bad idea. How do you plan for
+that to be used? Which clock cycles?
 
->         i2c->have_pmic = of_property_read_bool(np, "mediatek,have-pmic");
->         i2c->use_push_pull =
->                 of_property_read_bool(np, "mediatek,use-push-pull");
-> --
-> 1.9.1
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+In any case, I don't think it should be part of the interrupt
+descriptor, but provided as a static configuration at the interrupt
+controller level itself.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
