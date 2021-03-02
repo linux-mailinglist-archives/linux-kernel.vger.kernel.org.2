@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE5132A5BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D55EA32A5B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445654AbhCBNLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 08:11:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S1445506AbhCBNA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 08:00:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350252AbhCBMOh (ORCPT
+        with ESMTP id S1350254AbhCBMOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 07:14:37 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CC3C061225;
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EFDC061226;
         Tue,  2 Mar 2021 04:11:08 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id n16so13970319lfb.4;
+Received: by mail-lj1-x22e.google.com with SMTP id q23so23610725lji.8;
         Tue, 02 Mar 2021 04:11:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qXZh7vyQ2J2UJfaf/gy0esqvLP8/x2DgurRZz5ydknM=;
-        b=qM3CGaGIJBgtmI5H06yQQ2TKgKEOII778Lugl1ESmwGrTmmTyIP3yZzWT1rzYwlLsR
-         g37nMmYJc9fRme1zkK+xUx+WA23htLrOkgL3HaOsdaLJMfBmysPIDgoxeYxo5b0eRBOk
-         osUeif4pxGmP2xvph8N6nPojVyHFtxNRkAV/T0X7b/6nqfgbr2a+Ua4lCOfz0AfNZwLJ
-         AaXxL6K8wGPLUnhbLuQxBbLfDRYz4sUiqH+a+KMNniwcu/YdcG18925MLYcqPa+054l9
-         gCrYMYDviWczE/9h6439cQbEhTTWa4tnv9nwb9P0iCkFn/jJ3qM1xN8Xjh7lHd0BrYXm
-         pA9w==
+        bh=rdupt1UDK+oerUYqy2oy5jodn6cciH+E0fxTCOAF0cE=;
+        b=XopjqVPLoag5Q1cfHs2qDlou5T8ChZGKSF/uGINBvFPvqgwpSC8WSt31GRoJboVcV7
+         PBwgDoqSHx2bT7oJx8xlgkEv67Pd55AFX2FaZ+PjhyinjKkx1pGDE9aIGygRD/+sNVNW
+         hXyehYrzFxPraRB43TtDP9iBozeg/7GwCWLJY1LKo0nu4r//+J930REeUttSmv5B7n4P
+         UEgDV7O05L8xEbja9L70Ff0lnLIt3es6g1Sbw+4gvNVXEnG83DMKBSiGn/q2lX+lItM1
+         6BSUX5cPAaldJr95+GCog/HYIt0ezf3B609oQ7ErludJgK9ole+1ly9OtU6ZUVaPxfCQ
+         Zmgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qXZh7vyQ2J2UJfaf/gy0esqvLP8/x2DgurRZz5ydknM=;
-        b=IQGzzmmQwfT8ZEKPURroAGcuyg0Kt/IyQdFXcPeaCyic3koJ8FYppWjDOxHyCYPWJh
-         +YbfWngVxRBL6Xu0/yTm/lkmB/27cLfddiABweqlQ4hgy6vBj6Iknopvo3t6BXC0eN3p
-         gOoTHtt9KMT+vkYf6N4oRf2pCb8e3u64iF1k3/mNK8Dz1GitTorr28LPJsQHodenA5Ma
-         pCSSEumSeFh14iyAGVqhRZlDDRz9E50nt3VVxO333Rw+sx51hS8kwxKI/WQ2kANrpZyH
-         rFN1n1fnTsrt4wpMz9jsxy3s1i5x0a18ZAqGtd6bPDvv8O+ZpRheRAKJdcxnJlw3gRfU
-         6XlA==
-X-Gm-Message-State: AOAM530M07R4u4hB9AYUZC/A8JbXahTw5TNoMvclaUVoS3JAHPMumG3E
-        eUnuJoguEZS/BRfnlZtriV8=
-X-Google-Smtp-Source: ABdhPJylLZg9i+IgKfmE0uWJ54dl5Mc2qTkXuWavJ1DC1s8zbyC+QEKL7vCMjDBoVG+8YJadw2Zfvw==
-X-Received: by 2002:a05:6512:11e2:: with SMTP id p2mr12040376lfs.321.1614687066814;
-        Tue, 02 Mar 2021 04:11:06 -0800 (PST)
+        bh=rdupt1UDK+oerUYqy2oy5jodn6cciH+E0fxTCOAF0cE=;
+        b=kKhjVAcSsr0o0YsRqdepsiUq9xObkJKzhzfLbQwiQXmXAE/6+I5oGAsSyybdelSvB6
+         j9ZeQ4ywwODAGtC3Up8xjAlUStzhEw2ZeCo8hoOAm+ks+wykbK8+pdFK58jCu16qomBN
+         7uSNUVoQkZzO4pf0T9rWZ4begwxZd420wzAjL5gEi72WElP8RTIcwf/hUKzpwlrIJpqZ
+         VQubMRKsTltSDPXWEqJiL1xEjKA8GLh2lKYb5H3BBEIvQvk21zxBlOc5DASnZEgwL2KH
+         AQII6kYifXkwzIWmI9aNdWih+3ENwv8LpKnzH/9oiBMYaEMeoZ/wVZ/Cbgpk5d6fD3Xq
+         al0g==
+X-Gm-Message-State: AOAM532Ur/SimAaIYKMzSfqXZCv3zglj9U1C+o6vBBnOq8mJA5KC5DgF
+        tb0IbCjyWqlE4S1Me2QKKlE=
+X-Google-Smtp-Source: ABdhPJxuwq9cW+xxlD8orsejBoXhOjneLZH/yCcyx0Wxq8EicXuvVK7igZG9ZZA/P3fRTYIcQwCJyA==
+X-Received: by 2002:a2e:508:: with SMTP id 8mr11948709ljf.207.1614687067435;
+        Tue, 02 Mar 2021 04:11:07 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
         by smtp.gmail.com with ESMTPSA id d21sm835097ljo.55.2021.03.02.04.11.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 04:11:06 -0800 (PST)
+        Tue, 02 Mar 2021 04:11:07 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -56,9 +56,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 10/14] ARM: tegra: nexus7: Specify all CPU cores as cooling devices
-Date:   Tue,  2 Mar 2021 15:09:59 +0300
-Message-Id: <20210302121003.15058-11-digetx@gmail.com>
+Subject: [PATCH v3 11/14] ARM: tegra: ouya: Specify all CPU cores as cooling devices
+Date:   Tue,  2 Mar 2021 15:10:00 +0300
+Message-Id: <20210302121003.15058-12-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210302121003.15058-1-digetx@gmail.com>
 References: <20210302121003.15058-1-digetx@gmail.com>
@@ -76,46 +76,49 @@ CPU1, the cooling device mapping will fail.
 
 Hence specify all CPU cores as a cooling devices in the device-tree.
 
+Tested-by: Peter Geis <pgwipeout@gmail.com>
+Tested-by: Matt Merhar <mattmerhar@protonmail.com>
 Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- .../dts/tegra30-asus-nexus7-grouper-common.dtsi    | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/tegra30-ouya.dts | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-index ac1c1a63eb0e..dc773b1bf8ee 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
-@@ -1056,19 +1056,22 @@ cpu0: cpu@0 {
+diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
+index 0368b3b816ef..d36511d95d5a 100644
+--- a/arch/arm/boot/dts/tegra30-ouya.dts
++++ b/arch/arm/boot/dts/tegra30-ouya.dts
+@@ -391,19 +391,23 @@ cpu0: cpu@0 {
+ 			cpu-supply = <&vdd_cpu>;
  			#cooling-cells = <2>;
  		};
- 
 -		cpu@1 {
++
 +		cpu1: cpu@1 {
- 			cpu-supply = <&vdd_cpu>;
  			operating-points-v2 = <&cpu0_opp_table>;
+ 			cpu-supply = <&vdd_cpu>;
 +			#cooling-cells = <2>;
  		};
  
 -		cpu@2 {
 +		cpu2: cpu@2 {
- 			cpu-supply = <&vdd_cpu>;
  			operating-points-v2 = <&cpu0_opp_table>;
+ 			cpu-supply = <&vdd_cpu>;
 +			#cooling-cells = <2>;
  		};
  
 -		cpu@3 {
 +		cpu3: cpu@3 {
- 			cpu-supply = <&vdd_cpu>;
  			operating-points-v2 = <&cpu0_opp_table>;
+ 			cpu-supply = <&vdd_cpu>;
 +			#cooling-cells = <2>;
  		};
  	};
  
-@@ -1281,7 +1284,10 @@ trip1: cpu-crit {
- 			cooling-maps {
- 				map0 {
- 					trip = <&trip0>;
+@@ -455,7 +459,10 @@ map0 {
+ 				};
+ 				map1 {
+ 					trip = <&cpu_alert1>;
 -					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
 +					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
 +							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
