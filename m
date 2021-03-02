@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188E632A174
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E956532A17B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347810AbhCBGUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235886AbhCBEFb (ORCPT
+        id S1577417AbhCBGWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:22:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29929 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238536AbhCBEMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:05:31 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A9EC06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 20:03:01 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d11so11239564plo.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 20:03:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=we+6muhRQ5Jd0vJuVJtRUZjPyXgZhip/qNhUDmq8kc0=;
-        b=wQGCMj/TOD3Jm9OJXIr7m4RyMOvhHQddHsfcM6T4whYeEHhi9G1+uhyGVrQ/Kt3Nl8
-         HTdhniJp1r3v9sBfHQkOusHKxCK6T+njNkihr8H+1QfsxwZ2YUPyJWkpTz7Psx544+17
-         swrWD/4gSaGkrJ0FZiWHSDav9IKf36FpgHeWyKXd8gVF2/u9cFHZInlIFeppnfaxzdoG
-         HoApJp8+7xEsCPCBRe8jspYJrhK+LxC+RrQSor3ANW9X65SXdm9aPhVXmKdQk3K3tct+
-         PouOyLpPbRvHISLErzzCjCJ4//rLjbkkgth1Ry2P/Oqcn8XBtSO7xhk5TBYssm0WBRx1
-         uTVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=we+6muhRQ5Jd0vJuVJtRUZjPyXgZhip/qNhUDmq8kc0=;
-        b=mnwCU5DiF3NwkjBt9iJW8ha37xLfU0Fmrk5BfWHEyk4iEq2uBDT0JwTRlXNZA3hN09
-         /S8JKTgwM2EuzAquoNmG/sjbYdop/S1KGx7ouNGxnwRW84ITx/qcy6y0/kFWWcoYOxJ7
-         xP/NcGFH3xDacuqYdAOywM/qoPu+KLwAEdQLjRPvb3mb7NoYHLkb7vTLEL8OWhZYuZpC
-         cPtCG1Shpn0NEKWBbMstjNnSPWCx0IecZ5Px3bte7Xx4d/uBd5lJHOR9i7ZdM0vY5eMC
-         cUmrPXMCCvgEnVQHoCov/uPNiAeLjoc7HzwdGlnxlTjkMjHnCkvr0cXxyxLpxil2dJsQ
-         hMXw==
-X-Gm-Message-State: AOAM5337MuuLD3OuKL7YcTDDSaEXtuI9xCPVVFgt4PRYzzXcm9gjUE3g
-        ikwxEkPPvi9gfCFDn8LIFkgNLA==
-X-Google-Smtp-Source: ABdhPJxuKVFvecRI3AMDHLr8sIeRCXCONYFtOdEpMyByy8BgkYUlETcfUtt/vsF0h2jNvhowd6KriA==
-X-Received: by 2002:a17:90b:3551:: with SMTP id lt17mr2270466pjb.89.1614657780744;
-        Mon, 01 Mar 2021 20:03:00 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id z8sm1058557pjd.0.2021.03.01.20.02.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Mar 2021 20:03:00 -0800 (PST)
-Date:   Tue, 2 Mar 2021 09:32:58 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH V8 0/4] dt: Add fdtoverlay rule and statically build
- unittest
-Message-ID: <20210302040258.erg6mn4ykxvxhnqm@vireshk-i7>
-References: <cover.1613127681.git.viresh.kumar@linaro.org>
- <20210301065625.rgo2xvr7ol2vycyf@vireshk-i7>
- <31cbc900-fad2-4838-21d2-7204f1029a81@gmail.com>
+        Mon, 1 Mar 2021 23:12:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614658201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AiqlnBbL124RbFr+ZWPEGMV28LDKcaWTVjjFw6NK3tk=;
+        b=TQOZdzLifOpWklyQOjUJX1Q5EKxpvcxnbdflGoCRrYVDeIwzlxNsaX1GgPZuhh47rdQqa2
+        4aKcaTN7sjN0UIfTgHJ9nAhUsJ4NIhuRofOzRao3yGeB+XhkBERE9nOaZk0f1QvpVjLLXB
+        cbrwSOa3nzoFHPHIDMC4L7OSTqn7TAM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-Z7l6R31lOImEgMGWxzuctg-1; Mon, 01 Mar 2021 23:05:43 -0500
+X-MC-Unique: Z7l6R31lOImEgMGWxzuctg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BCDC107ACE3;
+        Tue,  2 Mar 2021 04:05:42 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-215.pek2.redhat.com [10.72.13.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A4F5E1A7D9;
+        Tue,  2 Mar 2021 04:05:37 +0000 (UTC)
+Subject: Re: [RFC PATCH 10/10] vhost/vdpa: return configuration bytes read and
+ written to user space
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>
+References: <20210216094454.82106-1-sgarzare@redhat.com>
+ <20210216094454.82106-11-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <4d682ff2-9663-d6ac-d5bf-616b2bf96e1a@redhat.com>
+Date:   Tue, 2 Mar 2021 12:05:35 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31cbc900-fad2-4838-21d2-7204f1029a81@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210216094454.82106-11-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-03-21, 21:14, Frank Rowand wrote:
-> Hi Viresh,
-> 
-> On 3/1/21 12:56 AM, Viresh Kumar wrote:
-> > On 12-02-21, 16:48, Viresh Kumar wrote:
-> >> Hi,
-> >>
-> >> This patchset adds a generic rule for applying overlays using fdtoverlay
-> >> tool and then updates unittests to get built statically using the same.
-> >>
-> >> V7->V8:
-> >> - Patch 1 is new.
-> >> - Platforms need to use dtb-y += foo.dtb instead of overlay-y +=
-> >>   foo.dtb.
-> >> - Use multi_depend instead of .SECONDEXPANSION.
-> >> - Use dtb-y for unittest instead of overlay-y.
-> >> - Rename the commented dtb filess in unittest Makefile as .dtbo.
-> >> - Improved Makefile code (I am learning a lot every day :)
-> > 
-> > Ping!
-> > 
-> 
-> Please respin on 5.12-rc1, and pull in the change you said
-> you would make in response to my post v8 comment about the
-> v7 patches.
 
-Yes, I will do that.
+On 2021/2/16 5:44 下午, Stefano Garzarella wrote:
+> vdpa_get_config() and vdpa_set_config() now return the amount
+> of bytes read and written, so let's return them to the user space.
+>
+> We also modify vhost_vdpa_config_validate() to return 0 (bytes read
+> or written) instead of an error, when the buffer length is 0.
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>   drivers/vhost/vdpa.c | 26 +++++++++++++++-----------
+>   1 file changed, 15 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 21eea2be5afa..b754c53171a7 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -191,9 +191,6 @@ static ssize_t vhost_vdpa_config_validate(struct vhost_vdpa *v,
+>   	struct vdpa_device *vdpa = v->vdpa;
+>   	u32 size = vdpa->config->get_config_size(vdpa);
+>   
+> -	if (c->len == 0)
+> -		return -EINVAL;
+> -
+>   	return min(c->len, size);
+>   }
+>   
+> @@ -204,6 +201,7 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+>   	struct vhost_vdpa_config config;
+>   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+>   	ssize_t config_size;
+> +	long ret;
+>   	u8 *buf;
+>   
+>   	if (copy_from_user(&config, c, size))
+> @@ -217,15 +215,18 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+>   	if (!buf)
+>   		return -ENOMEM;
+>   
+> -	vdpa_get_config(vdpa, config.off, buf, config_size);
+> -
+> -	if (copy_to_user(c->buf, buf, config_size)) {
+> -		kvfree(buf);
+> -		return -EFAULT;
+> +	ret = vdpa_get_config(vdpa, config.off, buf, config_size);
+> +	if (ret < 0) {
+> +		ret = -EFAULT;
+> +		goto out;
+>   	}
+>   
+> +	if (copy_to_user(c->buf, buf, config_size))
+> +		ret = -EFAULT;
+> +
+> +out:
+>   	kvfree(buf);
+> -	return 0;
+> +	return ret;
+>   }
+>   
+>   static long vhost_vdpa_set_config(struct vhost_vdpa *v,
+> @@ -235,6 +236,7 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
+>   	struct vhost_vdpa_config config;
+>   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+>   	ssize_t config_size;
+> +	long ret;
+>   	u8 *buf;
+>   
+>   	if (copy_from_user(&config, c, size))
+> @@ -248,10 +250,12 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
+>   	if (IS_ERR(buf))
+>   		return PTR_ERR(buf);
+>   
+> -	vdpa_set_config(vdpa, config.off, buf, config_size);
+> +	ret = vdpa_set_config(vdpa, config.off, buf, config_size);
+> +	if (ret < 0)
+> +		ret = -EFAULT;
+>   
+>   	kvfree(buf);
+> -	return 0;
+> +	return ret;
+>   }
 
-I must have been more explicit about the Ping I believe. It was
-more for Masahiro and Rob to see if the kbuild stuff (which is
-relatively new) makes sense or not before I respin this..
 
--- 
-viresh
+So I wonder whether it's worth to return the number of bytes since we 
+can't propogate the result to driver or driver doesn't care about that.
+
+Thanks
+
+
+>   
+>   static long vhost_vdpa_get_features(struct vhost_vdpa *v, u64 __user *featurep)
+
