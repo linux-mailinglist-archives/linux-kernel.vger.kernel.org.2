@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE8E32A7CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC29B32A807
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839724AbhCBQiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:38:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45084 "EHLO mail.kernel.org"
+        id S1579669AbhCBQ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:59:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448144AbhCBORT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:17:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CD8364FBF;
-        Tue,  2 Mar 2021 11:59:17 +0000 (UTC)
+        id S1351394AbhCBOWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:22:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDBF864FB3;
+        Tue,  2 Mar 2021 11:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686358;
-        bh=G9oStJ1tSPVN9jRxpMvgqQvqcyxNpJXijtvlJbQxO2w=;
+        s=k20201202; t=1614686359;
+        bh=tdEsweCBK+jRRgLHFORyuB/DNrpK71EXPvedRDiL8Qw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OIlUPJd/9hoET8JWIWrWa0em4HufXyMBDoBHsfEOuZYpd8OR58wnhMJMRPHvzp5Fa
-         M7bF04kKyNlxop5E0bKcEiRuEMayfMGHSecH/aS5XZagcnjOdz1PZcHQSNPMF/VW93
-         /QylHM53Hkor/O1dYe2Lh5hzh756h6uVAX0R7fwbHa/H6gO2kFGETfwiapwS5vay7q
-         s1Wh+XFY+18DJ/r28ALJ3uiSy8MdUd1HeF6uUfquKoUXVQdOhUQ6KWBgeMopM0SPRc
-         iBGUm3+kj2H7yMJO2Ee/lskMC5w1b1MW7zz35x3+pU2urDXw29nAZwOnTQdm9oubOl
-         JwBIKQtU08pfw==
+        b=uN4guFijRE0/dKdfFZ9dDPo71MMgD9Tc2l2yBhe8PdB9b0cXv6sny0J/u3pY/1JT6
+         y6ybpqy4iDGJaWeuQz/K1sp1IkRpiQmT1ccWbgTJvpQAPvw9Wzoted1CxIl2rJkDpd
+         /3Cgm9n/EorvlP6RMMD5Szf0dpUMXtX2Ctvtun/QeAUfa/YrnZc80I6Q/T1l3B/r0J
+         QvOdSpJBgddqMdXMTCsRokFgcm2EcX4CAdWS/mtWjimVGh6KtjgV+b1SGWG7A+8E40
+         Vm/hS/bS4jJhLQqA3CGOxi74Z3eqAPtZ8nnUzrEg/RLWmSSVzX7J/fhwctEWLbdio+
+         JEqMcCO/X7kYA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.14 11/13] drm/msm/a5xx: Remove overwriting A5XX_PC_DBG_ECO_CNTL register
-Date:   Tue,  2 Mar 2021 06:59:01 -0500
-Message-Id: <20210302115903.63458-11-sashal@kernel.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 12/13] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+Date:   Tue,  2 Mar 2021 06:59:02 -0500
+Message-Id: <20210302115903.63458-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115903.63458-1-sashal@kernel.org>
 References: <20210302115903.63458-1-sashal@kernel.org>
@@ -45,44 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 8f03c30cb814213e36032084a01f49a9e604a3e3 ]
+[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
 
-The PC_DBG_ECO_CNTL register on the Adreno A5xx family gets
-programmed to some different values on a per-model basis.
-At least, this is what we intend to do here;
+Avoid a potentially large stack frame and overflow by making
+"cpumask_t avail" a static variable. There is no concurrent
+access due to the existing locking.
 
-Unfortunately, though, this register is being overwritten with a
-static magic number, right after applying the GPU-specific
-configuration (including the GPU-specific quirks) and that is
-effectively nullifying the efforts.
-
-Let's remove the redundant and wrong write to the PC_DBG_ECO_CNTL
-register in order to retain the wanted configuration for the
-target GPU.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/s390/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index f1aaa76cc2e4..92e767f3cc16 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -472,8 +472,6 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
- 	if (adreno_gpu->info->quirks & ADRENO_QUIRK_TWO_PASS_USE_WFI)
- 		gpu_rmw(gpu, REG_A5XX_PC_DBG_ECO_CNTL, 0, (1 << 8));
- 
--	gpu_write(gpu, REG_A5XX_PC_DBG_ECO_CNTL, 0xc0200100);
--
- 	/* Enable USE_RETENTION_FLOPS */
- 	gpu_write(gpu, REG_A5XX_CP_CHICKEN_DBG, 0x02000000);
- 
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index 40946c8587a5..d43b48d8f67d 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -761,7 +761,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
+ static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
+ {
+ 	struct sclp_core_entry *core;
+-	cpumask_t avail;
++	static cpumask_t avail;
+ 	bool configured;
+ 	u16 core_id;
+ 	int nr, i;
 -- 
 2.30.1
 
