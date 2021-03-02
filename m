@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DC832ADC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2684332ADCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2359953AbhCBWFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:05:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52647 "EHLO
+        id S1837976AbhCBWN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:13:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29244 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1835981AbhCBTfg (ORCPT
+        by vger.kernel.org with ESMTP id S1835979AbhCBTfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:35:36 -0500
+        Tue, 2 Mar 2021 14:35:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1614713632;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rNatpjb+n7DNrLR6jP5bTK+enSkas3E4ZuMQHMLy71g=;
-        b=SJnET+Pt9xcMH3X88Xakr3Y2I2gPiVs2aodqVRXLUD6bMam5MrUm5NXEpUiEh50PPU6AME
-        R0+7hw78JTNXsgv5wg3YJ98rr7d6/48urAHCScK8zA2o5XK9Gji3dWWZQo57Ssfz/q2fN/
-        tIo4xfPSO5LsZjGGSUR5XcxHcSjml3M=
+        bh=NJjMpLhEpKR1pWhzoFkmrE5/lb6HEsJ/fHrc7LkNWZQ=;
+        b=bXpHS9xjmVLKJDNnYNOXlyYWjn7O6Hye/zKhHDEBkdmZUoDsyDHD/Qy1WnaWeLNQCVAggF
+        C4aDho4NrXKJxmefCGGUgD/npY/Al7ILgCOrUbtXW5oPOW3dVnEpAlbf8Q2dq3NC7aWPiG
+        v7JkmW6jj4mIwkJn1jy6ah1iDKemE4w=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41--375uUIFPPOjRtNviYirrw-1; Tue, 02 Mar 2021 14:33:49 -0500
-X-MC-Unique: -375uUIFPPOjRtNviYirrw-1
+ us-mta-526-JkNdCSPkM2qIKqmX8UiNnA-1; Tue, 02 Mar 2021 14:33:49 -0500
+X-MC-Unique: JkNdCSPkM2qIKqmX8UiNnA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 698D118B613D;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DAB7518B6141;
         Tue,  2 Mar 2021 19:33:48 +0000 (UTC)
 Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12C2260BFA;
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 850C360BFA;
         Tue,  2 Mar 2021 19:33:48 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     seanjc@google.com
-Subject: [PATCH 07/23] KVM: nSVM: do not mark all VMCB02 fields dirty on nested vmexit
-Date:   Tue,  2 Mar 2021 14:33:27 -0500
-Message-Id: <20210302193343.313318-8-pbonzini@redhat.com>
+Subject: [PATCH 08/23] KVM: nSVM: only copy L1 non-VMLOAD/VMSAVE data in svm_set_nested_state()
+Date:   Tue,  2 Mar 2021 14:33:28 -0500
+Message-Id: <20210302193343.313318-9-pbonzini@redhat.com>
 In-Reply-To: <20210302193343.313318-1-pbonzini@redhat.com>
 References: <20210302193343.313318-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -49,71 +49,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since L1 and L2 now use different VMCBs, most of the fields remain the
-same in VMCB02 from one L2 run to the next.  Since KVM itself is not
-looking at VMCB12's clean field, for now not much can be optimized.
-However, in the future we could avoid more copies if the VMCB12's SEG
-and DT sections are clean.
+The VMLOAD/VMSAVE data is not taken from userspace, since it will
+not be restored on VMEXIT (it will be copied from VMCB02 to VMCB01).
+For clarity, replace the wholesale copy of the VMCB save area
+with a copy of that state only.
 
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/svm/nested.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ arch/x86/kvm/svm/nested.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 4fc742ba1f1f..945c2a48b591 100644
+index 945c2a48b591..585b5aa1914f 100644
 --- a/arch/x86/kvm/svm/nested.c
 +++ b/arch/x86/kvm/svm/nested.c
-@@ -404,24 +404,32 @@ static void nested_vmcb02_prepare_save(struct vcpu_svm *svm, struct vmcb *vmcb12
- 	svm->vmcb->save.cs = vmcb12->save.cs;
- 	svm->vmcb->save.ss = vmcb12->save.ss;
- 	svm->vmcb->save.ds = vmcb12->save.ds;
-+	svm->vmcb->save.cpl = vmcb12->save.cpl;
-+	vmcb_mark_dirty(svm->vmcb, VMCB_SEG);
-+
- 	svm->vmcb->save.gdtr = vmcb12->save.gdtr;
- 	svm->vmcb->save.idtr = vmcb12->save.idtr;
-+	vmcb_mark_dirty(svm->vmcb, VMCB_DT);
-+
- 	kvm_set_rflags(&svm->vcpu, vmcb12->save.rflags | X86_EFLAGS_FIXED);
- 	svm_set_efer(&svm->vcpu, vmcb12->save.efer);
- 	svm_set_cr0(&svm->vcpu, vmcb12->save.cr0);
- 	svm_set_cr4(&svm->vcpu, vmcb12->save.cr4);
--	svm->vmcb->save.cr2 = svm->vcpu.arch.cr2 = vmcb12->save.cr2;
-+
-+	svm->vcpu.arch.cr2 = vmcb12->save.cr2;
- 	kvm_rax_write(&svm->vcpu, vmcb12->save.rax);
- 	kvm_rsp_write(&svm->vcpu, vmcb12->save.rsp);
- 	kvm_rip_write(&svm->vcpu, vmcb12->save.rip);
- 
- 	/* In case we don't even reach vcpu_run, the fields are not updated */
-+	svm->vmcb->save.cr2 = svm->vcpu.arch.cr2;
- 	svm->vmcb->save.rax = vmcb12->save.rax;
- 	svm->vmcb->save.rsp = vmcb12->save.rsp;
- 	svm->vmcb->save.rip = vmcb12->save.rip;
-+
- 	svm->vmcb->save.dr7 = vmcb12->save.dr7 | DR7_FIXED_1;
- 	svm->vcpu.arch.dr6  = vmcb12->save.dr6 | DR6_ACTIVE_LOW;
--	svm->vmcb->save.cpl = vmcb12->save.cpl;
-+	vmcb_mark_dirty(svm->vmcb, VMCB_DR);
- }
- 
- static void nested_vmcb02_prepare_control(struct vcpu_svm *svm)
-@@ -473,12 +481,10 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm)
- 	enter_guest_mode(&svm->vcpu);
- 
+@@ -715,7 +715,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
  	/*
--	 * Merge guest and host intercepts - must be called  with vcpu in
--	 * guest-mode to take affect here
-+	 * Merge guest and host intercepts - must be called with vcpu in
-+	 * guest-mode to take effect.
+ 	 * Restore processor state that had been saved in vmcb01
  	 */
- 	recalc_intercepts(svm);
--
--	vmcb_mark_all_dirty(svm->vmcb);
- }
+-	kvm_set_rflags(&svm->vcpu, svm->vmcb->save.rflags | X86_EFLAGS_FIXED);
++	kvm_set_rflags(&svm->vcpu, svm->vmcb->save.rflags);
+ 	svm_set_efer(&svm->vcpu, svm->vmcb->save.efer);
+ 	svm_set_cr0(&svm->vcpu, svm->vmcb->save.cr0 | X86_CR0_PE);
+ 	svm_set_cr4(&svm->vcpu, svm->vmcb->save.cr4);
+@@ -1250,7 +1250,23 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+ 	svm->nested.vmcb12_gpa = kvm_state->hdr.svm.vmcb_pa;
+ 	if (svm->current_vmcb == &svm->vmcb01)
+ 		svm->nested.vmcb02.ptr->save = svm->vmcb01.ptr->save;
+-	svm->vmcb01.ptr->save = *save;
++
++	svm->vmcb01.ptr->save.es = save->es;
++	svm->vmcb01.ptr->save.cs = save->cs;
++	svm->vmcb01.ptr->save.ss = save->ss;
++	svm->vmcb01.ptr->save.ds = save->ds;
++	svm->vmcb01.ptr->save.gdtr = save->gdtr;
++	svm->vmcb01.ptr->save.idtr = save->idtr;
++	svm->vmcb01.ptr->save.rflags = save->rflags | X86_EFLAGS_FIXED;
++	svm->vmcb01.ptr->save.efer = save->efer;
++	svm->vmcb01.ptr->save.cr0 = save->cr0;
++	svm->vmcb01.ptr->save.cr3 = save->cr3;
++	svm->vmcb01.ptr->save.cr4 = save->cr4;
++	svm->vmcb01.ptr->save.rax = save->rax;
++	svm->vmcb01.ptr->save.rsp = save->rsp;
++	svm->vmcb01.ptr->save.rip = save->rip;
++	svm->vmcb01.ptr->save.cpl = 0;
++
+ 	nested_load_control_from_vmcb12(svm, ctl);
  
- int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb12_gpa,
+ 	svm_switch_vmcb(svm, &svm->nested.vmcb02);
 -- 
 2.26.2
 
