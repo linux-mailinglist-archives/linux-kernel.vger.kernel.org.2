@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DAB32ACFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A441132ACF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1448126AbhCBVSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:18:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        id S1443337AbhCBVSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:18:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835152AbhCBSWp (ORCPT
+        with ESMTP id S1835141AbhCBSWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:22:45 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F939C061222
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:22:04 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id h22so20929429otr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:22:04 -0800 (PST)
+        Tue, 2 Mar 2021 13:22:42 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E74C061221;
+        Tue,  2 Mar 2021 10:22:02 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id h98so20896623wrh.11;
+        Tue, 02 Mar 2021 10:22:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0V4NppJX6K9gT+Ur7cLKD7613ioC61Z7I5irbavVEYA=;
-        b=qZefZTyNlgwXtOJORNJkek/yKCs0FmZ9ALgW1by4vpG5bJAQfZq3eomusKgQ8/z2mx
-         8LD5RIo89t0oMYXgZKB/8fczTMZrkgHwPLF3nqN402fRBaDGwsxF1zBjtZhp0flog0+Z
-         v7ggvwi5ltm0QKKv31ayWCzdiVMEvRFKNC+2i9CqyN3W/F1Nsz3eOTJ4mcTKXTKmIHh5
-         t2gorb9E8bsOjMG2l5Tkgx++aJqiv0G2G/Er0RGhvKwYiXimecwOg4OvUfQRyPGqkFz9
-         6n2QJI9sJKmejbKwoEK/iVCcv0xjIv2lcard5q/7OFPnKzSiPYiJ7wlbxxB7tO788EYF
-         zZ6g==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AQZcXfo9G8LYSteYT7WgoA4705B6+cwG5ceOPpfI2d4=;
+        b=XIV83jFogb46lKfrgPuVxB/tFK0vWOCkKWI13X9lyiPtf8qEEBZWiTabOC9JOa3a7R
+         qnBXcLYuM2xPstI1EcIVEvB6Fy6PiTw7alSXwFlPQdvIGLupwPXHwA5sUW1mpGGia3MH
+         Se3qfIFC18lNh3Xk/UbrUnuEoc5R3iy07GGN7iSz4ue0IRBEt63iu8UtfGfMmWX4dw7Q
+         tEuQuewux4gLQGBVstMpSd+zxg1mgo+3P4pqBjpcvG63V75KoP+0BhaBnqN99eKY7zZl
+         jXm5ifxaKbY83wouO0baO1zyNtFtAaa+zCC9JNgwevOnJF3iRLxz2Px0nOXr8OB9M0wv
+         qiVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0V4NppJX6K9gT+Ur7cLKD7613ioC61Z7I5irbavVEYA=;
-        b=irZZxG4TZbKm3fXIfBOrJ5mrEU0kLn+ah2KNX295q4wlFAe4ymDt9WozUEQo20sYpk
-         7YexZOdtrMZY29rO1mFEoZwglU1/RERlz95gZAG23ZWfkk6UnrdFVEAS3p8ruxKeMe7S
-         6RyrlEccnp4noFHQ0MAzWWOx4ziDS7g1sXcTBj457BcDycZDneie+gQ3ckOkwygw1D0c
-         eTaehJYWOCV+nKTm5DkbtjazWDL4EEr3SjV988XItocHeirW9JiCtekUtGmElX9ZSPhL
-         9OTMwpiGZO9Mlmz9D0Doz/C6ccfJwTz0OO0Dr1we+N+b88NOHsccBqt5TKlcgsEZJySc
-         +NYg==
-X-Gm-Message-State: AOAM5322oo74hSHfWJYFN1XWbGNJ9lbAz3ccTQQbUZHy9OLTu4ocFDkV
-        gdIST5LFkJRx19NG8pzh8bIlDml9DvlDdoTvSf8=
-X-Google-Smtp-Source: ABdhPJw/O9H/z+8HtBNlXU2R7NoSuNGK2lWWhXxmL6qIo44ysXAjAd/0dli43h1o0mtYbmCSY7UnIUQZyTODGiJkNjg=
-X-Received: by 2002:a05:6830:408f:: with SMTP id x15mr832415ott.132.1614709323593;
- Tue, 02 Mar 2021 10:22:03 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AQZcXfo9G8LYSteYT7WgoA4705B6+cwG5ceOPpfI2d4=;
+        b=gPCTHe0dP4RRWaEMipJFGpwKhBNC40rCyKeqyY452pqAjPsD9J3PKHYL/t4QVGuoHB
+         pV40tJkq8J3NHnQHQUpfh+xxnumA/qT/i1ySKmGn19pvehh7hfXQiGa88AkfmVH0ztn0
+         FHC/ewHh/y+ivj72pMxj/mqRg1oKpJBSVSnnEHWZNhnxWQGwtV3Z4O8aBmWjWKKdA/P/
+         bXr8okrELFvBZQLx+YSZrhQEcKDzpvWrlN3R866JX0l0j+Sn07XShlqkddrFbrRsYGaB
+         J6JnzqoczSugRXKhm6KnMLa4yvvnIEVrDiQ5/p1plEXtClZJaThADC9v0d/LSXRcPgit
+         6W3w==
+X-Gm-Message-State: AOAM532Eo53g2U918qo4bNsKWD3AfvhB09v0Yh2ICgHW4oNCvOvAJNUi
+        A1em6XOicFI4z1fKQbUeKuJZiteqGfMuzQ==
+X-Google-Smtp-Source: ABdhPJzGv6nlyivrup6XRDHj9bD9muewR9tZMzPIZYbK67oH8JrdLMi+RfLEOQvPJhPoOPYtms6HHg==
+X-Received: by 2002:adf:f3c2:: with SMTP id g2mr17115509wrp.300.1614709320670;
+        Tue, 02 Mar 2021 10:22:00 -0800 (PST)
+Received: from [192.168.1.10] (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id h2sm35071052wrq.81.2021.03.02.10.21.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 10:22:00 -0800 (PST)
+Subject: Re: [PATCH] gpio: regmap: fix direction register check
+To:     Michael Walle <michael@walle.cc>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210302180621.12301-1-noltari@gmail.com>
+ <c05bf9228206786a09f4f17160a2edf9@walle.cc>
+From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
+Message-ID: <bb5b8af1-6f7e-e2a0-0fcb-0de44447c1e6@gmail.com>
+Date:   Tue, 2 Mar 2021 19:21:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <1614581387-14843-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1614581387-14843-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 2 Mar 2021 13:21:52 -0500
-Message-ID: <CADnq5_MvyeR83qQM8+jqkg63QxYkZeRG5jpA1w7p7+5n4mcD_A@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c05bf9228206786a09f4f17160a2edf9@walle.cc>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi Michael,
 
-Alex
+El 02/03/2021 a las 19:16, Michael Walle escribió:
+> Am 2021-03-02 19:06, schrieb Álvaro Fernández Rojas:
+>> If there's a direction register, we should also have dat or set 
+>> registers.
+>> However, we only need one of them, not both.
+> 
+> Can you give some more context or an example? If there is a direction
+> register, we'd need to set and get the value, no?
 
-On Mon, Mar 1, 2021 at 1:50 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warnings:
->
-> ./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c:298:33-38:
-> WARNING: conversion to bool not needed here.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
-> index 3398540..fbefbba 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
-> @@ -295,7 +295,7 @@ bool dpp3_program_gamcor_lut(
->         cm_helper_program_gamcor_xfer_func(dpp_base->ctx, params, &gam_regs);
->
->         dpp3_program_gammcor_lut(dpp_base, params->rgb_resulted, params->hw_points_num,
-> -                       next_mode == LUT_RAM_A ? true:false);
-> +                                next_mode == LUT_RAM_A);
->
->         //select Gamma LUT to use for next frame
->         REG_UPDATE(CM_GAMCOR_CONTROL, CM_GAMCOR_SELECT, next_mode == LUT_RAM_A ? 0:1);
-> --
-> 1.8.3.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+I've just realized that I need to set reg_set_base to the same value as 
+reg_dat_base in my case.
+Please, ignore this patch and excuse me :$.
+
+> 
+> -michael
+> 
+>> Fixes: ebe363197e52 ("gpio: add a reusable generic gpio_chip using 
+>> regmap")
+>> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+>> ---
+>>  drivers/gpio/gpio-regmap.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+>> index 23b0a8572f53..5a9fca00b5e8 100644
+>> --- a/drivers/gpio/gpio-regmap.c
+>> +++ b/drivers/gpio/gpio-regmap.c
+>> @@ -194,7 +194,7 @@ struct gpio_regmap *gpio_regmap_register(const
+>> struct gpio_regmap_config *config
+>>
+>>      /* if we have a direction register we need both input and output */
+>>      if ((config->reg_dir_out_base || config->reg_dir_in_base) &&
+>> -        (!config->reg_dat_base || !config->reg_set_base))
+>> +        (!config->reg_dat_base && !config->reg_set_base))
+>>          return ERR_PTR(-EINVAL);
+>>
+>>      /* we don't support having both registers simultaneously for now */
