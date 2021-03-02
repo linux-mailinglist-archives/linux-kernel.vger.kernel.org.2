@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A0132A80B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F097C32A890
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238133AbhCBRAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:00:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45064 "EHLO
+        id S1351837AbhCBRuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:50:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384502AbhCBPFT (ORCPT
+        with ESMTP id S1578418AbhCBPQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:05:19 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EAAC061D7F
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:00:32 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id g5so11176641wrd.22
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:00:32 -0800 (PST)
+        Tue, 2 Mar 2021 10:16:08 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996F8C061225;
+        Tue,  2 Mar 2021 04:45:15 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id h4so23555388ljl.0;
+        Tue, 02 Mar 2021 04:45:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=twje/T88dKdujyu/Ipi7uGGbAfwKvVyGbqSSEkcY7iA=;
-        b=h3Auuv0gx9w0uL2JejVSJYcj+FN0Xhi6lI9t1VRPl88R9mO9oGEu3dwGf1lxzcNigU
-         pb7GHhkBl5+LSyCDcns3NnUnbBEzGjihkEgB3NuB1WUfpkovjjgoD1wLlCyaw7a2FAzM
-         29nnxhE3yIYM9mfy3/brP5+xqxG78O0uvZzH9spB/5Xaqhy0K9l6oIN3dAkt8HS9unYe
-         cJSuE1ohG6VZw+l7HWUPmoEy3/b1EPuCPG4Lon8j/wC/fVSMwrEdkqkEVg5Mcc/wWAU0
-         Q9ZGG7OBUqJ+sWmtLWqyWoMOkrOIwWF+xvd311ON5vNOd3iU6HnxXKcyf3xcKnxcGhGr
-         s9ww==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RODns9c8niEuo2cR8Tivcksr+gvQ6B3mB5cKu2wOr5k=;
+        b=sHlezPC1K+hQ2MvLnVoZTzrGOimIYa8oVDmfP4r4C4JOXwQGq+gkbMFn8966V11zVa
+         2nmO5IkDvXtncMumYS7YEyVoNKBl7rigd6JGEUKKLI/M/NqvQhpVmr/Lc1ZiHf10t7by
+         kb7jZZMhcEHqLa6aAaf/LOnKcKfxi7kocDp8dcBeZI1LWTs1REvkZHyNP3IS2AnJy4nu
+         h9X8Kg3XI/UCcb/ciaqOI5HArHPD8EblMwWnBhfFyNbV6oopQ94x9KrYDHjK9cMhcSdS
+         Isw4r/ERYp5zZ+8GqBSGjbnXU8CjDfMjMNkXPCrbM9oJQf9OsBimXzwQf1nuFwq5gF+W
+         Yh9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=twje/T88dKdujyu/Ipi7uGGbAfwKvVyGbqSSEkcY7iA=;
-        b=BZTmLpR0w5CXJ4poUj2IxjoUQ9vLXiD4+ohv2+kdUOFyCknBGXwUKURczd5t0hDXG9
-         TjhDA12BaOMuXADwDPmJlxnPnI7v5IGDKIapTOJmyMsoFZ307du8jqwgVR/ObictyK6R
-         wObvTWSl9o7tcfHudS2lMvnTmE2TsgorxSNSQcb95s6YD+kfCjmMGyGvaOvc64jNXyov
-         hn4kr9cuZwYLF+npS99Vfy8lVwg9tuHwQvhLZe6IlGTie/zW1H7MUH4pUuxTlJqJXes1
-         tMrgqXDZRTUcBWcXoIIZ57KvZnTAE7pKtExVfX59BtpJavx51oNq8aMFH5avKcF98kF6
-         NFgg==
-X-Gm-Message-State: AOAM531n92N8/+QqV0cjj+HHI5DVpIcunsBs1mwVSvFlBpS3pwS5fjJn
-        q8LmH+nsecj6L1y/q+8eacpGHTgWjpaE
-X-Google-Smtp-Source: ABdhPJwQwv/y/Y1CqtU5mX7QFPielulT4k9vdUFWl45cr8FFafLXMgEO9ymMubzKsO1L14g5Q1NqlrmfyD6Z
-Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
-X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a1c:de05:: with SMTP id
- v5mr744456wmg.25.1614697231398; Tue, 02 Mar 2021 07:00:31 -0800 (PST)
-Date:   Tue,  2 Mar 2021 14:59:41 +0000
-In-Reply-To: <20210302150002.3685113-1-qperret@google.com>
-Message-Id: <20210302150002.3685113-12-qperret@google.com>
-Mime-Version: 1.0
-References: <20210302150002.3685113-1-qperret@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v3 11/32] KVM: arm64: Stub CONFIG_DEBUG_LIST at Hyp
-From:   Quentin Perret <qperret@google.com>
-To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com
-Cc:     android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, qperret@google.com, robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RODns9c8niEuo2cR8Tivcksr+gvQ6B3mB5cKu2wOr5k=;
+        b=TM2hdfY6sWQ61iuU4E6s4mJnNHgwDhGEAZtapfgt7/WBVmD2+9jbtR3NCN9oaPFvPI
+         cszcLxb4Yo7574k13h3Co106Mso8WKM+JTud8+A808NX/AMkqRRG+zhPgxvlKOfat3Yv
+         z/oBIUztQeplQ44OxUYzNBh3lHKxu64tXoGwzY75X94vKxo/O0G/K0FX62ImqNHL1QrU
+         8CnM8QQsc3mkmJwH5qJZCyefEIrQt48bf/t3hBuOpShOAt2rtOkhddROgYkmlwnxsvoi
+         emxkhOOIbvBfPiM4NM8gkA+vTtyg+bJ0RmSb+dgyaYUqpwgv14O/yH1gRw7+jfh01aM0
+         74Rw==
+X-Gm-Message-State: AOAM531KTWgT8LiiA43dpDvijz8ay2UQx8Nqk1nqFi20XmoZYjvrAxzL
+        zV3DOUZJgidRiIaOsbFsbi4=
+X-Google-Smtp-Source: ABdhPJyu8IppM2jrWh9AXXl+HFGQgEQ6h8mGp7coHcqpb6q77syOlTkR6BmPxcAqrLBBq24PC/N9qw==
+X-Received: by 2002:a2e:7604:: with SMTP id r4mr12550406ljc.60.1614689114186;
+        Tue, 02 Mar 2021 04:45:14 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id m16sm2634705lfh.109.2021.03.02.04.45.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 04:45:13 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v13 0/2] Add memory bandwidth management to NVIDIA Tegra DRM driver
+Date:   Tue,  2 Mar 2021 15:44:43 +0300
+Message-Id: <20210302124445.29444-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to use the kernel list library at EL2, introduce stubs for the
-CONFIG_DEBUG_LIST out-of-lines calls.
+This series adds memory bandwidth management to the NVIDIA Tegra DRM driver,
+which is done using interconnect framework. It fixes display corruption that
+happens due to insufficient memory bandwidth.
 
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/hyp/nvhe/Makefile |  2 +-
- arch/arm64/kvm/hyp/nvhe/stub.c   | 22 ++++++++++++++++++++++
- 2 files changed, 23 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/kvm/hyp/nvhe/stub.c
+Tegra memory drivers already got the interconnect API support and DRM patches
+were a part of the series that added ICC support to the memory drivers, but
+the DRM patches were left out unreviewed and unapplied. Hence I'm re-sending
+the DRM changes in this new standalone series.
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index 24ff99e2eac5..144da72ad510 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -13,7 +13,7 @@ lib-objs := clear_page.o copy_page.o memcpy.o memset.o
- lib-objs := $(addprefix ../../../lib/, $(lib-objs))
- 
- obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
--	 hyp-main.o hyp-smp.o psci-relay.o early_alloc.o
-+	 hyp-main.o hyp-smp.o psci-relay.o early_alloc.o stub.o
- obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
- 	 ../fpsimd.o ../hyp-entry.o ../exception.o
- obj-y += $(lib-objs)
-diff --git a/arch/arm64/kvm/hyp/nvhe/stub.c b/arch/arm64/kvm/hyp/nvhe/stub.c
-new file mode 100644
-index 000000000000..c0aa6bbfd79d
---- /dev/null
-+++ b/arch/arm64/kvm/hyp/nvhe/stub.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Stubs for out-of-line function calls caused by re-using kernel
-+ * infrastructure at EL2.
-+ *
-+ * Copyright (C) 2020 - Google LLC
-+ */
-+
-+#include <linux/list.h>
-+
-+#ifdef CONFIG_DEBUG_LIST
-+bool __list_add_valid(struct list_head *new, struct list_head *prev,
-+		      struct list_head *next)
-+{
-+		return true;
-+}
-+
-+bool __list_del_entry_valid(struct list_head *entry)
-+{
-+		return true;
-+}
-+#endif
+Changelog:
+
+v13: - No code changes. Patches missed v5.12, re-sending them for v5.13.
+
+Dmitry Osipenko (2):
+  drm/tegra: dc: Support memory bandwidth management
+  drm/tegra: dc: Extend debug stats with total number of events
+
+ drivers/gpu/drm/tegra/Kconfig |   1 +
+ drivers/gpu/drm/tegra/dc.c    | 359 ++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/tegra/dc.h    |  19 ++
+ drivers/gpu/drm/tegra/drm.c   |  14 ++
+ drivers/gpu/drm/tegra/hub.c   |   3 +
+ drivers/gpu/drm/tegra/plane.c | 121 ++++++++++++
+ drivers/gpu/drm/tegra/plane.h |  15 ++
+ 7 files changed, 532 insertions(+)
+
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+2.29.2
 
