@@ -2,326 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC26432A098
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539AB32A099
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576143AbhCBEYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:24:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377656AbhCBAsQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:48:16 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF271C061222
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:47:04 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id 192so5684416pfv.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:47:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3ehy3NtZARWKqntzrYPlK6hSKlfy8OUUEgCoOD4fHSE=;
-        b=HWdXl+wGHfyAD0jSdQV4KKDcE36igEeT1w0wjKhgKk5SIvItzRKr1GujotMl+J0e82
-         PGhydmIoAsKJIeUM7230UpY9cZIH1i/4+9rm/Gu122fRJQd1Rl4w23h3kAWgCovzc5bY
-         SSkOGozVvcJT3+9oBThl0XJPf6O8tvBf9vwUU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3ehy3NtZARWKqntzrYPlK6hSKlfy8OUUEgCoOD4fHSE=;
-        b=IBLH1w4Zn4QOCbkplWTJoSFzkqJ3fFvLSxUXUaR70r0uDevi0KPYCXI4A36L/JqgTw
-         WfroIqPLrrVf/W+pyClyYMIsEQzcgflKygC1tp02NjGf2GAXAsXRXfsj9uBuD+J7Y6Gd
-         lFX5G0r4bXG1FxKVezR3AygeiFcd9VC9AcrVUY2atrRRnMdtv9ScCrF1UDnYOPsdo4wE
-         iL4Ot2F9zDkrRpOR8+Svsro2M7KVqGifEFxhmIZ5+qFJipO1IMY7a6Tfz1uAaYbmhxsU
-         7/cSsb8OBdgbs6p2eAENgL2fzR3WqsLXXpM/nbcvygUMz/U+NjQtlMgPLdxlDHIenMcJ
-         +KNA==
-X-Gm-Message-State: AOAM532sbaxbSZ9PkUwY/Cb5wDMeakKRLE1Z9DkP6D0vPvVr7lypDgSD
-        buoDPnQRjYLeLS4hHBzPYGMiExKFr6NCcQ==
-X-Google-Smtp-Source: ABdhPJxuPC6Un97/6i4LbPsWKyOZUv4BB/Ly+hLI8ZuL2VuI1/bEWIEH8k/aW6CxILcsZRx+k+Dr7g==
-X-Received: by 2002:a65:4c0b:: with SMTP id u11mr16102700pgq.409.1614646024411;
-        Mon, 01 Mar 2021 16:47:04 -0800 (PST)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:d5d7:1a61:2cdf:273c])
-        by smtp.gmail.com with ESMTPSA id b14sm678881pji.14.2021.03.01.16.47.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 16:47:04 -0800 (PST)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH 8/8] videobuf2: handle non-contiguous DMA allocations
-Date:   Tue,  2 Mar 2021 09:46:24 +0900
-Message-Id: <20210302004624.31294-9-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210302004624.31294-1-senozhatsky@chromium.org>
-References: <20210302004624.31294-1-senozhatsky@chromium.org>
+        id S1576154AbhCBEZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:25:26 -0500
+Received: from mga05.intel.com ([192.55.52.43]:62889 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1377782AbhCBAso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:48:44 -0500
+IronPort-SDR: O17Dm/16mWT8W9NlsSQ86fiByzNnoBD4ICqDyMcaQsBKtTPoPapkcMMf03AZexJohuK/9Axyn7
+ qaRXM9nkqscA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="271645401"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="271645401"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:48:03 -0800
+IronPort-SDR: DNJkPt3igpY/dyB8xh/RC/2FzxjiRvtglHy2RTkZde7Ub0jiFXLBkmGvLHHmv6HW9q5H3ZJ1kZ
+ OVmGIvCN24tw==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="517630897"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.197.33]) ([10.212.197.33])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:48:01 -0800
+Subject: Re: [PATCH v5 05/14] vfio/mdev: idxd: add basic mdev registration and
+ helper functions
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
+        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, parav@mellanox.com, netanelg@mellanox.com,
+        shahafs@mellanox.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
+ <161255840486.339900.5478922203128287192.stgit@djiang5-desk3.ch.intel.com>
+ <20210210235924.GJ4247@nvidia.com>
+ <b41828e1-ab67-856b-f2c0-6215106ba813@intel.com>
+ <20210302002922.GC4247@nvidia.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <3dd57aa0-3f64-d8cd-8f61-d91d7b1a1bdd@intel.com>
+Date:   Mon, 1 Mar 2021 17:48:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302002922.GC4247@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for new noncontiguous DMA API, which
-requires allocators to have two execution branches: one
-for the current API, and one for the new one.
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-[hch: untested conversion to the ne API]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- .../common/videobuf2/videobuf2-dma-contig.c   | 141 +++++++++++++++---
- 1 file changed, 117 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index 1e218bc440c6..d6a9f7b682f3 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -17,6 +17,7 @@
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
-+#include <linux/highmem.h>
- 
- #include <media/videobuf2-v4l2.h>
- #include <media/videobuf2-dma-contig.h>
-@@ -42,8 +43,14 @@ struct vb2_dc_buf {
- 	struct dma_buf_attachment	*db_attach;
- 
- 	struct vb2_buffer		*vb;
-+	unsigned int			non_coherent_mem:1;
- };
- 
-+static bool vb2_dc_is_coherent(struct vb2_dc_buf *buf)
-+{
-+	return !buf->non_coherent_mem;
-+}
-+
- /*********************************************/
- /*        scatterlist table functions        */
- /*********************************************/
-@@ -78,12 +85,21 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
- static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
- {
- 	struct vb2_dc_buf *buf = buf_priv;
--	struct dma_buf_map map;
--	int ret;
- 
--	if (!buf->vaddr && buf->db_attach) {
--		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
--		buf->vaddr = ret ? NULL : map.vaddr;
-+	if (buf->vaddr)
-+		return buf->vaddr;
-+
-+	if (buf->db_attach) {
-+		struct dma_buf_map map;
-+
-+		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-+			buf->vaddr = map.vaddr;
-+	}
-+
-+	if (!vb2_dc_is_coherent(buf)) {
-+		buf->vaddr = dma_vmap_noncontiguous(buf->dev,
-+						    buf->size,
-+						    buf->dma_sgt);
- 	}
- 
- 	return buf->vaddr;
-@@ -101,13 +117,26 @@ static void vb2_dc_prepare(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	/* This takes care of DMABUF and user-enforced cache sync hint */
- 	if (buf->vb->skip_cache_sync_on_prepare)
- 		return;
- 
-+	/*
-+	 * Coherent MMAP buffers do not need to be synced, unlike coherent
-+	 * USERPTR and non-coherent MMAP buffers.
-+	 */
-+	if (buf->vb->memory == V4L2_MEMORY_MMAP && vb2_dc_is_coherent(buf))
-+		return;
-+
- 	if (!sgt)
- 		return;
- 
-+	/* For both USERPTR and non-coherent MMAP */
- 	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
-+
-+	/* Non-coherrent MMAP only */
-+	if (!vb2_dc_is_coherent(buf) && buf->vaddr)
-+		flush_kernel_vmap_range(buf->vaddr, buf->size);
- }
- 
- static void vb2_dc_finish(void *buf_priv)
-@@ -115,19 +144,46 @@ static void vb2_dc_finish(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	/* This takes care of DMABUF and user-enforced cache sync hint */
- 	if (buf->vb->skip_cache_sync_on_finish)
- 		return;
- 
-+	/*
-+	 * Coherent MMAP buffers do not need to be synced, unlike coherent
-+	 * USERPTR and non-coherent MMAP buffers.
-+	 */
-+	if (buf->vb->memory == V4L2_MEMORY_MMAP && vb2_dc_is_coherent(buf))
-+		return;
-+
- 	if (!sgt)
- 		return;
- 
-+	/* For both USERPTR and non-coherent MMAP */
- 	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
-+
-+	/* Non-coherrent MMAP only */
-+	if (!vb2_dc_is_coherent(buf) && buf->vaddr)
-+		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
- }
- 
- /*********************************************/
- /*        callbacks for MMAP buffers         */
- /*********************************************/
- 
-+static void __vb2_dc_put(struct vb2_dc_buf *buf)
-+{
-+	if (vb2_dc_is_coherent(buf)) {
-+		dma_free_attrs(buf->dev, buf->size, buf->cookie,
-+			       buf->dma_addr, buf->attrs);
-+		return;
-+	}
-+
-+	if (buf->vaddr)
-+		dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
-+	dma_free_noncontiguous(buf->dev, buf->size,
-+			       buf->dma_sgt, buf->dma_addr);
-+}
-+
- static void vb2_dc_put(void *buf_priv)
- {
- 	struct vb2_dc_buf *buf = buf_priv;
-@@ -139,17 +195,47 @@ static void vb2_dc_put(void *buf_priv)
- 		sg_free_table(buf->sgt_base);
- 		kfree(buf->sgt_base);
- 	}
--	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
--		       buf->attrs);
-+	__vb2_dc_put(buf);
- 	put_device(buf->dev);
- 	kfree(buf);
- }
- 
-+static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
-+{
-+	struct vb2_queue *q = buf->vb->vb2_queue;
-+
-+	buf->cookie = dma_alloc_attrs(buf->dev,
-+				      buf->size,
-+				      &buf->dma_addr,
-+				      GFP_KERNEL | q->gfp_flags,
-+				      buf->attrs);
-+	if (!buf->cookie)
-+		return -ENOMEM;
-+	if ((q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
-+		buf->vaddr = buf->cookie;
-+	return 0;
-+}
-+
-+static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
-+{
-+	struct vb2_queue *q = buf->vb->vb2_queue;
-+
-+	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
-+					       buf->size,
-+					       buf->dma_dir,
-+					       GFP_KERNEL | q->gfp_flags,
-+					       buf->attrs);
-+	if (!buf->dma_sgt)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
- static void *vb2_dc_alloc(struct vb2_buffer *vb,
- 			  struct device *dev,
- 			  unsigned long size)
- {
- 	struct vb2_dc_buf *buf;
-+	int ret;
- 
- 	if (WARN_ON(!dev))
- 		return ERR_PTR(-EINVAL);
-@@ -159,27 +245,28 @@ static void *vb2_dc_alloc(struct vb2_buffer *vb,
- 		return ERR_PTR(-ENOMEM);
- 
- 	buf->attrs = vb->vb2_queue->dma_attrs;
--	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
--				      GFP_KERNEL | vb->vb2_queue->gfp_flags,
--				      buf->attrs);
--	if (!buf->cookie) {
--		dev_err(dev, "dma_alloc_coherent of size %ld failed\n", size);
--		kfree(buf);
--		return ERR_PTR(-ENOMEM);
--	}
--
--	if ((buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
--		buf->vaddr = buf->cookie;
-+	buf->dma_dir = vb->vb2_queue->dma_dir;
-+	buf->vb = vb;
-+	buf->non_coherent_mem = vb->vb2_queue->non_coherent_mem;
- 
-+	buf->size = size;
- 	/* Prevent the device from being released while the buffer is used */
- 	buf->dev = get_device(dev);
--	buf->size = size;
--	buf->dma_dir = vb->vb2_queue->dma_dir;
-+
-+	if (vb2_dc_is_coherent(buf))
-+		ret = vb2_dc_alloc_coherent(buf);
-+	else
-+		ret = vb2_dc_alloc_non_coherent(buf);
-+
-+	if (ret) {
-+		dev_err(dev, "dma alloc of size %ld failed\n", size);
-+		kfree(buf);
-+		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	buf->handler.refcount = &buf->refcount;
- 	buf->handler.put = vb2_dc_put;
- 	buf->handler.arg = buf;
--	buf->vb = vb;
- 
- 	refcount_set(&buf->refcount, 1);
- 
-@@ -196,9 +283,12 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
- 		return -EINVAL;
- 	}
- 
--	ret = dma_mmap_attrs(buf->dev, vma, buf->cookie,
--		buf->dma_addr, buf->size, buf->attrs);
--
-+	if (vb2_dc_is_coherent(buf))
-+		ret = dma_mmap_attrs(buf->dev, vma, buf->cookie, buf->dma_addr,
-+				     buf->size, buf->attrs);
-+	else
-+		ret = dma_mmap_noncontiguous(buf->dev, vma, buf->size,
-+					     buf->dma_sgt);
- 	if (ret) {
- 		pr_err("Remapping memory failed, error: %d\n", ret);
- 		return ret;
-@@ -390,6 +480,9 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
- 	int ret;
- 	struct sg_table *sgt;
- 
-+	if (!vb2_dc_is_coherent(buf))
-+		return buf->dma_sgt;
-+
- 	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
- 	if (!sgt) {
- 		dev_err(buf->dev, "failed to alloc sg table\n");
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+On 3/1/2021 5:29 PM, Jason Gunthorpe wrote:
+> On Mon, Mar 01, 2021 at 05:23:47PM -0700, Dave Jiang wrote:
+>> So after looking at the code in vfio_pci_intrs.c, I agree that the set_irqs
+>> code between VFIO_PCI and this driver can be made in common. Given that Alex
+>> doesn't want a vfio_pci device embedded in the driver,
+> idxd isn't a vfio_pci so it would be improper to do something like
+> that here anyhow.
+>
+>> I think we'll need some sort of generic VFIO device that can be used
+>> from the vfio_pci side and vfio_mdev side to pass down in order to
+>> have common support library functions.
+> Why do you need more layers?
+>
+> Just make some helper functions to manage this and build them into
+> their own struct and function family. All this needs is some callback
+> to for the end driver to hook in the raw device programming and some
+> entry points to direct the emulation access to the module.
+>
+> It should be fully self contained and completely unrelated to vfio_pci
+>
+Maybe I'm looking at this wrong. I see a some code in vfio_pci_intrs.c 
+that we can reuse with some changes here and there. But, I think see 
+where you are getting at with just common functions for mdev side. Let 
+me create it just for IMS emulation and then we can go from there trying 
+to figure if that's the right path to go down or if we need to share 
+code with vfio_pci.
