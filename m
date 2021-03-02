@@ -2,106 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B89F32A196
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BAE32A1A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245439AbhCBGkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:40:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835225AbhCBEvE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:51:04 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B6AC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 20:42:17 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id jx13so1089091pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 20:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xF+Ezsij9zQCVu5h7a22TZ4ku00IR7pz2OTflYnhmwU=;
-        b=hQcoTJylr8uj/s8ZCFM1eS7eB8f4ZOS9Hop2JUukAqc04z884Dgo5/IRAlLiTMFYVu
-         617uAiBaM2J7NKgCe3I6g1oMA9n+Ci1ER2vkXuXiBeseeUXNaJfD5wpKvu1UFa+OY0+T
-         6DN9VLnCO63T+VjC2NZQp5LDYg/Dr0qoZWy7db1T3SBCG9yLBLCRyRfn0zW9KKOMAYaN
-         1lb43IqfwyLg71GU68SegFm/D4WUjqEBJ4ncO8HtmmSfuv5tsUm/XxjOHHVTrluH1W4S
-         ZAYQR3riq7RBRYavQ7DtzZYVS+fRxKbVZc0ZAWq+cExWaCnnSNYzNsKoo9McM+u2xWu7
-         xk2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xF+Ezsij9zQCVu5h7a22TZ4ku00IR7pz2OTflYnhmwU=;
-        b=NRLYbUJ52+vsvkFGLSslVzjhJu5WmBdjBCkk5Y9TY3t+w5lc4DYJIfGGY78GufH63+
-         qWQo7CibdxJ6Me2RnBl5m2KEc8IkyNNKh2pT6ruklKT/frW7a2Vo9DciIMcXyZ1OzkJK
-         FNz30sEwSXq/iTsO16z55hVfuw3nl+yhRA6hTehAXOTjRoKERatHjXTm3VpMHJns1kI8
-         pDmFJlXJ3JauSeO4F83EUrYvQcAl3cj/92DZ+DnSWgoycFXWtIIKYxobw3FM+abbEwiI
-         pgcjrnUGUbWlZMRXdChj9wKZIvpIgMsvl93d+MRpMHZAdSXYPQLociYymjo57+6XKb5Q
-         yC/Q==
-X-Gm-Message-State: AOAM5314dRhwDCxFpk/KihY8gvjPErpfJKItE4xN8mDglIVqayoFP12e
-        iTMQt7YZ2FITZpwg9gNK+yDtXQ==
-X-Google-Smtp-Source: ABdhPJya7uA12iC0Raf6kjv1P0Uf/2aB9kBbZzyLJ0JzMUoKW88aHclbV1V3VWkzCBNmepcUFSHDBw==
-X-Received: by 2002:a17:902:7c83:b029:e2:b157:e25c with SMTP id y3-20020a1709027c83b02900e2b157e25cmr18870886pll.32.1614660136885;
-        Mon, 01 Mar 2021 20:42:16 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id z8sm1204224pjd.0.2021.03.01.20.42.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Mar 2021 20:42:16 -0800 (PST)
-Date:   Tue, 2 Mar 2021 10:12:14 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210302044214.gnnce5ptwehrsnpc@vireshk-i7>
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+        id S1344763AbhCBGnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:43:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1835384AbhCBE5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 23:57:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDC9660238;
+        Tue,  2 Mar 2021 04:43:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614660188;
+        bh=VO/ybizvK8GgrGUKEsnjwa7WEw7b6nZvpUw+0sSbNNI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dwsKS/DsTXTVBOFeQw2mm7zswcX8LRx8dPSZoYJYqDAVDjpXKQgNjBs9slcURMbo6
+         bYkp5iSyjGZdI3yc1qcK6LSQ3Yrz7y6+PBzqJjJIe/bP8AREYQKY0x+QUhcEjHD66D
+         PC0r6Rt3/HRUq/KiZn0/fVvrvQUeWrqFT2fdiZolStrf3G7dq8gWyojbWUnpQAEm/C
+         epIpiCD5GlyxnQjfBB8TDS0IXViz5t50g7xFsvM0atOBikREHpsWvJyFXHM7uMBRyh
+         RzP5JWfaGIJSIK63+ofi9Zcje0qfO6WqkV5KZov3xFFXJcuJC+Z+RdxPRdAHhD/rwY
+         l5gnSS8fUntBQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-sgx@vger.kernel.org
+Subject: [PATCH] x86/sgx: Replace section->init_laundry_list with a temp list
+Date:   Tue,  2 Mar 2021 06:42:41 +0200
+Message-Id: <20210302044241.457507-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-03-21, 14:41, Jie Deng wrote:
-> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
-> +				struct virtio_i2c_req *reqs,
-> +				struct i2c_msg *msgs, int nr)
-> +{
-> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
-> +	int i, outcnt, incnt, err = 0;
-> +	u8 *buf;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		if (!msgs[i].len)
-> +			break;
-> +
-> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+Build a local laundry list in sgx_init(), and transfer its ownsership to
+ksgxd for sanitization, thus getting rid of useless member in struct
+sgx_epc_section.
 
-And this won't work for 10 bit addressing right? Don't we support that
-in kernel ?
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ arch/x86/kernel/cpu/sgx/main.c | 64 ++++++++++++++++++----------------
+ arch/x86/kernel/cpu/sgx/sgx.h  |  7 ----
+ 2 files changed, 34 insertions(+), 37 deletions(-)
 
-From Spec:
-
-\begin{tabular}{ |l||l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l| }
-\hline
-Bits           & 15 & 14 & 13 & 12 & 11 & 10 & 9  & 8  & 7  & 6  & 5  & 4  & 3  & 2  & 1  & 0 \\
-\hline
-7-bit address  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & A6 & A5 & A4 & A3 & A2 & A1 & A0 & 0 \\
-\hline
-10-bit address & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 & 1  & 1  & 1  & 1  & 0  & A9 & A8 & 0 \\
-\hline
-\end{tabular}
-
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 52d070fb4c9a..f4633a2b7685 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -30,35 +30,33 @@ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+  * Reset dirty EPC pages to uninitialized state. Laundry can be left with SECS
+  * pages whose child pages blocked EREMOVE.
+  */
+-static void sgx_sanitize_section(struct sgx_epc_section *section)
++static void sgx_sanitize_section(struct list_head *laundry)
+ {
+ 	struct sgx_epc_page *page;
+ 	LIST_HEAD(dirty);
+ 	int ret;
+ 
+ 	/* init_laundry_list is thread-local, no need for a lock: */
+-	while (!list_empty(&section->init_laundry_list)) {
++	while (!list_empty(laundry)) {
+ 		if (kthread_should_stop())
+ 			return;
+ 
+-		/* needed for access to ->page_list: */
+-		spin_lock(&section->lock);
+-
+-		page = list_first_entry(&section->init_laundry_list,
+-					struct sgx_epc_page, list);
++		page = list_first_entry(laundry, struct sgx_epc_page, list);
+ 
+ 		ret = __eremove(sgx_get_epc_virt_addr(page));
+-		if (!ret)
+-			list_move(&page->list, &section->page_list);
+-		else
++		if (!ret) {
++			/* The page is clean - move to the free list. */
++			list_del(&page->list);
++			sgx_free_epc_page(page);
++		} else {
++			/* The page is not yet clean - move to the dirty list. */
+ 			list_move_tail(&page->list, &dirty);
+-
+-		spin_unlock(&section->lock);
++		}
+ 
+ 		cond_resched();
+ 	}
+ 
+-	list_splice(&dirty, &section->init_laundry_list);
++	list_splice(&dirty, laundry);
+ }
+ 
+ static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
+@@ -405,6 +403,7 @@ static bool sgx_should_reclaim(unsigned long watermark)
+ 
+ static int ksgxd(void *p)
+ {
++	struct list_head *laundry = p;
+ 	int i;
+ 
+ 	set_freezable();
+@@ -413,16 +412,13 @@ static int ksgxd(void *p)
+ 	 * Sanitize pages in order to recover from kexec(). The 2nd pass is
+ 	 * required for SECS pages, whose child pages blocked EREMOVE.
+ 	 */
+-	for (i = 0; i < sgx_nr_epc_sections; i++)
+-		sgx_sanitize_section(&sgx_epc_sections[i]);
++	sgx_sanitize_section(laundry);
++	sgx_sanitize_section(laundry);
+ 
+-	for (i = 0; i < sgx_nr_epc_sections; i++) {
+-		sgx_sanitize_section(&sgx_epc_sections[i]);
++	if (!list_empty(laundry))
++		WARN(1, "EPC section %d has unsanitized pages.\n", i);
+ 
+-		/* Should never happen. */
+-		if (!list_empty(&sgx_epc_sections[i].init_laundry_list))
+-			WARN(1, "EPC section %d has unsanitized pages.\n", i);
+-	}
++	kfree(laundry);
+ 
+ 	while (!kthread_should_stop()) {
+ 		if (try_to_freeze())
+@@ -441,11 +437,11 @@ static int ksgxd(void *p)
+ 	return 0;
+ }
+ 
+-static bool __init sgx_page_reclaimer_init(void)
++static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
+ {
+ 	struct task_struct *tsk;
+ 
+-	tsk = kthread_run(ksgxd, NULL, "ksgxd");
++	tsk = kthread_run(ksgxd, laundry, "ksgxd");
+ 	if (IS_ERR(tsk))
+ 		return false;
+ 
+@@ -619,7 +615,8 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
+ 
+ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 					 unsigned long index,
+-					 struct sgx_epc_section *section)
++					 struct sgx_epc_section *section,
++					 struct list_head *laundry)
+ {
+ 	unsigned long nr_pages = size >> PAGE_SHIFT;
+ 	unsigned long i;
+@@ -637,13 +634,12 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 	section->phys_addr = phys_addr;
+ 	spin_lock_init(&section->lock);
+ 	INIT_LIST_HEAD(&section->page_list);
+-	INIT_LIST_HEAD(&section->init_laundry_list);
+ 
+ 	for (i = 0; i < nr_pages; i++) {
+ 		section->pages[i].section = index;
+ 		section->pages[i].flags = 0;
+ 		section->pages[i].owner = NULL;
+-		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
++		list_add_tail(&section->pages[i].list, laundry);
+ 	}
+ 
+ 	section->free_cnt = nr_pages;
+@@ -661,7 +657,7 @@ static inline u64 __init sgx_calc_section_metric(u64 low, u64 high)
+ 	       ((high & GENMASK_ULL(19, 0)) << 32);
+ }
+ 
+-static bool __init sgx_page_cache_init(void)
++static bool __init sgx_page_cache_init(struct list_head *laundry)
+ {
+ 	u32 eax, ebx, ecx, edx, type;
+ 	u64 pa, size;
+@@ -684,7 +680,7 @@ static bool __init sgx_page_cache_init(void)
+ 
+ 		pr_info("EPC section 0x%llx-0x%llx\n", pa, pa + size - 1);
+ 
+-		if (!sgx_setup_epc_section(pa, size, i, &sgx_epc_sections[i])) {
++		if (!sgx_setup_epc_section(pa, size, i, &sgx_epc_sections[i], laundry)) {
+ 			pr_err("No free memory for an EPC section\n");
+ 			break;
+ 		}
+@@ -702,18 +698,25 @@ static bool __init sgx_page_cache_init(void)
+ 
+ static int __init sgx_init(void)
+ {
++	struct list_head *laundry;
+ 	int ret;
+ 	int i;
+ 
+ 	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+ 		return -ENODEV;
+ 
+-	if (!sgx_page_cache_init()) {
++	laundry = kzalloc(sizeof(*laundry), GFP_KERNEL);
++	if (!laundry)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(laundry);
++
++	if (!sgx_page_cache_init(laundry)) {
+ 		ret = -ENOMEM;
+ 		goto err_page_cache;
+ 	}
+ 
+-	if (!sgx_page_reclaimer_init()) {
++	if (!sgx_page_reclaimer_init(laundry)) {
+ 		ret = -ENOMEM;
+ 		goto err_page_cache;
+ 	}
+@@ -733,6 +736,7 @@ static int __init sgx_init(void)
+ 		memunmap(sgx_epc_sections[i].virt_addr);
+ 	}
+ 
++	kfree(laundry);
+ 	return ret;
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index 5fa42d143feb..bc8af0428640 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -45,13 +45,6 @@ struct sgx_epc_section {
+ 	spinlock_t lock;
+ 	struct list_head page_list;
+ 	unsigned long free_cnt;
+-
+-	/*
+-	 * Pages which need EREMOVE run on them before they can be
+-	 * used.  Only safe to be accessed in ksgxd and init code.
+-	 * Not protected by locks.
+-	 */
+-	struct list_head init_laundry_list;
+ };
+ 
+ extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
 -- 
-viresh
+2.30.1
+
