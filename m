@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B77032AE0E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8410D32AE13
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360449AbhCBWUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40292 "EHLO
+        id S2360491AbhCBWVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383543AbhCBVOx (ORCPT
+        with ESMTP id S1383589AbhCBVQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 16:14:53 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABC3C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:11:38 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id r6so14175114pfg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:11:38 -0800 (PST)
+        Tue, 2 Mar 2021 16:16:28 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A3AC061794
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:11:41 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id i1so5407030qvu.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:11:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=2Thoi1osEYfXt6vlYmJBsmUQwBzWO9/HMHOzYyQ+dCY=;
-        b=JlhYscxyAHwtKr2APcDygmiHuBCdOFe7YuQwU1RS/m/sM/h/ZeBi8ilrOfPasbSJJl
-         +DLoSyOj+dvvujDas/nLKbl0ezXnO2kaiDyL5AbnxR3EJ5C/sqLxVQcFLN4vbZO4vCjT
-         V57bilDkHqB9jQWQXC2fn2om6Zxx4bsAMNeI72VS7uC3JWueI6gcDZQ5zyLQZ+fcMDMe
-         wVLDym1xI0Xj3GqZ6jPp+AWWhA/BJ4RtSZ3lc/crPBjiAMDDshUsWdaCOiGBIwdsAiHT
-         g9zuTvJxXASDi/Qx0iW83N+AgQHEvAfIrqM30pl4Ac7HFUmmpBrI+XSowyicspgvFZjS
-         Jytg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=ha32Pb8LQarekc1l29yMATX3+MJye2BpgFbjrEa+47o=;
+        b=OnY895K/7pS8uVuh5xN1WbuUXXt1LrnLrKtSlEZafXgfD7nC0rgEpXnKR7lHwkiAJV
+         7nD/VI4XXUOZnYpWDMKM2RNjhL5F10ODPqMqtD1A1xhi4ESH69giqc3Akw1gSu3a+rzq
+         W/FL4ypFBsEuszLO2XsKMurKqWfPawdUJw6tBLTFNZp06Urso/TakpvkiTkh22Gf2ach
+         jHXUGa/QvHQRntFpJKFJUZKeAe4X7RE01AWiv/grMHoQY0o3p4taXeoi0iICipsZU/fn
+         XiVSZ5pVkWp+hBCx5PMbmfNmomEqc2vwebdVEr9Y11SlW0tjPse3q9RiAmRR9wt5fjg5
+         2PJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=2Thoi1osEYfXt6vlYmJBsmUQwBzWO9/HMHOzYyQ+dCY=;
-        b=qsWMYEf3hZt4crWOU2DhIf2N+cWtCNHlD2Fq1USXZ2+YKDT7GSrGCWtpTE9CeQeF4b
-         jbKuO7moME5FkxGtluxsogSfXgHGHehbiyHyfPTioFEqr03x65kBfkrbZYiTU5QcL34C
-         i3NVDGBCjW7BN3Th30gem1+MRsikguAhlJ79NKXPmKw6c6O7qjGeOr6v401Ar1ufa0KO
-         8+/awyOp33cPs/1OKxBlj+YJ9ywapx+BreWb14DURULDGIT0lHtkqNQq9phnbjFJUHxX
-         lAE0NvRA0OHBaQCCQyUrwW62EL5JxKfW1BiBOrntzAjd8a0iYi5k3Y/aJjvoLiWRLohU
-         V3Dw==
-X-Gm-Message-State: AOAM5305NozlOp0NpjHwmn6WXml8j05mhYsNGMVN7YrRdvRutvuJHazH
-        X1bo06MvhmPBzyQZ3Ob85gcMW36uPuneNOY=
-X-Google-Smtp-Source: ABdhPJxHGZNlNo7X9updngw4+YMTHQp6SiAUJlgyHdiMIIednhlaxPAEwJdPPnwg/MlCw2I0WeiBu1PlA9GvGWQ=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ha32Pb8LQarekc1l29yMATX3+MJye2BpgFbjrEa+47o=;
+        b=p7JcPYGA0w3ae++8sh3o9/Tmf+Mks4fgT5zBDLZBITCCgOPP2M1Vls3Drd2veq8TaQ
+         M7A/1kNwLybWst2wnjn7IT4CYTNgymIsj/agzfpsphHq/UV3K4V4InS21cAc4dbRY4Bd
+         tUBnH3w43qRk5vKJxTtAsGgabjJ/Ir+F7F8e/HrnWM/CnpO6cqyidfKsqU8d0EMHNz91
+         uiEF6tpPxbIkxpMi2qcdS0WLKGekC9OkPt9ozj2RAxEAJ7HUd6QmRP2qT0DzeLBMj4Q1
+         oH4z3Ej+IrkVkWseRcqv+w8TYFcdrpDYFbf7VEn/c/jOHmTVQwmf0BNTR+ud3caWo5Ru
+         xkIQ==
+X-Gm-Message-State: AOAM533rqgQWicm8qsOYYOpFTIvw2kHdk8hplBqZx98MTqwl4iWIO3HR
+        elb3PBsIEQxB6+ljkzQRfoLid20cXKlM1IY=
+X-Google-Smtp-Source: ABdhPJzTbMYKKSz5Mm8hHKRSrnzQ9BCNkd58dEhtIqC24T8TOWMdFHTwHLcwba8GIZWePxdw2QukihT9qJ4njm8=
 Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:a1ad:fce1:8a40:59b6])
- (user=saravanak job=sendgmr) by 2002:a17:90a:6503:: with SMTP id
- i3mr6031863pjj.117.1614719498301; Tue, 02 Mar 2021 13:11:38 -0800 (PST)
-Date:   Tue,  2 Mar 2021 13:11:29 -0800
-Message-Id: <20210302211133.2244281-1-saravanak@google.com>
+ (user=saravanak job=sendgmr) by 2002:a05:6214:523:: with SMTP id
+ x3mr21274886qvw.27.1614719500715; Tue, 02 Mar 2021 13:11:40 -0800 (PST)
+Date:   Tue,  2 Mar 2021 13:11:30 -0800
+In-Reply-To: <20210302211133.2244281-1-saravanak@google.com>
+Message-Id: <20210302211133.2244281-2-saravanak@google.com>
 Mime-Version: 1.0
+References: <20210302211133.2244281-1-saravanak@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
+Subject: [PATCH v1 1/3] driver core: Avoid pointless deferred probe attempts
 From:   Saravana Kannan <saravanak@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>
@@ -65,60 +68,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series fixes the last few remaining issues reported when fw_devlink=on
-by default.
+There's no point in adding a device to the deferred probe list if we
+know for sure that it doesn't have a matching driver. So, check if a
+device can match with a driver before adding it to the deferred probe
+list.
 
-Patch 1 is just [6] pulled in without changes into this series. It reduces
-some unnecessary probe reordering caused by a combination of fw_devlink and
-existing device link code. This fixes some issue caused by fw_devlink=on
-with respect to DMAs and IOMMUs [1].
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/dd.c      | 6 ++++++
+ include/linux/device.h | 4 ++++
+ 2 files changed, 10 insertions(+)
 
-Patch 2 fixes a warning [2] present in code unrelated to fw_devlink. It was
-just exposed by fw_devlink.
-
-Jon,
-
-Patch 2 should address the issues you reported[2] even without [3]. Could
-you test this series please?
-
-Michael,
-
-I think Patch 1 should fix [4] without [5]. Can you test the series please?
-
-Geert/Marek,
-
-As far as I know, there shouldn't have any more issues you reported that
-are still left unfixed after this series. Please correct me if I'm wrong or
-if you find new issues.
-
-[1] - https://lore.kernel.org/lkml/CAMuHMdUVVr8jES51_8_yPoicr-nwad_2nKLYUKweY8mbxx9GJw@mail.gmail.com/
-[2] - https://lore.kernel.org/lkml/56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com/
-[3] - https://lore.kernel.org/lkml/5176f496-facb-d7b0-9f4e-a9e4b8974178@nvidia.com/
-[4] - https://lore.kernel.org/lkml/4b9ae679b6f76d2f7e340e2ec229dd53@walle.cc/
-[5] - https://lore.kernel.org/lkml/20210120105246.23218-1-michael@walle.cc/
-[6] - https://lore.kernel.org/lkml/20210217235130.1744843-1-saravanak@google.com/
-
-Cc: Michael Walle <michael@walle.cc>
-Cc: Jon Hunter <jonathanh@nvidia.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-
-Thanks,
-Saravana
-
-Saravana Kannan (3):
-  driver core: Avoid pointless deferred probe attempts
-  driver core: Update device link status properly for
-    device_bind_driver()
-  Revert "Revert "driver core: Set fw_devlink=on by default""
-
- drivers/base/base.h    |  1 +
- drivers/base/core.c    | 37 ++++++++++++++++++++++++++++++++++++-
- drivers/base/dd.c      | 10 +++++++++-
- include/linux/device.h |  4 ++++
- 4 files changed, 50 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 9179825ff646..f18963f42e21 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -123,6 +123,9 @@ static DECLARE_WORK(deferred_probe_work, deferred_probe_work_func);
+ 
+ void driver_deferred_probe_add(struct device *dev)
+ {
++	if (!dev->can_match)
++		return;
++
+ 	mutex_lock(&deferred_probe_mutex);
+ 	if (list_empty(&dev->p->deferred_probe)) {
+ 		dev_dbg(dev, "Added to deferred list\n");
+@@ -726,6 +729,7 @@ static int driver_probe_device(struct device_driver *drv, struct device *dev)
+ 	if (!device_is_registered(dev))
+ 		return -ENODEV;
+ 
++	dev->can_match = true;
+ 	pr_debug("bus: '%s': %s: matched device %s with driver %s\n",
+ 		 drv->bus->name, __func__, dev_name(dev), drv->name);
+ 
+@@ -829,6 +833,7 @@ static int __device_attach_driver(struct device_driver *drv, void *_data)
+ 		return 0;
+ 	} else if (ret == -EPROBE_DEFER) {
+ 		dev_dbg(dev, "Device match requests probe deferral\n");
++		dev->can_match = true;
+ 		driver_deferred_probe_add(dev);
+ 	} else if (ret < 0) {
+ 		dev_dbg(dev, "Bus failed to match device: %d\n", ret);
+@@ -1064,6 +1069,7 @@ static int __driver_attach(struct device *dev, void *data)
+ 		return 0;
+ 	} else if (ret == -EPROBE_DEFER) {
+ 		dev_dbg(dev, "Device match requests probe deferral\n");
++		dev->can_match = true;
+ 		driver_deferred_probe_add(dev);
+ 	} else if (ret < 0) {
+ 		dev_dbg(dev, "Bus failed to match device: %d\n", ret);
+diff --git a/include/linux/device.h b/include/linux/device.h
+index ba660731bd25..569932d282c0 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -439,6 +439,9 @@ struct dev_links_info {
+  * @state_synced: The hardware state of this device has been synced to match
+  *		  the software state of this device by calling the driver/bus
+  *		  sync_state() callback.
++ * @can_match:	The device has matched with a driver at least once or it is in
++ *		a bus (like AMBA) which can't check for matching drivers until
++ *		other devices probe successfully.
+  * @dma_coherent: this particular device is dma coherent, even if the
+  *		architecture supports non-coherent devices.
+  * @dma_ops_bypass: If set to %true then the dma_ops are bypassed for the
+@@ -545,6 +548,7 @@ struct device {
+ 	bool			offline:1;
+ 	bool			of_node_reused:1;
+ 	bool			state_synced:1;
++	bool			can_match:1;
+ #if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
+     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
+     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
