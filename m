@@ -2,238 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9917C32A18B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D1B32A18C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577532AbhCBGXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:23:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1576231AbhCBE0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:26:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6230601FA;
-        Tue,  2 Mar 2021 04:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614659137;
-        bh=o9jvHY0CvMpjwiy06HTjeIBGpD7VgACJshBkrL38PrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YumWO4uOFkLOswsrk09TlzwX/MAHDgBy3Uyy3vgQ/RteLM7UGzpsMVUJvxjz6bhJk
-         VOwspeBUT4nQ9xJYURcbcg7QpSmE0WhGEWa10VNQXDyk+Z4nSZDSkSg9YkkypUA0uW
-         xXZvtj/WaOOvUKEydRZDiTaxhbYZmRD8b24AvNEd9D+u8uVwT3JjOcXvfs5UcRBaCB
-         wMOQIwhUvL4kdSC5OzJpAyfjXWM3Jw7V7O5rMnNXO/fTXo9ZSyTNCxGWrRgg1+32fD
-         wQjg8OtiEXGdP/aMAg4KoTGtZPsjTX2quHCqYDM51N2hQnoJoUhc2MbIjfLxK8d54u
-         F2ymTBYoM2yYw==
-Date:   Mon, 1 Mar 2021 20:25:35 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, zhangshiming@oppo.com
-Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: check if swapfile is
- section-alligned
-Message-ID: <YD2+P1pWIGB35oJ3@google.com>
-References: <20210227120231.136559-1-huangjianan@oppo.com>
- <20210227120231.136559-3-huangjianan@oppo.com>
- <b4ae58b2-3325-6cdf-26b4-b77810d33bbc@huawei.com>
- <YD28+iVg4sjS3+22@google.com>
+        id S238255AbhCBGfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:35:13 -0500
+Received: from mail.kingsoft.com ([114.255.44.146]:45931 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1576816AbhCBEcy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 23:32:54 -0500
+X-AuditID: 0a580157-f39ff7000005df43-4d-603db95d708e
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 50.37.57155.D59BD306; Tue,  2 Mar 2021 12:04:45 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 2 Mar 2021
+ 12:32:07 +0800
+Date:   Tue, 2 Mar 2021 12:32:07 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     Oscar Salvador <osalvador@suse.de>,
+        "HORIGUCHI =?UTF-8?B?TkFPWUE=?=( =?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        <yaoaili@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210302123207.0217e5c4@alex-virtual-machine>
+In-Reply-To: <20210226175837.GA184397@agluck-desk2.amr.corp.intel.com>
+References: <20210224151619.67c29731@alex-virtual-machine>
+        <20210224103105.GA16368@linux>
+        <20210225114329.4e1a41c6@alex-virtual-machine>
+        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
+        <20210225113930.GA7227@localhost.localdomain>
+        <20210226105250.3a15e35c@alex-virtual-machine>
+        <20210226175837.GA184397@agluck-desk2.amr.corp.intel.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YD28+iVg4sjS3+22@google.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsXCFcGooBu70zbBYF67gMWc9WvYLD5v+Mdm
+        8XX9L2aLaRvFLS6camCyuLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
+        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
+        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJXxd9EVtoI93BX7Pps3MH7i6GLk5JAQMJF4PmElcxcj
+        F4eQwHQmiZ5b75lBEkICLxkllm8oBLFZBFQk9nUtZwex2QRUJXbdm8UKYosIqElcWvwArJlZ
+        YA6rxNeZ85lAEsICXhJf7q9lBLF5BawkVkx5B2ZzCrhJnN71kR1i2wMmiV3HZ4Nt4xcQk+i9
+        8p8J4iR7ibYti6CaBSVOznzCAmIzC+hInFh1jBnClpfY/nYO1KWKEoeX/GKH6FWSONI9gw3C
+        jpVYNu8V6wRG4VlIRs1CMmoWklELGJlXMbIU56YbbmKExF/4DsZ5TR/1DjEycTAeYpTgYFYS
+        4T352TJBiDclsbIqtSg/vqg0J7X4EKM0B4uSOK+wi02CkEB6YklqdmpqQWoRTJaJg1OqgWn7
+        LKVHvm81N8i2/b3hO9VHdcaT1MuaXwoMp1z1spd5c8nzWCOHqMRR+8X3nObyqPcJHzfN+7iG
+        UchHe+WMgwuS8n7xJ0k9zrpwb0r/ygoXrxWr2T5d0vLO+H33dkTAl/XFhyy1Mq7Jfq4+oFG6
+        cUqeNpeXfEtiOnOq/5Ubff6cVWK/43aIR9p5+Sqs3vyHq/d9tV1UwRKPuYu3l8pOWZSp072z
+        +rlZxHrXHN+Hj2sll8Ul3L+zmbs38kXvrvSenc/2NNS8kb2bsrH8hqACy+qsV2+uCKz5X3o/
+        VzQu+Mi+7iPOJ5c8XROjl+DWKdFzQdl7wfy5wkWvVeY0/nRqc3A7YtXemlbOcGcO6xPFMCWW
+        4oxEQy3mouJEAGhR4eguAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/01, Jaegeuk Kim wrote:
-> On 03/01, Chao Yu wrote:
-> > Hi Jianan,
-> 
-> Merged 1/3 and 2/3, so please post v2 on 3/3.
+On Fri, 26 Feb 2021 09:58:37 -0800
+"Luck, Tony" <tony.luck@intel.com> wrote:
 
-NVM. Found v2.
+> On Fri, Feb 26, 2021 at 10:52:50AM +0800, Aili Yao wrote:
+> > Hi naoya,Oscar,david:  
+> > >   
+> > > > We could use some negative value (error code) to report the reported case,
+> > > > then as you mentioned above, some callers need change to handle the
+> > > > new case, and the same is true if you use some positive value.
+> > > > My preference is -EHWPOISON, but other options are fine if justified well.    
+> > > 
+> > > -EHWPOISON seems like a good fit.
+> > >   
+> > I am OK with the -EHWPOISON error code, But I have one doubt here:
+> > When we return this -EHWPOISON error code, Does this means we have to add a new error code
+> > to error-base.h or errno.h? Is this easy realized?  
+> 
+> The page already poisoned isn't really an error though. Just the result
+> of a race condition.  What if we added an extra argument to memory_failure()
+> so it can tell the caller that the specific reason for the early successful
+> return is that the page was already poisoned?
+> 
 
-> 
-> Thanks,
-> 
-> > 
-> > On 2021/2/27 20:02, Huang Jianan via Linux-f2fs-devel wrote:
-> > > If the swapfile isn't created by pin and fallocate, it cann't be
-> > 
-> > Typo:
-> > 
-> > can't
-> > 
-> > > guaranteed section-aligned, so it may be selected by f2fs gc. When
-> > > gc_pin_file_threshold is reached, the address of swapfile may change,
-> > > but won't be synchroniz to swap_extent, so swap will write to wrong
-> > 
-> > synchronized
-> > 
-> > > address, which will cause data corruption.
-> > > 
-> > > Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> > > Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> > > ---
-> > >   fs/f2fs/data.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 63 insertions(+)
-> > > 
-> > > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > > index 4dbc1cafc55d..3e523d6e4643 100644
-> > > --- a/fs/f2fs/data.c
-> > > +++ b/fs/f2fs/data.c
-> > > @@ -3781,11 +3781,63 @@ int f2fs_migrate_page(struct address_space *mapping,
-> > >   #endif
-> > >   #ifdef CONFIG_SWAP
-> > > +static int f2fs_check_file_aligned(struct inode *inode)
-> > 
-> > f2fs_check_file_alignment() or f2fs_is_file_aligned()?
-> > 
-> > > +{
-> > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > > +	block_t main_blkaddr = SM_I(sbi)->main_blkaddr;
-> > > +	block_t cur_lblock;
-> > > +	block_t last_lblock;
-> > > +	block_t pblock;
-> > > +	unsigned long len;
-> > > +	unsigned long nr_pblocks;
-> > > +	unsigned int blocks_per_sec = sbi->blocks_per_seg * sbi->segs_per_sec;
-> > 
-> > unsigned int blocks_per_sec = BLKS_PER_SEC(sbi);
-> > 
-> > > +	int ret;
-> > > +
-> > > +	cur_lblock = 0;
-> > > +	last_lblock = bytes_to_blks(inode, i_size_read(inode));
-> > > +	len = i_size_read(inode);
-> > > +
-> > > +	while (cur_lblock < last_lblock) {
-> > > +		struct f2fs_map_blocks map;
-> > > +		pgoff_t next_pgofs;
-> > > +
-> > > +		memset(&map, 0, sizeof(map));
-> > > +		map.m_lblk = cur_lblock;
-> > > +		map.m_len = bytes_to_blks(inode, len) - cur_lblock;
-> > 
-> > map.m_len = last_lblock - cur_lblock;
-> > 
-> > > +		map.m_next_pgofs = &next_pgofs;
-> > 
-> > map.m_next_pgofs = NULL;
-> > map.m_next_extent = NULL;
-> > 
-> > > +		map.m_seg_type = NO_CHECK_TYPE;
-> > 
-> > map.m_may_create = false;
-> > 
-> > > +
-> > > +		ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
-> > > +
-> > 
-> > Unneeded blank line.
-> > 
-> > > +		if (ret)
-> > > +			goto err_out;
-> > > +
-> > > +		/* hole */
-> > > +		if (!(map.m_flags & F2FS_MAP_FLAGS))
-> > 
-> > ret = -ENOENT;
-> > 
-> > > +			goto err_out;
-> > > +
-> > > +		pblock = map.m_pblk;
-> > > +		nr_pblocks = map.m_len;
-> > > +
-> > > +		if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
-> > > +			nr_pblocks & (blocks_per_sec - 1))
-> > 
-> > ret = -EINVAL;
-> > 
-> > > +			goto err_out;
-> > > +
-> > > +		cur_lblock += nr_pblocks;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +err_out:
-> > > +	pr_err("swapon: swapfile isn't section-aligned\n");
-> > 
-> > We should show above message only after we fail in check condition:
-> > 
-> > 	if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
-> > 		nr_pblocks & (blocks_per_sec - 1)) {
-> > 		f2fs_err(sbi, "Swapfile does not align to section");
-> > 		goto err_out;
-> > 	}
-> > 
-> > And please use f2fs_{err,warn,info..} macro rather than pr_{err,warn,info..}.
-> > 
-> > Could you please fix above related issues in check_swap_activate_fast() as well.
-> > 
-> > > +	return -EINVAL;
-> > 
-> > return ret;
-> > 
-> > > +}
-> > > +
-> > >   static int check_swap_activate_fast(struct swap_info_struct *sis,
-> > >   				struct file *swap_file, sector_t *span)
-> > >   {
-> > >   	struct address_space *mapping = swap_file->f_mapping;
-> > >   	struct inode *inode = mapping->host;
-> > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > >   	sector_t cur_lblock;
-> > >   	sector_t last_lblock;
-> > >   	sector_t pblock;
-> > > @@ -3793,6 +3845,7 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
-> > >   	sector_t highest_pblock = 0;
-> > >   	int nr_extents = 0;
-> > >   	unsigned long nr_pblocks;
-> > > +	unsigned int blocks_per_sec = sbi->blocks_per_seg * sbi->segs_per_sec;
-> > 
-> > Ditto,
-> > 
-> > >   	u64 len;
-> > >   	int ret;
-> > > @@ -3827,6 +3880,13 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
-> > >   		pblock = map.m_pblk;
-> > >   		nr_pblocks = map.m_len;
-> > > +		if ((pblock - SM_I(sbi)->main_blkaddr) & (blocks_per_sec - 1) ||
-> > > +			nr_pblocks & (blocks_per_sec - 1)) {
-> > > +			pr_err("swapon: swapfile isn't section-aligned\n");
-> > 
-> > Ditto,
-> > 
-> > > +			ret = -EINVAL;
-> > > +			goto out;
-> > > +		}
-> > > +
-> > >   		if (cur_lblock + nr_pblocks >= sis->max)
-> > >   			nr_pblocks = sis->max - cur_lblock;
-> > > @@ -3878,6 +3938,9 @@ static int check_swap_activate(struct swap_info_struct *sis,
-> > >   	if (PAGE_SIZE == F2FS_BLKSIZE)
-> > >   		return check_swap_activate_fast(sis, swap_file, span);
-> > > +	if (f2fs_check_file_aligned(inode))
-> > 
-> > ret = f2fs_check_file_aligned();
-> > if (ret)
-> > 	return ret;
-> > 
-> > Thanks,
-> > 
-> > > +		return -EINVAL;
-> > > +
-> > >   	blocks_per_page = bytes_to_blks(inode, PAGE_SIZE);
-> > >   	/*
-> > > 
-> > 
-> > 
-> > _______________________________________________
-> > Linux-f2fs-devel mailing list
-> > Linux-f2fs-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+It may be not an error, Is it reasonable to return a positive value like MF_HWPOISON, it seems the 0
+return code donesn't tell the whole story. 
+
+Your patch seems more safer, But I don't know if it's worth such multi module modifications for this case.
+It really should be referenced to other maintainers and reviewers and thet can give more expert suggestions.
+
+Thanks!
+Aili Yao
