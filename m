@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9F332AA44
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A58632AA0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581785AbhCBTRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:17:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839639AbhCBQhe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:37:34 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB401C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:10:27 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id r17so36224311ejy.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:10:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vJDGGYw7tvcK+titjb5UUUKjKogKFbuBWfwBQn8pnpY=;
-        b=BlJkHpJ9gb2T6xH4d7E6DsfDVr0uh9W/Z84RVzgIuhv/Qy8ZfKayi3gWppMi4kMSXj
-         LErYX2rZn36FwdYsyG3kZGhKii9OoE6QpO+PUmmCSk5lI0YW5riJfIK1VIJMyxoFUqoG
-         379zxil7FtYzj0JPDQ2/87FgaXDypPkhU6TdwiaOl1WwN7NDqt+HBSgJOKFX9abjwpm+
-         cmJg9XDLYsaLp3xMOouOx7bqSBYoOvemqiKQ9XQXF+QPWZWPgXYG8shXQT06TnlRZRY4
-         x1zbduD4zPKj1TxcyaFrvvER8rnfiuu4G4X+MFT1K2gnsJTkZqi8JDtf5Sb59DPOWwEh
-         pHFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vJDGGYw7tvcK+titjb5UUUKjKogKFbuBWfwBQn8pnpY=;
-        b=YMHJstKqLErzzHh3UdKw3QdX+MwJyoj5/ujn9/+KZRPCoFPEhQGCkU1xE4ZjTOKwbX
-         QpGmevlzToi1hvF2FX9lgm1rw/N7KvdP2mFlPsrZXJ9iuMsMIBGzyj8675ZH4Wktt/y+
-         ci/6G5NY6Demh+BPQBWKWOTp056LGxwudAJXvdcqp0XoHayPXXQkilqUSq0GP+uN/xgT
-         DhInhxxZEKXawrSdYeKRTSc1HdoTnVVvPwVV9SrByEUsZUEqZjW8EWu88eSNvixiJFp2
-         6yvE7hwzCs7UAAHRXWuewHr6Xp/THEqIGPEKv5cSQXpPzhTObAV9SOo23sbYvLBgoRt8
-         QBOQ==
-X-Gm-Message-State: AOAM532kUloG6HSIaVfm4QNeNmWYAl28coIwPkQfLyaeVwuWeQR4Xcw6
-        +fzEDAnhO4T0sP4ntzZHBhtdwP6ez2i0i5RiKDXq
-X-Google-Smtp-Source: ABdhPJx8PQFaZgOM2xUwSD8DpzvBCZqhortPrXsbuQRmYKE4KenPCbP0EoVbTKZ9wj1YIut8Zj0gMSbUKh7l4apxoGg=
-X-Received: by 2002:a17:906:7056:: with SMTP id r22mr6639665ejj.106.1614701426386;
- Tue, 02 Mar 2021 08:10:26 -0800 (PST)
+        id S1581531AbhCBS6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:58:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1449112AbhCBQPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:15:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C071B64E7C;
+        Tue,  2 Mar 2021 16:13:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614701626;
+        bh=XcaDjWsURv/8uZujGdas5wp5M1JZxAMhhXQc0wmkd0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PMdaxma/dPA8gQWX512Tik+zy7s5XhBA/c3U6rfgto/T+dowq5GR7QoNwNlgJtmt+
+         pRn42HIPQeCSPnqb+0ZGZfA+D4sTTN37fgPCB2+fFB+RBCsKt+O+SNkaGlWkMcORZ6
+         YcJBK6kC5WlqOP1WLs2urMyZLKwPVlhxjphw/wi/kpnSU7DWHQiRKhsCuUpjMMo/af
+         ibld2EvNF/AjyFkXJAhEIijJxJoEZg9vgBFdHsT9lBNTNn2t7HdAKPeqUWnzaAVhw8
+         rTIfSQAcYXobOMi96H7vpWqbCeSxvFoQFWm1Uwrv/i6BcKy4ahkt/oyK5U33ZCgBRv
+         WjAepb457Ne5Q==
+Date:   Tue, 2 Mar 2021 16:12:39 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     Rob Herring <robh@kernel.org>, Jon Hunter <jonathanh@nvidia.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 3/5] ASoC: audio-graph-card: Add bindings for sysclk
+ and pll
+Message-ID: <20210302161239.GM4522@sirena.org.uk>
+References: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
+ <1614276364-13655-4-git-send-email-spujar@nvidia.com>
+ <CAL_Jsq+9esDGw7ZCLnZS_KLmLUFyVenz83ohgNKFK3bdPD2ouQ@mail.gmail.com>
+ <0ea5b885-2610-8f12-569d-15a8eff50c10@nvidia.com>
 MIME-Version: 1.0
-References: <0000000000006305c005bc8ba7f0@google.com> <CACT4Y+YFtUHzWcU3VBvxsdq-V_4hN_ZDs4riZiHPt4f0cy8ryA@mail.gmail.com>
-In-Reply-To: <CACT4Y+YFtUHzWcU3VBvxsdq-V_4hN_ZDs4riZiHPt4f0cy8ryA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 2 Mar 2021 11:10:15 -0500
-Message-ID: <CAHC9VhTxrGgBDW_439HeSP=_F9Jt2_cYrrQ7DtAXtKG4evGb9g@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in cipso_v4_genopt
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>, dsahern@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rCb8EA+9TsBVtA92"
+Content-Disposition: inline
+In-Reply-To: <0ea5b885-2610-8f12-569d-15a8eff50c10@nvidia.com>
+X-Cookie: Friction is a drag.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 6:03 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
 
-...
+--rCb8EA+9TsBVtA92
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Besides these 2 crashes, we've also seen one on a 4.19 based kernel, see below.
-> Based on the reports with mismatching stacks, it looks like
-> cipso_v4_genopt is doing some kind of wild pointer access (uninit
-> pointer?).
+On Tue, Mar 02, 2021 at 12:33:04PM +0530, Sameer Pujar wrote:
 
-Hmm, interesting.  Looking quickly at the stack dump, it appears that
-the problem occurs (at least in the recent kernel) when accessing the
-cipso_v4_doi.tags[] array which is embedded in the cipso_v4_doi
-struct.  Based on the code in cipso_v4_genopt() it doesn't appear that
-we are shooting past the end of the array/struct and the cipso_v4_doi
-struct appears to be refcounted correctly in cipso_v4_doi_getdef() and
-cipso_v4_doi_putdef().  I'll look at it some more today to see if
-something jumps out at me, but obviously a reproducer would be very
-helpful if you are able to find one.
+> This was targetted for external audio codecs. Their internal clock
+> management is not exposed with the clock framework. Instead ASoC provides
+> callbacks to set this up on Codec side. There are many references where t=
+his
+> is followed with some hardcoded settings in the drivers.
 
-It's also worth adding that this code really hasn't changed much in a
-*long* time, not that this means it isn't broken, just that it might
-also be worth looking at other odd memory bugs to see if there is
-chance they are wandering around and stomping on memory ...
+> Are you suggesting to instead expose codec internal clocks and manage via
+> generic clock bindings? Would this mean each codec driver has to implement
+> these clock APIs (for ex: set_rate()) and program registers accordingly?
 
--- 
-paul moore
-www.paul-moore.com
+Yes, that's what we should be doing.
+
+> For a platform, different audio cards can be plugged in. In that case, ea=
+ch
+> codec has to be updated to follow this. Wouldn't it be simpler to use
+> available ASoC callbacks?
+
+If we want to use standard DT to describe things we need to use standard
+bindings to do it. =20
+
+--rCb8EA+9TsBVtA92
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+Y/YACgkQJNaLcl1U
+h9Dfkwf/VV5E+1E4QxiC9xMRf7CW6kQ6uOQUAIFgRWw7AeHnhEAPA0LxXX+G9DuH
+AYLLxx8/XoQDfbuG6WC+i7VomWK2rYpg4jo1G/f93iHFiG7AhXmr4crkEUXnKoUF
+6Qou31wOajsXqhh2SlOGM3EEcA73s6eMksiGFuvazFjRHQKk7V91PcAmlujX9qUA
+tsn+gsy6ebjriTqxMJ0atPeKsawOlaTYvDQkefn+3DV6RtjHA7i6x+0IKxdPhbV9
+ZVKc/q+sAdXJCjnGln9qDe1dRCoS3CYVvgZvteN4MH8+AC49Wm9DEIW+UNvS2XE4
+eWrZTbtnc4Fqg3WqfsVOAM70RK1+cw==
+=kyqj
+-----END PGP SIGNATURE-----
+
+--rCb8EA+9TsBVtA92--
