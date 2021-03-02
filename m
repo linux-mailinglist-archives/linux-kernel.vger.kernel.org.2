@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C3E32A251
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EA332A252
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837148AbhCBHey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
+        id S1837157AbhCBHfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349316AbhCBHQZ (ORCPT
+        with ESMTP id S1376307AbhCBHQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:16:25 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD93C061794;
-        Mon,  1 Mar 2021 23:14:06 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id b13so14701832edx.1;
-        Mon, 01 Mar 2021 23:14:06 -0800 (PST)
+        Tue, 2 Mar 2021 02:16:50 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C397C0617A7
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 23:16:09 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id w1so33244972ejf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 23:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Vwbv3+RIeGnp+Qm+N740tpu/JEP5WHksMGMUdFIRhJc=;
-        b=jUKP8s1sarYU4xlbJaaZ00DQEEQvcYj+Om1m+33Zs5h8rSl5Y7bKYs11hGCIDMIO3C
-         Y66hFgY0HkmLgQxKU8Jq8UbjWkJMYCvq44rL4RoefWc5O2ZZq1RhCiHyhNG3Cm9rF0UB
-         M3tzoV8rvGAPlC2dqtGYVpFsssQCTrpmR5hWU5BGlKvxspl+1T0N0uAwMTqDpac8rOdl
-         ypc9SBjqLmXcacNE4ExiPFjdPXRsfOX97t3IUj87ST36sAqTyEOEY8OPdOy7HlrQusst
-         F9jrflEaRQF0ICYotrVTfWQnfftsBAxYRP9WgOG2KLk15tPBuKCKLb31L4kWuIZv83Oq
-         gNEQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dhQ/p75iCVhXBur2ISu19bCShY4YhNyufyyRn+NVer8=;
+        b=np7mVVDgFoC//buHBjMD6mjKSLoEMzDr9XlMeQLyxONxiMzk0qpLpB4ugocDonMTO6
+         JzpD9jU0RO40wY5209HANQdSSyP2MdNCqDiwvJp4kqdLQxIk8IjUW4jpMGG88KcliNR9
+         3tfzLfXQ14Efwl6Wnq1yawlBKFIJI0HlECw0ctBgv9rGiCWI1Eyqrh8WTLZWP7gIg9QG
+         HnceW1Iex3XYzx5UVBciU4u5ou7iaQx3Zt0Akc+RDe2MEvYZ4xCvkE0wkMN9yJ4jX0Pk
+         X9qW9Y9ysEUq+p03g5CS5OmDSHrU7w6G1Q6fEnzWsKkw4T6YpwzzJbHpfpxrd8Yu2TjU
+         CbwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=Vwbv3+RIeGnp+Qm+N740tpu/JEP5WHksMGMUdFIRhJc=;
-        b=PFlMSpfJVWeEiczdnB5heD3l9iUcOio8TQQqH4RiUH1pEuC6rHeVBMpC5vOwhiKaUG
-         skC+C3A2JdnTEFiHYnYruynvUaPwEEmJu66IvUCfq5xAKLcbTgPnh4s9NJqINi/zrW35
-         ehCGpKy2be8MjXN8h1ZkEZ7VojyAajCCjC/kPLPHHkzfzEiZT5jyI8bF4ZlPfIqerInB
-         ZzTck0AK+cnlp+MSO2tRA74umrfZi9bTpho/SMMQ+67qz/4W61hoAwBTe37jwzonhQCX
-         2C1FL+dIukzMcR5N0Xlt2Kfcsd9FttZSSW+RE5Sg8K8cYrx0qIA93c1IpXO+4t1P7uW4
-         cRXA==
-X-Gm-Message-State: AOAM533rTJLu0N4mwoz4voFCtXTejNPty9x0WctoOEDfBFRZWxyqivAw
-        NAk4IYRxBrsTu612erSqSlQ=
-X-Google-Smtp-Source: ABdhPJwdfu1EOMlB2kYFyjgDmJH0n2894BrgXz6mft2zGdaNW4xunkGTWnubQit28Wf0La17ye3A2w==
-X-Received: by 2002:aa7:ce8a:: with SMTP id y10mr10613979edv.66.1614669245354;
-        Mon, 01 Mar 2021 23:14:05 -0800 (PST)
-Received: from gmail.com (20014C4E1C864000F9B8756A94F10216.dsl.pool.telekom.hu. [2001:4c4e:1c86:4000:f9b8:756a:94f1:216])
-        by smtp.gmail.com with ESMTPSA id y12sm10708502ejb.104.2021.03.01.23.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 23:14:03 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 2 Mar 2021 08:14:01 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        paulmck@kernel.org, mhocko@suse.com,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v2 3/3] kernel/smp: add more data to CSD lock debugging
-Message-ID: <20210302071401.GA2257965@gmail.com>
-References: <20210301101336.7797-1-jgross@suse.com>
- <20210301101336.7797-4-jgross@suse.com>
- <YD0fTLnQTQ7/M7fx@hirez.programming.kicks-ass.net>
- <c7c1eeb5-21b3-339b-4b25-a6c8df820146@suse.com>
- <YD1SJNDeGcNOO00s@hirez.programming.kicks-ass.net>
- <20210302070559.GB2809110@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dhQ/p75iCVhXBur2ISu19bCShY4YhNyufyyRn+NVer8=;
+        b=PMYkV55co/V5Fz86WO6EKramnUan1gRqOHczQK4p/v1GY9ow8fJIotyPsgh8D5PDYE
+         ap3p7CEMEbEdmnLhiXhpADT6F+94WJnu7MnjYZxnZpFrard9coADQCOph6KJEpMUtWZ+
+         5Tau63ji1T8ERSXVejC4WnRcqw6lEIlwAU7wjg7DLv26tlzSpsybn5F59twIwz9d7lNG
+         oUtVvwEVFeeowCy6cJgYlpHQAEDrhw5gb1fztaDxhfoEExeFKnyiMy38CsHmXB4Y3B4I
+         5vmyuLb004L+dnsQlQlVWZeqfjrEBnKp3zzEud4dI47EQmHwNzPFrVJ2qQHFI767K8Wj
+         6WLw==
+X-Gm-Message-State: AOAM531sWcvUYW7GZbEZNCvA/4Ci6ESaZJ1EgCHQ+XdaZQcU5MLuNIlY
+        ZQXFVc199TZCRGIYXGp3bTsKWrL6p6zRy9DAkJF4Bw==
+X-Google-Smtp-Source: ABdhPJyVxmsihpy1kqY+kqI95RR2JeFZi+7jFFVwsJ1WASqnYtD7E6XB1O6s0LzMWjFVen/J3v9lOeEqeY4wZGVfrBw=
+X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr19675329ejo.247.1614669367668;
+ Mon, 01 Mar 2021 23:16:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210302070559.GB2809110@gmail.com>
+References: <20210301193642.707301430@linuxfoundation.org>
+In-Reply-To: <20210301193642.707301430@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Mar 2021 12:45:55 +0530
+Message-ID: <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2 Mar 2021 at 01:21, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.20 release.
+> There are 661 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.20-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-* Ingo Molnar <mingo@kernel.org> wrote:
 
-> 
-> * Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Mon, Mar 01, 2021 at 08:16:12PM +0100, Jürgen Groß wrote:
-> > > >    https://lkml.kernel.org/r/20210220231712.2475218-2-namit@vmware.com
-> > > 
-> > > They are already in tip locking/core (Ingo applied them).
-> > 
-> > I'm very tempted to undo that :-(
-> 
-> Sorry about that - I'm sorting out the conflicts with the concurrent TLB 
-> flush series.
+Results from Linaro=E2=80=99s test farm.
+Regressions detected on all devices (arm64, arm, x86_64 and i386).
 
-I've resolved them in:
+hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
 
-  8dbac5da2796: ("Merge branch 'locking/core' into x86/mm, to resolve conflicts")
+This failure is specific to stable-rc 5.10 and 5.11.
+Test PASS on mainline and Linux next kernel.
 
-Will push it out after a bit of testing.
+Summary
+------------------------------------------------------------------------
 
-Thanks,
+kernel: 5.10.20-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.10.y
+git commit: 92929e15cdc088938051b73538d9d4d60844f9d4
+git describe: v5.10.19-662-g92929e15cdc0
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
+.y/build/v5.10.19-662-g92929e15cdc0
 
-	Ingo
+Regressions (compared to build v5.10.19)
+------------------------------------------------------------------------
+
+  ltp-pty-tests:
+    * hangup01
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
