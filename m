@@ -2,26 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DC432A1F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA79C32A1FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349332AbhCBHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:15:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39622 "EHLO mx2.suse.de"
+        id S1349359AbhCBHP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:15:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39636 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835864AbhCBGXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:23:51 -0500
+        id S1835866AbhCBGX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:23:59 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 92E86AFCC;
+        by mx2.suse.de (Postfix) with ESMTP id D963FAFD7;
         Tue,  2 Mar 2021 06:22:17 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 13/44] tty: 8250/serial_cs, propagate errors in simple_config
-Date:   Tue,  2 Mar 2021 07:21:43 +0100
-Message-Id: <20210302062214.29627-13-jslaby@suse.cz>
+        Jiri Slaby <jslaby@suse.cz>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH 14/44] net: caif: inline register_ldisc
+Date:   Tue,  2 Mar 2021 07:21:44 +0100
+Message-Id: <20210302062214.29627-14-jslaby@suse.cz>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302062214.29627-1-jslaby@suse.cz>
 References: <20210302062214.29627-1-jslaby@suse.cz>
@@ -31,46 +33,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The caller expects from the others (pfc_config and multi_config) to
-return standard error values. So do the same for simple_config too.
-
-We invert the if condition to handle the error case.
+register_ldisc only calls tty_register_ldisc. Inline register_ldisc into
+the only caller of register_ldisc, i.e. caif_ser_init. Now,
+caif_ser_init is symmetric to caif_ser_exit in this regard.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
 ---
- drivers/tty/serial/8250/serial_cs.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/caif/caif_serial.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8250/serial_cs.c
-index 35ff6627c61b..63ea9c4da3d5 100644
---- a/drivers/tty/serial/8250/serial_cs.c
-+++ b/drivers/tty/serial/8250/serial_cs.c
-@@ -456,11 +456,11 @@ static int simple_config(struct pcmcia_device *link)
- 	 * its base address, then try to grab any standard serial port
- 	 * address, and finally try to get any free port.
- 	 */
--	if (!pcmcia_loop_config(link, simple_config_check_notpicky, NULL))
--		goto found_port;
+diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
+index 675c374b32ee..da6fffb4d5a8 100644
+--- a/drivers/net/caif/caif_serial.c
++++ b/drivers/net/caif/caif_serial.c
+@@ -389,18 +389,6 @@ static struct tty_ldisc_ops caif_ldisc = {
+ 	.write_wakeup =	ldisc_tx_wakeup
+ };
+ 
+-static int register_ldisc(void)
+-{
+-	int result;
 -
--	dev_warn(&link->dev, "no usable port range found, giving up\n");
--	return -1;
-+	ret = pcmcia_loop_config(link, simple_config_check_notpicky, NULL);
-+	if (ret) {
-+		dev_warn(&link->dev, "no usable port range found, giving up\n");
-+		return ret;
-+	}
+-	result = tty_register_ldisc(N_CAIF, &caif_ldisc);
+-	if (result < 0) {
+-		pr_err("cannot register CAIF ldisc=%d err=%d\n", N_CAIF,
+-			result);
+-		return result;
+-	}
+-	return result;
+-}
+ static const struct net_device_ops netdev_ops = {
+ 	.ndo_open = caif_net_open,
+ 	.ndo_stop = caif_net_close,
+@@ -443,7 +431,10 @@ static int __init caif_ser_init(void)
+ {
+ 	int ret;
  
- found_port:
- 	if (info->multi && (info->manfid == MANFID_3COM))
-@@ -474,7 +474,7 @@ static int simple_config(struct pcmcia_device *link)
- 
- 	ret = pcmcia_enable_device(link);
- 	if (ret != 0)
--		return -1;
-+		return ret;
- 	return setup_serial(link, info, link->resource[0]->start, link->irq);
+-	ret = register_ldisc();
++	ret = tty_register_ldisc(N_CAIF, &caif_ldisc);
++	if (ret < 0)
++		pr_err("cannot register CAIF ldisc=%d err=%d\n", N_CAIF, ret);
++
+ 	debugfsdir = debugfs_create_dir("caif_serial", NULL);
+ 	return ret;
  }
- 
 -- 
 2.30.1
 
