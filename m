@@ -2,80 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D2732A4AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CB632A4AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838485AbhCBKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:55:00 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36324 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383052AbhCBKqK (ORCPT
+        id S1838493AbhCBKzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:55:01 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45132 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1383146AbhCBKqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:46:10 -0500
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614681928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vSOy8dFeOWs2dUYht0tqtF69xzoKC+eQy2xuFHyua5I=;
-        b=Y6pmBHMmwv8wUtkfhespjgY/x6QS9e35XcglBRIUOp2I+XS9TXMGCMMMB0p5GB+v7X3qCC
-        mbAzXSdYQyT2ucsI03h/edoxdZppVl4N8+/hfbCUPuzqumqBq/F3Ek5exG/O5TIeaBtLcl
-        cCfunqwhLVa4VYPyQJv/XqDOsSuC+jJ8236Ef5i1WX6D3PCa6MNmLYZkPzLQPkd3C96rxU
-        e4wWxawSMHaj5IJv7iNZUwhN2sgYyCPhlJzTJuWAkhpDqsp7U1sCL1oeh30PMwCjEqvCXX
-        7zQtRQI1vwab/ahWbsm6EBF2tsBt1/crPwz4ynYy3efJZrODPTdX3cX+5M8IxQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614681928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vSOy8dFeOWs2dUYht0tqtF69xzoKC+eQy2xuFHyua5I=;
-        b=GXOfiVqk2mYR6O83D5argptmP1sp4qvmGQZHwJ/9nP5x+tH7n5o31BZ9g2mQ0Kqfp//m3W
-        zjM5bqhiwrRtomCQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH next v3 02/15] mtd: mtdoops: synchronize kmsg_dumper
-In-Reply-To: <YDzaYqrk3Dv37uDa@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de> <20210225202438.28985-3-john.ogness@linutronix.de> <YDzaYqrk3Dv37uDa@alley>
-Date:   Tue, 02 Mar 2021 11:45:27 +0100
-Message-ID: <87tuptq1fc.fsf@jogness.linutronix.de>
+        Tue, 2 Mar 2021 05:46:51 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 752251F454D8
+Subject: Re: [PATCH 1/2] iio: cros_ec: do an early exit if not physical_device
+ case
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        bleung@chromium.org, groeck@chromium.org, gwendal@chromium.org
+References: <20201123144017.18311-1-alexandru.ardelean@analog.com>
+ <20210221162905.65be88d0@archlinux>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <408e9b87-0528-141a-1fa6-ca8c2a0b1c69@collabora.com>
+Date:   Tue, 2 Mar 2021 11:46:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210221162905.65be88d0@archlinux>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
->> The kmsg_dumper can be called from any context and CPU, possibly
->> from multiple CPUs simultaneously. Since the writing of the buffer
->> can occur from a later scheduled work queue, the oops buffer must
->> be protected against simultaneous dumping.
->> 
->> Use an atomic bit to mark when the buffer is protected. Release the
->> protection in between setting the buffer and the actual writing in
->> order for a possible panic (immediate write) to be written during
->> the scheduling of a previous oops (delayed write).
->
-> Just to be sure. You did not use spin lock to prevent problems
-> with eventual double unlock in panic(). Do I get it correctly,
-> please?
+Hi all,
 
-I do not understand what possible double unlock you are referring to.
+On 21/2/21 17:29, Jonathan Cameron wrote:
+> On Mon, 23 Nov 2020 16:40:16 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> 
+>> This whole code-block was put under one big if() condition/block.
+>> This change does an early return if the 'physical_device' boolean is false,
+>> thus unindenting the block by one level.
+>>
+>> No other functional change has been done.
+>>
+>> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> @Gwendal, others  This series from Alex has been outstanding for a while
+> but may well still apply.
+> Ideally looking for an ack.
+> 
 
-I chose not to use spinlocks because I wanted something that does not
-cause any scheduling or preemption side-effects for mtd. The mtd dumper
-sometimes dumps directly, sometimes delayed (via scheduled work), and
-they use different mtd callbacks in different contexts.
+This looks good to me.
 
-mtd_write() expects to be called in a non-atomic context. The callbacks
-can take a mutex.
+Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-John Ogness
+Thanks,
+ Enric
+
+> Thanks,
+> 
+> Jonathan
+>  
+>> ---
+>>  .../cros_ec_sensors/cros_ec_sensors_core.c    | 161 +++++++++---------
+>>  1 file changed, 81 insertions(+), 80 deletions(-)
+>>
+>> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+>> index 5c6c4e6fec9b..9470014936f2 100644
+>> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+>> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+>> @@ -287,89 +287,90 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
+>>  
+>>  	indio_dev->name = pdev->name;
+>>  
+>> -	if (physical_device) {
+>> -		state->param.cmd = MOTIONSENSE_CMD_INFO;
+>> -		state->param.info.sensor_num = sensor_platform->sensor_num;
+>> -		ret = cros_ec_motion_send_host_cmd(state, 0);
+>> -		if (ret) {
+>> -			dev_warn(dev, "Can not access sensor info\n");
+>> +	if (!physical_device)
+>> +		return 0;
+>> +
+>> +	state->param.cmd = MOTIONSENSE_CMD_INFO;
+>> +	state->param.info.sensor_num = sensor_platform->sensor_num;
+>> +	ret = cros_ec_motion_send_host_cmd(state, 0);
+>> +	if (ret) {
+>> +		dev_warn(dev, "Can not access sensor info\n");
+>> +		return ret;
+>> +	}
+>> +	state->type = state->resp->info.type;
+>> +	state->loc = state->resp->info.location;
+>> +
+>> +	/* Set sign vector, only used for backward compatibility. */
+>> +	memset(state->sign, 1, CROS_EC_SENSOR_MAX_AXIS);
+>> +
+>> +	for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
+>> +		state->calib[i].scale = MOTION_SENSE_DEFAULT_SCALE;
+>> +
+>> +	/* 0 is a correct value used to stop the device */
+>> +	if (state->msg->version < 3) {
+>> +		get_default_min_max_freq(state->resp->info.type,
+>> +					 &frequencies[1],
+>> +					 &frequencies[2],
+>> +					 &state->fifo_max_event_count);
+>> +	} else {
+>> +		frequencies[1] = state->resp->info_3.min_frequency;
+>> +		frequencies[2] = state->resp->info_3.max_frequency;
+>> +		state->fifo_max_event_count =
+>> +		    state->resp->info_3.fifo_max_event_count;
+>> +	}
+>> +	for (i = 0; i < ARRAY_SIZE(frequencies); i++) {
+>> +		state->frequencies[2 * i] = frequencies[i] / 1000;
+>> +		state->frequencies[2 * i + 1] =
+>> +			(frequencies[i] % 1000) * 1000;
+>> +	}
+>> +
+>> +	if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
+>> +		/*
+>> +		 * Create a software buffer, feed by the EC FIFO.
+>> +		 * We can not use trigger here, as events are generated
+>> +		 * as soon as sample_frequency is set.
+>> +		 */
+>> +		struct iio_buffer *buffer;
+>> +
+>> +		buffer = devm_iio_kfifo_allocate(dev);
+>> +		if (!buffer)
+>> +			return -ENOMEM;
+>> +
+>> +		iio_device_attach_buffer(indio_dev, buffer);
+>> +		indio_dev->modes = INDIO_BUFFER_SOFTWARE;
+>> +
+>> +		ret = cros_ec_sensorhub_register_push_data(
+>> +				sensor_hub, sensor_platform->sensor_num,
+>> +				indio_dev, push_data);
+>> +		if (ret)
+>>  			return ret;
+>> -		}
+>> -		state->type = state->resp->info.type;
+>> -		state->loc = state->resp->info.location;
+>>  
+>> -		/* Set sign vector, only used for backward compatibility. */
+>> -		memset(state->sign, 1, CROS_EC_SENSOR_MAX_AXIS);
+>> +		ret = devm_add_action_or_reset(
+>> +				dev, cros_ec_sensors_core_clean, pdev);
+>> +		if (ret)
+>> +			return ret;
+>>  
+>> -		for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
+>> -			state->calib[i].scale = MOTION_SENSE_DEFAULT_SCALE;
+>> -
+>> -		/* 0 is a correct value used to stop the device */
+>> -		if (state->msg->version < 3) {
+>> -			get_default_min_max_freq(state->resp->info.type,
+>> -						 &frequencies[1],
+>> -						 &frequencies[2],
+>> -						 &state->fifo_max_event_count);
+>> -		} else {
+>> -			frequencies[1] = state->resp->info_3.min_frequency;
+>> -			frequencies[2] = state->resp->info_3.max_frequency;
+>> -			state->fifo_max_event_count =
+>> -			    state->resp->info_3.fifo_max_event_count;
+>> -		}
+>> -		for (i = 0; i < ARRAY_SIZE(frequencies); i++) {
+>> -			state->frequencies[2 * i] = frequencies[i] / 1000;
+>> -			state->frequencies[2 * i + 1] =
+>> -				(frequencies[i] % 1000) * 1000;
+>> -		}
+>> -
+>> -		if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
+>> -			/*
+>> -			 * Create a software buffer, feed by the EC FIFO.
+>> -			 * We can not use trigger here, as events are generated
+>> -			 * as soon as sample_frequency is set.
+>> -			 */
+>> -			struct iio_buffer *buffer;
+>> -
+>> -			buffer = devm_iio_kfifo_allocate(dev);
+>> -			if (!buffer)
+>> -				return -ENOMEM;
+>> -
+>> -			iio_device_attach_buffer(indio_dev, buffer);
+>> -			indio_dev->modes = INDIO_BUFFER_SOFTWARE;
+>> -
+>> -			ret = cros_ec_sensorhub_register_push_data(
+>> -					sensor_hub, sensor_platform->sensor_num,
+>> -					indio_dev, push_data);
+>> -			if (ret)
+>> -				return ret;
+>> -
+>> -			ret = devm_add_action_or_reset(
+>> -					dev, cros_ec_sensors_core_clean, pdev);
+>> -			if (ret)
+>> -				return ret;
+>> -
+>> -			/* Timestamp coming from FIFO are in ns since boot. */
+>> -			ret = iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
+>> -			if (ret)
+>> -				return ret;
+>> -		} else {
+>> -			const struct attribute **fifo_attrs;
+>> -
+>> -			if (has_hw_fifo)
+>> -				fifo_attrs = cros_ec_sensor_fifo_attributes;
+>> -			else
+>> -				fifo_attrs = NULL;
+>> -
+>> -			/*
+>> -			 * The only way to get samples in buffer is to set a
+>> -			 * software trigger (systrig, hrtimer).
+>> -			 */
+>> -			ret = devm_iio_triggered_buffer_setup_ext(
+>> -					dev, indio_dev, NULL, trigger_capture,
+>> -					NULL, fifo_attrs);
+>> -			if (ret)
+>> -				return ret;
+>> -		}
+>> +		/* Timestamp coming from FIFO are in ns since boot. */
+>> +		ret = iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
+>> +		if (ret)
+>> +			return ret;
+>> +	} else {
+>> +		const struct attribute **fifo_attrs;
+>> +
+>> +		if (has_hw_fifo)
+>> +			fifo_attrs = cros_ec_sensor_fifo_attributes;
+>> +		else
+>> +			fifo_attrs = NULL;
+>> +
+>> +		/*
+>> +		 * The only way to get samples in buffer is to set a
+>> +		 * software trigger (systrig, hrtimer).
+>> +		 */
+>> +		ret = devm_iio_triggered_buffer_setup_ext(
+>> +				dev, indio_dev, NULL, trigger_capture,
+>> +				NULL, fifo_attrs);
+>> +		if (ret)
+>> +			return ret;
+>>  	}
+>>  
+>>  	return 0;
+> 
