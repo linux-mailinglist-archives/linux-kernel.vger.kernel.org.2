@@ -2,98 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CC532AB88
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D60BD32ABEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837000AbhCBU3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244743AbhCBRkL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:40:11 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA31C061356
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:39:10 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id g27so21255349iox.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f1fS5NpFbu6beXKjjCtL5o94IGkB8gbIgEDDeVSe160=;
-        b=jKSeCamb1tJMFb0v1+PCv4F4YShNUZG9qJIWxNEnlJkUpgAtZyugNZqvNVGa1nmr9X
-         B7pPwjROdcsb8k3Ie8e7fmAiFLko64dBr6k2et3Zcq6TU0KzYFMkHxfhAkCW7J7Kjtux
-         I1ourN6WVpzqF+OaduKSxTCqkrE0JccUZTaPs8v7AJLp1+mVwW6jamTFdH9FD/dgHWBv
-         4ROKt0FlgVx9cro++Zpmcmi5FZBFc4ucK0jPKpPj5BsIVSFwtgmAoSuIdKI3OEKI4C03
-         Nttmn7QJE07PhfXtlP3qbOlqr0ZbLT44FkmynwtRFILLyj7v3HRl+XbLk0aj33cVDgDX
-         SUlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f1fS5NpFbu6beXKjjCtL5o94IGkB8gbIgEDDeVSe160=;
-        b=rI8sW/ee+LSxnRu6wHLTdSB57j/OnNr547y+gq9OSGvNLgjnwgHWi0qWgthwR0qe+P
-         xX+SlE8gteAZ0tmtWKhoSDV8jyDEAXBHKOfTFWMWdeqFuaVX4RrTKaYT4fo4k1Vcs3V7
-         skAQ1kdTEUn4CnSR5zYP6t4EHqhAw6StRHWyGC1INc6xYvHmmyYmWOXNcz7sRDZKMMi8
-         gzY6Vi1GC5vIcic0vs8vhpnBDfKFkBa4EVR6nhPj6Mo4gbxMsRS8YebMmZntVQF3taCE
-         8YoHqX8bRA3wemTR9tAIjWYXLpPIUL8Rq2R8fqYFiKZcbWtIzZKLXCeQ9l4O1cS21jsQ
-         PFAQ==
-X-Gm-Message-State: AOAM530mpPQb2jmO6I5Xmlrw8krTwzsDZlaF8MqHoEmWdvtO9lgwtprB
-        O1ZtIIkYAaidZOhQqANqoPxIGQ==
-X-Google-Smtp-Source: ABdhPJwYx646uI12383G6cXSip/WSHz1MeSEL1EHGinB9nkBLqNAFX2x4OtiP3kVoYD4w8LG46nOSQ==
-X-Received: by 2002:a05:6638:3809:: with SMTP id i9mr1973536jav.24.1614706749753;
-        Tue, 02 Mar 2021 09:39:09 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id w6sm10882380ilm.38.2021.03.02.09.39.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 09:39:09 -0800 (PST)
-Subject: Re: [PATCH 4.19 21/57] proc: dont allow async path resolution of
- /proc/self components
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        yangerkun <yangerkun@huawei.com>,
-        Cheng Jian <cj.chengjian@huawei.com>
-References: <20201201084647.751612010@linuxfoundation.org>
- <20201201084650.205087954@linuxfoundation.org>
- <cced67ae-ceca-3812-121c-70e0ed104f49@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <395dd137-70d5-e915-92b5-b2a18f44badc@kernel.dk>
-Date:   Tue, 2 Mar 2021 10:39:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <cced67ae-ceca-3812-121c-70e0ed104f49@huawei.com>
-Content-Type: text/plain; charset=utf-8
+        id S1381559AbhCBU5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:57:23 -0500
+Received: from mail-mw2nam10on2119.outbound.protection.outlook.com ([40.107.94.119]:63808
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1580354AbhCBSCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 13:02:30 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VfmxKpHDGexfiwOqSxP7/sGFrEbEfWk/JO4FfQ9N35wbfZBuN+ALsY6hfq/m4UAEsZL0Od5Cg3C7i08SegrVou0c5DtR7jeIv80HsOKLERlMta0T1+xl4SYHzg2DcPkmT44WLdgOaJdSFhss7RItJTz5nPkc2fdJiN/dfAvnTJpIkC65+rgr94Q2NUlH0KyVaAFHXdqQ+iTZk+cga8Nbu1LLE5T7hRUxDEMou8szIARiTSymsH+CgU0G3FmdT1wE3pigUflVkPjttxiKqXmB8qq3T9NkHoFU++d6OLntECSRODwqxk82eRgt3K4lnflgc529rhLoC9K3OwZZLeRkyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5AgdkcVM16c2bLY9JmelK/tCxgxV8JdYipOL2/QmorM=;
+ b=nNQ6tBd2MvsjSkCgumM01+f5QRhSqmWxE8Vj3Ni7TTuuPtkJmQcSx2+EFbMrN50HsvpaCpxrp2bzjPjdKuQbosnlsh9tknHyPriX/R2EDubVPjO/FHCwSbkkGss3i/9LVnwivT7p817zSnnYSsqxdrUqSJvRYDWymgz7ez1M54ERvoXK7SNlpedFYLNaRhmm8P7lUHb13S7c+0VVVlJ6iClxTL6DcEsZLsRbsAdB/sFy7ACVFoFgR7P4wQtUdDhkpJLoA2V6lge1NSZiR3UatPbAH+41efcBWjre75VnKKrzWsWxLfZChA6J3np+jibTfoA7w6A7CmVbOqX5gqQyOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5AgdkcVM16c2bLY9JmelK/tCxgxV8JdYipOL2/QmorM=;
+ b=WXTJFlBxeJpxuKmM5YTp1kUSIY+Ui0E1C7CJqsqrcT1H97EGpaiKyL4E9xt9xTcA+enLdCqXAYWPlPyyzQczASQXPQu3vIuzJJXj1nWFgPY6wquvWPRA0EZUY6E0RlAKbgzColXG57qhuT+dHEstc/C2koAbGxD8Y9q3is1gGHw=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW4PR21MB1970.namprd21.prod.outlook.com (2603:10b6:303:70::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.8; Tue, 2 Mar
+ 2021 17:42:30 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3912.016; Tue, 2 Mar 2021
+ 17:42:30 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     vkuznets <vkuznets@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: RE: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 01/10] Drivers:
+ hv: vmbus: Move Hyper-V page allocator to arch neutral code
+Thread-Topic: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 01/10] Drivers:
+ hv: vmbus: Move Hyper-V page allocator to arch neutral code
+Thread-Index: AQHXDjhypGARyrRKUEOuG2wtOqcDE6pwqqAAgABO05A=
+Date:   Tue, 2 Mar 2021 17:42:30 +0000
+Message-ID: <MWHPR21MB1593AE5172A203C3D62B8C06D7999@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
+ <1614561332-2523-2-git-send-email-mikelley@microsoft.com>
+ <87r1kxemsj.fsf@vitty.brq.redhat.com>
+In-Reply-To: <87r1kxemsj.fsf@vitty.brq.redhat.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-02T17:42:29Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0f5b1eca-52c1-40cf-acc5-83b4d2934451;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3f134cbf-1db0-431e-9b68-08d8dda28df7
+x-ms-traffictypediagnostic: MW4PR21MB1970:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW4PR21MB1970060681BF30CF7401A5EBD7999@MW4PR21MB1970.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /wWoRiIpjER4vE8mA8WpNF54binYcDcQpga/+eOAXpDjpoBy7D8KoRWd8kTDmkT7FAYL52G0jVsTBr4hfT0k1iYxOUyOGpk/t4vO4s3D0vKN9Lid7wNrGwam+N2LhfN3CwBMSg+OM/OvgSAGodFccVluUS6eEEERpQbWgYbhlgE1XUPj8ujX/9wEt05RFUwXkGjkEReQekQ2+fymGGtTvpMuF1rUci6eR0BzYfx4xZD+S4iCfL9Lr6RwI3FbzY5bum0jBctl56IrtTWZVhXSS8fk0b5au9ypgY1vBOa+7cV/PnDGRtozaOog+MeG/LdnMFIfRKQad5F8LoQT6Hss8+06FTaOSiCNHcZ/eqPRrV81HtAMm24RB6JMugvOlZG0tLZjYbI7492EySKPRBa0Bbg2i7hWxtTh3ttlWlO1I91C7C624O96OIAsP5fIdgHJdEAaVcAFh5K33+STrqLfZMz8u8jyWru5ZByI0bZAa0daaNNRjxk5aOTJhL2UixzHo3WfIaKvXyoRpNeROP7mHsSc2lmpoa5GchCris0olzTFzZwVZPBTkxc6Gl76BuUECVCNYZBmj/Wx4Bj92aVI3BGBcyetbp3BKDFC/Y0AnHDq1XP3Rbs2VwY0le2kUN12
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(39860400002)(346002)(9686003)(7696005)(71200400001)(55016002)(2906002)(5660300002)(76116006)(54906003)(66946007)(10290500003)(4326008)(8936002)(82960400001)(82950400001)(6506007)(52536014)(86362001)(26005)(66476007)(8676002)(64756008)(66446008)(66556008)(478600001)(83380400001)(33656002)(186003)(8990500004)(316002)(6916009)(7416002)(184083001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?tjgcGuREFzajcF8e9MVV0l3DsjiXhPrJp+KfB2Gzt0735n+/j1XY8Z/uY5od?=
+ =?us-ascii?Q?HcSdnwtMXDwvCkyBkve4v4eWvvpcNnGFx5MfL6A6YHBq5hPCQSs2x5jJTETx?=
+ =?us-ascii?Q?1uE1aBp1wmA/M5iTRzE9twUuMlLCKKJ2T2MWs8hvzBS+LfHj9g1FJ/E7jQH7?=
+ =?us-ascii?Q?5DmXd2jNxu7fTe7+/4bNSZ9uoUKb3Jl1JNE5fKlTrUjUeZ99oQpV3HqMF8zm?=
+ =?us-ascii?Q?MK3r9XmN4BHuaozhrbYbCMzXzC4dfqO8K2kU6PdLNFDmo5QWlspi1w4Ax18C?=
+ =?us-ascii?Q?knMQqN5vItmYrUbrsbgkZIux8+yCC0tinPTPmW0VOnoLFfmv470irRdPp9ZM?=
+ =?us-ascii?Q?UbyrPY6UH8oCb5hYmjwKsYFE1FfSelqzfkVfO+r1KX5N2vHsCdnGEzzU8lHD?=
+ =?us-ascii?Q?KuyofK+nM3UBXmnJgekBPc00+FTS1sxEECCrZYV08mtvOmZXnkpu95u1tpy2?=
+ =?us-ascii?Q?sb1e0r/lEOVjgGNG3zXE5Dc6WdWjAhX2VL//zJbcP/1EzAFYknjYyhNRHGS0?=
+ =?us-ascii?Q?sp8vSrc2yv3YVAHLdUK+phs1F3gxYSgYG8htNkZTa8RnJq7tvvxGEwO46q7C?=
+ =?us-ascii?Q?AjVfHSGhynM85VwqTxUrl2BO/CUtJOeRnPgZ9iYCvagqAgzOAiwOLvA4QxLr?=
+ =?us-ascii?Q?1JSNTurMUS98gBFBCDJ0NEN5S7F0N/+lcOfBxEQSLsH44tOdIrkres4NzA7+?=
+ =?us-ascii?Q?Lw+Y7qJpmzStCzMHeUwVKDOCYbBK3zEFZFUL+nO589yElmINegmSpVmiGk1X?=
+ =?us-ascii?Q?Do4aN4uyOZKCbHFBXi2i5641/fabscP/qaT23piw0PfZbm3cA3PlZOsoZ8V8?=
+ =?us-ascii?Q?BJUPzgSGLOy6gXP+1DaKihbtdLBkk9JrQqYsAKNNTdd6fSXPm1IYcsq1zUvM?=
+ =?us-ascii?Q?3HCDH/ZuGcti9WfVppg6/DzZ7xPdaPhmTXyFJJjmxFa1J854EgLFZsKgz5ou?=
+ =?us-ascii?Q?V8IonovGrcBZLXDJnKtaGqS9pKW1/ArdjYNOaULBAMfZKbCJHGagy3qPN/3h?=
+ =?us-ascii?Q?gdTEspGMScCVwVNFT8qfzcFw3m070/TMdfk8AF3KfWj3+uUfpJsRL++8++3p?=
+ =?us-ascii?Q?pBlBnpdhajnv9iL/LydgpIBUcKtRZNs8EiUBDuL6IvXANYbBenQXfyhXIPHD?=
+ =?us-ascii?Q?WVQJN2K69m8sR2usFBrmt2vZ4fKCD9DvxK68ooQZ1bkWPdJfCC3l7N5wJ2t3?=
+ =?us-ascii?Q?BJBaxtlryAIg36OlBTeQzgThYtqRYhtVOpMgraa7g3IXkqI6+fTBhtE8jaoB?=
+ =?us-ascii?Q?1yND2P5bd4D5bqME35MX4WbvDn8TX562qAVkhRgEzIdefdBwJKlz/eAMgbXx?=
+ =?us-ascii?Q?4hawQMKd2j9/WkyaITL4pQgT?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f134cbf-1db0-431e-9b68-08d8dda28df7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2021 17:42:30.8350
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F1V9a9Vf+46jzupzdqAYN4ND54pYkCWNakH4weyb9+FW6YBmHN48QU3qU//sWA35SvHM/hIPVSaihc2UdZkZQSALhzMKf/kKZ3wP8xue6Sc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1970
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 1:40 AM, Yang Yingliang wrote:
-> Hi,
-> 
-> On 2020/12/1 16:53, Greg Kroah-Hartman wrote:
->> From: Jens Axboe <axboe@kernel.dk>
->>
->> [ Upstream commit 8d4c3e76e3be11a64df95ddee52e99092d42fc19 ]
->>
->> If this is attempted by a kthread, then return -EOPNOTSUPP as we don't
->> currently support that. Once we can get task_pid_ptr() doing the right
->> thing, then this can go away again.
-> 
-> https://www.spinics.net/lists/io-uring/msg05297.html
-> 
-> This patch seems used for io-wq worker which is merged in
-> 
-> v5.5-rc1, why we need this in linux-4.19.y ?
+From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Tuesday, March 2, 2021 4=
+:57 AM
+>=20
+> Michael Kelley <mikelley@microsoft.com> writes:
+>=20
+> > The Hyper-V page allocator functions are implemented in an architecture
+> > neutral way.  Move them into the architecture neutral VMbus module so
+> > a separate implementation for ARM64 is not needed.
+> >
+> > No functional change.
+> >
+> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> > Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
+> >  arch/x86/hyperv/hv_init.c       | 22 ----------------------
+> >  arch/x86/include/asm/mshyperv.h |  5 -----
+> >  drivers/hv/hv.c                 | 36 +++++++++++++++++++++++++++++++++=
++++
+> >  include/asm-generic/mshyperv.h  |  4 ++++
+> >  4 files changed, 40 insertions(+), 27 deletions(-)
+> >
 
-While that's true, it's also a sane safeguard in general.
+[snip]
 
--- 
-Jens Axboe
+> >
+> >  /*
+> > + * Functions for allocating and freeing memory with size and
+> > + * alignment HV_HYP_PAGE_SIZE. These functions are needed because
+> > + * the guest page size may not be the same as the Hyper-V page
+> > + * size. We depend upon kmalloc() aligning power-of-two size
+> > + * allocations to the allocation size boundary, so that the
+> > + * allocated memory appears to Hyper-V as a page of the size
+> > + * it expects.
+> > + */
+> > +
+> > +void *hv_alloc_hyperv_page(void)
+> > +{
+> > +	BUILD_BUG_ON(PAGE_SIZE <  HV_HYP_PAGE_SIZE);
+> > +
+> > +	if (PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE)
+> > +		return (void *)__get_free_page(GFP_KERNEL);
+> > +	else
+> > +		return kmalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
+>=20
+> PAGE_SIZE and HV_HYP_PAGE_SIZE are known compile-time and in case this
+> won't change in the future we can probably write this as
+>=20
+> #if PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE
+>        return (void *)__get_free_page(GFP_KERNEL);
+> #else
+>        return kmalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
+> #endif
+>=20
+> (not sure if the output is going to be any different with e.g. gcc's '-O2=
+')
+>=20
 
+I looked at the generated code, and the compiler does the right
+thing on both x86/x64 and on ARM64.  I'd rather leave the code
+as is so that both legs of the 'if' statement get checked by the
+compiler regardless of whether PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE.
+
+Michael
+
+> > +}
+> > +
+> > +void *hv_alloc_hyperv_zeroed_page(void)
+> > +{
+> > +	if (PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE)
+> > +		return (void *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+> > +	else
+> > +		return kzalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
+> > +}
+> > +
+> > +void hv_free_hyperv_page(unsigned long addr)
+> > +{
+> > +	if (PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE)
+> > +		free_page(addr);
+> > +	else
+> > +		kfree((void *)addr);
+> > +}
+> > +
+> > +/*
