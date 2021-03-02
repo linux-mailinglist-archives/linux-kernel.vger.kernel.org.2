@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE63E32A7C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B619C32A7D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839524AbhCBQhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:37:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346422AbhCBOLV (ORCPT
+        id S1839753AbhCBQiM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Mar 2021 11:38:12 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:53111 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1448195AbhCBOSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:11:21 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C17CC0617A9
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:02:29 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id q23so24050825lji.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 06:02:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6GuKfB6VrIFzx0x2SM7SwFm03Ow2RDJwKRM+LEP4l/M=;
-        b=Gu2DKChT3WpQASidqhk6P6Xr8vXUHC2t9v+bDGwlpA0n9fNIdsd9l+AihpBjywgMrl
-         IEY/NeWktRbr7HoYpV/7yRH64DiFv/QbO6CFlzy0dfaS/LLwp+yKX/GjHG0Mx6uHFvCf
-         CTLu0smjMYPDhzuAmZtGevSPlqyw8twxkqrKm6n+EtLfK9Rx01IJI0jeZd9qi+dDcZel
-         uzmDGFyeLyzaTtpu2r7+iDLkmyHYVCa4eYnTs4qafO9AcNCmFuS3Vi5GEc2PioW0tqgA
-         b60x8u93g2oYCRKFtGSnXGUbAOatkz3OloSUfyHY2QOxp/hV7o1BQgUI8pggzAm1sm8m
-         afkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6GuKfB6VrIFzx0x2SM7SwFm03Ow2RDJwKRM+LEP4l/M=;
-        b=gocANgTQocvqwUnZS8peQOmF84iKdwHRIEANTVDjOiwN5Bv7mk7zNiVu8kSH4+RNhr
-         XhXlX9YJywL1pPkzh4g5zzGGLoZBtQoAVLbra5LAENtWZTDpta40ZBUNHptFvuPvTtXn
-         Xaax6P1G8wNMjifWxJK5pzC/OtIEToY7+KE0OErEFXFZLIs8WdbRU7TrZ6cxhUCirEho
-         GWWdmk/IhXjEGwabjMRG62r8Q0uxxZpnErirpa/CuipSfT3CSxyi1NYUsg2gtS7a5Kqz
-         wgK+cqv056SRjr5Mr58GRz6OxoWaxWiCeGaEhbEixxcSNDSHfvz1u9Ocp9EApIVqHwl0
-         AvAg==
-X-Gm-Message-State: AOAM531hboxipIL55wrX5vvVTH3KBcQEnoS/0Bg8MWespyN4tPXIZ3um
-        5vMKiIwNeAmkdARMh+OmMBPV8fgSAxYmNl4j0Ske9g==
-X-Google-Smtp-Source: ABdhPJz5wc4+6ewbi0o1MoTMX7hrvfY52o5zB/bj47oH7eR8wYl8CEFdM7rERXtqnVxXNG9pNXBtxAWA1qDSsWbZqk0=
-X-Received: by 2002:a2e:8984:: with SMTP id c4mr6920315lji.456.1614693746481;
- Tue, 02 Mar 2021 06:02:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20210302073733.8928-1-songmuchun@bytedance.com>
-In-Reply-To: <20210302073733.8928-1-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 2 Mar 2021 06:02:14 -0800
-Message-ID: <CALvZod6Aqq_yCjfdbgKb1=Ocd04O=X_tNJ81kzyX77wHzBKBwA@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: fix kernel stack account
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 2 Mar 2021 09:18:52 -0500
+Received: from marcel-macbook.holtmann.net (p4ff9fb90.dip0.t-ipconnect.de [79.249.251.144])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 5FE90CECC8;
+        Tue,  2 Mar 2021 15:11:15 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH 1/2] Bluetooth: Notify suspend on le conn failed
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210301120602.1.Ia32a022edc307a4cb0c93dc18d52b6c5f97db23b@changeid>
+Date:   Tue, 2 Mar 2021 15:03:41 +0100
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-bluetooth@vger.kernel.org,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <5FE82D7B-E67B-4EF2-B0B2-12978BCA5DBE@holtmann.org>
+References: <20210301200605.106607-1-abhishekpandit@chromium.org>
+ <20210301120602.1.Ia32a022edc307a4cb0c93dc18d52b6c5f97db23b@changeid>
+To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 11:52 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> The alloc_thread_stack_node() cannot guarantee that allocated stack pages
-> are in the same node when CONFIG_VMAP_STACK. Because we do not specify
-> __GFP_THISNODE to __vmalloc_node_range().
+Hi Abhishek,
 
-Instead of __GFP_THISNODE, mention that the kernel_clone() passes
-NUMA_NO_NODE which is being used for __vmalloc_node_range().
-
-> Fix it by caling
-
-calling
-
-> mod_lruvec_page_state() for each page one by one.
->
-> Fixes: 991e7673859e ("mm: memcontrol: account kernel stack per node")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-Please follow Michal's suggestion to update the commit message.
-
-After that:
-
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-
+> When suspending, Bluetooth disconnects all connected peers devices. If
+> an LE connection is started but isn't completed, we will see an LE
+> Create Connection Cancel instead of an HCI disconnect. This just adds
+> a check to see if an LE cancel was the last disconnected device and wake
+> the suspend thread when that is the case.
+> 
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Reviewed-by: Archie Pusaka <apusaka@chromium.org>
 > ---
->  kernel/fork.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d66cd1014211..6e2201feb524 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -379,14 +379,19 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
->         void *stack = task_stack_page(tsk);
->         struct vm_struct *vm = task_stack_vm_area(tsk);
->
-> +       if (vm) {
-> +               int i;
->
-> -       /* All stack pages are in the same node. */
-> -       if (vm)
-> -               mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
-> -                                     account * (THREAD_SIZE / 1024));
-> -       else
-> +               BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
-> +
-> +               for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
-> +                       mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
-> +                                             account * (PAGE_SIZE / 1024));
-> +       } else {
-> +               /* All stack pages are in the same node. */
->                 mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
->                                       account * (THREAD_SIZE / 1024));
-> +       }
->  }
->
->  static int memcg_charge_kernel_stack(struct task_struct *tsk)
-> --
-> 2.11.0
->
+> Here is an HCI trace when the issue occurred.
+> 
+> < HCI Command: LE Create Connection (0x08|0x000d) plen 25                                           #187777 [hci0] 2021-02-03 21:42:35.130208
+>        Scan interval: 60.000 msec (0x0060)
+>        Scan window: 60.000 msec (0x0060)
+>        Filter policy: White list is not used (0x00)
+>        Peer address type: Random (0x01)
+>        Peer address: D9:DC:6B:61:EB:3A (Static)
+>        Own address type: Public (0x00)
+>        Min connection interval: 15.00 msec (0x000c)
+>        Max connection interval: 30.00 msec (0x0018)
+>        Connection latency: 20 (0x0014)
+>        Supervision timeout: 3000 msec (0x012c)
+>        Min connection length: 0.000 msec (0x0000)
+>        Max connection length: 0.000 msec (0x0000)
+>> HCI Event: Command Status (0x0f) plen 4                                                           #187778 [hci0] 2021-02-03 21:42:35.131184
+>      LE Create Connection (0x08|0x000d) ncmd 1
+>        Status: Success (0x00)
+> < HCI Command: LE Create Connection Cancel (0x08|0x000e) plen 0                                     #187805 [hci0] 2021-02-03 21:42:37.183336
+>> HCI Event: Command Complete (0x0e) plen 4                                                         #187806 [hci0] 2021-02-03 21:42:37.192394
+>      LE Create Connection Cancel (0x08|0x000e) ncmd 1
+>        Status: Success (0x00)
+>> HCI Event: LE Meta Event (0x3e) plen 19                                                           #187807 [hci0] 2021-02-03 21:42:37.193400
+>      LE Connection Complete (0x01)
+>        Status: Unknown Connection Identifier (0x02)
+>        Handle: 0
+>        Role: Master (0x00)
+>        Peer address type: Random (0x01)
+>        Peer address: D9:DC:6B:61:EB:3A (Static)
+>        Connection interval: 0.00 msec (0x0000)
+>        Connection latency: 0 (0x0000)
+>        Supervision timeout: 0 msec (0x0000)
+>        Master clock accuracy: 0x00
+> ... <skip a few unrelated events>
+> @ MGMT Event: Controller Suspended (0x002d) plen 1                                                 {0x0002} [hci0] 2021-02-03 21:42:39.178780
+>        Suspend state: Controller running (failed to suspend) (0)
+> @ MGMT Event: Controller Suspended (0x002d) plen 1                                                 {0x0001} [hci0] 2021-02-03 21:42:39.178780
+>        Suspend state: Controller running (failed to suspend) (0)
+> ... <actual suspended time>
+> < HCI Command: Set Event Filter (0x03|0x0005) plen 1                                                #187808 [hci0] 2021-02-04 09:23:07.313591
+>        Type: Clear All Filters (0x00)
+> 
+> net/bluetooth/hci_conn.c | 10 ++++++++++
+> 1 file changed, 10 insertions(+)
+
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
+
