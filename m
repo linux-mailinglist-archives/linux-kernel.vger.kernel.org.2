@@ -2,126 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F1B32B6FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AA932B70B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356767AbhCCKsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:48:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
+        id S1356936AbhCCKsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2361018AbhCBXME (ORCPT
+        with ESMTP id S2361103AbhCBXV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 18:12:04 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58237C061756;
-        Tue,  2 Mar 2021 15:11:24 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id j12so14813545pfj.12;
-        Tue, 02 Mar 2021 15:11:24 -0800 (PST)
+        Tue, 2 Mar 2021 18:21:58 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28553C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 15:21:18 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id i14so2952275pjz.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 15:21:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=L3H573ByBrOBb02mX24lIDWny2m/571jx6B2ljmNh9I=;
-        b=nsm0YN6OwiBC+K4bksH/UKwwlqlHN8/6zHYehmIUvbFMy2m/6ZdXis7+k2M95kBthr
-         3vFkaz4iRTr4hgC3hDjLpsq4Cmn48gblX4IBupXb0rLWaVoccuf3m28hhu1tNb4F6jrf
-         gSzNoOkLAcV7+u1XMmPFrNgnOUeOTGbF1GDwWjDuNK5TBFsmY+E7GGl9HyBGgyxk1vBR
-         rkGvERwp9pKlgNrDRNUq6vuD8JNscgDWtQ0rlBdHQf6YBC8AwfVn4fsn/oaJTVjmnfPi
-         EowMgu5d2N1iyjQluoRtsZNqUVQQDlIvye2+UFCy3LA32Vq7eJ1yxGmgjbcHwzD//e0K
-         ZMUA==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=/fnSRHcpZD0qpng7JyEtdVj7W482KqkR+RJHHplJhM4=;
+        b=LMSdseCbBy9ToXdWDq8iiB9HmAgjz3t4ZxvtOLzUbyLE7Pxg7kmBA5tQAe5zMVYBhX
+         Z9VsknD1Yr5PTDhFA9clnJYKElA2duw9RqsfMH23L+SsTpydkXy/hjWlS5Q/CPNG2PKa
+         RY0ul5xZDJIKXEBvXqSH3S67g7vPwDARCeeLM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=L3H573ByBrOBb02mX24lIDWny2m/571jx6B2ljmNh9I=;
-        b=mFsAl3tW69fVM7Im2tQPw3rH1n1BiV5L0+Ml/8eC77K7BLhatDXW0aiwxYYSiRr79e
-         FCZ4cz2WHpxE5dT8rZSjTEgtiEkQTSj0lFXdW+b5HplWRa5Oa2r5l4FHYGjQow2TMAcC
-         HCrnksVfqMIHMRNjHIv8wnLxXOksmBLvnSFjb0IoTP0MK5vqKmj1JBUVuSXqGbhHcefx
-         mrpXUbxZ/7xRb3KlDZt3owmOw+j3E0s7ej4Eae3LKKM2wCDXAfXX3cRdX5dH98SCEAyZ
-         /RcYLfyqiOQ+hr2+fv9w4D2Ykj+kEcMLRu8ZER/4rhfCiDkv3tnGKizgg+r2ShUbzknX
-         oAVQ==
-X-Gm-Message-State: AOAM530K4ojoxhV8qfJpXHEU0ulYlg5//lKyUTPo2scoLQGUpEvK7PL8
-        iZ9Ktim6XCaevzRHn8MaKZA=
-X-Google-Smtp-Source: ABdhPJy0A2GP1mYe3NRIqvfFKpxiK0+TByyD12Ql5KhraG55vVsAP4N42M2J0O49jTzKkY6gGdMqzg==
-X-Received: by 2002:a65:46c7:: with SMTP id n7mr20247495pgr.267.1614726683722;
-        Tue, 02 Mar 2021 15:11:23 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id y12sm7959008pgs.71.2021.03.02.15.11.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Mar 2021 15:11:23 -0800 (PST)
-Date:   Tue, 2 Mar 2021 15:08:59 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-Message-ID: <20210302230856.GA22992@Asurada-Nvidia>
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
- <9d6445c0-9574-1650-e327-32b11716f87e@gmail.com>
- <20210223021343.GA6539@Asurada-Nvidia>
- <79bb1248-497f-8adf-663b-74448bea3849@gmail.com>
- <20210225062742.GA13353@Asurada-Nvidia>
- <ee0f40f4-dffe-2987-5d4b-c5896f27ec24@gmail.com>
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=/fnSRHcpZD0qpng7JyEtdVj7W482KqkR+RJHHplJhM4=;
+        b=FJyRNgYk/D4XIjXD17/uu7NMEUuvS5AjCusu1V0wDJdkTEvGhfrrtxmxxSJ/aNxjIX
+         vhGNOdNQdMtTKJEuczDS676AbpMt13NAJqXcnOSf11fJjAaZ141S2dFbmTC5q0mFPP8b
+         tCwQmCh3x1Ow6l7veIw/F1OeNX/C0fawdjNYgkA4EB1yBHg4gkN+YwoAhxhilz68/7bf
+         3eAuJvTPwZh7R8phVa2TSkmTqwNImWo/+3nSnFWa59CUQUUdjZCpL2A/oEraDmIlT3h/
+         BLwOyqQ2m7ikq1UBVwiG4JnzcvVESX4hZmV/SmzA0OzZ3QVs6+z3f4lNVzVaZWuwzpoi
+         5sGg==
+X-Gm-Message-State: AOAM5330EW0Wo/MSLkPOgTgDStAk5rJAoEqJD3TztaVqMYZrmD6aJblR
+        5Z67wfVxUosV4M3X07KYO3kvFtyIFFC1iw==
+X-Google-Smtp-Source: ABdhPJwos7Jp751+K7me4BeRQAnfJ09F778UhQDl1o3HpAwJQtI06/WrlKnad31fCTGW5LVtzzlqTg==
+X-Received: by 2002:a17:902:a9cb:b029:e2:f64e:b778 with SMTP id b11-20020a170902a9cbb02900e2f64eb778mr5541383plr.39.1614727277667;
+        Tue, 02 Mar 2021 15:21:17 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
+        by smtp.gmail.com with ESMTPSA id h20sm21678426pfv.164.2021.03.02.15.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 15:21:17 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ee0f40f4-dffe-2987-5d4b-c5896f27ec24@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210302081909.GA28599@MiWiFi-R3L-srv>
+References: <20210301174749.1269154-1-swboyd@chromium.org> <20210301174749.1269154-8-swboyd@chromium.org> <20210302081909.GA28599@MiWiFi-R3L-srv>
+Subject: Re: [PATCH 7/7] kdump: Use vmlinux_build_id() to simplify
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+To:     Baoquan He <bhe@redhat.com>
+Date:   Tue, 02 Mar 2021 15:21:15 -0800
+Message-ID: <161472727569.1478170.5291979496668341424@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 12:59:17PM +0300, Dmitry Osipenko wrote:
-> 25.02.2021 09:27, Nicolin Chen пишет:
-> ...
-> >> The partially revert should be okay, but it's not clear to me what makes
-> >> difference for T124 since I don't see that problem on T30, which also
-> >> has active display at a boot time.
-> > 
-> > Hmm..do you see ->attach_dev() is called from host1x_client_iommu_attach
-> > or from of_dma_configure_id/arch_setup_dma_ops?
-> > 
-> 
-> I applied yours debug-patch, please see dmesg.txt attached to the email.
-> Seems probe-defer of the tegra-dc driver prevents the implicit
-> tegra_smmu_attach_dev, so it happens to work by accident.
+Quoting Baoquan He (2021-03-02 00:19:09)
+> On 03/01/21 at 09:47am, Stephen Boyd wrote:
+> > -                             note_sec->n_hdr.n_descsz,
+> > -                             BUILD_ID_MAX);
+> > -                     return;
+> > -             }
+> > -             n_remain -=3D sizeof(struct elf_note) +
+> > -                     ALIGN(note_sec->n_hdr.n_namesz, 4) +
+> > -                     ALIGN(note_sec->n_hdr.n_descsz, 4);
+> > +     const char *build_id =3D vmlinux_build_id();
+>=20
+> It's strange that I can only see the cover letter and this patch 7,
+> couldn't find the patch where vmlinux_build_id() is introduced in lkml.
+>=20
 
-> [    0.327826] tegra-dc 54200000.dc: -------tegra_smmu_of_xlate: id 1
-> [    0.328641] [<c052ec75>] (tegra_smmu_of_xlate) from [<c052e591>] (of_iommu_xlate+0x51/0x70)
-> [    0.328740] [<c052e591>] (of_iommu_xlate) from [<c052e6d7>] (of_iommu_configure+0x127/0x150)
-> [    0.328896] [<c052e6d7>] (of_iommu_configure) from [<c073f697>] (of_dma_configure_id+0x1fb/0x2ec)
-> [    0.329060] [<c073f697>] (of_dma_configure_id) from [<c059743f>] (really_probe+0x7b/0x2a0)
-> [    0.331438] tegra-dc 54200000.dc: --------tegra_smmu_probe_device, 822
-> [    0.332234] [<c052ebed>] (tegra_smmu_probe_device) from [<c052bd6d>] (__iommu_probe_device+0x35/0x1c4)
-> [    0.332391] [<c052bd6d>] (__iommu_probe_device) from [<c052c3cd>] (iommu_probe_device+0x19/0xec)
-> [    0.332545] [<c052c3cd>] (iommu_probe_device) from [<c052e6ab>] (of_iommu_configure+0xfb/0x150)
-> [    0.332701] [<c052e6ab>] (of_iommu_configure) from [<c073f697>] (of_dma_configure_id+0x1fb/0x2ec)
-> [    0.332804] [<c073f697>] (of_dma_configure_id) from [<c059743f>] (really_probe+0x7b/0x2a0)
-> [    0.335202] tegra-dc 54200000.dc: ---------iommu_group_get_for_dev, 1572
-> [    0.335292] tegra-dc 54200000.dc: ---------tegra_smmu_device_group, 862
-> [    0.335474] tegra-dc 54200000.dc: ---------tegra_smmu_device_group, 909: 1: drm
-> [    0.335566] tegra-dc 54200000.dc: ---------iommu_group_get_for_dev, 1574
-> [    0.335718] tegra-dc 54200000.dc: ---------iommu_group_add_device, 858
-> [    0.335862] tegra-dc 54200000.dc: Adding to iommu group 1
-> [    0.335955] tegra-dc 54200000.dc: ---------iommu_alloc_default_domain, 1543: type 3
-> [    0.336101] iommu: ------iommu_group_alloc_default_domain: platform, (null), drm
-> [    0.336187] ---------tegra_smmu_domain_alloc, 284: type 3
- [    0.336968] [<c0a0ff45>] (tegra_smmu_domain_alloc) from [<c0a0f87b>] (iommu_group_alloc_default_domain+0x4b/0xfa)
-> [    0.337127] [<c0a0f87b>] (iommu_group_alloc_default_domain) from [<c052c41d>] (iommu_probe_device+0x69/0xec)
-> [    0.337285] [<c052c41d>] (iommu_probe_device) from [<c052e6ab>] (of_iommu_configure+0xfb/0x150)
-> [    0.337441] [<c052e6ab>] (of_iommu_configure) from [<c073f697>] (of_dma_configure_id+0x1fb/0x2ec)
-> [    0.337599] [<c073f697>] (of_dma_configure_id) from [<c059743f>] (really_probe+0x7b/0x2a0)
-> [    0.339913] tegra-dc 54200000.dc: ---------iommu_probe_device, 272
-> [    0.348144] tegra-dc 54200000.dc: failed to probe RGB output: -517
-
-Hmm..not sure where this EPROBE_DEFER comes from. But you are right,
-as of_dma_configure_id() returns because of that so it didn't run to
-arch_setup_dma_ops() call, which allocates an UNMANAGED iommu domain
-and attaches DC to it on Tegra124.
-
-By the way, anyone can accept this change? It doesn't feel right to
-leave a regression in the newer release...
+Hmm not sure. Maybe spam stuff? I will Cc you on the first patch for v2.
