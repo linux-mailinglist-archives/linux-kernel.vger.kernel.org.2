@@ -2,95 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616AA32A0EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021DE32A0F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238563AbhCBEl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:41:27 -0500
-Received: from mga03.intel.com ([134.134.136.65]:24436 "EHLO mga03.intel.com"
+        id S241602AbhCBEq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:46:27 -0500
+Received: from mga14.intel.com ([192.55.52.115]:30313 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347334AbhCBCym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:54:42 -0500
-IronPort-SDR: MGul3XlqCh8eF0ltbz9vf5HWc0rcYwRQSlqg0RhPdzZnjLEFhB54FW0dpYiAm86IYt/HO5HEld
- BWoGxOCpPKtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186721906"
+        id S1381005AbhCBCzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 21:55:09 -0500
+IronPort-SDR: 3ITWqOIoAChKB6/nNNo6ztnMZ93LJiq5UL9txBh+iEUtYJxHqBJs1yST99RVLhLnsi6svO/Eq7
+ tfuY3C+rD36w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="185992775"
 X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="186721906"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 18:52:56 -0800
-IronPort-SDR: 0Y5NNDMqa45GgezOLyZGo9r8aF1T93aO2XijT0PR13FtODXOlI0A+3m/eiyJiE90gfi0q2nXh+
- VjuEKKEMRVeA==
+   d="scan'208";a="185992775"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 18:54:27 -0800
+IronPort-SDR: bmdWUdfOIPqUlZLY1pawC/bRyxvXqDLStBkwfZBjSfqFmAwiCP67RA/9ydiO5cjZrEHTvBoTUu
+ j8BA71BHJ7kg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="406507788"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 18:52:54 -0800
-Subject: Re: [PATCH v2 1/4] KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for
- Arch LBR
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203135714.318356-1-like.xu@linux.intel.com>
- <20210203135714.318356-2-like.xu@linux.intel.com>
- <YD1r2G1UQjVXkUk5@google.com>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <d194f89a-cd56-6f32-4797-ae11956bf5ba@linux.intel.com>
-Date:   Tue, 2 Mar 2021 10:52:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <YD1r2G1UQjVXkUk5@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="398030697"
+Received: from shbuild999.sh.intel.com ([10.239.146.165])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Mar 2021 18:54:25 -0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>, andi.kleen@intel.com,
+        Feng Tang <feng.tang@intel.com>
+Subject: [PATCH] clocksource: don't run watchdog forever
+Date:   Tue,  2 Mar 2021 10:54:24 +0800
+Message-Id: <1614653665-20905-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/2 6:34, Sean Christopherson wrote:
-> On Wed, Feb 03, 2021, Like Xu wrote:
->> @@ -348,10 +352,26 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
->>   	return true;
->>   }
->>   
->> +/*
->> + * Check if the requested depth values is supported
->> + * based on the bits [0:7] of the guest cpuid.1c.eax.
->> + */
->> +static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
->> +{
->> +	struct kvm_cpuid_entry2 *best;
->> +
->> +	best = kvm_find_cpuid_entry(vcpu, 0x1c, 0);
->> +	if (depth && best)
-> 
->> +		return (best->eax & 0xff) & (1ULL << (depth / 8 - 1));
-> 
-> I believe this will genereate undefined behavior if depth > 64.  Or if depth < 8.
-> And I believe this check also needs to enforce that depth is a multiple of 8.
-> 
->     For each bit n set in this field, the IA32_LBR_DEPTH.DEPTH value 8*(n+1) is
->     supported.
-> 
-> Thus it's impossible for 0-7, 9-15, etc... to be legal depths.
+clocksource watchdog runs every 500ms, which creates some OS noise.
+As the clocksource wreckage (especially for those that has per-cpu
+reading hook) usually happens shortly after CPU is brought up or
+after system resumes from sleep state, so add a time limit for
+clocksource watchdog to only run for a period of time, and make
+sure it run at least twice for each CPU.
 
-Thank you! How about:
+Regarding performance data, there is no improvement data with the
+micro-benchmarks we have like hackbench/netperf/fio/will-it-scale
+etc. But it obviously reduces periodic timer interrupts, and may
+help in following cases:
+* When some CPUs are isolated to only run scientific or high
+  performance computing tasks on a NOHZ_FULL kernel, where there
+  is almost no interrupts, this could make it more quiet
+* On a cluster which runs a lot of systems in parallel with
+  barriers there are always enough systems which run the watchdog
+  and make everyone else wait
 
-	best = kvm_find_cpuid_entry(vcpu, 0x1c, 0);
-	if (best && depth && !(depth % 8))
-		return (best->eax & 0xff) & (1ULL << (depth / 8 - 1));
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+---
+ include/linux/clocksource.h |  7 +++++++
+ kernel/cpu.c                |  3 +++
+ kernel/time/clocksource.c   | 31 +++++++++++++++++++++++++++++--
+ 3 files changed, 39 insertions(+), 2 deletions(-)
 
-	return false;
-
-> 
-> 
->> +
->> +	return false;
->> +}
->> +
-> 
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 86d143d..cf428a2 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -252,6 +252,13 @@ static inline void __clocksource_update_freq_khz(struct clocksource *cs, u32 khz
+ 	__clocksource_update_freq_scale(cs, 1000, khz);
+ }
+ 
++#ifdef CONFIG_CLOCKSOURCE_WATCHDOG
++extern void clocksource_kick_watchdog(void);
++#else
++static inline void clocksource_kick_watchdog(void) { }
++#endif
++
++
+ #ifdef CONFIG_ARCH_CLOCKSOURCE_INIT
+ extern void clocksource_arch_init(struct clocksource *cs);
+ #else
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 1b6302e..fdf3c69 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -32,6 +32,7 @@
+ #include <linux/relay.h>
+ #include <linux/slab.h>
+ #include <linux/percpu-rwsem.h>
++#include <linux/clocksource.h>
+ 
+ #include <trace/events/power.h>
+ #define CREATE_TRACE_POINTS
+@@ -1286,6 +1287,8 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+ 	}
+ 
+ 	err = _cpu_up(cpu, 0, target);
++
++	clocksource_kick_watchdog();
+ out:
+ 	cpu_maps_update_done();
+ 	return err;
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index cce484a..aba985a 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -104,6 +104,7 @@ static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
+ static DEFINE_SPINLOCK(watchdog_lock);
+ static int watchdog_running;
+ static atomic_t watchdog_reset_pending;
++static unsigned long watchdog_stop_time;	/* in jiffies */
+ 
+ static inline void clocksource_watchdog_lock(unsigned long *flags)
+ {
+@@ -295,10 +296,16 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 		next_cpu = cpumask_first(cpu_online_mask);
+ 
+ 	/*
+-	 * Arm timer if not already pending: could race with concurrent
+-	 * pair clocksource_stop_watchdog() clocksource_start_watchdog().
++	 * Arm timer if not already pending or pass the check time window:
++	 * could race with concurrent pair clocksource_stop_watchdog()
++	 * clocksource_start_watchdog().
+ 	 */
+ 	if (!timer_pending(&watchdog_timer)) {
++		if (time_after(jiffies, watchdog_stop_time)) {
++			atomic_inc(&watchdog_reset_pending);
++			watchdog_running = 0;
++			goto out;
++		}
+ 		watchdog_timer.expires += WATCHDOG_INTERVAL;
+ 		add_timer_on(&watchdog_timer, next_cpu);
+ 	}
+@@ -308,6 +315,16 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 
+ static inline void clocksource_start_watchdog(void)
+ {
++	unsigned long check_ticks;
++
++	/*
++	 * As all CPUs will be looped to run the timer, make sure each
++	 * CPU can run the timer twice, and the check run for at least
++	 * 10 minutes.
++	 */
++	check_ticks = max_t(unsigned long, num_possible_cpus(), 600) * HZ;
++	watchdog_stop_time = jiffies + check_ticks;
++
+ 	if (watchdog_running || !watchdog || list_empty(&watchdog_list))
+ 		return;
+ 	timer_setup(&watchdog_timer, clocksource_watchdog, 0);
+@@ -324,6 +341,15 @@ static inline void clocksource_stop_watchdog(void)
+ 	watchdog_running = 0;
+ }
+ 
++void clocksource_kick_watchdog(void)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&watchdog_lock, flags);
++	clocksource_start_watchdog();
++	spin_unlock_irqrestore(&watchdog_lock, flags);
++}
++
+ static inline void clocksource_reset_watchdog(void)
+ {
+ 	struct clocksource *cs;
+@@ -618,6 +644,7 @@ void clocksource_resume(void)
+ 			cs->resume(cs);
+ 
+ 	clocksource_resume_watchdog();
++	clocksource_kick_watchdog();
+ }
+ 
+ /**
+-- 
+2.7.4
 
