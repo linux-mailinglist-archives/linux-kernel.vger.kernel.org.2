@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD3532A220
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4476732A218
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836634AbhCBHTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:19:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39966 "EHLO mx2.suse.de"
+        id S1381386AbhCBHSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:18:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39618 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835905AbhCBGZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:25:35 -0500
+        id S1835896AbhCBGZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:25:08 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BC774B03B;
+        by mx2.suse.de (Postfix) with ESMTP id E180EB03C;
         Tue,  2 Mar 2021 06:22:21 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 36/44] tty: localise ptychar and make it const
-Date:   Tue,  2 Mar 2021 07:22:06 +0100
-Message-Id: <20210302062214.29627-36-jslaby@suse.cz>
+        Jiri Slaby <jslaby@suse.cz>, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 37/44] USB: serial/keyspan, drop unneeded forward declarations
+Date:   Tue,  2 Mar 2021 07:22:07 +0100
+Message-Id: <20210302062214.29627-37-jslaby@suse.cz>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302062214.29627-1-jslaby@suse.cz>
 References: <20210302062214.29627-1-jslaby@suse.cz>
@@ -31,35 +31,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ptychar was not const, so mark it as such. And move this variable to the
-only place where it's used.
+Forward declarations make the code larger, harder to follow and rewrite.
+Harder as the declarations are often omitted from global changes. Remove
+forward declarations which are not really needed, i.e. when the
+definition of the function is before its first use.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/tty_io.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/usb/serial/keyspan.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index c8cbf08b6dcf..7cf57e6cadbf 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -1196,8 +1196,6 @@ int tty_send_xchar(struct tty_struct *tty, char ch)
- 	return 0;
- }
+diff --git a/drivers/usb/serial/keyspan.c b/drivers/usb/serial/keyspan.c
+index 622077dcc344..b04a029e3657 100644
+--- a/drivers/usb/serial/keyspan.c
++++ b/drivers/usb/serial/keyspan.c
+@@ -41,27 +41,7 @@
+ #define DRIVER_AUTHOR "Hugh Blemings <hugh@misc.nu"
+ #define DRIVER_DESC "Keyspan USB to Serial Converter Driver"
  
--static char ptychar[] = "pqrstuvwxyzabcde";
--
- /**
-  *	pty_line_name	-	generate name for a pty
-  *	@driver: the tty driver in use
-@@ -1211,6 +1209,7 @@ static char ptychar[] = "pqrstuvwxyzabcde";
-  */
- static void pty_line_name(struct tty_driver *driver, int index, char *p)
- {
-+	static const char ptychar[] = "pqrstuvwxyzabcde";
- 	int i = index + driver->name_base;
- 	/* ->name is initialized to "ttyp", but "tty" is expected */
- 	sprintf(p, "%s%c%x",
+-/* Function prototypes for Keyspan serial converter */
+-static int keyspan_open(struct tty_struct *tty, struct usb_serial_port *port);
+-static void keyspan_close(struct usb_serial_port *port);
+-static void keyspan_dtr_rts(struct usb_serial_port *port, int on);
+-static int keyspan_startup(struct usb_serial *serial);
+-static void keyspan_disconnect(struct usb_serial *serial);
+-static void keyspan_release(struct usb_serial *serial);
+-static int keyspan_port_probe(struct usb_serial_port *port);
+-static void keyspan_port_remove(struct usb_serial_port *port);
+-static int keyspan_write_room(struct tty_struct *tty);
+-static int keyspan_write(struct tty_struct *tty, struct usb_serial_port *port,
+-			 const unsigned char *buf, int count);
+ static void keyspan_send_setup(struct usb_serial_port *port, int reset_port);
+-static void keyspan_set_termios(struct tty_struct *tty,
+-				struct usb_serial_port *port,
+-				struct ktermios *old);
+-static void keyspan_break_ctl(struct tty_struct *tty, int break_state);
+-static int keyspan_tiocmget(struct tty_struct *tty);
+-static int keyspan_tiocmset(struct tty_struct *tty, unsigned int set,
+-			    unsigned int clear);
+-static int keyspan_fake_startup(struct usb_serial *serial);
+ 
+ static int keyspan_usa19_calc_baud(struct usb_serial_port *port,
+ 				   u32 baud_rate, u32 baudclk,
 -- 
 2.30.1
 
