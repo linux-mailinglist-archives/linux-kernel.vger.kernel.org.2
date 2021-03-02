@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4704C32AA2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A4D32AA2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443632AbhCBTLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:11:45 -0500
-Received: from mga07.intel.com ([134.134.136.100]:7535 "EHLO mga07.intel.com"
+        id S1444850AbhCBTOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:14:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:53692 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1839377AbhCBQRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:17:32 -0500
-IronPort-SDR: cFTkh3JKH3wBngPDNjHT8hfMoW0lisMfEqWLQJsWmSNfXGh09b4ANLy7QcleQkMsAdeF/QNkMp
- gJgeQ+A3tNfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="250918179"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="250918179"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 08:15:42 -0800
-IronPort-SDR: Vt0QZCUuEOnMzMJNZlcPL/Mol5hhraqHKiC+kdIuQpx3T0VndNvPZNbGrS5y2K9DIKPObdVzf1
- rNFGQGmtjYqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="435746077"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Mar 2021 08:15:06 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id F082113A; Tue,  2 Mar 2021 18:14:56 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
-Date:   Tue,  2 Mar 2021 18:14:53 +0200
-Message-Id: <20210302161453.28540-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S1839414AbhCBQRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:17:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3525E12FC;
+        Tue,  2 Mar 2021 08:17:01 -0800 (PST)
+Received: from [192.168.122.166] (unknown [10.119.48.4])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14B223F7D7;
+        Tue,  2 Mar 2021 08:17:00 -0800 (PST)
+Subject: Re: [PATCH AUTOSEL 5.10 11/47] mmc: sdhci-iproc: Add ACPI bindings
+ for the RPi
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20210302115646.62291-1-sashal@kernel.org>
+ <20210302115646.62291-11-sashal@kernel.org>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <445ed4c0-3b2c-1371-931d-b0de7bdb497a@arm.com>
+Date:   Tue, 2 Mar 2021 10:16:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302115646.62291-11-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typos in kernel doc, otherwise validation script complains:
+Hi,
 
-.../irq_sim.c:170: warning: Function parameter or member 'fwnode' not described in 'irq_domain_create_sim'
-.../irq_sim.c:170: warning: Excess function parameter 'fnode' description in 'irq_domain_create_sim'
-.../irq_sim.c:240: warning: Function parameter or member 'fwnode' not described in 'devm_irq_domain_create_sim'
-.../irq_sim.c:240: warning: Excess function parameter 'fnode' description in 'devm_irq_domain_create_sim'
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- kernel/irq/irq_sim.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 3/2/21 5:56 AM, Sasha Levin wrote:
+> From: Jeremy Linton <jeremy.linton@arm.com>
+> 
+> [ Upstream commit 4f9833d3ec8da34861cd0680b00c73e653877eb9 ]
+> 
+> The RPi4 has an Arasan controller it carries over from the RPi3 and a newer
+> eMMC2 controller.  Because of a couple of quirks, it seems wiser to bind
+> these controllers to the same driver that DT is using on this platform
+> rather than the generic sdhci_acpi driver with PNP0D40.
+> 
+> So, BCM2847 describes the older Arasan and BRCME88C describes the newer
+> eMMC2. The older Arasan is reusing an existing ACPI _HID used by other OSes
+> booting these tables on the RPi.
+> 
+> With this change, Linux is capable of utilizing the SD card slot, and the
+> Wi-Fi when booted with UEFI+ACPI on the RPi4.
 
-diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
-index 48006608baf0..40880c350b95 100644
---- a/kernel/irq/irq_sim.c
-+++ b/kernel/irq/irq_sim.c
-@@ -159,7 +159,7 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
-  * irq_domain_create_sim - Create a new interrupt simulator irq_domain and
-  *                         allocate a range of dummy interrupts.
-  *
-- * @fnode:      struct fwnode_handle to be associated with this domain.
-+ * @fwnode:     struct fwnode_handle to be associated with this domain.
-  * @num_irqs:   Number of interrupts to allocate.
-  *
-  * On success: return a new irq_domain object.
-@@ -228,7 +228,7 @@ static void devm_irq_domain_release_sim(struct device *dev, void *res)
-  *                              a managed device.
-  *
-  * @dev:        Device to initialize the simulator object for.
-- * @fnode:      struct fwnode_handle to be associated with this domain.
-+ * @fwnode:     struct fwnode_handle to be associated with this domain.
-  * @num_irqs:   Number of interrupts to allocate
-  *
-  * On success: return a new irq_domain object.
--- 
-2.30.1
+For this to actually work on kernels < 5.11 you also need:
+
+c5b1c6dc13da mmc: sdhci: Update firmware interface API
+
+Which I don't see in 5.10 yet.
+
+Thanks,
+
+> 
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> Link: https://lore.kernel.org/r/20210120000406.1843400-2-jeremy.linton@arm.com
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   drivers/mmc/host/sdhci-iproc.c | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+> index c9434b461aab..ddeaf8e1f72f 100644
+> --- a/drivers/mmc/host/sdhci-iproc.c
+> +++ b/drivers/mmc/host/sdhci-iproc.c
+> @@ -296,9 +296,27 @@ static const struct of_device_id sdhci_iproc_of_match[] = {
+>   MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
+>   
+>   #ifdef CONFIG_ACPI
+> +/*
+> + * This is a duplicate of bcm2835_(pltfrm_)data without caps quirks
+> + * which are provided by the ACPI table.
+> + */
+> +static const struct sdhci_pltfm_data sdhci_bcm_arasan_data = {
+> +	.quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
+> +		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
+> +		  SDHCI_QUIRK_NO_HISPD_BIT,
+> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+> +	.ops = &sdhci_iproc_32only_ops,
+> +};
+> +
+> +static const struct sdhci_iproc_data bcm_arasan_data = {
+> +	.pdata = &sdhci_bcm_arasan_data,
+> +};
+> +
+>   static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
+>   	{ .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
+>   	{ .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
+> +	{ .id = "BCM2847",  .driver_data = (kernel_ulong_t)&bcm_arasan_data },
+> +	{ .id = "BRCME88C", .driver_data = (kernel_ulong_t)&bcm2711_data },
+>   	{ /* sentinel */ }
+>   };
+>   MODULE_DEVICE_TABLE(acpi, sdhci_iproc_acpi_ids);
+> 
 
