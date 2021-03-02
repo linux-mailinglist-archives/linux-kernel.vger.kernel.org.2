@@ -2,139 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3223532A24D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A10732A24E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444059AbhCBHds convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Mar 2021 02:33:48 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4640 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347615AbhCBHHB (ORCPT
+        id S1837116AbhCBHdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:33:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345665AbhCBHHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:07:01 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DqSm42pyGzYD8V;
-        Tue,  2 Mar 2021 15:04:04 +0800 (CST)
-Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 2 Mar 2021 15:05:35 +0800
-Received: from dggeme755-chm.china.huawei.com (10.3.19.101) by
- dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 2 Mar 2021 15:05:35 +0800
-Received: from dggeme755-chm.china.huawei.com ([10.7.64.71]) by
- dggeme755-chm.china.huawei.com ([10.7.64.71]) with mapi id 15.01.2106.006;
- Tue, 2 Mar 2021 15:05:35 +0800
-From:   "Zhouguanghui (OS Kernel)" <zhouguanghui1@huawei.com>
-To:     Zi Yan <ziy@nvidia.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "npiggin@suse.de" <npiggin@suse.de>,
-        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>,
-        "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>,
-        Dingtianhong <dingtianhong@huawei.com>,
-        Chenweilong <chenweilong@huawei.com>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH] mm/memcg: set memcg when split pages
-Thread-Topic: [PATCH] mm/memcg: set memcg when split pages
-Thread-Index: AQHXDwe4PfGiAC+zfUG9IaYiC6n5KA==
-Date:   Tue, 2 Mar 2021 07:05:35 +0000
-Message-ID: <aab0bc059f3b4ffcb7acbac1724bcaa2@huawei.com>
-References: <20210302013451.118701-1-zhouguanghui1@huawei.com>
- <733264DE-1845-4615-8573-481E63895397@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.106]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        Tue, 2 Mar 2021 02:07:02 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED18FC061788;
+        Mon,  1 Mar 2021 23:06:02 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id s8so23888863edd.5;
+        Mon, 01 Mar 2021 23:06:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tmhS/KeYVyEtrVqK4ma4bE7yqEBsOwF+0svPZ4Fg20U=;
+        b=eXUR/nfuzca1Q19Y5H8qRi7q/IK3HZEspy6KH0KjdLofWadozZfNmae5HZifLdY8s4
+         BERO++xo9gP5/vJFHT4shh8PcNsG84xbDAcFPt23xxM97HNwynxvK91MgJ/EOaNzZzOC
+         ZsnoyWJUo3JS0wX+IGDzI5DHTCjBOqr9cf6BbtGLSNglrjFqC7nv5U1Irx5iLXDGqKCa
+         BJmK5WzEsH32gKcYuvBgGunBDEclSkSMSfSdnC/lfkUfNrngVlLZDXqaRtpfMBaQKNJU
+         radHeu9NxBPR9+9jkvlSq/FUd28SOJPo3PZrjGxtJRw8ZHD8TQ3MAV7s39bOqrg/IBIK
+         VnFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=tmhS/KeYVyEtrVqK4ma4bE7yqEBsOwF+0svPZ4Fg20U=;
+        b=BnsX/vccwWM1pxcTubmo9fR6AtzC3BepIps65w/6Ni5zzZsoPvnFFuwfolzB9B6sAJ
+         2dwaKAgYXAlgx5Z6N2320Qog2gzOrl9MteTFw4Gg2+9x8a2FhxRmGkgRsjoHvEVZcHpA
+         6ExY03v9tfCdIAa3XhxlwQom3eUHTmrRvVbMyyG4EIF+MBKjxJmUysat+6oYPILLc2J9
+         /QoLjjk2A1XPU1tbn/E08Z3KonW9g833ztw3OhIpn1G++XjpInGuXnuhZi7CyLP/d5qc
+         R5sgdhE9qVxhCVvQI/XUgFKCAY4mHXHXDXOuH0nAf67yJDQJAVIbaJ31gfdtSIhO87LX
+         +2AQ==
+X-Gm-Message-State: AOAM533bacYGTqtfxkU4qJ4Jcuyj7j5TUSSWj6t4uYublL3hnykaYkAP
+        3hWLg6XVD4W30h+DBDwt6uQ=
+X-Google-Smtp-Source: ABdhPJxr0BAdDdpzb0RXsFS3MohsZq2i2dgUNGG+e/XDpdfTmnUKmCC+bC2IH+zY60ILoxNPBKhErA==
+X-Received: by 2002:aa7:d4d6:: with SMTP id t22mr16321161edr.376.1614668761706;
+        Mon, 01 Mar 2021 23:06:01 -0800 (PST)
+Received: from gmail.com (20014C4E1C864000F9B8756A94F10216.dsl.pool.telekom.hu. [2001:4c4e:1c86:4000:f9b8:756a:94f1:216])
+        by smtp.gmail.com with ESMTPSA id c20sm16444696eje.59.2021.03.01.23.06.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 23:06:01 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 2 Mar 2021 08:05:59 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        paulmck@kernel.org, mhocko@suse.com,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v2 3/3] kernel/smp: add more data to CSD lock debugging
+Message-ID: <20210302070559.GB2809110@gmail.com>
+References: <20210301101336.7797-1-jgross@suse.com>
+ <20210301101336.7797-4-jgross@suse.com>
+ <YD0fTLnQTQ7/M7fx@hirez.programming.kicks-ass.net>
+ <c7c1eeb5-21b3-339b-4b25-a6c8df820146@suse.com>
+ <YD1SJNDeGcNOO00s@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YD1SJNDeGcNOO00s@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-$B:_(B 2021/3/2 10:00, Zi Yan $B<LF;(B:
-> On 1 Mar 2021, at 20:34, Zhou Guanghui wrote:
+
+* Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Mon, Mar 01, 2021 at 08:16:12PM +0100, Jürgen Groß wrote:
+> > >    https://lkml.kernel.org/r/20210220231712.2475218-2-namit@vmware.com
+> > 
+> > They are already in tip locking/core (Ingo applied them).
 > 
->> When split page, the memory cgroup info recorded in first page is
->> not copied to tail pages. In this case, when the tail pages are
->> freed, the uncharge operation is not performed. As a result, the
->> usage of this memcg keeps increasing, and the OOM may occur.
->>
->> So, the copying of first page's memory cgroup info to tail pages
->> is needed when split page.
->>
->> Signed-off-by: Zhou Guanghui <zhouguanghui1@huawei.com>
->> ---
->>   include/linux/memcontrol.h | 10 ++++++++++
->>   mm/page_alloc.c            |  4 +++-
->>   2 files changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->> index e6dc793d587d..c7e2b4421dc1 100644
->> --- a/include/linux/memcontrol.h
->> +++ b/include/linux/memcontrol.h
->> @@ -867,6 +867,12 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
->>   extern bool cgroup_memory_noswap;
->>   #endif
->>
->> +static inline void copy_page_memcg(struct page *dst, struct page *src)
->> +{
->> +	if (src->memcg_data)
->> +		dst->memcg_data = src->memcg_data;
->> +}
->> +
->>   struct mem_cgroup *lock_page_memcg(struct page *page);
->>   void __unlock_page_memcg(struct mem_cgroup *memcg);
->>   void unlock_page_memcg(struct page *page);
->> @@ -1291,6 +1297,10 @@ mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
->>   {
->>   }
->>
->> +static inline void copy_page_memcg(struct page *dst, struct page *src)
->> +{
->> +}
->> +
->>   static inline struct mem_cgroup *lock_page_memcg(struct page *page)
->>   {
->>   	return NULL;
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 3e4b29ee2b1e..ee0a63dc1c9b 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -3307,8 +3307,10 @@ void split_page(struct page *page, unsigned int order)
->>   	VM_BUG_ON_PAGE(PageCompound(page), page);
->>   	VM_BUG_ON_PAGE(!page_count(page), page);
->>
->> -	for (i = 1; i < (1 << order); i++)
->> +	for (i = 1; i < (1 << order); i++) {
->>   		set_page_refcounted(page + i);
->> +		copy_page_memcg(page + i, page);
->> +	}
->>   	split_page_owner(page, 1 << order);
->>   }
->>   EXPORT_SYMBOL_GPL(split_page);
->> -- 
->> 2.25.0
-> 
-> +memcg maintainers
-> 
-> split_page() is used for non-compound higher-order pages. I am not sure
-> if there is any such pages monitored by memcg. Please let me know
-> if I miss anything.
+> I'm very tempted to undo that :-(
 
-Thank you for taking time for this.
+Sorry about that - I'm sorting out the conflicts with the concurrent TLB 
+flush series.
 
-This should be put in kmemcg, and I'll modify it.
+Thanks,
 
-When the kmemcg is enabled and _GFP_ACCOUNT is set, the charged and 
-uncharged sizes do not match when alloc/free_pages_exact method is used 
-to apply for or free memory with exact size. This is because memcg data 
-of the tail page is not set during the split page.
-
+	Ingo
