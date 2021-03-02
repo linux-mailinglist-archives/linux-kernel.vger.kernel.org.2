@@ -2,169 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BE132A0D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7D632A0D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576661AbhCBEb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:31:57 -0500
-Received: from mga05.intel.com ([192.55.52.43]:44177 "EHLO mga05.intel.com"
+        id S1576680AbhCBEcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:32:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1443616AbhCBCWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:22:46 -0500
-IronPort-SDR: KZUDmuoTJWn47ozItwX1532o05MfIBX3NC0uIY+i2T7XD81QVs/u63CLMLlf4JI1e1nrBKSg6R
- ghz0kTLf9Jcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="271663820"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="271663820"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 18:22:06 -0800
-IronPort-SDR: Sb5TjNiGTCmzYSMQV8Pa9AbbhcFfBgIoiLBKSTDcrCgSl9LbnlDIweQAFEbW6+oLBnibn6J8BW
- 6t1wuJwl3n0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="444539717"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga001.jf.intel.com with ESMTP; 01 Mar 2021 18:22:00 -0800
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
- <20210301115441.a4s5xzwm6d6ohz7f@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <16efea9f-d606-4cf9-9213-3c1cf9b1a906@intel.com>
-Date:   Tue, 2 Mar 2021 10:21:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210301115441.a4s5xzwm6d6ohz7f@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1443711AbhCBCXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 21:23:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BFDD614A7;
+        Tue,  2 Mar 2021 02:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614651750;
+        bh=twucalpitITdHszx7+x7EMGhA3/YxluCVY+oR0edqW4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LFinN9m/tx28kMdWUQbQb8VIklLB1k4t8oBFCQWx3cLQ/kN3j6SEjnM0roIDjMS5h
+         PGtbAcXUayBAWIwpUcvcj1+UhtPEgmszxmpjJe/CVR3iZtsnl1MoF6nSheHaD6blH2
+         /FYY6D+DNyG0SbiBikm0pYVSzSRFOpeQrm8SxIidXKiWo+l78XE6HOCCBmyxJIvzvr
+         0wbgz3n1+2/GGhfTnYQb7jKMSrm8Vh7VSRxN4ixMAeYjpxyp41AUtt0WIcdUxxHLul
+         xXyUOs932wF0bhN5pZCRHNRsw6jra/tjRD7mQPl+C62zvGAIsf5UbzOFmk0itiIDE8
+         kCo2exah6Xysw==
+Date:   Tue, 2 Mar 2021 11:22:24 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-Id: <20210302112224.6b3568434be490fbfbdec790@kernel.org>
+In-Reply-To: <20210301165130.GA5351@redhat.com>
+References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
+        <20210301165130.GA5351@redhat.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Oleg and Andy,
 
-On 2021/3/1 19:54, Viresh Kumar wrote:
-> On 01-03-21, 14:41, Jie Deng wrote:
->> +/**
->> + * struct virtio_i2c_req - the virtio I2C request structure
->> + * @out_hdr: the OUT header of the virtio I2C message
->> + * @write_buf: contains one I2C segment being written to the device
->> + * @read_buf: contains one I2C segment being read from the device
->> + * @in_hdr: the IN header of the virtio I2C message
->> + */
->> +struct virtio_i2c_req {
->> +	struct virtio_i2c_out_hdr out_hdr;
->> +	u8 *write_buf;
->> +	u8 *read_buf;
->> +	struct virtio_i2c_in_hdr in_hdr;
->> +};
-> I am not able to appreciate the use of write/read bufs here as we
-> aren't trying to read/write data in the same transaction. Why do we
-> have two bufs here as well as in specs ?
->
-> What about this on top of your patch ?
->
-> ---
->   drivers/i2c/busses/i2c-virtio.c | 31 +++++++++++--------------------
->   include/uapi/linux/virtio_i2c.h |  3 +--
->   2 files changed, 12 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> index 8c8bc9545418..e71ab1d2c83f 100644
-> --- a/drivers/i2c/busses/i2c-virtio.c
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -67,14 +67,13 @@ static int virtio_i2c_send_reqs(struct virtqueue *vq,
->   		if (!buf)
->   			break;
->   
-> +		reqs[i].buf = buf;
-> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
-> +
->   		if (msgs[i].flags & I2C_M_RD) {
-> -			reqs[i].read_buf = buf;
-> -			sg_init_one(&msg_buf, reqs[i].read_buf, msgs[i].len);
->   			sgs[outcnt + incnt++] = &msg_buf;
->   		} else {
-> -			reqs[i].write_buf = buf;
-> -			memcpy(reqs[i].write_buf, msgs[i].buf, msgs[i].len);
-> -			sg_init_one(&msg_buf, reqs[i].write_buf, msgs[i].len);
-> +			memcpy(reqs[i].buf, msgs[i].buf, msgs[i].len);
->   			sgs[outcnt++] = &msg_buf;
->   		}
->   
-> @@ -84,13 +83,8 @@ static int virtio_i2c_send_reqs(struct virtqueue *vq,
->   		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
->   		if (err < 0) {
->   			pr_err("failed to add msg[%d] to virtqueue.\n", i);
-> -			if (msgs[i].flags & I2C_M_RD) {
-> -				kfree(reqs[i].read_buf);
-> -				reqs[i].read_buf = NULL;
-> -			} else {
-> -				kfree(reqs[i].write_buf);
-> -				reqs[i].write_buf = NULL;
-> -			}
-> +			kfree(reqs[i].buf);
-> +			reqs[i].buf = NULL;
->   			break;
->   		}
->   	}
-> @@ -118,14 +112,11 @@ static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->   			break;
->   		}
->   
-> -		if (msgs[i].flags & I2C_M_RD) {
-> -			memcpy(msgs[i].buf, req->read_buf, msgs[i].len);
-> -			kfree(req->read_buf);
-> -			req->read_buf = NULL;
-> -		} else {
-> -			kfree(req->write_buf);
-> -			req->write_buf = NULL;
-> -		}
-> +		if (msgs[i].flags & I2C_M_RD)
-> +			memcpy(msgs[i].buf, req->buf, msgs[i].len);
-> +
-> +		kfree(req->buf);
-> +		req->buf = NULL;
->   	}
->   
->   	return i;
-> diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
-> index 92febf0c527e..61f0086ac75b 100644
-> --- a/include/uapi/linux/virtio_i2c.h
-> +++ b/include/uapi/linux/virtio_i2c.h
-> @@ -48,8 +48,7 @@ struct virtio_i2c_in_hdr {
->    */
->   struct virtio_i2c_req {
->   	struct virtio_i2c_out_hdr out_hdr;
-> -	u8 *write_buf;
-> -	u8 *read_buf;
-> +	u8 *buf;
->   	struct virtio_i2c_in_hdr in_hdr;
->   };
->   
+On Mon, 1 Mar 2021 17:51:31 +0100
+Oleg Nesterov <oleg@redhat.com> wrote:
 
-That's my original proposal. I used to mirror this interface with 
-"struct i2c_msg".
+> Hi Andy,
+> 
+> sorry for delay.
+> 
+> On 02/23, Andy Lutomirski wrote:
+> >
+> > A while back, I let myself be convinced that kprobes genuinely need to
+> > single-step the kernel on occasion, and I decided that this sucked but
+> > I could live with it.  it would, however, be Really Really Nice (tm)
+> > if we could have a rule that anyone running x86 Linux who single-steps
+> > the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
+> > when the system falls apart around them.  Specifically, if we don't
+> > allow kernel single-stepping and if we suitably limit kernel
+> > instruction breakpoints (the latter isn't actually a major problem),
+> > then we don't really really need to use IRET to return to the kernel,
+> > and that means we can avoid some massive NMI nastiness.
+> 
+> Not sure I understand you correctly, I know almost nothing about low-level
+> x86  magic.
 
-But the design philosophy of virtio TC is that VIRTIO devices are not 
-specific to Linux
-so the specs design should avoid the limitations of the current Linux 
-driver behavior.
+x86 has normal interrupt and NMI. When an NMI occurs the CPU masks NMI
+(the mask itself is hidden status) and IRET releases the mask. The problem
+is that if an INT3 is hit in the NMI handler and does a single-stepping,
+it has to use IRET for atomically setting TF and return.
 
-We had some discussion about this. You may check these links to learn 
-the story.
-https://lists.oasis-open.org/archives/virtio-comment/202010/msg00016.html
-https://lists.oasis-open.org/archives/virtio-comment/202010/msg00033.html
-https://lists.oasis-open.org/archives/virtio-comment/202011/msg00025.html
+> 
+> But I guess this has nothing to do with uprobes, they do not single-step
+> in kernel mode, right?
+
+Agreed, if the problematic case is IRET from NMI handler, uprobes doesn't
+hit because it only invoked from user-space.
+Andy, what would you think?
+
+> > Uprobes seem to single-step user code for no discernable reason.
+> > (They want to trap after executing an out of line instruction, AFAICT.
+> > Surely INT3 or even CALL after the out-of-line insn would work as well
+> > or better.)
+> 
+> Uprobes use single-step from the very beginning, probably because this
+> is the most simple and "standard" way to implement xol.
+> 
+> And please note that CALL/JMP/etc emulation was added much later to fix the
+> problems with non-canonical addresses, and this emulation it still incomplete.
+
+Yeah, I found another implementation of the emulation afterwards. Of cource
+since uprobes only treat user-space, it maybe need more care.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
