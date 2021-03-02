@@ -2,128 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A9432AA5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E540232AA8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835797AbhCBTT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:19:27 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:41937 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344137AbhCBRAw (ORCPT
+        id S1839807AbhCBToY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1579861AbhCBRLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:00:52 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id C75A72223E;
-        Tue,  2 Mar 2021 17:59:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614704371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3JlHuWOPny519lb/zyMBEgaPndadrigbre2ILZ7KICM=;
-        b=aIsuZAW7/uUq74cQH1wwlv/1J3mx4NjhSE0hH9sfWpgoSOpOGr20SMjMytSNk/22A0IEy1
-        PuuqQofyh3kiJq25UbGJEB0hyYU5+FP9so/6u1mzW5D5Sn0qy4VIW+RR5NVFZ/4slQeHBe
-        o8U3Dia5iS2yciyNfdM6sj1y0jbt2fs=
+        Tue, 2 Mar 2021 12:11:12 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5C9C0611C0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:02:29 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id w11so20628757wrr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2twvRoA3NAihouq+BGmazRF+N6tq+OJ4ANyVz+dJYmQ=;
+        b=yOYXKLEW9xqrQyEkADuSYJ2910/i3eUbAXE6nfCokgYzZF31tKBDLFEpqn2mquvCqD
+         z2jUkrRTmL69Al5ClM37EFCIv5ltbmap4+7CCeytDtB/yGT8xBpsP5dzv8UH2LLLZXOo
+         VDBG3WeARx50Ft5hVQ7D6sWifDxQ7mnQm/IEj3kLlaEjYy076qbGyN11VGUk4zIkF7jX
+         1MKH7lh4rzCmhSufCKy4mYP2wEbZimYjPoFHPSFFSky2YbsUwSKNcGUEEN6we9AX4AFs
+         E1AO5BAnIVmxonmiuAEzHyCJOF8LRimE6ddOVfql67O5PgpZUKR5JUXw8YYP/4s7eQUG
+         z0tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2twvRoA3NAihouq+BGmazRF+N6tq+OJ4ANyVz+dJYmQ=;
+        b=to9LqXAbGgN+14qoBRkotYe7i6MQuJG4rbYPRVuEue6EaG9dZtmgV92/WCkObCAXzC
+         dKtMsbjRO9AAywpo7Pi9aVajBeh2XsBF0hOUrjSKjJ9ICP5G79c/7hXbeCpUT/cJvcxc
+         TOMiz64wxarslUdjyIeCW7+mj6FQ3d7n6/uu6xXziNOed8jKu9BYOjhbf0G42GR8rUer
+         KOtemiI1zXuhDJL9jJ5+54cgvwkdxvJLCx6jFxFCbR2PW1LHmtSdyfCLUAzpo5ATP+6W
+         3tjfo5f81OundnW7bjjalRx4TtcS3SyEEckOyDoiyqHy8UvNjt0O+EQmEdXaB7K7fl5I
+         nTTQ==
+X-Gm-Message-State: AOAM532JCANbPvKcK0QSAgQkn/vNqdLdKKcYwpQJfNSqPptiRxOsv3SU
+        sVci+Mhhb15XWu5Z6DuyVG99raYfF6EVNFNUnrrDMg==
+X-Google-Smtp-Source: ABdhPJyZylNWGCXM8kX0RArUB9xsjfbomu24WxVC1n0jTvfiH8yd/AeGl7pX3HYbrqFfVrhEn7FXSdGvOglsrCMowoA=
+X-Received: by 2002:a5d:558b:: with SMTP id i11mr22567539wrv.176.1614704548486;
+ Tue, 02 Mar 2021 09:02:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 02 Mar 2021 17:59:31 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor.Ambarus@microchip.com
-Subject: Re: [RFC PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-In-Reply-To: <a4464459-dc49-d5de-d969-b9ea96b025d6@ti.com>
-References: <20210302110927.6520-1-michael@walle.cc>
- <b106264e-987f-cecc-28cb-0724d4af1f4c@ti.com>
- <74df918148be8c9820acc877e39adf3f@walle.cc>
- <a4464459-dc49-d5de-d969-b9ea96b025d6@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <be9c984f7366aa891591f4e2d003a8b1@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210224164835.3497311-1-mathieu.poirier@linaro.org>
+ <YD41GUtuq8fVa4Q6@kernel.org> <CAJ9a7ViKLg8vjBnuA1eWh8b5-PN7RryefyOV1qoX9Zu362Eq8Q@mail.gmail.com>
+ <YD5mu7Df3fXiWZuk@kernel.org> <20210302164254.GA3789438@xps15>
+In-Reply-To: <20210302164254.GA3789438@xps15>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Tue, 2 Mar 2021 17:02:17 +0000
+Message-ID: <CAJ9a7Vg5H-UUr9B3iOG4FqtgF=f3-2p8-VVqCCoegbrLn_GMjA@mail.gmail.com>
+Subject: Re: [PATCH 0/6] coresight: Patches for v5.12 (perf tools)
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-02 17:33, schrieb Vignesh Raghavendra:
-> On 3/2/21 9:49 PM, Michael Walle wrote:
->> Am 2021-03-02 16:30, schrieb Vignesh Raghavendra:
->>> Hi,
->>> 
->>> On 3/2/21 4:39 PM, Michael Walle wrote:
->>>> This may sound like a contradiction but some SPI-NOR flashes really
->>>> support erasing their OTP region until it is finally locked. Having 
->>>> the
->>>> possibility to erase an OTP region might come in handy during
->>>> development.
->>>> 
->>>> The ioctl argument follows the OTPLOCK style.
->>>> 
->>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>>> ---
->>>> OTP support for SPI-NOR flashes may be merged soon:
->>>> https://lore.kernel.org/linux-mtd/20210216162807.13509-1-michael@walle.cc/
->>>> 
->>>> 
->>>> Tudor suggested to add support for the OTP erase operation most 
->>>> SPI-NOR
->>>> flashes have:
->>>> https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
->>>> 
->>>> 
->>>> Therefore, this is an RFC to get some feedback on the MTD side, once
->>>> this
->>>> is finished, I can post a patch for mtd-utils. Then we'll have a
->>>> foundation
->>>> to add the support to SPI-NOR.
->>>> 
->>>>  drivers/mtd/mtdchar.c      |  7 ++++++-
->>>>  drivers/mtd/mtdcore.c      | 12 ++++++++++++
->>>>  include/linux/mtd/mtd.h    |  3 +++
->>>>  include/uapi/mtd/mtd-abi.h |  2 ++
->>>>  4 files changed, 23 insertions(+), 1 deletion(-)
->>>> 
->>>> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
->>>> index 323035d4f2d0..da423dd031ae 100644
->>>> --- a/drivers/mtd/mtdchar.c
->>>> +++ b/drivers/mtd/mtdchar.c
->>>> @@ -661,6 +661,7 @@ static int mtdchar_ioctl(struct file *file, 
->>>> u_int
->>>> cmd, u_long arg)
->>>>      case OTPGETREGIONCOUNT:
->>>>      case OTPGETREGIONINFO:
->>>>      case OTPLOCK:
->>>> +    case OTPERASE:
->>> 
->>> This is not a Safe IOCTL. We are destroying OTP data. Need to check 
->>> for
->>> write permission before allowing the ioctl right?
->> 
->> Ah yes, of course. But this makes me wonder why OTPLOCK
->> is considered a safe command. As well as MEMLOCK and
->> MEMUNLOCK. And MEMSETBADBLOCK. Shouldn't these also
->> require write permissions?
->> 
-> 
-> Well, one argument would be that LOCK/UNLOCK in itself won't modify 
-> data
-> and thus does not need write permission.. Although can brick a flash
-> from ever being writable again and change content of flash registers.
+On Tue, 2 Mar 2021 at 16:42, Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+>
+> On Tue, Mar 02, 2021 at 01:24:27PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Mar 02, 2021 at 02:23:14PM +0000, Mike Leach escreveu:
+> > > On Tue, 2 Mar 2021 at 12:52, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > > Em Wed, Feb 24, 2021 at 09:48:29AM -0700, Mathieu Poirier escreveu:
+> > > > > I noticed there is a couple of patchsets [1][2] that haven't made it
+> > > > > to your tree for the coming v5.12 cycle.  Do you think that can still
+> > > > > be done?
+> >
+> > > > > I tallied the patches here to make it easier for you to pick up.
+> >
+> > > > > Applies cleanly on perf/core (84b7725536d8)
+> >
+> > > > > [1]. https://lore.kernel.org/lkml/20210202214040.32349-1-mike.leach@linaro.org/
+> > > > > [2]. https://lore.kernel.org/lkml/20210213113220.292229-1-leo.yan@linaro.org/
+> >
+> > > > These are not applying right now, I've pushed what I have to
+> > > > tmp.perf/core, please take a look, I'll get back to this after
+> > > > processing fixes for v5.12 and what is outstanding for v5.13.
+> >
+> > > I've tried [1] on both Linux-5.12-rc1 and your tmp.perf/core and it
+> > > applies cleanly on both.
+> >
+> > Can you please try one more time, these are the last csets on this
+> > branch:
+> >
+> >   $ git log --oneline acme/tmp.perf/core -10
+> >   8e1488a46dcf73b1 (HEAD -> perf/core, five/perf/core, acme/tmp.perf/core, acme.korg/tmp.perf/core) perf cs-etm: Detect pid in VMID for kernel running at EL2
+> >   47f0d94c203751dd perf cs-etm: Add helper cs_etm__get_pid_fmt()
+> >   30cb76aabfb4deab perf cs-etm: Support PID tracing in config
+> >   8c559e8d68630d64 perf cs-etm: Fix bitmap for option
+> >   2bb4ccbd95d7fbf5 tools headers UAPI: Update tools' copy of linux/coresight-pmu.h
+> >   42b2b570b34afb5f perf cs-etm: Update ETM metadata format
+> >   83bf6fb8b076c72f perf vendor events power9: Remove unsupported metrics
+> >   34968b9327c83589 perf buildid-cache: Add test for PE executable
+> >   9bb8b74bdb186bd3 perf docs: Add man pages to see also
+> >   d9fd5a718977702f perf tools: Generate mips syscalls_n64.c syscall table
+> >   $
+>
+> As far as I can tell you have all 6 patches.
+>
 
-Whether not you can brick a device (I agree with you), it is writing
-to the protection bits. But what is more imporant is that OTPLOCK
-is actually write-once.
+Agreed - [1] I was trying is in fact:
+42b2b570b34afb5f perf cs-etm: Update ETM metadata format
+in the above list.
 
-> I am fine with moving these to require write permissions as well
-> (probably OTPLOCK as well).
+Mike
 
-Ok, I'm unsure about MEMSETBADBLOCK, though.
+> >
+> > I think it doesn't apply because I applied a series from Mathieu
+> > touching files affected by those two patchkits.
+> >
+> > - Arnaldo
+> >
+> > > Let me know if there is anything else I can try.
+> > >
+> > > Thanks
+> > >
+> > > Mike
+> > >
+> > >
+> > >
+> > > --
+> > > Mike Leach
+> > > Principal Engineer, ARM Ltd.
+> > > Manchester Design Centre. UK
+> >
+> > --
+> >
+> > - Arnaldo
 
--michael
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
