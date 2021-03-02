@@ -2,95 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A80F32AD5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B573532AD84
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837418AbhCBVq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:46:26 -0500
-Received: from mga14.intel.com ([192.55.52.115]:46932 "EHLO mga14.intel.com"
+        id S1837844AbhCBV7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:59:38 -0500
+Received: from ms9.eaxlabs.cz ([147.135.177.209]:50510 "EHLO ms9.eaxlabs.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1581416AbhCBSvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:51:20 -0500
-IronPort-SDR: MltmGhhWHl5i2Da+kOStqiL4cfQpCyYC94YTf0dBSMKUbZQA/cIDcDDij22ynktyrFORdy+LP5
- aV9dQLBNqmXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="186272521"
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; 
-   d="scan'208";a="186272521"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 10:45:47 -0800
-IronPort-SDR: HAfdzkGPXCjfG1XdJaLDYcrnfRu0D8eePJaFpVbln/KYNF6988EV61wEsfbAhYO3e0glqeAPiF
- +mTlz6vBvn2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; 
-   d="scan'208";a="406158814"
-Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
-  by orsmga007.jf.intel.com with ESMTP; 02 Mar 2021 10:45:47 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v2 4/4] iommu/vt-d: Calculate and set flags for handle_mm_fault
-Date:   Tue,  2 Mar 2021 02:14:00 -0800
-Message-Id: <1614680040-1989-5-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614680040-1989-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1614680040-1989-1-git-send-email-jacob.jun.pan@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1835348AbhCBTCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 14:02:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From; bh=65e45oHZO+BxFf5UqN9fVtID/K010U91Mz2QcQ/swdo=;
+        b=W0CSeYqtKX1Fo9IiZ2gD/lsrmkNl5mc18rDmr54RX98DO+epfDea2DwP1u8Ik3EoRQvjtTb2uy5nGXqoOg+buliEafOYLrkLFjYbrOgkHUmOkJj63n0UW8I0hDiBZu8HkX4iC0aRyAGna93+b8jpO3SgbXOJfUwhVqM09mFsjag=;
+Received: from [82.99.129.6] (helo=localhost.localdomain)
+        by ms9.eaxlabs.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <devik@eaxlabs.cz>)
+        id 1lH4sj-0000g6-Un; Tue, 02 Mar 2021 14:16:12 +0100
+From:   Martin Devera <devik@eaxlabs.cz>
+To:     linux-kernel@vger.kernel.org
+Cc:     Martin Devera <devik@eaxlabs.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jiri Slaby <jirislaby@kernel.org>, Le Ray <erwan.leray@st.com>,
+        fabrice.gasnier@foss.st.com, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
+Date:   Tue,  2 Mar 2021 14:15:57 +0100
+Message-Id: <20210302131558.19375-1-devik@eaxlabs.cz>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
+References: <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Page requests are originated from the user page fault. Therefore, we
-shall set FAULT_FLAG_USER. 
+Add new rx-tx-swap property to allow for RX & TX pin swapping.
 
-FAULT_FLAG_REMOTE indicates that we are walking an mm which is not
-guaranteed to be the same as the current->mm and should not be subject
-to protection key enforcement. Therefore, we should set FAULT_FLAG_REMOTE
-to avoid faults when both SVM and PKEY are used.
-
-References: commit 1b2ee1266ea6 ("mm/core: Do not enforce PKEY permissions on remote mm access")
-Reviewed-by: Raj Ashok <ashok.raj@intel.com>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Signed-off-by: Martin Devera <devik@eaxlabs.cz>
 ---
- drivers/iommu/intel/svm.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  | 32 +++++++++++++++-------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index ff7ae7cc17d5..7bfd20a24a60 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -1086,6 +1086,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 	struct intel_iommu *iommu = d;
- 	struct intel_svm *svm = NULL;
- 	int head, tail, handled = 0;
-+	unsigned int flags = 0;
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 8631678283f9..6eab2debebb5 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -9,9 +9,6 @@ maintainers:
  
- 	/* Clear PPR bit before reading head/tail registers, to
- 	 * ensure that we get a new interrupt if needed. */
-@@ -1186,9 +1187,11 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 		if (access_error(vma, req))
- 			goto invalid;
+ title: STMicroelectronics STM32 USART bindings
  
--		ret = handle_mm_fault(vma, address,
--				      req->wr_req ? FAULT_FLAG_WRITE : 0,
--				      NULL);
-+		flags = FAULT_FLAG_USER | FAULT_FLAG_REMOTE;
-+		if (req->wr_req)
-+			flags |= FAULT_FLAG_WRITE;
+-allOf:
+-  - $ref: rs485.yaml
+-
+ properties:
+   compatible:
+     enum:
+@@ -40,6 +37,10 @@ properties:
+ 
+   uart-has-rtscts: true
+ 
++  rx-tx-swap:
++    type: boolean
++    maxItems: 1
 +
-+		ret = handle_mm_fault(vma, address, flags, NULL);
- 		if (ret & VM_FAULT_ERROR)
- 			goto invalid;
+   dmas:
+     minItems: 1
+     maxItems: 2
+@@ -66,13 +67,24 @@ properties:
+   linux,rs485-enabled-at-boot-time: true
+   rs485-rx-during-tx: true
  
+-if:
+-  required:
+-    - st,hw-flow-ctrl
+-then:
+-  properties:
+-    cts-gpios: false
+-    rts-gpios: false
++allOf:
++  - $ref: rs485.yaml
++  - if:
++      required:
++        - st,hw-flow-ctrl
++    then:
++      properties:
++        cts-gpios: false
++        rts-gpios: false
++  - if:
++      required:
++        - rx-tx-swap
++    then:
++      properties:
++        compatible:
++          enum:
++            - st,stm32f7-uart
++            - st,stm32h7-uart
+ 
+ required:
+   - compatible
 -- 
-2.25.1
+2.11.0
 
