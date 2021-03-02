@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B5A32A222
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082ED32A226
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836652AbhCBHT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:19:27 -0500
-Received: from mga07.intel.com ([134.134.136.100]:40780 "EHLO mga07.intel.com"
+        id S1836686AbhCBHTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:19:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40638 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835941AbhCBG3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:29:04 -0500
-IronPort-SDR: HGl9bUtvDsbikKjEiRvFFuMr2O2s4an9eFVixOyJEDgPm1J5dNbUt54qnbN++kKmgGyZzbJEPh
- +bfwGWgEMU7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250753309"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="250753309"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 22:28:16 -0800
-IronPort-SDR: 4HEhIRxtLlBjbR5Mq0Pp6v5Wx40ez790z7ZwrTBe9T3G/JC2/2KZSjqbv1hsWgiGI5g7TMbXCP
- Y87wtZlJrYGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="444614627"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga001.jf.intel.com with ESMTP; 01 Mar 2021 22:28:09 -0800
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
- <20210301115441.a4s5xzwm6d6ohz7f@vireshk-i7>
- <16efea9f-d606-4cf9-9213-3c1cf9b1a906@intel.com>
- <20210302034323.gkqymzngyqofrdsr@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <664d590d-b43f-1829-3ea0-44a4054dfca6@intel.com>
-Date:   Tue, 2 Mar 2021 14:28:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S1835947AbhCBG31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:29:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614666521; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=j2V5NygERdiceguHnu5PxJjcwzhQsg1hdbgSpQOj140=;
+        b=GJ7wlEiVQYq3hfBIUFU62mMda6EhsM9sbZEdaLmFKtMt1VshXdwDMLnkhK/Vz67X/0h5Hy
+        bEpL2a1xGKlB3n9SulDeSZcftikeMP31QsEJz2fAXsnEKw1ShdB81MMB8ZpH+ZGNYZvz2/
+        9gWe6M8+DFvdVW4FadZO9XBif6fsEZA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03BBDAAC5;
+        Tue,  2 Mar 2021 06:28:41 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     paulmck@kernel.org, mhocko@suse.com, peterz@infradead.org,
+        Juergen Gross <jgross@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v3 0/4] kernel/smp.c: add more CSD lock debugging
+Date:   Tue,  2 Mar 2021 07:28:34 +0100
+Message-Id: <20210302062838.14267-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210302034323.gkqymzngyqofrdsr@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series was created to help catching a rather long standing
+problem with smp_call_function_any() and friends.
 
-On 2021/3/2 11:43, Viresh Kumar wrote:
-> On 02-03-21, 10:21, Jie Deng wrote:
->> On 2021/3/1 19:54, Viresh Kumar wrote:
->> That's my original proposal. I used to mirror this interface with "struct
->> i2c_msg".
->>
->> But the design philosophy of virtio TC is that VIRTIO devices are not
->> specific to Linux
->> so the specs design should avoid the limitations of the current Linux driver
->> behavior.
-> Right, I understand that.
->
->> We had some discussion about this. You may check these links to learn the
->> story.
->> https://lists.oasis-open.org/archives/virtio-comment/202010/msg00016.html
->> https://lists.oasis-open.org/archives/virtio-comment/202010/msg00033.html
->> https://lists.oasis-open.org/archives/virtio-comment/202011/msg00025.html
-> So the thing is that we want to support full duplex mode, right ?
->
-> How will that work protocol wise ? I mean how would we know if we are
-> expecting both tx and rx buffers in a transfer ?
+Very rarely a remote cpu seems not to execute a queued function and
+the cpu queueing that function request will wait forever for the
+CSD lock to be released by the remote cpu.
 
-Not for the full duplex. As Paolo explained in those links.
-We defined a combined request called "write-read request"
+This problem has been observed primarily when running as a guest on
+top of KVM or Xen, but there are reports of the same pattern for the
+bare metal case, too. It seems to exist since about 2 years now, and
+there is not much data available.
 
-"
-This is when a write is followed by a read: the master
-starts off the transmission with a write, then sends a second START,
-then continues with a read from the same address.
+What is known up to now is that resending an IPI to the remote cpu is
+helping.
 
-In theory there's no difference between one multi-segment transaction
-and many single-segment transactions _in a single-master scenario_.
+The patches are adding more debug data being printed in a hang
+situation using a kernel with CONFIG_CSD_LOCK_WAIT_DEBUG configured.
+Additionally the debug coding can be controlled via a new parameter
+in order to make it easier to use such a kernel in a production
+environment without too much negative performance impact. Per default
+the debugging additions will be switched off and they can be activated
+via the new boot parameter:
 
-However, it is a plausible configuration to have multiple guests sharing
-an I2C host device as if they were multiple master.
+csdlock_debug=1 will switch on the basic debugging and IPI resend
+csdlock_debug=ext will add additional data printed out in a hang
+  situation, but this option will have a larger impact on performance.
 
-So the spec should provide a way at least to support for transactions with
-1 write and 1 read segment in one request to the same address.
+I hope that the "ext" setting will help to find the root cause of the
+problem.
 
-"
+Juergen Gross (4):
+  kernel/smp: add boot parameter for controlling CSD lock debugging
+  kernel/smp: prepare more CSD lock debugging
+  kernel/smp: add more data to CSD lock debugging
+  kernel/smp: fix flush_smp_call_function_queue() cpu offline detection
 
- From the perspective of specification design, it hopes to provide more 
-choices
-while from the perspective of specific implementation, we can choose 
-what we need
-as long as it does not violate the specification.
+ .../admin-guide/kernel-parameters.txt         |  10 +
+ kernel/smp.c                                  | 280 +++++++++++++++++-
+ 2 files changed, 277 insertions(+), 13 deletions(-)
 
-Since the current Linux driver doesn't use this mechanism. I'm 
-considering to move
-the "struct virtio_i2c_req" into the driver and use one "buf" instead.
+-- 
+2.26.2
+
