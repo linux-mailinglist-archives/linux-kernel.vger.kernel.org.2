@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F4532A4F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D143432A517
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349993AbhCBLpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:45:14 -0500
-Received: from srv6.fidu.org ([159.69.62.71]:37672 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380366AbhCBL0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:26:37 -0500
-X-Greylist: delayed 373 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Mar 2021 06:26:36 EST
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 9644BC800CD;
-        Tue,  2 Mar 2021 12:25:06 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id lbnLkmpAJE1l; Tue,  2 Mar 2021 12:25:06 +0100 (CET)
-Received: from [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8] (p200300e37f234700CC4188a7F2f8D6b8.dip0.t-ipconnect.de [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 52B51C800CB;
-        Tue,  2 Mar 2021 12:25:06 +0100 (CET)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Intel NUC 10
-To:     wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        alsa-devel@vger.kernel.org
-Autocrypt: addr=wse@tuxedocomputers.com; keydata=
- mDMEX6ALvhYJKwYBBAHaRw8BAQdAG/kE3mlbV1YLpCU8iA7Pyq2eDq9LxzGQxcOZODh2Vnq0
- KFdlcm5lciBTZW1iYWNoIDx3c2VAdHV4ZWRvY29tcHV0ZXJzLmNvbT6IlgQTFggAPhYhBNzq
- jJqAsvWKK1h7bi7eQpXUvijKBQJfoAu+AhsDBQkJZgGABQsJCAcCBhUKCQgLAgQWAgMBAh4B
- AheAAAoJEC7eQpXUvijKzkEA/jblmQRWU/e18oo8J9GPHWOCRUA1WJLUt9lSye5cgl2vAP0Y
- q+EpkDRS+QqtIcIr3fVELwA4b/V1lVE2LW+plcmdCbg4BF+gC74SCisGAQQBl1UBBQEBB0Bc
- k3J9DVAB4ysrdDcKE7L9iAUjlWD+rsLh/5soPORqFQMBCAeIfgQYFggAJhYhBNzqjJqAsvWK
- K1h7bi7eQpXUvijKBQJfoAu+AhsMBQkJZgGAAAoJEC7eQpXUvijKBBYA/2DT2g26dpTU2Rbc
- lqviltu+woGZCd0GBfRgXuzUK0OfAQCwr8qPCl8uIsBgOsDmWIJYByG2ddwmXiAgBS1985bM Ag==
-Message-ID: <447c7c3f-9e9b-bdbe-5c91-c6d8ab306173@tuxedocomputers.com>
-Date:   Tue, 2 Mar 2021 12:25:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1443357AbhCBLrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349686AbhCBL33 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:29:29 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46815C061756;
+        Tue,  2 Mar 2021 03:28:46 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id jt13so34620037ejb.0;
+        Tue, 02 Mar 2021 03:28:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ne1jKQEzc+j2RSXx8k9BrFVLTm1aSJu1puRRw+vucrg=;
+        b=p62PR86sZ80v2f6kAMBfm4+98DvMiqLXnID5q9XL4LZUf4XxXBCwks+xayAq2q4AWg
+         x5O/GkcXicGZZOIHt+dUl6LhULxNjWgKLWq/JfI+dpXQ8tCBVaMkl4DxZLF1aHT3e1uS
+         Qkuj8TsuWWwEaiQWLn5906i1XJMJr9HqkCZl1NCiXfiUPBwiT2m5bvHpFqBrKMKuLOLh
+         GyhpIMxDli58PhmnyWw6i8SOLzNLkvT+rYhVIEFtSgRjBM2p0WoDpTlhLeaGijG3RmdZ
+         C1IAh1W5/jj7kncsDJNj47BB/sRexS/nOIHclpYYFzHAS1HD1CouEBn8Ql8gix3rOUG9
+         NQhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ne1jKQEzc+j2RSXx8k9BrFVLTm1aSJu1puRRw+vucrg=;
+        b=i4Ygd4c+OTLNOwjkPD9qxgkLNSyoGHlGWySOgwX+qHKfAnVDySiMe+4/rnB/Nw7Bi/
+         S3lbR2+nUngo2vVVr+NxgHt7i/cYTweJ22Kmt4B+LKzPl9XGNbosm7AQY44L0O3xFAtp
+         /rTsN4r5090uIue/I3h7JPZNilaMBEmObTgr3md2v1nX+5owziuYU/+3cw1GYfs2zOdl
+         1rgv8P12dQVBxTlcueAeWhE4VIf8EaKnpu3CpCAU311aA7wjTskdH1iAhdH/R8BKlHKq
+         ONIuJf6I5fmyRGq7yf5xI86oiFtPldbXAbiG4j4+TBpjvgf5JyIuT51v41yCsbJqBXe3
+         YZZA==
+X-Gm-Message-State: AOAM530v3yp4+/dD5dmbRhNPyRkWRXIkDWf9PZxxlZdNq1A4gHLsVR9g
+        z/xTLbS4IYy5XUpwBAhC2Hw=
+X-Google-Smtp-Source: ABdhPJw/jvJAKfJfUwxEWAZIAOYF5bvPWHeEgoHQPeuvjdlm6Vv4nDkbTh3/icJd2TOdqq6z37HOSw==
+X-Received: by 2002:a17:906:a51:: with SMTP id x17mr399300ejf.25.1614684524911;
+        Tue, 02 Mar 2021 03:28:44 -0800 (PST)
+Received: from skbuf ([188.25.217.13])
+        by smtp.gmail.com with ESMTPSA id w18sm15957552ejn.23.2021.03.02.03.28.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 03:28:44 -0800 (PST)
+Date:   Tue, 2 Mar 2021 13:28:42 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Birger Koblitz <git@birger-koblitz.de>,
+        =?utf-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
+        Stijn Segers <foss@volatilesystems.org>
+Subject: Re: dsa_master_find_slave()'s time complexity and potential
+ performance hit
+Message-ID: <20210302112842.5t54kgz3j556cm52@skbuf>
+References: <CALW65jatBuoE=NDRqccfiMVugPh5eeYSf-9a9qWYhvvszD2Jiw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALW65jatBuoE=NDRqccfiMVugPh5eeYSf-9a9qWYhvvszD2Jiw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Werner Sembach <wse@tuxedocomputers.com>
+On Tue, Mar 02, 2021 at 01:51:42PM +0800, DENG Qingfang wrote:
+> Since commit 7b9a2f4bac68 ("net: dsa: use ports list to find slave"),
+> dsa_master_find_slave() has been iterating over a linked list instead
+> of accessing arrays, making its time complexity O(n).
+> The said function is called frequently in DSA RX path, so it may cause
+> a performance hit, especially for switches that have many ports (20+)
+> such as RTL8380/8390/9300 (There is a downstream DSA driver for it,
+> see https://github.com/openwrt/openwrt/tree/openwrt-21.02/target/linux/realtek/files-5.4/drivers/net/dsa/rtl83xx).
+> I don't have one of those switches, so I can't test if the performance
+> impact is huge or not.
 
-ALSA: hda/realtek: Add quirk for Intel NUC 10
+You actually can test that, you could create a tagger in mainline based
+on the rtl83xx tagger from downstream, and then you could modify
+dsa_loop to use DSA_TAG_PROTO_RTL83XX.
 
-This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
-devices. This fixes the issue of the devices not having audio input and
-output on the headset jack because the kernel does not recognize when
-something is plugged in.
+Then you can craft some packets and inject them into the port on which
+dsa_loop is attached using tcpreplay.
+What I do is:
+- I initially send some packets using the xmit function of the tagger,
+  just to have an initial template to start with. This assumes that the
+  xmit format is more or less similar to the rcv format.
+- capture those xmit packets using tcpdump -i eth0 -Q out -w tagger.pcap
+- then open tagger-xmit.pcap in wireshark, run Export Specified Packet
+  and save it in the K12 text file format
+- edit the tagger-xmit.txt file according to my liking, in this case you
+  would have to create a receive packet on port 19 (the one where it's
+  most expensive to do the linear lookup of the ports list)
+- import the tagger.txt file again in Wireshark and save it as a new
+  tagger-rcv.pcap
+- run tcpreplay on that pcap file in a loop
 
-The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
-it turned out that the NUC 10 uses another pin. This information was
-acquired by black box testing likely pins.
+I would probably go with a very small packet size (64 bytes), and enable
+IP routing between two DSA interfaces lan0 and lan1:
 
-Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
-Hi,
-this is my second ever submitted kernel patch with the first one send just some minutes ago, feel free to criticise me if I made an error or missed a best practice bullet point.
-Also: I'm unsure if this would fit the requirements for stable@vger.kernel.org and/or trivial@kernel.org, but I think not (correct me if I'm wrong).
-Kind regards
-Werner Sembach
+ip link set lan0 address de:ad:be:ef:00:00
+ip link set lan1 address de:ad:be:ef:00:01
+ip addr add 192.168.100.2/24 dev lan0
+ip addr add 192.168.101.2/24 dev lan1
+echo 1 > /proc/sys/net/ipv4/ip_forward
+arp -s 192.168.100.1 00:01:02:03:04:05 dev lan0 # towards spoofed sender
+arp -s 192.168.200.1 00:01:02:03:04:06 dev lan1 # towards spoofed receiver
 
-From d281364b8ca6c054a0e5ce20caa599bf7d08160d Mon Sep 17 00:00:00 2001
-From: Werner Sembach <wse@tuxedocomputers.com>
-Date: Fri, 26 Feb 2021 13:54:30 +0100
-Subject: [PATCH] Fix Intel NUC10 no output and input on headset jack
+I would make sure the test packet from tagger-rcv.pcap has:
+- a source MAC address corresponding to your spoofed sender (in my
+  example 00:01:02:03:04:05).
+- a source IP address corresponding to your spoofed sender (in my
+  example 192.168.100.1)
+- a destination MAC address corresponding to the lan0 interface
+  (de:ad:be:ef:00:00)
+- a destination IP address corresponding to the spoofed receiver
+  (192.168.101.2)
 
----
- sound/pci/hda/patch_realtek.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Then the network stack should route the received packet on lan0 by
+replacing the destination MAC address with that of the spoofed receiver
+(00:01:02:03:04:06), decrement the IP TTL to 63 and send it through lan1
+according to the routing table.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 290645516313..c14d624dbaf1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6362,6 +6362,7 @@ enum {
-     ALC269_FIXUP_LEMOTE_A1802,
-     ALC269_FIXUP_LEMOTE_A190X,
-     ALC256_FIXUP_INTEL_NUC8_RUGGED,
-+    ALC256_FIXUP_INTEL_NUC10,
-     ALC255_FIXUP_XIAOMI_HEADSET_MIC,
-     ALC274_FIXUP_HP_MIC,
-     ALC274_FIXUP_HP_HEADSET_MIC,
-@@ -7744,6 +7745,15 @@ static const struct hda_fixup alc269_fixups[] = {
-         .chained = true,
-         .chain_id = ALC269_FIXUP_HEADSET_MODE
-     },
-+    [ALC256_FIXUP_INTEL_NUC10] = {
-+        .type = HDA_FIXUP_PINS,
-+        .v.pins = (const struct hda_pintbl[]) {
-+            { 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+            { }
-+        },
-+        .chained = true,
-+        .chain_id = ALC269_FIXUP_HEADSET_MODE
-+    },
-     [ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
-         .type = HDA_FIXUP_VERBS,
-         .v.verbs = (const struct hda_verb[]) {
-@@ -8183,6 +8193,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-     SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
-     SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
-     SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
-+    SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
- 
- #if 0
-     /* Below is a quirk table taken from the old code.
--- 
-2.25.1
+To make sure your throughput is consistent you can do some things such
+as add a static flow steering rule on the DSA master to ensure the
+packets from the same flow are affine to the same CPU, and that if you
+send bidirectional traffic, it gets load balanced across multiple CPUs:
 
+ethtool --config-nfc eth0 flow-type ether dst de:ad:be:ef:00:00 m ff:ff:ff:ff:ff:ff action 0
+ethtool --config-nfc eth0 flow-type ether dst de:ad:be:ef:00:01 m ff:ff:ff:ff:ff:ff action 1
 
+Also, you should probably turn off GRO since it's not useful with IP
+forwarding and it takes a lot of time to do the re-segmentation on TX,
+to recalculate the checksums and all.
 
+ethtool -K lan0 gro off
+ethtool -K lan1 gro off
 
+You could probably adjust things a bit, like for example see if the rcv
+throughput on lan19 is higher than the throughput on lan0.
 
+That should give you a baseline. Only then would I start hacking at
+dsa_master_find_slave and see what benefit it brings to replace the list
+lookup with something of fixed temporal complexity, such as a linear
+array or something.
 
-
-
+I'm curious what you come up with.
