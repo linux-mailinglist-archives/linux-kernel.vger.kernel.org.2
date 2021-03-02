@@ -2,93 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0950932A0DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B013632A0D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576741AbhCBEcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:32:19 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:52295 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1444111AbhCBCjk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:39:40 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 0021C109C;
-        Mon,  1 Mar 2021 21:27:44 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 01 Mar 2021 21:27:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=/
-        /gbrRneuXQ8PYBLHAooCmvbqBKxLnuewss1ximJRjY=; b=kzYMJr0SFGyFeRLLw
-        37rm6J3N86B7AmgxQGe1owM5lVNQUjT7epcA04dTl7RwcJtqWv4IKRNZP5mLxCSi
-        UcfjkBsDbDmN0IbP14jpQUkvoKE8uvvNV2qKl6z6ue8jv6AhZA+82JCZr7EZUUZc
-        OzRCYejYM442ufdDd/Tij8eXlPHyGoW0RqtgTUAPpZ6WKOlnHHgm7maKr46ZzP/i
-        gGJfYX0rqTF8WH0S8DQZgIiXVc7dJbTmZ/u5A/c7gTddDcXsv3apmTOSorgmvu8V
-        cZSFLmbEGYN9d0rMh5KrIVqNnVETBU8zlc7GhSJ3NgQFcm1Nlc+apN4ZdVsiFteS
-        xQoAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=//gbrRneuXQ8PYBLHAooCmvbqBKxLnuewss1ximJR
-        jY=; b=agqhp0tCc4foYE//oROKhFMyxOfxiYiRsSzBqGshIX5arV5/6kGx6QpVc
-        bLaIJmVfwsPf4ilv7K2sa/8aaV1z2Z0JvjxG7dUxTPnuv9KdX1nL0obnTPT/eutV
-        G+sHY9RHUJN9HsQ2HJBR5iDXOq/36GnzHRVKGZvB8ZTAobS9zrFXgKavTROi7Shf
-        NDaw0btT93ZrU4pl2xYR2uc9vM6nCvtEd8ahbQGmijKeUGbMuVBlI1ionr2IK6RH
-        Y464oIa3jTBDpTdxSlG/2Iwqu8UoI7yMm0cUc4vcc4HLiB5+z2/36XsFvvQ7JGag
-        ALCHM/oD1mm6xmh3PzQDycwbv1UHA==
-X-ME-Sender: <xms:n6I9YJhZePblU1mRNgrrDAVinzdoERYwMiWIKib1K9ZfMb77K-qmbg>
-    <xme:n6I9YODR0sF52QD7ol5Jvw-vXmn6mq4GYrltpeYni9hTJ_FEqARtv3Q2wKKI8TJrP
-    NtLvwjIas2n5dxv57w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrleelgdegiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeftnecuhfhrohhmpeflihgrgihu
-    nhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecugg
-    ftrfgrthhtvghrnhepfeeludeitddvkeffgefgueekjeegfeefteelgffhkeffueetieej
-    geehhfeuffdvnecukfhppeeghedrfeefrdehtddrvdehgeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhih
-    ghhorghtrdgtohhm
-X-ME-Proxy: <xmx:n6I9YJH0MqG738tCl8IAwbT5rUYy-63ZG7QubEpm_JUYHwzYyfjpyQ>
-    <xmx:n6I9YOTT--IWeIwgoGKFOaO2wSKUip1qThOx2MWwpaWW5TBwjZbBHw>
-    <xmx:n6I9YGzUCzBk3S1aatNFcAuz--BkM6ppJwp0qNM24VFiFW8QUiZyMg>
-    <xmx:oKI9YK-3RENV4HWIQnXQEMBBXqV7-VCuSkwVbXc4MXWGfPiynXYhlQ>
-Received: from [127.0.0.1] (li1000-254.members.linode.com [45.33.50.254])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AB34A1080057;
-        Mon,  1 Mar 2021 21:27:41 -0500 (EST)
-Subject: Re: [PATCH 1/2] MIPS: Remove KVM_GUEST support
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>
-References: <20210301152958.3480-1-tsbogend@alpha.franken.de>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <6a746cc8-0a72-c73b-c6bf-780c6ed68d0c@flygoat.com>
-Date:   Tue, 2 Mar 2021 10:27:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1576697AbhCBEcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:32:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241819AbhCBCdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 21:33:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D9B64D9C;
+        Tue,  2 Mar 2021 02:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614652389;
+        bh=2/sTuEpFwd93bBqjR0EAjn1gZBYjn5jEVQYV6u7dFpA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rD1yibcbaSMszD1yM2dmQRNfJ4p5XqppStQyE7CxzroWtmN8S85IOT+fP6srcl+6x
+         dWos1wnPmF9m0OF6eKaZiPV6sY8Q7vjSql7tNzhn5XF90+9oYQ3QahBnW4pEvY31Yi
+         xlGsntppQDTmgfBXoa8Xr65I6PFwUq7TAdi61ST+7IzT5VxJT0aYA3I7JciaG3/2Ek
+         7zyUyQWeexcpo6QP64YJJ4rvEPMKlWHJ2AL8drC2tEMyygMwr/JcW7bFuuLuiO8NwW
+         BZpSSa6SHj2KAUv6EmyyPGRVlzvAVhICezyuQ/pVbzeFjgu8kcTk6PGuecugbutSj8
+         +ZYNikt0cSZfQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, stable@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Serge Ayoun <serge.ayoun@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/sgx: Fix a resource leak in sgx_init()
+Date:   Tue,  2 Mar 2021 04:32:42 +0200
+Message-Id: <20210302023242.112285-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210301152958.3480-1-tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If sgx_page_cache_init() fails in the middle, a trivial return statement
+causes unused memory and virtual address space reserved for the EPC
+section, not freed. Fix this by using the same rollback, as when
+sgx_page_reclaimer_init() fails.
 
+Cc: stable@vger.kernel.org # 5.11
+Fixes: e7e0545299d8 ("x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections")
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ arch/x86/kernel/cpu/sgx/main.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-ÔÚ 2021/3/1 ÏÂÎç11:29, Thomas Bogendoerfer Ð´µÀ:
-> KVM_GUEST is broken and unmaintained, so let's remove it.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 8df81a3ed945..52d070fb4c9a 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -708,8 +708,10 @@ static int __init sgx_init(void)
+ 	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+ 		return -ENODEV;
+ 
+-	if (!sgx_page_cache_init())
+-		return -ENOMEM;
++	if (!sgx_page_cache_init()) {
++		ret = -ENOMEM;
++		goto err_page_cache;
++	}
+ 
+ 	if (!sgx_page_reclaimer_init()) {
+ 		ret = -ENOMEM;
+-- 
+2.30.1
 
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-
-I'll prepare a patch for KVM side removal.
-
-Thanks.
-
-- Jiaxun
