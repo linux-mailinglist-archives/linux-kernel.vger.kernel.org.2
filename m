@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D937432A3E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B492D32A3E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382723AbhCBJwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:52:02 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:36745 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838141AbhCBJ36 (ORCPT
+        id S1577732AbhCBJwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:52:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378868AbhCBJcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:29:58 -0500
-Received: by mail-il1-f199.google.com with SMTP id s13so14110719ilp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:29:43 -0800 (PST)
+        Tue, 2 Mar 2021 04:32:01 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EC7C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:31:13 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id l22so1626868wme.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:31:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=duqySNS7K2RXV+A+no11hnCWpUd9p0lgrM9odevZ3Ko=;
+        b=KybiIHEHfVSg3YhOS1sOgCd+YntEv3ioQBT6wh7u/BT45PH7GWuqA/X23Y58kK9uqv
+         6In53BefBhjfG5PWhh+8ykxb+dkd2NB96/fqfr5bsCa3F56syAj2XgWXR1U+riEuZIBK
+         XLg20tRKCRtnlIkXl+yyesmt3HuYnd2N/SRHFpWm/k7aFk68CONLlnhXXMSa5T9aDpKy
+         5jSWLHwp+w67XhmEtTS0iUnmBst6SHL6vQEfshvOeauqCwfLeWrGRkF2hhdEBd0jC8H4
+         Kz7nfImcRvgBNavSpFSs8Jz63S025faWMvwgTRrcBvTtVfN0h45L9XyCascOfBa479rK
+         LAow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mWrgSF6bXDt8oZKzNoVO6j2ZDCRfyqKvx81/QMegxVY=;
-        b=UOTjiBwslYyduEBJataIsAQFtGa6rrtQzSwLF1hOMrah3z4wCBDSFbGiCfTPhi5VLW
-         8IQwQv5UVowiSZRS0MhCBoaE0btyfZH2J/lB7dbvfrqkgver4UeC0sSkpgXpSM9dGGyk
-         Qp1VJUyMJNXjLt649UqL37ElM//An7mK1MkyaVYSMQ36O+ZWSh9CzUYIgLIVdX1eebsT
-         Nrg/2liVGRMbKLPcJa0ovLr7qsRAbMofd5vJUw/AHpUPRgu7mvJlB8x/RWVbYIfBtJm9
-         C/xaWWeChfOxhDud3Ln17jmLfZ6JWqgRy/bkzYK3r8ZzjJMQUAxF+LPQ3RzbR1uFCyua
-         HDyQ==
-X-Gm-Message-State: AOAM5320IJ/T7xfhs2IducTVtCVc6YJm94heyu6g4iPPA2Yr+ZHiNAxO
-        6JbiT7/3AAjmjWpDiIIpkbBjLzLSq9hnecwykKeaWZgomuDq
-X-Google-Smtp-Source: ABdhPJzYRtugQNJwsfcvLS+hVKsgyEYDJW1KKRISaXRdJRbOrHfk6pYCMLv0Os1pprF2odVOB6j7luJaC0meF1O3pydUvjmKoHoJ
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=duqySNS7K2RXV+A+no11hnCWpUd9p0lgrM9odevZ3Ko=;
+        b=erimcoYsDBPtWjh5KriwHslfRVpdhkuz1ZolO4/rxoyFwyKaFmMZ5p0vsEk+AjGvQk
+         /COzFkE59CXbeh/Ey41ozxImM4V6zc2Dh38vqM1NVH5VBSZM5asbMQDobI2tRfiXJcWz
+         8s1oBj/T962FcRr63vIY+VJ67vwHUQIf+9lwtvthpPNVke7UViLKWuYHCP02BCHQAIi7
+         FuoXCoXHeTDA2G7pv7ibtO5P77hjV2jOAGbSIRdyXLzucfIfTqsDDKMJbBmBgMWYwsSv
+         cuvRBEO7gEdqRBWLLPBIw4bhRaKBpqnf4/ZBki4rKDc+e5VL6urGok0EJFwpIZN1O9bU
+         u6Uw==
+X-Gm-Message-State: AOAM533u4SEg3lCy1EgQ1yZh0wF9c7SWHVjxrdWzsxlhU1X1lz6DFVFD
+        xnHX4hBty6hvGM6NfF6r35HLYw==
+X-Google-Smtp-Source: ABdhPJxIml2cSRQmyrAOS0vFHxqQG8C+95GOs0WSZY9gEUVuk5drR143w/v2r/4g0i7bWLO+GtoX+g==
+X-Received: by 2002:a05:600c:49aa:: with SMTP id h42mr3132506wmp.49.1614677472184;
+        Tue, 02 Mar 2021 01:31:12 -0800 (PST)
+Received: from dell ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id a6sm2557430wmm.0.2021.03.02.01.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 01:31:11 -0800 (PST)
+Date:   Tue, 2 Mar 2021 09:31:09 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-rc 1/2] RDMA/mlx5: Set correct kernel-doc identifier
+Message-ID: <20210302093109.GA2690909@dell>
+References: <20210302074214.1054299-1-leon@kernel.org>
+ <20210302074214.1054299-2-leon@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a606:: with SMTP id c6mr10241993jam.108.1614677357837;
- Tue, 02 Mar 2021 01:29:17 -0800 (PST)
-Date:   Tue, 02 Mar 2021 01:29:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000057420705bc8a5eeb@google.com>
-Subject: KMSAN: uninit-value in ieee802154_hdr_push
-From:   syzbot <syzbot+4f6e279a71100e94ae65@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, glider@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302074214.1054299-2-leon@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 02 Mar 2021, Leon Romanovsky wrote:
 
-syzbot found the following issue on:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The W=1 allmodconfig build produces the following warning:
+> drivers/infiniband/hw/mlx5/odp.c:1086: warning: wrong kernel-doc identifier on line:
+>   * Parse a series of data segments for page fault handling.
+> 
+> Fix it by changing /** to be /* as it is written in kernel-doc documentation.
+> 
+> Fixes: 5e769e444d26 ("RDMA/hw/mlx5/odp: Fix formatting and add missing descriptions in 'pagefault_data_segments()'")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/hw/mlx5/odp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+> index 374698186662..b103555b1f5d 100644
+> --- a/drivers/infiniband/hw/mlx5/odp.c
+> +++ b/drivers/infiniband/hw/mlx5/odp.c
+> @@ -1082,7 +1082,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
+>  	return ret ? ret : npages;
+>  }
+> 
+> -/**
+> +/*
 
-HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1756eff2d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c8e3b38ca92283e
-dashboard link: https://syzkaller.appspot.com/bug?extid=4f6e279a71100e94ae65
-compiler:       Debian clang version 11.0.1-2
-userspace arch: i386
+This is not the correct fix.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Kernel-doc is asking for the function name.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4f6e279a71100e94ae65@syzkaller.appspotmail.com
+>   * Parse a series of data segments for page fault handling.
+>   *
+>   * @dev:  Pointer to mlx5 IB device
 
-=====================================================
-BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
-BUG: KMSAN: uninit-value in ieee802154_hdr_push+0xd68/0xdd0 net/ieee802154/header_ops.c:108
-CPU: 1 PID: 15015 Comm: syz-executor.3 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
- ieee802154_hdr_push+0xd68/0xdd0 net/ieee802154/header_ops.c:108
- ieee802154_header_create+0xd07/0x1070 net/mac802154/iface.c:404
- wpan_dev_hard_header include/net/cfg802154.h:374 [inline]
- dgram_sendmsg+0xf48/0x15c0 net/ieee802154/socket.c:670
- ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x714/0x830 net/socket.c:2432
- __compat_sys_sendmsg net/compat.c:347 [inline]
- __do_compat_sys_sendmsg net/compat.c:354 [inline]
- __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
- __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
- do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
- __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f65549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f555f5fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
-RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00000000200003c0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Local variable ----hdr@ieee802154_header_create created at:
- ieee802154_header_create+0xc9/0x1070 net/mac802154/iface.c:368
- ieee802154_header_create+0xc9/0x1070 net/mac802154/iface.c:368
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
