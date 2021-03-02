@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C37032A4D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E357F32A4BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446535AbhCBLSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:18:02 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:58633 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838561AbhCBK4x (ORCPT
+        id S1446422AbhCBLMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:12:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1838470AbhCBKy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:56:53 -0500
-Received: from mail-wm1-f47.google.com ([209.85.128.47]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MWzbr-1lJap01VGb-00XIbh; Tue, 02 Mar 2021 11:54:19 +0100
-Received: by mail-wm1-f47.google.com with SMTP id n4so2210381wmq.3;
-        Tue, 02 Mar 2021 02:54:19 -0800 (PST)
-X-Gm-Message-State: AOAM531PfHCGTnwKqf4Xca8S6I4j7fUd6pXrkwopqJwyO5GPhRUNGCUP
-        rQnofa//7fuFoxNYTzaPk53TbSs7qqcyjCaznWE=
-X-Google-Smtp-Source: ABdhPJwSy1Zm9Mymlo1hNSTEvNea2JqPihM0NDsdqQ4z0ab+tRCjmNhlJs5SPzaIvZ02aT2eYQCACTgNAzu/Id76t/U=
-X-Received: by 2002:a05:600c:4f11:: with SMTP id l17mr3405660wmq.38.1614682458937;
- Tue, 02 Mar 2021 02:54:18 -0800 (PST)
+        Tue, 2 Mar 2021 05:54:56 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA0CC061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:54:15 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id b18so12868871wrn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:54:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WTqhktbSK+pb9FujmiEWqSsD3Ov6W1SagmahMe1crb4=;
+        b=eekxItstzdek5bmY3Fy4eehDypAbrdub+lzL53FCHxqePg1RLZDjbEEHCxfe7H5MeL
+         towuuIVEYAu76BFuny9l7i0558AzCjJQwktgvVC56VAIPG5pefsy7m+wYCgrwh0OwpNx
+         tZb3O6EXXH7lqAbnkqYPREIe4oOmXsySzOSAbCE85QopRCcIKKht9ZcDJ0rpP7mYKEnK
+         vviYTzhYaT90BQj+oIszMmWAJJrLlYs+e3CcNZ6yaJkA99jdrNtqgOWem7BKqI0WnguT
+         SlYzp+ZW5ClaM4W0z+R77lXtqsS8NOCLuyQkkuFQ36eA8CGjqoL3YiRE2anwN2GEu1oP
+         fZ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WTqhktbSK+pb9FujmiEWqSsD3Ov6W1SagmahMe1crb4=;
+        b=hqYRnBhpG6h2uPdt/eTyvzmSr13rp7bu5NMZBiogh+hbScxFZuNgI2gH8ALwcAh24+
+         0x2WKEypL94nIUZKSTcSqlRDXuS9V2EYE0c2USngmT1sav2MVSFVCSy7G1bmyBlDcMtC
+         GjzvQtOZD439u+bQH15izCU3vG0HOqRCutz+NjmLVDhV3z4QSWZKRWKuhoSQsrkT2LN7
+         /ruW/vKaJ8qxPy+DnKVL74pEFcTe35W7vKQ+vNNy88ZMpJtymBN04Yi1rrX2N9MztxmE
+         5uoucJKXy6wQfEZtWDiZ64ChfFiCkR8t6XxCm7BlHz/qyiseaGZnN+gIz/Jk2k+6ZaG4
+         tnoQ==
+X-Gm-Message-State: AOAM530fI5Aop3uFxFhaBMolRSNC3F+Nu0KlDBAz6oM0SoTGr3ih2ZAT
+        kVipOKqVGrwMEBvTZu790o7OknPc9UTmtg==
+X-Google-Smtp-Source: ABdhPJz2NeMkaA+BYqC42OXCin/GZFMyb6o91RKMQqOLxd9eWe0+cyjePPdLgXfy8TyNxcUMz/i6ZA==
+X-Received: by 2002:a5d:4c81:: with SMTP id z1mr6493646wrs.85.1614682454582;
+        Tue, 02 Mar 2021 02:54:14 -0800 (PST)
+Received: from localhost.localdomain (67.red-83-54-30.dynamicip.rima-tde.net. [83.54.30.67])
+        by smtp.gmail.com with ESMTPSA id v5sm2270407wmh.2.2021.03.02.02.54.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Mar 2021 02:54:14 -0800 (PST)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     vkoul@kernel.org
+Cc:     kishon@ti.com, linux-phy@lists.infradead.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        neil@brown.name
+Subject: [PATCH] phy: ralink: phy-mt7621-pci: fix XTAL bitmask
+Date:   Tue,  2 Mar 2021 11:54:12 +0100
+Message-Id: <20210302105412.16221-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
- <CAK8P3a1ZXbodV07TTErnQunCLWOBnzRiVdLCxBD743fn-6FbXg@mail.gmail.com>
- <56fdef9a-b373-32f2-6dac-e687caa813c8@intel.com> <YD4KovxeoNG/c8QC@stefanha-x1.localdomain>
-In-Reply-To: <YD4KovxeoNG/c8QC@stefanha-x1.localdomain>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 2 Mar 2021 11:54:02 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
-Message-ID: <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:gF0XgA0E5NC4LDXr21/b567gTU0xy0MQFYkHv+4rdqtRDoDZiBb
- bI9+BvBZDafPfhbcySdS7YnBoPEkq31Fkfo5z6OnVOnrzncPdsrhBoWlmokCMRLtJULXy7U
- 5+m4xnWEk3w7SmQ+/dV6XH0AEz7GtXYBpDnWq3E1ct1ItUYDxCcBJPDBzNNC99fDTbeMdKD
- a+C2FYpG8ygzJ+R9ZPOMg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vjcPgti2woE=:JBOJcGWnz+Uvvppff19JPY
- eMN1rU3e0Xhd67jckah4dd3wl/kTrzR3Co+OsU7o8DHAX9Ps81aRewDkGLfmDe5qMUNVEhF/x
- Xb9naahW/uSxUo7ze/6x1I0NsTM08wBYrwsNSHi+AnmY4UMSgoAf8rPLFuuFJLsfZjpPUOSNz
- VO0dhjXlnPGMZQN8dA/P3cuxxuPqpb4Cg/Z7Ax9ajm0+2XiV9kMRv2riOL34bTEWVvLCx+Eyw
- Erj3K7e17ZsGJlARuk+ZqQpioITVziD4n747e03IeiVZaiQmyMUugWY8tpOXyrNFecx/Bk6np
- 2zmdvJ7JT93U///nWSq4n/00XQeo3lWXjb2z/qT5hX1V9ueTcF3gWlOiVSTgt4euiQfkRL34o
- 5mf8mO2JF1McAJjdnQibudjdiJvNQgDV9ZkumRUQGGcdGZll+gW7+EX6U8WQVBB/n+hA7ZXOf
- PZ8PtF/T02zo/RpIVhSoKYCX1ovX0YKGWxD5SzoQdUb3TG8hi/KZ6yTxUQAAYpRW6wabap7fZ
- mmZG/1YOOZzBx2oWOXTs7bYfpRb5+m3vR9u01ZVJbq4zbhIowCs0eaWqvCzhQY97g==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 10:51 AM Stefan Hajnoczi <stefanha@redhat.com> wrote:
-> On Tue, Mar 02, 2021 at 10:42:06AM +0800, Jie Deng wrote:
-> > > > +/*
-> > > > + * Definitions for virtio I2C Adpter
-> > > > + *
-> > > > + * Copyright (c) 2021 Intel Corporation. All rights reserved.
-> > > > + */
-> > > > +
-> > > > +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
-> > > > +#define _UAPI_LINUX_VIRTIO_I2C_H
-> > > Why is this a uapi header? Can't this all be moved into the driver
-> > > itself?
->
-> Linux VIRTIO drivers provide a uapi header with structs and constants
-> that describe the device interface. This allows other software like
-> QEMU, other operating systems, etc to reuse these headers instead of
-> redefining everything.
->
-> These files should contain:
-> 1. Device-specific feature bits (VIRTIO_<device>_F_<feature>)
-> 2. VIRTIO Configuration Space layout (struct virtio_<device>_config)
-> 3. Virtqueue request layout (struct virtio_<device>_<req/resp>)
->
-> For examples, see <linux/virtio_net.h> and <linux/virtio_blk.h>.
+When this was rewriten to get mainlined and start to
+use 'linux/bitfield.h' headers, XTAL_MASK was wrong.
+It must mask three bits but only two were used. Hence
+properly fix it to make things work.
 
-Ok, makes sense. So it's not strictly uapi but just helpful for
-virtio applications to reference these. I suppose it is slightly harder
-when building qemu on other operating systems though, how does
-it get these headers on BSD or Windows?
+Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+ drivers/phy/ralink/phy-mt7621-pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-       Arnd
+diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
+index 9a610b414b1f..84ee2b5c2228 100644
+--- a/drivers/phy/ralink/phy-mt7621-pci.c
++++ b/drivers/phy/ralink/phy-mt7621-pci.c
+@@ -62,7 +62,7 @@
+ 
+ #define RG_PE1_FRC_MSTCKDIV			BIT(5)
+ 
+-#define XTAL_MASK				GENMASK(7, 6)
++#define XTAL_MASK				GENMASK(8, 6)
+ 
+ #define MAX_PHYS	2
+ 
+-- 
+2.25.1
+
