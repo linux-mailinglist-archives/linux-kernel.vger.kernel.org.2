@@ -2,91 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22E332ADD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2275532ADDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1840076AbhCBWPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:15:33 -0500
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:35630 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240616AbhCBUCT (ORCPT
+        id S1840093AbhCBWPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:15:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1582022AbhCBUCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:02:19 -0500
-Received: by mail-vs1-f54.google.com with SMTP id t23so11295950vsk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 12:01:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lzf9U5TyFr8YSgCYbQV0aCCbWT0MRYgraMrf2J/E5OM=;
-        b=MUIBpGfgoiHEGU8xStahm+ISOYThAi3D01ZDeHRZzZPF4mIXur0dDMfZFBnWhCAs20
-         GWGWwrO74a3BpGmBDsu6PGoV81YFbfPGAiOfmxUW9AYqvNGSyIu4+fddsQPgtxRuefQH
-         JBHmDZUwgFoqC/9Wt/bKhdrF+4tKZdN5tReD7pVSZEppA7HxXpZLaVMYD8jY50uBfF0O
-         lJbZQH40qx/6Wzyj3B6JbP/6uazo8s3kQ5x3jiQWWk23bScPkkqmCmZgGZzd8By2uws0
-         2oEZr+aZnnVDL68/Vylphr2HLG8xc3AQotfFXdLB0q6X+9rcCjXmD0vj9+mRQaDjcMH5
-         xX1A==
-X-Gm-Message-State: AOAM531IN3X5zw8k7upsd5Gc8h8rLydmxxCRnQmUuv+N6bUzBEq6qHbr
-        5iUnc4pw/nt30ajO6lK6YRSIu+ch/NAQTJhkWps=
-X-Google-Smtp-Source: ABdhPJzRCGpW4RCsZEhpYEAn3MR1Q73gbJHqe3CH+KRCFvVBwE5R/NVI0GIx7VbV9hgc+A3Gg/HXK7gUOE34HM0PfoU=
-X-Received: by 2002:a67:fb86:: with SMTP id n6mr3865292vsr.3.1614715282171;
- Tue, 02 Mar 2021 12:01:22 -0800 (PST)
+        Tue, 2 Mar 2021 15:02:00 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18AC061756;
+        Tue,  2 Mar 2021 12:01:18 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 1A7322223E;
+        Tue,  2 Mar 2021 21:01:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1614715275;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0KW/FK8JYfP2NgbfURSSqrkgkLGVEKeSJfvl4xPN+Zk=;
+        b=puDD5PjfnhmgTQdXwgjIVlzikBXCoF51Q9LK5M2KY8nBIaOzjZj7dnLNWtRG9LthC1tsXi
+        ozBb7oGCHUnoeFVYnZqHnFXdg0UR+ZaTlYLcqs3++DB5QCpJJloSDUzivDQ4YDKhaHFwwc
+        nFxIyhHJTcNMDtkkDlFXNtkYHIOgdMo=
 MIME-Version: 1.0
-References: <20210301104316.2766484-1-geert@linux-m68k.org>
- <alpine.DEB.2.22.394.2103011342520.710098@ramsan.of.borg> <CADnq5_O-j8EWL+Eb8zK-7WqUuWKWETVWYRQNFdS_ymUSgo1jrg@mail.gmail.com>
-In-Reply-To: <CADnq5_O-j8EWL+Eb8zK-7WqUuWKWETVWYRQNFdS_ymUSgo1jrg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Mar 2021 21:01:10 +0100
-Message-ID: <CAMuHMdVFstnce-WKmj=4h3ZdtSThJNOLz_f1ervcZxE6hg=KsA@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.12-rc1
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 02 Mar 2021 21:01:15 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Cc:     f.fainelli@gmail.com, Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/12] pinctrl: add a pincontrol driver for BCM6328
+In-Reply-To: <20210302191613.29476-3-noltari@gmail.com>
+References: <20210302191613.29476-1-noltari@gmail.com>
+ <20210302191613.29476-3-noltari@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <c69dc0da70d69add1c5e4d64d04c25e9@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Am 2021-03-02 20:16, schrieb Álvaro Fernández Rojas:
+> Add a pincontrol driver for BCM6328. BCM628 supports muxing 32 pins as
+> GPIOs, as LEDs for the integrated LED controller, or various other
+> functions. Its pincontrol mux registers also control other aspects, 
+> like
+> switching the second USB port between host and device mode.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> ---
+>  v2: switch to GPIO_REGMAP
+> 
+>  drivers/pinctrl/bcm/Kconfig           |  13 +
+>  drivers/pinctrl/bcm/Makefile          |   1 +
+>  drivers/pinctrl/bcm/pinctrl-bcm6328.c | 481 ++++++++++++++++++++++++++
+>  3 files changed, 495 insertions(+)
+>  create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6328.c
+> 
+> diff --git a/drivers/pinctrl/bcm/Kconfig b/drivers/pinctrl/bcm/Kconfig
+> index 0ed14de0134c..76728f097c25 100644
+> --- a/drivers/pinctrl/bcm/Kconfig
+> +++ b/drivers/pinctrl/bcm/Kconfig
+> @@ -29,6 +29,19 @@ config PINCTRL_BCM2835
+>  	help
+>  	   Say Y here to enable the Broadcom BCM2835 GPIO driver.
+> 
+> +config PINCTRL_BCM6328
+> +	bool "Broadcom BCM6328 GPIO driver"
+> +	depends on OF_GPIO && (BMIPS_GENERIC || COMPILE_TEST)
+> +	select GPIO_REGMAP
+> +	select GPIOLIB_IRQCHIP
+> +	select IRQ_DOMAIN_HIERARCHY
+> +	select PINMUX
+> +	select PINCONF
+> +	select GENERIC_PINCONF
 
-On Tue, Mar 2, 2021 at 8:30 PM Alex Deucher <alexdeucher@gmail.com> wrote:
-> On Mon, Mar 1, 2021 at 9:21 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Mon, 1 Mar 2021, Geert Uytterhoeven wrote:
-> > > Below is the list of build error/warning regressions/improvements in
-> > > v5.12-rc1[1] compared to v5.11[2].
-> > >
-> > > Summarized:
-> > >  - build errors: +2/-0
-> >
-> > > [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8/ (all 192 configs)
-> > > [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f40ddce88593482919761f74910f42f4b84c004b/ (all 192 configs)
-> > >
-> > >
-> > > *** ERRORS ***
-> > >
-> > > 2 error regressions:
-> > >  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 674:2
-> > >  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 638:2
-> >
-> > powerpc-gcc4.9/ppc64_book3e_allmodconfig
-> >
-> > This was fixed in v5.11-rc1, but reappeared in v5.12-rc1?
->
-> Do you know what fixed in for 5.11?  I guess for PPC64 we depend on CONFIG_VSX?
+select GPIO_REGMAP ?
 
-Looking at the kisskb build logs for v5.11*, it seems compilation never
-got to drivers/gpu/drm/ due to internal compiler errors that weren't caught
-by my scripts.  So the errors listed above were not really fixed.
+> +	default BMIPS_GENERIC
+> +	help
+> +	   Say Y here to enable the Broadcom BCM6328 GPIO driver.
+> +
+>  config PINCTRL_IPROC_GPIO
+>  	bool "Broadcom iProc GPIO (with PINCONF) driver"
+>  	depends on OF_GPIO && (ARCH_BCM_IPROC || COMPILE_TEST)
+> diff --git a/drivers/pinctrl/bcm/Makefile 
+> b/drivers/pinctrl/bcm/Makefile
+> index 79d5e49fdd9a..7e7c6e25b26d 100644
+> --- a/drivers/pinctrl/bcm/Makefile
+> +++ b/drivers/pinctrl/bcm/Makefile
+> @@ -3,6 +3,7 @@
+> 
+>  obj-$(CONFIG_PINCTRL_BCM281XX)		+= pinctrl-bcm281xx.o
+>  obj-$(CONFIG_PINCTRL_BCM2835)		+= pinctrl-bcm2835.o
+> +obj-$(CONFIG_PINCTRL_BCM6328)		+= pinctrl-bcm6328.o
+>  obj-$(CONFIG_PINCTRL_IPROC_GPIO)	+= pinctrl-iproc-gpio.o
+>  obj-$(CONFIG_PINCTRL_CYGNUS_MUX)	+= pinctrl-cygnus-mux.o
+>  obj-$(CONFIG_PINCTRL_NS)		+= pinctrl-ns.o
+> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm6328.c
+> b/drivers/pinctrl/bcm/pinctrl-bcm6328.c
+> new file mode 100644
+> index 000000000000..f2b1a14e7903
+> --- /dev/null
+> +++ b/drivers/pinctrl/bcm/pinctrl-bcm6328.c
+[..]
+> +static int bcm6328_reg_mask_xlate(struct gpio_regmap *gpio,
+> +				  unsigned int base, unsigned int offset,
+> +				  unsigned int *reg, unsigned int *mask)
+> +{
+> +	unsigned int line = offset % gpio->ngpio_per_reg;
+> +	unsigned int stride = offset / gpio->ngpio_per_reg;
+> +
+> +	*reg = base - stride * gpio->reg_stride;
+> +	*mask = BIT(line);
+> +
+> +	return 0;
+> +}
 
-Gr{oetje,eeting}s,
+How many registers are there? npgio_per_reg is 32 but so is ngpio.
+So isn't there only one register? And thus, can you use the default
+gpio_regmap_simple_xlat()?
 
-                        Geert
+[..]
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> +static int bcm6328_pinctrl_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct gpio_regmap_config grc = {0};
+> +	struct gpio_regmap *gr;
+> +	struct bcm6328_pinctrl *pc;
+> +	int err;
+> +
+> +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
+> +	if (!pc)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, pc);
+> +	pc->dev = dev;
+> +
+> +	pc->regs = syscon_node_to_regmap(dev->parent->of_node);
+> +	if (IS_ERR(pc->regs))
+> +		return PTR_ERR(pc->regs);
+> +
+> +	grc.parent = dev;
+> +	grc.ngpio = BCM6328_NUM_GPIOS;
+> +	grc.ngpio_per_reg = BCM6328_BANK_GPIOS;
+> +	grc.regmap = pc->regs;
+> +	grc.reg_dat_base = BCM6328_DATA_REG;
+> +	grc.reg_dir_out_base = BCM6328_DIROUT_REG;
+> +	grc.reg_mask_xlate = bcm6328_reg_mask_xlate;
+> +	grc.reg_set_base = BCM6328_DATA_REG;
+> +	grc.reg_stride = 4;
+> +
+> +	gr = devm_gpio_regmap_register(dev, &grc);
+> +	err = PTR_ERR_OR_ZERO(gr);
+> +	if (err) {
+> +		dev_err(dev, "could not add GPIO chip\n");
+> +		return err;
+> +	}
+> +
+> +	pc->pctl_desc.name = MODULE_NAME;
+> +	pc->pctl_desc.pins = bcm6328_pins;
+> +	pc->pctl_desc.npins = ARRAY_SIZE(bcm6328_pins);
+> +	pc->pctl_desc.pctlops = &bcm6328_pctl_ops;
+> +	pc->pctl_desc.pmxops = &bcm6328_pmx_ops;
+> +	pc->pctl_desc.owner = THIS_MODULE;
+> +
+> +	pc->pctl_dev = devm_pinctrl_register(dev, &pc->pctl_desc, pc);
+> +	if (IS_ERR(pc->pctl_dev)) {
+> +		gpiochip_remove(&gr->gpio_chip);
+> +		return PTR_ERR(pc->pctl_dev);
+> +	}
+> +
+> +	pc->gpio_range.name = MODULE_NAME;
+> +	pc->gpio_range.npins = BCM6328_NUM_GPIOS;
+> +	pc->gpio_range.base = gr->gpio_chip.base;
+> +	pc->gpio_range.gc = &gr->gpio_chip;
+> +	pinctrl_add_gpio_range(pc->pctl_dev, &pc->gpio_range);
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Ahh I see. What about adding a new function in gpio-regmap.c:
+   gpio_regmap_pinctrl_add_gpio_range(pc->pctl_dev, &pc->gpio_range)?
+
+gpio-regmap should have all the information to fill all the
+required properties. I'm unsure whether gpio-regmap should also
+allocate the gpio_range.
+
+Maybe someone can come up with a better function name though.
+
+-michael
