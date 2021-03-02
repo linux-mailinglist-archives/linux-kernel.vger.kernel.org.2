@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2604932A921
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA2732A937
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580728AbhCBSMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        id S1580743AbhCBSMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:12:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384630AbhCBPca (ORCPT
+        with ESMTP id S1384632AbhCBPca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 10:32:30 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C292C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:27:24 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id v12so19198222ott.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:27:24 -0800 (PST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030BFC061A31
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:28:43 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 18so23323252lff.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:28:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=e79b35YG0+gbCiDJj+I5H6NghEAUI7GEkWLA6tEg4Gs=;
-        b=IrRzArdgfVJVnwyHN0l6DUYd6q03xZbe5WO6GjoukZLcSYEk2SAZkuVEYpYNnInBKG
-         aA11Abo4VkwO+cqjr5RfFYdhNNew8gF7Y1tXDnOn1gnc4LpTj0ZObGaGzV674P2JbLCH
-         fpU2HPp3QK3RgfhbtjhrAuDv3ljEKuIO6o9aE=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RVLXV9q75+jht4iE83WdkIxMeuR8jzeBuwVVsN9WTLg=;
+        b=gV4ynqlQFejyy+ndUs/LYpx3zBRZkYYb+XQcgjk/Y2UhS8fERlg6PZC6CLPKxWVdJh
+         UPpuwSGiXxNNsSj57lw9eHpk00/M9tfI1Hg1/kmS7OkZwCH16dLSQTBjwF9kVmWB4rGf
+         VIToCruiTYRvqMwroG7hfCsNWbyHNNICx0RO/cUQCYiba9/ucEhyJCqVR+ieqfUk10pD
+         Tb5e+J+FY2x+oxAoSMkjq4lmPeWrE4eEpQTWGeNeXpFyv3wDeBXxYfTAL2oShaJG1gs+
+         j7z6zXZhf04vLIkap4O26CMNHIsWyCwd0+f4FJlFOqF7eDzyKn5DBqTv0whla3Zp6Vws
+         bYdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e79b35YG0+gbCiDJj+I5H6NghEAUI7GEkWLA6tEg4Gs=;
-        b=Cqc9fZkr0TPQ0g/UU7qDd37Ihn8IERaaEVrqlQIvpKTb0PEUbkY5f+w4eNCzYDSuEP
-         nGDjNBmxH/rFF15LnVlUXOqEMVkvp5tQJuj1enqQx4QVsUzVg+iBCDXJxR8rt31fIKDU
-         +fPu5v0wWb7wbTFNG/17vLXIcexSe59GrwksKPsjX/ODDPHUI3+UD1TBDF1qT1PHDpBG
-         aycGfVy+X3qHzPzdFAccx71VnImrvmZxy3+SN1SL6E5fGBnz03XHhuvInHq6pUMaVW/h
-         OYIRF1QDRzTtzvxDV9Tg7arTHkxdt21dgGma4AGOa9O0Q2pnYjlgZFQfY/BQsxDc/yYA
-         igfg==
-X-Gm-Message-State: AOAM532ZHIcwrgFffSAO8H6DLMSY1pPZM5rh1piOP8I/e8J8Q5a8Qr+B
-        kuIUsoPLHLD12Op0GY5IdkkZ+A==
-X-Google-Smtp-Source: ABdhPJztO3JExaOGej7r1rUpoB3z2m2zvTOXTtPpQ5UQVgKRMGDv9fZFfSTrouU/trOVqlMC87vJEA==
-X-Received: by 2002:a05:6830:15cf:: with SMTP id j15mr18821705otr.268.1614698843545;
-        Tue, 02 Mar 2021 07:27:23 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t2sm4586768otq.45.2021.03.02.07.27.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 07:27:23 -0800 (PST)
-Subject: Re: [PATCH] selftests: gpio: update .gitignore
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Kent Gibson <warthog618@gmail.com>, Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210224185316.17942-1-brgl@bgdev.pl>
- <CACRpkdZ915TABrSt0A_1tM3Jt_op4gcCY1b-d2ocM7wjKJFoPA@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <b188690a-31e5-fca9-1226-9dbf7c9f9448@linuxfoundation.org>
-Date:   Tue, 2 Mar 2021 08:27:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RVLXV9q75+jht4iE83WdkIxMeuR8jzeBuwVVsN9WTLg=;
+        b=hHfyw0mST176f/XeLxZDFCKiESxF8XHZavcnhmc9a8M0I5hCmawh9gImIj+KxIJd6V
+         qKYJsu+Cwb4k7wlydz7ok0hPxDADvaOp0EkbKmXczgHSlP4nUIl0FLuVYCuJ2/Ievkme
+         E+NrfDyDyS/IgiCGXoYG2GNgnFT43mBkMUKVMNfbELMlp7sSbssrmCWRfQ4e2vyC7hoD
+         FmwKJ04RAStxfLm8GgUEjTBPoct8qw3XhYnu7B2JriGh2CusaSx3A1zmIBOu06UQU6rp
+         cyv1K0EE8VpYU3JlP5kaCKe1Oo+NBQPD9RKJjltBMYO4CF60qLf4MK7Ev5nIR6AvEwH0
+         BS/Q==
+X-Gm-Message-State: AOAM531Z7Dl8NcWd9TNfAAnM2OLe1hB8b0/Wa7T2GvKmQhlAuFmQBTuZ
+        gZwcZLO1S4H7idi0FQkkTtS2B06GRXzi/iaUucxQhw==
+X-Google-Smtp-Source: ABdhPJyq3rpvaXhwX2VHa2lgT2358eC5Ypt/Jh3s8qQ435mBzMUVrLp8/RG4NPHNIYVQcCazuyhFFsD0nTR3rUUV0OU=
+X-Received: by 2002:a19:548:: with SMTP id 69mr10323405lff.465.1614698921540;
+ Tue, 02 Mar 2021 07:28:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZ915TABrSt0A_1tM3Jt_op4gcCY1b-d2ocM7wjKJFoPA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210225164216.21124-1-noltari@gmail.com> <20210225164216.21124-10-noltari@gmail.com>
+In-Reply-To: <20210225164216.21124-10-noltari@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 16:28:30 +0100
+Message-ID: <CACRpkdY5W_me1ym3MftGjMwtbPc2czCASET0-qPz8WgmV7H00g@mail.gmail.com>
+Subject: Re: [PATCH 09/12] Documentation: add BCM63268 pincontroller binding documentation
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 7:44 AM, Linus Walleij wrote:
-> On Wed, Feb 24, 2021 at 7:53 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> 
->> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>
->> The executable that we build for GPIO selftests was renamed to
->> gpio-mockup-cdev. Let's update .gitignore so that we don't show it
->> as an untracked file.
->>
->> Fixes: 8bc395a6a2e2 ("selftests: gpio: rework and simplify test implementation")
->> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> Yours,
-> Linus Walleij
-> 
+On Thu, Feb 25, 2021 at 5:42 PM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
 
+> Add binding documentation for the pincontrol core found in the BCM63268
+> family SoCs.
+>
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 
-Thank you. I will queue this up.
+> +  interrupts-extended:
+> +    description:
+> +      One interrupt per each of the 4 GPIO ports supported by the contro=
+ller,
+> +      sorted by port number ascending order.
+> +    minItems: 4
+> +    maxItems: 4
 
-thanks,
--- Shuah
+Same comment, this is hierarchical.
+
+Yours,
+Linus Walleij
