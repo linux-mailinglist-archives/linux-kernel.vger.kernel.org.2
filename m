@@ -2,72 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A61932A70F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA01532A6EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445875AbhCBQCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351207AbhCBNgn (ORCPT
+        id S1837876AbhCBPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:54:42 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:18622 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241729AbhCBNbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:36:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECCFC0617A9;
-        Tue,  2 Mar 2021 05:22:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YAXtL7G+ODJGViyx1Mmuan7J8bHV3q/uQ/e9jGUFsl4=; b=R2xHCj+zzbgtgx5t6uWCUKSWY8
-        buNdvpZPyaLugiJQ+bbHlIPtr7jk0ZKDag1XY1B/TmLY/fYWiisCATy6tiLpCYJ2G85hdq0OdSbAm
-        jKhsJOHkMB7HBWKTD7AUOOl9tuVjh6GMBk6xLQYqnwJK6z/lKkIUEzjQdgQkQCenuZ1OZCIxm9Dnm
-        afilmZ+rkmcM2kpF80r0caGEdEtvSieh0V4+J/LNlimrVGYDn6j2ZLBsSm4i3n9ddC+yoQa+5h31b
-        xZIdHhX5Jvh7akAdU65ymoXN+TcB9GxYfBBE13yYgfHPa46NT06u5Kit7RBLDC4Wgu5TuRwJQuQL1
-        7EEqB1jQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lH4zB-00HAov-9N; Tue, 02 Mar 2021 13:22:50 +0000
-Date:   Tue, 2 Mar 2021 13:22:49 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 01/25] mm: Introduce struct folio
-Message-ID: <20210302132249.GX2723601@casper.infradead.org>
-References: <20210128070404.1922318-1-willy@infradead.org>
- <20210128070404.1922318-2-willy@infradead.org>
- <68723D50-AFD1-4F25-8F10-81EC11045BE5@nvidia.com>
+        Tue, 2 Mar 2021 08:31:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1614691880; x=1646227880;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=geDaw/ej7e94nG9rcAUGZvgQPXgEy2UARyY+T9z+3SQ=;
+  b=LZH+6qp4rpf2NHV999J0yUMdwuNWOYp1pCUIczBCMjZE3KKaPektBwXq
+   v5Rxl+XlCOvO6qOkZJmxtYq6+SnUV/bD28ReEXN/h2wZyp0oG/I81EQUG
+   7FSgIaXZK55sSD8XnMTltC4/i92ysgkvn2lhQ8FdTN8T8sUcrTlYtogax
+   dvktL+zcgT5ACpbNhjiqyIvKzS60QbBlE0/t1QJIS1bnYO0RxWQXeeGiV
+   FjF4LvUnaayzOtSjG5S1yGC2Ce/T5CBSNnuB+ha8Pju5BZKZC+hxtaGnZ
+   FAIHqI/rHrkNZ4190bdHVt1njPye0SF/JIBnaINLlnG9A9JFeGxDvUE9J
+   Q==;
+IronPort-SDR: naKEzHOxExTgvEFR4hMpXAfv3aWBb06T+qLRvj0xB6EXH/TkX8Se7K7feEWsd2YVF5EcRXpG0D
+ xss2mwHD8K3iH/Inn5TK2la815aQWAi0HdJdgdkvpE/A32NqaWEwipbFaUTt8zP5K6EZ3URks1
+ m6fS5sSyN87q290xmfz+6UzZY4ZV41XmUschyjn2fDAX/E7Wvzm/26UkKFOvJ+v6st5gyK5jtf
+ R41PJK7d0IxnM6dFY1x4wMq/yzvx5+OrQjaPeOVR5ReRIoQhljdCJy0Qp7OTzgrSfH2lv3y4jf
+ sbQ=
+X-IronPort-AV: E=Sophos;i="5.81,216,1610380800"; 
+   d="scan'208";a="161146204"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2021 21:25:48 +0800
+IronPort-SDR: 3rdKSQPJZfOeHE/wZ7k7hZhXs7ygpQe0JEUKxWYRx315tBN0TJrjB+SWSwrE78NcA7MDFg7yR8
+ w1xihyRM05+Z0R7GsBUoOJwJs43NeFxLr5x/heb46wWHOCKz4x0WXx0f3YK2tzdK8usboB/fLy
+ pIW3+AxZS62rRNUqlacFc07WJrcFlnXvdbgqLvnzH05AQ3xso1kHoOJs0okJoAQc6xNLiL5wB4
+ XbvMbuuJo+8gwRpIj+DinsvR3n1YQK161h7yqNHQyAd7orbLA6r9VcV/epVZ5TasK+yV2QwSmC
+ APx6kHsbDwXe1NdHOPNCvEY5
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 05:07:03 -0800
+IronPort-SDR: 2LL1tBjxvjjVFK+KymTOyqNVzwXZL0wQUWx9hklrQSFsqELG0hTsgKIQ/61HBttDuO9L/A++0a
+ t+wVb3lZsI6CHeQ6GU72Oz+MbRrxrA9MA/VE9eb8v5coqXwp8mkv9oWjJAcfa4j3P0LO0zr8Yy
+ F68hbEwEQi7AvnYQdGSFOYekJlXpb0AR5pB75htfy6N0RA0EcHUQf44fPp0XBuKXgTSLsToMwK
+ duRnzdA/NaOrOuV+/Qo3XrH7O8na+0dvba79FdImp2fjnlQ39PWYG2z+NJdaGLN6Sow451d/1h
+ buk=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip01.wdc.com with ESMTP; 02 Mar 2021 05:25:44 -0800
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v5 00/10] Add Host control mode to HPB
+Date:   Tue,  2 Mar 2021 15:24:53 +0200
+Message-Id: <20210302132503.224670-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68723D50-AFD1-4F25-8F10-81EC11045BE5@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 03:26:11PM -0500, Zi Yan wrote:
-> > +static inline struct folio *next_folio(struct folio *folio)
-> > +{
-> > +	return folio + folio_nr_pages(folio);
-> 
-> Are you planning to make hugetlb use folio too?
-> 
-> If yes, this might not work if we have CONFIG_SPARSEMEM && !CONFIG_SPARSEMEM_VMEMMAP
-> with a hugetlb folio > MAX_ORDER, because struct page might not be virtually contiguous.
-> See the experiment I did in [1].
+v4 -> v5:
+ - attend Daejun's comments
+ - Control the number of inflight map requests
 
-Actually, how about proofing this against a future change?
+v3 -> v4:
+ - rebase on Daejun's v25
 
-static inline struct folio *next_folio(struct folio *folio)
-{
-#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
-	pfn_t next_pfn = page_to_pfn(&folio->page) + folio_nr_pages(folio);
-	return (struct folio *)pfn_to_page(next_pfn);
-#else
-	return folio + folio_nr_pages(folio);
-#endif
-}
+v2 -> v3:
+ - Attend Greg's and Can's comments
+ - rebase on Daejun's v21
 
-(not compiled)
+v1 -> v2:
+ - attend Greg's and Daejun's comments
+ - add patch 9 making host mode parameters configurable
+ - rebase on Daejun's v19
+
+
+The HPB spec defines 2 control modes - device control mode and host
+control mode. In oppose to device control mode, in which the host obey
+to whatever recommendation received from the device - In host control
+mode, the host uses its own algorithms to decide which regions should
+be activated or inactivated.
+
+We kept the host managed heuristic simple and concise.
+
+Aside from adding a by-spec functionality, host control mode entails
+some further potential benefits: makes the hpb logic transparent and
+readable, while allow tuning / scaling its various parameters, and
+utilize system-wide info to optimize HPB potential.
+
+This series is based on Samsung's V25 device-control HPB2.0 driver, see
+msg-id: 20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8
+in lore.kernel.org.
+
+This version was tested on Galaxy S20, and Xiaomi Mi10 pro.
+Your meticulous review and testing is mostly welcome and appreciated.
+
+Thanks,
+Avri
+
+Avri Altman (10):
+  scsi: ufshpb: Cache HPB Control mode on init
+  scsi: ufshpb: Add host control mode support to rsp_upiu
+  scsi: ufshpb: Add region's reads counter
+  scsi: ufshpb: Make eviction depends on region's reads
+  scsi: ufshpb: Region inactivation in host mode
+  scsi: ufshpb: Add hpb dev reset response
+  scsi: ufshpb: Add "Cold" regions timer
+  scsi: ufshpb: Limit the number of inflight map requests
+  scsi: ufshpb: Add support for host control mode
+  scsi: ufshpb: Make host mode parameters configurable
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  74 +++
+ drivers/scsi/ufs/ufshcd.h                  |   2 +
+ drivers/scsi/ufs/ufshpb.c                  | 555 ++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h                  |  39 ++
+ 4 files changed, 646 insertions(+), 24 deletions(-)
+
+-- 
+2.25.1
 
