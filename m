@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D286132A320
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD3932A3A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381914AbhCBIr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381690AbhCBIbs (ORCPT
+        id S1382331AbhCBJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:25:05 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:29580 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378825AbhCBJAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:31:48 -0500
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472CFC061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:30:52 -0800 (PST)
-Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
-        by antares.kleine-koenig.org (Postfix) with ESMTP id 62256B1BA39;
-        Tue,  2 Mar 2021 09:30:49 +0100 (CET)
-Received: from antares.kleine-koenig.org ([94.130.110.236])
-        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
-        with ESMTP id eKGK8R-UPJng; Tue,  2 Mar 2021 09:30:48 +0100 (CET)
-Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5c8:7b00:36f3:9aff:fec2:7e46])
-        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
-        Tue,  2 Mar 2021 09:30:48 +0100 (CET)
-Subject: Re: linux-next: build failure after merge of the powerpc-fixes tree
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210302112131.5bb7b08b@canb.auug.org.au>
- <87pn0is3wg.fsf@mpe.ellerman.id.au>
-From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-Message-ID: <6113ab65-7b3c-07f0-2813-76ddaa4c7236@kleine-koenig.org>
-Date:   Tue, 2 Mar 2021 09:30:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <87pn0is3wg.fsf@mpe.ellerman.id.au>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="rzZpUA4AhhBZ0hqwZjgvzr69OjxvLCLK7"
+        Tue, 2 Mar 2021 04:00:55 -0500
+Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210302090003epoutp0305cca2bca2e5283769173a367fde6527~oeufzRL1j1394513945epoutp03T
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:00:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210302090003epoutp0305cca2bca2e5283769173a367fde6527~oeufzRL1j1394513945epoutp03T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614675603;
+        bh=0lpjwPgu5Hj4CVMTV/29n5W4CRheI+0IpyiHnQi3AU4=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=lbnrIekrYDQ051mHqoq9W++fCu//Sl0I1eI3q8GqwIez49Qkmgpn/+RTPZFxoqNPb
+         UR4ZjvhEZdY/KhCyGVaZ3b6ixfNK5jl/ykQkeBjYuveXj1E/b0r4VbTByIxMpZBl6v
+         v05YeFtk8FlcC6ufEUc1tUGVGK+y1UKcfQv0JqAo=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
+        20210302090001epcas3p41b991dc965986cbbc7fd1b797fec4111~oeuesNSlR0891708917epcas3p4O;
+        Tue,  2 Mar 2021 09:00:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
+        (Postfix) with ESMTP id 4DqWKs5q5qz4x9Pq; Tue,  2 Mar 2021 09:00:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH v4 3/9] scsi: ufshpb: Add region's reads counter
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210226083300.30934-4-avri.altman@wdc.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01614675601803.JavaMail.epsvc@epcpadp3>
+Date:   Tue, 02 Mar 2021 17:31:10 +0900
+X-CMS-MailID: 20210302083110epcms2p5551cd399aef0217d7cd9b58ae9834bcb
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210226083422epcas2p2d39acff666e2cb9ed97bc2d5c7a8df6f
+References: <20210226083300.30934-4-avri.altman@wdc.com>
+        <20210226083300.30934-1-avri.altman@wdc.com>
+        <CGME20210226083422epcas2p2d39acff666e2cb9ed97bc2d5c7a8df6f@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rzZpUA4AhhBZ0hqwZjgvzr69OjxvLCLK7
-Content-Type: multipart/mixed; boundary="gQWsuGHVas7owk6hu4v1tveWztpbPdDEK";
- protected-headers="v1"
-From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-To: Michael Ellerman <mpe@ellerman.id.au>,
- Stephen Rothwell <sfr@canb.auug.org.au>,
- PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Message-ID: <6113ab65-7b3c-07f0-2813-76ddaa4c7236@kleine-koenig.org>
-Subject: Re: linux-next: build failure after merge of the powerpc-fixes tree
-References: <20210302112131.5bb7b08b@canb.auug.org.au>
- <87pn0is3wg.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87pn0is3wg.fsf@mpe.ellerman.id.au>
+Hi Avri,
 
---gQWsuGHVas7owk6hu4v1tveWztpbPdDEK
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+> +static void ufshpb_normalization_work_handler(struct work_struct *work)
+> +{
+> +        struct ufshpb_lu *hpb;
+> +        int rgn_idx;
+> +
+> +        hpb = container_of(work, struct ufshpb_lu, ufshpb_normalization_work);
+> +
+> +        for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
+> +                struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
 
-Hello,
+*HERE*
+> +                if (rgn->reads) {
+> +                        unsigned long flags;
+> +
+> +                        spin_lock_irqsave(&rgn->rgn_lock, flags);
 
-On 3/2/21 3:09 AM, Michael Ellerman wrote:
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
->> Hi all,
->>
->> After merging the powerpc-fixes tree, today's linux-next build (powerp=
-c
->> allyesconfig) failed like this:
->>
->> drivers/net/ethernet/ibm/ibmvnic.c:5399:13: error: conflicting types f=
-or 'ibmvnic_remove'
->>   5399 | static void ibmvnic_remove(struct vio_dev *dev)
->>        |             ^~~~~~~~~~~~~~
->> drivers/net/ethernet/ibm/ibmvnic.c:81:12: note: previous declaration o=
-f 'ibmvnic_remove' was here
->>     81 | static int ibmvnic_remove(struct vio_dev *);
->>        |            ^~~~~~~~~~~~~~
->>
->> Caused by commit
->>
->>    1bdd1e6f9320 ("vio: make remove callback return void")
->=20
-> Gah, is IBMVNIC in any of our defconfigs?! ... no it's not.
+I thinks this lock should protect rgn->reads when it is accessed.
 
-Would you accept a patch to add the driver to one of the defconfigs as=20
-an excuse for the build breakage I created? Which would be appropriate?=20
-ppc64_defconfig?
+> +                        rgn->reads = (rgn->reads >> 1);
+> +                        spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> +                }
+*HERE*
 
->> I have applied the following patch for today:
->=20
-> Thanks, I'll squash it in.
+> +
+> +                if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
+> +                        continue;
+> +
+> +                /* if region is active but has no reads - inactivate it */
+> +                spin_lock(&hpb->rsp_list_lock);
+> +                ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
+> +                spin_unlock(&hpb->rsp_list_lock);
+> +        }
+> +
+> +        clear_bit(WORK_PENDING, &hpb->work_data_bits);
 
-Also thanks for catching to Stephen and to Michael for the fixup.
+Why we use work_data_bits? It may be checked by worker API.
 
-Best regards
-Uwe
-
-
---gQWsuGHVas7owk6hu4v1tveWztpbPdDEK--
-
---rzZpUA4AhhBZ0hqwZjgvzr69OjxvLCLK7
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmA997IACgkQwfwUeK3K
-7Alusgf/ZA0f/3fntS+TPuUVpXIPbiu6zO761TKBOhnMsfdAxYGc4rgbvOmbNuWq
-Vsi9LKxvxPAasfr25zto/oF3eX9pH6bq4kl4gfYbDolGnI5Uy4Ez4N3pz5b3OVyQ
-MMG1fKLHz3hksGRCf8EEg4wAoEPtxILg50jeI68cU82Y+USc4G01RuTg8ZooYYTY
-81fNfbcj9nNOG3iGe9fyJoEaCDtIiMK5GZrJ9osOD/bl6VUF1jl+41FbXZohS5Ii
-Jx4U4i8gL7V0iIfVsd0RYa5FzKqdRc1vwuUM2tx9dBVsp+ASQ7isKdoAm7EL82Lg
-lIJGFbazOpXfLPCSjRIUiJa7DFrvfA==
-=W0cN
------END PGP SIGNATURE-----
-
---rzZpUA4AhhBZ0hqwZjgvzr69OjxvLCLK7--
+Thanks,
+Daejun
