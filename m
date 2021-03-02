@@ -2,89 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF1032A08D
+	by mail.lfdr.de (Postfix) with ESMTP id 90C0332A08E
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576053AbhCBEX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:23:26 -0500
-Received: from mga07.intel.com ([134.134.136.100]:28029 "EHLO mga07.intel.com"
+        id S1576061AbhCBEXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:23:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239889AbhCBAgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:36:18 -0500
-IronPort-SDR: aVUhxmNESQveZO4dyfIEmEkrZVhgGoZeTfSD5QT5Oe01vBC4IcLqDGupiV7uQChxGa/DJc4fir
- syDWkYLt0Zug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250689958"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="250689958"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:34:52 -0800
-IronPort-SDR: q/gVISHjvG9nz3tcGBNF2kID5er53oMhF8pXWDjUedqSozUxg5VB4RjzHUvh05q0z5shv0bjnJ
- j2vQ9wXi3Ehg==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="427144731"
-Received: from yueliu2-mobl.amr.corp.intel.com ([10.252.139.111])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:34:48 -0800
-Message-ID: <bbebb1b782ace1b4b9ba17cb4cefacead97d73b0.camel@intel.com>
-Subject: Re: [PATCH 12/25] x86/sgx: Add helper to update SGX_LEPUBKEYHASHn
- MSRs
-From:   Kai Huang <kai.huang@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
-Date:   Tue, 02 Mar 2021 13:34:46 +1300
-In-Reply-To: <YD0c4rEAbx2y5CXT@google.com>
-References: <cover.1614590788.git.kai.huang@intel.com>
-         <6730fbd2f7b26532f09e5a5e416a58f03a66d222.1614590788.git.kai.huang@intel.com>
-         <YD0c4rEAbx2y5CXT@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S240002AbhCBAhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:37:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27A2D6023B
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:37:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614645425;
+        bh=N2mwWtTHaQKdyNYa4nePUQtBQq2/4wIaRpydzOplecM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GyO83wb+CZWtC/zKyoU9sYvN34xex9VGsbS5834/UCAZ0+SCz2VmGfa3T694c/fhC
+         4qXMQYiy4FsR0eC7Z9ur6vAASOhLVqXyK3sLL+sihpZxIqVbLR33z3Or+tFmZuATBR
+         LNjANDno8v5IfisFVNvg85uH9NKGlKTqMd104rigFDlS/MnVmKZpLWIR5SG37kKBxI
+         yraKsGACJnLWT5yE3yEy4VxO4265obDhSEPV1x1ropWl0PKxeyLEPUSekB+MdQWFVq
+         hO9n1qr9pgvu9hyKsNByAObrsoDoEzUJEmAjuSCqm0Phcwnq4xDpZFjwE1LBVRm63v
+         txWXeRltrVHwA==
+Received: by mail-ed1-f49.google.com with SMTP id h10so23078142edl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:37:05 -0800 (PST)
+X-Gm-Message-State: AOAM533bKQQ5lfIDrwE2ymdzXX3THgYvy7yFH8RtpMzMzyNpipH4iq63
+        LBHnQC2Sd7s1y7ViJ0QHX8EilbZa1BSaZYRcCg==
+X-Google-Smtp-Source: ABdhPJzS++jETiKO7iSIvESeXqX+H1gC2cKMA2r/ShtQGoLjnFLIyBmHxQZVHF4cabJfuF4LOHpbeW8tbFn+v1dGYWM=
+X-Received: by 2002:a50:fe17:: with SMTP id f23mr19217294edt.258.1614645423671;
+ Mon, 01 Mar 2021 16:37:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1614644074-12476-1-git-send-email-victor.erminpour@oracle.com>
+In-Reply-To: <1614644074-12476-1-git-send-email-victor.erminpour@oracle.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 1 Mar 2021 18:36:52 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKbDzi6VFPVwpxqGG_RVuqwpWQsA820thZ6Z8ZqntL8Yw@mail.gmail.com>
+Message-ID: <CAL_JsqKbDzi6VFPVwpxqGG_RVuqwpWQsA820thZ6Z8ZqntL8Yw@mail.gmail.com>
+Subject: Re: [PATCH] c6x: Remove stale symlink 'scripts/dtc/include-prefixes/c6x'
+To:     Victor Erminpour <victor.erminpour@oracle.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-01 at 08:57 -0800, Sean Christopherson wrote:
-> On Mon, Mar 01, 2021, Kai Huang wrote:
-> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > index 8c922e68274d..276220d0e4b5 100644
-> > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > @@ -696,6 +696,21 @@ static bool __init sgx_page_cache_init(void)
-> >  	return true;
-> >  }
-> >  
-> > 
-> > 
-> > 
-> > +
-> > +/*
-> > + * Update the SGX_LEPUBKEYHASH MSRs to the values specified by caller.
-> > + * Bare-metal driver requires to update them to hash of enclave's signer
-> > + * before EINIT. KVM needs to update them to guest's virtual MSR values
-> > + * before doing EINIT from guest.
-> > + */
-> > +void sgx_update_lepubkeyhash(u64 *lepubkeyhash)
-> > +{
-> > +	int i;
-> 
-> Probably worth adding:
-> 
-> 	WARN_ON_ONCE(preemptible());
+On Mon, Mar 1, 2021 at 6:14 PM Victor Erminpour
+<victor.erminpour@oracle.com> wrote:
+>
+> Remove stale symlink 'scripts/dtc/include-prefixes/c6x'
+>
+> Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
+> ---
+>  scripts/dtc/include-prefixes/c6x | 1 -
+>  1 file changed, 1 deletion(-)
+>  delete mode 120000 scripts/dtc/include-prefixes/c6x
 
-Agreed. Will do.
+You are the 3rd fix. There's already one pending in linux-next I'll be
+sending to Linus this week.
 
-> 
-> > +
-> > +	for (i = 0; i < 4; i++)
-> > +		wrmsrl(MSR_IA32_SGXLEPUBKEYHASH0 + i, lepubkeyhash[i]);
-> > +}
-> > +
-> >  static int __init sgx_init(void)
-> >  {
-> >  	int ret;
-
-
+Rob
