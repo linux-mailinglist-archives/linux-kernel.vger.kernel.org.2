@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEC332AD19
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA31132AD27
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381683AbhCBVXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:23:16 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:45318 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352057AbhCBS3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:29:36 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 122GXF5L002099
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Mar 2021 17:33:15 +0100
-Received: from md1za8fc.ad001.siemens.net ([167.87.44.113])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 122GXBHR025192;
-        Tue, 2 Mar 2021 17:33:14 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Haener <michael.haener@siemens.com>
-Subject: [PATCH 4/4] platform/x86: pmc_atom: improve critclk_systems matching for Siemens PCs
-Date:   Tue,  2 Mar 2021 17:33:09 +0100
-Message-Id: <20210302163309.25528-5-henning.schild@siemens.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210302163309.25528-1-henning.schild@siemens.com>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
+        id S1382108AbhCBV0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:26:34 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40748 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1580972AbhCBScb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 13:32:31 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 122GXYPc015348;
+        Tue, 2 Mar 2021 10:33:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614702814;
+        bh=wld4sEYrbNAw/+pwRpknTrx7MkJjuJSJK47ViMmK7ec=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=p1I5gOxsyqynKIhqVCAAtZE5rD7PoA/eM/u8igWMLLq1wePr4FRPFu5vTnKgIeXol
+         WPIQNYIh7JDWV3sAwwXQjJBij0OBxvX0yeyfG3i+FjSEe6NFqhstSF0XzG3SBq7ao1
+         qiCq9Ret1Y+wfUpPGxqBr5ViONP7/avZV0alqooI=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 122GXYS7064947
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 2 Mar 2021 10:33:34 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Mar
+ 2021 10:33:33 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 2 Mar 2021 10:33:33 -0600
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 122GXUiH117369;
+        Tue, 2 Mar 2021 10:33:31 -0600
+Subject: Re: [RFC PATCH] mtd: add OTP (one-time-programmable) erase ioctl
+To:     Michael Walle <michael@walle.cc>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-api@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <Tudor.Ambarus@microchip.com>
+References: <20210302110927.6520-1-michael@walle.cc>
+ <b106264e-987f-cecc-28cb-0724d4af1f4c@ti.com>
+ <74df918148be8c9820acc877e39adf3f@walle.cc>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <a4464459-dc49-d5de-d969-b9ea96b025d6@ti.com>
+Date:   Tue, 2 Mar 2021 22:03:29 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <74df918148be8c9820acc877e39adf3f@walle.cc>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Henning Schild <henning.schild@siemens.com>
 
-Siemens industrial PCs unfortunately can not always be properly
-identified the way we used to. An earlier commit introduced code that
-allows proper identification without looking at DMI strings that could
-differ based on product branding.
-Switch over to that proper way and revert commits that used to collect
-the machines based on unstable strings.
 
-Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-Fixes: e8796c6c69d1 ("platform/x86: pmc_atom: Add Siemens CONNECT ...")
-Fixes: f110d252ae79 ("platform/x86: pmc_atom: Add Siemens SIMATIC ...")
-Fixes: ad0d315b4d4e ("platform/x86: pmc_atom: Add Siemens SIMATIC ...")
-Tested-by: Michael Haener <michael.haener@siemens.com>
-Signed-off-by: Henning Schild <henning.schild@siemens.com>
----
- drivers/platform/x86/pmc_atom.c | 39 ++++++++++++++++++---------------
- 1 file changed, 21 insertions(+), 18 deletions(-)
+On 3/2/21 9:49 PM, Michael Walle wrote:
+> Am 2021-03-02 16:30, schrieb Vignesh Raghavendra:
+>> Hi,
+>>
+>> On 3/2/21 4:39 PM, Michael Walle wrote:
+>>> This may sound like a contradiction but some SPI-NOR flashes really
+>>> support erasing their OTP region until it is finally locked. Having the
+>>> possibility to erase an OTP region might come in handy during
+>>> development.
+>>>
+>>> The ioctl argument follows the OTPLOCK style.
+>>>
+>>> Signed-off-by: Michael Walle <michael@walle.cc>
+>>> ---
+>>> OTP support for SPI-NOR flashes may be merged soon:
+>>> https://lore.kernel.org/linux-mtd/20210216162807.13509-1-michael@walle.cc/
+>>>
+>>>
+>>> Tudor suggested to add support for the OTP erase operation most SPI-NOR
+>>> flashes have:
+>>> https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
+>>>
+>>>
+>>> Therefore, this is an RFC to get some feedback on the MTD side, once
+>>> this
+>>> is finished, I can post a patch for mtd-utils. Then we'll have a
+>>> foundation
+>>> to add the support to SPI-NOR.
+>>>
+>>>  drivers/mtd/mtdchar.c      |  7 ++++++-
+>>>  drivers/mtd/mtdcore.c      | 12 ++++++++++++
+>>>  include/linux/mtd/mtd.h    |  3 +++
+>>>  include/uapi/mtd/mtd-abi.h |  2 ++
+>>>  4 files changed, 23 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+>>> index 323035d4f2d0..da423dd031ae 100644
+>>> --- a/drivers/mtd/mtdchar.c
+>>> +++ b/drivers/mtd/mtdchar.c
+>>> @@ -661,6 +661,7 @@ static int mtdchar_ioctl(struct file *file, u_int
+>>> cmd, u_long arg)
+>>>      case OTPGETREGIONCOUNT:
+>>>      case OTPGETREGIONINFO:
+>>>      case OTPLOCK:
+>>> +    case OTPERASE:
+>>
+>> This is not a Safe IOCTL. We are destroying OTP data. Need to check for
+>> write permission before allowing the ioctl right?
+> 
+> Ah yes, of course. But this makes me wonder why OTPLOCK
+> is considered a safe command. As well as MEMLOCK and
+> MEMUNLOCK. And MEMSETBADBLOCK. Shouldn't these also
+> require write permissions?
+> 
 
-diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
-index ca684ed760d1..03344f5502ad 100644
---- a/drivers/platform/x86/pmc_atom.c
-+++ b/drivers/platform/x86/pmc_atom.c
-@@ -13,6 +13,7 @@
- #include <linux/io.h>
- #include <linux/platform_data/x86/clk-pmc-atom.h>
- #include <linux/platform_data/x86/pmc_atom.h>
-+#include <linux/platform_data/x86/simatic-ipc.h>
- #include <linux/platform_device.h>
- #include <linux/pci.h>
- #include <linux/seq_file.h>
-@@ -424,30 +425,31 @@ static const struct dmi_system_id critclk_systems[] = {
- 		},
- 	},
- 	{
--		.ident = "SIMATIC IPC227E",
-+		.ident = "SIEMENS AG",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "6ES7647-8B"),
--		},
--	},
--	{
--		.ident = "SIMATIC IPC277E",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "6AV7882-0"),
--		},
--	},
--	{
--		.ident = "CONNECT X300",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "A5E45074588"),
- 		},
- 	},
- 
- 	{ /*sentinel*/ }
- };
- 
-+static int pmc_clk_is_critical(const struct dmi_system_id *d)
-+{
-+	int ret = true;
-+	u32 station_id;
-+
-+	if (!strcmp(d->ident, "SIEMENS AG")) {
-+		if (dmi_walk(simatic_ipc_find_dmi_entry_helper, &station_id))
-+			ret = false;
-+		else
-+			ret = (station_id == SIMATIC_IPC_IPC227E ||
-+			       station_id == SIMATIC_IPC_IPC277E);
-+	}
-+
-+	return ret;
-+}
-+
- static int pmc_setup_clks(struct pci_dev *pdev, void __iomem *pmc_regmap,
- 			  const struct pmc_data *pmc_data)
- {
-@@ -462,8 +464,9 @@ static int pmc_setup_clks(struct pci_dev *pdev, void __iomem *pmc_regmap,
- 	clk_data->base = pmc_regmap; /* offset is added by client */
- 	clk_data->clks = pmc_data->clks;
- 	if (d) {
--		clk_data->critical = true;
--		pr_info("%s critclks quirk enabled\n", d->ident);
-+		clk_data->critical = pmc_clk_is_critical(d);
-+		if (clk_data->critical)
-+			pr_info("%s critclks quirk enabled\n", d->ident);
- 	}
- 
- 	clkdev = platform_device_register_data(&pdev->dev, "clk-pmc-atom",
--- 
-2.26.2
+Well, one argument would be that LOCK/UNLOCK in itself won't modify data
+and thus does not need write permission.. Although can brick a flash
+from ever being writable again and change content of flash registers.
 
+I am fine with moving these to require write permissions as well
+(probably OTPLOCK as well).
+
+[...]
+>>> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+>>> index 65b9db936557..242015f60d10 100644
+>>> --- a/include/uapi/mtd/mtd-abi.h
+>>> +++ b/include/uapi/mtd/mtd-abi.h
+>>> @@ -205,6 +205,8 @@ struct otp_info {
+>>>   * without OOB, e.g., NOR flash.
+>>>   */
+>>>  #define MEMWRITE        _IOWR('M', 24, struct mtd_write_req)
+>>> +/* Erase a given range of user data (must be in mode
+>>> %MTD_FILE_MODE_OTP_USER) */
+>>> +#define OTPERASE        _IOR('M', 25, struct otp_info)
+>>>
+>>
+>> Hmm, shouldn't this be:
+>>
+>> #define OTPERASE        _IOW('M', 25, struct otp_info)
+>>
+>> Userspace is writing struct otp_info to the driver. OTPLOCK should
+>> probably be _IOW() as well.
+> 
+> You're right.
+> 
+> NB. most OTP commands have a wrong direction flag.
+> 
+
+Unfortunately, yes :(
+
+
+Regards
+Vignesh
