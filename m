@@ -2,228 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19D132A242
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E95832A243
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836900AbhCBHVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:21:34 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65358 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235242AbhCBGyy (ORCPT
+        id S1836908AbhCBHVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:21:36 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:55582 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241072AbhCBG4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:54:54 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1226Z7wu166851;
-        Tue, 2 Mar 2021 01:53:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=N8NTLeH6ygpcuDWFrCgBmLNur4LlNudqKL2nb5bJpo4=;
- b=LNKvQTKumKwzKnxKmLIWK7gwIsYZD3DKapVNwSC8VYCsEXu91hHxZuqbDX1wVeqqBvA0
- TEnpm75S1YhXIzDjViyLdtUcrywMfSHDe4XOu6xgrtITpRde5JnBA2uMtBBsjv7cIgDi
- p5lxXKuZhLrru0oODRq8/DALvT8/KR0c+lS8xV40g3yg3Su2u7UitSItc6hGeQsUeo8t
- IXWfA2uqzDuJ+bcla2jKC55BWbJ7Z2x2YJevA32Qrfvwj2GI1c91q4+FmwrRSXmyrRsv
- x8kyBu0sC0Q22HTLVI9ogA31kN7Jm7m6+mI7q1SdzskId2g1ewrp1BpoiUAVihcpDVU+ vQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 371fgc9npu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 01:53:37 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1226q8fH035142;
-        Tue, 2 Mar 2021 01:53:36 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 371fgc9npn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 01:53:36 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1226qof4018640;
-        Tue, 2 Mar 2021 06:53:35 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma01wdc.us.ibm.com with ESMTP id 36ydq8w0f0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 06:53:34 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1226rXYD28311962
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Mar 2021 06:53:33 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 99EC6BE04F;
-        Tue,  2 Mar 2021 06:53:33 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 70749BE053;
-        Tue,  2 Mar 2021 06:53:27 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.103.19])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  2 Mar 2021 06:53:27 +0000 (GMT)
-Subject: Re: [PATCH] perf stat: improve readability of shadow stats
-To:     Changbin Du <changbin.du@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210301172402.6794-1-changbin.du@gmail.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <6f110cc6-87a9-5e1f-87f5-eb62ce0ce951@linux.ibm.com>
-Date:   Tue, 2 Mar 2021 12:23:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 2 Mar 2021 01:56:18 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210302065454epoutp01a11bf45fc85c49dc861de8e1dd8e5f83~odBPU6v4e2439324393epoutp01s
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:54:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210302065454epoutp01a11bf45fc85c49dc861de8e1dd8e5f83~odBPU6v4e2439324393epoutp01s
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614668094;
+        bh=DliXzqFkxMgF30IQ84dS6zeqHegjNaRZkb9cDXxw4mQ=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=NPUeYhE8kQL6lyEpEx03Qbae6HKzqLQ3F1GFL1KFEVBtzzApv3RAZ3t74UNqn6FFC
+         ubBhE2RToZs2u9M5HA5muy81YX/kqhGgWdonPt5ZWoCq+p+5MecL05s7J5f8kbopMU
+         ua+PfCYuQkvlfs/nIbwMyRK6H4Va0TJI7v78RXbc=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210302065454epcas1p355b95a88ee561da92a3b113f0902e596~odBO8-QvP0064200642epcas1p3U;
+        Tue,  2 Mar 2021 06:54:54 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DqSYT15pCz4x9Pv; Tue,  2 Mar
+        2021 06:54:53 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CF.23.02418.D31ED306; Tue,  2 Mar 2021 15:54:53 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210302065452epcas1p254e20208b86fc68be1303bc7ab230303~odBNL7zZ02915529155epcas1p2Y;
+        Tue,  2 Mar 2021 06:54:52 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210302065452epsmtrp2b18eda2cff5a5226051c5dd89949cbb7~odBNLJq9J0481104811epsmtrp2Q;
+        Tue,  2 Mar 2021 06:54:52 +0000 (GMT)
+X-AuditID: b6c32a35-c0dff70000010972-ce-603de13d032d
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1A.8E.13470.C31ED306; Tue,  2 Mar 2021 15:54:52 +0900 (KST)
+Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210302065452epsmtip21938a1c70c96358623ac6369d415b524~odBM70AdY0702607026epsmtip2L;
+        Tue,  2 Mar 2021 06:54:52 +0000 (GMT)
+From:   "Sungjong Seo" <sj1557.seo@samsung.com>
+To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>,
+        <namjae.jeon@samsung.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <sj1557.seo@samsung.com>
+In-Reply-To: <20210302050521.6059-2-hyeongseok@gmail.com>
+Subject: RE: [PATCH v4 1/2] exfat: introduce bitmap_lock for cluster bitmap
+ access
+Date:   Tue, 2 Mar 2021 15:54:51 +0900
+Message-ID: <04a901d70f30$f167af70$d4370e50$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20210301172402.6794-1-changbin.du@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_02:2021-03-01,2021-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- adultscore=0 spamscore=0 clxscore=1015 phishscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103020051
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQGcWnf6BTkYMyzP2LJXG6KPoRfNLgFpn8c6AfaWP3KqyqpeMA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdljTQNf2oW2CwdRmVou/Ez8xWezZe5LF
+        4vKuOWwWP6bXW2z5d4TVgdVj56y77B59W1YxenzeJBfAHJVjk5GamJJapJCal5yfkpmXbqvk
+        HRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuWmQO0UUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCR
+        X1xiq5RakJJTYGhQoFecmFtcmpeul5yfa2VoYGBkClSZkJPx+MwutoJ3TBUnZsxia2BcxdTF
+        yMkhIWAi8f3mEdYuRi4OIYEdjBKrup6xQTifGCWur53LBOF8Y5Q4dW8tK0zLzQ3roFr2Mkpc
+        +dTHCOG8ZJS4sa+NEaSKTUBX4smNn8wgtoiAh8TjpmNgC5kF4iV2T+sDq+EUsJQ41jOVDcQW
+        FgiReNr8nR3EZhFQkZi58AWYzQtUs/1IC5QtKHFy5hMWiDnyEtvfzmGGuEhBYveno6wQu5wk
+        7u/ayg5RIyIxu7ONGeQ4CYGf7BI7f35nhGhwkZh2/xAbhC0s8er4FnYIW0ri87u9UPF6if/z
+        17JDNLcwSjz8tA3oAw4gx17i/SULEJNZQFNi/S59iHJFiZ2/5zJC7OWTePe1hxWimleio00I
+        okRF4vuHnSwwm678uMo0gVFpFpLPZiH5bBaSD2YhLFvAyLKKUSy1oDg3PbXYsMAQObY3MYKT
+        o5bpDsaJbz/oHWJk4mA8xCjBwawkwnvys2WCEG9KYmVValF+fFFpTmrxIUZTYFhPZJYSTc4H
+        pue8knhDUyNjY2MLEzNzM1NjJXHeJIMH8UIC6YklqdmpqQWpRTB9TBycUg1M25XrQvdZBws6
+        pSisXv9H0EUupNvjMgPjcqbudrvdDqu2cO7ZtVY+PCckp+XjPmn79vOdl37l/n0tN+vrdCne
+        zsmXvJh7QlQrfA9aZmuvX/FtKaekG1vfPa0D+VEXmjcbGf981ejitHP2HK8kvclfeayePLh2
+        5NTXyTF35nX8Xfi7VyoutDX8pGBR0FGVq0qLD1Tc8+3QNeE/HheQsNWoVaxRXurSjrInvcE7
+        zi7fuPOL8UfzKRtqst42GEi0vXc3cLqXGtt8L+vqJzn+4pkC2Qfyr12cnFXbeODnQT+dVYf9
+        fa5seVxt6Xpo9qp9Sbf8q2an/l4y8deRh+yeakGfi1mXNmeFz2246VPG8eq3EktxRqKhFnNR
+        cSIA3pj7IBcEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFLMWRmVeSWpSXmKPExsWy7bCSvK7NQ9sEg8dv5Cz+TvzEZLFn70kW
+        i8u75rBZ/Jheb7Hl3xFWB1aPnbPusnv0bVnF6PF5k1wAcxSXTUpqTmZZapG+XQJXxuMzu9gK
+        3jFVnJgxi62BcRVTFyMnh4SAicTNDetYuxi5OIQEdjNKnDp5gLmLkQMoISVxcJ8mhCkscfhw
+        MUi5kMBzRomzU2RAbDYBXYknN34yg9giAl4S+5tes4PYzAKJEs1fLjFBjNzOKHHtczvYLk4B
+        S4ljPVPZQGxhgSCJqSs2gDWzCKhIzFz4AqyZF6hm+5EWKFtQ4uTMJywgNzAL6Em0bWSEmC8v
+        sf3tHGaI8xUkdn86ygpxg5PE/V1boW4QkZjd2cY8gVF4FpJJsxAmzUIyaRaSjgWMLKsYJVML
+        inPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYKjQ0tzB+P2VR/0DjEycTAeYpTgYFYS4T352TJB
+        iDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqaq3a/9/Fpt
+        Vd6aBh48/9YnxPXwgq5n3NH80+I4VsX59PjULWm/tWTKmu93wxX4zuzZeeiW5MXJz3va4yyk
+        LJ9Pen82dt1MhbN6R5ad0L3Cnba/WE8+8sNJZZcHp8TcHMoUTq4VKVf/2v/a53LftgeFJ1Pf
+        datPcrN5qHnrQH3SjkCPg0p+y98+5xDTOfnG6++nFQst15TFc3b6n3PeurHXIb1S/s6Rg1WN
+        N2Yfiygp8zn/TfZou+KnGh3/Ca4VhZqXf+6/n2htm6KXrhqz8+katWWL+eYvOCH0N573Svej
+        xmpBq4IHaXGvWd/t/7/GMib3E5/MBpk7jcZiZaEi8xhqDnVnvW47J/NoX0bhlz1KLMUZiYZa
+        zEXFiQDuYfg5/QIAAA==
+X-CMS-MailID: 20210302065452epcas1p254e20208b86fc68be1303bc7ab230303
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210302050550epcas1p19adbc16f7c61a7988705f3ae91b4060a
+References: <20210302050521.6059-1-hyeongseok@gmail.com>
+        <CGME20210302050550epcas1p19adbc16f7c61a7988705f3ae91b4060a@epcas1p1.samsung.com>
+        <20210302050521.6059-2-hyeongseok@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> s_lock which is for protecting concurrent access of file operations is too
+> huge for cluster bitmap protection, so introduce a new bitmap_lock to
+> narrow the lock range if only need to access cluster bitmap.
+> 
+> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
 
+Looks good.
+Thanks for your work!
 
-On 3/1/21 10:54 PM, Changbin Du wrote:
-> This does follow two changes:
->   1) Select appropriate unit between K/M/G.
->   2) Use 'cpu-sec' instead of 'sec' to state this is not the wall-time.
-> 
-> $ sudo ./perf stat -a -- sleep 1
-> 
-> Before: Unit 'M' is selected even the number is very small.
->  Performance counter stats for 'system wide':
-> 
->           4,003.06 msec cpu-clock                 #    3.998 CPUs utilized
->             16,179      context-switches          #    0.004 M/sec
->                161      cpu-migrations            #    0.040 K/sec
->              4,699      page-faults               #    0.001 M/sec
->      6,135,801,925      cycles                    #    1.533 GHz                      (83.21%)
->      5,783,308,491      stalled-cycles-frontend   #   94.26% frontend cycles idle     (83.21%)
->      4,543,694,050      stalled-cycles-backend    #   74.05% backend cycles idle      (66.49%)
->      4,720,130,587      instructions              #    0.77  insn per cycle
->                                                   #    1.23  stalled cycles per insn  (83.28%)
->        753,848,078      branches                  #  188.318 M/sec                    (83.61%)
->         37,457,747      branch-misses             #    4.97% of all branches          (83.48%)
-> 
->        1.001283725 seconds time elapsed
-> 
-> After:
-> $ sudo ./perf stat -a -- sleep 2
-> 
->  Performance counter stats for 'system wide':
-> 
->           8,003.20 msec cpu-clock                 #    3.998 CPUs utilized
->              9,768      context-switches          #    1.221 K/cpu-sec
->                164      cpu-migrations            #   20.492  /cpu-sec
->             74,146      page-faults               #    9.265 K/cpu-sec
->     19,008,796,806      cycles                    #    2.375 GHz                      (83.21%)
->     14,789,443,853      stalled-cycles-frontend   #   77.80% frontend cycles idle     (83.29%)
->     11,867,812,064      stalled-cycles-backend    #   62.43% backend cycles idle      (66.80%)
->      9,898,252,603      instructions              #    0.52  insn per cycle
->                                                   #    1.49  stalled cycles per insn  (83.41%)
->      2,063,251,998      branches                  #  257.803 M/cpu-sec                (83.41%)
->         86,941,704      branch-misses             #    4.21% of all branches          (83.30%)
-> 
->        2.001743706 seconds time elapsed
-> 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> ---
->  tools/perf/util/stat-shadow.c | 13 +++++--------
->  tools/perf/util/units.c       | 22 ++++++++++++++++++++++
->  tools/perf/util/units.h       |  1 +
->  3 files changed, 28 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-> index 6ccf21a72f06..786b5ef512d8 100644
-> --- a/tools/perf/util/stat-shadow.c
-> +++ b/tools/perf/util/stat-shadow.c
-> @@ -9,6 +9,7 @@
->  #include "expr.h"
->  #include "metricgroup.h"
->  #include "cgroup.h"
-> +#include "units.h"
->  #include <linux/zalloc.h>
->  
+Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
 
->  /*
-> @@ -1270,18 +1271,14 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
->  		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
->  				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
->  	} else if (runtime_stat_n(st, STAT_NSECS, cpu, &rsd) != 0) {
-> -		char unit = 'M';
-> +		char unit = ' ';
->  		char unit_buf[10];
->  
->  		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
-> -
->  		if (total)
-> -			ratio = 1000.0 * avg / total;
-> -		if (ratio < 0.001) {
-> -			ratio *= 1000;
-> -			unit = 'K';
-> -		}
-> -		snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
-> +			ratio = convert_unit_double(1000000000.0 * avg / total, &unit);
-> +
-> +		snprintf(unit_buf, sizeof(unit_buf), "%c/cpu-sec", unit);
->  		print_metric(config, ctxp, NULL, "%8.3f", unit_buf, ratio);
->  	} else if (perf_stat_evsel__is(evsel, SMI_NUM)) {
->  		print_smi_cost(config, cpu, out, st, &rsd);
-> diff --git a/tools/perf/util/units.c b/tools/perf/util/units.c
-> index a46762aec4c9..ac13b5ecde31 100644
-> --- a/tools/perf/util/units.c
-> +++ b/tools/perf/util/units.c
-> @@ -55,6 +55,28 @@ unsigned long convert_unit(unsigned long value, char *unit)
->  	return value;
->  }
->
-
-Hi Changbin,
-      Since we are using added function `convert_unit_double` just in stat-shadow.c,
-I think there is no need to add it in units.h, we can directly create static func inside `stat-shadow.c`itself.
-
-Thanks,
-Kajol Jain
-  
-> +double convert_unit_double(double value, char *unit)
-> +{
-> +	*unit = ' ';
-> +
-> +	if (value > 1000.0) {
-> +		value /= 1000.0;
-> +		*unit = 'K';
-> +	}
-> +
-> +	if (value > 1000.0) {
-> +		value /= 1000.0;
-> +		*unit = 'M';
-> +	}
-> +
-> +	if (value > 1000.0) {
-> +		value /= 1000.0;
-> +		*unit = 'G';
-> +	}
-> +
-> +	return value;
-> +}
-> +
->  int unit_number__scnprintf(char *buf, size_t size, u64 n)
->  {
->  	char unit[4] = "BKMG";
-> diff --git a/tools/perf/util/units.h b/tools/perf/util/units.h
-> index 99263b6a23f7..b3ace67ac16f 100644
-> --- a/tools/perf/util/units.h
-> +++ b/tools/perf/util/units.h
-> @@ -13,6 +13,7 @@ struct parse_tag {
->  unsigned long parse_tag_value(const char *str, struct parse_tag *tags);
->  
->  unsigned long convert_unit(unsigned long value, char *unit);
-> +double convert_unit_double(double value, char *unit);
->  int unit_number__scnprintf(char *buf, size_t size, u64 n);
->  
->  #endif /* PERF_UNIT_H */
-> 
