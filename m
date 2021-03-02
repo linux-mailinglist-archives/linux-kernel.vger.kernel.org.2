@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E94F32A4EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 820B032A512
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383430AbhCBLfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:35:05 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:57058 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838813AbhCBLTf (ORCPT
+        id S1442791AbhCBLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:46:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347520AbhCBLbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:19:35 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122BF7vd146712;
-        Tue, 2 Mar 2021 11:18:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=814zCU+jbtYbxBBfpFjuVjzIdDrMYHR5u+Tdz4KtzyA=;
- b=WHnM18Pv9MMbBNIweEMKyRoYOxGZ6EoRlOraoOXC5f2rMQPZ1E2xV+0OI1Mo+D5R0cRJ
- mc4Xyy2Nd/rV3tyqlEwXx8Hp4dVFHrUTwILsO+L8uwp2R5c8icHzXfVj25iNy593LwIR
- SlgpPa0NZYJr357NTY2FOoo56PbbB5gmxcMTUbpdbptrN2I6mfCwNivRM7fyNsdT1jY6
- nFa5p4WDpciRwSekqaKiFNTbtldUfzIrMmODt6lK70l9zLpkXe1xE46Yee7oSQjCmnOY
- rZsnjzLWMX/O4JaUYBVkDnc5oQHvUwhrZlOg0Hcjs3wdxWgGYAXQ00DUuslJWRJCdKp4 Cw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 36yeqmy5bq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Mar 2021 11:18:25 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122BEwnv011942;
-        Tue, 2 Mar 2021 11:18:23 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 36yynp0jju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Mar 2021 11:18:23 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 122BILGP005022;
-        Tue, 2 Mar 2021 11:18:21 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Mar 2021 03:18:20 -0800
-Date:   Tue, 2 Mar 2021 14:18:13 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] firewire: prevent integer overflow on 32bit systems
-Message-ID: <YD4e9XOD8JPlJzxW@mwanda>
+        Tue, 2 Mar 2021 06:31:36 -0500
+X-Greylist: delayed 672 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 02 Mar 2021 03:30:17 PST
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00827C06178B
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 03:30:17 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 37667C800BF;
+        Tue,  2 Mar 2021 12:19:04 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id thJkERTQif9V; Tue,  2 Mar 2021 12:19:03 +0100 (CET)
+Received: from [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8] (p200300E37F234700Cc4188a7f2f8d6B8.dip0.t-ipconnect.de [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id A1DE2C800BB;
+        Tue,  2 Mar 2021 12:19:03 +0100 (CET)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
+To:     wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Autocrypt: addr=wse@tuxedocomputers.com; keydata=
+ mDMEX6ALvhYJKwYBBAHaRw8BAQdAG/kE3mlbV1YLpCU8iA7Pyq2eDq9LxzGQxcOZODh2Vnq0
+ KFdlcm5lciBTZW1iYWNoIDx3c2VAdHV4ZWRvY29tcHV0ZXJzLmNvbT6IlgQTFggAPhYhBNzq
+ jJqAsvWKK1h7bi7eQpXUvijKBQJfoAu+AhsDBQkJZgGABQsJCAcCBhUKCQgLAgQWAgMBAh4B
+ AheAAAoJEC7eQpXUvijKzkEA/jblmQRWU/e18oo8J9GPHWOCRUA1WJLUt9lSye5cgl2vAP0Y
+ q+EpkDRS+QqtIcIr3fVELwA4b/V1lVE2LW+plcmdCbg4BF+gC74SCisGAQQBl1UBBQEBB0Bc
+ k3J9DVAB4ysrdDcKE7L9iAUjlWD+rsLh/5soPORqFQMBCAeIfgQYFggAJhYhBNzqjJqAsvWK
+ K1h7bi7eQpXUvijKBQJfoAu+AhsMBQkJZgGAAAoJEC7eQpXUvijKBBYA/2DT2g26dpTU2Rbc
+ lqviltu+woGZCd0GBfRgXuzUK0OfAQCwr8qPCl8uIsBgOsDmWIJYByG2ddwmXiAgBS1985bM Ag==
+Message-ID: <c7a394b1-edd3-a692-0981-45086da82aac@tuxedocomputers.com>
+Date:   Tue, 2 Mar 2021 12:19:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9910 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103020094
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9910 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1011
- priorityscore=1501 mlxlogscore=999 suspectscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103020094
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In TCODE_STREAM_DATA mode, on 32bit systems, the "sizeof(*e) +
-request->length" operation can overflow leading to memory corruption.
+From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
 
-Fixes: 18e9b10fcdc0 ("firewire: cdev: add closure to async stream ioctl")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
+
+This applies a SND_PCI_QUIRK(...) to the Clevo NH55RZQ barebone. This
+fixes the issue of the device not recognizing a pluged in microphone.
+
+The device has both, a microphone only jack, and a speaker + microphone
+combo jack. The combo jack already works. The microphone-only jack does
+not recognize when a device is pluged in without this patch.
+
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- drivers/firewire/core-cdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hi,
+this is my first ever submitted kernel patch, feel free to criticise me if I made an error or missed a best practise bullet point.
+Also: I'm unsure if this would fit the requirements for stable@vger.kernel.org and/or trivial@kernel.org, but I think not (correct me if I'm wrong).
+Kind regards
+Werner Sembach
 
-diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-index fb6c651214f3..314de0384035 100644
---- a/drivers/firewire/core-cdev.c
-+++ b/drivers/firewire/core-cdev.c
-@@ -587,6 +587,9 @@ static int init_request(struct client *client,
- 	    request->length < 4)
- 		return -EINVAL;
- 
-+	if (request->length > ULONG_MAX - sizeof(*e))
-+		return -EINVAL;
-+
- 	e = kmalloc(sizeof(*e) + request->length, GFP_KERNEL);
- 	if (e == NULL)
- 		return -ENOMEM;
+From 2835edd753fd19c72a644dccb7e941cfc0ecdf8e Mon Sep 17 00:00:00 2001
+From: Werner Sembach <wse@tuxedocomputers.com>
+Date: Fri, 26 Feb 2021 13:50:15 +0100
+Subject: [PATCH] Fix device detection on microphone jack of Clevo NH55RZQ
+
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 290645516313..8014e80d72c3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8089,6 +8089,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+     SND_PCI_QUIRK(0x1558, 0x8551, "System76 Gazelle (gaze14)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+     SND_PCI_QUIRK(0x1558, 0x8560, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
+     SND_PCI_QUIRK(0x1558, 0x8561, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
++    SND_PCI_QUIRK(0x1558, 0x8562, "Clevo NH[5|7][0-9]RZ[Q]", ALC269_FIXUP_DMIC),
+     SND_PCI_QUIRK(0x1558, 0x8668, "Clevo NP50B[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+     SND_PCI_QUIRK(0x1558, 0x8680, "Clevo NJ50LU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+     SND_PCI_QUIRK(0x1558, 0x8686, "Clevo NH50[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
 -- 
-2.30.1
+2.25.1
+
+
+
+
+
 
