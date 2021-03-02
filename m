@@ -2,160 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168DB32A5C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D57A32A5A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577299AbhCBNOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 08:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350257AbhCBMOh (ORCPT
+        id S1350989AbhCBM7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:59:20 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46214 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1446616AbhCBMM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:14:37 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17D9C0611C2;
-        Tue,  2 Mar 2021 04:11:10 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id k9so10986473lfo.12;
-        Tue, 02 Mar 2021 04:11:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m9hqLWrkdSaK/WM4EDBGHiVS8Bvc68hFjoKQw4IIqVQ=;
-        b=aNwsHIIT4YETfiFgeX+XzLyUOrs8t3/RfIwuglx0Ei2n3tt9t05NRi43VXSvewmXdd
-         DIjVIc8UYcfwqIXnFL9oHYYlZbtPAZCglN0zMRm/zHkNjC0LRq9UZ4qygp3+1jppwC+I
-         tBk5GDPf5zXPqeH4TO2HKxAQq7t5G5wiYzqwbs4HpeIi+oiOLKftWIMBM5u92Zz+Lf6o
-         VjbvIUmS8iR4b/R7V2tDliaQ3LXAAd4jzETb5oMmRZDYdBaWl90fXVQS6ucWmVOwoObT
-         fJSJ2odz3oHV9bvkW4zkH1D5iN/qLRXAnORV3PcP8FsFgBm3B4+QHzOfjUHC5LlZO6SO
-         53bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m9hqLWrkdSaK/WM4EDBGHiVS8Bvc68hFjoKQw4IIqVQ=;
-        b=EEK+InqvdIdJ5nBXVHk0Az3qwScHJvp+4GUcOeTxRPSqDNNOt2H+rNrXN2Jf7VXnal
-         p1e6vEvu9AMPi2pm+OPa3nS7sHXzqx9c3sQfa7I5fQ+iTDMHs6odgriuc6XIAQVywT7h
-         5mJqXjhlvXa6I+dPm5+JG7rKUHZX/p71iD/MvrL017RKwTS016biYFQ/sc/lDkeAP1rW
-         nGvwIz3LCNfRz/OfsiVsV5aVbSnsM0rRo1ZBnsWHgSNg53cjDXxJv7g3sl+4dm+jWgHc
-         ZuJZpITdBQhM/OhSkg9JlnO0VNLjXnFFbQ2Adq2TATGo6Ho7Ymd19IbtFV6JfMJ9sbHv
-         WbkA==
-X-Gm-Message-State: AOAM530BZjddsMtbZh9nWwT1GbuooRGxVcn/T6+93h9N5a6l4YDHdvJu
-        oLW+/trFRathfGQQilQeHVo=
-X-Google-Smtp-Source: ABdhPJwexzO1C6N6cEA24Vhbl7IJZodv9+GtTzWEcqC8EVKzuAig/fG/VvokAL+NCsPfAWKnhhDIVg==
-X-Received: by 2002:a19:7e4e:: with SMTP id z75mr9202879lfc.618.1614687069261;
-        Tue, 02 Mar 2021 04:11:09 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id d21sm835097ljo.55.2021.03.02.04.11.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 04:11:09 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 14/14] ARM: tegra: Specify tps65911 as wakeup source
-Date:   Tue,  2 Mar 2021 15:10:03 +0300
-Message-Id: <20210302121003.15058-15-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210302121003.15058-1-digetx@gmail.com>
-References: <20210302121003.15058-1-digetx@gmail.com>
+        Tue, 2 Mar 2021 07:12:27 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122CAffn122673;
+        Tue, 2 Mar 2021 12:11:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=vFlqk/n0sIz+J0WMlX2+mDATUbkRMfGZ850YdcvXnso=;
+ b=aDkp699qaeUuRSv20RiDqQYqtifHpA/unSABaDLBZHtkxGADqZdePdPTcK+7I5jhHi0t
+ NrKPt9gkV6/1rHDr3YwZPHqzSBAoZkrb7fDIL/lmvBHg2EdxPgMRz0D6Jr3cZX35clbQ
+ q3RV7mYHU+1GwF9oeRLXRVBChP7vImqT55jCpsqAQhR6QU/w7c1bez//9tONsKKl0QqC
+ TspzgOgx74J0FRO3jGqCLTD+v0OQIycAcFF7wxERQJe98h5nLGgIRd5oJsOeqb7tR1SA
+ 7WfcFQ6NgufBz2yR4mEA//jDzF89GLA/o5nCsZln9vD1K4pnvw+lEgwCe23g5zT3vBX2 pQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 36ye1m7afn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 12:11:37 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122CAWsu111291;
+        Tue, 2 Mar 2021 12:11:36 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 36yyurwn9n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 12:11:36 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 122CBYQ0016706;
+        Tue, 2 Mar 2021 12:11:34 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Mar 2021 04:11:34 -0800
+Date:   Tue, 2 Mar 2021 15:11:25 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [kbuild] drivers/spi/spi-cadence-quadspi.c:250:18: warning: Shifting
+ signed 32-bit value by 31 bits is undefined behaviour
+Message-ID: <20210302121125.GU2222@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Message-ID-Hash: AHKHJSBLOLPMOOQZWT5HBY4OYHJX2END
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9910 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103020102
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9910 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103020102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify TPS65911 as wakeup source on Tegra devices in order to allow
-its RTC to wake up system from suspend by default instead of requiring
-wakeup to be enabled manually via sysfs.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+head:   7a7fd0de4a9804299793e564a555a49c1fc924cb
+commit: 31fb632b5d43ca16713095b3a4fe17e3d7331e28 spi: Move cadence-quadspi driver to drivers/spi/
+compiler: nds32le-linux-gcc (GCC) 9.3.0
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+
+>> drivers/spi/spi-cadence-quadspi.c:250:18: warning: Shifting signed 32-bit value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
+    return reg & (1 << CQSPI_REG_CONFIG_IDLE_LSB);
+
+vim +250 drivers/spi/spi-cadence-quadspi.c
+
+14062341053690 drivers/mtd/spi-nor/cadence-quadspi.c Graham Moore 2016-06-04  246  static bool cqspi_is_idle(struct cqspi_st *cqspi)
+14062341053690 drivers/mtd/spi-nor/cadence-quadspi.c Graham Moore 2016-06-04  247  {
+14062341053690 drivers/mtd/spi-nor/cadence-quadspi.c Graham Moore 2016-06-04  248  	u32 reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+14062341053690 drivers/mtd/spi-nor/cadence-quadspi.c Graham Moore 2016-06-04  249  
+14062341053690 drivers/mtd/spi-nor/cadence-quadspi.c Graham Moore 2016-06-04 @250  	return reg & (1 << CQSPI_REG_CONFIG_IDLE_LSB);
+                                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+CQSPI_REG_CONFIG_IDLE_LSB is 31 and reg is a u32 so this is very
+puzzling.
+
+14062341053690 drivers/mtd/spi-nor/cadence-quadspi.c Graham Moore 2016-06-04  251  }
+
 ---
- arch/arm/boot/dts/tegra30-apalis.dtsi                      | 1 +
- arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi | 1 +
- arch/arm/boot/dts/tegra30-beaver.dts                       | 1 +
- arch/arm/boot/dts/tegra30-cardhu.dtsi                      | 1 +
- arch/arm/boot/dts/tegra30-colibri.dtsi                     | 1 +
- arch/arm/boot/dts/tegra30-ouya.dts                         | 1 +
- 6 files changed, 6 insertions(+)
-
-diff --git a/arch/arm/boot/dts/tegra30-apalis.dtsi b/arch/arm/boot/dts/tegra30-apalis.dtsi
-index 6544ce70b46f..b2ac51fb15b1 100644
---- a/arch/arm/boot/dts/tegra30-apalis.dtsi
-+++ b/arch/arm/boot/dts/tegra30-apalis.dtsi
-@@ -860,6 +860,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-index bfc06b988781..b97da45ebdb4 100644
---- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-ti-pmic.dtsi
-@@ -12,6 +12,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,en-gpio-sleep = <0 0 1 0 0 0 0 0 0>;
- 			ti,system-power-controller;
-diff --git a/arch/arm/boot/dts/tegra30-beaver.dts b/arch/arm/boot/dts/tegra30-beaver.dts
-index e0624b74fb50..e159feeedef7 100644
---- a/arch/arm/boot/dts/tegra30-beaver.dts
-+++ b/arch/arm/boot/dts/tegra30-beaver.dts
-@@ -1776,6 +1776,7 @@ pmic: tps65911@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-index 844ed700c0e6..2dff14b87f3e 100644
---- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
-+++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-@@ -243,6 +243,7 @@ pmic: tps65911@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-colibri.dtsi b/arch/arm/boot/dts/tegra30-colibri.dtsi
-index e36aa3ce6c3d..413e35215804 100644
---- a/arch/arm/boot/dts/tegra30-colibri.dtsi
-+++ b/arch/arm/boot/dts/tegra30-colibri.dtsi
-@@ -737,6 +737,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,system-power-controller;
- 
-diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
-index d36511d95d5a..9a10e0d69762 100644
---- a/arch/arm/boot/dts/tegra30-ouya.dts
-+++ b/arch/arm/boot/dts/tegra30-ouya.dts
-@@ -139,6 +139,7 @@ pmic: pmic@2d {
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 			interrupt-controller;
-+			wakeup-source;
- 
- 			ti,en-gpio-sleep = <0 1 1 1 1 1 0 0 1>;
- 			ti,system-power-controller;
--- 
-2.29.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
+_______________________________________________
+kbuild mailing list -- kbuild@lists.01.org
+To unsubscribe send an email to kbuild-leave@lists.01.org
