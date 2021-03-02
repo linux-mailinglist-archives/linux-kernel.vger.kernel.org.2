@@ -2,232 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F2932A424
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E8332A427
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382743AbhCBKGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:06:40 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33328 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1577885AbhCBJ6d (ORCPT
+        id S1379928AbhCBKM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:12:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348416AbhCBKAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:58:33 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1229aYR1184438;
-        Tue, 2 Mar 2021 04:57:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=yKyKNplrnfGIMREBrT/v98LCI1geLYbB+er4Q6fkd9Q=;
- b=Jn5lxbK+UhDFunwJyfZ4umAH5vGgxd6IDwt+sEN0mKoA2rO257d89naH37/rhSBWL6yy
- IoBv5QXi2tI/Qkxmsc71Wx0lAkaEb+anjQGUoghaOXrFzjsGm45NFE1OR/DxE+avxeoR
- 4i5M8StT1YH1b9k2MUdw3TC9hzaZD5FeeP4hSJuRohOKhHIcxmH0EJqVulwIg6kz6sXU
- Hzd3G4po0+dCiGSDz3duSqyOvu6THoZt93A7f1WOFrj3UlGtZDvGeZ5k6EZrSR5Zv+Fb
- 2VtgPSmgdNp7XkDKO8IqvIP5TxlomLA1HZdZm6OeEEvZGVSHkhSlxL+YbwZ7fYobI+Ay 8w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 371gvtn1hy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 04:57:18 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1229aqv3185978;
-        Tue, 2 Mar 2021 04:57:17 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 371gvtn1gq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 04:57:17 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1229vECn024285;
-        Tue, 2 Mar 2021 09:57:15 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3712fmgpx4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 09:57:15 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1229vDsg54526246
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Mar 2021 09:57:13 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E643AE053;
-        Tue,  2 Mar 2021 09:57:13 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88387AE04D;
-        Tue,  2 Mar 2021 09:57:10 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.23.212])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  2 Mar 2021 09:57:10 +0000 (GMT)
-Date:   Tue, 2 Mar 2021 11:57:08 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dhaval Giani <dhaval.giani@oracle.com>, robert.moore@intel.com,
-        erik.kaneda@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH] mm, kasan: don't poison boot memory
-Message-ID: <YD4L9DCpsFWhjSlJ@linux.ibm.com>
-References: <20210225145700.GC1854360@linux.ibm.com>
- <bb444ddb-d60d-114f-c2fe-64e5fb34102d@oracle.com>
- <20210225160706.GD1854360@linux.ibm.com>
- <6000e7fd-bf8b-b9b0-066d-23661da8a51d@oracle.com>
- <dc5e007c-9223-b03b-1c58-28d2712ec352@oracle.com>
- <20210226111730.GL1854360@linux.ibm.com>
- <e9e2f1a3-80f2-1b3e-6ffd-8004fe41c485@oracle.com>
- <YDvcH7IY8hV4u2Zh@linux.ibm.com>
- <083c2bfd-12dd-f3c3-5004-fb1e3fb6493c@oracle.com>
- <a8864397-83e8-61f7-4b9a-33716eca6cf8@oracle.com>
+        Tue, 2 Mar 2021 05:00:45 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05333C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:00:04 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id p21so30305455lfu.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RAANZPu6Vv8jCX2UvvYw3XNjCCQMOVZINFzh1fIaOPQ=;
+        b=SbrLxqjwmiVHCuxR0AsUtnPqLuB+jhzxC4z0CiGOkzxc4tpL6wXe52IJyjN4vYX1Ma
+         Wtp2mNcPjvEp/70mC2lunXhY4uusYA1qd9CmEhW2SfGi6MP7XXlvuemmLKgYcE1ayP5q
+         XZK1WEfrU+y+3QXAnkE4FS/xmh9X/lYP/6Ov+9TRxuMeNPYOu2HRP13l4xgZFC7JVUnt
+         TaIpLAJuNrZgUPwD/BBjbgyRUp9q74yx4Hffwy+zrQh5Uq1apsOI2P1vL1PBxw7JxmWG
+         xOWmB9JzbZvr7ESnT/zMgfszSibL9/Z9OLAxvt1pce/e9scwDRWWXvZBKfRswp9zKmZQ
+         bewQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RAANZPu6Vv8jCX2UvvYw3XNjCCQMOVZINFzh1fIaOPQ=;
+        b=Y7dwHQLLjVsPBRGvqSxLmHaot+7r1xw4HUQe0XPR21hC5cvd0Cz+JJC+ojaO8ldSXJ
+         D6WI+5VZPVMMLZFcrBj9JFGvIUFWLeKxVZBMCAXc+094w1FkHnbEkkmp8Amy7p5Ogi2u
+         48sLLAjqb804zNvzET+PVGOFgX8W+bxqyRks8JG7tqA9gI/mcB6bi7ubWfdPHQmr7JQW
+         KY3GPA9NTV0YYhLjAHCV5q9kYi4GMsX6H6w7f2Tqyss8O5fri50zzaDrlL8fKufKs7oG
+         eZuG+9QJjMsOtwFzSgLavjh+N2gGlPnsp6Wtm7G9nSoXeNWlkfStwsvKShEzWLWvT2aq
+         P9Ag==
+X-Gm-Message-State: AOAM532n5YcqpyBer28I//evN+PM7rfSIvYcHHGvJuicay6xkWqn0Vw2
+        kdf69hGqdy2+LSWvUq9QrUbVC5KXOGc=
+X-Google-Smtp-Source: ABdhPJxgV49l4Hy/fcHwj3tmpc7LEwtoT7M58tmQuZi0LxURiTVexncjUcEIISzbbMJFWaK84B9pNA==
+X-Received: by 2002:a05:6512:39c5:: with SMTP id k5mr11723834lfu.478.1614679203143;
+        Tue, 02 Mar 2021 02:00:03 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id m3sm2772720ljg.25.2021.03.02.02.00.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 02:00:02 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v1] pstore/ram: Rate-limit "uncorrectable error in header" message
+Date:   Tue,  2 Mar 2021 12:58:50 +0300
+Message-Id: <20210302095850.30894-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a8864397-83e8-61f7-4b9a-33716eca6cf8@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_03:2021-03-01,2021-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 clxscore=1011 lowpriorityscore=0 impostorscore=0
- bulkscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 spamscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103020078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi George,
+There is a quite huge "uncorrectable error in header" flood in KMSG
+on a clean system boot since there is no pstore buffer saved in RAM.
+Let's silence the redundant noisy messages by rate-limiting the printk
+message. Now there are maximum 10 messages printed repeatedly instead
+of 35+.
 
-On Mon, Mar 01, 2021 at 08:20:45PM -0500, George Kennedy wrote:
-> > > > > 
-> > > > There should be no harm in doing the memblock_reserve() for all
-> > > > the standard
-> > > > tables, right?
-> > > It should be ok to memblock_reserve() all the tables very early as
-> > > long as
-> > > we don't run out of static entries in memblock.reserved.
-> > > 
-> > > We just need to make sure the tables are reserved before memblock
-> > > allocations are possible, so we'd still need to move
-> > > acpi_table_init() in
-> > > x86::setup_arch() before e820__memblock_setup().
-> > > Not sure how early ACPI is initialized on arm64.
-> > 
-> > Thanks Mike. Will try to move the memblock_reserves() before
-> > e820__memblock_setup().
-> 
-> Hi Mike,
-> 
-> Moved acpi_table_init() in x86::setup_arch() before e820__memblock_setup()
-> as you suggested.
-> 
-> Ran 10 boots with the following without error.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ fs/pstore/ram_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'd suggest to send it as a formal patch to see what x86 and ACPI folks
-have to say about this.
+diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
+index aa8e0b65ff1a..fff363bfd484 100644
+--- a/fs/pstore/ram_core.c
++++ b/fs/pstore/ram_core.c
+@@ -246,7 +246,7 @@ static int persistent_ram_init_ecc(struct persistent_ram_zone *prz,
+ 		pr_info("error in header, %d\n", numerr);
+ 		prz->corrected_bytes += numerr;
+ 	} else if (numerr < 0) {
+-		pr_info("uncorrectable error in header\n");
++		pr_info_ratelimited("uncorrectable error in header\n");
+ 		prz->bad_blocks++;
+ 	}
  
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 740f3bdb..3b1dd24 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -1047,6 +1047,7 @@ void __init setup_arch(char **cmdline_p)
->      cleanup_highmap();
-> 
->      memblock_set_current_limit(ISA_END_ADDRESS);
-> +    acpi_boot_table_init();
->      e820__memblock_setup();
-> 
->      /*
-> @@ -1140,8 +1141,6 @@ void __init setup_arch(char **cmdline_p)
->      /*
->       * Parse the ACPI tables for possible boot-time SMP configuration.
->       */
-> -    acpi_boot_table_init();
-> -
->      early_acpi_boot_init();
-> 
->      initmem_init();
-> diff --git a/drivers/acpi/acpica/tbinstal.c b/drivers/acpi/acpica/tbinstal.c
-> index 0bb15ad..7830109 100644
-> --- a/drivers/acpi/acpica/tbinstal.c
-> +++ b/drivers/acpi/acpica/tbinstal.c
-> @@ -7,6 +7,7 @@
->   *
-> *****************************************************************************/
-> 
-> +#include <linux/memblock.h>
->  #include <acpi/acpi.h>
->  #include "accommon.h"
->  #include "actables.h"
-> @@ -16,6 +17,33 @@
-> 
->  /*******************************************************************************
->   *
-> + * FUNCTION:    acpi_tb_reserve_standard_table
-> + *
-> + * PARAMETERS:  address             - Table physical address
-> + *              header              - Table header
-> + *
-> + * RETURN:      None
-> + *
-> + * DESCRIPTION: To avoid an acpi table page from being "stolen" by the
-> buddy
-> + *              allocator run memblock_reserve() on all the standard acpi
-> tables.
-> + *
-> + ******************************************************************************/
-> +void
-> +acpi_tb_reserve_standard_table(acpi_physical_address address,
-> +               struct acpi_table_header *header)
-> +{
-> +    if ((ACPI_COMPARE_NAMESEG(header->signature, ACPI_SIG_FACS)) ||
-> +        (ACPI_VALIDATE_RSDP_SIG(header->signature)))
-> +        return;
-> +
-
-Why these should be excluded?
-
-> +    if (header->length > PAGE_SIZE) /* same check as in acpi_map() */
-> +        return;
-
-I don't think this is required, I believe acpi_map() has this check because
-kmap() cannot handle multiple pages.
-
-> +
-> +    memblock_reserve(address, PAGE_ALIGN(header->length));
-> +}
-> +
-> +/*******************************************************************************
-> + *
->   * FUNCTION:    acpi_tb_install_table_with_override
->   *
->   * PARAMETERS:  new_table_desc          - New table descriptor to install
-> @@ -58,6 +86,9 @@
->                        new_table_desc->flags,
->                        new_table_desc->pointer);
-> 
-> +    acpi_tb_reserve_standard_table(new_table_desc->address,
-> +                   new_table_desc->pointer);
-> +
->      acpi_tb_print_table_header(new_table_desc->address,
->                     new_table_desc->pointer);
-> 
-> George
-
 -- 
-Sincerely yours,
-Mike.
+2.29.2
+
