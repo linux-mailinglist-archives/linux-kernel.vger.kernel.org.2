@@ -2,309 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102FD32A25B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C3E32A251
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376715AbhCBHug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:50:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S1837148AbhCBHey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1836812AbhCBHVD (ORCPT
+        with ESMTP id S1349316AbhCBHQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:21:03 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE677C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 23:13:42 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id do6so33254787ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 23:13:42 -0800 (PST)
+        Tue, 2 Mar 2021 02:16:25 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD93C061794;
+        Mon,  1 Mar 2021 23:14:06 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id b13so14701832edx.1;
+        Mon, 01 Mar 2021 23:14:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I+qmKjMEWnJQQCjAQbTHhcu0VbfoLpjr9qsukOsrxOY=;
-        b=R1Dx2DYrkJxqEZ5c1OAFGfyNA7OWb5qNqrITEn5UVu1NTsYZQ0ynKYjUiRuBbCXNEx
-         BuRp84dxbSs9Qz3BpW50ZR4AEJek5qII0BMvN/zVOU+L3S59zzFwU2e9Gn4XWZ4QS+jY
-         bocFMbi/s36+z2TYdNWeQQpsNis2wyeNMYBfU1/m5nWLVi3ByfLNMZy+AhWue0HjSmY2
-         yKxYTyMHEFEC4jwhiD5hiyJKkLS/75Yb0ZSkJOpI4GVsPeMK7W2tTNUM/KdeTHLHpWdq
-         uAx0Zxo9DfjVsiPI3XO+to9ZbVs5PmOcoPS3Pn/5E2i3yfIWje8NivxlxDgMnFmqW0t7
-         3nYg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Vwbv3+RIeGnp+Qm+N740tpu/JEP5WHksMGMUdFIRhJc=;
+        b=jUKP8s1sarYU4xlbJaaZ00DQEEQvcYj+Om1m+33Zs5h8rSl5Y7bKYs11hGCIDMIO3C
+         Y66hFgY0HkmLgQxKU8Jq8UbjWkJMYCvq44rL4RoefWc5O2ZZq1RhCiHyhNG3Cm9rF0UB
+         M3tzoV8rvGAPlC2dqtGYVpFsssQCTrpmR5hWU5BGlKvxspl+1T0N0uAwMTqDpac8rOdl
+         ypc9SBjqLmXcacNE4ExiPFjdPXRsfOX97t3IUj87ST36sAqTyEOEY8OPdOy7HlrQusst
+         F9jrflEaRQF0ICYotrVTfWQnfftsBAxYRP9WgOG2KLk15tPBuKCKLb31L4kWuIZv83Oq
+         gNEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I+qmKjMEWnJQQCjAQbTHhcu0VbfoLpjr9qsukOsrxOY=;
-        b=gppHqTpWptETP18grKuhrKSxqievPWLc9oR1XJH3evnkCylgvLabTMdquv05D86sfl
-         +O/FZPzbxpOq0dqzsKJba0YiJOndPvg898LY5MAc+16u+rx35AYMeNa7eDXNFZ7+i4Rl
-         qm6/Q6nMGQ5hIDFNFf9Gq6r8l4FwSGdeM4givJs/1o5kk5gjlpcjn917+AhyPUMuu9eH
-         mYVofqWP79pOrC3Cnz+NCdi6kgOqnI2W7cMY8Hz3tA8nkDbMaOetU+Io4ocrh/JW2+69
-         lmgZC+CSr70PYfMm6I1UEKdTjGVOEI5nhi+puqmaKOdpGysXVPnRoN4sGJXGsc99FiAe
-         tN4g==
-X-Gm-Message-State: AOAM5304vWxqLDkntSGCIRPZWYicC5+2DQ5UdLma3O42FG8B5Zrr/dCF
-        kxpm+TRYjnW3UDVtfOPjGKrdTV7vTvMLXJqW2vEImQ==
-X-Google-Smtp-Source: ABdhPJx3b6y6Czut5bDOqwM38L5CP34Sx0yQQZqRpVLowXaYLguUM3tvtqhOpV01u+b0puHGgmsaenEnx0+5vhYA0uY=
-X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr19667271ejo.247.1614669221225;
- Mon, 01 Mar 2021 23:13:41 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Vwbv3+RIeGnp+Qm+N740tpu/JEP5WHksMGMUdFIRhJc=;
+        b=PFlMSpfJVWeEiczdnB5heD3l9iUcOio8TQQqH4RiUH1pEuC6rHeVBMpC5vOwhiKaUG
+         skC+C3A2JdnTEFiHYnYruynvUaPwEEmJu66IvUCfq5xAKLcbTgPnh4s9NJqINi/zrW35
+         ehCGpKy2be8MjXN8h1ZkEZ7VojyAajCCjC/kPLPHHkzfzEiZT5jyI8bF4ZlPfIqerInB
+         ZzTck0AK+cnlp+MSO2tRA74umrfZi9bTpho/SMMQ+67qz/4W61hoAwBTe37jwzonhQCX
+         2C1FL+dIukzMcR5N0Xlt2Kfcsd9FttZSSW+RE5Sg8K8cYrx0qIA93c1IpXO+4t1P7uW4
+         cRXA==
+X-Gm-Message-State: AOAM533rTJLu0N4mwoz4voFCtXTejNPty9x0WctoOEDfBFRZWxyqivAw
+        NAk4IYRxBrsTu612erSqSlQ=
+X-Google-Smtp-Source: ABdhPJwdfu1EOMlB2kYFyjgDmJH0n2894BrgXz6mft2zGdaNW4xunkGTWnubQit28Wf0La17ye3A2w==
+X-Received: by 2002:aa7:ce8a:: with SMTP id y10mr10613979edv.66.1614669245354;
+        Mon, 01 Mar 2021 23:14:05 -0800 (PST)
+Received: from gmail.com (20014C4E1C864000F9B8756A94F10216.dsl.pool.telekom.hu. [2001:4c4e:1c86:4000:f9b8:756a:94f1:216])
+        by smtp.gmail.com with ESMTPSA id y12sm10708502ejb.104.2021.03.01.23.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 23:14:03 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 2 Mar 2021 08:14:01 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        paulmck@kernel.org, mhocko@suse.com,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v2 3/3] kernel/smp: add more data to CSD lock debugging
+Message-ID: <20210302071401.GA2257965@gmail.com>
+References: <20210301101336.7797-1-jgross@suse.com>
+ <20210301101336.7797-4-jgross@suse.com>
+ <YD0fTLnQTQ7/M7fx@hirez.programming.kicks-ass.net>
+ <c7c1eeb5-21b3-339b-4b25-a6c8df820146@suse.com>
+ <YD1SJNDeGcNOO00s@hirez.programming.kicks-ass.net>
+ <20210302070559.GB2809110@gmail.com>
 MIME-Version: 1.0
-References: <20210301193729.179652916@linuxfoundation.org>
-In-Reply-To: <20210301193729.179652916@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Mar 2021 12:43:29 +0530
-Message-ID: <CA+G9fYs+RueaArJXTswcX_7O4xezuJXkOUVDgXnPrtkErp7Q1Q@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/774] 5.11.3-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        LTP List <ltp@lists.linux.it>, Arnd Bergmann <arnd@arndb.de>,
-        Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302070559.GB2809110@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 01:25, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.3 release.
-> There are 774 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Mar 2021 19:35:23 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.3-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-Regressions detected on all devices (arm64, arm, x86_64 and i386).
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
+> 
+> * Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > On Mon, Mar 01, 2021 at 08:16:12PM +0100, Jürgen Groß wrote:
+> > > >    https://lkml.kernel.org/r/20210220231712.2475218-2-namit@vmware.com
+> > > 
+> > > They are already in tip locking/core (Ingo applied them).
+> > 
+> > I'm very tempted to undo that :-(
+> 
+> Sorry about that - I'm sorting out the conflicts with the concurrent TLB 
+> flush series.
 
-This failure is specific to stable-rc 5.10 and 5.11.
-Test PASS on mainline and Linux next kernel.
+I've resolved them in:
 
-Summary
-------------------------------------------------------------------------
+  8dbac5da2796: ("Merge branch 'locking/core' into x86/mm, to resolve conflicts")
 
-kernel: 5.11.3-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: 687a937c5987c23a8caf2466a827657c09dda0ca
-git describe: v5.11.2-775-g687a937c5987
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.2-775-g687a937c5987
+Will push it out after a bit of testing.
 
-Regressions (compared to build v5.11.2)
-------------------------------------------------------------------------
+Thanks,
 
-  ltp-pty-tests:
-    * hangup01
-
-hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Strace output:
-------------------
-
-+ cd /opt/ltp/testcases/bin/
-+ strace -f ./hangup01
-execve(\"./hangup01\", [\"./hangup01\"], 0xbed15d14 /* 18 vars */) =3D 0
-brk(NULL)                               =3D 0x43000
-mmap2(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) =3D 0xb6feb000
-access(\"/etc/ld.so.preload\", R_OK)      =3D -1 ENOENT (No such file or
-directory)
-openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) =3D 3
-fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D19813, ...}) =3D 0
-mmap2(NULL, 19813, PROT_READ, MAP_PRIVATE, 3, 0) =3D 0xb6fe6000
-close(3)                                =3D 0
-openat(AT_FDCWD, \"/lib/libc.so.6\", O_RDONLY|O_CLOEXEC) =3D 3
-read(3, \"\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0\\r\1\0004\0\0\0\".=
-..,
-512) =3D 512
-fstat64(3, {st_mode=3DS_IFREG|0755, st_size=3D1238788, ...}) =3D 0
-mmap2(NULL, 1308016, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE,
-3, 0) =3D 0xb6e7d000
-mprotect(0xb6fa8000, 61440, PROT_NONE)  =3D 0
-mmap2(0xb6fb7000, 12288, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x12a000) =3D 0xb6fb7000
-mmap2(0xb6fba000, 9584, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) =3D 0xb6fba000
-close(3)                                =3D 0
-set_tls(0xb6febd10, 0xb6fec400, 0xb6fee000, 0xb6febd10, 0xb6fee000) =3D 0
-mprotect(0xb6fb7000, 8192, PROT_READ)   =3D 0
-mprotect(0x3c000, 4096, PROT_READ)      =3D 0
-mprotect(0xb6fed000, 4096, PROT_READ)   =3D 0
-munmap(0xb6fe6000, 19813)               =3D 0
-openat(AT_FDCWD, \"/dev/ptmx\", O_RDWR)   =3D 3
-ioctl(3, TCGETS, {B38400 opost isig icanon echo ...}) =3D 0
-ioctl(3, TIOCGPTN, [0])                 =3D 0
-stat64(\"/dev/pts/0\", {st_mode=3DS_IFCHR|0620, st_rdev=3Dmakedev(136, 0), =
-...}) =3D 0
-ioctl(3, TCGETS, {B38400 opost isig icanon echo ...}) =3D 0
-ioctl(3, TIOCGPTN, [0])                 =3D 0
-stat64(\"/dev/pts/0\", {st_mode=3DS_IFCHR|0620, st_rdev=3Dmakedev(136, 0), =
-...}) =3D 0
-getuid32()                              =3D 0
-socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) =3D 4
-connect(4, {sa_family=3DAF_UNIX, sun_path=3D\"/var/run/nscd/socket\"},
-110) =3D -1 ENOENT (No such file or directory)
-close(4)                                =3D 0
-socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) =3D 4
-connect(4, {sa_family=3DAF_UNIX, sun_path=3D\"/var/run/nscd/socket\"},
-110) =3D -1 ENOENT (No such file or directory)
-close(4)                                =3D 0
-brk(NULL)                               =3D 0x43000
-brk(0x64000)                            =3D 0x64000
-openat(AT_FDCWD, \"/etc/nsswitch.conf\", O_RDONLY|O_CLOEXEC) =3D 4
-fstat64(4, {st_mode=3DS_IFREG|0644, st_size=3D514, ...}) =3D 0
-read(4, \"# /etc/nsswitch.conf\n#\n# Example\"..., 4096) =3D 514
-read(4, \"\", 4096)                       =3D 0
-close(4)                                =3D 0
-openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) =3D 4
-fstat64(4, {st_mode=3DS_IFREG|0644, st_size=3D19813, ...}) =3D 0
-mmap2(NULL, 19813, PROT_READ, MAP_PRIVATE, 4, 0) =3D 0xb6fe6000
-close(4)                                =3D 0
-openat(AT_FDCWD, \"/lib/libnss_compat.so.2\", O_RDONLY|O_CLOEXEC) =3D 4
-read(4, \"\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0\350\f\0\0004\0\0\0=
-\"...,
-512) =3D 512
-fstat64(4, {st_mode=3DS_IFREG|0755, st_size=3D26332, ...}) =3D 0
-mmap2(NULL, 91760, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4,
-0) =3D 0xb6e66000
-mprotect(0xb6e6c000, 61440, PROT_NONE)  =3D 0
-mmap2(0xb6e7b000, 8192, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0x5000) =3D 0xb6e7b000
-close(4)                                =3D 0
-mprotect(0xb6e7b000, 4096, PROT_READ)   =3D 0
-munmap(0xb6fe6000, 19813)               =3D 0
-openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) =3D 4
-fstat64(4, {st_mode=3DS_IFREG|0644, st_size=3D19813, ...}) =3D 0
-mmap2(NULL, 19813, PROT_READ, MAP_PRIVATE, 4, 0) =3D 0xb6fe6000
-close(4)                                =3D 0
-openat(AT_FDCWD, \"/lib/libnss_nis.so.2\", O_RDONLY|O_CLOEXEC) =3D 4
-read(4, \"\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0\350\27\0\0004\0\0\=
-0\"...,
-512) =3D 512
-fstat64(4, {st_mode=3DS_IFREG|0755, st_size=3D38456, ...}) =3D 0
-mmap2(NULL, 103004, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4,
-0) =3D 0xb6e4c000
-mprotect(0xb6e55000, 61440, PROT_NONE)  =3D 0
-mmap2(0xb6e64000, 8192, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0x8000) =3D 0xb6e64000
-close(4)                                =3D 0
-openat(AT_FDCWD, \"/lib/libnsl.so.1\", O_RDONLY|O_CLOEXEC) =3D 4
-read(4, \"\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0\334.\0\0004\0\0\0\=
-"...,
-512) =3D 512
-fstat64(4, {st_mode=3DS_IFREG|0755, st_size=3D67384, ...}) =3D 0
-mmap2(NULL, 141056, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4,
-0) =3D 0xb6e29000
-mprotect(0xb6e39000, 61440, PROT_NONE)  =3D 0
-mmap2(0xb6e48000, 8192, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0xf000) =3D 0xb6e48000
-mmap2(0xb6e4a000, 5888, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) =3D 0xb6e4a000
-close(4)                                =3D 0
-openat(AT_FDCWD, \"/lib/libnss_files.so.2\", O_RDONLY|O_CLOEXEC) =3D 4
-read(4, \"\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0008\32\0\0004\0\0\0=
-\"...,
-512) =3D 512
-fstat64(4, {st_mode=3DS_IFREG|0755, st_size=3D38448, ...}) =3D 0
-mmap2(NULL, 127752, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 4,
-0) =3D 0xb6e09000
-mprotect(0xb6e12000, 61440, PROT_NONE)  =3D 0
-mmap2(0xb6e21000, 8192, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 4, 0x8000) =3D 0xb6e21000
-mmap2(0xb6e23000, 21256, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) =3D 0xb6e23000
-close(4)                                =3D 0
-mprotect(0xb6e21000, 4096, PROT_READ)   =3D 0
-mprotect(0xb6e48000, 4096, PROT_READ)   =3D 0
-mprotect(0xb6e64000, 4096, PROT_READ)   =3D 0
-munmap(0xb6fe6000, 19813)               =3D 0
-openat(AT_FDCWD, \"/etc/group\", O_RDONLY|O_CLOEXEC) =3D 4
-_llseek(4, 0, [0], SEEK_CUR)            =3D 0
-fstat64(4, {st_mode=3DS_IFREG|0644, st_size=3D756, ...}) =3D 0
-mmap2(NULL, 756, PROT_READ, MAP_SHARED, 4, 0) =3D 0xb6fea000
-_llseek(4, 756, [756], SEEK_SET)        =3D 0
-munmap(0xb6fea000, 756)                 =3D 0
-close(4)                                =3D 0
-ioctl(3, TIOCSPTLCK, [0])               =3D 0
-clone(child_stack=3DNULL,
-flags=3DCLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD,
-child_tidptr=3D0xb6feb8b8) =3D 366
-nanosleep({tv_sec=3D1, tv_nsec=3D0}, strace: Process 366 attached
- <unfinished ...>
-[pid   366] ioctl(3, TCGETS, {B38400 opost isig icanon echo ...}) =3D 0
-[pid   366] ioctl(3, TIOCGPTN, [0])     =3D 0
-[pid   366] stat64(\"/dev/pts/0\", {st_mode=3DS_IFCHR|0620,
-st_rdev=3Dmakedev(136, 0), ...}) =3D 0
-[pid   366] openat(AT_FDCWD, \"/dev/pts/0\", O_RDWR) =3D 4
-[pid   366] write(4, \"I love Linux!\", 13) =3D 13
-[pid   366] close(4)                    =3D 0
-[pid   366] openat(AT_FDCWD, \"/dev/pts/0\", O_RDWR) =3D 4
-[pid   366] write(4, \"Use the LTP for all your Linux t\"..., 45) =3D 45
-[pid   366] close(4)                    =3D 0
-[pid   366] openat(AT_FDCWD, \"/dev/pts/0\", O_RDWR) =3D 4
-[pid   366] write(4, \"For the latest version of the LT\"..., 73) =3D 73
-[pid   366] close(4)                    =3D 0
-[pid   366] exit_group(0)               =3D ?
-[pid   366] +++ exited with 0 +++
-<... nanosleep resumed> {tv_sec=3D0, tv_nsec=3D957592940}) =3D ?
-ERESTART_RESTARTBLOCK (Interrupted by signal)
---- SIGCHLD {si_signo=3DSIGCHLD, si_code=3DCLD_EXITED, si_pid=3D366,
-si_uid=3D0, si_status=3D0, si_utime=3D0, si_stime=3D0} ---
-nanosleep({tv_sec=3D0, tv_nsec=3D957592940}, 0xbeeceb48) =3D 0
-poll([{fd=3D3, events=3DPOLLIN}], 1, -1)    =3D 1 ([{fd=3D3, revents=3DPOLL=
-IN|POLLHUP}])
-read(3, \"I love Linux!\", 13)            =3D 13
-poll([{fd=3D3, events=3DPOLLIN}], 1, -1)    =3D 1 ([{fd=3D3, revents=3DPOLL=
-IN|POLLHUP}])
-read(3, \"Use the LTP for all your Linux t\"..., 45) =3D 45
-poll([{fd=3D3, events=3DPOLLIN}], 1, -1)    =3D 1 ([{fd=3D3, revents=3DPOLL=
-IN|POLLHUP}])
-read(3, \"For the latest version of the LT\"..., 73) =3D 64
-ioctl(1, TCGETS, {B115200 opost isig icanon echo ...}) =3D 0
-fstat64(1, {st_mode=3DS_IFCHR|0600, st_rdev=3Dmakedev(204, 64), ...}) =3D 0
-ioctl(1, TCGETS, {B115200 opost isig icanon echo ...}) =3D 0
-write(1, \"hangup01    1  TFAIL \"..., 73hangup01    1  TFAIL  :
-hangup01.c:133: unexpected message 3
-) =3D 73
-
-
-Test case link:
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/pty/=
-hangup01.c#L133
-
-Full test log link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
-.2-775-g687a937c5987/testrun/4055638/suite/ltp-pty-tests/test/hangup01/log
-
-Test results comparison between 5.10, 5.11, Linux mainline and Linux
-next master.
-https://qa-reports.linaro.org/_/comparetest/?project=3D651&project=3D597&pr=
-oject=3D22&project=3D6&suite=3Dltp-pty-tests&test=3Dhangup01
-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+	Ingo
