@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CC732A40C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E03332A414
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379737AbhCBKFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:05:49 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36020 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577821AbhCBJz3 (ORCPT
+        id S1379872AbhCBKGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:06:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1577826AbhCBJzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:55:29 -0500
+        Tue, 2 Mar 2021 04:55:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72F0C06121D;
+        Tue,  2 Mar 2021 01:54:48 -0800 (PST)
 Date:   Tue, 02 Mar 2021 09:54:46 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1614678887;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wrXkji/MQbPHdN6Vwrye0+MZ+K7qw4CRLjmmfXscgJg=;
-        b=cQ5Ng57PnhdD3jmJGa1rofX4BKCrV8U0GHEmIpuGzs/CaQWdvtzweepoqhKUmDgL3nz0sN
-        e5cGNLf5FeGK05PeJEaCp3mNupr6rraODYvgN34i12MKTPvdqov84fJkb+KCizo/f/YUNx
-        LJKyj9w3pihduyX8EqZiAOdtTFstLXu2h0PnLkMvFADGu3CfHQBOgbUvjF/wX69BLWBGr5
-        YgkNGXpZImuRAdddhAYdSE8bQ0+PJOO6zx9IDjYHp+fzbXmU9c/domk3dBIG6hySb7rRXG
-        lZkzeJV3eTzS/68pGihC1pMp5HrRFbBov+SCJ4GrvLfdXPil9xmGjknhQRBijw==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=o5fRt0fkW8r3H74UHvCkdfOMOqabka4CfbA4sJRiIo4=;
+        b=Bes0xDfbdg95dSXhO+U8FkepJh5Xfutn2Yph1hfRqbUITUfZ3l10KrhkzL2fFN1MsBbQMx
+        4ZKvPSnC3MucsXgRgPz3yMUipcO3FRFpVfDHigE7PlKXDYYahmxIV9sOV4QEL+VN2kqfzO
+        aDlFdisKftrFP1IIMC3R3kqDxySYw7Dr5rGxIF6y5V9q6pKUfPMk305qECgB/QVQuIYGiM
+        Mx4UaGCgG3Uv+cvW7wa5EpseM4urDzVaxCWpzWfGCqRUQlUtZX95dZ7g0N4E5oVEv63Oj1
+        qnkDuzFZW2HvMIPuvZ2RiNGwbPANY6R673pJ7ymf95G6FxzKcMiI1cAY3FLDHw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1614678887;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wrXkji/MQbPHdN6Vwrye0+MZ+K7qw4CRLjmmfXscgJg=;
-        b=nbtgk50G4g4hOkPn8EUEHdbcPTXpRTgCJKdcf5Tawha6af1ig6vW+tiEI9Isajz14lwK+u
-        qUHeOK9R2Zof8OAA==
-From:   "tip-bot2 for Nadav Amit" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=o5fRt0fkW8r3H74UHvCkdfOMOqabka4CfbA4sJRiIo4=;
+        b=nQ+J+Mn1i82HhRPxw7/SXuxI+iJ+uykd7FFlj6YTodGQv/pQecclRSmpDn2lgf2vx3jNSY
+        JshdM+CzSH0iA7AQ==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/mm/tlb: Remove unnecessary uses of the inline keyword
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210220231712.2475218-9-namit@vmware.com>
-References: <20210220231712.2475218-9-namit@vmware.com>
+Subject: [tip: x86/mm] smp: Micro-optimize smp_call_function_many_cond()
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
 MIME-Version: 1.0
-Message-ID: <161467888668.20312.1594896899828031871.tip-bot2@tip-bot2>
+Message-ID: <161467888606.20312.2057210831067843812.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,54 +55,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/mm branch of tip:
 
-Commit-ID:     327db7a160b33865e086f7fff73e08f6d8d47005
-Gitweb:        https://git.kernel.org/tip/327db7a160b33865e086f7fff73e08f6d8d47005
-Author:        Nadav Amit <namit@vmware.com>
-AuthorDate:    Sat, 20 Feb 2021 15:17:11 -08:00
+Commit-ID:     dd75cba56151cb3b9dc7eac0221c9b1967f6ddb5
+Gitweb:        https://git.kernel.org/tip/dd75cba56151cb3b9dc7eac0221c9b1967f6ddb5
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Tue, 02 Mar 2021 08:02:43 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 02 Mar 2021 08:01:38 +01:00
+CommitterDate: Tue, 02 Mar 2021 09:09:59 +01:00
 
-x86/mm/tlb: Remove unnecessary uses of the inline keyword
+smp: Micro-optimize smp_call_function_many_cond()
 
-The compiler is smart enough without these hints.
+Call the generic send_call_function_single_ipi() function, which
+will avoid the IPI when @last_cpu is idle.
 
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/r/20210220231712.2475218-9-namit@vmware.com
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- arch/x86/mm/tlb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 17ec4bf..f4b162f 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -316,7 +316,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	local_irq_restore(flags);
- }
- 
--static inline unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
-+static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
- {
- 	unsigned long next_tif = task_thread_info(next)->flags;
- 	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
-@@ -880,7 +880,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct flush_tlb_info, flush_tlb_info);
- static DEFINE_PER_CPU(unsigned int, flush_tlb_info_idx);
- #endif
- 
--static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
-+static struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
- 			unsigned long start, unsigned long end,
- 			unsigned int stride_shift, bool freed_tables,
- 			u64 new_tlb_gen)
-@@ -907,7 +907,7 @@ static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
- 	return info;
- }
- 
--static inline void put_flush_tlb_info(void)
-+static void put_flush_tlb_info(void)
- {
- #ifdef CONFIG_DEBUG_VM
- 	/* Complete reentrency prevention checks */
+diff --git a/kernel/smp.c b/kernel/smp.c
+index b6375d7..af0d51d 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -694,7 +694,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 		 * provided mask.
+ 		 */
+ 		if (nr_cpus == 1)
+-			arch_send_call_function_single_ipi(last_cpu);
++			send_call_function_single_ipi(last_cpu);
+ 		else if (likely(nr_cpus > 1))
+ 			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
+ 	}
