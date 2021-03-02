@@ -2,132 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B97032A06D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1871332A06E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381035AbhCBETr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:19:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
+        id S1381044AbhCBETu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:19:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239530AbhCBAAs (ORCPT
+        with ESMTP id S1344283AbhCBACS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:00:48 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABE0C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:00:07 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id l7so8407105pfd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:00:07 -0800 (PST)
+        Mon, 1 Mar 2021 19:02:18 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F3AC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:01:38 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id v62so20589172ybb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:01:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Yq254SkrVPYkKMx5FhkZ8HM8pUWyZebr3dtEMZbEpmQ=;
-        b=KHn/xhSySXn3fRA4EHKz+k28VC/PZO+vrsZfRduXz5+AjuNRnPtkaqYP7JG8TubLUK
-         hRFt1gGOC2heiXHzduKFVFXs6WiNNWTo9WUk1bbPKS7FearKeUx07v9cM4stWQf1NFwh
-         hjPmarpKBnPizLmty2WBpci0eIh5zGs6G1335QdKOSjmkurTJ4o6lnNh+Dilg86EdyeN
-         BXEgibd52Yf/ZU4p/lZ0BEgAgGpRYq99q9OJht/D6eU8oA3GEthcjtvcUzjLYomAKHPT
-         tKUblaWfzhBWf8x51b0mCNbqKFT/cy2V4vN51eytfvDueZwth5rPGG0/tvcITiISQejx
-         s9kw==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=9heSrccM4QtbO8zJbZROi2fke/pBPWI/6xjb8kl8EnA=;
+        b=v6/QDeREsxB4ARFCeFWrSwJ2dSOaKDO4I9YTPff/uItNGTtUIPsya5PcsPffq9USJV
+         GyLgJlAiJtpUdoBfsiCVqJ8PnpkRa85psOWf6na+KGzRfr2Lrk9fNewpTU5x6pczbof1
+         xnh7jFSPMCqUCA3rIJEHHdO9iQiZKpT/iXDIYNtVbOYVpbORcp+OEKp/seXIsX3DKu5z
+         vz3jixxH+biRLNNZR5UwrHfpYr2uLeMroJEM1ECn5+/UPmTS5QfRMdLU9LU4k2ewYTsN
+         4RmHX1IZkJBxo51233WQAq/+zg+fU7F1yG06Tv4YSY9xxqIsE9C/ypSk8QzdibOfDWRq
+         HqBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yq254SkrVPYkKMx5FhkZ8HM8pUWyZebr3dtEMZbEpmQ=;
-        b=Ink8LWTlrDvE5QYe+B6tPb8OdZK4qq5SMIRquJHbbtRpnn1uFSl2euguH5vmLKW5Ka
-         TyfTB5WAdSdIKyQhlQ0EZe9arYnFok635JhreLbicZ6m4NSWuUkalo7TdhYkMg50gxOU
-         wjb8F3e6v9TWbbGFyqkYnWpL9q2EJqXd1PyD3nTg8i5RZo8DN2XcharzZHzWVy+30rN4
-         iq5Ypybk9+R+/AKmlq4p8jX+jom7tE73u+trVen5TIKiIF7ruZwRzJtbt7/bAVPWTl7J
-         VlHekwrcAer/gKNQY9/2Pge5oUL9VvosjOgIgPz2Mvk/NjyCx32Yv5kPb3gG+XPWIoyf
-         IOAw==
-X-Gm-Message-State: AOAM530tUAJIXOxpzZmpTdHRz03pKdXuEGzA0Z7lPBneVs2atrsK8+o4
-        qpSbR1/HkuxIL6VtB/WRsbGpOg==
-X-Google-Smtp-Source: ABdhPJwAT+GcPEZ1FmprKNY55vfpZmbu/uM/M2oFJkKCKneR+u8QUI9ttOwA/hkV3hk1G3YvTkL0eA==
-X-Received: by 2002:a62:16c9:0:b029:1ed:df04:8fcf with SMTP id 192-20020a6216c90000b02901eddf048fcfmr17574872pfw.63.1614643206783;
-        Mon, 01 Mar 2021 16:00:06 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
-        by smtp.gmail.com with ESMTPSA id r16sm18650982pfh.168.2021.03.01.16.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 16:00:06 -0800 (PST)
-Date:   Mon, 1 Mar 2021 15:59:59 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jing Liu <jing2.liu@linux.intel.com>
-Cc:     pbonzini@redhat.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: x86: Revise guest_fpu xcomp_bv field
-Message-ID: <YD1//+O57mr2D2Ne@google.com>
-References: <20210225104955.3553-1-jing2.liu@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225104955.3553-1-jing2.liu@linux.intel.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=9heSrccM4QtbO8zJbZROi2fke/pBPWI/6xjb8kl8EnA=;
+        b=W1Kdjc4WRoDP+on2nMjzm5aMnvW+rwjo5mI9ijEC8IoCkVc8zBJCcpl7D4ohkwIhwO
+         MNAF+g2Iam+pT7azqrYSvlW36zdvWwQiuVwqbxHew1znsgjWjm0rLhxH7/xtix/TNMRj
+         BYlpiJ9FpAflFfNYUSFxU+RFiGTA8M/HMo+D/z5/lap6igv2LuuzIKd9HSlFIn4hDe5J
+         rHxLGFleIsBziZIw/6SIj8sdVs7MtDsZJDg4QO06SX6urpy1CO9cai4SR2rErCbUYskG
+         yUG2vofZYc3PEQFVtk5C0+UWW67oz5YvmnSrtRTkyMbj2KTmCycv92s3ryzKE72/kZvu
+         0gyQ==
+X-Gm-Message-State: AOAM533TIroRbBSTLwsJJa6XWyiEmKO7/Sp2U51V/H1/UfYusQdDy8iN
+        PDifuaSkf0rVMbvlN191WB1V258LHKOuJWG4hRMr
+X-Google-Smtp-Source: ABdhPJwsjvTDQKynUq7mWB/rP6Sd9oEm0+6px27QpmseIPIUTtqRcvUs45V4lejD7oru/ynawP80FvtnrstPwSCt+XlZ
+Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:1998:8165:ca50:ab8d])
+ (user=axelrasmussen job=sendgmr) by 2002:a25:c0ca:: with SMTP id
+ c193mr27567242ybf.74.1614643297301; Mon, 01 Mar 2021 16:01:37 -0800 (PST)
+Date:   Mon,  1 Mar 2021 16:01:28 -0800
+Message-Id: <20210302000133.272579-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v2 0/5] userfaultfd: support minor fault handling for shmem
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021, Jing Liu wrote:
-> XCOMP_BV[63] field indicates that the save area is in the compacted
-> format and XCOMP_BV[62:0] indicates the states that have space allocated
-> in the save area, including both XCR0 and XSS bits enabled by the host
-> kernel. Use xfeatures_mask_all for calculating xcomp_bv and reuse
-> XCOMP_BV_COMPACTED_FORMAT defined by kernel.
-> 
-> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
-> ---
->  arch/x86/kvm/x86.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 1b404e4d7dd8..f115493f577d 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4435,8 +4435,6 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
->  	return 0;
->  }
->  
-> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
-> -
->  static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
->  {
->  	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
-> @@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
->  	/* Set XSTATE_BV and possibly XCOMP_BV.  */
->  	xsave->header.xfeatures = xstate_bv;
->  	if (boot_cpu_has(X86_FEATURE_XSAVES))
-> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
-> +		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
-> +					 xfeatures_mask_all;
+Base
+====
 
-Doesn't fill_xsave also need to be updated?  Not with xfeatures_mask_all, but
-to account for arch.ia32_xss?  I believe it's a nop with the current code, since
-supported_xss is zero, but it should be fixed, no?
+This series is based on top of my series which adds minor fault handling for
+hugetlbfs [1]. (And, therefore, it is based on 5.12-rc1 and Peter Xu's series
+for disabling huge pmd sharing as well.)
 
->  
->  	/*
->  	 * Copy each region from the non-compacted offset to the
-> @@ -9912,9 +9911,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
->  		return;
->  
->  	fpstate_init(&vcpu->arch.guest_fpu->state);
-> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
-> -		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
-> -			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+[1] https://lore.kernel.org/linux-fsdevel/20210301222728.176417-1-axelrasmussen@google.com/T/#t
 
-Ugh, this _really_ needs a comment in the changelog.  It took me a while to
-realize fpstate_init() does exactly what the new fill_xave() is doing.
+Changelog
+=========
 
-And isn't the code in load_xsave() redundant and can be removed?  Any code that
-uses get_xsave_addr() would be have a dependency on load_xsave() if it's not
-redundant, and I can't see how that would work.
+v1->v2:
+- For UFFDIO_CONTINUE, don't mess with page flags. Just use find_lock_page to
+  get a locked page from the page cache, instead of doing __SetPageLocked.
+  This fixes a VM_BUG_ON v1 hit when handling minor faults for THP-backed
+  shmem (a tmpfs mounted with huge=always).
 
->  
->  	/*
->  	 * Ensure guest xcr0 is valid for loading
-> -- 
-> 2.18.4
-> 
+Overview
+========
+
+See my original series linked above for a detailed overview of minor fault
+handling in general. The feature in this series works exactly like the
+hugetblfs version (from userspace's perspective).
+
+I'm sending this as a separate series because:
+
+- The original minor fault handling series has a full set of R-Bs, and seems
+  close to being merged. So, it seems reasonable to start looking at this next
+  step, which extends the basic functionality.
+
+- shmem is different enough that this series may require some additional work
+  before it's ready, and I don't want to delay the original series
+  unnecessarily by bundling them together.
+
+Use Case
+========
+
+In some cases it is useful to have VM memory backed by tmpfs instead of
+hugetlbfs. So, this feature will be used to support the same VM live migration
+use case described in my original series.
+
+Additionally, Android folks (Lokesh Gidra <lokeshgidra@google.com>) hope to
+optimize the Android Runtime garbage collector using this feature:
+
+"The plan is to use userfaultfd for concurrently compacting the heap. With
+this feature, the heap can be shared-mapped at another location where the
+GC-thread(s) could continue the compaction operation without the need to
+invoke userfault ioctl(UFFDIO_COPY) each time. OTOH, if and when Java threads
+get faults on the heap, UFFDIO_CONTINUE can be used to resume execution.
+Furthermore, this feature enables updating references in the 'non-moving'
+portion of the heap efficiently. Without this feature, uneccessary page
+copying (ioctl(UFFDIO_COPY)) would be required."
+
+Axel Rasmussen (5):
+  userfaultfd: support minor fault handling for shmem
+  userfaultfd/selftests: use memfd_create for shmem test type
+  userfaultfd/selftests: create alias mappings in the shmem test
+  userfaultfd/selftests: reinitialize test context in each test
+  userfaultfd/selftests: exercise minor fault handling shmem support
+
+ fs/userfaultfd.c                         |   6 +-
+ include/linux/shmem_fs.h                 |  26 +-
+ include/uapi/linux/userfaultfd.h         |   4 +-
+ mm/memory.c                              |   8 +-
+ mm/shmem.c                               |  92 +++----
+ mm/userfaultfd.c                         |  27 +-
+ tools/testing/selftests/vm/userfaultfd.c | 322 +++++++++++++++--------
+ 7 files changed, 295 insertions(+), 190 deletions(-)
+
+--
+2.30.1.766.gb4fecdf3b7-goog
+
