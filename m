@@ -2,135 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9804D32A246
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA8E32A247
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836934AbhCBHVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:21:43 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:11265 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441884AbhCBG7G (ORCPT
+        id S1836944AbhCBHVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1836269AbhCBHAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:59:06 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210302065823epoutp048fa107cac9b71a9699ca2ccf593f04b1~odERmfiDx2996229962epoutp04K
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:58:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210302065823epoutp048fa107cac9b71a9699ca2ccf593f04b1~odERmfiDx2996229962epoutp04K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614668303;
-        bh=ro5ltOW//usS2b3pAkuEm/Xj2HGAyfHiEMleWfYf0tI=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=vO3hh6vauhSvD+PmlK9q6mP15wQ4v+FRuNFP2x4ynU+5X+n5M46p70134oC7fCJCm
-         PEheJtZREq6CAuO0Q51M4P83WVvPvTbE6V96J2bPqZXL86DM4YrqV4eeyn9nJZaohq
-         9CxPmbXKl6R8wl6X8QnAxac6v/IsESXpIV+47jwI=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210302065823epcas1p2c1394e538bab0ae4ae5517a0f37103c6~odERTF_X80548305483epcas1p21;
-        Tue,  2 Mar 2021 06:58:23 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DqSdV3mGPz4x9QK; Tue,  2 Mar
-        2021 06:58:22 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3D.55.10463.D02ED306; Tue,  2 Mar 2021 15:58:21 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210302065821epcas1p13e2a6d136316daa635e407f9216db505~odEPoOcnl0465604656epcas1p1B;
-        Tue,  2 Mar 2021 06:58:21 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210302065821epsmtrp16c6a59a649be4bdabc4e1f71fb12f95d~odEPmVOnb2336823368epsmtrp1d;
-        Tue,  2 Mar 2021 06:58:21 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-e4-603de20dc499
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EE.FE.08745.D02ED306; Tue,  2 Mar 2021 15:58:21 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210302065821epsmtip2b73dea60d54f4aceb132b34985e133a4~odEPavb9n1094410944epsmtip2Z;
-        Tue,  2 Mar 2021 06:58:21 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>,
-        <namjae.jeon@samsung.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        "'Chaitanya Kulkarni'" <chaitanya.kulkarni@wdc.com>,
-        <sj1557.seo@samsung.com>
-In-Reply-To: <20210302050521.6059-3-hyeongseok@gmail.com>
-Subject: RE: [PATCH v4 2/2] exfat: add support ioctl and FITRIM function
-Date:   Tue, 2 Mar 2021 15:58:20 +0900
-Message-ID: <04aa01d70f31$6de160a0$49a421e0$@samsung.com>
+        Tue, 2 Mar 2021 02:00:02 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58639C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 22:59:22 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGz03-0006AE-MD; Tue, 02 Mar 2021 07:59:19 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGz02-0007lr-Pm; Tue, 02 Mar 2021 07:59:18 +0100
+Date:   Tue, 2 Mar 2021 07:59:18 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, Fabio Estevam <festevam@gmail.com>,
+        linux-serial@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: Re: [PATCH 10/44] tty: imx, use ms_to_ktime
+Message-ID: <20210302065918.cbxwen6vz2pz4msn@pengutronix.de>
+References: <20210302062214.29627-1-jslaby@suse.cz>
+ <20210302062214.29627-10-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQGcWnf6BTkYMyzP2LJXG6KPoRfNLgF8rXkvAXOJ+PyqzitREA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjk+LIzCtJLcpLzFFi42LZdlhTX5f3kW2CwdVFhhazbr9msfg78ROT
-        xZ69J1ksLu+aw2bxY3q9xZZ/R1gd2Dx2zrrL7tG3ZRWjx+dNch7tB7qZAliicmwyUhNTUosU
-        UvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgHYrKZQl5pQChQISi4uV
-        9O1sivJLS1IVMvKLS2yVUgtScgoMDQr0ihNzi0vz0vWS83OtDA0MjEyBKhNyMrae/M9acJyt
-        ouXjSaYGxpWsXYycHBICJhLr799j6mLk4hAS2MEo8WTdS1YI5xOQ09oPViUk8JlRYvnaPJiO
-        Vz/fQxXtYpToPbmVHcJ5yShx8cVHFpAqNgFdiSc3fjKD2CICHhKPm46B7WAWmMYo8evcc7Cx
-        nAKWErd2HAazhYGKtq49ygRiswioSDzauhZsEC9QzaYDDxghbEGJkzOfgMWZBeQltr+dwwxx
-        koLE7k9HWSGWOUlcvnKSEaJGRGJ2ZxszyGIJgU4OicnLH7FANLhI/Ls7GapZWOLV8S3sELaU
-        xMv+Nii7XuL//LXsEM0tjBIPP20Duo4DyLGXeH/JAsRkFtCUWL9LH6JcUWLn77lQe/kk3n3t
-        YYWo5pXoaBOCKFGR+P5hJwvMpis/rjJNYFSaheSzWUg+m4Xkg1kIyxYwsqxiFEstKM5NTy02
-        LDBBju1NjOCEqWWxg3Hu2w96hxiZOBgPMUpwMCuJ8J78bJkgxJuSWFmVWpQfX1Sak1p8iNEU
-        GNYTmaVEk/OBKTuvJN7Q1MjY2NjCxMzczNRYSZw3yeBBvJBAemJJanZqakFqEUwfEwenVAPT
-        9O+2mQbGF2LPZcgYJu07y9tc+lBn9fG+JS++im7h7lz8ye3agT023b/Ox0lU/DSZFPjg2uzG
-        aw6a3xqVGFZdPDiFk7GwPyJS42T85Jt2CVyTl0d+b43dWiD5xzU/TOqLbuenXbtUw79F+p4V
-        Wvbe/+DUx4yz/2Xfseddfvb8zNUiLx9Y3jmvdnHT5Z9unxx7H3pOPl/yMYpb3evGh8ifvO0L
-        DsQuDpOUfXn+5T3Fw3LrpdSURLeW3Tr/cYO86IolHWff6xhWcT65vbtXxedTj7R6jEZNvUyX
-        55IDAWr/bz1/tzZh4w8WxxAhW+7qozKtmf1R677JCmvrzxS/+Xx5WH3FvLpGzqaJmfX7bbre
-        K7EUZyQaajEXFScCABqf4IEhBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSvC7vI9sEg43XhCxm3X7NYvF34icm
-        iz17T7JYXN41h83ix/R6iy3/jrA6sHnsnHWX3aNvyypGj8+b5DzaD3QzBbBEcdmkpOZklqUW
-        6dslcGVsPfmfteA4W0XLx5NMDYwrWbsYOTkkBEwkXv18D2RzcQgJ7GCUON5ygL2LkQMoISVx
-        cJ8mhCkscfhwMUTJc0aJczc6GEF62QR0JZ7c+MkMYosIeEnsb3rNDlLELDCDUWLTgllQQ7cz
-        Svxsm8cGUsUpYClxa8dhsM3CAh4SW9ceZQKxWQRUJB5tXcsCYvMC1Ww68IARwhaUODnzCQvI
-        FcwCehJtG8HCzALyEtvfzmGGeEBBYveno6wQRzhJXL5yEqpGRGJ2ZxvzBEbhWUgmzUKYNAvJ
-        pFlIOhYwsqxilEwtKM5Nzy02LDDKSy3XK07MLS7NS9dLzs/dxAiOGi2tHYx7Vn3QO8TIxMF4
-        iFGCg1lJhPfkZ8sEId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqemFqQWwWSZ
-        ODilGpiYvkuGOzVEmfznmTbng3vtgTM9eg8vNp5YxTJl74M1GxhsPk1T07nqMGvrPdMi6aQ0
-        HaNLO15vyb9i9euC4ITNIvsO3fsjfj1RgreQ88nKqb27VH1NDp84cOvl/5W7Nkx31TzaoX9Q
-        k/uT4/dbXi1p4vvXVPjXP852Ot+e4LL70y4+95kcbM/fPufZfbHG/eX8I/+uu7jsXdXSPN32
-        RU/NolP9Ckwmsa80AzW3CDfUbTk4Z3lYX9nCjSJaiZK1Pru5pv5+cnW2Uil3K1//q0ilFzuP
-        yM0TPtv7a/k+R4OdDd+WfVebLaq3n/Xuepk4F4n+0G2Ht337+E/BNPzpyT1WM0zzHix/vU/m
-        sZbRh6aTGUosxRmJhlrMRcWJAJkda+gJAwAA
-X-CMS-MailID: 20210302065821epcas1p13e2a6d136316daa635e407f9216db505
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210302050556epcas1p2f830c64b70cbc1bbd6f48292d3556802
-References: <20210302050521.6059-1-hyeongseok@gmail.com>
-        <CGME20210302050556epcas1p2f830c64b70cbc1bbd6f48292d3556802@epcas1p2.samsung.com>
-        <20210302050521.6059-3-hyeongseok@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="liehcxyzb5az342c"
+Content-Disposition: inline
+In-Reply-To: <20210302062214.29627-10-jslaby@suse.cz>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Add FITRIM ioctl to enable discarding unused blocks while mounted.
-> As current exFAT doesn't have generic ioctl handler, add empty ioctl
-> function first, and add FITRIM handler.
-> 
-> Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+
+--liehcxyzb5az342c
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Jiri,
+
+On Tue, Mar 02, 2021 at 07:21:40AM +0100, Jiri Slaby wrote:
+> This really eliminates multiplications from the assembly. I would have
+> thought they are optimized by inlining ktime_set, but not on x86_64 with
+> gcc 10.
+>=20
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> Cc: Fabio Estevam <festevam@gmail.com>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
 > ---
->  fs/exfat/balloc.c   | 80 +++++++++++++++++++++++++++++++++++++++++++++
->  fs/exfat/dir.c      |  5 +++
->  fs/exfat/exfat_fs.h |  4 +++
->  fs/exfat/file.c     | 53 ++++++++++++++++++++++++++++++
->  4 files changed, 142 insertions(+)
-> 
+>  drivers/tty/serial/imx.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+> index 8257597d034d..3f69356937ef 100644
+> --- a/drivers/tty/serial/imx.c
+> +++ b/drivers/tty/serial/imx.c
+> @@ -394,11 +394,7 @@ static void imx_uart_rts_inactive(struct imx_port *s=
+port, u32 *ucr2)
+> =20
+>  static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
+>  {
+> -       long sec =3D msec / MSEC_PER_SEC;
+> -       long nsec =3D (msec % MSEC_PER_SEC) * 1000000;
+> -       ktime_t t =3D ktime_set(sec, nsec);
+> -
+> -       hrtimer_start(hrt, t, HRTIMER_MODE_REL);
+> +       hrtimer_start(hrt, ms_to_ktime(msec), HRTIMER_MODE_REL);
+>  }
 
-It looks better than v3.
-Thanks for your work!
+What about:
 
-Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
 
-BTW, there is still a problem that the alloc/free cluster operation waits
-until the trimfs operation is finished.
-Any ideas for improvement in the future are welcome. :)
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index 8257597d034d..8731d4f82cb8 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -392,15 +392,6 @@ static void imx_uart_rts_inactive(struct imx_port *spo=
+rt, u32 *ucr2)
+ 	mctrl_gpio_set(sport->gpios, sport->port.mctrl);
+ }
+=20
+-static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
+-{
+-       long sec =3D msec / MSEC_PER_SEC;
+-       long nsec =3D (msec % MSEC_PER_SEC) * 1000000;
+-       ktime_t t =3D ktime_set(sec, nsec);
+-
+-       hrtimer_start(hrt, t, HRTIMER_MODE_REL);
+-}
+-
+ /* called with port.lock taken and irqs off */
+ static void imx_uart_start_rx(struct uart_port *port)
+ {
+@@ -457,8 +448,9 @@ static void imx_uart_stop_tx(struct uart_port *port)
+ 	if (port->rs485.flags & SER_RS485_ENABLED) {
+ 		if (sport->tx_state =3D=3D SEND) {
+ 			sport->tx_state =3D WAIT_AFTER_SEND;
+-			start_hrtimer_ms(&sport->trigger_stop_tx,
+-					 port->rs485.delay_rts_after_send);
++			hrtimer_start(&sport->trigger_stop_tx,
++				      ms_to_ktime(port->rs485.delay_rts_after_send),
++				      HRTIMER_MODE_REL);
+ 			return;
+ 		}
+=20
+@@ -697,8 +689,9 @@ static void imx_uart_start_tx(struct uart_port *port)
+ 				imx_uart_stop_rx(port);
+=20
+ 			sport->tx_state =3D WAIT_AFTER_RTS;
+-			start_hrtimer_ms(&sport->trigger_start_tx,
+-					 port->rs485.delay_rts_before_send);
++			hrtimer_start(&sport->trigger_start_tx,
++				      ms_to_ktime(port->rs485.delay_rts_before_send),
++				      HRTIMER_MODE_REL);
+ 			return;
+ 		}
+=20
+instead?
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--liehcxyzb5az342c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmA94kMACgkQwfwUeK3K
+7Ak5yAf/elCUD1wY43QrLTTiAo8JYngSwH5rR2S7DKZ79hEmWcd7BAXbSkpS4lVJ
+aloUGw7g2WqlzQ1fa7UQrm7e/Xdrp5oraHkO0RStDuCDW8dVRoAuixl5CSLEKBJq
++JSGIVQ0O0qwOQnZH9XOhBuR1C+f1SiBdXIk+hMIS/CyTuFxBB4NVlo9OUH6R07a
+KrsOk7+nbGy5B5XcTEwFSVVyeO6h603nVBSmRnURwbKO5boea1SmcDO2povuDcYm
+QJYG7qYDXDO9+VIlH0Zs1tWsm9+nY/uJ2wRd2H5kHcobEXiFeo9KV3XAeAIjyT99
+gE+Iyd47vsFR0loi7gjIBMx6SqemoA==
+=cAGD
+-----END PGP SIGNATURE-----
+
+--liehcxyzb5az342c--
