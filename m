@@ -2,204 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2275532ADDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F73532ADDC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1840093AbhCBWPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:15:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1582022AbhCBUCA (ORCPT
+        id S2360026AbhCBWP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:15:58 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:38010 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1582026AbhCBUH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:02:00 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A18AC061756;
-        Tue,  2 Mar 2021 12:01:18 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 1A7322223E;
-        Tue,  2 Mar 2021 21:01:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614715275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0KW/FK8JYfP2NgbfURSSqrkgkLGVEKeSJfvl4xPN+Zk=;
-        b=puDD5PjfnhmgTQdXwgjIVlzikBXCoF51Q9LK5M2KY8nBIaOzjZj7dnLNWtRG9LthC1tsXi
-        ozBb7oGCHUnoeFVYnZqHnFXdg0UR+ZaTlYLcqs3++DB5QCpJJloSDUzivDQ4YDKhaHFwwc
-        nFxIyhHJTcNMDtkkDlFXNtkYHIOgdMo=
+        Tue, 2 Mar 2021 15:07:58 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lHBIT-0008BB-AE; Tue, 02 Mar 2021 20:07:09 +0000
+From:   Colin Ian King <colin.king@canonical.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Changman Lee <cm224.lee@samsung.com>,
+        Chao Yu <chao2.yu@samsung.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: f2fs_convert_inline_inode causing rebalance based on random
+ uninitialized value in dn.node_changed
+Message-ID: <9fcca081-9a60-8ae3-5cac-d8aa38c38ff2@canonical.com>
+Date:   Tue, 2 Mar 2021 20:07:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 02 Mar 2021 21:01:15 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Cc:     f.fainelli@gmail.com, Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/12] pinctrl: add a pincontrol driver for BCM6328
-In-Reply-To: <20210302191613.29476-3-noltari@gmail.com>
-References: <20210302191613.29476-1-noltari@gmail.com>
- <20210302191613.29476-3-noltari@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <c69dc0da70d69add1c5e4d64d04c25e9@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-02 20:16, schrieb Álvaro Fernández Rojas:
-> Add a pincontrol driver for BCM6328. BCM628 supports muxing 32 pins as
-> GPIOs, as LEDs for the integrated LED controller, or various other
-> functions. Its pincontrol mux registers also control other aspects, 
-> like
-> switching the second USB port between host and device mode.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> ---
->  v2: switch to GPIO_REGMAP
-> 
->  drivers/pinctrl/bcm/Kconfig           |  13 +
->  drivers/pinctrl/bcm/Makefile          |   1 +
->  drivers/pinctrl/bcm/pinctrl-bcm6328.c | 481 ++++++++++++++++++++++++++
->  3 files changed, 495 insertions(+)
->  create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6328.c
-> 
-> diff --git a/drivers/pinctrl/bcm/Kconfig b/drivers/pinctrl/bcm/Kconfig
-> index 0ed14de0134c..76728f097c25 100644
-> --- a/drivers/pinctrl/bcm/Kconfig
-> +++ b/drivers/pinctrl/bcm/Kconfig
-> @@ -29,6 +29,19 @@ config PINCTRL_BCM2835
->  	help
->  	   Say Y here to enable the Broadcom BCM2835 GPIO driver.
-> 
-> +config PINCTRL_BCM6328
-> +	bool "Broadcom BCM6328 GPIO driver"
-> +	depends on OF_GPIO && (BMIPS_GENERIC || COMPILE_TEST)
-> +	select GPIO_REGMAP
-> +	select GPIOLIB_IRQCHIP
-> +	select IRQ_DOMAIN_HIERARCHY
-> +	select PINMUX
-> +	select PINCONF
-> +	select GENERIC_PINCONF
+Hi,
 
-select GPIO_REGMAP ?
+Static analysis on linux-next detected a potential uninitialized
+variable dn.node_changed that does not get set when a call to
+f2fs_get_node_page() fails.  This uninitialized value gets used in the
+call to f2fs_balance_fs() that may or not may not balances dirty node
+and dentry pages depending on the uninitialized state of the variable.
 
-> +	default BMIPS_GENERIC
-> +	help
-> +	   Say Y here to enable the Broadcom BCM6328 GPIO driver.
-> +
->  config PINCTRL_IPROC_GPIO
->  	bool "Broadcom iProc GPIO (with PINCONF) driver"
->  	depends on OF_GPIO && (ARCH_BCM_IPROC || COMPILE_TEST)
-> diff --git a/drivers/pinctrl/bcm/Makefile 
-> b/drivers/pinctrl/bcm/Makefile
-> index 79d5e49fdd9a..7e7c6e25b26d 100644
-> --- a/drivers/pinctrl/bcm/Makefile
-> +++ b/drivers/pinctrl/bcm/Makefile
-> @@ -3,6 +3,7 @@
-> 
->  obj-$(CONFIG_PINCTRL_BCM281XX)		+= pinctrl-bcm281xx.o
->  obj-$(CONFIG_PINCTRL_BCM2835)		+= pinctrl-bcm2835.o
-> +obj-$(CONFIG_PINCTRL_BCM6328)		+= pinctrl-bcm6328.o
->  obj-$(CONFIG_PINCTRL_IPROC_GPIO)	+= pinctrl-iproc-gpio.o
->  obj-$(CONFIG_PINCTRL_CYGNUS_MUX)	+= pinctrl-cygnus-mux.o
->  obj-$(CONFIG_PINCTRL_NS)		+= pinctrl-ns.o
-> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm6328.c
-> b/drivers/pinctrl/bcm/pinctrl-bcm6328.c
-> new file mode 100644
-> index 000000000000..f2b1a14e7903
-> --- /dev/null
-> +++ b/drivers/pinctrl/bcm/pinctrl-bcm6328.c
-[..]
-> +static int bcm6328_reg_mask_xlate(struct gpio_regmap *gpio,
-> +				  unsigned int base, unsigned int offset,
-> +				  unsigned int *reg, unsigned int *mask)
-> +{
-> +	unsigned int line = offset % gpio->ngpio_per_reg;
-> +	unsigned int stride = offset / gpio->ngpio_per_reg;
-> +
-> +	*reg = base - stride * gpio->reg_stride;
-> +	*mask = BIT(line);
-> +
-> +	return 0;
-> +}
+I believe the issue was introduced by commit:
 
-How many registers are there? npgio_per_reg is 32 but so is ngpio.
-So isn't there only one register? And thus, can you use the default
-gpio_regmap_simple_xlat()?
+commit 2a3407607028f7c780f1c20faa4e922bf631d340
+Author: Jaegeuk Kim <jaegeuk@kernel.org>
+Date:   Tue Dec 22 13:23:35 2015 -0800
 
-[..]
+    f2fs: call f2fs_balance_fs only when node was changed
 
-> +static int bcm6328_pinctrl_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct gpio_regmap_config grc = {0};
-> +	struct gpio_regmap *gr;
-> +	struct bcm6328_pinctrl *pc;
-> +	int err;
-> +
-> +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
-> +	if (!pc)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, pc);
-> +	pc->dev = dev;
-> +
-> +	pc->regs = syscon_node_to_regmap(dev->parent->of_node);
-> +	if (IS_ERR(pc->regs))
-> +		return PTR_ERR(pc->regs);
-> +
-> +	grc.parent = dev;
-> +	grc.ngpio = BCM6328_NUM_GPIOS;
-> +	grc.ngpio_per_reg = BCM6328_BANK_GPIOS;
-> +	grc.regmap = pc->regs;
-> +	grc.reg_dat_base = BCM6328_DATA_REG;
-> +	grc.reg_dir_out_base = BCM6328_DIROUT_REG;
-> +	grc.reg_mask_xlate = bcm6328_reg_mask_xlate;
-> +	grc.reg_set_base = BCM6328_DATA_REG;
-> +	grc.reg_stride = 4;
-> +
-> +	gr = devm_gpio_regmap_register(dev, &grc);
-> +	err = PTR_ERR_OR_ZERO(gr);
-> +	if (err) {
-> +		dev_err(dev, "could not add GPIO chip\n");
-> +		return err;
-> +	}
-> +
-> +	pc->pctl_desc.name = MODULE_NAME;
-> +	pc->pctl_desc.pins = bcm6328_pins;
-> +	pc->pctl_desc.npins = ARRAY_SIZE(bcm6328_pins);
-> +	pc->pctl_desc.pctlops = &bcm6328_pctl_ops;
-> +	pc->pctl_desc.pmxops = &bcm6328_pmx_ops;
-> +	pc->pctl_desc.owner = THIS_MODULE;
-> +
-> +	pc->pctl_dev = devm_pinctrl_register(dev, &pc->pctl_desc, pc);
-> +	if (IS_ERR(pc->pctl_dev)) {
-> +		gpiochip_remove(&gr->gpio_chip);
-> +		return PTR_ERR(pc->pctl_dev);
-> +	}
-> +
-> +	pc->gpio_range.name = MODULE_NAME;
-> +	pc->gpio_range.npins = BCM6328_NUM_GPIOS;
-> +	pc->gpio_range.base = gr->gpio_chip.base;
-> +	pc->gpio_range.gc = &gr->gpio_chip;
-> +	pinctrl_add_gpio_range(pc->pctl_dev, &pc->gpio_range);
 
-Ahh I see. What about adding a new function in gpio-regmap.c:
-   gpio_regmap_pinctrl_add_gpio_range(pc->pctl_dev, &pc->gpio_range)?
+The analysis is a follows:
 
-gpio-regmap should have all the information to fill all the
-required properties. I'm unsure whether gpio-regmap should also
-allocate the gpio_range.
+184 int f2fs_convert_inline_inode(struct inode *inode)
+185 {
+186        struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
 
-Maybe someone can come up with a better function name though.
+   1. var_decl: Declaring variable dn without initializer.
 
--michael
+187        struct dnode_of_data dn;
+
+   NOTE dn is not initialized here.
+
+188        struct page *ipage, *page;
+189        int err = 0;
+190
+
+   2. Condition !f2fs_has_inline_data(inode), taking false branch.
+   3. Condition f2fs_hw_is_readonly(sbi), taking false branch.
+   4. Condition f2fs_readonly(sbi->sb), taking false branch.
+
+191        if (!f2fs_has_inline_data(inode) ||
+192                        f2fs_hw_is_readonly(sbi) ||
+f2fs_readonly(sbi->sb))
+193                return 0;
+194
+195        err = dquot_initialize(inode);
+
+   5. Condition err, taking false branch.
+
+196        if (err)
+197                return err;
+198
+199        page = f2fs_grab_cache_page(inode->i_mapping, 0, false);
+
+   6. Condition !page, taking false branch.
+
+200        if (!page)
+201                return -ENOMEM;
+202
+203        f2fs_lock_op(sbi);
+204
+205        ipage = f2fs_get_node_page(sbi, inode->i_ino);
+
+   7. Condition IS_ERR(ipage), taking true branch.
+
+206        if (IS_ERR(ipage)) {
+207                err = PTR_ERR(ipage);
+
+   8. Jumping to label out.
+
+208                goto out;
+209        }
+210
+
+   NOTE: set_new_dnode memset's dn so sets the flag to false, but we
+don't get to this memset if IS_ERR(ipage) above is true.
+
+211        set_new_dnode(&dn, inode, ipage, ipage, 0);
+212
+213        if (f2fs_has_inline_data(inode))
+214                err = f2fs_convert_inline_page(&dn, page);
+215
+216        f2fs_put_dnode(&dn);
+217 out:
+218        f2fs_unlock_op(sbi);
+219
+220        f2fs_put_page(page, 1);
+221
+
+Uninitialized scalar variable:
+
+   9. uninit_use_in_call: Using uninitialized value dn.node_changed when
+calling f2fs_balance_fs.
+
+222        f2fs_balance_fs(sbi, dn.node_changed);
+223
+224        return err;
+225 }
+
+I think a suitable fix will be to set dn.node_changed to false on in
+line 207-208 but I'm concerned if I'm missing something subtle to the
+rebalancing if I do this.
+
+Comments?
+
+Colin
+
+
