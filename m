@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC1632AE6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FEC32AE4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360976AbhCBXIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 18:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
+        id S1835430AbhCBXDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 18:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1575621AbhCBWrv (ORCPT
+        with ESMTP id S2360340AbhCBWTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:47:51 -0500
-X-Greylist: delayed 1686 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 02 Mar 2021 14:47:09 PST
-Received: from esgaroth.petrovitsch.at (unknown [IPv6:2a01:4f8:120:527b:6876:2a4f:a044:62ad])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB1CC061756;
-        Tue,  2 Mar 2021 14:47:09 -0800 (PST)
-Received: from thorin.petrovitsch.priv.at (80-110-91-187.cgn.dynamic.surfer.at [80.110.91.187])
-        (authenticated bits=0)
-        by esgaroth.petrovitsch.at (8.16.1/8.16.1) with ESMTPSA id 122MIGmL914592
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
-        Tue, 2 Mar 2021 23:18:16 +0100
-DKIM-Filter: OpenDKIM Filter v2.11.0 esgaroth.petrovitsch.at 122MIGmL914592
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=petrovitsch.priv.at;
-        s=default; t=1614723497;
-        bh=+MVoVMUVm8capWlNcUWJStxtBvOtui4ewlEULmYwlXE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=fS0wk1Xm132rltWm/1oyGznxEdWPToAqz2hoNZC11FcfHkqVTyx9yXdHBtk/KQgYu
-         CUW9zFrgfDiXTM+mo+IlrHMlPPr9NFHKgyMAaMTebilLaUnd2681oIcofQtw1oWtZW
-         WSq3taGbZHYFOVrfZvd+8Y37Sy4pPgxmVrownKX4=
-X-Info-sendmail: I was here
-Subject: Re: linux-kernel janitorial RFP: Mark static arrays as const
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        cocci <cocci@systeme.lip6.fr>
-References: <053b06c47f08631675c295b5c893b90be4248347.camel@perches.com>
-From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-Bimi-Selector: v=BIMI1; s=default
-Message-ID: <22d22edd-4213-0f57-d801-1c570f04ec05@petrovitsch.priv.at>
-Date:   Tue, 2 Mar 2021 23:18:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 2 Mar 2021 17:19:25 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6577FC06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:18:43 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d11so21517514wrj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:18:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1CRYhVcuu8s4Cw5PFiF8tO9YJ5r25Xl8k6gov04ULEU=;
+        b=icZDFe3+5TQTPgxaJkRi0J2naNUIKvlSGc38uO678KNK/kmA4zNGfQrjNBdFvJRRY3
+         tOQHpH3X2D0muDmTiQVzK2sP5DQ340sdSPgUaPxnBNG0+Zn+PEvPwCrWeSh2ALqCssex
+         FhtkzNF5IHQro9Y4yssjBtOX3z4QRy/zriTrWCTReS6Mwc3Sqcq8AvTN2xfMaEEb5RP5
+         OgEL31hFr0HKBtYVIGoI6CvNwsiq8H7n0IPNd2n0GlK1TqD4pf+OeXsJAAkAL6za97TA
+         lUtyt0u/gchUFIkW8MT+nfmla4DXFy7dFZOXF9YcmBAiye/3DgGk8aWguq22rIbmG3JB
+         pzkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1CRYhVcuu8s4Cw5PFiF8tO9YJ5r25Xl8k6gov04ULEU=;
+        b=mjLGU68WW77gASYNNNinnzmIRWMPidk2TG7QnbG11v3bE+v4PglCuw3VM6J9eaUvCC
+         SDjgQ+ROhu3UiM/vztBXLtC97xZqyTdXhRgipLuUF+Xthd2WETIes4dLTIwa/APrseOX
+         JTcvWEwmVhPe2IXLPB8KOUp/uqMVRorwp850LJmU89/xqtRzsglFINSf0gfcHsMsLVrW
+         vwitp7JdZ33PtzkInlgxhztPRVzmc8nm7Ec1J6xYe7uPheqox9IIxWpu79ZJZlET8uQK
+         n2FxZ84tX6MpQw1WKqRGyI5Ap5Hw1e2/sKjvFQgX138SJ57KxhFQYkx+VZk8Ounu23tn
+         MmDg==
+X-Gm-Message-State: AOAM531Q2LlsIlbTwwlU9C9MIxeMU7EyPsJ5r51JxCBSyPlRnoQ97/Ee
+        wqV5VyzPP0AE5FUAepcAa2n6jSsP3MQwbw==
+X-Google-Smtp-Source: ABdhPJyNXUSge9K5nPTyXhUQBFjlbqjElfe2HIxgZfCooI4E6F8xsZ+4MPQtGnu5E3gbpTLk90dpyA==
+X-Received: by 2002:a5d:4443:: with SMTP id x3mr8722557wrr.49.1614723521783;
+        Tue, 02 Mar 2021 14:18:41 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.googlemail.com with ESMTPSA id i8sm18569330wrx.43.2021.03.02.14.18.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 14:18:41 -0800 (PST)
+Subject: Re: [PATCH v3 10/10] clocksource/drivers/hyper-v: Move handling of
+ STIMER0 interrupts
+To:     Michael Kelley <mikelley@microsoft.com>, sthemmin@microsoft.com,
+        kys@microsoft.com, wei.liu@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-arch@vger.kernel.org
+References: <1614721102-2241-1-git-send-email-mikelley@microsoft.com>
+ <1614721102-2241-11-git-send-email-mikelley@microsoft.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <5495b52c-e619-90c4-0c4f-fdbde9e1ce58@linaro.org>
+Date:   Tue, 2 Mar 2021 23:18:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <053b06c47f08631675c295b5c893b90be4248347.camel@perches.com>
+In-Reply-To: <1614721102-2241-11-git-send-email-mikelley@microsoft.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-DCC-x.dcc-servers-Metrics: esgaroth.petrovitsch.priv.at 104; Body=5 Fuz1=5
-        Fuz2=5
-X-Spam-Status: No, score=-1.2 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A
-        autolearn=unavailable autolearn_force=no version=3.4.4
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 NICE_REPLY_A Looks like a legit reply (A)
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        esgaroth.petrovitsch.priv.at
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all!
-
-On 02/03/2021 18:42, Joe Perches wrote:
-[...]
-> ------------- For instance: (head -10 of the git grep for file statics)
+On 02/03/2021 22:38, Michael Kelley wrote:
+> STIMER0 interrupts are most naturally modeled as per-cpu IRQs. But
+> because x86/x64 doesn't have per-cpu IRQs, the core STIMER0 interrupt
+> handling machinery is done in code under arch/x86 and Linux IRQs are
+> not used. Adding support for ARM64 means adding equivalent code
+> using per-cpu IRQs under arch/arm64.
 > 
-> drivers/accessibility/speakup/keyhelp.c:18:static u_short masks[] = { 32, 16, 8, 4, 2, 1 };
-> drivers/accessibility/speakup/keyhelp.c:26:static u_char funcvals[] = {
-> drivers/accessibility/speakup/main.c:2059:static spkup_hand spkup_handler[] = {
-> drivers/accessibility/speakup/speakup_acntpc.c:35:static unsigned int synth_portlist[] = { 0x2a8, 0 };
-> drivers/accessibility/speakup/speakup_decpc.c:133:static int synth_portlist[] = { 0x340, 0x350, 0x240, 0x250, 0 };
-> drivers/accessibility/speakup/speakup_dectlk.c:110:static int ap_defaults[] = {122, 89, 155, 110, 208, 240, 200, 106, 306};
-> drivers/accessibility/speakup/speakup_dectlk.c:111:static int g5_defaults[] = {86, 81, 86, 84, 81, 80, 83, 83, 73};
-> drivers/accessibility/speakup/speakup_dtlk.c:34:static unsigned int synth_portlist[] = {
-> drivers/accessibility/speakup/speakup_keypc.c:34:static unsigned int synth_portlist[] = { 0x2a8, 0 };
-> drivers/acpi/ac.c:137:static enum power_supply_property ac_props[] = {
+> A better model is to treat per-cpu IRQs as the normal path (which it is
+> for modern architectures), and the x86/x64 path as the exception. Do this
+> by incorporating standard Linux per-cpu IRQ allocation into the main
+> SITMER0 driver code, and bypass it in the x86/x64 exception case. For
+> x86/x64, special case code is retained under arch/x86, but no STIMER0
+> interrupt handling code is needed under arch/arm64.
 > 
-> For drivers/accessibility/speakup/keyhelp.c:18:static u_short masks[] = { 32, 16, 8, 4, 2, 1 };
+> No functional change.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
-Looking at the examples: Just s/^static /static const / in the lines
-reported by the grep's above and see if it compiles (and save space)?
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-MfG,
-	Bernd
+[ ... ]
+
 -- 
-Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
-     There is NO CLOUD, just other people's computers. - FSFE
-                     LUGA : http://www.luga.at
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
