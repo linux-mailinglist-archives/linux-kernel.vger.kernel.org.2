@@ -2,385 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA6C32AA15
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9135832A9FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581550AbhCBS6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:58:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1449113AbhCBQPw (ORCPT
+        id S1835342AbhCBSwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1384765AbhCBQKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:15:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614701604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xj617NCTkcQlVOBgs3nUDfsN/jKMhqs1NUx4EljorXw=;
-        b=NUTsKroQDTIqYViB7/mlLw0+TkfnK9Glf9jYubjcrM9Vb1ExYr3uHjTHey8CGZywB2VqZ8
-        7Bmd6XqbOauXIR1t7tJCjERiXzaUhMDcqYUSefsswLXzriTc2f0zRZBuVs0nFuyOIwBRhi
-        pwAcz9gdqK3cg/z1J34d7bWisko2aa8=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-qPf26Gg_OTG7hM0SM1a6Jg-1; Tue, 02 Mar 2021 11:09:10 -0500
-X-MC-Unique: qPf26Gg_OTG7hM0SM1a6Jg-1
-Received: by mail-qv1-f70.google.com with SMTP id u8so15287765qvm.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:09:10 -0800 (PST)
+        Tue, 2 Mar 2021 11:10:40 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3897C0617AB
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:09:34 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id d3so32092924lfg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:09:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cACSwzPT9Tad/UgCbDi2G+cU13fcnP499kD2jiD09qs=;
+        b=NJEiwMLgHFNNJlVEd6adJjw4zF5BqE8QNvPbKlU2qcF5nTbpvSfDqBcSIuLL2KrUG6
+         o4ZRMnW5m5wifSfjNQCh/iV5R+WDo020X3Va3Y8ITQgT8aY0KjjMv93nxbBrMzWeQwvr
+         MV/yt9UmqPHGnd1769eSqMi/PH2vZuoeJEYufm2h62VWUqAa0i5521oYCBx7oIar/YS9
+         zeNA/8Ui0uVsSrNy8cMBB3ZT35D3bMnig3CWx5MuyCzQ0UlNDG/TjQ5OrQTbN8aYq+pT
+         yNgOA9VdMye8b1idb0bhysNzSimNMKDFKCGWkCanMgcDb7V+qWvA1qNJsc/12iLfhR+H
+         CNmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Xj617NCTkcQlVOBgs3nUDfsN/jKMhqs1NUx4EljorXw=;
-        b=M5cBNGVXwdeyLSVhR84corKg7sjWJ21Go0wFpy4CVqP4qDWM8fd1mDGHdu0blQ8U7X
-         B9JC1cbkV2PwYt3RVr8sGnbjH7dJKbrhfi5VgVB0fFA5nMiTuE7Jp0MUwSl9GWcsDF1t
-         4erjaM7DzFHA8Ispr4zktdbeMqaTVb9QHu3o9hSKNcza27ciqGSnB4JCo1+T8nUrc1AQ
-         XDbxaV2XWXcBJIe5qyz6n5XymesNWBfRiupyV6GzyzMzzKzXSk5pCNzdl3dsmGvq4Dau
-         2WxnFHKxkfkc+S2O/CgUNQ2ocLaBmVJXaNBH+5VQIe1/ZB8Y43wGA7A7t9OocxPLBNej
-         2nVg==
-X-Gm-Message-State: AOAM531Z5UGVaPHKG56ar6oMdYRH8z1e2nAFW5j+rDmLFkzFeRQ2tvcx
-        W5LY+u9EEBirvaTrwc0lzA1ISO9B1TqUROss6MLvDQs0J6a5B5y9SL9r6/Qg+VyPPMQOFv4ZaE9
-        0o+0jseEupU2WyRIBkqFvePzz
-X-Received: by 2002:a05:622a:254:: with SMTP id c20mr19101087qtx.387.1614701350179;
-        Tue, 02 Mar 2021 08:09:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPgp9285reKXXR5zjKwXh6Fk/hEiFPTHqxCo3e1OBX7LNY5TcUk/WK9fFTfyQiSgC4mCBgVw==
-X-Received: by 2002:a05:622a:254:: with SMTP id c20mr19101057qtx.387.1614701349880;
-        Tue, 02 Mar 2021 08:09:09 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 79sm401850qki.37.2021.03.02.08.09.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 08:09:09 -0800 (PST)
-Subject: Re: [PATCH V3 XRT Alveo 11/18] fpga: xrt: UCS platform driver
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-12-lizhih@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <3e4edfaa-e90d-1889-cd05-41107e730c18@redhat.com>
-Date:   Tue, 2 Mar 2021 08:09:07 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cACSwzPT9Tad/UgCbDi2G+cU13fcnP499kD2jiD09qs=;
+        b=p4yOFTvW5LvrpRgJ9xG40GSPyuQQTk/bpz+j1DHZFiN6CVJnOBnJdSeuPOKdkRNedF
+         dDI7i67CEMboNmRTiItCyUVVmirKgeOQ5YXWC76iUjEhEFZDbU3WxxvRuPLCW66BWK2Y
+         S1H0qE8VgZ3h8yyiRZXqwAPDkXeLOCr7VH+Hg9b6F+MS5Mxdfk8J9gRFlEWeR5RbNv4M
+         k6Tl3Jq0QUBe8/vqrwbihZSP7KSru9ucdwvd5PHCKo9nWmYYdinuHmxx9K9fBGqapK2q
+         yKIg3qrCzOhQHcnPMrG17vECcSvLBE7uiBxQDpYDHIHG03Be5qvHz8gny0uAAexGuhyL
+         puQw==
+X-Gm-Message-State: AOAM530V7l06wcXyNo0zShmt7wKy9DYFNAu4dP8KKlAk5sZCXn984kYc
+        Pv5Mhh5o+K2f7isYaCAlhh5Mumnwsw2C64ikC5JEtQ==
+X-Google-Smtp-Source: ABdhPJydOO1OZgkTglTXFR9GH+FnIBDVeX/ZEwc/b8GDNcDcujJOMYreC/Hdjimh7pS7t4PRVV+TgNPXC3wo4iruuGE=
+X-Received: by 2002:a19:6b13:: with SMTP id d19mr12469725lfa.291.1614701373147;
+ Tue, 02 Mar 2021 08:09:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210218064019.29189-12-lizhih@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210301165932.62352-1-andriy.shevchenko@linux.intel.com> <20210301165932.62352-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210301165932.62352-2-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 17:09:21 +0100
+Message-ID: <CACRpkdYsqF_Z4NpfxRCcTb5F2gZ1tLgVr0qALBfVm=LyfQWwiA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] gpio: aggregator: Replace custom get_arg() with a
+ generic next_arg()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 1, 2021 at 6:00 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-On 2/17/21 10:40 PM, Lizhi Hou wrote:
-> Add UCS driver. UCS is a hardware function discovered by walking xclbin
-What does UCS stand for ? add to commit log
-> metadata. A platform device node will be created for it.
-> UCS enables/disables the dynamic region clocks.
+> cmdline library provides next_arg() helper to traverse over parameters
+> and their values given in command line. Replace custom approach in the driver
+> by it.
 >
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
-> ---
->  drivers/fpga/xrt/include/xleaf/ucs.h |  24 +++
->  drivers/fpga/xrt/lib/xleaf/ucs.c     | 235 +++++++++++++++++++++++++++
->  2 files changed, 259 insertions(+)
->  create mode 100644 drivers/fpga/xrt/include/xleaf/ucs.h
->  create mode 100644 drivers/fpga/xrt/lib/xleaf/ucs.c
->
-> diff --git a/drivers/fpga/xrt/include/xleaf/ucs.h b/drivers/fpga/xrt/include/xleaf/ucs.h
-> new file mode 100644
-> index 000000000000..a5ef0e100e12
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/include/xleaf/ucs.h
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-This header is only used by ucs.c, so is it needed ?
+Wow how nice!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-could the enum be defined in ucs.c ?
-
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Header file for XRT UCS Leaf Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Lizhi Hou <Lizhi.Hou@xilinx.com>
-> + */
-> +
-> +#ifndef _XRT_UCS_H_
-> +#define _XRT_UCS_H_
-> +
-> +#include "xleaf.h"
-> +
-> +/*
-> + * UCS driver IOCTL calls.
-> + */
-> +enum xrt_ucs_ioctl_cmd {
-> +	XRT_UCS_CHECK = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
-> +	XRT_UCS_ENABLE,
-no disable ?
-> +};
-> +
-> +#endif	/* _XRT_UCS_H_ */
-> diff --git a/drivers/fpga/xrt/lib/xleaf/ucs.c b/drivers/fpga/xrt/lib/xleaf/ucs.c
-> new file mode 100644
-> index 000000000000..ae762c8fddbb
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/xleaf/ucs.c
-> @@ -0,0 +1,235 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Xilinx Alveo FPGA UCS Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
-> + */
-> +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include "metadata.h"
-> +#include "xleaf.h"
-> +#include "xleaf/ucs.h"
-> +#include "xleaf/clock.h"
-> +
-> +#define UCS_ERR(ucs, fmt, arg...)   \
-> +	xrt_err((ucs)->pdev, fmt "\n", ##arg)
-> +#define UCS_WARN(ucs, fmt, arg...)  \
-> +	xrt_warn((ucs)->pdev, fmt "\n", ##arg)
-> +#define UCS_INFO(ucs, fmt, arg...)  \
-> +	xrt_info((ucs)->pdev, fmt "\n", ##arg)
-> +#define UCS_DBG(ucs, fmt, arg...)   \
-> +	xrt_dbg((ucs)->pdev, fmt "\n", ##arg)
-> +
-> +#define XRT_UCS		"xrt_ucs"
-> +
-> +#define CHANNEL1_OFFSET			0
-> +#define CHANNEL2_OFFSET			8
-> +
-> +#define CLK_MAX_VALUE			6400
-> +
-> +struct ucs_control_status_ch1 {
-> +	unsigned int shutdown_clocks_latched:1;
-> +	unsigned int reserved1:15;
-> +	unsigned int clock_throttling_average:14;
-> +	unsigned int reserved2:2;
-> +};
-Likely needs to be packed and/or the unsigned int changed to u32
-> +
-> +struct xrt_ucs {
-> +	struct platform_device	*pdev;
-> +	void __iomem		*ucs_base;
-> +	struct mutex		ucs_lock; /* ucs dev lock */
-> +};
-> +
-> +static inline u32 reg_rd(struct xrt_ucs *ucs, u32 offset)
-> +{
-> +	return ioread32(ucs->ucs_base + offset);
-> +}
-> +
-> +static inline void reg_wr(struct xrt_ucs *ucs, u32 val, u32 offset)
-> +{
-> +	iowrite32(val, ucs->ucs_base + offset);
-> +}
-> +
-> +static void xrt_ucs_event_cb(struct platform_device *pdev, void *arg)
-> +{
-> +	struct platform_device	*leaf;
-> +	struct xrt_event *evt = (struct xrt_event *)arg;
-> +	enum xrt_events e = evt->xe_evt;
-> +	enum xrt_subdev_id id = evt->xe_subdev.xevt_subdev_id;
-> +	int instance = evt->xe_subdev.xevt_subdev_instance;
-> +
-> +	switch (e) {
-> +	case XRT_EVENT_POST_CREATION:
-> +		break;
-> +	default:
-> +		xrt_dbg(pdev, "ignored event %d", e);
-> +		return;
-> +	}
-this switch is a noop, remove
-> +
-> +	if (id != XRT_SUBDEV_CLOCK)
-> +		return;
-> +
-> +	leaf = xleaf_get_leaf_by_id(pdev, XRT_SUBDEV_CLOCK, instance);
-> +	if (!leaf) {
-> +		xrt_err(pdev, "does not get clock subdev");
-> +		return;
-> +	}
-> +
-> +	xleaf_ioctl(leaf, XRT_CLOCK_VERIFY, NULL);
-> +	xleaf_put_leaf(pdev, leaf);
-> +}
-> +
-> +static void ucs_check(struct xrt_ucs *ucs, bool *latched)
-> +{
-
-checking but not returning status, change to returning int.
-
-this function is called but xrt_ucs_leaf_ioctl which does return status.
-
-> +	struct ucs_control_status_ch1 *ucs_status_ch1;
-> +	u32 status;
-> +
-> +	mutex_lock(&ucs->ucs_lock);
-> +	status = reg_rd(ucs, CHANNEL1_OFFSET);
-> +	ucs_status_ch1 = (struct ucs_control_status_ch1 *)&status;
-> +	if (ucs_status_ch1->shutdown_clocks_latched) {
-> +		UCS_ERR(ucs,
-> +			"Critical temperature or power event, kernel clocks have been stopped.");
-> +		UCS_ERR(ucs,
-> +			"run 'xbutil valiate -q' to continue. See AR 73398 for more details.");
-This error message does not seem like it would be useful, please review.
-> +		/* explicitly indicate reset should be latched */
-> +		*latched = true;
-> +	} else if (ucs_status_ch1->clock_throttling_average >
-> +	    CLK_MAX_VALUE) {
-> +		UCS_ERR(ucs, "kernel clocks %d exceeds expected maximum value %d.",
-> +			ucs_status_ch1->clock_throttling_average,
-> +			CLK_MAX_VALUE);
-> +	} else if (ucs_status_ch1->clock_throttling_average) {
-> +		UCS_ERR(ucs, "kernel clocks throttled at %d%%.",
-> +			(ucs_status_ch1->clock_throttling_average /
-> +			 (CLK_MAX_VALUE / 100)));
-> +	}
-> +	mutex_unlock(&ucs->ucs_lock);
-> +}
-> +
-> +static void ucs_enable(struct xrt_ucs *ucs)
-> +{
-> +	reg_wr(ucs, 1, CHANNEL2_OFFSET);
-lock ?
-> +}
-> +
-> +static int
-> +xrt_ucs_leaf_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
-> +{
-> +	struct xrt_ucs		*ucs;
-> +	int			ret = 0;
-> +
-> +	ucs = platform_get_drvdata(pdev);
-> +
-> +	switch (cmd) {
-> +	case XRT_XLEAF_EVENT:
-> +		xrt_ucs_event_cb(pdev, arg);
-> +		break;
-> +	case XRT_UCS_CHECK: {
-brace not needed here
-> +		ucs_check(ucs, (bool *)arg);
-> +		break;
-> +	}
-> +	case XRT_UCS_ENABLE:
-> +		ucs_enable(ucs);
-> +		break;
-> +	default:
-> +		xrt_err(pdev, "unsupported cmd %d", cmd);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int ucs_remove(struct platform_device *pdev)
-> +{
-> +	struct xrt_ucs *ucs;
-> +
-> +	ucs = platform_get_drvdata(pdev);
-> +	if (!ucs) {
-
-is this possible ?
-
-Tom
-
-> +		xrt_err(pdev, "driver data is NULL");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (ucs->ucs_base)
-> +		iounmap(ucs->ucs_base);
-> +
-> +	platform_set_drvdata(pdev, NULL);
-> +	devm_kfree(&pdev->dev, ucs);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ucs_probe(struct platform_device *pdev)
-> +{
-> +	struct xrt_ucs *ucs = NULL;
-> +	struct resource *res;
-> +	int ret;
-> +
-> +	ucs = devm_kzalloc(&pdev->dev, sizeof(*ucs), GFP_KERNEL);
-> +	if (!ucs)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, ucs);
-> +	ucs->pdev = pdev;
-> +	mutex_init(&ucs->ucs_lock);
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	ucs->ucs_base = ioremap(res->start, res->end - res->start + 1);
-> +	if (!ucs->ucs_base) {
-> +		UCS_ERR(ucs, "map base %pR failed", res);
-> +		ret = -EFAULT;
-> +		goto failed;
-> +	}
-> +	ucs_enable(ucs);
-> +
-> +	return 0;
-> +
-> +failed:
-> +	ucs_remove(pdev);
-> +	return ret;
-> +}
-> +
-> +static struct xrt_subdev_endpoints xrt_ucs_endpoints[] = {
-> +	{
-> +		.xse_names = (struct xrt_subdev_ep_names[]) {
-> +			{ .ep_name = XRT_MD_NODE_UCS_CONTROL_STATUS },
-> +			{ NULL },
-> +		},
-> +		.xse_min_ep = 1,
-> +	},
-> +	{ 0 },
-> +};
-> +
-> +static struct xrt_subdev_drvdata xrt_ucs_data = {
-> +	.xsd_dev_ops = {
-> +		.xsd_ioctl = xrt_ucs_leaf_ioctl,
-> +	},
-> +};
-> +
-> +static const struct platform_device_id xrt_ucs_table[] = {
-> +	{ XRT_UCS, (kernel_ulong_t)&xrt_ucs_data },
-> +	{ },
-> +};
-> +
-> +static struct platform_driver xrt_ucs_driver = {
-> +	.driver = {
-> +		.name = XRT_UCS,
-> +	},
-> +	.probe = ucs_probe,
-> +	.remove = ucs_remove,
-> +	.id_table = xrt_ucs_table,
-> +};
-> +
-> +void ucs_leaf_init_fini(bool init)
-> +{
-> +	if (init)
-> +		xleaf_register_driver(XRT_SUBDEV_UCS, &xrt_ucs_driver, xrt_ucs_endpoints);
-> +	else
-> +		xleaf_unregister_driver(XRT_SUBDEV_UCS);
-> +}
-
+Yours,
+Linus Walleij
