@@ -2,135 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B561232A476
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 334F732A477
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838364AbhCBKgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:36:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
+        id S1838383AbhCBKgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382783AbhCBKQG (ORCPT
+        with ESMTP id S1382786AbhCBKQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:16:06 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B53C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:15:25 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id r17so34129838ejy.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:15:25 -0800 (PST)
+        Tue, 2 Mar 2021 05:16:45 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D8DC061756;
+        Tue,  2 Mar 2021 02:16:04 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id z11so30362246lfb.9;
+        Tue, 02 Mar 2021 02:16:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MpgdEY+xkJdsoRX59VzkePVcPoFPaD3OZG7TYDRW4KU=;
-        b=q66k2buIJldsnHIt6TmO9TJrxPJTcGOMHfKWA3WCAouMGR3WMo6B1zOIXj+5dyCPgU
-         Erzg6/W683GesDNNNQmv7RT/bTEnndnfV8LQi4GA/MZgq2wyq83WLjGgoabkHXJLTd0+
-         nSefuvXOD4AXnHIBm25McxuQeA8JTVFa1Nv5WVaSL8umn9cPbmNzfnYe7hXSXvONWO5B
-         fLsmN9hJPAELZB0gTNNnkJK+J4w4Abt3pWXQ7L0IKyc20evQzDQuByWKmTvH3AKR2b6P
-         YYrLStCfOny5+3bbHRw31rZ5iFf+KdrgiivY1heV973Eu1a/02hD1p0egRG8snj6X8Bk
-         fidA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PAuXf894I6dZt2fftnLEpxbZ38F5TI7pME3T3qqIkZI=;
+        b=BeiNOLHXfUd6x5xIH3DAqIB46kUFYiitWpt4cNZNlo1GZmWsGL/2yYn1JfYePe7DoP
+         89k+KuS66b0E5jDpnVX9hhx6pm4A/NqOpzGjUVC36RZsgvopFwvaa+jftP9zsyzCH3pE
+         dwhJ8y8UiT5L/dbwkyDoNQMZUEAZHyn0zhYhjujR/Eq8GnFc/tZNhkXyGnHRjGw0hWCq
+         0kZjkTk/UTjJNunNCE4osRlm9R6BZsjOIc3nCgjEI0Jj6Phr4vL1gaZJaNUBJuPpEN8E
+         N82/HiWkhHxczU83tLGEqSI97gFAKIWd1fhnKqP5/D6H9AdMiWyEPD3yYjjgnTCbVli9
+         eByg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MpgdEY+xkJdsoRX59VzkePVcPoFPaD3OZG7TYDRW4KU=;
-        b=o7kg0+GqMFUdNy63GUK5sZs3s01wzOc/3VOSEpKuAoEbjHUYMQMtr3WoQrk0H5X3sa
-         29LWe4QoaWxkvx948gonL/yvycy8F5lgpRunxUdvUDsKWuGcz2O3y9bH78545VwyL0BM
-         mrlssl7S/7d0hS+8Xuxts7Ife6bmT7Q1N+QYa0/yfkN5KbNyArYMIYGZlt6tDwona7aY
-         8UAx032AGcU6n17ll58hJKE0LKJKv8gsU63MVIKYIEtlOgt4eTYSrkxTQHMAL0T7SGfL
-         FyTWHyn/T+eabDGRzpBF8U/hEWmdsLbuIahciReni75MBrPriqQTCHAF/qvFQf2C8BIe
-         FE6Q==
-X-Gm-Message-State: AOAM531MAL42JaKpgQ6EOf1OwC0yUPQtKB7XwQ/21WPpfpSCQD2oEjrp
-        nDmloN4rAUYT0xEylW+NiRm78dNCOM4IBw6xLDtLuALmMOWRZh52
-X-Google-Smtp-Source: ABdhPJwlLd0mNZbGEtX9E/pIytMCFYrh0qNifxpn5diBNusJ17Ap1GHoboVpaKamYOneEv6/1WANMx+miaF3e88roFk=
-X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr20045311ejb.503.1614680124240;
- Tue, 02 Mar 2021 02:15:24 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PAuXf894I6dZt2fftnLEpxbZ38F5TI7pME3T3qqIkZI=;
+        b=XbgquZ2g59wVJNrBntjPjgYTuxaOVHLV1OAqctnIouqqjoTBJvef5gvOwURN6fNnhg
+         HYLC+gmKRWbKkhbC0V7Gmg9cl5mKchBeL/SnQh7+tlPNq9xiBCKmK0Op5DhWAF4ux100
+         F3PPq8jdokT1ngTH71ZTdC8GjlIM7FWDZaLvsaQ3IuHtkyDBFYNmgc11+xRHAowW0hIu
+         QIgenqqOeiMPsf/q+/VZn6AA7EXCujBsrqgfsyDrOY4yFHsVEIk02+5LU785yZQhwuz0
+         pVtOK9MbaFhW0ZNALj7LQ5AdoLieKfWtWMnl7ZSkeKOCEKi4VwsRewAtnDL8vIgGnAmK
+         /wqA==
+X-Gm-Message-State: AOAM530e+mZW9XSsBV6VhWAFdqnNgaDdoLw48RiJBii2m/P+JzmhXSvQ
+        uMfU60aLyN43L2SHXJF32Dg=
+X-Google-Smtp-Source: ABdhPJwYoPjpQg2/CPbZ46GC5VGUq1ff/xol41ePlNNTSTvg7Zai3jSN9j2oNzNuoeuND998v4BiWQ==
+X-Received: by 2002:a05:6512:31cc:: with SMTP id j12mr11449977lfe.408.1614680162897;
+        Tue, 02 Mar 2021 02:16:02 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id w4sm307861lfl.236.2021.03.02.02.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 02:16:02 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] Support wakeup methods of Atmel maXTouch controllers
+Date:   Tue,  2 Mar 2021 13:15:53 +0300
+Message-Id: <20210302101556.7150-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210301193642.707301430@linuxfoundation.org> <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
- <CA+G9fYsivUPRRQgMXpnA_XdXH8i2wx_DPH70t+6OzHkjOaswrg@mail.gmail.com> <YD4L57LQb8Nh/A85@kroah.com>
-In-Reply-To: <YD4L57LQb8Nh/A85@kroah.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Mar 2021 15:45:13 +0530
-Message-ID: <CA+G9fYsuLBo86PVUGVx=w6w8t9UCmNw+Co53_g_suE_my9Mmug@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        LTP List <ltp@lists.linux.it>, Arnd Bergmann <arnd@arndb.de>,
-        Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 15:26, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Mar 02, 2021 at 03:20:32PM +0530, Naresh Kamboju wrote:
-> > Hi Greg and Linus,
-> >
-> > On Tue, 2 Mar 2021 at 12:45, Naresh Kamboju <naresh.kamboju@linaro.org>=
- wrote:
-> > >
-> > > On Tue, 2 Mar 2021 at 01:21, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.10.20 releas=
-e.
-> > > > There are 661 patches in this series, all will be posted as a respo=
-nse
-> > > > to this one.  If anyone has any issues with these being applied, pl=
-ease
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/=
-patch-5.10.20-rc2.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
-stable-rc.git linux-5.10.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > >
-> > > Results from Linaro=E2=80=99s test farm.
-> > > Regressions detected on all devices (arm64, arm, x86_64 and i386).
-> > >
-> > > hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
-> > >
-> > > This failure is specific to stable-rc 5.10 and 5.11.
-> > > Test PASS on mainline and Linux next kernel.
-> > >
-> >
-> > I have reverted these two patches and the test case got PASS
-> > on Linux version 5.10.20-rc2.
-> >
-> > hangup01 1 TPASS : child process exited with status 0
-> >
-> >    Linus Torvalds <torvalds@linux-foundation.org>
-> >        tty: implement read_iter
-> >
-> >    Linus Torvalds <torvalds@linux-foundation.org>
-> >        tty: convert tty_ldisc_ops 'read()' function to take a kernel po=
-inter
->
-> Odd.
->
-> Is 5.12-rc1 also failing with this test as well?
+Some Atmel maXTouch controllers, like mXT1386 and mXT3432S1 for example,
+have a WAKE line that needs to be asserted in order to wake controller
+from a deep sleep, otherwise it will be unusable. This series implements
+support for the wakeup methods in accordance to the mXT1386 datasheet [1],
+see page 29 (chapter "5.8 WAKE Line").
 
-No.
-Test PASS on v5.12-rc1.
+The mXT1386 is a widely used controller found on many older Android tablet
+devices. Touchscreen on Acer A500 tablet now works properly after this
+series.
 
-- Naresh
+This patchset is a continuation of the work originally started by
+Jiada Wang [2].
+
+[1] https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
+[2] https://patchwork.kernel.org/project/linux-input/list/?series=357875
+
+Changelog:
+
+v5: - No code changes. Improved commit message of the "acer-a500: Add
+      atmel,wakeup-method property" patch and added r-b from Linus Walleij
+      to "Input: atmel_mxt_ts - support wakeup methods" patch that he gave
+      to v4.
+
+v4: - Improved commit message of the DT binding patch. No code changes.
+
+v3: - Added "default: 0" to the atmel,wakeup-method property in the binding.
+
+    - Added r-b from Linus Walleij to the binding patch.
+
+    - The wake-GPIO is now toggled on touchscreen's start/stop in order to
+      allow it to sleep during suspend. Suggested by Linus Walleij.
+
+v2: - Fixed copy-paste bug in the code.
+
+Dmitry Osipenko (3):
+  dt-bindings: input: atmel_mxt_ts: Document atmel,wakeup-method and
+    WAKE line GPIO
+  Input: atmel_mxt_ts - support wakeup methods
+  ARM: tegra: acer-a500: Add atmel,wakeup-method property
+
+ .../bindings/input/atmel,maxtouch.yaml        | 29 +++++++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |  3 +
+ drivers/input/touchscreen/atmel_mxt_ts.c      | 78 +++++++++++++++++++
+ include/dt-bindings/input/atmel-maxtouch.h    | 10 +++
+ 4 files changed, 120 insertions(+)
+ create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
+
+-- 
+2.29.2
+
