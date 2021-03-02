@@ -2,112 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201F832AD85
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6925C32AD86
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837860AbhCBV7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:59:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835355AbhCBTDP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:03:15 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05955C0611C2
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 11:01:47 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id g185so2092448qkf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 11:01:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bnXfU68ZzIsZlihNWZUn2t6cVsioWSUQ6rdGiL1Upjg=;
-        b=mlOhvvb/rH8DvWuDKTYklm5YoqVcXjyzDw0EukcQ7YrYl2Kj8083Uxq1Nrl0Q+znzC
-         3SKv9bgz/Uj0MxPwaYaGLVxX8AELrMekBfA158dO8QjBoixnATIjNqkYNxp/q9kpILtg
-         ZPwdVfu4wEJmM7aDzH/FZOtGvIs9VtrSZqKFDcO+dmny0c49xjXyKQcBf6AlsXPiMp2N
-         +xi/O40oXHCemWGtyqgadLVjvwQN3eAwY3KWZryLXYphrWNmkQJ05MwjRHr5PRsAI+gX
-         aw/qm2P0/Wv8gp2L4MRQ7a+WHAXO7AGSNpnlrYtJWfV5YRiBurSdGWYbJZuM+2SJzOT2
-         f4iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bnXfU68ZzIsZlihNWZUn2t6cVsioWSUQ6rdGiL1Upjg=;
-        b=dRthtm6crkKppMjV13UJP7LLw45F1f3ck0+kQp3Sz6fiTT+npQSd+UKl2Jwnu+v6N9
-         1PbjPa2M59Jv2KFRqvKlHkR9LT3sBO3mKBh9cy6o/+CA4fk+SdocNz58yIOuukRHVF3J
-         G4w45+dcSAisxbka4TVCpd+hwYjGvXE5MTGwa3Go9L0jQT5JdAKa92ITDV5LvaO9IIqY
-         64tzDx2OGa2OOi2yihlbDV2sxE+CYc/x5Jbq6Wa9f+ySxsFy5QVe5qdDhK1smjd3qSZw
-         64grQV0VD2GEE5v3/MPEtZBK29+wHb8fqfZnsgbC83Vqo4wIYJROupszM/Tpd1+K3PQY
-         wvEw==
-X-Gm-Message-State: AOAM533GARXKJFCzjrtIP5hriySEdfIJTYf28HW1X0oZUFdD+6g4FlBs
-        liHx8MPLsyewrbNV01uP4GgNgKPky3jvkWyDlEeikw==
-X-Google-Smtp-Source: ABdhPJwJiEYqApj6rgOYrCmW9HdrmS3ZOfM6+JirjcgL6eujZSZ4Dx4XpAiAtLAAnjnsL+7Jx9aKw0PSbF5M5001DTs=
-X-Received: by 2002:a05:620a:981:: with SMTP id x1mr20414567qkx.501.1614711705876;
- Tue, 02 Mar 2021 11:01:45 -0800 (PST)
+        id S1837885AbhCBV7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:59:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1835360AbhCBTDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 14:03:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CD2264F0A;
+        Tue,  2 Mar 2021 19:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614711774;
+        bh=f5vC2O2U/SsBgPYcbbJQVVH23nHk8egizekeNnBm79c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TBLDZscAs6DOos3gVH4pl7v48GTgnYz0wFTmzv5FmJ+yvKFDazS00mA6mh3ZZHMqP
+         DBPbclF0LLC8sh5SShx93pY0m/XpgYSwPP5reQIcIgE8JPp2GXfdbuI+OCo0S7Niqi
+         jwRHSIOmNTdO7rlfUNuzBbhFI6ZR1zX9ZlpH/ttg=
+Date:   Tue, 2 Mar 2021 20:02:52 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/93] 4.4.259-rc1 review
+Message-ID: <YD6L3IdZWKTafkFr@kroah.com>
+References: <20210301161006.881950696@linuxfoundation.org>
+ <99109388-1f32-6355-ccd2-08d3f268effa@roeck-us.net>
 MIME-Version: 1.0
-References: <00000000000039404305bc049fa5@google.com> <20210224023026.3001-1-hdanton@sina.com>
- <0a0573f07a7e1468f83d52afcf8f5ba356725740.camel@sipsolutions.net>
-In-Reply-To: <0a0573f07a7e1468f83d52afcf8f5ba356725740.camel@sipsolutions.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 2 Mar 2021 20:01:34 +0100
-Message-ID: <CACT4Y+ahrV-L8vV8Jm8XP=KwjWivFj445GULY1fbRN9t7buMGw@mail.gmail.com>
-Subject: Re: BUG: soft lockup in ieee80211_tasklet_handler
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+27df43cf7ae73de7d8ee@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <99109388-1f32-6355-ccd2-08d3f268effa@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 3:18 PM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> On Wed, 2021-02-24 at 10:30 +0800, Hillf Danton wrote:
-> >
-> > Add budget for the 80211 softint handler - it's feasible not to try to
-> > build the giant pyramid in a week.
-> >
-> > --- x/net/mac80211/main.c
-> > +++ y/net/mac80211/main.c
-> > @@ -224,9 +224,15 @@ static void ieee80211_tasklet_handler(un
-> >  {
-> >       struct ieee80211_local *local = (struct ieee80211_local *) data;
-> >       struct sk_buff *skb;
-> > +     int i = 0;
-> > +
-> > +     while (i++ < 64) {
-> > +             skb = skb_dequeue(&local->skb_queue);
-> > +             if (!skb)
-> > +                     skb = skb_dequeue(&local->skb_queue_unreliable);
-> > +             if (!skb)
-> > +                     return;
->
-> I guess that's not such a bad idea, but I do wonder how we get here,
-> userspace can submit packets faster than we can process?
->
-> It feels like a simulation-only case, tbh, since over the air you have
-> limits how much bandwidth you can get ... unless you have a very slow
-> CPU?
->
-> In any case, if you want anything merged you're going to have to submit
-> a proper patch with a real commit message and Signed-off-by, etc.
+On Tue, Mar 02, 2021 at 10:40:35AM -0800, Guenter Roeck wrote:
+> On 3/1/21 8:12 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.4.259 release.
+> > There are 93 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> 
+> Building nios2:allnoconfig ... failed
+> --------------
+> Error log:
+> arch/nios2/kernel/sys_nios2.c: In function 'sys_cacheflush':
+> arch/nios2/kernel/sys_nios2.c:38:6: error: implicit declaration of function 'mmap_read_lock_killable'; did you mean 'mutex_lock_killable'?
+> 
+> 
+> This problem affects all nios2 builds in v4.4.y ... v5.4.y.
 
-Looking at the reproducer that mostly contains just perf_event_open,
-It may be the old known issue of perf_event_open with some extreme
-parameters bringing down kernel.
-+perf maintainers
-And as far as I remember +Peter had some patch to restrict
-perf_event_open parameters.
+Ugh, thanks, will go drop that patch from all of those queues now,
+thanks.
 
-r0 = perf_event_open(&(0x7f000001d000)={0x1, 0x70, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x3ff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xfffffffe, 0x0, @perf_config_ext}, 0x0,
-0x0, 0xffffffffffffffff, 0x0)
+greg k-h
