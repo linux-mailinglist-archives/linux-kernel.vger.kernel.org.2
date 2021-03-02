@@ -2,129 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D43232AD92
+	by mail.lfdr.de (Postfix) with ESMTP id BE0A532AD93
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2359559AbhCBWAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:00:55 -0500
-Received: from ms9.eaxlabs.cz ([147.135.177.209]:50686 "EHLO ms9.eaxlabs.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835437AbhCBTHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:07:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=qZKGz3W2e4Y6Uv/wOhPkXx90yaEZmGLymSnEX5ezPbw=;
-        b=pe+fT21PnkusIjFGGDZcXYQNIw0YEvWCIwTprKhgG+giPVS/wTju96qQV79ZdgqL6gFREGewGjkagf+Fb5rXHIVPGUNZ8muEwzQTfSmA8ZzzjvJy2d+pWGtTgqugoWN5Jod+DPhlWI+R+ooIOAsOkSVaA22PEzT/eKRGLZE+wIQ=;
-Received: from [82.99.129.6] (helo=[10.76.6.112])
-        by ms9.eaxlabs.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <devik@eaxlabs.cz>)
-        id 1lHAMF-00035H-3H; Tue, 02 Mar 2021 20:07:01 +0100
-Subject: Re: [PATCH v3 2/2] tty/serial: Add rx-tx-swap OF option to
- stm32-usart
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jiri Slaby <jirislaby@kernel.org>, Le Ray <erwan.leray@st.com>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-References: <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
- <20210302131558.19375-1-devik@eaxlabs.cz>
- <20210302131558.19375-2-devik@eaxlabs.cz>
- <aeefa74e-fa19-6c31-5240-0f14fca89298@foss.st.com>
-From:   Martin DEVERA <devik@eaxlabs.cz>
-Message-ID: <13416deb-2a37-dd8e-ed2a-50b74f204f52@eaxlabs.cz>
-Date:   Tue, 2 Mar 2021 20:06:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2359572AbhCBWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:01:03 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11220 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1443639AbhCBTOE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 14:14:04 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122J5EEV027328;
+        Tue, 2 Mar 2021 14:11:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qAG5xfr4ga6rSb4QwNCXooGmvsPVXs5R9sVsHP8bXoA=;
+ b=PPpuxSi0/UCL2gTG3sVe/HkOKSKROzr8kukgK499nYD6lWWpvgrjOkWfbqop6pVGtOLg
+ mDEEGIaTMzdpuT2h6KBn8hRVBKZOM21+s8YB8PX3Ncyn6rHwI7IZbAbpGMxsmXJuPU34
+ hjr/mnw+R29JkRIT+CgY5t6wvMDSzd8ZDUNTHaxcrNTtOWh1SKHmee3QLcgQRX4EwQJI
+ DPI8WjvJYAPn727pExdd9EK1dN/KeibgwqaO6OWEP+zFxGGVZhAHz8fO6FxqH/ShMERM
+ Hg52fCZZTGRtux9s2IdtP5MlbG/Q9P+SarQ9wfzK1O+nuNb2c1ssRQTc/OVnLdq/l37x aw== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 371u728crb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Mar 2021 14:10:59 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 122J2Y1U003611;
+        Tue, 2 Mar 2021 19:09:51 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma02dal.us.ibm.com with ESMTP id 3710sqms21-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Mar 2021 19:09:51 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 122J9oT729360502
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Mar 2021 19:09:50 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 82619BE053;
+        Tue,  2 Mar 2021 19:09:50 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5EF4EBE051;
+        Tue,  2 Mar 2021 19:09:49 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Mar 2021 19:09:49 +0000 (GMT)
+Subject: Re: [PATCH 40/44] tty: hvc, drop unneeded forward declarations
+To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20210302062214.29627-1-jslaby@suse.cz>
+ <20210302062214.29627-40-jslaby@suse.cz>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <4f3c0b03-4a1b-3007-97c3-560afe5f9ab4@linux.ibm.com>
+Date:   Tue, 2 Mar 2021 11:09:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <aeefa74e-fa19-6c31-5240-0f14fca89298@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210302062214.29627-40-jslaby@suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 6:44 PM, Fabrice Gasnier wrote:
-> On 3/2/21 2:15 PM, Martin Devera wrote:
->> STM32 F7/H7 usarts supports RX & TX pin swapping.
->> Add option to turn it on.
->> Tested on STM32MP157.
->>
->> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
->> ---
->>   drivers/tty/serial/stm32-usart.c | 11 ++++++++++-
->>   drivers/tty/serial/stm32-usart.h |  5 +++++
->>   2 files changed, 15 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
->> index b3675cf25a69..d390f7da1441 100644
->> --- a/drivers/tty/serial/stm32-usart.c
->> +++ b/drivers/tty/serial/stm32-usart.c
->> @@ -644,6 +644,12 @@ static int stm32_usart_startup(struct uart_port *port)
->>   	if (ret)
->>   		return ret;
->>   
->> +	if (stm32_port->swap) {
->> +		val = readl_relaxed(port->membase + ofs->cr2);
->> +		val |= USART_CR2_SWAP;
->> +		writel_relaxed(val, port->membase + ofs->cr2);
->> +	}
->> +
->>   	/* RX FIFO Flush */
->>   	if (ofs->rqr != UNDEF_REG)
->>   		stm32_usart_set_bits(port, ofs->rqr, USART_RQR_RXFRQ);
->> @@ -758,7 +764,7 @@ static void stm32_usart_set_termios(struct uart_port *port,
->>   	cr1 = USART_CR1_TE | USART_CR1_RE;
->>   	if (stm32_port->fifoen)
->>   		cr1 |= USART_CR1_FIFOEN;
->> -	cr2 = 0;
->> +	cr2 = stm32_port->swap ? USART_CR2_SWAP : 0;
->>   	cr3 = readl_relaxed(port->membase + ofs->cr3);
->>   	cr3 &= USART_CR3_TXFTIE | USART_CR3_RXFTCFG_MASK | USART_CR3_RXFTIE
->>   		| USART_CR3_TXFTCFG_MASK;
->> @@ -1006,6 +1012,9 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
->>   			return stm32port->wakeirq ? : -ENODEV;
->>   	}
->>   
->> +	stm32port->swap = stm32port->info->cfg.has_swap &&
->> +		of_property_read_bool(pdev->dev.of_node, "rx-tx-swap");
->> +
->>   	stm32port->fifoen = stm32port->info->cfg.has_fifo;
->>   
->>   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
->> index cb4f327c46db..bd18dd1c1bcd 100644
->> --- a/drivers/tty/serial/stm32-usart.h
->> +++ b/drivers/tty/serial/stm32-usart.h
->> @@ -25,6 +25,7 @@ struct stm32_usart_offsets {
->>   struct stm32_usart_config {
->>   	u8 uart_enable_bit; /* USART_CR1_UE */
->>   	bool has_7bits_data;
->> +	bool has_swap;
->>   	bool has_wakeup;
->>   	bool has_fifo;
->>   	int fifosize;
->> @@ -55,6 +56,7 @@ struct stm32_usart_info stm32f4_info = {
->>   	.cfg = {
->>   		.uart_enable_bit = 13,
->>   		.has_7bits_data = false,
->> +		.has_swap = false,
-> Hi Martin,
->
-> Only one minor comment from me here. No need to add a false (zero)
-> initialization in this struct. I'm not sure why this is the case for the
-> has_7bits_data here...
->
-> With that fixed, you can add my:
-> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
->
-The has_7bits_data was what made me a bit unsure. Ok fixed now.
-Thank you for your review.
+On 3/1/21 10:22 PM, Jiri Slaby wrote:
+> Forward declarations make the code larger and rewrites harder. Harder as
+> they are often omitted from global changes. Remove forward declarations
+> which are not really needed, i.e. the definition of the function is
+> before its first use.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: linuxppc-dev@lists.ozlabs.org
 
-Martin
+Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+
+> ---
+>  drivers/tty/hvc/hvcs.c | 25 -------------------------
+>  1 file changed, 25 deletions(-)
+> 
+> diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
+> index c90848919644..0b89d878a108 100644
+> --- a/drivers/tty/hvc/hvcs.c
+> +++ b/drivers/tty/hvc/hvcs.c
+> @@ -290,36 +290,11 @@ static LIST_HEAD(hvcs_structs);
+>  static DEFINE_SPINLOCK(hvcs_structs_lock);
+>  static DEFINE_MUTEX(hvcs_init_mutex);
+> 
+> -static void hvcs_unthrottle(struct tty_struct *tty);
+> -static void hvcs_throttle(struct tty_struct *tty);
+> -static irqreturn_t hvcs_handle_interrupt(int irq, void *dev_instance);
+> -
+> -static int hvcs_write(struct tty_struct *tty,
+> -		const unsigned char *buf, int count);
+> -static int hvcs_write_room(struct tty_struct *tty);
+> -static int hvcs_chars_in_buffer(struct tty_struct *tty);
+> -
+> -static int hvcs_has_pi(struct hvcs_struct *hvcsd);
+> -static void hvcs_set_pi(struct hvcs_partner_info *pi,
+> -		struct hvcs_struct *hvcsd);
+>  static int hvcs_get_pi(struct hvcs_struct *hvcsd);
+>  static int hvcs_rescan_devices_list(void);
+> 
+> -static int hvcs_partner_connect(struct hvcs_struct *hvcsd);
+>  static void hvcs_partner_free(struct hvcs_struct *hvcsd);
+> 
+> -static int hvcs_enable_device(struct hvcs_struct *hvcsd,
+> -		uint32_t unit_address, unsigned int irq, struct vio_dev *dev);
+> -
+> -static int hvcs_open(struct tty_struct *tty, struct file *filp);
+> -static void hvcs_close(struct tty_struct *tty, struct file *filp);
+> -static void hvcs_hangup(struct tty_struct * tty);
+> -
+> -static int hvcs_probe(struct vio_dev *dev,
+> -		const struct vio_device_id *id);
+> -static int hvcs_remove(struct vio_dev *dev);
+> -static int __init hvcs_module_init(void);
+> -static void __exit hvcs_module_exit(void);
+>  static int hvcs_initialize(void);
+> 
+>  #define HVCS_SCHED_READ	0x00000001
+> 
 
