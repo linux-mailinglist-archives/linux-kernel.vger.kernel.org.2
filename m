@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C7B32A698
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1488932A6BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578674AbhCBP0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:26:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60560 "EHLO mail.kernel.org"
+        id S1575812AbhCBPoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:44:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351018AbhCBNEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:04:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE2064FC4;
-        Tue,  2 Mar 2021 11:59:30 +0000 (UTC)
+        id S1577047AbhCBNNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:13:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D70F964FC7;
+        Tue,  2 Mar 2021 11:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686371;
-        bh=nzfBEvURGIAy8Ojlx75w2U2uuZQ96+VrmVDH4xtSifc=;
+        s=k20201202; t=1614686385;
+        bh=X91BEpklofYjO4+lMYsjJCV7Ypwis/RBmob7/45dcQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IC1SIBlPfuQeAUnWDR8Sv20NmGzkUCV37m4lDki4qYTTHQhi4j99BBYLgJXaOrF22
-         tkO5x0R2xA07/vcz7jZHDMyS1Y7bOa8BkLjslnlMEnG2ohJixuHWDOOuZth67Dxt90
-         gYLjJv3AvAGpS6TSe1tWV+8gsiJAA/53W22MZiV5dU4NWleiG3xwdnZ9Vbywss8c1K
-         ujWlwXSfW73VLoqTR+X+SmmLoQkYBMQJydYPxBYTUFdVgHOCSYDVt/7CZVeeMydb1x
-         l4zO5QPTjQZ2+mpBwEJTaJBDA1dpKZDRYiKccFGVHCE59M2GkHaKjcUny53mw0Bumd
-         aDjNAv+3D2A+w==
+        b=MKbYEhvvtz1/v3XxzlQyEhUYrJvi+6e5NhhmbUFUI3eWbr+k+WpRvzlerXWoRm4zZ
+         eN5pZGAvZA+XehqohQrJ4TXashaVnri/Rp0lwF885FsBijq3VeetbotWUpSC9Np4BL
+         v7hdJlsAUHOZknXy1px2fMWOMybLF3L8QVOgBDOOY7FNmMC3ycrxRqhXycstzNarNF
+         lPXKLu1LMyghBPJHBCLYIrVeEEjYaOriRfwboAhrkXS6xN5wV5tTCHmqyJvhciENs6
+         8q5F1qPssu7TAZGKE4guboT6350VAY2PBBOiKHPm3eDgN6gyXLPoNdZqgfZrVUgKLb
+         RW7vhtA9izI9Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Martin Kaiser <martin@kaiser.cx>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.9 07/10] PCI: xgene-msi: Fix race in installing chained irq handler
-Date:   Tue,  2 Mar 2021 06:59:18 -0500
-Message-Id: <20210302115921.63636-7-sashal@kernel.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 7/8] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+Date:   Tue,  2 Mar 2021 06:59:34 -0500
+Message-Id: <20210302115935.63777-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302115921.63636-1-sashal@kernel.org>
-References: <20210302115921.63636-1-sashal@kernel.org>
+In-Reply-To: <20210302115935.63777-1-sashal@kernel.org>
+References: <20210302115935.63777-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,48 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Kaiser <martin@kaiser.cx>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit a93c00e5f975f23592895b7e83f35de2d36b7633 ]
+[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
 
-Fix a race where a pending interrupt could be received and the handler
-called before the handler's data has been setup, by converting to
-irq_set_chained_handler_and_data().
+Avoid a potentially large stack frame and overflow by making
+"cpumask_t avail" a static variable. There is no concurrent
+access due to the existing locking.
 
-See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained IRQ
-handler").
-
-Based on the mail discussion, it seems ok to drop the error handling.
-
-Link: https://lore.kernel.org/r/20210115212435.19940-3-martin@kaiser.cx
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/host/pci-xgene-msi.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ arch/s390/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/host/pci-xgene-msi.c b/drivers/pci/host/pci-xgene-msi.c
-index a6456b578269..b6a099371ad2 100644
---- a/drivers/pci/host/pci-xgene-msi.c
-+++ b/drivers/pci/host/pci-xgene-msi.c
-@@ -393,13 +393,9 @@ static int xgene_msi_hwirq_alloc(unsigned int cpu)
- 		if (!msi_group->gic_irq)
- 			continue;
- 
--		irq_set_chained_handler(msi_group->gic_irq,
--					xgene_msi_isr);
--		err = irq_set_handler_data(msi_group->gic_irq, msi_group);
--		if (err) {
--			pr_err("failed to register GIC IRQ handler\n");
--			return -EINVAL;
--		}
-+		irq_set_chained_handler_and_data(msi_group->gic_irq,
-+			xgene_msi_isr, msi_group);
-+
- 		/*
- 		 * Statically allocate MSI GIC IRQs to each CPU core.
- 		 * With 8-core X-Gene v1, 2 MSI GIC IRQs are allocated
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index f113fcd781d8..486f0d4f9aee 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -738,7 +738,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
+ static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
+ {
+ 	struct sclp_core_entry *core;
+-	cpumask_t avail;
++	static cpumask_t avail;
+ 	bool configured;
+ 	u16 core_id;
+ 	int nr, i;
 -- 
 2.30.1
 
