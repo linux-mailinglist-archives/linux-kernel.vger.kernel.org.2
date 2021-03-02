@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0267132A6C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C9832A6BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575844AbhCBPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
+        id S1575827AbhCBPoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:44:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446119AbhCBNQl (ORCPT
+        with ESMTP id S1578250AbhCBNQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:16:41 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A7AC061756;
-        Tue,  2 Mar 2021 05:06:35 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id E185F2223E;
-        Tue,  2 Mar 2021 14:06:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614690394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mTtVJwCrMEqy04BVWxGgfe8sOuG6CbjO06VOyD60coI=;
-        b=N1jbqwuLG9dlRICo7gv/InhS3T3Z95hbPGXGxPecFPDxLjOzwAI+8oh76X1nIWpyGQ2wmh
-        OjSHejnJe9fVnQlH2KmDVlcC0agYzilguPEGV3Cdql6nJfCD+mnu+UXiMaR8uX6lTzbNV1
-        ihERZ3CaUUAkTDmpjPY6Im1R8EIIm9o=
+        Tue, 2 Mar 2021 08:16:17 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910FAC06178C;
+        Tue,  2 Mar 2021 05:15:18 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id u4so23856946ljh.6;
+        Tue, 02 Mar 2021 05:15:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9r1DFAaPtb29HC2sU6gbzgJhxX04EpEmGmNyScrTRWg=;
+        b=PESF8tDUDk6Uz0FlXB9u8W4+2b2xyjPCCVflvcPHroKxon0Hf10BTl6qKtTqsW1wbp
+         BsWsgjRbjrLbixpfJSdObEfyrVG4rwxYvleDu3gsGkUHEvlrQzfuUOQCE0RBcNMpT1sE
+         pW5KXYtwisbRJOvlbz75/0umbgNJ6y+AY7zFI72oNFCuC7Vl9UvchqYxtNER3hwnjg4Q
+         KJDjIclGGbXTwGSNhFjmFJztX5dxyeGA1+9Rx2yrLucwnbP/BxLzndCrKMp85jrk+Qd7
+         ADq1Q5qOFAcqrVX539R4Og0orJwiinDOWTT28iUsWR/25obrx+r0+sV6A/cW6p/q7dXR
+         ZURg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9r1DFAaPtb29HC2sU6gbzgJhxX04EpEmGmNyScrTRWg=;
+        b=aCtdLllvGt8tjs7iDJAEvirEXVcp8uALs0a7UXuooAjzCLEe7QD8lNKrXlsqmv0mFN
+         y07PIiozj1ibr7kO4hQhUY7dT0SbYbZ1sNiMPjLU0KEyNP0QiqN0S/B9219nQXULHV2F
+         pq1Xn3df7ai8zw4uPSMWuY/XstfhOuYr9c+9cIJyY7r0fgrznl+ctSoSbp0+1g6v9t5Y
+         Ys88MEeEqtEIsCCFzQVNCluDozScPHN9cGD0xKvizy3BsH2QZclsb1nxHQ3M+KbOE9kD
+         OCkRTknid8+KgzynW6FS0gQdMO6utzjdvXiwqvQTqDcOEKr+5N+p+bhYcoU8z0Wb+X8z
+         GCZg==
+X-Gm-Message-State: AOAM530ejmCBq/Ch0zb+Ylj8hM/WSwmr6UZTOgD8mt55CI/cL3WFotNa
+        Eqhy4eWxqcOVcGvn9KrUPqM=
+X-Google-Smtp-Source: ABdhPJzRPfagcDRUtiuLO17bXWYhG7ON9ldHSkMJi2dTVgAKGwqZLgthGDdYpJKBH5gxTIZofHmu/g==
+X-Received: by 2002:a2e:b008:: with SMTP id y8mr3207751ljk.233.1614690917063;
+        Tue, 02 Mar 2021 05:15:17 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id i5sm1033370ljn.100.2021.03.02.05.15.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 05:15:16 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        David Heidelberg <david@ixit.cz>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v1] drm/tegra: dc: Don't set PLL clock to 0Hz
+Date:   Tue,  2 Mar 2021 16:15:06 +0300
+Message-Id: <20210302131506.11790-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Mar 2021 14:06:33 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor.Ambarus@microchip.com
-Subject: Re: [RFC PATCH] mtd: add OTP (one-time-programmable) erase ioctl
-In-Reply-To: <20210302134617.5aa78cc4@xps13>
-References: <20210302110927.6520-1-michael@walle.cc>
- <20210302134617.5aa78cc4@xps13>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <05c255e6d9d8d12e8e6af59d9c153981@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RGB output doesn't allow to change parent clock rate of the display and
+PCLK rate is set to 0Hz in this case. The tegra_dc_commit_state() shall
+not set the display clock to 0Hz since this change propagates to the
+parent clock. The DISP clock is defined as a NODIV clock by the tegra-clk
+driver and all NODIV clocks use the CLK_SET_RATE_PARENT flag.
 
-Am 2021-03-02 13:46, schrieb Miquel Raynal:
-> Michael Walle <michael@walle.cc> wrote on Tue,  2 Mar 2021 12:09:27
-> +0100:
-> 
->> This may sound like a contradiction but some SPI-NOR flashes really
->> support erasing their OTP region until it is finally locked. Having 
->> the
->> possibility to erase an OTP region might come in handy during
->> development.
->> 
->> The ioctl argument follows the OTPLOCK style.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->> OTP support for SPI-NOR flashes may be merged soon:
->> https://lore.kernel.org/linux-mtd/20210216162807.13509-1-michael@walle.cc/
->> 
->> Tudor suggested to add support for the OTP erase operation most 
->> SPI-NOR
->> flashes have:
->> https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
->> 
->> Therefore, this is an RFC to get some feedback on the MTD side, once 
->> this
->> is finished, I can post a patch for mtd-utils. Then we'll have a 
->> foundation
->> to add the support to SPI-NOR.
->> 
+This bug stayed unnoticed because by default PLLP is used as the parent
+clock for the display controller and PLLP silently skips the erroneous 0Hz
+rate changes because it always has active child clocks that don't permit
+rate changes. The PLLP isn't acceptable for some devices that we want to
+upstream (like Samsung Galaxy Tab and ASUS TF700T) due to a display panel
+clock rate requirements that can't be fulfilled by using PLLP and then the
+bug pops up in this case since parent clock is set to 0Hz, killing the
+display output.
 
-[..]
+Don't touch DC clock if pclk=0 in order to fix the problem.
 
->> +int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t 
->> len)
->> +{
->> +	struct mtd_info *master = mtd_get_master(mtd);
->> +
->> +	if (!master->_erase_user_prot_reg)
->> +		return -EOPNOTSUPP;
->> +	if (!len)
->> +		return 0;
-> 
-> Should we add a sanity check enforcing that we don't try to access
-> beyond the end of the OTP area?
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/gpu/drm/tegra/dc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-This is checked in the op itself, as it is done for all the
-other OTP read/write/lock ops.
+diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+index 1399e4032701..4ecda4cdf345 100644
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -1723,6 +1723,11 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
+ 			dev_err(dc->dev,
+ 				"failed to set clock rate to %lu Hz\n",
+ 				state->pclk);
++
++		err = clk_set_rate(dc->clk, state->pclk);
++		if (err < 0)
++			dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
++				dc->clk, state->pclk, err);
+ 	}
+ 
+ 	DRM_DEBUG_KMS("rate: %lu, div: %u\n", clk_get_rate(dc->clk),
+@@ -1733,11 +1738,6 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
+ 		value = SHIFT_CLK_DIVIDER(state->div) | PIXEL_CLK_DIVIDER_PCD1;
+ 		tegra_dc_writel(dc, value, DC_DISP_DISP_CLOCK_CONTROL);
+ 	}
+-
+-	err = clk_set_rate(dc->clk, state->pclk);
+-	if (err < 0)
+-		dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
+-			dc->clk, state->pclk, err);
+ }
+ 
+ static void tegra_dc_stop(struct tegra_dc *dc)
+-- 
+2.29.2
 
-Right at the moment, I don't see how this could be achieved in
-an elegant way. Without additional changes, you'd have to call
-mtd_get_user_prot_info() and iterate over the returned values
-and figure out whether from and len are valid.
-
-[..]
-
--michael
