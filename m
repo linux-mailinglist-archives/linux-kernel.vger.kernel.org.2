@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F9832A895
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579D932A89A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351952AbhCBRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:50:47 -0500
-Received: from mga05.intel.com ([192.55.52.43]:10890 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1578440AbhCBPQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:16:42 -0500
-IronPort-SDR: ovqFzCVenJr/Dsm+zJ2dZGOt7mhJpGyxtjp2fEomeQC1ipnxUsU8WfA18/KuOLXnzXo9dElOSj
- h6xoO7gxOSsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="271850938"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="271850938"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:14:36 -0800
-IronPort-SDR: IXTKtYhxJFtSq1rLuoJt8j1eiwNkdkfz1CaCtEat5dq02qqfQUtsDRhPj9/1EQR92wKw/V/gzF
- tnxc6iz3CC6w==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="434843030"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:14:33 -0800
-Received: by lahna (sSMTP sendmail emulation); Tue, 02 Mar 2021 17:14:30 +0200
-Date:   Tue, 2 Mar 2021 17:14:30 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1 1/3] gpiolib: acpi: Add
- ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk
-Message-ID: <20210302151430.GY2542@lahna.fi.intel.com>
-References: <20210225163320.71267-1-andriy.shevchenko@linux.intel.com>
- <20210225163320.71267-2-andriy.shevchenko@linux.intel.com>
- <CACRpkdZj4TqOoJmfDhL1MuZCT9quz+5Gj8C6ckZ1i6cYCq9SOA@mail.gmail.com>
- <YD5VJMDC1TmIN/T8@smile.fi.intel.com>
+        id S1351984AbhCBRu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:50:58 -0500
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:41753 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1574370AbhCBPPf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:15:35 -0500
+Received: by mail-pl1-f174.google.com with SMTP id d11so12197500plo.8;
+        Tue, 02 Mar 2021 07:15:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uiSdTAX5fGCQWtRj6bGUy+pKt+qEdnwtHvd6uiLQ99g=;
+        b=JaxAsjWt8qighC4uUM4w7vJlNN8hu9UHndg2iRylsIiSLPGcN1kCZVWrFhwVsXn/eP
+         jpWLKr+XvMXFP2LfcPOIT67qLlCJB16fpemvMikXmbzrb078dvghUxlI/ZpQdbhRgrPF
+         4nU0kDZ/gOzikDDeNkzPE8h6tgcRQIwnHGJNBz+fbY9HFlYjXVN9iFOzrIVdfDlEC99X
+         2n5z1KuXhvh3Y/cz/qx3YdI4TgFi5+6UZ4WATXLWSU/vVoIXd1BXeOvnisqmvRS7BfiV
+         WuMaypGbbBa/E8pFVuG/dvU7EU0xoJMkKnGOtnKqGtPf6X7IZgKIEbo4bCn1zj0r8p19
+         QgGQ==
+X-Gm-Message-State: AOAM532vWqv71lsyv6Gs97+k+rGpWH3QPJTNKIw0MDeAU0QhhJe5dDIB
+        khzHd2fsaJITzhF9HQC4+3M=
+X-Google-Smtp-Source: ABdhPJzU3c39I247IewBAHksLi8DflbHJZy5CZGtmnHGh4s7HB5mLxx+SLrm2Xw/IsW8owJzyQ6opw==
+X-Received: by 2002:a17:90a:4a0a:: with SMTP id e10mr4640637pjh.112.1614698094479;
+        Tue, 02 Mar 2021 07:14:54 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id d75sm18639178pfd.20.2021.03.02.07.14.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 07:14:53 -0800 (PST)
+Date:   Tue, 2 Mar 2021 07:14:52 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Lizhi Hou <lizhi.hou@xilinx.com>
+Cc:     Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+Subject: Re: [PATCH V3 XRT Alveo 03/18] fpga: xrt: xclbin file helper
+ functions
+Message-ID: <YD5WbLCdCTBALQiI@epycbox.lan>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-4-lizhih@xilinx.com>
+ <4628ef05-27d1-b92f-9126-27a1f810c608@redhat.com>
+ <3b73400c-cca1-60af-4eea-ed85de77a977@xilinx.com>
+ <c79176af-8d0c-2300-3e4a-dfa604f10a62@redhat.com>
+ <55ed0169-085c-9706-3b17-23ea582c43c3@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YD5VJMDC1TmIN/T8@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <55ed0169-085c-9706-3b17-23ea582c43c3@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:09:24PM +0200, Andy Shevchenko wrote:
-> On Tue, Mar 02, 2021 at 03:48:43PM +0100, Linus Walleij wrote:
-> > On Thu, Feb 25, 2021 at 5:33 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
+On Mon, Mar 01, 2021 at 04:25:37PM -0800, Lizhi Hou wrote:
+> Hi Tom，
+> 
+> 
+> On 02/28/2021 08:54 AM, Tom Rix wrote:
+> > CAUTION: This message has originated from an External Source. Please use proper judgment and caution when opening attachments, clicking links, or responding to this email.
 > > 
-> > > On some systems the ACPI tables has wrong pin number and instead of
-> > > having a relative one it provides an absolute one in the global GPIO
-> > > number space.
-> > >
-> > > Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk to cope with such cases.
-> > >
-> > > Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
-> > > Depends-on: 0ea683931adb ("gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip")
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > > 
-> > OH THE HORROR!
-> > However, we discussed it before. It is as it is.
-> 
-> Unfortunately :-( (And recently it seems MS does something really "creative" on
-> ARM ACPI platform)
-> 
-> > It's the right place to fix the problem, so:
-> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> I am waiting for Mika, but if he keeps silent let's say to the end of the day,
-> I will submit it as is to the v5.12-rcX fixes.
+> > On 2/26/21 1:23 PM, Lizhi Hou wrote:
+> > > Hi Tom,
+> > > 
+> > > 
+> > snip
+> > 
+> > > > I also do not see a pragma pack, usually this is set of 1 so the compiler does not shuffle elements, increase size etc.
+> > > This data structure is shared with other tools. And the structure is well defined with reasonable alignment. It is compatible with all compilers we have tested. So pragma pack is not necessary.
+> > You can not have possibly tested all the configurations since the kernel supports many arches and compilers.
+> > 
+> > If the tested existing alignment is ok, pragma pack should be a noop on your tested configurations.
+> > 
+> > And help cover the untested configurations.
+> Got it. I will add pragma pack(1).
 
-Sorry for the delay - I somehow missed this. Feel free to add my ACK too.
+Please do not use pragma pack(), add __packed to the structs in
+question.
+
+- Moritz
