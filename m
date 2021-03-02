@@ -2,151 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B9732A7AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF5132A7AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576872AbhCBQ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:27:32 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:46002 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1448083AbhCBNzK (ORCPT
+        id S1578988AbhCBQ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:27:45 -0500
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:39456 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241419AbhCBNzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:55:10 -0500
-Date:   Tue, 2 Mar 2021 16:54:25 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <guro@fb.com>, <akpm@linux-foundation.org>, <paul@crapouillou.net>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
-Message-ID: <20210302135425.xjvagpjxx57kdruj@mobilestation>
-References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
- <20210302041940.3663823-1-f.fainelli@gmail.com>
+        Tue, 2 Mar 2021 08:55:45 -0500
+Received: by mail-vs1-f45.google.com with SMTP id p123so10609819vsp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:55:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NodHc+ppHnADqI80/mzY0P9af63xy9kx4iRweKeW5Ww=;
+        b=OJwIv7H0QYm8d+fS4HAB8g2olDd7jkYsdRQZNHjtKJwdfqYT++GOrEjgeGCUTlPOo3
+         zKC9omaeFH0EooruSVe62D4paraXqh+K9Q1AasY8TTBBt4fpU7j22sovRFQAyWEn+fUr
+         UR909VfHE0NtW+hL1AFmFGhmz+kn6vFTbMXIC5MhoOo1Owr+lIP+6r/2jVMntkXrO1VI
+         fR4YoaRMfxg6yfMaTb0OVL1fhT0peh6bb7c2z/L89A4dsz8XfSH/P0BU8kyYmgS3uHN0
+         KYAyLKrHoT6U5rwJ/XpW+wX6qIEBViDE0i5t+09S/n+aP/Lurk/IL8wHdlct4rbwIRQd
+         rzSw==
+X-Gm-Message-State: AOAM533cLXQyLXgEn+I4lK2YA074oCPnR48Af8oQm5eSjBjMQsOgBSJO
+        mTNRR4GuJx0JUNFSwyfyiZbetQN+XY0Hl9bO/Xo=
+X-Google-Smtp-Source: ABdhPJyF2o1l58F5DCYuIcNYP+vMLUw/V+ZRP7USrXnmhzozyARD61djgeLy6Q7+OSe1S1/qEIlJUhlYvwoRHYTcJQo=
+X-Received: by 2002:a67:f247:: with SMTP id y7mr2134422vsm.42.1614693297493;
+ Tue, 02 Mar 2021 05:54:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210302041940.3663823-1-f.fainelli@gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20210225202438.28985-1-john.ogness@linutronix.de> <20210225202438.28985-8-john.ogness@linutronix.de>
+In-Reply-To: <20210225202438.28985-8-john.ogness@linutronix.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Mar 2021 14:54:45 +0100
+Message-ID: <CAMuHMdWDPjU1q6QnBJ2D7k4pt2XZyGMbKJuifTOb8SJB1uio7Q@mail.gmail.com>
+Subject: Re: [PATCH next v3 07/15] printk: introduce CONSOLE_LOG_MAX for
+ improved multi-line support
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 08:19:38PM -0800, Florian Fainelli wrote:
-> BMIPS is one of the few platforms that do change the exception base.
-> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-> with kernel_end") we started seeing BMIPS boards fail to boot with the
-> built-in FDT being corrupted.
-> 
-> Before the cited commit, early allocations would be in the [kernel_end,
-> RAM_END] range, but after commit they would be within [RAM_START +
-> PAGE_SIZE, RAM_END].
-> 
-> The custom exception base handler that is installed by
-> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-> memory region allocated by unflatten_and_copy_device_tree() thus
-> corrupting the FDT used by the kernel.
-> 
-> To fix this, we need to perform an early reservation of the custom
-> exception that is going to be installed and this needs to happen at
-> plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
-> finds a space that is suitable, away from reserved memory.
-> 
-> Huge thanks to Serget for analysing and proposing a solution to this
-> issue.
-> 
-> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+Hi John,
 
-> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+On Thu, Feb 25, 2021 at 9:30 PM John Ogness <john.ogness@linutronix.de> wrote:
+> Instead of using "LOG_LINE_MAX + PREFIX_MAX" for temporary buffer
+> sizes, introduce CONSOLE_LOG_MAX. This represents the maximum size
+> that is allowed to be printed to the console for a single record.
+>
+> Rather than setting CONSOLE_LOG_MAX to "LOG_LINE_MAX + PREFIX_MAX"
+> (1024), increase it to 4096. With a larger buffer size, multi-line
+> records that are nearly LOG_LINE_MAX in length will have a better
+> chance of being fully printed. (When formatting a record for the
+> console, each line of a multi-line record is prepended with a copy
+> of the prefix.)
+>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-I'd change the order of these two tags... 
+Thanks for your patch!
 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
+This increases kernel size by more than 3 KiB, which affects small
+devices (e.g. SoCs with 10 MiB of SRAM inside).
+Who is printing such long lines to the console?
 
-> Thomas,
-> 
-> This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
-> by the stable team for 5.11. We should find a safer way to avoid these
-> problems for 5.13 maybe.
+Gr{oetje,eeting}s,
 
-Thomas, could you join the discussion? If we had a more clever
-solution to reserve the exceptions table for each possibly affected
-platform this patch could have been omitted.
+                        Geert
 
-> 
->  arch/mips/bmips/setup.c       | 22 ++++++++++++++++++++++
->  arch/mips/include/asm/traps.h |  2 ++
->  2 files changed, 24 insertions(+)
-> 
-> diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
-> index 31bcfa4e08b9..0088bd45b892 100644
-> --- a/arch/mips/bmips/setup.c
-> +++ b/arch/mips/bmips/setup.c
-> @@ -149,6 +149,26 @@ void __init plat_time_init(void)
->  	mips_hpt_frequency = freq;
->  }
->  
-> +static void __init bmips_ebase_reserve(void)
-> +{
-> +	phys_addr_t base, size = VECTORSPACING * 64;
-> +
-> +	switch (current_cpu_type()) {
-> +	default:
-> +	case CPU_BMIPS4350:
-> +		return;
-> +	case CPU_BMIPS3300:
-> +	case CPU_BMIPS4380:
-> +		base = 0x0400;
-> +		break;
-> +	case CPU_BMIPS5000:
-> +		base = 0x1000;
-> +		break;
-> +	}
-> +
-> +	memblock_reserve(base, size);
-> +}
-> +
->  void __init plat_mem_setup(void)
->  {
->  	void *dtb;
-> @@ -169,6 +189,8 @@ void __init plat_mem_setup(void)
->  
->  	__dt_setup_arch(dtb);
->  
-> +	bmips_ebase_reserve();
-> +
->  	for (q = bmips_quirk_list; q->quirk_fn; q++) {
->  		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
->  					     q->compatible)) {
-> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-> index 6aa8f126a43d..0ba6bb7f9618 100644
-> --- a/arch/mips/include/asm/traps.h
-> +++ b/arch/mips/include/asm/traps.h
-> @@ -14,6 +14,8 @@
->  #define MIPS_BE_FIXUP	1		/* return to the fixup code */
->  #define MIPS_BE_FATAL	2		/* treat as an unrecoverable error */
->  
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> +#define VECTORSPACING 0x100	/* for EI/VI mode */
-
-What about the same macro declared in arch/mips/kernel/traps.c? I'd suggest
-to remove it from there and explicitly #include this header file into
-the arch/mips/bmips/setup.c file.
-
--Sergey
-
-> +
->  extern void (*board_be_init)(void);
->  extern int (*board_be_handler)(struct pt_regs *regs, int is_fixup);
->  
-> -- 
-> 2.25.1
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
