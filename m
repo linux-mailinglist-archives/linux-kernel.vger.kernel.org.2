@@ -2,98 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5284732AB7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635AF32ABA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836952AbhCBU3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:29:02 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:3032 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S240105AbhCBRik (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:38:40 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122H1q3P022910;
-        Tue, 2 Mar 2021 11:05:05 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=UJrx7lFKuFkpoJqPVBon3UkFDbfMntOg6B6GwmpNHcg=;
- b=HNewI+seYiQ8rkNbfSuS1HyfucG728waigLd3QTvOSleLrTn3aLWnrWu/zdiSlJa95PA
- 2wO0crm1BXXgUl6z6a9NfAKfEdQzjGTKXKZCcgxMFWZpMG0yYd68TwqWZspYgyE19yBv
- 8/9q26WEuonLoF/eqaFpqHKDzrIyvLFVDJpj3BywnUAnNNop48XSiwigWtMBA/jbwrMj
- eOIYnJKqu0vCC43RW6nr5+QVaJQie++SLMtqNeaRSM169+yLI3ycz9TCq7PYw1cYOehe
- DM3L8ntKOI7yYNEb+PTPY7N/p8HJhODQ+iXJUZ+7MufGw1wcopc5unfqBf+A0GA/BxU0 iA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg7-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 02 Mar 2021 11:05:05 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 2 Mar 2021
- 17:05:03 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 2 Mar 2021 17:05:03 +0000
-Received: from mail1.cirrus.com (unknown [198.61.64.35])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2126411D5;
-        Tue,  2 Mar 2021 17:05:03 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-CC:     Richard Fitzgerald <rf@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 15/15] ASoC: cs42l42: Fix mixer volume control
-Date:   Tue, 2 Mar 2021 17:04:54 +0000
-Message-ID: <20210302170454.39679-16-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
-References: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
+        id S1350879AbhCBUhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:37:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39324 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351693AbhCBRt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:49:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ABE86AAC5;
+        Tue,  2 Mar 2021 17:24:10 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 033A0DA8BB; Tue,  2 Mar 2021 18:22:14 +0100 (CET)
+Date:   Tue, 2 Mar 2021 18:22:14 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Remove unused variable ret
+Message-ID: <20210302172214.GJ7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1613715538-90761-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1015 suspectscore=0
- adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103020131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1613715538-90761-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The minimum value is 0x3f (-63dB), which also is mute
+On Fri, Feb 19, 2021 at 02:18:58PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./fs/btrfs/disk-io.c:4403:5-8: Unneeded variable: "ret". Return "0" on
+> line 4411.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 96f4e98ceaa0b..39f742a83cd2c 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -401,7 +401,7 @@ static const struct regmap_config cs42l42_regmap = {
- };
- 
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
--static DECLARE_TLV_DB_SCALE(mixer_tlv, -6200, 100, false);
-+static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
- 
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
-@@ -458,7 +458,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3e, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv)
- };
- 
- static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
--- 
-2.30.1
-
+That maybe stops the check to report the warning but it's not the right
+way to fix the code. The callees do not properly handle and propagate
+errors so that needs to be fixed, and the return value propagated from
+btrfs_destroy_delayed_refs.
