@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF01132A61B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4C032A61C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1448048AbhCBNyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 08:54:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48326 "EHLO mail.kernel.org"
+        id S1448064AbhCBNzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 08:55:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350346AbhCBMVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244896AbhCBMVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 07:21:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9182F64F80;
-        Tue,  2 Mar 2021 11:58:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AEAA64F9C;
+        Tue,  2 Mar 2021 11:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686304;
-        bh=jbwWDZa3iNaJmYre42IuR4NRBa6qf15yjc80YQm57j0=;
+        s=k20201202; t=1614686311;
+        bh=so+jXODUpALPJVR5oZ3MU3/QEZaMnhbzmkvUWAboWZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZWXcQ0urcp+NIOUxgQQr2jSkUojgwf43Lq79G0Lsdfd6iv2P/AImBgsOrpgntWpq
-         ArqeQ2TlxaoBTgO+7tEiT6s2LQYLJtF1IaSrj4mKCD0iQNBDiT1Hsx4W2rq3cQw2xH
-         TfdfMIOPlois7R8MoowOGwbwzJti/7sWSr9DWpdz731Y0XG4DEADsSWBsXQExkHxKM
-         Na/ihS3VOG8qd/ACYYv1TWiuk3AYDlGBNXh/J7BTk69JpvGIToDFUT6iykPkeJqIxe
-         1Gwl8c2lnkD8x0L87OEcAPaqgI7xd8f24bsgPlM99DbIZpbG0pvAE4eNNsWrzF0LlB
-         vC/MFK/7f7acw==
+        b=AxFlWzwA694Cg8fflsQuyAzHstACya6hwbjVAGllZmYIiHlE+MU98iYcQKl/UOZLb
+         7qwGjyuKFaMhD+QWwK/LtKYxo6P5whiMfrPEO5IGmmoVNFop+06WUcEvASyfvQV5x2
+         5ND2psJTD7vwS1VcjdMzaPDut44emkkvBTRyob4xngWMQwvpiGmSOV5+2yMbjzNOVC
+         Ub0b8zdBXow+ErZGLs9dQueCtiVISlBWHxZi+Z/PO+vK00y8YO9qBqk4PnqaX8L2/5
+         73i33X/quaK0zHFs3NfsPKcKF307yGn3SMZ6DpmbTkGAL/5UQIgbvb1XlL1X14TGwj
+         DsYxowDQ3IVrg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 26/33] PCI: Fix pci_register_io_range() memory leak
-Date:   Tue,  2 Mar 2021 06:57:42 -0500
-Message-Id: <20210302115749.62653-26-sashal@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        nbd-general@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.4 31/33] nbd: handle device refs for DESTROY_ON_DISCONNECT properly
+Date:   Tue,  2 Mar 2021 06:57:47 -0500
+Message-Id: <20210302115749.62653-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115749.62653-1-sashal@kernel.org>
 References: <20210302115749.62653-1-sashal@kernel.org>
@@ -42,79 +43,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit f6bda644fa3a7070621c3bf12cd657f69a42f170 ]
+[ Upstream commit c9a2f90f4d6b9d42b9912f7aaf68e8d748acfffd ]
 
-Kmemleak reports:
+There exists a race where we can be attempting to create a new nbd
+configuration while a previous configuration is going down, both
+configured with DESTROY_ON_DISCONNECT.  Normally devices all have a
+reference of 1, as they won't be cleaned up until the module is torn
+down.  However with DESTROY_ON_DISCONNECT we'll make sure that there is
+only 1 reference (generally) on the device for the config itself, and
+then once the config is dropped, the device is torn down.
 
-  unreferenced object 0xc328de40 (size 64):
-    comm "kworker/1:1", pid 21, jiffies 4294938212 (age 1484.670s)
-    hex dump (first 32 bytes):
-      00 00 00 00 00 00 00 00 e0 d8 fc eb 00 00 00 00  ................
-      00 00 10 fe 00 00 00 00 00 00 00 00 00 00 00 00  ................
+The race that exists looks like this
 
-  backtrace:
-    [<ad758d10>] pci_register_io_range+0x3c/0x80
-    [<2c7f139e>] of_pci_range_to_resource+0x48/0xc0
-    [<f079ecc8>] devm_of_pci_get_host_bridge_resources.constprop.0+0x2ac/0x3ac
-    [<e999753b>] devm_of_pci_bridge_init+0x60/0x1b8
-    [<a895b229>] devm_pci_alloc_host_bridge+0x54/0x64
-    [<e451ddb0>] rcar_pcie_probe+0x2c/0x644
+TASK1					TASK2
+nbd_genl_connect()
+  idr_find()
+    refcount_inc_not_zero(nbd)
+      * count is 2 here ^^
+					nbd_config_put()
+					  nbd_put(nbd) (count is 1)
+    setup new config
+      check DESTROY_ON_DISCONNECT
+	put_dev = true
+    if (put_dev) nbd_put(nbd)
+	* free'd here ^^
 
-In case a PCI host driver's probe is deferred, the same I/O range may be
-allocated again, and be ignored, causing a memory leak.
+In nbd_genl_connect() we assume that the nbd ref count will be 2,
+however clearly that won't be true if the nbd device had been setup as
+DESTROY_ON_DISCONNECT with its prior configuration.  Fix this by getting
+rid of the runtime flag to check if we need to mess with the nbd device
+refcount, and use the device NBD_DESTROY_ON_DISCONNECT flag to check if
+we need to adjust the ref counts.  This was reported by syzkaller with
+the following kasan dump
 
-Fix this by (a) letting logic_pio_register_range() return -EEXIST if the
-passed range already exists, so pci_register_io_range() will free it, and
-by (b) making pci_register_io_range() not consider -EEXIST an error
-condition.
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+BUG: KASAN: use-after-free in refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
+Read of size 4 at addr ffff888143bf71a0 by task systemd-udevd/8451
 
-Link: https://lore.kernel.org/r/20210202100332.829047-1-geert+renesas@glider.be
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+CPU: 0 PID: 8451 Comm: systemd-udevd Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
+ refcount_dec_and_mutex_lock+0x19/0x140 lib/refcount.c:115
+ nbd_put drivers/block/nbd.c:248 [inline]
+ nbd_release+0x116/0x190 drivers/block/nbd.c:1508
+ __blkdev_put+0x548/0x800 fs/block_dev.c:1579
+ blkdev_put+0x92/0x570 fs/block_dev.c:1632
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1640
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc1e92b5270
+Code: 73 01 c3 48 8b 0d 38 7d 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 59 c1 20 00 00 75 10 b8 03 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ee fb ff ff 48 89 04 24
+RSP: 002b:00007ffe8beb2d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000007 RCX: 00007fc1e92b5270
+RDX: 000000000aba9500 RSI: 0000000000000000 RDI: 0000000000000007
+RBP: 00007fc1ea16f710 R08: 000000000000004a R09: 0000000000000008
+R10: 0000562f8cb0b2a8 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000562f8cb0afd0 R14: 0000000000000003 R15: 000000000000000e
+
+Allocated by task 1:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ nbd_dev_add+0x44/0x8e0 drivers/block/nbd.c:1673
+ nbd_init+0x250/0x271 drivers/block/nbd.c:2394
+ do_one_initcall+0x103/0x650 init/main.c:1223
+ do_initcall_level init/main.c:1296 [inline]
+ do_initcalls init/main.c:1312 [inline]
+ do_basic_setup init/main.c:1332 [inline]
+ kernel_init_freeable+0x605/0x689 init/main.c:1533
+ kernel_init+0xd/0x1b8 init/main.c:1421
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 8451:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+ ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+ kasan_slab_free include/linux/kasan.h:192 [inline]
+ slab_free_hook mm/slub.c:1547 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+ slab_free mm/slub.c:3143 [inline]
+ kfree+0xdb/0x3b0 mm/slub.c:4139
+ nbd_dev_remove drivers/block/nbd.c:243 [inline]
+ nbd_put.part.0+0x180/0x1d0 drivers/block/nbd.c:251
+ nbd_put drivers/block/nbd.c:295 [inline]
+ nbd_config_put+0x6dd/0x8c0 drivers/block/nbd.c:1242
+ nbd_release+0x103/0x190 drivers/block/nbd.c:1507
+ __blkdev_put+0x548/0x800 fs/block_dev.c:1579
+ blkdev_put+0x92/0x570 fs/block_dev.c:1632
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1640
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888143bf7000
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 416 bytes inside of
+ 1024-byte region [ffff888143bf7000, ffff888143bf7400)
+The buggy address belongs to the page:
+page:000000005238f4ce refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x143bf0
+head:000000005238f4ce order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x57ff00000010200(slab|head)
+raw: 057ff00000010200 ffffea00004b1400 0000000300000003 ffff888010c41140
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888143bf7080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888143bf7100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888143bf7180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff888143bf7200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+
+Reported-and-tested-by: syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 4 ++++
- lib/logic_pio.c   | 3 +++
- 2 files changed, 7 insertions(+)
+ drivers/block/nbd.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 89dece8a4132..ff4e2a9ad8dd 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3896,6 +3896,10 @@ int pci_register_io_range(struct fwnode_handle *fwnode, phys_addr_t addr,
- 	ret = logic_pio_register_range(range);
- 	if (ret)
- 		kfree(range);
-+
-+	/* Ignore duplicates due to deferred probing */
-+	if (ret == -EEXIST)
-+		ret = 0;
- #endif
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index f068bb5d650e..e11fddcb73b9 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -78,8 +78,7 @@ struct link_dead_args {
+ #define NBD_RT_HAS_PID_FILE		3
+ #define NBD_RT_HAS_CONFIG_REF		4
+ #define NBD_RT_BOUND			5
+-#define NBD_RT_DESTROY_ON_DISCONNECT	6
+-#define NBD_RT_DISCONNECT_ON_CLOSE	7
++#define NBD_RT_DISCONNECT_ON_CLOSE	6
  
- 	return ret;
-diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-index 905027574e5d..774bb02fff10 100644
---- a/lib/logic_pio.c
-+++ b/lib/logic_pio.c
-@@ -27,6 +27,8 @@ static DEFINE_MUTEX(io_range_mutex);
-  * @new_range: pointer to the IO range to be registered.
-  *
-  * Returns 0 on success, the error code in case of failure.
-+ * If the range already exists, -EEXIST will be returned, which should be
-+ * considered a success.
-  *
-  * Register a new IO range node in the IO range list.
-  */
-@@ -49,6 +51,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
- 	list_for_each_entry(range, &io_range_list, list) {
- 		if (range->fwnode == new_range->fwnode) {
- 			/* range already there */
-+			ret = -EEXIST;
- 			goto end_register;
+ #define NBD_DESTROY_ON_DISCONNECT	0
+ #define NBD_DISCONNECT_REQUESTED	1
+@@ -1940,12 +1939,21 @@ again:
+ 	if (info->attrs[NBD_ATTR_CLIENT_FLAGS]) {
+ 		u64 flags = nla_get_u64(info->attrs[NBD_ATTR_CLIENT_FLAGS]);
+ 		if (flags & NBD_CFLAG_DESTROY_ON_DISCONNECT) {
+-			set_bit(NBD_RT_DESTROY_ON_DISCONNECT,
+-				&config->runtime_flags);
+-			set_bit(NBD_DESTROY_ON_DISCONNECT, &nbd->flags);
+-			put_dev = true;
++			/*
++			 * We have 1 ref to keep the device around, and then 1
++			 * ref for our current operation here, which will be
++			 * inherited by the config.  If we already have
++			 * DESTROY_ON_DISCONNECT set then we know we don't have
++			 * that extra ref already held so we don't need the
++			 * put_dev.
++			 */
++			if (!test_and_set_bit(NBD_DESTROY_ON_DISCONNECT,
++					      &nbd->flags))
++				put_dev = true;
+ 		} else {
+-			clear_bit(NBD_DESTROY_ON_DISCONNECT, &nbd->flags);
++			if (test_and_clear_bit(NBD_DESTROY_ON_DISCONNECT,
++					       &nbd->flags))
++				refcount_inc(&nbd->refs);
  		}
- 		if (range->flags == LOGIC_PIO_CPU_MMIO &&
+ 		if (flags & NBD_CFLAG_DISCONNECT_ON_CLOSE) {
+ 			set_bit(NBD_RT_DISCONNECT_ON_CLOSE,
+@@ -2116,15 +2124,13 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
+ 	if (info->attrs[NBD_ATTR_CLIENT_FLAGS]) {
+ 		u64 flags = nla_get_u64(info->attrs[NBD_ATTR_CLIENT_FLAGS]);
+ 		if (flags & NBD_CFLAG_DESTROY_ON_DISCONNECT) {
+-			if (!test_and_set_bit(NBD_RT_DESTROY_ON_DISCONNECT,
+-					      &config->runtime_flags))
++			if (!test_and_set_bit(NBD_DESTROY_ON_DISCONNECT,
++					      &nbd->flags))
+ 				put_dev = true;
+-			set_bit(NBD_DESTROY_ON_DISCONNECT, &nbd->flags);
+ 		} else {
+-			if (test_and_clear_bit(NBD_RT_DESTROY_ON_DISCONNECT,
+-					       &config->runtime_flags))
++			if (test_and_clear_bit(NBD_DESTROY_ON_DISCONNECT,
++					       &nbd->flags))
+ 				refcount_inc(&nbd->refs);
+-			clear_bit(NBD_DESTROY_ON_DISCONNECT, &nbd->flags);
+ 		}
+ 
+ 		if (flags & NBD_CFLAG_DISCONNECT_ON_CLOSE) {
 -- 
 2.30.1
 
