@@ -2,611 +2,543 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B5432A733
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F97932A774
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839044AbhCBQFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:05:15 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:17112 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446136AbhCBN24 (ORCPT
+        id S1449184AbhCBQQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:16:30 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:45952 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376687AbhCBNi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:28:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1614692254; x=1646228254;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=GCchBRP3jpI7i/NSPQ9yq+lKDAClVndYibe3J0+EGoM=;
-  b=BP5B+NV0U2Ec0Fu/VfH03FQslajQyF5471qgpYvmhusLkzBQne/SMBdj
-   vwAajamjWmmysYlZzjcOTn450cLsXdA9REa85Ls/G+ChydPbQ9XL5NpMe
-   vJ+MPALSEFdOLSFn5TlqsmlAxjylCAHtqZy4yABFkmrflGacr+l9mjI9p
-   sk7W40DKm7L6lYLHni77rB94AfnCSdb2MLQhbbxh0iS+wxokRT4H7cuRL
-   bBf+QHX/ufknysYPgA0jBWRH34cjMUFLWo2EuUCvkyv8biWQkA1EgWigQ
-   lfE61B+Z6bXQnIAspKXU4X1ZnD1zkqZSYlUDU3TTyxkogT4zEREZef/1O
-   w==;
-IronPort-SDR: sPjf9wQWbwUdz+1SRkARqKT7a4G4MfGYpNF6i5ge6x+SU02Deny5j6KqmlAk3Du8O6U4bHkF/D
- DmTFU1QNlZ3FF3Lh7MLWJiLme74Bx/nQebQkvqgfqH9M1dpq1anEdFqCf5XyRpuTR8sk9NDDhO
- A2yo/Bv93JI4/tS2DkCP0sK1h0dTiRenflco6dHb4xmBQ6xS8UIEIGgHpaxsVHClbyrhkq8Qgc
- ZYnjLyUaS83EtkVjbQRX19DIGlaEZBv5kqLAH4EJdUT0UxtNLhszGn2gT2mkOHl27ZkJ4Cx4vG
- bLA=
-X-IronPort-AV: E=Sophos;i="5.81,216,1610380800"; 
-   d="scan'208";a="265440560"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2021 21:34:58 +0800
-IronPort-SDR: ljXtf1jQotE6SkuVjmdsaHbdKDTkYsXQUdLCZK1kJxWSsoS5tiEV42gJgnTnfmvRoBc7EYLWgY
- +HXWnXseK0DIx3q0dmeKEFi/FdJaD97CdO+39ugaMiJhCjEKEOFc+4X1i3yyvpjldwQWxXZUQL
- 6h0wye1tUOdML4yF00IbJ0sQspjCQS1Yql8LiNJGgh2LUD9ZCSMn+vfkG5pGQAWJECQEvDy69u
- cX596sXjtvFizW32SE396K6tfHEiCXaqzjHL+T0qF8DHgapyGgBlecv3VnGY6tK93h6lOeHl3z
- rPOpzC/h+VvC1dXwRCypQvqn
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 05:08:26 -0800
-IronPort-SDR: Bfw+p7PxHv3Q7PNowyworr1sKqBHw7OSXXAH9nE7mbpfmPxOVpFKRKg/GR9oejGO5gIvkGflHA
- TA/dn8cZANBNGD7iMtzdBOd5Cd3zmpa2qTn+ZZ1NcBePGiLBx33ble1z0QHzOqDQmModn9DpnN
- 4KaLMVV4TJ4FHn66irls4zzLpO8u9f/+kvaLu/Kur85HWUcFzeqCmN2fXuUkfSfG0BOJ9VEX7h
- 91Pi2AKEeQqen0lDFlno1d7HvBn/tmudRcTgVcqpvDgM0642DAoFphl8rMGplDTl+L9lH47xKL
- oNU=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip01.wdc.com with ESMTP; 02 Mar 2021 05:27:07 -0800
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v5 10/10] scsi: ufshpb: Make host mode parameters configurable
-Date:   Tue,  2 Mar 2021 15:25:03 +0200
-Message-Id: <20210302132503.224670-11-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210302132503.224670-1-avri.altman@wdc.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
+        Tue, 2 Mar 2021 08:38:57 -0500
+Date:   Tue, 2 Mar 2021 16:26:01 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        <iamjoonsoo.kim@lge.com>, <riel@surriel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations with
+ kernel_end
+Message-ID: <20210302132601.c2bm6sbjnjzud3da@mobilestation>
+References: <20201217201214.3414100-1-guro@fb.com>
+ <20201217201214.3414100-2-guro@fb.com>
+ <23fc1ef9-7342-8bc2-d184-d898107c52b2@gmail.com>
+ <20210228090041.GO1447004@kernel.org>
+ <8cbafe95-0f8c-a9b7-2dc9-cded846622fd@gmail.com>
+ <20210228230811.wdae7oaaf3mbpgwl@mobilestation>
+ <2e973fa8-5f2b-6840-0874-9c15fa0ebea0@gmail.com>
+ <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <97600bf8-06fd-3d76-8791-c2e3c4eae8a1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <97600bf8-06fd-3d76-8791-c2e3c4eae8a1@gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can make use of this commit, to elaborate some more of the host
-control mode logic, explaining what role play each and every variable.
+On Mon, Mar 01, 2021 at 08:09:52PM -0800, Florian Fainelli wrote:
+> 
+> 
+> On 3/1/2021 1:22 AM, Serge Semin wrote:
+> > On Sun, Feb 28, 2021 at 07:50:45PM -0800, Florian Fainelli wrote:
+> >> Hi Serge,
+> >>
+> >> On 2/28/2021 3:08 PM, Serge Semin wrote:
+> >>> Hi folks,
+> >>> What you've got here seems a more complicated problem than it
+> >>> could originally look like. Please, see my comments below.
+> >>>
+> >>> (Note I've discarded some of the email logs, which of no interest
+> >>> to the discovered problem. Please also note that I haven't got any
+> >>> Broadcom hardware to test out a solution suggested below.)
+> >>>
+> >>> On Sun, Feb 28, 2021 at 10:19:51AM -0800, Florian Fainelli wrote:
+> >>>> Hi Mike,
+> >>>>
+> >>>> On 2/28/2021 1:00 AM, Mike Rapoport wrote:
+> >>>>> Hi Florian,
+> >>>>>
+> >>>>> On Sat, Feb 27, 2021 at 08:18:47PM -0800, Florian Fainelli wrote:
+> >>>>>>
+> >>>
+> >>>>>> [...]
+> >>>
+> >>>>>>
+> >>>>>> Hi Roman, Thomas and other linux-mips folks,
+> >>>>>>
+> >>>>>> Kamal and myself have been unable to boot v5.11 on MIPS since this
+> >>>>>> commit, reverting it makes our MIPS platforms boot successfully. We do
+> >>>>>> not see a warning like this one in the commit message, instead what
+> >>>>>> happens appear to be a corrupted Device Tree which prevents the parsing
+> >>>>>> of the "rdb" node and leading to the interrupt controllers not being
+> >>>>>> registered, and the system eventually not booting.
+> >>>>>>
+> >>>>>> The Device Tree is built-into the kernel image and resides at
+> >>>>>> arch/mips/boot/dts/brcm/bcm97435svmb.dts.
+> >>>>>>
+> >>>>>> Do you have any idea what could be wrong with MIPS specifically here?
+> >>>
+> >>> Most likely the problem you've discovered has been there for quite
+> >>> some time. The patch you are referring to just caused it to be
+> >>> triggered by extending the early allocation range. See before that
+> >>> patch was accepted the early memory allocations had been performed
+> >>> in the range:
+> >>> [kernel_end, RAM_END].
+> >>> The patch changed that, so the early allocations are done within
+> >>> [RAM_START + PAGE_SIZE, RAM_END].
+> >>>
+> >>> In normal situations it's safe to do that as long as all the critical
+> >>> memory regions (including the memory residing a space below the
+> >>> kernel) have been reserved. But as soon as a memory with some critical
+> >>> structures haven't been reserved, the kernel may allocate it to be used
+> >>> for instance for early initializations with obviously unpredictable but
+> >>> most of the times unpleasant consequences.
+> >>>
+> >>>>>
+> >>>>> Apparently there is a memblock allocation in one of the functions called
+> >>>>> from arch_mem_init() between plat_mem_setup() and
+> >>>>> early_init_fdt_reserve_self().
+> >>>
+> >>> Mike, alas according to the log provided by Florian that's not the reason
+> >>> of the problem. Please, see my considerations below.
+> >>>
+> >>>> [...]
+> >>>>
+> >>>> [    0.000000] Linux version 5.11.0-g5695e5161974 (florian@localhost)
+> >>>> (mipsel-linux-gcc (GCC) 8.3.0, GNU ld (GNU Binutils) 2.32) #84 SMP Sun
+> >>>> Feb 28 10:01:50 PST 2021
+> >>>> [    0.000000] CPU0 revision is: 00025b00 (Broadcom BMIPS5200)
+> >>>> [    0.000000] FPU revision is: 00130001
+> >>>
+> >>>> [    0.000000] memblock_add: [0x00000000-0x0fffffff]
+> >>>> early_init_dt_scan_memory+0x160/0x1e0
+> >>>> [    0.000000] memblock_add: [0x20000000-0x4fffffff]
+> >>>> early_init_dt_scan_memory+0x160/0x1e0
+> >>>> [    0.000000] memblock_add: [0x90000000-0xcfffffff]
+> >>>> early_init_dt_scan_memory+0x160/0x1e0
+> >>>
+> >>> Here the memory has been added to the memblock allocator.
+> >>>
+> >>>> [    0.000000] MIPS: machine is Broadcom BCM97435SVMB
+> >>>> [    0.000000] earlycon: ns16550a0 at MMIO32 0x10406b00 (options '')
+> >>>> [    0.000000] printk: bootconsole [ns16550a0] enabled
+> >>>
+> >>>> [    0.000000] memblock_reserve: [0x00aa7600-0x00aaa0a0]
+> >>>> setup_arch+0x128/0x69c
+> >>>
+> >>> Here the fdt memory has been reserved. (Note it's built into the
+> >>> kernel.)
+> >>>
+> >>>> [    0.000000] memblock_reserve: [0x00010000-0x018313cf]
+> >>>> setup_arch+0x1f8/0x69c
+> >>>
+> >>> Here the kernel itself together with built-in dtb have been reserved.
+> >>> So far so good.
+> >>>
+> >>>> [    0.000000] Initrd not found or empty - disabling initrd
+> >>>
+> >>>> [    0.000000] memblock_alloc_try_nid: 10913 bytes align=0x40 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000
+> >>>> early_init_dt_alloc_memory_arch+0x40/0x84
+> >>>> [    0.000000] memblock_reserve: [0x00001000-0x00003aa0]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 32680 bytes align=0x4 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000
+> >>>> early_init_dt_alloc_memory_arch+0x40/0x84
+> >>>> [    0.000000] memblock_reserve: [0x00003aa4-0x0000ba4b]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>
+> >>> The log above most likely belongs to the call-chain:
+> >>> setup_arch()
+> >>> +-> arch_mem_init()
+> >>>     +-> device_tree_init() - BMIPS specific method
+> >>>         +-> unflatten_and_copy_device_tree()
+> >>>
+> >>> So to speak here we've copied the fdt from the original space
+> >>> [0x00aa7600-0x00aaa0a0] into [0x00001000-0x00003aa0] and unflattened
+> >>> it to [0x00003aa4-0x0000ba4b].
+> >>>
+> >>> The problem is that a bit later the next call-chain is performed:
+> >>> setup_arch()
+> >>> +-> plat_smp_setup()
+> >>>     +-> mp_ops->smp_setup(); - registered by prom_init()->register_bmips_smp_ops();
+> >>>         +-> if (!board_ebase_setup)
+> >>>                  board_ebase_setup = &bmips_ebase_setup;
+> >>>
+> >>> So at the moment of the CPU traps initialization the bmips_ebase_setup()
+> >>> method is called. What trap_init() does isn't compatible with the
+> >>> allocation performed by the unflatten_and_copy_device_tree() method.
+> >>> See the next comment.
+> >>>
+> >>>> [    0.000000] memblock_alloc_try_nid: 25 bytes align=0x4 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000
+> >>>> early_init_dt_alloc_memory_arch+0x40/0x84
+> >>>> [    0.000000] memblock_reserve: [0x0000ba4c-0x0000ba64]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_reserve: [0x0096a000-0x00969fff]
+> >>>> setup_arch+0x3fc/0x69c
+> >>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
+> >>>> [    0.000000] memblock_reserve: [0x0000ba80-0x0000ba9f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
+> >>>> [    0.000000] memblock_reserve: [0x0000bb00-0x0000bb1f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
+> >>>> [    0.000000] memblock_reserve: [0x0000bb80-0x0000bb9f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] Primary instruction cache 32kB, VIPT, 4-way, linesize 64
+> >>>> bytes.
+> >>>> [    0.000000] Primary data cache 32kB, 4-way, VIPT, no aliases,
+> >>>> linesize 32 bytes
+> >>>> [    0.000000] MIPS secondary cache 512kB, 8-way, linesize 128 bytes.
+> >>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> >>>> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
+> >>>> [    0.000000] memblock_reserve: [0x0000c000-0x0000cfff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> >>>> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
+> >>>> [    0.000000] memblock_reserve: [0x0000d000-0x0000dfff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> >>>> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
+> >>>> [    0.000000] memblock_reserve: [0x0000e000-0x0000efff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] Zone ranges:
+> >>>> [    0.000000]   Normal   [mem 0x0000000000000000-0x000000000fffffff]
+> >>>> [    0.000000]   HighMem  [mem 0x0000000010000000-0x00000000cfffffff]
+> >>>> [    0.000000] Movable zone start for each node
+> >>>> [    0.000000] Early memory node ranges
+> >>>> [    0.000000]   node   0: [mem 0x0000000000000000-0x000000000fffffff]
+> >>>> [    0.000000]   node   0: [mem 0x0000000020000000-0x000000004fffffff]
+> >>>> [    0.000000]   node   0: [mem 0x0000000090000000-0x00000000cfffffff]
+> >>>> [    0.000000] Initmem setup node 0 [mem
+> >>>> 0x0000000000000000-0x00000000cfffffff]
+> >>>> [    0.000000] memblock_alloc_try_nid: 27262976 bytes align=0x80 nid=0
+> >>>> from=0x00000000 max_addr=0x00000000
+> >>>> alloc_node_mem_map.constprop.135+0x6c/0xc8
+> >>>> [    0.000000] memblock_reserve: [0x01831400-0x032313ff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=0
+> >>>> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
+> >>>> [    0.000000] memblock_reserve: [0x0000bc00-0x0000bc1f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 384 bytes align=0x80 nid=0
+> >>>> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
+> >>>> [    0.000000] memblock_reserve: [0x0000bc80-0x0000bdff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] MEMBLOCK configuration:
+> >>>> [    0.000000]  memory size = 0x80000000 reserved size = 0x0322f032
+> >>>> [    0.000000]  memory.cnt  = 0x3
+> >>>> [    0.000000]  memory[0x0]     [0x00000000-0x0fffffff], 0x10000000
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  memory[0x1]     [0x20000000-0x4fffffff], 0x30000000
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  memory[0x2]     [0x90000000-0xcfffffff], 0x40000000
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved.cnt  = 0xa
+> >>>> [    0.000000]  reserved[0x0]   [0x00001000-0x00003aa0], 0x00002aa1
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x1]   [0x00003aa4-0x0000ba64], 0x00007fc1
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x2]   [0x0000ba80-0x0000ba9f], 0x00000020
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x3]   [0x0000bb00-0x0000bb1f], 0x00000020
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x4]   [0x0000bb80-0x0000bb9f], 0x00000020
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x5]   [0x0000bc00-0x0000bc1f], 0x00000020
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x6]   [0x0000bc80-0x0000bdff], 0x00000180
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x7]   [0x0000c000-0x0000efff], 0x00003000
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x8]   [0x00010000-0x018313cf], 0x018213d0
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000]  reserved[0x9]   [0x01831400-0x032313ff], 0x01a00000
+> >>>> bytes flags: 0x0
+> >>>> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 start_kernel+0x12c/0x654
+> >>>> [    0.000000] memblock_reserve: [0x0000be00-0x0000be1d]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 start_kernel+0x150/0x654
+> >>>> [    0.000000] memblock_reserve: [0x0000be80-0x0000be9d]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x3b0/0x884
+> >>>> [    0.000000] memblock_reserve: [0x0000f000-0x0000ffff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x5a4/0x884
+> >>>> [    0.000000] memblock_reserve: [0x03231400-0x032323ff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 294912 bytes align=0x1000 nid=-1
+> >>>> from=0x01000000 max_addr=0x00000000 pcpu_dfl_fc_alloc+0x24/0x30
+> >>>> [    0.000000] memblock_reserve: [0x03233000-0x0327afff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_free: [0x03245000-0x03244fff]
+> >>>> pcpu_embed_first_chunk+0x7a0/0x884
+> >>>> [    0.000000] memblock_free: [0x03257000-0x03256fff]
+> >>>> pcpu_embed_first_chunk+0x7a0/0x884
+> >>>> [    0.000000] memblock_free: [0x03269000-0x03268fff]
+> >>>> pcpu_embed_first_chunk+0x7a0/0x884
+> >>>> [    0.000000] memblock_free: [0x0327b000-0x0327afff]
+> >>>> pcpu_embed_first_chunk+0x7a0/0x884
+> >>>> [    0.000000] percpu: Embedded 18 pages/cpu s50704 r0 d23024 u73728
+> >>>> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x178/0x6ec
+> >>>> [    0.000000] memblock_reserve: [0x0000bf00-0x0000bf03]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1a8/0x6ec
+> >>>> [    0.000000] memblock_reserve: [0x0000bf80-0x0000bf83]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1dc/0x6ec
+> >>>> [    0.000000] memblock_reserve: [0x03232400-0x0323240f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x20c/0x6ec
+> >>>> [    0.000000] memblock_reserve: [0x03232480-0x0323248f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 128 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x558/0x6ec
+> >>>> [    0.000000] memblock_reserve: [0x03232500-0x0323257f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 92 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x8c/0x294
+> >>>> [    0.000000] memblock_reserve: [0x03232580-0x032325db]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 768 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0xe0/0x294
+> >>>> [    0.000000] memblock_reserve: [0x03232600-0x032328ff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 772 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x124/0x294
+> >>>> [    0.000000] memblock_reserve: [0x03232900-0x03232c03]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_alloc_try_nid: 192 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x158/0x294
+> >>>> [    0.000000] memblock_reserve: [0x03232c80-0x03232d3f]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] memblock_free: [0x0000f000-0x0000ffff]
+> >>>> pcpu_embed_first_chunk+0x838/0x884
+> >>>> [    0.000000] memblock_free: [0x03231400-0x032323ff]
+> >>>> pcpu_embed_first_chunk+0x850/0x884
+> >>>> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 523776
+> >>>> [    0.000000] Kernel command line: console=ttyS0,115200 earlycon
+> >>>> [    0.000000] memblock_alloc_try_nid: 131072 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
+> >>>> [    0.000000] memblock_reserve: [0x0327b000-0x0329afff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072
+> >>>> bytes, linear)
+> >>>> [    0.000000] memblock_alloc_try_nid: 65536 bytes align=0x80 nid=-1
+> >>>> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
+> >>>> [    0.000000] memblock_reserve: [0x0329b000-0x032aafff]
+> >>>> memblock_alloc_range_nid+0xf8/0x198
+> >>>> [    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536
+> >>>> bytes, linear)
+> >>>
+> >>>> [    0.000000] memblock_reserve: [0x00000000-0x000003ff]
+> >>>> trap_init+0x70/0x4e8
+> >>>
+> >>> Most likely someplace here the corruption has happened. The log above
+> >>> has just reserved a memory for NMI/reset vectors:
+> >>> arch/mips/kernel/traps.c: trap_init(void): Line 2373.
+> >>>
+> >>> But then the board_ebase_setup() pointer is dereferenced and called,
+> >>> which has been initialized with bmips_ebase_setup() earlier and which
+> >>> overwrites the ebase variable with: 0x80001000 as this is
+> >>> CPU_BMIPS5000 CPU. So any further calls of the functions like
+> >>> set_handler()/set_except_vector()/set_vi_srs_handler()/etc may cause a
+> >>> corruption of the memory above 0x80001000, which as we have discovered
+> >>> belongs to fdt and unflattened device tree.
+> >>>
+> >>>> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+> >>>> [    0.000000] Memory: 2045268K/2097152K available (8226K kernel code,
+> >>>> 1070K rwdata, 1336K rodata, 13808K init, 260K bss, 51884K reserved, 0K
+> >>>> cma-reserved, 1835008K highmem)
+> >>>> [    0.000000] SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+> >>>> [    0.000000] rcu: Hierarchical RCU implementation.
+> >>>> [    0.000000] rcu:     RCU event tracing is enabled.
+> >>>> [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay
+> >>>> is 25 jiffies.
+> >>>> [    0.000000] NR_IRQS: 256
+> >>>
+> >>>> [    0.000000] OF: Bad cell count for /rdb
+> >>>> [    0.000000] irq_bcm7038_l1: failed to remap intc L1 registers
+> >>>> [    0.000000] OF: of_irq_init: children remain, but no parents
+> >>>
+> >>> So here is the first time we have got the consequence of the corruption
+> >>> popped up. Luckily it's just the "Bad cells count" error. We could have
+> >>> got much less obvious log here up to getting a crash at some place
+> >>> further...
+> >>>
+> >>>> [    0.000000] random: get_random_bytes called from
+> >>>> start_kernel+0x444/0x654 with crng_init=0
+> >>>> [    0.000000] sched_clock: 32 bits at 250 Hz, resolution 4000000ns,
+> >>>> wraps every 8589934590000000ns
+> >>>
+> >>>>
+> >>>> and with your patch applied which unfortunately did not work we have the
+> >>>> following:
+> >>>>
+> >>>> [...]
+> >>>
+> >>> So a patch like this shall workaround the corruption:
+> >>>
+> >>> --- a/arch/mips/bmips/setup.c
+> >>> +++ b/arch/mips/bmips/setup.c
+> >>> @@ -174,6 +174,8 @@ void __init plat_mem_setup(void)
+> >>>  
+> >>>  	__dt_setup_arch(dtb);
+> >>>  
+> >>> +	memblock_reserve(0x0, 0x1000 + 0x100*64);
+> >>> +
+> >>>  	for (q = bmips_quirk_list; q->quirk_fn; q++) {
+> >>>  		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
+> >>>  					     q->compatible)) {
+> >>
+> > 
+> >> This patch works, thanks a lot for the troubleshooting and analysis! How
+> >> about the following which would be more generic and works as well and
+> >> should be more universal since it does not require each architecture to
+> >> provide an appropriate call to memblock_reserve():
+> > 
+> > Hm, are you sure it's working?
+> 
+> I was until I noticed that I was working on top of a revert of Roman's
+> patch sorry about the brain fart here.
+> 
+> > If so, my analysis hasn't been quite
+> > correct. My suggestion was based on the memory initializations,
+> > allocations and reservations trace. So here is the sequence of most
+> > crucial of them:
+> > 1) Memblock initialization:
+> >    start_kernel()->setup_arch()->arch_mem_init()->plat_mem_setup()->__dt_setup_arch()
+> >    (At this point I suggested to place the exceptions memory
+> >     reservation.)
+> > 2) Base FDT memory reservation:
+> >    start_kernel()->setup_arch()->arch_mem_init()->early_init_fdt_reserve_self()
+> > 3) FDT "reserved-memory" nodes parsing and corresponding memory ranges
+> >    reservation:
+> >    start_kernel()->setup_arch()->arch_mem_init()->early_init_fdt_scan_reserved_mem()
+> > 4) Reserve kernel itself, some critical sections like initrd and
+> >    crash-kernel:
+> >    start_kernel()->setup_arch()->arch_mem_init()->bootmem_init()...
+> > 5) Copy and unflatten the built-into the kernel device tree
+> >    (BMIPS-platform code):
+> >    start_kernel()->setup_arch()->arch_mem_init()->device_tree_init()
+> >    This is the very first time an allocation from the memblock pool
+> >    is performed. Since we haven't reserved a memory for the exception
+> >    vectors yet, the memblock allocator is free to return that memory
+> >    range for any other use. Needless to say if we try to use that memory
+> >    later without consulting with memblock, we may and in our case
+> >    will get into troubles.
+> > 6) Many random early memblock allocations for kernel use before
+> >    buddy and sl*b allocators are up and running...
+> >    Note if for some fortunate reason the allocations made in 5) didn't
+> >    overlap the exceptions memory, here we have much more chances to
+> >    do that with obviously fatal consequences of the ranges independent
+> >    usage.
+> > 7) Trap/exception vectors initialization and !memory reservation! for
+> >    them:
+> >    start_kernel()->trap_init()
+> >    Only at this point we get to reserve the memory for the vectors.
+> > 8) Init and run buddy/sl*b allocators:
+> >    start_kernel()->mm_init()->...mem_init()...
+> > 
+> > There are a lot of allocations done in 5) and 6) before the
+> > trap_init() is called in 7). You can see that in your log. That's why
+> > I have doubts that your patch worked well. Most likely you've
+> > forgotten to revert the workaround suggested by me in the previous
+> > message. Could you make sure that you didn't and re-test your patch
+> > again? If it still works then I might have confused something and it's
+> > strange that my patch worked in the first place...
+> 
 
-While at it, allow those parameters to be configurable.
+> I would like to submit a fix for 5.12-rc1 and get it back ported into
+> 5.11 so we have BMIPS machines boot again, that will be essentially your
+> earlier proposed fix.
+> 
+> BMIPS is the only "legacy" MIPS platform that defines an exception base,
+> so while this problem may certainly exist with other platforms, I do
+> wonder how likely it is there, though?
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  74 ++++++
- drivers/scsi/ufs/ufshpb.c                  | 290 +++++++++++++++++++--
- drivers/scsi/ufs/ufshpb.h                  |  20 ++
- 3 files changed, 368 insertions(+), 16 deletions(-)
+Hm, at least we can be sure that the problem exists for each platform,
+which conforms to the !cpu_has_mips_r2_r6 condition and which have VEIC/
+VINT capability. Those platforms may get out of the first PAGE_SIZE
+memory in initializing the exceptions table thus corrupting the memory
+possibly allocated for something else. In my case the problem doesn't
+manifest itself because the CPU is MIPS32r5.
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index 0017eaf89cbe..b91a4d018b3e 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1322,3 +1322,77 @@ Description:	This entry shows the maximum HPB data size for using single HPB
- 		===  ========
- 
- 		The file is read only.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/activation_thld
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In host control mode, reads are the major source of activation
-+		trials.  once this threshold hs met, the region is added to the
-+		"to-be-activated" list.  Since we reset the read counter upon
-+		write, this include sending a rb command updating the region
-+		ppn as well.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/normalization_factor
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In host control mode, We think of the regions as "buckets".
-+		Those buckets are being filled with reads, and emptied on write.
-+		We use entries_per_srgn - the amount of blocks in a subregion as
-+		our bucket size.  This applies because HPB1.0 only concern a
-+		single-block reads.  Once the bucket size is crossed, we trigger
-+		a normalization work - not only to avoid overflow, but mainly
-+		because we want to keep those counters normalized, as we are
-+		using those reads as a comparative score, to make various decisions.
-+		The normalization is dividing (shift right) the read counter by
-+		the normalization_factor. If during consecutive normalizations
-+		an active region has exhaust its reads - inactivate it.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/eviction_thld_enter
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	Region deactivation is often due to the fact that eviction took
-+		place: a region become active on the expense of another. This is
-+		happening when the max-active-regions limit has crossed.
-+		In host mode, eviction is considered an extreme measure. We
-+		want to verify that the entering region has enough reads, and
-+		the exiting region has much less reads.  eviction_thld_enter is
-+		the min reads that a region must have in order to be considered
-+		as a candidate to evict other region.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/eviction_thld_exit
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	same as above for the exiting region. A region is consider to
-+		be a candidate to be evicted, only if it has less reads than
-+		eviction_thld_exit.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/read_timeout_ms
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In order not to hang on to “cold” regions, we shall inactivate
-+		a region that has no READ access for a predefined amount of
-+		time - read_timeout_ms. If read_timeout_ms has expired, and the
-+		region is dirty - it is less likely that we can make any use of
-+		HPB-READing it.  So we inactivate it.  Still, deactivation has
-+		its overhead, and we may still benefit from HPB-READing this
-+		region if it is clean - see read_timeout_expiries.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/read_timeout_expiries
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	if the region read timeout has expired, but the region is clean,
-+		just re-wind its timer for another spin.  Do that as long as it
-+		is clean and did not exhaust its read_timeout_expiries threshold.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/timeout_polling_interval_ms
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	the frequency in which the delayed worker that checks the
-+		read_timeouts is awaken.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/inflight_map_req
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	in host control mode the host is the originator of map requests.
-+		To not flood the device with map requests, use a simple throttling
-+		mechanism that limits the number of inflight map requests.
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 7b749b95accb..dce94a069c85 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -17,7 +17,6 @@
- #include "../sd.h"
- 
- #define ACTIVATION_THRESHOLD 4 /* 4 IOs */
--#define EVICTION_THRESHOLD (ACTIVATION_THRESHOLD << 6) /* 256 IOs */
- #define READ_TO_MS 1000
- #define READ_TO_EXPIRIES 100
- #define POLLING_INTERVAL_MS 200
-@@ -643,7 +642,7 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		 */
- 		spin_lock_irqsave(&rgn->rgn_lock, flags);
- 		rgn->reads++;
--		if (rgn->reads == ACTIVATION_THRESHOLD)
-+		if (rgn->reads == hpb->params.activation_thld)
- 			activate = true;
- 		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
- 		if (activate ||
-@@ -752,10 +751,11 @@ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
- 	struct bio *bio;
- 
- 	if (hpb->is_hcm &&
--	    hpb->num_inflight_map_req >= THROTTLE_MAP_REQ_DEFAULT) {
-+	    hpb->num_inflight_map_req >= hpb->params.inflight_map_req) {
- 		dev_info(&hpb->sdev_ufs_lu->sdev_dev,
- 			 "map_req throttle. inflight %d throttle %d",
--			 hpb->num_inflight_map_req, THROTTLE_MAP_REQ_DEFAULT);
-+			 hpb->num_inflight_map_req,
-+			 hpb->params.inflight_map_req);
- 		return NULL;
- 	}
- 
-@@ -1045,6 +1045,7 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 	struct victim_select_info *lru_info;
- 	struct ufshpb_region *rgn;
- 	unsigned long flags;
-+	unsigned int poll;
- 	LIST_HEAD(expired_list);
- 
- 	hpb = container_of(dwork, struct ufshpb_lu, ufshpb_read_to_work);
-@@ -1063,7 +1064,7 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 				list_add(&rgn->list_expired_rgn, &expired_list);
- 			else
- 				rgn->read_timeout = ktime_add_ms(ktime_get(),
--							 READ_TO_MS);
-+						hpb->params.read_timeout_ms);
- 		}
- 	}
- 
-@@ -1079,8 +1080,9 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 
- 	ufshpb_kick_map_work(hpb);
- 
-+	poll = hpb->params.timeout_polling_interval_ms;
- 	schedule_delayed_work(&hpb->ufshpb_read_to_work,
--			      msecs_to_jiffies(POLLING_INTERVAL_MS));
-+			      msecs_to_jiffies(poll));
- }
- 
- static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
-@@ -1090,8 +1092,11 @@ static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
- 	list_add_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
- 	atomic_inc(&lru_info->active_cnt);
- 	if (rgn->hpb->is_hcm) {
--		rgn->read_timeout = ktime_add_ms(ktime_get(), READ_TO_MS);
--		rgn->read_timeout_expiries = READ_TO_EXPIRIES;
-+		rgn->read_timeout =
-+			ktime_add_ms(ktime_get(),
-+				     rgn->hpb->params.read_timeout_ms);
-+		rgn->read_timeout_expiries =
-+			rgn->hpb->params.read_timeout_expiries;
- 	}
- }
- 
-@@ -1120,7 +1125,8 @@ static struct ufshpb_region *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
- 		 * in host control mode, verify that the exiting region
- 		 * has less reads
- 		 */
--		if (hpb->is_hcm && rgn->reads > (EVICTION_THRESHOLD >> 1))
-+		if (hpb->is_hcm &&
-+		    rgn->reads > hpb->params.eviction_thld_exit)
- 			continue;
- 
- 		victim_rgn = rgn;
-@@ -1351,7 +1357,8 @@ static int ufshpb_add_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
- 			 * in host control mode, verify that the entering
- 			 * region has enough reads
- 			 */
--			if (hpb->is_hcm && rgn->reads < EVICTION_THRESHOLD) {
-+			if (hpb->is_hcm &&
-+			    rgn->reads < hpb->params.eviction_thld_enter) {
- 				ret = -EACCES;
- 				goto out;
- 			}
-@@ -1696,14 +1703,16 @@ static void ufshpb_normalization_work_handler(struct work_struct *work)
- 	struct ufshpb_lu *hpb;
- 	int rgn_idx;
- 	unsigned long flags;
-+	u8 factor;
- 
- 	hpb = container_of(work, struct ufshpb_lu, ufshpb_normalization_work);
-+	factor = hpb->params.normalization_factor;
- 
- 	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
- 		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
- 
- 		spin_lock_irqsave(&rgn->rgn_lock, flags);
--		rgn->reads = (rgn->reads >> 1);
-+		rgn->reads = (rgn->reads >> factor);
- 		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
- 
- 		if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
-@@ -2022,8 +2031,248 @@ requeue_timeout_ms_store(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RW(requeue_timeout_ms);
- 
-+ufshpb_sysfs_param_show_func(activation_thld);
-+static ssize_t
-+activation_thld_store(struct device *dev, struct device_attribute *attr,
-+		      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.activation_thld = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(activation_thld);
-+
-+ufshpb_sysfs_param_show_func(normalization_factor);
-+static ssize_t
-+normalization_factor_store(struct device *dev, struct device_attribute *attr,
-+			   const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0 || val > ilog2(hpb->entries_per_srgn))
-+		return -EINVAL;
-+
-+	hpb->params.normalization_factor = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(normalization_factor);
-+
-+ufshpb_sysfs_param_show_func(eviction_thld_enter);
-+static ssize_t
-+eviction_thld_enter_store(struct device *dev, struct device_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= hpb->params.eviction_thld_exit)
-+		return -EINVAL;
-+
-+	hpb->params.eviction_thld_enter = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(eviction_thld_enter);
-+
-+ufshpb_sysfs_param_show_func(eviction_thld_exit);
-+static ssize_t
-+eviction_thld_exit_store(struct device *dev, struct device_attribute *attr,
-+			 const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= hpb->params.activation_thld)
-+		return -EINVAL;
-+
-+	hpb->params.eviction_thld_exit = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(eviction_thld_exit);
-+
-+ufshpb_sysfs_param_show_func(read_timeout_ms);
-+static ssize_t
-+read_timeout_ms_store(struct device *dev, struct device_attribute *attr,
-+		      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	/* read_timeout >> timeout_polling_interval */
-+	if (val < hpb->params.timeout_polling_interval_ms * 2)
-+		return -EINVAL;
-+
-+	hpb->params.read_timeout_ms = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(read_timeout_ms);
-+
-+ufshpb_sysfs_param_show_func(read_timeout_expiries);
-+static ssize_t
-+read_timeout_expiries_store(struct device *dev, struct device_attribute *attr,
-+			    const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.read_timeout_expiries = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(read_timeout_expiries);
-+
-+ufshpb_sysfs_param_show_func(timeout_polling_interval_ms);
-+static ssize_t
-+timeout_polling_interval_ms_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	/* timeout_polling_interval << read_timeout */
-+	if (val <= 0 || val > hpb->params.read_timeout_ms / 2)
-+		return -EINVAL;
-+
-+	hpb->params.timeout_polling_interval_ms = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(timeout_polling_interval_ms);
-+
-+ufshpb_sysfs_param_show_func(inflight_map_req);
-+static ssize_t inflight_map_req_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0 || val > hpb->sdev_ufs_lu->queue_depth - 1)
-+		return -EINVAL;
-+
-+	hpb->params.inflight_map_req = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(inflight_map_req);
-+
-+
-+static void ufshpb_hcm_param_init(struct ufshpb_lu *hpb)
-+{
-+	hpb->params.activation_thld = ACTIVATION_THRESHOLD;
-+	hpb->params.normalization_factor = 1;
-+	hpb->params.eviction_thld_enter = (ACTIVATION_THRESHOLD << 6);
-+	hpb->params.eviction_thld_exit = (ACTIVATION_THRESHOLD << 5);
-+	hpb->params.read_timeout_ms = READ_TO_MS;
-+	hpb->params.read_timeout_expiries = READ_TO_EXPIRIES;
-+	hpb->params.timeout_polling_interval_ms = POLLING_INTERVAL_MS;
-+	hpb->params.inflight_map_req = THROTTLE_MAP_REQ_DEFAULT;
-+}
-+
- static struct attribute *hpb_dev_param_attrs[] = {
- 	&dev_attr_requeue_timeout_ms.attr,
-+	&dev_attr_activation_thld.attr,
-+	&dev_attr_normalization_factor.attr,
-+	&dev_attr_eviction_thld_enter.attr,
-+	&dev_attr_eviction_thld_exit.attr,
-+	&dev_attr_read_timeout_ms.attr,
-+	&dev_attr_read_timeout_expiries.attr,
-+	&dev_attr_timeout_polling_interval_ms.attr,
-+	&dev_attr_inflight_map_req.attr,
- 	NULL,
- };
- 
-@@ -2098,6 +2347,8 @@ static void ufshpb_stat_init(struct ufshpb_lu *hpb)
- static void ufshpb_param_init(struct ufshpb_lu *hpb)
- {
- 	hpb->params.requeue_timeout_ms = HPB_REQUEUE_TIME_MS;
-+	if (hpb->is_hcm)
-+		ufshpb_hcm_param_init(hpb);
- }
- 
- static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
-@@ -2154,9 +2405,13 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- 	ufshpb_stat_init(hpb);
- 	ufshpb_param_init(hpb);
- 
--	if (hpb->is_hcm)
-+	if (hpb->is_hcm) {
-+		unsigned int poll;
-+
-+		poll = hpb->params.timeout_polling_interval_ms;
- 		schedule_delayed_work(&hpb->ufshpb_read_to_work,
--				      msecs_to_jiffies(POLLING_INTERVAL_MS));
-+				      msecs_to_jiffies(poll));
-+	}
- 
- 	return 0;
- 
-@@ -2336,10 +2591,13 @@ void ufshpb_resume(struct ufs_hba *hba)
- 			continue;
- 		ufshpb_set_state(hpb, HPB_PRESENT);
- 		ufshpb_kick_map_work(hpb);
--		if (hpb->is_hcm)
--			schedule_delayed_work(&hpb->ufshpb_read_to_work,
--				msecs_to_jiffies(POLLING_INTERVAL_MS));
-+		if (hpb->is_hcm) {
-+			unsigned int poll =
-+				hpb->params.timeout_polling_interval_ms;
- 
-+			schedule_delayed_work(&hpb->ufshpb_read_to_work,
-+				msecs_to_jiffies(poll));
-+		}
- 	}
- }
- 
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index d83ab488688a..91151593faad 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -180,8 +180,28 @@ struct victim_select_info {
- 	atomic_t active_cnt;
- };
- 
-+/**
-+ * ufshpb_params - ufs hpb parameters
-+ * @requeue_timeout_ms - requeue threshold of wb command (0x2)
-+ * @activation_thld - min reads [IOs] to activate/update a region
-+ * @normalization_factor - shift right the region's reads
-+ * @eviction_thld_enter - min reads [IOs] for the entering region in eviction
-+ * @eviction_thld_exit - max reads [IOs] for the exiting region in eviction
-+ * @read_timeout_ms - timeout [ms] from the last read IO to the region
-+ * @read_timeout_expiries - amount of allowable timeout expireis
-+ * @timeout_polling_interval_ms - frequency in which timeouts are checked
-+ * @inflight_map_req - number of inflight map requests
-+ */
- struct ufshpb_params {
- 	unsigned int requeue_timeout_ms;
-+	unsigned int activation_thld;
-+	unsigned int normalization_factor;
-+	unsigned int eviction_thld_enter;
-+	unsigned int eviction_thld_exit;
-+	unsigned int read_timeout_ms;
-+	unsigned int read_timeout_expiries;
-+	unsigned int timeout_polling_interval_ms;
-+	unsigned int inflight_map_req;
- };
- 
- struct ufshpb_stats {
--- 
-2.25.1
+-Sergey
 
+> 
+> > 
+> > A food for thoughts for everyone (Thomas, Mark, please join the
+> > discussion). What we've got here is a bit bigger problem. AFAICS
+> > if bottom-up allocation is enabled (it's our case) memblock_find_in_range_node()
+> > performs the allocation above the very first PAGE_SIZE memory chunk
+> > (see that method code for details). So we are currently on a safe side
+> > for some older MIPS platforms. But the platform with VEIC/VINT may get
+> > into the same troubles here if they didn't reserve exception memory
+> > early enough before the kernel starts random allocations from
+> > memblock. So we either need to provide a generic workaround for that
+> > or make sure each platform gets to reserve vectors itself for instance
+> > in the plat_mem_setup() method.
+> > 
+> > -Sergey
+> > 
+> >>
+> >> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> >> index e0352958e2f7..b0a173b500e8 100644
+> >> --- a/arch/mips/kernel/traps.c
+> >> +++ b/arch/mips/kernel/traps.c
+> >> @@ -2367,10 +2367,7 @@ void __init trap_init(void)
+> >>
+> >>         if (!cpu_has_mips_r2_r6) {
+> >>                 ebase = CAC_BASE;
+> >> -               ebase_pa = virt_to_phys((void *)ebase);
+> >>                 vec_size = 0x400;
+> >> -
+> >> -               memblock_reserve(ebase_pa, vec_size);
+> >>         } else {
+> >>                 if (cpu_has_veic || cpu_has_vint)
+> >>                         vec_size = 0x200 + VECTORSPACING*64;
+> >> @@ -2410,6 +2407,14 @@ void __init trap_init(void)
+> >>
+> >>         if (board_ebase_setup)
+> >>                 board_ebase_setup();
+> >> +
+> >> +       /* board_ebase_setup() can change the exception base address
+> >> +        * reserve it now after changes were made.
+> >> +        */
+> >> +       if (!cpu_has_mips_r2_r6) {
+> >> +               ebase_pa = virt_to_phys((void *)ebase);
+> >> +               memblock_reserve(ebase_pa, vec_size);
+> >> +       }
+> >>         per_cpu_trap_init(true);
+> >>         memblock_set_bottom_up(false);
+> >> -- 
+> >> Florian
+> 
+> -- 
+> Florian
