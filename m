@@ -2,227 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00E632A435
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502C032A436
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382806AbhCBK06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:26:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59072 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382745AbhCBKGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:06:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0053BABF4;
-        Tue,  2 Mar 2021 10:06:02 +0000 (UTC)
-Subject: Re: [PATCH] drm/fb-helper: only unmap if buffer not null
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-References: <20210228044625.171151-1-ztong0001@gmail.com>
- <da187130-8a73-8490-4c70-aed3055081bf@suse.de>
- <CAA5qM4BunmAAgq3jf7+=3H_z+RN4EriuJbpmyMOi3JioUOFwbQ@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <fdcf68c4-23f0-880a-a010-1d511f810e7d@suse.de>
-Date:   Tue, 2 Mar 2021 11:06:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1382822AbhCBK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:27:03 -0500
+Received: from mail-vi1eur05on2112.outbound.protection.outlook.com ([40.107.21.112]:46880
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1838140AbhCBKIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:08:41 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AcRugx2dk5ANMn6jDY9fCAkHtwIc31/Uwnu2coVe0Jxpz3TRoVfURkKodfbmnDboUJcfdagUNTjOW3LqfHVlpgY27mA2oqkkKSIn3osQrhBqOyFBd7rPP27kW/GHNvEyBqYPmvRc2I806XytNJU0RiARIgT8McjDZff1itmNFJ1vFFVnG2rureUPtpPSSvJyASfTdlsewPzvLhOLan5Ol02aDxEK5Wgg+RcCeOeKMogjdw5xGBAdYonWTAFZQpH4x69P2dALaCiE74QqeT4koPTV+T7LI6i0Ntr2q/+nFNLoI1Qbl1CqzxPZK4otLSOVB6A0JWLJCEKFgwEUg1Qc2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KlSQ+6U263tKjIdVJ9vESDlQYmeWwVj/8tW4N04p5fA=;
+ b=LshypGp5Hs98RvspThjNg8UxMMgAfyc+8o9JXnopQ4h6lHZb3GQ41DSka/DEwaE6ZV9ystiqAUY8szy6sXizQHIDaG5x2m4Z4/gU+S30vss543JBCFXXf9Ol1p/1E6XDHEnxpKCLuN9h4D3e52LNRJklKhv9zu9fm+38eZhXrCbsPFGVFnGs2Leh41slOydP1oybU0tf/94RaU8B6UHUWNQXJMd6ca64sp0iLMdMAL68MfssEeGjJ2wVRDFjVJ7PHviUa9a/cx110LeEsebReecHF6qtrWgcd5P7HtlB4doThfp9bvQwo6D2TarsF6k+/qBJT5jceaHExnGCmxi4fQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=leica-geosystems.com.cn; dmarc=pass action=none
+ header.from=leica-geosystems.com.cn; dkim=pass
+ header.d=leica-geosystems.com.cn; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=leica-geosystems.com.cn; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KlSQ+6U263tKjIdVJ9vESDlQYmeWwVj/8tW4N04p5fA=;
+ b=H+J4uXvWd4/UpaJDOsP+Qyr1e08Ay2M/p8GdtqhGYmo51IVWP6qDUbNWMQ1GMOAoqHrOzbapkHUroNKVXXY0VJIDBI9kQhQgeuU5MQHuw2YERFST4xwJSXZmt8zjh5qo4bLRzEGtkuq9/KPvuZdPQOQUyT4Mi08NzEYwlOQaI7w=
+Received: from DB7PR06MB4571.eurprd06.prod.outlook.com (2603:10a6:10:70::20)
+ by DB9PR06MB7722.eurprd06.prod.outlook.com (2603:10a6:10:263::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.36; Tue, 2 Mar
+ 2021 10:07:44 +0000
+Received: from DB7PR06MB4571.eurprd06.prod.outlook.com
+ ([fe80::dcab:24bb:617a:30ee]) by DB7PR06MB4571.eurprd06.prod.outlook.com
+ ([fe80::dcab:24bb:617a:30ee%3]) with mapi id 15.20.3890.023; Tue, 2 Mar 2021
+ 10:07:44 +0000
+From:   LI Qingwu <qing-wu.li@leica-geosystems.com.cn>
+To:     LI Qingwu <qing-wu.li@leica-geosystems.com.cn>,
+        "sre@kernel.org" <sre@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "dmurphy@ti.com" <dmurphy@ti.com>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     TERTYCHNYI Grygorii <grygorii.tertychnyi@leica-geosystems.com>,
+        ZHIZHIKIN Andrey <andrey.zhizhikin@leica-geosystems.com>
+Subject: RE: [PATCH V4 2/2] power: supply: bq27xxx: Add support for BQ78Z100
+Thread-Topic: [PATCH V4 2/2] power: supply: bq27xxx: Add support for BQ78Z100
+Thread-Index: AQHW+43zF4rTN+6HvEyXTT7OkSUGsKpwoHFQ
+Date:   Tue, 2 Mar 2021 10:07:44 +0000
+Message-ID: <DB7PR06MB4571F60314A7B11154E5B5F2D7999@DB7PR06MB4571.eurprd06.prod.outlook.com>
+References: <20210205071004.26317-1-Qing-wu.Li@leica-geosystems.com.cn>
+ <20210205071004.26317-3-Qing-wu.Li@leica-geosystems.com.cn>
+In-Reply-To: <20210205071004.26317-3-Qing-wu.Li@leica-geosystems.com.cn>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: leica-geosystems.com.cn; dkim=none (message not
+ signed) header.d=none;leica-geosystems.com.cn; dmarc=none action=none
+ header.from=leica-geosystems.com.cn;
+x-originating-ip: [140.207.15.106]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 22e74009-9e03-4da1-b6d5-08d8dd6305fd
+x-ms-traffictypediagnostic: DB9PR06MB7722:
+x-ms-exchange-minimumurldomainage: leica-geosystems.com.cn#7686
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB9PR06MB77228FBF425F71DD8E579B5AD7999@DB9PR06MB7722.eurprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nmlhutXr2r+JW0eT53CYhmMCPjiQfMS5LQcycWPongs4weGXvuQ9hen8tcmQ4h4TGWSgpb2n0ZKqlbBjjF6qe7kDnJca8SMB8I+843aa5tMMiQ6avnM+LSqZm6sxTRPytTl5kMjXMzSHKMotnsx6iLoBeT4SHf9zAi6nhqZ1DJqTv24anSHCcSFb/oyP4sYSmibuMnHHrFZ4E+YaoPT8MWKlfnQL7NA5Nix4Z7CWdb1lBG58x3kJqLMwXsmW6IG9Z4NTwTVmCenEdAPqHGwCy1Jk9asb65CAfXiyvyxftJ5QmnyqpZ8/edstkie25QM3qOGNL62umH5Z30pt3c+ZHGf6yZaamndY+5K5IrBR6yleMF6/5dUIUsSEjKhBBnqUnkmHY3JO3yKZz6wRPiPfuldw7CisyMF0fJEAPoZy6f5/94dYvaV3wiNLOfjapfmBv51gleRdWNgczP28DlSfTE615UuLUEUSZyVPoKQrDVzJP83eTw7NwxDmirmAz2eDxJNn/rUIIJCc7b8Rk0CMAirzJrAAtAFAqFIsViRL22Cau+ETAm8azoTapL4VPFJbonSQdQt3SP72C6l3j5N4PjyzVsu3Zpg3UkbRX3SDAqQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR06MB4571.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39860400002)(396003)(5660300002)(52536014)(966005)(83380400001)(7696005)(76116006)(66946007)(107886003)(66556008)(4326008)(66446008)(45080400002)(66476007)(64756008)(15974865002)(478600001)(316002)(71200400001)(110136005)(54906003)(33656002)(8676002)(2906002)(86362001)(8936002)(53546011)(26005)(55016002)(9686003)(186003)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mSmTjHXtYrEtUD/caDyfVSbWU9vfHS9KLuYcfLScINUpodB+ci/6TKm/zXDk?=
+ =?us-ascii?Q?KJBuowhBSuYOKFjGW4NQtBSK4l/Nq7E93lCXsC1JZsi3XyO/PoDjRq7fHzQa?=
+ =?us-ascii?Q?g1iNsSCh+suC9kYrADmVX4z9e1yedTkHskpQ1ciWmYBNnfXw92rNnWq6XoTS?=
+ =?us-ascii?Q?1wZ+NeKPKmq2j0HBllm1YSDytoAUAU3tHrHSjRJ9ngkuhdknyh1DEIjkV2pM?=
+ =?us-ascii?Q?dQF5hacI0rzZfo3KCppoNMfdKOFWsNndzC5gziuD7e4DgEZLIX9i0fUiNbwv?=
+ =?us-ascii?Q?kgn64XiPJD/GBxCS/3ATzdeyKiW3mzRoiUQyjgkLvBuYHJNzgLCxlf75G4aH?=
+ =?us-ascii?Q?jaQj/C4XxxsHD4TxQrsjSbm6zPv4QbBD2ATb3B95VdcZfdHetSw0db1EEl9x?=
+ =?us-ascii?Q?70KwJicYqygYm2yfG1qE4O/fRvitatUQFCeJeL0r9wBXj5F8zZkBy1tprwMs?=
+ =?us-ascii?Q?L6g1oN14STa820DOjuGkR1HkD+xGGjtrXgCHPDzXNlKCdP1UFdgZmrsBDw8w?=
+ =?us-ascii?Q?wuWsrDHp9veC6+6qu1drjrc3m0Y+I9fI/ixNnMP6qT8+hecnr5sgB9bID59t?=
+ =?us-ascii?Q?G27+in2uZ4ReSKfVqYIdENBHQqxeX+EZtpIc2+kox/ECGgO5HZmMPD6HENZW?=
+ =?us-ascii?Q?JGmJ7hZXiztjKoguKRAvGT/joJFER3pxZ33vwRcDB2M2qLMjs/ZYUT8mdgCD?=
+ =?us-ascii?Q?Kspvky8NJb2DO73IxAK2i7H4ooqj5Fhu4DIP3eFnFsNOY83tiQqKQBz7UfHv?=
+ =?us-ascii?Q?CraEyxePMzwIv7IOlJ4lCbpWx7Hi8KCn2LrHBw617MuI+mRgDbUZCw2UGRLi?=
+ =?us-ascii?Q?ROCEa6YJ0uwyF877fEIPtXarm3iMqJk4LdisQrVjJIu3RNGjXh6VXdRTQ6ua?=
+ =?us-ascii?Q?vTH19UNnA2NUf+zDAHqPQffBR9hVQ077SwGM/U3qJu0Vwx6d3g+7pmfDeCmM?=
+ =?us-ascii?Q?ueW93M/859rd6F1rRu91O9/jBsGAWxHuovYSmTKxO3r25+OuEg76iYIae1ny?=
+ =?us-ascii?Q?TYMvJu3vx690X5DYwypULofOp6g4LbwR4ocMJW9Xj89mq0rcE/m0Oxc+ar01?=
+ =?us-ascii?Q?3NDcMHuwBP8wEZALwRT3/1j2CRhQGDb8seuWorBse+ZGDr8k4+/h3CsNrue0?=
+ =?us-ascii?Q?dafqCPKTqangAXMM6+/H8p8njj4S0kKYCBvnPlERpMIAMPlpDF5mOf3NPm7o?=
+ =?us-ascii?Q?TprMBbtITIu0rT4keRmcDKIMZs10hpHc2BsiXDG+Jdes77IbVGPrpFSCJEkM?=
+ =?us-ascii?Q?vThhK70Y4+Nm0TgRDCczUU/se9b5t3uQZVg5cM9XBgwYvalmAtBXBfXtXtjY?=
+ =?us-ascii?Q?xoY1Rzs0FDm4a6GfgUarv/VV?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAA5qM4BunmAAgq3jf7+=3H_z+RN4EriuJbpmyMOi3JioUOFwbQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="UR6HGHl5SwziLkRa34OA3h2t6nxsXScDF"
+X-OriginatorOrg: leica-geosystems.com.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR06MB4571.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22e74009-9e03-4da1-b6d5-08d8dd6305fd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2021 10:07:44.3690
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pwEtm/p9YRn8+UMOvaIcFdYHa3/LDSMYibx9eLLyn6YLFMZzCfFSv6W5taOk8e3ZCKT4tkd71Fj05rrnN91DHXrdM4rg0DGrqqIL7yoF7aSGdQpWqz1xFWfICOxJhBah
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR06MB7722
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UR6HGHl5SwziLkRa34OA3h2t6nxsXScDF
-Content-Type: multipart/mixed; boundary="q5iyFweml60dc9jnjLlAwm9du02Ui7rOB";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tong Zhang <ztong0001@gmail.com>
-Cc: David Airlie <airlied@linux.ie>, open list
- <linux-kernel@vger.kernel.org>,
- DRI Development <dri-devel@lists.freedesktop.org>
-Message-ID: <fdcf68c4-23f0-880a-a010-1d511f810e7d@suse.de>
-Subject: Re: [PATCH] drm/fb-helper: only unmap if buffer not null
-References: <20210228044625.171151-1-ztong0001@gmail.com>
- <da187130-8a73-8490-4c70-aed3055081bf@suse.de>
- <CAA5qM4BunmAAgq3jf7+=3H_z+RN4EriuJbpmyMOi3JioUOFwbQ@mail.gmail.com>
-In-Reply-To: <CAA5qM4BunmAAgq3jf7+=3H_z+RN4EriuJbpmyMOi3JioUOFwbQ@mail.gmail.com>
-
---q5iyFweml60dc9jnjLlAwm9du02Ui7rOB
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 02.03.21 um 04:29 schrieb Tong Zhang:
-> Hi Tomas,
->=20
-> I think the issue could be possibly caused by the following,
-> Please correct me if I'm wrong.
->=20
-> drm_fb_helper_single_fb_probe() can fail with
-> "Cannot find any crtc or sizes"
-> which will cause fb_helper->funcs->fb_probe not being called,
-> thus fb_helper->buffer remains NULL --
-> Since there could be the case that the fb_probe is never called,
-> a subsequent modprobe -r will cause the following
-> drm_client_buffer_vunmap(NULL) in drm_fbdev_cleanup()
-
-Thanks! I added Fixes tags to your patch and merged it into drm-misc-fixe=
-s.
-
-Best regards
-Thomas
-
->=20
-> Best,
-> - Tong
->=20
-> On Mon, Mar 1, 2021 at 3:26 AM Thomas Zimmermann <tzimmermann@suse.de> =
-wrote:
->>
->> Hi
->>
->> Am 28.02.21 um 05:46 schrieb Tong Zhang:
->>> drm_fbdev_cleanup() can be called when fb_helper->buffer is null, hen=
-ce
->>> fb_helper->buffer should be checked before calling
->>> drm_client_buffer_vunmap(). This buffer is also checked in
->>> drm_client_framebuffer_delete(), so we should also do the same thing =
-for
->>> drm_client_buffer_vunmap().
->>
->> I think a lot of drivers are affected by this problem; probably most o=
-f
->> the ones that use the generic fbdev code. How did you produce the erro=
-r?
->>
->> What I'm more concerned about is why the buffer is NULL. Was ther eno
->> hotplug event? Do you have a display attached?
->>
->> Best regards
->> Thomas
->>
->>
->>>
->>> [  199.128742] RIP: 0010:drm_client_buffer_vunmap+0xd/0x20
->>> [  199.129031] Code: 43 18 48 8b 53 20 49 89 45 00 49 89 55 08 5b 44 =
-89 e0 41 5c 41 5d 41 5e 5d
->>> c3 0f 1f 00 53 48 89 fb 48 8d 7f 10 e8 73 7d a1 ff <48> 8b 7b 10 48 8=
-d 73 18 5b e9 75 53 fc ff 0
->>> f 1f 44 00 00 48 b8 00
->>> [  199.130041] RSP: 0018:ffff888103f3fc88 EFLAGS: 00010282
->>> [  199.130329] RAX: 0000000000000001 RBX: 0000000000000000 RCX: fffff=
-fff8214d46d
->>> [  199.130733] RDX: 1ffffffff079c6b9 RSI: 0000000000000246 RDI: fffff=
-fff83ce35c8
->>> [  199.131119] RBP: ffff888103d25458 R08: 0000000000000001 R09: fffff=
-bfff0791761
->>> [  199.131505] R10: ffffffff83c8bb07 R11: fffffbfff0791760 R12: 00000=
-00000000000
->>> [  199.131891] R13: ffff888103d25468 R14: ffff888103d25418 R15: ffff8=
-88103f18120
->>> [  199.132277] FS:  00007f36fdcbb6a0(0000) GS:ffff88815b400000(0000) =
-knlGS:0000000000000000
->>> [  199.132721] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [  199.133033] CR2: 0000000000000010 CR3: 0000000103d26000 CR4: 00000=
-000000006f0
->>> [  199.133420] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000=
-00000000000
->>> [  199.133807] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000=
-00000000400
->>> [  199.134195] Call Trace:
->>> [  199.134333]  drm_fbdev_cleanup+0x179/0x1a0
->>> [  199.134562]  drm_fbdev_client_unregister+0x2b/0x40
->>> [  199.134828]  drm_client_dev_unregister+0xa8/0x180
->>> [  199.135088]  drm_dev_unregister+0x61/0x110
->>> [  199.135315]  mgag200_pci_remove+0x38/0x52 [mgag200]
->>> [  199.135586]  pci_device_remove+0x62/0xe0
->>> [  199.135806]  device_release_driver_internal+0x148/0x270
->>> [  199.136094]  driver_detach+0x76/0xe0
->>> [  199.136294]  bus_remove_driver+0x7e/0x100
->>> [  199.136521]  pci_unregister_driver+0x28/0xf0
->>> [  199.136759]  __x64_sys_delete_module+0x268/0x300
->>> [  199.137016]  ? __ia32_sys_delete_module+0x300/0x300
->>> [  199.137285]  ? call_rcu+0x3e4/0x580
->>> [  199.137481]  ? fpregs_assert_state_consistent+0x4d/0x60
->>> [  199.137767]  ? exit_to_user_mode_prepare+0x2f/0x130
->>> [  199.138037]  do_syscall_64+0x33/0x40
->>> [  199.138237]  entry_SYSCALL_64_after_hwframe+0x44/0xae
->>> [  199.138517] RIP: 0033:0x7f36fdc3dcf7
->>>
->>> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
->>> ---
->>>    drivers/gpu/drm/drm_fb_helper.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb=
-_helper.c
->>> index b9a616737c0e..f6baa2046124 100644
->>> --- a/drivers/gpu/drm/drm_fb_helper.c
->>> +++ b/drivers/gpu/drm/drm_fb_helper.c
->>> @@ -2048,7 +2048,7 @@ static void drm_fbdev_cleanup(struct drm_fb_hel=
-per *fb_helper)
->>>
->>>        if (shadow)
->>>                vfree(shadow);
->>> -     else
->>> +     else if (fb_helper->buffer)
->>>                drm_client_buffer_vunmap(fb_helper->buffer);
->>>
->>>        drm_client_framebuffer_delete(fb_helper->buffer);
->>>
->>
->> --
->> Thomas Zimmermann
->> Graphics Driver Developer
->> SUSE Software Solutions Germany GmbH
->> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
->> (HRB 36809, AG N=C3=BCrnberg)
->> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
->>
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+this is a friendly reminder.
 
 
---q5iyFweml60dc9jnjLlAwm9du02Ui7rOB--
 
---UR6HGHl5SwziLkRa34OA3h2t6nxsXScDF
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
 
------BEGIN PGP SIGNATURE-----
+Best Regards
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmA+DgkFAwAAAAAACgkQlh/E3EQov+DZ
-Ng//Wifw9xv8zKgJXA+OQ+Maa07DNde7HZIyARHUtmlWjFPcehf+8XPOHIBQEOSVestA0A1pxg/w
-p6BGDyV50LMBvxaHPaff7Gp5gfMbfC14I/vIfKa57lPU3ODKHzvF1Erv0aMOn+AuSxH1LWNpndfb
-VVunWWyMz5Xi07p7o/eD5CJPHWZmvEoiTicL4SLgyyY5YgOxLeRtqb9+wQVqDRj+bz96PWdeKhqT
-FuDVZ4OLp6qiISz3dMWQlMdKF6ObfpHswfmbfTxNCYgOeSSeLjhErgIH2yuRN0gFpFeniTCwvdfv
-L+AqIwuOF8Xiomc1/CS+lX2RouFq7ulWFF+PwCowmL3NWmcWMaRNuTjW4PVeUT/5UzT1sQ7qWG9n
-9vEbDxgtKmX7mcEJtpVcAKezKm8BwXwpjc5HmFQahCbcP+Ogsdj9adAMbkB/34PDio1molAeIwBL
-BSvXGhOKn6OQYwMV8oSmCyVrQ1wBZDelJFCvGUcqykvzb2jGKjsBKu8cxG1tMaeg0b9IVZ5kVMfx
-ZHtvoSYrwCf6hLDvYNFV6p+tZ1vdgMaeYyIXqgWSydRSZAlNh0CieZC7PmBIOV9AHVwvwnMhzIf6
-OGEbO3Nuoq++vMba3ewa+IbVFirrmXlpZmZbnsDm6I/JEfWukpJjdXxNYrDFLbS6BvPQEWEMNcPK
-O7E=
-=yjkf
------END PGP SIGNATURE-----
+**********************************************
+Li Qingwu (Terry)
+Senior Embedded Software Engineer=20
+Leica Geosystems(Shanghai)Co.,Limited
+(Tel): +86 21 61061036
+(FAX): +86 21 61061008
+(Mobile): +86 187 0185 9600
+E-mail: Qing-wu.Li@leica-geosystems.com.cn
+Http: www.leica-geosystems.com.cn
+**********************************************
 
---UR6HGHl5SwziLkRa34OA3h2t6nxsXScDF--
+-----Original Message-----
+From: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>=20
+Sent: Friday, February 5, 2021 3:10 PM
+To: sre@kernel.org; robh+dt@kernel.org; dmurphy@ti.com; pali@kernel.org; kr=
+zk@kernel.org; linux-pm@vger.kernel.org; devicetree@vger.kernel.org; linux-=
+kernel@vger.kernel.org
+Cc: TERTYCHNYI Grygorii <grygorii.tertychnyi@leica-geosystems.com>; ZHIZHIK=
+IN Andrey <andrey.zhizhikin@leica-geosystems.com>; LI Qingwu <qing-wu.li@le=
+ica-geosystems.com.cn>
+Subject: [PATCH V4 2/2] power: supply: bq27xxx: Add support for BQ78Z100
+
+Add support for TI BQ78Z100, I2C interface gas gauge.
+It provides a fully integrated safety protection and authentication for 1 t=
+o 2-series cell Li-Ion and Li-Polymer battery packs.
+
+The patch was tested with BQ78Z100 equipment.
+
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+---
+ drivers/power/supply/bq27xxx_battery.c     | 46 +++++++++++++++++++++-
+ drivers/power/supply/bq27xxx_battery_i2c.c |  2 +
+ include/linux/power/bq27xxx_battery.h      |  1 +
+ 3 files changed, 48 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/=
+bq27xxx_battery.c
+index 315e0909e6a4..c8579ec7a4f8 100644
+--- a/drivers/power/supply/bq27xxx_battery.c
++++ b/drivers/power/supply/bq27xxx_battery.c
+@@ -39,6 +39,7 @@
+  * https://eur02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww=
+.ti.com%2Fproduct%2Fbq27z561&amp;data=3D04%7C01%7C%7C9f9bd80e6c4c48b21f0208=
+d8c9a5158b%7C1b16ab3eb8f64fe39f3e2db7fe549f6a%7C0%7C0%7C637481058152484173%=
+7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWw=
+iLCJXVCI6Mn0%3D%7C1000&amp;sdata=3Dm28d%2BWIxG3uVVBiA1GIYbahvhxe%2BqFFXHC9x=
+Fum17wc%3D&amp;reserved=3D0
+  * https://eur02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww=
+.ti.com%2Fproduct%2Fbq28z610&amp;data=3D04%7C01%7C%7C9f9bd80e6c4c48b21f0208=
+d8c9a5158b%7C1b16ab3eb8f64fe39f3e2db7fe549f6a%7C0%7C0%7C637481058152484173%=
+7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWw=
+iLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D5f7FlqKszetEP3Uq2rZFIvHAbSsVV%2FUAWS7gOK=
+tdzts%3D&amp;reserved=3D0
+  * https://eur02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww=
+.ti.com%2Fproduct%2Fbq34z100-g1&amp;data=3D04%7C01%7C%7C9f9bd80e6c4c48b21f0=
+208d8c9a5158b%7C1b16ab3eb8f64fe39f3e2db7fe549f6a%7C0%7C0%7C6374810581524841=
+73%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1h=
+aWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DIK%2Bfiq2ga7dciCQHO5%2FBqKRgRZDgNoM0N=
+eVpjmT9YtY%3D&amp;reserved=3D0
++ *=20
++ https://eur02.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.
++ ti.com%2Fproduct%2Fbq78z100&amp;data=3D04%7C01%7C%7C9f9bd80e6c4c48b21f02
++ 08d8c9a5158b%7C1b16ab3eb8f64fe39f3e2db7fe549f6a%7C0%7C0%7C637481058152
++ 484173%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJ
++ BTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DewaB4hkn%2Bx7EJPXIA5Uux0P
++ MolDcgFqTHYKCslVYDFs%3D&amp;reserved=3D0
+  */
+=20
+ #include <linux/device.h>
+@@ -497,7 +498,27 @@ static u8
+ 		[BQ27XXX_REG_DCAP] =3D 0x3c,
+ 		[BQ27XXX_REG_AP] =3D 0x22,
+ 		BQ27XXX_DM_REG_ROWS,
+-	};
++	},
++	bq78z100_regs[BQ27XXX_REG_MAX] =3D {
++		[BQ27XXX_REG_CTRL] =3D 0x00,
++		[BQ27XXX_REG_TEMP] =3D 0x06,
++		[BQ27XXX_REG_INT_TEMP] =3D 0x28,
++		[BQ27XXX_REG_VOLT] =3D 0x08,
++		[BQ27XXX_REG_AI] =3D 0x14,
++		[BQ27XXX_REG_FLAGS] =3D 0x0a,
++		[BQ27XXX_REG_TTE] =3D 0x16,
++		[BQ27XXX_REG_TTF] =3D 0x18,
++		[BQ27XXX_REG_TTES] =3D INVALID_REG_ADDR,
++		[BQ27XXX_REG_TTECP] =3D INVALID_REG_ADDR,
++		[BQ27XXX_REG_NAC] =3D INVALID_REG_ADDR,
++		[BQ27XXX_REG_FCC] =3D 0x12,
++		[BQ27XXX_REG_CYCT] =3D 0x2a,
++		[BQ27XXX_REG_AE] =3D 0x22,
++		[BQ27XXX_REG_SOC] =3D 0x2c,
++		[BQ27XXX_REG_DCAP] =3D 0x3c,
++		[BQ27XXX_REG_AP] =3D 0x22,
++		BQ27XXX_DM_REG_ROWS,
++};
+=20
+ static enum power_supply_property bq27000_props[] =3D {
+ 	POWER_SUPPLY_PROP_STATUS,
+@@ -792,6 +813,27 @@ static enum power_supply_property bq34z100_props[] =3D=
+ {
+ 	POWER_SUPPLY_PROP_MANUFACTURER,
+ };
+=20
++static enum power_supply_property bq78z100_props[] =3D {
++	POWER_SUPPLY_PROP_STATUS,
++	POWER_SUPPLY_PROP_PRESENT,
++	POWER_SUPPLY_PROP_VOLTAGE_NOW,
++	POWER_SUPPLY_PROP_CURRENT_NOW,
++	POWER_SUPPLY_PROP_CAPACITY,
++	POWER_SUPPLY_PROP_CAPACITY_LEVEL,
++	POWER_SUPPLY_PROP_TEMP,
++	POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW,
++	POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG,
++	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
++	POWER_SUPPLY_PROP_TECHNOLOGY,
++	POWER_SUPPLY_PROP_CHARGE_FULL,
++	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
++	POWER_SUPPLY_PROP_CYCLE_COUNT,
++	POWER_SUPPLY_PROP_ENERGY_NOW,
++	POWER_SUPPLY_PROP_POWER_AVG,
++	POWER_SUPPLY_PROP_HEALTH,
++	POWER_SUPPLY_PROP_MANUFACTURER,
++};
++
+ struct bq27xxx_dm_reg {
+ 	u8 subclass_id;
+ 	u8 offset;
+@@ -890,6 +932,7 @@ static struct bq27xxx_dm_reg bq27621_dm_regs[] =3D {  #=
+define bq27z561_dm_regs 0  #define bq28z610_dm_regs 0  #define bq34z100_dm_=
+regs 0
++#define bq78z100_dm_regs 0
+=20
+ #define BQ27XXX_O_ZERO		BIT(0)
+ #define BQ27XXX_O_OTDC		BIT(1) /* has OTC/OTD overtemperature flags */
+@@ -948,6 +991,7 @@ static struct {
+ 	[BQ28Z610]  =3D BQ27XXX_DATA(bq28z610,  0         , BQ27Z561_O_BITS),
+ 	[BQ34Z100]  =3D BQ27XXX_DATA(bq34z100,  0         , BQ27XXX_O_OTDC | BQ27=
+XXX_O_SOC_SI | \
+ 							  BQ27XXX_O_HAS_CI | BQ27XXX_O_MUL_CHEM),
++	[BQ78Z100]  =3D BQ27XXX_DATA(bq78z100,  0x00000000, BQ27Z561_O_BITS),
+ };
+=20
+ static DEFINE_MUTEX(bq27xxx_list_lock); diff --git a/drivers/power/supply/=
+bq27xxx_battery_i2c.c b/drivers/power/supply/bq27xxx_battery_i2c.c
+index eb4f4284982f..46f078350fd3 100644
+--- a/drivers/power/supply/bq27xxx_battery_i2c.c
++++ b/drivers/power/supply/bq27xxx_battery_i2c.c
+@@ -248,6 +248,7 @@ static const struct i2c_device_id bq27xxx_i2c_id_table[=
+] =3D {
+ 	{ "bq27z561", BQ27Z561 },
+ 	{ "bq28z610", BQ28Z610 },
+ 	{ "bq34z100", BQ34Z100 },
++	{ "bq78z100", BQ78Z100 },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(i2c, bq27xxx_i2c_id_table); @@ -284,6 +285,7 @@ static=
+ const struct of_device_id bq27xxx_battery_i2c_of_match_table[] =3D {
+ 	{ .compatible =3D "ti,bq27z561" },
+ 	{ .compatible =3D "ti,bq28z610" },
+ 	{ .compatible =3D "ti,bq34z100" },
++	{ .compatible =3D "ti,bq78z100" },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, bq27xxx_battery_i2c_of_match_table);
+diff --git a/include/linux/power/bq27xxx_battery.h b/include/linux/power/bq=
+27xxx_battery.h
+index 111a40d0d3d5..ac17618043b1 100644
+--- a/include/linux/power/bq27xxx_battery.h
++++ b/include/linux/power/bq27xxx_battery.h
+@@ -33,6 +33,7 @@ enum bq27xxx_chip {
+ 	BQ27Z561,
+ 	BQ28Z610,
+ 	BQ34Z100,
++	BQ78Z100,
+ };
+=20
+ struct bq27xxx_device_info;
+--
+2.17.1
+
