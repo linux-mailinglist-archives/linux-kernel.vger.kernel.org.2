@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E339D32A322
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C0D32A332
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381935AbhCBIrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        id S1378013AbhCBIx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:53:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381738AbhCBIcU (ORCPT
+        with ESMTP id S234867AbhCBIfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:32:20 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC487C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:31:39 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id bm21so14767177ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 00:31:39 -0800 (PST)
+        Tue, 2 Mar 2021 03:35:21 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B588C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:34:27 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id s8so24139163edd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 00:34:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Vofce9cg4If43flccFXJozuKUDopXjDd/VnmpQDiTuE=;
-        b=KtIbAa6zHDrkhlQLeR4CMC3GwzF1RsEG2IYJVT+dkS2rSg3SH4LMgKKKsujIB5jeub
-         avD3FgsDrk772cG2xDNbYxlai9uOVUyXo2lHisYm0eXBiKdX1rLLJLHJDC3YzBSS6L7V
-         YhiS8QDhXlvL9yF/P5wyUxc4XYUMyHxImSMM8qrUs9ZHpfZu54BZCKQsJ7JvzjKNYdFQ
-         Es8x/68pheGALs9Aci2vz+MB0txBE9sKSUMI559e7qWstfxbSckepur87y/pnk2SueET
-         E6wJsIIQb7X4NEFmzNeS3cL6aPq8mUoQk8tXl3VtPU0ECjDxZN2EONFu92jN606aYGm7
-         6srw==
+        bh=WRw/Dbn+mbtp8GKk3aEySNMABWck9aW3KhyPAfnMS/U=;
+        b=qGfRmw+E0luFw/w+E9tTRUUsOS76tFs5dNAYtfOlbcZgIOaRgtPv5QF0uzyAkv/Zei
+         KeIPwVNMCqUjzXKeWc4VEhnzzeowmXMak+4az1jtJrT3Qf7cFblafgwgEaAmDbsWa3/y
+         K9UYXqIpG1Vduxo33o+ECTDuvdjjE92EGrLOBAp1f0lWVVLSiP27zHkxXdVaNE/Uhq++
+         e9G2AP7ceoPpNcDheVvEG39DMqHOfmSUAstpqtM22pIgGmvKy+D9wyJrDyhUHj3SrF49
+         Ewbla6sX6Ttv4daJVl27Tua1ltnrP8imt6pILn56DMSkAMOG5ZCtNHavr9AVFRUa6l4e
+         jr4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Vofce9cg4If43flccFXJozuKUDopXjDd/VnmpQDiTuE=;
-        b=OD+oEXkk42B6wreubQTjE8weddqzYiV8i+RP+0oED2y4axmO1wxVMG6c6RXZ391Plp
-         aMFjvPdZ315+CetouVT8jZnGK3yLR3RxMfp947syhIF6VDPpxtrPww1A3T1EBpOEIfrd
-         O2tOwU3QIF/8F0TKZcoReXu7I6aXsOeVVz23PYurh5JkrKoVSujzh2wzN2EZRwnFMpLM
-         KsZPq+BEUYYTSdgz9ggwkjGV/ruBwlXCzyyXcJ1rzqk6E/XBQBf+BDJN8SoI7puE1TWG
-         1d7qHnjAEG/vroXlsH1ugVmZTSe6SL05Xt/n77MSq0JloR8/UlHeIQ7d4EyPhgFgMyMQ
-         /zrA==
-X-Gm-Message-State: AOAM530JnYIv2phVZe7gP9NYaRyplMkFzFlnYkSKhW8bvuqU85+RgH+y
-        qbFmYa6W3arlebPEz8BUbuHnyFJ62/5/jrEihF2QFA==
-X-Google-Smtp-Source: ABdhPJxHjmZUC5iRC5r/bT/DMEL0arKjzFzU9Z29V5ZobxNwHR/p3WN8QdJROWOyDjb+iEND+NMSKlLCXwzgIX4WqgU=
-X-Received: by 2002:a17:906:39d9:: with SMTP id i25mr20041528eje.226.1614673898323;
- Tue, 02 Mar 2021 00:31:38 -0800 (PST)
+        bh=WRw/Dbn+mbtp8GKk3aEySNMABWck9aW3KhyPAfnMS/U=;
+        b=unsnRXJaaz5Fx3/PALMbsH9OLIxPNMVRhKqnSumQYwslgNdWdi7dnpqXSFFIsQhcDs
+         7Px7GESDD03EVc28PhE4Z95WaZ2QmNuoQFkiuFzzcUb8E9ZH/GjQXgZoATWNiLerYtyD
+         FUwVL+Wjbx8QTeiRWH6k+jPHP7ve64lVu+YUbmu3e6HsIpCXo6xz6BG/OaUlAf5AAjOl
+         5nj9Xzbq+2uqhfvgAx68Sf7zEofzwougBvT9YNfEtinv1h5wdh9FQ7Hn2wftFxSQ2+gk
+         G0hcf0FegaDnJhY3B4sERJ9awNCsweQdCzfThAENeoIInvqeHJLPqPOjVpA0oUivxn/k
+         /nOQ==
+X-Gm-Message-State: AOAM533hE9LXiVBZuEa+wC0UaDepK64vg8xW/bMTDzJRKR8aXrjazfNq
+        XAqmPGJBLRsAo6LcdBXg6Q0Xv80e8oqcRhGQLGZ/mw==
+X-Google-Smtp-Source: ABdhPJyEbi5MpJZA5hOp4T/mnvccY2ETFEBIOYcXAgVyy/EImSYEy0XXZj+MHRC7p0WaSy59cX2SX3K/0MtY/VfDZYo=
+X-Received: by 2002:a05:6402:ce:: with SMTP id i14mr19661256edu.42.1614674066247;
+ Tue, 02 Mar 2021 00:34:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20210215121713.57687-1-marcan@marcan.st> <20210215121713.57687-22-marcan@marcan.st>
-In-Reply-To: <20210215121713.57687-22-marcan@marcan.st>
+References: <20210216080231.1303-1-angkery@163.com>
+In-Reply-To: <20210216080231.1303-1-angkery@163.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 09:31:27 +0100
-Message-ID: <CACRpkdbSCGgFBxaTHQ2b_ZS24G3+fnhA11nEg5717C-Na5Dpgg@mail.gmail.com>
-Subject: Re: [PATCH v2 21/25] dt-bindings: serial: samsung: Add apple,s5l-uart compatible
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 2 Mar 2021 09:34:15 +0100
+Message-ID: <CACRpkdaXjWiT0cOeqxbv6opu0vGpwqwHc4=0AJswkRaaQuYTrQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: equilibrium: add missing of_node_put
+To:     angkery <angkery@163.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Junlin Yang <yangjunlin@yulong.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 1:19 PM Hector Martin <marcan@marcan.st> wrote:
+On Tue, Feb 16, 2021 at 9:03 AM angkery <angkery@163.com> wrote:
 
-> Apple mobile devices originally used Samsung SoCs (starting with the
-> S5L8900), and their current in-house SoCs continue to use compatible
-> UART peripherals. We'll call this UART variant apple,s5l-uart.
+> From: Junlin Yang <yangjunlin@yulong.com>
 >
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+> Fix OF node leaks by calling of_node_put in
+> for_each_child_of_node when the cycle returns.
+>
+> Generated by: scripts/coccinelle/iterators/for_each_child.cocci
+>
+> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 
-Interesting IP-transfer story here! Too bad iPhone Linux was
-never upstreamed.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Patch applied.
 
 Yours,
 Linus Walleij
