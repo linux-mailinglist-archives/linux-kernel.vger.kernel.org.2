@@ -2,306 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8517032A90E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAD232A906
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580614AbhCBSFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:05:23 -0500
-Received: from mga04.intel.com ([192.55.52.120]:37209 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1578621AbhCBP0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:26:10 -0500
-IronPort-SDR: xwwTgPqNIGtIcItdHkCbVPABvcWBbLEIZf+ICBb0evkqYAPxBYI+zmIyKxYq6FOOly4u0gk0bJ
- phFQRlXrIQAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="184413558"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="184413558"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:18:40 -0800
-IronPort-SDR: skEIL9E3dQJ6buXLwqK1bhkGgbC6hZSNvhnm5oHvLslyt83GOX0RUcekAj91MDAinJLir/ZMRN
- ZWY0sQj19kHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="427525494"
-Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Mar 2021 07:18:38 -0800
-Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lH6nG-0000U9-0g; Tue, 02 Mar 2021 15:18:38 +0000
-Date:   Tue, 02 Mar 2021 23:18:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/net-fddi-skfp-smt] BUILD SUCCESS WITH
- WARNING 800290b4db3c7818e10af88f757b09b59588241c
-Message-ID: <603e5741.xl0IdreUvDN+SaA+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1580531AbhCBSEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:04:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1578598AbhCBPZZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:25:25 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E16C0617AB
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:20:47 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id q25so11613580lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:20:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cEfoHf83s/nppCpslFBm2JaQs5ooxd+wCNySTYqRLrg=;
+        b=ZJvvs7YpZ/v82uircBUdvlFwywAJ6JQXf6yaNLeLEx1ezcq4xouLe1KiOdpmq2WO+K
+         yQi5MUw3HpKmdjGCuYgV1N+z8daa6FmEwQiZyZk4fXbq1ygHmp71fIxcN6kPpnydM5PZ
+         2Y8RQPe6RexZGPlKsqkbrFT+y5Ky68ZqFnnU75jnh8IJyCUtuOuVUhHaFsb3GbjnUHye
+         TAmTMJ3NcUGrf1X359md9oPTRDV24QXbPhYpLP/nx0IoklMtgExYj1Il7aBxS3NQDver
+         5Fyp0QZijh5mr6qw8zQvVBOpczZzL4ETPy6ZqrGQTNaOUCWX8VnIpI2JrAgnh42rBLxV
+         0wPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cEfoHf83s/nppCpslFBm2JaQs5ooxd+wCNySTYqRLrg=;
+        b=LpDJBu0GAR61M/JjIJiRZJ8WLPYDdYlhxV46LtZEu4KALCUJcydvkMFvVJftIfZ8P5
+         XG8Q0AadC2SBujhboVFs20uF2ZhOoL+riaFB1kHzlV7x4XtdHoDZSzCcNcR+sGTCmDEC
+         vo5isz6CXjXPzm+6jfEn2j6DGhZUlnmSXaQLuCrlPcspjmLdxUGHrjTHI9YYVzcrpoaZ
+         06NV6YAlKbxjEm6WrZIlZ8CJDFagEF3+IlMy9pBNMP0m5jB42JiY95H6S8uNw3ZubrrD
+         4zJce0GT/e+J3bWqHItjRD65mQgHXIkWuA5P8jJQVbNR7jwclZJvDhy11RhNaCRRVXqM
+         T5Bw==
+X-Gm-Message-State: AOAM533MVx1vKBvkK2GaqgDgof/sPtw4v6d8X/adJbnNjJvHn9q03FRc
+        JL0YMd8p9LfMcQdHbVvAKMOZ1+94ugv2xoomNvf5YA==
+X-Google-Smtp-Source: ABdhPJzevMNFMunFXoFZ2HXPdNU9EPe6ZLvEUgVA+ngmmU2uY8vloaBM7p1WkOCz4RiwZbRP0gmr+zQUAQo/hObUIWA=
+X-Received: by 2002:ac2:5d21:: with SMTP id i1mr12066700lfb.649.1614698446288;
+ Tue, 02 Mar 2021 07:20:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210225164216.21124-1-noltari@gmail.com> <20210225164216.21124-3-noltari@gmail.com>
+In-Reply-To: <20210225164216.21124-3-noltari@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 16:20:35 +0100
+Message-ID: <CACRpkdbxAQTft8dapGqBDxM8nbkPvK4i95ND0JBFb_riafZSSg@mail.gmail.com>
+Subject: Re: [PATCH 02/12] pinctrl: add a pincontrol driver for BCM6328
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/net-fddi-skfp-smt
-branch HEAD: 800290b4db3c7818e10af88f757b09b59588241c  net: fddi: skfp: smt: Replace one-element array with flexible-array member
+Hi =C3=81lvaro,
 
-possible Warning in current branch:
+thanks for your patch!
 
-arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-arch/alpha/include/asm/string.h:37:11: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-arch/sparc/include/asm/string.h:15:25: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-arch/sparc/include/asm/string.h:18:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct DInfo' at offset 48 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct FInfo' at offset 48 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:228:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-drivers/gpu/drm/mga/mga_ioc32.c:70:2: warning: 'memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
-drivers/gpu/drm/radeon/si_dpm.c:2350:20: warning: array subscript 1 is above array bounds of 'SISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]' {aka 'struct SISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]'} [-Warray-bounds]
-drivers/ide/ide-ioctls.c:213:2: warning: 'memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
-drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
-drivers/media/platform/qcom/venus/hfi_cmds.c:57:11: warning: array subscript 1 is above array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
-drivers/media/platform/qcom/venus/hfi_msgs.c:246:35: warning: array subscript 1 is above array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
-drivers/message/fusion/mptlan.c:759:28: warning: array subscript 1 is above array bounds of 'U32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
-drivers/scsi/aacraid/aachba.c:3970:18: warning: array subscript 1 is above array bounds of 'struct sge_ieee1212[1]' [-Warray-bounds]
-drivers/scsi/mpt3sas/mpt3sas_ctl.c:3257:63: warning: array subscript 24 is above array bounds of 'U16[1]' {aka 'short unsigned int[1]'} [-Warray-bounds]
-drivers/staging/rtl8188eu/core/rtw_wlan_util.c:665:65: warning: array subscript 2 is above array bounds of 'u8[1]' {aka 'unsigned char[1]'} [-Warray-bounds]
-fs/nfsd/nfsfh.c:191:41: warning: array subscript 1 is above array bounds of '__u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [25, 28] from the object at 'threshold' is out of the bounds of referenced subobject 'low' with type 'struct iw_quality' at offset 20 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [49, 84] from the object at 'link_usettings' is out of the bounds of referenced subobject 'base' with type 'struct ethtool_link_settings' at offset 0 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct DInfo' at offset 48 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct FInfo' at offset 48 [-Warray-bounds]
-include/linux/fortify-string.h:22:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
-include/uapi/linux/bcache.h:109:32: warning: 'memcpy' offset [17, 24] from the object at 'alloc' is out of the bounds of referenced subobject 'key' with type 'struct bkey' at offset 0 [-Warray-bounds]
-net/core/flow_dissector.c:831:3: warning: 'memcpy' offset [33, 48] from the object at 'flow_keys' is out of the bounds of referenced subobject 'ipv6_src' with type '__u32[4]' {aka 'unsigned int[4]'} at offset 16 [-Warray-bounds]
-net/sctp/sm_make_chunk.c:3150:4: warning: 'memcpy' offset [17, 28] from the object at 'addr' is out of the bounds of referenced subobject 'v4' with type 'struct sockaddr_in' at offset 0 [-Warray-bounds]
+On Thu, Feb 25, 2021 at 5:42 PM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
 
-Warning ids grouped by kconfigs:
+> Add a pincontrol driver for BCM6328. BCM628 supports muxing 32 pins as
+> GPIOs, as LEDs for the integrated LED controller, or various other
+> functions. Its pincontrol mux registers also control other aspects, like
+> switching the second USB port between host and device mode.
+>
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 
-gcc_recent_errors
-|-- alpha-allmodconfig
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|-- alpha-allyesconfig
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|-- arc-allyesconfig
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|-- arm-allmodconfig
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|-- arm-allyesconfig
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|-- arm-randconfig-r023-20210302
-|   `-- net-sctp-sm_make_chunk.c:warning:memcpy-offset-from-the-object-at-addr-is-out-of-the-bounds-of-referenced-subobject-v4-with-type-struct-sockaddr_in-at-offset
-|-- arm-randconfig-r034-20210301
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
-|   |-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-link_usettings-is-out-of-the-bounds-of-referenced-subobject-base-with-type-struct-ethtool_link_settings-at-offset
-|   `-- include-linux-fortify-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|-- h8300-randconfig-p001-20210302
-|   `-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|-- i386-randconfig-a004-20210302
-|   |-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-DInfo-at-offset
-|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-FInfo-at-offset
-|-- i386-randconfig-a011-20210302
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   `-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|-- i386-randconfig-s001-20210302
-|   |-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|-- ia64-allmodconfig
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|   |-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   |-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|   |-- include-uapi-linux-bcache.h:warning:memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
-|   |-- net-core-flow_dissector.c:warning:memcpy-offset-from-the-object-at-flow_keys-is-out-of-the-bounds-of-referenced-subobject-ipv6_src-with-type-__u32-aka-unsigned-int-at-offset
-|   `-- net-sctp-sm_make_chunk.c:warning:memcpy-offset-from-the-object-at-addr-is-out-of-the-bounds-of-referenced-subobject-v4-with-type-struct-sockaddr_in-at-offset
-|-- mips-allyesconfig
-|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   `-- include-linux-fortify-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|-- mips-randconfig-r026-20210302
-|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-DInfo-at-offset
-|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-FInfo-at-offset
-|-- parisc-randconfig-r025-20210302
-|   |-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|   |-- include-uapi-linux-bcache.h:warning:memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
-|   `-- net-core-flow_dissector.c:warning:memcpy-offset-from-the-object-at-flow_keys-is-out-of-the-bounds-of-referenced-subobject-ipv6_src-with-type-__u32-aka-unsigned-int-at-offset
-|-- powerpc-allyesconfig
-|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
-|-- powerpc64-allyesconfig
-|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-threshold-is-out-of-the-bounds-of-referenced-subobject-low-with-type-struct-iw_quality-at-offset
-|-- riscv-allmodconfig
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|-- riscv-rv32_defconfig
-|   `-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|-- sh-allmodconfig
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-|-- sparc-allyesconfig
-|   |-- arch-sparc-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   |-- arch-sparc-include-asm-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
-|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-|   |-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
-|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
-|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
-|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
-|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
-|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
-`-- x86_64-randconfig-a001-20210302
-    |-- drivers-gpu-drm-mga-mga_ioc32.c:warning:memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
-    |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
-    `-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+Thanks for working on this. This SoC definitely need to come upstream.
 
-elapsed time: 725m
+I think this driver can be simplified a bit and reuse some core infrastruct=
+ure
+to make it more maintainable. It might be a bit of challenge but definitely
+worth it!
 
-configs tested: 92
-configs skipped: 2
+> +config PINCTRL_BCM6328
+> +       bool "Broadcom BCM6328 GPIO driver"
+> +       depends on OF_GPIO && (BMIPS_GENERIC || COMPILE_TEST)
+> +       select PINMUX
+> +       select PINCONF
+> +       select GENERIC_PINCONF
+> +       select MFD_SYSCON
+> +       default BMIPS_GENERIC
+> +       help
+> +          Say Y here to enable the Broadcom BCM6328 GPIO driver.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                          ep93xx_defconfig
-arm                     am200epdkit_defconfig
-powerpc                        warp_defconfig
-powerpc                     pq2fads_defconfig
-arm                        mvebu_v7_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                         s3c2410_defconfig
-sh                        dreamcast_defconfig
-mips                      maltaaprp_defconfig
-nios2                         10m50_defconfig
-arm                        realview_defconfig
-sh                   sh7770_generic_defconfig
-arm                         s5pv210_defconfig
-openrisc                 simple_smp_defconfig
-m68k                        stmark2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210302
-i386                 randconfig-a003-20210302
-i386                 randconfig-a002-20210302
-i386                 randconfig-a004-20210302
-i386                 randconfig-a006-20210302
-i386                 randconfig-a001-20210302
-i386                 randconfig-a016-20210302
-i386                 randconfig-a012-20210302
-i386                 randconfig-a014-20210302
-i386                 randconfig-a013-20210302
-i386                 randconfig-a011-20210302
-i386                 randconfig-a015-20210302
-x86_64               randconfig-a006-20210302
-x86_64               randconfig-a001-20210302
-x86_64               randconfig-a004-20210302
-x86_64               randconfig-a002-20210302
-x86_64               randconfig-a005-20210302
-x86_64               randconfig-a003-20210302
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+I suggest
 
-clang tested configs:
-x86_64               randconfig-a013-20210302
-x86_64               randconfig-a016-20210302
-x86_64               randconfig-a015-20210302
-x86_64               randconfig-a014-20210302
-x86_64               randconfig-a012-20210302
-x86_64               randconfig-a011-20210302
+select GPIO_REGMAP
+select GPIOLIB_IRQCHIP
+select IRQ_DOMAIN_HIERARCHY
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+see below.
+
+(...)
+> +#include <linux/bitops.h>
+
+Just <linux/bits.h> maybe, if you only use BIT() and GENMASK().
+
+> +#include <linux/gpio.h>
+> +#include <linux/of_gpio.h>
+
+Do not include these, just:
+#include <linux/gpio/driver.h>
+
+> +#define BCM6328_DIROUT_REG     0x04
+> +#define BCM6328_DATA_REG       0x0c
+> +#define BCM6328_MODE_REG       0x18
+
+This looks very much like it could use GPIO_REGMAP.
+Can you look at:
+drivers/gpio/gpio-regmap.c
+drivers/gpio/gpio-sl28cpld.c
+
+And see if you can do what that driver is doing and reuse
+this core infrastructure?
+
+> +static inline unsigned int bcm6328_bank_pin(unsigned int pin)
+> +{
+> +       return pin % PINS_PER_BANK;
+> +}
+
+I am generally reluctant about registering several banks/instances
+of the GPIO if it is possible to just use more devices in the
+device tree, like one for each instance.
+
+> +static inline unsigned int bcm6328_reg_off(unsigned int reg, unsigned in=
+t pin)
+> +{
+> +       return reg - (pin / PINS_PER_BANK) * BANK_SIZE;
+> +}
+
+Because it leads to this kind of weirdness to split out the devices
+from the main device in practice.
+
+> +static int bcm6328_gpio_direction_input(struct gpio_chip *chip,
+> +                                       unsigned int pin)
+> +{
+(...)
+> +       /*
+> +        * Check with the pinctrl driver whether this pin is usable as
+> +        * an input GPIO
+> +        */
+> +       ret =3D pinctrl_gpio_direction_input(chip->base + pin);
+> +       if (ret)
+> +               return ret;
+
+This is very nice.
+
+> +static int bcm6328_gpio_to_irq(struct gpio_chip *chip, unsigned gpio)
+> +{
+> +       char irq_name[7];
+> +
+> +       sprintf(irq_name, "gpio%d", gpio);
+> +
+> +       return of_irq_get_byname(chip->of_node, irq_name);
+> +}
+
+This is a clear indication that we are dealing with a hierarchical irqchip.
+
+My assumption is that you have one IRQ per GPIO line, so each
+GPIO has a dedicated IRQ on the interrupt controller. Correct?
+
+This means:
+
+- Do not add all the interrupts into the device tree by name.
+
+- In Kconfig select GPIOLIB_IRQCHIP, select IRQ_DOMAIN_HIERARCHY
+
+- Populate a simple struct gpio_irq_chip, if no local registers need
+  updating on interrupts, just pass interrupts through
+        .irq_mask       =3D irq_chip_mask_parent,
+        .irq_unmask     =3D irq_chip_unmask_parent,
+  etc.
+
+- Implement bcm6328_gpio_child_to_parent_hwirq() for this chip
+  with hardcoded mappings between the hardware GPIO and interrupt
+  lines, using the parent interrupt controller hierarchically. This mapping
+  is determined from the compatible-string, and part of the property
+  of how the GPIO block is integrated with the SoC. If need be to
+  tell different chips apart, more precise compatible strings are needed.
+
+- Examples:
+  drivers/gpio/gpio-ixp4xx.c
+  drivers/gpio/gpio-sifive.c
+
+If you do this you will notice the core is more helpful to cut down on the
+code.
+
+Yours,
+Linus Walleij
