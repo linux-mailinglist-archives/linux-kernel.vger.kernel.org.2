@@ -2,189 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D3C32A468
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CF532A43B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578078AbhCBKf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:35:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:48362 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382777AbhCBKPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:15:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DCC51435;
-        Tue,  2 Mar 2021 02:12:43 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 47B353F70D;
-        Tue,  2 Mar 2021 02:12:42 -0800 (PST)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
-        mark.rutland@arm.com, maz@kernel.org, tglx@linutronix.de,
-        will@kernel.org
-Subject: [PATCHv2 8/8] arm64: irq: allow FIQs to be handled
-Date:   Tue,  2 Mar 2021 10:12:11 +0000
-Message-Id: <20210302101211.2328-9-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210302101211.2328-1-mark.rutland@arm.com>
-References: <20210302101211.2328-1-mark.rutland@arm.com>
+        id S1382896AbhCBK1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1382759AbhCBKN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:13:28 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C5FC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:12:37 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id jt13so34202193ejb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:12:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9emZJGXSfS3CBcoV3moek0dr0o68xi0UvE5qBXpPUXA=;
+        b=fr17Px/Z62oKFGYJ/W88x9bOoKKpT/UW7LHPP7GzTTUryspn3cBwYenB6BbxirCW3r
+         XOCtCtIgvkezeRYYTG0m9S7vRfZb0U+NKoF9KTGtjklJjsgD06NXphU1asP1hXb6Kp+D
+         ekVH4pz2whvgusZscWvubpgcqi5Qw0KtAuMgKCmoDoLitRb/PNvLqpI6ca+hE3rr6HUS
+         fJRzAqiD31DYBZ4MSH19AliggrS3qJgAn/NMD4/rAXQksEax49z1TQWGk/SiZQhuNuVN
+         gXXJ97iZwOrOaD1D6BLA1BXmzAR2zDnTP3W9yBOerDdyJC9OI3l6n29fxZo0vOU6UXKA
+         KiFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9emZJGXSfS3CBcoV3moek0dr0o68xi0UvE5qBXpPUXA=;
+        b=qi/uM/Wy1Hdg1QPSjM0IVVOyzrD74ZnrtpPqiwhhGLmfNppc9YJFkoBzME6G1tsNMg
+         JsMu5YawCUynCc3KeSoscuXWMHhs/9hHBmLjXcrARSrYRJ67vKNuGQSyc2dchOmLBBbU
+         ZSoJMgdipQu3B2nOndVK9/lBW5vdPBNf43AxEPuRNfSR8mZNn/lO2cOJBTvKK5uGJNUW
+         dPtdN9lznvgxQCb+Tq9bcUiZRqDWrzkLYvYfdS8Y9faBl286e6UygvqpYBBc7XlGz904
+         vETxF+gFEediPpkWYdp99CLh8qrrih2GgZ0vnFESjaJQpxICPJ/I+xQF2SgTWDhRQvYy
+         UBRg==
+X-Gm-Message-State: AOAM5321kBofR+eINZ2AwtT2RlWbkK5t47i/0GiV4ifw+Yck7SemTwHs
+        87tKcj41EPKV7jmtiEMzxu/Lju9izawxANgR02Ft7A==
+X-Google-Smtp-Source: ABdhPJygHRWR6muKo1EKip/CdEc4MkfpNRQJIYTz00eMsp1q2b55BBcAgn3jRL2LvNtMSRKUwCewGi/MkwTQZskjB/0=
+X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr20268094ejo.247.1614679956551;
+ Tue, 02 Mar 2021 02:12:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20210301193642.707301430@linuxfoundation.org> <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
+ <CA+G9fYsivUPRRQgMXpnA_XdXH8i2wx_DPH70t+6OzHkjOaswrg@mail.gmail.com> <YD4L57LQb8Nh/A85@kroah.com>
+In-Reply-To: <YD4L57LQb8Nh/A85@kroah.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Mar 2021 15:42:25 +0530
+Message-ID: <CA+G9fYtbYENvUk8z78k3OHj5cULbd5Tc3Dfew0EE6sKfndOJxA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        LTP List <ltp@lists.linux.it>, Arnd Bergmann <arnd@arndb.de>,
+        Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On contemporary platforms we don't use FIQ, and treat any stray FIQ as a
-fatal event. However, some platforms have an interrupt controller wired
-to FIQ, and need to handle FIQ as part of regular operation.
+On Tue, 2 Mar 2021 at 15:26, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Mar 02, 2021 at 03:20:32PM +0530, Naresh Kamboju wrote:
+> > Hi Greg and Linus,
+> >
+> > On Tue, 2 Mar 2021 at 12:45, Naresh Kamboju <naresh.kamboju@linaro.org>=
+ wrote:
+> > >
+> > > On Tue, 2 Mar 2021 at 01:21, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > This is the start of the stable review cycle for the 5.10.20 releas=
+e.
+> > > > There are 661 patches in this series, all will be posted as a respo=
+nse
+> > > > to this one.  If anyone has any issues with these being applied, pl=
+ease
+> > > > let me know.
+> > > >
+> > > > Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
+> > > > Anything received after that time might be too late.
+> > > >
+> > > > The whole patch series can be found in one patch at:
+> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/=
+patch-5.10.20-rc2.gz
+> > > > or in the git tree and branch at:
+> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
+stable-rc.git linux-5.10.y
+> > > > and the diffstat can be found below.
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > >
+> > >
+> > > Results from Linaro=E2=80=99s test farm.
+> > > Regressions detected on all devices (arm64, arm, x86_64 and i386).
+> > >
+> > > hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
+> > >
+> > > This failure is specific to stable-rc 5.10 and 5.11.
+> > > Test PASS on mainline and Linux next kernel.
+> > >
+> >
+> > I have reverted these two patches and the test case got PASS
+> > on Linux version 5.10.20-rc2.
+> >
+> > hangup01 1 TPASS : child process exited with status 0
+> >
+> >    Linus Torvalds <torvalds@linux-foundation.org>
+> >        tty: implement read_iter
+> >
+> >    Linus Torvalds <torvalds@linux-foundation.org>
+> >        tty: convert tty_ldisc_ops 'read()' function to take a kernel po=
+inter
+>
+> Odd.
+>
+> Is 5.12-rc1 also failing with this test as well?
 
-So that we can support both cases dynamically, this patch updates the
-FIQ exception handling code to operate the same way as the IRQ handling
-code, with its own handle_arch_fiq handler. Where a root FIQ handler is
-not registered, an unexpected FIQ exception will trigger the default FIQ
-handler, which will panic() as today. Where a root FIQ handler is
-registered, handling of the FIQ is deferred to that handler.
+5.10 Failed
+5.11 Failed
+5.12 PASS
 
-As el0_fiq_invalid_compat is supplanted by el0_fiq, the former is
-removed. For !CONFIG_COMPAT builds we never expect to take an exception
-from AArch32 EL0, so we keep the common el0_fiq_invalid handler.
+This LTP pty hangup01 PASS Linux mainline and linux next.
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Hector Martin <marcan@marcan.st>
-Cc: James Morse <james.morse@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/irq.h |  1 +
- arch/arm64/kernel/entry.S    | 30 +++++++++++++++++++++---------
- arch/arm64/kernel/irq.c      | 16 ++++++++++++++++
- 3 files changed, 38 insertions(+), 9 deletions(-)
-
-diff --git a/arch/arm64/include/asm/irq.h b/arch/arm64/include/asm/irq.h
-index 8391c6f6f746..fac08e18bcd5 100644
---- a/arch/arm64/include/asm/irq.h
-+++ b/arch/arm64/include/asm/irq.h
-@@ -10,6 +10,7 @@ struct pt_regs;
- 
- int set_handle_irq(void (*handle_irq)(struct pt_regs *));
- #define set_handle_irq	set_handle_irq
-+int set_handle_fiq(void (*handle_fiq)(struct pt_regs *));
- 
- static inline int nr_legacy_irqs(void)
- {
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index ce8d4dc416fb..a86f50de2c7b 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -588,18 +588,18 @@ SYM_CODE_START(vectors)
- 
- 	kernel_ventry	1, sync				// Synchronous EL1h
- 	kernel_ventry	1, irq				// IRQ EL1h
--	kernel_ventry	1, fiq_invalid			// FIQ EL1h
-+	kernel_ventry	1, fiq				// FIQ EL1h
- 	kernel_ventry	1, error			// Error EL1h
- 
- 	kernel_ventry	0, sync				// Synchronous 64-bit EL0
- 	kernel_ventry	0, irq				// IRQ 64-bit EL0
--	kernel_ventry	0, fiq_invalid			// FIQ 64-bit EL0
-+	kernel_ventry	0, fiq				// FIQ 64-bit EL0
- 	kernel_ventry	0, error			// Error 64-bit EL0
- 
- #ifdef CONFIG_COMPAT
- 	kernel_ventry	0, sync_compat, 32		// Synchronous 32-bit EL0
- 	kernel_ventry	0, irq_compat, 32		// IRQ 32-bit EL0
--	kernel_ventry	0, fiq_invalid_compat, 32	// FIQ 32-bit EL0
-+	kernel_ventry	0, fiq_compat, 32		// FIQ 32-bit EL0
- 	kernel_ventry	0, error_compat, 32		// Error 32-bit EL0
- #else
- 	kernel_ventry	0, sync_invalid, 32		// Synchronous 32-bit EL0
-@@ -665,12 +665,6 @@ SYM_CODE_START_LOCAL(el0_error_invalid)
- 	inv_entry 0, BAD_ERROR
- SYM_CODE_END(el0_error_invalid)
- 
--#ifdef CONFIG_COMPAT
--SYM_CODE_START_LOCAL(el0_fiq_invalid_compat)
--	inv_entry 0, BAD_FIQ, 32
--SYM_CODE_END(el0_fiq_invalid_compat)
--#endif
--
- SYM_CODE_START_LOCAL(el1_sync_invalid)
- 	inv_entry 1, BAD_SYNC
- SYM_CODE_END(el1_sync_invalid)
-@@ -705,6 +699,12 @@ SYM_CODE_START_LOCAL_NOALIGN(el1_irq)
- 	kernel_exit 1
- SYM_CODE_END(el1_irq)
- 
-+SYM_CODE_START_LOCAL_NOALIGN(el1_fiq)
-+	kernel_entry 1
-+	el1_interrupt_handler handle_arch_fiq
-+	kernel_exit 1
-+SYM_CODE_END(el1_fiq)
-+
- /*
-  * EL0 mode handlers.
-  */
-@@ -731,6 +731,11 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_irq_compat)
- 	b	el0_irq_naked
- SYM_CODE_END(el0_irq_compat)
- 
-+SYM_CODE_START_LOCAL_NOALIGN(el0_fiq_compat)
-+	kernel_entry 0, 32
-+	b	el0_fiq_naked
-+SYM_CODE_END(el0_fiq_compat)
-+
- SYM_CODE_START_LOCAL_NOALIGN(el0_error_compat)
- 	kernel_entry 0, 32
- 	b	el0_error_naked
-@@ -745,6 +750,13 @@ el0_irq_naked:
- 	b	ret_to_user
- SYM_CODE_END(el0_irq)
- 
-+SYM_CODE_START_LOCAL_NOALIGN(el0_fiq)
-+	kernel_entry 0
-+el0_fiq_naked:
-+	el0_interrupt_handler handle_arch_fiq
-+	b	ret_to_user
-+SYM_CODE_END(el0_fiq)
-+
- SYM_CODE_START_LOCAL(el1_error)
- 	kernel_entry 1
- 	mrs	x1, esr_el1
-diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-index 2fe0b535de30..bda49430c9ea 100644
---- a/arch/arm64/kernel/irq.c
-+++ b/arch/arm64/kernel/irq.c
-@@ -76,7 +76,13 @@ static void default_handle_irq(struct pt_regs *regs)
- 	panic("IRQ taken without a root IRQ handler\n");
- }
- 
-+static void default_handle_fiq(struct pt_regs *regs)
-+{
-+	panic("FIQ taken without a root FIQ handler\n");
-+}
-+
- void (*handle_arch_irq)(struct pt_regs *) __ro_after_init = default_handle_irq;
-+void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init = default_handle_fiq;
- 
- int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
- {
-@@ -88,6 +94,16 @@ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
- 	return 0;
- }
- 
-+int __init set_handle_fiq(void (*handle_fiq)(struct pt_regs *))
-+{
-+	if (handle_arch_fiq != default_handle_fiq)
-+		return -EBUSY;
-+
-+	handle_arch_fiq = handle_fiq;
-+	pr_info("Root FIQ handler: %ps\n", handle_fiq);
-+	return 0;
-+}
-+
- void __init init_IRQ(void)
- {
- 	init_irq_stacks();
--- 
-2.11.0
-
+- Naresh
