@@ -2,234 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BA632A495
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B02332A49A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442006AbhCBKxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:53:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1578023AbhCBKfH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:35:07 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FE4C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:33:51 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id k66so2150608wmf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:33:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nX3UoFuzzMNsB4lVrgERxVlh7s23WyI/5O5RtFPy6nY=;
-        b=Bx4EvO9yQep9GrdueyHB8c/d21a2QkGhq+izz7ECyhwS09IazDO/FtVyuiTsYCYQZ3
-         d5+k4HK7ksKMKdFIKABfnG9RuMvF5SsTE+uu4jh3dEgLg/iY3hHSoEeJHQrfr4Cfc7NO
-         KQ3+kDt/KfA8fUQy7yVZeMwUAWM8oKdLKxSvT9q66k4nVuDmf50gRCT7klR48uBycMM2
-         AwoivxYTqzXP0sxmGWVkrJMifNxclOVabZL9NzP6dm5FLqFyF2PNhrSt1CijoNVnIiOI
-         rh3dNuzJwruEp/zBANsQyoTPeLAYiPRJBwDZ/2F3kt6DX/OHHWEvjV4nTUrUL2iTnF0A
-         2CEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nX3UoFuzzMNsB4lVrgERxVlh7s23WyI/5O5RtFPy6nY=;
-        b=Jpog8oJEZab5rfy62CpABrXhkXA09XcJZ+4pyckIxmbcuca5YKVZu6LFekWiouCgU9
-         TbFWZl4U4CSPPLWpSJ/REtuBiQtQyyUUdM/e5fUmoKzeIfsUXlt++kVBDarIH9wLMuM8
-         VGQ6+RZJlBe0vY4AMdY3vukgZRNhWxbzYB6ieNrWu2CefRWzYDYHHaOGeIKxHlfNVUvQ
-         hEOldyhnjWyrNmva0SGEurCShzHpsXsrBn7FGt0Y/KgEszxY1pAXCkbVZKKu3CAAJYR6
-         M1Oehgm4x3XbYbF3/Xwm7f1OnWJC9fRZw0oAWqtU0GEXtnx2k7Lt5fNfTLj0ztpB88RA
-         P89Q==
-X-Gm-Message-State: AOAM531HOvUeqrabL7eLkQyacE5hAaKyR4cuTJEPvWANNnMPVN9UdOko
-        OPIrjMVV4Nukma25o3P7pdQm1Vs4KzFHHQ==
-X-Google-Smtp-Source: ABdhPJx2rSIdbee/+K/KsslLjff4yaAjKlMBXCVceuCurYAl4gZVBdQy58OhHGQTBtHZYRyb4gXZpA==
-X-Received: by 2002:a1c:195:: with SMTP id 143mr3306604wmb.147.1614681230475;
-        Tue, 02 Mar 2021 02:33:50 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id j26sm20997516wrh.57.2021.03.02.02.33.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 02:33:49 -0800 (PST)
-Subject: Re: [PATCH 2/3] soundwire: qcom: add auto enumeration support
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
- <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
- <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <4721dd27-c8ce-f988-3c10-794841390656@linaro.org>
-Date:   Tue, 2 Mar 2021 10:33:49 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1446399AbhCBKxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:53:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1578093AbhCBKfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:35:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F64264F0D;
+        Tue,  2 Mar 2021 10:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614681294;
+        bh=ugJHg9cYk74SjXydnucoKS21JJi70MPT/T1tFbGj1Aw=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=XHfzaFb3CI/GV4HUw7gVLbAtfxuEFo8wByxVuPgt7dni1p6zPlFgUXJUUYZc7XMsw
+         LF/76BS7cBXKtfjQ00Vab5i8La+GUupSGypjSfAM/NTc9CJmbV+8Y72hm3il4AC5NJ
+         JN26aE/zppIjV6ZatuVBzv8mjAydhHhwfJCsE/7B5drCPuAw1rDl1oJbY1LNGLBOUh
+         V973vLkV9gGPa6Wjegi71ADKHC+vKJIPCRYDw2yfR0cjV/JlJWatpd/jdiTjMroWS5
+         bNgSSZ1EcpeBoYLS98p/l5UYCC+FI6pPR3IwymQ57gB16cUZRxytQA1xMxIvS3LnLE
+         oFQAa7GOlwrZw==
+Date:   Tue, 2 Mar 2021 11:34:51 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] iwlwifi: don't call netif_napi_add() with rxq->lock held
+ (was Re: Lockdep warning in iwl_pcie_rx_handle())
+In-Reply-To: <nycvar.YFH.7.76.2103021025410.12405@cbobk.fhfr.pm>
+Message-ID: <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2103012136570.12405@cbobk.fhfr.pm>  (sfid-20210301_215846_256695_15E0D07E) <2db8f779b4b37d4498cfeaed77d5ede54e429a6e.camel@sipsolutions.net> <nycvar.YFH.7.76.2103021025410.12405@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jiri Kosina <jkosina@suse.cz>
+
+We can't call netif_napi_add() with rxq-lock held, as there is a potential
+for deadlock as spotted by lockdep (see below). rxq->lock is not
+protecting anything over the netif_napi_add() codepath anyway, so let's
+drop it just before calling into NAPI.
+
+ ========================================================
+ WARNING: possible irq lock inversion dependency detected
+ 5.12.0-rc1-00002-gbada49429032 #5 Not tainted
+ --------------------------------------------------------
+ irq/136-iwlwifi/565 just changed the state of lock:
+ ffff89f28433b0b0 (&rxq->lock){+.-.}-{2:2}, at: iwl_pcie_rx_handle+0x7f/0x960 [iwlwifi]
+ but this lock took another, SOFTIRQ-unsafe lock in the past:
+  (napi_hash_lock){+.+.}-{2:2}
+
+ and interrupts could create inverse lock ordering between them.
+
+ other info that might help us debug this:
+  Possible interrupt unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(napi_hash_lock);
+                                local_irq_disable();
+                                lock(&rxq->lock);
+                                lock(napi_hash_lock);
+   <Interrupt>
+     lock(&rxq->lock);
+
+  *** DEADLOCK ***
+
+ 1 lock held by irq/136-iwlwifi/565:
+  #0: ffff89f2b1440170 (sync_cmd_lockdep_map){+.+.}-{0:0}, at: iwl_pcie_irq_handler+0x5/0xb30
+
+ the shortest dependencies between 2nd lock and 1st lock:
+  -> (napi_hash_lock){+.+.}-{2:2} {
+     HARDIRQ-ON-W at:
+                       lock_acquire+0x277/0x3d0
+                       _raw_spin_lock+0x2c/0x40
+                       netif_napi_add+0x14b/0x270
+                       e1000_probe+0x2fe/0xee0 [e1000e]
+                       local_pci_probe+0x42/0x90
+                       pci_device_probe+0x10b/0x1c0
+                       really_probe+0xef/0x4b0
+                       driver_probe_device+0xde/0x150
+                       device_driver_attach+0x4f/0x60
+                       __driver_attach+0x9c/0x140
+                       bus_for_each_dev+0x79/0xc0
+                       bus_add_driver+0x18d/0x220
+                       driver_register+0x5b/0xf0
+                       do_one_initcall+0x5b/0x300
+                       do_init_module+0x5b/0x21c
+                       load_module+0x1dae/0x22c0
+                       __do_sys_finit_module+0xad/0x110
+                       do_syscall_64+0x33/0x80
+                       entry_SYSCALL_64_after_hwframe+0x44/0xae
+     SOFTIRQ-ON-W at:
+                       lock_acquire+0x277/0x3d0
+                       _raw_spin_lock+0x2c/0x40
+                       netif_napi_add+0x14b/0x270
+                       e1000_probe+0x2fe/0xee0 [e1000e]
+                       local_pci_probe+0x42/0x90
+                       pci_device_probe+0x10b/0x1c0
+                       really_probe+0xef/0x4b0
+                       driver_probe_device+0xde/0x150
+                       device_driver_attach+0x4f/0x60
+                       __driver_attach+0x9c/0x140
+                       bus_for_each_dev+0x79/0xc0
+                       bus_add_driver+0x18d/0x220
+                       driver_register+0x5b/0xf0
+                       do_one_initcall+0x5b/0x300
+                       do_init_module+0x5b/0x21c
+                       load_module+0x1dae/0x22c0
+                       __do_sys_finit_module+0xad/0x110
+                       do_syscall_64+0x33/0x80
+                       entry_SYSCALL_64_after_hwframe+0x44/0xae
+     INITIAL USE at:
+                      lock_acquire+0x277/0x3d0
+                      _raw_spin_lock+0x2c/0x40
+                      netif_napi_add+0x14b/0x270
+                      e1000_probe+0x2fe/0xee0 [e1000e]
+                      local_pci_probe+0x42/0x90
+                      pci_device_probe+0x10b/0x1c0
+                      really_probe+0xef/0x4b0
+                      driver_probe_device+0xde/0x150
+                      device_driver_attach+0x4f/0x60
+                      __driver_attach+0x9c/0x140
+                      bus_for_each_dev+0x79/0xc0
+                      bus_add_driver+0x18d/0x220
+                      driver_register+0x5b/0xf0
+                      do_one_initcall+0x5b/0x300
+                      do_init_module+0x5b/0x21c
+                      load_module+0x1dae/0x22c0
+                      __do_sys_finit_module+0xad/0x110
+                      do_syscall_64+0x33/0x80
+                      entry_SYSCALL_64_after_hwframe+0x44/0xae
+   }
+   ... key      at: [<ffffffffae84ef38>] napi_hash_lock+0x18/0x40
+   ... acquired at:
+    _raw_spin_lock+0x2c/0x40
+    netif_napi_add+0x14b/0x270
+    _iwl_pcie_rx_init+0x1f4/0x710 [iwlwifi]
+    iwl_pcie_rx_init+0x1b/0x3b0 [iwlwifi]
+    iwl_trans_pcie_start_fw+0x2ac/0x6a0 [iwlwifi]
+    iwl_mvm_load_ucode_wait_alive+0x116/0x460 [iwlmvm]
+    iwl_run_init_mvm_ucode+0xa4/0x3a0 [iwlmvm]
+    iwl_op_mode_mvm_start+0x9ed/0xbf0 [iwlmvm]
+    _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
+    iwl_opmode_register+0x71/0xe0 [iwlwifi]
+    iwl_mvm_init+0x34/0x1000 [iwlmvm]
+    do_one_initcall+0x5b/0x300
+    do_init_module+0x5b/0x21c
+    load_module+0x1dae/0x22c0
+    __do_sys_finit_module+0xad/0x110
+    do_syscall_64+0x33/0x80
+    entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+[ ... lockdep output trimmed .... ]
+
+Fixes: 25edc8f259c7106 ("iwlwifi: pcie: properly implement NAPI")
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+---
+
+v1->v2: Previous patch was not refreshed against current code-base, sorry.
+
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+index 42426e25cac6..2bec97133119 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+@@ -1129,6 +1129,8 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
+ 
+ 		iwl_pcie_rx_init_rxb_lists(rxq);
+ 
++		spin_unlock_bh(&rxq->lock);
++
+ 		if (!rxq->napi.poll) {
+ 			int (*poll)(struct napi_struct *, int) = iwl_pcie_napi_poll;
+ 
+@@ -1149,7 +1151,6 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
+ 			napi_enable(&rxq->napi);
+ 		}
+ 
+-		spin_unlock_bh(&rxq->lock);
+ 	}
+ 
+ 	/* move the pool to the default queue and allocator ownerships */
 
 
-On 26/02/2021 17:44, Pierre-Louis Bossart wrote:
-> 
->> +static int qcom_swrm_enumerate(struct sdw_bus *bus)
->> +{
->> +    struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
->> +    struct sdw_slave *slave, *_s;
->> +    struct sdw_slave_id id;
->> +    u32 val1, val2;
->> +    u64 addr;
->> +    int i;
->> +    char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
->> +
->> +    for (i = 1; i < (SDW_MAX_DEVICES + 1); i++) {
-> 
-> I don't understand the (SDW_MAX_DEVICES + 1)?
-If you mean +1 then probably we can add <= instead of just < to make it 
-look like other parts of code in bus.c
+-- 
+Jiri Kosina
+SUSE Labs
 
-for (i = 1; i <= SDW_MAX_DEVICES; i++)
-
-> 
-> 
->> +        /*SCP_Devid5 - Devid 4*/
->> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
->> +
->> +        /*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
->> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
-> 
-> Do you mind explaining a bit what happens here?
-> Does the hardware issue commands to read all DevID registers and set the 
-> device number automagically?
-
-exactly the hardware assigns device numbers to slaves automatically, and 
-the devnum can be figured out by the controller driver by reading 
-SWRM_ENUMERATOR_SLAVE_DEV_ID_1/2 registers!
-
-> If yes, then in SoundWire parlance the enumeration is complete. What you 
-> are doing below is no longer part of the enumeration.
-
-yes, enumeration is complete by the hardware, however the controller 
-driver need to know the dev number assigned by the hardware, this 
-routine is doing that!
-> 
-> 
->> +
->> +        if (!val1 && !val2)
->> +            break;
->> +
->> +        addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
->> +            ((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
->> +            ((u64)buf1[0] << 40);
->> +
->> +        sdw_extract_slave_id(bus, addr, &id);
->> +        /* Now compare with entries */
->> +        list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
->> +            if (sdw_compare_devid(slave, id) == 0) {
->> +                u32 status = qcom_swrm_get_n_device_status(ctrl, i);
->> +                if (status == SDW_SLAVE_ATTACHED) {
->> +                    slave->dev_num = i;
->> +                    mutex_lock(&bus->bus_lock);
->> +                    set_bit(i, bus->assigned);
->> +                    mutex_unlock(&bus->bus_lock);
->> +
->> +                }
-> 
-> And that part is strange as well. The bus->assigned bit should be set 
-> even if the Slave is not in the list provided by platform firmware. It's 
-> really tracking the state of the hardware, and it should not be 
-> influenced by what software knows to manage.
-
-Am not 100% sure If I understand the concern here, but In normal (non 
-auto enum) cases this bit is set by the bus code while its doing 
-enumeration to assign a dev number from the assigned bitmap!
-
-However in this case where auto enumeration happens it makes sense to 
-set this here with matching dev number!
-
-AFAIU from code, each bit in this bitmap corresponds to slave dev number!
-
-
-> 
->> +                break;
->> +            }
->> +        }
->> +    }
->> +
->> +    complete(&ctrl->enumeration);
-> 
-> you have init_completion() and complete() in this patch, but no 
-> wait_for_completion(), so that should be added in a later patch, no?
-
-make sense, will move that to other patch!
-
---srini
-> 
->> +    return 0;
->> +}
->> +
->>   static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->>   {
->>       struct qcom_swrm_ctrl *swrm = dev_id;
->> -    u32 value, intr_sts, intr_sts_masked;
->> +    u32 value, intr_sts, intr_sts_masked, slave_status;
->>       u32 i;
->>       u8 devnum = 0;
->>       int ret = IRQ_HANDLED;
->> @@ -382,10 +443,19 @@ static irqreturn_t qcom_swrm_irq_handler(int 
->> irq, void *dev_id)
->>                   break;
->>               case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
->>               case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
->> -                dev_err_ratelimited(swrm->dev, "%s: SWR new slave 
->> attached\n",
->> +                dev_err_ratelimited(swrm->dev, "%s: SWR slave status 
->> changed\n",
->>                       __func__);
->> -                qcom_swrm_get_device_status(swrm);
->> -                sdw_handle_slave_status(&swrm->bus, swrm->status);
->> +                swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, 
->> &slave_status);
->> +                if (swrm->slave_status == slave_status) {
->> +                    dev_err(swrm->dev, "Slave status not changed %x\n",
->> +                        slave_status);
->> +                    break;
->> +                } else {
->> +                    dev_err(swrm->dev, "Slave status handle %x\n", 
->> slave_status);
->> +                    qcom_swrm_get_device_status(swrm);
->> +                    qcom_swrm_enumerate(&swrm->bus);
->> +                    sdw_handle_slave_status(&swrm->bus, swrm->status);
->> +                }
->>                   break;
->>               case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
->>                   dev_err_ratelimited(swrm->dev,
->> @@ -472,8 +542,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl 
->> *ctrl)
->>       ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
->> -    /* Disable Auto enumeration */
->> -    ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
->> +    /* Enable Auto enumeration */
->> +    ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 1);
->>       ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
->>       /* Mask soundwire interrupts */
->> @@ -507,6 +577,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl 
->> *ctrl)
->>           ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN,
->>                   SWRM_INTERRUPT_STATUS_RMSK);
->>       }
->> +    ctrl->slave_status = 0;
->>       return 0;
->>   }
->> @@ -1068,6 +1139,7 @@ static int qcom_swrm_probe(struct 
->> platform_device *pdev)
->>       dev_set_drvdata(&pdev->dev, ctrl);
->>       mutex_init(&ctrl->port_lock);
->>       init_completion(&ctrl->broadcast);
->> +    init_completion(&ctrl->enumeration);
->>       ctrl->bus.ops = &qcom_swrm_ops;
->>       ctrl->bus.port_ops = &qcom_swrm_port_ops;
->>
