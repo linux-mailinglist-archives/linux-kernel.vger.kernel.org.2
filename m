@@ -2,212 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60BD32ABEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4301132AB95
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381559AbhCBU5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:57:23 -0500
-Received: from mail-mw2nam10on2119.outbound.protection.outlook.com ([40.107.94.119]:63808
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1580354AbhCBSCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:02:30 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VfmxKpHDGexfiwOqSxP7/sGFrEbEfWk/JO4FfQ9N35wbfZBuN+ALsY6hfq/m4UAEsZL0Od5Cg3C7i08SegrVou0c5DtR7jeIv80HsOKLERlMta0T1+xl4SYHzg2DcPkmT44WLdgOaJdSFhss7RItJTz5nPkc2fdJiN/dfAvnTJpIkC65+rgr94Q2NUlH0KyVaAFHXdqQ+iTZk+cga8Nbu1LLE5T7hRUxDEMou8szIARiTSymsH+CgU0G3FmdT1wE3pigUflVkPjttxiKqXmB8qq3T9NkHoFU++d6OLntECSRODwqxk82eRgt3K4lnflgc529rhLoC9K3OwZZLeRkyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5AgdkcVM16c2bLY9JmelK/tCxgxV8JdYipOL2/QmorM=;
- b=nNQ6tBd2MvsjSkCgumM01+f5QRhSqmWxE8Vj3Ni7TTuuPtkJmQcSx2+EFbMrN50HsvpaCpxrp2bzjPjdKuQbosnlsh9tknHyPriX/R2EDubVPjO/FHCwSbkkGss3i/9LVnwivT7p817zSnnYSsqxdrUqSJvRYDWymgz7ez1M54ERvoXK7SNlpedFYLNaRhmm8P7lUHb13S7c+0VVVlJ6iClxTL6DcEsZLsRbsAdB/sFy7ACVFoFgR7P4wQtUdDhkpJLoA2V6lge1NSZiR3UatPbAH+41efcBWjre75VnKKrzWsWxLfZChA6J3np+jibTfoA7w6A7CmVbOqX5gqQyOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5AgdkcVM16c2bLY9JmelK/tCxgxV8JdYipOL2/QmorM=;
- b=WXTJFlBxeJpxuKmM5YTp1kUSIY+Ui0E1C7CJqsqrcT1H97EGpaiKyL4E9xt9xTcA+enLdCqXAYWPlPyyzQczASQXPQu3vIuzJJXj1nWFgPY6wquvWPRA0EZUY6E0RlAKbgzColXG57qhuT+dHEstc/C2koAbGxD8Y9q3is1gGHw=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MW4PR21MB1970.namprd21.prod.outlook.com (2603:10b6:303:70::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.8; Tue, 2 Mar
- 2021 17:42:30 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3912.016; Tue, 2 Mar 2021
- 17:42:30 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     vkuznets <vkuznets@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 01/10] Drivers:
- hv: vmbus: Move Hyper-V page allocator to arch neutral code
-Thread-Topic: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 01/10] Drivers:
- hv: vmbus: Move Hyper-V page allocator to arch neutral code
-Thread-Index: AQHXDjhypGARyrRKUEOuG2wtOqcDE6pwqqAAgABO05A=
-Date:   Tue, 2 Mar 2021 17:42:30 +0000
-Message-ID: <MWHPR21MB1593AE5172A203C3D62B8C06D7999@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
- <1614561332-2523-2-git-send-email-mikelley@microsoft.com>
- <87r1kxemsj.fsf@vitty.brq.redhat.com>
-In-Reply-To: <87r1kxemsj.fsf@vitty.brq.redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-02T17:42:29Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0f5b1eca-52c1-40cf-acc5-83b4d2934451;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3f134cbf-1db0-431e-9b68-08d8dda28df7
-x-ms-traffictypediagnostic: MW4PR21MB1970:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MW4PR21MB1970060681BF30CF7401A5EBD7999@MW4PR21MB1970.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /wWoRiIpjER4vE8mA8WpNF54binYcDcQpga/+eOAXpDjpoBy7D8KoRWd8kTDmkT7FAYL52G0jVsTBr4hfT0k1iYxOUyOGpk/t4vO4s3D0vKN9Lid7wNrGwam+N2LhfN3CwBMSg+OM/OvgSAGodFccVluUS6eEEERpQbWgYbhlgE1XUPj8ujX/9wEt05RFUwXkGjkEReQekQ2+fymGGtTvpMuF1rUci6eR0BzYfx4xZD+S4iCfL9Lr6RwI3FbzY5bum0jBctl56IrtTWZVhXSS8fk0b5au9ypgY1vBOa+7cV/PnDGRtozaOog+MeG/LdnMFIfRKQad5F8LoQT6Hss8+06FTaOSiCNHcZ/eqPRrV81HtAMm24RB6JMugvOlZG0tLZjYbI7492EySKPRBa0Bbg2i7hWxtTh3ttlWlO1I91C7C624O96OIAsP5fIdgHJdEAaVcAFh5K33+STrqLfZMz8u8jyWru5ZByI0bZAa0daaNNRjxk5aOTJhL2UixzHo3WfIaKvXyoRpNeROP7mHsSc2lmpoa5GchCris0olzTFzZwVZPBTkxc6Gl76BuUECVCNYZBmj/Wx4Bj92aVI3BGBcyetbp3BKDFC/Y0AnHDq1XP3Rbs2VwY0le2kUN12
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(39860400002)(346002)(9686003)(7696005)(71200400001)(55016002)(2906002)(5660300002)(76116006)(54906003)(66946007)(10290500003)(4326008)(8936002)(82960400001)(82950400001)(6506007)(52536014)(86362001)(26005)(66476007)(8676002)(64756008)(66446008)(66556008)(478600001)(83380400001)(33656002)(186003)(8990500004)(316002)(6916009)(7416002)(184083001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?tjgcGuREFzajcF8e9MVV0l3DsjiXhPrJp+KfB2Gzt0735n+/j1XY8Z/uY5od?=
- =?us-ascii?Q?HcSdnwtMXDwvCkyBkve4v4eWvvpcNnGFx5MfL6A6YHBq5hPCQSs2x5jJTETx?=
- =?us-ascii?Q?1uE1aBp1wmA/M5iTRzE9twUuMlLCKKJ2T2MWs8hvzBS+LfHj9g1FJ/E7jQH7?=
- =?us-ascii?Q?5DmXd2jNxu7fTe7+/4bNSZ9uoUKb3Jl1JNE5fKlTrUjUeZ99oQpV3HqMF8zm?=
- =?us-ascii?Q?MK3r9XmN4BHuaozhrbYbCMzXzC4dfqO8K2kU6PdLNFDmo5QWlspi1w4Ax18C?=
- =?us-ascii?Q?knMQqN5vItmYrUbrsbgkZIux8+yCC0tinPTPmW0VOnoLFfmv470irRdPp9ZM?=
- =?us-ascii?Q?UbyrPY6UH8oCb5hYmjwKsYFE1FfSelqzfkVfO+r1KX5N2vHsCdnGEzzU8lHD?=
- =?us-ascii?Q?KuyofK+nM3UBXmnJgekBPc00+FTS1sxEECCrZYV08mtvOmZXnkpu95u1tpy2?=
- =?us-ascii?Q?sb1e0r/lEOVjgGNG3zXE5Dc6WdWjAhX2VL//zJbcP/1EzAFYknjYyhNRHGS0?=
- =?us-ascii?Q?sp8vSrc2yv3YVAHLdUK+phs1F3gxYSgYG8htNkZTa8RnJq7tvvxGEwO46q7C?=
- =?us-ascii?Q?AjVfHSGhynM85VwqTxUrl2BO/CUtJOeRnPgZ9iYCvagqAgzOAiwOLvA4QxLr?=
- =?us-ascii?Q?1JSNTurMUS98gBFBCDJ0NEN5S7F0N/+lcOfBxEQSLsH44tOdIrkres4NzA7+?=
- =?us-ascii?Q?Lw+Y7qJpmzStCzMHeUwVKDOCYbBK3zEFZFUL+nO589yElmINegmSpVmiGk1X?=
- =?us-ascii?Q?Do4aN4uyOZKCbHFBXi2i5641/fabscP/qaT23piw0PfZbm3cA3PlZOsoZ8V8?=
- =?us-ascii?Q?BJUPzgSGLOy6gXP+1DaKihbtdLBkk9JrQqYsAKNNTdd6fSXPm1IYcsq1zUvM?=
- =?us-ascii?Q?3HCDH/ZuGcti9WfVppg6/DzZ7xPdaPhmTXyFJJjmxFa1J854EgLFZsKgz5ou?=
- =?us-ascii?Q?V8IonovGrcBZLXDJnKtaGqS9pKW1/ArdjYNOaULBAMfZKbCJHGagy3qPN/3h?=
- =?us-ascii?Q?gdTEspGMScCVwVNFT8qfzcFw3m070/TMdfk8AF3KfWj3+uUfpJsRL++8++3p?=
- =?us-ascii?Q?pBlBnpdhajnv9iL/LydgpIBUcKtRZNs8EiUBDuL6IvXANYbBenQXfyhXIPHD?=
- =?us-ascii?Q?WVQJN2K69m8sR2usFBrmt2vZ4fKCD9DvxK68ooQZ1bkWPdJfCC3l7N5wJ2t3?=
- =?us-ascii?Q?BJBaxtlryAIg36OlBTeQzgThYtqRYhtVOpMgraa7g3IXkqI6+fTBhtE8jaoB?=
- =?us-ascii?Q?1yND2P5bd4D5bqME35MX4WbvDn8TX562qAVkhRgEzIdefdBwJKlz/eAMgbXx?=
- =?us-ascii?Q?4hawQMKd2j9/WkyaITL4pQgT?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1837051AbhCBUaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:30:22 -0500
+Received: from smtprelay0189.hostedemail.com ([216.40.44.189]:60110 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1344390AbhCBRtC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:49:02 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id 1C213180322EC;
+        Tue,  2 Mar 2021 17:46:09 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E7A51181B3E89;
+        Tue,  2 Mar 2021 17:42:53 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:973:988:989:1260:1261:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1544:1593:1594:1605:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3865:3866:3867:3868:3870:3871:3872:3874:4031:5007:6996:7652:7903:10004:11026:11658:11914:12043:12296:12297:12438:12760:12986:13018:13019:13161:13184:13229:13439:13869:14093:14097:14659:14721:21063:21080:21433:21451:21627:21740:21939:21972:30005:30012:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: home60_3c159ee276be
+X-Filterd-Recvd-Size: 4972
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  2 Mar 2021 17:42:52 +0000 (UTC)
+Message-ID: <053b06c47f08631675c295b5c893b90be4248347.camel@perches.com>
+Subject: linux-kernel janitorial RFP: Mark static arrays as const
+From:   Joe Perches <joe@perches.com>
+To:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        cocci <cocci@systeme.lip6.fr>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 02 Mar 2021 09:42:51 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f134cbf-1db0-431e-9b68-08d8dda28df7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2021 17:42:30.8350
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: F1V9a9Vf+46jzupzdqAYN4ND54pYkCWNakH4weyb9+FW6YBmHN48QU3qU//sWA35SvHM/hIPVSaihc2UdZkZQSALhzMKf/kKZ3wP8xue6Sc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1970
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Tuesday, March 2, 2021 4=
-:57 AM
->=20
-> Michael Kelley <mikelley@microsoft.com> writes:
->=20
-> > The Hyper-V page allocator functions are implemented in an architecture
-> > neutral way.  Move them into the architecture neutral VMbus module so
-> > a separate implementation for ARM64 is not needed.
-> >
-> > No functional change.
-> >
-> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> > Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> >  arch/x86/hyperv/hv_init.c       | 22 ----------------------
-> >  arch/x86/include/asm/mshyperv.h |  5 -----
-> >  drivers/hv/hv.c                 | 36 +++++++++++++++++++++++++++++++++=
-+++
-> >  include/asm-generic/mshyperv.h  |  4 ++++
-> >  4 files changed, 40 insertions(+), 27 deletions(-)
-> >
+Here is a possible opportunity to reduce data usage in the kernel.
 
-[snip]
+$ git grep -P -n '^static\s+(?!const|struct)(?:\w+\s+){1,3}\w+\s*\[\s*\]' drivers/ | \
+  grep -v __initdata | \
+  wc -l
+3250
 
-> >
-> >  /*
-> > + * Functions for allocating and freeing memory with size and
-> > + * alignment HV_HYP_PAGE_SIZE. These functions are needed because
-> > + * the guest page size may not be the same as the Hyper-V page
-> > + * size. We depend upon kmalloc() aligning power-of-two size
-> > + * allocations to the allocation size boundary, so that the
-> > + * allocated memory appears to Hyper-V as a page of the size
-> > + * it expects.
-> > + */
-> > +
-> > +void *hv_alloc_hyperv_page(void)
-> > +{
-> > +	BUILD_BUG_ON(PAGE_SIZE <  HV_HYP_PAGE_SIZE);
-> > +
-> > +	if (PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE)
-> > +		return (void *)__get_free_page(GFP_KERNEL);
-> > +	else
-> > +		return kmalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
->=20
-> PAGE_SIZE and HV_HYP_PAGE_SIZE are known compile-time and in case this
-> won't change in the future we can probably write this as
->=20
-> #if PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE
->        return (void *)__get_free_page(GFP_KERNEL);
-> #else
->        return kmalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
-> #endif
->=20
-> (not sure if the output is going to be any different with e.g. gcc's '-O2=
-')
->=20
+Meaning there are ~3000 declarations of arrays with what appears to be
+file static const content that are not marked const.
 
-I looked at the generated code, and the compiler does the right
-thing on both x86/x64 and on ARM64.  I'd rather leave the code
-as is so that both legs of the 'if' statement get checked by the
-compiler regardless of whether PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE.
+So there are many static arrays that could be marked const to move the
+compiled object code from data to text minimizing the total amount of
+exposed r/w data.
 
-Michael
+However, I do not know of a mechanism using coccinelle to determine
+whether or not any of these static declarations are ever modified.
 
-> > +}
-> > +
-> > +void *hv_alloc_hyperv_zeroed_page(void)
-> > +{
-> > +	if (PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE)
-> > +		return (void *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
-> > +	else
-> > +		return kzalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
-> > +}
-> > +
-> > +void hv_free_hyperv_page(unsigned long addr)
-> > +{
-> > +	if (PAGE_SIZE =3D=3D HV_HYP_PAGE_SIZE)
-> > +		free_page(addr);
-> > +	else
-> > +		kfree((void *)addr);
-> > +}
-> > +
-> > +/*
+So it appears that each instance of these declarations might need
+manual inspection.
+
+But for arrays declared inside functions, it's much more likely that
+the static declaration without const is done with the intent to modify
+the array:
+
+(note the difference in the git grep with a leading '^\s+')
+
+$ git grep -Pn '^\s+static\s+(?!const|struct)(?:\w+\s+){1,3}\w+\s*\[\s*\]' drivers/ | \
+  grep -v __initdata | \
+  wc -l
+323
+
+------------- For instance: (head -10 of the git grep for file statics)
+
+drivers/accessibility/speakup/keyhelp.c:18:static u_short masks[] = { 32, 16, 8, 4, 2, 1 };
+drivers/accessibility/speakup/keyhelp.c:26:static u_char funcvals[] = {
+drivers/accessibility/speakup/main.c:2059:static spkup_hand spkup_handler[] = {
+drivers/accessibility/speakup/speakup_acntpc.c:35:static unsigned int synth_portlist[] = { 0x2a8, 0 };
+drivers/accessibility/speakup/speakup_decpc.c:133:static int synth_portlist[] = { 0x340, 0x350, 0x240, 0x250, 0 };
+drivers/accessibility/speakup/speakup_dectlk.c:110:static int ap_defaults[] = {122, 89, 155, 110, 208, 240, 200, 106, 306};
+drivers/accessibility/speakup/speakup_dectlk.c:111:static int g5_defaults[] = {86, 81, 86, 84, 81, 80, 83, 83, 73};
+drivers/accessibility/speakup/speakup_dtlk.c:34:static unsigned int synth_portlist[] = {
+drivers/accessibility/speakup/speakup_keypc.c:34:static unsigned int synth_portlist[] = { 0x2a8, 0 };
+drivers/acpi/ac.c:137:static enum power_supply_property ac_props[] = {
+
+For drivers/accessibility/speakup/keyhelp.c:18:static u_short masks[] = { 32, 16, 8, 4, 2, 1 };
+
+masks is only used in static function say_key and should be const and
+perhaps the declaration might be better moved into that function.
+
+For drivers/accessibility/speakup/keyhelp.c:26:static u_char funcvals[] = {
+
+funcvals is only used in static function spk_handle_help and should be const
+and perhaps the declaration might be better moved into that function.
+
+For drivers/accessibility/speakup/main.c:2059:static spkup_hand spkup_handler[] = {
+
+spkup_handler is only used in static function do_spkup and should be const
+and perhaps the declaration might be better moved into that function.
+
+etc... for speakup
+
+For drivers/acpi/ac.c:137:static enum power_supply_property ac_props[] = {
+
+array ac_props is assigned as a reference in acpi_ac_add as a 
+"const enum power_supply_property *" member of a struct power_supply_desc.
+
+------------- For instance: (head -10 of the git grep for function statics)
+
+drivers/acpi/apei/apei-base.c:781:	static u8 whea_uuid_str[] = "ed855e0c-6c90-47bf-a62a-26de0fc5ad5c";
+drivers/block/amiflop.c:1051:	static unsigned char CRCTable1[] = {
+drivers/block/amiflop.c:1070:	static unsigned char CRCTable2[] = {
+drivers/block/drbd/drbd_nl.c:872:	static char units[] = { 'K', 'M', 'G', 'T', 'P', 'E' };
+drivers/block/drbd/drbd_proc.c:224:	static char write_ordering_chars[] = {
+drivers/block/drbd/drbd_receiver.c:4363:	static enum drbd_conns c_tab[] = {
+drivers/char/pcmcia/synclink_cs.c:3717:	static unsigned char patterns[] =
+drivers/cpufreq/intel_pstate.c:1515:	static int silvermont_freq_table[] = {
+drivers/cpufreq/intel_pstate.c:1530:	static int airmont_freq_table[] = {
+drivers/dma/xgene-dma.c:360:	static u8 flyby_type[] = {
+
+Some of these could be const, but some could not.  For instance:
+
+For drivers/acpi/apei/apei-base.c:781:	static u8 whea_uuid_str[] = "ed855e0c-6c90-47bf-a62a-26de0fc5ad5c";
+
+whea_uuid_str is assigned as a reference in "int apei_osc_setup(void)"
+a struct acpi_osc_context where .uuid_str is not declared as const char *.
+
+
+
+
