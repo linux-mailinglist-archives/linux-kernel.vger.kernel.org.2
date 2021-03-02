@@ -2,204 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F1C32A17D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B9132A17E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577435AbhCBGWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:22:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239261AbhCBENe (ORCPT
+        id S1577443AbhCBGWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:22:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20041 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239568AbhCBEQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:13:34 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CD3C061797
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 20:12:53 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id i14so1039452pjz.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 20:12:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pJaPLF9X1F6hvOBAXTHBgh9HYMVdoLjPILjLEfD7bkc=;
-        b=YEZ1cocgpsBHNkw0q+n3c+WrJ0f5ZYMWZ5GgZymplzz/JjXP3J3GP3MQPyOD+t7hxj
-         AsK2COA53kOesfdd7nTgEuKuQJ7B+1JaLSiIWqINpSswz1f453uWWv5cf5Zy9QVnSZdd
-         X0vMaEoLsxLAVk5K6hSFHHKSylttTe535bfBlRj9YLzzI2p9d5SVShpMsGrjNw3iULbC
-         +mik6ICMk5ltsWjqpAmuGCd/qH7Pw0q8Y8kTUadbUjZeBEzXHeBTNP0c+D7LqoTso/Yu
-         kjJIpeToFr5LIiD+nTQahXyU61ghaF6X5hl9rGGDki1aC/DUcXPcY0IZd4brRdl8pXp+
-         iUug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pJaPLF9X1F6hvOBAXTHBgh9HYMVdoLjPILjLEfD7bkc=;
-        b=H2mzoHpcNMBlS6wmU+qE5o1fzHC7eeAUqauyaTKuXfc2EUPsnEMDfJS3tBS1iOp1v0
-         AOQCJQ2vsXt9Iq2K3vgbHx7z7a78DE0sd3flr74ZBD2rOs2FYaFryDeL+SaGZriNGeZ2
-         U7p9xyhytn6ZK+QrIZCnSgpMIvHkhA+/bkNLUPZLvlgOFcNkZrl6Svxd6U7OywuHGdDa
-         tYWAiJ3WvZ0uSH5KRpUJECo1ISJtDrmELndjHiuEUzr/3CxRofxT5zzUlaRG5huK0FJc
-         GtRRvMaG7YKSE5JgrCbp8zG6KFI0DV8zVDyqg7Yabp1e+jFDuKQ5F8LeQcIyRJ08NxI/
-         sMVg==
-X-Gm-Message-State: AOAM531AUqw5btcSdG6qzpU9zpjDIsgJB8I+RQO2xLOr/78Ic6jg1QOM
-        oUwWmlSKP9iNxgHMoJN9a+SdWLKIy0MRfO/4WS94Iw==
-X-Google-Smtp-Source: ABdhPJw4yPDMdM9rw5cTzxwrZpXy5wEJz7YfOZ5x9bGXhm1fMxZCHjNMKhVkXo1trQ0xr49A64GmU+RJmU/bXtSc/g0=
-X-Received: by 2002:a17:902:d4c2:b029:e3:cb77:e51 with SMTP id
- o2-20020a170902d4c2b02900e3cb770e51mr18426342plg.20.1614658372860; Mon, 01
- Mar 2021 20:12:52 -0800 (PST)
+        Mon, 1 Mar 2021 23:16:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614658473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DTs5bTdT/130awTFS1tu5ijWxNu0Rt9MlaERqm9NUPU=;
+        b=exvsORoxsheubC+CIm1xbrEzodG1sq0d3jV2NACEp1AYvPrWgEcNg7XSqQAVLRR0CHVmwA
+        0PB9E1Ewd7x5NHteq2zq1PkO3HdU1k/h2mvxvn19+/5xuGDlKuWetU1+4vJ9oSKmMFcogJ
+        KOeX00K7WZoJYg4wwOdVErizW4EJ5PU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-O1ppRP1lMXWwFuAq_kwXYA-1; Mon, 01 Mar 2021 23:14:32 -0500
+X-MC-Unique: O1ppRP1lMXWwFuAq_kwXYA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43D3A1868405;
+        Tue,  2 Mar 2021 04:14:31 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-215.pek2.redhat.com [10.72.13.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A424D5C730;
+        Tue,  2 Mar 2021 04:14:22 +0000 (UTC)
+Subject: Re: [RFC PATCH 01/10] vdpa: add get_config_size callback in
+ vdpa_config_ops
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>
+References: <20210216094454.82106-1-sgarzare@redhat.com>
+ <20210216094454.82106-2-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <5de4cd5b-04cb-46ca-1717-075e5e8542fd@redhat.com>
+Date:   Tue, 2 Mar 2021 12:14:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210301062227.59292-1-songmuchun@bytedance.com>
- <20210301062227.59292-5-songmuchun@bytedance.com> <YD2RuPzikjPnI82h@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YD2RuPzikjPnI82h@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 2 Mar 2021 12:12:16 +0800
-Message-ID: <CAMZfGtXdPw41iFUjDbkkAwm+D3ut-U+GpZC3Zz9cvS2FTCCYzw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/5] mm: memcontrol: move remote memcg
- charging APIs to CONFIG_MEMCG_KMEM
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, bristot@redhat.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        alexander.h.duyck@linux.intel.com,
-        Chris Down <chris@chrisdown.name>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Oskolkov <posk@google.com>, Jann Horn <jannh@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Waiman Long <longman@redhat.com>,
-        Michel Lespinasse <walken@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, krisman@collabora.com,
-        esyr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Marco Elver <elver@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210216094454.82106-2-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 9:15 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Mon, Mar 01, 2021 at 02:22:26PM +0800, Muchun Song wrote:
-> > The remote memcg charing APIs is a mechanism to charge kernel memory
-> > to a given memcg. So we can move the infrastructure to the scope of
-> > the CONFIG_MEMCG_KMEM.
->
-> This is not a good idea, because there is nothing kmem-specific
-> in the idea of remote charging, and we definitely will see cases
-> when user memory is charged to the process different from the current.
 
-Got it. Thanks for your reminder.
-
-
+On 2021/2/16 5:44 下午, Stefano Garzarella wrote:
+> This new callback is used to get the size of the configuration space
+> of vDPA devices.
 >
-> >
-> > As a bonus, on !CONFIG_MEMCG_KMEM build some functions and variables
-> > can be compiled out.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/linux/sched.h    | 2 ++
-> >  include/linux/sched/mm.h | 2 +-
-> >  kernel/fork.c            | 2 +-
-> >  mm/memcontrol.c          | 4 ++++
-> >  4 files changed, 8 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index ee46f5cab95b..c2d488eddf85 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1314,7 +1314,9 @@ struct task_struct {
-> >
-> >       /* Number of pages to reclaim on returning to userland: */
-> >       unsigned int                    memcg_nr_pages_over_high;
-> > +#endif
-> >
-> > +#ifdef CONFIG_MEMCG_KMEM
-> >       /* Used by memcontrol for targeted memcg charge: */
-> >       struct mem_cgroup               *active_memcg;
-> >  #endif
-> > diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> > index 1ae08b8462a4..64a72975270e 100644
-> > --- a/include/linux/sched/mm.h
-> > +++ b/include/linux/sched/mm.h
-> > @@ -294,7 +294,7 @@ static inline void memalloc_nocma_restore(unsigned int flags)
-> >  }
-> >  #endif
-> >
-> > -#ifdef CONFIG_MEMCG
-> > +#ifdef CONFIG_MEMCG_KMEM
-> >  DECLARE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-> >  /**
-> >   * set_active_memcg - Starts the remote memcg charging scope.
-> > diff --git a/kernel/fork.c b/kernel/fork.c
-> > index d66cd1014211..d66718bc82d5 100644
-> > --- a/kernel/fork.c
-> > +++ b/kernel/fork.c
-> > @@ -942,7 +942,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
-> >       tsk->use_memdelay = 0;
-> >  #endif
-> >
-> > -#ifdef CONFIG_MEMCG
-> > +#ifdef CONFIG_MEMCG_KMEM
-> >       tsk->active_memcg = NULL;
-> >  #endif
-> >       return tsk;
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 39cb8c5bf8b2..092dc4588b43 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -76,8 +76,10 @@ EXPORT_SYMBOL(memory_cgrp_subsys);
-> >
-> >  struct mem_cgroup *root_mem_cgroup __read_mostly;
-> >
-> > +#ifdef CONFIG_MEMCG_KMEM
-> >  /* Active memory cgroup to use from an interrupt context */
-> >  DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
-> > +#endif
-> >
-> >  /* Socket memory accounting disabled? */
-> >  static bool cgroup_memory_nosocket;
-> > @@ -1054,6 +1056,7 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
-> >  }
-> >  EXPORT_SYMBOL(get_mem_cgroup_from_mm);
-> >
-> > +#ifdef CONFIG_MEMCG_KMEM
-> >  static __always_inline struct mem_cgroup *active_memcg(void)
-> >  {
-> >       if (in_interrupt())
-> > @@ -1074,6 +1077,7 @@ static __always_inline bool memcg_kmem_bypass(void)
-> >
-> >       return false;
-> >  }
-> > +#endif
-> >
-> >  /**
-> >   * mem_cgroup_iter - iterate over memory cgroup hierarchy
-> > --
-> > 2.11.0
-> >
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>   include/linux/vdpa.h              | 4 ++++
+>   drivers/vdpa/ifcvf/ifcvf_main.c   | 6 ++++++
+>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 6 ++++++
+>   drivers/vdpa/vdpa_sim/vdpa_sim.c  | 9 +++++++++
+>   4 files changed, 25 insertions(+)
+>
+> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> index 4ab5494503a8..fddf42b17573 100644
+> --- a/include/linux/vdpa.h
+> +++ b/include/linux/vdpa.h
+> @@ -150,6 +150,9 @@ struct vdpa_iova_range {
+>    * @set_status:			Set the device status
+>    *				@vdev: vdpa device
+>    *				@status: virtio device status
+> + * @get_config_size:		Get the size of the configuration space
+> + *				@vdev: vdpa device
+> + *				Returns size_t: configuration size
+
+
+Rethink about this, how much we could gain by introducing a dedicated 
+ops here? E.g would it be simpler if we simply introduce a 
+max_config_size to vdpa device?
+
+Thanks
+
+
+>    * @get_config:			Read from device specific configuration space
+>    *				@vdev: vdpa device
+>    *				@offset: offset from the beginning of
+> @@ -231,6 +234,7 @@ struct vdpa_config_ops {
+>   	u32 (*get_vendor_id)(struct vdpa_device *vdev);
+>   	u8 (*get_status)(struct vdpa_device *vdev);
+>   	void (*set_status)(struct vdpa_device *vdev, u8 status);
+> +	size_t (*get_config_size)(struct vdpa_device *vdev);
+>   	void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
+>   			   void *buf, unsigned int len);
+>   	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+> index 7c8bbfcf6c3e..2443271e17d2 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+> @@ -332,6 +332,11 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
+>   	return IFCVF_QUEUE_ALIGNMENT;
+>   }
+>   
+> +static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
+> +{
+> +	return sizeof(struct virtio_net_config);
+> +}
+> +
+>   static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
+>   				  unsigned int offset,
+>   				  void *buf, unsigned int len)
+> @@ -392,6 +397,7 @@ static const struct vdpa_config_ops ifc_vdpa_ops = {
+>   	.get_device_id	= ifcvf_vdpa_get_device_id,
+>   	.get_vendor_id	= ifcvf_vdpa_get_vendor_id,
+>   	.get_vq_align	= ifcvf_vdpa_get_vq_align,
+> +	.get_config_size	= ifcvf_vdpa_get_config_size,
+>   	.get_config	= ifcvf_vdpa_get_config,
+>   	.set_config	= ifcvf_vdpa_set_config,
+>   	.set_config_cb  = ifcvf_vdpa_set_config_cb,
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 10e9b09932eb..78043ee567b6 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1814,6 +1814,11 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>   	ndev->mvdev.status |= VIRTIO_CONFIG_S_FAILED;
+>   }
+>   
+> +static size_t mlx5_vdpa_get_config_size(struct vdpa_device *vdev)
+> +{
+> +	return sizeof(struct virtio_net_config);
+> +}
+> +
+>   static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
+>   				 unsigned int len)
+>   {
+> @@ -1900,6 +1905,7 @@ static const struct vdpa_config_ops mlx5_vdpa_ops = {
+>   	.get_vendor_id = mlx5_vdpa_get_vendor_id,
+>   	.get_status = mlx5_vdpa_get_status,
+>   	.set_status = mlx5_vdpa_set_status,
+> +	.get_config_size = mlx5_vdpa_get_config_size,
+>   	.get_config = mlx5_vdpa_get_config,
+>   	.set_config = mlx5_vdpa_set_config,
+>   	.get_generation = mlx5_vdpa_get_generation,
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> index d5942842432d..779ae6c144d7 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> @@ -439,6 +439,13 @@ static void vdpasim_set_status(struct vdpa_device *vdpa, u8 status)
+>   	spin_unlock(&vdpasim->lock);
+>   }
+>   
+> +static size_t vdpasim_get_config_size(struct vdpa_device *vdpa)
+> +{
+> +	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+> +
+> +	return vdpasim->dev_attr.config_size;
+> +}
+> +
+>   static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
+>   			     void *buf, unsigned int len)
+>   {
+> @@ -566,6 +573,7 @@ static const struct vdpa_config_ops vdpasim_config_ops = {
+>   	.get_vendor_id          = vdpasim_get_vendor_id,
+>   	.get_status             = vdpasim_get_status,
+>   	.set_status             = vdpasim_set_status,
+> +	.get_config_size        = vdpasim_get_config_size,
+>   	.get_config             = vdpasim_get_config,
+>   	.set_config             = vdpasim_set_config,
+>   	.get_generation         = vdpasim_get_generation,
+> @@ -593,6 +601,7 @@ static const struct vdpa_config_ops vdpasim_batch_config_ops = {
+>   	.get_vendor_id          = vdpasim_get_vendor_id,
+>   	.get_status             = vdpasim_get_status,
+>   	.set_status             = vdpasim_set_status,
+> +	.get_config_size        = vdpasim_get_config_size,
+>   	.get_config             = vdpasim_get_config,
+>   	.set_config             = vdpasim_set_config,
+>   	.get_generation         = vdpasim_get_generation,
+
