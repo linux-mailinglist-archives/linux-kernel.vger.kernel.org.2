@@ -2,80 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB2832A7AF
+	by mail.lfdr.de (Postfix) with ESMTP id C08AC32A7B0
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579029AbhCBQ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238765AbhCBN4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:56:07 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7C6C0617A9
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:55:23 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id w1so14766861qto.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:55:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ms2DEUDg3w2MIQxiWCyPeHGtrqNcSJcVEZ0dLVETUxY=;
-        b=Sgn/ih4RYGRBRS7rn0ARvx/WETzDS1bNWJ3KiOedTppfKE0S9XlDuM9MLEN1kVM8kE
-         9s+b7gTac9NsILOMy3AClrVI2xymt8VdCNrAjnQeq70S/mD8Ldz/V1N5ugKTkN0wwlnO
-         z5Rv984HM1bO9VY4yQl9pSy7Tl4P3K6t1k1Ich5FhmY1o+kN9IbE1+ec63hX/dN4Jm7h
-         1JEzAHhFy29FxqO63CmxFpZaMyqo6NqPs56N6FxLn6cyZ/arYTOnrMa+QBzP6cm8C/tQ
-         Vyng5yN53IpAvaduJp6m9Z3lidKge1zbJMED2HJsAnMdXYuOF2k7SVL64WsC/ex9FUFU
-         0C0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ms2DEUDg3w2MIQxiWCyPeHGtrqNcSJcVEZ0dLVETUxY=;
-        b=sDVqg39UkVngEksqbw0YPQeS5rKFqtmYGTiDo3gIV9UM6U0G2PJvXKqjP/HfSqHLcj
-         NrR7EFu5Efvmh4scVXyRX+JR/3hnDJemzW8vJqUPtz/tj7OA6K6ZOFRO6yfv2AFZoCI2
-         Xzf7WLcQkzB60mpJEf7x+4mb3h5lW1WzYE5AxnceKkcdOfCjMI3eOR66Q/TNrPMSR9N0
-         stV4FbnvwSN2KP/m0H7B+ArmBE0R5GMeki7zjUivFA//CbBTsTsizVd+SKkGE0YXC4v6
-         rwOaWEmqJi50RLoshQBssRyOVYYzpH2Wh3gODpSah20tJ1VCVrZs1DCLclYG5oyWxjUe
-         mj6g==
-X-Gm-Message-State: AOAM531gdWV6VP41yFLj/VR9NUTPumXjA7+OMP6FdZjIXeKYmWbdZWPB
-        TkwF1Kdfq65Du0esoaeYrqItV5RV6N2ZNmGxM44=
-X-Google-Smtp-Source: ABdhPJxC+mg+78cgGANwTeYLG/WqZOlQLlcSNCT/ApfySnvbeju8x7iJL6SDlVcY/ETvHVerROLe9dCRD1w1sDsQTLw=
-X-Received: by 2002:ac8:6f01:: with SMTP id g1mr1118155qtv.214.1614693323195;
- Tue, 02 Mar 2021 05:55:23 -0800 (PST)
+        id S1579048AbhCBQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:28:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239578AbhCBN44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:56:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614693328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2zHzG0WPsx3xKiPqPnMCcC9JpT/COf8SAqNxgYPDcwI=;
+        b=oL4v99bE7SLyOQloEmxBm5+k/xMRvTkk4pt/OG8qvLA6b9DdiRhtxaD+0nUB4F5N4OQcsj
+        Ic/6CdYJx/OPu8rlCqsNQGpM38HYhSfsHpGptacoyamFaVFqs7/yek3tHvqyg/+qcdd+DL
+        OfjwuhDgZRqJTg+9ADLiziF6AFqEqM8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5718AAFF5;
+        Tue,  2 Mar 2021 13:55:28 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 14:55:26 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
+        linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
+Message-ID: <YD5DzldNpnzuECaA@alley>
+References: <20210225202438.28985-1-john.ogness@linutronix.de>
+ <20210225202438.28985-13-john.ogness@linutronix.de>
+ <YD0tbVV+hZOFvWyB@alley>
+ <87lfb5pu8c.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20210302033908.51706-1-yejune.deng@gmail.com> <alpine.DEB.2.22.394.2103021007490.860725@gentwo.de>
-In-Reply-To: <alpine.DEB.2.22.394.2103021007490.860725@gentwo.de>
-From:   Yejune Deng <yejune.deng@gmail.com>
-Date:   Tue, 2 Mar 2021 21:55:11 +0800
-Message-ID: <CABWKuGWDAfR2WaW7AXv9Tp+qnmhAqveJUxucU9tFccDhj0bLWg@mail.gmail.com>
-Subject: Re: [PATCH] include/linux/slab.h: use for() and left shift to calculate
-To:     Christoph Lameter <cl@gentwo.de>, willy@infradead.org
-Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfb5pu8c.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you. I hadn't thought of that=E3=80=82
+On Tue 2021-03-02 14:20:51, John Ogness wrote:
+> On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
+> >> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
+> >> index 532f22637783..5a64b24a91c2 100644
+> >> --- a/arch/powerpc/kernel/nvram_64.c
+> >> +++ b/arch/powerpc/kernel/nvram_64.c
+> >> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
+> >>  		return;
+> >>  
+> >>  	if (big_oops_buf) {
+> >> -		kmsg_dump_get_buffer(dumper, false,
+> >> +		kmsg_dump_rewind(&iter);
+> >
+> > It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
+> > in all callers.
+> >
+> > A solution might be to create the following in include/linux/kmsg_dump.h
+> >
+> > Then we could do the following at the beginning of both
+> > kmsg_dump_get_buffer() and kmsg_dump_get_line():
+> >
+> > 	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
+> >
+> > 	if (iter->cur_seq < clear_seq)
+> > 		cur_seq = clear_seq;
+> 
+> I suppose we need to add this part anyway, if we want to enforce that
+> records before @clear_seq are not to be available for dumpers.
 
-On Tue, Mar 2, 2021 at 5:09 PM Christoph Lameter <cl@gentwo.de> wrote:
->
-> On Tue, 2 Mar 2021, Yejune Deng wrote:
->
-> > use for() and left shift to calculate the value that compared with size=
-.
->
-> There is a reason for the madness...
->
-> The current code was written so compilers can do proper constant folding
-> and eliminate the whole function entirely.
->
-> If you want this change then please verify that all compilers currently i=
-n
-> use with this code do proper constant folding and never generate code for
-> the for loop.
+Yup.
+
+> > It might be better to avoid the infinite loop. We could do the following:
+> >
+> > static void check_and_set_iter(struct kmsg_dump_iter)
+> > {
+> > 	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
+> > 		kmsg_dump_rewind(iter);
+> > }
+> >
+> > and call this at the beginning of both kmsg_dump_get_buffer()
+> > and kmsg_dump_get_line()
+> >
+> > What do you think?
+> 
+> On a technical level, it does not make any difference. It is pure
+> cosmetic.
+
+Yup.
+
+> Personally, I prefer the rewind directly before the kmsg_dump_get calls
+> because it puts the initializer directly next to the user.
+> 
+> As an example to illustrate my view, I prefer:
+> 
+>     for (i = 0; i < n; i++)
+>         ...;
+> 
+> instead of:
+> 
+>     int i = 0;
+> 
+>     ...
+> 
+>     for (; i < n; i++)
+>         ...;
+> 
+> Also, I do not really like the special use of 0/U64_MAX to identify
+> special actions of the kmsg_dump_get functions.
+
+Fair enough.
+
+> > Note that I do not resist on it. But it might make the API easier to
+> > use from my POV.
+> 
+> Since you do not resist, I will keep the API the same for v4. But I will
+> add the @clear_seq check to the kmsg_dump_get functions.
+
+Go for it.
+
+Best Regards,
+Petr
