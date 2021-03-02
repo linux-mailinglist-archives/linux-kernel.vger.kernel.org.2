@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B65532A806
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B9332A7FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579653AbhCBQ7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:59:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45606 "EHLO mail.kernel.org"
+        id S1579525AbhCBQ6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:58:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351402AbhCBOWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:22:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6960464FCD;
-        Tue,  2 Mar 2021 11:59:36 +0000 (UTC)
+        id S1377883AbhCBO1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:27:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 937C564FD2;
+        Tue,  2 Mar 2021 11:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686378;
-        bh=XQ2zSEW/W21CTzIhc5QdKoiwCXhCc8zccWUX161ff7M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Rqi1eerSfWOqcYuuYkcpBKEdWaaavIA7i5Dx++//HkotRIvfUhsnOBPvN6me+w1fM
-         S//vcK7HXurtBjgPjaD/AnYbGzTrweB4lAzBe8gXh5cTwGpR6zDgzZSz3KOb0zWyBq
-         CYeM87bHgzNPvCZC30i3v4kjfRBSfk0iZy8xQbbGrBSU5KfCxB/x6vMXosXnd+2sgR
-         y4zHDbmF7F9yLKD8nas19XBMlYFdXAr4kJ669Oi7hXH0e3SxzjJR+vlHv21FfNPtVK
-         bF1wGTBgTVWYFFnHLE1u4jx0IAPEfmmFywTcIQ8DfMpFtvghCzpXnVQ2i9yVwaLvvT
-         dh6+NAUpOgdiQ==
+        s=k20201202; t=1614686379;
+        bh=Z5V6QxlYbSnVGsT/Zskji+exXNBQu9FvWIp6KdSxNg4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WN+TQSR8iCEBG9jWle9TwfWfHnKAk3Rcvyttxyez9JSD/msMSmyw++k+Pd0DGnA7I
+         w61hK4pvGc2HAR5oE3K55s+w+J/2uJKfb9aAx/+7/aT9e99xRjFWVI43+zz9z8EDhW
+         iMY0uodzNcCwJD4OL+i/rb33AmiehAL42H+28gsMDb2z/fxlizkQLcAFalayYE/Tui
+         Cftnet43GPQZrVV7i7ZHvsshDOM+vgRgcBQPnpQdfLuOT4jVWgnVc8aIoSmbCr+8mg
+         khA3htVcmxmKkkCOSVrMW+tRms22zPL4nAy8bnBZ0akHlnnwEhf2w08aAT9sde+ro9
+         gyvqdXuPDb0LA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 1/8] mmc: mxs-mmc: Fix a resource leak in an error handling path in 'mxs_mmc_probe()'
-Date:   Tue,  2 Mar 2021 06:59:28 -0500
-Message-Id: <20210302115935.63777-1-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.4 2/8] mmc: mediatek: fix race condition between msdc_request_timeout and irq
+Date:   Tue,  2 Mar 2021 06:59:29 -0500
+Message-Id: <20210302115935.63777-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210302115935.63777-1-sashal@kernel.org>
+References: <20210302115935.63777-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -40,34 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Chaotian Jing <chaotian.jing@mediatek.com>
 
-[ Upstream commit 0bb7e560f821c7770973a94e346654c4bdccd42c ]
+[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
 
-If 'mmc_of_parse()' fails, we must undo the previous 'dma_request_chan()'
-call.
+when get request SW timeout, if CMD/DAT xfer done irq coming right now,
+then there is race between the msdc_request_timeout work and irq handler,
+and the host->cmd and host->data may set to NULL in irq handler. also,
+current flow ensure that only one path can go to msdc_request_done(), so
+no need check the return value of cancel_delayed_work().
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201208203527.49262-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
+Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mxs-mmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index c8b8ac66ff7e..687fd68fbbcd 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -651,7 +651,7 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 5ef25463494f..1770c8df9d1b 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -720,13 +720,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
+ static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+ {
+ 	unsigned long flags;
+-	bool ret;
  
- 	ret = mmc_of_parse(mmc);
- 	if (ret)
--		goto out_clk_disable;
-+		goto out_free_dma;
+-	ret = cancel_delayed_work(&host->req_timeout);
+-	if (!ret) {
+-		/* delay work already running */
+-		return;
+-	}
++	/*
++	 * No need check the return value of cancel_delayed_work, as only ONE
++	 * path will go here!
++	 */
++	cancel_delayed_work(&host->req_timeout);
++
+ 	spin_lock_irqsave(&host->lock, flags);
+ 	host->mrq = NULL;
+ 	spin_unlock_irqrestore(&host->lock, flags);
+@@ -747,7 +747,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
+ 	bool done = false;
+ 	bool sbc_error;
+ 	unsigned long flags;
+-	u32 *rsp = cmd->resp;
++	u32 *rsp;
  
- 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
+ 	if (mrq->sbc && cmd == mrq->cmd &&
+ 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
+@@ -768,6 +768,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
  
+ 	if (done)
+ 		return true;
++	rsp = cmd->resp;
+ 
+ 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
+ 
+@@ -942,7 +943,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
+ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
+ 				struct mmc_request *mrq, struct mmc_data *data)
+ {
+-	struct mmc_command *stop = data->stop;
++	struct mmc_command *stop;
+ 	unsigned long flags;
+ 	bool done;
+ 	unsigned int check_data = events &
+@@ -958,6 +959,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
+ 
+ 	if (done)
+ 		return true;
++	stop = data->stop;
+ 
+ 	if (check_data || (stop && stop->error)) {
+ 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
 -- 
 2.30.1
 
