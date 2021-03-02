@@ -2,166 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C4432A17F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4466032A180
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577452AbhCBGWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381078AbhCBEUa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:20:30 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E76C061756;
-        Mon,  1 Mar 2021 20:19:46 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id l2so13053091pgb.1;
-        Mon, 01 Mar 2021 20:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ygpumBoGjcJPpkOrRtRnwo2svO0zz3+ZRmAmaq7w9/4=;
-        b=ddnplYiySQgFy4fjExd3GlUYK8UxyFRNV8CriQ47JYNi0i2wvNMAQ0UOwuTNWu3Oj4
-         pBRwzKQTEYPNaXakFhmSK+fGpV3t2giPQ5MbnLME2ZHZFBgwJX5Wj5qS5o6pJDhryf0Q
-         9uYUD6USOw8ItWO0HaPQvophDEB1rZBRmBMBYVGAXJnrWGrxVX0YBT1BgKuhHYpyZS4g
-         gLoA7p4/zw2Hn60LwCF9hGq5xTZJkl5ODHrEBWKvI03E++1d3ttS/EzPDqhvhccWi6TU
-         /xC+F6yzd2zDNt7QCP6OYsmFj8MfRebMElScBnep9jwX6F0aTeS7PZ0wko7zw9IXB0LD
-         AEHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ygpumBoGjcJPpkOrRtRnwo2svO0zz3+ZRmAmaq7w9/4=;
-        b=Xo6fIDOiuk7ixX5Zc0GTlX2xbj1pFfUK7xJ6ARehUNzVr8xIGPuqjsq8pv6tpMoyNJ
-         EtASWUG5PzMqymk91xVW+3+iICUIRQ4guZYEDty9FPnXYAVqnaZOpsMz7xYK3Hy9LZTR
-         TecdRtULu7XrQnancwA5l9F0cOjbuZUPRHGMrLJFTBesiF6xvPXwyfVLVsbT7mCbJIIJ
-         U9XtQo8dcFM5vgLHyNnhZOCQ8ZeLsAP7k226jyqlTqhfTXaKq4iucHZWfeuL2RwI1tCn
-         FkLwrF7NTmIwN4Ma8b+rKDeUBze74TBVcFFgM1wLTg1se81VUWTghTAo+CSbtOVYWlEF
-         HGHw==
-X-Gm-Message-State: AOAM531zpbdyO1cE7Qcu/7qzZroi4o0Z3CPP0JlXxtkxMnXLw9OWwRb6
-        KImS5j1Vd1xGRoycOahN4HsY4upqbv4=
-X-Google-Smtp-Source: ABdhPJxeYGndjRbxs7qyJCzcsYIKmkjKDNlzyb7+7kVsPSbhP/3N2CTua9HAIbQuRHOKPqI5HbV8wQ==
-X-Received: by 2002:a63:4e26:: with SMTP id c38mr16616807pgb.81.1614658785561;
-        Mon, 01 Mar 2021 20:19:45 -0800 (PST)
-Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 1sm6701316pfh.90.2021.03.01.20.19.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 20:19:45 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     rppt@kernel.org, fancer.lancer@gmail.com, guro@fb.com,
-        akpm@linux-foundation.org, paul@crapouillou.net,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM BMIPS MIPS
-        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
-Date:   Mon,  1 Mar 2021 20:19:38 -0800
-Message-Id: <20210302041940.3663823-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
-References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+        id S1577461AbhCBGWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:22:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1381108AbhCBEUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 23:20:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10601601FA;
+        Tue,  2 Mar 2021 04:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614658812;
+        bh=vOXe667EPdjWGQsTKUtkqDCOaVMfZzzv1gKuybI2dY0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L1kyoFKot1Kt8f7W4hCqI5IH94AhK754adlGNmVtpxPkcbfg9avxDjyA2O0V9Qc0S
+         IxkKHipP2SW9wUeu24TYYBdvLZ+4I2xR2z143/TLpjKgMbMqDAO8gBP2bfwT9zzR4V
+         QC8iUBSau8+NM4+mFPpQiON1v8M6pzt2ld2Uqf7DYt/uCYJvEnEBHY+w4/GvkGaP+w
+         zrdBcLTEvUSRZvrGA4BekWHPt9g6ELAMHsTlcesh86/7VH4uw8KcE8pp0Kn2QAIKl/
+         Yjg73tWlyQNzE43tFugRdnXhz1G6QYFZSDawHuNU8Csnm4tInD3p86w2wgO9oTh6cc
+         fsPxUuCUkmqlA==
+Date:   Mon, 1 Mar 2021 20:20:10 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Huang Jianan <huangjianan@oppo.com>,
+        linux-f2fs-devel@lists.sourceforge.net, zhangshiming@oppo.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: check if swapfile is
+ section-alligned
+Message-ID: <YD28+iVg4sjS3+22@google.com>
+References: <20210227120231.136559-1-huangjianan@oppo.com>
+ <20210227120231.136559-3-huangjianan@oppo.com>
+ <b4ae58b2-3325-6cdf-26b4-b77810d33bbc@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4ae58b2-3325-6cdf-26b4-b77810d33bbc@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BMIPS is one of the few platforms that do change the exception base.
-After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-with kernel_end") we started seeing BMIPS boards fail to boot with the
-built-in FDT being corrupted.
+On 03/01, Chao Yu wrote:
+> Hi Jianan,
 
-Before the cited commit, early allocations would be in the [kernel_end,
-RAM_END] range, but after commit they would be within [RAM_START +
-PAGE_SIZE, RAM_END].
+Merged 1/3 and 2/3, so please post v2 on 3/3.
 
-The custom exception base handler that is installed by
-bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-memory region allocated by unflatten_and_copy_device_tree() thus
-corrupting the FDT used by the kernel.
+Thanks,
 
-To fix this, we need to perform an early reservation of the custom
-exception that is going to be installed and this needs to happen at
-plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
-finds a space that is suitable, away from reserved memory.
-
-Huge thanks to Serget for analysing and proposing a solution to this
-issue.
-
-Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
-Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Thomas,
-
-This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
-by the stable team for 5.11. We should find a safer way to avoid these
-problems for 5.13 maybe.
-
- arch/mips/bmips/setup.c       | 22 ++++++++++++++++++++++
- arch/mips/include/asm/traps.h |  2 ++
- 2 files changed, 24 insertions(+)
-
-diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
-index 31bcfa4e08b9..0088bd45b892 100644
---- a/arch/mips/bmips/setup.c
-+++ b/arch/mips/bmips/setup.c
-@@ -149,6 +149,26 @@ void __init plat_time_init(void)
- 	mips_hpt_frequency = freq;
- }
- 
-+static void __init bmips_ebase_reserve(void)
-+{
-+	phys_addr_t base, size = VECTORSPACING * 64;
-+
-+	switch (current_cpu_type()) {
-+	default:
-+	case CPU_BMIPS4350:
-+		return;
-+	case CPU_BMIPS3300:
-+	case CPU_BMIPS4380:
-+		base = 0x0400;
-+		break;
-+	case CPU_BMIPS5000:
-+		base = 0x1000;
-+		break;
-+	}
-+
-+	memblock_reserve(base, size);
-+}
-+
- void __init plat_mem_setup(void)
- {
- 	void *dtb;
-@@ -169,6 +189,8 @@ void __init plat_mem_setup(void)
- 
- 	__dt_setup_arch(dtb);
- 
-+	bmips_ebase_reserve();
-+
- 	for (q = bmips_quirk_list; q->quirk_fn; q++) {
- 		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
- 					     q->compatible)) {
-diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-index 6aa8f126a43d..0ba6bb7f9618 100644
---- a/arch/mips/include/asm/traps.h
-+++ b/arch/mips/include/asm/traps.h
-@@ -14,6 +14,8 @@
- #define MIPS_BE_FIXUP	1		/* return to the fixup code */
- #define MIPS_BE_FATAL	2		/* treat as an unrecoverable error */
- 
-+#define VECTORSPACING 0x100	/* for EI/VI mode */
-+
- extern void (*board_be_init)(void);
- extern int (*board_be_handler)(struct pt_regs *regs, int is_fixup);
- 
--- 
-2.25.1
-
+> 
+> On 2021/2/27 20:02, Huang Jianan via Linux-f2fs-devel wrote:
+> > If the swapfile isn't created by pin and fallocate, it cann't be
+> 
+> Typo:
+> 
+> can't
+> 
+> > guaranteed section-aligned, so it may be selected by f2fs gc. When
+> > gc_pin_file_threshold is reached, the address of swapfile may change,
+> > but won't be synchroniz to swap_extent, so swap will write to wrong
+> 
+> synchronized
+> 
+> > address, which will cause data corruption.
+> > 
+> > Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> > Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> > ---
+> >   fs/f2fs/data.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 63 insertions(+)
+> > 
+> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > index 4dbc1cafc55d..3e523d6e4643 100644
+> > --- a/fs/f2fs/data.c
+> > +++ b/fs/f2fs/data.c
+> > @@ -3781,11 +3781,63 @@ int f2fs_migrate_page(struct address_space *mapping,
+> >   #endif
+> >   #ifdef CONFIG_SWAP
+> > +static int f2fs_check_file_aligned(struct inode *inode)
+> 
+> f2fs_check_file_alignment() or f2fs_is_file_aligned()?
+> 
+> > +{
+> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> > +	block_t main_blkaddr = SM_I(sbi)->main_blkaddr;
+> > +	block_t cur_lblock;
+> > +	block_t last_lblock;
+> > +	block_t pblock;
+> > +	unsigned long len;
+> > +	unsigned long nr_pblocks;
+> > +	unsigned int blocks_per_sec = sbi->blocks_per_seg * sbi->segs_per_sec;
+> 
+> unsigned int blocks_per_sec = BLKS_PER_SEC(sbi);
+> 
+> > +	int ret;
+> > +
+> > +	cur_lblock = 0;
+> > +	last_lblock = bytes_to_blks(inode, i_size_read(inode));
+> > +	len = i_size_read(inode);
+> > +
+> > +	while (cur_lblock < last_lblock) {
+> > +		struct f2fs_map_blocks map;
+> > +		pgoff_t next_pgofs;
+> > +
+> > +		memset(&map, 0, sizeof(map));
+> > +		map.m_lblk = cur_lblock;
+> > +		map.m_len = bytes_to_blks(inode, len) - cur_lblock;
+> 
+> map.m_len = last_lblock - cur_lblock;
+> 
+> > +		map.m_next_pgofs = &next_pgofs;
+> 
+> map.m_next_pgofs = NULL;
+> map.m_next_extent = NULL;
+> 
+> > +		map.m_seg_type = NO_CHECK_TYPE;
+> 
+> map.m_may_create = false;
+> 
+> > +
+> > +		ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
+> > +
+> 
+> Unneeded blank line.
+> 
+> > +		if (ret)
+> > +			goto err_out;
+> > +
+> > +		/* hole */
+> > +		if (!(map.m_flags & F2FS_MAP_FLAGS))
+> 
+> ret = -ENOENT;
+> 
+> > +			goto err_out;
+> > +
+> > +		pblock = map.m_pblk;
+> > +		nr_pblocks = map.m_len;
+> > +
+> > +		if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
+> > +			nr_pblocks & (blocks_per_sec - 1))
+> 
+> ret = -EINVAL;
+> 
+> > +			goto err_out;
+> > +
+> > +		cur_lblock += nr_pblocks;
+> > +	}
+> > +
+> > +	return 0;
+> > +err_out:
+> > +	pr_err("swapon: swapfile isn't section-aligned\n");
+> 
+> We should show above message only after we fail in check condition:
+> 
+> 	if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
+> 		nr_pblocks & (blocks_per_sec - 1)) {
+> 		f2fs_err(sbi, "Swapfile does not align to section");
+> 		goto err_out;
+> 	}
+> 
+> And please use f2fs_{err,warn,info..} macro rather than pr_{err,warn,info..}.
+> 
+> Could you please fix above related issues in check_swap_activate_fast() as well.
+> 
+> > +	return -EINVAL;
+> 
+> return ret;
+> 
+> > +}
+> > +
+> >   static int check_swap_activate_fast(struct swap_info_struct *sis,
+> >   				struct file *swap_file, sector_t *span)
+> >   {
+> >   	struct address_space *mapping = swap_file->f_mapping;
+> >   	struct inode *inode = mapping->host;
+> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> >   	sector_t cur_lblock;
+> >   	sector_t last_lblock;
+> >   	sector_t pblock;
+> > @@ -3793,6 +3845,7 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
+> >   	sector_t highest_pblock = 0;
+> >   	int nr_extents = 0;
+> >   	unsigned long nr_pblocks;
+> > +	unsigned int blocks_per_sec = sbi->blocks_per_seg * sbi->segs_per_sec;
+> 
+> Ditto,
+> 
+> >   	u64 len;
+> >   	int ret;
+> > @@ -3827,6 +3880,13 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
+> >   		pblock = map.m_pblk;
+> >   		nr_pblocks = map.m_len;
+> > +		if ((pblock - SM_I(sbi)->main_blkaddr) & (blocks_per_sec - 1) ||
+> > +			nr_pblocks & (blocks_per_sec - 1)) {
+> > +			pr_err("swapon: swapfile isn't section-aligned\n");
+> 
+> Ditto,
+> 
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> > +
+> >   		if (cur_lblock + nr_pblocks >= sis->max)
+> >   			nr_pblocks = sis->max - cur_lblock;
+> > @@ -3878,6 +3938,9 @@ static int check_swap_activate(struct swap_info_struct *sis,
+> >   	if (PAGE_SIZE == F2FS_BLKSIZE)
+> >   		return check_swap_activate_fast(sis, swap_file, span);
+> > +	if (f2fs_check_file_aligned(inode))
+> 
+> ret = f2fs_check_file_aligned();
+> if (ret)
+> 	return ret;
+> 
+> Thanks,
+> 
+> > +		return -EINVAL;
+> > +
+> >   	blocks_per_page = bytes_to_blks(inode, PAGE_SIZE);
+> >   	/*
+> > 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
