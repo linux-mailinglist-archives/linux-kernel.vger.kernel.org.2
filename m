@@ -2,155 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2885F32A3A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D791332A3AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382340AbhCBJZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347800AbhCBJBf (ORCPT
+        id S1382431AbhCBJ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:26:10 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35590 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378828AbhCBJDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:01:35 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291E9C06178B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:00:18 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id ci14so14761960ejc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:00:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OlQhZo66tdfixj0c2XUayC5dC48cYkknFAh4g2s0VB8=;
-        b=VVhxRPrsIbUWjeeEIAfPVav1chwuvvW2ogpbLjn/vg1vGxAANoefHJJk8ETghcW2De
-         KXXv2FUZAzBm01C5763rsWLGWfldabW7sEwRxOVBkTM0nCNK5OFf0iVmQyzj+AMMwDyl
-         ivHp8ULnyNeFH5o010LZ31o2PvxbUekoKg9411FrKaCLYRv3RTaBzeTqPNiQjiDOKzTg
-         39Q9rPMbz9L8K5HwSuS0ixqrts6QVmuKTBwmeoWkMMc76kZQTkznuTfqeM6p0sT7/2Mn
-         QlnS8dfgA/t4gYFKo/O0ODB6obPSs8UmC2bOdfcOWLLd0c0hpCP5YjLDwkHYNv9y1y3T
-         3MCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OlQhZo66tdfixj0c2XUayC5dC48cYkknFAh4g2s0VB8=;
-        b=lCmarIIoAy3g0h0G9XGlghYQA8vrb1/0shGb6eIUxGr57e6xpZJ/Xp9j42A501y35g
-         VDD3thjRgPByRop7eev1+QvIN6JQTHeN0LKpLbJI3DPniT9ZbDrMvqbrV9+80cIE7tKU
-         KdbDfvZOuHBS1jZImnjMDf1M5Tt+l8xQV2RyLD812azeJALPhEwR8NeOaZqiD/2PWClQ
-         q8lusuIHTuvdzG2BZXqVQntf2jh1vK1MPgXO/39lya2Qnj2FmMZJY/VYPSTReV4BO1Y5
-         FkAUdvF+grxBBFw9FDB8PW6O0SkBewlGIIVYL3A1Xwr+eWzscpU9zVpj6QKVTOMyzov0
-         Z+Tw==
-X-Gm-Message-State: AOAM530JgteuI1rfBjbu8FJtoesl5eTDXKzU8puWZR33uXW5dOL3qa4w
-        z/vjN39sgKBkex6qvLZN05R5LLIwyGfI4vUgosSIPQ==
-X-Google-Smtp-Source: ABdhPJzbcdp9yM+SANcB02A7Piji7QgRmHuVFYC2ehQOoZpWEmfM8Re/BPYo+miajM5iedjeo+7jPk+12Cf5EkxQtgE=
-X-Received: by 2002:a17:906:1d44:: with SMTP id o4mr18660019ejh.130.1614675616685;
- Tue, 02 Mar 2021 01:00:16 -0800 (PST)
+        Tue, 2 Mar 2021 04:03:30 -0500
+Date:   Tue, 02 Mar 2021 09:01:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614675713;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xO2UGDX9SAUMILrrzTFVv99ufqO24OgSanDGJN1W6Vo=;
+        b=3nFurr01hhUYMxQLvKg7GWzluuQ4rQ4/ZHE+7qhyU8a1yWjG4Q6FHXeNNVpocmmZti4Xt2
+        5Ng8WEBdm9BIHjCfc79K5i/qrTTR8O4XlMXHPACK7b/nkl3yN3Xs9QeNmAXQTaXs6f9Nwy
+        GTG5nzvWIvsNLb/x4v2OAICB1zk7aWucWTg2CqITIqDNRcjtYGDUYApmG7QzlriAmPnros
+        g9x+whUBjgoY9n/WF4IMT3yFZ07Z0K1ANy60aTZSAQBEYl5D/fZRU/nC4rtL8SM4GnbXzY
+        pTdCBh33QNl9hDEF5sFEChmWn876JeaV5wbO8uPAmH4uWlsxydLSSkaxP+71Gg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614675713;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xO2UGDX9SAUMILrrzTFVv99ufqO24OgSanDGJN1W6Vo=;
+        b=2Xu+3zDNOOwNNqQJS4t48MIUfKGHHR0jin83yyaENrwhYDZoI3sg902/Gx6GV1afPOmqEy
+        Vn5eeeOkABP87/Bw==
+From:   "tip-bot2 for Vincent Donnefort" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] cpu/hotplug: Add cpuhp_invoke_callback_range()
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210216103506.416286-4-vincent.donnefort@arm.com>
+References: <20210216103506.416286-4-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-References: <20210216163647.34264-1-vincent.knecht@mailoo.org> <20210216163647.34264-2-vincent.knecht@mailoo.org>
-In-Reply-To: <20210216163647.34264-2-vincent.knecht@mailoo.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 10:00:05 +0100
-Message-ID: <CACRpkdaLJzG3_M7fNC-MHOdQ6HMsqHqVccK7XkvL=PvJnycCHQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] Input: add MStar MSG2638 touchscreen driver
-To:     Vincent Knecht <vincent.knecht@mailoo.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Michael Srba <Michael.Srba@seznam.cz>,
-        Linux Input <linux-input@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <161467571220.20312.13249114552313882288.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+The following commit has been merged into the sched/core branch of tip:
 
-thanks for your patch!
+Commit-ID:     c91b0dcb6482096e7af4adbf39cfe3296af74a78
+Gitweb:        https://git.kernel.org/tip/c91b0dcb6482096e7af4adbf39cfe3296af74a78
+Author:        Vincent Donnefort <vincent.donnefort@arm.com>
+AuthorDate:    Tue, 16 Feb 2021 10:35:06 
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 01 Mar 2021 18:17:27 +01:00
 
-On Tue, Feb 16, 2021 at 5:38 PM Vincent Knecht
-<vincent.knecht@mailoo.org> wrote:
+cpu/hotplug: Add cpuhp_invoke_callback_range()
 
-> Add support for the msg2638 touchscreen IC from MStar.
-> This driver reuses zinitix.c structure, while the checksum and irq handle=
-r
-> functions are based on out-of-tree driver for Alcatel Idol 3 (4.7").
->
-> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
-> ---
-> Changed in v5:
-> - use gpiod_set_value_cansleep() (Stephan G)
-> - use msleep/usleep_range() rathen than mdelay() (Stephan G)
+Factorizing and unifying cpuhp callback range invocations, especially for
+the hotunplug path, where two different ways of decrementing were used. The
+first one, decrements before the callback is called:
 
-(...)
+ cpuhp_thread_fun()
+     state = st->state;
+     st->state--;
+     cpuhp_invoke_callback(state);
 
-> +#include <linux/delay.h>
-> +#include <linux/gpio.h>
+The second one, after:
 
-Please only include
-#include <linux/gpio/consumer.h>
+ take_down_cpu()|cpuhp_down_callbacks()
+     cpuhp_invoke_callback(st->state);
+     st->state--;
 
-> +#define CHIP_ON_DELAY                  15 // ms
-> +#define FIRMWARE_ON_DELAY              50 // ms
-> +#define RESET_DELAY_MIN                        10000 // =C2=B5s
-> +#define RESET_DELAY_MAX                        11000 // =C2=B5s
+This is problematic for rolling back the steps in case of error, as
+depending on the decrement, the rollback will start from N or N-1. It also
+makes tracing inconsistent, between steps run in the cpuhp thread and
+the others.
 
-Rename the defines with _MS and _US suffixes so you don't
-need the comments, CHIP_ON_DELAY_MS etc.
+Additionally, avoid useless cpuhp_thread_fun() loops by skipping empty
+steps.
 
-> +static int msg2638_init_regulators(struct msg2638_ts_data *msg2638)
-> +{
-> +       struct i2c_client *client =3D msg2638->client;
-> +       int error;
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210216103506.416286-4-vincent.donnefort@arm.com
+---
+ kernel/cpu.c | 170 ++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 102 insertions(+), 68 deletions(-)
 
-I usually prefer a short name like "err" (cognitive load) but your choice.
-
-> +static u8 msg2638_checksum(u8 *data, u32 length)
-> +{
-> +       s32 sum =3D 0;
-> +       u32 i;
-> +
-> +       for (i =3D 0; i < length; i++)
-> +               sum +=3D data[i];
-> +
-> +       return (u8)((-sum) & 0xFF);
-> +}
-
-Interesting checksum algoritm.
-
-> +static int msg2638_start(struct msg2638_ts_data *msg2638)
-> +{
-> +       int error;
-> +
-> +       error =3D regulator_bulk_enable(ARRAY_SIZE(msg2638->supplies),
-> +                                     msg2638->supplies);
-> +       if (error) {
-> +               dev_err(&msg2638->client->dev, "Failed to enable regulato=
-rs: %d\n", error);
-> +               return error;
-> +       }
-> +
-> +       msleep(CHIP_ON_DELAY);
-> +
-> +       msg2638_power_on(msg2638);
-
-Maybe move enable_irq() here from power on to mirror
-the stop() function below?
-
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id msg2638_of_match[] =3D {
-> +       { .compatible =3D "mstar,msg2638" },
-> +       { }
-> +};
-> +MODULE_DEVICE_TABLE(of, msg2638_of_match);
-> +#endif
-
-I think these #ifdefs are not needed anymore. We just have struct of_device=
-_id
-available at all times.
-
-Yours,
-Linus Walleij
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 680ed8f..23505d6 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -135,6 +135,11 @@ static struct cpuhp_step *cpuhp_get_step(enum cpuhp_state state)
+ 	return cpuhp_hp_states + state;
+ }
+ 
++static bool cpuhp_step_empty(bool bringup, struct cpuhp_step *step)
++{
++	return bringup ? !step->startup.single : !step->teardown.single;
++}
++
+ /**
+  * cpuhp_invoke_callback _ Invoke the callbacks for a given state
+  * @cpu:	The cpu for which the callback should be invoked
+@@ -157,26 +162,24 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
+ 
+ 	if (st->fail == state) {
+ 		st->fail = CPUHP_INVALID;
+-
+-		if (!(bringup ? step->startup.single : step->teardown.single))
+-			return 0;
+-
+ 		return -EAGAIN;
+ 	}
+ 
++	if (cpuhp_step_empty(bringup, step)) {
++		WARN_ON_ONCE(1);
++		return 0;
++	}
++
+ 	if (!step->multi_instance) {
+ 		WARN_ON_ONCE(lastp && *lastp);
+ 		cb = bringup ? step->startup.single : step->teardown.single;
+-		if (!cb)
+-			return 0;
++
+ 		trace_cpuhp_enter(cpu, st->target, state, cb);
+ 		ret = cb(cpu);
+ 		trace_cpuhp_exit(cpu, st->state, state, ret);
+ 		return ret;
+ 	}
+ 	cbm = bringup ? step->startup.multi : step->teardown.multi;
+-	if (!cbm)
+-		return 0;
+ 
+ 	/* Single invocation for instance add/remove */
+ 	if (node) {
+@@ -475,6 +478,15 @@ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
+ static inline void
+ cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
+ {
++	st->target = prev_state;
++
++	/*
++	 * Already rolling back. No need invert the bringup value or to change
++	 * the current state.
++	 */
++	if (st->rollback)
++		return;
++
+ 	st->rollback = true;
+ 
+ 	/*
+@@ -488,7 +500,6 @@ cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
+ 			st->state++;
+ 	}
+ 
+-	st->target = prev_state;
+ 	st->bringup = !st->bringup;
+ }
+ 
+@@ -591,10 +602,53 @@ static int finish_cpu(unsigned int cpu)
+  * Hotplug state machine related functions
+  */
+ 
+-static void undo_cpu_up(unsigned int cpu, struct cpuhp_cpu_state *st)
++/*
++ * Get the next state to run. Empty ones will be skipped. Returns true if a
++ * state must be run.
++ *
++ * st->state will be modified ahead of time, to match state_to_run, as if it
++ * has already ran.
++ */
++static bool cpuhp_next_state(bool bringup,
++			     enum cpuhp_state *state_to_run,
++			     struct cpuhp_cpu_state *st,
++			     enum cpuhp_state target)
+ {
+-	for (st->state--; st->state > st->target; st->state--)
+-		cpuhp_invoke_callback(cpu, st->state, false, NULL, NULL);
++	do {
++		if (bringup) {
++			if (st->state >= target)
++				return false;
++
++			*state_to_run = ++st->state;
++		} else {
++			if (st->state <= target)
++				return false;
++
++			*state_to_run = st->state--;
++		}
++
++		if (!cpuhp_step_empty(bringup, cpuhp_get_step(*state_to_run)))
++			break;
++	} while (true);
++
++	return true;
++}
++
++static int cpuhp_invoke_callback_range(bool bringup,
++				       unsigned int cpu,
++				       struct cpuhp_cpu_state *st,
++				       enum cpuhp_state target)
++{
++	enum cpuhp_state state;
++	int err = 0;
++
++	while (cpuhp_next_state(bringup, &state, st, target)) {
++		err = cpuhp_invoke_callback(cpu, state, bringup, NULL, NULL);
++		if (err)
++			break;
++	}
++
++	return err;
+ }
+ 
+ static inline bool can_rollback_cpu(struct cpuhp_cpu_state *st)
+@@ -617,16 +671,12 @@ static int cpuhp_up_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
+ 	enum cpuhp_state prev_state = st->state;
+ 	int ret = 0;
+ 
+-	while (st->state < target) {
+-		st->state++;
+-		ret = cpuhp_invoke_callback(cpu, st->state, true, NULL, NULL);
+-		if (ret) {
+-			if (can_rollback_cpu(st)) {
+-				st->target = prev_state;
+-				undo_cpu_up(cpu, st);
+-			}
+-			break;
+-		}
++	ret = cpuhp_invoke_callback_range(true, cpu, st, target);
++	if (ret) {
++		cpuhp_reset_state(st, prev_state);
++		if (can_rollback_cpu(st))
++			WARN_ON(cpuhp_invoke_callback_range(false, cpu, st,
++							    prev_state));
+ 	}
+ 	return ret;
+ }
+@@ -690,17 +740,9 @@ static void cpuhp_thread_fun(unsigned int cpu)
+ 		state = st->cb_state;
+ 		st->should_run = false;
+ 	} else {
+-		if (bringup) {
+-			st->state++;
+-			state = st->state;
+-			st->should_run = (st->state < st->target);
+-			WARN_ON_ONCE(st->state > st->target);
+-		} else {
+-			state = st->state;
+-			st->state--;
+-			st->should_run = (st->state > st->target);
+-			WARN_ON_ONCE(st->state < st->target);
+-		}
++		st->should_run = cpuhp_next_state(bringup, &state, st, st->target);
++		if (!st->should_run)
++			goto end;
+ 	}
+ 
+ 	WARN_ON_ONCE(!cpuhp_is_ap_state(state));
+@@ -728,6 +770,7 @@ static void cpuhp_thread_fun(unsigned int cpu)
+ 		st->should_run = false;
+ 	}
+ 
++end:
+ 	cpuhp_lock_release(bringup);
+ 	lockdep_release_cpus_lock();
+ 
+@@ -881,19 +924,18 @@ static int take_cpu_down(void *_param)
+ 		return err;
+ 
+ 	/*
+-	 * We get here while we are in CPUHP_TEARDOWN_CPU state and we must not
+-	 * do this step again.
++	 * Must be called from CPUHP_TEARDOWN_CPU, which means, as we are going
++	 * down, that the current state is CPUHP_TEARDOWN_CPU - 1.
+ 	 */
+-	WARN_ON(st->state != CPUHP_TEARDOWN_CPU);
+-	st->state--;
++	WARN_ON(st->state != (CPUHP_TEARDOWN_CPU - 1));
++
+ 	/* Invoke the former CPU_DYING callbacks */
+-	for (; st->state > target; st->state--) {
+-		ret = cpuhp_invoke_callback(cpu, st->state, false, NULL, NULL);
+-		/*
+-		 * DYING must not fail!
+-		 */
+-		WARN_ON_ONCE(ret);
+-	}
++	ret = cpuhp_invoke_callback_range(false, cpu, st, target);
++
++	/*
++	 * DYING must not fail!
++	 */
++	WARN_ON_ONCE(ret);
+ 
+ 	/* Give up timekeeping duties */
+ 	tick_handover_do_timer();
+@@ -975,27 +1017,22 @@ void cpuhp_report_idle_dead(void)
+ 				 cpuhp_complete_idle_dead, st, 0);
+ }
+ 
+-static void undo_cpu_down(unsigned int cpu, struct cpuhp_cpu_state *st)
+-{
+-	for (st->state++; st->state < st->target; st->state++)
+-		cpuhp_invoke_callback(cpu, st->state, true, NULL, NULL);
+-}
+-
+ static int cpuhp_down_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
+ 				enum cpuhp_state target)
+ {
+ 	enum cpuhp_state prev_state = st->state;
+ 	int ret = 0;
+ 
+-	for (; st->state > target; st->state--) {
+-		ret = cpuhp_invoke_callback(cpu, st->state, false, NULL, NULL);
+-		if (ret) {
+-			st->target = prev_state;
+-			if (st->state < prev_state)
+-				undo_cpu_down(cpu, st);
+-			break;
+-		}
++	ret = cpuhp_invoke_callback_range(false, cpu, st, target);
++	if (ret) {
++
++		cpuhp_reset_state(st, prev_state);
++
++		if (st->state < prev_state)
++			WARN_ON(cpuhp_invoke_callback_range(true, cpu, st,
++							    prev_state));
+ 	}
++
+ 	return ret;
+ }
+ 
+@@ -1168,14 +1205,12 @@ void notify_cpu_starting(unsigned int cpu)
+ 
+ 	rcu_cpu_starting(cpu);	/* Enables RCU usage on this CPU. */
+ 	cpumask_set_cpu(cpu, &cpus_booted_once_mask);
+-	while (st->state < target) {
+-		st->state++;
+-		ret = cpuhp_invoke_callback(cpu, st->state, true, NULL, NULL);
+-		/*
+-		 * STARTING must not fail!
+-		 */
+-		WARN_ON_ONCE(ret);
+-	}
++	ret = cpuhp_invoke_callback_range(true, cpu, st, target);
++
++	/*
++	 * STARTING must not fail!
++	 */
++	WARN_ON_ONCE(ret);
+ }
+ 
+ /*
+@@ -1781,8 +1816,7 @@ static int cpuhp_issue_call(int cpu, enum cpuhp_state state, bool bringup,
+ 	 * If there's nothing to do, we done.
+ 	 * Relies on the union for multi_instance.
+ 	 */
+-	if ((bringup && !sp->startup.single) ||
+-	    (!bringup && !sp->teardown.single))
++	if (cpuhp_step_empty(bringup, sp))
+ 		return 0;
+ 	/*
+ 	 * The non AP bound callbacks can fail on bringup. On teardown
