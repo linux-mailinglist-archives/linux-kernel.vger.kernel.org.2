@@ -2,119 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EDE32A3CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E08132A3D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382553AbhCBJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:39:48 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:52643 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1837986AbhCBJRO (ORCPT
+        id S1382569AbhCBJj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:39:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1838006AbhCBJRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:17:14 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7F1525C00D0;
-        Tue,  2 Mar 2021 04:16:07 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 02 Mar 2021 04:16:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=8Qsy7Meg0hACls6ymvjBD7Va/wH
-        qIHlIHDh6TppONGg=; b=IOl6bdVEvD++MdsXyrjzlex4cxcOmVlNXMpIvh3NtXK
-        RWnpPF07gZ8hz8vrYHqaEmnHIOJnHOtQyw5NPJAXls6UDWRvYfRtSsCHlntQR5ZZ
-        BdvNlQA9QoI8tbuLdJZnYmbypi2lP1ivUAm7uJ+jG4/S2uUW3Ojx4tssdvBN4ypb
-        l+HhrnHiSsAQWAbzHiKRMWcrI6oYJZzam0zSOBMZ9psaPF1TcvERQyz+S1fKEI0H
-        CZFDHV3GbUTB3E2crMKyGpmnYWiqq11gHzfDAqRk33+NOhNnOl74T8oR27Ca6V7p
-        HtjnTCgzJfbg1APK8dA0iPCPi1eOV0BJ8m7u6QZxO6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=8Qsy7M
-        eg0hACls6ymvjBD7Va/wHqIHlIHDh6TppONGg=; b=WdOIrS/5rSbDnJ0OzW6r3T
-        CtLhaSWPzIxM7ocU6TayZ2r9t54/GKeTP+HVgnulGdtwLnwvLPrD2LMmLk19VVMm
-        NuvybqxMlSRxSejljTMgeo29yXvR3iUHdqHRbl/FpWC+3wifv94nJHcC3Vxl4Z2b
-        kR0z3Wyu6bbktQS6aow+wVxqEQ8VbhB7/1Vd/oODJJRfoiQHBmZISXeIZNGr+w0z
-        1UUM9jR9WPpXT3JnY142VH8UiogLMJqRV9Ny/mRHbta88mDfxk0aCLed5a/5tvxT
-        cmwCXuhvyMBKZMMZTpYd8nDSZjWT+oiAmfj46TMzzBCGQCWLbFMDQf33eldOqj0Q
-        ==
-X-ME-Sender: <xms:VwI-YD-KpGKhSKs5eTUm3QV1HwdZxNiER_FOGADDmFlzeV6kkuMCAA>
-    <xme:VwI-YPuSTTAqlTwGAbUrXyyvbtd6QmmXw_xyIH9401arB7RxPmp-0B_B2WezDuAf3
-    Cmpvk7uj5N7D8lP6gQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddttddgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepgfeggfehkeevjedttdfhhffggeeltdfgueejtddvgedtudekuedukeduhfdu
-    uedtnecuffhomhgrihhnpeduvddrihhtnecukfhppeeltddrkeelrdeikedrjeeinecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgv
-    segtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:VwI-YBBv2WPPWTHHK9pn9bqRM6yRe6RKWM7ylCOWb7orVEVXsDSoIg>
-    <xmx:VwI-YPcVAGUzMH55JWEl6KbygiQtYddwsbrBjBCRr8Jr-KHqOYHe8A>
-    <xmx:VwI-YIMIvcJFm9M4AeiprdgA_ck1DydOTPgrbbCfczAPQCtaUfPfvg>
-    <xmx:VwI-YNqdkUtK6ZwDH15XhsAEZu2HiPYYqICe4xyRNQ9056qml2YD0w>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 14B9B24005E;
-        Tue,  2 Mar 2021 04:16:06 -0500 (EST)
-Date:   Tue, 2 Mar 2021 10:16:05 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: allwinner: h6: Switch to macros for RSB
- clock/reset indices
-Message-ID: <20210302091605.6shce4tb4kxab3bk@gilmour>
-References: <20210301162309.1225-1-wens@kernel.org>
+        Tue, 2 Mar 2021 04:17:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73374C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:16:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rW9sPjatAJVmVqJxc1zaXchYwyYTqpwEvQn9jEI0lyY=; b=BVjNj063tPI6VOEugurjjHN9gy
+        uu/3I7DnNGjKid8vDbhk1pk5p2cW87E7kYpUi42cMohWnenHfpwTy1phRMV11mWA9o4Lncz2Nlc6X
+        LIb+A1DSJOzHn1RrWTzqaYDbFzFM2SfJIxL0YEK/EGWQp2pd1vPCvNgzzs/xSob7JIzAaKReMes7H
+        b4G2lmzIfH/JFr9uf5ooXUn97s4cKH07HkTG9v3Cejfb7CbvUyTJXDoj7DF7MRQQOTF5J7I53bkd7
+        VJ91uPnEyHChEQsFH3EqOzjBTSU4VKntEoSibfVTmIWuKRI6RWMpPQVp90WdzQmadL3/phfL/xc3y
+        ccrqvFVg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lH18v-00GrwX-SE; Tue, 02 Mar 2021 09:16:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5E7633003E1;
+        Tue,  2 Mar 2021 10:16:37 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3FDB4234E17C3; Tue,  2 Mar 2021 10:16:37 +0100 (CET)
+Date:   Tue, 2 Mar 2021 10:16:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Qais Yousef <qais.yousef@arm.com>, andi.kleen@intel.com
+Subject: Re: [PATCH] clocksource: don't run watchdog forever
+Message-ID: <YD4CdQqX5Lea1rB5@hirez.programming.kicks-ass.net>
+References: <1614653665-20905-1-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="q7xlweowtzwnpyjf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210301162309.1225-1-wens@kernel.org>
+In-Reply-To: <1614653665-20905-1-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 02, 2021 at 10:54:24AM +0800, Feng Tang wrote:
+> clocksource watchdog runs every 500ms, which creates some OS noise.
+> As the clocksource wreckage (especially for those that has per-cpu
+> reading hook) usually happens shortly after CPU is brought up or
+> after system resumes from sleep state, so add a time limit for
+> clocksource watchdog to only run for a period of time, and make
+> sure it run at least twice for each CPU.
+> 
+> Regarding performance data, there is no improvement data with the
+> micro-benchmarks we have like hackbench/netperf/fio/will-it-scale
+> etc. But it obviously reduces periodic timer interrupts, and may
+> help in following cases:
+> * When some CPUs are isolated to only run scientific or high
+>   performance computing tasks on a NOHZ_FULL kernel, where there
+>   is almost no interrupts, this could make it more quiet
+> * On a cluster which runs a lot of systems in parallel with
+>   barriers there are always enough systems which run the watchdog
+>   and make everyone else wait
+> 
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
 
---q7xlweowtzwnpyjf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Urgh.. so this hopes and prays that the TSC wrackage happens in the
+first 10 minutes after boot.
 
-Hi,
-
-On Tue, Mar 02, 2021 at 12:23:09AM +0800, Chen-Yu Tsai wrote:
-> From: Chen-Yu Tsai <wens@csie.org>
->=20
-> The macros for the clock and reset indices for the RSB hardware block
-> were replaced with raw numbers when the RSB controller node was added.
-> This was done to avoid cross-tree dependencies.
->=20
-> Now that both the clk and DT changes have been merged, we can switch
-> back to using the macros.
->=20
-> Fixes: aaad900757a6 ("arm64: dts: allwinner: h6: Add RSB controller node")
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
->=20
-> Small patch split out from the H6 RSB clock support patch.
-> This should be merged for v5.12.
-
-It's not really a fix but something we can live with, so I've merged it
-to sunxi/dt-for-5.13
-
-Thanks!
-Maxime
-
---q7xlweowtzwnpyjf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYD4CVQAKCRDj7w1vZxhR
-xTydAP4tmEtCuD9ut84AJ9ej7MqOIgWiJSffOME+dts7ojyfOQEAzQ1xZt7spSYY
-z8e8QndzQ1HcGGFIvPKfCOyRBCEgQA0=
-=Kf9+
------END PGP SIGNATURE-----
-
---q7xlweowtzwnpyjf--
+Given the previous patch, the watchdog wouldn't be running at all on
+modern machines, so why wreck it for the old machines where it's
+actually needed?
