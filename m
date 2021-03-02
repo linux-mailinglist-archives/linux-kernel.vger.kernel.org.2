@@ -2,126 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668FB32AB4B
+	by mail.lfdr.de (Postfix) with ESMTP id DEA0432AB4C
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1582084AbhCBUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:19:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        id S1836536AbhCBUUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447196AbhCBRaF (ORCPT
+        with ESMTP id S1442205AbhCBRaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 12:30:05 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF474C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:16:48 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id o188so7583935pfg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:16:48 -0800 (PST)
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CD5C06178B
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:23:53 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id t29so14247077pfg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:23:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Ldg8M6N/OFEgwkYYvOKSVPLbYJ0qxhkHRj9/dN3vWoY=;
-        b=fhP2FKczCgCGk0pmQY2wn1hzRdo+XpFeRb+x+FuMga49qBJ8BVrJKmQV2rmTX0C7Js
-         kJy/Zdr97Dq+p7oiCw9HjXdYY3Q+3UYB+fVA/gl6s0PKBnBm1A32JqFDCMILKXRGKrzB
-         B55DIQPf5UGBLEEvoszcN676t8XyXdr2+2gqSerPy1O6z50N/ywiJsYHk+I3CGya8gS7
-         vbIllhWSQ+7/7ttkKC4f2T1KfncL7U/dIyeW9naMCLsrD6/Mdv8vs3Z+GeI3sLfktGz3
-         usfjr/W5oMFt4FAJ4HKsXvkjqa3gR4vI1/mz7oCJsl7rSUp/jkzqrrrvcSANdyNE0Ngf
-         tT4A==
+        bh=5b+Mo2wT+srZZ4GY87uavN/sz1cfhkln9hKeIpvVEdU=;
+        b=qG7VN9KfYqdG6eKmBtEOInhSxWgaQpPGspuqkrByhk2nX0ck6oFXmj9sXwIwcFDqNN
+         qe3HQ3pc6+uNiMJTL7y1S0MSxqgz9A6e9FgtcqDmPh/x8J/CHcU9XGrEpdR/mkWPucJf
+         CFWtNuJRnHV5I/4z2qpJyubgQCI/qPxyAuofrzgTlqAjfx6+1DRXWcACNV7KzZ/FOfGl
+         Phj5cjwYmvA4ktvYv5d7dqUHN98y5QPcGq/8VQ7I/1H5ybFnq4tzmea8k5pamE1lXxkx
+         TuY7RKJ8dpAJJheHHcqzw2UdawZgwvkTE7eAJLOyHOYsRNhaXHclxtoBh0HBHKf5jxZx
+         2gtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ldg8M6N/OFEgwkYYvOKSVPLbYJ0qxhkHRj9/dN3vWoY=;
-        b=lWQfNr1NiF4Enu6YdgW5ExRzAkreptqkuqVGPu070EXl2VnXAqnTaGcIQH01Yuc8Ls
-         +9OFpZ8YG3hxLccP+r+RNGhBjCBqrejSW7LaCFdpmYx4o6WcztEkeUNTBJ1m30A+kMEK
-         N/x1wqz532ijeLyR5tMQkil8pp4PA2jZkwWmahex7bO3uv0Y6Ml4FzsZIs5N/Mq7hEwV
-         Kx7MZ7zEHL0HKNkFqQbdRXFpPoKsHvfoTnNF8u529gOwXDCBScom+fCDaSSiPRjd/ut5
-         oJxfE3NQO9KQONJW0k2q6HBU5wZCDRGP0bQxtcXUAWvi20Xl9wB7Y1oQzg2QjVsCgv+c
-         89Cg==
-X-Gm-Message-State: AOAM530hMxb9dEjava6McFyk9uVlSwrZKSrr0HwekqFF494x+x8d92TT
-        VYYGy4uPiQMf/Enb6zSXHLR5rQ==
-X-Google-Smtp-Source: ABdhPJy/7/d0mTvPy7idBBwJCcpwE/oMOpLanp9ksHSGVxAJw9GO2Jgfl3YwqDJfEj50tctZqFULUw==
-X-Received: by 2002:a62:16c9:0:b029:1ed:df04:8fcf with SMTP id 192-20020a6216c90000b02901eddf048fcfmr20975877pfw.63.1614705408175;
-        Tue, 02 Mar 2021 09:16:48 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
-        by smtp.gmail.com with ESMTPSA id c29sm20045500pgb.58.2021.03.02.09.16.46
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5b+Mo2wT+srZZ4GY87uavN/sz1cfhkln9hKeIpvVEdU=;
+        b=irK4K0qz6lPVeFXp0G0iy8381oFAPN4sNg4usKZlO4aVc3GURwNiL1eNAtwLys3BzD
+         a16tsNT1Xj3/Kd3IbTa/dOzTyk4Z2nXheN3VOJ4PBPoD9Ro4ymJvmJEptwxnBqiOwE5D
+         XWUz2AseTJcoZhC9OugWBLfDOg//WrtwWmHndAj/Vy1q+tEF2eZIiJSzYL2b8pcOVyWy
+         L6nBGO2tB756HQ+J1/sDacrZsCN5Cv/A3YFbHStwwocL80Yce+1Q4Mhf7lrT3Jl5RfhH
+         CW+/XVsYPv6/j0OuUsDwVqK/C00PXcz7vFHKOCAyp60v8v0abmiWjK5GlFwy2eJx9fI9
+         RNuQ==
+X-Gm-Message-State: AOAM533Y3ISZqjG5o+I7U+DY4aWELAtaWXDsCT+PEIxcQr3DCg6OHpwg
+        8Lb7HI98wO7E4XsziKhkJds=
+X-Google-Smtp-Source: ABdhPJzWNcv72XYKyiqTkPG7hNOeRloVhaWXmLG3elA4tUMd0MLzO5p0rLGeoCceILbbHb7LzEAmfA==
+X-Received: by 2002:a63:546:: with SMTP id 67mr18532533pgf.173.1614705833122;
+        Tue, 02 Mar 2021 09:23:53 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:297a:af1:8ccf:6094])
+        by smtp.gmail.com with ESMTPSA id h6sm20479418pfv.84.2021.03.02.09.23.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 09:16:47 -0800 (PST)
-Date:   Tue, 2 Mar 2021 09:16:41 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] KVM: LAPIC: Advancing the timer expiration on guest
- initiated write
-Message-ID: <YD5y+W2nqnZt5bRZ@google.com>
-References: <1614678202-10808-1-git-send-email-wanpengli@tencent.com>
+        Tue, 02 Mar 2021 09:23:51 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 2 Mar 2021 09:23:49 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Message-ID: <YD50pcPuwV456vwm@google.com>
+References: <20210217163603.429062-1-minchan@kernel.org>
+ <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
+ <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
+ <YC402s1vqvC4q041@dhcp22.suse.cz>
+ <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
+ <YC6TpqT26dSy11fU@google.com>
+ <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1614678202-10808-1-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
+On Fri, Feb 19, 2021 at 10:28:12AM +0100, Michal Hocko wrote:
+> On Thu 18-02-21 08:19:50, Minchan Kim wrote:
+> > On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
+> > > On 18.02.21 10:35, Michal Hocko wrote:
+> > > > On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
+> > > > > On 18.02.21 09:56, Michal Hocko wrote:
+> > > > > > On Wed 17-02-21 08:36:03, Minchan Kim wrote:
+> > > > > > > alloc_contig_range is usually used on cma area or movable zone.
+> > > > > > > It's critical if the page migration fails on those areas so
+> > > > > > > dump more debugging message like memory_hotplug unless user
+> > > > > > > specifiy __GFP_NOWARN.
+> > > > > > 
+> > > > > > I agree with David that this has a potential to generate a lot of output
+> > > > > > and it is not really clear whether it is worth it. Page isolation code
+> > > > > > already has REPORT_FAILURE mode which currently used only for the memory
+> > > > > > hotplug because this was just too noisy from the CMA path - d381c54760dc
+> > > > > > ("mm: only report isolation failures when offlining memory").
+> > > > > > 
+> > > > > > Maybe migration failures are less likely to fail but still.
+> > > > > 
+> > > > > Side note: I really dislike that uncontrolled error reporting on memory
+> > > > > offlining path we have enabled as default. Yeah, it might be useful for
+> > > > > ZONE_MOVABLE in some cases, but otherwise it's just noise.
+> > > > > 
+> > > > > Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
+> > > > 
+> > > > Anyway we can discuss this in a separate thread but I think this is not
+> > > > a representative workload.
+> > > 
+> > > Sure, but the essence is "this is noise", and we'll have more noise on
+> > > alloc_contig_range() as we see these calls more frequently. There should be
+> > > an explicit way to enable such *debug* messages.
+> > 
+> > alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
+> > Why shouldn't people use it if they don't care the failure?
+> > Semantically, it makes sense to me.
+
+Sorry for the late response.
+
 > 
-> Advancing the timer expiration should only be necessary on guest initiated 
-> writes. Now, we cancel the timer, clear .pending and clear expired_tscdeadline 
-> at the same time during state restore.
+> Well, alloc_contig_range doesn't really have to implement all the gfp
+> flags. This is a matter of practicality. alloc_contig_range is quite
+> different from the page allocator because it is to be expected that it
+> can fail the request. This is avery optimistic allocation request. That
+> would suggest that complaining about allocation failures is rather
+> noisy.
 
-That last sentence is confusing.  kvm_apic_set_state() already clears .pending,
-by way of __start_apic_timer().  I think what you mean is:
+That was why I'd like to approach for per-call site indicator with
+__GFP_NOWARN. Even though it was allocation from CMA, some of them
+wouldn't be critical for the failure so those wouldn't care of
+the failure. cma_alloc already has carried on "bool no_warn"
+which was changed into gfp_t recently. What alloc_contig_range
+should do is to take care of the request.
 
-  When we cancel the timer and clear .pending during state restore, clear
-  expired_tscdeadline as well.
-
-With that, 
-
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
-
-
-Side topic, I think there's a theoretical bug where KVM could inject a spurious
-timer interrupt.  If KVM is using hrtimer, the hrtimer expires early due to an
-overzealous timer_advance_ns, and the guest writes MSR_TSCDEADLINE after the
-hrtimer expires but before the vCPU is kicked, then KVM will inject a spurious
-timer IRQ since the premature expiration should have been canceled by the guest's
-WRMSR.
-
-It could also cause KVM to soft hang the guest if the new lapic_timer.tscdeadline
-is written before apic_timer_expired() captures it in expired_tscdeadline.  In
-that case, KVM will wait for the new deadline, which could be far in the future.
-
-
-Side topic #2, I'm pretty sure the direct usage of kvm_wait_lapic_expire() in
-apic_timer_expired() before kvm_apic_inject_pending_timer_irqs() is broken.
-kvm_wait_lapic_expire() requires the interrupt to be pending, but that never
-happens if PI is used, and even if PI "fails", the IRQ isn't injected until the
-next line, kvm_apic_inject_pending_timer_irqs().  I'll send a patch.
-
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->  arch/x86/kvm/lapic.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 45d40bf..f2b6e79 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2595,6 +2595,7 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
->  
->  	apic_update_ppr(apic);
->  	hrtimer_cancel(&apic->lapic_timer.timer);
-> +	apic->lapic_timer.expired_tscdeadline = 0;
->  	apic_update_lvtt(apic);
->  	apic_manage_nmi_watchdog(apic, kvm_lapic_get_reg(apic, APIC_LVT0));
->  	update_divide_count(apic);
-> -- 
-> 2.7.4
+> Now I do understand that some users would like to see why those
+> allocations have failed. The question is whether that information is
+> generally useful or it is more of a debugging aid. The amount of
+> information is also an important aspect. It would be rather unfortunate
+> to dump thousands of pages just because they cannot be migrated.
+
+Totally, agree dumping thounds of pages as debugging aid are bad.
+Couldn't we simply ratelimit them like other places?
+
 > 
+> I do not have a strong opinion here. We can make all alloc_contig_range
+> users use GFP_NOWARN by default and only skip the flag from the cma
+> allocator but I am slowly leaning towards (ab)using dynamic debugging
+
+I agree the rest of the places are GFP_NOWARN by default except CMA
+if they expect alloc_contig_range are optimistic allocation request.
+However, I'd like to tweak it for CMA - accept gfp_t from cma_alloc
+and take care of the __GFP_NOWARN since some sites of CMA could be
+fault tolerant so no need to get the warning.
+
+> infrastructure for this.
+
+dynamic debugging is system wide flag so how to deal with if we
+want to see specific alloation faliure, not whole callsites?
+That's why I'd like to go with per-call site approach, still.
