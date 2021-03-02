@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA0732A9CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B9732A9D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581390AbhCBSvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        id S1581419AbhCBSvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449002AbhCBQDc (ORCPT
+        with ESMTP id S1449078AbhCBQEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:03:32 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11710C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:02:21 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id o10so14103287pgg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:02:21 -0800 (PST)
+        Tue, 2 Mar 2021 11:04:02 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E86C061356;
+        Tue,  2 Mar 2021 08:03:16 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id g20so12294012plo.2;
+        Tue, 02 Mar 2021 08:03:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=svOHLaBnqkDfLhE0cZ4LJEE36nGBqyQ9USTfjmqqgrQ=;
-        b=Lt+J5F4Qzn5XcdVTLUz5v5KhazZ3GtoSKi4eCwnhUyfDVP7CjIdTe7wrEupIgJjMIA
-         HlEZVtJ4zbOe7b76HD6dAnG1S4mTkKoSoRXAJchNJGjm5jbrHl2vNE2e9zX2776arIOf
-         UdKsWBRwTk9ywichOZb2Ro3wb2a2Z+VxipxSFch75SK8FHkGV246bAofC+niKQpJXehf
-         72HdOj0vU8M5ay2vJJwK40EHtP0D4bsWr/cHZQsOdFTq+DzNSkk9AJFiElG6TSAEPQtk
-         W/sjo/MiPdD35E2LyD3d1O6fbxO62upDmumlXFe+R2chC97vx6mTl3qzaOix0UNu7QPy
-         uqmA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d4SmVPMKiOaafY7J/CIyGIRDsi1j+B4Mv91x//6bmzU=;
+        b=D3uaZJ+uI8cWtUSLALwm1aenlxmUQ2LQW9fPy5EoOJY3AVlqCjj4HPn1qunaRUl9FR
+         IxwLFIkHqU99ZQLxyZA6YEqGEsp3HNd9gFQnaILPzvhYBwx8DoQPaeL2R7xz1C8cDBpr
+         UuxHpOB4ySqwVfAQS4YP3+NINJOwNsJ8bD5n+MJ0+sZQIJ19RwduJcrfNaeqlXx39MhV
+         DZh/kWL3TGbLljXX36nwCw6YK+fgzSFrQkXDniJFyYkw90FWbJu9B7B7QeTz4PeU32/v
+         iKsSgDNsBHON9zagiLXm7Z5febn2j39nX/gDpbTrKvQ9eTv6jG5jQk7Wd1kTT/qjvMBA
+         ttZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=svOHLaBnqkDfLhE0cZ4LJEE36nGBqyQ9USTfjmqqgrQ=;
-        b=j4mtmI5NjgGkHLj6Qp9EeHqw8xQRne3qAILppEJfdg8BtBWCgNt8A/iNo4ffCCnshV
-         r1Ea9BLYYtEO/i006y7s7OwJjlF/tU6ezGxD/Y+2UWJ1cZubkTuslRKrm65ZBFC63e/a
-         V4OeQkS210hOTQ57CHBjb5ZGBsr5M0zB/6n1+5hUb2DICiaTvTtq0q+EyJJL84Y+QGDs
-         Zpq4puESFOkQ7mA/HUsChRewXkNe7+gUJWnBQbQmfNCn8QOt4CrPHNyMK1l0JYLUKiKY
-         ndwlZqmiM5/PnncuwTxDXfKxFLTsmZw2fn7UAaD/Q5UPlQwHTcOTe92uo2vY/lCzTEie
-         goYA==
-X-Gm-Message-State: AOAM533Wzq2LEKFP/jJJGHJBUANcKNC1JkE19s8EjN0OHj9Ln/qUOg67
-        aH8MlFzGDa4RfboUMD3SQy8QbA==
-X-Google-Smtp-Source: ABdhPJw8fIoq/1KmCJqNQp/hD/uLuk0oH7QC1JQ5gpW5sqU026irp8qx8M6uJ7zNiZLj0GP87RUJYw==
-X-Received: by 2002:a62:7d17:0:b029:1ee:3bbe:fa5f with SMTP id y23-20020a627d170000b02901ee3bbefa5fmr3727106pfc.67.1614700940422;
-        Tue, 02 Mar 2021 08:02:20 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
-        by smtp.gmail.com with ESMTPSA id ie12sm3763220pjb.52.2021.03.02.08.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 08:02:19 -0800 (PST)
-Date:   Tue, 2 Mar 2021 08:02:13 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
-Message-ID: <YD5hhah9Sgj1YGqw@google.com>
-References: <cover.1614590788.git.kai.huang@intel.com>
- <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
- <20210301100037.GA6699@zn.tnic>
- <3fce1dd2abd42597bde7ae9496bde7b9596b2797.camel@intel.com>
- <20210301103043.GB6699@zn.tnic>
- <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com>
- <20210301105346.GC6699@zn.tnic>
- <e509c6c1e3644861edafb18e4045b813f9f344b3.camel@intel.com>
- <20210301113257.GD6699@zn.tnic>
- <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d4SmVPMKiOaafY7J/CIyGIRDsi1j+B4Mv91x//6bmzU=;
+        b=LpzI6BiAEHOqm45KM8/bBCjURtB9fSibvUtcaYC4EcLnn/GcDDPfyG5Nd3bwtfLTU0
+         KIN6K07mVYw9QnFtqLGfa/H8Qwsrmu8HsI0/PZTJPCrxzMaufse2qdd2imVE7EB0ijYl
+         XCWo1/QPYjuFTAIutDCsmb/QMX49JjHxcQOzGun2aw+hJvGS7jP8g2vEaFlMmYAqRkj+
+         A20se2Qx6kgO1K8ZXuWyTgM3Soj94quW3QbMnYjoAfrXDgsuTtT6vaLGxV44WD00tX26
+         gpa+rQctAevt1iUp1eqLx7V3o54dFxB7XKQfWq+RD4JTLD6nlZUhx/WWE8xxhOUr+g/s
+         /QzA==
+X-Gm-Message-State: AOAM530WZUVWtUrCqJKgHcnhLJr24m1EB9WsYZQDT83dlDl2j0JQdECA
+        QDMcwob2C52weTPOnCwpm64=
+X-Google-Smtp-Source: ABdhPJyBBfZPiS5stkHqGOo/Crjxg70pPquR1pYJCP4fsQGEGW+qyvr3JhHs3nhlYiRGBssLtnPkxA==
+X-Received: by 2002:a17:902:8b86:b029:e5:bef6:56b0 with SMTP id ay6-20020a1709028b86b02900e5bef656b0mr921109plb.76.1614700995852;
+        Tue, 02 Mar 2021 08:03:15 -0800 (PST)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id d7sm11231196pfh.73.2021.03.02.08.03.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 08:03:14 -0800 (PST)
+Subject: Re: [EXTERNAL] Re: [RFC PATCH 12/12] HV/Storvsc: Add bounce buffer
+ support for Storvsc
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>
+References: <20210228150315.2552437-1-ltykernel@gmail.com>
+ <20210228150315.2552437-13-ltykernel@gmail.com>
+ <20210301065454.GA3669027@infradead.org>
+ <9a5d3809-f1e1-0f4a-8249-9ce1c6df6453@gmail.com>
+ <SN4PR2101MB088022E836AEC0838266A8C6C09A9@SN4PR2101MB0880.namprd21.prod.outlook.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <726ac959-de27-62f8-bcd1-d194d685f16b@gmail.com>
+Date:   Wed, 3 Mar 2021 00:03:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com>
+In-Reply-To: <SN4PR2101MB088022E836AEC0838266A8C6C09A9@SN4PR2101MB0880.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021, Kai Huang wrote:
-> On Mon, 2021-03-01 at 12:32 +0100, Borislav Petkov wrote:
-> > On Tue, Mar 02, 2021 at 12:28:27AM +1300, Kai Huang wrote:
-> > > I think some script can utilize /proc/cpuinfo. For instance, admin can have
-> > > automation tool/script to deploy enclave (with sgx2) apps, and that script can check
-> > > whether platform supports sgx2 or not, before it can deploy those enclave apps. Or
-> > > enclave author may just want to check /proc/cpuinfo to know whether the machine can
-> > > be used for testing sgx2 enclave or not.
-> > 
-> > This doesn't sound like a concrete use of this. So you can hide it
-> > initially with "" until you guys have a use case. Exposing it later is
-> > always easy vs exposing it now and then not being able to change it
-> > anymore.
-> > 
+Hi Sunil:
+      Thanks for your review.
+
+On 3/2/2021 3:45 AM, Sunil Muthuswamy wrote:
+>> Hi Christoph:
+>>        Thanks a lot for your review. There are some reasons.
+>>        1) Vmbus drivers don't use DMA API now.
+> What is blocking us from making the Hyper-V drivers use the DMA API's? They
+> will be a null-op generally, when there is no bounce buffer support needed.
 > 
-> Hi Haitao, Jarkko,
+>>        2) Hyper-V Vmbus channel ring buffer already play bounce buffer
+>> role for most vmbus drivers. Just two kinds of packets from
+>> netvsc/storvsc are uncovered.
+> How does this make a difference here?
 > 
-> Do you have more concrete use case of needing "sgx2" in /proc/cpuinfo?
+>>        3) In AMD SEV-SNP based Hyper-V guest, the access physical address
+>> of shared memory should be bounce buffer memory physical address plus
+>> with a shared memory boundary(e.g, 48bit) reported Hyper-V CPUID. It's
+>> called virtual top of memory(vTom) in AMD spec and works as a watermark.
+>> So it needs to ioremap/memremap the associated physical address above
+>> the share memory boundary before accessing them. swiotlb_bounce() uses
+>> low end physical address to access bounce buffer and this doesn't work
+>> in this senario. If something wrong, please help me correct me.
+>>
+> There are alternative implementations of swiotlb on top of the core swiotlb
+> API's. One option is to have Hyper-V specific swiotlb wrapper DMA API's with
+> the custom logic above.
 
-The KVM use case is to query /proc/cpuinfo to see if sgx2 can be enabled in a
-guest.
+Agree. Hyper-V should have its own DMA ops and put Hyper-V bounce buffer
+code in DMA API callback. For vmbus channel ring buffer, it doesn't need 
+additional bounce buffer and there are two options. 1) Not call DMA API 
+around them 2) pass a flag in DMA API to notify Hyper-V DMA callback
+and not allocate bounce buffer for them.
 
-The counter-argument to that is we might want sgx2 in /proc/cpuinfo to mean sgx2
-is enabled in hardware _and_ supported by the kernel.  Userspace can grep for
-sgx in /proc/cpuinfo, and use cpuid to discover sgx2, so it's not a blocker.
-
-That being said, adding some form of capability/versioning to SGX seems
-inevitable, not sure it's worth witholding sgx2 from /proc/cpuinfo.
+> 
+>> Thanks.
+>>
+>>
+>> On 3/1/2021 2:54 PM, Christoph Hellwig wrote:
+>>> This should be handled by the DMA mapping layer, just like for native
+>>> SEV support.
+> I agree with Christoph's comment that in principle, this should be handled using
+> the DMA API's
+> 
