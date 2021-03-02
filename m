@@ -2,143 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDD332A655
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6B132A658
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346520AbhCBOVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:21:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38564 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235778AbhCBMn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:43:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46604ACD4;
-        Tue,  2 Mar 2021 12:42:18 +0000 (UTC)
-Message-ID: <5ba9bdddbdee87d501b791309115c2eadaf9be84.camel@suse.de>
-Subject: Re: [RFC 09/13] iommu/arm-smmu: Make use of
- dev_64bit_mmio_supported()
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 02 Mar 2021 13:42:16 +0100
-In-Reply-To: <CAK8P3a1t3yCD4vXF803nL=n3Y3hD1MOPOAEZwZA+782N64PXTA@mail.gmail.com>
-References: <20210226140305.26356-1-nsaenzjulienne@suse.de>
-         <20210226140305.26356-10-nsaenzjulienne@suse.de>
-         <CAK8P3a1t3yCD4vXF803nL=n3Y3hD1MOPOAEZwZA+782N64PXTA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-JrdrgEmwCwoQS03/ReLX"
-User-Agent: Evolution 3.38.4 
+        id S1384072AbhCBOhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 09:37:51 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:13486 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350743AbhCBMrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:47:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1614688971; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=FF5GwOFbVjRhJqJErMdD+9jWbXkGYVwkZGwfZ42C1bnR5anu8aj5vejU2dOPGoZ1ki
+    ScjIDTkKRmEdGhm9AP+ty6DrkS0ZlyZZrj+SAPU7L0QfhOs35e+dUuY29sROz7bzsJAg
+    maTMDRsZjWL7nTSwiCdSoOfVs6wGQicClRS+3uFwhHHKeHoeYI+GWzEUmVVUoZVEKNgU
+    P3jnDDhn5lbtPv6vZcJyOF3sjEK2SNnFZxpZpi4ZYmsjsKccGrA7YZTyNxnCurPAYKF8
+    vNYP5+G36dPjfGTt9vqM9JxyGmuCkO/WDV7famXzKdiflb9vvoiHqIGOCuOWuIzsdG3u
+    NnOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1614688971;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=M0joGJvVjkLtNUFWRb3GQ9CRUi9TJEmtHMRhbe4S2cw=;
+    b=QTtYZP1hkAN9hOw400/TAB0zXFI077PWm2UUw6HZWLoNZz4aZR8iAVRO1AZ8bby8On
+    ejPWX2BssQ+hXbetDYOtgyizW7FBnmmZOhKrw0XlZamOJOxJiEPIAjh/yrPjnK38QxZO
+    NSlj17UTw7o24Js5HYxPFCDCH3lFH/HRHlp2YGOaaMdhwr5ZcqPQCnIi1iON93xW53Ua
+    0X9GHlunl9r0vvGQmD1mjLm/8yHJbS+CDpdBC1jZXD6wmdDiepGup99+1ZSmOQfRkR5a
+    Yd/ZX1tXPW4zcyazuEntJohI1k0OF/kDNGpBlbryilMqaItzUkZO2QM86coaCA6LdqY9
+    SHBA==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1614688971;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=M0joGJvVjkLtNUFWRb3GQ9CRUi9TJEmtHMRhbe4S2cw=;
+    b=P6ygV2kn0wugpEuzjnVy/kAoc4uZBO/F378TFoA6XjCN9dNH4ZqShr/LuS3vqrT84O
+    K93pJ/EkkAkNSrupReYpz3TUJzrKXrrhBjKc1t/Tgk4WLIlvXukH4IGRo7QsJfpVSrDu
+    jao8RfGcBlJRm9vnwLvf03wc8uzg/s+lA4bmh5HEn0smTvnSKUu7Nj0778Bu1G/VHIz+
+    ehRVWMBgGs+PMnGe6mcfkIRpMrQlWBGY5kQn0q2Al0TPcAlrj6Z7CjyZCYhi4FIo671Y
+    w23tqbjMf78XxjiV1LGwu2hbljZ81J97U9ZPCsrjQyne8aHtRE4KYGvhZ4PyMcrTHSS0
+    AF+w==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7Nk1d30M="
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.20.2 DYNA|AUTH)
+    with ESMTPSA id d08e86x22Cgo8sA
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 2 Mar 2021 13:42:50 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH] drm: panel-simple: fix missing DRM_MODE_CONNECTOR_DPI for Ortustech com37h3m
+Date:   Tue,  2 Mar 2021 13:42:49 +0100
+Message-Id: <ff968cde9b64538101395cc660b7af3fda0945b4.1614688968.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Without we get an "Specify missing connector_type" warning.
 
---=-JrdrgEmwCwoQS03/ReLX
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Fixes: ddb8e853dc85 ("drm/panel: panel-simple: validate panel description")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/panel/panel-simple.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hi Arnd, thanks for the reviews!
-
-On Tue, 2021-03-02 at 10:32 +0100, Arnd Bergmann wrote:
-> On Fri, Feb 26, 2021 at 3:03 PM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
->=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (smmu->impl && unlik=
-ely(smmu->impl->write_reg))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0smmu->impl->write_reg(smmu, page, offset, val);
-> > -       else
-> > +       else if (dev_64bit_mmio_supported(smmu->dev))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0writel_relaxed(val, arm_smmu_page(smmu, page) + =
-offset);
-> > +       else
-> > +               hi_lo_writeq_relaxed(val, arm_smmu_page(smmu, page) + o=
-ffset);
-> > =C2=A0}
->=20
-> This is a writel_relaxed(), not a writeq_relaxed(), so I suppose you don'=
-t
-> have to change it at all.
-
-Yes, that was silly of me. I was worrying about the semantics of the whole
-thing, and missed basic stuff like this.
-
-> > +       else if (dev_64bit_mmio_supported(smmu->dev))
-> > +               return readq_relaxed(arm_smmu_page(smmu, page) + offset=
-);
-> > +       else
-> > +               return hi_lo_readq_relaxed(arm_smmu_page(smmu, page) + =
-offset);
-> > }
->=20
->=20
-> I see this pattern repeat across multiple drivers. I think Christoph
-> had originally
-> suggested folding the if/else logic into the writel_relaxed() that is def=
-ined in
-> include/linux/io-64-nonatomic-hi-lo.h, but of course that doesn't work if=
- you
-> need to pass a device pointer.
->=20
-> It might still make sense to have another wrapper in that same file thoug=
-h,
-> something like
->=20
-> static inline hi_lo_writeq_relaxed_if_possible(struct device *dev, __u64 =
-val,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0volatile void __iomem *addr=
-)
-> {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (dev_64bit_mmio_supported(sm=
-mu->dev)) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0readq_relaxed(arm_smmu_page(smmu, page) + offset);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0writel_relaxed(val >> 32, addr + 4);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0writel_relaxed(val, addr);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> }
-
-I like the idea. I'll try to integrate it into the next revision.
-
-Regards,
-Nicolas
-
-
---=-JrdrgEmwCwoQS03/ReLX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmA+MqgACgkQlfZmHno8
-x/7dpwf/aLel0KoDRYbTs0N1MCxUYaw65bxfhjj33y441mkd9HUSVemzI3HBOTln
-uEs/4WoEx/tWa+9t93oM2P+RLoQsk79775dXJzUUsKhaEjfFwEjEKlME+XCyedJ1
-ST7bgtafNyYLOEVgDqIOm/ies5GMLg7uO8f9za9Qfyu77tclP2AkvKFhlOyKHp5M
-dbZY4+YwhzP6mqVRqZCPlQvHZUBh1UH7yQHdZNjZkLcgvz3x1+f6EUW+rScBrpNq
-iSqt5gav8YDB0AcWD7tsxDZajP1tTqqjHfREvZoycWs7QLeC8vrODzO7S/G4za7u
-a8YAd5JlT6Xja8V8kqq5VSQmcdNYoA==
-=Loxv
------END PGP SIGNATURE-----
-
---=-JrdrgEmwCwoQS03/ReLX--
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 4e2dad314c7953..502b5f1c4fd16c 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -3226,6 +3226,7 @@ static const struct panel_desc ortustech_com37h3m = {
+ 	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+ 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE |
+ 		     DRM_BUS_FLAG_SYNC_DRIVE_POSEDGE,
++	.connector_type = DRM_MODE_CONNECTOR_DPI,
+ };
+ 
+ static const struct drm_display_mode ortustech_com43h4m85ulc_mode  = {
+-- 
+2.26.2
 
