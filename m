@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE26532A8FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4637F32A904
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580471AbhCBSDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S1580487AbhCBSDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:03:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1578600AbhCBPZZ (ORCPT
+        with ESMTP id S1578595AbhCBPZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 10:25:25 -0500
 Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3E9C0698CF
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:01:09 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id g2so4338446wrx.20
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:01:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9716AC0698D2
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:01:15 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id s10so294640wre.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:01:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=MUiu5cL4XJy7bcbjb67w8AVccQ6swyc7cTqk7H/pito=;
-        b=V2tQz8JIPctM0p8zJgSN56SE2f+sjG4GB6ZR55LMQiswnxYtR/ePVhbwO/o8W66G0b
-         PbHVynwDMo4m5hQTkVbwHPUN6c0PkFKQE/sf5DH5nMyM0tggxmbD3FPQjbi6a0POeCz+
-         jh+2Nsxcsol/OZxoAVv6MqFZjCqNUXiv4O8MXjSVu9i+FDKGBgulOa9tkVjyrYK5Z9Bd
-         Nq67f+OAletST31RgOjWXRR0vHMxg7CzWFcXeOoLWmi9Q4vWw9Jmfj0fTHu7FSTjC0o5
-         F2L8XjgbG6jShJL/W0Af7NMKKMKboklNsvT6OliD+fo6afqsvX1EexCiNHhJOW3b0KIF
-         4qmA==
+        bh=oOi4Pd0Cf29FRmhNkB2FdW4vfgElKPAhhlmUWrOeLOo=;
+        b=DAmMeWzNT5OYqZl5202wU65yxy+Ydp523Zp7hpAs3u6y50OwoTcx758BDuByCvqfpr
+         lL66LK7SqeqjJ31D3FeWNNmuzeeAYFbG0jOXhwExojOAYwgKPFB/Upejy1HSGCOeocBz
+         Q77qxjqgfA37YlEo0lvNhexw9R25bV/YneXYP1EAd0KGepP8GHBS0pghcx5PMdxRBZgc
+         YnHcQtY1pOu1oGjAOse8QuPkG5uwHCk1qvJOhgP1bCeNHMroUAn9rsUMkI+Xf9c0o3tx
+         ZwvKhjg5Mi3jbC3w5KrMFXC/hihqbKsMJfhqjnCBux8y/nIV1yUYUWlZYlo8euhBHzJV
+         wVYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=MUiu5cL4XJy7bcbjb67w8AVccQ6swyc7cTqk7H/pito=;
-        b=I5canhULxGP0vExjT2qxrUAb0zFpeNDNLlPc541LbcuuR583OoC1qJDit9kc2fOf1N
-         ua8jS1EeMo69ZkvaaHrCdbjUyFSArbMW6uVfuhOuArKX6T4PvlsxT73e5yUV1lRbwO/9
-         ZJGT4R13NkkIdfbxtRn2MJuKC2r3qvIPe+ngBNLge3cXsRswLHx8109lwXLXRFgJRU6F
-         psHezcV4Y5CYxbriCg7SefhPgR+iIbTuqkUztws6pi3i/v2ippI3j70c9KZF4yRzDQy6
-         /g41bap8Fv+TihWHBwjbkP29M/tgkkCCQA1vTrXubUNfPoJwQsdtW1E+Fe9doxiZ6wrG
-         OGMA==
-X-Gm-Message-State: AOAM530LjDxXxi8itOjeYMIOi1Mxydqxii/l3wj9Jk7Zse/lkQ1JVfp5
-        F3JFWD6e3Ys9fXOT7ccZeoGQgHVLhobI
-X-Google-Smtp-Source: ABdhPJz9F9KFBBfsTkBPKASwdRvs8WkwjMfKCJcm0vk7lvPEyGjjf4UWYBSGhgGbD6PbV21B/moA66tRIrG2
+        bh=oOi4Pd0Cf29FRmhNkB2FdW4vfgElKPAhhlmUWrOeLOo=;
+        b=jyS0/TSmbn7FXxhtyRSegqQdIFnYk1CUdAgVObyYhs038VXKc3TJo30mP0Gm3P4765
+         Pks22Ez9lYs16jujprKC7RdX8dVIP677rURS0duxbkDFULSU/PgQHr5WivhqOXPql3iU
+         CwigIrRztyK7K+BY0y2T8/BZa9yXBnOCkOtfwBuM98F7XNBoCAZoaqq9rkrVys3GLit0
+         /O7zdUbecvryf7ciUhN59INj6uEVCSBM3EOsC5Pwri3KyMPJ/P6bbWMFJMd6Ii3JIJH1
+         ZJ/3BJDSsewys2efdBioWVcO8X7kUbq2ewfapVK1NsGagz5pA/D1RNeN6Svzet1b8qjY
+         R/Ng==
+X-Gm-Message-State: AOAM530GjX7msOZj/o1fUJnO++x0QOVNhrzqYnmi7ZiEquQ6TltzYp7N
+        D7qvFRpCX4Wi3riHbup/YESFhAAwDsd9
+X-Google-Smtp-Source: ABdhPJy3ARsSSbx99em/qRXAe711Of+WD5kY+Gg+HksN47kkDAMNctzWR2nongDDAS+SviyOgYMF6zN0Mxfb
 Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a7b:c18e:: with SMTP id
- y14mr495903wmi.1.1614697267665; Tue, 02 Mar 2021 07:01:07 -0800 (PST)
-Date:   Tue,  2 Mar 2021 14:59:57 +0000
+ (user=qperret job=sendgmr) by 2002:a1c:1dd5:: with SMTP id
+ d204mr4338156wmd.127.1614697274353; Tue, 02 Mar 2021 07:01:14 -0800 (PST)
+Date:   Tue,  2 Mar 2021 15:00:00 +0000
 In-Reply-To: <20210302150002.3685113-1-qperret@google.com>
-Message-Id: <20210302150002.3685113-28-qperret@google.com>
+Message-Id: <20210302150002.3685113-31-qperret@google.com>
 Mime-Version: 1.0
 References: <20210302150002.3685113-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v3 27/32] KVM: arm64: Refactor stage2_map_set_prot_attr()
+Subject: [PATCH v3 30/32] KVM: arm64: Page-align the .hyp sections
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -67,72 +67,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to ease its re-use in other code paths, refactor
-stage2_map_set_prot_attr() to not depend on a stage2_map_data struct.
-No functional change intended.
+We will soon unmap the .hyp sections from the host stage 2 in Protected
+nVHE mode, which obvisouly works with at least page granularity, so make
+sure to align them correctly.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kvm/hyp/pgtable.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ arch/arm64/kernel/vmlinux.lds.S | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index 8e7059fcfd40..8aa01a9e2603 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -494,8 +494,7 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
- 	return vtcr;
- }
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index e96173ce211b..709d2c433c5e 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -15,9 +15,11 @@
  
--static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
--				    struct stage2_map_data *data)
-+static kvm_pte_t stage2_get_prot_attr(enum kvm_pgtable_prot prot)
- {
- 	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
- 	kvm_pte_t attr = device ? PAGE_S2_MEMATTR(DEVICE_nGnRE) :
-@@ -504,15 +503,15 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
- 
- 	if (prot & KVM_PGTABLE_PROT_NONE) {
- 		if (prot != KVM_PGTABLE_PROT_NONE)
--			return -EINVAL;
-+			return 0;
- 		attr |= KVM_PTE_LEAF_SW_BIT_PROT_NONE;
--		goto out;
-+		return attr;
+ #define HYPERVISOR_DATA_SECTIONS				\
+ 	HYP_SECTION_NAME(.rodata) : {				\
++		. = ALIGN(PAGE_SIZE);				\
+ 		__hyp_rodata_start = .;				\
+ 		*(HYP_SECTION_NAME(.data..ro_after_init))	\
+ 		*(HYP_SECTION_NAME(.rodata))			\
++		. = ALIGN(PAGE_SIZE);				\
+ 		__hyp_rodata_end = .;				\
  	}
  
- 	if (!(prot & KVM_PGTABLE_PROT_X))
- 		attr |= KVM_PTE_LEAF_ATTR_HI_S2_XN;
- 	else if (device)
--		return -EINVAL;
-+		return 0;
+@@ -72,21 +74,14 @@ ENTRY(_text)
+ jiffies = jiffies_64;
  
- 	if (prot & KVM_PGTABLE_PROT_R)
- 		attr |= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R;
-@@ -523,9 +522,7 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
- 	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
- 	attr |= KVM_PTE_LEAF_ATTR_LO_S2_AF;
+ #define HYPERVISOR_TEXT					\
+-	/*						\
+-	 * Align to 4 KB so that			\
+-	 * a) the HYP vector table is at its minimum	\
+-	 *    alignment of 2048 bytes			\
+-	 * b) the HYP init code will not cross a page	\
+-	 *    boundary if its size does not exceed	\
+-	 *    4 KB (see related ASSERT() below)		\
+-	 */						\
+-	. = ALIGN(SZ_4K);				\
++	. = ALIGN(PAGE_SIZE);				\
+ 	__hyp_idmap_text_start = .;			\
+ 	*(.hyp.idmap.text)				\
+ 	__hyp_idmap_text_end = .;			\
+ 	__hyp_text_start = .;				\
+ 	*(.hyp.text)					\
+ 	HYPERVISOR_EXTABLE				\
++	. = ALIGN(PAGE_SIZE);				\
+ 	__hyp_text_end = .;
  
--out:
--	data->attr = attr;
--	return 0;
-+	return attr;
- }
+ #define IDMAP_TEXT					\
+@@ -322,11 +317,12 @@ SECTIONS
+ #include "image-vars.h"
  
- static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
-@@ -708,9 +705,9 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
- 		.arg		= &map_data,
- 	};
- 
--	ret = stage2_map_set_prot_attr(prot, &map_data);
--	if (ret)
--		return ret;
-+	map_data.attr = stage2_get_prot_attr(prot);
-+	if (!map_data.attr)
-+		return -EINVAL;
- 
- 	ret = kvm_pgtable_walk(pgt, addr, size, &walker);
- 	dsb(ishst);
+ /*
+- * The HYP init code and ID map text can't be longer than a page each,
+- * and should not cross a page boundary.
++ * The HYP init code and ID map text can't be longer than a page each. The
++ * former is page-aligned, but the latter may not be with 16K or 64K pages, so
++ * it should also not cross a page boundary.
+  */
+-ASSERT(__hyp_idmap_text_end - (__hyp_idmap_text_start & ~(SZ_4K - 1)) <= SZ_4K,
+-	"HYP init code too big or misaligned")
++ASSERT(__hyp_idmap_text_end - __hyp_idmap_text_start <= PAGE_SIZE,
++	"HYP init code too big")
+ ASSERT(__idmap_text_end - (__idmap_text_start & ~(SZ_4K - 1)) <= SZ_4K,
+ 	"ID map text too big or misaligned")
+ #ifdef CONFIG_HIBERNATION
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
