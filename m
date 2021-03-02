@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A2F32A3A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C516E32A3AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382357AbhCBJZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:25:27 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35668 "EHLO
+        id S1382447AbhCBJ0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:26:17 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35666 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378832AbhCBJD0 (ORCPT
+        with ESMTP id S1378833AbhCBJD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 04:03:26 -0500
 Date:   Tue, 02 Mar 2021 09:01:54 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614675715;
+        s=2020; t=1614675714;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rQqqAUTPo2dYbb3X9g5nIQAMGcVCpCBWOGBwlnT00TQ=;
-        b=yltV/SkICtD5kgoXqcbHD7q8vg9LyylU19yaTXBKYKraS7Bsosyw1if8syz6oa6MDcwZLs
-        RMAQsb57vwlgTdpo74Op6o/RA+Vlj+ilGx5uVdDlQtH13GOdtObR9n4VzzrSlEZ/uao1Q3
-        VsyjDBEyA6k9cwmmO5Ssj2qptX3DAqGHGn2y5TZKo3RA7zcMbC5IGj4nwmPPDHFb0PZtks
-        sR/fedAJXEcZy1AH7YiebD9mbKdnqzfdmKdpx+mbl2J6B1X1BRLdwpGuX75smIhTXH3S7a
-        rjTu03A+ja9anrtxy77MDYHmXT4GznMVdaxW1ZT7ozyJzPh1UXEGlQt0EB5GfA==
+        bh=uY5MaecLlqC1YYkJOtb1NojcNJPEnWa//hOtLxPZrcA=;
+        b=HQhpFL4jjA24FH9luburHE8u2ZYLSFoZGL5ULg+h0Sqh5JPqCw7jPvb33GklhPmcZa+PB7
+        qCykjQxW4xzqKn5UKxclZh0o5D2Vct1zixMvjECPNUnSV9wjTSxSAeoSjE62UvYBD/GKl8
+        sAwfXRMRKsg+i6zyRaOR+riDRPjCa7CZeOSXH0hF9ixPyAK9utPs659u7ngFZOt/idnTMZ
+        4LjYA404xKtAIf2059Z+V4IaFCZBaTvgXaByg4VLQpzrczAtBM7GAgaQBaAYSYXsvwgJ9k
+        /acFyq7zoqYj/QWEizaTzIoL1FyILal5GZTsQGFot7ly+feAIgrKL++IRNE+Yg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614675715;
+        s=2020e; t=1614675714;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rQqqAUTPo2dYbb3X9g5nIQAMGcVCpCBWOGBwlnT00TQ=;
-        b=oea+m/y55jkMId8iCamacTe0xIOrIA9dgKM3yt2YS71M5RehNVqPBL0D4/h6BGeWIxSlWu
-        O5JUDa3kCqBXyxCg==
+        bh=uY5MaecLlqC1YYkJOtb1NojcNJPEnWa//hOtLxPZrcA=;
+        b=ATwLg9g4CldZLzkAQjAL1lZ8x5i6aLtK1okJsx80xRdIkKdPrtCEHJ98p5K+uaHSXqKY03
+        GkfbQ5kW5Wk1HWDQ==
 From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Trigger the update of blocked load on
- newly idle cpu
+Subject: [tip: sched/core] sched/fair: Reduce the window for duplicated update
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210224133007.28644-7-vincent.guittot@linaro.org>
-References: <20210224133007.28644-7-vincent.guittot@linaro.org>
+In-Reply-To: <20210224133007.28644-8-vincent.guittot@linaro.org>
+References: <20210224133007.28644-8-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Message-ID: <161467571458.20312.9603244485224907644.tip-bot2@tip-bot2>
+Message-ID: <161467571426.20312.5062953154271007386.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,128 +59,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     1705e3b449f62d957e897239ef6c67ca574acfc6
-Gitweb:        https://git.kernel.org/tip/1705e3b449f62d957e897239ef6c67ca574acfc6
+Commit-ID:     839ffb99d94f930fecbdee2fdfb883b10c30326b
+Gitweb:        https://git.kernel.org/tip/839ffb99d94f930fecbdee2fdfb883b10c30326b
 Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Wed, 24 Feb 2021 14:30:06 +01:00
+AuthorDate:    Wed, 24 Feb 2021 14:30:07 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 01 Mar 2021 18:17:24 +01:00
+CommitterDate: Mon, 01 Mar 2021 18:17:25 +01:00
 
-sched/fair: Trigger the update of blocked load on newly idle cpu
+sched/fair: Reduce the window for duplicated update
 
-Instead of waking up a random and already idle CPU, we can take advantage
-of this_cpu being about to enter idle to run the ILB and update the
-blocked load.
+Start to update last_blocked_load_update_tick to reduce the possibility
+of another cpu starting the update one more time
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224133007.28644-7-vincent.guittot@linaro.org
+Link: https://lkml.kernel.org/r/20210224133007.28644-8-vincent.guittot@linaro.org
 ---
- kernel/sched/core.c  |  2 +-
- kernel/sched/fair.c  | 24 +++++++++++++++++++++---
- kernel/sched/idle.c  |  6 ++++++
- kernel/sched/sched.h |  7 +++++++
- 4 files changed, 35 insertions(+), 4 deletions(-)
+ kernel/sched/fair.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f9dfb34..361974e 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -737,7 +737,7 @@ static void nohz_csd_func(void *info)
- 	/*
- 	 * Release the rq::nohz_csd.
- 	 */
--	flags = atomic_fetch_andnot(NOHZ_KICK_MASK, nohz_flags(cpu));
-+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
- 	WARN_ON(!(flags & NOHZ_KICK_MASK));
- 
- 	rq->idle_balance = idle_cpu(cpu);
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 356a245..e87e1b3 100644
+index e87e1b3..f1b55f9 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10453,6 +10453,24 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
- 	return true;
+@@ -7852,16 +7852,20 @@ static inline bool others_have_blocked(struct rq *rq)
+ 	return false;
  }
  
-+/*
-+ * Check if we need to run the ILB for updating blocked load before entering
-+ * idle state.
-+ */
-+void nohz_run_idle_balance(int cpu)
-+{
-+	unsigned int flags;
-+
-+	flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK, nohz_flags(cpu));
-+
-+	/*
-+	 * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
-+	 * (ie NOHZ_STATS_KICK set) and will do the same.
-+	 */
-+	if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
-+		_nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK, CPU_IDLE);
+-static inline void update_blocked_load_status(struct rq *rq, bool has_blocked)
++static inline void update_blocked_load_tick(struct rq *rq)
+ {
+-	rq->last_blocked_load_update_tick = jiffies;
++	WRITE_ONCE(rq->last_blocked_load_update_tick, jiffies);
 +}
-+
- static void nohz_newidle_balance(struct rq *this_rq)
- {
- 	int this_cpu = this_rq->cpu;
-@@ -10474,10 +10492,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
- 		return;
  
- 	/*
--	 * Blocked load of idle CPUs need to be updated.
--	 * Kick an ILB to update statistics.
-+	 * Set the need to trigger ILB in order to update blocked load
-+	 * before entering idle state.
- 	 */
--	kick_ilb(NOHZ_STATS_KICK);
-+	atomic_or(NOHZ_NEWILB_KICK, nohz_flags(this_cpu));
++static inline void update_blocked_load_status(struct rq *rq, bool has_blocked)
++{
+ 	if (!has_blocked)
+ 		rq->has_blocked_load = 0;
  }
- 
- #else /* !CONFIG_NO_HZ_COMMON */
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 7199e6f..7a92d60 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -261,6 +261,12 @@ exit_idle:
- static void do_idle(void)
- {
- 	int cpu = smp_processor_id();
-+
-+	/*
-+	 * Check if we need to update blocked load
-+	 */
-+	nohz_run_idle_balance(cpu);
-+
- 	/*
- 	 * If the arch has a polling bit, we maintain an invariant:
- 	 *
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 10a1522..0ddc9a6 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2385,9 +2385,11 @@ extern void cfs_bandwidth_usage_dec(void);
- #ifdef CONFIG_NO_HZ_COMMON
- #define NOHZ_BALANCE_KICK_BIT	0
- #define NOHZ_STATS_KICK_BIT	1
-+#define NOHZ_NEWILB_KICK_BIT	2
- 
- #define NOHZ_BALANCE_KICK	BIT(NOHZ_BALANCE_KICK_BIT)
- #define NOHZ_STATS_KICK		BIT(NOHZ_STATS_KICK_BIT)
-+#define NOHZ_NEWILB_KICK	BIT(NOHZ_NEWILB_KICK_BIT)
- 
- #define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK)
- 
-@@ -2398,6 +2400,11 @@ extern void nohz_balance_exit_idle(struct rq *rq);
- static inline void nohz_balance_exit_idle(struct rq *rq) { }
+ #else
+ static inline bool cfs_rq_has_blocked(struct cfs_rq *cfs_rq) { return false; }
+ static inline bool others_have_blocked(struct rq *rq) { return false; }
++static inline void update_blocked_load_tick(struct rq *rq) {}
+ static inline void update_blocked_load_status(struct rq *rq, bool has_blocked) {}
  #endif
  
-+#if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
-+extern void nohz_run_idle_balance(int cpu);
-+#else
-+static inline void nohz_run_idle_balance(int cpu) { }
-+#endif
+@@ -8022,6 +8026,7 @@ static void update_blocked_averages(int cpu)
+ 	struct rq_flags rf;
  
- #ifdef CONFIG_SMP
- static inline
+ 	rq_lock_irqsave(rq, &rf);
++	update_blocked_load_tick(rq);
+ 	update_rq_clock(rq);
+ 
+ 	decayed |= __update_blocked_others(rq, &done);
+@@ -8363,7 +8368,7 @@ static bool update_nohz_stats(struct rq *rq)
+ 	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+ 		return false;
+ 
+-	if (!time_after(jiffies, rq->last_blocked_load_update_tick))
++	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
+ 		return true;
+ 
+ 	update_blocked_averages(cpu);
