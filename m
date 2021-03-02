@@ -2,105 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCA232A89D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3BC32A855
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574571AbhCBRvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384609AbhCBPWn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:22:43 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE42C061A29
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:52:49 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id y12so11347625ljj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 06:52:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/M0iE7LYiQkzv/JWuS/1M9XYKrUbkxRvIVvQyWoD5T4=;
-        b=WBmAgrPqcHHbllyM/fX3Mjdcm+kDUPkno+SQSHhL8LJej4Avezled2lFqOOBYyOhSG
-         WFgJLJYGk1I77Q5qe5Du4NwWiXU0EpdNPJ6NaE2rr7pQHVvOFIkLIq5NUYi9x0AyE8NF
-         AkRDuKjs9KNZmbZcYCO3ZKGV3t6h4HsMy7/VIUGjP0Nm84JSeXCdSn4/VMiOkn/SLzMv
-         ikk3TkzMkBFaUh2Hn4foBw+2ToHqJzTGJCWZriWVcz9+E9WtFROQ+J2cv7rNL3kTNhO2
-         TYHJ0Ph2MjFE9d1MAFTrEDYJAp4iUmyQdFU3qZfy/ja7BsWd3Rtmp4BhPBNA8fA/wQek
-         oAXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/M0iE7LYiQkzv/JWuS/1M9XYKrUbkxRvIVvQyWoD5T4=;
-        b=lFIw99XOH2UvuhZ+wQcxWcZdqN3e/Lez+/e/G0LLWh54jF2lgJ19HOtAX6MpxQMyA6
-         Ew/fFJZeqQ8ljV1k8V0QF3d+ejAlmuXoXyP3c3NIDKG2azZ6XPr6GrIDKvY2k+vlVUPY
-         yPlSGp/ZH4zuHrmirzUSrifkpyjDc7zNUbInUinJFmaAfYC29A98nmFeKIaN0gIjwjBu
-         RDF4WZoNJnCf2btZJpXOFj+zXifRXiiKy/0vn5pTQEDf38N2UHAwuGTDsKjeyyL6j2GT
-         z03BsImPwX//HKTnW7OJrs2TUzxs1zgET9oDalv14kW6BEKPkbhUgrGXT9dbxbpYa5S9
-         K3ug==
-X-Gm-Message-State: AOAM531HMU/nFyuBH/0DI5shSUWfaEtGVG6K9zdSri5b5PK3RjczOmdW
-        vfXgDf3r8qBaJ+wmrSWXjNTbiM9wrrPBquPh+9ZWZA==
-X-Google-Smtp-Source: ABdhPJyXAjBUUClEYCZHtVdeFxB93e0KU/DaYNCaGJDseQVcIYSVpAd2vUIWhhLrI6o9uN4JZLtR9Hilte1ubUmv+wo=
-X-Received: by 2002:a2e:9041:: with SMTP id n1mr12338272ljg.273.1614696768477;
- Tue, 02 Mar 2021 06:52:48 -0800 (PST)
+        id S1580179AbhCBRac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:30:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1448614AbhCBPHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:07:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0220E64F31;
+        Tue,  2 Mar 2021 14:55:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614696906;
+        bh=8It4yP7aeowMnxrRjMp2VuO3oZ/kpVFvOz2t0EfqsLI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=cJviZO4CmzYCEFaTgFTU1n0fOKlFhyAC9Sb9iQlOW8un8OszNwLsc+5T6uVi7L7sS
+         KiegQBH3npHiSHLSUDx72vwgeju9bK6ss2NjV8prGv6J40SsO+d4f3uvy4MWIIm9rD
+         QsHZyXTiJSdc/qkUocY/84iCAxLFsPSK3C+v6OU5o2SiShm1FjAHhvHhOst5Sj8Vd9
+         X+HdQndb7DuYD6FmVsUNb/2HFMqk+KChELcqtYF/ANkp2SIn91s9iA+P6rOa5NhlJQ
+         fxHs8Ic6nPL92Hg//aqOlxhH3XlpeLrG03IPtjwHt0ZKKF0JfCzDIS+0BZxWjOtz6w
+         CRaTepHP7AqfA==
+Date:   Tue, 2 Mar 2021 15:55:02 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+cc:     "Coelho, Luciano" <luciano.coelho@intel.com>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] iwlwifi: don't call netif_napi_add() with rxq->lock
+ held (was Re: Lockdep warning in iwl_pcie_rx_handle())
+In-Reply-To: <87blc192cz.fsf@codeaurora.org>
+Message-ID: <nycvar.YFH.7.76.2103021554160.12405@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2103012136570.12405@cbobk.fhfr.pm> <2db8f779b4b37d4498cfeaed77d5ede54e429a6e.camel@sipsolutions.net> <nycvar.YFH.7.76.2103021025410.12405@cbobk.fhfr.pm> <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm>
+ <7de7aa19e5ea8a856cce4193ebb3c31b4ef78ca7.camel@intel.com> <87blc192cz.fsf@codeaurora.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210225163320.71267-1-andriy.shevchenko@linux.intel.com> <20210225163320.71267-4-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210225163320.71267-4-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 15:52:37 +0100
-Message-ID: <CACRpkdbeYkQiUjb0t2XWik1j1qQTUZZVyjkASMgpE24DWLx0fQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] gpio: pca953x: Set IRQ type when handle Intel
- Galileo Gen 2
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 5:33 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Tue, 2 Mar 2021, Kalle Valo wrote:
 
-> The commit 0ea683931adb ("gpio: dwapb: Convert driver to using the
-> GPIO-lib-based IRQ-chip") indeliberately made a regression on how
-> IRQ line from GPIO I=C2=B2C expander is handled. I.e. it reveals that
-> the quirk for Intel Galileo Gen 2 misses the part of setting IRQ type
-> which previously was predefined by gpio-dwapb driver. Now, we have to
-> reorganize the approach to call necessary parts, which can be done via
-> ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk.
->
-> Without this fix and with above mentioned change the kernel hangs
-> on the first IRQ event with:
->
->     gpio gpiochip3: Persistence not supported for GPIO 1
->     irq 32, desc: 62f8fb50, depth: 0, count: 0, unhandled: 0
->     ->handle_irq():  41c7b0ab, handle_bad_irq+0x0/0x40
->     ->irq_data.chip(): e03f1e72, 0xc2539218
->     ->action(): 0ecc7e6f
->     ->action->handler(): 8a3db21e, irq_default_primary_handler+0x0/0x10
->        IRQ_NOPROBE set
->     unexpected IRQ trap at vector 20
->
-> Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expander=
-s on Galileo Gen 2")
-> Depends-on: 0ea683931adb ("gpio: dwapb: Convert driver to using the GPIO-=
-lib-based IRQ-chip")
+> > Thanks, Jiri! Let's take your patch since you already sent it out.
+> >
+> > Kalle, can you please take this directly to wireless-drivers.git?
+> >
+> > Acked-by: Luca Coelho <luciano.coelho@intel.com>
+> 
+> Ok but I don't see this either in patchwork or lore, hopefully it shows
+> up later.
 
-I never saw that before, seems useful!
+Not sure about patchwork, but vger had hiccup (again) earlier today, 
+everything depending on the ML traffic is probably slower.
 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+lore has it now though: 
 
-Not only does it fix the bug, it also looks so much better by
-separation of concerns.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+	https://lore.kernel.org/lkml/nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm/
 
-Yours,
-Linus Walleij
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
