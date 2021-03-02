@@ -2,99 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F0E32A9D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7059532A9AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581443AbhCBSvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:51:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42628 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1449106AbhCBQE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:04:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614700270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pdDWsFQcF7rXCFOv6YgPKx+U/DSX9HDlai1p+dLPtQc=;
-        b=CUKK1D189WviMnFB36MEnc7SszarLzXWujqx5F/zbGbrjbAMHbx+ODykvZMkOihPe4jgPF
-        tNbDp+jlZb+Htf35AEd5RHN2RToqnRoSS4Kvg7KSFayMPDXjmLaI8DiP3AXqO4ZMPHJbD8
-        mPFJAXJztUY614pfLqEgcN6XgNcqrzE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 68E73B02E;
-        Tue,  2 Mar 2021 15:51:09 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 16:51:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhou Guanghui <zhouguanghui1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
-        guohanjun@huawei.com, dingtianhong@huawei.com,
-        chenweilong@huawei.com, rui.xiang@huawei.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] mm/memcg: set memcg when split pages
-Message-ID: <YD5e2k0ecvGt8sqR@dhcp22.suse.cz>
-References: <20210302013451.118701-1-zhouguanghui1@huawei.com>
- <YD4CciUX0/eXFLM0@dhcp22.suse.cz>
+        id S1581313AbhCBSl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:41:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1577708AbhCBPxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:53:53 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBC8C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:53:10 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id mm21so35851209ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:53:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QMwRcyglOwLZ35Davd21RnBIqDoikSKOqFigf1wF08Q=;
+        b=vF+08XRd3O0EMKMnWLzOFjBDhyu0U0YQMMn6uibbs9fwIhYc7oDRjHVJuflkeA2jZt
+         7mFG8VvthTdY2gz7Ziib7zZ5Dal2egH2bWiMetZQZ+tXpLvsbKZxMqNNyMUV6/8pgfl5
+         Qk8EKfQ0xXIftHmFCTum6tih+zxs0KJibj2BZSc9owX916KVh5Ha/GNtOu4m1opw0vrA
+         HbmCgHxthB+7rscJIW6O0v9DWGQuaWHL1RgUaIuYJIG/aa2OXz9Uq+1DJONixZBE14gK
+         wc2xHaXUeVSoh/3BBLz4uAml7n/KZ35qn7A/n8YgBgOpuH0oRHKvMsVdQi/rynRJGcp7
+         n/5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QMwRcyglOwLZ35Davd21RnBIqDoikSKOqFigf1wF08Q=;
+        b=h3iAP3SfrrF5tMIrlWyFFEiaYZBL4CDHJDXyJ/0waE0ZGnXkAFDKuEcqtAObiUANY6
+         jNAc8EEeQk2E8YNhhn+SZeWm+iAjps3j+wgZr8KhHUcp0BnAkwZZIVvyZ5WYFDVdMOXK
+         SXgxNiEU8VucYvUcXmr+pbJs/PO6i6qXqsmGHUsugZkHWVA2BkS3GmDGQk9E0SprYXJn
+         fUB+xBJGizIqZU4k93v0FcNAOR4fLhssBmEcivIV5tmpPJMsutg322UEIYlGtVP2ZG2c
+         EM8f8fw983VNNGJA+ZLEAaLw0Mjx/CB4px1zDQHjC3ebwT6vyarnP+ud5IEbG9zCgYzB
+         WUzQ==
+X-Gm-Message-State: AOAM531o1YFjBcSFdsqikPZkpoJZzltrvv3l6Ua625zkW/dsWfgpQUgM
+        SjKQg9YXrSNodY/wU7SgtK7/YHvpnwH/v+ndMXPkDg==
+X-Google-Smtp-Source: ABdhPJzyhmpnqBy3XKn1hwrSV1trimEFqFxnbtTfVuFXM8I7/TDmAeNMHfvwDQJtspg8hkYOWgY/y/V3WPuuERZUBNE=
+X-Received: by 2002:a17:906:444d:: with SMTP id i13mr20892006ejp.170.1614700389087;
+ Tue, 02 Mar 2021 07:53:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YD4CciUX0/eXFLM0@dhcp22.suse.cz>
+References: <20210301161006.881950696@linuxfoundation.org>
+In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Mar 2021 21:22:56 +0530
+Message-ID: <CA+G9fYtkJB+1woED8Lu6UVK3zqRbqTJ1Y+gbjTx32H03FkdR=Q@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/93] 4.4.259-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02-03-21 10:17:03, Michal Hocko wrote:
-> [Cc Johannes for awareness and fixup Nick's email]
-> 
-> On Tue 02-03-21 01:34:51, Zhou Guanghui wrote:
-> > When split page, the memory cgroup info recorded in first page is
-> > not copied to tail pages. In this case, when the tail pages are
-> > freed, the uncharge operation is not performed. As a result, the
-> > usage of this memcg keeps increasing, and the OOM may occur.
-> > 
-> > So, the copying of first page's memory cgroup info to tail pages
-> > is needed when split page.
-> 
-> I was not aware that alloc_pages_exact is used for accounted allocations
-> but git grep told me otherwise so this is not a theoretical one. Both
-> users (arm64 and s390 kvm) are quite recent AFAICS. split_page is also
-> used in dma allocator but I got lost in indirection so I have no idea
-> whether there are any users there.
-> 
-> The page itself looks reasonable to me.
-> 
-> > Signed-off-by: Zhou Guanghui <zhouguanghui1@huawei.com>
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> Minor nit
-> 
-> > ---
-> >  include/linux/memcontrol.h | 10 ++++++++++
-> >  mm/page_alloc.c            |  4 +++-
-> >  2 files changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index e6dc793d587d..c7e2b4421dc1 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -867,6 +867,12 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
-> >  extern bool cgroup_memory_noswap;
-> >  #endif
-> >  
-> > +static inline void copy_page_memcg(struct page *dst, struct page *src)
-> > +{
-> > +	if (src->memcg_data)
-> > +		dst->memcg_data = src->memcg_data;
-> 
-> I would just drop the test. The struct page is a single cache line which
-> is dirty by the reference count so another store will unlikely be
-> noticeable even when NULL is stored here and you safe a conditional.
+On Mon, 1 Mar 2021 at 21:47, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.259 release.
+> There are 93 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.259-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Disregard this. As Zi Yan mentioned in other reply, we need to keep the
-check and take a css reference along with transfering the memcg.
 
--- 
-Michal Hocko
-SUSE Labs
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.259-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 9c6543652027bdd932b512863425cee455274d83
+git describe: v4.4.258-94-g9c6543652027
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.258-94-g9c6543652027
+
+No regressions (compared to build v4.4.258)
+
+
+No fixes (compared to build v4.4.258)
+
+
+Ran 17073 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-r2 - arm64
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* network-basic-tests
+* perf
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-controllers-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* v4l2-compliance
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* install-android-platform-tools-r2600
+* fwts
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.259-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git tag: 4.4.259-rc1-hikey-20210301-944
+git commit: 12d629517b548857827a6d2c13ae8ba6c8708c63
+git describe: 4.4.259-rc1-hikey-20210301-944
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.259-rc1-hikey-20210301-944
+
+
+No regressions (compared to build 4.4.259-rc1-hikey-20210228-942)
+
+
+No fixes (compared to build 4.4.259-rc1-hikey-20210228-942)
+
+
+Ran 1897 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
