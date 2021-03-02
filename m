@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB3C32A507
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F4532A4F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442259AbhCBLq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:46:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32745 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1380390AbhCBL0d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:26:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614684266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1BhNztqEgWGMx7kPW5f0CLvD2WsnR/6LZwBjGCJ0xrE=;
-        b=NycymublH60UmomibTi6scOyUppov+crws1Oj4ttlQ20VjRQsP+ihx0OfocMmWhDCZ76c8
-        r2W7ULKKq3PGAGAqfrsto6WLGR9yu+zwIR47tBtVHqbXUUF+SvA2NKF7QN8zD7DjDUb/60
-        yWNo4mXy/FM13OsDIT7QJskDIxZnfeA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-66-gDNo3j1ONI-hmi5Rei7c-w-1; Tue, 02 Mar 2021 06:24:24 -0500
-X-MC-Unique: gDNo3j1ONI-hmi5Rei7c-w-1
-Received: by mail-ej1-f71.google.com with SMTP id b15so8316333ejv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 03:24:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1BhNztqEgWGMx7kPW5f0CLvD2WsnR/6LZwBjGCJ0xrE=;
-        b=qD4+W8eOQ2KoNwK8mTt/ArQmpph6C6uxOpzelbJpK3jz2373L4Ix1HAF2dLI9t3riV
-         2iF+q4Yq+3Oz3aO2lzBTFtAh312nO+5xX7rk494xzYP5TIhgQoHHqxhwNlcZMGZTwBpy
-         2UpOOfZbZLnCpZmP15fmJI7EqUcy2vX3JEbDY/TBPuvfZfhPwspm+S5P9C4EGjNL/ZcF
-         Bze4oUsd8H9EyfGtKe4iVNHz2bJLSYwoqfGZzykiu0XI/hyn0t+997dq7jYExE9yqZyk
-         r5reP6rfGGvbM8CXpygj0a4ydjpIcmvU44gmy3TH0fjDh24oKa66anIfUoA8Gb5E6Cle
-         dv2Q==
-X-Gm-Message-State: AOAM5328wsLKQMjtKU3pX3mOphqov2vQwjEXh7IqMSb/3wpfEXQuNzCn
-        qCMMR/uzFGLFOyWBoPXtI7FZnH9SqgBoTX5pXPlrkl3ZzqHb/iJGGSGseJb02jOIkOsEw8k3vEU
-        i4BVmm5E2HwgDW4qzww8i5x07
-X-Received: by 2002:a17:906:f296:: with SMTP id gu22mr19228817ejb.20.1614684263044;
-        Tue, 02 Mar 2021 03:24:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzGGNSokqgK/5RqqfSY3ERKl9lVWR62FSA4uJr14s6tOqkDbPKgW29y+nDnUA6mto+6bIvZew==
-X-Received: by 2002:a17:906:f296:: with SMTP id gu22mr19228806ejb.20.1614684262901;
-        Tue, 02 Mar 2021 03:24:22 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id h2sm15994879ejk.32.2021.03.02.03.24.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 03:24:22 -0800 (PST)
-Date:   Tue, 2 Mar 2021 06:24:19 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: Fix wrong use of bit numbers
-Message-ID: <20210302062405-mutt-send-email-mst@kernel.org>
-References: <20210301062817.39331-1-elic@nvidia.com>
- <959916f2-5fc9-bdb4-31ca-632fe0d98979@redhat.com>
- <20210301103214-mutt-send-email-mst@kernel.org>
- <20210302052306.GA227464@mtl-vdi-166.wap.labs.mlnx>
+        id S1349993AbhCBLpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:45:14 -0500
+Received: from srv6.fidu.org ([159.69.62.71]:37672 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1380366AbhCBL0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:26:37 -0500
+X-Greylist: delayed 373 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Mar 2021 06:26:36 EST
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 9644BC800CD;
+        Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id lbnLkmpAJE1l; Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+Received: from [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8] (p200300e37f234700CC4188a7F2f8D6b8.dip0.t-ipconnect.de [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 52B51C800CB;
+        Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Intel NUC 10
+To:     wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        alsa-devel@vger.kernel.org
+Autocrypt: addr=wse@tuxedocomputers.com; keydata=
+ mDMEX6ALvhYJKwYBBAHaRw8BAQdAG/kE3mlbV1YLpCU8iA7Pyq2eDq9LxzGQxcOZODh2Vnq0
+ KFdlcm5lciBTZW1iYWNoIDx3c2VAdHV4ZWRvY29tcHV0ZXJzLmNvbT6IlgQTFggAPhYhBNzq
+ jJqAsvWKK1h7bi7eQpXUvijKBQJfoAu+AhsDBQkJZgGABQsJCAcCBhUKCQgLAgQWAgMBAh4B
+ AheAAAoJEC7eQpXUvijKzkEA/jblmQRWU/e18oo8J9GPHWOCRUA1WJLUt9lSye5cgl2vAP0Y
+ q+EpkDRS+QqtIcIr3fVELwA4b/V1lVE2LW+plcmdCbg4BF+gC74SCisGAQQBl1UBBQEBB0Bc
+ k3J9DVAB4ysrdDcKE7L9iAUjlWD+rsLh/5soPORqFQMBCAeIfgQYFggAJhYhBNzqjJqAsvWK
+ K1h7bi7eQpXUvijKBQJfoAu+AhsMBQkJZgGAAAoJEC7eQpXUvijKBBYA/2DT2g26dpTU2Rbc
+ lqviltu+woGZCd0GBfRgXuzUK0OfAQCwr8qPCl8uIsBgOsDmWIJYByG2ddwmXiAgBS1985bM Ag==
+Message-ID: <447c7c3f-9e9b-bdbe-5c91-c6d8ab306173@tuxedocomputers.com>
+Date:   Tue, 2 Mar 2021 12:25:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210302052306.GA227464@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 07:23:06AM +0200, Eli Cohen wrote:
-> On Mon, Mar 01, 2021 at 10:33:14AM -0500, Michael S. Tsirkin wrote:
-> > On Mon, Mar 01, 2021 at 03:52:45PM +0800, Jason Wang wrote:
-> > > 
-> > > On 2021/3/1 2:28 下午, Eli Cohen wrote:
-> > > > VIRTIO_F_VERSION_1 is a bit number. Use BIT_ULL() with mask
-> > > > conditionals.
-> > > > 
-> > > > Also, in mlx5_vdpa_is_little_endian() use BIT_ULL for consistency with
-> > > > the rest of the code.
-> > > > 
-> > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > > 
-> > > 
-> > > Acked-by: Jason Wang <jasowang@redhat.com>
-> > 
-> > And CC stable I guess?
-> 
-> Is this a question or a request? :-)
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-A question. net patches are cc'd by net maintainer.
+ALSA: hda/realtek: Add quirk for Intel NUC 10
 
-> > 
-> > > 
-> > > > ---
-> > > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
-> > > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > index dc7031132fff..7d21b857a94a 100644
-> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > @@ -821,7 +821,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
-> > > >   	MLX5_SET(virtio_q, vq_ctx, event_qpn_or_msix, mvq->fwqp.mqp.qpn);
-> > > >   	MLX5_SET(virtio_q, vq_ctx, queue_size, mvq->num_ent);
-> > > >   	MLX5_SET(virtio_q, vq_ctx, virtio_version_1_0,
-> > > > -		 !!(ndev->mvdev.actual_features & VIRTIO_F_VERSION_1));
-> > > > +		 !!(ndev->mvdev.actual_features & BIT_ULL(VIRTIO_F_VERSION_1)));
-> > > >   	MLX5_SET64(virtio_q, vq_ctx, desc_addr, mvq->desc_addr);
-> > > >   	MLX5_SET64(virtio_q, vq_ctx, used_addr, mvq->device_addr);
-> > > >   	MLX5_SET64(virtio_q, vq_ctx, available_addr, mvq->driver_addr);
-> > > > @@ -1578,7 +1578,7 @@ static void teardown_virtqueues(struct mlx5_vdpa_net *ndev)
-> > > >   static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev *mvdev)
-> > > >   {
-> > > >   	return virtio_legacy_is_little_endian() ||
-> > > > -		(mvdev->actual_features & (1ULL << VIRTIO_F_VERSION_1));
-> > > > +		(mvdev->actual_features & BIT_ULL(VIRTIO_F_VERSION_1));
-> > > >   }
-> > > >   static __virtio16 cpu_to_mlx5vdpa16(struct mlx5_vdpa_dev *mvdev, u16 val)
-> > 
+This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
+devices. This fixes the issue of the devices not having audio input and
+output on the headset jack because the kernel does not recognize when
+something is plugged in.
+
+The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
+it turned out that the NUC 10 uses another pin. This information was
+acquired by black box testing likely pins.
+
+Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+---
+Hi,
+this is my second ever submitted kernel patch with the first one send just some minutes ago, feel free to criticise me if I made an error or missed a best practice bullet point.
+Also: I'm unsure if this would fit the requirements for stable@vger.kernel.org and/or trivial@kernel.org, but I think not (correct me if I'm wrong).
+Kind regards
+Werner Sembach
+
+From d281364b8ca6c054a0e5ce20caa599bf7d08160d Mon Sep 17 00:00:00 2001
+From: Werner Sembach <wse@tuxedocomputers.com>
+Date: Fri, 26 Feb 2021 13:54:30 +0100
+Subject: [PATCH] Fix Intel NUC10 no output and input on headset jack
+
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 290645516313..c14d624dbaf1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6362,6 +6362,7 @@ enum {
+     ALC269_FIXUP_LEMOTE_A1802,
+     ALC269_FIXUP_LEMOTE_A190X,
+     ALC256_FIXUP_INTEL_NUC8_RUGGED,
++    ALC256_FIXUP_INTEL_NUC10,
+     ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+     ALC274_FIXUP_HP_MIC,
+     ALC274_FIXUP_HP_HEADSET_MIC,
+@@ -7744,6 +7745,15 @@ static const struct hda_fixup alc269_fixups[] = {
+         .chained = true,
+         .chain_id = ALC269_FIXUP_HEADSET_MODE
+     },
++    [ALC256_FIXUP_INTEL_NUC10] = {
++        .type = HDA_FIXUP_PINS,
++        .v.pins = (const struct hda_pintbl[]) {
++            { 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++            { }
++        },
++        .chained = true,
++        .chain_id = ALC269_FIXUP_HEADSET_MODE
++    },
+     [ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
+         .type = HDA_FIXUP_VERBS,
+         .v.verbs = (const struct hda_verb[]) {
+@@ -8183,6 +8193,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+     SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+     SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
+     SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
++    SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+ 
+ #if 0
+     /* Below is a quirk table taken from the old code.
+-- 
+2.25.1
+
+
+
+
+
+
+
 
