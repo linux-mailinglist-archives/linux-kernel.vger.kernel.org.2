@@ -2,127 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA89232A6DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887FE32A6E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578971AbhCBPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:54:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447357AbhCBN3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:29:23 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44656C061A2B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:28:43 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id b7so11631178edz.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7L0BOqRe+13aQ5nTzLZo2I22iHREvV6oqm1AT8L/cvg=;
-        b=u2zl81Aqw9FwWu6GkxsEZfGirRBF1s1UixG5XuA9aLQM7dKs01Fn/NkJe/eIid1VtP
-         1V9c8DODkxMj5etjID8h0ONvUJeIaGemxIs10flIOS8pLlNLBojoaVz/EOmQhKSt5iUf
-         sNCQvsv2h9AKyUO+DRPWzlG+29xnjgnu0nIuoMPjeHEib4VC0Ad4OWHPQAYgGd+YhwMW
-         55uY9p9aJtSDw3y9mDmEkyuNl3PPJrX6TaB8zn/Z+Oco8un1umnRVGtVJ8bx1kqVAjed
-         uGgDKKbJwOYeE57C0d9kOpKGFQ4WSTsbJISeOqU2wMZXyqsJc3IggB+xTzVzaIhWV4pN
-         EZeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7L0BOqRe+13aQ5nTzLZo2I22iHREvV6oqm1AT8L/cvg=;
-        b=GWZwZWy9qmRRgjh+rzW9v6OqGakvCIXHjg0FskRdTYhz2OwySLJI72fhqmqWJsKn2u
-         pyAmO7uTNJ6Y7pySygY6ivIQhkwKsPsHZrMlMYhGf9Y5Iu5mBBqp9NJxSBT3DDqKJQiz
-         igNV6x12IWOGTALoz8qGhLyA9+RbsckLcxP/cPb9HY79VbQDjgTUUWhNygFYWU8rgrK5
-         3gplMfOrA9rWNFuAFLT+DwZ+LUQf+umBA0lc0Zj9QneB9lcUPqp9vQYx7qvc/yA+jvsI
-         0/FHckvBKpPjSlxv16pV0K0eHmWrCZwFd6LoQnSBnlbc+xgA5ydFOP5oPDTE/QXkYTIo
-         AQdg==
-X-Gm-Message-State: AOAM532t0kfwicwKCO8ifg5UBSPYjY5nivxESNUMb/zUnb7xxQc6s3U9
-        jOZZCDZVTmiO3LfQuOKsLaTUeg==
-X-Google-Smtp-Source: ABdhPJw9eHJTMelotSSOg71hzAPw3YXVnWisOTEJGBTWh28xPJGipgxc/LN7msOz1Qbj1qGcodyeVw==
-X-Received: by 2002:aa7:cf02:: with SMTP id a2mr18762312edy.59.1614691721960;
-        Tue, 02 Mar 2021 05:28:41 -0800 (PST)
-Received: from ?IPv6:2a02:768:2307:40d6::f9e? ([2a02:768:2307:40d6::f9e])
-        by smtp.gmail.com with ESMTPSA id y16sm16268059ejk.43.2021.03.02.05.28.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 05:28:41 -0800 (PST)
-Subject: Re: [PATCH v1] microblaze: tag highmem_setup() with __meminit
-To:     David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel test robot <lkp@intel.com>,
+        id S1837195AbhCBPyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:54:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39104 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346256AbhCBNau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:30:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614691784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=16p5CIBV5FZqq7PD+aIlSBkHNAAFXoVuh32HeslQ/SQ=;
+        b=gA5gYav2Hk333h8fF5E9qWN9lUs6VVCndPdoWWRkqMQUNVNqu7x8Lq8maaFNxgfWDx7pPH
+        KQIRik8Udnjz0LplVgpDmOCsmr5EJalTn7APJpMw6ZjZg8luWm9/ZC43KHG7zQfXgvCUsK
+        SHzk5LYrsAc7S2bjfeF0UsiES0uQkXk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7999DAAC5;
+        Tue,  2 Mar 2021 13:29:44 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 14:29:43 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Marco Elver <elver@google.com>, Timur Tabi <timur@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210301114749.47914-1-david@redhat.com>
- <20210301221846.GA4744@localhost.localdomain>
- <b38b353b-7138-373b-057a-a4fa4b4ab30e@redhat.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <2db45dcc-87a5-fe1c-c0e6-702edeedc246@monstr.eu>
-Date:   Tue, 2 Mar 2021 14:28:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
+ addresses as unhashed
+Message-ID: <YD49x/UGUq6MSE39@alley>
+References: <20210214161348.369023-1-timur@kernel.org>
+ <20210214161348.369023-4-timur@kernel.org>
+ <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
+ <CANpmjNNm-4s16_KQ1_NqFN4XOESJh4_=33LHQzt+p4V0Cy=Xzw@mail.gmail.com>
+ <CAMuHMdWWsZ-vTGZCeLtcwLTuBYpeP0STfhrK37wiwmyfsQ798A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b38b353b-7138-373b-057a-a4fa4b4ab30e@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWWsZ-vTGZCeLtcwLTuBYpeP0STfhrK37wiwmyfsQ798A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/2/21 10:04 AM, David Hildenbrand wrote:
-> On 01.03.21 23:18, Oscar Salvador wrote:
->> On Mon, Mar 01, 2021 at 12:47:49PM +0100, David Hildenbrand wrote:
->>> With commit a0cd7a7c4bc0 ("mm: simplify free_highmem_page() and
->>> free_reserved_page()") the kernel test robot complains about a warning:
->>>
->>> WARNING: modpost: vmlinux.o(.text.unlikely+0x23ac): Section mismatch in
->>>    reference from the function highmem_setup() to the function
->>>    .meminit.text:memblock_is_reserved()
->>>
->>> This has been broken ever since microblaze added highmem support,
->>> because memblock_is_reserved() was already tagged with "__init" back
->>> then -
->>> most probably the function always got inlined, so we never stumbled over
->>> it.
->>
->> It might be good to point out that we need __meminit instead of __init
->> because microblaze platform does not define CONFIG_ARCH_KEEP_MEMBLOCK,
->> and __init_memblock fallsback to that.
->>
->> (I had to go and look as I was puzzled :-) )
->>
->> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+On Tue 2021-03-02 13:51:35, Geert Uytterhoeven wrote:
+> Hi Marco,
 > 
-> Thanks!
+> On Tue, Mar 2, 2021 at 1:45 PM Marco Elver <elver@google.com> wrote:
+> > On Tue, 2 Mar 2021 at 12:51, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Sun, Feb 14, 2021 at 5:17 PM Timur Tabi <timur@kernel.org> wrote:
+> > > > If the no_hash_pointers command line parameter is set, then
+> > > > printk("%p") will print pointers as unhashed, which is useful for
+> > > > debugging purposes.  This change applies to any function that uses
+> > > > vsprintf, such as print_hex_dump() and seq_buf_printf().
+> > > >
+> > > > A large warning message is displayed if this option is enabled.
+> > > > Unhashed pointers expose kernel addresses, which can be a security
+> > > > risk.
+> > > >
+> > > > --- a/lib/vsprintf.c
+> > > > +++ b/lib/vsprintf.c
+> > > > @@ -2090,6 +2090,32 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+> > > >         return widen_string(buf, buf - buf_start, end, spec);
+> > > >  }
+> > > >
+> > > > +/* Disable pointer hashing if requested */
+> > > > +bool no_hash_pointers __ro_after_init;
+> > > > +EXPORT_SYMBOL_GPL(no_hash_pointers);
+> > > > +
+> > > > +static int __init no_hash_pointers_enable(char *str)
+> > > > +{
+> > > > +       no_hash_pointers = true;
+> > > > +
+> > > > +       pr_warn("**********************************************************\n");
+> > > > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > > > +       pr_warn("**                                                      **\n");
+> > > > +       pr_warn("** This system shows unhashed kernel memory addresses   **\n");
+> > > > +       pr_warn("** via the console, logs, and other interfaces. This    **\n");
+> > > > +       pr_warn("** might reduce the security of your system.            **\n");
+> > > > +       pr_warn("**                                                      **\n");
+> > > > +       pr_warn("** If you see this message and you are not debugging    **\n");
+> > > > +       pr_warn("** the kernel, report this immediately to your system   **\n");
+> > > > +       pr_warn("** administrator!                                       **\n");
+> > > > +       pr_warn("**                                                      **\n");
+> > > > +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > > > +       pr_warn("**********************************************************\n");
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > +early_param("no_hash_pointers", no_hash_pointers_enable);
+> > >
+> > > While bloat-o-meter is not smart enough to notice the real size impact,
+> > > this does add more than 500 bytes of string data to the kernel.
+> > > Do we really need such a large message?
+> > > Perhaps the whole no_hash_pointers machinery should be protected by
+> > > "#ifdef CONFIG_DEBUG_KERNEL"?
+
+This was the deal. The configure option is a no-go, see below and also
+https://lore.kernel.org/r/CAHk-=wgaK4cz=K-JB4p-KPXBV73m9bja2w1W1Lr3iu8+NEPk7A@mail.gmail.com
+
+
+> > We recently stumbled across this, and it appears an increasing number
+> > of production kernels enable CONFIG_DEBUG_KERNEL [1], so it likely
+> > isn't the solution (we tried to use CONFIG_DEBUG_KERNEL in similar
 > 
-> Whoever feels like picking this up (@Andrew?) can you add
+> I guess the people who do care about kernel size do know to disable
+> CONFIG_DEBUG_KERNEL, so it would help them.
+> The everything-but-the-kitchen-sink distro people don't care about kernel
+> size anyway.
+
+The problem with the configure option is not about size. The problem is
+that there would be many kernels in the wild with this option enabled.
+People would install them without knowing that they are less secure.
+
+Distros would need to provide both kernels. Well, they already do.
+But it might be worse. Some distros might even want to enable it
+by default.
+
+Also many bugs might be debugged without this option. Some bugs
+are hard to reproduce and might be visible only on production
+systems. It should be possible to enable this only when really
+needed and the user must be aware of the risk.
+
+
+> > Would placing the strings into an __initconst array help?
 > 
-> "We need __meminit because __init_memblock defaults to that without
-> CONFIG_ARCH_KEEP_MEMBLOCK" and __init_memblock is not used outside
-> memblock code.
-> 
+> That would indeed help to reduce run-time memory consumption.
 
-Applied with this line added.
+Sure. We could do this. Do you want to send a patch, please?
 
-Thanks,
-Michal
+> It would not solve the raw kernel size increase.
 
+I see. Well, the compression should be pretty efficient
+for a text (with many spaces).
 
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
+Best Regards,
+Petr
