@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7D632A0D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0950932A0DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576680AbhCBEcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:32:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1443711AbhCBCXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:23:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BFDD614A7;
-        Tue,  2 Mar 2021 02:22:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614651750;
-        bh=twucalpitITdHszx7+x7EMGhA3/YxluCVY+oR0edqW4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LFinN9m/tx28kMdWUQbQb8VIklLB1k4t8oBFCQWx3cLQ/kN3j6SEjnM0roIDjMS5h
-         PGtbAcXUayBAWIwpUcvcj1+UhtPEgmszxmpjJe/CVR3iZtsnl1MoF6nSheHaD6blH2
-         /FYY6D+DNyG0SbiBikm0pYVSzSRFOpeQrm8SxIidXKiWo+l78XE6HOCCBmyxJIvzvr
-         0wbgz3n1+2/GGhfTnYQb7jKMSrm8Vh7VSRxN4ixMAeYjpxyp41AUtt0WIcdUxxHLul
-         xXyUOs932wF0bhN5pZCRHNRsw6jra/tjRD7mQPl+C62zvGAIsf5UbzOFmk0itiIDE8
-         kCo2exah6Xysw==
-Date:   Tue, 2 Mar 2021 11:22:24 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: Why do kprobes and uprobes singlestep?
-Message-Id: <20210302112224.6b3568434be490fbfbdec790@kernel.org>
-In-Reply-To: <20210301165130.GA5351@redhat.com>
-References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
-        <20210301165130.GA5351@redhat.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1576741AbhCBEcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:32:19 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:52295 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1444111AbhCBCjk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 21:39:40 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 0021C109C;
+        Mon,  1 Mar 2021 21:27:44 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 01 Mar 2021 21:27:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=/
+        /gbrRneuXQ8PYBLHAooCmvbqBKxLnuewss1ximJRjY=; b=kzYMJr0SFGyFeRLLw
+        37rm6J3N86B7AmgxQGe1owM5lVNQUjT7epcA04dTl7RwcJtqWv4IKRNZP5mLxCSi
+        UcfjkBsDbDmN0IbP14jpQUkvoKE8uvvNV2qKl6z6ue8jv6AhZA+82JCZr7EZUUZc
+        OzRCYejYM442ufdDd/Tij8eXlPHyGoW0RqtgTUAPpZ6WKOlnHHgm7maKr46ZzP/i
+        gGJfYX0rqTF8WH0S8DQZgIiXVc7dJbTmZ/u5A/c7gTddDcXsv3apmTOSorgmvu8V
+        cZSFLmbEGYN9d0rMh5KrIVqNnVETBU8zlc7GhSJ3NgQFcm1Nlc+apN4ZdVsiFteS
+        xQoAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=//gbrRneuXQ8PYBLHAooCmvbqBKxLnuewss1ximJR
+        jY=; b=agqhp0tCc4foYE//oROKhFMyxOfxiYiRsSzBqGshIX5arV5/6kGx6QpVc
+        bLaIJmVfwsPf4ilv7K2sa/8aaV1z2Z0JvjxG7dUxTPnuv9KdX1nL0obnTPT/eutV
+        G+sHY9RHUJN9HsQ2HJBR5iDXOq/36GnzHRVKGZvB8ZTAobS9zrFXgKavTROi7Shf
+        NDaw0btT93ZrU4pl2xYR2uc9vM6nCvtEd8ahbQGmijKeUGbMuVBlI1ionr2IK6RH
+        Y464oIa3jTBDpTdxSlG/2Iwqu8UoI7yMm0cUc4vcc4HLiB5+z2/36XsFvvQ7JGag
+        ALCHM/oD1mm6xmh3PzQDycwbv1UHA==
+X-ME-Sender: <xms:n6I9YJhZePblU1mRNgrrDAVinzdoERYwMiWIKib1K9ZfMb77K-qmbg>
+    <xme:n6I9YODR0sF52QD7ol5Jvw-vXmn6mq4GYrltpeYni9hTJ_FEqARtv3Q2wKKI8TJrP
+    NtLvwjIas2n5dxv57w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrleelgdegiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeftnecuhfhrohhmpeflihgrgihu
+    nhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqnecugg
+    ftrfgrthhtvghrnhepfeeludeitddvkeffgefgueekjeegfeefteelgffhkeffueetieej
+    geehhfeuffdvnecukfhppeeghedrfeefrdehtddrvdehgeenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhih
+    ghhorghtrdgtohhm
+X-ME-Proxy: <xmx:n6I9YJH0MqG738tCl8IAwbT5rUYy-63ZG7QubEpm_JUYHwzYyfjpyQ>
+    <xmx:n6I9YOTT--IWeIwgoGKFOaO2wSKUip1qThOx2MWwpaWW5TBwjZbBHw>
+    <xmx:n6I9YGzUCzBk3S1aatNFcAuz--BkM6ppJwp0qNM24VFiFW8QUiZyMg>
+    <xmx:oKI9YK-3RENV4HWIQnXQEMBBXqV7-VCuSkwVbXc4MXWGfPiynXYhlQ>
+Received: from [127.0.0.1] (li1000-254.members.linode.com [45.33.50.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AB34A1080057;
+        Mon,  1 Mar 2021 21:27:41 -0500 (EST)
+Subject: Re: [PATCH 1/2] MIPS: Remove KVM_GUEST support
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>
+References: <20210301152958.3480-1-tsbogend@alpha.franken.de>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <6a746cc8-0a72-c73b-c6bf-780c6ed68d0c@flygoat.com>
+Date:   Tue, 2 Mar 2021 10:27:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210301152958.3480-1-tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleg and Andy,
 
-On Mon, 1 Mar 2021 17:51:31 +0100
-Oleg Nesterov <oleg@redhat.com> wrote:
 
-> Hi Andy,
+ÔÚ 2021/3/1 ÏÂÎç11:29, Thomas Bogendoerfer Ð´µÀ:
+> KVM_GUEST is broken and unmaintained, so let's remove it.
 > 
-> sorry for delay.
-> 
-> On 02/23, Andy Lutomirski wrote:
-> >
-> > A while back, I let myself be convinced that kprobes genuinely need to
-> > single-step the kernel on occasion, and I decided that this sucked but
-> > I could live with it.  it would, however, be Really Really Nice (tm)
-> > if we could have a rule that anyone running x86 Linux who single-steps
-> > the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
-> > when the system falls apart around them.  Specifically, if we don't
-> > allow kernel single-stepping and if we suitably limit kernel
-> > instruction breakpoints (the latter isn't actually a major problem),
-> > then we don't really really need to use IRET to return to the kernel,
-> > and that means we can avoid some massive NMI nastiness.
-> 
-> Not sure I understand you correctly, I know almost nothing about low-level
-> x86  magic.
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-x86 has normal interrupt and NMI. When an NMI occurs the CPU masks NMI
-(the mask itself is hidden status) and IRET releases the mask. The problem
-is that if an INT3 is hit in the NMI handler and does a single-stepping,
-it has to use IRET for atomically setting TF and return.
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-> 
-> But I guess this has nothing to do with uprobes, they do not single-step
-> in kernel mode, right?
+I'll prepare a patch for KVM side removal.
 
-Agreed, if the problematic case is IRET from NMI handler, uprobes doesn't
-hit because it only invoked from user-space.
-Andy, what would you think?
+Thanks.
 
-> > Uprobes seem to single-step user code for no discernable reason.
-> > (They want to trap after executing an out of line instruction, AFAICT.
-> > Surely INT3 or even CALL after the out-of-line insn would work as well
-> > or better.)
-> 
-> Uprobes use single-step from the very beginning, probably because this
-> is the most simple and "standard" way to implement xol.
-> 
-> And please note that CALL/JMP/etc emulation was added much later to fix the
-> problems with non-canonical addresses, and this emulation it still incomplete.
-
-Yeah, I found another implementation of the emulation afterwards. Of cource
-since uprobes only treat user-space, it maybe need more care.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+- Jiaxun
