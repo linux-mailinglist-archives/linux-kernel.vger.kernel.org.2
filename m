@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD3032A9D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FB732A9E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835245AbhCBSvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:51:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
+        id S1835295AbhCBSvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839217AbhCBQGJ (ORCPT
+        with ESMTP id S1379980AbhCBQJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:06:09 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3789DC06121E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:05:13 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 18so23524114lff.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:05:13 -0800 (PST)
+        Tue, 2 Mar 2021 11:09:31 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAB5C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:08:08 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id dx17so8682873ejb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:08:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9u3vrCOqBqiGMoxwM/+kt6E9YSBHI9AFXy4UzoBkJwk=;
-        b=JFAf2cQTX3pjJy/IKn8T+yEF7LZz0gU/ysRGaYoMRfr/37vv7anyyPz9VzZmIWVt6I
-         Zsp14STWWYVBxjNclWI9hIAwb7nn2PM5hDVF/Ffa/HC+hvwAyRO9d3wsmZ5IvYABOBme
-         DXYNcGkMM/CRtBJUpM5fbK4dK1BhxaPbdKTZVhBb6x/wWT1T8XI9nz7jTzD+quVAj5ly
-         ka5YgHXkbfTsCB0ALtae03KR7m2SBwEYHIeCJVWelgcuW+wM0mp+QC6hYCv6H7E1nPEp
-         zB/9WYmRIQ+BSoC/icIfiW9x6uHOTop96bov3Bc2tZYQGdpV502MeVnrB8R76qAYg/Sb
-         IwWA==
+        bh=ySBfAUfKkrTxnqwRAlElNRuJskL0Nij32l2OtUpRMe8=;
+        b=O4952JgPIL+2tmFGrwVq0Mz2DWtGeThdchNYHRKuK2HtIW5BWKnfwTpOrMWdNDa1dF
+         ROEA/v93M49/StTpJD0e+6vtgCssUvWYdSZ9Wwb5HosRH45KD+tbPETJddRsI8F8CETk
+         kkLG30ByW1gZM7oIs3k9ReNaqz7RkHeFmetF4Ul9FtJ/avk8EURsL6GWmxIso3EjfIJP
+         wHha7T3dbNiE36mo5ifMA9lolpocPXC61k2dzpCfFYylzveW9Poho944CYdLWRojmgNK
+         X9aPyJl1wN/X9goP/29Gbofkq6NrwVHTvLhTPfEiTTx3vzWfHbZfTRmYgvAh7G4gyJsh
+         b/aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9u3vrCOqBqiGMoxwM/+kt6E9YSBHI9AFXy4UzoBkJwk=;
-        b=X0SMRx8eUQgrysAeilRjnqu8A7YfkKJj5CvbGYgpskg6+IFwF0PY/AtwC6fuV+s+Tf
-         lnXDXO853crSgDbiHPvghAxvOdCY6KbGWa80ko9DztHb0nLTjfYUbeJkCiBwgj+N3VdC
-         2ZftyDV0zETDN1WpXEnGJshCJ/AM2fXL9/R+TLfomoIl4hC4RHwlbc2UXmir+GgbeiDp
-         OII98uXKd0Ddw5OmCc9SdKA9A8BZKCVOjgv/P27C53YcDPyKnlvYhsgrAGvOLTbx4vH0
-         m4Difdr5rJF97kz7w2/Vxam8NvJLsszGEZaw1tdiiCH4uSGn4aSWCDB9xJoHrzzvZGjn
-         jiyA==
-X-Gm-Message-State: AOAM532IwQ1zq1kYFYZQ9QcOpgRAjxNkuLkK8JHgVLI4ld6RP9pVVC2H
-        Pncx8ZsoQXJw5IkthsXUjFOAHKRaBu3LNxEXq6atfg==
-X-Google-Smtp-Source: ABdhPJzfGV7wd4O5cGyjJs+MbRVCgtXtQ4Vx7cbYfsSAQGGRpI3lbvsgIUESHKBcLEdBQv9avqoVykyxwph6YEXPPHY=
-X-Received: by 2002:a19:6b13:: with SMTP id d19mr12460951lfa.291.1614701111630;
- Tue, 02 Mar 2021 08:05:11 -0800 (PST)
+        bh=ySBfAUfKkrTxnqwRAlElNRuJskL0Nij32l2OtUpRMe8=;
+        b=pKsstnRRMq6U0vP3EA4D4plQnZyeRlQUomeoC2UN8bkWlxz7MZS83acrbM4ucmC628
+         NNwE/z/ct8+h+76S6/Gjx4PzQGbzek+hCtS09lNSfLXHO+nbiCTBHoHv3DO3eD+kD4df
+         md02/omm1PJHPs6CmZDoecQwxLqk8kAzb6f0YpP0nxFSFh18U8a0cir+xBws9VCb/NZd
+         phrXQbsGxHEgO72whZsNSOAvzhdROUlO7iLl21FG/AYjY+z97e5xh+SE2BW6z9G2Gvzp
+         DH6fwt2VJe+YQLnsnHGwHPkCDbpWCMhrkTawCeeSGVqOlTEaiY5A61tb563aVQhmKWyb
+         petA==
+X-Gm-Message-State: AOAM531hZHVvKHcMmHaIhTNG+0yP4Pi2eeK1T62rTj+fek2oYkej8yna
+        aeS0uo0U0ms6laXv75c6vKZZF/Z4zd2VJs+ZiFF/AQ==
+X-Google-Smtp-Source: ABdhPJyDNlQbitvS0R9F0Y/EyzkBOlI0yLYBJOj4a7MK+Gohur1NOzSn7P7javeAqgETQJbauLEnqE6IGdoj3QI/EuA=
+X-Received: by 2002:a17:906:5044:: with SMTP id e4mr21277561ejk.445.1614701286820;
+ Tue, 02 Mar 2021 08:08:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20210224061205.23270-1-dqfext@gmail.com> <CACRpkdZykWgxM7Ge40gpMBaVUoa7WqJrOugrvSpm2Lc52hHC8w@mail.gmail.com>
- <CALW65jYRaUHX7JBWbQa+y83_3KBStaMK1-_2Zj25v9isFKCLpQ@mail.gmail.com>
-In-Reply-To: <CALW65jYRaUHX7JBWbQa+y83_3KBStaMK1-_2Zj25v9isFKCLpQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 17:05:00 +0100
-Message-ID: <CACRpkdZW1oWx-gnRO7gBuOM9dO23r+iifQRm1-M8z4Ms8En9cw@mail.gmail.com>
-Subject: Re: [RFC net-next] net: dsa: rtl8366rb: support bridge offloading
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210225163320.71267-1-andriy.shevchenko@linux.intel.com>
+ <20210225163320.71267-2-andriy.shevchenko@linux.intel.com>
+ <CACRpkdZj4TqOoJmfDhL1MuZCT9quz+5Gj8C6ckZ1i6cYCq9SOA@mail.gmail.com>
+ <YD5VJMDC1TmIN/T8@smile.fi.intel.com> <20210302151430.GY2542@lahna.fi.intel.com>
+ <YD5X7XUrx9AQvaXP@smile.fi.intel.com>
+In-Reply-To: <YD5X7XUrx9AQvaXP@smile.fi.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 2 Mar 2021 17:07:55 +0100
+Message-ID: <CAMpxmJX5sKwuta_Ws-VLuA_95ji6xaSB-0ZoNtQ-dL5mAwQcpg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 4:58 AM DENG Qingfang <dqfext@gmail.com> wrote:
-> On Mon, Mar 1, 2021 at 9:48 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > With my minor changes:
-> > Tested-by: Linus Walleij <linus.walleij@linaro.org>
+On Tue, Mar 2, 2021 at 4:21 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> How about using a mutex lock in port_bridge_{join,leave} ?
-> In my opinion all functions that access multiple registers should be
-> synchronized.
+> On Tue, Mar 02, 2021 at 05:14:30PM +0200, Mika Westerberg wrote:
+> > On Tue, Mar 02, 2021 at 05:09:24PM +0200, Andy Shevchenko wrote:
+> > > On Tue, Mar 02, 2021 at 03:48:43PM +0100, Linus Walleij wrote:
+> > > > On Thu, Feb 25, 2021 at 5:33 PM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >
+> > > > > On some systems the ACPI tables has wrong pin number and instead of
+> > > > > having a relative one it provides an absolute one in the global GPIO
+> > > > > number space.
+> > > > >
+> > > > > Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk to cope with such cases.
+> > > > >
+> > > > > Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
+> > > > > Depends-on: 0ea683931adb ("gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip")
+> > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > >
+> > > > OH THE HORROR!
+> > > > However, we discussed it before. It is as it is.
+> > >
+> > > Unfortunately :-( (And recently it seems MS does something really "creative" on
+> > > ARM ACPI platform)
+> > >
+> > > > It's the right place to fix the problem, so:
+> > > > Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> > >
+> > > I am waiting for Mika, but if he keeps silent let's say to the end of the day,
+> > > I will submit it as is to the v5.12-rcX fixes.
+> >
+> > Sorry for the delay - I somehow missed this. Feel free to add my ACK too.
+>
+> Thanks, Mika!
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-That's one way, in some cases the framework (DSA) serialize
-the accesses so I don't know if that already happens on a
-higher level? Since it is accessed over a slow bus we should go
-for mutex in that case indeed.
+Hi Andy,
 
-Yours,
-Linus Walleij
+Do you want me to take these, or will you include them in your PR?
+
+Bart
