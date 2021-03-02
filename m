@@ -2,387 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FC432A18A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188E632A174
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577524AbhCBGXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:23:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44732 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1576136AbhCBEYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:24:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9FF02AED8;
-        Tue,  2 Mar 2021 04:03:27 +0000 (UTC)
-From:   Coly Li <colyli@suse.de>
-To:     linux-block@vger.kernel.org, axboe@kernel.dk,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com, neilb@suse.de
-Cc:     antlists@youngman.org.uk, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org,
-        Coly Li <colyli@suse.de>
-Subject: [RFC PATCH v1 6/6] badblocks: switch to the improved badblock handling code
-Date:   Tue,  2 Mar 2021 12:02:52 +0800
-Message-Id: <20210302040252.103720-7-colyli@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210302040252.103720-1-colyli@suse.de>
-References: <20210302040252.103720-1-colyli@suse.de>
+        id S1347810AbhCBGUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235886AbhCBEFb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 23:05:31 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A9EC06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 20:03:01 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d11so11239564plo.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 20:03:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=we+6muhRQ5Jd0vJuVJtRUZjPyXgZhip/qNhUDmq8kc0=;
+        b=wQGCMj/TOD3Jm9OJXIr7m4RyMOvhHQddHsfcM6T4whYeEHhi9G1+uhyGVrQ/Kt3Nl8
+         HTdhniJp1r3v9sBfHQkOusHKxCK6T+njNkihr8H+1QfsxwZ2YUPyJWkpTz7Psx544+17
+         swrWD/4gSaGkrJ0FZiWHSDav9IKf36FpgHeWyKXd8gVF2/u9cFHZInlIFeppnfaxzdoG
+         HoApJp8+7xEsCPCBRe8jspYJrhK+LxC+RrQSor3ANW9X65SXdm9aPhVXmKdQk3K3tct+
+         PouOyLpPbRvHISLErzzCjCJ4//rLjbkkgth1Ry2P/Oqcn8XBtSO7xhk5TBYssm0WBRx1
+         uTVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=we+6muhRQ5Jd0vJuVJtRUZjPyXgZhip/qNhUDmq8kc0=;
+        b=mnwCU5DiF3NwkjBt9iJW8ha37xLfU0Fmrk5BfWHEyk4iEq2uBDT0JwTRlXNZA3hN09
+         /S8JKTgwM2EuzAquoNmG/sjbYdop/S1KGx7ouNGxnwRW84ITx/qcy6y0/kFWWcoYOxJ7
+         xP/NcGFH3xDacuqYdAOywM/qoPu+KLwAEdQLjRPvb3mb7NoYHLkb7vTLEL8OWhZYuZpC
+         cPtCG1Shpn0NEKWBbMstjNnSPWCx0IecZ5Px3bte7Xx4d/uBd5lJHOR9i7ZdM0vY5eMC
+         cUmrPXMCCvgEnVQHoCov/uPNiAeLjoc7HzwdGlnxlTjkMjHnCkvr0cXxyxLpxil2dJsQ
+         hMXw==
+X-Gm-Message-State: AOAM5337MuuLD3OuKL7YcTDDSaEXtuI9xCPVVFgt4PRYzzXcm9gjUE3g
+        ikwxEkPPvi9gfCFDn8LIFkgNLA==
+X-Google-Smtp-Source: ABdhPJxuKVFvecRI3AMDHLr8sIeRCXCONYFtOdEpMyByy8BgkYUlETcfUtt/vsF0h2jNvhowd6KriA==
+X-Received: by 2002:a17:90b:3551:: with SMTP id lt17mr2270466pjb.89.1614657780744;
+        Mon, 01 Mar 2021 20:03:00 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id z8sm1058557pjd.0.2021.03.01.20.02.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Mar 2021 20:03:00 -0800 (PST)
+Date:   Tue, 2 Mar 2021 09:32:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH V8 0/4] dt: Add fdtoverlay rule and statically build
+ unittest
+Message-ID: <20210302040258.erg6mn4ykxvxhnqm@vireshk-i7>
+References: <cover.1613127681.git.viresh.kumar@linaro.org>
+ <20210301065625.rgo2xvr7ol2vycyf@vireshk-i7>
+ <31cbc900-fad2-4838-21d2-7204f1029a81@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31cbc900-fad2-4838-21d2-7204f1029a81@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch removes old code of badblocks_set(), badblocks_clear() and
-badblocks_check(), and make them as wrappers to call _badblocks_set(),
-_badblocks_clear() and _badblocks_check().
+On 01-03-21, 21:14, Frank Rowand wrote:
+> Hi Viresh,
+> 
+> On 3/1/21 12:56 AM, Viresh Kumar wrote:
+> > On 12-02-21, 16:48, Viresh Kumar wrote:
+> >> Hi,
+> >>
+> >> This patchset adds a generic rule for applying overlays using fdtoverlay
+> >> tool and then updates unittests to get built statically using the same.
+> >>
+> >> V7->V8:
+> >> - Patch 1 is new.
+> >> - Platforms need to use dtb-y += foo.dtb instead of overlay-y +=
+> >>   foo.dtb.
+> >> - Use multi_depend instead of .SECONDEXPANSION.
+> >> - Use dtb-y for unittest instead of overlay-y.
+> >> - Rename the commented dtb filess in unittest Makefile as .dtbo.
+> >> - Improved Makefile code (I am learning a lot every day :)
+> > 
+> > Ping!
+> > 
+> 
+> Please respin on 5.12-rc1, and pull in the change you said
+> you would make in response to my post v8 comment about the
+> v7 patches.
 
-By this change now the badblock handing switch to the improved algorithm
-in  _badblocks_set(), _badblocks_clear() and _badblocks_check().
+Yes, I will do that.
 
-This patch only contains the changes of old code deletion, new added
-code for the improved algorithms are in previous patches.
+I must have been more explicit about the Ping I believe. It was
+more for Masahiro and Rob to see if the kbuild stuff (which is
+relatively new) makes sense or not before I respin this..
 
-Signed-off-by: Coly Li <colyli@suse.de>
----
- block/badblocks.c | 310 +---------------------------------------------
- 1 file changed, 3 insertions(+), 307 deletions(-)
-
-diff --git a/block/badblocks.c b/block/badblocks.c
-index 304b91159a42..904c6ed0de6d 100644
---- a/block/badblocks.c
-+++ b/block/badblocks.c
-@@ -1386,75 +1386,7 @@ static int _badblocks_check(struct badblocks *bb, sector_t s, int sectors,
- int badblocks_check(struct badblocks *bb, sector_t s, int sectors,
- 			sector_t *first_bad, int *bad_sectors)
- {
--	int hi;
--	int lo;
--	u64 *p = bb->page;
--	int rv;
--	sector_t target = s + sectors;
--	unsigned seq;
--
--	if (bb->shift > 0) {
--		/* round the start down, and the end up */
--		s >>= bb->shift;
--		target += (1<<bb->shift) - 1;
--		target >>= bb->shift;
--		sectors = target - s;
--	}
--	/* 'target' is now the first block after the bad range */
--
--retry:
--	seq = read_seqbegin(&bb->lock);
--	lo = 0;
--	rv = 0;
--	hi = bb->count;
--
--	/* Binary search between lo and hi for 'target'
--	 * i.e. for the last range that starts before 'target'
--	 */
--	/* INVARIANT: ranges before 'lo' and at-or-after 'hi'
--	 * are known not to be the last range before target.
--	 * VARIANT: hi-lo is the number of possible
--	 * ranges, and decreases until it reaches 1
--	 */
--	while (hi - lo > 1) {
--		int mid = (lo + hi) / 2;
--		sector_t a = BB_OFFSET(p[mid]);
--
--		if (a < target)
--			/* This could still be the one, earlier ranges
--			 * could not.
--			 */
--			lo = mid;
--		else
--			/* This and later ranges are definitely out. */
--			hi = mid;
--	}
--	/* 'lo' might be the last that started before target, but 'hi' isn't */
--	if (hi > lo) {
--		/* need to check all range that end after 's' to see if
--		 * any are unacknowledged.
--		 */
--		while (lo >= 0 &&
--		       BB_OFFSET(p[lo]) + BB_LEN(p[lo]) > s) {
--			if (BB_OFFSET(p[lo]) < target) {
--				/* starts before the end, and finishes after
--				 * the start, so they must overlap
--				 */
--				if (rv != -1 && BB_ACK(p[lo]))
--					rv = 1;
--				else
--					rv = -1;
--				*first_bad = BB_OFFSET(p[lo]);
--				*bad_sectors = BB_LEN(p[lo]);
--			}
--			lo--;
--		}
--	}
--
--	if (read_seqretry(&bb->lock, seq))
--		goto retry;
--
--	return rv;
-+	return _badblocks_check(bb, s, sectors, first_bad, bad_sectors);
- }
- EXPORT_SYMBOL_GPL(badblocks_check);
- 
-@@ -1476,154 +1408,7 @@ EXPORT_SYMBOL_GPL(badblocks_check);
- int badblocks_set(struct badblocks *bb, sector_t s, int sectors,
- 			int acknowledged)
- {
--	u64 *p;
--	int lo, hi;
--	int rv = 0;
--	unsigned long flags;
--
--	if (bb->shift < 0)
--		/* badblocks are disabled */
--		return 1;
--
--	if (bb->shift) {
--		/* round the start down, and the end up */
--		sector_t next = s + sectors;
--
--		s >>= bb->shift;
--		next += (1<<bb->shift) - 1;
--		next >>= bb->shift;
--		sectors = next - s;
--	}
--
--	write_seqlock_irqsave(&bb->lock, flags);
--
--	p = bb->page;
--	lo = 0;
--	hi = bb->count;
--	/* Find the last range that starts at-or-before 's' */
--	while (hi - lo > 1) {
--		int mid = (lo + hi) / 2;
--		sector_t a = BB_OFFSET(p[mid]);
--
--		if (a <= s)
--			lo = mid;
--		else
--			hi = mid;
--	}
--	if (hi > lo && BB_OFFSET(p[lo]) > s)
--		hi = lo;
--
--	if (hi > lo) {
--		/* we found a range that might merge with the start
--		 * of our new range
--		 */
--		sector_t a = BB_OFFSET(p[lo]);
--		sector_t e = a + BB_LEN(p[lo]);
--		int ack = BB_ACK(p[lo]);
--
--		if (e >= s) {
--			/* Yes, we can merge with a previous range */
--			if (s == a && s + sectors >= e)
--				/* new range covers old */
--				ack = acknowledged;
--			else
--				ack = ack && acknowledged;
--
--			if (e < s + sectors)
--				e = s + sectors;
--			if (e - a <= BB_MAX_LEN) {
--				p[lo] = BB_MAKE(a, e-a, ack);
--				s = e;
--			} else {
--				/* does not all fit in one range,
--				 * make p[lo] maximal
--				 */
--				if (BB_LEN(p[lo]) != BB_MAX_LEN)
--					p[lo] = BB_MAKE(a, BB_MAX_LEN, ack);
--				s = a + BB_MAX_LEN;
--			}
--			sectors = e - s;
--		}
--	}
--	if (sectors && hi < bb->count) {
--		/* 'hi' points to the first range that starts after 's'.
--		 * Maybe we can merge with the start of that range
--		 */
--		sector_t a = BB_OFFSET(p[hi]);
--		sector_t e = a + BB_LEN(p[hi]);
--		int ack = BB_ACK(p[hi]);
--
--		if (a <= s + sectors) {
--			/* merging is possible */
--			if (e <= s + sectors) {
--				/* full overlap */
--				e = s + sectors;
--				ack = acknowledged;
--			} else
--				ack = ack && acknowledged;
--
--			a = s;
--			if (e - a <= BB_MAX_LEN) {
--				p[hi] = BB_MAKE(a, e-a, ack);
--				s = e;
--			} else {
--				p[hi] = BB_MAKE(a, BB_MAX_LEN, ack);
--				s = a + BB_MAX_LEN;
--			}
--			sectors = e - s;
--			lo = hi;
--			hi++;
--		}
--	}
--	if (sectors == 0 && hi < bb->count) {
--		/* we might be able to combine lo and hi */
--		/* Note: 's' is at the end of 'lo' */
--		sector_t a = BB_OFFSET(p[hi]);
--		int lolen = BB_LEN(p[lo]);
--		int hilen = BB_LEN(p[hi]);
--		int newlen = lolen + hilen - (s - a);
--
--		if (s >= a && newlen < BB_MAX_LEN) {
--			/* yes, we can combine them */
--			int ack = BB_ACK(p[lo]) && BB_ACK(p[hi]);
--
--			p[lo] = BB_MAKE(BB_OFFSET(p[lo]), newlen, ack);
--			memmove(p + hi, p + hi + 1,
--				(bb->count - hi - 1) * 8);
--			bb->count--;
--		}
--	}
--	while (sectors) {
--		/* didn't merge (it all).
--		 * Need to add a range just before 'hi'
--		 */
--		if (bb->count >= MAX_BADBLOCKS) {
--			/* No room for more */
--			rv = 1;
--			break;
--		} else {
--			int this_sectors = sectors;
--
--			memmove(p + hi + 1, p + hi,
--				(bb->count - hi) * 8);
--			bb->count++;
--
--			if (this_sectors > BB_MAX_LEN)
--				this_sectors = BB_MAX_LEN;
--			p[hi] = BB_MAKE(s, this_sectors, acknowledged);
--			sectors -= this_sectors;
--			s += this_sectors;
--		}
--	}
--
--	bb->changed = 1;
--	if (!acknowledged)
--		bb->unacked_exist = 1;
--	else
--		badblocks_update_acked(bb);
--	write_sequnlock_irqrestore(&bb->lock, flags);
--
--	return rv;
-+	return _badblocks_set(bb, s, sectors, acknowledged);
- }
- EXPORT_SYMBOL_GPL(badblocks_set);
- 
-@@ -1643,96 +1428,7 @@ EXPORT_SYMBOL_GPL(badblocks_set);
-  */
- int badblocks_clear(struct badblocks *bb, sector_t s, int sectors)
- {
--	u64 *p;
--	int lo, hi;
--	sector_t target = s + sectors;
--	int rv = 0;
--
--	if (bb->shift > 0) {
--		/* When clearing we round the start up and the end down.
--		 * This should not matter as the shift should align with
--		 * the block size and no rounding should ever be needed.
--		 * However it is better the think a block is bad when it
--		 * isn't than to think a block is not bad when it is.
--		 */
--		s += (1<<bb->shift) - 1;
--		s >>= bb->shift;
--		target >>= bb->shift;
--		sectors = target - s;
--	}
--
--	write_seqlock_irq(&bb->lock);
--
--	p = bb->page;
--	lo = 0;
--	hi = bb->count;
--	/* Find the last range that starts before 'target' */
--	while (hi - lo > 1) {
--		int mid = (lo + hi) / 2;
--		sector_t a = BB_OFFSET(p[mid]);
--
--		if (a < target)
--			lo = mid;
--		else
--			hi = mid;
--	}
--	if (hi > lo) {
--		/* p[lo] is the last range that could overlap the
--		 * current range.  Earlier ranges could also overlap,
--		 * but only this one can overlap the end of the range.
--		 */
--		if ((BB_OFFSET(p[lo]) + BB_LEN(p[lo]) > target) &&
--		    (BB_OFFSET(p[lo]) < target)) {
--			/* Partial overlap, leave the tail of this range */
--			int ack = BB_ACK(p[lo]);
--			sector_t a = BB_OFFSET(p[lo]);
--			sector_t end = a + BB_LEN(p[lo]);
--
--			if (a < s) {
--				/* we need to split this range */
--				if (bb->count >= MAX_BADBLOCKS) {
--					rv = -ENOSPC;
--					goto out;
--				}
--				memmove(p+lo+1, p+lo, (bb->count - lo) * 8);
--				bb->count++;
--				p[lo] = BB_MAKE(a, s-a, ack);
--				lo++;
--			}
--			p[lo] = BB_MAKE(target, end - target, ack);
--			/* there is no longer an overlap */
--			hi = lo;
--			lo--;
--		}
--		while (lo >= 0 &&
--		       (BB_OFFSET(p[lo]) + BB_LEN(p[lo]) > s) &&
--		       (BB_OFFSET(p[lo]) < target)) {
--			/* This range does overlap */
--			if (BB_OFFSET(p[lo]) < s) {
--				/* Keep the early parts of this range. */
--				int ack = BB_ACK(p[lo]);
--				sector_t start = BB_OFFSET(p[lo]);
--
--				p[lo] = BB_MAKE(start, s - start, ack);
--				/* now low doesn't overlap, so.. */
--				break;
--			}
--			lo--;
--		}
--		/* 'lo' is strictly before, 'hi' is strictly after,
--		 * anything between needs to be discarded
--		 */
--		if (hi - lo > 1) {
--			memmove(p+lo+1, p+hi, (bb->count - hi) * 8);
--			bb->count -= (hi - lo - 1);
--		}
--	}
--
--	badblocks_update_acked(bb);
--	bb->changed = 1;
--out:
--	write_sequnlock_irq(&bb->lock);
--	return rv;
-+	return _badblocks_clear(bb, s, sectors);
- }
- EXPORT_SYMBOL_GPL(badblocks_clear);
- 
 -- 
-2.26.2
-
+viresh
