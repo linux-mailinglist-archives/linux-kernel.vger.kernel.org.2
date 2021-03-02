@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2169A32A984
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFB732A98F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580937AbhCBScQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:32:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44188 "EHLO mail.kernel.org"
+        id S1581043AbhCBSdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:33:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448845AbhCBPnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:43:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4338E64F5A;
-        Tue,  2 Mar 2021 11:57:05 +0000 (UTC)
+        id S1351190AbhCBPr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:47:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F9D764F60;
+        Tue,  2 Mar 2021 11:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686226;
-        bh=ttBSAstuxahvrv6pryYeHwkR2zP2IIvHIkOm3LxkB/Y=;
+        s=k20201202; t=1614686233;
+        bh=YzbiNQhdh942VLjsdediUsjqpUuko2qfgVUPR6Cn+aM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EWvWZ0zehZnFwlm1SuPprezHBsNpcwmzCOvBdSRtaniTLtfqhL+SoJcLfMuvjzOxZ
-         UsEkA8Wxf2SWO5St91CBE7pS5yJ6pDKrEyT0SIvA99fo6YeoiwZa5L6yxukR1J+dsg
-         Ja+VSuLSbpkDIHHZ0BL3yTamfHXIAZYWJFcRhPnKSVuKuN0ju80E93E7JooZew3H3F
-         +gvoy4bXJFBq63wPG7N+LVks4UArhn7MVbJInzyE1lxSupNJS+waLyqfuFMWYanRbL
-         PaHfVE+coev1yEL9FEacJOkQ6v7K91A1S8MkQckL3g/N0N2siqV5IMkn0lBCxj4x+R
-         ecZKAb65FBs8g==
+        b=HNFTxbBwoO6gwDasHbmzw8rCob/OqC7Pyra1hJRRnWM8B3fOR4VojbYvmwqJJI7L1
+         xG4evv1nYqwpA5AsMkSMpSIlXywONeYs1UbZOG2nI8/5xjWagaqa5JvnW8ECtc0zpa
+         IZkJ6xsD1ALKPhW+3DgnrtQDoqn9lbMWSeWWe+zr/4TKDNRxJp5Y58aWs2M1AZPr7R
+         DAmeFhsOi4iOqgmFfkeCx5CdjzooWlxTq9bDhdx09S1ZznXKl4pfr8V6eCeF+2oPxU
+         4IBCmbM/rV680xxdDQPkH6s2s4VnZBrPtSNDnRV39G2lhPOtwwRcGLn2zGxHufVKTr
+         JNQ14e8eCk3vA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 15/47] spi: stm32: make spurious and overrun interrupts visible
-Date:   Tue,  2 Mar 2021 06:56:14 -0500
-Message-Id: <20210302115646.62291-15-sashal@kernel.org>
+Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Tj <ml.linux@elloe.vision>, Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.10 21/47] iommu/amd: Fix performance counter initialization
+Date:   Tue,  2 Mar 2021 06:56:20 -0500
+Message-Id: <20210302115646.62291-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
 References: <20210302115646.62291-1-sashal@kernel.org>
@@ -43,58 +43,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-[ Upstream commit c64e7efe46b7de21937ef4b3594d9b1fc74f07df ]
+[ Upstream commit 6778ff5b21bd8e78c8bd547fd66437cf2657fd9b ]
 
-We do not expect to receive spurious interrupts so rise a warning
-if it happens.
+Certain AMD platforms enable power gating feature for IOMMU PMC,
+which prevents the IOMMU driver from updating the counter while
+trying to validate the PMC functionality in the init_iommu_perf_ctr().
+This results in disabling PMC support and the following error message:
 
-RX overrun is an error condition that signals a corrupted RX
-stream both in dma and in irq modes. Report the error and
-abort the transfer in either cases.
+    "AMD-Vi: Unable to read/write to IOMMU perf counter"
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1612551572-495-9-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+To workaround this issue, disable power gating temporarily by programming
+the counter source to non-zero value while validating the counter,
+and restore the prior state afterward.
+
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Tested-by: Tj (Elloe Linux) <ml.linux@elloe.vision>
+Link: https://lore.kernel.org/r/20210208122712.5048-1-suravee.suthikulpanit@amd.com
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ drivers/iommu/amd/init.c | 45 ++++++++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 6017209c6d2f..4bcdad084801 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -928,8 +928,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 		mask |= STM32H7_SPI_SR_RXP;
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index c842545368fd..3c215f0a6052 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -12,6 +12,7 @@
+ #include <linux/acpi.h>
+ #include <linux/list.h>
+ #include <linux/bitmap.h>
++#include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/syscore_ops.h>
+ #include <linux/interrupt.h>
+@@ -254,6 +255,8 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
+ static int amd_iommu_enable_interrupts(void);
+ static int __init iommu_go_to_state(enum iommu_init_state state);
+ static void init_device_table_dma(void);
++static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
++				u8 fxn, u64 *value, bool is_write);
  
- 	if (!(sr & mask)) {
--		dev_dbg(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
--			sr, ier);
-+		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
-+			 sr, ier);
- 		spin_unlock_irqrestore(&spi->lock, flags);
- 		return IRQ_NONE;
- 	}
-@@ -956,15 +956,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	}
+ static bool amd_iommu_pre_enabled = true;
  
- 	if (sr & STM32H7_SPI_SR_OVR) {
--		dev_warn(spi->dev, "Overrun: received value discarded\n");
--		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
--			stm32h7_spi_read_rxfifo(spi, false);
--		/*
--		 * If overrun is detected while using DMA, it means that
--		 * something went wrong, so stop the current transfer
--		 */
--		if (spi->cur_usedma)
--			end = true;
-+		dev_err(spi->dev, "Overrun: RX data lost\n");
-+		end = true;
- 	}
+@@ -1717,13 +1720,11 @@ static int __init init_iommu_all(struct acpi_table_header *table)
+ 	return 0;
+ }
  
- 	if (sr & STM32H7_SPI_SR_EOT) {
+-static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
+-				u8 fxn, u64 *value, bool is_write);
+-
+-static void init_iommu_perf_ctr(struct amd_iommu *iommu)
++static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
+ {
++	int retry;
+ 	struct pci_dev *pdev = iommu->dev;
+-	u64 val = 0xabcd, val2 = 0, save_reg = 0;
++	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
+ 
+ 	if (!iommu_feature(iommu, FEATURE_PC))
+ 		return;
+@@ -1731,17 +1732,39 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
+ 	amd_iommu_pc_present = true;
+ 
+ 	/* save the value to restore, if writable */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
++	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
+ 		goto pc_false;
+ 
+-	/* Check if the performance counters can be written to */
+-	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
+-	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
+-	    (val != val2))
++	/*
++	 * Disable power gating by programing the performance counter
++	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
++	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
++	 * which never get incremented during this init phase.
++	 * (Note: The event is also deprecated.)
++	 */
++	val = 20;
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
+ 		goto pc_false;
+ 
++	/* Check if the performance counters can be written to */
++	val = 0xabcd;
++	for (retry = 5; retry; retry--) {
++		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
++		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
++		    val2)
++			break;
++
++		/* Wait about 20 msec for power gating to disable and retry. */
++		msleep(20);
++	}
++
+ 	/* restore */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
++	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
++		goto pc_false;
++
++	if (val != val2)
+ 		goto pc_false;
+ 
+ 	pci_info(pdev, "IOMMU performance counters supported\n");
 -- 
 2.30.1
 
