@@ -2,119 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8820332AE06
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7691832AE0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360381AbhCBWTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:19:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
+        id S2360424AbhCBWUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:20:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383415AbhCBVDY (ORCPT
+        with ESMTP id S1381629AbhCBVKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 16:03:24 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB51C061226
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 12:59:09 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id n16so16568515lfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 12:59:09 -0800 (PST)
+        Tue, 2 Mar 2021 16:10:50 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D98C0698DF
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:02:59 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id e3so10632620pfj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:02:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Go8ACEa3guLKAG5WpAxfwUSeU5KTsiXL4eCKtU7xHX4=;
-        b=SqlnzmNR7VqUbnSjeSjQSy+fl81/apOARjyT3yBJGB24YYxlUWNGDtM6n7kLsyAhcF
-         zVkcSyyAbeDsjO3jb8HtkeMapedp7Zvn+G4r3zmM7bSGAXzCKT5SgfMt2a7heWOrFIhJ
-         cnSFr/RWo5i80ec4/pvUV7cnPnclj0GPfvXrF8PoFPO+bXFt0TjVeC0fd6Uy9NxinRH4
-         1gamNl324XfQf99Xj8c4bMOVR1Aep5aNwsWcFzbbL1MB/zMha8Ct7rj34jB7VwLXBhor
-         cqRThsL7ZbgWsrkXwzwm5cbYvIwU2ns+PEzm85AQuooWlzr7qTwrjCzJZrkD+S5Nh7XQ
-         v0yw==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=CB9dY4Lo/FVVsXfU2ohXWUZuVD42ULjyGl9o+tMY6Y8=;
+        b=kEn/jTaFtVpFmfCrT7bL4yxMKEL+7/DDc3lsEo5QR+j1n1aCc8f0qujpo0FciT082V
+         cmrgOfKTnFLcR9EFh9f0nrroavyJTTeufrRwJidYhJRhmEpKuV78c4BdGQPbXBSC5eK4
+         Y5RDspp1l2iVsMqFgSUW7tjeTU0ldBS1jRmNgi1e/PfVqXmMqr+gxEjIGYwukVqTkwEX
+         C+2R6FhS9KFt4p/FRw1GL2lgjAdauN/ww9vSNVVgN6/MReGuo0HKLQMeYSyVm6upjzw1
+         RiLpJxexbc3CbRSRTU9sAjYah8W3YHb9iheXKfYij/OUvu887kndLu+gFVqv8ljjM/WR
+         R07g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Go8ACEa3guLKAG5WpAxfwUSeU5KTsiXL4eCKtU7xHX4=;
-        b=XvUxhP0ymiZHDz0PEF4707Y3qbA1YoObjFUMNuSJiWpDBfiumHWxrxRWIAkcpZJPsd
-         8qP3mV9/FyTvEOu6ma3y8I/LTJSyVu6g1W6kBo0FtzeFGh0kpyAQ0UpHsEc2apywuVW6
-         0iqU3vVoVmToQmVwitsEv2finMozmW2JrYY8+Y26dMtHAlCFMmexit3GHk2YbgfRPfhv
-         TrxmTDXuFUIrVIwso26IWztjizK32Iy1UfuBTssej6LcM/4BuB4atKETIF4/T4FdeiXt
-         yEhq6/MBY94aSAzCEofCnwr0OTmpTNFot9COEi9X8S6H33Xsd37GGZzr2VmVHWRpGVsW
-         u6Pg==
-X-Gm-Message-State: AOAM532EZSfDr3virMdGTMOu6v4knP3wMLZwtlOSfqtc8hLoZu6c3oJF
-        U+SySfuhax5e/lZ5xSEftCM=
-X-Google-Smtp-Source: ABdhPJzfeK2YqHMCkmkNQFJKUVQVYpvyEV2d9qs1KFZ/bgksfncfxoLAF7bWK7z4qX2X3pISux4v8Q==
-X-Received: by 2002:a05:6512:70:: with SMTP id i16mr10210098lfo.508.1614718747818;
-        Tue, 02 Mar 2021 12:59:07 -0800 (PST)
-Received: from rikard (h-98-128-229-129.NA.cust.bahnhof.se. [98.128.229.129])
-        by smtp.gmail.com with ESMTPSA id d1sm2754464lfq.156.2021.03.02.12.59.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 12:59:07 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
-Date:   Tue, 2 Mar 2021 21:59:03 +0100
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH v1 1/5] mfd: intel_quark_i2c_gpio: revert "Constify
- static struct resources"
-Message-ID: <YD6nF1oJVMeCzn6R@rikard>
-References: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=CB9dY4Lo/FVVsXfU2ohXWUZuVD42ULjyGl9o+tMY6Y8=;
+        b=iU9xlkqhTcKuVwRiA51SDwkByz/tiQj7ezGcasKKeOd46hLV56l8dqbmzWvDYPGes4
+         TUQ+l6TYpGewA5p9E7XfrR7vpFas69+HMNjqIBqaFiheIBKL4ZvLRVD0PrqJwLygd8kL
+         Z4bXoM8dWv6Zcmi9WklN5JiolC2cTQhZqvoES80GZD9Dv/9jmjXg3jxD0C3VY+DepoLc
+         IWw9psAclakCJ7jvCyxYiKP9lkSqE3icMAEZcOoutl7LK3rX3uQqcQ5/MkzsrOwRnqka
+         zTMM4oGkqbvrmVwv+wN1tuSswfXFdR1bOAfU2RD8Cb1BbQl6rHpxnAMAadcjtIzmBRdi
+         V2KQ==
+X-Gm-Message-State: AOAM531EWFvnCZ7bl9jZ7T5ovAwlikbsO000zwylDuenUw2WpXSS11Wz
+        IkxA3Z5XCBGKdEUm14e9yMi4uA==
+X-Google-Smtp-Source: ABdhPJygZuY9KaqkU4K9gLXIZ9wSlUe7qlBkMj13Bu2eXTZp5/3vDnvFlNMTXcuIUbq2VLW6J4hP5w==
+X-Received: by 2002:a63:fb11:: with SMTP id o17mr19763253pgh.282.1614718979407;
+        Tue, 02 Mar 2021 13:02:59 -0800 (PST)
+Received: from ?IPv6:2600:1010:b02b:fd90:e1d3:88b3:9a99:4873? ([2600:1010:b02b:fd90:e1d3:88b3:9a99:4873])
+        by smtp.gmail.com with ESMTPSA id c29sm20427129pgb.58.2021.03.02.13.02.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 13:02:58 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Why do kprobes and uprobes singlestep?
+Date:   Tue, 2 Mar 2021 13:02:57 -0800
+Message-Id: <EECBE373-7CA1-4ED8-9F03-406BBED607FD@amacapital.net>
+References: <CAADnVQ+czV6u4CM-A+o5U+WhApkocunZXiCMJBB_Zbs0mvNSwQ@mail.gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+In-Reply-To: <CAADnVQ+czV6u4CM-A+o5U+WhApkocunZXiCMJBB_Zbs0mvNSwQ@mail.gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 03:56:16PM +0200, Andy Shevchenko wrote:
-> The structures are used as place holders, so they are modified at run-time.
-> Obviously they may not be constants.
-> 
->   BUG: unable to handle page fault for address: d0643220
->   ...
->   CPU: 0 PID: 110 Comm: modprobe Not tainted 5.11.0+ #1
->   Hardware name: Intel Corp. QUARK/GalileoGen2, BIOS 0x01000200 01/01/2014
->   EIP: intel_quark_mfd_probe+0x93/0x1c0 [intel_quark_i2c_gpio]
-> 
-> This partially reverts the commit c4a164f41554d2899bed94bdcc499263f41787b4.
-> 
-> While at it, add a comment to avoid similar changes in the future.
-> 
-> Fixes: c4a164f41554 ("mfd: Constify static struct resources")
-> Cc: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/mfd/intel_quark_i2c_gpio.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-> index 55a9e017edee..124c0ee84169 100644
-> --- a/drivers/mfd/intel_quark_i2c_gpio.c
-> +++ b/drivers/mfd/intel_quark_i2c_gpio.c
-> @@ -72,7 +72,8 @@ static const struct dmi_system_id dmi_platform_info[] = {
->  	{}
->  };
->  
-> -static const struct resource intel_quark_i2c_res[] = {
-> +/* This is used as a place holder and will be modified at run-time */
-> +static struct resource intel_quark_i2c_res[] = {
->  	[INTEL_QUARK_IORES_MEM] = {
->  		.flags = IORESOURCE_MEM,
->  	},
-> @@ -85,7 +86,8 @@ static struct mfd_cell_acpi_match intel_quark_acpi_match_i2c = {
->  	.adr = MFD_ACPI_MATCH_I2C,
->  };
->  
-> -static const struct resource intel_quark_gpio_res[] = {
-> +/* This is used as a place holder and will be modified at run-time */
-> +static struct resource intel_quark_gpio_res[] = {
->  	[INTEL_QUARK_IORES_MEM] = {
->  		.flags = IORESOURCE_MEM,
->  	},
-> -- 
-> 2.30.1
-> 
 
-Sorry about that :(
+> On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gmail.=
+com> wrote:
+>=20
+> =EF=BB=BFOn Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.org>=
+ wrote:
+>>=20
+>> Is there something like a uprobe test suite?  How maintained /
+>> actively used is uprobe?
+>=20
+> uprobe+bpf is heavily used in production.
+> selftests/bpf has only one test for it though.
+>=20
+> Why are you asking?
 
-Reviewed-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Because the integration with the x86 entry code is a mess, and I want to kno=
+w whether to mark it BROKEN or how to make sure the any cleanups actually wo=
+rk.=
