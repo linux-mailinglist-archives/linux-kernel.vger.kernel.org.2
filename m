@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CFE32A798
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAED32A7CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839371AbhCBQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:17:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
+        id S1839669AbhCBQho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:37:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1447618AbhCBNmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:42:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D93664F91;
-        Tue,  2 Mar 2021 11:58:15 +0000 (UTC)
+        id S1448132AbhCBORX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:17:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2269C64FB7;
+        Tue,  2 Mar 2021 11:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686296;
-        bh=0YgUISATPaoeQiXIOeaqI3ERm1eWdGLGjPdhsD+llEY=;
+        s=k20201202; t=1614686355;
+        bh=Z9kBah8MI5Mx+Hiq+9csFyDvsgpcS8YcRzKuTgTBzc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3x31FwDjgyQInEes0zuQanzbdNAC/lgt7ik002TnAWvBqTZAeiRojuYpDabSuQzR
-         zBdHv9I30AwZ3EjBVOPBodUT0W7a96hytgTjOpHIKQ0dSLKOl3WTynJCALj9h11xvo
-         zsL/MBHywHBircEHJN5hTrXQwWmerhmVcjNejn+NCN4wTXDkJp43sHCMrxn2GyHfs/
-         FBieC8FXWOcWwvCtX8XKJQy51y+mAtV21i1Y5D5yr+pcWf91S/WF77sA/cJyu0Aznq
-         tOMh0KY/kXPYyzp/PrSoJJzUm8VNGZudBMRjINogRYQrvUk25phTAEiP3rQIsCJYW4
-         ebfcCoQhYD7kw==
+        b=JktUIdjMo8cv/u7d7y55okYQn6eERnokpW/FG5pPKO4Lj3i5PjoQYMIC29Eijf+NT
+         +BuJewCtO2otxyo5qOvVtl2RzDa70DFGiEsZZEEbEMDG/FgphNW9hverPd92Zc8AiY
+         QNpWo2yJ0cUayFROjuNIo/adp7Zl8L/raJg8e+mg2GwJyDdud/YUShyu0kuloYa+Ny
+         jQkDSTE0QTIysKbT7qgo+2uzAWxlzyK32bdAqsNU7lzg0IuhoDs2RbSIUe92aLz2ai
+         trQTekxofj7OEdjeulzS1Kor7jPSuhCyh+0vidRAD4egCQZRYj8QZytwo6gpuRXqH6
+         RTQpitBYiMhIg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
+Cc:     Aswath Govindraju <a-govindraju@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 20/33] x86, build: use objtool mcount
-Date:   Tue,  2 Mar 2021 06:57:36 -0500
-Message-Id: <20210302115749.62653-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 09/13] misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
+Date:   Tue,  2 Mar 2021 06:58:59 -0500
+Message-Id: <20210302115903.63458-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302115749.62653-1-sashal@kernel.org>
-References: <20210302115749.62653-1-sashal@kernel.org>
+In-Reply-To: <20210302115903.63458-1-sashal@kernel.org>
+References: <20210302115903.63458-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,33 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sami Tolvanen <samitolvanen@google.com>
+From: Aswath Govindraju <a-govindraju@ti.com>
 
-[ Upstream commit 6dafca97803309c3cb5148d449bfa711e41ddef2 ]
+[ Upstream commit f6f1f8e6e3eea25f539105d48166e91f0ab46dd1 ]
 
-Select HAVE_OBJTOOL_MCOUNT if STACK_VALIDATION is selected to use
-objtool to generate __mcount_loc sections for dynamic ftrace with
-Clang and gcc <5 (later versions of gcc use -mrecord-mcount).
+A dummy zero bit is sent preceding the data during a read transfer by the
+Microchip 93LC46B eeprom (section 2.7 of[1]). This results in right shift
+of data during a read. In order to ignore this bit a quirk can be added to
+send an extra zero bit after the read address.
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Add a quirk to ignore the zero bit sent before data by adding a zero bit
+after the read address.
+
+[1] - https://www.mouser.com/datasheet/2/268/20001749K-277859.pdf
+
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Link: https://lore.kernel.org/r/20210105105817.17644-3-a-govindraju@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/eeprom/eeprom_93xx46.c | 15 +++++++++++++++
+ include/linux/eeprom_93xx46.h       |  2 ++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8ef85139553f..8523579feced 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -154,6 +154,7 @@ config X86
- 	select HAVE_CONTEXT_TRACKING		if X86_64
- 	select HAVE_COPY_THREAD_TLS
- 	select HAVE_C_RECORDMCOUNT
-+	select HAVE_OBJTOOL_MCOUNT		if STACK_VALIDATION
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
+diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+index 38766968bfa2..0bcb1864eb5d 100644
+--- a/drivers/misc/eeprom/eeprom_93xx46.c
++++ b/drivers/misc/eeprom/eeprom_93xx46.c
+@@ -38,6 +38,10 @@ static const struct eeprom_93xx46_devtype_data atmel_at93c46d_data = {
+ 		  EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH,
+ };
+ 
++static const struct eeprom_93xx46_devtype_data microchip_93lc46b_data = {
++	.quirks = EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE,
++};
++
+ struct eeprom_93xx46_dev {
+ 	struct spi_device *spi;
+ 	struct eeprom_93xx46_platform_data *pdata;
+@@ -58,6 +62,11 @@ static inline bool has_quirk_instruction_length(struct eeprom_93xx46_dev *edev)
+ 	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH;
+ }
+ 
++static inline bool has_quirk_extra_read_cycle(struct eeprom_93xx46_dev *edev)
++{
++	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE;
++}
++
+ static int eeprom_93xx46_read(void *priv, unsigned int off,
+ 			      void *val, size_t count)
+ {
+@@ -99,6 +108,11 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
+ 		dev_dbg(&edev->spi->dev, "read cmd 0x%x, %d Hz\n",
+ 			cmd_addr, edev->spi->max_speed_hz);
+ 
++		if (has_quirk_extra_read_cycle(edev)) {
++			cmd_addr <<= 1;
++			bits += 1;
++		}
++
+ 		spi_message_init(&m);
+ 
+ 		t[0].tx_buf = (char *)&cmd_addr;
+@@ -366,6 +380,7 @@ static void select_deassert(void *context)
+ static const struct of_device_id eeprom_93xx46_of_table[] = {
+ 	{ .compatible = "eeprom-93xx46", },
+ 	{ .compatible = "atmel,at93c46d", .data = &atmel_at93c46d_data, },
++	{ .compatible = "microchip,93lc46b", .data = &microchip_93lc46b_data, },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
+diff --git a/include/linux/eeprom_93xx46.h b/include/linux/eeprom_93xx46.h
+index eec7928ff8fe..99580c22f91a 100644
+--- a/include/linux/eeprom_93xx46.h
++++ b/include/linux/eeprom_93xx46.h
+@@ -16,6 +16,8 @@ struct eeprom_93xx46_platform_data {
+ #define EEPROM_93XX46_QUIRK_SINGLE_WORD_READ		(1 << 0)
+ /* Instructions such as EWEN are (addrlen + 2) in length. */
+ #define EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH		(1 << 1)
++/* Add extra cycle after address during a read */
++#define EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE		BIT(2)
+ 
+ 	/*
+ 	 * optional hooks to control additional logic
 -- 
 2.30.1
 
