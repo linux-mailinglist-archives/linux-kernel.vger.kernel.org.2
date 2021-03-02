@@ -2,156 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE4832A914
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3669F32A967
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347507AbhCBSIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
+        id S1580886AbhCBSWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:22:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344087AbhCBP2W (ORCPT
+        with ESMTP id S1578856AbhCBP2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:28:22 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A69C061A2B;
-        Tue,  2 Mar 2021 06:56:54 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id i10so4825393pfk.4;
-        Tue, 02 Mar 2021 06:56:54 -0800 (PST)
+        Tue, 2 Mar 2021 10:28:03 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1512C061A2D
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:57:13 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 21so12605478oiq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 06:57:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U6T9PbU/F4qKp+N/YQtkVMfFVe3qnYSRW1k8rGsnvnk=;
-        b=BBmSnXXr+94I6o1ekJr9V+ADvzDVATCFa7BccMr9FAJhc0gsyNi5pLeemmgdQhFhfL
-         G9Mso1M/4bzUIVzexYT4ggJhMej38VIoGil1Z4SnggW/LKRm3OKV88h9RKKOh5p5XA5O
-         15quSskjfkQTAlyI23i8U7rTHirlIoRTfyHu7ICnbuk7HM83LI1wZX/A7EB0E2imd2iz
-         xF1BKS8jaXgWQyxjgf6YgnoiNuZP93gDZhF0xpDURqMZulbVP9RkSeV+hYme0zfuYbLo
-         qAF5kB1a3JMgNlJyYknLMlLknaZZX9TduHtqiGBBNyn8KNgdpoQ/dmniWSptZtW5/VNM
-         am6w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kmUWdxYWY4JnxgM68Ep5fyjuN1K6LUQgUumR1JHhFjM=;
+        b=ucOUGXgcAKZ8z8MoWdcXzhM1S9Akea7eRUv41rR9DdvWJtN77xqeADIfnnZ0xNl5sz
+         3tm7ONDrz/dAAFAzucZm0ba211M6sE3b3XvvbsrYllCMPwNVsiG/4z16LwN2XyemUrzZ
+         03gngD7beCxhGjEpSDqn7mQB2D3gpWmn9j60jl4vV1WA8iLp9jkUHyTRKq5jNptyEbAW
+         ZOv8gdrbIJZXIcJ7pvS+ahd7XDS355kpmmG+ampCHPCm/ejY6FdXxlr4zNyqSV68CcD/
+         Rxq5ooblk+N/ejzdmBv6LLrVdvhRI3tERs3EFe+idAMXqt2XJ3j4CHcf9b3GBf6MbW34
+         UR4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U6T9PbU/F4qKp+N/YQtkVMfFVe3qnYSRW1k8rGsnvnk=;
-        b=W3YWnCH501pDu4+z9L8NDRWe0j3Z3tjOU1mZMpTL5KvV3j8Wh+LJkg1GgT/2M1yQ9m
-         SX31WuKf1dsXlsVDPdgMKRf3RI8+KadD3sw5pTHuE/wu9U7soz2J7N3N9Gh8kBjGs40f
-         YLhLrMrCikD7GRY/dUUCQ0+fTrAH2itLKo5sHnmF0rTk5Oy6h/jdACxJC3Db3pLkPsZs
-         97c9oVuv2MIvms5qKQ+NwYZhbwyK9xvcKku0xpUOH5+urJoDjNyYa4ajjffssGEYGRcy
-         t15szaBQPNV8iWwzhKdDoo5GcHQBj9CMh2HxIF3h9vx8cMvD9KC4kHWJdFm3TClPUaiT
-         j2rQ==
-X-Gm-Message-State: AOAM530/w6S7DIdMb8n+7za6OBcteWEw0ltQZQ+pndhYLUBqA4ZQzVvR
-        YZ6C8xmYP8OmI95j6w7YmgqlqRlUnJQ2kA==
-X-Google-Smtp-Source: ABdhPJzkOHuxJPX9u8w6hzM1eTHou32whD5fTEDPdbRDsHCAUdvnl3kj6FbvUtuDUvEvuW3HZpIemQ==
-X-Received: by 2002:a63:e747:: with SMTP id j7mr18301486pgk.235.1614697013985;
-        Tue, 02 Mar 2021 06:56:53 -0800 (PST)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id s138sm22917284pfc.135.2021.03.02.06.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 06:56:53 -0800 (PST)
-Date:   Tue, 2 Mar 2021 23:56:46 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     jic23@kernel.org, david@lechnology.com,
-        alexandre.torgue@foss.st.com, mcoquelin.stm32@gmail.com,
-        olivier.moysan@foss.st.com, linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: stm32-timer-cnt: fix ceiling write max value
-Message-ID: <YD5SLrdttn+95M7N@shinobu>
-References: <1614696235-24088-1-git-send-email-fabrice.gasnier@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kmUWdxYWY4JnxgM68Ep5fyjuN1K6LUQgUumR1JHhFjM=;
+        b=fRJEvyEdkh1EJRngk1CcGIFgTWMCsdy2ssfzbX4hYMK5e8wJCrXqaQJz+k4Ny+2Kb0
+         Lchd1+yXMhCmoPkYDC2gVJhA9IbXA8426MezcaiwQ0XKxWexcOijmzs/cjEnxbSnGGYV
+         i0FHxOY3An4a8FJZRMFGC9B5TdB+V8JmU7KK/iZqB9RPhPKdL6y5SYsO+KKb/GQD87k+
+         2pQTffQlXfm0DwxsDXgfg6Yd8BHOQlTMC1LD6qW0jTE3b3M5DmPtWKFbivOTm6gcZwX+
+         eDLb+2FB4W9tRK9zqaJinqbZT2ubnXrJgmCLNFthx/3hKtV6woPNSZaP+w3CfQiutv2g
+         TgjQ==
+X-Gm-Message-State: AOAM532rih6qgyszCah5CQomOqAgGfzPBJHqdvxCtlxjZXOWZ0wIupxF
+        vE7ruxPAZR2cr5VRvietzY+Fg6+UTmX5sLtS+aCDPA==
+X-Google-Smtp-Source: ABdhPJwLwbBM3NS+I9Xhcy1DO7959Zl+cml3b3a5uuRHoowSmVvD41Ot3ignp1wWvmr7W3kU7ZPHuHcgWcmnqSxfwhw=
+X-Received: by 2002:aca:5fd4:: with SMTP id t203mr3439866oib.121.1614697032814;
+ Tue, 02 Mar 2021 06:57:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wvX72FUvr+D6FcPx"
-Content-Disposition: inline
-In-Reply-To: <1614696235-24088-1-git-send-email-fabrice.gasnier@foss.st.com>
+References: <20210214161348.369023-1-timur@kernel.org> <20210214161348.369023-4-timur@kernel.org>
+ <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
+ <CANpmjNNm-4s16_KQ1_NqFN4XOESJh4_=33LHQzt+p4V0Cy=Xzw@mail.gmail.com>
+ <CAMuHMdWWsZ-vTGZCeLtcwLTuBYpeP0STfhrK37wiwmyfsQ798A@mail.gmail.com>
+ <YD49x/UGUq6MSE39@alley> <8893ff08-1e50-316c-f632-cd37be1690d5@suse.cz>
+ <CAMuHMdUB4DZxHo=j1+EsSsoGCdWmDO9mBo0cUtAH4OYHy3sBzw@mail.gmail.com>
+ <20210302090811.620ae7d0@gandalf.local.home> <YD5LKqtSz5r1Xp7B@elver.google.com>
+ <20210302143516.GY2723601@casper.infradead.org> <CANpmjNNMFtJvkVBhjpp=YqFb3ck8Q4Ak8nGtB21XMd9ds_APFA@mail.gmail.com>
+ <CAMuHMdXAH9tVX9Fz2X3L4+e9DkdFoy1qhmEocY69DKJXBQjexQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdXAH9tVX9Fz2X3L4+e9DkdFoy1qhmEocY69DKJXBQjexQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 2 Mar 2021 15:57:01 +0100
+Message-ID: <CANpmjNP2Z7O-2GhsjiHtTFzHGEryQPGdjHN6EeGweLWZHq-u2Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
+ addresses as unhashed
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, Timur Tabi <timur@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2 Mar 2021 at 15:55, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Marco,
+>
+> On Tue, Mar 2, 2021 at 3:40 PM Marco Elver <elver@google.com> wrote:
+> > On Tue, 2 Mar 2021 at 15:35, Matthew Wilcox <willy@infradead.org> wrote:
+> > > On Tue, Mar 02, 2021 at 03:26:50PM +0100, Marco Elver wrote:
+> > > > +static const char no_hash_pointers_warning[9][55] __initconst = {
+> > > > +     "******************************************************",
+> > > > +     "   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   ",
+> > > > +     "                                                      ",
+> > > > +     " This system shows unhashed kernel memory addresses   ",
+> > > > +     " via the console, logs, and other interfaces. This    ",
+> > > > +     " might reduce the security of your system.            ",
+> > > > +     " If you see this message and you are not debugging    ",
+> > > > +     " the kernel, report this immediately to your system   ",
+> > > > +     " administrator!                                       ",
+> > > > +};
+> > > > +
+> > > >  static int __init no_hash_pointers_enable(char *str)
+> > > >  {
+> > > > +     const int lines[] = { 0, 1, 2, 3, 4, 5, 2, 6, 7, 8, 2, 1, 0 };
+> > > > +     int i;
+> > > > +
+> > > >       no_hash_pointers = true;
+> > > >
+> > > > -     pr_warn("**********************************************************\n");
+> > > > -     pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > > > -     pr_warn("**                                                      **\n");
+> > > > -     pr_warn("** This system shows unhashed kernel memory addresses   **\n");
+> > > > -     pr_warn("** via the console, logs, and other interfaces. This    **\n");
+> > > > -     pr_warn("** might reduce the security of your system.            **\n");
+> > > > -     pr_warn("**                                                      **\n");
+> > > > -     pr_warn("** If you see this message and you are not debugging    **\n");
+> > > > -     pr_warn("** the kernel, report this immediately to your system   **\n");
+> > > > -     pr_warn("** administrator!                                       **\n");
+> > > > -     pr_warn("**                                                      **\n");
+> > > > -     pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > > > -     pr_warn("**********************************************************\n");
+> > > > +     for (i = 0; i < ARRAY_SIZE(lines); i++)
+> > > > +             pr_warn("**%s**\n", no_hash_pointers_warning[lines[i]]);
+> > >
+> > > +       for (i = 0; i < 3; i++)
+> > > +               pr_warn("**%s**\n", no_hash_pointers_warning[lines[2 - i]]);
+> >
+> > Yeah, I had that before, but then wanted to deal with the blank line
+> > in the middle of the thing. So I just went with the lines array above,
+> > which seemed cleanest for dealing with the middle blank line and
+> > footer. Or maybe there's something even nicer I missed? :-)
+>
+> Gcc deduplicates the identical strings, so you don't have to go through
+> a double indirection at all?
 
---wvX72FUvr+D6FcPx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In this case I think we do, because we're asking the compiler to
+create a giant array char[9][55]. If we had char*[9], then you're
+right, but in that case we would not benefit from __initconst for the
+majority of the data.
 
-On Tue, Mar 02, 2021 at 03:43:55PM +0100, Fabrice Gasnier wrote:
-> The ceiling value isn't checked before writing it into registers. The user
-> could write a value higher than the counter resolution (e.g. 16 or 32 bits
-> indicated by max_arr). This makes most significant bits to be truncated.
-> Fix it by checking the max_arr to report a range error [1] to the user.
->=20
-> Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
->=20
-> [1] https://lkml.org/lkml/2021/2/12/358
->=20
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-
-Side question: if priv->ceiling is tracking the current ceiling
-configuration, would it make sense to change stm32_count_ceiling_read()
-to print the value of priv->ceiling instead of doing a regmap_read()
-call?
-
-> ---
->  drivers/counter/stm32-timer-cnt.c | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-ti=
-mer-cnt.c
-> index ef2a974..2cf0c05 100644
-> --- a/drivers/counter/stm32-timer-cnt.c
-> +++ b/drivers/counter/stm32-timer-cnt.c
-> @@ -32,6 +32,7 @@ struct stm32_timer_cnt {
->  	struct regmap *regmap;
->  	struct clk *clk;
->  	u32 ceiling;
-> +	u32 max_arr;
->  	bool enabled;
->  	struct stm32_timer_regs bak;
->  };
-> @@ -185,6 +186,9 @@ static ssize_t stm32_count_ceiling_write(struct count=
-er_device *counter,
->  	if (ret)
->  		return ret;
-> =20
-> +	if (ceiling > priv->max_arr)
-> +		return -ERANGE;
-> +
->  	/* TIMx_ARR register shouldn't be buffered (ARPE=3D0) */
->  	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
->  	regmap_write(priv->regmap, TIM_ARR, ceiling);
-> @@ -360,6 +364,7 @@ static int stm32_timer_cnt_probe(struct platform_devi=
-ce *pdev)
->  	priv->regmap =3D ddata->regmap;
->  	priv->clk =3D ddata->clk;
->  	priv->ceiling =3D ddata->max_arr;
-> +	priv->max_arr =3D ddata->max_arr;
-> =20
->  	priv->counter.name =3D dev_name(dev);
->  	priv->counter.parent =3D dev;
-> --=20
-> 2.7.4
->=20
-
---wvX72FUvr+D6FcPx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA+UggACgkQhvpINdm7
-VJJt3g/+OVZcvByeL/DXkUu5tzYQxQ5xzzfViSO16w54567c2tGJuB8gBEFaK9eG
-Q5EzOeM9YaL982A/9OtqQup3CAJVkLizpy65aH1jDlPasA8JKKoelTfd+mAo58Vu
-hiwG3DXxwOCZNB7b2/+RaKcYyayviVsKgrl8mHUQ1SY81kM3/cdzSLSnAoxkfD8o
-7w1CdXnOxDvvTD6rwcbc4izhSSxgHzvaGHFpKwwYa3gDpmCY44rDKsgXc0CL6F2B
-1JRDgvIePdqIStdC8VXcGkUwmlrEVwfSqFgbAtadWuwMSR293AR1PCayvsA4yWyo
-49fMudR81RlG5aFyYoOWbAvoKpiq81LlGQspGWFcND4mdbDR7qvEeuZO//0wbTxk
-5bNTj/VrQeSyNb7HmDFzOaKwF3waAnYpwZyOcUKVwzVNyAJkRq4nCPn29OKHE3mC
-/Pbun8nAcbF0BP5R6QzX++aELtXzuArqJHOCDudTDQas0i7BNH0/+1KNKvisLTbk
-6ftDbo0p3M90RUks08LLVpDzrAUGpyWeq7+VmWj1jHj22759PtbkEd/dxXKMkcQk
-OwD4+2zRN4yq4J2U8oiofAprHHgidhAXPB+Qvy4GXP1SewZl3q+cXCNn20Se39Xw
-uEDiJrNEX2zfbyRHx1V1zjqBlXFvCKIt62uqb8FBMmexuC5fmbc=
-=M2Bd
------END PGP SIGNATURE-----
-
---wvX72FUvr+D6FcPx--
+Thanks,
+-- Marco
