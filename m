@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4752E32A2FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7D032A310
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377935AbhCBIpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:45:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349458AbhCBIZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:25:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E01326148E;
-        Tue,  2 Mar 2021 08:23:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614673441;
-        bh=CpzI4Qq3HpAUm+Ff4gmctdpIRhmEXGG9TE6ucokTozY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qYL67jtv2Q77JAOc80jZRkCXt1bfXU0wzM8OLiKhzyPd8un1t1a6G8aEs4tSzw5qG
-         8yH6NQoWIUi7R1FC1LTn+nmsJd0bPXWAFKej1MDxtf8YY3AJWZf2d8mCLqcDKBm8sG
-         3ru9kMH8gSZHSNNSwNhQB5u47MARpQm0ql5A2EUELSMJyIXSj6+QQXXpfQaOPmhR9l
-         7Fbvn41n9w4MBw07B/74PTimC/tZxnL7FlqAVr5XSo9GUymkhnj7YJ8o3cVjZnIWY+
-         gE7bNRb09QH382MlgBTu9lG7JgrIUOSRLlJCytW/Ft8OQJ6iwoiySWzkrEIx0MZnI+
-         qyEqqHyMoyYlA==
-Date:   Tue, 2 Mar 2021 16:23:55 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jacob Wen <jian.w.wen@oracle.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
- from trace events
-Message-ID: <20210302082355.GA8633@nchen>
-References: <20210226185909.100032746@goodmis.org>
- <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
- <20210227141802.5c9aca91@oasis.local.home>
- <20210227190831.56956c80@oasis.local.home>
- <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1378109AbhCBIq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:46:26 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:48011 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377811AbhCBIaD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:30:03 -0500
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210302082803epoutp025dc14b8df1ac41aae4daf59c60b97303~oeSjyLmvT0162701627epoutp02e
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:28:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210302082803epoutp025dc14b8df1ac41aae4daf59c60b97303~oeSjyLmvT0162701627epoutp02e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614673683;
+        bh=ieAX5F0NNTBKAp0bwMpe/dTphFDtJVxl3rOuhDMWvkw=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=UHQ9BCNW2jJZsNVFqTjwqRbTVnt1JEUhawnVmVQYzQyUK6LEeGgFVwWSa7j1zyHJa
+         NHgEeaGe6gHYiymcvI2MBuy8OCAo5ms9dvkDX3DMGF4QBeeKJbLbGO5d/BfPut+TMW
+         Q3vXo/+oBORwdLEXZyOaQkVwAQa/bUr1x4d4E4EA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
+        20210302082802epcas3p3ffe8cb231ca2d09f2a0e29bf2dd20ed5~oeSjSh4Al1701117011epcas3p3i;
+        Tue,  2 Mar 2021 08:28:02 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp4.localdomain
+        (Postfix) with ESMTP id 4DqVcy4Ljzz4x9Pw; Tue,  2 Mar 2021 08:28:02 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH v4 6/9] scsi: ufshpb: Add hpb dev reset response
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210226083300.30934-7-avri.altman@wdc.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <2038148563.21614673682593.JavaMail.epsvc@epcpadp4>
+Date:   Tue, 02 Mar 2021 17:20:28 +0900
+X-CMS-MailID: 20210302082028epcms2p3516b09d363126e1a7b2113d29fb874a2
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210226083447epcas2p2f68ef00a935d25bd2cfc930d1ef1f4f7
+References: <20210226083300.30934-7-avri.altman@wdc.com>
+        <20210226083300.30934-1-avri.altman@wdc.com>
+        <CGME20210226083447epcas2p2f68ef00a935d25bd2cfc930d1ef1f4f7@epcms2p3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-01 05:27:04, Pawel Laszczak wrote:
-> 
-> + Peter Chen - Maintainer of CDNS3 driver
-> 
-> >
-> >[ Resending with an address that should work for Felipe ]
-> >
-> >On Sat, 27 Feb 2021 14:18:02 -0500
-> >Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> >> On Fri, 26 Feb 2021 14:21:00 -0800
-> >> Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> >>
-> >> > On Fri, Feb 26, 2021 at 11:07 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >> > >
-> >> > > The first patch scans the print fmts of the trace events looking for
-> >> > > dereferencing pointers from %p*, and making sure that they refer back
-> >> > > to the trace event itself.
-> >> > >
-> >> > > The second patch handles strings "%s" [..]
-> >> >
-> >> > Doing this at runtime really feels like the wrong thing to do.
-> >> >
-> >> > It won't even protect us from what happened - people like me and
-> >> > Andrew won't even run those tracepoints in the first place, so we
-> >> > won't notice.
-> >> >
-> >> > It really would be much better in every respect to have this done by
-> >> > checkpatch, I think.
-> >>
-> >> And after fixing the parsing to not trigger false positives, an
-> >> allyesconfig boot found this:
-> >>
-> >> event cdns3_gadget_giveback has unsafe dereference of argument 11
-> >> print_fmt: "%s: req: %p, req buff %p, length: %u/%u %s%s%s, status: %d, trb: [start:%d, end:%d: virt addr %pa], flags:%x SID: %u",
-> >__get_str(name), REC->req, REC->buf,
-> >>  REC->actual, REC->length, REC->zero ? "Z" : "z", REC->short_not_ok ? "S" : "s", REC->no_interrupt ? "I" : "i", REC->status, REC-
-> >>start_trb, REC->end_trb, REC->start_trb_addr, REC->flags, RE
-> >> C->stream_id
-> >>
-> >> (as the above is from a trace event class, it triggered for every event
-> >> in that class).
-> >>
-> >> As it looks like it uses %pa which IIUC from the printk code, it
-> >> dereferences the pointer to find it's virtual address. The event has
-> >> this as the field:
-> >>
-> >>                 __field(struct cdns3_trb *, start_trb_addr)
-> >>
-> >> Assigns it with:
-> >>
-> >>                 __entry->start_trb_addr = req->trb;
-> >>
-> >> And prints that with %pa, which will dereference pointer at the time of
-> >> reading, where the address in question may no longer be around. That
-> >> looks to me as a potential bug.
+Hi Avri,
 
-Steven, thanks for reporting. Do you mind sending patch to fix it?
-If you have no time to do it, I will do it later.
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index cf704b82e72a..f33aa28e0a0a 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -642,7 +642,8 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+>                  if (rgn->reads == ACTIVATION_THRESHOLD)
+>                          activate = true;
+>                  spin_unlock_irqrestore(&rgn->rgn_lock, flags);
+> -                if (activate) {
+> +                if (activate ||
+> +                    test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags)) {
 
--- 
+How about merge rgn->rgn_flags to rgn_state?
 
 Thanks,
-Peter Chen
-
+Daejun
