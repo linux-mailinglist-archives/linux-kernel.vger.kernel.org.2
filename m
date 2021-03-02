@@ -2,96 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E20032A081
+	by mail.lfdr.de (Postfix) with ESMTP id 9F81C32A082
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381176AbhCBEWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:22:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2477 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348007AbhCBAW3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:22:29 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603d85150000>; Mon, 01 Mar 2021 16:21:41 -0800
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 00:21:37 +0000
-From:   Alistair Popple <apopple@nvidia.com>
+        id S1381184AbhCBEWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:22:12 -0500
+Received: from mga04.intel.com ([192.55.52.120]:28280 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238266AbhCBAYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:24:45 -0500
+IronPort-SDR: iN3hYikNJIOSX3u7mrI/drGhaxtKaanPDUGiOIYz0YI24wyzP1XBWtbc8WtAe2B3FHnM+dtz9P
+ NZmXfRqL47mw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184200619"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="184200619"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:23:49 -0800
+IronPort-SDR: Om+hs81dnl54ZKsRsn+DsJSHwC6HUChzPGlYt8f2xbAeGL6jI8NFR68jCMYWwF8DSPWIbaV8Nt
+ MgXbA0z6jRaw==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="517624851"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.197.33]) ([10.212.197.33])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:23:48 -0800
+Subject: Re: [PATCH v5 05/14] vfio/mdev: idxd: add basic mdev registration and
+ helper functions
 To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
-        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
-        <daniel@ffwll.ch>
-Subject: Re: [PATCH v3 1/8] mm: Remove special swap entry functions
-Date:   Tue, 2 Mar 2021 11:21:35 +1100
-Message-ID: <3156280.dJpzq75PnV@nvdebian>
-In-Reply-To: <20210301174642.GP4247@nvidia.com>
-References: <20210226071832.31547-1-apopple@nvidia.com> <20210226071832.31547-2-apopple@nvidia.com> <20210301174642.GP4247@nvidia.com>
+Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
+        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, parav@mellanox.com, netanelg@mellanox.com,
+        shahafs@mellanox.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
+ <161255840486.339900.5478922203128287192.stgit@djiang5-desk3.ch.intel.com>
+ <20210210235924.GJ4247@nvidia.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <b41828e1-ab67-856b-f2c0-6215106ba813@intel.com>
+Date:   Mon, 1 Mar 2021 17:23:47 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614644501; bh=azDUrxm78xZYK+HMnHGyx9Cls7mv6No8+tEzyjhqkY4=;
-        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-         MIME-Version:Content-Transfer-Encoding:Content-Type:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=OWpxffKeP4tRIYOnIzWmKU2ko4OneFNOwVj+FyTqa4wUuAyUq/G035xSN96rL3s4U
-         CA2Le5hOQkxj09JDqjwtL+dcVozOjVJOqsAP/77YPxoAGDgKoCS+uC44nuPIHShHJu
-         AQcoFQv2I5HrVxcpLUdaEYX96qs+Fbn+H4WH6IiNhxMuJse6m0q6LImPEePfGXcqS3
-         y8rWRlSZ6kxZv7XVJ05BMWPXBFERIbAwCPh/cbO3qmpQiPSlkeCWEOdT2cGGNX3CKM
-         xj85TG9o7jkYYmeYx1sJ/KOkEFDUPRj2HB/Euue8YPgbHDP8xnwpiiRC88gPjPdE07
-         Dv/DTQIp44Jsg==
+In-Reply-To: <20210210235924.GJ4247@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 2 March 2021 4:46:42 AM AEDT Jason Gunthorpe wrote:
-> 
-> I wish you could come up with a more descriptive word that special
-> here
-> 
-> What I understand is this is true when the swap_offset is a pfn?
 
-Correct, and that points to a better name. Maybe is_pfn_swap_entry()? In which 
-case adding a helper as Christoph suggested makes some more sense. Eg: 
-pfn_swap_entry_to_page()
+On 2/10/2021 4:59 PM, Jason Gunthorpe wrote:
+> On Fri, Feb 05, 2021 at 01:53:24PM -0700, Dave Jiang wrote:
 
-> > -static inline struct page *migration_entry_to_page(swp_entry_t entry)
-> > -{
-> > -	struct page *p = pfn_to_page(swp_offset(entry));
-> > -	/*
-> > -	 * Any use of migration entries may only occur while the
-> > -	 * corresponding page is locked
-> > -	 */
-> > -	BUG_ON(!PageLocked(compound_head(p)));
-> > -	return p;
-> 
-> And this constraint has been completely lost?
-
-Yes, sorry I should have called that out. I didn't think loosing the check was 
-a big deal, but I can add some checks to some of the call sites which would 
-catch a page being incorrectly unlocked.
-
-> A comment in front of the is_special_entry explaining all the rule
-> would help alot
-
-Will add one.
-
-> Transformation looks fine otherwise
-
-Thanks.
-
- - Alistair
- 
-> Jason
-> 
+<-- cut for brevity -->
 
 
+> +static int vdcm_idxd_set_msix_trigger(struct vdcm_idxd *vidxd,
+> +				      unsigned int index, unsigned int start,
+> +				      unsigned int count, uint32_t flags,
+> +				      void *data)
+> +{
+> +	int i, rc = 0;
+> +
+> +	if (count > VIDXD_MAX_MSIX_ENTRIES - 1)
+> +		count = VIDXD_MAX_MSIX_ENTRIES - 1;
+> +
+> +	if (count == 0 && (flags & VFIO_IRQ_SET_DATA_NONE)) {
+> +		/* Disable all MSIX entries */
+> +		for (i = 0; i < VIDXD_MAX_MSIX_ENTRIES; i++) {
+> +			rc = msix_trigger_unregister(vidxd, i);
+> +			if (rc < 0)
+> +				return rc;
+> +		}
+> +		return 0;
+> +	}
+> +
+> +	for (i = 0; i < count; i++) {
+> +		if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+> +			u32 fd = *(u32 *)(data + i * sizeof(u32));
+> +
+> +			rc = msix_trigger_register(vidxd, fd, i);
+> +			if (rc < 0)
+> +				return rc;
+> +		} else if (flags & VFIO_IRQ_SET_DATA_NONE) {
+> +			rc = msix_trigger_unregister(vidxd, i);
+> +			if (rc < 0)
+> +				return rc;
+> +		}
+> +	}
+> +	return rc;
+> +}
+> +
+> +static int idxd_vdcm_set_irqs(struct vdcm_idxd *vidxd, uint32_t flags,
+> +			      unsigned int index, unsigned int start,
+> +			      unsigned int count, void *data)
+> +{
+> +	int (*func)(struct vdcm_idxd *vidxd, unsigned int index,
+> +		    unsigned int start, unsigned int count, uint32_t flags,
+> +		    void *data) = NULL;
+> +	struct mdev_device *mdev = vidxd->vdev.mdev;
+> +	struct device *dev = mdev_dev(mdev);
+> +
+> +	switch (index) {
+> +	case VFIO_PCI_INTX_IRQ_INDEX:
+> +		dev_warn(dev, "intx interrupts not supported.\n");
+> +		break;
+> +	case VFIO_PCI_MSI_IRQ_INDEX:
+> +		dev_dbg(dev, "msi interrupt.\n");
+> +		switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
+> +		case VFIO_IRQ_SET_ACTION_MASK:
+> +		case VFIO_IRQ_SET_ACTION_UNMASK:
+> +			break;
+> +		case VFIO_IRQ_SET_ACTION_TRIGGER:
+> +			func = vdcm_idxd_set_msix_trigger;
+> This would be a good place to insert a common VFIO helper library to
+> take care of the MSI-X emulation for IMS.
+
+Hi Jason,
+
+So after looking at the code in vfio_pci_intrs.c, I agree that the 
+set_irqs code between VFIO_PCI and this driver can be made in common. 
+Given that Alex doesn't want a vfio_pci device embedded in the driver, I 
+think we'll need some sort of generic VFIO device that can be used from 
+the vfio_pci side and vfio_mdev side to pass down in order to have 
+common support library functions. Do you have any thoughts on how to do 
+this cleanly architecturally? Also, with vfio_pci common split [1] still 
+being worked on, do you think we can defer the work on making the 
+interrupt setup code common until the vfio_pci split work settles? Thanks!
+
+[1]: https://lore.kernel.org/kvm/20210201162828.5938-1-mgurtovoy@nvidia.com/
 
 
