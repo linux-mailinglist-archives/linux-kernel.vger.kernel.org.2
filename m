@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC9A32ADA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E73A32ADA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2359722AbhCBWCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:02:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbhCBTVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:21:09 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C803DC06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 11:20:24 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id u12so2690025pjr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 11:20:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nTR1gSY8AyYBmlkN5NsyaE59tkLRlPt3XQnuP/gtEls=;
-        b=FYAaFJLMeUfXUwWCbf1ENPmBFy0H5/UzPli0k0XMaUSiA/XyNFmOM6M8gz9PTSZzPd
-         4oy+ZkmwVTFba1Hy/LJ45HqVSbLbMMmYiBYbqM9DkazTMipXqfsdXX/HFVdG0Kg+PG4/
-         Jw9G6Lrh5c/pwwUjafGnSmAVGjiSknjwRA3/XmN/SL9Y3xwir4FQ4qjnWGMRZ1K7Gs06
-         +l2/f67IZKCQ1cXg6+U/bxe8sekLMG7htcF5LHJXbyQ9/Fk8nAF5RRUbUb8MGQ07p/4x
-         ctydUAtxPAvChUQdFQa7d+JC1eps48K7ZiNO+/glmI+fX+SSaJBnbXdOcOEAzQZgvyXn
-         XAlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nTR1gSY8AyYBmlkN5NsyaE59tkLRlPt3XQnuP/gtEls=;
-        b=ABVId2p5bBg3LMr8Vj9fzkBfndk2yfmUgoHyFBmLgA/27iOw+dyH7vG3Id1JZBkDZ3
-         PVHKB06X3u28Mko0gJrCY7ubjdIH20JYVoR3LK/LawvLpMiKyLMwMLwTEUUz29tMcVeP
-         zILhZPpInHJCulEAXrqAo4z8ZBaEEXrktyf1A4PcyOjsUeTIPSiM7BKhSoW7sun+vgh0
-         SfrmaEmDl4GStAKBoShTiwtNmag4eyg1pHsUyGWNU+irPYpVjqnRFQ4lzn15dOekcD/P
-         in0vqENtLLqPT4AJHs9xMMWACEFgbjkep4wgkoJUsSOVWI352TdmaxdRxgxteB+d8xq6
-         CzMw==
-X-Gm-Message-State: AOAM5300GIvs7gn4OGR+l1fT0eVFFakvQAfLYBxxfpNIgB2UCTSliswV
-        2UAIhEdaI6aKmz6FZrrpTp0nYQ==
-X-Google-Smtp-Source: ABdhPJzCY3Cp3rFD0UgLcAl5GfX9tJC8u7gu1D91cETA8vt2rNf28lrXCjk6d40ldU7B1AsGIPtJew==
-X-Received: by 2002:a17:902:9d82:b029:e4:b5a9:ff9f with SMTP id c2-20020a1709029d82b02900e4b5a9ff9fmr4944015plq.75.1614712824062;
-        Tue, 02 Mar 2021 11:20:24 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
-        by smtp.gmail.com with ESMTPSA id w128sm22095590pfw.86.2021.03.02.11.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 11:20:23 -0800 (PST)
-Date:   Tue, 2 Mar 2021 11:20:17 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     pbonzini@redhat.com, wanpengli@tencent.com, kvm@vger.kernel.org,
-        joro@8bytes.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, vkuznets@redhat.com,
-        tglx@linutronix.de, jmattson@google.com
-Subject: Re: [PATCH] KVM: SVM: Clear the CR4 register on reset
-Message-ID: <YD6P8TbrZKD4zbxV@google.com>
-References: <161471109108.30811.6392805173629704166.stgit@bmoger-ubuntu>
+        id S2359713AbhCBWCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:02:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344907AbhCBTWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 14:22:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DEFF64F11;
+        Tue,  2 Mar 2021 19:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614712871;
+        bh=8WEFZSWnJIsqpo9iq3vWGFrllqblNgH4s/OCeK1l0iI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T1pXLsYthibit7Vh1FoISRFZiE+LgcR2WP3WdYD6geUqpS/FyMtw6Wc60BXTHbyjG
+         fj5tWoHJ4i2tB1eI+6s680eeO7L3QGtJDYwrj5y0f+rfQgJqaCAknFh4rbeqthxbMP
+         UZq6mCmn47LTK1lsjEUjpxYlOAYZ6HjRDhm30jSU=
+Date:   Tue, 2 Mar 2021 20:21:08 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/658] 5.10.20-rc3 review
+Message-ID: <YD6QJHivWcEDdXxx@kroah.com>
+References: <20210302123520.857524345@linuxfoundation.org>
+ <b0456766-0744-2086-a9ba-daa6aba5e896@roeck-us.net>
+ <YD6L8/4q6Y9jA3VL@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161471109108.30811.6392805173629704166.stgit@bmoger-ubuntu>
+In-Reply-To: <YD6L8/4q6Y9jA3VL@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021, Babu Moger wrote:
-> This problem was reported on a SVM guest while executing kexec.
-> Kexec fails to load the new kernel when the PCID feature is enabled.
+On Tue, Mar 02, 2021 at 08:03:15PM +0100, Greg Kroah-Hartman wrote:
+> On Tue, Mar 02, 2021 at 10:44:15AM -0800, Guenter Roeck wrote:
+> > On 3/2/21 4:38 AM, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 5.10.20 release.
+> > > There are 658 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Thu, 04 Mar 2021 12:32:41 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > 
+> > Building arm:allmodconfig ... failed
+> > --------------
+> > Error log:
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c: In function 'mtk_aal_config':
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:183:54: error: 'struct mtk_ddp_comp' has no member named 'dev'
+> >   183 |  struct mtk_ddp_comp_dev *priv = dev_get_drvdata(comp->dev);
+> >       |                                                      ^~
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:185:44: error: dereferencing pointer to incomplete type 'struct mtk_ddp_comp_dev'
+> >   185 |  mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AAL_SIZE);
+> >       |                                            ^~
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:185:2: error: too many arguments to function 'mtk_ddp_write'
+> >   185 |  mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AAL_SIZE);
+> >       |  ^~~~~~~~~~~~~
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:89:6: note: declared here
+> >    89 | void mtk_ddp_write(struct cmdq_pkt *cmdq_pkt, unsigned int value,
+> >       |      ^~~~~~~~~~~~~
+> > make[5]: *** [drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.o] Error 1
+> > make[4]: *** [drivers/gpu/drm/mediatek] Error 2
+> > 
+> > ---
+> > Building arm64:allmodconfig ... failed
+> > --------------
+> > Error log:
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c: In function 'mtk_aal_config':
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:183:54: error: 'struct mtk_ddp_comp' has no member named 'dev'
+> >   183 |  struct mtk_ddp_comp_dev *priv = dev_get_drvdata(comp->dev);
+> >       |                                                      ^~
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:185:44: error: dereferencing pointer to incomplete type 'struct mtk_ddp_comp_dev'
+> >   185 |  mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AAL_SIZE);
+> >       |                                            ^~
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:185:2: error: too many arguments to function 'mtk_ddp_write'
+> >   185 |  mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AAL_SIZE);
+> >       |  ^~~~~~~~~~~~~
+> > drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:89:6: note: declared here
+> >    89 | void mtk_ddp_write(struct cmdq_pkt *cmdq_pkt, unsigned int value,
+> >       |      ^~~~~~~~~~~~~
+> > make[5]: *** [drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.o] Error 1
+> > 
+> > 
+> > The same problem also affects v5.11.y.
+> > 
+> > Am I missing something here ? Why do I see that problem ? It seems to be very basic.
 > 
-> When kexec starts loading the new kernel, it starts the process by
-> resetting the vCPU's and then bringing each vCPU online one by one.
-> The vCPU reset is supposed to reset all the register states before the
-> vCPUs are brought online. However, the CR4 register is not reset during
-> this process. If this register is already setup during the last boot,
-> all the flags can remain intact. The X86_CR4_PCIDE bit can only be
-> enabled in long mode. So, it must be enabled much later in SMP
-> initialization.  Having the X86_CR4_PCIDE bit set during SMP boot can
-> cause a boot failures.
-> 
-> Fix the issue by resetting the CR4 register in init_vmcb().
-> 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> You aren't the only one, I got an off-list response that this was seen
+> as well.  Let me dig into it...
 
-Cc: stable@vger.kernel.org
+Found it, am dropping the offending patch now.  Should also affect
+5.11.y too.
 
-The bug goes back too far to have a meaningful Fixes.
+Looks like I'll do a whole new round of -rcs for all queues now, this
+has been a rough cycle...
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-
-
-On a related topic, I think we can clean up the RESET/INIT flows by hoisting the
-common code into kvm_vcpu_reset().  That would also provide good motivation for
-removing the init_vmcb() call in svm_create_vcpu(), which is fully redundant
-with the call in svm_vcpu_reset().  I'll put that on the todo list.
+greg k-h
