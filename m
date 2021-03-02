@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE5332A626
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 919CB32A691
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573030AbhCBOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:08:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1442154AbhCBMcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:32:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED67764F0D;
-        Tue,  2 Mar 2021 12:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614687794;
-        bh=nIxz5EvW+c2Zl9voIp91MQE6tD0opgmdGseUBbonhvA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T3B9ASBjSTTtqOQUSKaCij/h2eEfr5IJmL/vaWu3dKGuUhHq1H4qipwxNmFqqFAan
-         4rPclXys+P6c0s1fRH9oKWQ0CiEn0DuXz5cz0TYd3s/tK+G5qVuKvZwxgp2C6BK1UB
-         4zAO1lBkJzajSP18qolntGRw8Gpv0j7ddGjqV1fvF0Go3sCW7ub5a9D91iPHzH79f1
-         DAJalm69h4rkGsCG/nzIcPIBhNt+osLwFJNK+clBF4dBBnnPrn+FgEQ2vtsC5qdWM+
-         HwdWaRj2bTIS/TR1QeXFngyLBkW44cldpMPiJlZ5Ogj910b26t75g1TtxLx8lgsM+T
-         sxgO/5UGxpcSQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E9F1840CD9; Tue,  2 Mar 2021 09:23:09 -0300 (-03)
-Date:   Tue, 2 Mar 2021 09:23:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Gon Solo <gonsolo@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andreas Wendleder <andreas.wendleder@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Perf: Clean generated directory.
-Message-ID: <YD4uLRARSI16b9eJ@kernel.org>
-References: <20210301185642.163396-1-gonsolo@gmail.com>
+        id S1578494AbhCBPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242631AbhCBNBb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:01:31 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563C6C06121E;
+        Tue,  2 Mar 2021 04:25:13 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id q14so23668623ljp.4;
+        Tue, 02 Mar 2021 04:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nnScvCZI6cAu2ypGFQUT8MjO5y66eSGlKO06JBJkuno=;
+        b=pnsSHUx172+8tj6P8OAvqX3eFoZvdUQdb8uwGvkxVg19e2wQ8EMSxu+oyIgvpc1OM4
+         8mcUMcUm1O+/R4pU1a4Rqjh3V7yYjqx9H2tDNoGV0sk7H+9/v7BpIWXaunl5ioDgtyVE
+         JGk/Aa6UAttn8ZvXYsiAnKks75Hmtxga+lvfxOWXOKRxwdS3cuWAO+ILsvrfssTds+JC
+         ONsr4BJMXmWo/auxQZJQLMDXoqQTFiHjsoN/0HcxSUDPzKP0Ey+PklNCKSzxWmQdURua
+         0YVX6aBpJfRSo0nUONvV5RGoIxyO8o2iaWxqPYNwMpmmrRqedoDuqHayzb9WZOZ9A9Cm
+         3uRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nnScvCZI6cAu2ypGFQUT8MjO5y66eSGlKO06JBJkuno=;
+        b=NQDLssaSwezM+CIorPaVomvaKI82huDoWW1t0zRlSYTN80SKpxgSkFCZyzlTgoIJiL
+         oLnUBMEEsvWPVdlEevyHxpDKBb5R9UtylvaIUoNDyj4+s81zepPIYcErqeKxDIDU2fEq
+         UI3Shu1bvAVf7G7EIZ2Dsr3jvaXXReALmK436uMtdwe1N7F8SjW4OC8lnywAH8Ah8eDq
+         VxTjO9gfJEAjE+pzqnLDkc5VKJ8HdG34WQVLkySdSGnZEESnW3JVgfpj1QrggTcrb3Dq
+         IA2iti/ZZ34ZTZr0MZ0m0u9xFCI/zN8rjIgoahzbuctXeimIGrUHgjBSxJZGLIbzwesW
+         P9FA==
+X-Gm-Message-State: AOAM5326ZE+lp7hXva0yR8Z9D8ZsWmyqfKU1UspODkIeFEdH36zmCt92
+        oPcAdkVu4ILncZ8Rl84VyKM=
+X-Google-Smtp-Source: ABdhPJxJjdLQuvoRy2t+5XQEfbwzHPRlXPyTTw4lTci1Dn8sGAbEILcUB9yKPJG+nRjW074FwWfL1w==
+X-Received: by 2002:a05:651c:548:: with SMTP id q8mr11901278ljp.256.1614687911795;
+        Tue, 02 Mar 2021 04:25:11 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id u4sm2602126lfs.61.2021.03.02.04.25.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 04:25:11 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] Tegra PMC driver fixes and improvements
+Date:   Tue,  2 Mar 2021 15:24:57 +0300
+Message-Id: <20210302122502.20874-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301185642.163396-1-gonsolo@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Mar 01, 2021 at 07:56:42PM +0100, Gon Solo escreveu:
-> From: Andreas Wendleder <andreas.wendleder@gmail.com>
-> 
-> Remove generated directory tools/perf/arch/x86/include/generated.
+Hi,
 
-Thanks applied.
+This is a continuation of [1]. I decided to factor out PMC patches into a
+separate series to ease reviewing and applying of the patches. This series
+is a prerequisite for enabling dynamic power management by Tegra drivers
+that are using PMC domain.
 
-There is one more, consider fixing it too:
+[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
 
-  $ make -C tools/perf clean
-  make: Entering directory '/home/acme/git/perf/tools/perf'
-    CLEAN    x86
-    CLEAN    libtraceevent
-    CLEAN    libapi
-    CLEAN    libbpf
-    CLEAN    libsubcmd
-    CLEAN    libperf
-    CLEAN    fixdep
-    CLEAN    feature-detect
-    CLEAN    python
-    CLEAN    bpf-skel
-    CLEAN    core-objs
-    CLEAN    core-progs
-    CLEAN    core-gen
-    CLEAN    Documentation
-  make: Leaving directory '/home/acme/git/perf/tools/perf'
-  $ find tools/perf -name generated
-  tools/perf/trace/beauty/generated
-  $
+Changelog:
 
-- Arnaldo
- 
-> Signed-off-by: Andreas Wendleder <andreas.wendleder@gmail.com>
-> ---
->  tools/perf/arch/x86/Makefile | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/arch/x86/Makefile b/tools/perf/arch/x86/Makefile
-> index 8cc6642fce7a..5a9f9a7bf07d 100644
-> --- a/tools/perf/arch/x86/Makefile
-> +++ b/tools/perf/arch/x86/Makefile
-> @@ -10,10 +10,11 @@ PERF_HAVE_JITDUMP := 1
->  # Syscall table generation
->  #
->  
-> -out    := $(OUTPUT)arch/x86/include/generated/asm
-> -header := $(out)/syscalls_64.c
-> -sys    := $(srctree)/tools/perf/arch/x86/entry/syscalls
-> -systbl := $(sys)/syscalltbl.sh
-> +generated := $(OUTPUT)arch/x86/include/generated
-> +out       := $(generated)/asm
-> +header    := $(out)/syscalls_64.c
-> +sys       := $(srctree)/tools/perf/arch/x86/entry/syscalls
-> +systbl    := $(sys)/syscalltbl.sh
->  
->  # Create output directory if not already present
->  _dummy := $(shell [ -d '$(out)' ] || mkdir -p '$(out)')
-> @@ -22,6 +23,6 @@ $(header): $(sys)/syscall_64.tbl $(systbl)
->  	$(Q)$(SHELL) '$(systbl)' $(sys)/syscall_64.tbl 'x86_64' > $@
->  
->  clean::
-> -	$(call QUIET_CLEAN, x86) $(RM) $(header)
-> +	$(call QUIET_CLEAN, x86) $(RM) -r $(header) $(generated)
->  
->  archheaders: $(header)
-> -- 
-> 2.27.0
-> 
+v4: - Dropped "Link power domains to the parent Core domain" patch,
+      moving it to the series which adds driver for the Core domain.
+
+    - Added new minor patch "Rate-limit error message about failed to
+      acquire of reset".
+
+v3: - Added new patch "pmc: Fix completion of power-gate toggling",
+      which fixes toggling power state of PMC domains.
+
+Dmitry Osipenko (5):
+  soc/tegra: pmc: Fix imbalanced clock disabling in error code path
+  soc/tegra: pmc: Fix completion of power-gate toggling
+  soc/tegra: pmc: Ensure that clock rates aren't too high
+  soc/tegra: pmc: Print out domain name when reset fails to acquire
+  soc/tegra: pmc: Rate-limit error message about failed to acquire of
+    reset
+
+ drivers/soc/tegra/pmc.c | 165 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 157 insertions(+), 8 deletions(-)
 
 -- 
+2.29.2
 
-- Arnaldo
