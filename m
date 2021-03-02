@@ -2,157 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B6732A486
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 114F932A489
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383207AbhCBKuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:50:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:48604 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379959AbhCBKWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:22:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2B0EED1;
-        Tue,  2 Mar 2021 02:20:54 -0800 (PST)
-Received: from [10.163.67.84] (unknown [10.163.67.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D13CA3F70D;
-        Tue,  2 Mar 2021 02:20:51 -0800 (PST)
-Subject: Re: [PATCH v4 17/19] coresight: core: Add support for dedicated
- percpu sinks
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, leo.yan@linaro.org
-References: <20210225193543.2920532-18-suzuki.poulose@arm.com>
- <202102261412.zCSQLdKB-lkp@intel.com>
- <5fad098f-8cdd-e56d-3812-d85720b1768c@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <b1dc82de-d148-8483-f9e7-c70930240dd3@arm.com>
-Date:   Tue, 2 Mar 2021 15:51:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1441904AbhCBKwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:52:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379981AbhCBKXf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:23:35 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982E8C061756;
+        Tue,  2 Mar 2021 02:22:05 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id q23so23232756lji.8;
+        Tue, 02 Mar 2021 02:22:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u3zwkrw3cHSWJJ7SrOgT7FSkDK7Nb1eb+/tiKZcAfbQ=;
+        b=RqIEdpOAAgcl80AL1PC1mX62xisSdEGrhhGlELSsaWIr0WWFNnZOBAoqJiFg1oLyap
+         A5VitR0aUhCNyELLw1XiLLc5pJFBjMsiC5MPgcgjF775VnExER/WnY8G6DY5oOdDYFFp
+         QyYmmGNl79AtXUnEtxPkBdMzpuGjs4RBO5/4sdUCjZUeEeqeZvLz6H68duzSFOe+vOOF
+         dXKwphZkzvnBeIaUb5Bs3QViDN2a08HJFr5pPqgpy/Pn7KqIwPjAA7mVXA1Zg0WUtC08
+         N7q2kOdGaymYyuEVyb+fDisG/LFEraVNM51bFCR7eIb7bV8oUuVKvXa4JNZaNBQ/t4GR
+         yC3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u3zwkrw3cHSWJJ7SrOgT7FSkDK7Nb1eb+/tiKZcAfbQ=;
+        b=gKEj6xNdYExREt+Ve9uW/M64ZX5ArNHD0Ospl638Qlcgm+RMkucntiorMTRn5Oq5db
+         9iBwcFaKTe9CpVc/vyoyE58SG4VGwtNtVO9G1MHzXs3nLRory3Ok+QM9hnzr+2Cp4vgw
+         yszTVF+IiqHiz77xk6Gjie9ckTH/lqANDSxADIdms7pw/ZMIJMIREXP4xsUULMORxD4p
+         cyFwycccBbdb6vt2bSYNTIQ+EJ04a7ZJ1wywr74plKQxo7Er7ppIEle7G8OAvj8Wiu/N
+         fe2av4vb8UbVVGwz3yo+0/Xn9ndoABD2Epmc8MxAD63mx/zZUdzb/EaujN99737nIYad
+         WbWg==
+X-Gm-Message-State: AOAM532U2N3dZ0agL7M4G2RxSZSpCXoWoi4roO0RtFRFgQeeGF8To6Bw
+        OaUf8ZZG2bO8yEV5CTmL/5s=
+X-Google-Smtp-Source: ABdhPJw4UiNM8EWQ1z41AMe9ym6LDkfFECl8t+0LLWs5xKYnNVNsNaETkXhBdkjVic8Qt2cVQS/CKg==
+X-Received: by 2002:a2e:a481:: with SMTP id h1mr2473275lji.143.1614680524152;
+        Tue, 02 Mar 2021 02:22:04 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id n2sm2586369lfu.274.2021.03.02.02.22.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 02:22:03 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/3] Support wakeup methods of Atmel maXTouch controllers
+Date:   Tue,  2 Mar 2021 13:21:55 +0300
+Message-Id: <20210302102158.10533-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <5fad098f-8cdd-e56d-3812-d85720b1768c@arm.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some Atmel maXTouch controllers, like mXT1386 and mXT3432S1 for example,
+have a WAKE line that needs to be asserted in order to wake controller
+from a deep sleep, otherwise it will be unusable. This series implements
+support for the wakeup methods in accordance to the mXT1386 datasheet [1],
+see page 29 (chapter "5.8 WAKE Line").
 
+The mXT1386 is a widely used controller found on many older Android tablet
+devices. Touchscreen on Acer A500 tablet now works properly after this
+series.
 
-On 3/1/21 7:24 PM, Suzuki K Poulose wrote:
-> On 2/26/21 6:34 AM, kernel test robot wrote:
->> Hi Suzuki,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on linus/master]
->> [also build test ERROR on next-20210226]
->> [cannot apply to kvmarm/next arm64/for-next/core tip/perf/core v5.11]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:    https://github.com/0day-ci/linux/commits/Suzuki-K-Poulose/arm64-coresight-Add-support-for-ETE-and-TRBE/20210226-035447
->> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 6fbd6cf85a3be127454a1ad58525a3adcf8612ab
->> config: arm-randconfig-r024-20210225 (attached as .config)
->> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a921aaf789912d981cbb2036bdc91ad7289e1523)
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # install arm cross compiling tool for clang build
->>          # apt-get install binutils-arm-linux-gnueabi
->>          # https://github.com/0day-ci/linux/commit/c37564326cdf11e0839eae06c1bfead47d3e5775
->>          git remote add linux-review https://github.com/0day-ci/linux
->>          git fetch --no-tags linux-review Suzuki-K-Poulose/arm64-coresight-Add-support-for-ETE-and-TRBE/20210226-035447
->>          git checkout c37564326cdf11e0839eae06c1bfead47d3e5775
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> Thanks for the report. The following fixup should clear this :
-> 
-> 
-> ---8>---
-> 
-> 
-> 
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index 8a3a3c199087..85008a65e21f 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -429,6 +429,33 @@ static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 o
->          csa->write(val, offset, false, true);
->  }
-> 
-> +#else    /* !CONFIG_64BIT */
-> +
-> +static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
-> +                          u32 offset)
-> +{
-> +    WARN_ON(1);
-> +    return 0;
-> +}
-> +
-> +static inline u64 csdev_access_read64(struct csdev_access *csa, u32 offset)
-> +{
-> +    WARN_ON(1);
-> +    return 0;
-> +}
-> +
-> +static inline void csdev_access_relaxed_write64(struct csdev_access *csa,
-> +                        u64 val, u32 offset)
-> +{
-> +    WARN_ON(1);
-> +}
-> +
-> +static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 offset)
-> +{
-> +    WARN_ON(1);
-> +}
-> +#endif    /* CONFIG_64BIT */
-> +
->  static inline bool coresight_is_percpu_source(struct coresight_device *csdev)
->  {
->      return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
-> @@ -440,32 +467,6 @@ static inline bool coresight_is_percpu_sink(struct coresight_device *csdev)
->      return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SINK) &&
->             (csdev->subtype.sink_subtype == CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM);
->  }
-> -#else    /* !CONFIG_64BIT */
-> -
-> -static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
-> -                          u32 offset)
-> -{
-> -    WARN_ON(1);
-> -    return 0;
-> -}
-> -
-> -static inline u64 csdev_access_read64(struct csdev_access *csa, u32 offset)
-> -{
-> -    WARN_ON(1);
-> -    return 0;
-> -}
-> -
-> -static inline void csdev_access_relaxed_write64(struct csdev_access *csa,
-> -                        u64 val, u32 offset)
-> -{
-> -    WARN_ON(1);
-> -}
-> -
-> -static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 offset)
-> -{
-> -    WARN_ON(1);
-> -}
-> -#endif    /* CONFIG_64BIT */
-> 
->  extern struct coresight_device *
->  coresight_register(struct coresight_desc *desc);
+This patchset is a continuation of the work originally started by
+Jiada Wang [2].
 
-Agreed, these new helpers should be available in general and not restricted for 64BIT.
+[1] https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
+[2] https://patchwork.kernel.org/project/linux-input/list/?series=357875
+
+Changelog:
+
+v6: - Added r-b from Rob Herring to the DT-binding patch that he gave
+      to v4.
+
+v5: - No code changes. Improved commit message of the "acer-a500: Add
+      atmel,wakeup-method property" patch and added r-b from Linus Walleij
+      to "Input: atmel_mxt_ts - support wakeup methods" patch that he gave
+      to v4.
+
+v4: - Improved commit message of the DT binding patch. No code changes.
+
+v3: - Added "default: 0" to the atmel,wakeup-method property in the binding.
+
+    - Added r-b from Linus Walleij to the binding patch.
+
+    - The wake-GPIO is now toggled on touchscreen's start/stop in order to
+      allow it to sleep during suspend. Suggested by Linus Walleij.
+
+v2: - Fixed copy-paste bug in the code.
+
+Dmitry Osipenko (3):
+  dt-bindings: input: atmel_mxt_ts: Document atmel,wakeup-method and
+    WAKE line GPIO
+  Input: atmel_mxt_ts - support wakeup methods
+  ARM: tegra: acer-a500: Add atmel,wakeup-method property
+
+ .../bindings/input/atmel,maxtouch.yaml        | 29 +++++++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |  3 +
+ drivers/input/touchscreen/atmel_mxt_ts.c      | 78 +++++++++++++++++++
+ include/dt-bindings/input/atmel-maxtouch.h    | 10 +++
+ 4 files changed, 120 insertions(+)
+ create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
+
+-- 
+2.29.2
+
