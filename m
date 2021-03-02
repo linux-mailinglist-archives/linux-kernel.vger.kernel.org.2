@@ -2,231 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C61132AA18
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4704C32AA2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581564AbhCBS6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449142AbhCBQPw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:15:52 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D79C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:14:49 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d15e:6060:f6a9:3ce5])
-        by laurent.telenet-ops.be with bizsmtp
-        id bUEl2400S0v3pQi01UElpr; Tue, 02 Mar 2021 17:14:46 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lH7fZ-004ChD-JT; Tue, 02 Mar 2021 17:14:45 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lH7fY-00FwSS-VM; Tue, 02 Mar 2021 17:14:44 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] sh: Use generic GGC library routines
-Date:   Tue,  2 Mar 2021 17:14:39 +0100
-Message-Id: <20210302161439.3799589-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S1443632AbhCBTLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:11:45 -0500
+Received: from mga07.intel.com ([134.134.136.100]:7535 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1839377AbhCBQRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:17:32 -0500
+IronPort-SDR: cFTkh3JKH3wBngPDNjHT8hfMoW0lisMfEqWLQJsWmSNfXGh09b4ANLy7QcleQkMsAdeF/QNkMp
+ gJgeQ+A3tNfA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="250918179"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="250918179"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 08:15:42 -0800
+IronPort-SDR: Vt0QZCUuEOnMzMJNZlcPL/Mol5hhraqHKiC+kdIuQpx3T0VndNvPZNbGrS5y2K9DIKPObdVzf1
+ rNFGQGmtjYqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="435746077"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Mar 2021 08:15:06 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id F082113A; Tue,  2 Mar 2021 18:14:56 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
+Date:   Tue,  2 Mar 2021 18:14:53 +0200
+Message-Id: <20210302161453.28540-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The C implementations of __ashldi3(), __ashrdi3__(), and __lshrdi3() in
-arch/sh/lib/ are identical to the generic C implementations in lib/.
-Reduce duplication by switching SH to the generic versions.
+Fix typos in kernel doc, otherwise validation script complains:
 
-Update the include path in arch/sh/boot/compressed accordingly.
+.../irq_sim.c:170: warning: Function parameter or member 'fwnode' not described in 'irq_domain_create_sim'
+.../irq_sim.c:170: warning: Excess function parameter 'fnode' description in 'irq_domain_create_sim'
+.../irq_sim.c:240: warning: Function parameter or member 'fwnode' not described in 'devm_irq_domain_create_sim'
+.../irq_sim.c:240: warning: Excess function parameter 'fnode' description in 'devm_irq_domain_create_sim'
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-Against sh/for-next, tested on landisk and qemu/rts7751r2d.
+ kernel/irq/irq_sim.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Note that it also works without the change to arch/sh/boot/compressed/,
-as lib/ashldi3.c can be reached via both include/uapi/../../lib/ashldi3.c
-and arch/sh/boot/compressed/../../../../lib/ashldi3.c.
-
-Palmer tried a similar thing before:
-https://lore.kernel.org/linux-arch/20170523220546.16758-1-palmer@dabbelt.com/
-but initially it broke the SH build due to a missing change to
-arch/sh/boot/compressed/, and the later update never got picked up.
-In the mean time, arch/sh/boot/compressed/ was changed, so his patch no
-longer applies.
-
-Similar for the other architectures, I guess?
----
- arch/sh/Kconfig                   |  3 +++
- arch/sh/boot/compressed/ashldi3.c |  4 ++--
- arch/sh/lib/Makefile              |  4 +---
- arch/sh/lib/ashldi3.c             | 30 -----------------------------
- arch/sh/lib/ashrdi3.c             | 32 -------------------------------
- arch/sh/lib/lshrdi3.c             | 30 -----------------------------
- 6 files changed, 6 insertions(+), 97 deletions(-)
- delete mode 100644 arch/sh/lib/ashldi3.c
- delete mode 100644 arch/sh/lib/ashrdi3.c
- delete mode 100644 arch/sh/lib/lshrdi3.c
-
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index e798e55915c2337f..468e475c02d184bd 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -19,6 +19,9 @@ config SUPERH
- 	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
- 	select GENERIC_IDLE_POLL_SETUP
- 	select GENERIC_IRQ_SHOW
-+	select GENERIC_LIB_ASHLDI3
-+	select GENERIC_LIB_ASHRDI3
-+	select GENERIC_LIB_LSHRDI3
- 	select GENERIC_PCI_IOMAP if PCI
- 	select GENERIC_SCHED_CLOCK
- 	select GENERIC_STRNCPY_FROM_USER
-diff --git a/arch/sh/boot/compressed/ashldi3.c b/arch/sh/boot/compressed/ashldi3.c
-index 7cebd646df839b48..7c12121702309e8c 100644
---- a/arch/sh/boot/compressed/ashldi3.c
-+++ b/arch/sh/boot/compressed/ashldi3.c
-@@ -1,2 +1,2 @@
--// SPDX-License-Identifier: GPL-2.0-only
--#include "../../lib/ashldi3.c"
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#include "../../../../lib/ashldi3.c"
-diff --git a/arch/sh/lib/Makefile b/arch/sh/lib/Makefile
-index eb473d373ca43a4b..d20a0768b31fa2b6 100644
---- a/arch/sh/lib/Makefile
-+++ b/arch/sh/lib/Makefile
-@@ -7,9 +7,7 @@ lib-y  = delay.o memmove.o memchr.o \
- 	 checksum.o strlen.o div64.o div64-generic.o
- 
- # Extracted from libgcc
--obj-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
--	 ashlsi3.o ashrsi3.o ashiftrt.o lshrsi3.o \
--	 udiv_qrnnd.o
-+obj-y += movmem.o ashlsi3.o ashrsi3.o ashiftrt.o lshrsi3.o udiv_qrnnd.o
- 
- udivsi3-y			:= udivsi3_i4i-Os.o
- 
-diff --git a/arch/sh/lib/ashldi3.c b/arch/sh/lib/ashldi3.c
-deleted file mode 100644
-index e5afe0935847427f..0000000000000000
---- a/arch/sh/lib/ashldi3.c
-+++ /dev/null
-@@ -1,30 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/module.h>
--
--#include "libgcc.h"
--
--long long __ashldi3(long long u, word_type b)
--{
--	DWunion uu, w;
--	word_type bm;
--
--	if (b == 0)
--		return u;
--
--	uu.ll = u;
--	bm = 32 - b;
--
--	if (bm <= 0) {
--		w.s.low = 0;
--		w.s.high = (unsigned int) uu.s.low << -bm;
--	} else {
--		const unsigned int carries = (unsigned int) uu.s.low >> bm;
--
--		w.s.low = (unsigned int) uu.s.low << b;
--		w.s.high = ((unsigned int) uu.s.high << b) | carries;
--	}
--
--	return w.ll;
--}
--
--EXPORT_SYMBOL(__ashldi3);
-diff --git a/arch/sh/lib/ashrdi3.c b/arch/sh/lib/ashrdi3.c
-deleted file mode 100644
-index ae263fbf25383b70..0000000000000000
---- a/arch/sh/lib/ashrdi3.c
-+++ /dev/null
-@@ -1,32 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/module.h>
--
--#include "libgcc.h"
--
--long long __ashrdi3(long long u, word_type b)
--{
--	DWunion uu, w;
--	word_type bm;
--
--	if (b == 0)
--		return u;
--
--	uu.ll = u;
--	bm = 32 - b;
--
--	if (bm <= 0) {
--		/* w.s.high = 1..1 or 0..0 */
--		w.s.high =
--		    uu.s.high >> 31;
--		w.s.low = uu.s.high >> -bm;
--	} else {
--		const unsigned int carries = (unsigned int) uu.s.high << bm;
--
--		w.s.high = uu.s.high >> b;
--		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
--	}
--
--	return w.ll;
--}
--
--EXPORT_SYMBOL(__ashrdi3);
-diff --git a/arch/sh/lib/lshrdi3.c b/arch/sh/lib/lshrdi3.c
-deleted file mode 100644
-index 33eaa1edbc3c0656..0000000000000000
---- a/arch/sh/lib/lshrdi3.c
-+++ /dev/null
-@@ -1,30 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/module.h>
--
--#include "libgcc.h"
--
--long long __lshrdi3(long long u, word_type b)
--{
--	DWunion uu, w;
--	word_type bm;
--
--	if (b == 0)
--		return u;
--
--	uu.ll = u;
--	bm = 32 - b;
--
--	if (bm <= 0) {
--		w.s.high = 0;
--		w.s.low = (unsigned int) uu.s.high >> -bm;
--	} else {
--		const unsigned int carries = (unsigned int) uu.s.high << bm;
--
--		w.s.high = (unsigned int) uu.s.high >> b;
--		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
--	}
--
--	return w.ll;
--}
--
--EXPORT_SYMBOL(__lshrdi3);
+diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
+index 48006608baf0..40880c350b95 100644
+--- a/kernel/irq/irq_sim.c
++++ b/kernel/irq/irq_sim.c
+@@ -159,7 +159,7 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
+  * irq_domain_create_sim - Create a new interrupt simulator irq_domain and
+  *                         allocate a range of dummy interrupts.
+  *
+- * @fnode:      struct fwnode_handle to be associated with this domain.
++ * @fwnode:     struct fwnode_handle to be associated with this domain.
+  * @num_irqs:   Number of interrupts to allocate.
+  *
+  * On success: return a new irq_domain object.
+@@ -228,7 +228,7 @@ static void devm_irq_domain_release_sim(struct device *dev, void *res)
+  *                              a managed device.
+  *
+  * @dev:        Device to initialize the simulator object for.
+- * @fnode:      struct fwnode_handle to be associated with this domain.
++ * @fwnode:     struct fwnode_handle to be associated with this domain.
+  * @num_irqs:   Number of interrupts to allocate
+  *
+  * On success: return a new irq_domain object.
 -- 
-2.25.1
+2.30.1
 
