@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F6C32A9A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2169A32A984
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581150AbhCBSkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:40:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46440 "EHLO mail.kernel.org"
+        id S1580937AbhCBScQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:32:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351036AbhCBPr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:47:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B12A164F57;
-        Tue,  2 Mar 2021 11:57:01 +0000 (UTC)
+        id S1448845AbhCBPnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:43:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4338E64F5A;
+        Tue,  2 Mar 2021 11:57:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686222;
-        bh=6c15F5Uhi6U8dgs+Iy1Mr9IC+YG/q6nRShgMK4C9KO8=;
+        s=k20201202; t=1614686226;
+        bh=ttBSAstuxahvrv6pryYeHwkR2zP2IIvHIkOm3LxkB/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iGSwpBGUJWO/5Ain7heo7mz2kVO2tWQD0fVFACRxIQ2WvoWY0xcdT6D+COai4etVm
-         70sxFqaDOO4hgH5w+4WTK5Pl+endx4cLhmLLpfDS5+d+hb0quOI/UQfLiTjr2plhPG
-         1tWeu61jxx2HCzF/WEyup5J6sFTQ+4jC2FaBjTHy3RGtV1aOWYO0MdIN69uLPcl+MV
-         kg5XZ3T3lg3kCIzTXD9q/zEiMgXFZwn/U9MHp/dzO0pLpvZb5sY78IO+oqZd16fiwg
-         dVgPMyYvv4n7Zn/b6EfCW/t08YIKC87jocdGaDg5hiZrmhboQeZzMK3Ho583a1VWPV
-         wQDrDoPjGF/aA==
+        b=EWvWZ0zehZnFwlm1SuPprezHBsNpcwmzCOvBdSRtaniTLtfqhL+SoJcLfMuvjzOxZ
+         UsEkA8Wxf2SWO5St91CBE7pS5yJ6pDKrEyT0SIvA99fo6YeoiwZa5L6yxukR1J+dsg
+         Ja+VSuLSbpkDIHHZ0BL3yTamfHXIAZYWJFcRhPnKSVuKuN0ju80E93E7JooZew3H3F
+         +gvoy4bXJFBq63wPG7N+LVks4UArhn7MVbJInzyE1lxSupNJS+waLyqfuFMWYanRbL
+         PaHfVE+coev1yEL9FEacJOkQ6v7K91A1S8MkQckL3g/N0N2siqV5IMkn0lBCxj4x+R
+         ecZKAb65FBs8g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lubomir Rintel <lkundrak@v3.sk>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 12/47] Platform: OLPC: Fix probe error handling
-Date:   Tue,  2 Mar 2021 06:56:11 -0500
-Message-Id: <20210302115646.62291-12-sashal@kernel.org>
+Cc:     Alain Volmat <alain.volmat@foss.st.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 15/47] spi: stm32: make spurious and overrun interrupts visible
+Date:   Tue,  2 Mar 2021 06:56:14 -0500
+Message-Id: <20210302115646.62291-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
 References: <20210302115646.62291-1-sashal@kernel.org>
@@ -43,58 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lubomir Rintel <lkundrak@v3.sk>
+From: Alain Volmat <alain.volmat@foss.st.com>
 
-[ Upstream commit cec551ea0d41c679ed11d758e1a386e20285b29d ]
+[ Upstream commit c64e7efe46b7de21937ef4b3594d9b1fc74f07df ]
 
-Reset ec_priv if probe ends unsuccessfully.
+We do not expect to receive spurious interrupts so rise a warning
+if it happens.
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-Link: https://lore.kernel.org/r/20210126073740.10232-2-lkundrak@v3.sk
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+RX overrun is an error condition that signals a corrupted RX
+stream both in dma and in irq modes. Report the error and
+abort the transfer in either cases.
+
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Link: https://lore.kernel.org/r/1612551572-495-9-git-send-email-alain.volmat@foss.st.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/olpc/olpc-ec.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/spi/spi-stm32.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/platform/olpc/olpc-ec.c b/drivers/platform/olpc/olpc-ec.c
-index f64b82824db2..2db7113383fd 100644
---- a/drivers/platform/olpc/olpc-ec.c
-+++ b/drivers/platform/olpc/olpc-ec.c
-@@ -426,11 +426,8 @@ static int olpc_ec_probe(struct platform_device *pdev)
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index 6017209c6d2f..4bcdad084801 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -928,8 +928,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
+ 		mask |= STM32H7_SPI_SR_RXP;
  
- 	/* get the EC revision */
- 	err = olpc_ec_cmd(EC_FIRMWARE_REV, NULL, 0, &ec->version, 1);
--	if (err) {
--		ec_priv = NULL;
--		kfree(ec);
--		return err;
--	}
-+	if (err)
-+		goto error;
- 
- 	config.dev = pdev->dev.parent;
- 	config.driver_data = ec;
-@@ -440,12 +437,16 @@ static int olpc_ec_probe(struct platform_device *pdev)
- 	if (IS_ERR(ec->dcon_rdev)) {
- 		dev_err(&pdev->dev, "failed to register DCON regulator\n");
- 		err = PTR_ERR(ec->dcon_rdev);
--		kfree(ec);
--		return err;
-+		goto error;
+ 	if (!(sr & mask)) {
+-		dev_dbg(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
+-			sr, ier);
++		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
++			 sr, ier);
+ 		spin_unlock_irqrestore(&spi->lock, flags);
+ 		return IRQ_NONE;
+ 	}
+@@ -956,15 +956,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
  	}
  
- 	ec->dbgfs_dir = olpc_ec_setup_debugfs();
+ 	if (sr & STM32H7_SPI_SR_OVR) {
+-		dev_warn(spi->dev, "Overrun: received value discarded\n");
+-		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
+-			stm32h7_spi_read_rxfifo(spi, false);
+-		/*
+-		 * If overrun is detected while using DMA, it means that
+-		 * something went wrong, so stop the current transfer
+-		 */
+-		if (spi->cur_usedma)
+-			end = true;
++		dev_err(spi->dev, "Overrun: RX data lost\n");
++		end = true;
+ 	}
  
-+	return 0;
-+
-+error:
-+	ec_priv = NULL;
-+	kfree(ec);
- 	return err;
- }
- 
+ 	if (sr & STM32H7_SPI_SR_EOT) {
 -- 
 2.30.1
 
