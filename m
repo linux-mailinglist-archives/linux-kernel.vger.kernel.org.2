@@ -2,117 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A636132A49E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD17532A49D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446443AbhCBKyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
+        id S1446435AbhCBKyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:54:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238943AbhCBKkN (ORCPT
+        with ESMTP id S239276AbhCBKkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 05:40:13 -0500
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B78BC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:39:18 -0800 (PST)
-Received: by mail-vk1-xa2a.google.com with SMTP id q17so4304035vkd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:39:18 -0800 (PST)
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC70C0617AA
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:39:22 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id t15so6603910ual.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:39:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WF09PQ21WPf2dOn93uEnZ+9gNN1Yr1nYVt54j/3LMVA=;
-        b=sNsG+EXeYlvQRBmN49oVUL3WhpRz0zSEl+Gg/ricE1AfvEhjkyBoTN+qkr6FMdevP6
-         VJlGR3oSqZEAggQNomng3pkOsJxnYgtENg2rWX+wPDDVVN5M0hlekGThgke3ddy4P+pJ
-         nrffJFvIRjj+jXh2VpXIe38NZ4IMi6ffpy1EsOsQiIyF3mRKTETyA/TQa2BZMnJg302g
-         OuyTjSnpGevB0/rBCz+uZSC0N9FHCKF6x9SYuzbppjGGR+ySSzxiuFlufZLxoMgpae+H
-         zhg6lY6feqnh4JPZKg+Zex8t6/Xm94U/pOokxoacsOH3riqF0IlvGO0GI/FJLXu15PBC
-         Pt0w==
+        bh=Umhvl4bq+upwhpgsDahvWiFLVfJYEzzIi8Pp8HB1UCU=;
+        b=OQG3lH5wODLrZdv+wguq1ZV0/ouPrqhe3yjBzS5zIDZ9Z3IP+ASIFxVf+INdGRUEKQ
+         2/twk8qhoUJem5qqPWeeh5b74/yj2selF5wiJ4HmR9mo8H0T50wrgDxAqWRrGVgfcvUV
+         VngPYDvdzNKKI71OQE1LDYEt9UQyRTASDZTYp6vXooGlDnbSU4rNy9sHsEX4eORftUHY
+         YnCyFFsI1E+85nKfV4oehVPQEgcBTOfUJzuXn+8QpCKNsJVsgjL+wAmq9XmN8LVmZQdq
+         Ke/iqI6p0/62buAnjIu5ZAAFafN8r/gikx0YnzlmndlYxofqONVdOr86VCFm4G998eQi
+         g2Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WF09PQ21WPf2dOn93uEnZ+9gNN1Yr1nYVt54j/3LMVA=;
-        b=nSnU8yommR6AHPwAHmldzna6ie4vWBng3q6pR6KcxPVHoTIXxMafg01IheHFW6//pa
-         HZJrouWy22pvpZROY46Sqqlr7kXX0ggR8LD0iCNi8FRB8jdZJd1sLaeh1krSm+DdI7G/
-         mokBOX1MTlbDAsGF5J+sIjCOSKRsW9DsjD1phsxlGMcqFfuRWHHsoTg5NTr3xn2ZAD3m
-         yJMdR8LFNVbmFBzDHmORQMgVBgg2RRTjRLnbxjC3ICwEDWtaMzQgTJktvLQ4h00IQrPS
-         byKhurlPN/65+GUzXqtS4isxCUqGnHUY04i9jkCIvRBDFYI9oM+SE6A8S9V5JApAxrQc
-         iI6A==
-X-Gm-Message-State: AOAM531+mgf0k+v2s/DuZNYjlMicbF9DCmkodAY5r8XWMCMzaWjBt40b
-        Plf4vYu2xhZGnyxk8skS8XWbiNcvbpBJ4ZZ2IQ70zQ==
-X-Google-Smtp-Source: ABdhPJxVkINy7HOK1m5ma1Zk+SdXXGCfrtrNZlF55NOTcuSX03rgAIRm7nT6iYaMxQPEbcjn0rtBkFbWIxkR/cJn82U=
-X-Received: by 2002:a1f:b408:: with SMTP id d8mr1436895vkf.8.1614681557530;
- Tue, 02 Mar 2021 02:39:17 -0800 (PST)
+        bh=Umhvl4bq+upwhpgsDahvWiFLVfJYEzzIi8Pp8HB1UCU=;
+        b=M/+qyPClEXx9lcmqWoc3an9/aAvHTWJgZrl/IKR/QkU//0ySn6pLYhLP0OF71BzbNA
+         5y2kyM9lQZx3LfeXH4eCz/KXpkvEclGh2IscpeTX7cZLmRST62aJjv3a5OexzFjpL3jO
+         nimCFSEnfSQ7yw7sQ8D4T887gC5bowXQ9yDgQ7bfKxcEFvlnjtRnzDVj1Fc/AtaQWPiY
+         FVKLPZ40IyYrCUUt19dzDcsP79Fg4Lf5t3bI5Azs082W6vRKW9bmv/DQSc88FufBM2qH
+         VNzLA50kNC6e0Zj3ihLcLXwvOUasufmYURNTbOW/mNDkGxHKD6410NNSu2mpNusmkWb2
+         C6wg==
+X-Gm-Message-State: AOAM531J55ieOMzoytc0wymEL3bADE4A8lpN1AhA80rjvkCqhQ2KelUn
+        u536UozroxRYnHDJCWf6e2n2Jn80UAimB6f6YWNBLA==
+X-Google-Smtp-Source: ABdhPJzEyACksmZlApWoBwwWgL7AzKp9cesm9Vy9z6W3q1lFtagYm5gc2fmXlNs/auwZp9RnR9QdnP8r6zx/hInmD3k=
+X-Received: by 2002:ab0:6045:: with SMTP id o5mr10027474ual.100.1614681562074;
+ Tue, 02 Mar 2021 02:39:22 -0800 (PST)
 MIME-Version: 1.0
-References: <CGME20210210051209epcas1p3e55c0cbab7313731bc6e425da6189bb4@epcas1p3.samsung.com>
- <20210210045936.7809-1-dh0421.hwang@samsung.com>
-In-Reply-To: <20210210045936.7809-1-dh0421.hwang@samsung.com>
+References: <20210215015116.1355-1-zbestahu@gmail.com>
+In-Reply-To: <20210215015116.1355-1-zbestahu@gmail.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 2 Mar 2021 11:38:40 +0100
-Message-ID: <CAPDyKFpQyoNELdh3FrFF++HXKjH_Tn9oaY=PzUXHcE8o=KK-hg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: add a power cycle when CMD11 fails
-To:     DooHyun Hwang <dh0421.hwang@samsung.com>
+Date:   Tue, 2 Mar 2021 11:38:44 +0100
+Message-ID: <CAPDyKFrNBPUdU772EFhcodbu6Mnhv+KmfV6E1oNau1xOooNf8A@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Reduce code duplication to mmc_spi_send_{csd|cid}
+To:     Yue Hu <zbestahu@gmail.com>
 Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Satya Tangirala <satyat@google.com>,
-        Ludovic Barre <ludovic.barre@st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, Chanwoo Lee <cw9316.lee@samsung.com>,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com
+        Yue Hu <huyue2@yulong.com>, zhangwen@yulong.com,
+        zbestahu@163.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 at 06:12, DooHyun Hwang <dh0421.hwang@samsung.com> wrote:
+On Mon, 15 Feb 2021 at 02:51, Yue Hu <zbestahu@gmail.com> wrote:
 >
-> A power cycle is required if CMD11 fails.
-> CMD11 failure should be handled as no response.
+> From: Yue Hu <huyue2@yulong.com>
 >
-> If there is a timeout error that means no response to the CMD11,
-> do not send the CMD11 again and the power cycle is required.
-> Any other errors for CMD11 are the same because CMD11 failed.
+> mmc_spi_send_{csd|cid} have similar function body. Let's remove the
+> duplicated part to simplify the code, just add opcode to distinguish
+> them in changed mmc_spi_send_cxd().
 >
-> On some bad SD Card, CMD11 may fail but the card may have already
-> invoked the voltage switch sequence.
-> In this case, it is necessary to retry without voltage switching
-> after power cycle.
->
-> Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
 
 Applied for next, thanks!
 
-I took the liberty of updating the commit message a bit, to try to
-clarify things. Moreover, I have tagged this for stable kernels.
-
-BTW, did you try to force the error to -EAGAIN, to keep retrying for a
-couple of times? If so, did it end up with the same kind of errors?
-
-> ---
->  drivers/mmc/core/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index 1136b859ddd8..a6674df2a7bb 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -1207,7 +1207,7 @@ int mmc_set_uhs_voltage(struct mmc_host *host, u32 ocr)
->
->         err = mmc_wait_for_cmd(host, &cmd, 0);
->         if (err)
-> -               return err;
-> +               goto power_cycle;
->
->         if (!mmc_host_is_spi(host) && (cmd.resp[0] & R1_ERROR))
->                 return -EIO;
-> --
-> 2.29.0
->
-
 Kind regards
 Uffe
+
+
+> ---
+>  drivers/mmc/core/mmc_ops.c | 39 +++++++++------------------------------
+>  1 file changed, 9 insertions(+), 30 deletions(-)
+>
+> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+> index 265d95e..f413474 100644
+> --- a/drivers/mmc/core/mmc_ops.c
+> +++ b/drivers/mmc/core/mmc_ops.c
+> @@ -296,61 +296,40 @@ int mmc_set_relative_addr(struct mmc_card *card)
+>         return 0;
+>  }
+>
+> -static int mmc_spi_send_csd(struct mmc_host *host, u32 *csd)
+> +static int mmc_spi_send_cxd(struct mmc_host *host, u32 *cxd, u32 opcode)
+>  {
+>         int ret, i;
+> -       __be32 *csd_tmp;
+> +       __be32 *cxd_tmp;
+>
+> -       csd_tmp = kzalloc(16, GFP_KERNEL);
+> -       if (!csd_tmp)
+> +       cxd_tmp = kzalloc(16, GFP_KERNEL);
+> +       if (!cxd_tmp)
+>                 return -ENOMEM;
+>
+> -       ret = mmc_send_cxd_data(NULL, host, MMC_SEND_CSD, csd_tmp, 16);
+> +       ret = mmc_send_cxd_data(NULL, host, opcode, cxd_tmp, 16);
+>         if (ret)
+>                 goto err;
+>
+>         for (i = 0; i < 4; i++)
+> -               csd[i] = be32_to_cpu(csd_tmp[i]);
+> +               cxd[i] = be32_to_cpu(cxd_tmp[i]);
+>
+>  err:
+> -       kfree(csd_tmp);
+> +       kfree(cxd_tmp);
+>         return ret;
+>  }
+>
+>  int mmc_send_csd(struct mmc_card *card, u32 *csd)
+>  {
+>         if (mmc_host_is_spi(card->host))
+> -               return mmc_spi_send_csd(card->host, csd);
+> +               return mmc_spi_send_cxd(card->host, csd, MMC_SEND_CSD);
+>
+>         return mmc_send_cxd_native(card->host, card->rca << 16, csd,
+>                                 MMC_SEND_CSD);
+>  }
+>
+> -static int mmc_spi_send_cid(struct mmc_host *host, u32 *cid)
+> -{
+> -       int ret, i;
+> -       __be32 *cid_tmp;
+> -
+> -       cid_tmp = kzalloc(16, GFP_KERNEL);
+> -       if (!cid_tmp)
+> -               return -ENOMEM;
+> -
+> -       ret = mmc_send_cxd_data(NULL, host, MMC_SEND_CID, cid_tmp, 16);
+> -       if (ret)
+> -               goto err;
+> -
+> -       for (i = 0; i < 4; i++)
+> -               cid[i] = be32_to_cpu(cid_tmp[i]);
+> -
+> -err:
+> -       kfree(cid_tmp);
+> -       return ret;
+> -}
+> -
+>  int mmc_send_cid(struct mmc_host *host, u32 *cid)
+>  {
+>         if (mmc_host_is_spi(host))
+> -               return mmc_spi_send_cid(host, cid);
+> +               return mmc_spi_send_cxd(host, cid, MMC_SEND_CID);
+>
+>         return mmc_send_cxd_native(host, 0, cid, MMC_ALL_SEND_CID);
+>  }
+> --
+> 1.9.1
+>
