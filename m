@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9630032A63B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D3732A686
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444229AbhCBORA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:17:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51136 "EHLO mail.kernel.org"
+        id S1574336AbhCBPPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:15:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345670AbhCBMgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:36:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA8964F51;
-        Tue,  2 Mar 2021 11:56:55 +0000 (UTC)
+        id S1444911AbhCBMlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:41:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C402964F53;
+        Tue,  2 Mar 2021 11:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686216;
-        bh=gHCNSIIJBpDDyHuxZ94L+MAHMGyBEwM33M/mylZiORs=;
+        s=k20201202; t=1614686223;
+        bh=BgcOHfwvydH1yXWb/ipxKMGonTpJkoG8DBfuIUv7qXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WFdgLGGV+QL8pvSAPKHii4jUCUSimpqoIrACdhNQHZAStnsCuxnHJarSZNOlAeIk4
-         +YAcrX3shcA64ogxve0ShiRvgNf2lpdihNhato9zFVUmW7iL30tJuuZYaWJH98uVtV
-         OjtmB9sbN5mKN2P9/HQy43I7f2ecmm/DjuAGEMn6JwhZgYUbHRqqaXRws/3LByj5/b
-         nvgl7jgcXTBlZ9YO1heww9qsuQ5E548HVEGRT3qoNbIm4vTEtrxYRUHiVgw7u2X4fG
-         XIkJa0sg6Mv6hsr5K7nj1l3dkotQg6a3Y9495x6w4kO55tk+2nQ4GcLL86kiiAXrSe
-         JtWVC7yyMo67Q==
+        b=jKxlK8uJ9HgboP5Rv/+BYoVh+ftans1Gcnr1UrVETccVniqawznVrF/H7tMwQhFSY
+         YXDgpUwI49+sT0SBH2ILagk/tsV2FwgmBQhuYjqTkSoZwTXgnAlLfllUnnxKcUWhwQ
+         9iQghfFCQVZ9i40jyrAGHH5m2qMzdJkOHZI7s4r8pdAAnXPH0mPzEsUKztW6tYg2Xm
+         udzm1RlG9ZjpIFv0FsIlp23cIdH6bEzrhZ7leRDrd0F0ci6+4SiAIlGSkyDljcRvEr
+         +YkJHEi/qVnUMfsamtO5TWHMPRbSjZ7Nlj2rFqj/dqIy0nSE5Vg3hAmkXPuXW8vJTB
+         71VN8o24qpC7Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 5.10 07/47] iommu/vt-d: Clear PRQ overflow only when PRQ is empty
-Date:   Tue,  2 Mar 2021 06:56:06 -0500
-Message-Id: <20210302115646.62291-7-sashal@kernel.org>
+Cc:     Oliver O'Halloran <oohall@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.10 13/47] powerpc/pci: Add ppc_md.discover_phbs()
+Date:   Tue,  2 Mar 2021 06:56:12 -0500
+Message-Id: <20210302115646.62291-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
 References: <20210302115646.62291-1-sashal@kernel.org>
@@ -44,53 +43,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-[ Upstream commit 28a77185f1cd0650b664f54614143aaaa3a7a615 ]
+[ Upstream commit 5537fcb319d016ce387f818dd774179bc03217f5 ]
 
-It is incorrect to always clear PRO when it's set w/o first checking
-whether the overflow condition has been cleared. Current code assumes
-that if an overflow condition occurs it must have been cleared by earlier
-loop. However since the code runs in a threaded context, the overflow
-condition could occur even after setting the head to the tail under some
-extreme condition. To be sane, we should read both head/tail again when
-seeing a pending PRO and only clear PRO after all pending PRs have been
-handled.
+On many powerpc platforms the discovery and initalisation of
+pci_controllers (PHBs) happens inside of setup_arch(). This is very early
+in boot (pre-initcalls) and means that we're initialising the PHB long
+before many basic kernel services (slab allocator, debugfs, a real ioremap)
+are available.
 
-Suggested-by: Kevin Tian <kevin.tian@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/linux-iommu/MWHPR11MB18862D2EA5BD432BF22D99A48CA09@MWHPR11MB1886.namprd11.prod.outlook.com/
-Link: https://lore.kernel.org/r/20210126080730.2232859-2-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+On PowerNV this causes an additional problem since we map the PHB registers
+with ioremap(). As of commit d538aadc2718 ("powerpc/ioremap: warn on early
+use of ioremap()") a warning is printed because we're using the "incorrect"
+API to setup and MMIO mapping in searly boot. The kernel does provide
+early_ioremap(), but that is not intended to create long-lived MMIO
+mappings and a seperate warning is printed by generic code if
+early_ioremap() mappings are "leaked."
+
+This is all fixable with dumb hacks like using early_ioremap() to setup
+the initial mapping then replacing it with a real ioremap later on in
+boot, but it does raise the question: Why the hell are we setting up the
+PHB's this early in boot?
+
+The old and wise claim it's due to "hysterical rasins." Aside from amused
+grapes there doesn't appear to be any real reason to maintain the current
+behaviour. Already most of the newer embedded platforms perform PHB
+discovery in an arch_initcall and between the end of setup_arch() and the
+start of initcalls none of the generic kernel code does anything PCI
+related. On powerpc scanning PHBs occurs in a subsys_initcall so it should
+be possible to move the PHB discovery to a core, postcore or arch initcall.
+
+This patch adds the ppc_md.discover_phbs hook and a core_initcall stub that
+calls it. The core_initcalls are the earliest to be called so this will
+any possibly issues with dependency between initcalls. This isn't just an
+academic issue either since on pseries and PowerNV EEH init occurs in an
+arch_initcall and depends on the pci_controllers being available, similarly
+the creation of pci_dns occurs at core_initcall_sync (i.e. between core and
+postcore initcalls). These problems need to be addressed seperately.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+[mpe: Make discover_phbs() static]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201103043523.916109-1-oohall@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/svm.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/powerpc/include/asm/machdep.h |  3 +++
+ arch/powerpc/kernel/pci-common.c   | 10 ++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 43f392d27d31..b200a3acc6ed 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -1079,8 +1079,17 @@ prq_advance:
- 	 * Clear the page request overflow bit and wake up all threads that
- 	 * are waiting for the completion of this handling.
- 	 */
--	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO)
--		writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
-+	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO) {
-+		pr_info_ratelimited("IOMMU: %s: PRQ overflow detected\n",
-+				    iommu->name);
-+		head = dmar_readq(iommu->reg + DMAR_PQH_REG) & PRQ_RING_MASK;
-+		tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & PRQ_RING_MASK;
-+		if (head == tail) {
-+			writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
-+			pr_info_ratelimited("IOMMU: %s: PRQ overflow cleared",
-+					    iommu->name);
-+		}
-+	}
+diff --git a/arch/powerpc/include/asm/machdep.h b/arch/powerpc/include/asm/machdep.h
+index 475687f24f4a..d319160d790c 100644
+--- a/arch/powerpc/include/asm/machdep.h
++++ b/arch/powerpc/include/asm/machdep.h
+@@ -59,6 +59,9 @@ struct machdep_calls {
+ 	int		(*pcibios_root_bridge_prepare)(struct pci_host_bridge
+ 				*bridge);
  
- 	if (!completion_done(&iommu->prq_complete))
- 		complete(&iommu->prq_complete);
++	/* finds all the pci_controllers present at boot */
++	void 		(*discover_phbs)(void);
++
+ 	/* To setup PHBs when using automatic OF platform driver for PCI */
+ 	int		(*pci_setup_phb)(struct pci_controller *host);
+ 
+diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
+index be108616a721..7920559a1ca8 100644
+--- a/arch/powerpc/kernel/pci-common.c
++++ b/arch/powerpc/kernel/pci-common.c
+@@ -1625,3 +1625,13 @@ static void fixup_hide_host_resource_fsl(struct pci_dev *dev)
+ }
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MOTOROLA, PCI_ANY_ID, fixup_hide_host_resource_fsl);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_FREESCALE, PCI_ANY_ID, fixup_hide_host_resource_fsl);
++
++
++static int __init discover_phbs(void)
++{
++	if (ppc_md.discover_phbs)
++		ppc_md.discover_phbs();
++
++	return 0;
++}
++core_initcall(discover_phbs);
 -- 
 2.30.1
 
