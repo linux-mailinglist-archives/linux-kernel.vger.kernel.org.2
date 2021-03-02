@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C589332AE60
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D796D32AE67
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1840127AbhCBXHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 18:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383537AbhCBWi5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:38:57 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B55C061788;
-        Tue,  2 Mar 2021 14:38:17 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id i10so5628186pfk.4;
-        Tue, 02 Mar 2021 14:38:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=16ZsYeV/ZdwWP3DCpSIRW9ueEChomR6vgL2YdoWwzwA=;
-        b=H2d5kSfv+pw836sRSAVCES3eU6Mva3juAldmt+kabEIZXIUBAcc6Md3/QB2pTKaujJ
-         G44djHwrNUAYMlBViFeLDM3YpuRyv6vzHp4SI2WU8fRZjho6C5UZTbuuY0RnAyiiCYHJ
-         uUf7qXc3rTB2RaQZ5ctoupmX+07bC+nj0silk619ptEQ6o5KVEfGizNFm/iUcgxfFPnZ
-         lwdOyV6vFCC0q/SgAqM3cEL03lb0OtGvRnOZDPttYQNS+6H7IW+a3j40O7XEUxxGWlRb
-         3Q2UWaBn7j6tP5ifZBQ9+JpKCy8ba4zknTundlx/LAdOfIa+lSPtyIh0ZN5y07p+P7fJ
-         sRhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=16ZsYeV/ZdwWP3DCpSIRW9ueEChomR6vgL2YdoWwzwA=;
-        b=NemGJezmRUznShf4XUxlFJXsC1wpS9YNTIY/O1q0KCorb1GELUNsGTZr8KPTxnzkni
-         yGSu4f+zIo8EdUHzIrxnhWq3Ib5g2RRSCmcbiDUYEIqzktE1Xt3mFyOC63diaykGJCH0
-         WrANBJ9MetGqkegNQpWbfuwp7zY5qhpfW9XdGzZfgHzT8LtLewCt32peKpqGFyCHpVCa
-         atSqGdrGaa0wLfTHetF/SytEfO+qcwK2PH2D024bMVDqeu0Lnp8nt2w4NO7i4nMcbGHL
-         fbtyBsRfynhaUKytRN1rjeR4lHpVyv85aYpW832mBDRvZug5HS01lTlfFzgLw2IG90aq
-         aBnw==
-X-Gm-Message-State: AOAM532pUcm3q/oLWZcoVjRSj9mvc8ou6pi9H3IEeMLp8HmB+7zT+tN4
-        X1xIIAuZBmFJXfef+V3S2UcjNpbb7Y4=
-X-Google-Smtp-Source: ABdhPJy/PoQitzmFU7THgSQysUFTtdfwwm2EHOuLzpD4xUOmczvel0jcOLnwJIEjTU7Tt4jfQw9pDQ==
-X-Received: by 2002:aa7:9010:0:b029:1ee:253b:ebca with SMTP id m16-20020aa790100000b02901ee253bebcamr47090pfo.53.1614724696559;
-        Tue, 02 Mar 2021 14:38:16 -0800 (PST)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 8sm4654737pjl.55.2021.03.02.14.38.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 14:38:16 -0800 (PST)
-Subject: Re: [PATCH 4.9 000/134] 4.9.259-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210302192532.615945247@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8cb35629-5815-2bef-6859-1de4cfd60196@gmail.com>
-Date:   Tue, 2 Mar 2021 14:38:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210302192532.615945247@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1840189AbhCBXIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 18:08:01 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:21107 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1384470AbhCBWjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 17:39:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614724772; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Rd4FZOhdgvrwwUHWZxzFOWLaO9NESYzGU/Wl652V4R8=; b=J4N6cvf3RSaJrSI0+r32AvAs0S30MZX0sv+to0/CktAcXSjo55iERI/bTC/XSVrS9DJTNqEf
+ KTd+hv52bSi9uc8+1tV0cB0oDXbKqN/FP7khvWJWj9ZPUWRCEDZt6JvnfpOI+x2gW/G1nM6m
+ PUZgbVh0hcQAYAmFRUGqHFKUjqc=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 603ebe7ec008ffc73a75437e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 22:38:54
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1B8E2C433CA; Tue,  2 Mar 2021 22:38:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9676C433CA;
+        Tue,  2 Mar 2021 22:38:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E9676C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH] bus: mhi: core: Add missing checks for MMIO register entries
+Date:   Tue,  2 Mar 2021 14:38:45 -0800
+Message-Id: <1614724725-35872-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 11:27 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.259 release.
-> There are 134 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.259-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+As per documentation, fields marked as (required) in an MHI
+controller structure need to be populated by the controller driver
+before calling mhi_register_controller(). Ensure all required
+fields are present in the controller before proceeding with the
+registration.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernel:
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+ drivers/bus/mhi/core/init.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index aa575d3..33323ad 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -860,10 +860,10 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 	u32 soc_info;
+ 	int ret, i;
+ 
+-	if (!mhi_cntrl)
+-		return -EINVAL;
+-
+-	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
++	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
++	    !mhi_cntrl->iova_start || !mhi_cntrl->iova_stop ||
++	    !mhi_cntrl->fw_image || !mhi_cntrl->irq ||
++	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
+ 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
+ 	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
+ 		return -EINVAL;
 -- 
-Florian
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
