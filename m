@@ -2,233 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10B132A3DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE9332A3DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382660AbhCBJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:40:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45682 "EHLO mail.kernel.org"
+        id S1382669AbhCBJku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:40:50 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:16247 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1838109AbhCBJ2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:28:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CFF064F0B;
-        Tue,  2 Mar 2021 09:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614677258;
-        bh=/d9JcsrJy2ZQxdWam/1fe7GqsKrPDyLOFEO8rkB2fm0=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=RpH6VV3LMhbD9S6/59a+5Ujmb1jNo8XGen3nZaJR1KibWK8aoNvfZsCbtZ49VSrf7
-         wmAWAvADsOvx4jhlR5X7x5kfGom9gyPGSlshAsMKrxNse7zzPGVGx/1Tb8YhO48lm0
-         mFKp/ag1NMswZfccEiLxadZ8fUq4MaSpxwcHDKNOLxYCwpWz0UmFLcp7+YUh6tGpTQ
-         pqMd3oEmatMAjAWWk6P+yea4ux/CAhyWWHlGVkS8WImaqijaraWPtotZnDyGijXLa0
-         scLcji3zZ189biIYvoNG5UWHAW5nBYkzpLPvYifUioN3N5I/l7KJoKQI14yNaN2uZ4
-         33tRGUEH0I4jA==
-Date:   Tue, 2 Mar 2021 10:27:34 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iwlwifi: don't call netif_napi_add() with rxq->lock held
- (was Re: Lockdep warning in iwl_pcie_rx_handle())
-In-Reply-To: <2db8f779b4b37d4498cfeaed77d5ede54e429a6e.camel@sipsolutions.net>
-Message-ID: <nycvar.YFH.7.76.2103021025410.12405@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2103012136570.12405@cbobk.fhfr.pm>  (sfid-20210301_215846_256695_15E0D07E) <2db8f779b4b37d4498cfeaed77d5ede54e429a6e.camel@sipsolutions.net>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1838108AbhCBJ2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:28:21 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DqWxh65Czz9vBLF;
+        Tue,  2 Mar 2021 10:27:36 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id D2UnChWDqhR1; Tue,  2 Mar 2021 10:27:36 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DqWxh58jrz9vBLD;
+        Tue,  2 Mar 2021 10:27:36 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CDBF28B75F;
+        Tue,  2 Mar 2021 10:27:37 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id nNec12v5Mb1w; Tue,  2 Mar 2021 10:27:37 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 310CF8B7AD;
+        Tue,  2 Mar 2021 10:27:37 +0100 (CET)
+Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
+ <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
+ <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
+ <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
+Date:   Tue, 2 Mar 2021 10:27:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021, Johannes Berg wrote:
 
-> > I am getting the splat below with Linus' tree as of today (5.11-rc1, 
-> > fe07bfda2fb). I haven't started to look into the code yet, but apparently 
-> > this has been already reported by Heiner here:
-> > 
-> > 	https://www.spinics.net/lists/linux-wireless/msg208353.html
-> > 
-> > so before I start digging deep into it (the previous kernel this 
-> > particular machine had is 5.9, so I'd rather avoid lenghty bisect for now 
-> > in case someone has already looked into it and has ideas where the problem 
-> > is), I thought I'd ask whether this has been root-caused elsewhere 
-> > already.
+
+Le 02/03/2021 à 10:21, Alexander Potapenko a écrit :
+>> [   14.998426] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
+>> [   14.998426]
+>> [   15.007061] Invalid read at 0x(ptrval):
+>> [   15.010906]  finish_task_switch.isra.0+0x54/0x23c
+>> [   15.015633]  kunit_try_run_case+0x5c/0xd0
+>> [   15.019682]  kunit_generic_run_threadfn_adapter+0x24/0x30
+>> [   15.025099]  kthread+0x15c/0x174
+>> [   15.028359]  ret_from_kernel_thread+0x14/0x1c
+>> [   15.032747]
+>> [   15.034251] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
+>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
+>> [   15.045811] ==================================================================
+>> [   15.053324]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
+>> [   15.053324]     Expected report_matches(&expect) to be true, but is false
+>> [   15.068359]     not ok 21 - test_invalid_access
 > 
-> Yeah, I'm pretty sure we have a fix for this, though I'm not sure right
-> now where it is in the pipeline.
+> The test expects the function name to be test_invalid_access, i. e.
+> the first line should be "BUG: KFENCE: invalid read in
+> test_invalid_access".
+> The error reporting function unwinds the stack, skips a couple of
+> "uninteresting" frames
+> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L43)
+> and uses the first "interesting" one frame to print the report header
+> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L226).
 > 
-> It's called "iwlwifi: pcie: don't add NAPI under rxq->lock" but right
-> now I can't find it in any of the public archives.
+> It's strange that test_invalid_access is missing altogether from the
+> stack trace - is that expected?
+> Can you try printing the whole stacktrace without skipping any frames
+> to see if that function is there?
+> 
 
-I was not able to find that patch anywhere indeed, but in the meantime I 
-fixed it by the patch below. Please consider merging either of the fixes.
+Booting with 'no_hash_pointers" I get the following. Does it helps ?
 
-Also I am still seeing
-
-	WARNING: CPU: 2 PID: 1138 at kernel/softirq.c:178 __local_bh_enable_ip+0xa5/0xf0
-
-on the
-
-	[   21.902173]  iwl_pcie_enqueue_hcmd+0x5d9/0xa00 [iwlwifi]
-	[   21.906445]  iwl_trans_txq_send_hcmd+0x6c/0x430 [iwlwifi]
-	[   21.910757]  iwl_trans_send_cmd+0x88/0x170 [iwlwifi]
-	[   21.915074]  ? lock_acquire+0x277/0x3d0
-	[   21.919327]  iwl_mvm_send_cmd+0x32/0x80 [iwlmvm]
-	[   21.923616]  iwl_mvm_led_set+0xc2/0xe0 [iwlmvm]
-
-codepath, but I'll look into it separately.
-
-
-
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH] iwlwifi: don't call netif_napi_add() with rxq->lock held
-
-We can't call netif_napi_add() with rxq-lock held, as there is a potential
-for deadlock as spotted by lockdep (see below). rxq->lock is not
-protecting anything over the netif_napi_add() codepath anyway, so let's
-drop it just before calling into NAPI.
-
- ========================================================
- WARNING: possible irq lock inversion dependency detected
- 5.12.0-rc1-00002-gbada49429032 #5 Not tainted
- --------------------------------------------------------
- irq/136-iwlwifi/565 just changed the state of lock:
- ffff89f28433b0b0 (&rxq->lock){+.-.}-{2:2}, at: iwl_pcie_rx_handle+0x7f/0x960 [iwlwifi]
- but this lock took another, SOFTIRQ-unsafe lock in the past:
-  (napi_hash_lock){+.+.}-{2:2}
-
- and interrupts could create inverse lock ordering between them.
-
- other info that might help us debug this:
-  Possible interrupt unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(napi_hash_lock);
-                                local_irq_disable();
-                                lock(&rxq->lock);
-                                lock(napi_hash_lock);
-   <Interrupt>
-     lock(&rxq->lock);
-
-  *** DEADLOCK ***
-
- 1 lock held by irq/136-iwlwifi/565:
-  #0: ffff89f2b1440170 (sync_cmd_lockdep_map){+.+.}-{0:0}, at: iwl_pcie_irq_handler+0x5/0xb30
-
- the shortest dependencies between 2nd lock and 1st lock:
-  -> (napi_hash_lock){+.+.}-{2:2} {
-     HARDIRQ-ON-W at:
-                       lock_acquire+0x277/0x3d0
-                       _raw_spin_lock+0x2c/0x40
-                       netif_napi_add+0x14b/0x270
-                       e1000_probe+0x2fe/0xee0 [e1000e]
-                       local_pci_probe+0x42/0x90
-                       pci_device_probe+0x10b/0x1c0
-                       really_probe+0xef/0x4b0
-                       driver_probe_device+0xde/0x150
-                       device_driver_attach+0x4f/0x60
-                       __driver_attach+0x9c/0x140
-                       bus_for_each_dev+0x79/0xc0
-                       bus_add_driver+0x18d/0x220
-                       driver_register+0x5b/0xf0
-                       do_one_initcall+0x5b/0x300
-                       do_init_module+0x5b/0x21c
-                       load_module+0x1dae/0x22c0
-                       __do_sys_finit_module+0xad/0x110
-                       do_syscall_64+0x33/0x80
-                       entry_SYSCALL_64_after_hwframe+0x44/0xae
-     SOFTIRQ-ON-W at:
-                       lock_acquire+0x277/0x3d0
-                       _raw_spin_lock+0x2c/0x40
-                       netif_napi_add+0x14b/0x270
-                       e1000_probe+0x2fe/0xee0 [e1000e]
-                       local_pci_probe+0x42/0x90
-                       pci_device_probe+0x10b/0x1c0
-                       really_probe+0xef/0x4b0
-                       driver_probe_device+0xde/0x150
-                       device_driver_attach+0x4f/0x60
-                       __driver_attach+0x9c/0x140
-                       bus_for_each_dev+0x79/0xc0
-                       bus_add_driver+0x18d/0x220
-                       driver_register+0x5b/0xf0
-                       do_one_initcall+0x5b/0x300
-                       do_init_module+0x5b/0x21c
-                       load_module+0x1dae/0x22c0
-                       __do_sys_finit_module+0xad/0x110
-                       do_syscall_64+0x33/0x80
-                       entry_SYSCALL_64_after_hwframe+0x44/0xae
-     INITIAL USE at:
-                      lock_acquire+0x277/0x3d0
-                      _raw_spin_lock+0x2c/0x40
-                      netif_napi_add+0x14b/0x270
-                      e1000_probe+0x2fe/0xee0 [e1000e]
-                      local_pci_probe+0x42/0x90
-                      pci_device_probe+0x10b/0x1c0
-                      really_probe+0xef/0x4b0
-                      driver_probe_device+0xde/0x150
-                      device_driver_attach+0x4f/0x60
-                      __driver_attach+0x9c/0x140
-                      bus_for_each_dev+0x79/0xc0
-                      bus_add_driver+0x18d/0x220
-                      driver_register+0x5b/0xf0
-                      do_one_initcall+0x5b/0x300
-                      do_init_module+0x5b/0x21c
-                      load_module+0x1dae/0x22c0
-                      __do_sys_finit_module+0xad/0x110
-                      do_syscall_64+0x33/0x80
-                      entry_SYSCALL_64_after_hwframe+0x44/0xae
-   }
-   ... key      at: [<ffffffffae84ef38>] napi_hash_lock+0x18/0x40
-   ... acquired at:
-    _raw_spin_lock+0x2c/0x40
-    netif_napi_add+0x14b/0x270
-    _iwl_pcie_rx_init+0x1f4/0x710 [iwlwifi]
-    iwl_pcie_rx_init+0x1b/0x3b0 [iwlwifi]
-    iwl_trans_pcie_start_fw+0x2ac/0x6a0 [iwlwifi]
-    iwl_mvm_load_ucode_wait_alive+0x116/0x460 [iwlmvm]
-    iwl_run_init_mvm_ucode+0xa4/0x3a0 [iwlmvm]
-    iwl_op_mode_mvm_start+0x9ed/0xbf0 [iwlmvm]
-    _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
-    iwl_opmode_register+0x71/0xe0 [iwlwifi]
-    iwl_mvm_init+0x34/0x1000 [iwlmvm]
-    do_one_initcall+0x5b/0x300
-    do_init_module+0x5b/0x21c
-    load_module+0x1dae/0x22c0
-    __do_sys_finit_module+0xad/0x110
-    do_syscall_64+0x33/0x80
-    entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-[ ... lockdep output trimmed .... ]
-
-Fixes: 25edc8f259c7106 ("iwlwifi: pcie: properly implement NAPI")
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
----
- drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-index 1bccaa034284..6262dd9043aa 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-@@ -1063,11 +1063,12 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
- 
- 		iwl_pcie_rx_init_rxb_lists(rxq);
- 
-+		spin_unlock_bh(&rxq->lock);
-+
- 		if (!rxq->napi.poll)
- 			netif_napi_add(&trans_pcie->napi_dev, &rxq->napi,
- 				       iwl_pcie_dummy_napi_poll, 64);
- 
--		spin_unlock_bh(&rxq->lock);
- 	}
- 
- 	/* move the pool to the default queue and allocator ownerships */
-
-
--- 
-Jiri Kosina
-SUSE Labs
-
+[   16.837198] ==================================================================
+[   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
+[   16.848521]
+[   16.857158] Invalid read at 0xdf98800a:
+[   16.861004]  finish_task_switch.isra.0+0x54/0x23c
+[   16.865731]  kunit_try_run_case+0x5c/0xd0
+[   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
+[   16.875199]  kthread+0x15c/0x174
+[   16.878460]  ret_from_kernel_thread+0x14/0x1c
+[   16.882847]
+[   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B 
+5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
+[   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
+[   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B 
+(5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
+[   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
+[   16.918153] DAR: df98800a DSISR: 20000000
+[   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
+[   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
+[   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
+[   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
+[   16.947292] Call Trace:
+[   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
+[   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
+[   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
+[   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
+[   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
+[   16.981896] Instruction dump:
+[   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
+[   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
+[   17.000711] ==================================================================
+[   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
+[   17.008223]     Expected report_matches(&expect) to be true, but is false
+[   17.023243]     not ok 21 - test_invalid_access
