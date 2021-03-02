@@ -2,242 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71D032A09F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3EB32A0A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576209AbhCBE0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:26:06 -0500
-Received: from mga03.intel.com ([134.134.136.65]:15924 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238045AbhCBAzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:55:47 -0500
-IronPort-SDR: 830Tlm/yRY1u5PWZ65qxSSe7m4ZYKHXcVm2/rF/PR/iG7ZPzT1YIIbZLvjwze5JPVvkWTbKCbj
- tx6O7lAi/Ung==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186699970"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="186699970"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:54:44 -0800
-IronPort-SDR: pcL/gSin5IPrKGR4yEFLKXeoLMmDuU79vvGCDOKZx1G5lW+8HeDKGOHuJLM8X/37JS/H1bjoPR
- uJStPXHjcfxw==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="406475662"
-Received: from yueliu2-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.139.111])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:54:39 -0800
-Date:   Tue, 2 Mar 2021 13:54:37 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com
-Subject: Re: [PATCH 21/25] KVM: VMX: Add SGX ENCLS[ECREATE] handler to
- enforce CPUID restrictions
-Message-Id: <20210302135437.36a274c7395953219cd3d417@intel.com>
-In-Reply-To: <YD0iT3c8FMPGUNjo@google.com>
-References: <cover.1614590788.git.kai.huang@intel.com>
-        <58db33aae58582de8f644b686fc99b27f39d4d8f.1614590788.git.kai.huang@intel.com>
-        <YD0iT3c8FMPGUNjo@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1576220AbhCBE0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:26:11 -0500
+Received: from sonic309-22.consmr.mail.gq1.yahoo.com ([98.137.65.148]:42277
+        "EHLO sonic309-22.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240175AbhCBA7U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:59:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1614646676; bh=vA9wWjDn6bLma0CuAY4qp6fi9IxIzOHwRVYPhrr5f6E=; h=Date:From:Subject:To:References:From:Subject:Reply-To; b=Uv2FV+hjQ8q3kuDHKTVRJypP56qDy6uJ/8z42+yFsUOH5qLd8kKZbk2sva0EncyVPI2kQjsydiDPzUKfTFJJezEdPI/0QM6u1scHOCaz8Jr/KG2N3w8Eno38bq0evz4Pb/TEg+Lfhi531I6pSm4qsAcpssen4iDc9En7NxnvAHv5iIRGCe5t47KK3z6M/T40GCTSEERDcJEpuW56cTxtACCP8mQ4sq1m4epZu+0NktFXuCJmS2wvzdvQChNMgI7h7uK/C3iQt4NmKCwc1HoRfRcP3S4xlq6pT4h4X7TF6Ph5WImKjlCNsnZKZRR4FMdfAqQ/IPZvCCNQJUOeTQlHgQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1614646676; bh=Wch3LCNOJB7MJeUSkweI4aZ/nlO4ap+48VyCOV920QQ=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=TOf825wncIpRYMAcAL1EIaYuXPkZJNMmqh1Lz/HKa4wD3tVU3Oy0P5gxUNlR9YN8U0Nq/QibQksI8h5dsA8FHr2XJ8egKg6fUboRCFKckyDGPOMgM8/F8oaEyjYIavJG3fOVVFpBOBWdnEWIVi2QxrBgXue2at4dCrZvWGaJUeGTyd2cvZrEhT/JC0hk5ElVmitfxA2mgEIq6TRYA3uD2+DEJCu436u+cnw2j3Q5/RSxnwhKvRuioiqIB8A+v+RHhdzgMaHRcH3cNus3ufcStKZUPFETCbP1qTicwaHCMqe6BZ+vPtAuPuyMgSvKF3uddyv78hWao6tJicSQT+iV0Q==
+X-YMail-OSG: bU8m3UQVM1kKpbeCirlobVfuXYiKp.RHohhdsuz6o5CAuD5e5vIT6wMPvCyWFo7
+ vPB4hEp7UY9HjxnMBXe2hK8dkOfzyt8Y7xx1mUUWp2RK4pEO2zMy0Cz6z70UylQhOJ9eODe65PTy
+ u1LmJ2Xxkjq9d1aHb.d9F2xMX1xjK0Uh6trEfKRj8eem7zG9NFVC2BYCIEQVm4pNPPsnLmRGdbmh
+ xLw125Fh4qnn1DsaetCC9KYIAC8rFSmpTxvWj191Vc4cnht.5iyXsd_YTmckKWCsud2VTsxykTy2
+ _ai5_HAbPpzVh6AbIY4qHt8DboZvneaqHFdm93JX0g9Sp391pQWme4_5wqa8dQrbTAKssr_cluGx
+ .95mW1Q.WpAGdV__oXvGlpvvM4J9jqQZXWv21fFqG2Wai__wrubu_S88mp_ntLoaNb7_vruqQ6NH
+ cqaHverwIUS3GxCOZBZlH.ZrvNgcmUS6cJ9AjpFylvkvipmt4sJCpPjZDvyuh1W_RT.ZqZQglg8k
+ NJQOyKpBmgd.pxG1gwUNmjhRMzg.nntQGw34WipMX2UvX34iZ7u5AiAMiygZkS78MpLDNyis5YNB
+ moo6zqgueIAynTssHuIGus_rf1nuNM.pnAu7rrXo9ns1jNwdRN7tjASrTL4F0IhZdB9feDt6XY68
+ 3rVyTgcMmaF9tdgSjjR7Y6CQGSUfcqbPr8WUI2HU2OhHxWNkyzxepYj4u32kRtGT1yKffdZsfUev
+ MMJ0GxHv0tiJSyenXMCMF9X1sSyV9s99uv.cWZ2AS93HY4BMZqzBYRBUL_PaGcMVRgg0reH5P_YL
+ FR_UAn5wft1VaRRMvpJmIx9XSKst3yxjy.Iq3QZLBMd16eOOexoNMYUM3H4sTNjFeX5ugmwNYUw5
+ 7yNPPol0qCgw0BmUPdz1CuPQjCDkmMU4.jNwKmGZb37Lxdwn67lQp5YmYfq8ctjIkzsilVOmrKX.
+ 9C8i82dMQkkhYwBxobR7_HTb5C.uvDUDW00XIgCqOeSrGkZHyddOlAhzRrULnilP.iO1sJa9kxt4
+ LQCY4RJSh1vOBvGqVd6oOhLolx2whfMJJ9O93XBly8Dkvnn9T2i8pDioKYcpOuDSqCUqnRS5m27A
+ DR1qbiFT2mvpoBTr1YMR8FTkybphjDX9TBFDjKX3XridXL9eVAy6mVuQI7altDgARTk8ddli9Zqa
+ amehohK_rDrpkE1Z3KwFYjMenq8UwboEHnQeE76KyF7O_JoQMxa_kvxdiPuauU__GI5fUulE0qbf
+ Ph.vlm92OWPtlDZkwXu1BEyx6CGcLnONhc6Gte2N2ybqsbzVc8lf2iGABQ7wIu4_irtLTI_ObzmC
+ gZnnDgatVKgBKNpDZgM_tq3kYDm9Mlg3uRSmVkqo7vtpdkwkcoiWismHm3q1JJT_FjXO_zj.uKPO
+ l5lt8BIIWbg7U_RtdqxuA6pZq1kbEZcEsOoos84H9sOHikn07Z0Q9Q6WVoVoUudfzwkZiEetmYBZ
+ 4adhXf4SoqgYFpXic2J_b0ivczjsvjPsBssw1ZwgUJKQqhlGnpi4jd0B2iaRfVeE2d1LYMTd1pLV
+ 7b4avpmoWSL3NDau5qJb1eJyLi.7r.0qVFuRBNN7.CIFjT1rQBVGmEcYsNE67f7H8w_63wxLkLqs
+ pyHOUMUD3v6Bvo6szhCxcGtgttwvpCCXlc_EPVqcIvEcOUBd2CTs6zqAfpx1hAY_x5Xq2HZnEiui
+ IiHpG69uFthhkey9YeHwkxlbjXuOI9bgliTTHD34datZOrxP.2Vf02mr6ca87UO436qJ4YGTC7So
+ Th2flvtlHqcCQVp6szXdsjzouDCdI3viofyN1BNyCrgcpVwudfSaaEa8Kt9GgUtbZ4qZfoIkoU9R
+ ID..kDb62fO7xAa0IA.Ur8XBxFFDgHzYzw_yW_cgjmxMOuG3wuuTt9JbDDb82XKXf6S9DUcoQSod
+ YMFw3vEuc0WxJtX_nmgdMHooehztOGRIOYYBjMBGgkm1dyXnotYMEjzXZbT7.aDoLVN0jdMd_YU7
+ Z4B46gYmlzlZoRsxJsZMRFKyf6ag9iIUNIUFSa86Q5i_I..Dc2116GhY68tnfqO6QQ49rpHhFzfx
+ Z7L4Yhw0hNk20r0WfCVIs8omp0I.CqbV.TJ3coe_E6xaWeuci1nWeBVqiSlAhz1D8XH877KfQ0o4
+ lvgcnUtK57jLwwQnBAlz9a_e.nGEeG4WD0ox0kneaGVpm41OpRXS.kGHYg0iRce.Ew66MqMRJgXR
+ j8dFgYrEeMNGEfDt0z8.kmVHOBcrdbwAPsUtwl7cx3z9KxtMr99FgO3UGBsl3TednBbxka9.NG_o
+ KEmn4.RGxoCRNDj5BQtzDVFHS2WQwRupea2Roff8W207FhtygiYxFzQKTdBhDeQxr5.XjYrBLqG.
+ S4vLYgtM1WFLWBsjl.tdUfdoB1F8YZo6hXgRsrIE9dcI04qMmcGnCuvtHJkStx_64ZU6OiDoD99X
+ Kxa56fAkyC.7WgMpPnIDey8zZC6HLFo3gH__cd2FXcRcLBbcmBguDX8Wtfl_WJurW0lw-
+X-Sonic-MF: <alex_y_xu@yahoo.ca>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.gq1.yahoo.com with HTTP; Tue, 2 Mar 2021 00:57:56 +0000
+Received: by smtp401.mail.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 1eada59726444d77940edec9cae3d9d9;
+          Tue, 02 Mar 2021 00:57:50 +0000 (UTC)
+Date:   Mon, 01 Mar 2021 19:57:46 -0500
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: 5.12-rc1 regression: freezing iou-mgr/wrk failed
+To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+MIME-Version: 1.0
+Message-Id: <1614646241.av51lk2de4.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+References: <1614646241.av51lk2de4.none.ref@localhost>
+X-Mailer: WebService/1.1.17828 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 09:20:15 -0800 Sean Christopherson wrote:
-> On Mon, Mar 01, 2021, Kai Huang wrote:
-> > +static int handle_encls_ecreate(struct kvm_vcpu *vcpu)
-> > +{
-> > +	struct kvm_cpuid_entry2 *sgx_12_0, *sgx_12_1;
-> > +	gva_t pageinfo_gva, secs_gva;
-> > +	gva_t metadata_gva, contents_gva;
-> > +	gpa_t metadata_gpa, contents_gpa, secs_gpa;
-> > +	unsigned long metadata_hva, contents_hva, secs_hva;
-> > +	struct sgx_pageinfo pageinfo;
-> > +	struct sgx_secs *contents;
-> > +	u64 attributes, xfrm, size;
-> > +	u32 miscselect;
-> > +	struct x86_exception ex;
-> > +	u8 max_size_log2;
-> > +	int trapnr, r;
-> > +
-> 
-> (see below)
-> 
-> --- cut here --- >8
-> 
-> > +	sgx_12_0 = kvm_find_cpuid_entry(vcpu, 0x12, 0);
-> > +	sgx_12_1 = kvm_find_cpuid_entry(vcpu, 0x12, 1);
-> > +	if (!sgx_12_0 || !sgx_12_1) {
-> > +		kvm_inject_gp(vcpu, 0);
-> 
-> This should probably be an emulation failure.  This code is reached iff SGX1 is
-> enabled in the guest, userspace done messed up if they enabled SGX1 without
-> defining CPUID.0x12.1.  That also makes it more obvious that burying this in a
-> helper after a bunch of other checks isn't wrong, i.e. KVM has already verified
-> that SGX1 is enabled in the guest.
+Hi,
 
-Agreed.
+On Linux 5.12-rc1, I am unable to suspend to RAM. The system freezes for=20
+about 40 seconds and then continues operation. The following messages=20
+are printed to the kernel log:
 
-> 
-> > +		return 1;
-> > +	}
-> 
-> ---
-> 
-> > +
-> > +	if (sgx_get_encls_gva(vcpu, kvm_rbx_read(vcpu), 32, 32, &pageinfo_gva) ||
-> > +	    sgx_get_encls_gva(vcpu, kvm_rcx_read(vcpu), 4096, 4096, &secs_gva))
-> > +		return 1;
-> > +
-> > +	/*
-> > +	 * Copy the PAGEINFO to local memory, its pointers need to be
-> > +	 * translated, i.e. we need to do a deep copy/translate.
-> > +	 */
-> > +	r = kvm_read_guest_virt(vcpu, pageinfo_gva, &pageinfo,
-> > +				sizeof(pageinfo), &ex);
-> > +	if (r == X86EMUL_PROPAGATE_FAULT) {
-> > +		kvm_inject_emulated_page_fault(vcpu, &ex);
-> > +		return 1;
-> > +	} else if (r != X86EMUL_CONTINUE) {
-> > +		sgx_handle_emulation_failure(vcpu, pageinfo_gva, size);
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (sgx_get_encls_gva(vcpu, pageinfo.metadata, 64, 64, &metadata_gva) ||
-> > +	    sgx_get_encls_gva(vcpu, pageinfo.contents, 4096, 4096,
-> > +			      &contents_gva))
-> > +		return 1;
-> > +
-> > +	/*
-> > +	 * Translate the SECINFO, SOURCE and SECS pointers from GVA to GPA.
-> > +	 * Resume the guest on failure to inject a #PF.
-> > +	 */
-> > +	if (sgx_gva_to_gpa(vcpu, metadata_gva, false, &metadata_gpa) ||
-> > +	    sgx_gva_to_gpa(vcpu, contents_gva, false, &contents_gpa) ||
-> > +	    sgx_gva_to_gpa(vcpu, secs_gva, true, &secs_gpa))
-> > +		return 1;
-> > +
-> > +	/*
-> > +	 * ...and then to HVA.  The order of accesses isn't architectural, i.e.
-> > +	 * KVM doesn't have to fully process one address at a time.  Exit to
-> > +	 * userspace if a GPA is invalid.
-> > +	 */
-> > +	if (sgx_gpa_to_hva(vcpu, metadata_gpa, &metadata_hva) ||
-> > +	    sgx_gpa_to_hva(vcpu, contents_gpa, &contents_hva) ||
-> > +	    sgx_gpa_to_hva(vcpu, secs_gpa, &secs_hva))
-> > +		return 0;
-> > +	/*
-> > +	 * Copy contents into kernel memory to prevent TOCTOU attack. E.g. the
-> > +	 * guest could do ECREATE w/ SECS.SGX_ATTR_PROVISIONKEY=0, and
-> > +	 * simultaneously set SGX_ATTR_PROVISIONKEY to bypass the check to
-> > +	 * enforce restriction of access to the PROVISIONKEY.
-> > +	 */
-> > +	contents = (struct sgx_secs *)__get_free_page(GFP_KERNEL);
-> > +	if (!contents)
-> > +		return -ENOMEM;
-> 
-> --- cut here --- >8
-> 
-> > +
-> > +	/* Exit to userspace if copying from a host userspace address fails. */
-> > +	if (sgx_read_hva(vcpu, contents_hva, (void *)contents, PAGE_SIZE))
-> 
-> This, and every failure path below, will leak 'contents'.  The easiest thing is
-> probably to wrap everything in "cut here" in a separate helper.  The CPUID
-> lookups can be , e.g.
-> 
-> 	contents = (struct sgx_secs *)__get_free_page(GFP_KERNEL);
-> 	if (!contents)
-> 		return -ENOMEM;
-> 
-> 	r = __handle_encls_ecreate(vcpu, &pageinfo, secs);
-> 
-> 	free_page((unsigned long)contents);
-> 	return r;
-> 
-> And then the helper can be everything below, plus the CPUID lookup:
-> 
-> 	sgx_12_0 = kvm_find_cpuid_entry(vcpu, 0x12, 0);
-> 	sgx_12_1 = kvm_find_cpuid_entry(vcpu, 0x12, 1);
-> 	if (!sgx_12_0 || !sgx_12_1) {
-> 		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> 		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
-> 		vcpu->run->internal.ndata = 0;
-> 		return 0;
-> 	}
-> 
+[  240.650300] PM: suspend entry (deep)
+[  240.650748] Filesystems sync: 0.000 seconds
+[  240.725605] Freezing user space processes ...
+[  260.739483] Freezing of tasks failed after 20.013 seconds (3 tasks refus=
+ing to freeze, wq_busy=3D0):
+[  260.739497] task:iou-mgr-446     state:S stack:    0 pid:  516 ppid:   4=
+39 flags:0x00004224
+[  260.739504] Call Trace:
+[  260.739507]  ? sysvec_apic_timer_interrupt+0xb/0x81
+[  260.739515]  ? pick_next_task_fair+0x197/0x1cde
+[  260.739519]  ? sysvec_reschedule_ipi+0x2f/0x6a
+[  260.739522]  ? asm_sysvec_reschedule_ipi+0x12/0x20
+[  260.739525]  ? __schedule+0x57/0x6d6
+[  260.739529]  ? del_timer_sync+0xb9/0x115
+[  260.739533]  ? schedule+0x63/0xd5
+[  260.739536]  ? schedule_timeout+0x219/0x356
+[  260.739540]  ? __next_timer_interrupt+0xf1/0xf1
+[  260.739544]  ? io_wq_manager+0x73/0xb1
+[  260.739549]  ? io_wq_create+0x262/0x262
+[  260.739553]  ? ret_from_fork+0x22/0x30
+[  260.739557] task:iou-mgr-517     state:S stack:    0 pid:  522 ppid:   4=
+39 flags:0x00004224
+[  260.739561] Call Trace:
+[  260.739563]  ? sysvec_apic_timer_interrupt+0xb/0x81
+[  260.739566]  ? pick_next_task_fair+0x16f/0x1cde
+[  260.739569]  ? sysvec_apic_timer_interrupt+0xb/0x81
+[  260.739571]  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
+[  260.739574]  ? __schedule+0x5b7/0x6d6
+[  260.739578]  ? del_timer_sync+0x70/0x115
+[  260.739581]  ? schedule_timeout+0x211/0x356
+[  260.739585]  ? __next_timer_interrupt+0xf1/0xf1
+[  260.739588]  ? io_wq_check_workers+0x15/0x11f
+[  260.739592]  ? io_wq_manager+0x69/0xb1
+[  260.739596]  ? io_wq_create+0x262/0x262
+[  260.739600]  ? ret_from_fork+0x22/0x30
+[  260.739603] task:iou-wrk-517     state:S stack:    0 pid:  523 ppid:   4=
+39 flags:0x00004224
+[  260.739607] Call Trace:
+[  260.739609]  ? __schedule+0x5b7/0x6d6
+[  260.739614]  ? schedule+0x63/0xd5
+[  260.739617]  ? schedule_timeout+0x219/0x356
+[  260.739621]  ? __next_timer_interrupt+0xf1/0xf1
+[  260.739624]  ? task_thread.isra.0+0x148/0x3af
+[  260.739628]  ? task_thread_unbound+0xa/0xa
+[  260.739632]  ? task_thread_bound+0x7/0x7
+[  260.739636]  ? ret_from_fork+0x22/0x30
+[  260.739647] OOM killer enabled.
+[  260.739648] Restarting tasks ... done.
+[  260.740077] PM: suspend exit
 
-Hmm.. Obviously I wasn't careful enough. Thanks for pointing out.
+and then a set of similar messages except with s2idle instead of deep.
 
-Will do in your way.
+Reverting 5695e51619 ("Merge tag 'io_uring-worker.v3-2021-02-25' of=20
+git://git.kernel.dk/linux-block") appears to resolve the issue. I have=20
+not yet bisected further. Let me know which troubleshooting steps I=20
+should perform next.
 
-> 
-> > +		return 0;
-> > +
-> > +	miscselect = contents->miscselect;
-> > +	attributes = contents->attributes;
-> > +	xfrm = contents->xfrm;
-> > +	size = contents->size;
-> > +
-> > +	/* Enforce restriction of access to the PROVISIONKEY. */
-> > +	if (!vcpu->kvm->arch.sgx_provisioning_allowed &&
-> > +	    (attributes & SGX_ATTR_PROVISIONKEY)) {
-> > +		if (sgx_12_1->eax & SGX_ATTR_PROVISIONKEY)
-> > +			pr_warn_once("KVM: SGX PROVISIONKEY advertised but not allowed\n");
-> > +		kvm_inject_gp(vcpu, 0);
-> > +		return 1;
-> > +	}
-> > +
-> > +	/* Enforce CPUID restrictions on MISCSELECT, ATTRIBUTES and XFRM. */
-> > +	if ((u32)miscselect & ~sgx_12_0->ebx ||
-> > +	    (u32)attributes & ~sgx_12_1->eax ||
-> > +	    (u32)(attributes >> 32) & ~sgx_12_1->ebx ||
-> > +	    (u32)xfrm & ~sgx_12_1->ecx ||
-> > +	    (u32)(xfrm >> 32) & ~sgx_12_1->edx) {
-> > +		kvm_inject_gp(vcpu, 0);
-> > +		return 1;
-> > +	}
-> > +
-> > +	/* Enforce CPUID restriction on max enclave size. */
-> > +	max_size_log2 = (attributes & SGX_ATTR_MODE64BIT) ? sgx_12_0->edx >> 8 :
-> > +							    sgx_12_0->edx;
-> > +	if (size >= BIT_ULL(max_size_log2))
-> > +		kvm_inject_gp(vcpu, 0);
-> > +
-> > +	pageinfo.metadata = metadata_hva;
-> > +	pageinfo.contents = (u64)contents;
-> > +
-> > +	r = sgx_virt_ecreate(&pageinfo, (void __user *)secs_hva, &trapnr);
-> > +
-> > +	free_page((unsigned long)contents);
-> > +
-> > +	if (r)
-> > +		return sgx_inject_fault(vcpu, secs_gva, trapnr);
-> > +
-> > +	return kvm_skip_emulated_instruction(vcpu);
-> 
-> ---
-> 
-> > +}
-> > +
-> >  static inline bool encls_leaf_enabled_in_guest(struct kvm_vcpu *vcpu, u32 leaf)
-> >  {
-> >  	if (!enable_sgx || !guest_cpuid_has(vcpu, X86_FEATURE_SGX))
-> > @@ -41,6 +286,8 @@ int handle_encls(struct kvm_vcpu *vcpu)
-> >  	} else if (!sgx_enabled_in_guest_bios(vcpu)) {
-> >  		kvm_inject_gp(vcpu, 0);
-> >  	} else {
-> > +		if (leaf == ECREATE)
-> > +			return handle_encls_ecreate(vcpu);
-> >  		WARN(1, "KVM: unexpected exit on ENCLS[%u]", leaf);
-> >  		vcpu->run->exit_reason = KVM_EXIT_UNKNOWN;
-> >  		vcpu->run->hw.hardware_exit_reason = EXIT_REASON_ENCLS;
-> > -- 
-> > 2.29.2
-> > 
+Thanks,
+Alex.
