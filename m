@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE9532A318
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CF232A397
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381840AbhCBIqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:46:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240744AbhCBIXH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:23:07 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17987C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:22:01 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id p15so13923934ljc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 00:22:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TZiG9FUNsTtc9xJcNdP176kzLhfPZPzNMUWuHOZpK8w=;
-        b=gHWMhNFwzoaxoWpcJp6yjvQ7y+iou36IC0ueaijGcXCsg6iiBUKchjf+EXQmmlPpar
-         zXVMRxBZFBzDPfWohS+2dG+CfzhJz5kt7+YLk/ndTG9zW1K9thECTty+0Eb5kLmY5/Jp
-         xFdVKKifCm+gh2sGx/iusL+RvceHVKk/l+WDqyzTyBx+CsR+GN78NKUIxI/cuLAVsrvX
-         3aN5Qubd/YGSGOfU7XxmkVPT2mMThd4z5qiWLIEfqlnDNwTgGiJ6kz01tJpP3W9AQqxE
-         NMtOHC2fM9hMfpqsaMduG0400JuHt/vXPyTdhjiAGnupttHjff2DxzvUaXXHRt0A9j1g
-         Epng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZiG9FUNsTtc9xJcNdP176kzLhfPZPzNMUWuHOZpK8w=;
-        b=lHHWpP81ywbdwkSu5KFZib6zM2AlbLO3raYe01KS5uzSVBXaQx2kMLi0Ug540EsA63
-         dXFUWA/ik4/S3mmaaeMYe0nQCqsPBahSqeRJ7npwDvEyeCCpPF+Q+yFg21cRs7RKq1Zx
-         dB7CsvQwRs0f+wYPf0oRSKgSCpPIAUNWnDdWJ5YxcQE5q3Fpddq8Plu2gEOXIl5I0C6m
-         SGNYaQpXhT5Nb9VKSMUcDThBhwiHFuVlJW8899GAa++C1BI9s5IJjE+PZKwyQTSzcMog
-         LdnZzzkyo9kn+thWiejC694iZuJJGnmddLm1K6HAvVxypnnxdDV6D6zSvbvCbE62iAR8
-         G6jQ==
-X-Gm-Message-State: AOAM533cXLz7FGyAPsJ4tQpa1JK8WfYjhgOfIYWXq9FbbHVZxEYJ5tmL
-        jKeoWAJLenHoULzDuF/GYGrli64gFWGG2VCDtMSECA==
-X-Google-Smtp-Source: ABdhPJx8HGSb/7Z34+2VXUnmVlC+KJdL4zJXe6r7nEdMAuDE14JW4wngfpMeFsIXp7IYIQnkEi2H5zPVRMplMdLT208=
-X-Received: by 2002:a2e:864a:: with SMTP id i10mr11017005ljj.467.1614673319597;
- Tue, 02 Mar 2021 00:21:59 -0800 (PST)
+        id S1837881AbhCBJJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:09:07 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:32974 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1382142AbhCBI42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:56:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614675359; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=8krkIsgp68wHhS+liGQXlnkyDDn+zrlQACVVaDV4MCQ=; b=Hz32eyMHUehJdrjzLqyPVu3oJjonmzjFI1S32YYMlOYcqOn+FYqWOv1F6Oiwy8DiP5BPLzeI
+ 5bKUHJgd/Hb6ISc2rDioMxGbNe3OScO49h/fKwOPlzQk8h8Zn0VpmK4Xq++iyzl6RSpzav6J
+ Mamg4j61javoOzBYNJKOAQdk4Ss=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 603df6939d2570c9febc029f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 08:25:55
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4A91C433CA; Tue,  2 Mar 2021 08:25:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D34CBC43461;
+        Tue,  2 Mar 2021 08:25:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D34CBC43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Coelho\, Luciano" <luciano.coelho@intel.com>
+Cc:     "pierre-louis.bossart\@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Berg\, Johannes" <johannes.berg@intel.com>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "kuba\@kernel.org" <kuba@kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] iwlwifi: fix ARCH=i386 compilation warnings
+References: <20210302011640.1276636-1-pierre-louis.bossart@linux.intel.com>
+        <87k0qq85bj.fsf@codeaurora.org>
+        <d8437a2c23aa2217233a55222c6968d1ce887bf2.camel@intel.com>
+Date:   Tue, 02 Mar 2021 10:25:49 +0200
+In-Reply-To: <d8437a2c23aa2217233a55222c6968d1ce887bf2.camel@intel.com>
+        (Luciano Coelho's message of "Tue, 2 Mar 2021 07:24:22 +0000")
+Message-ID: <87ft1e7yia.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20210215121713.57687-1-marcan@marcan.st> <20210215121713.57687-2-marcan@marcan.st>
-In-Reply-To: <20210215121713.57687-2-marcan@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 09:21:48 +0100
-Message-ID: <CACRpkdbk9yyzL+nG0KHrRmEw2FYTPfrozOxCTPYOLD9Mk7GZHQ@mail.gmail.com>
-Subject: Re: [PATCH v2 01/25] dt-bindings: vendor-prefixes: Add apple prefix
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 1:17 PM Hector Martin <marcan@marcan.st> wrote:
+"Coelho, Luciano" <luciano.coelho@intel.com> writes:
 
-> This is different from the legacy AAPL prefix used on PPC, but
-> consensus is that we prefer `apple` for these new platforms.
+> On Tue, 2021-03-02 at 07:58 +0200, Kalle Valo wrote:
+>> Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> writes:
+>> 
+>> > An unsigned long variable should rely on '%lu' format strings, not '%zd'
+>> > 
+>> > Fixes: a1a6a4cf49ece ("iwlwifi: pnvm: implement reading PNVM from UEFI")
+>> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> > ---
+>> > warnings found with v5.12-rc1 and next-20210301
+>> 
+>> Luca, can I take this to wireless-drivers?
 >
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+> Yes, please.
+>
+> Acked-by: Luca Coelho <luciano.coelho@intel.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Thansk. I don't see this in patchwork yet (I guess vger is slow again)
+so I cannot assign it to me at the moment, will do it later.
 
-Yours,
-Linus Walleij
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
