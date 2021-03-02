@@ -2,95 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C104032A115
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBACA32A123
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344531AbhCBEtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        id S1379151AbhCBEti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:49:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1445144AbhCBC4n (ORCPT
+        with ESMTP id S1445225AbhCBC5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:56:43 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ACBC061788;
-        Mon,  1 Mar 2021 18:56:02 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id f20so20171149ioo.10;
-        Mon, 01 Mar 2021 18:56:02 -0800 (PST)
+        Mon, 1 Mar 2021 21:57:16 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C49BC06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 18:56:36 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id l18so946831pji.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 18:56:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b/iU+4MCfDOZKJqdyJrM0gfu7fMW1rxZzEA8By+aoPI=;
-        b=fofpuf54tNID7ojunPZi8cAg3fKWUhTBIostlMtbptISKhMsU03ycwudk1iBBcpujG
-         QSfkI01LfoQxF6j72v7OlxjldYcW+WIGpCdcnxpoejOREsIUVAMUj6J1OFdiqJ+u4ZHr
-         f9rA8bCKMbxefXkI5jyP72R/PJ7NQuFx/w8FOWTd7bqIH0yT9fVmCTt0FbeqOon/mPxA
-         rchD8Wqhpq4SUgXc9U6TtVBpCxz4zt/E1iD6o9tCsY8ms4KRAlmqC3KaJLqUmENN+eIR
-         mrx2D3Skem9VwIACf1CDyCBUQpsTBUSojxLX7cJsbUhEvWV/pXz8pbI+pz9dsDOcf7Zt
-         5NEw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+IZNoE4E9l3eWMVT2Obt86H5jq5BW9DleHnD2g9iNvw=;
+        b=ZxZq/smZVpC9WlNe4MDL4pHr/HTA8pP44i22GmGeqCqsuxStxJ4pS8cxERjZNkuZJv
+         8ThxGCSXUkL8yTS3EGUx59IAQU79hIJHzEhVtZgCwJzx52YmlJnwYycZSCG6YihxCgp1
+         izaFAkOo5+o+BgIGuJGfhK7cHViZ9bhCuDpSQWQXWEotbeWx5+54lYZ7tYs19GAjAnsj
+         alU2a9xA68rEEvsHLTC178xs2Qu07kCF6dB/DdNVP/xGoZDAh3TMTyLjOtg/14rbwUDR
+         7khnMT7o0YBRpOWwaNWaRCcFoONoegT8TGGUL2zx9WGRlys1kU0qhrA37BbmvamwGydq
+         alPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b/iU+4MCfDOZKJqdyJrM0gfu7fMW1rxZzEA8By+aoPI=;
-        b=mbmvGBKjq6B35F6ro1K8adN0pFa/SDAIp85ac7ho5MUnDkUz0ZJUWzlCADcUPxH4qX
-         g3+L/hmXV43HPRJqBuy9eCP+dcr/vi0M6r+3/DLx6D9NwPDBRcUyc0xEJ2AP7MA/Rrb5
-         6lrImtwx09j9+GFbe+OlZ/qPCbt6oJjCuA3oM7X81A8eaHE70me7/yY78vCHujahuls/
-         keX+foJZdQARj1eFwTyy7kZL0UHJRz4MquMYAU7c3sLNiFuuCfZQH3oM17o61jgVu1pk
-         lWi5pIvpCGMuH/1nWGOOpd5hK+CXZVfLGF+OWcWm/D7yZAJ/KA/hfcd93ZKJsp9dJyDC
-         ns4Q==
-X-Gm-Message-State: AOAM531VwpF/EywwAdXKifWhpqi2zz9bmA+OewLtREG38hm9YLO8g/nk
-        Pk0PQxP/IEaAouFjW3/GBlIsi1UA3oJ2S+C3XsQ=
-X-Google-Smtp-Source: ABdhPJwqpFM+0OqWvmoSVEZdsnnteDFQItJgeJAHaSAVioKlWRvNw1lvx/tqf6Q9Lc/rPUNX/1uc8IvTajMPMohMW10=
-X-Received: by 2002:a02:b893:: with SMTP id p19mr19211711jam.68.1614653762507;
- Mon, 01 Mar 2021 18:56:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+IZNoE4E9l3eWMVT2Obt86H5jq5BW9DleHnD2g9iNvw=;
+        b=Zvr74BxchWK9MrQig2eL8rEitq3FrALUuGJ7W2ywQsX8YxEMIh0XS3Pr3vO4kJUKKS
+         20B8OzMLQ8vonPc99aafAtg3uy42hsep6QaBE2ixEX94flYJAt5CrPrTWajeePvRFNZn
+         nk5HBqDX/NIoz+OQF8H2PjLsq+Cu+8KB3QFP2TCJ73rqwj1MbVJd6Y4wp3+OJm0SqrDB
+         fGmwp9nbBNAogI++Flv+KkKx4m+0krZQYU+MW0ZyJzlM7Q5Ji/rK5RRYFyyKD06oLIX3
+         5CtqfMKPf3VOpFZVnOkQ8OorNTthbwtxDdFgEEfnSRXRxGIrAw2xU/+D09GC8v6Nf1P9
+         Yctg==
+X-Gm-Message-State: AOAM5303GbBYKRypboVSgRhfP8RbHuo6NkZh8+XOU3Ij/esit2mmVyJY
+        q1q2Po2TFi5OkcPzI1rkUb5ThDZk6xPz3A==
+X-Google-Smtp-Source: ABdhPJyBS9U+6AtdKNABLhwXXCBgjsOObPODZW8Oq9QBLmZ5tZ2NDADOH8ib3q/xB0NcIvIbDYUzig==
+X-Received: by 2002:a17:90b:3890:: with SMTP id mu16mr2014337pjb.9.1614653795608;
+        Mon, 01 Mar 2021 18:56:35 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id r16sm18928400pfh.168.2021.03.01.18.56.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 18:56:35 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [RESEND][PATCH v2 1/2] dma-buf: dma-heap: Provide accessor to get heap name
+Date:   Tue,  2 Mar 2021 02:56:28 +0000
+Message-Id: <20210302025629.2558215-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210301041550.795500-1-ztong0001@gmail.com> <20210301150840.mqngl7og46o3nxjb@pengutronix.de>
-In-Reply-To: <20210301150840.mqngl7og46o3nxjb@pengutronix.de>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Mon, 1 Mar 2021 21:55:51 -0500
-Message-ID: <CAA5qM4Di1J7oPK3JrP8o++JUoBqkQ-wDzmwrBaT+9mmpCgK+=w@mail.gmail.com>
-Subject: Re: [PATCH] can: c_can: move runtime PM enable/disable to c_can_platform
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 2:49 PM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
->
-> On 28.02.2021 23:15:48, Tong Zhang wrote:
-> > Currently doing modprobe c_can_pci will make kernel complain
-> > "Unbalanced pm_runtime_enable!", this is caused by pm_runtime_enable()
-> > called before pm is initialized in register_candev() and doing so will
->
-> I don't see where register_candev() is doing any pm related
-> initialization.
->
-> > also cause it to enable twice.
->
-> > This fix is similar to 227619c3ff7c, move those pm_enable/disable code to
-> > c_can_platform.
->
-> As I understand 227619c3ff7c ("can: m_can: move runtime PM
-> enable/disable to m_can_platform"), PCI devices automatically enable PM,
-> when the "PCI device is added".
+It can be useful to access the name for the heap,
+so provide an accessor to do so.
 
-Hi Marc,
-Thanks for the comments. I thinks you are right -- I was mislead by the trace --
-I have corrected the commit log along with the indent fix in v2 patch.
-Thanks again for your help,
-- Tong
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+v2:
+* Make sure to use "const char *" as Reported-by: kernel test robot <lkp@intel.com>
+---
+ drivers/dma-buf/dma-heap.c | 12 ++++++++++++
+ include/linux/dma-heap.h   |  9 +++++++++
+ 2 files changed, 21 insertions(+)
 
->
-> Please clarify the above point, otherwise the code looks OK, small
-> nitpick inline:
+diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+index 6b5db954569f..56bf5ad01ad5 100644
+--- a/drivers/dma-buf/dma-heap.c
++++ b/drivers/dma-buf/dma-heap.c
+@@ -202,6 +202,18 @@ void *dma_heap_get_drvdata(struct dma_heap *heap)
+ 	return heap->priv;
+ }
+ 
++/**
++ * dma_heap_get_name() - get heap name
++ * @heap: DMA-Heap to retrieve private data for
++ *
++ * Returns:
++ * The char* for the heap name.
++ */
++const char *dma_heap_get_name(struct dma_heap *heap)
++{
++	return heap->name;
++}
++
+ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+ {
+ 	struct dma_heap *heap, *h, *err_ret;
+diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
+index 5bc5c946af58..0c05561cad6e 100644
+--- a/include/linux/dma-heap.h
++++ b/include/linux/dma-heap.h
+@@ -50,6 +50,15 @@ struct dma_heap_export_info {
+  */
+ void *dma_heap_get_drvdata(struct dma_heap *heap);
+ 
++/**
++ * dma_heap_get_name() - get heap name
++ * @heap: DMA-Heap to retrieve private data for
++ *
++ * Returns:
++ * The char* for the heap name.
++ */
++const char *dma_heap_get_name(struct dma_heap *heap);
++
+ /**
+  * dma_heap_add - adds a heap to dmabuf heaps
+  * @exp_info:		information needed to register this heap
+-- 
+2.25.1
+
