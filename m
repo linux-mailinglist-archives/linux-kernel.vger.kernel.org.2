@@ -2,120 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4454732A2E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD59632A2E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238870AbhCBIfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:35:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbhCBIUj (ORCPT
+        id S1377886AbhCBIkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:40:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45890 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235703AbhCBIVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:20:39 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2229C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:19:54 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id u11so11558661plg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 00:19:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SDK+ajP5jBELnVhiWbUw5itoPVWVT0C+pRbdXA2pXzw=;
-        b=M3wbBHDNI7w7ke6LqBh7MD9RPOf01wSC97wdKQu8q/EV8CoQAYCAM5Uz6qMUDtCjlB
-         VKUdBCfqVmvLMBlHAFw/cxYqPbEPz3v5na3AuCoqbgYbRQJ8kQ63GP36LAPlcC8u+eFa
-         Pkp8UeN6hz2syWJWH+RjC/NInThhKhUk3G0G5Kae/UC4hlKG4eRpRNcU5LO8MxEOTuzD
-         0VcAWzogWN0HbGOSEolJcws8s0ShmixujgKl1EB/eZRBtCJlpf2jDuAEaXYlQGnFYzer
-         Qm5g8vntBUDyn68OfHHlapgG6k8I2bkXdDWzJnAnIN+JKHmiJTYbrqRfJsgwZbpAu8kJ
-         2tqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SDK+ajP5jBELnVhiWbUw5itoPVWVT0C+pRbdXA2pXzw=;
-        b=tVNxMiPfbVkDUEun4cDOFszU6xe/jzS18PG41wqZFnUSITWHZ1pyyFga7GPJg6yz5c
-         oDwZugotMohkyk2XEvmUKfoijaocw65OASaPtnAt5ikAFQwI9jjVlavnsRj6j4O6DLYv
-         PYrVlz9AfXM3iGStlJ5I8nv4/touEh8ImFkWGFd9tFJbyiiRTqn74N3RxETP4nwwEVsh
-         2RtOy/A2PfH3yFt9cL+h63z3Wj93fA+YUfGeX/ys1FIffcKKEHhDfrWPCWfOlXMiEqJb
-         84RPQ7VagWMdiL34ogNukiawIjag01kjU/XsSr3VSsM1Z3Ill3LEP/fLzdyAcDhzCTKQ
-         FhpA==
-X-Gm-Message-State: AOAM5334WL7O5j29Lr5JP/vHodTNsDM6I2dKV/rLmuZQJ/K6yQJlQ0BL
-        Q9ocg3AIsPRJJy5qP6E2DfYSmw==
-X-Google-Smtp-Source: ABdhPJyB3ADWISJa4UEPElc5MoA53ychWV9OqL0XQVQ3l/BtTJlO7Ggf2HeajEQSQxgg06tQnj/wXQ==
-X-Received: by 2002:a17:902:7d83:b029:e4:45ca:5407 with SMTP id a3-20020a1709027d83b02900e445ca5407mr19052690plm.57.1614673194229;
-        Tue, 02 Mar 2021 00:19:54 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.227])
-        by smtp.gmail.com with ESMTPSA id j20sm2157781pjn.27.2021.03.02.00.19.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 00:19:53 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        akpm@linux-foundation.org, shakeelb@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: fix root_mem_cgroup charging
-Date:   Tue,  2 Mar 2021 16:18:23 +0800
-Message-Id: <20210302081823.9849-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Tue, 2 Mar 2021 03:21:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614673162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9zKjm3eQ7NiVum4dqopzeJFlLmqcjV5S2gllw6JZT34=;
+        b=hqw01NcqecoAkX88HK+gulujXCG1OoHGLe9f4ZdI5RjeoTQmV/flS7lrs8DEjdkNMcWM8L
+        OIfrl7PZI2fwEhqATs4daSth5o700hST5iBW22lWEctMcUCOcb8TNWipvPVq4nTNUkBYt/
+        FQI89IUfn+fpce2NHd9+7mxFIWDwjP4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-3KMuztsBP56cC614y1Nj7g-1; Tue, 02 Mar 2021 03:19:18 -0500
+X-MC-Unique: 3KMuztsBP56cC614y1Nj7g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 763CC1966320;
+        Tue,  2 Mar 2021 08:19:16 +0000 (UTC)
+Received: from localhost (ovpn-12-78.pek2.redhat.com [10.72.12.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D2F910013DB;
+        Tue,  2 Mar 2021 08:19:12 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 16:19:09 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Evan Green <evgreen@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH 7/7] kdump: Use vmlinux_build_id() to simplify
+Message-ID: <20210302081909.GA28599@MiWiFi-R3L-srv>
+References: <20210301174749.1269154-1-swboyd@chromium.org>
+ <20210301174749.1269154-8-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301174749.1269154-8-swboyd@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CPU0:                                   CPU1:
+On 03/01/21 at 09:47am, Stephen Boyd wrote:
+> We can use the vmlinux_build_id() helper here now instead of open coding
+> it. This consolidates code and possibly avoids calculating the build ID
+> twice in the case of a crash with a stacktrace.
+> 
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Jessica Yu <jeyu@kernel.org>
+> Cc: Evan Green <evgreen@chromium.org>
+> Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: <kexec@lists.infradead.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  kernel/crash_core.c | 46 ++++++++-------------------------------------
+>  1 file changed, 8 insertions(+), 38 deletions(-)
+> 
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 825284baaf46..07d3e1109a8c 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -4,6 +4,7 @@
+>   * Copyright (C) 2002-2004 Eric Biederman  <ebiederm@xmission.com>
+>   */
+>  
+> +#include <linux/buildid.h>
+>  #include <linux/crash_core.h>
+>  #include <linux/utsname.h>
+>  #include <linux/vmalloc.h>
+> @@ -378,51 +379,20 @@ phys_addr_t __weak paddr_vmcoreinfo_note(void)
+>  }
+>  EXPORT_SYMBOL(paddr_vmcoreinfo_note);
+>  
+> -#define NOTES_SIZE (&__stop_notes - &__start_notes)
+> -#define BUILD_ID_MAX SHA1_DIGEST_SIZE
+> -#define NT_GNU_BUILD_ID 3
+> -
+> -struct elf_note_section {
+> -	struct elf_note	n_hdr;
+> -	u8 n_data[];
+> -};
+> -
+>  /*
+>   * Add build ID from .notes section as generated by the GNU ld(1)
+>   * or LLVM lld(1) --build-id option.
+>   */
+>  static void add_build_id_vmcoreinfo(void)
+>  {
+> -	char build_id[BUILD_ID_MAX * 2 + 1];
+> -	int n_remain = NOTES_SIZE;
+> -
+> -	while (n_remain >= sizeof(struct elf_note)) {
+> -		const struct elf_note_section *note_sec =
+> -			&__start_notes + NOTES_SIZE - n_remain;
+> -		const u32 n_namesz = note_sec->n_hdr.n_namesz;
+> -
+> -		if (note_sec->n_hdr.n_type == NT_GNU_BUILD_ID &&
+> -		    n_namesz != 0 &&
+> -		    !strcmp((char *)&note_sec->n_data[0], "GNU")) {
+> -			if (note_sec->n_hdr.n_descsz <= BUILD_ID_MAX) {
+> -				const u32 n_descsz = note_sec->n_hdr.n_descsz;
+> -				const u8 *s = &note_sec->n_data[n_namesz];
+> -
+> -				s = PTR_ALIGN(s, 4);
+> -				bin2hex(build_id, s, n_descsz);
+> -				build_id[2 * n_descsz] = '\0';
+> -				VMCOREINFO_BUILD_ID(build_id);
+> -				return;
+> -			}
+> -			pr_warn("Build ID is too large to include in vmcoreinfo: %u > %u\n",
+> -				note_sec->n_hdr.n_descsz,
+> -				BUILD_ID_MAX);
+> -			return;
+> -		}
+> -		n_remain -= sizeof(struct elf_note) +
+> -			ALIGN(note_sec->n_hdr.n_namesz, 4) +
+> -			ALIGN(note_sec->n_hdr.n_descsz, 4);
+> +	const char *build_id = vmlinux_build_id();
 
-objcg = get_obj_cgroup_from_current();
-obj_cgroup_charge(objcg);
-                                        memcg_reparent_objcgs();
-                                            xchg(&objcg->memcg, root_mem_cgroup);
-    // memcg == root_mem_cgroup
-    memcg = obj_cgroup_memcg(objcg);
-    __memcg_kmem_charge(memcg);
-        // Do not charge to the root memcg
-        try_charge(memcg);
+It's strange that I can only see the cover letter and this patch 7,
+couldn't find the patch where vmlinux_build_id() is introduced in lkml.
 
-If the objcg->memcg is reparented to the root_mem_cgroup,
-obj_cgroup_charge() can pass root_mem_cgroup as the first
-parameter to here. The root_mem_cgroup is skipped in the
-try_charge(). So the page counters of it do not update.
-
-When we uncharge this, we will decrease the page counters
-(e.g. memory and memsw) of the root_mem_cgroup. This will
-cause the page counters of the root_mem_cgroup to be out
-of balance. Fix it by charging the page to the
-root_mem_cgroup unconditional.
-
-Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2db2aeac8a9e..edf604824d63 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3078,6 +3078,19 @@ static int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * If the objcg->memcg is reparented to the root_mem_cgroup,
-+	 * obj_cgroup_charge() can pass root_mem_cgroup as the first
-+	 * parameter to here. We should charge the page to the
-+	 * root_mem_cgroup unconditional to keep it's page counters
-+	 * balance.
-+	 */
-+	if (unlikely(mem_cgroup_is_root(memcg))) {
-+		page_counter_charge(&memcg->memory, nr_pages);
-+		if (do_memsw_account())
-+			page_counter_charge(&memcg->memsw, nr_pages);
-+	}
-+
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
- 	    !page_counter_try_charge(&memcg->kmem, nr_pages, &counter)) {
- 
--- 
-2.11.0
+> +
+> +	if (build_id[0] == '\0') {
+> +		pr_warn("Build ID cannot be included in vmcoreinfo\n");
+> +		return;
+>  	}
+> +
+> +	VMCOREINFO_BUILD_ID(build_id);
+>  }
+>  
+>  static int __init crash_save_vmcoreinfo_init(void)
+> -- 
+> https://chromeos.dev
+> 
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
 
