@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D739632A1C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075C232A1B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349307AbhCBG7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:59:02 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:52929 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1576937AbhCBFfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 00:35:11 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614663283; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=qrnccJJtl6xl/gjlaFUu+QbAU2qldweGFvJZ9NL5wsk=; b=V2p9feNqBBDyab3+SjAdABXJj0wFDwHa5slzBAsuBuTh081ja5NqOrqAANJgytHWHNYT2Lb5
- 6tMWQuMMJ68o41O5HvYTo4STmCcpemFX/c6zPvtLjgNLtDAotlimTCY+aTwMv1wpFuJXGICF
- Dw8Oz5QazEAnaWQsjw94m60BZnI=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 603dcb8a1d4da3b75dcc864c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 05:22:18
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0A5A6C43462; Tue,  2 Mar 2021 05:22:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        SORTED_RECIPS,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C364C43461;
-        Tue,  2 Mar 2021 05:22:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C364C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        linus.walleij@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH 2/2] pinctrl: qcom: sc7280: Fix SDC1_RCLK configurations
-Date:   Tue,  2 Mar 2021 10:51:51 +0530
-Message-Id: <1614662511-26519-2-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614662511-26519-1-git-send-email-rnayak@codeaurora.org>
-References: <1614662511-26519-1-git-send-email-rnayak@codeaurora.org>
+        id S1349255AbhCBG5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:57:54 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17151 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344556AbhCBF0d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 00:26:33 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603dcbbf0009>; Mon, 01 Mar 2021 21:23:11 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Mar 2021 05:23:09 +0000
+Date:   Tue, 2 Mar 2021 07:23:06 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Jason Wang <jasowang@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH] vdpa/mlx5: Fix wrong use of bit numbers
+Message-ID: <20210302052306.GA227464@mtl-vdi-166.wap.labs.mlnx>
+References: <20210301062817.39331-1-elic@nvidia.com>
+ <959916f2-5fc9-bdb4-31ca-632fe0d98979@redhat.com>
+ <20210301103214-mutt-send-email-mst@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210301103214-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614662591; bh=wBB6MQw+SyLdjXxml/9vKVN7x4w0HR+GxTmyhn7I07s=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=MwbEyNcOtell+6MV1oUSSBHgilUfxVGPpik8njqbSYxQi2TAsjTOF/VPHDZ+1L9Gs
+         fBQ87O/2oGRs6twXJePEiOe/E9Cl1/y9ttnuCOGp9hqVlC8gYKEsL6EqvaHLHGbKFS
+         IsmNB4N5tAv5DAnGG8D0BGF7aPfXzt+jNzRJ9w5fRocQIC2Qpa5/sJsq3EN6ukhVOK
+         7q81QIzIv4SnXx8QuapwlY+YsIpgwUTreR8CkH2/s0pLO7YI9KcXlAzUYf1UHkZCS+
+         ifaF595go020tUNXn0qxDHcmWGorVR52oMghdbp720oH5KFoFGZ5okajDx6TYu4DAd
+         0YeVslCVZ+8Ug==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix SDC1_RCLK configurations which are in a different register so fix the
-offset from 0xb3000 to 0xb3004.
+On Mon, Mar 01, 2021 at 10:33:14AM -0500, Michael S. Tsirkin wrote:
+> On Mon, Mar 01, 2021 at 03:52:45PM +0800, Jason Wang wrote:
+> >=20
+> > On 2021/3/1 2:28 =E4=B8=8B=E5=8D=88, Eli Cohen wrote:
+> > > VIRTIO_F_VERSION_1 is a bit number. Use BIT_ULL() with mask
+> > > conditionals.
+> > >=20
+> > > Also, in mlx5_vdpa_is_little_endian() use BIT_ULL for consistency wit=
+h
+> > > the rest of the code.
+> > >=20
+> > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 d=
+evices")
+> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> >=20
+> >=20
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+>=20
+> And CC stable I guess?
 
-Fixes: ecb454594c43: ("pinctrl: qcom: Add sc7280 pinctrl driver")
+Is this a question or a request? :-)
 
-Reported-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- drivers/pinctrl/qcom/pinctrl-sc7280.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-index 49c4347..9d41abf 100644
---- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-@@ -1440,7 +1440,7 @@ static const struct msm_pingroup sc7280_groups[] = {
- 	[173] = PINGROUP(173, qdss, _, _, _, _, _, _, _, _),
- 	[174] = PINGROUP(174, qdss, _, _, _, _, _, _, _, _),
- 	[175] = UFS_RESET(ufs_reset, 0xbe000),
--	[176] = SDC_QDSD_PINGROUP(sdc1_rclk, 0xb3000, 15, 0),
-+	[176] = SDC_QDSD_PINGROUP(sdc1_rclk, 0xb3004, 0, 6),
- 	[177] = SDC_QDSD_PINGROUP(sdc1_clk, 0xb3000, 13, 6),
- 	[178] = SDC_QDSD_PINGROUP(sdc1_cmd, 0xb3000, 11, 3),
- 	[179] = SDC_QDSD_PINGROUP(sdc1_data, 0xb3000, 9, 0),
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+>=20
+> >=20
+> > > ---
+> > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/ne=
+t/mlx5_vnet.c
+> > > index dc7031132fff..7d21b857a94a 100644
+> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > @@ -821,7 +821,7 @@ static int create_virtqueue(struct mlx5_vdpa_net =
+*ndev, struct mlx5_vdpa_virtque
+> > >   	MLX5_SET(virtio_q, vq_ctx, event_qpn_or_msix, mvq->fwqp.mqp.qpn);
+> > >   	MLX5_SET(virtio_q, vq_ctx, queue_size, mvq->num_ent);
+> > >   	MLX5_SET(virtio_q, vq_ctx, virtio_version_1_0,
+> > > -		 !!(ndev->mvdev.actual_features & VIRTIO_F_VERSION_1));
+> > > +		 !!(ndev->mvdev.actual_features & BIT_ULL(VIRTIO_F_VERSION_1)));
+> > >   	MLX5_SET64(virtio_q, vq_ctx, desc_addr, mvq->desc_addr);
+> > >   	MLX5_SET64(virtio_q, vq_ctx, used_addr, mvq->device_addr);
+> > >   	MLX5_SET64(virtio_q, vq_ctx, available_addr, mvq->driver_addr);
+> > > @@ -1578,7 +1578,7 @@ static void teardown_virtqueues(struct mlx5_vdp=
+a_net *ndev)
+> > >   static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev =
+*mvdev)
+> > >   {
+> > >   	return virtio_legacy_is_little_endian() ||
+> > > -		(mvdev->actual_features & (1ULL << VIRTIO_F_VERSION_1));
+> > > +		(mvdev->actual_features & BIT_ULL(VIRTIO_F_VERSION_1));
+> > >   }
+> > >   static __virtio16 cpu_to_mlx5vdpa16(struct mlx5_vdpa_dev *mvdev, u1=
+6 val)
+>=20
