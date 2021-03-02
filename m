@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06EB32A3EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDAF32A3E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577790AbhCBJxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:53:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60128 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238575AbhCBJgU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:36:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614677644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S1577763AbhCBJwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:52:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36316 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238007AbhCBJgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:36:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614677650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=UiswwEqWgCcc6JVEOoT/GV1Yehm2pU+siqiY2RK3s7M=;
-        b=YrRqBTLVrOVBSXtT/5DMnD9TYdpaZfPXi1/pxbXWeAXl5IuWNi88iSmBQMhYlptA8F7iPh
-        6qXYCSAzgz+NEP5Jb/pWhpi0T9gNxSkhYO/OiVVBgXr6gAbn7aL/G8+4rZPiy5ZLj216/P
-        08B3LooJQnajsMJZ3mijzRgAhDObGr4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-vkQhMMdZMWWP3PWz5PHNlg-1; Tue, 02 Mar 2021 04:34:02 -0500
-X-MC-Unique: vkQhMMdZMWWP3PWz5PHNlg-1
-Received: by mail-wm1-f69.google.com with SMTP id r21so306874wmq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:34:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UiswwEqWgCcc6JVEOoT/GV1Yehm2pU+siqiY2RK3s7M=;
-        b=qYZhnjEAkYcNGwDR1fpMZOra77geXF6579u/rnZIhc2UokEZNmlTRJgCayerM85A2D
-         FS6HoKKVqeVXfRjMohzwP/DRG2wCkR3bdwhDYjUqPPecHtqgMrHW623AUKbDs0pnonN0
-         RcFw6XfsBDYQuxfnjo7nlefi4VpAnMdEppAhDRFDO6Hpvc+zoJqDDoiytqs/m2L7cEf6
-         LR/Acrcp6+CUBdeHVWMoZVPFPP6Rz0F/wFedmv+PeoRlDEah7AYBtBVM4txbENEhcbpB
-         wlK/KMh+PEN7DH0gMziCSR+tI414ueDCZ7/cD6H6e+LozDiUM5t21dHYzC8cq+9Z5VxP
-         G/oQ==
-X-Gm-Message-State: AOAM530xTyrA8z8ztXcwp4QZk1nakjGjOK417RI9fnUXMiCnVyjLE+FN
-        6p3kXwJ/VYS7R6/c4nDNiJtdcnup00ZIv3d82h/zo1o1vPuVuBMiPyfb58OPQNdbRzYtfWeud9b
-        GFN4JGvOtJQxsDkIgHfVs9vKg
-X-Received: by 2002:a1c:bac2:: with SMTP id k185mr3137760wmf.148.1614677640851;
-        Tue, 02 Mar 2021 01:34:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyoXcwmapp7HZMXF9WKS7S9md99CuclLhyuqLkFLsTZMmv0tMBvmgShASamrRonSac04nM/rg==
-X-Received: by 2002:a1c:bac2:: with SMTP id k185mr3137742wmf.148.1614677640649;
-        Tue, 02 Mar 2021 01:34:00 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a131sm1972171wmc.48.2021.03.02.01.33.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 01:34:00 -0800 (PST)
-Subject: Re: [PATCH v2] KVM: nVMX: Sync L2 guest CET states between L1/L2
-To:     Yang Weijiang <weijiang.yang@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20210225030951.17099-1-weijiang.yang@intel.com>
- <20210225030951.17099-2-weijiang.yang@intel.com>
- <YD0oa99pgXqlS07h@google.com> <20210302090532.GA5372@local-michael-cet-test>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <39737fcf-ac15-006e-c21f-39f6caa3b342@redhat.com>
-Date:   Tue, 2 Mar 2021 10:33:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=cSTLa9hZjScF2nB/fdohi0qlgKjoTXLy1AfmxxhJlBE=;
+        b=Eh5uhBdOdjB3Tu9kATn08Pfe+yZ7BbNU6zC0pyU7JryhFYPGBCSuVjOp7QnEv7a/6Tv1mt
+        /2ZKuLEZuGPgwKP/GwytapTUVpIjbVRvmtoEbGGTVM5d+Z1wXNL0AfENyFyNApIVZ5x0dJ
+        Zp8SYDoZIpCuuehjzbODzi9pc7UXV7Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9F880AAC5;
+        Tue,  2 Mar 2021 09:34:10 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 10:34:09 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix kernel stack account
+Message-ID: <YD4GkRnTN6RK5CyG@dhcp22.suse.cz>
+References: <20210302073733.8928-1-songmuchun@bytedance.com>
+ <YD36+i1PZX/CH1jf@dhcp22.suse.cz>
+ <CAMZfGtX=EmE8iOLfO3duCyMWOmu-OYra9Rk4mKsknds+5MueMg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210302090532.GA5372@local-michael-cet-test>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtX=EmE8iOLfO3duCyMWOmu-OYra9Rk4mKsknds+5MueMg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/21 10:05, Yang Weijiang wrote:
-> I got some description from MSFT as below, do you mean that:
+On Tue 02-03-21 17:23:42, Muchun Song wrote:
+> On Tue, Mar 2, 2021 at 4:44 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 02-03-21 15:37:33, Muchun Song wrote:
+> > > The alloc_thread_stack_node() cannot guarantee that allocated stack pages
+> > > are in the same node when CONFIG_VMAP_STACK. Because we do not specify
+> > > __GFP_THISNODE to __vmalloc_node_range(). Fix it by caling
+> > > mod_lruvec_page_state() for each page one by one.
+> >
+> > What is the actual problem you are trying to address by this patch?
+> > 991e7673859e has deliberately dropped the per page accounting. Can you
+> > explain why that was incorrect? There surely is some imprecision
+> > involved but does it matter and is it even observable?
 > 
-> GuestSsp uses clean field GUEST_BASIC (bit 10)
-> GuestSCet/GuestInterruptSspTableAddr uses GUEST_GRP1 (bit 11)
-> HostSCet/HostSsp/HostInterruptSspTableAddr uses HOST_GRP1 (bit 14)
-> 
-> If it is, should these go into separate patch series for Hyper-v nested
-> support? I have some pending patches for the enabling.
+> When I read the code of account_kernel_stack(), I see a comment that
+> says "All stack pages are in the same node". I am confused about this.
+> IIUC, there is no guarantee about this. Right?
 
-Yes, it should be a separate patch.  The main patch however should add 
-the CET fields to EVMCS1_UNSUPPORTED_VMENTRY_CTRL and 
-EVMCS1_UNSUPPORTED_VMEXIT_CTRL.
+Yes there is no guarantee indeed. Please always make sure to describe
+the underlying reasoning for the patch. Subject of this patch refers to
+a fix without explaining the actual problem. If a change is motivated by
+code reading then make it explicit. Also if you are refering to a
+different commit by Fixes: tag then it would be really helpful to
+explicitly mention why that commit is incorrect or cause a visible
+problems.
 
-Thanks,
+> Yeah, imprecision may
+> not be a problem. But if this is what we did deliberately, I think that
+> it is better to add a comment there. Thanks.
 
-Paolo
+Yes the comment is quite confusing. I suspect it meant to say
+	/* All stack pages are accounted to the same node */
 
+-- 
+Michal Hocko
+SUSE Labs
