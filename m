@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1CB32AE18
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CA432AE15
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360515AbhCBWV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        id S2360507AbhCBWV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:21:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383594AbhCBVRA (ORCPT
+        with ESMTP id S1383597AbhCBVQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 16:17:00 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2FBC061797
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:11:44 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id a63so24065262yba.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:11:44 -0800 (PST)
+        Tue, 2 Mar 2021 16:16:28 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38D1C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:11:46 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id k68so14327825qke.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:11:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=bb06rucpely5yW30WUY4CrrQt38vQ0aV0zDKkwTD8/8=;
-        b=ta3vio6vckCy8usZMNP/oSCED7HFMRKu14VEnPuJzFZx10YFZuqHyQbfx/DTNqGepJ
-         lBoKtjyyIu8hs3LfsddcQhQPZOmit+Bb5swEMxhdquY8EH/oFHjNM3a3spdlquDwGMbs
-         qJCh8CPv7CWEYc+1kQSlTukAnVMcR6Jqf88BLQqiO0dHzJIdngAhn2ZD91z6KpA8n023
-         v+raqioOa0bcDX2coeZ1YxKIYgqpyEha10s6q2G1tfu5ZgABSlgD6vuWV1SNKCMEuu5+
-         68FDbclPQZkyUGW0Pc7e9RkxlFhwG2rzdbjfYX5GgkePe9UBLj66QGnqGoPYQibvcUMu
-         +5Hw==
+        bh=2Mto1DCOxlLzDfjtf+5qxXYDPOWq6BI6lEfSm4q36Mg=;
+        b=BgrR/JyWnWZom3nQVD3sD8sQb30jz/EPZEoMRT530G/gEBFzea8CpgKsLFmoDI8DMR
+         fZTZjDjq218dl+yec+0zPBB0+g9NzYV+4taJdVtA0aHlmHHAYkGou6/Cv94CdSXnd+l2
+         l2D7pKf2ds1GxjXK1Ud5Lng1DHbLZDVlEC9xhe6Zg0xifLBn2XWQ7A5DETVWNcqc18rg
+         7lZCNP8hFAd7tKGP16dEqQPrdi18m+lB0y9HHFU3VVPNfQIpFF5H52NWkad8tWNi/VtA
+         kWbHj7gu+i4LkxgC5iED/RL7LqVTvSFGFBpp4hghOLdL8RgYbYy86CzlrCutn/mSoTPS
+         mHLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=bb06rucpely5yW30WUY4CrrQt38vQ0aV0zDKkwTD8/8=;
-        b=Fd1BzB41Ga9vK7KQhsfGRsJ0Jrgoohj/Mf+0VvIzTrhkdM4Ro6CU4Yj783VuTIN+VJ
-         VoEtCxfR256CgF8xoVeJPJ8LLCly+3qT4BS2BuD1vfVP9JQrGBPqJjX36zd2jMJ+JlE/
-         55O2bpOibawlSljuoQaDPkaFhRMgRuKv3gXIgiH5NioGJimpxc+ZzIGkJ9A/lWDuvagP
-         veRftq3TU9nlQuanRk9igb5d/DVYg5DYM8Bf2z9RGX3ebB6Kh5Tw3H72rFQvN9uGlFk9
-         S/I3YB0i1QC+ZFPKqj0tDxnPcfYnfe27ikoxZaXcz2Wmrhdefe/W9wH4egCIuzeyXfmF
-         NFeQ==
-X-Gm-Message-State: AOAM533+HQom77VWAhVpayZMwgGWJFerCAZrQbQUf4hRvHAisfdgv70X
-        rZ+ve/VFsHY58B0JwV1f1iRYXgQ4h1pVVTs=
-X-Google-Smtp-Source: ABdhPJwy8Cvxbp0Pt1ShiBQOEjv9X37hC4QysFyc+CjEQ8Ydl8Jq+SSVnO/g29jKzcF1aESQNUnIsBe3LEDIzj8=
+        bh=2Mto1DCOxlLzDfjtf+5qxXYDPOWq6BI6lEfSm4q36Mg=;
+        b=t8TqV0e6BMvUntlhv2abjY1hmj2EyMe3w9x93I0krR4bQN7mkuaDD7XjGRf31LT8il
+         3P8ULbpr+atYDH9ib8fr+KfnjgSVfYKteZuD5S4FaqnPoi2U7owdOOPiwLnS8+wttue5
+         1Oyw1hLYSmxzvAzV2lDMkjrftJinQeZjrP59S6N95qnydnOo33s35N0g+iiV0o6ND5qC
+         zWePOf2w5Y1ZoduJCSYD4T9frVUE22DTsnFgrcYvO8pST1Lt2mFrQYg+mjgIFkH+RHLq
+         UjTaYW04pPx/ZyH+kO4vcZTCwvw3vVVhcsIJew02muRXK/OBLc05a9jGXIn2bljUAv7X
+         iRwg==
+X-Gm-Message-State: AOAM530eZIHhQkty6iBj5bdMOkHW/qjCy27OgF02LlIV/mXyj1wWkvxV
+        zzxgsxsR38c92Q8XYClkG9nfc+X7GYyMkD0=
+X-Google-Smtp-Source: ABdhPJxKZs+nC8iQ+F7QUYDAfQZIEYEWJ+TjIi+Q9Kq0yfqXcooPjSo2y72D6ySnIjE8v/M3Ma4LcX5lGMJtLXo=
 Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:a1ad:fce1:8a40:59b6])
- (user=saravanak job=sendgmr) by 2002:a25:1043:: with SMTP id
- 64mr33913158ybq.141.1614719503619; Tue, 02 Mar 2021 13:11:43 -0800 (PST)
-Date:   Tue,  2 Mar 2021 13:11:31 -0800
+ (user=saravanak job=sendgmr) by 2002:a0c:f946:: with SMTP id
+ i6mr5480376qvo.40.1614719506149; Tue, 02 Mar 2021 13:11:46 -0800 (PST)
+Date:   Tue,  2 Mar 2021 13:11:32 -0800
 In-Reply-To: <20210302211133.2244281-1-saravanak@google.com>
-Message-Id: <20210302211133.2244281-3-saravanak@google.com>
+Message-Id: <20210302211133.2244281-4-saravanak@google.com>
 Mime-Version: 1.0
 References: <20210302211133.2244281-1-saravanak@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v1 2/3] driver core: Update device link status properly for device_bind_driver()
+Subject: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by default""
 From:   Saravana Kannan <saravanak@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>
@@ -68,93 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device link status was not getting updated correctly when
-device_bind_driver() is called on a device. This causes a warning[1].
-Fix this by updating device links that can be updated and dropping
-device links that can't be updated to a sensible state.
+This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
 
-[1] - https://lore.kernel.org/lkml/56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com/
+Since all reported issues due to fw_devlink=on should be addressed by
+this series, revert the revert. fw_devlink=on Take II.
+
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/base/base.h |  1 +
- drivers/base/core.c | 35 +++++++++++++++++++++++++++++++++++
- drivers/base/dd.c   |  4 +++-
- 3 files changed, 39 insertions(+), 1 deletion(-)
+ drivers/base/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/base.h b/drivers/base/base.h
-index 52b3d7b75c27..1b44ed588f66 100644
---- a/drivers/base/base.h
-+++ b/drivers/base/base.h
-@@ -185,6 +185,7 @@ extern int device_links_read_lock(void);
- extern void device_links_read_unlock(int idx);
- extern int device_links_read_lock_held(void);
- extern int device_links_check_suppliers(struct device *dev);
-+extern void device_links_force_bind(struct device *dev);
- extern void device_links_driver_bound(struct device *dev);
- extern void device_links_driver_cleanup(struct device *dev);
- extern void device_links_no_driver(struct device *dev);
 diff --git a/drivers/base/core.c b/drivers/base/core.c
-index f29839382f81..45c75cc96fdc 100644
+index 45c75cc96fdc..de518178ac36 100644
 --- a/drivers/base/core.c
 +++ b/drivers/base/core.c
-@@ -1153,6 +1153,41 @@ static ssize_t waiting_for_supplier_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(waiting_for_supplier);
+@@ -1538,7 +1538,7 @@ static void device_links_purge(struct device *dev)
+ #define FW_DEVLINK_FLAGS_RPM		(FW_DEVLINK_FLAGS_ON | \
+ 					 DL_FLAG_PM_RUNTIME)
  
-+/**
-+ * device_links_force_bind - Prepares device to be force bound
-+ * @dev: Consumer device.
-+ *
-+ * device_bind_driver() force binds a device to a driver without calling any
-+ * driver probe functions. So the consumer really isn't going to wait for any
-+ * supplier before it's bound to the driver. We still want the device link
-+ * states to be sensible when this happens.
-+ *
-+ * In preparation for device_bind_driver(), this function goes through each
-+ * supplier device links and checks if the supplier is bound. If it is, then
-+ * the device link status is set to CONSUMER_PROBE. Otherwise, the device link
-+ * is dropped. Links without the DL_FLAG_MANAGED flag set are ignored.
-+ */
-+void device_links_force_bind(struct device *dev)
-+{
-+	struct device_link *link, *ln;
-+
-+	device_links_write_lock();
-+
-+	list_for_each_entry_safe(link, ln, &dev->links.suppliers, c_node) {
-+		if (!(link->flags & DL_FLAG_MANAGED))
-+			continue;
-+
-+		if (link->status != DL_STATE_AVAILABLE) {
-+			device_link_drop_managed(link);
-+			continue;
-+		}
-+		WRITE_ONCE(link->status, DL_STATE_CONSUMER_PROBE);
-+	}
-+	dev->links.status = DL_DEV_PROBING;
-+
-+	device_links_write_unlock();
-+}
-+
- /**
-  * device_links_driver_bound - Update device links after probing its driver.
-  * @dev: Device to update the links for.
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index f18963f42e21..eb201c6d5a6a 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -460,8 +460,10 @@ int device_bind_driver(struct device *dev)
- 	int ret;
- 
- 	ret = driver_sysfs_add(dev);
--	if (!ret)
-+	if (!ret) {
-+		device_links_force_bind(dev);
- 		driver_bound(dev);
-+	}
- 	else if (dev->bus)
- 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
- 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
+-static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_PERMISSIVE;
++static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_ON;
+ static int __init fw_devlink_setup(char *arg)
+ {
+ 	if (!arg)
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
