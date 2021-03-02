@@ -2,130 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843D732AD7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F8232AD70
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837788AbhCBV6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:58:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1581633AbhCBTBP (ORCPT
+        id S1837641AbhCBV6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:58:10 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45158 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1581604AbhCBS7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:01:15 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E04C061356
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:56:49 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id q14so25346387ljp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:56:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jPemdFCvcOw+M7rO60HZ8OEoGnA5eVH5NVd0v+mKulU=;
-        b=YyCfRc7bqIIPy2pLts3gZ1AaH7tiza3GiTHxYs9f+v7VuDwSeWXWF0YlC6p9Rf0qDh
-         9vUlz3m+dioWFfHbeNrOBT9vGHtggYOqXVZF8Tiu1IBGhTDUH7XnW4AZ6KaKEvQWbg7C
-         ydGAufrimWtv1w0FUqZs/jsQcMO+ezP7fyRnU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jPemdFCvcOw+M7rO60HZ8OEoGnA5eVH5NVd0v+mKulU=;
-        b=KjA90LJJvF/rj3uTH1UgiTzjw39g2lpoOQatvdPx/upS2Rf+TB4RnySm3kiaALNUV6
-         qgj3anRKrcJ+HxfInCCdb5Oydgrq19TsWgZSYiZrMjR8d/8Po8DvIXrOVPEdebV3VQ0A
-         11ZQcnfh9eihDHYXmZ+XdrzW5HYW+LUJGznr2XKk4yMMxQmP9ix+zcwx0x2qdluJTmqa
-         ZpSovsrfgubG2ZTb7+ZO5ZGoWB7yW+lPuDMn7PF9OYqhdgXFGB4a92R6PBKlFyoqOVSI
-         f2lKSjd4cX+RWmBIx9W8yykJZm4JzRpOsIkX1KCwrABiJRgRSkKDIsw00NJkAMQFnjkA
-         49SA==
-X-Gm-Message-State: AOAM531GZAQec3zvhFn3ZruFnppuL5wpdkYRkiHi3P+InLnjzOJrwyCl
-        rcdc3ZFph7ZXcUMXhVE8B8xqo7rvWLgHqg==
-X-Google-Smtp-Source: ABdhPJyzQixE69JRmzIPXn811+y+KeQWSqdVAc90O8fc27t+8VIFjozJvaE0upJkoIVXzgWOX/TNXg==
-X-Received: by 2002:a2e:700a:: with SMTP id l10mr12967208ljc.368.1614711407320;
-        Tue, 02 Mar 2021 10:56:47 -0800 (PST)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id k5sm2955738ljh.130.2021.03.02.10.56.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 10:56:46 -0800 (PST)
-Received: by mail-lf1-f48.google.com with SMTP id f1so32983412lfu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:56:46 -0800 (PST)
-X-Received: by 2002:ac2:58fc:: with SMTP id v28mr8117958lfo.201.1614711405966;
- Tue, 02 Mar 2021 10:56:45 -0800 (PST)
+        Tue, 2 Mar 2021 13:59:40 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 122Iiiqu026311;
+        Tue, 2 Mar 2021 10:58:43 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=vWgcOfqUaWjNw49VbbdqEwGEjGFrwkKR7CY2v3MoBiA=;
+ b=MqpxFlg94ciNy3PVUfC9VUu0ThDFeagAxaeKKOx02FyAiqAYQ85TYNuMXBhPLqtzWBVT
+ 3GVUsuyCzA5dbk4oVQ1qhyoHtLquDS6pO6QuVIHBqIL7NNEvFMgIpgcG8K1iTerPyhrC
+ pRGgDdmEkfjMU9pooVf7EwGanNyzMi5FFmk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 371trm85ma-20
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 02 Mar 2021 10:58:43 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 2 Mar 2021 10:58:41 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RxBP/byFxm9dj9RgU4OamIHahwJApozx1jmVDfwBAkepqFKt34qK3QjJvtr63nB6tKAzguqnPqpm5G630d2E0fbhVQEcnwyEalrBDty0y7PFtnMfFdrf6kayVY3k24/3DibSIm1j9Nf6Zulamf1B5DAx55XoXuuaklouSxs/VsQHbuouavZym/r/W3KL8s8O3I6xReEUJfrnEzc9JsuBFdMCKz3ltKsF1W6jaxBjdyJPTVe9sAk2CXy5gwBEgcGBZAA+37QNlA+M7JJIjpYlBecEwqPAi6nnySGD8wtu7X843A+MPYfCXFMDFbz2mgCGiQnOeegp0PtdRx8XpYTyhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vWgcOfqUaWjNw49VbbdqEwGEjGFrwkKR7CY2v3MoBiA=;
+ b=B0rY9rFSC9W5/Pi14lJ1LtUbBTCwUIJYLFDRhfShXDgSb8rZ8AkrAirDGbJ4/8vJLh5qgoGC0MAU04O9kXMfQWI9IrWH2Ta2BdYsWCjjnb1qfFazndvXy8wF07SRyA5dVYOsbp76KT3GzD1wCMRJhf+fSCwn9Kqr+iz5h311UkpeEMy+YOPukXpIlSQQEimNPmvYAfE5ASR13Yna9iEbbiDnDI9zZttmAglGhS9FfcTFfcWacGRa+6QcBY9qsP6bxyWdQfqjXrcmNgqwb6YJxLO6MFC5zUnbPW7soCd/WXKoNdgCaNw/q0MSU1qon2i1w4Ic/RiDQKEpPs1yd8z7cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB4134.namprd15.prod.outlook.com (2603:10b6:a03:9a::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 2 Mar
+ 2021 18:58:40 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3890.029; Tue, 2 Mar 2021
+ 18:58:40 +0000
+Date:   Tue, 2 Mar 2021 10:58:36 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <akpm@linux-foundation.org>, <shakeelb@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: memcontrol: fix root_mem_cgroup charging
+Message-ID: <YD6K3HghLy5glOgi@carbon.dhcp.thefacebook.com>
+References: <20210302081823.9849-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210302081823.9849-1-songmuchun@bytedance.com>
+X-Originating-IP: [2620:10d:c090:400::5:68d2]
+X-ClientProxiedBy: MWHPR22CA0014.namprd22.prod.outlook.com
+ (2603:10b6:300:ef::24) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <CALCv0x1NauG_13DmmzwYaRDaq3qjmvEdyi7=XzF04KR06Q=WHA@mail.gmail.com>
- <m1wnuqhaew.fsf@fess.ebiederm.org> <CALCv0x1Wka10b-mgb1wRHW-W-qRaZOKvJ_-ptq85Hj849PFPSw@mail.gmail.com>
-In-Reply-To: <CALCv0x1Wka10b-mgb1wRHW-W-qRaZOKvJ_-ptq85Hj849PFPSw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 2 Mar 2021 10:56:30 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjVWMnH2LfFNnXcf6=WuU1RyLa_cgTEOqnViHiqDrqQjg@mail.gmail.com>
-Message-ID: <CAHk-=wjVWMnH2LfFNnXcf6=WuU1RyLa_cgTEOqnViHiqDrqQjg@mail.gmail.com>
-Subject: Re: exec error: BUG: Bad rss-counter
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:68d2) by MWHPR22CA0014.namprd22.prod.outlook.com (2603:10b6:300:ef::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Tue, 2 Mar 2021 18:58:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 17a73330-b278-4f4e-f862-08d8ddad31a7
+X-MS-TrafficTypeDiagnostic: BYAPR15MB4134:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB4134BFAC574D7573D6681AADBE999@BYAPR15MB4134.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k4cqQ8xB4wA/b3DZ6S9VCrFsysJiXxYe6/wij8Hv6uPBgbi/BMQxbEPcH8aiL/KWmMcoxak42Wo6OCG+zDrFltgG/S9KiyYhj4/B4jfThO59TzqYKcqjCmDJypp7ITS84LuxLfqph3+JvhETZNmUF25HkLjCJyObYeUnZyFijGb6DecaPRXTRGDxoZqLZWOtSIdzZEPg8jroM9QUo5Ck+efWHiZdaJ1Y6228lDxKyFP7CkxHgcTNq663iKMDERgDIVHH+v7IMeEXHB5J2/E/AWu+gzds9UT6z/sCWRUB8S8LH7HTnFoP6kWOQJMLAcIFLSOdtd1GqY53xFGwfIGNYwjLP1fs3lUPH8DiG4Tnjkf1bFShlCYxaHQI8f44gE1EttwOeID2ixV6nxYtvhALpFyJOhSeu8k5pynmFlB34QNmqoHQu/btd/FWZ4ize227knYR1zs1DdgWjLlfMeB41sl/JYOp7a0tAHu4HylejIUkXeIRVEt0C+HOul87I2FfvGeR7zLO4s6Cx1CyEeNWMg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(136003)(396003)(366004)(83380400001)(66946007)(66556008)(66476007)(2906002)(52116002)(6506007)(5660300002)(4326008)(316002)(8676002)(478600001)(16526019)(8936002)(186003)(6916009)(6666004)(55016002)(86362001)(7696005)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?OpsZVGzU0qiluG+77iBS1UIVZ8VMRp9A5jMBW3s3ojHEoC8HnUj2cDuGffk2?=
+ =?us-ascii?Q?WImvBHlpfrPSxNoc0zKWjOBq5yU5BEXKkkLFKHGugS1483fL0vDN2BkD7y4P?=
+ =?us-ascii?Q?B2LRx2VlTeINBGJAwMTQIDpWMQPs7Pkfle6yNxDtQ8A9aAXlIkMQTb5SuPxD?=
+ =?us-ascii?Q?gItKdv+KEpJ/XmwXQgPbTeTnU7gqx0B1U6xxZ31v0FbnGpUhXRUGTZFS6piv?=
+ =?us-ascii?Q?XwU0J9VNeW6JT0xFLoCRMVTr9EgETNDvn0haQZo9yGM1JZN7j4ahKIJ3Usff?=
+ =?us-ascii?Q?o+vig6sduO2NcV5qkyrK/jDQR0XX9aD/rQKrS4m0DAxB3U2PoEj6iPo97GTr?=
+ =?us-ascii?Q?rXoVs7JvvLTJiWQ4OPaTHlcs2JDfU69XJGdSKLpQLhOCzFF6lSXlYpHPh9op?=
+ =?us-ascii?Q?jyMLnIab+YPkLcNsD+bw+rCLSZz9iDffWulq3T4ICGUhO4E/iLaiC+8PCuVg?=
+ =?us-ascii?Q?w0F8UT0YAmqAuL/u3zSNCIxFhzZSRxiU3gRdbhndjS12sLrHu8nwewv231lt?=
+ =?us-ascii?Q?rU4GhNhZXunk0oHON7xFEShNansEnLGjTPEVNDJJAK5epogywuGVfPtMwkGY?=
+ =?us-ascii?Q?ZpsnqZ9YFv3oL4T9tNI9HDk7hfwaXxYgD5SKHWGyk66RoQs+t65MM9h3GLEb?=
+ =?us-ascii?Q?4VEi/FG5MuKrPRiYi2uoX2i6lMPvITVmtMGeP3l7+Yrt6oiOKHBAit82AQoM?=
+ =?us-ascii?Q?sdI6wPiehaHkV3AmZkSJf88GcUmpYnDc/kRZ65yeImHv9F2NRqzfARAqk0CT?=
+ =?us-ascii?Q?RPDcNdBhqcHMZ8mG4SIc/PnpwA2q0Sh0jCYMT3vJwtciHgTBDa+SRRX78Zbo?=
+ =?us-ascii?Q?++lOQjN/NA1XPQcYTiFf/yCUWel55pDVY+qFu2g9FQG9fDAiZeOd0/AB9Bc2?=
+ =?us-ascii?Q?Gg9z5o7p9S246DsBOb1kOWkF9MzYvRu7pHP4Jm2pqUuFGu2S5BQunx//7ZHD?=
+ =?us-ascii?Q?yhZyhLbK0K2I6RGmlV0UO/1J/Ei7GbLbPQRLNIHxvy+dA8Hexn41IoUCEq5z?=
+ =?us-ascii?Q?RJyXgQAIQCHo80zEPrK32EECYt9qBxpgO3Jb8nuZX0Mm4P9vnNRrYFXkibPc?=
+ =?us-ascii?Q?fAtNQr2X35yfHjrrNBwDA+pacbHj05Jtx+XvtM8Ja+w22Rnhu3gjHN/QECCD?=
+ =?us-ascii?Q?nVOvYj8w+dMHrH2nzQa8X/2FgKnsBEwizlWu+02/wY4uSIugQA5+ijjZRyTb?=
+ =?us-ascii?Q?7K2V5/iD8dM/AWXk9k0JNvAHWYlzCM0KjCIdpks5t9FpIXGJZvTy5DqLCXeE?=
+ =?us-ascii?Q?jbiioSvOXjOeLza1pMa3JgRBN0syuk//wrxMUgnB9GeFyeOO17uyRRoMRk0Q?=
+ =?us-ascii?Q?rX5+oLGhmeRGqz3hGYtNAUhUCW/bJj9FqeVJJ0viiNfulA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17a73330-b278-4f4e-f862-08d8ddad31a7
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 18:58:40.7036
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sa4PKu7NaG5Mu5Gr1xR2GX4bCWNSMx3M4JCPuzgAMmV8sEXCPz7xDDL6s3BtN/79
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4134
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 malwarescore=0 bulkscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 clxscore=1015 adultscore=0
+ spamscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103020143
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 11:59 PM Ilya Lipnitskiy
-<ilya.lipnitskiy@gmail.com> wrote:
->
-> Good to know. Some more digging and I can say that we hit this error
-> when trying to unmap PFN 0 (is_zero_pfn(pfn) returns TRUE,
-> vm_normal_page returns NULL, zap_pte_range does not decrement
-> MM_ANONPAGES RSS counter). Is my understanding correct that PFN 0 is
-> usable, but special? Or am I totally off the mark here?
+On Tue, Mar 02, 2021 at 04:18:23PM +0800, Muchun Song wrote:
+> CPU0:                                   CPU1:
+> 
+> objcg = get_obj_cgroup_from_current();
+> obj_cgroup_charge(objcg);
+>                                         memcg_reparent_objcgs();
+>                                             xchg(&objcg->memcg, root_mem_cgroup);
+>     // memcg == root_mem_cgroup
+>     memcg = obj_cgroup_memcg(objcg);
+>     __memcg_kmem_charge(memcg);
+>         // Do not charge to the root memcg
+>         try_charge(memcg);
+> 
+> If the objcg->memcg is reparented to the root_mem_cgroup,
+> obj_cgroup_charge() can pass root_mem_cgroup as the first
+> parameter to here. The root_mem_cgroup is skipped in the
+> try_charge(). So the page counters of it do not update.
+> 
+> When we uncharge this, we will decrease the page counters
+> (e.g. memory and memsw) of the root_mem_cgroup. This will
+> cause the page counters of the root_mem_cgroup to be out
+> of balance. Fix it by charging the page to the
+> root_mem_cgroup unconditional.
 
-PFN 0 should be usable - depending on architecture, of course - and
-shouldn't even be special in any way.
+Is this a problem? It seems that we do not expose root memcg's counters
+except kmem and tcp. It seems that the described problem is not
+applicable to the kmem counter. Please, explain.
 
-is_zero_pfn(pfn) is *not* meant to test for pfn being 0 - it's meant
-to test for the pfn pointing to the special zero-filled page. The two
-_could_ be the same thing, of course, but generally are not (h8300
-seems to say "we use pfn 0 as the zero page" if I read things right).
+Thanks!
 
-In fact, there can be many zero-filled pages - architectures with
-virtually mapped caches that want cache coloring have multiple
-contiguous zero-filled pages and then map in the right one based on
-virtual address. I'm not sure why it would matter (the zero-page is
-always mapped read-only, so any physical aliases should be a
-non-issue), but whatever..
-
-> Here is the (optimized) stack trace when the counter does not get decremented:
-> [<8015b078>] vm_normal_page+0x114/0x1a8
-
-Yes, if "is_zero_pfn()" returns true, then it won't be considered a
-normal page, and is not refcounted.
-
-But that should only trigger for pfn == zero_pfn, and zero_pfn should
-be initialized to
-
-    zero_pfn = page_to_pfn(ZERO_PAGE(0));
-
-so it _sounds_ like you possibly have something odd going on with ZERO_PAGE.
-
-Yes, one architecture does actually make pfn 0 _be_ the zero page, but
-you said MIPS, and that does do the page coloring games, and has
-
-   #define ZERO_PAGE(vaddr) \
-        (virt_to_page((void *)(empty_zero_page + (((unsigned
-long)(vaddr)) & zero_page_mask))))
-
-where zero_page_mask is the page colorign mask, and empty_zero_page is
-allocated in setup_zero_pages() fairly early in mem_init() (again, it
-allocates multiple pages depending on the page ordering - see that
-horrible virtual cache thing with cpu_has_vce).
-
-So PFN 0 shouldn't be an issue at all.
-
-Of course, since you said this was an embedded MIPS platform, maybe
-it's one of the broken ones with virtual caches and cpu_has_vce is
-set. I'm not sure how much testing that has gotten lately. MOST of the
-later MIPS architectures walked away from the pure virtual cache
-setups.
-
-              Linus
+> 
+> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/memcontrol.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2db2aeac8a9e..edf604824d63 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3078,6 +3078,19 @@ static int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
+>  	if (ret)
+>  		return ret;
+>  
+> +	/*
+> +	 * If the objcg->memcg is reparented to the root_mem_cgroup,
+> +	 * obj_cgroup_charge() can pass root_mem_cgroup as the first
+> +	 * parameter to here. We should charge the page to the
+> +	 * root_mem_cgroup unconditional to keep it's page counters
+> +	 * balance.
+> +	 */
+> +	if (unlikely(mem_cgroup_is_root(memcg))) {
+> +		page_counter_charge(&memcg->memory, nr_pages);
+> +		if (do_memsw_account())
+> +			page_counter_charge(&memcg->memsw, nr_pages);
+> +	}
+> +
+>  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
+>  	    !page_counter_try_charge(&memcg->kmem, nr_pages, &counter)) {
+>  
+> -- 
+> 2.11.0
+> 
