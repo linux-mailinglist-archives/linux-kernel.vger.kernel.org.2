@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABA032AB47
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB90032AB33
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1582055AbhCBUTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
+        id S1836506AbhCBUJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442213AbhCBRaF (ORCPT
+        with ESMTP id S1580108AbhCBRaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:30:05 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C231C0611BC
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:24:22 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id p21so32152260lfu.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:24:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=spDqAabTsp4LqzJSCuCF/LplY6jTXds7B6hpNsRhkM4=;
-        b=o5gwQ4yZ8YTvEOf5qcO+EU9Zhnf2Uvz/xYHgt6qfyvwsR9pU+d9URb+5QLO2PiynAK
-         LuVS8fyQImGGVPUwoWMFxfamLRbRwL2aIeadk8cA8o8oULaWDaIbCLxzEGTlEu/ked4G
-         lI8Gd0xfbzaxd0uv9owFO0QT/wgAMXOSsw0pIST6ou8Yz6clXyXPWsu7txWLQI73Yhop
-         BSnGyXQh5hhjy5SlteD/ab8bng/KmWetDld2Hmxptjm83wF0Q+7dQikrMNsdFpxJxyHF
-         kNEj+5WwSGRbQyzO9GEAFylxPIiUfY9mmoE9m6nP9yT+SSY8yKrh5hMcAVPd6YM2aCiY
-         5gwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=spDqAabTsp4LqzJSCuCF/LplY6jTXds7B6hpNsRhkM4=;
-        b=r0+biCEEpIGRvrg8BEJqUxXYxNZ5jOAaI/YLMkFTxOvDu+/J2/b0EfBLBgdDaWpe28
-         Dp5/4NnvnR9dKnlSc83EPsZp7t6kpLJewov2z/TR4F727Zlz1kbMDGUKfepDDMaGC+Ff
-         T6DIHaCuhcdATajtieE9ACBSJ3Wi69C6L60kKmDMMI3TXE9zSMGbxGTfFaLY0poTwlj+
-         f6DOQwNmyB9e63rPe8hXYMkd9JOvRE1fiW4gT35H+prr1f9icdbVtSgp8sd9E4ULx3Xn
-         kxaXlTedsbGwvBHFsyfc6RiSiNu1ncS3cLlu1BFBqhOmEmPDd65U54u9AUs+bXy3x4Q4
-         B8qQ==
-X-Gm-Message-State: AOAM530tXXZ6cl5iVIaCXSfutQZ23BCcm1BSKcdT3hZKzmuLNL8HnluV
-        IadxXR5xrW/vz5A9mzidC59K4/BU8q31YWmwFauf/w==
-X-Google-Smtp-Source: ABdhPJwc752qfzLhHXNFNl2brHU8Umz8JE1YiOOWV/JR3gN5px83aOEgiqJ6qgDyygXSnltEUC8hg0CLdY6Fp2/ljtg=
-X-Received: by 2002:a05:6512:74a:: with SMTP id c10mr12928022lfs.586.1614702260058;
- Tue, 02 Mar 2021 08:24:20 -0800 (PST)
+        Tue, 2 Mar 2021 12:30:11 -0500
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8518AC061A2A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:25:30 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 46C1CC800AC;
+        Tue,  2 Mar 2021 17:25:28 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id S5QVdRIUw3Fx; Tue,  2 Mar 2021 17:25:28 +0100 (CET)
+Received: from [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8] (p200300e37f234700cc4188a7f2f8D6B8.dip0.t-ipconnect.de [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id F00A6C800AB;
+        Tue,  2 Mar 2021 17:25:27 +0100 (CET)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
+To:     wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Autocrypt: addr=wse@tuxedocomputers.com; keydata=
+ mDMEX6ALvhYJKwYBBAHaRw8BAQdAG/kE3mlbV1YLpCU8iA7Pyq2eDq9LxzGQxcOZODh2Vnq0
+ KFdlcm5lciBTZW1iYWNoIDx3c2VAdHV4ZWRvY29tcHV0ZXJzLmNvbT6IlgQTFggAPhYhBNzq
+ jJqAsvWKK1h7bi7eQpXUvijKBQJfoAu+AhsDBQkJZgGABQsJCAcCBhUKCQgLAgQWAgMBAh4B
+ AheAAAoJEC7eQpXUvijKzkEA/jblmQRWU/e18oo8J9GPHWOCRUA1WJLUt9lSye5cgl2vAP0Y
+ q+EpkDRS+QqtIcIr3fVELwA4b/V1lVE2LW+plcmdCbg4BF+gC74SCisGAQQBl1UBBQEBB0Bc
+ k3J9DVAB4ysrdDcKE7L9iAUjlWD+rsLh/5soPORqFQMBCAeIfgQYFggAJhYhBNzqjJqAsvWK
+ K1h7bi7eQpXUvijKBQJfoAu+AhsMBQkJZgGAAAoJEC7eQpXUvijKBBYA/2DT2g26dpTU2Rbc
+ lqviltu+woGZCd0GBfRgXuzUK0OfAQCwr8qPCl8uIsBgOsDmWIJYByG2ddwmXiAgBS1985bM Ag==
+Message-ID: <0eee6545-5169-ef08-6cfa-5def8cd48c86@tuxedocomputers.com>
+Date:   Tue, 2 Mar 2021 17:25:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210224061205.23270-1-dqfext@gmail.com> <CACRpkdZykWgxM7Ge40gpMBaVUoa7WqJrOugrvSpm2Lc52hHC8w@mail.gmail.com>
- <CALW65jYRaUHX7JBWbQa+y83_3KBStaMK1-_2Zj25v9isFKCLpQ@mail.gmail.com>
- <CACRpkdZW1oWx-gnRO7gBuOM9dO23r+iifQRm1-M8z4Ms8En9cw@mail.gmail.com> <20210302161140.l3jtvkcm3tvlv5q3@skbuf>
-In-Reply-To: <20210302161140.l3jtvkcm3tvlv5q3@skbuf>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 17:24:08 +0100
-Message-ID: <CACRpkdZuUc=fw1sRhdpUGoEo_87_uLuDfEu4uLAL43phR04k7A@mail.gmail.com>
-Subject: Re: [RFC net-next] net: dsa: rtl8366rb: support bridge offloading
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 5:11 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> On Tue, Mar 02, 2021 at 05:05:00PM +0100, Linus Walleij wrote:
-> > On Tue, Mar 2, 2021 at 4:58 AM DENG Qingfang <dqfext@gmail.com> wrote:
-> > > On Mon, Mar 1, 2021 at 9:48 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > > > With my minor changes:
-> > > > Tested-by: Linus Walleij <linus.walleij@linaro.org>
-> > >
-> > > How about using a mutex lock in port_bridge_{join,leave} ?
-> > > In my opinion all functions that access multiple registers should be
-> > > synchronized.
-> >
-> > That's one way, in some cases the framework (DSA) serialize
-> > the accesses so I don't know if that already happens on a
-> > higher level? Since it is accessed over a slow bus we should go
-> > for mutex in that case indeed.
->
-> DSA does not serialize this. The .port_bridge_join and
-> .port_bridge_leave calls are initiated from the NETDEV_CHANGEUPPER net
-> device event, which is called under rtnl_mutex (see call_netdevice_notifiers).
-> This is pretty fundamental and I don't think it will ever change.
->
-> However, if you still want to add an extra layer of locking (with code
-> paths that for some reason are not under the rtnl_mutex), then go ahead,
-> I suppose. It will be challenging to make sure they do something that
-> isn't snake oil, though.
+From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
 
-Nah, just didn't know if was already in place.
+ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
 
-I suggest Qingfang go with a driver-local mutex (it may already be needed in
-more places).
+This applies a SND_PCI_QUIRK(...) to the Clevo NH55RZQ barebone. This
+fixes the issue of the device not recognizing a pluged in microphone.
 
-Yours,
-Linus Walleij
+The device has both, a microphone only jack, and a speaker + microphone
+combo jack. The combo jack already works. The microphone-only jack does
+not recognize when a device is pluged in without this patch.
+
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+---
+This is a resend of the patch because I missed that the editor I used to write the commit message replaced tabs with spaces.
+
+From 2835edd753fd19c72a644dccb7e941cfc0ecdf8e Mon Sep 17 00:00:00 2001
+From: Werner Sembach <wse@tuxedocomputers.com>
+Date: Fri, 26 Feb 2021 13:50:15 +0100
+Subject: [PATCH] Fix device detection on microphone jack of Clevo NH55RZQ
+
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 290645516313..8014e80d72c3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8089,6 +8089,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x8551, "System76 Gazelle (gaze14)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x8560, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1558, 0x8561, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1558, 0x8562, "Clevo NH[5|7][0-9]RZ[Q]", ALC269_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1558, 0x8668, "Clevo NP50B[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x8680, "Clevo NJ50LU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x8686, "Clevo NH50[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-- 
+2.25.1
+
