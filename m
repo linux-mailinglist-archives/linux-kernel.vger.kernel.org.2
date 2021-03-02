@@ -2,236 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF75E32A132
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C304532A137
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhCBFBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
+        id S232259AbhCBFKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446179AbhCBDEZ (ORCPT
+        with ESMTP id S239596AbhCBDPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:04:25 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ECFC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:03:42 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id s16so11164662plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:03:42 -0800 (PST)
+        Mon, 1 Mar 2021 22:15:12 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7F8C061788;
+        Mon,  1 Mar 2021 19:12:17 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id t1so8245798qvj.8;
+        Mon, 01 Mar 2021 19:12:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1bhqnALZ2+KE5BNt1x/b9t2x1AkPvkj58NfI+kSCMY8=;
-        b=UYnhJBpLGeXBzTsG1LRoT9PKDmaTMwK9UVmBSKewIAouqErxx2ofVXdE+eXziIbdpd
-         sGoirzJpSJXD/iCzCesUzihCGoEtLPB5MgPV1zx3ZlDdMeVTHur4f+XAPZ+P/Xp2I050
-         4AGVuC3F0W9MqITV+2Vh0iABS/bLWKy/hxLNu+nn470erji9VMW/mDFTGDbRlB6fuWov
-         o6s4PQooVOtr4HNnNIgMxpRUI0p3tTaywvWy4beq4Hkl67xSc/YbhKve+rR984OE/GFL
-         5L3Ua6Vx4i/C3mJ4O858u4zkNv5IHuaNTi2e9FuHOaenQwl3BW2OE/EOaLWKb2sT/Pag
-         qDlQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=smhH6HHLqI1BreYn5aGKi+xq6ykkM+3AdCizKg/x6V0=;
+        b=jwc2vMhNB9hf2A23RYIBr18R91FDj8XXeJHanENfsRZEYuaFWsZC4d9ATu+120W84J
+         zYldEfiZ34+kGi7mYOMCXbKdPZl0eUI9+TG6RIea+QxCqLu5nhCZmFTJ8B1+sBP5CEOe
+         IdsD/2OTUzuWjKqDWzWLNnI2zQNbLW1tTtUsWmXNap9o/iN1lax0AShzOgrv0ZdPqMbo
+         oUi2ckToUlyfm4caOZVAP2O4xz+Z/5Cze1VL1pkJzHQUYMzw/P24bcUT8dU4CokDz/qw
+         WIOvfXIUWjjZ76MFa2nohAXdwHaKfe7i0avXF1LuzdgM6dfHBC1PoFmwLjAxMyriPuqf
+         Ocug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1bhqnALZ2+KE5BNt1x/b9t2x1AkPvkj58NfI+kSCMY8=;
-        b=Q8ohMZHftNsLEc+7SvhtCOPF4r7kGgQlWOYRliMpdLjPeajT9Z9NY/VoNPE7lpf6Ez
-         Or/qhsz9/U0n+3aoBjEXf6eHQojDsE71hTPOm9FQu3/xHYfXDE5n3ZL1FfyjDmHuMZZS
-         a17kiL8FOg/P5GInAfHva2QYghV/hOEej3y6YTXSz1u5NltVg/2XH1Np13xVMWujPUh7
-         kJwdHfIsdBMwYCgtLEZlfoxJhPAbyq6mvNRu+nlaCHuz7KBYOhCdoMkVPEFA8MLyWl8F
-         tiJ6ri2fqBF4JWlhdG7+NTHGgQEGxOHcsHXGJhLA8kH/One0/eyPAHKzK7nwVzmUzpL8
-         AjmQ==
-X-Gm-Message-State: AOAM532bhOmq8Tz2ZxaifpZGf1Ud3ipg7wqK8EBPION8rK7EQZG4o8JW
-        0GX1DgJtBFe51rkcHT5faB68usB68xgtTTMxkW/N1w==
-X-Google-Smtp-Source: ABdhPJzkDzVaKb6VAcUaPdmIqjsZ96Mht1x5iPUiMpXvga/HiZejji300KaqZif5tK9B32QsU9s1bkNMxlRSC7wGZyk=
-X-Received: by 2002:a17:902:9341:b029:e1:7b4e:57a8 with SMTP id
- g1-20020a1709029341b02900e17b4e57a8mr1633790plp.34.1614654221758; Mon, 01 Mar
- 2021 19:03:41 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=smhH6HHLqI1BreYn5aGKi+xq6ykkM+3AdCizKg/x6V0=;
+        b=sOl0PIdslY9UJUmCxhyFJFtMPilV2LhwzjnG4umMeHFxxHwU5etP//9tL6cfnDvGX8
+         fk/0RHJMsRptAajWJSjFs3mvLHj/nTT+zFbHjvgVwZKh/n5culoO2igrpvBVs+ikQPjV
+         +VhbrIlfli6efgQSCT8+ql/Hg18qnhBwXFZymOBPVoLuSYH7BrIrM8B4W/pkW1+2jVB1
+         cjuARL5vXc4xTi2YSWMHg4U58vxKF2pQnB1d9Nq1jXnLi5qD08FGOLmLb2HytKllrcDz
+         ocsIU0ZOjUjt5xa2JkBm3l7a6Ht+wfdxntlof7sAGWAclZBrrHbaIwqyYiVOTBDbOV1+
+         ka6w==
+X-Gm-Message-State: AOAM531T092Xo6PUDSr/rydkDx6NndQRXXJfty851z5xVmmZzIfiY8Tc
+        OW9eNf7BRYxgqw9+YhqCEqAxp2uTEHQ=
+X-Google-Smtp-Source: ABdhPJwXUy55A0hZsbKO+S0R6ueEeh0FcPatPlW0i0/6nyIX7XzMqxY65Nlh0O2B48NgPodHvEjNnw==
+X-Received: by 2002:a05:6214:52:: with SMTP id c18mr1699893qvr.54.1614654736075;
+        Mon, 01 Mar 2021 19:12:16 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id c5sm2484058qkg.105.2021.03.01.19.12.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 19:12:15 -0800 (PST)
+Subject: Re: [PATCH V8 3/4] of: unittest: Create overlay_common.dtsi and
+ testcases_common.dtsi
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Frank Rowand <frowand.list@gmail.com>
+References: <cover.1613127681.git.viresh.kumar@linaro.org>
+ <d4775a7280b93ffed64291f8f67d9d2dba564f21.1613127681.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <34c67b01-6504-83c9-c7ec-cc351f0f2423@gmail.com>
+Date:   Mon, 1 Mar 2021 21:12:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210301062227.59292-1-songmuchun@bytedance.com>
- <20210301062227.59292-3-songmuchun@bytedance.com> <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
-In-Reply-To: <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 2 Mar 2021 11:03:05 +0800
-Message-ID: <CAMZfGtVhgPzGXrLp12Z=r_FYuyqOoza9tOkPZ0N1=cHR+ataQA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 2/5] mm: memcontrol: make page_memcg{_rcu}
- only applicable for non-kmem page
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, bristot@redhat.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Oskolkov <posk@google.com>, Jann Horn <jannh@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Waiman Long <longman@redhat.com>,
-        Michel Lespinasse <walken@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, krisman@collabora.com,
-        esyr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Marco Elver <elver@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d4775a7280b93ffed64291f8f67d9d2dba564f21.1613127681.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 2:11 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Sun, Feb 28, 2021 at 10:25 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > We want to reuse the obj_cgroup APIs to reparent the kmem pages when
-> > the memcg offlined. If we do this, we should store an object cgroup
-> > pointer to page->memcg_data for the kmem pages.
-> >
-> > Finally, page->memcg_data can have 3 different meanings.
-> >
-> >   1) For the slab pages, page->memcg_data points to an object cgroups
-> >      vector.
-> >
-> >   2) For the kmem pages (exclude the slab pages), page->memcg_data
-> >      points to an object cgroup.
-> >
-> >   3) For the user pages (e.g. the LRU pages), page->memcg_data points
-> >      to a memory cgroup.
-> >
-> > Currently we always get the memcg associated with a page via page_memcg
-> > or page_memcg_rcu. page_memcg_check is special, it has to be used in
-> > cases when it's not known if a page has an associated memory cgroup
-> > pointer or an object cgroups vector. Because the page->memcg_data of
-> > the kmem page is not pointing to a memory cgroup in the later patch,
-> > the page_memcg and page_memcg_rcu cannot be applicable for the kmem
-> > pages. In this patch, we introduce page_memcg_kmem to get the memcg
-> > associated with the kmem pages. And make page_memcg and page_memcg_rcu
-> > no longer apply to the kmem pages.
-> >
-> > In the end, there are 4 helpers to get the memcg associated with a
-> > page. The usage is as follows.
-> >
-> >   1) Get the memory cgroup associated with a non-kmem page (e.g. the LRU
-> >      pages).
-> >
-> >      - page_memcg()
-> >      - page_memcg_rcu()
->
-> Can you rename these to page_memcg_lru[_rcu] to make them explicitly
-> for LRU pages?
+Hi Viresh,
 
-Yes. Will do. Thanks.
+I commented on this patch in v7 after you had created v8.  You acknowledged
+that comment and said that it will be corrected.
 
->
-> >
-> >   2) Get the memory cgroup associated with a kmem page (exclude the slab
-> >      pages).
-> >
-> >      - page_memcg_kmem()
-> >
-> >   3) Get the memory cgroup associated with a page. It has to be used in
-> >      cases when it's not known if a page has an associated memory cgroup
-> >      pointer or an object cgroups vector. Returns NULL for slab pages or
-> >      uncharged pages, otherwise, returns memory cgroup for charged pages
-> >      (e.g. kmem pages, LRU pages).
-> >
-> >      - page_memcg_check()
-> >
-> > In some place, we use page_memcg to check whether the page is charged.
-> > Now we introduce page_memcg_charged helper to do this.
-> >
-> > This is a preparation for reparenting the kmem pages. To support reparent
-> > kmem pages, we just need to adjust page_memcg_kmem and page_memcg_check in
-> > the later patch.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> [snip]
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -855,10 +855,11 @@ void __mod_lruvec_page_state(struct page *page, enum node_stat_item idx,
-> >                              int val)
-> >  {
-> >         struct page *head = compound_head(page); /* rmap on tail pages */
-> > -       struct mem_cgroup *memcg = page_memcg(head);
-> > +       struct mem_cgroup *memcg;
-> >         pg_data_t *pgdat = page_pgdat(page);
-> >         struct lruvec *lruvec;
-> >
-> > +       memcg = PageMemcgKmem(head) ? page_memcg_kmem(head) : page_memcg(head);
->
-> Should page_memcg_check() be used here?
+-Frank
 
-Yeah. page_memcg_check() can be used here.
-But on the inside of the page_memcg_check(),
-there is a READ_ONCE(). Actually, we do not
-need READ_ONCE() here. So I use page_memcg
-or page_memcg_kmem directly. Thanks.
+On 2/12/21 5:18 AM, Viresh Kumar wrote:
+> In order to build-test the same unit-test files using fdtoverlay tool,
+> move the device nodes from the existing overlay_base.dts and
+> testcases_common.dts files to .dtsi counterparts. The .dts files now
+> include the new .dtsi files, resulting in exactly the same behavior as
+> earlier.
+> 
+> The .dtsi files can now be reused for compile time tests using
+> fdtoverlay (will be done by a later commit).
+> 
+> This is required because the base files passed to fdtoverlay tool
+> shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
+> tag).
+> 
+> Note that this commit also moves "testcase-device2" node to
+> testcases.dts from tests-interrupts.dtsi, as this node has a deliberate
+> error in it and is only relevant for runtime testing done with
+> unittest.c.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+>  drivers/of/unittest-data/testcases.dts        | 18 ++--
+>  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
+>  .../of/unittest-data/tests-interrupts.dtsi    |  7 --
+>  5 files changed, 118 insertions(+), 107 deletions(-)
+>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+> 
+> diff --git a/drivers/of/unittest-data/overlay_base.dts b/drivers/of/unittest-data/overlay_base.dts
+> index 99ab9d12d00b..ab9014589c5d 100644
+> --- a/drivers/of/unittest-data/overlay_base.dts
+> +++ b/drivers/of/unittest-data/overlay_base.dts
+> @@ -2,92 +2,4 @@
+>  /dts-v1/;
+>  /plugin/;
+>  
+> -/*
+> - * Base device tree that overlays will be applied against.
+> - *
+> - * Do not add any properties in node "/".
+> - * Do not add any nodes other than "/testcase-data-2" in node "/".
+> - * Do not add anything that would result in dtc creating node "/__fixups__".
+> - * dtc will create nodes "/__symbols__" and "/__local_fixups__".
+> - */
+> -
+> -/ {
+> -	testcase-data-2 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -
+> -		electric_1: substation@100 {
+> -			compatible = "ot,big-volts-control";
+> -			reg = < 0x00000100 0x100 >;
+> -			status = "disabled";
+> -
+> -			hvac_1: hvac-medium-1 {
+> -				compatible = "ot,hvac-medium";
+> -				heat-range = < 50 75 >;
+> -				cool-range = < 60 80 >;
+> -			};
+> -
+> -			spin_ctrl_1: motor-1 {
+> -				compatible = "ot,ferris-wheel-motor";
+> -				spin = "clockwise";
+> -				rpm_avail = < 50 >;
+> -			};
+> -
+> -			spin_ctrl_2: motor-8 {
+> -				compatible = "ot,roller-coaster-motor";
+> -			};
+> -		};
+> -
+> -		rides_1: fairway-1 {
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			compatible = "ot,rides";
+> -			status = "disabled";
+> -			orientation = < 127 >;
+> -
+> -			ride@100 {
+> -				#address-cells = <1>;
+> -				#size-cells = <1>;
+> -				compatible = "ot,roller-coaster";
+> -				reg = < 0x00000100 0x100 >;
+> -				hvac-provider = < &hvac_1 >;
+> -				hvac-thermostat = < 29 > ;
+> -				hvac-zones = < 14 >;
+> -				hvac-zone-names = "operator";
+> -				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
+> -				spin-controller-names = "track_1", "track_2";
+> -				queues = < 2 >;
+> -
+> -				track@30 {
+> -					reg = < 0x00000030 0x10 >;
+> -				};
+> -
+> -				track@40 {
+> -					reg = < 0x00000040 0x10 >;
+> -				};
+> -
+> -			};
+> -		};
+> -
+> -		lights_1: lights@30000 {
+> -			compatible = "ot,work-lights";
+> -			reg = < 0x00030000 0x1000 >;
+> -			status = "disabled";
+> -		};
+> -
+> -		lights_2: lights@40000 {
+> -			compatible = "ot,show-lights";
+> -			reg = < 0x00040000 0x1000 >;
+> -			status = "disabled";
+> -			rate = < 13 138 >;
+> -		};
+> -
+> -		retail_1: vending@50000 {
+> -			reg = < 0x00050000 0x1000 >;
+> -			compatible = "ot,tickets";
+> -			status = "disabled";
+> -		};
+> -
+> -	};
+> -};
+> -
+> +#include "overlay_common.dtsi"
+> diff --git a/drivers/of/unittest-data/overlay_common.dtsi b/drivers/of/unittest-data/overlay_common.dtsi
+> new file mode 100644
+> index 000000000000..08874a72556e
+> --- /dev/null
+> +++ b/drivers/of/unittest-data/overlay_common.dtsi
+> @@ -0,0 +1,91 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Base device tree that overlays will be applied against.
+> + *
+> + * Do not add any properties in node "/".
+> + * Do not add any nodes other than "/testcase-data-2" in node "/".
+> + * Do not add anything that would result in dtc creating node "/__fixups__".
+> + * dtc will create nodes "/__symbols__" and "/__local_fixups__".
+> + */
+> +
+> +/ {
+> +	testcase-data-2 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		electric_1: substation@100 {
+> +			compatible = "ot,big-volts-control";
+> +			reg = < 0x00000100 0x100 >;
+> +			status = "disabled";
+> +
+> +			hvac_1: hvac-medium-1 {
+> +				compatible = "ot,hvac-medium";
+> +				heat-range = < 50 75 >;
+> +				cool-range = < 60 80 >;
+> +			};
+> +
+> +			spin_ctrl_1: motor-1 {
+> +				compatible = "ot,ferris-wheel-motor";
+> +				spin = "clockwise";
+> +				rpm_avail = < 50 >;
+> +			};
+> +
+> +			spin_ctrl_2: motor-8 {
+> +				compatible = "ot,roller-coaster-motor";
+> +			};
+> +		};
+> +
+> +		rides_1: fairway-1 {
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			compatible = "ot,rides";
+> +			status = "disabled";
+> +			orientation = < 127 >;
+> +
+> +			ride@100 {
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +				compatible = "ot,roller-coaster";
+> +				reg = < 0x00000100 0x100 >;
+> +				hvac-provider = < &hvac_1 >;
+> +				hvac-thermostat = < 29 > ;
+> +				hvac-zones = < 14 >;
+> +				hvac-zone-names = "operator";
+> +				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
+> +				spin-controller-names = "track_1", "track_2";
+> +				queues = < 2 >;
+> +
+> +				track@30 {
+> +					reg = < 0x00000030 0x10 >;
+> +				};
+> +
+> +				track@40 {
+> +					reg = < 0x00000040 0x10 >;
+> +				};
+> +
+> +			};
+> +		};
+> +
+> +		lights_1: lights@30000 {
+> +			compatible = "ot,work-lights";
+> +			reg = < 0x00030000 0x1000 >;
+> +			status = "disabled";
+> +		};
+> +
+> +		lights_2: lights@40000 {
+> +			compatible = "ot,show-lights";
+> +			reg = < 0x00040000 0x1000 >;
+> +			status = "disabled";
+> +			rate = < 13 138 >;
+> +		};
+> +
+> +		retail_1: vending@50000 {
+> +			reg = < 0x00050000 0x1000 >;
+> +			compatible = "ot,tickets";
+> +			status = "disabled";
+> +		};
+> +
+> +	};
+> +};
+> +
+> diff --git a/drivers/of/unittest-data/testcases.dts b/drivers/of/unittest-data/testcases.dts
+> index a85b5e1c381a..04b9e7bb30d9 100644
+> --- a/drivers/of/unittest-data/testcases.dts
+> +++ b/drivers/of/unittest-data/testcases.dts
+> @@ -2,19 +2,15 @@
+>  /dts-v1/;
+>  /plugin/;
+>  
+> +#include "testcases_common.dtsi"
+> +
+>  / {
+>  	testcase-data {
+> -		changeset {
+> -			prop-update = "hello";
+> -			prop-remove = "world";
+> -			node-remove {
+> -			};
+> +		testcase-device2 {
+> +			compatible = "testcase-device";
+> +			interrupt-parent = <&test_intc2>;
+> +			interrupts = <1>; /* invalid specifier - too short */
+>  		};
+>  	};
+> +
+>  };
+> -#include "tests-phandle.dtsi"
+> -#include "tests-interrupts.dtsi"
+> -#include "tests-match.dtsi"
+> -#include "tests-address.dtsi"
+> -#include "tests-platform.dtsi"
+> -#include "tests-overlay.dtsi"
+> diff --git a/drivers/of/unittest-data/testcases_common.dtsi b/drivers/of/unittest-data/testcases_common.dtsi
+> new file mode 100644
+> index 000000000000..19292bbb4cbb
+> --- /dev/null
+> +++ b/drivers/of/unittest-data/testcases_common.dtsi
+> @@ -0,0 +1,19 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/ {
+> +	testcase-data {
+> +		changeset {
+> +			prop-update = "hello";
+> +			prop-remove = "world";
+> +			node-remove {
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +#include "tests-phandle.dtsi"
+> +#include "tests-interrupts.dtsi"
+> +#include "tests-match.dtsi"
+> +#include "tests-address.dtsi"
+> +#include "tests-platform.dtsi"
+> +#include "tests-overlay.dtsi"
+> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
+> index ec175e800725..0e5914611107 100644
+> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
+> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
+> @@ -61,12 +61,5 @@ testcase-device1 {
+>  			interrupt-parent = <&test_intc0>;
+>  			interrupts = <1>;
+>  		};
+> -
+> -		testcase-device2 {
+> -			compatible = "testcase-device";
+> -			interrupt-parent = <&test_intc2>;
+> -			interrupts = <1>; /* invalid specifier - too short */
+> -		};
+>  	};
+> -
+>  };
+> 
 
->
-> >         /* Untracked pages have no memcg, no lruvec. Update only the node */
-> >         if (!memcg) {
-> >                 __mod_node_page_state(pgdat, idx, val);
-> > @@ -3170,12 +3171,13 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
-> >   */
-> >  void __memcg_kmem_uncharge_page(struct page *page, int order)
-> >  {
-> > -       struct mem_cgroup *memcg = page_memcg(page);
-> > +       struct mem_cgroup *memcg;
-> >         unsigned int nr_pages = 1 << order;
-> >
-> > -       if (!memcg)
-> > +       if (!page_memcg_charged(page))
-> >                 return;
-> >
-> > +       memcg = page_memcg_kmem(page);
-> >         VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
-> >         __memcg_kmem_uncharge(memcg, nr_pages);
-> >         page->memcg_data = 0;
-> > @@ -6831,24 +6833,25 @@ static void uncharge_batch(const struct uncharge_gather *ug)
-> >  static void uncharge_page(struct page *page, struct uncharge_gather *ug)
-> >  {
-> >         unsigned long nr_pages;
-> > +       struct mem_cgroup *memcg;
-> >
-> >         VM_BUG_ON_PAGE(PageLRU(page), page);
-> >
-> > -       if (!page_memcg(page))
-> > +       if (!page_memcg_charged(page))
-> >                 return;
-> >
-> >         /*
-> >          * Nobody should be changing or seriously looking at
-> > -        * page_memcg(page) at this point, we have fully
-> > -        * exclusive access to the page.
-> > +        * page memcg at this point, we have fully exclusive
-> > +        * access to the page.
-> >          */
-> > -
-> > -       if (ug->memcg != page_memcg(page)) {
-> > +       memcg = PageMemcgKmem(page) ? page_memcg_kmem(page) : page_memcg(page);
->
-> Same, should page_memcg_check() be used here?
-
-Same as above.
