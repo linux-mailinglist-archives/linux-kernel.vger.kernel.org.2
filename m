@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C9632ABF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68F332ABF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 22:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447815AbhCBU6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
+        id S1347567AbhCBU6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:58:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240809AbhCBSGP (ORCPT
+        with ESMTP id S1347493AbhCBSHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:06:15 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C49C061225;
-        Tue,  2 Mar 2021 09:54:06 -0800 (PST)
-Received: from [10.130.51.25] (dynamic-046-114-035-025.46.114.pool.telefonica.de [46.114.35.25])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DB4B31EC0419;
-        Tue,  2 Mar 2021 18:54:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614707643;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=++1uon9cBlN0dbDj/X3dayJGsnXBiQOjWiDUluqfe1s=;
-        b=eaceNnuTckvTP/ytCLvr+V/BqQ3H2lReO0SJtAepSie1LmVP0o8yF4yXQWitRnk/HgKeoc
-        mLAnU/4x3F6C417wjIcyqpFar2UnKVjBmWApmGZrlPAFii4klieqi3WIj9zSKHq2xGWSRf
-        7H8qjwvmvZ4IiO3oqf+rZc1eP471q6k=
-Date:   Tue, 02 Mar 2021 18:53:59 +0100
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YD5hhah9Sgj1YGqw@google.com>
-References: <cover.1614590788.git.kai.huang@intel.com> <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com> <20210301100037.GA6699@zn.tnic> <3fce1dd2abd42597bde7ae9496bde7b9596b2797.camel@intel.com> <20210301103043.GB6699@zn.tnic> <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com> <20210301105346.GC6699@zn.tnic> <e509c6c1e3644861edafb18e4045b813f9f344b3.camel@intel.com> <20210301113257.GD6699@zn.tnic> <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com> <YD5hhah9Sgj1YGqw@google.com>
+        Tue, 2 Mar 2021 13:07:05 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1792C061224
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:57:21 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id d2so2525816pjs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:57:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t0XgsYWzCDRLhsNvXhAFsWAxsY9xHFp6XSF1To7GMYQ=;
+        b=YLXgMyNgQnRjv23cdr0A9TqS5czUZWEqzjL+SQxCKArJAenMg38p+18B8lgzV/8W4O
+         6MzfIGFKr7GFV33hd1rAckk4m5r4+6cECKAnMmht559jzSqe0nza6AoCUM5mLtb3bz2+
+         bT/JSMkWWSIB0AxeshdzbRMy8Pi7xG/9lxKuA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t0XgsYWzCDRLhsNvXhAFsWAxsY9xHFp6XSF1To7GMYQ=;
+        b=hT2HYns2KEgMgGnvVd2OERxSCGeXfxPbUu7YgQ4gVO7knpEZezYRqG249kPEDE0G/B
+         lshe9VMhB0r6DPh0CJCGQDekdz3/VkJrWlYixAA8axa3HHjvUt43IxNC9bAjHbDqda54
+         zU+WDrIzo0JLR0szsgCjAQ4rh/Ci6CrBIVpaaBKmgVJ3X0qSJkhD5iJboX49QFikcHqo
+         tf42nNoktVWZnT8IxnWfYr0KJ/Hfa2G2JxRGFk8ZrJm/pAZL8appnpDQ0Nb9yWkiisdH
+         PisNmk+/cQfnV2+3hQVJX/kqb6o8CsgVyTvbl9Us1l1K4aPtKNGbCPZbrjDg9XI/Dn63
+         7gSA==
+X-Gm-Message-State: AOAM531ZztbsVKtmRwFKdXBdlGbP84H1DEdu5ZNkwoXsDTiP2b1Z0sDw
+        811UPHzgiC0lx6u/j83ElOKfGg==
+X-Google-Smtp-Source: ABdhPJyo1UjGzp40tLRvvraXfpsxXnqkr/lo8Ai+kssmF8iV7dIyu7Zguv60AaGzSRRkEo9ejOaxTg==
+X-Received: by 2002:a17:90b:1bc6:: with SMTP id oa6mr5801071pjb.86.1614707841197;
+        Tue, 02 Mar 2021 09:57:21 -0800 (PST)
+Received: from ub-XPS-13-9350.domain.name ([103.161.30.225])
+        by smtp.gmail.com with ESMTPSA id e22sm18521329pgk.56.2021.03.02.09.57.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 09:57:20 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH] drm/stm: ltdc: Use simple encoder
+Date:   Tue,  2 Mar 2021 23:27:00 +0530
+Message-Id: <20210302175700.28640-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
-To:     Sean Christopherson <seanjc@google.com>,
-        Kai Huang <kai.huang@intel.com>
-CC:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-From:   Boris Petkov <bp@alien8.de>
-Message-ID: <9971018C-8250-4E51-9EF9-72ED6CBD2E47@alien8.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On March 2, 2021 5:02:13 PM GMT+01:00, Sean Christopherson <seanjc@google=
-=2Ecom> wrote:
->The KVM use case is to query /proc/cpuinfo to see if sgx2 can be
->enabled in a
->guest=2E
+STM ltdc driver uses an empty implementation for its encoder.
+Replace the code with the generic simple encoder.
 
-You mean before the guest ia created? I sure hope there's a better way to =
-query HV-supported features than grepping /proc/cpuinfo=2E=2E=2E
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
->The counter-argument to that is we might want sgx2 in /proc/cpuinfo to
->mean sgx2
->is enabled in hardware _and_ supported by the kernel=2E  Userspace can
->grep for
->sgx in /proc/cpuinfo, and use cpuid to discover sgx2, so it's not a
->blocker=2E
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 7812094f93d6..aeeb43524ca0 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -31,6 +31,7 @@
+ #include <drm/drm_of.h>
+ #include <drm/drm_plane_helper.h>
+ #include <drm/drm_probe_helper.h>
++#include <drm/drm_simple_kms_helper.h>
+ #include <drm/drm_vblank.h>
+ 
+ #include <video/videomode.h>
+@@ -1020,14 +1021,6 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+ 	return ret;
+ }
+ 
+-/*
+- * DRM_ENCODER
+- */
+-
+-static const struct drm_encoder_funcs ltdc_encoder_funcs = {
+-	.destroy = drm_encoder_cleanup,
+-};
+-
+ static void ltdc_encoder_disable(struct drm_encoder *encoder)
+ {
+ 	struct drm_device *ddev = encoder->dev;
+@@ -1088,8 +1081,7 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
+ 	encoder->possible_crtcs = CRTC_MASK;
+ 	encoder->possible_clones = 0;	/* No cloning support */
+ 
+-	drm_encoder_init(ddev, encoder, &ltdc_encoder_funcs,
+-			 DRM_MODE_ENCODER_DPI, NULL);
++	drm_simple_encoder_init(ddev, encoder, DRM_MODE_ENCODER_DPI);
+ 
+ 	drm_encoder_helper_add(encoder, &ltdc_encoder_helper_funcs);
+ 
+-- 
+2.25.1
 
-Question is, what exactly that flag should denote: that EDMM is supported =
-in the HV and guests can do the dynamic thing of adding/rwmoving EPC pages?=
- Is that the only feature behind SGX2?
-
->That being said, adding some form of capability/versioning to SGX seems
->inevitable, not sure it's worth witholding sgx2 from /proc/cpuinfo=2E
-
-See what I typed earlier - no objections from me if a proper use case is i=
-dentified and written down=2E
-
-Thx=2E
---=20
-Sent from a small device: formatting sux and brevity is inevitable=2E 
