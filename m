@@ -2,53 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E1132A3B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F9232A3B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382488AbhCBJ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:26:41 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35704 "EHLO
+        id S1382473AbhCBJ0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:26:34 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35770 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378835AbhCBJD0 (ORCPT
+        with ESMTP id S1378838AbhCBJD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 04:03:26 -0500
-Date:   Tue, 02 Mar 2021 09:01:55 -0000
+Date:   Tue, 02 Mar 2021 09:01:56 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614675716;
+        s=2020; t=1614675717;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/sybR9nsvB35T/F1HG+zdLQgZ1CBfNipke2xlswkYJ4=;
-        b=EFWEaVzEnqyB2T1c1EWOIuc46u1uqlZab9ucEB2vRFR2FFBYVBl9pksOXr1BOraL57rfmk
-        Zq5y+k2yLvy3HSl50Iwzjw9Yqn8bHEWI2jysRReHnHl0iqUUxPMkiUBpToZWVuW3ePXP4g
-        EmidqvYFnPNSOmZgoOBUhaR+h+HooEmc5jAhffzKPUYJPs3XwIDtw7DjKs5PZiDmermUv7
-        t5seYRRXRe4D/REw/SQJO5Bov9g1dVQviF4ECjDm4GciYornYKFY7rN0/ar+L95iRNlNg8
-        wFRHHdyakMSgf0gZADARzSOfp3b767uhT1YhxyIMvUQV20MZE/deFXoXPuvPNw==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=YXny8m16onebBca7MJcoTKbcwRi1HbBvixTzf1b98cA=;
+        b=ABPGF3vJVT8emsHE+E69qYH78CSLqUZlnbjjAoM8OmAMAUdEC9tVIIV4C0Y+46qm7QEXlq
+        gela/S0W3JDgMMB2jvrxYfX+lKmkeOV61/NnAJbUp3COyeWaaE7/2EGDpj7GFBSThP8bXd
+        XodQu2ZdzRbbm1eiZZQYX0NO0SwkBV8ppvCFFujrCPPLGTWJyy1aGTQ5fMJfJMzSoWao3B
+        VlIEbSJHGZRX609DqnEN1cnACf62U9/GDBzh0bv836XODTCFim72A3YLKACpZNK8k/mzMS
+        4geYBFYS2caHKt1Ln/304d3r4FlQTNbY/SV9+ecUIjn1Zc0xyBMjKpGkudbn7Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614675716;
+        s=2020e; t=1614675717;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/sybR9nsvB35T/F1HG+zdLQgZ1CBfNipke2xlswkYJ4=;
-        b=SKXvlH+5NbTMyjH/ZvUsMiGpsTEQz39mCeNxV6JG9r0dceTfVDm8wH4yaK+rc8/Oabp7Vu
-        bSpmssy3WsN7ffBQ==
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=YXny8m16onebBca7MJcoTKbcwRi1HbBvixTzf1b98cA=;
+        b=0qVovKNir8ap5gNr+JbvO0lpauJ/g3Brei0Pl5Zps2+PA2udA2zI2M4Bj/WWhq7+Shgm82
+        jvZEutvZcGtpumBg==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Remove unused parameter of update_nohz_stats
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210224133007.28644-4-vincent.guittot@linaro.org>
-References: <20210224133007.28644-4-vincent.guittot@linaro.org>
+Subject: [tip: sched/core] sched: Simplify migration_cpu_stop()
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161467571544.20312.5783812537772586397.tip-bot2@tip-bot2>
+Message-ID: <161467571651.20312.8520180930890736591.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,54 +52,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     8af3f0fbfbaa3b78bb1fc577ee42c3228f3cc822
-Gitweb:        https://git.kernel.org/tip/8af3f0fbfbaa3b78bb1fc577ee42c3228f3cc822
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Wed, 24 Feb 2021 14:30:03 +01:00
+Commit-ID:     560c86ed4c1ca92592c04a8b2032fb29f8556a90
+Gitweb:        https://git.kernel.org/tip/560c86ed4c1ca92592c04a8b2032fb29f8556a90
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Thu, 25 Feb 2021 10:22:30 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 01 Mar 2021 18:17:23 +01:00
+CommitterDate: Mon, 01 Mar 2021 18:17:22 +01:00
 
-sched/fair: Remove unused parameter of update_nohz_stats
+sched: Simplify migration_cpu_stop()
 
-idle load balance is the only user of update_nohz_stats and doesn't use
-force parameter. Remove it
+Since, when ->stop_pending, only the stopper can uninstall
+p->migration_pending. This could simplify a few ifs, because:
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+  (pending != NULL) => (pending == p->migration_pending)
+
+Also, the fatty comment above affine_move_task() probably needs a bit
+of gardening.
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224133007.28644-4-vincent.guittot@linaro.org
 ---
- kernel/sched/fair.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/sched/core.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6a458e9..1b91030 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8352,7 +8352,7 @@ group_type group_classify(unsigned int imbalance_pct,
- 	return group_has_spare;
- }
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9819121..f9dfb34 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1927,6 +1927,12 @@ static int migration_cpu_stop(void *data)
+ 	rq_lock(rq, &rf);
  
--static bool update_nohz_stats(struct rq *rq, bool force)
-+static bool update_nohz_stats(struct rq *rq)
- {
- #ifdef CONFIG_NO_HZ_COMMON
- 	unsigned int cpu = rq->cpu;
-@@ -8363,7 +8363,7 @@ static bool update_nohz_stats(struct rq *rq, bool force)
- 	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
- 		return false;
+ 	/*
++	 * If we were passed a pending, then ->stop_pending was set, thus
++	 * p->migration_pending must have remained stable.
++	 */
++	WARN_ON_ONCE(pending && pending != p->migration_pending);
++
++	/*
+ 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
+ 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
+ 	 * we're holding p->pi_lock.
+@@ -1936,8 +1942,7 @@ static int migration_cpu_stop(void *data)
+ 			goto out;
  
--	if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick))
-+	if (!time_after(jiffies, rq->last_blocked_load_update_tick))
- 		return true;
+ 		if (pending) {
+-			if (p->migration_pending == pending)
+-				p->migration_pending = NULL;
++			p->migration_pending = NULL;
+ 			complete = true;
+ 		}
  
- 	update_blocked_averages(cpu);
-@@ -10401,7 +10401,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 
- 		rq = cpu_rq(balance_cpu);
- 
--		has_blocked_load |= update_nohz_stats(rq, true);
-+		has_blocked_load |= update_nohz_stats(rq);
- 
- 		/*
- 		 * If time for next balance is due,
+@@ -1976,8 +1981,7 @@ static int migration_cpu_stop(void *data)
+ 		 * somewhere allowed, we're done.
+ 		 */
+ 		if (cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
+-			if (p->migration_pending == pending)
+-				p->migration_pending = NULL;
++			p->migration_pending = NULL;
+ 			complete = true;
+ 			goto out;
+ 		}
+@@ -2165,16 +2169,21 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
+  *
+  * (1) In the cases covered above. There is one more where the completion is
+  * signaled within affine_move_task() itself: when a subsequent affinity request
+- * cancels the need for an active migration. Consider:
++ * occurs after the stopper bailed out due to the targeted task still being
++ * Migrate-Disable. Consider:
+  *
+  *     Initial conditions: P0->cpus_mask = [0, 1]
+  *
+- *     P0@CPU0            P1                             P2
+- *
+- *     migrate_disable();
+- *     <preempted>
++ *     CPU0		  P1				P2
++ *     <P0>
++ *       migrate_disable();
++ *       <preempted>
+  *                        set_cpus_allowed_ptr(P0, [1]);
+  *                          <blocks>
++ *     <migration/0>
++ *       migration_cpu_stop()
++ *         is_migration_disabled()
++ *           <bails>
+  *                                                       set_cpus_allowed_ptr(P0, [0, 1]);
+  *                                                         <signal completion>
+  *                          <awakes>
