@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0979E32A499
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A557D32A494
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446391AbhCBKxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:53:30 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:48362 "EHLO
+        id S1441995AbhCBKxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:53:08 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:39982 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838418AbhCBKgc (ORCPT
+        with ESMTP id S1382757AbhCBKdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:36:32 -0500
+        Tue, 2 Mar 2021 05:33:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1614681391; x=1646217391;
+  t=1614681176; x=1646217176;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VuZIIgx/oKPQRhS2ZIU1XW16cnCzcCDlmJPPqb5khL0=;
-  b=GqpxROo51Ok9/aXqmIT5DtQr/Wx8wms+suTekZr+FDzpbDRhzArksYys
-   fEB5iuMJxRJt8roErvwYa9QdH/Nb1jzkic7bIFCRyRR1OPqgih2GqnvxK
-   lTzPKf09UnQ0IAbh0thJNJfoDFrbwWgg0Ma1NsuLk6yo+kZTD/wUQRiPe
-   8oJbcq6Wf78Oz4izEgc9Bc3J5kX2DY+RuT/6HQmsgpvwxAJ9oh3awxZiB
-   1xlPm+kUT2TonKH0WLF283eoywjWBKVvuw46r1w+1i8J46+d9WZwsnZKg
-   Sf+A4sOdedpbkfesdstc0BdzkZldTpL2cs+kvdBtkc4uVMTjblBMKeUO4
-   Q==;
-IronPort-SDR: pWTsJI0pPsFsd4vbX3R8CF48H1FXjkW0XOXSa0ggmW73v7iO9e36gXPDFJcAHz5UkjKC1lN2Vv
- Tmg4Z7E1i9UuHjTYeqhRSOxCYizj6oyZPohNFiyCxWpS6fyV5Gf/sP9vpUjgl1WZJLvsiG5gvJ
- /gNTyE+CItnmykQKX1keqUclw3ipBczezKDaqMEiFjr4svzZs8IuXJNitS4ASdcWkzJJjFdzHj
- jZoLm2ANFOEPmJfXC9Es8PLsTFUnjr/i15wXncO2CT6DCBTJ4GWKVYmekb6qFXsLMxawza4Wy5
- 3Sc=
+  bh=ZKavSbB+YTr/cKay1DvS1N6mi6rzLJ2WCBypGjGFL9U=;
+  b=wMsIjvb/UHKW6RG9hXeTWpjhMLgmlu9qzpPB12JTDXqNIs46wEmeU0vw
+   iSFdOpN4J6ChhBoOPEo+BxCanfLLyfM9x5IBfQPqvALAZO82KRr1qYkEz
+   G5C2FC+hGjCtFf+btG1aqsdSAKb46R8W1f5iS9QHoxauAl0WweWyG9bMp
+   4bfGf108gclaPrsev9HGKFIlww278UQGC59w9lH48zFaSa+q43IEycJQw
+   eqMS0JPQ8wqNSnlD1TcMp9VggkzzaBXhgENC1FKFrjIqb+bE/aKoVZuZO
+   rCxp17lH9nnuHFmpbb3FE+Z1s97yX0CNQiiM8MQzfoA/hg5t5cgDQmpF2
+   w==;
+IronPort-SDR: ii7TZPhxSW+2yiJ4qzgKMIwS2Af5xRxeq0XzKF51MyLpvHDqIO0f+i7hkEtjgmJxhp4/EQSr70
+ 9OGljrOwiHzRwC6AWTAjI3j9W7oRKsL8oxtGsWJnAS5RBZr1IOsp7g1CxXF5hsFRZNF90dl8tH
+ CMJ4tFm1In1o7q3sUN91r4XB6UG/Zfs6i4yPqtqzDbr0Xw6QRNjoBSpJWLaJPaA3ugT5QIYm46
+ I8bMyzoFZUEVgsIJDBKX1qm0/kEQY+wl6KYo4Hn79CTTTRHktFTyIuGYJcshlVlXwSVWez6Y2x
+ wkI=
 X-IronPort-AV: E=Sophos;i="5.81,216,1610434800"; 
-   d="scan'208";a="117184993"
+   d="scan'208";a="45952590"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Mar 2021 03:29:46 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Mar 2021 03:29:51 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 2 Mar 2021 03:29:46 -0700
+ 15.1.1979.3; Tue, 2 Mar 2021 03:29:51 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 2 Mar 2021 03:29:17 -0700
+ 15.1.1979.3 via Frontend Transport; Tue, 2 Mar 2021 03:29:47 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <tglx@linutronix.de>, <maz@kernel.org>, <robh+dt@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <nicolas.ferre@microchip.com>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 1/2] dt-bindings: mchp-eic: add bindings
-Date:   Tue, 2 Mar 2021 12:28:45 +0200
-Message-ID: <20210302102846.619980-2-claudiu.beznea@microchip.com>
+Subject: [PATCH 2/2] irqchip/mchp-eic: add support
+Date:   Tue, 2 Mar 2021 12:28:46 +0200
+Message-ID: <20210302102846.619980-3-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210302102846.619980-1-claudiu.beznea@microchip.com>
 References: <20210302102846.619980-1-claudiu.beznea@microchip.com>
@@ -60,94 +60,415 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT bindings for Microchip External Interrupt Controller.
+Add support for Microchip External Interrupt Controller.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- .../interrupt-controller/mchp,eic.yaml        | 74 +++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+ MAINTAINERS                    |   6 +
+ drivers/irqchip/Kconfig        |   7 +
+ drivers/irqchip/Makefile       |   1 +
+ drivers/irqchip/irq-mchp-eic.c | 350 +++++++++++++++++++++++++++++++++
+ 4 files changed, 364 insertions(+)
+ create mode 100644 drivers/irqchip/irq-mchp-eic.c
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml b/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a008b70f3c16..ea99e5a7f519 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11585,6 +11585,12 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Supported
+ F:	drivers/usb/gadget/udc/atmel_usba_udc.*
+ 
++MICROCHIP EIC DRIVER
++M:	Claudiu Beznea <claudiu.beznea@microchip.com>
++L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
++S:	Supported
++F:	drivers/irqchip/irq-mchp-eic.c
++
+ MICROCHIP WILC1000 WIFI DRIVER
+ M:	Ajay Singh <ajay.kathat@microchip.com>
+ M:	Claudiu Beznea <claudiu.beznea@microchip.com>
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 2aa79c32ee22..7c7ca33c3f7d 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -596,4 +596,11 @@ config MST_IRQ
+ 	help
+ 	  Support MStar Interrupt Controller.
+ 
++config MCHP_EIC
++	bool "Microchip External Interrupt Controller"
++	depends on ARCH_AT91 || COMPILE_TEST
++	select IRQ_DOMAIN
++	help
++	  Support for Microchip External Interrupt Controller.
++
+ endmenu
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index 94c2885882ee..f3df6eb7c4c3 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -114,3 +114,4 @@ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
+ obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
+ obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
+ obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
++obj-$(CONFIG_MCHP_EIC)			+= irq-mchp-eic.o
+diff --git a/drivers/irqchip/irq-mchp-eic.c b/drivers/irqchip/irq-mchp-eic.c
 new file mode 100644
-index 000000000000..5a927817aa7d
+index 000000000000..ec01877fc75f
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/mchp,eic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/irqchip/irq-mchp-eic.c
+@@ -0,0 +1,350 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Microchip External Interrupt Controller driver
++ *
++ * Copyright (C) 2021 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Claudiu Beznea <claudiu.beznea@microchip.com>
++ */
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqchip.h>
++#include <linux/irqdomain.h>
++#include <linux/module.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/irqchip/chained_irq.h>
 +
-+title: Microchip External Interrupt Controller
++#define MCHP_EIC_GFCS			(0x0)
++#define MCHP_EIC_SCFG(x)		(0x4 + (x) * 0x4)
++#define MCHP_EIC_SCFG_FRZ		BIT(31)
++#define MCHP_EIC_SCFG_EN		BIT(16)
++#define MCHP_EIC_SCFG_LVL		BIT(9)
++#define MCHP_EIC_SCFG_POL		BIT(8)
++#define MCHP_EIC_SCFG_GFEN		BIT(4)
++#define MCHP_EIC_SCFG_GFSEL		GENMASK(1, 0)
 +
-+maintainers:
-+  - Claudiu Beznea <claudiu.beznea@microchip.com>
++#define MCHP_EIC_NIRQ			(2)
++#define MCHP_EIC_DEFAULT_WAIT_US	(100)
 +
-+description:
-+  This interrupt controller is found in Microchip SoCs (SAMA7G5) and provides
-+  support for handling up to 2 external interrupt lines.
++/**
++ * struct mchp_eic - EIC private data structure
++ * @base: base address
++ * @dev: eic device
++ * @clk: peripheral clock
++ * @chip: irq chip
++ * @domain: irq domain
++ * @irqs: irqs b/w eic and gic
++ * @scfg: backup for scfg registers (necessary for backup and self-refresh mode)
++ * @wakeup_source: wakeup source mask
++ */
++struct mchp_eic {
++	void __iomem *base;
++	struct device *dev;
++	struct clk *clk;
++	struct irq_chip *chip;
++	struct irq_domain *domain;
++	u32 irqs[MCHP_EIC_NIRQ];
++	u32 scfg[MCHP_EIC_NIRQ];
++	u32 wakeup_source;
++};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - microchip,sama7g5-eic
++static void mchp_eic_wait_rdy(struct mchp_eic *eic, unsigned int hwirq,
++			      int delay_us)
++{
++	unsigned int tmp = readl(eic->base + MCHP_EIC_SCFG(hwirq));
 +
-+  reg:
-+    maxItems: 1
++	while (delay_us >= 0 && tmp & BIT(hwirq)) {
++		udelay(1);
++		delay_us -= 1;
++		tmp = readl(eic->base + MCHP_EIC_SCFG(hwirq));
++	}
 +
-+  interrupt-controller: true
++	if (delay_us < 0)
++		dev_err(eic->dev, "Failed to configure IRQ=%u!\n", hwirq);
++}
 +
-+  '#interrupt-cells':
-+    const: 3
-+    description:
-+      The first cell is the input IRQ number (between 0 and 1), the second cell
-+      is the trigger type as defined in interrupt.txt present in this directory
-+      and the third cell is the glitch filter (1, 2, 4, 8) in clock cycles
++static void mchp_eic_irq_mask(struct irq_data *d)
++{
++	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
++	unsigned int tmp;
 +
-+  'interrupts':
-+    description: |
-+      Contains the GIC SPI IRQs mapped to the external interrupt lines. They
-+      should be specified sequentially from output 0 to output 1.
-+    minItems: 2
-+    maxItems: 2
++	tmp = readl(eic->base + MCHP_EIC_SCFG(d->hwirq));
++	tmp &= ~MCHP_EIC_SCFG_EN;
++	writel(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
++}
 +
-+  clocks:
-+    maxItems: 1
++static void mchp_eic_irq_unmask(struct irq_data *d)
++{
++	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
++	unsigned int tmp;
 +
-+  clock-names:
-+    const: pclk
++	tmp = readl(eic->base + MCHP_EIC_SCFG(d->hwirq));
++	tmp |= MCHP_EIC_SCFG_EN;
++	writel(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
++	mchp_eic_wait_rdy(eic, d->hwirq, MCHP_EIC_DEFAULT_WAIT_US);
++}
 +
-+required:
-+  - compatible
-+  - reg
-+  - interrupt-controller
-+  - '#interrupt-cells'
-+  - 'interrupts'
-+  - clocks
-+  - clock-names
++static int mchp_eic_irq_set_type(struct irq_data *d, unsigned int type)
++{
++	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
++	unsigned int tmp;
 +
-+additionalProperties: false
++	tmp = readl(eic->base + MCHP_EIC_SCFG(d->hwirq));
++	tmp &= ~(MCHP_EIC_SCFG_POL | MCHP_EIC_SCFG_LVL);
++	switch (type) {
++	case IRQ_TYPE_LEVEL_HIGH:
++		irq_set_handler_locked(d, handle_level_irq);
++		tmp |= MCHP_EIC_SCFG_POL | MCHP_EIC_SCFG_LVL;
++		break;
++	case IRQ_TYPE_LEVEL_LOW:
++		irq_set_handler_locked(d, handle_level_irq);
++		tmp |= MCHP_EIC_SCFG_LVL;
++		break;
++	case IRQ_TYPE_EDGE_RISING:
++		irq_set_handler_locked(d, handle_edge_irq);
++		tmp |= MCHP_EIC_SCFG_POL;
++		break;
++	case IRQ_TYPE_EDGE_FALLING:
++		irq_set_handler_locked(d, handle_edge_irq);
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+examples:
-+  - |
-+    #include <dt-bindings/clock/at91.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
++	writel(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
 +
-+    eic: eic@e1628000 {
-+      compatible = "microchip,sama7g5-eic";
-+      reg = <0xe1628000 0x100>;
-+      interrupt-parent = <&gic>;
-+      interrupt-controller;
-+      #interrupt-cells = <3>;
-+      interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>,
-+                   <GIC_SPI 154 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&pmc PMC_TYPE_PERIPHERAL 37>;
-+      clock-names = "pclk";
-+    };
++	return 0;
++}
 +
-+...
++static void mchp_eic_irq_ack(struct irq_data *d)
++{
++	/* Nothing to do here. */
++}
++
++static int mchp_eic_irq_set_wake(struct irq_data *d, unsigned int on)
++{
++	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
++
++	irq_set_irq_wake(eic->irqs[d->hwirq], on);
++	if (on)
++		eic->wakeup_source |= BIT(d->hwirq);
++	else
++		eic->wakeup_source &= BIT(d->hwirq);
++
++	return 0;
++}
++
++static struct irq_chip mchp_eic_chip = {
++	.name		= "eic-irq",
++	.flags		= IRQCHIP_MASK_ON_SUSPEND,
++	.irq_mask	= mchp_eic_irq_mask,
++	.irq_unmask	= mchp_eic_irq_unmask,
++	.irq_set_type	= mchp_eic_irq_set_type,
++	.irq_ack	= mchp_eic_irq_ack,
++	.irq_set_wake	= mchp_eic_irq_set_wake,
++};
++
++static int mchp_eic_domain_map(struct irq_domain *d, unsigned int virq,
++			       irq_hw_number_t hw)
++{
++	struct mchp_eic *eic = d->host_data;
++
++	irq_set_chip_data(virq, eic);
++	irq_set_chip_and_handler(virq, eic->chip, handle_bad_irq);
++	irq_set_probe(virq);
++
++	return 0;
++}
++
++static int mchp_eic_domain_xlate(struct irq_domain *d, struct device_node *node,
++				 const u32 *intspec, unsigned int intsize,
++				 irq_hw_number_t *out_hwirq,
++				 unsigned int *out_type)
++{
++	struct mchp_eic *eic = d->host_data;
++	unsigned int tmp, i;
++
++	if (WARN_ON(intsize < 2))
++		return -EINVAL;
++
++	if (WARN_ON(intspec[0] > MCHP_EIC_NIRQ))
++		return -EINVAL;
++
++	*out_hwirq = intspec[0];
++	*out_type = intspec[1] & IRQ_TYPE_SENSE_MASK;
++
++	if (intsize == 3) {
++		/* Validate against available filters. */
++		for (i = 0; i <= MCHP_EIC_SCFG_GFSEL; i++) {
++			if (intspec[2] == (2 << i))
++				break;
++		}
++		if (i == MCHP_EIC_SCFG_GFSEL + 1)
++			return -EINVAL;
++
++		/* Enable glitch filter. */
++		tmp = readl(eic->base + MCHP_EIC_SCFG(*out_hwirq));
++		tmp |= MCHP_EIC_SCFG_GFEN;
++		tmp &= ~MCHP_EIC_SCFG_GFSEL;
++		tmp |= i;
++		writel(tmp, eic->base + MCHP_EIC_SCFG(*out_hwirq));
++
++		/* Wait for glitch filter to be enabled. */
++		mchp_eic_wait_rdy(eic, *out_hwirq, MCHP_EIC_DEFAULT_WAIT_US);
++	}
++
++	return 0;
++}
++
++static const struct irq_domain_ops mchp_eic_domain_ops = {
++	.map		= mchp_eic_domain_map,
++	.xlate		= mchp_eic_domain_xlate,
++};
++
++static void mchp_eic_irq_handler(struct irq_desc *desc)
++{
++	struct mchp_eic *eic = irq_desc_get_handler_data(desc);
++	struct irq_chip *chip = irq_desc_get_chip(desc);
++	unsigned int hwirq, irq = irq_desc_get_irq(desc);
++
++	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++) {
++		if (eic->irqs[hwirq] == irq)
++			break;
++	}
++	if (hwirq == MCHP_EIC_NIRQ)
++		return;
++
++	chained_irq_enter(chip, desc);
++	generic_handle_irq(irq_find_mapping(eic->domain, hwirq));
++	chained_irq_exit(chip, desc);
++}
++
++static int mchp_eic_probe(struct platform_device *pdev)
++{
++	struct resource *res;
++	struct mchp_eic *eic;
++	int ret, i;
++
++	eic = devm_kzalloc(&pdev->dev, sizeof(*eic), GFP_KERNEL);
++	if (!eic)
++		return -ENOMEM;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	eic->base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(eic->base))
++		return PTR_ERR(eic->base);
++
++	eic->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(eic->clk))
++		return PTR_ERR(eic->clk);
++
++	ret = clk_prepare_enable(eic->clk);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < MCHP_EIC_NIRQ; i++) {
++		/* Disable it, if any. */
++		writel(0UL, eic->base + MCHP_EIC_SCFG(i));
++
++		res = platform_get_resource(pdev, IORESOURCE_IRQ, i);
++		if (!res) {
++			ret = dev_err_probe(&pdev->dev, -EINVAL,
++					    "Failed to get hwirq=%d\n", i);
++			goto clk_unprepare;
++		}
++
++		eic->irqs[i] = res->start;
++		irq_set_chained_handler(res->start, mchp_eic_irq_handler);
++		irq_set_handler_data(res->start, eic);
++	}
++
++	eic->dev = &pdev->dev;
++	eic->chip = &mchp_eic_chip;
++
++	eic->domain = irq_domain_add_linear(pdev->dev.of_node, MCHP_EIC_NIRQ,
++					    &mchp_eic_domain_ops, eic);
++	if (!eic->domain) {
++		ret = dev_err_probe(&pdev->dev, -ENODEV,
++				    "Failed to regiter irq domain!\n");
++		goto clk_unprepare;
++	}
++	eic->domain->name = "eic";
++
++	platform_set_drvdata(pdev, eic);
++
++	dev_info(&pdev->dev, "EIC registered, nr_irqs %u\n", MCHP_EIC_NIRQ);
++
++	return 0;
++
++clk_unprepare:
++	clk_disable_unprepare(eic->clk);
++	return ret;
++}
++
++static int mchp_eic_remove(struct platform_device *pdev)
++{
++	struct mchp_eic *eic = platform_get_drvdata(pdev);
++
++	irq_domain_remove(eic->domain);
++	clk_disable_unprepare(eic->clk);
++
++	return 0;
++}
++
++static int __maybe_unused mchp_eic_suspend(struct device *dev)
++{
++	struct mchp_eic *eic = dev_get_drvdata(dev);
++	unsigned int hwirq;
++
++	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++)
++		eic->scfg[hwirq] = readl(eic->base + MCHP_EIC_SCFG(hwirq));
++
++	if (!eic->wakeup_source)
++		clk_disable_unprepare(eic->clk);
++
++	return 0;
++}
++
++static int __maybe_unused mchp_eic_resume(struct device *dev)
++{
++	struct mchp_eic *eic = dev_get_drvdata(dev);
++	unsigned int hwirq;
++
++	if (!eic->wakeup_source)
++		clk_prepare_enable(eic->clk);
++
++	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++) {
++		writel(eic->scfg[hwirq], eic->base + MCHP_EIC_SCFG(hwirq));
++		mchp_eic_wait_rdy(eic, hwirq, MCHP_EIC_DEFAULT_WAIT_US);
++	}
++
++	return 0;
++}
++
++static const struct dev_pm_ops mchp_eic_pm_ops = {
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mchp_eic_suspend, mchp_eic_resume)
++};
++
++static const struct of_device_id mchp_eic_dt_ids[] = {
++	{ .compatible = "microchip,sama7g5-eic", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, mchp_eic_dt_ids);
++
++static struct platform_driver mchp_eic_device_driver = {
++	.probe		= mchp_eic_probe,
++	.remove		= mchp_eic_remove,
++	.driver		= {
++		.name = "mchp-eic",
++		.of_match_table = of_match_ptr(mchp_eic_dt_ids),
++		.pm = pm_ptr(&mchp_eic_pm_ops),
++	},
++};
++module_platform_driver(mchp_eic_device_driver);
++
++MODULE_DESCRIPTION("Microchip External Interrupt Controller");
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Claudiu Beznea <claudiu.beznea@microchip.com>");
 -- 
 2.25.1
 
