@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7551132AA87
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CDE32AA99
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836107AbhCBTnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:43:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344182AbhCBRPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:15:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D05F664F23;
-        Tue,  2 Mar 2021 17:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614705237;
-        bh=rTa+VFMAdGMoFocARiaHSEJ8fY06Ra7RcO+lNs2jNXU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mQ/OzDT+b7dShEf/PIDOh13OgJoQyXN0RZ9nYKUZgJ4Lnnbn8dGFKL3BJLkuPmfDl
-         d6PxsAwIPwbbHvNvkOFnzqUu+BAc5tGg8Eqa1Lh1bTRvN0AbneHOanvqs7STcj4jAt
-         9PzjFFn4LWF6CjEPjNHXrPROUGKh3lZak2afQNaH7aHHDNYtzyTtXLMBN66mvhCyho
-         ge7BsaSZAzbz6HRm0nvMQSvyZgzuAIuqIndmMHQ1lhyjlj08rKQMKFoBTmyG9Uf2HF
-         B+7/tZShZVnQue4BSD8PkTxWe0T+QYIv3gbUv5xcC7IhTyAxXW4bXycpobSJMiRnSe
-         OBqgU+Wets9HA==
-Date:   Tue, 2 Mar 2021 17:12:50 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/15] ASoC: cs42l42: Remove power if the driver is being
- removed
-Message-ID: <20210302171250.GO4522@sirena.org.uk>
-References: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
- <20210302170454.39679-4-tanureal@opensource.cirrus.com>
+        id S1350368AbhCBTwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:52:01 -0500
+Received: from rcdn-iport-3.cisco.com ([173.37.86.74]:27943 "EHLO
+        rcdn-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1579959AbhCBRVU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:21:20 -0500
+X-Greylist: delayed 458 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Mar 2021 12:21:19 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1625; q=dns/txt; s=iport;
+  t=1614705679; x=1615915279;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ImvxV88MVdFuksRY57yHoR9ifNWa1nbpC7IuceuHtdI=;
+  b=DHJAmi6pIanMDzLMZhoQrTts24E3LqKzVJ5nni6NvEjg3FmDN2j6Cumj
+   YNKnQsGi3qQYsPTsRONPszom2VzU34ebhAKmJS4FY5TSaqBi75QZ7h90z
+   j5/OwAcQSq63ofvt3UYFXTCKwun+OV4SrCd1soTUhyUgt3Ws+86YfOH0R
+   U=;
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BKAwC9cD5g/5RdJa1iHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQFAgU+CK3ZWATkxA5Yaj3oWilOBaAsBAQENAQEqCgQBAYRNAoF?=
+ =?us-ascii?q?6AiU4EwIDAQELAQEFAQEBAgEGBHGFYQ2GRQEFOjQLEAsYLjwKEQYTgnGDBw+?=
+ =?us-ascii?q?sa3SBNIRAAYRigT4GIoEWjUMmHIFJQoQrPoQJARIBg2uCKwSEAYIxQ5MVAYo?=
+ =?us-ascii?q?tm3uDBoEfiCCSUjEQgyeQSo9VLZYxiTSWYAIEBgUCFoFrI2dwMxoIGxU7gmk?=
+ =?us-ascii?q?TPRkNjisWiGGFZiADLwI2AgYKAQEDCYwTAQE?=
+X-IronPort-AV: E=Sophos;i="5.81,217,1610409600"; 
+   d="scan'208";a="842559803"
+Received: from rcdn-core-12.cisco.com ([173.37.93.148])
+  by rcdn-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 02 Mar 2021 17:12:53 +0000
+Received: from zorba ([10.24.9.198])
+        by rcdn-core-12.cisco.com (8.15.2/8.15.2) with ESMTPS id 122HCpOe014626
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 2 Mar 2021 17:12:52 GMT
+Date:   Tue, 2 Mar 2021 09:12:51 -0800
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Max Uvarov <muvarov@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 0/2] Fix CMDLINE_EXTEND handling for FDT "bootargs"
+Message-ID: <20210302171251.GB109100@zorba>
+References: <20210225125921.13147-1-will@kernel.org>
+ <CAL_JsqJX=TCCs7=gg486r9TN4NYscMTCLNfqJF9crskKPq-bTg@mail.gmail.com>
+ <20210301144153.GA16716@willie-the-truck>
+ <CAL_JsqJ11D-7a3pwLTVd+rHjqDGBb=b8OU_a6h3Co-at+2qMtQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1y1tiN5hVw5cPBDe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302170454.39679-4-tanureal@opensource.cirrus.com>
-X-Cookie: Friction is a drag.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAL_JsqJ11D-7a3pwLTVd+rHjqDGBb=b8OU_a6h3Co-at+2qMtQ@mail.gmail.com>
+X-Outbound-SMTP-Client: 10.24.9.198, [10.24.9.198]
+X-Outbound-Node: rcdn-core-12.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 01, 2021 at 11:26:14AM -0600, Rob Herring wrote:
+> +PPC folks and Daniel W
+> 
+> On Mon, Mar 1, 2021 at 8:42 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Mon, Mar 01, 2021 at 08:19:32AM -0600, Rob Herring wrote:
+> > > On Thu, Feb 25, 2021 at 6:59 AM Will Deacon <will@kernel.org> wrote:
+> > > > We recently [1] enabled support for CMDLINE_EXTEND on arm64, however
+> > > > when I started looking at replacing Android's out-of-tree implementation [2]
+> > >
+> > > Did anyone go read the common, reworked version of all this I
+> > > referenced that supports prepend and append. Here it is again[1].
+> > > Maybe I should have been more assertive there and said 'extend' is
+> > > ambiguous.
+> >
+> > I tried reading that, but (a) most of the series is not in the mailing list
+> > archives and (b) the patch that _is_ doesn't touch CMDLINE_EXTEND at all.
+> > Right now the code in mainline does the opposite of what it's documented to
+> > do.
+> 
+> Actually, there is a newer version I found:
+> 
+> https://lore.kernel.org/linuxppc-dev/1551469472-53043-1-git-send-email-danielwa@cisco.com/
+> https://lore.kernel.org/linuxppc-dev/1551469472-53043-2-git-send-email-danielwa@cisco.com/
+> https://lore.kernel.org/linuxppc-dev/1551469472-53043-3-git-send-email-danielwa@cisco.com/
+> 
+> (Once again, there's some weird threading going on)
+> 
 
---1y1tiN5hVw5cPBDe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm happy to work with anyone to resubmit the changes. We currently use the
+changes in Cisco, and we have used them for many years.
 
-On Tue, Mar 02, 2021 at 05:04:42PM +0000, Lucas Tanure wrote:
+I was planning to update and resubmit since someone has recently inquired about
+why it wasn't upstream.
 
->  	/* Hold down reset */
->  	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
-> =20
-> +	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies), cs42l42->supplies=
-);
-
-Are you sure the device is always runtime resumed on remove?
-
---1y1tiN5hVw5cPBDe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+chEACgkQJNaLcl1U
-h9ATtgf+MNQsl9DYDnA0IuhXNX2UYO8ULD6URRUWSQVUwauxN/xqFUhK/7QkRhbv
-+uc58aCIkAOTNnd476FGA34BwivjGOt2M6QSpgYywV79rh0zSHaX1g25S8Mbm9I3
-arknamPvzPz6hcU9KFCl4zlfhJsUosEuvYmWeUqxrFNUiuYeHjgS56vOVBSatD6z
-GXEccn3VXpV395tMc2Sp8lUJpZ0RwKdKs1BG5weoSQgDpRiViMweIaLnSUaSUFp5
-FB/o91xSAj/NVTkPOGZA9Xcj3rZzQ0VSjE3I/FFvh52QpIQstsTgqn/5TKRunKWD
-u5g8WGYF/S+1q86m4bpHyShOseqGnw==
-=Re6y
------END PGP SIGNATURE-----
-
---1y1tiN5hVw5cPBDe--
+Daniel
