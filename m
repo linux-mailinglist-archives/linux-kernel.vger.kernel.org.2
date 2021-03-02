@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5E732A7B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE7A32A7BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579169AbhCBQ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:28:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43008 "EHLO mx2.suse.de"
+        id S1835091AbhCBQ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:29:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1572973AbhCBOIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:08:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF120AFF5;
-        Tue,  2 Mar 2021 14:06:59 +0000 (UTC)
-Message-ID: <6c26302c546afb4d9d35e044b3b5d643704d46a5.camel@suse.de>
-Subject: Re: [RFC 10/13] iommu/arm-smmu-impl: Get rid of Marvell's
- implementation details
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     f.fainelli@gmail.com, robh+dt@kernel.org, ardb@kernel.org,
-        hch@infradead.org, narmstrong@baylibre.com, dwmw2@infradead.org,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, arnd@arndb.de,
-        will@kernel.org
-Date:   Tue, 02 Mar 2021 15:06:58 +0100
-In-Reply-To: <96b6c3e4-d9d3-270e-6d8e-7c826ae11827@arm.com>
-References: <20210226140305.26356-1-nsaenzjulienne@suse.de>
-         <20210226140305.26356-11-nsaenzjulienne@suse.de>
-         <96b6c3e4-d9d3-270e-6d8e-7c826ae11827@arm.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-/u4BP8h9tAaw6XMVTBaB"
-User-Agent: Evolution 3.38.4 
+        id S1573056AbhCBOI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:08:57 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BACBB6186A;
+        Tue,  2 Mar 2021 14:08:12 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 09:08:11 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Petr Mladek <pmladek@suse.com>,
+        Marco Elver <elver@google.com>, Timur Tabi <timur@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
+ addresses as unhashed
+Message-ID: <20210302090811.620ae7d0@gandalf.local.home>
+In-Reply-To: <CAMuHMdUB4DZxHo=j1+EsSsoGCdWmDO9mBo0cUtAH4OYHy3sBzw@mail.gmail.com>
+References: <20210214161348.369023-1-timur@kernel.org>
+        <20210214161348.369023-4-timur@kernel.org>
+        <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
+        <CANpmjNNm-4s16_KQ1_NqFN4XOESJh4_=33LHQzt+p4V0Cy=Xzw@mail.gmail.com>
+        <CAMuHMdWWsZ-vTGZCeLtcwLTuBYpeP0STfhrK37wiwmyfsQ798A@mail.gmail.com>
+        <YD49x/UGUq6MSE39@alley>
+        <8893ff08-1e50-316c-f632-cd37be1690d5@suse.cz>
+        <CAMuHMdUB4DZxHo=j1+EsSsoGCdWmDO9mBo0cUtAH4OYHy3sBzw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2 Mar 2021 14:49:42 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
---=-/u4BP8h9tAaw6XMVTBaB
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> > So this is basically a kernel tinyfication issue, right? Is that still pursued
+> > today? Are there better config options suitable for this than CONFIG_DEBUG_KERNEL?  
+> 
+> As long as I hear about products running Linux on SoCs with 10 MiB of
+> SRAM, I think the answer is yes.
+> I'm not immediately aware of a better config option.  There are no more
+> TINY options left, and EXPERT selects DEBUG_KERNEL.
 
-On Tue, 2021-03-02 at 11:40 +0000, Robin Murphy wrote:
-> On 2021-02-26 14:03, Nicolas Saenz Julienne wrote:
-> > arm-smmu can now deal with integrations on buses that don't support
-> > 64bit MMIO accesses. No need to create a special case for that on
-> > Marvell's integration.
->=20
-> This breaks compatibility with existing DTs.
+Since the trace_printk() uses the same type of notice, I wonder if we could
+make this into a helper function and just pass in the top part.
 
-Yes. On top of that, I had a brief word with robh on the topic of DT
-properties. I'm going to explore alternatives that don't depend on it.
-
-Regards,
-Nicolas
-
++	pr_warn("**********************************************************\n");
++	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
++	pr_warn("**                                                      **\n");
 
 
---=-/u4BP8h9tAaw6XMVTBaB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
++	pr_warn("** This system shows unhashed kernel memory addresses   **\n");
++	pr_warn("** via the console, logs, and other interfaces. This    **\n");
++	pr_warn("** might reduce the security of your system.            **\n");
 
------BEGIN PGP SIGNATURE-----
+Only the above section is really unique. The rest can be a boiler plate.
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmA+RoIACgkQlfZmHno8
-x/4MCAf/TpAOjoNHKE4k6N89MnAltLVWF4UlHKUz/tIYugJ2GUImpgURvwxaudOX
-nQvFM1vEiW60EjrG6P++8r5z+GGnkazSz4KOCfgMrog9XjRqNPghs1912LeSuBuW
-w94CUzLy/cXbAHwb7Ll6c3rF47fIwoYvl+ii7+n858wTmIw9yLjxZrnwA61aEUha
-wmqCaMgudz9OtfDOAxhG9wCuG+IAXCRFeWffG9+JrVhO1gOnJlESt0YExV71G/Kw
-k+q5VwnH9VuTE+PrngfiNdLmhmW04idgTsVnPIOt1NZLZxJLXbryufQmL+jWOBxq
-rSF6APg/ku0+yfHJZorjZlkJm8QTFw==
-=iVwW
------END PGP SIGNATURE-----
+-- Steve
 
---=-/u4BP8h9tAaw6XMVTBaB--
-
++	pr_warn("**                                                      **\n");
++	pr_warn("** If you see this message and you are not debugging    **\n");
++	pr_warn("** the kernel, report this immediately to your system   **\n");
++	pr_warn("** administrator!                                       **\n");
++	pr_warn("**                                                      **\n");
++	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
++	pr_warn("**********************************************************\n");
++
