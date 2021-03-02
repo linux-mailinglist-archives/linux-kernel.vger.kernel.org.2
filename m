@@ -2,80 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8CC32A0E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC8032A0E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576785AbhCBEcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:32:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236658AbhCBCse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:48:34 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98D8F61477;
-        Tue,  2 Mar 2021 02:47:04 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 21:47:02 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [x86, build] 6dafca9780:
- WARNING:at_arch/x86/kernel/ftrace.c:#ftrace_verify_code
-Message-ID: <20210301214702.1119c732@oasis.local.home>
-In-Reply-To: <YD2loOkd/AYqKPB6@google.com>
-References: <20210301074027.GD12822@xsang-OptiPlex-9020>
-        <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
-        <20210301184524.7aa05ac1@gandalf.local.home>
-        <CABCJKudQme=bcNJtNCORUpBnVA_Pkr2Zk_3Nu2EsfnuoE7LJ3g@mail.gmail.com>
-        <20210301201526.65ce7f1c@oasis.local.home>
-        <YD2loOkd/AYqKPB6@google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1576793AbhCBEcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238563AbhCBCwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 21:52:22 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B26C06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 18:50:41 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id e9so11156272plh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 18:50:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SzsqJhnliez1tKlON8yLC5F6USIx2iyCxc12/4u/r+c=;
+        b=I4jmhul4Z5yg+xo9mAznhlNQXfF9s8TJskKTSIYrPYUwxVyIOcIlOkHWTsBaQVpGvf
+         zDfHR7YnJY4d4j+veaCOxSfnf0WdJ3ID5HmWGdqqfn4X9IRnN3/RLi+lxjq9EkL/uYJg
+         Ok1k3/niPacZp26eNMSpbDoq3GpfxW/XQqR6xZjE05+hd3yztSnH3lGoSdP8q0vzU8mV
+         ti376Ul89wmAe/aqsDWlTzuj21DVQu/MYm6lieeS66zGszHG8yOjJilhLpYNAckcid0b
+         vaMpKvLB8/KzK02Oz61Wzk23FWx6sno07D+PyBkHlLt9mXti8KpMz9jXfJ37NeirOLtu
+         9sVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SzsqJhnliez1tKlON8yLC5F6USIx2iyCxc12/4u/r+c=;
+        b=RVxonxYUk91pFhd4DwGyJVdnGriDBZKG14phFmM6Bp8QzF0rZqESKEY0P6gyJbWqvs
+         /aniuTmcZAF6txa3abrH9CfEgVAp85JDgrUfgn2ED3hpsOcPThBuRD/3NIWNeDDgHytf
+         CQ+Y0zpVT9FezArVYqnAPcMlqBwvJncItY26QrhkG/QGonrE3Eyw0xjF9dozFzajsr3m
+         aObXnDTCipUy4Afqx0OAJsJ/OxEI8BDD3Nh7PLDTWiUGZ3sdyODGXw6EHoT45L6yKMzT
+         B9J8w0ivNVNNGtOUffmHakrEnJ4BTTILma5ADWwJN0IF3YAiQG8F/hII4CXGZzs/1Haq
+         I6Eg==
+X-Gm-Message-State: AOAM531a8PGbaJbr2OqN6JAKy6ZMXiKpQ0bEyMqTCXjxMgz7QaJMeEJW
+        eJhflsP0eMnVjd3MLBp07rO88AI98Ddzo3VNJwaYfg==
+X-Google-Smtp-Source: ABdhPJwO4U6Vuif29dmFk6pc2ND9DlOcJXGnqC3Sy0dnPR0PpJ3LuKt8LwGDKRqjDVvzgWiY/91mipCndD5BXqlSM8E=
+X-Received: by 2002:a17:902:e54e:b029:e3:9f84:db8e with SMTP id
+ n14-20020a170902e54eb02900e39f84db8emr1508267plf.24.1614653440529; Mon, 01
+ Mar 2021 18:50:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210301062227.59292-1-songmuchun@bytedance.com> <YD2Q5q2HfKXPnDte@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YD2Q5q2HfKXPnDte@carbon.dhcp.thefacebook.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 2 Mar 2021 10:50:04 +0800
+Message-ID: <CAMZfGtUzB1duVS+pSEHvB-g6BSQ25mQMvUjopcADx0v2go3Q0g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 0/5] Use obj_cgroup APIs to change kmem pages
+To:     Roman Gushchin <guro@fb.com>
+Cc:     viro@zeniv.linux.org.uk, Jan Kara <jack@suse.cz>,
+        amir73il@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        mingo@redhat.com, Peter Zijlstra <peterz@infradead.org>,
+        juri.lelli@redhat.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        bristot@redhat.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>, richard.weiyang@gmail.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        mathieu.desnoyers@efficios.com, posk@google.com,
+        Jann Horn <jannh@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>, longman@redhat.com,
+        Michel Lespinasse <walken@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, krisman@collabora.com,
+        esyr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
+        Marco Elver <elver@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 18:40:32 -0800
-Sami Tolvanen <samitolvanen@google.com> wrote:
+On Tue, Mar 2, 2021 at 9:12 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> Hi Muchun!
+>
+> On Mon, Mar 01, 2021 at 02:22:22PM +0800, Muchun Song wrote:
+> > Since Roman series "The new cgroup slab memory controller" applied. All
+> > slab objects are changed via the new APIs of obj_cgroup. This new APIs
+> > introduce a struct obj_cgroup instead of using struct mem_cgroup directly
+> > to charge slab objects. It prevents long-living objects from pinning the
+> > original memory cgroup in the memory. But there are still some corner
+> > objects (e.g. allocations larger than order-1 page on SLUB) which are
+> > not charged via the API of obj_cgroup. Those objects (include the pages
+> > which are allocated from buddy allocator directly) are charged as kmem
+> > pages which still hold a reference to the memory cgroup.
+>
+> Yes, this is a good idea, large kmallocs should be treated the same
+> way as small ones.
+>
+> >
+> > E.g. We know that the kernel stack is charged as kmem pages because the
+> > size of the kernel stack can be greater than 2 pages (e.g. 16KB on x86_64
+> > or arm64). If we create a thread (suppose the thread stack is charged to
+> > memory cgroup A) and then move it from memory cgroup A to memory cgroup
+> > B. Because the kernel stack of the thread hold a reference to the memory
+> > cgroup A. The thread can pin the memory cgroup A in the memory even if
+> > we remove the cgroup A. If we want to see this scenario by using the
+> > following script. We can see that the system has added 500 dying cgroups.
+> >
+> >       #!/bin/bash
+> >
+> >       cat /proc/cgroups | grep memory
+> >
+> >       cd /sys/fs/cgroup/memory
+> >       echo 1 > memory.move_charge_at_immigrate
+> >
+> >       for i in range{1..500}
+> >       do
+> >               mkdir kmem_test
+> >               echo $$ > kmem_test/cgroup.procs
+> >               sleep 3600 &
+> >               echo $$ > cgroup.procs
+> >               echo `cat kmem_test/cgroup.procs` > cgroup.procs
+> >               rmdir kmem_test
+> >       done
+> >
+> >       cat /proc/cgroups | grep memory
+>
+> Well, moving processes between cgroups always created a lot of issues
+> and corner cases and this one is definitely not the worst. So this problem
+> looks a bit artificial, unless I'm missing something. But if it doesn't
+> introduce any new performance costs and doesn't make the code more complex,
+> I have nothing against.
 
-> On Mon, Mar 01, 2021 at 08:15:26PM -0500, Steven Rostedt wrote:
-> > On Mon, 1 Mar 2021 16:03:51 -0800
-> > Sami Tolvanen <samitolvanen@google.com> wrote:  
-> > >   
-> > > >                 ret = ftrace_verify_code(rec->ip, old);
-> > > > +
-> > > > +               if (__is_defined(CC_USING_NOP_MCOUNT) && ret && old_nop) {
-> > > > +                       /* Compiler could have put in P6_NOP5 */
-> > > > +                       old = P6_NOP5;
-> > > > +                       ret = ftrace_verify_code(rec->ip, old);
-> > > > +               }
-> > > > +    
-> > > 
-> > > Wouldn't that still hit WARN(1) in the initial ftrace_verify_code()
-> > > call if ideal_nops doesn't match?  
-> > 
-> > That was too quickly written ;-)
-> > 
-> > Take 2:
-> > 
-> > [ with fixes for setting p6_nop ]  
-> 
-> Thanks, I tested this with the config from the build bot, and I can
-> confirm that it fixes the issue for me.
-> 
-> I also tested a quick patch to disable the __fentry__ conversion in
-> objtool, and it seems to work too, but it's probably a good idea to
-> fix the issue with CC_USING_NOP_MCOUNT in any case.
+OK. I just want to show that large kmallocs are charged as kmem pages.
+So I constructed this test case.
 
-Thanks for testing, I'll make this into a proper patch and start
-testing it internally. I'm assuming you want this to go into the -rc
-release and possibly stable?
+>
+> Btw, can you, please, run the spell-checker on commit logs? There are many
+> typos (starting from the title of the series, I guess), which make the patchset
+> look less appealing.
 
--- Steve
+Sorry for my poor English. I will do that. Thanks for your suggestions.
+
+
+>
+> Thank you!
+>
+> >
+> > This patchset aims to make those kmem pages drop the reference to memory
+> > cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
+> > of the dying cgroups will not increase if we run the above test script.
+> >
+> > Patch 1-3 are using obj_cgroup APIs to charge kmem pages. The remote
+> > memory cgroup charing APIs is a mechanism to charge kernel memory to a
+> > given memory cgroup. So I also make it use the APIs of obj_cgroup.
+> > Patch 4-5 are doing this.
+> >
+> > Muchun Song (5):
+> >   mm: memcontrol: introduce obj_cgroup_{un}charge_page
+> >   mm: memcontrol: make page_memcg{_rcu} only applicable for non-kmem
+> >     page
+> >   mm: memcontrol: reparent the kmem pages on cgroup removal
+> >   mm: memcontrol: move remote memcg charging APIs to CONFIG_MEMCG_KMEM
+> >   mm: memcontrol: use object cgroup for remote memory cgroup charging
+> >
+> >  fs/buffer.c                          |  10 +-
+> >  fs/notify/fanotify/fanotify.c        |   6 +-
+> >  fs/notify/fanotify/fanotify_user.c   |   2 +-
+> >  fs/notify/group.c                    |   3 +-
+> >  fs/notify/inotify/inotify_fsnotify.c |   8 +-
+> >  fs/notify/inotify/inotify_user.c     |   2 +-
+> >  include/linux/bpf.h                  |   2 +-
+> >  include/linux/fsnotify_backend.h     |   2 +-
+> >  include/linux/memcontrol.h           | 109 +++++++++++---
+> >  include/linux/sched.h                |   6 +-
+> >  include/linux/sched/mm.h             |  30 ++--
+> >  kernel/bpf/syscall.c                 |  35 ++---
+> >  kernel/fork.c                        |   4 +-
+> >  mm/memcontrol.c                      | 276 ++++++++++++++++++++++-------------
+> >  mm/page_alloc.c                      |   4 +-
+> >  15 files changed, 324 insertions(+), 175 deletions(-)
+> >
+> > --
+> > 2.11.0
+> >
