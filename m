@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EA332A252
+	by mail.lfdr.de (Postfix) with ESMTP id 93FB232A253
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837157AbhCBHfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:35:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376307AbhCBHQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:16:50 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C397C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 23:16:09 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id w1so33244972ejf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 23:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dhQ/p75iCVhXBur2ISu19bCShY4YhNyufyyRn+NVer8=;
-        b=np7mVVDgFoC//buHBjMD6mjKSLoEMzDr9XlMeQLyxONxiMzk0qpLpB4ugocDonMTO6
-         JzpD9jU0RO40wY5209HANQdSSyP2MdNCqDiwvJp4kqdLQxIk8IjUW4jpMGG88KcliNR9
-         3tfzLfXQ14Efwl6Wnq1yawlBKFIJI0HlECw0ctBgv9rGiCWI1Eyqrh8WTLZWP7gIg9QG
-         HnceW1Iex3XYzx5UVBciU4u5ou7iaQx3Zt0Akc+RDe2MEvYZ4xCvkE0wkMN9yJ4jX0Pk
-         X9qW9Y9ysEUq+p03g5CS5OmDSHrU7w6G1Q6fEnzWsKkw4T6YpwzzJbHpfpxrd8Yu2TjU
-         CbwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dhQ/p75iCVhXBur2ISu19bCShY4YhNyufyyRn+NVer8=;
-        b=PMYkV55co/V5Fz86WO6EKramnUan1gRqOHczQK4p/v1GY9ow8fJIotyPsgh8D5PDYE
-         ap3p7CEMEbEdmnLhiXhpADT6F+94WJnu7MnjYZxnZpFrard9coADQCOph6KJEpMUtWZ+
-         5Tau63ji1T8ERSXVejC4WnRcqw6lEIlwAU7wjg7DLv26tlzSpsybn5F59twIwz9d7lNG
-         oUtVvwEVFeeowCy6cJgYlpHQAEDrhw5gb1fztaDxhfoEExeFKnyiMy38CsHmXB4Y3B4I
-         5vmyuLb004L+dnsQlQlVWZeqfjrEBnKp3zzEud4dI47EQmHwNzPFrVJ2qQHFI767K8Wj
-         6WLw==
-X-Gm-Message-State: AOAM531sWcvUYW7GZbEZNCvA/4Ci6ESaZJ1EgCHQ+XdaZQcU5MLuNIlY
-        ZQXFVc199TZCRGIYXGp3bTsKWrL6p6zRy9DAkJF4Bw==
-X-Google-Smtp-Source: ABdhPJyVxmsihpy1kqY+kqI95RR2JeFZi+7jFFVwsJ1WASqnYtD7E6XB1O6s0LzMWjFVen/J3v9lOeEqeY4wZGVfrBw=
-X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr19675329ejo.247.1614669367668;
- Mon, 01 Mar 2021 23:16:07 -0800 (PST)
+        id S1837168AbhCBHfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:35:23 -0500
+Received: from mga01.intel.com ([192.55.52.88]:33412 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1376313AbhCBHRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:17:01 -0500
+IronPort-SDR: HfKJdSqFdQi/GbNiy1oYExChle7pPTBIPr3GEN/c20aMzop3iHAyGEjkHkT391/DG5X6LSMPJA
+ 0yNNEUcIM4iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="206345510"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="206345510"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 23:16:11 -0800
+IronPort-SDR: cONYIPV0OpIAhapGBuMV8l0Va3BTh17wycnHERsBtyZn7o1wKu8N/PRruo2a5RXzARs2ntB5/C
+ +jd9tVBIgNbQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="444631585"
+Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
+  by orsmga001.jf.intel.com with ESMTP; 01 Mar 2021 23:16:05 -0800
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        conghui.chen@intel.com, arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <YDzZHKdrpROgSdg3@smile.fi.intel.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <5888846c-cc7b-44b1-98df-9fa10d89a3ff@intel.com>
+Date:   Tue, 2 Mar 2021 15:16:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210301193642.707301430@linuxfoundation.org>
-In-Reply-To: <20210301193642.707301430@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 2 Mar 2021 12:45:55 +0530
-Message-ID: <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YDzZHKdrpROgSdg3@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 01:21, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+
+On 2021/3/1 20:07, Andy Shevchenko wrote:
+> On Mon, Mar 01, 2021 at 02:41:35PM +0800, Jie Deng wrote:
+>> Add an I2C bus driver for virtio para-virtualization.
+>>
+>> The controller can be emulated by the backend driver in
+>> any device model software by following the virtio protocol.
+>>
+>> The device specification can be found on
+>> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+>>
+>> By following the specification, people may implement different
+>> backend drivers to emulate different controllers according to
+>> their needs.
+> ...
 >
-> This is the start of the stable review cycle for the 5.10.20 release.
-> There are 661 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+>> +		buf = kzalloc(msgs[i].len, GFP_KERNEL);
+>> +		if (!buf)
+>> +			break;
+>> +
+>> +		if (msgs[i].flags & I2C_M_RD) {
+> kzalloc()
 >
-> Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
-> Anything received after that time might be too late.
+>> +			reqs[i].read_buf = buf;
+>> +			sg_init_one(&msg_buf, reqs[i].read_buf, msgs[i].len);
+>> +			sgs[outcnt + incnt++] = &msg_buf;
+>> +		} else {
+>> +			reqs[i].write_buf = buf;
+>> +			memcpy(reqs[i].write_buf, msgs[i].buf, msgs[i].len);
+> kmemdup() ?
+Do you mean using "kzalloc" in the if condition and "kmemdup" in the 
+else condition ?
+Then we have to check the NULL twice which is also not good.
+>> +			sg_init_one(&msg_buf, reqs[i].write_buf, msgs[i].len);
+>> +			sgs[outcnt++] = &msg_buf;
+>> +		}
+> ...
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.20-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+>> +
+>> +
+> One blank line is enough.
+Will fix it. Thank you.
+> ...
 >
-> thanks,
 >
-> greg k-h
-
-
-Results from Linaro=E2=80=99s test farm.
-Regressions detected on all devices (arm64, arm, x86_64 and i386).
-
-hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
-
-This failure is specific to stable-rc 5.10 and 5.11.
-Test PASS on mainline and Linux next kernel.
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.10.20-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: 92929e15cdc088938051b73538d9d4d60844f9d4
-git describe: v5.10.19-662-g92929e15cdc0
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.19-662-g92929e15cdc0
-
-Regressions (compared to build v5.10.19)
-------------------------------------------------------------------------
-
-  ltp-pty-tests:
-    * hangup01
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+>> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
+>> +	if (ret == 0)
+>> +		goto err_unlock_free;
+>> +	else
+> Redundant.
+Good catch !
+>> +		nr = ret;
