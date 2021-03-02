@@ -2,265 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED27B32AC1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 22:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DF432AC12
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 22:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449517AbhCBVJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
+        id S1448043AbhCBVHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:07:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352105AbhCBSLM (ORCPT
+        with ESMTP id S1347076AbhCBSHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:11:12 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27753C0617AB
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:45:22 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id 130so5285728qkm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:45:22 -0800 (PST)
+        Tue, 2 Mar 2021 13:07:05 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73284C0611C2
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:54:33 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id l133so22857271oib.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:54:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=5/elzHKwYLkN+eBkXoR3/tKQXe6bjPSZcc2tVPAsRfM=;
-        b=C53i1Iy2d9Zgd7MgCcEDwZQOu6xidTY0b0GaaBJbnadm0fsfGrP0eKtLL9tvcjybZx
-         NGnuax0zbTcAmgqwrtWlJF0y//QOBhsJYMiwmJu66peXwMMwlTahOfpkDU63HcCqpgBT
-         Drb5F9f/bncYxCKH8ARMmYQBKxAa2d9xN8QNzcW1+38kzXcVDFyDT63M4YILj2ywx2D/
-         COva0NkacrgkrndijEzjEcCW060nYABJT11gIJwPc5X0QL50fFSccXgQZLhSI7WCPO5j
-         U/4QMuIbyg2nkolQbVA3NXLJ8iifjlSmnjkn5u5RJTyYu5JW44PCTntQCqgw9HY8HdO5
-         WBKg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Et+xU+di4F1x3AQ1+A9WWet/mw3rwpq1euxtEeoI89c=;
+        b=R8IMffRwg3aGHh1B5gMoq/i7WEbQ2fL4NUAIAo89ZzlhhjKsNsQWJaZvMijOUazeTZ
+         OpMAB7iHFz8rvR0Z+p8U3Vo+0hART0VJlgY7MwY6olkvlLBe4qrhD/px9iljx0b+P+Ju
+         bACHt60UzNx+/G4ZsCSc6jqcMFOyFO5HUBcu/v33O4vjiH42sdSgr6VTSQxfCJbj5TpO
+         2V0evh8DKHmLHVL2OrjgHShVTa2UUlxacOUHkfwPOg/plPEJ8+1eMBXQMAJEnRjEijg/
+         pwYAFgAGiUcAIq4pS5x22sTBb9/ElHmKtRlmhI5e/Y4lpxKM/+rjkaJrw5wlaeh2YApf
+         CCzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=5/elzHKwYLkN+eBkXoR3/tKQXe6bjPSZcc2tVPAsRfM=;
-        b=QDxe0MimYSCyFkurnbuFFn47T5arhZiWagpDj9/DxbBpCBusNI4WA+3YJsNqcvFW8B
-         Awi3w9Z5CAQV/Q0BB/e4YBSQtjMeAXmdWZtsOV3aBvg3jB/22LpZjIDY7OPCD5upgd8D
-         pQNY7eY2ic/ks/eh1tAmiaGDb/mE3r7e69KLju0M032aSlmoxY5ipeIu/1uUNiZZTeeM
-         YNZOvSU5vRGh2R9YXuXeeJRDOe5cJRp/9ZJPj2U6vEWFVsHsvl6QAY819v3HRoZ3aMi8
-         xVxMIIwV1qvC5/ADl4MeuwpjGeX3DMK8T3yOBWxiag/mMZxTdzzUJ3VUAmM5F7tic2yP
-         RAZQ==
-X-Gm-Message-State: AOAM533gTWTYz5e2sSmrmy0/OCLAyQC+kNh523cItPPaLvIM4cXrBOnV
-        H+OF1M8ZyKYcTsMhwjTmWZfmkS+1tj8=
-X-Google-Smtp-Source: ABdhPJxdXnFWysaLU/7z5LU0knkvvvBO3bCJCwcjOeNkm4zHzKYCwnJH62bYpc12JdRgvL8NnZ82AXMqjEc=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:805d:6324:3372:6183])
- (user=seanjc job=sendgmr) by 2002:a0c:b894:: with SMTP id y20mr4551211qvf.43.1614707121201;
- Tue, 02 Mar 2021 09:45:21 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  2 Mar 2021 09:45:14 -0800
-In-Reply-To: <20210302174515.2812275-1-seanjc@google.com>
-Message-Id: <20210302174515.2812275-2-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210302174515.2812275-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 1/2] KVM: x86: Handle triple fault in L2 without killing L1
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Et+xU+di4F1x3AQ1+A9WWet/mw3rwpq1euxtEeoI89c=;
+        b=Fd40wYLV6x4bDpEWZwzKKzh8Sbtoa04PZiybhJp+LihaYQtZquHRafsb/OyfGzyqnl
+         S09HY8MRSfQldgRyRYArKL63jRYiutY7s7U+tn+VDVSxhgNq7jI312KDypcyDje2SqAN
+         Ozdzu5QH6DAp03y9eUeoxWpiqhSkD6D9K4nyVYTf++6ca5EftNpvEMfU1rdAJiXqjfvI
+         M3CbkyevnQPsDrAR/KgoeorE160rRkj84V0M9A+MBtaUJbGpMaBxJYf+rBVn7uMV2M3C
+         o63mrIDyqZjLg/6xMDzQohHkt1yd5vV0MWpVExoqmFCVfVTOTA2a15TZefzDsc5Kuwlu
+         E5mw==
+X-Gm-Message-State: AOAM530bXsxrzCBzqhl9DItC2nSUH1uxILLK2CP9xg4P0QVozPbA0K1k
+        WiZ4L7BD/Rny3ESgfJI9o33bH6pV51TO/59dQBg=
+X-Google-Smtp-Source: ABdhPJxRW4p/vHzKb5c4JRQmf36SLWtagL0pbDRXWsUl6Q0LsZbThftkKX3kYDCpqSStbcgfjUlyvx+pUY4jiy9rzlA=
+X-Received: by 2002:a05:6808:f15:: with SMTP id m21mr4022056oiw.123.1614707672757;
+ Tue, 02 Mar 2021 09:54:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20210225150119.405469-1-arnd@kernel.org>
+In-Reply-To: <20210225150119.405469-1-arnd@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 2 Mar 2021 12:54:21 -0500
+Message-ID: <CADnq5_NU3DOJShJm4jGLYgPoM2kWT83sL5GZTGp11Be+hsCcmQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix an uninitialized index variable
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Synthesize a nested VM-Exit if L2 triggers an emulated triple fault
-instead of exiting to userspace, which likely will kill L1.  Any flow
-that does KVM_REQ_TRIPLE_FAULT is suspect, but the most common scenario
-for L2 killing L1 is if L0 (KVM) intercepts a contributory exception that
-is _not_intercepted by L1.  E.g. if KVM is intercepting #GPs for the
-VMware backdoor, a #GP that occurs in L2 while vectoring an injected #DF
-will cause KVM to emulate triple fault.
+On Thu, Feb 25, 2021 at 10:01 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang points out that the new logic uses an always-uninitialized
+> array index:
+>
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9810:38: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
+>                         timing  = &edid->detailed_timings[i];
+>                                                           ^
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9720:7: note: initialize the variable 'i' to silence this warning
+>
+> My best guess is that the index should have been returned by the
+> parse_hdmi_amd_vsdb() function that walks an array here, so do that.
+>
+> Fixes: f9b4f20c4777 ("drm/amd/display: Add Freesync HDMI support to DM")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Jim Mattson <jmattson@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/lapic.c            |  2 +-
- arch/x86/kvm/svm/nested.c       | 14 ++++++++++++++
- arch/x86/kvm/vmx/nested.c       |  9 +++++++++
- arch/x86/kvm/x86.c              | 29 +++++++++++++++++++++++------
- arch/x86/kvm/x86.h              |  2 ++
- 6 files changed, 50 insertions(+), 7 deletions(-)
+Applied.  Thanks!
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 6db60ea8ee5b..3668f38bad60 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1333,6 +1333,7 @@ struct kvm_x86_ops {
- struct kvm_x86_nested_ops {
- 	int (*check_events)(struct kvm_vcpu *vcpu);
- 	bool (*hv_timer_pending)(struct kvm_vcpu *vcpu);
-+	void (*triple_fault)(struct kvm_vcpu *vcpu);
- 	int (*get_state)(struct kvm_vcpu *vcpu,
- 			 struct kvm_nested_state __user *user_kvm_nested_state,
- 			 unsigned user_data_size);
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 45d40bfacb7c..9faed6e6960a 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2859,7 +2859,7 @@ void kvm_apic_accept_events(struct kvm_vcpu *vcpu)
- 		return;
- 
- 	if (is_guest_mode(vcpu)) {
--		r = kvm_x86_ops.nested_ops->check_events(vcpu);
-+		r = kvm_check_nested_events(vcpu);
- 		if (r < 0)
- 			return;
- 		/*
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 90a1704b5752..93a61ed76e5b 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -671,6 +671,9 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
- 	struct kvm_host_map map;
- 	int rc;
- 
-+	/* Triple faults in L2 should never escape. */
-+	WARN_ON_ONCE(kvm_check_request(KVM_REQ_TRIPLE_FAULT, vcpu));
-+
- 	rc = kvm_vcpu_map(vcpu, gpa_to_gfn(svm->nested.vmcb12_gpa), &map);
- 	if (rc) {
- 		if (rc == -EINVAL)
-@@ -792,6 +795,16 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
- 	return 0;
- }
- 
-+static void nested_svm_triple_fault(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+
-+	svm->vmcb->control.exit_code   = SVM_EXIT_SHUTDOWN;
-+	svm->vmcb->control.exit_info_1 = 0;
-+	svm->vmcb->control.exit_info_2 = 0;
-+	nested_svm_vmexit(svm);
-+}
-+
- int svm_allocate_nested(struct vcpu_svm *svm)
- {
- 	struct page *vmcb02_page;
-@@ -1327,6 +1340,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 
- struct kvm_x86_nested_ops svm_nested_ops = {
- 	.check_events = svm_check_nested_events,
-+	.triple_fault = nested_svm_triple_fault,
- 	.get_nested_state_pages = svm_get_nested_state_pages,
- 	.get_state = svm_get_nested_state,
- 	.set_state = svm_set_nested_state,
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index fdd80dd8e781..3493a48411a8 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -4416,6 +4416,9 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
- 	/* trying to cancel vmlaunch/vmresume is a bug */
- 	WARN_ON_ONCE(vmx->nested.nested_run_pending);
- 
-+	/* Similarly, triple faults in L2 should never escape. */
-+	WARN_ON_ONCE(kvm_check_request(KVM_REQ_TRIPLE_FAULT, vcpu));
-+
- 	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
- 
- 	/* Service the TLB flush request for L2 before switching to L1. */
-@@ -4552,6 +4555,11 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
- 	vmx->fail = 0;
- }
- 
-+static void nested_vmx_triple_fault(struct kvm_vcpu *vcpu)
-+{
-+	nested_vmx_vmexit(vcpu, EXIT_REASON_TRIPLE_FAULT, 0, 0);
-+}
-+
- /*
-  * Decode the memory-address operand of a vmx instruction, as recorded on an
-  * exit caused by such an instruction (run by a guest hypervisor).
-@@ -6593,6 +6601,7 @@ __init int nested_vmx_hardware_setup(int (*exit_handlers[])(struct kvm_vcpu *))
- struct kvm_x86_nested_ops vmx_nested_ops = {
- 	.check_events = vmx_check_nested_events,
- 	.hv_timer_pending = nested_vmx_preemption_timer_pending,
-+	.triple_fault = nested_vmx_triple_fault,
- 	.get_state = vmx_get_nested_state,
- 	.set_state = vmx_set_nested_state,
- 	.get_nested_state_pages = vmx_get_nested_state_pages,
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 828de7d65074..11746f488f04 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8349,6 +8349,19 @@ static void update_cr8_intercept(struct kvm_vcpu *vcpu)
- 	static_call(kvm_x86_update_cr8_intercept)(vcpu, tpr, max_irr);
- }
- 
-+int kvm_check_nested_events(struct kvm_vcpu *vcpu)
-+{
-+	if (WARN_ON_ONCE(!is_guest_mode(vcpu)))
-+		return -EIO;
-+
-+	if (kvm_check_request(KVM_REQ_TRIPLE_FAULT, vcpu)) {
-+		kvm_x86_ops.nested_ops->triple_fault(vcpu);
-+		return 1;
-+	}
-+
-+	return kvm_x86_ops.nested_ops->check_events(vcpu);
-+}
-+
- static void kvm_inject_exception(struct kvm_vcpu *vcpu)
- {
- 	if (vcpu->arch.exception.error_code && !is_protmode(vcpu))
-@@ -8401,7 +8414,7 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
- 	 * from L2 to L1.
- 	 */
- 	if (is_guest_mode(vcpu)) {
--		r = kvm_x86_ops.nested_ops->check_events(vcpu);
-+		r = kvm_check_nested_events(vcpu);
- 		if (r < 0)
- 			goto busy;
- 	}
-@@ -8964,10 +8977,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 			goto out;
- 		}
- 		if (kvm_check_request(KVM_REQ_TRIPLE_FAULT, vcpu)) {
--			vcpu->run->exit_reason = KVM_EXIT_SHUTDOWN;
--			vcpu->mmio_needed = 0;
--			r = 0;
--			goto out;
-+			if (is_guest_mode(vcpu)) {
-+				kvm_x86_ops.nested_ops->triple_fault(vcpu);
-+			} else {
-+				vcpu->run->exit_reason = KVM_EXIT_SHUTDOWN;
-+				vcpu->mmio_needed = 0;
-+				r = 0;
-+				goto out;
-+			}
- 		}
- 		if (kvm_check_request(KVM_REQ_APF_HALT, vcpu)) {
- 			/* Page is swapped out. Do synthetic halt */
-@@ -9265,7 +9282,7 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
- static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
- {
- 	if (is_guest_mode(vcpu))
--		kvm_x86_ops.nested_ops->check_events(vcpu);
-+		kvm_check_nested_events(vcpu);
- 
- 	return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
- 		!vcpu->arch.apf.halted);
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index ee6e01067884..daccf20fbcd5 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -56,6 +56,8 @@ static inline unsigned int __shrink_ple_window(unsigned int val,
- 
- #define MSR_IA32_CR_PAT_DEFAULT  0x0007040600070406ULL
- 
-+int kvm_check_nested_events(struct kvm_vcpu *vcpu);
-+
- static inline void kvm_clear_exception_queue(struct kvm_vcpu *vcpu)
- {
- 	vcpu->arch.exception.pending = false;
--- 
-2.30.1.766.gb4fecdf3b7-goog
+Alex
 
+
+> ---
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index b19b93c74bae..667c0d52dbfa 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -9736,7 +9736,7 @@ static bool parse_edid_cea(struct amdgpu_dm_connector *aconnector,
+>         return false;
+>  }
+>
+> -static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+> +static int parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>                 struct edid *edid, struct amdgpu_hdmi_vsdb_info *vsdb_info)
+>  {
+>         uint8_t *edid_ext = NULL;
+> @@ -9746,7 +9746,7 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>         /*----- drm_find_cea_extension() -----*/
+>         /* No EDID or EDID extensions */
+>         if (edid == NULL || edid->extensions == 0)
+> -               return false;
+> +               return -ENODEV;
+>
+>         /* Find CEA extension */
+>         for (i = 0; i < edid->extensions; i++) {
+> @@ -9756,14 +9756,15 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>         }
+>
+>         if (i == edid->extensions)
+> -               return false;
+> +               return -ENODEV;
+>
+>         /*----- cea_db_offsets() -----*/
+>         if (edid_ext[0] != CEA_EXT)
+> -               return false;
+> +               return -ENODEV;
+>
+>         valid_vsdb_found = parse_edid_cea(aconnector, edid_ext, EDID_LENGTH, vsdb_info);
+> -       return valid_vsdb_found;
+> +
+> +       return valid_vsdb_found ? i : -ENODEV;
+>  }
+>
+>  void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+> @@ -9781,7 +9782,6 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>         struct amdgpu_device *adev = drm_to_adev(dev);
+>         bool freesync_capable = false;
+>         struct amdgpu_hdmi_vsdb_info vsdb_info = {0};
+> -       bool hdmi_valid_vsdb_found = false;
+>
+>         if (!connector->state) {
+>                 DRM_ERROR("%s - Connector has no state", __func__);
+> @@ -9857,8 +9857,8 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>                         }
+>                 }
+>         } else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
+> -               hdmi_valid_vsdb_found = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> -               if (hdmi_valid_vsdb_found && vsdb_info.freesync_supported) {
+> +               i = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> +               if (i >= 0 && vsdb_info.freesync_supported) {
+>                         timing  = &edid->detailed_timings[i];
+>                         data    = &timing->data.other_data;
+>
+> --
+> 2.29.2
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
