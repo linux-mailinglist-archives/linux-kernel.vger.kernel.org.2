@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCE932A221
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B5A32A222
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836640AbhCBHTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:19:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43610 "EHLO mail.kernel.org"
+        id S1836652AbhCBHT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:19:27 -0500
+Received: from mga07.intel.com ([134.134.136.100]:40780 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835931AbhCBG1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:27:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C2A46148E;
-        Tue,  2 Mar 2021 06:27:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614666426;
-        bh=+3Kv/EyqZjPRD+Ojky4zLLPgLaC/qvoYz7Cg7qQNlrY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TosIvsAfWKqiI7ePx73vBmF1fNpgflKKlKo9BMAvbAdW9Kg7T8LXGGUs9s5lq2IAg
-         S6R6h1F57+OkErmWIhAzD56x8wVue/UN5C/GrVcdbuDC3V6TvSiwYJk66blRUgL1QY
-         mDMvP2uGGxahSHsfTRbZjGczc/B9ABsJE2i4AaUE=
-Date:   Tue, 2 Mar 2021 07:27:01 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     rikard.falkeborn@gmail.com, zbr@ioremap.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] w1: ds2708 and ds2781 use the new API kobj_to_dev()
-Message-ID: <YD3atYZfpTh0XliL@kroah.com>
-References: <1614665822-12258-1-git-send-email-tiantao6@hisilicon.com>
+        id S1835941AbhCBG3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:29:04 -0500
+IronPort-SDR: HGl9bUtvDsbikKjEiRvFFuMr2O2s4an9eFVixOyJEDgPm1J5dNbUt54qnbN++kKmgGyZzbJEPh
+ +bfwGWgEMU7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250753309"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="250753309"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 22:28:16 -0800
+IronPort-SDR: 4HEhIRxtLlBjbR5Mq0Pp6v5Wx40ez790z7ZwrTBe9T3G/JC2/2KZSjqbv1hsWgiGI5g7TMbXCP
+ Y87wtZlJrYGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="444614627"
+Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
+  by orsmga001.jf.intel.com with ESMTP; 01 Mar 2021 22:28:09 -0800
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <20210301115441.a4s5xzwm6d6ohz7f@vireshk-i7>
+ <16efea9f-d606-4cf9-9213-3c1cf9b1a906@intel.com>
+ <20210302034323.gkqymzngyqofrdsr@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <664d590d-b43f-1829-3ea0-44a4054dfca6@intel.com>
+Date:   Tue, 2 Mar 2021 14:28:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614665822-12258-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <20210302034323.gkqymzngyqofrdsr@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 02:17:02PM +0800, Tian Tao wrote:
-> fix the below warnning which reported by coccicheck.
-> /drivers/w1/slaves/w1_ds2780.c:93:60-61: WARNING opportunity for
-> kobj_to_dev().
-> /drivers/w1/slaves/w1_ds2781.c:90:60-61: WARNING opportunity for
-> kobj_to_dev().
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/w1/slaves/w1_ds2780.c | 2 +-
->  drivers/w1/slaves/w1_ds2781.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/w1/slaves/w1_ds2780.c b/drivers/w1/slaves/w1_ds2780.c
-> index c281fe5..9dcb5a5 100644
-> --- a/drivers/w1/slaves/w1_ds2780.c
-> +++ b/drivers/w1/slaves/w1_ds2780.c
-> @@ -90,7 +90,7 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
->  			     struct bin_attribute *bin_attr, char *buf,
->  			     loff_t off, size_t count)
->  {
-> -	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct device *dev = kobj_to_dev(kobj);
->  	return w1_ds2780_io(dev, buf, off, count, 0);
->  }
->  
-> diff --git a/drivers/w1/slaves/w1_ds2781.c b/drivers/w1/slaves/w1_ds2781.c
-> index f0d393a..2cb7c02 100644
-> --- a/drivers/w1/slaves/w1_ds2781.c
-> +++ b/drivers/w1/slaves/w1_ds2781.c
-> @@ -87,7 +87,7 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
->  			     struct bin_attribute *bin_attr, char *buf,
->  			     loff_t off, size_t count)
->  {
-> -	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct device *dev = kobj_to_dev(kobj);
->  	return w1_ds2781_io(dev, buf, off, count, 0);
->  }
->  
-> -- 
-> 2.7.4
-> 
 
-Hi,
+On 2021/3/2 11:43, Viresh Kumar wrote:
+> On 02-03-21, 10:21, Jie Deng wrote:
+>> On 2021/3/1 19:54, Viresh Kumar wrote:
+>> That's my original proposal. I used to mirror this interface with "struct
+>> i2c_msg".
+>>
+>> But the design philosophy of virtio TC is that VIRTIO devices are not
+>> specific to Linux
+>> so the specs design should avoid the limitations of the current Linux driver
+>> behavior.
+> Right, I understand that.
+>
+>> We had some discussion about this. You may check these links to learn the
+>> story.
+>> https://lists.oasis-open.org/archives/virtio-comment/202010/msg00016.html
+>> https://lists.oasis-open.org/archives/virtio-comment/202010/msg00033.html
+>> https://lists.oasis-open.org/archives/virtio-comment/202011/msg00025.html
+> So the thing is that we want to support full duplex mode, right ?
+>
+> How will that work protocol wise ? I mean how would we know if we are
+> expecting both tx and rx buffers in a transfer ?
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Not for the full duplex. As Paolo explained in those links.
+We defined a combined request called "write-read request"
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+"
+This is when a write is followed by a read: the master
+starts off the transmission with a write, then sends a second START,
+then continues with a read from the same address.
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+In theory there's no difference between one multi-segment transaction
+and many single-segment transactions _in a single-master scenario_.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+However, it is a plausible configuration to have multiple guests sharing
+an I2C host device as if they were multiple master.
 
-thanks,
+So the spec should provide a way at least to support for transactions with
+1 write and 1 read segment in one request to the same address.
 
-greg k-h's patch email bot
+"
+
+ From the perspective of specification design, it hopes to provide more 
+choices
+while from the perspective of specific implementation, we can choose 
+what we need
+as long as it does not violate the specification.
+
+Since the current Linux driver doesn't use this mechanism. I'm 
+considering to move
+the "struct virtio_i2c_req" into the driver and use one "buf" instead.
