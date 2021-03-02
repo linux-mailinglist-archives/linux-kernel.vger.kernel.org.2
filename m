@@ -2,293 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D05932A1A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E058232A1A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344916AbhCBGoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhCBFJO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 00:09:14 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F83C06178B;
-        Mon,  1 Mar 2021 21:05:49 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id q20so13057493pfu.8;
-        Mon, 01 Mar 2021 21:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Iqp5bpy3tZBqdtRjNj/u1VvRMlRbGWzDgAp5ZHqpvhs=;
-        b=bxc9ZVXO+pJvIJo+e9qN3qi3uF9DGgelFeL2kXAR46UJpHLV56FLoYjpbdtRU0HUWZ
-         h6pR/WcboBMSWlps5ZOpKhG8itI/i89p611L4834VKFC+n3hdKvoh8yGi+HZxKN8ds+O
-         MLbToSFPKEmtXmaKQDgeUj+b2QG07BRO34obl5H3UBGnOs7rQQ7QTdu2pRc6CWzR1TXl
-         7I0stBQoDtD0UTb4mXfGLtaVeMgMoI2TQUkxBkulYr1ynpuC8g+OiXLEQS9bWvN1gAdO
-         bx6xGgO7+NM+hmympASiqnUjCMH2lWnPSAyDOoBPzzAB41zUzROJ3KVpDEz6Of1gd4O5
-         OViw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Iqp5bpy3tZBqdtRjNj/u1VvRMlRbGWzDgAp5ZHqpvhs=;
-        b=akX+ohi6dIMnhvhxRk7sXZloh/1ZY9yMFXJQEMb8ND0IAU3DekEfVG90FtuH8Z6PMM
-         tJhtQYblmAj5116EgsyOsXc5nCYFql1mtcK7el/pex5/EredSS5quLzcGSiaTVI+XSeg
-         LkX7Mt4KAeosMDs4ld40irF9PLBH8jtjOO6BPSxPJeg9VhZCi85RAal+O6fsxoaT+3fw
-         QFFqRAIcU+bgA1Znp5zxJotGTYvRB7I7Qf7Nq1dDG6tM1PpvW8Sq4Ax4buKfCYt6mHyp
-         1Vj4co6YTz4KBy2hW7VrIKEhKIj499nGisEXPTtV93XB6ElFNM/3z6WYN3tj5xe6TnGn
-         mT2w==
-X-Gm-Message-State: AOAM532Mo1W/rr2PYOjNrI4Euz4+cHl0T9Tskn9lQCfEz05e/+zcatez
-        kcPCj9PTpST6ElzsME9YtbI=
-X-Google-Smtp-Source: ABdhPJxxQjWqo1f1yNleYzB15q+uce+ZkH5ufVCny0uk3/GiSi1URTO1/6kaQwYHEd51XFrGTlQh9A==
-X-Received: by 2002:a62:dd01:0:b029:1ed:6b67:1377 with SMTP id w1-20020a62dd010000b02901ed6b671377mr1768587pff.48.1614661549532;
-        Mon, 01 Mar 2021 21:05:49 -0800 (PST)
-Received: from localhost.localdomain ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id s16sm19759143pfs.39.2021.03.01.21.05.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Mar 2021 21:05:49 -0800 (PST)
-From:   Hyeongseok Kim <hyeongseok@gmail.com>
-To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Hyeongseok Kim <hyeongseok@gmail.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: [PATCH v4 2/2] exfat: add support ioctl and FITRIM function
-Date:   Tue,  2 Mar 2021 14:05:21 +0900
-Message-Id: <20210302050521.6059-3-hyeongseok@gmail.com>
-X-Mailer: git-send-email 2.27.0.83.g0313f36
-In-Reply-To: <20210302050521.6059-1-hyeongseok@gmail.com>
-References: <20210302050521.6059-1-hyeongseok@gmail.com>
+        id S1344884AbhCBGoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:44:17 -0500
+Received: from mga07.intel.com ([134.134.136.100]:22644 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231171AbhCBFKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 00:10:32 -0500
+IronPort-SDR: M0+QNDo5E75z1snl2cJZlheux0PeRoI59l1YYSQWVE+OzduezhoALizsyEF9Htz/CSd8EdYiC1
+ JgNyF4Pn2uTA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250737284"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="250737284"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 21:06:56 -0800
+IronPort-SDR: wC2bDyBmi0EgPUh2mckEVJcTi1BVjhN/kpCXBscfpu7q505k7SZLIfh0tJa+QWXTl/V4r+wymJ
+ DqZBizKNO+Pw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="444591095"
+Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
+  by orsmga001.jf.intel.com with ESMTP; 01 Mar 2021 21:06:50 -0800
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <CAK8P3a1ZXbodV07TTErnQunCLWOBnzRiVdLCxBD743fn-6FbXg@mail.gmail.com>
+ <20210302040114.rg6bb32g2bsivsgf@vireshk-i7>
+ <20210302042233.7ppagwjk3rah3uh3@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <5e66fc1b-81d3-341e-4864-adb021e9ce1e@intel.com>
+Date:   Tue, 2 Mar 2021 13:06:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302042233.7ppagwjk3rah3uh3@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add FITRIM ioctl to enable discarding unused blocks while mounted.
-As current exFAT doesn't have generic ioctl handler, add empty ioctl
-function first, and add FITRIM handler.
 
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
----
- fs/exfat/balloc.c   | 80 +++++++++++++++++++++++++++++++++++++++++++++
- fs/exfat/dir.c      |  5 +++
- fs/exfat/exfat_fs.h |  4 +++
- fs/exfat/file.c     | 53 ++++++++++++++++++++++++++++++
- 4 files changed, 142 insertions(+)
+On 2021/3/2 12:22, Viresh Kumar wrote:
+> On 02-03-21, 09:31, Viresh Kumar wrote:
+>> On 01-03-21, 16:19, Arnd Bergmann wrote:
+>>> On Mon, Mar 1, 2021 at 7:41 AM Jie Deng <jie.deng@intel.com> wrote:
+>>>
+>>>> --- /dev/null
+>>>> +++ b/include/uapi/linux/virtio_i2c.h
+>>>> @@ -0,0 +1,56 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+>>>> +/*
+>>>> + * Definitions for virtio I2C Adpter
+>>>> + *
+>>>> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+>>>> + */
+>>>> +
+>>>> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+>>>> +#define _UAPI_LINUX_VIRTIO_I2C_H
+>>> Why is this a uapi header? Can't this all be moved into the driver
+>>> itself?
+>>>
+>>>> +/**
+>>>> + * struct virtio_i2c_req - the virtio I2C request structure
+>>>> + * @out_hdr: the OUT header of the virtio I2C message
+>>>> + * @write_buf: contains one I2C segment being written to the device
+>>>> + * @read_buf: contains one I2C segment being read from the device
+>>>> + * @in_hdr: the IN header of the virtio I2C message
+>>>> + */
+>>>> +struct virtio_i2c_req {
+>>>> +       struct virtio_i2c_out_hdr out_hdr;
+>>>> +       u8 *write_buf;
+>>>> +       u8 *read_buf;
+>>>> +       struct virtio_i2c_in_hdr in_hdr;
+>>>> +};
+>>> In particular, this structure looks like it is only ever usable between
+>>> the transfer functions in the driver itself, it is shared with neither
+>>> user space nor the virtio host side.
+>> Why is it so ? Won't you expect hypervisors or userspace apps to use
+>> these ?
+> This comment applies only for the first two structures as the third
+> one is never exchanged over virtio.
+Yeah. Actually, the backend only needs "struct virtio_i2c_out_hdr out_hdr"
+and "struct virtio_i2c_in_hdr in_hdr" for communication. So we only need 
+to keep
+the first two in uapi and move "struct virtio_i2c_req" into the driver.
 
-diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c
-index 761c79c3a4ba..8e5e9f037574 100644
---- a/fs/exfat/balloc.c
-+++ b/fs/exfat/balloc.c
-@@ -273,3 +273,83 @@ int exfat_count_used_clusters(struct super_block *sb, unsigned int *ret_count)
- 	*ret_count = count;
- 	return 0;
- }
-+
-+int exfat_trim_fs(struct inode *inode, struct fstrim_range *range)
-+{
-+	unsigned int trim_begin, trim_end, count, next_free_clu;
-+	u64 clu_start, clu_end, trim_minlen, trimmed_total = 0;
-+	struct super_block *sb = inode->i_sb;
-+	struct exfat_sb_info *sbi = EXFAT_SB(sb);
-+	int err = 0;
-+
-+	clu_start = max_t(u64, range->start >> sbi->cluster_size_bits,
-+				EXFAT_FIRST_CLUSTER);
-+	clu_end = clu_start + (range->len >> sbi->cluster_size_bits) - 1;
-+	trim_minlen = range->minlen >> sbi->cluster_size_bits;
-+
-+	if (clu_start >= sbi->num_clusters || range->len < sbi->cluster_size)
-+		return -EINVAL;
-+
-+	if (clu_end >= sbi->num_clusters)
-+		clu_end = sbi->num_clusters - 1;
-+
-+	mutex_lock(&sbi->bitmap_lock);
-+
-+	trim_begin = trim_end = exfat_find_free_bitmap(sb, clu_start);
-+	if (trim_begin == EXFAT_EOF_CLUSTER)
-+		goto unlock;
-+
-+	next_free_clu = exfat_find_free_bitmap(sb, trim_end + 1);
-+	if (next_free_clu == EXFAT_EOF_CLUSTER)
-+		goto unlock;
-+
-+	do {
-+		if (next_free_clu == trim_end + 1) {
-+			/* extend trim range for continuous free cluster */
-+			trim_end++;
-+		} else {
-+			/* trim current range if it's larger than trim_minlen */
-+			count = trim_end - trim_begin + 1;
-+			if (count >= trim_minlen) {
-+				err = sb_issue_discard(sb,
-+					exfat_cluster_to_sector(sbi, trim_begin),
-+					count * sbi->sect_per_clus, GFP_NOFS, 0);
-+				if (err)
-+					goto unlock;
-+
-+				trimmed_total += count;
-+			}
-+
-+			/* set next start point of the free hole */
-+			trim_begin = trim_end = next_free_clu;
-+		}
-+
-+		if (next_free_clu >= clu_end)
-+			break;
-+
-+		if (fatal_signal_pending(current)) {
-+			err = -ERESTARTSYS;
-+			goto unlock;
-+		}
-+
-+		next_free_clu = exfat_find_free_bitmap(sb, next_free_clu + 1);
-+	} while (next_free_clu != EXFAT_EOF_CLUSTER &&
-+			next_free_clu > trim_end);
-+
-+	/* try to trim remainder */
-+	count = trim_end - trim_begin + 1;
-+	if (count >= trim_minlen) {
-+		err = sb_issue_discard(sb, exfat_cluster_to_sector(sbi, trim_begin),
-+			count * sbi->sect_per_clus, GFP_NOFS, 0);
-+		if (err)
-+			goto unlock;
-+
-+		trimmed_total += count;
-+	}
-+
-+unlock:
-+	mutex_unlock(&sbi->bitmap_lock);
-+	range->len = trimmed_total << sbi->cluster_size_bits;
-+
-+	return err;
-+}
-diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
-index 916797077aad..e1d5536de948 100644
---- a/fs/exfat/dir.c
-+++ b/fs/exfat/dir.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/slab.h>
-+#include <linux/compat.h>
- #include <linux/bio.h>
- #include <linux/buffer_head.h>
- 
-@@ -306,6 +307,10 @@ const struct file_operations exfat_dir_operations = {
- 	.llseek		= generic_file_llseek,
- 	.read		= generic_read_dir,
- 	.iterate	= exfat_iterate,
-+	.unlocked_ioctl = exfat_ioctl,
-+#ifdef CONFIG_COMPAT
-+	.compat_ioctl = exfat_compat_ioctl,
-+#endif
- 	.fsync		= exfat_file_fsync,
- };
- 
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index 1ce422d7e9ae..80ffca67cfdc 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -412,6 +412,7 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu);
- void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync);
- unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu);
- int exfat_count_used_clusters(struct super_block *sb, unsigned int *ret_count);
-+int exfat_trim_fs(struct inode *inode, struct fstrim_range *range);
- 
- /* file.c */
- extern const struct file_operations exfat_file_operations;
-@@ -421,6 +422,9 @@ int exfat_setattr(struct dentry *dentry, struct iattr *attr);
- int exfat_getattr(const struct path *path, struct kstat *stat,
- 		unsigned int request_mask, unsigned int query_flags);
- int exfat_file_fsync(struct file *file, loff_t start, loff_t end, int datasync);
-+long exfat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
-+long exfat_compat_ioctl(struct file *filp, unsigned int cmd,
-+				unsigned long arg);
- 
- /* namei.c */
- extern const struct dentry_operations exfat_dentry_ops;
-diff --git a/fs/exfat/file.c b/fs/exfat/file.c
-index 183ffdf4d43c..56542f3f7c5a 100644
---- a/fs/exfat/file.c
-+++ b/fs/exfat/file.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/slab.h>
-+#include <linux/compat.h>
- #include <linux/cred.h>
- #include <linux/buffer_head.h>
- #include <linux/blkdev.h>
-@@ -348,6 +349,54 @@ int exfat_setattr(struct dentry *dentry, struct iattr *attr)
- 	return error;
- }
- 
-+static int exfat_ioctl_fitrim(struct inode *inode, unsigned long arg)
-+{
-+	struct request_queue *q = bdev_get_queue(inode->i_sb->s_bdev);
-+	struct fstrim_range range;
-+	int ret = 0;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (!blk_queue_discard(q))
-+		return -EOPNOTSUPP;
-+
-+	if (copy_from_user(&range, (struct fstrim_range __user *)arg, sizeof(range)))
-+		return -EFAULT;
-+
-+	range.minlen = max_t(unsigned int, range.minlen,
-+				q->limits.discard_granularity);
-+
-+	ret = exfat_trim_fs(inode, &range);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (copy_to_user((struct fstrim_range __user *)arg, &range, sizeof(range)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+long exfat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-+{
-+	struct inode *inode = file_inode(filp);
-+
-+	switch (cmd) {
-+	case FITRIM:
-+		return exfat_ioctl_fitrim(inode, arg);
-+	default:
-+		return -ENOTTY;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+long exfat_compat_ioctl(struct file *filp, unsigned int cmd,
-+				unsigned long arg)
-+{
-+	return exfat_ioctl(filp, cmd, (unsigned long)compat_ptr(arg));
-+}
-+#endif
-+
- int exfat_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
- {
- 	struct inode *inode = filp->f_mapping->host;
-@@ -368,6 +417,10 @@ const struct file_operations exfat_file_operations = {
- 	.llseek		= generic_file_llseek,
- 	.read_iter	= generic_file_read_iter,
- 	.write_iter	= generic_file_write_iter,
-+	.unlocked_ioctl = exfat_ioctl,
-+#ifdef CONFIG_COMPAT
-+	.compat_ioctl = exfat_compat_ioctl,
-+#endif
- 	.mmap		= generic_file_mmap,
- 	.fsync		= exfat_file_fsync,
- 	.splice_read	= generic_file_splice_read,
--- 
-2.27.0.83.g0313f36
-
+But Jason wanted to include "struct virtio_i2c_req" in uapi. He 
+explained in this link
+https://lists.linuxfoundation.org/pipermail/virtualization/2020-October/050222.html.
+Do you agree with that explanation ?
