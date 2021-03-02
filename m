@@ -2,137 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8DF32A3A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D9332A350
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382311AbhCBJYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:24:49 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13107 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1837868AbhCBI71 (ORCPT
+        id S1382075AbhCBIzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:55:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377970AbhCBIqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:59:27 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DqVlY4HmHz16Fdw;
-        Tue,  2 Mar 2021 16:33:45 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Mar 2021 16:35:16 +0800
-Subject: Re: [PATCH v14 05/13] iommu/smmuv3: Implement
- attach/detach_pasid_table
-To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <will@kernel.org>, <maz@kernel.org>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <alex.williamson@redhat.com>, <tn@semihalf.com>
-References: <20210223205634.604221-1-eric.auger@redhat.com>
- <20210223205634.604221-6-eric.auger@redhat.com>
-CC:     <jacob.jun.pan@linux.intel.com>, <yi.l.liu@intel.com>,
-        <wangxingang5@huawei.com>, <jiangkunkun@huawei.com>,
-        <jean-philippe@linaro.org>, <zhangfei.gao@linaro.org>,
-        <zhangfei.gao@gmail.com>, <vivek.gautam@arm.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <yuzenghui@huawei.com>,
-        <nicoleotsuka@gmail.com>, <lushenming@huawei.com>,
-        <vsethi@nvidia.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <5a22a597-0fba-edcc-bcf0-50d92346af08@huawei.com>
-Date:   Tue, 2 Mar 2021 16:35:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 2 Mar 2021 03:46:04 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF4BC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:35:41 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id r24so14178554qtt.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 00:35:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W6eKTrwZOGzZaaIPE5kajqz3v0GbqJdSsTU9GqqZVN8=;
+        b=nh8KTZ4SC9a3vuW0O0sud1WnspwurKyKthxIOMW4Xu4CjX+FpHMr87tHd+vO7RjFGD
+         JnQKl5LHwmHvNV7OgJVK3o3MkN4TUDRArAegR0dMxuoJPFeP1KWJWtKrfLpPu7eps4CO
+         0mVQZAsTdMsEuudm54HR/28qbTaLu5kURoKULuKDJRMT9zjvwWyvStfU8zzWnlgwv+9Y
+         ELjY0gq+zWWdN5Sxhi+csaiNQ7q5lvLdcMF9tXtVrr1tax2v143ZsW7OraH6oO+snZkS
+         z8gS1pKKs0uo6uyT+BesuMnNq1cK83G551UWa4c4LiHecydTal9v1NW1Iw8DyrU9Iaq2
+         s31w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W6eKTrwZOGzZaaIPE5kajqz3v0GbqJdSsTU9GqqZVN8=;
+        b=s2lAKBDh9NqaImtkGGNC4VTmccX66oKV+qnnq2nbdbOsHJQN5u5Bul7GvMGHLksOyN
+         xCthI1kHeLfunNZLYT6We+EorZyQZnYBlXZjq0hXi6sUro8BFtoYKPkQWPLOOhqF3lfb
+         6NCcuwrnVHzw3skLBKFAbz3h0FdVNzn/VecEug+k3Ng+4mDUHt0uQfpSg6Wh06P+RQwQ
+         9qLmTDue12N8U4De6ImgDzPRD0Mx5kQKkwHyqpskzjL4NwBdZnJQf0lp5jv/h8m7WYK5
+         Nr+0ojlOI7548gMS2HRys4kEAAuL1eTBlcI0HNVXWQoqPeTFBDBs7ITP1Pi/IQCt1UP8
+         LvSg==
+X-Gm-Message-State: AOAM530+pFYidw4IoO7eBzGAG2jSkN8MomvvlquxWE14zvp77vBiaKfc
+        tJSjPGy2TEaVm84J/ahQf96jsEshIKmyAKACsE073Q==
+X-Google-Smtp-Source: ABdhPJxEDyVUlV4e1CjvzctnUjgMyOzA+eqo395T1EpZ1PQ33h35Ge9tFoBNBkLjCwwu1ofz6sGHvrdq9zZY/p6YcUw=
+X-Received: by 2002:ac8:6f3b:: with SMTP id i27mr5686549qtv.67.1614674139539;
+ Tue, 02 Mar 2021 00:35:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210223205634.604221-6-eric.auger@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+References: <20210128024316.1425-1-hdanton@sina.com> <20210128105830.7d8aa91d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <60139ef4.1c69fb81.8d2f9.f26bSMTPIN_ADDED_MISSING@mx.google.com>
+In-Reply-To: <60139ef4.1c69fb81.8d2f9.f26bSMTPIN_ADDED_MISSING@mx.google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 2 Mar 2021 09:35:28 +0100
+Message-ID: <CACT4Y+Z7152DKY=TKOUe17=z=yJmO3oTYmD66Qa-eOmV+XZCsw@mail.gmail.com>
+Subject: Re: [PATCH] netdevsim: init u64 stats for 32bit hardware
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com" 
+        <syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Fri, Jan 29, 2021 at 6:36 AM Hillf Danton <hdanton@sina.com> wrote:
+>
+> On 29 Jan 2021 2:58:22 Jakub Kicinski wrpte:
+>
+> >On Thu, 28 Jan 2021 10:43:16 +0800 Hillf Danton wrote:
+>
+> >> Init the u64 stats in order to avoid the lockdep prints on the 32bit
+>
+> >> hardware like
+>
+> >
+>
+> >Thanks for the fix!
+>
+>
+>
+> Hi Jakub,
+>
+> >
+>
+> >Unless it's my poor eyesight I think this didn't get into patchwork:
+>
+> >
+>
+> >https://patchwork.kernel.org/project/netdevbpf/list/
+>
+>
+>
+> You are right.
+>
+> And the reason is that my inbox never survived certain check
+>
+> at @vger.kernel.org.
+>
+>
+>
+> Hillf
 
-On 2021/2/24 4:56, Eric Auger wrote:
-> On attach_pasid_table() we program STE S1 related info set
-> by the guest into the actual physical STEs. At minimum
-> we need to program the context descriptor GPA and compute
-> whether the stage1 is translated/bypassed or aborted.
-> 
-> On detach, the stage 1 config is unset and the abort flag is
-> unset.
-> 
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> 
-[...]
+Hi,
 
-> +
-> +		/*
-> +		 * we currently support a single CD so s1fmt and s1dss
-> +		 * fields are also ignored
-> +		 */
-> +		if (cfg->pasid_bits)
-> +			goto out;
-> +
-> +		smmu_domain->s1_cfg.cdcfg.cdtab_dma = cfg->base_ptr;
-only the "cdtab_dma" field of "cdcfg" is set, we are not able to locate a specific cd using arm_smmu_get_cd_ptr().
-
-Maybe we'd better use a specialized function to fill other fields of "cdcfg" or add a sanity check in arm_smmu_get_cd_ptr()
-to prevent calling it under nested mode?
-
-As now we just call arm_smmu_get_cd_ptr() during finalise_s1(), no problem found. Just a suggestion ;-)
-
-Thanks,
-Keqian
-
-
-> +		smmu_domain->s1_cfg.set = true;
-> +		smmu_domain->abort = false;
-> +		break;
-> +	default:
-> +		goto out;
-> +	}
-> +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-> +	list_for_each_entry(master, &smmu_domain->devices, domain_head)
-> +		arm_smmu_install_ste_for_dev(master);
-> +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-> +	ret = 0;
-> +out:
-> +	mutex_unlock(&smmu_domain->init_mutex);
-> +	return ret;
-> +}
-> +
-> +static void arm_smmu_detach_pasid_table(struct iommu_domain *domain)
-> +{
-> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
-> +	struct arm_smmu_master *master;
-> +	unsigned long flags;
-> +
-> +	mutex_lock(&smmu_domain->init_mutex);
-> +
-> +	if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
-> +		goto unlock;
-> +
-> +	smmu_domain->s1_cfg.set = false;
-> +	smmu_domain->abort = false;
-> +
-> +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-> +	list_for_each_entry(master, &smmu_domain->devices, domain_head)
-> +		arm_smmu_install_ste_for_dev(master);
-> +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-> +
-> +unlock:
-> +	mutex_unlock(&smmu_domain->init_mutex);
-> +}
-> +
->  static bool arm_smmu_dev_has_feature(struct device *dev,
->  				     enum iommu_dev_features feat)
->  {
-> @@ -2939,6 +3026,8 @@ static struct iommu_ops arm_smmu_ops = {
->  	.of_xlate		= arm_smmu_of_xlate,
->  	.get_resv_regions	= arm_smmu_get_resv_regions,
->  	.put_resv_regions	= generic_iommu_put_resv_regions,
-> +	.attach_pasid_table	= arm_smmu_attach_pasid_table,
-> +	.detach_pasid_table	= arm_smmu_detach_pasid_table,
->  	.dev_has_feat		= arm_smmu_dev_has_feature,
->  	.dev_feat_enabled	= arm_smmu_dev_feature_enabled,
->  	.dev_enable_feat	= arm_smmu_dev_enable_feature,
-> 
+What happened with this patch?
+I hoped this would get at least into 5.12. syzbot can't start testing
+arm32 because of this.
