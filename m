@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D8632A3B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F3632A3C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382496AbhCBJ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378868AbhCBJET (ORCPT
+        id S1379033AbhCBJim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:38:42 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:43872 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1837912AbhCBJKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:04:19 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3651C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:03:38 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id h10so24146639edl.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:03:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bgcx8XYRJ2MIUiVBQ1Ps5WQFXuncO1kcZgg8iDvQbp8=;
-        b=LGKN6BORWdVe1OkMw8pb/80gdgXfZFrvz3WAb9MRvNjT0XK7n1I0/gcnKqFyfJpymy
-         6ZWCxeoe2/9XjsnhGjttJYMk/z7M7+kLd8TIov/2tZ2KgDR/tM32U9114e3+vdiEejTz
-         g8IcVHgVWhPZZG8lmpXySJWr1t2KR+39edOu+aCjQakgyNcF2LwyB65Kyl0NYhdwF1/C
-         AiqM9bShTkMc1E/o2NwA40qKQa0dD7TaGmsjNV3PJU3w5SrTMaNF7hdaBPC62rzXInuc
-         AmWiM5C61I+swiTlBhg1wXHa1pKmDnDUwXWoG08SJi2TjtIIx/mIHbFUtEq4LiXVKvxo
-         scMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bgcx8XYRJ2MIUiVBQ1Ps5WQFXuncO1kcZgg8iDvQbp8=;
-        b=mClcv1gLI8VhTFm2rEiDysQbelY20B04OVqA9nC3qfyMJxl0wGOUt91JAM2fTOnLG8
-         db7lpVN2l1RgEbhsah6Nbn2t2+ivBY3jiJqR1yGU7gT+jGI1DiUaJbxdrl+vFFuQIVfV
-         EGGsOkd6uQW8hKgGPmKiwPshHuX0kuxqC/9UDVNhvlQS+q5Vl/urIwkQQQf3gcaIMb8z
-         DeBdVDf7gFPMqZS+Fn2h6SOuVoaxBPp+t4OeWBiZVFt/1J3NFNmBZ9+mXNdFyAx/qakO
-         qnjn9hbIwP8nuIpKNt86MjkGR8SaVARdaBjhY/FKeC453aksh0/9SaavC9L8aEN/jxx1
-         iBww==
-X-Gm-Message-State: AOAM530AoH0WRyMd7LfGntEvPYTFnSmQ8YyYfsUhbReJm9hzVZyKIzkQ
-        GYy9tivO5dzhSknqOxI6qXXzm8ywLtfdCAiQVB+uzQ==
-X-Google-Smtp-Source: ABdhPJwyRopB083Gu9P1H7B9AQhYk+FtYbteWd9NpSms8Dn0jR0vWJd6E5uC7ouqFNupa/N2LYkDYWyDeo/a/JFx+K8=
-X-Received: by 2002:aa7:dc56:: with SMTP id g22mr6165534edu.219.1614675817514;
- Tue, 02 Mar 2021 01:03:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20210215103643.898-1-angkery@163.com>
-In-Reply-To: <20210215103643.898-1-angkery@163.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 10:03:26 +0100
-Message-ID: <CACRpkdZ-Ty12apvgMyedwu8-pqwTreRXv-OJ=V3OCZNBCx0qiw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: stm32: add missing of_node_put
-To:     angkery <angkery@163.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Etienne Carriere <etienne.carriere@st.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Fabien Dessenne <fabien.dessenne@st.com>,
-        Marek Vasut <marex@denx.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Junlin Yang <yangjunlin@yulong.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 2 Mar 2021 04:10:45 -0500
+Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210302091002epoutp02fed549d4a6f1737ae9d49a1dcb5580e7~oe3N95Dth0378803788epoutp02-
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:10:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210302091002epoutp02fed549d4a6f1737ae9d49a1dcb5580e7~oe3N95Dth0378803788epoutp02-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614676202;
+        bh=O31FVF9w9jaxLxUzUwYA/nvnejdGzFszkeQF7lstuOI=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=WC6zzbMVz131or/4bzIVJNDvdKGamYMGVFuXVCE68I+EcKEfdxs2aq+BrE+EV91bi
+         QVTIxBdMWOm6E3hCb61lw0ea7iZGfVVsGNwGGh2io1g+wbTXW3si0MjPt95jAiv0SY
+         6RlVPYQpdRFy1w6zlBjJTQmCKTyaNKgVFS6pHIjo=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
+        20210302091001epcas3p1c8d434a344e81ac45f34b96ab67e0f17~oe3NVbKVU3071630716epcas3p1F;
+        Tue,  2 Mar 2021 09:10:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp3.localdomain
+        (Postfix) with ESMTP id 4DqWYP4gyhz4x9Q8; Tue,  2 Mar 2021 09:10:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: RE: [PATCH v4 7/9] scsi: ufshpb: Add "Cold" regions timer
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB657580F9080C31AB5AED1FDBFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <2038148563.21614676201654.JavaMail.epsvc@epcpadp3>
+Date:   Tue, 02 Mar 2021 18:04:29 +0900
+X-CMS-MailID: 20210302090429epcms2p443de88c14298f707577122e6a91b9a82
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210226083459epcas2p1862e3e2c18208074336cc9faf14a7139
+References: <DM6PR04MB657580F9080C31AB5AED1FDBFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210226083300.30934-8-avri.altman@wdc.com>
+        <20210226083300.30934-1-avri.altman@wdc.com>
+        <878274034.81614673683390.JavaMail.epsvc@epcpadp4>
+        <CGME20210226083459epcas2p1862e3e2c18208074336cc9faf14a7139@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:41 AM angkery <angkery@163.com> wrote:
+Hi Avri,
+> > 
+> > Hi Avri,
+> > 
+> > > +static void ufshpb_read_to_handler(struct work_struct *work)
+> > > +{
+> > > +        struct delayed_work *dwork = to_delayed_work(work);
+> > > +        struct ufshpb_lu *hpb;
+> > > +        struct victim_select_info *lru_info;
+> > > +        struct ufshpb_region *rgn;
+> > > +        unsigned long flags;
+> > > +        LIST_HEAD(expired_list);
+> > > +
+> > > +        hpb = container_of(dwork, struct ufshpb_lu, ufshpb_read_to_work);
+> > > +
+> > > +        if (test_and_set_bit(TIMEOUT_WORK_PENDING, &hpb-
+> > >work_data_bits))
+> > > +                return;
+> > > +
+> > > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+> > > +
+> > > +        lru_info = &hpb->lru_info;
+> > > +
+> > > +        list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn) {
+> > > +                bool timedout = ktime_after(ktime_get(), rgn->read_timeout);
+> > > +
+> > > +                if (timedout) {
+> > 
+> > It is important not just to check the timeout, but how much time has passed.
+> > If the time exceeded is twice the threshold, the read_timeout_expiries
+> > value should be reduced by 2 instead of 1.
+> Theoretically this shouldn't happened.
+> Please note that POLLING_INTERVAL_MS << READ_TO_MS.
+> Better add appropriate check when making those configurable.
 
-> From: Junlin Yang <yangjunlin@yulong.com>
->
-> Fix OF node leaks by calling of_node_put in
-> for_each_available_child_of_node when the cycle returns.
->
-> Generated by: scripts/coccinelle/iterators/for_each_child.cocci
->
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+OK, I agree.
 
-Patch applied with Fabien's ACK!
+Thanks,
+Daejun
 
-Yours,
-Linus Walleij
+>  
+> Thanks,
+> Avri
+> > 
+> > > +                        rgn->read_timeout_expiries--;
+> > 
+> > Thanks,
+> > Daejun
+>  
+>  
+>  
+>   
