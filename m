@@ -2,473 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A557D32A494
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351B432A4A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441995AbhCBKxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:53:08 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:39982 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382757AbhCBKdS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:33:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1614681176; x=1646217176;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZKavSbB+YTr/cKay1DvS1N6mi6rzLJ2WCBypGjGFL9U=;
-  b=wMsIjvb/UHKW6RG9hXeTWpjhMLgmlu9qzpPB12JTDXqNIs46wEmeU0vw
-   iSFdOpN4J6ChhBoOPEo+BxCanfLLyfM9x5IBfQPqvALAZO82KRr1qYkEz
-   G5C2FC+hGjCtFf+btG1aqsdSAKb46R8W1f5iS9QHoxauAl0WweWyG9bMp
-   4bfGf108gclaPrsev9HGKFIlww278UQGC59w9lH48zFaSa+q43IEycJQw
-   eqMS0JPQ8wqNSnlD1TcMp9VggkzzaBXhgENC1FKFrjIqb+bE/aKoVZuZO
-   rCxp17lH9nnuHFmpbb3FE+Z1s97yX0CNQiiM8MQzfoA/hg5t5cgDQmpF2
-   w==;
-IronPort-SDR: ii7TZPhxSW+2yiJ4qzgKMIwS2Af5xRxeq0XzKF51MyLpvHDqIO0f+i7hkEtjgmJxhp4/EQSr70
- 9OGljrOwiHzRwC6AWTAjI3j9W7oRKsL8oxtGsWJnAS5RBZr1IOsp7g1CxXF5hsFRZNF90dl8tH
- CMJ4tFm1In1o7q3sUN91r4XB6UG/Zfs6i4yPqtqzDbr0Xw6QRNjoBSpJWLaJPaA3ugT5QIYm46
- I8bMyzoFZUEVgsIJDBKX1qm0/kEQY+wl6KYo4Hn79CTTTRHktFTyIuGYJcshlVlXwSVWez6Y2x
- wkI=
-X-IronPort-AV: E=Sophos;i="5.81,216,1610434800"; 
-   d="scan'208";a="45952590"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Mar 2021 03:29:51 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 2 Mar 2021 03:29:51 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 2 Mar 2021 03:29:47 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <tglx@linutronix.de>, <maz@kernel.org>, <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 2/2] irqchip/mchp-eic: add support
-Date:   Tue, 2 Mar 2021 12:28:46 +0200
-Message-ID: <20210302102846.619980-3-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210302102846.619980-1-claudiu.beznea@microchip.com>
-References: <20210302102846.619980-1-claudiu.beznea@microchip.com>
+        id S1838444AbhCBKyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:54:46 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:56413 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349616AbhCBKn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:43:29 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614681782; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=bzphY5OQxbLN/iqNOX3XvX2YxbNYlBSIUk0+bXErBE4=;
+ b=dbRxsvHZmbFFMOkkrWRnUpa7cFtTA4sSKeKAcwkCY/mQnFh3hZlFi37v3ezaFedXYYA/Hl41
+ cxV/WYagUnsLm3ug8wSGk8nJhnYTAlNGcMe8zJH6VIYf8Qgh7/BZ1F/AHCLTVglziDJUrhxC
+ VyD7SV/n25Vkd4guvW0CGfcFZac=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 603e13cd91ca526c583f54b4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 10:30:37
+ GMT
+Sender: pintu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7EFCEC4346B; Tue,  2 Mar 2021 10:30:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pintu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A934C433C6;
+        Tue,  2 Mar 2021 10:30:34 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Mar 2021 16:00:34 +0530
+From:   pintu@codeaurora.org
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
+        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
+        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
+        lokeshgidra@google.com, nigupta@nvidia.com, famzheng@amazon.com,
+        andrew.a.klychkov@gmail.com, bigeasy@linutronix.de,
+        ping.ping@gmail.com, vbabka@suse.cz, yzaikin@google.com,
+        keescook@chromium.org, mcgrof@kernel.org, corbet@lwn.net,
+        pintu.ping@gmail.com
+Subject: Re: [PATCH] mm: introduce clear all vm events counters
+In-Reply-To: <YD0EOyW3pZXDnuuJ@cmpxchg.org>
+References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
+ <YD0EOyW3pZXDnuuJ@cmpxchg.org>
+Message-ID: <419bb403c33b7e48291972df938d0cae@codeaurora.org>
+X-Sender: pintu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for Microchip External Interrupt Controller.
+On 2021-03-01 20:41, Johannes Weiner wrote:
+> On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
+>> At times there is a need to regularly monitor vm counters while we
+>> reproduce some issue, or it could be as simple as gathering some 
+>> system
+>> statistics when we run some scenario and every time we like to start 
+>> from
+>> beginning.
+>> The current steps are:
+>> Dump /proc/vmstat
+>> Run some scenario
+>> Dump /proc/vmstat again
+>> Generate some data or graph
+>> reboot and repeat again
+> 
+> You can subtract the first vmstat dump from the second to get the
+> event delta for the scenario run. That's what I do, and I'd assume
+> most people are doing. Am I missing something?
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- MAINTAINERS                    |   6 +
- drivers/irqchip/Kconfig        |   7 +
- drivers/irqchip/Makefile       |   1 +
- drivers/irqchip/irq-mchp-eic.c | 350 +++++++++++++++++++++++++++++++++
- 4 files changed, 364 insertions(+)
- create mode 100644 drivers/irqchip/irq-mchp-eic.c
+Thanks so much for your comments.
+Yes in most cases it works.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a008b70f3c16..ea99e5a7f519 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11585,6 +11585,12 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- F:	drivers/usb/gadget/udc/atmel_usba_udc.*
- 
-+MICROCHIP EIC DRIVER
-+M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Supported
-+F:	drivers/irqchip/irq-mchp-eic.c
-+
- MICROCHIP WILC1000 WIFI DRIVER
- M:	Ajay Singh <ajay.kathat@microchip.com>
- M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 2aa79c32ee22..7c7ca33c3f7d 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -596,4 +596,11 @@ config MST_IRQ
- 	help
- 	  Support MStar Interrupt Controller.
- 
-+config MCHP_EIC
-+	bool "Microchip External Interrupt Controller"
-+	depends on ARCH_AT91 || COMPILE_TEST
-+	select IRQ_DOMAIN
-+	help
-+	  Support for Microchip External Interrupt Controller.
-+
- endmenu
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 94c2885882ee..f3df6eb7c4c3 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -114,3 +114,4 @@ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
- obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
- obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
- obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
-+obj-$(CONFIG_MCHP_EIC)			+= irq-mchp-eic.o
-diff --git a/drivers/irqchip/irq-mchp-eic.c b/drivers/irqchip/irq-mchp-eic.c
-new file mode 100644
-index 000000000000..ec01877fc75f
---- /dev/null
-+++ b/drivers/irqchip/irq-mchp-eic.c
-@@ -0,0 +1,350 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Microchip External Interrupt Controller driver
-+ *
-+ * Copyright (C) 2021 Microchip Technology Inc. and its subsidiaries
-+ *
-+ * Author: Claudiu Beznea <claudiu.beznea@microchip.com>
-+ */
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqdomain.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/irqchip/chained_irq.h>
-+
-+#define MCHP_EIC_GFCS			(0x0)
-+#define MCHP_EIC_SCFG(x)		(0x4 + (x) * 0x4)
-+#define MCHP_EIC_SCFG_FRZ		BIT(31)
-+#define MCHP_EIC_SCFG_EN		BIT(16)
-+#define MCHP_EIC_SCFG_LVL		BIT(9)
-+#define MCHP_EIC_SCFG_POL		BIT(8)
-+#define MCHP_EIC_SCFG_GFEN		BIT(4)
-+#define MCHP_EIC_SCFG_GFSEL		GENMASK(1, 0)
-+
-+#define MCHP_EIC_NIRQ			(2)
-+#define MCHP_EIC_DEFAULT_WAIT_US	(100)
-+
-+/**
-+ * struct mchp_eic - EIC private data structure
-+ * @base: base address
-+ * @dev: eic device
-+ * @clk: peripheral clock
-+ * @chip: irq chip
-+ * @domain: irq domain
-+ * @irqs: irqs b/w eic and gic
-+ * @scfg: backup for scfg registers (necessary for backup and self-refresh mode)
-+ * @wakeup_source: wakeup source mask
-+ */
-+struct mchp_eic {
-+	void __iomem *base;
-+	struct device *dev;
-+	struct clk *clk;
-+	struct irq_chip *chip;
-+	struct irq_domain *domain;
-+	u32 irqs[MCHP_EIC_NIRQ];
-+	u32 scfg[MCHP_EIC_NIRQ];
-+	u32 wakeup_source;
-+};
-+
-+static void mchp_eic_wait_rdy(struct mchp_eic *eic, unsigned int hwirq,
-+			      int delay_us)
-+{
-+	unsigned int tmp = readl(eic->base + MCHP_EIC_SCFG(hwirq));
-+
-+	while (delay_us >= 0 && tmp & BIT(hwirq)) {
-+		udelay(1);
-+		delay_us -= 1;
-+		tmp = readl(eic->base + MCHP_EIC_SCFG(hwirq));
-+	}
-+
-+	if (delay_us < 0)
-+		dev_err(eic->dev, "Failed to configure IRQ=%u!\n", hwirq);
-+}
-+
-+static void mchp_eic_irq_mask(struct irq_data *d)
-+{
-+	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
-+	unsigned int tmp;
-+
-+	tmp = readl(eic->base + MCHP_EIC_SCFG(d->hwirq));
-+	tmp &= ~MCHP_EIC_SCFG_EN;
-+	writel(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
-+}
-+
-+static void mchp_eic_irq_unmask(struct irq_data *d)
-+{
-+	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
-+	unsigned int tmp;
-+
-+	tmp = readl(eic->base + MCHP_EIC_SCFG(d->hwirq));
-+	tmp |= MCHP_EIC_SCFG_EN;
-+	writel(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
-+	mchp_eic_wait_rdy(eic, d->hwirq, MCHP_EIC_DEFAULT_WAIT_US);
-+}
-+
-+static int mchp_eic_irq_set_type(struct irq_data *d, unsigned int type)
-+{
-+	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
-+	unsigned int tmp;
-+
-+	tmp = readl(eic->base + MCHP_EIC_SCFG(d->hwirq));
-+	tmp &= ~(MCHP_EIC_SCFG_POL | MCHP_EIC_SCFG_LVL);
-+	switch (type) {
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		irq_set_handler_locked(d, handle_level_irq);
-+		tmp |= MCHP_EIC_SCFG_POL | MCHP_EIC_SCFG_LVL;
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		irq_set_handler_locked(d, handle_level_irq);
-+		tmp |= MCHP_EIC_SCFG_LVL;
-+		break;
-+	case IRQ_TYPE_EDGE_RISING:
-+		irq_set_handler_locked(d, handle_edge_irq);
-+		tmp |= MCHP_EIC_SCFG_POL;
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		irq_set_handler_locked(d, handle_edge_irq);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
-+
-+	return 0;
-+}
-+
-+static void mchp_eic_irq_ack(struct irq_data *d)
-+{
-+	/* Nothing to do here. */
-+}
-+
-+static int mchp_eic_irq_set_wake(struct irq_data *d, unsigned int on)
-+{
-+	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
-+
-+	irq_set_irq_wake(eic->irqs[d->hwirq], on);
-+	if (on)
-+		eic->wakeup_source |= BIT(d->hwirq);
-+	else
-+		eic->wakeup_source &= BIT(d->hwirq);
-+
-+	return 0;
-+}
-+
-+static struct irq_chip mchp_eic_chip = {
-+	.name		= "eic-irq",
-+	.flags		= IRQCHIP_MASK_ON_SUSPEND,
-+	.irq_mask	= mchp_eic_irq_mask,
-+	.irq_unmask	= mchp_eic_irq_unmask,
-+	.irq_set_type	= mchp_eic_irq_set_type,
-+	.irq_ack	= mchp_eic_irq_ack,
-+	.irq_set_wake	= mchp_eic_irq_set_wake,
-+};
-+
-+static int mchp_eic_domain_map(struct irq_domain *d, unsigned int virq,
-+			       irq_hw_number_t hw)
-+{
-+	struct mchp_eic *eic = d->host_data;
-+
-+	irq_set_chip_data(virq, eic);
-+	irq_set_chip_and_handler(virq, eic->chip, handle_bad_irq);
-+	irq_set_probe(virq);
-+
-+	return 0;
-+}
-+
-+static int mchp_eic_domain_xlate(struct irq_domain *d, struct device_node *node,
-+				 const u32 *intspec, unsigned int intsize,
-+				 irq_hw_number_t *out_hwirq,
-+				 unsigned int *out_type)
-+{
-+	struct mchp_eic *eic = d->host_data;
-+	unsigned int tmp, i;
-+
-+	if (WARN_ON(intsize < 2))
-+		return -EINVAL;
-+
-+	if (WARN_ON(intspec[0] > MCHP_EIC_NIRQ))
-+		return -EINVAL;
-+
-+	*out_hwirq = intspec[0];
-+	*out_type = intspec[1] & IRQ_TYPE_SENSE_MASK;
-+
-+	if (intsize == 3) {
-+		/* Validate against available filters. */
-+		for (i = 0; i <= MCHP_EIC_SCFG_GFSEL; i++) {
-+			if (intspec[2] == (2 << i))
-+				break;
-+		}
-+		if (i == MCHP_EIC_SCFG_GFSEL + 1)
-+			return -EINVAL;
-+
-+		/* Enable glitch filter. */
-+		tmp = readl(eic->base + MCHP_EIC_SCFG(*out_hwirq));
-+		tmp |= MCHP_EIC_SCFG_GFEN;
-+		tmp &= ~MCHP_EIC_SCFG_GFSEL;
-+		tmp |= i;
-+		writel(tmp, eic->base + MCHP_EIC_SCFG(*out_hwirq));
-+
-+		/* Wait for glitch filter to be enabled. */
-+		mchp_eic_wait_rdy(eic, *out_hwirq, MCHP_EIC_DEFAULT_WAIT_US);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops mchp_eic_domain_ops = {
-+	.map		= mchp_eic_domain_map,
-+	.xlate		= mchp_eic_domain_xlate,
-+};
-+
-+static void mchp_eic_irq_handler(struct irq_desc *desc)
-+{
-+	struct mchp_eic *eic = irq_desc_get_handler_data(desc);
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	unsigned int hwirq, irq = irq_desc_get_irq(desc);
-+
-+	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++) {
-+		if (eic->irqs[hwirq] == irq)
-+			break;
-+	}
-+	if (hwirq == MCHP_EIC_NIRQ)
-+		return;
-+
-+	chained_irq_enter(chip, desc);
-+	generic_handle_irq(irq_find_mapping(eic->domain, hwirq));
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static int mchp_eic_probe(struct platform_device *pdev)
-+{
-+	struct resource *res;
-+	struct mchp_eic *eic;
-+	int ret, i;
-+
-+	eic = devm_kzalloc(&pdev->dev, sizeof(*eic), GFP_KERNEL);
-+	if (!eic)
-+		return -ENOMEM;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	eic->base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(eic->base))
-+		return PTR_ERR(eic->base);
-+
-+	eic->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(eic->clk))
-+		return PTR_ERR(eic->clk);
-+
-+	ret = clk_prepare_enable(eic->clk);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < MCHP_EIC_NIRQ; i++) {
-+		/* Disable it, if any. */
-+		writel(0UL, eic->base + MCHP_EIC_SCFG(i));
-+
-+		res = platform_get_resource(pdev, IORESOURCE_IRQ, i);
-+		if (!res) {
-+			ret = dev_err_probe(&pdev->dev, -EINVAL,
-+					    "Failed to get hwirq=%d\n", i);
-+			goto clk_unprepare;
-+		}
-+
-+		eic->irqs[i] = res->start;
-+		irq_set_chained_handler(res->start, mchp_eic_irq_handler);
-+		irq_set_handler_data(res->start, eic);
-+	}
-+
-+	eic->dev = &pdev->dev;
-+	eic->chip = &mchp_eic_chip;
-+
-+	eic->domain = irq_domain_add_linear(pdev->dev.of_node, MCHP_EIC_NIRQ,
-+					    &mchp_eic_domain_ops, eic);
-+	if (!eic->domain) {
-+		ret = dev_err_probe(&pdev->dev, -ENODEV,
-+				    "Failed to regiter irq domain!\n");
-+		goto clk_unprepare;
-+	}
-+	eic->domain->name = "eic";
-+
-+	platform_set_drvdata(pdev, eic);
-+
-+	dev_info(&pdev->dev, "EIC registered, nr_irqs %u\n", MCHP_EIC_NIRQ);
-+
-+	return 0;
-+
-+clk_unprepare:
-+	clk_disable_unprepare(eic->clk);
-+	return ret;
-+}
-+
-+static int mchp_eic_remove(struct platform_device *pdev)
-+{
-+	struct mchp_eic *eic = platform_get_drvdata(pdev);
-+
-+	irq_domain_remove(eic->domain);
-+	clk_disable_unprepare(eic->clk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused mchp_eic_suspend(struct device *dev)
-+{
-+	struct mchp_eic *eic = dev_get_drvdata(dev);
-+	unsigned int hwirq;
-+
-+	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++)
-+		eic->scfg[hwirq] = readl(eic->base + MCHP_EIC_SCFG(hwirq));
-+
-+	if (!eic->wakeup_source)
-+		clk_disable_unprepare(eic->clk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused mchp_eic_resume(struct device *dev)
-+{
-+	struct mchp_eic *eic = dev_get_drvdata(dev);
-+	unsigned int hwirq;
-+
-+	if (!eic->wakeup_source)
-+		clk_prepare_enable(eic->clk);
-+
-+	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++) {
-+		writel(eic->scfg[hwirq], eic->base + MCHP_EIC_SCFG(hwirq));
-+		mchp_eic_wait_rdy(eic, hwirq, MCHP_EIC_DEFAULT_WAIT_US);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops mchp_eic_pm_ops = {
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mchp_eic_suspend, mchp_eic_resume)
-+};
-+
-+static const struct of_device_id mchp_eic_dt_ids[] = {
-+	{ .compatible = "microchip,sama7g5-eic", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, mchp_eic_dt_ids);
-+
-+static struct platform_driver mchp_eic_device_driver = {
-+	.probe		= mchp_eic_probe,
-+	.remove		= mchp_eic_remove,
-+	.driver		= {
-+		.name = "mchp-eic",
-+		.of_match_table = of_match_ptr(mchp_eic_dt_ids),
-+		.pm = pm_ptr(&mchp_eic_pm_ops),
-+	},
-+};
-+module_platform_driver(mchp_eic_device_driver);
-+
-+MODULE_DESCRIPTION("Microchip External Interrupt Controller");
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Claudiu Beznea <claudiu.beznea@microchip.com>");
--- 
-2.25.1
+But I guess there are sometimes where we need to compare with fresh data 
+(just like reboot) at least for some of the counters.
+Suppose we wanted to monitor pgalloc_normal and pgfree.
+Or, suppose we want to monitor until the field becomes non-zero..
+Or, how certain values are changing compared to fresh reboot.
+Or, suppose we want to reset all counters after boot and start capturing 
+fresh stats.
 
+Some of the counters could be growing too large and too fast. Will there 
+be chances of overflow ?
+Then resetting using this could help without rebooting.
+
+Suppose system came back from hibernation, and we want to reset all 
+counters again (to capture fresh data) ?
+
+Here I am sharing one output (from qemu-arm32 with 256MB RAM) just to 
+indicate what could be changed:
+Scenario: Generate OOM kill case and check oom_kill counter
+
+BEFORE	AFTER	proc/vmstat
+------  ------  -----------------------
+49991	49916	nr_free_pages
+4467	4481	nr_zone_inactive_anon
+68	68	nr_zone_active_anon
+3189	3067	nr_zone_inactive_file
+223	444	nr_zone_active_file
+0	0	nr_zone_unevictable
+122	136	nr_zone_write_pending
+0	0	nr_mlock
+139	139	nr_page_table_pages
+0	0	nr_bounce
+0	0	nr_zspages
+4032	4032	nr_free_cma
+4467	4481	nr_inactive_anon
+68	68	nr_active_anon
+3189	3067	nr_inactive_file
+223	444	nr_active_file
+0	0	nr_unevictable
+1177	1178	nr_slab_reclaimable
+1889	1889	nr_slab_unreclaimable
+0	0	nr_isolated_anon
+0	0	nr_isolated_file
+176	163	workingset_nodes
+0	0	workingset_refault_anon
+3295	3369	workingset_refault_file
+0	0	workingset_activate_anon
+4	4	workingset_activate_file
+0	0	workingset_restore_anon
+4	4	workingset_restore_file
+0	0	workingset_nodereclaim
+4436	4436	nr_anon_pages
+2636	2678	nr_mapped
+3559	3645	nr_file_pages
+122	136	nr_dirty
+0	0	nr_writeback
+0	0	nr_writeback_temp
+126	126	nr_shmem
+0	0	nr_shmem_hugepages
+0	0	nr_shmem_pmdmapped
+0	0	nr_file_hugepages
+0	0	nr_file_pmdmapped
+0	0	nr_anon_transparent_hugepages
+1	1	nr_vmscan_write
+1	1	nr_vmscan_immediate_reclaim
+1024	1038	nr_dirtied
+902	902	nr_written
+0	0	nr_kernel_misc_reclaimable
+0	0	nr_foll_pin_acquired
+0	0	nr_foll_pin_released
+616	616	nr_kernel_stack
+10529	10533	nr_dirty_threshold
+5258	5260	nr_dirty_background_threshold
+50714	256	pgpgin
+3932	16	pgpgout
+0	0	pswpin
+0	0	pswpout
+86828	122	pgalloc_normal
+0	0	pgalloc_movable
+0	0	allocstall_normal
+22	0	allocstall_movable
+0	0	pgskip_normal
+0	0	pgskip_movable
+139594	34	pgfree
+4998	155	pgactivate
+5738	0	pgdeactivate
+0	0	pglazyfree
+82113	122	pgfault
+374	2	pgmajfault
+0	0	pglazyfreed
+7695	0	pgrefill
+2718	20	pgreuse
+9261	0	pgsteal_kswapd
+173	0	pgsteal_direct
+12627	0	pgscan_kswapd
+283	0	pgscan_direct
+2	0	pgscan_direct_throttle
+0	0	pgscan_anon
+12910	0	pgscan_file
+0	0	pgsteal_anon
+9434	0	pgsteal_file
+0	0	pginodesteal
+7008	0	slabs_scanned
+109	0	kswapd_inodesteal
+16	0	kswapd_low_wmark_hit_quickly
+24	0	kswapd_high_wmark_hit_quickly
+43	0	pageoutrun
+1	0	pgrotated
+0	0	drop_pagecache
+0	0	drop_slab
+1	0	oom_kill
+1210	0	pgmigrate_success
+0	0	pgmigrate_fail
+0	0	thp_migration_success
+0	0	thp_migration_fail
+0	0	thp_migration_split
+1509	0	compact_migrate_scanned
+9015	0	compact_free_scanned
+3911	0	compact_isolated
+0	0	compact_stall
+0	0	compact_fail
+0	0	compact_success
+3	0	compact_daemon_wake
+1509	0	compact_daemon_migrate_scanned
+9015	0	compact_daemon_free_scanned
+0	0	unevictable_pgs_culled
+0	0	unevictable_pgs_scanned
+0	0	unevictable_pgs_rescued
+0	0	unevictable_pgs_mlocked
+0	0	unevictable_pgs_munlocked
+0	0	unevictable_pgs_cleared
+0	0	unevictable_pgs_stranded
+0	0	balloon_inflate
+0	0	balloon_deflate
+0	0	balloon_migrate
+0	0	swap_ra
+0	0	swap_ra_hit
+0	0	nr_unstable
+
+
+
+Thanks,
+Pintu
