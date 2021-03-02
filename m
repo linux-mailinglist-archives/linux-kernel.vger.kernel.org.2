@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59AE32A502
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B1D32A4FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442218AbhCBLqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
+        id S1350021AbhCBLpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344065AbhCBLXe (ORCPT
+        with ESMTP id S1344461AbhCBLXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 06:23:34 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED7AC06178B;
-        Tue,  2 Mar 2021 03:22:07 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id u4so23439525ljh.6;
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CC3C06178C;
+        Tue,  2 Mar 2021 03:22:08 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id m22so30718580lfg.5;
         Tue, 02 Mar 2021 03:22:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6Pw3GTr/GjOIi01Z3q0PpRjgmUtwICxpPYij6S5wwcI=;
-        b=rAeqU7sAJzvubjRxRBvRPb0Xflif2/Ah/bGNEHgWmu+/qMN17futs5w/h0G2v5btvR
-         ulRQ7DirUjesXRkGzZfp1Lho3KVLbwvkKQlo+3su/+lWoKp+Zs5L7Bdx/8dLlSBUnPOl
-         8wxQV4GfyCy/19GKbdc1SZ1VEYOqAtNT8iUtBaK8pDQramHT1kYhKejtTATwZe1lVaO5
-         +CW1jzinKThVdFaH9ZUGdojzZMdg39nlbrJkz/Io/LT+0XHkJ9rZj28tclXXmFyyc0iv
-         l87aJSmd2WUZmHX0WYuh+jXeG9hl1Ao+eLoEg6JZp5tSObo5bWGeJbYkARntYkvYVgkd
-         FNig==
+        bh=eHJDWKwpMM6cb9JU11x1wUIhvtQqgROewecwtgVy2N0=;
+        b=KA4Y0Tsyx6wny/1fbDCWLOkL6AFPWHKh5/uwf1eSoPg7MlkRHTEMaQ329g1b/M32ZE
+         1088gihSRrQDMld+eMaV6KktUmDbyDoGctQTOr3PXGu049GMiv/fnO406mBNQddyKJ8O
+         ZeEh4RnZKI92iYsaZ8CaLxcmmv2BKybK4dwDYdu7EJJa/az8DgxphnOX0/ILaAjrnGGt
+         m0lxX8tdJs+vZ8+Cni+iZ5evCwhvouv/LJjA1urcEHC8K1kwmStX/XBL6kSvNHF3k8so
+         8Fh8Q9XCjqdzHIqYbcBdxml1WviiOf7CziRtpXoRQUQeUf17/4QrHF7zfYDORQj97UT5
+         J1lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6Pw3GTr/GjOIi01Z3q0PpRjgmUtwICxpPYij6S5wwcI=;
-        b=ZzhRQazQhS0O8yuc5P2u+BtDcMALFVebSL3zcj6q7eU3npJ770kaBsahxo9f1z8mnl
-         7ZkLDh1hXhmziGTYiTrwwfxJpcrz335CEBImnhLChVLMVBudBsZ2TgvmbyJEH5JK5Ipg
-         qib7siFya+3tTXJzaqIzQ9mTWsZSmWHgpXju+kAv22bNBahoXVF6rhIFfN0LQ96vUJxt
-         EVqqWiG+YraA6TVdkmo8AGJS+UcGr+7un3FoAjSQyr4MSM7PpdD+owV0FLvXe647pMam
-         D+u5pLoXOrx6a0VP7IU4cNYiKSrVnyOvrFvleeZkiBahmjptRllojUeLuSvyWoM238fF
-         u1vQ==
-X-Gm-Message-State: AOAM532SapOO54adJLTU0VzYjmAsZLt6+2m4JqhANHNXpTjrkk27xvpV
-        AK6mXCfVLfHx9NBfLUtGK/A=
-X-Google-Smtp-Source: ABdhPJz+HoWgkAqzXnvMEVoBpss7bHPZEO+Q5RCteeV43AIfK/+skRujNOfzl7jNkdQpdps0XG12ng==
-X-Received: by 2002:a2e:9f08:: with SMTP id u8mr7152270ljk.50.1614684125824;
-        Tue, 02 Mar 2021 03:22:05 -0800 (PST)
+        bh=eHJDWKwpMM6cb9JU11x1wUIhvtQqgROewecwtgVy2N0=;
+        b=a1oN1peoPQ6hnuQusOzYeDjoTp+YzWT9p0JWqP6VBS0EdlKEEGHarisWWzkpsFsZ23
+         3Iy0PTdMng94cTin5Wt59Pie/2H7bxD2a/xxBDRmlZrMeB8IcpVAnkxG8kxvEfNRdPkJ
+         xHbtItdrMpz2bUTKou/pZSN1aNPu1MhxQOMS1954OQIplKkMkR7nloJ7hxNcqTdnmbqC
+         IjNYIfE/y+D0psNC2OOfnXTfdU+MBxaguHZcWaaHuVzcVoNHD/r1i8LkHFrcEhfExQ9F
+         5MBslfKy551R6PELTxEr9g7+elshTJYPMolsYJY2w0bLSwAkfK3zHrz/EGZsDXb9nEFo
+         9c2A==
+X-Gm-Message-State: AOAM533OODyBfoExyXKWax/u3TWQdlfedwk77/VI9p3QnADrMoofmIQH
+        R0/7TtwepRNtqGzWX7+MrEM=
+X-Google-Smtp-Source: ABdhPJyKxz9BYcUUyxdMZ1AX6m8pDZ9C0dzxbibzbcLo6KkoeOmLZPDAGWCpPc8MBiSr+rey8Jv9bw==
+X-Received: by 2002:a19:3f08:: with SMTP id m8mr12331184lfa.275.1614684126498;
+        Tue, 02 Mar 2021 03:22:06 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
         by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 03:22:05 -0800 (PST)
+        Tue, 02 Mar 2021 03:22:06 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Paul Fertser <fercerpav@gmail.com>
 Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/5] reset: Add devm_reset_control_array_get_exclusive_released()
-Date:   Tue,  2 Mar 2021 14:21:20 +0300
-Message-Id: <20210302112123.24161-3-digetx@gmail.com>
+Subject: [PATCH v1 3/5] ASoC: tegra20: ac97: Add reset control
+Date:   Tue,  2 Mar 2021 14:21:21 +0300
+Message-Id: <20210302112123.24161-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210302112123.24161-1-digetx@gmail.com>
 References: <20210302112123.24161-1-digetx@gmail.com>
@@ -69,31 +69,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devm_reset_control_array_get_exclusive_released() which is wanted by
-NVIDIA Tegra drivers.
+Tegra20 AC97 driver doesn't manage the AC97 controller reset, relying on
+implicit deassertion of the reset by tegra-clk driver, which needs to be
+fixed since this behaviour is unacceptable by other Tegra drivers. Add
+explicit reset control to the Tegra20 AC97 driver.
+
+Note that AC97 reset was always specified in Tegra20 device-tree, hence
+DTB ABI changes aren't required.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- include/linux/reset.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/tegra/tegra20_ac97.c | 21 +++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.h |  1 +
+ 2 files changed, 22 insertions(+)
 
-diff --git a/include/linux/reset.h b/include/linux/reset.h
-index 3bee086f1f06..ab240a8648ee 100644
---- a/include/linux/reset.h
-+++ b/include/linux/reset.h
-@@ -534,6 +534,12 @@ devm_reset_control_array_get_optional_shared(struct device *dev)
- 	return devm_reset_control_array_get(dev, true, true, true);
- }
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index 06c728ae17ed..c454a34c15c4 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -21,6 +21,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -313,6 +314,12 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	}
+ 	dev_set_drvdata(&pdev->dev, ac97);
  
-+static inline struct reset_control *
-+devm_reset_control_array_get_exclusive_released(struct device *dev)
-+{
-+	return devm_reset_control_array_get(dev, false, false, false);
-+}
++	ac97->reset = devm_reset_control_get_exclusive(&pdev->dev, "ac97");
++	if (IS_ERR(ac97->reset)) {
++		dev_err(&pdev->dev, "Can't retrieve ac97 reset\n");
++		return PTR_ERR(ac97->reset);
++	}
 +
- static inline struct reset_control *
- of_reset_control_array_get_exclusive(struct device_node *node)
- {
+ 	ac97->clk_ac97 = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(ac97->clk_ac97)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ac97 clock\n");
+@@ -364,12 +371,26 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	ac97->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	ac97->playback_dma_data.maxburst = 4;
+ 
++	ret = reset_control_assert(ac97->reset);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to assert AC'97 reset: %d\n", ret);
++		goto err_clk_put;
++	}
++
+ 	ret = clk_prepare_enable(ac97->clk_ac97);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "clk_enable failed: %d\n", ret);
+ 		goto err_clk_put;
+ 	}
+ 
++	usleep_range(10, 100);
++
++	ret = reset_control_deassert(ac97->reset);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to deassert AC'97 reset: %d\n", ret);
++		goto err_clk_disable_unprepare;
++	}
++
+ 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to set AC'97 ops: %d\n", ret);
+diff --git a/sound/soc/tegra/tegra20_ac97.h b/sound/soc/tegra/tegra20_ac97.h
+index e467cd1ff2ca..870ea09ff301 100644
+--- a/sound/soc/tegra/tegra20_ac97.h
++++ b/sound/soc/tegra/tegra20_ac97.h
+@@ -78,6 +78,7 @@ struct tegra20_ac97 {
+ 	struct clk *clk_ac97;
+ 	struct snd_dmaengine_dai_dma_data capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data playback_dma_data;
++	struct reset_control *reset;
+ 	struct regmap *regmap;
+ 	int reset_gpio;
+ 	int sync_gpio;
 -- 
 2.29.2
 
