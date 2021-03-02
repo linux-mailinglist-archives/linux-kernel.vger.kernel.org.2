@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD95432AB4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C4632AB25
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836569AbhCBUUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
+        id S1836457AbhCBUIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446568AbhCBRaF (ORCPT
+        with ESMTP id S1448132AbhCBRaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:30:05 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0E6C06121E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:53:55 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id f33so20585660otf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:53:55 -0800 (PST)
+        Tue, 2 Mar 2021 12:30:25 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47437C061221;
+        Tue,  2 Mar 2021 08:53:59 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id a17so24833909ljq.2;
+        Tue, 02 Mar 2021 08:53:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F7NOrHOLrccy/SQYMTkigwceK69ASy8V14Aa+3j99bQ=;
-        b=HaGDtAiGBkHeEySoib/HgAjObyaLvIEO+kyFZlxNnfM6m0FBX22R0B9bn4t0of4Xpu
-         M6akWjJXtNhTuq3H3Jxtubj2nkG+d2BoYJL1N7Nzd9pZxj2r3VDBXdRqXf9YTSJ0LFmm
-         amxrP2tLQH7iFCvGPSwuXS5PGpc2sug7Tb/wtelrn3b4WND32n4MCYhFmbwQUg3tTmeJ
-         3eWCIhXJ19+7kSVVuMrU0zZVeruzc/XRz7OJFHNj2bPByAmoa6RhPMZjCJ2t385vbk01
-         G9oq1HHzIW+qu853DujxiVTv0/dY/2bB1lhRU/d9Dfjbj3lUerqLE57aJMBTXuV9LUTW
-         AScw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=faWbq/WMv3ZR1gToxIr2aLjBRTdDNxo7+ThXJjNGaIo=;
+        b=hmBekdGUxUExGQJ6JMFq6hE1MDzFwReePVI8GOf5z4T/95msnW4QO3MIEmsO/NaKEZ
+         LQfdb7pOMUeCUrqJguC1IlMp+uzDJsrDME3ZJ4TsZsp8DARjnnLKhq2geD/GpRoRy+qk
+         cK4b3GUoy4msSiT31Kdapphy7vtzuw8gdONd1mdwu2R8etVGOFwIvxuofeUW0ov7Kxv2
+         +N+ERu2Szxo46lPTqNtzQbUcmsKEovWNcqH4YXgOc9MWnQmlPjDlE5Y1jvsqYLYljb7x
+         HmARZIYImzMPiiltdmcOdY6Jm7gSjKsYT2xwxXTTekQIGMZxxulQAND9KJOoHvar31hO
+         91uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F7NOrHOLrccy/SQYMTkigwceK69ASy8V14Aa+3j99bQ=;
-        b=luNoMQHqusuC0wos15+YlxtI/J8wLjpoBQ9/ET0dYUmsdHto2rym5PIQL3Dt0w9PC2
-         lzw8Q8BsvY/qktfgyhWmdhxKV2Nr2cn0u+ZW0feLOcfxka922MGMz1ws2g9CywG2E2Uw
-         LIYt2CxPM+BVyVvLRoSHU9p6NWQkd3DZoElJrUtaS1qt1qX4k5GUna1ZzKiIB4+HmNW+
-         wCxZ2aataV4RtKSZB5jThWf1200mneJLxVO01BNzr0VcDXVzf+ylj68o+xt0tULcrWcx
-         79bxmwu360yyZbLIW7O8pbKHRhQXtZ25p0FIKaEr2zSsdGNS8xSZe62BKCzWgitGTcey
-         oYzg==
-X-Gm-Message-State: AOAM530Z3TKGx2cyViHvvmh6myQSkfqW46m0aaBMeEddMKjoSPOiSSyo
-        brp2eAB4w51SeI4YDUT7TBIs9w==
-X-Google-Smtp-Source: ABdhPJwanh1Ukx8/FCiG0K/XEaIcouQScmaD5Vtqgr/fJqX/Fp9weERJKzABkE6PIyLpg39iwlbRag==
-X-Received: by 2002:a05:6830:1682:: with SMTP id k2mr18829829otr.154.1614704034746;
-        Tue, 02 Mar 2021 08:53:54 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g3sm4032647ooi.28.2021.03.02.08.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 08:53:54 -0800 (PST)
-Date:   Tue, 2 Mar 2021 10:53:52 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        kbuild@lists.01.org, kbuild test robot <lkp@intel.com>,
-        kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:458 lpi_config_set()
- error: uninitialized symbol 'strength'.
-Message-ID: <YD5toMl9VehxrIaU@builder.lan>
-References: <20210227092152.GC2087@kadam>
- <CACRpkdbWtBA-ptCF7prizoP1D9cshWgpt8r4CGRRfxwcXiX61g@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=faWbq/WMv3ZR1gToxIr2aLjBRTdDNxo7+ThXJjNGaIo=;
+        b=AjMM2zPLZ0vA7OXF6y4anfSf53FrNJyWkGmrR6ptVFk2aOccYsbI+mTSmCaVcibxTr
+         3IVNoyVEGNGwdzCGps9EUD2NT7ElxWX5wZIAvGdqJaQBmMg2D4Hy77qgV2tRG/fIZNNJ
+         VYJqJ4SkrtVW7iDIPVWn1sEWw6w+wGRhUG/YFc+fQHmOgmS/HgHtOz6ECDx+d35oYGwO
+         BII8h+qoDWr7nZxJpOT3PJ/54Fg19ARzcA72XhsicGczuwka5iAwkGf6PLXLdNU+JjPv
+         3zAMPf+EpSSUbfNv2Nd58vZtivoe/M4Fi+kSXQwqoR83bRJp0GGA8LZqCnmimVVX96ZF
+         GXIw==
+X-Gm-Message-State: AOAM5304r+NFavhdWBDLKx/xSnbexHrUyspzRz/LrDZU9zEeA15LYcEv
+        1xO1Wr0FVazDFkhcLfF60vw=
+X-Google-Smtp-Source: ABdhPJw/W01gIjsqpMNr8JSw/9SiRbUKcitCde7eXbhpqsWpDs9pwVC/y07CdIyBdlketTmha75GtQ==
+X-Received: by 2002:a2e:2e19:: with SMTP id u25mr38659lju.487.1614704037798;
+        Tue, 02 Mar 2021 08:53:57 -0800 (PST)
+Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id g2sm2894780ljk.15.2021.03.02.08.53.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 08:53:56 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] mtd: partitions: ofpart: skip subnodes parse with
+ compatible
+To:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Richard Weinberger <richard@nod.at>
+Cc:     devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+References: <20210216212638.28382-1-ansuelsmth@gmail.com>
+ <20210216212638.28382-2-ansuelsmth@gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <d504a4df-b1f7-b7c9-e62a-599d114d8a18@gmail.com>
+Date:   Tue, 2 Mar 2021 17:53:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbWtBA-ptCF7prizoP1D9cshWgpt8r4CGRRfxwcXiX61g@mail.gmail.com>
+In-Reply-To: <20210216212638.28382-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02 Mar 09:47 CST 2021, Linus Walleij wrote:
-
-> On Sat, Feb 27, 2021 at 10:22 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+On 16.02.2021 22:26, Ansuel Smith wrote:
+> If a partitions structure is not used, parse direct subnodes as
+> fixed-partitions only if a compatible is not found or is of type
+> fixed-partition. A parser can be used directly on the subnode and
+> subnodes should not be parsed as fixed-partitions by default.
 > 
-> > New smatch warnings:
-> > drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:458 lpi_config_set() error: uninitialized symbol 'strength'.
-> >
-> > Old smatch warnings:
-> > drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:457 lpi_config_set() error: uninitialized symbol 'pullup'.
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>   drivers/mtd/parsers/ofpart.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
-> I don't think these are real problems, but maybe there is some way to explicitly
-> express that so that smatch knows as well?
-> 
+> diff --git a/drivers/mtd/parsers/ofpart.c b/drivers/mtd/parsers/ofpart.c
+> index daf507c123e6..4b363dd0311c 100644
+> --- a/drivers/mtd/parsers/ofpart.c
+> +++ b/drivers/mtd/parsers/ofpart.c
+> @@ -50,6 +50,11 @@ static int parse_fixed_partitions(struct mtd_info *master,
+>   			 master->name, mtd_node);
+>   		ofpart_node = mtd_node;
+>   		dedicated = false;
+> +
+> +		/* Skip parsing direct subnodes if a compatible is found and is not fixed-partitions */
+> +		if (node_has_compatible(ofpart_node) &&
+> +		    !of_device_is_compatible(ofpart_node, "fixed-partitions"))
+> +			return 0;
+>   	} else if (!of_device_is_compatible(ofpart_node, "fixed-partitions")) {
+>   		/* The 'partitions' subnode might be used by another parser */
+>   		return 0;
 
-Perhaps I'm reading it wrong, but wouldn't a state that doesn't specify
-drive-strength or bias cause these properties to be written out as some
-undefined/uninitialized value? (I.e. isn't the report correct?)
+I admit I'm not familiar with the old binding, so let me know if my
+understanding is incorrect.
 
-Regards,
-Bjorn
+It seems to me however that your change will break parsing in cases
+like:
+
+spi-flash@0 {
+	compatible = "jedec,spi-nor";
+	reg = <0x0>;
+
+	partition@0 {
+		label = "bootloader";
+		reg = <0x0 0x100000>;
+	};
+};
+
+nandcs@0 {
+	compatible = "brcm,nandcs";
+	reg = <0>;
+
+	partition@0 {
+		label = "bootloader";
+		reg = <0x0000000 0x10000>;
+	};
+};
+
+Did we ever use "fixed-partitions" without partitions { } subnode?
