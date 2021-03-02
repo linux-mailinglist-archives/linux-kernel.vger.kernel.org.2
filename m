@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E95832A243
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6CE32A244
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836908AbhCBHVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:21:36 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:55582 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241072AbhCBG4S (ORCPT
+        id S1836917AbhCBHVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:21:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345799AbhCBG5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:56:18 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210302065454epoutp01a11bf45fc85c49dc861de8e1dd8e5f83~odBPU6v4e2439324393epoutp01s
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:54:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210302065454epoutp01a11bf45fc85c49dc861de8e1dd8e5f83~odBPU6v4e2439324393epoutp01s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614668094;
-        bh=DliXzqFkxMgF30IQ84dS6zeqHegjNaRZkb9cDXxw4mQ=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=NPUeYhE8kQL6lyEpEx03Qbae6HKzqLQ3F1GFL1KFEVBtzzApv3RAZ3t74UNqn6FFC
-         ubBhE2RToZs2u9M5HA5muy81YX/kqhGgWdonPt5ZWoCq+p+5MecL05s7J5f8kbopMU
-         ua+PfCYuQkvlfs/nIbwMyRK6H4Va0TJI7v78RXbc=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210302065454epcas1p355b95a88ee561da92a3b113f0902e596~odBO8-QvP0064200642epcas1p3U;
-        Tue,  2 Mar 2021 06:54:54 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DqSYT15pCz4x9Pv; Tue,  2 Mar
-        2021 06:54:53 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CF.23.02418.D31ED306; Tue,  2 Mar 2021 15:54:53 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210302065452epcas1p254e20208b86fc68be1303bc7ab230303~odBNL7zZ02915529155epcas1p2Y;
-        Tue,  2 Mar 2021 06:54:52 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210302065452epsmtrp2b18eda2cff5a5226051c5dd89949cbb7~odBNLJq9J0481104811epsmtrp2Q;
-        Tue,  2 Mar 2021 06:54:52 +0000 (GMT)
-X-AuditID: b6c32a35-c0dff70000010972-ce-603de13d032d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1A.8E.13470.C31ED306; Tue,  2 Mar 2021 15:54:52 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210302065452epsmtip21938a1c70c96358623ac6369d415b524~odBM70AdY0702607026epsmtip2L;
-        Tue,  2 Mar 2021 06:54:52 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>,
-        <namjae.jeon@samsung.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <sj1557.seo@samsung.com>
-In-Reply-To: <20210302050521.6059-2-hyeongseok@gmail.com>
-Subject: RE: [PATCH v4 1/2] exfat: introduce bitmap_lock for cluster bitmap
- access
-Date:   Tue, 2 Mar 2021 15:54:51 +0900
-Message-ID: <04a901d70f30$f167af70$d4370e50$@samsung.com>
+        Tue, 2 Mar 2021 01:57:03 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21955C061788;
+        Mon,  1 Mar 2021 22:55:51 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id l12so23818128edt.3;
+        Mon, 01 Mar 2021 22:55:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FkQlyQkx4YlaiWtPjbjtcm8QF/fjSftYDKk5kkfUey0=;
+        b=PFlj/AbLsGqPbk3apdT1uKeW7cFiUGggPb7txtL2cKFfBRSbsjVq7tDgupMkQPci6d
+         /5Dfpsl3vX9oWzTRVuabWzMsmgWHDjBzvWmqsHV8XprenQE/dvM7mFPa/NOnP/ihT08z
+         autad4M91CAFPFT68Iz8XNgOS6s2O2A3oxw/r0QeN+S0ZcMsa2fKXWYmyGt/GpxR4AcV
+         V1bFbBANndmxqnxiJheuZbykHCfz+OCKdxvdfXdGKsdGVMZojiY0Hnq1djYlXz32jwW3
+         AJDi60j6zN59bgJhyp1zd8Ywv73MhRPiWhHcrIMs4mv1hRfAQUP2FnRotdda5+Qekj5u
+         8CvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FkQlyQkx4YlaiWtPjbjtcm8QF/fjSftYDKk5kkfUey0=;
+        b=R0MRviwapnKABnTt+JoBQM43VFN0HCx7eaZn7aFctNZwEXFJboNhxl6M9Tp5BZqm2T
+         NNjTgpe+nPzzoYPSlQ0T1u0+NBQ3/RXGPLmrBGaiFEJUVAzVf2OyY1ZJ/swjiXJmyIhU
+         FLuKMPqWDI0d3gfSUD7Me/0XFnK0nvDN+rDvfc2G6+5Qt+DaL9TWrwm95l5eSM3LByOE
+         eAy4vF3K+KbNDLinT1EzbcqagYbIoMqdfjbZOTwUJadrIV6s9dRNLQoYp1eSCCRhohUG
+         0ODZex7qBpt31P2kW+KyAGY7Fe/GwJWMaYgJysxvEqI5rROl/cOqf0oPZZ5B5KLK7Rxx
+         rqew==
+X-Gm-Message-State: AOAM531vCjvvGCH/bXYS5/luYrlJwZGUZuFHqWU0obpXNVZ5+dr3/6xP
+        8JlmxTkWzj46FQ+R6mTjmYBJsUmZYopt4inpQqM=
+X-Google-Smtp-Source: ABdhPJybh6pmK5GtQmq/c3vvZGuCHaTR3ln7l9rsmzuuQ7BXZx12cEyOKZV8gpU8repWmjDUKkUnlpWFKdYgBsD+7XA=
+X-Received: by 2002:a50:d987:: with SMTP id w7mr19419656edj.350.1614668149868;
+ Mon, 01 Mar 2021 22:55:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQGcWnf6BTkYMyzP2LJXG6KPoRfNLgFpn8c6AfaWP3KqyqpeMA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdljTQNf2oW2CwdRmVou/Ez8xWezZe5LF
-        4vKuOWwWP6bXW2z5d4TVgdVj56y77B59W1YxenzeJBfAHJVjk5GamJJapJCal5yfkpmXbqvk
-        HRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuWmQO0UUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCR
-        X1xiq5RakJJTYGhQoFecmFtcmpeul5yfa2VoYGBkClSZkJPx+MwutoJ3TBUnZsxia2BcxdTF
-        yMkhIWAi8f3mEdYuRi4OIYEdjBKrup6xQTifGCWur53LBOF8Y5Q4dW8tK0zLzQ3roFr2Mkpc
-        +dTHCOG8ZJS4sa+NEaSKTUBX4smNn8wgtoiAh8TjpmNgC5kF4iV2T+sDq+EUsJQ41jOVDcQW
-        FgiReNr8nR3EZhFQkZi58AWYzQtUs/1IC5QtKHFy5hMWiDnyEtvfzmGGuEhBYveno6wQu5wk
-        7u/ayg5RIyIxu7ONGeQ4CYGf7BI7f35nhGhwkZh2/xAbhC0s8er4FnYIW0ri87u9UPF6if/z
-        17JDNLcwSjz8tA3oAw4gx17i/SULEJNZQFNi/S59iHJFiZ2/5zJC7OWTePe1hxWimleio00I
-        okRF4vuHnSwwm678uMo0gVFpFpLPZiH5bBaSD2YhLFvAyLKKUSy1oDg3PbXYsMAQObY3MYKT
-        o5bpDsaJbz/oHWJk4mA8xCjBwawkwnvys2WCEG9KYmVValF+fFFpTmrxIUZTYFhPZJYSTc4H
-        pue8knhDUyNjY2MLEzNzM1NjJXHeJIMH8UIC6YklqdmpqQWpRTB9TBycUg1M25XrQvdZBws6
-        pSisXv9H0EUupNvjMgPjcqbudrvdDqu2cO7ZtVY+PCckp+XjPmn79vOdl37l/n0tN+vrdCne
-        zsmXvJh7QlQrfA9aZmuvX/FtKaekG1vfPa0D+VEXmjcbGf981ejitHP2HK8kvclfeayePLh2
-        5NTXyTF35nX8Xfi7VyoutDX8pGBR0FGVq0qLD1Tc8+3QNeE/HheQsNWoVaxRXurSjrInvcE7
-        zi7fuPOL8UfzKRtqst42GEi0vXc3cLqXGtt8L+vqJzn+4pkC2Qfyr12cnFXbeODnQT+dVYf9
-        fa5seVxt6Xpo9qp9Sbf8q2an/l4y8deRh+yeakGfi1mXNmeFz2246VPG8eq3EktxRqKhFnNR
-        cSIA3pj7IBcEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFLMWRmVeSWpSXmKPExsWy7bCSvK7NQ9sEg8dv5Cz+TvzEZLFn70kW
-        i8u75rBZ/Jheb7Hl3xFWB1aPnbPusnv0bVnF6PF5k1wAcxSXTUpqTmZZapG+XQJXxuMzu9gK
-        3jFVnJgxi62BcRVTFyMnh4SAicTNDetYuxi5OIQEdjNKnDp5gLmLkQMoISVxcJ8mhCkscfhw
-        MUi5kMBzRomzU2RAbDYBXYknN34yg9giAl4S+5tes4PYzAKJEs1fLjFBjNzOKHHtczvYLk4B
-        S4ljPVPZQGxhgSCJqSs2gDWzCKhIzFz4AqyZF6hm+5EWKFtQ4uTMJywgNzAL6Em0bWSEmC8v
-        sf3tHGaI8xUkdn86ygpxg5PE/V1boW4QkZjd2cY8gVF4FpJJsxAmzUIyaRaSjgWMLKsYJVML
-        inPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYKjQ0tzB+P2VR/0DjEycTAeYpTgYFYS4T352TJB
-        iDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqaq3a/9/Fpt
-        Vd6aBh48/9YnxPXwgq5n3NH80+I4VsX59PjULWm/tWTKmu93wxX4zuzZeeiW5MXJz3va4yyk
-        LJ9Pen82dt1MhbN6R5ad0L3Cnba/WE8+8sNJZZcHp8TcHMoUTq4VKVf/2v/a53LftgeFJ1Pf
-        datPcrN5qHnrQH3SjkCPg0p+y98+5xDTOfnG6++nFQst15TFc3b6n3PeurHXIb1S/s6Rg1WN
-        N2Yfiygp8zn/TfZou+KnGh3/Ca4VhZqXf+6/n2htm6KXrhqz8+katWWL+eYvOCH0N573Svej
-        xmpBq4IHaXGvWd/t/7/GMib3E5/MBpk7jcZiZaEi8xhqDnVnvW47J/NoX0bhlz1KLMUZiYZa
-        zEXFiQDuYfg5/QIAAA==
-X-CMS-MailID: 20210302065452epcas1p254e20208b86fc68be1303bc7ab230303
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210302050550epcas1p19adbc16f7c61a7988705f3ae91b4060a
-References: <20210302050521.6059-1-hyeongseok@gmail.com>
-        <CGME20210302050550epcas1p19adbc16f7c61a7988705f3ae91b4060a@epcas1p1.samsung.com>
-        <20210302050521.6059-2-hyeongseok@gmail.com>
+References: <20210302062214.29627-1-jslaby@suse.cz> <20210302062214.29627-33-jslaby@suse.cz>
+In-Reply-To: <20210302062214.29627-33-jslaby@suse.cz>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Mon, 1 Mar 2021 22:55:38 -0800
+Message-ID: <CAMo8BfJ=-ORUowT4aUrQsYyZC+Kvpa6Xk-v5u7ah_GAkcAVpCA@mail.gmail.com>
+Subject: Re: [PATCH 33/44] tty: xtensa/iss, make rs_init static
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> s_lock which is for protecting concurrent access of file operations is too
-> huge for cluster bitmap protection, so introduce a new bitmap_lock to
-> narrow the lock range if only need to access cluster bitmap.
-> 
-> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+On Mon, Mar 1, 2021 at 10:22 PM Jiri Slaby <jslaby@suse.cz> wrote:
+>
+> To fix the warning:
+> warning: no previous prototype for 'rs_init'
+>
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: linux-xtensa@linux-xtensa.org
+> ---
+>  arch/xtensa/platforms/iss/console.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Looks good.
-Thanks for your work!
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
-Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
-
+-- 
+Thanks.
+-- Max
