@@ -2,261 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B3832A231
+	by mail.lfdr.de (Postfix) with ESMTP id C2A8832A232
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836769AbhCBHUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344753AbhCBGnZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:43:25 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D0DC06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 22:42:38 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id a18so10423750wrc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 22:42:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tfd97WX1co/bA1GShyJOLBPAN41kKS3JMrc0KxlzgGU=;
-        b=X3HySQSox1FrvVZIqGKp3GG6HIrkQQVlWJxpD5Cco4Ge2nF0iwz+VlZzafhh+7M7kK
-         Ec3QuQX8AccyoXeXbACGA6WDmbvBYjKDKKH+UpLB01eR6ha3wPafBmLjBhmpY6qJiOqw
-         bK2kyAE5fEuIRwu+B6ITr7rrY30tatyMOpGz+8exxEsQP2enrIsMEIN27dRfsMvLplZx
-         nlH+uXvkTP0FbPoFiBFwLFeJVzY0lU+WxTi+Y3lnpg+eG+caUSBga2HP1cv0ixswGjec
-         VRhGC6ZRxaBRCEeJrksMHekp+Xah/I+GfxaeShSi7hK5InuZn7lg7zDRWsnbVXyGYh6R
-         IsFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tfd97WX1co/bA1GShyJOLBPAN41kKS3JMrc0KxlzgGU=;
-        b=DjZeLxLc8wOSspIFNn/L94Nz3dacQhMyBS60h06tdXsLFJSGTz1ACJBEgUOF1xMAdQ
-         GyV1jAl0v/H5I4WeAOiVvDC8Sgx9Dcrzn7Nq211BRMb+khJ+/fEAI4t25J5xohrjlRqu
-         V9tee4hhkQ9h3VcE+r2K+TRnb3s2fHSzLXSikYHn2BPEqsOmt3H+dUBQXdI4j5RnQiEM
-         VCGCgL9oQ9CLxBtbrF263MaduH47RIlZ14/CZxzQArqeZ5RvK3305ejGDQ2G6PVRvXnw
-         TPHJNq7lzj5SsiVW6XU3D9AFqHWQDlvURGprW+aTz1cZgisivlXc98ZEdth7RUhj3OJc
-         ZPQA==
-X-Gm-Message-State: AOAM532ORxzgP9IZboexapOUSCf+of4lwLwc2i4VayBMNBwJ4l5cUn0s
-        09GSQYiavZwiCzyBVmPnmD5UQnCX1bYDtgGo4gq/jA==
-X-Google-Smtp-Source: ABdhPJz1mZd5y4d1mGFzB+y5OipFPnyMJbdA+7nb01Qbnev+st2N3Fi1s+PseO+OVJpZp0oP8W2X+LgHDA+7KkohnTo=
-X-Received: by 2002:a5d:464f:: with SMTP id j15mr21059836wrs.390.1614667357370;
- Mon, 01 Mar 2021 22:42:37 -0800 (PST)
+        id S1836777AbhCBHUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:20:50 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:26978 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347841AbhCBGqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:46:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614667543; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lPBgyd1J7Yq8i540u5i8VAgbFU7w/HyUwEY4QeeVj30=;
+ b=rZ7B5UbJJF3c0hQoqC6EBp13bmk+UmBBorhjl7Z3P1KWyycHxWB+Uk5EqG17oSvyl27dJX7L
+ 6Q+bScqahhQYjZp1E/82JlEbBAY0F4QkWUyirEaU9X42SRgW5gDXZUXmTTD5GzvRAoHhoL0U
+ tYvnhwTU1T9viRV6TXvlW/bpCzo=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 603ddef6832f19b9efab1642 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 06:45:10
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5D6B4C43467; Tue,  2 Mar 2021 06:45:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60477C433C6;
+        Tue,  2 Mar 2021 06:45:09 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210221093758.210981-1-anup.patel@wdc.com> <20210221093758.210981-2-anup.patel@wdc.com>
- <3a6e2af7-934d-078f-4e19-d4241809e7fb@ghiti.fr>
-In-Reply-To: <3a6e2af7-934d-078f-4e19-d4241809e7fb@ghiti.fr>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 2 Mar 2021 12:12:26 +0530
-Message-ID: <CAAhSdy2cOoNK5f75e_mo5c-0-qo4zNWH+Lxoyg31br-+ZZ4n9w@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/8] RISC-V: Enable CPU_IDLE drivers
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Liush <liush@allwinnertech.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Sandeep Tripathy <milun.tripathy@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Mar 2021 12:15:09 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Al Grant <al.grant@arm.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCHv2 2/4] perf evsel: Print warning for excluding kernel mode
+ instruction tracing
+In-Reply-To: <CAD=FV=UQbVpOLz_xavCPXQ9gN-9G4J8qN3+5f0E3jYZDDx4Cjw@mail.gmail.com>
+References: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org>
+ <523a5af43615b804aa1211a3f27e06226d7159bc.1614624041.git.saiprakash.ranjan@codeaurora.org>
+ <CAD=FV=UQbVpOLz_xavCPXQ9gN-9G4J8qN3+5f0E3jYZDDx4Cjw@mail.gmail.com>
+Message-ID: <cca9ed70d86fb7781bdf242e8761c520@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 6:46 PM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Hi Anup,
->
-> Le 2/21/21 =C3=A0 4:37 AM, Anup Patel a =C3=A9crit :
-> > We force select CPU_PM and provide asm/cpuidle.h so that we can
-> > use CPU IDLE drivers for Linux RISC-V kernel.
-> >
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > ---
-> >   arch/riscv/Kconfig                |  7 +++++++
-> >   arch/riscv/configs/defconfig      |  7 +++----
-> >   arch/riscv/configs/rv32_defconfig |  4 ++--
-> >   arch/riscv/include/asm/cpuidle.h  | 24 ++++++++++++++++++++++++
-> >   arch/riscv/kernel/process.c       |  3 ++-
-> >   5 files changed, 38 insertions(+), 7 deletions(-)
-> >   create mode 100644 arch/riscv/include/asm/cpuidle.h
-> >
-> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > index fe6862b06ead..4901200b6b6c 100644
-> > --- a/arch/riscv/Kconfig
-> > +++ b/arch/riscv/Kconfig
-> > @@ -37,6 +37,7 @@ config RISCV
-> >       select CLONE_BACKWARDS
-> >       select CLINT_TIMER if !MMU
-> >       select COMMON_CLK
-> > +     select CPU_PM if CPU_IDLE
-> >       select EDAC_SUPPORT
-> >       select GENERIC_ARCH_TOPOLOGY if SMP
-> >       select GENERIC_ATOMIC64 if !64BIT
-> > @@ -430,4 +431,10 @@ source "kernel/power/Kconfig"
-> >
-> >   endmenu
-> >
-> > +menu "CPU Power Management"
-> > +
-> > +source "drivers/cpuidle/Kconfig"
-> > +
-> > +endmenu
-> > +
-> >   source "drivers/firmware/Kconfig"
-> > diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfi=
-g
-> > index 6c0625aa96c7..dc4927c0e44b 100644
-> > --- a/arch/riscv/configs/defconfig
-> > +++ b/arch/riscv/configs/defconfig
-> > @@ -13,11 +13,13 @@ CONFIG_USER_NS=3Dy
-> >   CONFIG_CHECKPOINT_RESTORE=3Dy
-> >   CONFIG_BLK_DEV_INITRD=3Dy
-> >   CONFIG_EXPERT=3Dy
-> > +# CONFIG_SYSFS_SYSCALL is not set
-> >   CONFIG_BPF_SYSCALL=3Dy
-> >   CONFIG_SOC_SIFIVE=3Dy
-> >   CONFIG_SOC_VIRT=3Dy
-> >   CONFIG_SMP=3Dy
-> >   CONFIG_HOTPLUG_CPU=3Dy
-> > +CONFIG_CPU_IDLE=3Dy
-> >   CONFIG_JUMP_LABEL=3Dy
-> >   CONFIG_MODULES=3Dy
-> >   CONFIG_MODULE_UNLOAD=3Dy
-> > @@ -65,10 +67,9 @@ CONFIG_HW_RANDOM=3Dy
-> >   CONFIG_HW_RANDOM_VIRTIO=3Dy
-> >   CONFIG_SPI=3Dy
-> >   CONFIG_SPI_SIFIVE=3Dy
-> > +# CONFIG_PTP_1588_CLOCK is not set
-> >   CONFIG_GPIOLIB=3Dy
-> >   CONFIG_GPIO_SIFIVE=3Dy
-> > -# CONFIG_PTP_1588_CLOCK is not set
-> > -CONFIG_POWER_RESET=3Dy
->
-> Why do you remove this config ?
+Hi
 
-This option is selected by CONFIG_SOC_VIRT so it is being
-removed from defconfig by savedefconfig.
+On 2021-03-02 04:13, Doug Anderson wrote:
+> Hi,
+> 
+> On Mon, Mar 1, 2021 at 11:05 AM Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+>> 
+>> Add a warning message to check CONFIG_EXCLUDE_KERNEL_HW_ITRACE kernel
+>> config which excludes kernel mode instruction tracing to help perf 
+>> tool
+>> users identify the perf event open failure when they attempt kernel 
+>> mode
+>> tracing with this config enabled.
+>> 
+>> Tested-by: Denis Nikitin <denik@chromium.org>
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>>  tools/perf/util/evsel.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> I'm not really knowledgeable at all about the perf subsystem so my
+> review doesn't hold a lot of weight.  However, Sai's patch seems sane
+> to me.
+> 
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
->
-> >   CONFIG_DRM=3Dy
-> >   CONFIG_DRM_RADEON=3Dy
-> >   CONFIG_DRM_VIRTIO_GPU=3Dy
-> > @@ -132,5 +133,3 @@ CONFIG_DEBUG_BLOCK_EXT_DEVT=3Dy
-> >   # CONFIG_FTRACE is not set
-> >   # CONFIG_RUNTIME_TESTING_MENU is not set
-> >   CONFIG_MEMTEST=3Dy
-> > -# CONFIG_SYSFS_SYSCALL is not set
-> > -CONFIG_EFI=3Dy
->
-> And this is one too ? If those removals are intentional, maybe you can
-> add something about that in the commit description ?
+Thanks for the review, I carefully modified all the patch commit 
+messages
+to change the config and wording from CONFIG_EXCLUDE_KERNEL_HW_ITRACE to
+CONFIG_EXCLUDE_KERNEL_PMU_TRACE but missed this commit message. I will
+fix this up in v3, but will hold off posting v3 till I get some feedback
+on other patches.
 
-This is enabled by default so savedefconfig removes it.
+Thanks,
+Sai
 
->
-> > diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv3=
-2_defconfig
-> > index 8dd02b842fef..332e43a4a2c3 100644
-> > --- a/arch/riscv/configs/rv32_defconfig
-> > +++ b/arch/riscv/configs/rv32_defconfig
-> > @@ -13,12 +13,14 @@ CONFIG_USER_NS=3Dy
-> >   CONFIG_CHECKPOINT_RESTORE=3Dy
-> >   CONFIG_BLK_DEV_INITRD=3Dy
-> >   CONFIG_EXPERT=3Dy
-> > +# CONFIG_SYSFS_SYSCALL is not set
-> >   CONFIG_BPF_SYSCALL=3Dy
-> >   CONFIG_SOC_SIFIVE=3Dy
-> >   CONFIG_SOC_VIRT=3Dy
-> >   CONFIG_ARCH_RV32I=3Dy
-> >   CONFIG_SMP=3Dy
-> >   CONFIG_HOTPLUG_CPU=3Dy
-> > +CONFIG_CPU_IDLE=3Dy
-> >   CONFIG_JUMP_LABEL=3Dy
-> >   CONFIG_MODULES=3Dy
-> >   CONFIG_MODULE_UNLOAD=3Dy
-> > @@ -67,7 +69,6 @@ CONFIG_HW_RANDOM_VIRTIO=3Dy
-> >   CONFIG_SPI=3Dy
-> >   CONFIG_SPI_SIFIVE=3Dy
-> >   # CONFIG_PTP_1588_CLOCK is not set
-> > -CONFIG_POWER_RESET=3Dy
-> >   CONFIG_DRM=3Dy
-> >   CONFIG_DRM_RADEON=3Dy
-> >   CONFIG_DRM_VIRTIO_GPU=3Dy
-> > @@ -131,4 +132,3 @@ CONFIG_DEBUG_BLOCK_EXT_DEVT=3Dy
-> >   # CONFIG_FTRACE is not set
-> >   # CONFIG_RUNTIME_TESTING_MENU is not set
-> >   CONFIG_MEMTEST=3Dy
-> > -# CONFIG_SYSFS_SYSCALL is not set
-> > diff --git a/arch/riscv/include/asm/cpuidle.h b/arch/riscv/include/asm/=
-cpuidle.h
-> > new file mode 100644
-> > index 000000000000..1042d790e446
-> > --- /dev/null
-> > +++ b/arch/riscv/include/asm/cpuidle.h
-> > @@ -0,0 +1,24 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2021 Allwinner Ltd
-> > + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
-> > + */
-> > +
-> > +#ifndef _ASM_RISCV_CPUIDLE_H
-> > +#define _ASM_RISCV_CPUIDLE_H
-> > +
-> > +#include <asm/barrier.h>
-> > +#include <asm/processor.h>
-> > +
-> > +static inline void cpu_do_idle(void)
-> > +{
-> > +     /*
-> > +      * Add mb() here to ensure that all
-> > +      * IO/MEM access are completed prior
->
-> accessES ?
->
-> > +      * to enter WFI.
-> > +      */
-> > +     mb();
-> > +     wait_for_interrupt();
-> > +}
-> > +
-> > +#endif
-> > diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-> > index dd5f985b1f40..b5b51fd26624 100644
-> > --- a/arch/riscv/kernel/process.c
-> > +++ b/arch/riscv/kernel/process.c
-> > @@ -21,6 +21,7 @@
-> >   #include <asm/string.h>
-> >   #include <asm/switch_to.h>
-> >   #include <asm/thread_info.h>
-> > +#include <asm/cpuidle.h>
-> >
-> >   register unsigned long gp_in_global __asm__("gp");
-> >
-> > @@ -35,7 +36,7 @@ extern asmlinkage void ret_from_kernel_thread(void);
-> >
-> >   void arch_cpu_idle(void)
-> >   {
-> > -     wait_for_interrupt();
-> > +     cpu_do_idle();
-> >       raw_local_irq_enable();
-> >   }
-> >
-> >
-
-Regards,
-Anup
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
