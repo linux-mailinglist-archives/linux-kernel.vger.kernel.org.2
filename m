@@ -2,120 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D26D32B718
+	by mail.lfdr.de (Postfix) with ESMTP id E714C32B719
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357271AbhCCKtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbhCBXum (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 18:50:42 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DE2C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 15:49:53 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id i11so3750353ood.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 15:49:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=lv6FaWR0xxSCDGyH4driuiSYrxR2/TJyfIIhajWZ/QA=;
-        b=AfjGyv6gpXarIl2aQp61RhMDD9VQVVoH7Fu7cn6UODvNKLAjXOKLTCjc2xhgA9+Nwe
-         G2AWHUwCFWQl3Wn98qYS2Xn7TH1saGna3cNOiC5M8rmMrNi1rrhNl8cWnyFVlbztFQH5
-         HGQhyb1SgeyYR0cW8IZeoo1SJgXddLj8Z6VMWG4Ak7vuJyG0xxaIeBGBNbT+RFXDUWcL
-         FuvGmMMn5tgT7gCEbHT4MZTJz3oYzm73mdkHCoh0QHmVFhGTSF+N8ExeSlNCqnYbHMWA
-         UHABAQwQrxF7t4eNIcfpjaYhkvkPynXE6CDCS9yRdP2cpSubAVHesGcwSzVEcVj2YSP9
-         eqwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=lv6FaWR0xxSCDGyH4driuiSYrxR2/TJyfIIhajWZ/QA=;
-        b=s3T9Bb8vdUmb5kQV3j9yQRNiIXwnQxfdEz5Ab51rP6qsV9jG40JqxRQzXdGprseapL
-         85NselckT45UrIGeultjSAzmoah0zCbB6F3e3itS20NGTVBzEVduaWNuAJuvt+nrNmgB
-         wxMs4D+IsUtHuisOIU4FPACDqGbwWMRBFC5kPFZqGxIeEj7ljOBeMe5M2y4YNFEKAYUF
-         GBbKLPHqglm5/KqRmRdSwgvNJCUQWkHU9bWEYcuDCkanUlPKGLwokoNOkv2/MTLuM64e
-         qIMDsXda25uWme4hNSmzDtlGG4oTn6RNL+jfzoHPe+XE+uYeMtNbbrnUpxVGDZFVvcOH
-         TmMw==
-X-Gm-Message-State: AOAM530YMHNk5x/QvtJoOkx1J6Sj+CEV2kgg2qG+Z0N8z7LrjWWrB7CY
-        2v8NBpFJkfBKNGOZCvTGc/cekg==
-X-Google-Smtp-Source: ABdhPJzTPGgq+/iqKzkaNKTT6UDe8+wq5IRQKulhhPg0F6EYqfuvTFBxC2W7Tsao2zbmQAC7KhCxow==
-X-Received: by 2002:a4a:9b8e:: with SMTP id x14mr18791863ooj.67.1614728992312;
-        Tue, 02 Mar 2021 15:49:52 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id q4sm4650731otf.67.2021.03.02.15.49.50
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 02 Mar 2021 15:49:51 -0800 (PST)
-Date:   Tue, 2 Mar 2021 15:49:38 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Zhou Guanghui <zhouguanghui1@huawei.com>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
-        dingtianhong@huawei.com, chenweilong@huawei.com,
-        rui.xiang@huawei.com, Nicholas Piggin <npiggin@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] mm/memcg: set memcg when split pages
-In-Reply-To: <YD7Ch/8QebzmneCR@cmpxchg.org>
-Message-ID: <alpine.LSU.2.11.2103021547330.9320@eggly.anvils>
-References: <20210302013451.118701-1-zhouguanghui1@huawei.com> <YD4CciUX0/eXFLM0@dhcp22.suse.cz> <alpine.LSU.2.11.2103021157160.8450@eggly.anvils> <YD7Ch/8QebzmneCR@cmpxchg.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1357288AbhCCKtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:49:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232917AbhCBXvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 18:51:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 481D864F45;
+        Tue,  2 Mar 2021 23:50:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614729020;
+        bh=mD9oG7Zn/uIeJEBEoZqcRpiShRlD9VUAPEWMowEB/fY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=R4QCmm//yfC21yKBgDEZF8tbH3abijkWkFXS63v48Ul2N9hT825pjCGZ5hCyVcBnf
+         5kEVjfcaVlw4K97a1eTXvOn2TmM5rwFQp1juKYb9K5atFDOzcPMXsvv/ijg4SuKMdc
+         5Xvg7nPO8JoW3+vH10eb86w7rW9RBNS6RcneolnawfC1RS82RiXE7acqSP+GNI7PNw
+         lIpCVcJhztCVQgunQvN2AkyahMLv+kuAzpBFoLeR8VxpaI8EQnWb/39y3z102Ye6cg
+         biwAiKTqe7tApMHLRCB+zrNYjfdg8IQLyyR2Zs+Ycn9D8qH1OSHT1mbAJ/wuwhY8qF
+         E92VipNgz/lUw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DF3183522829; Tue,  2 Mar 2021 15:50:19 -0800 (PST)
+Date:   Tue, 2 Mar 2021 15:50:19 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210302235019.GT2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302211446.GA1541641@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021, Johannes Weiner wrote:
-> On Tue, Mar 02, 2021 at 12:24:41PM -0800, Hugh Dickins wrote:
-> > On Tue, 2 Mar 2021, Michal Hocko wrote:
-> > > [Cc Johannes for awareness and fixup Nick's email]
-> > > 
-> > > On Tue 02-03-21 01:34:51, Zhou Guanghui wrote:
-> > > > When split page, the memory cgroup info recorded in first page is
-> > > > not copied to tail pages. In this case, when the tail pages are
-> > > > freed, the uncharge operation is not performed. As a result, the
-> > > > usage of this memcg keeps increasing, and the OOM may occur.
-> > > > 
-> > > > So, the copying of first page's memory cgroup info to tail pages
-> > > > is needed when split page.
-> > > 
-> > > I was not aware that alloc_pages_exact is used for accounted allocations
-> > > but git grep told me otherwise so this is not a theoretical one. Both
-> > > users (arm64 and s390 kvm) are quite recent AFAICS. split_page is also
-> > > used in dma allocator but I got lost in indirection so I have no idea
-> > > whether there are any users there.
+On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
+> On Tue, Mar 02, 2021 at 07:46:27PM +0100, Björn Töpel wrote:
+> > Hi!
 > > 
-> > Yes, it's a bit worrying that such a low-level thing as split_page()
-> > can now get caught up in memcg accounting, but I suppose that's okay.
+> > Firstly; The long Cc-list is to reach the LKMM-folks.
 > > 
-> > I feel rather strongly that whichever way it is done, THP splitting
-> > and split_page() should use the same interface to memcg.
+> > Some background; the XDP sockets use a ring-buffer to communicate
+> > between the kernel and userland. It's a
+> > single-consumer/single-producer ring, and described in
+> > net/xdp/xsk_queue.h.
 > > 
-> > And a look at mem_cgroup_split_huge_fixup() suggests that nowadays
-> > there need to be css_get()s too - or better, a css_get_many().
+> > --8<---
+> > /* The structure of the shared state of the rings are the same as the
+> >  * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
+> >  * ring, the kernel is the producer and user space is the consumer. For
+> >  * the Tx and fill rings, the kernel is the consumer and user space is
+> >  * the producer.
+> >  *
+> >  * producer                         consumer
+> >  *
+> >  * if (LOAD ->consumer) {           LOAD ->producer
+> >  *                    (A)           smp_rmb()       (C)
+> >  *    STORE $data                   LOAD $data
+> >  *    smp_wmb()       (B)           smp_mb()        (D)
+> >  *    STORE ->producer              STORE ->consumer
+> >  * }
+> >  *
+> >  * (A) pairs with (D), and (B) pairs with (C).
+> > ...
+> > -->8---
 > > 
-> > Its #ifdef CONFIG_TRANSPARENT_HUGEPAGE should be removed, rename
-> > it mem_cgroup_split_page_fixup(), and take order from caller.
+> > I'd like to replace the smp_{r,w,}mb() barriers with acquire-release
+> > semantics [1], without breaking existing userspace applications.
+> > 
+> > So, I figured I'd use herd7 and the LKMM model to build a litmus test
+> > for the barrier version, then for the acquire-release version, and
+> > finally permutations of both.
+> > 
+> > The idea is to use a one element ring, with a state machine outlined
+> > in the litmus test.
+> > 
+> > The basic test for the existing smp_{r,w,}mb() barriers looks like:
+> > 
+> > $ cat spsc-rb+1p1c.litmus
+> > C spsc-rb+1p1c
+> > 
+> > // Stupid one entry ring:
+> > // prod cons     allowed action       prod cons
+> > //    0    0 =>       prod          =>   1    0
+> > //    0    1 =>       cons          =>   0    0
+> > //    1    0 =>       cons          =>   1    1
+> > //    1    1 =>       prod          =>   0    1
+> > 
+> > { prod = 1; }
+> > 
+> > // Here, we start at prod==1,cons==0, data==0, i.e. producer has
+> > // written data=0, so from here only the consumer can start, and should
+> > // consume data==0. Afterwards, producer can continue and write 1 to
+> > // data. Can we enter state prod==0, cons==1, but consumer observerd
+> > // the write of 1?
+> > 
+> > P0(int *prod, int *cons, int *data)
+> > {
+> >     int p;
+> >     int c;
+> >     int cond = 0;
+> > 
+> >     p = READ_ONCE(*prod);
+> >     c = READ_ONCE(*cons);
+> >     if (p == 0)
+> >         if (c == 0)
+> >             cond = 1;
+> >     if (p == 1)
+> >         if (c == 1)
+> >             cond = 1;
+> > 
+> >     if (cond) {
+> >         smp_mb();
+> >         WRITE_ONCE(*data, 1);
+> >         smp_wmb();
+> >         WRITE_ONCE(*prod, p ^ 1);
+> >     }
+> > }
+> > 
+> > P1(int *prod, int *cons, int *data)
+> > {
+> >     int p;
+> >     int c;
+> >     int d = -1;
+> >     int cond = 0;
+> > 
+> >     p = READ_ONCE(*prod);
+> >     c = READ_ONCE(*cons);
+> >     if (p == 1)
+> >         if (c == 0)
+> >             cond = 1;
+> >     if (p == 0)
+> >         if (c == 1)
+> >             cond = 1;
+> > 
+> >     if (cond == 1) {
+> >         smp_rmb();
+> >         d = READ_ONCE(*data);
+> >         smp_mb();
+> >         WRITE_ONCE(*cons, c ^ 1);
+> >     }
+> > }
+> > 
+> > exists( 1:d=1 /\ prod=0 /\ cons=1 );
+> > 
+> > --
+> > 
+> > The weird state changing if-statements is because that I didn't get
+> > '&&' and '||' to work with herd.
+> > 
+> > When this is run:
+> > 
+> > $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+> > Test spsc-rb+1p1c Allowed
+> > States 2
+> > 1:d=0; cons=1; prod=0;
+> > 1:d=0; cons=1; prod=1;
+> > No
+> > Witnesses
+> > Positive: 0 Negative: 2
+> > Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+> > Observation spsc-rb+1p1c Never 0 2
+> > Time spsc-rb+1p1c 0.04
+> > Hash=b399756d6a1301ca5bda042f32130791
+> > 
+> > Now to my question; In P0 there's an smp_mb(). Without that, the d==1
+> > can be observed from P1 (consumer):
+> > 
+> > $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+> > Test spsc-rb+1p1c Allowed
+> > States 3
+> > 1:d=0; cons=1; prod=0;
+> > 1:d=0; cons=1; prod=1;
+> > 1:d=1; cons=1; prod=0;
+> > Ok
+> > Witnesses
+> > Positive: 1 Negative: 2
+> > Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+> > Observation spsc-rb+1p1c Sometimes 1 2
+> > Time spsc-rb+1p1c 0.04
+> > Hash=0047fc21fa77da9a9aee15e35ec367ef
 > 
-> +1
+> This result is wrong, apparently because of a bug in herd7.  There 
+> should be control dependencies from each of the two loads in P0 to each 
+> of the two stores, but herd7 doesn't detect them.
 > 
-> There is already a split_page_owner() in both these places as well
-> which does a similar thing. Mabye we can match that by calling it
-> split_page_memcg() and having it take a nr of pages?
+> Maybe Luc can find some time to check whether this really is a bug and 
+> if it is, fix it.
 
-Agreed on both counts :) "fixup" was not an inspiring name.
+I agree that herd7's control dependency tracking could be improved.
 
+But sadly, it is currently doing exactly what I asked Luc to make it do,
+which is to confine the control dependency to its "if" statement.  But as
+usual I wasn't thinking globally enough.  And I am not exactly sure what
+to ask for.  Here a store to a local was control-dependency ordered after
+a read, and so that should propagate to a read from that local variable.
+Maybe treat local variables as if they were registers, so that from
+herd7's viewpoint the READ_ONCE()s are able to head control-dependency
+chains in multiple "if" statements?
+
+Thoughts?
+
+							Thanx, Paul
+
+> > In commit c7f2e3cd6c1f ("perf: Optimize ring-buffer write by depending
+> > on control dependencies") removes the corresponding smp_mb(), and also
+> > the circular buffer in circular-buffers.txt (pre commit 6c43c091bdc5
+> > ("documentation: Update circular buffer for
+> > load-acquire/store-release")) is missing the smp_mb() at the
+> > producer-side.
+> > 
+> > I'm trying to wrap my head around why it's OK to remove the smp_mb()
+> > in the cases above? I'm worried that the current XDP socket ring
+> > implementation (which is missing smp_mb()) might be broken.
 > 
-> > Though I've never much liked that separate pass: would it be
-> > better page by page, like this copy_page_memcg() does?  Though
-> > mem_cgroup_disabled() and css_getting make that less appealing.
+> Because of the control dependencies, the smp_mb isn't needed.  The 
+> dependencies will order both of the stores after both of the loads.
 > 
-> Agreed on both counts. mem_cgroup_disabled() is a jump label and would
-> be okay, IMO, but the refcounting - though it is (usually) per-cpu -
-> adds at least two branches and rcu read locking.
+> Alan Stern
