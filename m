@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02B332A794
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFA432A79B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839350AbhCBQRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:17:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447518AbhCBNl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:41:27 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C0CC061756;
-        Tue,  2 Mar 2021 05:40:38 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id q25so11076955lfc.8;
-        Tue, 02 Mar 2021 05:40:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sy2937whkD36NnxmnEnOHu/2WmMpJHhESVIp923Q2ms=;
-        b=WR417b2TXL4XluWU3Q62QUJQT2KHPwbcPUhvSl9ZQVrVxjti1bnY0rVY28lskvQOQ9
-         Wd4ONpWLQsrq2U9ZfDpZJ9FfQ0enFUDeq957Rh8PhHNklfHjRCfh4w3CGHcGpKedn3JL
-         JU325/yJb/LyWrSRbGakExDJSSgUVg+qczoU+PFZZ2dZHklZkgt4nYBqwUHa/sX6A7Vq
-         KcMVXJKg88SR6oBSveZT8yEuJBNqlxOaa9sbDxhpRkGsJXaBT3wgy8o8QOEuUJEnZHii
-         cNSLUqZnaK/Zmp1Gtp5hNnFenxB8+j+e6Auapc+QBS0WcKBPGyzm5C2dO3+rub2odxvy
-         Guzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sy2937whkD36NnxmnEnOHu/2WmMpJHhESVIp923Q2ms=;
-        b=EhoMuAQ7DKnyEuzgvbgptxDcLLMmpunXnYHxlPxyQYlBX0OjfsollGtZPKjopFc4Lg
-         40uNKjaP3JVWNk8+DhBnFwh+LBgGeIjsGt1KOGWWPQ6QdlGquhp9IGcyncV8+zJ9+2f5
-         G8iTj7VRvZcK7Q2lH57ZD6t4xt7SuCdvGwj+LwntDW857ylrcIbL/0VPpgQHQjkEYJta
-         5Lo7y4tW9K19X3AOCHs7IMsOarZG9apGXTnCmJi+bn106t5rMpMZinFyvug+/mNeArqF
-         njguiz5NpnMpZqLrAVnYeMA/vQhlwJ7Ba2xQkbipd1eT1OAM52UoQc7J32a3skK9648c
-         92eQ==
-X-Gm-Message-State: AOAM531ECC0QCVft70Sjj/KRUzLAwuj20RwAe+0fj/VW89xsh5eOzvau
-        65n4IeFIMCeoXganNFUiRbwUBmbuuUo=
-X-Google-Smtp-Source: ABdhPJxRPWPVr1JuoC8bNRBtDqyUDprT1LYGiwQlldtoe/FBCoxaKt0EfpMAr+/aLHyNPv+Ih4vpaQ==
-X-Received: by 2002:ac2:4ecd:: with SMTP id p13mr5165188lfr.421.1614692436754;
-        Tue, 02 Mar 2021 05:40:36 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id 192sm2462749ljj.95.2021.03.02.05.40.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 05:40:36 -0800 (PST)
-Subject: Re: [PATCH 00/31] Introduce devm_pm_opp_* API
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Yangtao Li <tiny.windzz@gmail.com>, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, cw00.choi@samsung.com, krzk@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
-        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
-        mka@chromium.org, harigovi@codeaurora.org,
-        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
-        georgi.djakov@linaro.org, akashast@codeaurora.org,
-        parashar@codeaurora.org, dianders@chromium.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20210101165507.19486-1-tiny.windzz@gmail.com>
- <6bd6730c-6f4e-df93-65cd-93fa4785a8d8@gmail.com>
-Message-ID: <c7a246a4-ab25-a193-f74a-98351780135e@gmail.com>
-Date:   Tue, 2 Mar 2021 16:40:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1839399AbhCBQRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:17:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351217AbhCBNtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:49:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3B7D60C41;
+        Tue,  2 Mar 2021 13:47:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614692863;
+        bh=1QT9Jo+ZtFYdSbb6Zn/Pha/R/xZ7LYXPosLrCrzMQcU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hSh8R9umiFJRz+GUvZwTd2thTzX9ClmlXqz8aglezu0NoxCyoRi87nCzNRsFAz5h5
+         xHpje6dLGhNJ/bzyC+yvU0Reo+7x3tm2NBVX0n6ytmmyL4US6+irCTb3wkPT9yy9io
+         ZLGwKsrL9Lkklekkd7u9FdxyC4WvXS7NsaATpNMns1vzXOI/prFyywA0mN4nCPiR8s
+         Wa8KXA5q4FOOiHiPNsQcTFijayStjXeGLv55MeypRFbLFMSZOTz3OT2gcHGdrYdGgl
+         spb554fomGDxD5ibG9F7ByYgXNRMdHLaDmUYrIa51EpL0Z5WuY+CXePaJYC6eQPDwO
+         RXg2g1yztMugA==
+Date:   Tue, 2 Mar 2021 15:47:24 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
+ SGX_INVALID_SIGNATURE
+Message-ID: <YD5B7P++T6jLoWBR@kernel.org>
+References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
+ <YDy51R2Wva7s+k/x@kernel.org>
+ <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
+ <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <6bd6730c-6f4e-df93-65cd-93fa4785a8d8@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20.01.2021 19:01, Dmitry Osipenko пишет:
-> 01.01.2021 19:54, Yangtao Li пишет:
->> Hi,
->>
->> This patchset add devm_pm_opp_set_clkname, devm_pm_opp_put_clkname,
->> devm_pm_opp_set_regulators, devm_pm_opp_put_regulators,
->> devm_pm_opp_set_supported_hw, devm_pm_opp_of_add_table and
->> devm_pm_opp_register_notifier.
+On Mon, Mar 01, 2021 at 09:54:37PM -0800, Andy Lutomirski wrote:
+> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
+> <tianjia.zhang@linux.alibaba.com> wrote:
+> >
+> >
+> >
+> > On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
+> > > On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
+> > >> q2 is not always 384-byte length. Sometimes it only has 383-byte.
+> > >
+> > > What does determine this?
+> > >
+> > >> In this case, the valid portion of q2 is reordered reversely for
+> > >> little endian order, and the remaining portion is filled with zero.
+> > >
+> > > I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
+> > >
+> > > I'm lacking these details:
+> > >
+> > > 1. Why the length of Q2 can vary?
+> > > 2. Why reversing the bytes is the correct measure to counter-measure
+> > >     this variation?
+> > >
+> > > /Jarkko
+> > >
+> >
+> > When use openssl to generate a key instead of using the built-in
+> > sign_key.pem, there is a probability that will encounter this problem.
+> >
+> > Here is a problematic key I encountered. The calculated q1 and q2 of
+> > this key are both 383 bytes, If the length is not processed, the
+> > hardware signature will fail.
 > 
-> Hello Yangtao,
-> 
-> Thank you for your effort, looking forward to v2!
+> Presumably the issue is that some keys have parameters that have
+> enough leading 0 bits to be effectively shorter.  The openssl API
+> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
+> variable-size integers.
 
-Yangtao, could you please let me know what is the status of this series?
-Will you be able to make a v2 anytime soon?
+But the test uses a static key. It used to generate a key on fly but
+in some of the last versions I replaced key generation with a static
+key:
+
+static RSA *gen_sign_key(void)
+{
+	unsigned long sign_key_length;
+	BIO *bio;
+	RSA *key;
+
+	sign_key_length = (unsigned long)&sign_key_end -
+			  (unsigned long)&sign_key;
+
+	bio = BIO_new_mem_buf(&sign_key, sign_key_length);
+	if (!bio)
+		return NULL;
+
+	key = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);
+	BIO_free(bio);
+
+	return key;
+}
+
+/Jarkko
