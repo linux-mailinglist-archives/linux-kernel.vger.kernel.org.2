@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AE932A5EE
+	by mail.lfdr.de (Postfix) with ESMTP id F195732A5EF
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442984AbhCBNjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 08:39:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48570 "EHLO mail.kernel.org"
+        id S1446282AbhCBNkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 08:40:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350403AbhCBMVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350404AbhCBMVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 07:21:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 918A864F9B;
-        Tue,  2 Mar 2021 11:58:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51DC64F99;
+        Tue,  2 Mar 2021 11:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686314;
-        bh=UBX+hDlWTye2ioLgZ1h7Fsft8q5FcT975NMOEDcdfDc=;
+        s=k20201202; t=1614686322;
+        bh=t8QnT/aIpcXuRhRM9tNQFdbNjsC4v3IZvlSbKSH24fU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V1BylEgInIGN6P0bT/nLYDl+bF0XKuMS6Ek5rTZFbR35rv1FGNyLsZ6FF76uVsvlI
-         Mxnj57xwuoxSEQba/1BXwXZDhLqaErUUkXYQxU0W5bxFqtVmawlOGPdmN8vCWK2f2z
-         Dh8l1xmjh+jnHjL0Ozj7GMPS2SZjImI3xzPL9Ao9R6hDspxnuwS1zIeL/yyFxIKPyM
-         TBJegTvoUmcBan3v4o1ZgrgOHQdKhtrs6kokG2AKX9uOVcuuEMGMi8nS8VNSLQ25QO
-         YMQUZOXEpWX9ChwOQ/Vy/H6MsPgqk0lnZQahTQkJ0FbkDbv/66epeDq9U4RFvsmhNU
-         kU7Qj2i8qRONA==
+        b=SlU3RyFeA4tgvBAlS6VZWaSH28VUjrDuIq6cE2MStPM/O2ftQU0UccJM+cEbeVO/Q
+         +Z4rxVJLqed2s23jM0KvXihVWX74oaunwar4hmo6Wjww06I+hxTxXQFmBtMFcM45TL
+         4n6yPXsURd+yVXAC1geFydovwt+Jw+Nh1Mc8Ez5THTbfzo4fhb5MXTtX85N4yssiFu
+         Zygx9LKUqHJjdE9JwuVnWdJkV9hxzZffHt+5Ang8b90df2kqk+xj/0MHBtHVprMQ/7
+         67fRic8CEEoN3xvOz4PwZ6bKrxR2N6is6cMQlrs3jbmRdM/cHcK3oKEH3GON4vG7DY
+         yU+6iCWRTlLvg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Aleksandr Miloserdov <a.miloserdov@yadro.com>,
-        Roman Bolshakov <r.bolshakov@yadro.com>,
-        Bodo Stroesser <bostroesser@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 33/33] scsi: target: core: Prevent underflow for service actions
-Date:   Tue,  2 Mar 2021 06:57:49 -0500
-Message-Id: <20210302115749.62653-33-sashal@kernel.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 05/21] mmc: mediatek: fix race condition between msdc_request_timeout and irq
+Date:   Tue,  2 Mar 2021 06:58:19 -0500
+Message-Id: <20210302115835.63269-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302115749.62653-1-sashal@kernel.org>
-References: <20210302115749.62653-1-sashal@kernel.org>
+In-Reply-To: <20210302115835.63269-1-sashal@kernel.org>
+References: <20210302115835.63269-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,100 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Miloserdov <a.miloserdov@yadro.com>
+From: Chaotian Jing <chaotian.jing@mediatek.com>
 
-[ Upstream commit 14d24e2cc77411301e906a8cf41884739de192de ]
+[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
 
-TCM buffer length doesn't necessarily equal 8 + ADDITIONAL LENGTH which
-might be considered an underflow in case of Data-In size being greater than
-8 + ADDITIONAL LENGTH. So truncate buffer length to prevent underflow.
+when get request SW timeout, if CMD/DAT xfer done irq coming right now,
+then there is race between the msdc_request_timeout work and irq handler,
+and the host->cmd and host->data may set to NULL in irq handler. also,
+current flow ensure that only one path can go to msdc_request_done(), so
+no need check the return value of cancel_delayed_work().
 
-Link: https://lore.kernel.org/r/20210209072202.41154-3-a.miloserdov@yadro.com
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Aleksandr Miloserdov <a.miloserdov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
+Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_pr.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/target/target_core_pr.c b/drivers/target/target_core_pr.c
-index 5e931690e697..51e690ab4d29 100644
---- a/drivers/target/target_core_pr.c
-+++ b/drivers/target/target_core_pr.c
-@@ -3731,6 +3731,7 @@ core_scsi3_pri_read_keys(struct se_cmd *cmd)
- 	spin_unlock(&dev->t10_pr.registration_lock);
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 9ecf86ba4bb0..967e47770af6 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -928,13 +928,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
+ static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
+ {
+ 	unsigned long flags;
+-	bool ret;
  
- 	put_unaligned_be32(add_len, &buf[4]);
-+	target_set_cmd_data_length(cmd, 8 + add_len);
- 
- 	transport_kunmap_data_sg(cmd);
- 
-@@ -3749,7 +3750,7 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
- 	struct t10_pr_registration *pr_reg;
- 	unsigned char *buf;
- 	u64 pr_res_key;
--	u32 add_len = 16; /* Hardcoded to 16 when a reservation is held. */
-+	u32 add_len = 0;
- 
- 	if (cmd->data_length < 8) {
- 		pr_err("PRIN SA READ_RESERVATIONS SCSI Data Length: %u"
-@@ -3767,8 +3768,9 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
- 	pr_reg = dev->dev_pr_res_holder;
- 	if (pr_reg) {
- 		/*
--		 * Set the hardcoded Additional Length
-+		 * Set the Additional Length to 16 when a reservation is held
- 		 */
-+		add_len = 16;
- 		put_unaligned_be32(add_len, &buf[4]);
- 
- 		if (cmd->data_length < 22)
-@@ -3804,6 +3806,8 @@ core_scsi3_pri_read_reservation(struct se_cmd *cmd)
- 			  (pr_reg->pr_res_type & 0x0f);
- 	}
- 
-+	target_set_cmd_data_length(cmd, 8 + add_len);
+-	ret = cancel_delayed_work(&host->req_timeout);
+-	if (!ret) {
+-		/* delay work already running */
+-		return;
+-	}
++	/*
++	 * No need check the return value of cancel_delayed_work, as only ONE
++	 * path will go here!
++	 */
++	cancel_delayed_work(&host->req_timeout);
 +
- err:
- 	spin_unlock(&dev->dev_reservation_lock);
- 	transport_kunmap_data_sg(cmd);
-@@ -3822,7 +3826,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
- 	struct se_device *dev = cmd->se_dev;
- 	struct t10_reservation *pr_tmpl = &dev->t10_pr;
- 	unsigned char *buf;
--	u16 add_len = 8; /* Hardcoded to 8. */
-+	u16 len = 8; /* Hardcoded to 8. */
+ 	spin_lock_irqsave(&host->lock, flags);
+ 	host->mrq = NULL;
+ 	spin_unlock_irqrestore(&host->lock, flags);
+@@ -952,7 +952,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
+ 	bool done = false;
+ 	bool sbc_error;
+ 	unsigned long flags;
+-	u32 *rsp = cmd->resp;
++	u32 *rsp;
  
- 	if (cmd->data_length < 6) {
- 		pr_err("PRIN SA REPORT_CAPABILITIES SCSI Data Length:"
-@@ -3834,7 +3838,7 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
- 	if (!buf)
- 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+ 	if (mrq->sbc && cmd == mrq->cmd &&
+ 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
+@@ -973,6 +973,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
  
--	put_unaligned_be16(add_len, &buf[0]);
-+	put_unaligned_be16(len, &buf[0]);
- 	buf[2] |= 0x10; /* CRH: Compatible Reservation Hanlding bit. */
- 	buf[2] |= 0x08; /* SIP_C: Specify Initiator Ports Capable bit */
- 	buf[2] |= 0x04; /* ATP_C: All Target Ports Capable bit */
-@@ -3863,6 +3867,8 @@ core_scsi3_pri_report_capabilities(struct se_cmd *cmd)
- 	buf[4] |= 0x02; /* PR_TYPE_WRITE_EXCLUSIVE */
- 	buf[5] |= 0x01; /* PR_TYPE_EXCLUSIVE_ACCESS_ALLREG */
+ 	if (done)
+ 		return true;
++	rsp = cmd->resp;
  
-+	target_set_cmd_data_length(cmd, len);
-+
- 	transport_kunmap_data_sg(cmd);
+ 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
  
- 	return 0;
-@@ -4023,6 +4029,7 @@ core_scsi3_pri_read_full_status(struct se_cmd *cmd)
- 	 * Set ADDITIONAL_LENGTH
- 	 */
- 	put_unaligned_be32(add_len, &buf[4]);
-+	target_set_cmd_data_length(cmd, 8 + add_len);
+@@ -1154,7 +1155,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
+ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
+ 				struct mmc_request *mrq, struct mmc_data *data)
+ {
+-	struct mmc_command *stop = data->stop;
++	struct mmc_command *stop;
+ 	unsigned long flags;
+ 	bool done;
+ 	unsigned int check_data = events &
+@@ -1170,6 +1171,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
  
- 	transport_kunmap_data_sg(cmd);
+ 	if (done)
+ 		return true;
++	stop = data->stop;
  
+ 	if (check_data || (stop && stop->error)) {
+ 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
 -- 
 2.30.1
 
