@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445A632A24B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D4E32A24F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381442AbhCBHcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:32:31 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:62262 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1836605AbhCBHFP (ORCPT
+        id S1837128AbhCBHeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:34:00 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:41177 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347607AbhCBHHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:05:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1614668714; x=1646204714;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=6/I2AcpIWg+wVFXJYK4Vzg4MTL9+5fMlO0fOvA2MzVA=;
-  b=dfYgp8gYHN4PBcmqrn2VMs7nUYq7JTcGn0U+FgHcvi1XSP9wwPtemPpv
-   3g8bi25nBY6/CbE9P15TSMLduJHkcg17AMuFImYP2YASR0QpvnyInz+OF
-   wB0YKxVeYGHe+AsDGZVwIvEvvrcD1bReoE5FZ8C7+2avdMXWK3Dze6IOh
-   mFevYhPicUzsIKkNWKEQeMhX3DHrjIvjRAD4Ns3DU6Z1TlkvrG+G43rPA
-   yyYRH8hioAHd/E5e5H4e5Fyhx2bCqr9FI/RkifCNcq0e5VDGHK9oEqkEZ
-   5Vv+flNAQIBactgJFAY7Gp0N+a2JFrfRqaTTD209BsIkhEYqKkfn3oXx0
-   g==;
-IronPort-SDR: rWxhSzw0bFEXRgWzOpzZt4EG/g96JxyPkloOsvFl6mDPzkSVLrFtrEbIQSaVzwDkwVWYQZWDh4
- 6lzjjNkIi/XZR3iJgiXW5P/9N6YiB38bsseruO1/0yBK8xyeuDCThXargHL7+rWit1WEzFLcK3
- UfZT84Bu6a4ffhaeNYD1EzU++lFjJdZtfc2AtLBJ/fS6Wvk/lEgvkTsd8aI5ZcjHlZiQ9HRdR/
- uomU2bSI7z/rAAC+fBdSoA9jpps+LjMDjRfpnee9irqlGLwiuoA9TcsX4aSmRItW893jL/CgXT
- saw=
-X-IronPort-AV: E=Sophos;i="5.81,216,1610380800"; 
-   d="scan'208";a="161148318"
-Received: from mail-bn7nam10lp2105.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.105])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2021 15:04:06 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l6cIhQTeJMjXpcv+gBKhPVoZVm03I18e10y7vEt+F9McozV2TPaKOjX2cw19lirh91cwJSi7KBQRFGgB76v1Bg20tcZbhkdQ72L7rk79UFdhyMcGsFUEU3wrvK3A++3GOdaD9NCB9xlyS63F7eVutsI6vk2UUWOzdF8Td6eYllYJKh5enxb0iUcQJJx07dLSLmGU5kNVxoRC+jJmFNJXxiUhY21TofWiOVaTprOlBcmBQezsaHFTLdSF3PLw4JoLaQJmYy6E8LUjeQOW/WiiKUzBIPDWq6VF5CWgt/Z3T50xlTDQA/33lkEx9nTgZrrL+NqQGOUlNCTudDp7P98t1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=84KkPOlAGqhCL98lZBR4T9O3qsVzfK0cIAZhU9Pz4EE=;
- b=iSpZi465deS1jxcn1c3poPKpf+bj86JX3BOzwFzWxvj02aPIFEYvVrYmGvZGhh+iKlx5VZThHz99A1Wnqf1K0NBd8N+J4Dx64Id16+uNzvl1hgcz5Iuo7ZuhximGM7fY5INPUUuuRB/3jaCGjmSGyTiIXEZQvgB+LlNKgiPy3jpD3EEtYjF6SOy/3clVljByd2FzQlE6FULl+rZh+JkPDX8YQXKv4jy0JjHFRXwcqmydy3Y7QARYZU3EO+d692Lgh1q2zZ4F2dIX/1wDisl+777bM77os+T2LFS31XMNgROICNfFzYVEVOegQBzSE28I/4YDgnkRsIlKvsUHjWfAhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=84KkPOlAGqhCL98lZBR4T9O3qsVzfK0cIAZhU9Pz4EE=;
- b=JS8+9qhjDkT1p/XBmILhioul1pedJcm+Uc6W0vU9cyYUmIlGm3qCPPzvhw5L4AQ4HrgYWIAFTcSjGXy7ujUkTniyOlaY26gu3TGpW4bSXtZOeB1CWZlRwZc2pw4RZI73UkccyGIo4sE/KTjnsvoL7pO0F2D9Vg03+zkiKwwcAvI=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (20.179.166.71) by
- DM6PR04MB4842.namprd04.prod.outlook.com (20.176.107.153) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3890.29; Tue, 2 Mar 2021 07:04:05 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
- 07:04:05 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>
-CC:     "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] scsi: ufs: convert sysfs sprintf/snprintf family to
- sysfs_emit
-Thread-Topic: [PATCH] scsi: ufs: convert sysfs sprintf/snprintf family to
- sysfs_emit
-Thread-Index: AQHXDyp+KdsAkQvzZE2ICiXVQJOZMqpwRe3g
-Date:   Tue, 2 Mar 2021 07:04:05 +0000
-Message-ID: <DM6PR04MB65758DF8DCE75B782D0A10F0FC999@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <1614665298-115183-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1614665298-115183-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c2c578fe-c1fc-4964-b010-08d8dd495e1a
-x-ms-traffictypediagnostic: DM6PR04MB4842:
-x-microsoft-antispam-prvs: <DM6PR04MB4842E959EA7948B451E525C0FC999@DM6PR04MB4842.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:626;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LU0SSiB+rRczRB3bbKMH3hKhjGgYZPH16ryFcTcIaa4n60u54NVg560qyNMflJR2jJqXze91Bc+x0jgo9rTePA1aV2drGJtQQ6SNGh3kZ9iCra45jrOexDXKb1fbx5yE6N6NhkMemwEDa4wursO8RiMwzd8OqdQxi5/B3nTrYz2tXNf+2rk5T6C1cU5gHtXbtxYMw8odj2sSyvnAC9k6mPrCfIK94nXRUE9/FhcSENDzRycp3BS8ghxhyRNZLeZGcVWbQ1KCn0RxmPCFLIqzM9zkABtyg41S9ct7EuIAIuggfET/srhk8KyTCKN/bq3iwE4wdD+7Hir0/m2uESmeND2kDyiFAdZVg8S2TVqLSr7IXlpl3sGRs2PMbe5MT+E90Nt3su96SNVzKlbreM5t8hOb2wUQ+3ugUourZgfY0IhYXo9/rMltUTtZUl137BfM+BQiQh5qEz9tU9qy533C3CQxg5ibBHaN9A/el022EIS/6/HczQOfJPXUO4wKz4kDxwXG+6jz2W8RGDQuwe5tHA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(136003)(376002)(39860400002)(86362001)(66556008)(66446008)(76116006)(64756008)(7696005)(66476007)(66946007)(71200400001)(186003)(8936002)(54906003)(8676002)(110136005)(83380400001)(316002)(9686003)(2906002)(33656002)(52536014)(26005)(55016002)(5660300002)(4326008)(478600001)(4744005)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?lXc5VD6ED0HKqCBklyv1FXSgIafLpnmREW11+CPbtYYCyVV5HxvL/puHX2zQ?=
- =?us-ascii?Q?EGCMfqOEAIkZmy32zAgtmKUHzXlwwa28LoIQNVq9i7b6pjGhb3U6ioU65nDR?=
- =?us-ascii?Q?+KW6hjVTHzmNT4mEtf/7L9aMH0zwcMGtpZrS5p2Ow0slYrTBhfKL+UIdVYuS?=
- =?us-ascii?Q?KLnwueY3eWmyl+4IoXr+nlNQxch7C4dgPo5yAeMc5prIaeOGV7VaofZDXAKI?=
- =?us-ascii?Q?PK3PAaJBzgsVYECPxcK5U0DPTCREWZebojyGGM7j93usAke7OYyymPE1xjY4?=
- =?us-ascii?Q?WCHYQXMdQ1XadG3yZhtjSTSwmLt/cP3fvJl9vSy/AazGww+iNoQc0Ip4vzUl?=
- =?us-ascii?Q?TpjGRDCEqi/4Ta9T3sP0Y/PneSDiroLz9YXoy9O1f53ZP+PQik+SBxVWqw/H?=
- =?us-ascii?Q?IMxqmtMJqj+izTeiaZXiaxua1s7KHQh5FfSQrISQ1ObvwwAM1v1XgWYYcLae?=
- =?us-ascii?Q?NppcYaXXQ3opHUGmbnKKWRzddJBZlMHKHdb/ElObfUrbHjJ/tGCOkAQiXNAb?=
- =?us-ascii?Q?rf7S+eGCLbpw/qnzastiEz0HdckKXz56c2s/Ny6VUuepOU+I9h1CqpaJw+LQ?=
- =?us-ascii?Q?j+TKd6kRQ3kUdYWApQu2pCf8GnXlrhNsvEhyVTzdSQGBUGfbdX6bc7geYzPb?=
- =?us-ascii?Q?KP5OsDQ8M9zQxks38uOHag2WE7X3LoifzDgYwx71qKaSOfu5gxxGfmbfY+8I?=
- =?us-ascii?Q?/rdHOVM+ravoz9WIz1kOYtVFmRw10eu/SvZb6OH418iP0sx69cQVACElmeip?=
- =?us-ascii?Q?NU9cKeXl2fKa2jM/jpaY0pS3lk+9UwkQw+uOjJmbRMEdVMpgWoJ5ER3qCdio?=
- =?us-ascii?Q?erMkmbpQkvJfsgBLqr8i5/U/Twh5MWM6mTJcIXXuDpCtPyPJL5S8PxEV+7eG?=
- =?us-ascii?Q?Uak01yo7rpYxb8VI7BceKJ1e8KrdA5q/wYfQGg5FJZGXFFPJLOOVZ1Lf2OU+?=
- =?us-ascii?Q?dAUevPcvoUwnqnTETVJoNH1TBFo+Dm1XbsL1txPiYzi0QIP3UasqAk/yTULn?=
- =?us-ascii?Q?uaiN8JUluyBj0oSEpQ5Pd4dxabJVDmAy1ySo/9H/Xtex16BXArJ64NmAKR2I?=
- =?us-ascii?Q?Hxmv/TzjH1/BXWmi+rP5j3UZsfQoimdXfZzGc+g41WkyKKywZO/MgrCE9whU?=
- =?us-ascii?Q?hRdu7ZSlgw0adBxzd0VMKJA6d32btrmJFM8PDw+Rb/1ql1hk6nkp6MOy+K3j?=
- =?us-ascii?Q?bG5UF9laewGyB9zzLT9HIasTxXpsF9MmDa4DxxfI4gDdoKgdNhZYWsE1w4w1?=
- =?us-ascii?Q?yMgUcE3hmEHoO/F1bJFI5ZRyoBs330prwbNxorE6hEawZ2+7DX4muOPDyqM0?=
- =?us-ascii?Q?pd96FP8JSM4T417+hEAc/Rox?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 2 Mar 2021 02:07:13 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lGz4z-00043R-4L; Tue, 02 Mar 2021 08:04:25 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lGz4x-0001Ps-Gy; Tue, 02 Mar 2021 08:04:23 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 0AE98240041;
+        Tue,  2 Mar 2021 08:04:23 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 5CD2C240040;
+        Tue,  2 Mar 2021 08:04:22 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id DE26A20043;
+        Tue,  2 Mar 2021 08:04:20 +0100 (CET)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2c578fe-c1fc-4964-b010-08d8dd495e1a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2021 07:04:05.2948
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jbwnuPE1GaaCWuvTjMwWEydDq4RnL87nMSG1+SdJPdSGK97aEv5cD3/3j3/1KwEez4jv0GfIwjX3QTpe6I4Ycw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4842
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Mar 2021 08:04:20 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
+Organization: TDT AG
+In-Reply-To: <CAJht_EMG27YU+Jxtb2qeq1nXwu8uV8FXQPr62OcNHsE7DozD1g@mail.gmail.com>
+References: <20210216201813.60394-1-xie.he.0141@gmail.com>
+ <YC4sB9OCl5mm3JAw@unreal>
+ <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
+ <YC5DVTHHd6OOs459@unreal>
+ <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
+ <YC7GHgYfGmL2wVRR@unreal>
+ <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
+ <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
+ <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
+ <906d8114f1965965749f1890680f2547@dev.tdt.de>
+ <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
+ <e1750da4179aca52960703890e985af3@dev.tdt.de>
+ <CAJht_ENP3Y98jgj1peGa3fGpQ-qPaF=1gtyYwMcawRFW_UCpeA@mail.gmail.com>
+ <ff200b159ef358494a922a676cbef8a6@dev.tdt.de>
+ <CAJht_EMG27YU+Jxtb2qeq1nXwu8uV8FXQPr62OcNHsE7DozD1g@mail.gmail.com>
+Message-ID: <41b77b1c3cf1bb7a51b750faf23900ef@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate: clean
+X-purgate-ID: 151534::1614668664-00002CDB-8FE715EC/0/0
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-01 09:56, Xie He wrote:
+> On Sun, Feb 28, 2021 at 10:56 PM Martin Schiller <ms@dev.tdt.de> wrote:
+>> 
+>> >> Also, I have a hard time assessing if such a wrap is really
+>> >> enforceable.
+>> >
+>> > Sorry. I don't understand what you mean. What "wrap" are you referring
+>> > to?
+>> 
+>> I mean the change from only one hdlc<x> interface to both hdlc<x> and
+>> hdlc<x>_x25.
+>> 
+>> I can't estimate how many users are out there and how their setup 
+>> looks
+>> like.
+> 
+> I'm also thinking about solving this issue by adding new APIs to the
+> HDLC subsystem (hdlc_stop_queue / hdlc_wake_queue) for hardware
+> drivers to call instead of netif_stop_queue / netif_wake_queue. This
+> way we can preserve backward compatibility.
+> 
+> However I'm reluctant to change the code of all the hardware drivers
+> because I'm afraid of introducing bugs, etc. When I look at the code
+> of "wan/lmc/lmc_main.c", I feel I'm not able to make sure there are no
+> bugs (related to stop_queue / wake_queue) after my change (and even
+> before my change, actually). There are even serious style problems:
+> the majority of its lines are indented by spaces.
+> 
+> So I don't want to mess with all the hardware drivers. Hardware driver
+> developers (if they wish to properly support hdlc_x25) should do the
+> change themselves. This is not a problem for me, because I use my own
+> out-of-tree hardware driver. However if I add APIs with no user code
+> in the kernel, other developers may think these APIs are not
+> necessary.
 
-> Fix the following coccicheck warning:
->=20
-> ./drivers/scsi/ufs/ufshcd.c:1538:8-16: WARNING: use scnprintf or
-> sprintf.
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+I don't think a change that affects the entire HDLC subsystem is
+justified, since the actual problem only affects the hdlc_x25 area.
 
-> ---
->  drivers/scsi/ufs/ufshcd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 7716175..7fb94d7 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1535,7 +1535,7 @@ static ssize_t ufshcd_clkscale_enable_show(struct
-> device *dev,
->  {
->         struct ufs_hba *hba =3D dev_get_drvdata(dev);
->=20
-> -       return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_enabl=
-ed);
-> +       return sysfs_emit(buf, "%d\n", hba->clk_scaling.is_enabled);
->  }
->=20
->  static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
-> --
-> 1.8.3.1
+The approach with the additional hdlc<x>_x25 is clean and purposeful and
+I personally could live with it.
 
+I just don't see myself in the position to decide such a change at the
+moment.
+
+@Jakub: What is your opinion on this.
