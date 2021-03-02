@@ -2,88 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3117C32A2B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BEE32A2E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbhCBIW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S235210AbhCBIoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:44:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236567AbhCBIW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 03:22:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237977AbhCBIJS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:09:18 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3ACC061756;
-        Tue,  2 Mar 2021 00:08:35 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 33EC8C01B; Tue,  2 Mar 2021 09:08:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1614672514; bh=jo1ApVji+2tQwiUYRWmYN3Y+RBqiduiLhHfkJ1tbAVI=;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 315116146D;
+        Tue,  2 Mar 2021 08:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614672569;
+        bh=b7MRmgm5OlBAwHlkF3g3dXoVjRXEXsxIMOfK1akZc6A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0cNN7pnls8BE7DnPzkHaXGu9tEd7hrNWUN75AnMdJUaMT8PBKw9A5YNP1gSwEDhIR
-         54cJ4nh030YM7fLrUCymQGkKNu6aRtQryhME1O/sUHfJdkGtmXQM8HasmFjvsPbQ4o
-         WiP8E8lFetzeLpp1AXF/WyLKo8vkl7Sfk/GIcx2fWrx7iunSrUIjOR//9zvQGBaT59
-         frfOWbOTxTQUDjM81C+iM1/mDtnSPZkTuHQBeOxQ4uqXzEo6aL6K74pxUHfmXj5brP
-         M/av2VPnLFEFKkTgO8KVSJskh8ZMlRGwFWtxfgEdQJ2mvB/91q5LRxvEYtIJrPunkY
-         mgvpEYktQr5Bw==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 161F1C01B;
-        Tue,  2 Mar 2021 09:08:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1614672513; bh=jo1ApVji+2tQwiUYRWmYN3Y+RBqiduiLhHfkJ1tbAVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OpT+RaVXKbY5pxROi3uyhFf/WrZ1CFSp2mGEdK3FHtTsafFaLFy2HkJI9r36aDLCT
-         Lj+tn4GZ/4CG9uFLG06ApZEuI4vv7dtKHXzZiZTv/jDnOk4vJjy0dgfND1PDWbzZEV
-         WGaVPsYBZrN1u6C9RrBco3Ta+kt3I5xp4CUoVA2eF1rfHUKeMPxyCPZyWrl665TfBc
-         x+Z3lTMBwcbUkUluwbdbmPQDbfIRHhjhmBADcqktEBG+1lIBs90BuUu1HpVp0yOOcK
-         gl6yXLay7POrbiOxIDbPGnQXDWrR0FxXxo4087PmV+YZ/z8ZCashmSPIzax84UaXdo
-         haWi3jPnkh1dQ==
-Received: from odin (localhost [127.0.0.1])
-        by odin.codewreck.org (OpenSMTPD) with ESMTP id af406e63;
-        Tue, 2 Mar 2021 08:08:28 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 17:08:13 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: 9p: free what was emitted when read count is 0
-Message-ID: <YD3ybcx1i8Rtbvkp@codewreck.org>
-References: <20210301103336.2e29da13@xhacker.debian>
- <YDxWrB8AoxJOmScE@odin>
- <20210301110157.19d9ad4e@xhacker.debian>
- <YD3BMLuZXIcETtzp@codewreck.org>
- <20210302153940.64332d11@xhacker.debian>
+        b=LeOStWJeirYyUSKXEVj1C91TXQyyc75dmOuQ+MqpKvL9FsqFUdgTDwc1ZJrMr4j0X
+         +mNjdNVL0vI0a4Kpl4Z5vmsdixvN2SUnzRRTlaU4Fh+4GUTFh7cb7gmeN2j9YCRC8m
+         cWqV23ljMqm3tnYs+ZM3LzIPFWtNZxu4DfdOzLx1cYJ+WiCGCfJyWMGFtmp1SLo+zN
+         MUmafnfGuOgldn/WPPRsGCJ13XvNHyQMEom0RCEvLJ9DpzUFVcXKM8vxFSoNhWVeL/
+         yRHjzCBB82l9t1sQCEoOcU8PrKlYb1h60hS0/EBacHb+1k6iXi0HfbzwEh8NrPkfaC
+         cfuhc/uaWAljA==
+Date:   Tue, 2 Mar 2021 10:09:20 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@vger.kernel.org, fancer.lancer@gmail.com, guro@fb.com,
+        akpm@linux-foundation.org, paul@crapouillou.net,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Message-ID: <YD3ysGd86zRjOLQa@kernel.org>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <20210302041940.3663823-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302153940.64332d11@xhacker.debian>
+In-Reply-To: <20210302041940.3663823-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jisheng Zhang wrote on Tue, Mar 02, 2021 at 03:39:40PM +0800:
-> > Rather than make an exception for 0, how about just removing the if as
-> > follow ?
+On Mon, Mar 01, 2021 at 08:19:38PM -0800, Florian Fainelli wrote:
+> BMIPS is one of the few platforms that do change the exception base.
+> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> with kernel_end") we started seeing BMIPS boards fail to boot with the
+> built-in FDT being corrupted.
 > 
-> IMHO, we may need to keep the "if" in current logic. When count
-> reaches zero, we need to break the "while(iov_iter_count(to))" loop, so removing
-> the "if" modifying the logic.
+> Before the cited commit, early allocations would be in the [kernel_end,
+> RAM_END] range, but after commit they would be within [RAM_START +
+> PAGE_SIZE, RAM_END].
+> 
+> The custom exception base handler that is installed by
+> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> memory region allocated by unflatten_and_copy_device_tree() thus
+> corrupting the FDT used by the kernel.
+> 
+> To fix this, we need to perform an early reservation of the custom
+> exception that is going to be installed and this needs to happen at
+> plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
+> finds a space that is suitable, away from reserved memory.
+> 
+> Huge thanks to Serget for analysing and proposing a solution to this
+> issue.
+> 
+> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-We're not looking at the same loop, the break will happen properly
-without the if because it's the return value of p9_client_read_once()
-now.
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
-In the old code I remember what you're saying and it makes sense, I
-guess that was the reason for the special case.
-It's not longer required, let's remove it.
+> ---
+> Thomas,
+> 
+> This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
+> by the stable team for 5.11. We should find a safer way to avoid these
+> problems for 5.13 maybe.
+> 
+>  arch/mips/bmips/setup.c       | 22 ++++++++++++++++++++++
+>  arch/mips/include/asm/traps.h |  2 ++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+> index 31bcfa4e08b9..0088bd45b892 100644
+> --- a/arch/mips/bmips/setup.c
+> +++ b/arch/mips/bmips/setup.c
+> @@ -149,6 +149,26 @@ void __init plat_time_init(void)
+>  	mips_hpt_frequency = freq;
+>  }
+>  
+> +static void __init bmips_ebase_reserve(void)
+> +{
+> +	phys_addr_t base, size = VECTORSPACING * 64;
+> +
+> +	switch (current_cpu_type()) {
+> +	default:
+> +	case CPU_BMIPS4350:
+> +		return;
+> +	case CPU_BMIPS3300:
+> +	case CPU_BMIPS4380:
+> +		base = 0x0400;
+> +		break;
+> +	case CPU_BMIPS5000:
+> +		base = 0x1000;
+> +		break;
+> +	}
+> +
+> +	memblock_reserve(base, size);
+> +}
+> +
+>  void __init plat_mem_setup(void)
+>  {
+>  	void *dtb;
+> @@ -169,6 +189,8 @@ void __init plat_mem_setup(void)
+>  
+>  	__dt_setup_arch(dtb);
+>  
+> +	bmips_ebase_reserve();
+> +
+>  	for (q = bmips_quirk_list; q->quirk_fn; q++) {
+>  		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
+>  					     q->compatible)) {
+> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+> index 6aa8f126a43d..0ba6bb7f9618 100644
+> --- a/arch/mips/include/asm/traps.h
+> +++ b/arch/mips/include/asm/traps.h
+> @@ -14,6 +14,8 @@
+>  #define MIPS_BE_FIXUP	1		/* return to the fixup code */
+>  #define MIPS_BE_FATAL	2		/* treat as an unrecoverable error */
+>  
+> +#define VECTORSPACING 0x100	/* for EI/VI mode */
+> +
+>  extern void (*board_be_init)(void);
+>  extern int (*board_be_handler)(struct pt_regs *regs, int is_fixup);
+>  
+> -- 
+> 2.25.1
+> 
 
 -- 
-Dominique
+Sincerely yours,
+Mike.
