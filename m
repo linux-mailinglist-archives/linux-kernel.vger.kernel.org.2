@@ -2,238 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C6C32ADE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12E232ADE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360064AbhCBWQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:16:10 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3116 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1582047AbhCBUSw (ORCPT
+        id S2360081AbhCBWQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:16:28 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:57552 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347035AbhCBUVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:18:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603e9d7b0000>; Tue, 02 Mar 2021 12:18:03 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 20:18:02 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 2 Mar 2021 20:18:02 +0000
+        Tue, 2 Mar 2021 15:21:35 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122KF4iM061553;
+        Tue, 2 Mar 2021 20:20:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=MySXm0Dugl+sP25rrPs2V0sxZ1PfMnqZsXjwK8peeOg=;
+ b=JURshcwlAS1pVWjY2DLPHN1MQbBxulHVFZ3wT9zfKX9qOxRWjm/AEqx6sqBxhkDCn5KX
+ /FtP0KguBt+wbkyrkmeDKix9y1XwD78QiM5lSOFui97u3yUghGfAdCI3tMFshYLZ7QwZ
+ cd14wXIq/xs7Z6yq30YMNIuxnotyi7YxGfPT6KGXeobMZc5UkbQ0s8V/dnA7i7LIXCRx
+ OQncyIZeFlRWf/nRs8RsHyt8wmvozbYXH3aSuHsSegT59D1e5ElEq6xMXhmvqQRxfnQR
+ LFzpGO43y/90Rv85ezh5sDJUrDvpIkpsANwu2fKEajGu3q+jB0Hwb2cdYajCHkeoMxhS WA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 36ybkb95e4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 20:20:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122KF3a1009505;
+        Tue, 2 Mar 2021 20:20:14 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+        by aserp3020.oracle.com with ESMTP id 370000cnrt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 20:20:13 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nIFHfF541a8TEc27HteV0X7SPQnMFVpVxxFwME+6rhB/QyotyRPMwV2qRWFKuQ8qnLjNkw647dvBfCrM4GtU2fPQQfQPhLbTBV+U5Pjr73LKFuL2pSq9x16gNf3eDDS7FX19qpGnXiS618B++mu+w/qxNv8b4ODgVH7pniDALciDKGuuwsOhYRXrwRd1bJ4iDCQcsZZ4IDZ86zFS49olhUPnwI5g/oBHQ+KKGbyudbEh7CB6VxhkSBlL03yUJ63dShM9Twqkdfu4Sbv5fOXdkLqR0f77Xfr+JGdyM5cWCLf+DItIKfFOKXzW+rpkuvhEkc+LqeoQuDmIXi8CtgFA7w==
+ b=Ou3dN8J29r1YxdTHTSOu24yx9MS2ka//xg9qMqmMIBRUdaQEQazQd7chSE4A0I8mxUd9PRx0j1gX/9HGEAEh1pwCg5669iRQtoKIDGueLGz6ltHRGklnNdqs6bNBTHWpl+2onowb+fHlNviUN9CBz+K5pAaljf9gAzATHgD7HIBFJcSYP4xctR9DJtUp4ieZXPGmxcDJmkLuOMV9MUK2JaZwd1UGa42g+eii4lytNcG1ekVUe1eLpiQkihAKhsu/l9oP+Ziik/yxGph3nq3kABCxKOicO98N0Jts+Z8cnDB9t4zLfEb6kUfRgFL7qod8kd3Gmka6QqK3ZLbHYqeTEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fRKWLWO157z6pwj7FpiXPV7XIhe0xiseYJqYfaznWo8=;
- b=AHctGTc9AGfVZMXbtItLo2w92MMee2OANDZm8PYWVhfgTkX+NpZvH/k1jq8X2gUEUJxpG3rqbsdd1IJ4S5UoGLPA28w8hX2CGnF/tjTT7dtg4QEKvWS2RYU/WA8nAm4BzUiB6fVXZkUutI2n3oP68IgiQACo+YwjrwKkjmOGunTJr1eu5KRb/ZyONkOghcKN9tWYBj0Hok/0ayubQW7Cs0k8NjOAEbKUoGBNMF5v9db9OLqAGad1N86COitYHMvDDUk5k2MCa+ZsBRIOx113J6JxXYXqpfGs4xZCnG2lJZnrPpj++Kp5HQ1upV3kzCCMfDvfYSOZbByhItUOP4XIgQ==
+ bh=MySXm0Dugl+sP25rrPs2V0sxZ1PfMnqZsXjwK8peeOg=;
+ b=aN0FrIq8HmlFaOmCrdNXxeoYltf/iiqqMiyzLnsc4PC+0G8vRBZXCdCGvOTRQOSK2Dm9wKrvqeTxjiKGEpJGRO+N3vp3VAwI16G/r4+pEifFEu4jOgHxMVPZcFc8be5w1wFL4cRf8FK9P20v6moleAe1EsuojGStt7w1fOFB4HIMsaoUJdPGVU1KDw8Bs296rtVxTf2pb26tihoeKJfYe21yjv0e/eRxeyuMtBIskmHYTjBlbAXwrLX89T999g+ruu2zbDrmWDXCV0GGhlMjLEBz0tygKW2d6zDCiGdgTQKgyJVGnEr3hqOa2idW2rBKXGHyiyVXgGm9cIoZUhVV8g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BYAPR12MB3416.namprd12.prod.outlook.com (2603:10b6:a03:ac::10)
- by BY5PR12MB4323.namprd12.prod.outlook.com (2603:10b6:a03:211::10) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MySXm0Dugl+sP25rrPs2V0sxZ1PfMnqZsXjwK8peeOg=;
+ b=nxt4kqWsnaewjduBnlFnLHCz4ecN+1fJo7Q1WRCcsFjIfyUew4S9zH59MjmzwyKW+cS9DUi0q+Ai61xjAgDMTpWfI1k06/r9K0SjmyoSZgd9hupK4BPirDFIsMNpc1FxxK8+uPfnTLY6fYmxgBxQ3Tlgc77odfA3YAW+z5DRScU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from SN6PR10MB3006.namprd10.prod.outlook.com (2603:10b6:805:cf::13)
+ by SA2PR10MB4411.namprd10.prod.outlook.com (2603:10b6:806:116::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 2 Mar
- 2021 20:18:02 +0000
-Received: from BYAPR12MB3416.namprd12.prod.outlook.com
- ([fe80::9428:ff6a:7f2:5976]) by BYAPR12MB3416.namprd12.prod.outlook.com
- ([fe80::9428:ff6a:7f2:5976%6]) with mapi id 15.20.3890.029; Tue, 2 Mar 2021
- 20:18:02 +0000
-From:   Nitin Gupta <nigupta@nvidia.com>
-To:     Pintu Kumar <pintu@codeaurora.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "sh_def@163.com" <sh_def@163.com>,
-        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>
-CC:     "pintu.ping@gmail.com" <pintu.ping@gmail.com>
-Subject: RE: [PATCH] mm/compaction: remove unused variable
- sysctl_compact_memory
-Thread-Topic: [PATCH] mm/compaction: remove unused variable
- sysctl_compact_memory
-Thread-Index: AQHXD411mHVMaaygcESwzSP7eEOUu6pxIlMg
-Date:   Tue, 2 Mar 2021 20:18:01 +0000
-Message-ID: <BYAPR12MB3416C9FD5D10AFB930E1C023D8999@BYAPR12MB3416.namprd12.prod.outlook.com>
-References: <1614707773-10725-1-git-send-email-pintu@codeaurora.org>
-In-Reply-To: <1614707773-10725-1-git-send-email-pintu@codeaurora.org>
-Accept-Language: en-US
+ 2021 20:20:12 +0000
+Received: from SN6PR10MB3006.namprd10.prod.outlook.com
+ ([fe80::607a:91ec:c8b0:af82]) by SN6PR10MB3006.namprd10.prod.outlook.com
+ ([fe80::607a:91ec:c8b0:af82%3]) with mapi id 15.20.3890.029; Tue, 2 Mar 2021
+ 20:20:12 +0000
+Subject: Re: [PATCH] swiotlb: Fix type of max_slot
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jianxiong Gao <jxgao@google.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <1614705688-10567-1-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Message-ID: <436bf276-5b16-62af-6a32-70f91fce7557@oracle.com>
+Date:   Tue, 2 Mar 2021 15:20:08 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
+In-Reply-To: <1614705688-10567-1-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [216.228.112.22]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2e8d5048-0c24-4ce8-f3da-08d8ddb847bb
-x-ms-traffictypediagnostic: BY5PR12MB4323:
-x-microsoft-antispam-prvs: <BY5PR12MB4323272E34FAA521D6DF69B8D8999@BY5PR12MB4323.namprd12.prod.outlook.com>
-x-header: ProcessedBy-CMR-outbound
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: enZrwk5n+DAPmlSVUCikF4POmkJhA5016JiqV+T6qHn/2z9ibUtrT7q0p8AFJShFm/JPZONGb5U0XTGecWjMJ9NznPr8z5bOFUHbo+JsQRDja6VIhiiC/cA2sijl83DAmGGBbmaFwB7eVz58DOnIFWgHfKLKX2oYTfUmcRncKwpWwcZfnc86f+Xf4l4XI76Dpudiuofc61dkjRcMIjdjMnUn+uNprVe5jO/5P/GzVXPEi7n7RSmXEYmeWGY+XMgLmLYyggT2GymFEXGq8MZlyKS7LtjmaVwumyUW81jSdFeDrY7U6zdgdGxkl2DWSmaKqQKVc2e1yYKX8FOpY1uDdrjEoc31nplApDn2hUpk2jQzcWzXD8NxVsIXDdfuJdCjx9pOaNhBudkPXkpsXvp9soQZh5aeS+S/tle+ShEM6pHWRPUnOz9KrsmIHQxDEO07SjmOUjOQTmPt58smhZFa0YOAs7VnqlhaE7xWWK1SP9Z4GnmCW2NKSdj+yRwu3p3DQEpS/Y9Ri49IX/x1dfmNtKf6lNdh1YORyb5EYpZBHE4cs3LjLZkqtpaH6jX0AVb+
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3416.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(396003)(366004)(376002)(110136005)(6506007)(66556008)(66476007)(66446008)(83380400001)(8676002)(7696005)(26005)(64756008)(52536014)(4326008)(33656002)(71200400001)(66946007)(2906002)(8936002)(76116006)(86362001)(53546011)(186003)(921005)(55016002)(5660300002)(478600001)(316002)(7416002)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?lEMonPLdThL37J2ANxFHkf4enF62zqRyDHBErWDD/Z4y0R82C0VK7UvPnZ2q?=
- =?us-ascii?Q?NA7hcd1S1iOAqm8r8ktywqisSVRVYe/novwzlvWaBvzUUG+3dX0EqQsntBCc?=
- =?us-ascii?Q?m++BLAf0z4dOxbi2+wugdyYm3/BCrw/CSqJbZg12VTaz5bcsQQgOgqDIBmvt?=
- =?us-ascii?Q?dAfmXGu6XigKiR1oG3g2w9tWnFDRrFJW9138tKBIbXm7Wke4ydO3Obko29H0?=
- =?us-ascii?Q?ka8h862FEy5AEL155QLh2jYPzvBdG45Wz99zvJ4LNHlD8fe1B018WAXJAO65?=
- =?us-ascii?Q?FoRvqJ+FNengXOv3qINypE7onjKcJsvnMjQVDnfMVUOt8vY/D8JiaPCYg9z0?=
- =?us-ascii?Q?3l+mVFsPfBkDWEQm+h9SuvoryV/bDe0zRq4JK3PXcRj3+OgXFWdxSVc3p7Nl?=
- =?us-ascii?Q?xY2ge8yrnUY1n3CzsEvEOpcrn6n0Q1uSBzM66NQaR+cxwQ5fqTzLb8iYAOfI?=
- =?us-ascii?Q?+WXQdyY2aaMmu2+7N4eyodbrTRlDYm38guwt1dWA2GJfjsZA/rsA8Ts2EMXn?=
- =?us-ascii?Q?9lg0JrLELg9j/+zpzV4R3Fdn+i8vaq2j8jOo2oIXWjYxsZ0yXuP0BLSOjgyU?=
- =?us-ascii?Q?oOHTS8tLsvhVopuRVYOOixRyb7VQpbr8YNZAe6+94lvoHIbkvhDPFahNyR+0?=
- =?us-ascii?Q?NsrQbqc97X3sLqJIwRgVB0SnXwHugRpnZNXe0K3W/4L00+CnOQPqUkKRWyFf?=
- =?us-ascii?Q?kelvpCLb00Z4OOrPvKb9M1eiltmvY9jzxbNzqn+5owo5SOfzuSdKvaDPRwzJ?=
- =?us-ascii?Q?y7tjSneysW85mhIOMydQrrwH0An2qZdxfcJO8YL0QU4dkf2bUNcQbIg6Oucl?=
- =?us-ascii?Q?IjMtlM9+k8zY6WEnll1P215mpE9uQ8O0eISnSjRcTrzOCxXYv5quF2KGr5dL?=
- =?us-ascii?Q?x85VRHcp4WIG0MjUBgCF8ugvAiaWpy10SvBbQNtN6zQ6x1uut9U5R+PdQtBz?=
- =?us-ascii?Q?dcfAnMkjWFK+rT3JhR4IR0+qHob+sNPV3GOOmMpdl1beWY9obc7o8yJ9lsAY?=
- =?us-ascii?Q?kZBeNUFNmUIVY5HjMltLm418fbsW3GqGKJJgL2KnEdALMedOWOFpP7Bl4C2V?=
- =?us-ascii?Q?viw6Ync8QtWkZ5dO6Yv+qqnnJ+T06sg57LkINgw6apahOQTIbny6DtErqacp?=
- =?us-ascii?Q?WzacWjOz/HyQ7thK3alzHPPaWZ4YNPcpr/gSAP/lLmAh/OXqkR0J6VpJVO4i?=
- =?us-ascii?Q?rhWsesmkKWmT4GrLbi2I4DsrMAqkBKHYmRHrWfJcSDMlsUQQM1T4XomW6FZV?=
- =?us-ascii?Q?/fiudSiQ7eb5gedpVta2zYFEWnrSTAzUJqYq/Y2ZQvIJcpU+L9nbDKprPvP9?=
- =?us-ascii?Q?+OI=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [209.6.208.110]
+X-ClientProxiedBy: SJ0PR03CA0250.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::15) To SN6PR10MB3006.namprd10.prod.outlook.com
+ (2603:10b6:805:cf::13)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Konrads-MacBook-Pro.local (209.6.208.110) by SJ0PR03CA0250.namprd03.prod.outlook.com (2603:10b6:a03:3a0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 2 Mar 2021 20:20:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 20748b9a-153a-45ee-40d7-08d8ddb89520
+X-MS-TrafficTypeDiagnostic: SA2PR10MB4411:
+X-Microsoft-Antispam-PRVS: <SA2PR10MB4411BF8939CB123D11BFB07E89999@SA2PR10MB4411.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iu2vC3pTRQnDLq6AR38/9+crCZsLjkDXQLh7IgftT4KFiJqcDWIzCne8/twn9p0oKyUMoWAufWi++lmT8WQ6qk4Mr9Kq7FmWugSSn6Hjbx2O7xsywjbrJxBaXZi/dJwvPWeopgBin/q9CqV1fuhw4M1mEfJP1ZEC9FPdac45Z58aBsAV/YdaDJzs5+kgBm5JycXtS0lNYK69zQ9Ql9VVcdN8eJPEw8XyTjDO75UXu+Vt0FxYahyJvn8e+VyacsWpzi8kWXLjZtR7n3N7ZEc+SLa7OJ45OnhY/TZglL5tAIwa4v7cQXOlKppcF/3PMpkuJNAnXAzj17Ibi2Gx4VD40UiJ/hau0s4lWj8W82EZrfVP7tbAtLyGB8MaP7cL8LMa57VrxjOlJqunLEt4qbCXkuoe+lIoosksqlSxc0Q43TeIpKGZ7ea1bO8bf8cn86dJA/J02czXPClyqSlOxcCboEr3qty5j3fXwP7ENirjILYk7MbHrvFaziUjkb483YCXqPKet7nH4/PNmJMw0xNS8D2hq8I2mN1CzEdH8pWXiN8g0MVOAJBjmG/oZPhMPDEdYrngVWFbdijfFXRZvBZe2OMdNximzQp13Jwj7bwTGWU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3006.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(39860400002)(396003)(376002)(2906002)(31696002)(5660300002)(36756003)(186003)(6512007)(83380400001)(86362001)(31686004)(16526019)(8936002)(316002)(26005)(53546011)(2616005)(66556008)(66946007)(6486002)(4326008)(66476007)(478600001)(8676002)(956004)(6506007)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QVZDV1FDd2JzS1I2ZWVkVEh6U1ppUkhoWUVOTzNyVVhsam5RWDhyMm1FVk02?=
+ =?utf-8?B?Q0NRVnFueWx6RnpuWHFGU0pkYjZneFFZaUowWFl6aWtKUFNBdmZEZHJKbEJr?=
+ =?utf-8?B?a29zVUpJdDV1KzVFd3ExWTBoWEhWRHN0bFo1aW5FamRONnF0U0d3d3BsYlRC?=
+ =?utf-8?B?VGczN1dWa0pKVHBRcWNPQ2hQK2R0WlJPaFdHY0J6NFJFbGQwenZzZThuZ2J0?=
+ =?utf-8?B?d1J6VWtqdHJGN01EZThsaCtrTFUxd3NIQlZJam5KVytlUEhXeUVKVkNrYy9U?=
+ =?utf-8?B?SFZBZDJ5OEllSnpvU0VjMFlzc08yNUdKbmNxejVyUnVIdEpqUWd6NThNQU9D?=
+ =?utf-8?B?MUlDd2svRExTZnk1QktjNFhtVVpCNXNrN2trR1RkUnk2RGRVS1lHOUUwTURo?=
+ =?utf-8?B?SldxQU9Hd1R6UGpMRmtabnFCZDR5ak40aHQ4TEZqOWY0ZkdEVGNHbW9XUkVX?=
+ =?utf-8?B?M0duS0ZpUzdTV290WVJ2Wk0wcGtXakVqdFlSSXdmMFJRYmJ1Mnhxa0xtdmJF?=
+ =?utf-8?B?V3hSSWNCZ0J6cisxbDNWTEp3Zk9hYjg2UUhEWHl5U1FOZU1SbU13ZGtiRFJo?=
+ =?utf-8?B?QUJIQThlK2FsUG84RmhFOUJQSzFVU3FlZFpTV0d0dm1oZEJVazZFM1FPZEdm?=
+ =?utf-8?B?TzdLR2xxVlJLVlN0WHZnYk1zbWNVY1JKKzZ1SFNFRnRZbE9Vd0R4T2lXSlNL?=
+ =?utf-8?B?WXI0cVRHdHFpRW84MGJWQXc1MWY0eTY1b0VNa1pBaWhsZEhPWDRKU2cybGZ2?=
+ =?utf-8?B?L2l2bmd5alRFL1M5dmN0eFJLSmhWdFJObS9MNlB0QkI2emVRaHFJbWFwOHZs?=
+ =?utf-8?B?T1g4U1pSR0xmZDVaWXVqc3NHTWxYMVRZQzlzbVpLODRoZFpSejQwY1h4SlJz?=
+ =?utf-8?B?czVnYjRKcVpBUjFUcThnWTJIa1NZTzlRTjBNenZTUEhXUlQ0dGZhU2g0SFRi?=
+ =?utf-8?B?blBPeFdEYVltNWphZDRoQnBOQXE0c3ZvcWdFUVhuK2FRNHlhK0tMeTVPZncr?=
+ =?utf-8?B?bmlHRU1tL2d1dkpMRUV0blF3d1NnbHBtL2tZOUtSRDhJSEFheFhHWnZWRHM2?=
+ =?utf-8?B?NXczbjBLNThBREVQQklVUjhkSjYxOEV6RjgzZ3Q3OE1EOEZNeDZ3c25NVHdE?=
+ =?utf-8?B?SUN4YlJ4VmpvamhIbHhaNnNoNU4vYmk0Y1NWZ21KYlMwUXU1NEthcmxHTy9B?=
+ =?utf-8?B?NmhsSkJmMmtaeGdLQ1BHa0FzNjBQU3I3bkRkV3VWbVZGVW0xc2pQM2orTWZK?=
+ =?utf-8?B?NVVscUpReithV0t5RVY2MXdZaDlmVzI5NzNNM0pFajJvUGhTVW5qSzNYMU5r?=
+ =?utf-8?B?UklrQXhlbWt4aVViOXEzT0VoUnFEQ1NweVNkbUwrbEkyd29LblA4ZEIxdXJv?=
+ =?utf-8?B?bjV5d1JuM1ZGTExvUENxd0taSkVWZGVBbzRwLzNJd1RzVURnWEltVXZPS0ZG?=
+ =?utf-8?B?eEtZSGZVbkIxUmZqOEl3eVk2RlRNaTQyM0tYU3JPTW92M0h3blZTS3hwS05B?=
+ =?utf-8?B?S0tDZXF4SDlTSCt6cUY4TTdRSmM5aWlsbXp0d2pldzdoOW1BdFBFQit5a2hM?=
+ =?utf-8?B?em5aKzA2T2dENE5HWk1aU1JLV1ZGdHhUYU01YlRoOGZEQ0JydDFvTEl4L2FC?=
+ =?utf-8?B?VmJLbkk2SEkvdFRVSFl4M2xGeHcxQm1ublhGeFh4eklrSTBhOVhEQzNkR0Rq?=
+ =?utf-8?B?QW0wRlFTOVhqd3pQTHplQlY4c0REMDU4bnNrcHplbkczT05zam13S2x1K2Fu?=
+ =?utf-8?Q?bB80lSorLzjn2bfH6l9vC96hu9U9qfGSZ1MPGeG?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20748b9a-153a-45ee-40d7-08d8ddb89520
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3006.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3416.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e8d5048-0c24-4ce8-f3da-08d8ddb847bb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2021 20:18:01.9306
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 20:20:12.1013
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SMz9dUP0xP2lKWr44FUTraD4Ap+7yvjO+DlCw3E0x4Gjv2pLUWN/KYJRaZ8ppck3ZwuySSQ5F2THyNUeew5uRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4323
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614716283; bh=fRKWLWO157z6pwj7FpiXPV7XIhe0xiseYJqYfaznWo8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:x-header:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         x-ms-exchange-transport-forked:Content-Type:
-         Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=Nx7tfkfMZ9BAO0iRZfpUaha0UIbMqZQsjNocFpj5092aoMFP1EMg/TGlR74UryI05
-         DmIQLtWeCz8gS1Q/wmNoT/6XHt6Nk3he0Iip7kO5QIXiMJK1uC5LFt5Rgq+L3MJQYm
-         sfm01MWawlbsr4CWy/trE+8je5Dr9MR0V7IDk6DuNxW3pC3W0+sAfzC9rpm2eW3PX5
-         GlJlAy8PnXx8y7KOJi8kpzc7xiKZl9FBvs5L76gIWIB3Ain+JnAc/If1MggwkaElYA
-         /6ZHyXsPfk1XMp/1YFV6bJnF5dV+coI+KTSnoi95xN5F+IuB25qFg5923p/sDxrlAv
-         j4UlyeC5cAfhw==
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r9TMxRsNL6sYXQsgyScmQu6lvT1qkUrJjvYdy2g4ezeKnXRZk3cdo5TditgTx8BlNo33VoLY+lMqxwf2lqSWAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4411
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020153
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 mlxlogscore=999 adultscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020153
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/2/21 12:21 PM, Kunihiko Hayashi wrote:
+> After the refactoring phase, the type of max_slot has changed from unsigned
+> long to unsigned int. The return type of the function get_max_slots() and
+> the 4th argument type of iommu_is_span_boundary() are different from the
+> type of max_slot. Finally, asserts BUG_ON in iommu_is_span_boundary().
+> 
+> Cc: Christoph Hellwig <hch@lst.de>
+> Fixes: 567d877f9a7d ("swiotlb: refactor swiotlb_tbl_map_single")
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+
+I think this is all good. Looking at Linus's master I see:
 
 
-> -----Original Message-----
-> From: pintu=3Dcodeaurora.org@mg.codeaurora.org
-> <pintu=3Dcodeaurora.org@mg.codeaurora.org> On Behalf Of Pintu Kumar
-> Sent: Tuesday, March 2, 2021 9:56 AM
-> To: linux-kernel@vger.kernel.org; akpm@linux-foundation.org; linux-
-> mm@kvack.org; linux-fsdevel@vger.kernel.org; pintu@codeaurora.org;
-> iamjoonsoo.kim@lge.com; sh_def@163.com; mateusznosek0@gmail.com;
-> bhe@redhat.com; Nitin Gupta <nigupta@nvidia.com>; vbabka@suse.cz;
-> yzaikin@google.com; keescook@chromium.org; mcgrof@kernel.org;
-> mgorman@techsingularity.net
-> Cc: pintu.ping@gmail.com
-> Subject: [PATCH] mm/compaction: remove unused variable
-> sysctl_compact_memory
->=20
-> External email: Use caution opening links or attachments
->=20
->=20
-> The sysctl_compact_memory is mostly unsed in mm/compaction.c It just acts
-> as a place holder for sysctl.
->=20
-> Thus we can remove it from here and move the declaration directly in
-> kernel/sysctl.c itself.
-> This will also eliminate the extern declaration from header file.
+537         unsigned long max_slots = get_max_slots(boundary_mask);
 
+?
 
-I prefer keeping the existing pattern of listing all compaction related tun=
-ables
-together in compaction.h:
-
-	extern int sysctl_compact_memory;
-	extern unsigned int sysctl_compaction_proactiveness;
-	extern int sysctl_extfrag_threshold;
-	extern int sysctl_compact_unevictable_allowed;
-
-
-> No functionality is broken or changed this way.
->=20
-> Signed-off-by: Pintu Kumar <pintu@codeaurora.org>
-> Signed-off-by: Pintu Agarwal <pintu.ping@gmail.com>
 > ---
->  include/linux/compaction.h | 1 -
->  kernel/sysctl.c            | 1 +
->  mm/compaction.c            | 3 ---
->  3 files changed, 1 insertion(+), 4 deletions(-)
->=20
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h inde=
-x
-> ed4070e..4221888 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -81,7 +81,6 @@ static inline unsigned long compact_gap(unsigned int
-> order)  }
->=20
->  #ifdef CONFIG_COMPACTION
-> -extern int sysctl_compact_memory;
->  extern unsigned int sysctl_compaction_proactiveness;  extern int
-> sysctl_compaction_handler(struct ctl_table *table, int write,
->                         void *buffer, size_t *length, loff_t *ppos); diff=
- --git
-> a/kernel/sysctl.c b/kernel/sysctl.c index c9fbdd8..66aff21 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -198,6 +198,7 @@ static int max_sched_tunable_scaling =3D
-> SCHED_TUNABLESCALING_END-1;  #ifdef CONFIG_COMPACTION  static int
-> min_extfrag_threshold;  static int max_extfrag_threshold =3D 1000;
-> +static int sysctl_compact_memory;
->  #endif
->=20
->  #endif /* CONFIG_SYSCTL */
-> diff --git a/mm/compaction.c b/mm/compaction.c index 190ccda..ede2886
-> 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2650,9 +2650,6 @@ static void compact_nodes(void)
->                 compact_node(nid);
->  }
->=20
-> -/* The written value is actually unused, all memory is compacted */ -int
-> sysctl_compact_memory;
-> -
+>   kernel/dma/swiotlb.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 369e4c3..c10e855 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -534,7 +534,7 @@ static int find_slots(struct device *dev, phys_addr_t orig_addr,
+>   	unsigned long boundary_mask = dma_get_seg_boundary(dev);
+>   	dma_addr_t tbl_dma_addr =
+>   		phys_to_dma_unencrypted(dev, io_tlb_start) & boundary_mask;
+> -	unsigned int max_slots = get_max_slots(boundary_mask);
+> +	unsigned long max_slots = get_max_slots(boundary_mask);
+>   	unsigned int iotlb_align_mask =
+>   		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
+>   	unsigned int nslots = nr_slots(alloc_size), stride;
+> 
 
-
-Please retain this comment for the tunable.
-
--Nitin
