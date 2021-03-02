@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB25232AE56
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 880AE32AE57
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838179AbhCBXFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 18:05:47 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:52094 "EHLO z11.mailgun.us"
+        id S1838190AbhCBXGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 18:06:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2360840AbhCBWar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:30:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614724223; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=G4mdmCWN76SSPEAS/LrL4raY53sm6MHrKfrJEPw11bI=; b=AKc35jt5ZovCg1ERBekB7fGvGrc5aNc4nlaqvm9zFTwItH0VfLCBErkW/HtXHfXOd+ch/YY/
- /7qLAtRAvrnl0K9B2YnibCkbvEiBaWOKzXijfYHPVFL21eEmzN3Hq2Ou4MmloJh/dayZ3Ov3
- temhTQdfhDdquscSxkG7r7X8OJE=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 603ebc6039ef372114e6bf77 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 22:29:52
- GMT
-Sender: bbhatt=qti.qualcomm.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B75B9C43462; Tue,  2 Mar 2021 22:29:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S241902AbhCBWbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 17:31:51 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A3FAC433CA;
-        Tue,  2 Mar 2021 22:29:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9A3FAC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=pass (p=none dis=none) header.from=qti.qualcomm.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=pass smtp.mailfrom=bbhatt@qti.qualcomm.com
-From:   Bhaumik Bhatt <bbhatt@qti.qualcomm.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, carl.yin@quectel.com,
-        naveen.kumar@quectel.com, Bhaumik Bhatt <bbhatt@qti.qualcomm.com>
-Subject: [PATCH] bus: mhi: core: Add missing checks for MMIO register entries
-Date:   Tue,  2 Mar 2021 14:29:43 -0800
-Message-Id: <1614724183-32302-1-git-send-email-bbhatt@qti.qualcomm.com>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 7979064F2D;
+        Tue,  2 Mar 2021 22:31:00 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 17:30:58 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Li Huafei <lihuafei1@huawei.com>, gregory.herrero@oracle.com,
+        catalin.marinas@arm.com, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, zhangjinhao2@huawei.com,
+        yangjihong1@huawei.com, xukuohai@huawei.com,
+        linux-arm-kernel@lists.infradead.org,
+        Chen Jun <chenjun102@huawei.com>
+Subject: Re: [PATCH] recordmcount: Fix the wrong use of w* in
+ arm64_is_fake_mcount()
+Message-ID: <20210302173058.28fd3d36@gandalf.local.home>
+In-Reply-To: <20210225160116.GA13604@willie-the-truck>
+References: <20210225140747.10818-1-lihuafei1@huawei.com>
+        <20210225094426.7729b9cc@gandalf.local.home>
+        <20210225160116.GA13604@willie-the-truck>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per documentation, fields marked as (required) in an MHI
-controller structure need to be populated by the controller driver
-before calling mhi_register_controller(). Ensure all required
-fields are present in the controller before proceeding with the
-registration.
+On Thu, 25 Feb 2021 16:01:17 +0000
+Will Deacon <will@kernel.org> wrote:
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@qti.qualcomm.com>
----
- drivers/bus/mhi/core/init.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> On Thu, Feb 25, 2021 at 09:44:26AM -0500, Steven Rostedt wrote:
+> > This requires an acked-by from one of the ARM64 maintainers.
+> > 
+> > -- Steve
+> > 
+> > 
+> > On Thu, 25 Feb 2021 22:07:47 +0800
+> > Li Huafei <lihuafei1@huawei.com> wrote:
+> >   
+> > > When cross-compiling the kernel, the endian of the target machine and
+> > > the local machine may not match, at this time the recordmcount tool
+> > > needs byte reversal when processing elf's variables to get the correct
+> > > value. w* callback function is used to solve this problem, w is used for
+> > > 4-byte variable processing, while w8 is used for 8-byte.
+> > > 
+> > > arm64_is_fake_mcount() is used to filter '_mcount' relocations that are
+> > > not used by ftrace. In arm64_is_fake_mcount(), rp->info is 8 bytes in
+> > > size, but w is used. This causes arm64_is_fake_mcount() to get the wrong
+> > > type of relocation when we cross-compile the arm64_be kernel image on an
+> > > x86_le machine, and all valid '_mcount' is filtered out. The
+> > > recordmcount tool does not collect any mcount function call locations.
+> > > At kernel startup, the following ftrace log is seen:
+> > > 
+> > > 	ftrace: No functions to be traced?
+> > > 
+> > > and thus ftrace cannot be used.
+> > > 
+> > > Using w8 to get the value of rp->r_info will fix the problem.
+> > > 
+> > > Fixes: ea0eada45632 ("recordmcount: only record relocation of type
+> > > R_AARCH64_CALL26 on arm64")
+> > > Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+> > > ---
+> > >  scripts/recordmcount.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
+> > > index b9c2ee7ab43f..cce12e1971d8 100644
+> > > --- a/scripts/recordmcount.c
+> > > +++ b/scripts/recordmcount.c
+> > > @@ -438,7 +438,7 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
+> > >  
+> > >  static int arm64_is_fake_mcount(Elf64_Rel const *rp)
+> > >  {
+> > > -	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
+> > > +	return ELF64_R_TYPE(w8(rp->r_info)) != R_AARCH64_CALL26;  
+> 
+> Acked-by: Will Deacon <will@kernel.org>
+> 
+> But you know you could avoid these sorts of problems by moving to little
+> endian along with everybody else? ;)
+> 
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index aa575d3..33323ad 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -860,10 +860,10 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
- 	u32 soc_info;
- 	int ret, i;
- 
--	if (!mhi_cntrl)
--		return -EINVAL;
--
--	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
-+	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
-+	    !mhi_cntrl->iova_start || !mhi_cntrl->iova_stop ||
-+	    !mhi_cntrl->fw_image || !mhi_cntrl->irq ||
-+	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
- 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
- 	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
- 		return -EINVAL;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I just realized that I received this patch twice, and thought it was the
+same patch! Chen was three days ahead of you, so he get's the credit ;-)
 
+ https://lore.kernel.org/r/20210222135840.56250-1-chenjun102@huawei.com
+
+-- Steve
