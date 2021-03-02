@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42E332A727
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA89232A6DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575913AbhCBQEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S1578971AbhCBPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:54:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447346AbhCBN3B (ORCPT
+        with ESMTP id S1447357AbhCBN3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:29:01 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B05BC061A29
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:28:21 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id e9so1997665pjj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:28:21 -0800 (PST)
+        Tue, 2 Mar 2021 08:29:23 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44656C061A2B
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:28:43 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id b7so11631178edz.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:28:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PqPgRtzVantKyRNR1zZk8EcuOOdksOMCXe9nMbpmH0o=;
-        b=KhrvHfmW54YOdVY/n36ESd9/pdRvnND7vy94ZX7v6gkP5vQBdXGN/2dndp3CXxob3O
-         0xMeF80owgoInE0hQvw9eGl03YK8+P0PKUT2rXNJ3ONhuXnfOSMmTf3VtvCO/ptCPAqb
-         DXKMCse35CkVmQeA78HmSuIAQyPaFWs2nNBIa9NbaKLdp4jgWp5zpPvrVYoBl7C5Vk6w
-         j2pEp/wBwj6eTOtiFQEqb6jkJ/lxD2E5PA884lKxkGRlbTegtYSV4Ui6eCJOCyMFbsEp
-         2VYrcxUAv3oRz+zpM1sbFxRvZnaXWtaDXrr5JyKx5Jh+CDdC61bYY6SslLIX8dgWxt8H
-         2BhA==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7L0BOqRe+13aQ5nTzLZo2I22iHREvV6oqm1AT8L/cvg=;
+        b=u2zl81Aqw9FwWu6GkxsEZfGirRBF1s1UixG5XuA9aLQM7dKs01Fn/NkJe/eIid1VtP
+         1V9c8DODkxMj5etjID8h0ONvUJeIaGemxIs10flIOS8pLlNLBojoaVz/EOmQhKSt5iUf
+         sNCQvsv2h9AKyUO+DRPWzlG+29xnjgnu0nIuoMPjeHEib4VC0Ad4OWHPQAYgGd+YhwMW
+         55uY9p9aJtSDw3y9mDmEkyuNl3PPJrX6TaB8zn/Z+Oco8un1umnRVGtVJ8bx1kqVAjed
+         uGgDKKbJwOYeE57C0d9kOpKGFQ4WSTsbJISeOqU2wMZXyqsJc3IggB+xTzVzaIhWV4pN
+         EZeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PqPgRtzVantKyRNR1zZk8EcuOOdksOMCXe9nMbpmH0o=;
-        b=ZoQZhmDtIuMDMRgNDp4Sz43aleltc4MWi/64kbCcALnayD0PRW01Dno8W2tEJDvGhV
-         JJloJlCbdmLSdki03VwLZOGW/W5drJBg0AOtdkz9wkx7WnbY2VN3COIuAs44RuzwZe+f
-         vR4KGJJIKQU/JyLqWFuXvY/X39JIvCqgUcRJHShJAo0XWbk/GeIOQ7/QL/Ttl9oV9lFD
-         oJHyI6Ir5Dd92beDXE4GXY37npObNLcY2fIaztxMgOEtQKq2xG7pM/vcdy+VU93s0F2O
-         salNgokQYlDSeJH7/nCFZUlJ3ic5U+cKpmBg6SFuW/bCyosjtJlWo+quBa/GDDdOcji6
-         T82Q==
-X-Gm-Message-State: AOAM532xt4VmQcoSWwyTUF7jV4vFPHFEST9uSlAhfkuaiSUYaYQOzkxu
-        VGBB3QfwUkR/cEERgTeiHNRQ
-X-Google-Smtp-Source: ABdhPJzNqdjp6LlEtRCSQEo3DvznilMTpm/AJqjpAuo55QQR78RWQNlHDHM1hfTHqDgBvPVLQF71kg==
-X-Received: by 2002:a17:90a:e2ca:: with SMTP id fr10mr4533637pjb.18.1614691700590;
-        Tue, 02 Mar 2021 05:28:20 -0800 (PST)
-Received: from localhost.localdomain ([103.66.79.74])
-        by smtp.gmail.com with ESMTPSA id w1sm13027454pgs.15.2021.03.02.05.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 05:28:20 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, boris.brezillon@collabora.com,
-        Daniele.Palmas@telit.com, bjorn.andersson@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 2/2] mtd: rawnand: qcom: Return actual error code instead of -ENODEV
-Date:   Tue,  2 Mar 2021 18:57:57 +0530
-Message-Id: <20210302132757.225395-3-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210302132757.225395-1-manivannan.sadhasivam@linaro.org>
-References: <20210302132757.225395-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7L0BOqRe+13aQ5nTzLZo2I22iHREvV6oqm1AT8L/cvg=;
+        b=GWZwZWy9qmRRgjh+rzW9v6OqGakvCIXHjg0FskRdTYhz2OwySLJI72fhqmqWJsKn2u
+         pyAmO7uTNJ6Y7pySygY6ivIQhkwKsPsHZrMlMYhGf9Y5Iu5mBBqp9NJxSBT3DDqKJQiz
+         igNV6x12IWOGTALoz8qGhLyA9+RbsckLcxP/cPb9HY79VbQDjgTUUWhNygFYWU8rgrK5
+         3gplMfOrA9rWNFuAFLT+DwZ+LUQf+umBA0lc0Zj9QneB9lcUPqp9vQYx7qvc/yA+jvsI
+         0/FHckvBKpPjSlxv16pV0K0eHmWrCZwFd6LoQnSBnlbc+xgA5ydFOP5oPDTE/QXkYTIo
+         AQdg==
+X-Gm-Message-State: AOAM532t0kfwicwKCO8ifg5UBSPYjY5nivxESNUMb/zUnb7xxQc6s3U9
+        jOZZCDZVTmiO3LfQuOKsLaTUeg==
+X-Google-Smtp-Source: ABdhPJw9eHJTMelotSSOg71hzAPw3YXVnWisOTEJGBTWh28xPJGipgxc/LN7msOz1Qbj1qGcodyeVw==
+X-Received: by 2002:aa7:cf02:: with SMTP id a2mr18762312edy.59.1614691721960;
+        Tue, 02 Mar 2021 05:28:41 -0800 (PST)
+Received: from ?IPv6:2a02:768:2307:40d6::f9e? ([2a02:768:2307:40d6::f9e])
+        by smtp.gmail.com with ESMTPSA id y16sm16268059ejk.43.2021.03.02.05.28.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 05:28:41 -0800 (PST)
+Subject: Re: [PATCH v1] microblaze: tag highmem_setup() with __meminit
+To:     David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel test robot <lkp@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210301114749.47914-1-david@redhat.com>
+ <20210301221846.GA4744@localhost.localdomain>
+ <b38b353b-7138-373b-057a-a4fa4b4ab30e@redhat.com>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <2db45dcc-87a5-fe1c-c0e6-702edeedc246@monstr.eu>
+Date:   Tue, 2 Mar 2021 14:28:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <b38b353b-7138-373b-057a-a4fa4b4ab30e@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In qcom_probe_nand_devices() function, the error code returned by
-qcom_nand_host_init_and_register() is converted to -ENODEV in the case
-of failure. This poses issue if -EPROBE_DEFER is returned when the
-dependency is not available for a component like parser.
 
-So let's restructure the error handling logic a bit and return the
-actual error code in case of qcom_nand_host_init_and_register() failure.
 
-Fixes: c76b78d8ec05 ("mtd: nand: Qualcomm NAND controller driver")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+On 3/2/21 10:04 AM, David Hildenbrand wrote:
+> On 01.03.21 23:18, Oscar Salvador wrote:
+>> On Mon, Mar 01, 2021 at 12:47:49PM +0100, David Hildenbrand wrote:
+>>> With commit a0cd7a7c4bc0 ("mm: simplify free_highmem_page() and
+>>> free_reserved_page()") the kernel test robot complains about a warning:
+>>>
+>>> WARNING: modpost: vmlinux.o(.text.unlikely+0x23ac): Section mismatch in
+>>>    reference from the function highmem_setup() to the function
+>>>    .meminit.text:memblock_is_reserved()
+>>>
+>>> This has been broken ever since microblaze added highmem support,
+>>> because memblock_is_reserved() was already tagged with "__init" back
+>>> then -
+>>> most probably the function always got inlined, so we never stumbled over
+>>> it.
+>>
+>> It might be good to point out that we need __meminit instead of __init
+>> because microblaze platform does not define CONFIG_ARCH_KEEP_MEMBLOCK,
+>> and __init_memblock fallsback to that.
+>>
+>> (I had to go and look as I was puzzled :-) )
+>>
+>> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> 
+> Thanks!
+> 
+> Whoever feels like picking this up (@Andrew?) can you add
+> 
+> "We need __meminit because __init_memblock defaults to that without
+> CONFIG_ARCH_KEEP_MEMBLOCK" and __init_memblock is not used outside
+> memblock code.
+> 
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index c2dc99c1b2f1..54230f2c1a3f 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2952,7 +2952,7 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
- 	struct device *dev = nandc->dev;
- 	struct device_node *dn = dev->of_node, *child;
- 	struct qcom_nand_host *host;
--	int ret;
-+	int ret = -ENODEV;
- 
- 	for_each_available_child_of_node(dn, child) {
- 		host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
-@@ -2970,10 +2970,7 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
- 		list_add_tail(&host->node, &nandc->host_list);
- 	}
- 
--	if (list_empty(&nandc->host_list))
--		return -ENODEV;
--
--	return 0;
-+	return ret;
- }
- 
- /* parse custom DT properties here */
+Applied with this line added.
+
+Thanks,
+Michal
+
+
 -- 
-2.25.1
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
