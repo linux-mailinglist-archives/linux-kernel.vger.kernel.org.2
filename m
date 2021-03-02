@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A2932AA4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8FB32AA3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835618AbhCBTSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:18:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1579341AbhCBQrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:47:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23F9564F11;
-        Tue,  2 Mar 2021 16:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614702270;
-        bh=8uz1l9NTt3hs+m2jI4ElPQerrK5vVk9t1pZ2SpFgykQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pGF9z6RgA0u650rXYe89FKmW51l3PMC+fL/yyNP33YHINw4FrR+vNdfrHc6OKDY8K
-         MkKmFnHFF8ozsbCqYN5sMuuvQe4z0eaHVTVaKTbebfJ8PwqjR/TQ39XqY7roGECHNU
-         sRULrB9zXc4FZ6ldvWNa5TEX9z3lpNc69neUmizzN0hNSpmn1p08/ZZYZo1hTan2M9
-         y6IfptLafpwQUynNSBG09vkBJk/PazqGm3VPf9h2EmUXEpSClc+bI/Q0nsI40251jY
-         qMWbAkk7VruGSQi3S3AczTwQmoZGmNqFWLDf00SeQAws8AKaxbrfTdzbt93FnnqeN1
-         VvpD07fe8RjNA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E349640CD9; Tue,  2 Mar 2021 13:24:27 -0300 (-03)
-Date:   Tue, 2 Mar 2021 13:24:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/6] coresight: Patches for v5.12 (perf tools)
-Message-ID: <YD5mu7Df3fXiWZuk@kernel.org>
-References: <20210224164835.3497311-1-mathieu.poirier@linaro.org>
- <YD41GUtuq8fVa4Q6@kernel.org>
- <CAJ9a7ViKLg8vjBnuA1eWh8b5-PN7RryefyOV1qoX9Zu362Eq8Q@mail.gmail.com>
+        id S1581727AbhCBTRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:17:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1839715AbhCBQh5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:37:57 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48BBC061A28
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:25:05 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id r23so24690950ljh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:25:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NgzcgIB23RMi47QVqd3ju8TPfRDtVMdCk8UEZvI/KOk=;
+        b=oCfgGQA0IMiav6FcMToDhsbb8L8fZl0A4rdm2RSIeKLmKD4v23sBbEtqXkGfisoYqP
+         Z2WYGGTvNcVzs09UjGiVNCaSpp+l/27BGwk5hWlvB3DOvAZvWit9pT6LLahK9EAf6i9U
+         3zilEKSFq4mPZzw5xhrTXu00mk7aII1gw+OoL/Thxo3OfHE0LP8UU6F0Getd/qgTeP6u
+         Um9uxExjowErjUNRPmFK/iW4vO0ByRevv8FZ/KR60fQ+XODDZkZDoc8BRZLim1ax3osw
+         VWKcyOvQ1ZNrgAcW4FCaeMZjmJLcorURE2UcRNY4ORS1vrfosgAe4Yqf/katbzWLzfSL
+         QFXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NgzcgIB23RMi47QVqd3ju8TPfRDtVMdCk8UEZvI/KOk=;
+        b=fYbdzawK4+R7sKb6SMVP94Di5sk2FbLVHM2ruDrK51N+OBVQSWxEy5+Q0MEAIUlLAn
+         YQf7QJ+6GaEq2I5+4s2OAHiNCDOj0sxWv/nR1Ahyjue4qeossmA2kdKwUmgrtg9a3zwI
+         fMbB+f8C/uUDKG2Rb39GXQco7Vq84/i6a08dG6zcPQhtqv4H6Gk55ivhSQcDehdV23Gh
+         bcqyvyLZrphoq/iTyXRYqWcQodUnYxu1Rg/zNSDePDGPlIbgg9gaA4dFMiwD1uf0Eyg+
+         eUCkdl6soacAJTG7uv92seZyCYrQe/ju863vthsfoEIVqxAV3tqmj6lERPZA1RE+wJ56
+         +qdw==
+X-Gm-Message-State: AOAM530D0sabc/OvRkXvXNfj2PiBNH1psNaYLDKGW35aC5/5YSFs0Vh0
+        VtIVYheu1EKHoJ2/IoHngS8g9NbdFq0yBIcqMmFxgagfjhk0Gg==
+X-Google-Smtp-Source: ABdhPJy+IkGD8KvWzg2c0gA6CgGZv+VLjkXbozOe70ttJzYLpjRi1N2NxIJmy80zw1y0cZQRV1GPl5piB9vX8lMCH78=
+X-Received: by 2002:a2e:1649:: with SMTP id 9mr4198706ljw.74.1614702304270;
+ Tue, 02 Mar 2021 08:25:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ9a7ViKLg8vjBnuA1eWh8b5-PN7RryefyOV1qoX9Zu362Eq8Q@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210301165932.62352-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210301165932.62352-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 17:24:53 +0100
+Message-ID: <CACRpkdaF4acg2MyKS=nvzPk2gAroUZTiQBixtociqKioFCyPiw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] lib/cmdline: Export next_arg() for being used in modules
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Mar 02, 2021 at 02:23:14PM +0000, Mike Leach escreveu:
-> On Tue, 2 Mar 2021 at 12:52, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > Em Wed, Feb 24, 2021 at 09:48:29AM -0700, Mathieu Poirier escreveu:
-> > > I noticed there is a couple of patchsets [1][2] that haven't made it
-> > > to your tree for the coming v5.12 cycle.  Do you think that can still
-> > > be done?
+On Mon, Mar 1, 2021 at 6:00 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-> > > I tallied the patches here to make it easier for you to pick up.
+> At least one module will benefit from using next_arg() helper.
+> Let's export it for that module and others if they consider it
+> helpful.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> > > Applies cleanly on perf/core (84b7725536d8)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> > > [1]. https://lore.kernel.org/lkml/20210202214040.32349-1-mike.leach@linaro.org/
-> > > [2]. https://lore.kernel.org/lkml/20210213113220.292229-1-leo.yan@linaro.org/
-
-> > These are not applying right now, I've pushed what I have to
-> > tmp.perf/core, please take a look, I'll get back to this after
-> > processing fixes for v5.12 and what is outstanding for v5.13.
- 
-> I've tried [1] on both Linux-5.12-rc1 and your tmp.perf/core and it
-> applies cleanly on both.
-
-Can you please try one more time, these are the last csets on this
-branch:
-
-  $ git log --oneline acme/tmp.perf/core -10
-  8e1488a46dcf73b1 (HEAD -> perf/core, five/perf/core, acme/tmp.perf/core, acme.korg/tmp.perf/core) perf cs-etm: Detect pid in VMID for kernel running at EL2
-  47f0d94c203751dd perf cs-etm: Add helper cs_etm__get_pid_fmt()
-  30cb76aabfb4deab perf cs-etm: Support PID tracing in config
-  8c559e8d68630d64 perf cs-etm: Fix bitmap for option
-  2bb4ccbd95d7fbf5 tools headers UAPI: Update tools' copy of linux/coresight-pmu.h
-  42b2b570b34afb5f perf cs-etm: Update ETM metadata format
-  83bf6fb8b076c72f perf vendor events power9: Remove unsupported metrics
-  34968b9327c83589 perf buildid-cache: Add test for PE executable
-  9bb8b74bdb186bd3 perf docs: Add man pages to see also
-  d9fd5a718977702f perf tools: Generate mips syscalls_n64.c syscall table
-  $
-
-I think it doesn't apply because I applied a series from Mathieu
-touching files affected by those two patchkits.
-
-- Arnaldo
- 
-> Let me know if there is anything else I can try.
-> 
-> Thanks
-> 
-> Mike
-> 
-> 
-> 
-> -- 
-> Mike Leach
-> Principal Engineer, ARM Ltd.
-> Manchester Design Centre. UK
-
--- 
-
-- Arnaldo
+Yours,
+Linus Walleij
