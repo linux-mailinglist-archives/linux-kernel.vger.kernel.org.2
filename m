@@ -2,187 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8557432A702
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EDC32A75B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838993AbhCBPzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:55:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351191AbhCBNfM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:35:12 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C41C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:34:16 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id m1so2762955wml.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:34:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZdRgbB/+xhU+BLrEYW5FodZNgcXrZTzEEyZSROXdiNs=;
-        b=AYlTlq4uW3iRg29N/HN0EX4sWg7+Le02hNVo3M/Yt9O05X/IY8T6751/c1wmEoCY0L
-         biLdWKDhwHXiyra5neWncvah9XDw0cZFZJYMMmR2gsOLFy14QaWJtQ2kIHUgb8mfRkSx
-         /6LKYUXahNk7VB85kjvAsvXfx364A2h5uMQWfrZ6YMhc35f0NceLI5S+fQ1oG2z19JHa
-         O9v7dj6PPis7ILJNbQNLncYb9BLabzUFOYX1exg4oixDpugNo8v9EqICPC1JiRgX2+JI
-         VRU8jezhLwGk8aPjOVf05vtVleyBrItTHD93svBy/b403AaUGdbqIfMBVCDNNC9s8I/Q
-         3q2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZdRgbB/+xhU+BLrEYW5FodZNgcXrZTzEEyZSROXdiNs=;
-        b=m49ZWTn+IyWIEDHSoaKrOv1HOkPLhUXAdFZ5Qcxm2AdnDAFKTTVEuBu5EjW1hGmplg
-         s4fvod6bc+xzAkvPgS43c4fEQiefc/KFNsdge45NcLemx1Dw6NZ5L4VvDnsXrsR9QVXQ
-         LP5u9LLIKP3c5u/aKEU1hfBv1d4dLg2bmaEv6z9o2tEbkHIU8t6Tiy6fD2eY2hMu25EO
-         FENcRPe5re+JM/bEYmVg0WcTIjIvWJQoicblzt30oSDWk9UbGhE8TI69VmgmIOwYYx8G
-         rWCbTUe9B4KjxRkVMwhH9LGlqs9bPIbB6vHDypMWoFU8dc7NglHIHT+TF/DlcYXj5MjQ
-         esvA==
-X-Gm-Message-State: AOAM532Davwt1O8ue4GyXVIfno7eL8aek187KlivX1nDgcPzFlOUEdmL
-        rXUcoo8fuj2u4Cuqm9E5oAo2Ug==
-X-Google-Smtp-Source: ABdhPJyD6nClABQXADENbFNrOJPev1ANCgFMGR64xibMhC4BJsr7IRE+y2o+qXFj/OTvruUkwmPhYg==
-X-Received: by 2002:a7b:cb05:: with SMTP id u5mr4092039wmj.46.1614692054679;
-        Tue, 02 Mar 2021 05:34:14 -0800 (PST)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
-        by smtp.googlemail.com with ESMTPSA id w18sm2428636wrr.7.2021.03.02.05.34.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 05:34:14 -0800 (PST)
-Subject: Re: [PATCH v2 08/10] clocksource/drivers/hyper-v: Handle sched_clock
- differences inline
-To:     Michael Kelley <mikelley@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
- <1614561332-2523-9-git-send-email-mikelley@microsoft.com>
- <2c320759-4e0e-752f-f3e8-7594cc1d544f@linaro.org>
- <MWHPR21MB1593812919AF130E61C2A1CFD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6c0b3487-5f99-764c-6dc7-70454916cd57@linaro.org>
-Date:   Tue, 2 Mar 2021 14:34:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1446400AbhCBQNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:13:35 -0500
+Received: from mga07.intel.com ([134.134.136.100]:56274 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1376694AbhCBNin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:38:43 -0500
+IronPort-SDR: vc5qYVqY5qb8LyqX76SgGk5ktxsMV9Rby7ivEHQIyPIe0NN6en5ve2vufnva56UoeYV6RryTJV
+ AfriyL33aVhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250856195"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="250856195"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 05:35:55 -0800
+IronPort-SDR: +eBSO8i7q0dLr1Wa0uO8cwePxTtFaCaNSgmefH9c0+SxGRGWcugvC7TryGhqan+Smdopzct7Lm
+ y288fYruUFxQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="585939105"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 02 Mar 2021 05:35:53 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id DB4E913A; Tue,  2 Mar 2021 15:35:52 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: [PATCH v1 1/1] ACPI: bus: Constify is_acpi_node() and friends (part 2)
+Date:   Tue,  2 Mar 2021 15:35:48 +0200
+Message-Id: <20210302133548.88230-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB1593812919AF130E61C2A1CFD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/2021 02:38, Michael Kelley wrote:
-> From: Daniel Lezcano <daniel.lezcano@linaro.org> Sent: Monday, March 1, 2021 6:25 AM
->>
->> On 01/03/2021 02:15, Michael Kelley wrote:
->>> While the Hyper-V Reference TSC code is architecture neutral, the
->>> pv_ops.time.sched_clock() function is implemented for x86/x64, but not
->>> for ARM64. Current code calls a utility function under arch/x86 (and
->>> coming, under arch/arm64) to handle the difference.
->>>
->>> Change this approach to handle the difference inline based on whether
->>> GENERIC_SCHED_CLOCK is present.  The new approach removes code under
->>> arch/* since the difference is tied more to the specifics of the Linux
->>> implementation than to the architecture.
->>>
->>> No functional change.
->>>
->>> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
->>> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
->>> ---
->>
->> [ ... ]
->>
->>> +/*
->>> + * Reference to pv_ops must be inline so objtool
->>> + * detection of noinstr violations can work correctly.
->>> + */
->>> +static __always_inline void hv_setup_sched_clock(void *sched_clock)
->>> +{
->>> +#ifdef CONFIG_GENERIC_SCHED_CLOCK
->>> +	/*
->>> +	 * We're on an architecture with generic sched clock (not x86/x64).
->>> +	 * The Hyper-V sched clock read function returns nanoseconds, not
->>> +	 * the normal 100ns units of the Hyper-V synthetic clock.
->>> +	 */
->>> +	sched_clock_register(sched_clock, 64, NSEC_PER_SEC);
->>> +#else
->>> +#ifdef CONFIG_PARAVIRT
->>> +	/* We're on x86/x64 *and* using PV ops */
->>> +	pv_ops.time.sched_clock = sched_clock;
->>> +#endif
->>> +#endif
->>> +}
->> Please refer to:
->>
->> Documentation/process/coding-style.rst
->>
->> Section 21)
->>
->> [ ... ]
->>
->> Prefer to compile out entire functions, rather than portions of
->> functions or portions of expressions.
->>
->> [ ... ]
->>
-> 
-> OK.  I'll rework the #ifdef in v3 of the patch set.  Is the following
-> the preferred approach?
+The commit 8b9d6802583a ("ACPI: Constify acpi_bus helper functions,
+switch to macros") only changed functions for CONFIG_ACPI=y case.
+This part adjusts the rest.
 
-Yes but with an indentation and comment to describe the section end.
+Fixes: 8b9d6802583a ("ACPI: Constify acpi_bus helper functions, switch to macros")
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/acpi.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-eg.
-
-#ifdef A
-#else
-# ifdef B
-...
-# else
-# endif /* B */
-#endif /* A */
-
-> #ifdef CONFIG_GENERIC_SCHED_CLOCK
-> static __always_inline void hv_setup_sched_clock(void *sched_clock)
-> {
-> 	sched_clock_register(sched_clock, 64 NSEC_PER_SEC);
-> }
-> #else
-> #ifdef CONFIG_PARAVIRT
-> static __always_inline void hv_setup_sched_clock(void *sched_clock)
-> {
-> 	pv_ops.time.sched_clock = sched_clock:
-> }
-> #else
-> static __always_inline void hv_setup_sched_clock(void *sched_clock) {}
-> #endif
-> #endif
-
-Or
-
-#ifdef CONFIG_GENERIC_SCHED_CLOCK
-...
-#elif defined CONFIG_PARAVIRT
-...
-#else /* !CONFIG_GENERIC_SCHED_CLOCK && !CONFIG_PARAVIRT */
-...
-#endif /* CONFIG_GENERIC_SCHED_CLOCK */
-
-
-
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 095bf2b147c7..fcdaab723916 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -746,12 +746,12 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv)
+ 
+ static inline void acpi_dev_put(struct acpi_device *adev) {}
+ 
+-static inline bool is_acpi_node(struct fwnode_handle *fwnode)
++static inline bool is_acpi_node(const struct fwnode_handle *fwnode)
+ {
+ 	return false;
+ }
+ 
+-static inline bool is_acpi_device_node(struct fwnode_handle *fwnode)
++static inline bool is_acpi_device_node(const struct fwnode_handle *fwnode)
+ {
+ 	return false;
+ }
+@@ -761,7 +761,7 @@ static inline struct acpi_device *to_acpi_device_node(struct fwnode_handle *fwno
+ 	return NULL;
+ }
+ 
+-static inline bool is_acpi_data_node(struct fwnode_handle *fwnode)
++static inline bool is_acpi_data_node(const struct fwnode_handle *fwnode)
+ {
+ 	return false;
+ }
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.30.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
