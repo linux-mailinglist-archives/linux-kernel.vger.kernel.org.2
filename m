@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075C232A1B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4123D32A1B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349255AbhCBG5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:57:54 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17151 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344556AbhCBF0d (ORCPT
+        id S1349247AbhCBG5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:57:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344564AbhCBF0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 00:26:33 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603dcbbf0009>; Mon, 01 Mar 2021 21:23:11 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Mar 2021 05:23:09 +0000
-Date:   Tue, 2 Mar 2021 07:23:06 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Jason Wang <jasowang@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH] vdpa/mlx5: Fix wrong use of bit numbers
-Message-ID: <20210302052306.GA227464@mtl-vdi-166.wap.labs.mlnx>
-References: <20210301062817.39331-1-elic@nvidia.com>
- <959916f2-5fc9-bdb4-31ca-632fe0d98979@redhat.com>
- <20210301103214-mutt-send-email-mst@kernel.org>
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7B3C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 21:25:36 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id x29so4867409pgk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 21:25:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pjnIqWr4W5c6Rfpfq+1B4oObRaCw2aXuDrZPon0JAAw=;
+        b=QDGCef49J+YEYWjt3GPyAryWMv4lwEf5kBZEzzM/dbIWG4gd9wu57ZJUFjlbFCZ5UL
+         NB/GBOLvqyfQjS3RD/ocetVm6mSMDipqVXazooMCN47fHFY4xyHHQNpOOneTAxehas6n
+         10li34CgfQXpAbo7r31CLx5apAdX4p1TRUwf+q2JDkZWoUt0gdnL2hDunCmFPsJT2PiC
+         QEDkisfE+MmRrbfxAEDtZVBiaxy7umr0gGpU6mIhG/PJVhSdFUceQ5avScWq79Pu5qX8
+         M+zhjhN4uO9tZCd6aBGN5ZXC8xp0sueOqemkv/5PBqyDN62DlaydxwyZ9JxRaVy951IF
+         q5jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pjnIqWr4W5c6Rfpfq+1B4oObRaCw2aXuDrZPon0JAAw=;
+        b=orFemnyG1S99waN/zah0mUmmMKT3ZKBBmHiceEjw1s2c70TXonDlGjPjOSdd7AaoFM
+         NXzpB7mwH9az6E6SZrzQTPfqzF/wGJpKthqZhqnPBEZkXoy+lwXe79PVijf0SjYe9bGG
+         okH91DvnvmnF8cfFU/AvBqyUl6qkHa5BotAd+kEr4eFzork6c+utwUQvs3R+SwuIst23
+         agJn2bWM7/iBj9QMkk7sxEP7cOm8ZXb3EXHp/jMBYSvdFjR8Z4oaI3pPUcMPghmN253e
+         jio5AVVy7f/MBb8jVMPa9Ed7JAC65g/evtwCzaMr5fCcu5z3YEiGwxrBk9USUUQJuxL1
+         cTVQ==
+X-Gm-Message-State: AOAM532D6jzpTvywqnViY/8GSPMSL1li9bD2O8DPlD71+gishS51IQZo
+        DMnyjhyp0moRs8Iwzgjz8ir5TQ==
+X-Google-Smtp-Source: ABdhPJwKpZ7suTk61XskKgNbSXO/rLU1BT7eJSqyuOfbUaVz+DIW5sZQGdY3MkGgzlDoGuLAI+c/fw==
+X-Received: by 2002:a05:6a00:1693:b029:1ec:b0af:d1d with SMTP id k19-20020a056a001693b02901ecb0af0d1dmr18206446pfc.42.1614662735639;
+        Mon, 01 Mar 2021 21:25:35 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id a136sm19383970pfa.66.2021.03.01.21.25.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Mar 2021 21:25:35 -0800 (PST)
+Date:   Tue, 2 Mar 2021 10:55:33 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210302052533.syriswm7gmainpnb@vireshk-i7>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <20210302044214.gnnce5ptwehrsnpc@vireshk-i7>
+ <1e01448f-52f6-3d39-6794-d140637fdcc3@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210301103214-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614662591; bh=wBB6MQw+SyLdjXxml/9vKVN7x4w0HR+GxTmyhn7I07s=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:Content-Transfer-Encoding:
-         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=MwbEyNcOtell+6MV1oUSSBHgilUfxVGPpik8njqbSYxQi2TAsjTOF/VPHDZ+1L9Gs
-         fBQ87O/2oGRs6twXJePEiOe/E9Cl1/y9ttnuCOGp9hqVlC8gYKEsL6EqvaHLHGbKFS
-         IsmNB4N5tAv5DAnGG8D0BGF7aPfXzt+jNzRJ9w5fRocQIC2Qpa5/sJsq3EN6ukhVOK
-         7q81QIzIv4SnXx8QuapwlY+YsIpgwUTreR8CkH2/s0pLO7YI9KcXlAzUYf1UHkZCS+
-         ifaF595go020tUNXn0qxDHcmWGorVR52oMghdbp720oH5KFoFGZ5okajDx6TYu4DAd
-         0YeVslCVZ+8Ug==
+In-Reply-To: <1e01448f-52f6-3d39-6794-d140637fdcc3@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 10:33:14AM -0500, Michael S. Tsirkin wrote:
-> On Mon, Mar 01, 2021 at 03:52:45PM +0800, Jason Wang wrote:
-> >=20
-> > On 2021/3/1 2:28 =E4=B8=8B=E5=8D=88, Eli Cohen wrote:
-> > > VIRTIO_F_VERSION_1 is a bit number. Use BIT_ULL() with mask
-> > > conditionals.
-> > >=20
-> > > Also, in mlx5_vdpa_is_little_endian() use BIT_ULL for consistency wit=
-h
-> > > the rest of the code.
-> > >=20
-> > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 d=
-evices")
-> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> >=20
-> >=20
-> > Acked-by: Jason Wang <jasowang@redhat.com>
->=20
-> And CC stable I guess?
+On 02-03-21, 13:21, Jie Deng wrote:
+> 
+> On 2021/3/2 12:42, Viresh Kumar wrote:
+> > On 01-03-21, 14:41, Jie Deng wrote:
+> > > +static int virtio_i2c_send_reqs(struct virtqueue *vq,
+> > > +				struct virtio_i2c_req *reqs,
+> > > +				struct i2c_msg *msgs, int nr)
+> > > +{
+> > > +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
+> > > +	int i, outcnt, incnt, err = 0;
+> > > +	u8 *buf;
+> > > +
+> > > +	for (i = 0; i < nr; i++) {
+> > > +		if (!msgs[i].len)
+> > > +			break;
+> > > +
+> > > +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+> > And this won't work for 10 bit addressing right? Don't we support that
+> > in kernel ?
+> > 
+> >  From Spec:
+> > 
+> > \begin{tabular}{ |l||l|l|l|l|l|l|l|l|l|l|l|l|l|l|l|l| }
+> > \hline
+> > Bits           & 15 & 14 & 13 & 12 & 11 & 10 & 9  & 8  & 7  & 6  & 5  & 4  & 3  & 2  & 1  & 0 \\
+> > \hline
+> > 7-bit address  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & 0  & A6 & A5 & A4 & A3 & A2 & A1 & A0 & 0 \\
+> > \hline
+> > 10-bit address & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 & 1  & 1  & 1  & 1  & 0  & A9 & A8 & 0 \\
+> > \hline
+> > \end{tabular}
+> Currently, to make things simple, this driver only supports 7 bit mode.
+> It doesn't declare "I2C_FUNC_10BIT_ADDR" in the functionality.
+> We may add in the future according to the need.
 
-Is this a question or a request? :-)
+Okay, fair enough. Please add such details somewhere in the code so
+people can understand it. You can very well add these at the top of
+the file as well, in the general header.
 
->=20
-> >=20
-> > > ---
-> > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
-> > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/ne=
-t/mlx5_vnet.c
-> > > index dc7031132fff..7d21b857a94a 100644
-> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > @@ -821,7 +821,7 @@ static int create_virtqueue(struct mlx5_vdpa_net =
-*ndev, struct mlx5_vdpa_virtque
-> > >   	MLX5_SET(virtio_q, vq_ctx, event_qpn_or_msix, mvq->fwqp.mqp.qpn);
-> > >   	MLX5_SET(virtio_q, vq_ctx, queue_size, mvq->num_ent);
-> > >   	MLX5_SET(virtio_q, vq_ctx, virtio_version_1_0,
-> > > -		 !!(ndev->mvdev.actual_features & VIRTIO_F_VERSION_1));
-> > > +		 !!(ndev->mvdev.actual_features & BIT_ULL(VIRTIO_F_VERSION_1)));
-> > >   	MLX5_SET64(virtio_q, vq_ctx, desc_addr, mvq->desc_addr);
-> > >   	MLX5_SET64(virtio_q, vq_ctx, used_addr, mvq->device_addr);
-> > >   	MLX5_SET64(virtio_q, vq_ctx, available_addr, mvq->driver_addr);
-> > > @@ -1578,7 +1578,7 @@ static void teardown_virtqueues(struct mlx5_vdp=
-a_net *ndev)
-> > >   static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev =
-*mvdev)
-> > >   {
-> > >   	return virtio_legacy_is_little_endian() ||
-> > > -		(mvdev->actual_features & (1ULL << VIRTIO_F_VERSION_1));
-> > > +		(mvdev->actual_features & BIT_ULL(VIRTIO_F_VERSION_1));
-> > >   }
-> > >   static __virtio16 cpu_to_mlx5vdpa16(struct mlx5_vdpa_dev *mvdev, u1=
-6 val)
->=20
+-- 
+viresh
