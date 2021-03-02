@@ -2,95 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CA432AE15
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC5032AE14
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360507AbhCBWV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383597AbhCBVQ2 (ORCPT
+        id S2360499AbhCBWVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:21:12 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:60963 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1383579AbhCBVQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 16:16:28 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38D1C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 13:11:46 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id k68so14327825qke.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 13:11:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=2Mto1DCOxlLzDfjtf+5qxXYDPOWq6BI6lEfSm4q36Mg=;
-        b=BgrR/JyWnWZom3nQVD3sD8sQb30jz/EPZEoMRT530G/gEBFzea8CpgKsLFmoDI8DMR
-         fZTZjDjq218dl+yec+0zPBB0+g9NzYV+4taJdVtA0aHlmHHAYkGou6/Cv94CdSXnd+l2
-         l2D7pKf2ds1GxjXK1Ud5Lng1DHbLZDVlEC9xhe6Zg0xifLBn2XWQ7A5DETVWNcqc18rg
-         7lZCNP8hFAd7tKGP16dEqQPrdi18m+lB0y9HHFU3VVPNfQIpFF5H52NWkad8tWNi/VtA
-         kWbHj7gu+i4LkxgC5iED/RL7LqVTvSFGFBpp4hghOLdL8RgYbYy86CzlrCutn/mSoTPS
-         mHLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=2Mto1DCOxlLzDfjtf+5qxXYDPOWq6BI6lEfSm4q36Mg=;
-        b=t8TqV0e6BMvUntlhv2abjY1hmj2EyMe3w9x93I0krR4bQN7mkuaDD7XjGRf31LT8il
-         3P8ULbpr+atYDH9ib8fr+KfnjgSVfYKteZuD5S4FaqnPoi2U7owdOOPiwLnS8+wttue5
-         1Oyw1hLYSmxzvAzV2lDMkjrftJinQeZjrP59S6N95qnydnOo33s35N0g+iiV0o6ND5qC
-         zWePOf2w5Y1ZoduJCSYD4T9frVUE22DTsnFgrcYvO8pST1Lt2mFrQYg+mjgIFkH+RHLq
-         UjTaYW04pPx/ZyH+kO4vcZTCwvw3vVVhcsIJew02muRXK/OBLc05a9jGXIn2bljUAv7X
-         iRwg==
-X-Gm-Message-State: AOAM530eZIHhQkty6iBj5bdMOkHW/qjCy27OgF02LlIV/mXyj1wWkvxV
-        zzxgsxsR38c92Q8XYClkG9nfc+X7GYyMkD0=
-X-Google-Smtp-Source: ABdhPJxKZs+nC8iQ+F7QUYDAfQZIEYEWJ+TjIi+Q9Kq0yfqXcooPjSo2y72D6ySnIjE8v/M3Ma4LcX5lGMJtLXo=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:a1ad:fce1:8a40:59b6])
- (user=saravanak job=sendgmr) by 2002:a0c:f946:: with SMTP id
- i6mr5480376qvo.40.1614719506149; Tue, 02 Mar 2021 13:11:46 -0800 (PST)
-Date:   Tue,  2 Mar 2021 13:11:32 -0800
-In-Reply-To: <20210302211133.2244281-1-saravanak@google.com>
-Message-Id: <20210302211133.2244281-4-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v1 3/3] Revert "Revert "driver core: Set fw_devlink=on by default""
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Received: (qmail 1545136 invoked by uid 1000); 2 Mar 2021 16:14:46 -0500
+Date:   Tue, 2 Mar 2021 16:14:46 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, paulmck@kernel.org, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210302211446.GA1541641@rowland.harvard.edu>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
+On Tue, Mar 02, 2021 at 07:46:27PM +0100, Björn Töpel wrote:
+> Hi!
+> 
+> Firstly; The long Cc-list is to reach the LKMM-folks.
+> 
+> Some background; the XDP sockets use a ring-buffer to communicate
+> between the kernel and userland. It's a
+> single-consumer/single-producer ring, and described in
+> net/xdp/xsk_queue.h.
+> 
+> --8<---
+> /* The structure of the shared state of the rings are the same as the
+>  * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
+>  * ring, the kernel is the producer and user space is the consumer. For
+>  * the Tx and fill rings, the kernel is the consumer and user space is
+>  * the producer.
+>  *
+>  * producer                         consumer
+>  *
+>  * if (LOAD ->consumer) {           LOAD ->producer
+>  *                    (A)           smp_rmb()       (C)
+>  *    STORE $data                   LOAD $data
+>  *    smp_wmb()       (B)           smp_mb()        (D)
+>  *    STORE ->producer              STORE ->consumer
+>  * }
+>  *
+>  * (A) pairs with (D), and (B) pairs with (C).
+> ...
+> -->8---
+> 
+> I'd like to replace the smp_{r,w,}mb() barriers with acquire-release
+> semantics [1], without breaking existing userspace applications.
+> 
+> So, I figured I'd use herd7 and the LKMM model to build a litmus test
+> for the barrier version, then for the acquire-release version, and
+> finally permutations of both.
+> 
+> The idea is to use a one element ring, with a state machine outlined
+> in the litmus test.
+> 
+> The basic test for the existing smp_{r,w,}mb() barriers looks like:
+> 
+> $ cat spsc-rb+1p1c.litmus
+> C spsc-rb+1p1c
+> 
+> // Stupid one entry ring:
+> // prod cons     allowed action       prod cons
+> //    0    0 =>       prod          =>   1    0
+> //    0    1 =>       cons          =>   0    0
+> //    1    0 =>       cons          =>   1    1
+> //    1    1 =>       prod          =>   0    1
+> 
+> { prod = 1; }
+> 
+> // Here, we start at prod==1,cons==0, data==0, i.e. producer has
+> // written data=0, so from here only the consumer can start, and should
+> // consume data==0. Afterwards, producer can continue and write 1 to
+> // data. Can we enter state prod==0, cons==1, but consumer observerd
+> // the write of 1?
+> 
+> P0(int *prod, int *cons, int *data)
+> {
+>     int p;
+>     int c;
+>     int cond = 0;
+> 
+>     p = READ_ONCE(*prod);
+>     c = READ_ONCE(*cons);
+>     if (p == 0)
+>         if (c == 0)
+>             cond = 1;
+>     if (p == 1)
+>         if (c == 1)
+>             cond = 1;
+> 
+>     if (cond) {
+>         smp_mb();
+>         WRITE_ONCE(*data, 1);
+>         smp_wmb();
+>         WRITE_ONCE(*prod, p ^ 1);
+>     }
+> }
+> 
+> P1(int *prod, int *cons, int *data)
+> {
+>     int p;
+>     int c;
+>     int d = -1;
+>     int cond = 0;
+> 
+>     p = READ_ONCE(*prod);
+>     c = READ_ONCE(*cons);
+>     if (p == 1)
+>         if (c == 0)
+>             cond = 1;
+>     if (p == 0)
+>         if (c == 1)
+>             cond = 1;
+> 
+>     if (cond == 1) {
+>         smp_rmb();
+>         d = READ_ONCE(*data);
+>         smp_mb();
+>         WRITE_ONCE(*cons, c ^ 1);
+>     }
+> }
+> 
+> exists( 1:d=1 /\ prod=0 /\ cons=1 );
+> 
+> --
+> 
+> The weird state changing if-statements is because that I didn't get
+> '&&' and '||' to work with herd.
+> 
+> When this is run:
+> 
+> $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+> Test spsc-rb+1p1c Allowed
+> States 2
+> 1:d=0; cons=1; prod=0;
+> 1:d=0; cons=1; prod=1;
+> No
+> Witnesses
+> Positive: 0 Negative: 2
+> Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+> Observation spsc-rb+1p1c Never 0 2
+> Time spsc-rb+1p1c 0.04
+> Hash=b399756d6a1301ca5bda042f32130791
+> 
+> Now to my question; In P0 there's an smp_mb(). Without that, the d==1
+> can be observed from P1 (consumer):
+> 
+> $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+> Test spsc-rb+1p1c Allowed
+> States 3
+> 1:d=0; cons=1; prod=0;
+> 1:d=0; cons=1; prod=1;
+> 1:d=1; cons=1; prod=0;
+> Ok
+> Witnesses
+> Positive: 1 Negative: 2
+> Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+> Observation spsc-rb+1p1c Sometimes 1 2
+> Time spsc-rb+1p1c 0.04
+> Hash=0047fc21fa77da9a9aee15e35ec367ef
 
-Since all reported issues due to fw_devlink=on should be addressed by
-this series, revert the revert. fw_devlink=on Take II.
+This result is wrong, apparently because of a bug in herd7.  There 
+should be control dependencies from each of the two loads in P0 to each 
+of the two stores, but herd7 doesn't detect them.
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/base/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Maybe Luc can find some time to check whether this really is a bug and 
+if it is, fix it.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 45c75cc96fdc..de518178ac36 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1538,7 +1538,7 @@ static void device_links_purge(struct device *dev)
- #define FW_DEVLINK_FLAGS_RPM		(FW_DEVLINK_FLAGS_ON | \
- 					 DL_FLAG_PM_RUNTIME)
- 
--static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_PERMISSIVE;
-+static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_ON;
- static int __init fw_devlink_setup(char *arg)
- {
- 	if (!arg)
--- 
-2.30.1.766.gb4fecdf3b7-goog
+> In commit c7f2e3cd6c1f ("perf: Optimize ring-buffer write by depending
+> on control dependencies") removes the corresponding smp_mb(), and also
+> the circular buffer in circular-buffers.txt (pre commit 6c43c091bdc5
+> ("documentation: Update circular buffer for
+> load-acquire/store-release")) is missing the smp_mb() at the
+> producer-side.
+> 
+> I'm trying to wrap my head around why it's OK to remove the smp_mb()
+> in the cases above? I'm worried that the current XDP socket ring
+> implementation (which is missing smp_mb()) might be broken.
 
+Because of the control dependencies, the smp_mb isn't needed.  The 
+dependencies will order both of the stores after both of the loads.
+
+Alan Stern
