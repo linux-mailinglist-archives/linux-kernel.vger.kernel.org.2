@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9DF32AD80
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2198E32AD83
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837799AbhCBV7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:59:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        id S1837828AbhCBV7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1581634AbhCBTBQ (ORCPT
+        with ESMTP id S1835346AbhCBTCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:01:16 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E251C0617AA;
-        Tue,  2 Mar 2021 11:00:14 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id b15so2554347pjb.0;
-        Tue, 02 Mar 2021 11:00:14 -0800 (PST)
+        Tue, 2 Mar 2021 14:02:52 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA71C06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 11:01:15 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 201so14442534pfw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 11:01:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:newsgroups:references:from:message-id:date
+        h=sender:subject:to:newsgroups:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Pm2aM6FEgY+3tAqdPcwvE3RwWA9gxzo2YpOjuF17cv8=;
-        b=AWkypi6kEjBrXnQanyv1xj1pAvw7NlbLFHxY6hoohSjAaPeKGWIFd3M81Sag8pdaoP
-         +JPVudjBLkVHVlG+41WBpr1mAUV6lkiBp7iT3t6w4tww08wHWhNyK64lATI/D7n9+vJw
-         bnF2U78ssFQ9aCHREawwYrs9s8u4debDn/V6z+uFBNNkupCO1Hyionu886RnqIlACM49
-         DN41Zkwo7XpblLXpV4IBdJ9J7wKMHFhD8VZgYvnd1y9hpQnUjLypc/VnLVavowuLW0J0
-         BnpjwTeHpv3CSASet/dblY2H7nEeeoEH9T2z8v6SohRwU1CueqpUGJmvoOSpmhwjXBW7
-         9qOA==
+        bh=wht29kUAgkDTBmrHaW1q6XJ3NXEO35xEuxud/bR3ziE=;
+        b=AZrrmzliYKd1I2bdE1uPjy6MzgCQYn94j+rrwAbHdfT3faZtrRh0wbfaDLNVvtb2qt
+         nQaiXureHZxB8+QeqHQXy2X7UiCopVHmJxQd0Tq3jOiFpt3isgYaVZq9xWfn+jY/wrt+
+         DJEd6A/bDeZbMJCIigCLzlZA7nHZE2PDIcYqQlcakuxPG+BwYeuA6EbVTkdEuhxJ8q06
+         2z/6QTTRESwT3FwsLoeLM1YJFu0fQXoDnhpa7nWKycx9Ky5khf3L7OC7/+uqguXUNSyD
+         OF5RABsitB65mU1xlpVZSuBxZCuPJj0w4FEnC4ZR/j8tpfSAecZkr+f1mXSqqSwVGjVm
+         26xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:newsgroups:references:from
+        h=x-gm-message-state:sender:subject:to:newsgroups:references:from
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=Pm2aM6FEgY+3tAqdPcwvE3RwWA9gxzo2YpOjuF17cv8=;
-        b=HbvzMIqeSg2ac87sgyjqDrpX+rG63Qc2e2SwTwVRa+SgNT5JjG3J9tn5pV5dJrypp7
-         KrHgtyN729Ou9UEPb+77c8IC3D/O1eo2Dco50CqhGAuunfKwGSmy1E9HM0MLti2E1fhv
-         /74w5fW47fc8HH/VJZ/F/SbqwZTG+reJrHyDJkLr1iwyxx1OVUhm7r5eCRWIvu7Qi8P3
-         3cPP3gQyDc6Xp//MAXNB0prC8J0LH9tffZDjGljvAmxWl51W1kWF0DY0P32l2qrf9LAD
-         e3CLcWlxDlrPR7sCUiUoh+3L+rXdLrYCBdTTum2LVItTaxnrYv1ol+4JacT9gnYC6DRa
-         fawA==
-X-Gm-Message-State: AOAM532GMgUYy9h15Q6jrcMJ2TdKbGdyxQILmKZoQ9MP7DuIaQ9qN3BZ
-        I7ReGFQIkcfmbNoNtrFp8Kw=
-X-Google-Smtp-Source: ABdhPJw6tjn8/TxNf1rBIHrhfEfbfG5tHMVi2iYMOvI69cprxwH+TD8cO83WIZRUx4dqD3JFR7WXMg==
-X-Received: by 2002:a17:90a:a106:: with SMTP id s6mr4897313pjp.146.1614711613646;
-        Tue, 02 Mar 2021 11:00:13 -0800 (PST)
+        bh=wht29kUAgkDTBmrHaW1q6XJ3NXEO35xEuxud/bR3ziE=;
+        b=BgWp1vg1278j90tMpzvxHOJ9WS5GyLLm/yLqpTA/jDvxGHxW6Pn1s0o60XqW0E9Zzo
+         QsPpgPJJ6pOt97QVv8mwwe8rVLOuLRM2a5EPa4YmWdRhwblyrw+9qM17JCZ6s3+suWi4
+         1qbAq/WdIzJ3xGnu9Y5rIAeezvYPHl/CrrQxugr6oMHjSIzqajFl6puW71096i48MHwd
+         QeZiHWO8oNu/lVstdavgJ8nE7yn8FlPp2BrxSRbVpmq80cyo8Qe6U4AUbvfS87CCEims
+         hdMOM3+1RKF64TDc2VA++3rUVW9UHyVCLxeUp2RD82BGtWuJWX0ny7usZIRnidKqF5ER
+         UQgg==
+X-Gm-Message-State: AOAM533RO0WJ4FYDqD69XKtQ9uB8/m8Acqjcl20Scfd7T3CLSBjdckTt
+        NnlYD/Mb9Vd0Gzsdsn55+0a5oo3clxlE2A==
+X-Google-Smtp-Source: ABdhPJywrkBqp9m6xKkrLJLVnWvCouj4D7AyUfUr4U23MJmh3YdXp//gK+9wnKB64E695F64o9FIYA==
+X-Received: by 2002:a63:1021:: with SMTP id f33mr1065584pgl.409.1614711674219;
+        Tue, 02 Mar 2021 11:01:14 -0800 (PST)
 Received: from [192.168.50.50] (c-24-4-73-83.hsd1.ca.comcast.net. [24.4.73.83])
-        by smtp.gmail.com with ESMTPSA id o5sm4146300pjq.57.2021.03.02.11.00.11
+        by smtp.gmail.com with ESMTPSA id e22sm18629680pgk.56.2021.03.02.11.01.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 11:00:13 -0800 (PST)
+        Tue, 02 Mar 2021 11:01:13 -0800 (PST)
 Sender: Vineet Gupta <vineetg76@gmail.com>
-Subject: Re: [PATCH 10/11] pragma once: delete few backslashes
-To:     Alexey Dobriyan <adobriyan@gmail.com>,
-        torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-snps-arc@lists.infradead.org, jiri@nvidia.com,
-        idosch@nvidia.com, netdev@vger.kernel.org, Jason@zx2c4.com,
-        mchehab@kernel.org
-Newsgroups: gmane.linux.network,gmane.linux.kernel,gmane.linux.kernel.arc
-References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
- <YDvNSg9OPv7JqfRS@localhost.localdomain>
+Subject: Re: [PATCH] arc: kernel: Return -EFAULT if copy_to_user() fails
+To:     Wang Qing <wangqing@vivo.com>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
+Newsgroups: gmane.linux.kernel,gmane.linux.kernel.arc
+References: <1614600349-15662-1-git-send-email-wangqing@vivo.com>
 From:   Vineet Gupta <vgupta@synopsys.com>
-Message-ID: <5783abae-c7af-0e82-8f28-09f30ff67904@synopsys.com>
-Date:   Tue, 2 Mar 2021 11:00:10 -0800
+Message-ID: <bed81c02-97e0-9905-0dd3-6064a54691ff@synopsys.com>
+Date:   Tue, 2 Mar 2021 11:01:11 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YDvNSg9OPv7JqfRS@localhost.localdomain>
+In-Reply-To: <1614600349-15662-1-git-send-email-wangqing@vivo.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,81 +72,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/28/21 9:05 AM, Alexey Dobriyan wrote:
->  From 251ca5673886b5bb0a42004944290b9d2b267a4a Mon Sep 17 00:00:00 2001
-> From: Alexey Dobriyan <adobriyan@gmail.com>
-> Date: Fri, 19 Feb 2021 13:37:24 +0300
-> Subject: [PATCH 10/11] pragma once: delete few backslashes
+On 3/1/21 4:05 AM, Wang Qing wrote:
+> The copy_to_user() function returns the number of bytes remaining to be
+> copied, but we want to return -EFAULT if the copy doesn't complete.
 > 
-> Some macros contain one backslash too many and end up being the last
-> macro in a header file. When #pragma once conversion script truncates
-> the last #endif and whitespace before it, such backslash triggers
-> a warning about "OMG file ends up in a backslash-newline".
-> 
-> Needless to say I don't want to handle another case in my script,
-> so delete useless backslashes instead.
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-Acked-by: Vineet Gupta <vgupta@synopsys.com>   #arch/arc bits
+Acked-by: Vineet Gupta <vgupta@synopsys.com>
+
+Do you want me to pick this up via ARC tree ?
 
 Thx,
 -Vineet
 
 > ---
->   arch/arc/include/asm/cacheflush.h          | 2 +-
->   drivers/net/ethernet/mellanox/mlxsw/item.h | 2 +-
->   include/linux/once.h                       | 2 +-
->   include/media/drv-intf/exynos-fimc.h       | 2 +-
->   4 files changed, 4 insertions(+), 4 deletions(-)
+>   arch/arc/kernel/signal.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arc/include/asm/cacheflush.h b/arch/arc/include/asm/cacheflush.h
-> index e201b4b1655a..46704c341b17 100644
-> --- a/arch/arc/include/asm/cacheflush.h
-> +++ b/arch/arc/include/asm/cacheflush.h
-> @@ -112,6 +112,6 @@ do {									\
->   } while (0)
+> diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
+> index a78d8f7..fdbe06c
+> --- a/arch/arc/kernel/signal.c
+> +++ b/arch/arc/kernel/signal.c
+> @@ -96,7 +96,7 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+>   			     sizeof(sf->uc.uc_mcontext.regs.scratch));
+>   	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
 >   
->   #define copy_from_user_page(vma, page, vaddr, dst, src, len)		\
-> -	memcpy(dst, src, len);						\
-> +	memcpy(dst, src, len)
+> -	return err;
+> +	return err ? -EFAULT : 0;
+>   }
 >   
->   #endif
-> diff --git a/drivers/net/ethernet/mellanox/mlxsw/item.h b/drivers/net/ethernet/mellanox/mlxsw/item.h
-> index e92cadc98128..cc0133401dd1 100644
-> --- a/drivers/net/ethernet/mellanox/mlxsw/item.h
-> +++ b/drivers/net/ethernet/mellanox/mlxsw/item.h
-> @@ -504,6 +504,6 @@ mlxsw_##_type##_##_cname##_##_iname##_set(char *buf, u16 index, u8 val)		\
->   	return __mlxsw_item_bit_array_set(buf,					\
->   					  &__ITEM_NAME(_type, _cname, _iname),	\
->   					  index, val);				\
-> -}										\
-> +}
+>   static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
+> @@ -110,7 +110,7 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
+>   				&(sf->uc.uc_mcontext.regs.scratch),
+>   				sizeof(sf->uc.uc_mcontext.regs.scratch));
+>   	if (err)
+> -		return err;
+> +		return -EFAULT;
 >   
->   #endif
-> diff --git a/include/linux/once.h b/include/linux/once.h
-> index 9225ee6d96c7..0af450ff94a5 100644
-> --- a/include/linux/once.h
-> +++ b/include/linux/once.h
-> @@ -55,6 +55,6 @@ void __do_once_done(bool *done, struct static_key_true *once_key,
->   #define get_random_once(buf, nbytes)					     \
->   	DO_ONCE(get_random_bytes, (buf), (nbytes))
->   #define get_random_once_wait(buf, nbytes)                                    \
-> -	DO_ONCE(get_random_bytes_wait, (buf), (nbytes))                      \
-> +	DO_ONCE(get_random_bytes_wait, (buf), (nbytes))
->   
->   #endif /* _LINUX_ONCE_H */
-> diff --git a/include/media/drv-intf/exynos-fimc.h b/include/media/drv-intf/exynos-fimc.h
-> index 6b9ef631d6bb..6c5fbdacf4b5 100644
-> --- a/include/media/drv-intf/exynos-fimc.h
-> +++ b/include/media/drv-intf/exynos-fimc.h
-> @@ -152,6 +152,6 @@ static inline struct exynos_video_entity *vdev_to_exynos_video_entity(
->   #define fimc_pipeline_call(ent, op, args...)				  \
->   	((!(ent) || !(ent)->pipe) ? -ENOENT : \
->   	(((ent)->pipe->ops && (ent)->pipe->ops->op) ? \
-> -	(ent)->pipe->ops->op(((ent)->pipe), ##args) : -ENOIOCTLCMD))	  \
-> +	(ent)->pipe->ops->op(((ent)->pipe), ##args) : -ENOIOCTLCMD))
->   
->   #endif /* S5P_FIMC_H_ */
+>   	set_current_blocked(&set);
+>   	regs->bta	= uregs.scratch.bta;
 > 
 
