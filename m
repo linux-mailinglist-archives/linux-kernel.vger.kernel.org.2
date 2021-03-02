@@ -2,126 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECB432A3DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10B132A3DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382677AbhCBJkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:40:52 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55848 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838142AbhCBJ3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:29:15 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1229RZbM117601;
-        Tue, 2 Mar 2021 03:27:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614677255;
-        bh=VKa9ZLInAy2XzS1IUg7DGYoE6OxMM/zNE7tI2sgufOA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=nBxjVUfBlRsYk2MpVi97OJS/jowTlC6jCid6bRscRLGZNrHe9wRt63lIkr+MNtN2/
-         mqpHAEBGhvoT+ATAls/rEJsUrJKGrwFzUwUkHVVPQ772inAhNxvcin5ohos0G17bEg
-         fCGWJqE0kk3NsU8vEwXtP+cQ/zMx7skQSzb/+OpU=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1229RZtZ004151
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 2 Mar 2021 03:27:35 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Mar
- 2021 03:27:34 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 2 Mar 2021 03:27:34 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1229RVZf054243;
-        Tue, 2 Mar 2021 03:27:32 -0600
-Subject: Re: [PATCH] gpio: omap: Honor "aliases" node
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        <linux-omap@vger.kernel.org>
-CC:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210302011813.2331879-1-alexander.sverdlin@gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <eb34f303-4d05-4fcd-fb18-e304d06e6e2d@ti.com>
-Date:   Tue, 2 Mar 2021 11:27:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1382660AbhCBJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:40:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1838109AbhCBJ2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:28:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CFF064F0B;
+        Tue,  2 Mar 2021 09:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614677258;
+        bh=/d9JcsrJy2ZQxdWam/1fe7GqsKrPDyLOFEO8rkB2fm0=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=RpH6VV3LMhbD9S6/59a+5Ujmb1jNo8XGen3nZaJR1KibWK8aoNvfZsCbtZ49VSrf7
+         wmAWAvADsOvx4jhlR5X7x5kfGom9gyPGSlshAsMKrxNse7zzPGVGx/1Tb8YhO48lm0
+         mFKp/ag1NMswZfccEiLxadZ8fUq4MaSpxwcHDKNOLxYCwpWz0UmFLcp7+YUh6tGpTQ
+         pqMd3oEmatMAjAWWk6P+yea4ux/CAhyWWHlGVkS8WImaqijaraWPtotZnDyGijXLa0
+         scLcji3zZ189biIYvoNG5UWHAW5nBYkzpLPvYifUioN3N5I/l7KJoKQI14yNaN2uZ4
+         33tRGUEH0I4jA==
+Date:   Tue, 2 Mar 2021 10:27:34 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iwlwifi: don't call netif_napi_add() with rxq->lock held
+ (was Re: Lockdep warning in iwl_pcie_rx_handle())
+In-Reply-To: <2db8f779b4b37d4498cfeaed77d5ede54e429a6e.camel@sipsolutions.net>
+Message-ID: <nycvar.YFH.7.76.2103021025410.12405@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2103012136570.12405@cbobk.fhfr.pm>  (sfid-20210301_215846_256695_15E0D07E) <2db8f779b4b37d4498cfeaed77d5ede54e429a6e.camel@sipsolutions.net>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210302011813.2331879-1-alexander.sverdlin@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 1 Mar 2021, Johannes Berg wrote:
+
+> > I am getting the splat below with Linus' tree as of today (5.11-rc1, 
+> > fe07bfda2fb). I haven't started to look into the code yet, but apparently 
+> > this has been already reported by Heiner here:
+> > 
+> > 	https://www.spinics.net/lists/linux-wireless/msg208353.html
+> > 
+> > so before I start digging deep into it (the previous kernel this 
+> > particular machine had is 5.9, so I'd rather avoid lenghty bisect for now 
+> > in case someone has already looked into it and has ideas where the problem 
+> > is), I thought I'd ask whether this has been root-caused elsewhere 
+> > already.
+> 
+> Yeah, I'm pretty sure we have a fix for this, though I'm not sure right
+> now where it is in the pipeline.
+> 
+> It's called "iwlwifi: pcie: don't add NAPI under rxq->lock" but right
+> now I can't find it in any of the public archives.
+
+I was not able to find that patch anywhere indeed, but in the meantime I 
+fixed it by the patch below. Please consider merging either of the fixes.
+
+Also I am still seeing
+
+	WARNING: CPU: 2 PID: 1138 at kernel/softirq.c:178 __local_bh_enable_ip+0xa5/0xf0
+
+on the
+
+	[   21.902173]  iwl_pcie_enqueue_hcmd+0x5d9/0xa00 [iwlwifi]
+	[   21.906445]  iwl_trans_txq_send_hcmd+0x6c/0x430 [iwlwifi]
+	[   21.910757]  iwl_trans_send_cmd+0x88/0x170 [iwlwifi]
+	[   21.915074]  ? lock_acquire+0x277/0x3d0
+	[   21.919327]  iwl_mvm_send_cmd+0x32/0x80 [iwlmvm]
+	[   21.923616]  iwl_mvm_led_set+0xc2/0xe0 [iwlmvm]
+
+codepath, but I'll look into it separately.
 
 
-On 02/03/2021 03:18, Alexander Sverdlin wrote:
-> Currently the naming of the GPIO chips depends on their order in the DT,
-> but also on the kernel version (I've noticed the change from v5.10.x to
-> v5.11). Honor the persistent enumeration in the "aliases" node like other
-> GPIO drivers do.
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> ---
-> Yes, I noticed checkpatch "WARNING: DT binding docs and includes should be
-> a separate patch."
-> However, the parts below are tiny and barely make sense separately.
-> 
->   Documentation/devicetree/bindings/gpio/gpio-omap.txt | 6 ++++++
->   drivers/gpio/gpio-omap.c                             | 5 +++++
->   2 files changed, 11 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-omap.txt b/Documentation/devicetree/bindings/gpio/gpio-omap.txt
-> index e57b2cb28f6c..6050db3fd84e 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-omap.txt
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-omap.txt
-> @@ -30,9 +30,15 @@ OMAP specific properties:
->   - ti,gpio-always-on: 	Indicates if a GPIO bank is always powered and
->   			so will never lose its logic state.
->   
-> +Note: GPIO ports can have an alias correctly numbered in "aliases" node for
-> +persistent enumeration.
->   
->   Example:
->   
-> +aliases {
-> +	gpio0 = &gpio0;
-> +};
-> +
->   gpio0: gpio@44e07000 {
->       compatible = "ti,omap4-gpio";
->       reg = <0x44e07000 0x1000>;
-> diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-> index 41952bb818ad..dd2a8f6d920f 100644
-> --- a/drivers/gpio/gpio-omap.c
-> +++ b/drivers/gpio/gpio-omap.c
-> @@ -1014,6 +1014,11 @@ static int omap_gpio_chip_init(struct gpio_bank *bank, struct irq_chip *irqc)
->   			bank->chip.parent = &omap_mpuio_device.dev;
->   		bank->chip.base = OMAP_MPUIO(0);
->   	} else {
-> +#ifdef CONFIG_OF_GPIO
-> +		ret = of_alias_get_id(bank->chip.of_node, "gpio");
-> +		if (ret >= 0)
-> +			gpio = ret * bank->width;
-> +#endif
->   		label = devm_kasprintf(bank->chip.parent, GFP_KERNEL, "gpio-%d-%d",
->   				       gpio, gpio + bank->width - 1);
->   		if (!label)
-> 
 
-You're not the first one, this was not accepted. See [1]
-[1] https://patchwork.kernel.org/project/linux-omap/patch/1465898604-16294-1-git-send-email-u.kleine-koenig@pengutronix.de/
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH] iwlwifi: don't call netif_napi_add() with rxq->lock held
+
+We can't call netif_napi_add() with rxq-lock held, as there is a potential
+for deadlock as spotted by lockdep (see below). rxq->lock is not
+protecting anything over the netif_napi_add() codepath anyway, so let's
+drop it just before calling into NAPI.
+
+ ========================================================
+ WARNING: possible irq lock inversion dependency detected
+ 5.12.0-rc1-00002-gbada49429032 #5 Not tainted
+ --------------------------------------------------------
+ irq/136-iwlwifi/565 just changed the state of lock:
+ ffff89f28433b0b0 (&rxq->lock){+.-.}-{2:2}, at: iwl_pcie_rx_handle+0x7f/0x960 [iwlwifi]
+ but this lock took another, SOFTIRQ-unsafe lock in the past:
+  (napi_hash_lock){+.+.}-{2:2}
+
+ and interrupts could create inverse lock ordering between them.
+
+ other info that might help us debug this:
+  Possible interrupt unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(napi_hash_lock);
+                                local_irq_disable();
+                                lock(&rxq->lock);
+                                lock(napi_hash_lock);
+   <Interrupt>
+     lock(&rxq->lock);
+
+  *** DEADLOCK ***
+
+ 1 lock held by irq/136-iwlwifi/565:
+  #0: ffff89f2b1440170 (sync_cmd_lockdep_map){+.+.}-{0:0}, at: iwl_pcie_irq_handler+0x5/0xb30
+
+ the shortest dependencies between 2nd lock and 1st lock:
+  -> (napi_hash_lock){+.+.}-{2:2} {
+     HARDIRQ-ON-W at:
+                       lock_acquire+0x277/0x3d0
+                       _raw_spin_lock+0x2c/0x40
+                       netif_napi_add+0x14b/0x270
+                       e1000_probe+0x2fe/0xee0 [e1000e]
+                       local_pci_probe+0x42/0x90
+                       pci_device_probe+0x10b/0x1c0
+                       really_probe+0xef/0x4b0
+                       driver_probe_device+0xde/0x150
+                       device_driver_attach+0x4f/0x60
+                       __driver_attach+0x9c/0x140
+                       bus_for_each_dev+0x79/0xc0
+                       bus_add_driver+0x18d/0x220
+                       driver_register+0x5b/0xf0
+                       do_one_initcall+0x5b/0x300
+                       do_init_module+0x5b/0x21c
+                       load_module+0x1dae/0x22c0
+                       __do_sys_finit_module+0xad/0x110
+                       do_syscall_64+0x33/0x80
+                       entry_SYSCALL_64_after_hwframe+0x44/0xae
+     SOFTIRQ-ON-W at:
+                       lock_acquire+0x277/0x3d0
+                       _raw_spin_lock+0x2c/0x40
+                       netif_napi_add+0x14b/0x270
+                       e1000_probe+0x2fe/0xee0 [e1000e]
+                       local_pci_probe+0x42/0x90
+                       pci_device_probe+0x10b/0x1c0
+                       really_probe+0xef/0x4b0
+                       driver_probe_device+0xde/0x150
+                       device_driver_attach+0x4f/0x60
+                       __driver_attach+0x9c/0x140
+                       bus_for_each_dev+0x79/0xc0
+                       bus_add_driver+0x18d/0x220
+                       driver_register+0x5b/0xf0
+                       do_one_initcall+0x5b/0x300
+                       do_init_module+0x5b/0x21c
+                       load_module+0x1dae/0x22c0
+                       __do_sys_finit_module+0xad/0x110
+                       do_syscall_64+0x33/0x80
+                       entry_SYSCALL_64_after_hwframe+0x44/0xae
+     INITIAL USE at:
+                      lock_acquire+0x277/0x3d0
+                      _raw_spin_lock+0x2c/0x40
+                      netif_napi_add+0x14b/0x270
+                      e1000_probe+0x2fe/0xee0 [e1000e]
+                      local_pci_probe+0x42/0x90
+                      pci_device_probe+0x10b/0x1c0
+                      really_probe+0xef/0x4b0
+                      driver_probe_device+0xde/0x150
+                      device_driver_attach+0x4f/0x60
+                      __driver_attach+0x9c/0x140
+                      bus_for_each_dev+0x79/0xc0
+                      bus_add_driver+0x18d/0x220
+                      driver_register+0x5b/0xf0
+                      do_one_initcall+0x5b/0x300
+                      do_init_module+0x5b/0x21c
+                      load_module+0x1dae/0x22c0
+                      __do_sys_finit_module+0xad/0x110
+                      do_syscall_64+0x33/0x80
+                      entry_SYSCALL_64_after_hwframe+0x44/0xae
+   }
+   ... key      at: [<ffffffffae84ef38>] napi_hash_lock+0x18/0x40
+   ... acquired at:
+    _raw_spin_lock+0x2c/0x40
+    netif_napi_add+0x14b/0x270
+    _iwl_pcie_rx_init+0x1f4/0x710 [iwlwifi]
+    iwl_pcie_rx_init+0x1b/0x3b0 [iwlwifi]
+    iwl_trans_pcie_start_fw+0x2ac/0x6a0 [iwlwifi]
+    iwl_mvm_load_ucode_wait_alive+0x116/0x460 [iwlmvm]
+    iwl_run_init_mvm_ucode+0xa4/0x3a0 [iwlmvm]
+    iwl_op_mode_mvm_start+0x9ed/0xbf0 [iwlmvm]
+    _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
+    iwl_opmode_register+0x71/0xe0 [iwlwifi]
+    iwl_mvm_init+0x34/0x1000 [iwlmvm]
+    do_one_initcall+0x5b/0x300
+    do_init_module+0x5b/0x21c
+    load_module+0x1dae/0x22c0
+    __do_sys_finit_module+0xad/0x110
+    do_syscall_64+0x33/0x80
+    entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+[ ... lockdep output trimmed .... ]
+
+Fixes: 25edc8f259c7106 ("iwlwifi: pcie: properly implement NAPI")
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+---
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+index 1bccaa034284..6262dd9043aa 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+@@ -1063,11 +1063,12 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
+ 
+ 		iwl_pcie_rx_init_rxb_lists(rxq);
+ 
++		spin_unlock_bh(&rxq->lock);
++
+ 		if (!rxq->napi.poll)
+ 			netif_napi_add(&trans_pcie->napi_dev, &rxq->napi,
+ 				       iwl_pcie_dummy_napi_poll, 64);
+ 
+-		spin_unlock_bh(&rxq->lock);
+ 	}
+ 
+ 	/* move the pool to the default queue and allocator ownerships */
 
 
 -- 
-Best regards,
-grygorii
+Jiri Kosina
+SUSE Labs
+
