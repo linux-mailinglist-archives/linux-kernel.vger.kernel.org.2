@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAED32A7CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C8D32A802
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839669AbhCBQho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:37:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45080 "EHLO mail.kernel.org"
+        id S1579585AbhCBQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:59:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448132AbhCBORX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:17:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2269C64FB7;
-        Tue,  2 Mar 2021 11:59:15 +0000 (UTC)
+        id S1351400AbhCBOWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:22:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 388DE64FBE;
+        Tue,  2 Mar 2021 11:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686355;
-        bh=Z9kBah8MI5Mx+Hiq+9csFyDvsgpcS8YcRzKuTgTBzc4=;
+        s=k20201202; t=1614686357;
+        bh=ttanRSDdKT/MJoxSdzTfCjV5gPBC06d1CKHa4cPf1Mk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JktUIdjMo8cv/u7d7y55okYQn6eERnokpW/FG5pPKO4Lj3i5PjoQYMIC29Eijf+NT
-         +BuJewCtO2otxyo5qOvVtl2RzDa70DFGiEsZZEEbEMDG/FgphNW9hverPd92Zc8AiY
-         QNpWo2yJ0cUayFROjuNIo/adp7Zl8L/raJg8e+mg2GwJyDdud/YUShyu0kuloYa+Ny
-         jQkDSTE0QTIysKbT7qgo+2uzAWxlzyK32bdAqsNU7lzg0IuhoDs2RbSIUe92aLz2ai
-         trQTekxofj7OEdjeulzS1Kor7jPSuhCyh+0vidRAD4egCQZRYj8QZytwo6gpuRXqH6
-         RTQpitBYiMhIg==
+        b=KSn1nARDdzub5HvZ6uTYY3/enhBK5eh2z6CyaRHj8wwNjURgnKJf/xahbF5UoFtLb
+         g/QBl3HwcZyFnlK0rGAnpOoEfQJE9C/NxAynQWOxKI7pnqHMVDO4poo+2oe2xYf6Ry
+         6WcVbCyHtM683A8LDJz6bbQpuuUEbHUEA5Hya46SgyDL79KoHiHnk94gGpaYwbV4I6
+         tP+VCnI7B5YlXSunJIeFcc6jx3zBQE+t5S332DVKth3wTNvjkAE83Ng0sd2hsj9c/b
+         LWqHH+sx7B1VghlpzbdZO9OiuUZQ2LygWuxKL1HUzurr5x7mCDOt7DL3m1pwY+UBgI
+         qVn5n2SMuDLSQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Aswath Govindraju <a-govindraju@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 09/13] misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
-Date:   Tue,  2 Mar 2021 06:58:59 -0500
-Message-Id: <20210302115903.63458-9-sashal@kernel.org>
+Cc:     =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.14 10/13] PCI: mediatek: Add missing of_node_put() to fix reference leak
+Date:   Tue,  2 Mar 2021 06:59:00 -0500
+Message-Id: <20210302115903.63458-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115903.63458-1-sashal@kernel.org>
 References: <20210302115903.63458-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -42,89 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aswath Govindraju <a-govindraju@ti.com>
+From: Krzysztof Wilczyński <kw@linux.com>
 
-[ Upstream commit f6f1f8e6e3eea25f539105d48166e91f0ab46dd1 ]
+[ Upstream commit 42814c438aac79746d310f413a27d5b0b959c5de ]
 
-A dummy zero bit is sent preceding the data during a read transfer by the
-Microchip 93LC46B eeprom (section 2.7 of[1]). This results in right shift
-of data during a read. In order to ignore this bit a quirk can be added to
-send an extra zero bit after the read address.
+The for_each_available_child_of_node helper internally makes use of the
+of_get_next_available_child() which performs an of_node_get() on each
+iteration when searching for next available child node.
 
-Add a quirk to ignore the zero bit sent before data by adding a zero bit
-after the read address.
+Should an available child node be found, then it would return a device
+node pointer with reference count incremented, thus early return from
+the middle of the loop requires an explicit of_node_put() to prevent
+reference count leak.
 
-[1] - https://www.mouser.com/datasheet/2/268/20001749K-277859.pdf
+To stop the reference leak, explicitly call of_node_put() before
+returning after an error occurred.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Link: https://lore.kernel.org/r/20210105105817.17644-3-a-govindraju@ti.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210120184810.3068794-1-kw@linux.com
+Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/eeprom/eeprom_93xx46.c | 15 +++++++++++++++
- include/linux/eeprom_93xx46.h       |  2 ++
- 2 files changed, 17 insertions(+)
+ drivers/pci/host/pcie-mediatek.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 38766968bfa2..0bcb1864eb5d 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -38,6 +38,10 @@ static const struct eeprom_93xx46_devtype_data atmel_at93c46d_data = {
- 		  EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH,
- };
+diff --git a/drivers/pci/host/pcie-mediatek.c b/drivers/pci/host/pcie-mediatek.c
+index c896bb9ef968..60c3110b5151 100644
+--- a/drivers/pci/host/pcie-mediatek.c
++++ b/drivers/pci/host/pcie-mediatek.c
+@@ -1042,14 +1042,14 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
+ 		err = of_pci_get_devfn(child);
+ 		if (err < 0) {
+ 			dev_err(dev, "failed to parse devfn: %d\n", err);
+-			return err;
++			goto error_put_node;
+ 		}
  
-+static const struct eeprom_93xx46_devtype_data microchip_93lc46b_data = {
-+	.quirks = EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE,
-+};
-+
- struct eeprom_93xx46_dev {
- 	struct spi_device *spi;
- 	struct eeprom_93xx46_platform_data *pdata;
-@@ -58,6 +62,11 @@ static inline bool has_quirk_instruction_length(struct eeprom_93xx46_dev *edev)
- 	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH;
+ 		slot = PCI_SLOT(err);
+ 
+ 		err = mtk_pcie_parse_port(pcie, child, slot);
+ 		if (err)
+-			return err;
++			goto error_put_node;
+ 	}
+ 
+ 	err = mtk_pcie_subsys_powerup(pcie);
+@@ -1065,6 +1065,9 @@ static int mtk_pcie_setup(struct mtk_pcie *pcie)
+ 		mtk_pcie_subsys_powerdown(pcie);
+ 
+ 	return 0;
++error_put_node:
++	of_node_put(child);
++	return err;
  }
  
-+static inline bool has_quirk_extra_read_cycle(struct eeprom_93xx46_dev *edev)
-+{
-+	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE;
-+}
-+
- static int eeprom_93xx46_read(void *priv, unsigned int off,
- 			      void *val, size_t count)
- {
-@@ -99,6 +108,11 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
- 		dev_dbg(&edev->spi->dev, "read cmd 0x%x, %d Hz\n",
- 			cmd_addr, edev->spi->max_speed_hz);
- 
-+		if (has_quirk_extra_read_cycle(edev)) {
-+			cmd_addr <<= 1;
-+			bits += 1;
-+		}
-+
- 		spi_message_init(&m);
- 
- 		t[0].tx_buf = (char *)&cmd_addr;
-@@ -366,6 +380,7 @@ static void select_deassert(void *context)
- static const struct of_device_id eeprom_93xx46_of_table[] = {
- 	{ .compatible = "eeprom-93xx46", },
- 	{ .compatible = "atmel,at93c46d", .data = &atmel_at93c46d_data, },
-+	{ .compatible = "microchip,93lc46b", .data = &microchip_93lc46b_data, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
-diff --git a/include/linux/eeprom_93xx46.h b/include/linux/eeprom_93xx46.h
-index eec7928ff8fe..99580c22f91a 100644
---- a/include/linux/eeprom_93xx46.h
-+++ b/include/linux/eeprom_93xx46.h
-@@ -16,6 +16,8 @@ struct eeprom_93xx46_platform_data {
- #define EEPROM_93XX46_QUIRK_SINGLE_WORD_READ		(1 << 0)
- /* Instructions such as EWEN are (addrlen + 2) in length. */
- #define EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH		(1 << 1)
-+/* Add extra cycle after address during a read */
-+#define EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE		BIT(2)
- 
- 	/*
- 	 * optional hooks to control additional logic
+ static int mtk_pcie_request_resources(struct mtk_pcie *pcie)
 -- 
 2.30.1
 
