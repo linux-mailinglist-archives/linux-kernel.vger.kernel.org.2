@@ -2,73 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDDA32A62A
+	by mail.lfdr.de (Postfix) with ESMTP id 5F22832A629
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578281AbhCBOJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:09:33 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:32304 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1443647AbhCBMdE (ORCPT
+        id S1578264AbhCBOJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 09:09:06 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:35760 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1444086AbhCBMdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:33:04 -0500
-X-UUID: 5fafb8e125d3457daa75546a34b4ad5f-20210302
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3ZRCi/nRxti+OHB6RGuP2kk8X0Uuta9T9GY8fOIWmF8=;
-        b=uP89SOWI/4awQ9Sr2L5UPRGyaZvTeT0Z8+XtwFDT1Jl/VXo8arBymKJc20gPhe+EzoCvVtMxCcrlWI9EyrzGl2ku7hipqVBSzLKcSU0/mM6D2ELKxrCils4rsJRCSBMls6HUCkTYfVYO9Ls9Bp/1Q9SIKOf/w+O/Taclv4EnWZ0=;
-X-UUID: 5fafb8e125d3457daa75546a34b4ad5f-20210302
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 539081713; Tue, 02 Mar 2021 20:32:14 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 20:32:11 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Mar 2021 20:32:11 +0800
-Message-ID: <1614688331.28437.7.camel@mhfsdcap03>
-Subject: Re: [PATCH] i2c: mediatek: Get device clock-stretch time via dts
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>
-CC:     <wsa@the-dreams.de>, srv_heupstream <srv_heupstream@mediatek.com>,
-        <leilk.liu@mediatek.com>, open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 2 Mar 2021 20:32:11 +0800
-In-Reply-To: <CAATdQgCoLB-iOcxN2ptDmqD69FnyUen5XeRTq=LCCfXmWkBeWw@mail.gmail.com>
-References: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
-         <CAATdQgCoLB-iOcxN2ptDmqD69FnyUen5XeRTq=LCCfXmWkBeWw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 2 Mar 2021 07:33:38 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C1ED545D;
+        Tue,  2 Mar 2021 13:32:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614688374;
+        bh=e/Y0M8qv9vPeCW6Q3y5Ln2XAzlf3D5bfRcvSEsOp8cs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZAmf/VxgFHsvT8vo5KLK5ZX+6pnTiQGE15b3PWyqR/lt9H5u+7BfsujtgZQCWuu2G
+         HMqOAL1DCcZJHDO3oClsWWjtw53u88Srm+2ohD9QghK4rc427HD9riXYtNMJxG98mW
+         XdGKPmQU613uCCrEy+eTuVPg3teyv2XYVoxdq8kU=
+Date:   Tue, 2 Mar 2021 14:32:25 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        "REE dirk.behme@de.bosch.com" <dirk.behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 4/7] misc: Add driver for DAB IP found on Renesas R-Car
+ devices
+Message-ID: <YD4wWYc7/pDucm3s@pendragon.ideasonboard.com>
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+ <20210225225147.29920-5-fabrizio.castro.jz@renesas.com>
+ <CAK8P3a1+CZTAcR5T=gN565Q8=CdZnu5KYsAijKXLY8taofEpGg@mail.gmail.com>
+ <OSAPR01MB2737666F47174B68A8EC8DD8C29A9@OSAPR01MB2737.jpnprd01.prod.outlook.com>
+ <CAAEAJfDDhN4btecUzu=3ZYxP=amnOD=vq0bhhetx7voKdeMZ9Q@mail.gmail.com>
+ <OSAPR01MB2737169C686080958657D65AC2999@OSAPR01MB2737.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2EB7B12E6C512922AD6609AB522FD825146F1596765CF85E5FB095D7D12A9FB82000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <OSAPR01MB2737169C686080958657D65AC2999@OSAPR01MB2737.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQpPbiBUdWUsIDIwMjEtMDMtMDIgYXQgMTk6MzAgKzA4MDAsIElram9vbiBKYW5nIHdyb3Rl
-Og0KPiBIaSBRaWksDQo+ID4NCj4gPiBAQCAtMTE3MSw2ICsxMTczLDggQEAgc3RhdGljIGludCBt
-dGtfaTJjX3BhcnNlX2R0KHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAsIHN0cnVjdCBtdGtfaTJjICpp
-MmMpDQo+ID4gICAgICAgICBpZiAoaTJjLT5jbGtfc3JjX2RpdiA9PSAwKQ0KPiA+ICAgICAgICAg
-ICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPg0KPiA+ICsgICAgICAgb2ZfcHJvcGVydHlfcmVh
-ZF91MzIobnAsICJjbG9jay1zdHJldGNoLW5zIiwgJmkyYy0+Y2xvY2tfc3RyZXRjaF9ucyk7DQo+
-ID4gKw0KPiANCj4gSSB0aGluayB0aGlzIG5ldyBwcm9wZXJ0eSAiY2xvY2stc3RyZXRjaC1ucyIg
-aXMgZm9yIHRoZSBzYW1lIHB1cnBvc2Ugb2YNCj4gImkyYy1zY2wtZmFsbGluZy10aW1lLW5zIiAr
-ICJpMmMtc2NsLXJpc2luZy10aW1lLW5zIiBkZWZpbmVkIGluDQo+IERvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLnR4dD8NCj4gDQoNCkkgaGF2ZW4ndCBmaW5kIHRoZSBj
-b3JyZXNwb25kaW5nIGluc3RydWN0aW9uczthbmQgdGhpcyBwYXRjaCBpcyBmb3IgdGhlDQpwcm9i
-bGVtIGNhdXNlZCBieSBjbG9jay1zdHJldGNoIHdoZW4gdGhlIHNjbCBpcyBwdWxsZWQuDQoNCj4g
-PiAgICAgICAgIGkyYy0+aGF2ZV9wbWljID0gb2ZfcHJvcGVydHlfcmVhZF9ib29sKG5wLCAibWVk
-aWF0ZWssaGF2ZS1wbWljIik7DQo+ID4gICAgICAgICBpMmMtPnVzZV9wdXNoX3B1bGwgPQ0KPiA+
-ICAgICAgICAgICAgICAgICBvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJtZWRpYXRlayx1c2Ut
-cHVzaC1wdWxsIik7DQo+ID4gLS0NCj4gPiAxLjkuMQ0KPiA+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4gTGludXgtbWVkaWF0ZWsgbWFpbGluZyBs
-aXN0DQo+ID4gTGludXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiA+IGh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbWVkaWF0ZWsNCg0K
+Hi Fabrizio,
 
+On Tue, Mar 02, 2021 at 12:20:17PM +0000, Fabrizio Castro wrote:
+> On 02 March 2021 11:17, Ezequiel Garcia wrote:
+> > On Mon, 1 Mar 2021 at 14:36, Fabrizio Castro wrote:
+> > > On 26 February 2021 10:38, Arnd Bergmann wrote:
+> > > > On Thu, Feb 25, 2021 at 11:51 PM Fabrizio Castro wrote:
+> > > > >
+> > > > > The DAB hardware accelerator found on R-Car E3 and R-Car M3-N devices is
+> > > > > a hardware accelerator for software DAB demodulators.
+> > > > > It consists of one FFT (Fast Fourier Transform) module and one decoder
+> > > > > module, compatible with DAB specification (ETSI EN 300 401 and
+> > > > > ETSI TS 102 563).
+> > > > > The decoder module can perform FIC decoding and MSC decoding processing
+> > > > > from de-puncture to final decoded result.
+> > > > >
+> > > > > This patch adds a device driver to support the FFT module only.
+> > > > >
+> > > > > Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> > > > > ---
+> > > > >  MAINTAINERS                      |   7 ++
+> > > > >  drivers/misc/Kconfig             |   1 +
+> > > > >  drivers/misc/Makefile            |   1 +
+> > > > >  drivers/misc/rcar_dab/Kconfig    |  11 ++
+> > > > >  drivers/misc/rcar_dab/Makefile   |   8 ++
+> > > > >  drivers/misc/rcar_dab/rcar_dev.c | 176 +++++++++++++++++++++++++++++++
+> > > > >  drivers/misc/rcar_dab/rcar_dev.h | 116 ++++++++++++++++++++
+> > > > >  drivers/misc/rcar_dab/rcar_fft.c | 160 ++++++++++++++++++++++++++++
+> > > > >  include/uapi/linux/rcar_dab.h    |  35 ++++++
+> > > >
+> > > > Can you explain why this is not in drivers/media/?
+> > >
+> > > I wasn't entirely sure were to put it to be honest as I couldn't find
+> > > anything similar, that's why "misc" for v1, to mainly get a feedback
+> > > and advice.
+> > >
+> > > > I don't think we want a custom ioctl interface for a device that
+> > > > implements
+> > > > a generic specification. My first feeling would be that this should not
+> > > > have a user-level API but instead get called by the DAB radio driver.
+> > >
+> > > I hear you, the trouble is that the modules of this IP should be seen
+> > > as part of a SW and HW processing pipeline.
+> > > Some of the SW components of the pipeline can be proprietary, and
+> > > unfortunately we don't have access (yet) to a framework that allows us to
+> > > test and demonstrate the whole pipeline, for the moment we can only test
+> > > things in isolation. It'll take us a while to come up with a full solution
+> > > (or to have access to one), and in the meantime our SoCs come with an IP
+> > > that can't be used because there is no driver for it (yet).
+> > >
+> > > After discussing things further with Geert and Laurent, I think they
+> > > are right in saying that the best path for this is probably to add this
+> > > driver under "drivers/staging" as an interim solution, so that the IP will
+> > > be accessible by developers, and when we have everything we need (a fully
+> > > fledged processing framework), we will able to integrate it better with
+> > > the other components (if possible).
+> > >
+> > > > What is the intended usage model here? I assume the idea is to
+> > > > use it in an application that receives audio or metadata from DAB.
+> > > > What driver do you use for that?
+> > >
+> > > This IP is similar to a DMA to some extent, in the sense that it takes
+> > > input data from a buffer in memory and it writes output data onto a buffer
+> > > in memory, and of course it does some processing in between.
+> > 
+> > That sounds like something that can fit V4L2 MEM2MEM driver.
+> > You queue two buffers and an operation, and then run a job.
+> 
+> V4L2 MEM2MEM seems good for this in general, however the DAB IP is going
+> to be shared by multiple processing pipelines (as usually we have several
+> DRIF interfaces, and only 1 DAB IP), and for what concerns FFT specifically
+> there is only 1 FFT module inside the DAB IP.
+> My understanding is that the capabilities of V4L2 MEM2MEM devices are
+> configured for the specific pipeline, but in the this context user space
+> would have to continuously switch the capabilities of the DAB IP (at the
+> right moment) to allow processing for data streams requiring different
+> capabilities.
+> 
+> Am I wrong?
+
+V4L2 M2M devices can be opened multiple times, but different processes,
+which can configure the device in different ways, and submit jobs that
+are then scheduled by the V4L2 M2M framework.
+
+> > > It's not directly connected to any other Radio related IP.
+> > > The user space application can read DAB IQ samples from the R-Car DRIF
+> > > interface (via driver drivers/media/platform/rcar_drif.c, or from other
+> > > sources since this IP is decoupled from DRIF), and then when it's time
+> > > to accelerate FFT, FIC, or MSC, it can request services to the DAB IP, so
+> > > that the app can go on and use the processor to do some work, while the DAB
+> > > IP processes things.
+> > > A framework to connect and exchange processing blocks (either SW or HW) and
+> > > interfaces is therefore vital to properly place a kernel implementation
+> > > in the great scheme of things, in its absence a simple driver can help
+> > 
+> > I'm not entirely sure we are missing a framework. What's missing in
+> > V4L2 MEM2MEM?
+> 
+> I was referring to a user space framework (I should have been more specific
+> with my previous email).
+> 
+> > Before considering drivers/staging, it would be interesting to figure
+> > out if V4L2 can do it as-is, and if not, discuss what's missing.
+> 
+> I think an interim solution would allow us and users to evaluate things a
+> little bit better, so that we can integrate this IP with V4L2 later on.
+
+-- 
+Regards,
+
+Laurent Pinchart
