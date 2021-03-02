@@ -2,199 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC8032A0E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8041332A0EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576793AbhCBEcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        id S1576810AbhCBEcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238563AbhCBCwW (ORCPT
+        with ESMTP id S242522AbhCBCyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:52:22 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B26C06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 18:50:41 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id e9so11156272plh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 18:50:41 -0800 (PST)
+        Mon, 1 Mar 2021 21:54:18 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B49DC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 18:51:22 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id n16so12021834lfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 18:51:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SzsqJhnliez1tKlON8yLC5F6USIx2iyCxc12/4u/r+c=;
-        b=I4jmhul4Z5yg+xo9mAznhlNQXfF9s8TJskKTSIYrPYUwxVyIOcIlOkHWTsBaQVpGvf
-         zDfHR7YnJY4d4j+veaCOxSfnf0WdJ3ID5HmWGdqqfn4X9IRnN3/RLi+lxjq9EkL/uYJg
-         Ok1k3/niPacZp26eNMSpbDoq3GpfxW/XQqR6xZjE05+hd3yztSnH3lGoSdP8q0vzU8mV
-         ti376Ul89wmAe/aqsDWlTzuj21DVQu/MYm6lieeS66zGszHG8yOjJilhLpYNAckcid0b
-         vaMpKvLB8/KzK02Oz61Wzk23FWx6sno07D+PyBkHlLt9mXti8KpMz9jXfJ37NeirOLtu
-         9sVw==
+        bh=8E7jhhYaCr8C6xSxrpG64nSWDU98o0HEwhCAOn7PAok=;
+        b=CtAXWUOUEPDunoQwsrVEycASyIeLXdyliiw3gjDfZoPH+mu6HRFJOGnvR+MXDvPlDm
+         oJEoBKJceAIP2pSJHn+StAUkr8+FPr8L0aB9U0Vy1qM2/Mbuam3IoNYxT5pbkQ80CSz5
+         v+n7Dc+u4gZ3D8doFYnzRKlLYdu9QORdgOB+hiY2Y5a++SWfH2tQYDboAkTDYnDaSE0Z
+         JRvCN/hTYcNbxkcDEy80hNN15DwQWGSIOoLUUTwsvFme1NaGT/LGKe9KUqplff5A7xWE
+         XyhzBmSQ2tNJ2WB0xFUzwBEFK5UX42BcM70Ib0iGxM8OhzGOBsql/eZGL2c4DYIhUEFD
+         Xw2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SzsqJhnliez1tKlON8yLC5F6USIx2iyCxc12/4u/r+c=;
-        b=RVxonxYUk91pFhd4DwGyJVdnGriDBZKG14phFmM6Bp8QzF0rZqESKEY0P6gyJbWqvs
-         /aniuTmcZAF6txa3abrH9CfEgVAp85JDgrUfgn2ED3hpsOcPThBuRD/3NIWNeDDgHytf
-         CQ+Y0zpVT9FezArVYqnAPcMlqBwvJncItY26QrhkG/QGonrE3Eyw0xjF9dozFzajsr3m
-         aObXnDTCipUy4Afqx0OAJsJ/OxEI8BDD3Nh7PLDTWiUGZ3sdyODGXw6EHoT45L6yKMzT
-         B9J8w0ivNVNNGtOUffmHakrEnJ4BTTILma5ADWwJN0IF3YAiQG8F/hII4CXGZzs/1Haq
-         I6Eg==
-X-Gm-Message-State: AOAM531a8PGbaJbr2OqN6JAKy6ZMXiKpQ0bEyMqTCXjxMgz7QaJMeEJW
-        eJhflsP0eMnVjd3MLBp07rO88AI98Ddzo3VNJwaYfg==
-X-Google-Smtp-Source: ABdhPJwO4U6Vuif29dmFk6pc2ND9DlOcJXGnqC3Sy0dnPR0PpJ3LuKt8LwGDKRqjDVvzgWiY/91mipCndD5BXqlSM8E=
-X-Received: by 2002:a17:902:e54e:b029:e3:9f84:db8e with SMTP id
- n14-20020a170902e54eb02900e39f84db8emr1508267plf.24.1614653440529; Mon, 01
- Mar 2021 18:50:40 -0800 (PST)
+        bh=8E7jhhYaCr8C6xSxrpG64nSWDU98o0HEwhCAOn7PAok=;
+        b=tZCTnLR1GC1zVYvHd757N+PzHJmk23nEtfRwe8fsx7/ycB+5jSHsh2jiZYiMSCmwuA
+         dJAXQAMrEzZCNo+XdCsh6/kUKlkrSojOHeSarbouEm1Hq7UHHNTCkD7WCDhZuKSks8Au
+         n4Xi7mAfJz5suPHP4OPBQXFzvgjXzNlY0ygHSAGajyfGVvGaWeCT1KL1RfWFYW6XJVQb
+         pON8lW+T7Hs8/tRS9FbdYsTmQ2ZGupHHRqFbcWGrtwlKftakrgM3GluRloZ9DlxqOqVk
+         6mh52TBYR4Y1KybaRMcXuYSlKcq1eSZow/yrEOOuz4kOlQfKueu9t7K0IVWoi6hEcPRo
+         kPOQ==
+X-Gm-Message-State: AOAM531mghSX1hEZAFXGRVgog9mLaCYS/y6O3JvnaDKJ4pqEORl7+o+1
+        kpCpcdnU87J+tyX8/ymj9zOJRBrBwCY3ngPUIpxvmw==
+X-Google-Smtp-Source: ABdhPJz39rZTCGPuL53OOyY7GEDe7aOcYzZlxQr263eEFf2vvM39BGGanu2WFzPxlDI0/hLiEweWlg9234LilyOgSj4=
+X-Received: by 2002:a05:6512:547:: with SMTP id h7mr11428172lfl.529.1614653480706;
+ Mon, 01 Mar 2021 18:51:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20210301062227.59292-1-songmuchun@bytedance.com> <YD2Q5q2HfKXPnDte@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YD2Q5q2HfKXPnDte@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 2 Mar 2021 10:50:04 +0800
-Message-ID: <CAMZfGtUzB1duVS+pSEHvB-g6BSQ25mQMvUjopcADx0v2go3Q0g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 0/5] Use obj_cgroup APIs to change kmem pages
-To:     Roman Gushchin <guro@fb.com>
-Cc:     viro@zeniv.linux.org.uk, Jan Kara <jack@suse.cz>,
-        amir73il@gmail.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        mingo@redhat.com, Peter Zijlstra <peterz@infradead.org>,
-        juri.lelli@redhat.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        bristot@redhat.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>, richard.weiyang@gmail.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        mathieu.desnoyers@efficios.com, posk@google.com,
-        Jann Horn <jannh@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>, longman@redhat.com,
-        Michel Lespinasse <walken@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, krisman@collabora.com,
-        esyr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Marco Elver <elver@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
+References: <20210226040908.3274666-1-john.stultz@linaro.org>
+ <CAKMK7uHGutJiZ879NAweTHka=gZQBw9zWQSDJn6bTLS6bJwvvg@mail.gmail.com> <20210227094436.GA3130571@infradead.org>
+In-Reply-To: <20210227094436.GA3130571@infradead.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 1 Mar 2021 18:51:09 -0800
+Message-ID: <CALAqxLUcbAWiwxqLRmr4Ve4ecSAJ-jsZy-RDC3jqDONgoRht9Q@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: heaps: Set VM_PFNMAP in mmap for system and cma heaps
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        "??rjan Eide" <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 9:12 AM Roman Gushchin <guro@fb.com> wrote:
+On Sat, Feb 27, 2021 at 1:44 AM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> Hi Muchun!
+> On Fri, Feb 26, 2021 at 08:36:55AM +0100, Daniel Vetter wrote:
+> > Also given that both deal with struct page there's a ton of divergence
+> > between these two that doesn't make much sense. Maybe could even share
+> > the code fully, aside from how you allocate the struct pages.
 >
-> On Mon, Mar 01, 2021 at 02:22:22PM +0800, Muchun Song wrote:
-> > Since Roman series "The new cgroup slab memory controller" applied. All
-> > slab objects are changed via the new APIs of obj_cgroup. This new APIs
-> > introduce a struct obj_cgroup instead of using struct mem_cgroup directly
-> > to charge slab objects. It prevents long-living objects from pinning the
-> > original memory cgroup in the memory. But there are still some corner
-> > objects (e.g. allocations larger than order-1 page on SLUB) which are
-> > not charged via the API of obj_cgroup. Those objects (include the pages
-> > which are allocated from buddy allocator directly) are charged as kmem
-> > pages which still hold a reference to the memory cgroup.
+> I've been saying that since the code was first submitted.  Once pages
+> are allocated from CMA they should be treated not different from normal
+> pages.
 >
-> Yes, this is a good idea, large kmallocs should be treated the same
-> way as small ones.
->
-> >
-> > E.g. We know that the kernel stack is charged as kmem pages because the
-> > size of the kernel stack can be greater than 2 pages (e.g. 16KB on x86_64
-> > or arm64). If we create a thread (suppose the thread stack is charged to
-> > memory cgroup A) and then move it from memory cgroup A to memory cgroup
-> > B. Because the kernel stack of the thread hold a reference to the memory
-> > cgroup A. The thread can pin the memory cgroup A in the memory even if
-> > we remove the cgroup A. If we want to see this scenario by using the
-> > following script. We can see that the system has added 500 dying cgroups.
-> >
-> >       #!/bin/bash
-> >
-> >       cat /proc/cgroups | grep memory
-> >
-> >       cd /sys/fs/cgroup/memory
-> >       echo 1 > memory.move_charge_at_immigrate
-> >
-> >       for i in range{1..500}
-> >       do
-> >               mkdir kmem_test
-> >               echo $$ > kmem_test/cgroup.procs
-> >               sleep 3600 &
-> >               echo $$ > cgroup.procs
-> >               echo `cat kmem_test/cgroup.procs` > cgroup.procs
-> >               rmdir kmem_test
-> >       done
-> >
-> >       cat /proc/cgroups | grep memory
->
-> Well, moving processes between cgroups always created a lot of issues
-> and corner cases and this one is definitely not the worst. So this problem
-> looks a bit artificial, unless I'm missing something. But if it doesn't
-> introduce any new performance costs and doesn't make the code more complex,
-> I have nothing against.
+> Please take a look at how the DMA contigous allocator manages to share
+> all code for handling CMA vs alloc_pages pages.
 
-OK. I just want to show that large kmallocs are charged as kmem pages.
-So I constructed this test case.
-
->
-> Btw, can you, please, run the spell-checker on commit logs? There are many
-> typos (starting from the title of the series, I guess), which make the patchset
-> look less appealing.
-
-Sorry for my poor English. I will do that. Thanks for your suggestions.
-
-
->
-> Thank you!
->
-> >
-> > This patchset aims to make those kmem pages drop the reference to memory
-> > cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
-> > of the dying cgroups will not increase if we run the above test script.
-> >
-> > Patch 1-3 are using obj_cgroup APIs to charge kmem pages. The remote
-> > memory cgroup charing APIs is a mechanism to charge kernel memory to a
-> > given memory cgroup. So I also make it use the APIs of obj_cgroup.
-> > Patch 4-5 are doing this.
-> >
-> > Muchun Song (5):
-> >   mm: memcontrol: introduce obj_cgroup_{un}charge_page
-> >   mm: memcontrol: make page_memcg{_rcu} only applicable for non-kmem
-> >     page
-> >   mm: memcontrol: reparent the kmem pages on cgroup removal
-> >   mm: memcontrol: move remote memcg charging APIs to CONFIG_MEMCG_KMEM
-> >   mm: memcontrol: use object cgroup for remote memory cgroup charging
-> >
-> >  fs/buffer.c                          |  10 +-
-> >  fs/notify/fanotify/fanotify.c        |   6 +-
-> >  fs/notify/fanotify/fanotify_user.c   |   2 +-
-> >  fs/notify/group.c                    |   3 +-
-> >  fs/notify/inotify/inotify_fsnotify.c |   8 +-
-> >  fs/notify/inotify/inotify_user.c     |   2 +-
-> >  include/linux/bpf.h                  |   2 +-
-> >  include/linux/fsnotify_backend.h     |   2 +-
-> >  include/linux/memcontrol.h           | 109 +++++++++++---
-> >  include/linux/sched.h                |   6 +-
-> >  include/linux/sched/mm.h             |  30 ++--
-> >  kernel/bpf/syscall.c                 |  35 ++---
-> >  kernel/fork.c                        |   4 +-
-> >  mm/memcontrol.c                      | 276 ++++++++++++++++++++++-------------
-> >  mm/page_alloc.c                      |   4 +-
-> >  15 files changed, 324 insertions(+), 175 deletions(-)
-> >
-> > --
-> > 2.11.0
-> >
+I'll take a look at that! Thanks for the pointer!
+-john
