@@ -2,125 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACB532ABF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D5F32ABAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447749AbhCBU6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:58:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50864 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1580523AbhCBSEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:04:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614707013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n1odR/9HIGhwlY9C1AyzEeD9zVtoOxcaXyC3jT9R5QA=;
-        b=mhn55k0DONsD3wIp8Y4XJ+X3wOcLKsU59xYYRmNFqFD+QjAosw1o2FIWwtx5jlg+NpN1V2
-        ouNrtZEnOxpvriwCNjlJy7wqODo8p4hk0mPHctHPbURfVHoNkPcwQjIEI/MOqW3MjEvirA
-        0NUxQFMzmWUtvo7yPaIJ1/xeVtbPxME=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3B66AD87;
-        Tue,  2 Mar 2021 17:43:33 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 18:43:23 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched/cpuacct: Fix charge cpuacct.usage_sys
- incorrently.
-Message-ID: <YD55OxQrJ54PWgs+@blackbook>
-References: <20200420070453.76815-1-songmuchun@bytedance.com>
+        id S1446686AbhCBUhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:37:51 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45616 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347523AbhCBRt2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:49:28 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122HZ5wD045499;
+        Tue, 2 Mar 2021 12:44:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=51f9USJRNe5/Dw4IR9bEzcSsqDV7pi67ofwYMedkrQ8=;
+ b=XTGIczHjPvjy/RijlW2Evd1tftNxRp/MX9ZnnSC+SAitktZ1ItOeBTvV9ZPeJEPDhPDc
+ iI6rvl/OBmFaNDYUDncdZhwjGnFIr/MqU2G8MqwF+dU1B8kmVv3UokkRhcaYay707AeH
+ RvcmkdtbnoODTFaXN8kR/CkNBliNJTQGGvcgUendV0GnT3JTWJ10rKKq++z4abv+ZoQE
+ wAizZ21fyOoTXBCkKXxBqiGiUdlEaxiS+xNgJeI81mO+5t4wrYgqeDSApoXjzx5LZTgG
+ VAVdS4jCq00Y//X5A2ieKC9KXsW3q0bpSbTxxyu1s87kELjW6xOsAoYkwKunrRm3ICWa HA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 371qdk6273-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Mar 2021 12:44:51 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 122HbMjU057353;
+        Tue, 2 Mar 2021 12:44:50 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 371qdk626g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Mar 2021 12:44:50 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 122HfSs8005399;
+        Tue, 2 Mar 2021 17:44:48 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 3713s9rhfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Mar 2021 17:44:47 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 122HiiWr21627388
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Mar 2021 17:44:44 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8296052050;
+        Tue,  2 Mar 2021 17:44:44 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.10.194])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 1BAB952057;
+        Tue,  2 Mar 2021 17:44:44 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        stable@vger.kernel.org, Janosch Frank <frankja@de.ibm.com>
+Subject: [PATCH v5 2/3] s390/kvm: extend kvm_s390_shadow_fault to return entry pointer
+Date:   Tue,  2 Mar 2021 18:44:42 +0100
+Message-Id: <20210302174443.514363-3-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210302174443.514363-1-imbrenda@linux.ibm.com>
+References: <20210302174443.514363-1-imbrenda@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dFxZORNm+VieO2OP"
-Content-Disposition: inline
-In-Reply-To: <20200420070453.76815-1-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103020136
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Extend kvm_s390_shadow_fault to return the pointer to the valid leaf
+DAT table entry, or to the invalid entry.
 
---dFxZORNm+VieO2OP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Also return some flags in the lower bits of the address:
+PEI_DAT_PROT: indicates that DAT protection applies because of the
+              protection bit in the segment (or, if EDAT, region) tables.
+PEI_NOT_PTE: indicates that the address of the DAT table entry returned
+             does not refer to a PTE, but to a segment or region table.
 
-Hello.
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Janosch Frank <frankja@de.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+---
+ arch/s390/kvm/gaccess.c | 30 +++++++++++++++++++++++++-----
+ arch/s390/kvm/gaccess.h |  6 +++++-
+ arch/s390/kvm/vsie.c    |  8 ++++----
+ 3 files changed, 34 insertions(+), 10 deletions(-)
 
-(Sorry for necroposting, found this upstream reference only now.)
+diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
+index 6d6b57059493..33a03e518640 100644
+--- a/arch/s390/kvm/gaccess.c
++++ b/arch/s390/kvm/gaccess.c
+@@ -976,7 +976,9 @@ int kvm_s390_check_low_addr_prot_real(struct kvm_vcpu *vcpu, unsigned long gra)
+  * kvm_s390_shadow_tables - walk the guest page table and create shadow tables
+  * @sg: pointer to the shadow guest address space structure
+  * @saddr: faulting address in the shadow gmap
+- * @pgt: pointer to the page table address result
++ * @pgt: pointer to the beginning of the page table for the given address if
++ *       successful (return value 0), or to the first invalid DAT entry in
++ *       case of exceptions (return value > 0)
+  * @fake: pgt references contiguous guest memory block, not a pgtable
+  */
+ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+@@ -1034,6 +1036,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+ 			rfte.val = ptr;
+ 			goto shadow_r2t;
+ 		}
++		*pgt = ptr + vaddr.rfx * 8;
+ 		rc = gmap_read_table(parent, ptr + vaddr.rfx * 8, &rfte.val);
+ 		if (rc)
+ 			return rc;
+@@ -1060,6 +1063,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+ 			rste.val = ptr;
+ 			goto shadow_r3t;
+ 		}
++		*pgt = ptr + vaddr.rsx * 8;
+ 		rc = gmap_read_table(parent, ptr + vaddr.rsx * 8, &rste.val);
+ 		if (rc)
+ 			return rc;
+@@ -1087,6 +1091,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+ 			rtte.val = ptr;
+ 			goto shadow_sgt;
+ 		}
++		*pgt = ptr + vaddr.rtx * 8;
+ 		rc = gmap_read_table(parent, ptr + vaddr.rtx * 8, &rtte.val);
+ 		if (rc)
+ 			return rc;
+@@ -1123,6 +1128,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+ 			ste.val = ptr;
+ 			goto shadow_pgt;
+ 		}
++		*pgt = ptr + vaddr.sx * 8;
+ 		rc = gmap_read_table(parent, ptr + vaddr.sx * 8, &ste.val);
+ 		if (rc)
+ 			return rc;
+@@ -1157,6 +1163,8 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+  * @vcpu: virtual cpu
+  * @sg: pointer to the shadow guest address space structure
+  * @saddr: faulting address in the shadow gmap
++ * @datptr: will contain the address of the faulting DAT table entry, or of
++ *          the valid leaf, plus some flags
+  *
+  * Returns: - 0 if the shadow fault was successfully resolved
+  *	    - > 0 (pgm exception code) on exceptions while faulting
+@@ -1165,11 +1173,11 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+  *	    - -ENOMEM if out of memory
+  */
+ int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
+-			  unsigned long saddr)
++			  unsigned long saddr, unsigned long *datptr)
+ {
+ 	union vaddress vaddr;
+ 	union page_table_entry pte;
+-	unsigned long pgt;
++	unsigned long pgt = 0;
+ 	int dat_protection, fake;
+ 	int rc;
+ 
+@@ -1191,8 +1199,20 @@ int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
+ 		pte.val = pgt + vaddr.px * PAGE_SIZE;
+ 		goto shadow_page;
+ 	}
+-	if (!rc)
+-		rc = gmap_read_table(sg->parent, pgt + vaddr.px * 8, &pte.val);
++
++	switch (rc) {
++	case PGM_SEGMENT_TRANSLATION:
++	case PGM_REGION_THIRD_TRANS:
++	case PGM_REGION_SECOND_TRANS:
++	case PGM_REGION_FIRST_TRANS:
++		pgt |= PEI_NOT_PTE;
++		break;
++	case 0:
++		pgt += vaddr.px * 8;
++		rc = gmap_read_table(sg->parent, pgt, &pte.val);
++	}
++	if (*datptr)
++		*datptr = pgt | dat_protection * PEI_DAT_PROT;
+ 	if (!rc && pte.i)
+ 		rc = PGM_PAGE_TRANSLATION;
+ 	if (!rc && pte.z)
+diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+index 107fdfd2eadd..df4014f09e26 100644
+--- a/arch/s390/kvm/gaccess.h
++++ b/arch/s390/kvm/gaccess.h
+@@ -378,7 +378,11 @@ void ipte_unlock(struct kvm_vcpu *vcpu);
+ int ipte_lock_held(struct kvm_vcpu *vcpu);
+ int kvm_s390_check_low_addr_prot_real(struct kvm_vcpu *vcpu, unsigned long gra);
+ 
++/* MVPG PEI indication bits */
++#define PEI_DAT_PROT 2
++#define PEI_NOT_PTE 4
++
+ int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *shadow,
+-			  unsigned long saddr);
++			  unsigned long saddr, unsigned long *datptr);
+ 
+ #endif /* __KVM_S390_GACCESS_H */
+diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+index bd803e091918..78b604326016 100644
+--- a/arch/s390/kvm/vsie.c
++++ b/arch/s390/kvm/vsie.c
+@@ -620,10 +620,10 @@ static int map_prefix(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+ 	/* with mso/msl, the prefix lies at offset *mso* */
+ 	prefix += scb_s->mso;
+ 
+-	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, prefix);
++	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, prefix, NULL);
+ 	if (!rc && (scb_s->ecb & ECB_TE))
+ 		rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
+-					   prefix + PAGE_SIZE);
++					   prefix + PAGE_SIZE, NULL);
+ 	/*
+ 	 * We don't have to mprotect, we will be called for all unshadows.
+ 	 * SIE will detect if protection applies and trigger a validity.
+@@ -914,7 +914,7 @@ static int handle_fault(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+ 				    current->thread.gmap_addr, 1);
+ 
+ 	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
+-				   current->thread.gmap_addr);
++				   current->thread.gmap_addr, NULL);
+ 	if (rc > 0) {
+ 		rc = inject_fault(vcpu, rc,
+ 				  current->thread.gmap_addr,
+@@ -936,7 +936,7 @@ static void handle_last_fault(struct kvm_vcpu *vcpu,
+ {
+ 	if (vsie_page->fault_addr)
+ 		kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
+-				      vsie_page->fault_addr);
++				      vsie_page->fault_addr, NULL);
+ 	vsie_page->fault_addr = 0;
+ }
+ 
+-- 
+2.26.2
 
-On Mon, Apr 20, 2020 at 03:04:53PM +0800, Muchun Song <songmuchun@bytedance.com> wrote:
->  /* Time spent by the tasks of the CPU accounting group executing in ... */
-> @@ -339,7 +340,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
->  {
->  	struct cpuacct *ca;
->  	int index = CPUACCT_STAT_SYSTEM;
-> -	struct pt_regs *regs = task_pt_regs(tsk);
-> +	struct pt_regs *regs = get_irq_regs() ? : task_pt_regs(tsk);
-I've read the discussion in [1] but I don't think this approach is
-correct either (and I don't know what is better :-/).
-
-I only have a qualitative proof:
-
-host:~ # uname -r
-5.10.16-1-default
-
-host:~ # systemd-run -p CPUAccounting=yes sh -c 'time sh -c "i=0 ; while [ \"\$i\" -lt 10000 ] ; do i=\$((\$i+1)) ; cat /proc/slabinfo >/dev/null ; done" ; sleep inf'
-Running as unit: run-r101b9f53efcb4d2a9bfb65feb6f120ca.service
-
-host:~ # cat /sys/fs/cgroup/cpuacct/system.slice/run-r101b9f53efcb4d2a9bfb65feb6f120ca.service/cpuacct.usage{,_user,_sys}
-16138535165
-14332580468
-1805954697
-
-(See that sys/user ~ 0.1)
-
-host:~ # journalctl -u run-r101b9f53efcb4d2a9bfb65feb6f120ca.service
--- Logs begin at Tue 2021-03-02 18:06:41 CET, end at Tue 2021-03-02 18:27:45 CET. --
-Mar 02 18:27:29 host systemd[1]: Started /usr/bin/sh -c time sh -c "i=0 ; while [ \"\$i\" -lt 10000 ] ; do i=\$((\$i+1)) ; cat /proc/slabinfo >/dev/null ; done" ; sleep inf.
-Mar 02 18:27:45 host sh[19117]: real        0m15.543s
-Mar 02 18:27:45 host sh[19117]: user        0m10.752s
-Mar 02 18:27:45 host sh[19117]: sys        0m5.379s
-
-(See that sys/user ~ 0.5)
-
-host:~ # cat /sys/fs/cgroup/cpuacct/system.slice/run-r101b9f53efcb4d2a9bfb65feb6f120ca.service/cpuacct.stat
-user 415
-system 1209
-
-(See that sys/user ~ 3.0 :-o)
-
-The expectation is that significant amount of the loop is spent in
-kernel (dumping slabinfo). I can't tell which of the ratios fits the
-reality best but the cpuacct.usage_sys still seems too low.
-
-
-Michal
-
-[1] https://lore.kernel.org/lkml/20200416141833.50663-1-songmuchun@bytedance.com/
-
---dFxZORNm+VieO2OP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA+eTUACgkQia1+riC5
-qShN+Q//e89E9MA7Ku6PURFKldbhEMpFwuI48vsYuDg1b7OwMtWqk0kpOfhSjjKD
-N0nP0aMALG1fl9oISUDBzth4CGOzmo28LIlao/f0LGLC+ThJyM48oCEFP44C3VUt
-hJv4UqEIVHTW7DCuH+lLhU/Tbvwn5TJZoSYdQDwHWsfVlPpO7Ov3mwqlqQlAsr/s
-nXW+uaz3rjWq8n1L/Q0RK1jbChCLHftF0YG7EBP/5SC0CjN7vnyIIZQQMat8K8qi
-cbnum0nW4yInY/XBQsUTU13Htk1DB5/c/fqpQurkcp32b8VYMWoV4FrhEhcHSrgD
-9XWAA/mvRvzjWIHItgtzQcmBQTz1Kkh+4kjDwHT5Xsl12HCxhPXslkoS4lHIKafu
-pN3THfUofKeyvRENqcmttDxzWJ74iVSYgs3zmz6nmhpfs2k5HwKF2UEiUeUMLwUd
-IMdb0rDVD5QhH7JoJ+j8MZQB5nrwrrESdwzV3NCptmxUnyZxarra4fxEM1Cds0Cj
-wbZlu6KYSrNlwcIG77P03nsTOKWFHKq/CDITvHvCQK1hJYilmW+MPC2DFcLfciRq
-cFvcn24Mcg6BRBrTvbr5rnhc4mB+MF48K2MckXr+2mk98g1u2JlTYQ2XYj4IgQwq
-egBnSR90ckz9QD/FSGxJ3ob1CDdmY9DAixP21GbSVKBy6Brfa6A=
-=xqAD
------END PGP SIGNATURE-----
-
---dFxZORNm+VieO2OP--
