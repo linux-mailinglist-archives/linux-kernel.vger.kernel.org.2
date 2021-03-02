@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12B632A080
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E20032A081
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381167AbhCBEVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348006AbhCBAWZ (ORCPT
+        id S1381176AbhCBEWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:22:08 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2477 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348007AbhCBAW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:22:25 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30FBC061756;
-        Mon,  1 Mar 2021 16:21:39 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DqHqg0Qjgz9sS8;
-        Tue,  2 Mar 2021 11:21:35 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614644495;
-        bh=8OV61hNxQX0O7/OTVI4qBszDlVyPCO8tx8jUIJVD+Oc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YUOQSf4DpL8Xa9EqsjLIKtTubZVkbyrtZL9vHtuFwqSwKioWmwhkvaKWUNAiW5Nhc
-         YZMh8iYq7bmsZ37x/QqLYEHmvo9+m3sJolkfzRuOGfbhwUQ2aDfJsu3b67+JqhwbKY
-         3FFDplwmFDdMSS5Oxyxrs6CjkUkwfYGLUM0UQrjgX2u4v0Q4MwjtTo1QQbF2wmwkfR
-         85mRkL0FweYaHO/gKQs9AOZY1t34WWHWE0sr30pvOBFvgx5rPm/5984Q4S6XY3cW8z
-         291OevBPddj3nEk/f/Fer/SkQhkuw8uK4hG3j/S/3c18ea/Y7u3L/3yZaHpioABJiI
-         TEy6U0nPCeOzA==
-Date:   Tue, 2 Mar 2021 11:21:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the powerpc-fixes tree
-Message-ID: <20210302112131.5bb7b08b@canb.auug.org.au>
+        Mon, 1 Mar 2021 19:22:29 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603d85150000>; Mon, 01 Mar 2021 16:21:41 -0800
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
+ 2021 00:21:37 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
+        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
+        <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 1/8] mm: Remove special swap entry functions
+Date:   Tue, 2 Mar 2021 11:21:35 +1100
+Message-ID: <3156280.dJpzq75PnV@nvdebian>
+In-Reply-To: <20210301174642.GP4247@nvidia.com>
+References: <20210226071832.31547-1-apopple@nvidia.com> <20210226071832.31547-2-apopple@nvidia.com> <20210301174642.GP4247@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/D4mqAlbm0wq8Ywvog1l6MM/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614644501; bh=azDUrxm78xZYK+HMnHGyx9Cls7mv6No8+tEzyjhqkY4=;
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Transfer-Encoding:Content-Type:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=OWpxffKeP4tRIYOnIzWmKU2ko4OneFNOwVj+FyTqa4wUuAyUq/G035xSN96rL3s4U
+         CA2Le5hOQkxj09JDqjwtL+dcVozOjVJOqsAP/77YPxoAGDgKoCS+uC44nuPIHShHJu
+         AQcoFQv2I5HrVxcpLUdaEYX96qs+Fbn+H4WH6IiNhxMuJse6m0q6LImPEePfGXcqS3
+         y8rWRlSZ6kxZv7XVJ05BMWPXBFERIbAwCPh/cbO3qmpQiPSlkeCWEOdT2cGGNX3CKM
+         xj85TG9o7jkYYmeYx1sJ/KOkEFDUPRj2HB/Euue8YPgbHDP8xnwpiiRC88gPjPdE07
+         Dv/DTQIp44Jsg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/D4mqAlbm0wq8Ywvog1l6MM/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tuesday, 2 March 2021 4:46:42 AM AEDT Jason Gunthorpe wrote:
+> 
+> I wish you could come up with a more descriptive word that special
+> here
+> 
+> What I understand is this is true when the swap_offset is a pfn?
 
-Hi all,
+Correct, and that points to a better name. Maybe is_pfn_swap_entry()? In which 
+case adding a helper as Christoph suggested makes some more sense. Eg: 
+pfn_swap_entry_to_page()
 
-After merging the powerpc-fixes tree, today's linux-next build (powerpc
-allyesconfig) failed like this:
+> > -static inline struct page *migration_entry_to_page(swp_entry_t entry)
+> > -{
+> > -	struct page *p = pfn_to_page(swp_offset(entry));
+> > -	/*
+> > -	 * Any use of migration entries may only occur while the
+> > -	 * corresponding page is locked
+> > -	 */
+> > -	BUG_ON(!PageLocked(compound_head(p)));
+> > -	return p;
+> 
+> And this constraint has been completely lost?
 
-drivers/net/ethernet/ibm/ibmvnic.c:5399:13: error: conflicting types for 'i=
-bmvnic_remove'
- 5399 | static void ibmvnic_remove(struct vio_dev *dev)
-      |             ^~~~~~~~~~~~~~
-drivers/net/ethernet/ibm/ibmvnic.c:81:12: note: previous declaration of 'ib=
-mvnic_remove' was here
-   81 | static int ibmvnic_remove(struct vio_dev *);
-      |            ^~~~~~~~~~~~~~
+Yes, sorry I should have called that out. I didn't think loosing the check was 
+a big deal, but I can add some checks to some of the call sites which would 
+catch a page being incorrectly unlocked.
 
-Caused by commit
+> A comment in front of the is_special_entry explaining all the rule
+> would help alot
 
-  1bdd1e6f9320 ("vio: make remove callback return void")
+Will add one.
 
-I have applied the following patch for today:
+> Transformation looks fine otherwise
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 2 Mar 2021 11:06:37 +1100
-Subject: [PATCH] vio: fix for make remove callback return void
+Thanks.
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/net/ethernet/ibm/ibmvnic.c | 1 -
- 1 file changed, 1 deletion(-)
+ - Alistair
+ 
+> Jason
+> 
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/=
-ibmvnic.c
-index eb39318766f6..fe3201ba2034 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -78,7 +78,6 @@ MODULE_LICENSE("GPL");
- MODULE_VERSION(IBMVNIC_DRIVER_VERSION);
-=20
- static int ibmvnic_version =3D IBMVNIC_INITIAL_VERSION;
--static int ibmvnic_remove(struct vio_dev *);
- static void release_sub_crqs(struct ibmvnic_adapter *, bool);
- static int ibmvnic_reset_crq(struct ibmvnic_adapter *);
- static int ibmvnic_send_crq_init(struct ibmvnic_adapter *);
---=20
-2.30.0
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/D4mqAlbm0wq8Ywvog1l6MM/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA9hQsACgkQAVBC80lX
-0Gw/tgf/X1mjakb6+92nMtN4BKbLQpllmRKdA+xmN2SHAlJhXDviswVeWKBJa2ue
-/wrRfq97m9m28/frwbTrbLd0pemJ0CjP0ZtNVMPgDiDMfSZMe6W3zJ6vAnwxGtuW
-WcgqphbiQyzt30NHOa0kX0DANyeNS54jiZbupaYEYGZcZBLcEshZniaBzji+6JfX
-ev0OdkJiCeyuHk6uyGgbEuGaMMj+CmEjwnTs/9JSKN061I3E4p999PuIzJ/eBxpn
-5z2QraLWK8pqB1B9IHuG8tHSA9OvZtLcnu5hmfKWKN/TwsarBr7ghL+cEcb9OP3P
-tOFf5HNetbZ1Xek+2xyH7aIlUpf5VA==
-=JDVK
------END PGP SIGNATURE-----
-
---Sig_/D4mqAlbm0wq8Ywvog1l6MM/--
