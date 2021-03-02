@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9A232A3C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2834432A3C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379069AbhCBJjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:39:12 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42653 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1837922AbhCBJMO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:12:14 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id F23BC5C00B0;
-        Tue,  2 Mar 2021 04:11:23 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 02 Mar 2021 04:11:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=fxp8Q1ZobdKfv1l/FezgBYXf6NS
-        F8GlosMSO26Vrskg=; b=lEIfGLugw+wra+8DkOmDr1cjDDkZj8/+0Xy2DhvFDWY
-        9bbuaSAiU1h4uRInotU9TUd+d3mJiEyY4WbT3elvP/hZjp/FcWkJ0f2iJjl9bwRg
-        8udsWnov36rM0WfqBg26wttID+r6YmYPQBn8Jujpl5a5Aw7+8p04qZRLAEvSI14Z
-        Os2FPJWtu4IJfUGEdattORmSe2B04CLOGc4n8SxFD9OJw9yMcBWa49vGmaCz3jK3
-        BrL3bd+Js32A9l1rJ2W5CXXNuKhGsJb1wycmxiUnCZ3lko83ddkdFHRfS+ijgKL6
-        sFqlVBPJCXQ2lMDFY7slOiC8o4/ALiCxxACDhHR4F+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fxp8Q1
-        ZobdKfv1l/FezgBYXf6NSF8GlosMSO26Vrskg=; b=qqyD3OiRd/dQPXvIDP36ti
-        G5bV+wtEn9KVfXS+0lsM4MrtdKNYr5QXNS8S+vxfACYF6WH33KPuO7Gs6bC/dPFD
-        bl0zNf/uJtVqeN/3UOZmQ0Dp/e6is+3rhemBz8S6UkMIfBTEQaEA+DTZH2WfuAeb
-        +XgaTzx0d4ZQUT4kdmhBQjPpOWWbAAIhV1UEBoNNM+aIP3ICG7aRQqgAcnvAao2M
-        OaX5sB6pKiH0xhsUZJuBIpTNDHOUWGu56C/VChoDT+tlaHxwq1iYQYEoXiDeWAUm
-        ON/iC3VUU03m3+AQZhjv84vg6HdA3MzwvB2BzlLzgTimd/lfaVmaLXhNnc3lBlMA
-        ==
-X-ME-Sender: <xms:OgE-YJUkZf-Po6tAw_ZEc6Quv4D0vk9wrQsCUID6dBKJi0W9T1Qr-g>
-    <xme:OgE-YLncbAh5l7oalT9TgYPxCyUul3wtVUGcmwFLQu_qkW6KXGjGoyvUNLL12knc3
-    Ps6mkrWsMZe9tujrhM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddttdcutefuodetggdotefrodftvfcurf
-    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgvucft
-    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
-    hnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeguden
-    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:OgE-YOyxqbWFesDNHTRdQSH5iOxSYC7IKdoTMW-2WlTvxaZ2SEo5Hw>
-    <xmx:OgE-YOi-zx1zHO1twSSFTApPpA1j7nrVIq9HmrtMXK56rwtpL2ez8g>
-    <xmx:OgE-YLWlg0YXaiQc7iY320HIjbwMzc2M2g2-Dg6V-2ykpFQXIaSf8w>
-    <xmx:OwE-YGCCu7zkbOgGTQEtQPKmeLWSZMsj0U83cZuF4vhhKQnynvvaFg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 6D68A108005C;
-        Tue,  2 Mar 2021 04:11:22 -0500 (EST)
-Date:   Tue, 2 Mar 2021 10:11:19 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Tobias Schramm <t.schramm@manjaro.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] ARM: dts: sun8i: V3s/V3/S3: add dma controller node
-Message-ID: <20210302091119.ckclp2ywjzaz4ivp@gilmour>
-References: <20210226103028.729172-1-t.schramm@manjaro.org>
- <20210226103028.729172-2-t.schramm@manjaro.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cmdqmnqtlsaxm5zb"
-Content-Disposition: inline
-In-Reply-To: <20210226103028.729172-2-t.schramm@manjaro.org>
+        id S1379077AbhCBJjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:39:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43466 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1837924AbhCBJMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:12:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 521C1ABF4;
+        Tue,  2 Mar 2021 09:11:52 +0000 (UTC)
+Date:   Tue, 02 Mar 2021 10:11:52 +0100
+Message-ID: <s5hr1kxhqcn.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Cc:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume support
+In-Reply-To: <d9853306-2adf-24fe-935c-f7f8a1295dc3@opensynergy.com>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+        <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
+        <s5hpn0kjt31.wl-tiwai@suse.de>
+        <7d4daea0-ed59-e84c-c28a-945c49204c83@opensynergy.com>
+        <s5hwnuqgifa.wl-tiwai@suse.de>
+        <d9853306-2adf-24fe-935c-f7f8a1295dc3@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 02 Mar 2021 09:09:33 +0100,
+Anton Yakovlev wrote:
+> 
+> On 02.03.2021 07:48, Takashi Iwai wrote:
+> > On Tue, 02 Mar 2021 07:29:20 +0100,
+> > Anton Yakovlev wrote:
+> >>
+> >> On 28.02.2021 13:05, Takashi Iwai wrote:
+> >>> On Sat, 27 Feb 2021 09:59:56 +0100,
+> >>> Anton Yakovlev wrote:
+> >>>>
+> >>
+> >> [snip]
+> >>
+> >>>> --- a/sound/virtio/virtio_pcm.c
+> >>>> +++ b/sound/virtio/virtio_pcm.c
+> >>>> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+> >>>>                 SNDRV_PCM_INFO_BATCH |
+> >>>>                 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> >>>>                 SNDRV_PCM_INFO_INTERLEAVED |
+> >>>> +             SNDRV_PCM_INFO_RESUME |
+> >>>>                 SNDRV_PCM_INFO_PAUSE;
+> >>>
+> >>> Actually you don't need to set SNDRV_PCM_INFO_RESUME.
+> >>> This flag means that the driver supports the full resume procedure,
+> >>> which isn't often the case; with this, the driver is supposed to
+> >>> resume the stream exactly from the suspended position.
+> >>>
+> >>> Most drivers don't set this but implement only the suspend-stop
+> >>> action.  Then the application (or the sound backend) will re-setup the
+> >>> stream and restart accordingly.
+> >>
+> >> I tried to resume driver without SNDRV_PCM_INFO_RESUME, and alsa-lib
+> >> called only ops->prepare(). It makes sense for a typical hw, but we have
+> >> "clean" unconfigured device on resume. And we must set hw parameters as
+> >> a first step. It means, that code should be more or less the same. And
+> >> maybe it's better to set SNDRV_PCM_INFO_RESUME, since it allows us to
+> >> resume substream in any situation (regardless of application behavior).
+> >> I can refactor code to only send requests from trigger(RESUME) path and
+> >> not to call ops itself. It should make code more straitforward. What do
+> >> you say?
+> >
+> > How about calling hw_params(NULL) conditionally in the prepare?
+> 
+> Then the question is that condition. When ops->prepare() is called, the
+> substream is in SUSPENDED state or not? If not then we need to track
+> this in some additional field (and it will make logic a little bit
+> clumsy, since that field is needed to be carefully handled in other
+> places).
 
---cmdqmnqtlsaxm5zb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, you'd need to have a suspend/resume PM callback in the driver
+that flips the internal flag to invalidate the hw_parmas, and in the
+prepare callback, just call hw_params(NULL) if that flag is set.
 
-On Fri, Feb 26, 2021 at 11:30:26AM +0100, Tobias Schramm wrote:
-> The V3s, V3 and S3 SoCs have a dma controller. Add it to the dts.
->=20
-> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+> > Doing the full stack work in the trigger callback is bad from the API
+> > design POV; in general the trigger callback is supposed to be as short
+> > as possible.
+> 
+> Yeah, but usually original subsystem design does not take into account
+> para-virtualized devices, which usually have it's own slightly different
+> reality. And we need to introduce some tricks.
 
-Applied, thanks
-Maxime
+The hardware drivers do a lot of more things in either suspend/resume
+PM callbacks or prepare callback for re-setup of the hardware.  We can
+follow the similar pattern.  Heavy-lifting works in the trigger
+callbacks is really something to avoid.
 
---cmdqmnqtlsaxm5zb
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYD4BNwAKCRDj7w1vZxhR
-xRmEAQDLWf+LCieT+Xnugb19mCcR0hCl8gSeHeSCZJUg+rpADQEAzOrI2+L7svjN
-MM4w6cNlbJYvSTb8/R43q1yfaarSsQ8=
-=WjNb
------END PGP SIGNATURE-----
-
---cmdqmnqtlsaxm5zb--
+Takashi
