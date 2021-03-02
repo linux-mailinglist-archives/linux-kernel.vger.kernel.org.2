@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13ADD32ABDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4AD32AB8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444158AbhCBUtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:49:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352020AbhCBRvK (ORCPT
+        id S1837023AbhCBU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:29:50 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:41200 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239320AbhCBRn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:51:10 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBC0C061225
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:28:06 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id e2so17251932ljo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:28:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aPax3GL1qwe1HwLabdJUeK1LIyhAZJzxJUxC8g0CrqA=;
-        b=zUMBuf2BI1C1L3cXsm5ETv5uy/TNdLURmncPes75wlQXzUc7LGrFJpIpB0tGX+DVzl
-         Xq8xgRKJhdx70VSBYNnkiaF+TAisNndnUOVlmbku+mOplCwlWeP1WXK4UQ50qv7jDzyP
-         RgglgTgURUrDzlSg8pkATeL54SG4LrzDACHTmxev6Uv1+Hs0cjrhvsXkRKIONTKe49cQ
-         QyXQvbanzB7Bt2Qf1Ocgk/dEHOUiLBHhNLiNjHYI1/GmdTMhhd3OC/8Hyk70u4Ap9kDm
-         3/MJz0tamQztGSqhOTCrEbQpJzituKpVIEX8mRk2Eq/v4vmnATbU31W8hfruFS8+f+lX
-         AI1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aPax3GL1qwe1HwLabdJUeK1LIyhAZJzxJUxC8g0CrqA=;
-        b=i4Kg/9RVTV6vKb0fZ8UG/5bL6L21yxrQxD3ueSrrRLJVUbgOU5koIm9UpQcKwUDwIp
-         3hBHBPlGxLVKcInSSUlrzS1r4xjKDd1OgeYhqU9fPAd/CgOOuvlcY9V5jlHA6WuUVDSL
-         Ew2lO9FuBuRZzfrixaSBepXyAE/q4Dq1Cq9pJFi0pay7pGXU0rD/TUTZu+mEm2WKsQ6u
-         72yoO4FuVgPqPd0a6dZ6ewcJaSVyCOjWpG6Sf+cLO1YvrfOm/2JG/kJkJZF2jA1YaKzk
-         4U7BcH4uBBXKmkH8HjcNUIGuPC6sS8AJn0ygDwUMo0kphjd0TZkQX3wTk+YsVb73LEWU
-         8ITQ==
-X-Gm-Message-State: AOAM532R5bSkbw1HNby3djFQcIiMeINYg1CUzHp++t7i+N5+SiyyKwMV
-        JEZcvGKOJ8rsQ8Xy0cV1feVCYTiCzreH1Y+GvUk6yA==
-X-Google-Smtp-Source: ABdhPJwpVHsQIIpr4Wxk1imfzi1DhFf4KVqUC8erLVb6K34rLlG4dfMC2gAE/7BMpbwcrYTc43NzTLz/U3I4d78XTP0=
-X-Received: by 2002:a2e:1649:: with SMTP id 9mr4062048ljw.74.1614698885189;
- Tue, 02 Mar 2021 07:28:05 -0800 (PST)
+        Tue, 2 Mar 2021 12:43:27 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122GNnvT014620;
+        Tue, 2 Mar 2021 16:24:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=v2AeWFJDONlxBkRHpLRb9BRRazoZvRTPXfbGtZe5tKI=;
+ b=NcG6tmL2jiWJJ9skPmLNPOzMzGcCnxgEaFZVKsSmn4QmXIhIpI2puAK3E1ptDEdPRrKZ
+ MzuoziBkkwsCOfPyjp9rWrqEs2+EnLVBqZKuqMAQ7NVM6O2WEDh/mA0aAFtLbtC/fjw8
+ zytzPpHqfwBbH3g4hxxRUaGDpL7U2XK7qrqs/XuKP/seAbV3QJFR172jDOM52YU80lhT
+ QiCi8VHVSiej97rBLFhoz2qkAmHeh+WWOgj55JzQcSml2mPJpyXQFs6MaOG9ZP16lxyX
+ rHLt+Y5mOxXdVF6nnQGo4LxPllFnvdu9rOkOPGDaQlX/GVOfsnx8ERR3Fpi2K2WISFaJ bA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 371hhc1nst-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 16:24:30 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122G70xk073588;
+        Tue, 2 Mar 2021 16:24:28 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 36yynpc8vu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 16:24:28 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 122GOR6v002775;
+        Tue, 2 Mar 2021 16:24:27 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Mar 2021 16:24:27 +0000
+Date:   Tue, 2 Mar 2021 19:24:18 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Perrin Smith <perrinjamessmith@gmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        yashsri421@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: remove unnecessary break
+Message-ID: <20210302162417.GU2087@kadam>
+References: <20210302152903.2930-1-perrinjemessmith@gmail.com>
 MIME-Version: 1.0
-References: <20210225164216.21124-1-noltari@gmail.com> <20210225164216.21124-9-noltari@gmail.com>
-In-Reply-To: <20210225164216.21124-9-noltari@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 16:27:53 +0100
-Message-ID: <CACRpkdanuQAg9ON_-=NwOi7J_pYZS4zecH+r3tFKK-NuRa1P2Q@mail.gmail.com>
-Subject: Re: [PATCH 08/12] pinctrl: add a pincontrol driver for BCM6368
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302152903.2930-1-perrinjemessmith@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103020128
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 malwarescore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 lowpriorityscore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 5:42 PM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
+On Tue, Mar 02, 2021 at 11:29:03PM +0800, Perrin Smith wrote:
+> From: Perrin Smith <perrinjamessmith@gmail.com>
+> 
+> removed unnecessary break at end of while loop
+> 
+> Signed-off-by: Perrin Smith <perrinjamessmith@gmail.com>
+> ---
+>  drivers/staging/rtl8192e/rtllib_rx.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
+> index b8ab34250e6a..2de6330b7737 100644
+> --- a/drivers/staging/rtl8192e/rtllib_rx.c
+> +++ b/drivers/staging/rtl8192e/rtllib_rx.c
+> @@ -460,8 +460,6 @@ static bool AddReorderEntry(struct rx_ts_record *pTS,
+>  			((struct rx_reorder_entry *)list_entry(pList->next,
+>  			struct rx_reorder_entry, List))->SeqNum))
+>  			return false;
+> -		else
+> -			break;
 
-> Add a pincontrol driver for BCM6368. BCM6368 allows muxing the first 32
-> GPIOs onto alternative functions. Not all are documented.
->
-> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+No, this break is necessary.  The patch introduces a bug.  You need to
+be careful following checkpatch's advice because it's just a simple
+Perl script.
 
-Same comments as for the other drivers :)
+>  	}
 
-Yours,
-Linus Walleij
+regards,
+dan carpenter
+
