@@ -2,111 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B2A32A6FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8557432A702
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838949AbhCBPzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:55:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S1838993AbhCBPzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:55:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351175AbhCBNeU (ORCPT
+        with ESMTP id S1351191AbhCBNfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:34:20 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E068C06121E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:33:22 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 18so22710111lff.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:33:21 -0800 (PST)
+        Tue, 2 Mar 2021 08:35:12 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C41C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:34:16 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id m1so2762955wml.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:34:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iSy8XDFMp0a7WSm8SRUUoPZjrV8zT9TVzmc4W+YVnt0=;
-        b=muTIlCk5kkvjyji32omYwf+paO3hraugCWesSpuLQsEWurrOtv2LkuCl6kR08bkfvg
-         A6GnCuAbiavXpP6X+RWNX7lHIkfAB0M8pik4fuBcTkyX+KWS7eB9P4AK6fMy4PSjqHzF
-         5KnqjvDB2QI67xes/P70H8yoAXPOvpsDSCaT/bAAzGvwusGzda3XPI3AQOJyQi94scJI
-         iWF71bvf56zWzmx0LJMa9rlv1NqnmUgyPwP6B9pW9/y5uzP1wyMeFMFpdmE7RlmwwPKa
-         +ahhi2xIdYnuy0TnkKnyvj4yGAq+UjuJmNT5XjAaepghP6qYE+xKENxLMqwATj0/K4B+
-         fTFw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZdRgbB/+xhU+BLrEYW5FodZNgcXrZTzEEyZSROXdiNs=;
+        b=AYlTlq4uW3iRg29N/HN0EX4sWg7+Le02hNVo3M/Yt9O05X/IY8T6751/c1wmEoCY0L
+         biLdWKDhwHXiyra5neWncvah9XDw0cZFZJYMMmR2gsOLFy14QaWJtQ2kIHUgb8mfRkSx
+         /6LKYUXahNk7VB85kjvAsvXfx364A2h5uMQWfrZ6YMhc35f0NceLI5S+fQ1oG2z19JHa
+         O9v7dj6PPis7ILJNbQNLncYb9BLabzUFOYX1exg4oixDpugNo8v9EqICPC1JiRgX2+JI
+         VRU8jezhLwGk8aPjOVf05vtVleyBrItTHD93svBy/b403AaUGdbqIfMBVCDNNC9s8I/Q
+         3q2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iSy8XDFMp0a7WSm8SRUUoPZjrV8zT9TVzmc4W+YVnt0=;
-        b=U5rVtUXKRuYAFcpl9CoQpAMWwzLJZSeiTPfNmgxTTlNgAX7uZV5FyS6GxgIj8F36u7
-         i9kg8wQ2VfDQZDhXZKl7kVd9dc0I25HHLpO5/H3ni2skpjZ2v3Ab1nsrOYomoXBi6554
-         88jwFKYb2IlejpslA68DOoCUtZs3itTCgNyI3YhCYUxLFMUaFR9X6awr4oQ7l9GoWHvk
-         AjPRNBv9TS+Y7mOvl324mTXfCR2aE1RFDGBl57tQNIIUlyEyJS35CabWZSS786Rf0adS
-         Wko4tv9XY+ch4kAzsQ28sLP8Z9cN7Pm9dGFAsPVQtlrwxPys8eV3S4yGNPIjw6E+g0tT
-         V84A==
-X-Gm-Message-State: AOAM530g/E4jK4EVWPuANcSuTpXX5rfGA9xRyZ8M4wisEdhtB2D57NQz
-        J92PF/2QC6+NzOB3nS845npqg0As7tMnAbjJhARREA==
-X-Google-Smtp-Source: ABdhPJx92UylmzN7UzJit4KOHJg5xSFTK0EOobHZawkbLd9lf5/TSOXqApb0TItqvbUM4jSbHtr8kr6+qxcDjcviWwI=
-X-Received: by 2002:a05:6512:547:: with SMTP id h7mr12700579lfl.529.1614692000450;
- Tue, 02 Mar 2021 05:33:20 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZdRgbB/+xhU+BLrEYW5FodZNgcXrZTzEEyZSROXdiNs=;
+        b=m49ZWTn+IyWIEDHSoaKrOv1HOkPLhUXAdFZ5Qcxm2AdnDAFKTTVEuBu5EjW1hGmplg
+         s4fvod6bc+xzAkvPgS43c4fEQiefc/KFNsdge45NcLemx1Dw6NZ5L4VvDnsXrsR9QVXQ
+         LP5u9LLIKP3c5u/aKEU1hfBv1d4dLg2bmaEv6z9o2tEbkHIU8t6Tiy6fD2eY2hMu25EO
+         FENcRPe5re+JM/bEYmVg0WcTIjIvWJQoicblzt30oSDWk9UbGhE8TI69VmgmIOwYYx8G
+         rWCbTUe9B4KjxRkVMwhH9LGlqs9bPIbB6vHDypMWoFU8dc7NglHIHT+TF/DlcYXj5MjQ
+         esvA==
+X-Gm-Message-State: AOAM532Davwt1O8ue4GyXVIfno7eL8aek187KlivX1nDgcPzFlOUEdmL
+        rXUcoo8fuj2u4Cuqm9E5oAo2Ug==
+X-Google-Smtp-Source: ABdhPJyD6nClABQXADENbFNrOJPev1ANCgFMGR64xibMhC4BJsr7IRE+y2o+qXFj/OTvruUkwmPhYg==
+X-Received: by 2002:a7b:cb05:: with SMTP id u5mr4092039wmj.46.1614692054679;
+        Tue, 02 Mar 2021 05:34:14 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.googlemail.com with ESMTPSA id w18sm2428636wrr.7.2021.03.02.05.34.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 05:34:14 -0800 (PST)
+Subject: Re: [PATCH v2 08/10] clocksource/drivers/hyper-v: Handle sched_clock
+ differences inline
+To:     Michael Kelley <mikelley@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
+ <1614561332-2523-9-git-send-email-mikelley@microsoft.com>
+ <2c320759-4e0e-752f-f3e8-7594cc1d544f@linaro.org>
+ <MWHPR21MB1593812919AF130E61C2A1CFD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6c0b3487-5f99-764c-6dc7-70454916cd57@linaro.org>
+Date:   Tue, 2 Mar 2021 14:34:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210208222203.22335-1-info@metux.net> <20210208222203.22335-12-info@metux.net>
- <CACRpkdYbOX_RDqwxaiugtYB4vSpSKChvKsPjcB_vv3Q74QeG2Q@mail.gmail.com> <c5ed2b27-21a2-5a07-8dd9-e080f9a6cd98@metux.net>
-In-Reply-To: <c5ed2b27-21a2-5a07-8dd9-e080f9a6cd98@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 2 Mar 2021 14:33:09 +0100
-Message-ID: <CACRpkdZ1PvA6822YYPwzHNvVrvd+bNFRLwpQ=RRrXpitWmnrxQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 11/12] platform/x86: skeleton for oftree based board
- device initialization
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <MWHPR21MB1593812919AF130E61C2A1CFD7999@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:54 PM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
-> On 12.02.21 10:58, Linus Walleij wrote:
+On 02/03/2021 02:38, Michael Kelley wrote:
+> From: Daniel Lezcano <daniel.lezcano@linaro.org> Sent: Monday, March 1, 2021 6:25 AM
+>>
+>> On 01/03/2021 02:15, Michael Kelley wrote:
+>>> While the Hyper-V Reference TSC code is architecture neutral, the
+>>> pv_ops.time.sched_clock() function is implemented for x86/x64, but not
+>>> for ARM64. Current code calls a utility function under arch/x86 (and
+>>> coming, under arch/arm64) to handle the difference.
+>>>
+>>> Change this approach to handle the difference inline based on whether
+>>> GENERIC_SCHED_CLOCK is present.  The new approach removes code under
+>>> arch/* since the difference is tied more to the specifics of the Linux
+>>> implementation than to the architecture.
+>>>
+>>> No functional change.
+>>>
+>>> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+>>> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+>>> ---
+>>
+>> [ ... ]
+>>
+>>> +/*
+>>> + * Reference to pv_ops must be inline so objtool
+>>> + * detection of noinstr violations can work correctly.
+>>> + */
+>>> +static __always_inline void hv_setup_sched_clock(void *sched_clock)
+>>> +{
+>>> +#ifdef CONFIG_GENERIC_SCHED_CLOCK
+>>> +	/*
+>>> +	 * We're on an architecture with generic sched clock (not x86/x64).
+>>> +	 * The Hyper-V sched clock read function returns nanoseconds, not
+>>> +	 * the normal 100ns units of the Hyper-V synthetic clock.
+>>> +	 */
+>>> +	sched_clock_register(sched_clock, 64, NSEC_PER_SEC);
+>>> +#else
+>>> +#ifdef CONFIG_PARAVIRT
+>>> +	/* We're on x86/x64 *and* using PV ops */
+>>> +	pv_ops.time.sched_clock = sched_clock;
+>>> +#endif
+>>> +#endif
+>>> +}
+>> Please refer to:
+>>
+>> Documentation/process/coding-style.rst
+>>
+>> Section 21)
+>>
+>> [ ... ]
+>>
+>> Prefer to compile out entire functions, rather than portions of
+>> functions or portions of expressions.
+>>
+>> [ ... ]
+>>
+> 
+> OK.  I'll rework the #ifdef in v3 of the patch set.  Is the following
+> the preferred approach?
 
-> > If the usecase is to explicitly work around deployed firmware that cannot
-> > and will not be upgraded/fixed by describing the hardware using DT
-> > instead, based on just the DMI ID then we should spell that out
-> > explicitly.
->
-> Okay, maybe I should have stated this more clearly.
->
-> OTOH, the scope is also a little bit greater: certain external cards
-> that don't need much special handling for the card itself, just
-> enumerate devices (and connections between them) using existing drivers.
->
-> That's a pretty common scenario in industrial backplane systems, where
-> we have lots of different (even application specific) cards, usually
-> composed of standard chips, that can be identified by some ID, but
-> cannot describe themselves. We have to write lots of specific drivers
-> for them, usually just for instantiating existing drivers. (we rarely
-> see such code going towards mainline).
->
-> A similar case (mainlined) seems to be the RCAR display unit - they're
-> using dt overlays that are built into the driver and applied by it
-> based on the detected DU at runtime. RCAR seems to be a pure DT
-> platform, so that's an obvious move. APU2/3/4 is ACPI based, so I went
-> in a different direction - but I'm now investigating how to make DT
-> overlays work on an ACPI platform (eg. needs some initial nodes, ...)
-> In case that's successful, I'll rework my RFC to use overlays, and
-> it will become much smaller (my oftree core changes then won't be
-> necessary anymore).
+Yes but with an indentation and comment to describe the section end.
 
-I understand. I have had the same problem with trying to fix 96boards
-mezzanines.
+eg.
 
-I also tried to sidestep the DT overlays, and it was generally disliked.
-The DT people have made up their mind that overlays is what they
-want to use for this type of stuff.
+#ifdef A
+#else
+# ifdef B
+...
+# else
+# endif /* B */
+#endif /* A */
 
-Yours,
-Linus Walleij
+> #ifdef CONFIG_GENERIC_SCHED_CLOCK
+> static __always_inline void hv_setup_sched_clock(void *sched_clock)
+> {
+> 	sched_clock_register(sched_clock, 64 NSEC_PER_SEC);
+> }
+> #else
+> #ifdef CONFIG_PARAVIRT
+> static __always_inline void hv_setup_sched_clock(void *sched_clock)
+> {
+> 	pv_ops.time.sched_clock = sched_clock:
+> }
+> #else
+> static __always_inline void hv_setup_sched_clock(void *sched_clock) {}
+> #endif
+> #endif
+
+Or
+
+#ifdef CONFIG_GENERIC_SCHED_CLOCK
+...
+#elif defined CONFIG_PARAVIRT
+...
+#else /* !CONFIG_GENERIC_SCHED_CLOCK && !CONFIG_PARAVIRT */
+...
+#endif /* CONFIG_GENERIC_SCHED_CLOCK */
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
