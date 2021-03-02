@@ -2,153 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2696232AAC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D2732AA6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839843AbhCBTy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:54:58 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:17725 "EHLO z11.mailgun.us"
+        id S1835833AbhCBT3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:29:34 -0500
+Received: from gecko.sbs.de ([194.138.37.40]:59937 "EHLO gecko.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1580063AbhCBRWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:22:55 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614705725; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=i6HWitAvfuibUOrEhE9hWqjcYM7rHuJywCh3nQMG6cA=; b=P75gxfee+KISkKX+PZOFiiOXExoVsZKAIrb60kOGrIpSWi/2M+lVQlcDcVfpyZzmA7jaLXx7
- OxFCLiIkhHrjD16hLyzxb22RZnJVqij+na/mKSQo01eTCaX/AxS4HbNyJiQr/qBLtJLb+iui
- eTwNWuKCAJHyt7AHHVfzmXNy61Y=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 603e65bf4fd7814d5f8c7566 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 16:20:15
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC0CCC4346F; Tue,  2 Mar 2021 16:20:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1E9ACC433C6;
-        Tue,  2 Mar 2021 16:20:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1E9ACC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Date:   Tue, 2 Mar 2021 08:20:10 -0800
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     cang@codeaurora.org, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v9 1/2] scsi: ufs: Enable power management for wlun
-Message-ID: <20210302162010.GH12147@stor-presley.qualcomm.com>
-References: <cover.1614655058.git.asutoshd@codeaurora.org>
- <b291bb65fadc9c828cbcb4ffb81cfa1ee47b82be.1614655058.git.asutoshd@codeaurora.org>
- <d17e52e0-cb50-50ee-accb-458b318014e5@intel.com>
+        id S238754AbhCBRNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:13:39 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 122GhEw0015430
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Mar 2021 17:43:14 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.44.113])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 122GXBHQ025192;
+        Tue, 2 Mar 2021 17:33:13 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH 3/4] watchdog: simatic-ipc-wdt: add new driver for Siemens Industrial PCs
+Date:   Tue,  2 Mar 2021 17:33:08 +0100
+Message-Id: <20210302163309.25528-4-henning.schild@siemens.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210302163309.25528-1-henning.schild@siemens.com>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <d17e52e0-cb50-50ee-accb-458b318014e5@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02 2021 at 06:14 -0800, Adrian Hunter wrote:
->On 2/03/21 5:21 am, Asutosh Das wrote:
->> During runtime-suspend of ufs host, the scsi devices are
->> already suspended and so are the queues associated with them.
->> But the ufs host sends SSU to wlun during its runtime-suspend.
->> During the process blk_queue_enter checks if the queue is not in
->> suspended state. If so, it waits for the queue to resume, and never
->> comes out of it.
->> The commit
->> (d55d15a33: scsi: block: Do not accept any requests while suspended)
->> adds the check if the queue is in suspended state in blk_queue_enter().
->>
->> Call trace:
->>  __switch_to+0x174/0x2c4
->>  __schedule+0x478/0x764
->>  schedule+0x9c/0xe0
->>  blk_queue_enter+0x158/0x228
->>  blk_mq_alloc_request+0x40/0xa4
->>  blk_get_request+0x2c/0x70
->>  __scsi_execute+0x60/0x1c4
->>  ufshcd_set_dev_pwr_mode+0x124/0x1e4
->>  ufshcd_suspend+0x208/0x83c
->>  ufshcd_runtime_suspend+0x40/0x154
->>  ufshcd_pltfrm_runtime_suspend+0x14/0x20
->>  pm_generic_runtime_suspend+0x28/0x3c
->>  __rpm_callback+0x80/0x2a4
->>  rpm_suspend+0x308/0x614
->>  rpm_idle+0x158/0x228
->>  pm_runtime_work+0x84/0xac
->>  process_one_work+0x1f0/0x470
->>  worker_thread+0x26c/0x4c8
->>  kthread+0x13c/0x320
->>  ret_from_fork+0x10/0x18
->>
->> Fix this by registering ufs device wlun as a scsi driver and
->> registering it for block runtime-pm. Also make this as a
->> supplier for all other luns. That way, this device wlun
->> suspends after all the consumers and resumes after
->> hba resumes.
->>
->> Co-developed-by: Can Guo <cang@codeaurora.org>
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->> ---
->
->Now we need either to move the suspend/resume vops from
->ufshcd_suspend/resume to __ufshcd_wl_suspend/resume, assuming that
->would work for existing implementations of those callbacks,
->or otherwise create new vops ->wl_suspend() / ->wl_resume(), and
->then split the existing implementations of those callbacks.
->
->ufs_intel_resume() now needs to be invoked from __ufshcd_wl_resume().
->I am not sure about the others:
->
->	exynos_ufs_suspend()
->	exynos_ufs_resume()
->	ufs_hisi_suspend()
->	ufs_hisi_resume()
->	ufs_mtk_suspend()
->	ufs_mtk_resume()
->	ufs_qcom_suspend()
->	ufs_qcom_resume()
->
+From: Henning Schild <henning.schild@siemens.com>
 
-Thanks. I'll change this in the next version.
+This driver adds initial support for several devices from Siemens. It is
+based on a platform driver introduced in an earlier commit.
 
--asd
+Signed-off-by: Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+Signed-off-by: Henning Schild <henning.schild@siemens.com>
+---
+ drivers/watchdog/Kconfig           |  11 ++
+ drivers/watchdog/Makefile          |   1 +
+ drivers/watchdog/simatic-ipc-wdt.c | 305 +++++++++++++++++++++++++++++
+ 3 files changed, 317 insertions(+)
+ create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 1fe0042a48d2..948497eb4bef 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -1575,6 +1575,17 @@ config NIC7018_WDT
+ 	  To compile this driver as a module, choose M here: the module will be
+ 	  called nic7018_wdt.
+ 
++config SIEMENS_SIMATIC_IPC_WDT
++	tristate "Siemens Simatic IPC Watchdog"
++	depends on SIEMENS_SIMATIC_IPC
++	select WATCHDOG_CORE
++	help
++	  This driver adds support for several watchdogs found in Industrial
++	  PCs from Siemens.
++
++	  To compile this driver as a module, choose M here: the module will be
++	  called simatic-ipc-wdt.
++
+ # M68K Architecture
+ 
+ config M54xx_WATCHDOG
+diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+index f3a6540e725e..7f5c73ec058c 100644
+--- a/drivers/watchdog/Makefile
++++ b/drivers/watchdog/Makefile
+@@ -142,6 +142,7 @@ obj-$(CONFIG_NI903X_WDT) += ni903x_wdt.o
+ obj-$(CONFIG_NIC7018_WDT) += nic7018_wdt.o
+ obj-$(CONFIG_MLX_WDT) += mlx_wdt.o
+ obj-$(CONFIG_KEEMBAY_WATCHDOG) += keembay_wdt.o
++obj-$(CONFIG_SIEMENS_SIMATIC_IPC_WDT) += simatic-ipc-wdt.o
+ 
+ # M68K Architecture
+ obj-$(CONFIG_M54xx_WATCHDOG) += m54xx_wdt.o
+diff --git a/drivers/watchdog/simatic-ipc-wdt.c b/drivers/watchdog/simatic-ipc-wdt.c
+new file mode 100644
+index 000000000000..b5c8b7ceb404
+--- /dev/null
++++ b/drivers/watchdog/simatic-ipc-wdt.c
+@@ -0,0 +1,305 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Siemens SIMATIC IPC driver for Watchdogs
++ *
++ * Copyright (c) Siemens AG, 2020-2021
++ *
++ * Authors:
++ *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/device.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/errno.h>
++#include <linux/watchdog.h>
++#include <linux/ioport.h>
++#include <linux/sizes.h>
++#include <linux/io.h>
++#include <linux/platform_data/x86/simatic-ipc-base.h>
++
++#define WD_ENABLE_IOADR		0x62
++#define WD_TRIGGER_IOADR	0x66
++#define GPIO_COMMUNITY0_PORT_ID 0xaf
++#define PAD_CFG_DW0_GPP_A_23	0x4b8
++#define SAFE_EN_N_427E		0x01
++#define SAFE_EN_N_227E		0x04
++#define WD_ENABLED		0x01
++
++#define TIMEOUT_MIN	2
++#define TIMEOUT_DEF	64
++#define TIMEOUT_MAX	64
++
++#define GP_STATUS_REG_227E	0x404D	/* IO PORT for SAFE_EN_N on 227E */
++
++static bool nowayout = WATCHDOG_NOWAYOUT;
++module_param(nowayout, bool, 0000);
++MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
++		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
++
++static DEFINE_SPINLOCK(io_lock);	/* the lock for io operations */
++static struct watchdog_device wdd;
++
++static struct resource gp_status_reg_227e_res =
++	DEFINE_RES_IO_NAMED(GP_STATUS_REG_227E, SZ_1, KBUILD_MODNAME);
++
++static struct resource io_resource =
++	DEFINE_RES_IO_NAMED(WD_ENABLE_IOADR, SZ_1,
++			    KBUILD_MODNAME " WD_ENABLE_IOADR");
++
++/* the actual start will be discovered with pci, 0 is a placeholder */
++static struct resource mem_resource =
++	DEFINE_RES_MEM_NAMED(0, SZ_4, "WD_RESET_BASE_ADR");
++
++static u32 wd_timeout_table[] = {2, 4, 6, 8, 16, 32, 48, 64 };
++static void __iomem *wd_reset_base_addr;
++
++static int get_timeout_idx(u32 timeout)
++{
++	int i;
++
++	i = ARRAY_SIZE(wd_timeout_table) - 1;
++	for (; i >= 0; i--) {
++		if (timeout >= wd_timeout_table[i])
++			break;
++	}
++
++	return i;
++}
++
++static int wd_start(struct watchdog_device *wdd)
++{
++	u8 regval;
++
++	spin_lock(&io_lock);
++
++	regval = inb(WD_ENABLE_IOADR);
++	regval |= WD_ENABLED;
++	outb(regval, WD_ENABLE_IOADR);
++
++	spin_unlock(&io_lock);
++
++	return 0;
++}
++
++static int wd_stop(struct watchdog_device *wdd)
++{
++	u8 regval;
++
++	spin_lock(&io_lock);
++
++	regval = inb(WD_ENABLE_IOADR);
++	regval &= ~WD_ENABLED;
++	outb(regval, WD_ENABLE_IOADR);
++
++	spin_unlock(&io_lock);
++
++	return 0;
++}
++
++static int wd_ping(struct watchdog_device *wdd)
++{
++	inb(WD_TRIGGER_IOADR);
++	return 0;
++}
++
++static int wd_set_timeout(struct watchdog_device *wdd, unsigned int t)
++{
++	u8 regval;
++	int timeout_idx = get_timeout_idx(t);
++
++	spin_lock(&io_lock);
++
++	regval = inb(WD_ENABLE_IOADR) & 0xc7;
++	regval |= timeout_idx << 3;
++	outb(regval, WD_ENABLE_IOADR);
++
++	spin_unlock(&io_lock);
++	wdd->timeout = wd_timeout_table[timeout_idx];
++
++	return 0;
++}
++
++static const struct watchdog_info wdt_ident = {
++	.options	= WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
++			  WDIOF_SETTIMEOUT,
++	.identity	= KBUILD_MODNAME,
++};
++
++static const struct watchdog_ops wdt_ops = {
++	.owner		= THIS_MODULE,
++	.start		= wd_start,
++	.stop		= wd_stop,
++	.ping		= wd_ping,
++	.set_timeout	= wd_set_timeout,
++};
++
++static void wd_set_safe_en_n(u32 wdtmode, bool safe_en_n)
++{
++	u16 resetbit;
++
++	if (wdtmode == SIMATIC_IPC_DEVICE_227E) {
++		/* enable SAFE_EN_N on GP_STATUS_REG_227E */
++		resetbit = inw(GP_STATUS_REG_227E);
++		if (safe_en_n)
++			resetbit &= ~SAFE_EN_N_227E;
++		else
++			resetbit |= SAFE_EN_N_227E;
++
++		outw(resetbit, GP_STATUS_REG_227E);
++	} else {
++		/* enable SAFE_EN_N on PCH D1600 */
++		resetbit = ioread16(wd_reset_base_addr);
++
++		if (safe_en_n)
++			resetbit &= ~SAFE_EN_N_427E;
++		else
++			resetbit |= SAFE_EN_N_427E;
++
++		iowrite16(resetbit, wd_reset_base_addr);
++	}
++}
++
++static int wd_setup(u32 wdtmode, bool safe_en_n)
++{
++	u8 regval;
++	int timeout_idx = 0;
++	bool alarm_active;
++
++	timeout_idx = get_timeout_idx(TIMEOUT_DEF);
++
++	wd_set_safe_en_n(wdtmode, safe_en_n);
++
++	/* read wd register to determine alarm state */
++	regval = inb(WD_ENABLE_IOADR);
++	if (regval & 0x80) {
++		pr_warn("Watchdog alarm active.\n");
++		regval = 0x82;	/* use only macro mode, reset alarm bit */
++		alarm_active = true;
++	} else {
++		regval = 0x02;	/* use only macro mode */
++		alarm_active = false;
++	}
++
++	regval |= timeout_idx << 3;
++	if (nowayout)
++		regval |= WD_ENABLED;
++
++	outb(regval, WD_ENABLE_IOADR);
++
++	return alarm_active;
++}
++
++static int simatic_ipc_wdt_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	int rc = 0;
++	struct simatic_ipc_platform *plat = pdev->dev.platform_data;
++	struct resource *res;
++
++	pr_debug(KBUILD_MODNAME ":%s(#%d) WDT mode: %d\n",
++		 __func__, __LINE__, plat->devmode);
++
++	switch (plat->devmode) {
++	case SIMATIC_IPC_DEVICE_227E:
++		if (!devm_request_region(dev, gp_status_reg_227e_res.start,
++					 resource_size(&gp_status_reg_227e_res),
++					 KBUILD_MODNAME)) {
++			dev_err(dev,
++				"Unable to register IO resource at %pR\n",
++				&gp_status_reg_227e_res);
++			return -EBUSY;
++		}
++		fallthrough;
++	case SIMATIC_IPC_DEVICE_427E:
++		wdd.info = &wdt_ident;
++		wdd.ops = &wdt_ops;
++		wdd.min_timeout = TIMEOUT_MIN;
++		wdd.max_timeout = TIMEOUT_MAX;
++		wdd.parent = NULL;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (!devm_request_region(dev, io_resource.start,
++				 resource_size(&io_resource),
++				 io_resource.name)) {
++		dev_err(dev,
++			"Unable to register IO resource at %#x\n",
++			WD_ENABLE_IOADR);
++		return -EBUSY;
++	}
++
++	if (plat->devmode == SIMATIC_IPC_DEVICE_427E) {
++		res = &mem_resource;
++
++		/* get GPIO base from PCI */
++		res->start = simatic_ipc_get_membase0(PCI_DEVFN(0x1f, 1));
++		if (res->start == 0)
++			return -ENODEV;
++
++		/* do the final address calculation */
++		res->start = res->start + (GPIO_COMMUNITY0_PORT_ID << 16) +
++			     PAD_CFG_DW0_GPP_A_23;
++		res->end += res->start;
++
++		wd_reset_base_addr = devm_ioremap_resource(dev, res);
++		if (IS_ERR(wd_reset_base_addr))
++			return -ENOMEM;
++	}
++
++	wdd.bootstatus = wd_setup(plat->devmode, true);
++	if (wdd.bootstatus)
++		pr_warn(KBUILD_MODNAME ": last reboot caused by watchdog reset\n");
++
++	watchdog_set_nowayout(&wdd, nowayout);
++	watchdog_stop_on_reboot(&wdd);
++
++	rc = devm_watchdog_register_device(dev, &wdd);
++
++	if (rc == 0)
++		pr_debug("initialized. nowayout=%d\n",
++			 nowayout);
++
++	return rc;
++}
++
++static int simatic_ipc_wdt_remove(struct platform_device *pdev)
++{
++	struct simatic_ipc_platform *plat = pdev->dev.platform_data;
++
++	wd_setup(plat->devmode, false);
++	return 0;
++}
++
++static struct platform_driver wdt_driver = {
++	.probe = simatic_ipc_wdt_probe,
++	.remove = simatic_ipc_wdt_remove,
++	.driver = {
++		.name = KBUILD_MODNAME,
++	},
++};
++
++static int __init simatic_ipc_wdt_init(void)
++{
++	return platform_driver_register(&wdt_driver);
++}
++
++static void __exit simatic_ipc_wdt_exit(void)
++{
++	platform_driver_unregister(&wdt_driver);
++}
++
++module_init(simatic_ipc_wdt_init);
++module_exit(simatic_ipc_wdt_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:" KBUILD_MODNAME);
++MODULE_AUTHOR("Gerd Haeussler <gerd.haeussler.ext@siemens.com>");
+-- 
+2.26.2
+
