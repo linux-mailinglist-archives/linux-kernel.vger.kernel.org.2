@@ -2,144 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C9232A893
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EEB32A83E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351917AbhCBRuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574432AbhCBPQn (ORCPT
+        id S1580032AbhCBRV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:21:56 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37218 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1448618AbhCBPIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:16:43 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCBEC0617AB;
-        Tue,  2 Mar 2021 06:43:37 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id f1so31668460lfu.3;
-        Tue, 02 Mar 2021 06:43:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ehMk768PgaHXNDKEGxlTJz4HCadGsVKT4y8Pam5y8jk=;
-        b=Cak8Jo5viyKK52oOim0l23vqCN/enz9J0cwGAAUInxi1rHEVBI0dAVlJK/O6sqsR3W
-         vUZrISwpO6Kh57vR5nu1ZgeGsosQUXKiVHJFptxGlO1nY4VZsAveEJ5c+F1dwtUkCXwt
-         zFWp+s1woKTPqyH6AHkjvFODPnd4V4AhhtBQ0PkfMZW5n3Q1l1kKI+hK5gDZ6jfXov+c
-         MhKLiIfuCKiDMehNP/x9RkkbIvaHI1GcHP+ojdHO1jBLQ3N9++o82pQiCzyqJxj5BuAo
-         3TLSGEnvD8wdFv0osE93KeHWNlPg7HFkv8fuCQk1HCPExSp0wW6uQfjp6t8gzG24oa5/
-         KkkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ehMk768PgaHXNDKEGxlTJz4HCadGsVKT4y8Pam5y8jk=;
-        b=Z+E/77XmC9I8XgEcxB+F15GEpLX5E5m2jbgujdF0/7GHH76OZ1thrHfv6EHXQS0eSm
-         wTGWoAm21PjKTSMFjLpGo3hgvhpv67OUTEa+4KIil/ryijH2saKj2i75Gf35kiqTJOWA
-         qaRq3MWvans/yFmG0WPzJIs5IC9PMsxpAppkzk12RIkcgdAvpOUunltvxLZmv55qhJYg
-         lMRnYXVOMg5vJbvDqVqE12fpnKD0ggEBeY5w2fgCGKxF5LvVxbOaHksWBRezbg+YehRW
-         +7YCrBElJOzjpL0ThVQJe7I1bnrGeHtzS5eYIbPDjDBnKkJMRpGu6R9o1Wu8Y4xUO3dt
-         x5Xg==
-X-Gm-Message-State: AOAM533bExp2NylD6QSrxJduqQZJ60i/MBoHXVMYjFUjq6UJBxZTK4Rx
-        bdFGgDio2Mq3wHwVR37cLO0PW4LlyhVTK6M3Ssc=
-X-Google-Smtp-Source: ABdhPJzRI6Lp0cn6FbNf1ROo1ggRWQL+ogHxDx2OVGLxaKVt2gd8s0BKD4GnCwZMyEZvXDjvmnKudQ4aLaQ/9yR4t4Q=
-X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr8351771lfu.500.1614696215995;
- Tue, 02 Mar 2021 06:43:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20210222140756.713-1-heiko.thiery@gmail.com> <20210222140756.713-3-heiko.thiery@gmail.com>
-In-Reply-To: <20210222140756.713-3-heiko.thiery@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 2 Mar 2021 11:43:24 -0300
-Message-ID: <CAOMZO5C4bL72mksHG4GfikgLOxib-A659rac7VkpjGsm150O_A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: fsl: add support for Kontron
- pitx-imx8m board
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        Tue, 2 Mar 2021 10:08:11 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122EeoRO025076;
+        Tue, 2 Mar 2021 15:44:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=oONoIdGfPczi+ljXGpeeDFb41fuDUkn+9QagP/RsyGM=;
+ b=kXUKxlCIjBQEJDbjy2/4thPlsCHLtv3WeDbjy4ZG3XxQk4fzIc9BdI14IaDqgyMxdOpb
+ cZIvUK3r6lXkw+EAFZQMqbEaM2y3KOeCWKp4c15j/tepr5Czm9VCzuY8aCVV5FKk8wnG
+ nFqbbPNQdhm3xFefaMppMoi756E31vd/gSInXRLlcr03IcuunhU5UTFnS9TCaFNb+U8w
+ wXy9j0PSRR5EYcODGRMBO7vSj6QWN9+RwL7fB2xDxJtHC4s/ejHCLWjD7JGZ6m+yH4Bb
+ UMu07ks/vLmFJnwum3MZoy25smObFj2tVSKnVKIne120CWbrdnEnaEQXTWhCf9ulj+l7 LA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 370xehqk1t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 Mar 2021 15:44:08 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3174E10002A;
+        Tue,  2 Mar 2021 15:44:07 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 21D32241615;
+        Tue,  2 Mar 2021 15:44:07 +0100 (CET)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Mar 2021 15:44:06
+ +0100
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     <vilhelm.gray@gmail.com>, <jic23@kernel.org>
+CC:     <david@lechnology.com>, <alexandre.torgue@foss.st.com>,
+        <mcoquelin.stm32@gmail.com>, <olivier.moysan@foss.st.com>,
+        <fabrice.gasnier@foss.st.com>, <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Content-Type: text/plain; charset="UTF-8"
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] counter: stm32-timer-cnt: fix ceiling write max value
+Date:   Tue, 2 Mar 2021 15:43:55 +0100
+Message-ID: <1614696235-24088-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_06:2021-03-01,2021-03-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+The ceiling value isn't checked before writing it into registers. The user
+could write a value higher than the counter resolution (e.g. 16 or 32 bits
+indicated by max_arr). This makes most significant bits to be truncated.
+Fix it by checking the max_arr to report a range error [1] to the user.
 
-On Mon, Feb 22, 2021 at 11:08 AM Heiko Thiery <heiko.thiery@gmail.com> wrote:
+Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
 
-> +       reg_usdhc2_vmmc: regulator-v-3v3-sd {
+[1] https://lkml.org/lkml/2021/2/12/358
 
-reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+---
+ drivers/counter/stm32-timer-cnt.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> +       tpm_reset: tpm-reset {
-> +               compatible = "gpio-reset";
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index ef2a974..2cf0c05 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -32,6 +32,7 @@ struct stm32_timer_cnt {
+ 	struct regmap *regmap;
+ 	struct clk *clk;
+ 	u32 ceiling;
++	u32 max_arr;
+ 	bool enabled;
+ 	struct stm32_timer_regs bak;
+ };
+@@ -185,6 +186,9 @@ static ssize_t stm32_count_ceiling_write(struct counter_device *counter,
+ 	if (ret)
+ 		return ret;
+ 
++	if (ceiling > priv->max_arr)
++		return -ERANGE;
++
+ 	/* TIMx_ARR register shouldn't be buffered (ARPE=0) */
+ 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
+ 	regmap_write(priv->regmap, TIM_ARR, ceiling);
+@@ -360,6 +364,7 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+ 	priv->regmap = ddata->regmap;
+ 	priv->clk = ddata->clk;
+ 	priv->ceiling = ddata->max_arr;
++	priv->max_arr = ddata->max_arr;
+ 
+ 	priv->counter.name = dev_name(dev);
+ 	priv->counter.parent = dev;
+-- 
+2.7.4
 
-I don't see this compatible string documented.
-
-> +               reset-gpios = <&gpio3 2 GPIO_ACTIVE_LOW>;
-> +               reset-delay-us = <2>;
-> +               reset-post-delay-ms = <60>;
-> +               #reset-cells = <0>;
-> +       };
-> +
-> +       usb_hub_reset: usb-hub-reset {
-> +               compatible = "gpio-reset";
-
-Same here.
-
-> +&fec1 {
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_fec1>;
-> +       phy-mode = "rgmii-id";
-> +       phy-handle = <&ethphy0>;
-> +       phy-reset-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
-
-This property is deprecated. Please consider using reset-gpios inside
-ethernet-phy instead.
-
-> +       /* TODO: configure audio, as of now just put a placeholder */
-> +       wm8904: audio-codec@1a {
-> +               compatible = "wlf,wm8904";
-> +               reg = <0x1a>;
-> +               clocks = <&clk IMX8MQ_CLK_SAI2_ROOT>;
-> +               clock-names = "mclk";
-> +               clock-frequency = <24000000>;
-
-Not a valid property.
-
-> +/* M.2 B-key slot */
-> +&pcie0 {
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_pcie0>;
-> +       disable-gpio = <&gpio5 29 GPIO_ACTIVE_LOW>;
-
-Not a valid property.
-
-> +       reset-gpio = <&gpio1 9 GPIO_ACTIVE_LOW>;
-> +       clocks = <&clk IMX8MQ_CLK_PCIE1_ROOT>,
-> +                <&clk IMX8MQ_CLK_PCIE1_AUX>,
-> +                <&clk IMX8MQ_CLK_PCIE1_PHY>,
-> +                <&pcie0_refclk>;
-> +       clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
-> +       ext_osc = <1>;
-
-Not a valid property.
-
-> +/* Intel Ethernet Controller I210/I211 */
-> +&pcie1 {
-> +       clocks = <&clk IMX8MQ_CLK_PCIE2_ROOT>,
-> +                <&clk IMX8MQ_CLK_PCIE2_AUX>,
-> +                <&clk IMX8MQ_CLK_PCIE2_PHY>,
-> +                <&pcie1_refclk>;
-> +       clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
-> +       ext_osc = <1>;
-
-Not a valid property.
