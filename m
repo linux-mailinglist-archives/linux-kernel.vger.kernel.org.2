@@ -2,116 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68FB32A52E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB0B32A530
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350046AbhCBLtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:49:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245759AbhCBLgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:36:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 992FF64EF4;
-        Tue,  2 Mar 2021 11:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614684945;
-        bh=QYORUg6MWJj5KzcskwuwqFJFmFdTn9wtcbYZ2e/OC7k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LhiW0BbUVmxzju8Ku3/nzwaXdeOGALz2rmnPpAY6VUM6N6kOcBkTYaq1FaLAJhy87
-         LsHwmsIkehJfjUojX3iKwnuIqji2Im17g/T607fg1sJW0eoME4hsc5U8QimBqMhnTp
-         o4Zh8AdT7IcrEkzsg2iPM2zF1X6EYgn8qJDOnL0BtQhZ/w8EFwCMcI/1f+h+/KKErd
-         bpiheHvTyIJKJdjyxMm8JKuEq7CLWYk+TYna9KGVSpkzu8vMDcrXQoqSYwz2vf2ixL
-         WtmWzNty6MeuF88mczCjRfC9wjmGhal6QA7rGISBYkUak4jBOI6PyXhmhuIQUaXbiN
-         SZ79S/0TPbdMw==
-Date:   Tue, 2 Mar 2021 13:35:41 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc 1/2] RDMA/mlx5: Set correct kernel-doc identifier
-Message-ID: <YD4jDbyn6PZQ76HB@unreal>
-References: <20210302074214.1054299-1-leon@kernel.org>
- <20210302074214.1054299-2-leon@kernel.org>
- <20210302093109.GA2690909@dell>
- <YD4SxWLbPkEoH3GR@unreal>
- <20210302104410.GD2690909@dell>
+        id S243629AbhCBMAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350009AbhCBLpa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:45:30 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F63C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 03:44:37 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id mm21so34350218ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 03:44:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OYb8vJLtF0OcL+zflNVb+VLYn9hupFKm6pNP1npRGAs=;
+        b=Fdzmb2mRXTcQ71E7e/Rz9NstwwCYPElhCv8G7FK/LY3feNupOcxaNfx/7MchmQ/vNL
+         iDfzMaZK4OQisuZk3ng8Z2redjqlToRn5uGKL3rndzr50AuqN/kdKo4KXVzsVfOIQAqd
+         y7isDG/ym9EAbW1Y9Ym7a4tCXyRQNgscnZpSkcK6VXl0eyl/AStNR/0OPzfiYPcXICqt
+         ny9O5+0PfSEjSZdkBg9uMZx+u7TB2+rkfR16kYMCfSprQwCSX0SZydRe6XpxMYiDYL16
+         Uua8gvl0lseBR7r6ooml18e9YvnVYLWHRZHVME0MY7pw+ZFUrw1HM+uuctAHz6Up+RFs
+         2tnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OYb8vJLtF0OcL+zflNVb+VLYn9hupFKm6pNP1npRGAs=;
+        b=pWAGA5LNuXeoQt9YtRMHmtHPgqs3Z2SRwwTlDpDspiV14DH9TwxSSnh1hOk4HflXmm
+         B11tim2R7NXobCQdsjZhKxNJFjUqxWLTY7qa9J6jKQ2jYqSTHnOXNQnHLPnS+MF9M2Zu
+         bL+bMep7Achl1zfrr3xsQndL1XJVgi/O7LzgsfRpjdH9heSrSdPWE60KL790vXMXRpZ6
+         +6Ap1kHC+fIULZqc1+4ZSF4KFp/NJKPnibF2IeSd+/dSFsBx7LpSYN0mDw+9WEiUdQth
+         TMHbZzWasfjNzYRttri1tw1AhfYLdWW+zzdyYzRg5hZhzLrvKwD/PnNKz6cdfQ7YGKD2
+         osPA==
+X-Gm-Message-State: AOAM530q3qTXrRpiyt7c8sGp+ffvzVwxqtpXxa7HWAgkjjw4KXWl7sDo
+        eCj65XaYc3YrRf5UOzEYOL79ug==
+X-Google-Smtp-Source: ABdhPJxPnMQDXF+ikLOWRIcd1g0H8KL/Bv0qB65dbjTr/Y9F89o5L8MY2b4sVhbO1Npyd8zBOZRRnA==
+X-Received: by 2002:a17:906:388d:: with SMTP id q13mr2469836ejd.34.1614685475483;
+        Tue, 02 Mar 2021 03:44:35 -0800 (PST)
+Received: from localhost.localdomain (hst-208-217.medicom.bg. [84.238.208.217])
+        by smtp.gmail.com with ESMTPSA id x17sm18494897edq.42.2021.03.02.03.44.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 03:44:35 -0800 (PST)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2 1/2] v4l2-ctrl: Add decoder conceal color control
+Date:   Tue,  2 Mar 2021 13:44:29 +0200
+Message-Id: <20210302114430.3594475-2-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210302114430.3594475-1-stanimir.varbanov@linaro.org>
+References: <20210302114430.3594475-1-stanimir.varbanov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210302104410.GD2690909@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 10:44:10AM +0000, Lee Jones wrote:
-> On Tue, 02 Mar 2021, Leon Romanovsky wrote:
->
-> > On Tue, Mar 02, 2021 at 09:31:09AM +0000, Lee Jones wrote:
-> > > On Tue, 02 Mar 2021, Leon Romanovsky wrote:
-> > >
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > >
-> > > > The W=1 allmodconfig build produces the following warning:
-> > > > drivers/infiniband/hw/mlx5/odp.c:1086: warning: wrong kernel-doc identifier on line:
-> > > >   * Parse a series of data segments for page fault handling.
-> > > >
-> > > > Fix it by changing /** to be /* as it is written in kernel-doc documentation.
-> > > >
-> > > > Fixes: 5e769e444d26 ("RDMA/hw/mlx5/odp: Fix formatting and add missing descriptions in 'pagefault_data_segments()'")
-> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > ---
-> > > >  drivers/infiniband/hw/mlx5/odp.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-> > > > index 374698186662..b103555b1f5d 100644
-> > > > --- a/drivers/infiniband/hw/mlx5/odp.c
-> > > > +++ b/drivers/infiniband/hw/mlx5/odp.c
-> > > > @@ -1082,7 +1082,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
-> > > >  	return ret ? ret : npages;
-> > > >  }
-> > > >
-> > > > -/**
-> > > > +/*
-> > >
-> > > This is not the correct fix.
-> >
-> > I don't want kernel-doc comments on static function. It is local to this
-> > file, so change from /** to /* was to mark that this is not kernel-doc.
-> >
-> > >
-> > > Kernel-doc is asking for the function name.
-> >
-> > The thing is that I don't want it to be kernel-doc.
->
-> In the past, if the authors have made a good effort to document the
-> function, I have left the kernel-doc formatting in place.  It looks
-> odd / non-consistent to demote some, but not others.  Especially
-> considering there are 100's if not 1000's of other static functions
-> documented in the kernel with kernel-doc formatting.
+Add decoder v4l2 control to set conceal color.
 
-I'm not interested to solve all kernel-doc issues, but only specific to
-drivers/infiniband and especially this mlx5 driver which is under my
-responsibility.
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ .../media/v4l/ext-ctrls-codec.rst             | 33 +++++++++++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++
+ include/uapi/linux/v4l2-controls.h            |  1 +
+ 3 files changed, 43 insertions(+)
 
->
-> There are also 1000's of uses that are left referenced by kernel-doc::
-> tags.  See: scripts/find-unused-docs.sh for more details.
->
-> If you're going to go through with this, you should at least say what
-> you're doing and why in the commit message.  Since demoting an
-> otherwise full and complete kernel-doc header seems a little harsh to
-> say the least.
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index 00944e97d638..817da8a14572 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -674,6 +674,39 @@ enum v4l2_mpeg_video_frame_skip_mode -
+     is currently displayed (decoded). This value is reset to 0 whenever
+     the decoder is started.
+ 
++``V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR (integer64)``
++    This control sets conceal color in YUV color space. It describes the
++    client preference of error conceal color in case of error where
++    reference frame is missing. The decoder should fill the reference
++    buffer with preferred color and use it for future decoding. The control
++    is using 16bits per channel.
++    Applicable to decoders.
++
++.. flat-table::
++    :header-rows:  0
++    :stub-columns: 0
++
++    * -
++      - 8bit  format
++      - 10bit format
++      - 12bit format
++    * - Y luminance
++      - Bit 0:7
++      - Bit 0:9
++      - Bit 0:11
++    * - Cb chrominance
++      - Bit 16:23
++      - Bit 16:25
++      - Bit 16:27
++    * - Cr chrominance
++      - Bit 32:39
++      - Bit 32:41
++      - Bit 32:43
++    * - Must be zero
++      - Bit 48:63
++      - Bit 48:63
++      - Bit 48:63
++
+ ``V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE (boolean)``
+     If enabled the decoder expects to receive a single slice per buffer,
+     otherwise the decoder expects a single frame in per buffer.
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+index 016cf6204cbb..a3b9d28a00b7 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+@@ -945,6 +945,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:			return "VBV Buffer Size";
+ 	case V4L2_CID_MPEG_VIDEO_DEC_PTS:			return "Video Decoder PTS";
+ 	case V4L2_CID_MPEG_VIDEO_DEC_FRAME:			return "Video Decoder Frame Count";
++	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:		return "Video Decoder Conceal Color";
+ 	case V4L2_CID_MPEG_VIDEO_VBV_DELAY:			return "Initial Delay for VBV Control";
+ 	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:		return "Horizontal MV Search Range";
+ 	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
+@@ -1430,6 +1431,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+ 		*max = 0x7fffffffffffffffLL;
+ 		*step = 1;
+ 		break;
++	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
++		*type = V4L2_CTRL_TYPE_INTEGER64;
++		*min = 0;
++		/* default for 8bit black, luma is 16, chroma is 128 */
++		*def = 0x8000800010LL;
++		*max = 0xffffffffffffLL;
++		*step = 1;
++		break;
+ 	case V4L2_CID_PIXEL_RATE:
+ 		*type = V4L2_CTRL_TYPE_INTEGER64;
+ 		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 039c0d7add1b..5e5a3068be2d 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -428,6 +428,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+ #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
+ #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
+ #define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID	(V4L2_CID_CODEC_BASE+230)
++#define V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR		(V4L2_CID_CODEC_BASE+231)
+ 
+ /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+ #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
+-- 
+2.25.1
 
-It wasn't kernel-doc from the beginning.
-
-Thanks
-
->
-> --
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
