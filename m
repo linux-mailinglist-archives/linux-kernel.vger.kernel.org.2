@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68F432A72B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F1132A71C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575936AbhCBQE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:04:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35864 "EHLO mail.kernel.org"
+        id S1449088AbhCBQEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:04:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1446279AbhCBN25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:28:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1342964F40;
-        Tue,  2 Mar 2021 11:56:48 +0000 (UTC)
+        id S1351145AbhCBNcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 08:32:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD88464F43;
+        Tue,  2 Mar 2021 11:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686209;
-        bh=T9VhanuWJu/sRtrg731RxKgJzqEsndhyllDNaolkWuk=;
+        s=k20201202; t=1614686217;
+        bh=2830jk0Yx1O8DCWoLForj/JZjaz5APv9kJxORQ/tqTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SX8bsl84EkdaEA9NltU7Y+Q+KKt5z8f0VVZ05Pq5q5oe6GH2vOqkYWZpoZti0keA2
-         EnBSuDB/EgfM4A/ksiPjbwJ/75oDPhOp6v/UUen0w41iQTROyLWCJgDQXFv6ZW82vi
-         uHZs6F0fIt9gnPI8u8nIH/Z0KiSF9d9BLKHVKsBJSJR9+uk0ctpe9N/B50oQzk44qR
-         6v93rfB9KDfeAXWK6pZGdGB9IrZcbS6Dom+88SX4kWEY3HUEjf42OeiBbiIFXzcC1S
-         L8KnqTgjbXFHFImOxDYlzP8Vc/1qbmOBs6VtrY/sJf3MDodxgMomfSnKFwcBTqTa5R
-         t+exo2k7M+WMA==
+        b=Rw5nnSsuMhWSuNPvC0uvlUGUMwnpqjNtinxaApNaSDaRH8o3tgWxkkFNlqipdZLa1
+         mizAr9akMYco/tDsY9icamxz/iuDrjWewnAtoYFJfOo3sOutRTjCaRxgwEAgwxBN9a
+         9kD8X6D3eoXTkaIplQPbQmJEdJZ27cabRA03139bWMNF8Zah4eew7AEdu1ZzgW/5gT
+         9KCzHLV4kW/O8EC2CzEcZy54vE9ABlDBfkcNy+AHCJsLfj1mneGDq+me3c6qjeSVc/
+         YxQVW1UmRAqemr5muCMSIJKBQl8HNGhD2XCVES9yH15jxYmofR7Vqd91YmdzrxXF/L
+         Pgqj9xEvw6PAQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-i2c@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 02/47] i2c: rcar: optimize cacheline to minimize HW race condition
-Date:   Tue,  2 Mar 2021 06:56:01 -0500
-Message-Id: <20210302115646.62291-2-sashal@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 08/47] mmc: mxs-mmc: Fix a resource leak in an error handling path in 'mxs_mmc_probe()'
+Date:   Tue,  2 Mar 2021 06:56:07 -0500
+Message-Id: <20210302115646.62291-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115646.62291-1-sashal@kernel.org>
 References: <20210302115646.62291-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,41 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 25c2e0fb5fefb8d7847214cf114d94c7aad8e9ce ]
+[ Upstream commit 0bb7e560f821c7770973a94e346654c4bdccd42c ]
 
-'flags' and 'io' are needed first, so they should be at the beginning of
-the private struct.
+If 'mmc_of_parse()' fails, we must undo the previous 'dma_request_chan()'
+call.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201208203527.49262-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-rcar.c | 2 +-
+ drivers/mmc/host/mxs-mmc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 824586d7ee56..ad6630e3cc77 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -119,6 +119,7 @@ enum rcar_i2c_type {
- };
+diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+index 75007f61df97..4fbbff03137c 100644
+--- a/drivers/mmc/host/mxs-mmc.c
++++ b/drivers/mmc/host/mxs-mmc.c
+@@ -643,7 +643,7 @@ static int mxs_mmc_probe(struct platform_device *pdev)
  
- struct rcar_i2c_priv {
-+	u32 flags;
- 	void __iomem *io;
- 	struct i2c_adapter adap;
- 	struct i2c_msg *msg;
-@@ -129,7 +130,6 @@ struct rcar_i2c_priv {
+ 	ret = mmc_of_parse(mmc);
+ 	if (ret)
+-		goto out_clk_disable;
++		goto out_free_dma;
  
- 	int pos;
- 	u32 icccr;
--	u32 flags;
- 	u8 recovery_icmcr;	/* protected by adapter lock */
- 	enum rcar_i2c_type devtype;
- 	struct i2c_client *slave;
+ 	mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
+ 
 -- 
 2.30.1
 
