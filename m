@@ -2,73 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429A632A4A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BA632A495
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838426AbhCBKyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        id S1442006AbhCBKxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:53:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349609AbhCBKmx (ORCPT
+        with ESMTP id S1578023AbhCBKfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:42:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AFBC061756;
-        Tue,  2 Mar 2021 02:32:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=F6qthdef1oL7Dk4r+O4vHCgwbdrKqGXK0mSoEWD6Tpc=; b=W+9iyS0S3xZXDQMTKv9qOoTbzq
-        DETq9J4HXqzXK/klgSYLlMOK2j/kdfZWBrB0fBGtlt1q0w/obZsTjvoAYpZE8HF31nrd7XN5Gn76t
-        r9xbdsXrADg4IHbklIeF6IcDi21Lj8Y3Fw+mdQ4Vi6fHd3hpybYHZ6QrOXUBRlC+V9226IaJYmO1s
-        ndNDO1/3QW3UMM9Gv1WjOzViE6jNTqtkbzO0QByeIGWVrC22/q7n68glVpLDE7M04N/2KoDEAuf1C
-        DApoVmodqrRISvRz07oIbtIwkYDWnj1ZyMz4QhWp1A6IHJ0Vlr+sTJGdc837OAp0zKLJMHYtMK5kA
-        z0kSNvmQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lH2If-00Gwg8-TI; Tue, 02 Mar 2021 10:30:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26904306BCA;
-        Tue,  2 Mar 2021 11:30:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 173262027C1AA; Tue,  2 Mar 2021 11:30:43 +0100 (CET)
-Date:   Tue, 2 Mar 2021 11:30:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     tim.c.chen@linux.intel.com, catalin.marinas@arm.com,
-        will@kernel.org, rjw@rjwysocki.net, vincent.guittot@linaro.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com,
-        lenb@kernel.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, msys.mizuma@gmail.com,
-        valentin.schneider@arm.com, gregkh@linuxfoundation.org,
-        jonathan.cameron@huawei.com, juri.lelli@redhat.com,
-        mark.rutland@arm.com, sudeep.holla@arm.com,
-        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        x86@kernel.org, xuwei5@huawei.com, prime.zeng@hisilicon.com,
-        guodong.xu@linaro.org, yangyicong@huawei.com,
-        liguozhu@hisilicon.com, linuxarm@openeuler.org, hpa@zytor.com
-Subject: Re: [RFC PATCH v4 3/3] scheduler: Add cluster scheduler level for x86
-Message-ID: <YD4T0qBBgR6fPbQb@hirez.programming.kicks-ass.net>
-References: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
- <20210301225940.16728-4-song.bao.hua@hisilicon.com>
+        Tue, 2 Mar 2021 05:35:07 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FE4C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:33:51 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id k66so2150608wmf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:33:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nX3UoFuzzMNsB4lVrgERxVlh7s23WyI/5O5RtFPy6nY=;
+        b=Bx4EvO9yQep9GrdueyHB8c/d21a2QkGhq+izz7ECyhwS09IazDO/FtVyuiTsYCYQZ3
+         d5+k4HK7ksKMKdFIKABfnG9RuMvF5SsTE+uu4jh3dEgLg/iY3hHSoEeJHQrfr4Cfc7NO
+         KQ3+kDt/KfA8fUQy7yVZeMwUAWM8oKdLKxSvT9q66k4nVuDmf50gRCT7klR48uBycMM2
+         AwoivxYTqzXP0sxmGWVkrJMifNxclOVabZL9NzP6dm5FLqFyF2PNhrSt1CijoNVnIiOI
+         rh3dNuzJwruEp/zBANsQyoTPeLAYiPRJBwDZ/2F3kt6DX/OHHWEvjV4nTUrUL2iTnF0A
+         2CEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nX3UoFuzzMNsB4lVrgERxVlh7s23WyI/5O5RtFPy6nY=;
+        b=Jpog8oJEZab5rfy62CpABrXhkXA09XcJZ+4pyckIxmbcuca5YKVZu6LFekWiouCgU9
+         TbFWZl4U4CSPPLWpSJ/REtuBiQtQyyUUdM/e5fUmoKzeIfsUXlt++kVBDarIH9wLMuM8
+         VGQ6+RZJlBe0vY4AMdY3vukgZRNhWxbzYB6ieNrWu2CefRWzYDYHHaOGeIKxHlfNVUvQ
+         hEOldyhnjWyrNmva0SGEurCShzHpsXsrBn7FGt0Y/KgEszxY1pAXCkbVZKKu3CAAJYR6
+         M1Oehgm4x3XbYbF3/Xwm7f1OnWJC9fRZw0oAWqtU0GEXtnx2k7Lt5fNfTLj0ztpB88RA
+         P89Q==
+X-Gm-Message-State: AOAM531HOvUeqrabL7eLkQyacE5hAaKyR4cuTJEPvWANNnMPVN9UdOko
+        OPIrjMVV4Nukma25o3P7pdQm1Vs4KzFHHQ==
+X-Google-Smtp-Source: ABdhPJx2rSIdbee/+K/KsslLjff4yaAjKlMBXCVceuCurYAl4gZVBdQy58OhHGQTBtHZYRyb4gXZpA==
+X-Received: by 2002:a1c:195:: with SMTP id 143mr3306604wmb.147.1614681230475;
+        Tue, 02 Mar 2021 02:33:50 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id j26sm20997516wrh.57.2021.03.02.02.33.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Mar 2021 02:33:49 -0800 (PST)
+Subject: Re: [PATCH 2/3] soundwire: qcom: add auto enumeration support
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        vkoul@kernel.org
+Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
+ <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
+ <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4721dd27-c8ce-f988-3c10-794841390656@linaro.org>
+Date:   Tue, 2 Mar 2021 10:33:49 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301225940.16728-4-song.bao.hua@hisilicon.com>
+In-Reply-To: <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 11:59:40AM +1300, Barry Song wrote:
-> From: Tim Chen <tim.c.chen@linux.intel.com>
-> 
-> There are x86 CPU architectures (e.g. Jacobsville) where L2 cahce
-> is shared among a cluster of cores instead of being exclusive
-> to one single core.
 
-Isn't that most atoms one way or another? Tremont seems to have it per 4
-cores, but earlier it was per 2 cores.
+
+On 26/02/2021 17:44, Pierre-Louis Bossart wrote:
+> 
+>> +static int qcom_swrm_enumerate(struct sdw_bus *bus)
+>> +{
+>> +    struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+>> +    struct sdw_slave *slave, *_s;
+>> +    struct sdw_slave_id id;
+>> +    u32 val1, val2;
+>> +    u64 addr;
+>> +    int i;
+>> +    char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
+>> +
+>> +    for (i = 1; i < (SDW_MAX_DEVICES + 1); i++) {
+> 
+> I don't understand the (SDW_MAX_DEVICES + 1)?
+If you mean +1 then probably we can add <= instead of just < to make it 
+look like other parts of code in bus.c
+
+for (i = 1; i <= SDW_MAX_DEVICES; i++)
+
+> 
+> 
+>> +        /*SCP_Devid5 - Devid 4*/
+>> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
+>> +
+>> +        /*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
+>> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
+> 
+> Do you mind explaining a bit what happens here?
+> Does the hardware issue commands to read all DevID registers and set the 
+> device number automagically?
+
+exactly the hardware assigns device numbers to slaves automatically, and 
+the devnum can be figured out by the controller driver by reading 
+SWRM_ENUMERATOR_SLAVE_DEV_ID_1/2 registers!
+
+> If yes, then in SoundWire parlance the enumeration is complete. What you 
+> are doing below is no longer part of the enumeration.
+
+yes, enumeration is complete by the hardware, however the controller 
+driver need to know the dev number assigned by the hardware, this 
+routine is doing that!
+> 
+> 
+>> +
+>> +        if (!val1 && !val2)
+>> +            break;
+>> +
+>> +        addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
+>> +            ((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
+>> +            ((u64)buf1[0] << 40);
+>> +
+>> +        sdw_extract_slave_id(bus, addr, &id);
+>> +        /* Now compare with entries */
+>> +        list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
+>> +            if (sdw_compare_devid(slave, id) == 0) {
+>> +                u32 status = qcom_swrm_get_n_device_status(ctrl, i);
+>> +                if (status == SDW_SLAVE_ATTACHED) {
+>> +                    slave->dev_num = i;
+>> +                    mutex_lock(&bus->bus_lock);
+>> +                    set_bit(i, bus->assigned);
+>> +                    mutex_unlock(&bus->bus_lock);
+>> +
+>> +                }
+> 
+> And that part is strange as well. The bus->assigned bit should be set 
+> even if the Slave is not in the list provided by platform firmware. It's 
+> really tracking the state of the hardware, and it should not be 
+> influenced by what software knows to manage.
+
+Am not 100% sure If I understand the concern here, but In normal (non 
+auto enum) cases this bit is set by the bus code while its doing 
+enumeration to assign a dev number from the assigned bitmap!
+
+However in this case where auto enumeration happens it makes sense to 
+set this here with matching dev number!
+
+AFAIU from code, each bit in this bitmap corresponds to slave dev number!
+
+
+> 
+>> +                break;
+>> +            }
+>> +        }
+>> +    }
+>> +
+>> +    complete(&ctrl->enumeration);
+> 
+> you have init_completion() and complete() in this patch, but no 
+> wait_for_completion(), so that should be added in a later patch, no?
+
+make sense, will move that to other patch!
+
+--srini
+> 
+>> +    return 0;
+>> +}
+>> +
+>>   static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>>   {
+>>       struct qcom_swrm_ctrl *swrm = dev_id;
+>> -    u32 value, intr_sts, intr_sts_masked;
+>> +    u32 value, intr_sts, intr_sts_masked, slave_status;
+>>       u32 i;
+>>       u8 devnum = 0;
+>>       int ret = IRQ_HANDLED;
+>> @@ -382,10 +443,19 @@ static irqreturn_t qcom_swrm_irq_handler(int 
+>> irq, void *dev_id)
+>>                   break;
+>>               case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
+>>               case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
+>> -                dev_err_ratelimited(swrm->dev, "%s: SWR new slave 
+>> attached\n",
+>> +                dev_err_ratelimited(swrm->dev, "%s: SWR slave status 
+>> changed\n",
+>>                       __func__);
+>> -                qcom_swrm_get_device_status(swrm);
+>> -                sdw_handle_slave_status(&swrm->bus, swrm->status);
+>> +                swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, 
+>> &slave_status);
+>> +                if (swrm->slave_status == slave_status) {
+>> +                    dev_err(swrm->dev, "Slave status not changed %x\n",
+>> +                        slave_status);
+>> +                    break;
+>> +                } else {
+>> +                    dev_err(swrm->dev, "Slave status handle %x\n", 
+>> slave_status);
+>> +                    qcom_swrm_get_device_status(swrm);
+>> +                    qcom_swrm_enumerate(&swrm->bus);
+>> +                    sdw_handle_slave_status(&swrm->bus, swrm->status);
+>> +                }
+>>                   break;
+>>               case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
+>>                   dev_err_ratelimited(swrm->dev,
+>> @@ -472,8 +542,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl 
+>> *ctrl)
+>>       ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+>> -    /* Disable Auto enumeration */
+>> -    ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
+>> +    /* Enable Auto enumeration */
+>> +    ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 1);
+>>       ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
+>>       /* Mask soundwire interrupts */
+>> @@ -507,6 +577,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl 
+>> *ctrl)
+>>           ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN,
+>>                   SWRM_INTERRUPT_STATUS_RMSK);
+>>       }
+>> +    ctrl->slave_status = 0;
+>>       return 0;
+>>   }
+>> @@ -1068,6 +1139,7 @@ static int qcom_swrm_probe(struct 
+>> platform_device *pdev)
+>>       dev_set_drvdata(&pdev->dev, ctrl);
+>>       mutex_init(&ctrl->port_lock);
+>>       init_completion(&ctrl->broadcast);
+>> +    init_completion(&ctrl->enumeration);
+>>       ctrl->bus.ops = &qcom_swrm_ops;
+>>       ctrl->bus.port_ops = &qcom_swrm_port_ops;
+>>
