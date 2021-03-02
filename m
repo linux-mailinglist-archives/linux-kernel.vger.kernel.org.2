@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2198E32AD83
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201F832AD85
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837828AbhCBV7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
+        id S1837860AbhCBV7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:59:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835346AbhCBTCw (ORCPT
+        with ESMTP id S1835355AbhCBTDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:02:52 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA71C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 11:01:15 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id 201so14442534pfw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 11:01:15 -0800 (PST)
+        Tue, 2 Mar 2021 14:03:15 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05955C0611C2
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 11:01:47 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id g185so2092448qkf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 11:01:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:newsgroups:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wht29kUAgkDTBmrHaW1q6XJ3NXEO35xEuxud/bR3ziE=;
-        b=AZrrmzliYKd1I2bdE1uPjy6MzgCQYn94j+rrwAbHdfT3faZtrRh0wbfaDLNVvtb2qt
-         nQaiXureHZxB8+QeqHQXy2X7UiCopVHmJxQd0Tq3jOiFpt3isgYaVZq9xWfn+jY/wrt+
-         DJEd6A/bDeZbMJCIigCLzlZA7nHZE2PDIcYqQlcakuxPG+BwYeuA6EbVTkdEuhxJ8q06
-         2z/6QTTRESwT3FwsLoeLM1YJFu0fQXoDnhpa7nWKycx9Ky5khf3L7OC7/+uqguXUNSyD
-         OF5RABsitB65mU1xlpVZSuBxZCuPJj0w4FEnC4ZR/j8tpfSAecZkr+f1mXSqqSwVGjVm
-         26xA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bnXfU68ZzIsZlihNWZUn2t6cVsioWSUQ6rdGiL1Upjg=;
+        b=mlOhvvb/rH8DvWuDKTYklm5YoqVcXjyzDw0EukcQ7YrYl2Kj8083Uxq1Nrl0Q+znzC
+         3SKv9bgz/Uj0MxPwaYaGLVxX8AELrMekBfA158dO8QjBoixnATIjNqkYNxp/q9kpILtg
+         ZPwdVfu4wEJmM7aDzH/FZOtGvIs9VtrSZqKFDcO+dmny0c49xjXyKQcBf6AlsXPiMp2N
+         +xi/O40oXHCemWGtyqgadLVjvwQN3eAwY3KWZryLXYphrWNmkQJ05MwjRHr5PRsAI+gX
+         aw/qm2P0/Wv8gp2L4MRQ7a+WHAXO7AGSNpnlrYtJWfV5YRiBurSdGWYbJZuM+2SJzOT2
+         f4iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:newsgroups:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wht29kUAgkDTBmrHaW1q6XJ3NXEO35xEuxud/bR3ziE=;
-        b=BgWp1vg1278j90tMpzvxHOJ9WS5GyLLm/yLqpTA/jDvxGHxW6Pn1s0o60XqW0E9Zzo
-         QsPpgPJJ6pOt97QVv8mwwe8rVLOuLRM2a5EPa4YmWdRhwblyrw+9qM17JCZ6s3+suWi4
-         1qbAq/WdIzJ3xGnu9Y5rIAeezvYPHl/CrrQxugr6oMHjSIzqajFl6puW71096i48MHwd
-         QeZiHWO8oNu/lVstdavgJ8nE7yn8FlPp2BrxSRbVpmq80cyo8Qe6U4AUbvfS87CCEims
-         hdMOM3+1RKF64TDc2VA++3rUVW9UHyVCLxeUp2RD82BGtWuJWX0ny7usZIRnidKqF5ER
-         UQgg==
-X-Gm-Message-State: AOAM533RO0WJ4FYDqD69XKtQ9uB8/m8Acqjcl20Scfd7T3CLSBjdckTt
-        NnlYD/Mb9Vd0Gzsdsn55+0a5oo3clxlE2A==
-X-Google-Smtp-Source: ABdhPJywrkBqp9m6xKkrLJLVnWvCouj4D7AyUfUr4U23MJmh3YdXp//gK+9wnKB64E695F64o9FIYA==
-X-Received: by 2002:a63:1021:: with SMTP id f33mr1065584pgl.409.1614711674219;
-        Tue, 02 Mar 2021 11:01:14 -0800 (PST)
-Received: from [192.168.50.50] (c-24-4-73-83.hsd1.ca.comcast.net. [24.4.73.83])
-        by smtp.gmail.com with ESMTPSA id e22sm18629680pgk.56.2021.03.02.11.01.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 11:01:13 -0800 (PST)
-Sender: Vineet Gupta <vineetg76@gmail.com>
-Subject: Re: [PATCH] arc: kernel: Return -EFAULT if copy_to_user() fails
-To:     Wang Qing <wangqing@vivo.com>, Jens Axboe <axboe@kernel.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
-Newsgroups: gmane.linux.kernel,gmane.linux.kernel.arc
-References: <1614600349-15662-1-git-send-email-wangqing@vivo.com>
-From:   Vineet Gupta <vgupta@synopsys.com>
-Message-ID: <bed81c02-97e0-9905-0dd3-6064a54691ff@synopsys.com>
-Date:   Tue, 2 Mar 2021 11:01:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bnXfU68ZzIsZlihNWZUn2t6cVsioWSUQ6rdGiL1Upjg=;
+        b=dRthtm6crkKppMjV13UJP7LLw45F1f3ck0+kQp3Sz6fiTT+npQSd+UKl2Jwnu+v6N9
+         1PbjPa2M59Jv2KFRqvKlHkR9LT3sBO3mKBh9cy6o/+CA4fk+SdocNz58yIOuukRHVF3J
+         G4w45+dcSAisxbka4TVCpd+hwYjGvXE5MTGwa3Go9L0jQT5JdAKa92ITDV5LvaO9IIqY
+         64tzDx2OGa2OOi2yihlbDV2sxE+CYc/x5Jbq6Wa9f+ySxsFy5QVe5qdDhK1smjd3qSZw
+         64grQV0VD2GEE5v3/MPEtZBK29+wHb8fqfZnsgbC83Vqo4wIYJROupszM/Tpd1+K3PQY
+         wvEw==
+X-Gm-Message-State: AOAM533GARXKJFCzjrtIP5hriySEdfIJTYf28HW1X0oZUFdD+6g4FlBs
+        liHx8MPLsyewrbNV01uP4GgNgKPky3jvkWyDlEeikw==
+X-Google-Smtp-Source: ABdhPJwJiEYqApj6rgOYrCmW9HdrmS3ZOfM6+JirjcgL6eujZSZ4Dx4XpAiAtLAAnjnsL+7Jx9aKw0PSbF5M5001DTs=
+X-Received: by 2002:a05:620a:981:: with SMTP id x1mr20414567qkx.501.1614711705876;
+ Tue, 02 Mar 2021 11:01:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1614600349-15662-1-git-send-email-wangqing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <00000000000039404305bc049fa5@google.com> <20210224023026.3001-1-hdanton@sina.com>
+ <0a0573f07a7e1468f83d52afcf8f5ba356725740.camel@sipsolutions.net>
+In-Reply-To: <0a0573f07a7e1468f83d52afcf8f5ba356725740.camel@sipsolutions.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 2 Mar 2021 20:01:34 +0100
+Message-ID: <CACT4Y+ahrV-L8vV8Jm8XP=KwjWivFj445GULY1fbRN9t7buMGw@mail.gmail.com>
+Subject: Re: BUG: soft lockup in ieee80211_tasklet_handler
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+27df43cf7ae73de7d8ee@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 4:05 AM, Wang Qing wrote:
-> The copy_to_user() function returns the number of bytes remaining to be
-> copied, but we want to return -EFAULT if the copy doesn't complete.
-> 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+On Tue, Mar 2, 2021 at 3:18 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Wed, 2021-02-24 at 10:30 +0800, Hillf Danton wrote:
+> >
+> > Add budget for the 80211 softint handler - it's feasible not to try to
+> > build the giant pyramid in a week.
+> >
+> > --- x/net/mac80211/main.c
+> > +++ y/net/mac80211/main.c
+> > @@ -224,9 +224,15 @@ static void ieee80211_tasklet_handler(un
+> >  {
+> >       struct ieee80211_local *local = (struct ieee80211_local *) data;
+> >       struct sk_buff *skb;
+> > +     int i = 0;
+> > +
+> > +     while (i++ < 64) {
+> > +             skb = skb_dequeue(&local->skb_queue);
+> > +             if (!skb)
+> > +                     skb = skb_dequeue(&local->skb_queue_unreliable);
+> > +             if (!skb)
+> > +                     return;
+>
+> I guess that's not such a bad idea, but I do wonder how we get here,
+> userspace can submit packets faster than we can process?
+>
+> It feels like a simulation-only case, tbh, since over the air you have
+> limits how much bandwidth you can get ... unless you have a very slow
+> CPU?
+>
+> In any case, if you want anything merged you're going to have to submit
+> a proper patch with a real commit message and Signed-off-by, etc.
 
-Acked-by: Vineet Gupta <vgupta@synopsys.com>
+Looking at the reproducer that mostly contains just perf_event_open,
+It may be the old known issue of perf_event_open with some extreme
+parameters bringing down kernel.
++perf maintainers
+And as far as I remember +Peter had some patch to restrict
+perf_event_open parameters.
 
-Do you want me to pick this up via ARC tree ?
-
-Thx,
--Vineet
-
-> ---
->   arch/arc/kernel/signal.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
-> index a78d8f7..fdbe06c
-> --- a/arch/arc/kernel/signal.c
-> +++ b/arch/arc/kernel/signal.c
-> @@ -96,7 +96,7 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
->   			     sizeof(sf->uc.uc_mcontext.regs.scratch));
->   	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
->   
-> -	return err;
-> +	return err ? -EFAULT : 0;
->   }
->   
->   static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
-> @@ -110,7 +110,7 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
->   				&(sf->uc.uc_mcontext.regs.scratch),
->   				sizeof(sf->uc.uc_mcontext.regs.scratch));
->   	if (err)
-> -		return err;
-> +		return -EFAULT;
->   
->   	set_current_blocked(&set);
->   	regs->bta	= uregs.scratch.bta;
-> 
-
+r0 = perf_event_open(&(0x7f000001d000)={0x1, 0x70, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x3ff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xfffffffe, 0x0, @perf_config_ext}, 0x0,
+0x0, 0xffffffffffffffff, 0x0)
