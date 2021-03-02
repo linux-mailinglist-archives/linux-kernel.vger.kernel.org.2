@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B33632A43E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE31032A43D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382952AbhCBK1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:27:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:48210 "EHLO foss.arm.com"
+        id S1382933AbhCBK1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:27:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:48220 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382323AbhCBKN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:13:29 -0500
+        id S1382703AbhCBKN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:13:28 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CAAAA11D4;
-        Tue,  2 Mar 2021 02:12:24 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1937B12FC;
+        Tue,  2 Mar 2021 02:12:27 -0800 (PST)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 942E03F70D;
-        Tue,  2 Mar 2021 02:12:23 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D536E3F70D;
+        Tue,  2 Mar 2021 02:12:25 -0800 (PST)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
         mark.rutland@arm.com, maz@kernel.org, tglx@linutronix.de,
         will@kernel.org
-Subject: [PATCHv2 2/8] irqchip: Do not blindly select CONFIG_GENERIC_IRQ_MULTI_HANDLER
-Date:   Tue,  2 Mar 2021 10:12:05 +0000
-Message-Id: <20210302101211.2328-3-mark.rutland@arm.com>
+Subject: [PATCHv2 3/8] genirq: Allow architectures to override set_handle_irq() fallback
+Date:   Tue,  2 Mar 2021 10:12:06 +0000
+Message-Id: <20210302101211.2328-4-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210302101211.2328-1-mark.rutland@arm.com>
 References: <20210302101211.2328-1-mark.rutland@arm.com>
@@ -34,15 +34,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marc Zyngier <maz@kernel.org>
 
-Implementing CONFIG_GENERIC_IRQ_MULTI_HANDLER is a decision that is
-made at the architecture level, and shouldn't involve the irqchip
-at all (we even provide a fallback helper when the option isn't
-selected).
+Some architectures want to provide the generic set_handle_irq() API, but
+for structural reasons need to provide their own implementation. For
+example, arm64 needs to do this to provide uniform set_handle_irq() and
+set_handle_fiq() registration functions.
 
-Drop all instances of such selection from non-arch code.
+Make this possible by allowing architectures to provide their own
+implementation of set_handle_irq when CONFIG_GENERIC_IRQ_MULTI_HANDLER
+is not selected.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210217142800.2547737-1-maz@kernel.org
+[Mark: expand commit message]
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Hector Martin <marcan@marcan.st>
@@ -50,84 +52,27 @@ Cc: James Morse <james.morse@arm.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Will Deacon <will@kernel.org>
 ---
- drivers/irqchip/Kconfig | 9 ---------
- 1 file changed, 9 deletions(-)
+ include/linux/irq.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index e74fa206240a..15536e321df5 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -8,7 +8,6 @@ config IRQCHIP
- config ARM_GIC
- 	bool
- 	select IRQ_DOMAIN_HIERARCHY
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 2efde6a79b7e..9890180b84fd 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -1258,11 +1258,13 @@ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *));
+  */
+ extern void (*handle_arch_irq)(struct pt_regs *) __ro_after_init;
+ #else
++#ifndef set_handle_irq
+ #define set_handle_irq(handle_irq)		\
+ 	do {					\
+ 		(void)handle_irq;		\
+ 		WARN_ON(1);			\
+ 	} while (0)
+ #endif
++#endif
  
- config ARM_GIC_PM
-@@ -33,7 +32,6 @@ config GIC_NON_BANKED
- 
- config ARM_GIC_V3
- 	bool
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select IRQ_DOMAIN_HIERARCHY
- 	select PARTITION_PERCPU
- 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
-@@ -64,7 +62,6 @@ config ARM_NVIC
- config ARM_VIC
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 
- config ARM_VIC_NR
- 	int
-@@ -99,14 +96,12 @@ config ATMEL_AIC_IRQ
- 	bool
- 	select GENERIC_IRQ_CHIP
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config ATMEL_AIC5_IRQ
- 	bool
- 	select GENERIC_IRQ_CHIP
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config I8259
-@@ -153,7 +148,6 @@ config DW_APB_ICTL
- config FARADAY_FTINTC010
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config HISILICON_IRQ_MBIGEN
-@@ -169,7 +163,6 @@ config IMGPDC_IRQ
- config IXP4XX_IRQ
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config MADERA_IRQ
-@@ -186,7 +179,6 @@ config CLPS711X_IRQCHIP
- 	bool
- 	depends on ARCH_CLPS711X
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 	default y
- 
-@@ -205,7 +197,6 @@ config OMAP_IRQCHIP
- config ORION_IRQCHIP
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 
- config PIC32_EVIC
- 	bool
+ #endif /* _LINUX_IRQ_H */
 -- 
 2.11.0
 
