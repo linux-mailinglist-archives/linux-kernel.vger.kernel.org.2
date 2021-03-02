@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D7A32A7FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA7632A7F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579432AbhCBQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:56:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
+        id S1579276AbhCBQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:46:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351413AbhCBOXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:23:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A13A064FBA;
-        Tue,  2 Mar 2021 11:59:25 +0000 (UTC)
+        id S1448344AbhCBOUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:20:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9D2C64FCA;
+        Tue,  2 Mar 2021 11:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686366;
-        bh=e+4B+SZc++KIqzbrcwnrHoSGfVZ62k0sVHX6gV/iffw=;
+        s=k20201202; t=1614686372;
+        bh=VPRE832pU0+LBG5pWKgG1aQ+yt+O0wX0qot67RDjVa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N8vaCFz6Eacw2j7Crvq9EhCRqvSKzg6L9GEyMwo7Jwjw6eCLalU2tx2KyN2OiluWH
-         2YHoMzt1N5N44DtsL9PiW9GEj9V5HFqelhLc/Nudxr6WtjGfse2D/nsspLZrQH/5wr
-         4o1Pco20hJfqMtXNV3LZ2X9BJdFpfOmmP7XpRFqlSWYhtdOaiL+QoolKBsnMcdkRh4
-         g+U7IEfazcBrLIbPPd/JKvtahwWcbWlj+wBjt/1/JPmNA+Quqoq4LPHBKYaxSyxdHR
-         IaHgU2qL3LJ+dXmLqxud66SIhO1CefrFnvjKtBR5xou+GaEGYx0xnwpQWvaTlYQQUA
-         E2ZuWQPA3+ogQ==
+        b=RalFa7TDSIMnawl/3mKoRCf682EYRYV1ekAnqATjOvQHCy3UKL/D0pcroKzcoKmSy
+         IEM1J+eJGvc3XooWDrgG27+xXooCuM3s/0zk4vvs+QuBI/6lKcbS1B5YRfmz+bgtbP
+         jQXjV289Cmhpq/90Pji75x0zv3uOjv1f5z/zxKJhfeZctqqaspsn7txezTA44yH79k
+         6PpEM9I1DlCuRIkZqF9HQv48kO0KS+zyBUzIFNmPpr/AqiO4h9ZlxsXjhAcTE1IKf+
+         5QA6NcbrIvc5acdAB7COQy5aCbs1NQ3Lq5FvWTxl45sAB8w5yrfff+h1GV7rBclb9f
+         Pczyv5bErj2xg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.9 03/10] mmc: mediatek: fix race condition between msdc_request_timeout and irq
-Date:   Tue,  2 Mar 2021 06:59:14 -0500
-Message-Id: <20210302115921.63636-3-sashal@kernel.org>
+Cc:     Aswath Govindraju <a-govindraju@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 08/10] misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
+Date:   Tue,  2 Mar 2021 06:59:19 -0500
+Message-Id: <20210302115921.63636-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115921.63636-1-sashal@kernel.org>
 References: <20210302115921.63636-1-sashal@kernel.org>
@@ -44,82 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaotian Jing <chaotian.jing@mediatek.com>
+From: Aswath Govindraju <a-govindraju@ti.com>
 
-[ Upstream commit 0354ca6edd464a2cf332f390581977b8699ed081 ]
+[ Upstream commit f6f1f8e6e3eea25f539105d48166e91f0ab46dd1 ]
 
-when get request SW timeout, if CMD/DAT xfer done irq coming right now,
-then there is race between the msdc_request_timeout work and irq handler,
-and the host->cmd and host->data may set to NULL in irq handler. also,
-current flow ensure that only one path can go to msdc_request_done(), so
-no need check the return value of cancel_delayed_work().
+A dummy zero bit is sent preceding the data during a read transfer by the
+Microchip 93LC46B eeprom (section 2.7 of[1]). This results in right shift
+of data during a read. In order to ignore this bit a quirk can be added to
+send an extra zero bit after the read address.
 
-Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
-Link: https://lore.kernel.org/r/20201218071611.12276-1-chaotian.jing@mediatek.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Add a quirk to ignore the zero bit sent before data by adding a zero bit
+after the read address.
+
+[1] - https://www.mouser.com/datasheet/2/268/20001749K-277859.pdf
+
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Link: https://lore.kernel.org/r/20210105105817.17644-3-a-govindraju@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/misc/eeprom/eeprom_93xx46.c | 15 +++++++++++++++
+ include/linux/eeprom_93xx46.h       |  2 ++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 7fc6ce381142..125c06a10455 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -741,13 +741,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
- static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
- {
- 	unsigned long flags;
--	bool ret;
+diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+index 94cc035aa841..a6409a362eb3 100644
+--- a/drivers/misc/eeprom/eeprom_93xx46.c
++++ b/drivers/misc/eeprom/eeprom_93xx46.c
+@@ -38,6 +38,10 @@ static const struct eeprom_93xx46_devtype_data atmel_at93c46d_data = {
+ 		  EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH,
+ };
  
--	ret = cancel_delayed_work(&host->req_timeout);
--	if (!ret) {
--		/* delay work already running */
--		return;
--	}
-+	/*
-+	 * No need check the return value of cancel_delayed_work, as only ONE
-+	 * path will go here!
-+	 */
-+	cancel_delayed_work(&host->req_timeout);
++static const struct eeprom_93xx46_devtype_data microchip_93lc46b_data = {
++	.quirks = EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE,
++};
 +
- 	spin_lock_irqsave(&host->lock, flags);
- 	host->mrq = NULL;
- 	spin_unlock_irqrestore(&host->lock, flags);
-@@ -765,7 +765,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 	bool done = false;
- 	bool sbc_error;
- 	unsigned long flags;
--	u32 *rsp = cmd->resp;
-+	u32 *rsp;
+ struct eeprom_93xx46_dev {
+ 	struct spi_device *spi;
+ 	struct eeprom_93xx46_platform_data *pdata;
+@@ -58,6 +62,11 @@ static inline bool has_quirk_instruction_length(struct eeprom_93xx46_dev *edev)
+ 	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH;
+ }
  
- 	if (mrq->sbc && cmd == mrq->cmd &&
- 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
-@@ -786,6 +786,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 
- 	if (done)
- 		return true;
-+	rsp = cmd->resp;
- 
- 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
- 
-@@ -968,7 +969,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
- static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 				struct mmc_request *mrq, struct mmc_data *data)
++static inline bool has_quirk_extra_read_cycle(struct eeprom_93xx46_dev *edev)
++{
++	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE;
++}
++
+ static int eeprom_93xx46_read(void *priv, unsigned int off,
+ 			      void *val, size_t count)
  {
--	struct mmc_command *stop = data->stop;
-+	struct mmc_command *stop;
- 	unsigned long flags;
- 	bool done;
- 	unsigned int check_data = events &
-@@ -984,6 +985,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
+@@ -99,6 +108,11 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
+ 		dev_dbg(&edev->spi->dev, "read cmd 0x%x, %d Hz\n",
+ 			cmd_addr, edev->spi->max_speed_hz);
  
- 	if (done)
- 		return true;
-+	stop = data->stop;
++		if (has_quirk_extra_read_cycle(edev)) {
++			cmd_addr <<= 1;
++			bits += 1;
++		}
++
+ 		spi_message_init(&m);
  
- 	if (check_data || (stop && stop->error)) {
- 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
+ 		t[0].tx_buf = (char *)&cmd_addr;
+@@ -366,6 +380,7 @@ static void select_deassert(void *context)
+ static const struct of_device_id eeprom_93xx46_of_table[] = {
+ 	{ .compatible = "eeprom-93xx46", },
+ 	{ .compatible = "atmel,at93c46d", .data = &atmel_at93c46d_data, },
++	{ .compatible = "microchip,93lc46b", .data = &microchip_93lc46b_data, },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
+diff --git a/include/linux/eeprom_93xx46.h b/include/linux/eeprom_93xx46.h
+index 885f587a3555..affe4d1d7d4a 100644
+--- a/include/linux/eeprom_93xx46.h
++++ b/include/linux/eeprom_93xx46.h
+@@ -16,6 +16,8 @@ struct eeprom_93xx46_platform_data {
+ #define EEPROM_93XX46_QUIRK_SINGLE_WORD_READ		(1 << 0)
+ /* Instructions such as EWEN are (addrlen + 2) in length. */
+ #define EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH		(1 << 1)
++/* Add extra cycle after address during a read */
++#define EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE		BIT(2)
+ 
+ 	/*
+ 	 * optional hooks to control additional logic
 -- 
 2.30.1
 
