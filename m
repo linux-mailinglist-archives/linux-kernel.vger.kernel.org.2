@@ -2,193 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E89E32A407
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CC732A40C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379141AbhCBKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577800AbhCBJyQ (ORCPT
+        id S1379737AbhCBKFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:05:49 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36020 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1577821AbhCBJz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:54:16 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89355C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:54:00 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id 21so11753726oiq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:54:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tvKwxmRwJCtoKJ49eALPKngOjwRbk6LF76WWu5CWfIo=;
-        b=cfWyjvjnY/GgwTK9I628QoCNsEMJaF1aakcSwCm3puMV13BShNtXEpkO6IRgwND9bh
-         WRXL5x9gOyHupoJyHYqtzM0+r5wtECpLknb+Ypf3vf6dEKAw8IhX/o0LG5rjmgXaNK6i
-         6GhRWYV0OpfZehVjEV99yyNQmgonvWUG2RSiIqldI3i2I2VYYYx/SI8xCBKee915cpPD
-         BVtYQ3J/qplBf9KHP1Pz3/J1x/MJd/iytab2Mgm+5ZptJJdtfM3+xPKd1rNFfSNk5/n6
-         6L3Ww1zKzI04/PZ4lZiboyNFfSUXB4sTEiVQaM5xXtc7kfM5dFTMKaMaaMzk0RcUFyJz
-         nbwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tvKwxmRwJCtoKJ49eALPKngOjwRbk6LF76WWu5CWfIo=;
-        b=mMEfax9H6BJbjvGQqquq+W2LOun2XdeufBfdkx/KuQDhUu5cFtW74QUhlqcG0MeZEU
-         Obzxh9Ma/aLVE15UzR4fOof97ujkTl4FSanN07bQIr1GDb79OkCgbbiCt/FrrHkYf55b
-         2xprOlVC8f9FylWSNh4n2Z4r0+/FPZ7Z3E/NkbacIcXO62akvysQNcitiMC8TTrU6SAH
-         fNVwPjqy3o9iXP5jRbTbeyutyWihUCXs9/Wx5/ELwrJh1sZIEog0UwcJCBDqW6awBYp4
-         1uWPDq3AJzcLqvvMu/XcFQE9/SeHY94voxIII8VdVZbYppRw4jDq4y9JWR2yZxlhBMeG
-         0t2Q==
-X-Gm-Message-State: AOAM53249oF59olp/dOdqghXd9j+QD/kGDht0vfpLh0NsK1iHtCezOkd
-        JsrksRgs7r2fTCBk8sTcUh/b5SFvu5DdpeLurmq9xA==
-X-Google-Smtp-Source: ABdhPJyGIeM4ZbK0vTh5R+BgOzxvurYlsDaMjjznIxKN9t59Yh9Owm3sbiTHZbaZM8CpGHf4f3uYXEX/FCPXtGXDEjU=
-X-Received: by 2002:aca:d515:: with SMTP id m21mr2637776oig.172.1614678839617;
- Tue, 02 Mar 2021 01:53:59 -0800 (PST)
+        Tue, 2 Mar 2021 04:55:29 -0500
+Date:   Tue, 02 Mar 2021 09:54:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614678887;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wrXkji/MQbPHdN6Vwrye0+MZ+K7qw4CRLjmmfXscgJg=;
+        b=cQ5Ng57PnhdD3jmJGa1rofX4BKCrV8U0GHEmIpuGzs/CaQWdvtzweepoqhKUmDgL3nz0sN
+        e5cGNLf5FeGK05PeJEaCp3mNupr6rraODYvgN34i12MKTPvdqov84fJkb+KCizo/f/YUNx
+        LJKyj9w3pihduyX8EqZiAOdtTFstLXu2h0PnLkMvFADGu3CfHQBOgbUvjF/wX69BLWBGr5
+        YgkNGXpZImuRAdddhAYdSE8bQ0+PJOO6zx9IDjYHp+fzbXmU9c/domk3dBIG6hySb7rRXG
+        lZkzeJV3eTzS/68pGihC1pMp5HrRFbBov+SCJ4GrvLfdXPil9xmGjknhQRBijw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614678887;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wrXkji/MQbPHdN6Vwrye0+MZ+K7qw4CRLjmmfXscgJg=;
+        b=nbtgk50G4g4hOkPn8EUEHdbcPTXpRTgCJKdcf5Tawha6af1ig6vW+tiEI9Isajz14lwK+u
+        qUHeOK9R2Zof8OAA==
+From:   "tip-bot2 for Nadav Amit" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86/mm/tlb: Remove unnecessary uses of the inline keyword
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210220231712.2475218-9-namit@vmware.com>
+References: <20210220231712.2475218-9-namit@vmware.com>
 MIME-Version: 1.0
-References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
- <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
- <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu> <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
-In-Reply-To: <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 2 Mar 2021 10:53:48 +0100
-Message-ID: <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <161467888668.20312.1594896899828031871.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 10:27, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 02/03/2021 =C3=A0 10:21, Alexander Potapenko a =C3=A9crit :
-> >> [   14.998426] BUG: KFENCE: invalid read in finish_task_switch.isra.0+=
-0x54/0x23c
-> >> [   14.998426]
-> >> [   15.007061] Invalid read at 0x(ptrval):
-> >> [   15.010906]  finish_task_switch.isra.0+0x54/0x23c
-> >> [   15.015633]  kunit_try_run_case+0x5c/0xd0
-> >> [   15.019682]  kunit_generic_run_threadfn_adapter+0x24/0x30
-> >> [   15.025099]  kthread+0x15c/0x174
-> >> [   15.028359]  ret_from_kernel_thread+0x14/0x1c
-> >> [   15.032747]
-> >> [   15.034251] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
-> >> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
-> >> [   15.045811] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >> [   15.053324]     # test_invalid_access: EXPECTATION FAILED at mm/kfe=
-nce/kfence_test.c:636
-> >> [   15.053324]     Expected report_matches(&expect) to be true, but is=
- false
-> >> [   15.068359]     not ok 21 - test_invalid_access
-> >
-> > The test expects the function name to be test_invalid_access, i. e.
-> > the first line should be "BUG: KFENCE: invalid read in
-> > test_invalid_access".
-> > The error reporting function unwinds the stack, skips a couple of
-> > "uninteresting" frames
-> > (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L=
-43)
-> > and uses the first "interesting" one frame to print the report header
-> > (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L=
-226).
-> >
-> > It's strange that test_invalid_access is missing altogether from the
-> > stack trace - is that expected?
-> > Can you try printing the whole stacktrace without skipping any frames
-> > to see if that function is there?
-> >
->
-> Booting with 'no_hash_pointers" I get the following. Does it helps ?
->
-> [   16.837198] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x5=
-4/0x23c
-> [   16.848521]
-> [   16.857158] Invalid read at 0xdf98800a:
-> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
-> [   16.865731]  kunit_try_run_case+0x5c/0xd0
-> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
-> [   16.875199]  kthread+0x15c/0x174
-> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
-> [   16.882847]
-> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
-> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
-> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
-> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
-> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
-> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 000000=
-00
-> [   16.918153] DAR: df98800a DSISR: 20000000
-> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 000000=
-08 c084b32b c016eb38
-> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
-> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
-> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
-> [   16.947292] Call Trace:
-> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c=
- (unreliable)
+The following commit has been merged into the x86/mm branch of tip:
 
-The "(unreliable)" might be a clue that it's related to ppc32 stack
-unwinding. Any ppc expert know what this is about?
+Commit-ID:     327db7a160b33865e086f7fff73e08f6d8d47005
+Gitweb:        https://git.kernel.org/tip/327db7a160b33865e086f7fff73e08f6d8d47005
+Author:        Nadav Amit <namit@vmware.com>
+AuthorDate:    Sat, 20 Feb 2021 15:17:11 -08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 02 Mar 2021 08:01:38 +01:00
 
-> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
-> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0=
-x24/0x30
-> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
-> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
-> [   16.981896] Instruction dump:
-> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f=
-0028 90ff001c
-> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 81=
-2a4b98 3d40c02f
-> [   17.000711] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence=
-/kfence_test.c:636
-> [   17.008223]     Expected report_matches(&expect) to be true, but is fa=
-lse
-> [   17.023243]     not ok 21 - test_invalid_access
+x86/mm/tlb: Remove unnecessary uses of the inline keyword
 
-On a fault in test_invalid_access, KFENCE prints the stack trace based
-on the information in pt_regs. So we do not think there's anything we
-can do to improve stack printing pe-se.
+The compiler is smart enough without these hints.
 
-What's confusing is that it's only this test, and none of the others.
-Given that, it might be code-gen related, which results in some subtle
-issue with stack unwinding. There are a few things to try, if you feel
-like it:
+Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210220231712.2475218-9-namit@vmware.com
+---
+ arch/x86/mm/tlb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
--- Change the unwinder, if it's possible for ppc32.
-
--- Add code to test_invalid_access(), to get the compiler to emit
-different code. E.g. add a bunch (unnecessary) function calls, or add
-barriers, etc.
-
--- Play with compiler options. We already pass
--fno-optimize-sibling-calls for kfence_test.o to avoid tail-call
-optimizations that'd hide stack trace entries. But perhaps there's
-something ppc-specific we missed?
-
-Well, the good thing is that KFENCE detects the bad access just fine.
-Since, according to the test, everything works from KFENCE's side, I'd
-be happy to give my Ack:
-
-  Acked-by: Marco Elver <elver@google.com>
-
-Thanks,
--- Marco
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 17ec4bf..f4b162f 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -316,7 +316,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	local_irq_restore(flags);
+ }
+ 
+-static inline unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
++static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
+ {
+ 	unsigned long next_tif = task_thread_info(next)->flags;
+ 	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
+@@ -880,7 +880,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct flush_tlb_info, flush_tlb_info);
+ static DEFINE_PER_CPU(unsigned int, flush_tlb_info_idx);
+ #endif
+ 
+-static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
++static struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
+ 			unsigned long start, unsigned long end,
+ 			unsigned int stride_shift, bool freed_tables,
+ 			u64 new_tlb_gen)
+@@ -907,7 +907,7 @@ static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
+ 	return info;
+ }
+ 
+-static inline void put_flush_tlb_info(void)
++static void put_flush_tlb_info(void)
+ {
+ #ifdef CONFIG_DEBUG_VM
+ 	/* Complete reentrency prevention checks */
