@@ -2,166 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C4132BF4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532EA32BF79
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577998AbhCCSBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:01:48 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:25782 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1447631AbhCCPEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:04:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614783861; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=apZmXTWwqH3OC7fNpu7dz9ehXMHteTrrn76iMve0R98=;
- b=sEwneNUDOXZRfErvJS9Pykn7UFZDiAY9XoTNwkFjzn9vyp4FIX1CustxETA/rlBDnEHJ5gxh
- 5oY7pTsRp3ghuFYLVzFuN0/uYkGdOhZTaVu2cBY1KBDtv1s614qdqg+Y3x0cTeSaWxqwrxpK
- zo88uq3TsZm8du5eMu/983AYxPI=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 603f9e3fc862e1b9fd8f1e03 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 14:33:35
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8FC21C433C6; Wed,  3 Mar 2021 14:33:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37FD3C433ED;
-        Wed,  3 Mar 2021 14:33:33 +0000 (UTC)
+        id S1577934AbhCCSBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:01:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1444125AbhCCPBU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:01:20 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CA2C06121F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:34:56 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id d15so8689765wrv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L1RbVwNozbMEhIlYozwqO6QzTGoV7UQM4uCG//6rsVY=;
+        b=L04HIeeFpp9qpeDcZe17XsnDPRYOxXbuL/gti0bbZINWR8fjhoFO6oA+icoYSdUbJU
+         qJv+GlOdvdTpBGY3eJyGOE5HFCKGgbsdcfuQoqpRmitfWZZTx5etug6AJqLE9Zpo+MIF
+         e7f82hcLy4d1aMZ4d/W0Tq4G/+lhPk+6zg5vxWsjN3bIthd0No7wyOXswPKPFzhQZhbd
+         sMsBsZ67uS8sUU0YQemEAenQzFd2I2bnzBx/CcaewbfmrweHYeNVanzhhq/qr0/xKl2g
+         ROXG+FZZ57NPM0CM3grm+pe5Y0NqCLU5IgVnFhG+cZR9MpbvWhrphZaJxct3OCDx6kcc
+         XzHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L1RbVwNozbMEhIlYozwqO6QzTGoV7UQM4uCG//6rsVY=;
+        b=JCkE5qZPuDpUONDZdnzt9MDBZ7+wcG3rv/9/dK9AnMTTSAtBUlMmMH7BY3R9TRKuT3
+         OYi3N9bLWBdp5lLGWUjc+3jpGAQtljq/QJkHSG36D9pRPHFH8NPCv+zhxI1H6EmhZuG+
+         W5Uxd0+RsU2LTPBBSpNUMqZfAAB/syNoq9uDPVJdd/rOmPLl/iJxsOMEvAi8/Pi1xqxl
+         LJvxuv+ehEbiZMwzGIa6X1yZF7GCaBdZiv29kGXG1itc9pwgskOYHMv9BnSW206keJwH
+         1Y/iXPDOfqRiuQZpgJ9JjcFVUVB+eSNgn1HRSbAr33tzE1hs7erHrwWdADEU74fBusbz
+         HAag==
+X-Gm-Message-State: AOAM530ihs7cZSbQezYb0XukdMQROGU7xQWOfEhuihDZx6NvWvkVxhyO
+        KhPF6zvBkjr8kyGLyc9cYC4XhQ==
+X-Google-Smtp-Source: ABdhPJy/WNSjeAnc02Hh3KWLAXBxgB9kMs5eRjeHAQRlqgWIOlgEM2POuDGFU/Cws9/8rs2j+YABoQ==
+X-Received: by 2002:adf:dbc2:: with SMTP id e2mr26741212wrj.227.1614782093784;
+        Wed, 03 Mar 2021 06:34:53 -0800 (PST)
+Received: from dell.default ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id f16sm31475923wrt.21.2021.03.03.06.34.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 06:34:53 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andreas Westin <andreas.westin@stericsson.com>,
+        Atul Gupta <atul.gupta@chelsio.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Berne Hebark <berne.herbark@stericsson.com>,
+        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Declan Murphy <declan.murphy@intel.com>,
+        Harsh Jain <harsh@chelsio.com>,
+        Henrique Cerri <mhcerri@br.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jitendra Lulla <jlulla@chelsio.com>,
+        Joakim Bech <joakim.xx.bech@stericsson.com>,
+        Jonas Linde <jonas.linde@stericsson.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Kent Yoder <yoder1@us.ibm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Manoj Malviya <manojmalviya@chelsio.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        M R Gowda <yeshaswi@chelsio.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Niklas Hernaeus <niklas.hernaeus@stericsson.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Rob Rice <rob.rice@broadcom.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Shujuan Chen <shujuan.chen@stericsson.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Zaibo Xu <xuzaibo@huawei.com>
+Subject: [PATCH v2 00/10] Rid W=1 warnings in Crypto
+Date:   Wed,  3 Mar 2021 14:34:39 +0000
+Message-Id: <20210303143449.3170813-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Mar 2021 20:03:33 +0530
-From:   pintu@codeaurora.org
-To:     Nitin Gupta <nigupta@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        iamjoonsoo.kim@lge.com, sh_def@163.com, mateusznosek0@gmail.com,
-        bhe@redhat.com, vbabka@suse.cz, yzaikin@google.com,
-        keescook@chromium.org, mcgrof@kernel.org,
-        mgorman@techsingularity.net, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm/compaction: remove unused variable
- sysctl_compact_memory
-In-Reply-To: <BYAPR12MB3416C9FD5D10AFB930E1C023D8999@BYAPR12MB3416.namprd12.prod.outlook.com>
-References: <1614707773-10725-1-git-send-email-pintu@codeaurora.org>
- <BYAPR12MB3416C9FD5D10AFB930E1C023D8999@BYAPR12MB3416.namprd12.prod.outlook.com>
-Message-ID: <d3a2ef132c8deee8ced530367c81479c@codeaurora.org>
-X-Sender: pintu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-03 01:48, Nitin Gupta wrote:
->> -----Original Message-----
->> From: pintu=codeaurora.org@mg.codeaurora.org
->> <pintu=codeaurora.org@mg.codeaurora.org> On Behalf Of Pintu Kumar
->> Sent: Tuesday, March 2, 2021 9:56 AM
->> To: linux-kernel@vger.kernel.org; akpm@linux-foundation.org; linux-
->> mm@kvack.org; linux-fsdevel@vger.kernel.org; pintu@codeaurora.org;
->> iamjoonsoo.kim@lge.com; sh_def@163.com; mateusznosek0@gmail.com;
->> bhe@redhat.com; Nitin Gupta <nigupta@nvidia.com>; vbabka@suse.cz;
->> yzaikin@google.com; keescook@chromium.org; mcgrof@kernel.org;
->> mgorman@techsingularity.net
->> Cc: pintu.ping@gmail.com
->> Subject: [PATCH] mm/compaction: remove unused variable
->> sysctl_compact_memory
->> 
->> External email: Use caution opening links or attachments
->> 
->> 
->> The sysctl_compact_memory is mostly unsed in mm/compaction.c It just 
->> acts
->> as a place holder for sysctl.
->> 
->> Thus we can remove it from here and move the declaration directly in
->> kernel/sysctl.c itself.
->> This will also eliminate the extern declaration from header file.
-> 
-> 
-> I prefer keeping the existing pattern of listing all compaction related 
-> tunables
-> together in compaction.h:
-> 
-> 	extern int sysctl_compact_memory;
-> 	extern unsigned int sysctl_compaction_proactiveness;
-> 	extern int sysctl_extfrag_threshold;
-> 	extern int sysctl_compact_unevictable_allowed;
-> 
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Thanks Nitin for your review.
-You mean, you just wanted to retain this extern declaration ?
-Any real benefit of keeping this declaration if not used elsewhere ?
+This is set 1 of 2 sets required to fully clean Crypto.
 
-> 
->> No functionality is broken or changed this way.
->> 
->> Signed-off-by: Pintu Kumar <pintu@codeaurora.org>
->> Signed-off-by: Pintu Agarwal <pintu.ping@gmail.com>
->> ---
->>  include/linux/compaction.h | 1 -
->>  kernel/sysctl.c            | 1 +
->>  mm/compaction.c            | 3 ---
->>  3 files changed, 1 insertion(+), 4 deletions(-)
->> 
->> diff --git a/include/linux/compaction.h b/include/linux/compaction.h 
->> index
->> ed4070e..4221888 100644
->> --- a/include/linux/compaction.h
->> +++ b/include/linux/compaction.h
->> @@ -81,7 +81,6 @@ static inline unsigned long compact_gap(unsigned int
->> order)  }
->> 
->>  #ifdef CONFIG_COMPACTION
->> -extern int sysctl_compact_memory;
->>  extern unsigned int sysctl_compaction_proactiveness;  extern int
->> sysctl_compaction_handler(struct ctl_table *table, int write,
->>                         void *buffer, size_t *length, loff_t *ppos); 
->> diff --git
->> a/kernel/sysctl.c b/kernel/sysctl.c index c9fbdd8..66aff21 100644
->> --- a/kernel/sysctl.c
->> +++ b/kernel/sysctl.c
->> @@ -198,6 +198,7 @@ static int max_sched_tunable_scaling =
->> SCHED_TUNABLESCALING_END-1;  #ifdef CONFIG_COMPACTION  static int
->> min_extfrag_threshold;  static int max_extfrag_threshold = 1000;
->> +static int sysctl_compact_memory;
->>  #endif
->> 
->>  #endif /* CONFIG_SYSCTL */
->> diff --git a/mm/compaction.c b/mm/compaction.c index 190ccda..ede2886
->> 100644
->> --- a/mm/compaction.c
->> +++ b/mm/compaction.c
->> @@ -2650,9 +2650,6 @@ static void compact_nodes(void)
->>                 compact_node(nid);
->>  }
->> 
->> -/* The written value is actually unused, all memory is compacted */ 
->> -int
->> sysctl_compact_memory;
->> -
-> 
-> 
-> Please retain this comment for the tunable.
+No functional changes since v1.
 
-Sorry, I could not understand.
-You mean to say just retain this last comment and only remove the 
-variable ?
-Again any real benefit you see in retaining this even if its not used?
+Lee Jones (10):
+  crypto: hisilicon: sec_drv: Supply missing description for
+    'sec_queue_empty()'s 'queue' param
+  crypto: bcm: Fix a whole host of kernel-doc misdemeanours
+  crypto: chelsio: chcr_core: Fix some kernel-doc issues
+  crypto: ux500: hash: hash_core: Fix worthy kernel-doc headers and
+    remove others
+  crypto: keembay: ocs-hcu: Fix incorrectly named functions/structs
+  crypto: atmel-ecc: Struct headers need to start with keyword 'struct'
+  crypto: caam: caampkc: Provide the name of the function and provide
+    missing descriptions
+  crypto: vmx: Source headers are not good kernel-doc candidates
+  crypto: nx: nx-aes-cbc: Repair some kernel-doc problems
+  crypto: cavium: nitrox_isr: Demote non-compliant kernel-doc headers
 
+ drivers/crypto/atmel-ecc.c                |  2 +-
+ drivers/crypto/bcm/cipher.c               |  7 ++--
+ drivers/crypto/bcm/spu.c                  | 16 ++++-----
+ drivers/crypto/bcm/spu2.c                 | 43 +++++++++++++----------
+ drivers/crypto/bcm/util.c                 |  4 +--
+ drivers/crypto/caam/caamalg_qi2.c         |  2 ++
+ drivers/crypto/caam/caampkc.c             |  3 +-
+ drivers/crypto/cavium/nitrox/nitrox_isr.c |  4 +--
+ drivers/crypto/chelsio/chcr_algo.c        |  8 ++---
+ drivers/crypto/chelsio/chcr_core.c        |  2 +-
+ drivers/crypto/hisilicon/sec/sec_drv.c    |  1 +
+ drivers/crypto/keembay/ocs-hcu.c          |  6 ++--
+ drivers/crypto/nx/nx-aes-cbc.c            |  2 +-
+ drivers/crypto/nx/nx.c                    |  5 +--
+ drivers/crypto/nx/nx_debugfs.c            |  2 +-
+ drivers/crypto/ux500/cryp/cryp.c          |  5 +--
+ drivers/crypto/ux500/cryp/cryp_core.c     |  5 +--
+ drivers/crypto/ux500/cryp/cryp_irq.c      |  2 +-
+ drivers/crypto/ux500/hash/hash_core.c     | 15 +++-----
+ drivers/crypto/vmx/vmx.c                  |  2 +-
+ 20 files changed, 71 insertions(+), 65 deletions(-)
 
-Thanks,
-Pintu
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Andreas Westin <andreas.westin@stericsson.com>
+Cc: Atul Gupta <atul.gupta@chelsio.com>
+Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc: Ayush Sawal <ayush.sawal@chelsio.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Berne Hebark <berne.herbark@stericsson.com>
+Cc: "Breno Leitão" <leitao@debian.org>
+Cc: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Declan Murphy <declan.murphy@intel.com>
+Cc: Harsh Jain <harsh@chelsio.com>
+Cc: Henrique Cerri <mhcerri@br.ibm.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Horia Geantă" <horia.geanta@nxp.com>
+Cc: Jitendra Lulla <jlulla@chelsio.com>
+Cc: Joakim Bech <joakim.xx.bech@stericsson.com>
+Cc: Jonas Linde <jonas.linde@stericsson.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: Kent Yoder <yoder1@us.ibm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: Manoj Malviya <manojmalviya@chelsio.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: M R Gowda <yeshaswi@chelsio.com>
+Cc: Nayna Jain <nayna@linux.ibm.com>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Niklas Hernaeus <niklas.hernaeus@stericsson.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
+Cc: Rob Rice <rob.rice@broadcom.com>
+Cc: Rohit Maheshwari <rohitm@chelsio.com>
+Cc: Shujuan Chen <shujuan.chen@stericsson.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Cc: Zaibo Xu <xuzaibo@huawei.com>
+-- 
+2.27.0
+
