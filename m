@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119B232BFE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C749532BFD9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380037AbhCCSNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:13:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384100AbhCCPgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:36:22 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3048AC061763
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 07:27:58 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id m22so37746252lfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 07:27:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=B7e8ps8+6KgtwjvkMtXtTUb/RUWQBqnIoQ/7yrVtwxM=;
-        b=T3smYZREz3wZWOrOSabPyhBR1Ae/LDRY6AZCilnUYUMM5nMBXkOAhVBhw42fX5HQKP
-         HhkbLxIvWgFs6YOQC+ZdY2/X2zs5Z+NfwmjNQceUwTVUXN7cJ6mk0kCf9ZguGvQoBH5x
-         Ae/DKwVkOz1w8Uu0dg67GrEFQvegQ4wdvkdL7gmrBLyLSS9nt7j3K7AzKPCvW4ucVWEM
-         kvYxd1lOv9fT/PQADKysIpq/+1xniWBx+88T8HXNSDCLNva7WKKLWnQKYV4hSR7Y5l0V
-         FguLvQybJDffzc496glALtZFHwt74u/lZttgBD+EtgrzIJpxtsin0Gy495PcfYtytwFW
-         WTGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=B7e8ps8+6KgtwjvkMtXtTUb/RUWQBqnIoQ/7yrVtwxM=;
-        b=UmvrEi5rgGYy3RVJcV7/p/jDna8ct1h8HGmQARiT1t6p2LfOhC3DLb+P/sgfN/LNE+
-         goOI7xU0XEaBrzHCv+EiavpXHRwhSEFyP07oUgVffkqMFTRpufpc7HRaEZ5sG4UAnQup
-         o4UFXKqiI4yZtY+874pt+WkN41pkMOrfqp9AynBC7PUJpMrtNzBAQA6lFU3yJYt5pVim
-         //+2eJzhsAqUj3z3V2GK1YeOy0lOjOYhtGStIQfc4m+CgxVu2I2HyY7XJ9LwuSG6YBOj
-         ZkoQ4pvnpqIzIYuOT4E7HryDEXCIZ2+/+BMXapQ2jBwS4l8ULzWbjm3WI27/koATtMzN
-         K/Rg==
-X-Gm-Message-State: AOAM532DjiGxj8HPT6twi5ayW+8quOA1t29KE2jHhJLZbP0kvVjYsIVg
-        MMox8bIKfDkHKg9b1+diEV3z1pJGlmSjEZEnMfIHWA==
-X-Google-Smtp-Source: ABdhPJxwSZfkYhtJWwEjy73tyu94P/P5s2En+mmWPKHZ4Ff70sGNABOhy3vBB9KOx8oiJgQnlsb7bBHfgb4lHbxSFgA=
-X-Received: by 2002:a19:4c08:: with SMTP id z8mr14810793lfa.157.1614785276573;
- Wed, 03 Mar 2021 07:27:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210303142310.6371-1-noltari@gmail.com> <20210303142310.6371-2-noltari@gmail.com>
-In-Reply-To: <20210303142310.6371-2-noltari@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 3 Mar 2021 16:27:45 +0100
-Message-ID: <CACRpkdb56dB+f89Neuix=KKtAsYSTHKuCifhmmzN7jy2LuUbdQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/14] gpio: regmap: set gpio_chip of_node
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1347980AbhCCSNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:13:20 -0500
+Received: from mga14.intel.com ([192.55.52.115]:39539 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1383871AbhCCPfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:35:25 -0500
+IronPort-SDR: 9X3WCiI2nxIHO7d5/H0/HRx0ReedIRcjgFF1P1YA4/0kB1T5F+4jmOZWNfP7NZsYq/69c36SoJ
+ VxVuYct0DHOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="186564101"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="186564101"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 07:28:01 -0800
+IronPort-SDR: tiVx67nZorZLEMZqXymk8KfgYz8ZZmXH/hXhYa+Hb9MioKxvFew3SZVoui8icgJ+FFf9mzcFIf
+ div9VDpHszHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="399758550"
+Received: from climb.png.intel.com ([10.221.118.165])
+  by fmsmga008.fm.intel.com with ESMTP; 03 Mar 2021 07:27:58 -0800
+From:   Voon Weifeng <weifeng.voon@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jose Abreu <joabreu@synopsys.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH v1 net-next 0/5] net: stmmac: enable multi-vector MSI
+Date:   Wed,  3 Mar 2021 23:27:52 +0800
+Message-Id: <20210303152757.18959-1-weifeng.voon@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 3:23 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
-ail.com> wrote:
+This patchset adds support for multi MSI interrupts in addition to
+current single common interrupt implementation. Each MSI interrupt is tied
+to a newly introduce interrupt service routine(ISR). Hence, each interrupt
+will only go through the corresponding ISR.
 
-> This is needed for properly registering gpio regmap as a child of a regma=
-p
-> pin controller.
->
-> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> ---
->  v3: introduce patch needed for properly parsing gpio-ranges.
+In order to increase the efficiency, enabling multi MSI interrupt will
+automatically select the interrupt mode configuration INTM=1. When INTM=1,
+the TX/RX transfer complete signal will only asserted on corresponding
+sbd_perch_tx_intr_o[] or sbd_perch_rx_intr_o[] without asserting signal
+on the common sbd_intr_o. Hence, for each TX/RX interrupts, only the
+corresponding ISR will be triggered.
 
-Oops a little bug. I suggest that I merge this into the pinctrl tree
-together with the rest of the patches when we are done with review.
+Every vendor might have different MSI vector assignment. So, this patchset
+only includes multi-vector MSI assignment for Intel platform.
 
-Yours.
-Linus Walleij
+Ong Boon Leong (4):
+  net: stmmac: introduce DMA interrupt status masking per traffic
+    direction
+  net: stmmac: make stmmac_interrupt() function more friendly to MSI
+  net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX
+  stmmac: intel: add support for multi-vector msi and msi-x
+
+Wong, Vee Khee (1):
+  net: stmmac: use interrupt mode INTM=1 for multi-MSI
+
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  21 +
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 112 +++-
+ .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  24 +-
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |   8 +
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.h  |  24 +-
+ .../net/ethernet/stmicro/stmmac/dwmac4_lib.c  |  30 +-
+ .../net/ethernet/stmicro/stmmac/dwmac_dma.h   |  22 +-
+ .../net/ethernet/stmicro/stmmac/dwmac_lib.c   |   8 +-
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |   6 +
+ .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |   8 +-
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  16 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 482 +++++++++++++++---
+ include/linux/stmmac.h                        |   9 +
+ 14 files changed, 676 insertions(+), 96 deletions(-)
+
+-- 
+2.17.1
+
