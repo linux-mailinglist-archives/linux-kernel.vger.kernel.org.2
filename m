@@ -2,96 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9859432BCE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DEB32BCB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447367AbhCCPCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S1445961AbhCCOcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843070AbhCCKZN (ORCPT
+        with ESMTP id S1842986AbhCCKXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:13 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCE4C08ECBA
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:03:08 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id a62so12237410vsa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:03:08 -0800 (PST)
+        Wed, 3 Mar 2021 05:23:25 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E50C08ED29
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:06:49 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id p1so24659883edy.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:06:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=j6Z35wE+MtULjBnHD6+ImGDCWHNfojb4HqKmprrxy5Q=;
+        b=gHkn2s4WYKafodlkDzVVCJEUlKiWzt99WW62l6Zjg6YwXQIE6X88bDLh2KjyDKbeWX
+         8mEvwA8cJZiLTCRDGGFHvxMX7keDtjtAMwmueDVZV3aqHl306awX3wRVLSnoqb5v7rt0
+         XS4XL+Ihz2CicgRJ+qql73C38ZF7WeSXnsFCl+AQhZBf6buTU+LZwLDYaqUCj8PqgylV
+         6fsSGt/6EH6bhvgEZedJ00rnI8K4j/enPr1FEn57ZIpdKF8zUWSCfAl0QAAR3k9JxskO
+         AhHpZ545Qb+k33hmnQbaV5F/rgWJiFKCZ8ZBGV9Ai/80NxnYbO5QfE54eue0yL4ilpP7
+         8mIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0P7a8icA4MGEc1ctz6tQzm2lAG+q8RttLehrVy6dqQk=;
-        b=BfXVjjTnzAg6hl0OV+cHH7Zg0rG+EwIq2L8mFbj/pDSmy6tpBt8gAeob8lONaFwW3r
-         fxAi37TFKZvjmHiLnOlggVFvOQVe3OV9iGWH8hLtyJnBNr1GUotGYD+jOVGuwXFmmHXL
-         x8IxL1lcU/YQkEI50HXwjM6wkEyEdpviCrRP1vMvhiz+SSzR8MPmpoTVJ3CCrR3iuaTj
-         la7tWiYDEGd5/8oiWBxOx51Zf8jXCKcMuj1ybGVnb9gkcv3OaV3eIylnV+eAV/6FVZuh
-         Oa5IxE9EA6AHmUUqQBj+iiJSRGnIkCz3B2IlUJhEb9/DEBC7QM5LX/aLDDt2u0zYjUk5
-         Xdqw==
-X-Gm-Message-State: AOAM530zzhsiWp2JyUtHwQDaPLbVailg34UlWamwPQU+mAHZ29Ji+4J0
-        zYF0hdCvrTxvo2SXN/cOhCN1zSbDKKVW28fm08k=
-X-Google-Smtp-Source: ABdhPJyGxGH50NMFA1uCJ7/0BFG1/bHkNiJl9a/xic6JQ8JgjJ52DQf19Ycr3Bgm4Z9t2NJKd++39NFjQPyFiZGN42M=
-X-Received: by 2002:a67:2245:: with SMTP id i66mr1349923vsi.18.1614765787001;
- Wed, 03 Mar 2021 02:03:07 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=j6Z35wE+MtULjBnHD6+ImGDCWHNfojb4HqKmprrxy5Q=;
+        b=tpbQZuE/6iuqMbtkqtq63PnSDVr+sIuRDRaaqYB1twoGvrdI1sXCAjTeKiV782vG8u
+         NJtduTfke0sG4RASaK0UBCxS9pSb1Ar/3i2pMnXDqbgbr3+o6jQCUEuVQfItvHSvPr6N
+         nzsXaJ8JVQv7Oxpav5z5CqvmBekaao194BXjwr4SXUCDcZUEm24r8DLTL6msajKvjox8
+         jhwHy5zljhsHbE0MJRf4aJ9OJsr8rnIQLpLUNRXi9HL4GyDmLuSyiE6drAfm7HMzuSf0
+         o1wHAaThYfWo5IJmYtpF7Wt+1SE9IWu03Mbdxis80mwFaRduruA5q8jjCEp4M2EwGAnH
+         R9hw==
+X-Gm-Message-State: AOAM5303HML5QXCCslhdUkcs3JQKKtnFJXE6WUvJhCOh4RxoR/7H+AM9
+        nnfph3ZLX2VvCU2rnq+XumEcK5rtfvehYZQsWB/sXw==
+X-Google-Smtp-Source: ABdhPJzFLDM6A6Jm5LfUDsEGiucIZUnp8kAfbfkJoUPepCOBrkYocWzW22ah04hphLEZNNPLgJA2dlYcd6dcEudFAUU=
+X-Received: by 2002:aa7:d416:: with SMTP id z22mr24277955edq.239.1614766007878;
+ Wed, 03 Mar 2021 02:06:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com>
- <CAMuHMdU4rJaMFUS8ukUgqYjTGY41Pa3iQQpKiK8qJA6YnDJDkw@mail.gmail.com> <CAGETcx8F+cC5wrSRb8qzLyHfxUNtyOoy6-m+YbxRgp09k9fp9Q@mail.gmail.com>
-In-Reply-To: <CAGETcx8F+cC5wrSRb8qzLyHfxUNtyOoy6-m+YbxRgp09k9fp9Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 3 Mar 2021 11:02:55 +0100
-Message-ID: <CAMuHMdUe07Zm833AZg1c0cQZ5ObEoGsNKzwb2eyGtW2Hn_aVnQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210302192606.592235492@linuxfoundation.org>
+In-Reply-To: <20210302192606.592235492@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Mar 2021 15:36:36 +0530
+Message-ID: <CA+G9fYur3FxTmQGdsnPbFUUh1YMTGK2UMFVdML4TgfMfvi8vcg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/337] 5.4.102-rc5 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Wed, Mar 3, 2021 at 10:24 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Wed, Mar 3, 2021 at 1:22 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Mar 2, 2021 at 10:11 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > This series fixes the last few remaining issues reported when fw_devlink=on
-> > > by default.
-> >
-> > [...]
-> >
-> > Thanks for your series!
-> >
-> > > Geert/Marek,
-> > >
-> > > As far as I know, there shouldn't have any more issues you reported that
-> > > are still left unfixed after this series. Please correct me if I'm wrong or
-> > > if you find new issues.
-> >
-> > While this fixes the core support, there may still be driver fixes left
-> > that were not developed in time for the v5.12-rc1 merge window.
-> > Personally, I'm aware of "soc: renesas: rmobile-sysc: Mark fwnode
-> > when PM domain is added", which I have queued for v5.13[1].
-> > There may be other fixes for other platforms.
+On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Right, I intended this series for 5.13. Is that what you are trying to say too?
+> This is the start of the stable review cycle for the 5.4.102 release.
+> There are 337 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.102-rc5.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-OK, v5.13 is fine for me.
-It wasn't clear to me if you intended (the last patch of) this series to
-be merged for v5.12-rcX or v5.13.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Gr{oetje,eeting}s,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-                        Geert
+Summary
+------------------------------------------------------------------------
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+kernel: 5.4.102-rc5
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 44433bdfc6fdb454620f64bf0148f3480a45afdd
+git describe: v5.4.101-338-g44433bdfc6fd
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.101-338-g44433bdfc6fd
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+No regressions (compared to build v5.4.101)
+
+No fixes (compared to build v5.4.101)
+
+Ran 44094 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-ptrace
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* v4l2-compliance
+* fwts
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* ltp-cve-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-open-posix-tests
+* perf
+* kvm-unit-tests
+* rcutorture
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
