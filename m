@@ -2,201 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBDF32BA7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898BC32BA78
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357710AbhCCLYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:24:02 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:49786 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240149AbhCCCQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 21:16:06 -0500
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmdT_6z5gCpkTAA--.24602S3;
-        Wed, 03 Mar 2021 09:53:04 +0800 (CST)
-Subject: Re: [PATCH] riscv: Return -EFAULT if copy_to_user() failed in
- signal.c
-To:     Ben Dooks <ben.dooks@codethink.co.uk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <1614670097-28536-1-git-send-email-yangtiezhu@loongson.cn>
- <aa84cddb-9c04-3bad-49de-2fb3056ec44a@codethink.co.uk>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <07aa690f-b37d-7d91-414f-f5dfda98a868@loongson.cn>
-Date:   Wed, 3 Mar 2021 09:53:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1357642AbhCCLXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:23:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346927AbhCCCHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 21:07:09 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D069161606;
+        Wed,  3 Mar 2021 01:54:57 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 20:54:56 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     Pawel Laszczak <pawell@cadence.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jacob Wen <jian.w.wen@oracle.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
+ from trace events
+Message-ID: <20210302205456.391a14a8@gandalf.local.home>
+In-Reply-To: <20210303012139.GA11703@nchen>
+References: <20210226185909.100032746@goodmis.org>
+        <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
+        <20210227141802.5c9aca91@oasis.local.home>
+        <20210227190831.56956c80@oasis.local.home>
+        <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
+        <20210302082355.GA8633@nchen>
+        <20210302095605.7b2881cd@gandalf.local.home>
+        <20210303012139.GA11703@nchen>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <aa84cddb-9c04-3bad-49de-2fb3056ec44a@codethink.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxmdT_6z5gCpkTAA--.24602S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr4Dur1xurW8CrWrKrW7Jwb_yoWrKrW5pF
-        4UCa4akrW7Jrn2vF92vw1rua4rArn3tFy8Kr90k3WfAFs0qr45K34kta4jgF4rJry8Ca1v
-        kFyqkry5Can8WrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8JV
-        WxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-        8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
-        uYvjxUgGNtDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/2021 06:01 PM, Ben Dooks wrote:
-> On 02/03/2021 07:28, Tiezhu Yang wrote:
->> copy_to_user() returns the amount left to copy, it should return -EFAULT
->> if copy to user failed.
->
-> This looks technically correct, but the caller (only one)
-> will check for non-zero and will covert that to -EFAULT
-> in setup_rt_frame().
+On Wed, 3 Mar 2021 09:21:39 +0800
+Peter Chen <peter.chen@kernel.org> wrote:
 
-Yes, as you said, the original code logic has no problem, it will covert
-that to -EFAULT in setup_rt_frame().
+> On 21-03-02 09:56:05, Steven Rostedt wrote:
+> > On Tue, 2 Mar 2021 16:23:55 +0800
+> > Peter Chen <peter.chen@kernel.org> wrote:
+> > 
+> > s it looks like it uses %pa which IIUC from the printk code, it  
+> > > > >> dereferences the pointer to find it's virtual address. The event has
+> > > > >> this as the field:
+> > > > >>
+> > > > >>                 __field(struct cdns3_trb *, start_trb_addr)
+> > > > >>
+> > > > >> Assigns it with:
+> > > > >>
+> > > > >>                 __entry->start_trb_addr = req->trb;
+> > > > >>
+> > > > >> And prints that with %pa, which will dereference pointer at the time of
+> > > > >> reading, where the address in question may no longer be around. That
+> > > > >> looks to me as a potential bug.    
+> > > 
+> > > Steven, thanks for reporting. Do you mind sending patch to fix it?
+> > > If you have no time to do it, I will do it later.
+> > >   
+> > 
+> > I would have already fixed it, but I wasn't exactly sure how this is used.
+> > 
+> > In Documentation/core-api/printk-formats.rst we have:
+> > 
+> >    Physical address types phys_addr_t
+> >    ----------------------------------
+> > 
+> >    ::
+> > 
+> >            %pa[p]  0x01234567 or 0x0123456789abcdef
+> > 
+> >    For printing a phys_addr_t type (and its derivatives, such as
+> >    resource_size_t) which can vary based on build options, regardless of the
+> >    width of the CPU data path.
+> > 
+> > So it only looks like it is used to for the size of the pointer.
+> > 
+> > I guess something like this might work:
+> > 
+> > diff --git a/drivers/usb/cdns3/cdns3-trace.h b/drivers/usb/cdns3/cdns3-trace.h
+> > index 8648c7a7a9dd..d3b8624fc427 100644
+> > --- a/drivers/usb/cdns3/cdns3-trace.h
+> > +++ b/drivers/usb/cdns3/cdns3-trace.h
+> > @@ -214,7 +214,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+> >  		__field(int, no_interrupt)
+> >  		__field(int, start_trb)
+> >  		__field(int, end_trb)
+> > -		__field(struct cdns3_trb *, start_trb_addr)
+> > +		__field(phys_addr_t, start_trb_addr)
+> >  		__field(int, flags)
+> >  		__field(unsigned int, stream_id)
+> >  	),
+> > @@ -230,7 +230,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+> >  		__entry->no_interrupt = req->request.no_interrupt;
+> >  		__entry->start_trb = req->start_trb;
+> >  		__entry->end_trb = req->end_trb;
+> > -		__entry->start_trb_addr = req->trb;
+> > +		__entry->start_trb_addr = *(const phys_addr_t *)req->trb;
+> >  		__entry->flags = req->flags;
+> >  		__entry->stream_id = req->request.stream_id;
+> >  	),
+> > @@ -244,7 +244,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+> >  		__entry->status,
+> >  		__entry->start_trb,
+> >  		__entry->end_trb,
+> > -		__entry->start_trb_addr,
+> > +		/* %pa dereferences */ &__entry->start_trb_addr,
+> >  		__entry->flags,
+> >  		__entry->stream_id
+> >  	)
+> > 
+> > 
+> > Can you please test it? I don't have the hardware, but I also want to make
+> > sure I don't break anything.
+> >   
+> 
+> Hi Steve,
+> 
+> Regarding this issue, I have one question:
+> - If the virtual address is got from dma_alloc_coherent, can't we print
+> this address using %pa to get its physical address (the same with DMA address),
+> or its DMA address using %pad? req->trb is the virtual address got from
 
-The initial aim of this patch is to make save_fp_state() return error code
-if __copy_to_user() failed, just like it returns -EFAULT if __put_user() 
-failed.
+I'm not sure. I just looked at the vsprintf code, which simply does:
 
-I notice that restore_fp_state() has similar issue, it will return -EFAULT
-if __get_user() failed and maybe return -EINVAL in the other error case,
-both -EFAULT and -EINVAL are error code, but when __copy_from_user() failed,
-it does not return an error code, which seems not so consistent.
+> static noinline_for_stack
+> char *address_val(char *buf, char *end, const void *addr,
+> 		  struct printf_spec spec, const char *fmt)
+> {
+> 	unsigned long long num;
+> 	int size;
+> 
+> 	if (check_pointer(&buf, end, addr, spec))
+> 		return buf;
+> 
+> 	switch (fmt[1]) {
+> 	case 'd':
+> 		num = *(const dma_addr_t *)addr;
+> 		size = sizeof(dma_addr_t);
 
->
-> I expect if this change is done, it also needs to be done
-> for the callers too and there's a few others than assume
-> !=0 is an error.
->
-> I think it would be easier to define save_fp_state() to
-> return non-zero on error and note it does not return an
-> error code. It may be worth exiting the functio nif
-> the first __copy_to_user fails?
+The above is what is called, which dereferences addr and places it into num.
 
-Now,
-(1) is it necessary to do some changes? If yes, I will send v2 later.
-Like this:
+> 		break;
+> 	case 'p':
+> 	default:
+> 		num = *(const phys_addr_t *)addr;
+> 		size = sizeof(phys_addr_t);
+> 		break;
+> 	}
+> 
+> 	return special_hex_number(buf, end, num, size);
 
-[PATCH v2] riscv: Return -EFAULT if copy_{to,from}_user() failed in
-  signal.c
+This just prints the hex number defined by num. There's no physical address
+calculations done via vsprintf that I'm aware of.
 
-copy_{to,from}_user() returns the amount left to copy, it should return
--EFAULT error code if copy {to,from} user failed, just like the return
-value is an error code when {put,get}_user() failed, this is to make the
-return value consistent, no function change.
+> }
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-  arch/riscv/kernel/signal.c | 12 ++++++++++--
-  1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index 65942b3..c76d877 100644
---- a/arch/riscv/kernel/signal.c
-+++ b/arch/riscv/kernel/signal.c
-@@ -39,7 +39,7 @@ static long restore_fp_state(struct pt_regs *regs,
 
-      err = __copy_from_user(&current->thread.fstate, state, 
-sizeof(*state));
-      if (unlikely(err))
--        return err;
-+        return -EFAULT;
+> dma_alloc_coherent. And what's the logic for this "unsafe dereference" warning?
 
-      fstate_restore(current, regs);
+The actions done in TP_fast_assign() are executed at the time of the trace
+event (i.e. when trace_cdns3_ep_queue() is called), but the actions of
+TP_printk() are executed when the user reads the trace file (minutes,
+hours, days later!). Thus, when you have a TP_printk("... %pa ...", and a
+__entry->start_trb_addr referenced, that start_trb_addr may be pointing to
+something that is long gone, and when you use a kernel vsnprintf()
+dereferencing pointer like %pa (or %pU, %pM, etc), it may read something
+that no longer exists, and is obviously unsafe.
 
-@@ -67,7 +67,7 @@ static long save_fp_state(struct pt_regs *regs,
-      fstate_save(current, regs);
-      err = __copy_to_user(state, &current->thread.fstate, sizeof(*state));
-      if (unlikely(err))
--        return err;
-+        return -EFAULT;
+So I created this patch series (in this thread, you can use lore to see it)
+that analyzes the trace events as they get register, parses the TP_printk()
+for any dereferencing pointers, and makes sure that what it is dereferencing
+lives on the ring buffer. Otherwise it is likely referencing something that
+may no longer be around when it gets dereferenced.
 
-      /* We support no other extension state at this time. */
-      for (i = 0; i < ARRAY_SIZE(sc_fpregs->q.reserved); i++) {
-@@ -87,8 +87,12 @@ static long restore_sigcontext(struct pt_regs *regs,
-      struct sigcontext __user *sc)
-  {
-      long err;
-+
-      /* sc_regs is structured the same as the start of pt_regs */
-      err = __copy_from_user(regs, &sc->sc_regs, sizeof(sc->sc_regs));
-+    if (unlikely(err))
-+        return -EFAULT;
-+
-      /* Restore the floating-point state. */
-      if (has_fpu)
-          err |= restore_fp_state(regs, &sc->sc_fpregs);
-@@ -140,8 +144,12 @@ static long setup_sigcontext(struct rt_sigframe 
-__user *frame,
-  {
-      struct sigcontext __user *sc = &frame->uc.uc_mcontext;
-      long err;
-+
-      /* sc_regs is structured the same as the start of pt_regs */
-      err = __copy_to_user(&sc->sc_regs, regs, sizeof(sc->sc_regs));
-+    if (unlikely(err))
-+        return -EFAULT;
-+
-      /* Save the floating-point state. */
-      if (has_fpu)
-          err |= save_fp_state(regs, &sc->sc_fpregs);
--- 
-2.1.0
+I booted an allyesconfig with this logic and your event triggered the
+warning, and it was the only event in the kernel to do so. Thus, I've been
+pretty good at policing trace events from doing such things (I've stopped a
+lot of them from getting into the kernel by manually reviewing every trace
+event that is Cc'd to me).
 
-(2) or just leave it as it is and ignore this patch?
+I hope that answers your question.
 
-Thanks,
-Tiezhu
+-- Steve
 
->
-> Note: setup_rt_frame -> setup_sigcontext -> save_fp_frame
->
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   arch/riscv/kernel/signal.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
->> index 65942b3..2238fc5 100644
->> --- a/arch/riscv/kernel/signal.c
->> +++ b/arch/riscv/kernel/signal.c
->> @@ -67,7 +67,7 @@ static long save_fp_state(struct pt_regs *regs,
->>       fstate_save(current, regs);
->>       err = __copy_to_user(state, &current->thread.fstate, 
->> sizeof(*state));
->>       if (unlikely(err))
->> -        return err;
->> +        return -EFAULT;
->>         /* We support no other extension state at this time. */
->>       for (i = 0; i < ARRAY_SIZE(sc_fpregs->q.reserved); i++) {
->> @@ -140,8 +140,12 @@ static long setup_sigcontext(struct rt_sigframe 
->> __user *frame,
->>   {
->>       struct sigcontext __user *sc = &frame->uc.uc_mcontext;
->>       long err;
->> +
->>       /* sc_regs is structured the same as the start of pt_regs */
->>       err = __copy_to_user(&sc->sc_regs, regs, sizeof(sc->sc_regs));
->> +    if (unlikely(err))
->> +        return -EFAULT;
->> +
->>       /* Save the floating-point state. */
->>       if (has_fpu)
->>           err |= save_fp_state(regs, &sc->sc_fpregs);
->>
->
->
 
