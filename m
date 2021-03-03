@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2361432C2E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A84B32C31C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236679AbhCCX74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 18:59:56 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:51931 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376952AbhCCTnv (ORCPT
+        id S231616AbhCCX7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:49 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:48885 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1344473AbhCCTmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:43:51 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1My2pz-1lzclI09iJ-00zZYU; Wed, 03 Mar 2021 20:40:27 +0100
-Received: by mail-oi1-f174.google.com with SMTP id f3so27268160oiw.13;
-        Wed, 03 Mar 2021 11:40:26 -0800 (PST)
-X-Gm-Message-State: AOAM533s2niafG6HZGnI5/zGikXBUPvNqOQxyU95D1HPpD0/9681G+Fh
-        tB8187U1tQBCliz+Bx2U2N09rG4rFlG2XQOUcwg=
-X-Google-Smtp-Source: ABdhPJzn3Q499PVsI9fue4JXopGo7Jot+WRlXZuMu9dMyxd/+iuVPnM+k2Lyu54W16vUNKI5PzbS2+wPDBpoflHkL00=
-X-Received: by 2002:aca:4fd3:: with SMTP id d202mr343594oib.11.1614800425710;
- Wed, 03 Mar 2021 11:40:25 -0800 (PST)
+        Wed, 3 Mar 2021 14:42:31 -0500
+Received: (qmail 1582740 invoked by uid 1000); 3 Mar 2021 14:40:54 -0500
+Date:   Wed, 3 Mar 2021 14:40:54 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     maranget <luc.maranget@inria.fr>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210303194054.GB1582185@rowland.harvard.edu>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
 MIME-Version: 1.0
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
- <20210303022628.6540-1-taehyun.cho@samsung.com> <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
- <YD9lTjWc25Nn7jAR@kroah.com> <20210303103839.it7grj3vtrdmngbd@kozik-lap>
- <YD+XkFAfoKpSsea3@kroah.com> <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
- <YD+mkse29UwwYbFB@kroah.com> <6e9d6831-f88e-477f-6256-7ab155bfa7ac@kernel.org>
- <CAK8P3a2TAZELiqzy8Xv8hKvZwM6_+rF5OW9_AkP2TBoDRS3skQ@mail.gmail.com> <YD+8q/hSWNKQS1tE@kroah.com>
-In-Reply-To: <YD+8q/hSWNKQS1tE@kroah.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 3 Mar 2021 20:40:08 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3_u-FdPKNtAZdZHKY2EAk+qhg1GQHV4dsnuGV4+LawgQ@mail.gmail.com>
-Message-ID: <CAK8P3a3_u-FdPKNtAZdZHKY2EAk+qhg1GQHV4dsnuGV4+LawgQ@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        taehyun cho <taehyun.cho@samsung.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:irQ9Y8hDCfeUHTK7SbkRdDLoBO8Uq+AB9S6IUXcUUPd29CetD8n
- DDOk2fRuSsSPNQkTl/PhpY0nZcEDftn9TQRcVDd8gYnMKT9XlCC/lligLZ0PjhyKpgHn0MI
- FglGW5oaJjCXdwZFNYNmfmYU2A0rwMotWxh+3NgmD48EpIljOz2Cj5J0CQ3ZStYKiVDHxPn
- u7h1amwEaDsLvsnsZ/Z5Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YaQBB56KKM8=:7xYZZ8e5QttoWoYrmiquhT
- d2YUfXZj+iRbSfEUhgsq76sbNWYYi3k4ZWRTYzBaZo6BrWAkmTdci06tZNwV78wbgub4gQj78
- pXIIOrqTQRfJyWcjZ8+UigqPrcmQJDCUwvkcEO2IO7CqUqe4PihAzyFADFPq/CXFrkX85ZIYt
- Ku8LAzKP0KoCH4eI40CPWHsKqDVcGnfzK9Dm7LIiFL0YRtIX2tRi8cBNEUtfy5jxQOd/mSxWt
- ePvE1JUTKmihsa1UkTNyD19sdhj5ETCQfCaE9Q4cqp6xzYP/nVk2Y2OTm9mJw1qrlRMwLqoVd
- WBds5+bTBRJNERQs915+zWVRGhG7pT0zR9taG3z9NPZLh5MYHCAnlA1kctcYEn21n9icmQdIv
- vvYBj0ggNWWOV1CA0ugcchLJE5T7y+iAvzssvahV/l/ygwv8Cmt4+pShif6ZC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 5:43 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Wed, Mar 03, 2021 at 05:33:46PM +0100, Arnd Bergmann wrote:
-> > > > On Wed, Mar 03, 2021 at 06:56:38AM -0800, Guenter Roeck wrote:
-> > > >
-> > > >> I don't think that will work in practice. Many ARCH_ symbols for various
-> > > >> architectures contradict with each other. Almost all watchdog drivers
-> > > >> only _build_ for specific platforms/architectures.
->
-> That's fine, drivers are easy, but when I see comments like "ARCH_
-> symbols contradict" that means that we can not make a generic kernel
-> image.  Otherwise there's no contradiction :)
+On Wed, Mar 03, 2021 at 06:37:36PM +0100, maranget wrote:
+> 
+> 
+> > On 3 Mar 2021, at 18:12, Alan Stern <stern@rowland.harvard.edu> wrote:
+> > 
+> > On Tue, Mar 02, 2021 at 03:50:19PM -0800, Paul E. McKenney wrote:
+> >> On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
+> > 
+> >>> This result is wrong, apparently because of a bug in herd7.  There 
+> >>> should be control dependencies from each of the two loads in P0 to each 
+> >>> of the two stores, but herd7 doesn't detect them.
+> >>> 
+> >>> Maybe Luc can find some time to check whether this really is a bug and 
+> >>> if it is, fix it.
+> >> 
+> >> I agree that herd7's control dependency tracking could be improved.
+> >> 
+> >> But sadly, it is currently doing exactly what I asked Luc to make it do,
+> >> which is to confine the control dependency to its "if" statement.  But as
+> >> usual I wasn't thinking globally enough.  And I am not exactly sure what
+> >> to ask for.  Here a store to a local was control-dependency ordered after
+> >> a read, and so that should propagate to a read from that local variable.
+> >> Maybe treat local variables as if they were registers, so that from
+> >> herd7's viewpoint the READ_ONCE()s are able to head control-dependency
+> >> chains in multiple "if" statements?
+> >> 
+> >> Thoughts?
+> > 
+> > Local variables absolutely should be treated just like CPU registers, if 
+> > possible.  In fact, the compiler has the option of keeping local 
+> > variables stored in registers.
+> > 
+> 
+> And indeed local variables are treated as registers by herd7.
+> 
+> 
+> > (Of course, things may get complicated if anyone writes a litmus test 
+> > that uses a pointer to a local variable,  Especially if the pointer 
+> > could hold the address of a local variable in one execution and a 
+> > shared variable in another!  Or if the pointer is itself a shared 
+> > variable and is dereferenced in another thread!)
+> > 
+> > But even if local variables are treated as non-shared storage locations, 
+> > we should still handle this correctly.  Part of the problem seems to lie 
+> > in the definition of the to-r dependency relation; the relevant portion 
+> > is:
+> 
+> In fact, I’d rather change the computation of “dep” here control-dependency “ctrl”. Notice that “ctrl” is computed by herd7 and present in the initial environment of the Cat interpreter.
+> 
+> I have made a PR to herd7 that performs the change. The commit message states the new definition.
 
-I think the key part of Guenter's sentence above was 'for various
-architectures', which does not include arm64 or modern arm32 (armv6
-or higher). On arm64 specifically, there is no platform specific code at
-all that is not "just a driver".
+Shouldn't similar reasoning apply to data and address dependencies?
 
-32-bit ARM was in that category, and is mostly converted now to allow
-combining arbitrary platforms within each of the three sets of slightly
-incompatible CPUs (armv4/v4t/v5 vs armv6/v6k/v7/v7ve/v8 vs nommu
-armv7-m).
+For example, suppose there is a control dependency from a load to a 
+register variable, and then a data dependency from the register variable 
+to a store.  This should be treated as an overall data dependency from 
+the load to the store.
 
-powerpc did this first, but still has at least five groups of incompatible
-CPU cores (8xx, 6xx, 4xx, e500 and everything 64-bit) with one or
-more platforms in each.
+Does your change to herd7 do this?  I couldn't tell from the description 
+in the PR.
 
-mips is mostly incompatible between platforms, though there has been
-some progress in the past few years to make some of the common ones
-coexist.
+Also, do you think it's reasonable to add a restriction to herd7 against 
+taking the address of a local variable?
 
-m68k can have all mmu-based platforms (mac, atari, amiga, ...) coexist,
-but the nommu platforms are all mutually exclusive. This is probably
-not a problem because they are also highly resource constrained.
+> > 	(dep ; [Marked] ; rfi)
+> > 
+> > Here dep is the control dependency from the READ_ONCE to the 
+> > local-variable store, and the rfi refers to the following load of the 
+> > local variable.  The problem is that the store to the local variable 
+> > doesn't go in the Marked class, because it is notated as a plain C 
+> > assignment.  (And likewise for the following load.)
+> > 
+> This is a related issue, I am not sure, but perhaps it can be formulated as
+> "should rfi and rf on registers behave the  same?”
 
-> And "new drivers" are almost always not really "new" as everyone uses
-> much the same IP blocks.  As proof of this patch where the DWC3 IP block
-> is being used by multiple SoC vendors.  To handle that, you split out
-> the SoC-specific portions into sub-drivers, so that you can build a
-> single image of the driver that works on multiple platforms.  Nothing
-> new, we've been doing this for years, it's just that out-of-mainline SoC
-> trees that think they can touch "core IP block code" break this all the
-> time, which is what I am pushing back on.
+Aren't they already the same thing?  It's not possible to have an rfe 
+from a register, is it?
 
-In those cases where more than one or two platforms share an identical
-driver, I agree we should just remove those dependencies. Across
-subsystems, I think those are a small minority, but they are more common
-in certain areas (usb, pci, networking) than others (clk, pinctrl, gpio).
+Alan
 
-I did find it very helpful to have the dependencies when I removed a
-number of ARM platforms for linux-5.12 that had no remaining users ,
-and I could just remove all the drivers along with those platforms.
-
-I found one networking driver in that set that was a generic licensed
-IP block that was probably shared by other platforms, but none of
-those had upstream Linux support, so I removed it as well.
-
-     Arnd
+> > Should we change the model to make loads from and stores to local 
+> > variables always count as Marked?
+> > 
+> > What should have happened if the local variable were instead a shared 
+> > variable which the other thread didn't access at all?  It seems like a 
+> > weak point of the memory model that it treats these two things 
+> > differently.
+> > 
+> > Alan
