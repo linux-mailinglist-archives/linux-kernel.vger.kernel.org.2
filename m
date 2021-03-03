@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D539332BDDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF5132BDEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346839AbhCCQiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:38:55 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9212 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358161AbhCCL4W (ORCPT
+        id S1379104AbhCCQji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:39:38 -0500
+Received: from lucky1.263xmail.com ([211.157.147.134]:55918 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344732AbhCCME1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:56:22 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603f79370000>; Wed, 03 Mar 2021 03:55:35 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
- 2021 11:55:34 +0000
-Received: from moonraker.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Mar 2021 11:55:32 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is present
-Date:   Wed, 3 Mar 2021 11:55:26 +0000
-Message-ID: <20210303115526.419458-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 3 Mar 2021 07:04:27 -0500
+Received: from localhost (unknown [192.168.167.13])
+        by lucky1.263xmail.com (Postfix) with ESMTP id E7B09C75D3;
+        Wed,  3 Mar 2021 19:57:16 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P4300T140473571735296S1614772632866484_;
+        Wed, 03 Mar 2021 19:57:18 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <ba80ddaa333c65d3e86d5ece2779404c>
+X-RL-SENDER: maqianga@uniontech.com
+X-SENDER: maqianga@uniontech.com
+X-LOGIN-NAME: maqianga@uniontech.com
+X-FST-TO: mpe@ellerman.id.au
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   maqiang <maqianga@uniontech.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        maqiang <maqianga@uniontech.com>
+Subject: [PATCH] powerpc: remove redundant space
+Date:   Wed,  3 Mar 2021 19:57:10 +0800
+Message-Id: <20210303115710.30886-1-maqianga@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614772535; bh=4m4/54FIMd3nVyRMq6v7JqGzyu918YBQawVTaUMBx8I=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=TPCLIFKcv+wAz90NoF7wDd+GzlkGxwrcf/fCzuJ6d7VOED5nzc7bOwHPEgT12p8FM
-         5HunMahXtxxTrRmPhv9QUA1qVbnS4VZ+0Fz2blC2l05vzZG6OkA9OMl5i+5PbB2DDV
-         zXD6804I0dgUExmdoaeRTln+uE0cPZ4VIH9V0ayG4lT1Fke39YZzgBtcbe+wV309Mb
-         dyQj4BG0Sa5UlLhSHmnoTyQW2PPNc3lvphUqikiTiUhk+WIEC8dNcDaiDhj8OFVYNT
-         MH7lVhc8fJwI8Ei8CJT9LMghh7lR+Hypvt9a7A0UvdNokt5d7n4KvGYfGnu2TQ7wws
-         kF3aomKs1YqmA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many systems do not use ACPI and hence do not provide a DMI table. On
-non-ACPI systems a warning, such as the following, is printed on boot.
+These one line of code don't meet the kernel coding style,
+so remove the redundant space.
 
- WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
-
-The variable 'dmi_available' is not exported and so currently cannot be
-used by kernel modules without adding an accessor. However, it is
-possible to use the function is_acpi_device_node() to determine if the
-sound card is an ACPI device and hence indicate if we expect a DMI table
-to be present. Therefore, call is_acpi_device_node() to see if we are
-using ACPI and only parse the DMI table if we are booting with ACPI.
-
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: maqiang <maqianga@uniontech.com>
 ---
-Changes since V1:
-- Use is_acpi_device_node() to determine if we expect the DMI table to
-  be present.
+ arch/powerpc/kernel/syscalls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- sound/soc/soc-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
+index 078608ec2e92..9248288752d5 100644
+--- a/arch/powerpc/kernel/syscalls.c
++++ b/arch/powerpc/kernel/syscalls.c
+@@ -81,7 +81,7 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
+ int
+ ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
+ {
+-	if ( (unsigned long)n >= 4096 )
++	if ((unsigned long)n >= 4096)
+ 	{
+ 		unsigned long __user *buffer = (unsigned long __user *)n;
+ 		if (!access_ok(buffer, 5*sizeof(unsigned long))
+-- 
+2.20.1
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f6d4e99b590c..0cffc9527e28 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -31,6 +31,7 @@
- #include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/dmi.h>
-+#include <linux/acpi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -1573,6 +1574,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, c=
-onst char *flavour)
- 	if (card->long_name)
- 		return 0; /* long name already set by driver or from DMI */
-=20
-+	if (!is_acpi_device_node(card->dev->fwnode))
-+		return 0;
-+
- 	/* make up dmi long name as: vendor-product-version-board */
- 	vendor =3D dmi_get_system_info(DMI_BOARD_VENDOR);
- 	if (!vendor || !is_dmi_valid(vendor)) {
---=20
-2.25.1
+
 
