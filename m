@@ -2,55 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D5032BEAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4703A32BEB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574745AbhCCReJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:34:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236430AbhCCOHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:07:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C686764EAE;
-        Wed,  3 Mar 2021 14:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614780360;
-        bh=Dp0+D625HwAqvxI89RK1lqFQ0TMsmccmmw5X2AV2AqQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xxJcA485F5jgnpF+bBLXnNgks0su/Sl0PRgMADE7m/ptDwGJNSX26wM6eextQlun9
-         iyxOKNSGbKnvSJfGzXpesfvbixiMru1o9ms6VqsmSUnbqa0fK1COCrCZK7DUCT5827
-         xVwj1KXxkqePMJ8sTxlm2UP0UwBDs4CGMGToUT4Q=
-Date:   Wed, 3 Mar 2021 15:05:57 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] docs: driver-model: device: Add helper macro examples
-Message-ID: <YD+XxZ2/8vPeDt05@kroah.com>
-References: <20210303133845.3939403-1-geert+renesas@glider.be>
+        id S1575057AbhCCRec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:34:32 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:29321 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241741AbhCCOIO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:08:14 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-137-8m7MO7eUN4WPYDQe3WOerw-1; Wed, 03 Mar 2021 14:06:01 +0000
+X-MC-Unique: 8m7MO7eUN4WPYDQe3WOerw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 3 Mar 2021 14:06:03 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 3 Mar 2021 14:06:03 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     Artem Savkov <asavkov@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: RE: Upper bound mode for kernel timers
+Thread-Topic: Upper bound mode for kernel timers
+Thread-Index: AQHXDzpnJdxnFeR40EihNWY2PsQIHKpyR8OA
+Date:   Wed, 3 Mar 2021 14:06:03 +0000
+Message-ID: <5efd5c6a00dc46529767c428a81ec9e0@AcuMS.aculab.com>
+References: <20210302001054.4qgrvnkltvkgikzr@treble>
+In-Reply-To: <20210302001054.4qgrvnkltvkgikzr@treble>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303133845.3939403-1-geert+renesas@glider.be>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 02:38:43PM +0100, Geert Uytterhoeven wrote:
-> 	Hi Jon, Greg, Rafael,
-> 
-> The DEVICE_ATTR_* and ATTRIBUTE_GROUPS() helper macros have existed for
-> more than a decade, but are still not mentioned in the driver-model
-> device documentation.  Hence this patch series adds them, including
-> examples, to the documentation.
-> 
-> Thanks for your comments!
-> 
-> Geert Uytterhoeven (2):
->   docs: driver-model: device: Add DEVICE_ATTR_{RO,RW} examples
->   docs: driver-model: device: Add ATTRIBUTE_GROUPS() example
+RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMDIgTWFyY2ggMjAyMSAwMDoxMQ0KPiANCj4g
+V2UgaGFkIGEgcmVwb3J0IG9mIGEgcmVncmVzc2lvbiBpbiB0aGUgVENQIGtlZXBhbGl2ZSB0aW1l
+ci4gIFRoZSB1c2VyDQo+IGhhZCBhIDM2MDBzIGtlZXBhbGl2ZSB0aW1lciBmb3IgcHJldmVudGlu
+ZyBmaXJld2FsbCBkaXNjb25uZWN0cyAob24gYQ0KPiAzNjUwcyBpbnRlcnZhbCkuICBUaGV5IG9i
+c2VydmVkIGtlZXBhbGl2ZSB0aW1lcnMgY29taW5nIGluIHVwIHRvIGZvdXINCj4gbWludXRlcyBs
+YXRlLCBjYXVzaW5nIHVuZXhwZWN0ZWQgZGlzY29ubmVjdHMuDQo+IA0KPiBUaGUgcmVncmVzc2lv
+biB3YXMgb2JzZXJ2ZWQgdG8gaGF2ZSBjb21lIGZyb20gdGhlIHRpbWVyIHdoZWVsIHJld3JpdGUN
+Cj4gZnJvbSBhbG1vc3QgZml2ZSB5ZWFycyBhZ286DQo+IA0KPiAgIDUwMDQ2MmE5ZGU2NSAoInRp
+bWVyczogU3dpdGNoIHRvIGEgbm9uLWNhc2NhZGluZyB3aGVlbCIpDQo+IA0KPiBBcyB5b3UgbWVu
+dGlvbmVkLCB3aXRoIGEgSFogb2YgMTAwMCwgdGhlIGdyYW51bGFyaXR5IGZvciBhIG9uZS1ob3Vy
+DQo+IHRpbWVyIGlzIGZvdXIgbWludXRlcywgd2hpY2ggbWF0Y2hlcyB0aGUgc2VlbiBiZWhhdmlv
+ci4NCg0KVGhhdCBzZWVtcyBob3JyaWJseSBicm9rZW4gLSBpZiB0ZWNobmljYWxseSB2YWxpZC4N
+Cg0KUmVhZGluZyB0aGUgYmlnIGNvbW1lbnQgZXZlbiB0aGUgMzJzZWMgZm9yIHRoZSBuZXh0IGZp
+bmVyICd3aGVlbCcNCnNlZW1zIGEgbGl0dGxlIGNvYXJzZSBmb3IgYSAxaCB0aW1lci4NClRoZSBz
+ZWNvbmQgZmluZXIgd2hlZWwgaGFzIDRzZWMgcmVzb2x1dGlvbiAtIHdoaWNoIGlzIHByb2JhYmx5
+IHJlYXNvbmFibGUuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
+IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
+Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-Thanks for adding these:
-
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
