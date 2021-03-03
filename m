@@ -2,144 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C79332C1AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087F032C1B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387370AbhCCTYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:24:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26148 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350093AbhCCTFN (ORCPT
+        id S1387405AbhCCTYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:24:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350345AbhCCTFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:05:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614798216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UoLMKstBrKdSmL1aXA1VyV0RNHRz4sF2B9MnCUrQmn0=;
-        b=caJTaH9jJR9HW0Hez6Cd8sQ4tlv8qihyigkP/4GGQlv6y6830jZi+AbFKrGmqI5MOKOvcR
-        echxg0uEQf48ZyY9KlbwXikBRflM3w47yNHrjvZNslvKzQgini0BP9ICC6kDia75f9lzkb
-        PYcu+5Ggjyx7LbG8rmMCy0Ql1tnXdEE=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-vbJUZrwnNx6cfN5eVsHKyw-1; Wed, 03 Mar 2021 14:03:35 -0500
-X-MC-Unique: vbJUZrwnNx6cfN5eVsHKyw-1
-Received: by mail-qt1-f200.google.com with SMTP id k10so15612834qte.17
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 11:03:35 -0800 (PST)
+        Wed, 3 Mar 2021 14:05:32 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2D3C061765
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 11:04:45 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id w1so44378805ejf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 11:04:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=emB76DYl8PmmcmITFjkIlLA/KjBQhOxxjznaA2F8hE4=;
+        b=bt17grf5jTznLnyyJrRe5nSPyIJhqqI/eIkQkXHehzw1+by6/BaEkgNQZV5Wq1kReo
+         yTZyzGYsWknSfPNib1svKGo6bL+jUsd+if0RrYvFKHkp5A0QOYIWx4qvvMFsz78XT8jx
+         H8Zs1EyzxkLlTebyu0KkBvHHyC/zLoi/OXaWpkLUL0//E4AJOdtcEvUowmMolZhegrqt
+         o2ZAduUYxBM/gFwzFDva01tjU2BHnDTcouoJfGR4JJ/Bcs5cshwl3tBK1MyIdozXAD8g
+         1ERdwVMfXHlKsifQ1DcmnjHNunYIRgiPEGc9yywQkwhxEz9SUI+EXG3Q8udjPaLXg7Au
+         Cppg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UoLMKstBrKdSmL1aXA1VyV0RNHRz4sF2B9MnCUrQmn0=;
-        b=jBRF7K9CLF3gaZgqSyw3aFi7Rhm5xUVcHPlhMp6upyu5xxjZMLbvnGU284zcfhcqo3
-         bZ8qgmGh/1z262R72l6G4GHcKAyw3Rit38eCk84XJMYsUWLMCqalFpF1OFdqdnGiI/qI
-         M+rPb1SQ6t0xKood/JHo3TUjGhHfILtZ05qsDtPWUt8Bq/D9MSqEzAjKK5D34vEDblE7
-         9Jz+uuISVYCfpQRoInDSoEM/2ZTOZ9PAOopusiwxrXTeFv3/VuwlKNk8/mzGU670CZww
-         F7oYHfKgLq81mtSyRUSX7vz3aW39WKEauzNvm3At1Rb8L2VHD9VIHEN2tPxv36YaAiOY
-         UdFA==
-X-Gm-Message-State: AOAM530hquzpetFpZf8p22P+nIZqha5Ce2y+xGXckL3BRAf4LFb2tfEc
-        0v1dbiy0nTAg7BYWnPSNlD99UADUBhqMUBe1z7LnDAbNY0TP6wqQqXY/oQcqvVwIl73UsyTHvEx
-        x8As888Gqv57h1qx7rK4xOYT5
-X-Received: by 2002:a0c:b49f:: with SMTP id c31mr604257qve.35.1614798213377;
-        Wed, 03 Mar 2021 11:03:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz5PF37P+ynLvSYll0RMVL0A9E5K1GNnpbcQIBu/Q3dkFlUVNkM/Ivi1uWHgnQdBHCXB/sDwA==
-X-Received: by 2002:a0c:b49f:: with SMTP id c31mr603966qve.35.1614798209781;
-        Wed, 03 Mar 2021 11:03:29 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
-        by smtp.gmail.com with ESMTPSA id z65sm15976988qtd.15.2021.03.03.11.03.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 11:03:28 -0800 (PST)
-Date:   Wed, 3 Mar 2021 14:03:27 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
-        Yu Zhao <yuzhao@google.com>
-Subject: Re: [PATCH RESEND v3] mm/userfaultfd: fix memory corruption due to
- writeprotect
-Message-ID: <20210303190327.GV397383@xz-x1>
-References: <20210303095702.3814618-1-namit@vmware.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=emB76DYl8PmmcmITFjkIlLA/KjBQhOxxjznaA2F8hE4=;
+        b=O5eSutZC7iKR+E+0Q6ZA76N1i8Xj/3hoBGEJjQblXE2Pg1VSJNTv+0HS8KoDfZ613c
+         Z9ThZqIrXijfP79idmHht8M75FO1w6wIvukxjokiI/8NLWeYK51/QcWMa9vcLWxjpOJ1
+         vAkYMzTA1IGJmi37ZXVAc+F7fhkB/SfBAaixLVr7ST6/XGDCO3oUumDzSJfwuiyybcpP
+         vNldp6mxuy5zoEe/0tR1URYSAhkG71Uewm6tvHuznKNMIZG4z/eSXJVPcOBUJYawW3Zt
+         R59MwuAwQTIg89ab7m6darT3S/wB4p2jWX0OnCxs3Wk7W5c8cHarVgEnKYePPG7ruGxY
+         SdcQ==
+X-Gm-Message-State: AOAM532bCi2Bob1oTZXfcr4lDsO5dXsksdiYPGQWJehSD49JkYK7Iwqn
+        Gjzu6a4BD4vVRB9qq/cxVqMpjrA7OjcR5Fmicz6/4g==
+X-Google-Smtp-Source: ABdhPJxLmIMCD5thMPhEljfIP3oZXUuagP+sz6u1sBLxpvrEkxxiOzwKhxFS1Rlm6E3fXMFuSM+0j9eA0/LHaG2Fc+g=
+X-Received: by 2002:a17:906:3603:: with SMTP id q3mr257584ejb.201.1614798284132;
+ Wed, 03 Mar 2021 11:04:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210303095702.3814618-1-namit@vmware.com>
+References: <20210303175235.3308220-1-bgeffon@google.com> <CADyq12ymZcrU-+ZnDZ=nieq5zgzf_j9zGT7-BPDXXnxP-rz_kw@mail.gmail.com>
+In-Reply-To: <CADyq12ymZcrU-+ZnDZ=nieq5zgzf_j9zGT7-BPDXXnxP-rz_kw@mail.gmail.com>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Wed, 3 Mar 2021 11:04:32 -0800
+Message-ID: <CA+EESO7GLWcSmzRSiTqFygqEmrKT=oVFEuMs_F0nTQf-wepJXQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: Allow shmem mappings with MREMAP_DONTUNMAP
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 01:57:02AM -0800, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> Userfaultfd self-test fails occasionally, indicating a memory
-> corruption.
+On Wed, Mar 3, 2021 at 10:13 AM Brian Geffon <bgeffon@google.com> wrote:
+>
+> I apologize, this patch didn't include my signed off by, here it is:
+>
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+>
+>
+> On Wed, Mar 3, 2021 at 9:53 AM Brian Geffon <bgeffon@google.com> wrote:
+> >
+> > Currently MREMAP_DONTUNMAP only accepts private anonymous mappings. This change
+> > will widen the support to include shmem mappings. The primary use case
+> > is to support MREMAP_DONTUNMAP on mappings which may have been created from
+> > a memfd.
+> >
+> > Lokesh Gidra who works on the Android JVM, provided an explanation of how such
+> > a feature will improve Android JVM garbage collection:
+> > "Android is developing a new garbage collector (GC), based on userfaultfd. The
+> > garbage collector will use userfaultfd (uffd) on the java heap during compaction.
+> > On accessing any uncompacted page, the application threads will find it missing,
+> > at which point the thread will create the compacted page and then use UFFDIO_COPY
+> > ioctl to get it mapped and then resume execution. Before starting this compaction,
+> > in a stop-the-world pause the heap will be mremap(MREMAP_DONTUNMAP) so that the
+> > java heap is ready to receive UFFD_EVENT_PAGEFAULT events after resuming execution.
+> >
+> > To speedup mremap operations, pagetable movement was optimized by moving PUD entries
+> > instead of PTE entries [1]. It was necessary as mremap of even modest sized memory
+> > ranges also took several milliseconds, and stopping the application for that long
+> > isn't acceptable in response-time sensitive cases. With UFFDIO_CONTINUE feature [2],
+> > it will be even more efficient to implement this GC, particularly the 'non-moveable'
+> > portions of the heap. It will also help in reducing the need to copy (UFFDIO_COPY)
+> > the pages. However, for this to work, the java heap has to be on a 'shared' vma.
+> > Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this patch will
+> > enable using UFFDIO_CONTINUE for the new userfaultfd-based heap compaction."
+> >
+> > [1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
+> > [2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
 
-It's failing very constantly now for me after I got it run on a 40 cores
-system...  While indeed not easy to fail on my laptop.
+Thanks for the patch, Brian. I've tested mremap(MREMAP_DONTUNMAP) on a
+memfd memory range.
 
-[...]
+Tested-by: Lokesh Gidra <lokeshgidra@google.com>
 
-> Fixes: 292924b26024 ("userfaultfd: wp: apply _PAGE_UFFD_WP bit")
-> Signed-off-by: Nadav Amit <namit@vmware.com>
-> 
-> ---
-> v2->v3:
-> * Do not acquire mmap_lock for write, flush conditionally instead [Yu]
-> * Change the fixes tag to the patch that made the race apparent [Yu]
-
-Did you forget about this one?  It would still be good to point to 09854ba94c6a
-just to show that 5.7/5.8 stable branches shouldn't need this patch as they're
-not prone to the tlb data curruption.  Maybe also cc stable with 5.9+?
-
-> * Removing patch to avoid write-protect on uffd unprotect. More
->   comprehensive solution to follow (and avoid the TLB flush as well).
-> ---
->  mm/memory.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 9e8576a83147..06da04f98936 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3092,6 +3092,13 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
->  		return handle_userfault(vmf, VM_UFFD_WP);
->  	}
->  
-> +	/*
-> +	 * Userfaultfd write-protect can defer flushes. Ensure the TLB
-> +	 * is flushed in this case before copying.
-> +	 */
-> +	if (userfaultfd_wp(vmf->vma) && mm_tlb_flush_pending(vmf->vma->vm_mm))
-> +		flush_tlb_page(vmf->vma, vmf->address);
-> +
->  	vmf->page = vm_normal_page(vma, vmf->address, vmf->orig_pte);
->  	if (!vmf->page) {
->  		/*
-> -- 
-> 2.25.1
-> 
-
-Thanks for being consistent on fixing this problem.
-
-Maybe it's even better to put that into a "unlikely" to reduce the affect of
-normal do_wp_page as much as possible?  But I'll leave it to others.
-
-If with the fixes tag modified:
-
-Reviewed-by: Peter Xu <peterx@redhat.com>
-Tested-by: Peter Xu <peterx@redhat.com>
-
-Thanks,
-
--- 
-Peter Xu
-
+> > ---
+> >  mm/mremap.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/mm/mremap.c b/mm/mremap.c
+> > index ec8f840399ed..6934d199da54 100644
+> > --- a/mm/mremap.c
+> > +++ b/mm/mremap.c
+> > @@ -653,8 +653,7 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+> >                 return ERR_PTR(-EINVAL);
+> >         }
+> >
+> > -       if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+> > -                       vma->vm_flags & VM_SHARED))
+> > +       if (flags & MREMAP_DONTUNMAP && !(vma_is_anonymous(vma) || vma_is_shmem(vma)))
+> >                 return ERR_PTR(-EINVAL);
+> >
+> >         if (is_vm_hugetlb_page(vma))
+> > --
+> > 2.31.0.rc0.254.gbdcc3b1a9d-goog
+> >
