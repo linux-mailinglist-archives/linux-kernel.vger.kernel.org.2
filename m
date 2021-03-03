@@ -2,89 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB4B32C2C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5462D32C2D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352945AbhCDACq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:02:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
+        id S1352971AbhCDACu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:02:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387997AbhCCURv (ORCPT
+        with ESMTP id S1387998AbhCCUSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:17:51 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABD1C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 12:17:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gndyAcqrFEb63lWZfXawPqTaD/MPoQSVtS2l/6X7nOE=; b=Hy0MCL/pcPG630Jq37Pi6sfRtV
-        0ZAZLuuOX51OLePqKr3e/vp3gLmwNjaSSyjBhstskI8wB2Xz9gAbeuYufynBjW8nKF2dWyA42V0/K
-        EZOokb4u7ILkr0zMR0LTKoqMo9iFxSe4A0VVeHFTGuhUTKu96Z8uzBtGfOftzb4EI5Lm8AtF2OIob
-        nnqQYbFhHVoiNEVnhdMxgKaXkZ/NnyIclhMEny94+NY67y/7QczxPlh6+e2/iimRss70Po2CrPDef
-        jJSC41+VTZjuCmP7RPwpxxIv2elYgG565Q0CV0hkbg3DsJktqi+9PzTcoYaNzZ/lPHpEiBRClJLhn
-        /BEY3sVA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lHXvN-0043UN-GD; Wed, 03 Mar 2021 20:16:52 +0000
-Date:   Wed, 3 Mar 2021 20:16:49 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Pekka Enberg <penberg@gmail.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>,
-        linux-kernel@vger.kernel.org,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 3/3] mm/slub: Use percpu partial free counter
-Message-ID: <20210303201649.GF2723601@casper.infradead.org>
-References: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
- <1597061872-58724-4-git-send-email-xlpang@linux.alibaba.com>
- <alpine.DEB.2.22.394.2103021012010.860725@gentwo.de>
- <20210303142612.GC2723601@casper.infradead.org>
- <alpine.DEB.2.22.394.2103032012250.896915@gentwo.de>
- <20210303193038.GE2723601@casper.infradead.org>
- <alpine.DEB.2.22.394.2103032032070.897408@gentwo.de>
+        Wed, 3 Mar 2021 15:18:06 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE68C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 12:17:26 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 18so30649930lff.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:17:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WJU47HfLr24C5iHZ6QnN66/JheJ0eDT25q9fy/MswAI=;
+        b=QLA9VfftBNrxhMy11KY7iYzpDwYXuC99/HWIBxltPnMI5ztG9/vW21kc1NVhBQ/G5m
+         kKYXenXZCPFpBe/SQLVhcB/mrEA88dF0aV5ReqvCDpu3eopgJZPnBvojk7pBjyjLHpHb
+         aIaG3jG6p0K8uMEl9uNHlxdJPHLRoguFi63uw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WJU47HfLr24C5iHZ6QnN66/JheJ0eDT25q9fy/MswAI=;
+        b=C7odhaCF34ZiIq/J/WdFRfmYelKp3ukero04Qkv3vEMqx2kDCzCTL13mMFk3IdQO3L
+         ZUTL4HlSRho/f0EPGPuowyhIpYeuiBNvu1WkcjxEGFKT3YaSJafCiHA4+bo0UW1fboly
+         5mT7fYmJqBcmcwTCH+4P93pG21R93UBYKIFuSI/zsSVHFN5zW8dwFk3dCProjeN+fW3J
+         e5y9hOsh+P/emLXaKTVT620E+EPB3scFi7hGnWs9sx5tDhJNrqs12I6eCqGellSwkKAD
+         HFHSuTtASpQvkl0rbqafuPkxLHj4e04S04e2QSq6kdFvbGVcwZlx+JDqgnrXsKNGtYSC
+         zTpg==
+X-Gm-Message-State: AOAM533J3CVrqS++Y3GZ3P8Vxf2gZgvbidTJMcqrTtJtPmWHMwWQNqH+
+        98ZoER1MXzVFxrVIi7jBM2DRb/uIHZy3Mg==
+X-Google-Smtp-Source: ABdhPJzp+p3N0CfKojt1+Tx5BWiCdOeKuiAkZvYuszlL/fKcj+gIMxAMpG6vDSJc8rPQ6l1hV54QMA==
+X-Received: by 2002:ac2:51ac:: with SMTP id f12mr176601lfk.605.1614802643975;
+        Wed, 03 Mar 2021 12:17:23 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id j1sm711414lfb.18.2021.03.03.12.17.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 12:17:23 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id q25so18989593lfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:17:23 -0800 (PST)
+X-Received: by 2002:a19:ed03:: with SMTP id y3mr226039lfy.377.1614802642636;
+ Wed, 03 Mar 2021 12:17:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2103032032070.897408@gentwo.de>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain> <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
+ <YDvwVlG/fqVxVYlQ@localhost.localdomain> <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
+ <877dmo10m3.fsf@tromey.com>
+In-Reply-To: <877dmo10m3.fsf@tromey.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 3 Mar 2021 12:17:06 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
+Message-ID: <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
+Subject: Re: [PATCH 00/11] pragma once: treewide conversion
+To:     Tom Tromey <tom@tromey.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 08:55:48PM +0100, Christoph Lameter wrote:
-> On Wed, 3 Mar 2021, Matthew Wilcox wrote:
-> 
-> > > Can this be allocated in an interrupt context?
-> > >
-> > > And I am not sure how local_t relates to that? Percpu counters can be used
-> > > in an interrupt context without the overhead of the address calculations
-> > > that are required by a local_t.
-> >
-> > As I understand the patch, this counts the number of partially free slabs.
-> > So if we start to free an object from a completely full slab in process
-> > context, as "load x, add one to x, store x" and take an interrupt
-> > between loading x and adding one to x, that interrupt handler might
-> > free a different object from another completely full slab.  that would
-> > also load the same x, add one to it and store x, but then the process
-> > context would add one to the old x, overwriting the updated value from
-> > interrupt context.
-> 
-> this_cpu operations are "atomic" vs. preemption but on some platforms not
-> vs interrupts. That could be an issue in kmem_cache_free(). This would
-> need a modification to the relevant this_cpu ops so that interrupts are
-> disabled on those platforms.
+On Wed, Mar 3, 2021 at 11:46 AM Tom Tromey <tom@tromey.com> wrote:
+>
+> It's also worth noting that in GCC it is slower than include guards.
+> See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58770
+>
+> It's just a bug, probably easy to fix.  On the other hand, nobody has
+> ever bothered to do so.
 
-Hmmmm ... re-reading the documentation, it says that this_cpu_x is
-atomic against interrupts:
+That bugzilla is actually worth reading, if only to explain how the
+include guard is more robust technology compared to #pragma once.
 
-These operations can be used without worrying about
-preemption and interrupts::
-[...]
-        this_cpu_add(pcp, val)
-        this_cpu_inc(pcp)
-...
+The traditional include guarding with #ifndef/#define/#endif around
+the contents has the advantage that a compiler _can_ generate the
+obvious trivial optimizations of just memoizing that "oh, I've seen
+this filename already, and it had that include guard pattern, so I
+don't need to include it again".
 
+But, I hear you say "that's exactly what '#pragma once' does too!".
+
+No, it's not. There's actually two huge and very fundamental
+differences between '#pragma once' and the traditional include guard
+optimization:
+
+ (a) the traditional include guard optimization HAS NO HIDDEN SEMANTIC
+MEANING. It's a pure optimization that doesn't actually change
+anything else. If you don't do the optimization, absolutely nothing
+changes.
+
+ (b) the traditional include guard model allows for overriding and is
+simply more flexible
+
+And the GCC bugzilla talks about some of the issues with (a), and I
+already mentioned one similar issue with (a) wrt sparse: exactly what
+is it that "#pragma once" really protects?
+
+Is it the filename? Is it the _canonical_ filename? What about
+symbolic links or hardlinks? Is it the inode number? What about
+filesystems that don't really have those concepts?
+
+The above questions aren't some made-up example. They are literally
+FUNDAMENTAL DESIGN MISTAKES in "#pragma once".
+
+In contrast, include guards just work. You give the guard an explicit
+name, and that solves all the problems above, and allows for extra
+flexibility (ie the (b) issue: you can override things and include
+things twice if you know you're playing games, but you can also use
+the guard name to see "have I already included this file" for when you
+have possible nasty circular include file issues etc).
+
+So the traditional include guard model is simply technically the superior model.
+
+This is why I'm NAK'ing "#pragma once". It was never a good idea, and
+the alleged advantage ("faster builds by avoiding double includes")
+was always pure garbage because preprocessors could do the same
+optimization using the traditional include guards. In fact, because
+the traditional include guards have well-defined meaning and doesn't
+have any of the questions about what makes a file unique, and a missed
+optimization doesn't cause any semantic differences, a compiler has a
+much _easier_ time with that optimization than with the ostensibly
+simpler "#pragma once".
+
+Most #pragma things are not wonderful. But '#pragma once' is actively bad.
+
+             Linus
