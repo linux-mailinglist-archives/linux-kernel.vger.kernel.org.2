@@ -2,82 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F8732BD37
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3A332BDA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383924AbhCCPfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:35:45 -0500
-Received: from mga01.intel.com ([192.55.52.88]:16872 "EHLO mga01.intel.com"
+        id S1349321AbhCCQSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:18:14 -0500
+Received: from comms.puri.sm ([159.203.221.185]:56318 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356571AbhCCKrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:47:45 -0500
-IronPort-SDR: gcYlS7q+Kn0ts8+weWNUoUryCMuOveFCE9ljsz+tzPTMgTZONYpeneKuTQtTR5+V3q4OHOeXU+
- U2FWND0sgHow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="206833510"
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="206833510"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 01:18:21 -0800
-IronPort-SDR: x4qll68f1qKzE/mO1wM9dYjUNY5uiabN43HLRt81uuD/69MrqvYxWljJkUROf+dRKUogBTUJCu
- OAH+gmOfAaCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="435956918"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Mar 2021 01:17:08 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 366B0F4; Wed,  3 Mar 2021 11:16:58 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v3 3/3] spi: lm70llp: Switch to use module_parport_driver()
-Date:   Wed,  3 Mar 2021 11:16:42 +0200
-Message-Id: <20210303091642.23929-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210303091642.23929-1-andriy.shevchenko@linux.intel.com>
-References: <20210303091642.23929-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
+        id S234981AbhCCLpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:45:24 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 06028E0415;
+        Wed,  3 Mar 2021 01:17:02 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JZHkuqRt8frZ; Wed,  3 Mar 2021 01:17:01 -0800 (PST)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     corbet@lwn.net
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH] Documentation: dynamic-debug-howto: fix example
+Date:   Wed,  3 Mar 2021 10:16:46 +0100
+Message-Id: <20210303091646.773111-1-martin.kepplinger@puri.sm>
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use module_parport_driver() to reduce boilerplate code.
+dynamic debug is "expecting pairs of match-spec <value>" so the example
+for all files of which the paths include "usb" there is "file" missing.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 ---
- drivers/spi/spi-lm70llp.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ Documentation/admin-guide/dynamic-debug-howto.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-lm70llp.c b/drivers/spi/spi-lm70llp.c
-index 174dba29b1dd..f914b8d2043e 100644
---- a/drivers/spi/spi-lm70llp.c
-+++ b/drivers/spi/spi-lm70llp.c
-@@ -320,18 +320,7 @@ static struct parport_driver spi_lm70llp_drv = {
- 	.detach =	spi_lm70llp_detach,
- 	.devmodel =	true,
- };
--
--static int __init init_spi_lm70llp(void)
--{
--	return parport_register_driver(&spi_lm70llp_drv);
--}
--module_init(init_spi_lm70llp);
--
--static void __exit cleanup_spi_lm70llp(void)
--{
--	parport_unregister_driver(&spi_lm70llp_drv);
--}
--module_exit(cleanup_spi_lm70llp);
-+module_parport_driver(spi_lm70llp_drv);
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index 6c04aea8f4cd..b119b8277b3e 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -347,7 +347,7 @@ Examples
+ 				<debugfs>/dynamic_debug/control
  
- MODULE_AUTHOR("Kaiwan N Billimoria <kaiwan@designergraphix.com>");
- MODULE_DESCRIPTION(
+   // enable messages in files of which the paths include string "usb"
+-  nullarbor:~ # echo -n '*usb* +p' > <debugfs>/dynamic_debug/control
++  nullarbor:~ # echo -n 'file *usb* +p' > <debugfs>/dynamic_debug/control
+ 
+   // enable all messages
+   nullarbor:~ # echo -n '+p' > <debugfs>/dynamic_debug/control
 -- 
 2.30.1
 
