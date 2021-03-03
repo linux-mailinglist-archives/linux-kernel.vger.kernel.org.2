@@ -2,208 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4159F32BD15
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755CD32BD20
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345928AbhCCPS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:18:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbhCCKaz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:30:55 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F71C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:30:10 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id q25so16045953lfc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:30:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ul5d5eo5jjguw4uCkJHVtdEjPOboupeNtSzAVz4Rmio=;
-        b=ThpGElSJaCEbZZncSCI7UVnPIpXqQjO7Q4JJCYgYQ5obCM9YSBam90bydANSj3gDJj
-         goYyHSbLByqsIFWn/0d9nyPpQrSNEwpWzB1GvB89Pmnx90aZRKA/uvkwcHmfaj47ChC/
-         g4MbCiU8TMHgSsfVHS1LWSrMaKVvq+02Hdhak=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ul5d5eo5jjguw4uCkJHVtdEjPOboupeNtSzAVz4Rmio=;
-        b=Z0pIqyrGD6uyHuT+lRkZ25NIwwIUcJJUfjhKLBLbS50z2ZlqPfN6lpdvJQ7PwYcv5j
-         V1vfYSITxMwe/xWA0XrvFYpBX0Huj1GUAPeJ+eGKM9x3ZRTSwnWM3e4q9/hAVPqLn5FQ
-         7CshAzdT60cill+Q+EiwrY2WjE+yHqcEtsZFegt7YIiIomahsUUF/LoQNS0uqnFrNH6q
-         WGdK/zwSHDYPhAY+CDdfJhIr+OzoOg4TmZA1DH7/QIPPubgM4SCqFxJMyeqIPmVM/F7z
-         eORe+c5AkMIISjAeWq3XfS5QNCKFfK7Oqd5kClpd2Nf2Yk0t43p067ymTk0/LwnQ00Oj
-         zAKw==
-X-Gm-Message-State: AOAM530OElj+nzoABZAMUY6/h4r+UITuota/MGVJQRBej1a8lJ4rWo6r
-        XpM0DLKje4WZPLI0OKXgnaPNM1nbN/Asjg==
-X-Google-Smtp-Source: ABdhPJzKYMXHunCLE1/2dL31gais9whUWj0O2jXIJTIesAQqDT9IFw4vwjdoA97nmMJzvxrAsoO/xQ==
-X-Received: by 2002:a19:8085:: with SMTP id b127mr15319429lfd.25.1614767408411;
-        Wed, 03 Mar 2021 02:30:08 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id s6sm2919649lfe.97.2021.03.03.02.30.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 02:30:07 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id q25so16045825lfc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:30:07 -0800 (PST)
-X-Received: by 2002:a19:712:: with SMTP id 18mr14809919lfh.591.1614767406688;
- Wed, 03 Mar 2021 02:30:06 -0800 (PST)
+        id S1448193AbhCCPYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:24:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229756AbhCCKbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:31:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F376164EE1;
+        Wed,  3 Mar 2021 10:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614767441;
+        bh=YkUt7e1p9mMc+VuaDIEttpy+Wk4e/s1d1rMVjVEMx7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WKDnFaWQR2efae0gE0M3Yb0vTthj+v6Ocf1f1nJhU1Y5ryNg8VWgsHwu2ja6+TNhU
+         i9GeAlHOsyTURts43rdIYnq2R+2GOFYBxKSFEYvzng5UdxxzEaaJSbfEzgmHrDaI+l
+         RFNHsVAAjJr4EtdHxHVCCingTonARplZYRFbV9QI=
+Date:   Wed, 3 Mar 2021 11:30:38 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     taehyun cho <taehyun.cho@samsung.com>, balbi@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
+Message-ID: <YD9lTjWc25Nn7jAR@kroah.com>
+References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
+ <20210303022628.6540-1-taehyun.cho@samsung.com>
+ <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
 MIME-Version: 1.0
-References: <20210225101612.2832444-1-acourbot@chromium.org>
- <20210225101612.2832444-4-acourbot@chromium.org> <4cb93f828695f7f6307077da466a58ba478c9824.camel@ndufresne.ca>
-In-Reply-To: <4cb93f828695f7f6307077da466a58ba478c9824.camel@ndufresne.ca>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Wed, 3 Mar 2021 19:29:55 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MUUDSwRNEiuDy8s-CMwosraS25P2o109XyJCms9RTRBsQ@mail.gmail.com>
-Message-ID: <CAPBb6MUUDSwRNEiuDy8s-CMwosraS25P2o109XyJCms9RTRBsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] media: add Mediatek's MM21 format
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+On Wed, Mar 03, 2021 at 11:24:01AM +0100, Krzysztof Kozlowski wrote:
+> On 03/03/2021 03:26, taehyun cho wrote:
+> > 'ARCH_EXYNOS' is not suitable for DWC3_EXYNOS config.
+> > 'USB_DWC3_EXYNOS' is glue layer which can be used with
+> > Synopsys DWC3 controller on Exynos SoCs. USB_DWC3_EXYNOS'
+> > can be used from Exynos5 to Exynos9.
+> > 
+> > Signed-off-by: taehyun cho <taehyun.cho@samsung.com>
+> 
+> NACK because you ignored comments from March. Please respond to them instead
+> of resending the same patch.
+> 
+> Anyway, when resending you need to version your patches and explain the
+> differences. Please also Cc reviewers and other maintainers. I pointed out
+> this before:
+> scripts/get_maintainer.pl -f drivers/usb/dwc3/dwc3-exynos.c
+> 
+> The driver - in current form - should not be available for other
+> architectures. It would clutter other platforms and kernel config selection.
+> If you want to change this, you need to provide rationale (usually by adding
+> support to new non-Exynos platform).
 
-On Wed, Mar 3, 2021 at 2:38 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrot=
-e:
->
-> Le jeudi 25 f=C3=A9vrier 2021 =C3=A0 19:16 +0900, Alexandre Courbot a =C3=
-=A9crit :
-> > Add Mediatek's non-compressed 8 bit block video mode. This format is
-> > produced by the MT8183 codec and can be converted to a non-proprietary
-> > format by the MDP3 component.
-> >
-> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > ---
-> >  Documentation/userspace-api/media/v4l/pixfmt-reserved.rst | 7 +++++++
-> >  drivers/media/v4l2-core/v4l2-ioctl.c                      | 1 +
-> >  include/uapi/linux/videodev2.h                            | 1 +
-> >  3 files changed, 9 insertions(+)
-> >
-> > diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> > b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> > index c9231e18859b..187ea89f7a25 100644
-> > --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> > +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-> > @@ -242,6 +242,13 @@ please make a proposal on the linux-media mailing =
-list.
-> >         It is an opaque intermediate format and the MDP hardware must b=
-e
-> >         used to convert ``V4L2_PIX_FMT_MT21C`` to ``V4L2_PIX_FMT_NV12M`=
-`,
-> >         ``V4L2_PIX_FMT_YUV420M`` or ``V4L2_PIX_FMT_YVU420``.
-> > +    * .. _V4L2-PIX-FMT-MM21:
-> > +
-> > +      - ``V4L2_PIX_FMT_MM21``
-> > +      - 'MM21'
-> > +      - Non-compressed, tiled two-planar format used by Mediatek MT818=
-3.
-> > +       This is an opaque intermediate format and the MDP3 hardware can=
- be
-> > +       used to convert it to other formats.
-> >      * .. _V4L2-PIX-FMT-SUNXI-TILED-NV12:
->
-> The SUNXI one was a mistake,  it's linear layout 32x32 tiles. The problem=
- with
-> calling this a vendor format, is that other vendor might be using it too.=
- But
-> they won't know and the format might endup duplicated, even if it's the s=
-ame
-> one.
->
-> So here's my request, have you tried to understand a bit more what the ti=
-ling
-> layout is ? Could be tiled + SAND, could use zigzag layout like Samsung d=
-o. I
-> think if we can avoid vendor formats, we can preserve the pixel format li=
-st
-> sanity here. Most of the HW I've encoutered was very easy to reverse, eve=
-n if
-> undocumented (except the compressed one).
+No, these crazy "ARCH_FOO" things need to go away.  For systems that
+want to build "universal" kernels, why are they being forced to enable
+"ARCH_*" just so they can pick specific drivers?  That is not done on
+other architectures, why is ARM64 so "special" in this regard.
 
-Unfortunately I don't think I can look too closely into that, for
-non-technical reasons. But if MTK could come forward and document
-their format, that would be indeed ideal.
+How do you "know" that these cores/devices are tied to specific ARCH_
+platforms?  We don't, so that dependency should not be there.
 
->
-> If not possible, I would like to suggest:
->
->   V4L2_PIX_FMT_MTK_NV21
->
-> The important part is to add a clear seperation for the vendor name, it e=
-asy to
-> recognize then.
+Just let any arch pick any driver if it can be built, you never know
+what it might be run on.  Removing ARCH_ dependencies in Kconfig files
+is a good thing, please do not discourage that from happening.
 
-The MTK prefix makes sense, but I do not know if NV21 is a correct
-denomination for that format. Note that we have another MTK-only
-format currently named V4L2_PIX_FMT_MT21C, which is already public. It
-would be nice to rename it as well, but since it is part of the public
-API I'm afraid the cat is already out of the bag for that one...
+thanks,
 
->
-> >
-> >        - ``V4L2_PIX_FMT_SUNXI_TILED_NV12``
-> > diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-
-> > core/v4l2-ioctl.c
-> > index 31d1342e61e8..0b85b2bbc628 100644
-> > --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> > +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> > @@ -1384,6 +1384,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc =
-*fmt)
-> >         case V4L2_PIX_FMT_TM6000:       descr =3D "A/V + VBI Mux Packet=
-"; break;
-> >         case V4L2_PIX_FMT_CIT_YYVYUY:   descr =3D "GSPCA CIT YYVYUY"; b=
-reak;
-> >         case V4L2_PIX_FMT_KONICA420:    descr =3D "GSPCA KONICA420"; br=
-eak;
-> > +       case V4L2_PIX_FMT_MM21:         descr =3D "Mediatek 8-bit block=
- format";
-> > break;
-> >         case V4L2_PIX_FMT_HSV24:        descr =3D "24-bit HSV 8-8-8"; b=
-reak;
-> >         case V4L2_PIX_FMT_HSV32:        descr =3D "32-bit XHSV 8-8-8-8"=
-; break;
-> >         case V4L2_SDR_FMT_CU8:          descr =3D "Complex U8"; break;
-> > diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videod=
-ev2.h
-> > index 79dbde3bcf8d..e6890dae76ec 100644
-> > --- a/include/uapi/linux/videodev2.h
-> > +++ b/include/uapi/linux/videodev2.h
-> > @@ -731,6 +731,7 @@ struct v4l2_pix_format {
-> >  #define V4L2_PIX_FMT_Y12I     v4l2_fourcc('Y', '1', '2', 'I') /* Greys=
-cale
-> > 12-bit L/R interleaved */
-> >  #define V4L2_PIX_FMT_Z16      v4l2_fourcc('Z', '1', '6', ' ') /* Depth=
- data
-> > 16-bit */
-> >  #define V4L2_PIX_FMT_MT21C    v4l2_fourcc('M', 'T', '2', '1') /* Media=
-tek
-> > compressed block mode  */
-> > +#define V4L2_PIX_FMT_MM21     v4l2_fourcc('M', 'M', '2', '1') /* Media=
-tek 8-
-> > bit block mode, two non-contiguous planes */
-> >  #define V4L2_PIX_FMT_INZI     v4l2_fourcc('I', 'N', 'Z', 'I') /* Intel=
- Planar
-> > Greyscale 10-bit and Depth 16-bit */
-> >  #define V4L2_PIX_FMT_SUNXI_TILED_NV12 v4l2_fourcc('S', 'T', '1', '2') =
-/*
-> > Sunxi Tiled NV12 Format */
-> >  #define V4L2_PIX_FMT_CNF4     v4l2_fourcc('C', 'N', 'F', '4') /* Intel=
- 4-bit
-> > packed depth confidence information */
->
->
+greg k-h
