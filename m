@@ -2,215 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3A432C50B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4612132C4E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240942AbhCDATE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:19:04 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20640 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1388903AbhCDAMW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:12:22 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123NiF7E187060;
-        Wed, 3 Mar 2021 18:46:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=9hmufHBx8zEm/lSY8SP5hpZIAwhMnmA4N+Y9juxescc=;
- b=ndGszCqaTZThXbYE1yudxey01QJ3extFyMAhKY9vvbjzwn9o3X0yGhGuPlncqJp0Ng4g
- C9w3LBP0VxlDpqFVOOYxcWQjB3sYv53APMpzK7e1GZR1z5C0PNy31lxP0dnYB2LpPuaK
- 9pOsek4ANiPN65o0I5X+ebFQCGgNM9kAt3SWVzmXW4r0Ryfb1sPu2AYcR3SWj4anI4WZ
- gxRf32psbmVnphSwzvaX/uGJZMWdbXGrcBAq4mW4Dw0DvE9j+++GMfvTpN4nh+XI6CDb
- FvcsEhewXrz28SW44VV+rcmRiR+kA4iiT9zHwEBxKzMYNRhxfZpPuUAwwxgM6hN4N6+f VA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372mcx80yd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 18:46:15 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 123NjJeQ193130;
-        Wed, 3 Mar 2021 18:46:14 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372mcx80xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 18:46:14 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 123Nh1JL010430;
-        Wed, 3 Mar 2021 23:46:13 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma01dal.us.ibm.com with ESMTP id 371qmunegh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 23:46:13 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 123NkDes26739058
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Mar 2021 23:46:13 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0DA49AE05F;
-        Wed,  3 Mar 2021 23:46:13 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D2EE6AE062;
-        Wed,  3 Mar 2021 23:46:12 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  3 Mar 2021 23:46:12 +0000 (GMT)
-Subject: Re: [PATCH v9 2/9] x509: Detect sm2 keys by their parameters OID
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
- <20210225160802.2478700-3-stefanb@linux.vnet.ibm.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <048e22c7-45e3-022c-cd5b-a6bc127958d3@linux.ibm.com>
-Date:   Wed, 3 Mar 2021 18:46:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1355013AbhCDASG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:18:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353109AbhCDAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:07:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA4CE64F38;
+        Wed,  3 Mar 2021 23:46:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614815198;
+        bh=XPBSnqYNbLadROWp2s8xZFTZNulMYA/qPBxSSGN7gSs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pxm5tEXe0Fq4/Ij/3nBx2ovq3fMIvcfFCV+P8r7Yf7xAk3VUkQHyrmZdV/O0TTpNN
+         ePPPBxO/bUJCJTf6d+l0ZzadZ65kyX0U70OLJu8hM2Cdp9I9/TDIlQszbfiVIY+Fnr
+         FerxXaI9njjVouYYyRThD3bvMb0RTs1yPzlP/8FvMyfrSRLVhkmhKGjFCF77eabvdk
+         mNkA51gzIVmreMv2ggWDHcgrc4ziNeaVYyevZfsz77T8vLq+rYAxY0J1kKjtrjGYrk
+         RvEvedhvOqar4BtDvJhs5+pKEmyXhmHEt/VwU1h5crLvzlNXAXOlY+hfkBMD56next
+         pgH+XhDYlEUlw==
+Date:   Wed, 3 Mar 2021 15:46:37 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Changman Lee <cm224.lee@samsung.com>,
+        Chao Yu <chao2.yu@samsung.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: f2fs_convert_inline_inode causing rebalance based on random
+ uninitialized value in dn.node_changed
+Message-ID: <YEAf3W6BEUc7L3FL@google.com>
+References: <9fcca081-9a60-8ae3-5cac-d8aa38c38ff2@canonical.com>
+ <YD/nFt6Gswnyogfa@google.com>
+ <9b586bbb-bb94-6fdf-c9a4-9415dbc6d8d0@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210225160802.2478700-3-stefanb@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-03_07:2021-03-03,2021-03-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 mlxscore=0
- priorityscore=1501 spamscore=0 suspectscore=0 impostorscore=0
- mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103030169
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b586bbb-bb94-6fdf-c9a4-9415dbc6d8d0@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tianjia,
+On 03/03, Colin Ian King wrote:
+> On 03/03/2021 19:44, Jaegeuk Kim wrote:
+> > On 03/02, Colin Ian King wrote:
+> >> Hi,
+> >>
+> >> Static analysis on linux-next detected a potential uninitialized
+> >> variable dn.node_changed that does not get set when a call to
+> >> f2fs_get_node_page() fails.  This uninitialized value gets used in the
+> >> call to f2fs_balance_fs() that may or not may not balances dirty node
+> >> and dentry pages depending on the uninitialized state of the variable.
+> >>
+> >> I believe the issue was introduced by commit:
+> >>
+> >> commit 2a3407607028f7c780f1c20faa4e922bf631d340
+> >> Author: Jaegeuk Kim <jaegeuk@kernel.org>
+> >> Date:   Tue Dec 22 13:23:35 2015 -0800
+> >>
+> >>     f2fs: call f2fs_balance_fs only when node was changed
+> >>
+> >>
+> >> The analysis is a follows:
+> >>
+> >> 184 int f2fs_convert_inline_inode(struct inode *inode)
+> >> 185 {
+> >> 186        struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> >>
+> >>    1. var_decl: Declaring variable dn without initializer.
+> >>
+> >> 187        struct dnode_of_data dn;
+> >>
+> >>    NOTE dn is not initialized here.
+> >>
+> >> 188        struct page *ipage, *page;
+> >> 189        int err = 0;
+> >> 190
+> >>
+> >>    2. Condition !f2fs_has_inline_data(inode), taking false branch.
+> >>    3. Condition f2fs_hw_is_readonly(sbi), taking false branch.
+> >>    4. Condition f2fs_readonly(sbi->sb), taking false branch.
+> >>
+> >> 191        if (!f2fs_has_inline_data(inode) ||
+> >> 192                        f2fs_hw_is_readonly(sbi) ||
+> >> f2fs_readonly(sbi->sb))
+> >> 193                return 0;
+> >> 194
+> >> 195        err = dquot_initialize(inode);
+> >>
+> >>    5. Condition err, taking false branch.
+> >>
+> >> 196        if (err)
+> >> 197                return err;
+> >> 198
+> >> 199        page = f2fs_grab_cache_page(inode->i_mapping, 0, false);
+> >>
+> >>    6. Condition !page, taking false branch.
+> >>
+> >> 200        if (!page)
+> >> 201                return -ENOMEM;
+> >> 202
+> >> 203        f2fs_lock_op(sbi);
+> >> 204
+> >> 205        ipage = f2fs_get_node_page(sbi, inode->i_ino);
+> >>
+> >>    7. Condition IS_ERR(ipage), taking true branch.
+> >>
+> >> 206        if (IS_ERR(ipage)) {
+> >> 207                err = PTR_ERR(ipage);
+> >>
+> >>    8. Jumping to label out.
+> >>
+> >> 208                goto out;
+> >> 209        }
+> >> 210
+> >>
+> >>    NOTE: set_new_dnode memset's dn so sets the flag to false, but we
+> >> don't get to this memset if IS_ERR(ipage) above is true.
+> >>
+> >> 211        set_new_dnode(&dn, inode, ipage, ipage, 0);
+> >> 212
+> >> 213        if (f2fs_has_inline_data(inode))
+> >> 214                err = f2fs_convert_inline_page(&dn, page);
+> >> 215
+> >> 216        f2fs_put_dnode(&dn);
+> >> 217 out:
+> >> 218        f2fs_unlock_op(sbi);
+> >> 219
+> >> 220        f2fs_put_page(page, 1);
+> >> 221
+> >>
+> >> Uninitialized scalar variable:
+> >>
+> >>    9. uninit_use_in_call: Using uninitialized value dn.node_changed when
+> >> calling f2fs_balance_fs.
+> >>
+> >> 222        f2fs_balance_fs(sbi, dn.node_changed);
+> >> 223
+> >> 224        return err;
+> >> 225 }
+> >>
+> >> I think a suitable fix will be to set dn.node_changed to false on in
+> >> line 207-208 but I'm concerned if I'm missing something subtle to the
+> >> rebalancing if I do this.
+> >>
+> >> Comments?
+> > 
+> > Thank you for the report. Yes, it seems that's a right call and we need to
+> > check the error to decide calling f2fs_balance_fs() in line 222, since
+> > set_new_dnode() is used to set all the fields in dnode_of_data. So, if you
+> > don't mind, could you please post a patch?
+> 
+> Just to clarify, just setting dn.node_changes to false is enough?
+> 
+> I'm not entirely sure what you meant when you wrote "and we need to
+> check the error to decide calling f2fs_balance_fs() in line 222".
 
-    can you say whether SM2 support works for you before and after 
-applying this patch? I cannot verify it with an sm2 key I have created 
-using a sequence of commands like this:
+I meant:
 
- > modprobe sm2_generic
- > id=$(keyctl newring test @u)
- > keyctl padd asymmetric "" $id < sm2.der
-add_key: Key was rejected by service
- > keyctl padd asymmetric "" $id < eckeys/cert-prime192v1-0.der
-88506426
+222	if (!err)
+223		f2fs_balance_fs(sbi, dn.node_changed);
 
-The sm2 key is reject but the pime192v1 key works just fine. SM2 support 
-neither worked for me before nor after this patch here. The difference 
-is that before it returned 'add_key: Package not installed'.
+Thanks,
 
-This is my sm2 cert:
-
- > base64 < sm2.der
-MIIBbzCCARWgAwIBAgIUfqwndeAy7reymWLwvCHOgYPU2YUwCgYIKoZIzj0EAwIwDTELMAkGA1UE
-AwwCbWUwHhcNMjEwMTI0MTgwNjQ3WhcNMjIwMTI0MTgwNjQ3WjANMQswCQYDVQQDDAJtZTBZMBMG
-ByqGSM49AgEGCCqBHM9VAYItA0IABEtiMaczdk46MEugmOsY/u+puf5qoi7JdLd/w3VpdixvDd26
-vrxLKL7lCTVn5w3a07G7QB1dgdMDpzIRgWrVXC6jUzBRMB0GA1UdDgQWBBSxOVnE7ihvTb6Nczb4
-/mow+HIc9TAfBgNVHSMEGDAWgBSxOVnE7ihvTb6Nczb4/mow+HIc9TAPBgNVHRMBAf8EBTADAQH/
-MAoGCCqGSM49BAMCA0gAMEUCIE1kiji2ABUy663NANe0iCPjCeeqg02Yk4b3K+Ci/Qh4AiEA/cFB
-eJEVklyveRMvuTP7BN7FG4U8iRdtedjiX+YrNio=
-
-Regards,
-    Stefan
-
-
-
-On 2/25/21 11:07 AM, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
->
-> Detect whether a key is an sm2 type of key by its OID in the parameters
-> array rather than assuming that everything under OID_id_ecPublicKey
-> is sm2, which is not the case.
->
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: keyrings@vger.kernel.org
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->   crypto/asymmetric_keys/x509_cert_parser.c | 12 +++++++++++-
->   include/linux/oid_registry.h              |  1 +
->   lib/oid_registry.c                        | 13 +++++++++++++
->   3 files changed, 25 insertions(+), 1 deletion(-)
->
-> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-> index 52c9b455fc7d..1621ceaf5c95 100644
-> --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->   			  const void *value, size_t vlen)
->   {
->   	struct x509_parse_context *ctx = context;
-> +	enum OID oid;
->   
->   	ctx->key_algo = ctx->last_oid;
->   	switch (ctx->last_oid) {
-> @@ -470,7 +471,16 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->   		ctx->cert->pub->pkey_algo = "ecrdsa";
->   		break;
->   	case OID_id_ecPublicKey:
-> -		ctx->cert->pub->pkey_algo = "sm2";
-> +		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
-> +			return -EBADMSG;
-> +
-> +		switch (oid) {
-> +		case OID_sm2:
-> +			ctx->cert->pub->pkey_algo = "sm2";
-> +			break;
-> +		default:
-> +			return -ENOPKG;
-> +		}
->   		break;
->   	default:
->   		return -ENOPKG;
-> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-> index b504e2f36b25..f32d91895e4d 100644
-> --- a/include/linux/oid_registry.h
-> +++ b/include/linux/oid_registry.h
-> @@ -121,6 +121,7 @@ enum OID {
->   };
->   
->   extern enum OID look_up_OID(const void *data, size_t datasize);
-> +extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
->   extern int sprint_oid(const void *, size_t, char *, size_t);
->   extern int sprint_OID(enum OID, char *, size_t);
->   
-> diff --git a/lib/oid_registry.c b/lib/oid_registry.c
-> index f7ad43f28579..508e0b34b5f0 100644
-> --- a/lib/oid_registry.c
-> +++ b/lib/oid_registry.c
-> @@ -11,6 +11,7 @@
->   #include <linux/kernel.h>
->   #include <linux/errno.h>
->   #include <linux/bug.h>
-> +#include <linux/asn1.h>
->   #include "oid_registry_data.c"
->   
->   MODULE_DESCRIPTION("OID Registry");
-> @@ -92,6 +93,18 @@ enum OID look_up_OID(const void *data, size_t datasize)
->   }
->   EXPORT_SYMBOL_GPL(look_up_OID);
->   
-> +int parse_OID(const void *data, size_t datasize, enum OID *oid)
-> +{
-> +	const unsigned char *v = data;
-> +
-> +	if (datasize < 2 || v[0] != ASN1_OID || v[1] != datasize - 2)
-> +		return -EBADMSG;
-> +
-> +	*oid = look_up_OID(data + 2, datasize - 2);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(parse_OID);
-> +
->   /*
->    * sprint_OID - Print an Object Identifier into a buffer
->    * @data: The encoded OID to print
-
-
+> 
+> Colin
+> 
+> > 
+> > Thanks,
+> > 
+> >>
+> >> Colin
+> >>
