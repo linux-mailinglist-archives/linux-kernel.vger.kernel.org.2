@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8497932BEFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D6732BF00
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577077AbhCCRsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
+        id S1577092AbhCCRsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:48:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359482AbhCCOsk (ORCPT
+        with ESMTP id S1359491AbhCCOsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:48:40 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B295C0613AB
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:47:18 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id w11so23947508wrr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:47:18 -0800 (PST)
+        Wed, 3 Mar 2021 09:48:47 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648ACC0613AC
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:47:19 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id v15so23982934wrx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:47:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gGrr9T7NomFeuiTH4lgL2Bpnb+NGOdMtM4BXDpHgTNU=;
-        b=xkcY0dECP581NNSgUwVihjJSM6/h+SZYYMJ0ZakPWJeLpf2+EFMp471iI8sFQUBPe6
-         kP/YQsFS1cRv8DHlqXuG+F2kBmMdye1VPNqDt0/MW2u7xwtFWUTkdp0tFuGTCJh2/mA3
-         mhx8GhyWZxMVJz50WUnQbr06OoS9cjTADgiP7AAmyh92XbHwZYaompYG2LAvuHJetfoe
-         13htKb0UJ7QPQJezKv11jPeMMnWy/P7CU+cvPIhbPHG2G+cvw+O65i1xeZeWHOBEVOx7
-         WzEEKGB959vWbTOJzmoEq6V1lF0zINFxSkITJPVnM4xzilGthJUw0PoBUOpHOtJDJyZp
-         qqEg==
+        bh=fC33Zk0ZyYtHJeu4W5SBQTBQUeiPwdCaCHRN8M5tXzo=;
+        b=DwK5Dwt6nm/K8A2h+SM7y1TVazpE7jM04zdOA6+fAjDaE24o4gNxKo0p47FOYZmr5p
+         7tz4IncFdVyJWF34XsqHuofmvBXLxB0VAuFNK5Oarknakq8yfMUTidNNUttmss0O8dd2
+         LEBuwpPwAa1vCL9qmlwDs04zTKm1W+O1XnxL559HFLhUE87HM/kKOm4AeqUvHaKjPpd8
+         5QVrXrzwZMt9Jtn+JncyrKUh1LJ4L1EtZBsq+SiAJT78Kq71lCH2cWHhn3EZ1j+TYLgI
+         NEVaoCHNezYapYZl+Jk0ZxYtfYtqV3+m+EikoTtv6hzQJawGtJ4cWul13WUXMTXEc+Hw
+         GKUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gGrr9T7NomFeuiTH4lgL2Bpnb+NGOdMtM4BXDpHgTNU=;
-        b=JgLlNmJIckcPq8GriQC/8FKF8r6gFka4iC4lhQ4DXlhkjwkpyTuvlGGQ+sy9acgVeZ
-         XrR7URqnIuFyfCsMwgLfh/1P72FaAa2tKPLFnr3z+6rNQIUi9AV8OkyoO3fbOSSQQXt4
-         8KiKkJPzDvTkUmKDkp+64fwwD+lWrLmdev5UR3CJfWNx3h9L/eoZl7YL7PonVdlOSg1J
-         Xhntr8Y3sgII1wDYyW2bzH5yaLtUG4DuwbRc+XHF7WAr3v+PxV993IEEnLIOwoxdSCiN
-         r0wNNof8MHcym98vs6ZIh5ko4eZaPtRxIKSaa/sUG+p8f91kaLl8KYtYNu4f9va2Eis2
-         A5lg==
-X-Gm-Message-State: AOAM532/Kynfv4BZhoERvb5LLKClaS4/3e27KzAXV9gal5o15CFiH4SM
-        kkxs3zCoicNtEgHIqyjEOrjmRQ==
-X-Google-Smtp-Source: ABdhPJw6jTNXLQqEabROh13Z9vvXRfzv0RD4iGLhlsh6uyIdkRDhebVScqDZgnGZ65QDWI4dNUdD2g==
-X-Received: by 2002:adf:d1ce:: with SMTP id b14mr27614718wrd.126.1614782836318;
-        Wed, 03 Mar 2021 06:47:16 -0800 (PST)
+        bh=fC33Zk0ZyYtHJeu4W5SBQTBQUeiPwdCaCHRN8M5tXzo=;
+        b=NQQDkPGcajF+dc1DNU4WUiqq3KdKn710PRhFOds3qYD2hbM7xtmIlgKHbTPnwLOyqj
+         c9oxgf7kZ09994lV7jeSJ8OiJsqx/pJKiE8qtEUhcAlW9eFPcrj8/b/5yJDz3lMYkjaX
+         wZaqQIAFE++3dGZVDqYNWdcG+bSLTugplSGwy07TNAenFSGjQxs6vzc6CgDbyyPSw0Ox
+         DwwIbNdCeqtN7pvm3FV7WsYv/5kPUZRkUsqOu5F/kQ8axU5vfpJwmL3XYOIf7Czf36wm
+         TI50IWQycPxzJPnVOWjCoDK6t1XFQrNnHsO2b/TBO5MbbemJ5GOzgve2SwS2JwWUZ5og
+         FuzQ==
+X-Gm-Message-State: AOAM530ezRAiiUUqTY3X5eOxZ1TxDpCmKF1BUStltCawDHjUj5ReCg8r
+        hhl5MeQ64Npm8q0/9apihrDkrg==
+X-Google-Smtp-Source: ABdhPJxA1ca38hEZOIyWn15165I5rGmv6LMTG2ybwsHKfb9NP+M/DFJfic2d7l229KukE2tLKHBKfA==
+X-Received: by 2002:adf:eec5:: with SMTP id a5mr12420188wrp.303.1614782838134;
+        Wed, 03 Mar 2021 06:47:18 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id a14sm36567233wrg.84.2021.03.03.06.47.14
+        by smtp.gmail.com with ESMTPSA id a14sm36567233wrg.84.2021.03.03.06.47.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 06:47:15 -0800 (PST)
+        Wed, 03 Mar 2021 06:47:17 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
+Cc:     linux-kernel@vger.kernel.org,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 12/30] scsi: qla4xxx: ql4_os: Fix formatting issues - missing '-' and '_'
-Date:   Wed,  3 Mar 2021 14:46:13 +0000
-Message-Id: <20210303144631.3175331-13-lee.jones@linaro.org>
+Subject: [PATCH 13/30] scsi: pm8001: pm8001_ctl: Fix incorrectly named functions in headers
+Date:   Wed,  3 Mar 2021 14:46:14 +0000
+Message-Id: <20210303144631.3175331-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303144631.3175331-1-lee.jones@linaro.org>
 References: <20210303144631.3175331-1-lee.jones@linaro.org>
@@ -70,42 +69,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/qla4xxx/ql4_os.c:631: warning: expecting prototype for qla4xxx_create chap_list(). Prototype was for qla4xxx_create_chap_list() instead
- drivers/scsi/qla4xxx/ql4_os.c:9643: warning: expecting prototype for gets called if(). Prototype was for qla4xxx_pci_mmio_enabled() instead
+ drivers/scsi/pm8001/pm8001_ctl.c:313: warning: expecting prototype for pm8001_ctl_sas_address_show(). Prototype was for pm8001_ctl_host_sas_address_show() instead
+ drivers/scsi/pm8001/pm8001_ctl.c:530: warning: expecting prototype for pm8001_ctl_aap_log_show(). Prototype was for pm8001_ctl_iop_log_show() instead
 
-Cc: Nilesh Javali <njavali@marvell.com>
-Cc: Manish Rangankar <mrangankar@marvell.com>
-Cc: GR-QLogic-Storage-Upstream@marvell.com
+Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/qla4xxx/ql4_os.c | 4 ++--
+ drivers/scsi/pm8001/pm8001_ctl.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index 7bd9a4a04ad5d..597a64d91fe92 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
-@@ -618,7 +618,7 @@ static umode_t qla4_attr_is_visible(int param_type, int param)
- }
+diff --git a/drivers/scsi/pm8001/pm8001_ctl.c b/drivers/scsi/pm8001/pm8001_ctl.c
+index 12035baf0997b..1921e69bc2328 100644
+--- a/drivers/scsi/pm8001/pm8001_ctl.c
++++ b/drivers/scsi/pm8001/pm8001_ctl.c
+@@ -299,7 +299,7 @@ static DEVICE_ATTR(sas_spec_support, S_IRUGO,
+ 		   pm8001_ctl_sas_spec_support_show, NULL);
  
  /**
-- * qla4xxx_create chap_list - Create CHAP list from FLASH
-+ * qla4xxx_create_chap_list - Create CHAP list from FLASH
-  * @ha: pointer to adapter structure
-  *
-  * Read flash and make a list of CHAP entries, during login when a CHAP entry
-@@ -9633,7 +9633,7 @@ qla4xxx_pci_error_detected(struct pci_dev *pdev, pci_channel_state_t state)
+- * pm8001_ctl_sas_address_show - sas address
++ * pm8001_ctl_host_sas_address_show - sas address
+  * @cdev: pointer to embedded class device
+  * @attr: device attribute (unused)
+  * @buf: the buffer returned
+@@ -518,7 +518,7 @@ static ssize_t event_log_size_show(struct device *cdev,
  }
- 
+ static DEVICE_ATTR_RO(event_log_size);
  /**
-- * qla4xxx_pci_mmio_enabled() gets called if
-+ * qla4xxx_pci_mmio_enabled() - gets called if
-  * qla4xxx_pci_error_detected() returns PCI_ERS_RESULT_CAN_RECOVER
-  * and read/write to the device still works.
-  * @pdev: PCI device pointer
+- * pm8001_ctl_aap_log_show - IOP event log
++ * pm8001_ctl_iop_log_show - IOP event log
+  * @cdev: pointer to embedded class device
+  * @attr: device attribute (unused)
+  * @buf: the buffer returned
 -- 
 2.27.0
 
