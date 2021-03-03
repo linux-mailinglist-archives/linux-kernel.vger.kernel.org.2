@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDECA32BE7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DAE32BE81
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345343AbhCCRax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:30:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
+        id S1377106AbhCCRbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444813AbhCCNrB (ORCPT
+        with ESMTP id S1444839AbhCCNrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:47:01 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E0EC061A30
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:00 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id i9so5241373wml.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:00 -0800 (PST)
+        Wed, 3 Mar 2021 08:47:05 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B7BC061A31
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:02 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id v15so23747574wrx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=b0iGOR+oUMpMNe+ms/bEjIiPtMEjVOFpPaMripgJlBc=;
-        b=H3A2bX0qU2J5eGZ//pel/mRnd6dBhTswU4+t4zHgTV1HaBUd95Rb0EzZSbPgzbZrjq
-         j8ESjAX9QTleaddGPj46Px/f02U74SKXKsnFH2XyTcqMSfbp+1XAD5FLrihvK8hM+EhA
-         2ASRRySAxjh/USI9McXkFJpFLpzo9+Cg7uFLx6Xb5QDNMaihiJ3Slp/Y4qpVN3DMfBIu
-         xFGZJIGlBr/M83m8F/+IbGa3yazSF3ygRCyOMPnZ8yoAUy4BWCfWQ+jS3gylTb1AIgRs
-         VKb0OC//m7ammGv/OHvD29p4+5R5ui6nO1sYFJZyinjRzkAkz/VWvti6q5motDgxnvBH
-         KdSQ==
+        bh=XZmI3Pr1jHFtcMrfTt6XXf4g0zv3hzYPvnP4OKNbsog=;
+        b=yV5tYX7sM66C63eujllHcaOJ32XhnRuSYM/2ysLql2AqOw+0JFFtYrW1BeMOOIHrZ8
+         2UxRh0GBKyBo386hNVibHh13wK44EFoEUJTGtQTp9oqSnU7fby17L706jr/Wf3ztNjYM
+         e0evuYs/GWXlUByzjSYua4Tix9Hu9A1wpB1z9zkkMtLkCPj9GJB0U3Y9GzJg0G0GTUFv
+         zY2ExaVCmrwe0zXYkSET4B5WBIYN3G8+2iTBnc/2WURR17wbrq2tlLA6QGo9PzSCUQka
+         8MsbRoPLLrgWQvdGQr6UxayoAfr/mFvceRlGPzYb4pD9Hkm/WG0C4bvaPHLmwj9wJS3F
+         I1CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=b0iGOR+oUMpMNe+ms/bEjIiPtMEjVOFpPaMripgJlBc=;
-        b=KkDAfMeEVSoE63O4+GF5X+2opioCMDaZVghpx/TZuXzQs/yYqJ/PQY1BTLDtCPcd0G
-         fK0vJCZT/a33gPOqxDjtAdte3AgL/v0xIgnWgEhBKi1mFGIuUoeBJi5Ri1wxUOUWXzzv
-         s2HwfnNZH/cKW2ZvEydpc+9vcxA8DyoiuMTQnVxKlbgKIuWs4WOWJkOEHAF67EqX6hZo
-         3qtQTd4qZII3SEzfIXBPUsYDX8shhslkE6QErdgwCsKATGcSTOZ2RHTMRGbBnGWT5h6A
-         Asj/J3tc1tCKBjkVJv1AOOYfiBCfxAMec0Y8KG3v9qfOF5Fe6Z87MhmxoCRjL9o8ILts
-         C31w==
-X-Gm-Message-State: AOAM532ufungGepryktcO4MGh8yzw5Kv9sGrtXClFdfKxJfltP9vbIG7
-        G3Zj7WsYLe7pc9NAsQqGkYTlPg==
-X-Google-Smtp-Source: ABdhPJxc7emTJGKEjU9Wo29D+VPtdHhPYwwuByMM/om5mfLeEVGGuVWbdFK9Ox6gGaBrHg5C5yenmQ==
-X-Received: by 2002:a7b:cb05:: with SMTP id u5mr9207361wmj.46.1614779039360;
-        Wed, 03 Mar 2021 05:43:59 -0800 (PST)
+        bh=XZmI3Pr1jHFtcMrfTt6XXf4g0zv3hzYPvnP4OKNbsog=;
+        b=Xp/M/3Fugtsd7hZH51LxReKN4l5MPhln2838v5ksCia+q4kva3Skx3oRHA5YrijnyL
+         LiRSs4RHzdNPgnxrn/bwZUlSzhKxaztTYjkaVqIPb6bT3vk4FOejtnrzm1e0hUNLr5SQ
+         NY2/PdJeePhRRxKnkCYVXHzTnnxuprGdr5YVjWhW7TWYTHnPtKy4zlWsmG+NyiEozlXf
+         +8+mjz2sjDJ2AEL6RMWSeCe9N6UrYbzLEaWyYZ4Rq4TIfxxZOZEIXrcaojXRzULj6i7h
+         P+20Y1sU+xLMpv0YknLU5Oh40DVh+XLH/ovCzrUtj0JKQPk1ASGeh0McGcnJPwp3unxu
+         nXsA==
+X-Gm-Message-State: AOAM530P+hDT+r05z8jYSo6B1Rr9+wlvI0dycHBcD3SvlgubqIvNgeBp
+        D9ZWbWW3zVqxFy6XPszo5pNBUw==
+X-Google-Smtp-Source: ABdhPJzL6t/K2FE9rWW+xuELLulwr2MIoNYvIh8upvVA3qbwZ8TmosW+CD13NqnCN6jab6u9DAhE9w==
+X-Received: by 2002:adf:a1ce:: with SMTP id v14mr27677100wrv.228.1614779040787;
+        Wed, 03 Mar 2021 05:44:00 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.58
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:43:58 -0800 (PST)
+        Wed, 03 Mar 2021 05:44:00 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, Zack Rusin <zackr@vmware.com>
-Subject: [PATCH 26/53] drm/vmwgfx/vmwgfx_drv: Fix some kernel-doc misdemeanours
-Date:   Wed,  3 Mar 2021 13:42:52 +0000
-Message-Id: <20210303134319.3160762-27-lee.jones@linaro.org>
+Subject: [PATCH 27/53] drm/vmwgfx/vmwgfx_ioctl: Provide missing '@' sign required by kernel-doc
+Date:   Wed,  3 Mar 2021 13:42:53 +0000
+Message-Id: <20210303134319.3160762-28-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
@@ -70,13 +70,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:164: warning: Function parameter or member 'ioctl' not described in 'VMW_IOCTL_DEF'
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:164: warning: Function parameter or member 'func' not described in 'VMW_IOCTL_DEF'
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:164: warning: Function parameter or member 'flags' not described in 'VMW_IOCTL_DEF'
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:170: warning: cannot understand function prototype: 'const struct drm_ioctl_desc vmw_ioctls[] = '
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:542: warning: Function parameter or member 'dev_priv' not described in 'vmw_get_initial_size'
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:611: warning: Function parameter or member 'dev_priv' not described in 'vmw_dma_masks'
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:611: warning: Excess function parameter 'dev' description in 'vmw_dma_masks'
+ In file included from drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c:30:
+ drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c:448: warning: Function parameter or member 'offset' not described in 'vmw_fops_read'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -85,51 +80,24 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-9-lee.jones@linaro.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-10-lee.jones@linaro.org
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-index dd69b51c40e41..ef81a68dd4bd4 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-@@ -153,7 +153,7 @@
- 	DRM_IOWR(DRM_COMMAND_BASE + DRM_VMW_MSG,			\
- 		struct drm_vmw_msg_arg)
- 
--/**
-+/*
-  * The core DRM version of this macro doesn't account for
-  * DRM_COMMAND_BASE.
-  */
-@@ -161,7 +161,7 @@
- #define VMW_IOCTL_DEF(ioctl, func, flags) \
-   [DRM_IOCTL_NR(DRM_IOCTL_##ioctl) - DRM_COMMAND_BASE] = {DRM_IOCTL_##ioctl, flags, func}
- 
--/**
-+/*
-  * Ioctl definitions.
-  */
- 
-@@ -526,7 +526,7 @@ static void vmw_release_device_late(struct vmw_private *dev_priv)
- 	vmw_fifo_release(dev_priv, &dev_priv->fifo);
- }
- 
--/**
-+/*
-  * Sets the initial_[width|height] fields on the given vmw_private.
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c
+index 80af8772b8c24..b36032964b2fe 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c
+@@ -437,7 +437,7 @@ __poll_t vmw_fops_poll(struct file *filp, struct poll_table_struct *wait)
+  * @filp: See the linux fops read documentation.
+  * @buffer: See the linux fops read documentation.
+  * @count: See the linux fops read documentation.
+- * offset: See the linux fops read documentation.
++ * @offset: See the linux fops read documentation.
   *
-  * It does so by reading SVGA_REG_[WIDTH|HEIGHT] regs and then
-@@ -599,7 +599,7 @@ static int vmw_dma_select_mode(struct vmw_private *dev_priv)
- /**
-  * vmw_dma_masks - set required page- and dma masks
-  *
-- * @dev: Pointer to struct drm-device
-+ * @dev_priv: Pointer to struct drm-device
-  *
-  * With 32-bit we can only handle 32 bit PFNs. Optionally set that
-  * restriction also for 64-bit systems.
+  * Wrapper around the drm_read function that makes sure the device is
+  * processing the fifo if drm_read decides to wait.
 -- 
 2.27.0
 
