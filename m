@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00A132BE90
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FAD32BE98
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385833AbhCCRcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:32:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60754 "EHLO mx2.suse.de"
+        id S1385909AbhCCRc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:32:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236504AbhCCNuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:50:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614779319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pu/3seYMql33mUGXHcZj1oG0qaMLQn8mcgtStwoiQOY=;
-        b=qi4UC6hUpKVqsIab1ecHkri1SQfudluavf0CINthr1FLnsNtM5q8rG05RSaCJn+Um9pgwR
-        JfB+Vj2/CNZ02GVC22inMEzATHJ+8kPxSW7/R6gewxBgKHq1cQaLnv6iq+ws7baN5OJd9I
-        zx5+UaQymkuoSD+q1Ar5CPG7aqqg87o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D9E98AC24;
-        Wed,  3 Mar 2021 13:48:38 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 14:48:33 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Thomas Meyer <thomas@m3y3r.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
-        linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net
-Subject: Re: [PATCH next v4 12/15] printk: introduce a kmsg_dump iterator
-Message-ID: <YD+TsR+yiM2RB9Hh@alley>
-References: <20210303101528.29901-1-john.ogness@linutronix.de>
- <20210303101528.29901-13-john.ogness@linutronix.de>
+        id S242249AbhCCNwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:52:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 869FD64EC3;
+        Wed,  3 Mar 2021 13:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614779419;
+        bh=LQhZ5BU+nRYQULx0ZKG9Ay1y3ooSannOJVQLDg7rhDA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JKWAVe0RmqwyokpDoK7CoAnB8oUaSQMWGe5badQh37eHZVXqKfgYvOLsy+Ei7cWPK
+         UNVASJfQxu3zS9yR+uoIhuRPUUVnMGq4F2FX8UOt78ioVkglSZgXcDwKA6IV/848tP
+         6SjSIcfXibW8ZiNpyTkRSxXXz5qNhkpuq+ntBQp3Q+24TMrrj1HT4Fu1hKXmnVvP+x
+         qvgyw3vIda6KjxFP+hnsGRmzGEpxhnEU/kUClBHDW0N1NNRTAcbGs16tt72p5Vjdmd
+         NXnJzJSouStJQyLPtDCfxLmrPu/pJNZp3QjgZI/yzw0FyE+v9JonN+qXPMAwPpIVN8
+         y6bJAbNCKD3mA==
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>, Max Uvarov <muvarov@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 0/2] Fix arm64 CONFIG_CMDLINE handling and remove CMDLINE_EXTEND
+Date:   Wed,  3 Mar 2021 13:49:25 +0000
+Message-Id: <20210303134927.18975-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303101528.29901-13-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-03-03 11:15:25, John Ogness wrote:
-> Rather than storing the iterator information in the registered
-> kmsg_dumper structure, create a separate iterator structure. The
-> kmsg_dump_iter structure can reside on the stack of the caller, thus
-> allowing lockless use of the kmsg_dump functions.
-> 
-> Update code that accesses the kernel logs using the kmsg_dumper
-> structure to use the new kmsg_dump_iter structure. For kmsg_dumpers,
-> this also means adding a call to kmsg_dump_rewind() to initialize
-> the iterator.
-> 
-> All this is in preparation for removal of @logbuf_lock.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> Reviewed-by: Kees Cook <keescook@chromium.org> # pstore
+Hi again,
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+This is version two of the series I previously posted here:
 
-Best Regards,
-Petr
+	https://lore.kernel.org/r/20210225125921.13147-1-will@kernel.org
+
+The main change since v1 is that, rather than "fix" the FDT code to
+follow the documented behaviour for CMDLINE_EXTEND, I've opted to remove
+the thing entirely for arm64 while a less ambiguous and generic
+replacement is developed, probably based on either [1] or [2].
+
+I've left the first-patch as-is so that it's easier to incorporate
+whatever ends up replacing CMDLINE_EXTEND in future.
+
+Cheers,
+
+Will
+
+[1] https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1554195798.git.christophe.leroy@c-s.fr/
+[2] https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20190319232448.45964-2-danielwa@cisco.com/
+
+--->8
+
+Cc: Max Uvarov <muvarov@gmail.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Doug Anderson <dianders@chromium.org>
+Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: <kernel-team@android.com>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <devicetree@vger.kernel.org>
+
+Will Deacon (2):
+  arm64: cpufeatures: Fix handling of CONFIG_CMDLINE for idreg overrides
+  arm64: Drop support for CMDLINE_EXTEND
+
+ arch/arm64/Kconfig                 |  6 -----
+ arch/arm64/kernel/idreg-override.c | 43 ++++++++++++++++--------------
+ 2 files changed, 23 insertions(+), 26 deletions(-)
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
