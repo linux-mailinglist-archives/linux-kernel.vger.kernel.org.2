@@ -2,155 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D3632BAC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D12932BAC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358236AbhCCL5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236101AbhCCFWN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 00:22:13 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02CEC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 21:21:28 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id c16so3917787ply.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 21:21:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jGdvbu0FrsOZa6Rq/Yom9taOBE4Ik/ZEHiXZKsv0uRI=;
-        b=GPNx/T4z+1ZeuJgxHzD53mXPB6Msnm9jX+CktVmXhjy5egAoDwYonMJ1t3b6OR/UQN
-         U77XRK8W3FACHStST2UYo+AqSHpHNJjmSJxKLRJ325itlIlVGxSJFX2JmxoRtZqMpsQt
-         wa2TZvE4gCI6E33DPEEa1NGcv1ecJxFDpZGIRWu5KjLMsYG7cWfONDYjewPgH0eBqqJK
-         SuhPtKHM7E/9HeavGZBmeIPh3iSDiFSDpCQ8a4A1qnjnWTIYdY/StT/QPmUxj36OWJi9
-         gmEDoBUXGY6QocgnfRw5aWsMmzDdLetJPUT3S9BC1sdx+W8UYXCP5PWIBovbu7hz8W3e
-         QF9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jGdvbu0FrsOZa6Rq/Yom9taOBE4Ik/ZEHiXZKsv0uRI=;
-        b=Gz1eW4YCdDp91kn+e3Fb/mP+SHWOrTNbNmpLXdA3m6Yt5Sj+KIaI5CsfS95gaJXxhQ
-         bAuWX4kg6fWxBhl7TEcs7wHt72gnXPtb7iR+7O+F5l+9i31VbRm84Rfs19apVuAGXpPD
-         K5NAsK74ZjGdvGrS2teDVABTJB2sbx+3I30d6DeWSHtiZLjCoeVumzDgdh9X1TIll7DH
-         jIoanP7piRxT/XAKcFBmz6M/ZAUWhuL5Wdi0OHzF9THSzCcdY1iS95qu7gNo0SIeWeH5
-         xQpmnGHN8SEstw8aPCUIZnRi7Kr2nwp9nhEnQht2rbAo3IpJEBV7XLL4eHsRt4zaqDyr
-         V4BA==
-X-Gm-Message-State: AOAM533rnZoDMGPM7mMoQxFN9/lYAwuWOhpmG7T6te0YOHWxezDM/e7N
-        PLDaTGHjFS2EdWtPxkN0GC1rdg==
-X-Google-Smtp-Source: ABdhPJw6GlpfyE7P8dvwW1CesEsCPrq8AC/kChySl3CPk8cQ1uYFOq6bzHsnWmMmpc+RdGAWqyi5sQ==
-X-Received: by 2002:a17:90a:6342:: with SMTP id v2mr7739878pjs.150.1614748888349;
-        Tue, 02 Mar 2021 21:21:28 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id q95sm5314450pjq.20.2021.03.02.21.21.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 21:21:27 -0800 (PST)
-Date:   Wed, 3 Mar 2021 10:51:25 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH V7 4/6] kbuild: Add support to build overlays (%.dtbo)
-Message-ID: <20210303052125.uh32ndnu5d6mem7c@vireshk-i7>
-References: <cover.1611904394.git.viresh.kumar@linaro.org>
- <434ba2467dd0cd011565625aeb3450650afe0aae.1611904394.git.viresh.kumar@linaro.org>
- <CAMuHMdVp0vGMqoEoP9A7Y7-ph-DYUWdddtChdq_eZcROYTBMHg@mail.gmail.com>
- <20210205092507.fdxotdjlq5rjs2yh@vireshk-i7>
- <CAMuHMdWUMcMcJxnC+oML8P0+r72_+d6RWGY50dOWCUECdJGWPA@mail.gmail.com>
- <20210205095545.woevnkxg3ar7ctys@vireshk-i7>
- <CAMuHMdXKT3LD3ojMJEg-oHsEKO5TN5P1BTJMyf2fYkhnC8PU=Q@mail.gmail.com>
- <20210205210814.GA3707622@robh.at.kernel.org>
- <02728dac-5666-9c2b-bd46-9c2eabbb2ed8@gmail.com>
+        id S1358296AbhCCL6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:58:04 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:61304 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1450475AbhCCFd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 00:33:56 -0500
+Received: by ajax-webmail-mail-app4 (Coremail) ; Wed, 3 Mar 2021 13:21:56
+ +0800 (GMT+08:00)
+X-Originating-IP: [222.205.72.8]
+Date:   Wed, 3 Mar 2021 13:21:56 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Cc:     "Kangjie Lu" <kjlu@umn.edu>, "Jens Axboe" <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: Re: Re: Re: [PATCH] sata_dwc_460ex: Fix missing check in
+ sata_dwc_isr
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <CAHp75VctFSqxpSfCP=XDSd_QsqX6kpEN+VtKQQU7Xp_wpN52gw@mail.gmail.com>
+References: <20210301072842.7410-1-dinghao.liu@zju.edu.cn>
+ <CAHp75Vf86_Ccs7wqzbpWbLDZSSJLbMwZ1TX3dwru9JvXUTMR_Q@mail.gmail.com>
+ <44c09a14.a0cbd.177ed8446ea.Coremail.dinghao.liu@zju.edu.cn>
+ <CAHp75VdT04AVzW=C=SubHjUE5_MHBeC0ptHTFSLgKzrSP3HmRQ@mail.gmail.com>
+ <56ec2ffd.a3db1.177f1db3d26.Coremail.dinghao.liu@zju.edu.cn>
+ <CAHp75VctFSqxpSfCP=XDSd_QsqX6kpEN+VtKQQU7Xp_wpN52gw@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <02728dac-5666-9c2b-bd46-9c2eabbb2ed8@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Message-ID: <c865dd8.a4485.177f6891a80.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgBHwWD0HD9gsZf3AQ--.8565W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtSkspwAGsX
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-02-21, 19:32, Frank Rowand wrote:
-> I overlooked this and mistakenly thought that the move to .dtbo also
-> involved changing to .dtso.  My bad.
-> 
-> My favorite color here is to use .dtso for the source file that will
-> be compiled to create a .dtbo.
-> 
-> Linus has already accepted patch 4/6 to 5.12-rc1, so changing to .dtso
-> will require another patch.
+PiBPbiBUdWUsIE1hciAyLCAyMDIxIGF0IDk6MzQgQU0gPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+
+IHdyb3RlOgo+ID4gPiBPbiBNb24sIE1hciAxLCAyMDIxIGF0IDE6MjAgUE0gPGRpbmdoYW8ubGl1
+QHpqdS5lZHUuY24+IHdyb3RlOgo+ID4gPiA+ID4gT24gTW9uLCBNYXIgMSwgMjAyMSBhdCA5OjQ0
+IEFNIERpbmdoYW8gTGl1IDxkaW5naGFvLmxpdUB6anUuZWR1LmNuPiB3cm90ZToKPiAKPiAuLi4K
+PiAKPiA+ID4gPiBUaGlzIGlzc3VlIGlzIHJlcG9ydGVkIGJ5IG15IHN0YXRpYyBhbmFseXNpcyB0
+b29sLCBzbyBJIGRvbid0IGhhdmUgdGhlCj4gPiA+ID4gdnVsbmVyYWJsZSBpbnB1dCBjdXJyZW50
+bHkuCj4gPiA+Cj4gPiA+IFNob3VsZCB3ZSBibGluZGx5IGZvbGxvdyBldmVyeXRoaW5nIHRoYXQg
+c29tZSAobm9uLWlkZWFsKSB0b29sCj4gPiA+IHJlcG9ydHM/IEkgZG9uJ3QgdGhpbmsgc28uCj4g
+PiA+IEZvciBhbGwgbXkgZXhwZXJpbWVudHMgd2l0aCB0aGF0IGhhcmR3YXJlLCBJIGhhdmVuJ3Qg
+aGVhcmQgYWJvdXQgdGhlCj4gPiA+IGlzc3VlIHdpdGggTlVMTCBwb2ludGVycy4gVXNlbGVzcyBj
+aGVja3MgbWFrZSBjb2RlIGhhcmRlciB0byByZWFkIGFuZAo+ID4gPiBDUFUgdG8gd2FzdGUgY3lj
+bGVzLiBJdCBtaWdodCBiZSBtYWludGFpbmVycyBvZiB0aGlzIGRyaXZlciBjb25zaWRlcgo+ID4g
+PiBvdGhlcndpc2UsIHNvIG5vdCBteSBjYWxsLgo+ID4gPgo+ID4KPiA+IFRoYW5rcyBmb3IgeW91
+ciBhZHZpY2UuIEkgYWxzbyBjaGVja2VkIGFsbCB1c2Ugb2YgYXRhX3FjX2Zyb21fdGFnKCkgaW4g
+dGhlCj4gPiB3aG9sZSBrZXJuZWwgYW5kIGZvdW5kIGFsbCBvZiB0aGVtIGhhZCByZXR1cm4gdmFs
+dWUgY2hlY2tzIGV4Y2VwdCBmb3IgdGhlCj4gPiBjYWxscyBpbiBzYXRhX2R3Y19pc3IoKSwgd2hp
+Y2ggaXMgb2RkLgo+IAo+IFRoYW5rcyBmb3IgdGhpcyBpbmZvcm1hdGlvbiwgaXQgbWFrZXMgc2Vu
+c2UgdG8gbWUuIFBlcmhhcHMgeW91IG5lZWQgdG8KPiBwdXQgdGhpcyBpbnRvIHRoZSBjb21taXQg
+bWVzc2FnZSB0byBqdXN0aWZ5IHRoZSBuZWVkIG9mIHRoZSBjaGFuZ2UuCj4gCgpPSy4gSSB3aWxs
+IGZpeCB0aGlzIGFuZCBzZW5kIGEgbmV3IHBhdGNoIHNvb24uCgpSZWdhcmRzLApEaW5naGFvCg==
 
-Looks like this is what many people desire, lets do it and make it a
-standard even if it wasn't followed earlier.
-
-What about this ?
-
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index c430fbb36763..0dbedb61835f 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -337,7 +337,7 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
- 
- quiet_cmd_dtc = DTC     $@
- cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
--       $(DTC) -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
-+       $(DTC) -I dts -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
-                $(addprefix -i,$(dir $<) $(DTC_INCLUDE)) $(DTC_FLAGS) \
-                -d $(depfile).dtc.tmp $(dtc-tmp) ; \
-        cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
-@@ -348,6 +348,9 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
- $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
-        $(call if_changed_dep,dtc)
- 
-+$(obj)/%.dtbo: $(src)/%.dtso $(DTC) FORCE
-+       $(call if_changed_dep,dtc)
-+
- overlay-y := $(addprefix $(obj)/, $(overlay-y))
- 
- quiet_cmd_fdtoverlay = DTOVL   $@
-@@ -373,6 +376,9 @@ endef
- $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
-        $(call if_changed_rule,dtc,yaml)
- 
-+$(obj)/%.dt.yaml: $(src)/%.dtso $(DTC) $(DT_TMP_SCHEMA) FORCE
-+       $(call if_changed_rule,dtc,yaml)
-+
- dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
- 
- # Bzip2
-
--------------------------8<-------------------------
-
-I had to keep the original line as is:
-
- $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
-
-to support the unittest stuff as there are no dtso files there. There
-are few things we can do here:
-
-- Don't follow the dtso/dtbo convention for unittest, build files as
-  dtb only and everything will continue to work I suppose as
-  fdtoverlay won't complain.
-
-- Keep the above line in Makefile, this doesn't sound right, isn't it
-  ?
-
-- Make .dts links for unittest file, maybe from the Makefile itself.
-
-- Something else ?
-
--- 
-viresh
