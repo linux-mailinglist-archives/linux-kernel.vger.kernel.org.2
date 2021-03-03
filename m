@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBD332BE7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCB232BE7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357156AbhCCRbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:31:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        id S1348286AbhCCRbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1445887AbhCCNsB (ORCPT
+        with ESMTP id S1445920AbhCCNsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 08:48:01 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA33C0610CE
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:05 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id f12so19932024wrx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:05 -0800 (PST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4046C061A86
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:06 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id u125so6380161wmg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BjfwsSGdxPmrvaJOjBX9ijfyCI7yYPSZw53zZSFU+oQ=;
-        b=sGQaCdMVqDriVS+b6KY0lBnm3pYMMCpz4EqqljOvMl7zgk5jRtBQ2i2oPWzoFCYHiP
-         sz+9QyRiQeLU9+2j2CdDvc1h+dR8wwSwQ4ITxc+oKDq1N0/R8XSEkNboWDtqtZRMnXCa
-         YoMKsx5UXZ2aTahxpyoVfcxkalHnJTobJl2WL5kI/S1/jtfJWJAav5w2Elr9j1T8x+Dh
-         jpIeXoXtZ2FbJm1MLHx/hwVEq1Jn/d9lhTNu4mndi9xm78/Qc0H5eJXr6CNQ9RIcsbEf
-         88pL/SiRunxWo13GmHuvzJddVrxHN4wVC1cRR5BhEEa84NvYQTR1psg5kWSKOi2m0li5
-         tZjA==
+        bh=tmSWc9lSX8plC+W5s/fzd/gmEeVkpduD+/cr5gvR47U=;
+        b=XG9g9GqcUfSvxhKZ3LXb18saIpgWwFds4iItiADLUMMHBM00te+esEhv7OYwz62YS2
+         ZVXaG5uHxzk3+7ib+aQ1hfw+dx5mg2ohpnRw6S7Zgo51DC1RG/BJ6VkL6d8IzEwNchUG
+         MLXBaQoleIiBHUZanNQJFIJD15MSH0bP+V/kKXMn0FcIuyeK/pscQ1iLvqWs6FopfsK8
+         BBPkuMQYZkq+FIvdehyn+ZmXrSCtpep1o7Xk5wX1lAZKkgtmQq8o7m7VERTrLRii1Y83
+         czQ5lbvifM4mqqyMn1QNeZOHJL2qfhdIpc9chnfmKHEY0lFgjeTJADscLImG+tswDopd
+         IytA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BjfwsSGdxPmrvaJOjBX9ijfyCI7yYPSZw53zZSFU+oQ=;
-        b=EUmGviNsnaqxTs93wC63c0ZQw5y0ZAYl8Aws4I5yzBrnGttq21Mv3ZRRbzJ0yzgTH+
-         grxbmNAPdO3A6A32MWmlRGL0pXoPI90IPigt9Mtv2sGRiyLcy6qZRjaFl0ej7xDF3g1V
-         El26j0zlbwjZ6muO/uj8oK0EqZ6QMijyhb3eJBK02oS8kGgKCgPB5kFoIuAv6aX2sQgL
-         k4imM2+AdCI4n7Ln2PFJQveMTnjodExyMADqUEquOTGgbFMV9zjPLzNJfFG9kLoozInR
-         PnbKfkHQr4hhL6X31lZUQbDGOnw556ootR3ExQqmngLa0yp5hRfqnodKpM7sGNLvfK03
-         0Uzw==
-X-Gm-Message-State: AOAM530sXpZ5SF9alByR1ygwejxp0CR9HwsyC3KxNd3FQC0ZmY/8dBOe
-        CmyS7ShTs6wDhlKfzq1ViTw/aQ==
-X-Google-Smtp-Source: ABdhPJzH4w3Zis0RicRCbLsKI5Q9wSbWJ1nQ6IQidubaAIk3XcmrOVqPNyRlg8jIRjJsYzSZNZTzpw==
-X-Received: by 2002:a5d:4564:: with SMTP id a4mr292223wrc.3.1614779044383;
-        Wed, 03 Mar 2021 05:44:04 -0800 (PST)
+        bh=tmSWc9lSX8plC+W5s/fzd/gmEeVkpduD+/cr5gvR47U=;
+        b=QrcSqW01hCGCBAPWBmKEx/lRr/hM0inRiaU5dIMIiS5kv10EN5FjHTBGBViYNshBS0
+         ZiZi3IiHSRrVaJHu5clS65F0Jph4pr55LriRl0WjJUP8qK5MBhkTXztvB0UqkNiI3XXY
+         DA+DCe/G2vv0OdClraJOJUfHr7x52okqdIbkzsL7lL9c9jEfinUhmt/PngcQpTuI3V1o
+         LIm8p+wf5Vo9JJM+C0EaSpzDb0dLnaesnb4cKP3ZInenslmJi3GiRK19BWD1oYq4BAI2
+         poXCD6rkTHu5iPxqE2OUR1DnSTDbmg2NZp1DSMivYbae1gZFBrOZoo/K4sPp7UHBPbnE
+         gvVQ==
+X-Gm-Message-State: AOAM533I0BLqwX7OkIqkvlZ9RM3TnGrHVbvZ2hbDyt520z8l0ft0we4P
+        lelSwrQqLzNs1jJ+21czXQWheg==
+X-Google-Smtp-Source: ABdhPJwFgTcETayyMMWtzZVDN6UJAXq0mvasuXRA0M8p4u4vBy1m9KLvRyxeigxIOdfyIIWoARHaBw==
+X-Received: by 2002:a05:600c:289:: with SMTP id 9mr9317471wmk.135.1614779045399;
+        Wed, 03 Mar 2021 05:44:05 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.03
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:44:03 -0800 (PST)
+        Wed, 03 Mar 2021 05:44:04 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, Zack Rusin <zackr@vmware.com>
-Subject: [PATCH 30/53] drm/vmwgfx/vmwgfx_fifo: Demote non-conformant kernel-doc header
-Date:   Wed,  3 Mar 2021 13:42:56 +0000
-Message-Id: <20210303134319.3160762-31-lee.jones@linaro.org>
+Subject: [PATCH 31/53] drm/vmwgfx/vmwgfx_ldu: Supply descriptions for 'state' function parameter
+Date:   Wed,  3 Mar 2021 13:42:57 +0000
+Message-Id: <20210303134319.3160762-32-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
@@ -70,8 +70,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c:299: warning: Function parameter or member 'dev_priv' not described in 'vmw_local_fifo_reserve'
- drivers/gpu/drm/vmwgfx/vmwgfx_fifo.c:299: warning: Function parameter or member 'bytes' not described in 'vmw_local_fifo_reserve'
+ drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c:55: warning: cannot understand function prototype: 'struct vmw_legacy_display_unit '
+ drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c:218: warning: Function parameter or member 'state' not described in 'vmw_ldu_crtc_atomic_enable'
+ drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c:228: warning: Function parameter or member 'state' not described in 'vmw_ldu_crtc_atomic_disable'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -80,24 +81,40 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-13-lee.jones@linaro.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-14-lee.jones@linaro.org
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c b/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
-index 7400d617ae3cc..20246a7c97c9d 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
-@@ -276,7 +276,7 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
- 	return ret;
- }
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c
+index 9a9508edbc9ed..acae92a07f4f3 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c
+@@ -49,7 +49,7 @@ struct vmw_legacy_display {
+ 	struct vmw_framebuffer *fb;
+ };
  
 -/**
 +/*
-  * Reserve @bytes number of bytes in the fifo.
+  * Display unit using the legacy register interface.
+  */
+ struct vmw_legacy_display_unit {
+@@ -206,6 +206,7 @@ static void vmw_ldu_crtc_mode_set_nofb(struct drm_crtc *crtc)
+  * vmw_ldu_crtc_atomic_enable - Noop
   *
-  * This function will return NULL (error) on two conditions:
+  * @crtc: CRTC associated with the new screen
++ * @state: Unused
+  *
+  * This is called after a mode set has been completed.  Here's
+  * usually a good place to call vmw_ldu_add_active/vmw_ldu_del_active
+@@ -221,6 +222,7 @@ static void vmw_ldu_crtc_atomic_enable(struct drm_crtc *crtc,
+  * vmw_ldu_crtc_atomic_disable - Turns off CRTC
+  *
+  * @crtc: CRTC to be turned off
++ * @state: Unused
+  */
+ static void vmw_ldu_crtc_atomic_disable(struct drm_crtc *crtc,
+ 					struct drm_atomic_state *state)
 -- 
 2.27.0
 
