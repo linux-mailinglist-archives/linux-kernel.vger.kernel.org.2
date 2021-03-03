@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9174E32C412
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E7432C417
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240221AbhCDAKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:10:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S1354792AbhCDALD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391906AbhCCW62 (ORCPT
+        with ESMTP id S1392024AbhCCXAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:58:28 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C60BC0613DB
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 14:55:17 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id dm26so8716504edb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 14:55:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nNfmdMd0q/KJcPW/Pt2XOjgMWmsyCvOwypPBu+510F8=;
-        b=di36/4MerspWPQL3Hcu11fHLk90w33FzG8F9I72a+ih/Ph3wO5+iwcfG3gZdc1wx2K
-         4N7YuZdmj3W7dzyLiBk0pBPcxPKCgtuNNqjdUtMF4o30UBYDekj6LORZa2ywnCMOPsfd
-         Xtt2ySEJ4cByLi4V4gF8u7b024EixIKviB9vAHLgrKKgc1k6VSKXe5hdvHLsRMuVGuaC
-         qNRJ6N1CIaBAKSXBADNi7J/xkgxQaOtxVeDmgo9S2A5KnUhlJkuQ7LLMajiy8Wu0GMLt
-         iNYfAWEBtp2sPir90BDuUDCNcGnmsuv5xBlg3qazp2XfH7E1HqkWosB0ulNgTqX67JdV
-         qtPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nNfmdMd0q/KJcPW/Pt2XOjgMWmsyCvOwypPBu+510F8=;
-        b=EYuPESuMiGHgEH6cHQnVI+mq+wmgUHmx7BJd8oEF1izbV3TWOOlCmdvRgn3ash4wJI
-         rgIqY1JVKjmTXVFqWd34+pTAaZ0V9Y0AYKUA8Mz7avnWEWI9miwwLRL5SlyCNXea/9sP
-         IKGwFj1BEA2ld5Z4g56o31PFht6gfTQeczo/lL0bSZur7/4faoPS+9w+LrzqINhrjDud
-         ApEZUU4VxwKx0j+G6DVBhjCMmWSxNiI6gaW1vY/qUMWMy4+kLUl6lR+sMTeUV53D97Ws
-         wMJp8C316VNnFB04X91Nad9X33qmUs35j8edjDpNBAyzClc1es+fcj+xHtUQJNyZE2cw
-         hl5Q==
-X-Gm-Message-State: AOAM530BKjVaEGQgHlV9SdNZxTRH9g9c9aSk0Nb/f5HwKMwhKAa2CmoY
-        YXdkbzZFmCJDleHZvUdAYryCYFaZ5dFcbzb+umLL
-X-Google-Smtp-Source: ABdhPJyPKOFDLP4ZDIj9l7E7eyd/qGHvPBYKaGfRVFgSPGmbB0dG8m09mNyz2IEVAM1sB+qKVD0k1rI7v/yVQXju5D4=
-X-Received: by 2002:a50:ee05:: with SMTP id g5mr1412810eds.164.1614812115906;
- Wed, 03 Mar 2021 14:55:15 -0800 (PST)
+        Wed, 3 Mar 2021 18:00:54 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12244C0613D7;
+        Wed,  3 Mar 2021 14:59:53 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 461498DE;
+        Wed,  3 Mar 2021 23:59:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614812390;
+        bh=FY7RDvOyDuyrLYN60fJkrRyy7oaq4NoG/d+IagzZCkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c1prsOhxNcgaGbPAMiXowZ5sblQpnh9rqRIulCZ18EqXJ+M9skF3IW/PaNn6AIkV9
+         c3CGM+ca2xdWljuAt1sQ5ZXVdqF7rEm3yjO1py+/cd2rsKuOjMKi+wlFVsBftATpdL
+         Ri7mltwwGcvuUp7wI6Qma6zKxxXg/HodfMM+6qfo=
+Date:   Thu, 4 Mar 2021 00:59:21 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: display: bridge: Add bindings for
+ Chipone ICN6211
+Message-ID: <YEAUyUsZb+4Oe0Ye@pendragon.ideasonboard.com>
+References: <20210214175211.105107-1-jagan@amarulasolutions.com>
+ <YCpmZWRoiWULiANx@pendragon.ideasonboard.com>
+ <CAMty3ZDt2EDB8E2nNLx_jfqE7-ActVYVoeFo2Eso+nVuUfVL+w@mail.gmail.com>
+ <YDZRFeuzsamKyIJo@pendragon.ideasonboard.com>
+ <CAMty3ZBHKzksbrWoWapZb9h4hmbL9Lk1baqS_Lb7WPdmRr2hGQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000f022ff05bca3d9a3@google.com> <CAHC9VhT5DJzk9MVRHJtO7kR1RVkGW+WRx8xt_xGS01H3HLm3RA@mail.gmail.com>
-In-Reply-To: <CAHC9VhT5DJzk9MVRHJtO7kR1RVkGW+WRx8xt_xGS01H3HLm3RA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 3 Mar 2021 17:55:04 -0500
-Message-ID: <CAHC9VhQrwHhi_ODP2zC5FrF2LvVMctp57hJ3JqmQ09Ej3nSpVg@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Write in cipso_v4_doi_putdef
-To:     syzbot <syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com>
-Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMty3ZBHKzksbrWoWapZb9h4hmbL9Lk1baqS_Lb7WPdmRr2hGQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 11:20 AM Paul Moore <paul@paul-moore.com> wrote:
-> On Wed, Mar 3, 2021 at 10:53 AM syzbot
-> <syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    7a7fd0de Merge branch 'kmap-conversion-for-5.12' of git://..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=164a74dad00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=779a2568b654c1c6
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=521772a90166b3fca21f
-> > compiler:       Debian clang version 11.0.1-2
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-> > BUG: KASAN: use-after-free in atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
-> > BUG: KASAN: use-after-free in __refcount_sub_and_test include/linux/refcount.h:272 [inline]
-> > BUG: KASAN: use-after-free in __refcount_dec_and_test include/linux/refcount.h:315 [inline]
-> > BUG: KASAN: use-after-free in refcount_dec_and_test include/linux/refcount.h:333 [inline]
-> > BUG: KASAN: use-after-free in cipso_v4_doi_putdef+0x2d/0x190 net/ipv4/cipso_ipv4.c:586
-> > Write of size 4 at addr ffff8880179ecb18 by task syz-executor.5/20110
->
-> Almost surely the same problem as the others, I'm currently chasing
-> down a few remaining spots to make sure the fix I'm working on is
-> correct.
+Hi Jagan,
 
-I think I've now managed to convince myself that the patch I've got
-here is reasonable.  I'm looping over a series of tests right now and
-plan to let it continue overnight; assuming everything still looks
-good in the morning I'll post it.
+On Wed, Mar 03, 2021 at 08:08:35PM +0530, Jagan Teki wrote:
+> On Wed, Feb 24, 2021 at 6:44 PM Laurent Pinchart wrote:
+> > On Wed, Feb 24, 2021 at 06:07:43PM +0530, Jagan Teki wrote:
+> > > On Mon, Feb 15, 2021 at 5:48 PM Laurent Pinchart wrote:
+> > > > On Sun, Feb 14, 2021 at 11:22:10PM +0530, Jagan Teki wrote:
+> > > > > ICN6211 is MIPI-DSI to RGB Convertor bridge from Chipone.
+> > > > >
+> > > > > It has a flexible configuration of MIPI DSI signal input and
+> > > > > produce RGB565, RGB666, RGB888 output format.
+> > > > >
+> > > > > Add dt-bingings for it.
+> > > > >
+> > > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > > > ---
+> > > > > Changes for v3:
+> > > > > - updated to new dt-bindings style
+> > > > >
+> > > > >  .../display/bridge/chipone,icn6211.yaml       | 90 +++++++++++++++++++
+> > > > >  1 file changed, 90 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml b/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..13764f13fe46
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
+> > > > > @@ -0,0 +1,90 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/display/bridge/chipone,icn6211.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: Chipone ICN6211 MIPI-DSI to RGB Converter bridge
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Jagan Teki <jagan@amarulasolutions.com>
+> > > > > +
+> > > > > +description: |
+> > > > > +  ICN6211 is MIPI-DSI to RGB Convertor bridge from chipone.
+> > > > > +
+> > > > > +  It has a flexible configuration of MIPI DSI signal input and
+> > > > > +  produce RGB565, RGB666, RGB888 output format.
+> > > >
+> > > > How does one select between the output formats ? Should the output
+> > > > connection option be described in the device tree ?
+> > >
+> > > I think that is a good option to select output formats via dts. what
+> > > if it makes it a generic property like data-lanes? since it is common
+> > > across many other bridges.
+> >
+> > Describing the output connection in the device tree sounds like a good
+> > idea indeed. The bus-width property could be used for this, maybe along
+> > the lines of
+> > https://lore.kernel.org/dri-devel/20201013020619.GG3942@pendragon.ideasonboard.com/.
+> 
+> I have seen an issue by passing bus-width where the same bus-with 24
+> can use by RGB888 and RGB666 according to
+> mipi_dsi_pixel_format_to_bpp. Having a default RGB888 format now and
+> update it when it supports properly, can be a good Idea I thought of.
+> Let me know if you have any comments?
 
-Thanks for your help.
+I'm fine with hardcoding a default for now. If a given bus wiring (which
+is described in DT by bus-width) can transport different formats, that's
+something that should be configured dynamically, either by querying what
+format a sink (such as a panel) requires, or if both the source and the
+sink can support different formats, possibly by involving userspace in
+the selection.
 
 -- 
-paul moore
-www.paul-moore.com
+Regards,
+
+Laurent Pinchart
