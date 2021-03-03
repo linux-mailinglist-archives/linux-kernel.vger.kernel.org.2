@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F35932BBFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D00532BBFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382817AbhCCNbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:31:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32948 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379675AbhCCIVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:21:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2075AAD57;
-        Wed,  3 Mar 2021 08:20:18 +0000 (UTC)
-Subject: Re: [RFC PATCH v1 1/6] badblocks: add more helper structure and
- routines in badblocks.h
-To:     Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
-        axboe@kernel.dk, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, neilb@suse.de
-Cc:     antlists@youngman.org.uk, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org
-References: <20210302040252.103720-1-colyli@suse.de>
- <20210302040252.103720-2-colyli@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <96a899a9-151e-ff8c-c61c-900df1122357@suse.de>
-Date:   Wed, 3 Mar 2021 09:20:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231718AbhCCNcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:32:09 -0500
+Received: from bin-mail-out-05.binero.net ([195.74.38.228]:49169 "EHLO
+        bin-mail-out-05.binero.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1380621AbhCCIV2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:21:28 -0500
+X-Halon-ID: 56e20dc8-7bf9-11eb-b73f-0050569116f7
+Authorized-sender: andreas@gaisler.com
+Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
+        by bin-vsp-out-03.atm.binero.net (Halon) with ESMTPA
+        id 56e20dc8-7bf9-11eb-b73f-0050569116f7;
+        Wed, 03 Mar 2021 09:20:45 +0100 (CET)
+Subject: Re: [PATCH AUTOSEL 4.9 05/10] sparc32: Limit memblock allocation to
+ low memory
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org
+References: <20210302115921.63636-1-sashal@kernel.org>
+ <20210302115921.63636-5-sashal@kernel.org>
+From:   Andreas Larsson <andreas@gaisler.com>
+Message-ID: <0b1dc8c7-2594-00ef-c117-a111e56f9c61@gaisler.com>
+Date:   Wed, 3 Mar 2021 09:20:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210302040252.103720-2-colyli@suse.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210302115921.63636-5-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 5:02 AM, Coly Li wrote:
-> This patch adds the following helper structure and routines into
-> badblocks.h,
-> - struct bad_context
->   This structure is used in improved badblocks code for bad table
->   iteration.
-> - BB_END()
->   The macro to culculate end LBA of a bad range record from bad
->   table.
-> - badblocks_full() and badblocks_empty()
->   The inline routines to check whether bad table is full or empty.
-> - set_changed() and clear_changed()
->   The inline routines to set and clear 'changed' tag from struct
->   badblocks.
+On 2021-03-02 12:59, Sasha Levin wrote:
+> From: Andreas Larsson <andreas@gaisler.com>
 > 
-> These new helper structure and routines can help to make the code more
-> clear, they will be used in the improved badblocks code in following
-> patches.
+> [ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
 > 
-> Signed-off-by: Coly Li <colyli@suse.de>
+> Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
+> memblocks instead of bootmem, but also made high memory available via
+> memblock allocation which does not work together with e.g. phys_to_virt
+> and can lead to kernel panic.
+> 
+> This changes back to only low memory being allocatable in the early
+> stages, now using memblock allocation.
+> 
+> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  include/linux/badblocks.h | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
+>   arch/sparc/mm/init_32.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/include/linux/badblocks.h b/include/linux/badblocks.h
-> index 2426276b9bd3..166161842d1f 100644
-> --- a/include/linux/badblocks.h
-> +++ b/include/linux/badblocks.h
-> @@ -15,6 +15,7 @@
->  #define BB_OFFSET(x)	(((x) & BB_OFFSET_MASK) >> 9)
->  #define BB_LEN(x)	(((x) & BB_LEN_MASK) + 1)
->  #define BB_ACK(x)	(!!((x) & BB_ACK_MASK))
-> +#define BB_END(x)	(BB_OFFSET(x) + BB_LEN(x))
->  #define BB_MAKE(a, l, ack) (((a)<<9) | ((l)-1) | ((u64)(!!(ack)) << 63))
->  
->  /* Bad block numbers are stored sorted in a single page.
-> @@ -41,6 +42,14 @@ struct badblocks {
->  	sector_t size;		/* in sectors */
->  };
->  
-> +struct bad_context {
-> +	sector_t	start;
-> +	sector_t	len;
-> +	int		ack;
-> +	sector_t	orig_start;
-> +	sector_t	orig_len;
-> +};
+> diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+> index 3b7092d9ea8f..4abe4bf08377 100644
+> --- a/arch/sparc/mm/init_32.c
+> +++ b/arch/sparc/mm/init_32.c
+> @@ -240,6 +240,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
+>   	reserve_bootmem((bootmap_pfn << PAGE_SHIFT), size, BOOTMEM_DEFAULT);
+>   	*pages_avail -= PAGE_ALIGN(size) >> PAGE_SHIFT;
+>   
+> +	/* Only allow low memory to be allocated via memblock allocation */
+> +	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
 > +
-Maybe rename it to 'badblocks_context'.
-It's not the context which is bad ...
+>   	return max_pfn;
+>   }
+>   
+> 
 
-Cheers,
+This is not needed for 4.9, and will not compile, as the problem it
+fixes was introduced in 4.19.
 
-Hannes
 -- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
+Andreas Larsson
