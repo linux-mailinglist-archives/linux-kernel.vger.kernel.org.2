@@ -2,54 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3A332BDA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC7832BDAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349321AbhCCQSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:18:14 -0500
-Received: from comms.puri.sm ([159.203.221.185]:56318 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234981AbhCCLpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:45:24 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 06028E0415;
-        Wed,  3 Mar 2021 01:17:02 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JZHkuqRt8frZ; Wed,  3 Mar 2021 01:17:01 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH] Documentation: dynamic-debug-howto: fix example
-Date:   Wed,  3 Mar 2021 10:16:46 +0100
-Message-Id: <20210303091646.773111-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S1346417AbhCCQ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:26:15 -0500
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:52995 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243405AbhCCLrK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:47:10 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id B972DCCB24
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:18:28 +0000 (GMT)
+Received: (qmail 8195 invoked from network); 3 Mar 2021 09:18:28 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 3 Mar 2021 09:18:28 -0000
+Date:   Wed, 3 Mar 2021 09:18:25 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 4/5] net: page_pool: refactor dma_map into own function
+ page_pool_dma_map
+Message-ID: <20210303091825.GO3697@techsingularity.net>
+References: <20210301161200.18852-1-mgorman@techsingularity.net>
+ <20210301161200.18852-5-mgorman@techsingularity.net>
+ <YD6IosORkdRN9B2x@enceladus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <YD6IosORkdRN9B2x@enceladus>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dynamic debug is "expecting pairs of match-spec <value>" so the example
-for all files of which the paths include "usb" there is "file" missing.
+On Tue, Mar 02, 2021 at 08:49:06PM +0200, Ilias Apalodimas wrote:
+> Hi Mel,
+> 
+> Can you please CC me in future revisions. I almost missed that!
+> 
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- Documentation/admin-guide/dynamic-debug-howto.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Will do.
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index 6c04aea8f4cd..b119b8277b3e 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -347,7 +347,7 @@ Examples
- 				<debugfs>/dynamic_debug/control
- 
-   // enable messages in files of which the paths include string "usb"
--  nullarbor:~ # echo -n '*usb* +p' > <debugfs>/dynamic_debug/control
-+  nullarbor:~ # echo -n 'file *usb* +p' > <debugfs>/dynamic_debug/control
- 
-   // enable all messages
-   nullarbor:~ # echo -n '+p' > <debugfs>/dynamic_debug/control
+> On Mon, Mar 01, 2021 at 04:11:59PM +0000, Mel Gorman wrote:
+> > From: Jesper Dangaard Brouer <brouer@redhat.com>
+> > 
+> > In preparation for next patch, move the dma mapping into its own
+> > function, as this will make it easier to follow the changes.
+> > 
+> > V2: make page_pool_dma_map return boolean (Ilias)
+> > 
+> 
+> [...]
+> 
+> > @@ -211,30 +234,14 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+> >  	if (!page)
+> >  		return NULL;
+> >  
+> > -	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
+> > -		goto skip_dma_map;
+> > -
+> > -	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
+> > -	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
+> > -	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
+> > -	 * This mapping is kept for lifetime of page, until leaving pool.
+> > -	 */
+> > -	dma = dma_map_page_attrs(pool->p.dev, page, 0,
+> > -				 (PAGE_SIZE << pool->p.order),
+> > -				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
+> > -	if (dma_mapping_error(pool->p.dev, dma)) {
+> > +	if (pp_flags & PP_FLAG_DMA_MAP &&
+> 
+> Nit pick but can we have if ((pp_flags & PP_FLAG_DMA_MAP) && ...
+> 
+
+Done.
+
+> [...]
+>
+> > 
+> 
+> Otherwise 
+> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org> 
+
+Thanks. I'll wait for other review feedback before sending a V2.
+
 -- 
-2.30.1
-
+Mel Gorman
+SUSE Labs
