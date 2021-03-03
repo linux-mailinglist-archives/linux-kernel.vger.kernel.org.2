@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCDD32C194
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF5E32C19C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhCCTTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S1350969AbhCCTXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1837850AbhCCS67 (ORCPT
+        with ESMTP id S1838495AbhCCTAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:58:59 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F613C0613DB
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:58:19 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 127so27746156ybc.19
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=8A+Vn1cjgQFOcnDW+QJHWNfY0Snfwko60G1y42Y3xgQ=;
-        b=EpO/7HH81xcIMjmISnM93Lf1cTCniUoMKyu7mC95M0PrCQYm7LXCrQJFJxnhZLebYL
-         7pgo4FkTt/mXEQZGUDVK60yhEbDk+l70ihk7fVZRA7q4x00fCo4K0ZLzvUGDVBUCJ/Ip
-         XMq1817dtkxXcudmkwE9YXFa5LjA/esowmInvI2pZ8JnNxJ4EKkvy5wviOMspFd3DJJE
-         WO7EY93hE9dI9+/koHkwJLl1Bja54aqa7WzriMyAQE1AIbkNDaRz1Gy29w6vUOJQSNRX
-         Ov3RIk4m9opjmKSFTrlLQYe7ndJ/OAJuKsGAHDXeZtV2/2JBNiFf7obXAg8Vb1Pdkhkz
-         ILqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=8A+Vn1cjgQFOcnDW+QJHWNfY0Snfwko60G1y42Y3xgQ=;
-        b=KuuEF2QUFsyfVkKWixJq5LOCMPSQkQl9YDg+xMrO8oLV97RQhizOiw4BKsradU9Ena
-         4BecJjQLR2KPpZHkk3pFbt1TRLSuIqT89AOdWEuNsvbcPToxl8BeuEXyTNHZQ7BrlTTm
-         P8KdIx46Y4ZYUz/zf91sRU6gUdhlXV/FuezDqxwkBjQaxTJ5PHfJJvyrgE2MYSFePLiz
-         Zh45F4v3WbT+cjYa9NFT4AevHKf0gGxg4ACvIHrx1zMlqkhmDYBlVr72oDWotNk2VmaV
-         Ruw3/1O2vbc1J6XkSVLZi0Kdzn0qNL2w7pwnOGN2qLaB9T8T3E8X1D1rVK5iUVK6dq69
-         /T4g==
-X-Gm-Message-State: AOAM532LchWyJlhIE09x0j7PU3plTzTSkVIfJ1DhMrThN1qTG+slcMqv
-        lDV0eYE/Ory38tieVA9DQ/8qvX308v0=
-X-Google-Smtp-Source: ABdhPJw5vqMC1rNuxjPhDpEuhkpA8XxV6s45QZbFWYlu/dQ45hxGXNv7dGL1NqqF16Ah3hvn7L52qLtxWkQ=
-Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f028:1b0b:1705:8ebb])
- (user=surenb job=sendgmr) by 2002:a25:f40e:: with SMTP id q14mr1113934ybd.230.1614797898171;
- Wed, 03 Mar 2021 10:58:18 -0800 (PST)
-Date:   Wed,  3 Mar 2021 10:58:07 -0800
-Message-Id: <20210303185807.2160264-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v3 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     akpm@linux-foundation.org
-Cc:     jannh@google.com, keescook@chromium.org, jeffv@google.com,
-        minchan@kernel.org, mhocko@suse.com, shakeelb@google.com,
-        rientjes@google.com, edgararriaga@google.com, timmurray@google.com,
-        fweimer@redhat.com, oleg@redhat.com, jmorris@namei.org,
-        linux-mm@kvack.org, selinux@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-security-module@vger.kernel.org,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, surenb@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Mar 2021 14:00:36 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A71BC061765
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B76ip7Z1pMeqyo0ZwLMBroQsISdWL+yZsCzxkZ1ErXk=; b=CTmtWS9/X/DNebLxAL9FMJdsZj
+        MeyCTW8LPdt1alZjzEG66q5CAN0ESBeYpmoD1bUUCEWRUaNnENvQ1mLXhMvTtU7+dOpmDLw7t1856
+        CFNuulPtFyxfAmJTovgQlmnEA5thKeOvP2qayrmsYP/vdsRyS/8HJY2CiAsPmsGf9+vHnw5deDTyH
+        /+vSURvY5IZunsuz0rVfFSxU4/CxfyitB1L/u7VPG5srfdYHbNntGyb5N7Qxsqld8CxvGzzUlVr39
+        t+dwhvMxw35PHCKgR/AKePTxdVGe1OT9tzB/+pPJIzGpx8ADObCqBoK4zct2pvt0dlvaqKL4AXRvr
+        63dUccFQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lHWil-0067U3-3c; Wed, 03 Mar 2021 18:59:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7ADD530011C;
+        Wed,  3 Mar 2021 19:59:42 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5DBD023CE7A7E; Wed,  3 Mar 2021 19:59:42 +0100 (CET)
+Date:   Wed, 3 Mar 2021 19:59:42 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, eranian@google.com,
+        ak@linux.intel.com, stable@vger.kernel.org
+Subject: Re: [PATCH] Revert "perf/x86: Allow zero PEBS status with only
+ single active event"
+Message-ID: <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net>
+References: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-process_madvise currently requires ptrace attach capability.
-PTRACE_MODE_ATTACH gives one process complete control over another
-process. It effectively removes the security boundary between the
-two processes (in one direction). Granting ptrace attach capability
-even to a system process is considered dangerous since it creates an
-attack surface. This severely limits the usage of this API.
-The operations process_madvise can perform do not affect the correctness
-of the operation of the target process; they only affect where the data
-is physically located (and therefore, how fast it can be accessed).
-What we want is the ability for one process to influence another process
-in order to optimize performance across the entire system while leaving
-the security boundary intact.
-Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-and CAP_SYS_NICE for influencing process performance.
+On Wed, Mar 03, 2021 at 05:42:18AM -0800, kan.liang@linux.intel.com wrote:
 
-Cc: stable@vger.kernel.org # 5.10+
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Minchan Kim <minchan@kernel.org>
-Acked-by: David Rientjes <rientjes@google.com>
----
-changes in v3
-- Added Reviewed-by: Kees Cook <keescook@chromium.org>
-- Created man page for process_madvise per Andrew's request: https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=a144f458bad476a3358e3a45023789cb7bb9f993
-- cc'ed stable@vger.kernel.org # 5.10+ per Andrew's request
-- cc'ed linux-security-module@vger.kernel.org per James Morris's request
+> For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
+> may be mistakenly set to 0. To minimize the impact of the defect, the
+> commit was introduced to try to avoid dropping the PEBS record for some
+> cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
+> the local pebs_status accordingly. However, it doesn't correct the PEBS
+> status in the PEBS record, which may trigger the crash, especially for
+> the large PEBS.
+> 
+> It's possible that all the PEBS records in a large PEBS have the PEBS
+> status 0. If so, the first get_next_pebs_record_by_bit() in the
+> __intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
+> PEBS, the 'count' parameter must > 1. The second
+> get_next_pebs_record_by_bit() will crash.
+> 
+> Two solutions were considered to fix the crash.
+> - Keep the SW workaround and add extra checks in the
+>   get_next_pebs_record_by_bit() to workaround the issue. The
+>   get_next_pebs_record_by_bit() is a critical path. The extra checks
+>   will bring extra overhead for the latest CPUs which don't have the
+>   defect. Also, the defect can only be observed on some old CPUs
+>   (For example, the issue can be reproduced on an HSW client, but I
+>   didn't observe the issue on my Haswell server machine.). The impact
+>   of the defect should be limit.
+>   This solution is dropped.
+> - Drop the SW workaround and revert the commit.
+>   It seems that the commit never works, because the PEBS status in the
+>   PEBS record never be changed. The get_next_pebs_record_by_bit() only
+>   checks the PEBS status in the PEBS record. The record is dropped
+>   eventually. Reverting the commit should not change the current
+>   behavior.
 
- mm/madvise.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
+>  			continue;
+>  		}
+>  
+> -		/*
+> -		 * On some CPUs the PEBS status can be zero when PEBS is
+> -		 * racing with clearing of GLOBAL_STATUS.
+> -		 *
+> -		 * Normally we would drop that record, but in the
+> -		 * case when there is only a single active PEBS event
+> -		 * we can assume it's for that event.
+> -		 */
+> -		if (!pebs_status && cpuc->pebs_enabled &&
+> -			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
+> -			pebs_status = cpuc->pebs_enabled;
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index df692d2e35d4..01fef79ac761 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -1198,12 +1198,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
- 		goto release_task;
- 	}
- 
--	mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
-+	/* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
-+	mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
- 	if (IS_ERR_OR_NULL(mm)) {
- 		ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
- 		goto release_task;
- 	}
- 
-+	/*
-+	 * Require CAP_SYS_NICE for influencing process performance. Note that
-+	 * only non-destructive hints are currently supported.
-+	 */
-+	if (!capable(CAP_SYS_NICE)) {
-+		ret = -EPERM;
-+		goto release_mm;
-+	}
-+
- 	total_len = iov_iter_count(&iter);
- 
- 	while (iov_iter_count(&iter)) {
-@@ -1218,6 +1228,7 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
- 	if (ret == 0)
- 		ret = total_len - iov_iter_count(&iter);
- 
-+release_mm:
- 	mmput(mm);
- release_task:
- 	put_task_struct(task);
--- 
-2.30.1.766.gb4fecdf3b7-goog
+Wouldn't something like:
+
+			pebs_status = p->status = cpus->pebs_enabled;
+
+actually fix things without adding overhead?
+
 
