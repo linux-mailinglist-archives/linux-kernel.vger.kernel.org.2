@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CDD32BC63
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5531332BC23
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349209AbhCCN4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1582444AbhCCKVz (ORCPT
+        id S1444316AbhCCNlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:41:13 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:51968 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1449286AbhCCKUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:21:55 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6A7C0698D1
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:15:49 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id u4so35981057lfs.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sp36NWnrhLjOQm0Stkd4LZHThWDt7bH0sFAyGvv2U8I=;
-        b=vWE9DEmxJVpajt4N0OeAIG4Ywd6F9yjGpG/Usi4bJAfS82H2VuZuwrnkRZ6T0NDQfB
-         pZl0oKm1D6Z2tM/z2yRbdqL7iCZFJVZlrgA4IalEQTULXAw9RNSgSwRLEeV5gyvwR3Ea
-         uDGSawz54h09NUHEWROgApheu51J7YhOVRs8f9rRAGHvm5ANyh+jZa6cE4KMEhKy0nm/
-         3a8iCPs8IcuwdiK7HC+CNwuzWeeoxEjj/Lx5nSJE0St9dqiwhU4vpzCVixIvl6V9Wltw
-         otlve2l05JPsjGMmY5r3lgm2mN4XLAy4kC7IzPIlbMcrNqAJqIs0/hEzz2KUyTuUgONi
-         WSBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sp36NWnrhLjOQm0Stkd4LZHThWDt7bH0sFAyGvv2U8I=;
-        b=bCeWOdg1LKABv7uVmPnLzYueHHPlvHyqyWvUFMxvbhPIJlvubqe6j0LoA4MTBJIpyf
-         Yx0sJbAsyTmPXWRi8nmLXvN+e26dTuWuQRZqPyXeFtu++YrrRgfINi2OW6wmsMVe+nSW
-         R6lSSDf/jpHM/DvaGwQMWofyHQJaVn7c0md2+Ddjg/gYB7cTo3CuEe4DNe9Ws/fLr/Wq
-         vQSHONgwDxIHOZ0MQ5ww1fpImwLOHL5I/988TNh11NpAAizuG/zlpEuSljQT/6LVnD8F
-         nIZke2PfmbLVTq7aRgj95OnnUJMIPufQnjd0fyhhcCDuZDg91CZ2fNDVFP2VqEPWUr8K
-         rnPg==
-X-Gm-Message-State: AOAM533xZ481mf31MdfEGzs1FJhAZZ7tXTPpVASIRMnuPk+jgBpvs+la
-        ZUFIvqJF0VRqbLzK/vEXZmJiqefMTg8u1zZpr2VmuLaQ0QsoDQ==
-X-Google-Smtp-Source: ABdhPJyQEF3Dg3TGmwCnQX8IQTX6FuafUjYFGINhQ2GjRDyLMrkwj4Lim0GfOkHxDuTA0bc0wFX+DNzDrPi0C9v3McM=
-X-Received: by 2002:a05:6512:74a:: with SMTP id c10mr14912207lfs.586.1614762948094;
- Wed, 03 Mar 2021 01:15:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com> <20210302153451.50593-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210302153451.50593-2-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 3 Mar 2021 10:15:37 +0100
-Message-ID: <CACRpkdZ5G=YX3NX-xhmj5t_w0mqtcnrnR_cYhv04d_9Rzg=FFw@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] gpiolib: Move of_node operations to gpiolib-of and
- correct fwnode use
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Mar 2021 05:20:24 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UQCzVlF_1614763066;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UQCzVlF_1614763066)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Mar 2021 17:18:05 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu: Remove unnecessary conversion to bool
+Date:   Wed,  3 Mar 2021 17:17:45 +0800
+Message-Id: <1614763065-114245-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 4:35 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Fix the following coccicheck warnings:
 
-> The initial value of the OF node based on presence of parent, but
-> at the same time this operation somehow appeared separately from others
-> that handle the OF case. On the other hand there is no need to assign
-> dev->fwnode in the OF case if code properly retrieves fwnode, i.e.
-> via dev_fwnode() helper.
->
-> Amend gpiolib.c and gpiolib-of.c code in order to group OF operations.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+./drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c:2252:40-45: WARNING: conversion
+to bool not needed here.
 
-I parsed it in my head a few times and it looks like it will
-end up working the same, so:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
+index c8c22c1..00d3773 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
+@@ -2249,7 +2249,7 @@ static int sdma_v4_0_set_powergating_state(void *handle,
+ 	case CHIP_RAVEN:
+ 	case CHIP_RENOIR:
+ 		sdma_v4_1_update_power_gating(adev,
+-				state == AMD_PG_STATE_GATE ? true : false);
++				state == AMD_PG_STATE_GATE);
+ 		break;
+ 	default:
+ 		break;
+-- 
+1.8.3.1
+
