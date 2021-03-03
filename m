@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DC832BC8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7402832BCAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244495AbhCCOKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
+        id S1383304AbhCCObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:31:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842924AbhCCKWg (ORCPT
+        with ESMTP id S1842970AbhCCKXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:36 -0500
+        Wed, 3 Mar 2021 05:23:11 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C809C08EC31;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D889BC08EC35;
         Wed,  3 Mar 2021 01:49:39 -0800 (PST)
 Date:   Wed, 03 Mar 2021 09:49:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/kpGDB+dtKyI/ybyOwa/9kKmrICWwBnWQy1b8eKtTxk=;
-        b=JaCWgQGYIVDDJh0wZCn13hIhBcO6ExwkreY9w82DzsluNT0LaJdUV6XmkaUFW8qnGKa8cg
-        9sNM5M0puRk2Stin6II69gte7W8OFQBLEdAiINycR44Pi5ATk7xfAN7sXAMDjmXdE847SG
-        mwqMDIbydYXOTMcPiYVcoKaPSQsFnA86WYXGDVD34lpI4AfHkbZy5QrUVHnNLFtBkoAiVt
-        Iqs+1WdgkcOMp8ik269opzjsB7dAAudMs4g9GPRceMUxSnNqZVjhY+oECXGGltbM2ULW82
-        UN7cm0sKUxJsIL6xiAwugK9FS/KK1BD/3AFko8i5ReJIEz5Kj327pB3xFCsk8A==
+        bh=ch8o6XbDa6CK1VvCA+XQ2OhcGyrfZWVFh7nJuLHRs3o=;
+        b=Tgay1+jfd2cjT5aAV5gCvOc2Ie8muVN3/rktva9ZTpqze5HR4hxBCb/0oWdsq7g+ZpaTMb
+        /xv0mzHrCBE/2VDyORDeXbaJCIIpDHfCCyPeqhv6OK0ukztYncJ3wcE+6QDSzkA5Jv8SLv
+        yP7gf6Jr9odJNNOIEF63GDcrcZgLs2BoukVELwxSjYutXLZ3g20XSi4vv7Tpv8G1PAN6Pe
+        tM5is4UcC3Ko7ShsKqw7y22eWY/7vUjQwCafVQ3Z6BFunYMBq58G6zT9Qxv9/DjUGxoKv2
+        OdWcutpW+MZVUOPdzaB70hjqvWSsyxewjjXTrobgtrnuI3DL8JxPgFZWAVGJgQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1614764978;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +36,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/kpGDB+dtKyI/ybyOwa/9kKmrICWwBnWQy1b8eKtTxk=;
-        b=xQx2StjM0GskqPkhlZENO7uI8kN7+JmtTSeJS2YEX2CceNI1NS/DCbTuAuL18pPyN1t066
-        +Ql5pYw1IICvDrBw==
+        bh=ch8o6XbDa6CK1VvCA+XQ2OhcGyrfZWVFh7nJuLHRs3o=;
+        b=PWwKsQ67J+UiRrT1FHtgtgZdntr+0kpK4QAiJfKNKuVsbLCWAZlH66XzZ4kLCEoos/O7KL
+        WHGxlbxjfd5vJaDw==
 From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Reorder newidle_balance pulled_task tests
+Subject: [tip: sched/core] sched/fair: Merge for each idle cpu loop of ILB
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210224133007.28644-6-vincent.guittot@linaro.org>
-References: <20210224133007.28644-6-vincent.guittot@linaro.org>
+In-Reply-To: <20210224133007.28644-5-vincent.guittot@linaro.org>
+References: <20210224133007.28644-5-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Message-ID: <161476497748.20312.7719009634434548681.tip-bot2@tip-bot2>
+Message-ID: <161476497787.20312.14014429392968052029.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,55 +62,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     053192dea58da994fb3dd7ad235440accf292a08
-Gitweb:        https://git.kernel.org/tip/053192dea58da994fb3dd7ad235440accf292a08
+Commit-ID:     2aa7f2f6d1e4308b81bef079091561445b9cb949
+Gitweb:        https://git.kernel.org/tip/2aa7f2f6d1e4308b81bef079091561445b9cb949
 Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Wed, 24 Feb 2021 14:30:05 +01:00
+AuthorDate:    Wed, 24 Feb 2021 14:30:04 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 03 Mar 2021 10:32:59 +01:00
 
-sched/fair: Reorder newidle_balance pulled_task tests
+sched/fair: Merge for each idle cpu loop of ILB
 
-Reorder the tests and skip useless ones when no load balance has been
-performed and rq lock has not been released.
+Remove the specific case for handling this_cpu outside for_each_cpu() loop
+when running ILB. Instead we use for_each_cpu_wrap() and start with the
+next cpu after this_cpu so we will continue to finish with this_cpu.
+
+update_nohz_stats() is now used for this_cpu too and will prevents
+unnecessary update. We don't need a special case for handling the update of
+nohz.next_balance for this_cpu anymore because it is now handled by the
+loop like others.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224133007.28644-6-vincent.guittot@linaro.org
+Link: https://lkml.kernel.org/r/20210224133007.28644-5-vincent.guittot@linaro.org
 ---
- kernel/sched/fair.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/sched/fair.c | 32 +++++++-------------------------
+ 1 file changed, 7 insertions(+), 25 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 3c00918..356a245 100644
+index 1b91030..3c00918 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10584,7 +10584,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	if (curr_cost > this_rq->max_idle_balance_cost)
- 		this_rq->max_idle_balance_cost = curr_cost;
+@@ -10043,22 +10043,9 @@ out:
+ 	 * When the cpu is attached to null domain for ex, it will not be
+ 	 * updated.
+ 	 */
+-	if (likely(update_next_balance)) {
++	if (likely(update_next_balance))
+ 		rq->next_balance = next_balance;
  
--out:
- 	/*
- 	 * While browsing the domains, we released the rq lock, a task could
- 	 * have been enqueued in the meantime. Since we're not going idle,
-@@ -10593,14 +10592,15 @@ out:
- 	if (this_rq->cfs.h_nr_running && !pulled_task)
- 		pulled_task = 1;
+-#ifdef CONFIG_NO_HZ_COMMON
+-		/*
+-		 * If this CPU has been elected to perform the nohz idle
+-		 * balance. Other idle CPUs have already rebalanced with
+-		 * nohz_idle_balance() and nohz.next_balance has been
+-		 * updated accordingly. This CPU is now running the idle load
+-		 * balance for itself and we need to update the
+-		 * nohz.next_balance accordingly.
+-		 */
+-		if ((idle == CPU_IDLE) && time_after(nohz.next_balance, rq->next_balance))
+-			nohz.next_balance = rq->next_balance;
+-#endif
+-	}
+ }
  
--	/* Move the next balance forward */
--	if (time_after(this_rq->next_balance, next_balance))
--		this_rq->next_balance = next_balance;
+ static inline int on_null_domain(struct rq *rq)
+@@ -10385,8 +10372,12 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	 */
+ 	smp_mb();
+ 
+-	for_each_cpu(balance_cpu, nohz.idle_cpus_mask) {
+-		if (balance_cpu == this_cpu || !idle_cpu(balance_cpu))
++	/*
++	 * Start with the next CPU after this_cpu so we will end with this_cpu and let a
++	 * chance for other idle cpu to pull load.
++	 */
++	for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
++		if (!idle_cpu(balance_cpu))
+ 			continue;
+ 
+ 		/*
+@@ -10432,15 +10423,6 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+ 	if (likely(update_next_balance))
+ 		nohz.next_balance = next_balance;
+ 
+-	/* Newly idle CPU doesn't need an update */
+-	if (idle != CPU_NEWLY_IDLE) {
+-		update_blocked_averages(this_cpu);
+-		has_blocked_load |= this_rq->has_blocked_load;
+-	}
 -
- 	/* Is there a task of a high priority class? */
- 	if (this_rq->nr_running != this_rq->cfs.h_nr_running)
- 		pulled_task = -1;
+-	if (flags & NOHZ_BALANCE_KICK)
+-		rebalance_domains(this_rq, CPU_IDLE);
+-
+ 	WRITE_ONCE(nohz.next_blocked,
+ 		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
  
-+out:
-+	/* Move the next balance forward */
-+	if (time_after(this_rq->next_balance, next_balance))
-+		this_rq->next_balance = next_balance;
-+
- 	if (pulled_task)
- 		this_rq->idle_stamp = 0;
- 	else
