@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE4D32BE45
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7231832BE3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376614AbhCCRSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:18:53 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:59009 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380317AbhCCNaa (ORCPT
+        id S1345154AbhCCRQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:16:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1380706AbhCCN3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:30:30 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lHRWR-0004eQ-3X; Wed, 03 Mar 2021 14:26:39 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lHRWP-0000NT-Lz; Wed, 03 Mar 2021 14:26:37 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id EFA0E240041;
-        Wed,  3 Mar 2021 14:26:36 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 4FC9B240040;
-        Wed,  3 Mar 2021 14:26:36 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id B706B200E7;
-        Wed,  3 Mar 2021 14:26:35 +0100 (CET)
+        Wed, 3 Mar 2021 08:29:42 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820E5C06178C
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:28:01 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id s16so14029580plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:28:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GDH7lgjRH5u3RTqXMq5Tl04VvG/bzdMWK3DmgGuHjNg=;
+        b=bazKNP9smhGB0AaA3ZgST/1l2rLawqsYZX+v6I4r9lrS8ig/5GAQoWRLViI7EZf1sY
+         y7PTVw012LS0dGujFogrqhAWzA2YAuxRwfJP4pzs+mnb/mJK/Df3OnvAd3115XKogSdv
+         i4BQ92i9aL6wzN5TtptJuew9+X2mIWnnu2b3KlRnoL6azIjyUlgw1BT6AoClmmfqOWb7
+         DHUhVdJJn9iwnSj951+gBTJrgMTla6tqo/rmI/NM/gtuETmNJ7TleDB8TTTzdfuUw6yn
+         OaFaUMcPnyuFQgEy9QilQwkmmJnCsqRVi63N4hKP6JxiztStR28iXv8mmA8T28RcqGoN
+         VxQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GDH7lgjRH5u3RTqXMq5Tl04VvG/bzdMWK3DmgGuHjNg=;
+        b=oYhJOc8tYaRZhBxEqyqcr06y3OOzyAdmUxBDohnrC3dvIQ/ZkDpvFTbQMwAhaopKLH
+         ruVQa8W3Hbt689PwZDpwozISKS0NcikaUrIFGr78SlsSUyiQAn7NR+0FcfcPJM9w/6s1
+         EKy5xulVPrXJ1ovffxbxtm7ffIUjVSCWHoTKjn81nfxCeXyFJF6zCOJyclI9OVKE27Nw
+         XjliqzJDlMKJloIrcDLMQDFkpSCgWsx0uL7T2BAZBXVZ9ZXw9jGZApactYou4qObaeCH
+         8R38PHJ6MpVcgqRrhbWQolhrFoE1+QHZ0uokR7plDUi+wAp711cyNUWAV6NxlRR5FBU1
+         NI5g==
+X-Gm-Message-State: AOAM533H0YBmaeFHYTqyLQdpdlZMZd22NbGUwyWZN9pTRD72bywBmXtj
+        FqZhHwkyTOyUZQFNhQkqzdZdRImDMhBTQlkr+pG8sA==
+X-Google-Smtp-Source: ABdhPJw0LwArSdnvTDr+Hc6zokLHVmsmS5LG8oVeZyn9/01/gqylWDQXxsUWCHfelRedXOK5pHQY8aBf6SPZcfd4/Uw=
+X-Received: by 2002:a17:90a:778a:: with SMTP id v10mr9402005pjk.229.1614778081078;
+ Wed, 03 Mar 2021 05:28:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Mar 2021 14:26:35 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Xie He <xie.he.0141@gmail.com>, Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+References: <20210303093956.72318-1-songmuchun@bytedance.com> <YD9kCLlckn9evWuw@dhcp22.suse.cz>
+In-Reply-To: <YD9kCLlckn9evWuw@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 3 Mar 2021 21:27:24 +0800
+Message-ID: <CAMZfGtVdU9KWD8U_0CbctMpYo5SbzJEW2pSa1Qdr9tFcwaWcoQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm: memcontrol: fix kernel stack account
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-Organization: TDT AG
-In-Reply-To: <20210302153034.5f4e320b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210216201813.60394-1-xie.he.0141@gmail.com>
- <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal>
- <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
- <YC7GHgYfGmL2wVRR@unreal>
- <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
- <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
- <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
- <906d8114f1965965749f1890680f2547@dev.tdt.de>
- <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
- <e1750da4179aca52960703890e985af3@dev.tdt.de>
- <CAJht_ENP3Y98jgj1peGa3fGpQ-qPaF=1gtyYwMcawRFW_UCpeA@mail.gmail.com>
- <ff200b159ef358494a922a676cbef8a6@dev.tdt.de>
- <CAJht_EMG27YU+Jxtb2qeq1nXwu8uV8FXQPr62OcNHsE7DozD1g@mail.gmail.com>
- <41b77b1c3cf1bb7a51b750faf23900ef@dev.tdt.de>
- <20210302153034.5f4e320b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Message-ID: <8cac820a181070ac2bad983dc49e4e4e@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate: clean
-X-purgate-type: clean
-X-purgate-ID: 151534::1614777998-0000B5A4-ED31A05D/0/0
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-03 00:30, Jakub Kicinski wrote:
-> On Tue, 02 Mar 2021 08:04:20 +0100 Martin Schiller wrote:
->> On 2021-03-01 09:56, Xie He wrote:
->> > On Sun, Feb 28, 2021 at 10:56 PM Martin Schiller <ms@dev.tdt.de> wrote:
->> >> I mean the change from only one hdlc<x> interface to both hdlc<x> and
->> >> hdlc<x>_x25.
->> >>
->> >> I can't estimate how many users are out there and how their setup
->> >> looks
->> >> like.
->> >
->> > I'm also thinking about solving this issue by adding new APIs to the
->> > HDLC subsystem (hdlc_stop_queue / hdlc_wake_queue) for hardware
->> > drivers to call instead of netif_stop_queue / netif_wake_queue. This
->> > way we can preserve backward compatibility.
->> >
->> > However I'm reluctant to change the code of all the hardware drivers
->> > because I'm afraid of introducing bugs, etc. When I look at the code
->> > of "wan/lmc/lmc_main.c", I feel I'm not able to make sure there are no
->> > bugs (related to stop_queue / wake_queue) after my change (and even
->> > before my change, actually). There are even serious style problems:
->> > the majority of its lines are indented by spaces.
->> >
->> > So I don't want to mess with all the hardware drivers. Hardware driver
->> > developers (if they wish to properly support hdlc_x25) should do the
->> > change themselves. This is not a problem for me, because I use my own
->> > out-of-tree hardware driver. However if I add APIs with no user code
->> > in the kernel, other developers may think these APIs are not
->> > necessary.
->> 
->> I don't think a change that affects the entire HDLC subsystem is
->> justified, since the actual problem only affects the hdlc_x25 area.
->> 
->> The approach with the additional hdlc<x>_x25 is clean and purposeful 
->> and
->> I personally could live with it.
->> 
->> I just don't see myself in the position to decide such a change at the
->> moment.
->> 
->> @Jakub: What is your opinion on this.
-> 
-> Hard question to answer, existing users seem happy and Xie's driver
-> isn't upstream, so the justification for potentially breaking backward
-> compatibility isn't exactly "strong".
-> 
-> Can we cop out and add a knob somewhere to control spawning the extra
-> netdev? Let people who just want a newer kernel carry on without
-> distractions and those who want the extra layer can flip the switch?
+On Wed, Mar 3, 2021 at 6:25 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 03-03-21 17:39:56, Muchun Song wrote:
+> > For simplification 991e7673859e ("mm: memcontrol: account kernel stack
+> > per node") has changed the per zone vmalloc backed stack pages
+> > accounting to per node. By doing that we have lost a certain precision
+> > because those pages might live in different NUMA nodes. In the end
+> > NR_KERNEL_STACK_KB exported to the userspace might be over estimated on
+> > some nodes while underestimated on others.
+> >
+> > This doesn't impose any real problem to correctnes of the kernel
+> > behavior as the counter is not used for any internal processing but it
+> > can cause some confusion to the userspace.
+>
+> You have skipped over one part of the changelog I have proposed and that
+> is to provide an actual data.
 
-Yes, that would be a good compromise.
-I think a compile time selection option is enough here.
-We could introduce a new config option CONFIG_HDLC_X25_LEGACY (or
-something like that) and then implement the new or the old behavior in
-the driver accordingly.
+Because this is a problem I found by looking at the code, not a real world
+problem. I do not have any actual data. :-(
 
-A switch that can be toggled at runtime (e.g. via sethdlc) would also be
-conceivable, but I don't think this is necessary.
+>
+> > Address the problem by accounting each vmalloc backing page to its own
+> > node.
+> >
+> > Fixes: 991e7673859e ("mm: memcontrol: account kernel stack per node")
+>
+> Fixes tag might make somebody assume this is worth backporting but I
+> highly doubt so.
 
+OK. I can remove the Fixes tag.
+
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>
+> Anyway
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks for your review.
+
+>
+> as the patch is correct with one comment below
+>
+> > ---
+> > Changelog in v2:
+> >  - Rework commit log suggested by Michal.
+> >
+> >  Thanks to Michal and Shakeel for review.
+> >
+> >  kernel/fork.c | 15 ++++++++++-----
+> >  1 file changed, 10 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index d66cd1014211..6e2201feb524 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -379,14 +379,19 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
+> >       void *stack = task_stack_page(tsk);
+> >       struct vm_struct *vm = task_stack_vm_area(tsk);
+> >
+> > +     if (vm) {
+> > +             int i;
+> >
+> > -     /* All stack pages are in the same node. */
+> > -     if (vm)
+> > -             mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
+> > -                                   account * (THREAD_SIZE / 1024));
+> > -     else
+> > +             BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
+>
+> I do not think we need this BUG_ON. What kind of purpose does it serve?
+
+vm->nr_pages should be always equal to THREAD_SIZE / PAGE_SIZE
+if the system is not corrupted. It makes sense to remove the BUG_ON.
+I will remove it in the next version. Thanks.
+
+>
+> > +
+> > +             for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
+> > +                     mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
+> > +                                           account * (PAGE_SIZE / 1024));
+> > +     } else {
+> > +             /* All stack pages are in the same node. */
+> >               mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
+> >                                     account * (THREAD_SIZE / 1024));
+> > +     }
+> >  }
+> >
+> >  static int memcg_charge_kernel_stack(struct task_struct *tsk)
+> > --
+> > 2.11.0
+>
+> --
+> Michal Hocko
+> SUSE Labs
