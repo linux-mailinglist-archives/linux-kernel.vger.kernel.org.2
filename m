@@ -2,137 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E1D32C135
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E98A432C131
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837011AbhCCSsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835190AbhCCSCd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:02:33 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECA1C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:01:51 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id s7so7282065plg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:01:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fN9kN40P4Zb0ukn4Ugrf+KcpYX4t7X0lCi/CEaratbo=;
-        b=HR9HE4CMDqeLv5C4sWclwl7s5hfMoIrfjNf3jN8ZfWfTFiDoND8rTi8dzYei7fRnnG
-         8CEI8u1jdw+BLbKMKrzcydeZ8f3J+72cdzt8W1IMx1C14U5S4QoCBC0kf894CuFZQ/cW
-         e8ajp6S0OR4owY2zjwEKJvEMcq5VIWPKu6lwc3O1ewxsbct508b2NSMNjdofJQfRa/At
-         FignDJwRpKNgc8QOw/06M9O7ZSRUo1ou6O6ktmu4veCYeAgpJxEaKMID+hmPbDst8M32
-         h2iy5nEEA6V/T0ZY+PwDEBsW39qZkrIQwka+beRRpY34dEvprsIPGrg685z+N60f1Q1U
-         tIWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fN9kN40P4Zb0ukn4Ugrf+KcpYX4t7X0lCi/CEaratbo=;
-        b=nKUuX105yjytk+rJsr78YKU4q5meu42JiJjt0NeFKNQDVA0ffUoD3mgds6dQji/6kP
-         afTFCyNvGtPeNgjKz/TLbMRbFahglL+SojV0OVCq3JBcMqagb0OmVnMAsUAKneTSRdvv
-         UGoeYH4Aj9ixyUo1hqyasSVzs9J0+RhEmuI44eehigzoZT/0cj3pAZErgyrbfQBKfxln
-         oElHtS0NhjZBNa/QPqiSutWzi9DXZqkWHi9CERPOzqHKOFZQORNUXDL/x9KB+3UTFkrk
-         mzXYhOdaLrnyYo+gF5WaxxH+FBuViHaNNhIXEoEfBZbgUINXspu/IErSwAGsEC+szkt5
-         YGEg==
-X-Gm-Message-State: AOAM532TAT9Y5vkdv5y37XgqCOx2LmU0zDsYiKwcHcjOUU0xgdQzZkpv
-        M1bYRXGvW4xSixlxhYu+NVbgyQ==
-X-Google-Smtp-Source: ABdhPJxNGP2ojm9WBMUOuIrgKMhdSc9v7P8W4g6NZqjn4VtIHtI3ni07XFYu+J2/K28y5xiMoKZ5rw==
-X-Received: by 2002:a17:903:22cb:b029:e5:b8b0:b935 with SMTP id y11-20020a17090322cbb02900e5b8b0b935mr211991plg.66.1614794510591;
-        Wed, 03 Mar 2021 10:01:50 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
-        by smtp.gmail.com with ESMTPSA id r15sm25659314pfh.97.2021.03.03.10.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 10:01:50 -0800 (PST)
-Date:   Wed, 3 Mar 2021 10:01:43 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] KVM: x86: Expose Architectural LBR CPUID leaf
-Message-ID: <YD/PB18qLqS7noKH@google.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-9-like.xu@linux.intel.com>
- <YD/IeTdqbK9kEDNp@google.com>
+        id S1836991AbhCCSsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:48:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1835182AbhCCSCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:02:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87FC364EBD;
+        Wed,  3 Mar 2021 18:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614794508;
+        bh=UKy7wDZ5bChILMO8xcrObp1g4dcJ2qNkVlmdmBl9ZX0=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=PH9ZOJl20JyEMilez2SL/x3jyUlCRnEVLFx4gxCtuZ945yee/n+NTe0e4laoR+pdE
+         GzMpcbyKyvoEu3R4TUXuakvljSx9yIksJqPjZRIKG/WrpIAKgTI0c2vhuUSwe2Txe8
+         5JxClRFJOrmpABYsedHVE+BoM55XjqJmNhMnv9WRzP2VAeqUGwFdr+K4oTDveROvxm
+         Zm+jcFBvq2vqUeKC9ourygLQ+hJEPE63VhjPidoHgK5cBb2JC4Dqw2eIMGr5QN+LRz
+         HYUPp3ZtH28O0xj8TjmQES1thS0cPV9Z3S9vFu0PGCZMDvjiQpb9e9CpU10grKbJLS
+         yYAZPvip34AsQ==
+Date:   Wed, 3 Mar 2021 19:01:45 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iwlwifi: don't call netif_napi_add() with rxq->lock
+ held (was Re: Lockdep warning in iwl_pcie_rx_handle())
+In-Reply-To: <20210303155941.25521C43463@smtp.codeaurora.org>
+Message-ID: <nycvar.YFH.7.76.2103031901140.12405@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm> <20210303155941.25521C43463@smtp.codeaurora.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YD/IeTdqbK9kEDNp@google.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021, Sean Christopherson wrote:
-> On Wed, Mar 03, 2021, Like Xu wrote:
-> > If CPUID.(EAX=07H, ECX=0):EDX[19] is set to 1, then KVM supports Arch
-> > LBRs and CPUID leaf 01CH indicates details of the Arch LBRs capabilities.
-> > Currently, KVM only supports the current host LBR depth for guests,
-> > which is also the maximum supported depth on the host.
-> > 
-> > Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> > ---
-> >  arch/x86/kvm/cpuid.c   | 25 ++++++++++++++++++++++++-
-> >  arch/x86/kvm/vmx/vmx.c |  2 ++
-> >  2 files changed, 26 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > index b4247f821277..4473324fe7be 100644
-> > --- a/arch/x86/kvm/cpuid.c
-> > +++ b/arch/x86/kvm/cpuid.c
-> > @@ -450,7 +450,7 @@ void kvm_set_cpu_caps(void)
-> >  		F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
-> >  		F(SPEC_CTRL_SSBD) | F(ARCH_CAPABILITIES) | F(INTEL_STIBP) |
-> >  		F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM) |
-> > -		F(SERIALIZE) | F(TSXLDTRK) | F(AVX512_FP16)
-> > +		F(SERIALIZE) | F(TSXLDTRK) | F(AVX512_FP16) | F(ARCH_LBR)
-> >  	);
-> >  
-> >  	/* TSC_ADJUST and ARCH_CAPABILITIES are emulated in software. */
-> 
-> ...
-> 
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 2f307689a14b..034708a3df20 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -7258,6 +7258,8 @@ static __init void vmx_set_cpu_caps(void)
-> >  		kvm_cpu_cap_clear(X86_FEATURE_INVPCID);
-> >  	if (vmx_pt_mode_is_host_guest())
-> >  		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
-> > +	if (cpu_has_vmx_arch_lbr())
-> > +		kvm_cpu_cap_check_and_set(X86_FEATURE_ARCH_LBR);
-> 
-> Using kvm_cpu_cap_check_and_set(), which queries boot_cpu_has(), is only
-> necessary if a feature is not exposed by default in kvm_set_cpu_caps().  That's
-> why INTEL_PT uses it.  ARCH_LBR on the other hand is set in the "enable by
-> default" mask.
-> 
-> That being said, it's probably a bad idea to advertise ARCH_LBR by default.  In
-> the unlikely case that AMD adds support for ARCH_LBR, enable-by-default means
-> guest will be able to use ARCH_LBR on old KVMs that presumably would lack support
-> for ARCH_LBR on SVM.
-> 
-> TL;DR: omit F(ARCH_LBR) or replace it with "0 /* ARCH_LBR */".
+On Wed, 3 Mar 2021, Kalle Valo wrote:
 
-Actually, I take that back.  It'll require changing SVM, but due to the XSS
-interaction it's probably cleaner to leaf F(ARCH_LBR) as is, and do:
+> Patch applied to wireless-drivers.git, thanks.
 
-	if (!cpu_has_vmx_arch_lbr())
-		kvm_cpu_cap_clear(X86_FEATURE_ARCH_LBR);
+Thanks, but ...
 
-and then unconditionally clear the cap for SVM.  In a way, that's arguably
-better documentation as it explicitly shows that SVM lacks supports.
+> 295d4cd82b01 iwlwifi: don't call netif_napi_add() with rxq->lock held (was Re: Lockdep warning in iwl_pcie_rx_handle())
 
-More thoughts in the next patch...
+... i believe you want to drop the "(was ...") part from the patch 
+subject.
+
+-- 
+Jiri Kosina
+SUSE Labs
+
