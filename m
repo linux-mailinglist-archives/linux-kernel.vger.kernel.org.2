@@ -2,271 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53F232BE3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED0832BEC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349515AbhCCRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:18:39 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:47334 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241960AbhCCNZu (ORCPT
+        id S1575790AbhCCRf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:35:57 -0500
+Received: from 7.mo52.mail-out.ovh.net ([188.165.59.253]:51604 "EHLO
+        7.mo52.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359427AbhCCOT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:25:50 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123DL0Ep003994;
-        Wed, 3 Mar 2021 14:22:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=iWcMqaioAbOcEOUYc2PgX4sjLWX0rmRYYIEX6Aexrls=;
- b=7mMxG78oxY9mNZQEcSHcjvnffXSccMz7nMDgWejxe1zgpIdl4axXFV0pH4dKSOuYi02F
- Hg9q5zXQuZfPVEBx1Ultdruu3DV3GyYXF4kOXzXt2HXOBxHjDdIMuU+hZU43bVqHOZXU
- qDUhXYjCyTMq15Z94noWyt1GP+SxL2Gw0Ogzhhd4giwM2GT9zBNEdbg7GX5OP9n0DiWZ
- +7t/M3ZtmRFTWjIkeINY8va0AW6bbmDLhJc2lWtp5/pU0G350DDnyJU0HWQ1J/FLY0Wt
- rbvDUUeZ3TiKqUgimjKZ6MmtZUjK3KMZ6ioBkjoN5C8k7wQBe3SQ4WjrJegKj1+ms25a +w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 370xehwtgp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 14:22:39 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6E81010002A;
-        Wed,  3 Mar 2021 14:22:38 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 52E0D246CF5;
-        Wed,  3 Mar 2021 14:22:38 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Mar
- 2021 14:22:37 +0100
-Subject: Re: [PATCH v5 04/16] rpmsg: char: export eptdev create an destroy
- functions
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-5-arnaud.pouliquen@foss.st.com>
- <20210302175702.GA3791957@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <4b361c08-09ad-b353-4896-97af3edfc9c6@foss.st.com>
-Date:   Wed, 3 Mar 2021 14:22:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Mar 2021 09:19:28 -0500
+X-Greylist: delayed 3289 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 09:19:26 EST
+Received: from mxplan5.mail.ovh.net (unknown [10.109.143.250])
+        by mo52.mail-out.ovh.net (Postfix) with ESMTPS id 04DA6240D89;
+        Wed,  3 Mar 2021 14:23:46 +0100 (CET)
+Received: from kaod.org (37.59.142.101) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 3 Mar 2021
+ 14:23:44 +0100
+Authentication-Results: garm.ovh; auth=pass (GARM-101G0041df797e7-eca5-4642-af97-01170dd1b56e,
+                    24CAEE7A76C7E725A9866EAA9907F8E378F99BC5) smtp.auth=clg@kaod.org
+X-OVh-ClientIp: 82.64.250.170
+Subject: Re: arch/powerpc/sysdev/xive/common.c:1614 xive_debug_show_irq()
+ warn: variable dereferenced before check 'd' (see line 1596)
+To:     Dan Carpenter <dan.carpenter@oracle.com>, <kbuild@lists.01.org>
+CC:     <lkp@intel.com>, <kbuild-all@lists.01.org>,
+        <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Greg Kurz <groug@kaod.org>
+References: <20210227150325.GI2087@kadam>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <5624492f-7484-f6db-f779-be90a658044f@kaod.org>
+Date:   Wed, 3 Mar 2021 14:23:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210302175702.GA3791957@xps15>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210227150325.GI2087@kadam>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-03_04:2021-03-03,2021-03-03 signatures=0
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [37.59.142.101]
+X-ClientProxiedBy: DAG5EX1.mxp5.local (172.16.2.41) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: cea6c17b-f604-45f7-9749-cf0175b3a5f5
+X-Ovh-Tracer-Id: 10223734107060210537
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtvddghedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeehnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeduudefffelleffgfelueegueelvddvveefkedvteeivdefkeegfeehhedutedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpohiilhgrsghsrdhorhhgpddtuddrohhrghenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhrtghpthhtohepghhrohhugheskhgrohgurdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
-
-On 3/2/21 6:57 PM, Mathieu Poirier wrote:
-> Good morning,
+On 2/27/21 4:03 PM, Dan Carpenter wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
+> commit: 930914b7d528fc6b0249bffc00564100bcf6ef75 powerpc/xive: Add a debugfs file to dump internal XIVE state
+> config: powerpc64-randconfig-m031-20210226 (attached as .config)
+> compiler: powerpc64-linux-gcc (GCC) 9.3.0
 > 
-> I have started to review this set - comments will be staggered over several
-> days.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> On Fri, Feb 19, 2021 at 12:14:49PM +0100, Arnaud Pouliquen wrote:
->> To prepare the split code related to the control and the endpoint
->> devices in separate files:
->> - suppress the dependency with the rpmsg_ctrldev struct,
->> - rename and export the functions in rpmsg_char.h.
->>
->> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/rpmsg_char.c | 22 ++++++++++------
->>  drivers/rpmsg/rpmsg_char.h | 51 ++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 66 insertions(+), 7 deletions(-)
->>  create mode 100644 drivers/rpmsg/rpmsg_char.h
->>
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index 9e33b53bbf56..78a6d19fdf82 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -1,5 +1,6 @@
->>  // SPDX-License-Identifier: GPL-2.0
->>  /*
->> + * Copyright (C) 2021, STMicroelectronics
->>   * Copyright (c) 2016, Linaro Ltd.
->>   * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
->>   * Copyright (c) 2012, PetaLogix
->> @@ -22,6 +23,7 @@
->>  #include <linux/uaccess.h>
->>  #include <uapi/linux/rpmsg.h>
->>  
->> +#include "rpmsg_char.h"
->>  #include "rpmsg_internal.h"
->>  
->>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
->> @@ -78,7 +80,7 @@ struct rpmsg_eptdev {
->>  	wait_queue_head_t readq;
->>  };
->>  
->> -static int rpmsg_eptdev_destroy(struct device *dev, void *data)
->> +static int rpmsg_eptdev_destroy(struct device *dev)
->>  {
->>  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
->>  
->> @@ -277,7 +279,7 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
->>  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
->>  		return -EINVAL;
->>  
->> -	return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
->> +	return rpmsg_eptdev_destroy(&eptdev->dev);
->>  }
->>  
->>  static const struct file_operations rpmsg_eptdev_fops = {
->> @@ -336,10 +338,15 @@ static void rpmsg_eptdev_release_device(struct device *dev)
->>  	kfree(eptdev);
->>  }
->>  
->> -static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
->> +int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
->> +{
->> +	return rpmsg_eptdev_destroy(dev);
->> +}
->> +EXPORT_SYMBOL(rpmsg_chrdev_eptdev_destroy);
-> 
-> Below we have rpmsg_chrdev_create_eptdev() so it would make sense to have
-> rpmsg_chrdev_destroy_ept().
-> 
-> I would also rename rpmsg_eptdev_destroy() to rpmsg_chrdev_destroy_ept() and
-> export that symbol rather than introducing a function that only calls another
-> one.  You did exactly that for rpmsg_chrdev_create_eptdev().
+> New smatch warnings:
+> arch/powerpc/sysdev/xive/common.c:1614 xive_debug_show_irq() warn: variable dereferenced before check 'd' (see line 1596)
 
-This function is used in rpmsg_ctrl to remove eptdev devices.
-As device_for_each_child request a specific function prototype I do not only
-export but change function prototype.
+This should be addressed by patch : 
 
-I can squash all in one function but that means that the "data" parameter is
-just always unused.
+  http://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210209161936.377760-5-clg@kaod.org/
 
-> 
->> +
->> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
->>  			       struct rpmsg_channel_info chinfo)
->>  {
->> -	struct rpmsg_device *rpdev = ctrldev->rpdev;
->>  	struct rpmsg_eptdev *eptdev;
->>  	struct device *dev;
->>  	int ret;
->> @@ -359,7 +366,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
->>  
->>  	device_initialize(dev);
->>  	dev->class = rpmsg_class;
->> -	dev->parent = &ctrldev->dev;
->> +	dev->parent = parent;
->>  	dev->groups = rpmsg_eptdev_groups;
->>  	dev_set_drvdata(dev, eptdev);
->>  
->> @@ -402,6 +409,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
->>  
->>  	return ret;
->>  }
->> +EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->>  
->>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
->>  {
->> @@ -441,7 +449,7 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>  	chinfo.src = eptinfo.src;
->>  	chinfo.dst = eptinfo.dst;
->>  
->> -	return rpmsg_eptdev_create(ctrldev, chinfo);
->> +	return rpmsg_chrdev_create_eptdev(ctrldev->rpdev, &ctrldev->dev, chinfo);
-> 
-> Not sure why we have to change the signature of rpmsg_eptdev_create() but I may
-> find an answer to that question later on in the patchset.
-
-Here I need to break dependency with rpmsg_ctrldev that will move to the
-rpmsg_ctrl.c. rpmsg_eptdev_create doesn't need it but just parent devices to be
-attached to.
-
-I will add more explicit information about this, in the commit message.
+> Old smatch warnings:
+> arch/powerpc/sysdev/xive/common.c:280 xmon_xive_get_irq_config() warn: variable dereferenced before check 'd' (see line 262)
+This one needs a very similar fix which can come as a followup.
 
 Thanks,
-Arnaud
 
+C.
+
+> vim +/d +1614 arch/powerpc/sysdev/xive/common.c
 > 
->>  };
->>  
->>  static const struct file_operations rpmsg_ctrldev_fops = {
->> @@ -527,7 +535,7 @@ static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
->>  	int ret;
->>  
->>  	/* Destroy all endpoints */
->> -	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_eptdev_destroy);
->> +	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
->>  	if (ret)
->>  		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
->>  
->> diff --git a/drivers/rpmsg/rpmsg_char.h b/drivers/rpmsg/rpmsg_char.h
->> new file mode 100644
->> index 000000000000..0feb3ea9445c
->> --- /dev/null
->> +++ b/drivers/rpmsg/rpmsg_char.h
->> @@ -0,0 +1,51 @@
->> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->> +/*
->> + * Copyright (C) STMicroelectronics 2021.
->> + */
->> +
->> +#ifndef __RPMSG_CHRDEV_H__
->> +#define __RPMSG_CHRDEV_H__
->> +
->> +#if IS_ENABLED(CONFIG_RPMSG_CHAR)
->> +/**
->> + * rpmsg_chrdev_create_eptdev() - register char device based on an endpoint
->> + * @rpdev:  prepared rpdev to be used for creating endpoints
->> + * @parent: parent device
->> + * @chinfo: assiated endpoint channel information.
->> + *
->> + * This function create a new rpmsg char endpoint device to instantiate a new
->> + * endpoint based on chinfo information.
->> + */
->> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
->> +			       struct rpmsg_channel_info chinfo);
->> +
->> +/**
->> + * rpmsg_chrdev_eptdev_destroy() - destroy created char device
->> + * @data: parent device
->> + * @chinfo: assiated endpoint channel information.
->> + *
->> + * This function create a new rpmsg char endpoint device to instantiate a new
->> + * endpoint based on chinfo information.
->> + */
->> +int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data);
->> +
->> +#else  /*IS_ENABLED(CONFIG_RPMSG_CHAR) */
->> +
->> +static inline int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev,
->> +					     struct device *parent,
->> +					     struct rpmsg_channel_info chinfo)
->> +{
->> +	return -EINVAL;
->> +}
->> +
->> +static inline int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
->> +{
->> +	/* This shouldn't be possible */
->> +	WARN_ON(1);
->> +
->> +	return 0;
->> +}
->> +
->> +#endif /*IS_ENABLED(CONFIG_RPMSG_CHAR) */
->> +
->> +#endif /*__RPMSG_CHRDEV_H__ */
->> -- 
->> 2.17.1
->>
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1594  void xive_debug_show_irq(struct seq_file *m, u32 hw_irq, struct irq_data *d)
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1595  {
+> 930914b7d528fc Cédric Le Goater 2020-03-06 @1596  	struct irq_chip *chip = irq_data_get_irq_chip(d);
+>                                                                                                       ^
+> Dereferenced inside function
+> 
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1597  	int rc;
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1598  	u32 target;
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1599  	u8 prio;
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1600  	u32 lirq;
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1601  
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1602  	if (!is_xive_irq(chip))
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1603  		return;
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1604  
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1605  	rc = xive_ops->get_irq_config(hw_irq, &target, &prio, &lirq);
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1606  	if (rc) {
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1607  		seq_printf(m, "IRQ 0x%08x : no config rc=%d\n", hw_irq, rc);
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1608  		return;
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1609  	}
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1610  
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1611  	seq_printf(m, "IRQ 0x%08x : target=0x%x prio=%02x lirq=0x%x ",
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1612  		   hw_irq, target, prio, lirq);
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1613  
+> 930914b7d528fc Cédric Le Goater 2020-03-06 @1614  	if (d) {
+>                                                         ^^^^^^^^
+> Checked too late.
+> 
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1615  		struct xive_irq_data *xd = irq_data_get_irq_handler_data(d);
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1616  		u64 val = xive_esb_read(xd, XIVE_ESB_GET);
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1617  
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1618  		seq_printf(m, "flags=%c%c%c PQ=%c%c",
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1619  			   xd->flags & XIVE_IRQ_FLAG_STORE_EOI ? 'S' : ' ',
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1620  			   xd->flags & XIVE_IRQ_FLAG_LSI ? 'L' : ' ',
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1621  			   xd->flags & XIVE_IRQ_FLAG_H_INT_ESB ? 'H' : ' ',
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1622  			   val & XIVE_ESB_VAL_P ? 'P' : '-',
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1623  			   val & XIVE_ESB_VAL_Q ? 'Q' : '-');
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1624  	}
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1625  	seq_puts(m, "\n");
+> 930914b7d528fc Cédric Le Goater 2020-03-06  1626  }
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+
