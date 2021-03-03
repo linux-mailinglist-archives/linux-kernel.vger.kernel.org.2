@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CCF32B72E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A95332B730
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383119AbhCCKuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53070 "EHLO
+        id S1383132AbhCCKuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:50:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237499AbhCCAYB (ORCPT
+        with ESMTP id S237498AbhCCAYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 19:24:01 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25914C0617AB
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:22:35 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id q85so22341709qke.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 16:22:35 -0800 (PST)
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC37C061356
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:22:36 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id o1so11849687qta.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 16:22:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=2ZHo6bqqoFQHDt1XsnxWzUIHllyauSrjIJToDTBiZLY=;
-        b=HFHYvchu6CpdqexxuDSsNYf6zc2J6VEKWIBzKSjPVt7Oj5tn2/oRKB1PtdVtAhgBcu
-         8QtnWiz/7P8/LqX5wFb1aqUQju3puj7mBA1eY2moIHPzNRpZr6tHqSrfP6M19tFtCndA
-         Dw7uvs/8X/wLRsL+Y2oTYcwh4VUTm1gb0QoWI27HLxniuFGEj0KhR+xLWCeoEvbTnu+7
-         iDZO6hGQaznymI4Z7Kti3JjhODZC9KYEwl0lPssNr6T7Q8YrqF4+AmY67n+7+DzGelJs
-         WYrCxrVf4ENesVrOPXLzb1mOiHh9nKU3H9yCHxRR06iUcT7IO02sj3oVqitQee/e+0NO
-         HyTg==
+        bh=Me+IJOmpVZMJE6OZITjjNJXxLybVS0PvpkZtNmZgu9s=;
+        b=TexeuK1LzjZUxl+qx3qQULwT87vQYc1MD6Bj68BOVjP3cGLOT2rRwv1i74chPgGfYO
+         UbwIjulEE5WjuUopzaIzxJPEuV7hmvshndmHJBpW/eW8BnrLt1Cr+b2u4gSWJdSJ3OGP
+         JwY+w0YB4TdGP9WGlGzIaL5gqIKtQQYXEyCZUEkKWc4+LfQjREDeMeDJf799nFNdtcYa
+         3loS2FGH6MBJ5vfpVkn8MnukQ54Se5vlVbHC6yPt9D67uZmJrJJh8vJDHEUtq80ftZPG
+         l026k6HCjmsCE6HHevk/8lCVPEc5jzpfn6+0cF6QpQLBswS06CStNq8tM/bnGM6z0lET
+         sIMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2ZHo6bqqoFQHDt1XsnxWzUIHllyauSrjIJToDTBiZLY=;
-        b=FRhYCD4xoqPfZSax+vNHBZOgHh/wwXjyaK1GpovHEduXRB2C6Zc9WDw1H/tVuNZ3m/
-         6jxAXY5AztG4PGaqY5St+TOgJa/6Cns2vj0IEzsHh4EuGDAPmuIPGaeD4LH8o/0yV0mD
-         S5b1cFqWdCqU/NSer9TefH2waHzx3gjjtQvjz16pJJaSfu4ol4xbEzPhsR8EuB0FBcNf
-         1cvUryuo/A5WeS+ZpysV3AWHJpyaHBPkIxrbypaES1wUClNno6G2PdIaUcGDyCz+4fYK
-         DmegCzRzvUUKpJSJpB758jSBkMh0M0zvSmhCRzO6uv/HD3cMQ26bTVsoCr+QRqRQUfsz
-         M3Jg==
-X-Gm-Message-State: AOAM533qha2fHmqTYuA+4ekiYL6TkWPP16st03tfgVT4JmWz5D3PMPoh
-        8vaImtL56IkQw//B8O2tbTL2Dw==
-X-Google-Smtp-Source: ABdhPJwsTtNwrwyfksF0JxhDL724PEtC95EO+MO9/7fXbkyN8TnG2jdsy9RcmwXwPeG1L2V0hRnmfQ==
-X-Received: by 2002:a37:4743:: with SMTP id u64mr16003296qka.350.1614730954363;
-        Tue, 02 Mar 2021 16:22:34 -0800 (PST)
+        bh=Me+IJOmpVZMJE6OZITjjNJXxLybVS0PvpkZtNmZgu9s=;
+        b=flyMOKbCx0yXmTcDm2Vu5IDhk8CF4zZhlrWfu2OKJ/J2e943T5jZ+WSG4TjYXjtTk0
+         frdza5hZvKZeDjOAwgP40LYGuQKk5RjqpxHhRP8vdReQI7EJBLJ7M2t+ZHT5Vem9aasY
+         jkazbbx/xt+v6FMh7p+3UyRlDwFq1k+VVwrUcifO5H9Kr9fgVyMvZT0wBkU+rCqDy/EO
+         z1f5sP7yVXT1MPIvDd41VneRgB4jzBysfqHquLyUKTs8tojB7jVHOzAf4LWAI8YF96Pj
+         4lnPRpUSEncMLFvRSs0z59ZkNJximhzGhYE18XMl/ICeWjwAM0eyo5u20VygrXydqg9G
+         XfuA==
+X-Gm-Message-State: AOAM533LmrlXvoY72irDgV6I5Rqp51xVZb12iHJCiV7u2JQt7+96dEmb
+        1EYC4c7ZS/UudI62eunTdDLHjA==
+X-Google-Smtp-Source: ABdhPJwug5BfAFqjtQc6bxUz5+jervNuBn1c/vyjkzVFvBEuDqyurtMGznEMcQrgeoHuudD6UVUuOA==
+X-Received: by 2002:ac8:544:: with SMTP id c4mr20060173qth.245.1614730955693;
+        Tue, 02 Mar 2021 16:22:35 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id r3sm16690512qkm.129.2021.03.02.16.22.33
+        by smtp.gmail.com with ESMTPSA id r3sm16690512qkm.129.2021.03.02.16.22.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 16:22:34 -0800 (PST)
+        Tue, 02 Mar 2021 16:22:35 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -58,9 +58,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
         steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
         selindag@gmail.com, tyhicks@linux.microsoft.com
-Subject: [PATCH v12 01/17] arm64: hyp-stub: Check the size of the HYP stub's vectors
-Date:   Tue,  2 Mar 2021 19:22:14 -0500
-Message-Id: <20210303002230.1083176-2-pasha.tatashin@soleen.com>
+Subject: [PATCH v12 02/17] arm64: hyp-stub: Move invalid vector entries into the vectors
+Date:   Tue,  2 Mar 2021 19:22:15 -0500
+Message-Id: <20210303002230.1083176-3-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
 References: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
@@ -72,47 +72,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: James Morse <james.morse@arm.com>
 
-Hibernate contains a set of temporary EL2 vectors used to 'park'
-EL2 somewhere safe while all the memory is thrown in the air.
-Making kexec do its relocations with the MMU on means they have to
-be done at EL1, so EL2 has to be parked. This means yet another
-set of vectors.
+Most of the hyp-stub's vector entries are invalid. These are each
+a unique function that branches to itself. To move these into the
+vectors, merge the ventry and invalid_vector macros and give each
+one a unique name.
 
-All these things do is HVC_SET_VECTORS and HVC_SOFT_RESTART, both
-of which are implemented by the hyp-stub. Lets copy it instead
-of re-inventing it.
-
-To do this the hyp-stub's entrails need to be packed neatly inside
-its 2K vectors.
-
-Start by moving the final 2K alignment inside the end marker, and
-add a build check that we didn't overflow 2K.
+This means we can copy the hyp-stub as it is self contained within
+its vectors.
 
 Signed-off-by: James Morse <james.morse@arm.com>
+
+[Fixed merging issues]
+
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/kernel/hyp-stub.S | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/hyp-stub.S | 56 +++++++++++++++---------------------
+ 1 file changed, 23 insertions(+), 33 deletions(-)
 
 diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
-index 5eccbd62fec8..572b28646005 100644
+index 572b28646005..ff329c5c074d 100644
 --- a/arch/arm64/kernel/hyp-stub.S
 +++ b/arch/arm64/kernel/hyp-stub.S
-@@ -41,9 +41,13 @@ SYM_CODE_START(__hyp_stub_vectors)
- 	ventry	el1_irq_invalid			// IRQ 32-bit EL1
- 	ventry	el1_fiq_invalid			// FIQ 32-bit EL1
- 	ventry	el1_error_invalid		// Error 32-bit EL1
-+	.align 11
-+SYM_INNER_LABEL(__hyp_stub_vectors_end, SYM_L_LOCAL)
- SYM_CODE_END(__hyp_stub_vectors)
+@@ -16,31 +16,38 @@
+ #include <asm/ptrace.h>
+ #include <asm/virt.h>
  
--	.align 11
-+# Check the __hyp_stub_vectors didn't overflow
-+.org . - (__hyp_stub_vectors_end - __hyp_stub_vectors) + SZ_2K
++.macro invalid_vector	label
++SYM_CODE_START_LOCAL(\label)
++	.align 7
++	b	\label
++SYM_CODE_END(\label)
++.endm
 +
+ 	.text
+ 	.pushsection	.hyp.text, "ax"
  
- SYM_CODE_START_LOCAL(el1_sync)
- 	cmp	x0, #HVC_SET_VECTORS
+ 	.align 11
+ 
+ SYM_CODE_START(__hyp_stub_vectors)
+-	ventry	el2_sync_invalid		// Synchronous EL2t
+-	ventry	el2_irq_invalid			// IRQ EL2t
+-	ventry	el2_fiq_invalid			// FIQ EL2t
+-	ventry	el2_error_invalid		// Error EL2t
++	invalid_vector	hyp_stub_el2t_sync_invalid	// Synchronous EL2t
++	invalid_vector	hyp_stub_el2t_irq_invalid	// IRQ EL2t
++	invalid_vector	hyp_stub_el2t_fiq_invalid	// FIQ EL2t
++	invalid_vector	hyp_stub_el2t_error_invalid	// Error EL2t
+ 
+-	ventry	el2_sync_invalid		// Synchronous EL2h
+-	ventry	el2_irq_invalid			// IRQ EL2h
+-	ventry	el2_fiq_invalid			// FIQ EL2h
+-	ventry	el2_error_invalid		// Error EL2h
++	invalid_vector	hyp_stub_el2h_sync_invalid	// Synchronous EL2h
++	invalid_vector	hyp_stub_el2h_irq_invalid	// IRQ EL2h
++	invalid_vector	hyp_stub_el2h_fiq_invalid	// FIQ EL2h
++	invalid_vector	hyp_stub_el2h_error_invalid	// Error EL2h
+ 
+ 	ventry	el1_sync			// Synchronous 64-bit EL1
+-	ventry	el1_irq_invalid			// IRQ 64-bit EL1
+-	ventry	el1_fiq_invalid			// FIQ 64-bit EL1
+-	ventry	el1_error_invalid		// Error 64-bit EL1
+-
+-	ventry	el1_sync_invalid		// Synchronous 32-bit EL1
+-	ventry	el1_irq_invalid			// IRQ 32-bit EL1
+-	ventry	el1_fiq_invalid			// FIQ 32-bit EL1
+-	ventry	el1_error_invalid		// Error 32-bit EL1
++	invalid_vector	hyp_stub_el1_irq_invalid	// IRQ 64-bit EL1
++	invalid_vector	hyp_stub_el1_fiq_invalid	// FIQ 64-bit EL1
++	invalid_vector	hyp_stub_el1_error_invalid	// Error 64-bit EL1
++
++	invalid_vector	hyp_stub_32b_el1_sync_invalid	// Synchronous 32-bit EL1
++	invalid_vector	hyp_stub_32b_el1_irq_invalid	// IRQ 32-bit EL1
++	invalid_vector	hyp_stub_32b_el1_fiq_invalid	// FIQ 32-bit EL1
++	invalid_vector	hyp_stub_32b_el1_error_invalid	// Error 32-bit EL1
+ 	.align 11
+ SYM_INNER_LABEL(__hyp_stub_vectors_end, SYM_L_LOCAL)
+ SYM_CODE_END(__hyp_stub_vectors)
+@@ -173,23 +180,6 @@ SYM_CODE_END(enter_vhe)
+ 
+ 	.popsection
+ 
+-.macro invalid_vector	label
+-SYM_CODE_START_LOCAL(\label)
+-	b \label
+-SYM_CODE_END(\label)
+-.endm
+-
+-	invalid_vector	el2_sync_invalid
+-	invalid_vector	el2_irq_invalid
+-	invalid_vector	el2_fiq_invalid
+-	invalid_vector	el2_error_invalid
+-	invalid_vector	el1_sync_invalid
+-	invalid_vector	el1_irq_invalid
+-	invalid_vector	el1_fiq_invalid
+-	invalid_vector	el1_error_invalid
+-
+-	.popsection
+-
+ /*
+  * __hyp_set_vectors: Call this after boot to set the initial hypervisor
+  * vectors as part of hypervisor installation.  On an SMP system, this should
 -- 
 2.25.1
 
