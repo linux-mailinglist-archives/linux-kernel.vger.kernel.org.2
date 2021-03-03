@@ -2,315 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2487C32C05A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A7B32C075
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578372AbhCCSRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhCCQJb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:09:31 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29F1C061762
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:08:47 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id gt32so31689322ejc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:08:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QXzwi7K89SM65l2xmgOkE5chltGcXBKL1/8sSWy7BjA=;
-        b=zwtYDbfXS5Zh4lhYqnAozwwS25vDd0/GaaKVk5ENt+5QRlSeC/0UffsXOi8aUevNpe
-         0lMzsmahYip2OjkDVEUtvWWCU2K4IuSvgDAI7NyZQIeRNPTFgng3nK0WaFC6/r7Zo5ia
-         9s2WUSRFLC/pMfHgu3CqozLlTuUqRxvgWa3WBn8lUESA9KfEDVNLSM59ZrBSQDCdThhA
-         FTs8dtH5W82Q5P1KnwXjoc8Y9HofyLl/sEsvV9gbWASPpv9bgP5sueehKpp2nf/m1qVT
-         338NguDIThvnvSI34B3sD4SeO7y5Vbi3xuqzTFE8fXSzVd4rOTu2ipzfqDzjzDRxb3A6
-         t9Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QXzwi7K89SM65l2xmgOkE5chltGcXBKL1/8sSWy7BjA=;
-        b=KJ1gcP3PQSS3Ji8op6LN+G/fhlxycNSDPe+XVwzDhwyqEv7B9WQAEBvDvUoRCyjc1c
-         SWmIWD/V4r6n8bOCR73vq4gpFAKGmLrXwGSSN1g7/dlGT+7/E61VQ4Vd6mhtkW+w4hMO
-         8SQ5czOObnNl4PWsHee+rnvKyr5SSaCoNwP3RmFvS3l3cX9mwrvC7heLu/hZ/bGNs5UG
-         YOk9dNIj2U6SfW1ykb636CUCpgjNDx/q/yXqN8J9J170gw6aVgNqmgJl37wrAB2l8174
-         R4MkdBuQJ/3aRyeVAsaueQjzNG2u/7pM3kjpsD056Ye+B8zbyIU1j+O9HpllId3l9e8q
-         EfMQ==
-X-Gm-Message-State: AOAM5315v/d+jfRumZ2zYXb9cfaGCz765HkqRZUKVNfH6jEz0FYb8JPj
-        tb2sE1H8+maWJVHdMjYpVMKk7hk0U+jgty+M8GSPBw==
-X-Google-Smtp-Source: ABdhPJxDYmONyMmSsWX01gOQMI8Lxt9u62CZnPjPjHJ5Ep/EoYeh2LIVFljf/qYH9Iv98cYABdAvzpe2NvUxiA3MwJQ=
-X-Received: by 2002:a17:906:b2c3:: with SMTP id cf3mr25558356ejb.133.1614787726489;
- Wed, 03 Mar 2021 08:08:46 -0800 (PST)
+        id S1578691AbhCCSRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:17:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230430AbhCCQJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:09:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 563A264ED7;
+        Wed,  3 Mar 2021 16:08:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614787739;
+        bh=oLEMq+FKXQy4SVc1LwzFfB9gKXgRmMlJaTjBzUFQP+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UnikIBCXiim0R4HJziT75V1F8nppUbRj3q+OrkLYA/NTyaweTDY+8tXeQDONo+IiQ
+         kLA4hbqX8DFJiApfUGeaTk2/E+FHgtc/ieEdQgRJK5FrXl3gVkMNd8pV28ZTu3RJle
+         UWUyjf4ErPsURpCRh9nMmkle3Ry3Ujs9iLjAowH0=
+Date:   Wed, 3 Mar 2021 17:08:56 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] mtd: require write permissions for locking and badblock
+ ioctls
+Message-ID: <YD+0mAPTMN8AwNBx@kroah.com>
+References: <20210303155735.25887-1-michael@walle.cc>
 MIME-Version: 1.0
-References: <20210302192525.276142994@linuxfoundation.org>
-In-Reply-To: <20210302192525.276142994@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Mar 2021 21:38:33 +0530
-Message-ID: <CA+G9fYuNBYTjTQuEDk7KEoTHQt6hwnoAavCP6=XC8GvEnme3Zg@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/92] 4.4.259-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303155735.25887-1-michael@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 00:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.259 release.
-> There are 92 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.259-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, Mar 03, 2021 at 04:57:35PM +0100, Michael Walle wrote:
+> MEMLOCK, MEMUNLOCK and OTPLOCK modify protection bits. Thus require
+> write permission. Depending on the hardware MEMLOCK might even be
+> write-once, e.g. for SPI-NOR flashes with their WP# tied to GND. OTPLOCK
+> is always write-once.
+> 
+> MEMSETBADBLOCK modifies the bad block table.
+> 
+> Fixes: f7e6b19bc764 ("mtd: properly check all write ioctls for permissions")
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  drivers/mtd/mtdchar.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
+Thanks for auditing the rest of these from my original patch.  If this
+is ok with userspace tools, it's fine with me, but I don't even have
+this hardware to test with :)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.259-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: a8379a8a874e8a88249eb6f87a66d886cb72259f
-git describe: v4.4.258-93-ga8379a8a874e
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.258-93-ga8379a8a874e
-
-No regressions (compared to build v4.4.258)
-
-
-No fixes (compared to build v4.4.258)
-
-
-Ran 27052 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-r2 - arm64
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* network-basic-tests
-* perf
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-controllers-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* v4l2-compliance
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* install-android-platform-tools-r2600
-* fwts
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.259-rc2
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git tag: 4.4.259-rc2-hikey-20210302-945
-git commit: 425e0998cf27fbb998d5d1e6692f592dd9ff6a14
-git describe: 4.4.259-rc2-hikey-20210302-945
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.259-rc2-hikey-20210302-945
-
-
-No regressions (compared to build 4.4.259-rc1-hikey-20210228-942)
-
-
-No fixes (compared to build 4.4.259-rc1-hikey-20210228-942)
-
-
-Ran 1951 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
