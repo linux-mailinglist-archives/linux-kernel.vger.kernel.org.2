@@ -2,146 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D689A32BA90
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4737B32BA94
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357898AbhCCLhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:37:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234386AbhCCDO1 (ORCPT
+        id S1357968AbhCCLha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:37:30 -0500
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.5]:29532 "EHLO
+        mail1.bemta23.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242438AbhCCD0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 22:14:27 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745DFC06178B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 19:13:03 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d8so2821836plg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 19:13:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jPtyv7FWNE5afHArRbhNorqbEBt/90YtJ2/j1QcFJFk=;
-        b=L2HVGMBbxOe1DUQxG0VZsngFSjQuWnhYhNGZmw4MHVlJRyqbmUwS8iL9WGQ/8pWBei
-         /XN3a1460NKQsgVyKnsD5Rq2n++ewQ8EQadRMPs4XpnfqYtazzjce6/qqHHzc46N0xHq
-         gVJQSelHZ5nrFMSUA9sD63r6gRTOwkJsMZB4jurQlq3ntGcBN8jZX2bjdBpAyUtNdZ+B
-         iWByPp5+QhBBfOJtdyYLc8rJVM7qGBTPuYeo3JQBHH2bq5cnDef+ycCNtasjW1zNaLRQ
-         YLr8n/VbJGaPj3r5lV0lvW1y6J1scJUg3LG23obPzPSolQIMtVfzNp5hpsgsnuyOrM4e
-         6bkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jPtyv7FWNE5afHArRbhNorqbEBt/90YtJ2/j1QcFJFk=;
-        b=W50ePuK6C2tPLcwRILvj7jnLAAJiPns0Gyt8/0fFd3dcFoEMqqA8xIkDpbOFUz1am5
-         gkt6uTrWctQbblPhCoSHSmQKbNP4tCsarGNnzKg+8bPzpqTW/ArQPnKxpps0CBwYAjIQ
-         4lV7SJqoKwGiMFR8wgCPp/cbqRqE9Kp3KD241bK14GMggTu8guPqC8qNOyM7BDycS4hO
-         D8qfUejOAP5gPX7QRzjH3OLTvxYIVL4IfYKyqgNabdd5js4Nk2Qk1li0aNM7BRXC9xIm
-         9BJDrDbS//jYmznWcTyHirYU4EvjNHkGDUZkuqdOPuE6QDdxhaLim7vg8ICEIH2RUEbk
-         17LQ==
-X-Gm-Message-State: AOAM530ULOKx4ls4VyLpNW8OCSoDa0El0opv28AHgI79g+YJcb2Q8Fcw
-        +cy37sKBTyJv0stjZHrD13QCVqgArP5D29Iy8IxBhw==
-X-Google-Smtp-Source: ABdhPJx3chnssos306qpL9AmHwbrb44kCCmB0MEYUU84BwvstDSlD/D91l1sBkVKXSYBrKUHOk9rCIv3wyp3pOsPqyM=
-X-Received: by 2002:a17:90a:f008:: with SMTP id bt8mr1365042pjb.13.1614741183030;
- Tue, 02 Mar 2021 19:13:03 -0800 (PST)
+        Tue, 2 Mar 2021 22:26:50 -0500
+Received: from [100.112.2.115] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-5.bemta.az-b.us-east-1.aws.symcld.net id 41/5A-54546-2B00F306; Wed, 03 Mar 2021 03:21:22 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRWlGSWpSXmKPExsWSLveKTXcTg32
+  CwZen4hZnJwRatL/eymhxedccNosnC88wObB47PzewO6xfstVFo/Pm+QCmKNYM/OS8isSWDMO
+  XVnMXHCFv+LmhR+MDYzbeboYuTiEBP4zSkzom8YG4bxklDg4fztzFyMHB5uAgsSDfapdjJwcI
+  gK5Ep177jOD2MwCFhLLfzxkBLGFBYwk2g9/ZAexWQRUJA7tPQZWwytgLvHgzxcWEFtCQF7i7Z
+  FuNhCbE8h+dKERLC4kICfR0/OFFaJeUOLkzCcsEPMlJA6+eMEM0ask0XvoGBvIORICCRLTnmh
+  MYOSfhaRjFpKOBYxMqxjNkooy0zNKchMzc3QNDQx0DQ2NdI10DY2M9RKrdJP0Sot1UxOLS3QN
+  9RLLi/WKK3OTc1L08lJLNjECwzalgKl6B+OPVx/0DjFKcjApifIuu2WXIMSXlJ9SmZFYnBFfV
+  JqTWnyIUYaDQ0mCd/tfoJxgUWp6akVaZg4whmDSEhw8SiK8z/8ApXmLCxJzizPTIVKnGBWlxH
+  mP/QNKCIAkMkrz4NpgcXuJUVZKmJeRgYFBiKcgtSg3swRV/hWjOAejkjBv+H+gKTyZeSVw018
+  BLWYCWjzLDWxxSSJCSqqBiWmdd6yYiOG77OIFU7dJKV++GWPS2Xy0djr7hr7ZRdNsO9onGqrZ
+  mjjJ/ud8Zh8qWpWZp7/hHcOybbETVF27D1hW/y+1m2PRc4M7QzVpVc7ZzhVu35d4L3lnqXTS8
+  75idx678u70tZXlZ37Zq8aXrt9ifHSvm5pvo4Z95Gb9WQGnrl1/Y7Oc+UB56bXFOu7+zk9fl0
+  603KmZrF8l5L1DTnj75JdWWx40XN15dLuEvrpGoGgI68cMnblCuc6MqxNOq+v0VTwW33Ft+az
+  LWn+mKM/YKvY642Z8EvuiZ+tcT2zepLg/5sbl5DV/Oc/9v1r9zX+p6MxXlQx3Xms86p7YMH1H
+  TZUiw9xHFVElV3aJKbEUZyQaajEXFScCACvoqH1WAwAA
+X-Env-Sender: lijq9@lenovo.com
+X-Msg-Ref: server-4.tower-395.messagelabs.com!1614741679!779752!1
+X-Originating-IP: [103.30.234.6]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 6910 invoked from network); 3 Mar 2021 03:21:22 -0000
+Received: from unknown (HELO lenovo.com) (103.30.234.6)
+  by server-4.tower-395.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 3 Mar 2021 03:21:22 -0000
+Received: from pekwpmail03.lenovo.com (unknown [10.96.93.81])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by Forcepoint Email with ESMTPS id 3B200AE80B899EAF92AE;
+        Wed,  3 Mar 2021 11:21:19 +0800 (CST)
+Received: from localhost.localdomain (100.67.100.178) by
+ pekwpmail03.lenovo.com (10.96.93.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Wed, 3 Mar 2021 11:21:14 +0800
+From:   Jiqi Li <lijq9@lenovo.com>
+To:     <jdelvare@suse.com>, <linux@roeck-us.net>,
+        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <markpearson@lenovo.com>, Jiqi Li <lijq9@lenovo.com>
+Subject: [PATCH] hwmon: (nct6883) Support NCT6686D
+Date:   Wed, 3 Mar 2021 11:20:37 +0800
+Message-ID: <20210303032037.1891858-1-lijq9@lenovo.com>
+X-Mailer: git-send-email 2.18.2
+In-Reply-To: <lijq9@lenovo.com>
+References: <lijq9@lenovo.com>
 MIME-Version: 1.0
-References: <20210302081823.9849-1-songmuchun@bytedance.com> <YD6K3HghLy5glOgi@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YD6K3HghLy5glOgi@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 3 Mar 2021 11:12:26 +0800
-Message-ID: <CAMZfGtWbEzgDqkHr1Pu598tfEHHCzKRXbSnVHyDWk5FeH2372w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix root_mem_cgroup charging
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [100.67.100.178]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ pekwpmail03.lenovo.com (10.96.93.81)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 2:58 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Mar 02, 2021 at 04:18:23PM +0800, Muchun Song wrote:
-> > CPU0:                                   CPU1:
-> >
-> > objcg = get_obj_cgroup_from_current();
-> > obj_cgroup_charge(objcg);
-> >                                         memcg_reparent_objcgs();
-> >                                             xchg(&objcg->memcg, root_mem_cgroup);
-> >     // memcg == root_mem_cgroup
-> >     memcg = obj_cgroup_memcg(objcg);
-> >     __memcg_kmem_charge(memcg);
-> >         // Do not charge to the root memcg
-> >         try_charge(memcg);
-> >
-> > If the objcg->memcg is reparented to the root_mem_cgroup,
-> > obj_cgroup_charge() can pass root_mem_cgroup as the first
-> > parameter to here. The root_mem_cgroup is skipped in the
-> > try_charge(). So the page counters of it do not update.
-> >
-> > When we uncharge this, we will decrease the page counters
-> > (e.g. memory and memsw) of the root_mem_cgroup. This will
-> > cause the page counters of the root_mem_cgroup to be out
-> > of balance. Fix it by charging the page to the
-> > root_mem_cgroup unconditional.
->
-> Is this a problem? It seems that we do not expose root memcg's counters
-> except kmem and tcp.
+Add support for NCT6686D chip used in the Lenovo P620.
 
-In the page_counter_cancel(), we can see a WARN_ON_ONCE()
-to catch this issue. Yeah, it is very hard to trigger this warn for
-root memcg. But it actually can. Right?
+Signed-off-by: Jiqi Li <lijq9@lenovo.com>
+Reviewed-by: Mark Pearson <markpearson@lenovo.com>
+---
+ drivers/hwmon/nct6683.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-If we do not care about the root memcg counter, we should not warn
-for the root memcg.
+diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
+index a23047a3bfe2..256e8d62f858 100644
+--- a/drivers/hwmon/nct6683.c
++++ b/drivers/hwmon/nct6683.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * nct6683 - Driver for the hardware monitoring functionality of
+- *	     Nuvoton NCT6683D/NCT6687D eSIO
++ *	     Nuvoton NCT6683D/NCT6686D/NCT6687D eSIO
+  *
+  * Copyright (C) 2013  Guenter Roeck <linux@roeck-us.net>
+  *
+@@ -12,6 +12,7 @@
+  *
+  * Chip        #vin    #fan    #pwm    #temp  chip ID
+  * nct6683d     21(1)   16      8       32(1) 0xc730
++ * nct6686d     21(1)   16      8       32(1) 0xd440
+  * nct6687d     21(1)   16      8       32(1) 0xd590
+  *
+  * Notes:
+@@ -33,7 +34,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+-enum kinds { nct6683, nct6687 };
++enum kinds { nct6683, nct6686, nct6687 };
+ 
+ static bool force;
+ module_param(force, bool, 0);
+@@ -41,11 +42,13 @@ MODULE_PARM_DESC(force, "Set to one to enable support for unknown vendors");
+ 
+ static const char * const nct6683_device_names[] = {
+ 	"nct6683",
++	"nct6686",
+ 	"nct6687",
+ };
+ 
+ static const char * const nct6683_chip_names[] = {
+ 	"NCT6683D",
++	"NCT6686D",
+ 	"NCT6687D",
+ };
+ 
+@@ -66,6 +69,7 @@ static const char * const nct6683_chip_names[] = {
+ 
+ #define SIO_NCT6681_ID		0xb270	/* for later */
+ #define SIO_NCT6683_ID		0xc730
++#define SIO_NCT6686_ID		0xd440
+ #define SIO_NCT6687_ID		0xd590
+ #define SIO_ID_MASK		0xFFF0
+ 
+@@ -1362,6 +1366,9 @@ static int __init nct6683_find(int sioaddr, struct nct6683_sio_data *sio_data)
+ 	case SIO_NCT6683_ID:
+ 		sio_data->kind = nct6683;
+ 		break;
++	case SIO_NCT6686_ID:
++		sio_data->kind = nct6686;
++		break;
+ 	case SIO_NCT6687_ID:
+ 		sio_data->kind = nct6687;
+ 		break;
+-- 
+2.18.2
 
-> It seems that the described problem is not
-> applicable to the kmem counter. Please, explain.
-
-The kmem counter of the root memcg is updated unconditionally.
-Because we do not check whether the memcg is root when we
-charge pages to the kmem counter.
-
-Thanks.
-
->
-> Thanks!
->
-> >
-> > Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/memcontrol.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 2db2aeac8a9e..edf604824d63 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -3078,6 +3078,19 @@ static int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
-> >       if (ret)
-> >               return ret;
-> >
-> > +     /*
-> > +      * If the objcg->memcg is reparented to the root_mem_cgroup,
-> > +      * obj_cgroup_charge() can pass root_mem_cgroup as the first
-> > +      * parameter to here. We should charge the page to the
-> > +      * root_mem_cgroup unconditional to keep it's page counters
-> > +      * balance.
-> > +      */
-> > +     if (unlikely(mem_cgroup_is_root(memcg))) {
-> > +             page_counter_charge(&memcg->memory, nr_pages);
-> > +             if (do_memsw_account())
-> > +                     page_counter_charge(&memcg->memsw, nr_pages);
-> > +     }
-> > +
-> >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
-> >           !page_counter_try_charge(&memcg->kmem, nr_pages, &counter)) {
-> >
-> > --
-> > 2.11.0
-> >
