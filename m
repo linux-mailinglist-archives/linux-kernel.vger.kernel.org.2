@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9390B32BC85
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BFF32BC86
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359291AbhCCOFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:05:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
+        id S1359311AbhCCOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:05:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842920AbhCCKWd (ORCPT
+        with ESMTP id S1842921AbhCCKWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:33 -0500
+        Wed, 3 Mar 2021 05:22:34 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844E4C08ED3F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:15:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C23C08ED82
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:15:51 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1614766533;
@@ -22,30 +22,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NRhzEmfFktdT55ZMKpkoTASFREmaGJREj6FLiwVzcaE=;
-        b=TW7qaEpNSsD9cTIlX2HtSbuNdnyYPSjge21x5JEKFhSAM5JdXFZeTRSsSPWY5+e6RIfdBG
-        P+zfYKlDkzI2K7qGR5kYJZK7saEAtAeFcWbonL2O/27rtueaFFhjmLkm3ha4PLlAYnGS/0
-        7TbY4anpinLG059bPBHO52iBKjujjAjqoGRmtMmKwKPv5EtPMbPAy5YQwQTd3VSun7HgUp
-        OpTo5XpS85WPHzXGl/b+wSS/sDYjnTwQclgz6NazDWOMYtAt0ThNimObupD5SUTRQrVco+
-        xn8+Uk1Q2Myo2B8/n4khcQQU6IusG4iCbSxIUMmXhaIjw2y4mFGqnRkBsRAg9w==
+        bh=bV4acOLBKzR+P4WEzqLKGGz2LRMOZ3l7+n8NxpAIp+w=;
+        b=NmSk7b2ppDXwvv+t354gXADXoT3Vxg5xo8Ay6EvxN0FG7sraztnf2A7SpgICZYJp2xa7o5
+        KKdUJkRL7mbvtUtUutlpTTmIMWiSSOd0nOuJg9YmOiX4FPg8EFAdtbZQMYKRAP1T1xkqeP
+        J0+hDyGWS9gBNaKZNobaQNfykc7Luz0vb7TCppLXHecMy9ZaKQHqlMojcJ5DjFhQOesquI
+        Qxkc9eV4MQAxf7M6vnXP8JspH7592E59DXx1NFVh8yn+tNRRGg1BudQgl0W2MaR8WyZs8g
+        451CSmc2cRJj8tC7MZEvkgP4sjAvA8U7G8nRQW0f7s+hbQ0W3uBl9WVSiWBlIA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1614766533;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NRhzEmfFktdT55ZMKpkoTASFREmaGJREj6FLiwVzcaE=;
-        b=+pAj54WOhmHr1es2o0Fsj/2SyEfbc/T/o028pdoQnKNR+h1kXKrP7JPi8GAfGr1KIckWc3
-        HT8cllytrx6BQgAQ==
+        bh=bV4acOLBKzR+P4WEzqLKGGz2LRMOZ3l7+n8NxpAIp+w=;
+        b=X/miGsYajEYM8nokn/02F4rzo8aT6MernjTwB/1a3Q7GeYDFrYvxY3CqMjVoFhDs2KY6sV
+        4t30rlhzOoja6hCw==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH next v4 08/15] printk: use seqcount_latch for clear_seq
-Date:   Wed,  3 Mar 2021 11:15:21 +0100
-Message-Id: <20210303101528.29901-9-john.ogness@linutronix.de>
+Subject: [PATCH next v4 09/15] printk: use atomic64_t for devkmsg_user.seq
+Date:   Wed,  3 Mar 2021 11:15:22 +0100
+Message-Id: <20210303101528.29901-10-john.ogness@linutronix.de>
 In-Reply-To: <20210303101528.29901-1-john.ogness@linutronix.de>
 References: <20210303101528.29901-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -54,143 +54,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmsg_dump_rewind_nolock() locklessly reads @clear_seq. However,
-this is not done atomically. Since @clear_seq is 64-bit, this
-cannot be an atomic operation for all platforms. Therefore, use
-a seqcount_latch to allow readers to always read a consistent
-value.
+@user->seq is indirectly protected by @logbuf_lock. Once @logbuf_lock
+is removed, @user->seq will be no longer safe from an atomicity point
+of view.
+
+In preparation for the removal of @logbuf_lock, change it to
+atomic64_t to provide this safety.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/printk.c | 58 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 50 insertions(+), 8 deletions(-)
+ kernel/printk/printk.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 2c8873fa2f29..1b4bb88c3547 100644
+index 1b4bb88c3547..65e216ca6ca6 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -402,8 +402,21 @@ static u64 console_seq;
- static u64 exclusive_console_stop_seq;
- static unsigned long console_dropped;
+@@ -662,7 +662,7 @@ static ssize_t msg_print_ext_body(char *buf, size_t size,
  
--/* the next printk record to read after the last 'clear' command */
--static u64 clear_seq;
-+struct latched_seq {
-+	seqcount_latch_t	latch;
-+	u64			val[2];
-+};
-+
-+/*
-+ * The next printk record to read after the last 'clear' command. There are
-+ * two copies (updated with seqcount_latch) so that reads can locklessly
-+ * access a valid value. Writers are synchronized by @logbuf_lock.
-+ */
-+static struct latched_seq clear_seq = {
-+	.latch		= SEQCNT_LATCH_ZERO(clear_seq.latch),
-+	.val[0]		= 0,
-+	.val[1]		= 0,
-+};
+ /* /dev/kmsg - userspace message inject/listen interface */
+ struct devkmsg_user {
+-	u64 seq;
++	atomic64_t seq;
+ 	struct ratelimit_state rs;
+ 	struct mutex lock;
+ 	char buf[CONSOLE_EXT_LOG_MAX];
+@@ -763,7 +763,7 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+ 		return ret;
  
- #ifdef CONFIG_PRINTK_CALLER
- #define PREFIX_MAX		48
-@@ -457,6 +470,31 @@ bool printk_percpu_data_ready(void)
- 	return __printk_percpu_data_ready;
- }
+ 	logbuf_lock_irq();
+-	if (!prb_read_valid(prb, user->seq, r)) {
++	if (!prb_read_valid(prb, atomic64_read(&user->seq), r)) {
+ 		if (file->f_flags & O_NONBLOCK) {
+ 			ret = -EAGAIN;
+ 			logbuf_unlock_irq();
+@@ -772,15 +772,15 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
  
-+/* Must be called under logbuf_lock. */
-+static void latched_seq_write(struct latched_seq *ls, u64 val)
-+{
-+	raw_write_seqcount_latch(&ls->latch);
-+	ls->val[0] = val;
-+	raw_write_seqcount_latch(&ls->latch);
-+	ls->val[1] = val;
-+}
-+
-+/* Can be called from any context. */
-+static u64 latched_seq_read_nolock(struct latched_seq *ls)
-+{
-+	unsigned int seq;
-+	unsigned int idx;
-+	u64 val;
-+
-+	do {
-+		seq = raw_read_seqcount_latch(&ls->latch);
-+		idx = seq & 0x1;
-+		val = ls->val[idx];
-+	} while (read_seqcount_latch_retry(&ls->latch, seq));
-+
-+	return val;
-+}
-+
- /* Return log buffer address */
- char *log_buf_addr_get(void)
- {
-@@ -801,7 +839,7 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
+ 		logbuf_unlock_irq();
+ 		ret = wait_event_interruptible(log_wait,
+-					prb_read_valid(prb, user->seq, r));
++				prb_read_valid(prb, atomic64_read(&user->seq), r));
+ 		if (ret)
+ 			goto out;
+ 		logbuf_lock_irq();
+ 	}
+ 
+-	if (r->info->seq != user->seq) {
++	if (r->info->seq != atomic64_read(&user->seq)) {
+ 		/* our last seen message is gone, return error and reset */
+-		user->seq = r->info->seq;
++		atomic64_set(&user->seq, r->info->seq);
+ 		ret = -EPIPE;
+ 		logbuf_unlock_irq();
+ 		goto out;
+@@ -791,7 +791,7 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+ 				  &r->text_buf[0], r->info->text_len,
+ 				  &r->info->dev_info);
+ 
+-	user->seq = r->info->seq + 1;
++	atomic64_set(&user->seq, r->info->seq + 1);
+ 	logbuf_unlock_irq();
+ 
+ 	if (len > count) {
+@@ -831,7 +831,7 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
+ 	switch (whence) {
+ 	case SEEK_SET:
+ 		/* the first record */
+-		user->seq = prb_first_valid_seq(prb);
++		atomic64_set(&user->seq, prb_first_valid_seq(prb));
+ 		break;
+ 	case SEEK_DATA:
+ 		/*
+@@ -839,11 +839,11 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
  		 * like issued by 'dmesg -c'. Reading /dev/kmsg itself
  		 * changes no global state, and does not clear anything.
  		 */
--		user->seq = clear_seq;
-+		user->seq = latched_seq_read_nolock(&clear_seq);
+-		user->seq = latched_seq_read_nolock(&clear_seq);
++		atomic64_set(&user->seq, latched_seq_read_nolock(&clear_seq));
  		break;
  	case SEEK_END:
  		/* after the last record */
-@@ -960,6 +998,9 @@ void log_buf_vmcoreinfo_setup(void)
+-		user->seq = prb_next_seq(prb);
++		atomic64_set(&user->seq, prb_next_seq(prb));
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -864,9 +864,9 @@ static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
+ 	poll_wait(file, &log_wait, wait);
  
- 	VMCOREINFO_SIZE(atomic_long_t);
- 	VMCOREINFO_TYPE_OFFSET(atomic_long_t, counter);
-+
-+	VMCOREINFO_STRUCT_SIZE(latched_seq);
-+	VMCOREINFO_OFFSET(latched_seq, val);
- }
- #endif
- 
-@@ -1557,7 +1598,8 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 	 * Find first record that fits, including all following records,
- 	 * into the user-provided buffer for this dump.
- 	 */
--	seq = find_first_fitting_seq(clear_seq, -1, size, true, time);
-+	seq = find_first_fitting_seq(latched_seq_read_nolock(&clear_seq), -1,
-+				     size, true, time);
- 
- 	prb_rec_init_rd(&r, &info, text, CONSOLE_LOG_MAX);
- 
-@@ -1584,7 +1626,7 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- 	}
- 
- 	if (clear)
--		clear_seq = seq;
-+		latched_seq_write(&clear_seq, seq);
- 	logbuf_unlock_irq();
- 
- 	kfree(text);
-@@ -1594,7 +1636,7 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
- static void syslog_clear(void)
- {
  	logbuf_lock_irq();
--	clear_seq = prb_next_seq(prb);
-+	latched_seq_write(&clear_seq, prb_next_seq(prb));
+-	if (prb_read_valid_info(prb, user->seq, &info, NULL)) {
++	if (prb_read_valid_info(prb, atomic64_read(&user->seq), &info, NULL)) {
+ 		/* return error when data has vanished underneath us */
+-		if (info.seq != user->seq)
++		if (info.seq != atomic64_read(&user->seq))
+ 			ret = EPOLLIN|EPOLLRDNORM|EPOLLERR|EPOLLPRI;
+ 		else
+ 			ret = EPOLLIN|EPOLLRDNORM;
+@@ -905,7 +905,7 @@ static int devkmsg_open(struct inode *inode, struct file *file)
+ 			&user->text_buf[0], sizeof(user->text_buf));
+ 
+ 	logbuf_lock_irq();
+-	user->seq = prb_first_valid_seq(prb);
++	atomic64_set(&user->seq, prb_first_valid_seq(prb));
  	logbuf_unlock_irq();
- }
  
-@@ -3336,7 +3378,7 @@ void kmsg_dump(enum kmsg_dump_reason reason)
- 		dumper->active = true;
- 
- 		logbuf_lock_irqsave(flags);
--		dumper->cur_seq = clear_seq;
-+		dumper->cur_seq = latched_seq_read_nolock(&clear_seq);
- 		dumper->next_seq = prb_next_seq(prb);
- 		logbuf_unlock_irqrestore(flags);
- 
-@@ -3534,7 +3576,7 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
-  */
- void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
- {
--	dumper->cur_seq = clear_seq;
-+	dumper->cur_seq = latched_seq_read_nolock(&clear_seq);
- 	dumper->next_seq = prb_next_seq(prb);
- }
- 
+ 	file->private_data = user;
 -- 
 2.20.1
 
