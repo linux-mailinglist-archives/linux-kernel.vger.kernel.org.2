@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D3632BE3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8445632BE9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348220AbhCCRSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:18:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380760AbhCCN3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:29:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F2864E02;
-        Wed,  3 Mar 2021 13:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614778126;
-        bh=KhFSMataHsGZ7AJ138B1Au+pcPiS3CjPeDpmVqerXfU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hU6dUMv/g5EAqhju6UP+vRZHy/O9CADHkLmn123hDs/GCXVzmxRfL/uvcJPETBg/5
-         yI2hovgjRV1LngZXlzxOnaqkNeyMai367ggkTjWC0pxY23sX/SHv4QAK94jAt0xXwi
-         vIlDnxkxX01/8/zEzZQbBZXFBaulaYkrK56GaIB0Ypmba3RIWta8+wEYXY8AwJFE94
-         CqpSpssoRuOTxcKuTlFeL7tY0/0kLkFoUtHhYRvq013eFC4V3IRaIfg5UwvFeQZn3n
-         wTvLvNNof8iDiIl0lX2Q4v7xrIDWLASz/8ATWD7bPxr44bA651lgP/ErLMG1y/cDSk
-         vlBqQSbP4IV/w==
-Date:   Wed, 3 Mar 2021 21:28:40 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
-Message-ID: <20210303132839.GI15865@dragon>
-References: <20210205013847.1736929-1-saravanak@google.com>
+        id S1385951AbhCCRdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245213AbhCCNwE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:52:04 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23DBC061794
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:34:39 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id r23so28667452ljh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:34:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=8cH+E67WnUC8kFZnu/5q9GLdLVE4HeCDojfHFLyfzOw=;
+        b=gmu0zTDpPj98s5IlbD6W+jjI3J39l2ASZnLYG8NjpvKPeqfGAbrxhq6TPW9IKS98F9
+         eFmBF6x241XaaCGK03e9ioh+36tvd88PYwsXr6V2cb5s8vLJEULzj5YMp6+CPZBYHpbz
+         XshkW56u49xcq0p5eiVRqxG96eBrPapB3vRYchEwhwbQGP4txatDVVdy11BfSL28mURQ
+         agmugCXfFHwBSq0oqlbcmw/GLL5ThhTDTl07rrQDo6tmAbGuqwAWP7cCSri5YIpnKWuM
+         srw24m1doca0ZfRHMFLs//+lD0Gp3VSu5pRjUviMGY18zDdT8IuOtPIHTP/jOQPqPIJ1
+         tIhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=8cH+E67WnUC8kFZnu/5q9GLdLVE4HeCDojfHFLyfzOw=;
+        b=gDzgvxc8hH6WpCcuHZIRYtKVdpBSfEihzOd8N6U4GRH+QPmPOSRvUcGuWo8NumR0XT
+         jbN7KCfoOd4ilx4bu4LEQIoGFdWf/rKa6atqS8Gpe7+qLS7ca/ySJsFySIxQomWtgUbc
+         UmTflf1W/cQ3AcmKCazu7O1XaxRZ1YecunicuUPdkGNhLtaE6L2EStsYiivN9T5MTiZO
+         wN3GVupKzi9uV8YoH7AzN8jOwc6KFlTqeqFA0Y07jonIUURTT9iXabIyGKFDzOgshyV3
+         vGNGD4PXZvU5bxEFM8REKI33ljHFT1LijABEwYw1pJwzz8YXFxW1tnZ0VPLn6t3XojE8
+         Xdpg==
+X-Gm-Message-State: AOAM530qOlan/VUiTW8+MTKT3bDyqhpKiclGDFnfN2hK2P++a4wYogSU
+        huKw/xVBes3qpW6yN/ltdzVHkJY2QlnnIpuxxIc=
+X-Google-Smtp-Source: ABdhPJwkCwz1bCipSHiSlFa8QcSk60Nh+nlvEQmTjKnjLjfx37IBgtnftMD1Yet5obxnC6WP4o3olcpMHrCiCeRdiXM=
+X-Received: by 2002:a2e:bc0c:: with SMTP id b12mr15277056ljf.201.1614778478332;
+ Wed, 03 Mar 2021 05:34:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205013847.1736929-1-saravanak@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a2e:b5d4:0:0:0:0:0 with HTTP; Wed, 3 Mar 2021 05:34:37 -0800 (PST)
+Reply-To: ukofficeimf66@gmail.com
+From:   Imfoffice <samuelamala006@gmail.com>
+Date:   Wed, 3 Mar 2021 13:34:37 +0000
+Message-ID: <CABjBN85YCRHcfBiuPcZmX=iDXA6uQmJT-i3VtmsZNf2+k79Ucw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 05:38:46PM -0800, Saravana Kannan wrote:
-> Using IRQCHIP_DECLARE lets fw_devlink know that it should not wait for
-> these interrupt controllers to be populated as struct devices. Without
-> this change, fw_devlink=on will make the consumers of these interrupt
-> controllers wait for the struct device to be added and thereby block the
-> consumers' probes forever. Converting to IRQCHIP_DECLARE addresses boot
-> issues on imx25 with fw_devlink=on that were reported by Martin.
-> 
-> This also removes a lot of boilerplate code.
-> 
-> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> Reported-by: Martin Kaiser <martin@kaiser.cx>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Tested-by: Martin Kaiser <martin@kaiser.cx>
+-- 
+Good Afternoon from UK,
 
-Applied, thanks.
+How are you? we guess you're well, Our office has sent you a message
+last week but there is no answer from you to date, did you read our
+notice? get back to us upon the receipt of this mail.
+
+Thank You,
+
+Mr. Hennager James Craig
+IMF Office London United Kingdom
