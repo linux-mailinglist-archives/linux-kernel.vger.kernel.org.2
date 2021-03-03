@@ -2,111 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2488B32C0C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7373E32C0CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386727AbhCCSqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:46:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
+        id S1386761AbhCCSq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:46:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236768AbhCCR1W (ORCPT
+        with ESMTP id S239338AbhCCR3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:27:22 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7EBC061763
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:26:13 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id e9so4774863pjj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:26:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EK8LKNqmhy5x5LGHLejHKmLyx1MsPWviMZPTqKPSEvc=;
-        b=JAljs/qnOK5jykvYwB6CxVcKXYmcriiOHnXg+2p/0p+pr1G9jTezxPcXNnfUkuF0u6
-         K/gVGL85aHy4UOB9QVbFAJgBq9wGhyEJjMXDjn1Df1LlYWauOVLOuKG6nuERLGdqtrv2
-         2VBT4jEcYz4L1TaZTN0gkWkq9IXNMUX83aTipLspLO2xUxVy6SdyO2uxyzAIpx1W+Gjy
-         hmoD8h3c8uNaGjUMGQPyqOxkravbrA43rCMhX8jabm4CDuqT6Pxa3Y2c9CEAONqGI8fz
-         A0hibh7eoiujKp4rxdjoJ61sXj9OfgRvu0qgsZe2FwMJSkSBDC4DyZAVPen/txEjeohY
-         FE8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EK8LKNqmhy5x5LGHLejHKmLyx1MsPWviMZPTqKPSEvc=;
-        b=j9j/ztbBS6+mhjNYeou5EfMzHUK/+L+GcblcaqQzntfTQKPoFvuKCapg0I3E0Rv4jE
-         +bcq3ljfoy8awArUw7WjvtCwtKo3CiFYTI5Qa7pVM//Bufg5RW6G0Lc4wlxa10Wz8Wdt
-         wuBNvLcF9zmOokiZd+UCr1exsMYlcUaFFijNdOOfBZp6K3V8/PFzsLOXPTxRf+njOjb+
-         rQY7ot0CQKKTuDjBJse+UD6UVVSrdsIr3VAySAZXtwIVeh4ZvV1InPN3YOLlZAXaiQLg
-         vptTf7js/BLt2CpaiIcjxH3z20npEnHDHvhMQ7wcMuOZQ//UNNgLbvXUTjp/CLV/DN5N
-         HinQ==
-X-Gm-Message-State: AOAM531+OsRa6OWyTmNrO5H37ksaBjSqkxWXWo1YqcTSqRwK2tO2+lN5
-        /7sG9JO2iQjRLNRtA7+hcrzswg==
-X-Google-Smtp-Source: ABdhPJzelju/P4Sadau5toHeUSN3iJ90+g+CrjUu7odQYNHUelH7VSCksC5Fy/t8qpf0EFPUkGkJWg==
-X-Received: by 2002:a17:902:f68c:b029:e5:ca30:8657 with SMTP id l12-20020a170902f68cb02900e5ca308657mr251635plg.78.1614792372514;
-        Wed, 03 Mar 2021 09:26:12 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
-        by smtp.gmail.com with ESMTPSA id v26sm24500719pff.195.2021.03.03.09.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:26:11 -0800 (PST)
-Date:   Wed, 3 Mar 2021 09:26:05 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 7/9] KVM: vmx/pmu: Add Arch LBR emulation and its VMCS
- field
-Message-ID: <YD/GrQAl1NMPHXFj@google.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-8-like.xu@linux.intel.com>
+        Wed, 3 Mar 2021 12:29:30 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C8FC061764;
+        Wed,  3 Mar 2021 09:27:00 -0800 (PST)
+Received: from zn.tnic (p200300ec2f086d000d273eec19a1f357.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6d00:d27:3eec:19a1:f357])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D6C9B1EC0300;
+        Wed,  3 Mar 2021 18:26:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614792418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=4ibLcnOd4K0tYTtc82E0TWwQeSANPgQebYcD/0eumSw=;
+        b=fZN/EdJwGpouJQ1EYJJuFKYMPR3wGDQgjNMM/pTBNKL59wEOirstsgN7mKM8OyeoyKou1i
+        HGktvIYgCwElZrpEtMPzSViQ6wOytsMrrX738nFT6eAj1GoSTfQHGXvVd8SHtaowHM5TAR
+        eEiSsLKgC1unJF+Xny+UH7GSFR/ThdA=
+Date:   Wed, 3 Mar 2021 18:26:52 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v21 08/26] x86/mm: Introduce _PAGE_COW
+Message-ID: <20210303172652.GF22305@zn.tnic>
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
+ <20210217222730.15819-9-yu-cheng.yu@intel.com>
+ <20210301155234.GF6699@zn.tnic>
+ <167f58a3-20ef-7210-1d66-cf25f4a9bbef@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210303135756.1546253-8-like.xu@linux.intel.com>
+In-Reply-To: <167f58a3-20ef-7210-1d66-cf25f4a9bbef@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021, Like Xu wrote:
-> New VMX controls bits for Arch LBR are added. When bit 21 in vmentry_ctrl
-> is set, VM entry will write the value from the "Guest IA32_LBR_CTL" guest
-> state field to IA32_LBR_CTL. When bit 26 in vmexit_ctrl is set, VM exit
-> will clear IA32_LBR_CTL after the value has been saved to the "Guest
-> IA32_LBR_CTL" guest state field.
+On Tue, Mar 02, 2021 at 03:46:31PM -0800, Yu, Yu-cheng wrote:
+> There is a problem of doing that: pmd_write() is defined after this
+> function.  Maybe we can declare it first, or leave this as-is?
 
-...
+Or a third option: you lift those two functions in a prepatch and then
+in this patch use them directly.
 
-> @@ -2529,7 +2532,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->  	      VM_EXIT_LOAD_IA32_EFER |
->  	      VM_EXIT_CLEAR_BNDCFGS |
->  	      VM_EXIT_PT_CONCEAL_PIP |
-> -	      VM_EXIT_CLEAR_IA32_RTIT_CTL;
-> +	      VM_EXIT_CLEAR_IA32_RTIT_CTL |
-> +	      VM_EXIT_CLEAR_IA32_LBR_CTL;
+Combined diff ontop:
 
-So, how does MSR_ARCH_LBR_CTL get restored on the host?  What if the host wants
-to keep _its_ LBR recording active while the guest is running?
+---
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 1a6c0784af0a..b7e4d031ce22 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -209,6 +209,18 @@ static inline int pte_write(pte_t pte)
+ 	return (pte_flags(pte) & _PAGE_RW) || pte_shstk(pte);
+ }
+ 
++#define pmd_write pmd_write
++static inline int pmd_write(pmd_t pmd)
++{
++	return (pmd_flags(pmd) & _PAGE_RW) || pmd_shstk(pmd);
++}
++
++#define pud_write pud_write
++static inline int pud_write(pud_t pud)
++{
++	return pud_flags(pud) & _PAGE_RW;
++}
++
+ static inline int pte_huge(pte_t pte)
+ {
+ 	return pte_flags(pte) & _PAGE_PSE;
+@@ -540,7 +552,7 @@ static inline pmd_t pmd_mkdirty(pmd_t pmd)
+ 	pmdval_t dirty = _PAGE_DIRTY;
+ 
+ 	/* Avoid creating (HW)Dirty=1, Write=0 PMDs */
+-	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !(pmd_flags(pmd) & _PAGE_RW))
++	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !pmd_write(pmd))
+ 		dirty = _PAGE_COW;
+ 
+ 	return pmd_set_flags(pmd, dirty | _PAGE_SOFT_DIRTY);
+@@ -636,7 +648,7 @@ static inline pud_t pud_mkdirty(pud_t pud)
+ 	pudval_t dirty = _PAGE_DIRTY;
+ 
+ 	/* Avoid creating (HW)Dirty=1, Write=0 PUDs */
+-	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !(pud_flags(pud) & _PAGE_RW))
++	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !pud_write(pud))
+ 		dirty = _PAGE_COW;
+ 
+ 	return pud_set_flags(pud, dirty | _PAGE_SOFT_DIRTY);
+@@ -1273,12 +1285,6 @@ extern int pmdp_clear_flush_young(struct vm_area_struct *vma,
+ 				  unsigned long address, pmd_t *pmdp);
+ 
+ 
+-#define pmd_write pmd_write
+-static inline int pmd_write(pmd_t pmd)
+-{
+-	return (pmd_flags(pmd) & _PAGE_RW) || pmd_shstk(pmd);
+-}
+-
+ #define __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR
+ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm, unsigned long addr,
+ 				       pmd_t *pmdp)
+@@ -1300,12 +1306,6 @@ static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+ 	clear_bit(_PAGE_BIT_RW, (unsigned long *)pmdp);
+ }
+ 
+-#define pud_write pud_write
+-static inline int pud_write(pud_t pud)
+-{
+-	return pud_flags(pud) & _PAGE_RW;
+-}
+-
+ #ifndef pmdp_establish
+ #define pmdp_establish pmdp_establish
+ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
 
->  	if (adjust_vmx_controls(min, opt, MSR_IA32_VMX_EXIT_CTLS,
->  				&_vmexit_control) < 0)
->  		return -EIO;
-> @@ -2553,7 +2557,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->  	      VM_ENTRY_LOAD_IA32_EFER |
->  	      VM_ENTRY_LOAD_BNDCFGS |
->  	      VM_ENTRY_PT_CONCEAL_PIP |
-> -	      VM_ENTRY_LOAD_IA32_RTIT_CTL;
-> +	      VM_ENTRY_LOAD_IA32_RTIT_CTL |
-> +	      VM_ENTRY_LOAD_IA32_LBR_CTL;
->  	if (adjust_vmx_controls(min, opt, MSR_IA32_VMX_ENTRY_CTLS,
->  				&_vmentry_control) < 0)
->  		return -EIO;
-> -- 
-> 2.29.2
-> 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
