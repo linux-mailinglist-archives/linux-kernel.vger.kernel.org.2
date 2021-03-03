@@ -2,55 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4449132F174
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F7532F16F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCERij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:38:39 -0500
-Received: from mga04.intel.com ([192.55.52.120]:23772 "EHLO mga04.intel.com"
+        id S230266AbhCERid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:38:33 -0500
+Received: from mga06.intel.com ([134.134.136.31]:58241 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229679AbhCERiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229642AbhCERiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 12:38:12 -0500
-IronPort-SDR: oYS783mHeGfQe6UpoK1fAt6QfYY4lUaOvqNKRetWoV0Di+Hm72/RgLgiwii562R0jLZ0Dyt4bj
- gFpMjaMLIuJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="185287116"
+IronPort-SDR: DvrCTq5FMwv73MEKGiWBTbl2wwTCN+0RfrM6QWHQgYKx5uIeaLj3gWX8Pl1YDEMsO41FtaVZgT
+ cWLrm/RLMT2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="249080299"
 X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="185287116"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 09:38:10 -0800
-IronPort-SDR: ufh/QpfAm7ZSxL27WcyXGy81bGyZbwKChF0AegqD/+wKS87uzt66c2UXCuUDUMX4L/fhW41Tsc
- lytGZCQBHoTQ==
+   d="scan'208";a="249080299"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 09:38:10 -0800
+IronPort-SDR: khUqjA50TWcGwQLpQPz73qdnlZze//MLBSWvZ+4yXSK33zgPx+sNIkQ49YjNhilWyGR4mfuW9H
+ FCjlF+fhmfQg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="446288784"
+   d="scan'208";a="597867960"
 Received: from viggo.jf.intel.com (HELO ray) ([10.54.77.144])
-  by orsmga001.jf.intel.com with ESMTP; 05 Mar 2021 09:38:09 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 05 Mar 2021 09:38:09 -0800
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by ray (Postfix) with ESMTP id 5B99FE0A05;
-        Wed,  3 Mar 2021 08:48:58 -0800 (PST)
-Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
- MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
-To:     Michal Hocko <mhocko@suse.com>, Feng Tang <feng.tang@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi leen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-References: <1614766858-90344-1-git-send-email-feng.tang@intel.com>
- <1614766858-90344-15-git-send-email-feng.tang@intel.com>
- <YD91jTMssJUCupJm@dhcp22.suse.cz>
- <20210303120717.GA16736@shbuild999.sh.intel.com>
- <20210303121833.GB16736@shbuild999.sh.intel.com>
- <YD+BvvM/388AVnmm@dhcp22.suse.cz>
- <20210303131832.GB78458@shbuild999.sh.intel.com>
- <20210303134644.GC78458@shbuild999.sh.intel.com>
- <YD+WR5cpuWhybm2L@dhcp22.suse.cz> <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
+        by ray (Postfix) with ESMTP id A36B9E259B;
+        Wed,  3 Mar 2021 08:56:52 -0800 (PST)
+Subject: Re: [PATCH v3 1/5] x86/sgx: Fix a resource leak in sgx_init()
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
+Cc:     stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Serge Ayoun <serge.ayoun@intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20210303150323.433207-1-jarkko@kernel.org>
+ <20210303150323.433207-2-jarkko@kernel.org>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -95,12 +84,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <d07f8675-939b-daea-c128-30ceecfac8a0@intel.com>
-Date:   Wed, 3 Mar 2021 08:48:58 -0800
+Message-ID: <57b33fb5-f961-5c81-72f1-ebf5e6af671c@intel.com>
+Date:   Wed, 3 Mar 2021 08:56:52 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
+In-Reply-To: <20210303150323.433207-2-jarkko@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -108,30 +97,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/3/21 8:31 AM, Ben Widawsky wrote:
->> I haven't got to the whole series yet. The real question is whether the
->> first attempt to enforce the preferred mask is a general win. I would
->> argue that it resembles the existing single node preferred memory policy
->> because that one doesn't push heavily on the preferred node either. So
->> dropping just the direct reclaim mode makes some sense to me.
->>
->> IIRC this is something I was recommending in an early proposal of the
->> feature.
-> My assumption [FWIW] is that the usecases we've outlined for multi-preferred
-> would want more heavy pushing on the preference mask. However, maybe the uapi
-> could dictate how hard to try/not try.
+On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
+> If sgx_page_cache_init() fails in the middle, a trivial return
+> statement causes unused memory and virtual address space reserved for
+> the EPC section, not freed. Fix this by using the same rollback, as
+> when sgx_page_reclaimer_init() fails.
+...
+> @@ -708,8 +708,10 @@ static int __init sgx_init(void)
+>  	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+>  		return -ENODEV;
+>  
+> -	if (!sgx_page_cache_init())
+> -		return -ENOMEM;
+> +	if (!sgx_page_cache_init()) {
+> +		ret = -ENOMEM;
+> +		goto err_page_cache;
+> +	}
 
-There are two things that I think are important:
 
-1. MPOL_PREFERRED_MANY fallback away from the preferred nodes should be
-   *temporary*, even in the face of the preferred set being full.  That
-   means that _some_ reclaim needs to be done.  Kicking off kswapd is
-   fine for this.
-2. MPOL_PREFERRED_MANY behavior should resemble MPOL_PREFERRED as
-   closely as possible.  We're just going to confuse users if they set a
-   single node in a MPOL_PREFERRED_MANY mask and get different behavior
-   from MPOL_PREFERRED.
+Currently, the only way sgx_page_cache_init() can fail is in the case
+that there are no sections:
 
-While it would be nice, short-term, to steer MPOL_PREFERRED_MANY
-behavior toward how we expect it to get used first, I think it's a
-mistake if we do it at the cost of long-term divergence from MPOL_PREFERRED.
+        if (!sgx_nr_epc_sections) {
+                pr_err("There are zero EPC sections.\n");
+                return false;
+        }
+
+That only happened if all sgx_setup_epc_section() calls failed.
+sgx_setup_epc_section() never both allocates memory with vmalloc for
+section->pages *and* fails.  If sgx_setup_epc_section() has a successful
+memremap() but a failed vmalloc(), it cleans up with memunmap().
+
+In other words, I see how this _looks_ like a memory leak from
+sgx_init(), but I don't see an actual leak in practice.
+
+Am I missing something?
