@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8D832BF8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3475332BFA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835642AbhCCSEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:04:24 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13116 "EHLO
+        id S1835757AbhCCSEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:04:44 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13121 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378965AbhCCP2a (ORCPT
+        with ESMTP id S1379393AbhCCPbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:28:30 -0500
+        Wed, 3 Mar 2021 10:31:39 -0500
 Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DrHqV3Qknz16Fyj;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DrHqV5DbZz16G08;
         Wed,  3 Mar 2021 23:24:54 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
@@ -28,10 +28,12 @@ CC:     <irogers@google.com>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>,
         <zhangshaokun@hisilicon.com>, <qiangqing.zhang@nxp.com>,
         <kjain@linux.ibm.com>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 0/5] perf arm64 metricgroup support
-Date:   Wed, 3 Mar 2021 23:22:13 +0800
-Message-ID: <1614784938-27080-1-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 1/5] perf metricgroup: Support printing metrics for arm64
+Date:   Wed, 3 Mar 2021 23:22:14 +0800
+Message-ID: <1614784938-27080-2-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1614784938-27080-1-git-send-email-john.garry@huawei.com>
+References: <1614784938-27080-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.58]
@@ -40,81 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series contains support to get basic metricgroups working for
-arm64 CPUs.
+Calling perf_pmu__find_map(NULL) returns the cpumap for the common CPU
+PMU. However arm64 supports heterogeneous-CPU based systems, and so there
+may be no common CPU PMU. As such, perf_pmu__find_map(NULL) returns NULL
+for arm64.
 
-Initial support is added for HiSilicon hip08 platform.
+To support printing metrics for arm64, iterate through all PMUs, looking
+for a CPU PMU, and use the cpumap there for determining supported metrics.
 
-Some sample usage on Huawei D06 board:
+For heterogeneous systems (like arm big.LITTLE), supporting metrics has
+potential challenges, like not all CPUs in a system not supporting a
+specific metric event. So just don't support it for now.
 
- $ ./perf list metric    
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ tools/perf/util/metricgroup.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-List of pre-defined events (to be used in -e): 
-
-Metrics:     
-
-  bp_misp_flush
-       [BP misp flush L3 topdown metric]
-  branch_mispredicts
-       [Branch mispredicts L2 topdown metric]
-  core_bound
-       [Core bound L2 topdown metric]
-  divider
-       [Divider L3 topdown metric]
-  exe_ports_util
-       [EXE ports util L3 topdown metric]
-  fetch_bandwidth_bound
-       [Fetch bandwidth bound L2 topdown metric]
-  fetch_latency_bound
-       [Fetch latency bound L2 topdown metric]
-  fsu_stall
-       [FSU stall L3 topdown metric]
-  idle_by_icache_miss
-
-$ sudo ./perf stat -v -M core_bound sleep 1
-Using CPUID 0x00000000480fd010
-metric expr (exe_stall_cycle - (mem_stall_anyload + armv8_pmuv3_0@event\=0x7005@)) / cpu_cycles for core_bound
-found event cpu_cycles
-found event armv8_pmuv3_0/event=0x7005/
-found event exe_stall_cycle
-found event mem_stall_anyload
-adding {cpu_cycles -> armv8_pmuv3_0/event=0x7001/
-mem_stall_anyload -> armv8_pmuv3_0/event=0x7004/
-Control descriptor is not initialized
-cpu_cycles: 989433 385050 385050
-armv8_pmuv3_0/event=0x7005/: 19207 385050 385050
-exe_stall_cycle: 900825 385050 385050
-mem_stall_anyload: 253516 385050 385050
-
-Performance counter stats for 'sleep':
-
-989,433      cpu_cycles      #     0.63 core_bound
-  19,207      armv8_pmuv3_0/event=0x7005/
- 900,825      exe_stall_cycle
- 253,516      mem_stall_anyload
-
-       0.000805809 seconds time elapsed
-
-       0.000875000 seconds user
-       0.000000000 seconds sys
-       
-perf stat --topdown is not supported, as this requires the CPU PMU to
-expose (alias) events for the TopDown L1 metrics from sysfs, which arm 
-does not do. To get that to work, we probably need to make perf use the
-pmu-events cpumap to learn about those alias events.
-
-John Garry (5):
-  perf metricgroup: Support printing metrics for arm64
-  perf metricgroup: Support adding metrics for arm64
-  perf vendor events arm64: Add Hisi hip08 L1 metrics
-  perf vendor events arm64: Add Hisi hip08 L2 metrics
-  perf vendor events arm64: Add Hisi hip08 L3 metrics
-
- .../arch/arm64/hisilicon/hip08/metrics.json   | 233 ++++++++++++++++++
- tools/perf/util/metricgroup.c                 |  27 +-
- 2 files changed, 257 insertions(+), 3 deletions(-)
- create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip08/metrics.json
-
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 26c990e32378..9a2a23093961 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -6,6 +6,7 @@
+ /* Manage metrics and groups of metrics from JSON files */
+ 
+ #include "metricgroup.h"
++#include "cpumap.h"
+ #include "debug.h"
+ #include "evlist.h"
+ #include "evsel.h"
+@@ -615,10 +616,31 @@ static int metricgroup__print_sys_event_iter(struct pmu_event *pe, void *data)
+ 				     d->details, d->groups, d->metriclist);
+ }
+ 
++static struct pmu_events_map *find_cpumap(void)
++{
++	struct perf_pmu *pmu = NULL;
++
++	while ((pmu = perf_pmu__scan(pmu))) {
++		if (!is_pmu_core(pmu->name))
++			continue;
++
++		/*
++		 * The cpumap should cover all CPUs. Otherwise, some CPUs may
++		 * not support some events or have different event IDs.
++		 */
++		if (pmu->cpus && pmu->cpus->nr != cpu__max_cpu())
++			return NULL;
++
++		return perf_pmu__find_map(pmu);
++	}
++
++	return NULL;
++}
++
+ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+ 			bool raw, bool details)
+ {
+-	struct pmu_events_map *map = perf_pmu__find_map(NULL);
++	struct pmu_events_map *map = find_cpumap();
+ 	struct pmu_event *pe;
+ 	int i;
+ 	struct rblist groups;
 -- 
 2.26.2
 
