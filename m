@@ -2,228 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF2F32C08F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9618632C077
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386619AbhCCSo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:44:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1574292AbhCCRWw (ORCPT
+        id S1386602AbhCCSok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1574212AbhCCRWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:22:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614792083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CAwyU1BHNDoyV8EO5GioXHZdHdDn0xPfe1nQ/O6geG4=;
-        b=Qjq2eornDNgiGWj3ppNacSYNptV+er9ERzH/EV+h93f4Yy6E5p9E7ArcBwYUdjG5PB6t6o
-        j3n038Vl4anxOapY/7Pd42luz0CXot0cqCc8OXpX0XiSfva/6NomBBJh4hsvF6hy+upE/n
-        kffP8XSq1OdmPV1u+rexufDfKs/iRYg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90--_7ZJDl5O7-47-s3XMVffw-1; Wed, 03 Mar 2021 12:21:14 -0500
-X-MC-Unique: -_7ZJDl5O7-47-s3XMVffw-1
-Received: by mail-ed1-f70.google.com with SMTP id o15so7297597edv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:21:14 -0800 (PST)
+        Wed, 3 Mar 2021 12:22:19 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C54C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:21:37 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id n4so7056120wmq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:21:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=snvF1oZRAeOuQ652xF7hxq8e8Xbivy9W17OCql8Ju58=;
+        b=N4GzE8TYwDr5X4gxi0SyFxRoTBr18n1OZjxbvypLvGP0Y4FoY0LysvNlydxCGejw5o
+         /cBkCZJLNvfwhcIGdhFCqyxDwdKIZ6qjVhtXO7fN9azK3VGGOf3w8vj2aAp59oSB8xdN
+         0dPT6MSfpozH0a30HioSChw0qmgAqCUYwcaapdq7uWhX/Cau9DcgXlxcfIWQUMNLc/LK
+         TFzBMXyK/zWnYtJMBqnKSmu5upeKLdHMql2kQ6zKb0XVFDIJl4dEbHe0xo7Qskg90KJL
+         JLt1qlFufE95dlru/PO4iXTOUfQzsqlVCf9J3BlUkcK+TVC4CiGinPkkPQSne2U/TFlH
+         LzWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=CAwyU1BHNDoyV8EO5GioXHZdHdDn0xPfe1nQ/O6geG4=;
-        b=RHBE4+PuqOPQF17hID3yLEuPNl3DnBQJyQkWsK3BteB13MqMano9+t2eTQT24ECzST
-         JMt0GrF+kR9+wH3xPZ6t2WEEGWbZvi4txHCiyJCCWC+Iq9ewTv0IZ99CiaG+7YXNcYwT
-         M5nzMCku7QOrLEPWRFdo+uauHVn2j5kbm8aIXafekrylv4t7PssRJOLME05eN3p+ytHB
-         BqPTT80XFMJ8ZRhANsdxWBnXDZQmplrfwybDpFp6tRFcjN1U5pQ47MYcEf3D5LBYN+KN
-         T7D7fdP9VRKwBm0nVlKnS8MnZNfGg0ToKkKbeS/hpzqqSXq9xtTYpY8MAx49Fgn/rnE9
-         iBKw==
-X-Gm-Message-State: AOAM532Ajve5Wk1VyeW64+T/63EtLoyi7oV+DeKUk4YnTUXuZplJHyYS
-        hV6vhNU5qO+4l3zPp3ZFqnm9um2Ni/BTu+g1SltvLR0JGBUGImWZ4qFj2e2LGqmF9IGTZYMxuxx
-        uOCTJkPHx7ZfD58xLwbxZfFey
-X-Received: by 2002:aa7:cd94:: with SMTP id x20mr332354edv.53.1614792073126;
-        Wed, 03 Mar 2021 09:21:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwty1xIzXyywNnOr8oKLUrlKOHFnVxaaKcLshQU3Al/qp0TSfgK2IbqBaBG6Pranmy85FHGOw==
-X-Received: by 2002:aa7:cd94:: with SMTP id x20mr332331edv.53.1614792072969;
-        Wed, 03 Mar 2021 09:21:12 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o8sm22625148edj.79.2021.03.03.09.21.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=snvF1oZRAeOuQ652xF7hxq8e8Xbivy9W17OCql8Ju58=;
+        b=cHoRStumNtXkt2z5yIAaCsW1wW1TaP54mA7VsnnDBxLISdkTZn435BOBAxn+HBdb+Z
+         XtIpSKJ92sKLhNu1Cm229ojrLIqJsGzjFOBUXn/TvsPJYRPmXJoq3ntd9nbvcUYT6f3o
+         4GXf7Ph+TLF4j7Culc7unvSUsSWVViKCN9dL+QZSTj7FUeS077d1UYVhJ4jn8QtbBibI
+         3WiP3RyIrx7hP5nifXifCMhfqHFLk6cmYyP/MliiOBqnCxQ0Xa1bYLIuG9CB7QPfmKTx
+         1AZq2pyRGQ3qYCwrRzqj+aGQh1maz8QLrSr2YWw5ZnWcf3qfxHPzvyvQixsJ/UVc+axe
+         6MYA==
+X-Gm-Message-State: AOAM530tCwgRH1kvY2rsOeyAZVohgpCOv+/vOV87v97roXQZ/Rgw6mv6
+        zcXIYTfpmXGUv9pvkdJAg7y7aQ==
+X-Google-Smtp-Source: ABdhPJz0FpEULBkKSmdBklW+Kq2/Ls1+mEtrqGKqrnMSwdqjEtdd4QHizAokDIN5S9VOM4P4MLCxhg==
+X-Received: by 2002:a1c:7715:: with SMTP id t21mr74337wmi.132.1614792096379;
+        Wed, 03 Mar 2021 09:21:36 -0800 (PST)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id s23sm6477150wmc.35.2021.03.03.09.21.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:21:12 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        sunilmut@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Subject: Re: [RFC PATCH 5/12] HV: Add ghcb hvcall support for SNP VM
-In-Reply-To: <20210228150315.2552437-6-ltykernel@gmail.com>
-References: <20210228150315.2552437-1-ltykernel@gmail.com>
- <20210228150315.2552437-6-ltykernel@gmail.com>
-Date:   Wed, 03 Mar 2021 18:21:11 +0100
-Message-ID: <87mtvkcfw8.fsf@vitty.brq.redhat.com>
+        Wed, 03 Mar 2021 09:21:35 -0800 (PST)
+Date:   Wed, 3 Mar 2021 18:21:14 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Vivek Gautam <vivek.gautam@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, joro@8bytes.org,
+        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
+        eric.auger@redhat.com, alex.williamson@redhat.com,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        yi.l.liu@intel.com, lorenzo.pieralisi@arm.com,
+        shameerali.kolothum.thodi@huawei.com
+Subject: Re: [PATCH RFC v1 09/15] iommu/virtio: Update table format probing
+ header
+Message-ID: <YD/Fiuxd9/kThGxt@myrica>
+References: <20210115121342.15093-1-vivek.gautam@arm.com>
+ <20210115121342.15093-10-vivek.gautam@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115121342.15093-10-vivek.gautam@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tianyu Lan <ltykernel@gmail.com> writes:
-
-> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->
-> Hyper-V provides ghcb hvcall to handle VMBus
-> HVCALL_SIGNAL_EVENT and HVCALL_POST_MESSAGE
-> msg in SNP Isolation VM. Add such support.
->
-> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+On Fri, Jan 15, 2021 at 05:43:36PM +0530, Vivek Gautam wrote:
+> Add info about asid_bits and additional flags to table format
+> probing header.
+> 
+> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Liu Yi L <yi.l.liu@intel.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
 > ---
->  arch/x86/hyperv/ivm.c           | 69 +++++++++++++++++++++++++++++++++
->  arch/x86/include/asm/mshyperv.h |  1 +
->  drivers/hv/connection.c         |  6 ++-
->  drivers/hv/hv.c                 |  8 +++-
->  4 files changed, 82 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-> index 4332bf7aaf9b..feaabcd151f5 100644
-> --- a/arch/x86/hyperv/ivm.c
-> +++ b/arch/x86/hyperv/ivm.c
-> @@ -14,8 +14,77 @@
->  
->  union hv_ghcb {
->  	struct ghcb ghcb;
-> +	struct {
-> +		u64 hypercalldata[509];
-> +		u64 outputgpa;
-> +		union {
-> +			union {
-> +				struct {
-> +					u32 callcode        : 16;
-> +					u32 isfast          : 1;
-> +					u32 reserved1       : 14;
-> +					u32 isnested        : 1;
-> +					u32 countofelements : 12;
-> +					u32 reserved2       : 4;
-> +					u32 repstartindex   : 12;
-> +					u32 reserved3       : 4;
-> +				};
-> +				u64 asuint64;
-> +			} hypercallinput;
-> +			union {
-> +				struct {
-> +					u16 callstatus;
-> +					u16 reserved1;
-> +					u32 elementsprocessed : 12;
-> +					u32 reserved2         : 20;
-> +				};
-> +				u64 asunit64;
-> +			} hypercalloutput;
-> +		};
-> +		u64 reserved2;
-> +	} hypercall;
->  } __packed __aligned(PAGE_SIZE);
->  
-> +u64 hv_ghcb_hypercall(u64 control, void *input, void *output, u32 input_size)
-> +{
-> +	union hv_ghcb *hv_ghcb;
-> +	void **ghcb_base;
-> +	unsigned long flags;
+>  include/uapi/linux/virtio_iommu.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index 43821e33e7af..8a0624bab4b2 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+> @@ -169,7 +169,10 @@ struct virtio_iommu_probe_pasid_size {
+>  struct virtio_iommu_probe_table_format {
+>  	struct virtio_iommu_probe_property	head;
+>  	__le16					format;
+> -	__u8					reserved[2];
+> +	__le16					asid_bits;
 > +
-> +	if (!ms_hyperv.ghcb_base)
-> +		return -EFAULT;
-> +
-> +	local_irq_save(flags);
-> +	ghcb_base = (void **)this_cpu_ptr(ms_hyperv.ghcb_base);
-> +	hv_ghcb = (union hv_ghcb *)*ghcb_base;
-> +	if (!hv_ghcb) {
-> +		local_irq_restore(flags);
-> +		return -EFAULT;
-> +	}
-> +
-> +	memset(hv_ghcb, 0x00, HV_HYP_PAGE_SIZE);
-> +	hv_ghcb->ghcb.protocol_version = 1;
-> +	hv_ghcb->ghcb.ghcb_usage = 1;
-> +
-> +	hv_ghcb->hypercall.outputgpa = (u64)output;
-> +	hv_ghcb->hypercall.hypercallinput.asuint64 = 0;
-> +	hv_ghcb->hypercall.hypercallinput.callcode = control;
-> +
-> +	if (input_size)
-> +		memcpy(hv_ghcb->hypercall.hypercalldata, input, input_size);
-> +
-> +	VMGEXIT();
-> +
-> +	hv_ghcb->ghcb.ghcb_usage = 0xffffffff;
-> +	memset(hv_ghcb->ghcb.save.valid_bitmap, 0,
-> +	       sizeof(hv_ghcb->ghcb.save.valid_bitmap));
-> +
-> +	local_irq_restore(flags);
-> +
-> +	return hv_ghcb->hypercall.hypercalloutput.callstatus;
-> +}
-> +EXPORT_SYMBOL_GPL(hv_ghcb_hypercall);
-> +
->  void hv_ghcb_msr_write(u64 msr, u64 value)
->  {
->  	union hv_ghcb *hv_ghcb;
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index f624d72b99d3..c8f66d269e5b 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -274,6 +274,7 @@ void hv_sint_rdmsrl_ghcb(u64 msr, u64 *value);
->  void hv_signal_eom_ghcb(void);
->  void hv_ghcb_msr_write(u64 msr, u64 value);
->  void hv_ghcb_msr_read(u64 msr, u64 *value);
-> +u64 hv_ghcb_hypercall(u64 control, void *input, void *output, u32 input_size);
->  
->  #define hv_get_synint_state_ghcb(int_num, val)			\
->  	hv_sint_rdmsrl_ghcb(HV_X64_MSR_SINT0 + int_num, val)
-> diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-> index c83612cddb99..79bca653dce9 100644
-> --- a/drivers/hv/connection.c
-> +++ b/drivers/hv/connection.c
-> @@ -442,6 +442,10 @@ void vmbus_set_event(struct vmbus_channel *channel)
->  
->  	++channel->sig_events;
->  
-> -	hv_do_fast_hypercall8(HVCALL_SIGNAL_EVENT, channel->sig_event);
-> +	if (hv_isolation_type_snp())
-> +		hv_ghcb_hypercall(HVCALL_SIGNAL_EVENT, &channel->sig_event,
-> +				NULL, sizeof(u64));
-> +	else
-> +		hv_do_fast_hypercall8(HVCALL_SIGNAL_EVENT, channel->sig_event);
+> +	__le32					flags;
 
-vmbus_set_event() is a hotpath so I'd suggest we introduce a static
-branch instead of checking hv_isolation_type_snp() every time.
+This struct should only contain the head and format fields. asid and flags
+should go in a specialized structure - virtio_iommu_probe_pgt_arm64 in the
+latest spec draft, where I dropped the asid_bits field in favor of an
+"ASID16" flag.
 
->  }
->  EXPORT_SYMBOL_GPL(vmbus_set_event);
-> diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-> index 28e28ccc2081..6c64a7fd1ebd 100644
-> --- a/drivers/hv/hv.c
-> +++ b/drivers/hv/hv.c
-> @@ -60,7 +60,13 @@ int hv_post_message(union hv_connection_id connection_id,
->  	aligned_msg->payload_size = payload_size;
->  	memcpy((void *)aligned_msg->payload, payload, payload_size);
->  
-> -	status = hv_do_hypercall(HVCALL_POST_MESSAGE, aligned_msg, NULL);
-> +	if (hv_isolation_type_snp())
-> +		status = hv_ghcb_hypercall(HVCALL_POST_MESSAGE,
-> +				(void *)aligned_msg, NULL,
-> +				sizeof(struct hv_input_post_message));
-> +	else
-> +		status = hv_do_hypercall(HVCALL_POST_MESSAGE,
-> +				aligned_msg, NULL);
-
-and, if we are to introduce a static branch, we could use it here
-(though it doesn't matter much for messages).
-
->  
->  	/* Preemption must remain disabled until after the hypercall
->  	 * so some other thread can't get scheduled onto this cpu and
-
--- 
-Vitaly
+Thanks,
+Jean
 
