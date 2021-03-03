@@ -2,163 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB2432C301
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E407032C2D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349601AbhCDAAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:00:08 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:45210 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387384AbhCCT6X (ORCPT
+        id S231559AbhCDAAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:00:14 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:41497 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1387407AbhCCT6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:58:23 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123Jn9qe071091;
-        Wed, 3 Mar 2021 19:57:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=bJimN45scXE6L2VD23s1lt2rZtFhav6ZkpmARH6roFY=;
- b=NH+y2jSzphhkIPIyEW5k2q1KHIwp477UmRtA1JV+Jk66W422fVbk9x/33BDthQeTbxqS
- HuBG6sSEOgqrHY8cvGBBq9RjZXlPsrVlp3knJc14IQuzmq7ZEep7vOFLsXz2/gKkdrtL
- EF/MJJpck1dMhdrAukcDsYa5lxRpakBpXTq5nUyGUKtCIiEc3L3O2ssBaAg6PLDJcPHw
- pXMUfKpHfSc9YbcN19z8jYkTeFoZLJnWGa8ZpCtLpnAXmDxCMwsx/6ZARBL/U8vyOm4I
- 00A2mrz8u0ZOWhX0gZXkGSC0PpkhPrVu4OdzHm/MlyZNkinzmFvDXyFczVpGhHr5133v KA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36ybkbcw6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Mar 2021 19:57:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123Jp5ev131819;
-        Wed, 3 Mar 2021 19:57:36 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
-        by aserp3020.oracle.com with ESMTP id 370001qngx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Mar 2021 19:57:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lUY/MeroiDpFI08wb7wwZuUxgq+mBlEbHz1rlvH6D/jSyqbL3jluTGEnlSgL3DrVA7z8q9AwKvcveviLVuykGS/8IFFmV3PkPNK6Y4BPufgw1x4tpq8ZpYRjkYZDNYq75i71wd851/Yiwo2YV4xHDNjMv072kvUMobaxWRqdg8UhWeEWVpeEXBlOtZfefStsMgG5md8tog9X/bmWmjZ2pXt6eDgtRnK0ihAzjC37o84sYL6uKVhSiI3oOcKRyb+PcV/pUunbPWAO6257o9SsYVLYLkTainoSYjgF3y0tywbqXoaWpyJETQbZs5rubuUk3/FWAZt7005Dr7F4LZSRsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bJimN45scXE6L2VD23s1lt2rZtFhav6ZkpmARH6roFY=;
- b=dbb0DajRXyriqcwhp0Yj8X0Mv3iiawIMvAg2frDLQMvoL36nPGNrx1JdnI0MNDlSWbfceVyU4HYdNTcdCGOUZnSu48oez9jkoJGT0znnsYAjP9Q7Y7ulxMYZfDEdPkOMhGzDhsJ0ZRrz8SPET+RGI3Fzqx0qFDQ3etJEQBI2txPA5CBAlWyj77vBXQsM2rQ4O4PPi4BEcAEceLG/fF9I37757XRj2e4vuzqckcswc6nQSjJYx16ernLhJj/hrLYPb4T2F1YtLd4S3B0EsL1XJfSyeHw0gt3m+infArfoB/MpTqKBWWFyvYahtNeQ2qFUr/D0a8XDbYiDQXHmRV07wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bJimN45scXE6L2VD23s1lt2rZtFhav6ZkpmARH6roFY=;
- b=e902c25mUs2Zi/fAGahpVZ09gzGjrNxZkvHrgLOncIEni50KrSlHccL1Qc9iYqKFBXGHNutIy9cL0+fQOCJJzyP3RiaHM57/9JKkhndPyG9ZzU2iR1GWQqb6n7YfrZKnSsfMquiB4bfEsjIhdB1vlg7LnXIRv7UTRsY/Iz3IUs4=
-Authentication-Results: ACULAB.COM; dkim=none (message not signed)
- header.d=none;ACULAB.COM; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BY5PR10MB3762.namprd10.prod.outlook.com (2603:10b6:a03:1b6::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Wed, 3 Mar
- 2021 19:57:34 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3912.017; Wed, 3 Mar 2021
- 19:57:32 +0000
-Date:   Wed, 3 Mar 2021 14:57:25 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "alison.schofield@intel.com" <alison.schofield@intel.com>,
-        "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>,
-        "ira.weiny@intel.com" <ira.weiny@intel.com>,
-        "ben.widawsky@intel.com" <ben.widawsky@intel.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] cxl: Make loop variable be 'i' instead of 'j'
-Message-ID: <YD/qJZql2Ti0ULdT@Konrads-MacBook-Pro.local>
-References: <CAPcyv4iXhsOK0ZdHuHkQ-FwZbvT6H2M+FHRoZVr=Pv8SUdpT+g@mail.gmail.com>
- <20210226211656.46359-1-konrad.wilk@oracle.com>
- <9c4643b7200449ce8e6693e4bcaf24b6@AcuMS.aculab.com>
+        Wed, 3 Mar 2021 14:58:45 -0500
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 43DE85C0063;
+        Wed,  3 Mar 2021 14:57:34 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Wed, 03 Mar 2021 14:57:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=HZlbfd46lkwmol3NQrqYW8RLu0H
+        uj779eapAkCJw284=; b=JqVuS4cbzrIoT3OiQm+re8VcffHRtoM2z8sg/dbxLY7
+        uCky4aMJ6y8nqtJfbu69dGS8zvd9u5Gh6I8+1K5V75JwmFRnWZy2w8HUFRKzW+B3
+        EcRdzuaULTQlsbhk8qymvydGfVrW9lnt4RqecSwRtBTGiuXqLDVIcm8a7OKCtb+8
+        wkcdSIEAo2g3QgOW+ooiS6IkDsue+CmEVrwx9WDURhD/O2DVHIeePpfzfa+SJgSv
+        pJ4hy7aaH5GJ70tNX+4EPwzVYlBWOeWteyJOIfyRCr14+IwhliWXw9EYNijRnujq
+        AwIIegRhSsLeB9KdRwgTvulDmLl/J8TpyshCu7uex3g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=HZlbfd
+        46lkwmol3NQrqYW8RLu0Huj779eapAkCJw284=; b=Go3gDb41rOQkf8pS8JfKRp
+        8RToCWlE3Lz+eISJZLOCa1kqO3w2A2tiy5B7ahB6+tnqQ1oQBGRJhkZUW9VanP9I
+        3IPc5aeiMIDZJ1DLaUu3aZ2J5XYvPxG1l4/5Ar/Uw8sB3bzfpsgnoOZIj7iVjQ8A
+        L/yPl5b2xGkkSQ9xzLEXfL4APDGpNWLVmaBxVAXMfPbgm2NnWhYPCHtfepjRvb1V
+        RE9DwkQlg+bK4zebWZoOG9PcdFoQ9bCePZw3HRxyW1E32we2E0REWyCw5I4uGJ21
+        qBuKhLksw3o43pcoc1oBsOuczbH83A0uV41cIcbx4HtPxc/QofCIyGm+SYmG5NEw
+        ==
+X-ME-Sender: <xms:Leo_YLqyoval5sS3MnfJEjXQo2Pder40mgsl-6dSPhrBUubDFeGaVA>
+    <xme:Leo_YFm2xqeXzHh7t-aMlJl3R5UpTgyON3mfqd_8s3RPV990lyy1AS1jN8vdeHRAO
+    Lw7s3Ps19a4WNJtQQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtvddguddvjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepgfeijefhfeefgfejhfeguedthfejhffggfdthfejueeujeef
+    feevhefgieeiteeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepieelrd
+    dukedurddutdehrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:Leo_YFGPoOArWvXlngsBmRZcEyy-QVEv9l2PG3Znrsa2acwZEGRTCA>
+    <xmx:Leo_YGq4dgNkLeyXZimAi_Y0Py-Qs1_pm2WrYseVpQKqd90oG0KrPQ>
+    <xmx:Leo_YJ7K8h9swdR6hwlBl_SzA797_yDVAeXGD3xn4xHaOPSeRRhwjQ>
+    <xmx:Luo_YF06d7JVOzbDVSVVA8ZKAsk6HFi1qHtVqW7IgVwz4mfM2Vj1lw>
+Received: from maharaja.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 174F2108005C;
+        Wed,  3 Mar 2021 14:57:32 -0500 (EST)
+Date:   Wed, 3 Mar 2021 11:57:30 -0800
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: Broken kretprobe stack traces
+Message-ID: <20210303195730.czt64mdfmpfie4ys@maharaja.localdomain>
+References: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
+ <20210303134828.39922eb167524bc7206c7880@kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c4643b7200449ce8e6693e4bcaf24b6@AcuMS.aculab.com>
-X-Originating-IP: [138.3.200.33]
-X-ClientProxiedBy: CY4PR01CA0014.prod.exchangelabs.com (2603:10b6:903:1f::24)
- To BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Konrads-MacBook-Pro.local (138.3.200.33) by CY4PR01CA0014.prod.exchangelabs.com (2603:10b6:903:1f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 3 Mar 2021 19:57:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d27db5a-3b9a-4e39-8916-08d8de7e9511
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3762:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3762461CC5D414797337A21689989@BY5PR10MB3762.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CTZukkhNxGR1FCB/jZSpMHtXSFc+Ub5DdNecsCiziawmtFKuCWTp9OVXJuGR9x8ICBmw5DyBpjlWBRCUyLbOHdeOb9TmvZ3fv9aXi7vTkihUIIHJrIMsBu1aFoftCs41oNWajMsA57Vpk0P/nL9G/OYvGv1+SKW4hL4L9rji4SQnWM7vaSzJ0Jr2RpUpyxVK8qXIh8DQUswatCYtjI20BfTZEPrBkeJRWddBiXw2gI3vE+Nh5X3javBvv98YJl7rdNVNni6+9L75rGoTa46tu+HpJ3tHee6P0CmtbE3HwbYGVEmPWUuZJRszgcAW20/ywS8/F2RdM2YXGOyKTv2h5WyYREKYfb6YWmL6Z3L9rzwSR7XEC+9nknX10NF+nv4kQkHlMhhC+c/BnBFn/TUezYwBW7KgXjnGXz/pODdglGY/liBZVlMTAJbuwJU1C8Zwah4eAivLZYqMUIoX0VBMk2ZO9oAgtj/Uz4c0Z+XiVVW9w851OupnqDT5wB3vcClrLT0VeL0sLFqtJCCcu+DmVmtMoTot6oN8/3BPlE5Bas4DyyrUTTgs68HD4ABFUSsGcMShfsFUbWHHeAlCfY+R8QcwVub360rtdtxC+gEfmCs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(396003)(376002)(346002)(4744005)(2906002)(54906003)(4326008)(6506007)(66476007)(478600001)(8676002)(8936002)(5660300002)(66946007)(6666004)(186003)(16526019)(66556008)(86362001)(55016002)(956004)(7696005)(52116002)(316002)(6916009)(966005)(9686003)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6t/nXbBHlQs1EFUrCEXKu7NGUga4zcFxK7jgJ6g30xCNYbA8Hk0s+5Kf+0U/?=
- =?us-ascii?Q?WSMgh6B5xZeHOtqV/HrPhSsKzEnOdrHqzPoExV8GqXQRXriH23Ktv9QcXWxw?=
- =?us-ascii?Q?5UhMLwuPszqhgx773L4IdlmOSkY025sKX4liuBKA0gXUAiGw+yOdNlbTDE3U?=
- =?us-ascii?Q?Cvc3fAbuhNI3B242ARnFhZeaAUYN4Ix1vKqBjxXs2F+Itor1ks+XQ3BWK8xr?=
- =?us-ascii?Q?CTXi1sz82a5UzT8UW6vcdlYKhgA6e2WZT5nvRtrH7pmApyEVaP0qUCeJWPxZ?=
- =?us-ascii?Q?g87o3rQ6sal3uQLFUdj0DiaH36dpjHPiFHlygJpSbWU+IeFcDjmmLyv1f1KJ?=
- =?us-ascii?Q?NbftdzKxr6MXBzsaB0jpI3+lg1BFeeZuyL4SkyLbBI/Bw0qGHiaJObAmYW8f?=
- =?us-ascii?Q?N+FQMpEVUUVGCI2EE78GIwO22/h9XUK1Kc4MAk6VImjS2Z9926NMtdcOHOBl?=
- =?us-ascii?Q?/t1jW3xjGSI4eWR0F0r9bAra+VLgeiIBmDCzDG6fSUvEEhTxhwylla5rLrOC?=
- =?us-ascii?Q?OZDhWbAdbD1AU7nfkzzDDWI9CE6ocenDGANohUSfmc731WLiCxtg9dbGK1Hn?=
- =?us-ascii?Q?0X1Eu2ve9HklzLEu8PUtdcPxA8P04R0t+takgH4sPc2KvbFo78JytSNiwP85?=
- =?us-ascii?Q?MQZu6PMc+vYtME3pd6Madc/XBi/yLhG7zVqQpACOw0PLv5yJvMFgQq3LtEnb?=
- =?us-ascii?Q?jB0RcQn5iY6GODLA9Ql90d6JFFgzI0k79wq2AP7i7otxer1RWxs85Ncbuvd8?=
- =?us-ascii?Q?jYs05hhmpuSF90PexuNKQ7xRvGOZTbMy6+XMhOmULzhkPPdztPILetKgCVZv?=
- =?us-ascii?Q?kTNkG8dQ2JArp54ASWSZfirjSRIfHmoxnVjKQ61JeHQOK/oO9qJzDEA7JhnO?=
- =?us-ascii?Q?sic/tbA64nX3R+SVGhWzUFZ1kSLGZg/mhK4awWFYcAogQZAYlIkkvhDNRXHs?=
- =?us-ascii?Q?T8joye7aSL5j9W6GcZuK4oU+u77BAHtHV1CxIOWpRtP8vAvEDH8Or/t0N1Dq?=
- =?us-ascii?Q?XtdPhIOBOGcg+q9uteHX+OvDmGGjJc70Vgpljq33g4YNPPavQw7UiWpbKNg9?=
- =?us-ascii?Q?9XBpyTfieEqh9amAKMttOeEYwNEPn8kJRNFcMJiDcPq2rDYb5ET8+F8+lJQ5?=
- =?us-ascii?Q?PJuMuaMq3w9iryj7u34NLfuu+Q9ReVONKp5aiajjBGpT02UbFA61MMaDTfLy?=
- =?us-ascii?Q?HWm49DOIO/vKxRNFIw3uknSmmCzT42238UAEylJmQmELfCrUzLFXqfi+Iv+O?=
- =?us-ascii?Q?E/+q22RZqd+DCPBP6bjZz7tpIKdQP3yCp7kbJztfnslYtVebI82fmpBojpX4?=
- =?us-ascii?Q?MuSnaiPhHUN8rMXvMlC0qDju?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d27db5a-3b9a-4e39-8916-08d8de7e9511
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2021 19:57:32.5312
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ko3vmJ3X7DCSs9omo4GT6AgrH4D2HqmX9w4f7iMNZhxMf62fvBLU/BskAbiiUj7hCjFk2QlK2296Z3BxbfVnBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3762
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9912 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030140
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9912 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 mlxlogscore=999 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030140
+In-Reply-To: <20210303134828.39922eb167524bc7206c7880@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-..snip..
-> >  	cxl_for_each_cmd(cmd) {
-> >  		const struct cxl_command_info *info = &cmd->info;
-> > +		int i = 0;
+On Wed, Mar 03, 2021 at 01:48:28PM +0900, Masami Hiramatsu wrote:
+> Hi Daniel,
+> 
+> On Tue, 02 Mar 2021 17:15:13 -0800
+> "Daniel Xu" <dxu@dxuuu.xyz> wrote:
+> 
+> > Hi Masami,
 > > 
-> > -		if (copy_to_user(&q->commands[j++], info, sizeof(*info)))
-> > +		if (copy_to_user(&q->commands[i++], info, sizeof(*info)))
-> >  			return -EFAULT;
-> > 
-> > -		if (j == n_commands)
-> > +		if (i == n_commands)
-> >  			break;
+> > Jakub reported a bug with kretprobe stack traces -- wondering if you've gotten
+> > any bug reports related to stack traces being broken for kretprobes.
+> 
+> Yeah, stack dumper must check the stack entry is kretprobe'd and skip it.
+> For example, ftrace checks it as below.
+> 
+> /sys/kernel/debug/tracing # echo r vfs_read > kprobe_events 
+> /sys/kernel/debug/tracing # echo stacktrace > events/kprobes/r_vfs_read_0/trigger 
+> /sys/kernel/debug/tracing # echo 1 > events/kprobes/r_vfs_read_0/enable 
+> /sys/kernel/debug/tracing # head -20 trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 15685/336094   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>               sh-132     [006] ...1    38.920352: <stack trace>
+>  => kretprobe_dispatcher
+>  => __kretprobe_trampoline_handler
+>  => trampoline_handler
+>  => [unknown/kretprobe'd]
+>  => [unknown/kretprobe'd]
+>  => __x64_sys_read
+>  => do_syscall_64
+>  => entry_SYSCALL_64_after_hwframe
 > 
 > 
-> Did you test this?
-> Looks badly broken to me.
+> > 
+> > I think (can't prove) this used to work:
+> 
+> I'm not sure the bpftrace had correctly handled it or not.
+> 
+> > 
+> >     # bpftrace -e 'kretprobe:__tcp_retransmit_skb { @[kstack()] = count() }'
+> >     Attaching 1 probe...
+> >     ^C
+> > 
+> >     @[
+> >         kretprobe_trampoline+0
+> >     ]: 1
+> 
+> Would you know how the bpftrace stacktracer rewinds the stack entries?
+> FYI, ftrace does it in trace_seq_print_sym()@kernel/trace/trace_output.c
 
-I sent out the v3 which had that fixed. See
-https://lore.kernel.org/linux-cxl/20210226222152.48467-1-konrad.wilk@oracle.com/T/#u
+Thanks for the hint, I'll take a look.
+
+bpftrace generates a bpf program that calls into the kernel's
+bpf_get_stackid():
+
+https://github.com/torvalds/linux/blob/f69d02e37a85645aa90d18cacfff36dba370f797/include/uapi/linux/bpf.h#L1296
+
+so it could be a bug with bpf.
+
+<...>
+
