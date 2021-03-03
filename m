@@ -2,127 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC2032BF0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEC032BF10
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577585AbhCCRsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:48:50 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:51868 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244142AbhCCO4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:56:38 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614783308; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=UILnfCywdfyeY6fqwhyeFBww/+wz+Ww4Bwere9bnWJs=;
- b=EDPN0k+N/EdOALE5MT/7uADhhjqsuJuyD+HAKqZKMAAYKKj5NSvLyKZsm4sOT2YNkfcLSeAJ
- P1EQvVNWsyxubSvQb6lV1KL4rkCBMXLXHGGawitZvV5fbGaNWfQXT1BqfhDg706T2kThpDJ9
- 7x8reshNBWxxayFvgckw6xuo3aw=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 603fa32d1a5c93533fb1fa6a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 14:54:37
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D225EC433C6; Wed,  3 Mar 2021 14:54:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1E920C433CA;
-        Wed,  3 Mar 2021 14:54:36 +0000 (UTC)
+        id S239107AbhCCRxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:53:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244869AbhCCO6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:58:54 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2EDC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:56:03 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id bd6so17105160edb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:56:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BeRYEBXOGtUPacQ3jkJGzfydVsmuFdHHmsB89bO92TI=;
+        b=r50kqoWy+d1dJYf6ypcyQwWbSum4uqiHvTtVjWcG+68wn0e+NK4KIa7MPsxG5zO3CD
+         eCgWLopEPyP92JyNf/nUKOFcM05+BaYnLvekoqOMzUxPzCACSCkfz/yXYUZIGQel7cPe
+         OF/8+H0CC5+ChvGB6YpQqPkXkWtn0zZZwJLxWO9S8Nx34nR3JvYY5IJ7wIGmq1PRhcKC
+         c9QS5XETuxA0b3EIH7Pq6UJXp0ze7icTfe2O99aXJKYfTZ/rPJhbxHZH27R64chMrBF/
+         JIbBvmPnWVeAEe24ajmqIHxROI7E+XC7WDcMcL8Kww4oANUViqj8PpAotsKArcllCbcE
+         BNxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BeRYEBXOGtUPacQ3jkJGzfydVsmuFdHHmsB89bO92TI=;
+        b=IN79gRwuUR/il6DsC4OVPwdicpjSMRufAVb6XSwTus8NrNr5KvASqt/lG2QGQjXPjx
+         WMERmtxXqWBvNB+z0aNZrV6fhnbGfCoS7CDtWs4qGAlZ4myWTb6N51cOrIQvYpfSPZLg
+         rAycOUaHX9to4By14x8JYwvvd0rssgLqd2DMZz6pxghjyNiyVLb148BwPuFBuQAlHME3
+         DvA98hQqZ0U/sgCJiGhX4lFMny7C+s3TaDsT3E0DKNQ6LY/2K+p8kW2GjZ48goWZTtUm
+         oPBOwhUOAsxENmMKw+hntnahrlwZUERjTpjf+c6r+8N7FX+9dvq8hQMDhE+jQXn1HCdm
+         U+CA==
+X-Gm-Message-State: AOAM530V/CgmQxLX1Xu7t4XqDOy0fK5e3KNKCTy+mtrYK//8n6drKVg5
+        N8fT8xkNZdiN83o+7xzMZIJihAyiKu9b8A5abA5rlg==
+X-Google-Smtp-Source: ABdhPJw5Tnill5Lv4tgf8pN2VY2Vo3q6TPg5TrHu0jh97X5xDkXoay7DMgbUtIkuYKc1RHOtHRA4sLfxm7+JtQWfM3g=
+X-Received: by 2002:a05:6402:510f:: with SMTP id m15mr26129817edd.78.1614783361814;
+ Wed, 03 Mar 2021 06:56:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Mar 2021 20:24:36 +0530
-From:   skakit@codeaurora.org
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, kgunda@codeaurora.org,
-        rnayak@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/7] dt-bindings: regulator: Convert regulator bindings to
- YAML format
-In-Reply-To: <1614609861.067266.37858.nullmailer@robh.at.kernel.org>
-References: <1614155592-14060-1-git-send-email-skakit@codeaurora.org>
- <1614155592-14060-2-git-send-email-skakit@codeaurora.org>
- <1614609861.067266.37858.nullmailer@robh.at.kernel.org>
-Message-ID: <77f78569ccfea64842176ae19063ef88@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210302192550.512870321@linuxfoundation.org>
+In-Reply-To: <20210302192550.512870321@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Mar 2021 20:25:48 +0530
+Message-ID: <CA+G9fYvtvZ2Cz+vEXiZouYWsG6V6ZnyF3N8m2c9mkfUn=RxZCg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/246] 4.19.178-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-01 20:14, Rob Herring wrote:
-> On Wed, 24 Feb 2021 14:03:06 +0530, satya priya wrote:
->> Convert regulator bindings from .txt to .yaml format.
->> 
->> Signed-off-by: satya priya <skakit@codeaurora.org>
->> ---
->>  .../bindings/regulator/qcom,rpmh-regulator.txt     | 180 
->> ---------------------
->>  .../bindings/regulator/qcom,rpmh-regulator.yaml    | 147 
->> +++++++++++++++++
->>  2 files changed, 147 insertions(+), 180 deletions(-)
->>  delete mode 100644 
->> Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
->>  create mode 100644 
->> Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
->> 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:13:5:
-> [warning] wrong indentation: expected 2 but found 4 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:48:5:
-> [warning] wrong indentation: expected 2 but found 4 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:49:9:
-> [warning] wrong indentation: expected 6 but found 8 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:50:13:
-> [warning] wrong indentation: expected 10 but found 12 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:64:9:
-> [warning] wrong indentation: expected 6 but found 8 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:69:9:
-> [warning] wrong indentation: expected 6 but found 8 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:83:6:
-> [warning] wrong indentation: expected 6 but found 5 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:89:6:
-> [warning] wrong indentation: expected 6 but found 5 (indentation)
-> ./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:95:2:
-> [warning] wrong indentation: expected 2 but found 1 (indentation)
-> 
-> dtschema/dtc warnings/errors:
-> 
-> See https://patchwork.ozlabs.org/patch/1443748
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
+On Wed, 3 Mar 2021 at 00:58, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.178 release.
+> There are 246 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.178-rc4.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I've updated dt-schema, and also installed yamllint but I am not seeing 
-these errors, could you please let me know if I am missing anything 
-here.
 
-Thanks,
-Satya Priya
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.178-rc3
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: be9fac34eff6bc947c29cdccf772b7671f70dbc8
+git describe: v4.19.177-248-gbe9fac34eff6
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.177-248-gbe9fac34eff6
+
+No regressions (compared to build v4.19.177-rc1)
+
+No fixes (compared to build v4.19.177-rc1)
+
+Ran 46512 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kvm-unit-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-bpf
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-cve-tests
+* ltp-open-posix-tests
+* rcutorture
+* ssuite
+* network-basic-tests
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* kselftest-
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+
+--
+Linaro LKFT
+https://lkft.linaro.org
