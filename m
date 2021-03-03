@@ -2,143 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A06532C40D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CD632C41B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381695AbhCDAKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:10:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380750AbhCCW5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:57:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D01A64EEF;
-        Wed,  3 Mar 2021 22:44:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1614811490;
-        bh=2rtpPwzLJHVHIJnLXsKsmJg32BkCVjuDiTmHOHM5K7k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vBNagQ9lTfWPruGCNNpnKngmPSpHpbBdsY6OHavrWAHrdGZcdo1YlOiSZJ8r+bqZs
-         KQWi/SuQ/y/4yBAUAuau3/EbKod66NclsVLGFZ+7iCshfF4KavbJ3gHRH2j3OVKaA2
-         gWDTXrsgBhzNEbGxMBncnOzqEvaUpcfihlOPWuE0=
-Date:   Wed, 3 Mar 2021 14:44:49 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, willy@infradead.org, surenb@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH v3] mm: cma: support sysfs
-Message-Id: <20210303144449.aa69518bfbaec9c71f799dc7@linux-foundation.org>
-In-Reply-To: <20210303205053.2906924-1-minchan@kernel.org>
-References: <20210303205053.2906924-1-minchan@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S1354464AbhCDALN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:11:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1449777AbhCCXBY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 18:01:24 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E14C0613E7
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 14:48:31 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id b18so10485132qtt.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 14:48:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc:content-transfer-encoding;
+        bh=6GsG4BSAoi0zOG8y5aYDqIlqcuuhkTJOTNFA5M+6RFc=;
+        b=Y+A60D74ZEOuyHZ0L1sPY5s3pbrklD3/nblbLXwuEcfrO1g3joof/HL3d5YCNi5jo1
+         v4bSIWtF43Yn9qvmJHzQF+Q3ct3Oht1mLrWbCB7kOd5GixooBS2AdHdfj/JVsc4jbpIQ
+         MdxodfcTClAHtD9ALV7rwYQmGnS0jvHFmdZjOmACc15f2QwwHzSWkU1zFsfHCah0mOgq
+         cyx55+hWfJejGSy+vjQcl1e+9ryEL/VU5t8KkavULxn0MzYoH/fsqq9/n6Ijs71P/oFs
+         ZFJR6CgOtiKLyudIuegTjV7rnxNcwlVE3NBH/TXxRkqXSfiVQ5ghF1CphdDQSBKo3WT3
+         ev3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=6GsG4BSAoi0zOG8y5aYDqIlqcuuhkTJOTNFA5M+6RFc=;
+        b=J0RthSaCw4FpA2oABbvkZw7UXDxBhUbyJV8vTCl2XYOK9K9dmfr+BR4g98QQrMLOYe
+         2QNX9/9N38wRjzwELv+IRw/sajLuCs+mMk5M6RsNAHqnnXWgwL7Ipdz4HgWJU1TN4rri
+         +IC0+fg6Ns7nN3y8ki/cnqZ/LFDMv+PXlMw5MZ+o/bCE6NyYut6ZIZ+6LtODu7EGtEzQ
+         TfrFMCN5CT3tfWiR+VZjs0Fpe3hPWdOYgeDNkz5x7fvSjHX1Bsz4t5XN+9Ejojg9ub2c
+         2eERTdBfoE/z8oMiWeN7ta5lgNjcc9EMeQnWL70zmAVRAmel2ePijRQd1erC1h/Jkqtf
+         rMtQ==
+X-Gm-Message-State: AOAM533mfm2br9f25CeDhTmkZyP/L7vDVW6Y/hGx3fTXZ3/ESRNiznZH
+        H41zdsa1CH8FJ9XkvVF99jmPm9QBgl1P
+X-Google-Smtp-Source: ABdhPJwUJiSK1nnsgdcA8xGtVOq+Dr9R520jeAFaT9su2xEVBnARovyShv8AC+KYXSXQRcGeDcZrHnTglNYC
+Sender: "joshdon via sendgmr" <joshdon@joshdon.svl.corp.google.com>
+X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:6dda:c053:b83b:4416])
+ (user=joshdon job=sendgmr) by 2002:ad4:5d46:: with SMTP id
+ jk6mr1274223qvb.22.1614811710568; Wed, 03 Mar 2021 14:48:30 -0800 (PST)
+Date:   Wed,  3 Mar 2021 14:46:53 -0800
+In-Reply-To: <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
+Message-Id: <20210303224653.2579656-1-joshdon@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v2] sched: Optimize __calc_delta.
+From:   Josh Don <joshdon@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Clement Courbet <courbet@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  3 Mar 2021 12:50:53 -0800 Minchan Kim <minchan@kernel.org> wrote:
+From: Clement Courbet <courbet@google.com>
 
-> Since CMA is getting used more widely, it's more important to
-> keep monitoring CMA statistics for system health since it's
-> directly related to user experience.
-> 
-> This patch introduces sysfs statistics for CMA, in order to provide
-> some basic monitoring of the CMA allocator.
-> 
->  * the number of CMA page allocation attempts
->  * the number of CMA page allocation failures
-> 
-> These two values allow the user to calcuate the allocation
-> failure rate for each CMA area.
-> 
-> e.g.)
->   /sys/kernel/mm/cma/WIFI/cma_alloc_pages_[attempts|fails]
->   /sys/kernel/mm/cma/SENSOR/cma_alloc_pages_[attempts|fails]
->   /sys/kernel/mm/cma/BLUETOOTH/cma_alloc_pages_[attempts|fails]
-> 
-> ...
->
-> --- a/mm/cma.h
-> +++ b/mm/cma.h
-> @@ -3,6 +3,14 @@
->  #define __MM_CMA_H__
->  
->  #include <linux/debugfs.h>
-> +#include <linux/kobject.h>
-> +
-> +struct cma_stat {
-> +	spinlock_t lock;
-> +	unsigned long pages_attempts;	/* the number of CMA page allocation attempts */
-> +	unsigned long pages_fails;	/* the number of CMA page allocation failures */
-> +	struct kobject kobj;
-> +};
->  
->  struct cma {
->  	unsigned long   base_pfn;
-> @@ -16,6 +24,9 @@ struct cma {
->  	struct debugfs_u32_array dfs_bitmap;
->  #endif
->  	char name[CMA_MAX_NAME];
-> +#ifdef CONFIG_CMA_SYSFS
-> +	struct cma_stat	*stat;
-> +#endif
->  };
+A significant portion of __calc_delta time is spent in the loop
+shifting a u64 by 32 bits. Use `fls` instead of iterating.
 
-Why aren't the stat fields simply placed directly into struct cma_stat?
+This is ~7x faster on benchmarks.
 
-> ...
->
-> +static int __init cma_sysfs_init(void)
-> +{
-> +	int i = 0;
-> +	struct cma *cma;
-> +
-> +	cma_kobj = kobject_create_and_add("cma", mm_kobj);
-> +	if (!cma_kobj) {
-> +		pr_err("failed to create cma kobject\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
-> +				cma_area_count), GFP_KERNEL);
+The generic `fls` implementation (`generic_fls`) is still ~4x faster
+than the loop.
+Architectures that have a better implementation will make use of it. For
+example, on X86 we get an additional factor 2 in speed without dedicated
+implementation.
 
-kmalloc_array(..., GFP_KERNEL|__GFP_ZERO);
+On gcc, the asm versions of `fls` are about the same speed as the
+builtin. On clang, the versions that use fls are more than twice as
+slow as the builtin. This is because the way the `fls` function is
+written, clang puts the value in memory:
+https://godbolt.org/z/EfMbYe. This bug is filed at
+https://bugs.llvm.org/show_bug.cgi?id=3D49406.
 
-?
+```
+name                                   cpu/op
+BM_Calc<__calc_delta_loop>             9.57ms =C2=B112%
+BM_Calc<__calc_delta_generic_fls>      2.36ms =C2=B113%
+BM_Calc<__calc_delta_asm_fls>          2.45ms =C2=B113%
+BM_Calc<__calc_delta_asm_fls_nomem>    1.66ms =C2=B112%
+BM_Calc<__calc_delta_asm_fls64>        2.46ms =C2=B113%
+BM_Calc<__calc_delta_asm_fls64_nomem>  1.34ms =C2=B115%
+BM_Calc<__calc_delta_builtin>          1.32ms =C2=B111%
+```
 
-> +	if (!cma_stats) {
-> +		pr_err("failed to create cma_stats\n");
+Signed-off-by: Clement Courbet <courbet@google.com>
+Signed-off-by: Josh Don <joshdon@google.com>
+---
+ kernel/sched/fair.c  | 19 +++++++++++--------
+ kernel/sched/sched.h |  1 +
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-Probably unneeded - the ENOMEM stack backtrace will point straight here.
-
-> +		goto out;
-> +	}
-> +
-> +	do {
-> +		cma = &cma_areas[i];
-> +		cma->stat = &cma_stats[i];
-> +		spin_lock_init(&cma->stat->lock);
-> +		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
-> +					cma_kobj, "%s", cma->name)) {
-> +			kobject_put(&cma->stat->kobj);
-> +			goto out;
-> +		}
-> +	} while (++i < cma_area_count);
-> +
-> +	return 0;
-> +out:
-> +	while (--i >= 0) {
-> +		cma = &cma_areas[i];
-> +		kobject_put(&cma->stat->kobj);
-> +	}
-> +
-> +	kfree(cma_stats);
-> +	kobject_put(cma_kobj);
-> +
-> +	return -ENOMEM;
-> +}
-> +subsys_initcall(cma_sysfs_init);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8a8bd7b13634..a691371960ae 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -229,22 +229,25 @@ static void __update_inv_weight(struct load_weight *l=
+w)
+ static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct load_=
+weight *lw)
+ {
+ 	u64 fact =3D scale_load_down(weight);
++	u32 fact_hi =3D (u32)(fact >> 32);
+ 	int shift =3D WMULT_SHIFT;
++	int fs;
+=20
+ 	__update_inv_weight(lw);
+=20
+-	if (unlikely(fact >> 32)) {
+-		while (fact >> 32) {
+-			fact >>=3D 1;
+-			shift--;
+-		}
++	if (unlikely(fact_hi)) {
++		fs =3D fls(fact_hi);
++		shift -=3D fs;
++		fact >>=3D fs;
+ 	}
+=20
+ 	fact =3D mul_u32_u32(fact, lw->inv_weight);
+=20
+-	while (fact >> 32) {
+-		fact >>=3D 1;
+-		shift--;
++	fact_hi =3D (u32)(fact >> 32);
++	if (fact_hi) {
++		fs =3D fls(fact_hi);
++		shift -=3D fs;
++		fact >>=3D fs;
+ 	}
+=20
+ 	return mul_u64_u32_shr(delta_exec, fact, shift);
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 10a1522b1e30..714af71cf983 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -36,6 +36,7 @@
+ #include <uapi/linux/sched/types.h>
+=20
+ #include <linux/binfmts.h>
++#include <linux/bitops.h>
+ #include <linux/blkdev.h>
+ #include <linux/compat.h>
+ #include <linux/context_tracking.h>
+--=20
+2.30.1.766.gb4fecdf3b7-goog
 
