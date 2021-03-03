@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F33D32BDA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD9F32BCE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445178AbhCCQS0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 11:18:26 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3460 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235049AbhCCLpa (ORCPT
+        id S1442707AbhCCPAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:00:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843052AbhCCKY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:45:30 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Dr7bp3qh5z5YCd;
-        Wed,  3 Mar 2021 17:14:14 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 3 Mar 2021 17:15:56 +0800
-Received: from dggeme755-chm.china.huawei.com (10.3.19.101) by
- dggema772-chm.china.huawei.com (10.1.198.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 3 Mar 2021 17:15:55 +0800
-Received: from dggeme755-chm.china.huawei.com ([10.7.64.71]) by
- dggeme755-chm.china.huawei.com ([10.7.64.71]) with mapi id 15.01.2106.006;
- Wed, 3 Mar 2021 17:15:55 +0800
-From:   "Zhouguanghui (OS Kernel)" <zhouguanghui1@huawei.com>
-To:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-CC:     Hugh Dickins <hughd@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>,
-        "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>,
-        Dingtianhong <dingtianhong@huawei.com>,
-        Chenweilong <chenweilong@huawei.com>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>
-Subject: Re: [PATCH] mm/memcg: set memcg when split pages
-Thread-Topic: [PATCH] mm/memcg: set memcg when split pages
-Thread-Index: AQHXD0TOPfGiAC+zfUG9IaYiC6n5KA==
-Date:   Wed, 3 Mar 2021 09:15:55 +0000
-Message-ID: <afd198dbac71474f8f02c710feaf8c5e@huawei.com>
-References: <20210302013451.118701-1-zhouguanghui1@huawei.com>
- <YD4CciUX0/eXFLM0@dhcp22.suse.cz>
- <alpine.LSU.2.11.2103021157160.8450@eggly.anvils>
- <YD7Ch/8QebzmneCR@cmpxchg.org> <YD8+2P6J9+NhLZoX@dhcp22.suse.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.106]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        Wed, 3 Mar 2021 05:24:57 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157F1C0698D6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:16:39 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id v9so18179024lfa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:16:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=buRZjTCkPRscNUcgouTsLvhNWylzQC2Vu2Jj2dnDvlY=;
+        b=JanEXoUqmSxDacqDR+nKEc/kxryraHtUeHFnwycu6BONzCTOiWRBjALBiBwlfx5e78
+         ZM4cbGNZDa80DIBjWjbZ2BTmh/bTfU/pztwWhDbOXCyuO5Inl7kwcij9ZURFHJn6dGoD
+         UD6u/e6GJGukxlR4C+JGktCNDZNFhYJdJo+HsUD9jewcpNbVAwYRmV9TXTLefeLCaANA
+         FA5vJsiIvKMa/cADkYmxpsh4aeA4oA4nDt98zTYblsM9ibdNDEdD4FamSm1JsFm98Eha
+         3iVWyXyVIs5Cf9aq0+KyuHzX3J8Zv+J7qB2v9YJn8rfo7WOSw4qYG64AzrHWwI0RI4LT
+         PsmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=buRZjTCkPRscNUcgouTsLvhNWylzQC2Vu2Jj2dnDvlY=;
+        b=bDHJh21X7Eus/mfV9Qy0ppQUZkved0GjVRSLWEki30t0DWNz0/lwN62Bd71ZQpdt59
+         PP0LbolIpnAuvL1LAP/EKz4IOszA+JqcEYz/Ld0PUw4qmD0n+Rpqq/O+27eWeSChS0my
+         ohxDAc3FHI1NiJQ/L5P92YD6y0d8qCYHE3yuZyTTFyJeQ6faQ1Cz1D9IMikFngtTEo1q
+         gBcOHyrRCh0VZvDUCEj4E7LuYb3PlBHtw46itRqQciOzt5KSsIvGhrIDZcRKlcCUFsTD
+         sPlwFDqWtQW0SQTu8XtrHoeR5kpfJDHqL9VskzjTZazdTK0WYFVqw8P79S1Bh1tHINC8
+         Asrg==
+X-Gm-Message-State: AOAM533d4hGz1DRhx+jHIOS6OqfiygHTFKRbS+Von1Mb+3WZAtpdPowI
+        GIj51ZLPv3BEnRMbZyyyCDhITXJ5cO93Yk1LrjfXFw==
+X-Google-Smtp-Source: ABdhPJy9aRQHMyc4qKY1gO36BOHVs6AyUE+pwQt9Kzv2pXSSRggMKgV9EEBjNSTc07PFy8N4HS0999U1MZ6NLJp5Nn0=
+X-Received: by 2002:ac2:5d21:: with SMTP id i1mr14044766lfb.649.1614762997648;
+ Wed, 03 Mar 2021 01:16:37 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com> <20210302153451.50593-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210302153451.50593-3-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 3 Mar 2021 10:16:26 +0100
+Message-ID: <CACRpkdYX-CuSmNk1Yx24y15+R7q=UbXqdhgKKdeWa+dzy3wKgQ@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] gpiolib: Introduce acpi_gpio_dev_init() and call
+ it from core
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/3/3 15:46, Michal Hocko 写道:
-> On Tue 02-03-21 17:56:07, Johannes Weiner wrote:
->> On Tue, Mar 02, 2021 at 12:24:41PM -0800, Hugh Dickins wrote:
->>> On Tue, 2 Mar 2021, Michal Hocko wrote:
->>>> [Cc Johannes for awareness and fixup Nick's email]
->>>>
->>>> On Tue 02-03-21 01:34:51, Zhou Guanghui wrote:
->>>>> When split page, the memory cgroup info recorded in first page is
->>>>> not copied to tail pages. In this case, when the tail pages are
->>>>> freed, the uncharge operation is not performed. As a result, the
->>>>> usage of this memcg keeps increasing, and the OOM may occur.
->>>>>
->>>>> So, the copying of first page's memory cgroup info to tail pages
->>>>> is needed when split page.
->>>>
->>>> I was not aware that alloc_pages_exact is used for accounted allocations
->>>> but git grep told me otherwise so this is not a theoretical one. Both
->>>> users (arm64 and s390 kvm) are quite recent AFAICS. split_page is also
->>>> used in dma allocator but I got lost in indirection so I have no idea
->>>> whether there are any users there.
->>>
->>> Yes, it's a bit worrying that such a low-level thing as split_page()
->>> can now get caught up in memcg accounting, but I suppose that's okay.
->>>
->>> I feel rather strongly that whichever way it is done, THP splitting
->>> and split_page() should use the same interface to memcg.
->>>
->>> And a look at mem_cgroup_split_huge_fixup() suggests that nowadays
->>> there need to be css_get()s too - or better, a css_get_many().
->>>
->>> Its #ifdef CONFIG_TRANSPARENT_HUGEPAGE should be removed, rename
->>> it mem_cgroup_split_page_fixup(), and take order from caller.
->>
->> +1
->>
->> There is already a split_page_owner() in both these places as well
->> which does a similar thing. Mabye we can match that by calling it
->> split_page_memcg() and having it take a nr of pages?
-> 
-> Sounds good to me.
-> 
-  Hi, Michal, Johannes, Hugh, and Zi Yan, thank you for taking time for 
-this.
+On Tue, Mar 2, 2021 at 4:36 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-I agree, and will send v2 patches for taking these.
+> In the ACPI case we may use the firmware node in the similar way
+> as it's done for OF case. We may use that fwnode for other purposes
+> in the future.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
