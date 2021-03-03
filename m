@@ -2,184 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824A232BC42
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2681C32BC5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445717AbhCCNri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
+        id S241378AbhCCNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1582431AbhCCKVL (ORCPT
+        with ESMTP id S1582439AbhCCKVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:21:11 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93EBC08EC2F;
-        Wed,  3 Mar 2021 01:49:38 -0800 (PST)
-Date:   Wed, 03 Mar 2021 09:49:36 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614764977;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gs9ZzgIItOpb66CTWgidjMbH9rx2aMPX0PYAefOGwxA=;
-        b=EPdlTeSo1RaAr5xkerIsuYbKsJ2/XCKnclXJgy88cEj+xkWLA6jCRNzPCr7GQ/NkB9AKCX
-        4Xminze9JFPG70uRSncytpxooM/2zCVS/1cWBqg7bXrbWiYbJCUMWBL862+Wzv4OmQiOdA
-        HyKKdLmFYNwhpewiogvh4DjChCG0+ASYxvAY4xZK/bW73h7OeoGm//vXFBlwVjsmA+1f8b
-        YkxBH6KKEtZentdoVNIPi4ZWCAJT8Lyt3x51ITY6K1o7sLNUviQnm391h+qsMWVblkLdRU
-        OYreJ3dW/M/Mk8zH3nR4jJN2f4M1xPZ6mxrh9QH0UqMEN+F43kdEJG3V/wyGJA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614764977;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gs9ZzgIItOpb66CTWgidjMbH9rx2aMPX0PYAefOGwxA=;
-        b=BFU/kwMrpEefGXypkxrR6vP++jmohxoiekJ7P0WHCo31kz2X+1rbEe63Y6aesuFBKpuyuo
-        jLzlPghrxcxsKbDQ==
-From:   "tip-bot2 for Vincent Donnefort" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Fix task utilization accountability in
- compute_energy()
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Quentin Perret <qperret@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210225083612.1113823-2-vincent.donnefort@arm.com>
-References: <20210225083612.1113823-2-vincent.donnefort@arm.com>
-MIME-Version: 1.0
-Message-ID: <161476497633.20312.518515728651071926.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 3 Mar 2021 05:21:53 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B7BC08ECAF;
+        Wed,  3 Mar 2021 01:57:12 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id g20so13759548plo.2;
+        Wed, 03 Mar 2021 01:57:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=rO9Y833nDH2+YLt8R02YKuOgTZIbRQR101oQDtAVGXE=;
+        b=Xez7ZQlXgayaQh5vq8//StWeI9hfC35doRt6LcGRHN9oIldF2PoCtaVY6wtbEKOjqw
+         MPzQOsjshSaQBkwSevXZMUeeEPlISMLBTuxRKLYuZkOA+/I1IyG3eAA4ATFd5KiTDf/T
+         gjp/Znf++R1A5NFyP9vWUfQEYtaVgbCo8l/UAh2x4P7/weObZGBs9nxuPhAFxKCKw0ck
+         y0MGXPxYbccLGh702YcP32UeW44R+k7EXHFHrCzolNkdkLnnsBD5UyVNKR4u+q1XhPlC
+         TQc3ZpjX+nvqzm8/P63WXf0ogVMBlGaSSX9kSr3WaMJDiiiUjJ7+AenUxh5rE4tMzXsP
+         Tm3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=rO9Y833nDH2+YLt8R02YKuOgTZIbRQR101oQDtAVGXE=;
+        b=NmQuae08T8xH+5adqCYulP9jZvPL8EXY9oa1n0oGyNFTXl51xkdtoKYcS/GgN0tZYN
+         xc1Vo90HKtrCwBs/ehfI4fLT0VmhSgfBqDfUZLMa609xCRfd8ZH1RF0FuGor4BSpOadV
+         WoAh37qGEXnhyVOc6ql2D8Cv+ti/DnS1CIEpReyet6HmiJExjdfS7OxGM2vWHGdF7pNP
+         EKtzkxw2af5nLTU5PXz2tenVP4hv0Ef8GPHm33ECg+aEvLeeB8gQ6UQubJBLtPWm+e8I
+         GRbloT0x1bUk2dsbgN3UZ4/pfnM6RLdUk/CoWvNc7ilBDBWVSpTEi8RH+AXbhhMzaq+K
+         Iw5g==
+X-Gm-Message-State: AOAM530YtI5/a/EXmZiHi9Ot7+QFg27nr6vz/DLIfHD3Bba/JBNNi1NU
+        j542gdvv+GxPInXW0dbgcvQ=
+X-Google-Smtp-Source: ABdhPJx72uTlFuQaVNYA6wP7x5v8gHrLGgSfCqeuNhuWsiZh8GRNqH2txME6FMui3dokXUQCcXe6HA==
+X-Received: by 2002:a17:90a:d516:: with SMTP id t22mr9016990pju.51.1614765432272;
+        Wed, 03 Mar 2021 01:57:12 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id h12sm22299781pgs.7.2021.03.03.01.57.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 01:57:11 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+Message-Id: <A53B1EF2-345D-4D42-A662-77C38F3E8CB4@gmail.com>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_988504CF-EF92-4AFA-BE5D-F379324AE072";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v3] mm/userfaultfd: fix memory corruption due to
+ writeprotect
+Date:   Wed, 3 Mar 2021 01:57:09 -0800
+In-Reply-To: <20210303095116.3814443-1-namit@vmware.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>, Yu Zhao <yuzhao@google.com>
+To:     Linux-MM <linux-mm@kvack.org>
+References: <20210303095116.3814443-1-namit@vmware.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     2d120f71df4baeb7694f513c86fe6f85940f6f76
-Gitweb:        https://git.kernel.org/tip/2d120f71df4baeb7694f513c86fe6f85940f6f76
-Author:        Vincent Donnefort <vincent.donnefort@arm.com>
-AuthorDate:    Thu, 25 Feb 2021 08:36:11 
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 03 Mar 2021 10:33:00 +01:00
+--Apple-Mail=_988504CF-EF92-4AFA-BE5D-F379324AE072
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-sched/fair: Fix task utilization accountability in compute_energy()
 
-find_energy_efficient_cpu() (feec()) computes for each perf_domain (pd) an
-energy delta as follows:
+> On Mar 3, 2021, at 1:51 AM, Nadav Amit <nadav.amit@gmail.com> wrote:
+> 
+> From: Nadav Amit <namit@vmware.com>
+> 
+> Userfaultfd self-test fails occasionally, indicating a memory
+> corruption.
 
-  feec(task)
-    for_each_pd
-      base_energy = compute_energy(task, -1, pd)
-        -> for_each_cpu(pd)
-           -> cpu_util_next(cpu, task, -1)
+Please ignore - I will resend.
 
-      energy_delta = compute_energy(task, dst_cpu, pd)
-        -> for_each_cpu(pd)
-           -> cpu_util_next(cpu, task, dst_cpu)
-      energy_delta -= base_energy
+--Apple-Mail=_988504CF-EF92-4AFA-BE5D-F379324AE072
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
-Then it picks the best CPU as being the one that minimizes energy_delta.
+-----BEGIN PGP SIGNATURE-----
 
-cpu_util_next() estimates the CPU utilization that would happen if the
-task was placed on dst_cpu as follows:
+iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmA/XXUACgkQHaAqSaba
+D1rufBAAk4Vo6Q73H1mV4rFLQFiYKkzUoUxDgyK6hHTv8JcXg38x80iyNu6tL/2W
+rsF9ql0mcPTI54NiTW+rvUeV4DuJjU0VuGM4xq7THZO9SV9P5K99B2Ozc1VEwJ2K
+FhYSp+5qEUh2KlySgoh0XlQ3keFF+H1CsrzoJC1DYGJDgYIlj6DNuTZPF7Tv8B6M
+GRpOHtA34v0K1nJTAa7LDhGTDxDqhUafu1d6SXI6wzfYO75OV1m/dJwkvJ1RSVKq
+za+56HYFdcqdADFktmpjuIDH2fBGum/xdg37ytIniMIHXCdo16+K2YB9zoWqli6c
+4prhAxACobX+4WB/+BkLOYaT1x8OCZTCH5aLHqKUy6lKHXRAIIMGSislXkoKJ+Mq
+JqmsJIlxGZLEeDQYX03vApSiTaepIjqYstqBzo1XchjmLOFD2YoOs/144n+50wxA
+xK5ejy7ZSh2iZXu8ttVJkqcZn3GSvnFyHlRXJZNSGUmH0cyuo7IoXFYC7rdHmxou
+Rjf+xxd3mzhuj+dsTwh6WRGSePUr/PNuzjy7yq/aPWWtUVmtE12FjBR08VXVMm/v
+IpP3XE7QuoLz3OyMczSYveKLDIsd2aJf5weYR/x8HZA1Qnli+zH5s41tWNAvrZk+
++xu83CA6lgkecw/Vueyiyjz+4ReCRPi/kGk2pny/GAEeC+TddgA=
+=U4N0
+-----END PGP SIGNATURE-----
 
-  max(cpu_util + task_util, cpu_util_est + _task_util_est)
-
-The task contribution to the energy delta can then be either:
-
-  (1) _task_util_est, on a mostly idle CPU, where cpu_util is close to 0
-      and _task_util_est > cpu_util.
-  (2) task_util, on a mostly busy CPU, where cpu_util > _task_util_est.
-
-  (cpu_util_est doesn't appear here. It is 0 when a CPU is idle and
-   otherwise must be small enough so that feec() takes the CPU as a
-   potential target for the task placement)
-
-This is problematic for feec(), as cpu_util_next() might give an unfair
-advantage to a CPU which is mostly busy (2) compared to one which is
-mostly idle (1). _task_util_est being always bigger than task_util in
-feec() (as the task is waking up), the task contribution to the energy
-might look smaller on certain CPUs (2) and this breaks the energy
-comparison.
-
-This issue is, moreover, not sporadic. By starving idle CPUs, it keeps
-their cpu_util < _task_util_est (1) while others will maintain cpu_util >
-_task_util_est (2).
-
-Fix this problem by always using max(task_util, _task_util_est) as a task
-contribution to the energy (ENERGY_UTIL). The new estimated CPU
-utilization for the energy would then be:
-
-  max(cpu_util, cpu_util_est) + max(task_util, _task_util_est)
-
-compute_energy() still needs to know which OPP would be selected if the
-task would be migrated in the perf_domain (FREQUENCY_UTIL). Hence,
-cpu_util_next() is still used to estimate the maximum util within the pd.
-
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Quentin Perret <qperret@google.com>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Link: https://lkml.kernel.org/r/20210225083612.1113823-2-vincent.donnefort@arm.com
----
- kernel/sched/fair.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f1b55f9..b994db9 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6518,8 +6518,24 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
- 	 * its pd list and will not be accounted by compute_energy().
- 	 */
- 	for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
--		unsigned long cpu_util, util_cfs = cpu_util_next(cpu, p, dst_cpu);
--		struct task_struct *tsk = cpu == dst_cpu ? p : NULL;
-+		unsigned long util_freq = cpu_util_next(cpu, p, dst_cpu);
-+		unsigned long cpu_util, util_running = util_freq;
-+		struct task_struct *tsk = NULL;
-+
-+		/*
-+		 * When @p is placed on @cpu:
-+		 *
-+		 * util_running = max(cpu_util, cpu_util_est) +
-+		 *		  max(task_util, _task_util_est)
-+		 *
-+		 * while cpu_util_next is: max(cpu_util + task_util,
-+		 *			       cpu_util_est + _task_util_est)
-+		 */
-+		if (cpu == dst_cpu) {
-+			tsk = p;
-+			util_running =
-+				cpu_util_next(cpu, p, -1) + task_util_est(p);
-+		}
- 
- 		/*
- 		 * Busy time computation: utilization clamping is not
-@@ -6527,7 +6543,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
- 		 * is already enough to scale the EM reported power
- 		 * consumption at the (eventually clamped) cpu_capacity.
- 		 */
--		sum_util += effective_cpu_util(cpu, util_cfs, cpu_cap,
-+		sum_util += effective_cpu_util(cpu, util_running, cpu_cap,
- 					       ENERGY_UTIL, NULL);
- 
- 		/*
-@@ -6537,7 +6553,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
- 		 * NOTE: in case RT tasks are running, by default the
- 		 * FREQUENCY_UTIL's utilization can be max OPP.
- 		 */
--		cpu_util = effective_cpu_util(cpu, util_cfs, cpu_cap,
-+		cpu_util = effective_cpu_util(cpu, util_freq, cpu_cap,
- 					      FREQUENCY_UTIL, tsk);
- 		max_util = max(max_util, cpu_util);
- 	}
+--Apple-Mail=_988504CF-EF92-4AFA-BE5D-F379324AE072--
