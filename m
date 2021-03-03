@@ -2,118 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3230B32C0F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B488E32C0FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837225AbhCCSsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:46 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:31744 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237847AbhCCSIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:08:41 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DrMRT2KJHz9twsP;
-        Wed,  3 Mar 2021 19:07:49 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Oezy_9lCxP9I; Wed,  3 Mar 2021 19:07:49 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrMRT1Nrpz9twsB;
-        Wed,  3 Mar 2021 19:07:49 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6D9A88B7E6;
-        Wed,  3 Mar 2021 19:07:49 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id mppgCCIWAOu2; Wed,  3 Mar 2021 19:07:49 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A8E2F8B7DB;
-        Wed,  3 Mar 2021 19:07:48 +0100 (CET)
-Subject: Re: [PATCH v2 0/7] Improve boot command line handling
-To:     Daniel Walker <danielwa@cisco.com>, Rob Herring <robh@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
- <20210302173523.GE109100@zorba>
- <CAL_JsqJ7U8QAbJe3zkZiFPJN4PveHz5TZoPk2S8qQWB6cm5e5Q@mail.gmail.com>
- <20210303173908.GG109100@zorba>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <59b054e8-d85b-fd87-c94d-691af748a2f5@csgroup.eu>
-Date:   Wed, 3 Mar 2021 19:07:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S243071AbhCCSws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:52:48 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:46559 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244872AbhCCSNR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:13:17 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4DF44580272;
+        Wed,  3 Mar 2021 13:11:15 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 03 Mar 2021 13:11:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=R
+        G1V6+KyPgUrPQt1cGsfMCiGS9LQ7Gy572gXAWOD3F8=; b=FWLUkYNoPVnGT1uBS
+        Q3vfTpPFcjRBP0ItlmpKPA7FEh2gInJdu0TbIonUpyBtc64tirRusc7bv1XyQZFi
+        kNNvCKiKSTdyc3Y+baURuAFiNHUQxJZVnOSnDO1nuAkeHKkiOcWf4DnrkBkAdAiE
+        y3Wyroh1jJ94Mqnmu8baQbNnos+4xvv45z7oQmDipuFFKFPNjEoRGB6U2+O0q77P
+        n7Uth6nrgqKcUYpJg0Jxc+xFgxWdjC5Q4h0F+q4Pb1X48e0amgv4C5kfanxgv32H
+        WQMWMp8dUiKROFVJ6cv67skRILo3gs53OSofLwWccQ8PGPl+JAiVqYNoGOv+cGGA
+        zuObg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=RG1V6+KyPgUrPQt1cGsfMCiGS9LQ7Gy572gXAWOD3
+        F8=; b=TgJYGJRGC+y4SQqYI8rB5HkySq+ErerVbjcW5YoIuIC4fSewqtwiX2wxp
+        du6hCIMBgmUWjrxU1pogdcCSLvHRnPmCfSa6CiDSo962LNmhwi3GPqBBVFLSK9si
+        IPB3GdCHAg9Oxc0OzqDgbjguFzzzm1YeaiUu3RTqWVfUK1tfbdXsGVwkHtACkjmg
+        Y4ynUUOoyfgbhGEm/fbUdV+FEWF7USqpUflHaQxZKXzzK/1DlI8bGiZ525+4vrcf
+        h7l9Ccd83qEOzQV5KPTuFsyNK8+8Jc3e7k33qv198fuxPRGYG25FrddtUe0Y1evd
+        edV1V8f5z1wp+nQJ3u+iZGDger53Q==
+X-ME-Sender: <xms:QtE_YKD2F2vaegFiJAOXxwPurULnQx7zZdkM6G8VN_dtbkPzZEbpHw>
+    <xme:QtE_YEdDvaQ4UB-L-8e024WDyX2hCk_wthmECD_uOyf24o4kpxkSZ44SU_5HDMMIl
+    5B2ACDZheEJ1BrQbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtvddguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddujedmnecujfgurhepfffhvffukfhfgggtugfgjgesthekredt
+    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpedtjeefvefhgedutdfghfeiudfhvddvveegvdejhedvhfeg
+    tdelleeltdfgffeljeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeile
+    drudekuddruddthedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:QtE_YKdkoGcM5AvREP5dWZGqRrUMtvTqrv0idJ6s2Weq6re9ZCq7bw>
+    <xmx:QtE_YAjSV5e5YC0yFpcGhvKmNB4pqu1GT5Z0zsV2jhBnreLjsBEiyA>
+    <xmx:QtE_YOSmdvX3q1LkRDQ-VK7Q34YSnOGz7uS8kI_SwEWEe-rC4rBHOA>
+    <xmx:Q9E_YKPj7fFWFASGS4YmdB3xiYjr6CCfuKnhP4SMRg_vFk_pfCVJfQ>
+Received: from maharaja.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EB391240065;
+        Wed,  3 Mar 2021 13:11:12 -0500 (EST)
+Date:   Wed, 3 Mar 2021 10:11:11 -0800
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-ID: <20210303181111.th5ukrfzrmyuvk5x@maharaja.localdomain>
+References: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
+ <968E85AE-75B8-42D7-844A-0D61B32063B3@amacapital.net>
+ <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210303173908.GG109100@zorba>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 03/03/2021 à 18:39, Daniel Walker a écrit :
-> On Tue, Mar 02, 2021 at 08:01:01PM -0600, Rob Herring wrote:
->> +Will D
->>
->> On Tue, Mar 2, 2021 at 11:36 AM Daniel Walker <danielwa@cisco.com> wrote:
->>>
->>> On Tue, Mar 02, 2021 at 05:25:16PM +0000, Christophe Leroy wrote:
->>>> The purpose of this series is to improve and enhance the
->>>> handling of kernel boot arguments.
->>>>
->>>> It is first focussed on powerpc but also extends the capability
->>>> for other arches.
->>>>
->>>> This is based on suggestion from Daniel Walker <danielwa@cisco.com>
->>>>
->>>
->>>
->>> I don't see a point in your changes at this time. My changes are much more
->>> mature, and you changes don't really make improvements.
->>
->> Not really a helpful comment. What we merge here will be from whomever
->> is persistent and timely in their efforts. But please, work together
->> on a common solution.
->>
->> This one meets my requirements of moving the kconfig and code out of
->> the arches, supports prepend/append, and is up to date.
+On Tue, Mar 02, 2021 at 06:18:23PM -0800, Alexei Starovoitov wrote:
+> On Tue, Mar 2, 2021 at 5:46 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> >
+> >
+> > > On Mar 2, 2021, at 5:22 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > ﻿On Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> > >>
+> > >>
+> > >>>> On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > >>>
+> > >>> ﻿On Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.org> wrote:
+> > >>>>
+> > >>>> Is there something like a uprobe test suite?  How maintained /
+> > >>>> actively used is uprobe?
+> > >>>
+> > >>> uprobe+bpf is heavily used in production.
+> > >>> selftests/bpf has only one test for it though.
+> > >>>
+> > >>> Why are you asking?
+> > >>
+> > >> Because the integration with the x86 entry code is a mess, and I want to know whether to mark it BROKEN or how to make sure the any cleanups actually work.
+> > >
+> > > Any test case to repro the issue you found?
+> > > Is it a bug or just messy code?
+> >
+> > Just messy code.
+> >
+> > > Nowadays a good chunk of popular applications (python, mysql, etc) has
+> > > USDTs in them.
+> > > Issues reported with bcc:
+> > > https://github.com/iovisor/bcc/issues?q=is%3Aissue+USDT
+> > > Similar thing with bpftrace.
+> > > Both standard USDT and semaphore based are used in the wild.
+> > > uprobe for containers has been a long standing feature request.
+> > > If you can improve uprobe performance that would be awesome.
+> > > That's another thing that people report often. We optimized it a bit.
+> > > More can be done.
+> >
+> >
+> > Wait... USDT is much easier to implement well.  Are we talking just USDT or are we talking about general uprobes in which almost any instruction can get probed?  If the only users that care about uprobes are doing USDT, we could vastly simplify the implementation and probably make it faster, too.
 > 
-> 
-> Maintainers are capable of merging whatever they want to merge. However, I
-> wouldn't make hasty choices. The changes I've been submitting have been deployed
-> on millions of router instances and are more feature rich.
-> 
-> I believe I worked with you on this change, or something like it,
-> 
-> https://lkml.org/lkml/2019/3/19/970
-> 
-> I don't think Christophe has even addressed this.
+> USDTs are driving the majority of uprobe usage.
 
-I thing I have, see 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/3b4291271ce4af4941a771e5af5cbba3c8fa1b2a.1614705851.git.christophe.leroy@csgroup.eu/
+I'd say 50/50 in my experience. Larger userspace applications using bpf
+for production monitoring tend to use USDT for stability and ABI reasons
+(hard for bpf to read C++ classes). Bare uprobes (ie not USDT) are used
+quite often for ad-hoc production debugging.
 
-If you see something missing in that patch, can you tell me.
-
-> I've converted many
-> architectures, and Cisco uses my changes on at least 4 different
-> architecture. With products deployed and tested.
-
-As far as we know, only powerpc was converted in the last series you submitted, see 
-https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=98106&state=*
-
+> If they can get faster it will increase their adoption even more.
+> There are certainly cases of normal uprobes.
+> They are at the start of the function 99% of the time.
+> Like the following:
+> "uprobe:/lib64/libc.so:malloc(u64 size):size:size,_ret",
+> "uprobe:/lib64/libc.so:free(void *ptr)::ptr",
+> is common despite its overhead.
 > 
-> I will resubmit my changes as soon as I can.
+> Here is the most interesting and practical usage of uprobes:
+> https://github.com/iovisor/bcc/blob/master/tools/sslsniff.py
+> and the manpage for the tool:
+> https://github.com/iovisor/bcc/blob/master/tools/sslsniff_example.txt
 > 
+> uprobe in the middle of the function is very rare.
+> If the kernel starts rejecting uprobes on some weird instructions
+> I suspect no one will complain.
 
-Christophe
+I think it would be great if the kernel could reject mid-instruction
+uprobes. Unlike with kprobes, you can place uprobes on immediate
+operands which can cause silent data corruption. See
+https://github.com/iovisor/bpftrace/pull/803#issuecomment-507693933
+for a funny example.
+
+To prevent accidental (and silent) data corruption, bpftrace uses a
+disassembler to ensure uprobes are placed on instruction boundaries.
+
+<...>
+
+Daniel
