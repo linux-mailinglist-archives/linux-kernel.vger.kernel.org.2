@@ -2,80 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678E732BBDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DA332BBEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358801AbhCCNDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344790AbhCCIPi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:15:38 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BF6C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:14:57 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d11so13599939plo.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:14:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=Ys6kuPDFRi31EkQfNoVQbkWvHohfbwNBXe8ToIgFzPc=;
-        b=AsuVtpWFV2Q636LgKkKnxXazaMOiw8680f1n5HPgHPAiaog2JDJYl9Yp6Va5KkXf4L
-         RvS0e7mTZLko9V88kZO3b0pBVwHK2FZgpcI0b1k29oLc4fiKxd/68Nmlcfn87qXDFFBO
-         4Vfy077i2rw0PoP0SP+eLMNUJe8/rp/tzDyPQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=Ys6kuPDFRi31EkQfNoVQbkWvHohfbwNBXe8ToIgFzPc=;
-        b=Qq/sU6wHFpFxCxrXcF8UrXtzAFW1DRp9NnRAByuDVERgTh8+8gzdGNsxqjnzfPEXD0
-         +yJ0ruNL9Rwjpk51pzl4vCR1hlNBSOXjOpLFHcPwq++1NBn9t0gqV/at8KfOGxdCAGWb
-         uAelA40oS5cL6W85O/OPvPDSCI4FoScSICKBo3ELuMt5kHuMIXiI/U2lvwZkzaYAWRJo
-         0bq5ICYir97m4j0ZVMCwv6lCq/qGVv2C7AN8BDKiqTXRZWU3VQlOEFTnAhhtstb8BgZp
-         IvzJOCJiCMjpdsR7Mr7DVNTHmr43WZjR+TlMrNOrG93Prc29mnYppiPLffDAclqzcS/q
-         7S6g==
-X-Gm-Message-State: AOAM5332eGcXU76Kvx2oeByPdQirYIjQSIW3ZVZyTmnB+IYNBGKgCRY0
-        nVOvSr4Gr2slq3U8iE9BEDWoyg==
-X-Google-Smtp-Source: ABdhPJzFxT/t8kc9vVl/6aILPA0eun40kYLrV/D9zGBSCRUNhtEpDCAO7Wmx5gnU/F8yIsTkPqwcIg==
-X-Received: by 2002:a17:90a:1463:: with SMTP id j90mr7788262pja.205.1614759296696;
-        Wed, 03 Mar 2021 00:14:56 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id s10sm23329080pgl.90.2021.03.03.00.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:14:56 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S1358932AbhCCNSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:18:36 -0500
+Received: from mga05.intel.com ([192.55.52.43]:62141 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357077AbhCCIR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:17:26 -0500
+IronPort-SDR: PQULdhaIckK/7t69uRbc68UNTb5FwiduS4t7Kcgp0PvHlxaeXIay/ugR6if1TdQ6M3GoJFe7VF
+ YvOeczNcYN9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="272136727"
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="272136727"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 00:15:30 -0800
+IronPort-SDR: Jl1gDOt18Yx3Wc3FOkcfIFLNuc3RejNsIXAn65v97ohTHqhTMI8M/7DjMCF88L5gQLcyzhIZ1W
+ ZKMMVTPRr2mQ==
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="383900135"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 00:15:27 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lHMfD-009afi-Vm; Wed, 03 Mar 2021 10:15:23 +0200
+Date:   Wed, 3 Mar 2021 10:15:23 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: stmpe: Revert "Constify static struct resource"
+Message-ID: <YD9Fm2qOf7ABYjZK@smile.fi.intel.com>
+References: <20210302234710.74455-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210301133318.v2.4.I1483fac4c5ae4b2d7660290ff85d69945292618f@changeid>
-References: <20210301213437.4165775-1-dianders@chromium.org> <20210301133318.v2.4.I1483fac4c5ae4b2d7660290ff85d69945292618f@changeid>
-Subject: Re: [PATCH v2 04/13] arm64: dts: qcom: Unify the sc7180-trogdor panel nodes
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Date:   Wed, 03 Mar 2021 00:14:54 -0800
-Message-ID: <161475929481.1478170.891014466656181696@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302234710.74455-1-rikard.falkeborn@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-03-01 13:34:28)
-> Let's avoid a bit of duplication by pushing this up to the trogdor.dtsi
-> file.
->=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+On Wed, Mar 03, 2021 at 12:47:10AM +0100, Rikard Falkeborn wrote:
+> Andy noted that constification of some static resource structs in
 
-Suggested-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+(If you wish, you may use Reported-by:, I'm fine with either way)
+
+> intel_quark_i2c_gpio.c were incorrect. It turns out there is another
+> change from the same series that is also incorrect in stmpe.c.
+> These structures are modified at init and can not be made const.
+> 
+> This reverts commit 8d7b3a6dac4eae22c58b0853696cbd256966741b.
+
+I recommend to add a comment in the code as I did so nobody (okay, who reads
+the comments) will change that again.
+
+Thanks!
+
+> Fixes: 8d7b3a6dac4e ("mfd: stmpe: Constify static struct resource")
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
+> I went through the series and this was the only additional issue I
+> found. Sorry about that.
+> 
+>  drivers/mfd/stmpe.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
+> index 90f3292230c9..1aee3b3253fc 100644
+> --- a/drivers/mfd/stmpe.c
+> +++ b/drivers/mfd/stmpe.c
+> @@ -312,7 +312,7 @@ EXPORT_SYMBOL_GPL(stmpe_set_altfunc);
+>   * GPIO (all variants)
+>   */
+>  
+> -static const struct resource stmpe_gpio_resources[] = {
+> +static struct resource stmpe_gpio_resources[] = {
+>  	/* Start and end filled dynamically */
+>  	{
+>  		.flags	= IORESOURCE_IRQ,
+> @@ -336,7 +336,7 @@ static const struct mfd_cell stmpe_gpio_cell_noirq = {
+>   * Keypad (1601, 2401, 2403)
+>   */
+>  
+> -static const struct resource stmpe_keypad_resources[] = {
+> +static struct resource stmpe_keypad_resources[] = {
+>  	{
+>  		.name	= "KEYPAD",
+>  		.flags	= IORESOURCE_IRQ,
+> @@ -357,7 +357,7 @@ static const struct mfd_cell stmpe_keypad_cell = {
+>  /*
+>   * PWM (1601, 2401, 2403)
+>   */
+> -static const struct resource stmpe_pwm_resources[] = {
+> +static struct resource stmpe_pwm_resources[] = {
+>  	{
+>  		.name	= "PWM0",
+>  		.flags	= IORESOURCE_IRQ,
+> @@ -445,7 +445,7 @@ static struct stmpe_variant_info stmpe801_noirq = {
+>   * Touchscreen (STMPE811 or STMPE610)
+>   */
+>  
+> -static const struct resource stmpe_ts_resources[] = {
+> +static struct resource stmpe_ts_resources[] = {
+>  	{
+>  		.name	= "TOUCH_DET",
+>  		.flags	= IORESOURCE_IRQ,
+> @@ -467,7 +467,7 @@ static const struct mfd_cell stmpe_ts_cell = {
+>   * ADC (STMPE811)
+>   */
+>  
+> -static const struct resource stmpe_adc_resources[] = {
+> +static struct resource stmpe_adc_resources[] = {
+>  	{
+>  		.name	= "STMPE_TEMP_SENS",
+>  		.flags	= IORESOURCE_IRQ,
+> -- 
+> 2.30.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
