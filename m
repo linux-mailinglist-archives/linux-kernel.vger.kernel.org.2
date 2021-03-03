@@ -2,88 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FBE32BE3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55FA32BE46
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242781AbhCCRPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:15:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22527 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1359034AbhCCN0R (ORCPT
+        id S1385394AbhCCRTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:19:10 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:48039 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1381544AbhCCNac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:26:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614777850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vk447qmcUk9k9oiYBDQSU0MXpWTCWyE8diWCiLIMsCQ=;
-        b=VsAu2uYPScKRXhYt4/3BbxR486eITEomDYd/GiG5diJxFo6LwvNohuYA0DIiTfVo4N4q1Z
-        ozqTSbadjPuBuf7aKsqN517mVZg/qnxcOYc2fDyWuLl01nHtn+BfVpipShyOdDHtFEgW9n
-        N8ymIFNlf5XYkKwyqbJ3fvc92rDLhsw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-SfutzYt4PO6iqn8pozASaw-1; Wed, 03 Mar 2021 08:24:06 -0500
-X-MC-Unique: SfutzYt4PO6iqn8pozASaw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6A9D804023;
-        Wed,  3 Mar 2021 13:24:04 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 205305D9E2;
-        Wed,  3 Mar 2021 13:24:02 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-In-Reply-To: <20210121131959.646623-10-christian.brauner@ubuntu.com>
-References: <20210121131959.646623-10-christian.brauner@ubuntu.com> <20210121131959.646623-1-christian.brauner@ubuntu.com>
-To:     Tycho Andersen <tycho@tycho.pizza>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     dhowells@redhat.com, Tycho Andersen <tycho@tycho.ws>,
-        James Morris <jmorris@namei.org>,
-        linux-fsdevel@vger.kernel.org,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 09/40] xattr: handle idmapped mounts
+        Wed, 3 Mar 2021 08:30:32 -0500
+Received: from relay10.mail.gandi.net (unknown [217.70.178.230])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 706EA3B61AC
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 13:27:30 +0000 (UTC)
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 28D0524000D;
+        Wed,  3 Mar 2021 13:24:13 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 14:24:13 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: Re: [RESEND 1/1] arch: arm: mach-at91: pm: Move prototypes to
+ mutually included header
+Message-ID: <YD+N/QVRYbm/Idp3@piout.net>
+References: <20210303124149.3149511-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2123327.1614777789.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-From:   David Howells <dhowells@redhat.com>
-Date:   Wed, 03 Mar 2021 13:24:02 +0000
-Message-ID: <2129497.1614777842@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210303124149.3149511-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <christian.brauner@ubuntu.com> wrote:
+On 03/03/2021 12:41:49+0000, Lee Jones wrote:
+> Both the caller and the supplier's source file should have access to
+> the include file containing the prototypes.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
+>  1637 | void at91_pinctrl_gpio_suspend(void)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
+>  1661 | void at91_pinctrl_gpio_resume(void)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> diff --git a/fs/cachefiles/xattr.c b/fs/cachefiles/xattr.c
-> index 72e42438f3d7..a591b5e09637 100644
-> --- a/fs/cachefiles/xattr.c
-> +++ b/fs/cachefiles/xattr.c
-> @@ -39,8 +39,8 @@ int cachefiles_check_object_type(struct cachefiles_obj=
-ect *object)
->  	_enter("%p{%s}", object, type);
->  =
+I'm pretty sure you had my ack on v3 ;)
 
->  	/* attempt to install a type label directly */
-> -	ret =3D vfs_setxattr(dentry, cachefiles_xattr_cache, type, 2,
-> -			   XATTR_CREATE);
-> +	ret =3D vfs_setxattr(&init_user_ns, dentry, cachefiles_xattr_cache, ty=
-pe,
-> +			   2, XATTR_CREATE);
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Actually, on further consideration, this might be the wrong thing to do in
-cachefiles.  The creds are (or should be) overridden when accesses to the
-underlying filesystem are being made.
+or again, alternatively, I can apply it with Linus' ack
 
-I wonder if this should be using current_cred()->user_ns or
-cache->cache_cred->user_ns instead.
+> ---
+>  arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
+>  drivers/pinctrl/pinctrl-at91.c |  2 ++
+>  include/soc/at91/pm.h          | 16 ++++++++++++++++
+>  3 files changed, 26 insertions(+), 11 deletions(-)
+>  create mode 100644 include/soc/at91/pm.h
+> 
+> diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
+> index 120f9aa6fff32..90dcdfe3b3d0d 100644
+> --- a/arch/arm/mach-at91/pm.c
+> +++ b/arch/arm/mach-at91/pm.c
+> @@ -17,6 +17,8 @@
+>  #include <linux/clk/at91_pmc.h>
+>  #include <linux/platform_data/atmel.h>
+>  
+> +#include <soc/at91/pm.h>
+> +
+>  #include <asm/cacheflush.h>
+>  #include <asm/fncpy.h>
+>  #include <asm/system_misc.h>
+> @@ -25,17 +27,6 @@
+>  #include "generic.h"
+>  #include "pm.h"
+>  
+> -/*
+> - * FIXME: this is needed to communicate between the pinctrl driver and
+> - * the PM implementation in the machine. Possibly part of the PM
+> - * implementation should be moved down into the pinctrl driver and get
+> - * called as part of the generic suspend/resume path.
+> - */
+> -#ifdef CONFIG_PINCTRL_AT91
+> -extern void at91_pinctrl_gpio_suspend(void);
+> -extern void at91_pinctrl_gpio_resume(void);
+> -#endif
+> -
+>  struct at91_soc_pm {
+>  	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
+>  	int (*config_pmc_ws)(void __iomem *pmc, u32 mode, u32 polarity);
+> @@ -326,6 +317,12 @@ static void at91_pm_suspend(suspend_state_t state)
+>  static int at91_pm_enter(suspend_state_t state)
+>  {
+>  #ifdef CONFIG_PINCTRL_AT91
+> +	/*
+> +	 * FIXME: this is needed to communicate between the pinctrl driver and
+> +	 * the PM implementation in the machine. Possibly part of the PM
+> +	 * implementation should be moved down into the pinctrl driver and get
+> +	 * called as part of the generic suspend/resume path.
+> +	 */
+>  	at91_pinctrl_gpio_suspend();
+>  #endif
+>  
+> diff --git a/drivers/pinctrl/pinctrl-at91.c b/drivers/pinctrl/pinctrl-at91.c
+> index 8003d1bd16953..fc61aaec34cc9 100644
+> --- a/drivers/pinctrl/pinctrl-at91.c
+> +++ b/drivers/pinctrl/pinctrl-at91.c
+> @@ -23,6 +23,8 @@
+>  /* Since we request GPIOs from ourself */
+>  #include <linux/pinctrl/consumer.h>
+>  
+> +#include <soc/at91/pm.h>
+> +
+>  #include "pinctrl-at91.h"
+>  #include "core.h"
+>  
+> diff --git a/include/soc/at91/pm.h b/include/soc/at91/pm.h
+> new file mode 100644
+> index 0000000000000..7a41e53a3ffa3
+> --- /dev/null
+> +++ b/include/soc/at91/pm.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Atmel Power Management
+> + *
+> + * Copyright (C) 2020 Atmel
+> + *
+> + * Author: Lee Jones <lee.jones@linaro.org>
+> + */
+> +
+> +#ifndef __SOC_ATMEL_PM_H
+> +#define __SOC_ATMEL_PM_H
+> +
+> +void at91_pinctrl_gpio_suspend(void);
+> +void at91_pinctrl_gpio_resume(void);
+> +
+> +#endif /* __SOC_ATMEL_PM_H */
+> -- 
+> 2.27.0
+> 
 
-David
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
