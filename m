@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6A932BCC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A08D932BC82
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240541AbhCCOo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        id S1359224AbhCCOEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843013AbhCCKXt (ORCPT
+        with ESMTP id S1842915AbhCCKW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:49 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD20C0698CC
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:11:03 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 9DD621F45983
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        weiyi.lu@mediatek.com, Collabora Kernel ML <kernel@collabora.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] soc: mediatek: pm-domains: Fix missing error code in scpsys_add_subdomain()
-Date:   Wed,  3 Mar 2021 10:10:54 +0100
-Message-Id: <20210303091054.796975-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.30.1
+        Wed, 3 Mar 2021 05:22:29 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2102BC0698CD
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:11:21 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id q23so27677482lji.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:11:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pvXRasKDNnUplGKqzHk62n6lD6KnrrKXY+1eJIPLqe0=;
+        b=WiFl8QOb5leynrCtKe3zMsV9KlbTPbHg35wYGEgWIxoqyPP0cCLWwEGVii8/y/twcB
+         xR1RwxlK5Ohll6CJ6xQDjX73wl4MGPtZsVJrMT6WEVZTUsf6n3loIcl7zfYWiBS/FYyC
+         FfvTzQfpQU6W2eZ59V7XtFzQlNcoSsRa1+wTpwAP4J/UV3EH4YU7psNWmHTvall9bZHH
+         WLRxgQKcPwQUUe2DSABPa2aSWFOYGh4b1Hjs/YSPAkMMXM4NXlQTyXa5iiDPZtQ87RxJ
+         vgcFpekosl3g2vts8OT3rCEYp6yZLhNts8p7pM3oHGR5d37Q8qEVdw/HHTEclmNxjhCx
+         NIzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pvXRasKDNnUplGKqzHk62n6lD6KnrrKXY+1eJIPLqe0=;
+        b=NSMhfyZrRyIza12bVW9stAbZ7EnALinlEltOxbdXsCGeoJxBG3mf3NqvTH3R1SVbjA
+         iCJ/jP8mkb7as/1jdPJtLu791PLpXGsO1aI9JGsiPfeof5+W4jqK9JFl8H4gSDQLzAYU
+         cOVxn72e6VuB3bo6XvNSJgDdztq4AM7NiWi8l46ygGh2SD2cJ3Np+eCROKshzZRe3vx0
+         dF+B4r1QioUDMpUe5Rj1yIujLFtz2Mms5drRu+CbPQQpQ4RxiKRUZK0tflJH9tULuhNL
+         wvEw6h0EeoxnrGrhty09ZxZys/3OAoajiSR1tvDNgBmPPn0YIn7AIIBZkib7SrEONa8Z
+         gHGg==
+X-Gm-Message-State: AOAM5338e7pBJUJobe/PiqV3MjOPQzCteoLnnY8TW2gvYIwVhWl8UAk7
+        0xNiGvwqKh55DBnK3m2tq4e0c7AbrhpjzMxl2zWuzcQGe//0Rw==
+X-Google-Smtp-Source: ABdhPJwRAdGtZseF4AGCcWugqL080PWu2zQkl7W3itQgLw4vUj76ghMl0LRAP1ir1rNQSyMXtIt2o5cPqOPa3q+AHYs=
+X-Received: by 2002:a2e:9004:: with SMTP id h4mr11225796ljg.326.1614762679638;
+ Wed, 03 Mar 2021 01:11:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 3 Mar 2021 10:11:08 +0100
+Message-ID: <CACRpkdZX=kipnYukV6Y5GZmmB_GEB6htM5HP4fJbPOOhiLBtHQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] gpiolib: Unify the checks on fwnode type
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding one power domain in scpsys_add_subdomain is missing to assign an
-error code when it fails. Fix that assigning an error code to 'ret',
-this also fixes the follwowing smatch warning.
+On Tue, Mar 2, 2021 at 4:35 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-  drivers/soc/mediatek/mtk-pm-domains.c:492 scpsys_add_subdomain() warn: missing error code 'ret'
+> We have (historically) different approaches how we identify the type
+> of a given fwnode. Let's standardize them across the library code.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Fixes: dd65030295e2 ("soc: mediatek: pm-domains: Don't print an error if child domain is deferred")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+Looks way better like this, with your follow-up fix folded in:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
- drivers/soc/mediatek/mtk-pm-domains.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-index 694d6ea6de1d..0af00efa0ef8 100644
---- a/drivers/soc/mediatek/mtk-pm-domains.c
-+++ b/drivers/soc/mediatek/mtk-pm-domains.c
-@@ -491,8 +491,9 @@ static int scpsys_add_subdomain(struct scpsys *scpsys, struct device_node *paren
- 
- 		child_pd = scpsys_add_one_domain(scpsys, child);
- 		if (IS_ERR(child_pd)) {
--			dev_err_probe(scpsys->dev, PTR_ERR(child_pd),
--				      "%pOF: failed to get child domain id\n", child);
-+			ret = PTR_ERR(child_pd);
-+			dev_err_probe(scpsys->dev, ret, "%pOF: failed to get child domain id\n",
-+				      child);
- 			goto err_put_node;
- 		}
- 
--- 
-2.30.1
-
+Yours,
+Linus Walleij
