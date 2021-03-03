@@ -2,226 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAFF32BDFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A12832BDE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239719AbhCCQm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:42:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51684 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1444292AbhCCMP2 (ORCPT
+        id S1346980AbhCCQjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:39:16 -0500
+Received: from mail6.tencent.com ([220.249.245.26]:40384 "EHLO
+        mail6.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358186AbhCCL5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:15:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614773641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kUoH8Vyn/B9sleJnzpy65y0LAnQtC6/RFAeTcmxlxsw=;
-        b=CqmxghloPlivpFlx/h+MIgNhnzTlxc9H4n49cY5DMTIpdsGlwdXyelG0dRnCyMv1M8skVP
-        Z9mRv6sR+eIHrap1TAT+QR6fitRXUPzGxvySQDw8cXhgMXeFOA9ssiP0HYyV84+qDd4mYL
-        H7arPI91t0iUJPYAjQ2WivZmP1TPX1I=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-cCl0WJruMXunt77Um1ahPw-1; Wed, 03 Mar 2021 04:08:35 -0500
-X-MC-Unique: cCl0WJruMXunt77Um1ahPw-1
-Received: by mail-ej1-f71.google.com with SMTP id di5so1414405ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:08:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=kUoH8Vyn/B9sleJnzpy65y0LAnQtC6/RFAeTcmxlxsw=;
-        b=oXzXGeWIWS/q9eX9YgnP0J22dr7DPXuI4uQZd1+9kroMqmKHYttcoYCMGmfwEyihFW
-         eq92OH4d28xKxMwSaXoxgunyRD2OlvVkve/tzM401nNdSXVFq8Pl2p4699oYnQZts9d6
-         UL+7UMn+Bu+1zcEeMPxxSHAk6y5VrYqOz7cvOt8g3GuvKisFB3Pt9jvJE3nyTtO8I3NK
-         3WLKaInXAEEzbtzh+vcr+LeF5fbAoLABxkQ2/b3J61OiiabWqxTIeMbf2ZZYGFzzOx/e
-         tNzu8m3DToaC5BkwBV+KH0h7aTwE4l4zAwRFq+/9++DNdoiBgvAq2bpov2qptFudYRjm
-         iPIw==
-X-Gm-Message-State: AOAM533Qmuq60KC4QDToTT2jJ1y/hElFsCXQvbuPP7fNQf/P5UIWBFRu
-        aYfHN2nijbxkOXcYfSmfLnNT11ZlDrkArUokArZ8XNZr7K+sznio70REX3hTzsaBPYwkX9K0rXE
-        1azCduFQtA/E0zQ+Myxtq3tMa
-X-Received: by 2002:a17:907:1b1c:: with SMTP id mp28mr21956402ejc.243.1614762513724;
-        Wed, 03 Mar 2021 01:08:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzPRNyHGfOzCGecv1dJXu51I4Fb07WNs03fEQ81eIx+y8OXe5aoHUBPL/wnYdvm/NHmI8Q0kg==
-X-Received: by 2002:a17:907:1b1c:: with SMTP id mp28mr21956387ejc.243.1614762513495;
-        Wed, 03 Mar 2021 01:08:33 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id bv9sm15083248ejb.21.2021.03.03.01.08.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 01:08:33 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     kys@microsoft.com, martin.petersen@oracle.com,
-        longli@microsoft.com, wei.liu@kernel.org, jejb@linux.ibm.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] scsi: storvsc: Enable scatterlist entry lengths
- > 4Kbytes
-In-Reply-To: <1614120294-1930-1-git-send-email-mikelley@microsoft.com>
-References: <1614120294-1930-1-git-send-email-mikelley@microsoft.com>
-Date:   Wed, 03 Mar 2021 10:08:32 +0100
-Message-ID: <87mtvkeh9r.fsf@vitty.brq.redhat.com>
+        Wed, 3 Mar 2021 06:57:17 -0500
+X-Greylist: delayed 4183 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 06:57:10 EST
+Received: from EX-SZ018.tencent.com (unknown [10.28.6.39])
+        by mail6.tencent.com (Postfix) with ESMTP id BCE37CC18E;
+        Wed,  3 Mar 2021 17:28:11 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
+        s=s202002; t=1614763691;
+        bh=0DHu7YSHfuZpObjRsOBKHAFPCxsRH9TW5j6O5SKoe9k=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=X+pEBCV/6eYCwRgDue7cZsWhG3wPeimxju3wmtzIT8Ljm49YAZj2bml/1VKhUoNUc
+         RPkQWkwQaEfmbBhPkGNgD/DBn7ioIry6I3KtsJBHt4pOv1/T0VhHHjW80k6PXDViUI
+         egcZE1A/LZ4D+dT1VPMjhZmCJ8smK08WyrRxIGxw=
+Received: from EX-SZ001.tencent.com (10.28.6.13) by EX-SZ018.tencent.com
+ (10.28.6.39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 3 Mar 2021
+ 17:28:11 +0800
+Received: from EX-SZ008.tencent.com (10.28.6.32) by EX-SZ001.tencent.com
+ (10.28.6.13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 3 Mar 2021
+ 17:28:11 +0800
+Received: from EX-SZ008.tencent.com ([fe80::a445:9f31:1c10:bf51]) by
+ EX-SZ008.tencent.com ([fe80::a445:9f31:1c10:bf51%10]) with mapi id
+ 15.01.2106.002; Wed, 3 Mar 2021 17:28:11 +0800
+From:   =?utf-8?B?a2l5aW4o5bC55LquKQ==?= <kiyin@tencent.com>
+To:     Xiaoming Ni <nixiaoming@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "linville@tuxdriver.com" <linville@tuxdriver.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "stefan@datenfreihafen.org" <stefan@datenfreihafen.org>,
+        "matthieu.baerts@tessares.net" <matthieu.baerts@tessares.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "wangle6@huawei.com" <wangle6@huawei.com>,
+        "xiaoqian9@huawei.com" <xiaoqian9@huawei.com>
+Subject: RE: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
+ llcp_sock_connect()(Internet mail)
+Thread-Topic: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
+ llcp_sock_connect()(Internet mail)
+Thread-Index: AQHXD/Teu1rU3sSMBUSAy4tsrXSR0apx/YwQ
+Date:   Wed, 3 Mar 2021 09:28:11 +0000
+Message-ID: <2965a9b88d254b7f8e7f4356875bbedb@tencent.com>
+References: <20210303061654.127666-1-nixiaoming@huawei.com>
+ <20210303061654.127666-5-nixiaoming@huawei.com>
+In-Reply-To: <20210303061654.127666-5-nixiaoming@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.14.87.252]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Kelley <mikelley@microsoft.com> writes:
-
-> storvsc currently sets .dma_boundary to limit scatterlist entries
-> to 4 Kbytes, which is less efficient with huge pages that offer
-> large chunks of contiguous physical memory. Improve the algorithm
-> for creating the Hyper-V guest physical address PFN array so
-> that scatterlist entries with lengths > 4Kbytes are handled.
-> As a result, remove the .dma_boundary setting.
->
-> The improved algorithm also adds support for scatterlist
-> entries with offsets >= 4Kbytes, which is supported by many
-> other SCSI low-level drivers.  And it retains support for
-> architectures where possibly PAGE_SIZE != HV_HYP_PAGE_SIZE
-> (such as ARM64).
->
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> ---
->
-> Changes in v2:
-> * Add HVPFN_DOWN() macro and use it instead of open coding
->   [Vitaly Kuznetsov]
-> * Change loop that fills pfn array and its initialization
->   [Vitaly Kuznetsov]
-> * Use offset_in_hvpage() instead of open coding
->
->
->  drivers/scsi/storvsc_drv.c | 66 ++++++++++++++++------------------------------
->  include/linux/hyperv.h     |  1 +
->  2 files changed, 24 insertions(+), 43 deletions(-)
->
-> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-> index 2e4fa77..5ba3145 100644
-> --- a/drivers/scsi/storvsc_drv.c
-> +++ b/drivers/scsi/storvsc_drv.c
-> @@ -1678,9 +1678,8 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
->  	struct storvsc_cmd_request *cmd_request = scsi_cmd_priv(scmnd);
->  	int i;
->  	struct scatterlist *sgl;
-> -	unsigned int sg_count = 0;
-> +	unsigned int sg_count;
->  	struct vmscsi_request *vm_srb;
-> -	struct scatterlist *cur_sgl;
->  	struct vmbus_packet_mpb_array  *payload;
->  	u32 payload_sz;
->  	u32 length;
-> @@ -1759,8 +1758,8 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
->  	payload_sz = sizeof(cmd_request->mpb);
->  
->  	if (sg_count) {
-> -		unsigned int hvpgoff = 0;
-> -		unsigned long offset_in_hvpg = sgl->offset & ~HV_HYP_PAGE_MASK;
-> +		unsigned int hvpgoff, hvpfns_to_add;
-> +		unsigned long offset_in_hvpg = offset_in_hvpage(sgl->offset);
->  		unsigned int hvpg_count = HVPFN_UP(offset_in_hvpg + length);
->  		u64 hvpfn;
->  
-> @@ -1773,51 +1772,34 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
->  				return SCSI_MLQUEUE_DEVICE_BUSY;
->  		}
->  
-> -		/*
-> -		 * sgl is a list of PAGEs, and payload->range.pfn_array
-> -		 * expects the page number in the unit of HV_HYP_PAGE_SIZE (the
-> -		 * page size that Hyper-V uses, so here we need to divide PAGEs
-> -		 * into HV_HYP_PAGE in case that PAGE_SIZE > HV_HYP_PAGE_SIZE.
-> -		 * Besides, payload->range.offset should be the offset in one
-> -		 * HV_HYP_PAGE.
-> -		 */
->  		payload->range.len = length;
->  		payload->range.offset = offset_in_hvpg;
-> -		hvpgoff = sgl->offset >> HV_HYP_PAGE_SHIFT;
->  
-> -		cur_sgl = sgl;
-> -		for (i = 0; i < hvpg_count; i++) {
-> +
-> +		for (i = 0; sgl != NULL; sgl = sg_next(sgl)) {
->  			/*
-> -			 * 'i' is the index of hv pages in the payload and
-> -			 * 'hvpgoff' is the offset (in hv pages) of the first
-> -			 * hv page in the the first page. The relationship
-> -			 * between the sum of 'i' and 'hvpgoff' and the offset
-> -			 * (in hv pages) in a payload page ('hvpgoff_in_page')
-> -			 * is as follow:
-> -			 *
-> -			 * |------------------ PAGE -------------------|
-> -			 * |   NR_HV_HYP_PAGES_IN_PAGE hvpgs in total  |
-> -			 * |hvpg|hvpg| ...              |hvpg|... |hvpg|
-> -			 * ^         ^                                 ^                 ^
-> -			 * +-hvpgoff-+                                 +-hvpgoff_in_page-+
-> -			 *           ^                                                   |
-> -			 *           +--------------------- i ---------------------------+
-> +			 * Init values for the current sgl entry. hvpgoff
-> +			 * and hvpfns_to_add are in units of Hyper-V size
-> +			 * pages. Handling the PAGE_SIZE != HV_HYP_PAGE_SIZE
-> +			 * case also handles values of sgl->offset that are
-> +			 * larger than PAGE_SIZE. Such offsets are handled
-> +			 * even on other than the first sgl entry, provided
-> +			 * they are a multiple of PAGE_SIZE.
->  			 */
-> -			unsigned int hvpgoff_in_page =
-> -				(i + hvpgoff) % NR_HV_HYP_PAGES_IN_PAGE;
-> +			hvpgoff = HVPFN_DOWN(sgl->offset);
-> +			hvpfn = page_to_hvpfn(sg_page(sgl)) + hvpgoff;
-> +			hvpfns_to_add =	HVPFN_UP(sgl->offset + sgl->length) -
-> +						hvpgoff;
->  
->  			/*
-> -			 * Two cases that we need to fetch a page:
-> -			 * 1) i == 0, the first step or
-> -			 * 2) hvpgoff_in_page == 0, when we reach the boundary
-> -			 *    of a page.
-> +			 * Fill the next portion of the PFN array with
-> +			 * sequential Hyper-V PFNs for the continguous physical
-> +			 * memory described by the sgl entry. The end of the
-> +			 * last sgl should be reached at the same time that
-> +			 * the PFN array is filled.
->  			 */
-> -			if (hvpgoff_in_page == 0 || i == 0) {
-> -				hvpfn = page_to_hvpfn(sg_page(cur_sgl));
-> -				cur_sgl = sg_next(cur_sgl);
-> -			}
-> -
-> -			payload->range.pfn_array[i] = hvpfn + hvpgoff_in_page;
-> +			while (hvpfns_to_add--)
-> +				payload->range.pfn_array[i++] =	hvpfn++;
->  		}
->  	}
->  
-> @@ -1851,8 +1833,6 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
->  	.slave_configure =	storvsc_device_configure,
->  	.cmd_per_lun =		2048,
->  	.this_id =		-1,
-> -	/* Make sure we dont get a sg segment crosses a page boundary */
-> -	.dma_boundary =		PAGE_SIZE-1,
->  	/* Ensure there are no gaps in presented sgls */
->  	.virt_boundary_mask =	PAGE_SIZE-1,
->  	.no_write_same =	1,
-> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-> index 5ddb479..a1eed76 100644
-> --- a/include/linux/hyperv.h
-> +++ b/include/linux/hyperv.h
-> @@ -1717,6 +1717,7 @@ static inline unsigned long virt_to_hvpfn(void *addr)
->  #define NR_HV_HYP_PAGES_IN_PAGE	(PAGE_SIZE / HV_HYP_PAGE_SIZE)
->  #define offset_in_hvpage(ptr)	((unsigned long)(ptr) & ~HV_HYP_PAGE_MASK)
->  #define HVPFN_UP(x)	(((x) + HV_HYP_PAGE_SIZE-1) >> HV_HYP_PAGE_SHIFT)
-> +#define HVPFN_DOWN(x)	((x) >> HV_HYP_PAGE_SHIFT)
->  #define page_to_hvpfn(page)	(page_to_pfn(page) * NR_HV_HYP_PAGES_IN_PAGE)
->  
->  #endif /* _HYPERV_H */
-
-Thank you for implementing my suggestion in v2,
-
-Reviewed-by:  Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
-
+SGkgeGlhb21pbmcsDQogIHRoZSBwYXRoIGNhbiBvbmx5IGZpeCB0aGUgZW5kbGVzcyBsb29wIHBy
+b2JsZW0uIGl0IGNhbid0IGZpeCB0aGUgbWVhbmluZ2xlc3MgbGxjcF9zb2NrLT5zZXJ2aWNlX25h
+bWUgcHJvYmxlbS4NCiAgaWYgd2Ugc2V0IGxsY3Bfc29jay0+c2VydmljZV9uYW1lIHRvIG1lYW5p
+bmdsZXNzIHN0cmluZywgdGhlIGNvbm5lY3Qgd2lsbCBiZSBmYWlsZWQuIGFuZCBzay0+c2tfc3Rh
+dGUgd2lsbCBub3QgYmUgTExDUF9DT05ORUNURUQuIHRoZW4gd2UgY2FuIGNhbGwgbGxjcF9zb2Nr
+X2Nvbm5lY3QoKSBtYW55IHRpbWVzLiB0aGF0IGxlYWtzIGV2ZXJ5dGhpbmc6IGxsY3Bfc29jay0+
+ZGV2LCBsbGNwX3NvY2stPmxvY2FsLCBsbGNwX3NvY2stPnNzYXAsIGxsY3Bfc29jay0+c2Vydmlj
+ZV9uYW1lLi4uDQoNClJlZ2FyZHMsDQpraXlpbi4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
+LS0tLQ0KPiBGcm9tOiBYaWFvbWluZyBOaSBbbWFpbHRvOm5peGlhb21pbmdAaHVhd2VpLmNvbV0N
+Cj4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAzLCAyMDIxIDI6MTcgUE0NCj4gVG86IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGtpeWluKOWwueS6rikgPGtpeWluQHRlbmNlbnQuY29tPjsN
+Cj4gc3RhYmxlQHZnZXIua2VybmVsLm9yZzsgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc7IHNh
+bWVvQGxpbnV4LmludGVsLmNvbTsNCj4gbGludmlsbGVAdHV4ZHJpdmVyLmNvbTsgZGF2ZW1AZGF2
+ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3JnOw0KPiBta2xAcGVuZ3V0cm9uaXguZGU7IHN0ZWZh
+bkBkYXRlbmZyZWloYWZlbi5vcmc7DQo+IG1hdHRoaWV1LmJhZXJ0c0B0ZXNzYXJlcy5uZXQ7IG5l
+dGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IG5peGlhb21pbmdAaHVhd2VpLmNvbTsgd2FuZ2xl
+NkBodWF3ZWkuY29tOyB4aWFvcWlhbjlAaHVhd2VpLmNvbQ0KPiBTdWJqZWN0OiBbUEFUQ0ggNC80
+XSBuZmM6IEF2b2lkIGVuZGxlc3MgbG9vcHMgY2F1c2VkIGJ5IHJlcGVhdGVkDQo+IGxsY3Bfc29j
+a19jb25uZWN0KCkoSW50ZXJuZXQgbWFpbCkNCj4gDQo+IFdoZW4gc29ja193YWl0X3N0YXRlKCkg
+cmV0dXJucyAtRUlOUFJPR1JFU1MsICJzay0+c2tfc3RhdGUiIGlzDQo+IExMQ1BfQ09OTkVDVElO
+Ry4gSW4gdGhpcyBjYXNlLCBsbGNwX3NvY2tfY29ubmVjdCgpIGlzIHJlcGVhdGVkbHkgaW52b2tl
+ZCwNCj4gIG5mY19sbGNwX3NvY2tfbGluaygpIHdpbGwgYWRkIHNrIHRvIGxvY2FsLT5jb25uZWN0
+aW5nX3NvY2tldHMgdHdpY2UuDQo+ICBzay0+c2tfbm9kZS0+bmV4dCB3aWxsIHBvaW50IHRvIGl0
+c2VsZiwgdGhhdCB3aWxsIG1ha2UgYW4gZW5kbGVzcyBsb29wICBhbmQNCj4gaGFuZy11cCB0aGUg
+c3lzdGVtLg0KPiBUbyBmaXggaXQsIGNoZWNrIHdoZXRoZXIgc2stPnNrX3N0YXRlIGlzIExMQ1Bf
+Q09OTkVDVElORyBpbg0KPiAgbGxjcF9zb2NrX2Nvbm5lY3QoKSB0byBhdm9pZCByZXBlYXRlZCBp
+bnZva2luZy4NCj4gDQo+IGZpeCBDVkUtMjAyMC0yNTY3Mw0KPiBGaXhlczogYjQwMTEyMzlhMDhl
+ICgiTkZDOiBsbGNwOiBGaXggbm9uIGJsb2NraW5nIHNvY2tldHMgY29ubmVjdGlvbnMiKQ0KPiBS
+ZXBvcnRlZC1ieTogImtpeWluKOWwueS6rikiIDxraXlpbkB0ZW5jZW50LmNvbT4NCj4gTGluazog
+aHR0cHM6Ly93d3cub3BlbndhbGwuY29tL2xpc3RzL29zcy1zZWN1cml0eS8yMDIwLzExLzAxLzEN
+Cj4gQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPiAjdjMuMTENCj4gU2lnbmVkLW9mZi1ieTog
+WGlhb21pbmcgTmkgPG5peGlhb21pbmdAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBuZXQvbmZjL2xs
+Y3Bfc29jay5jIHwgNCArKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvbmV0L25mYy9sbGNwX3NvY2suYyBiL25ldC9uZmMvbGxjcF9zb2Nr
+LmMgaW5kZXgNCj4gNTkxNzI2MTRiMjQ5Li5hM2I0NmY4ODg4MDMgMTAwNjQ0DQo+IC0tLSBhL25l
+dC9uZmMvbGxjcF9zb2NrLmMNCj4gKysrIGIvbmV0L25mYy9sbGNwX3NvY2suYw0KPiBAQCAtNjcz
+LDYgKzY3MywxMCBAQCBzdGF0aWMgaW50IGxsY3Bfc29ja19jb25uZWN0KHN0cnVjdCBzb2NrZXQg
+KnNvY2ssDQo+IHN0cnVjdCBzb2NrYWRkciAqX2FkZHIsDQo+ICAJCXJldCA9IC1FSVNDT05OOw0K
+PiAgCQlnb3RvIGVycm9yOw0KPiAgCX0NCj4gKwlpZiAoc2stPnNrX3N0YXRlID09IExMQ1BfQ09O
+TkVDVElORykgew0KPiArCQlyZXQgPSAtRUlOUFJPR1JFU1M7DQo+ICsJCWdvdG8gZXJyb3I7DQo+
+ICsJfQ0KPiANCj4gIAlkZXYgPSBuZmNfZ2V0X2RldmljZShhZGRyLT5kZXZfaWR4KTsNCj4gIAlp
+ZiAoZGV2ID09IE5VTEwpIHsNCj4gLS0NCj4gMi4yNy4wDQo+IA0KDQo=
