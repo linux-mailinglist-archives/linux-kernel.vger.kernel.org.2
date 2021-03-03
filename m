@@ -2,104 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFA032C03F
+	by mail.lfdr.de (Postfix) with ESMTP id A93BD32C043
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578197AbhCCSQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
+        id S1578212AbhCCSQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:16:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234278AbhCCQCs (ORCPT
+        with ESMTP id S235506AbhCCQFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:02:48 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD34C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:01:58 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id 192so9565146pfv.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:01:58 -0800 (PST)
+        Wed, 3 Mar 2021 11:05:24 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3B8C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:04:24 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id jt13so43265850ejb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:04:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YlBFJQlEO+lyMRVcd8i9eW1uGtWD1JtQnYATA4mTAks=;
-        b=apLq6nbx2K8jVdej4g1cYPHE1Ioa284puWrnJYtpO1aj5uE7fnlPe2u988Qg49U6au
-         I3/ruUA8+Cc7rYX90yajLnwHT3iIzCjHLmgFpb2CfSfWaRfmhoUkj9xDYIUOAEHx6rmj
-         ZnvdqsaTnMggoJ1Irk9hJMWvi511Okdtp6cNI7ZfGvMZ/Y5ykuuUaWL1x1bXdpqOk2q0
-         a7Em4aKcPyKOeey5a14E15AwGg+bAtUJ0o59HtlutYL7Hxx/uJCOpBPjxH/385Lr0Isq
-         AyXQqISo4dK/dDvkF5mgc5k2kH9MgXwUCj1Mu3jHa7Lanf1PMossFh5ClQYisKuL9UXS
-         oJrg==
+         :cc:content-transfer-encoding;
+        bh=7P0ECFZga2jYSTUEc3GMITFYDojAwdE2hu69blx60ww=;
+        b=yVju7jS7vwVsKV4nJ/Ko5mkNmoj8hqBrkrrHgQbqu7drXUYEvag3eUF2cKl057MMhk
+         OEPVQIKeB7oiuGOnxWUGXCAWqcrlhJpCq7HEBswiMfQhJu2fafS7QfL8WEz9IlhSCXXA
+         w2ZJKkdHObTk3e4VjzcYNiBkiipbLsP1k2D9RSNc0TrQU1K0ZrasAFRYYkg3/TrlrxyQ
+         dBZHyuJ/OuhYd9XYFZqH7q0HYh67p1aEIzmiOrstetbnWwuIS5xxhrNU76iMPezhI2VJ
+         lUiOPEZyD48bh+CPHw5tdespOmcsUyMGtSYtWCQxMOjEvLLKATbxpQhDFFFxzN0xt4uA
+         9sAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YlBFJQlEO+lyMRVcd8i9eW1uGtWD1JtQnYATA4mTAks=;
-        b=Cn245uigTEC/4+OCtbiHRg79cdpfBQs+Uq1k22cTdZUZxiyIU08S/vCo6EAyB5AP4A
-         I2Kdb7DRasDgIO5+BCzfpLbgWP/iB9PFHV0Kg7aEoawtj1Lpl8prGS4JuhB6xkdT5kHv
-         i/KpSL0+5QufFfDAjKKDxHbtzpFFOqVi94gXkdJZEN69PxcY5Ig+WQoJdmoBB8Iut4Ya
-         xFf6bi3iKwuc8NAsUVfkC0ELHU7HNkvmO+qS72TsZFCvKvPeyuyJxEM5SOUfrjj8Bpe1
-         +L2ON4LJwz9ojk+w00VieCqp0GfAVV0QiG+EMVphRpseQ3eV/RsthJtL9lwa7Z3wyZL6
-         rJTw==
-X-Gm-Message-State: AOAM531C3vXRyD0bcsl8t5/7cFWrdv76ZDqfIInPC2Y4hLDtQhVEMSnv
-        PeepOyYygA9YEYNwNI84bGowF9/gEgFCZmp1L1orCxNYPrzyNJqT
-X-Google-Smtp-Source: ABdhPJywIlwbJQpn67289Ye30Jbxm6kyewXWb73Tj9gazxumHxqSqR+Zp4n+D0YeXyZBttOWLu9E4/kSnyH2MoxVgj4=
-X-Received: by 2002:a63:161c:: with SMTP id w28mr12136789pgl.341.1614787318191;
- Wed, 03 Mar 2021 08:01:58 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7P0ECFZga2jYSTUEc3GMITFYDojAwdE2hu69blx60ww=;
+        b=Xv+/K+djwyXZ4gEsbfudrO8jgUzI074a51UYVG9WD8C2WRbRmaKFHlLtHj4yUho16V
+         p+Qn1p2fnT2fOeulZ3HUkJ9Hck82Le8sSf+L6Gahbo1zFUtWSjnW3CIa8KZfEc5dEB0g
+         dCImd3RT5hoPvpO1Ta66sQ2Sh3eRKLX7whmB9fGkYbl/dOeDduCYL6OsLQfJQ8AbMHV2
+         uBms3/pS7A23HsKoLZarmjEmUANjZwbOhDrqFPuyeLF9OqReUljbld2/519iaC981i5/
+         BKeJ180uc8IdnVxiLJy+YZr6IxdzDyDrx1VkPtuTlf0fUJXTOlJR2HthGpLhyzqM5Fpl
+         flFw==
+X-Gm-Message-State: AOAM533enN87X0OPBmF0y+1ULsbto0u2Brfa1Y/o7lfjsgPA6FJtqarE
+        tplTG/HvpJD3gTz0N50RlI6uk/D8t3eCg15lzHK9Ng==
+X-Google-Smtp-Source: ABdhPJyUtorPel/psTZMby0goZ+Bbacuj0Kuq/XCptCEOmO8twBG2TA4+W+VV/WVcljLv1N3BtKhOOXZAeh9EumnyDI=
+X-Received: by 2002:a17:906:444d:: with SMTP id i13mr25657181ejp.170.1614787462825;
+ Wed, 03 Mar 2021 08:04:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303034659.91735-1-zhouchengming@bytedance.com>
- <20210303034659.91735-5-zhouchengming@bytedance.com> <YD+w6Gbb49LeIQb1@hirez.programming.kicks-ass.net>
-In-Reply-To: <YD+w6Gbb49LeIQb1@hirez.programming.kicks-ass.net>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 4 Mar 2021 00:01:21 +0800
-Message-ID: <CAMZfGtW8kR5yHO=zAdOrfVg=bm8cvXqZp3vieqU7zGhC+BLp_g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 4/4] psi: Optimize task switch inside
- shared cgroups
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210302192532.615945247@linuxfoundation.org>
+In-Reply-To: <20210302192532.615945247@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Mar 2021 21:34:10 +0530
+Message-ID: <CA+G9fYs0hGL4KO6L-hVtpNw+41S=prNSaYUWUitbKGghXmXDNQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 000/134] 4.9.259-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 11:53 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, 3 Mar 2021 at 00:58, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Wed, Mar 03, 2021 at 11:46:59AM +0800, Chengming Zhou wrote:
-> > The commit 36b238d57172 ("psi: Optimize switching tasks inside shared
-> > cgroups") only update cgroups whose state actually changes during a
-> > task switch only in task preempt case, not in task sleep case.
-> >
-> > We actually don't need to clear and set TSK_ONCPU state for common cgroups
-> > of next and prev task in sleep case, that can save many psi_group_change
-> > especially when most activity comes from one leaf cgroup.
-> >
-> > sleep before:
-> > psi_dequeue()
-> >   while ((group = iterate_groups(prev)))  # all ancestors
-> >     psi_group_change(prev, .clear=TSK_RUNNING|TSK_ONCPU)
-> > psi_task_switch()
-> >   while ((group = iterate_groups(next)))  # all ancestors
-> >     psi_group_change(next, .set=TSK_ONCPU)
-> >
-> > sleep after:
-> > psi_dequeue()
-> >   nop
-> > psi_task_switch()
-> >   while ((group = iterate_groups(next)))  # until (prev & next)
-> >     psi_group_change(next, .set=TSK_ONCPU)
-> >   while ((group = iterate_groups(prev)))  # all ancestors
-> >     psi_group_change(prev, .clear=common?TSK_RUNNING:TSK_RUNNING|TSK_ONCPU)
-> >
-> > When a voluntary sleep switches to another task, we remove one call of
-> > psi_group_change() for every common cgroup ancestor of the two tasks.
-> >
-> Co-developed-by: Muchun ?
+> This is the start of the stable review cycle for the 4.9.259 release.
+> There are 134 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.259-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Yes. Should Chengming send another version patch to add Co-developed-by tag?
 
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.9.259-rc3
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 90d5aacad5cf640a69a965432687787f5ad7a949
+git describe: v4.9.258-135-g90d5aacad5cf
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.258-135-g90d5aacad5cf
+
+No regressions (compared to build v4.9.258-rc1)
+
+No fixes (compared to build v4.9.258-rc1)
+
+Ran 39097 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* libhugetlbfs
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* network-basic-tests
+* kvm-unit-tests
+* ltp-open-posix-tests
+* kselftest-vm
+* kselftest-kexec
+* kselftest-x86
+
+--
+Linaro LKFT
+https://lkft.linaro.org
