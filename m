@@ -2,164 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319C732C3FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94ADF32C401
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376311AbhCDAKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:10:00 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:55585 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377179AbhCCWYr (ORCPT
+        id S1378023AbhCDAKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:10:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1391223AbhCCW0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:24:47 -0500
-Received: by mail-il1-f198.google.com with SMTP id f2so18874526ils.22
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 14:24:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=U0pQ8UeY3jjvyGIA/GmTExIy024e3Gh7t6G65nu29TY=;
-        b=XfOOaMNTy/0NzdxhJ/QTjmd4BZ7yVD9rt28C7YvPfkDeh3MFd1DCU6Ic8YFRbs7Ew2
-         6T5CBQwXaJD4x9KkEIOmhyRiUZ7k6VVNCeYWZ6ikOQrTcDKYDC+4pSZb11SGTzfS+R1s
-         uKRhsKoDaQ2xrtm4xnhPiuC9FePCkhjbiIezartVvTlt0Da0VKfmLg3/nhpucA7jX0c3
-         nNdbkRJLquCs3DEUl3wUoqiHu8J0pbMDaAYEeTDrdxMBQZqTzFqHmwC7gA3K4kIpfyva
-         iJc3nL71yCMYmBz+bFbyEDynXVeqlw3Qm1HOewiNcpTpV81PRvX2LDIVlu1himYozXdE
-         W8Bg==
-X-Gm-Message-State: AOAM531XBk3M6ckpf2tr0ae8TsXI2mPMnX4/P1ccJ5m3PeAp8Oaqxcpa
-        fOqPeNAluRV3GbD7qGcaZniCHklgU0q7cScIIJtOO0Ky9TKh
-X-Google-Smtp-Source: ABdhPJw4wmNgJQkCl6BM6noRm3a60twCGn3jXdUuhUeeSuXi0iHyQM9FNOTjoTNW5NkzTsNZj8+dmfwxjES+1f2WGoX+VbJ9PlWC
+        Wed, 3 Mar 2021 17:26:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B02C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 14:26:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ZcoL2mr1lmoxyY9eSUa9jIixayUOxgwcpOf1ShYSpb0=; b=E5TG6jFxttCVB6e+wzuYFhkdR+
+        gL3AggMlJ4rbmx96hJg3BqFeVvkwvbMCxQCldHZdyHTdK94wEw7Cw1E4irEl3sVBAAwmOSO/QrrME
+        bpb0YIBSHGZiHxA+1pqtotJ5evOvxiHr4w2gvIDClmwLRUBlS8pgCx/tNs+Q9596JJF87jex3iwrX
+        dPSoP7yZ6dPCk/AkBVB5dfTkzt8PD2Se4KJvrW8UUzTEFtlzSKxjI9MSYoiu4no94abEJdr9tCBpN
+        s2+QIjNLOXKj33rsksEw9Gg9PiMovjqC53GAQdYxtuZPKl8TT8Y55TbMs79tCbZQtU61njZC38KuX
+        o63GXTdQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lHZwE-004Qxk-Go; Wed, 03 Mar 2021 22:25:55 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH] mm/filemap: Drop check for truncated page after I/O
+Date:   Wed,  3 Mar 2021 22:25:47 +0000
+Message-Id: <20210303222547.1056428-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:c7:: with SMTP id r7mr1408691ilq.288.1614810244587;
- Wed, 03 Mar 2021 14:24:04 -0800 (PST)
-Date:   Wed, 03 Mar 2021 14:24:04 -0800
-In-Reply-To: <af143fa7-cff3-48eb-5abc-94e3685d0955@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000002261d05bca94f7b@google.com>
-Subject: Re: memory leak in io_submit_sqes (2)
-From:   syzbot <syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+If the I/O completed successfully, the page will remain Uptodate,
+even if it is subsequently truncated.  If the I/O completed with an error,
+this check would cause us to retry the I/O if the page were truncated
+before we woke up.  There is no need to retry the I/O; the I/O to fill
+the page failed, so we can legitimately just return -EIO.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-memory leak in io_submit_sqes
+This code was originally added by commit 56f0d5fe6851 ("[PATCH]
+readpage-vs-invalidate fix") in 2005 (this commit ID is from the
+linux-fullhistory tree; it is also commit ba1f08f14b52 in tglx-history).
 
-BUG: memory leak
-unreferenced object 0xffff88811043cc00 (size 232):
-  comm "syz-executor.0", pid 10595, jiffies 4294944973 (age 10.850s)
-  hex dump (first 32 bytes):
-    00 f0 40 10 81 88 ff ff 00 00 00 00 00 00 00 00  ..@.............
-    00 7a 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .z_.............
-  backtrace:
-    [<000000005cfa592c>] io_alloc_req fs/io_uring.c:1610 [inline]
-    [<000000005cfa592c>] io_submit_sqes+0x7ae/0x22f0 fs/io_uring.c:6518
-    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
-    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+At the time, truncate_complete_page() called ClearPageUptodate(), and
+so this was fixing a real bug.  In 2008, commit 84209e02de48
+("mm: dont clear PG_uptodate on truncate/invalidate") removed the
+call to ClearPageUptodate, and this check has been unnecessary ever
+since.
 
-BUG: memory leak
-unreferenced object 0xffff888124dd1300 (size 256):
-  comm "syz-executor.0", pid 10595, jiffies 4294944973 (age 10.850s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000099ea7aac>] kmalloc include/linux/slab.h:559 [inline]
-    [<0000000099ea7aac>] __io_alloc_async_data fs/io_uring.c:3060 [inline]
-    [<0000000099ea7aac>] io_setup_async_rw fs/io_uring.c:3079 [inline]
-    [<0000000099ea7aac>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3072
-    [<0000000002d951db>] io_read+0x1fe/0x560 fs/io_uring.c:3257
-    [<00000000ca56953d>] io_issue_sqe+0x18d/0x23e0 fs/io_uring.c:5933
-    [<00000000a5a737fd>] __io_queue_sqe+0x9a/0x4f0 fs/io_uring.c:6200
-    [<00000000af920b23>] io_queue_sqe+0x361/0x560 fs/io_uring.c:6253
-    [<00000000deecb73d>] io_submit_sqe fs/io_uring.c:6417 [inline]
-    [<00000000deecb73d>] io_submit_sqes+0x1fc1/0x22f0 fs/io_uring.c:6531
-    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
-    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+It doesn't do any real harm, but there's no need to keep it.
 
-BUG: memory leak
-unreferenced object 0xffff88810d21fa00 (size 232):
-  comm "syz-executor.0", pid 10613, jiffies 4294944997 (age 10.610s)
-  hex dump (first 32 bytes):
-    00 47 b1 11 81 88 ff ff 00 00 00 00 00 00 00 00  .G..............
-    00 7a 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .z_.............
-  backtrace:
-    [<000000005cfa592c>] io_alloc_req fs/io_uring.c:1610 [inline]
-    [<000000005cfa592c>] io_submit_sqes+0x7ae/0x22f0 fs/io_uring.c:6518
-    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
-    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ mm/filemap.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-BUG: memory leak
-unreferenced object 0xffff888124e98500 (size 256):
-  comm "syz-executor.0", pid 10613, jiffies 4294944997 (age 10.610s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000099ea7aac>] kmalloc include/linux/slab.h:559 [inline]
-    [<0000000099ea7aac>] __io_alloc_async_data fs/io_uring.c:3060 [inline]
-    [<0000000099ea7aac>] io_setup_async_rw fs/io_uring.c:3079 [inline]
-    [<0000000099ea7aac>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3072
-    [<0000000002d951db>] io_read+0x1fe/0x560 fs/io_uring.c:3257
-    [<00000000ca56953d>] io_issue_sqe+0x18d/0x23e0 fs/io_uring.c:5933
-    [<00000000a5a737fd>] __io_queue_sqe+0x9a/0x4f0 fs/io_uring.c:6200
-    [<00000000af920b23>] io_queue_sqe+0x361/0x560 fs/io_uring.c:6253
-    [<00000000deecb73d>] io_submit_sqe fs/io_uring.c:6417 [inline]
-    [<00000000deecb73d>] io_submit_sqes+0x1fc1/0x22f0 fs/io_uring.c:6531
-    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
-    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810edcff00 (size 232):
-  comm "syz-executor.0", pid 10633, jiffies 4294945010 (age 10.480s)
-  hex dump (first 32 bytes):
-    00 99 b3 11 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    00 7a 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .z_.............
-  backtrace:
-    [<000000005cfa592c>] io_alloc_req fs/io_uring.c:1610 [inline]
-    [<000000005cfa592c>] io_submit_sqes+0x7ae/0x22f0 fs/io_uring.c:6518
-    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
-    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888124c06300 (size 256):
-  comm "syz-executor.0", pid 10633, jiffies 4294945010 (age 10.480s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000099ea7aac>] kmalloc include/linux/slab.h:559 [inline]
-    [<0000000099ea7aac>] __io_alloc_async_data fs/io_uring.c:3060 [inline]
-    [<0000000099ea7aac>] io_setup_async_rw fs/io_uring.c:3079 [inline]
-    [<0000000099ea7aac>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3072
-    [<0000000002d951db>] io_read+0x1fe/0x560 fs/io_uring.c:3257
-    [<00000000ca56953d>] io_issue_sqe+0x18d/0x23e0 fs/io_uring.c:5933
-    [<00000000a5a737fd>] __io_queue_sqe+0x9a/0x4f0 fs/io_uring.c:6200
-    [<00000000af920b23>] io_queue_sqe+0x361/0x560 fs/io_uring.c:6253
-    [<00000000deecb73d>] io_submit_sqe fs/io_uring.c:6417 [inline]
-    [<00000000deecb73d>] io_submit_sqes+0x1fc1/0x22f0 fs/io_uring.c:6531
-    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
-    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-
-Tested on:
-
-commit:         4f766d6f io_uring: ensure that threads freeze on suspend
-git tree:       git://git.kernel.dk/linux-block io_uring-5.12
-console output: https://syzkaller.appspot.com/x/log.txt?x=143ce02ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c43bda1f1543d72b
-dashboard link: https://syzkaller.appspot.com/bug?extid=91b4b56ead187d35c9d3
-compiler:       
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 8d3e0daed7c9..3d1635d3be3e 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2238,8 +2238,6 @@ static int filemap_read_page(struct file *file, struct address_space *mapping,
+ 		return error;
+ 	if (PageUptodate(page))
+ 		return 0;
+-	if (!page->mapping)	/* page truncated */
+-		return AOP_TRUNCATED_PAGE;
+ 	shrink_readahead_size_eio(&file->f_ra);
+ 	return -EIO;
+ }
+-- 
+2.30.0
 
