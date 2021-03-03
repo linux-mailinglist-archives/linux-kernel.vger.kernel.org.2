@@ -2,236 +2,882 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A515C32C3CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2B132C3D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhCCX7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 18:59:45 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:56594 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236020AbhCCTij (ORCPT
+        id S231418AbhCCX7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239330AbhCCTin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:38:39 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lHXIO-000RuW-N5; Wed, 03 Mar 2021 12:36:32 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lHXIN-00Grlm-E2; Wed, 03 Mar 2021 12:36:32 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20210213130042.828076-1-christian.brauner@ubuntu.com>
-Date:   Wed, 03 Mar 2021 13:36:31 -0600
-In-Reply-To: <20210213130042.828076-1-christian.brauner@ubuntu.com> (Christian
-        Brauner's message of "Sat, 13 Feb 2021 14:00:42 +0100")
-Message-ID: <m18s7481xc.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 3 Mar 2021 14:38:43 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A9CC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 11:37:41 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id k9so19120197lfo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 11:37:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jpLduuiCyOq06beWOXY27a9XvYqgwGUTfOi9bDsrHBw=;
+        b=pvrSfVf4xRuVV5UAFQnBsxqRuyowj5TH82NNf0G9MW/EDEMoG7OtG/qNWhSNTJjpM1
+         xdjqo0SmXYoJFfGeYMRjld4+z5i26aYR8aPEke67u1ZJVFjVabblFjDjQNyvwIi0MAv7
+         KHvHLkpsveKAzbhRoFrsMIcjayp6klZ29OA+MnXMetLvFceegja84fvUdRZ0EuxMB7qw
+         +ENdXPkizCX+xIKAEQ3RJkP0CuvqlsjfT1tr9KurNo+JxSjeuqdn9n5zQQtd+N8tdhHH
+         +2ptRkQNSB6EqOWWo87Cg8vQSmCEw1CXYTdwvP71IfhuVI6aN1v0WHwWjMR5vV7iHX0T
+         DrqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jpLduuiCyOq06beWOXY27a9XvYqgwGUTfOi9bDsrHBw=;
+        b=sG9lbABAMqj8dvpcL/YazNFqtEqJyfxUWdUZBKwu7uKwnzuHehMIadMi7XsNGLM084
+         uG4/asKMPlhMdWFhkrTS6NNEsLdv2giNto5uYvJ6cWj+tYBCFBO9FiWBxf1qq2tfWfHY
+         DR5sCnS4pyK99s8g91vLcSKnSaz0Zq8kU0TrzNvwHJWYbe36HRvxXxnSNURF9023+l2m
+         gMotzhuKwtQT0IyK11aOO++ePaMMFUV3C1uuWBIeYVl+0uUUx+ACEIL/0COfIb7HikEx
+         yMgF824FMHg1VUyBxQGYPXcSCrwqJdnpn7viTVe0mjsETzax2e61Drxl2TV+i7OIfIEa
+         HAdQ==
+X-Gm-Message-State: AOAM531vx4sDKN5K8rUEeuIDqnhGrwCQVI16A+PuVRF6sbffKXlk8h4I
+        sXXrHXCQ8qcYzQeRYS5IUfEYNc87uI0H2nrvn9lXKsCZUeLmAA==
+X-Google-Smtp-Source: ABdhPJwEDUwd+YYCvjpsy3DLJ0pULFzNuwpvtDQOsHDbQasQZAW++YbjkZ3F7nILje/LtaRS+LRX2JTgaWXJvFmsFNk=
+X-Received: by 2002:a19:c14a:: with SMTP id r71mr163890lff.358.1614800260021;
+ Wed, 03 Mar 2021 11:37:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lHXIN-00Grlm-E2;;;mid=<m18s7481xc.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+pEkaRQEHDxGQEeFVuZBpYD2ocYNqs1yc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: ****
-X-Spam-Status: No, score=4.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSexyCombo_01,
-        XMSubMetaSxObfu_03,XMSubMetaSx_00,XM_Body_Dirty_Words
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  1.0 XM_Body_Dirty_Words Contains a dirty word
-        *  1.0 XMSexyCombo_01 Sexy words in both body/subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ****;Christian Brauner <christian.brauner@ubuntu.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 499 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (2.1%), b_tie_ro: 9 (1.9%), parse: 1.07 (0.2%),
-         extract_message_metadata: 15 (2.9%), get_uri_detail_list: 3.4 (0.7%),
-        tests_pri_-1000: 11 (2.2%), tests_pri_-950: 1.35 (0.3%),
-        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 87 (17.4%), check_bayes:
-        85 (17.1%), b_tokenize: 10 (2.0%), b_tok_get_all: 10 (2.0%),
-        b_comp_prob: 2.8 (0.6%), b_tok_touch_all: 59 (11.8%), b_finish: 0.91
-        (0.2%), tests_pri_0: 357 (71.6%), check_dkim_signature: 0.63 (0.1%),
-        check_dkim_adsp: 1.82 (0.4%), poll_dns_idle: 0.48 (0.1%),
-        tests_pri_10: 2.3 (0.5%), tests_pri_500: 9 (1.8%), rewrite_mail: 0.00
-        (0.0%)
-Subject: Re: [GIT PULL] idmapped mounts for v5.12
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-2-alex.bennee@linaro.org> <CAPDyKFrJJEyF95s3tVjFWFK3rq0OdJh9ec_ihg-S7uFCtPKTdQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFrJJEyF95s3tVjFWFK3rq0OdJh9ec_ihg-S7uFCtPKTdQ@mail.gmail.com>
+From:   =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Date:   Wed, 3 Mar 2021 19:37:28 +0000
+Message-ID: <CAHDbmO3V3Q_q0Z7YoLQ=hvP_ciWgH5CFdOSJM2G74XX0K3MtFA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@linaro.org>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Yang Huang <yang.huang@intel.com>,
+        Bing Zhu <bing.zhu@intel.com>,
+        =?UTF-8?Q?Matti_M=C3=B6ll?= <Matti.Moell@opensynergy.com>,
+        Harald Mommer <hmo@opensynergy.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <christian.brauner@ubuntu.com> writes:
+Foolishly I'd missed you out of the series Cc so you only got those
+two patches. You should find the rest @
 
-> Hi Linus,
+Subject: [RFC PATCH  0/5] RPMB internal and user-space API + WIP
+virtio-rpmb frontend
+Date: Wed,  3 Mar 2021 13:54:55 +0000
+Message-Id: <20210303135500.24673-1-alex.bennee@linaro.org>
 
-> This series comes with an extensive xfstests suite covering both ext4 and xfs
-> https://git.kernel.org/brauner/xfstests-dev/h/idmapped_mounts
-> It covers truncation, creation, opening, xattrs, vfscaps, setid execution,
-> setgid inheritance and more both with idmapped and non-idmapped mounts.
-> It already helped to discover an unrelated xfs setgid inheritance bug which has
-> since been fixed in mainline. It will be sent for inclusion with the xfstests
-> project should you decide to merge this.
+assuming you are subscribed to one of the Cc'd lists.
 
-And yet chown is broken (details below), and in a very predictable way.
+On Wed, 3 Mar 2021 at 15:29, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Wed, 3 Mar 2021 at 14:55, Alex Benn=C3=A9e <alex.bennee@linaro.org> wr=
+ote:
+> >
+> > A number of storage technologies support a specialised hardware
+> > partition designed to be resistant to replay attacks. The underlying
+> > HW protocols differ but the operations are common. The RPMB partition
+> > cannot be accessed via standard block layer, but by a set of specific
+> > commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+> > partition provides authenticated and replay protected access, hence
+> > suitable as a secure storage.
+> >
+> > The RPMB layer aims to provide in-kernel API for Trusted Execution
+> > Environment (TEE) devices that are capable to securely compute block
+> > frame signature. In case a TEE device wishes to store a replay
+> > protected data, requests the storage device via RPMB layer to store
+> > the data.
+> >
+> > A TEE device driver can claim the RPMB interface, for example, via
+> > class_interface_register(). The RPMB layer provides a series of
+> > operations for interacting with the device.
+> >
+> >   * program_key - a one time operation for setting up a new device
+> >   * get_capacity - introspect the device capacity
+> >   * get_write_count - check the write counter
+> >   * write_blocks - write a series of blocks to the RPMB device
+> >   * read_blocks - read a series of blocks from the RPMB device
+> >
+> > The detailed operation of implementing the access is left to the TEE
+> > device driver itself.
+> >
+> > [This is based-on Thomas Winkler's proposed API from:
+> >
+> >   https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-to=
+mas.winkler@intel.com/
+> >
+> > The principle difference is the framing details and HW specific
+> > bits (JDEC vs NVME frames) are left to the lower level TEE driver to
+> > worry about. The eventual userspace ioctl interface will aim to be
+> > similarly generic. This is an RFC to follow up on:
+> >
+> >   Subject: RPMB user space ABI
+> >   Date: Thu, 11 Feb 2021 14:07:00 +0000
+> >   Message-ID: <87mtwashi4.fsf@linaro.org>]
+> >
+> > Signed-off-by: Alex Benn=C3=A9e <alex.bennee@linaro.org>
+> > Cc: Tomas Winkler <tomas.winkler@intel.com>
+> > Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > Cc: Linus  Walleij <linus.walleij@linaro.org>
+> > Cc: Arnd Bergmann <arnd.bergmann@linaro.org>
+> > Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>
+> Alex, I promise to have a closer look at this and provide my opinions.
+>
+> However, it looks like you have posted patch 1 and patch2, but the
+> remainder 3, 4, 5 I can't find. Was this perhaps intentional?
+>
+> Moreover, I think these kinds of changes deserve a proper
+> cover-letter, describing the overall goal with the series. Can you
+> perhaps re-submit, so clarify things.
+>
+> Kind regards
+> Uffe
+>
+> > ---
+> >  MAINTAINERS                |   7 +
+> >  drivers/char/Kconfig       |   2 +
+> >  drivers/char/Makefile      |   1 +
+> >  drivers/char/rpmb/Kconfig  |  11 +
+> >  drivers/char/rpmb/Makefile |   7 +
+> >  drivers/char/rpmb/core.c   | 429 +++++++++++++++++++++++++++++++++++++
+> >  include/linux/rpmb.h       | 163 ++++++++++++++
+> >  7 files changed, 620 insertions(+)
+> >  create mode 100644 drivers/char/rpmb/Kconfig
+> >  create mode 100644 drivers/char/rpmb/Makefile
+> >  create mode 100644 drivers/char/rpmb/core.c
+> >  create mode 100644 include/linux/rpmb.h
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index bfc1b86e3e73..076f3983526c 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -15369,6 +15369,13 @@ T:     git git://linuxtv.org/media_tree.git
+> >  F:     Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-de=
+2-rotate.yaml
+> >  F:     drivers/media/platform/sunxi/sun8i-rotate/
+> >
+> > +RPMB SUBSYSTEM
+> > +M:     ?
+> > +L:     linux-kernel@vger.kernel.org
+> > +S:     Supported
+> > +F:     drivers/char/rpmb/*
+> > +F:     include/linux/rpmb.h
+> > +
+> >  RTL2830 MEDIA DRIVER
+> >  M:     Antti Palosaari <crope@iki.fi>
+> >  L:     linux-media@vger.kernel.org
+> > diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
+> > index d229a2d0c017..a7834cc3e0ea 100644
+> > --- a/drivers/char/Kconfig
+> > +++ b/drivers/char/Kconfig
+> > @@ -471,6 +471,8 @@ config ADI
+> >           and SSM (Silicon Secured Memory).  Intended consumers of this
+> >           driver include crash and makedumpfile.
+> >
+> > +source "drivers/char/rpmb/Kconfig"
+> > +
+> >  endmenu
+> >
+> >  config RANDOM_TRUST_CPU
+> > diff --git a/drivers/char/Makefile b/drivers/char/Makefile
+> > index ffce287ef415..0eed6e21a7a7 100644
+> > --- a/drivers/char/Makefile
+> > +++ b/drivers/char/Makefile
+> > @@ -47,3 +47,4 @@ obj-$(CONFIG_PS3_FLASH)               +=3D ps3flash.o
+> >  obj-$(CONFIG_XILLYBUS)         +=3D xillybus/
+> >  obj-$(CONFIG_POWERNV_OP_PANEL) +=3D powernv-op-panel.o
+> >  obj-$(CONFIG_ADI)              +=3D adi.o
+> > +obj-$(CONFIG_RPMB)             +=3D rpmb/
+> > diff --git a/drivers/char/rpmb/Kconfig b/drivers/char/rpmb/Kconfig
+> > new file mode 100644
+> > index 000000000000..431c2823cf70
+> > --- /dev/null
+> > +++ b/drivers/char/rpmb/Kconfig
+> > @@ -0,0 +1,11 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2015-2019, Intel Corporation.
+> > +
+> > +config RPMB
+> > +       tristate "RPMB partition interface"
+> > +       help
+> > +         Unified RPMB partition interface for eMMC and UFS.
+> > +         Provides interface for in kernel security controllers to
+> > +         access RPMB partition.
+> > +
+> > +         If unsure, select N.
+> > diff --git a/drivers/char/rpmb/Makefile b/drivers/char/rpmb/Makefile
+> > new file mode 100644
+> > index 000000000000..24d4752a9a53
+> > --- /dev/null
+> > +++ b/drivers/char/rpmb/Makefile
+> > @@ -0,0 +1,7 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2015-2019, Intel Corporation.
+> > +
+> > +obj-$(CONFIG_RPMB) +=3D rpmb.o
+> > +rpmb-objs +=3D core.o
+> > +
+> > +ccflags-y +=3D -D__CHECK_ENDIAN__
+> > diff --git a/drivers/char/rpmb/core.c b/drivers/char/rpmb/core.c
+> > new file mode 100644
+> > index 000000000000..a2e21c14986a
+> > --- /dev/null
+> > +++ b/drivers/char/rpmb/core.c
+> > @@ -0,0 +1,429 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright(c) 2015 - 2019 Intel Corporation. All rights reserved.
+> > + * Copyright(c) 2021 - Linaro Ltd.
+> > + */
+> > +#include <linux/module.h>
+> > +#include <linux/init.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/list.h>
+> > +#include <linux/device.h>
+> > +#include <linux/slab.h>
+> > +
+> > +#include <linux/rpmb.h>
+> > +
+> > +static DEFINE_IDA(rpmb_ida);
+> > +
+> > +/**
+> > + * rpmb_dev_get() - increase rpmb device ref counter
+> > + * @rdev: rpmb device
+> > + */
+> > +struct rpmb_dev *rpmb_dev_get(struct rpmb_dev *rdev)
+> > +{
+> > +       return get_device(&rdev->dev) ? rdev : NULL;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_get);
+> > +
+> > +/**
+> > + * rpmb_dev_put() - decrease rpmb device ref counter
+> > + * @rdev: rpmb device
+> > + */
+> > +void rpmb_dev_put(struct rpmb_dev *rdev)
+> > +{
+> > +       put_device(&rdev->dev);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_put);
+> > +
+> > +/**
+> > + * rpmb_program_key() - program the RPMB access key
+> > + * @rdev: rpmb device
+> > + * @key: key data
+> > + * @keylen: length of key data
+> > + *
+> > + * A successful programming of the key implies it has been set by the
+> > + * driver and can be used.
+> > + *
+> > + * Return:
+> > + * *        0 on success
+> > + * *        -EINVAL on wrong parameters
+> > + * *        -EPERM key already programmed
+> > + * *        -EOPNOTSUPP if device doesn't support the requested operat=
+ion
+> > + * *        < 0 if the operation fails
+> > + */
+> > +int rpmb_program_key(struct rpmb_dev *rdev, key_serial_t keyid)
+> > +{
+> > +       int err;
+> > +
+> > +       if (!rdev || !keyid)
+> > +               return -EINVAL;
+> > +
+> > +       mutex_lock(&rdev->lock);
+> > +       err =3D -EOPNOTSUPP;
+> > +       if (rdev->ops && rdev->ops->program_key) {
+> > +               err =3D rdev->ops->program_key(rdev->dev.parent, rdev->=
+target,
+> > +                                            keyid);
+> > +       }
+> > +       mutex_unlock(&rdev->lock);
+> > +
+> > +       return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_program_key);
+> > +
+> > +/**
+> > + * rpmb_get_capacity() - returns the capacity of the rpmb device
+> > + * @rdev: rpmb device
+> > + *
+> > + * Return:
+> > + * *        capacity of the device in units of 128K, on success
+> > + * *        -EINVAL on wrong parameters
+> > + * *        -EOPNOTSUPP if device doesn't support the requested operat=
+ion
+> > + * *        < 0 if the operation fails
+> > + */
+> > +int rpmb_get_capacity(struct rpmb_dev *rdev)
+> > +{
+> > +       int err;
+> > +
+> > +       if (!rdev)
+> > +               return -EINVAL;
+> > +
+> > +       mutex_lock(&rdev->lock);
+> > +       err =3D -EOPNOTSUPP;
+> > +       if (rdev->ops && rdev->ops->get_capacity)
+> > +               err =3D rdev->ops->get_capacity(rdev->dev.parent, rdev-=
+>target);
+> > +       mutex_unlock(&rdev->lock);
+> > +
+> > +       return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_get_capacity);
+> > +
+> > +/**
+> > + * rpmb_get_write_count() - returns the write counter of the rpmb devi=
+ce
+> > + * @rdev: rpmb device
+> > + *
+> > + * Return:
+> > + * *        counter
+> > + * *        -EINVAL on wrong parameters
+> > + * *        -EOPNOTSUPP if device doesn't support the requested operat=
+ion
+> > + * *        < 0 if the operation fails
+> > + */
+> > +int rpmb_get_write_count(struct rpmb_dev *rdev)
+> > +{
+> > +       int err;
+> > +
+> > +       if (!rdev)
+> > +               return -EINVAL;
+> > +
+> > +       mutex_lock(&rdev->lock);
+> > +       err =3D -EOPNOTSUPP;
+> > +       if (rdev->ops && rdev->ops->get_write_count)
+> > +               err =3D rdev->ops->get_write_count(rdev->dev.parent, rd=
+ev->target);
+> > +       mutex_unlock(&rdev->lock);
+> > +
+> > +       return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_get_write_count);
+> > +
+> > +/**
+> > + * rpmb_write_blocks() - write data to RPMB device
+> > + * @rdev: rpmb device
+> > + * @addr: block address (index of first block - 256B blocks)
+> > + * @count: number of 256B blosks
+> > + * @data: pointer to data to program
+> > + *
+> > + * Write a series of blocks to the RPMB device.
+> > + *
+> > + * Return:
+> > + * *        0 on success
+> > + * *        -EINVAL on wrong parameters
+> > + * *        -EACCESS no key set
+> > + * *        -EOPNOTSUPP if device doesn't support the requested operat=
+ion
+> > + * *        < 0 if the operation fails
+> > + */
+> > +int rpmb_write_blocks(struct rpmb_dev *rdev, key_serial_t keyid, int a=
+ddr,
+> > +                     int count, u8 *data)
+> > +{
+> > +       int err;
+> > +
+> > +       if (!rdev || !count || !data)
+> > +               return -EINVAL;
+> > +
+> > +       mutex_lock(&rdev->lock);
+> > +       err =3D -EOPNOTSUPP;
+> > +       if (rdev->ops && rdev->ops->write_blocks) {
+> > +               err =3D rdev->ops->write_blocks(rdev->dev.parent, rdev-=
+>target, keyid,
+> > +                                             addr, count, data);
+> > +       }
+> > +       mutex_unlock(&rdev->lock);
+> > +
+> > +       return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_write_blocks);
+> > +
+> > +/**
+> > + * rpmb_read_blocks() - read data from RPMB device
+> > + * @rdev: rpmb device
+> > + * @addr: block address (index of first block - 256B blocks)
+> > + * @count: number of 256B blocks
+> > + * @data: pointer to data to read
+> > + *
+> > + * Read a series of one or more blocks from the RPMB device.
+> > + *
+> > + * Return:
+> > + * *        0 on success
+> > + * *        -EINVAL on wrong parameters
+> > + * *        -EACCESS no key set
+> > + * *        -EOPNOTSUPP if device doesn't support the requested operat=
+ion
+> > + * *        < 0 if the operation fails
+> > + */
+> > +int rpmb_read_blocks(struct rpmb_dev *rdev, int addr, int count, u8 *d=
+ata)
+> > +{
+> > +       int err;
+> > +
+> > +       if (!rdev || !count || !data)
+> > +               return -EINVAL;
+> > +
+> > +       mutex_lock(&rdev->lock);
+> > +       err =3D -EOPNOTSUPP;
+> > +       if (rdev->ops && rdev->ops->read_blocks) {
+> > +               err =3D rdev->ops->read_blocks(rdev->dev.parent, rdev->=
+target,
+> > +                                            addr, count, data);
+> > +       }
+> > +       mutex_unlock(&rdev->lock);
+> > +
+> > +       return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_read_blocks);
+> > +
+> > +
+> > +static void rpmb_dev_release(struct device *dev)
+> > +{
+> > +       struct rpmb_dev *rdev =3D to_rpmb_dev(dev);
+> > +
+> > +       ida_simple_remove(&rpmb_ida, rdev->id);
+> > +       kfree(rdev);
+> > +}
+> > +
+> > +struct class rpmb_class =3D {
+> > +       .name =3D "rpmb",
+> > +       .owner =3D THIS_MODULE,
+> > +       .dev_release =3D rpmb_dev_release,
+> > +};
+> > +EXPORT_SYMBOL(rpmb_class);
+> > +
+> > +/**
+> > + * rpmb_dev_find_device() - return first matching rpmb device
+> > + * @data: data for the match function
+> > + * @match: the matching function
+> > + *
+> > + * Return: matching rpmb device or NULL on failure
+> > + */
+> > +static
+> > +struct rpmb_dev *rpmb_dev_find_device(const void *data,
+> > +                                     int (*match)(struct device *dev,
+> > +                                                  const void *data))
+> > +{
+> > +       struct device *dev;
+> > +
+> > +       dev =3D class_find_device(&rpmb_class, NULL, data, match);
+> > +
+> > +       return dev ? to_rpmb_dev(dev) : NULL;
+> > +}
+> > +
+> > +struct device_with_target {
+> > +       const struct device *dev;
+> > +       u8 target;
+> > +};
+> > +
+> > +static int match_by_parent(struct device *dev, const void *data)
+> > +{
+> > +       const struct device_with_target *d =3D data;
+> > +       struct rpmb_dev *rdev =3D to_rpmb_dev(dev);
+> > +
+> > +       return (d->dev && dev->parent =3D=3D d->dev && rdev->target =3D=
+=3D d->target);
+> > +}
+> > +
+> > +/**
+> > + * rpmb_dev_find_by_device() - retrieve rpmb device from the parent de=
+vice
+> > + * @parent: parent device of the rpmb device
+> > + * @target: RPMB target/region within the physical device
+> > + *
+> > + * Return: NULL if there is no rpmb device associated with the parent =
+device
+> > + */
+> > +struct rpmb_dev *rpmb_dev_find_by_device(struct device *parent, u8 tar=
+get)
+> > +{
+> > +       struct device_with_target t;
+> > +
+> > +       if (!parent)
+> > +               return NULL;
+> > +
+> > +       t.dev =3D parent;
+> > +       t.target =3D target;
+> > +
+> > +       return rpmb_dev_find_device(&t, match_by_parent);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_find_by_device);
+> > +
+> > +/**
+> > + * rpmb_dev_unregister() - unregister RPMB partition from the RPMB sub=
+system
+> > + * @rdev: the rpmb device to unregister
+> > + * Return:
+> > + * *        0 on success
+> > + * *        -EINVAL on wrong parameters
+> > + */
+> > +int rpmb_dev_unregister(struct rpmb_dev *rdev)
+> > +{
+> > +       if (!rdev)
+> > +               return -EINVAL;
+> > +
+> > +       mutex_lock(&rdev->lock);
+> > +       device_del(&rdev->dev);
+> > +       mutex_unlock(&rdev->lock);
+> > +
+> > +       rpmb_dev_put(rdev);
+> > +
+> > +       return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_unregister);
+> > +
+> > +/**
+> > + * rpmb_dev_unregister_by_device() - unregister RPMB partition
+> > + *     from the RPMB subsystem
+> > + * @dev: the parent device of the rpmb device
+> > + * @target: RPMB target/region within the physical device
+> > + * Return:
+> > + * *        0 on success
+> > + * *        -EINVAL on wrong parameters
+> > + * *        -ENODEV if a device cannot be find.
+> > + */
+> > +int rpmb_dev_unregister_by_device(struct device *dev, u8 target)
+> > +{
+> > +       struct rpmb_dev *rdev;
+> > +
+> > +       if (!dev)
+> > +               return -EINVAL;
+> > +
+> > +       rdev =3D rpmb_dev_find_by_device(dev, target);
+> > +       if (!rdev) {
+> > +               dev_warn(dev, "no disk found %s\n", dev_name(dev->paren=
+t));
+> > +               return -ENODEV;
+> > +       }
+> > +
+> > +       rpmb_dev_put(rdev);
+> > +
+> > +       return rpmb_dev_unregister(rdev);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_unregister_by_device);
+> > +
+> > +/**
+> > + * rpmb_dev_get_drvdata() - driver data getter
+> > + * @rdev: rpmb device
+> > + *
+> > + * Return: driver private data
+> > + */
+> > +void *rpmb_dev_get_drvdata(const struct rpmb_dev *rdev)
+> > +{
+> > +       return dev_get_drvdata(&rdev->dev);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_get_drvdata);
+> > +
+> > +/**
+> > + * rpmb_dev_set_drvdata() - driver data setter
+> > + * @rdev: rpmb device
+> > + * @data: data to store
+> > + */
+> > +void rpmb_dev_set_drvdata(struct rpmb_dev *rdev, void *data)
+> > +{
+> > +       dev_set_drvdata(&rdev->dev, data);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_set_drvdata);
+> > +
+> > +/**
+> > + * rpmb_dev_register - register RPMB partition with the RPMB subsystem
+> > + * @dev: storage device of the rpmb device
+> > + * @target: RPMB target/region within the physical device
+> > + * @ops: device specific operations
+> > + *
+> > + * Return: a pointer to rpmb device
+> > + */
+> > +struct rpmb_dev *rpmb_dev_register(struct device *dev, u8 target,
+> > +                                  const struct rpmb_ops *ops)
+> > +{
+> > +       struct rpmb_dev *rdev;
+> > +       int id;
+> > +       int ret;
+> > +
+> > +       if (!dev || !ops)
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       if (!ops->program_key)
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       if (!ops->get_capacity)
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       if (!ops->get_write_count)
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       if (!ops->write_blocks)
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       if (!ops->read_blocks)
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       if (ops->type =3D=3D RPMB_TYPE_ANY || ops->type > RPMB_TYPE_MAX=
+)
+> > +               return ERR_PTR(-EINVAL);
+> > +
+> > +       rdev =3D kzalloc(sizeof(*rdev), GFP_KERNEL);
+> > +       if (!rdev)
+> > +               return ERR_PTR(-ENOMEM);
+> > +
+> > +       id =3D ida_simple_get(&rpmb_ida, 0, 0, GFP_KERNEL);
+> > +       if (id < 0) {
+> > +               ret =3D id;
+> > +               goto exit;
+> > +       }
+> > +
+> > +       mutex_init(&rdev->lock);
+> > +       rdev->ops =3D ops;
+> > +       rdev->id =3D id;
+> > +       rdev->target =3D target;
+> > +
+> > +       dev_set_name(&rdev->dev, "rpmb%d", id);
+> > +       rdev->dev.class =3D &rpmb_class;
+> > +       rdev->dev.parent =3D dev;
+> > +       ret =3D device_register(&rdev->dev);
+> > +       if (ret)
+> > +               goto exit;
+> > +
+> > +       dev_dbg(&rdev->dev, "registered device\n");
+> > +
+> > +       return rdev;
+> > +
+> > +exit:
+> > +       if (id >=3D 0)
+> > +               ida_simple_remove(&rpmb_ida, id);
+> > +       kfree(rdev);
+> > +       return ERR_PTR(ret);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpmb_dev_register);
+> > +
+> > +static int __init rpmb_init(void)
+> > +{
+> > +       ida_init(&rpmb_ida);
+> > +       class_register(&rpmb_class);
+> > +       return 0;
+> > +}
+> > +
+> > +static void __exit rpmb_exit(void)
+> > +{
+> > +       class_unregister(&rpmb_class);
+> > +       ida_destroy(&rpmb_ida);
+> > +}
+> > +
+> > +subsys_initcall(rpmb_init);
+> > +module_exit(rpmb_exit);
+> > +
+> > +MODULE_AUTHOR("Intel Corporation");
+> > +MODULE_DESCRIPTION("RPMB class");
+> > +MODULE_LICENSE("GPL v2");
+> > diff --git a/include/linux/rpmb.h b/include/linux/rpmb.h
+> > new file mode 100644
+> > index 000000000000..718ba7c91ecd
+> > --- /dev/null
+> > +++ b/include/linux/rpmb.h
+> > @@ -0,0 +1,163 @@
+> > +/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2015-2019 Intel Corp. All rights reserved
+> > + * Copyright (C) 2021 Linaro Ltd
+> > + */
+> > +#ifndef __RPMB_H__
+> > +#define __RPMB_H__
+> > +
+> > +#include <linux/types.h>
+> > +#include <linux/device.h>
+> > +#include <linux/kref.h>
+> > +#include <linux/key.h>
+> > +
+> > +/**
+> > + * struct rpmb_ops - RPMB ops to be implemented by underlying block de=
+vice
+> > + *
+> > + * @program_key    : program device key (once only op).
+> > + * @get_capacity   : rpmb size in 128K units in for region/target.
+> > + * @get_write_count: return the device write counter
+> > + * @write_blocks   : write blocks to RPMB device
+> > + * @read_blocks    : read blocks from RPMB device
+> > + * @block_size     : block size in half sectors (1 =3D=3D 256B)
+> > + * @wr_cnt_max     : maximal number of blocks that can be
+> > + *                   written in one access.
+> > + * @rd_cnt_max     : maximal number of blocks that can be
+> > + *                   read in one access.
+> > + * @auth_method    : rpmb_auth_method
+> > + * @dev_id         : unique device identifier
+> > + * @dev_id_len     : unique device identifier length
+> > + */
+> > +struct rpmb_ops {
+> > +       int (*program_key)(struct device *dev, u8 target, key_serial_t =
+keyid);
+> > +       int (*get_capacity)(struct device *dev, u8 target);
+> > +       int (*get_write_count)(struct device *dev, u8 target);
+> > +       int (*write_blocks)(struct device *dev, u8 target, key_serial_t=
+ keyid,
+> > +                           int addr, int count, u8 *data);
+> > +       int (*read_blocks)(struct device *dev, u8 target,
+> > +                          int addr, int count, u8 *data);
+> > +       u16 block_size;
+> > +       u16 wr_cnt_max;
+> > +       u16 rd_cnt_max;
+> > +       u16 auth_method;
+> > +       const u8 *dev_id;
+> > +       size_t dev_id_len;
+> > +};
+> > +
+> > +/**
+> > + * struct rpmb_dev - device which can support RPMB partition
+> > + *
+> > + * @lock       : the device lock
+> > + * @dev        : device
+> > + * @id         : device id
+> > + * @target     : RPMB target/region within the physical device
+> > + * @ops        : operation exported by block layer
+> > + */
+> > +struct rpmb_dev {
+> > +       struct mutex lock; /* device serialization lock */
+> > +       struct device dev;
+> > +       int id;
+> > +       u8 target;
+> > +       const struct rpmb_ops *ops;
+> > +};
+> > +
+> > +#define to_rpmb_dev(x) container_of((x), struct rpmb_dev, dev)
+> > +
+> > +#if IS_ENABLED(CONFIG_RPMB)
+> > +struct rpmb_dev *rpmb_dev_get(struct rpmb_dev *rdev);
+> > +void rpmb_dev_put(struct rpmb_dev *rdev);
+> > +struct rpmb_dev *rpmb_dev_find_by_device(struct device *parent, u8 tar=
+get);
+> > +struct rpmb_dev *rpmb_dev_get_by_type(u32 type);
+> > +struct rpmb_dev *rpmb_dev_register(struct device *dev, u8 target,
+> > +                                  const struct rpmb_ops *ops);
+> > +void *rpmb_dev_get_drvdata(const struct rpmb_dev *rdev);
+> > +void rpmb_dev_set_drvdata(struct rpmb_dev *rdev, void *data);
+> > +int rpmb_dev_unregister(struct rpmb_dev *rdev);
+> > +int rpmb_dev_unregister_by_device(struct device *dev, u8 target);
+> > +int rpmb_program_key(struct rpmb_dev *rdev, key_serial_t keyid);
+> > +int rpmb_get_capacity(struct rpmb_dev *rdev);
+> > +int rpmb_get_write_count(struct rpmb_dev *rdev);
+> > +int rpmb_write_blocks(struct rpmb_dev *rdev, key_serial_t keyid,
+> > +                     int addr, int count, u8 *data);
+> > +int rpmb_read_blocks(struct rpmb_dev *rdev, int addr, int count, u8 *d=
+ata);
+> > +
+> > +#else
+> > +static inline struct rpmb_dev *rpmb_dev_get(struct rpmb_dev *rdev)
+> > +{
+> > +       return NULL;
+> > +}
+> > +
+> > +static inline void rpmb_dev_put(struct rpmb_dev *rdev) { }
+> > +
+> > +static inline struct rpmb_dev *rpmb_dev_find_by_device(struct device *=
+parent,
+> > +                                                      u8 target)
+> > +{
+> > +       return NULL;
+> > +}
+> > +
+> > +static inline
+> > +struct rpmb_dev *rpmb_dev_get_by_type(enum rpmb_type type)
+> > +{
+> > +       return NULL;
+> > +}
+> > +
+> > +static inline void *rpmb_dev_get_drvdata(const struct rpmb_dev *rdev)
+> > +{
+> > +       return NULL;
+> > +}
+> > +
+> > +static inline void rpmb_dev_set_drvdata(struct rpmb_dev *rdev, void *d=
+ata)
+> > +{
+> > +}
+> > +
+> > +static inline struct rpmb_dev *
+> > +rpmb_dev_register(struct device *dev, u8 target, const struct rpmb_ops=
+ *ops)
+> > +{
+> > +       return NULL;
+> > +}
+> > +
+> > +static inline int rpmb_dev_unregister(struct rpmb_dev *dev)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +static inline int rpmb_dev_unregister_by_device(struct device *dev, u8=
+ target)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +static inline int rpmb_program_key(struct rpmb_dev *rdev, key_serial_t=
+ keyid)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +static inline rpmb_set_key(struct rpmb_dev *rdev, u8 *key, int keylen)=
+;
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +static inline int rpmb_get_capacity(struct rpmb_dev *rdev)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +static inline int rpmb_get_write_count(struct rpmb_dev *rdev)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +static inline int rpmb_write_blocks(struct rpmb_dev *rdev, int addr, i=
+nt count,
+> > +                                   u8 *data)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +static inline int rpmb_read_blocks(struct rpmb_dev *rdev, int addr, in=
+t count,
+> > +                                  u8 *data)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +#endif /* CONFIG_RPMB */
+> > +
+> > +#endif /* __RPMB_H__ */
+> > --
+> > 2.20.1
+> >
 
-This is not considering that the entire concept is giving people a
-loaded footgun, that is very difficult to use safely.
 
 
-When the user namespace was implemented the two kinds of uids were very
-carefully separated from each other by type, so it would be take
-deliberate action to mix them.  These changes introduces a third type
-of uid and does not use the type system to keep them separate.  In just
-a little bit of looking since I realized this problem I have found two
-bugs in chown where the wrong values are compared.
-
-We now have the following types of uids and gids:
-- The userspace values.
-- The kernel values that are used for comparisons.
-  (The old fashioned kuid_t and kgid_t)
-- The values used for interfacing with the filesystems
-  underneath a mount.
-  (The beneath mount kuid_t and kgid_t)
-- The values stored in the filesystem.
-
-The third type is new, and the code mixes old fashioned kuid_t and
-kgid_t with the below mount kuid_t and kgid_t.
-
-Starting with chown_common the code does:
-
-int chown_common(const struct path *path, uid_t user, gid_t group)
-{
-	...
-	uid = make_kuid(current_user_ns(), user);
-	gid = make_kgid(current_user_ns(), group);
-
-	mnt_userns = mnt_user_ns(path->mnt);
-	uid = kuid_from_mnt(mnt_userns, uid);
-	gid = kgid_from_mnt(mnt_userns, gid);
-
-retry_deleg:
-	newattrs.ia_valid =  ATTR_CTIME;
-	if (user != (uid_t) -1) {
-		if (!uid_valid(uid))
-			return -EINVAL;
-		newattrs.ia_valid |= ATTR_UID;
-		newattrs.ia_uid = uid;
-	}
-	if (group != (gid_t) -1) {
-		if (!gid_valid(gid))
-			return -EINVAL;
-		newattrs.ia_valid |= ATTR_GID;
-		newattrs.ia_gid = gid;
-	}
-	if (!S_ISDIR(inode->i_mode))
-		newattrs.ia_valid |=
-			ATTR_KILL_SUID | ATTR_KILL_SGID | ATTR_KILL_PRIV;
-	inode_lock(inode);
-	error = security_path_chown(path, uid, gid);
-	if (!error)
-		error = notify_change(mnt_userns, path->dentry, &newattrs,
-				      &delegated_inode);
-	inode_unlock(inode);
-	...
-}
-
-Here security_path_chown is expecting the old fashioned kuid_t and
-kgid_t but looking at the top of the function we can see that
-security_path_chown is getting the kuid_t and kgid_t from below the
-mount.
-
-The Tomoyo lsm cares.
-
-
-Notice that ia_uid and ia_gid in struct newattrs are below mount values.
-
-
-Now looking in notify_change:
-
-int notify_change(struct user_namespace *mnt_userns, struct dentry *dentry,
-		  struct iattr *attr, struct inode **delegated_inode)
-{
-	...
-       	if (inode->i_op->setattr)
-		error = inode->i_op->setattr(mnt_userns, dentry, attr);
-	else
-		error = simple_setattr(mnt_userns, dentry, attr);
-        ...
-}
-
-
-int simple_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
-		   struct iattr *iattr)
-{
-	...
-	error = setattr_prepare(mnt_userns, dentry, iattr);
-	if (error)
-		return error;
-	...
-}
-
-
-int setattr_prepare(struct user_namespace *mnt_userns, struct dentry *dentry,
-		    struct iattr *attr)
-{
-	...
-	/* Make sure a caller can chown. */
-	if ((ia_valid & ATTR_UID) && !chown_ok(mnt_userns, inode, attr->ia_uid))
-		return -EPERM;
-
-	/* Make sure caller can chgrp. */
-	if ((ia_valid & ATTR_GID) && !chgrp_ok(mnt_userns, inode, attr->ia_gid))
-		return -EPERM;
-	...
-}
-
-static bool chown_ok(struct user_namespace *mnt_userns,
-		     const struct inode *inode,
-		     kuid_t uid)
-{
-	kuid_t kuid = i_uid_into_mnt(mnt_userns, inode);
-	if (uid_eq(current_fsuid(), kuid) && uid_eq(uid, kuid))
-                                             ^^^^^^^^^^^^^^^^^^
-		return true;
- 	....               
-}
-
-The comparison of uid and kuid in chown_ok is nonsense.  As the kuid is
-the old fashioned kuid.  While the uid is attr->ia_uid is the below
-mount value.
-
-I found these both within just a couple of minutes by creating
-a type vfsuid_t and vfsgid_t and using it for the values stored in
-struct inode and struct iattr.
-
-There are probably more cases of inappropriate mixing.  I stopped as I
-don't have the energy or the inclination to dig through and find more.
-
-Unfortunately what I found was that the current design of using kuid_t
-and kgid_t for both the old fashioned kuids and for the new below mount
-values is so error prone that even the author of the change while
-performing a lot of testing can not get it right.
-
-Christian do you think you can add a type for the below mount values
-and separate everything by type quickly?
-
-Otherwise I think the better part of valor would be to revert this code
-and come back it has made not error prone.
-
-Eric
-
+--=20
+Alex Benn=C3=A9e
+KVM/QEMU Hacker for Linaro
