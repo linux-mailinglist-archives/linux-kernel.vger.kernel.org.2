@@ -2,126 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615C032BD08
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5E932BD0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447664AbhCCPQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:16:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
+        id S1447897AbhCCPQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:16:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240097AbhCCK2I (ORCPT
+        with ESMTP id S240618AbhCCK2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:28:08 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B48C061788
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:27:28 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id q203so2368861oih.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:27:28 -0800 (PST)
+        Wed, 3 Mar 2021 05:28:34 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4D3C06178B
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:27:53 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id b130so11789399qkc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:27:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=94FU4aImSyveb72Fh42pjQwrSbJ+f3XzeivB4wSoR78=;
-        b=TPsmqF4DiwneZsBqICYdPOa29BGt70SR8yCZLys0WXRd8rFZIw1GUvfX7iMCLGVxQB
-         C5MxaiTdM2gnMZNd72rNUuRZReFaYDvCJjfAct7n3kaMDZiPbvkoIcgD51I7edBYM3uZ
-         G50f5hmZYM9BO0FHhjNfGoty7zvsPgda8dQcV/T0vY3cDDJEgTR12X+zUTJvY6dy6IUS
-         k35maJzmrft8jBKaRug9SJYxosur19yPY8DQpYLY3c4AqAmhEMOKX/mxPqj7+H0EQV7i
-         6FQgEmBjjdmvMIMRpbNJV+phC4qgeQ4OJ2usuyXDHwugttb/emwZ5rh53RsQyOm+P2TY
-         84fw==
+         :cc:content-transfer-encoding;
+        bh=w3iu+FPZ2AQzegLPXY/KDKL+9Oc/6sekpAqi6o7HuJI=;
+        b=iEGrkfqbIjy7TAtG6ZAITpccSyN9/W2r2t5hbzfvr9lLSOTTVEfIVnVchRJAI8AZwJ
+         imrk1T44duG21Zt5Ju8BAUPDJeiiGJilPv70pByvhMPxZC0tTqoyg611p0rBbXrtH1fC
+         QmH1JqpKxduAr5r/txEupbyCyAUOpvxdL0WweMROrs/+YqfAwhLPNGPXsPZ2xPce+tIG
+         j6/qWkCgQRJjapH6g7cguDcyonlWtitPQRGeq02LWuN8dfnRL9+9X5wBWm7MRX8XPbg0
+         Xb82rdYWV49rAAfrd6W5/Vl4FqpMh3lAFiKUJo4U8y4EyVfbhQCNCrOPtxr8g3Vzphqu
+         9o+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=94FU4aImSyveb72Fh42pjQwrSbJ+f3XzeivB4wSoR78=;
-        b=Te2qu2GCooafewt8M351qm2ERO/qr8JmdI8LSu1jzbDHGpNwiC8hxd39lIIUP5fi87
-         D4acfJrv09siabLhjiB0aKrIAAPDojBdf40uuVP/DGwhMC5Eh6d9TTaKOpj9glW4FS5B
-         De5RJfc2Z8rzEy3Dleh1x57osYLcXY+jBhyToydmvyookLVT5Cbfdo0oeuolNrXGjsQQ
-         5he8bIjQ3XX8aJK3Fsc8l2IHKSDikIgfcJb6aZf0iHhmKih1vZbFQTI6yFp6y3ku7O0R
-         mloSCs6THRpOXKzBMpsnprrZzDlr4p7e7X/9KXjufqrE3Bsl8tDeUg1w5dMY7A484gfO
-         dPFg==
-X-Gm-Message-State: AOAM530tgZ4YivWlBmbYyiZRCJXA3UpgX0XlV7A+Yr3wSiwSv5B7bcpi
-        aWonJBbSWrHmcz4J+2Pi6KfUTeIPjA7ohbhM+pB3Dw==
-X-Google-Smtp-Source: ABdhPJzEjJBfP0+b5HSHdvaVlTjhK7j0sIV85vmNsnUkZyxcXT8JIFBTCSPTghfDv0QK1R9PoCFNQ75GdZzfRjZD7II=
-X-Received: by 2002:aca:5fd4:: with SMTP id t203mr6668726oib.121.1614767247769;
- Wed, 03 Mar 2021 02:27:27 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=w3iu+FPZ2AQzegLPXY/KDKL+9Oc/6sekpAqi6o7HuJI=;
+        b=TZBpLPw2MiAsIzm/HsJK161s2aZqpFbFNTyoAwRlWZmPPB2e3ZEw4HBXrqJeWe4c4s
+         JxhwAOarqY+DefdwY02I8Q7Conzf91kLJRdJASu1zXm/mz/6/Q+TM0nLxrPP0XFmcikE
+         fsB9XQEyRpmxE7YTZnGMijsj45NG1IBRWafITzA9bY1JfroPvx3z3OYrDzuhyJNrsZjy
+         opXcruATrfASkfoV7XTbdsgLkbaUVVbcjktqz96YY2WAUaR8VH+M0FCwq7EI2qK72eoV
+         2A8I7aC11iL7CUHTEDjpwpuvWxvwI1VfIXMjd76l8mQzWHOC2kGkNMiOjkQXsOx84hTL
+         xe8g==
+X-Gm-Message-State: AOAM532k6O+iWYMDzWO0nSwmi0Zue0+rAYcSyFWomPtrGkInlCMCyybA
+        6weby7gS3CQqvcQLRAkwR+T8XlWYp/zCMSVQrqQ+8Q==
+X-Google-Smtp-Source: ABdhPJz4zeZijSXmd2tIZ8Sz21Pfc9SkCP2ddPDhF//3BI0zJ8VIiF3Bpy0cZps+fQVBiWasY126gcNsZ9qBT2MqJl0=
+X-Received: by 2002:a37:96c4:: with SMTP id y187mr25321093qkd.231.1614767272807;
+ Wed, 03 Mar 2021 02:27:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303093845.2743309-1-elver@google.com> <YD9dld26cz0RWHg7@kroah.com>
- <CANpmjNMxuj23ryjDCr+ShcNy_oZ=t3MrxFa=pVBXjODBopEAnw@mail.gmail.com> <YD9jujCYGnjwOMoP@kroah.com>
-In-Reply-To: <YD9jujCYGnjwOMoP@kroah.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 3 Mar 2021 11:27:16 +0100
-Message-ID: <CANpmjNPS7BXepA=G-Fbc_PEjeBhyc8PYEhzEO+TbWApGO7tL-g@mail.gmail.com>
-Subject: Re: [PATCH] kcsan, debugfs: Move debugfs file creation out of early init
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
+References: <20200808040440.255578-1-yepeilin.cs@gmail.com>
+ <CACT4Y+b6m7kRS82iRNcmaEPKN8fbvOUmztuGJSw6OketyxM8Kw@mail.gmail.com> <1576870386.32806253.1614766300531.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1576870386.32806253.1614766300531.JavaMail.zimbra@redhat.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 3 Mar 2021 11:27:41 +0100
+Message-ID: <CACT4Y+Y090LkpY=PcuG_VGhaah1uPduO+dHww3uERP_x1MEUMQ@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH net] Bluetooth: Fix NULL pointer
+ dereference in amp_read_loc_assoc_final_data()
+To:     Gopal Tiwari <gtiwari@redhat.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Andrei Emeltchenko <andrei.emeltchenko@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
+        syzbot+f4fb0eaafdb51c32a153@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 11:24, Greg KH <gregkh@linuxfoundation.org> wrote:
-> On Wed, Mar 03, 2021 at 11:18:06AM +0100, Marco Elver wrote:
-> > On Wed, 3 Mar 2021 at 10:57, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Mar 03, 2021 at 10:38:45AM +0100, Marco Elver wrote:
-> > > > Commit 56348560d495 ("debugfs: do not attempt to create a new file
-> > > > before the filesystem is initalized") forbids creating new debugfs files
-> > > > until debugfs is fully initialized. This breaks KCSAN's debugfs file
-> > > > creation, which happened at the end of __init().
-> > >
-> > > How did it "break" it?  The files shouldn't have actually been created,
-> > > right?
-> >
-> > Right, with 56348560d495 the debugfs file isn't created anymore, which
-> > is the problem. Before 56348560d495 the file exists (syzbot wants the
-> > file to exist.)
-> >
-> > > > There is no reason to create the debugfs file during early
-> > > > initialization. Therefore, move it into a late_initcall() callback.
-> > > >
-> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > > > Cc: stable <stable@vger.kernel.org>
-> > > > Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-> > > > Signed-off-by: Marco Elver <elver@google.com>
-> > > > ---
-> > > > I've marked this for 'stable', since 56348560d495 is also intended for
-> > > > stable, and would subsequently break KCSAN in all stable kernels where
-> > > > KCSAN is available (since 5.8).
-> > >
-> > > No objection from me, just odd that this actually fixes anything :)
-> >
-> > 56348560d495 causes the file to just not be created if we try to
-> > create at the end of __init(). Having it created as late as
-> > late_initcall() gets us the file back.
-> >
-> > When you say "fixes anything", should the file be created even though
-> > it's at the end of __init()? Perhaps I misunderstood what 56348560d495
-> > changes, but I verified it to be the problem by reverting (upon which
-> > the file exists as expected).
+On Wed, Mar 3, 2021 at 11:11 AM Gopal Tiwari <gtiwari@redhat.com> wrote:
 >
-> All my change did is explicitly not allow you to create a file if
-> debugfs had not been initialized.  If you tried to do that before, you
-> should have gotten an error from the vfs layer that the file was not
-> created, as otherwise how would it have succeeded?
+> Hi,
 >
-> I just moved the check up higher in the "stack" to the debugfs code, and
-> not relied on the vfs layer to do a lot of work only to reject things
-> later on.
+> I tried to search the patch for one of the bugzilla reported (Internal) h=
+ttps://bugzilla.redhat.com/show_bug.cgi?id=3D1916057 with the traces
 >
-> So there "should" not have been any functional change with this patch.
-> If there was, then something is really odd as how can the vfs layer
-> create a file for a filesystem _before_ that filesystem has been
-> registered with the vfs layer?
+> [  405.938525] Workqueue: hci0 hci_rx_work [bluetooth]
+> [  405.941360] RIP: 0010:amp_read_loc_assoc_final_data+0xfc/0x1c0 [blueto=
+oth]
+> [  405.944740] Code: 89 44 24 29 48 b8 00 00 00 00 00 fc ff df 0f b6 04 0=
+2 84 c0 74 08 3c 01 0f 8e 9d 00 00 00 0f b7 85 c0 03 00 00 66 89 44 24 2b <=
+f0> 41 80 4c 24 30 04 4c 8d 64 24 68 48 89 ee 4c 89 e7 e8 3d 48 fe
+> [  405.952396] RSP: 0018:ffff88802ea0f838 EFLAGS: 00010246
+> [  405.955368] RAX: 0000000000000000 RBX: 1ffff11005d41f08 RCX: dffffc000=
+0000000
+> [  405.958669] RDX: 1ffff110254cc878 RSI: ffff88802eeee000 RDI: ffff88812=
+a6643c0
+> [  405.961980] RBP: ffff88812a664000 R08: 0000000000000000 R09: 000000000=
+0000000
+> [  405.965319] R10: ffff88802ea0fd00 R11: 0000000000000000 R12: 000000000=
+0000000
+> [  405.968624] R13: 0000000000000041 R14: ffff88802b836800 R15: ffff88812=
+50570c0
+> [  405.971989] FS:  0000000000000000(0000) GS:ffff888055a00000(0000) knlG=
+S:0000000000000000
+> [  405.975645] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  405.978755] CR2: 0000000000000030 CR3: 000000002d200000 CR4: 000000000=
+0340ee0
+> [  405.982150] Call Trace:
+> [  405.984768]  ? amp_read_loc_assoc+0x170/0x170 [bluetooth]
+> [  405.987875]  ? rcu_read_unlock+0x50/0x50
+> [  405.990663]  ? deref_stack_reg+0xf0/0xf0
+> [  405.993403]  ? __module_address+0x3f/0x370
+> [  405.996184]  ? hci_cmd_work+0x180/0x330 [bluetooth]
+> [  405.999170]  ? hci_conn_hash_lookup_handle+0x1a1/0x270 [bluetooth]
+> [  406.002354]  hci_event_packet+0x1476/0x7e00 [bluetooth]
+> [  406.005407]  ? arch_stack_walk+0x8f/0xf0
+> [  406.008206]  ? ret_from_fork+0x27/0x50
+> [  406.010887]  ? hci_cmd_complete_evt+0xbf70/0xbf70 [bluetooth]
+> [  406.013933]  ? stack_trace_save+0x8a/0xb0
+> [  406.016618]  ? do_profile_hits.isra.4.cold.9+0x2d/0x2d
+> [  406.019483]  ? lock_acquire+0x1a3/0x970
+> [  406.022092]  ? __wake_up_common_lock+0xaf/0x130
+>
+>
+> I didn't found any solution upstream. After the vmcore analysis I found w=
+hat is wrong. And took reference from the following patch, which seems to b=
+e on the similar line
+>
+> commit 6dfccd13db2ff2b709ef60a50163925d477549aa
+>     Author: Anmol Karn <anmol.karan123@gmail.com>
+>     Date:   Wed Sep 30 19:48:13 2020 +0530
+>
+>         Bluetooth: Fix null pointer dereference in hci_event_packet()
+>
+>         AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), wh=
+en called
+>         from hci_event_packet() and there is a possibility, that hcon->am=
+p_mgr may
+>         not be found when accessing after initialization of hcon.
+>
+>         - net/bluetooth/hci_event.c:4945
+>
+> How we can avoid this scenario. So I made the chages and tested. It worke=
+d or avoided the kernel panic. But I really don't know that some one has al=
+ready posted the patch. I would have love to backport the patch, I was more=
+ of looking for the fix. That's where I didn't applied the reported-by tag =
+as I thought it reported internal only.
 
-Ah, I see. I do confirm that the file has been created until
-56348560d495, without any errors.
+Hi Gopal,
 
-Thanks,
--- Marco
+I think it's somewhat inherent to the current kernel unstructured
+processes with bugs being reported on mailing lists, bugzilla,
+distro-specific trackers.
+One useful thing, though, is searching Lore, e.g. searching for just
+the crashing function:
+https://lore.kernel.org/lkml/?q=3Damp_read_loc_assoc_final_data
+gives the report and the patch (if we filter out all entries produced
+by your patch, which obviously wasn't yet there before you wrote it
+:)):
+
+12. [Linux-kernel-mentees] [PATCH net] Bluetooth: Fix NULL pointer
+dereference in amp_read_loc_assoc_final_data()
+    - by Peilin Ye @ 2020-08-08  4:04 UTC [21%]
+
+13. KASAN: null-ptr-deref Write in amp_read_loc_assoc_final_data
+    - by syzbot @ 2020-07-31 17:04 UTC [13%]
+
+
+> Thanks & regards,
+> Gopal Tiwari
+>
+>
+>
+> ----- Original Message -----
+> From: "Dmitry Vyukov" <dvyukov@google.com>
+> To: "Peilin Ye" <yepeilin.cs@gmail.com>
+> Cc: "Marcel Holtmann" <marcel@holtmann.org>, "Johan Hedberg" <johan.hedbe=
+rg@gmail.com>, "Andrei Emeltchenko" <andrei.emeltchenko@intel.com>, "Greg K=
+roah-Hartman" <gregkh@linuxfoundation.org>, "David S. Miller" <davem@daveml=
+oft.net>, "Jakub Kicinski" <kuba@kernel.org>, linux-kernel-mentees@lists.li=
+nuxfoundation.org, "syzkaller-bugs" <syzkaller-bugs@googlegroups.com>, "lin=
+ux-bluetooth" <linux-bluetooth@vger.kernel.org>, "netdev" <netdev@vger.kern=
+el.org>, "LKML" <linux-kernel@vger.kernel.org>, gtiwari@redhat.com, syzbot+=
+f4fb0eaafdb51c32a153@syzkaller.appspotmail.com
+> Sent: Wednesday, March 3, 2021 1:51:41 PM
+> Subject: Re: [Linux-kernel-mentees] [PATCH net] Bluetooth: Fix NULL point=
+er dereference in amp_read_loc_assoc_final_data()
+>
+> On Sat, Aug 8, 2020 at 6:06 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> >
+> > Prevent amp_read_loc_assoc_final_data() from dereferencing `mgr` as NUL=
+L.
+> >
+> > Reported-and-tested-by: syzbot+f4fb0eaafdb51c32a153@syzkaller.appspotma=
+il.com
+> > Fixes: 9495b2ee757f ("Bluetooth: AMP: Process Chan Selected event")
+> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > ---
+> >  net/bluetooth/amp.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/net/bluetooth/amp.c b/net/bluetooth/amp.c
+> > index 9c711f0dfae3..be2d469d6369 100644
+> > --- a/net/bluetooth/amp.c
+> > +++ b/net/bluetooth/amp.c
+> > @@ -297,6 +297,9 @@ void amp_read_loc_assoc_final_data(struct hci_dev *=
+hdev,
+> >         struct hci_request req;
+> >         int err;
+> >
+> > +       if (!mgr)
+> > +               return;
+> > +
+> >         cp.phy_handle =3D hcon->handle;
+> >         cp.len_so_far =3D cpu_to_le16(0);
+> >         cp.max_len =3D cpu_to_le16(hdev->amp_assoc_size);
+>
+> Not sure what happened here, but the merged patch somehow has a
+> different author and no Reported-by tag:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3De8bd76ede155fd54d8c41d045dda43cd3174d506
+> so let's tell syzbot what fixed it manually:
+> #syz fix:
+> Bluetooth: Fix null pointer dereference in amp_read_loc_assoc_final_data
+>
