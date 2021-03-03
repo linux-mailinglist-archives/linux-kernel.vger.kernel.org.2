@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A907332C2EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C8732C356
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354028AbhCDAGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574785AbhCCVMs (ORCPT
+        id S1354003AbhCDAG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:06:28 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:40213 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388526AbhCCVKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 16:12:48 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEE5C061761;
-        Wed,  3 Mar 2021 13:10:52 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id l22so6281263wme.1;
-        Wed, 03 Mar 2021 13:10:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c1hVb64++yJApAm3B8Tu4MMiI3NLOIPswavPPO9bVgw=;
-        b=M7j5RyQpEpxkOlvJepyq4K8SkeBc0qBg0r7T9hvfQx14M8jfXYAsHCC0tQrISlGeKS
-         Zxv2VgvYhn/aaanoNK8MILPpQjRF4tWUiWQi7aBQQHZ9cTYtEKP/yUZ9jxorrE+/sS3n
-         EzyDS/F7gpJeId8H0PejfT+6KXlEMLpuTdkur6orNopdFFU3zfN21bSflVaaiu4PyP4x
-         uX8OV6JdygxS5pNNvOk+YkRmRVlaI8LJ/5KuKvHIrJlmTzYVNQOTSpGG3Kd792/Yp4mN
-         wQFW4DduuY+p8YE9VXjGtkY2K+gwmgdOw5jQP9nATBb/Oaa4ylJp8Ql30uWXZTtIYY52
-         ANhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c1hVb64++yJApAm3B8Tu4MMiI3NLOIPswavPPO9bVgw=;
-        b=ShpsW8LYzokVLJyCoHa2dHU/6tyxjw0YgYz5xxc1Nl0bG8BtXbn+QhqsnNQCNcotAC
-         mvpvsU3R3xe+tWIqMwqDpMAgAzrN83DUt3kdmWKcZeG7uHvFRKdnBtNNiLzWE7LKXPXs
-         oef4BcJQjYpG51JFRGDLldnQYzt6LIjj2Is+A4TzPeGyducOaNc0nzpRZhVtH9lja17n
-         FfNYgIw5AHmMib/rIdshDrORG/D1vdw57OwyxRn2j5nXRpu+R78WGHGpcsfkEaEdVLZh
-         obulPjmerhGRIKZLNFgbsYV2u2CY8SDlOMOlnFoPrmJvyzqjsx6WuH0vuls42gndPDUp
-         T0sw==
-X-Gm-Message-State: AOAM530dP2Fy8/TwDjrl2qhuwrfKs5mIxSO3mVC+m734AjJWQo1d6cO/
-        2i0x8HRuw9epQ1v7UbchO1gdEKCgPRTH9Q==
-X-Google-Smtp-Source: ABdhPJw4CZ9pjEl4f8S4btNDtnIQX0S8QiIwzabJvbRBZo8HSLqoUM7zDKd0q60XZGwfFIMellTpHQ==
-X-Received: by 2002:a05:600c:608:: with SMTP id o8mr796682wmm.42.1614805851411;
-        Wed, 03 Mar 2021 13:10:51 -0800 (PST)
-Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
-        by smtp.gmail.com with ESMTPSA id y18sm32684684wrq.61.2021.03.03.13.10.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 13:10:51 -0800 (PST)
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Heiko Thiery <heiko.thiery@gmail.com>
-Subject: [PATCH v4 0/2] add Kontron pITX-imx8m board
-Date:   Wed,  3 Mar 2021 22:10:01 +0100
-Message-Id: <20210303211002.17650-1-heiko.thiery@gmail.com>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 3 Mar 2021 16:10:49 -0500
+Received: from marcel-macbook.holtmann.net (p4ff9fb90.dip0.t-ipconnect.de [79.249.251.144])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 58E05CED0A;
+        Wed,  3 Mar 2021 22:17:37 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH] Bluetooth: Allow scannable adv with extended MGMT APIs
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210303111505.1.I3108b046a478cb4f1b85aeb84edb0f127cff81a8@changeid>
+Date:   Wed, 3 Mar 2021 22:10:02 +0100
+Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        Sonny Sasaka <sonnysasaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <EA8605ED-9E87-4A8F-BEE6-3B2720732278@holtmann.org>
+References: <20210303111505.1.I3108b046a478cb4f1b85aeb84edb0f127cff81a8@changeid>
+To:     Daniel Winkler <danielwinkler@google.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds support for the Kontron pITX-imx8m board:
+Hi Daniel,
 
-https://www.kontron.com/products/boards-and-standard-form-factors/single-board-computer/pitx-imx8m.html
+> An issue was found, where if a bluetooth client requests a broadcast
+> advertisement with scan response data, it will not be properly
+> registered with the controller. This is because at the time that the
+> hci_cp_le_set_scan_param structure is created, the scan response will
+> not yet have been received since it comes in a second MGMT call. With
+> empty scan response, the request defaults to a non-scannable PDU type.
+> On some controllers, the subsequent scan response request will fail due
+> to incorrect PDU type, and others will succeed and not use the scan
+> response.
+> 
+> This fix allows the advertising parameters MGMT call to include a flag
+> to let the kernel know whether a scan response will be coming, so that
+> the correct PDU type is used in the first place. A bluetoothd change is
+> also incoming to take advantage of it.
+> 
+> To test this, I created a broadcast advertisement with scan response
+> data and registered it on the hatch chromebook. Without this change, the
+> request fails, and with it will succeed.
+> 
+> Reviewed-by: Alain Michaud <alainm@chromium.org>
+> Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Signed-off-by: Daniel Winkler <danielwinkler@google.com>
+> ---
+> 
+> include/net/bluetooth/mgmt.h | 1 +
+> net/bluetooth/hci_request.c  | 3 ++-
+> net/bluetooth/mgmt.c         | 1 +
+> 3 files changed, 4 insertions(+), 1 deletion(-)
 
-Heiko Thiery (2):
-  dt-bindings: arm: fsl: add Kontron pITX-imx8m board
-  arm64: dts: fsl: add support for Kontron pitx-imx8m board
+patch has been applied to bluetooth-next tree.
 
- .../devicetree/bindings/arm/fsl.yaml          |   1 +
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../freescale/imx8mq-kontron-pitx-imx8m.dts   | 611 ++++++++++++++++++
- 3 files changed, 613 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+Regards
 
--- 
-2.30.0
+Marcel
 
