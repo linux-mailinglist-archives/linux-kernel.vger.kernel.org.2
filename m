@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D89832C118
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC9332C136
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837962AbhCCS7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:59:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50738 "EHLO mail.kernel.org"
+        id S1838328AbhCCTAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:00:15 -0500
+Received: from elvis.franken.de ([193.175.24.41]:40114 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1578009AbhCCSQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:16:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B337464EEC;
-        Wed,  3 Mar 2021 18:15:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614795335;
-        bh=5T9bHIFj1CyoGXbVb1zYt1TrohJNGLumV+zjmV7GO9I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=thLbqn6F/11rvo1ByfrUWKbCxykt3UKMvbxFWt++nWhbXCqHwUkjIN/0LnsLHBQcC
-         ez0V1GlQbWXbzmWbhKXPceHv9APr1lI57lVjDczrlqm4YOThn8aHFlSPRHLWjmQ8D1
-         iQD6MbshCrhjjNMsKPAp2fJCiDxASs6/e12hNedp9cOvbOVgEt4uLBhsh5CXNu94cD
-         RjhvBsOxFPzmtZW0TcehIorc3UdSH6AGyML5yQ75vBCafL5MlNv/HYQVJKqyRwhns5
-         /rFC2Clv5FhHTEh6Ht9mj/WPEqi3aTSy8P67mZXggY8yRlRHJokwhylh/Hg+eYGLwV
-         KhoBirn/8NN+w==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6CEA535237A1; Wed,  3 Mar 2021 10:15:35 -0800 (PST)
-Date:   Wed, 3 Mar 2021 10:15:35 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH drivers/net] #ifdef mdio_bus_phy_suspend() and
- mdio_bus_phy_suspend()
-Message-ID: <20210303181535.GF2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210303175338.GA15338@paulmck-ThinkPad-P72>
- <20210303180422.GB1463@shell.armlinux.org.uk>
+        id S1579159AbhCCSad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:30:33 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lHWFq-0003ZZ-00; Wed, 03 Mar 2021 19:29:50 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id BE979C0D74; Wed,  3 Mar 2021 19:15:41 +0100 (CET)
+Date:   Wed, 3 Mar 2021 19:15:41 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-mips@vger.kernel.org, rppt@kernel.org,
+        fancer.lancer@gmail.com, guro@fb.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        paul@crapouillou.net,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Message-ID: <20210303181541.GA25675@alpha.franken.de>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <20210302041940.3663823-1-f.fainelli@gmail.com>
+ <20210302235411.GA3897@alpha.franken.de>
+ <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com>
+ <20210303094134.GA18354@alpha.franken.de>
+ <alpine.DEB.2.21.2103031844510.19637@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210303180422.GB1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <alpine.DEB.2.21.2103031844510.19637@angie.orcam.me.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 06:04:22PM +0000, Russell King - ARM Linux admin wrote:
-> On Wed, Mar 03, 2021 at 09:53:38AM -0800, Paul E. McKenney wrote:
-> > drivers/net: #ifdef mdio_bus_phy_suspend() and mdio_bus_phy_suspend()
-> > 
-> > The following build error is emitted by rcutorture builds of v5.12-rc1:
-> > 
-> > drivers/net/phy/phy_device.c:293:12: warning: ‘mdio_bus_phy_resume’ defined but not used [-Wunused-function]
-> > drivers/net/phy/phy_device.c:273:12: warning: ‘mdio_bus_phy_suspend’ defined but not used [-Wunused-function]
-> > 
-> > The problem is that these functions are only used by SIMPLE_DEV_PM_OPS(),
-> > which creates a dev_pm_ops structure only in CONFIG_PM_SLEEP=y kernels.
-> > Therefore, the mdio_bus_phy_suspend() and mdio_bus_phy_suspend() functions
-> > will be used only in CONFIG_PM_SLEEP=y kernels.  This commit therefore
-> > wraps them in #ifdef CONFIG_PM_SLEEP.
+On Wed, Mar 03, 2021 at 06:45:52PM +0100, Maciej W. Rozycki wrote:
+> On Wed, 3 Mar 2021, Thomas Bogendoerfer wrote:
 > 
-> Arnd submitted a patch that Jakub has applied which fix these warnings
-> in a slightly different way. Please see
-> 20210225145748.404410-1-arnd@kernel.org
+> > perfect, I only forgot about R3k... I'll submit a formal patch submission
+> > later today.
+> 
+>  What's up with the R3k (the usual trigger for me) here?
 
-Works for me!  When will this be hitting mainline?
+I've moved r3k cpu_probe() to it's own file and when moving ebase
+reservation to cpu_probe(), I need to add it there as well. So just
+a mechanic step, I've missed.
 
-Not a huge deal given that I can suppress the resulting rcutorture
-failures by keeping a copy of either patch in -rcu, but I might not
-be the only one hitting this.
+Thomas.
 
-							Thanx, Paul
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
