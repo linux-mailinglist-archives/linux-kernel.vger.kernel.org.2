@@ -2,67 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9604032BDE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD4B32BDD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350159AbhCCQj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:39:26 -0500
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:40132 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344703AbhCCMEE (ORCPT
+        id S1346766AbhCCQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:38:46 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13849 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352972AbhCCLzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:04:04 -0500
-Received: by mail-wm1-f45.google.com with SMTP id o2so5581510wme.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:02:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MgKg+xuFshcWxF/EWFStdvX3IMRA6xhZUH5DmSOHrFs=;
-        b=ndQ5HhP9GKxt1nP6KAA/R6M1DU6ObNHUer0W6C2cz+mi/MzdBOZmKCSV3VQ5sXsmdq
-         CHJiQd7o3gwK8BlyKGriSAhfZ5+ZSr0Si7Hw+mADDaEQi+sUNM6ejpPCbAdXH/KH5jiL
-         Nq6IT+NE4y2Gz9HmVdoHBkxT0hZ0WBozTmcn4eSINM4suesKc7jgMjmN90vwShChSq96
-         xdfvylaTKsxLlOxJg9BfVn7fwm34Xm19F57S0eYJHpdNAs9oGeP15bXE6do3YTkJqnDP
-         2fBGdIuarCX0cU0B+597KdPlGDImo920n6bLcNKeJKypPD+zcK7kc/0W0Nm4f3ZjqavQ
-         uIQg==
-X-Gm-Message-State: AOAM5309b2RKe9luxf+x9CMGMwSpscGfE+snrDBMAL5GZ4O//JPZ1MWa
-        7+H7hCGmGc0OfA2RtbUWL42eXcjU2VA=
-X-Google-Smtp-Source: ABdhPJwbVQqhAFsa13auW4eF3yjMx+StH3dqVQPam9+Jh5V2R/AUGy6jdsUSjFw678Ny0MVLZodEFA==
-X-Received: by 2002:a7b:cb90:: with SMTP id m16mr8770689wmi.162.1614772335253;
-        Wed, 03 Mar 2021 03:52:15 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a75sm5914399wme.10.2021.03.03.03.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 03:52:14 -0800 (PST)
-Date:   Wed, 3 Mar 2021 11:52:13 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        linux-hyperv@vger.kernel.org, mikelley@microsoft.com
-Subject: Re: [PATCH] Drivers: hv: vmbus: Drop error message when 'No request
- id available'
-Message-ID: <20210303115213.h355ncqtezsigjxz@liuwe-devbox-debian-v2>
-References: <20210301191348.196485-1-parri.andrea@gmail.com>
+        Wed, 3 Mar 2021 06:55:43 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DrC6K3q7Yz7rxF;
+        Wed,  3 Mar 2021 19:52:25 +0800 (CST)
+Received: from localhost (10.174.150.118) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Wed, 3 Mar 2021
+ 19:54:00 +0800
+From:   <ann.zhuangyanying@huawei.com>
+To:     <pbonzini@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <weidong.huang@huawei.com>,
+        Zhuang Yanying <ann.zhuangyanying@huawei.com>
+Subject: [PATCH] KVM: x86: fix cpu hang due to tsc adjustment when kvmclock in use
+Date:   Wed, 3 Mar 2021 19:53:57 +0800
+Message-ID: <20210303115357.7464-1-ann.zhuangyanying@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301191348.196485-1-parri.andrea@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.150.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 08:13:48PM +0100, Andrea Parri (Microsoft) wrote:
-> Running out of request IDs on a channel essentially produces the same
-> effect as running out of space in the ring buffer, in that -EAGAIN is
-> returned.  The error message in hv_ringbuffer_write() should either be
-> dropped (since we don't output a message when the ring buffer is full)
-> or be made conditional/debug-only.
-> 
-> Suggested-by: Michael Kelley <mikelley@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Fixes: e8b7db38449ac ("Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus hardening")
+From: Zhuang Yanying <ann.zhuangyanying@huawei.com>
 
-Applied to hyperv-fixes.
+If the TSC frequency of the VM is not equal to the host, hot-plugging vCPU
+will cause the VM to be hang. The time of hang depends on the current TSC
+value of the VM.
 
-Wei.
+System time calculation of kvmclock is based on (tsc_timestamp, system_time),
+and adjusted by delta ( = rdtsc_ordered() - src->tsc_timestamp).The tsc of the
+hotplugged cpu is initialized to 0, which will trigger check_tsc_sync_target()
+to adjust the tsc of the hotplugged cpu according to another online cpu, that
+is, rdtsc_ordered() will change abruptly to a large value. Then system time
+based on kvmclock is modified at the same time.
+
+So after modifying the tsc offset, update vcpu->hv_clock immediately.
+---
+ Host:
+  Intel(R) Xeon(R) Gold 6161 CPU @ 2.20GHz
+  linux-5.11
+  qemu-5.1
+    <cpu mode='host-passthrough' check='none'>
+      <feature policy='require' name='invtsc'/>
+    </cpu>
+    <clock offset='utc'>
+      <timer name='hpet' present='no'/>
+      <timer name='pit' tickpolicy='delay'/>
+      <timer name='tsc' frequency='3000000000'/>
+    </clock>
+ Guest:
+  Centos8.1 (4.18.0-147.el8.x86_64)
+
+ After Hotplug cpu, vm hang for 290s:
+  [  283.224026] CPU3 has been hot-added
+  [  283.226118] smpboot: Booting Node 0 Processor 3 APIC 0x3
+  [  283.226964] kvm-clock: cpu 3, msr 9e5e010c1, secondary cpu clock
+  [  283.247200] TSC ADJUST compensate: CPU3 observed 867529151959 warp. Adjust: 867529151959
+  [  572.445543] KVM setup async PF for cpu 3
+  [  572.446412] kvm-stealtime: cpu 3, msr a16ce5040
+  [  572.448108] Will online and init hotplugged CPU: 3
+  Feb 27 18:47:28 localhost kernel: CPU3 has been hot-added
+  Feb 27 18:47:28 localhost kernel: smpboot: Booting Node 0 Processor 3 APIC 0x3
+  Feb 27 18:47:28 localhost kernel: kvm-clock: cpu 3, msr 9e5e010c1, secondary cpu clock
+  Feb 27 18:47:28 localhost kernel: TSC ADJUST compensate: CPU3 observed 867529151959 warp. Adjust: 867529151959
+  Feb 27 18:47:28 localhost kernel: KVM setup async PF for cpu 3
+  Feb 27 18:47:28 localhost kernel: kvm-stealtime: cpu 3, msr a16ce5040
+  Feb 27 18:47:28 localhost kernel: Will online and init hotplugged CPU: 3
+  Feb 27 18:47:28 localhost systemd[1]: Started /usr/lib/udev/kdump-udev-throttler.
+  [  572.495181] clocksource: timekeeping watchdog on CPU2: Marking clocksource 'tsc' as unstable because the skew is too large:
+  [  572.495181] clocksource:                       'kvm-clock' wd_now: 86ab1286a2 wd_last: 4344b44d09 mask: ffffffffffffffff
+  [  572.495181] clocksource:                       'tsc' cs_now: ca313c563b cs_last: c9d88b54d2 mask: ffffffffffffffff
+  [  572.495181] tsc: Marking TSC unstable due to clocksource watchdog
+  [  572.495181] clocksource: Switched to clocksource kvm-clock
+  Feb 27 18:47:28 localhost kernel: clocksource: timekeeping watchdog on CPU2: Marking clocksource 'tsc' as unstable because the skew 
+  Feb 27 18:47:28 localhost kernel: clocksource:                       'kvm-clock' wd_now: 86ab1286a2 wd_last: 4344b44d09 mask: ffffff
+  Feb 27 18:47:28 localhost kernel: clocksource:                       'tsc' cs_now: ca313c563b cs_last: c9d88b54d2 mask: ffffffffffff
+  Feb 27 18:47:28 localhost kernel: tsc: Marking TSC unstable due to clocksource watchdog
+  Feb 27 18:47:28 localhost kernel: clocksource: Switched to clocksource kvm-clock
+  Feb 27 18:47:28 localhost systemd[1]: Started Getty on tty2.
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: kexec: unloaded kdump kernel
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: Stopping kdump: [OK]
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: kexec: loaded kdump kernel
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: Starting kdump: [OK]
+---
+ arch/x86/kvm/x86.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 3712bb5245eb..429206d65989 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3078,6 +3078,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			if (!msr_info->host_initiated) {
+ 				s64 adj = data - vcpu->arch.ia32_tsc_adjust_msr;
+ 				adjust_tsc_offset_guest(vcpu, adj);
++				kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
+ 			}
+ 			vcpu->arch.ia32_tsc_adjust_msr = data;
+ 		}
+-- 
+2.23.0
+
