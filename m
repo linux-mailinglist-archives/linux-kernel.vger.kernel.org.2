@@ -2,263 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3139932C18D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCDD32C194
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387015AbhCCTOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:14:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55332 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378337AbhCCS6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:58:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D7558ADDB;
-        Wed,  3 Mar 2021 18:57:18 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH] MIPS: kernel: Reserve exception base early to prevent corruption
-Date:   Wed,  3 Mar 2021 19:57:13 +0100
-Message-Id: <20210303185713.122531-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234374AbhCCTTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1837850AbhCCS67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:58:59 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F613C0613DB
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:58:19 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 127so27746156ybc.19
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:58:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=8A+Vn1cjgQFOcnDW+QJHWNfY0Snfwko60G1y42Y3xgQ=;
+        b=EpO/7HH81xcIMjmISnM93Lf1cTCniUoMKyu7mC95M0PrCQYm7LXCrQJFJxnhZLebYL
+         7pgo4FkTt/mXEQZGUDVK60yhEbDk+l70ihk7fVZRA7q4x00fCo4K0ZLzvUGDVBUCJ/Ip
+         XMq1817dtkxXcudmkwE9YXFa5LjA/esowmInvI2pZ8JnNxJ4EKkvy5wviOMspFd3DJJE
+         WO7EY93hE9dI9+/koHkwJLl1Bja54aqa7WzriMyAQE1AIbkNDaRz1Gy29w6vUOJQSNRX
+         Ov3RIk4m9opjmKSFTrlLQYe7ndJ/OAJuKsGAHDXeZtV2/2JBNiFf7obXAg8Vb1Pdkhkz
+         ILqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=8A+Vn1cjgQFOcnDW+QJHWNfY0Snfwko60G1y42Y3xgQ=;
+        b=KuuEF2QUFsyfVkKWixJq5LOCMPSQkQl9YDg+xMrO8oLV97RQhizOiw4BKsradU9Ena
+         4BecJjQLR2KPpZHkk3pFbt1TRLSuIqT89AOdWEuNsvbcPToxl8BeuEXyTNHZQ7BrlTTm
+         P8KdIx46Y4ZYUz/zf91sRU6gUdhlXV/FuezDqxwkBjQaxTJ5PHfJJvyrgE2MYSFePLiz
+         Zh45F4v3WbT+cjYa9NFT4AevHKf0gGxg4ACvIHrx1zMlqkhmDYBlVr72oDWotNk2VmaV
+         Ruw3/1O2vbc1J6XkSVLZi0Kdzn0qNL2w7pwnOGN2qLaB9T8T3E8X1D1rVK5iUVK6dq69
+         /T4g==
+X-Gm-Message-State: AOAM532LchWyJlhIE09x0j7PU3plTzTSkVIfJ1DhMrThN1qTG+slcMqv
+        lDV0eYE/Ory38tieVA9DQ/8qvX308v0=
+X-Google-Smtp-Source: ABdhPJw5vqMC1rNuxjPhDpEuhkpA8XxV6s45QZbFWYlu/dQ45hxGXNv7dGL1NqqF16Ah3hvn7L52qLtxWkQ=
+Sender: "surenb via sendgmr" <surenb@surenb1.mtv.corp.google.com>
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f028:1b0b:1705:8ebb])
+ (user=surenb job=sendgmr) by 2002:a25:f40e:: with SMTP id q14mr1113934ybd.230.1614797898171;
+ Wed, 03 Mar 2021 10:58:18 -0800 (PST)
+Date:   Wed,  3 Mar 2021 10:58:07 -0800
+Message-Id: <20210303185807.2160264-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v3 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     jannh@google.com, keescook@chromium.org, jeffv@google.com,
+        minchan@kernel.org, mhocko@suse.com, shakeelb@google.com,
+        rientjes@google.com, edgararriaga@google.com, timmurray@google.com,
+        fweimer@redhat.com, oleg@redhat.com, jmorris@namei.org,
+        linux-mm@kvack.org, selinux@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-security-module@vger.kernel.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BMIPS is one of the few platforms that do change the exception base.
-After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-with kernel_end") we started seeing BMIPS boards fail to boot with the
-built-in FDT being corrupted.
+process_madvise currently requires ptrace attach capability.
+PTRACE_MODE_ATTACH gives one process complete control over another
+process. It effectively removes the security boundary between the
+two processes (in one direction). Granting ptrace attach capability
+even to a system process is considered dangerous since it creates an
+attack surface. This severely limits the usage of this API.
+The operations process_madvise can perform do not affect the correctness
+of the operation of the target process; they only affect where the data
+is physically located (and therefore, how fast it can be accessed).
+What we want is the ability for one process to influence another process
+in order to optimize performance across the entire system while leaving
+the security boundary intact.
+Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
+and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
+and CAP_SYS_NICE for influencing process performance.
 
-Before the cited commit, early allocations would be in the [kernel_end,
-RAM_END] range, but after commit they would be within [RAM_START +
-PAGE_SIZE, RAM_END].
-
-The custom exception base handler that is installed by
-bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-memory region allocated by unflatten_and_copy_device_tree() thus
-corrupting the FDT used by the kernel.
-
-To fix this, we need to perform an early reservation of the custom
-exception space. So we reserve it already in cpu_probe() for the CPUs
-where this is fixed. For CPU with an ebase config register allocation
-of exception space will be done in trap_init().
-
-Huge thanks to Serget for analysing and proposing a solution to this
-issue.
-
-Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
-Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: stable@vger.kernel.org # 5.10+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Acked-by: David Rientjes <rientjes@google.com>
 ---
- arch/mips/include/asm/traps.h    |  4 ++++
- arch/mips/kernel/cpu-probe.c     |  7 +++++++
- arch/mips/kernel/cpu-r3k-probe.c |  3 +++
- arch/mips/kernel/smp-bmips.c     |  9 +--------
- arch/mips/kernel/traps.c         | 31 ++++++++++++++++---------------
- 5 files changed, 31 insertions(+), 23 deletions(-)
+changes in v3
+- Added Reviewed-by: Kees Cook <keescook@chromium.org>
+- Created man page for process_madvise per Andrew's request: https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=a144f458bad476a3358e3a45023789cb7bb9f993
+- cc'ed stable@vger.kernel.org # 5.10+ per Andrew's request
+- cc'ed linux-security-module@vger.kernel.org per James Morris's request
 
-diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-index 6aa8f126a43d..d74d829e1655 100644
---- a/arch/mips/include/asm/traps.h
-+++ b/arch/mips/include/asm/traps.h
-@@ -24,7 +24,11 @@ extern void (*board_ebase_setup)(void);
- extern void (*board_cache_error_setup)(void);
- 
- extern int register_nmi_notifier(struct notifier_block *nb);
-+extern void reserve_exception_space(unsigned long addr, unsigned long size);
- extern char except_vec_nmi[];
-+extern unsigned long ebase_size;
-+
-+#define VECTORSPACING 0x100	/* for EI/VI mode */
- 
- #define nmi_notifier(fn, pri)						\
- ({									\
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 9a89637b4ecf..effc45cbb351 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -26,6 +26,7 @@
- #include <asm/elf.h>
- #include <asm/pgtable-bits.h>
- #include <asm/spram.h>
-+#include <asm/traps.h>
- #include <linux/uaccess.h>
- 
- #include "fpu-probe.h"
-@@ -1628,6 +1629,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->cputype = CPU_BMIPS3300;
- 		__cpu_name[cpu] = "Broadcom BMIPS3300";
- 		set_elf_platform(cpu, "bmips3300");
-+		reserve_exception_space(0x80000400, VECTORSPACING * 64);
- 		break;
- 	case PRID_IMP_BMIPS43XX: {
- 		int rev = c->processor_id & PRID_REV_MASK;
-@@ -1638,6 +1640,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS4380";
- 			set_elf_platform(cpu, "bmips4380");
- 			c->options |= MIPS_CPU_RIXI;
-+			reserve_exception_space(0x80000400, VECTORSPACING * 64);
- 		} else {
- 			c->cputype = CPU_BMIPS4350;
- 			__cpu_name[cpu] = "Broadcom BMIPS4350";
-@@ -1654,6 +1657,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS5000";
- 		set_elf_platform(cpu, "bmips5000");
- 		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
-+		reserve_exception_space(0x80001000, VECTORSPACING * 64);
- 		break;
- 	}
- }
-@@ -2133,6 +2137,9 @@ void cpu_probe(void)
- 	if (cpu == 0)
- 		__ua_limit = ~((1ull << cpu_vmbits) - 1);
- #endif
-+
-+	if (ebase_size == 0 && !cpu_has_mips_r2_r6)
-+		reserve_exception_space(CAC_BASE, 0x400);
- }
- 
- void cpu_report(void)
-diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
-index abdbbe8c5a43..6e3f4c17b810 100644
---- a/arch/mips/kernel/cpu-r3k-probe.c
-+++ b/arch/mips/kernel/cpu-r3k-probe.c
-@@ -21,6 +21,7 @@
- #include <asm/fpu.h>
- #include <asm/mipsregs.h>
- #include <asm/elf.h>
-+#include <asm/traps.h>
- 
- #include "fpu-probe.h"
- 
-@@ -158,6 +159,8 @@ void cpu_probe(void)
- 		cpu_set_fpu_opts(c);
- 	else
- 		cpu_set_nofpu_opts(c);
-+
-+	reserve_exception_space(CAC_BASE, 0x400);
- }
- 
- void cpu_report(void)
-diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
-index b6ef5f7312cf..ad3f2282a65a 100644
---- a/arch/mips/kernel/smp-bmips.c
-+++ b/arch/mips/kernel/smp-bmips.c
-@@ -528,10 +528,6 @@ static void bmips_set_reset_vec(int cpu, u32 val)
- 
- void bmips_ebase_setup(void)
- {
--	unsigned long new_ebase = ebase;
--
--	BUG_ON(ebase != CKSEG0);
--
- 	switch (current_cpu_type()) {
- 	case CPU_BMIPS4350:
- 		/*
-@@ -554,7 +550,6 @@ void bmips_ebase_setup(void)
- 		 * 0x8000_0000: reset/NMI (initially in kseg1)
- 		 * 0x8000_0400: normal vectors
- 		 */
--		new_ebase = 0x80000400;
- 		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
- 		break;
- 	case CPU_BMIPS5000:
-@@ -562,16 +557,14 @@ void bmips_ebase_setup(void)
- 		 * 0x8000_0000: reset/NMI (initially in kseg1)
- 		 * 0x8000_1000: normal vectors
- 		 */
--		new_ebase = 0x80001000;
- 		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
--		write_c0_ebase(new_ebase);
-+		write_c0_ebase(ebase);
- 		break;
- 	default:
- 		return;
+ mm/madvise.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index df692d2e35d4..01fef79ac761 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1198,12 +1198,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
+ 		goto release_task;
  	}
  
- 	board_nmi_handler_setup = &bmips_nmi_handler_setup;
--	ebase = new_ebase;
- }
+-	mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
++	/* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
++	mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
+ 	if (IS_ERR_OR_NULL(mm)) {
+ 		ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
+ 		goto release_task;
+ 	}
  
- asmlinkage void __weak plat_wired_tlb_setup(void)
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index e0352958e2f7..670b824b05a0 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2009,13 +2009,19 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
- 	nmi_exit();
- }
- 
--#define VECTORSPACING 0x100	/* for EI/VI mode */
--
- unsigned long ebase;
- EXPORT_SYMBOL_GPL(ebase);
-+unsigned long ebase_size;
- unsigned long exception_handlers[32];
- unsigned long vi_handlers[64];
- 
-+void reserve_exception_space(unsigned long addr, unsigned long size)
-+{
-+	ebase = addr;
-+	ebase_size = size;
-+	memblock_reserve(__pa((void *)ebase), ebase_size);
-+}
++	/*
++	 * Require CAP_SYS_NICE for influencing process performance. Note that
++	 * only non-destructive hints are currently supported.
++	 */
++	if (!capable(CAP_SYS_NICE)) {
++		ret = -EPERM;
++		goto release_mm;
++	}
 +
- void __init *set_except_vector(int n, void *addr)
- {
- 	unsigned long handler = (unsigned long) addr;
-@@ -2360,27 +2366,22 @@ void __init trap_init(void)
- 	extern char except_vec3_generic;
- 	extern char except_vec4;
- 	extern char except_vec3_r4000;
--	unsigned long i, vec_size;
- 	phys_addr_t ebase_pa;
-+	unsigned long i;
+ 	total_len = iov_iter_count(&iter);
  
- 	check_wait();
+ 	while (iov_iter_count(&iter)) {
+@@ -1218,6 +1228,7 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
+ 	if (ret == 0)
+ 		ret = total_len - iov_iter_count(&iter);
  
--	if (!cpu_has_mips_r2_r6) {
--		ebase = CAC_BASE;
--		ebase_pa = virt_to_phys((void *)ebase);
--		vec_size = 0x400;
--
--		memblock_reserve(ebase_pa, vec_size);
--	} else {
-+	if (cpu_has_mips_r2_r6) {
- 		if (cpu_has_veic || cpu_has_vint)
--			vec_size = 0x200 + VECTORSPACING*64;
-+			ebase_size = 0x200 + VECTORSPACING*64;
- 		else
--			vec_size = PAGE_SIZE;
-+			ebase_size = PAGE_SIZE;
- 
--		ebase_pa = memblock_phys_alloc(vec_size, 1 << fls(vec_size));
-+		ebase_pa = memblock_phys_alloc(ebase_size,
-+					       1 << fls(ebase_size));
- 		if (!ebase_pa)
- 			panic("%s: Failed to allocate %lu bytes align=0x%x\n",
--			      __func__, vec_size, 1 << fls(vec_size));
-+			      __func__, ebase_size, 1 << fls(ebase_size));
- 
- 		/*
- 		 * Try to ensure ebase resides in KSeg0 if possible.
-@@ -2534,7 +2535,7 @@ void __init trap_init(void)
- 	else
- 		set_handler(0x080, &except_vec3_generic, 0x80);
- 
--	local_flush_icache_range(ebase, ebase + vec_size);
-+	local_flush_icache_range(ebase, ebase + ebase_size);
- 
- 	sort_extable(__start___dbe_table, __stop___dbe_table);
- 
++release_mm:
+ 	mmput(mm);
+ release_task:
+ 	put_task_struct(task);
 -- 
-2.29.2
+2.30.1.766.gb4fecdf3b7-goog
 
