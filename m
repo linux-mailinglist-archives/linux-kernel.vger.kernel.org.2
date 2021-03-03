@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E62B32BBF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA7A32BBF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382109AbhCCNa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:30:59 -0500
-Received: from vsp-unauthed02.binero.net ([195.74.38.227]:22965 "EHLO
-        vsp-unauthed02.binero.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357218AbhCCIUf (ORCPT
+        id S1381787AbhCCNan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357213AbhCCIUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:20:35 -0500
-X-Halon-ID: 3290c9d2-7bf9-11eb-b73f-0050569116f7
-Authorized-sender: andreas@gaisler.com
-Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
-        by bin-vsp-out-03.atm.binero.net (Halon) with ESMTPA
-        id 3290c9d2-7bf9-11eb-b73f-0050569116f7;
-        Wed, 03 Mar 2021 09:19:49 +0100 (CET)
-Subject: Re: [PATCH AUTOSEL 4.14 06/13] sparc32: Limit memblock allocation to
- low memory
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org
-References: <20210302115903.63458-1-sashal@kernel.org>
- <20210302115903.63458-6-sashal@kernel.org>
-From:   Andreas Larsson <andreas@gaisler.com>
-Message-ID: <ad613de2-6fd4-f7a3-25b1-61f3a093c811@gaisler.com>
-Date:   Wed, 3 Mar 2021 09:19:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Mar 2021 03:20:34 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3479DC0617A9
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:19:53 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id c16so4141781ply.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=PM+ZyrAzhPWcczvghcrbAJYRu9kPAEObR9xBWMwNMDA=;
+        b=gRnwTT2D2Qv17IEktnlVuanRdrxeAmR3L3jgF5pEQ8g3B8Ysfly/z6K1ktz8MgkvxE
+         fF4sOg+7/JhW5m0V/+etu0CaKnHtWi/R5pH8rzU3DNq4pL4S//dTHI/oqCBYM6YkYjes
+         Qkwt6EPDyHW5acJEzzAUeasu71myXWxbzKaHw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=PM+ZyrAzhPWcczvghcrbAJYRu9kPAEObR9xBWMwNMDA=;
+        b=mYepmYoo1UW0hhAx9AfCCT87HU4M5cLExw8KuH3o1Q/ears8P/lNmLAVsplvXq2bPs
+         MUuysVdqSDYWcN6iAzVbwz3DcrsuNbT/u2JLuLwguREJOP8qo4GtGyd50ETJ91YRddlO
+         aKHxhRMJReudGlXIhvBM1yPCgYENvDsY5bq0IDJPbjNUTWkCO2lPYi/KOxzweTYOu2/P
+         Tysjy2vJ+p1sedgFPqdHa6ggf1rSVZXot1UHWD+XsSkynUgng6wc0zKoa+eOzZpfGqrN
+         fzuvdvecyubszOeJYhHVocufLSPIdK4vbPFDkaVvnDBCv6fn+ed8TV9b0Nj2C1LKafME
+         oeVA==
+X-Gm-Message-State: AOAM532ScRzAz2BvMK61Qass9yk2jzZBLvjibj0wlg6XQ7Xt9wURgjGN
+        k8dMHUshbO/jOW/dpmEOueUbmg==
+X-Google-Smtp-Source: ABdhPJyeS7RzwtOTkkPzrCKLJYFTzBrnx6Uap9DROLJFWpzrrscugtQaL+TcHwJOTW7M8aCBXfapuA==
+X-Received: by 2002:a17:90a:d0c1:: with SMTP id y1mr8359625pjw.164.1614759592795;
+        Wed, 03 Mar 2021 00:19:52 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
+        by smtp.gmail.com with ESMTPSA id b188sm25272192pfg.179.2021.03.03.00.19.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 00:19:52 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210302115903.63458-6-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210301133318.v2.12.If93a01b30d20dccacbad4be8ddc519dc20a51a1e@changeid>
+References: <20210301213437.4165775-1-dianders@chromium.org> <20210301133318.v2.12.If93a01b30d20dccacbad4be8ddc519dc20a51a1e@changeid>
+Subject: Re: [PATCH v2 12/13] arm64: dts: qcom: Add sc7180-trogdor-pompom skus
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Alexandru M Stan <amstan@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Philip Chen <philipchen@google.com>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Date:   Wed, 03 Mar 2021 00:19:50 -0800
+Message-ID: <161475959090.1478170.938228652801288465@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 12:58, Sasha Levin wrote:
-> From: Andreas Larsson <andreas@gaisler.com>
-> 
-> [ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
-> 
-> Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
-> memblocks instead of bootmem, but also made high memory available via
-> memblock allocation which does not work together with e.g. phys_to_virt
-> and can lead to kernel panic.
-> 
-> This changes back to only low memory being allocatable in the early
-> stages, now using memblock allocation.
-> 
-> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+Quoting Douglas Anderson (2021-03-01 13:34:36)
+> This is a trogdor variant.  This is mostly a grab from the downstream
+> tree with notable exceptions:
+> - I skip -rev0.  This was a super early build and there's no advantage
+>   of long term support.
+> - In -rev1 I translate the handling of the USB hub like is done for
+>   similar boards.  See the difference between the downstream and
+>   upstream 'sc7180-trogdor-lazor-r0.dts' for an example.  This will
+>   need to be resolved when proper support for the USB hub is figured
+>   out upstream.
+> - I remove sound node since sound hasn't landed upstream yet.
+> - In incorporate the pending <https://crrev.com/c/2719075> for the
+>   keyboard.
+>=20
+> Cc: Philip Chen <philipchen@google.com>
+> Cc: Matthias Kaehlcke <mka@chromium.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Tzung-Bi Shih <tzungbi@chromium.org>
+> Cc: Judy Hsiao <judyhsiao@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
->   arch/sparc/mm/init_32.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-> index 95fe4f081ba3..372a4f08ddf8 100644
-> --- a/arch/sparc/mm/init_32.c
-> +++ b/arch/sparc/mm/init_32.c
-> @@ -230,6 +230,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
->   	reserve_bootmem((bootmap_pfn << PAGE_SHIFT), size, BOOTMEM_DEFAULT);
->   	*pages_avail -= PAGE_ALIGN(size) >> PAGE_SHIFT;
->   
-> +	/* Only allow low memory to be allocated via memblock allocation */
-> +	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
-> +
->   	return max_pfn;
->   }
->   
-> 
 
-This is not needed for 4.14, and will not compile, as the problem it
-fixes was introduced in 4.19.
-
--- 
-Andreas Larsson
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
