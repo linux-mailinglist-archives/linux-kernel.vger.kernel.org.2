@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4206E32C348
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ACA32C384
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357291AbhCDAHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:07:34 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:38524 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388454AbhCCVpY (ORCPT
+        id S1354108AbhCDAHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:07:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45856 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1389804AbhCCVrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 16:45:24 -0500
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 1EBEB72C8B9;
-        Thu,  4 Mar 2021 00:44:09 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-        id 119137CC8A2; Thu,  4 Mar 2021 00:44:08 +0300 (MSK)
-Date:   Thu, 4 Mar 2021 00:44:08 +0300
-From:   "Dmitry V. Levin" <ldv@altlinux.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
-Subject: Re: [PATCH] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
-Message-ID: <20210303214408.GB19445@altlinux.org>
-References: <20210221002554.333076-1-slyfox@gentoo.org>
- <20210221002554.333076-2-slyfox@gentoo.org>
+        Wed, 3 Mar 2021 16:47:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614807945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/LUNLY/w0+Bzk+kXfX0uauiVFlX2RwNcK9iVLBJ9IPA=;
+        b=dg5zI/zy3aUNkARrmQIj+ylWwpGy0D7Qie0G2oseLUZHDEZbqUtIDbx5NAYLR5RQv3drkC
+        3/uTYgnrPx+VkNAM8yrNy//s5H/2Boi2d3I3b8QriJ0/j4n+ieCVbneU2Zs9As4mauvuZ4
+        PBwYgrFtYmfK9GmC2WPtus5QPBJLN+E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-xR35m5hIMDWHSE7CU3j2Fg-1; Wed, 03 Mar 2021 16:45:42 -0500
+X-MC-Unique: xR35m5hIMDWHSE7CU3j2Fg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C6CB1E561;
+        Wed,  3 Mar 2021 21:45:40 +0000 (UTC)
+Received: from treble (ovpn-114-218.rdu2.redhat.com [10.10.114.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 75A435D741;
+        Wed,  3 Mar 2021 21:45:37 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 15:45:34 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <20210303214534.guyoxcwrgxgcqzy4@treble>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <20210302232649.y2tutffhxsblwqlb@treble>
+ <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+ <20210303191516.6ksxmng4pis7ue4p@treble>
+ <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
+ <20210303193806.oovupl4ubtkkyiih@treble>
+ <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
+ <20210303202406.bxgdx5a25j6wc43b@treble>
+ <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210221002554.333076-2-slyfox@gentoo.org>
+In-Reply-To: <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 21, 2021 at 12:25:54AM +0000, Sergei Trofimovich wrote:
-> In https://bugs.gentoo.org/769614 Dmitry noticed that
-> `ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
+On Wed, Mar 03, 2021 at 12:56:52PM -0800, Linus Torvalds wrote:
+> On Wed, Mar 3, 2021 at 12:24 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > Your nack is for a different reason: GCC plugins are second-class
+> > citizens.  Fair enough...
 > 
-> The bug is in mismatch between get/set errors:
+> MNo, I didn't NAK it. Quite the reverser.
 > 
-> static inline long syscall_get_error(struct task_struct *task,
->                                      struct pt_regs *regs)
-> {
->         return regs->r10 == -1 ? regs->r8:0;
-> }
+> I am ABSOLUTELY against rebuilding normal object files just because
+> gcc versions change. A compiler version change makes zero difference
+> for any normal object file.
 > 
-> static inline long syscall_get_return_value(struct task_struct *task,
->                                             struct pt_regs *regs)
-> {
->         return regs->r8;
-> }
+> But the gcc plugins are different. They very much _are_ tied to a
+> particular gcc version.
 > 
-> static inline void syscall_set_return_value(struct task_struct *task,
->                                             struct pt_regs *regs,
->                                             int error, long val)
-> {
->         if (error) {
->                 /* error < 0, but ia64 uses > 0 return value */
->                 regs->r8 = -error;
->                 regs->r10 = -1;
->         } else {
->                 regs->r8 = val;
->                 regs->r10 = 0;
->         }
-> }
-> 
-> Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
-> 
-> CC: linux-ia64@vger.kernel.org
-> CC: linux-kernel@vger.kernel.org
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-> Bug: https://bugs.gentoo.org/769614
-> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> ---
->  arch/ia64/include/asm/syscall.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-> index 6c6f16e409a8..0d23c0049301 100644
-> --- a/arch/ia64/include/asm/syscall.h
-> +++ b/arch/ia64/include/asm/syscall.h
-> @@ -32,7 +32,7 @@ static inline void syscall_rollback(struct task_struct *task,
->  static inline long syscall_get_error(struct task_struct *task,
->  				     struct pt_regs *regs)
->  {
-> -	return regs->r10 == -1 ? regs->r8:0;
-> +	return regs->r10 == -1 ? -regs->r8:0;
->  }
->  
->  static inline long syscall_get_return_value(struct task_struct *task,
+> Now, they are tied to a particular gcc version because they are
+> horribly badly done, and bad technology, and I went off on a bit of a
+> rant about just how bad they are, but the point is that gcc plugins
+> depend on the exact gcc version in ways that normal object files do
+> _not_.
 
-Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
+Thanks, reading comprehension is hard.  I realized after re-reading that
+I interpreted your "plugins should depend on the kernel version"
+statement too broadly.
 
+Masahiro, any idea how I can make the GCC version a build dependency?
 
 -- 
-ldv
+Josh
+
