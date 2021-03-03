@@ -2,60 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155A132BB41
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC9C32BB50
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhCCMQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:16:51 -0500
-Received: from smtprelay0151.hostedemail.com ([216.40.44.151]:43614 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1344494AbhCCGue (ORCPT
+        id S1344521AbhCCMVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:21:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232897AbhCCGwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 01:50:34 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 33F8C100E7B42;
-        Wed,  3 Mar 2021 06:49:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3743:3865:3866:3868:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4384:5007:6117:6120:7652:7901:9025:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13208:13229:13311:13357:13439:14181:14659:14721:14764:21060:21067:21080:21611:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: thumb56_150e8a6276c3
-X-Filterd-Recvd-Size: 1626
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  3 Mar 2021 06:49:44 +0000 (UTC)
-Message-ID: <70f35c99165ac4dd1846ea2e30b9a1745c364903.camel@perches.com>
-Subject: Re: [PATCH V3 XRT Alveo 00/18] XRT Alveo driver overview
-From:   Joe Perches <joe@perches.com>
-To:     Moritz Fischer <mdf@kernel.org>, Lizhi Hou <lizhi.hou@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, Lizhi Hou <lizhih@xilinx.com>,
-        linux-fpga@vger.kernel.org, maxz@xilinx.com,
-        sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, trix@redhat.com,
-        robh@kernel.org
-Date:   Tue, 02 Mar 2021 22:49:43 -0800
-In-Reply-To: <YDLF2Bi3oEhP6A7Q@archbook>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
-         <YDLF2Bi3oEhP6A7Q@archbook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 3 Mar 2021 01:52:02 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E60C061756;
+        Tue,  2 Mar 2021 22:51:16 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id f12so18596875wrx.8;
+        Tue, 02 Mar 2021 22:51:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8JdY2JS+1+w/fgyi7UwJfIDGPQZQW84sAhTJerAI7Oo=;
+        b=PgdXYZl5kTjYEWXcfoaydo1YdGO+iE+8oO2TGSCSrs8jsa42HXuRgPiU0U7DchcSbW
+         +oKZRMG1k2rfj36Ou0jvAzCKJfCsvIpIcy/ldvBmw6bbhbS/S7A76bYWTLcWPWcOTOqm
+         0ksRxq0YG+16R9uJByZE6eWj3mGjcXc1m1XanUjARH8hTn+IO2Ro99mDxdLwDvedoSDH
+         Keri6KW5bJtSSOjFg1CWa7k5kQYpdCaK2HAaDUb5x/uYtiG4V0eqjKE04jyTwjiGuKBP
+         rH0+mzEtlmf67gC+USFpQzfS54DJur9yGnwP2T536eVlbCPviLR9BvwRvkJN/25Jxh5w
+         zEBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8JdY2JS+1+w/fgyi7UwJfIDGPQZQW84sAhTJerAI7Oo=;
+        b=DTgauoUGTH6u4veWmvrw1ER2PZUez/JSiVrQnNroUk/HIpsgDnuv/MkMz11JxVkDch
+         XO4lxUMCakCG+QJvBV7df1AjzOcASSHvufPGFQooV/ecM8esZcRqeq7o68bwJeTajK59
+         X6qkNDk6a+ucigSkmn09KLq2sT5AZ9aQ74EN3EFGQor0NuMW/cbBo+XVdRkMAjZyjXkl
+         Dbbx8yy+Wt8dHoxD1WTEP9DZZlHzeUzOn1oHhQTRRjV4cGJ1ko/tmHUVhvDFEx89BJ45
+         Id/iDaOiYitMz1kd28KXca5wfYulgxatdNb+QYyyhJPyo5z+OY6bDD8GWNSD2B1LGdeb
+         mUPA==
+X-Gm-Message-State: AOAM533Io/Nj5IfKBetdXz7P5BMj/jvuLS7Yqcm/9Mk5RqTE4QeLORX+
+        fJB2zLuRuLqoB1v3VwMo33NSOJAYouIBnw==
+X-Google-Smtp-Source: ABdhPJzLCQKKKvug8DvHVhgWybYNp0Wj1smYraXBkLfUzBIKDyQ8vPkfSX9QgIDdO248Rm1uymSfPg==
+X-Received: by 2002:adf:fac1:: with SMTP id a1mr26310548wrs.98.1614754275283;
+        Tue, 02 Mar 2021 22:51:15 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f39:5b00:b95e:61df:ef38:eb5b? (p200300ea8f395b00b95e61dfef38eb5b.dip0.t-ipconnect.de. [2003:ea:8f39:5b00:b95e:61df:ef38:eb5b])
+        by smtp.googlemail.com with ESMTPSA id p18sm24188956wro.18.2021.03.02.22.51.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 22:51:14 -0800 (PST)
+Subject: Re: next-20210302 - build issue with linux-firmware and rtl_nic/
+ firmware.
+To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <199898.1614751762@turing-police>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <02b966f5-a056-b799-dd6d-c5dc762d42f3@gmail.com>
+Date:   Wed, 3 Mar 2021 07:51:06 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <199898.1614751762@turing-police>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-02-21 at 12:43 -0800, Moritz Fischer wrote:
-> On Wed, Feb 17, 2021 at 10:40:01PM -0800, Lizhi Hou wrote:
-> > This is V3 of patch series which adds management physical function driver for Xilinx
-> > Alveo PCIe accelerator cards, https://www.xilinx.com/products/boards-and-kits/alveo.html
-> > This driver is part of Xilinx Runtime (XRT) open source stack.
-[]
-> Please fix the indents all across this patchset. Doesn't checkpatch with
-> --strict complain about this?
+On 03.03.2021 07:09, Valdis Klētnieks wrote:
+> So my kernel build died..
+> 
+>   UPD     drivers/base/firmware_loader/builtin/rtl_nic/rtl8106e-1.fw.gen.S
+> make[4]: *** No rule to make target '/lib/firmware/rtl_nic/rtl8106e-1.fw', needed by 'drivers/base/firmware_loader/builtin/rtl_nic/rtl8106e-1.fw.gen.o'.  Stop.
+> make[3]: *** [scripts/Makefile.build:514: drivers/base/firmware_loader/builtin] Error 2
+> 
+> I tracked it down to a linux-firmware update that shipped everything with .xz compression:
+> 
+> % rpm2cpio linux-firmware-20201218-116.fc34.noarch.rpm | cpio -itv | grep 8106e-1
+> -rw-r--r--   1 root     root         1856 Dec 19 04:43 ./usr/lib/firmware/rtl_nic/rtl8106e-1.fw
+> 631034 blocks
+> % rpm2cpio linux-firmware-20210208-117.fc34.noarch.rpm | cpio -itv|  grep 8106e-1
+> -rw-r--r--   1 root     root          848 Feb  8 16:38 ./usr/lib/firmware/rtl_nic/rtl8106e-1.fw.xz
+> 340217 blocks
+> 
+> and my .config shows it's self-inflicted (no, I don't remember why it's in there):
+> 
+> # Firmware loader
+> CONFIG_EXTRA_FIRMWARE="rtl_nic/rtl8106e-1.fw"
+> CONFIG_EXTRA_FIRMWARE_DIR="/lib/firmware"
+> 
+This is wrong, simply remove it.
 
-I glanced at a couple bits of these patches and didn't
-notice any of what I consider poor indentation style.
-
-What indent is wrong here?
-
-
+> But then I take a closer look at  drivers/net/ethernet/realtek/r8169_main.c
+> #define FIRMWARE_8168D_1	"rtl_nic/rtl8168d-1.fw"
+> #define FIRMWARE_8168D_2	"rtl_nic/rtl8168d-2.fw"
+> #define FIRMWARE_8168E_1	"rtl_nic/rtl8168e-1.fw"
+> 
+> So now I'm mystified how this compressing all the firmware files is supposed to work...
+> 
