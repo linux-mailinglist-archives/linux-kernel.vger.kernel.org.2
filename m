@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE25A32C104
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57AB32C113
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576291AbhCCS6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:58:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244858AbhCCSNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:13:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28EE660202;
-        Wed,  3 Mar 2021 17:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614793223;
-        bh=rDStRwmXAve0oQTG5k7PfaMiDSDFC27uP7nYrXqgo3o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=b+JGlPDUkGXhKIeRKVvV2gFkS5Dk4zndAPHSXAQ9FXADV14ZIL3rhHpOAowpJfGvq
-         +iEIoe7MZ6/9iP7vmnJ3jCM2WOGoFHO0pkqMpQX3zj/e3JbBayZwfuCikZ6C6OiEEN
-         xMS7iBV9zv8021pav27dRLdFqcRzi2zZ6mMEMiogOPwfAoaDWaHkv1bZS2grQVi1M8
-         b8/fQzpFt50kKYDXt2C/zQSkN9o72kNBJm35FIlziHvNuzKj6HqqHjGgtd1QsenZTE
-         QfuYCGUgI81fu2plL0IGFT8J6KJp6PgNFxFidEGl3aRohVVaU55nXJZlRLUdBwl0AY
-         2JW9UKfL2zrYQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D930835237A1; Wed,  3 Mar 2021 09:40:22 -0800 (PST)
-Date:   Wed, 3 Mar 2021 09:40:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210303174022.GD2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
+        id S1836435AbhCCSrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1386182AbhCCRq7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:46:59 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450F5C061756;
+        Wed,  3 Mar 2021 09:46:15 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id F25D51C0B8E; Wed,  3 Mar 2021 18:40:40 +0100 (CET)
+Date:   Wed, 3 Mar 2021 18:40:40 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
+ Industial PCs
+Message-ID: <20210303174040.GA3305@amd>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+ <20210302163309.25528-3-henning.schild@siemens.com>
+ <20210302205452.GA32573@duo.ucw.cz>
+ <20210303183714.62c0f06f@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ibTvN161/egqYuK8"
 Content-Disposition: inline
-In-Reply-To: <20210303171221.GA1574518@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210303183714.62c0f06f@md1za8fc.ad001.siemens.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 12:12:21PM -0500, Alan Stern wrote:
-> On Tue, Mar 02, 2021 at 03:50:19PM -0800, Paul E. McKenney wrote:
-> > On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
-> 
-> > > This result is wrong, apparently because of a bug in herd7.  There 
-> > > should be control dependencies from each of the two loads in P0 to each 
-> > > of the two stores, but herd7 doesn't detect them.
-> > > 
-> > > Maybe Luc can find some time to check whether this really is a bug and 
-> > > if it is, fix it.
-> > 
-> > I agree that herd7's control dependency tracking could be improved.
-> > 
-> > But sadly, it is currently doing exactly what I asked Luc to make it do,
-> > which is to confine the control dependency to its "if" statement.  But as
-> > usual I wasn't thinking globally enough.  And I am not exactly sure what
-> > to ask for.  Here a store to a local was control-dependency ordered after
-> > a read, and so that should propagate to a read from that local variable.
-> > Maybe treat local variables as if they were registers, so that from
-> > herd7's viewpoint the READ_ONCE()s are able to head control-dependency
-> > chains in multiple "if" statements?
-> > 
-> > Thoughts?
-> 
-> Local variables absolutely should be treated just like CPU registers, if 
-> possible.  In fact, the compiler has the option of keeping local 
-> variables stored in registers.
-> 
-> (Of course, things may get complicated if anyone writes a litmus test 
-> that uses a pointer to a local variable,  Especially if the pointer 
-> could hold the address of a local variable in one execution and a 
-> shared variable in another!  Or if the pointer is itself a shared 
-> variable and is dereferenced in another thread!)
 
-Good point!  I did miss this complication.  ;-)
+--ibTvN161/egqYuK8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As you say, when its address is taken, the "local" variable needs to be
-treated as is it were shared.  There are exceptions where the pointed-to
-local is still used only by its process.  Are any of these exceptions
-problematic?
+Hi!
 
-> But even if local variables are treated as non-shared storage locations, 
-> we should still handle this correctly.  Part of the problem seems to lie 
-> in the definition of the to-r dependency relation; the relevant portion 
-> is:
-> 
-> 	(dep ; [Marked] ; rfi)
-> 
-> Here dep is the control dependency from the READ_ONCE to the 
-> local-variable store, and the rfi refers to the following load of the 
-> local variable.  The problem is that the store to the local variable 
-> doesn't go in the Marked class, because it is notated as a plain C 
-> assignment.  (And likewise for the following load.)
-> 
-> Should we change the model to make loads from and stores to local 
-> variables always count as Marked?
+> > > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > > index 2a698df9da57..c15e1e3c5958 100644
+> > > --- a/drivers/leds/Makefile
+> > > +++ b/drivers/leds/Makefile
+> > > @@ -93,6 +93,7 @@ obj-$(CONFIG_LEDS_TURRIS_OMNIA)		+=3D
+> > > leds-turris-omnia.o obj-$(CONFIG_LEDS_WM831X_STATUS)	+=3D
+> > > leds-wm831x-status.o obj-$(CONFIG_LEDS_WM8350)		+=3D
+> > > leds-wm8350.o obj-$(CONFIG_LEDS_WRAP)			+=3D
+> > > leds-wrap.o +obj-$(CONFIG_LEDS_SIEMENS_SIMATIC_IPC)	+=3D
+> > > simatic-ipc-leds.o =20
+> >=20
+> > Let's put this into drivers/leds/simple. You'll have to create it.
+>=20
+> Can you please go into detail why? We plan to add more devices in the
+> future, which might in fact make this a little less simple. But we can
+> discuss that when the time is right and start with simple.
 
-As long as the initial (possibly unmarked) load would be properly
-complained about.  And I cannot immediately think of a situation where
-this approach would break that would not result in a data race being
-flagged.  Or is this yet another failure of my imagination?
+There's already way too many drivers in the directory, and your driver
+is very different from drivers for camera flash (for example).
 
-> What should have happened if the local variable were instead a shared 
-> variable which the other thread didn't access at all?  It seems like a 
-> weak point of the memory model that it treats these two things 
-> differently.
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-But is this really any different than the situation where a global
-variable is only accessed by a single thread?
+--ibTvN161/egqYuK8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-							Thanx, Paul
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmA/yhgACgkQMOfwapXb+vJwawCff7t7AFisGfmOn1cjlZXTC+KH
+ZiYAni5b8V20pcW5uaex2w2HX/rRX3RA
+=W9Dz
+-----END PGP SIGNATURE-----
+
+--ibTvN161/egqYuK8--
