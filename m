@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E30832BFF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E97B32C006
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386316AbhCCSOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:14:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37082 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1448626AbhCCPmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:42:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614786026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v/B/vFyvdim6DFmRje+NahSs84+dybnbCq6JUenc1xY=;
-        b=ItMHXpErGvN4CKXrf6lJpI6lEL5BPg7Jm7HsAbvtoNGd/fC4BManeJ9yeKLEeFrt+Ify86
-        uiaAYbi4ewFhH3YLtLhIcE6UlIJqfXDgZ9ShlIFbTLeTbwc9NRPrpgEnzBGg0O2N9nCDSn
-        yNP6QxCWlQBHHfgDI3v5kyzwI8dOWzc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-w_Mi8ygwMry9mxWUUsfKvA-1; Wed, 03 Mar 2021 10:40:22 -0500
-X-MC-Unique: w_Mi8ygwMry9mxWUUsfKvA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F047CC621;
-        Wed,  3 Mar 2021 15:40:21 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 760FA60C15;
-        Wed,  3 Mar 2021 15:40:21 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 8B93718095CB;
-        Wed,  3 Mar 2021 15:40:20 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 10:40:20 -0500 (EST)
-From:   Bob Peterson <rpeterso@redhat.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Message-ID: <270744488.59307524.1614786020378.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1614676526-102967-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1614676526-102967-1-git-send-email-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] gfs2: Remove unneeded return variable
+        id S1386401AbhCCSPF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 13:15:05 -0500
+Received: from mga06.intel.com ([134.134.136.31]:42743 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1452251AbhCCPoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:44:44 -0500
+IronPort-SDR: zz88F/Gjxqvs/Fjg3z1sHEODSFXgPqtDNvXBnRsrW6w0wkTmzk0kbA1kaAnTMnvHifPC4X7sOM
+ rtNfN4NIwQhw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="248621665"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="248621665"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 07:41:36 -0800
+IronPort-SDR: yXpyJk2j0C04/Bw3RIfI7MJkMU6yQc8k208m+pb6y178O/htKkJuvtbGI8nBza4gRk8qYEZcXm
+ rMVoVpqk8uhw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="600194614"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Mar 2021 07:41:36 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 3 Mar 2021 07:41:35 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 3 Mar 2021 07:41:35 -0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Wed, 3 Mar 2021 07:41:35 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>
+CC:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
+Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0A==
+Date:   Wed, 3 Mar 2021 15:41:35 +0000
+Message-ID: <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
+References: <20210224151619.67c29731@alex-virtual-machine>
+        <20210224103105.GA16368@linux>  <20210225114329.4e1a41c6@alex-virtual-machine>
+        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
+        <20210225113930.GA7227@localhost.localdomain>
+        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
+        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
+        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
+        <20210226105915.6cf7d2b8@alex-virtual-machine>
+        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
+        <20210303115710.2e9f8e23@alex-virtual-machine>
+ <20210303163912.3d508e0f@alex-virtual-machine>
+In-Reply-To: <20210303163912.3d508e0f@alex-virtual-machine>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.3.112.116, 10.4.195.12]
-Thread-Topic: gfs2: Remove unneeded return variable
-Thread-Index: 3VuNkBJDA75kU/6FZuU1wYet5NWkVw==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Original Message -----
-> This patch removes unneeded return variables, using only
-> '0' instead.
-> It fixes the following warning detected by coccinelle:
-> ./fs/gfs2/super.c:592:5-10: Unneeded variable: "error". Return "0" on
-> line 628
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  fs/gfs2/super.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-> index 861ed5f..fe2dae4 100644
-> --- a/fs/gfs2/super.c
-> +++ b/fs/gfs2/super.c
-> @@ -589,7 +589,6 @@ static void gfs2_dirty_inode(struct inode *inode, int
-> flags)
->  
->  int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
->  {
-> -	int error = 0;
->  	int log_write_allowed = test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
->  
->  	gfs2_flush_delete_work(sdp);
-> @@ -625,7 +624,7 @@ int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
->  	if (!log_write_allowed)
->  		sdp->sd_vfs->s_flags |= SB_RDONLY;
->  
-> -	return error;
-> +	return 0;
->  }
->  
->  /**
-> --
-> 1.8.3.1
+> For error address with sigbus, i think this is not an issue resulted by the patch i post, before my patch, the issue is already there.
+> I don't find a realizable way to get the correct address for same reason --- we don't know whether the page mapping is there or not when
+> we got to kill_me_maybe(), in some case, we may get it, but there are a lot of parallel issue need to consider, and if failed we have to fallback
+> to the error brach again, remaining current code may be an easy option;
 
-Hi Yang,
+My RFC patch from yesterday removes the uncertainty about whether the page is there or not. After it walks the page
+tables we know that the poison page isn't mapped (note that patch is RFC for a reason ... I'm 90% sure that it should
+do a bit more that just clear the PRESENT bit).
 
-Thanks for submitting your patch. I like it. However, since gfs2_make_fs_ro
-always returns 0, we should also be able to make it a void function instead
-of int, and change its callers to not act on any return code.
+So perhaps memory_failure() has queued a SIGBUS for this task, if so, we take it when we return from kill_me_maybe()
 
-Regards,
+If not, we will return to user mode and re-execute the failing instruction ... but because the page is unmapped we will take a #PF
 
-Bob Peterson
-Red Hat File Systems
+The x86 page fault handler will see that the page for this physical address is marked HWPOISON, and it will send the SIGBUS
+(just like it does if the page had been removed by an earlier UCNA/SRAO error).
 
+At least that's the theory.
+
+-Tony
