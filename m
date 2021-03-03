@@ -2,147 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB6832C065
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B12732C06C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578549AbhCCSRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:17:35 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:53610 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236607AbhCCQPe (ORCPT
+        id S1578632AbhCCSRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:17:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234010AbhCCQNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:15:34 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123FwEbn019267;
-        Wed, 3 Mar 2021 17:12:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=oBSCDr6pumMwSnGjMzBLCyN+aCiMW9l6k6rqZVXJZes=;
- b=Sffuk4F0omnhhqQs067z32mOava1pBdl9ucUV/nkNIvDmNfFWpRvE3TWp5LmICU4J3L5
- KuXSOsQsIVU8ltoGaunltqhVK+ZuSy6w7XWfBVP9iZkgjfVi8PiazbdgD7Y9wfb7MXEN
- vjo+/ZTLUK2XC2z1+XnI5jMoZYvoYEkXcpaBUsY6fTCpbJABbVp6KMwUnHUn2wlJEc4g
- cf2NrzpF+pdQji7F7muYRDXK24Ayu+D/39h4LnKfYxj35mUykhKIEBgRCIxg9TD0NQHC
- h2k03Tm66SI0ddsWRPOa7lCi5yzi0kGpztrjlORCR5gTUIlqK045c/VqocMMB7BCCZ6E IA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36yf9q9xvf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 17:12:10 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C0039100034;
-        Wed,  3 Mar 2021 17:12:09 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AA90E252AEC;
-        Wed,  3 Mar 2021 17:12:09 +0100 (CET)
-Received: from [10.211.2.167] (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Mar
- 2021 17:12:00 +0100
-Subject: Re: [PATCH] counter: stm32-timer-cnt: fix ceiling write max value
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-CC:     <jic23@kernel.org>, <david@lechnology.com>,
-        <alexandre.torgue@foss.st.com>, <mcoquelin.stm32@gmail.com>,
-        <olivier.moysan@foss.st.com>, <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1614696235-24088-1-git-send-email-fabrice.gasnier@foss.st.com>
- <YD5SLrdttn+95M7N@shinobu> <e54d1446-b583-9625-1ab3-09e54d6a7456@foss.st.com>
- <YD7NZiqCtmtmqJGg@shinobu>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <adc63e37-6eae-decd-99bc-a49787d9670a@foss.st.com>
-Date:   Wed, 3 Mar 2021 17:11:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Mar 2021 11:13:53 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA5DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:12:35 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id r17so43214317ejy.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:12:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hdbGvE7OxH1ozlVSe6sun/EFAVtFiv+mLa//hBpREOQ=;
+        b=kEDT0UAfgVm1B7FGc2AiSdBCh4aRsxqSIkFqm/q8SkddfZ9jE1SFBumnYCN2bKQjG6
+         znPUqE7thSf+gXicrhsEFJv4eecwi/Hi1k7OWInF/gQsYl6T58a/GEDgBuIRCjAVDyhG
+         dkD1HdAQWO8gDCrOu7vpjJmVp2cMJsSlCVvktbpFndQBLdq/2rOElNj6p5k1rBruFduq
+         6qKe+tLcP3iIxtn0dXVutxXz2KnmVHjQDl5kBWLNXyUvBu4aOWMdq9jQT58t1RVEGQDs
+         BbW7bdTy8GPQz/Af3i916SDzttOkxOKE8RPYYghmhX5D9RvaKu0aeMs+2ttQgtet6enk
+         nFEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hdbGvE7OxH1ozlVSe6sun/EFAVtFiv+mLa//hBpREOQ=;
+        b=egbJULPUAhAFL43lScNtFZvU6p888ck8QO1sD90gb9PN46ltT+nXEyMTZo/HRS4D57
+         0et377r/vINY70gR9sQvqxVjxpgegc2h+T05Kq3BZgIq8yDCi2w7zaJr+wQH2hu9xQBE
+         4r8m47t3Jqc0YDq4pU9cNBbHf1mFTpqWO9+9QQVOtN5pAuFosYhxI4v63SZ3/kpgxuCj
+         DeJOZi/wrThTqEh5miLkKqi+nPPcFVqHQvuiyVj1mokVbhDlRbKuzni+UJhCJtKzPaK7
+         SCo0epQ71al2+a8ZWMm44CFrdc352iuEA37pWFhF/YiVaPjVLqCT4sZXtX/sWwrMjipl
+         dF1w==
+X-Gm-Message-State: AOAM530Ws72SEfFmi/zqe5I4pimI/YP6/LyGtUKzRQDE5xBgxVUEHii1
+        qiLx5FcDdkAev8B46eXVqBVSxJ80/94bkMcFWhi2YQ==
+X-Google-Smtp-Source: ABdhPJy6rAOgoMw/i73rHFickgZDyRhv0OZu+fM32yUkz8wO4itbfzFAefn69stUaxRvhGLVYDibW5qDfLnieYVeDow=
+X-Received: by 2002:a17:906:b2c3:: with SMTP id cf3mr25576820ejb.133.1614787953836;
+ Wed, 03 Mar 2021 08:12:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YD7NZiqCtmtmqJGg@shinobu>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-03_05:2021-03-03,2021-03-03 signatures=0
+References: <20210302192700.399054668@linuxfoundation.org>
+In-Reply-To: <20210302192700.399054668@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 3 Mar 2021 21:42:20 +0530
+Message-ID: <CA+G9fYsA7U7rzd=yGYQ=uWViY3_dXc4iY_pC-DM1K3R+gac19g@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/3/21 12:42 AM, William Breathitt Gray wrote:
-> On Tue, Mar 02, 2021 at 06:03:25PM +0100, Fabrice Gasnier wrote:
->> On 3/2/21 3:56 PM, William Breathitt Gray wrote:
->>> Side question: if priv->ceiling is tracking the current ceiling
->>> configuration, would it make sense to change stm32_count_ceiling_read()
->>> to print the value of priv->ceiling instead of doing a regmap_read()
->>> call?
->>
->> Hi William,
->>
->> Thanks for reviewing.
->>
->> I'd be fine either way. So no objection to move to the priv->ceiling
->> (cached) value. It could also here here.
->> By looking at this, I figured out there's probably another thing to fix
->> here, for initial conditions.
->>
->> At probe time priv->ceiling is initialized to max value (ex 65535 for a
->> 16 bits counter). But the register content is 0 (clear by mfd driver at
->> probe time).
->>
->> - So, reading ceiling from sysfs currently reports 0 (regmap_read())
->> after booting and probing.
->>
->> I see two cases at this point:
->> - In case the counter gets enabled without any prior configuration, it
->> won't count: ceiling value (e.g. 65535) should be written to register
->> before it is enabled, so the counter will actually count. So there's
->> room for a fix here.
->>
->> - In case function gets set (ex: quadrature x4), priv->ceiling (e.g.
->> 65535) gets written to the register (although it's been read earlier as
->> 0 from sysfs).
->> This could be fixed by reading the priv->ceiling in
->> stm32_count_ceiling_read() as you're asking (provided 1st case has been
->> fixed as well)
->>
->> I'll probably prepare one or two patches for the above cases, if you agree ?
->>
->> Best Regards,
->> Fabrice
-> 
-> Looking through the driver, it doesn't seem like priv->ceiling is used
-> in any performance critical code, just the callbacks for count_write()
-> and function_set(). It might make more sense to remove priv->ceiling and
-> replace it with the regmap_read() calls where necessary so that we
-> always get the most current ceiling value from the device when needed.
+On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.20 release.
+> There are 657 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.20-rc4.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi William,
+Results from Linaro=E2=80=99s test farm.
+All our builds are getting PASS now.
+But,
+Regressions detected on all devices (arm64, arm, x86_64 and i386).
+LTP pty test case hangup01 failed on all devices
 
-Ok, I'll look into this.
+hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
 
-> 
-> As for the default ceiling value for the device at probe time, this
-> should probably be set to the max value because that is what a normal
-> user would expect when loading a Counter driver (a ceiling value of 0 at
-> startup is somewhat unintuitive).
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Yes, I agree. In fact, the default (reset) value is the maximum. The 0
-value is forced in ARR register by the mfd driver [1], after reading the
-max_arr value. I see no rationale for this.
-I think the fix should probably be done there: I'd prefer to backup and
-restore ARR value in the mfd, instead of unconditionally clearing it.
+This failure is specific to stable-rc v5.10.20-rc4 and v5.11.3-rc3
+Test PASS on the v5.12-rc1 mainline and Linux next kernel.
 
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/mfd/stm32-timers.c?h=v5.11#n167
+Following two commits caused this test failure,
 
-> 
-> If you prepare those two patches, then that should resolve this.
+   Linus Torvalds <torvalds@linux-foundation.org>
+       tty: implement read_iter
 
-I'll prepare this.
+   Linus Torvalds <torvalds@linux-foundation.org>
+       tty: convert tty_ldisc_ops 'read()' function to take a kernel pointe=
+r
 
-Thanks for your advices,
-Best Regards,
-Fabrice
+Test case failed link,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.19-658-g083cbba104d9/testrun/4068229/suite/ltp-pty-tests/test/hangup01/log
 
-> 
-> William Breathitt Gray
-> 
+
+--
+Linaro LKFT
+https://lkft.linaro.org
