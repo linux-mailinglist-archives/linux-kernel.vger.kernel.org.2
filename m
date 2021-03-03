@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6775932BE2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE7732BE30
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385184AbhCCRIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238550AbhCCMvz (ORCPT
+        id S1385232AbhCCRJJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 12:09:09 -0500
+Received: from mail.kingsoft.com ([114.255.44.146]:46060 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239436AbhCCMwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:51:55 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C566C06178C
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:49:56 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id c19so4090243pjq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:49:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=UENSETCCSEDGxjTkQmqskiUgabV6KTJ5GVCGqRR2WeU=;
-        b=FCtkSXDEcxgX1TqpqqdTnD8DMSoRVbK1hEuV3/IhT/lllSVvPuEtO4J4uGFDBefbOj
-         ImvnczGzv+lY/tPJLrhxQqyNFK9mB8S3WK430mXnkWSTY+HNP7JVFga5xneXH4SoIGru
-         Kmi5BFYtY69xEBr6B8BJKuGTMT6yC3GpB43G0lds2vOPR7/yhALobcKNHJmM2yFdRtfS
-         5y07AutoWsGjS+sPh+dcj1S4kddIUpMNDre6Yc1WxKKbXKJbrOvitFaPQGawApqRNxY4
-         bCU5QJszHbPbysh8ofYcOsDuCSMuQa4pBYJ5z+IJSpJTltnwvNfxfArSO+Qk9vmFGSzY
-         gePw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=UENSETCCSEDGxjTkQmqskiUgabV6KTJ5GVCGqRR2WeU=;
-        b=DW3OujNubgW0h69sJXA66w0Cu9L/G9Uwp3ZyyWJAuxNCVH4Yl5csO5Cn9X5tzFwPJ7
-         iF9acNqtUGV32CGHbHTY7Yhqjy8SGOrpYDFczH23CqOms39zNeCh2qLritLbHfj38gjO
-         Roqs2xL+EaOXL1ENlHl8RenSu2ASxmln25WTh3pi2E3cnYngy5oDTzHurNrAhI1YC7qH
-         Zp+Lbuhu2HgsgwJGM29hL226k71GvD7TcxuxsOq1Sf1UEIylR77OYqKFbmyA58cUgKa0
-         klg3k4MFDIeFCPjkChALPRlmxYJRA9iWXvWViYF0niKAumAQeBUjfwHWBi2OiB83UTlt
-         eOjQ==
-X-Gm-Message-State: AOAM5315M1H/sq5h3XaSg3LraGfcQjHxzV3HlYUywVoxSHl6LviCxTrf
-        2x4dIEqcUu9MgLRCGUM4Ltw=
-X-Google-Smtp-Source: ABdhPJxKGgC9YUoFjWyKXMfkcrb48impfAYkzV47xMdbWioftwa0OsXTkQLd+BsvpwC2mHNsIm1Mzg==
-X-Received: by 2002:a17:90a:5887:: with SMTP id j7mr9143604pji.178.1614775795754;
-        Wed, 03 Mar 2021 04:49:55 -0800 (PST)
-Received: from adolin ([49.207.223.176])
-        by smtp.gmail.com with ESMTPSA id q192sm24878430pfc.85.2021.03.03.04.49.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 04:49:55 -0800 (PST)
-Date:   Wed, 3 Mar 2021 18:19:50 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     melissa.srw@gmail.com
-Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 0/2] Add virtual hardware module
-Message-ID: <cover.1614775351.git.sylphrenadin@gmail.com>
+        Wed, 3 Mar 2021 07:52:37 -0500
+X-AuditID: 0a580155-713ff700000550c6-8a-603f7f0a80d2
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id A7.FF.20678.A0F7F306; Wed,  3 Mar 2021 20:20:26 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 3 Mar 2021
+ 20:51:29 +0800
+Date:   Wed, 3 Mar 2021 20:51:29 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+CC:     "Luck, Tony" <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        <yangfeng1@kingsoft.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, <yaoaili@kingsoft.com>
+Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <20210303205129.0a66f7a7@alex-virtual-machine>
+In-Reply-To: <20210303202402.384265a3@alex-virtual-machine>
+References: <8d0c76f97f35499f91a2b82d3e7c024d@intel.com>
+        <59469ECC-5316-4074-98EF-52FFF7940818@amacapital.net>
+        <20210303202402.384265a3@alex-virtual-machine>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEIsWRmVeSWpSXmKPExsXCFcGooMtVb59gcGCtscXnDf/YLF5saGe0
+        mLZR3OLyrjlsFvfW/Ge1WL22gdXi/K61rBaXDixgsrjYeIDR4njvASaLzZumMlu8uXCPxeLH
+        hsesDrwe31v7WDzuv/nL4rF5hZbH4j0vmTw2repk89j0aRK7x7tz59g95p0M9HhxdSOLx/t9
+        V9k8Pm+S8zjR8oU1gCeKyyYlNSezLLVI3y6BK2Pt0fOsBVf4KuY+ec3awLiLu4uRk0NCwERi
+        YfNH1i5GLg4hgelMEksPN7NAOC8ZJd607GEHqWIRUJHY3PYPzGYTUJXYdW8WK4gtIqAp8XLK
+        fLAGZoGXzBLb3sxiBkkICyRLnJn0gBHE5hWwkrg+aztYnFPAWuL/zsmMEBsWMkqsWv4ZrIhf
+        QEyi98p/Joib7CXatiyCahaUODnzCQuIzQy0rXX7b3YIW1ti2cLXYEOFBBQlDi/5xQ7RqyRx
+        pHsGG4QdK7Fs3ivWCYzCs5CMmoVk1CwkoxYwMq9iZCnOTTfaxAiJxtAdjDOaPuodYmTiYDzE
+        KMHBrCTCK/7SNkGINyWxsiq1KD++qDQntfgQozQHi5I479StJglCAumJJanZqakFqUUwWSYO
+        TqkGpsfd12fLxHJpMbzk/3x7dUjrXD5Bjmlc/nrmfPu6BFJ3KS86KZd53kCuJiXJbbuQ4DHF
+        HTvTd5u0NMVXhHrnTEk8crG6OGjLRm/ZZ8t3KR77l5rH4P1i3dEN58P4/EXKmo/r6me3iHun
+        tnDVzWJd6CO+Qq771uKZFkGre3blyxX9dWky9flZUXX48cTMOY9dom5Mtk5wMg+rXiS50sd1
+        z+KC66y7NBZd+mv0sEBAWEziVqGG7YV75oyL//6XKrkwed6GmXF7s6x+iqfd23el5bKM43Hu
+        xwea2C6F+n09ebfM0eVwMYvVkVybOYITKye5/t79quJjmPaZ56yZhVxLLrSz3uESu6848+tB
+        lc81SizFGYmGWsxFxYkAdcD1LDUDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds support for emulating virtual hardware with VKMS.
-The virtual hardware mode can be enabled by using the following command
-while loading the module:
-        sudo modprobe vkms enable_virtual_hw=1
+On Wed, 3 Mar 2021 20:24:02 +0800
+Aili Yao <yaoaili@kingsoft.com> wrote:
 
-The first patch adds virtual hardware support as a module option. The
-second patch adds new atomic helper functions for the virtual mode
-and modifies the existing atomic helpers for usage by the vblank mode
-This gives us two sets of drm_crtc_helper_funcs struct for both modes,
-making the code flow cleaner and easier to debug.
+> On Mon, 1 Mar 2021 11:09:36 -0800
+> Andy Lutomirski <luto@amacapital.net> wrote:
+> 
+> > > On Mar 1, 2021, at 11:02 AM, Luck, Tony <tony.luck@intel.com> wrote:
+> > > 
+> > > ﻿    
+> > >> 
+> > >> Some programs may use read(2), write(2), etc as ways to check if
+> > >> memory is valid without getting a signal.  They might not want
+> > >> signals, which means that this feature might need to be configurable.    
+> > > 
+> > > That sounds like an appalling hack. If users need such a mechanism
+> > > we should create some better way to do that.
+> > >     
+> > 
+> > Appalling hack or not, it works. So, if we’re going to send a signal to user code that looks like it originated from a bina fide architectural recoverable fault, it needs to be recoverable.  A load from a failed NVDIMM page is such a fault. A *kernel* load is not. So we need to distinguish it somehow.  
+> 
+> Sorry for my previous mis-understanding, and i have some questions: 
+> if programs use read,write to check if if memory is valid, does it really want to cover the poison case? 
+> When for such a case, an error is returned,  can the program realize it's hwposion issue not other software error and process correctly?
+> 
+> if this is the proper action, the original posion flow in current code from read and write need to change too.
+> 
 
-This patchset has been tested with the igt tests, kms_writeback, kms_atomic,
-kms_lease, kms_flip, kms_pipe_get_crc and preserves results except for
-subtests related to crc reads and skips tests that rely on vertical
-blanking. This patchset must be tested after incorporating the
-igt-tests patch: https://lists.freedesktop.org/archives/igt-dev/2021-February/029355.html .
-
-Sumera Priyadarsini (2):
-  drm/vkms: Add support for virtual hardware mode
-  drm/vkms: Add crtc atomic helper functions for virtual mode
-
- drivers/gpu/drm/vkms/vkms_composer.c | 88 +++++++++++++++++-----------
- drivers/gpu/drm/vkms/vkms_crtc.c     | 45 ++++++++++----
- drivers/gpu/drm/vkms/vkms_drv.c      | 18 ++++--
- drivers/gpu/drm/vkms/vkms_drv.h      |  4 ++
- 4 files changed, 106 insertions(+), 49 deletions(-)
+Sorry, another question:
+  When programs use read(2), write(2) as ways to check if memory is valid, does it really want to check if the user page the program provided is valid, not the destination or disk space valid?
+  the patch will not affect this purpose as it's only valid for user page which program provide to write or some syscall similiar parameter.
 
 -- 
-2.25.1
-
+Thanks!
+Aili Yao
