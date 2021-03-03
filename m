@@ -2,93 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA30532BAC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C7F32BACC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442071AbhCCL6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:58:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232388AbhCCFkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 00:40:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81C0364EA4;
-        Wed,  3 Mar 2021 05:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614750010;
-        bh=nf6BgVXIglExdD5I5xeTnP34a41bqPXPoX9F4q//kRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XpvEbW4eQ0LNJQbFhRNGv8wV4Ddg3kcRxzZjkaiiNK4aSWuynE3/uZ9yz0rZO04ww
-         3tj23MZAksENaVJai6vEZHYA8m9u32LJYGpVwU2RFayBHC6Y6pc72eZgxcKq4FHvVX
-         /+wiWEmIXMZV1sBdkIWzFQ/xLkG7JTJftv42sd/HLlEJ7t3EuhpGk9LpI5YThw9ya6
-         yJCBccbFAsf/LJiY8g70tx2484vVXPqIEQffGcLea5mvysjLeVmMHPp3iN7su5d6M1
-         6f86psUdwq78w5ijHKigbWXvYJp0EcaHH5Xu5iXswyZIhkFMqlahTITw06Q9w/C6RW
-         j+lQcuClWkSxw==
-Date:   Wed, 3 Mar 2021 11:10:06 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, andriy.shevchenko@linux.intel.com,
-        linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Etienne Carriere <etienne.carriere@st.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 9/9] phy/drivers/stm32: Use HZ macros
-Message-ID: <YD8hNs98g172DiF8@vkoul-mobl>
-References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
- <20210224144222.23762-9-daniel.lezcano@linaro.org>
- <YD5olWDZ50sLVn7w@vkoul-mobl>
- <e44809f1-63a6-8c8b-a05f-52516fb2141f@linaro.org>
+        id S1442255AbhCCL6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:58:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237251AbhCCFry (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 00:47:54 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BF1C061756;
+        Tue,  2 Mar 2021 21:47:14 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id j1so24746584oiw.3;
+        Tue, 02 Mar 2021 21:47:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GWkWeZ3BpJFHwrebuC12ra1A7FdIGqlxiDDxj6VEJXM=;
+        b=Fqcc9qw29PfLGYlp/wKmWUQTVSFFqheN15N+Pr16R55/7ZCp9xn/nr55soIhFw9xjF
+         +ICe/HFWY8Wgyl8KstAXgt6gR8opELNbZbv1yBSbpMTDSAfczHhjXF96EqXOBAatvdzN
+         0gOJGi9IPrgTrUxtGJctTSaCr5A+vGGSj49wmAhEkoWoW+U5onqS8uXu/sO5QfrSygZv
+         GPBj6u8WFDjCB5X562P57geljeNIV8egWAFzSPtFTJbBPd4c4ssCppBoWMaz93PuYG4o
+         oFX3ch6e3W0TAt6SSwMojcBQ18L7aesFTHOOjtZ3CZCsIv40Q5g31uQry/QIHs818/U5
+         yj8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GWkWeZ3BpJFHwrebuC12ra1A7FdIGqlxiDDxj6VEJXM=;
+        b=W9WZZd8LiHQJ6vh0VMecXUeX2PfWCmJvAdMOmfTZVQUz5zW3owKwtU2V6pkM5PV7ec
+         WQ/ZjL5VdRazEq7UvrZ3W7Z//awvXqKAzoN7ZAOGXXa+MzD4ZW7wa2B1KM7J/shBlCtV
+         U6IfbUDADhmNuTw6e7T2vL9ekZDS8j1llJ5THYzbZYN7+1ECjcr3Hw19/75tQnovVLBc
+         akh4nRgxcGWNaJxBqXUVareyAWVUtjVDQmoFJT78D92gdmCEsdqEzIHE7Li7ctKwb+22
+         m8bGU+VlimLaOj7xZd6X+WCc00rINBwufeunKvjYQmy2YDBHkHu65G4JSQINtAq29DXr
+         Xj2Q==
+X-Gm-Message-State: AOAM531oTMfzDz2uGCI6WoorL/bw0E77YDgaLS+9kfWKJevgk1PK/93T
+        /si6QNuDeMogEw0hE4n9zM0/f0pF4NY=
+X-Google-Smtp-Source: ABdhPJz7Qy3Tpsh864DweuqNMRaa10kAxHsNl41Pvoqk981uScvaoKMc5HH3Du4RJOLgm67p4mNiPw==
+X-Received: by 2002:a05:6808:687:: with SMTP id k7mr6192658oig.140.1614750433327;
+        Tue, 02 Mar 2021 21:47:13 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e19sm4820213otp.31.2021.03.02.21.47.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 21:47:12 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: (nct6883) Support NCT6686D
+To:     Jiqi Li <lijq9@lenovo.com>, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     markpearson@lenovo.com
+References: <lijq9@lenovo.com> <20210303032037.1891858-1-lijq9@lenovo.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <b5895ca2-37e2-023e-8954-38c7f18b7f3d@roeck-us.net>
+Date:   Tue, 2 Mar 2021 21:47:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e44809f1-63a6-8c8b-a05f-52516fb2141f@linaro.org>
+In-Reply-To: <20210303032037.1891858-1-lijq9@lenovo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-03-21, 18:03, Daniel Lezcano wrote:
-> On 02/03/2021 17:32, Vinod Koul wrote:
-> > On 24-02-21, 15:42, Daniel Lezcano wrote:
-> >> HZ unit conversion macros are available in units.h, use them and
-> >> remove the duplicate definition.
-> >>
-> >> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> >> ---
-> >>  drivers/phy/st/phy-stm32-usbphyc.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-> >> index a54317e96c41..02dd12bb4692 100644
-> >> --- a/drivers/phy/st/phy-stm32-usbphyc.c
-> >> +++ b/drivers/phy/st/phy-stm32-usbphyc.c
-> >> @@ -14,6 +14,7 @@
-> >>  #include <linux/of_platform.h>
-> >>  #include <linux/phy/phy.h>
-> >>  #include <linux/reset.h>
-> >> +#include <linux/units.h>
-> >>  
-> >>  #define STM32_USBPHYC_PLL	0x0
-> >>  #define STM32_USBPHYC_MISC	0x8
-> >> @@ -48,7 +49,6 @@ static const char * const supplies_names[] = {
-> >>  #define PLL_FVCO_MHZ		2880
-> >>  #define PLL_INFF_MIN_RATE_HZ	19200000
-> >>  #define PLL_INFF_MAX_RATE_HZ	38400000
-> >> -#define HZ_PER_MHZ		1000000L
-> > 
-> > I dont see this in units.h, can you send this once it is merged upstream
+On 3/2/21 7:20 PM, Jiqi Li wrote:
+> Add support for NCT6686D chip used in the Lenovo P620.
 > 
-> Actually, it is the first patch of the series.
+> Signed-off-by: Jiqi Li <lijq9@lenovo.com>
+> Reviewed-by: Mark Pearson <markpearson@lenovo.com
+
+Please version your patches, and provide change logs.
+
+Guenter
+
+> ---
+>  drivers/hwmon/nct6683.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 > 
-> I asked Rafael if he can merge the entire series.
+> diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
+> index a23047a3bfe2..256e8d62f858 100644
+> --- a/drivers/hwmon/nct6683.c
+> +++ b/drivers/hwmon/nct6683.c
+> @@ -1,7 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * nct6683 - Driver for the hardware monitoring functionality of
+> - *	     Nuvoton NCT6683D/NCT6687D eSIO
+> + *	     Nuvoton NCT6683D/NCT6686D/NCT6687D eSIO
+>   *
+>   * Copyright (C) 2013  Guenter Roeck <linux@roeck-us.net>
+>   *
+> @@ -12,6 +12,7 @@
+>   *
+>   * Chip        #vin    #fan    #pwm    #temp  chip ID
+>   * nct6683d     21(1)   16      8       32(1) 0xc730
+> + * nct6686d     21(1)   16      8       32(1) 0xd440
+>   * nct6687d     21(1)   16      8       32(1) 0xd590
+>   *
+>   * Notes:
+> @@ -33,7 +34,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+>  
+> -enum kinds { nct6683, nct6687 };
+> +enum kinds { nct6683, nct6686, nct6687 };
+>  
+>  static bool force;
+>  module_param(force, bool, 0);
+> @@ -41,11 +42,13 @@ MODULE_PARM_DESC(force, "Set to one to enable support for unknown vendors");
+>  
+>  static const char * const nct6683_device_names[] = {
+>  	"nct6683",
+> +	"nct6686",
+>  	"nct6687",
+>  };
+>  
+>  static const char * const nct6683_chip_names[] = {
+>  	"NCT6683D",
+> +	"NCT6686D",
+>  	"NCT6687D",
+>  };
+>  
+> @@ -66,6 +69,7 @@ static const char * const nct6683_chip_names[] = {
+>  
+>  #define SIO_NCT6681_ID		0xb270	/* for later */
+>  #define SIO_NCT6683_ID		0xc730
+> +#define SIO_NCT6686_ID		0xd440
+>  #define SIO_NCT6687_ID		0xd590
+>  #define SIO_ID_MASK		0xFFF0
+>  
+> @@ -1362,6 +1366,9 @@ static int __init nct6683_find(int sioaddr, struct nct6683_sio_data *sio_data)
+>  	case SIO_NCT6683_ID:
+>  		sio_data->kind = nct6683;
+>  		break;
+> +	case SIO_NCT6686_ID:
+> +		sio_data->kind = nct6686;
+> +		break;
+>  	case SIO_NCT6687_ID:
+>  		sio_data->kind = nct6687;
+>  		break;
+> 
 
-Pls cc folks on cover at least so that they are aware.
-
-Thanks
--- 
-~Vinod
