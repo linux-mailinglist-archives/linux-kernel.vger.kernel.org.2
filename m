@@ -2,153 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3085532BA76
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C0732BA75
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352057AbhCCLXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:23:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        id S1351595AbhCCLXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:23:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238038AbhCCCFj (ORCPT
+        with ESMTP id S237829AbhCCCFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 21:05:39 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDFFC06178C;
-        Tue,  2 Mar 2021 18:03:55 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id gi9so10983328qvb.10;
-        Tue, 02 Mar 2021 18:03:55 -0800 (PST)
+        Tue, 2 Mar 2021 21:05:36 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6D3C061797
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 18:04:45 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t26so15204961pgv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 18:04:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=SWgDl8ZesuDM2NAIYjMPAnyZm1VzAvxJEJ4cGxqrkw4=;
-        b=LK9FJeWUjvXOdiWeLfwdbKwClga1/MJA8WveK8zJFsbs/9+qeFyHjjozQSipVX9RCy
-         Yg41oIPHCqpB0aRtlLbqsegKEUIQMweECDYdGEbfV08JBYW7VfD2H8MKNSbR+oeUa6L/
-         kH2e3eLPgZJAYc3q33ryafRfSHow+2UHYnARebxMAxmEqJmdRRUZ8PC0/97DY6sNZwca
-         w8aeBkCkDrzwRS7RKtzwbPJcmO8jBtrOL9aw1mXSBgQ8Ppjdf9Ni2B1pgEiP+ywqV1lC
-         wYodvzTZFtgWJONbJ1jeDD9tP4APsO7dMJ7pfN2/dMOorLAijyr6J+XZnoD76RMIZNhZ
-         RRjw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uSV5pC2Oc46URYUg4vRkVcFkmbh0BpY3IJRMt1c2+RQ=;
+        b=a5waVDHv4yhDO34gEPR0QkqxIymU5LbWrUN3KxzjJoc5BQ/Oy83Uk6S0EIlJcPwUnC
+         /VS3QTghu6jk3nWMPzthUlOeTiA5CAk45JPP8NYh1oTGIMaFNBR40j5+SO1oYci4aXDL
+         oTzmrx7g9BFjX4FzE7Pi0CphiEZOAjzWXv3A+DaeO38y9QZe5c5WAOQ6sht8nMl2ei9p
+         kk+Wa0ejQ6lZ4vE7fLqGYrMb4phGP6sJkD7D/omCxlIIiNTEkMATgLYkD6gFBfBFhiXL
+         OB+LHNvCGZsPP1gzllKDHooGfdYCdk47aZe3Nz1oFuJbuoKSynI7oYi1UUpfGkLAzF97
+         8Pvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=SWgDl8ZesuDM2NAIYjMPAnyZm1VzAvxJEJ4cGxqrkw4=;
-        b=mI1k1HMDMrs3Fcde0viDTQz0dGVadEjjFSO7ElOXPfSb9Nk+hio4zxz0oJSz1hFBI2
-         gF6txAwRNeUJ31wNhxLJhtnacj+tIeWX/JIdvXBE5Bw6nt5YcBf11hxve0qE3ahEJIwi
-         Ae8X8rtKajb6VPPQ0Msg1oeu/ORR6Xv6YzkL0+wY/Vw23yt+Jh5C2B1gGar0S4kb13N9
-         g9gqModqKxb7WNLmsqv6us7KuWkTZ7s64fAc+VNQiujejlPfocVNY6IL910bAYV6hAMc
-         ohtXC2dyOxLFro6onJ2Diq/bih3HjD7C06eIecStcUWoF5iJ/AsCyvWQwOz+PlTXkoYD
-         aT4w==
-X-Gm-Message-State: AOAM531o2n6oXWf4c0coI+GsxhgWHQ6HDIlNzRqQIDO5ylIUfvZ7uac9
-        /CbzWGHTE4FYEj17TrBnv90=
-X-Google-Smtp-Source: ABdhPJyV6raoRUWcHcdGZB7qD7LCub9i0c1p9J0sY+UwxFtnLB3AmR9NqdBGpWHth0pYjtADGSX+ZQ==
-X-Received: by 2002:ad4:4c83:: with SMTP id bs3mr655518qvb.41.1614737034559;
-        Tue, 02 Mar 2021 18:03:54 -0800 (PST)
-Received: from smtp.gmail.com ([2804:14c:73:9e91::1001])
-        by smtp.gmail.com with ESMTPSA id v145sm17069268qka.27.2021.03.02.18.03.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uSV5pC2Oc46URYUg4vRkVcFkmbh0BpY3IJRMt1c2+RQ=;
+        b=pn/bSXAI1vQsXSa3b4lW61vx0DV4kHkINezgwcyEgfpZIAW6ex7/fSx2D6hD0etVZF
+         KIomaLZtJ7AxR09Cb+GFqf6e9HRk6pIUrYH+kDleiOfS8dcxpKtoCi0EgZeZH53BCcSV
+         9JsWUsFwqcVYtp5XJ6Nv+KsLYJSg2+aFIXDSJyDospD9q3sf/HOLoKw/K2EXPPu9uuRp
+         NP/cerjWf1NsfJmbSn+/KSqASmHSVzBlfMxnNdZRZvh2JlXLKZjnyG2ksG/kgEdanW45
+         4/I7OlaPngoHhtHDRtLIDrkgd9244iLTOtw0WphQO99hmxMDzNItKuJo6Af8vpbg8tGB
+         oxiQ==
+X-Gm-Message-State: AOAM533prWp3csI2FOmjbC1fb6l87fgLl8Jf1ymXc3cfadS4UbKWLyRV
+        Dn04YdzftInIpsUp5fhvnFc=
+X-Google-Smtp-Source: ABdhPJwqGtelapVjpvam/hBjAyZNqg0eqlG90fnPODcVfqj//UTkiV7mgc3tYE4CCFrOVleZ69yXOA==
+X-Received: by 2002:a63:2604:: with SMTP id m4mr52605pgm.423.1614737084651;
+        Tue, 02 Mar 2021 18:04:44 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id h3sm20747929pgm.67.2021.03.02.18.04.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 18:03:54 -0800 (PST)
-Date:   Tue, 2 Mar 2021 23:03:50 -0300
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-To:     brendanhiggins@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Tue, 02 Mar 2021 18:04:44 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: zhang.yunkai@zte.com.cn
+To:     vladimir.murzin@arm.com
+Cc:     linux@armlinux.org.uk, akpm@linux-foundation.org, rppt@kernel.org,
+        maz@kernel.org, geert@linux-m68k.org, anshuman.khandual@arm.com,
+        zhang.yunkai@zte.com.cn, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] kunit: fix checkpatch warning
-Message-ID: <20210303020350.4sahuojkqnkcxquf@smtp.gmail.com>
+Subject: [PATCH] module: remove duplicate include in ./arch/arm/include/asm/pgtable.h
+Date:   Tue,  2 Mar 2021 18:04:22 -0800
+Message-Id: <20210303020422.174818-1-zhang.yunkai@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tidy up code by fixing the following checkpatch warnings:
-CHECK: Alignment should match open parenthesis
-CHECK: Lines should not end with a '('
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+'asm-generic/pgtable-nopud.h' included in 'pgtable.h' is duplicated.
+
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 ---
-Change log v1 -> v2
-fixed signed-off-by tag
- lib/kunit/assert.c | 31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ arch/arm/include/asm/pgtable.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/lib/kunit/assert.c b/lib/kunit/assert.c
-index e0ec7d6fed6f..acfbf86bddd6 100644
---- a/lib/kunit/assert.c
-+++ b/lib/kunit/assert.c
-@@ -25,7 +25,7 @@ void kunit_base_assert_format(const struct kunit_assert *assert,
- 	}
+diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
+index c02f24400369..f3124e57be83 100644
+--- a/arch/arm/include/asm/pgtable.h
++++ b/arch/arm/include/asm/pgtable.h
+@@ -9,15 +9,14 @@
  
- 	string_stream_add(stream, "%s FAILED at %s:%d\n",
--			 expect_or_assert, assert->file, assert->line);
-+			  expect_or_assert, assert->file, assert->line);
- }
- EXPORT_SYMBOL_GPL(kunit_base_assert_format);
+ #include <linux/const.h>
+ #include <asm/proc-fns.h>
++#include <asm-generic/pgtable-nopud.h>
  
-@@ -48,8 +48,9 @@ EXPORT_SYMBOL_GPL(kunit_fail_assert_format);
- void kunit_unary_assert_format(const struct kunit_assert *assert,
- 			       struct string_stream *stream)
- {
--	struct kunit_unary_assert *unary_assert = container_of(
--			assert, struct kunit_unary_assert, assert);
-+	struct kunit_unary_assert *unary_assert;
-+
-+	unary_assert = container_of(assert, struct kunit_unary_assert, assert);
+ #ifndef CONFIG_MMU
  
- 	kunit_base_assert_format(assert, stream);
- 	if (unary_assert->expected_true)
-@@ -67,8 +68,10 @@ EXPORT_SYMBOL_GPL(kunit_unary_assert_format);
- void kunit_ptr_not_err_assert_format(const struct kunit_assert *assert,
- 				     struct string_stream *stream)
- {
--	struct kunit_ptr_not_err_assert *ptr_assert = container_of(
--			assert, struct kunit_ptr_not_err_assert, assert);
-+	struct kunit_ptr_not_err_assert *ptr_assert;
-+
-+	ptr_assert = container_of(assert, struct kunit_ptr_not_err_assert,
-+				  assert);
+-#include <asm-generic/pgtable-nopud.h>
+ #include <asm/pgtable-nommu.h>
  
- 	kunit_base_assert_format(assert, stream);
- 	if (!ptr_assert->value) {
-@@ -111,8 +114,10 @@ static bool is_literal(struct kunit *test, const char *text, long long value,
- void kunit_binary_assert_format(const struct kunit_assert *assert,
- 				struct string_stream *stream)
- {
--	struct kunit_binary_assert *binary_assert = container_of(
--			assert, struct kunit_binary_assert, assert);
-+	struct kunit_binary_assert *binary_assert;
-+
-+	binary_assert = container_of(assert, struct kunit_binary_assert,
-+				     assert);
+ #else
  
- 	kunit_base_assert_format(assert, stream);
- 	string_stream_add(stream,
-@@ -137,8 +142,10 @@ EXPORT_SYMBOL_GPL(kunit_binary_assert_format);
- void kunit_binary_ptr_assert_format(const struct kunit_assert *assert,
- 				    struct string_stream *stream)
- {
--	struct kunit_binary_ptr_assert *binary_assert = container_of(
--			assert, struct kunit_binary_ptr_assert, assert);
-+	struct kunit_binary_ptr_assert *binary_assert;
-+
-+	binary_assert = container_of(assert, struct kunit_binary_ptr_assert,
-+				     assert);
+-#include <asm-generic/pgtable-nopud.h>
+ #include <asm/memory.h>
+ #include <asm/pgtable-hwdef.h>
  
- 	kunit_base_assert_format(assert, stream);
- 	string_stream_add(stream,
-@@ -159,8 +166,10 @@ EXPORT_SYMBOL_GPL(kunit_binary_ptr_assert_format);
- void kunit_binary_str_assert_format(const struct kunit_assert *assert,
- 				    struct string_stream *stream)
- {
--	struct kunit_binary_str_assert *binary_assert = container_of(
--			assert, struct kunit_binary_str_assert, assert);
-+	struct kunit_binary_str_assert *binary_assert;
-+
-+	binary_assert = container_of(assert, struct kunit_binary_str_assert,
-+				     assert);
- 
- 	kunit_base_assert_format(assert, stream);
- 	string_stream_add(stream,
 -- 
-2.30.1
+2.25.1
 
