@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CC432C2A3
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF3F32C2A8
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhCDAAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:00:53 -0500
+        id S240723AbhCDABE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:01:04 -0500
 Received: from esa4.hgst.iphmx.com ([216.71.154.42]:51828 "EHLO
         esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387974AbhCCUIE (ORCPT
+        with ESMTP id S1387977AbhCCUIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:08:04 -0500
+        Wed, 3 Mar 2021 15:08:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1614802083; x=1646338083;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cjT47Y+Foav4IUdFGeBZNjaxykl7ywcHlPHQ263WpSI=;
-  b=hupSLZPsNNocg7dLrbdHKfBWFXbGv/Rc9F3ViBEUlfF1QMQ77iNQRUc9
-   TVqdD9TeXuaMOTiPRA+J/pn5l4Rp+bVCbVgkBktnpSzk1LDdtfpBWI8ys
-   k3eUFZLYigayCCEU7pbT+jRdh/FhHdIlmCVEVcAXyfABTxjBSaO5/JApa
-   CaSpVP5obKxtQjWi/0lBdp9yGOUbQtl58cbPqQSkJGrjBSlaxLQRZl8/m
-   1Bpx3zq5J2y1Ng9Do1tBuSZaq0X/9Wa1/KCDS803vx9rOO/0QU84JxcNX
-   TCi+6AtV4MyZO7LNQ4MAP/nlSmB+Jby11Iqx0LeKHpdEYhq/Ly0LM4mZn
-   w==;
-IronPort-SDR: S9rN6e/o28n3RbNoRl1if+q+HAdZgyJrDZ7Px5dxOmr6pIa6FIw6vi1FMgKsOJzI3lVicH7Nly
- 76jTuBKfSBAvfC++bQ3Pc6Yi+pLppE7+EJnUJ6UDIQKHQM2YkbJdgfbR04rqZj7s8hkeXo/rYD
- l/qdex3UW8IA8UVEfVfx8/isAk+2jShY8zxyczau4XjH4EkoCkpyKaohCmig9uhP2KXdaXu2if
- FBVYEWViyfZKICUWbXHWjFKqCcTAZRzKNDm7uZuZ+oYJNthxBzrAFI66RtPPicMKkysEQIIrtt
- CPU=
+  t=1614802127; x=1646338127;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=cq6Qiw/Z67SYWe44YS0p0slZ5t+6fb9uqLYw/KGGbCY=;
+  b=rVlyVPmvO58jYSfAtlNSp+j1gAx9ctwaLlkubRBjajSmRQnbe0Dhg/9+
+   pJ6VLJ3h7lz3oMYFfGpnO3mrw873f41T/5CdbNLlHEphfbSdcbpSywI2w
+   mfDMt8Iu4HA6W4CFsHoWNd0PKw1Y7vtjpa7s24Y+VSdwwYRJ16LfSrOrp
+   R8fmFVyBH9uhVSo1VhQbXV3Bv8NcwJWxMCqSRrNXezsRATg/DxH5n2v6d
+   cD0+QjLYvoPQKVQIvJlTdK7TVAgcXP6RpoOiqZLsj5Vx1XoctUadwMsID
+   GKqRaXTZewXvMdbWaHQubN6o2smwcjaIKrP552emLu+ZRjBapOtWNmP5f
+   g==;
+IronPort-SDR: 0A8a37SxwyNQtfGag9ihbogBDWNkH2cA/zEyU64Us+2nPaH2RGn709bRrZsbkArSQdn5uglt23
+ 5n6KYLUXKPwTbbT/qhN7XA1cUDN6JN17wQpjeku+gKsFnk/MjD8LVwISxrjYfoaz7fN4N6ps7/
+ tTFC6SDM9wy8IW7zZOd6aLRJrXykeeNxPPpX7uAA3Awr8dorLU7WcOgLn6hf95vi/gOCt7KH8p
+ DT+vVqIU4IxkgO/39x8FO38AhOXczAHAeLGMp/e/UYpun2KSKe2QLpdAXT1Mx6Q4poH6w6mwiM
+ uvk=
 X-IronPort-AV: E=Sophos;i="5.81,220,1610380800"; 
-   d="scan'208";a="161271856"
+   d="scan'208";a="161271858"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Mar 2021 04:06:57 +0800
-IronPort-SDR: 2gsSjHtJchyLBuA7xmHuPwb7YaKgLg463NHiFNJ8ALB2/0tugJV5BpXucqynYG4BMoNs87QpUB
- ThmxgPOwm3S6FZBq1tF6/Pi22D1HlNhwZAbDIu0IqkHJ1JwWMkOjUKCYAcqsXihi8QSxodHUZ4
- hrOIOqhFbDdd5SYOeA3wmcInBd3ozByweBRoMWth71Wq1WLzF6u3OT6jAuiVd14iGQxNPcbLj0
- ciznJSKRIiRCmQdj1fwoilDEFmG4cOu46UbE3q5hgAbloqbfh/rA54H8lfiAyHSr/3NS5TEHbZ
- F6glbYiCwUn3VxNDMQSa03XH
+  by ob1.hgst.iphmx.com with ESMTP; 04 Mar 2021 04:06:58 +0800
+IronPort-SDR: 60ncR626wY2PkTpAd6VnWAICHjPBe6XfRe/HiuQkszj/r9iO8vLymqKh7T+dTgVZx7zF8h6dxv
+ kO/mfYCPmcBs3ES45vOvVpj6eaPktT2S2AxPrnw+77/lnabxAbzbvzSvLvgGxqnzmcEVyqAwxX
+ FpVyVhXQomkv1tjmhfHK2BcGdMifm2gfA1HuudYYNt/FEBaDcTJxMJ/Nj2GqjsyMzfwcg5CLlt
+ VmcwlHkLhE1bvBlF3nDB58ZCYFOCa5vMnPfUFotR5ZHCtZahvf/RUIj6QA5wbaePb+kH+zxozD
+ 4wq1wiTl2AOFBqtlWXOrBhWf
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
   by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 11:50:02 -0800
-IronPort-SDR: lrp34JjvSOAuSzQgVDJ41RlatV5pePGDpkn4S+cKVuDlZtpeAAItGSWrNtG69Fihlf5tw5C0yZ
- lXPb4beU7vrOdo2k0rpc8bEvI3IPwOZQ+Yh6Mqt5KHpoaNjiayy9VhS8lvSIjLx2ACJ25V5jmE
- b2a5ueWc5o2sHqoKZ1DjyzXSkQwTf8pTlnZ1Ym/UJsWuIEdtQTxxtG/XHza63jFK/Q4NaEvArx
- a4SCUCrs9VP78Tbzy2ehWrVPUM2uqpb2zrCCpM8I3K+YIs2VBmOgwZB8dIDTex97SChR63ae46
- YQg=
+IronPort-SDR: UyakJ0SZO7XUdwUi2bQqA9gRsyIoV1MxrFz3ZohZDW3j2KqOBSYY2TacBraXG2n5oQSk6mDxLG
+ SeWwZDw6y6/UYK08/r0zovxNgZ8nCTEz6XZUHgAqAqudbhuDqWWB73omgGxxeIHBMoEfUUpf12
+ 5497zkXoYEEjSZdx3OiuewEen7iMn+RPkAaIrvEMdZbqUMHQWvDYxJoeWEnbRdKJNPuRiDdn6B
+ JpoVU7ITC2917OdiVsmzz5czL1Vz2AD5w6kZatKLSKzq8Vz9iBpW7Ruuq7C0/DolRhTnsHOSgF
+ 4rI=
 WDCIronportException: Internal
 Received: from ind002560.ad.shared (HELO jedi-01.hgst.com) ([10.86.48.105])
-  by uls-op-cesaip01.wdc.com with ESMTP; 03 Mar 2021 12:06:57 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP; 03 Mar 2021 12:06:58 -0800
 From:   Atish Patra <atish.patra@wdc.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Atish Patra <atish.patra@wdc.com>,
+        Bin Meng <bin.meng@windriver.com>,
+        Anup Patel <anup@brainfault.org>,
         Albert Ou <aou@eecs.berkeley.edu>,
         Alistair Francis <alistair.francis@wdc.com>,
         Anup Patel <anup.patel@wdc.com>,
@@ -62,73 +64,45 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Rob Herring <robh+dt@kernel.org>, Conor.Dooley@microchip.com,
         Daire McNamara <daire.mcnamara@microchip.com>,
         Ivan.Griffin@microchip.com, Lewis.Hanly@microchip.com
-Subject: [PATCH v4 0/5] Add Microchip PolarFire Soc Support 
-Date:   Wed,  3 Mar 2021 12:02:48 -0800
-Message-Id: <20210303200253.1827553-1-atish.patra@wdc.com>
+Subject: [PATCH v4 1/5] RISC-V: Add Microchip PolarFire SoC kconfig option
+Date:   Wed,  3 Mar 2021 12:02:49 -0800
+Message-Id: <20210303200253.1827553-2-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210303200253.1827553-1-atish.patra@wdc.com>
+References: <20210303200253.1827553-1-atish.patra@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds minimal support for Microchip Polar Fire Soc Icicle kit.
-It is rebased on v5.12-rc1 and depends on clock support. 
-Only MMC and ethernet drivers are enabled via this series.
-The idea here is to add the foundational patches so that other drivers
-can be added to on top of this. The device tree may change based on
-feedback on bindings of individual driver support patches.
+Add Microchip PolarFire kconfig option which selects SoC specific
+and common drivers that is required for this SoC.
 
-This series has been tested on Qemu and Polar Fire Soc Icicle kit.
-It depends on the updated clock-series[2] and macb fix[3].
-The series is also tested by Lewis from Microchip.
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Reviewed-by: Bin Meng <bin.meng@windriver.com>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+---
+ arch/riscv/Kconfig.socs | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-The series can also be found at.
-https://github.com/atishp04/linux/tree/polarfire_support_upstream_v4
-
-[1] https://lists.nongnu.org/archive/html/qemu-devel/2020-10/msg08582.html
-[2] https://www.spinics.net/lists/linux-clk/msg54579.html 
-
-Changes from v3->v4:
-1. Fixed few DT specific issues.
-2. Rebased on top of new clock driver.
-3. SD card functionality is verified.
-
-Changes from v2->v3:
-1. Fixed a typo in dt binding.
-2. Included MAINTAINERS entry for PolarFire SoC.
-3. Improved the dts file by using lowercase clock names and keeping phy
-   details in board specific dts file.
-
-Changes from v1->v2:
-1. Modified the DT to match the device tree in U-Boot.
-2. Added both eMMC & SDcard entries in DT. However, SD card is only enabled
-   as it allows larger storage option for linux distros.
-
-Atish Patra (4):
-RISC-V: Add Microchip PolarFire SoC kconfig option
-dt-bindings: riscv: microchip: Add YAML documentation for the
-PolarFire SoC
-RISC-V: Initial DTS for Microchip ICICLE board
-RISC-V: Enable Microchip PolarFire ICICLE SoC
-
-Conor Dooley (1):
-MAINTAINERS: add microchip polarfire soc support
-
-.../devicetree/bindings/riscv/microchip.yaml  |  27 ++
-MAINTAINERS                                   |   8 +
-arch/riscv/Kconfig.socs                       |   7 +
-arch/riscv/boot/dts/Makefile                  |   1 +
-arch/riscv/boot/dts/microchip/Makefile        |   2 +
-.../microchip/microchip-mpfs-icicle-kit.dts   |  72 ++++
-.../boot/dts/microchip/microchip-mpfs.dtsi    | 329 ++++++++++++++++++
-arch/riscv/configs/defconfig                  |   4 +
-8 files changed, 450 insertions(+)
-create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
-create mode 100644 arch/riscv/boot/dts/microchip/Makefile
-create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-
---
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index 7efcece8896c..82b298bfd3be 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -1,5 +1,12 @@
+ menu "SoC selection"
+ 
++config SOC_MICROCHIP_POLARFIRE
++	bool "Microchip PolarFire SoCs"
++	select MCHP_CLK_MPFS
++	select SIFIVE_PLIC
++	help
++	  This enables support for Microchip PolarFire SoC platforms.
++
+ config SOC_SIFIVE
+ 	bool "SiFive SoCs"
+ 	select SERIAL_SIFIVE if TTY
+-- 
 2.25.1
 
