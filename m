@@ -2,161 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBA032BABD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F7C32BABE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239775AbhCCLvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:51:42 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:22443 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhCCFAr (ORCPT
+        id S1346223AbhCCLyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:54:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237290AbhCCFDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 00:00:47 -0500
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210303045948epoutp04784d39f67603f5ce6f554836820eb4e0~ovGBc_6UE2857028570epoutp04M
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:59:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210303045948epoutp04784d39f67603f5ce6f554836820eb4e0~ovGBc_6UE2857028570epoutp04M
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614747588;
-        bh=LFpu4niTELPpIgwV+ShrXIOoHRX8q8Iwx3jpmBGZCFs=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=iXx+hXce0Jcqm12VS/RzkS9d6c3oQctpidmYdort+p2yhOw8ivaNN6RwDTQuMhqX7
-         asF8dCtMN79430jog0eI2GnmDptzJ0oP4+Yxb73P+aj1Y7mYMsbW6CZ3uGdIiEaPd5
-         e3rr+aZcob/t8r5eyc67VsmqHkWLtGGU0isCIErU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210303045943epcas2p293ccc38448e5d85ca9804d86b62858ad~ovF9IzMTP2491124911epcas2p2W;
-        Wed,  3 Mar 2021 04:59:43 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.191]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Dr1y62fFWz4x9QD; Wed,  3 Mar
-        2021 04:59:42 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-be-603f17be3127
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A8.47.05262.EB71F306; Wed,  3 Mar 2021 13:59:42 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <c76cfa925ce2b91735577a030564a3c2@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210303045939epcms2p414cacf444a5dd161b441e030d48d6000@epcms2p4>
-Date:   Wed, 03 Mar 2021 13:59:39 +0900
-X-CMS-MailID: 20210303045939epcms2p414cacf444a5dd161b441e030d48d6000
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA52TbUxTVxjHOfeW3oIpu/J6xqKwSyBioJRCy2EDIcy5EmO2sA0nZINruQKx
-        lKa3EDAba9RRgWFhRHEdQ2EbZIXAeLVAFATFbpOEBRQpOCCDZcXhcEQmTHClLdPs47798zv/
-        5/Xk4eHuVwlfXrZCzagUtJziunK6h4IloVd94tKFhkYSzdZ2c9GVYhOBLGu3uWho6gGBzi+v
-        4ejP1gZnZBkMRobZw+jUV61cVDOiwVC5rouLfpleIVD93W4M6Ta1HDTWW8NFZRNGLmq8uYmh
-        qU5X9E3XJEAl1c0cVF/Xx4n3ko6NH5SOnS3HpD36e4S0on4ASPu/bCakp7/v50gfLpg50rOd
-        BiBdad8t1Q6UYW+5pmhADK2SZWXnM/6MQpabka3IjKXefedAKKL8s3JZdSyVGo5EgvBosSAy
-        WiCKev+VcKFQJKb8FXQOE0sVhDqiKX+VTGl1qxlWrWJkjBWp4lk1nckIWDqHzVNkCmS5OZR/
-        Pi3Ps8ZRYftishg6g1H5p8+DrPaeOqC85FYwf99AaMB1l1LgwoNkJJy43+JcClx57qQRwPrf
-        arBSwOPxyZ1ww+ix5fEg4+DDER3Y0u4kBVt/0hN2LoDmuWYb55IhsNo0Y+OeZCJ8VNVky4mT
-        Y1x4ckgD7MX48IJ2gWPXL8HLjV027kLugz+2VOJ2vgc+bih3aC842bREbOs/hi868njCT34e
-        cXh2wtm1Pgd/EQ73LWN2/THsml4HW01A8lMAh3rMzvaHMHjnTJutCT55CJoHzto0hwyEptUy
-        rt2zH07estiS4qQfvLxUg28tBSeDYWtv2JaEZAC8buZsj6Vp+5v4r8ZJN3hmaONfbqydd7QW
-        BFvWWrEKEKB/tmn9c7X0z2pdArgBeDNKNieTYUXKiOc/uh3YbmDvG0ZwYWlZMAgwHhgEkIdT
-        nnwfS2y6Oz+DLjzBqHLTVHlyhh0EJ6xTVuK+XrJc6xEp1GnhEqFIIo6IjIgQR4r/NxaLJBJh
-        tBiJJSJE+fBZ4WyaO5lJq5njDKNkVNvFMZ6LrwZTVxZaGQj7bLHM7+X3dH1LTlWPy7WFUud+
-        UheDGuaOSXoCnxz2mj8aUjB4PNFptX3ko7fLPw/QeSSYTOOlSe0pUdTRA0f4uwp7eyvn97Tt
-        Ph+1kvx62vipi4G+v38r9+stfpq9WV0bVpLoXddkXFQuR08qd62vf12UNL3D955pB/3qmOJJ
-        8e2i5IGbHXEzDbV3xQTUeR/b0JqPdNyoeBpkIl47GH/jr/21w0GjC2+eXD1HOn2xlvqd3klu
-        OD3r6fxg5ty1qoZrMQRZdKjATzuaNEeWLCXP3FpdTJxwyx994de5FnnnnYUO7ApZFGlZEFtC
-        HuVPNH0YM/UBL6Xqh4TUBJbisFl0+F5cxdL/AOpxWjDRBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210226073233epcms2p80fca2dffabea03143a9414838f757633
-References: <c76cfa925ce2b91735577a030564a3c2@codeaurora.org>
-        <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
-        <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
-        <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p4>
+        Wed, 3 Mar 2021 00:03:07 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF77C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 21:02:16 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id a23so5639589pga.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 21:02:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kxs4zdW6EpTQ1WfyGGPHPV1+xFIcOWqo8CYwcjQtMxA=;
+        b=bV4dO9I1oawjEP9Qq7F/QgMlby/KIy4G26dTxfaz6xHrODvzgOMgEIeq9xmT6siMn3
+         kEclcKGR5nSJViY7RKiyLE2BKMcPGytbNemHDqx68z5CYe+QSEuu0w2fYfmZ8crhqHDm
+         adJwkkKwSBiB7qGySwUH0Krn2fdrZuuvfpk0Z4Vm3cE7x/7WY+oqZzgIL/9k4Ot+NjJf
+         uMGtdLJCDPso50e4BXmFwABJ+KbJ+TBk1R/QdgYtieL1aFiOf7IGvU9XCOKs39Ql42TT
+         28AEHWXQI5Ltd/MfLKyWYlxQFjVmzw7yQJRaRoCCz7k6f2YcMVPa5Vb1SfDwotvwPt5c
+         EPeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kxs4zdW6EpTQ1WfyGGPHPV1+xFIcOWqo8CYwcjQtMxA=;
+        b=Q+ElDv0pTofJAEHgtxjFKEkrB9gT0uhmvixQKznXNsI92CoToedd+hvODzGK9loXkF
+         wXs632qHuDb+iM9DoWlgfinAZ5GNF7zlYU0IFcAzaEhiG8afQyaWVa53Z5QkJAjb88Db
+         a+cid3bQTu9QtWrv0cyk6yIH3QGvKwXJmGEeyHjb5lL6rl0pwpqmhjr2H+lMkY13gdSw
+         5s5B8UsFcOGJp9FchmUGbqbJCY6c452NA2WkuwUAdoC6RTFSptooQn1Xy25LylxaVA66
+         3eiBlIxn2reGH2sbhDcf2gF3zMgPo87qZ80R5i6uoKe0RZszc3DQNgAKfPAk3vUfCaDE
+         mu6g==
+X-Gm-Message-State: AOAM532yXzo4ctqGVG8oQGZywoi5IPygzxkXiMfQM6DxqGGeuatYLbut
+        Jkqk5pH/frtuA59Lzp6rwvZHgzLVRQ5ODA//
+X-Google-Smtp-Source: ABdhPJzyEC1xG6CI9hXhjtN0nDSDSGYy4pYdU4SzeMAPYfSFTPG+xWIdCLZtmgJuUh4KrQhPr5NCMw==
+X-Received: by 2002:a63:d618:: with SMTP id q24mr21086317pgg.283.1614747735788;
+        Tue, 02 Mar 2021 21:02:15 -0800 (PST)
+Received: from localhost.localdomain ([116.246.26.51])
+        by smtp.gmail.com with ESMTPSA id a199sm13844738pfa.49.2021.03.02.21.02.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 21:02:15 -0800 (PST)
+From:   Youlin Song <syl.loop@gmail.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@csgroup.eu
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Youlin Song <syl.loop@gmail.com>
+Subject: [PATCH] powerpc/prom: move the device tree to the right space
+Date:   Wed,  3 Mar 2021 13:00:54 +0800
+Message-Id: <20210303050054.3343-1-syl.loop@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -1812,8 +2307,9 @@ void ufshpb_get_geo_info(struct ufs_hba *hba, u8 
-> > *geo_buf)
-> >  void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
-> >  {
-> >          struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
-> > -        int version;
-> > +        int version, ret;
-> >          u8 hpb_mode;
-> > +        u32 max_hpb_sigle_cmd = 0;
->  
-> Maybe max_hpb_single_cmd?
->  
-> > 
-> >          hpb_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
-> >          if (hpb_mode == HPB_HOST_CONTROL) {
-> > @@ -1824,13 +2320,27 @@ void ufshpb_get_dev_info(struct ufs_hba *hba,
-> > u8 *desc_buf)
-> >          }
-> > 
-> >          version = get_unaligned_be16(desc_buf + DEVICE_DESC_PARAM_HPB_VER);
-> > -        if (version != HPB_SUPPORT_VERSION) {
-> > +        if ((version != HPB_SUPPORT_VERSION) &&
-> > +            (version != HPB_SUPPORT_LEGACY_VERSION)) {
-> >                  dev_err(hba->dev, "%s: HPB %x version is not supported.\n",
-> >                          __func__, version);
-> >                  hpb_dev_info->hpb_disabled = true;
-> >                  return;
-> >          }
-> > 
-> > +        if (version == HPB_SUPPORT_LEGACY_VERSION)
-> > +                hpb_dev_info->is_legacy = true;
-> > +
-> > +        pm_runtime_get_sync(hba->dev);
-> > +        ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-> > +                QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_sigle_cmd);
->  
-> Same here
->  
-> > +        pm_runtime_put_sync(hba->dev);
-> > +
-> > +        if (ret)
-> > +                dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query
-> > request failed",
-> > +                        __func__);
-> > +        hpb_dev_info->max_hpb_single_cmd = max_hpb_sigle_cmd;
->  
-> Same here
->  
+If the device tree has been allocated memory and it will
+be in the memblock reserved space.Obviously it is in a
+valid memory declaration and will be mapped by the kernel.
 
-Done.
+Signed-off-by: Youlin Song <syl.loop@gmail.com>
+---
+ arch/powerpc/kernel/prom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Daejun
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index 9a4797d1d40d..ef5f93e7d7f2 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -121,7 +121,7 @@ static void __init move_device_tree(void)
+ 	size = fdt_totalsize(initial_boot_params);
+ 
+ 	if ((memory_limit && (start + size) > PHYSICAL_START + memory_limit) ||
+-	    !memblock_is_memory(start + size - 1) ||
++	    (!memblock_is_memory(start + size - 1) && !memblock_is_reserved(start + size - 1)) ||
+ 	    overlaps_crashkernel(start, size) || overlaps_initrd(start, size)) {
+ 		p = memblock_alloc_raw(size, PAGE_SIZE);
+ 		if (!p)
+-- 
+2.25.1
+
