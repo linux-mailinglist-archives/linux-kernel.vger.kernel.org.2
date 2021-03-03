@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB9532BFC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36E932BFC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580140AbhCCSdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:33:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35682 "EHLO
+        id S1580187AbhCCSdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:33:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42553 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352452AbhCCRHd (ORCPT
+        by vger.kernel.org with ESMTP id S1376297AbhCCRHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:07:33 -0500
+        Wed, 3 Mar 2021 12:07:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614791167;
+        s=mimecast20190719; t=1614791169;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PNFPZrFga1zLopoBvYwVrfUOQSaR7zQE1lJT2SHv4Qk=;
-        b=flCqHCsQuhDvx1J2aac0hZbsrLOrP39teVu1vNCVOic1KHQZyp6UBJJYqmZaR2jMellyZB
-        jSI6buvwxM1NXT50wlsyS6bWxIINUBILeQMOVwKRBvVliw6SMpO0laj7DM9C/jjYojGpQZ
-        vglnnAmvdZC1rqgfnZCHd3EBHgGwW4Y=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-ktDCNPZWPFWsyciDpQrmXw-1; Wed, 03 Mar 2021 12:06:05 -0500
-X-MC-Unique: ktDCNPZWPFWsyciDpQrmXw-1
-Received: by mail-wm1-f72.google.com with SMTP id 73so3234197wma.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:06:05 -0800 (PST)
+        bh=L6Xn+u33CPNxO4HFinhCXFka/RB/0sOFe6x8iRrvQEw=;
+        b=PQLzXSJPG6R+RTqGFoQnV8m1aY8JmVqg8ukL6EAggiJz8xj0QVldny3bg15PHmRt1sZu+L
+        lswbTg4tekLQTcYZWQK/y1FQAHRmaXMdHfiQC0h0iXt5fW8jPY/6sjZMFZh5nHbGTJI6zO
+        ZRWtkybvzqOuzMfkJ1yqznCgjpfVsJM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-UzIkIx-DMAeepIXBLLeaOg-1; Wed, 03 Mar 2021 12:06:07 -0500
+X-MC-Unique: UzIkIx-DMAeepIXBLLeaOg-1
+Received: by mail-wm1-f70.google.com with SMTP id w20so2035385wmc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:06:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PNFPZrFga1zLopoBvYwVrfUOQSaR7zQE1lJT2SHv4Qk=;
-        b=see2WReBursGXptb0iptIN3eaOVRvvolVqLD9P4JkHUUdBeQTp7sVAkj8ThvJpdqFA
-         cyPv7dx/WXWVEJkdtEGI1AxS5EDr20GJQrjJorSJCuNMMJm5nvJZ3RhHJ3tsBProwp2r
-         x0eegAbzIs5zGKTfG5Y7cqkapjxJCaPO4bie0UQJTq2OA7YQFA7jF3zvbINKPAxQr+xs
-         UVmXbMH7PSqwjW9L+nvnNsZoY9FoQrzan3NA8T5qrN+z8Fe2ltnfWfOejP18ZNc5peg8
-         XWRDjvMWKycCUgMQYm9Mkkc/Rh31/rdR6HOIqirWtG+Tlk/JPvdl7Ye2rDu3/5wy8WdW
-         VtoA==
-X-Gm-Message-State: AOAM530D8w7+Rhc8Jk61FfybwEx+J/6mcuGfanUD/3cofIRzOU5YwKVi
-        ZG/tOjCQdZW6CPHY7C1NzxD7AA1M7dfzjZRiV2hPvxl1sWZpsmK8E4wlmSK2Vx8ruh+ItVKM4Az
-        X8GtaGioTlOOfjXJszFpAZ21ZWKVF8Kvk6Ect7GCGLttvTOmQIOmsz552NGlExMe8u2qR7ABpsG
-        0d
-X-Received: by 2002:adf:a2c2:: with SMTP id t2mr27859277wra.47.1614791163821;
-        Wed, 03 Mar 2021 09:06:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxD0v/fzNgqSwNk35vvYY+wNzFbFYn93XkQS+sDe+djtqgvt9cBoTJiWb04+lSf82I9ql7osQ==
-X-Received: by 2002:adf:a2c2:: with SMTP id t2mr27859256wra.47.1614791163583;
-        Wed, 03 Mar 2021 09:06:03 -0800 (PST)
+        bh=L6Xn+u33CPNxO4HFinhCXFka/RB/0sOFe6x8iRrvQEw=;
+        b=TZh5If5vLvE8Cqsjui57FqpJca218VP3qiIj+05Nz88jDk72bsGBAvZhG34e/DMgoH
+         zwzFD8Loq9Nz+WoBAv9t4qar6KfOE5eQwprq0be/aZmUlwzab5zdVGFSFZGAaq0iLmuT
+         O7ACHv3yu3f5xVQwglMvvF5IEO/65KqCceJEATsyuktFn4i/aBU6h9YofqfT/3D4ThvB
+         KT131afjju0y6vxPWEugkckqiAh9qoKBxuzkZbkkOZQaHM1NPxU7IxNutLowa1/PqEl5
+         nRk41uUaqx4bkcjLB7yM7dN/eNUYoBw0P51IiQ9H+LHt+PifLJXwrGRqKEDoqtDOJBgX
+         w1/g==
+X-Gm-Message-State: AOAM532DPT8j+5xS+N9J0F9bxOY89vCITdztKncmldgXTunLTHtgT6t/
+        AcnnwqpZHF9UBmXd1QjF0Sugv+xArLYi7ZMApiv7NsUVulybniNpIoGEL0b9YJa90/Gz91XmCFn
+        Db0bgQyIOtIYMKNc23SH8XO/QH1mfikaLGGWGktwV6eo6OTbW2SCsNKxvukF5PjUiHqYikNHqsv
+        pa
+X-Received: by 2002:adf:ebc9:: with SMTP id v9mr28671238wrn.387.1614791166248;
+        Wed, 03 Mar 2021 09:06:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwpZBXzvFoGUuSttyR1nFY9YigBcVkN3UpeHTBedmmsMa9WDXR2BdsJ4M3u3ibeINwYxZYl7Q==
+X-Received: by 2002:adf:ebc9:: with SMTP id v9mr28671202wrn.387.1614791165608;
+        Wed, 03 Mar 2021 09:06:05 -0800 (PST)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id d29sm32957827wra.51.2021.03.03.09.06.02
+        by smtp.gmail.com with ESMTPSA id d29sm32957827wra.51.2021.03.03.09.06.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:06:03 -0800 (PST)
+        Wed, 03 Mar 2021 09:06:05 -0800 (PST)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
         broonie@kernel.org, ycote@redhat.com,
         Julien Thierry <jthierry@redhat.com>
-Subject: [RFC PATCH v2 5/8] arm64: insn: Add SVE instruction class
-Date:   Wed,  3 Mar 2021 18:05:33 +0100
-Message-Id: <20210303170536.1838032-6-jthierry@redhat.com>
+Subject: [RFC PATCH v2 6/8] arm64: insn: Add barrier encodings
+Date:   Wed,  3 Mar 2021 18:05:34 +0100
+Message-Id: <20210303170536.1838032-7-jthierry@redhat.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20210303170536.1838032-1-jthierry@redhat.com>
 References: <20210303170536.1838032-1-jthierry@redhat.com>
@@ -69,40 +69,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SVE has been public for some time now. Let the decoder acknowledge
-its existence.
+Create necessary functions to encode/decode aarch64 barrier
+instructions.
+
+DSB needs special case handling as it has multiple encodings.
 
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- arch/arm64/include/asm/insn.h | 1 +
- arch/arm64/lib/insn.c         | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/insn.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
-index ffcdeac80026..b55b629c5eab 100644
+index b55b629c5eab..185f52ef0228 100644
 --- a/arch/arm64/include/asm/insn.h
 +++ b/arch/arm64/include/asm/insn.h
-@@ -31,6 +31,7 @@
-  */
- enum aarch64_insn_encoding_class {
- 	AARCH64_INSN_CLS_UNKNOWN,	/* UNALLOCATED */
-+	AARCH64_INSN_CLS_SVE,		/* SVE instructions */
- 	AARCH64_INSN_CLS_DP_IMM,	/* Data processing - immediate */
- 	AARCH64_INSN_CLS_DP_REG,	/* Data processing - register */
- 	AARCH64_INSN_CLS_DP_FPSIMD,	/* Data processing - SIMD and FP */
-diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
-index 6ff8826ae7ea..b506a4b1e38c 100644
---- a/arch/arm64/lib/insn.c
-+++ b/arch/arm64/lib/insn.c
-@@ -23,7 +23,7 @@
- static const int aarch64_insn_encoding_class[] = {
- 	AARCH64_INSN_CLS_UNKNOWN,
- 	AARCH64_INSN_CLS_UNKNOWN,
--	AARCH64_INSN_CLS_UNKNOWN,
-+	AARCH64_INSN_CLS_SVE,
- 	AARCH64_INSN_CLS_UNKNOWN,
- 	AARCH64_INSN_CLS_LDST,
- 	AARCH64_INSN_CLS_DP_REG,
+@@ -370,6 +370,14 @@ __AARCH64_INSN_FUNCS(eret_auth,	0xFFFFFBFF, 0xD69F0BFF)
+ __AARCH64_INSN_FUNCS(mrs,	0xFFF00000, 0xD5300000)
+ __AARCH64_INSN_FUNCS(msr_imm,	0xFFF8F01F, 0xD500401F)
+ __AARCH64_INSN_FUNCS(msr_reg,	0xFFF00000, 0xD5100000)
++__AARCH64_INSN_FUNCS(dmb,	0xFFFFF0FF, 0xD50330BF)
++__AARCH64_INSN_FUNCS(dsb_base,	0xFFFFF0FF, 0xD503309F)
++__AARCH64_INSN_FUNCS(dsb_nxs,	0xFFFFF3FF, 0xD503323F)
++__AARCH64_INSN_FUNCS(isb,	0xFFFFF0FF, 0xD50330DF)
++__AARCH64_INSN_FUNCS(sb,	0xFFFFFFFF, 0xD50330FF)
++__AARCH64_INSN_FUNCS(clrex,	0xFFFFF0FF, 0xD503305F)
++__AARCH64_INSN_FUNCS(ssbb,	0xFFFFFFFF, 0xD503309F)
++__AARCH64_INSN_FUNCS(pssbb,	0xFFFFFFFF, 0xD503349F)
+ 
+ #undef	__AARCH64_INSN_FUNCS
+ 
+@@ -381,6 +389,20 @@ static inline bool aarch64_insn_is_adr_adrp(u32 insn)
+ 	return aarch64_insn_is_adr(insn) || aarch64_insn_is_adrp(insn);
+ }
+ 
++static inline bool aarch64_insn_is_dsb(u32 insn)
++{
++	return (aarch64_insn_is_dsb_base(insn) && (insn & 0xb00)) ||
++		aarch64_insn_is_dsb_nxs(insn);
++}
++
++static inline bool aarch64_insn_is_barrier(u32 insn)
++{
++	return aarch64_insn_is_dmb(insn) || aarch64_insn_is_dsb(insn) ||
++	       aarch64_insn_is_isb(insn) || aarch64_insn_is_sb(insn) ||
++	       aarch64_insn_is_clrex(insn) || aarch64_insn_is_ssbb(insn) ||
++	       aarch64_insn_is_pssbb(insn);
++}
++
+ enum aarch64_insn_encoding_class aarch64_get_insn_class(u32 insn);
+ bool aarch64_insn_uses_literal(u32 insn);
+ bool aarch64_insn_is_branch(u32 insn);
 -- 
 2.25.4
 
