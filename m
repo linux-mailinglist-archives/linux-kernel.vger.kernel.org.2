@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7338332BE9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8871632BEA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385984AbhCCRdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:33:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S1574598AbhCCRdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:33:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241922AbhCCNub (ORCPT
+        with ESMTP id S242703AbhCCOBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:50:31 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199AAC0698CA
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:26 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id u14so23750862wri.3
+        Wed, 3 Mar 2021 09:01:33 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBC6C0698CB
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:27 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id 7so23757717wrz.0
         for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H3xPEHi6egTkwvWXcCWYIyS0K3zaWAAbSzwMQ/qKgYI=;
-        b=JBhtQCRKcqLPe0dwAMaSPsbnFi0wbQuCUn4xQf9Xb3MLfWa9Gekp03nTcRSi+Ab/+4
-         umFVmud0hLFrAqQlcj4BHxjvAb3WDfGHHr1ph2IViuFyrvlOe+0HHy5cZwlNjNsj2JWe
-         CumSKeKBGrNyEpwGgKRtM7bifqHTKUspukU9gInkM1LspVA3xD+Lx2uGtaxgDfWc4vpP
-         EkU9TQh2OqP0bvOkrAHO7jZhcjYEjJSyAGjKdhoX6ntx7DEdSqBMxl+/gBGPpXmJpyTD
-         iXAR5/KdBwxlVrToW2OsLt2/arAH1yDev4SJGJd+7v0Zp8zIvVvzKlMpsKI0knh7wvK5
-         ww1A==
+        bh=iycuw02Ze2lHNSA405Xw+zB9o0y7L/MHkkRIkUAmng8=;
+        b=thFldj+NR7/yJQFlx5CmFrSDIqztiJhVtzEIncot0oT9IuZefM8LS0OIhOXMeciq+1
+         pt7Ymt7WJXTsvEKX/HUnsWKzPuFY48/YLBIW3LpFe+iOsB+uzaUF+EMcvtGogOomdHXM
+         teioDoBTjwhsvvC5sObP3W4piv5q9tiMO4unVsGZV652CmmLfL+V0m3cSBas82wBMgaA
+         w6NzkVxZ/IP+NegS6rg0+alFY9+A1Nfbdnj6glWZOyQ45oMiB/EfaNWGiSAUOoMwHENy
+         08FpX3SzMS2AdhNEaofx7ToAK0fWTQNl/Y3S1B/zlB2WyGJGfUuB7Yj14FiKCN40Tbfj
+         VaZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H3xPEHi6egTkwvWXcCWYIyS0K3zaWAAbSzwMQ/qKgYI=;
-        b=c62bpi5Pgtp/8KC+K1Mjy7BSTA61uuU7gLudbQNQFcLuZyP1f5HXDCiNBGc9hU+QNy
-         7i9jhIUIfTc7FSQjn3UJnw5azNUnKbdRnEMmFmiu7s3NGkN47NN1cEXifjrIW8HiwqM9
-         waQ4GmCmq74tI+PmnHfIWkhj4wx6Ruh/1KWoYt+uO9xP5MSerEe/fVnQ99F0EfpeYGIO
-         J3Ic+EdZ8rcGdcO/+tq2ibYZTjG+5muJpCty27yaCzMCzZQV0+YHsWbcsPhq8p7/RpaJ
-         TaWOjvx6tX6L3krsnicsyc6nctfBa6K0dg68ln9HxrjPU0Fax/8y/UiJYSZ0v9n1fPMI
-         Qx8w==
-X-Gm-Message-State: AOAM532man2LvlsqOQRZL7NWoPmhDojK8btCTYrdbQ8d/XjjiMSXgjOs
-        zUA4zoYmdIlIjjjJI/mZb9dnww==
-X-Google-Smtp-Source: ABdhPJxDyaHvKTYB+FuVTEoLeXNmHOSn2maq6TRxgw6HeBYfJpgKfvcihdXAfSMYdVDQlfT/xV4TLA==
-X-Received: by 2002:a5d:528f:: with SMTP id c15mr27394416wrv.142.1614779064899;
-        Wed, 03 Mar 2021 05:44:24 -0800 (PST)
+        bh=iycuw02Ze2lHNSA405Xw+zB9o0y7L/MHkkRIkUAmng8=;
+        b=p/DE6z5xRi1WoXWx6fWcBRYTDpjKQfgAQeT2wO359Yl65Jk5+zTtm8k7YjeBgT7DtM
+         89VDCL7PKbZfc2EZWQdeIgDQPtYYBwbvokZtERmV/U3nWvbp+EoGCL6deDD2xsTDkp25
+         KuxGrcutpVvnCrn3duYuvPsdbkQXVmNkEJfuRM76WmOmp91EFjGVKZNThvC9LIfOV8bE
+         mSE+AWM567dkLRBmw4kbFfSJTGI3nwCHCQs0l0egcUE9rc5bqabqicSRuSN2amqqk99g
+         Sm22hao8b8GqMRuUxj0FLY3OtRqvvJh2CTe8Uhurjd6LCruJMUmiSyLwHtS7r3+6pHxd
+         Oj3A==
+X-Gm-Message-State: AOAM530mDOclezByV8qG69dAal2x3B5eR4lixZPDyjqPVy3H0AN8dMXr
+        8br5hikq8ArWb9JV7xFg2Wpj0Q==
+X-Google-Smtp-Source: ABdhPJxahbBIE2LRClKS78/6HsclGgIdKNslueE6t2fTii73se5u0IQl5HPtgslGGaA+a/JlY6OszQ==
+X-Received: by 2002:adf:fec5:: with SMTP id q5mr16916292wrs.43.1614779065836;
+        Wed, 03 Mar 2021 05:44:25 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.23
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:44:24 -0800 (PST)
+        Wed, 03 Mar 2021 05:44:25 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 48/53] drm/vmwgfx/vmwgfx_msg: Fix misspelling of 'msg'
-Date:   Wed,  3 Mar 2021 13:43:14 +0000
-Message-Id: <20210303134319.3160762-49-lee.jones@linaro.org>
+Subject: [PATCH 49/53] drm/vmwgfx/vmwgfx_blit: Add description for 'vmw_bo_cpu_blit's 'diff' param
+Date:   Wed,  3 Mar 2021 13:43:15 +0000
+Message-Id: <20210303134319.3160762-50-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
@@ -70,8 +70,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_msg.c:261: warning: Function parameter or member 'msg' not described in 'vmw_send_msg'
- drivers/gpu/drm/vmwgfx/vmwgfx_msg.c:261: warning: Excess function parameter 'logmsg' description in 'vmw_send_msg'
+ drivers/gpu/drm/vmwgfx/vmwgfx_blit.c:452: warning: Function parameter or member 'diff' not described in 'vmw_bo_cpu_blit'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -81,24 +80,23 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210115181601.3432599-6-lee.jones@linaro.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115181601.3432599-8-lee.jones@linaro.org
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_msg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_blit.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-index 15b5bde693242..609269625468d 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-@@ -253,7 +253,7 @@ static unsigned long vmw_port_hb_in(struct rpc_channel *channel, char *reply,
-  * vmw_send_msg: Sends a message to the host
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+index 9f2779ddcf083..118db24eb756c 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+@@ -431,6 +431,7 @@ static int vmw_bo_cpu_blit_line(struct vmw_bo_blit_line_data *d,
+  * @src_stride: Source stride in bytes.
+  * @w: Width of blit.
+  * @h: Height of blit.
++ * @diff: The struct vmw_diff_cpy used to track the modified bounding box.
+  * return: Zero on success. Negative error value on failure. Will print out
+  * kernel warnings on caller bugs.
   *
-  * @channel: RPC channel
-- * @logmsg: NULL terminated string
-+ * @msg: NULL terminated string
-  *
-  * Returns: 0 on success
-  */
 -- 
 2.27.0
 
