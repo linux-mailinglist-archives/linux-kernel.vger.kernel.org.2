@@ -2,112 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C92832C09B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6110D32C093
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234048AbhCCSUa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 13:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        id S1579628AbhCCSbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:31:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346432AbhCCQ0P (ORCPT
+        with ESMTP id S1349003AbhCCQ3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:26:15 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC612C061764
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:25:25 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHUJL-00017T-6G; Wed, 03 Mar 2021 17:25:19 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHUJK-0003MJ-Ef; Wed, 03 Mar 2021 17:25:18 +0100
-Message-ID: <c12d84b955b0265dbcf89f2d7fc4d5c28bc74756.camel@pengutronix.de>
-Subject: Re: [PATCH v3 0/5] Reset driver for IMX8MQ VPU hardware block
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, ezequiel@collabora.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Date:   Wed, 03 Mar 2021 17:25:18 +0100
-In-Reply-To: <2d55ad69-9b93-ab0e-04af-cd775cc9248b@collabora.com>
-References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
-         <e6f8537d2a1f34d0a424b68e056c0ae556c93efd.camel@pengutronix.de>
-         <2d55ad69-9b93-ab0e-04af-cd775cc9248b@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Wed, 3 Mar 2021 11:29:18 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB66C061762;
+        Wed,  3 Mar 2021 08:28:32 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id q25so17831908lfc.8;
+        Wed, 03 Mar 2021 08:28:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e6jk4zYBS5RjBAZNG1Jc1PukaUiIwiF3IBqy3w9hmmE=;
+        b=BVFfZbLb/FeEe0raR3StYBDGVDr7EX5N7HR+g7owlm2IURTCIF/HOBRI03YTYuqbXF
+         jywwE5g/Qr2634AGPScQqQZ32quudwZ7KqWjwszCuBZBb/QQduiNLOZmqI0CvZxJBav5
+         FTVlD/6w9RwzTBzlDIybudSexYk0YPtLLWHyGFkftBOX3MWf9vhrz8MLyO6SeA3rSgi4
+         G5euWldZ6kU0QG2RBFGMIvX0ZEXJco1BDjJICcq29HtG1dZV6IPaF9yeqhQLOyzZkmXI
+         4gKWrKZuv+ktwOl7R56zww/pDMCkfIAu7YWW3iGQb9poXB766giMAKNQ79eHN86519k3
+         Haew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e6jk4zYBS5RjBAZNG1Jc1PukaUiIwiF3IBqy3w9hmmE=;
+        b=A2AyNPrbyWTvxEywP60T82SYU6Ms+R2naiIPpGpzh9C3O8yLW3aycVnJkbUvERm8sr
+         z6JdiuFpO1Q4wl5hdRcYxM7whDBRhjJL0t58wCvqZsZ5Jit3Jtck+bwqmSwCa5j4buiI
+         hyyhJrwvpoJ3TPii24bwU7VCHdJkhU6vwX6qoyvjEaEun2syDphIDm5De2gDZDC2D5Qe
+         kw4Axeb3tQiMZvROzDq4gCiaBxaTl4FEV2+Yh/2B4tqcHnr32JIJ19spc6ZLY1tgxlkp
+         HwhPlFOvwI3Dwyv+CEWnwsTdtBfyMInEMjIq+10ZaD7/QNO9r6GHVHuLcYHfNe66wsoY
+         9Qrw==
+X-Gm-Message-State: AOAM530YBa4YMgdCfQy9MrG7m4mS3+rJ/6x9E5roUH25t7qSMi2rLoRy
+        I5y/ysm5NXirEOhN+TRyB2m/7HVAOEaU8RG72E4=
+X-Google-Smtp-Source: ABdhPJzHo9T4zCaRaT2RXZe7050zl4QyZYHQQOAv+ZHRdXKF78eQwZLT0ljcRlyNCHQr+e/PesVdKQ==
+X-Received: by 2002:a19:8888:: with SMTP id k130mr14960980lfd.399.1614788911449;
+        Wed, 03 Mar 2021 08:28:31 -0800 (PST)
+Received: from localhost.localdomain ([94.103.235.167])
+        by smtp.gmail.com with ESMTPSA id s7sm2084403lfi.140.2021.03.03.08.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 08:28:31 -0800 (PST)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     alex.aring@gmail.com, stefan@datenfreihafen.org,
+        davem@davemloft.net
+Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com
+Subject: [PATCH] net: mac802154: Fix null pointer dereference
+Date:   Wed,  3 Mar 2021 19:27:56 +0300
+Message-Id: <20210303162757.763502-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-03 at 16:20 +0100, Benjamin Gaignard wrote:
-> Le 03/03/2021 à 15:17, Philipp Zabel a écrit :
-> > Hi Benjamin,
-> > 
-> > On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
-> > > The two VPUs inside IMX8MQ share the same control block which can be see
-> > > as a reset hardware block.
-> > This isn't a reset controller though. The control block also contains
-> > clock gates of some sort and a filter register for the featureset fuses.
-> > Those shouldn't be manipulated via the reset API.
-> 
-> They are all part of the control block and of the reset process for this
-> hardware that why I put them here. I guess it is border line :-)
+syzbot found general protection fault in crypto_destroy_tfm()[1].
+It was caused by wrong clean up loop in llsec_key_alloc().
+If one of the tfm array members won't be initialized it will cause
+NULL dereference in crypto_destroy_tfm().
 
-I'm pushing back to keep the reset control framework focused on
-controlling reset lines. Every side effect (such as the asymmetric clock
-ungating) in a random driver makes it harder to reason about behaviour
-at the API level, and to review patches for hardware I am not familiar
-with.
+Call Trace:
+ crypto_free_aead include/crypto/aead.h:191 [inline] [1]
+ llsec_key_alloc net/mac802154/llsec.c:156 [inline]
+ mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
+ ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
+ rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
+ nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-> > > In order to be able to add the second VPU (for HECV decoding) it will be
-> > > more handy if the both VPU drivers instance don't have to share the
-> > > control block registers. This lead to implement it as an independ reset
-> > > driver and to change the VPU driver to use it.
-> > Why not switch to a syscon regmap for the control block? That should
-> > also allow to keep backwards compatibility with the old binding with
-> > minimal effort.
-> 
-> I will give a try in this direction.
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reported-by: syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com
+---
+ net/mac802154/llsec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you.
+diff --git a/net/mac802154/llsec.c b/net/mac802154/llsec.c
+index 585d33144c33..6709f186f777 100644
+--- a/net/mac802154/llsec.c
++++ b/net/mac802154/llsec.c
+@@ -151,7 +151,7 @@ llsec_key_alloc(const struct ieee802154_llsec_key *template)
+ err_tfm0:
+ 	crypto_free_sync_skcipher(key->tfm0);
+ err_tfm:
+-	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
++	for (; i >= 0; i--)
+ 		if (key->tfm[i])
+ 			crypto_free_aead(key->tfm[i]);
+ 
+-- 
+2.25.1
 
-> > > Please note that this series break the compatibility between the DTB and
-> > > kernel. This break is limited to IMX8MQ SoC and is done when the driver
-> > > is still in staging directory.
-> > I know in this case we are pretty sure there are no users of this
-> > binding except for a staging driver, but it would still be nice to keep
-> > support for the deprecated binding, to avoid the requirement of updating
-> > kernel and DT in lock-step.
-> 
-> If I want to use a syscon (or a reset) the driver must not ioremap the "ctrl"
-> registers. It means that "ctrl" has to be removed from the driver requested
-> reg-names (imx8mq_reg_names[]). Doing that break the kernel/DT compatibility.
-> Somehow syscon and "ctrl" are exclusive.
-
-The way the driver is set up currently, yes. You could add a bit of
-platform specific probe code, though, that would set up the regmap
-either by calling
-	syscon_regmap_lookup_by_phandle();
-for the new binding, or, if the phandle is not available, fall back to
-	platform_get_resource_byname(..., "ctrl");
-	devm_ioremap_resource();
-	devm_regmap_init_mmio();
-for the old binding.
-The actual codec .reset and variant .runtime_resume ops could be
-identical then.
-
-regards
-Philipp
