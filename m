@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B08C32BBF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E62B32BBF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241904AbhCCNXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237653AbhCCIS5 (ORCPT
+        id S1382109AbhCCNa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:30:59 -0500
+Received: from vsp-unauthed02.binero.net ([195.74.38.227]:22965 "EHLO
+        vsp-unauthed02.binero.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357218AbhCCIUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:18:57 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B26C061797
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:18:15 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id t29so15716032pfg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:18:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=etDbu/Jc8DSP0ReRXwiySpUcMKSnU5m0Bp8k/7msBIg=;
-        b=U9CPs7lWRQQQzxXHEQly5XVAdgZZ6TJnyisFz3MXn7lDCtOFVnY3KGUZLNRshg/PpP
-         Mwh3HutyXg51L2IkLKpWo2+CqqiA2JlYQY7HBn95FbXnYMTn+bmBkukpGhHjGXGKmm2c
-         QghsXOFzaDFHxx9Mp7i89oue1+uIcUOO9cV2A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=etDbu/Jc8DSP0ReRXwiySpUcMKSnU5m0Bp8k/7msBIg=;
-        b=hoDHVa6+q8IJvCFZBtrrhrevewqHK3c2c2iHUlaDKcJl3+5UpAITMoX9MZyNPXdUVw
-         QVq1biyh3VaxntEaBh6q0NC6ORZBQRwjiR1xh3locytCaRX7C+5mwYVG0BDtnQzWvPJ4
-         H0pxeuDZMEu9DAONQaVl5bONBZH5FWJsJvTvIw9G2rFwzhsTKYiI33cvrcLv3+1YNu9d
-         EgwfewJr40DQgggeQ0hS3DW5iIlcMXBLeYEEeXu3CGQJZpwB/eMb93/AwYimsIKcyiq8
-         6Zsqv76unQ2aTwJgmrUfp+Kc3zHka6gFgfQGIjCM0gVIAQFaC8cD0oZ+PBdgHJ5w9LAY
-         8eig==
-X-Gm-Message-State: AOAM533x+A5t1tufJYn5eBdE//1wXWMgbiZXWtQApfJEwJMR1uhESU0D
-        bYlWLqEW/y1cP7gsmeSUwpEAz5RTyecjAw==
-X-Google-Smtp-Source: ABdhPJw2GLT90aaJtF6/DsDt1GQXRlXieOUK1wJ5RHl3hlvTNwBTu9/j9qm/fX0JmtYkeBM3exGawg==
-X-Received: by 2002:a63:e150:: with SMTP id h16mr21890180pgk.308.1614759495529;
-        Wed, 03 Mar 2021 00:18:15 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id t10sm5971833pjf.30.2021.03.03.00.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:18:15 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 3 Mar 2021 03:20:35 -0500
+X-Halon-ID: 3290c9d2-7bf9-11eb-b73f-0050569116f7
+Authorized-sender: andreas@gaisler.com
+Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
+        by bin-vsp-out-03.atm.binero.net (Halon) with ESMTPA
+        id 3290c9d2-7bf9-11eb-b73f-0050569116f7;
+        Wed, 03 Mar 2021 09:19:49 +0100 (CET)
+Subject: Re: [PATCH AUTOSEL 4.14 06/13] sparc32: Limit memblock allocation to
+ low memory
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org
+References: <20210302115903.63458-1-sashal@kernel.org>
+ <20210302115903.63458-6-sashal@kernel.org>
+From:   Andreas Larsson <andreas@gaisler.com>
+Message-ID: <ad613de2-6fd4-f7a3-25b1-61f3a093c811@gaisler.com>
+Date:   Wed, 3 Mar 2021 09:19:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210301133318.v2.11.I556326b24441e22c8c429ce383cc157c7aaef44b@changeid>
-References: <20210301213437.4165775-1-dianders@chromium.org> <20210301133318.v2.11.I556326b24441e22c8c429ce383cc157c7aaef44b@changeid>
-Subject: Re: [PATCH v2 11/13] arm64: dts: qcom: Add sc7180-lazor-limozeen skus
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Date:   Wed, 03 Mar 2021 00:18:13 -0800
-Message-ID: <161475949356.1478170.4345976627607852193@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210302115903.63458-6-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-03-01 13:34:35)
-> This is a SKU variant of lazor.  Add it.  This squashes the downstream
-> patches to support this hardware.
->=20
-> NOTES:
-> - The non-touch SKU actually has "innolux,n116bca-ea1" but that driver
->   is still pending in simple-panel.  The bindings have been Acked
->   though [1].  Things work well enough with the "innolux,n116bge"
->   timings for now, though.
-> - The wonky special dts just for "-rev4" arguably doesn't need to go
->   upstream since they weren't widely distributed, but since a few
->   people have them we might as well.  If it ever causes problems we
->   can delete it.
->=20
-> [1] https://lore.kernel.org/r/20210115144345.v2.4.I6889e21811df6adaff5c5b=
-8a8c80fda0669ab3a5@changeid
->=20
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+On 2021-03-02 12:58, Sasha Levin wrote:
+> From: Andreas Larsson <andreas@gaisler.com>
+> 
+> [ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
+> 
+> Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
+> memblocks instead of bootmem, but also made high memory available via
+> memblock allocation which does not work together with e.g. phys_to_virt
+> and can lead to kernel panic.
+> 
+> This changes back to only low memory being allocatable in the early
+> stages, now using memblock allocation.
+> 
+> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
+>   arch/sparc/mm/init_32.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+> index 95fe4f081ba3..372a4f08ddf8 100644
+> --- a/arch/sparc/mm/init_32.c
+> +++ b/arch/sparc/mm/init_32.c
+> @@ -230,6 +230,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
+>   	reserve_bootmem((bootmap_pfn << PAGE_SHIFT), size, BOOTMEM_DEFAULT);
+>   	*pages_avail -= PAGE_ALIGN(size) >> PAGE_SHIFT;
+>   
+> +	/* Only allow low memory to be allocated via memblock allocation */
+> +	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
+> +
+>   	return max_pfn;
+>   }
+>   
+> 
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+This is not needed for 4.14, and will not compile, as the problem it
+fixes was introduced in 4.19.
+
+-- 
+Andreas Larsson
