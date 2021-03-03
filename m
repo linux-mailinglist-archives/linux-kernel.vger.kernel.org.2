@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D573532BCBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71A032BD73
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243838AbhCCOh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842992AbhCCKX1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:27 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337B1C08EB25
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:40:53 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id l3so26150516ybf.17
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:40:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=XuDHw3O1srmLKsSoSJf7jMgqz2ffuZm3aO6BAJ189BA=;
-        b=ua0Yw5zjlfjCqKHVLIv3cJaneXUfA3FK9C2+mEXp6+8xI9jMNNs4U49S+28oh4k3SE
-         W5hkTE5GYypEGerM0kW8VGKF0kBPcPE+hxeLtMnwBrFmeridcwkZ2rJ/ocb56DXTVktl
-         XEVRCwVrrKzo4hBIIA6GbVOMbm4/ncKaZAeuHt9zdBVg5rIR6PH0s0nACxj02ugUtAut
-         Demfq0hUBFRQppiKfkoEsAtICHeqCWh5QDv61kPaQ9JqZpXwIhSL1dhjG+hiCbXCm5sq
-         NgeLOwwvTYvWkGAgveyJlzSb9KaEpjN7GVDj+X0VU3L9l2PashFHORmezPHYOLalFgBa
-         KS2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=XuDHw3O1srmLKsSoSJf7jMgqz2ffuZm3aO6BAJ189BA=;
-        b=jt/P2PwrjzWDSsc7Wic6f/GnmGZKf+uUtM+pcccUrZORry8p0ftqw8TCu4uVFNh3Xf
-         pFWOXdx1e2VD7BUGNEXlaeKfr1gwMt8t5ET6BcISBHURrhIWn/hiKGiTMtpNmCSH66yA
-         w9Behu5UPuYe8bTnh7lbYRfzg8qSkjGxVdgMMOd+pv2cfOiUkPACsdFadjR1aMKdnP0/
-         RywiTi3d/NjPdfSftZFYGeECFAObytAVGe17a7Q3lcVC51hTK4rDX0DQm+tXwO2fPp9o
-         7TrnbBL4cVH3i+GCgP49p+ItBIqGYYsYkIYNaIFj5xgb/AYwHI7Zriio3SjDMZGIE9F5
-         lDRg==
-X-Gm-Message-State: AOAM5328VcpuOKErRuF8q3xO44V9Tz/k2xGsngX1Lkpt+S873hu2wvfg
-        kKqqs+TE1Bxz+f1uS9xo4/SJd0CRzCc=
-X-Google-Smtp-Source: ABdhPJyRhUYTr6tzygLKQIL3hxEKRNYaM+RzAhBvDfbibZwl8U6wV8e2G/k94KHj2iFlyzJwPyRBDQYB5qE=
-Sender: "raychi via sendgmr" <raychi@raychi.tao.corp.google.com>
-X-Received: from raychi.tao.corp.google.com ([2401:fa00:fc:202:d0b:ce1b:8f7e:f53a])
- (user=raychi job=sendgmr) by 2002:a25:cc46:: with SMTP id l67mr39991239ybf.16.1614764452378;
- Wed, 03 Mar 2021 01:40:52 -0800 (PST)
-Date:   Wed,  3 Mar 2021 17:40:47 +0800
-Message-Id: <20210303094047.2788465-1-raychi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [Patch v2] usb: dwc3: document usb_psy in struct dwc3
-From:   Ray Chi <raychi@google.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kyletso@google.com, Ray Chi <raychi@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S1345020AbhCCQHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:07:30 -0500
+Received: from elvis.franken.de ([193.175.24.41]:39192 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349800AbhCCLfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:35:18 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lHO0q-0005hN-00; Wed, 03 Mar 2021 10:41:48 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4E8B9C0477; Wed,  3 Mar 2021 10:41:34 +0100 (CET)
+Date:   Wed, 3 Mar 2021 10:41:34 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@vger.kernel.org, rppt@kernel.org,
+        fancer.lancer@gmail.com, guro@fb.com, akpm@linux-foundation.org,
+        paul@crapouillou.net,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Message-ID: <20210303094134.GA18354@alpha.franken.de>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <20210302041940.3663823-1-f.fainelli@gmail.com>
+ <20210302235411.GA3897@alpha.franken.de>
+ <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new struct member was added to struct dwc3, but
-a documentation was missing:
+On Tue, Mar 02, 2021 at 05:30:18PM -0800, Florian Fainelli wrote:
+> 
+> 
+> On 3/2/2021 3:54 PM, Thomas Bogendoerfer wrote:
+> > On Mon, Mar 01, 2021 at 08:19:38PM -0800, Florian Fainelli wrote:
+> >> BMIPS is one of the few platforms that do change the exception base.
+> >> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> >> with kernel_end") we started seeing BMIPS boards fail to boot with the
+> >> built-in FDT being corrupted.
+> >>
+> >> Before the cited commit, early allocations would be in the [kernel_end,
+> >> RAM_END] range, but after commit they would be within [RAM_START +
+> >> PAGE_SIZE, RAM_END].
+> >>
+> >> The custom exception base handler that is installed by
+> >> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> >> memory region allocated by unflatten_and_copy_device_tree() thus
+> >> corrupting the FDT used by the kernel.
+> >>
+> >> To fix this, we need to perform an early reservation of the custom
+> >> exception that is going to be installed and this needs to happen at
+> >> plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
+> >> finds a space that is suitable, away from reserved memory.
+> >>
+> >> Huge thanks to Serget for analysing and proposing a solution to this
+> >> issue.
+> >>
+> >> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> >> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> >> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> >> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> >> ---
+> >> Thomas,
+> >>
+> >> This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
+> >> by the stable team for 5.11. We should find a safer way to avoid these
+> >> problems for 5.13 maybe.
+> > 
+> > let's try to make it in one ago. Hwo about reserving vector space in
+> > cpu_probe, if it's known there and leave the rest to trap_init() ?
+> > 
+> > Below patch got a quick test on IP22 (real hardware) and malta (qemu).
+> > Not sure, if I got all BMIPS parts correct, so please check/test.
+> 
+> Works for me here:
 
-drivers/usb/dwc3/core.h:1273: warning: Function parameter or member 'usb_psy' not described in 'dwc3'
+perfect, I only forgot about R3k... I'll submit a formal patch submission
+later today.
 
-Signed-off-by: Ray Chi <raychi@google.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
-Changelog since v1:
-(reported-by Stephen Rothwell <sfr@canb.auug.org.au>)
-- added Reported-by line.
+Thomas.
 
- drivers/usb/dwc3/core.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 6708fdf358b3..ce6bd84e2b39 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -988,6 +988,7 @@ struct dwc3_scratchpad_array {
-  * @role_sw: usb_role_switch handle
-  * @role_switch_default_mode: default operation mode of controller while
-  *			usb role is USB_ROLE_NONE.
-+ * @usb_psy: pointer to power supply interface.
-  * @usb2_phy: pointer to USB2 PHY
-  * @usb3_phy: pointer to USB3 PHY
-  * @usb2_generic_phy: pointer to USB2 PHY
 -- 
-2.30.1.766.gb4fecdf3b7-goog
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
