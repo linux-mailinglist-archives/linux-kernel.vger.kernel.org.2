@@ -2,182 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBAC32BCB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1BF32BD85
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383436AbhCCOb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842975AbhCCKXP (ORCPT
+        id S230423AbhCCQJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:09:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46512 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234095AbhCCLmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:15 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDF4C08E8A8
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:36:27 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d15so7644770wrv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:36:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=e3QV9AU6iRpPBZ6EfqvhfdsrTKr6pttQKnm9uvKZZ7U=;
-        b=IOBUVwcx6niakOkcT62K2hkhVczPuQm5I6xuYaF+8e1srwMD9pjXdUan2lMFyS0Ge6
-         wO9/7LSVv3youC89baWMQvRgUo0QfNUixNyHCH4DwwenxYhAYA+h7l4RbSaOdQsqmrFI
-         BFpEUQ3ja95Y6WrddWuwRVz3RBrdY3cZX5G0VkwtZsf7nk/jNWao9d31JvlugNYsrc/W
-         aC4TTBky+zEOzIS0pgTpkDAC/KIwXlH+z/zr4VTnAEZy6dB2S2eTjUex0ioSXEgQX5a5
-         FIJmbr0RYoW+BoZ1qgsWpKnE+7XsR4RypCM/KHu1cBQ0VqrjSVG/6yO/P5qwRB82HuOk
-         yvKw==
+        Wed, 3 Mar 2021 06:42:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614771622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r/j20RVofkj/hPK0Wo3xRPO9YBuymSE3SUYDVG+qh8o=;
+        b=LZ7zBmqmD3uCrih3m5/N7teNpl1B0EfKewFFn3Bl7j0BqzG7QzzlN/jqhP8rNe7cqNOcbX
+        7z+x3zBI4xwcWUpUCsBhq6v1PHSZ/VLO9XdoNGe2galTL7vF+3/5Du6PfZ+24D3filCG7c
+        LEpb+lXxMRP3lhIIUAbQLTKdghVdEdk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-WwWlgG9fNr-dXzyKAmSTrw-1; Wed, 03 Mar 2021 04:36:43 -0500
+X-MC-Unique: WwWlgG9fNr-dXzyKAmSTrw-1
+Received: by mail-ed1-f70.google.com with SMTP id i19so9443274edy.18
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:36:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e3QV9AU6iRpPBZ6EfqvhfdsrTKr6pttQKnm9uvKZZ7U=;
-        b=X3eqEgQeXnOkZ1VTjAlgIlO6ACAxjDXCPs/4th7y9WR/KK0hTS8JzDlKQnmScJ37tn
-         o813X1Ry0/oEtq3ARW+mJYvnRh199SFN87BzKobUTpDIY1LMVo1hmXR/rm5j/d+2Uphv
-         kRrTylh0VqONhjBw54ev85PFaH+zY2oJou1b+oq0wC0h/T2hwHNHeR5pfwO6TuJ/QbbA
-         IKjB1Vv9EsWKa/i1Q7Q9vySWDjPbE/GsB7zPhg9zUfAoF/a7grtq0uHQBTifAxDxeOEy
-         OW3FUInjzteT/9meRJoRHcSwwzT6uHJMG010Oj8lBd71b4/ZfoAUe6Cc4V3Hyx/AT+Bv
-         dhFQ==
-X-Gm-Message-State: AOAM530+3hcGc5CNSRE1GOSNWSXxkLAhsto+7YrtstfKqjgt0cjxROtk
-        qbD0E0QxZhYxizn5G3anNar3BQ==
-X-Google-Smtp-Source: ABdhPJytY/PGKRvUg4glI88jU/Ognn20af62M6KZdm4enB7KPRkvg7xChu/XvgYCkgLji+wjM7+4QQ==
-X-Received: by 2002:a05:6000:1363:: with SMTP id q3mr2232266wrz.74.1614764186628;
-        Wed, 03 Mar 2021 01:36:26 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id r11sm8942797wrm.26.2021.03.03.01.36.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Mar 2021 01:36:26 -0800 (PST)
-Subject: Re: [PATCH v2 1/5] soundwire: qcom: add support to missing transport
- params
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        vkoul@kernel.org
-Cc:     sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210226155814.27536-1-srinivas.kandagatla@linaro.org>
- <20210226155814.27536-2-srinivas.kandagatla@linaro.org>
- <00842f73-c0fb-5728-3ed0-c0a1fd75f94e@linux.intel.com>
- <31eca99d-9f84-e088-443b-9aae782c2df2@linaro.org>
- <06a687f6-e79c-9bad-32c2-ea61356f882e@linux.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <d0dc4c6f-cbd5-06e8-6ed8-234a55f9de9c@linaro.org>
-Date:   Wed, 3 Mar 2021 09:36:24 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=r/j20RVofkj/hPK0Wo3xRPO9YBuymSE3SUYDVG+qh8o=;
+        b=JENExQCsYluzoIbuewvuYilQL0Jomcec5mAksXfp9RvCydkq8O2mzEGExK0YLcMmZN
+         vBhf573VUd2sH2qrtH0ndiQmFGpG+n/4xWs4bjiXvM7VSds7l0Zy/bgYve69JDJ41Z5r
+         INceVCh9bzm9qExngVgOUdx9vTb7ECFOgX9BGBikH6LJBixkkCOBV6d1QI4eQVSn9UMY
+         sW/x0io8+qzMtNK1G/KLJOIvKFTqHXoRe09saUrMxVqzZdkG7Yt5NG++R8CJHkpSVXIw
+         rkHW4hWcLDReqKlocdIKyllyq9LZmVise7lg4VU0/CnBpjmlgYJ/+L250jhqMOIjxpQb
+         Y63g==
+X-Gm-Message-State: AOAM530byXSDCZErsceembvXZ9WBwH6Y0WWAXb7Gpq7UGArl0rl+fTnE
+        roazQuFaX6uiP+sGTqdLYq42ZdpteFvFtQX8Of0+E+8+pq61K/VRDMGpfV93qUdLQ2/0HHcvSuE
+        TAX5x56yfAxA9GWqZ9WZF/GRMctMR/75jcfttmOh9Zvcl6/cuyO2buPG+N+m7Ub3hLN0WxQhlt7
+        yR
+X-Received: by 2002:a17:906:33d9:: with SMTP id w25mr24858494eja.413.1614764202036;
+        Wed, 03 Mar 2021 01:36:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw9srdPqz0s4q1Xe5kvp25flWERjZA9N812PYdPFVO6+9MmFpJ6/Ozf7O8+uFN1+d2OxMxUQw==
+X-Received: by 2002:a17:906:33d9:: with SMTP id w25mr24858472eja.413.1614764201828;
+        Wed, 03 Mar 2021 01:36:41 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id o6sm2602785edw.24.2021.03.03.01.36.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 01:36:41 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: nVMX: Add CET entry/exit load bits to evmcs
+ unsupported list
+In-Reply-To: <20210303060435.8158-1-weijiang.yang@intel.com>
+References: <20210303060435.8158-1-weijiang.yang@intel.com>
+Date:   Wed, 03 Mar 2021 10:36:40 +0100
+Message-ID: <87h7lsefyv.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <06a687f6-e79c-9bad-32c2-ea61356f882e@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Yang Weijiang <weijiang.yang@intel.com> writes:
 
+> CET in nested guest over Hyper-V is not supported for now. Relevant
+> enabling patches will be posted as a separate patch series.
+>
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kvm/vmx/evmcs.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
+> index bd41d9462355..25588694eb04 100644
+> --- a/arch/x86/kvm/vmx/evmcs.h
+> +++ b/arch/x86/kvm/vmx/evmcs.h
+> @@ -59,8 +59,10 @@ DECLARE_STATIC_KEY_FALSE(enable_evmcs);
+>  	 SECONDARY_EXEC_SHADOW_VMCS |					\
+>  	 SECONDARY_EXEC_TSC_SCALING |					\
+>  	 SECONDARY_EXEC_PAUSE_LOOP_EXITING)
+> -#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL)
+> -#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL)
+> +#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL | \
+> +					VM_EXIT_LOAD_CET_STATE)
+> +#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | \
+> +					 VM_ENTRY_LOAD_CET_STATE)
+>  #define EVMCS1_UNSUPPORTED_VMFUNC (VMX_VMFUNC_EPTP_SWITCHING)
+>  
+>  #if IS_ENABLED(CONFIG_HYPERV)
 
-On 02/03/2021 14:29, Pierre-Louis Bossart wrote:
-> 
->>>>       for (i = 0; i < nports; i++) {
->>>>           ctrl->pconfig[i].si = si[i];
->>>>           ctrl->pconfig[i].off1 = off1[i];
->>>>           ctrl->pconfig[i].off2 = off2[i];
->>>>           ctrl->pconfig[i].bp_mode = bp_mode[i];
->>>> +        ctrl->pconfig[i].hstart = hstart[i];
->>>> +        ctrl->pconfig[i].hstop = hstop[i];
->>>> +        ctrl->pconfig[i].word_length = word_length[i];
->>>> +        ctrl->pconfig[i].blk_group_count = blk_group_count[i];
->>>> +        ctrl->pconfig[i].lane_control = lane_control[i];
->>>>       }
->>>
->>> I don't get why you test the values parsed from DT before writing the 
->>> registers. Why do test them here? if some values are incorrect it's 
->>> much better to provide an error log instead of writing a partially 
->>> valid setup to hardware, no?
->>
->> from DT we pass parameters for all the master ports, however some of 
->> these parameters are not really applicable for some of the ports! so 
->> the way we handle this is by marking them as 0xFF which means these 
->> values are not applicable for those ports! Having said that I think I 
->> should probably redefine SWR_INVALID_PARAM to QCOM_SWR_PARAM_NA or 
->> something on those lines!
-> 
-> Humm, do you have an example here? It's a bit odd to define DT 
+This should be enough when we run KVM on Hyper-V using eVMCS, however,
+it may not suffice when we run Hyper-V on KVM using eVMCS: there's still
+no corresponding eVMCS fields so CET can't be used. In case Hyper-V is
+smart enough it won't use the feature, however, it was proven to be 'not
+very smart' in the past, see nested_evmcs_filter_control_msr(). I'm
+wondering if we should also do
 
+diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
+index 41f24661af04..9f81db51fd8b 100644
+--- a/arch/x86/kvm/vmx/evmcs.c
++++ b/arch/x86/kvm/vmx/evmcs.c
+@@ -351,11 +351,11 @@ void nested_evmcs_filter_control_msr(u32 msr_index, u64 *pdata)
+        switch (msr_index) {
+        case MSR_IA32_VMX_EXIT_CTLS:
+        case MSR_IA32_VMX_TRUE_EXIT_CTLS:
+-               ctl_high &= ~VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
++               ctl_high &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
+                break;
+        case MSR_IA32_VMX_ENTRY_CTLS:
+        case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
+-               ctl_high &= ~VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
++               ctl_high &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
+                break;
+        case MSR_IA32_VMX_PROCBASED_CTLS2:
+                ctl_high &= ~SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES;
 
+to be on the safe side.
 
-In DT we describe parameters for each port in an array so, parameters 
-for ports that are not applicable/available for that platform can be 
-marked with 0xFF.
-
-Most importantly, Some of these registers are only implemented based on 
-the data ports. Ex: GROUP_CONTROL register is only implemented for data 
-ports that support Group Count other than 0. Like wise for HSTART/STOP 
-for Full Data ports only!
-So avoiding reading/writing to registers by passing 
-invalid/not-applicable value 0xFF made more sense!
-
-Here are some examples of controller instances on SM8250 SoC.
-
-soundwire-controller@3230000 {
-	reg = <0 0x3230000 0 0x2000>;
-	compatible = "qcom,soundwire-v1.5.1";
-	interrupts-extended = <&intc GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>,
-			<&pdc 109 IRQ_TYPE_LEVEL_HIGH>;
-	interrupt-names = "core", "wakeup";
-
-	qcom,clock-stop-mode0;
-	clocks = <&txmacro>;
-	clock-names = "iface";
-
-	qcom,din-ports = <5>;
-	qcom,dout-ports = <0>;
-	qcom,ports-sinterval-low = /bits/ 8 <0xFF 0x01 0x01 0x03 0x03>;
-	qcom,ports-offset1 = /bits/ 8 <0xFF 0x01 0x00 0x02 0x00>;
-	qcom,ports-offset2 = /bits/ 8 <0xFF 0x00 0x00 0x00 0x00>;
-	qcom,ports-block-pack-mode = /bits/ 8 <0xFF 0xFF 0xFF 0xFF 0xFF>;
-	qcom,ports-hstart = /bits/ 8 <0xFF 0xFF 0xFF 0xFF 0xFF>;
-	qcom,ports-hstop = /bits/ 8 <0xFF 0xFF 0xFF 0xFF 0xFF>;
-	qcom,ports-word-length = /bits/ 8 <0xFF 0xFF 0xFF 0xFF 0xFF>;
-	qcom,ports-block-group-count = /bits/ 8 <0xFF 0xFF 0xFF 0xFF 0xFF>;
-	qcom,ports-lane-control = /bits/ 8 <0xFF 0x00 0x01 0x00 0x01>;
-	qcom,port-offset = <1>;
-	#sound-dai-cells = <1>;
-	#address-cells = <2>;
-	#size-cells = <0>;
-};
-
-
-soundwire-controller@3210000 {
-	reg = <0 0x3210000 0 0x2000>;
-	compatible = "qcom,soundwire-v1.5.1";
-	interrupts = <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>;
-	clocks = <&rxmacro>;
-	clock-names = "iface";
-	qcom,clock-stop-mode0;
-	qcom,din-ports = <0>;
-	qcom,dout-ports = <5>;
-
-	qcom,ports-sinterval-low = /bits/ 8 <0x03 0x1F 0x1F 0x07 0x00>;
-	qcom,ports-offset1 = /bits/ 8 <0x00 0x00 0x0B 0x01 0x00>;
-	qcom,ports-offset2 = /bits/ 8 <0x00 0x00 0x0B 0x00 0x00>;
-	qcom,ports-hstart = /bits/ 8 <0xFF 0x03 0xFF 0xFF 0xFF>;
-	qcom,ports-hstop = /bits/ 8 <0xFF 0x06 0xFF 0xFF 0xFF>;
-	qcom,ports-word-length = /bits/ 8 <0x01 0x07 0x04 0xFF 0xFF>;
-	qcom,ports-block-pack-mode = /bits/ 8 <0xFF 0x00 0x01 0xFF 0xFF>;
-	qcom,ports-lane-control = /bits/ 8 <0x01 0x00 0x00 0x00 0x00>;
-	qcom,ports-block-group-count = /bits/ 8 <0xFF 0xFF 0xFF 0xFF 0x00>;
-
-	#sound-dai-cells = <1>;
-	#address-cells = <2>;
-	#size-cells = <0>;
-};
-> properties that may or may not be valid. If this is intentional and 
-> desired, this should still be captured somehow, e.g. in the bindings 
-> documentation or in the code with a comment, no?
-
-Yes, I agree with you on this, I should document this in bindings!
-
---srini
-
+-- 
+Vitaly
 
