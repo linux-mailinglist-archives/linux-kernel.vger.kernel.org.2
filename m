@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBCD32C40B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9174E32C412
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381228AbhCDAKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
+        id S240221AbhCDAKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:10:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449512AbhCCWvx (ORCPT
+        with ESMTP id S1391906AbhCCW62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:51:53 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BEFC061762
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 14:51:10 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id o11so19692148iob.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 14:51:10 -0800 (PST)
+        Wed, 3 Mar 2021 17:58:28 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C60BC0613DB
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 14:55:17 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id dm26so8716504edb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 14:55:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=jkzaHDmTkBHODt1WjVbgPR48CKiEaxtUsO+VNZNhYrg=;
-        b=ntt3x+/5daP2OHMLRkxesZxOn5fFMYhrAVnDEELfsLfjchH1bwaNvRb6a+5j23sPdH
-         eoMwJzQa0VySN5WvrGKcunWxWJ0VlcXNpEkp14cq0IU+p/cdGEW0905qVkPLseEdeO6w
-         nTig+SbDfWlJfcGlx13qtyahwexv94CMu+itWU7UBnQbgzlqKMAVBOtEEqib26qBCzjr
-         R309t8UVXPOOi4S8Bu6lkDtbn0WZ1WQEOu2nyOZw9KHHTSIrxVfdFiIy5CMxgkOnwXcE
-         kZyNmOeZb1BW+kFFsFUxs9TZNTeB4LFhlbmQN2uglFzmeH5oApt5uFvQot496kGoReL0
-         b+6A==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nNfmdMd0q/KJcPW/Pt2XOjgMWmsyCvOwypPBu+510F8=;
+        b=di36/4MerspWPQL3Hcu11fHLk90w33FzG8F9I72a+ih/Ph3wO5+iwcfG3gZdc1wx2K
+         4N7YuZdmj3W7dzyLiBk0pBPcxPKCgtuNNqjdUtMF4o30UBYDekj6LORZa2ywnCMOPsfd
+         Xtt2ySEJ4cByLi4V4gF8u7b024EixIKviB9vAHLgrKKgc1k6VSKXe5hdvHLsRMuVGuaC
+         qNRJ6N1CIaBAKSXBADNi7J/xkgxQaOtxVeDmgo9S2A5KnUhlJkuQ7LLMajiy8Wu0GMLt
+         iNYfAWEBtp2sPir90BDuUDCNcGnmsuv5xBlg3qazp2XfH7E1HqkWosB0ulNgTqX67JdV
+         qtPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jkzaHDmTkBHODt1WjVbgPR48CKiEaxtUsO+VNZNhYrg=;
-        b=gpbRP3MK+S9W9xjjAKR9XMrqZFWN+8NydliBf5mEuh6gHjSo17EV5pCOiUPRH1DMfO
-         fPeRWt/4cNvCOTYV2c2LqXkGoKmcU8Qd8wPPjKcoRuqNIdONCih51Y4J+N1Z70LgTbhT
-         QxvyLt17q17DN1xMp6XglRJicCTWQEPVkhsS0b8uBi/DPnylXnFdJB/xkxdPK012e9Nt
-         UVe/RLJkLeICmYtcb5dhAjsUVEsyLQfgcTYgBXBnJFwyeABWK8N2ekormXhAxkq69iLL
-         +HF6K3VqnhMKlh+tWU56N9LAehBtmOLNdUCyJQGz+GDGMp0yA7hvegc03PcO4B7dTGwA
-         KnOA==
-X-Gm-Message-State: AOAM5328+ZTDPVrybpS1wyU22c3/zi+zl4WyV9dXEO5Mpsnx40EHzUvB
-        QKUqbET/xCpdDo6l2HCaPG4oVA==
-X-Google-Smtp-Source: ABdhPJxcT/1+ki8D/dqM2vDVIGQ7Q7c9/G0PwbdOblR9vU7tZmdRZByv7K8+Rwqo1s7ZunQKRwELZA==
-X-Received: by 2002:a02:a889:: with SMTP id l9mr1234532jam.1.1614811869882;
-        Wed, 03 Mar 2021 14:51:09 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id y18sm3170152ili.16.2021.03.03.14.51.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 14:51:09 -0800 (PST)
-Subject: Re: memory leak in io_submit_sqes (2)
-To:     syzbot <syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000002261d05bca94f7b@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8494c673-180e-e0b9-4db7-04aed2aee791@kernel.dk>
-Date:   Wed, 3 Mar 2021 15:51:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nNfmdMd0q/KJcPW/Pt2XOjgMWmsyCvOwypPBu+510F8=;
+        b=EYuPESuMiGHgEH6cHQnVI+mq+wmgUHmx7BJd8oEF1izbV3TWOOlCmdvRgn3ash4wJI
+         rgIqY1JVKjmTXVFqWd34+pTAaZ0V9Y0AYKUA8Mz7avnWEWI9miwwLRL5SlyCNXea/9sP
+         IKGwFj1BEA2ld5Z4g56o31PFht6gfTQeczo/lL0bSZur7/4faoPS+9w+LrzqINhrjDud
+         ApEZUU4VxwKx0j+G6DVBhjCMmWSxNiI6gaW1vY/qUMWMy4+kLUl6lR+sMTeUV53D97Ws
+         wMJp8C316VNnFB04X91Nad9X33qmUs35j8edjDpNBAyzClc1es+fcj+xHtUQJNyZE2cw
+         hl5Q==
+X-Gm-Message-State: AOAM530BKjVaEGQgHlV9SdNZxTRH9g9c9aSk0Nb/f5HwKMwhKAa2CmoY
+        YXdkbzZFmCJDleHZvUdAYryCYFaZ5dFcbzb+umLL
+X-Google-Smtp-Source: ABdhPJyPKOFDLP4ZDIj9l7E7eyd/qGHvPBYKaGfRVFgSPGmbB0dG8m09mNyz2IEVAM1sB+qKVD0k1rI7v/yVQXju5D4=
+X-Received: by 2002:a50:ee05:: with SMTP id g5mr1412810eds.164.1614812115906;
+ Wed, 03 Mar 2021 14:55:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <00000000000002261d05bca94f7b@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000f022ff05bca3d9a3@google.com> <CAHC9VhT5DJzk9MVRHJtO7kR1RVkGW+WRx8xt_xGS01H3HLm3RA@mail.gmail.com>
+In-Reply-To: <CAHC9VhT5DJzk9MVRHJtO7kR1RVkGW+WRx8xt_xGS01H3HLm3RA@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 3 Mar 2021 17:55:04 -0500
+Message-ID: <CAHC9VhQrwHhi_ODP2zC5FrF2LvVMctp57hJ3JqmQ09Ej3nSpVg@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Write in cipso_v4_doi_putdef
+To:     syzbot <syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.dk/linux-block leak
+On Wed, Mar 3, 2021 at 11:20 AM Paul Moore <paul@paul-moore.com> wrote:
+> On Wed, Mar 3, 2021 at 10:53 AM syzbot
+> <syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    7a7fd0de Merge branch 'kmap-conversion-for-5.12' of git://..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=164a74dad00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=779a2568b654c1c6
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=521772a90166b3fca21f
+> > compiler:       Debian clang version 11.0.1-2
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+> > BUG: KASAN: use-after-free in atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
+> > BUG: KASAN: use-after-free in __refcount_sub_and_test include/linux/refcount.h:272 [inline]
+> > BUG: KASAN: use-after-free in __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+> > BUG: KASAN: use-after-free in refcount_dec_and_test include/linux/refcount.h:333 [inline]
+> > BUG: KASAN: use-after-free in cipso_v4_doi_putdef+0x2d/0x190 net/ipv4/cipso_ipv4.c:586
+> > Write of size 4 at addr ffff8880179ecb18 by task syz-executor.5/20110
+>
+> Almost surely the same problem as the others, I'm currently chasing
+> down a few remaining spots to make sure the fix I'm working on is
+> correct.
+
+I think I've now managed to convince myself that the patch I've got
+here is reasonable.  I'm looping over a series of tests right now and
+plan to let it continue overnight; assuming everything still looks
+good in the morning I'll post it.
+
+Thanks for your help.
 
 -- 
-Jens Axboe
-
+paul moore
+www.paul-moore.com
