@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD4B32BDD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D539332BDDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346766AbhCCQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:38:46 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13849 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352972AbhCCLzn (ORCPT
+        id S1346839AbhCCQiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:38:55 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9212 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358161AbhCCL4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:55:43 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DrC6K3q7Yz7rxF;
-        Wed,  3 Mar 2021 19:52:25 +0800 (CST)
-Received: from localhost (10.174.150.118) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Wed, 3 Mar 2021
- 19:54:00 +0800
-From:   <ann.zhuangyanying@huawei.com>
-To:     <pbonzini@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <weidong.huang@huawei.com>,
-        Zhuang Yanying <ann.zhuangyanying@huawei.com>
-Subject: [PATCH] KVM: x86: fix cpu hang due to tsc adjustment when kvmclock in use
-Date:   Wed, 3 Mar 2021 19:53:57 +0800
-Message-ID: <20210303115357.7464-1-ann.zhuangyanying@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Wed, 3 Mar 2021 06:56:22 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603f79370000>; Wed, 03 Mar 2021 03:55:35 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
+ 2021 11:55:34 +0000
+Received: from moonraker.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Mar 2021 11:55:32 +0000
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is present
+Date:   Wed, 3 Mar 2021 11:55:26 +0000
+Message-ID: <20210303115526.419458-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.150.118]
-X-CFilter-Loop: Reflected
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614772535; bh=4m4/54FIMd3nVyRMq6v7JqGzyu918YBQawVTaUMBx8I=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=TPCLIFKcv+wAz90NoF7wDd+GzlkGxwrcf/fCzuJ6d7VOED5nzc7bOwHPEgT12p8FM
+         5HunMahXtxxTrRmPhv9QUA1qVbnS4VZ+0Fz2blC2l05vzZG6OkA9OMl5i+5PbB2DDV
+         zXD6804I0dgUExmdoaeRTln+uE0cPZ4VIH9V0ayG4lT1Fke39YZzgBtcbe+wV309Mb
+         dyQj4BG0Sa5UlLhSHmnoTyQW2PPNc3lvphUqikiTiUhk+WIEC8dNcDaiDhj8OFVYNT
+         MH7lVhc8fJwI8Ei8CJT9LMghh7lR+Hypvt9a7A0UvdNokt5d7n4KvGYfGnu2TQ7wws
+         kF3aomKs1YqmA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhuang Yanying <ann.zhuangyanying@huawei.com>
+Many systems do not use ACPI and hence do not provide a DMI table. On
+non-ACPI systems a warning, such as the following, is printed on boot.
 
-If the TSC frequency of the VM is not equal to the host, hot-plugging vCPU
-will cause the VM to be hang. The time of hang depends on the current TSC
-value of the VM.
+ WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
 
-System time calculation of kvmclock is based on (tsc_timestamp, system_time),
-and adjusted by delta ( = rdtsc_ordered() - src->tsc_timestamp).The tsc of the
-hotplugged cpu is initialized to 0, which will trigger check_tsc_sync_target()
-to adjust the tsc of the hotplugged cpu according to another online cpu, that
-is, rdtsc_ordered() will change abruptly to a large value. Then system time
-based on kvmclock is modified at the same time.
+The variable 'dmi_available' is not exported and so currently cannot be
+used by kernel modules without adding an accessor. However, it is
+possible to use the function is_acpi_device_node() to determine if the
+sound card is an ACPI device and hence indicate if we expect a DMI table
+to be present. Therefore, call is_acpi_device_node() to see if we are
+using ACPI and only parse the DMI table if we are booting with ACPI.
 
-So after modifying the tsc offset, update vcpu->hv_clock immediately.
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
 ---
- Host:
-  Intel(R) Xeon(R) Gold 6161 CPU @ 2.20GHz
-  linux-5.11
-  qemu-5.1
-    <cpu mode='host-passthrough' check='none'>
-      <feature policy='require' name='invtsc'/>
-    </cpu>
-    <clock offset='utc'>
-      <timer name='hpet' present='no'/>
-      <timer name='pit' tickpolicy='delay'/>
-      <timer name='tsc' frequency='3000000000'/>
-    </clock>
- Guest:
-  Centos8.1 (4.18.0-147.el8.x86_64)
+Changes since V1:
+- Use is_acpi_device_node() to determine if we expect the DMI table to
+  be present.
 
- After Hotplug cpu, vm hang for 290s:
-  [  283.224026] CPU3 has been hot-added
-  [  283.226118] smpboot: Booting Node 0 Processor 3 APIC 0x3
-  [  283.226964] kvm-clock: cpu 3, msr 9e5e010c1, secondary cpu clock
-  [  283.247200] TSC ADJUST compensate: CPU3 observed 867529151959 warp. Adjust: 867529151959
-  [  572.445543] KVM setup async PF for cpu 3
-  [  572.446412] kvm-stealtime: cpu 3, msr a16ce5040
-  [  572.448108] Will online and init hotplugged CPU: 3
-  Feb 27 18:47:28 localhost kernel: CPU3 has been hot-added
-  Feb 27 18:47:28 localhost kernel: smpboot: Booting Node 0 Processor 3 APIC 0x3
-  Feb 27 18:47:28 localhost kernel: kvm-clock: cpu 3, msr 9e5e010c1, secondary cpu clock
-  Feb 27 18:47:28 localhost kernel: TSC ADJUST compensate: CPU3 observed 867529151959 warp. Adjust: 867529151959
-  Feb 27 18:47:28 localhost kernel: KVM setup async PF for cpu 3
-  Feb 27 18:47:28 localhost kernel: kvm-stealtime: cpu 3, msr a16ce5040
-  Feb 27 18:47:28 localhost kernel: Will online and init hotplugged CPU: 3
-  Feb 27 18:47:28 localhost systemd[1]: Started /usr/lib/udev/kdump-udev-throttler.
-  [  572.495181] clocksource: timekeeping watchdog on CPU2: Marking clocksource 'tsc' as unstable because the skew is too large:
-  [  572.495181] clocksource:                       'kvm-clock' wd_now: 86ab1286a2 wd_last: 4344b44d09 mask: ffffffffffffffff
-  [  572.495181] clocksource:                       'tsc' cs_now: ca313c563b cs_last: c9d88b54d2 mask: ffffffffffffffff
-  [  572.495181] tsc: Marking TSC unstable due to clocksource watchdog
-  [  572.495181] clocksource: Switched to clocksource kvm-clock
-  Feb 27 18:47:28 localhost kernel: clocksource: timekeeping watchdog on CPU2: Marking clocksource 'tsc' as unstable because the skew 
-  Feb 27 18:47:28 localhost kernel: clocksource:                       'kvm-clock' wd_now: 86ab1286a2 wd_last: 4344b44d09 mask: ffffff
-  Feb 27 18:47:28 localhost kernel: clocksource:                       'tsc' cs_now: ca313c563b cs_last: c9d88b54d2 mask: ffffffffffff
-  Feb 27 18:47:28 localhost kernel: tsc: Marking TSC unstable due to clocksource watchdog
-  Feb 27 18:47:28 localhost kernel: clocksource: Switched to clocksource kvm-clock
-  Feb 27 18:47:28 localhost systemd[1]: Started Getty on tty2.
-  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: kexec: unloaded kdump kernel
-  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: Stopping kdump: [OK]
-  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: kexec: loaded kdump kernel
-  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: Starting kdump: [OK]
----
- arch/x86/kvm/x86.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/soc-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3712bb5245eb..429206d65989 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3078,6 +3078,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			if (!msr_info->host_initiated) {
- 				s64 adj = data - vcpu->arch.ia32_tsc_adjust_msr;
- 				adjust_tsc_offset_guest(vcpu, adj);
-+				kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
- 			}
- 			vcpu->arch.ia32_tsc_adjust_msr = data;
- 		}
--- 
-2.23.0
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f6d4e99b590c..0cffc9527e28 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -31,6 +31,7 @@
+ #include <linux/of.h>
+ #include <linux/of_graph.h>
+ #include <linux/dmi.h>
++#include <linux/acpi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -1573,6 +1574,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, c=
+onst char *flavour)
+ 	if (card->long_name)
+ 		return 0; /* long name already set by driver or from DMI */
+=20
++	if (!is_acpi_device_node(card->dev->fwnode))
++		return 0;
++
+ 	/* make up dmi long name as: vendor-product-version-board */
+ 	vendor =3D dmi_get_system_info(DMI_BOARD_VENDOR);
+ 	if (!vendor || !is_dmi_valid(vendor)) {
+--=20
+2.25.1
 
