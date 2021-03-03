@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D179732BBFC
+	by mail.lfdr.de (Postfix) with ESMTP id 5F35932BBFB
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382931AbhCCNbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:31:46 -0500
-Received: from smtprelay0022.hostedemail.com ([216.40.44.22]:58352 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1379692AbhCCIVB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:21:01 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3F59F180CE5FF;
+        id S1382817AbhCCNbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:31:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:32948 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1379675AbhCCIVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:21:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2075AAD57;
         Wed,  3 Mar 2021 08:20:18 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2736:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3871:3874:4321:4605:5007:6119:6742:7652:10004:10400:10848:11026:11232:11473:11658:11914:12043:12048:12296:12297:12438:12740:12895:13439:13894:14096:14097:14659:14721:21080:21451:21611:21627:21939:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: snake87_191524c276c3
-X-Filterd-Recvd-Size: 3585
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  3 Mar 2021 08:20:15 +0000 (UTC)
-Message-ID: <aed5d2b78c4ac121ca0cf46107334673a3c9a586.camel@perches.com>
-Subject: Re: [PATCH v2 08/10] fsdax: Dedup file range to use a compare
- function
-From:   Joe Perches <joe@perches.com>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
-Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Date:   Wed, 03 Mar 2021 00:20:14 -0800
-In-Reply-To: <20210226002030.653855-9-ruansy.fnst@fujitsu.com>
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
-         <20210226002030.653855-9-ruansy.fnst@fujitsu.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: Re: [RFC PATCH v1 1/6] badblocks: add more helper structure and
+ routines in badblocks.h
+To:     Coly Li <colyli@suse.de>, linux-block@vger.kernel.org,
+        axboe@kernel.dk, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, neilb@suse.de
+Cc:     antlists@youngman.org.uk, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org
+References: <20210302040252.103720-1-colyli@suse.de>
+ <20210302040252.103720-2-colyli@suse.de>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <96a899a9-151e-ff8c-c61c-900df1122357@suse.de>
+Date:   Wed, 3 Mar 2021 09:20:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210302040252.103720-2-colyli@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-26 at 08:20 +0800, Shiyang Ruan wrote:
-> With dax we cannot deal with readpage() etc. So, we create a dax
-> comparison funciton which is similar with
-> vfs_dedupe_file_range_compare().
-> And introduce dax_remap_file_range_prep() for filesystem use.
-[]
-> diff --git a/fs/dax.c b/fs/dax.c
-[]
-> @@ -1856,3 +1856,54 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,l
->  	return dax_insert_pfn_mkwrite(vmf, pfn, order);
->  }
->  EXPORT_SYMBOL_GPL(dax_finish_sync_fault);
+On 3/2/21 5:02 AM, Coly Li wrote:
+> This patch adds the following helper structure and routines into
+> badblocks.h,
+> - struct bad_context
+>   This structure is used in improved badblocks code for bad table
+>   iteration.
+> - BB_END()
+>   The macro to culculate end LBA of a bad range record from bad
+>   table.
+> - badblocks_full() and badblocks_empty()
+>   The inline routines to check whether bad table is full or empty.
+> - set_changed() and clear_changed()
+>   The inline routines to set and clear 'changed' tag from struct
+>   badblocks.
+> 
+> These new helper structure and routines can help to make the code more
+> clear, they will be used in the improved badblocks code in following
+> patches.
+> 
+> Signed-off-by: Coly Li <colyli@suse.de>
+> ---
+>  include/linux/badblocks.h | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/include/linux/badblocks.h b/include/linux/badblocks.h
+> index 2426276b9bd3..166161842d1f 100644
+> --- a/include/linux/badblocks.h
+> +++ b/include/linux/badblocks.h
+> @@ -15,6 +15,7 @@
+>  #define BB_OFFSET(x)	(((x) & BB_OFFSET_MASK) >> 9)
+>  #define BB_LEN(x)	(((x) & BB_LEN_MASK) + 1)
+>  #define BB_ACK(x)	(!!((x) & BB_ACK_MASK))
+> +#define BB_END(x)	(BB_OFFSET(x) + BB_LEN(x))
+>  #define BB_MAKE(a, l, ack) (((a)<<9) | ((l)-1) | ((u64)(!!(ack)) << 63))
+>  
+>  /* Bad block numbers are stored sorted in a single page.
+> @@ -41,6 +42,14 @@ struct badblocks {
+>  	sector_t size;		/* in sectors */
+>  };
+>  
+> +struct bad_context {
+> +	sector_t	start;
+> +	sector_t	len;
+> +	int		ack;
+> +	sector_t	orig_start;
+> +	sector_t	orig_len;
+> +};
 > +
-> +static loff_t dax_range_compare_actor(struct inode *ino1, loff_t pos1,
-> +		struct inode *ino2, loff_t pos2, loff_t len, void *data,
-> +		struct iomap *smap, struct iomap *dmap)
-> +{
-> +	void *saddr, *daddr;
-> +	bool *same = data;
-> +	int ret;
-> +
-> +	while (len) {
-> +		if (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE)
-> +			goto next;
-> +
-> +		if (smap->type == IOMAP_HOLE || dmap->type == IOMAP_HOLE) {
-> +			*same = false;
-> +			break;
-> +		}
-> +
-> +		ret = dax_iomap_direct_access(smap, pos1,
-> +			ALIGN(pos1 + len, PAGE_SIZE), &saddr, NULL);
-> +		if (ret < 0)
-> +			return -EIO;
-> +
-> +		ret = dax_iomap_direct_access(dmap, pos2,
-> +			ALIGN(pos2 + len, PAGE_SIZE), &daddr, NULL);
-> +		if (ret < 0)
-> +			return -EIO;
-> +
-> +		*same = !memcmp(saddr, daddr, len);
-> +		if (!*same)
-> +			break;
-> +next:
-> +		len -= len;
-> +	}
-> +
-> +	return 0;
-> +}
+Maybe rename it to 'badblocks_context'.
+It's not the context which is bad ...
 
-This code looks needlessly complex.
+Cheers,
 
-len is never decremented inside the while loop so the while loop
-itself looks unnecessary.  Is there some missing decrement of len
-or some other reason to use a while loop?
-
-Is dax_iomap_direct_access some ugly macro that modifies a hidden len?
-
-Why not remove the while loop and use straightforward code without
-unnecessary indentatation?
-
-{
-	void *saddr;
-	void *daddr;
-	bool *same = data;
-	int ret;
-
-	if (!len ||
-	    (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE))
-		return 0;
-
-	if (smap->type == IOMAP_HOLE || dmap->type == IOMAP_HOLE) {
-		*same = false;
-		return 0;
-	}
-
-	ret = dax_iomap_direct_access(smap, pos1, ALIGN(pos1 + len, PAGE_SIZE),
-				      &saddr, NULL);
-	if (ret < 0)
-		return -EIO;
-
-	ret = dax_iomap_direct_access(dmap, pos2, ALIGN(pos2 + len, PAGE_SIZE),
-				      &daddr, NULL);
-	if (ret < 0)
-		return -EIO;
-
-	*same = !memcmp(saddr, daddr, len);
-
-	return 0;
-}	
-
-I didn't look at the rest.
-
+Hannes
+-- 
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 NÃ¼rnberg
+HRB 36809 (AG NÃ¼rnberg), GF: Felix ImendÃ¶rffer
