@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D8732C45A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5941932C3DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238115AbhCDANU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
+        id S1354353AbhCDAIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390183AbhCCWCA (ORCPT
+        with ESMTP id S234281AbhCCWH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:02:00 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC523C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 13:52:55 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id x24so32848pfn.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 13:52:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U4O+yoeWHzagedfUZbZH3qiIab8SJ8X8eM+Tksp4UhY=;
-        b=YYN0VZ5WcAWAdy5YeXEE1zzzPSpAz9ryE+zz2Xjricab0JVxyluPP4MCa4XoxvZyfy
-         PfoXpn+gE9tdYbkr5nG+wTiMmd0FKuwgAulwdpx7KWHw8T7g/kR8Q+EDGF6YJwapvUHQ
-         BTZa6v14yrVnKiN9VM1L5Am+qXRvEVRvEOeE4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U4O+yoeWHzagedfUZbZH3qiIab8SJ8X8eM+Tksp4UhY=;
-        b=KxYx8jtj81RZqXZoEqNZY5pcGPsk68KPts0DFUUdhwVIbENLGKGvN6wXvcNjN6V/o/
-         s3B8ZH4UH5vw9VMRxoL1jsDawiq1Clua8+9kJQjkjmUzxx+teiXUgZRlOCXVwUeKnv5D
-         h2jq4/ZizWy0Le2AqIch9uiFh7WAsKxdf0s66mGpTBCxodYONoZbFr0EX/fyhRPCHr5S
-         Hg6nbfBXSDIcoUd+9pbHLFAQHS1CM1+hL720kwIaKWfdAhrQXz/AoH+r6/+IOOLQoB0P
-         cd0AQAgK/XiuhFarx+P0chw5GNZDafjIZqw2KKhOWfsgui/ZNiM61Hc3huxSuYJfSXlA
-         fc7Q==
-X-Gm-Message-State: AOAM530L4gK5ND7O+fPwJgxfAARha3jtnQCd/JJguFxkoZkzAe36jT17
-        DI+9++8/ftVhPHvwrTx7z2npjA==
-X-Google-Smtp-Source: ABdhPJzRbr7qT0eiEBpzaXHBBfgfy8P7f5UDk1iAQYT1T8aUAdJl816Nk43z6fbffM6tjXW+X0hvoA==
-X-Received: by 2002:a63:3e03:: with SMTP id l3mr427004pga.452.1614808375205;
-        Wed, 03 Mar 2021 13:52:55 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k69sm25568517pfd.4.2021.03.03.13.52.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 13:52:54 -0800 (PST)
-Date:   Wed, 3 Mar 2021 13:52:53 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Frank Eigler <fche@redhat.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <202103031334.8D898CA@keescook>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210302232649.y2tutffhxsblwqlb@treble>
- <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
- <20210303191516.6ksxmng4pis7ue4p@treble>
- <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
- <20210303193806.oovupl4ubtkkyiih@treble>
- <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
+        Wed, 3 Mar 2021 17:07:29 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8433C061765;
+        Wed,  3 Mar 2021 13:56:35 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 8B8851F45F5B
+Message-ID: <22a8ea464f4c7dcb7a90889f53d85f003b7c739a.camel@collabora.com>
+Subject: Re: [PATCH v4 03/11] media: hantro: change hantro_codec_ops run
+ prototype to return errors
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, peng.fan@nxp.com,
+        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Date:   Wed, 03 Mar 2021 18:56:23 -0300
+In-Reply-To: <20210303113952.178519-4-benjamin.gaignard@collabora.com>
+References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
+         <20210303113952.178519-4-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:57:33AM -0800, Linus Torvalds wrote:
-> End result: gcc plugins are pure garbage, and you should shun them. If
+On Wed, 2021-03-03 at 12:39 +0100, Benjamin Gaignard wrote:
+> Change hantro_codec_ops run prototype from 'void' to 'int'.
+> This allow to cancel the job if an error occur while configuring
+> the hardware.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  drivers/staging/media/hantro/hantro_drv.c     |  4 +++-
+>  .../staging/media/hantro/hantro_g1_h264_dec.c |  6 ++++--
+>  .../media/hantro/hantro_g1_mpeg2_dec.c        |  4 +++-
+>  .../staging/media/hantro/hantro_g1_vp8_dec.c  |  6 ++++--
+>  .../staging/media/hantro/hantro_h1_jpeg_enc.c |  4 +++-
+>  drivers/staging/media/hantro/hantro_hw.h      | 19 ++++++++++---------
+>  .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |  4 +++-
+>  .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |  4 +++-
+>  .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |  6 ++++--
+>  9 files changed, 37 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index e5f200e64993..ac1429f00b33 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -161,7 +161,9 @@ static void device_run(void *priv)
+>  
+>         v4l2_m2m_buf_copy_metadata(src, dst, true);
+>  
+> -       ctx->codec_ops->run(ctx);
+> +       if (ctx->codec_ops->run(ctx))
+> +               goto err_cancel_job;
+> +
+>         return;
+>  
+>  err_cancel_job:
+> diff --git a/drivers/staging/media/hantro/hantro_g1_h264_dec.c b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
+> index 845bef73d218..fcd4db13c9fe 100644
+> --- a/drivers/staging/media/hantro/hantro_g1_h264_dec.c
+> +++ b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
+> @@ -273,13 +273,13 @@ static void set_buffers(struct hantro_ctx *ctx)
+>         vdpu_write_relaxed(vpu, ctx->h264_dec.priv.dma, G1_REG_ADDR_QTABLE);
+>  }
+>  
+> -void hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
+> +int hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
+>  {
+>         struct hantro_dev *vpu = ctx->dev;
+>  
+>         /* Prepare the H264 decoder context. */
+>         if (hantro_h264_dec_prepare_run(ctx))
+> -               return;
+> +               return -EINVAL;
 
-I think that's pretty harsh, but okay, opinions are opinions. As Josh
-says, people are interested in them for not-uncommon real-world uses:
+This should be returning the value from hantro_h264_dec_prepare_run.
 
-- stackleak has data-lifetime wiping coverage that -ftrivial-auto-var-init=zero
-  for either Clang or GCC doesn't cover. There are no plans to provide
-  such coverage under Clang yet. It's arguable that stackleak's benefits
-  are smaller than it's maintenance burden compared to having
-  -ftrivial-auto-var-init=zero, but we can have that conversation when
-  we get there. :)
+Thanks!
+Ezequiel
 
-- structleak is likely to vanish as soon as GCC supports
-  -ftrivial-auto-var-init=zero. Clang's implementation is done and in
-  use by every Clang-built kernel I know of.
-
-- latent_entropy is likely less useful since the jitter entropy was added,
-  but I've not seen anyone analyze it. No "upstream" GCC nor Clang support
-  is planned.
-
-- arm32 per-task stack protector canary meaningfully reduces the risk of
-  stack content exposures vs stack frame overwrites, but neither GCC
-  nor Clang seem interested in implementing this "correctly" (as done
-  for arm64 on GCC -- Clang doesn't have this for arm64 yet). I want this
-  fixed for arm64 on Clang, and maybe arm32 can be done at the same time.
-
-- randstruct is likely not used for distro kernels, but very much for
-  end users where security has a giant priority over performance.
-  There's no "upstream" GCC plan for this, and the Clang support has
-  stalled.
-
-> you really believe you need compiler plugins, you should look at
-> clang.
-
-This is currently true only in 1 case (structleak), and only a few
-"traditional" distros are building the kernel with Clang right now. I
-don't disagree: doing this via LLVM IR would be much easier, but the
-implementations for the other above features don't exist yet. I expect
-this to change over time (I expect Clang's randstruct and GCC's
--ftrivial-auto-var-init=zero to likely be the next two things to
-appear), but it's not the case right now.
-
--- 
-Kees Cook
