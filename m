@@ -2,169 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B291A32C21A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6C732C21F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387736AbhCCTdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:33:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387042AbhCCTPS (ORCPT
+        id S1387768AbhCCTdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:33:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43818 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1387218AbhCCTQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:15:18 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4B8C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 11:14:38 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id e9so4986066pjj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 11:14:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=k4jBZrFbV5z5C+8VpzHIjWbEzvPUkgb89xssp4fGpJY=;
-        b=r9/TcZaLLPtkrbWxQm5ZqCCvdnLL138WIXcHAkp4uJ44kSq892Nde99fe0Z9wuh6Fq
-         QHDhi2UmvACYcjTgvWzBojSyGD8q9nJeeRGBRN4gQehgj/Cmhwvf3iAheplKRy22l3Au
-         KpMFDOCeTxHej/CuwOS4kPtTif/ztYOORF/jb+5VptwODSNQUn59I6jduHXX4yPxZhVP
-         2ulz4KcYSFe0Wjolb9sIX30psLeoprlxFBs9lFp+ElysN3/0QIkln+jRWVZYAWtTBUXK
-         7UL7KhqWdiFx//r4rG6Ip75S5C6KQzMBYWFm6Z8nufWvT63zH1MoSTdIujV2+idqb7Es
-         MEJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=k4jBZrFbV5z5C+8VpzHIjWbEzvPUkgb89xssp4fGpJY=;
-        b=rt4OfHe2nNmDLYQpv9W+XS8ikME8MWj6AVEZIuzur4P78buPAgRcSc7zNBujPSYCfS
-         MlIFTKGocitYEslTEd68D1w12WEwy39OQs4Jp+LKcvBfyoVlB8bm9INQWONLKRVg8tsX
-         nzDItwSuc3Ajo2Ppme7hi4iMClNYjDOR5iDdChUhq97b+rSQ//rTJTVnfhpcGcWszAsc
-         /HRJ8vmyilDyILBo7yJaGe9xysj7LYmv37ygECIJ0HtSELjknT7CHWQgkZSF0cJzweJk
-         EbbO/kDZtNuEdLZTUH3D4VlQwAJ3gJ9bvl1bRIEZR1sxd6CXsyS6lFrcLFGrAQ9yyf6U
-         FF4w==
-X-Gm-Message-State: AOAM533MmeptuHW8xDHskxqs+dt8wCr1Dh/N3cdJod+VL+zay3q20wlP
-        0KhpypU0QuluUaUjme7JepLA5Q==
-X-Google-Smtp-Source: ABdhPJwcIrb5IbtzbgJ0PzMEfiISby6O5NvZxZfvV/2oRTzXzdv64m6kabldrocwVcHKTKFcSI3GEg==
-X-Received: by 2002:a17:902:b089:b029:e3:28:b8ee with SMTP id p9-20020a170902b089b02900e30028b8eemr615480plr.84.1614798878128;
-        Wed, 03 Mar 2021 11:14:38 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:d817:cd13:9030:8391? ([2601:646:c200:1ef2:d817:cd13:9030:8391])
-        by smtp.gmail.com with ESMTPSA id k5sm7076673pjl.50.2021.03.03.11.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 11:14:37 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Why do kprobes and uprobes singlestep?
-Date:   Wed, 3 Mar 2021 11:14:36 -0800
-Message-Id: <39348848-C213-4739-B002-5BFACDA981C1@amacapital.net>
-References: <20210303181111.th5ukrfzrmyuvk5x@maharaja.localdomain>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        Wed, 3 Mar 2021 14:16:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614798927;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bz4CI8McQx8p5ZXoYfBIb+l3Y+3kXiSbTdBrsMcZ7oY=;
+        b=MzVEhKhwIJ70Rahy3Kz2UmOn+jFioJWHkI+tvl88zc9iA7Oyl2rsdsXLY7BKRhLQmmzPh5
+        37Mkjj38vJcgY9FGXFMKoho/LPehJQsuJSTLJcPzF11BaUhJi02C0y/95v5pk+WCBwdcJg
+        +YIHLBzEBxBEJGvr146YJ0KX9jfsUBc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-METF-eXEMFmv3tb7sfismw-1; Wed, 03 Mar 2021 14:15:23 -0500
+X-MC-Unique: METF-eXEMFmv3tb7sfismw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BF4A9F934;
+        Wed,  3 Mar 2021 19:15:21 +0000 (UTC)
+Received: from treble (ovpn-114-218.rdu2.redhat.com [10.10.114.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E3D4E58821;
+        Wed,  3 Mar 2021 19:15:18 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 13:15:16 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-In-Reply-To: <20210303181111.th5ukrfzrmyuvk5x@maharaja.localdomain>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-X-Mailer: iPhone Mail (18D52)
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <20210303191516.6ksxmng4pis7ue4p@treble>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <20210302232649.y2tutffhxsblwqlb@treble>
+ <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 04, 2021 at 03:49:35AM +0900, Masahiro Yamada wrote:
+> > This problem is becoming more prevalent.  We will need to fix it one way
+> > or another, if we want to support distro adoption of these GCC
+> > plugin-based features.
+> >
+> > Frank suggested a possibly better idea: always rebuild the plugins when
+> > the GCC version changes.
+> 
+> 
+> That is just another form of the previous patch,
+> which was already rejected.
+> 
+> 
+> - That is a hack just for external modules
+> - Our consensus is, use the same version for the kernel and external modules
+> 
+> 
+> 
+> I use Ubuntu, and I do not see such a problem.
+> (I have never seen it on Debian either, except sid.)
+> 
+> I see Fedora providing GCC whose version is different
+> from the one used for building the kernel.
+> That is a problem on the distribution side.
 
-> On Mar 3, 2021, at 10:11 AM, Daniel Xu <dxu@dxuuu.xyz> wrote:
->=20
-> =EF=BB=BFOn Tue, Mar 02, 2021 at 06:18:23PM -0800, Alexei Starovoitov wrot=
-e:
->>> On Tue, Mar 2, 2021 at 5:46 PM Andy Lutomirski <luto@amacapital.net> wro=
-te:
->>>=20
->>>=20
->>>> On Mar 2, 2021, at 5:22 PM, Alexei Starovoitov <alexei.starovoitov@gmai=
-l.com> wrote:
->>>>=20
->>>> =EF=BB=BFOn Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapita=
-l.net> wrote:
->>>>>=20
->>>>>=20
->>>>>>> On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@=
-gmail.com> wrote:
->>>>>>=20
->>>>>> =EF=BB=BFOn Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel=
-.org> wrote:
->>>>>>>=20
->>>>>>> Is there something like a uprobe test suite?  How maintained /
->>>>>>> actively used is uprobe?
->>>>>>=20
->>>>>> uprobe+bpf is heavily used in production.
->>>>>> selftests/bpf has only one test for it though.
->>>>>>=20
->>>>>> Why are you asking?
->>>>>=20
->>>>> Because the integration with the x86 entry code is a mess, and I want t=
-o know whether to mark it BROKEN or how to make sure the any cleanups actual=
-ly work.
->>>>=20
->>>> Any test case to repro the issue you found?
->>>> Is it a bug or just messy code?
->>>=20
->>> Just messy code.
->>>=20
->>>> Nowadays a good chunk of popular applications (python, mysql, etc) has
->>>> USDTs in them.
->>>> Issues reported with bcc:
->>>> https://github.com/iovisor/bcc/issues?q=3Dis%3Aissue+USDT
->>>> Similar thing with bpftrace.
->>>> Both standard USDT and semaphore based are used in the wild.
->>>> uprobe for containers has been a long standing feature request.
->>>> If you can improve uprobe performance that would be awesome.
->>>> That's another thing that people report often. We optimized it a bit.
->>>> More can be done.
->>>=20
->>>=20
->>> Wait... USDT is much easier to implement well.  Are we talking just USDT=
- or are we talking about general uprobes in which almost any instruction can=
- get probed?  If the only users that care about uprobes are doing USDT, we c=
-ould vastly simplify the implementation and probably make it faster, too.
->>=20
->> USDTs are driving the majority of uprobe usage.
->=20
-> I'd say 50/50 in my experience. Larger userspace applications using bpf
-> for production monitoring tend to use USDT for stability and ABI reasons
-> (hard for bpf to read C++ classes). Bare uprobes (ie not USDT) are used
-> quite often for ad-hoc production debugging.
->=20
->> If they can get faster it will increase their adoption even more.
->> There are certainly cases of normal uprobes.
->> They are at the start of the function 99% of the time.
->> Like the following:
->> "uprobe:/lib64/libc.so:malloc(u64 size):size:size,_ret",
->> "uprobe:/lib64/libc.so:free(void *ptr)::ptr",
->> is common despite its overhead.
->>=20
->> Here is the most interesting and practical usage of uprobes:
->> https://github.com/iovisor/bcc/blob/master/tools/sslsniff.py
->> and the manpage for the tool:
->> https://github.com/iovisor/bcc/blob/master/tools/sslsniff_example.txt
->>=20
->> uprobe in the middle of the function is very rare.
->> If the kernel starts rejecting uprobes on some weird instructions
->> I suspect no one will complain.
->=20
-> I think it would be great if the kernel could reject mid-instruction
-> uprobes. Unlike with kprobes, you can place uprobes on immediate
-> operands which can cause silent data corruption. See
-> https://github.com/iovisor/bpftrace/pull/803#issuecomment-507693933
-> for a funny example.
+I don't understand.  Are you suggesting that a distro should always
+release GCC and kernel updates simultaneously?
 
-This can=E2=80=99t be done in general on x86. One cannot look at code and fi=
-nd the instruction boundaries.
+How is this problem specific to Fedora?  Please be specific about what
+Ubuntu and Debian do, which Fedora doesn't do.
 
->=20
-> To prevent accidental (and silent) data corruption, bpftrace uses a
-> disassembler to ensure uprobes are placed on instruction boundaries.
->=20
-> <...>
->=20
-> Daniel
+Adding Linus, who indicated in another thread that we shouldn't force
+exact GCC versions because there's no technical reason to do so.
+
+-- 
+Josh
+
