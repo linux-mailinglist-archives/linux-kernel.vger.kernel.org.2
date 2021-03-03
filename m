@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2049E32BDF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5519932BDF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384962AbhCCQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:39:54 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39385 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239577AbhCCMFO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:05:14 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UQFn22N_1614772990;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UQFn22N_1614772990)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Mar 2021 20:03:11 +0800
-Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
- SGX_INVALID_SIGNATURE
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
- <YDy51R2Wva7s+k/x@kernel.org>
- <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
- <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <870e9a2e-65dd-131d-78c2-24de1ffffd31@linux.alibaba.com>
-Date:   Wed, 3 Mar 2021 20:03:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S1385031AbhCCQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:40:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234646AbhCCMHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:07:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F056148E;
+        Wed,  3 Mar 2021 12:06:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614773195;
+        bh=LLxjeivOlnK1I7vYA6dpUWq+M3OE00MAiU+GvR9rVkw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Z+88v9hVHb+j/C2U4QnnFuccsYx5jaACZhOdi+OYHwU1YtvPpCp3DNVi2LkE7YUzP
+         k2Z5vb4+LcLBMBcUITBSolwj/7WgFXrRdv/iLBqFSafvGXYu5p2mp8DjLjyjXDL6IW
+         sb0eDDDNODDZCf5DkS2agbmV3oWcjobcSvsfiXLsipE2hmxM2f24v23GG3sguCiQ9p
+         vflSJLt59flFjGlwnY7MxAzt1UL0YEc1q5XQW4DPXDN97n7Az/Id16p4bg3T2DoBH5
+         Jigge6niBpce7I3on/cyQcVgsAcSmnpNeVjmylfFYY8gHHNE7P/0XzjmK5lyfu9Is7
+         n/MuDd86q7+jA==
+Received: by mail-lj1-f171.google.com with SMTP id p15so19380061ljc.13;
+        Wed, 03 Mar 2021 04:06:35 -0800 (PST)
+X-Gm-Message-State: AOAM53196E/mXouBRXKeLX37VL0cVOE9D6npZIxgF8nj3AW+3YI5LSW9
+        /UVQaVBH0GQGKde2BinzIV1g/ukXVJQr9br9WzQ=
+X-Google-Smtp-Source: ABdhPJztGn+/1FbW6Bs9appTQ/KNmSvi+QrDcPxVpPJOWvSNN5ODcWjU5SY+33uadcXTnhFyhcJM6tN63331W1ItBBY=
+X-Received: by 2002:a2e:994e:: with SMTP id r14mr15169293ljj.115.1614773193338;
+ Wed, 03 Mar 2021 04:06:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210303080410.178702-1-zhang.yunkai@zte.com.cn>
+In-Reply-To: <20210303080410.178702-1-zhang.yunkai@zte.com.cn>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 3 Mar 2021 20:06:22 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRGyOV_14TjHrW6FAXAE0h56Nos+3PbaAOu_WHSQyTasw@mail.gmail.com>
+Message-ID: <CAJF2gTRGyOV_14TjHrW6FAXAE0h56Nos+3PbaAOu_WHSQyTasw@mail.gmail.com>
+Subject: Re: [PATCH] module: remove duplicate include in arch/csky/kernel/entry.S
+To:     menglong8.dong@gmail.com
+Cc:     linux-csky@vger.kernel.org, zhang.yunkai@zte.com.cn,
+        jiulong@linux.alibaba.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thx, looks good for me.
+
+On Wed, Mar 3, 2021 at 4:04 PM <menglong8.dong@gmail.com> wrote:
+>
+> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+>
+> 'asm/setup.h' included in 'arch/csky/kernel/entry.S' is duplicated.
+>
+> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+> ---
+>  arch/csky/kernel/entry.S | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/csky/kernel/entry.S b/arch/csky/kernel/entry.S
+> index c1bd7a6b4ab6..00e3c8ebf9b8 100644
+> --- a/arch/csky/kernel/entry.S
+> +++ b/arch/csky/kernel/entry.S
+> @@ -9,7 +9,6 @@
+>  #include <asm/unistd.h>
+>  #include <asm/asm-offsets.h>
+>  #include <linux/threads.h>
+> -#include <asm/setup.h>
+>  #include <asm/page.h>
+>  #include <asm/thread_info.h>
+>
+> --
+> 2.25.1
+>
 
 
-On 3/2/21 1:54 PM, Andy Lutomirski wrote:
-> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
-> <tianjia.zhang@linux.alibaba.com> wrote:
->>
->>
->>
->> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
->>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
->>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
->>>
->>> What does determine this?
->>>
->>>> In this case, the valid portion of q2 is reordered reversely for
->>>> little endian order, and the remaining portion is filled with zero.
->>>
->>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
->>>
->>> I'm lacking these details:
->>>
->>> 1. Why the length of Q2 can vary?
->>> 2. Why reversing the bytes is the correct measure to counter-measure
->>>      this variation?
->>>
->>> /Jarkko
->>>
->>
->> When use openssl to generate a key instead of using the built-in
->> sign_key.pem, there is a probability that will encounter this problem.
->>
->> Here is a problematic key I encountered. The calculated q1 and q2 of
->> this key are both 383 bytes, If the length is not processed, the
->> hardware signature will fail.
-> 
-> Presumably the issue is that some keys have parameters that have
-> enough leading 0 bits to be effectively shorter.  The openssl API
-> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
-> variable-size integers.
-> 
+-- 
+Best Regards
+ Guo Ren
 
-I agree with your opinion.
-
-Thanks,
-Tianjia
+ML: https://lore.kernel.org/linux-csky/
