@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189E732BAAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1C732BB3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349618AbhCCLti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:49:38 -0500
-Received: from mga09.intel.com ([134.134.136.24]:26554 "EHLO mga09.intel.com"
+        id S236873AbhCCMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:15:56 -0500
+Received: from m12-15.163.com ([220.181.12.15]:55473 "EHLO m12-15.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235229AbhCCEIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 23:08:48 -0500
-IronPort-SDR: R0elyS9hq+RhQbA9nDFV0v6C9KAw56s/FyRyNYFvDfExxWBAoTYymRJ7kyL/bR2chB1sUlGDyD
- eNtvhkLbwrvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="187208253"
-X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
-   d="scan'208";a="187208253"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 20:08:03 -0800
-IronPort-SDR: 6JOYJ6aBjXDsTvfNE18IvXvNacFMncaIzyC3On+Kl0FC2bUn/DjHPi2VdCy85nepbya1bbQ1Rx
- /mGjtM9oDFvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
-   d="scan'208";a="407056226"
-Received: from intel-z390-ud.iind.intel.com ([10.223.96.21])
-  by orsmga008.jf.intel.com with ESMTP; 02 Mar 2021 20:07:59 -0800
-From:   ramesh.babu.b@intel.com
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Ramesh Babu B <ramesh.babu.b@intel.com>
-Subject: [PATCH net 1/1] net: stmmac: fix incorrect DMA channel intr enable setting of EQoS v4.10
-Date:   Wed,  3 Mar 2021 20:38:40 +0530
-Message-Id: <20210303150840.30024-1-ramesh.babu.b@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1355566AbhCCGtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:49:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Y5I94
+        cTExtGaMRThkHngPoCwB3fvdKWQc1AhklMV9I4=; b=Ne5cucJzNtpXb3PgIB1gz
+        /fj3MySWqIocJgPjtNrLbZEX4oEzOYTzuaBLZxvjU0O4sQLG90VPdZ93t0sCCfQB
+        NZx2m8DTDJDW2h8FUcN2Z9DeRBO0SNrN3xKI5x7/mE6XB/gwowtT+t4twomjkcLe
+        L3SLppNhUyIFZ6z5HrLd14=
+Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
+        by smtp11 (Coremail) with SMTP id D8CowAAnrAgU+D5g9HhoDg--.49S2;
+        Wed, 03 Mar 2021 10:44:47 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, vladbu@nvidia.com, dlinkin@nvidia.com,
+        roid@nvidia.com, dan.carpenter@oracle.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] net/mlx5: use kvfree() for memory allocated with kvzalloc()
+Date:   Wed,  3 Mar 2021 10:40:19 +0800
+Message-Id: <20210303024019.2245-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowAAnrAgU+D5g9HhoDg--.49S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7WF13Xw1DGr4kAryrtryrWFg_yoW8XrWxpF
+        s8K34jkr1Sqa47X34kA395Xr98Wa1UKayxur92v3yfXrn5Jw18JF1Fkry3uw18ArWxJasx
+        tr4Yyw1fuaykJwUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bO1v3UUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLR9KI1SIlJvXtgAAsp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ong Boon Leong <boon.leong.ong@intel.com>
+From: Junlin Yang <yangjunlin@yulong.com>
 
-We introduce dwmac410_dma_init_channel() here for both EQoS v4.10 and
-above which use different DMA_CH(n)_Interrupt_Enable bit definitions for
-NIE and AIE.
+It is allocated with kvzalloc(), the corresponding release function
+should not be kfree(), use kvfree() instead.
 
-Fixes: 48863ce5940f ("stmmac: add DMA support for GMAC 4.xx")
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Ramesh Babu B <ramesh.babu.b@intel.com>
+Generated by: scripts/coccinelle/api/kfree_mismatch.cocci
+
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 ---
- .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-index bb29bfcd62c3..62aa0e95beb7 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-@@ -124,6 +124,23 @@ static void dwmac4_dma_init_channel(void __iomem *ioaddr,
- 	       ioaddr + DMA_CHAN_INTR_ENA(chan));
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+index 6f6772b..3da7bec 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+@@ -248,7 +248,7 @@ static int mlx5_esw_indir_table_rule_get(struct mlx5_eswitch *esw,
+ err_ethertype:
+ 	kfree(rule);
+ out:
+-	kfree(rule_spec);
++	kvfree(rule_spec);
+ 	return err;
  }
  
-+static void dwmac410_dma_init_channel(void __iomem *ioaddr,
-+				      struct stmmac_dma_cfg *dma_cfg, u32 chan)
-+{
-+	u32 value;
-+
-+	/* common channel control register config */
-+	value = readl(ioaddr + DMA_CHAN_CONTROL(chan));
-+	if (dma_cfg->pblx8)
-+		value = value | DMA_BUS_MODE_PBL;
-+
-+	writel(value, ioaddr + DMA_CHAN_CONTROL(chan));
-+
-+	/* Mask interrupts by writing to CSR7 */
-+	writel(DMA_CHAN_INTR_DEFAULT_MASK_4_10,
-+	       ioaddr + DMA_CHAN_INTR_ENA(chan));
-+}
-+
- static void dwmac4_dma_init(void __iomem *ioaddr,
- 			    struct stmmac_dma_cfg *dma_cfg, int atds)
- {
-@@ -523,7 +540,7 @@ const struct stmmac_dma_ops dwmac4_dma_ops = {
- const struct stmmac_dma_ops dwmac410_dma_ops = {
- 	.reset = dwmac4_dma_reset,
- 	.init = dwmac4_dma_init,
--	.init_chan = dwmac4_dma_init_channel,
-+	.init_chan = dwmac410_dma_init_channel,
- 	.init_rx_chan = dwmac4_dma_init_rx_chan,
- 	.init_tx_chan = dwmac4_dma_init_tx_chan,
- 	.axi = dwmac4_dma_axi,
+@@ -328,7 +328,7 @@ static int mlx5_create_indir_recirc_group(struct mlx5_eswitch *esw,
+ 	e->recirc_cnt = 0;
+ 
+ out:
+-	kfree(in);
++	kvfree(in);
+ 	return err;
+ }
+ 
+@@ -347,7 +347,7 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
+ 
+ 	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (!spec) {
+-		kfree(in);
++		kvfree(in);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -371,8 +371,8 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
+ 	}
+ 
+ err_out:
+-	kfree(spec);
+-	kfree(in);
++	kvfree(spec);
++	kvfree(in);
+ 	return err;
+ }
+ 
 -- 
-2.17.1
+1.9.1
+
 
