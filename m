@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E28332B771
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F79B32B779
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351113AbhCCLJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:09:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232926AbhCCBXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 20:23:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 306C964FB4;
-        Wed,  3 Mar 2021 01:22:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614734550;
-        bh=uYBqMWEu2cum0jtgCVaXQt5AB4RMzXYdMt4CxTKk0fw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ve9j/TxL2rBLxXwJRfTZy23sV8UIjOVbxxKaUnt4dpCtMxhM86qUgjPJIzt8qSkiq
-         Bd0NSV3Qy2C7Zzb0B4qJh/YFO+LuKyFxuojHv4T6TlkyLkNmGJ5byjqOxBdAl8g9Ja
-         emOZpQpoaNOez4/w/dg8MKBNh0vCrZiMY1iakKG+B7CZgFafrWQW4GnuDbOhHQFkL0
-         tY5S9xox+rgRFIeSWUEjVvkwTgVNglXAZ3T5UYEXmZB4Pv82WDVsZAwk7KSJWZErpk
-         POoEEkC3TFHH73KlN1TlRPhBqbavw2x9ayBfYGvcZJ2VjICDBIdl66Ru5QAl+HFPfG
-         d3gFcHbvanR1Q==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id BA1CB3522A62; Tue,  2 Mar 2021 17:22:29 -0800 (PST)
-Date:   Tue, 2 Mar 2021 17:22:29 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Stable <stable@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 11/13] rcu/nocb: Only cancel nocb timer if not polling
-Message-ID: <20210303012229.GB20917@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210223001011.127063-1-frederic@kernel.org>
- <20210223001011.127063-12-frederic@kernel.org>
+        id S1351799AbhCCLKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233372AbhCCBXY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 20:23:24 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F17EC061794;
+        Tue,  2 Mar 2021 17:22:43 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id u4so26494759ljh.6;
+        Tue, 02 Mar 2021 17:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7vpxjdzLC35rO+JFayl4Y64pj7Iqa9C/mCMrzz7lHgk=;
+        b=sFWqjyHdBwGvkKfUQ5i/8pSgB5aexxVlxIXA1/VUFSEnCPAOF4wk9XWWU75j0MeloQ
+         ZsYVGBCEGmKNXG2VpVFMrflK9S4IQoGklTKmrznsrrXlzEZSY0OCe5xrR7bCH1ju8tiZ
+         K80hyQJmWtroAevAgItdUVYc3ZLwPfE6NqeWcktCkJ0hOrDSGpcVZzpQxOA/ZkvRain3
+         dnRIy7r1NcDxZ4DB69NWsR4QWxSjj9nrfeADfAqcc2MQ13UDkpEuGnfmf6/y/6VV06Vd
+         NwK4uutAqeq3JmlD/H6oD06hrl33ZMj1SkogoaLC03pAz4L2B9YLM1wvy+jKN8PMOUcI
+         Hj0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7vpxjdzLC35rO+JFayl4Y64pj7Iqa9C/mCMrzz7lHgk=;
+        b=g9xsDXSSAke0D9Hx0TS94hzqSL1MqAbBvXuvwXTSZyIPtnCgStqYVYU1QebwoOeor1
+         xwT+yf38GkxfIv4ZVhsLTe+ZF5KooZlnEPTr8N+pavrlECHcTwIIkKg04ny91qacfCY7
+         WiRazqCq4AZUYQq3BKfndVPigUnQ9M9ZjdbTwP4y8g0bqNCeus/TPOKMawv5ILxyeJad
+         rl6S4LiS/3rpbLa5w//WPDYr3/tlNWLZUOwwSdUB7IbE6rlNW1V1zdTWg/GAuPfQIdBZ
+         AJg21LSbJ8BqnxdPziYwnGDu0p7df/NdnbGPKXpQHCWVXfFzQLDt7zXVJBmJfrYaEvvz
+         HhiA==
+X-Gm-Message-State: AOAM530fMmwiassX51nKK45FlTVHUirogS+sFsKxNwsE8txdXBVOw2Lb
+        CtNAOOt50ZJ8j3xfzgGZMu141IhUhEYbz4nWJPs=
+X-Google-Smtp-Source: ABdhPJxrVUWH1j0C/T4fF8i6oqMI0C10dnbwznUUzx7+j4ufVOZ+cgRjqOKU0xGoatY6KXdfo78YHPlAe1AXdvoppT0=
+X-Received: by 2002:a2e:9704:: with SMTP id r4mr13232071lji.486.1614734561822;
+ Tue, 02 Mar 2021 17:22:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223001011.127063-12-frederic@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CAADnVQ+czV6u4CM-A+o5U+WhApkocunZXiCMJBB_Zbs0mvNSwQ@mail.gmail.com>
+ <EECBE373-7CA1-4ED8-9F03-406BBED607FD@amacapital.net>
+In-Reply-To: <EECBE373-7CA1-4ED8-9F03-406BBED607FD@amacapital.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 2 Mar 2021 17:22:30 -0800
+Message-ID: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 01:10:09AM +0100, Frederic Weisbecker wrote:
-> No need to disarm the nocb_timer if rcu_nocb is polling because it
-> shouldn't be armed either.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
+On Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapital.net> wrote:
+>
+>
+> > On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gma=
+il.com> wrote:
+> >
+> > =EF=BB=BFOn Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.o=
+rg> wrote:
+> >>
+> >> Is there something like a uprobe test suite?  How maintained /
+> >> actively used is uprobe?
+> >
+> > uprobe+bpf is heavily used in production.
+> > selftests/bpf has only one test for it though.
+> >
+> > Why are you asking?
+>
+> Because the integration with the x86 entry code is a mess, and I want to =
+know whether to mark it BROKEN or how to make sure the any cleanups actuall=
+y work.
 
-OK, so it does make sense to move that del_timer() under the following
-"if" statement, then.  ;-)
-
-> ---
->  kernel/rcu/tree_plugin.h | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 9da67b0d3997..d8b50ff40e4b 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -2186,18 +2186,18 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
->  	my_rdp->nocb_gp_gp = needwait_gp;
->  	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
->  	if (bypass) {
-> -		raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
-> -		// Avoid race with first bypass CB.
-> -		if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
-> -			WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
-> -			del_timer(&my_rdp->nocb_timer);
-> -		}
->  		if (!rcu_nocb_poll) {
-> +			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
-> +			// Avoid race with first bypass CB.
-> +			if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
-> +				WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
-> +				del_timer(&my_rdp->nocb_timer);
-> +			}
->  			// At least one child with non-empty ->nocb_bypass, so set
->  			// timer in order to avoid stranding its callbacks.
->  			mod_timer(&my_rdp->nocb_bypass_timer, j + 2);
-> +			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
->  		}
-> -		raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
->  	}
->  	if (rcu_nocb_poll) {
->  		/* Polling, so trace if first poll in the series. */
-> -- 
-> 2.25.1
-> 
+Any test case to repro the issue you found?
+Is it a bug or just messy code?
+Nowadays a good chunk of popular applications (python, mysql, etc) has
+USDTs in them.
+Issues reported with bcc:
+https://github.com/iovisor/bcc/issues?q=3Dis%3Aissue+USDT
+Similar thing with bpftrace.
+Both standard USDT and semaphore based are used in the wild.
+uprobe for containers has been a long standing feature request.
+If you can improve uprobe performance that would be awesome.
+That's another thing that people report often. We optimized it a bit.
+More can be done.
