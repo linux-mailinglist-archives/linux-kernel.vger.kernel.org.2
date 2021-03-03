@@ -2,212 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFD332BE32
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06D132BE34
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385265AbhCCRJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        id S1385298AbhCCRJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240120AbhCCMxl (ORCPT
+        with ESMTP id S239444AbhCCMyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:53:41 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0B7C06178B
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:53:01 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id c16so4514861ply.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:53:01 -0800 (PST)
+        Wed, 3 Mar 2021 07:54:54 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E87C061788;
+        Wed,  3 Mar 2021 04:54:12 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id u20so25531357iot.9;
+        Wed, 03 Mar 2021 04:54:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SMLSZ661wk6fExMDN3tlUU4qJDW65aXvHGdCmbhry1s=;
-        b=sb6qfWE7bnQxJYfJwUAwmAE/yKjmR2V9HcX9K8p3IdKwq8Lbq+I0gJBEe8AD2wQgOY
-         8nVs5qtdlp6uH2V9nONgA39AjTMHrT/rRgpgGeR/LMaalld3WsflFlu2Jh/Zc34hdMEF
-         Ihs01lN8wpDxETtXo07wVMjYjXDsWs464OO+a0yhVPtuRIa18/wrT+irfq6aorGPewxy
-         YH0J8WTxhDNKFqquTR+CeKglcURz0YSzT8qae7NEGCSEkY8NtuVjSY8EedMkeDIlP9Bv
-         QE3gODoPe9cLtocEcH146wRRomV++usn6/fyBq70vLPaYcc5EWSzjdXo+ykcd7M8WqLe
-         Srhg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CBvkFEvqxR6pJ8RNOiBgWpkdUJaqTzxbWWfGxZhteMs=;
+        b=nN7p0M48f/tcetJyHBbjLEHxhzaLbYFZ6xXf7pJw91utDAhSWOwJjpn//gKsz0OS09
+         2j05ZatL0qlnau5YxMei0k8xaO3bVAv0gqM6GWc8KvOA8ghSXaGHiA+R0BJXlHUcuHCu
+         8scwg8GsiDkFOUjGkioYrySmYN5tL0eT6Jurw1MM5/eHD4eisguQvXwCxxI1HeMR36L1
+         Q5UikKq3B3VLXyhNU9T9vWmZrnSd72qwTLYKu3eNfnrfDY8rvW43/UwagL5Lg+AqFqOP
+         gqtMJsmTJQwVS+HR0mYmkrbGmHDzKNp5cfR7rd+JyPwVHMj6PRSS3TzXgDv8h62FqjTy
+         gV5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SMLSZ661wk6fExMDN3tlUU4qJDW65aXvHGdCmbhry1s=;
-        b=akVYy8WgJhoefhbCBkUyPZ0A4zC9c7MMimpGOt3pyIP5553vvVwA0YE6YDMewmluSx
-         H+zqnG8I3BuLM7CYuaBw6Bno9Yq3vtlUdk/258C+wK+gfvs19+Fe3uMsM89i0tB7Toyt
-         NgYnhBt6L2Ws+zqQw1cYZR08xLLlv3yuZIl+HAGzWFcN9xTTQX6egBkLgSDIr000jZ73
-         BBkeT5EksuNeaZc9vFT9t1z+ZaH4xFhgPTCxKW612LjIHM6yZ6vL+xdBoQEzZxF+vrXh
-         XTu+pBr9MA9ocg9GCfejAr8it0aS3BsFB5FZLgHpNUEw1EzqTt5e+Sw7A98gTSNxuR4o
-         5K1A==
-X-Gm-Message-State: AOAM531OIeu5XLUA9CHB38qG/IFRcWh8cxKGIpFhLVuOoOd45ro4J1oU
-        97u+lhZRzTYcxN//htd0rUc=
-X-Google-Smtp-Source: ABdhPJyK7vG/RD8twY1z7+hWj6aJGl/4qTtMX195lU58sTqgj5FlqrtTKwkto2LmPR9Bjtm26kGqzw==
-X-Received: by 2002:a17:902:b7cb:b029:e4:55cd:ddf0 with SMTP id v11-20020a170902b7cbb02900e455cdddf0mr2659381plz.45.1614775981254;
-        Wed, 03 Mar 2021 04:53:01 -0800 (PST)
-Received: from adolin ([49.207.223.176])
-        by smtp.gmail.com with ESMTPSA id s10sm24418750pgl.90.2021.03.03.04.52.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 04:53:00 -0800 (PST)
-Date:   Wed, 3 Mar 2021 18:22:56 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     melissa.srw@gmail.com
-Cc:     daniel@ffwll.ch, rodrigosiqueiramelo@gmail.com,
-        hamohammed.sa@gmail.com, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 2/2] drm/vkms: Add crtc atomic helper functions for
- virtual mode
-Message-ID: <b6daa0dd91269fa6a3463c132057d553eb9207c1.1614775351.git.sylphrenadin@gmail.com>
-References: <cover.1614775351.git.sylphrenadin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CBvkFEvqxR6pJ8RNOiBgWpkdUJaqTzxbWWfGxZhteMs=;
+        b=mHgeylLmxzlUpbwcRM1LjLe17yjP6cIV1snYHq2JMvRQ2ag+MK/fIouqqYFF4ZvbeX
+         ZkWU3hZAV2tTr6vvqzd+8VQkqGAfzbI11gipSGDO4a78lezjhD80bDYDMFr/XIEb5l0a
+         ick3982Tt9GHTp5IpPHAB7tQs4IGIBrJRLTxNFeWsSeGHMvL1HwgzjOrWtqbFUI7trVP
+         z92nRHbvJpIMxvB+MevlsE6e9HqI7ln4gV7ml3wQwazO6MYynUWWbmuydILbOAWfJtoq
+         FkMdga9Ov43FFNbhPehpY4zpASsAmws2PIUFsv4DL0c2WGbALQoGiOcu0y0/F6JFGY3x
+         uI0g==
+X-Gm-Message-State: AOAM532hdDzIn41EXeD48SNLIBU/ksSyJEprAjgOvq8A3Y5nbyHatzKO
+        kWGmOhg/hDDyIKXLM1eyK6oPCACPUpK4pu1URzI=
+X-Google-Smtp-Source: ABdhPJyV/xGvvi3YmN3DtKAi73iEQpcmeHQCMH5AslZ5uDEigz35WsiBhVAzD8/j5c1mw18Z6kAeFWiJwvtK+3dCmGg=
+X-Received: by 2002:a6b:db15:: with SMTP id t21mr16665316ioc.133.1614776051339;
+ Wed, 03 Mar 2021 04:54:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1614775351.git.sylphrenadin@gmail.com>
+References: <20210222140756.713-1-heiko.thiery@gmail.com> <20210222140756.713-3-heiko.thiery@gmail.com>
+ <CAOMZO5C4bL72mksHG4GfikgLOxib-A659rac7VkpjGsm150O_A@mail.gmail.com>
+In-Reply-To: <CAOMZO5C4bL72mksHG4GfikgLOxib-A659rac7VkpjGsm150O_A@mail.gmail.com>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Wed, 3 Mar 2021 13:54:00 +0100
+Message-ID: <CAEyMn7akV6G4PkS266pMwi+nro6-Tffc0Zt6LN9sV7Kgi2dKcg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: fsl: add support for Kontron
+ pitx-imx8m board
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new drm_crtc_helper_funcs struct,
-vkms_virtual_crtc_helper_funcs() which holds the atomic helpers
-for virtual hardware mode. Change the existing
-vkms_crtc_helper_funcs struct to vkms_vblank_crtc_helper_funcs
-which holds atomic helpers for the vblank mode.
+Hi Fabio,
 
-This patch makes the code flow clearer and easier to test
-virtual hardware mode.
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
+Am Di., 2. M=C3=A4rz 2021 um 15:43 Uhr schrieb Fabio Estevam <festevam@gmai=
+l.com>:
+>
+> Hi Heiko,
+>
+> On Mon, Feb 22, 2021 at 11:08 AM Heiko Thiery <heiko.thiery@gmail.com> wr=
+ote:
+>
+> > +       reg_usdhc2_vmmc: regulator-v-3v3-sd {
+>
+> reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
 
-Changes in V2:
-- Add atomic helper functions in a separate struct for virtual hardware
-mode (Daniel)
----
- drivers/gpu/drm/vkms/vkms_crtc.c | 69 ++++++++++++++++++--------------
- 1 file changed, 39 insertions(+), 30 deletions(-)
+I used the same name as used on imx8mq-evk. Do you think a better name
+is the one you proposed?
 
-diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-index 6cc8dc23bd5d..7d5562ab5ce6 100644
---- a/drivers/gpu/drm/vkms/vkms_crtc.c
-+++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-@@ -221,48 +221,35 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
- 	return 0;
- }
- 
--static void vkms_crtc_atomic_enable(struct drm_crtc *crtc,
--				    struct drm_atomic_state *state)
-+static void vkms_vblank_crtc_atomic_enable(struct drm_crtc *crtc,
-+					 struct drm_atomic_state *state)
- {
--	struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
--
--	if (!vkmsdev->config->virtual_hw)
--		drm_crtc_vblank_on(crtc);
-+	drm_crtc_vblank_on(crtc);
- }
- 
--static void vkms_crtc_atomic_disable(struct drm_crtc *crtc,
-+static void vkms_vblank_crtc_atomic_disable(struct drm_crtc *crtc,
- 				     struct drm_atomic_state *state)
- {
--	struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
--
--	if (!vkmsdev->config->virtual_hw)
--		drm_crtc_vblank_off(crtc);
-+	drm_crtc_vblank_off(crtc);
- }
- 
--static void vkms_crtc_atomic_begin(struct drm_crtc *crtc,
-+static void vkms_vblank_crtc_atomic_begin(struct drm_crtc *crtc,
- 				   struct drm_atomic_state *state)
- {
- 	struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
--	struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
- 
- 	/* This lock is held across the atomic commit to block vblank timer
- 	 * from scheduling vkms_composer_worker until the composer is updated
- 	 */
--	if (!vkmsdev->config->virtual_hw)
--		spin_lock_irq(&vkms_output->lock);
-+	spin_lock_irq(&vkms_output->lock);
- }
- 
--static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
-+static void vkms_vblank_crtc_atomic_flush(struct drm_crtc *crtc,
- 				   struct drm_atomic_state *state)
- {
- 	struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
--	struct vkms_crtc_state *vkms_state = to_vkms_crtc_state(crtc->state);
--	struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
--
--	if (vkmsdev->config->virtual_hw)
--		vkms_crtc_composer(vkms_state);
- 
--	if (crtc->state->event && !vkmsdev->config->virtual_hw) {
-+	if (crtc->state->event) {
- 		spin_lock(&crtc->dev->event_lock);
- 
- 		if (drm_crtc_vblank_get(crtc) != 0)
-@@ -277,22 +264,41 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
- 
- 	vkms_output->composer_state = to_vkms_crtc_state(crtc->state);
- 
--	if (!vkmsdev->config->virtual_hw)
--		spin_unlock_irq(&vkms_output->lock);
-+	spin_unlock_irq(&vkms_output->lock);
- }
- 
--static const struct drm_crtc_helper_funcs vkms_crtc_helper_funcs = {
-+/*
-+ * Crtc functions for virtual hardware/vblankless mode
-+ */
-+static void vkms_virtual_crtc_atomic_flush(struct drm_crtc *crtc,
-+				   struct drm_atomic_state *state)
-+{
-+	struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
-+	struct vkms_crtc_state *vkms_state = to_vkms_crtc_state(crtc->state);
-+
-+	vkms_crtc_composer(vkms_state);
-+
-+	vkms_output->composer_state = to_vkms_crtc_state(crtc->state);
-+}
-+
-+static const struct drm_crtc_helper_funcs vkms_vblank_crtc_helper_funcs = {
- 	.atomic_check	= vkms_crtc_atomic_check,
--	.atomic_begin	= vkms_crtc_atomic_begin,
--	.atomic_flush	= vkms_crtc_atomic_flush,
--	.atomic_enable	= vkms_crtc_atomic_enable,
--	.atomic_disable	= vkms_crtc_atomic_disable,
-+	.atomic_begin	= vkms_vblank_crtc_atomic_begin,
-+	.atomic_flush	= vkms_vblank_crtc_atomic_flush,
-+	.atomic_enable	= vkms_vblank_crtc_atomic_enable,
-+	.atomic_disable	= vkms_vblank_crtc_atomic_disable,
-+};
-+
-+static const struct drm_crtc_helper_funcs vkms_virtual_crtc_helper_funcs = {
-+	.atomic_check	= vkms_crtc_atomic_check,
-+	.atomic_flush	= vkms_virtual_crtc_atomic_flush,
- };
- 
- int vkms_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
- 		   struct drm_plane *primary, struct drm_plane *cursor)
- {
- 	struct vkms_output *vkms_out = drm_crtc_to_vkms_output(crtc);
-+	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
- 	int ret;
- 
- 	ret = drm_crtc_init_with_planes(dev, crtc, primary, cursor,
-@@ -302,7 +308,10 @@ int vkms_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
- 		return ret;
- 	}
- 
--	drm_crtc_helper_add(crtc, &vkms_crtc_helper_funcs);
-+	if (vkmsdev->config->virtual_hw)
-+		drm_crtc_helper_add(crtc, &vkms_virtual_crtc_helper_funcs);
-+	else
-+		drm_crtc_helper_add(crtc, &vkms_vblank_crtc_helper_funcs);
- 
- 	spin_lock_init(&vkms_out->lock);
- 	spin_lock_init(&vkms_out->composer_lock);
--- 
-2.25.1
+> > +       tpm_reset: tpm-reset {
+> > +               compatible =3D "gpio-reset";
+>
+> I don't see this compatible string documented.
 
+This comes from the linux-imx tree [1].  Nethertheless the reset seems
+not to be used by the tpm driver for the infineon chip.
+
+[1] https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/reset=
+/gpio-reset.c?h=3Dimx_5.4.70_2.3.0
+
+So I think I can remove it here.
+
+>
+> > +               reset-gpios =3D <&gpio3 2 GPIO_ACTIVE_LOW>;
+> > +               reset-delay-us =3D <2>;
+> > +               reset-post-delay-ms =3D <60>;
+> > +               #reset-cells =3D <0>;
+> > +       };
+> > +
+> > +       usb_hub_reset: usb-hub-reset {
+> > +               compatible =3D "gpio-reset";
+>
+> Same here.
+
+Also the usb-hub-reset can be removed.
+
+>
+> > +&fec1 {
+> > +       pinctrl-names =3D "default";
+> > +       pinctrl-0 =3D <&pinctrl_fec1>;
+> > +       phy-mode =3D "rgmii-id";
+> > +       phy-handle =3D <&ethphy0>;
+> > +       phy-reset-gpios =3D <&gpio1 11 GPIO_ACTIVE_LOW>;
+>
+> This property is deprecated. Please consider using reset-gpios inside
+> ethernet-phy instead.
+
+Done
+
+> > +       /* TODO: configure audio, as of now just put a placeholder */
+> > +       wm8904: audio-codec@1a {
+> > +               compatible =3D "wlf,wm8904";
+> > +               reg =3D <0x1a>;
+> > +               clocks =3D <&clk IMX8MQ_CLK_SAI2_ROOT>;
+> > +               clock-names =3D "mclk";
+> > +               clock-frequency =3D <24000000>;
+>
+> Not a valid property.
+
+The whole node is removed since v3.
+
+> > +/* M.2 B-key slot */
+> > +&pcie0 {
+> > +       pinctrl-names =3D "default";
+> > +       pinctrl-0 =3D <&pinctrl_pcie0>;
+> > +       disable-gpio =3D <&gpio5 29 GPIO_ACTIVE_LOW>;
+>
+> Not a valid property.
+
+This comes from the linux-imx tree [2]. but in mainline it is not
+valid. So I will remove it.
+
+[2] https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/pci/c=
+ontroller/dwc/pci-imx6.c?h=3Dimx_5.4.70_2.3.0#n2436
+
+> > +       reset-gpio =3D <&gpio1 9 GPIO_ACTIVE_LOW>;
+> > +       clocks =3D <&clk IMX8MQ_CLK_PCIE1_ROOT>,
+> > +                <&clk IMX8MQ_CLK_PCIE1_AUX>,
+> > +                <&clk IMX8MQ_CLK_PCIE1_PHY>,
+> > +                <&pcie0_refclk>;
+> > +       clock-names =3D "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
+> > +       ext_osc =3D <1>;
+>
+> Not a valid property.
+
+This comes from the linux-imx tree [3]. but in mainline it is not
+valid. So I will remove it.
+
+[3] https://source.codeaurora.org/external/imx/linux-imx/tree/drivers/pci/c=
+ontroller/dwc/pci-imx6.c?h=3Dimx_5.4.70_2.3.0#n2422
+
+> > +/* Intel Ethernet Controller I210/I211 */
+> > +&pcie1 {
+> > +       clocks =3D <&clk IMX8MQ_CLK_PCIE2_ROOT>,
+> > +                <&clk IMX8MQ_CLK_PCIE2_AUX>,
+> > +                <&clk IMX8MQ_CLK_PCIE2_PHY>,
+> > +                <&pcie1_refclk>;
+> > +       clock-names =3D "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
+> > +       ext_osc =3D <1>;
+>
+> Not a valid property.
+
+same as commented before.
+
+Thank you for the review. I will prepare v4.
+
+
+--
+Heiko
