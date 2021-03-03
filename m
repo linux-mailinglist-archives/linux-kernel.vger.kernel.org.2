@@ -2,298 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8392532C3E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E899732C3F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354450AbhCDAIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:08:49 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:44312 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390592AbhCCWKO (ORCPT
+        id S1354575AbhCDAJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:09:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344776AbhCCWMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:10:14 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lHZg4-000hYk-DQ; Wed, 03 Mar 2021 15:09:08 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lHZg2-0007z3-1S; Wed, 03 Mar 2021 15:09:08 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de>
-Date:   Wed, 03 Mar 2021 16:09:05 -0600
-In-Reply-To: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de> (Sebastian
-        Andrzej Siewior's message of "Wed, 3 Mar 2021 15:20:25 +0100")
-Message-ID: <m1zgzj7uv2.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 3 Mar 2021 17:12:35 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21B5C061762;
+        Wed,  3 Mar 2021 14:11:40 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id s16so14853813plr.9;
+        Wed, 03 Mar 2021 14:11:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fmz7mf6a8ehp/fj7ID9RqkKnKPqFdWFgfCn2Xi8eoHQ=;
+        b=arlloiozzjAUxpbyPFgpm0cn81CQvS3ReYlpqJU3xC1sZiKOYquuFgVaha6+JZyxD2
+         ukDQktD8jGQXN31zCtijAx1D3xXYX2Fg9LS8dJn6RP4RuoYv/PA1EzY5uE4lj9htAsXY
+         qfn0hKmwZJaOPMHumULJmXrz6q78z36c0DcUIEYfH8UOeHlVqL2GeUv0kT+lOQwGVySY
+         FsPwl2aWqSf0yaWnbxY/bWceveL30j48T4t5e7fSBqoraPZVhmUsi1Y59Zb9bNeqJPuG
+         I/4gX0cfCKanBboSGdsWzIWFuBraWtW28qiW8zXcUnLlb86+lbInzCoS+7WHGRm+9B/P
+         ArZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fmz7mf6a8ehp/fj7ID9RqkKnKPqFdWFgfCn2Xi8eoHQ=;
+        b=PkqGbxL4N0+cziWHU7Z6K5iPwgHeStLWZo90zvDYpMP/quR5k0cwtN2B25/H/WIolu
+         Cr4ELEPEDEZb8gBhzWge/Trj28nmIH1sIG3o5xhTIujSgAkBphaWaghbv3tAb7B0xk4w
+         /KEKXk91a2ofLJHUE/6JgT83WBxFCbaQdFFrZP9k2JtnEY0oKzn4Yb1qkqiszNDMVOmw
+         IgIuS3GEnwLA3rZ8/QtwJSUxudqZ5Vrwc2i0q/lKHxlwHQwTI1R7JGfnjgITwE3VpDZi
+         UYNFAfLC35fidagn7afGrvfkkpAvQfaUBbXsVMDd8lSLVgrp/YyozEuO4sWb3e6zodC1
+         JBvA==
+X-Gm-Message-State: AOAM532l0CNpjZKW0R4zSJFBgjTT8VdGygpFZCFdmIOJlESSmmDb23on
+        czQXPI67FaF2r46HJBR+qEU=
+X-Google-Smtp-Source: ABdhPJw6J/dmQ8VMss8ipOIJsss5IHRXgVmsYwwU5PxTp1qMcsklaBVOhDc89tWo0/07etpIG9aM/w==
+X-Received: by 2002:a17:902:e80e:b029:e4:b2b8:e36e with SMTP id u14-20020a170902e80eb02900e4b2b8e36emr1143585plg.45.1614809500038;
+        Wed, 03 Mar 2021 14:11:40 -0800 (PST)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id h123sm23111241pfe.115.2021.03.03.14.11.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 14:11:39 -0800 (PST)
+Subject: Re: [PATCH] MIPS: kernel: Reserve exception base early to prevent
+ corruption
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Serge Semin <fancer.lancer@gmail.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Kamal Dasu <kdasu.kdev@gmail.com>
+References: <20210303185713.122531-1-tsbogend@alpha.franken.de>
+ <20210303211455.5d3vedv7ewk2d4ns@mobilestation>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <e56a7758-7bc9-d8e2-1bea-434887ec3447@gmail.com>
+Date:   Wed, 3 Mar 2021 14:11:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lHZg2-0007z3-1S;;;mid=<m1zgzj7uv2.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX189jIHFqY2loenP1Kd3Or3M8Rwc6gVRNmc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,XMSubLong,
-        XM_B_SpammyTLD autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 XM_B_SpammyTLD Contains uncommon/spammy TLD
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 2070 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.6 (0.2%), b_tie_ro: 2.5 (0.1%), parse: 0.90
-        (0.0%), extract_message_metadata: 13 (0.6%), get_uri_detail_list: 3.0
-        (0.1%), tests_pri_-1000: 5 (0.2%), tests_pri_-950: 1.05 (0.1%),
-        tests_pri_-900: 0.81 (0.0%), tests_pri_-90: 102 (4.9%), check_bayes:
-        99 (4.8%), b_tokenize: 12 (0.6%), b_tok_get_all: 11 (0.5%),
-        b_comp_prob: 2.2 (0.1%), b_tok_touch_all: 72 (3.5%), b_finish: 0.61
-        (0.0%), tests_pri_0: 1502 (72.6%), check_dkim_signature: 0.53 (0.0%),
-        check_dkim_adsp: 4.7 (0.2%), poll_dns_idle: 428 (20.7%), tests_pri_10:
-        1.75 (0.1%), tests_pri_500: 437 (21.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20210303211455.5d3vedv7ewk2d4ns@mobilestation>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+On 3/3/21 1:14 PM, Serge Semin wrote:
+> Hello  Thomas,
+> Thanks for the patch. My comments are below.
+> 
+> On Wed, Mar 03, 2021 at 07:57:13PM +0100, Thomas Bogendoerfer wrote:
+>> BMIPS is one of the few platforms that do change the exception base.
+>> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+>> with kernel_end") we started seeing BMIPS boards fail to boot with the
+>> built-in FDT being corrupted.
+>>
+>> Before the cited commit, early allocations would be in the [kernel_end,
+>> RAM_END] range, but after commit they would be within [RAM_START +
+>> PAGE_SIZE, RAM_END].
+>>
+>> The custom exception base handler that is installed by
+>> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+>> memory region allocated by unflatten_and_copy_device_tree() thus
+>> corrupting the FDT used by the kernel.
+>>
+>> To fix this, we need to perform an early reservation of the custom
+>> exception space. So we reserve it already in cpu_probe() for the CPUs
+>> where this is fixed. For CPU with an ebase config register allocation
+>> of exception space will be done in trap_init().
+>>
+>> Huge thanks to Serget for analysing and proposing a solution to this
+>> issue.
+>>
+> 
+>> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> 
+> Fixes tag is used twice.
+> 
+>> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+>> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> 
+> I'd switch these tags order. First it was reported, then the
+> problem was debugged. I suppose it would be also nice to add
+> Florian under the second Reported-by tag if he doesn't mind. I haven't
+> seen any Kamal' email message, but a report posted by Florian only.
 
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> Allow realtime tasks to cache one sigqueue in task struct. This avoids an
-> allocation which can increase the latency or fail.
-> Ideally the sigqueue is cached after first successful delivery and will be
-> available for next signal delivery. This works under the assumption that the RT
-> task has never an unprocessed signal while a one is about to be queued.
->
-> The caching is not used for SIGQUEUE_PREALLOC because this kind of sigqueue is
-> handled differently (and not used for regular signal delivery).
+Kamal reported it to me privately and then I brought it publicly, still
+wanted to give him credit.
 
-What part of this is about real time tasks?  This allows any task
-to cache a sigqueue entry.
+> 
+>> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+>> ---
+>>  arch/mips/include/asm/traps.h    |  4 ++++
+>>  arch/mips/kernel/cpu-probe.c     |  7 +++++++
+>>  arch/mips/kernel/cpu-r3k-probe.c |  3 +++
+>>  arch/mips/kernel/smp-bmips.c     |  9 +--------
+>>  arch/mips/kernel/traps.c         | 31 ++++++++++++++++---------------
+>>  5 files changed, 31 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+>> index 6aa8f126a43d..d74d829e1655 100644
+>> --- a/arch/mips/include/asm/traps.h
+>> +++ b/arch/mips/include/asm/traps.h
+>> @@ -24,7 +24,11 @@ extern void (*board_ebase_setup)(void);
+>>  extern void (*board_cache_error_setup)(void);
+>>  
+>>  extern int register_nmi_notifier(struct notifier_block *nb);
+>> +extern void reserve_exception_space(unsigned long addr, unsigned long size);
+>>  extern char except_vec_nmi[];
+>> +extern unsigned long ebase_size;
+>> +
+>> +#define VECTORSPACING 0x100	/* for EI/VI mode */
+>>  
+>>  #define nmi_notifier(fn, pri)						\
+>>  ({									\
+>> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+>> index 9a89637b4ecf..effc45cbb351 100644
+>> --- a/arch/mips/kernel/cpu-probe.c
+>> +++ b/arch/mips/kernel/cpu-probe.c
+>> @@ -26,6 +26,7 @@
+>>  #include <asm/elf.h>
+>>  #include <asm/pgtable-bits.h>
+>>  #include <asm/spram.h>
+>> +#include <asm/traps.h>
+>>  #include <linux/uaccess.h>
+>>  
+>>  #include "fpu-probe.h"
+>> @@ -1628,6 +1629,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>>  		c->cputype = CPU_BMIPS3300;
+>>  		__cpu_name[cpu] = "Broadcom BMIPS3300";
+>>  		set_elf_platform(cpu, "bmips3300");
+>> +		reserve_exception_space(0x80000400, VECTORSPACING * 64);
+>>  		break;
+>>  	case PRID_IMP_BMIPS43XX: {
+>>  		int rev = c->processor_id & PRID_REV_MASK;
+>> @@ -1638,6 +1640,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>>  			__cpu_name[cpu] = "Broadcom BMIPS4380";
+>>  			set_elf_platform(cpu, "bmips4380");
+>>  			c->options |= MIPS_CPU_RIXI;
+>> +			reserve_exception_space(0x80000400, VECTORSPACING * 64);
+>>  		} else {
+>>  			c->cputype = CPU_BMIPS4350;
+>>  			__cpu_name[cpu] = "Broadcom BMIPS4350";
+>> @@ -1654,6 +1657,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>>  			__cpu_name[cpu] = "Broadcom BMIPS5000";
+>>  		set_elf_platform(cpu, "bmips5000");
+>>  		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
+>> +		reserve_exception_space(0x80001000, VECTORSPACING * 64);
+>>  		break;
+>>  	}
+>>  }
+>> @@ -2133,6 +2137,9 @@ void cpu_probe(void)
+>>  	if (cpu == 0)
+>>  		__ua_limit = ~((1ull << cpu_vmbits) - 1);
+>>  #endif
+>> +
+>> +	if (ebase_size == 0 && !cpu_has_mips_r2_r6)
+>> +		reserve_exception_space(CAC_BASE, 0x400);
+>>  }
+>>  
+>>  void cpu_report(void)
+>> diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
+>> index abdbbe8c5a43..6e3f4c17b810 100644
+>> --- a/arch/mips/kernel/cpu-r3k-probe.c
+>> +++ b/arch/mips/kernel/cpu-r3k-probe.c
+>> @@ -21,6 +21,7 @@
+>>  #include <asm/fpu.h>
+>>  #include <asm/mipsregs.h>
+>>  #include <asm/elf.h>
+>> +#include <asm/traps.h>
+>>  
+>>  #include "fpu-probe.h"
+>>  
+>> @@ -158,6 +159,8 @@ void cpu_probe(void)
+>>  		cpu_set_fpu_opts(c);
+>>  	else
+>>  		cpu_set_nofpu_opts(c);
+>> +
+>> +	reserve_exception_space(CAC_BASE, 0x400);
+>>  }
+>>  
+>>  void cpu_report(void)
+>> diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
+>> index b6ef5f7312cf..ad3f2282a65a 100644
+>> --- a/arch/mips/kernel/smp-bmips.c
+>> +++ b/arch/mips/kernel/smp-bmips.c
+>> @@ -528,10 +528,6 @@ static void bmips_set_reset_vec(int cpu, u32 val)
+>>  
+>>  void bmips_ebase_setup(void)
+>>  {
+>> -	unsigned long new_ebase = ebase;
+>> -
+>> -	BUG_ON(ebase != CKSEG0);
+>> -
+>>  	switch (current_cpu_type()) {
+>>  	case CPU_BMIPS4350:
+>>  		/*
+> 
+>> @@ -554,7 +550,6 @@ void bmips_ebase_setup(void)
+>>  		 * 0x8000_0000: reset/NMI (initially in kseg1)
+>>  		 * 0x8000_0400: normal vectors
+>>  		 */
+>> -		new_ebase = 0x80000400;
+>>  		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
+>>  		break;
+>>  	case CPU_BMIPS5000:
+>> @@ -562,16 +557,14 @@ void bmips_ebase_setup(void)
+>>  		 * 0x8000_0000: reset/NMI (initially in kseg1)
+>>  		 * 0x8000_1000: normal vectors
+>>  		 */
+>> -		new_ebase = 0x80001000;
+>>  		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
+>> -		write_c0_ebase(new_ebase);
+>> +		write_c0_ebase(ebase);
+>>  		break;
+>>  	default:
+>>  		return;
+>>  	}
+>>  
+>>  	board_nmi_handler_setup = &bmips_nmi_handler_setup;
+> 
+> I've just realized that Broadcom MIPS actually needs to reserve a
+> space above 0x80000000 too. See the in-situ comment here, 0x8000_0000
+> is said to be a space for reset/NMI. That space is then rewritten by
+> the method bmips_nmi_handler_setup() called in trap_init(). Of course
+> memblock allocates a memory starting from PAGE_SIZE so we are on safe
+> side at boot-stage. At the same time memblock doesn't mark the lowest
+> region as reserved. Thus we can't be sure that the buddy allocator
+> won't ever try to use that physical memory. AFAICS bcm63xx
+> also copies some vector to 0xa0000200.
 
-Either the patch is buggy or the description is.  Overall caching one
-sigqueue entry doesn't look insane. But it would help to have a clear
-description of what is going on.
+Yes, good point, I missed that part as well.
 
-Eric
+> 
+> Similar thing concerns all the platforms, which initialize the
+> pointers: board_nmi_handler_setup and board_ejtag_handler_setup. All
+> of them rewrite some lowest memory space with NMI/eJTAG vectors and
+> most likely expects that data being left unchanged too.
+> 
+> I am a bit surprised we haven't got any bug report in that matter so
+> far, because AFAIR the MIPS arch's stopped reserving memory below the
+> kernel since bootmem allocator was removed. Anyway at least for the
+> sake of consistency the lowest page should be reserved in the affected
+> platforms.
 
-
-> [bigeasy: With a fix from Matt Fleming <matt@codeblueprint.co.uk>]
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  include/linux/sched.h  |  1 +
->  include/linux/signal.h |  1 +
->  kernel/exit.c          |  2 +-
->  kernel/fork.c          |  1 +
->  kernel/signal.c        | 65 +++++++++++++++++++++++++++++++++++++++---
->  5 files changed, 65 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index ef00bb22164cd..7009b25f48160 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -985,6 +985,7 @@ struct task_struct {
->  	/* Signal handlers: */
->  	struct signal_struct		*signal;
->  	struct sighand_struct __rcu		*sighand;
-> +	struct sigqueue			*sigqueue_cache;
->  	sigset_t			blocked;
->  	sigset_t			real_blocked;
->  	/* Restored if set_restore_sigmask() was used: */
-> diff --git a/include/linux/signal.h b/include/linux/signal.h
-> index 205526c4003aa..d47a86790edc8 100644
-> --- a/include/linux/signal.h
-> +++ b/include/linux/signal.h
-> @@ -265,6 +265,7 @@ static inline void init_sigpending(struct sigpending *sig)
->  }
->  
->  extern void flush_sigqueue(struct sigpending *queue);
-> +extern void flush_task_sigqueue(struct task_struct *tsk);
->  
->  /* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
->  static inline int valid_signal(unsigned long sig)
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 04029e35e69af..346f7b76cecaa 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -152,7 +152,7 @@ static void __exit_signal(struct task_struct *tsk)
->  	 * Do this under ->siglock, we can race with another thread
->  	 * doing sigqueue_free() if we have SIGQUEUE_PREALLOC signals.
->  	 */
-> -	flush_sigqueue(&tsk->pending);
-> +	flush_task_sigqueue(tsk);
->  	tsk->sighand = NULL;
->  	spin_unlock(&sighand->siglock);
->  
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d66cd1014211b..a767e4e49a692 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1993,6 +1993,7 @@ static __latent_entropy struct task_struct *copy_process(
->  	spin_lock_init(&p->alloc_lock);
->  
->  	init_sigpending(&p->pending);
-> +	p->sigqueue_cache = NULL;
->  
->  	p->utime = p->stime = p->gtime = 0;
->  #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index ba4d1ef39a9ea..d99273b798085 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -20,6 +20,7 @@
->  #include <linux/sched/task.h>
->  #include <linux/sched/task_stack.h>
->  #include <linux/sched/cputime.h>
-> +#include <linux/sched/rt.h>
->  #include <linux/file.h>
->  #include <linux/fs.h>
->  #include <linux/proc_fs.h>
-> @@ -404,13 +405,30 @@ void task_join_group_stop(struct task_struct *task)
->  	task_set_jobctl_pending(task, mask | JOBCTL_STOP_PENDING);
->  }
->  
-> +static struct sigqueue *sigqueue_from_cache(struct task_struct *t)
-> +{
-> +	struct sigqueue *q = t->sigqueue_cache;
-> +
-> +	if (q && cmpxchg(&t->sigqueue_cache, q, NULL) == q)
-> +		return q;
-> +	return NULL;
-> +}
-> +
-> +static bool sigqueue_add_cache(struct task_struct *t, struct sigqueue *q)
-> +{
-> +	if (!t->sigqueue_cache && cmpxchg(&t->sigqueue_cache, NULL, q) == NULL)
-> +		return true;
-> +	return false;
-> +}
-> +
->  /*
->   * allocate a new signal queue record
->   * - this may be called without locks if and only if t == current, otherwise an
->   *   appropriate lock must be held to stop the target task from exiting
->   */
->  static struct sigqueue *
-> -__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimit)
-> +__sigqueue_do_alloc(int sig, struct task_struct *t, gfp_t flags,
-> +		    int override_rlimit, bool fromslab)
->  {
->  	struct sigqueue *q = NULL;
->  	struct user_struct *user;
-> @@ -432,7 +450,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
->  	rcu_read_unlock();
->  
->  	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
-> -		q = kmem_cache_alloc(sigqueue_cachep, flags);
-> +		if (!fromslab)
-> +			q = sigqueue_from_cache(t);
-> +		if (!q)
-> +			q = kmem_cache_alloc(sigqueue_cachep, flags);
->  	} else {
->  		print_dropped_signal(sig);
->  	}
-> @@ -449,6 +470,13 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
->  	return q;
->  }
->  
-> +static struct sigqueue *
-> +__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags,
-> +		 int override_rlimit)
-> +{
-> +	return __sigqueue_do_alloc(sig, t, flags, override_rlimit, false);
-> +}
-> +
->  static void __sigqueue_free(struct sigqueue *q)
->  {
->  	if (q->flags & SIGQUEUE_PREALLOC)
-> @@ -458,6 +486,20 @@ static void __sigqueue_free(struct sigqueue *q)
->  	kmem_cache_free(sigqueue_cachep, q);
->  }
->  
-> +static void __sigqueue_cache_or_free(struct sigqueue *q)
-> +{
-> +	struct user_struct *up;
-> +
-> +	if (q->flags & SIGQUEUE_PREALLOC)
-> +		return;
-> +
-> +	up = q->user;
-> +	if (atomic_dec_and_test(&up->sigpending))
-> +		free_uid(up);
-> +	if (!task_is_realtime(current) || !sigqueue_add_cache(current, q))
-> +		kmem_cache_free(sigqueue_cachep, q);
-> +}
-> +
->  void flush_sigqueue(struct sigpending *queue)
->  {
->  	struct sigqueue *q;
-> @@ -470,6 +512,21 @@ void flush_sigqueue(struct sigpending *queue)
->  	}
->  }
->  
-> +/*
-> + * Called from __exit_signal. Flush tsk->pending and
-> + * tsk->sigqueue_cache
-> + */
-> +void flush_task_sigqueue(struct task_struct *tsk)
-> +{
-> +	struct sigqueue *q;
-> +
-> +	flush_sigqueue(&tsk->pending);
-> +
-> +	q = sigqueue_from_cache(tsk);
-> +	if (q)
-> +		kmem_cache_free(sigqueue_cachep, q);
-> +}
-> +
->  /*
->   * Flush all pending signals for this kthread.
->   */
-> @@ -594,7 +651,7 @@ static void collect_signal(int sig, struct sigpending *list, kernel_siginfo_t *i
->  			(info->si_code == SI_TIMER) &&
->  			(info->si_sys_private);
->  
-> -		__sigqueue_free(first);
-> +		__sigqueue_cache_or_free(first);
->  	} else {
->  		/*
->  		 * Ok, it wasn't in the queue.  This must be
-> @@ -1807,7 +1864,7 @@ EXPORT_SYMBOL(kill_pid);
->   */
->  struct sigqueue *sigqueue_alloc(void)
->  {
-> -	struct sigqueue *q = __sigqueue_alloc(-1, current, GFP_KERNEL, 0);
-> +	struct sigqueue *q = __sigqueue_do_alloc(-1, current, GFP_KERNEL, 0, true);
->  
->  	if (q)
->  		q->flags |= SIGQUEUE_PREALLOC;
+My guess is that MIPS is just becoming less and less used so all of
+these issues tend to be overlooked and/or harder to discover.
+-- 
+Florian
