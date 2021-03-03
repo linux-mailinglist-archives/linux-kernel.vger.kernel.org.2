@@ -2,109 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A9632C410
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACDC32C406
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238069AbhCDAKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:10:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391907AbhCCW62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:58:28 -0500
-X-Greylist: delayed 443 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 03 Mar 2021 14:44:34 PST
-Received: from mail.katalix.com (mail.katalix.com [IPv6:2a05:d01c:827:b342:16d0:7237:f32a:8096])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 051B6C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 14:44:34 -0800 (PST)
-Received: from localhost (82-69-49-219.dsl.in-addr.zen.co.uk [82.69.49.219])
-        (Authenticated sender: tom)
-        by mail.katalix.com (Postfix) with ESMTPSA id D3EBF7D718;
-        Wed,  3 Mar 2021 22:32:06 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=katalix.com; s=mail;
-        t=1614810726; bh=JgojL7uEE8S0Atixqtrf9rO9YOzCU+W2zwfhGb2Vqaw=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Disposition:In-Reply-To:From;
-        z=Date:=20Wed,=203=20Mar=202021=2022:32:06=20+0000|From:=20Tom=20Pa
-         rkin=20<tparkin@katalix.com>|To:=20Matthias=20Schiffer=20<mschiffe
-         r@universe-factory.net>|Cc:=20netdev@vger.kernel.org,=20"David=20S
-         .=20Miller"=20<davem@davemloft.net>,=0D=0A=09Jakub=20Kicinski=20<k
-         uba@kernel.org>,=20linux-kernel@vger.kernel.org|Subject:=20Re:=20[
-         PATCH=20net=20v2]=20net:=20l2tp:=20reduce=20log=20level=20of=20mes
-         sages=20in=0D=0A=20receive=20path,=20add=20counter=20instead|Messa
-         ge-ID:=20<20210303223206.GA7374@katalix.com>|References:=20<bd6f11
-         7b433969634b613153ec86ccd9d5fa3fb9.1614707999.git.mschiffer@univer
-         se-factory.net>|MIME-Version:=201.0|Content-Disposition:=20inline|
-         In-Reply-To:=20<bd6f117b433969634b613153ec86ccd9d5fa3fb9.161470799
-         9.git.mschiffer@universe-factory.net>;
-        b=bK+8OADEbtVmvEES+L1agA1ssHqKnODjTPqqxzVAb0B4ovgOujLqmqX0GvWOkgZvJ
-         0HgSI/UFg2NA596UEn7MO8NSTqIjVxX02Vngb/ogSY7loFpetVpjIWIoI4ABvIXTXg
-         Q1c/r70RPFeTDps3N4VEXF6lVWPfnyZ6Yrv6D9MDFmPxgLh6y8cB2q0s+yRiLAbEDa
-         MELLgsdEaPOu3BO45LiVG0G4YWH33p8OLdpEYLQl5jv7tTd8IooQRDUt2fTckXWd/V
-         7LSZdaDMCFVOzfXPt8JFjktIU3lscmOLpV9IG7o35d0rcAEGXCzJk8/INLAV6nJf9V
-         1oFZMIQUbKh7A==
-Date:   Wed, 3 Mar 2021 22:32:06 +0000
-From:   Tom Parkin <tparkin@katalix.com>
-To:     Matthias Schiffer <mschiffer@universe-factory.net>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net: l2tp: reduce log level of messages in
- receive path, add counter instead
-Message-ID: <20210303223206.GA7374@katalix.com>
-References: <bd6f117b433969634b613153ec86ccd9d5fa3fb9.1614707999.git.mschiffer@universe-factory.net>
+        id S1378747AbhCDAKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:10:15 -0500
+Received: from mga09.intel.com ([134.134.136.24]:36579 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1391856AbhCCWvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 17:51:18 -0500
+IronPort-SDR: QriaMfydYinrvhJVsBvfD/prUF3pOeoVB+ptiCatDgR6DlbR5+9Auv4AiNPP/D5RmNJoXaoWex
+ vTxQA8AlcvpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="187408850"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="187408850"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 14:32:29 -0800
+IronPort-SDR: ptIcPbOqGAYyN0M4xD+jUZn6UdffAovz15GWKamewMzigZcNskzXRS76qzyEgSjoaxBwTrmCm2
+ J8gY57bKKu6w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="406622452"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 03 Mar 2021 14:32:28 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lHa2d-0001nw-QK; Wed, 03 Mar 2021 22:32:27 +0000
+Date:   Thu, 04 Mar 2021 06:32:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 8b89220650146d59e9a8af2e5f12fc582539609e
+Message-ID: <60400e76.dkVbul+NnwIOqNyr%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
-In-Reply-To: <bd6f117b433969634b613153ec86ccd9d5fa3fb9.1614707999.git.mschiffer@universe-factory.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 8b89220650146d59e9a8af2e5f12fc582539609e  cpu/hotplug: Add cpuhp_invoke_callback_range()
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+elapsed time: 720m
 
-On  Wed, Mar 03, 2021 at 16:50:49 +0100, Matthias Schiffer wrote:
-> Commit 5ee759cda51b ("l2tp: use standard API for warning log messages")
-> changed a number of warnings about invalid packets in the receive path
-> so that they are always shown, instead of only when a special L2TP debug
-> flag is set. Even with rate limiting these warnings can easily cause
-> significant log spam - potentially triggered by a malicious party
-> sending invalid packets on purpose.
->=20
-> In addition these warnings were noticed by projects like Tunneldigger [1],
-> which uses L2TP for its data path, but implements its own control
-> protocol (which is sufficiently different from L2TP data packets that it
-> would always be passed up to userspace even with future extensions of
-> L2TP).
->=20
-> Some of the warnings were already redundant, as l2tp_stats has a counter
-> for these packets. This commit adds one additional counter for invalid
-> packets that are passed up to userspace. Packets with unknown session are
-> not counted as invalid, as there is nothing wrong with the format of
-> these packets.
->=20
-> With the additional counter, all of these messages are either redundant
-> or benign, so we reduce them to pr_debug_ratelimited().
+configs tested: 130
+configs skipped: 2
 
-This looks good to me -- thanks Matthias! :-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature; name="signature.asc"
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         at91_dt_defconfig
+powerpc                 mpc832x_mds_defconfig
+sh                              ul2_defconfig
+powerpc                  mpc885_ads_defconfig
+i386                             alldefconfig
+powerpc                    klondike_defconfig
+sparc                       sparc64_defconfig
+powerpc                       eiger_defconfig
+powerpc                       maple_defconfig
+xtensa                         virt_defconfig
+sh                          rsk7203_defconfig
+csky                             alldefconfig
+powerpc                  iss476-smp_defconfig
+sh                         apsh4a3a_defconfig
+mips                      bmips_stb_defconfig
+arm                         lubbock_defconfig
+arm                           tegra_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                      tqm8xx_defconfig
+sh                           se7751_defconfig
+arc                 nsimosci_hs_smp_defconfig
+powerpc                      cm5200_defconfig
+powerpc                     tqm8555_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                        edosk7760_defconfig
+arm                        mvebu_v5_defconfig
+arm                       netwinder_defconfig
+mips                     loongson1b_defconfig
+arm                             mxs_defconfig
+sh                        sh7763rdp_defconfig
+riscv                            allmodconfig
+sh                           se7705_defconfig
+h8300                     edosk2674_defconfig
+arm                          pxa910_defconfig
+mips                        nlm_xlp_defconfig
+arm                        shmobile_defconfig
+nds32                             allnoconfig
+arm                          exynos_defconfig
+microblaze                      mmu_defconfig
+arm                        oxnas_v6_defconfig
+mips                malta_kvm_guest_defconfig
+arm                      footbridge_defconfig
+alpha                            allyesconfig
+powerpc                        cell_defconfig
+arm                         orion5x_defconfig
+arc                          axs101_defconfig
+arm                          pxa3xx_defconfig
+mips                     cu1830-neo_defconfig
+arc                        vdk_hs38_defconfig
+nds32                               defconfig
+c6x                              allyesconfig
+xtensa                           allyesconfig
+sh                         ap325rxa_defconfig
+powerpc                     ep8248e_defconfig
+arm                        multi_v5_defconfig
+arm                        trizeps4_defconfig
+alpha                            alldefconfig
+powerpc                  storcenter_defconfig
+m68k                           sun3_defconfig
+arm                          collie_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210303
+i386                 randconfig-a003-20210303
+i386                 randconfig-a002-20210303
+i386                 randconfig-a004-20210303
+i386                 randconfig-a006-20210303
+i386                 randconfig-a001-20210303
+x86_64               randconfig-a013-20210303
+x86_64               randconfig-a016-20210303
+x86_64               randconfig-a015-20210303
+x86_64               randconfig-a014-20210303
+x86_64               randconfig-a012-20210303
+x86_64               randconfig-a011-20210303
+i386                 randconfig-a016-20210303
+i386                 randconfig-a012-20210303
+i386                 randconfig-a014-20210303
+i386                 randconfig-a013-20210303
+i386                 randconfig-a011-20210303
+i386                 randconfig-a015-20210303
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
------BEGIN PGP SIGNATURE-----
+clang tested configs:
+x86_64               randconfig-a006-20210303
+x86_64               randconfig-a001-20210303
+x86_64               randconfig-a004-20210303
+x86_64               randconfig-a002-20210303
+x86_64               randconfig-a005-20210303
+x86_64               randconfig-a003-20210303
 
-iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmBADmIACgkQlIwGZQq6
-i9AYpwgAqkpw/Vw8I9Zk6EMpQz8rIw7uRP1RHjJKz94ReoaQUmfPT2Fx87CSm5D4
-7ojWyOt7dly9aFKvXF6bvi+KWA6AhzyXrVU0c8SjOxtb86J677HI2w4njsptKvxo
-5XPLfLKgo4fFyO4KWMAQqdnZxN8o1w1MKdjc/+B9EEKB9/XO7hf613Sl66eBBBaS
-GWSUH1IUYlgRF2JBR3RAq85pZPABzU5oseh10koBB8haSFSltQFbzpdmVuIdFrBp
-xQxXjYYf1m4MVYBN/exmifyKicpG0QHGz3kyjWn2SzkC44KCvhdXKpw5Sy9+mIFO
-GM11OWGGjNbk1cg9nqs1l58CFe4/mg==
-=EHmr
------END PGP SIGNATURE-----
-
---0OAP2g/MAC+5xKAE--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
