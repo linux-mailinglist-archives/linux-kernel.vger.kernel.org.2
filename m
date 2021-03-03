@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B0D32BBDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E73632BBE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358817AbhCCNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:03:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        id S1346151AbhCCNKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:10:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349063AbhCCIQF (ORCPT
+        with ESMTP id S1350064AbhCCIQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:16:05 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ACDC061788
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:15:49 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id q20so15716870pfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=GTl72NabGi/IKpwlgFnK8VxUBIaVwPwtxb0HRt0N0tM=;
-        b=bqQ18CjlBrGl8T5bZD8lHCg75fqppP0zhYH4O0zoPbiUP9pTm/+5ANgTRVM69yBWI0
-         ZvsdBu2AqL0K9KW87nWY7c5xG/B0GRfU/nVUMfBBEwfwPez0+lqvVFxETsCY4/p5ugJG
-         l2hk1yi8qcbUXcEw9yC5QFNF0Jq+V1GK9O4Y4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=GTl72NabGi/IKpwlgFnK8VxUBIaVwPwtxb0HRt0N0tM=;
-        b=KFXoo9BZjPWmUjvWdzdP3rSv5ftERr73evK+iUaDmx6KqpXqx/6lMAqFEnBChGHJYV
-         gKwtY1ngDWIwdnKRfiyMKFoj1VVzLJcxQnHgdaXKy4LWBMG03wglxi8hmXvwZ1AvYDF3
-         rghadgb/I2oIEFtYnhE4fCFuaWlZfV2jwVvUZoNDlhkj8GAPUXwMd+3fcr6aJN70M3T8
-         /v0ftu4jOJRIA2xNzEGIiPI2eg/GGGAFstLhxUbPlTFhqxQzghI7icb299fJXwtB8L4E
-         8mdM13ZC9BhKw6bJciRIA4rTc6P59YFGRymVi6c9TV5p8ssN/BLMT+TSS7iqfyls5cqm
-         CzdQ==
-X-Gm-Message-State: AOAM5331FV98kaaQVNqiebFDrA2HIpfQljAPgcugL4XWOGgdiuCgzBOw
-        JfUMwYPaDP/1zHvJpTRg5Vf9/w==
-X-Google-Smtp-Source: ABdhPJzA9BCElwlRBD6UFaqEd1DNz3mMFtTjw1FrL9+ZLbCPHQ5AcOFYFyPXKn3SjWn4TnQsVe7AwA==
-X-Received: by 2002:aa7:8a11:0:b029:1ee:42d8:a8f5 with SMTP id m17-20020aa78a110000b02901ee42d8a8f5mr7209909pfa.5.1614759349450;
-        Wed, 03 Mar 2021 00:15:49 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id f3sm23102706pfe.25.2021.03.03.00.15.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:15:49 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 3 Mar 2021 03:16:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7BAC061793;
+        Wed,  3 Mar 2021 00:16:01 -0800 (PST)
+Date:   Wed, 03 Mar 2021 08:15:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614759359;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=KS76QJybmSg5e/fjqFjX6w1OpnhCzFgC4r1JyNgxdps=;
+        b=rSoZ14lvW9oju/0ebD3qBjHLEtkT3H42SV3tVoClqMR8AzxK5NfdEJtSbhj01HCHDLMHMf
+        KE4KXrp/nxqOa8QjTRgcgHPBcN6zvZGJqp4lFDz1CwJFdEcqH71e2+/NV6xO7yHmd+3W/3
+        6d9aWh8H/AG6rSLVMBnS2ZT+a8xYYHoCHstRLBIYlMyVYbWRK4PgGlEwJvm4ToqxMUnSag
+        vUPJ+BA8es2qQPgioeKv9uUNi1P89RS+xERlnVHlsvRWFV99Z2ufK/3heO8Al6WGLDMGMr
+        Dmz6bOWF21BA73VQTspK35On01DuvBCcuwbR41G/f6SforhDB7giVfdrfqdBEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614759359;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=KS76QJybmSg5e/fjqFjX6w1OpnhCzFgC4r1JyNgxdps=;
+        b=EMe51mkICoSE8Qs+Oj7gcof1oR5yMXia+b34stFx/a2UxwdXKUNBMjpn1J0d8r0R8HstgS
+        abgBaHiJ38bF5bBQ==
+From:   "tip-bot2 for Shuah Khan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] ath10k: Detect conf_mutex held ath10k_drain_tx() calls
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kalle Valo <kvalo@codeaurora.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210301133318.v2.8.I80c268f163e6d49a70af1238be442b5de400c579@changeid>
-References: <20210301213437.4165775-1-dianders@chromium.org> <20210301133318.v2.8.I80c268f163e6d49a70af1238be442b5de400c579@changeid>
-Subject: Re: [PATCH v2 08/13] arm64: dts: qcom: sc7180: Remove clock for bluetooth on Trogdor
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Date:   Wed, 03 Mar 2021 00:15:47 -0800
-Message-ID: <161475934760.1478170.16764959964880020501@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Message-ID: <161475935878.20312.1052815878297335176.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-03-01 13:34:32)
-> From: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
->=20
-> Removed voting for RPMH_RF_CLK2 which is not required as it is
-> getting managed by BT SoC through SW_CTRL line.
->=20
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+The following commit has been merged into the locking/core branch of tip:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Commit-ID:     de469d82991b905548b5dc6539177f7b881dce1b
+Gitweb:        https://git.kernel.org/tip/de469d82991b905548b5dc6539177f7b881dce1b
+Author:        Shuah Khan <skhan@linuxfoundation.org>
+AuthorDate:    Fri, 26 Feb 2021 17:07:00 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 02 Mar 2021 15:06:35 +01:00
+
+ath10k: Detect conf_mutex held ath10k_drain_tx() calls
+
+ath10k_drain_tx() must not be called with conf_mutex held as workers can
+use that also. Add call to lockdep_assert_not_held() on conf_mutex to
+detect if conf_mutex is held by the caller.
+
+The idea for this patch stemmed from coming across the comment block
+above the ath10k_drain_tx() while reviewing the conf_mutex holds during
+to debug the conf_mutex lock assert in ath10k_debug_fw_stats_request().
+
+Adding detection to assert on conf_mutex hold will help detect incorrect
+usages that could lead to locking problems when async worker routines try
+to call this routine.
+
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/linux-wireless/871rdmu9z9.fsf@codeaurora.org/
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index bb6c5ee..5ce4f8d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4727,6 +4727,8 @@ out:
+ /* Must not be called with conf_mutex held as workers can use that also. */
+ void ath10k_drain_tx(struct ath10k *ar)
+ {
++	lockdep_assert_not_held(&ar->conf_mutex);
++
+ 	/* make sure rcu-protected mac80211 tx path itself is drained */
+ 	synchronize_net();
+ 
