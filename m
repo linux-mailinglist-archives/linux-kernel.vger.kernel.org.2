@@ -2,220 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4E132BA6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3656A32BA70
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243717AbhCCLUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:20:42 -0500
-Received: from mga03.intel.com ([134.134.136.65]:10469 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238605AbhCCBrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 20:47:05 -0500
-IronPort-SDR: I4SIoP5VZFJcFIjWLqFyeYdQIT/DF02Y/WbIEvMfgKDTCiSb1yfoceQYsqGNQckvCtGblJ+s0M
- BGbsp/fyqLjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="187122511"
-X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
-   d="scan'208";a="187122511"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 17:45:54 -0800
-IronPort-SDR: fOk1mP5/UEwX4oy7jKE9TrAF0X5oa2yUnHKpILKd1dnxsAZAQeaRjbjWAdgMSZs4kIIEF2IrGk
- ootx0dZCzVOw==
-X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
-   d="scan'208";a="399305987"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.243.235])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 17:45:52 -0800
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH v8 1/1] fpga: dfl: afu: harden port enable logic
-Date:   Tue,  2 Mar 2021 17:45:43 -0800
-Message-Id: <20210303014543.68292-1-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1344458AbhCCLVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239697AbhCCBrQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 20:47:16 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9F1C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 17:46:34 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id s7so5946378plg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 17:46:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=s3c8ka2NxmqUACAecVla9DLrhMUmoHZHgqpBk3nSwE4=;
+        b=ey6P3q0LbP8aXSAgr0U4Q4rU9RpbW5A6RQswB3UUyw0iAk3a3WCLPnOu8ZV5MrM85X
+         6Aj9ILxW0xe3pKs86YYWAVkiUE830LaKaCfRY8L2VU698rF397jifaJzmqNssqfNEzEw
+         HC/cMeh1HqWwJ1xwnJzsElT3O6o7IOFq3e4Wd2vC41CdQOtCcOmKsunjPngKlPldfeH5
+         PHrpby8xcJe91t7e1s1nhNpLOON2LXZYrplFGVyE6WEIwjyrOzsP5tag5BrAxSYtoOob
+         cXL6xngPB3D8tyk/1H1yy/L/gxq0uTMyY19QlL9oWjYdq8H2iayOnVfGdjaAY4D96sVM
+         ishQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=s3c8ka2NxmqUACAecVla9DLrhMUmoHZHgqpBk3nSwE4=;
+        b=o1XZSYZJ7l5SLb/HW0c5cTJ0tcdKrEqpTkeyuZkBcb8hEj5bOk1vGkEDsCzwKredQT
+         +bUR+D2TMtyyiqC2mRjZjdFUcIVOzwrenCTpM6+enIqZ0DGK84tFVGu3tBg+KjyHJ30F
+         6zTcs6dIb4Gb0ya6zhQ0OUDXpwB8yyfqsq1/ajIQD4jiq8oOiCMZTTyhp3lI/IcU+hbu
+         OhLr1L/mxMP23uaWFDuiJdlNV8FtmafRgjNZuGKnA58OmmNp3DzupurcesaplP9KOBJK
+         lTOdMflysiywG5S/pVJPBaxUVWM9lw4jSp3OpNaC5D7tC5yRKWXbMQbMRmVbEwSoDzqS
+         qdNQ==
+X-Gm-Message-State: AOAM533umnbhJnr9s53C71+lwatBXo44G86rIMOMdWcndwbCoG/9JECu
+        NHIx1hKJeCq2tMN9swY+ygAMXQ==
+X-Google-Smtp-Source: ABdhPJxm8vrcllcsZ42e4OgPXlUzbfB3kZOBxO/kCNMZK6f8AVdyZdbb/750Ej6UVqiyHnQPOokChQ==
+X-Received: by 2002:a17:90a:cb0a:: with SMTP id z10mr2962028pjt.170.1614735993594;
+        Tue, 02 Mar 2021 17:46:33 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:55b7:4147:bab7:e0dc? ([2601:646:c200:1ef2:55b7:4147:bab7:e0dc])
+        by smtp.gmail.com with ESMTPSA id j11sm4871155pjb.11.2021.03.02.17.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 17:46:33 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Why do kprobes and uprobes singlestep?
+Date:   Tue, 2 Mar 2021 17:46:32 -0800
+Message-Id: <968E85AE-75B8-42D7-844A-0D61B32063B3@amacapital.net>
+References: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+In-Reply-To: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port enable is not complete until ACK = 0. Change
-__afu_port_enable() to guarantee that the enable process
-is complete by polling for ACK == 0.
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Acked-by: Wu Hao <hao.wu@intel.com>
----
-v8:
-  - Rebased to 5.12-rc1 (there were no conflicts)
-v7:
-  - Added Acked-by tag from Wu Hao
-v6:
-  - Fixed the dev_warn statement, which had "__func__" embedded in the
-    string instead of treated as a parameter to the format string.
-v5:
-  - Added Reviewed-by tag to commit message
-v4:
-  - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
-  - Modified dev_err() message in __afu_port_disable() to say "disable"
-    instead of "reset"
-v3:
-  - afu_port_err_clear() changed to prioritize port_enable failure over
-    other a detected mismatch in port errors.
-  - reorganized code in port_reset() to be more readable.
-v2:
-  - Fixed typo in commit message
----
- drivers/fpga/dfl-afu-error.c | 10 ++++++----
- drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
- drivers/fpga/dfl-afu.h       |  2 +-
- 3 files changed, 30 insertions(+), 15 deletions(-)
+> On Mar 2, 2021, at 5:22 PM, Alexei Starovoitov <alexei.starovoitov@gmail.c=
+om> wrote:
+>=20
+> =EF=BB=BFOn Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapital.n=
+et> wrote:
+>>=20
+>>=20
+>>>> On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gma=
+il.com> wrote:
+>>>=20
+>>> =EF=BB=BFOn Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.or=
+g> wrote:
+>>>>=20
+>>>> Is there something like a uprobe test suite?  How maintained /
+>>>> actively used is uprobe?
+>>>=20
+>>> uprobe+bpf is heavily used in production.
+>>> selftests/bpf has only one test for it though.
+>>>=20
+>>> Why are you asking?
+>>=20
+>> Because the integration with the x86 entry code is a mess, and I want to k=
+now whether to mark it BROKEN or how to make sure the any cleanups actually w=
+ork.
+>=20
+> Any test case to repro the issue you found?
+> Is it a bug or just messy code?
 
-diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
-index c4691187cca9..ab7be6217368 100644
---- a/drivers/fpga/dfl-afu-error.c
-+++ b/drivers/fpga/dfl-afu-error.c
-@@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
- 	struct platform_device *pdev = to_platform_device(dev);
- 	void __iomem *base_err, *base_hdr;
--	int ret = -EBUSY;
-+	int enable_ret = 0, ret = -EBUSY;
- 	u64 v;
- 
- 	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
-@@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 		v = readq(base_err + PORT_FIRST_ERROR);
- 		writeq(v, base_err + PORT_FIRST_ERROR);
- 	} else {
-+		dev_warn(dev, "%s: received 0x%llx, expected 0x%llx\n",
-+			 __func__, v, err);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Clear mask */
- 	__afu_port_err_mask(dev, false);
- 
--	/* Enable the Port by clear the reset */
--	__afu_port_enable(pdev);
-+	/* Enable the Port by clearing the reset */
-+	enable_ret = __afu_port_enable(pdev);
- 
- done:
- 	mutex_unlock(&pdata->lock);
--	return ret;
-+	return enable_ret ? enable_ret : ret;
- }
- 
- static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
-diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-index 753cda4b2568..77dadaae5b8f 100644
---- a/drivers/fpga/dfl-afu-main.c
-+++ b/drivers/fpga/dfl-afu-main.c
-@@ -21,6 +21,9 @@
- 
- #include "dfl-afu.h"
- 
-+#define RST_POLL_INVL 10 /* us */
-+#define RST_POLL_TIMEOUT 1000 /* us */
-+
- /**
-  * __afu_port_enable - enable a port by clear reset
-  * @pdev: port platform device.
-@@ -32,7 +35,7 @@
-  *
-  * The caller needs to hold lock for protection.
-  */
--void __afu_port_enable(struct platform_device *pdev)
-+int __afu_port_enable(struct platform_device *pdev)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	void __iomem *base;
-@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
- 	WARN_ON(!pdata->disable_count);
- 
- 	if (--pdata->disable_count != 0)
--		return;
-+		return 0;
- 
- 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
- 
-@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
- 	v = readq(base + PORT_HDR_CTRL);
- 	v &= ~PORT_CTRL_SFTRST;
- 	writeq(v, base + PORT_HDR_CTRL);
--}
- 
--#define RST_POLL_INVL 10 /* us */
--#define RST_POLL_TIMEOUT 1000 /* us */
-+	/*
-+	 * HW clears the ack bit to indicate that the port is fully out
-+	 * of reset.
-+	 */
-+	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-+			       !(v & PORT_CTRL_SFTRST_ACK),
-+			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-+		dev_err(&pdev->dev, "timeout, failure to enable device\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
- 
- /**
-  * __afu_port_disable - disable a port by hold reset
-@@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
- 	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
- 			       v & PORT_CTRL_SFTRST_ACK,
- 			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
--		dev_err(&pdev->dev, "timeout, fail to reset device\n");
-+		dev_err(&pdev->dev, "timeout, failure to disable device\n");
- 		return -ETIMEDOUT;
- 	}
- 
-@@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
- 
- 	ret = __afu_port_disable(pdev);
- 	if (!ret)
--		__afu_port_enable(pdev);
-+		return ret;
- 
--	return ret;
-+	return __afu_port_enable(pdev);
- }
- 
- static int port_reset(struct platform_device *pdev)
-@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
- static int port_enable_set(struct platform_device *pdev, bool enable)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
--	int ret = 0;
-+	int ret;
- 
- 	mutex_lock(&pdata->lock);
- 	if (enable)
--		__afu_port_enable(pdev);
-+		ret = __afu_port_enable(pdev);
- 	else
- 		ret = __afu_port_disable(pdev);
- 	mutex_unlock(&pdata->lock);
-diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
-index 576e94960086..e5020e2b1f3d 100644
---- a/drivers/fpga/dfl-afu.h
-+++ b/drivers/fpga/dfl-afu.h
-@@ -80,7 +80,7 @@ struct dfl_afu {
- };
- 
- /* hold pdata->lock when call __afu_port_enable/disable */
--void __afu_port_enable(struct platform_device *pdev);
-+int __afu_port_enable(struct platform_device *pdev);
- int __afu_port_disable(struct platform_device *pdev);
- 
- void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
--- 
-2.25.1
+Just messy code.
 
+> Nowadays a good chunk of popular applications (python, mysql, etc) has
+> USDTs in them.
+> Issues reported with bcc:
+> https://github.com/iovisor/bcc/issues?q=3Dis%3Aissue+USDT
+> Similar thing with bpftrace.
+> Both standard USDT and semaphore based are used in the wild.
+> uprobe for containers has been a long standing feature request.
+> If you can improve uprobe performance that would be awesome.
+> That's another thing that people report often. We optimized it a bit.
+> More can be done.
+
+
+Wait... USDT is much easier to implement well.  Are we talking just USDT or a=
+re we talking about general uprobes in which almost any instruction can get p=
+robed?  If the only users that care about uprobes are doing USDT, we could v=
+astly simplify the implementation and probably make it faster, too.=
