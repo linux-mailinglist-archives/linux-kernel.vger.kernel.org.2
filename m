@@ -2,118 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397CA32C001
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574C832C015
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580666AbhCCSeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:34:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236310AbhCCRLf (ORCPT
+        id S1580803AbhCCSfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:35:10 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4588 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233473AbhCCRLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 12:11:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614791401;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8cECYFHQXW6ZC2a1gqf4nDPpPZL2JkTjaxDe2H/4YEM=;
-        b=H7oci9efCQQe8UfpPhj3ng3pqoQeCeTurqhbgHvjOhr8800zrYxaJXK2v55ozzp4sqAvEr
-        /PTP2BQNo9SLwatMrS9x4XHjC5R8+9nX1DRfDg2JPsJUrXXq6D3EIyyJ/MSYxRZzh8ntyg
-        MGIgdko2fHFNYaPV8AMInBOr3uZecTc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-K94w8fx9NT6wvBDQMAcxtA-1; Wed, 03 Mar 2021 12:09:59 -0500
-X-MC-Unique: K94w8fx9NT6wvBDQMAcxtA-1
-Received: by mail-wm1-f71.google.com with SMTP id 73so3238814wma.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:09:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8cECYFHQXW6ZC2a1gqf4nDPpPZL2JkTjaxDe2H/4YEM=;
-        b=lUanlm3WBxd7eaDMzGQfvFmcgqLrmx3ZTZwHJe2PLzM9T7oI+KXQ0bigQLq7IogyON
-         /7teL7FN71GSg1oRutRIM71q9BGSI8fAxLMpTmgnu5INx6zrqIbKJagxhqQlMpod/3SJ
-         EIXdDyaSuwJkUo2XV7vFPWNxguLzCuOBiA8aoR2HuyCzQj3NGJcmrJ2xP98JjtQaxb6Q
-         uXoXFlYPUi+OCmIfV5WC32LnyYN4Yb1uYdFTpalAo+5/+3drjXWnfEyG9M34JnIzv8fT
-         5CwGVWIfSGVZT8TaEZc/zRhyChkwYjdZWKZCRMeDd18zJq/HL7v1hENmmS83uzTdhgZM
-         T23Q==
-X-Gm-Message-State: AOAM532VPB8XhxhbOXA/gebFca5SSpAkF7uN6IZbv1A4LBpfchWMwz4W
-        7LAV0oBSPZCSejObwpGKYJSsJSTwx2/nZ4sbrZsz70c16T97VWKUQBh99F68Wh8GT7U/BqoZGhL
-        b++fOWSvKAyds28GyD0fBermfZbp2mcuK0PGm1uL7mrRzgul/q9SFh7wNVdcG0p3SVccuzTegl7
-        iF
-X-Received: by 2002:adf:d84d:: with SMTP id k13mr28964847wrl.164.1614791397394;
-        Wed, 03 Mar 2021 09:09:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyVvvF8AoBPMoaVRWSl4ebWzlC+SRuerfrx4Hs3SxLXgle7eZ1Bx/KLr8ThmWLeoi7Z3fvifw==
-X-Received: by 2002:adf:d84d:: with SMTP id k13mr28964820wrl.164.1614791397215;
-        Wed, 03 Mar 2021 09:09:57 -0800 (PST)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id r7sm33066226wre.25.2021.03.03.09.09.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:09:56 -0800 (PST)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        ardb@kernel.org, masahiroy@kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, ycote@redhat.com,
-        Raphael Gault <raphael.gault@arm.com>,
-        Julien Thierry <jthierry@redhat.com>
-Subject: [RFC PATCH v2 13/13] objtool: arm64: Enable stack validation for arm64
-Date:   Wed,  3 Mar 2021 18:09:32 +0100
-Message-Id: <20210303170932.1838634-14-jthierry@redhat.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210303170932.1838634-1-jthierry@redhat.com>
-References: <20210303170932.1838634-1-jthierry@redhat.com>
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123H3YMN036521;
+        Wed, 3 Mar 2021 12:10:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xB4pj5ZQmdaIfWonq+qYZ9igM/UR1LN9BL/+/khQTwY=;
+ b=HwfrlT+MWatOCZWhscq4UHiyg4cbIjTMAEIagbWjaEoz7svKwLB5tK/Xwo02drucOYec
+ ZcBJgFtW+y0qd7sJZiQlVWkpNrX+gFnXh3LxqFay/li/CXdVq3BvZTyk1JbgcYJcArzv
+ Tal++cENl7yLtZBLqCICg8XYJAcw8rQzSlqrHKzSw3HWc1LfRc92UDjurVjkbEjDVyMm
+ 1kJkLU7JPKRLnTcduFgurqih1tFO+1RDYP8za4aU+C3N8jMrGFesJYsJFzi9yjBHRa69
+ +b3fvZnZwyYCKwQnTf+YXX8sXph6AEMjh4Cg+n2Y6aL+oL4txMnKjSrZS6INmz2maM2V VQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372dwshnb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 12:10:17 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 123H3uvX042538;
+        Wed, 3 Mar 2021 12:10:17 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372dwshnaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 12:10:16 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 123Gw93R032762;
+        Wed, 3 Mar 2021 17:10:16 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma03dal.us.ibm.com with ESMTP id 3720r0eckk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 17:10:16 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 123HAEtU24379838
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Mar 2021 17:10:14 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E63F13604F;
+        Wed,  3 Mar 2021 17:10:14 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BFF2136053;
+        Wed,  3 Mar 2021 17:10:12 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.150.254])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  3 Mar 2021 17:10:12 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+References: <20210302204322.24441-1-akrowiak@linux.ibm.com>
+ <20210302204322.24441-2-akrowiak@linux.ibm.com>
+ <20210303162332.4d227dbe.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <14665bcf-2224-e313-43ff-357cadd177cf@linux.ibm.com>
+Date:   Wed, 3 Mar 2021 12:10:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210303162332.4d227dbe.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-03_05:2021-03-03,2021-03-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103030123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gault <raphael.gault@arm.com>
 
-Add build option to run stack validation at compile time.
 
-When requiring stack validation, jump tables are disabled as it
-simplifies objtool analysis (without having to introduce unreliable
-artifacs). In local testing, this does not appear to significaly
-affect final binary size nor system performance.
+On 3/3/21 10:23 AM, Halil Pasic wrote:
+> On Tue,  2 Mar 2021 15:43:22 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> This patch fixes a lockdep splat introduced by commit f21916ec4826
+>> ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated").
+>> The lockdep splat only occurs when starting a Secure Execution guest.
+>> Crypto virtualization (vfio_ap) is not yet supported for SE guests;
+>> however, in order to avoid this problem when support becomes available,
+>> this fix is being provided.
+> [..]
+>
+>> @@ -1038,14 +1116,28 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+>>   {
+>>   	struct ap_matrix_mdev *m;
+>>
+>> -	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+>> -		if ((m != matrix_mdev) && (m->kvm == kvm))
+>> -			return -EPERM;
+>> -	}
+>> +	if (kvm->arch.crypto.crycbd) {
+>> +		matrix_mdev->kvm_busy = true;
+>>
+>> -	matrix_mdev->kvm = kvm;
+>> -	kvm_get_kvm(kvm);
+>> -	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+>> +		list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+>> +			if ((m != matrix_mdev) && (m->kvm == kvm)) {
+>> +				wake_up_all(&matrix_mdev->wait_for_kvm);
+> This ain't no good. kvm_busy will remain true if we take this exit. The
+> wake_up_all() is not needed, because we hold the lock, so nobody can
+> observe it if we don't forget kvm_busy set.
+>
+> I suggest moving matrix_mdev->kvm_busy = true; after this loop, maybe right
+> before the unlock, and removing the wake_up_all().
+>
+>> +				return -EPERM;
+>> +			}
+>> +		}
+>> +
+>> +		kvm_get_kvm(kvm);
+>> +		mutex_unlock(&matrix_dev->lock);
+>> +		kvm_arch_crypto_set_masks(kvm,
+>> +					  matrix_mdev->matrix.apm,
+>> +					  matrix_mdev->matrix.aqm,
+>> +					  matrix_mdev->matrix.adm);
+>> +		mutex_lock(&matrix_dev->lock);
+>> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+>> +		matrix_mdev->kvm = kvm;
+>> +		matrix_mdev->kvm_busy = false;
+>> +		wake_up_all(&matrix_mdev->wait_for_kvm);
+>> +	}
+>>
+>>   	return 0;
+>>   }
+> [..]
+>
+>> @@ -1300,7 +1406,21 @@ static ssize_t vfio_ap_mdev_ioctl(struct mdev_device *mdev,
+>>   		ret = vfio_ap_mdev_get_device_info(arg);
+>>   		break;
+>>   	case VFIO_DEVICE_RESET:
+>> -		ret = vfio_ap_mdev_reset_queues(mdev);
+>> +		matrix_mdev = mdev_get_drvdata(mdev);
+>> +
+>> +		/*
+>> +		 * If the KVM pointer is in the process of being set, wait until
+>> +		 * the process has completed.
+>> +		 */
+>> +		wait_event_cmd(matrix_mdev->wait_for_kvm,
+>> +			       matrix_mdev->kvm_busy == false,
+>> +			       mutex_unlock(&matrix_dev->lock),
+>> +			       mutex_lock(&matrix_dev->lock));
+>> +
+>> +		if (matrix_mdev->kvm)
+>> +			ret = vfio_ap_mdev_reset_queues(mdev);
+>> +		else
+>> +			ret = -ENODEV;
+> I don't think rejecting the reset is a good idea. I have you a more detailed
+> explanation of the list, where we initially discussed this question.
+>
+> How do you exect userspace to react to this -ENODEV?
 
-Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
----
- arch/arm64/Kconfig  | 1 +
- arch/arm64/Makefile | 4 ++++
- 2 files changed, 5 insertions(+)
+After reading your more detailed explanation, I have come to the
+conclusion that the test for matrix_mdev->kvm should not be
+performed here and the the vfio_ap_mdev_reset_queues() function
+should be called regardless. Each queue assigned to the mdev
+that is also bound to the vfio_ap driver will get reset and its
+IRQ resources cleaned up if they haven't already been and the
+other required conditions are met (i.e., see 
+vfio_ap_mdev_free_irq_resources()).
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1f212b47a48a..928323c03318 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -187,6 +187,7 @@ config ARM64
- 	select MMU_GATHER_RCU_TABLE_FREE
- 	select HAVE_RSEQ
- 	select HAVE_STACKPROTECTOR
-+	select HAVE_STACK_VALIDATION
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_KPROBES
- 	select HAVE_KRETPROBES
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 5b84aec31ed3..b819fb2e8eda 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -136,6 +136,10 @@ ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
-   CC_FLAGS_FTRACE := -fpatchable-function-entry=2
- endif
- 
-+ifeq ($(CONFIG_STACK_VALIDATION),y)
-+KBUILD_CFLAGS	+= -fno-jump-tables
-+endif
-+
- # Default value
- head-y		:= arch/arm64/kernel/head.o
- 
--- 
-2.25.4
+>
+> Otherwise looks good to me!
+>
+> I've tested your branch from yesterday (which looks to me like this patch
+> without the above check on ->kvm and reset) for the lockdep splat, but I
+> didn't do any comprehensive testing -- which would ensure that we didn't
+> break something else in the process. With the two issues fixed, and your
+> word that the patch was properly tested (except for the lockdep splat
+> which I tested myself), I feel comfortable with moving forward with this.
+>
+> Regards,
+>
 
