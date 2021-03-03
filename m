@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF5132BDEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2049E32BDF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379104AbhCCQji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:39:38 -0500
-Received: from lucky1.263xmail.com ([211.157.147.134]:55918 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344732AbhCCME1 (ORCPT
+        id S1384962AbhCCQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:39:54 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39385 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239577AbhCCMFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:04:27 -0500
-Received: from localhost (unknown [192.168.167.13])
-        by lucky1.263xmail.com (Postfix) with ESMTP id E7B09C75D3;
-        Wed,  3 Mar 2021 19:57:16 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P4300T140473571735296S1614772632866484_;
-        Wed, 03 Mar 2021 19:57:18 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <ba80ddaa333c65d3e86d5ece2779404c>
-X-RL-SENDER: maqianga@uniontech.com
-X-SENDER: maqianga@uniontech.com
-X-LOGIN-NAME: maqianga@uniontech.com
-X-FST-TO: mpe@ellerman.id.au
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   maqiang <maqianga@uniontech.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        maqiang <maqianga@uniontech.com>
-Subject: [PATCH] powerpc: remove redundant space
-Date:   Wed,  3 Mar 2021 19:57:10 +0800
-Message-Id: <20210303115710.30886-1-maqianga@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 3 Mar 2021 07:05:14 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UQFn22N_1614772990;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UQFn22N_1614772990)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Mar 2021 20:03:11 +0800
+Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
+ SGX_INVALID_SIGNATURE
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
+ <YDy51R2Wva7s+k/x@kernel.org>
+ <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
+ <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <870e9a2e-65dd-131d-78c2-24de1ffffd31@linux.alibaba.com>
+Date:   Wed, 3 Mar 2021 20:03:10 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrVn_inXAULfsPrCXeHUTBet+KnL1XsxuiaR+jgG1uTJNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These one line of code don't meet the kernel coding style,
-so remove the redundant space.
-
-Signed-off-by: maqiang <maqianga@uniontech.com>
----
- arch/powerpc/kernel/syscalls.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
-index 078608ec2e92..9248288752d5 100644
---- a/arch/powerpc/kernel/syscalls.c
-+++ b/arch/powerpc/kernel/syscalls.c
-@@ -81,7 +81,7 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
- int
- ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
- {
--	if ( (unsigned long)n >= 4096 )
-+	if ((unsigned long)n >= 4096)
- 	{
- 		unsigned long __user *buffer = (unsigned long __user *)n;
- 		if (!access_ok(buffer, 5*sizeof(unsigned long))
--- 
-2.20.1
 
 
+On 3/2/21 1:54 PM, Andy Lutomirski wrote:
+> On Mon, Mar 1, 2021 at 9:06 PM Tianjia Zhang
+> <tianjia.zhang@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
+>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
+>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
+>>>
+>>> What does determine this?
+>>>
+>>>> In this case, the valid portion of q2 is reordered reversely for
+>>>> little endian order, and the remaining portion is filled with zero.
+>>>
+>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
+>>>
+>>> I'm lacking these details:
+>>>
+>>> 1. Why the length of Q2 can vary?
+>>> 2. Why reversing the bytes is the correct measure to counter-measure
+>>>      this variation?
+>>>
+>>> /Jarkko
+>>>
+>>
+>> When use openssl to generate a key instead of using the built-in
+>> sign_key.pem, there is a probability that will encounter this problem.
+>>
+>> Here is a problematic key I encountered. The calculated q1 and q2 of
+>> this key are both 383 bytes, If the length is not processed, the
+>> hardware signature will fail.
+> 
+> Presumably the issue is that some keys have parameters that have
+> enough leading 0 bits to be effectively shorter.  The openssl API
+> (and, sadly, a bunch  of the ASN.1 stuff) treats these parameters as
+> variable-size integers.
+> 
 
+I agree with your opinion.
+
+Thanks,
+Tianjia
