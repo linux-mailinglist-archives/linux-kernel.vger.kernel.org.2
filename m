@@ -2,96 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA8132BEAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D5032BEAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574719AbhCCReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:34:04 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36438 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235447AbhCCOGi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:06:38 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lHS7v-0001mB-LN; Wed, 03 Mar 2021 14:05:23 +0000
-Date:   Wed, 3 Mar 2021 14:05:22 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Tycho Andersen <tycho@tycho.ws>,
-        James Morris <jmorris@namei.org>,
-        linux-fsdevel@vger.kernel.org,
-        containers@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 09/40] xattr: handle idmapped mounts
-Message-ID: <20210303140522.jwlzrmhhho3lvpmv@wittgenstein>
-References: <20210121131959.646623-10-christian.brauner@ubuntu.com>
- <20210121131959.646623-1-christian.brauner@ubuntu.com>
- <2129497.1614777842@warthog.procyon.org.uk>
+        id S1574745AbhCCReJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:34:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236430AbhCCOHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:07:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C686764EAE;
+        Wed,  3 Mar 2021 14:05:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614780360;
+        bh=Dp0+D625HwAqvxI89RK1lqFQ0TMsmccmmw5X2AV2AqQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xxJcA485F5jgnpF+bBLXnNgks0su/Sl0PRgMADE7m/ptDwGJNSX26wM6eextQlun9
+         iyxOKNSGbKnvSJfGzXpesfvbixiMru1o9ms6VqsmSUnbqa0fK1COCrCZK7DUCT5827
+         xVwj1KXxkqePMJ8sTxlm2UP0UwBDs4CGMGToUT4Q=
+Date:   Wed, 3 Mar 2021 15:05:57 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] docs: driver-model: device: Add helper macro examples
+Message-ID: <YD+XxZ2/8vPeDt05@kroah.com>
+References: <20210303133845.3939403-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2129497.1614777842@warthog.procyon.org.uk>
+In-Reply-To: <20210303133845.3939403-1-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 01:24:02PM +0000, David Howells wrote:
-> Christian Brauner <christian.brauner@ubuntu.com> wrote:
+On Wed, Mar 03, 2021 at 02:38:43PM +0100, Geert Uytterhoeven wrote:
+> 	Hi Jon, Greg, Rafael,
 > 
-> > diff --git a/fs/cachefiles/xattr.c b/fs/cachefiles/xattr.c
-> > index 72e42438f3d7..a591b5e09637 100644
-> > --- a/fs/cachefiles/xattr.c
-> > +++ b/fs/cachefiles/xattr.c
-> > @@ -39,8 +39,8 @@ int cachefiles_check_object_type(struct cachefiles_object *object)
-> >  	_enter("%p{%s}", object, type);
-> >  
-> >  	/* attempt to install a type label directly */
-> > -	ret = vfs_setxattr(dentry, cachefiles_xattr_cache, type, 2,
-> > -			   XATTR_CREATE);
-> > +	ret = vfs_setxattr(&init_user_ns, dentry, cachefiles_xattr_cache, type,
-> > +			   2, XATTR_CREATE);
+> The DEVICE_ATTR_* and ATTRIBUTE_GROUPS() helper macros have existed for
+> more than a decade, but are still not mentioned in the driver-model
+> device documentation.  Hence this patch series adds them, including
+> examples, to the documentation.
 > 
-
-Hey David,
-
-(Ok, recovered from my run-in with the swapfile bug. I even managed to
-get my emails back.)
-
-> Actually, on further consideration, this might be the wrong thing to do in
-> cachefiles.  The creds are (or should be) overridden when accesses to the
-> underlying filesystem are being made.
+> Thanks for your comments!
 > 
-> I wonder if this should be using current_cred()->user_ns or
-> cache->cache_cred->user_ns instead.
+> Geert Uytterhoeven (2):
+>   docs: driver-model: device: Add DEVICE_ATTR_{RO,RW} examples
+>   docs: driver-model: device: Add ATTRIBUTE_GROUPS() example
 
-Before I go into the second question please note that this is a no-op
-change. So if this is wrong it was wrong before. Which is your point, I
-guess.
+Thanks for adding these:
 
-Please also note that the mnt_userns is _never_ used for (capability)
-permission checking, only for idmapping vfs objects and permission
-checks based on the i_uid and i_gid. So if your argument about passing
-one of those two user namespaces above has anything to do with
-permission checking on caps it's most likely wrong. :)
-
-In order to answer this more confidently I need to know a bit more about
-how cachefiles are supposed to work.
-
-From what I gather here it seemed what this code is trying to set here
-is an internal "CacheFiles.cache" extended attribute on the indode. This
-extended attribute doesn't store any uids and gids or filesystem
-capabilities so the user namespace isn't relevant for that since there
-doesn't need to be any conversion.
-
-What I need to know is what information do you use for cachefiles to
-determine whether someone can set that "Cachefiles.cache" extended
-attribute on the inode:
-- Is it the mnt_userns of a/the mount of the filesystem you're caching for?
-- The mnt_userns of the mnt of struct cachefiles_cache?
-- Or the stashed or current creds of the caller?
-
-Christian
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
