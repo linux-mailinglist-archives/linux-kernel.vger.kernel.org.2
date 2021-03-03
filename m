@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801E132BE72
+	by mail.lfdr.de (Postfix) with ESMTP id 0E24B32BE71
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574193AbhCCRWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S1574175AbhCCRWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444522AbhCCNqh (ORCPT
+        with ESMTP id S1444516AbhCCNqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 08:46:37 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907F7C061A29
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:43:55 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id v15so23747232wrx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:43:55 -0800 (PST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263E8C061A2A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:43:57 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id o2so5882798wme.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:43:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BenSWVQP2zN1koiPW0t4kws5hTFRiEoau/BE1y9GfNM=;
-        b=Ng8hdaWRiiyvyJ7rnmG9yRryrouH4pj2frjYm54JU0V/Kij/mLkEoTUEP+yMJyN858
-         43bEo3V8esgmfbqdFHDVhOX+SYmO5tr9O/V0Mceqz5W1Xcgm7WGS+5ivEqcwlqOs8Ds7
-         gUsslo0geHrYU/ZKFsr3zq/YneNyJndoy2Em75uprLvmdbJe7KRxkSvIsl559Ym/lM8a
-         V4HEidvwkXJY7TwiMQqabQmXvPddzJPgihMF4HHRUsKPHxZdQKO0HpYJ2lh1WlJB06N5
-         cC4fLLZcxrlhDnzlMsFU70uqIMOuAxIpB4tT9G1IKwKiYZzRepB8asZvagjaujELaLUf
-         SRXw==
+        bh=sFatDrTTk8QqhpQrxXr3ebT1Fq28H33Kmdp2vbOtLEY=;
+        b=JN+pNUBNmoRVzmyxYCjZbYRzO+sgBe9ntzqJZE5KsicmUm686iLD/gtmxYujDKuJFG
+         EdpRwSuIDzKvMWWzXFpuVyMc0Z/8oUsNVwiD+Y/98rL1O3nZEEKacuG5oLnsEkg7UI32
+         i/CCJxLvq75MhT+jqReyFzFhOcB3Ylyl7+og6zurPtuI4vzr+pKkdbhT4YWhZroN0g9W
+         QEpW44HNpHbO0XdwwhQPRYfcZ0zLnpSBGGVbFjs6xMKu1KcDzu6p2/SaXzYgDREiY++R
+         DCboisRRX6fh4D+fEPxrtkhtVJvaSJO2vW3gA4YJgiU93YagoCJzCGGfPssKAzZTYNmx
+         vCyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BenSWVQP2zN1koiPW0t4kws5hTFRiEoau/BE1y9GfNM=;
-        b=GMed1ll/tKCIKUxj6yCm6qf+7HopxP2AGCAdvb4JPjDaIzR7iFe50Yg0PesRacImld
-         S4NC/SYnZH1SeJnwaRE26L7S5I8xvvydp7iYOg34h+lUj5nFVIym/DbphvGTPymWo87X
-         F2paob6Bwz+h95w7Ibdj4qqOrtJrbK6CA2hQfh0r4zqzD3Heu+YhpwqP9cPxcd9BLTH5
-         gp85NlyG89MMWglKDiJ5ccZtqATRLzVlyEXoTLTJcnKPPjaoXuMtBqRVgViWpMkqfYeA
-         UG4Ehlpv96kNNw39wyE3o/+XwFJiWYn38XynFWbbBmNumojLc9wBJotrNYpLZDvfUmQr
-         K1MQ==
-X-Gm-Message-State: AOAM532F1ASEPkMkP6levMtwo8NoTOQ7oTNRzyT6/5iM9hZ0NOUyBuKH
-        C7o1Pw6iULzX208U/i0PzOIrGUq2+uoRQA==
-X-Google-Smtp-Source: ABdhPJycA6TC1eg5KWRI2oQfh3Gk2eiMaVqoQpFQ2CQX+w8wHkausDg6d3nojKl6dS4quQKwNJFznw==
-X-Received: by 2002:a5d:6042:: with SMTP id j2mr28094272wrt.336.1614779034339;
-        Wed, 03 Mar 2021 05:43:54 -0800 (PST)
+        bh=sFatDrTTk8QqhpQrxXr3ebT1Fq28H33Kmdp2vbOtLEY=;
+        b=OTJlsrhW5P36d2Q6ll/+el2m6U4sv00X/e+vBVxMKS4f37oqjCaUlgbHZFCEVk4UVC
+         MNEcCvkZzk0CTcxVC8KODoG5MW0YRTWcxBGVzrJHYU60j+/9bOVkQfKAj1v46P0lHBDt
+         I0jl/5MWFzTahXuNwqxZILxAYRnFICC3p2eoFmqljnf4iP4jUPGw0f9he+pja3NGAhLe
+         ufb6Y6no1r591JpU+8NwYeWrRT0GsWLIkvv6SMUQz7zxX7wfC3ra98jxuQctlhEpS3++
+         EkkEpTeDQ5LGLtKwsiS8aTW//pbdVhVgRL+0l/eEDEh85QwlxiJRHCEt88XOSVW+FmPI
+         RG4A==
+X-Gm-Message-State: AOAM533fETG6iNXmuTske8qyOzXGPt0fLuQTZefHK+KDtiQFI0mfC16u
+        gE2SR6GyERbkPYtSHmBg+vMrDg==
+X-Google-Smtp-Source: ABdhPJylT1iR2h2Lg9leQR27Gb9vT9nE553qKmYJDPgCQk3GqVw1z9r9EffVmzICn+nguOeafP4RiQ==
+X-Received: by 2002:a1c:2288:: with SMTP id i130mr9151603wmi.62.1614779035907;
+        Wed, 03 Mar 2021 05:43:55 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.52
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:43:53 -0800 (PST)
+        Wed, 03 Mar 2021 05:43:55 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH 22/53] drm/nouveau/nouveau_ioc32: Demote kernel-doc abuse to standard comment block
-Date:   Wed,  3 Mar 2021 13:42:48 +0000
-Message-Id: <20210303134319.3160762-23-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, Zack Rusin <zackr@vmware.com>
+Subject: [PATCH 23/53] drm/vmwgfx/vmwgfx_execbuf: Fix some kernel-doc related issues
+Date:   Wed,  3 Mar 2021 13:42:49 +0000
+Message-Id: <20210303134319.3160762-24-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -68,33 +74,121 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'filp' not described in 'nouveau_compat_ioctl'
- drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'cmd' not described in 'nouveau_compat_ioctl'
- drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'arg' not described in 'nouveau_compat_ioctl'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:89: warning: Enum value 'vmw_res_rel_max' not described in enum 'vmw_resource_relocation_type'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:136: warning: Function parameter or member 'func' not described in 'vmw_cmd_entry'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:136: warning: Function parameter or member 'cmd_name' not described in 'vmw_cmd_entry'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:212: warning: Function parameter or member 'res' not described in 'vmw_cmd_ctx_first_setup'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:523: warning: Function parameter or member 'sw_context' not described in 'vmw_resource_relocation_add'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:523: warning: Excess function parameter 'list' description in 'vmw_resource_relocation_add'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:653: warning: Function parameter or member 'p_res' not described in 'vmw_cmd_res_check'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:653: warning: Excess function parameter 'p_val' description in 'vmw_cmd_res_check'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:1716: warning: Function parameter or member 'res' not described in 'vmw_cmd_res_switch_backup'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:1716: warning: Excess function parameter 'val_node' description in 'vmw_cmd_res_switch_backup'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:3757: warning: Function parameter or member 'file_priv' not described in 'vmw_execbuf_fence_commands'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:3757: warning: Function parameter or member 'dev_priv' not described in 'vmw_execbuf_fence_commands'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:3757: warning: Function parameter or member 'p_fence' not described in 'vmw_execbuf_fence_commands'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:3757: warning: Function parameter or member 'p_handle' not described in 'vmw_execbuf_fence_commands'
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c:3954: warning: Function parameter or member 'kernel_commands' not described in 'vmw_execbuf_cmdbuf'
 
-Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+Cc: Roland Scheidegger <sroland@vmware.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: nouveau@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Zack Rusin <zackr@vmware.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-4-lee.jones@linaro.org
 ---
- drivers/gpu/drm/nouveau/nouveau_ioc32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_ioc32.c b/drivers/gpu/drm/nouveau/nouveau_ioc32.c
-index 8ddf9b2325a42..2af3615c5205c 100644
---- a/drivers/gpu/drm/nouveau/nouveau_ioc32.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_ioc32.c
-@@ -38,7 +38,7 @@
- 
- #include "nouveau_ioctl.h"
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+index 462f173207085..7a24196f92c38 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
+@@ -80,7 +80,8 @@ struct vmw_relocation {
+  * with a NOP.
+  * @vmw_res_rel_cond_nop: Conditional NOP relocation. If the resource id after
+  * validation is -1, the command is replaced with a NOP. Otherwise no action.
+- */
++ * @vmw_res_rel_max: Last value in the enum - used for error checking
++*/
+ enum vmw_resource_relocation_type {
+ 	vmw_res_rel_normal,
+ 	vmw_res_rel_nop,
+@@ -122,9 +123,11 @@ struct vmw_ctx_validation_info {
+ /**
+  * struct vmw_cmd_entry - Describe a command for the verifier
+  *
++ * @func: Call-back to handle the command.
+  * @user_allow: Whether allowed from the execbuf ioctl.
+  * @gb_disable: Whether disabled if guest-backed objects are available.
+  * @gb_enable: Whether enabled iff guest-backed objects are available.
++ * @cmd_name: Name of the command.
+  */
+ struct vmw_cmd_entry {
+ 	int (*func) (struct vmw_private *, struct vmw_sw_context *,
+@@ -203,6 +206,7 @@ static void vmw_bind_dx_query_mob(struct vmw_sw_context *sw_context)
+  *
+  * @dev_priv: Pointer to the device private:
+  * @sw_context: The command submission context
++ * @res: Pointer to the resource
+  * @node: The validation node holding the context resource metadata
+  */
+ static int vmw_cmd_ctx_first_setup(struct vmw_private *dev_priv,
+@@ -509,7 +513,7 @@ static int vmw_resource_context_res_add(struct vmw_private *dev_priv,
+ /**
+  * vmw_resource_relocation_add - Add a relocation to the relocation list
+  *
+- * @list: Pointer to head of relocation list.
++ * @sw_context: Pointer to the software context.
+  * @res: The resource.
+  * @offset: Offset into the command buffer currently being parsed where the id
+  * that needs fixup is located. Granularity is one byte.
+@@ -639,7 +643,7 @@ static int vmw_resources_reserve(struct vmw_sw_context *sw_context)
+  * @converter: User-space visisble type specific information.
+  * @id_loc: Pointer to the location in the command buffer currently being parsed
+  * from where the user-space resource id handle is located.
+- * @p_val: Pointer to pointer to resource validalidation node. Populated on
++ * @p_res: Pointer to pointer to resource validalidation node. Populated on
+  * exit.
+  */
+ static int
+@@ -1700,7 +1704,7 @@ static int vmw_cmd_check_define_gmrfb(struct vmw_private *dev_priv,
+  *
+  * @dev_priv: Pointer to a device private struct.
+  * @sw_context: The software context being used for this batch.
+- * @val_node: The validation node representing the resource.
++ * @res: Pointer to the resource.
+  * @buf_id: Pointer to the user-space backup buffer handle in the command
+  * stream.
+  * @backup_offset: Offset of backup into MOB.
+@@ -3739,7 +3743,7 @@ static int vmw_resize_cmd_bounce(struct vmw_sw_context *sw_context,
+ 	return 0;
+ }
  
 -/**
 +/*
-  * Called whenever a 32-bit process running under a 64-bit kernel
-  * performs an ioctl on /dev/dri/card<n>.
+  * vmw_execbuf_fence_commands - create and submit a command stream fence
   *
+  * Creates a fence object and submits a command stream marker.
+@@ -3939,9 +3943,9 @@ static int vmw_execbuf_submit_cmdbuf(struct vmw_private *dev_priv,
+  * On successful return, the function returns a pointer to the data in the
+  * command buffer and *@header is set to non-NULL.
+  *
+- * If command buffers could not be used, the function will return the value of
+- * @kernel_commands on function call. That value may be NULL. In that case, the
+- * value of *@header will be set to NULL.
++ * @kernel_commands: If command buffers could not be used, the function will
++ * return the value of @kernel_commands on function call. That value may be
++ * NULL. In that case, the value of *@header will be set to NULL.
+  *
+  * If an error is encountered, the function will return a pointer error value.
+  * If the function is interrupted by a signal while sleeping, it will return
 -- 
 2.27.0
 
