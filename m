@@ -2,249 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B32332C3E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2636D32C3E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354425AbhCDAIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:08:32 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51086 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390503AbhCCWIt (ORCPT
+        id S235869AbhCDAJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:09:01 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40122 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1390527AbhCCWKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:08:49 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lHZeb-0001P3-JQ; Wed, 03 Mar 2021 22:07:37 +0000
-Date:   Wed, 3 Mar 2021 22:07:36 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, hch@lst.de, stgraber@ubuntu.com,
-        alban@kinvolk.io, serge@hallyn.com,
-        James Morris <jamorris@linux.microsoft.com>,
-        luto@amacapital.net
-Subject: Re: [GIT PULL] idmapped mounts for v5.12
-Message-ID: <20210303220736.x3qwzrfdhttdwacn@wittgenstein>
-References: <20210213130042.828076-1-christian.brauner@ubuntu.com>
- <m18s7481xc.fsf@fess.ebiederm.org>
+        Wed, 3 Mar 2021 17:10:16 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 7D5BE1F46036
+Message-ID: <0a4ad90338e58a7cc953fb9cd0a0414dacb010d4.camel@collabora.com>
+Subject: Re: [PATCH v4 09/11] media: hantro: IMX8M: add variant for G2/HEVC
+ codec
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, peng.fan@nxp.com,
+        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Date:   Wed, 03 Mar 2021 19:08:42 -0300
+In-Reply-To: <20210303113952.178519-10-benjamin.gaignard@collabora.com>
+References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
+         <20210303113952.178519-10-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <m18s7481xc.fsf@fess.ebiederm.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 01:36:31PM -0600, Eric W. Biederman wrote:
-> Christian Brauner <christian.brauner@ubuntu.com> writes:
+On Wed, 2021-03-03 at 12:39 +0100, Benjamin Gaignard wrote:
+> Add variant to IMX8M to enable G2/HEVC codec.
+> Define the capabilities for the hardware up to 3840x2160.
+> Retrieve the hardware version at init to distinguish G1 from G2.
 > 
-> > Hi Linus,
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 2:
+> - remove useless clocks
+> 
+>  drivers/staging/media/hantro/hantro_drv.c   |  1 +
+>  drivers/staging/media/hantro/hantro_hw.h    |  1 +
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c | 95 ++++++++++++++++++++-
+>  3 files changed, 93 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index bc90a52f4d3d..976be7b6ecfb 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -591,6 +591,7 @@ static const struct of_device_id of_hantro_match[] = {
+>  #endif
+>  #ifdef CONFIG_VIDEO_HANTRO_IMX8M
+>         { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
+> +       { .compatible = "nxp,imx8mq-vpu-g2", .data = &imx8mq_vpu_g2_variant },
+>  #endif
+>         { /* sentinel */ }
+>  };
+> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> index dade3b0769c1..f61f58da05fe 100644
+> --- a/drivers/staging/media/hantro/hantro_hw.h
+> +++ b/drivers/staging/media/hantro/hantro_hw.h
+> @@ -193,6 +193,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
+>  extern const struct hantro_variant rk3328_vpu_variant;
+>  extern const struct hantro_variant rk3288_vpu_variant;
+>  extern const struct hantro_variant imx8mq_vpu_variant;
+> +extern const struct hantro_variant imx8mq_vpu_g2_variant;
+>  
+>  extern const struct hantro_postproc_regs hantro_g1_postproc_regs;
+>  
+> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> index d5b4312b9391..46b33531be85 100644
+> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> @@ -12,6 +12,7 @@
+>  #include "hantro.h"
+>  #include "hantro_jpeg.h"
+>  #include "hantro_g1_regs.h"
+> +#include "hantro_g2_regs.h"
+>  
+>  static int imx8mq_runtime_resume(struct hantro_dev *vpu)
+>  {
+> @@ -90,6 +91,26 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
+>         },
+>  };
+>  
+> +static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_NV12,
+> +               .codec_mode = HANTRO_MODE_NONE,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_HEVC_SLICE,
+> +               .codec_mode = HANTRO_MODE_HEVC_DEC,
+> +               .max_depth = 2,
+> +               .frmsize = {
+> +                       .min_width = 48,
+> +                       .max_width = 3840,
+> +                       .step_width = MB_DIM,
+> +                       .min_height = 48,
+> +                       .max_height = 2160,
+> +                       .step_height = MB_DIM,
+> +               },
+> +       },
+> +};
+> +
+>  static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
+>  {
+>         struct hantro_dev *vpu = dev_id;
+> @@ -108,9 +129,42 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
+>         return IRQ_HANDLED;
+>  }
+>  
+> +static irqreturn_t imx8m_vpu_g2_irq(int irq, void *dev_id)
+> +{
+> +       struct hantro_dev *vpu = dev_id;
+> +       enum vb2_buffer_state state;
+> +       u32 status;
+> +
+> +       status = vdpu_read(vpu, HEVC_REG_INTERRUPT);
+> +       state = (status & HEVC_REG_INTERRUPT_DEC_RDY_INT) ?
+> +                VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
+> +
+> +       vdpu_write(vpu, 0, HEVC_REG_INTERRUPT);
+> +       vdpu_write(vpu, HEVC_REG_CONFIG_DEC_CLK_GATE_E, HEVC_REG_CONFIG);
 
-Hi Eric,
+Is this clock gate enable needed on each interrupt?
 
-> 
-> > This series comes with an extensive xfstests suite covering both ext4 and xfs
-> > https://git.kernel.org/brauner/xfstests-dev/h/idmapped_mounts
-> > It covers truncation, creation, opening, xattrs, vfscaps, setid execution,
-> > setgid inheritance and more both with idmapped and non-idmapped mounts.
-> > It already helped to discover an unrelated xfs setgid inheritance bug which has
-> > since been fixed in mainline. It will be sent for inclusion with the xfstests
-> > project should you decide to merge this.
-> 
-> And yet chown is broken (details below), and in a very predictable way.
+> +
+> +       hantro_irq_done(vpu, state);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+>  static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
+>  {
+> -       vpu->dec_base = vpu->reg_bases[0];
+> +       int ret;
+> +
+> +       /* Check variant version */
+> +       ret = clk_bulk_prepare_enable(vpu->variant->num_clocks, vpu->clocks);
+> +       if (ret) {
+> +               dev_err(vpu->dev, "Failed to enable clocks\n");
+> +               return ret;
+> +       }
+> +
+> +       /* Make that the device has been reset before read it id */
+> +       ret = device_reset(vpu->dev);
+> +       if (ret)
+> +               dev_err(vpu->dev, "Failed to reset Hantro VPU\n");
+> +
+> +       vpu->core_hw_dec_rev = (vdpu_read(vpu, HEVC_REG_VERSION) >> 16) & 0xffff;
+> +       clk_bulk_disable_unprepare(vpu->variant->num_clocks, vpu->clocks);
+>  
+>         return 0;
+>  }
+> @@ -149,17 +203,32 @@ static const struct hantro_codec_ops imx8mq_vpu_codec_ops[] = {
+>         },
+>  };
+>  
+> +static const struct hantro_codec_ops imx8mq_vpu_g2_codec_ops[] = {
+> +       [HANTRO_MODE_HEVC_DEC] = {
+> +               .run = hantro_g2_hevc_dec_run,
+> +               .reset = imx8mq_vpu_reset,
+> +               .init = hantro_hevc_dec_init,
+> +               .exit = hantro_hevc_dec_exit,
+> +       },
+> +};
+> +
+>  /*
+>   * VPU variants.
+>   */
+>  
+>  static const struct hantro_irq imx8mq_irqs[] = {
+>         { "g1", imx8m_vpu_g1_irq },
+> -       { "g2", NULL /* TODO: imx8m_vpu_g2_irq */ },
+>  };
+>  
+> -static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus" };
+> -static const char * const imx8mq_reg_names[] = { "g1", "g2", "ctrl" };
+> +static const struct hantro_irq imx8mq_g2_irqs[] = {
+> +       { "g2", imx8m_vpu_g2_irq },
+> +};
+> +
+> +static const char * const imx8mq_clk_names[] = { "g1", "bus"};
+> +static const char * const imx8mq_reg_names[] = { "g1"};
+> +
+> +static const char * const imx8mq_g2_clk_names[] = { "g2", "bus"};
+> +static const char * const imx8mq_g2_reg_names[] = { "g2"};
+>  
+>  const struct hantro_variant imx8mq_vpu_variant = {
+>         .dec_fmts = imx8m_vpu_dec_fmts,
+> @@ -179,3 +248,21 @@ const struct hantro_variant imx8mq_vpu_variant = {
+>         .reg_names = imx8mq_reg_names,
+>         .num_regs = ARRAY_SIZE(imx8mq_reg_names)
+>  };
+> +
+> +const struct hantro_variant imx8mq_vpu_g2_variant = {
+> +       .dec_offset = 0x0,
+> +       .dec_fmts = imx8m_vpu_g2_dec_fmts,
+> +       .num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
+> +       .postproc_fmts = imx8m_vpu_postproc_fmts,
+> +       .num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_postproc_fmts),
 
-This is increadibly poor timing, there were 6 versions of this patchset
-published over several months and you were Cced on all of them. All that
-came from you during that time were a couple of odd comments.
+Is this postproc_fmts correct?
 
-If chown is broken please give us a specific reproducer for when it
-yields the wrong ownership so we can fix it and add this as a test-case
-to the testsuite so it never breaks again.
+Thanks!
+Ezequiel
 
-> 
-> This is not considering that the entire concept is giving people a
-> loaded footgun, that is very difficult to use safely.
+> +       .codec = HANTRO_HEVC_DECODER,
+> +       .codec_ops = imx8mq_vpu_g2_codec_ops,
+> +       .init = imx8mq_vpu_hw_init,
+> +       .runtime_resume = imx8mq_runtime_resume,
+> +       .irqs = imx8mq_g2_irqs,
+> +       .num_irqs = ARRAY_SIZE(imx8mq_g2_irqs),
+> +       .clk_names = imx8mq_g2_clk_names,
+> +       .num_clocks = ARRAY_SIZE(imx8mq_g2_clk_names),
+> +       .reg_names = imx8mq_g2_reg_names,
+> +       .num_regs = ARRAY_SIZE(imx8mq_g2_reg_names),
+> +};
 
-The concept has seen a lot of interest by a lot of users during
-development of this patchset and is already being integrated in
-container runtimes and other tools by people who understand its behavior
-and implication.
-And fwiw, by this argument we simply should have never done user
-namespaces or unprivileged filesystem mounts too.
 
-> 
-> 
-> When the user namespace was implemented the two kinds of uids were very
-> carefully separated from each other by type, so it would be take
-> deliberate action to mix them.  These changes introduces a third type
-> of uid and does not use the type system to keep them separate.  In just
-
-I don't agree. This causes more confusion then it solves imho and is the
-whole basis for your argument. This reads a bit confusing to me.
-
-> a little bit of looking since I realized this problem I have found two
-> bugs in chown where the wrong values are compared.
-> 
-> We now have the following types of uids and gids:
-> - The userspace values.
-> - The kernel values that are used for comparisons.
->   (The old fashioned kuid_t and kgid_t)
-> - The values used for interfacing with the filesystems
->   underneath a mount.
->   (The beneath mount kuid_t and kgid_t)
-
-I don't see why we would need yet another type for this. It is simply a
-remapped or shifted kuid. A third type would introduce more confusion
-most likely but I'm open to it if you have a clear idea what you want
-and why you want it. It slightly feels like a strawman distinction to
-push for the revert.
-
-> - The values stored in the filesystem.
-> 
-> The third type is new, and the code mixes old fashioned kuid_t and
-> kgid_t with the below mount kuid_t and kgid_t.
-> 
-> Starting with chown_common the code does:
-> 
-> int chown_common(const struct path *path, uid_t user, gid_t group)
-> {
-> 	...
-> 	uid = make_kuid(current_user_ns(), user);
-> 	gid = make_kgid(current_user_ns(), group);
-> 
-> 	mnt_userns = mnt_user_ns(path->mnt);
-> 	uid = kuid_from_mnt(mnt_userns, uid);
-> 	gid = kgid_from_mnt(mnt_userns, gid);
-> 
-> retry_deleg:
-> 	newattrs.ia_valid =  ATTR_CTIME;
-> 	if (user != (uid_t) -1) {
-> 		if (!uid_valid(uid))
-> 			return -EINVAL;
-> 		newattrs.ia_valid |= ATTR_UID;
-> 		newattrs.ia_uid = uid;
-> 	}
-> 	if (group != (gid_t) -1) {
-> 		if (!gid_valid(gid))
-> 			return -EINVAL;
-> 		newattrs.ia_valid |= ATTR_GID;
-> 		newattrs.ia_gid = gid;
-> 	}
-> 	if (!S_ISDIR(inode->i_mode))
-> 		newattrs.ia_valid |=
-> 			ATTR_KILL_SUID | ATTR_KILL_SGID | ATTR_KILL_PRIV;
-> 	inode_lock(inode);
-> 	error = security_path_chown(path, uid, gid);
-> 	if (!error)
-> 		error = notify_change(mnt_userns, path->dentry, &newattrs,
-> 				      &delegated_inode);
-> 	inode_unlock(inode);
-> 	...
-> }
-> 
-> Here security_path_chown is expecting the old fashioned kuid_t and
-> kgid_t but looking at the top of the function we can see that
-> security_path_chown is getting the kuid_t and kgid_t from below the
-> mount.
-
-As it should. The idmapping of the mount is authorative. This attack
-only makes sense if you assume that there is a third type.
-
-> 
-> The Tomoyo lsm cares.
-
-Please explain or send a patch to fix Tomoyo.
-
-> 
-> 
-> Notice that ia_uid and ia_gid in struct newattrs are below mount values.
-> 
-> 
-> Now looking in notify_change:
-> 
-> int notify_change(struct user_namespace *mnt_userns, struct dentry *dentry,
-> 		  struct iattr *attr, struct inode **delegated_inode)
-> {
-> 	...
->        	if (inode->i_op->setattr)
-> 		error = inode->i_op->setattr(mnt_userns, dentry, attr);
-> 	else
-> 		error = simple_setattr(mnt_userns, dentry, attr);
->         ...
-> }
-> 
-> 
-> int simple_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
-> 		   struct iattr *iattr)
-> {
-> 	...
-> 	error = setattr_prepare(mnt_userns, dentry, iattr);
-> 	if (error)
-> 		return error;
-> 	...
-> }
-> 
-> 
-> int setattr_prepare(struct user_namespace *mnt_userns, struct dentry *dentry,
-> 		    struct iattr *attr)
-> {
-> 	...
-> 	/* Make sure a caller can chown. */
-> 	if ((ia_valid & ATTR_UID) && !chown_ok(mnt_userns, inode, attr->ia_uid))
-> 		return -EPERM;
-> 
-> 	/* Make sure caller can chgrp. */
-> 	if ((ia_valid & ATTR_GID) && !chgrp_ok(mnt_userns, inode, attr->ia_gid))
-> 		return -EPERM;
-> 	...
-> }
-> 
-> static bool chown_ok(struct user_namespace *mnt_userns,
-> 		     const struct inode *inode,
-> 		     kuid_t uid)
-> {
-> 	kuid_t kuid = i_uid_into_mnt(mnt_userns, inode);
-> 	if (uid_eq(current_fsuid(), kuid) && uid_eq(uid, kuid))
->                                              ^^^^^^^^^^^^^^^^^^
-> 		return true;
->  	....               
-> }
-> 
-> The comparison of uid and kuid in chown_ok is nonsense.  As the kuid is
-> the old fashioned kuid.  While the uid is attr->ia_uid is the below
-> mount value.
-
-I don't follow. Both are idmapped kuids. If we missed a conversion then
-it's a bug we'll fix. I don't see it yet though. All I see is that your
-third type already introduces more confusion than it solves.
-
-> 
-> I found these both within just a couple of minutes by creating
-> a type vfsuid_t and vfsgid_t and using it for the values stored in
-> struct inode and struct iattr.
-
-I don't see code for what you want or mean so I have no clue what this is.
-
-> 
-> There are probably more cases of inappropriate mixing.  I stopped as I
-> don't have the energy or the inclination to dig through and find more.
-> 
-> Unfortunately what I found was that the current design of using kuid_t
-> and kgid_t for both the old fashioned kuids and for the new below mount
-> values is so error prone that even the author of the change while
-> performing a lot of testing can not get it right.
-> 
-> Christian do you think you can add a type for the below mount values
-> and separate everything by type quickly?
-> 
-> Otherwise I think the better part of valor would be to revert this code
-> and come back it has made not error prone.
-
-I don't see a reason to rush adding another id type and no fundamental
-flaw in the patchset as it stands. If there is a strong case for adding
-another id type, it can be done at a later time with no userspace
-impact.
-
-Christian
