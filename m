@@ -2,136 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7F732C18F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C03032C211
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387030AbhCCTO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:14:28 -0500
-Received: from rcdn-iport-9.cisco.com ([173.37.86.80]:2909 "EHLO
-        rcdn-iport-9.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580955AbhCCS65 (ORCPT
+        id S1387692AbhCCTcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:32:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350698AbhCCTHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:58:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2586; q=dns/txt; s=iport;
-  t=1614797935; x=1616007535;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=NhiyH3foSNEt6lkCV9u0ibo4udmRICreeAo5BgksPTA=;
-  b=cWROdOooLRakjip97rCirB8wN/6FzqqPcSO7bRm8TAbdmJT/SwzaRuq2
-   5JshQxeiLzwmCsx112yhzgrbPEKVzXIPN6EMvZ6juAlUOkoq6b0j7MpMh
-   oUp4urFB554BDD9Y7+9u9Hy3gjFjE0VnN8QYY33lyZycxyyodT/oHr48P
-   E=;
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BOAwB12j9g/5NdJa1iHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgU+CK3ZWATkxlh6PehaMOwsBAQENAQEjEQQBAYEUgzQDAgK?=
- =?us-ascii?q?BegIlOBMCAwEBCwEBBQEBAQIBBgRxhWENhkQBAQEDATIBRhALEgYuPA0OBhM?=
- =?us-ascii?q?bglaCZiEPrT10gTSEPwELAYRTgT4GIoEWjUMmHIFJQoQrPoJcBBeHPASCRoE?=
- =?us-ascii?q?7c4IBkEuCS4otm3uDBoEfiCCSUjEQgyeKT5VQoBKSGg2EOQIEBgUCFoFrI4F?=
- =?us-ascii?q?XMxoIGxU7gjUBMxMMMRkNlyKFZiADLwIBAQEzAgYBCQEBAwmMEwEB?=
-X-IronPort-AV: E=Sophos;i="5.81,220,1610409600"; 
-   d="scan'208";a="778466374"
-Received: from rcdn-core-11.cisco.com ([173.37.93.147])
-  by rcdn-iport-9.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 03 Mar 2021 18:53:10 +0000
-Received: from zorba ([10.24.1.194])
-        by rcdn-core-11.cisco.com (8.15.2/8.15.2) with ESMTPS id 123Ir8xP021729
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 3 Mar 2021 18:53:10 GMT
-Date:   Wed, 3 Mar 2021 10:53:08 -0800
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Rob Herring <robh@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 0/7] Improve boot command line handling
-Message-ID: <20210303185308.GH109100@zorba>
-References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
- <20210302173523.GE109100@zorba>
- <CAL_JsqJ7U8QAbJe3zkZiFPJN4PveHz5TZoPk2S8qQWB6cm5e5Q@mail.gmail.com>
- <20210303173908.GG109100@zorba>
- <59b054e8-d85b-fd87-c94d-691af748a2f5@csgroup.eu>
+        Wed, 3 Mar 2021 14:07:02 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F963C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:54:16 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id b13so22263691edx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:54:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YKFQH6E0yNZuowlitL0N34JlWPD6X2Se55p2GC5RTco=;
+        b=D2z0Gn99jifSpH4aD3vxwF1HsZhUEo7ZHIWKKwlftOgsXvzJy4CR9j1e7VGpMTpkzk
+         DZjltsb8hsZ6COVcSSf54oRduRqNS7HwYj0d3+nYyJet5DRWaUAokYRbA21zGi0HMGw6
+         icJDbi7zzceq1odFUJaaCO+0k8xJW974siTZFpSLH4a30gCdEjVxdBC7UBRiZvF53oWD
+         8qHDkxX4aWd3FCScLKj6sniICzf7CXnKV+HP/9mehA0vUP+/NNIIAUGyKm8G/Mp+ESOG
+         LV/4SOlxOCrrop84PalOIbCYRgU4bZ36CRmNPa6wlNOfx8eVLEDpBdPyFo0z+3BRF3kY
+         y46A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YKFQH6E0yNZuowlitL0N34JlWPD6X2Se55p2GC5RTco=;
+        b=hPUscmNDS6e+j1+GUczt5PP1Nyd0BTPNvlql5sjWP6IGLaQlFXjV/km8aIjma+puQd
+         6Dc2R+/lCAgP8pEAlEvyQLk5wUU7GDcCaA+htcE7TUCdbRvNJiE9gYtrgRtzPsXfGeWs
+         HcytuxcE0QzBP4FlJYrD3WzjIJF5aEWbOOUOQMvULy3WMMSjKgVQPtC9jO4gSmG2GyW4
+         W+l83JAZZhO5uC1CtbrjBZb13Tj/akPZy7W108xq0rKSP39jNFg3/SeP2qdx817dUFaL
+         /Q0dER+BmiRSXUDsqns7ApEIBYBk32XKjwmiMOjOdP6/vDbG9SGlwJZpjdsJFE6/PNza
+         HHhQ==
+X-Gm-Message-State: AOAM530FsIUu7MKHAeLBzfW7JeMMbAM0pTPU0YJlIokiDuwmfCa8VQwE
+        KlPaqWIK8usBIIxoRe0GEE29TciB5Mg=
+X-Google-Smtp-Source: ABdhPJxY3STYFtrfoINRMrL5EKxPmIVlDc1R7OSsqtGJ2ySyCc3EOKV5YvPPxEP4ckjIY8LRJaonwQ==
+X-Received: by 2002:a05:6402:3510:: with SMTP id b16mr723871edd.242.1614797654738;
+        Wed, 03 Mar 2021 10:54:14 -0800 (PST)
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
+        by smtp.gmail.com with ESMTPSA id j25sm4441586edy.9.2021.03.03.10.54.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 10:54:12 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id o16so7325296wmh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:54:12 -0800 (PST)
+X-Received: by 2002:a05:600c:198c:: with SMTP id t12mr330047wmq.183.1614797651850;
+ Wed, 03 Mar 2021 10:54:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <59b054e8-d85b-fd87-c94d-691af748a2f5@csgroup.eu>
-X-Outbound-SMTP-Client: 10.24.1.194, [10.24.1.194]
-X-Outbound-Node: rcdn-core-11.cisco.com
+References: <20210303123338.99089-1-hxseverything@gmail.com>
+In-Reply-To: <20210303123338.99089-1-hxseverything@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 3 Mar 2021 13:53:34 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfY0y7Y2XSKO-rqPY5mX83NWgAWbQeVukFA94eJVu2B2g@mail.gmail.com>
+Message-ID: <CA+FuTSfY0y7Y2XSKO-rqPY5mX83NWgAWbQeVukFA94eJVu2B2g@mail.gmail.com>
+Subject: Re: [PATCH/v4] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     Xuesen Huang <hxseverything@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 07:07:45PM +0100, Christophe Leroy wrote:
-> 
-> 
-> Le 03/03/2021 à 18:39, Daniel Walker a écrit :
-> > On Tue, Mar 02, 2021 at 08:01:01PM -0600, Rob Herring wrote:
-> > > +Will D
-> > > 
-> > > On Tue, Mar 2, 2021 at 11:36 AM Daniel Walker <danielwa@cisco.com> wrote:
-> > > > 
-> > > > On Tue, Mar 02, 2021 at 05:25:16PM +0000, Christophe Leroy wrote:
-> > > > > The purpose of this series is to improve and enhance the
-> > > > > handling of kernel boot arguments.
-> > > > > 
-> > > > > It is first focussed on powerpc but also extends the capability
-> > > > > for other arches.
-> > > > > 
-> > > > > This is based on suggestion from Daniel Walker <danielwa@cisco.com>
-> > > > > 
-> > > > 
-> > > > 
-> > > > I don't see a point in your changes at this time. My changes are much more
-> > > > mature, and you changes don't really make improvements.
-> > > 
-> > > Not really a helpful comment. What we merge here will be from whomever
-> > > is persistent and timely in their efforts. But please, work together
-> > > on a common solution.
-> > > 
-> > > This one meets my requirements of moving the kconfig and code out of
-> > > the arches, supports prepend/append, and is up to date.
-> > 
-> > 
-> > Maintainers are capable of merging whatever they want to merge. However, I
-> > wouldn't make hasty choices. The changes I've been submitting have been deployed
-> > on millions of router instances and are more feature rich.
-> > 
-> > I believe I worked with you on this change, or something like it,
-> > 
-> > https://lkml.org/lkml/2019/3/19/970
-> > 
-> > I don't think Christophe has even addressed this.
-> 
-> I thing I have, see https://patchwork.ozlabs.org/project/linuxppc-dev/patch/3b4291271ce4af4941a771e5af5cbba3c8fa1b2a.1614705851.git.christophe.leroy@csgroup.eu/
-> 
-> If you see something missing in that patch, can you tell me.
- 
-Ok, must have missed that one.
+On Wed, Mar 3, 2021 at 7:33 AM Xuesen Huang <hxseverything@gmail.com> wrote:
+>
+> From: Xuesen Huang <huangxuesen@kuaishou.com>
+>
+> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
+> encapsulation. But that is not appropriate when pushing Ethernet header.
+>
+> Add an option to further specify encap L2 type and set the inner_protocol
+> as ETH_P_TEB.
+>
+> Update test_tc_tunnel to verify adding vxlan encapsulation works with
+> this flag.
+>
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+> Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+> Signed-off-by: Li Wang <wangli09@kuaishou.com>
 
+Thanks for adding the test. Perhaps that is better in a separate patch?
 
-> > I've converted many
-> > architectures, and Cisco uses my changes on at least 4 different
-> > architecture. With products deployed and tested.
-> 
-> As far as we know, only powerpc was converted in the last series you
-> submitted, see
-> https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=98106&state=*
+Overall looks great to me.
 
+The patch has not (yet?) arrived on patchwork.
 
-Me and others submitted my changes many times, and other architectures have been included. The patch
-you submitted I've submitted similar at Rob's request years ago.
+>  enum {
+> diff --git a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+> index 37bce7a..6e144db 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+> @@ -20,6 +20,14 @@
+>  #include <bpf/bpf_endian.h>
+>  #include <bpf/bpf_helpers.h>
+>
+> +#define encap_ipv4(...) __encap_ipv4(__VA_ARGS__, 0)
+> +
+> +#define encap_ipv4_with_ext_proto(...) __encap_ipv4(__VA_ARGS__)
+> +
+> +#define encap_ipv6(...) __encap_ipv6(__VA_ARGS__, 0)
+> +
+> +#define encap_ipv6_with_ext_proto(...) __encap_ipv6(__VA_ARGS__)
+> +
 
-Here a fuller submissions some time ago,
+Instead of untyped macros, I'd define encap_ipv4 as a function that
+calls __encap_ipv4.
 
-https://lore.kernel.org/patchwork/cover/992768/
+And no need for encap_ipv4_with_ext_proto equivalent to __encap_ipv4.
 
-You've only been involved in prior powerpc only submissions.
+>  static const int cfg_port = 8000;
+>
+>  static const int cfg_udp_src = 20000;
+> @@ -27,11 +35,24 @@
+>  #define        UDP_PORT                5555
+>  #define        MPLS_OVER_UDP_PORT      6635
+>  #define        ETH_OVER_UDP_PORT       7777
+> +#define        VXLAN_UDP_PORT          8472
+> +
+> +#define        EXTPROTO_VXLAN  0x1
+> +
+> +#define        VXLAN_N_VID     (1u << 24)
+> +#define        VXLAN_VNI_MASK  bpf_htonl((VXLAN_N_VID - 1) << 8)
+> +#define        VXLAN_FLAGS     0x8
+> +#define        VXLAN_VNI       1
+>
+>  /* MPLS label 1000 with S bit (last label) set and ttl of 255. */
+>  static const __u32 mpls_label = __bpf_constant_htonl(1000 << 12 |
+>                                                      MPLS_LS_S_MASK | 0xff);
+>
+> +struct vxlanhdr {
+> +       __be32 vx_flags;
+> +       __be32 vx_vni;
+> +} __attribute__((packed));
+> +
+>  struct gre_hdr {
+>         __be16 flags;
+>         __be16 protocol;
+> @@ -45,13 +66,13 @@ struct gre_hdr {
+>  struct v4hdr {
+>         struct iphdr ip;
+>         union l4hdr l4hdr;
+> -       __u8 pad[16];                   /* enough space for L2 header */
+> +       __u8 pad[24];                   /* space for L2 header / vxlan header ... */
 
-Daniel
+could we use something like sizeof(..) instead of a constant?
+
+> @@ -171,14 +197,26 @@ static __always_inline int encap_ipv4(struct __sk_buff *skb, __u8 encap_proto,
+>         }
+>
+>         /* add L2 encap (if specified) */
+> +       l2_hdr = (__u8 *)&h_outer + olen;
+>         switch (l2_proto) {
+>         case ETH_P_MPLS_UC:
+> -               *((__u32 *)((__u8 *)&h_outer + olen)) = mpls_label;
+> +               *(__u32 *)l2_hdr = mpls_label;
+>                 break;
+>         case ETH_P_TEB:
+> -               if (bpf_skb_load_bytes(skb, 0, (__u8 *)&h_outer + olen,
+> -                                      ETH_HLEN))
+
+This is non-standard indentation? Here and elsewhere.
+
+> @@ -249,7 +288,11 @@ static __always_inline int encap_ipv6(struct __sk_buff *skb, __u8 encap_proto,
+>                 break;
+>         case ETH_P_TEB:
+>                 l2_len = ETH_HLEN;
+> -               udp_dst = ETH_OVER_UDP_PORT;
+> +               if (ext_proto & EXTPROTO_VXLAN) {
+> +                       udp_dst = VXLAN_UDP_PORT;
+> +                       l2_len += sizeof(struct vxlanhdr);
+> +               } else
+> +                       udp_dst = ETH_OVER_UDP_PORT;
+>                 break;
+>         }
+>         flags |= BPF_F_ADJ_ROOM_ENCAP_L2(l2_len);
+> @@ -267,7 +310,7 @@ static __always_inline int encap_ipv6(struct __sk_buff *skb, __u8 encap_proto,
+>                 h_outer.l4hdr.udp.source = __bpf_constant_htons(cfg_udp_src);
+>                 h_outer.l4hdr.udp.dest = bpf_htons(udp_dst);
+>                 tot_len = bpf_ntohs(iph_inner.payload_len) + sizeof(iph_inner) +
+> -                         sizeof(h_outer.l4hdr.udp);
+> +                         sizeof(h_outer.l4hdr.udp) + l2_len;
+
+Was this a bug previously?
+
+>                 h_outer.l4hdr.udp.check = 0;
+>                 h_outer.l4hdr.udp.len = bpf_htons(tot_len);
+>                 break;
+> @@ -278,13 +321,24 @@ static __always_inline int encap_ipv6(struct __sk_buff *skb, __u8 encap_proto,
+>         }
+>
+>         /* add L2 encap (if specified) */
+> +       l2_hdr = (__u8 *)&h_outer + olen;
+>         switch (l2_proto) {
+>         case ETH_P_MPLS_UC:
+> -               *((__u32 *)((__u8 *)&h_outer + olen)) = mpls_label;
+> +               *(__u32 *)l2_hdr = mpls_label;
+>                 break;
+>         case ETH_P_TEB:
+> -               if (bpf_skb_load_bytes(skb, 0, (__u8 *)&h_outer + olen,
+> -                                      ETH_HLEN))
+> +               flags |= BPF_F_ADJ_ROOM_ENCAP_L2_ETH;
+
+This is a change also for the existing case. Correctly so, I imagine.
+But the test used to pass with the wrong protocol?
