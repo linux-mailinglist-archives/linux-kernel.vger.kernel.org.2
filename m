@@ -2,153 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5722F32BD24
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752EF32BD4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1448431AbhCCPZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:25:23 -0500
-Received: from smtp-33-i2.italiaonline.it ([213.209.12.33]:43062 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240691AbhCCKbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:31:53 -0500
-Received: from oxapps-11-061.iol.local ([10.101.8.71])
-        by smtp-33.iol.local with ESMTPA
-        id HOmcl0ssMR8VAHOmclqOk0; Wed, 03 Mar 2021 11:31:10 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1614767471; bh=iWeKOBQjPDMP70PIy6g/lv11yegMli1iUbTvPIab9Hw=;
-        h=From;
-        b=Sc7Dy2wN0gP1XRVMgTMpMxmI1D3l5ClDP3toihoaqHPAuKMnmh496S9X8HYkW8lPC
-         3pVaJ6bUFXHKfLbox8LgOm7/9m3N7Nr4o6fiTnOG8XVGtIvHAlvVCJ9g/nBn7I6Aea
-         ZSaovdx1MChmi1TtZ3w7XE11luWaWuL8Txskv28NSC6yKHyuBypzJAX9PF2/STLe8G
-         hZgW8MEP1KG4GC+a5sICYeOPkBsgKvmlJ89cX/L+33rRtHgO0zpiaXr1xF7HhZq6nx
-         WG4H825ttXbFc+K0FEDw9apRECHaXvYw7lu0DKinCqnXythIAj2SNRwI/i3ACxUSIT
-         ingFK3U8FV5EQ==
-X-CNFS-Analysis: v=2.4 cv=OapdsjfY c=1 sm=1 tr=0 ts=603f656f cx=a_exe
- a=EdAe90YrY4QbXR8+o2XJeA==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
- a=vesc6bHxzc4A:10 a=P-IC7800AAAA:8 a=bGNZPXyTAAAA:8 a=lneh_w3DiUngg6D-LXoA:9
- a=QEXdDO2ut3YA:10 a=d3PnA9EDa4IxuAV0gXij:22 a=yL4RfsBhuEsimFDS2qtJ:22
- a=BPzZvq435JnGatEyYwdK:22
-Date:   Wed, 3 Mar 2021 11:31:10 +0100 (CET)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
-        linux-kernel@vger.kernel.org,
-        Federico Vaga <federico.vaga@gmail.com>,
-        Alexander Stein <alexander.stein@systec-electronic.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <1871630605.34606.1614767470294@mail1.libero.it>
-In-Reply-To: <20210303090036.aocqk6gp3vqnzaku@pengutronix.de>
-References: <20210228103856.4089-1-dariobin@libero.it>
- <20210228103856.4089-6-dariobin@libero.it>
- <20210302184901.GD26930@x1.vandijck-laurijssen.be>
- <91394876.26757.1614759793793@mail1.libero.it>
- <20210303090036.aocqk6gp3vqnzaku@pengutronix.de>
-Subject: Re: [PATCH v3 5/6] can: c_can: prepare to up the message objects
- number
+        id S1449440AbhCCPoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:44:17 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:18927 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357525AbhCCKvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:51:35 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dr9KW1qJQz9tygX;
+        Wed,  3 Mar 2021 11:31:59 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 0QULnvIuV7Xg; Wed,  3 Mar 2021 11:31:59 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dr9KW0l9sz9tygT;
+        Wed,  3 Mar 2021 11:31:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C19B08B7CD;
+        Wed,  3 Mar 2021 11:32:00 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id jz1xUYx8uX1J; Wed,  3 Mar 2021 11:32:00 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 04AC38B7C3;
+        Wed,  3 Mar 2021 11:31:59 +0100 (CET)
+Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
+ <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
+ <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
+ <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
+ <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
+ <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <3abbe4c9-16ad-c168-a90f-087978ccd8f7@csgroup.eu>
+Date:   Wed, 3 Mar 2021 11:31:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
-X-Originating-IP: 185.33.57.41
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: e/8xLbhvGv4RhpAuB15ddAfaBZ6f60R7
-x-libjamv: H528txnWAb8=
-X-CMAE-Envelope: MS4xfLp0UZWodVO6sdmB8YeH3dE4jHsE98HGVnRNZs/1QONJC62Zhmsfok8ovMiiQfnz5IfFhwVkyLDNajUMbWKCKr/2yGMm2tylZMMzbNGQnx5ZnLLgxPH8
- oH3lLxRdyOxpT0f44rzgqaDq1PXpP9JjJcl/DmCiombR+3kfDGzsPK4SiCo/6yKRHY/WjuT9dShZZ9xvZtwXHjFPW9rqj1X7El7ZEhuUpU2oAq4TZ2c/tt5k
- iIzsU8plzv59qefSv7NykZF5OqAYunEEDQwumMIIBbezNw2S4L4WDFA4NKHWkUfv9YJXyYlIthyRJa36U89csRhFnRtLMnCY47afkTEx/x6OJoP/9DLtB04K
- yCTBgfetHXI8JKCbJEpy3dl7aioFyuCsKgQnlQmoAZTkhM1WvA19b+qjKTuF5NqR/PWHhG2C3zOY4O4Vq8zmjNoBqZUb88WK3roxmivQryM9V1DlTSN1RE/U
- nr1JatGzu7SIiIzyy8nXB9dTsaVxYd5q4qHlsQZ3tJ5i7wl1xrgYfjTUpjdyRErcQ8ld18c8KJYW8gW95zXso7bQ23zFoI5VbMpaeSadDXYNc8wj4An5Zlek
- r425X09xKMur4csD1xdjAxpoo/xqoFDBT62JAVoR0oxZVXGWysNpi65UsY6BpZNVetKbuRkR3pgkafKN+1OsFjAw
+In-Reply-To: <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-> Il 03/03/2021 10:00 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
+
+Le 02/03/2021 à 10:53, Marco Elver a écrit :
+> On Tue, 2 Mar 2021 at 10:27, Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>> Le 02/03/2021 à 10:21, Alexander Potapenko a écrit :
+>>>> [   14.998426] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
+>>>> [   14.998426]
+>>>> [   15.007061] Invalid read at 0x(ptrval):
+>>>> [   15.010906]  finish_task_switch.isra.0+0x54/0x23c
+>>>> [   15.015633]  kunit_try_run_case+0x5c/0xd0
+>>>> [   15.019682]  kunit_generic_run_threadfn_adapter+0x24/0x30
+>>>> [   15.025099]  kthread+0x15c/0x174
+>>>> [   15.028359]  ret_from_kernel_thread+0x14/0x1c
+>>>> [   15.032747]
+>>>> [   15.034251] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
+>>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
+>>>> [   15.045811] ==================================================================
+>>>> [   15.053324]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
+>>>> [   15.053324]     Expected report_matches(&expect) to be true, but is false
+>>>> [   15.068359]     not ok 21 - test_invalid_access
+>>>
+>>> The test expects the function name to be test_invalid_access, i. e.
+>>> the first line should be "BUG: KFENCE: invalid read in
+>>> test_invalid_access".
+>>> The error reporting function unwinds the stack, skips a couple of
+>>> "uninteresting" frames
+>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L43)
+>>> and uses the first "interesting" one frame to print the report header
+>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L226).
+>>>
+>>> It's strange that test_invalid_access is missing altogether from the
+>>> stack trace - is that expected?
+>>> Can you try printing the whole stacktrace without skipping any frames
+>>> to see if that function is there?
+>>>
+>>
+>> Booting with 'no_hash_pointers" I get the following. Does it helps ?
+>>
+>> [   16.837198] ==================================================================
+>> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
+>> [   16.848521]
+>> [   16.857158] Invalid read at 0xdf98800a:
+>> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
+>> [   16.865731]  kunit_try_run_case+0x5c/0xd0
+>> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
+>> [   16.875199]  kthread+0x15c/0x174
+>> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
+>> [   16.882847]
+>> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
+>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
+>> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
+>> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
+>> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
+>> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
+>> [   16.918153] DAR: df98800a DSISR: 20000000
+>> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
+>> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
+>> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
+>> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
+>> [   16.947292] Call Trace:
+>> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
 > 
->  
-> On 03.03.2021 09:23:13, Dario Binacchi wrote:
-> [...]
-> > > > @@ -1205,17 +1203,31 @@ static int c_can_close(struct net_device *dev)
-> > > >  	return 0;
-> > > >  }
-> > > >  
-> > > > -struct net_device *alloc_c_can_dev(void)
-> > > > +struct net_device *alloc_c_can_dev(int msg_obj_num)
-> > > >  {
-> > > >  	struct net_device *dev;
-> > > >  	struct c_can_priv *priv;
-> > > > +	int msg_obj_tx_num = msg_obj_num / 2;
-> > > 
-> > > IMO, a bigger tx queue is not usefull.
-> > > A bigger rx queue however is.
-> > 
-> > This would not be good for my application. I think it really depends
-> > on the type of application. We can probably say that being able to
-> > size rx/tx queue would be a useful feature.
+> The "(unreliable)" might be a clue that it's related to ppc32 stack
+> unwinding. Any ppc expert know what this is about?
 > 
-> Ok. There is an ethtool interface to configure the size of the RX and TX
-> queues. In ethtool it's called the RX/TX "ring" size and you can get it
-> via the -g parameter, e.g. here for by Ethernet interface:
+>> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
+>> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
+>> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
+>> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
+>> [   16.981896] Instruction dump:
+>> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
+>> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
+>> [   17.000711] ==================================================================
+>> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
+>> [   17.008223]     Expected report_matches(&expect) to be true, but is false
+>> [   17.023243]     not ok 21 - test_invalid_access
 > 
-> | $ ethtool -g enp0s25
-> | Ring parameters for enp0s25:
-> | Pre-set maximums:
-> | RX:		4096
-> | RX Mini:	n/a
-> | RX Jumbo:	n/a
-> | TX:		4096
-> | Current hardware settings:
-> | RX:		256
-> | RX Mini:	n/a
-> | RX Jumbo:	n/a
-> | TX:		256
+> On a fault in test_invalid_access, KFENCE prints the stack trace based
+> on the information in pt_regs. So we do not think there's anything we
+> can do to improve stack printing pe-se.
 > 
-> If I understand correctly patch 6 has some assumptions that RX and TX
-> are max 32. To support up to 64 RX objects, you have to convert:
-> - u32 -> u64
-> - BIT() -> BIT_ULL()
-> - GENMASK() -> GENMASK_ULL()
+> What's confusing is that it's only this test, and none of the others.
+> Given that, it might be code-gen related, which results in some subtle
+> issue with stack unwinding. There are a few things to try, if you feel
+> like it:
 > 
-> The register access has to be converted, too. For performance reasons
-> you want to do as least as possible. Which is probably the most
-> complicated.
+> -- Change the unwinder, if it's possible for ppc32.
 > 
-> In the flexcan driver I have a similar problem. The driver keeps masks,
-> which mailboxes are RX and which TX and I added wrapper functions to
-> minimize IO access:
+> -- Add code to test_invalid_access(), to get the compiler to emit
+> different code. E.g. add a bunch (unnecessary) function calls, or add
+> barriers, etc.
 > 
-> https://elixir.bootlin.com/linux/v5.11/source/drivers/net/can/flexcan.c#L904
+> -- Play with compiler options. We already pass
+> -fno-optimize-sibling-calls for kfence_test.o to avoid tail-call
+> optimizations that'd hide stack trace entries. But perhaps there's
+> something ppc-specific we missed?
 > 
-> This should to IMHO into patch 6.
+> Well, the good thing is that KFENCE detects the bad access just fine.
+> Since, according to the test, everything works from KFENCE's side, I'd
+> be happy to give my Ack:
 > 
-> Adding the ethtool support and making the rings configurable would be a
-> separate patch.
+>    Acked-by: Marco Elver <elver@google.com>
 > 
 
-I think these features need to be developed in a later series. 
-I would stay with the extension to 64 messages equally divided 
-between reception and transmission.
+Thanks.
 
-Thanks and regards,
-Dario
+For you information, I've got a pile of warnings from mm/kfence/report.o . Is that expected ?
 
-> regards,
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+   CC      mm/kfence/report.o
+In file included from ./include/linux/printk.h:7,
+                  from ./include/linux/kernel.h:16,
+                  from mm/kfence/report.c:10:
+mm/kfence/report.c: In function 'kfence_report_error':
+./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t', 
+but argument 6 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+       |                  ^~~~~~
+./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
+    11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
+       |                  ^~~~~~~~
+./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
+   343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+       |         ^~~~~~~~
+mm/kfence/report.c:207:3: note: in expansion of macro 'pr_err'
+   207 |   pr_err("Out-of-bounds %s at 0x%p (%luB %s of kfence-#%zd):\n",
+       |   ^~~~~~
+./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t', 
+but argument 4 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+       |                  ^~~~~~
+./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
+    11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
+       |                  ^~~~~~~~
+./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
+   343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+       |         ^~~~~~~~
+mm/kfence/report.c:216:3: note: in expansion of macro 'pr_err'
+   216 |   pr_err("Use-after-free %s at 0x%p (in kfence-#%zd):\n",
+       |   ^~~~~~
+./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t', 
+but argument 2 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+       |                  ^~~~~~
+./include/linux/kern_levels.h:24:19: note: in expansion of macro 'KERN_SOH'
+    24 | #define KERN_CONT KERN_SOH "c"
+       |                   ^~~~~~~~
+./include/linux/printk.h:385:9: note: in expansion of macro 'KERN_CONT'
+   385 |  printk(KERN_CONT fmt, ##__VA_ARGS__)
+       |         ^~~~~~~~~
+mm/kfence/report.c:223:3: note: in expansion of macro 'pr_cont'
+   223 |   pr_cont(" (in kfence-#%zd):\n", object_index);
+       |   ^~~~~~~
+./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t', 
+but argument 3 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+       |                  ^~~~~~
+./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
+    11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
+       |                  ^~~~~~~~
+./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
+   343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+       |         ^~~~~~~~
+mm/kfence/report.c:233:3: note: in expansion of macro 'pr_err'
+   233 |   pr_err("Invalid free of 0x%p (in kfence-#%zd):\n", (void *)address,
+       |   ^~~~~~
+
+Christophe
