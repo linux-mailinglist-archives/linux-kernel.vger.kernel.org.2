@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1BF32BD85
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D536E32BC74
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhCCQJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:09:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234095AbhCCLmu (ORCPT
+        id S1350400AbhCCN5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:57:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1582448AbhCCKWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:42:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614771622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r/j20RVofkj/hPK0Wo3xRPO9YBuymSE3SUYDVG+qh8o=;
-        b=LZ7zBmqmD3uCrih3m5/N7teNpl1B0EfKewFFn3Bl7j0BqzG7QzzlN/jqhP8rNe7cqNOcbX
-        7z+x3zBI4xwcWUpUCsBhq6v1PHSZ/VLO9XdoNGe2galTL7vF+3/5Du6PfZ+24D3filCG7c
-        LEpb+lXxMRP3lhIIUAbQLTKdghVdEdk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-WwWlgG9fNr-dXzyKAmSTrw-1; Wed, 03 Mar 2021 04:36:43 -0500
-X-MC-Unique: WwWlgG9fNr-dXzyKAmSTrw-1
-Received: by mail-ed1-f70.google.com with SMTP id i19so9443274edy.18
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:36:42 -0800 (PST)
+        Wed, 3 Mar 2021 05:22:09 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AFAC08EA3E
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:38:39 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id a4so15912688pgc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:38:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=iUz312iac7LFNx2ya66Z5XkzPT8yJgIVgv7MyKSn4VE=;
+        b=wsvDAZ+Xcf6/ydZfSDPUq/Okd3uBkptJGGE9RJHceUdEF5+vAcEJbCEi51CMol+zqq
+         9rt2UAvNAxwrzFA9kfvMQ56S27ZzM9rcoelSCOVAu/ujrIml3XvOHj4Vd4GUYjhTsIll
+         ySf61ycmoJLJp0Do7bDtNB8zj6/AJhwvu61ZTv6DdMN+XBga+G3UlWwmN/I3HejzcH5J
+         bJa7lpigkf8L94Ca1VYtwPvTJm+BJncEcbPlpLj4M8bJTFtSzfpHn7bhCgD8s0wVPn5b
+         MYA4z+MP+6rg0oub0KuLd7ZcqbmRCzFxVdjOhkhBTASf3VtoVZgMe6SWWf8DqLni274p
+         PLag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=r/j20RVofkj/hPK0Wo3xRPO9YBuymSE3SUYDVG+qh8o=;
-        b=JENExQCsYluzoIbuewvuYilQL0Jomcec5mAksXfp9RvCydkq8O2mzEGExK0YLcMmZN
-         vBhf573VUd2sH2qrtH0ndiQmFGpG+n/4xWs4bjiXvM7VSds7l0Zy/bgYve69JDJ41Z5r
-         INceVCh9bzm9qExngVgOUdx9vTb7ECFOgX9BGBikH6LJBixkkCOBV6d1QI4eQVSn9UMY
-         sW/x0io8+qzMtNK1G/KLJOIvKFTqHXoRe09saUrMxVqzZdkG7Yt5NG++R8CJHkpSVXIw
-         rkHW4hWcLDReqKlocdIKyllyq9LZmVise7lg4VU0/CnBpjmlgYJ/+L250jhqMOIjxpQb
-         Y63g==
-X-Gm-Message-State: AOAM530byXSDCZErsceembvXZ9WBwH6Y0WWAXb7Gpq7UGArl0rl+fTnE
-        roazQuFaX6uiP+sGTqdLYq42ZdpteFvFtQX8Of0+E+8+pq61K/VRDMGpfV93qUdLQ2/0HHcvSuE
-        TAX5x56yfAxA9GWqZ9WZF/GRMctMR/75jcfttmOh9Zvcl6/cuyO2buPG+N+m7Ub3hLN0WxQhlt7
-        yR
-X-Received: by 2002:a17:906:33d9:: with SMTP id w25mr24858494eja.413.1614764202036;
-        Wed, 03 Mar 2021 01:36:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9srdPqz0s4q1Xe5kvp25flWERjZA9N812PYdPFVO6+9MmFpJ6/Ozf7O8+uFN1+d2OxMxUQw==
-X-Received: by 2002:a17:906:33d9:: with SMTP id w25mr24858472eja.413.1614764201828;
-        Wed, 03 Mar 2021 01:36:41 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o6sm2602785edw.24.2021.03.03.01.36.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 01:36:41 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: Add CET entry/exit load bits to evmcs
- unsupported list
-In-Reply-To: <20210303060435.8158-1-weijiang.yang@intel.com>
-References: <20210303060435.8158-1-weijiang.yang@intel.com>
-Date:   Wed, 03 Mar 2021 10:36:40 +0100
-Message-ID: <87h7lsefyv.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=iUz312iac7LFNx2ya66Z5XkzPT8yJgIVgv7MyKSn4VE=;
+        b=EIE26F/JqL8R0a0q9B+qt1PgyfyroUgRIGushdAHx19THTuSe4Znt44jCMJmGBogEs
+         8VWJIv61XiMA8xkhqeW8ODAKu8dtO2CDgFHgXFomWdMa6ie9hergDK2LahxfLva2bB1B
+         3XGfWj0tPlgm0Ay31FOaa+cKJiXc2R+4avB7AgrxfpL7MZGZBoiv0zeSyxdpDm7TjFB2
+         5WpoKVPZcHepJv9FK/vD7W0QuIuqEfIqKAdPf/sZ3wBYozbPeyN5x+v9QMOdJqwal+bJ
+         A/DC6QIwmSty7oYcWEeGubPDBSh4ZrW+qdSVJBeH6MqEjqSDgQW8k8EWK8f9eWacmR++
+         h78w==
+X-Gm-Message-State: AOAM532N8HQ3whSuuJU+Xjc49BgWAltlnyvch88qtGasi0WMssC76KUO
+        DrhxhunWqcVDzm5cMx2kBv9QAw==
+X-Google-Smtp-Source: ABdhPJyIymaBHw/Yi0uxQqi7IJAz4uFHceC34phcsMTa1e/8lj0QDSfk15NedkVO7Kk9PIJ9nkKTGA==
+X-Received: by 2002:a63:5647:: with SMTP id g7mr21806900pgm.113.1614764319033;
+        Wed, 03 Mar 2021 01:38:39 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id fr23sm5894999pjb.22.2021.03.03.01.38.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 01:38:38 -0800 (PST)
+Date:   Wed, 3 Mar 2021 15:08:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210303093836.ftgq62yw7i6cd3q6@vireshk-i7>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <20210303075430.n7ewkots6cgbbabi@vireshk-i7>
+ <876371c3-ba9a-5176-493b-5a883cba3b07@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <876371c3-ba9a-5176-493b-5a883cba3b07@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Weijiang <weijiang.yang@intel.com> writes:
+On 03-03-21, 16:46, Jie Deng wrote:
+> This is not a problem. My original proposal was to mirror the struct
+> i2c_msg.
+> The code you looked at was based on that.
+> However, the virtio TC prefer not to mirror it. They have some concerns.
+> For example, there is a bit I2C_M_RD in i2c_msg.flag which has the same
+> meaning with
+> the R/W in virtio descriptor. This is a repetition which may cause problems.
+> So the virtio_i2c_out_hdr.flags is used to instead of i2c_msg.flags for
+> extension.
 
-> CET in nested guest over Hyper-V is not supported for now. Relevant
-> enabling patches will be posted as a separate patch series.
->
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/kvm/vmx/evmcs.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
-> index bd41d9462355..25588694eb04 100644
-> --- a/arch/x86/kvm/vmx/evmcs.h
-> +++ b/arch/x86/kvm/vmx/evmcs.h
-> @@ -59,8 +59,10 @@ DECLARE_STATIC_KEY_FALSE(enable_evmcs);
->  	 SECONDARY_EXEC_SHADOW_VMCS |					\
->  	 SECONDARY_EXEC_TSC_SCALING |					\
->  	 SECONDARY_EXEC_PAUSE_LOOP_EXITING)
-> -#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL)
-> -#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL)
-> +#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL | \
-> +					VM_EXIT_LOAD_CET_STATE)
-> +#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | \
-> +					 VM_ENTRY_LOAD_CET_STATE)
->  #define EVMCS1_UNSUPPORTED_VMFUNC (VMX_VMFUNC_EPTP_SWITCHING)
->  
->  #if IS_ENABLED(CONFIG_HYPERV)
+So by default we don't support any of the existing flags except
+I2C_M_RD?
 
-This should be enough when we run KVM on Hyper-V using eVMCS, however,
-it may not suffice when we run Hyper-V on KVM using eVMCS: there's still
-no corresponding eVMCS fields so CET can't be used. In case Hyper-V is
-smart enough it won't use the feature, however, it was proven to be 'not
-very smart' in the past, see nested_evmcs_filter_control_msr(). I'm
-wondering if we should also do
+#define I2C_M_TEN		0x0010	/* this is a ten bit chip address */
+#define I2C_M_RD		0x0001	/* read data, from slave to master */
+#define I2C_M_STOP		0x8000	/* if I2C_FUNC_PROTOCOL_MANGLING */
+#define I2C_M_NOSTART		0x4000	/* if I2C_FUNC_NOSTART */
+#define I2C_M_REV_DIR_ADDR	0x2000	/* if I2C_FUNC_PROTOCOL_MANGLING */
+#define I2C_M_IGNORE_NAK	0x1000	/* if I2C_FUNC_PROTOCOL_MANGLING */
+#define I2C_M_NO_RD_ACK		0x0800	/* if I2C_FUNC_PROTOCOL_MANGLING */
+#define I2C_M_RECV_LEN		0x0400	/* length will be first received byte */
 
-diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
-index 41f24661af04..9f81db51fd8b 100644
---- a/arch/x86/kvm/vmx/evmcs.c
-+++ b/arch/x86/kvm/vmx/evmcs.c
-@@ -351,11 +351,11 @@ void nested_evmcs_filter_control_msr(u32 msr_index, u64 *pdata)
-        switch (msr_index) {
-        case MSR_IA32_VMX_EXIT_CTLS:
-        case MSR_IA32_VMX_TRUE_EXIT_CTLS:
--               ctl_high &= ~VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
-+               ctl_high &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
-                break;
-        case MSR_IA32_VMX_ENTRY_CTLS:
-        case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
--               ctl_high &= ~VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
-+               ctl_high &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
-                break;
-        case MSR_IA32_VMX_PROCBASED_CTLS2:
-                ctl_high &= ~SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES;
-
-to be on the safe side.
+How do we work with clients who want to use such flags now ?
 
 -- 
-Vitaly
-
+viresh
