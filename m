@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6C432C312
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9934132C292
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345131AbhCDAAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:00:07 -0500
-Received: from mga17.intel.com ([192.55.52.151]:17986 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1386961AbhCCTyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:54:52 -0500
-IronPort-SDR: mD0oRJhUw9+/t3qNen+pL9KzBb3wo0GzwIwwmNGOJ4aLkWVEc3okkyjRPzhpTDTKt0LSK2ttVB
- m0XJQ8Nop69A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="167167152"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="167167152"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 11:53:03 -0800
-IronPort-SDR: R6iyP80M2hDdAwzW5JY4jBh3y+pIwOyZybQib2owkYHoShjNulOA3CDxBZc8mYFtKpNscgEq0o
- l0ioqUQuaNIQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="406585782"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 03 Mar 2021 11:53:03 -0800
-Received: from [10.252.139.65] (kliang2-MOBL.ccr.corp.intel.com [10.252.139.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 43E9D580814;
-        Wed,  3 Mar 2021 11:53:02 -0800 (PST)
-Subject: Re: [PATCH] Revert "perf/x86: Allow zero PEBS status with only single
- active event"
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Vince Weaver <vincent.weaver@maine.edu>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, eranian@google.com,
-        ak@linux.intel.com, stable@vger.kernel.org
-References: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
- <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <9484ab6e-a6e5-bb72-106f-ed904e50fc0c@linux.intel.com>
-Date:   Wed, 3 Mar 2021 14:53:00 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S237698AbhCDAAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:00:23 -0500
+Received: from vmi485042.contaboserver.net ([161.97.139.209]:38422 "EHLO
+        gentwo.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1387965AbhCCUE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 15:04:26 -0500
+Received: by gentwo.de (Postfix, from userid 1001)
+        id 17718B007D1; Wed,  3 Mar 2021 20:55:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.de (Postfix) with ESMTP id 0F843B005D8;
+        Wed,  3 Mar 2021 20:55:49 +0100 (CET)
+Date:   Wed, 3 Mar 2021 20:55:48 +0100 (CET)
+From:   Christoph Lameter <cl@gentwo.de>
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Xunlei Pang <xlpang@linux.alibaba.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>, Pekka Enberg <penberg@gmail.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 3/3] mm/slub: Use percpu partial free counter
+In-Reply-To: <20210303193038.GE2723601@casper.infradead.org>
+Message-ID: <alpine.DEB.2.22.394.2103032032070.897408@gentwo.de>
+References: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com> <1597061872-58724-4-git-send-email-xlpang@linux.alibaba.com> <alpine.DEB.2.22.394.2103021012010.860725@gentwo.de> <20210303142612.GC2723601@casper.infradead.org>
+ <alpine.DEB.2.22.394.2103032012250.896915@gentwo.de> <20210303193038.GE2723601@casper.infradead.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 3 Mar 2021, Matthew Wilcox wrote:
 
-
-On 3/3/2021 1:59 PM, Peter Zijlstra wrote:
-> On Wed, Mar 03, 2021 at 05:42:18AM -0800, kan.liang@linux.intel.com wrote:
-> 
->> For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
->> may be mistakenly set to 0. To minimize the impact of the defect, the
->> commit was introduced to try to avoid dropping the PEBS record for some
->> cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
->> the local pebs_status accordingly. However, it doesn't correct the PEBS
->> status in the PEBS record, which may trigger the crash, especially for
->> the large PEBS.
->>
->> It's possible that all the PEBS records in a large PEBS have the PEBS
->> status 0. If so, the first get_next_pebs_record_by_bit() in the
->> __intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
->> PEBS, the 'count' parameter must > 1. The second
->> get_next_pebs_record_by_bit() will crash.
->>
->> Two solutions were considered to fix the crash.
->> - Keep the SW workaround and add extra checks in the
->>    get_next_pebs_record_by_bit() to workaround the issue. The
->>    get_next_pebs_record_by_bit() is a critical path. The extra checks
->>    will bring extra overhead for the latest CPUs which don't have the
->>    defect. Also, the defect can only be observed on some old CPUs
->>    (For example, the issue can be reproduced on an HSW client, but I
->>    didn't observe the issue on my Haswell server machine.). The impact
->>    of the defect should be limit.
->>    This solution is dropped.
->> - Drop the SW workaround and revert the commit.
->>    It seems that the commit never works, because the PEBS status in the
->>    PEBS record never be changed. The get_next_pebs_record_by_bit() only
->>    checks the PEBS status in the PEBS record. The record is dropped
->>    eventually. Reverting the commit should not change the current
->>    behavior.
-> 
->> +++ b/arch/x86/events/intel/ds.c
->> @@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
->>   			continue;
->>   		}
->>   
->> -		/*
->> -		 * On some CPUs the PEBS status can be zero when PEBS is
->> -		 * racing with clearing of GLOBAL_STATUS.
->> -		 *
->> -		 * Normally we would drop that record, but in the
->> -		 * case when there is only a single active PEBS event
->> -		 * we can assume it's for that event.
->> -		 */
->> -		if (!pebs_status && cpuc->pebs_enabled &&
->> -			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
->> -			pebs_status = cpuc->pebs_enabled;
-> 
-> Wouldn't something like:
-> 
-> 			pebs_status = p->status = cpus->pebs_enabled;
+> > Can this be allocated in an interrupt context?
+> >
+> > And I am not sure how local_t relates to that? Percpu counters can be used
+> > in an interrupt context without the overhead of the address calculations
+> > that are required by a local_t.
 >
+> As I understand the patch, this counts the number of partially free slabs.
+> So if we start to free an object from a completely full slab in process
+> context, as "load x, add one to x, store x" and take an interrupt
+> between loading x and adding one to x, that interrupt handler might
+> free a different object from another completely full slab.  that would
+> also load the same x, add one to it and store x, but then the process
+> context would add one to the old x, overwriting the updated value from
+> interrupt context.
 
-I didn't consider it as a potential solution in this patch because I 
-don't think it's a proper way that SW modifies the buffer, which is 
-supposed to be manipulated by the HW.
-It's just a personal preference. I don't see any issue here. We may try it.
+this_cpu operations are "atomic" vs. preemption but on some platforms not
+vs interrupts. That could be an issue in kmem_cache_free(). This would
+need a modification to the relevant this_cpu ops so that interrupts are
+disabled on those platforms.
 
-Vince, could you please help check whether Peter's suggestion fixes the 
-crash?
+Like this_cpu_inc_irq() or so?
 
-Thanks,
-Kan
 
-> actually fix things without adding overhead?
-> 
+> it's not the likeliest of races, and i don't know how important it is
+> that these counters remain accurate.  but using a local_t instead of
+> a percpu long would fix the problem.  i don't know why you think that
+> a local_t needs "address calculations".  perhaps you've misremembered
+> what a local_t is?
+
+local_t does not include the address arithmetic that the this_cpu
+operation can implicitly perform on x86 f.e. with an segment register or
+maybe another register on another platform thereby avoiding the need to
+disable preemption or interrupts.
+
+Therefore a manual calculation of the target address for a local_t
+operation needs to be done beforehand which usually means disabling
+interrupts and/or preemption for the code segment. Otherwise we may end up
+on a different processor due to scheduler or other interruptions and use
+the percpu counter value of a different processor which could be racy.
