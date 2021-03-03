@@ -2,94 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826DF32BEBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B6632BE14
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575355AbhCCReq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 12:34:46 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:46068 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238859AbhCCORJ (ORCPT
+        id S1382659AbhCCQ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:58:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32899 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344857AbhCCM3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:17:09 -0500
-X-AuditID: 0a580157-f39ff7000005df43-be-603f796e2583
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id E5.5F.57155.E697F306; Wed,  3 Mar 2021 19:56:30 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 3 Mar 2021
- 20:24:02 +0800
-Date:   Wed, 3 Mar 2021 20:24:02 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-CC:     "Luck, Tony" <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        <yangfeng1@kingsoft.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, <yaoaili@kingsoft.com>
-Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
- hwpoison page access.
-Message-ID: <20210303202402.384265a3@alex-virtual-machine>
-In-Reply-To: <59469ECC-5316-4074-98EF-52FFF7940818@amacapital.net>
-References: <8d0c76f97f35499f91a2b82d3e7c024d@intel.com>
-        <59469ECC-5316-4074-98EF-52FFF7940818@amacapital.net>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Wed, 3 Mar 2021 07:29:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614774493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EOe4fqSyksQ+t6iqfEbs4KKusbmAebZtw4sO0NgAswg=;
+        b=aiLHQ2pygfBtj6bR7ttR8IvK2SxSkpszNYQx4Ya4zWC3sy+DCHEBP6sFUEZOQxOTR+HNo0
+        uJLvSX7z+GBZabrtIBsNFn4tAKbsv6arbbPV0dFDjoQuIt5kUlNPZSm0leB00D5bJheS1A
+        Mn9rzCH0gUPO1kLu4+OntHwMeuPVFqk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-GugYBVXPNnu5CP42Ez43kA-1; Wed, 03 Mar 2021 07:24:11 -0500
+X-MC-Unique: GugYBVXPNnu5CP42Ez43kA-1
+Received: by mail-wm1-f69.google.com with SMTP id m17so1714167wml.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:24:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EOe4fqSyksQ+t6iqfEbs4KKusbmAebZtw4sO0NgAswg=;
+        b=X6JYLfQF9NdEFUBUU+Z7gbQFwivM7JO875uyiq2SlV992+JerFSO5HIMbN+xaF2OET
+         rozzHUNGR+v/V+dd/fwbS9nv2d6cgPphEkKe/oz0ju+g2tq1I0QimhS/clscF8yjX33E
+         D9NuARQtoBSh7ghoGN5yVMWuTtd/Z+qT2DXt8oWcnfQ3hnLK+//684ocAqiHs3QobHc2
+         QakupyPNloIvrBuqMl0DzLM96GkUH3U7bAEPVROU3gugfA0yJRFTTDabl0lYmR8Qe6wn
+         78/1gPI192BL6leFFgQjKleeiKHLUhe92in+YqOcJTVXg0vXQgjhwhQ8AJ9MGtrjMfzf
+         F3zQ==
+X-Gm-Message-State: AOAM5300s2TUjQObnVA+8fghONK4EJOuKGlbBOkP4WVDjwnXGCUusvFm
+        2HvKCkeQV34NtEF2wYmcMxad/R9Er2YllSlMQAcOobXK008UQLzmPxnTSkthJhALhXKRW4TDh6J
+        GsABBeJNCyKSLjUn4ul4whhnqjXKRiZoEdkFoE3e9E7TinGAWIwP6tIkqQE3ham0MePrdHwmGad
+        Vt
+X-Received: by 2002:a1c:f702:: with SMTP id v2mr8695757wmh.131.1614774249560;
+        Wed, 03 Mar 2021 04:24:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw9/yjlUuKaPWmHfker1GqCi1i/CgJOHrb6s/ZNwHlFIiyYN9twj1rMIJahF8tf71Tg2E4/uQ==
+X-Received: by 2002:a1c:f702:: with SMTP id v2mr8695738wmh.131.1614774249334;
+        Wed, 03 Mar 2021 04:24:09 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id m132sm5810002wmf.45.2021.03.03.04.24.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 04:24:08 -0800 (PST)
+Subject: Re: [PATCH v3] KVM: nVMX: Sync L2 guest CET states between L1/L2
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        vkuznets@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210303060435.8158-1-weijiang.yang@intel.com>
+ <20210303060435.8158-2-weijiang.yang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <073a7e70-33a0-4ce4-9e15-77c4e13e2af3@redhat.com>
+Date:   Wed, 3 Mar 2021 13:24:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsXCFcGooJtXaZ9g0PBYzOLzhn9sFi82tDNa
-        TNsobnF51xw2i3tr/rNarF7bwGpxftdaVotLBxYwWVxsPMBocbz3AJPF5k1TmS3eXLjHYvFj
-        w2NWB16P7619LB733/xl8di8Qstj8Z6XTB6bVnWyeWz6NInd4925c+we804Gery4upHF4/2+
-        q2wenzfJeZxo+cIawBPFZZOSmpNZllqkb5fAldHTvIW54AJXxY1T/9kbGNdxdDFyckgImEjc
-        3TiVvYuRi0NIYDqTRP/WHmYI5yWjxM5vfSxdjBwcLAIqEtO+GYE0sAmoSuy6N4sVxBYR0JR4
-        OWU+C0g9s8BLZoltb2YxgySEBZIlzkx6wAhi8wpYSXS0bQGLcwo4SRyfs5EJxBYSKJD42dLI
-        AmLzC4hJ9F75zwRxkb1E25ZFUL2CEidnPgGrYQZa1rr9NzuErS2xbOFrZog5ihKHl/xih+hV
-        kjjSPYMNwo6VWDbvFesERuFZSEbNQjJqFpJRCxiZVzGyFOemG25ihERi+A7GeU0f9Q4xMnEw
-        HmKU4GBWEuEVf2mbIMSbklhZlVqUH19UmpNafIhRmoNFSZy3xck+QUggPbEkNTs1tSC1CCbL
-        xMEp1cDEOucYx61ojSWTj4aHpl34o8HWONfo3R3TpMPSU7/7rzD4djQ/fxfnG7c9Rc82Vi5Y
-        rXH/nqnchyAe33mbn0hvrzn9bP4K7f8XahYssNdQt/jX7Kr4d13x4SfMC3hyJ0yYuLLU6bXn
-        68mvDkbU8/BJBu264h1mHet4dOnH/2Z6xatSW++/m8tbt6n80q003xkMieZbbZfu4N2z+nz1
-        dc7qXz+23f839/jcyb+dznyT7TjaP03Llsvv5N6dG6f4OjltP+NabZaZLVKxh+3uGj2+DdOd
-        zA/NSPdL2pcnvV6CVX2rsthWIxWOzhLmkJNf6/ekz6jL++08/4FL2wfFs3nvEud0zP+pfcU/
-        5PYKs42u1kosxRmJhlrMRcWJAEUw0kwzAwAA
+In-Reply-To: <20210303060435.8158-2-weijiang.yang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 11:09:36 -0800
-Andy Lutomirski <luto@amacapital.net> wrote:
-
-> > On Mar 1, 2021, at 11:02 AM, Luck, Tony <tony.luck@intel.com> wrote:
-> > 
-> > ﻿  
-> >> 
-> >> Some programs may use read(2), write(2), etc as ways to check if
-> >> memory is valid without getting a signal.  They might not want
-> >> signals, which means that this feature might need to be configurable.  
-> > 
-> > That sounds like an appalling hack. If users need such a mechanism
-> > we should create some better way to do that.
-> >   
+On 03/03/21 07:04, Yang Weijiang wrote:
+> These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
+> read/write them and after they're changed. If CET guest entry-load bit is not
+> set by L1 guest, migrate them to L2 manaully.
 > 
-> Appalling hack or not, it works. So, if we’re going to send a signal to user code that looks like it originated from a bina fide architectural recoverable fault, it needs to be recoverable.  A load from a failed NVDIMM page is such a fault. A *kernel* load is not. So we need to distinguish it somehow.
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
 
-Sorry for my previous mis-understanding, and i have some questions: 
-if programs use read,write to check if if memory is valid, does it really want to cover the poison case? 
-When for such a case, an error is returned,  can the program realize it's hwposion issue not other software error and process correctly?
+Hi Weijiang, can you post the complete series again?  Thanks!
 
-if this is the proper action, the original posion flow in current code from read and write need to change too.
+Paolo
 
--- 
-Thanks!
-Aili Yao
+> ---
+>   arch/x86/kvm/cpuid.c      |  1 -
+>   arch/x86/kvm/vmx/nested.c | 30 ++++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/vmx.h    |  3 +++
+>   3 files changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index d191de769093..8692f53b8cd0 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+>   		}
+>   		vcpu->arch.guest_supported_xss =
+>   			(((u64)best->edx << 32) | best->ecx) & supported_xss;
+> -
+>   	} else {
+>   		vcpu->arch.guest_supported_xss = 0;
+>   	}
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 9728efd529a1..24cace55e1f9 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2516,6 +2516,13 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>   	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
+>   
+>   	set_cr4_guest_host_mask(vmx);
+> +
+> +	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
+> +	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
+> +	}
+>   }
+>   
+>   /*
+> @@ -2556,6 +2563,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>   	if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
+>   	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
+>   		vmcs_write64(GUEST_BNDCFGS, vmx->nested.vmcs01_guest_bndcfgs);
+> +
+> +	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
+> +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE))) {
+> +		vmcs_writel(GUEST_SSP, vmx->nested.vmcs01_guest_ssp);
+> +		vmcs_writel(GUEST_S_CET, vmx->nested.vmcs01_guest_s_cet);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE,
+> +			    vmx->nested.vmcs01_guest_ssp_tbl);
+> +	}
+> +
+>   	vmx_set_rflags(vcpu, vmcs12->guest_rflags);
+>   
+>   	/* EXCEPTION_BITMAP and CR0_GUEST_HOST_MASK should basically be the
+> @@ -3375,6 +3391,12 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+>   	if (kvm_mpx_supported() &&
+>   		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+>   		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+> +	if (kvm_cet_supported() &&
+> +		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> +		vmx->nested.vmcs01_guest_ssp = vmcs_readl(GUEST_SSP);
+> +		vmx->nested.vmcs01_guest_s_cet = vmcs_readl(GUEST_S_CET);
+> +		vmx->nested.vmcs01_guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> +	}
+>   
+>   	/*
+>   	 * Overwrite vmcs01.GUEST_CR3 with L1's CR3 if EPT is disabled *and*
+> @@ -4001,6 +4023,9 @@ static bool is_vmcs12_ext_field(unsigned long field)
+>   	case GUEST_IDTR_BASE:
+>   	case GUEST_PENDING_DBG_EXCEPTIONS:
+>   	case GUEST_BNDCFGS:
+> +	case GUEST_SSP:
+> +	case GUEST_INTR_SSP_TABLE:
+> +	case GUEST_S_CET:
+>   		return true;
+>   	default:
+>   		break;
+> @@ -4052,6 +4077,11 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
+>   		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
+>   	if (kvm_mpx_supported())
+>   		vmcs12->guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+> +	if (kvm_cet_supported()) {
+> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
+> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
+> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> +	}
+>   
+>   	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
+>   }
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 9d3a557949ac..36dc4fdb0909 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -155,6 +155,9 @@ struct nested_vmx {
+>   	/* to migrate it to L2 if VM_ENTRY_LOAD_DEBUG_CONTROLS is off */
+>   	u64 vmcs01_debugctl;
+>   	u64 vmcs01_guest_bndcfgs;
+> +	u64 vmcs01_guest_ssp;
+> +	u64 vmcs01_guest_s_cet;
+> +	u64 vmcs01_guest_ssp_tbl;
+>   
+>   	/* to migrate it to L1 if L2 writes to L1's CR8 directly */
+>   	int l1_tpr_threshold;
+> 
+
