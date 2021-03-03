@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C9832BFE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40F232BFED
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386281AbhCCSOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:14:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55673 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343706AbhCCPlA (ORCPT
+        id S1386306AbhCCSO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:14:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1384311AbhCCPmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:41:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614785861;
+        Wed, 3 Mar 2021 10:42:06 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F98DC061761;
+        Wed,  3 Mar 2021 07:39:12 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 48FAE2223A;
+        Wed,  3 Mar 2021 16:39:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1614785948;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Kekw656uYC95FPRUxg1j2pExp/VajkKqqTQ75ucp+7I=;
-        b=h2Pw4/GGubJZZvePsNY5wqDZ7k1tdWd3dsUfkHiZt50hiZvBVBFIxy2XUb7AeJLdJsKwzS
-        lAQ6CnXfQNrrASJnEouVWJp6zJDIJ26S4HKu6I9pUzdkoIHwybwiNjrwUH/MQkEjowUrcJ
-        r9RsYUs5x4p69u+gFhhl5igAhsO3Jhc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-JhbiPPqlMNevTp_8NVRD6g-1; Wed, 03 Mar 2021 10:37:39 -0500
-X-MC-Unique: JhbiPPqlMNevTp_8NVRD6g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E66B6800D53;
-        Wed,  3 Mar 2021 15:37:37 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 789205D9C6;
-        Wed,  3 Mar 2021 15:37:34 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  3 Mar 2021 16:37:37 +0100 (CET)
-Date:   Wed, 3 Mar 2021 16:37:33 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
-Message-ID: <20210303153732.GC28955@redhat.com>
-References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de>
+        bh=3tg9/2YH88B53ii3tFImN3rADlNo36/ozFOz8uqRXwI=;
+        b=Fn6DrK1xAp2SF5XU/kuySfh9K2VMKZXKhSDOv1F+37YhnZ3Q4BzysP3D38yIgLC8O2K8m3
+        bHxFXdHSGVfPO7ApAhPQrexFuRrXwutwTEQl5G1iBDjbfVPmvrHo5UxOydWJsInUEJfixt
+        sAz9wGwBZlgYQ9jvr8N+JDSoLyhDt6A=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 03 Mar 2021 16:39:08 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 01/14] gpio: regmap: set gpio_chip of_node
+In-Reply-To: <CACRpkdb56dB+f89Neuix=KKtAsYSTHKuCifhmmzN7jy2LuUbdQ@mail.gmail.com>
+References: <20210303142310.6371-1-noltari@gmail.com>
+ <20210303142310.6371-2-noltari@gmail.com>
+ <CACRpkdb56dB+f89Neuix=KKtAsYSTHKuCifhmmzN7jy2LuUbdQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <ab50e6dddcbf418a41d39cc09356834a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/03, Sebastian Andrzej Siewior wrote:
->
-> +static struct sigqueue *sigqueue_from_cache(struct task_struct *t)
-> +{
-> +	struct sigqueue *q = t->sigqueue_cache;
-> +
-> +	if (q && cmpxchg(&t->sigqueue_cache, q, NULL) == q)
-> +		return q;
-> +	return NULL;
-> +}
-> +
-> +static bool sigqueue_add_cache(struct task_struct *t, struct sigqueue *q)
-> +{
-> +	if (!t->sigqueue_cache && cmpxchg(&t->sigqueue_cache, NULL, q) == NULL)
-> +		return true;
-> +	return false;
-> +}
+Am 2021-03-03 16:27, schrieb Linus Walleij:
+> On Wed, Mar 3, 2021 at 3:23 PM Álvaro Fernández Rojas 
+> <noltari@gmail.com> wrote:
+> 
+>> This is needed for properly registering gpio regmap as a child of a 
+>> regmap
+>> pin controller.
+>> 
+>> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+>> ---
+>>  v3: introduce patch needed for properly parsing gpio-ranges.
+> 
+> Oops a little bug. I suggest that I merge this into the pinctrl tree
+> together with the rest of the patches when we are done with review.
 
-Do we really need cmpxchg? It seems they are always called with spinlock held.
+Ha, I've just debugged this because it puzzled me why it was working
+for me.
 
->  static struct sigqueue *
-> -__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimit)
-> +__sigqueue_do_alloc(int sig, struct task_struct *t, gfp_t flags,
-> +		    int override_rlimit, bool fromslab)
->  {
->  	struct sigqueue *q = NULL;
->  	struct user_struct *user;
-> @@ -432,7 +450,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
->  	rcu_read_unlock();
->
->  	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
-> -		q = kmem_cache_alloc(sigqueue_cachep, flags);
-> +		if (!fromslab)
-> +			q = sigqueue_from_cache(t);
-> +		if (!q)
-> +			q = kmem_cache_alloc(sigqueue_cachep, flags);
+I was about to suggesting using the following instead:
+chip->of_node = config->of_node ?: dev_of_node(config->parent);
 
-I won't insist but afaics you can avoid the new arg/function and simplify this
-patch. __sigqueue_alloc() can simply check "sig > 0" or valid_signal(sig) rather
-than "!fromslab".
+It turns out this is already done in of_gpio_dev_init():
+https://elixir.bootlin.com/linux/v5.12-rc1/source/drivers/gpio/gpiolib-of.c#L1043
 
-> +static void __sigqueue_cache_or_free(struct sigqueue *q)
-> +{
-> +	struct user_struct *up;
-> +
-> +	if (q->flags & SIGQUEUE_PREALLOC)
-> +		return;
-> +
-> +	up = q->user;
-> +	if (atomic_dec_and_test(&up->sigpending))
-> +		free_uid(up);
-> +	if (!task_is_realtime(current) || !sigqueue_add_cache(current, q))
-> +		kmem_cache_free(sigqueue_cachep, q);
-> +}
+So config->of_node is still optional. But I'm not sure if we
+should add the line above for clarity in gpio-regmap.c.
 
-Well, this duplicates __sigqueue_free... Do we really need the new helper?
-What if we simply change __sigqueue_free() to do sigqueue_add_cache() if
-task_is_realtime() && !PF_EXITING ? This too can simplify the patch...
-
-Oleg.
-
+-michael
