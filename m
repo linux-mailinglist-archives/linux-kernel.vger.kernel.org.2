@@ -2,131 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0D632BEF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A106032BF0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575996AbhCCRrS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 12:47:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        id S1577329AbhCCRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbhCCOkf (ORCPT
+        with ESMTP id S239702AbhCCOxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:40:35 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4178C0611C2
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:39:39 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHSez-0003rD-RS; Wed, 03 Mar 2021 15:39:33 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHSey-0000i4-TA; Wed, 03 Mar 2021 15:39:32 +0100
-Message-ID: <29bf66f4b531ec701e85c23a411e40e3621b0ff8.camel@pengutronix.de>
-Subject: Re: [PATCH v3 4/5] media: hantro: Use reset driver
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, ezequiel@collabora.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Date:   Wed, 03 Mar 2021 15:39:32 +0100
-In-Reply-To: <20210301151754.104749-5-benjamin.gaignard@collabora.com>
-References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
-         <20210301151754.104749-5-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Wed, 3 Mar 2021 09:53:41 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA41C06178A
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:42:27 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id u4so37492659lfs.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:42:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SJyFsTiCe9XNG8TmQw4FTErWPKkRCrfm1UpjfacnCRk=;
+        b=TTTSuCmDYQAQDBRD4EKHRAK1Jd/bFDLZfJoRLYmjth5/oqd2f1BLLm/a1BthSC7wZN
+         L7nUY9xFGKH2u4iFMHMLCu1bB1zy2C/BIhGsLIlvsWX1Z2bKNlChUy1EtdqTINFc1IXe
+         7J/Yc1MGbaBDwUiWj4WYa+c8E+D75k6FHy+RGqPIrN3iUm2LRKyaSsr+K82CAT0/oKMY
+         iuCQe4GNkqOAVOKidqaiLcNSFPr+k+TCrqyBOSovDARkfFYe8iJyO1gpLy2gZH8dHJPl
+         R3LfIpycj6qZnIqU8tINI41bUp/uu7NT9YlK1D5N8frx8Z3XvCbIGq4zuk/aPAUEIJUT
+         hqtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SJyFsTiCe9XNG8TmQw4FTErWPKkRCrfm1UpjfacnCRk=;
+        b=VtLx7sIfwY/hr3DZiQOJ+4L4bqblT4qtkStQ2wHCYirV8A3fWIoCxDJK2VzAyIU3wM
+         wUbSz+Q4HaeVOPkWNSfZZ7/hNkjn4EvGAEGtSuOczyyVIjbUJ8ZBdyExsunYfQHbwXzB
+         DewfKPQDy6j7zEYWgR4MRqBQwPEYlOxaufSWFqaLhh4cNRJO60ES65oXzNV6S15K1GfF
+         SsJ1MF1EQsG5TaoQV4V6UuwykrJv+94aREk4bRtlJ7czjCGIKP4pCgLPciXINTiMYGjy
+         4g+N4KbJKxUEswp7w7mi8wTF/qriYLF6qGaMUnn4WZfH4hd1QJ3a4SmCIxJizjX8X0s7
+         0mVA==
+X-Gm-Message-State: AOAM5328JlDMyEFIInbcyjZUngrnp+FfjBfv5IZdSyiaodg9ulceBh8c
+        mUt2cgEY3O0JGOfSYGTBUqO85lyV0BpUX3h9Wi/2Bw==
+X-Google-Smtp-Source: ABdhPJzvKP5lgHp/eRliXv3scmLxOVHbfjwzKOI4TpEoH0afRBOD8JAccayavUGKnE30nEG4RNc9dL19sFT2ScAagy0=
+X-Received: by 2002:a05:6512:942:: with SMTP id u2mr15752552lft.117.1614782544239;
+ Wed, 03 Mar 2021 06:42:24 -0800 (PST)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210303093956.72318-1-songmuchun@bytedance.com>
+ <YD9kCLlckn9evWuw@dhcp22.suse.cz> <CAMZfGtVdU9KWD8U_0CbctMpYo5SbzJEW2pSa1Qdr9tFcwaWcoQ@mail.gmail.com>
+ <YD+XB6LVUhwL6qm+@dhcp22.suse.cz>
+In-Reply-To: <YD+XB6LVUhwL6qm+@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 3 Mar 2021 06:42:11 -0800
+Message-ID: <CALvZod7LLP02bw0t0eJFz1CF6dannFDNEGY2dNWOdqzqmJ_jEg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm: memcontrol: fix kernel stack account
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
-> Rather use a reset like feature inside the driver use the reset
-> controller API to get the same result.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  drivers/staging/media/hantro/Kconfig        |  1 +
->  drivers/staging/media/hantro/imx8m_vpu_hw.c | 61 ++++-----------------
->  2 files changed, 12 insertions(+), 50 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/Kconfig b/drivers/staging/media/hantro/Kconfig
-> index 5b6cf9f62b1a..dd1d4dde2658 100644
-> --- a/drivers/staging/media/hantro/Kconfig
-> +++ b/drivers/staging/media/hantro/Kconfig
-> @@ -20,6 +20,7 @@ config VIDEO_HANTRO_IMX8M
->  	bool "Hantro VPU i.MX8M support"
->  	depends on VIDEO_HANTRO
->  	depends on ARCH_MXC || COMPILE_TEST
-> +	select RESET_VPU_IMX8MQ
->  	default y
->  	help
->  	  Enable support for i.MX8M SoCs.
-> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> index c222de075ef4..d5b4312b9391 100644
-> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> @@ -7,49 +7,12 @@
->  
->  #include <linux/clk.h>
->  #include <linux/delay.h>
-> +#include <linux/reset.h>
->  
->  #include "hantro.h"
->  #include "hantro_jpeg.h"
->  #include "hantro_g1_regs.h"
->  
-> -#define CTRL_SOFT_RESET		0x00
-> -#define RESET_G1		BIT(1)
-> -#define RESET_G2		BIT(0)
-> -
-> -#define CTRL_CLOCK_ENABLE	0x04
-> -#define CLOCK_G1		BIT(1)
-> -#define CLOCK_G2		BIT(0)
-> -
-> -#define CTRL_G1_DEC_FUSE	0x08
-> -#define CTRL_G1_PP_FUSE		0x0c
-> -#define CTRL_G2_DEC_FUSE	0x10
-> -
-> -static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
-> -{
-> -	u32 val;
-> -
-> -	/* Assert */
-> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
-> -	val &= ~reset_bits;
-> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
-> -
-> -	udelay(2);
-> -
-> -	/* Release */
-> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
-> -	val |= reset_bits;
-> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
-> -}
-> -
-> -static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
-> -{
-> -	u32 val;
-> -
-> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
-> -	val |= clock_bits;
-> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+On Wed, Mar 3, 2021 at 6:02 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+[...]
+> > > > +             BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
+> > >
+> > > I do not think we need this BUG_ON. What kind of purpose does it serve?
+> >
+> > vm->nr_pages should be always equal to THREAD_SIZE / PAGE_SIZE
+> > if the system is not corrupted.
+>
+> BUG_ON is not an annotation for "this shouldn't happen". Even if the
+> system was corrupted and nr_pages wouldn't match then this is not a
+> reason to crash the kernel right away.
+>
+> In general there should be a very _strong_ reason to add a BUG_ON.
+>
 
-The way it is implemented in the reset driver, the clocks are now
-ungated between assert and deassert instead of afterwards. Is this on
-purpose?
-
-regards
-Philipp
+I agree with Michal. We should remove this BUG_ON or at least convert
+it into VM_BUG_ON.
