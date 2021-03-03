@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071CC32BCD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B03CA32BCAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359757AbhCCOus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
+        id S1383322AbhCCObJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843038AbhCCKYr (ORCPT
+        with ESMTP id S1842969AbhCCKXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:24:47 -0500
+        Wed, 3 Mar 2021 05:23:11 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C96BC08EC66;
-        Wed,  3 Mar 2021 01:49:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFB8C08EC2C;
+        Wed,  3 Mar 2021 01:49:38 -0800 (PST)
 Date:   Wed, 03 Mar 2021 09:49:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614764977;
+        s=2020; t=1614764976;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q5MEh5+BGenUUyK/QrA5gHPrNEb8FI+SOWRvaZ1nfVk=;
-        b=ebdqO8avVzWZu3nNs4Um5UU/5cJpoiwvTGEUxMhTEFyYToYx68Pe92vM/CNM2aOBO70JSo
-        9ozl6rZR7n6bJFHOCgGb9Nu5mwon4YQulSH0ItMjBJPB27Cfs1qe8zYdzCkOpkivfpbxFe
-        zfLjudrXbjtnhJsCFlICS572FBZAlmD4dg+fbe1pRU6YRR3xlSlt1kmOh+0GbQmbwDR4SK
-        CjmwPlKkExUMFzLAQfsBywSwnRuM5kUvrB1L3E6bT87kpaRndpw4HS6/HdLSdXRnh8itKV
-        zqxyObXUZoJektJtJEqtIWWqwtMGhpqhfI/8Bzdz7ssfNBde3AfAWnX37BgEyQ==
+        bh=T/A0o3BrWwxHFCgmVIMQGpakIiLM/ChkfyWO3Ef/TA8=;
+        b=nqz3m0130PIKihgFX/e4X9Nvj1Aba2heHbnz6Yj4tyvHa1FAj7Ij+8e5jeV0j4qx4M3Dci
+        eoIFu+KFR5lUFpFwj/bAzK5yOOdnEZecryXJR/jDpTUACrKf/MhlZLxSu/u6IB+yzpzJVS
+        fqWIjp5YKmze7Sq/P61LHc0r7j7JaSQexc01Rh9vsOAjDi/mOf1rF02GFuU48GIMhjtYtf
+        zFyuW64h1TQcEG+qeCOkpwGV7qUbZGuxcA9+dPlode15eWZ/NYHHJF/bDq10Dwc8B0vlvh
+        Q99XSvthFju8vHLFVPQlELPVt37edlSrF4JKbCKd7r34qxBZe7M/Oh7qcrPUfg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614764977;
+        s=2020e; t=1614764976;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q5MEh5+BGenUUyK/QrA5gHPrNEb8FI+SOWRvaZ1nfVk=;
-        b=vvcXVb8/jDZewlk2W/WzXXABJ7o4jGFdKIJnfHOwN3SKL6VLWB0w27zDOG3SwMBom3xdyz
-        qQJ5+6uYMAnFqhCg==
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
+        bh=T/A0o3BrWwxHFCgmVIMQGpakIiLM/ChkfyWO3Ef/TA8=;
+        b=WBVmzePQukWpTUtnQEEaCdDS0170LYm1KXO2797vii1XRk0JVTbUhegabK2WtHNu4PbWA6
+        9XIN17AR1j98RjBg==
+From:   "tip-bot2 for Vincent Donnefort" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Reduce the window for duplicated update
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+Subject: [tip: sched/core] sched/fair: use lsub_positive in cpu_util_next()
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210224133007.28644-8-vincent.guittot@linaro.org>
-References: <20210224133007.28644-8-vincent.guittot@linaro.org>
+        Quentin Perret <qperret@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210225083612.1113823-3-vincent.donnefort@arm.com>
+References: <20210225083612.1113823-3-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-Message-ID: <161476497664.20312.7873446370756765765.tip-bot2@tip-bot2>
+Message-ID: <161476497604.20312.18168364785560763796.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,67 +63,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     780eec5b50930b34e2f096b4dce5368d90497b55
-Gitweb:        https://git.kernel.org/tip/780eec5b50930b34e2f096b4dce5368d90497b55
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Wed, 24 Feb 2021 14:30:07 +01:00
+Commit-ID:     b641a8b52c6162172ca31590510569eaadcd5e49
+Gitweb:        https://git.kernel.org/tip/b641a8b52c6162172ca31590510569eaadcd5e49
+Author:        Vincent Donnefort <vincent.donnefort@arm.com>
+AuthorDate:    Thu, 25 Feb 2021 08:36:12 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 03 Mar 2021 10:32:59 +01:00
+CommitterDate: Wed, 03 Mar 2021 10:33:00 +01:00
 
-sched/fair: Reduce the window for duplicated update
+sched/fair: use lsub_positive in cpu_util_next()
 
-Start to update last_blocked_load_update_tick to reduce the possibility
-of another cpu starting the update one more time
+The sub_positive local version is saving an explicit load-store and is
+enough for the cpu_util_next() usage.
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224133007.28644-8-vincent.guittot@linaro.org
+Reviewed-by: Quentin Perret <qperret@google.com>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Link: https://lkml.kernel.org/r/20210225083612.1113823-3-vincent.donnefort@arm.com
 ---
- kernel/sched/fair.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index e87e1b3..f1b55f9 100644
+index b994db9..7b2fac0 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -7852,16 +7852,20 @@ static inline bool others_have_blocked(struct rq *rq)
- 	return false;
- }
+@@ -6471,7 +6471,7 @@ static unsigned long cpu_util_next(int cpu, struct task_struct *p, int dst_cpu)
+ 	 * util_avg should already be correct.
+ 	 */
+ 	if (task_cpu(p) == cpu && dst_cpu != cpu)
+-		sub_positive(&util, task_util(p));
++		lsub_positive(&util, task_util(p));
+ 	else if (task_cpu(p) != cpu && dst_cpu == cpu)
+ 		util += task_util(p);
  
--static inline void update_blocked_load_status(struct rq *rq, bool has_blocked)
-+static inline void update_blocked_load_tick(struct rq *rq)
- {
--	rq->last_blocked_load_update_tick = jiffies;
-+	WRITE_ONCE(rq->last_blocked_load_update_tick, jiffies);
-+}
- 
-+static inline void update_blocked_load_status(struct rq *rq, bool has_blocked)
-+{
- 	if (!has_blocked)
- 		rq->has_blocked_load = 0;
- }
- #else
- static inline bool cfs_rq_has_blocked(struct cfs_rq *cfs_rq) { return false; }
- static inline bool others_have_blocked(struct rq *rq) { return false; }
-+static inline void update_blocked_load_tick(struct rq *rq) {}
- static inline void update_blocked_load_status(struct rq *rq, bool has_blocked) {}
- #endif
- 
-@@ -8022,6 +8026,7 @@ static void update_blocked_averages(int cpu)
- 	struct rq_flags rf;
- 
- 	rq_lock_irqsave(rq, &rf);
-+	update_blocked_load_tick(rq);
- 	update_rq_clock(rq);
- 
- 	decayed |= __update_blocked_others(rq, &done);
-@@ -8363,7 +8368,7 @@ static bool update_nohz_stats(struct rq *rq)
- 	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
- 		return false;
- 
--	if (!time_after(jiffies, rq->last_blocked_load_update_tick))
-+	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
- 		return true;
- 
- 	update_blocked_averages(cpu);
