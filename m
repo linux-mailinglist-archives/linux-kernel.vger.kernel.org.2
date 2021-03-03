@@ -2,108 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B515632C105
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EAF32C0FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836192AbhCCSra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:47:30 -0500
-Received: from rcdn-iport-5.cisco.com ([173.37.86.76]:56464 "EHLO
-        rcdn-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359427AbhCCRpZ (ORCPT
+        id S1836148AbhCCSrW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 13:47:22 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:35460 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243100AbhCCRoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:45:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1566; q=dns/txt; s=iport;
-  t=1614793524; x=1616003124;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HwSDExt/4yEwWWICTamnjrNRGaKwzVnKFGtN23ZY2jQ=;
-  b=L5Iw75ttAcT0M6/xoD+eFXpCtsHuc4EklSKAIC6UFb+vyhSrFUjitWTR
-   143mAO0k6RSaw4OcVAqdDiFJIs1V6ltHmkHozjnNwcDWAbG27MPMrYU7v
-   Z+8kNhl1E3Vu24BZPb7qj5RDhjcAHqorC1MbPuXy1APhIWa3iBz39chRf
-   E=;
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BKAwCgyD9g/5BdJa1iHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgU+CK3ZWATkxlh2PehaMOwsBAQENAQEkEAQBAYRNAoF6AiU?=
- =?us-ascii?q?4EwIDAQELAQEFAQEBAgEGBHGFYQ2GRQEFOj8QCxIGLjwNDgYTG4JWgwcPrUV?=
- =?us-ascii?q?0gTSEPwGEX4E+BiKBFo1DJhyBSUKEKz6KMwSCRoE7gnSQS4JLii2be4MGgR+?=
- =?us-ascii?q?IIJJSMRCDJ4pPlVCgEpZgAgQGBQIWgWsjgVczGggbFYMkHzEZDZcihWYgAy8?=
- =?us-ascii?q?4AgYKAQEDCYwTAQE?=
-X-IronPort-AV: E=Sophos;i="5.81,220,1610409600"; 
-   d="scan'208";a="598970073"
-Received: from rcdn-core-8.cisco.com ([173.37.93.144])
-  by rcdn-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 03 Mar 2021 17:39:14 +0000
-Received: from zorba ([10.24.1.194])
-        by rcdn-core-8.cisco.com (8.15.2/8.15.2) with ESMTPS id 123Hd88Y022034
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 3 Mar 2021 17:39:12 GMT
-Date:   Wed, 3 Mar 2021 09:39:08 -0800
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 0/7] Improve boot command line handling
-Message-ID: <20210303173908.GG109100@zorba>
-References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
- <20210302173523.GE109100@zorba>
- <CAL_JsqJ7U8QAbJe3zkZiFPJN4PveHz5TZoPk2S8qQWB6cm5e5Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJ7U8QAbJe3zkZiFPJN4PveHz5TZoPk2S8qQWB6cm5e5Q@mail.gmail.com>
-X-Outbound-SMTP-Client: 10.24.1.194, [10.24.1.194]
-X-Outbound-Node: rcdn-core-8.cisco.com
+        Wed, 3 Mar 2021 12:44:24 -0500
+X-IronPort-AV: E=Sophos;i="5.81,220,1610406000"; 
+   d="scan'208";a="495963565"
+Received: from lfbn-idf1-1-708-183.w86-245.abo.wanadoo.fr (HELO mp-66156.home) ([86.245.159.183])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 18:39:15 +0100
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: XDP socket rings, and LKMM litmus tests
+From:   maranget <luc.maranget@inria.fr>
+In-Reply-To: <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
+Date:   Wed, 3 Mar 2021 18:39:14 +0100
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F6EF0AE0-F0AA-4158-988B-C2638738B054@inria.fr>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
+To:     Alan Stern <stern@rowland.harvard.edu>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:01:01PM -0600, Rob Herring wrote:
-> +Will D
+
+
+> On 3 Mar 2021, at 18:37, maranget <luc.maranget@inria.fr> wrote:
 > 
-> On Tue, Mar 2, 2021 at 11:36 AM Daniel Walker <danielwa@cisco.com> wrote:
-> >
-> > On Tue, Mar 02, 2021 at 05:25:16PM +0000, Christophe Leroy wrote:
-> > > The purpose of this series is to improve and enhance the
-> > > handling of kernel boot arguments.
-> > >
-> > > It is first focussed on powerpc but also extends the capability
-> > > for other arches.
-> > >
-> > > This is based on suggestion from Daniel Walker <danielwa@cisco.com>
-> > >
-> >
-> >
-> > I don't see a point in your changes at this time. My changes are much more
-> > mature, and you changes don't really make improvements.
-> 
-> Not really a helpful comment. What we merge here will be from whomever
-> is persistent and timely in their efforts. But please, work together
-> on a common solution.
-> 
-> This one meets my requirements of moving the kconfig and code out of
-> the arches, supports prepend/append, and is up to date.
+> I have made a PR to herd7 that performs the change. The commit message states the new definition.
 
+For those who are interested
+<https://github.com/herd/herdtools7/pull/183>
 
-Maintainers are capable of merging whatever they want to merge. However, I
-wouldn't make hasty choices. The changes I've been submitting have been deployed
-on millions of router instances and are more feature rich.
+—Luc
 
-I believe I worked with you on this change, or something like it,
-
-https://lkml.org/lkml/2019/3/19/970
-
-I don't think Christophe has even addressed this. I've converted many
-architectures, and Cisco uses my changes on at least 4 different
-architecture. With products deployed and tested.
-
-I will resubmit my changes as soon as I can.
-
-Daniel
