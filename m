@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECBC32BCED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2C232BCEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447551AbhCCPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843082AbhCCKZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:29 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FC7C06178A
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=c22xLj3GaH+4mij0mN1ziDixlex7PdTUYF+mWbqebsA=; b=mFqVtwjrKg2TS1lDq/UU/dtiI
-        2M8UdwfvO5WVtheGtZdfG+8F4m/FKIk56js/LbM+8krlM27pF3CrL5jUhFGTMjmzj9b8QnRiRDNBe
-        ufvuVzM6/qRWZb6i+Y3peBRewSZTj+gaui1cZignxksaT/Kb180AaZmE1zj+x1xKDDipua5720Ekh
-        3vrDkYsqAoeWJg3YzDRF9mBu6FL1RWylWjuLGPfl24QoDRJJEZzbrCttyH9E8bbf5vyDQvWIdYOmi
-        CXD5WSL9K2lngXlY5AJexYTIiqA7+Giqxu0eeeKqAtjRVomwjKnv/qGjAFymIMKmAcTUB7Rq3rUX/
-        iVgmtU2JA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48440)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lHOfp-0005la-77; Wed, 03 Mar 2021 10:24:09 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lHOfn-0002Hs-Eg; Wed, 03 Mar 2021 10:24:07 +0000
-Date:   Wed, 3 Mar 2021 10:24:07 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     menglong8.dong@gmail.com
-Cc:     vladimir.murzin@arm.com, akpm@linux-foundation.org,
-        rppt@kernel.org, maz@kernel.org, geert@linux-m68k.org,
-        anshuman.khandual@arm.com, zhang.yunkai@zte.com.cn,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: remove duplicate include in
- ./arch/arm/include/asm/pgtable.h
-Message-ID: <20210303102407.GZ1463@shell.armlinux.org.uk>
-References: <20210303020422.174818-1-zhang.yunkai@zte.com.cn>
+        id S1447626AbhCCPEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:04:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51954 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1843086AbhCCKZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:25:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614767113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0sFDgqNuAGBwdZtFGlQ6KMAz588jj5D84lNaxniNvRs=;
+        b=hg77FMOHpvTO3oWdodqeuN17jinSq0WZyJsnSiMukBFGgmEK7hHBZqWuv0rjv6UJj0r3X5
+        RPBO9w8QzYZxYezbpPOICA/n2UKAGOkEbqaqiwC1p/ffIyeEIGGHmBjhqjC3YcGsBDkmjB
+        XGi6yay6liJiYsq/B6ejf0CVxdjxTkw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 08813AD87;
+        Wed,  3 Mar 2021 10:25:13 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 11:25:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+        shakeelb@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: memcontrol: fix kernel stack account
+Message-ID: <YD9kCLlckn9evWuw@dhcp22.suse.cz>
+References: <20210303093956.72318-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303020422.174818-1-zhang.yunkai@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210303093956.72318-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 06:04:22PM -0800, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Wed 03-03-21 17:39:56, Muchun Song wrote:
+> For simplification 991e7673859e ("mm: memcontrol: account kernel stack
+> per node") has changed the per zone vmalloc backed stack pages
+> accounting to per node. By doing that we have lost a certain precision
+> because those pages might live in different NUMA nodes. In the end
+> NR_KERNEL_STACK_KB exported to the userspace might be over estimated on
+> some nodes while underestimated on others.
 > 
-> 'asm-generic/pgtable-nopud.h' included in 'pgtable.h' is duplicated.
+> This doesn't impose any real problem to correctnes of the kernel
+> behavior as the counter is not used for any internal processing but it
+> can cause some confusion to the userspace.
+
+You have skipped over one part of the changelog I have proposed and that
+is to provide an actual data.
+
+> Address the problem by accounting each vmalloc backing page to its own
+> node.
 > 
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+> Fixes: 991e7673859e ("mm: memcontrol: account kernel stack per node")
 
-I don't see this change has anything to do with module code, so what is
-the reason for "module:" in the subject line? What am I missing here?
+Fixes tag might make somebody assume this is worth backporting but I
+highly doubt so.
 
-I also think that this patch needs a better explanation, since it's not
-a removal of a redundant include, whereas your other similarly described
-changes are.
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+
+Anyway
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+as the patch is correct with one comment below
+
+> ---
+> Changelog in v2:
+>  - Rework commit log suggested by Michal.
+> 
+>  Thanks to Michal and Shakeel for review.
+> 
+>  kernel/fork.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index d66cd1014211..6e2201feb524 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -379,14 +379,19 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
+>  	void *stack = task_stack_page(tsk);
+>  	struct vm_struct *vm = task_stack_vm_area(tsk);
+>  
+> +	if (vm) {
+> +		int i;
+>  
+> -	/* All stack pages are in the same node. */
+> -	if (vm)
+> -		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
+> -				      account * (THREAD_SIZE / 1024));
+> -	else
+> +		BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
+
+I do not think we need this BUG_ON. What kind of purpose does it serve?
+
+> +
+> +		for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
+> +			mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
+> +					      account * (PAGE_SIZE / 1024));
+> +	} else {
+> +		/* All stack pages are in the same node. */
+>  		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
+>  				      account * (THREAD_SIZE / 1024));
+> +	}
+>  }
+>  
+>  static int memcg_charge_kernel_stack(struct task_struct *tsk)
+> -- 
+> 2.11.0
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Michal Hocko
+SUSE Labs
