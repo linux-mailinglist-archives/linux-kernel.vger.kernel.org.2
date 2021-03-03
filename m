@@ -2,60 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF24432C390
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BEC32C393
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354382AbhCDAIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:08:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234271AbhCCWH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1354397AbhCDAIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:08:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1390402AbhCCWH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 17:07:29 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3DCAFC061763;
-        Wed,  3 Mar 2021 13:54:39 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 69B8E92009C; Wed,  3 Mar 2021 22:50:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 5B28392009B;
-        Wed,  3 Mar 2021 22:50:56 +0100 (CET)
-Date:   Wed, 3 Mar 2021 22:50:56 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mips@vger.kernel.org, rppt@kernel.org,
-        fancer.lancer@gmail.com, guro@fb.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        paul@crapouillou.net,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent
- corruption
-In-Reply-To: <20210303181541.GA25675@alpha.franken.de>
-Message-ID: <alpine.DEB.2.21.2103032249550.19637@angie.orcam.me.uk>
-References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation> <20210302041940.3663823-1-f.fainelli@gmail.com> <20210302235411.GA3897@alpha.franken.de> <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com> <20210303094134.GA18354@alpha.franken.de>
- <alpine.DEB.2.21.2103031844510.19637@angie.orcam.me.uk> <20210303181541.GA25675@alpha.franken.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 431BE64E41;
+        Wed,  3 Mar 2021 21:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614808580;
+        bh=nvrsaAh1K0woYB6MB0qOBTsrWHC2pRAqyUQ7YOcgOmE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jxMo3UHRY983ulV04oVNJRGmaQbNneITowiQtIrOMKMkyCKk5/vViO569UHoFZmiP
+         0X5Ef/TU4LNLgvJhF7YO9xzL3D/aewmELC/3NAfAQjoYPweC+c6kr8bQdQtRHRd0WL
+         ZQPzWzK1PF/gyS7WwVwddhgzP1JfV3DJcIdeQ5Xu5bdoT4Pd33fi4Q7DTrqkzpBxo0
+         c/G9K75AKFQZnVSRIQZ9x+snWeQVFyig37aY1QPail9jPubQ22Wt0KfyYpMipmend9
+         kjumS5ZxwfkaH4hHPde0N2Zs/B/Ufb62V+11OFMbjNslODlDMH0kqEKrLwqeOW86oR
+         Cyg4bOUSk+X0g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 083183522591; Wed,  3 Mar 2021 13:56:20 -0800 (PST)
+Date:   Wed, 3 Mar 2021 13:56:20 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     maranget <luc.maranget@inria.fr>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210303215619.GK2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
+ <F6EF0AE0-F0AA-4158-988B-C2638738B054@inria.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <F6EF0AE0-F0AA-4158-988B-C2638738B054@inria.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021, Thomas Bogendoerfer wrote:
-
-> >  What's up with the R3k (the usual trigger for me) here?
+On Wed, Mar 03, 2021 at 06:39:14PM +0100, maranget wrote:
 > 
-> I've moved r3k cpu_probe() to it's own file and when moving ebase
-> reservation to cpu_probe(), I need to add it there as well. So just
-> a mechanic step, I've missed.
+> 
+> > On 3 Mar 2021, at 18:37, maranget <luc.maranget@inria.fr> wrote:
+> > 
+> > I have made a PR to herd7 that performs the change. The commit message states the new definition.
+> 
+> For those who are interested
+> <https://github.com/herd/herdtools7/pull/183>
 
- Ah, right, I didn't notice the split.  Thanks for taking care of it!
+And I just confirmed that with this change, Björn's original litmus
+test behaves as desired.  Merci beaucoup, Luc!
 
-  Maciej
+The new herd7 also passes the in-kernel regression test, and also all
+of the github "litmus" archive's tests up to six processes that are
+flagged with expected outcomes except for these five tests, which
+are expected failures:
+
+	litmus/manual/deps/LB-addr-equals.litmus
+	litmus/manual/deps/LB-ctls-bothvals-a.litmus
+	litmus/manual/deps/LB-ctls-diffvals-det.litmus
+	litmus/manual/deps/LB-ctls-sameval-barrier.litmus
+	litmus/manual/deps/LB-ctls-sameval.litmus
+
+This situation is a bit silly, so I changed the "Results" clause
+and added a comment noting that LKMM does not yet know about these
+corner cases.
+
+I just started a longer regression test, but this will take some time.
+
+							Thanx, Paul
