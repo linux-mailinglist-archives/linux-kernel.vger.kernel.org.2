@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB1632BBD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BA132BBD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240725AbhCCMz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842797AbhCCINS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:13:18 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625BCC061356
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:12:11 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id g20so13616562plo.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:12:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=v+0jU7T/57brpKh9RpL8fin465X4mOv5JQ4AMv8IGp0=;
-        b=dc2XBOX3HRnDVfFvwQniAJP185de/MmOM3KG9MRakuIhIH0uztDeESXuD++dRM7FId
-         /QD4+X8DZ7RSk1besGI68U8WbOyMTSB2pXk9Phs21qYYdpmZvO15HZ8EJ5nLgQMqitSM
-         LJueqwmSVvgFz0Bl7lnbZoyXS4y6ZqXXjD5nQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=v+0jU7T/57brpKh9RpL8fin465X4mOv5JQ4AMv8IGp0=;
-        b=g6upBad9UrCTBwTIl2TtWblREN+fXteH1hFnkLhfjdofCVdk5q3VY7+vhaqabMwuWe
-         qSVV/k8Z8SkpDLVNV94i4yVIsqN78Q5op8iPGxdQkaM2ZIRcPCpiptR0L2fdHv6+sD+U
-         a+yN1efJmo2uhJkSpJ05Ovj4HiiP92F/GwQthSwkIKeM1JZzS4tV3dkBuALwYiVLqSPg
-         VLux3yeBUxvcH5VosUfHM10DhYRjsJRy00ht5yUx+FMbcTDv8mqv79D3Ds/jfu49UfPT
-         GrlFsEYnL+8XVgEu2fEqRFDPl3hAO/wM7ozyTUvYiVNQEVsggEBxFUxp6JCE6rBJh8Fc
-         4wpQ==
-X-Gm-Message-State: AOAM530OZKZhMhSai67yzsxq1FZoqSpFzU12IuELnj+Vx8Ts5YDemf5O
-        uUzgW9EtSKU/PLiTMBjSrljkFQ==
-X-Google-Smtp-Source: ABdhPJxkbVDZj/D+4e1Zi04a4GBVH8SLEIZCQme6jT56vZq4cjMzOy3HMCAKImi0vYzNwj5lH3H4WA==
-X-Received: by 2002:a17:90a:a615:: with SMTP id c21mr8596905pjq.163.1614759130973;
-        Wed, 03 Mar 2021 00:12:10 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id r16sm23509186pfh.168.2021.03.03.00.12.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:12:10 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S1358706AbhCCNCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:02:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1842848AbhCCIOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:14:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E82664E4A;
+        Wed,  3 Mar 2021 08:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614759206;
+        bh=b5SxC+H+cvkxpArFsunrLLawT4SeX25oPPqB53vqkdw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eoTzFd121sN+Ycjr0YMQp9KBlYGjd/Eu8edTrCvZVcDwCUo6PKb/pvF8dfOwbi5aB
+         GKx4bhxqC4+td6nwb65mTkndLde7pUp9PG5AEaFvROvax2R6KyGCDLUpsfiyyD4Bm5
+         YlNFE2RvZy+jh+W7T4v6/3Bs5BJMwoQ3QvSzGiR8jFkFhNklXYoLj3DFNzoWMrzq2W
+         U/9G+N5RbAtjd8hqyNbfJVWWLMYqn7+SC9rZPbw5qy8eomZdvgbd68Xdqna7kipaMT
+         E6eXaPz0SspCS0pCJXIjImXtwcLabzn5EofUIVpTT51P7oK4rK6FZr6su39+UH4usA
+         mNBqXxOwXJEbQ==
+Date:   Wed, 3 Mar 2021 10:13:21 +0200
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull resend] habanalabs fixes for 5.12-rc2
+Message-ID: <20210303081321.GA6609@CORE.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <15005f1441594670adcd60a300c88e41d79cad27.1614669585.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1614669585.git.saiprakash.ranjan@codeaurora.org> <15005f1441594670adcd60a300c88e41d79cad27.1614669585.git.saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: sm8350: Rename the qmp node to power-controller
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Date:   Wed, 03 Mar 2021 00:12:09 -0800
-Message-ID: <161475912912.1478170.15486269626625076966@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sai Prakash Ranjan (2021-03-01 23:28:04)
-> Use the generic DT node name "power-controller" for AOSS message ram
-> instead of the protocol name QMP(Qualcomm Messaging Protocol) since
-> it is used for power management requests.
->=20
-> Suggested-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
+Hi Greg,
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+This pull request contains some fixes of the habanalabs driver for
+5.12-rc2.
+Nothing too scary, more details are in the tag.
+
+Thanks,
+Oded
+
+The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
+
+  Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-03-03
+
+for you to fetch changes up to 3612e9f5df4c0c605ab2e4b569214786cc701cb9:
+
+  habanalabs: fix debugfs address translation (2021-03-03 09:56:58 +0200)
+
+----------------------------------------------------------------
+This tag contains the following fixes for 5.12-rc2:
+
+- Call put_pid() when the user releases the control device.
+- Disable file operations after a PCI device is removed.
+- Fix address translation when displaying the memory mappings
+  through our debugFS.
+- Remove unused dentry pointer for debugFS files.
+
+----------------------------------------------------------------
+Greg Kroah-Hartman (1):
+      drivers: habanalabs: remove unused dentry pointer for debugfs files
+
+Oded Gabbay (1):
+      habanalabs: mark hl_eq_inc_ptr() as static
+
+Tomer Tayar (2):
+      habanalabs: Call put_pid() when releasing control device
+      habanalabs: Disable file operations after device is removed
+
+farah kassabri (1):
+      habanalabs: fix debugfs address translation
+
+ drivers/misc/habanalabs/common/debugfs.c          |  5 +--
+ drivers/misc/habanalabs/common/device.c           | 40 ++++++++++++++++++++---
+ drivers/misc/habanalabs/common/habanalabs.h       |  2 --
+ drivers/misc/habanalabs/common/habanalabs_ioctl.c | 12 +++++++
+ drivers/misc/habanalabs/common/irq.c              |  2 +-
+ drivers/misc/habanalabs/common/mmu/mmu.c          | 38 ++++++++++++++-------
+ 6 files changed, 75 insertions(+), 24 deletions(-)
