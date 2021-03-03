@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC30032C360
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2361432C2E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233368AbhCCX7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 18:59:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51441 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1376802AbhCCTnb (ORCPT
+        id S236679AbhCCX74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:56 -0500
+Received: from mout.kundenserver.de ([212.227.126.133]:51931 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376952AbhCCTnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:43:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614800525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bv5cAMYlaP5qwIgoi2PUPPqfWwaPF9ayOOCbDPpLsEY=;
-        b=UrcYyEEAWZvAzhhVKdMTad93zo3PxZL1U51d9kGwJuJhnGNfNX7+S4gaVVdxQd1260T8wy
-        sN9iz2y00BXotgIQA6nMMDZsuS7TVS42zycrPX0qTfdWJMRtdA1ZXtSJ4OCUBD/9HCEiwW
-        EHKNcQlGIxccEl4THTeCiifW86Hleo8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-3zO5FGdEPoyNzMkrsb1f9Q-1; Wed, 03 Mar 2021 14:38:18 -0500
-X-MC-Unique: 3zO5FGdEPoyNzMkrsb1f9Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4457E10CE780;
-        Wed,  3 Mar 2021 19:38:17 +0000 (UTC)
-Received: from treble (ovpn-114-218.rdu2.redhat.com [10.10.114.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EBD1518AD4;
-        Wed,  3 Mar 2021 19:38:14 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 13:38:06 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210303193806.oovupl4ubtkkyiih@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210302232649.y2tutffhxsblwqlb@treble>
- <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
- <20210303191516.6ksxmng4pis7ue4p@treble>
- <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
+        Wed, 3 Mar 2021 14:43:51 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1My2pz-1lzclI09iJ-00zZYU; Wed, 03 Mar 2021 20:40:27 +0100
+Received: by mail-oi1-f174.google.com with SMTP id f3so27268160oiw.13;
+        Wed, 03 Mar 2021 11:40:26 -0800 (PST)
+X-Gm-Message-State: AOAM533s2niafG6HZGnI5/zGikXBUPvNqOQxyU95D1HPpD0/9681G+Fh
+        tB8187U1tQBCliz+Bx2U2N09rG4rFlG2XQOUcwg=
+X-Google-Smtp-Source: ABdhPJzn3Q499PVsI9fue4JXopGo7Jot+WRlXZuMu9dMyxd/+iuVPnM+k2Lyu54W16vUNKI5PzbS2+wPDBpoflHkL00=
+X-Received: by 2002:aca:4fd3:: with SMTP id d202mr343594oib.11.1614800425710;
+ Wed, 03 Mar 2021 11:40:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
+ <20210303022628.6540-1-taehyun.cho@samsung.com> <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
+ <YD9lTjWc25Nn7jAR@kroah.com> <20210303103839.it7grj3vtrdmngbd@kozik-lap>
+ <YD+XkFAfoKpSsea3@kroah.com> <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
+ <YD+mkse29UwwYbFB@kroah.com> <6e9d6831-f88e-477f-6256-7ab155bfa7ac@kernel.org>
+ <CAK8P3a2TAZELiqzy8Xv8hKvZwM6_+rF5OW9_AkP2TBoDRS3skQ@mail.gmail.com> <YD+8q/hSWNKQS1tE@kroah.com>
+In-Reply-To: <YD+8q/hSWNKQS1tE@kroah.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 3 Mar 2021 20:40:08 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3_u-FdPKNtAZdZHKY2EAk+qhg1GQHV4dsnuGV4+LawgQ@mail.gmail.com>
+Message-ID: <CAK8P3a3_u-FdPKNtAZdZHKY2EAk+qhg1GQHV4dsnuGV4+LawgQ@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        taehyun cho <taehyun.cho@samsung.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:irQ9Y8hDCfeUHTK7SbkRdDLoBO8Uq+AB9S6IUXcUUPd29CetD8n
+ DDOk2fRuSsSPNQkTl/PhpY0nZcEDftn9TQRcVDd8gYnMKT9XlCC/lligLZ0PjhyKpgHn0MI
+ FglGW5oaJjCXdwZFNYNmfmYU2A0rwMotWxh+3NgmD48EpIljOz2Cj5J0CQ3ZStYKiVDHxPn
+ u7h1amwEaDsLvsnsZ/Z5Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YaQBB56KKM8=:7xYZZ8e5QttoWoYrmiquhT
+ d2YUfXZj+iRbSfEUhgsq76sbNWYYi3k4ZWRTYzBaZo6BrWAkmTdci06tZNwV78wbgub4gQj78
+ pXIIOrqTQRfJyWcjZ8+UigqPrcmQJDCUwvkcEO2IO7CqUqe4PihAzyFADFPq/CXFrkX85ZIYt
+ Ku8LAzKP0KoCH4eI40CPWHsKqDVcGnfzK9Dm7LIiFL0YRtIX2tRi8cBNEUtfy5jxQOd/mSxWt
+ ePvE1JUTKmihsa1UkTNyD19sdhj5ETCQfCaE9Q4cqp6xzYP/nVk2Y2OTm9mJw1qrlRMwLqoVd
+ WBds5+bTBRJNERQs915+zWVRGhG7pT0zR9taG3z9NPZLh5MYHCAnlA1kctcYEn21n9icmQdIv
+ vvYBj0ggNWWOV1CA0ugcchLJE5T7y+iAvzssvahV/l/ygwv8Cmt4+pShif6ZC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:25:34AM -0800, Linus Torvalds wrote:
-> On Wed, Mar 3, 2021 at 11:15 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > Adding Linus, who indicated in another thread that we shouldn't force
-> > exact GCC versions because there's no technical reason to do so.
-> 
-> I do not believe we should recompile everything just because the gcc
-> version changes.
-> 
-> But gcc _plugins_ certainly should depend on the kernel version.
-> 
-> Very few people should be enabling the gcc plugins in the first place.
-> Honestly, most of them are bad, and the people who really care about
-> those things have already moved to clang which does the important
-> parts natively without the need for a plugin. I'm personally waiting
-> for the day when we can just say "let's remove them".
+On Wed, Mar 3, 2021 at 5:43 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Wed, Mar 03, 2021 at 05:33:46PM +0100, Arnd Bergmann wrote:
+> > > > On Wed, Mar 03, 2021 at 06:56:38AM -0800, Guenter Roeck wrote:
+> > > >
+> > > >> I don't think that will work in practice. Many ARCH_ symbols for various
+> > > >> architectures contradict with each other. Almost all watchdog drivers
+> > > >> only _build_ for specific platforms/architectures.
+>
+> That's fine, drivers are easy, but when I see comments like "ARCH_
+> symbols contradict" that means that we can not make a generic kernel
+> image.  Otherwise there's no contradiction :)
 
-You might be sad to learn that some of the plugins are useful for
-hardening of a production distro kernel, like stackleak and structleak.
+I think the key part of Guenter's sentence above was 'for various
+architectures', which does not include arm64 or modern arm32 (armv6
+or higher). On arm64 specifically, there is no platform specific code at
+all that is not "just a driver".
 
-> But in the meantime, making the plugins depend on the gcc version some
-> way is certainly better than not doing so.
+32-bit ARM was in that category, and is mostly converted now to allow
+combining arbitrary platforms within each of the three sets of slightly
+incompatible CPUs (armv4/v4t/v5 vs armv6/v6k/v7/v7ve/v8 vs nommu
+armv7-m).
 
-So currently, the plugins already so that.  They require the GCC version
-to be exact.  If there's a mismatch, then it fails the OOT module build.
+powerpc did this first, but still has at least five groups of incompatible
+CPU cores (8xx, 6xx, 4xx, e500 and everything 64-bit) with one or
+more platforms in each.
 
-But that's not usable for a distro.  When users build OOT modules with a
-slight GCC mismatch, it breaks the build, effectively requiring the
-exact same GCC version for *all* OOT builds going forward.
+mips is mostly incompatible between platforms, though there has been
+some progress in the past few years to make some of the common ones
+coexist.
 
-So there have been a few proposals to better handle GCC version
-mismatches:
+m68k can have all mmu-based platforms (mac, atari, amiga, ...) coexist,
+but the nommu platforms are all mutually exclusive. This is probably
+not a problem because they are also highly resource constrained.
 
-1) disable the plugin - this works fine for most plugins except
-   randstruct
+> And "new drivers" are almost always not really "new" as everyone uses
+> much the same IP blocks.  As proof of this patch where the DWC3 IP block
+> is being used by multiple SoC vendors.  To handle that, you split out
+> the SoC-specific portions into sub-drivers, so that you can build a
+> single image of the driver that works on multiple platforms.  Nothing
+> new, we've been doing this for years, it's just that out-of-mainline SoC
+> trees that think they can touch "core IP block code" break this all the
+> time, which is what I am pushing back on.
 
-2) rebuild the plugin whenever the GCC version changes
+In those cases where more than one or two platforms share an identical
+driver, I agree we should just remove those dependencies. Across
+subsystems, I think those are a small minority, but they are more common
+in certain areas (usb, pci, networking) than others (clk, pinctrl, gpio).
 
-3) fail the build, like today - effectively blocks distros from using
-   plugins
+I did find it very helpful to have the dependencies when I removed a
+number of ARM platforms for linux-5.12 that had no remaining users ,
+and I could just remove all the drivers along with those platforms.
 
--- 
-Josh
+I found one networking driver in that set that was a generic licensed
+IP block that was probably shared by other platforms, but none of
+those had upstream Linux support, so I removed it as well.
 
+     Arnd
