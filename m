@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40F232BFED
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E30832BFF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386306AbhCCSO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:14:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384311AbhCCPmG (ORCPT
+        id S1386316AbhCCSOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:14:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37082 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1448626AbhCCPmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 10:42:06 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F98DC061761;
-        Wed,  3 Mar 2021 07:39:12 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 48FAE2223A;
-        Wed,  3 Mar 2021 16:39:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614785948;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614786026;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3tg9/2YH88B53ii3tFImN3rADlNo36/ozFOz8uqRXwI=;
-        b=Fn6DrK1xAp2SF5XU/kuySfh9K2VMKZXKhSDOv1F+37YhnZ3Q4BzysP3D38yIgLC8O2K8m3
-        bHxFXdHSGVfPO7ApAhPQrexFuRrXwutwTEQl5G1iBDjbfVPmvrHo5UxOydWJsInUEJfixt
-        sAz9wGwBZlgYQ9jvr8N+JDSoLyhDt6A=
+        bh=v/B/vFyvdim6DFmRje+NahSs84+dybnbCq6JUenc1xY=;
+        b=ItMHXpErGvN4CKXrf6lJpI6lEL5BPg7Jm7HsAbvtoNGd/fC4BManeJ9yeKLEeFrt+Ify86
+        uiaAYbi4ewFhH3YLtLhIcE6UlIJqfXDgZ9ShlIFbTLeTbwc9NRPrpgEnzBGg0O2N9nCDSn
+        yNP6QxCWlQBHHfgDI3v5kyzwI8dOWzc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-w_Mi8ygwMry9mxWUUsfKvA-1; Wed, 03 Mar 2021 10:40:22 -0500
+X-MC-Unique: w_Mi8ygwMry9mxWUUsfKvA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F047CC621;
+        Wed,  3 Mar 2021 15:40:21 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 760FA60C15;
+        Wed,  3 Mar 2021 15:40:21 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 8B93718095CB;
+        Wed,  3 Mar 2021 15:40:20 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 10:40:20 -0500 (EST)
+From:   Bob Peterson <rpeterso@redhat.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     agruenba@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Message-ID: <270744488.59307524.1614786020378.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1614676526-102967-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1614676526-102967-1-git-send-email-yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH] gfs2: Remove unneeded return variable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 03 Mar 2021 16:39:08 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 01/14] gpio: regmap: set gpio_chip of_node
-In-Reply-To: <CACRpkdb56dB+f89Neuix=KKtAsYSTHKuCifhmmzN7jy2LuUbdQ@mail.gmail.com>
-References: <20210303142310.6371-1-noltari@gmail.com>
- <20210303142310.6371-2-noltari@gmail.com>
- <CACRpkdb56dB+f89Neuix=KKtAsYSTHKuCifhmmzN7jy2LuUbdQ@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <ab50e6dddcbf418a41d39cc09356834a@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.3.112.116, 10.4.195.12]
+Thread-Topic: gfs2: Remove unneeded return variable
+Thread-Index: 3VuNkBJDA75kU/6FZuU1wYet5NWkVw==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-03 16:27, schrieb Linus Walleij:
-> On Wed, Mar 3, 2021 at 3:23 PM Álvaro Fernández Rojas 
-> <noltari@gmail.com> wrote:
+----- Original Message -----
+> This patch removes unneeded return variables, using only
+> '0' instead.
+> It fixes the following warning detected by coccinelle:
+> ./fs/gfs2/super.c:592:5-10: Unneeded variable: "error". Return "0" on
+> line 628
 > 
->> This is needed for properly registering gpio regmap as a child of a 
->> regmap
->> pin controller.
->> 
->> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
->> ---
->>  v3: introduce patch needed for properly parsing gpio-ranges.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  fs/gfs2/super.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Oops a little bug. I suggest that I merge this into the pinctrl tree
-> together with the rest of the patches when we are done with review.
+> diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
+> index 861ed5f..fe2dae4 100644
+> --- a/fs/gfs2/super.c
+> +++ b/fs/gfs2/super.c
+> @@ -589,7 +589,6 @@ static void gfs2_dirty_inode(struct inode *inode, int
+> flags)
+>  
+>  int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
+>  {
+> -	int error = 0;
+>  	int log_write_allowed = test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
+>  
+>  	gfs2_flush_delete_work(sdp);
+> @@ -625,7 +624,7 @@ int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
+>  	if (!log_write_allowed)
+>  		sdp->sd_vfs->s_flags |= SB_RDONLY;
+>  
+> -	return error;
+> +	return 0;
+>  }
+>  
+>  /**
+> --
+> 1.8.3.1
 
-Ha, I've just debugged this because it puzzled me why it was working
-for me.
+Hi Yang,
 
-I was about to suggesting using the following instead:
-chip->of_node = config->of_node ?: dev_of_node(config->parent);
+Thanks for submitting your patch. I like it. However, since gfs2_make_fs_ro
+always returns 0, we should also be able to make it a void function instead
+of int, and change its callers to not act on any return code.
 
-It turns out this is already done in of_gpio_dev_init():
-https://elixir.bootlin.com/linux/v5.12-rc1/source/drivers/gpio/gpiolib-of.c#L1043
+Regards,
 
-So config->of_node is still optional. But I'm not sure if we
-should add the line above for clarity in gpio-regmap.c.
+Bob Peterson
+Red Hat File Systems
 
--michael
