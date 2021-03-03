@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E459D32BE3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D3632BE3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345273AbhCCRRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:17:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48086 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1380751AbhCCN3g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:29:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614778080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJFVk9Prwjkxdm586ACwDtBMKBVeZRi7IzKPe/DvaFI=;
-        b=hErmplPYcuy9JYr5U0+O+j+nsfeI2pSwip1oPv/fxbbFtYEvVx5V34nCqc1FB4+ulF5XlT
-        W7PWfZyohYcMDiU6Ee7TiJBtY7ZJABsj2vhWu5WQVjrCyusU2W0Us1V69ESKfkqzAioFbs
-        5ylvXPmpTvsIx61ZkPx+q1Yike357Vk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-YJ8FY7OuMBiHiY1HqX1Adg-1; Wed, 03 Mar 2021 08:27:56 -0500
-X-MC-Unique: YJ8FY7OuMBiHiY1HqX1Adg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 795176D4E0;
-        Wed,  3 Mar 2021 13:27:54 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 614936F999;
-        Wed,  3 Mar 2021 13:27:51 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  3 Mar 2021 14:27:54 +0100 (CET)
-Date:   Wed, 3 Mar 2021 14:27:50 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: Why do kprobes and uprobes singlestep?
-Message-ID: <20210303132749.GA28955@redhat.com>
-References: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
- <968E85AE-75B8-42D7-844A-0D61B32063B3@amacapital.net>
- <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
+        id S1348220AbhCCRSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:18:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1380760AbhCCN3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:29:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F2864E02;
+        Wed,  3 Mar 2021 13:28:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614778126;
+        bh=KhFSMataHsGZ7AJ138B1Au+pcPiS3CjPeDpmVqerXfU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hU6dUMv/g5EAqhju6UP+vRZHy/O9CADHkLmn123hDs/GCXVzmxRfL/uvcJPETBg/5
+         yI2hovgjRV1LngZXlzxOnaqkNeyMai367ggkTjWC0pxY23sX/SHv4QAK94jAt0xXwi
+         vIlDnxkxX01/8/zEzZQbBZXFBaulaYkrK56GaIB0Ypmba3RIWta8+wEYXY8AwJFE94
+         CqpSpssoRuOTxcKuTlFeL7tY0/0kLkFoUtHhYRvq013eFC4V3IRaIfg5UwvFeQZn3n
+         wTvLvNNof8iDiIl0lX2Q4v7xrIDWLASz/8ATWD7bPxr44bA651lgP/ErLMG1y/cDSk
+         vlBqQSbP4IV/w==
+Date:   Wed, 3 Mar 2021 21:28:40 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
+Message-ID: <20210303132839.GI15865@dragon>
+References: <20210205013847.1736929-1-saravanak@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210205013847.1736929-1-saravanak@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02, Alexei Starovoitov wrote:
->
-> Especially if such tightening will come with performance boost for
-> uprobe on a nop and unprobe at the start (which is typically push or
-> alu on %sp).
-> That would be a great step forward.
+On Thu, Feb 04, 2021 at 05:38:46PM -0800, Saravana Kannan wrote:
+> Using IRQCHIP_DECLARE lets fw_devlink know that it should not wait for
+> these interrupt controllers to be populated as struct devices. Without
+> this change, fw_devlink=on will make the consumers of these interrupt
+> controllers wait for the struct device to be added and thereby block the
+> consumers' probes forever. Converting to IRQCHIP_DECLARE addresses boot
+> issues on imx25 with fw_devlink=on that were reported by Martin.
+> 
+> This also removes a lot of boilerplate code.
+> 
+> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> Reported-by: Martin Kaiser <martin@kaiser.cx>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Martin Kaiser <martin@kaiser.cx>
 
-Just in case, nop and push are emulated without additional overhead.
-
-Oleg.
-
+Applied, thanks.
