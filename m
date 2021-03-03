@@ -2,203 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE94532BCAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D8F32BD0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381414AbhCCOav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842966AbhCCKXK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:10 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F416C08ECAD;
-        Wed,  3 Mar 2021 01:56:12 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id t26so15995514pgv.3;
-        Wed, 03 Mar 2021 01:56:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6nAum7+Ob49UjR8SXRm3Bf/BdE+ABiXk8yB55vKwcjo=;
-        b=t6d98gwHsFVJx6OL8dYpXRpDtNn7Wf+l5TtZs67JkFEb3y/YMeNPE3cYMIqqJsGc2c
-         uSC+BojNjx2A3NumpC6ZYOxhMZ9IiKaB5uw3OW3gJkYwdWaPZTpMHu+1terIF3Bopn1t
-         0YiNxuaUp8jmLx/QaExikzl4y2FmQp1tWGLu6uREHeiWeYJ01Xw0QM+e2/qMq0gMHVn8
-         17DBUbY3w2iTBSts4kTlIQU3sYZNqsGHgwY0MBGGPAAzVwc3Wcog8nqkUeSZd4BVBH5q
-         DtJ/Ul5sr9khy5dsItqGvNTnV2WkaczvbMaOkvaTciFNEwmHC1lpzwL7vWTZpKBxBbpS
-         4BOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6nAum7+Ob49UjR8SXRm3Bf/BdE+ABiXk8yB55vKwcjo=;
-        b=dji8hm0tiGYfEfLwgXQrUpHRV2WY27mEFNg4OW34ckCwJGV5wHMJkvjOybRrdCl9oI
-         nUsDvGxZhPPWWKr8ESXA93c8QbQcADaIMbMx4Fep29N1C55iwdPvpwsDDzRv5QPdzurK
-         GpRqS9AvQf+jZR8xkVJM7mDM+wzyGpFLTLgMGdFX1yYK6S3kYcwJKl/cmaf/ZfiCOnqa
-         SSvjqXAex/bVDKkHj7dH07zW9BI/84I9R6NEPUChsgaACe60bazBmS+x4l9ESwlbRNIR
-         iHj6zTvfJRePYPpiinr0y3pHfbC1jwhRWWVl/85RSZB9L2LUlZBWG/1vSgtEPwan6wSj
-         l8dw==
-X-Gm-Message-State: AOAM533Sbw/7Muk6hbFhDUov4phEA99j3cf8VccDOZ86b6ulzdYoHL79
-        E3RvFkCCP5hTjxBF3xn0FpI=
-X-Google-Smtp-Source: ABdhPJzL+/f5k+R8WaiFUPLm5x5UffaBaUc6zqPhsKJfhucmslPQZdW8AwZD4LLWEJkiLpiPGHy2tg==
-X-Received: by 2002:a62:5ec1:0:b029:1ee:7baf:8ed3 with SMTP id s184-20020a625ec10000b02901ee7baf8ed3mr2344276pfb.62.1614765371678;
-        Wed, 03 Mar 2021 01:56:11 -0800 (PST)
-Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id x14sm24351087pfm.207.2021.03.03.01.56.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 01:56:11 -0800 (PST)
-From:   Nadav Amit <nadav.amit@gmail.com>
-X-Google-Original-From: Nadav Amit
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
-        Yu Zhao <yuzhao@google.com>
-Subject: [PATCH v3] mm/userfaultfd: fix memory corruption due to writeprotect
-Date:   Wed,  3 Mar 2021 01:51:16 -0800
-Message-Id: <20210303095116.3814443-1-namit@vmware.com>
-X-Mailer: git-send-email 2.25.1
+        id S1447970AbhCCPRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:17:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:45036 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238857AbhCCK24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:28:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F066A1FB;
+        Wed,  3 Mar 2021 01:52:01 -0800 (PST)
+Received: from [10.57.12.223] (unknown [10.57.12.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33BFD3F73B;
+        Wed,  3 Mar 2021 01:52:00 -0800 (PST)
+Subject: Re: [PATCH 1/8] ARM: ARMv7-M: Fix register restore corrupt after svc
+ call
+To:     dillon.minfei@gmail.com, robh+dt@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com
+References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+ <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+Message-ID: <5284d390-c03a-4035-df5a-10d6cd60e47b@arm.com>
+Date:   Wed, 3 Mar 2021 09:52:07 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+On 3/3/21 8:05 AM, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> For some case, kernel not boot by u-boot(single thread),
+> but by rtos , as most rtos use pendsv to do context switch.
 
-Userfaultfd self-test fails occasionally, indicating a memory
-corruption.
 
-Analyzing this problem indicates that there is a real bug since
-mmap_lock is only taken for read in mwriteprotect_range() and defers
-flushes, and since there is insufficient consideration of concurrent
-deferred TLB flushes in wp_page_copy(). Although the PTE is flushed from
-the TLBs in wp_page_copy(), this flush takes place after the copy has
-already been performed, and therefore changes of the page are possible
-between the time of the copy and the time in which the PTE is flushed.
+Hmm, does it mean that it starts kernel from process context?
 
-To make matters worse, memory-unprotection using userfaultfd also poses
-a problem. Although memory unprotection is logically a promotion of PTE
-permissions, and therefore should not require a TLB flush, the current
-userrfaultfd code might actually cause a demotion of the architectural
-PTE permission: when userfaultfd_writeprotect() unprotects memory
-region, it unintentionally *clears* the RW-bit if it was already set.
-Note that this unprotecting a PTE that is not write-protected is a valid
-use-case: the userfaultfd monitor might ask to unprotect a region that
-holds both write-protected and write-unprotected PTEs.
+I'd assume that it is not only kernel who expects MSP. So, what
+if RTOS you mentioned want to boot other RTOS (even itself)? What
+if you have no access to the source code for those RTOS(es) to
+patch MSP/PSP switch?
 
-The scenario that happens in selftests/vm/userfaultfd is as follows:
+I'd very much prefer to keep stack switching logic outside kernel,
+say, in some shim which RTOS/bootloader can maintain.
 
-cpu0				cpu1			cpu2
-----				----			----
-							[ Writable PTE
-							  cached in TLB ]
-userfaultfd_writeprotect()
-[ write-*unprotect* ]
-mwriteprotect_range()
-mmap_read_lock()
-change_protection()
+Cheers
+Vladimir
 
-change_protection_range()
-...
-change_pte_range()
-[ *clear* “write”-bit ]
-[ defer TLB flushes ]
-				[ page-fault ]
-				...
-				wp_page_copy()
-				 cow_user_page()
-				  [ copy page ]
-							[ write to old
-							  page ]
-				...
-				 set_pte_at_notify()
-
-A similar scenario can happen:
-
-cpu0		cpu1		cpu2		cpu3
-----		----		----		----
-						[ Writable PTE
-				  		  cached in TLB ]
-userfaultfd_writeprotect()
-[ write-protect ]
-[ deferred TLB flush ]
-		userfaultfd_writeprotect()
-		[ write-unprotect ]
-		[ deferred TLB flush]
-				[ page-fault ]
-				wp_page_copy()
-				 cow_user_page()
-				 [ copy page ]
-				 ...		[ write to page ]
-				set_pte_at_notify()
-
-This race exists since commit 292924b26024 ("userfaultfd: wp: apply
-_PAGE_UFFD_WP bit"). Yet, as Yu Zhao pointed, these races became
-apparent since commit 09854ba94c6a ("mm: do_wp_page() simplification")
-which made wp_page_copy() more likely to take place, specifically if
-page_count(page) > 1.
-
-To resolve the aforementioned races, check whether there are pending
-flushes on uffd-write-protected VMAs, and if there are, perform a flush
-before doing the COW.
-
-Further optimizations will follow, since currently write-unprotect would
-also
-
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Pavel Emelyanov <xemul@openvz.org>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Suggested-by: Yu Zhao <yuzhao@google.com>
-Fixes: 292924b26024 ("userfaultfd: wp: apply _PAGE_UFFD_WP bit")
-Signed-off-by: Nadav Amit <namit@vmware.com>
-
----
-v2->v3:
-* Do not acquire mmap_lock for write, flush conditionally instead [Yu]
-* Change the fixes tag to the patch that made the race apparent [Yu]
-* Removing patch to avoid write-protect on uffd unprotect. More
-  comprehensive solution to follow (and avoid the TLB flush as well).
----
- mm/memory.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 9e8576a83147..06da04f98936 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3092,6 +3092,13 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- 		return handle_userfault(vmf, VM_UFFD_WP);
- 	}
- 
-+	/*
-+	 * Userfaultfd write-protect can defer flushes. Ensure the TLB
-+	 * is flushed in this case before copying.
-+	 */
-+	if (userfaultfd_wp(vmf->vma) && mm_tlb_flush_pending(vmf->vma->vm_mm))
-+		flush_tlb_page(vmf->vma, vmf->address);
-+
- 	vmf->page = vm_normal_page(vma, vmf->address, vmf->orig_pte);
- 	if (!vmf->page) {
- 		/*
--- 
-2.25.1
+> 
+> So, we need add an lr check after svc call, to find out should
+> use psp or msp. else register restore after svc call might be
+> corrupted.
+> 
+> Fixes: b70cd406d7fe ("ARM: 8671/1: V7M: Preserve registers across switch from Thread to Handler mode")
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>  arch/arm/mm/proc-v7m.S | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mm/proc-v7m.S b/arch/arm/mm/proc-v7m.S
+> index 84459c1d31b8..c93d2757312d 100644
+> --- a/arch/arm/mm/proc-v7m.S
+> +++ b/arch/arm/mm/proc-v7m.S
+> @@ -137,7 +137,10 @@ __v7m_setup_cont:
+>  1:	cpsid	i
+>  	/* Calculate exc_ret */
+>  	orr	r10, lr, #EXC_RET_THREADMODE_PROCESSSTACK
+> -	ldmia	sp, {r0-r3, r12}
+> +	tst	lr, #EXC_RET_STACK_MASK
+> +	mrsne	r4, psp
+> +	moveq	r4, sp
+> +	ldmia	r4!, {r0-r3, r12}
+>  	str	r5, [r12, #11 * 4]	@ restore the original SVC vector entry
+>  	mov	lr, r6			@ restore LR
+>  
+> 
 
