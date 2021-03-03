@@ -2,655 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D225132BD6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B03632BD5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452693AbhCCP7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:59:06 -0500
-Received: from mail.pr-group.ru ([178.18.215.3]:53490 "EHLO mail.pr-group.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347514AbhCCLAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:00:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-        d=metrotek.ru; s=mail;
-        h=from:subject:date:message-id:to:cc:mime-version:content-type:in-reply-to;
-        bh=T4tgXtAHGvJqlcF71s75FGKBB2aYv5KGHsNvvM8+EdQ=;
-        b=G9BK64rr6pDf6NvAA2IplrA81OOX8/ozWfjAAwcdGmOJ3ayPNZiS5aSBGL5Pt8LgzdJqZICee0auB
-         5fOj9OZSpvINaoIjZG1YCF9zxeB6G55YYSJF79FkqtHtT2nrHPEA7sboiO0HcksjPkCyPeurqIs83h
-         7Aqr0rACASpt8irSjPun18ctDrg3QanM9tC7T4SxQKiuOnRy2hyu+oy4oxZHyPbRYnF2ZTpItYYAw8
-         9UWU2axyWky5pcgO1wwUEDW42vwgUWHdcse0ZvS4H69HgvGn8YBZ6yLhV4KlkvR4gp1i81jAK5EqRB
-         XhspbpsRxii5YgmpsJdxAFpmQM9AV3Q==
-X-Spam-Status: No, hits=0.0 required=3.4
-        tests=AWL: 0.000, BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW,
-        TOTAL_SCORE: -1.665,autolearn=ham
-X-Spam-Level: 
-X-Footer: bWV0cm90ZWsucnU=
-Received: from dhcp-179.ddg ([85.143.252.66])
-        (authenticated user i.bornyakov@metrotek.ru)
-        by mail.pr-group.ru with ESMTPSA
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
-        Wed, 3 Mar 2021 13:58:13 +0300
-Date:   Wed, 3 Mar 2021 13:57:57 +0300
-From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
-To:     netdev@vger.kernel.org
-Cc:     i.bornyakov@metrotek.ru, system@metrotek.ru, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] net: phy: add Marvell 88X2222 transceiver support
-Message-ID: <20210303105756.sdeiwg7hn3p4rtq4@dhcp-179.ddg>
+        id S1452564AbhCCPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:52:04 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:55210 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350011AbhCCLAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:00:25 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123AwrsY076562;
+        Wed, 3 Mar 2021 10:59:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=XZsFqSQ50liVCZbNlbeb8g8IToLinTVb61e+knYF4S0=;
+ b=c9XoJVjFMHOZ4VuStylJmiwj6eCiI4mHM8oJX7iw6pmKgw2wq4oD6w2l7h1LEUlWaGwM
+ Ql9YvoRdenYgl4D6h6/O3d3UjQ2qUPP6rT4DHTJAHADaSkJS7DCebaamXjEP0jssHqdq
+ X6zKrL7Z9wrDzG1lpusko6M35PjYd1z7phvTnSZAsl8Gqaj9J+K/2H8ISmMsR0ATJauS
+ KC1DAJcdpT2Kc5294P1opDCMIovl1oy1TrfWy5rU0XoxcbFoUCEM9GtOhUx7Ay6/1KUW
+ b7140MDB3ulgjdL/amAYLMB6JCCUOuMmDQLfcZ7ksXib2BcJ7h6UGLVWg1JPlTBZE++5 QA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 36yeqn2w1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Mar 2021 10:59:31 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123At2RW117974;
+        Wed, 3 Mar 2021 10:59:30 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 36yynqdbbj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Mar 2021 10:59:30 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 123AxLCf023593;
+        Wed, 3 Mar 2021 10:59:24 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Mar 2021 02:59:21 -0800
+Date:   Wed, 3 Mar 2021 13:59:12 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH RESEND] rsxx: Return -EFAULT if copy_to_user() fails
+Message-ID: <20210303105912.GZ2222@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200610172359.GB90634@mwanda>
+X-Mailer: git-send-email haha only kidding
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103030084
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1011
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 malwarescore=0
+ impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103030085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic support for the Marvell 88X2222 multi-speed ethernet
-transceiver.
+The copy_to_user() function returns the number of bytes remaining but
+we want to return -EFAULT to the user if it can't complete the copy.
+The "st" variable only holds zero on success or negative error codes on
+failure so the type should be int.
 
-This PHY provides data transmission over fiber-optic as well as Twinax
-copper links. The 88X2222 supports 2 ports of 10GBase-R and 1000Base-X
-on the line-side interface. The host-side interface supports 4 ports of
-10GBase-R, RXAUI, 1000Base-X and 2 ports of XAUI.
-
-This driver, however, supports only XAUI on the host-side and
-1000Base-X/10GBase-R on the line-side, for now. The SGMII is also
-supported over 1000Base-X. Interrupts are not supported.
-
-Internal registers access compliant with the Clause 45 specification.
-
-Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
+Fixes: 36f988e978f8 ("rsxx: Adding in debugfs entries.")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/net/phy/Kconfig           |   6 +
- drivers/net/phy/Makefile          |   1 +
- drivers/net/phy/marvell-88x2222.c | 533 ++++++++++++++++++++++++++++++
- include/linux/marvell_phy.h       |   1 +
- 4 files changed, 541 insertions(+)
- create mode 100644 drivers/net/phy/marvell-88x2222.c
+I sent this last June as part of a 2 patch series.  No one responded
+to the patches.  The first patch was a NULL derefence fix but I now
+think that the correct fix for that is to remove the "enable_blkdev"
+module option...  Anyway, this patch is uncontroversial so I'm going to
+resend it.
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 698bea312adc..a615b3660b05 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -201,6 +201,12 @@ config MARVELL_10G_PHY
- 	help
- 	  Support for the Marvell Alaska MV88X3310 and compatible PHYs.
+ drivers/block/rsxx/core.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+index 6207449fa716f..558fa263acbc0 100644
+--- a/drivers/block/rsxx/core.c
++++ b/drivers/block/rsxx/core.c
+@@ -165,15 +165,17 @@ static ssize_t rsxx_cram_read(struct file *fp, char __user *ubuf,
+ {
+ 	struct rsxx_cardinfo *card = file_inode(fp)->i_private;
+ 	char *buf;
+-	ssize_t st;
++	int st;
  
-+config MARVELL_88X2222_PHY
-+	tristate "Marvell 88X2222 PHY"
-+	help
-+	  Support for the Marvell 88X2222 Dual-port Multi-speed Ethernet
-+	  Transceiver.
-+
- config MICREL_PHY
- 	tristate "Micrel PHYs"
- 	help
-diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index a13e402074cf..de683e3abe63 100644
---- a/drivers/net/phy/Makefile
-+++ b/drivers/net/phy/Makefile
-@@ -63,6 +63,7 @@ obj-$(CONFIG_LSI_ET1011C_PHY)	+= et1011c.o
- obj-$(CONFIG_LXT_PHY)		+= lxt.o
- obj-$(CONFIG_MARVELL_10G_PHY)	+= marvell10g.o
- obj-$(CONFIG_MARVELL_PHY)	+= marvell.o
-+obj-$(CONFIG_MARVELL_88X2222_PHY)	+= marvell-88x2222.o
- obj-$(CONFIG_MESON_GXL_PHY)	+= meson-gxl.o
- obj-$(CONFIG_MICREL_KS8995MA)	+= spi_ks8995.o
- obj-$(CONFIG_MICREL_PHY)	+= micrel.o
-diff --git a/drivers/net/phy/marvell-88x2222.c b/drivers/net/phy/marvell-88x2222.c
-new file mode 100644
-index 000000000000..aec7e299c165
---- /dev/null
-+++ b/drivers/net/phy/marvell-88x2222.c
-@@ -0,0 +1,533 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Marvell 88x2222 dual-port multi-speed ethernet transceiver.
-+ *
-+ * Supports:
-+ *	XAUI on the host side.
-+ *	1000Base-X or 10GBase-R on the line side.
-+ *	SGMII over 1000Base-X.
-+ */
-+#include <linux/module.h>
-+#include <linux/phy.h>
-+#include <linux/gpio.h>
-+#include <linux/delay.h>
-+#include <linux/mdio.h>
-+#include <linux/marvell_phy.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_gpio.h>
-+#include <linux/sfp.h>
-+#include <linux/netdevice.h>
-+
-+/* Port PCS Configuration */
-+#define	MV_PCS_CONFIG		0xF002
-+#define	MV_PCS_HOST_XAUI	0x73
-+#define	MV_PCS_LINE_10GBR	(0x71 << 8)
-+#define	MV_PCS_LINE_1GBX_AN	(0x7B << 8)
-+#define	MV_PCS_LINE_SGMII_AN	(0x7F << 8)
-+
-+/* Port Reset and Power Down */
-+#define	MV_PORT_RST	0xF003
-+#define	MV_LINE_RST_SW	BIT(15)
-+#define	MV_HOST_RST_SW	BIT(7)
-+#define	MV_PORT_RST_SW	(MV_LINE_RST_SW | MV_HOST_RST_SW)
-+
-+/* 1000Base-X/SGMII Control Register */
-+#define	MV_1GBX_CTRL		(0x2000 + MII_BMCR)
-+
-+/* 1000BASE-X/SGMII Status Register */
-+#define	MV_1GBX_STAT		(0x2000 + MII_BMSR)
-+
-+/* 1000Base-X Auto-Negotiation Advertisement Register */
-+#define	MV_1GBX_ADVERTISE	(0x2000 + MII_ADVERTISE)
-+
-+/* 1000Base-X PHY Specific Status Register */
-+#define	MV_1GBX_PHY_STAT		0xA003
-+#define	MV_1GBX_PHY_STAT_AN_RESOLVED	BIT(11)
-+#define	MV_1GBX_PHY_STAT_DUPLEX		BIT(13)
-+#define	MV_1GBX_PHY_STAT_SPEED100	BIT(14)
-+#define	MV_1GBX_PHY_STAT_SPEED1000	BIT(15)
-+
-+struct mv2222_data {
-+	phy_interface_t line_interface;
-+	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
-+};
-+
-+/* SFI PMA transmit enable */
-+static int mv2222_tx_enable(struct phy_device *phydev)
-+{
-+	return phy_clear_bits_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_TXDIS,
-+				  MDIO_PMD_TXDIS_GLOBAL);
-+}
-+
-+/* SFI PMA transmit disable */
-+static int mv2222_tx_disable(struct phy_device *phydev)
-+{
-+	return phy_set_bits_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_TXDIS,
-+				MDIO_PMD_TXDIS_GLOBAL);
-+}
-+
-+static int mv2222_soft_reset(struct phy_device *phydev)
-+{
-+	int val, ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PORT_RST,
-+			    MV_PORT_RST_SW);
-+	if (ret < 0)
-+		return ret;
-+
-+	return phy_read_mmd_poll_timeout(phydev, MDIO_MMD_VEND2, MV_PORT_RST,
-+					 val, !(val & MV_PORT_RST_SW),
-+					 5000, 1000000, true);
-+}
-+
-+/* Returns negative on error, 0 if link is down, 1 if link is up */
-+static int mv2222_read_status_10g(struct phy_device *phydev)
-+{
-+	int val, link = 0;
-+
-+	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_STAT1);
-+	if (val < 0)
-+		return val;
-+
-+	if (val & MDIO_STAT1_LSTATUS) {
-+		link = 1;
-+
-+		/* 10GBASE-R do not support auto-negotiation */
-+		phydev->autoneg = AUTONEG_DISABLE;
-+		phydev->speed = SPEED_10000;
-+		phydev->duplex = DUPLEX_FULL;
-+	}
-+
-+	return link;
-+}
-+
-+/* Returns negative on error, 0 if link is down, 1 if link is up */
-+static int mv2222_read_status_1g(struct phy_device *phydev)
-+{
-+	int val, link = 0;
-+
-+	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
-+	if (val < 0)
-+		return val;
-+
-+	if (!(val & BMSR_LSTATUS) ||
-+	    (phydev->autoneg == AUTONEG_ENABLE &&
-+	     !(val & BMSR_ANEGCOMPLETE)))
-+		return 0;
-+
-+	link = 1;
-+
-+	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_PHY_STAT);
-+	if (val < 0)
-+		return val;
-+
-+	if (val & MV_1GBX_PHY_STAT_AN_RESOLVED) {
-+		if (val & MV_1GBX_PHY_STAT_DUPLEX)
-+			phydev->duplex = DUPLEX_FULL;
-+		else
-+			phydev->duplex = DUPLEX_HALF;
-+
-+		if (val & MV_1GBX_PHY_STAT_SPEED1000)
-+			phydev->speed = SPEED_1000;
-+		else if (val & MV_1GBX_PHY_STAT_SPEED100)
-+			phydev->speed = SPEED_100;
-+		else
-+			phydev->speed = SPEED_10;
-+	}
-+
-+	return link;
-+}
-+
-+static int mv2222_read_status(struct phy_device *phydev)
-+{
-+	struct mv2222_data *priv = phydev->priv;
-+	int link;
-+
-+	phydev->link = 0;
-+	phydev->speed = SPEED_UNKNOWN;
-+	phydev->duplex = DUPLEX_UNKNOWN;
-+
-+	if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER)
-+		link = mv2222_read_status_10g(phydev);
-+	else
-+		link = mv2222_read_status_1g(phydev);
-+
-+	if (link < 0)
-+		return link;
-+
-+	phydev->link = link;
-+
-+	return 0;
-+}
-+
-+static int mv2222_disable_aneg(struct phy_device *phydev)
-+{
-+	int ret = phy_clear_bits_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_CTRL,
-+				     BMCR_ANENABLE | BMCR_ANRESTART);
-+	if (ret < 0)
-+		return ret;
-+
-+	return mv2222_soft_reset(phydev);
-+}
-+
-+static int mv2222_enable_aneg(struct phy_device *phydev)
-+{
-+	int ret = phy_set_bits_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_CTRL,
-+				   BMCR_ANENABLE | BMCR_RESET);
-+	if (ret < 0)
-+		return ret;
-+
-+	return mv2222_soft_reset(phydev);
-+}
-+
-+static int mv2222_set_sgmii_speed(struct phy_device *phydev)
-+{
-+	struct mv2222_data *priv = phydev->priv;
-+
-+	switch (phydev->speed) {
-+	default:
-+	case SPEED_1000:
-+		if ((linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
-+				       priv->supported) ||
-+		     linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
-+				       priv->supported)))
-+			return phy_modify_mmd(phydev, MDIO_MMD_PCS,
-+					      MV_1GBX_CTRL,
-+					      BMCR_SPEED1000 | BMCR_SPEED100,
-+					      BMCR_SPEED1000);
-+
-+		fallthrough;
-+	case SPEED_100:
-+		if ((linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
-+				       priv->supported) ||
-+		     linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT,
-+				       priv->supported)))
-+			return phy_modify_mmd(phydev, MDIO_MMD_PCS,
-+					      MV_1GBX_CTRL,
-+					      BMCR_SPEED1000 | BMCR_SPEED100,
-+					      BMCR_SPEED100);
-+		fallthrough;
-+	case SPEED_10:
-+		if ((linkmode_test_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT,
-+				       priv->supported) ||
-+		     linkmode_test_bit(ETHTOOL_LINK_MODE_10baseT_Half_BIT,
-+				       priv->supported)))
-+			return phy_modify_mmd(phydev, MDIO_MMD_PCS,
-+					      MV_1GBX_CTRL,
-+					      BMCR_SPEED1000 | BMCR_SPEED100,
-+					      BMCR_SPEED10);
-+
-+		return -EINVAL;
-+	}
-+}
-+
-+static bool mv2222_is_10g_capable(struct phy_device *phydev)
-+{
-+	struct mv2222_data *priv = phydev->priv;
-+
-+	return (linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT,
-+				  priv->supported) ||
-+		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
-+				  priv->supported) ||
-+		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseCR_Full_BIT,
-+				  priv->supported) ||
-+		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseSR_Full_BIT,
-+				  priv->supported) ||
-+		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseLR_Full_BIT,
-+				  priv->supported) ||
-+		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseLRM_Full_BIT,
-+				  priv->supported) ||
-+		linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseER_Full_BIT,
-+				  priv->supported));
-+}
-+
-+static bool mv2222_is_1gbx_capable(struct phy_device *phydev)
-+{
-+	struct mv2222_data *priv = phydev->priv;
-+
-+	return linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
-+				 priv->supported);
-+}
-+
-+static int mv2222_config_line(struct phy_device *phydev)
-+{
-+	struct mv2222_data *priv = phydev->priv;
-+
-+	switch (priv->line_interface) {
-+	case PHY_INTERFACE_MODE_10GBASER:
-+		return phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
-+				     MV_PCS_HOST_XAUI | MV_PCS_LINE_10GBR);
-+	case PHY_INTERFACE_MODE_1000BASEX:
-+		return phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
-+				     MV_PCS_HOST_XAUI | MV_PCS_LINE_1GBX_AN);
-+	case PHY_INTERFACE_MODE_SGMII:
-+		return phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
-+				     MV_PCS_HOST_XAUI | MV_PCS_LINE_SGMII_AN);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int mv2222_setup_forced(struct phy_device *phydev)
-+{
-+	struct mv2222_data *priv = phydev->priv;
-+	bool changed = false;
-+	int ret;
-+
-+	switch (priv->line_interface) {
-+	case PHY_INTERFACE_MODE_10GBASER:
-+		if (phydev->speed == SPEED_1000 &&
-+		    mv2222_is_1gbx_capable(phydev)) {
-+			priv->line_interface = PHY_INTERFACE_MODE_1000BASEX;
-+			changed = true;
-+		}
-+
-+		break;
-+	case PHY_INTERFACE_MODE_1000BASEX:
-+		if (phydev->speed == SPEED_10000 &&
-+		    mv2222_is_10g_capable(phydev)) {
-+			priv->line_interface = PHY_INTERFACE_MODE_10GBASER;
-+			changed = true;
-+		}
-+
-+		break;
-+	case PHY_INTERFACE_MODE_SGMII:
-+		ret = mv2222_set_sgmii_speed(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (changed) {
-+		ret = mv2222_config_line(phydev);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return mv2222_disable_aneg(phydev);
-+}
-+
-+static int mv2222_config_aneg(struct phy_device *phydev)
-+{
-+	struct mv2222_data *priv = phydev->priv;
-+	int ret, adv;
-+
-+	/* SFP is not present, do nothing */
-+	if (priv->line_interface == PHY_INTERFACE_MODE_NA)
-+		return 0;
-+
-+	if (phydev->autoneg == AUTONEG_DISABLE ||
-+	    phydev->speed == SPEED_10000)
-+		return mv2222_setup_forced(phydev);
-+
-+	if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER &&
-+	    mv2222_is_1gbx_capable(phydev)) {
-+		priv->line_interface = PHY_INTERFACE_MODE_1000BASEX;
-+		ret = mv2222_config_line(phydev);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	adv = 0;
-+
-+	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
-+			      priv->supported))
-+		adv |= ADVERTISE_1000XFULL;
-+
-+	if (linkmode_test_bit(ETHTOOL_LINK_MODE_Pause_BIT,
-+			      priv->supported))
-+		adv |= ADVERTISE_1000XPAUSE;
-+
-+	if (linkmode_test_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
-+			      priv->supported))
-+		adv |= ADVERTISE_1000XPSE_ASYM;
-+
-+	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_ADVERTISE,
-+			     ADVERTISE_1000XFULL |
-+			     ADVERTISE_1000XPAUSE | ADVERTISE_1000XPSE_ASYM,
-+			     adv);
-+	if (ret < 0)
-+		return ret;
-+
-+	return mv2222_enable_aneg(phydev);
-+}
-+
-+static int mv2222_aneg_done(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	if (mv2222_is_10g_capable(phydev)) {
-+		ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_STAT1);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (ret & MDIO_STAT1_LSTATUS)
-+			return 1;
-+	}
-+
-+	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
-+	if (ret < 0)
-+		return ret;
-+
-+	return (ret & BMSR_ANEGCOMPLETE);
-+}
-+
-+static int mv2222_resume(struct phy_device *phydev)
-+{
-+	return mv2222_tx_enable(phydev);
-+}
-+
-+static int mv2222_suspend(struct phy_device *phydev)
-+{
-+	return mv2222_tx_disable(phydev);
-+}
-+
-+static int mv2222_get_features(struct phy_device *phydev)
-+{
-+	/* All supported linkmodes are set at probe */
-+
-+	return 0;
-+}
-+
-+static int mv2222_config_init(struct phy_device *phydev)
-+{
-+	if (phydev->interface != PHY_INTERFACE_MODE_XAUI)
-+		return -EINVAL;
-+
-+	phydev->autoneg = AUTONEG_DISABLE;
-+
-+	return 0;
-+}
-+
-+static int mv2222_sfp_insert(void *upstream, const struct sfp_eeprom_id *id)
-+{
-+	struct phy_device *phydev = upstream;
-+	phy_interface_t sfp_interface;
-+	struct mv2222_data *priv;
-+	struct device *dev;
-+	int ret;
-+
-+	__ETHTOOL_DECLARE_LINK_MODE_MASK(sfp_supported) = { 0, };
-+
-+	priv = (struct mv2222_data *)phydev->priv;
-+	dev = &phydev->mdio.dev;
-+
-+	sfp_parse_support(phydev->sfp_bus, id, sfp_supported);
-+	sfp_interface = sfp_select_interface(phydev->sfp_bus, sfp_supported);
-+
-+	dev_info(dev, "%s SFP module inserted\n", phy_modes(sfp_interface));
-+
-+	if (sfp_interface != PHY_INTERFACE_MODE_10GBASER &&
-+	    sfp_interface != PHY_INTERFACE_MODE_1000BASEX &&
-+	    sfp_interface != PHY_INTERFACE_MODE_SGMII) {
-+		dev_err(dev, "Incompatible SFP module inserted\n");
-+
-+		return -EINVAL;
-+	}
-+
-+	priv->line_interface = sfp_interface;
-+	linkmode_and(priv->supported, phydev->supported, sfp_supported);
-+
-+	ret = mv2222_config_line(phydev);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (mutex_trylock(&phydev->lock)) {
-+		if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER)
-+			ret = mv2222_setup_forced(phydev);
-+		else
-+			ret = mv2222_config_aneg(phydev);
-+
-+		mutex_unlock(&phydev->lock);
-+	}
-+
-+	return ret;
-+}
-+
-+static void mv2222_sfp_remove(void *upstream)
-+{
-+	struct phy_device *phydev = upstream;
-+	struct mv2222_data *priv;
-+
-+	priv = (struct mv2222_data *)phydev->priv;
-+
-+	priv->line_interface = PHY_INTERFACE_MODE_NA;
-+	linkmode_zero(priv->supported);
-+}
-+
-+static const struct sfp_upstream_ops sfp_phy_ops = {
-+	.module_insert = mv2222_sfp_insert,
-+	.module_remove = mv2222_sfp_remove,
-+	.attach = phy_sfp_attach,
-+	.detach = phy_sfp_detach,
-+};
-+
-+static int mv2222_probe(struct phy_device *phydev)
-+{
-+	struct device *dev = &phydev->mdio.dev;
-+	struct mv2222_data *priv = NULL;
-+
-+	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported) = { 0, };
-+
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_Pause_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_TP_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Half_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Half_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseT_Half_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseCR_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseSR_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseLR_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseLRM_Full_BIT, supported);
-+	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseER_Full_BIT, supported);
-+
-+	linkmode_copy(phydev->supported, supported);
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->line_interface = PHY_INTERFACE_MODE_NA;
-+	phydev->priv = priv;
-+
-+	return phy_sfp_probe(phydev, &sfp_phy_ops);
-+}
-+
-+static struct phy_driver mv2222_drivers[] = {
-+	{
-+		.phy_id = MARVELL_PHY_ID_88X2222,
-+		.phy_id_mask = MARVELL_PHY_ID_MASK,
-+		.name = "Marvell 88X2222",
-+		.get_features = mv2222_get_features,
-+		.soft_reset = mv2222_soft_reset,
-+		.config_init = mv2222_config_init,
-+		.config_aneg = mv2222_config_aneg,
-+		.aneg_done = mv2222_aneg_done,
-+		.probe = mv2222_probe,
-+		.suspend = mv2222_suspend,
-+		.resume = mv2222_resume,
-+		.read_status = mv2222_read_status,
-+	},
-+};
-+module_phy_driver(mv2222_drivers);
-+
-+static struct mdio_device_id __maybe_unused mv2222_tbl[] = {
-+	{ MARVELL_PHY_ID_88X2222, MARVELL_PHY_ID_MASK },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(mdio, mv2222_tbl);
-+
-+MODULE_DESCRIPTION("Marvell 88x2222 ethernet transceiver driver");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/marvell_phy.h b/include/linux/marvell_phy.h
-index 52b1610eae68..274abd5fbac3 100644
---- a/include/linux/marvell_phy.h
-+++ b/include/linux/marvell_phy.h
-@@ -24,6 +24,7 @@
- #define MARVELL_PHY_ID_88E3016		0x01410e60
- #define MARVELL_PHY_ID_88X3310		0x002b09a0
- #define MARVELL_PHY_ID_88E2110		0x002b09b0
-+#define MARVELL_PHY_ID_88X2222		0x01410f10
+ 	buf = kzalloc(cnt, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
  
- /* Marvel 88E1111 in Finisar SFP module with modified PHY ID */
- #define MARVELL_PHY_ID_88E1111_FINISAR	0x01ff0cc0
+ 	st = rsxx_creg_read(card, CREG_ADD_CRAM + (u32)*ppos, cnt, buf, 1);
+-	if (!st)
+-		st = copy_to_user(ubuf, buf, cnt);
++	if (!st) {
++		if (copy_to_user(ubuf, buf, cnt))
++			st = -EFAULT;
++	}
+ 	kfree(buf);
+ 	if (st)
+ 		return st;
 -- 
-2.20.1
-
-
+2.26.2
