@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D520D32BC73
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CA732BCC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350206AbhCCN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:57:14 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:52980 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1582447AbhCCKWB (ORCPT
+        id S244448AbhCCOr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843015AbhCCKXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:01 -0500
-X-UUID: f7d82a628d8d41d49dc3aef8ee823e63-20210303
-X-UUID: f7d82a628d8d41d49dc3aef8ee823e63-20210303
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <vic.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 427815017; Wed, 03 Mar 2021 17:40:58 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 3 Mar 2021 17:40:48 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Mar 2021 17:40:48 +0800
-From:   Vic Wu <vic.wu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Ryder Lee <ryder.lee@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Vic Wu <vic.wu@mediatek.com>
-Subject: [PATCH] crypto: mediatek - remove obsolete documentation
-Date:   Wed, 3 Mar 2021 17:39:50 +0800
-Message-ID: <20210303093950.20309-1-vic.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 3 Mar 2021 05:23:50 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7148DC08EB27
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:41:27 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id m6so15883313pfk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:41:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HuoFzrfHBgRpGB1S/Pm90uFoEaWpFEXI5cv//wG4H2s=;
+        b=Xr6ER+bksZxkJbMXLoySGxJaEmmcYGK3nmHQapWxz3W7BTIa8Y+vTnfB6r/G+HFBqt
+         DEJtMk6baSN0IO1VhtSHxnr9HFL+mXL30chhMwpW2HSGa1meGo3N44SyxDSzST4IbA8h
+         qVTWdIctGswX7OumTWDziApBZqlzcCzNP6Skst0zK+ex8KotHXi7KTUc/lAm6uGod8vL
+         EEGYX3KI+2ovo+s3zh+bsp+8VJTGE6A2GvX0/Wh9jsGo2EcQd2SX4g1QMwd8GVdWXXq/
+         pXL214erEC2KeZQVnfHESUCmOzYRkcvBJZxfDgaXemkAdCv6iC2DjQ8LniDyopVb4ZIY
+         B94Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HuoFzrfHBgRpGB1S/Pm90uFoEaWpFEXI5cv//wG4H2s=;
+        b=FwjCWqhPqMSK1CmdTVSgqrXl/+FCzODdfdsWb7kdV2zfpZXXfjOl2cUnXj9UoHboIO
+         OQ0YnwqapaG663ODOyncf61B2MahecD1jpCuC6GXJrCFCPqJYwK6JC4xgYcZePOeltpS
+         PHtJn0VMPHLSdiWWYRoycw5pUfAW5gv8GprVny94MsavJm1ZdA6+B6orgYl4outx16Aw
+         vbIR01qCsekakiHGJSZlvg4alEVTEGkAuM1zaMrrA8JMIlcM6xfjkfcuXw+F6aZrtfSf
+         BrWeDSPE9jhjd2a7uwtX9TkvbtdfDWSrHWwl6cBbUWkJddT4KFocvysW/nNobaDJTe85
+         eDnA==
+X-Gm-Message-State: AOAM530+LhyK5hDPGVyv7kNq35dlrpZSu8St4cgODqbBrkfPhJhjRjho
+        MlkmE78PNSKCpq6Sbl9fXz+yDQ==
+X-Google-Smtp-Source: ABdhPJxf4CEDONXrnyzwQQbOoexCzNLf9VH258dboqUGrOOFaod19GbchLPaEuPlDKJSwM5iWYBC1g==
+X-Received: by 2002:a63:5b57:: with SMTP id l23mr4313299pgm.445.1614764487006;
+        Wed, 03 Mar 2021 01:41:27 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.227])
+        by smtp.gmail.com with ESMTPSA id u66sm26346459pfc.72.2021.03.03.01.41.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 01:41:26 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        akpm@linux-foundation.org, shakeelb@google.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: memcontrol: fix kernel stack account
+Date:   Wed,  3 Mar 2021 17:39:56 +0800
+Message-Id: <20210303093956.72318-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The crypto mediatek driver has been replaced by the inside-secure driver now.
-Remove DT bindings documentation and update crypto engine nodes to the mt7623.dtsi files.
+For simplification 991e7673859e ("mm: memcontrol: account kernel stack
+per node") has changed the per zone vmalloc backed stack pages
+accounting to per node. By doing that we have lost a certain precision
+because those pages might live in different NUMA nodes. In the end
+NR_KERNEL_STACK_KB exported to the userspace might be over estimated on
+some nodes while underestimated on others.
 
-Signed-off-by: Vic Wu <vic.wu@mediatek.com>
-Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+This doesn't impose any real problem to correctnes of the kernel
+behavior as the counter is not used for any internal processing but it
+can cause some confusion to the userspace.
+
+Address the problem by accounting each vmalloc backing page to its own
+node.
+
+Fixes: 991e7673859e ("mm: memcontrol: account kernel stack per node")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 ---
- Documentation/devicetree/bindings/crypto/mediatek-crypto.txt       | 25 -------------------
- arch/arm/boot/dts/mt7623.dtsi                 |  8 +++---
- 2 files changed, 3 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
+Changelog in v2:
+ - Rework commit log suggested by Michal.
 
-diff --git a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt b/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
-deleted file mode 100644
-index 450da3661cad..000000000000
---- a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--MediaTek cryptographic accelerators
--
--Required properties:
--- compatible: Should be "mediatek,eip97-crypto"
--- reg: Address and length of the register set for the device
--- interrupts: Should contain the five crypto engines interrupts in numeric
--	order. These are global system and four descriptor rings.
--- clocks: the clock used by the core
--- clock-names: Must contain "cryp".
--- power-domains: Must contain a reference to the PM domain.
--
--
--Example:
--	crypto: crypto@1b240000 {
--		compatible = "mediatek,eip97-crypto";
--		reg = <0 0x1b240000 0 0x20000>;
--		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
--		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
--		clock-names = "cryp";
--		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
--	};
-diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-index aea6809500d7..25e3f3b04123 100644
---- a/arch/arm/boot/dts/mt7623.dtsi
-+++ b/arch/arm/boot/dts/mt7623.dtsi
-@@ -949,16 +949,14 @@
- 	};
+ Thanks to Michal and Shakeel for review.
+
+ kernel/fork.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/fork.c b/kernel/fork.c
+index d66cd1014211..6e2201feb524 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -379,14 +379,19 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
+ 	void *stack = task_stack_page(tsk);
+ 	struct vm_struct *vm = task_stack_vm_area(tsk);
  
- 	crypto: crypto@1b240000 {
--		compatible = "mediatek,eip97-crypto";
-+		compatible = "inside-secure,safexcel-eip97";
- 		reg = <0 0x1b240000 0 0x20000>;
- 		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
-+			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-names = "ring0", "ring1", "ring2", "ring3";
- 		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
--		clock-names = "cryp";
--		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
- 		status = "disabled";
- 	};
++	if (vm) {
++		int i;
  
+-	/* All stack pages are in the same node. */
+-	if (vm)
+-		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
+-				      account * (THREAD_SIZE / 1024));
+-	else
++		BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
++
++		for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
++			mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
++					      account * (PAGE_SIZE / 1024));
++	} else {
++		/* All stack pages are in the same node. */
+ 		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
+ 				      account * (THREAD_SIZE / 1024));
++	}
+ }
+ 
+ static int memcg_charge_kernel_stack(struct task_struct *tsk)
 -- 
-2.18.0
+2.11.0
 
