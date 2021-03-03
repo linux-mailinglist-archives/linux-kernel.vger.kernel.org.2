@@ -2,182 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEA832C32C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B45032C334
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353212AbhCDADp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
+        id S233550AbhCDADv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388011AbhCCUYG (ORCPT
+        with ESMTP id S1388015AbhCCUYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:24:06 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9A6C061756;
-        Wed,  3 Mar 2021 12:23:26 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id e6so17221676pgk.5;
-        Wed, 03 Mar 2021 12:23:26 -0800 (PST)
+        Wed, 3 Mar 2021 15:24:15 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E81C061760;
+        Wed,  3 Mar 2021 12:23:35 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id t29so17084138pfg.11;
+        Wed, 03 Mar 2021 12:23:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0FH7LxOsmxIsgoTenyw1jRon/uhYAlBiA4+ZL3nwHtQ=;
-        b=AIxxwOFh8H6cXbMpEdUcTMgTdPU74pl6sVrvlULaxh05OgQMd7JETuqq6JECoOf+1t
-         SNlWMPlsbvKX8LXBSllxuBVY4Fh4k3kT9RciAiOqo70OYzQagHRgd1TTACTGBOS8a1Zl
-         D4GuPN//j2pELtPdyiQ6YCP7l9V8CtyHtz5llwdzhNs2iAmYf7f01+tlPM6xPuDFMTgR
-         d2tWa8VGxraO/6LahwJzsCNWcC3FzO7b85LnyOymqMgzzk9Q3NBzwLnZApS4/VdWzR3s
-         Ejev7zAmc8y9v2fFS2VwEjmP+tfa70h2/0Jw85ETgMA7OR9zaP47plt7PYF6SxvTT5kS
-         PO5A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zkgxTa1swI7czPihfHxjvpadRXNKE7cU4riRGgz6wYc=;
+        b=H0wTIWV6YDtXRsDsVGvbWl59qcAUFOz6CLz9bd9kfWcw5thrryJ63vo6BiBBGk13rn
+         VyFwtLUcm8dZYqo24yxrX+PLPvl+dEk0JyDky+bOVviQLPCdeOyH5EcJXTPp14APxGKs
+         QJolCmjYo0JUxjDocXXtmdoNqzXMc0f+lj7/55RtEF7pO75Ef6Y7GQKCEEokjSdmrAVS
+         6JeSi2IesCXYEmV1iow8iBTNNDtlYYMohMHC7ryhzudG7obhZftFvG/0dlahLeQ8sQ6j
+         YB0Hwqre2nJfIsuIF21+wqkiyPgcQQNc+vP3m3L1rgK6aRfFv5Z/YYmB2aaiX1L/nyW9
+         foEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0FH7LxOsmxIsgoTenyw1jRon/uhYAlBiA4+ZL3nwHtQ=;
-        b=ClfWi/wOKB23vs1bJG0OCtPQXOMBQCH8+veGg92nipXw6evdmAHivTSvnwle6YG9vD
-         akYgRroqjYd8OX6YRtM64SfFhZoAonYfSJkkZAJPO1nch8AXjGj3rP0LZ84IhG9uinj7
-         ziUr/KW0aOGMkBQyudW9fLtZ72NYAmOzoaGvnYPb4U85Jmchwj7ws/gyd5NGI4W35KDr
-         q8UO3AJlIZNr40/49NQBW03va+AoXYw8BZVzk8sFmF+z63+fsKuqVq1XQwumerjqfeVr
-         Qe/+oCcFknRC1rKY5IP/xi/NUSsjNs3X+fLYvqK7NtWhEKJbQihlIrvDOT9WhlP1Dv55
-         QNCw==
-X-Gm-Message-State: AOAM532WFwhmqEgL5jsP5bbW0N7EupEsdxIyZhktlYrG7GxPxdYhK/HB
-        GbC3/VAdMC2L/Wtbh3Czv3g=
-X-Google-Smtp-Source: ABdhPJzjTbg+doQsb4ri01ZrBnPufRMmByvBrcHUbX8wMYPuO9f//uSNLvMzwnmMPt3noGJiw4BXEA==
-X-Received: by 2002:a63:74d:: with SMTP id 74mr619392pgh.316.1614803006263;
-        Wed, 03 Mar 2021 12:23:26 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:c87:c34:99dc:ba23])
-        by smtp.gmail.com with ESMTPSA id g15sm25192777pfb.30.2021.03.03.12.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 12:23:24 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 3 Mar 2021 12:23:22 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
-        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: disable LRU pagevec during the migration
- temporarily
-Message-ID: <YD/wOq3lf9I5HK85@google.com>
-References: <20210302210949.2440120-1-minchan@kernel.org>
- <YD+F4LgPH0zMBDGW@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zkgxTa1swI7czPihfHxjvpadRXNKE7cU4riRGgz6wYc=;
+        b=Y8gD5bsCXsh11ANY/Sr4TJmCTmEfNsW6khurHvbs29UvtYSxabGNd5vL0WejEZ/S6k
+         wonVzdbE5qEepuiv4uaCc4aG9c50Gmbepi/DhpEsfD7LWl++AHNQtY4W4ptSv+7u8UQY
+         Nti/AwgfHSmFzM2BB/Fx95Y6oW7QLBQAtWhII1WOS45Tz4voD2yKvZuex7K+MBPtRua3
+         VC3sPNOUVXkbnYN7ikkDxZwDRoButzgjc5PHq1aZUQFEutuvO3SAj7NLqOp2CBhl0e/t
+         cvvQvvwYVbdOjJA7dHysjUiBF8Bq2j/boSg/wzVRyiLdZ40b5IMAzG67epZ9HFryFpOI
+         85og==
+X-Gm-Message-State: AOAM530fIMCWz8jyVo83QLRDCYW28/eyBFUEQIkKFw9vdG8ZWDRWvhdo
+        ucpmRdyTtgPMrBx8qvw9ZHOaF5RFS3P1RdbyZVE=
+X-Google-Smtp-Source: ABdhPJzIb/MFBl/1iDElv2ckDbWpVscaiSHzbARRWa8Mg2kRFc5cqa0XVgihYCGPPabh3lgqFYOS7P1IuavjmeqNcFc=
+X-Received: by 2002:a65:5c8d:: with SMTP id a13mr601359pgt.63.1614803015304;
+ Wed, 03 Mar 2021 12:23:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YD+F4LgPH0zMBDGW@dhcp22.suse.cz>
+References: <20210216201813.60394-1-xie.he.0141@gmail.com> <YC4sB9OCl5mm3JAw@unreal>
+ <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
+ <YC5DVTHHd6OOs459@unreal> <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
+ <YC7GHgYfGmL2wVRR@unreal> <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
+ <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
+ <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
+ <906d8114f1965965749f1890680f2547@dev.tdt.de> <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
+ <e1750da4179aca52960703890e985af3@dev.tdt.de> <CAJht_ENP3Y98jgj1peGa3fGpQ-qPaF=1gtyYwMcawRFW_UCpeA@mail.gmail.com>
+ <ff200b159ef358494a922a676cbef8a6@dev.tdt.de> <CAJht_EMG27YU+Jxtb2qeq1nXwu8uV8FXQPr62OcNHsE7DozD1g@mail.gmail.com>
+ <41b77b1c3cf1bb7a51b750faf23900ef@dev.tdt.de> <20210302153034.5f4e320b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <8cac820a181070ac2bad983dc49e4e4e@dev.tdt.de>
+In-Reply-To: <8cac820a181070ac2bad983dc49e4e4e@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Wed, 3 Mar 2021 12:23:24 -0800
+Message-ID: <CAJht_ENFd74+MeqYDk4AtipKFcQ3n7WHG-rNL62Z=K3FxWct=A@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 01:49:36PM +0100, Michal Hocko wrote:
-> On Tue 02-03-21 13:09:48, Minchan Kim wrote:
-> > LRU pagevec holds refcount of pages until the pagevec are drained.
-> > It could prevent migration since the refcount of the page is greater
-> > than the expection in migration logic. To mitigate the issue,
-> > callers of migrate_pages drains LRU pagevec via migrate_prep or
-> > lru_add_drain_all before migrate_pages call.
-> > 
-> > However, it's not enough because pages coming into pagevec after the
-> > draining call still could stay at the pagevec so it could keep
-> > preventing page migration. Since some callers of migrate_pages have
-> > retrial logic with LRU draining, the page would migrate at next trail
-> > but it is still fragile in that it doesn't close the fundamental race
-> > between upcoming LRU pages into pagvec and migration so the migration
-> > failure could cause contiguous memory allocation failure in the end.
-> > 
-> > To close the race, this patch disables lru caches(i.e, pagevec)
-> > during ongoing migration until migrate is done.
-> > 
-> > Since it's really hard to reproduce, I measured how many times
-> > migrate_pages retried with force mode below debug code.
-> > 
-> > int migrate_pages(struct list_head *from, new_page_t get_new_page,
-> > 			..
-> > 			..
-> > 
-> > if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
-> >        printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), rc);
-> >        dump_page(page, "fail to migrate");
-> > }
-> > 
-> > The test was repeating android apps launching with cma allocation
-> > in background every five seconds. Total cma allocation count was
-> > about 500 during the testing. With this patch, the dump_page count
-> > was reduced from 400 to 30.
-> 
-> Have you seen any improvement on the CMA allocation success rate?
+On Wed, Mar 3, 2021 at 5:26 AM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> On 2021-03-03 00:30, Jakub Kicinski wrote:
+> >
+> > Hard question to answer, existing users seem happy and Xie's driver
+> > isn't upstream, so the justification for potentially breaking backward
+> > compatibility isn't exactly "strong".
+> >
+> > Can we cop out and add a knob somewhere to control spawning the extra
+> > netdev? Let people who just want a newer kernel carry on without
+> > distractions and those who want the extra layer can flip the switch?
+>
+> Yes, that would be a good compromise.
+> I think a compile time selection option is enough here.
+> We could introduce a new config option CONFIG_HDLC_X25_LEGACY (or
+> something like that) and then implement the new or the old behavior in
+> the driver accordingly.
+>
+> A switch that can be toggled at runtime (e.g. via sethdlc) would also be
+> conceivable, but I don't think this is necessary.
 
-Unfortunately, the cma alloc failure rate with reasonable margin
-of error is really hard to reproduce under real workload.
-That's why I measured the soft metric instead of direct cma fail
-under real workload(I don't want to make some adhoc artificial
-benchmark and keep tunes system knobs until it could show 
-extremly exaggerated result to convice patch effect).
-
-Please say if you belive this work is pointless unless there is
-stable data under reproducible scenario. I am happy to drop it.
-
-> 
-> > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > ---
-> > * from RFC - http://lore.kernel.org/linux-mm/20210216170348.1513483-1-minchan@kernel.org
-> >   * use atomic and lru_add_drain_all for strict ordering - mhocko
-> >   * lru_cache_disable/enable - mhocko
-> > 
-> >  fs/block_dev.c          |  2 +-
-> >  include/linux/migrate.h |  6 +++--
-> >  include/linux/swap.h    |  4 ++-
-> >  mm/compaction.c         |  4 +--
-> >  mm/fadvise.c            |  2 +-
-> >  mm/gup.c                |  2 +-
-> >  mm/khugepaged.c         |  2 +-
-> >  mm/ksm.c                |  2 +-
-> >  mm/memcontrol.c         |  4 +--
-> >  mm/memfd.c              |  2 +-
-> >  mm/memory-failure.c     |  2 +-
-> >  mm/memory_hotplug.c     |  2 +-
-> >  mm/mempolicy.c          |  6 +++++
-> >  mm/migrate.c            | 15 ++++++-----
-> >  mm/page_alloc.c         |  5 +++-
-> >  mm/swap.c               | 55 +++++++++++++++++++++++++++++++++++------
-> >  16 files changed, 85 insertions(+), 30 deletions(-)
-> 
-> The churn seems to be quite big for something that should have been a
-> very small change. Have you considered not changing lru_add_drain_all
-> but rather introduce __lru_add_dain_all that would implement the
-> enforced flushing?
-
-Good idea.
-
-> 
-> [...]
-> > +static atomic_t lru_disable_count = ATOMIC_INIT(0);
-> > +
-> > +bool lru_cache_disabled(void)
-> > +{
-> > +	return atomic_read(&lru_disable_count);
-> > +}
-> > +
-> > +void lru_cache_disable(void)
-> > +{
-> > +	/*
-> > +	 * lru_add_drain_all's IPI will make sure no new pages are added
-> > +	 * to the pcp lists and drain them all.
-> > +	 */
-> > +	atomic_inc(&lru_disable_count);
-> 
-> As already mentioned in the last review. The IPI reference is more
-> cryptic than useful. I would go with something like this instead
-> 
-> 	/*
-> 	 * lru_add_drain_all in the force mode will schedule draining on
-> 	 * all online CPUs so any calls of lru_cache_disabled wrapped by
-> 	 * local_lock or preemption disabled would be  ordered by that.
-> 	 * The atomic operation doesn't need to have stronger ordering
-> 	 * requirements because that is enforece by the scheduling
-> 	 * guarantees.
-> 	 */
-
-Thanks for the nice description.
-I will use it in next revision if you believe this work is useful.
+Yes, I think adding a new config option would be a good way. Thank you both!!
