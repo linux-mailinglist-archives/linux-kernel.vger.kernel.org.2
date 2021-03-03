@@ -2,162 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B488E32C0FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0607132C106
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243071AbhCCSws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:52:48 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:46559 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244872AbhCCSNR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:13:17 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4DF44580272;
-        Wed,  3 Mar 2021 13:11:15 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 03 Mar 2021 13:11:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=R
-        G1V6+KyPgUrPQt1cGsfMCiGS9LQ7Gy572gXAWOD3F8=; b=FWLUkYNoPVnGT1uBS
-        Q3vfTpPFcjRBP0ItlmpKPA7FEh2gInJdu0TbIonUpyBtc64tirRusc7bv1XyQZFi
-        kNNvCKiKSTdyc3Y+baURuAFiNHUQxJZVnOSnDO1nuAkeHKkiOcWf4DnrkBkAdAiE
-        y3Wyroh1jJ94Mqnmu8baQbNnos+4xvv45z7oQmDipuFFKFPNjEoRGB6U2+O0q77P
-        n7Uth6nrgqKcUYpJg0Jxc+xFgxWdjC5Q4h0F+q4Pb1X48e0amgv4C5kfanxgv32H
-        WQMWMp8dUiKROFVJ6cv67skRILo3gs53OSofLwWccQ8PGPl+JAiVqYNoGOv+cGGA
-        zuObg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=RG1V6+KyPgUrPQt1cGsfMCiGS9LQ7Gy572gXAWOD3
-        F8=; b=TgJYGJRGC+y4SQqYI8rB5HkySq+ErerVbjcW5YoIuIC4fSewqtwiX2wxp
-        du6hCIMBgmUWjrxU1pogdcCSLvHRnPmCfSa6CiDSo962LNmhwi3GPqBBVFLSK9si
-        IPB3GdCHAg9Oxc0OzqDgbjguFzzzm1YeaiUu3RTqWVfUK1tfbdXsGVwkHtACkjmg
-        Y4ynUUOoyfgbhGEm/fbUdV+FEWF7USqpUflHaQxZKXzzK/1DlI8bGiZ525+4vrcf
-        h7l9Ccd83qEOzQV5KPTuFsyNK8+8Jc3e7k33qv198fuxPRGYG25FrddtUe0Y1evd
-        edV1V8f5z1wp+nQJ3u+iZGDger53Q==
-X-ME-Sender: <xms:QtE_YKD2F2vaegFiJAOXxwPurULnQx7zZdkM6G8VN_dtbkPzZEbpHw>
-    <xme:QtE_YEdDvaQ4UB-L-8e024WDyX2hCk_wthmECD_uOyf24o4kpxkSZ44SU_5HDMMIl
-    5B2ACDZheEJ1BrQbw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtvddguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculddujedmnecujfgurhepfffhvffukfhfgggtugfgjgesthekredt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtjeefvefhgedutdfghfeiudfhvddvveegvdejhedvhfeg
-    tdelleeltdfgffeljeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeile
-    drudekuddruddthedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:QtE_YKdkoGcM5AvREP5dWZGqRrUMtvTqrv0idJ6s2Weq6re9ZCq7bw>
-    <xmx:QtE_YAjSV5e5YC0yFpcGhvKmNB4pqu1GT5Z0zsV2jhBnreLjsBEiyA>
-    <xmx:QtE_YOSmdvX3q1LkRDQ-VK7Q34YSnOGz7uS8kI_SwEWEe-rC4rBHOA>
-    <xmx:Q9E_YKPj7fFWFASGS4YmdB3xiYjr6CCfuKnhP4SMRg_vFk_pfCVJfQ>
-Received: from maharaja.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EB391240065;
-        Wed,  3 Mar 2021 13:11:12 -0500 (EST)
-Date:   Wed, 3 Mar 2021 10:11:11 -0800
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: Why do kprobes and uprobes singlestep?
-Message-ID: <20210303181111.th5ukrfzrmyuvk5x@maharaja.localdomain>
-References: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
- <968E85AE-75B8-42D7-844A-0D61B32063B3@amacapital.net>
- <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
+        id S1580936AbhCCS6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:58:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244887AbhCCSNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:13:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4469C60295;
+        Wed,  3 Mar 2021 18:11:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614795086;
+        bh=JFreicAS3kHza1sZEPHAWrMrSGHusltAns/J69KXcT8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=maGIUbKpXP7ECKXOzOoIXooEr2OWZSa407UoqMLlrH4Rsqix9sEqdUEnGsXpRMEdM
+         eYkeAVL22TkW9jJRyilv9irGH8rf1hU5iP2NVfhgELSgDR0mm4a+mCZMH40PyGZgTQ
+         hx5UROe9Bl6+xIJWCH5dKkZ41GrNICAP3g/GqxllbrjiN600/4dlzK8Mj9OWpGhOKG
+         +6eyk+zNmKaRezour52JuUKQLqljOfnR95cgRNwq14lzpsta1b5qF8dlrbg/ZhikrR
+         +UnJ5mxcyCTDFUtK6j5FlzZCm9+Wcv5YA0Y6aYV2JL6TJfCuXMPs7zcy3pVr8avgxG
+         UiNOzlZCAU7rw==
+Date:   Wed, 3 Mar 2021 11:11:21 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] certs: Add ability to preload revocation certs
+Message-ID: <20210303181121.ii7ofii65lh337ln@archlinux-ax161>
+References: <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
+ <161428673564.677100.4112098280028451629.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
+In-Reply-To: <161428673564.677100.4112098280028451629.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 06:18:23PM -0800, Alexei Starovoitov wrote:
-> On Tue, Mar 2, 2021 at 5:46 PM Andy Lutomirski <luto@amacapital.net> wrote:
-> >
-> >
-> > > On Mar 2, 2021, at 5:22 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > ﻿On Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapital.net> wrote:
-> > >>
-> > >>
-> > >>>> On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > >>>
-> > >>> ﻿On Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.org> wrote:
-> > >>>>
-> > >>>> Is there something like a uprobe test suite?  How maintained /
-> > >>>> actively used is uprobe?
-> > >>>
-> > >>> uprobe+bpf is heavily used in production.
-> > >>> selftests/bpf has only one test for it though.
-> > >>>
-> > >>> Why are you asking?
-> > >>
-> > >> Because the integration with the x86 entry code is a mess, and I want to know whether to mark it BROKEN or how to make sure the any cleanups actually work.
-> > >
-> > > Any test case to repro the issue you found?
-> > > Is it a bug or just messy code?
-> >
-> > Just messy code.
-> >
-> > > Nowadays a good chunk of popular applications (python, mysql, etc) has
-> > > USDTs in them.
-> > > Issues reported with bcc:
-> > > https://github.com/iovisor/bcc/issues?q=is%3Aissue+USDT
-> > > Similar thing with bpftrace.
-> > > Both standard USDT and semaphore based are used in the wild.
-> > > uprobe for containers has been a long standing feature request.
-> > > If you can improve uprobe performance that would be awesome.
-> > > That's another thing that people report often. We optimized it a bit.
-> > > More can be done.
-> >
-> >
-> > Wait... USDT is much easier to implement well.  Are we talking just USDT or are we talking about general uprobes in which almost any instruction can get probed?  If the only users that care about uprobes are doing USDT, we could vastly simplify the implementation and probably make it faster, too.
+On Thu, Feb 25, 2021 at 08:58:55PM +0000, David Howells wrote:
+> From: Eric Snowberg <eric.snowberg@oracle.com>
 > 
-> USDTs are driving the majority of uprobe usage.
-
-I'd say 50/50 in my experience. Larger userspace applications using bpf
-for production monitoring tend to use USDT for stability and ABI reasons
-(hard for bpf to read C++ classes). Bare uprobes (ie not USDT) are used
-quite often for ad-hoc production debugging.
-
-> If they can get faster it will increase their adoption even more.
-> There are certainly cases of normal uprobes.
-> They are at the start of the function 99% of the time.
-> Like the following:
-> "uprobe:/lib64/libc.so:malloc(u64 size):size:size,_ret",
-> "uprobe:/lib64/libc.so:free(void *ptr)::ptr",
-> is common despite its overhead.
+> Add a new Kconfig option called SYSTEM_REVOCATION_KEYS. If set,
+> this option should be the filename of a PEM-formated file containing
+> X.509 certificates to be included in the default blacklist keyring.
 > 
-> Here is the most interesting and practical usage of uprobes:
-> https://github.com/iovisor/bcc/blob/master/tools/sslsniff.py
-> and the manpage for the tool:
-> https://github.com/iovisor/bcc/blob/master/tools/sslsniff_example.txt
+> [DH: Changed this to make the new Kconfig option depend on the option to
+> enable the facility.]
 > 
-> uprobe in the middle of the function is very rare.
-> If the kernel starts rejecting uprobes on some weird instructions
-> I suspect no one will complain.
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> Link: https://lore.kernel.org/r/20200930201508.35113-3-eric.snowberg@oracle.com/
+> Link: https://lore.kernel.org/r/20210122181054.32635-4-eric.snowberg@oracle.com/ # v5
+> ---
+> 
+>  certs/Kconfig                   |    8 ++++++++
+>  certs/Makefile                  |   18 ++++++++++++++++--
+>  certs/blacklist.c               |   17 +++++++++++++++++
+>  certs/revocation_certificates.S |   21 +++++++++++++++++++++
+>  scripts/Makefile                |    1 +
+>  5 files changed, 63 insertions(+), 2 deletions(-)
+>  create mode 100644 certs/revocation_certificates.S
+> 
+> diff --git a/certs/Kconfig b/certs/Kconfig
+> index 76e469b56a77..ab88d2a7f3c7 100644
+> --- a/certs/Kconfig
+> +++ b/certs/Kconfig
+> @@ -92,4 +92,12 @@ config SYSTEM_REVOCATION_LIST
+>  	  blacklist keyring and implements a hook whereby a PKCS#7 message can
+>  	  be checked to see if it matches such a certificate.
+>  
+> +config SYSTEM_REVOCATION_KEYS
+> +	string "X.509 certificates to be preloaded into the system blacklist keyring"
+> +	depends on SYSTEM_REVOCATION_LIST
+> +	help
+> +	  If set, this option should be the filename of a PEM-formatted file
+> +	  containing X.509 certificates to be included in the default blacklist
+> +	  keyring.
+> +
+>  endmenu
+> diff --git a/certs/Makefile b/certs/Makefile
+> index f4b90bad8690..e3f4926fd21e 100644
+> --- a/certs/Makefile
+> +++ b/certs/Makefile
+> @@ -4,7 +4,7 @@
+>  #
+>  
+>  obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o common.o
+> -obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist.o
+> +obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist.o revocation_certificates.o common.o
+>  ifneq ($(CONFIG_SYSTEM_BLACKLIST_HASH_LIST),"")
+>  obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist_hashes.o
+>  else
+> @@ -29,7 +29,7 @@ $(obj)/x509_certificate_list: scripts/extract-cert $(SYSTEM_TRUSTED_KEYS_SRCPREF
+>  	$(call if_changed,extract_certs,$(SYSTEM_TRUSTED_KEYS_SRCPREFIX)$(CONFIG_SYSTEM_TRUSTED_KEYS))
+>  endif # CONFIG_SYSTEM_TRUSTED_KEYRING
+>  
+> -clean-files := x509_certificate_list .x509.list
+> +clean-files := x509_certificate_list .x509.list x509_revocation_list
+>  
+>  ifeq ($(CONFIG_MODULE_SIG),y)
+>  ###############################################################################
+> @@ -104,3 +104,17 @@ targets += signing_key.x509
+>  $(obj)/signing_key.x509: scripts/extract-cert $(X509_DEP) FORCE
+>  	$(call if_changed,extract_certs,$(MODULE_SIG_KEY_SRCPREFIX)$(CONFIG_MODULE_SIG_KEY))
+>  endif # CONFIG_MODULE_SIG
+> +
+> +ifeq ($(CONFIG_SYSTEM_BLACKLIST_KEYRING),y)
+> +
+> +$(eval $(call config_filename,SYSTEM_REVOCATION_KEYS))
+> +
+> +$(obj)/revocation_certificates.o: $(obj)/x509_revocation_list
+> +
+> +quiet_cmd_extract_certs  = EXTRACT_CERTS   $(patsubst "%",%,$(2))
+> +      cmd_extract_certs  = scripts/extract-cert $(2) $@
+> +
+> +targets += x509_revocation_list
+> +$(obj)/x509_revocation_list: scripts/extract-cert $(SYSTEM_REVOCATION_KEYS_SRCPREFIX)$(SYSTEM_REVOCATION_KEYS_FILENAME) FORCE
+> +	$(call if_changed,extract_certs,$(SYSTEM_REVOCATION_KEYS_SRCPREFIX)$(CONFIG_SYSTEM_REVOCATION_KEYS))
+> +endif
+> diff --git a/certs/blacklist.c b/certs/blacklist.c
+> index 2b8644123d5f..723b19c96256 100644
+> --- a/certs/blacklist.c
+> +++ b/certs/blacklist.c
+> @@ -17,9 +17,13 @@
+>  #include <linux/uidgid.h>
+>  #include <keys/system_keyring.h>
+>  #include "blacklist.h"
+> +#include "common.h"
+>  
+>  static struct key *blacklist_keyring;
+>  
+> +extern __initconst const u8 revocation_certificate_list[];
+> +extern __initconst const unsigned long revocation_certificate_list_size;
+> +
+>  /*
+>   * The description must be a type prefix, a colon and then an even number of
+>   * hex digits.  The hash is kept in the description.
+> @@ -220,3 +224,16 @@ static int __init blacklist_init(void)
+>   * Must be initialised before we try and load the keys into the keyring.
+>   */
+>  device_initcall(blacklist_init);
+> +
+> +/*
+> + * Load the compiled-in list of revocation X.509 certificates.
+> + */
+> +static __init int load_revocation_certificate_list(void)
+> +{
+> +	if (revocation_certificate_list_size)
+> +		pr_notice("Loading compiled-in revocation X.509 certificates\n");
+> +
+> +	return load_certificate_list(revocation_certificate_list, revocation_certificate_list_size,
+> +				     blacklist_keyring);
+> +}
+> +late_initcall(load_revocation_certificate_list);
+> diff --git a/certs/revocation_certificates.S b/certs/revocation_certificates.S
+> new file mode 100644
+> index 000000000000..f21aae8a8f0e
+> --- /dev/null
+> +++ b/certs/revocation_certificates.S
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#include <linux/export.h>
+> +#include <linux/init.h>
+> +
+> +	__INITRODATA
+> +
+> +	.align 8
+> +	.globl revocation_certificate_list
+> +revocation_certificate_list:
+> +__revocation_list_start:
+> +	.incbin "certs/x509_revocation_list"
+> +__revocation_list_end:
+> +
+> +	.align 8
+> +	.globl revocation_certificate_list_size
+> +revocation_certificate_list_size:
+> +#ifdef CONFIG_64BIT
+> +	.quad __revocation_list_end - __revocation_list_start
+> +#else
+> +	.long __revocation_list_end - __revocation_list_start
+> +#endif
+> diff --git a/scripts/Makefile b/scripts/Makefile
+> index b5418ec587fb..983b785f13cb 100644
+> --- a/scripts/Makefile
+> +++ b/scripts/Makefile
+> @@ -11,6 +11,7 @@ hostprogs-always-$(CONFIG_ASN1)				+= asn1_compiler
+>  hostprogs-always-$(CONFIG_MODULE_SIG_FORMAT)		+= sign-file
+>  hostprogs-always-$(CONFIG_SYSTEM_TRUSTED_KEYRING)	+= extract-cert
+>  hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
+> + hostprogs-always-$(CONFIG_SYSTEM_BLACKLIST_KEYRING)	+= extract-cert
+>  
+>  HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
+>  HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
+> 
+> 
 
-I think it would be great if the kernel could reject mid-instruction
-uprobes. Unlike with kprobes, you can place uprobes on immediate
-operands which can cause silent data corruption. See
-https://github.com/iovisor/bpftrace/pull/803#issuecomment-507693933
-for a funny example.
+This patch is broken when CONFIG_SYSTEM_BLACKLIST_KEYRING is set but
+CONFIG_SYSTEM_REVOCATION_LIST is unset, meaning that
+CONFIG_SYSTEM_REVOCATION_KEYS is not defined at all. This is very easy
+to reproduce with x86_64_defconfig.
 
-To prevent accidental (and silent) data corruption, bpftrace uses a
-disassembler to ensure uprobes are placed on instruction boundaries.
+$ make -skj"$(nproc)" O=build/x86_64 defconfig
 
-<...>
+$ scripts/config --file build/x86_64/.config -e SYSTEM_BLACKLIST_KEYRING
 
-Daniel
+$ make -skj"$(nproc)" O=build/x86_64 olddefconfig certs/
+At main.c:154:
+- SSL error:0909006C:PEM routines:get_name:no start line: crypto/pem/pem_lib.c:745
+extract-cert: /home/nathan/cbl/src/linux-next/: Is a directory
+make[3]: *** [/home/nathan/cbl/src/linux-next/certs/Makefile:119: certs/x509_revocation_list] Error 1
+...
+
+This happens with every single distribution configuration that I test.
+
+Cheers,
+Nathan
