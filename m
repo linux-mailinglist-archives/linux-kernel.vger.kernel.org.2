@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3443D32C0E7
+	by mail.lfdr.de (Postfix) with ESMTP id CA85332C0EA
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837106AbhCCSsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        id S1837161AbhCCSsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238239AbhCCSFd (ORCPT
+        with ESMTP id S234297AbhCCSGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:05:33 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9CAC061756;
-        Wed,  3 Mar 2021 10:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=My/MoKrMBRtOg8zhU/75Schf078+7/DO6AlXtF8wtwY=; b=HrMUjp3hfvQhqfw0sFwKn4ACS
-        T7MUr/tsEmTP/kX0/QWn4OjpZKtNvoxf8PEL0IGYI9Nku9th986oQ7GB7Z+ztqd7QCQQTVNKqQH6k
-        RgSkYBzZsky8hNAJo1Auwf2PB5iN5NtyFxFK1v/l9aj+dpWABPZC7w7c30b8JE+0CCnI9fQTxjWIT
-        xEomqmMDAH4c3WoW67jqt9QRCZU4QJhPAuCAGu6qMtGPEcFLkRSSMorWGc1bDhXkX3m1bn/S2lkVc
-        qzDR1wmK6IWMdUW/74q1Fgtlep//yAXkWtMO3l9OKsU0ppMzFDQi83uzBy0q90Pmpe621BpNpMcaB
-        jqkFwcRGw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48582)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lHVrE-0006E5-NR; Wed, 03 Mar 2021 18:04:24 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lHVrC-0002YO-N9; Wed, 03 Mar 2021 18:04:22 +0000
-Date:   Wed, 3 Mar 2021 18:04:22 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH drivers/net] #ifdef mdio_bus_phy_suspend() and
- mdio_bus_phy_suspend()
-Message-ID: <20210303180422.GB1463@shell.armlinux.org.uk>
-References: <20210303175338.GA15338@paulmck-ThinkPad-P72>
+        Wed, 3 Mar 2021 13:06:34 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2612C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:05:48 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id s16so14470074plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:05:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fi0uubBVxUB+GuaJG69hF0VmSki/WHsri58nDTTvB9Y=;
+        b=OFBbBC/qbuy5DVoTDWKAbIz+evhGUmngQud/1bqxDNXQEMNT1ErJvyZdetAQssoB8V
+         w90jHsRqLy9ZJSBFSa+8YaMR4VBwhokSubrPfwfc6sNsr8FJIuLYDZpySkq1zP41xDnZ
+         ip2zGb6V2byY+jXHnsndQTTEFE8/Tkpl2L9qre4GYYRNyqAoy5BBZyRl4O92ksTIFGBJ
+         G9FEdYtOgCzXoKEhJDyaxoVLZFt1ZeBUbxYTl3ZBLJcV4/nsZDEFUuz3mPNBmUAFxpI+
+         vSVXnOT4C6hp/vgs84OQhAzwiCVq02aEmot3yZxZPF0CB9xYwNEi4d53jTJXAPBnRwg6
+         ws4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fi0uubBVxUB+GuaJG69hF0VmSki/WHsri58nDTTvB9Y=;
+        b=Px98NKCKXWvvvoHyDiahRZaGg0kVfNpiySjM1NC4gVjZE3o2Z7DOQSraY0BgepM6El
+         t+XMf2+PInQCHdxokDvGB7K2WGlHx2r3x1Kw2o4RoG03Jhjt/YcvXzZMwDo3/2+anV3+
+         FljuFu18VyqXq4/1GHbE8lfbgRO07hpPdjmugoJBmT3MR+aMMx3uPAeaLoZ2ikTjwjWU
+         K262qpTAU1n8+Uw3Tk4Xzk631f1PE5kAOS5aqau9ektIbWLOvagaf0ICCtsf8Oztq2PH
+         YiSYSS89r1YMkrICqjyZyKdnGGwNu1AYTRLYBrrsDxVm7m7G8VBdcPBZ3BF0C+HT5JIG
+         J1ig==
+X-Gm-Message-State: AOAM530587rBVnVTnIVVKeB7t2n8/rsxhrQqQWnMQ0zIBeztc7pfQLlp
+        5gkKM0xYCFPDdb4yCftIE6sKkA==
+X-Google-Smtp-Source: ABdhPJxbC8wsZPd378cO0hva1cNnbCyc3RT9K0geIiwmjepkvWVRMfJGjacgj5mU/jhfb3+1+7+USw==
+X-Received: by 2002:a17:902:108:b029:e4:9e1b:b976 with SMTP id 8-20020a1709020108b02900e49e1bb976mr191625plb.67.1614794748200;
+        Wed, 03 Mar 2021 10:05:48 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
+        by smtp.gmail.com with ESMTPSA id z12sm7329506pjz.16.2021.03.03.10.05.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 10:05:47 -0800 (PST)
+Date:   Wed, 3 Mar 2021 10:05:40 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [kvm-unit-tests PATCH] x86: Update guest LBR tests for
+ Architectural LBR
+Message-ID: <YD/P9EkihjNHqrLb@google.com>
+References: <20210303135756.1546253-1-like.xu@linux.intel.com>
+ <20210303135756.1546253-11-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210303175338.GA15338@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210303135756.1546253-11-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 09:53:38AM -0800, Paul E. McKenney wrote:
-> drivers/net: #ifdef mdio_bus_phy_suspend() and mdio_bus_phy_suspend()
-> 
-> The following build error is emitted by rcutorture builds of v5.12-rc1:
-> 
-> drivers/net/phy/phy_device.c:293:12: warning: ‘mdio_bus_phy_resume’ defined but not used [-Wunused-function]
-> drivers/net/phy/phy_device.c:273:12: warning: ‘mdio_bus_phy_suspend’ defined but not used [-Wunused-function]
-> 
-> The problem is that these functions are only used by SIMPLE_DEV_PM_OPS(),
-> which creates a dev_pm_ops structure only in CONFIG_PM_SLEEP=y kernels.
-> Therefore, the mdio_bus_phy_suspend() and mdio_bus_phy_suspend() functions
-> will be used only in CONFIG_PM_SLEEP=y kernels.  This commit therefore
-> wraps them in #ifdef CONFIG_PM_SLEEP.
+On Wed, Mar 03, 2021, Like Xu wrote:
+> This unit-test is intended to test the KVM's support for the
+> Architectural LBRs which is a Architectural performance monitor
+> unit (PMU) feature on Intel processors.
 
-Arnd submitted a patch that Jakub has applied which fix these warnings
-in a slightly different way. Please see
-20210225145748.404410-1-arnd@kernel.org
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+These really need negative testing, especially on the MSR values.  IMO, negative
+tests should be mandatory for merging arch LBR support in KVM, it shouldn't be
+too much additional effort.
