@@ -2,166 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099EF32BCE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AA932BC8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447423AbhCCPD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
+        id S1350781AbhCCOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843073AbhCCKZO (ORCPT
+        with ESMTP id S1842929AbhCCKWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD489C08ECAE
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:57:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=9y87D77CpzAQFasjvNcZbUvYXFL0FEiGiYgu9WotuuE=; b=b3XH1EFSXGvkfziyxNEW6rZvjr
-        nFsJsPuloXai7GlhRjpMp5cQ/GmZqP3yTZDjfzlfg+xGh69qUrvHO2seOdFkvimywl/C+N4dSdF+v
-        IHZ4hO9M0qpxC4cuFjATVo3FFbXGUjVPKDF4/YRC3TvPzmrmJDqNGFRzsCVkxaiZpqXh5JCiERWCg
-        +vwyMb/VOpCZni3fw9yDLjerY4zbvkLnvApKxEYxzWZzliTszYVQ649s9fIyTIRILAx1F2FkUHdcB
-        YRmVluuV6BG1iAJHMUujkvM7Ibwd0FR20lZqKiU3f9GZ4Tg02VJBRpqB4wzONcHApsYKRVxckRuws
-        TNmpiPLg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lHOFB-0025dR-Mg; Wed, 03 Mar 2021 09:56:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4815C30018A;
-        Wed,  3 Mar 2021 10:56:34 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 28F9B20CC0618; Wed,  3 Mar 2021 10:56:34 +0100 (CET)
-Date:   Wed, 3 Mar 2021 10:56:34 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Clement Courbet <courbet@google.com>,
-        Oleg Rombakh <olegrom@google.com>
-Subject: Re: [PATCH] sched: Optimize __calc_delta.
-Message-ID: <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
-References: <20210226195239.3905966-1-joshdon@google.com>
- <YDliCOPy9s1RdLwd@hirez.programming.kicks-ass.net>
- <CABk29Nv7iJEcDg3rgSvfTkXEM69ZeLByJAsZYuA5qpdj645nZw@mail.gmail.com>
- <CABk29Ntt88BfqGz=Rjd5Mwyj+N0YLv0Z9QsZp8DgB-n+FV1Zgw@mail.gmail.com>
+        Wed, 3 Mar 2021 05:22:38 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0435CC08ECB5;
+        Wed,  3 Mar 2021 02:01:39 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id j12so15874803pfj.12;
+        Wed, 03 Mar 2021 02:01:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8DrZrPQbyPtgf2aW639cqNZTuk5sChQgDw7fi81dRqU=;
+        b=GRI7FdF3WjDJBJwLyAIRUyb/6dNvkGLEFbRin86oTgDmPfK8yt2xIz9eD6Y54f1QqI
+         Sk+ekbnCaBOpIIhSMfTIGLFF0fZpvTSbESePjq2VIvfczqPdiEnSBsjeBz6alijtOgsB
+         sVA/7DRhikwKbl2eWxQv8GKx6bZFn5i5auNco+fQU2oh/4eXQ9yfr/jqXnyOSvpBlRzB
+         88f2bYJcGQ5lZ0QknYqUygzV4IiMIXkN5MMmDQgJiRA/kX988l00Vvao3DS3VVAtt0AK
+         itH+6r4S8ZSXhjghXAOX8njzvFY7NG6OpwDUXkpSxPw0tCuPmRW8jf7iOCdOVBMsyHog
+         kVRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8DrZrPQbyPtgf2aW639cqNZTuk5sChQgDw7fi81dRqU=;
+        b=FT9UzjvqVcSxy0dNJSvprH+ybZ+X/qs2dbYuK0zGy68PT7lkkO/8Rj099AZGbbixVV
+         FE4rmDMzs+r8QnT+aJ/VlvgUY77pcxpnOrlYrvslTTztftRrWDvX58gbRjYKdHyy4n0a
+         fqH98dO7XTzCEE2e6MK5yShBhJSFNIKVZ6RG8teuYKJFWZsVvWeKAM3DyxUd74VkhKR7
+         fiDlYWdN8mIljCEiQamOPIojCOc5fG+Nkxb6ZZBxPIyAYN8Xp4WOvmVoVtzd7CTRQC7q
+         O4PogNuFs9LeP/M3PYRhM6EDtPyoIDXGiTSvVTmkbgpIUXienFDqIauMNhFN0uou6xz7
+         g+gA==
+X-Gm-Message-State: AOAM533HOT1rmBjkqOwUQl674l+jUBGcYRTdcc809h+FMw9gZTgMyTOz
+        g7TekLOIl7ZygTrP2p1UaIEza4IZxm5ZTVh7
+X-Google-Smtp-Source: ABdhPJwO84KcxWuPUTPVV2FhPZV0rM7ZW1OyKzHFpIIDtlCgIYuaYNUj8cHdCyvvqOm8S9Kb8dtGYA==
+X-Received: by 2002:a62:e809:0:b029:1ed:c7ec:179b with SMTP id c9-20020a62e8090000b02901edc7ec179bmr2306577pfi.43.1614765699341;
+        Wed, 03 Mar 2021 02:01:39 -0800 (PST)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id 132sm2292606pfu.158.2021.03.03.02.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 02:01:38 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>
+Subject: [PATCH RESEND v3] mm/userfaultfd: fix memory corruption due to writeprotect
+Date:   Wed,  3 Mar 2021 01:57:02 -0800
+Message-Id: <20210303095702.3814618-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABk29Ntt88BfqGz=Rjd5Mwyj+N0YLv0Z9QsZp8DgB-n+FV1Zgw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 12:57:37PM -0800, Josh Don wrote:
-> From: Clement Courbet <courbet@google.com>
-> 
-> A significant portion of __calc_delta time is spent in the loop
-> shifting a u64 by 32 bits. Use `fls` instead of iterating.
-> 
-> This is ~7x faster on benchmarks.
-> 
-> The generic `fls` implementation (`generic_fls`) is still ~4x faster
-> than the loop.
-> Architectures that have a better implementation will make use of it. For
-> example, on X86 we get an additional factor 2 in speed without dedicated
-> implementation.
-> 
-> On gcc, the asm versions of `fls` are about the same speed as the
-> builtin. On clang, the versions that use fls (fls,fls64) are more than
-> twice as slow as the builtin. This is because the way the `fls` function
-> is written, clang puts the value in memory:
-> https://godbolt.org/z/EfMbYe. This can be fixed in a separate patch.
-> 
-> ```
-> name                                   cpu/op
-> BM_Calc<__calc_delta_loop>             9.57ms ±12%
-> BM_Calc<__calc_delta_generic_fls>      2.36ms ±13%
-> BM_Calc<__calc_delta_asm_fls>          2.45ms ±13%
-> BM_Calc<__calc_delta_asm_fls_nomem>    1.66ms ±12%
-> BM_Calc<__calc_delta_asm_fls64>        2.46ms ±13%
-> BM_Calc<__calc_delta_asm_fls64_nomem>  1.34ms ±15%
-> BM_Calc<__calc_delta_builtin>          1.32ms ±11%
-> ```
-> 
-> Signed-off-by: Clement Courbet <courbet@google.com>
-> Signed-off-by: Josh Don <joshdon@google.com>
-> ---
->  kernel/sched/fair.c  | 30 ++++++++++++++++++++++--------
->  kernel/sched/sched.h |  1 +
->  2 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8a8bd7b13634..67e5a1d536ad 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -214,6 +214,16 @@ static void __update_inv_weight(struct load_weight *lw)
->   lw->inv_weight = WMULT_CONST / w;
->  }
-> 
-> +/*
-> + * An fls that handles an u32 value on architectures
-> + * where `sizeof(unsigned int) < 32`.
-> + */
-> +#if (__SIZEOF_INT__ >= 32)
+From: Nadav Amit <namit@vmware.com>
 
-This should never happen, we use ILP32 or LP64 for Linux.
+Userfaultfd self-test fails occasionally, indicating a memory
+corruption.
 
-> +# define FLS_AT_LEAST_32(v) fls(v)
-> +#else
-> +# define FLS_AT_LEAST_32(v) fls64(v)
-> +#endif
-> +
->  /*
->   * delta_exec * weight / lw.weight
->   *   OR
-> @@ -229,27 +239,31 @@ static void __update_inv_weight(struct load_weight *lw)
->  static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct
-> load_weight *lw)
->  {
->   u64 fact = scale_load_down(weight);
-> + u32 fact_hi = (u32)(fact >> 32);
->   int shift = WMULT_SHIFT;
-> + int fs;
-> 
->   __update_inv_weight(lw);
-> 
-> - if (unlikely(fact >> 32)) {
-> - while (fact >> 32) {
-> - fact >>= 1;
-> - shift--;
-> - }
-> + if (unlikely(fact_hi)) {
-> + fs = FLS_AT_LEAST_32(fact_hi);
+Analyzing this problem indicates that there is a real bug since
+mmap_lock is only taken for read in mwriteprotect_range() and defers
+flushes, and since there is insufficient consideration of concurrent
+deferred TLB flushes in wp_page_copy(). Although the PTE is flushed from
+the TLBs in wp_page_copy(), this flush takes place after the copy has
+already been performed, and therefore changes of the page are possible
+between the time of the copy and the time in which the PTE is flushed.
 
-you made fact_hi u32, why can't we unconditionally use fls() ?
+To make matters worse, memory-unprotection using userfaultfd also poses
+a problem. Although memory unprotection is logically a promotion of PTE
+permissions, and therefore should not require a TLB flush, the current
+userrfaultfd code might actually cause a demotion of the architectural
+PTE permission: when userfaultfd_writeprotect() unprotects memory
+region, it unintentionally *clears* the RW-bit if it was already set.
+Note that this unprotecting a PTE that is not write-protected is a valid
+use-case: the userfaultfd monitor might ask to unprotect a region that
+holds both write-protected and write-unprotected PTEs.
 
-> + shift -= fs;
-> + fact >>= fs;
->   }
-> 
->   fact = mul_u32_u32(fact, lw->inv_weight);
-> 
-> - while (fact >> 32) {
-> - fact >>= 1;
-> - shift--;
-> + fact_hi = (u32)(fact >> 32);
-> + if (fact_hi) {
-> + fs = FLS_AT_LEAST_32(fact_hi);
-> + shift -= fs;
-> + fact >>= fs;
->   }
-> 
->   return mul_u64_u32_shr(delta_exec, fact, shift);
->  }
+The scenario that happens in selftests/vm/userfaultfd is as follows:
 
-Horrific whitespace damage..
+cpu0				cpu1			cpu2
+----				----			----
+							[ Writable PTE
+							  cached in TLB ]
+userfaultfd_writeprotect()
+[ write-*unprotect* ]
+mwriteprotect_range()
+mmap_read_lock()
+change_protection()
+
+change_protection_range()
+...
+change_pte_range()
+[ *clear* â€œwriteâ€-bit ]
+[ defer TLB flushes ]
+				[ page-fault ]
+				...
+				wp_page_copy()
+				 cow_user_page()
+				  [ copy page ]
+							[ write to old
+							  page ]
+				...
+				 set_pte_at_notify()
+
+A similar scenario can happen:
+
+cpu0		cpu1		cpu2		cpu3
+----		----		----		----
+						[ Writable PTE
+				  		  cached in TLB ]
+userfaultfd_writeprotect()
+[ write-protect ]
+[ deferred TLB flush ]
+		userfaultfd_writeprotect()
+		[ write-unprotect ]
+		[ deferred TLB flush]
+				[ page-fault ]
+				wp_page_copy()
+				 cow_user_page()
+				 [ copy page ]
+				 ...		[ write to page ]
+				set_pte_at_notify()
+
+This race exists since commit 292924b26024 ("userfaultfd: wp: apply
+_PAGE_UFFD_WP bit"). Yet, as Yu Zhao pointed, these races became
+apparent since commit 09854ba94c6a ("mm: do_wp_page() simplification")
+which made wp_page_copy() more likely to take place, specifically if
+page_count(page) > 1.
+
+To resolve the aforementioned races, check whether there are pending
+flushes on uffd-write-protected VMAs, and if there are, perform a flush
+before doing the COW.
+
+Further optimizations will follow to avoid during uffd-write-unprotect
+unnecassary PTE write-protection and TLB flushes.
+
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Pavel Emelyanov <xemul@openvz.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Suggested-by: Yu Zhao <yuzhao@google.com>
+Fixes: 292924b26024 ("userfaultfd: wp: apply _PAGE_UFFD_WP bit")
+Signed-off-by: Nadav Amit <namit@vmware.com>
+
+---
+v2->v3:
+* Do not acquire mmap_lock for write, flush conditionally instead [Yu]
+* Change the fixes tag to the patch that made the race apparent [Yu]
+* Removing patch to avoid write-protect on uffd unprotect. More
+  comprehensive solution to follow (and avoid the TLB flush as well).
+---
+ mm/memory.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 9e8576a83147..06da04f98936 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3092,6 +3092,13 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+ 		return handle_userfault(vmf, VM_UFFD_WP);
+ 	}
+ 
++	/*
++	 * Userfaultfd write-protect can defer flushes. Ensure the TLB
++	 * is flushed in this case before copying.
++	 */
++	if (userfaultfd_wp(vmf->vma) && mm_tlb_flush_pending(vmf->vma->vm_mm))
++		flush_tlb_page(vmf->vma, vmf->address);
++
+ 	vmf->page = vm_normal_page(vma, vmf->address, vmf->orig_pte);
+ 	if (!vmf->page) {
+ 		/*
+-- 
+2.25.1
+
