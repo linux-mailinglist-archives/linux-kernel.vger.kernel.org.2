@@ -2,76 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08D932BC82
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AF232BD23
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359224AbhCCOEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:04:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842915AbhCCKW3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:29 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2102BC0698CD
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:11:21 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id q23so27677482lji.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:11:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pvXRasKDNnUplGKqzHk62n6lD6KnrrKXY+1eJIPLqe0=;
-        b=WiFl8QOb5leynrCtKe3zMsV9KlbTPbHg35wYGEgWIxoqyPP0cCLWwEGVii8/y/twcB
-         xR1RwxlK5Ohll6CJ6xQDjX73wl4MGPtZsVJrMT6WEVZTUsf6n3loIcl7zfYWiBS/FYyC
-         FfvTzQfpQU6W2eZ59V7XtFzQlNcoSsRa1+wTpwAP4J/UV3EH4YU7psNWmHTvall9bZHH
-         WLRxgQKcPwQUUe2DSABPa2aSWFOYGh4b1Hjs/YSPAkMMXM4NXlQTyXa5iiDPZtQ87RxJ
-         vgcFpekosl3g2vts8OT3rCEYp6yZLhNts8p7pM3oHGR5d37Q8qEVdw/HHTEclmNxjhCx
-         NIzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pvXRasKDNnUplGKqzHk62n6lD6KnrrKXY+1eJIPLqe0=;
-        b=NSMhfyZrRyIza12bVW9stAbZ7EnALinlEltOxbdXsCGeoJxBG3mf3NqvTH3R1SVbjA
-         iCJ/jP8mkb7as/1jdPJtLu791PLpXGsO1aI9JGsiPfeof5+W4jqK9JFl8H4gSDQLzAYU
-         cOVxn72e6VuB3bo6XvNSJgDdztq4AM7NiWi8l46ygGh2SD2cJ3Np+eCROKshzZRe3vx0
-         dF+B4r1QioUDMpUe5Rj1yIujLFtz2Mms5drRu+CbPQQpQ4RxiKRUZK0tflJH9tULuhNL
-         wvEw6h0EeoxnrGrhty09ZxZys/3OAoajiSR1tvDNgBmPPn0YIn7AIIBZkib7SrEONa8Z
-         gHGg==
-X-Gm-Message-State: AOAM5338e7pBJUJobe/PiqV3MjOPQzCteoLnnY8TW2gvYIwVhWl8UAk7
-        0xNiGvwqKh55DBnK3m2tq4e0c7AbrhpjzMxl2zWuzcQGe//0Rw==
-X-Google-Smtp-Source: ABdhPJwRAdGtZseF4AGCcWugqL080PWu2zQkl7W3itQgLw4vUj76ghMl0LRAP1ir1rNQSyMXtIt2o5cPqOPa3q+AHYs=
-X-Received: by 2002:a2e:9004:: with SMTP id h4mr11225796ljg.326.1614762679638;
- Wed, 03 Mar 2021 01:11:19 -0800 (PST)
+        id S1448389AbhCCPZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:25:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241133AbhCCKcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:32:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8877464ECE;
+        Wed,  3 Mar 2021 09:12:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614762769;
+        bh=LcFEAIV39oP6qhAFHARHbGR+Nvr/RN2ia8mLaBzIos0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z7bLFFz9oOMQtk+cVU94y2on5R6Q6uDedD0ceE8/iNe/x8BenPPZ4SJCxbiraQLWI
+         bAC3OiRYGRfht03bQg+Fe5L3uDsNHbKAUlo3sOZxjur8xt4ppSFR4rK+YBup7Za6zU
+         oVGBTXdLWnIyxSZs/+9zmrv5s9qf882+rPRnZsGA=
+Date:   Wed, 3 Mar 2021 10:12:46 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Leilk Liu <leilk.liu@mediatek.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "luhua . xu" <luhua.xu@mediatek.com>,
+        Wei Yongjun <weiyj.lk@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Javier Martinez Canillas <javier@osg.samsung.com>,
+        Fengguang Wu <fengguang.wu@intel.com>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        Axel Lin <axel.lin@ingics.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-spi@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        fparent@baylibre.com
+Subject: Re: [PATCH] spi: mediatek: Re-license MTK SPI driver as Dual MIT/GPL
+Message-ID: <YD9TDv85D/zSV2Li@kroah.com>
+References: <20210303025636.795-1-leilk.liu@mediatek.com>
+ <YD84OKr4vNwA7vnz@kroah.com>
+ <1614762159.5898.9.camel@mhfsdcap03>
 MIME-Version: 1.0
-References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 3 Mar 2021 10:11:08 +0100
-Message-ID: <CACRpkdZX=kipnYukV6Y5GZmmB_GEB6htM5HP4fJbPOOhiLBtHQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] gpiolib: Unify the checks on fwnode type
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614762159.5898.9.camel@mhfsdcap03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 4:35 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Wed, Mar 03, 2021 at 05:02:39PM +0800, Leilk Liu wrote:
+> On Wed, 2021-03-03 at 08:18 +0100, Greg Kroah-Hartman wrote:
+> > On Wed, Mar 03, 2021 at 10:56:36AM +0800, Leilk Liu wrote:
+> > > From: "leilk.liu" <leilk.liu@mediatek.com>
+> > > 
+> > > It is wanted to use MTK spi bus driver with GPL-2.0 or MIT license.
+> > > But now it is only licensed as GPL-2.0, so re-license it as dual
+> > > MIT/GPL.
+> > > 
+> > > Signed-off-by: leilk.liu <leilk.liu@mediatek.com>
+> > 
+> > Please use your name here, not an email alias for where your name goes.
+> > 
+> OK, I'll fix it, thanks!
+> > 
+> > > ---
+> > >  drivers/spi/spi-mt65xx.c                 | 4 ++--
+> > >  include/linux/platform_data/spi-mt65xx.h | 2 +-
+> > 
+> > Given that these files have been licensed under the GPL only since 2015,
+> > all changes contributed to it have only been licensed under the GPL as
+> > well, so have you gotten approval for all of the contributors for this
+> > change?
+> > 
+> This is the reason that I sent this patch to ask for ACKs from all
+> contributors (who are all in the To mail-list) for these files.
 
-> We have (historically) different approaches how we identify the type
-> of a given fwnode. Let's standardize them across the library code.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+That wasn't obvious :)
 
-Looks way better like this, with your follow-up fix folded in:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+But given that many of the contributors here do not actually own the
+copyrights of their contributions, how can you be sure that the real
+owners are agreeing to this?  That requires something much more "legal"
+than just an "ack" on a patch.  Please work with your corporate lawyers
+for how to do this correctly.
 
-Yours,
-Linus Walleij
+> > Can you please get your lawyer to also sign off on this license change
+> > patch, so that we know that you have their approval for this incase
+> > there are questions about it in the future?
+> > 
+> I need to use the code in other projects that is not with GPL-2.0.
+
+What project needs this code that you can not just base it off of your
+original contribution instead?  That would not require any license
+change of the kernel files, right?  Wouldn't that be easier than trying
+to retain this license change over time as you will not be taking the
+changes here into another project as well.
+
+> Also, the license change is approved by Mediatek supervisor.
+
+Great, get them to also sign-off on the patch please, along with your
+lawyers, so that we know all is done correctly.
+
+thanks,
+
+greg k-h
