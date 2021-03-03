@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F79B32B779
+	by mail.lfdr.de (Postfix) with ESMTP id 80C2132B77A
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351799AbhCCLKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:10:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbhCCBXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 20:23:24 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F17EC061794;
-        Tue,  2 Mar 2021 17:22:43 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id u4so26494759ljh.6;
-        Tue, 02 Mar 2021 17:22:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7vpxjdzLC35rO+JFayl4Y64pj7Iqa9C/mCMrzz7lHgk=;
-        b=sFWqjyHdBwGvkKfUQ5i/8pSgB5aexxVlxIXA1/VUFSEnCPAOF4wk9XWWU75j0MeloQ
-         ZsYVGBCEGmKNXG2VpVFMrflK9S4IQoGklTKmrznsrrXlzEZSY0OCe5xrR7bCH1ju8tiZ
-         K80hyQJmWtroAevAgItdUVYc3ZLwPfE6NqeWcktCkJ0hOrDSGpcVZzpQxOA/ZkvRain3
-         dnRIy7r1NcDxZ4DB69NWsR4QWxSjj9nrfeADfAqcc2MQ13UDkpEuGnfmf6/y/6VV06Vd
-         NwK4uutAqeq3JmlD/H6oD06hrl33ZMj1SkogoaLC03pAz4L2B9YLM1wvy+jKN8PMOUcI
-         Hj0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7vpxjdzLC35rO+JFayl4Y64pj7Iqa9C/mCMrzz7lHgk=;
-        b=g9xsDXSSAke0D9Hx0TS94hzqSL1MqAbBvXuvwXTSZyIPtnCgStqYVYU1QebwoOeor1
-         xwT+yf38GkxfIv4ZVhsLTe+ZF5KooZlnEPTr8N+pavrlECHcTwIIkKg04ny91qacfCY7
-         WiRazqCq4AZUYQq3BKfndVPigUnQ9M9ZjdbTwP4y8g0bqNCeus/TPOKMawv5ILxyeJad
-         rl6S4LiS/3rpbLa5w//WPDYr3/tlNWLZUOwwSdUB7IbE6rlNW1V1zdTWg/GAuPfQIdBZ
-         AJg21LSbJ8BqnxdPziYwnGDu0p7df/NdnbGPKXpQHCWVXfFzQLDt7zXVJBmJfrYaEvvz
-         HhiA==
-X-Gm-Message-State: AOAM530fMmwiassX51nKK45FlTVHUirogS+sFsKxNwsE8txdXBVOw2Lb
-        CtNAOOt50ZJ8j3xfzgGZMu141IhUhEYbz4nWJPs=
-X-Google-Smtp-Source: ABdhPJxrVUWH1j0C/T4fF8i6oqMI0C10dnbwznUUzx7+j4ufVOZ+cgRjqOKU0xGoatY6KXdfo78YHPlAe1AXdvoppT0=
-X-Received: by 2002:a2e:9704:: with SMTP id r4mr13232071lji.486.1614734561822;
- Tue, 02 Mar 2021 17:22:41 -0800 (PST)
+        id S1357575AbhCCLKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:10:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239545AbhCCBZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 20:25:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B455C64FB8;
+        Wed,  3 Mar 2021 01:24:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614734696;
+        bh=1pX3GhK3Mhm63DTy3NRp0mhzbbcYTuCdbDqq8wxqGqI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SjeGS0cDc5nWtN9Ff+khL2j8OvJHjwWABFxT8JEcCwv9/thSegS3+4MwzUtHHoFD3
+         r5XQ+v15iuuEIPG9lXUkNMCmMqPXE4onbISKt163RCpdFCCpt4NMztRDIIlhShLtsw
+         ImQJn4I87nGh0cHR9mymZud0NwEQKq0W9jPgto0+T3FW0gA6T8aBqzAXx09fgXXGZh
+         fFxL3ERO0l41SZVT3qiDdYKkJ6MnTJeEmU1gBVlz+nmCk7EboRK6EvMOfEuPDHX6JZ
+         XsmidHqMdSdgxWnBwcPd+gbx798uLKx1rZCvrXbAnjrJnRYTEvg6Tjz2DIfdITD5AB
+         DWwJzCpXgdV9w==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 563123522A62; Tue,  2 Mar 2021 17:24:56 -0800 (PST)
+Date:   Tue, 2 Mar 2021 17:24:56 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 10/13] rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
+Message-ID: <20210303012456.GC20917@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-11-frederic@kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQ+czV6u4CM-A+o5U+WhApkocunZXiCMJBB_Zbs0mvNSwQ@mail.gmail.com>
- <EECBE373-7CA1-4ED8-9F03-406BBED607FD@amacapital.net>
-In-Reply-To: <EECBE373-7CA1-4ED8-9F03-406BBED607FD@amacapital.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 2 Mar 2021 17:22:30 -0800
-Message-ID: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
-Subject: Re: Why do kprobes and uprobes singlestep?
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223001011.127063-11-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapital.net> wrote:
->
->
-> > On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gma=
-il.com> wrote:
-> >
-> > =EF=BB=BFOn Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.o=
-rg> wrote:
-> >>
-> >> Is there something like a uprobe test suite?  How maintained /
-> >> actively used is uprobe?
-> >
-> > uprobe+bpf is heavily used in production.
-> > selftests/bpf has only one test for it though.
-> >
-> > Why are you asking?
->
-> Because the integration with the x86 entry code is a mess, and I want to =
-know whether to mark it BROKEN or how to make sure the any cleanups actuall=
-y work.
+On Tue, Feb 23, 2021 at 01:10:08AM +0100, Frederic Weisbecker wrote:
+> A NOCB-gp wake up can safely delete the nocb_bypass_timer. nocb_gp_wait()
+> is going to check again the bypass state and rearm the bypass timer if
+> necessary.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
 
-Any test case to repro the issue you found?
-Is it a bug or just messy code?
-Nowadays a good chunk of popular applications (python, mysql, etc) has
-USDTs in them.
-Issues reported with bcc:
-https://github.com/iovisor/bcc/issues?q=3Dis%3Aissue+USDT
-Similar thing with bpftrace.
-Both standard USDT and semaphore based are used in the wild.
-uprobe for containers has been a long standing feature request.
-If you can improve uprobe performance that would be awesome.
-That's another thing that people report often. We optimized it a bit.
-More can be done.
+Give that you delete this code a couple of patches later in this series,
+why not just leave it out entirely?  ;-)
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/tree_plugin.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index b62ad79bbda5..9da67b0d3997 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1711,6 +1711,8 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
+>  		del_timer(&rdp_gp->nocb_timer);
+>  	}
+>  
+> +	del_timer(&rdp_gp->nocb_bypass_timer);
+> +
+>  	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+>  		WRITE_ONCE(rdp_gp->nocb_gp_sleep, false);
+>  		needwake = true;
+> -- 
+> 2.25.1
+> 
