@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F56F32BFE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CD432C013
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580356AbhCCSdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:33:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24333 "EHLO
+        id S1580791AbhCCSfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:35:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30952 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236120AbhCCRLf (ORCPT
+        by vger.kernel.org with ESMTP id S236154AbhCCRLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 12:11:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614791392;
+        s=mimecast20190719; t=1614791394;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mmyQ1vLXbs33D+zQRSzuHol0axjSVg3bJx9Qi1M7Zos=;
-        b=U8Ycl2g36K+0gBFMmkN3HW1h8fV/46/CvWuAbZSYkKsPLN8Br7cE18xgGco/lVsj+LVV6r
-        kNeXIt/BM4qFa+Oi9ETO8pzitOibWeo3vkKk2ihHfW6Ju6+5eN83CJIDK3mfIhJ6MVNjsW
-        TgneK/eeUOnYdO6SyWHH/zz1AV00cpQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-72TiEZ1ANdWH4Bxj-by73Q-1; Wed, 03 Mar 2021 12:09:51 -0500
-X-MC-Unique: 72TiEZ1ANdWH4Bxj-by73Q-1
-Received: by mail-wr1-f72.google.com with SMTP id r12so8945834wro.15
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:09:50 -0800 (PST)
+        bh=wWFc5LkINmQGNoqDpICyJHLZ4ydJLXuT0gd8wTx9egU=;
+        b=YeBpMTKQ2Z2G7LxeKZqzrygRoisXfMOseoy6U34xXqJ/B8UxKUfPIhigIAkRJYC1uaEFK3
+        TUh39L+gODnjiZjiXlfXCOAUU+kY3XNzTHqLuCU7rD87TtDYdMrmeG8D6xvkrIGyUJ4tUF
+        vQIZCtbncjTgBMDqoUu68ZPrG0EXFDM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-foDOB-7-MQGqzYs6S5jHUQ-1; Wed, 03 Mar 2021 12:09:52 -0500
+X-MC-Unique: foDOB-7-MQGqzYs6S5jHUQ-1
+Received: by mail-wr1-f69.google.com with SMTP id z6so4297742wrh.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:09:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mmyQ1vLXbs33D+zQRSzuHol0axjSVg3bJx9Qi1M7Zos=;
-        b=uT6fvwTvCRAT+AAupKxDZVRyCrq4WRray1rdUrW9S4Z4QDn93uwnTNyEzBcYv7GyM5
-         SLcw8lpYoFwAKwH9eT1TuzhPIp/egXnVMMQY+plF32vLx8cszgcD2C4wVl0O0Rs0xcx6
-         WFnfatrNRNNS94lVlIyjzlSssE/DhDN2G1fcQgT3quTeDyNEUi8lamf459ffRN0fco+T
-         qmXrM9pT84jI4lC/pHXGZ3iafA2ppYb0mh9+TlvsXcIMKgpFw6/jtkHyErAkrx1UDqYt
-         BxdTWDf04P6gpgSRxy0kjHXpAmR8dPFaisiK0fcIB9xy6UwbEa4WGyKrmoI9R4vXbHew
-         2NKw==
-X-Gm-Message-State: AOAM533LnD2qvKJW1pEM7/Y2vKPS4h4sYHRJJLxuFVnevObJU5FkfiA8
-        kXux/rny4f+MxoTwR2aLf+J4/ItoWdwD/ZBuj7n+SvS7/7my6W685BAe+Z1ieQu6UQ0jnItB+ns
-        3E/9KZa8ZAf2gon/njEHYm7m3FlQo2Sl8EU7rynNMzQ1eZVURjJqXEngirfRKNcoQZF51Xb5uwi
-        nF
-X-Received: by 2002:a5d:6b45:: with SMTP id x5mr27277360wrw.415.1614791389750;
-        Wed, 03 Mar 2021 09:09:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz0XDBrMZxSsxp5+DNQ1w7VD9AfdFpKfYS/ZFMG6AdajjxP67bBEHBhvze93dzry0E16Kwh7A==
-X-Received: by 2002:a5d:6b45:: with SMTP id x5mr27277334wrw.415.1614791389562;
-        Wed, 03 Mar 2021 09:09:49 -0800 (PST)
+        bh=wWFc5LkINmQGNoqDpICyJHLZ4ydJLXuT0gd8wTx9egU=;
+        b=CSOkH6KfroOYa079B4Kn1woLhnbh9Va8QvBFRmQra8WsGu1t/KgSQJtb3xIcMDKisR
+         QkIIbAQ45MJ2baqgRXpBsQ7o3aC1YyWhX+OlRWeLML8jA6V4TLLcQZp0JeD5E2AVPXNL
+         L99SiDitQDEnBJ2gmzdbS3PnIg7l2k7nIRH5WZpHuYyAmJM1FZOxRJVvJfv2Sb6CEvgv
+         1OCdKsmRCHAEAKpvisJsruCZXkOcjFd9p1qVbKK3GjEnVtYgJkwKtoMCZCXt8HD3eKZp
+         EMt4gA8tnDdi2o7jDbMfThrIHDJEk47vYirPEB1GCxfhwZV2tcHr5lvsEDEuIy/NL3gc
+         y1vg==
+X-Gm-Message-State: AOAM530OMxc1LS/xBDPhitdyv9r5D4+2SOQxOn1breaah8PvB1kcoDQ1
+        9ar1du/25YIHYPrJy6i/R7f+RkeuGLbboN/2/0r8xTj9qilJm3PZxxglRDHlZfH/uiZAfa6FZ9L
+        NCt6ix9baSHl9KWJRDXA91PuVN1ChmEkqhLX5c0TyklxfWrDN1Y+/XieY8iEMSySHdzS0QwWBLi
+        AS
+X-Received: by 2002:adf:f841:: with SMTP id d1mr27888726wrq.36.1614791391446;
+        Wed, 03 Mar 2021 09:09:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxDCUZUG8mSoLXRPqSl8I/V8alKK6lYNpH2msZdC3D2Z/G3uqkfDbJx/aOBofOeSHgeyAmuew==
+X-Received: by 2002:adf:f841:: with SMTP id d1mr27888704wrq.36.1614791391241;
+        Wed, 03 Mar 2021 09:09:51 -0800 (PST)
 Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id r7sm33066226wre.25.2021.03.03.09.09.48
+        by smtp.gmail.com with ESMTPSA id r7sm33066226wre.25.2021.03.03.09.09.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:09:49 -0800 (PST)
+        Wed, 03 Mar 2021 09:09:50 -0800 (PST)
 From:   Julien Thierry <jthierry@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
         ardb@kernel.org, masahiroy@kernel.org, jpoimboe@redhat.com,
         peterz@infradead.org, ycote@redhat.com,
         Julien Thierry <jthierry@redhat.com>
-Subject: [RFC PATCH v2 08/13] objtool: arm64: Decode load/store instructions
-Date:   Wed,  3 Mar 2021 18:09:27 +0100
-Message-Id: <20210303170932.1838634-9-jthierry@redhat.com>
+Subject: [RFC PATCH v2 09/13] objtool: arm64: Decode LDR instructions
+Date:   Wed,  3 Mar 2021 18:09:28 +0100
+Message-Id: <20210303170932.1838634-10-jthierry@redhat.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20210303170932.1838634-1-jthierry@redhat.com>
 References: <20210303170932.1838634-1-jthierry@redhat.com>
@@ -70,198 +70,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Decode load/store operations and create corresponding stack_ops for
-operations targetting SP or FP.
-
-Operations storing/loading multiple registers are split into separate
-stack_ops storing single registers.
-
-Operations modifying the base register get an additional stack_op
-for the register update. Since the atomic register(s) load/store + base
-register update gets split into multiple operations, to make sure
-objtool always sees a valid stack, consider store instruction to perform
-stack allocations (i.e. modifying the base pointer before the storing)
-and loads de-allocations (i.e. modifying the base pointer after the
-load).
+Load literal instructions can generate constants inside code sections.
+Record the locations of the constants in order to be able to remove
+their corresponding "struct instruction".
 
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 ---
- tools/objtool/arch/arm64/decode.c | 148 ++++++++++++++++++++++++++++++
- 1 file changed, 148 insertions(+)
+ tools/objtool/arch/arm64/decode.c    | 86 ++++++++++++++++++++++++++++
+ tools/objtool/arch/x86/decode.c      |  5 ++
+ tools/objtool/check.c                |  3 +
+ tools/objtool/include/objtool/arch.h |  3 +
+ 4 files changed, 97 insertions(+)
 
 diff --git a/tools/objtool/arch/arm64/decode.c b/tools/objtool/arch/arm64/decode.c
-index 3008dcbb5e64..4e086d2251f5 100644
+index 4e086d2251f5..b4631d79f13f 100644
 --- a/tools/objtool/arch/arm64/decode.c
 +++ b/tools/objtool/arch/arm64/decode.c
-@@ -105,6 +105,48 @@ int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg)
- 	return -1;
+@@ -30,6 +30,73 @@ static unsigned long sign_extend(unsigned long x, int nbits)
+ 	return ((~0UL + (sign_bit ^ 1)) << nbits) | x;
  }
  
-+static struct stack_op *arm_make_store_op(enum aarch64_insn_register base,
-+					  enum aarch64_insn_register reg,
-+					  int offset)
++struct insn_loc {
++	const struct section *sec;
++	unsigned long offset;
++	struct hlist_node hnode;
++	bool ignorable;
++};
++
++DEFINE_HASHTABLE(invalid_insns, 16);
++
++static int record_invalid_insn(const struct section *sec,
++			       unsigned long offset,
++			       bool ignore)
 +{
-+	struct stack_op *op;
++	struct insn_loc *loc;
++	struct hlist_head *l;
 +
-+	op = calloc(1, sizeof(*op));
-+	if (!op) {
-+		WARN("calloc failed");
-+		return NULL;
-+	}
-+	op->dest.type = OP_DEST_REG_INDIRECT;
-+	op->dest.reg = base;
-+	op->dest.offset = offset;
-+	op->src.type = OP_SRC_REG;
-+	op->src.reg = reg;
-+	op->src.offset = 0;
-+
-+	return op;
-+}
-+
-+static struct stack_op *arm_make_load_op(enum aarch64_insn_register base,
-+					 enum aarch64_insn_register reg,
-+					 int offset)
-+{
-+	struct stack_op *op;
-+
-+	op = calloc(1, sizeof(*op));
-+	if (!op) {
-+		WARN("calloc failed");
-+		return NULL;
-+	}
-+	op->dest.type = OP_DEST_REG;
-+	op->dest.reg = reg;
-+	op->dest.offset = 0;
-+	op->src.type = OP_SRC_REG_INDIRECT;
-+	op->src.reg = base;
-+	op->src.offset = offset;
-+
-+	return op;
-+}
-+
- static struct stack_op *arm_make_add_op(enum aarch64_insn_register dest,
- 					enum aarch64_insn_register src,
- 					int val)
-@@ -125,6 +167,101 @@ static struct stack_op *arm_make_add_op(enum aarch64_insn_register dest,
- 	return op;
- }
- 
-+static int arm_decode_load_store(u32 insn, enum insn_type *type,
-+				 unsigned long *immediate,
-+				 struct list_head *ops_list)
-+{
-+	enum aarch64_insn_register base;
-+	enum aarch64_insn_register rt;
-+	struct stack_op *op;
-+	int size;
-+	int offset;
-+
-+	*type = INSN_OTHER;
-+
-+	if (aarch64_insn_is_store_single(insn) ||
-+	    aarch64_insn_is_load_single(insn))
-+		size = 1 << ((insn & GENMASK(31, 30)) >> 30);
-+	else
-+		size = 4 << ((insn >> 31) & 1);
-+
-+	if (aarch64_insn_is_store_imm(insn) || aarch64_insn_is_load_imm(insn))
-+		*immediate = size * aarch64_insn_decode_immediate(AARCH64_INSN_IMM_12,
-+								  insn);
-+	else if (aarch64_insn_is_store_pre(insn) ||
-+		 aarch64_insn_is_load_pre(insn) ||
-+		 aarch64_insn_is_store_post(insn) ||
-+		 aarch64_insn_is_load_post(insn))
-+		*immediate = sign_extend(aarch64_insn_decode_immediate(AARCH64_INSN_IMM_9,
-+								       insn),
-+					 9);
-+	else if (aarch64_insn_is_stp(insn) || aarch64_insn_is_ldp(insn) ||
-+		 aarch64_insn_is_stp_pre(insn) ||
-+		 aarch64_insn_is_ldp_pre(insn) ||
-+		 aarch64_insn_is_stp_post(insn) ||
-+		 aarch64_insn_is_ldp_post(insn))
-+		*immediate = size * sign_extend(aarch64_insn_decode_immediate(AARCH64_INSN_IMM_7,
-+									      insn),
-+						7);
-+	else
-+		return 1;
-+
-+	base = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RN, insn);
-+	if (base != AARCH64_INSN_REG_FP && base != AARCH64_INSN_REG_SP)
++	l = &invalid_insns[hash_min(offset, HASH_BITS(invalid_insns))];
++	if (!hlist_empty(l)) {
++		loc = hlist_entry(l->first, struct insn_loc, hnode);
++		loc->ignorable |= ignore;
 +		return 0;
-+
-+	offset = *immediate;
-+
-+	if (aarch64_insn_is_store_pre(insn) || aarch64_insn_is_stp_pre(insn) ||
-+	    aarch64_insn_is_store_post(insn) || aarch64_insn_is_stp_post(insn)) {
-+		op = arm_make_add_op(base, base, *immediate);
-+		list_add_tail(&op->list, ops_list);
-+
-+		if (aarch64_insn_is_store_post(insn) || aarch64_insn_is_stp_post(insn))
-+			offset = -*immediate;
-+		else
-+			offset = 0;
-+	} else if (aarch64_insn_is_load_post(insn) || aarch64_insn_is_ldp_post(insn)) {
-+		offset = 0;
 +	}
 +
-+	/* First register */
-+	rt = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT, insn);
-+	if (aarch64_insn_is_store_single(insn) ||
-+	    aarch64_insn_is_store_pair(insn))
-+		op = arm_make_store_op(base, rt, offset);
-+	else
-+		op = arm_make_load_op(base, rt, offset);
-+
-+	if (!op)
++	loc = malloc(sizeof(*loc));
++	if (!loc) {
++		WARN("malloc failed");
 +		return -1;
-+	list_add_tail(&op->list, ops_list);
-+
-+	/* Second register (if present) */
-+	if (aarch64_insn_is_store_pair(insn) ||
-+	    aarch64_insn_is_load_pair(insn)) {
-+		rt = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT2,
-+						  insn);
-+		if (aarch64_insn_is_store_pair(insn))
-+			op = arm_make_store_op(base, rt, offset + size);
-+		else
-+			op = arm_make_load_op(base, rt, offset + size);
-+		if (!op)
-+			return -1;
-+		list_add_tail(&op->list, ops_list);
 +	}
 +
-+	if (aarch64_insn_is_load_pre(insn) || aarch64_insn_is_ldp_pre(insn) ||
-+	    aarch64_insn_is_load_post(insn) || aarch64_insn_is_ldp_post(insn)) {
-+		op = arm_make_add_op(base, base, *immediate);
-+		if (!op)
-+			return -1;
-+		list_add_tail(&op->list, ops_list);
-+	}
++	loc->sec = sec;
++	loc->offset = offset;
++	loc->ignorable = ignore;
++
++	hash_add(invalid_insns, &loc->hnode, loc->offset);
 +
 +	return 0;
 +}
 +
- static int arm_decode_add_sub_imm(u32 instr, bool set_flags,
- 				  enum insn_type *type,
- 				  unsigned long *immediate,
-@@ -244,6 +381,17 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 			*type = INSN_OTHER;
- 		}
- 		break;
-+	case AARCH64_INSN_CLS_LDST:
-+	{
-+		int ret;
++int arch_post_process_instructions(struct objtool_file *file)
++{
++	struct hlist_node *tmp;
++	struct insn_loc *loc;
++	unsigned int bkt;
++	int res = 0;
 +
-+		ret = arm_decode_load_store(insn, type, immediate, ops_list);
-+		if (ret <= 0)
-+			return ret;
++	hash_for_each_safe(invalid_insns, bkt, tmp, loc, hnode) {
++		struct instruction *insn;
 +
-+		*type = INSN_OTHER;
-+		break;
++		insn = find_insn(file, (struct section *) loc->sec, loc->offset);
++		if (insn) {
++			if (loc->ignorable) {
++				list_del(&insn->list);
++				hash_del(&insn->hash);
++				free(insn);
++			} else {
++				WARN_FUNC("can't decode instruction", insn->sec, insn->offset);
++				return -1;
++			}
++		}
++
++		hash_del(&loc->hnode);
++		free(loc);
 +	}
- 	default:
++
++	return res;
++}
++
+ bool arch_callee_saved_reg(unsigned char reg)
+ {
+ 	switch (reg) {
+@@ -389,6 +456,25 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		if (ret <= 0)
+ 			return ret;
+ 
++		if (aarch64_insn_is_ldr_lit(insn)) {
++			long pc_offset;
++
++			pc_offset = insn & GENMASK(23, 5);
++			/* Sign extend and multiply by 4 */
++			pc_offset = (pc_offset << (64 - 23));
++			pc_offset = ((pc_offset >> (64 - 23)) >> 5) << 2;
++
++			if (record_invalid_insn(sec, offset + pc_offset, true))
++				return -1;
++
++			/* 64-bit literal */
++			if (insn & BIT(30)) {
++				if (record_invalid_insn(sec,
++							offset + pc_offset + 4,
++							true))
++					return -1;
++			}
++		}
  		*type = INSN_OTHER;
  		break;
+ 	}
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 431bafb881d4..54f57bfd6f8f 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -619,6 +619,11 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 	return 0;
+ }
+ 
++int arch_post_process_instructions(struct objtool_file *file)
++{
++	return 0;
++}
++
+ void arch_initial_func_cfi_state(struct cfi_init_state *state)
+ {
+ 	int i;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index a0f762a15ad5..7750f6342855 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -325,6 +325,9 @@ static int decode_instructions(struct objtool_file *file)
+ 	if (stats)
+ 		printf("nr_insns: %lu\n", nr_insns);
+ 
++	if (arch_post_process_instructions(file))
++		return -1;
++
+ 	return 0;
+ 
+ err:
+diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
+index ff21f387712d..6c61fc96ff00 100644
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -65,6 +65,7 @@ struct stack_op {
+ 	struct list_head list;
+ };
+ 
++struct objtool_file;
+ struct instruction;
+ 
+ void arch_initial_func_cfi_state(struct cfi_init_state *state);
+@@ -75,6 +76,8 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			    unsigned long *immediate,
+ 			    struct list_head *ops_list);
+ 
++int arch_post_process_instructions(struct objtool_file *file);
++
+ bool arch_callee_saved_reg(unsigned char reg);
+ 
+ unsigned long arch_jump_destination(struct instruction *insn);
 -- 
 2.25.4
 
