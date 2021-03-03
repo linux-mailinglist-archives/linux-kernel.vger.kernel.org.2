@@ -2,62 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A66632BEF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E5932BF02
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576728AbhCCRrr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 12:47:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244607AbhCCOs0 (ORCPT
+        id S1577126AbhCCRsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:48:15 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35762 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359556AbhCCOta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:48:26 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60692C0613E5
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:46:48 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHSlx-0004m9-Px; Wed, 03 Mar 2021 15:46:45 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHSlv-0001j1-BD; Wed, 03 Mar 2021 15:46:43 +0100
-Message-ID: <1d80a0d0a66e4dedba2beca51cae53ff5258a260.camel@pengutronix.de>
-Subject: Re: [PATCH v6 22/37] reset: reset-scmi: port driver to the new
- scmi_reset_proto_ops interface
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com
-Date:   Wed, 03 Mar 2021 15:46:43 +0100
-In-Reply-To: <20210202221555.41167-23-cristian.marussi@arm.com>
-References: <20210202221555.41167-1-cristian.marussi@arm.com>
-         <20210202221555.41167-23-cristian.marussi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Wed, 3 Mar 2021 09:49:30 -0500
+Received: from [IPv6:2a01:e0a:4cb:a870:30e8:5098:73c5:2bfe] (unknown [IPv6:2a01:e0a:4cb:a870:30e8:5098:73c5:2bfe])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5F13F1F459FA;
+        Wed,  3 Mar 2021 14:48:46 +0000 (GMT)
+Subject: Re: [PATCH v3 4/5] media: hantro: Use reset driver
+To:     Philipp Zabel <p.zabel@pengutronix.de>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        ezequiel@collabora.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+ <20210301151754.104749-5-benjamin.gaignard@collabora.com>
+ <29bf66f4b531ec701e85c23a411e40e3621b0ff8.camel@pengutronix.de>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <ef2b0aff-cca3-6c75-1f25-176332e3162b@collabora.com>
+Date:   Wed, 3 Mar 2021 15:48:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <29bf66f4b531ec701e85c23a411e40e3621b0ff8.camel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-02 at 22:15 +0000, Cristian Marussi wrote:
-> Port driver to the new SCMI Reset interface based on protocol handles
-> and common devm_get_ops().
-> 
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 
-Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+Le 03/03/2021 à 15:39, Philipp Zabel a écrit :
+> On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
+>> Rather use a reset like feature inside the driver use the reset
+>> controller API to get the same result.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>   drivers/staging/media/hantro/Kconfig        |  1 +
+>>   drivers/staging/media/hantro/imx8m_vpu_hw.c | 61 ++++-----------------
+>>   2 files changed, 12 insertions(+), 50 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/hantro/Kconfig b/drivers/staging/media/hantro/Kconfig
+>> index 5b6cf9f62b1a..dd1d4dde2658 100644
+>> --- a/drivers/staging/media/hantro/Kconfig
+>> +++ b/drivers/staging/media/hantro/Kconfig
+>> @@ -20,6 +20,7 @@ config VIDEO_HANTRO_IMX8M
+>>   	bool "Hantro VPU i.MX8M support"
+>>   	depends on VIDEO_HANTRO
+>>   	depends on ARCH_MXC || COMPILE_TEST
+>> +	select RESET_VPU_IMX8MQ
+>>   	default y
+>>   	help
+>>   	  Enable support for i.MX8M SoCs.
+>> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>> index c222de075ef4..d5b4312b9391 100644
+>> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>> @@ -7,49 +7,12 @@
+>>   
+>>   #include <linux/clk.h>
+>>   #include <linux/delay.h>
+>> +#include <linux/reset.h>
+>>   
+>>   #include "hantro.h"
+>>   #include "hantro_jpeg.h"
+>>   #include "hantro_g1_regs.h"
+>>   
+>> -#define CTRL_SOFT_RESET		0x00
+>> -#define RESET_G1		BIT(1)
+>> -#define RESET_G2		BIT(0)
+>> -
+>> -#define CTRL_CLOCK_ENABLE	0x04
+>> -#define CLOCK_G1		BIT(1)
+>> -#define CLOCK_G2		BIT(0)
+>> -
+>> -#define CTRL_G1_DEC_FUSE	0x08
+>> -#define CTRL_G1_PP_FUSE		0x0c
+>> -#define CTRL_G2_DEC_FUSE	0x10
+>> -
+>> -static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
+>> -{
+>> -	u32 val;
+>> -
+>> -	/* Assert */
+>> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+>> -	val &= ~reset_bits;
+>> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+>> -
+>> -	udelay(2);
+>> -
+>> -	/* Release */
+>> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+>> -	val |= reset_bits;
+>> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+>> -}
+>> -
+>> -static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
+>> -{
+>> -	u32 val;
+>> -
+>> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+>> -	val |= clock_bits;
+>> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+> The way it is implemented in the reset driver, the clocks are now
+> ungated between assert and deassert instead of afterwards. Is this on
+> purpose?
 
-regards
-Philipp
+No and that could be changed on next version.
+
+Benjamin
+
+>
+> regards
+> Philipp
+>
