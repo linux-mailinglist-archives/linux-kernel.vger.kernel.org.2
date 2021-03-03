@@ -2,211 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B79632BD79
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEFC32BCE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384496AbhCCQIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:08:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351618AbhCCLge (ORCPT
+        id S234286AbhCCPBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:01:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843059AbhCCKZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:36:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614771304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YtKbwEmP7H421NTmXaZCzpu8hrW/nWzRy135iMLmxUk=;
-        b=cUucRan8I0PN3D6IVlhB7rCyH4oa7OiXLnGVZcyQe3aus8/ieB8gwprMJ5f04tvTcRZbrk
-        /imVJJEOf6gzY2UPGGzvRrZIbZKPhipnknrGY6DrxFjMZUS3OIgIL0KgdoNcJxGzAJ2py6
-        rW1J/ki50jfX8AmUHsxuIn0GZjjBIOg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-Qzbk6FMePyuxAZzVB2-Njw-1; Wed, 03 Mar 2021 03:29:16 -0500
-X-MC-Unique: Qzbk6FMePyuxAZzVB2-Njw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 93B7D80196C;
-        Wed,  3 Mar 2021 08:29:14 +0000 (UTC)
-Received: from gondolin (ovpn-113-85.ams2.redhat.com [10.36.113.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ED0395C257;
-        Wed,  3 Mar 2021 08:29:07 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 09:29:05 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        Wed, 3 Mar 2021 05:25:04 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2062f.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D76C06121D
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:30:52 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N4YUdLZtUmXO9WwFQSt9D62WdcKyRjooT6jGkHiB8rClxuaIpyh64zl44zmoFOLiRfxT2qB2j6/3jyJ+zukxFK6NTMyhwnOidNk84vDG/qPcGiQhgw0XLZIll91LQCR8iHni0xpYsoyhPUpiITmMAC5RvM7Fkp1DaAKd1SoTSr9H7vNRHj/xpmXLQRG2SAuzQb0usAQjIrXyiRLrw+F0N2VFdx5wvOaMT2GKHJTEcyeQybCBiHqRUTW4B5Mii7rQO3mvHckTzyW0Ct6FhHsRsb9V6dXtHX9Ap4QlBjLegoBQ/AH/5EcuOOKm3h88oYFL5zI+RuKmh+8CH0YoERBYRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h90L60eBns+8UXaMe11qcdZ4w5DYYE5GY+wsWGOZLx0=;
+ b=JUfN6mjcnfBMYq//l5bBp0AJRlkMOnWa1JqTemFzLWp7w4fa1/iG9HYMzAO6XHFEx8qBVXKnKYUcy4n1jzGEHNin+XtSw3Xxf2mAYeegGAQABpP3+1WTjvKR3XvnQvAs/Sr2BUdNRbzEfcUOtLpqvEkNzBir6yq/Sjk8MSKEcy71x08SqxE0c1jbGlh5hFyD6quTQ/3Gb/SNpUe9tQJwwDY0PDe7XKAY8B2awNhDj56XqSid+8xK/EaD6rjnOVOZ4Evt+cNPB/REtB1nrrP4461fKNGob52ljvlxnnegjFtr3BwN2PU2AHgYhXKxGim//Ugt8uulQVd+3C4gdaJExg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h90L60eBns+8UXaMe11qcdZ4w5DYYE5GY+wsWGOZLx0=;
+ b=Y5OPB6gvsLQAv8yjC3joGklSWZV46La68gYnKNYukfo2jUJ1LumYbjeYHt2AWXQHqkoqlUCVfxmM0yvIe56JuLLQYjSXzHI60sAFPWE0KbNSULrzdAo5pyCRPZ17mQVqJVNZ3PufLLHmhD8GO1djLYZK4GSA/pvUU1ORjTPwPLg=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18) by MWHPR11MB1680.namprd11.prod.outlook.com
+ (2603:10b6:301:d::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.22; Wed, 3 Mar
+ 2021 08:30:35 +0000
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::ad02:3dcf:d3e5:b27d]) by MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::ad02:3dcf:d3e5:b27d%10]) with mapi id 15.20.3890.030; Wed, 3 Mar 2021
+ 08:30:35 +0000
+Subject: Re: [PATCH 2/2] perf tools: Improve EOPNOTSUPP error reporting
+From:   He Zhe <zhe.he@windriver.com>
+To:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        virtio-dev@lists.oasis-open.org
-Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
- reset to zero
-Message-ID: <20210303092905.677eb66c.cohuck@redhat.com>
-In-Reply-To: <5f6972fe-7246-b622-958d-9cab8dd98e21@redhat.com>
-References: <20210223041740-mutt-send-email-mst@kernel.org>
-        <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
-        <20210223110430.2f098bc0.cohuck@redhat.com>
-        <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
-        <20210223115833.732d809c.cohuck@redhat.com>
-        <8355f9b3-4cda-cd2e-98df-fed020193008@redhat.com>
-        <20210224121234.0127ae4b.cohuck@redhat.com>
-        <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
-        <20210225135229-mutt-send-email-mst@kernel.org>
-        <0f8eb381-cc98-9e05-0e35-ccdb1cbd6119@redhat.com>
-        <20210228162306-mutt-send-email-mst@kernel.org>
-        <cdd72199-ac7b-cc8d-2c40-81e43162c532@redhat.com>
-        <20210302130812.6227f176.cohuck@redhat.com>
-        <5f6972fe-7246-b622-958d-9cab8dd98e21@redhat.com>
-Organization: Red Hat GmbH
+        Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        acme@kernel.org
+References: <20210223082535.48730-1-zhe.he@windriver.com>
+ <20210223082535.48730-2-zhe.he@windriver.com>
+Message-ID: <0bf98239-8956-9d9b-64e1-dee31bf18d93@windriver.com>
+Date:   Wed, 3 Mar 2021 16:30:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210223082535.48730-2-zhe.he@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: BY3PR10CA0002.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::7) To MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.175] (60.247.85.82) by BY3PR10CA0002.namprd10.prod.outlook.com (2603:10b6:a03:255::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 3 Mar 2021 08:30:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8089d87c-7a69-45af-4f9c-08d8de1e9dd9
+X-MS-TrafficTypeDiagnostic: MWHPR11MB1680:
+X-Microsoft-Antispam-PRVS: <MWHPR11MB1680AE6CE2D2BE6E60BFBED58F989@MWHPR11MB1680.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:639;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xkUvuEI+nDE2jUyVisMKKAP/ANHCSKnTXAte/QKlm6+o3mxFvIwoaR2ynBu6U62yy7x6/0jIu/oIubAzjiVLknGPjOx+CYooIuQdwOVd6I51BR8vCouFmLYvyFrUOXZaPE+tOgM9mZCu9zY4bn6BNjKcGXZEzSUZsU+ygg0ZGPaREu5e12+rMgP4lu5jqizSPg2dr/S1KUARhYVR9tGfuPFqsmeReR6j2ospMyH5Q7NgUf6lNU5/opww1j6YfClWexgfdXkY8HAbAuEAFIgix2QckbZW8O+bih7Y8M6CccGDPgIWq2BS/TEw1FFw0atKCXhG/svPzSe4a0rEU4SZLarNIQ9Wlo7TGeQ4PgaJjtHIW4IRms/o6MPDmz4FwYcJdJZqcAwMXvgDDOg/PSGG68AjISuK7BcB7XCxe5x3clg1HImPMwx81SOylB6bsz4XDsBe/K0apZ6NhsBSuLw7fEn/d+Q4VAHYX/lEU/GaXMdx6wLYc3atFd2GOTj45cQvWx8Cx4N5+y8rRfwn1+rlRPtkbH8yvBJ2+LqrxpCJWJ0olNj/TMzQ/I8aDZwOYHsLt8nCYvdT8XkzWT9Lp/xA/CzDJq/+2GRXhyF0XohOoO0f15KSKdTRJYuwu/TJJ1/YreJpftCnbxOE0giLBsy1pw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2351.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(39830400003)(396003)(376002)(478600001)(66556008)(83380400001)(956004)(16526019)(66476007)(66946007)(52116002)(921005)(36756003)(53546011)(8676002)(6486002)(5660300002)(31686004)(31696002)(2906002)(6706004)(86362001)(7416002)(8936002)(316002)(6666004)(186003)(26005)(2616005)(16576012)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TFRScWl6Q2FjWEJQSjZOUUtJVWV1c0dFWS9WSFdkODVsMG0wWW1VV2hSYkhr?=
+ =?utf-8?B?Q21iRHprS1FEc1QzSWRySkxHTW16ZWpkcEtidlVCWmxONUNmbkNXaEEydHY2?=
+ =?utf-8?B?Mk1UQW9sSnFmZXFhOGx2bE52SG9kT1RybzhDSng5enc2RTZmZklzZXc4Rk15?=
+ =?utf-8?B?Vy9sOEpOWVpXMStjMGczZElPV2xERmVLWHkwazR5eHNIVk5ISm52QjNsN1lS?=
+ =?utf-8?B?MmFlcHVta2U4czEwY2dXYlBKZnR3dE0yNUE0R3UwS3NBWE1VZTZDM0tmanFD?=
+ =?utf-8?B?L0FGQUh1amJ2OStpUXZoNTBUc05sMFd0UkhxNzk1QmFLdExUdnhXM1FTRmtt?=
+ =?utf-8?B?T3lFem5WY1JPWFp2akF3dmJPOTFod2NoOGpYNHdFRTRtNXEyU0gwSVdzMWR2?=
+ =?utf-8?B?TVlVWVFUN3JRcmRoc0hpcGxtQ282eGRERC9keENWRGo0ZElqN3hBc3FGOXAr?=
+ =?utf-8?B?RVlmRVI0dElpeDJlNkljWnEvRVhGR0JYRGs0YXAyamJLbEQrb25kc3J1RGJq?=
+ =?utf-8?B?ZDdZbEZWSml3Skh0VzRVVW1EdExGRGhxRVRsWk1WWFBVOEFpMVZsZVcwekl5?=
+ =?utf-8?B?dWRMTVRjem5PVW5uWWJ4Y3ZaSjVCNHpnWEp1dzlBZGNndmZEVXp0TFlhNWd3?=
+ =?utf-8?B?VEw2MHRSZUZWR0R1RWdOUjFSQmJ3VkNhNUJZZ2RXaVlUbGVjYnA2WHRBZWp1?=
+ =?utf-8?B?SWdody9XSExCM1NrSkRvOTNlUHdraCsyN3FGNkwwcUJtQncvRDJ4SW9YUisr?=
+ =?utf-8?B?Q3hrS3hWQnlXSlIzL1BtSkJsVlFvZnFTT1NQYm1TTC9obFlxamRUb2RKZ3Bl?=
+ =?utf-8?B?bzNVQVdjdU9LVnBOMmpYa3VRUjVpWGZqek9JVURLbG9Eb2x0dkRtY3c0OFMz?=
+ =?utf-8?B?NDRDV2VodmZvTVk0QVowL2ZwcEZtVkYxVENHamFJeGFnVUVuL2FDa2JFc1Ix?=
+ =?utf-8?B?M1BTV1RXY2pIakI2TDhjV2dvVzc1Smw0U2JLOHVIcEFlZ29zTEZsVDBndWJa?=
+ =?utf-8?B?bkdCZk1GbWhYem9oWlYxT3FudjhEVE42WFUraUZQRW5sSnNYRXREcHZpcndM?=
+ =?utf-8?B?TmprYm5RZ1hwSHVqOFNNdGltZU5JSjYzZmRWK2xvT2k4QW5UTFFXL2JJZEJq?=
+ =?utf-8?B?cVpvQUZmZG1sSG1QdmpmZTBTTjFBb1pMcW5LRzBtY09NT0lNSW53Y05TZ1RX?=
+ =?utf-8?B?Mi9ROVVEMnNlMzhXYjl2RWc4QVJIUkVEV3dUQTdSV3JlSjNmWk83amZlSUpS?=
+ =?utf-8?B?RlBBaFRSRmhEV3FJUUhBbXd2T0ZGUjJYcU1HTXdHVXRDdEZGbVk4ZjBiUVI4?=
+ =?utf-8?B?Y2pKQkRidzgzTFB5SW05ZW5GUGJVQTVFZ1pGQXFMWXlmbVdrSHJWejJlVUtR?=
+ =?utf-8?B?TTY0d0FSUlR1c01ONmVUT0U5dlkvNHJKcnc2ZFhHS2ZKMEFHTUxxUW5vdmlo?=
+ =?utf-8?B?M1JSWW9tcFNXcVI1TExNOVM1UlVCNGU1WFRSN3BCMUQ5Y0ZJcnZMcFBvcEVR?=
+ =?utf-8?B?QzVSSUdqUDE3QkVzSENSb01nOGl6UjAwdFBMM3cwUGM2NVBMS2JkQ3ZBYlBn?=
+ =?utf-8?B?WWs3ZE8yOHladGlqMDNGUDNGc2lPNy96L2lKcTZzaE1hSG91dzhQbk9uRG1R?=
+ =?utf-8?B?dEkvTkozQjVoVUM5Nk9aNjVTNmV6VFNLSEh0cU94THpJalBRMFZ4cjdCclVI?=
+ =?utf-8?B?NzZVMWlmQklWeE1pT0ZCY1NUV0d0aU1tKzVzSW5pRnpodHJka05RWUZQdXFW?=
+ =?utf-8?Q?tlokfN9r4auPniZ6QxvLAW/eWkEyRXYUAySuxsD?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8089d87c-7a69-45af-4f9c-08d8de1e9dd9
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2351.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2021 08:30:35.4483
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /rpCczk8RPchqWWtE6iYDLWyo0H/5ZoPSz8N+wcQGeMUtZ+TRddP+XKy8ifhQ8qqK5qT7VkrnZpJYvbGIxNmDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1680
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 12:01:01 +0800
-Jason Wang <jasowang@redhat.com> wrote:
+Oops, add some supporters from get_maintainer.pl
 
-> On 2021/3/2 8:08 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote:
-> > On Mon, 1 Mar 2021 11:51:08 +0800
-> > Jason Wang <jasowang@redhat.com> wrote:
-> > =20
-> >> On 2021/3/1 5:25 =E4=B8=8A=E5=8D=88, Michael S. Tsirkin wrote: =20
-> >>> On Fri, Feb 26, 2021 at 04:19:16PM +0800, Jason Wang wrote: =20
-> >>>> On 2021/2/26 2:53 =E4=B8=8A=E5=8D=88, Michael S. Tsirkin wrote: =20
-> >>>>> Confused. What is wrong with the above? It never reads the
-> >>>>> field unless the feature has been offered by device. =20
-> >>>> So the spec said:
-> >>>>
-> >>>> "
-> >>>>
-> >>>> The following driver-read-only field, max_virtqueue_pairs only exist=
-s if
-> >>>> VIRTIO_NET_F_MQ is set.
-> >>>>
-> >>>> "
-> >>>>
-> >>>> If I read this correctly, there will be no max_virtqueue_pairs field=
- if the
-> >>>> VIRTIO_NET_F_MQ is not offered by device? If yes the offsetof() viol=
-ates
-> >>>> what spec said.
-> >>>>
-> >>>> Thanks =20
-> >>> I think that's a misunderstanding. This text was never intended to
-> >>> imply that field offsets change beased on feature bits.
-> >>> We had this pain with legacy and we never wanted to go back there.
-> >>>
-> >>> This merely implies that without VIRTIO_NET_F_MQ the field
-> >>> should not be accessed. Exists in the sense "is accessible to driver".
-> >>>
-> >>> Let's just clarify that in the spec, job done. =20
-> >>
-> >> Ok, agree. That will make things more eaiser. =20
-> > Yes, that makes much more sense.
-> >
-> > What about adding the following to the "Basic Facilities of a Virtio
-> > Device/Device Configuration Space" section of the spec:
-> >
-> > "If an optional configuration field does not exist, the corresponding
-> > space is still present, but reserved." =20
->=20
->=20
-> This became interesting after re-reading some of the qemu codes.
->=20
-> E.g in virtio-net.c we had:
->=20
-> *static VirtIOFeature feature_sizes[] =3D {
->  =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_MAC,
->  =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, mac)},
->  =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_STATUS,
->  =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, status=
-)},
->  =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_MQ,
->  =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, max_vi=
-rtqueue_pairs)},
->  =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_MTU,
->  =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, mtu)},
->  =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_SPEED_DUPLEX,
->  =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, duplex=
-)},
->  =C2=A0=C2=A0=C2=A0 {.flags =3D (1ULL << VIRTIO_NET_F_RSS) | (1ULL <<=20
-> VIRTIO_NET_F_HASH_REPORT),
->  =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, suppor=
-ted_hash_types)},
->  =C2=A0=C2=A0=C2=A0 {}
-> };*
->=20
-> *It has a implict dependency chain. E.g MTU doesn't presnet if=20
-> DUPLEX/RSS is not offered ...
-> *
+Zhe
 
-But I think it covers everything up to the relevant field, no? So MTU
-is included if we have the feature bit, even if we don't have
-DUPLEX/RSS.
-
-Given that a config space may be shorter (but must not collapse
-non-existing fields), maybe a better wording would be:
-
-"If an optional configuration field does not exist, the corresponding
-space will still be present if it is not at the end of the
-configuration space (i.e., further configuration fields exist.) This
-implies that a given field, if it exists, is always at the same offset
-from the beginning of the configuration space."
-
-
-> >
-> > (Do we need to specify what a device needs to do if the driver tries to
-> > access a non-existing field? We cannot really make assumptions about
-> > config space accesses; virtio-ccw can just copy a chunk of config space
-> > that contains non-existing fields... =20
->=20
->=20
-> Right, it looks to me ccw doesn't depends on config len which is kind of=
-=20
-> interesting. I think the answer depends on the implementation of both=20
-> transport and device:
-
-(virtio-ccw is a bit odd, because channel I/O does not have the concept
-of a config space and I needed to come up with something)
-
->=20
-> Let's take virtio-net-pci as an example, it fills status unconditionally=
-=20
-> in virtio_net_set_config() even if VIRTIO_NET_F_STATUS is not=20
-> negotiated. So with the above feature_sizes:
->=20
-> 1) if one of the MQ, MTU, DUPLEX or RSS is implemented, driver can still=
-=20
-> read status in this case
-> 2) if none of the above four is negotied, driver can only read a 0xFF=20
-> (virtio_config_readb())
->=20
->=20
-> > I guess the device could ignore
-> > writes and return zeroes on read?) =20
->=20
->=20
-> So consider the above, it might be too late to fix/clarify that in the=20
-> spec on the expected behaviour of reading/writing non-exist fields.
-
-We could still advise behaviour via SHOULD, though I'm not sure it adds
-much at this point in time.
-
-It really feels a bit odd that a driver can still read and write fields
-for features that it did not negotiate, but I fear we're stuck with it.
-
->=20
-> Thanks
->=20
->=20
-> >
-> > I've opened https://github.com/oasis-tcs/virtio-spec/issues/98 for the
-> > spec issues.
-> > =20
+On 2/23/21 4:25 PM, He Zhe wrote:
+> There may be multiple reasons for EOPNOTSUPP. Sometimes we cannot determine
+> which one it is.
+>
+> For example, when we set up uprobe with 32-bit perf and arm64 kernel on
+> some hardware that does not support sampling/overflow-interrupts,
+> $ perf probe -x /lib/libc.so.6 malloc
+> $ perf record -e probe_libc:malloc -a ls
+>
+> Before this patch:
+> probe_libc:malloc: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
+>
+> After this patch:
+> probe_libc:malloc: PMU Hardware may not support sampling/overflow-interrupts. Try 'perf stat'.
+> Some 64-bit architectures may not support 32-bit instruction probing.
+>
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> ---
+>  tools/perf/util/evsel.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index 1bf76864c4f2..aa56511ddf60 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -2697,22 +2697,24 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+>  		break;
+>  	case EOPNOTSUPP:
+>  		if (evsel->core.attr.aux_output)
+> -			return scnprintf(msg, size,
+> -	"%s: PMU Hardware doesn't support 'aux_output' feature",
+> +			printed += scnprintf(msg + printed, size,
+> +	"%s: PMU Hardware may not support 'aux_output' feature.\n",
+>  					 evsel__name(evsel));
+>  		if (evsel->core.attr.sample_period != 0)
+> -			return scnprintf(msg, size,
+> -	"%s: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'",
+> +			printed += scnprintf(msg + printed, size,
+> +	"%s: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'.\n",
+>  					 evsel__name(evsel));
+>  		if (evsel->core.attr.precise_ip)
+> -			return scnprintf(msg, size, "%s",
+> -	"\'precise\' request may not be supported. Try removing 'p' modifier.");
+> +			printed += scnprintf(msg + printed, size, "%s",
+> +	"\'precise\' request may not be supported. Try removing 'p' modifier.\n");
+>  #if defined(__i386__) || defined(__x86_64__)
+>  		if (evsel->core.attr.type == PERF_TYPE_HARDWARE)
+> -			return scnprintf(msg, size, "%s",
+> +			printed += scnprintf(msg + printed, size, "%s",
+>  	"No hardware sampling interrupt available.\n");
+>  #endif
+> -		break;
+> +		scnprintf(msg + printed, size, "%s",
+> +	"Some 64-bit architectures may not support 32-bit instruction uprobe.\n");
+> +		return;
+>  	case EBUSY:
+>  		if (find_process("oprofiled"))
+>  			return scnprintf(msg, size,
 
