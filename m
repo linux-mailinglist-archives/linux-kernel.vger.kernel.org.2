@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3836432BD0E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FE232BC9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447929AbhCCPQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:16:54 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:58334 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241433AbhCCK2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:28:49 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lHO1m-0000ol-IK; Wed, 03 Mar 2021 09:42:46 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-mtd@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mtd: nand: Fix error handling in nand_prog_page_op
-Date:   Wed,  3 Mar 2021 09:42:46 +0000
-Message-Id: <20210303094246.5724-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        id S1359421AbhCCOTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:19:22 -0500
+Received: from verein.lst.de ([213.95.11.211]:36062 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1842936AbhCCKWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:22:45 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id EAEBC68D01; Wed,  3 Mar 2021 10:43:09 +0100 (CET)
+Date:   Wed, 3 Mar 2021 10:43:09 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
+Subject: Re: [PATCH v2 09/10] fs/xfs: Handle CoW for fsdax write() path
+Message-ID: <20210303094309.GB15389@lst.de>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com> <20210226002030.653855-10-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226002030.653855-10-ruansy.fnst@fujitsu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Feb 26, 2021 at 08:20:29AM +0800, Shiyang Ruan wrote:
+>  	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
+> -			&xfs_buffered_write_iomap_ops);
+> +		  IS_DAX(VFS_I(ip)) ?
+> +		  &xfs_dax_write_iomap_ops : &xfs_buffered_write_iomap_ops);
 
-The less than zero comparison with status is always false because status
-is a u8. Fix this by using ret as the return check for the call to
-chip->legacy.waitfunc() and checking on this and assigning status to ret
-if it is OK.
+Please add a xfs_zero_range helper that picks the right iomap_ops
+instead of open coding this in a few places.
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: 52f67def97f1 ("mtd: nand: fix error handling in nand_prog_page_op() #1")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mtd/nand/raw/nand_base.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> +static int
+> +xfs_dax_write_iomap_end(
+> +	struct inode		*inode,
+> +	loff_t			pos,
+> +	loff_t			length,
+> +	ssize_t			written,
+> +	unsigned int		flags,
+> +	struct iomap		*iomap)
+> +{
+> +	int			error = 0;
+> +	xfs_inode_t		*ip = XFS_I(inode);
+> +
+> +	if (pos + written > i_size_read(inode)) {
+> +		i_size_write(inode, pos + written);
+> +		error = xfs_setfilesize(ip, pos, written);
+> +	}
+> +	if (xfs_is_cow_inode(ip))
+> +		error = xfs_reflink_end_cow(ip, pos, written);
+> +
+> +	return error;
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 0f6babefaed2..4f263c22c80d 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1462,9 +1462,10 @@ int nand_prog_page_op(struct nand_chip *chip, unsigned int page,
- 				     page);
- 		chip->legacy.write_buf(chip, buf, len);
- 		chip->legacy.cmdfunc(chip, NAND_CMD_PAGEPROG, -1, -1);
--		status = chip->legacy.waitfunc(chip);
--		if (status < 0)
--			return status;
-+		ret = chip->legacy.waitfunc(chip);
-+		if (ret < 0)
-+			return ret;
-+		status = ret;
- 	}
- 
- 	if (status & NAND_STATUS_FAIL)
--- 
-2.30.0
+What is the advantage of the ioemap_end handler here?  It adds another
+indirect funtion call to the fast path, so if we can avoid it, I'd
+rather do that.
 
+Also, shouldn't we cancel the COW rather than finishing it when setting
+the file size fails?
