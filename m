@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C49732BABF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199F432BABC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358154AbhCCLz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:55:56 -0500
-Received: from mga03.intel.com ([134.134.136.65]:61075 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353312AbhCCFId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 00:08:33 -0500
-IronPort-SDR: LJVo5w0mtb/XkrK/qqeqhK4kG07idtpDRnHw8JKRZi4p5uMaVq8IMtN7nEPyo86Q1xYpsCc+bT
- d6M2o7B0V2FA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="187160062"
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="187160062"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 21:06:15 -0800
-IronPort-SDR: 2c4Ag05Xnpus+ArzV0OBxfdEX2R3S3Eys+j+1+/KFIAcsKXGg+NAnCCBddEDDi0oAUmGqDRUnh
- RvU1nazkV9PQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="428035702"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Mar 2021 21:06:12 -0800
-Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Sanjay Kumar <sanjay.k.kumar@intel.com>
-Subject: Re: [PATCH v2 2/4] iommu/vt-d: Enable write protect propagation from
- guest
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <1614680040-1989-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1614680040-1989-3-git-send-email-jacob.jun.pan@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <ed71158c-d906-f503-3372-dd7936a992ba@linux.intel.com>
-Date:   Wed, 3 Mar 2021 12:57:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1614680040-1989-3-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1350139AbhCCLvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:51:07 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:48553 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353166AbhCCE6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 23:58:52 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210303045807epoutp02e658b3b0f5250f251fe3c93f89df6bb1~ovEjZoRoY2266822668epoutp02L
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:58:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210303045807epoutp02e658b3b0f5250f251fe3c93f89df6bb1~ovEjZoRoY2266822668epoutp02L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614747487;
+        bh=Pc1wOYKNjTeOPqPY5AL7PRnrrPlngedIuzWw71SJAWo=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=lf3o46zP/c2HYjBtT24AXUU1wteF2z1ghfpNb/Rjfk/v4IGChwAUHxZSQzvqB55bD
+         r2gQUh/nBXFz4J1iIz68W2yg+j0+Eu/hmuQafXbe7fAt4QyyjSowjs6w3njO26zlVy
+         LalwpUm3++zpgILmlFeyNYz3cdInnikp0ww4gUcs=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210303045806epcas2p285a5e7778cce1eb26a1220dfbe046bd0~ovEifM6RX2200022000epcas2p2B;
+        Wed,  3 Mar 2021 04:58:06 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.184]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Dr1wF2kXjz4x9QG; Wed,  3 Mar
+        2021 04:58:05 +0000 (GMT)
+X-AuditID: b6c32a48-50fff7000000cd1f-27-603f175dd69f
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        63.77.52511.D571F306; Wed,  3 Mar 2021 13:58:05 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Can Guo <cang@codeaurora.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <967425555dc20554ce312c6929967d82@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210303045804epcms2p8ba1a2455e015c27354cda36091d3f790@epcms2p8>
+Date:   Wed, 03 Mar 2021 13:58:04 +0900
+X-CMS-MailID: 20210303045804epcms2p8ba1a2455e015c27354cda36091d3f790
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA52Te0xTZxjG8/WUcwpJzaHcvuEc3UE3YaO0hZaPjVvchWPMEpyamamBrhyB
+        DEpzTlHnzOjkOu6LC2hFYGVKBmxFBSwgk1CHOK3TISjgFCedqxHksrl1GzpKyzT7c/89+eV9
+        3+d9vi+vABP1EoGCDI2OYTWqTAr34ndaQqLCdgTEp0jry73RRF0njnoLBwlkdwzjyDI+TaDq
+        GQeG5kzHPJC9PwQ1T7yD8hpNOKq16nmovLIDR3duzBPIeL2ThyofFfHRUHctjkqvmXHUdO4R
+        D423e6GjHaMAfVLTykfGz3v4CX700NUN9FBFOY/uMvxI0FXGPkCfOdJK0Pnnz/DpWdsYn65o
+        bwb0/Inn6KK+Ul6S17t6EKNi1ekZuxgxo1Fnp2Zo0mKpLZvfDEOUOD2b08VS22RILpFFKySR
+        0RJ51I5XZFKpXEGJNaosJpbaE+bupsSsWrtYrWM4HcuomUXEJnA6VRoj4VRZXI4mTaLOzqLE
+        u1SZOYt9VHhcTDqjSmVYccokSG9rs+PaaXxP18eHcD2o9igBngJIRsK20ntECfASiEgzgH1N
+        xaAECARC0hsumH2cNT5kPJy1VgKnFpEUNF0xEC4ugWO3W5c4Tr4MawZvLXFfcj387UCLh3Mm
+        Rg7hcL9FD1xmQniwyMZ36ZXwVFPHEvck4+Bc2X7CxdfCP46VYy7tB0dbpohl/WCg3j3HFxbc
+        tLprvOGEo8fNn4EDPTM8l86FHTf+BM4lIFkGoKVrzJ04HI4UH19aQki+Besu5+FOzSfXwHvW
+        SQ9neEi+Dg83veTEGBkET03VYk6MkSHQ1B3uqgiGZ8f4y6n0x/8i/qsxcgUstiz8y811k+7N
+        XoBfO0y8KhBsePLQhqe8DE+8GgDWDPwZLZeVxnBybeTT/3wCLJ1AKG0Gh6dmJP2AJwD9AAow
+        ylcYYI9NEQlTVR/sZdjsZDYnk+H6wd7FkJ9igX7q7MUb0uiSZUqpXKmIiIyIUEQq/jdWyJVK
+        abQCKZRyRAUIWelEsohMU+mY9xlGy7DL5jyBZ6Cet3s0MeiH84UVK+Kpo5n8ocKNbzeKNhp0
+        +TXmpKC5+74NdwuuF9BlbdLQK5cGH9Q8/wsz8mF9uOLQyff87fYkTXepiagJOGJZt+riz7fD
+        w/K/sQ6Axn3VF7QxdWLDyjtrggN9yAqT41JeLmcZMQh3+ouGrTO0cbjn8verN22vWmt5eGBK
+        jX4vMQZPtyV+2fnFupaz7UkdB9db7m9no2LixLa740FbR4LnH2pXX6CunduQe1r2Ru9rtn3I
+        qIzZvNXWKnqsMjS++mK/JFT9E1pV1szd/GyipDZRvluT+9HpcNN8gzzh1q/PJn3FzI7G2rb5
+        zlx9vInZ+Z3lYrtj4du/t5y0oVqKz6WrZKEYy6n+Aaw5bUfQBAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210226073233epcms2p80fca2dffabea03143a9414838f757633
+References: <967425555dc20554ce312c6929967d82@codeaurora.org>
+        <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
+        <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
+        <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 6:13 PM, Jacob Pan wrote:
-> Write protect bit, when set, inhibits supervisor writes to the read-only
-> pages. In guest supervisor shared virtual addressing (SVA), write-protect
-> should be honored upon guest bind supervisor PASID request.
-> 
-> This patch extends the VT-d portion of the IOMMU UAPI to include WP bit.
-> WPE bit of the  supervisor PASID entry will be set to match CPU CR0.WP bit.
-> 
-> Signed-off-by: Sanjay Kumar <sanjay.k.kumar@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> ---
->   drivers/iommu/intel/pasid.c | 3 +++
->   include/uapi/linux/iommu.h  | 3 ++-
->   2 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-> index 0b7e0e726ade..b7e39239f539 100644
-> --- a/drivers/iommu/intel/pasid.c
-> +++ b/drivers/iommu/intel/pasid.c
-> @@ -763,6 +763,9 @@ intel_pasid_setup_bind_data(struct intel_iommu *iommu, struct pasid_entry *pte,
->   			return -EINVAL;
->   		}
->   		pasid_set_sre(pte);
-> +		/* Enable write protect WP if guest requested */
-> +		if (pasid_data->flags & IOMMU_SVA_VTD_GPASID_WPE)
-> +			pasid_set_wpe(pte);
->   	}
->   
->   	if (pasid_data->flags & IOMMU_SVA_VTD_GPASID_EAFE) {
-> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> index 35d48843acd8..3a9164cc9937 100644
-> --- a/include/uapi/linux/iommu.h
-> +++ b/include/uapi/linux/iommu.h
-> @@ -288,7 +288,8 @@ struct iommu_gpasid_bind_data_vtd {
->   #define IOMMU_SVA_VTD_GPASID_PWT	(1 << 3) /* page-level write through */
->   #define IOMMU_SVA_VTD_GPASID_EMTE	(1 << 4) /* extended mem type enable */
->   #define IOMMU_SVA_VTD_GPASID_CD		(1 << 5) /* PASID-level cache disable */
-> -#define IOMMU_SVA_VTD_GPASID_LAST	(1 << 6)
-> +#define IOMMU_SVA_VTD_GPASID_WPE	(1 << 6) /* Write protect enable */
-> +#define IOMMU_SVA_VTD_GPASID_LAST	(1 << 7)
->   	__u64 flags;
->   	__u32 pat;
->   	__u32 emt;
-> 
+> > +bool ufshpb_is_legacy(struct ufs_hba *hba)
+> > +{
+> > +        return hba->ufshpb_dev.is_legacy;
+> > +}
+> > +
+> >  static struct ufshpb_lu *ufshpb_get_hpb_data(struct scsi_device *sdev)
+> >  {
+> >          return sdev->hostdata;
+> > @@ -64,9 +69,19 @@ static bool ufshpb_is_write_or_discard_cmd(struct
+> > scsi_cmnd *cmd)
+> >                 op_is_discard(req_op(cmd->request));
+> >  }
+> > 
+> > -static bool ufshpb_is_support_chunk(int transfer_len)
+> > +static bool ufshpb_is_support_chunk(struct ufshpb_lu *hpb, int 
+> > transfer_len)
+> >  {
+> > -        return transfer_len <= HPB_MULTI_CHUNK_HIGH;
+> > +        return transfer_len <= hpb->pre_req_max_tr_len;
+>  
+> In the case of HPB1.0, this is wrong - you are allowing transfer_len > 1 
+> for HPB1.0 devices.
+>  
+> Can Guo.
 
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+OK, I will check whether it is HPB 1.0 or not.
 
-Best regards,
-baolu
+Thanks,
+Daejun
