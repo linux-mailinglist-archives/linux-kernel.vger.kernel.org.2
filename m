@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7602F32C482
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCA332C48B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1392465AbhCDAOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S1392604AbhCDAPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:15:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352892AbhCDACj (ORCPT
+        with ESMTP id S1353155AbhCDAD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:02:39 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F283C061762;
-        Wed,  3 Mar 2021 15:14:41 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id w3so5633134oti.8;
-        Wed, 03 Mar 2021 15:14:41 -0800 (PST)
+        Wed, 3 Mar 2021 19:03:28 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DCBC061763;
+        Wed,  3 Mar 2021 15:15:10 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id u12so5391490pjr.2;
+        Wed, 03 Mar 2021 15:15:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=yXVmeSl5oOevxfQxlrfETF+M/MDbt5WdR8xryqID+Tw=;
-        b=oQU6nvWULZkiQX21JwzS3zUmIYS3Y9QNCASf3m+dbAZvX/CHjqhP8KRZfTWDfhnAWV
-         6MX6kco8J5FPyk4LsWA6XmXRHcebMLr5+0NHuNb5Izcp0v0A0PUKWk6IeA2ut87StRuk
-         DGF/o4AeGViZlsUmVatRWsWPyBSv9Aq29RiU9FDoD4LiRMtLZh4JfUy7EQB9PNUXqREK
-         a3mCEQOVPG5uVx8I+iLI1FoodnlVVWiIxQMwnlGOpYbatbXQNRJzDsEZ3fnj0gEykX2Q
-         4/e+nZu/ejmb9SoYUno4hnAvH9rw6iH8sMWUafxtzMxI+pg5hkbWd+FECszvbzOGhKfG
-         U2gw==
-X-Gm-Message-State: AOAM531N9BaDDfnXAIx7d3ZsdAN1iJqeZzhRjyjPJsWG9xu/r3UUXVJF
-        o3H7DiTLdNTA87u7jNwgVw==
-X-Google-Smtp-Source: ABdhPJwrBA/11mAg/pOkn/zbVpAwEHWyNgvNOkMVN9xeD9R31M6hU7b8jv46jT4ggUwLalDuSU1VGQ==
-X-Received: by 2002:a9d:20c3:: with SMTP id x61mr1194688ota.311.1614813280679;
-        Wed, 03 Mar 2021 15:14:40 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f193sm1879302oig.8.2021.03.03.15.14.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mt8/q9przhRO9oiYAln8itOH0lx/lQPxaj7HDM76lXE=;
+        b=LVW0ontmptCBzchxvOuz4WAsECT3TwOjZ2yv/RDcPBLknSUvgoScXw+uhmeU4a0dW4
+         AGt8S0pBoCUOzLRIsOCPK6BwpdyEJr+tltC6NvpaLJ1hlwgE3QjC1mrJ8zAikE3Jyctl
+         y7eNjDu3yevSSHbXLGQ4cX/gx442DnAYKMFuowa3JzAj4v87IvYrX1iUjrDpu6njDyV/
+         4us56OOkaSw/2c3wuwQPZUXSOnTEFst/5No4aWrhQP00Gqbh20pzMTUOn+AAqWaSxGLD
+         Z1XK9DT4SpqkCC3O2xj70KBu5/7CSa8VxfbfQg7pwWFt6Zk6M4paONa3HdlNNuNW6NZD
+         SFeg==
+X-Gm-Message-State: AOAM5338z6Fo2GMk+Bl8W2fS7v/x7R5lAKJXDr8plSdjvq2cf5Glw43K
+        7UiSbFKekIRgh+SConJwp++AJrth0EY=
+X-Google-Smtp-Source: ABdhPJwVAU51jdeE3BpJvU5lPgtNpJaSi+tPloqGIpFcULsqq3+Z8+wzo1XXQYiPE/nlEnsyf177gw==
+X-Received: by 2002:a17:90a:4a81:: with SMTP id f1mr1391947pjh.44.1614813310297;
+        Wed, 03 Mar 2021 15:15:10 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id 188sm25463092pfz.119.2021.03.03.15.15.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 15:14:39 -0800 (PST)
-Received: (nullmailer pid 846313 invoked by uid 1000);
-        Wed, 03 Mar 2021 23:14:36 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     bhelgaas@google.com, hes@sifive.com, p.zabel@pengutronix.de,
-        khilman@baylibre.com, vidyas@nvidia.com,
-        linux-riscv@lists.infradead.org, jh80.chung@samsung.com,
-        lorenzo.pieralisi@arm.com, alex.dewar90@gmail.com,
-        sboyd@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zong.li@sifive.com, paul.walmsley@sifive.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        erik.danie@sifive.com, robh+dt@kernel.org, mturquette@baylibre.com,
-        hayashi.kunihiko@socionext.com
-In-Reply-To: <4e63c5515f9755d0cf4cd65ab70048554d917d89.1614681831.git.greentime.hu@sifive.com>
-References: <cover.1614681831.git.greentime.hu@sifive.com> <4e63c5515f9755d0cf4cd65ab70048554d917d89.1614681831.git.greentime.hu@sifive.com>
-Subject: Re: [RFC PATCH 4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
-Date:   Wed, 03 Mar 2021 17:14:36 -0600
-Message-Id: <1614813276.374609.846312.nullmailer@robh.at.kernel.org>
+        Wed, 03 Mar 2021 15:15:09 -0800 (PST)
+Date:   Wed, 3 Mar 2021 15:15:10 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Lizhi Hou <lizhi.hou@xilinx.com>,
+        linux-kernel@vger.kernel.org, Lizhi Hou <lizhih@xilinx.com>,
+        linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, trix@redhat.com,
+        robh@kernel.org
+Subject: Re: [PATCH V3 XRT Alveo 00/18] XRT Alveo driver overview
+Message-ID: <YEAYfvJk+iyi+G+6@archbook>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <YDLF2Bi3oEhP6A7Q@archbook>
+ <70f35c99165ac4dd1846ea2e30b9a1745c364903.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70f35c99165ac4dd1846ea2e30b9a1745c364903.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Mar 2021 18:59:15 +0800, Greentime Hu wrote:
-> Add PCIe host controller DT bindings of SiFive FU740.
+On Tue, Mar 02, 2021 at 10:49:43PM -0800, Joe Perches wrote:
+> On Sun, 2021-02-21 at 12:43 -0800, Moritz Fischer wrote:
+> > On Wed, Feb 17, 2021 at 10:40:01PM -0800, Lizhi Hou wrote:
+> > > This is V3 of patch series which adds management physical function driver for Xilinx
+> > > Alveo PCIe accelerator cards, https://www.xilinx.com/products/boards-and-kits/alveo.html
+> > > This driver is part of Xilinx Runtime (XRT) open source stack.
+> []
+> > Please fix the indents all across this patchset. Doesn't checkpatch with
+> > --strict complain about this?
 > 
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> ---
->  .../bindings/pci/sifive,fu740-pcie.yaml       | 119 ++++++++++++++++++
->  1 file changed, 119 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+> I glanced at a couple bits of these patches and didn't
+> notice any of what I consider poor indentation style.
 > 
+> What indent is wrong here?
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Maybe I dreamed it, or confused it with the CamelCase issues instead?
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml:114:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+Sorry for the noise in that case,
 
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/pci/sifive,fu740-pcie.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a block scalar
-  in "<unicode string>", line 88, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 114, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/pci/sifive,fu740-pcie.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml:  while scanning a block scalar
-  in "<unicode string>", line 88, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 114, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
-make: *** [Makefile:1380: dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1446288
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+- Moritz
