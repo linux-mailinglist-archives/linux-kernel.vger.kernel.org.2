@@ -2,140 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60C432BA9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 080FA32BAA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358069AbhCCLiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:38:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
+        id S234092AbhCCLip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343781AbhCCDlV (ORCPT
+        with ESMTP id S1352583AbhCCD4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 22:41:21 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C2DC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 19:40:32 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id a23so5514807pga.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 19:40:32 -0800 (PST)
+        Tue, 2 Mar 2021 22:56:43 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368F3C061797
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 19:47:08 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id a23so5524832pga.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 19:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fXj7pUv1rSHNrbWS16GZpW+aOhtxYAFrXaUPJx5/v/k=;
-        b=swkOa5Vzo7h//FHwE8PxXseo33f8A7LeYCNlcJ20nSTXecWZCez8dmEYpd7QHVYmQP
-         abe8SGSzV1cGENuWBYUcJmq+2fbDgK4WjY81AnMAzSEUZmj6vNiFgyuJzlVRNUPDBr3m
-         q9Wkwha3h3tqg+kKcDMStDweoKVY/6eQs6cwtHRC5kuPbHq3WX/1Pl/uDWAOujNtyscK
-         CrCSGMETWSJDWId3xGSp6znFZ+c/6kDKXnwc2tcGgbV+3USHUWxNqUEk8yfSvwL91naJ
-         JlZdWA2+jeFZed0Vg3WHqkoUTyU5axZOfS2ZtQIxdBe3176EEZzCh05iWIRAI5QbJRXM
-         bW4A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yFyGg6KNGzSfRYjZ76byOcmhxoc8vO+7hPNjo35K9rQ=;
+        b=KVd56+eSRCDSoGMKAfjcnD/9taVnzDzrPgvXdUvZaRvPmqNGKQ7ZpVzc6P8HsGBInY
+         Hmwjk22pg8yHMG915IOi8jslPZEnFZcZq1EOdGq0dmaOQNsbtddD691QKlxC54K6kG/V
+         a2ZZfQL2p5ABe+FLMXtab8y6Omx8n1L4R2UBMimaPhLmM4xtvroe6cdontcR+9yznLqm
+         ffZDnEomZho3TV6ljauyUkg7C7LJw+SZXyd4JTJy3qxRmpz1jHW1efuzN58ML+TXGqbc
+         74wfb42CudBDNZQECztn97ssrbzHTFqTlHrCWREOEqP2PNvnC2LdECInQ7HnrUH9yssj
+         Dc9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fXj7pUv1rSHNrbWS16GZpW+aOhtxYAFrXaUPJx5/v/k=;
-        b=LrQW7DWq+rN6mdKPEPGIHx0yAcf1A2Ydn0UBkzxnvJSqf3ZnSUiF/9pPHAefSZkwt3
-         UFb7eAqz2ES+PkimO2h4EAyZOHjXb9u6Z4uYDdPcEQx/QONNSScqMhwdED6tiiySERzS
-         2ZFyf7jyMQBZOcD3iOB2cswjBYpoW24eVlOWyEBeqQCrbFFRZpjNPrDqyX0HcLFloXh0
-         q1vtogYM0o3OK+hwLMu6g6T42bvk5Als1jYmdx/kRfxbxM+HySsGCKCHzNtpMpD3Y9uQ
-         4YxftrKn/SrbxTXSpayAW8+lLiJIYRXm38xy+/w9vR80bEbAPaZgGdgTPWynA9dLSeAh
-         /rmQ==
-X-Gm-Message-State: AOAM530KoIqVM8yzavM7SLZYtZKn3j8XpUUdDEiSY/JIy0c/0L6HnFx9
-        gF4Uza4T1MFDWSvFG7vFNfV+hHFhVzZZQS2UaiMTAxbSRp3Nz4rA
-X-Google-Smtp-Source: ABdhPJxAjhVWhTHFfT/cCI2iypfwj6MoWYBzVnuwqdBw1mQ1KX+WMxHyZMYMwQwhlIfIpqNGw0CE0gH2TeJXg7HgZwM=
-X-Received: by 2002:a63:141e:: with SMTP id u30mr21344365pgl.31.1614742832061;
- Tue, 02 Mar 2021 19:40:32 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yFyGg6KNGzSfRYjZ76byOcmhxoc8vO+7hPNjo35K9rQ=;
+        b=CkYQbvsaGxr36txCWZvpiy1WvspjvXrYUE3NR3Tfc6jvetVgh5XP17qVIxYTNioC7a
+         U3vqb/wzSX7gDQS7lfiRyrvFu3HF4yyxtYM0/d0iv2r7OdDZCW+/lGnSnDj+UAqH903a
+         tBD9hNxM3ZeLKno9uzUnKkPjbSAS/u6W35ePcpa4FrBkTM7w1S9E2Nj+uKeLpNpxEsAi
+         XmYKf7uuxJbGXLzqk+KED3cACdFwM0lsZL/REvbDLkz1cAmmySP3TX9pVa9vtty635kH
+         XFvRMj74xuHHE44Q2UjmCmxrZ728wN4h6VBOpIr4dnPUOnpnW52sapU7saT30ExLIQds
+         9KrA==
+X-Gm-Message-State: AOAM533ublrusF3LhagOTw2BTPqMhAYn4UGyGbfGJtgRkA8riix374tm
+        6fKhoWDUXzYvhdzVsQje/epSHw==
+X-Google-Smtp-Source: ABdhPJyOhqMPZbj3lBnGpDBFc9h5xjqToYA3/nBhw1Nw1+wQ6qW7FvP28wZNfzgZfmiGkZ6BOjG0cQ==
+X-Received: by 2002:aa7:8e43:0:b029:1ed:447c:f1d4 with SMTP id d3-20020aa78e430000b02901ed447cf1d4mr1361460pfr.16.1614743227772;
+        Tue, 02 Mar 2021 19:47:07 -0800 (PST)
+Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.246])
+        by smtp.gmail.com with ESMTPSA id p26sm23029703pfn.127.2021.03.02.19.47.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Mar 2021 19:47:07 -0800 (PST)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com
+Subject: [PATCH v2 0/4] psi: Add PSI_CPU_FULL state and some code optimization
+Date:   Wed,  3 Mar 2021 11:46:55 +0800
+Message-Id: <20210303034659.91735-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-References: <20200420070453.76815-1-songmuchun@bytedance.com> <YD55OxQrJ54PWgs+@blackbook>
-In-Reply-To: <YD55OxQrJ54PWgs+@blackbook>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 3 Mar 2021 11:39:56 +0800
-Message-ID: <CAMZfGtVn7c2bQ+zttUs2k33he=z_Mm895yH7c0ghzwt+jRaySg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] sched/cpuacct: Fix charge
- cpuacct.usage_sys incorrently.
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 1:43 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> Hello.
->
-> (Sorry for necroposting, found this upstream reference only now.)
->
-> On Mon, Apr 20, 2020 at 03:04:53PM +0800, Muchun Song <songmuchun@bytedan=
-ce.com> wrote:
-> >  /* Time spent by the tasks of the CPU accounting group executing in ..=
-. */
-> > @@ -339,7 +340,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cp=
-utime)
-> >  {
-> >       struct cpuacct *ca;
-> >       int index =3D CPUACCT_STAT_SYSTEM;
-> > -     struct pt_regs *regs =3D task_pt_regs(tsk);
-> > +     struct pt_regs *regs =3D get_irq_regs() ? : task_pt_regs(tsk);
-> I've read the discussion in [1] but I don't think this approach is
-> correct either (and I don't know what is better :-/).
+This patch series is RESEND of the previous patches on psi subsystem. A few
+weeks passed since the last review, so I put them together and resend for
+more convenient review and merge.
 
-Yes. It didn't solve the problem completely. I am trying to
-count the sys time as much as possible, but the sys time here
-still can be lower than the real situation. I didn't think of a better
-solution.
+Patch 1 add PSI_CPU_FULL state means all non-idle tasks in a cgroup are delayed
+on the CPU resource which used by others outside of the cgroup or throttled
+by the cgroup cpu.max configuration.
 
->
-> I only have a qualitative proof:
->
-> host:~ # uname -r
-> 5.10.16-1-default
->
-> host:~ # systemd-run -p CPUAccounting=3Dyes sh -c 'time sh -c "i=3D0 ; wh=
-ile [ \"\$i\" -lt 10000 ] ; do i=3D\$((\$i+1)) ; cat /proc/slabinfo >/dev/n=
-ull ; done" ; sleep inf'
-> Running as unit: run-r101b9f53efcb4d2a9bfb65feb6f120ca.service
->
-> host:~ # cat /sys/fs/cgroup/cpuacct/system.slice/run-r101b9f53efcb4d2a9bf=
-b65feb6f120ca.service/cpuacct.usage{,_user,_sys}
-> 16138535165
-> 14332580468
-> 1805954697
->
-> (See that sys/user ~ 0.1)
->
-> host:~ # journalctl -u run-r101b9f53efcb4d2a9bfb65feb6f120ca.service
-> -- Logs begin at Tue 2021-03-02 18:06:41 CET, end at Tue 2021-03-02 18:27=
-:45 CET. --
-> Mar 02 18:27:29 host systemd[1]: Started /usr/bin/sh -c time sh -c "i=3D0=
- ; while [ \"\$i\" -lt 10000 ] ; do i=3D\$((\$i+1)) ; cat /proc/slabinfo >/=
-dev/null ; done" ; sleep inf.
-> Mar 02 18:27:45 host sh[19117]: real        0m15.543s
-> Mar 02 18:27:45 host sh[19117]: user        0m10.752s
-> Mar 02 18:27:45 host sh[19117]: sys        0m5.379s
->
-> (See that sys/user ~ 0.5)
->
-> host:~ # cat /sys/fs/cgroup/cpuacct/system.slice/run-r101b9f53efcb4d2a9bf=
-b65feb6f120ca.service/cpuacct.stat
-> user 415
-> system 1209
->
-> (See that sys/user ~ 3.0 :-o)
->
-> The expectation is that significant amount of the loop is spent in
-> kernel (dumping slabinfo). I can't tell which of the ratios fits the
-> reality best but the cpuacct.usage_sys still seems too low.
->
->
-> Michal
->
-> [1] https://lore.kernel.org/lkml/20200416141833.50663-1-songmuchun@byteda=
-nce.com/
+Patch 2 use ONCPU state and the current in_memstall flag to detect reclaim,
+remove the hook in timer tick to make code more concise and maintainable.
+And patch 3 adds unlikely() annotations to move the pressure state branches
+out of line to eliminate undesirable jumps during wakeup and sleeps.
+
+Patch 4 optimize the voluntary sleep switch by remove one call of
+psi_group_change() for every common cgroup ancestor of the two tasks.
+
+Chengming Zhou (3):
+  psi: Add PSI_CPU_FULL state
+  psi: Use ONCPU state tracking machinery to detect reclaim
+  psi: Optimize task switch inside shared cgroups
+
+Johannes Weiner (1):
+  psi: pressure states are unlikely
+
+ include/linux/psi.h       |   1 -
+ include/linux/psi_types.h |   3 +-
+ kernel/sched/core.c       |   1 -
+ kernel/sched/psi.c        | 122 ++++++++++++++++++++++++----------------------
+ kernel/sched/stats.h      |  37 +++++---------
+ 5 files changed, 78 insertions(+), 86 deletions(-)
+
+-- 
+2.11.0
+
