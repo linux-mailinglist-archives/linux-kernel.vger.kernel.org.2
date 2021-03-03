@@ -2,140 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF4332BA7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D222232BA7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357694AbhCCLXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238045AbhCCCLA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 21:11:00 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546B1C061224;
-        Tue,  2 Mar 2021 18:09:58 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id e9so3371051pjj.0;
-        Tue, 02 Mar 2021 18:09:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y4CDZC0XRtdxRyUu6upw3DY8PzyuYgSy6jHykMMCFTY=;
-        b=M+m8+IeTn56qvibEzZaBaLzICwpFnGw1QTeozL3il7ZPPhlofSUc32Pqvf9KvcU4Co
-         1ksSTP9mOLQXpmxuFfe5B09ISx2/2c/OngpINTk7OQwqJa1uM2INoScqO7W+suxk4wUk
-         Dnf3XfWuePpDh1JhqHSdaqT7pvw2FBEc3DgiyoI3eWW0Uwc/qAZw7OeSX8si9cTtjm4H
-         GJXE4NeRLSFyXODVCe1WuRWokDjwtp1eKeEQ8AL5q6hxdP2Rc32Zpns9eWBXIey91Xev
-         A1kRVKb5KOiaCEi8ZmsmmtLmon/o8vAHRBnh3k3E0tVbnI9zTZa8vXSOp15y+PMHolJX
-         FgaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y4CDZC0XRtdxRyUu6upw3DY8PzyuYgSy6jHykMMCFTY=;
-        b=a2oiwdicy+VnrOBNxqEg8JyYkKc2h5cjvjff+zPwnzOsO4xCyUoiouzPJux9BbCm4+
-         KFnUeNZvejO2foRCDWqpXKqbbo9lrnkrW6aM7K3zifT8C2tVUwfiQnXJvkmhXKkiulOk
-         bTkrF2YbmXQbplNsjJn8q+xps+zV3qdKDDww6g0TIUZvASyjwlUrSQNWooVuvyUuC1rx
-         tx83zzEdPEtBc95i4bV7zyAqpz/RcGMi7/vOHhjP8zdx9DPQ6YlU0dyqbv0Rcr9iBX32
-         Qn2HlK0gvPLYM0oVjE7AM4bcl+3ujvW991I7IKXBnHsJFHAlYXJKbaa9hQFos7035Af0
-         Ebsw==
-X-Gm-Message-State: AOAM5319bW+TbCC+4h+68G2dRcXPR4mDWeon1T3gB21yFM65DxxRyf8u
-        Bw2TxSXKFcRsHcrNL9ThBQx5n9CyHg==
-X-Google-Smtp-Source: ABdhPJyJ/vLG5EM+mwDq6WrvjKVvipezABEQ4XAsfkBAlmEkSCpxAjE03uaEyDFwX9tlOqQIXfIKjg==
-X-Received: by 2002:a17:90a:7344:: with SMTP id j4mr7575058pjs.216.1614737397602;
-        Tue, 02 Mar 2021 18:09:57 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id f20sm280415pfa.10.2021.03.02.18.09.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 18:09:57 -0800 (PST)
-From:   lihaiwei.kernel@gmail.com
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        Haiwei Li <lihaiwei@tencent.com>
-Subject: [PATCH] kvm: lapic: add module parameters for LAPIC_TIMER_ADVANCE_ADJUST_MAX/MIN
-Date:   Wed,  3 Mar 2021 10:09:46 +0800
-Message-Id: <20210303020946.26083-1-lihaiwei.kernel@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1357725AbhCCLYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:24:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350106AbhCCCSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 21:18:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 722C564E75;
+        Wed,  3 Mar 2021 02:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614737860;
+        bh=t36DvLgE2z70q8BelGzmFYQLxEbNXYUV5NHPDeSEld4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GVXlXVrSlIgUc3PsMgLMiv+hN5UkxlSf8fA2H9eHmrpoRIzbLcVoTC7wmIU1fT2Nv
+         SnkFDUHpfTVEQCJ8/J/3gvCmTUOHIi3l+JzEtbEoAcpIAO2BEMQT45pDkVf3KdVr6j
+         hCgg838tzDFsDoZw/5Aj3mUf5Qxtu4S63SuKnUtuIUOyZ2zjuR77glxnbvMs1mO8kO
+         V7m9YrmYptsycC8w/sL9HmRjwtlYSn3gqe9E29nQ2etXBLDcarUwIlvAkGZtnBsuB/
+         nbftBvatOBZ/B+J4BMEdm4ogkgjt0QfC80eVHaEc28FsT7xwoM0RBpR9jBowi3kPwM
+         FDrAwyu1bu3tQ==
+Date:   Wed, 3 Mar 2021 03:17:37 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 01/13] rcu/nocb: Fix potential missed nocb_timer rearm
+Message-ID: <20210303021737.GC102493@lothringen>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-2-frederic@kernel.org>
+ <20210224183709.GI2743@paulmck-ThinkPad-P72>
+ <20210224220606.GA3179@lothringen>
+ <20210302014829.GK2696@paulmck-ThinkPad-P72>
+ <20210302123444.GA97498@lothringen>
+ <20210302181729.GN2696@paulmck-ThinkPad-P72>
+ <20210303013533.GA102493@lothringen>
+ <20210303020643.GV2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303020643.GV2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiwei Li <lihaiwei@tencent.com>
+On Tue, Mar 02, 2021 at 06:06:43PM -0800, Paul E. McKenney wrote:
+> On Wed, Mar 03, 2021 at 02:35:33AM +0100, Frederic Weisbecker wrote:
+> > On Tue, Mar 02, 2021 at 10:17:29AM -0800, Paul E. McKenney wrote:
+> > > On Tue, Mar 02, 2021 at 01:34:44PM +0100, Frederic Weisbecker wrote:
+> > > 
+> > > OK, how about if I queue a temporary commit (shown below) that just
+> > > calls out the first scenario so that I can start testing, and you get
+> > > me more detail on the second scenario?  I can then update the commit.
+> > 
+> > Sure, meanwhile here is an attempt for a nocb_bypass_timer based
+> > scenario, it's overly hairy and perhaps I picture more power
+> > in the hands of callbacks advancing on nocb_cb_wait() than it
+> > really has:
+> 
+> Thank you very much!
+> 
+> I must defer looking through this in detail until I am more awake,
+> but I do very much like the fine-grained exposition.
+> 
+> 							Thanx, Paul
+> 
+> > 0.          CPU 0's ->nocb_cb_kthread just called rcu_do_batch() and
+> >             executed all the ready callbacks. Its segcblist is now
+> >             entirely empty. It's preempted while calling local_bh_enable().
+> > 
+> > 1.          A new callback is enqueued on CPU 0 with IRQs enabled. So
+> >             the ->nocb_gp_kthread for CPU 0-2's is awaken. Then a storm
+> >             of callbacks enqueue follows on CPU 0 and even reaches the
+> >             bypass queue. Note that ->nocb_gp_kthread is also associated
+> >             with CPU 0.
+> > 
+> > 2.          CPU 0 queues one last bypass callback.
+> > 
+> > 3.          The ->nocb_gp_kthread wakes up and associates a grace period
+> >             with the whole queue of regular callbacks on CPU 0. It also
+> >             tries to flush the bypass queue of CPU 0 but the bypass lock
+> >             is contended due to the concurrent enqueuing on the previous
+> >             step 2, so the flush fails.
+> > 
+> > 4.          This ->nocb_gp_kthread arms its ->nocb_bypass_timer and goes
+> >             to sleep waiting for the end of this future grace period.
+> > 
+> > 5.          This grace period elapses before the ->nocb_bypass_timer timer
+> >             fires. This is normally improbably given that the timer is set
+> >             for only two jiffies, but timers can be delayed.  Besides, it
+> >             is possible that kernel was built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
+> > 
+> > 6.          The grace period ends, so rcu_gp_kthread awakens the
+> >             ->nocb_gp_kthread but it doesn't get a chance to run on a CPU
+> >             before a while.
+> > 
+> > 7.          CPU 0's ->nocb_cb_kthread get back to the CPU after its preemption.
+> >             As it notices the new completed grace period, it advances the callbacks
+> >             and executes them. Then it gets preempted again on local_bh_enabled().
+> > 
+> > 8.          A new callback enqueue on CPU 0 flushes itself the bypass queue
+> >             because CPU 0's ->nocb_nobypass_count < nocb_nobypass_lim_per_jiffy.
+> > 
+> > 9.          CPUs from other ->nocb_gp_kthread groups (above CPU 2) initiate and
+> >             elapse a few grace periods. CPU 0's ->nocb_gp_kthread still hasn't
+> >             got an opportunity to run on a CPU and its ->nocb_bypass_timer still
+> >             hasn't fired.
+> > 
+> > 10.         CPU 0's ->nocb_cb_kthread wakes up from preemption. It notices the
+> >             new grace periods that have elapsed, advance all the callbacks and
+> >             executes them. Then it goes to sleep waiting for invocable
+> >             callbacks.
 
-In my test environment, advance_expire_delta is frequently greater than
-the fixed LAPIC_TIMER_ADVANCE_ADJUST_MAX. And this will hinder the
-adjustment.
+I'm just not so sure about the above point 10. Even though a few grace periods
+have elapsed, the callback queued in 8 is in RCU_NEXT_TAIL at this
+point. Perhaps one more grace period is necessary after that.
 
-Adding module parameters for LAPIC_TIMER_ADVANCE_ADJUST_MAX/MIN, so they
-can be dynamically adjusted.
-
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
----
- arch/x86/kvm/lapic.c | 6 ++----
- arch/x86/kvm/x86.c   | 8 ++++++++
- arch/x86/kvm/x86.h   | 3 +++
- 3 files changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 45d40bf..730c657 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -61,8 +61,6 @@
- #define APIC_VECTORS_PER_REG		32
- 
- static bool lapic_timer_advance_dynamic __read_mostly;
--#define LAPIC_TIMER_ADVANCE_ADJUST_MIN	100	/* clock cycles */
--#define LAPIC_TIMER_ADVANCE_ADJUST_MAX	10000	/* clock cycles */
- #define LAPIC_TIMER_ADVANCE_NS_INIT	1000
- #define LAPIC_TIMER_ADVANCE_NS_MAX     5000
- /* step-by-step approximation to mitigate fluctuation */
-@@ -1563,8 +1561,8 @@ static inline void adjust_lapic_timer_advance(struct kvm_vcpu *vcpu,
- 	u64 ns;
- 
- 	/* Do not adjust for tiny fluctuations or large random spikes. */
--	if (abs(advance_expire_delta) > LAPIC_TIMER_ADVANCE_ADJUST_MAX ||
--	    abs(advance_expire_delta) < LAPIC_TIMER_ADVANCE_ADJUST_MIN)
-+	if (abs(advance_expire_delta) > lapic_timer_advance_adjust_cycles_max ||
-+	    abs(advance_expire_delta) < lapic_timer_advance_adjust_cycles_min)
- 		return;
- 
- 	/* too early */
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 828de7d..3bd8d19 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -176,6 +176,14 @@
- int __read_mostly pi_inject_timer = -1;
- module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
- 
-+u64 __read_mostly lapic_timer_advance_adjust_cycles_max = 10000;
-+module_param(lapic_timer_advance_adjust_cycles_max, ullong, S_IRUGO | S_IWUSR);
-+EXPORT_SYMBOL_GPL(lapic_timer_advance_adjust_cycles_max);
-+
-+u64 __read_mostly lapic_timer_advance_adjust_cycles_min = 100;
-+module_param(lapic_timer_advance_adjust_cycles_min, ullong, S_IRUGO | S_IWUSR);
-+EXPORT_SYMBOL_GPL(lapic_timer_advance_adjust_cycles_min);
-+
- /*
-  * Restoring the host value for MSRs that are only consumed when running in
-  * usermode, e.g. SYSCALL MSRs and TSC_AUX, can be deferred until the CPU
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index ee6e010..3f7eca0 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -305,6 +305,9 @@ static inline bool kvm_mpx_supported(void)
- 
- extern int pi_inject_timer;
- 
-+extern u64 lapic_timer_advance_adjust_cycles_max;
-+extern u64 lapic_timer_advance_adjust_cycles_min;
-+
- extern struct static_key kvm_no_apic_vcpu;
- 
- extern bool report_ignored_msrs;
--- 
-1.8.3.1
-
+Anyway, I need to be more awake as well before checking that again.
