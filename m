@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458C332BEB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA8132BEAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574945AbhCCRe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:34:27 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55186 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236153AbhCCOHQ (ORCPT
+        id S1574719AbhCCReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:34:04 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36438 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235447AbhCCOGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:07:16 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 123E5KbK030138;
-        Wed, 3 Mar 2021 08:05:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614780320;
-        bh=sny2YcpGa4DQa7cTGGJ00vnhQUe+5Yv3lyKxESu3egQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=qoii31p7VqP9cyjdUjx5aw4dxClyQ4Wm6uITtyWExRNAxzyOP2k3ycT9g4LKYvoz6
-         kG2SFS23dVMP++HuoQzfYwRWQwcdbz0EmrXcT+/uBzqP81IXlChq9hLsyA15WQFrC/
-         VzYIlSKAfYrBB1gVUaIyOT7zXi8l45hGAsQHCcTg=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 123E5KNx032649
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 3 Mar 2021 08:05:20 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
- 2021 08:05:19 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 3 Mar 2021 08:05:19 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 123E5Jht107458;
-        Wed, 3 Mar 2021 08:05:19 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <kristo@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Nishanth Menon <nm@ti.com>, Bao Cheng Su <baocheng.su@siemens.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, Le Jin <le.jin@siemens.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] arm64: Add TI AM65x-based IOT2050 boards
-Date:   Wed, 3 Mar 2021 08:05:18 -0600
-Message-ID: <161477999018.19253.13540036146776431880.b4-ty@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1613071976.git.jan.kiszka@siemens.com>
-References: <cover.1613071976.git.jan.kiszka@siemens.com>
+        Wed, 3 Mar 2021 09:06:38 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lHS7v-0001mB-LN; Wed, 03 Mar 2021 14:05:23 +0000
+Date:   Wed, 3 Mar 2021 14:05:22 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Tycho Andersen <tycho@tycho.ws>,
+        James Morris <jmorris@namei.org>,
+        linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 09/40] xattr: handle idmapped mounts
+Message-ID: <20210303140522.jwlzrmhhho3lvpmv@wittgenstein>
+References: <20210121131959.646623-10-christian.brauner@ubuntu.com>
+ <20210121131959.646623-1-christian.brauner@ubuntu.com>
+ <2129497.1614777842@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2129497.1614777842@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 20:32:52 +0100, Jan Kiszka wrote:
-> Changes in v2:
->  - address board-specific issues found by kernel_verify_patch
->  - remove dead l2-cache node from iot2050-basic DT
->  - add binding for Siemens vendor prefix
->  - factor out board bindings into separate patch
->  - add missing device_type to common ti,am654-pcie-rc nodes
+On Wed, Mar 03, 2021 at 01:24:02PM +0000, David Howells wrote:
+> Christian Brauner <christian.brauner@ubuntu.com> wrote:
 > 
-> [...]
+> > diff --git a/fs/cachefiles/xattr.c b/fs/cachefiles/xattr.c
+> > index 72e42438f3d7..a591b5e09637 100644
+> > --- a/fs/cachefiles/xattr.c
+> > +++ b/fs/cachefiles/xattr.c
+> > @@ -39,8 +39,8 @@ int cachefiles_check_object_type(struct cachefiles_object *object)
+> >  	_enter("%p{%s}", object, type);
+> >  
+> >  	/* attempt to install a type label directly */
+> > -	ret = vfs_setxattr(dentry, cachefiles_xattr_cache, type, 2,
+> > -			   XATTR_CREATE);
+> > +	ret = vfs_setxattr(&init_user_ns, dentry, cachefiles_xattr_cache, type,
+> > +			   2, XATTR_CREATE);
+> 
 
-Hi Jan Kiszka,
+Hey David,
 
-I have picked patch #4 in your series to the following to branch
-ti-k3-dts-next on [1]. Thank you! Rest of the series will have to be
-reposted *after* Rob Herring Acks the bindings (monitor status in
-queue [2]).
+(Ok, recovered from my run-in with the swapfile bug. I even managed to
+get my emails back.)
 
-[4/4] arm64: dts: ti: k3-am65-main: Add device_type to pcie*_rc nodes
-      commit: 0d7571c36331aafce485fa105959b498c86615d7
+> Actually, on further consideration, this might be the wrong thing to do in
+> cachefiles.  The creds are (or should be) overridden when accesses to the
+> underlying filesystem are being made.
+> 
+> I wonder if this should be using current_cred()->user_ns or
+> cache->cache_cred->user_ns instead.
 
-I have picked patch #4 for the next kernel window for now, given it is
-a trivial fix.
+Before I go into the second question please note that this is a no-op
+change. So if this is wrong it was wrong before. Which is your point, I
+guess.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Please also note that the mnt_userns is _never_ used for (capability)
+permission checking, only for idmapping vfs objects and permission
+checks based on the i_uid and i_gid. So if your argument about passing
+one of those two user namespaces above has anything to do with
+permission checking on caps it's most likely wrong. :)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+In order to answer this more confidently I need to know a bit more about
+how cachefiles are supposed to work.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+From what I gather here it seemed what this code is trying to set here
+is an internal "CacheFiles.cache" extended attribute on the indode. This
+extended attribute doesn't store any uids and gids or filesystem
+capabilities so the user namespace isn't relevant for that since there
+doesn't need to be any conversion.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+What I need to know is what information do you use for cachefiles to
+determine whether someone can set that "Cachefiles.cache" extended
+attribute on the inode:
+- Is it the mnt_userns of a/the mount of the filesystem you're caching for?
+- The mnt_userns of the mnt of struct cachefiles_cache?
+- Or the stashed or current creds of the caller?
 
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
-[2] https://patchwork.ozlabs.org/project/devicetree-bindings/list/?param=3&page=2
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+Christian
