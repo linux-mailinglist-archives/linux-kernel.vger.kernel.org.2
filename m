@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D633432BB3A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7726132BB3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444945AbhCCMPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:15:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41218 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351444AbhCCGol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 01:44:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EB11AE56;
-        Wed,  3 Mar 2021 06:43:58 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     bp@alien8.de
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Subject: [PATCH] x86/vdso: Use proper modifier for len's printf in extract
-Date:   Wed,  3 Mar 2021 07:43:57 +0100
-Message-Id: <20210303064357.17056-1-jslaby@suse.cz>
-X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S244426AbhCCMQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:16:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1842078AbhCCGt3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:49:29 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C86C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 22:48:48 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id 81so15120098pfv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 22:48:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=sJTPRU61wkj/8X18GE/NltaTHGeTbWKgfmwT64xhMDQ=;
+        b=K9JfA9BK6FN2k9nXLrdM+xjKw8Sud8sJ/ELtXv1L6e0JEJbjuKTF0ZVgqhyVSlxbYe
+         eoJ+/a3MRLCTZlVgcmaCm6W2BwNePxRqZnCczMzqfdGxYJ4yPt1h8zCikgnu0retndpL
+         VPaCrxawW4gXOB2VR9kqP1jxcp3yRC73mJIDCniUgHFBDvYhmXTqye3FwGcG/kSdJkaC
+         xWSXDHGucG3zlsXKuB96qplAjzt2nOg6ib2lhAPRSFX4IVRcZ7kBqPTMFKXE9+SlpGcY
+         z6gS6X1ZOkNlivb4LMk+KaB7CH/LLExiZBIDU0vjxzDGsBfzHwmUKWmOzZBFkxMAvw4m
+         Wl0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=sJTPRU61wkj/8X18GE/NltaTHGeTbWKgfmwT64xhMDQ=;
+        b=BBmDYJUnRYNCe5NgLTOS+QldBpVsLRtoPVT8qwKPST/B4NiR+sIX5VD0NZBUcfNs1w
+         fbLAmNL031DH5+xG7/RAu8M6Y3h9so8rsXXwkAneXFzdYEc2GWAuLv3OOTU3F6yAOx7D
+         3F9KZlKsWq//ylaeBqQepO5KAfCWX50Fga9NXqsbV87tjJt9qF0wG6znzP8rwS+Hc0Ly
+         hs1jcMQLJJmbGiQZ9F6LeLWzJx3EXAhz8hcruLEaBn+/FbS2IY1lfOz1g+6HiW0lSdiS
+         RJQDL+YE/k/yfeDvCavfxGdSDUAnU/pXtGEWwkHrh78mKIcd20qQmP6ysjLS6Z6XWf4J
+         i3eg==
+X-Gm-Message-State: AOAM532tHGf9Z9vKBYjixAL24rokBeGfHFiDPP72lqPcuqkuZXS2puV1
+        T8ETY+Wj4I89k0NgQk03bXTXjvEIVr8=
+X-Google-Smtp-Source: ABdhPJzPojQhHpe4rIz4wxHM+lTnZFzyssypBGlR4STg1VbckYy/M0hFkIt72SYsxLCslygwj5TISWTzlS0=
+Sender: "raychi via sendgmr" <raychi@raychi.tao.corp.google.com>
+X-Received: from raychi.tao.corp.google.com ([2401:fa00:fc:202:d0b:ce1b:8f7e:f53a])
+ (user=raychi job=sendgmr) by 2002:a17:90a:8d83:: with SMTP id
+ d3mr775606pjo.0.1614754127807; Tue, 02 Mar 2021 22:48:47 -0800 (PST)
+Date:   Wed,  3 Mar 2021 14:48:42 +0800
+Message-Id: <20210303064842.2723785-1-raychi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] usb: dwc3: document usb_psy in struct dwc3
+From:   Ray Chi <raychi@google.com>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kyletso@google.com, Ray Chi <raychi@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8382c668ce4f ("x86/vdso: Add support for exception fixup in vDSO
-functions") added a printf of len which is size_t. Compilers now
-complain on 32b:
-In file included from arch/x86/entry/vdso/vdso2c.c:162:
-arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
-arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t' {aka 'unsigned int'}
+The new struct member was added to struct dwc3, but
+a documentation was missing:
 
-So use proper modifier (%zu) for size_t.
+drivers/usb/dwc3/core.h:1273: warning: Function parameter or member 'usb_psy' not described in 'dwc3'
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Fixes: 8382c668ce4f ("x86/vdso: Add support for exception fixup in vDSO functions")
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Jethro Beekman <jethro@fortanix.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
+Signed-off-by: Ray Chi <raychi@google.com>
 ---
- arch/x86/entry/vdso/vdso2c.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc3/core.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
-index 1c7cfac7e64a..5264daa8859f 100644
---- a/arch/x86/entry/vdso/vdso2c.h
-+++ b/arch/x86/entry/vdso/vdso2c.h
-@@ -35,7 +35,7 @@ static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
- 	if (offset + len > data_len)
- 		fail("section to extract overruns input data");
- 
--	fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-+	fprintf(outfile, "static const unsigned char %s[%zu] = {", name, len);
- 	BITSFUNC(copy)(outfile, data + offset, len);
- 	fprintf(outfile, "\n};\n\n");
- }
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 6708fdf358b3..ce6bd84e2b39 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -988,6 +988,7 @@ struct dwc3_scratchpad_array {
+  * @role_sw: usb_role_switch handle
+  * @role_switch_default_mode: default operation mode of controller while
+  *			usb role is USB_ROLE_NONE.
++ * @usb_psy: pointer to power supply interface.
+  * @usb2_phy: pointer to USB2 PHY
+  * @usb3_phy: pointer to USB3 PHY
+  * @usb2_generic_phy: pointer to USB2 PHY
 -- 
-2.30.1
+2.30.1.766.gb4fecdf3b7-goog
 
