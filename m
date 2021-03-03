@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156A132C31F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6C432C312
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242708AbhCDAAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:00:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39156 "EHLO mail.kernel.org"
+        id S1345131AbhCDAAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:00:07 -0500
+Received: from mga17.intel.com ([192.55.52.151]:17986 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377246AbhCCTu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:50:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2859A64EBA;
-        Wed,  3 Mar 2021 19:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614800986;
-        bh=2wCTT0trV7CMjh58rRXKgJ7GpVI2VVAowjvnTfisdOU=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=b+8oZ4Fk8Pl7CUZi4mYb4jrUG9cWajmBsi5ca8v9B1JU5itny5YAJTdl54SW32DvY
-         5bl7VsezXy7jZU4jXsbF5/KpCP5TGOLw9tg9VupHvNcrbGibi8t1kFwUW1ibdAic59
-         +w7VraJ10BTvNb9nnSB5lBVQj5heF1za+fiQhK6TyJEBW+aOaiPdNlVNzGoPYjtyPE
-         jxGuSI+Q/oS++qNbXTmvH2mzljzLZ7HIx7ZMpxR2apno0WFE+v2s08EA9x1C5fu17s
-         InyEMQClT6U/YR7leKer2/dY5AU+0Kd3wT3LYX5eJpwf1SqPYR4ReZWdIPY1xB9ZHW
-         vL5RUfCtc4qzg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E8BD635237A1; Wed,  3 Mar 2021 11:49:45 -0800 (PST)
-Date:   Wed, 3 Mar 2021 11:49:45 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     frederic@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@kernel.org
-Subject: timer: Report ignored local enqueue in nohz mode?
-Message-ID: <20210303194945.GA20866@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1386961AbhCCTyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 14:54:52 -0500
+IronPort-SDR: mD0oRJhUw9+/t3qNen+pL9KzBb3wo0GzwIwwmNGOJ4aLkWVEc3okkyjRPzhpTDTKt0LSK2ttVB
+ m0XJQ8Nop69A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="167167152"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="167167152"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 11:53:03 -0800
+IronPort-SDR: R6iyP80M2hDdAwzW5JY4jBh3y+pIwOyZybQib2owkYHoShjNulOA3CDxBZc8mYFtKpNscgEq0o
+ l0ioqUQuaNIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="406585782"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 03 Mar 2021 11:53:03 -0800
+Received: from [10.252.139.65] (kliang2-MOBL.ccr.corp.intel.com [10.252.139.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 43E9D580814;
+        Wed,  3 Mar 2021 11:53:02 -0800 (PST)
+Subject: Re: [PATCH] Revert "perf/x86: Allow zero PEBS status with only single
+ active event"
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Vince Weaver <vincent.weaver@maine.edu>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, eranian@google.com,
+        ak@linux.intel.com, stable@vger.kernel.org
+References: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
+ <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <9484ab6e-a6e5-bb72-106f-ed904e50fc0c@linux.intel.com>
+Date:   Wed, 3 Mar 2021 14:53:00 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Frederic!
 
-I don't see the following commit in mainline, but figured I should
-check with you guys to see if the problem got solved in some other way.
-Unless I hear otherwise, I will continue to carry this patch in -rcu
-and will send it along for the v5.13 merge window.
 
-							Thanx, Paul
+On 3/3/2021 1:59 PM, Peter Zijlstra wrote:
+> On Wed, Mar 03, 2021 at 05:42:18AM -0800, kan.liang@linux.intel.com wrote:
+> 
+>> For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
+>> may be mistakenly set to 0. To minimize the impact of the defect, the
+>> commit was introduced to try to avoid dropping the PEBS record for some
+>> cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
+>> the local pebs_status accordingly. However, it doesn't correct the PEBS
+>> status in the PEBS record, which may trigger the crash, especially for
+>> the large PEBS.
+>>
+>> It's possible that all the PEBS records in a large PEBS have the PEBS
+>> status 0. If so, the first get_next_pebs_record_by_bit() in the
+>> __intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
+>> PEBS, the 'count' parameter must > 1. The second
+>> get_next_pebs_record_by_bit() will crash.
+>>
+>> Two solutions were considered to fix the crash.
+>> - Keep the SW workaround and add extra checks in the
+>>    get_next_pebs_record_by_bit() to workaround the issue. The
+>>    get_next_pebs_record_by_bit() is a critical path. The extra checks
+>>    will bring extra overhead for the latest CPUs which don't have the
+>>    defect. Also, the defect can only be observed on some old CPUs
+>>    (For example, the issue can be reproduced on an HSW client, but I
+>>    didn't observe the issue on my Haswell server machine.). The impact
+>>    of the defect should be limit.
+>>    This solution is dropped.
+>> - Drop the SW workaround and revert the commit.
+>>    It seems that the commit never works, because the PEBS status in the
+>>    PEBS record never be changed. The get_next_pebs_record_by_bit() only
+>>    checks the PEBS status in the PEBS record. The record is dropped
+>>    eventually. Reverting the commit should not change the current
+>>    behavior.
+> 
+>> +++ b/arch/x86/events/intel/ds.c
+>> @@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
+>>   			continue;
+>>   		}
+>>   
+>> -		/*
+>> -		 * On some CPUs the PEBS status can be zero when PEBS is
+>> -		 * racing with clearing of GLOBAL_STATUS.
+>> -		 *
+>> -		 * Normally we would drop that record, but in the
+>> -		 * case when there is only a single active PEBS event
+>> -		 * we can assume it's for that event.
+>> -		 */
+>> -		if (!pebs_status && cpuc->pebs_enabled &&
+>> -			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
+>> -			pebs_status = cpuc->pebs_enabled;
+> 
+> Wouldn't something like:
+> 
+> 			pebs_status = p->status = cpus->pebs_enabled;
+>
 
-------------------------------------------------------------------------
+I didn't consider it as a potential solution in this patch because I 
+don't think it's a proper way that SW modifies the buffer, which is 
+supposed to be manipulated by the HW.
+It's just a personal preference. I don't see any issue here. We may try it.
 
-commit 650c433b46ca9601378c9d170d5dc0e24dd42822
-Author: Frederic Weisbecker <frederic@kernel.org>
-Date:   Fri Jan 8 13:50:12 2021 +0100
+Vince, could you please help check whether Peter's suggestion fixes the 
+crash?
 
-    timer: Report ignored local enqueue in nohz mode
-    
-    Enqueuing a local timer after the tick has been stopped will result in
-    the timer being ignored until the next random interrupt.
-    
-    Perform sanity checks to report these situations.
-    
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Ingo Molnar<mingo@kernel.org>
-    Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Thanks,
+Kan
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ca2bb62..4822371 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -674,6 +674,26 @@ int get_nohz_timer_target(void)
- 	return cpu;
- }
- 
-+static void wake_idle_assert_possible(void)
-+{
-+#ifdef CONFIG_SCHED_DEBUG
-+	/* Timers are re-evaluated after idle IRQs */
-+	if (in_hardirq())
-+		return;
-+	/*
-+	 * Same as hardirqs, assuming they are executing
-+	 * on IRQ tail. Ksoftirqd shouldn't reach here
-+	 * as the timer base wouldn't be idle. And inline
-+	 * softirq processing after a call to local_bh_enable()
-+	 * within idle loop sound too fun to be considered here.
-+	 */
-+	if (in_serving_softirq())
-+		return;
-+
-+	WARN_ON_ONCE("Late timer enqueue may be ignored\n");
-+#endif
-+}
-+
- /*
-  * When add_timer_on() enqueues a timer into the timer wheel of an
-  * idle CPU then this timer might expire before the next timer event
-@@ -688,8 +708,10 @@ static void wake_up_idle_cpu(int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 
--	if (cpu == smp_processor_id())
-+	if (cpu == smp_processor_id()) {
-+		wake_idle_assert_possible();
- 		return;
-+	}
- 
- 	if (set_nr_and_not_polling(rq->idle))
- 		smp_send_reschedule(cpu);
+> actually fix things without adding overhead?
+> 
