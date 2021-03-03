@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A610B32C324
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D7432C30A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhCCX7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 18:59:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245757AbhCCTmA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:42:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE66C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 11:30:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w7rnAtm+5rmUMrt1OegFvCAzCtgfl80a+yX/UPaOyPY=; b=HFX3Ree+HgwGP9YppDyjBu+56k
-        LUsFOu01L/T5XS5UmatceiCZxATCw60R2G5ciblJbG1Nt6NG9OIW1g0ASfgMWGZ8RFKDy/XwgOkxB
-        tbN+9LR01DA6SsvlLGy4bnfMUf+NQTVjBWS4TbE92TwtphqbllbdPeArDTgprPR/e4mHQCXO2a+vf
-        GC5wSK93cFyubBVDc9pQf+ecQtkWKhDUyidXRh9iW1Ac5EtoNGoYjpFUEGCIEUPCDaaLqRyADXBXp
-        jN6aag39uFyQQmm9DULLIHHAXVPTnOczhxLv/b173nGPF+STy9BCHzIYxwEx0yGWy83yy6XUZXPbU
-        SMr9HIEg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lHXCg-003uht-L8; Wed, 03 Mar 2021 19:30:39 +0000
-Date:   Wed, 3 Mar 2021 19:30:38 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Pekka Enberg <penberg@gmail.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>,
-        linux-kernel@vger.kernel.org,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 3/3] mm/slub: Use percpu partial free counter
-Message-ID: <20210303193038.GE2723601@casper.infradead.org>
-References: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com>
- <1597061872-58724-4-git-send-email-xlpang@linux.alibaba.com>
- <alpine.DEB.2.22.394.2103021012010.860725@gentwo.de>
- <20210303142612.GC2723601@casper.infradead.org>
- <alpine.DEB.2.22.394.2103032012250.896915@gentwo.de>
+        id S231734AbhCCX7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350397AbhCCTmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 14:42:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF24B64ED0;
+        Wed,  3 Mar 2021 19:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614799865;
+        bh=h5FCaQLoCU1eLgBpB+1GspxLjjVwOPWrvQkt3lDgAUc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cEcgKJCSdq6xUFXNdC95YSgTC/uiJvkG0L6ZhxyQLlM/j4QKJH5PJyf053oXS82dR
+         ebHF+Cr1XG27xFKZ+8MVrHy5b8t5zi7N+7vB3QzJ0/++vdoMaNBGT+W/z4WikA1PNZ
+         +j3arvkQC+NwTQecUli9YcrdLDUear4lgJWqluqU=
+Date:   Wed, 3 Mar 2021 20:31:02 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Erwan Le Ray <erwan.leray@foss.st.com>
+Cc:     Jiri Slaby <jslaby@suse.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+Subject: Re: [PATCH 00/13] stm32 usart various fixes
+Message-ID: <YD/j9jhkcVbN3zs0@kroah.com>
+References: <20210219174736.1022-1-erwan.leray@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2103032012250.896915@gentwo.de>
+In-Reply-To: <20210219174736.1022-1-erwan.leray@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 08:15:58PM +0100, Christoph Lameter wrote:
-> On Wed, 3 Mar 2021, Matthew Wilcox wrote:
+On Fri, Feb 19, 2021 at 06:47:23PM +0100, Erwan Le Ray wrote:
+> This series brings various fixes to stm32-usart driver.
 > 
-> > On Tue, Mar 02, 2021 at 10:14:53AM +0100, Christoph Lameter wrote:
-> > > On Mon, 10 Aug 2020, Xunlei Pang wrote:
-> > > > -	atomic_long_t partial_free_objs;
-> > > > +	atomic_long_t __percpu *partial_free_objs;
-> > >
-> > > A percpu counter is never atomic. Just use unsigned long and use this_cpu
-> > > operations for this thing. That should cut down further on the overhead.
-> >
-> > What about allocations from interrupt context?  Should this be a local_t
-> > instead?
+> Erwan Le Ray (13):
+>   serial: stm32: fix probe and remove order for dma
+>   serial: stm32: fix startup by enabling usart for reception
+>   serial: stm32: fix incorrect characters on console
+>   serial: stm32: fix TX and RX FIFO thresholds
+>   serial: stm32: fix a deadlock condition with wakeup event
+>   serial: stm32: fix wake-up flag handling
+>   serial: stm32: fix a deadlock in set_termios
+>   serial: stm32: fix tx dma completion, release channel
+>   serial: stm32: call stm32_transmit_chars locked
+>   serial: stm32: fix FIFO flush in startup and set_termios
+>   serial: stm32: add FIFO flush when port is closed
+>   serial: stm32: fix tx_empty condition
+>   serial: stm32: add support for "flush_buffer" ops
 > 
-> Can this be allocated in an interrupt context?
-> 
-> And I am not sure how local_t relates to that? Percpu counters can be used
-> in an interrupt context without the overhead of the address calculations
-> that are required by a local_t.
+>  drivers/tty/serial/stm32-usart.c | 198 +++++++++++++++++++++----------
+>  drivers/tty/serial/stm32-usart.h |   3 -
+>  2 files changed, 135 insertions(+), 66 deletions(-)
 
-As I understand the patch, this counts the number of partially free slabs.
-So if we start to free an object from a completely full slab in process
-context, as "load x, add one to x, store x" and take an interrupt
-between loading x and adding one to x, that interrupt handler might
-free a different object from another completely full slab.  that would
-also load the same x, add one to it and store x, but then the process
-context would add one to the old x, overwriting the updated value from
-interrupt context.
+This series does not apply cleanly to my tree.  Can you rebase it
+against 5.12-rc1 and resend?
 
-it's not the likeliest of races, and i don't know how important it is
-that these counters remain accurate.  but using a local_t instead of
-a percpu long would fix the problem.  i don't know why you think that
-a local_t needs "address calculations".  perhaps you've misremembered
-what a local_t is?
+thanks,
+
+greg k-h
