@@ -2,153 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA5B32BF09
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA1832BF16
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577234AbhCCRse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:48:34 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:4262 "EHLO pegase1.c-s.fr"
+        id S1576085AbhCCSAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:00:03 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:56321 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238560AbhCCOyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:54:09 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DrH6K5yVWz9tyY7;
-        Wed,  3 Mar 2021 15:52:41 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id rUeZkj7gGtB7; Wed,  3 Mar 2021 15:52:41 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrH6K50QRz9tyY3;
-        Wed,  3 Mar 2021 15:52:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 85C278B7E6;
-        Wed,  3 Mar 2021 15:52:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SVrpgpT8WrDo; Wed,  3 Mar 2021 15:52:41 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E37758B7DB;
-        Wed,  3 Mar 2021 15:52:40 +0100 (CET)
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-To:     Marco Elver <elver@google.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
- <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
-Date:   Wed, 3 Mar 2021 15:52:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S242548AbhCCOz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:55:56 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614783268; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Pg9UcnXmNNJDfqbP+jEVxc2qlx2KGMB67XjQuDCqIh8=;
+ b=F6GtZzCbsm8pCRC6BkLMsWdYepwMnTzPeILi1AO1stnL8/YXUSi+PwPPIHgSZ4CYIRc3k9El
+ fc+Alb8daxIQxMZkOqhl17RQZPX0s/FujdhJpicKBC0Nji2cJYgBBJdFhmvS6GpGYhUtUkCj
+ ApovQBEHuQNgW/wbb90fTafzyuk=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 603fa30364e0747df9ec69d0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 14:53:55
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9ADD9C433C6; Wed,  3 Mar 2021 14:53:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F090FC433CA;
+        Wed,  3 Mar 2021 14:53:53 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Mar 2021 20:23:53 +0530
+From:   skakit@codeaurora.org
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Kiran Gunda <kgunda@codeaurora.org>
+Subject: Re: [PATCH 1/7] dt-bindings: regulator: Convert regulator bindings to
+ YAML format
+In-Reply-To: <CAL_JsqLLM9LLUb8r2ZEKfjKxG0tfxuKHchGhG3kVOUG35jgWGg@mail.gmail.com>
+References: <1614155592-14060-1-git-send-email-skakit@codeaurora.org>
+ <1614155592-14060-2-git-send-email-skakit@codeaurora.org>
+ <CAL_JsqLLM9LLUb8r2ZEKfjKxG0tfxuKHchGhG3kVOUG35jgWGg@mail.gmail.com>
+Message-ID: <6fd80f9c8d36deee7ed36f9dab5ad5c1@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
+Thanks for reviewing the patch!
 
-Le 03/03/2021 à 15:38, Marco Elver a écrit :
-> On Wed, 3 Mar 2021 at 15:09, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->> It seems like all other sane architectures, namely x86 and arm64
->> at least, include the running function as top entry when saving
->> stack trace.
->>
->> Functionnalities like KFENCE expect it.
->>
->> Do the same on powerpc, it allows KFENCE to properly identify the faulting
->> function as depicted below. Before the patch KFENCE was identifying
->> finish_task_switch.isra as the faulting function.
->>
->> [   14.937370] ==================================================================
->> [   14.948692] BUG: KFENCE: invalid read in test_invalid_access+0x54/0x108
->> [   14.948692]
->> [   14.956814] Invalid read at 0xdf98800a:
->> [   14.960664]  test_invalid_access+0x54/0x108
->> [   14.964876]  finish_task_switch.isra.0+0x54/0x23c
->> [   14.969606]  kunit_try_run_case+0x5c/0xd0
->> [   14.973658]  kunit_generic_run_threadfn_adapter+0x24/0x30
->> [   14.979079]  kthread+0x15c/0x174
->> [   14.982342]  ret_from_kernel_thread+0x14/0x1c
->> [   14.986731]
->> [   14.988236] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B             5.12.0-rc1-01537-g95f6e2088d7e-dirty #4682
->> [   14.999795] NIP:  c016ec2c LR: c02f517c CTR: c016ebd8
->> [   15.004851] REGS: e2449d90 TRAP: 0301   Tainted: G    B              (5.12.0-rc1-01537-g95f6e2088d7e-dirty)
->> [   15.015274] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
->> [   15.022043] DAR: df98800a DSISR: 20000000
->> [   15.022043] GPR00: c02f517c e2449e50 c1142080 e100dd24 c084b13c 00000008 c084b32b c016ebd8
->> [   15.022043] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
->> [   15.040581] NIP [c016ec2c] test_invalid_access+0x54/0x108
->> [   15.046010] LR [c02f517c] kunit_try_run_case+0x5c/0xd0
->> [   15.051181] Call Trace:
->> [   15.053637] [e2449e50] [c005a68c] finish_task_switch.isra.0+0x54/0x23c (unreliable)
->> [   15.061338] [e2449eb0] [c02f517c] kunit_try_run_case+0x5c/0xd0
->> [   15.067215] [e2449ed0] [c02f648c] kunit_generic_run_threadfn_adapter+0x24/0x30
->> [   15.074472] [e2449ef0] [c004e7b0] kthread+0x15c/0x174
->> [   15.079571] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
->> [   15.085798] Instruction dump:
->> [   15.088784] 8129d608 38e7ebd8 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
->> [   15.096613] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
->> [   15.104612] ==================================================================
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: 
+>> http://devicetree.org/schemas/regulator/qcom,rpmh-regulator.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Technologies, Inc. RPMh Regulators
+>> +
+>> +maintainers:
+>> +  - David Collins <collinsd@codeaurora.org>
+>> +
+>> +description:
 > 
-> Acked-by: Marco Elver <elver@google.com>
-> 
-> Thank you, I think this looks like the right solution. Just a question below:
-> 
-...
-
->> @@ -59,23 +70,26 @@ void save_stack_trace(struct stack_trace *trace)
->>
->>          sp = current_stack_frame();
->>
->> -       save_context_stack(trace, sp, current, 1);
->> +       save_context_stack(trace, sp, (unsigned long)save_stack_trace, current, 1);
-> 
-> This causes ip == save_stack_trace and also below for
-> save_stack_trace_tsk. Does this mean save_stack_trace() is included in
-> the trace? Looking at kernel/stacktrace.c, I think the library wants
-> to exclude itself from the trace, as it does '.skip = skipnr + 1' (and
-> '.skip   = skipnr + (current == tsk)' for the _tsk variant).
-> 
-> If the arch-helper here is included, should this use _RET_IP_ instead?
+> I assume you want the formatting here maintained, so you need a '|' at 
+> the end.
 > 
 
-Don't really know, I was inspired by arm64 which has:
+Ok.
 
-void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-		     struct task_struct *task, struct pt_regs *regs)
-{
-	struct stackframe frame;
+>> +    rpmh-regulator devices support PMIC regulator management via the 
+>> Voltage
+>> +    Regulator Manager (VRM) and Oscillator Buffer (XOB) RPMh 
+>> accelerators.  The APPS
+>> +    processor communicates with these hardware blocks via a Resource 
+>> State
+>> +    Coordinator (RSC) using command packets.  The VRM allows changing 
+>> three
+>> +    parameters for a given regulator, enable state, output voltage, 
+>> and operating
+>> +    mode.  The XOB allows changing only a single parameter for a 
+>> given regulator,
+>> +    its enable state.  Despite its name, the XOB is capable of 
+>> controlling the
+>> +    enable state of any PMIC peripheral.  It is used for clock 
+>> buffers, low-voltage
+>> +    switches, and LDO/SMPS regulators which have a fixed voltage and 
+>> mode.
+>> +
+>> +    =======================
+>> +    Required Node Structure
+>> +    =======================
+>> +
+>> +    RPMh regulators must be described in two levels of device nodes.  
+>> The first
+>> +    level describes the PMIC containing the regulators and must 
+>> reside within an
+>> +    RPMh device node.  The second level describes each regulator 
+>> within the PMIC
+>> +    which is to be used on the board.  Each of these regulators maps 
+>> to a single
+>> +    RPMh resource.
+>> +
+>> +    The names used for regulator nodes must match those supported by 
+>> a given PMIC.
+>> +    Supported regulator node names are
+>> +      For PM8005, smps1 - smps4
+>> +      For PM8009, smps1 - smps2, ldo1 - ldo7
+>> +      For PM8150, smps1 - smps10, ldo1 - ldo18
+>> +      For PM8150L, smps1 - smps8, ldo1 - ldo11, bob, flash, rgb
+> 
+> flash and rgb aren't documented.
+> 
 
-	if (regs)
-		start_backtrace(&frame, regs->regs[29], regs->pc);
-	else if (task == current)
-		start_backtrace(&frame,
-				(unsigned long)__builtin_frame_address(0),
-				(unsigned long)arch_stack_walk);
-	else
-		start_backtrace(&frame, thread_saved_fp(task),
-				thread_saved_pc(task));
+Ok will add them.
 
-	walk_stackframe(task, &frame, consume_entry, cookie);
-}
+>> +      For PM8350, smps1 - smps12, ldo1 - ldo10
+>> +      For PM8350C, smps1 - smps10, ldo1 - ldo13, bob
+>> +      For PM8998, smps1 - smps13, ldo1 - ldo28, lvs1 - lvs2
+>> +      For PMI8998, bob
+>> +      For PM6150, smps1 - smps5, ldo1 - ldo19
+>> +      For PM6150L, smps1 - smps8, ldo1 - ldo11, bob
+>> +      For PMX55, smps1 - smps7, ldo1 - ldo16
+>> +
+>> +properties:
+>> +    compatible:
+>> +        enum:
+>> +            - qcom,pm8005-rpmh-regulators
+>> +            - qcom,pm8009-rpmh-regulators
+>> +            - qcom,pm8009-1-rpmh-regulators
+>> +            - qcom,pm8150-rpmh-regulators
+>> +            - qcom,pm8150l-rpmh-regulators
+>> +            - qcom,pm8350-rpmh-regulators
+>> +            - qcom,pm8350c-rpmh-regulators
+>> +            - qcom,pm8998-rpmh-regulators
+>> +            - qcom,pmi8998-rpmh-regulators
+>> +            - qcom,pm6150-rpmh-regulators
+>> +            - qcom,pm6150l-rpmh-regulators
+>> +            - qcom,pmx55-rpmh-regulators
+>> +
+>> +    qcom,pmic-id:
+>> +        description: RPMh resource name suffix used for the 
+>> regulators found on
+>> +                     this PMIC.  Typical values are "a", "b", "c", 
+>> "d", "e", "f".
+> 
+> Sounds like constraints. Make the values a schema.
+> 
 
+Ok
 
-But looking at x86 you may be right, so what should be done really ?
+>> +        $ref: /schemas/types.yaml#/definitions/string
+>> +
+>> +    qcom,always-wait-for-ack:
+>> +        description: Boolean flag which indicates that the 
+>> application processor
+>> +                     must wait for an ACK or a NACK from RPMh for 
+>> every request
+>> +                     sent for this regulator including those which 
+>> are for a
+>> +                     strictly lower power state.
+>> +        $ref: /schemas/types.yaml#/definitions/string
+> 
+> Boolean or string?
+> 
 
-Thanks
-Christophe
+Ok, will change it to /schemas/types.yaml#/definitions/flag
+
+>> +
+>> +patternProperties:
+>> +  ".*-supply$":
+> 
+> You can drop '.*'. That's already the case without '^'.
+> 
+
+Ok.
+
+> The supply names need to be defined.
+> 
+
+you mean I should define like this "^vdd-s|l([0-9]+)-supply$": ?
+
+>> +    description: phandle of the parent supply regulator of one or 
+>> more of the
+>> +                 regulators for this PMIC.
+>> +
+>> +  "^((smps|ldo|lvs)[0-9]*)$":
+> 
+> s/*/+/ as 1 digit is always required, right?
+> 
+
+ok
+
+>> +    type: object
+>> +    allOf:
+> 
+> Don't need allOf.
+> 
+
+ok, will drop this.
+
+>> +     - $ref: "regulator.yaml#"
+>> +    description: List of regulator parent supply phandles
+> 
+> This is a node, not a list of phandles.
+> 
+
+Okay.
+
+>> +
+>> +  "bob$":
+> 
+> 'foobob' is okay as that would be allowed? If a fixed string, put
+> under 'properties'.
+> 
+
+It is fixed string, will move it to properties.
+
+>> +    type: object
+>> +    allOf:
+>> +     - $ref: "regulator.yaml#"
+>> +    description: BOB regulator parent supply phandle
+>> +
+>> +additionalProperties: false
+>> +
+>> +required:
+>> + - compatible
+>> + - qcom,pmic-id
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>> +
+>> +    pm8998-rpmh-regulators {
+>> +        compatible = "qcom,pm8998-rpmh-regulators";
+>> +        qcom,pmic-id = "a";
+>> +
+>> +        vdd-l7-l12-l14-l15-supply = <&pm8998_s5>;
+>> +
+>> +        smps2 {
+>> +            regulator-min-microvolt = <1100000>;
+>> +            regulator-max-microvolt = <1100000>;
+>> +        };
+>> +
+>> +        pm8998_s5: smps5 {
+> 
+> Drop unused labels.
+> 
+
+Okay.
+
+>> +            regulator-min-microvolt = <1904000>;
+>> +            regulator-max-microvolt = <2040000>;
+>> +        };
+>> +
+>> +        ldo7 {
+>> +            regulator-min-microvolt = <1800000>;
+>> +            regulator-max-microvolt = <1800000>;
+>> +            regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+>> +            regulator-allowed-modes =
+>> +                <RPMH_REGULATOR_MODE_LPM
+>> +                 RPMH_REGULATOR_MODE_HPM>;
+>> +            regulator-allow-set-load;
+>> +        };
+>> +
+>> +        lvs1 {
+>> +            regulator-min-microvolt = <1800000>;
+>> +            regulator-max-microvolt = <1800000>;
+>> +        };
+>> +    };
+>> +
+>> +    pmi8998-rpmh-regulators {
+>> +        compatible = "qcom,pmi8998-rpmh-regulators";
+>> +        qcom,pmic-id = "b";
+>> +
+>> +        bob {
+>> +            regulator-min-microvolt = <3312000>;
+>> +            regulator-max-microvolt = <3600000>;
+>> +            regulator-allowed-modes =
+>> +                <RPMH_REGULATOR_MODE_AUTO
+>> +                 RPMH_REGULATOR_MODE_HPM>;
+>> +            regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
+>> +        };
+>> +    };
+>> +...
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
+
+Thanks,
+Satya Priya
