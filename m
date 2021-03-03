@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2B132BEDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AD032BEE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386072AbhCCRq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:46:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S1386095AbhCCRqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:46:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243788AbhCCOhY (ORCPT
+        with ESMTP id S240067AbhCCOhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:37:24 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1825C061224
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:34:58 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id l12so23924887wry.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:34:58 -0800 (PST)
+        Wed, 3 Mar 2021 09:37:25 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B69C0611C1
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:35:02 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id a18so15722135wrc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:35:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=erPTjshbhLchKwQuh0XQUk+wc12RIGoz2km1xclT6d4=;
-        b=EZo0F/vKAXWlIQpH9PKqPP4VUz1vgWxjmgaL0A6IOrX4Zm0mz5zh/eOsJsT7Ux1gDE
-         0axE6MsOpRohAXChk1J5cnJWf7/gDUt2CVNwx30l8yc5VjW7th/ct4aaoqAZEwEtvDG+
-         mmbx22dFlouq+ky0S9Htp2vFGaRw08CdjsDXm82grykQNcw2DJYMK40jMC0GZYNEFFYa
-         +aiNEQak2YYfkMoanJIjD2hCSRejCvGH9cRrD576TpYHImXZG3w6yXlcW/wwB1/u2zau
-         bHCjf0S9B7APGQqDcwzzwqG7ISsbitDdvaVbBwBxHIvZf7+pn7rSxVtQr1cyf6h2rNVg
-         Kb8A==
+        bh=GVJx+OIpfKowVFAHFOdCV34ApK3YA2W1l4+0ZHpyDsw=;
+        b=OneTgoj343vuzv6eLpdMk7KlamRIjQ+zwEP4ByQvLTClzJw/vompYIPqNAcX0/eHud
+         mRoCZExt2LM8evV6Eev/Q5a+ox3XLp0K7SeWY51eZThyFmxBmjDn/xBsEvp2Z5E/4oai
+         39uATGESAQRWkd+4/eTtsZ3kpZb2BTvPmoarJIOKQ28ovA4Xz9duL2iFsPxBM8qFxfyo
+         aYLYwVJ8Q1htY77gm/0prxmwzZDJ9Nd7Jo+v3SABrWCoUECnIyXfWsifBKTw2E/GJKtZ
+         MWu3kWfOxYTe6mgt5d2L0mJJdmeabHqm6HkszCOF3zwlFU+VWGf3v/OvWYok948++aoA
+         NPcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=erPTjshbhLchKwQuh0XQUk+wc12RIGoz2km1xclT6d4=;
-        b=W7SWVObsIiYXeWvxy1cLn389vUoq/XcT7HhineIwBKb+ns7LuhBLJ+J+j0uCPx9KfZ
-         KSCwGjobWW4RlsP6I5ntgnVN2XGTzMUnPcdpuvPAp2SZugQA/CNnpMCDin4+COzMdQ1I
-         HjPJ6C6zMqH2Td5/QC376debv++xZhzZL19fzDFhgBYJC7570KSvCxxBnhIGwuFZErrg
-         4pmMobFlClWnVLnxbpJlfHJjT4kYBfWr41DZt7qmr9zRvIZHOkBW0oYw/I6LHXVVgbPO
-         5EFbs9xNo6r6Y9H0y+lrrN3aRimGXd7MmvrkA/66uDk8IVFzATTx4vnu+h/UOF6nmnjS
-         po0A==
-X-Gm-Message-State: AOAM531kAlUhgyeTuvz211KLWnr0FqXyz/xR6zfDvGCjeNx9qz+e9Vdm
-        v8ekMOFHpB5GsD4K7chxy06vXA==
-X-Google-Smtp-Source: ABdhPJysfJFi1Ht/iBLsCA6KO+d9zXB1Q5jZOY/aNyGPlLgX2TCgqkySNK0y6vBlm2Yqk6SIU3NEPQ==
-X-Received: by 2002:adf:fbce:: with SMTP id d14mr26519347wrs.44.1614782097568;
-        Wed, 03 Mar 2021 06:34:57 -0800 (PST)
+        bh=GVJx+OIpfKowVFAHFOdCV34ApK3YA2W1l4+0ZHpyDsw=;
+        b=M9tUyI4kgaUBTurFXiFYoj2gFeOtYzaRPpM4s3X+oEttpvu3U8Cu8f3Ov9vTV3xwj/
+         PabMonGpjPSLlyLzCUUbKuK0dedu6KhwjSFQxd+CEeXFuIHwkiiRjFVfPampoeno64hK
+         Wuf+pb4MveMFqifVVyaCl6V/kRIPo5kklqE2KpnjIjPdU+4UZsXaIlE1hRqF7zcGhfn8
+         GO61sn6FWb7tO7rAh1PZJD8+udcE5vVYPQ6WeOmDx5Kb6eEOMBHBPyWDivWIlzzkaeOG
+         sAUg1Vii+c9UVpPS8FKebi0qWrjYppjy9SQTTNKAifuccGsco9ere/YH/ayQNV2ougv3
+         4qCw==
+X-Gm-Message-State: AOAM533yqaoV/Z/sO+ba/fd/gaEfpcQuyeW+P+qxBjnelC8HsBRSnTTV
+        R1L2vKe73nvXjO2l6cK7rLtXm8XT7U5R3w==
+X-Google-Smtp-Source: ABdhPJzUkciQgQog+DC6TbpnIgltWimTaFk7AuH45YonszOYy8CXN9P2wxC7WYmPGKQXA4xp88Oisw==
+X-Received: by 2002:a05:6000:1788:: with SMTP id e8mr28068298wrg.171.1614782100775;
+        Wed, 03 Mar 2021 06:35:00 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id f16sm31475923wrt.21.2021.03.03.06.34.56
+        by smtp.gmail.com with ESMTPSA id f16sm31475923wrt.21.2021.03.03.06.34.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 06:34:56 -0800 (PST)
+        Wed, 03 Mar 2021 06:34:59 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Rob Rice <rob.rice@broadcom.com>, linux-crypto@vger.kernel.org
-Subject: [PATCH 02/10] crypto: bcm: Fix a whole host of kernel-doc misdemeanours
-Date:   Wed,  3 Mar 2021 14:34:41 +0000
-Message-Id: <20210303143449.3170813-3-lee.jones@linaro.org>
+        Shujuan Chen <shujuan.chen@stericsson.com>,
+        Joakim Bech <joakim.xx.bech@stericsson.com>,
+        Berne Hebark <berne.herbark@stericsson.com>,
+        Niklas Hernaeus <niklas.hernaeus@stericsson.com>,
+        Jonas Linde <jonas.linde@stericsson.com>,
+        Andreas Westin <andreas.westin@stericsson.com>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 04/10] crypto: ux500: hash: hash_core: Fix worthy kernel-doc headers and remove others
+Date:   Wed,  3 Mar 2021 14:34:43 +0000
+Message-Id: <20210303143449.3170813-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303143449.3170813-1-lee.jones@linaro.org>
 References: <20210303143449.3170813-1-lee.jones@linaro.org>
@@ -66,317 +72,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ones remove here not only fail to conform to kernel-doc, but also
+provide no value, so let's remove them completely in this case.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/crypto/bcm/util.c:136: warning: Function parameter or member 'from_nents' not described in 'spu_msg_sg_add'
- drivers/crypto/bcm/util.c:136: warning: Function parameter or member 'length' not described in 'spu_msg_sg_add'
- drivers/crypto/bcm/spu.c:464: warning: Excess function parameter 'Return' description in 'spum_gcm_ccm_pad_len'
- drivers/crypto/bcm/spu.c:524: warning: Function parameter or member 'iv_len' not described in 'spum_aead_ivlen'
- drivers/crypto/bcm/spu.c:524: warning: expecting prototype for spu_aead_ivlen(). Prototype was for spum_aead_ivlen() instead
- drivers/crypto/bcm/spu.c:556: warning: Function parameter or member 'alg_digest_size' not described in 'spum_digest_size'
- drivers/crypto/bcm/spu.c:556: warning: Function parameter or member 'alg' not described in 'spum_digest_size'
- drivers/crypto/bcm/spu.c:556: warning: Function parameter or member 'htype' not described in 'spum_digest_size'
- drivers/crypto/bcm/spu.c:583: warning: bad line:
- drivers/crypto/bcm/spu.c:927: warning: Function parameter or member 'is_inbound' not described in 'spum_cipher_req_finish'
- drivers/crypto/bcm/spu.c:927: warning: Excess function parameter 'isInbound' description in 'spum_cipher_req_finish'
- drivers/crypto/bcm/spu2.c:557: warning: Function parameter or member 'fmd' not described in 'spu2_fmd_init'
- drivers/crypto/bcm/spu2.c:557: warning: Function parameter or member 'spu2_type' not described in 'spu2_fmd_init'
- drivers/crypto/bcm/spu2.c:557: warning: Excess function parameter 'spu2_cipher_type' description in 'spu2_fmd_init'
- drivers/crypto/bcm/spu2.c:615: warning: Function parameter or member 'auth_first' not described in 'spu2_fmd_ctrl0_write'
- drivers/crypto/bcm/spu2.c:615: warning: Excess function parameter 'authFirst' description in 'spu2_fmd_ctrl0_write'
- drivers/crypto/bcm/spu2.c:666: warning: Function parameter or member 'is_inbound' not described in 'spu2_fmd_ctrl1_write'
- drivers/crypto/bcm/spu2.c:803: warning: expecting prototype for spu_payload_length(). Prototype was for spu2_payload_length() instead
- drivers/crypto/bcm/spu2.c:825: warning: Function parameter or member 'is_hash' not described in 'spu2_response_hdr_len'
- drivers/crypto/bcm/spu2.c:825: warning: expecting prototype for spu_response_hdr_len(). Prototype was for spu2_response_hdr_len() instead
- drivers/crypto/bcm/spu2.c:843: warning: expecting prototype for spu_hash_pad_len(). Prototype was for spu2_hash_pad_len() instead
- drivers/crypto/bcm/spu2.c:855: warning: Function parameter or member 'cipher_mode' not described in 'spu2_gcm_ccm_pad_len'
- drivers/crypto/bcm/spu2.c:855: warning: Function parameter or member 'data_size' not described in 'spu2_gcm_ccm_pad_len'
- drivers/crypto/bcm/spu2.c:855: warning: expecting prototype for spu2_gcm_ccm_padlen(). Prototype was for spu2_gcm_ccm_pad_len() instead
- drivers/crypto/bcm/spu2.c:872: warning: expecting prototype for spu_assoc_resp_len(). Prototype was for spu2_assoc_resp_len() instead
- drivers/crypto/bcm/spu2.c:919: warning: Function parameter or member 'alg_digest_size' not described in 'spu2_digest_size'
- drivers/crypto/bcm/spu2.c:919: warning: Function parameter or member 'alg' not described in 'spu2_digest_size'
- drivers/crypto/bcm/spu2.c:919: warning: Function parameter or member 'htype' not described in 'spu2_digest_size'
- drivers/crypto/bcm/spu2.c:945: warning: expecting prototype for spu_create_request(). Prototype was for spu2_create_request() instead
- drivers/crypto/bcm/spu2.c:1122: warning: expecting prototype for spu_cipher_req_init(). Prototype was for spu2_cipher_req_init() instead
- drivers/crypto/bcm/spu2.c:1182: warning: Function parameter or member 'is_inbound' not described in 'spu2_cipher_req_finish'
- drivers/crypto/bcm/spu2.c:1182: warning: expecting prototype for spu_cipher_req_finish(). Prototype was for spu2_cipher_req_finish() instead
- drivers/crypto/bcm/spu2.c:1243: warning: expecting prototype for spu_request_pad(). Prototype was for spu2_request_pad() instead
- drivers/crypto/bcm/spu2.c:1321: warning: expecting prototype for spu_status_process(). Prototype was for spu2_status_process() instead
- drivers/crypto/bcm/cipher.c:1048: warning: Function parameter or member 'req' not described in 'spu_aead_rx_sg_create'
- drivers/crypto/bcm/cipher.c:2966: warning: Function parameter or member 'cipher' not described in 'rfc4543_gcm_esp_setkey'
- drivers/crypto/bcm/cipher.c:2966: warning: Function parameter or member 'key' not described in 'rfc4543_gcm_esp_setkey'
- drivers/crypto/bcm/cipher.c:2966: warning: Function parameter or member 'keylen' not described in 'rfc4543_gcm_esp_setkey'
+ drivers/crypto/ux500/hash/hash_core.c:368: warning: Function parameter or member 'ctx' not described in 'hash_get_device_data'
+ drivers/crypto/ux500/hash/hash_core.c:368: warning: Excess function parameter 'hash_ctx' description in 'hash_get_device_data'
+ drivers/crypto/ux500/hash/hash_core.c:551: warning: expecting prototype for hash_init(). Prototype was for ux500_hash_init() instead
+ drivers/crypto/ux500/hash/hash_core.c:592: warning: Function parameter or member 'length' not described in 'hash_processblock'
+ drivers/crypto/ux500/hash/hash_core.c:1302: warning: expecting prototype for hash_update(). Prototype was for ahash_update() instead
+ drivers/crypto/ux500/hash/hash_core.c:1322: warning: expecting prototype for hash_final(). Prototype was for ahash_final() instead
+ drivers/crypto/ux500/hash/hash_core.c:1622: warning: Function parameter or member 'device_data' not described in 'ahash_algs_register_all'
+ drivers/crypto/ux500/hash/hash_core.c:1622: warning: expecting prototype for hash_algs_register_all(). Prototype was for ahash_algs_register_all() instead
+ drivers/crypto/ux500/hash/hash_core.c:1647: warning: Function parameter or member 'device_data' not described in 'ahash_algs_unregister_all'
+ drivers/crypto/ux500/hash/hash_core.c:1647: warning: expecting prototype for hash_algs_unregister_all(). Prototype was for ahash_algs_unregister_all() instead
+ drivers/crypto/ux500/cryp/cryp.c:19: warning: Incorrect use of kernel-doc format:  * cryp_wait_until_done - wait until the device logic is not busy
+ drivers/crypto/ux500/cryp/cryp.c:22: warning: Function parameter or member 'device_data' not described in 'cryp_wait_until_done'
+ drivers/crypto/ux500/cryp/cryp.c:22: warning: expecting prototype for ST(). Prototype was for cryp_wait_until_done() instead
+ drivers/crypto/ux500/cryp/cryp.c:292: warning: Function parameter or member 'cryp_mode' not described in 'cryp_save_device_context'
+ drivers/crypto/ux500/cryp/cryp_irq.c:21: warning: Function parameter or member 'device_data' not described in 'cryp_enable_irq_src'
+ drivers/crypto/ux500/cryp/cryp_irq.c:21: warning: Function parameter or member 'irq_src' not described in 'cryp_enable_irq_src'
+ drivers/crypto/ux500/cryp/cryp_irq.c:21: warning: expecting prototype for ST(). Prototype was for cryp_enable_irq_src() instead
+ drivers/crypto/ux500/cryp/cryp_core.c:42: warning: expecting prototype for ST(). Prototype was for CRYP_MAX_KEY_SIZE() instead
+ drivers/crypto/ux500/cryp/cryp_core.c:91: warning: Function parameter or member 'key' not described in 'cryp_ctx'
+ drivers/crypto/ux500/cryp/cryp_core.c:91: warning: Function parameter or member 'session_id' not described in 'cryp_ctx'
 
 Cc: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Rob Rice <rob.rice@broadcom.com>
+Cc: Shujuan Chen <shujuan.chen@stericsson.com>
+Cc: Joakim Bech <joakim.xx.bech@stericsson.com>
+Cc: Berne Hebark <berne.herbark@stericsson.com>
+Cc: Niklas Hernaeus <niklas.hernaeus@stericsson.com>
+Cc: Jonas Linde <jonas.linde@stericsson.com>
+Cc: Andreas Westin <andreas.westin@stericsson.com>
 Cc: linux-crypto@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/crypto/bcm/cipher.c |  7 +++---
- drivers/crypto/bcm/spu.c    | 16 +++++++-------
- drivers/crypto/bcm/spu2.c   | 43 +++++++++++++++++++++----------------
- drivers/crypto/bcm/util.c   |  4 ++--
- 4 files changed, 38 insertions(+), 32 deletions(-)
+ drivers/crypto/ux500/cryp/cryp.c      |  5 +++--
+ drivers/crypto/ux500/cryp/cryp_core.c |  5 +++--
+ drivers/crypto/ux500/cryp/cryp_irq.c  |  2 +-
+ drivers/crypto/ux500/hash/hash_core.c | 15 +++++----------
+ 4 files changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/crypto/bcm/cipher.c b/drivers/crypto/bcm/cipher.c
-index 851b149f71701..053315e260c22 100644
---- a/drivers/crypto/bcm/cipher.c
-+++ b/drivers/crypto/bcm/cipher.c
-@@ -1019,6 +1019,7 @@ static void handle_ahash_resp(struct iproc_reqctx_s *rctx)
-  * a SPU response message for an AEAD request. Includes buffers to catch SPU
-  * message headers and the response data.
-  * @mssg:	mailbox message containing the receive sg
-+ * @req:	Crypto API request
-  * @rctx:	crypto request context
-  * @rx_frag_num: number of scatterlist elements required to hold the
-  *		SPU response message
-@@ -2952,9 +2953,9 @@ static int aead_gcm_esp_setkey(struct crypto_aead *cipher,
+diff --git a/drivers/crypto/ux500/cryp/cryp.c b/drivers/crypto/ux500/cryp/cryp.c
+index 9866c2a5e9a70..759d0d9786fd1 100644
+--- a/drivers/crypto/ux500/cryp/cryp.c
++++ b/drivers/crypto/ux500/cryp/cryp.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * Copyright (C) ST-Ericsson SA 2010
+  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
+  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
+@@ -15,7 +15,7 @@
+ #include "cryp_p.h"
+ #include "cryp.h"
  
- /**
-  * rfc4543_gcm_esp_setkey() - setkey operation for RFC4543 variant of GCM/GMAC.
-- * cipher: AEAD structure
-- * key:    Key followed by 4 bytes of salt
-- * keylen: Length of key plus salt, in bytes
-+ * @cipher: AEAD structure
-+ * @key:    Key followed by 4 bytes of salt
-+ * @keylen: Length of key plus salt, in bytes
-  *
-  * Extracts salt from key and stores it to be prepended to IV on each request.
-  * Digest is always 16 bytes
-diff --git a/drivers/crypto/bcm/spu.c b/drivers/crypto/bcm/spu.c
-index 007abf92cc05b..6283e8c6d51d3 100644
---- a/drivers/crypto/bcm/spu.c
-+++ b/drivers/crypto/bcm/spu.c
-@@ -457,7 +457,7 @@ u16 spum_hash_pad_len(enum hash_alg hash_alg, enum hash_mode hash_mode,
-  * @cipher_mode:	Algo type
-  * @data_size:		Length of plaintext (bytes)
-  *
-- * @Return: Length of padding, in bytes
-+ * Return: Length of padding, in bytes
+-/**
++/*
+  * cryp_wait_until_done - wait until the device logic is not busy
   */
- u32 spum_gcm_ccm_pad_len(enum spu_cipher_mode cipher_mode,
- 			 unsigned int data_size)
-@@ -510,10 +510,10 @@ u32 spum_assoc_resp_len(enum spu_cipher_mode cipher_mode,
- }
- 
- /**
-- * spu_aead_ivlen() - Calculate the length of the AEAD IV to be included
-+ * spum_aead_ivlen() - Calculate the length of the AEAD IV to be included
-  * in a SPU request after the AAD and before the payload.
-  * @cipher_mode:  cipher mode
-- * @iv_ctr_len:   initialization vector length in bytes
-+ * @iv_len:   initialization vector length in bytes
-  *
-  * In Linux ~4.2 and later, the assoc_data sg includes the IV. So no need
-  * to include the IV as a separate field in the SPU request msg.
-@@ -543,9 +543,9 @@ enum hash_type spum_hash_type(u32 src_sent)
- /**
-  * spum_digest_size() - Determine the size of a hash digest to expect the SPU to
-  * return.
-- * alg_digest_size: Number of bytes in the final digest for the given algo
-- * alg:             The hash algorithm
-- * htype:           Type of hash operation (init, update, full, etc)
-+ * @alg_digest_size: Number of bytes in the final digest for the given algo
-+ * @alg:             The hash algorithm
-+ * @htype:           Type of hash operation (init, update, full, etc)
-  *
-  * When doing incremental hashing for an algorithm with a truncated hash
-  * (e.g., SHA224), the SPU returns the full digest so that it can be fed back as
-@@ -580,7 +580,7 @@ u32 spum_digest_size(u32 alg_digest_size, enum hash_alg alg,
-  * @aead_parms:   Parameters related to AEAD operation
-  * @data_size:    Length of data to be encrypted or authenticated. If AEAD, does
-  *		  not include length of AAD.
--
-+ *
-  * Return: the length of the SPU header in bytes. 0 if an error occurs.
+ void cryp_wait_until_done(struct cryp_device_data *device_data)
+@@ -285,6 +285,7 @@ int cryp_configure_init_vector(struct cryp_device_data *device_data,
+  *				other device context parameter
+  * @device_data: Pointer to the device data struct for base address.
+  * @ctx: Crypto device context
++ * @cryp_mode: Mode: Polling, Interrupt or DMA
   */
- u32 spum_create_request(u8 *spu_hdr,
-@@ -911,7 +911,7 @@ u16 spum_cipher_req_init(u8 *spu_hdr, struct spu_cipher_parms *cipher_parms)
-  * setkey() time in spu_cipher_req_init().
-  * @spu_hdr:         Start of the request message header (MH field)
-  * @spu_req_hdr_len: Length in bytes of the SPU request header
-- * @isInbound:       0 encrypt, 1 decrypt
-+ * @is_inbound:      0 encrypt, 1 decrypt
-  * @cipher_parms:    Parameters describing cipher operation to be performed
-  * @data_size:       Length of the data in the BD field
-  *
-diff --git a/drivers/crypto/bcm/spu2.c b/drivers/crypto/bcm/spu2.c
-index 2db35b5ccaa24..07989bb8c220a 100644
---- a/drivers/crypto/bcm/spu2.c
-+++ b/drivers/crypto/bcm/spu2.c
-@@ -543,7 +543,8 @@ void spu2_dump_msg_hdr(u8 *buf, unsigned int buf_len)
+ void cryp_save_device_context(struct cryp_device_data *device_data,
+ 			      struct cryp_device_context *ctx,
+diff --git a/drivers/crypto/ux500/cryp/cryp_core.c b/drivers/crypto/ux500/cryp/cryp_core.c
+index c3adeb2e58232..25ce56d05084e 100644
+--- a/drivers/crypto/ux500/cryp/cryp_core.c
++++ b/drivers/crypto/ux500/cryp/cryp_core.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * Copyright (C) ST-Ericsson SA 2010
+  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
+  * Author: Joakim Bech <joakim.xx.bech@stericsson.com> for ST-Ericsson.
+@@ -62,7 +62,7 @@ struct cryp_driver_data {
  /**
-  * spu2_fmd_init() - At setkey time, initialize the fixed meta data for
-  * subsequent skcipher requests for this context.
-- * @spu2_cipher_type:  Cipher algorithm
-+ * @fmd:               Start of FMD field to be written
-+ * @spu2_type:         Cipher algorithm
-  * @spu2_mode:         Cipher mode
-  * @cipher_key_len:    Length of cipher key, in bytes
-  * @cipher_iv_len:     Length of cipher initialization vector, in bytes
-@@ -598,7 +599,7 @@ static int spu2_fmd_init(struct SPU2_FMD *fmd,
-  * SPU request packet.
-  * @fmd:            Start of FMD field to be written
-  * @is_inbound:     true if decrypting. false if encrypting.
-- * @authFirst:      true if alg authenticates before encrypting
-+ * @auth_first:     true if alg authenticates before encrypting
-  * @protocol:       protocol selector
-  * @cipher_type:    cipher algorithm
-  * @cipher_mode:    cipher mode
-@@ -640,6 +641,7 @@ static void spu2_fmd_ctrl0_write(struct SPU2_FMD *fmd,
-  * spu2_fmd_ctrl1_write() - Write ctrl1 field in fixed metadata (FMD) field of
-  * SPU request packet.
-  * @fmd:            Start of FMD field to be written
-+ * @is_inbound:     true if decrypting. false if encrypting.
-  * @assoc_size:     Length of additional associated data, in bytes
-  * @auth_key_len:   Length of authentication key, in bytes
-  * @cipher_key_len: Length of cipher key, in bytes
-@@ -793,7 +795,7 @@ u32 spu2_ctx_max_payload(enum spu_cipher_alg cipher_alg,
- }
- 
- /**
-- * spu_payload_length() -  Given a SPU2 message header, extract the payload
-+ * spu2_payload_length() -  Given a SPU2 message header, extract the payload
-  * length.
-  * @spu_hdr:  Start of SPU message header (FMD)
-  *
-@@ -812,10 +814,11 @@ u32 spu2_payload_length(u8 *spu_hdr)
- }
- 
- /**
-- * spu_response_hdr_len() - Determine the expected length of a SPU response
-+ * spu2_response_hdr_len() - Determine the expected length of a SPU response
-  * header.
-  * @auth_key_len:  Length of authentication key, in bytes
-  * @enc_key_len:   Length of encryption key, in bytes
-+ * @is_hash:       Unused
-  *
-  * For SPU2, includes just FMD. OMD is never requested.
-  *
-@@ -827,7 +830,7 @@ u16 spu2_response_hdr_len(u16 auth_key_len, u16 enc_key_len, bool is_hash)
- }
- 
- /**
-- * spu_hash_pad_len() - Calculate the length of hash padding required to extend
-+ * spu2_hash_pad_len() - Calculate the length of hash padding required to extend
-  * data to a full block size.
-  * @hash_alg:        hash algorithm
-  * @hash_mode:       hash mode
-@@ -845,8 +848,10 @@ u16 spu2_hash_pad_len(enum hash_alg hash_alg, enum hash_mode hash_mode,
- }
- 
- /**
-- * spu2_gcm_ccm_padlen() -  Determine the length of GCM/CCM padding for either
-+ * spu2_gcm_ccm_pad_len() -  Determine the length of GCM/CCM padding for either
-  * the AAD field or the data.
-+ * @cipher_mode:  Unused
-+ * @data_size:    Unused
-  *
-  * Return:  0. Unlike SPU-M, SPU2 hardware does any GCM/CCM padding required.
+  * struct cryp_ctx - Crypto context
+  * @config: Crypto mode.
+- * @key[CRYP_MAX_KEY_SIZE]: Key.
++ * @key: Key array.
+  * @keylen: Length of key.
+  * @iv: Pointer to initialization vector.
+  * @indata: Pointer to indata.
+@@ -73,6 +73,7 @@ struct cryp_driver_data {
+  * @updated: Updated flag.
+  * @dev_ctx: Device dependent context.
+  * @device: Pointer to the device.
++ * @session_id: Atomic session ID.
   */
-@@ -857,7 +862,7 @@ u32 spu2_gcm_ccm_pad_len(enum spu_cipher_mode cipher_mode,
- }
+ struct cryp_ctx {
+ 	struct cryp_config config;
+diff --git a/drivers/crypto/ux500/cryp/cryp_irq.c b/drivers/crypto/ux500/cryp/cryp_irq.c
+index 7ebde69e8c76b..6d2f07bec98a7 100644
+--- a/drivers/crypto/ux500/cryp/cryp_irq.c
++++ b/drivers/crypto/ux500/cryp/cryp_irq.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * Copyright (C) ST-Ericsson SA 2010
+  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
+  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
+diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
+index da284b0ea1b26..bcaf6ba3e9235 100644
+--- a/drivers/crypto/ux500/hash/hash_core.c
++++ b/drivers/crypto/ux500/hash/hash_core.c
+@@ -356,7 +356,7 @@ static int hash_enable_power(struct hash_device_data *device_data,
  
  /**
-- * spu_assoc_resp_len() - Determine the size of the AAD2 buffer needed to catch
-+ * spu2_assoc_resp_len() - Determine the size of the AAD2 buffer needed to catch
-  * associated data in a SPU2 output packet.
-  * @cipher_mode:   cipher mode
-  * @assoc_len:     length of additional associated data, in bytes
-@@ -878,11 +883,11 @@ u32 spu2_assoc_resp_len(enum spu_cipher_mode cipher_mode,
- 	return resp_len;
- }
- 
--/*
-- * spu_aead_ivlen() - Calculate the length of the AEAD IV to be included
-+/**
-+ * spu2_aead_ivlen() - Calculate the length of the AEAD IV to be included
-  * in a SPU request after the AAD and before the payload.
-  * @cipher_mode:  cipher mode
-- * @iv_ctr_len:   initialization vector length in bytes
-+ * @iv_len:   initialization vector length in bytes
+  * hash_get_device_data - Checks for an available hash device and return it.
+- * @hash_ctx:		Structure for the hash context.
++ * @ctx:		Structure for the hash context.
+  * @device_data:	Structure for the hash device.
   *
-  * For SPU2, AEAD IV is included in OMD and does not need to be repeated
-  * prior to the payload.
-@@ -909,9 +914,9 @@ enum hash_type spu2_hash_type(u32 src_sent)
+  * This function check for an available hash device and return it to
+@@ -542,7 +542,7 @@ static bool hash_dma_valid_data(struct scatterlist *sg, int datasize)
+ }
+ 
  /**
-  * spu2_digest_size() - Determine the size of a hash digest to expect the SPU to
-  * return.
-- * alg_digest_size: Number of bytes in the final digest for the given algo
-- * alg:             The hash algorithm
-- * htype:           Type of hash operation (init, update, full, etc)
-+ * @alg_digest_size: Number of bytes in the final digest for the given algo
-+ * @alg:             The hash algorithm
-+ * @htype:           Type of hash operation (init, update, full, etc)
+- * hash_init - Common hash init function for SHA1/SHA2 (SHA256).
++ * ux500_hash_init - Common hash init function for SHA1/SHA2 (SHA256).
+  * @req: The hash request for the job.
+  *
+  * Initialize structures.
+@@ -585,6 +585,7 @@ static int ux500_hash_init(struct ahash_request *req)
+  * @device_data:	Structure for the hash device.
+  * @message:		Block (512 bits) of message to be written to
+  *			the HASH hardware.
++ * @length:		Message length
   *
   */
- u32 spu2_digest_size(u32 alg_digest_size, enum hash_alg alg,
-@@ -921,7 +926,7 @@ u32 spu2_digest_size(u32 alg_digest_size, enum hash_alg alg,
+ static void hash_processblock(struct hash_device_data *device_data,
+@@ -1295,7 +1296,7 @@ void hash_get_digest(struct hash_device_data *device_data,
  }
  
  /**
-- * spu_create_request() - Build a SPU2 request message header, includint FMD and
-+ * spu2_create_request() - Build a SPU2 request message header, includint FMD and
-  * OMD.
-  * @spu_hdr: Start of buffer where SPU request header is to be written
-  * @req_opts: SPU request message options
-@@ -1105,7 +1110,7 @@ u32 spu2_create_request(u8 *spu_hdr,
+- * hash_update - The hash update function for SHA1/SHA2 (SHA256).
++ * ahash_update - The hash update function for SHA1/SHA2 (SHA256).
+  * @req: The hash request for the job.
+  */
+ static int ahash_update(struct ahash_request *req)
+@@ -1315,7 +1316,7 @@ static int ahash_update(struct ahash_request *req)
  }
  
  /**
-- * spu_cipher_req_init() - Build an skcipher SPU2 request message header,
-+ * spu2_cipher_req_init() - Build an skcipher SPU2 request message header,
-  * including FMD and OMD.
-  * @spu_hdr:       Location of start of SPU request (FMD field)
-  * @cipher_parms:  Parameters describing cipher request
-@@ -1162,11 +1167,11 @@ u16 spu2_cipher_req_init(u8 *spu_hdr, struct spu_cipher_parms *cipher_parms)
+- * hash_final - The hash final function for SHA1/SHA2 (SHA256).
++ * ahash_final - The hash final function for SHA1/SHA2 (SHA256).
+  * @req:	The hash request for the job.
+  */
+ static int ahash_final(struct ahash_request *req)
+@@ -1615,9 +1616,6 @@ static struct hash_algo_template hash_algs[] = {
+ 	}
+ };
+ 
+-/**
+- * hash_algs_register_all -
+- */
+ static int ahash_algs_register_all(struct hash_device_data *device_data)
+ {
+ 	int ret;
+@@ -1640,9 +1638,6 @@ static int ahash_algs_register_all(struct hash_device_data *device_data)
+ 	return ret;
  }
  
- /**
-- * spu_cipher_req_finish() - Finish building a SPU request message header for a
-+ * spu2_cipher_req_finish() - Finish building a SPU request message header for a
-  * block cipher request.
-  * @spu_hdr:         Start of the request message header (MH field)
-  * @spu_req_hdr_len: Length in bytes of the SPU request header
-- * @isInbound:       0 encrypt, 1 decrypt
-+ * @is_inbound:      0 encrypt, 1 decrypt
-  * @cipher_parms:    Parameters describing cipher operation to be performed
-  * @data_size:       Length of the data in the BD field
-  *
-@@ -1222,7 +1227,7 @@ void spu2_cipher_req_finish(u8 *spu_hdr,
- }
- 
- /**
-- * spu_request_pad() - Create pad bytes at the end of the data.
-+ * spu2_request_pad() - Create pad bytes at the end of the data.
-  * @pad_start:      Start of buffer where pad bytes are to be written
-  * @gcm_padding:    Length of GCM padding, in bytes
-  * @hash_pad_len:   Number of bytes of padding extend data to full block
-@@ -1311,7 +1316,7 @@ u8 spu2_rx_status_len(void)
- }
- 
- /**
-- * spu_status_process() - Process the status from a SPU response message.
-+ * spu2_status_process() - Process the status from a SPU response message.
-  * @statp:  start of STATUS word
-  *
-  * Return:  0 - if status is good and response should be processed
-diff --git a/drivers/crypto/bcm/util.c b/drivers/crypto/bcm/util.c
-index c4669a96eaecf..d5d9cabea55aa 100644
---- a/drivers/crypto/bcm/util.c
-+++ b/drivers/crypto/bcm/util.c
-@@ -119,8 +119,8 @@ int spu_sg_count(struct scatterlist *sg_list, unsigned int skip, int nbytes)
-  * @from_skip:   number of bytes to skip in from_sg. Non-zero when previous
-  *		 request included part of the buffer in entry in from_sg.
-  *		 Assumes from_skip < from_sg->length.
-- * @from_nents   number of entries in from_sg
-- * @length       number of bytes to copy. may reach this limit before exhausting
-+ * @from_nents:  number of entries in from_sg
-+ * @length:      number of bytes to copy. may reach this limit before exhausting
-  *		 from_sg.
-  *
-  * Copies the entries themselves, not the data in the entries. Assumes to_sg has
+-/**
+- * hash_algs_unregister_all -
+- */
+ static void ahash_algs_unregister_all(struct hash_device_data *device_data)
+ {
+ 	int i;
 -- 
 2.27.0
 
