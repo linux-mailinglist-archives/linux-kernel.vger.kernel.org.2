@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258DB32BC28
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED5C32BC3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237743AbhCCNle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:41:34 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:42311 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1449361AbhCCKU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:20:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614766808; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=NgawUiqwXp+6LkGutn5iBvxqzt510G1PCZ3d25uDEa4=;
- b=Yl2o+oO3yd1GLxmMloKbhyYbcEi85wezsPV6e71pkEcqqx6EDGgNeJlHX4dxPv0r4KY6z4Ze
- FeV+TkaJ99HiFSxsDXQW5TT7fDBjGwwrfAVawDtIWzPZmYvT7/u+7y075u2aDmKPtCrLEUtG
- TIhZ8dbM5SKrWifkhHSyPuJsnh0=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 603f62a639ef3721149d633a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 10:19:18
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 88C67C43463; Wed,  3 Mar 2021 10:19:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1444718AbhCCNqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:46:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1582423AbhCCKU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:20:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614766770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lVfA4qsQ/EcXcCKiEC4CuqfV0xUeTJfshoPATWapESA=;
+        b=N22erfy0JXmReDsgtB64IrFgQxw3kLcD8r/AyleRuMyxXVq+Idx3M8cETX8sKsxzfqHeeC
+        gAIchAXqU1ZAnCFLrF1zcE2p1hvaGgbj9TRknxJoWdTfEegirJOH2uud0U34W+VRqIrRFf
+        cXWO0f/ah/BRy/WszzKD3i8ezBI9yGg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-hoiVQ_PyMYyo5ByJpG6gZA-1; Wed, 03 Mar 2021 05:19:28 -0500
+X-MC-Unique: hoiVQ_PyMYyo5ByJpG6gZA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2974C433C6;
-        Wed,  3 Mar 2021 10:19:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1DA6835E20;
+        Wed,  3 Mar 2021 10:19:26 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACB3B60BFA;
+        Wed,  3 Mar 2021 10:19:20 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 11:19:19 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>, brouer@redhat.com
+Subject: Re: [PATCH 4/5] net: page_pool: refactor dma_map into own function
+ page_pool_dma_map
+Message-ID: <20210303111919.3c6e29cc@carbon>
+In-Reply-To: <20210303091825.GO3697@techsingularity.net>
+References: <20210301161200.18852-1-mgorman@techsingularity.net>
+        <20210301161200.18852-5-mgorman@techsingularity.net>
+        <YD6IosORkdRN9B2x@enceladus>
+        <20210303091825.GO3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Mar 2021 18:19:17 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Avri Altman <Avri.Altman@wdc.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Bean Huo <huobean@gmail.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: Re: [PATCH] scsi: ufs: Fix incorrect ufshcd_state after
- ufshcd_reset_and_restore()
-In-Reply-To: <5fe97f16-406c-c279-b108-d27bb2769ed6@intel.com>
-References: <20210301191940.15247-1-adrian.hunter@intel.com>
- <DM6PR04MB65753E738C556F035A56F77CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
- <5fe97f16-406c-c279-b108-d27bb2769ed6@intel.com>
-Message-ID: <80301bea84b7349ca9dbdcc4f2c9a744@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 16:14, Adrian Hunter wrote:
-> On 2/03/21 9:01 am, Avri Altman wrote:
->> 
->>> If ufshcd_probe_hba() fails it sets ufshcd_state to 
->>> UFSHCD_STATE_ERROR,
->>> however, if it is called again, as it is within a loop in
->>> ufshcd_reset_and_restore(), and succeeds, then it will not set the 
->>> state
->>> back to UFSHCD_STATE_OPERATIONAL unless the state was
->>> UFSHCD_STATE_RESET.
->>> 
->>> That can result in the state being UFSHCD_STATE_ERROR even though
->>> ufshcd_reset_and_restore() is successful and returns zero.
->>> 
->>> Fix by initializing the state to UFSHCD_STATE_RESET in the start of 
->>> each
->>> loop in ufshcd_reset_and_restore().  If there is an error,
->>> ufshcd_reset_and_restore() will change the state to 
->>> UFSHCD_STATE_ERROR,
->>> otherwise ufshcd_probe_hba() will have set the state appropriately.
->>> 
->>> Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and 
->>> other
->>> error recovery paths")
->>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->> I think that CanG recent series addressed that issue as well, can you 
->> take a look?
->> https://lore.kernel.org/lkml/1614145010-36079-2-git-send-email-cang@codeaurora.org/
+On Wed, 3 Mar 2021 09:18:25 +0000
+Mel Gorman <mgorman@techsingularity.net> wrote:
+> On Tue, Mar 02, 2021 at 08:49:06PM +0200, Ilias Apalodimas wrote:
+> > On Mon, Mar 01, 2021 at 04:11:59PM +0000, Mel Gorman wrote:  
+> > > From: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > 
+> > > In preparation for next patch, move the dma mapping into its own
+> > > function, as this will make it easier to follow the changes.
+> > > 
+> > > V2: make page_pool_dma_map return boolean (Ilias)
+> > >   
+> > 
+> > [...]
+> >   
+> > > @@ -211,30 +234,14 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+> > >  	if (!page)
+> > >  		return NULL;
+> > >  
+> > > -	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
+> > > -		goto skip_dma_map;
+> > > -
+> > > -	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
+> > > -	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
+> > > -	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
+> > > -	 * This mapping is kept for lifetime of page, until leaving pool.
+> > > -	 */
+> > > -	dma = dma_map_page_attrs(pool->p.dev, page, 0,
+> > > -				 (PAGE_SIZE << pool->p.order),
+> > > -				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
+> > > -	if (dma_mapping_error(pool->p.dev, dma)) {
+> > > +	if (pp_flags & PP_FLAG_DMA_MAP &&  
+> > 
+> > Nit pick but can we have if ((pp_flags & PP_FLAG_DMA_MAP) && ...
+> >   
 > 
-> Yes, there it is mixed in with other changes.  However it is probably 
-> better
-> as a separate patch.  Can Guo, what do you think?
+> Done.
 
-Oh, I missed this one...
-Sure, I will split it out as a seperate change in next version.
+Thanks for fixing this nitpick, and carrying the patch.
 
-Thanks,
-Can Guo.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-> 
->> 
->> 
->>> ---
->>>  drivers/scsi/ufs/ufshcd.c | 2 ++
->>>  1 file changed, 2 insertions(+)
->>> 
->>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>> index 77161750c9fb..91a403afe038 100644
->>> --- a/drivers/scsi/ufs/ufshcd.c
->>> +++ b/drivers/scsi/ufs/ufshcd.c
->>> @@ -7031,6 +7031,8 @@ static int ufshcd_reset_and_restore(struct 
->>> ufs_hba
->>> *hba)
->>>         spin_unlock_irqrestore(hba->host->host_lock, flags);
->>> 
->>>         do {
->>> +               hba->ufshcd_state = UFSHCD_STATE_RESET;
->>> +
->>>                 /* Reset the attached device */
->>>                 ufshcd_device_reset(hba);
->>> 
->>> --
->>> 2.17.1
->> 
