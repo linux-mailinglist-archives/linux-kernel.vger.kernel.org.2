@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CB432C28C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE2232C2BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbhCDAAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387973AbhCCUHZ (ORCPT
+        id S1351112AbhCDACJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:02:09 -0500
+Received: from mout.kundenserver.de ([212.227.126.130]:49639 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1387985AbhCCUKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:07:25 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EFCC061756;
-        Wed,  3 Mar 2021 12:06:45 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id j1so27404427oiw.3;
-        Wed, 03 Mar 2021 12:06:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=maWR3MwDnpTCyKD0A5JuR2qaNqfVR1pB3LvsxhZUP8s=;
-        b=fu94lpr87gnX31AVFnE80wq3W+kr4ff4xdKHueLMARJNnTbugI/1OAm2rhKEUoBts4
-         IrLYZl3tUmrUJanHfKsnvmRDrMqtau+KJhtfUlsz4Ib+/YfYR5AYYbPz7/doNrJRG7s8
-         tQNXFQ1FvsQU9LnxdJe3ugxZTEnrtjpIqWhNx8JvqKCHoGVGlTO1jJQLIDFyhrvBhzJG
-         foaKBuVLtl1IVHox5qti5MtVfrr7m6nwME3DpNVVhHp+a6AKJZjMxDB70f2sJ9D6Io0X
-         7OkiX3ON9+cGH7HmlUx2Pjroo5ry/sI5Tn13jli1EuiHU+s+m8X02ck/cGCnXl/S4GZi
-         /DwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=maWR3MwDnpTCyKD0A5JuR2qaNqfVR1pB3LvsxhZUP8s=;
-        b=SH4YtPmFsTQvk+d79l35bQw8Qq6Z+UBj1v5+DhDhrLIuEFGQpr2JrxKXU/tGK9g74K
-         xqkeGWf6yQw/vVeAzLs9hhjd8TlPwWA6QhvmkIfgv91vuOEFks6NmvigvjdyMQsm0KF2
-         p2SbZ/FxIpSMHb2YgMNc917PdXzuGeM0xG2gykFsilnOiCLMBe5HDDHUdQLHRgn9DtVb
-         J4BsEke5I0npFJwyPMiyvtJj88ID9zZhouMQ5XOmdG7zZs0OggoNlwkW4BhcBgsu+RFA
-         LJKTBe2sJVrfSqXrLkthCwoWZQ8+Ig6rxNbFwAobHVR93x2sqWWQkctJ7g2R7Ssn5nE4
-         RUkw==
-X-Gm-Message-State: AOAM533FcZB/qkObvqjcA0AVTFmzSwhjdUR1/7DZpK4ZoG2mOvYrpwRn
-        dj3mB9dWNJ1m2A8xv+2ZZM4=
-X-Google-Smtp-Source: ABdhPJybbv/A5rtSLpfid+7HgbIe2wXvM3PiuINYCk2CtjCWJLZ0xT+AYqvSkiEbkGMx1cYNNCP3MA==
-X-Received: by 2002:aca:4508:: with SMTP id s8mr450644oia.118.1614802004860;
-        Wed, 03 Mar 2021 12:06:44 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w15sm4296092otp.29.2021.03.03.12.06.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 03 Mar 2021 12:06:44 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 3 Mar 2021 12:06:42 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.14 000/175] 4.14.223-rc4 review
-Message-ID: <20210303200642.GC33580@roeck-us.net>
-References: <20210302192539.408045707@linuxfoundation.org>
+        Wed, 3 Mar 2021 15:10:08 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mg6Na-1liMQ52ib8-00hh0G for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021
+ 21:07:35 +0100
+Received: by mail-ot1-f51.google.com with SMTP id h22so24853462otr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:07:35 -0800 (PST)
+X-Gm-Message-State: AOAM530t4TKC1VqHWIm8sgH995D8zIlCIX1Rw7ILh7Ii8AHL5h43maye
+        ZgpH/ml6GExtg9QcTc2UmOuO9amtdXlK15g0CZo=
+X-Google-Smtp-Source: ABdhPJxv/7ZtZ1Vrev+3ZiD+ZQuUiDcKrt3mECSCn1uhptL/wvua5yWVTUq0K2mw/w7pqtD2GZGGaKThUFn+Fc98Osc=
+X-Received: by 2002:a9d:7f11:: with SMTP id j17mr624298otq.251.1614802054390;
+ Wed, 03 Mar 2021 12:07:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302192539.408045707@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <202103040304.DTElvlrq-lkp@intel.com>
+In-Reply-To: <202103040304.DTElvlrq-lkp@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 3 Mar 2021 21:07:18 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3x+JnCDVsNpCn0sSChXG41hCKmQMVAOuiLovGJSStUgA@mail.gmail.com>
+Message-ID: <CAK8P3a3x+JnCDVsNpCn0sSChXG41hCKmQMVAOuiLovGJSStUgA@mail.gmail.com>
+Subject: Re: COPYING CREDITS Documentation Kbuild Kconfig LICENSES MAINTAINERS
+ Makefile README arch block certs crypto drivers fs include init ipc kernel
+ lib mm net samples scripts security sound tools usr virt No rule to make
+ target 'arch/c6x/Makefile'.
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:PTWNyf113yrihFsWbkAEEKW5NqTAIwmeL+7bHmYvnPmBcwFai1p
+ XzWUJnwnSVUwmSQMoCe4dwF407Vg3KuWCYke6+oUrDphvQNe8lVKbSakVwVv1go80CwkrBm
+ VDeitkVESz9DtLjVgMjC+RyU4CP28Yr9c+HjOB7IasE86CRYBjSDllXFat89BHSZGif9228
+ +36VbHLaNxapY9LV+9/6A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3geSkNoVqZQ=:/H7qUG/f50ulp55eWOCzPF
+ kwHWVIAV0oMX+KYPPiTF8QbNMvcOcBc7UV9nYeLN5q8BWjcyzy/So0onhfWejHjch9jQwCzWq
+ ISSumI+gKXiZFicav9ZQinj3rP6T81oq63WaD2K7PLsLCpZ9li+vvuEKOiW9cWFPRMteTsB2i
+ YDo7MBrGtrbVF5t9WlEgF87fRER7+5vPbvbHJ+J3qesl/pDpDckdXl/84iDM9+SkYrWt7miW/
+ jKn0YL7Tia+SpRT8pAZK7nGYMtDdIYNBIb1ohtkkhUZwqjKD8hGp+QB3IpTRCIw/wGnZAPr+p
+ X/Mgywzdwi8DXI3IWrje9RcnkA/3AZSTYPh5LujaqU1oeJV0L9nvzf17MCpqJZA3iqvKU2CBn
+ qwAKWStxsyMXDGSGV0IDy4AuDwzInm7MKKxwIHcWbQ3FqmQIlM7N1IRXXE3hyIl8yeHdDzV1F
+ 1BxKaHtvlSHG9VfTmEBhXzKZ0pjriJEDc4K0bQPIXDvghEFFbJwhoYTfX/uDo84x75csb4Nsu
+ 8D9Q9aPQhI4X3EwyURoLMBAwPHXctBTrr0NqHbGlMxkC7Vu5YogL53xPS4zPI2PyA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:28:05PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.223 release.
-> There are 175 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
-> 
+On Wed, Mar 3, 2021 at 8:44 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Arnd,
+>
+> FYI, the error/warning still remains.
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f69d02e37a85645aa90d18cacfff36dba370f797
+> commit: a579fcfa8e49cc77ad59211bb18bc5004133e6a0 c6x: remove architecture
+> date:   6 weeks ago
+> config: c6x-randconfig-r026-20210303 (attached as .config)
+> compiler: c6x-elf-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a579fcfa8e49cc77ad59211bb18bc5004133e6a0
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout a579fcfa8e49cc77ad59211bb18bc5004133e6a0
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=c6x
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    Makefile:681: arch/c6x/Makefile: No such file or directory
 
-Build results:
-	total: 168 pass: 168 fail: 0
-Qemu test results:
-	total: 406 pass: 406 fail: 0
+Yes, arch/c6x is gone and unlikely to return. Please fix the 0day scripts
+to no longer build it on v5.12-rc1 or higher.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+        Arnd
