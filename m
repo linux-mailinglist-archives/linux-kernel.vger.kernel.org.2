@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1293532BE19
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E28532BE33
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452965AbhCCQ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233405AbhCCMcX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:32:23 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315B5C06178B
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:31:39 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id d3so36770786lfg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:31:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cryptogams.org; s=gmail;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZJ9YmLXJMRVQqrwkPYggJ4USyGQCg6hVZAYYYHZZaEU=;
-        b=MWJkz0uD17Lw3eji41KWwp0FylL3T5nJxo2U+RLrwvXXqlhNLse+/0bWk0aNwXUqV7
-         saBPb7htZMAuiq6p8XhVNm6E0rgd4Qv0eh005gx/kQ1hXr4iayiqP5i+IPlcOzRX2fYr
-         VUVCo1KhBnjurTJQxaUD5D2tivjt86O9HXzNlL6FUz4NVsuButIecXpV7TJkFLPVIZBg
-         G5BIm0Pn10kur0d97H2qByacL3lFgKCrPPMvICA30Ndv8Ovbs+wi6yJYBOjGGVumzc/i
-         8lSLZofvAszqGUoWiKTXaRgIrrp3xv3NuKvQAcq5HLdoUs1bUYOKyJUTNtgC+kU/tIHt
-         FYug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZJ9YmLXJMRVQqrwkPYggJ4USyGQCg6hVZAYYYHZZaEU=;
-        b=e9seug8//gzdN8ITDBaLlYrfkCA1myqksrQ+EPwE16D+E4qD9klnRgtYoaSDDh5Y/9
-         cJGeeTerxA3arvPifcZqDzH5mWm/o37dp7MHwev1Z0oQMc+pFWa2WwtyvL3RfdV4+bF5
-         It5nXd2Euuh7bpCAZYzYBxPxiv54CcIjA8MYfykUyEH4zCok29F7wjAFdIolvCH/OraW
-         nv9mBZgOlQ34gqdqhYNRL+gFvam7ws/SMK6/8KFOrMTrCyeFfIbX9Z4+GeYgF5HUvAfx
-         bZaauwFMge8UxQxxvyCy7RCrXVpq65wKe21Qp/K+JaYhsTSRKTHAzawg6xe97WuZeTNI
-         OLSA==
-X-Gm-Message-State: AOAM530kW9Dnxd2OAKdRN87ogZj4bP4nVlRtFwiB/krke3JdH7MgH/l1
-        ctD10mMV+DYxQUbdX1JRprW8Zw==
-X-Google-Smtp-Source: ABdhPJzBp29wZ23xRTdlJ6SJxcClcWGV+ftIYsJQv0I4D1aUw/Ib+kVod1DBPXa00vWtZZxdP9GKNQ==
-X-Received: by 2002:ac2:4144:: with SMTP id c4mr15145307lfi.549.1614774697571;
-        Wed, 03 Mar 2021 04:31:37 -0800 (PST)
-Received: from [10.0.1.129] (c-0f3be255.012-217-67626713.bbcust.telenor.se. [85.226.59.15])
-        by smtp.gmail.com with ESMTPSA id x27sm2935199lfu.151.2021.03.03.04.31.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 04:31:37 -0800 (PST)
-Subject: Re: [PATCH] crypto: mips/poly1305 - enable for all MIPS processors
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        George Cherian <gcherian@marvell.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        stable <stable@vger.kernel.org>
-References: <alpine.DEB.2.21.2103030122010.19637@angie.orcam.me.uk>
- <CAHmME9qgEMdcVgkBkvBZ9Du=ae=wEyQ4uPa+Au8+LEs5ZQCzAg@mail.gmail.com>
-From:   Andy Polyakov <appro@cryptogams.org>
-Message-ID: <70eb96e1-3243-105c-b52e-c9bd3239a263@cryptogams.org>
-Date:   Wed, 3 Mar 2021 13:31:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1385279AbhCCRJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:09:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55366 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352188AbhCCMy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:54:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614774737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gegs5ccyMsw3DhFe6SxpdxOypLc6ElTbJlXWRgZLM20=;
+        b=VnL6xiqxy/TFJEzZ5fLzJ0yYeROVeHv99xNLRTtEAz5f+tCc6tqxUg+9SZqsoqLQ7N+8TJ
+        YgOCaHlY0mnBbk91Ff3Z+tTXZtB1xO4TmGzX8UIACCAux8Gvf8Rp55sunbVJ78eHPBE3Dm
+        vCOxoBigDQG2u5hxM2EYPiZmT7yXqbo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7EEA1AD29;
+        Wed,  3 Mar 2021 12:32:17 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 13:32:11 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Widawsky, Ben" <ben.widawsky@intel.com>,
+        Andi leen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
+ MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
+Message-ID: <YD+BvvM/388AVnmm@dhcp22.suse.cz>
+References: <1614766858-90344-1-git-send-email-feng.tang@intel.com>
+ <1614766858-90344-15-git-send-email-feng.tang@intel.com>
+ <YD91jTMssJUCupJm@dhcp22.suse.cz>
+ <20210303120717.GA16736@shbuild999.sh.intel.com>
+ <20210303121833.GB16736@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHmME9qgEMdcVgkBkvBZ9Du=ae=wEyQ4uPa+Au8+LEs5ZQCzAg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303121833.GB16736@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed 03-03-21 20:18:33, Feng Tang wrote:
+> On Wed, Mar 03, 2021 at 08:07:17PM +0800, Tang, Feng wrote:
+> > Hi Michal,
+> > 
+> > On Wed, Mar 03, 2021 at 12:39:57PM +0100, Michal Hocko wrote:
+> > > On Wed 03-03-21 18:20:58, Feng Tang wrote:
+> > > > When doing broader test, we noticed allocation slowness in one test
+> > > > case that malloc memory with size which is slightly bigger than free
+> > > > memory of targeted nodes, but much less then the total free memory
+> > > > of system.
+> > > > 
+> > > > The reason is the code enters the slowpath of __alloc_pages_nodemask(),
+> > > > which takes quite some time. As alloc_pages_policy() will give it a 2nd
+> > > > try with NULL nodemask, so there is no need to enter the slowpath for
+> > > > the first try. Add a new gfp bit to skip the slowpath, so that user cases
+> > > > like this can leverage.
+> > > > 
+> > > > With it, the malloc in such case is much accelerated as it never enters
+> > > > the slowpath.
+> > > > 
+> > > > Adding a new gfp_mask bit is generally not liked, and another idea is to
+> > > > add another nodemask to struct 'alloc_context', so it has 2: 'preferred-nmask'
+> > > > and 'fallback-nmask', and they will be tried in turn if not NULL, with
+> > > > it we can call __alloc_pages_nodemask() only once.
+> > > 
+> > > Yes, it is very much disliked. Is there any reason why you cannot use
+> > > GFP_NOWAIT for that purpose?
+> > 
+> > I did try that at the first place, but it didn't obviously change the slowness.
+> > I assumed the direct claim was still involved as GFP_NOWAIT only impact kswapd
+> > reclaim.
 
-> I'm also CC'ing Andy on this, who wrote the original assembly, in case
-> he has some last minute objection.
+I assume you haven't really created gfp mask correctly. What was the
+exact gfp mask you have used?
 
-Just "what took you so long":-) On potentially related note cryptogams
-chacha-mips is as universal as poly1305-mips. "Universal" in sense that
-it can be compiled for all MIPS stripes.
+> 
+> One thing I tried which can fix the slowness is:
+> 
+> +	gfp_mask &= ~(__GFP_DIRECT_RECLAIM | __GFP_KSWAPD_RECLAIM);
+> 
+> which explicitly clears the 2 kinds of reclaim. And I thought it's too
+> hacky and didn't mention it in the commit log.
 
-Cheers.
+Clearing __GFP_DIRECT_RECLAIM would be the right way to achieve
+GFP_NOWAIT semantic. Why would you want to exclude kswapd as well? 
+
+-- 
+Michal Hocko
+SUSE Labs
