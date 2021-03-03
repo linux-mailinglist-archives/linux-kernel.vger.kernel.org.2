@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECFB32BBCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCE732BBD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240118AbhCCMxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:53:41 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:60740 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1842732AbhCCILK (ORCPT
+        id S240935AbhCCMxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:53:55 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13423 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1842746AbhCCIMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:11:10 -0500
-X-UUID: 068f4a0470aa42498db92df92c488324-20210303
-X-UUID: 068f4a0470aa42498db92df92c488324-20210303
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <vic.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1551120669; Wed, 03 Mar 2021 16:10:19 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 3 Mar 2021 16:10:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 3 Mar 2021 16:10:12 +0800
-From:   Vic Wu <vic.wu@mediatek.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Vic Wu <vic.wu@mediatek.com>
-Subject: [PATCH] crypto: mediatek - remove obsolete documentation
-Date:   Wed, 3 Mar 2021 16:09:23 +0800
-Message-ID: <20210303080923.16761-1-vic.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 3 Mar 2021 03:12:03 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dr69W31TmzjT5V;
+        Wed,  3 Mar 2021 16:09:51 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 3 Mar 2021 16:11:09 +0800
+Subject: Re: [PATCH 5.4 000/340] 5.4.102-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210301161048.294656001@linuxfoundation.org>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <c689884d-6418-98ff-f535-da022ba527f7@huawei.com>
+Date:   Wed, 3 Mar 2021 16:11:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The crypto mediatek driver has been replaced by the inside-secure driver now.
-Remove DT bindings documentation and update crypto engine nodes to the mt7623.dtsi files.
+On 2021/3/2 0:09, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.102 release.
+> There are 340 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
+> Anything received after that time might be too late.
 
-Signed-off-by: Vic Wu <vic.wu@mediatek.com>
-Acked-by: Ryder Lee <ryder.lee@mediatek.com>
----
- Documentation/devicetree/bindings/crypto/mediatek-crypto.txt       | 25 -------------------
- arch/arm/boot/dts/mt7623.dtsi                 |  8 +++---
- 2 files changed, 3 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
+Tested on arm64 and x86 for 5.4.102-rc4+,
 
-diff --git a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt b/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
-deleted file mode 100644
-index 450da3661cad..000000000000
---- a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--MediaTek cryptographic accelerators
--
--Required properties:
--- compatible: Should be "mediatek,eip97-crypto"
--- reg: Address and length of the register set for the device
--- interrupts: Should contain the five crypto engines interrupts in numeric
--	order. These are global system and four descriptor rings.
--- clocks: the clock used by the core
--- clock-names: Must contain "cryp".
--- power-domains: Must contain a reference to the PM domain.
--
--
--Example:
--	crypto: crypto@1b240000 {
--		compatible = "mediatek,eip97-crypto";
--		reg = <0 0x1b240000 0 0x20000>;
--		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
--		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
--		clock-names = "cryp";
--		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
--	};
-diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-index aea6809500d7..25e3f3b04123 100644
---- a/arch/arm/boot/dts/mt7623.dtsi
-+++ b/arch/arm/boot/dts/mt7623.dtsi
-@@ -949,16 +949,14 @@
- 	};
- 
- 	crypto: crypto@1b240000 {
--		compatible = "mediatek,eip97-crypto";
-+		compatible = "inside-secure,safexcel-eip97";
- 		reg = <0 0x1b240000 0 0x20000>;
- 		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
--			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
-+			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-names = "ring0", "ring1", "ring2", "ring3";
- 		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
--		clock-names = "cryp";
--		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
- 		status = "disabled";
- 	};
- 
--- 
-2.18.0
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4716
+succeed_num: 4716
+failed_num: 0
+timeout_num: 0
 
+x86 (No kernel failures)
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4716
+succeed_num: 4715
+failed_num: 1
+timeout_num: 0
+
+Tested-by: Hulk Robot <hulkci@huawei.com>
