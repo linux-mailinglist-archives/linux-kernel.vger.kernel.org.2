@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7424232BB90
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709E032BB91
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381309AbhCCMh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835993AbhCCIDf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:03:35 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8C4C061222;
-        Wed,  3 Mar 2021 00:01:32 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id d3so35619595lfg.10;
-        Wed, 03 Mar 2021 00:01:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/mjreVpadpKOEE3R8AOsVJMSrNInXRosIgT1ZILxxiE=;
-        b=dE3+/vWuyuvijq2HriwGlgqNrY5erKdcaSErmK2duCWF6WD/2C8h7EOQjVGcS4zSmM
-         pPhbNhDXsrbEJAYBQPQFQ7R2NdMRhtfkm7VAk7lsjd9Td+rBrmsF+pbzCoxYaMHS1RmZ
-         QlDEhnV7zX8cBN4r3P1vM5Qsa6xO4+a4B4Yk+X1z+WCYcQn1S8byA33tyjjONVhOjit7
-         PIHHXe+jAaoS8P21A/MdB+FWaifv7hnSjVwtQ3ssmV+puKaYZ7Y1tlHCFVxeg8UU6wb1
-         OKT6E+KqdTeu1wY/Wbk1z/EYBj23ULaEemJkHUtyTH/ujsoRFhJMjFsm9kbvunzPhFuY
-         VWpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/mjreVpadpKOEE3R8AOsVJMSrNInXRosIgT1ZILxxiE=;
-        b=SERBu1WopTYWVvSYrCCITMGKPAvfW3iy7SBh4plz75s85V1SA33NHBJqtS6RkJX/Yt
-         zw2euOhwUl0Fe+kMFobknXfM4aAZ/8kEfGKMWh1zvS+MH8xyQcIvyKaH9OtLIDqGt7px
-         I5nK4Jl83XH8TEPSYKU2KfRcakxvf0R9yjAZ/zQYV/4+C0RoZuOZU5T8R4mq8h+bg3jH
-         J4eM5BPHWACKkh+XY1yc20aRDaczTABYnL4l/8T+pun1vXkG8zGMwGDE0F4idudwpR2q
-         7vdFscovAZBOQbvV8rOzA9Ya4xFnoqPepU/EmiznDuZvDz61pEHetTiKZNZ30dNogJsC
-         AAtg==
-X-Gm-Message-State: AOAM531j4rIGGAx7RYO4ibXFcokq+aoIulIdSf4sa7BNXNiu7XJyoBQs
-        0vUzVbkSgCSkYSJMqB/BW4M=
-X-Google-Smtp-Source: ABdhPJxIv82bYEfW2FtkSgcrkkPmEi4YuJBSF8dFVeltzkVrfDT63RtTSW0Z+cHfYdd1Ew7+iTp9bQ==
-X-Received: by 2002:ac2:490b:: with SMTP id n11mr14054883lfi.491.1614758491002;
-        Wed, 03 Mar 2021 00:01:31 -0800 (PST)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id b25sm2360395lff.268.2021.03.03.00.01.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 00:01:30 -0800 (PST)
-Subject: Re: [PATCH v2 2/3] mtd: core: add nvmem-partitions compatible to
- parse mtd as nvmem cells
-To:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Richard Weinberger <richard@nod.at>
-Cc:     devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20210216212638.28382-1-ansuelsmth@gmail.com>
- <20210216212638.28382-3-ansuelsmth@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <e1182d56-441e-c827-6b95-d756720054a1@gmail.com>
-Date:   Wed, 3 Mar 2021 09:01:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1443507AbhCCMiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:38:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59674 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1835028AbhCCIEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:04:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614758608; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f9LseYxhhvKnvAG5ItlR8EN+CAZlGjlHQXS4l19bjE0=;
+        b=LiHG6iMo6Dliklpsc9IDxjRF0fXr94/vZfe9KbtDJuqlsdg3X1yBaPkN+hmyNN+ywgHb4O
+        WCiAXIoheDbuT0Lhi8DyRudYU7wZpWVNEFLcRkQqUK7z+iprNJypk71i3EE8FUfhMB+eXN
+        Fv6771Ya73ZQ9tebqqa9iKS+X3A8yS0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0B3BAAF5C;
+        Wed,  3 Mar 2021 08:03:28 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 09:03:27 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>
+Subject: Re: possible deadlock in sk_clone_lock
+Message-ID: <YD9CzzypRyUPT0Jh@dhcp22.suse.cz>
+References: <YDzaAWK41K4gD35V@dhcp22.suse.cz>
+ <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
+ <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
+ <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
+ <YD0jLTciK0M7P+Hc@dhcp22.suse.cz>
+ <122e8c5d-60b8-52d9-c6a1-00cd61b2e1b6@oracle.com>
+ <YD4I+VPr3UNt063H@dhcp22.suse.cz>
+ <CALvZod7XHbjfoGGVH=h17u8-FruMaiPMWxXJz5JBmeJkNHBqNQ@mail.gmail.com>
+ <YD5L1K3EWVWh1ULr@dhcp22.suse.cz>
+ <06edda9a-dce9-accd-11a3-97f6d5243ed1@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210216212638.28382-3-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <06edda9a-dce9-accd-11a3-97f6d5243ed1@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.02.2021 22:26, Ansuel Smith wrote:
-> Partitions that contains the nvmem-partitions compatible will register
-> their direct subonodes as nvmem cells and the node will be treated as a
-> nvmem provider.
+[Add Paul]
+
+On Tue 02-03-21 13:19:34, Mike Kravetz wrote:
+> On 3/2/21 6:29 AM, Michal Hocko wrote:
+> > On Tue 02-03-21 06:11:51, Shakeel Butt wrote:
+> >> On Tue, Mar 2, 2021 at 1:44 AM Michal Hocko <mhocko@suse.com> wrote:
+> >>>
+> >>> On Mon 01-03-21 17:16:29, Mike Kravetz wrote:
+> >>>> On 3/1/21 9:23 AM, Michal Hocko wrote:
+> >>>>> On Mon 01-03-21 08:39:22, Shakeel Butt wrote:
+> >>>>>> On Mon, Mar 1, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
+> >>>>> [...]
+> >>>>>>> Then how come this can ever be a problem? in_task() should exclude soft
+> >>>>>>> irq context unless I am mistaken.
+> >>>>>>>
+> >>>>>>
+> >>>>>> If I take the following example of syzbot's deadlock scenario then
+> >>>>>> CPU1 is the one freeing the hugetlb pages. It is in the process
+> >>>>>> context but has disabled softirqs (see __tcp_close()).
+> >>>>>>
+> >>>>>>         CPU0                    CPU1
+> >>>>>>         ----                    ----
+> >>>>>>    lock(hugetlb_lock);
+> >>>>>>                                 local_irq_disable();
+> >>>>>>                                 lock(slock-AF_INET);
+> >>>>>>                                 lock(hugetlb_lock);
+> >>>>>>    <Interrupt>
+> >>>>>>      lock(slock-AF_INET);
+> >>>>>>
+> > [...]
+> >>> Wouldn't something like this help? It is quite ugly but it would be
+> >>> simple enough and backportable while we come up with a more rigorous
+> >>> solution. What do you think?
+> >>>
+> >>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> >>> index 4bdb58ab14cb..c9a8b39f678d 100644
+> >>> --- a/mm/hugetlb.c
+> >>> +++ b/mm/hugetlb.c
+> >>> @@ -1495,9 +1495,11 @@ static DECLARE_WORK(free_hpage_work, free_hpage_workfn);
+> >>>  void free_huge_page(struct page *page)
+> >>>  {
+> >>>         /*
+> >>> -        * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+> >>> +        * Defer freeing if in non-task context or when put_page is called
+> >>> +        * with IRQ disabled (e.g from via TCP slock dependency chain) to
+> >>> +        * avoid hugetlb_lock deadlock.
+> >>>          */
+> >>> -       if (!in_task()) {
+> >>> +       if (!in_task() || irqs_disabled()) {
+> >>
+> >> Does irqs_disabled() also check softirqs?
+> > 
+> > Nope it doesn't AFAICS. I was referring to the above lockdep splat which
+> > claims irq disabled to be the trigger. But now that you are mentioning
+> > that it would be better to replace in_task() along the way. We have
+> > discussed that in another email thread and I was suggesting to use
+> > in_atomic() which should catch also bh disabled situation. The big IF is
+> > that this needs preempt count to be enabled unconditionally. There are
+> > changes in the RCU tree heading that direction.
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> I have not been following developments in preemption and the RCU tree. 
+> The comment for in_atomic() says:
+> 
+> /*
+>  * Are we running in atomic context?  WARNING: this macro cannot
+>  * always detect atomic context; in particular, it cannot know about
+>  * held spinlocks in non-preemptible kernels.  Thus it should not be
+>  * used in the general case to determine whether sleeping is possible.
+>  * Do not use in_atomic() in driver code.
+>  */
+> 
+> That does seem to be the case.  I verified in_atomic can detect softirq
+> context even in non-preemptible kernels.  But, as the comment says it
+> will not detect a held spinlock in non-preemptible kernels.  So, I think
+> in_atomic would be better than the current check for !in_task.  That
+> would handle this syzbot issue, but we could still have issues if the
+> hugetlb put_page path is called while someone is holding a spinlock with
+> all interrupts enabled.  Looks like there is no way to detect this
+> today in non-preemptible kernels.  in_atomic does detect spinlocks held
+> in preemptible kernels.
 
-Tested-by: Rafał Miłecki <rafal@milecki.pl>
+Paul what is the current plan with in_atomic to be usable for !PREEMPT
+configurations?
 
-
-I applied this patch on top of the:
-[PATCH] mtd: parsers: ofpart: limit parsing of deprecated DT syntax
-
-I succesfully used NVMEM cell defined in bootloader mtd partition for
-reading device MAC address.
-
-partitions {
-	compatible = "fixed-partitions";
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	partition@0 {
-		compatible = "nvmem-partitions";
-		label = "bootloader";
-		reg = <0x0 0x100000>;
-		#address-cells = <1>;
-		#size-cells = <1>;
-		ranges = <0 0x0 0x100000>;
-
-		base_mac_addr: mac@106a0 {
-			reg = <0x106a0 0x6>;
-		};
-	};
-}
+-- 
+Michal Hocko
+SUSE Labs
