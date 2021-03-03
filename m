@@ -2,357 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428B032C2CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A29032C2D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353859AbhCDAGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:06:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
+        id S1353881AbhCDAGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388065AbhCCUvi (ORCPT
+        with ESMTP id S233173AbhCCUyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:51:38 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE0BC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 12:50:58 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id u11so14714406plg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:50:58 -0800 (PST)
+        Wed, 3 Mar 2021 15:54:19 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E42C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 12:53:37 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id q14so30519851ljp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:53:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E5l2Kiq7RxtUIhSoToDUXks5wKj0nCUy8zX15I4c+84=;
-        b=N3Oa6Z8jJA3+U3fltdKWqLRpE92dpWN0XPe01dL8vi2ofT2bwX9YQvSx3/CpoD9G3l
-         zGeYlzFTb3f0O6E1wUpkdYwL7U0bkdLTFJvTudu1ORE2IdCkXnLbZDtTXJlW7pTr2e1c
-         6IDqhBLNdFvzA2WUoJ4vdbGGOzhmilNM7NCGBCLI4FYw2xxuImTuQClX/cQ+Gxw0X0ih
-         LYc6w6R4zYY3w9qOWZ51U17Py25IcAzHurlJS4M75ku1y/vx16z0GDgOJnvkGukqohbS
-         aKUh+e0L5Ajlaa31iL5iA6kUFsOZZXmRWeAQjoYVE63B9YupmLFwDHyMB9kJSVm4YDRm
-         i4lw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=29R9t7f01tsBoXDV+Koehd/EHDMqlTrum3hJEMk0HMU=;
+        b=ePpiHxfrV4Ugkr9JtT5tWU3hfIlefc3u49q1i8xVYKdzU0YCE+DSt3QpsED8tv28cO
+         fcT4VbBwwG1AzdpXyiVmVpESrLcE4fL5COWoBl4eNj98iWvHywV2ou5lGMbIfuvLzxAh
+         orGA569jwG0jCj/lgurHCBwqRij6sbDuWCGKI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=E5l2Kiq7RxtUIhSoToDUXks5wKj0nCUy8zX15I4c+84=;
-        b=udqLZ5Jl/T1qr7njCFCNVAMhQ/YBNqWkeJBffCI3WgaR5QainvYPQeH2hFwNIMt3IY
-         YpHDifbm4w+XoQ4jJKKXiqWj/1S9KKN0ns+g2WAiRR0cgVfxaXwR81Ill5q0TeQjTdcy
-         h3F06m7ACVcy8vwvIATIAaejRmcXcIRSy9VCi65F0+4Z7G1YM3JysBbcH1pbUFx5cuMa
-         ITIEBZ4BqyBEqujptJH6yFqLRzRHIZPURL6mx6mTzDH6C7Q3vI8LAtZz0TWrB2WowRoO
-         STXxhdPGbJe/27+LHV4WMcTUylzLRdyaxB32Zn0VAhc/K+nIWnWw2f9SvG4R1dgXF0ZW
-         tlMQ==
-X-Gm-Message-State: AOAM530GfcnJZ/klROidtsZqWRKFMauFtkBbixk7dxNiaWQT+HIOifE/
-        FjOO1oJMOmrSaqy4cEAVymM=
-X-Google-Smtp-Source: ABdhPJyTIMkiSeEP4k5vvdMpCHGR3ePPpWHGXxjpBE8LjcBR4RGFTvj+2hgVpMCs5Q7a1t1K6XcJSQ==
-X-Received: by 2002:a17:90a:1b24:: with SMTP id q33mr982825pjq.86.1614804657991;
-        Wed, 03 Mar 2021 12:50:57 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:c87:c34:99dc:ba23])
-        by smtp.gmail.com with ESMTPSA id cp22sm7087024pjb.15.2021.03.03.12.50.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 12:50:56 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, willy@infradead.org, surenb@google.com,
-        Minchan Kim <minchan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v3] mm: cma: support sysfs
-Date:   Wed,  3 Mar 2021 12:50:53 -0800
-Message-Id: <20210303205053.2906924-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=29R9t7f01tsBoXDV+Koehd/EHDMqlTrum3hJEMk0HMU=;
+        b=h7nMep90OLLF0jghwziDLnKoEyHvFyGeu88naIR+Lxt8TeZAyLOUnikJdYgwN0E9e/
+         4W9jy2GaDQ8IZypZT9ntQ1xrFWX73TGNlWbXpNT/kyXXLn5KO7KPkyft8Sa444MMBagI
+         XfkfiZ154xQVf5kYOM/9sTCww5VZK0PzWf1VQU684v/AA4twsK7mzTEHJVmzXWsN9qGs
+         X3e++SmjXkQ+MIFLG1Nclzou/RRXRD2bj3OJjPgZG88PWWstzmxIv5eBG+FY304Nx9lI
+         yhOQAjT8rntWhd13vxNsZExmy7ki9bw4xXDBNo1FGj3XULc4cvlKo4npAd4kBkJ4jcFM
+         s18w==
+X-Gm-Message-State: AOAM532eiJ5Yqqxmy1Rh4uI77KEMXxzGQm4yLLoQY/eZnK7g0ZiL25nA
+        4MimbIK9UeaQ4/lkmWj/F2Qg7wiEMOSxZw==
+X-Google-Smtp-Source: ABdhPJxuOusQcahXJjYfVIcz5EQ6Zr0JkXaDXJJ2TgdQhBppggQVdt7Ukdv+rjVSKhcho9lWOKkK0g==
+X-Received: by 2002:a2e:96c7:: with SMTP id d7mr438722ljj.268.1614804815866;
+        Wed, 03 Mar 2021 12:53:35 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id e2sm1620749ljp.135.2021.03.03.12.53.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 12:53:35 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id m22so39400846lfg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:53:34 -0800 (PST)
+X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr320341lfu.253.1614804814383;
+ Wed, 03 Mar 2021 12:53:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 3 Mar 2021 12:53:18 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
+Message-ID: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
+Subject: A note on the 5.12-rc1 tag
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since CMA is getting used more widely, it's more important to
-keep monitoring CMA statistics for system health since it's
-directly related to user experience.
+Hey peeps - some of you may have already noticed that in my public git
+tree, the "v5.12-rc1" tag has magically been renamed to
+"v5.12-rc1-dontuse". It's still the same object, it still says
+"v5.12-rc1" internally, and it is still is signed by me, but the
+user-visible name of the tag has changed.
 
-This patch introduces sysfs statistics for CMA, in order to provide
-some basic monitoring of the CMA allocator.
+The reason is fairly straightforward: this merge window, we had a very
+innocuous code cleanup and simplification that raised no red flags at
+all, but had a subtle and very nasty bug in it: swap files stopped
+working right.  And they stopped working in a particularly bad way:
+the offset of the start of the swap file was lost.
 
- * the number of CMA page allocation attempts
- * the number of CMA page allocation failures
+Swapping still happened, but it happened to the wrong part of the
+filesystem, with the obvious catastrophic end results.
 
-These two values allow the user to calcuate the allocation
-failure rate for each CMA area.
+Now, the good news is even if you do use swap (and hey, that's nowhere
+near as common as it used to be), most people don't use a swap *file*,
+but a separate swap *partition*. And the bug in question really only
+happens for when you have a regular filesystem, and put a file on it
+as a swap.
 
-e.g.)
-  /sys/kernel/mm/cma/WIFI/cma_alloc_pages_[attempts|fails]
-  /sys/kernel/mm/cma/SENSOR/cma_alloc_pages_[attempts|fails]
-  /sys/kernel/mm/cma/BLUETOOTH/cma_alloc_pages_[attempts|fails]
+And, as far as I know, all the normal distributions set things up with
+swap partitions, not files, because honestly, swapfiles tend to be
+slower and have various other complexity issues.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
-From v2 - https://lore.kernel.org/linux-mm/20210208180142.2765456-1-minchan@kernel.org/
- * sysfs doc and description modification - jhubbard
+The bad news is that the reason we support swapfiles in the first
+place is that they do end up having some flexibility advantages, and
+so some people do use them for that reason. If so, do not use rc1.
+Thus the renaming of the tag.
 
-From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
- * fix sysfs build and refactoring - willy
- * rename and drop some attributes - jhubbard
+Yes, this is very unfortunate, but it really wasn't a very obvious
+bug, and it didn't even show up in normal testing, exactly because
+swapfiles just aren't normal. So I'm not blaming the developers in
+question, and it also wasn't due to the odd timing of the merge
+window, it was just simply an unusually nasty bug that did get caught
+and is fixed in the current tree.
 
- Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
- mm/Kconfig                                    |   7 ++
- mm/Makefile                                   |   1 +
- mm/cma.c                                      |   6 +-
- mm/cma.h                                      |  18 +++
- mm/cma_sysfs.c                                | 114 ++++++++++++++++++
- 6 files changed, 170 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
- create mode 100644 mm/cma_sysfs.c
+But I want everybody to be aware of because _if_ it bites you, it
+bites you hard, and you can end up with a filesystem that is
+essentially overwritten by random swap data. This is what we in the
+industry call "double ungood".
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-new file mode 100644
-index 000000000000..f518af819cee
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-@@ -0,0 +1,25 @@
-+What:		/sys/kernel/mm/cma/
-+Date:		Feb 2021
-+Contact:	Minchan Kim <minchan@kernel.org>
-+Description:
-+		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
-+		heap name (also sometimes called CMA areas).
-+
-+		Each CMA heap subdirectory (that is, each
-+		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
-+		following items:
-+
-+			cma_alloc_pages_attempts
-+			cma_alloc_pages_fails
-+
-+What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_attempts
-+Date:		Feb 2021
-+Contact:	Minchan Kim <minchan@kernel.org>
-+Description:
-+		the number of pages CMA API tried to allocate
-+
-+What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_fails
-+Date:		Feb 2021
-+Contact:	Minchan Kim <minchan@kernel.org>
-+Description:
-+		the number of pages CMA API failed to allocate
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 24c045b24b95..febb7e8e24de 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -513,6 +513,13 @@ config CMA_DEBUGFS
- 	help
- 	  Turns on the DebugFS interface for CMA.
- 
-+config CMA_SYSFS
-+	bool "CMA information through sysfs interface"
-+	depends on CMA && SYSFS
-+	help
-+	  This option exposes some sysfs attributes to get information
-+	  from CMA.
-+
- config CMA_AREAS
- 	int "Maximum count of the CMA areas"
- 	depends on CMA
-diff --git a/mm/Makefile b/mm/Makefile
-index 72227b24a616..56968b23ed7a 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
- obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
- obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
- obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
-+obj-$(CONFIG_CMA_SYSFS) += cma_sysfs.o
- obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
- obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
- obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
-diff --git a/mm/cma.c b/mm/cma.c
-index 54eee2119822..551b704faeaf 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -447,9 +447,10 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 	offset = cma_bitmap_aligned_offset(cma, align);
- 	bitmap_maxno = cma_bitmap_maxno(cma);
- 	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
-+	cma_sysfs_alloc_count(cma, count);
- 
- 	if (bitmap_count > bitmap_maxno)
--		return NULL;
-+		goto out;
- 
- 	for (;;) {
- 		mutex_lock(&cma->lock);
-@@ -504,6 +505,9 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 		       __func__, cma->name, count, ret);
- 		cma_debug_show_areas(cma);
- 	}
-+out:
-+	if (!page)
-+		cma_sysfs_fail_count(cma, count);
- 
- 	pr_debug("%s(): returned %p\n", __func__, page);
- 	return page;
-diff --git a/mm/cma.h b/mm/cma.h
-index 42ae082cb067..24a1d61eabc7 100644
---- a/mm/cma.h
-+++ b/mm/cma.h
-@@ -3,6 +3,14 @@
- #define __MM_CMA_H__
- 
- #include <linux/debugfs.h>
-+#include <linux/kobject.h>
-+
-+struct cma_stat {
-+	spinlock_t lock;
-+	unsigned long pages_attempts;	/* the number of CMA page allocation attempts */
-+	unsigned long pages_fails;	/* the number of CMA page allocation failures */
-+	struct kobject kobj;
-+};
- 
- struct cma {
- 	unsigned long   base_pfn;
-@@ -16,6 +24,9 @@ struct cma {
- 	struct debugfs_u32_array dfs_bitmap;
- #endif
- 	char name[CMA_MAX_NAME];
-+#ifdef CONFIG_CMA_SYSFS
-+	struct cma_stat	*stat;
-+#endif
- };
- 
- extern struct cma cma_areas[MAX_CMA_AREAS];
-@@ -26,4 +37,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
- 	return cma->count >> cma->order_per_bit;
- }
- 
-+#ifdef CONFIG_CMA_SYSFS
-+void cma_sysfs_alloc_count(struct cma *cma, size_t count);
-+void cma_sysfs_fail_count(struct cma *cma, size_t count);
-+#else
-+static inline void cma_sysfs_alloc_count(struct cma *cma, size_t count) {};
-+static inline void cma_sysfs_fail_count(struct cma *cma, size_t count) {};
-+#endif
- #endif
-diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-new file mode 100644
-index 000000000000..d281bf95a614
---- /dev/null
-+++ b/mm/cma_sysfs.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * CMA SysFS Interface
-+ *
-+ * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
-+ */
-+
-+#include <linux/cma.h>
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+
-+#include "cma.h"
-+
-+static struct cma_stat *cma_stats;
-+
-+void cma_sysfs_alloc_count(struct cma *cma, size_t count)
-+{
-+	spin_lock(&cma->stat->lock);
-+	cma->stat->pages_attempts += count;
-+	spin_unlock(&cma->stat->lock);
-+}
-+
-+void cma_sysfs_fail_count(struct cma *cma, size_t count)
-+{
-+	spin_lock(&cma->stat->lock);
-+	cma->stat->pages_fails += count;
-+	spin_unlock(&cma->stat->lock);
-+}
-+
-+#define CMA_ATTR_RO(_name) \
-+	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
-+
-+static struct kobject *cma_kobj;
-+
-+static ssize_t cma_alloc_pages_attempts_show(struct kobject *kobj,
-+			struct kobj_attribute *attr, char *buf)
-+{
-+	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-+
-+	return sysfs_emit(buf, "%lu\n", stat->pages_attempts);
-+}
-+CMA_ATTR_RO(cma_alloc_pages_attempts);
-+
-+static ssize_t cma_alloc_pages_fails_show(struct kobject *kobj,
-+			struct kobj_attribute *attr, char *buf)
-+{
-+	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-+
-+	return sysfs_emit(buf, "%lu\n", stat->pages_fails);
-+}
-+CMA_ATTR_RO(cma_alloc_pages_fails);
-+
-+static void cma_kobj_release(struct kobject *kobj)
-+{
-+	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-+
-+	kfree(stat);
-+}
-+
-+static struct attribute *cma_attrs[] = {
-+	&cma_alloc_pages_attempts_attr.attr,
-+	&cma_alloc_pages_fails_attr.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(cma);
-+
-+static struct kobj_type cma_ktype = {
-+	.release = cma_kobj_release,
-+	.sysfs_ops = &kobj_sysfs_ops,
-+	.default_groups = cma_groups
-+};
-+
-+static int __init cma_sysfs_init(void)
-+{
-+	int i = 0;
-+	struct cma *cma;
-+
-+	cma_kobj = kobject_create_and_add("cma", mm_kobj);
-+	if (!cma_kobj) {
-+		pr_err("failed to create cma kobject\n");
-+		return -ENOMEM;
-+	}
-+
-+	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
-+				cma_area_count), GFP_KERNEL);
-+	if (!cma_stats) {
-+		pr_err("failed to create cma_stats\n");
-+		goto out;
-+	}
-+
-+	do {
-+		cma = &cma_areas[i];
-+		cma->stat = &cma_stats[i];
-+		spin_lock_init(&cma->stat->lock);
-+		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
-+					cma_kobj, "%s", cma->name)) {
-+			kobject_put(&cma->stat->kobj);
-+			goto out;
-+		}
-+	} while (++i < cma_area_count);
-+
-+	return 0;
-+out:
-+	while (--i >= 0) {
-+		cma = &cma_areas[i];
-+		kobject_put(&cma->stat->kobj);
-+	}
-+
-+	kfree(cma_stats);
-+	kobject_put(cma_kobj);
-+
-+	return -ENOMEM;
-+}
-+subsys_initcall(cma_sysfs_init);
--- 
-2.30.1.766.gb4fecdf3b7-goog
+Now, there's a couple of additional reasons for me writing this note
+other than just "don't run 5.12-rc1 if you use a swapfile". Because
+it's more than just "ok, we all know the merge window is when all the
+new scary code gets merged, and rc1 can be a bit scary and not work
+for everybody". Yes, rc1 tends to be buggier than later rc's, we are
+all used to that, but honestly, most of the time the bugs are much
+smaller annoyances than this time.
 
+And in fact, most of our rc1 releases have been so solid over the
+years that people may have forgotten that "yeah, this is all the new
+code that can have nasty bugs in it".
+
+One additional reason for this note is that I want to not just warn
+people to not run this if you have a swapfile - even if you are
+personally not impacted (like I am, and probably most people are -
+swap partitions all around) - I want to make sure that nobody starts
+new topic branches using that 5.12-rc1 tag. I know a few developers
+tend to go "Ok, rc1 is out, I got all my development work into this
+merge window, I will now fast-forward to rc1 and use that as a base
+for the next release". Don't do it this time. It may work perfectly
+well for you because you have the common partition setup, but it can
+end up being a horrible base for anybody else that might end up
+bisecting into that area.
+
+And the *final* reason I want to just note this is a purely git
+process one: if you already pulled my git tree, you will have that
+"v5.12-rc1" tag, and the fact that it no longer exists in my public
+tree under that name changes nothing at all for you. Git is
+distributed, and me removing that tag and replacing it with another
+name doesn't magically remove it from other copies unless you have
+special mirroring code.
+
+So if you have a kernel git tree (and I'm here assuming "origin"
+points to my trees), and you do
+
+     git fetch --tags origin
+
+you _will_ now see the new "v5.12-rc1-dontuse" tag. But git won't
+remove the old v5.12-rc1 tag, because while git will see that it is
+not upstream, git will just assume that that simply means that it's
+your own local tag. Tags, unlike branch names, are a global namespace
+in git.
+
+So you should additionally do a "git tag -d v5.12-rc1" to actually get
+rid of the original tag name.
+
+Of course, having the old tag doesn't really do anything bad, so this
+git process thing is entirely up to you. As long as you don't _use_
+v5.12-rc1 for anything, having the tag around won't really matter, and
+having both 'v5.12-rc1' _and_ 'v5.12-rc1-dontuse' doesn't hurt
+anything either, and seeing both is hopefully already sufficient
+warning of "let's not use that then".
+
+Sorry for this mess,
+             Linus
