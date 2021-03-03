@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAB232BFFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83F632C031
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386373AbhCCSOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:14:50 -0500
-Received: from mail-ej1-f53.google.com ([209.85.218.53]:34602 "EHLO
-        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1452429AbhCCPox (ORCPT
+        id S1578089AbhCCSQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:16:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhCCPpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:44:53 -0500
-Received: by mail-ej1-f53.google.com with SMTP id hs11so43095115ejc.1;
-        Wed, 03 Mar 2021 07:44:36 -0800 (PST)
+        Wed, 3 Mar 2021 10:45:16 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8931C06175F;
+        Wed,  3 Mar 2021 07:44:31 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id s17so7334739qvr.12;
+        Wed, 03 Mar 2021 07:44:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yAenZ2k324Y74inyHnLSpf4GKMijWe+eb5zJ0f7us3Y=;
+        b=Yo/WbLtNEcukoBaVIbtOmoJkqQ78eohGvlv9L6yTWcdDIuU+1DKAsD3fh1HE47Xrp+
+         QFlB7j0powGVx/NAToiiojNwZYwizMSL3bMhnmCO5LXvVsufMjP7GNnPm8L/4Z04DNED
+         PwkvridEsCPsRoNu/6CyDKV6GbFO6q2fPyLhHKJnUfbBGoKhaEDc7kAAkZXc5ASnjGnj
+         COSukL6HNRaAnW+dWsCVUTEWV6O1Sj57SBKzdk7nqI1XHIiwgqRSH+n321SqE/5pCgGy
+         ZRtUeRAi9hqP8qbDLI7pXQc3l3kAvlrBrJ0G4HVsFGa3WxRqSwAhAuIuaJFI+TFc8FpN
+         EZ4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jmwkopkt3BG1/Et9G0GYQYsOFcnJ7f1RtzCYTDIXsGI=;
-        b=hXiWnB2EPaqIKQ0qVPOA8F/bLBYdr9aagBmY6XvW7TrhVTTkV7Gs9UFyD8CEZxYYq/
-         7bcVzuLk3l1nB7BqiNosypXS7e83YiDB49UbjMeXlyAq0EbAbuJJQ12ltex7qsxRIFMz
-         gPPv/uaJuSdsMGtR00JD/E3tmzMB/TmOqwYzMnqPCa1mqmYMj15QFwt+32eqqZ9nC8T7
-         I3WxUD6ePxqRlnR+YmADZe5aJPibeYm3Hw/a0KfqZziT9mAnlAyhaAfkPEGABXZC1KLc
-         JZTvMDXpfgSghYPD/fBdrPn52YD+yy08WEbM27HSXr+iVlfwPayzFav+MuJyQWbqtURt
-         3crg==
-X-Gm-Message-State: AOAM530CD2OW4QZSgtY6zyEZFXEjxkk2N/yIUFrZeC6DUQNP1aqdGjb1
-        xvpfTMJtIpa7geg0pcZWbqIr1kME2i0=
-X-Google-Smtp-Source: ABdhPJx6ywcjp3HZcdfY4i3Kci8tvaNlhQba0HUoDE8H/AoVUR+4ZRHIO1GBjkOhvcqhPY282vCWOQ==
-X-Received: by 2002:a17:907:ea3:: with SMTP id ho35mr25834832ejc.396.1614786250768;
-        Wed, 03 Mar 2021 07:44:10 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id a9sm3559544edt.82.2021.03.03.07.44.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 07:44:09 -0800 (PST)
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@arndb.de>,
-        taehyun cho <taehyun.cho@samsung.com>, balbi@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
- <20210303022628.6540-1-taehyun.cho@samsung.com>
- <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
- <YD9lTjWc25Nn7jAR@kroah.com> <20210303103839.it7grj3vtrdmngbd@kozik-lap>
- <YD+XkFAfoKpSsea3@kroah.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <c50d2091-0f87-dd2c-a7bc-df1bed14c17f@kernel.org>
-Date:   Wed, 3 Mar 2021 16:44:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=yAenZ2k324Y74inyHnLSpf4GKMijWe+eb5zJ0f7us3Y=;
+        b=GOPo44OjVFNC9CLZGaKYRfU+mn2tolvjltWa3daK+7ZlcpvFxAwq2hdmkJLsmQBTSE
+         +PDZQ8p2iZm1odp2wxytxbXAlUxIu//KYIN97JTUbfTfkfJn+1JWmMOeAHEgnQ76g1oa
+         mX2redR5lC67iGBY92ma3ZR26+TNxWLWImWfh4n6XKTQ169oTuEGk9pge1NrdXKw4HU+
+         ApyMrc2L/35etDuQjxfvm2/hKUnh4ECraMlj1yEbFLTKQNq9uXVMSIE3z8V3xG3yxK4W
+         gcrpY0yVG/JYIsYKC6TGX6/xI/7SICj6mxmRl2Nj1M+vBAa0Dj3bolMuRrYbE1xBakVL
+         dBcw==
+X-Gm-Message-State: AOAM531wBswscg5TgokYVxEh8Y8lSMLtFfpf4+qxCoJxLRdsEo+JQM39
+        ymVEFo5Jt28D5WGvXh+xL8oBVANgJ1a/Tg==
+X-Google-Smtp-Source: ABdhPJzfFnuZzOw9IZBrOfo12BzAhQPTqGWB0InFeznSDVw2hz00sFHfeQE8i+h+temYeCDQwJeU0A==
+X-Received: by 2002:ad4:4581:: with SMTP id x1mr3253236qvu.9.1614786270710;
+        Wed, 03 Mar 2021 07:44:30 -0800 (PST)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id g6sm1590177qtg.91.2021.03.03.07.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 07:44:29 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 3 Mar 2021 10:44:28 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
+Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
+Message-ID: <YD+u3CXhwOi2LC+4@slm.duckdns.org>
+References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YD+XkFAfoKpSsea3@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/03/2021 15:05, Greg Kroah-Hartman wrote:
-> On Wed, Mar 03, 2021 at 11:38:39AM +0100, Krzysztof Kozlowski wrote:
->> This is so far component of a SoC, so it cannot be re-used outside of
->> SoC. Unless it appears in a new SoC (just like recent re-use of Samsung
->> serial driver for Apple M1). Because of the architecture, you cannot
->> build universal kernel without ARCH_EXYNOS. You need it. Otherwise the
->> kernel won't boot on hardware with DWC Exynos.
+On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:
+> IOASIDs are used to associate DMA requests with virtual address spaces.
+> They are a system-wide limited resource made available to the userspace
+> applications. Let it be VMs or user-space device drivers.
 > 
-> So, to create a "generic" arm64 kernel, I need to go enable all of the
-> ARCH_* variants as well?  I thought we were trying to NOT do the same
-> mess that arm32 had for this type of thing.
+> This RFC patch introduces a cgroup controller to address the following
+> problems:
+> 1. Some user applications exhaust all the available IOASIDs thus
+> depriving others of the same host.
+> 2. System admins need to provision VMs based on their needs for IOASIDs,
+> e.g. the number of VMs with assigned devices that perform DMA requests
+> with PASID.
 
-The kernel itself is generic and could work on all arm64 platforms. You 
-have to however enable all ARCH_* because of the design choice:
-1. device tree sources are toggled with ARCH_xxx
-2. the given ARCH_xxx might select specific drivers needed for the 
-kernel to work (or the drivers depend on it).
+Please take a look at the proposed misc controller:
 
-Maybe except the device trees, the case 2. above could be solved not 
-with dependency but "imply".
+ http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
 
->> Since DWC Exynos won't work without ARCH_EXYNOS - the user will not get
->> any usable binary - I think all, or almost all, SoC specific drivers are
->> limited per ARCH. This limits the amount of choices for distro people
->> and other kernel configuring folks, so they won't have to consider
->> useless options.
-> 
-> Why do we have ARCH_EXYNOS at all?  x86-64 doesn't have this, why is
-> arm64 somehow special here?
+Would that fit your bill?
 
-Because x86 is plug and play? Has BIOS? You can have generic kernel? ARM 
-is not like this - you need to load for example proper device tree blob 
-matching your hardware. This could be loaded/passed/chosen by 
-bootloader, but it's not the same as BIOS.
+Thanks.
 
-> That's my complaint, it feels wrong that I have to go and enable all
-> different ARCH_ symbols just to build these drivers.  If people want
-> 'default' configurations, then provide an exynos default config file,
-> right?
-
-If you refer to only building, then options are usually 
-compile-testable. But if you think about having a working kernel, why 
-having a ARCH_xxx for given platform feels wrong? Isn't it nice to hide 
-all stuff behind one option?
-
-I think MIPS and RISC-V do similar.
-
-> 
->> Anyway, that's the convention or consensus so far for entire SoC. If we
->> want to change it - sure, but let's make it for everyone, not for just
->> this one USB driver.
-> 
-> Great, let's change it for everyone, I don't see a need for ARCH_*
-> symbols except for people who want to make it simpler for their one
-> board type.  And for that, use a defconfig.
-> 
-> I've complained about this before, from a driver subsystem maintainer
-> point of view, this is crazy, drivers should be building and working on
-> everything.  Worst case, it's a cpu-type issue, to build or not build a
-> driver (i.e. s390, i386), best case it's a feature-type issue to depend
-> on (i.e. USB, TTY, etc.).  But never a "this one sub-architecture of
-> this one cpu"-type issue.  That feels crazy to me...
-
- From the building point of view, I agree that the goal is to build them 
-everywhere. This is why we have COMPILE_TEST. From the running/working 
-point of view, these are not PCI or USB cards. These are dedicated 
-blocks of System on Chip. They sometimes got reused on different SoCs 
-but they do not exist outside the SoC.
-
-Is there a point to split a complex PCI driver into 10 different parts 
-and be able to use each of this part separately? Usually not...
-
-Best regards,
-Krzysztof
+-- 
+tejun
