@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C7332BCA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF7832BD5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhCCOVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:21:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842953AbhCCKW5 (ORCPT
+        id S1452537AbhCCPvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:51:49 -0500
+Received: from bin-mail-out-06.binero.net ([195.74.38.229]:47621 "EHLO
+        bin-mail-out-06.binero.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350020AbhCCLA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:57 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6687C06178B
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:21:28 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id e6so15793745pgk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:21:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=5sgzs+e2k+RgTtqJplWFR6KEm78SgZsm88oW5JzXnRk=;
-        b=Gsh5aV+FHnmKZJ7JbbY6hJOLx1kU0QPS/64NpmYMgkKRUjfeKdK8rR7Tz03hZ4xIOe
-         WIsEzbhGzKOUdvlB8rscszrMSYgPhidSFK6E3q6aAods6EOnKRn2BLFGsaFmiJWU2GDK
-         +nRtEB8GzY9NirzzrljR/cWUXKjbduPs/18lE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=5sgzs+e2k+RgTtqJplWFR6KEm78SgZsm88oW5JzXnRk=;
-        b=msTNyX60DE1nqKGcCeUm0ksNb9/FGWhUZUesV90M6/mP/Ml1nDAd/pvGqkCAlRXqVJ
-         bzD7PGvMroVJH50Ig5qDNAsP6FFePrM4Xm6ZhvSx6OjitEt9gs+/FlIGjQP0r97eSFx5
-         yeE1htlkyVM1FSesX8HrB2GsG9C9VaIK0VwdjjvV2UVDKzpEq/ymoQ6ZEIXhWkZqjvce
-         XYyWXph1s6HCITuRmYsg6ZzdM7HPru6R6LHOfFIoc/La2KYtY36ZPPs+SrS+H3QvmO2n
-         RCUIxPIMCFJQScy9awxsCHzjiA06PM8EDTOk3OyqSiaYJzDkZmv9ldB/A7d0GxOCNvfZ
-         fpLg==
-X-Gm-Message-State: AOAM533KkCGhZOhC/FP9vG4ojw5tRkp3X3zBZkk0ONO6M6fXz83mHY2g
-        lXJdpK6NdksnEeFUx/eDEeRPug==
-X-Google-Smtp-Source: ABdhPJzjVSYkQQnQXjf65ZJvtnHkb8n8lOPDn88s8QzhuX1Q+AGEXMCx5CKjZ7KQJh3JojpQLon70Q==
-X-Received: by 2002:a63:dc50:: with SMTP id f16mr6809504pgj.16.1614759688410;
-        Wed, 03 Mar 2021 00:21:28 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id q15sm6726694pje.28.2021.03.03.00.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:21:27 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 3 Mar 2021 06:00:26 -0500
+X-Halon-ID: 745b473b-7bf9-11eb-b73f-0050569116f7
+Authorized-sender: andreas@gaisler.com
+Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
+        by bin-vsp-out-03.atm.binero.net (Halon) with ESMTPA
+        id 745b473b-7bf9-11eb-b73f-0050569116f7;
+        Wed, 03 Mar 2021 09:21:34 +0100 (CET)
+Subject: Re: [PATCH AUTOSEL 4.4 4/8] sparc32: Limit memblock allocation to low
+ memory
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org
+References: <20210302115935.63777-1-sashal@kernel.org>
+ <20210302115935.63777-4-sashal@kernel.org>
+From:   Andreas Larsson <andreas@gaisler.com>
+Message-ID: <c9573605-e4e3-92a5-3a21-1b324277a345@gaisler.com>
+Date:   Wed, 3 Mar 2021 09:21:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <f58070ee-ff00-f8c5-6459-782562e903e5@codeaurora.org>
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org> <1613114930-1661-7-git-send-email-rnayak@codeaurora.org> <161406618557.1254594.15985584772106947706@swboyd.mtv.corp.google.com> <f58070ee-ff00-f8c5-6459-782562e903e5@codeaurora.org>
-Subject: Re: [PATCH 06/13] arm64: dts: qcom: SC7280: Add rpmhcc clock controller node
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Date:   Wed, 03 Mar 2021 00:21:25 -0800
-Message-ID: <161475968509.1478170.5248506718236838205@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210302115935.63777-4-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2021-03-01 09:27:06)
-> On 2/23/2021 1:13 PM, Stephen Boyd wrote:
-> > Quoting Rajendra Nayak (2021-02-11 23:28:43)
-> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dt=
-s/qcom/sc7280.dtsi
-> >> +               usb3_phy_wrapper_gcc_usb30_pipe_clk: usb3-phy-wrapper-=
-gcc-usb30-pipe-clk {
-> >> +                       compatible =3D "fixed-clock";
-> >> +                       clock-frequency =3D <1000>;
-> >> +                       #clock-cells =3D <0>;
-> >> +               };
-> >=20
-> > Shouldn't these come from the phys? Why are they being added here?
-> >=20
->=20
-> Once the phys are added, these could be replaced, that was the reason to =
+On 2021-03-02 12:59, Sasha Levin wrote:
+> From: Andreas Larsson <andreas@gaisler.com>
+> 
+> [ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
+> 
+> Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
+> memblocks instead of bootmem, but also made high memory available via
+> memblock allocation which does not work together with e.g. phys_to_virt
+> and can lead to kernel panic.
+> 
+> This changes back to only low memory being allocatable in the early
+> stages, now using memblock allocation.
+> 
+> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   arch/sparc/mm/init_32.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+> index 3b7092d9ea8f..4abe4bf08377 100644
+> --- a/arch/sparc/mm/init_32.c
+> +++ b/arch/sparc/mm/init_32.c
+> @@ -240,6 +240,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
+>   	reserve_bootmem((bootmap_pfn << PAGE_SHIFT), size, BOOTMEM_DEFAULT);
+>   	*pages_avail -= PAGE_ALIGN(size) >> PAGE_SHIFT;
+>   
+> +	/* Only allow low memory to be allocated via memblock allocation */
+> +	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
+> +
+>   	return max_pfn;
+>   }
+>   
+> 
 
-> add them.
->=20
-> >>          };
-> >>  =20
-> >>          reserved_memory: reserved-memory {
-> >> @@ -174,6 +211,17 @@
-> >>                  gcc: clock-controller@100000 {
-> >>                          compatible =3D "qcom,gcc-sc7280";
-> >>                          reg =3D <0 0x00100000 0 0x1f0000>;
-> >> +                       clocks =3D <&rpmhcc RPMH_CXO_CLK>,
-> >> +                                <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk=
->,
-> >> +                                <&pcie_0_pipe_clk>, <&pcie_1_pipe_clk=
->,
-> >> +                                <&ufs_phy_rx_symbol_0_clk>, <&ufs_phy=
-_rx_symbol_1_clk>,
-> >> +                                <&ufs_phy_tx_symbol_0_clk>,
-> >> +                                <&usb3_phy_wrapper_gcc_usb30_pipe_clk=
->;
-> >=20
-> > If the phys aren't ready then <0> should work. Unless something goes
-> > wrong?
-> >
->=20
-> Nothing would go wrong if we add <0>, but wanted them to be replaced=20
-> once the support is added.
+This is not needed for 4.4, and will not compile, as the problem it
+fixes was introduced in 4.19.
 
-Please use <0> to indicate that it's missing. Otherwise we may never
-realize that we should connect it up later.
+-- 
+Andreas Larsson
