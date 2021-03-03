@@ -2,172 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3810932BCCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE94532BCAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359568AbhCCOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
+        id S1381414AbhCCOav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843021AbhCCKYb (ORCPT
+        with ESMTP id S1842966AbhCCKXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:24:31 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782DDC08EC87;
-        Wed,  3 Mar 2021 01:49:41 -0800 (PST)
-Date:   Wed, 03 Mar 2021 09:49:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614764980;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bv5If5aKkmKrvwapua3MrOf7KZ9MkEG8vbkFDJ7p3WU=;
-        b=i+83FaMNipnWtWaWMXhxHayNTMGnBv8hYUqDT7ypXtHvNOVWAxczph1QOytsCkg3+u8aqE
-        DE59x2IVPSdxLYEboM/59a9CJJn6Moz0qgsKqJx9lZak77QABDZZw/FMlpSEplAGaKHzLJ
-        MslT0r+GfD6EnMp3G3lh3APDAtfZtlkN3j9VSBzuBtnyJjuu4fPuC4pN+zmGRYrbvx0LyH
-        7D+kjmk8A18CQ2jXRRXk5GaWa6uo/Gb3HjtdczEdVbsNDyWYCveW3NAGokWkBjOrDYdtlV
-        6w6Vq6kBtUwd95Yc1C7fiXkCZhYLPr2LPzgjSdjfuTz6NZ/NEBCwOnDRzfIciA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614764980;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bv5If5aKkmKrvwapua3MrOf7KZ9MkEG8vbkFDJ7p3WU=;
-        b=0jqb4/YOtCDJZ8muPWCdGrsxO6+TEyRCC7ptQ68UMbzJR4020WmT/dl2zL2Edq1/BoDQzs
-        Ajz+uBhZ7O6tZVBw==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] kcov: Remove kcov include from sched.h and move it
- to its users.
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andrey Konovalov <andreyknvl@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210218173124.iy5iyqv3a4oia4vv@linutronix.de>
-References: <20210218173124.iy5iyqv3a4oia4vv@linutronix.de>
+        Wed, 3 Mar 2021 05:23:10 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F416C08ECAD;
+        Wed,  3 Mar 2021 01:56:12 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id t26so15995514pgv.3;
+        Wed, 03 Mar 2021 01:56:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6nAum7+Ob49UjR8SXRm3Bf/BdE+ABiXk8yB55vKwcjo=;
+        b=t6d98gwHsFVJx6OL8dYpXRpDtNn7Wf+l5TtZs67JkFEb3y/YMeNPE3cYMIqqJsGc2c
+         uSC+BojNjx2A3NumpC6ZYOxhMZ9IiKaB5uw3OW3gJkYwdWaPZTpMHu+1terIF3Bopn1t
+         0YiNxuaUp8jmLx/QaExikzl4y2FmQp1tWGLu6uREHeiWeYJ01Xw0QM+e2/qMq0gMHVn8
+         17DBUbY3w2iTBSts4kTlIQU3sYZNqsGHgwY0MBGGPAAzVwc3Wcog8nqkUeSZd4BVBH5q
+         DtJ/Ul5sr9khy5dsItqGvNTnV2WkaczvbMaOkvaTciFNEwmHC1lpzwL7vWTZpKBxBbpS
+         4BOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6nAum7+Ob49UjR8SXRm3Bf/BdE+ABiXk8yB55vKwcjo=;
+        b=dji8hm0tiGYfEfLwgXQrUpHRV2WY27mEFNg4OW34ckCwJGV5wHMJkvjOybRrdCl9oI
+         nUsDvGxZhPPWWKr8ESXA93c8QbQcADaIMbMx4Fep29N1C55iwdPvpwsDDzRv5QPdzurK
+         GpRqS9AvQf+jZR8xkVJM7mDM+wzyGpFLTLgMGdFX1yYK6S3kYcwJKl/cmaf/ZfiCOnqa
+         SSvjqXAex/bVDKkHj7dH07zW9BI/84I9R6NEPUChsgaACe60bazBmS+x4l9ESwlbRNIR
+         iHj6zTvfJRePYPpiinr0y3pHfbC1jwhRWWVl/85RSZB9L2LUlZBWG/1vSgtEPwan6wSj
+         l8dw==
+X-Gm-Message-State: AOAM533Sbw/7Muk6hbFhDUov4phEA99j3cf8VccDOZ86b6ulzdYoHL79
+        E3RvFkCCP5hTjxBF3xn0FpI=
+X-Google-Smtp-Source: ABdhPJzL+/f5k+R8WaiFUPLm5x5UffaBaUc6zqPhsKJfhucmslPQZdW8AwZD4LLWEJkiLpiPGHy2tg==
+X-Received: by 2002:a62:5ec1:0:b029:1ee:7baf:8ed3 with SMTP id s184-20020a625ec10000b02901ee7baf8ed3mr2344276pfb.62.1614765371678;
+        Wed, 03 Mar 2021 01:56:11 -0800 (PST)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id x14sm24351087pfm.207.2021.03.03.01.56.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 01:56:11 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, stable@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>
+Subject: [PATCH v3] mm/userfaultfd: fix memory corruption due to writeprotect
+Date:   Wed,  3 Mar 2021 01:51:16 -0800
+Message-Id: <20210303095116.3814443-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <161476497944.20312.6366820795221202396.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+From: Nadav Amit <namit@vmware.com>
 
-Commit-ID:     4c7ee75cccbf0635cbec6528ae7fff4b7bc549fa
-Gitweb:        https://git.kernel.org/tip/4c7ee75cccbf0635cbec6528ae7fff4b7bc549fa
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Thu, 18 Feb 2021 18:31:24 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 03 Mar 2021 10:32:47 +01:00
+Userfaultfd self-test fails occasionally, indicating a memory
+corruption.
 
-kcov: Remove kcov include from sched.h and move it to its users.
+Analyzing this problem indicates that there is a real bug since
+mmap_lock is only taken for read in mwriteprotect_range() and defers
+flushes, and since there is insufficient consideration of concurrent
+deferred TLB flushes in wp_page_copy(). Although the PTE is flushed from
+the TLBs in wp_page_copy(), this flush takes place after the copy has
+already been performed, and therefore changes of the page are possible
+between the time of the copy and the time in which the PTE is flushed.
 
-The recent addition of in_serving_softirq() to kconv.h results in
-compile failure on PREEMPT_RT because it requires
-task_struct::softirq_disable_cnt. This is not available if kconv.h is
-included from sched.h.
+To make matters worse, memory-unprotection using userfaultfd also poses
+a problem. Although memory unprotection is logically a promotion of PTE
+permissions, and therefore should not require a TLB flush, the current
+userrfaultfd code might actually cause a demotion of the architectural
+PTE permission: when userfaultfd_writeprotect() unprotects memory
+region, it unintentionally *clears* the RW-bit if it was already set.
+Note that this unprotecting a PTE that is not write-protected is a valid
+use-case: the userfaultfd monitor might ask to unprotect a region that
+holds both write-protected and write-unprotected PTEs.
 
-It is not needed to include kconv.h from sched.h. All but the net/ user
-already include the kconv header file.
+The scenario that happens in selftests/vm/userfaultfd is as follows:
 
-Move the include of the kconv.h header from sched.h it its users.
-Additionally include sched.h from kconv.h to ensure that everything
-task_struct related is available.
+cpu0				cpu1			cpu2
+----				----			----
+							[ Writable PTE
+							  cached in TLB ]
+userfaultfd_writeprotect()
+[ write-*unprotect* ]
+mwriteprotect_range()
+mmap_read_lock()
+change_protection()
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
-Acked-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://lkml.kernel.org/r/20210218173124.iy5iyqv3a4oia4vv@linutronix.de
+change_protection_range()
+...
+change_pte_range()
+[ *clear* “write”-bit ]
+[ defer TLB flushes ]
+				[ page-fault ]
+				...
+				wp_page_copy()
+				 cow_user_page()
+				  [ copy page ]
+							[ write to old
+							  page ]
+				...
+				 set_pte_at_notify()
+
+A similar scenario can happen:
+
+cpu0		cpu1		cpu2		cpu3
+----		----		----		----
+						[ Writable PTE
+				  		  cached in TLB ]
+userfaultfd_writeprotect()
+[ write-protect ]
+[ deferred TLB flush ]
+		userfaultfd_writeprotect()
+		[ write-unprotect ]
+		[ deferred TLB flush]
+				[ page-fault ]
+				wp_page_copy()
+				 cow_user_page()
+				 [ copy page ]
+				 ...		[ write to page ]
+				set_pte_at_notify()
+
+This race exists since commit 292924b26024 ("userfaultfd: wp: apply
+_PAGE_UFFD_WP bit"). Yet, as Yu Zhao pointed, these races became
+apparent since commit 09854ba94c6a ("mm: do_wp_page() simplification")
+which made wp_page_copy() more likely to take place, specifically if
+page_count(page) > 1.
+
+To resolve the aforementioned races, check whether there are pending
+flushes on uffd-write-protected VMAs, and if there are, perform a flush
+before doing the COW.
+
+Further optimizations will follow, since currently write-unprotect would
+also
+
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Pavel Emelyanov <xemul@openvz.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Suggested-by: Yu Zhao <yuzhao@google.com>
+Fixes: 292924b26024 ("userfaultfd: wp: apply _PAGE_UFFD_WP bit")
+Signed-off-by: Nadav Amit <namit@vmware.com>
+
 ---
- drivers/usb/usbip/usbip_common.h | 1 +
- include/linux/kcov.h             | 1 +
- include/linux/sched.h            | 1 -
- net/core/skbuff.c                | 1 +
- net/mac80211/iface.c             | 1 +
- net/mac80211/rx.c                | 1 +
- 6 files changed, 5 insertions(+), 1 deletion(-)
+v2->v3:
+* Do not acquire mmap_lock for write, flush conditionally instead [Yu]
+* Change the fixes tag to the patch that made the race apparent [Yu]
+* Removing patch to avoid write-protect on uffd unprotect. More
+  comprehensive solution to follow (and avoid the TLB flush as well).
+---
+ mm/memory.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
-index d60ce17..a7dd6c6 100644
---- a/drivers/usb/usbip/usbip_common.h
-+++ b/drivers/usb/usbip/usbip_common.h
-@@ -18,6 +18,7 @@
- #include <linux/usb.h>
- #include <linux/wait.h>
- #include <linux/sched/task.h>
-+#include <linux/kcov.h>
- #include <uapi/linux/usbip.h>
+diff --git a/mm/memory.c b/mm/memory.c
+index 9e8576a83147..06da04f98936 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3092,6 +3092,13 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+ 		return handle_userfault(vmf, VM_UFFD_WP);
+ 	}
  
- #undef pr_fmt
-diff --git a/include/linux/kcov.h b/include/linux/kcov.h
-index 4e3037d..55dc338 100644
---- a/include/linux/kcov.h
-+++ b/include/linux/kcov.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_KCOV_H
- #define _LINUX_KCOV_H
- 
-+#include <linux/sched.h>
- #include <uapi/linux/kcov.h>
- 
- struct task_struct;
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ef00bb2..cf245bc 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -14,7 +14,6 @@
- #include <linux/pid.h>
- #include <linux/sem.h>
- #include <linux/shm.h>
--#include <linux/kcov.h>
- #include <linux/mutex.h>
- #include <linux/plist.h>
- #include <linux/hrtimer.h>
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 545a472..420f23c 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -60,6 +60,7 @@
- #include <linux/prefetch.h>
- #include <linux/if_vlan.h>
- #include <linux/mpls.h>
-+#include <linux/kcov.h>
- 
- #include <net/protocol.h>
- #include <net/dst.h>
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index b80c9b0..c127deb 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -15,6 +15,7 @@
- #include <linux/if_arp.h>
- #include <linux/netdevice.h>
- #include <linux/rtnetlink.h>
-+#include <linux/kcov.h>
- #include <net/mac80211.h>
- #include <net/ieee80211_radiotap.h>
- #include "ieee80211_i.h"
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index c1343c0..62047e9 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -17,6 +17,7 @@
- #include <linux/etherdevice.h>
- #include <linux/rcupdate.h>
- #include <linux/export.h>
-+#include <linux/kcov.h>
- #include <linux/bitops.h>
- #include <net/mac80211.h>
- #include <net/ieee80211_radiotap.h>
++	/*
++	 * Userfaultfd write-protect can defer flushes. Ensure the TLB
++	 * is flushed in this case before copying.
++	 */
++	if (userfaultfd_wp(vmf->vma) && mm_tlb_flush_pending(vmf->vma->vm_mm))
++		flush_tlb_page(vmf->vma, vmf->address);
++
+ 	vmf->page = vm_normal_page(vma, vmf->address, vmf->orig_pte);
+ 	if (!vmf->page) {
+ 		/*
+-- 
+2.25.1
+
