@@ -2,97 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABD532C303
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F9532C313
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236603AbhCDADI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:03:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388006AbhCCUXR (ORCPT
+        id S1350342AbhCDAD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:03:29 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:49863 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1388009AbhCCUX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:23:17 -0500
-X-Greylist: delayed 4964 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 03 Mar 2021 12:22:37 PST
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EFDC061756;
-        Wed,  3 Mar 2021 12:22:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NJRVHOfY/wAjmUPZBNz4qgJex3zmcTXiYgWDUNlTG8o=; b=eqA9t6kzaBOgSsX6JWQ6bNyGRh
-        UgYeALN9opyR6KuSqGmP4uzPf+k1oBK6TCyU6a/1fX501vYjGmCpXFSWywGvkaonbPZhEayT++4iZ
-        oODGrrJEmiuUlswEbZ3fyg6gI9kYBFgn9UR+KDU3zx1LGek7KNREdgasXMr6iw6BLvLokSybzj3o0
-        FNG0+dPAVRHOOozCESR//7yz71L+9+0rl3yqiyPbu8P6DvpStpnaONCATRQi3TmBKlvyzIITN694t
-        lEto28QgNJ950rVl1iEY2vdIbNKBUcYGt3oxMUUHAEyvaVM0uFuclcgYh+03KSaFH8kTFiBm0BULu
-        IrCyN89A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lHXzy-006Opo-Az; Wed, 03 Mar 2021 20:21:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 795C73017B7;
-        Wed,  3 Mar 2021 21:21:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3FB8320B10DC6; Wed,  3 Mar 2021 21:21:31 +0100 (CET)
-Date:   Wed, 3 Mar 2021 21:21:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Vince Weaver <vincent.weaver@maine.edu>, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, eranian@google.com,
-        ak@linux.intel.com, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "perf/x86: Allow zero PEBS status with only
- single active event"
-Message-ID: <YD/vy2RnkWZYiJHP@hirez.programming.kicks-ass.net>
-References: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
- <YD/cnnuh/AHOL8hV@hirez.programming.kicks-ass.net>
- <9484ab6e-a6e5-bb72-106f-ed904e50fc0c@linux.intel.com>
+        Wed, 3 Mar 2021 15:23:28 -0500
+Received: (qmail 1584406 invoked by uid 1000); 3 Mar 2021 15:22:46 -0500
+Date:   Wed, 3 Mar 2021 15:22:46 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210303202246.GC1582185@rowland.harvard.edu>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9484ab6e-a6e5-bb72-106f-ed904e50fc0c@linux.intel.com>
+In-Reply-To: <20210303174022.GD2696@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 02:53:00PM -0500, Liang, Kan wrote:
-> On 3/3/2021 1:59 PM, Peter Zijlstra wrote:
-> > On Wed, Mar 03, 2021 at 05:42:18AM -0800, kan.liang@linux.intel.com wrote:
+On Wed, Mar 03, 2021 at 09:40:22AM -0800, Paul E. McKenney wrote:
+> On Wed, Mar 03, 2021 at 12:12:21PM -0500, Alan Stern wrote:
 
-> > > +++ b/arch/x86/events/intel/ds.c
-> > > @@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
-> > >   			continue;
-> > >   		}
-> > > -		/*
-> > > -		 * On some CPUs the PEBS status can be zero when PEBS is
-> > > -		 * racing with clearing of GLOBAL_STATUS.
-> > > -		 *
-> > > -		 * Normally we would drop that record, but in the
-> > > -		 * case when there is only a single active PEBS event
-> > > -		 * we can assume it's for that event.
-> > > -		 */
-> > > -		if (!pebs_status && cpuc->pebs_enabled &&
-> > > -			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
-> > > -			pebs_status = cpuc->pebs_enabled;
+> > Local variables absolutely should be treated just like CPU registers, if 
+> > possible.  In fact, the compiler has the option of keeping local 
+> > variables stored in registers.
 > > 
-> > Wouldn't something like:
-> > 
-> > 			pebs_status = p->status = cpus->pebs_enabled;
-> > 
+> > (Of course, things may get complicated if anyone writes a litmus test 
+> > that uses a pointer to a local variable,  Especially if the pointer 
+> > could hold the address of a local variable in one execution and a 
+> > shared variable in another!  Or if the pointer is itself a shared 
+> > variable and is dereferenced in another thread!)
 > 
-> I didn't consider it as a potential solution in this patch because I don't
-> think it's a proper way that SW modifies the buffer, which is supposed to be
-> manipulated by the HW.
+> Good point!  I did miss this complication.  ;-)
 
-Right, but then HW was supposed to write sane values and it doesn't do
-that either ;-)
+I suspect it wouldn't be so bad if herd7 disallowed taking addresses of 
+local variables.
 
-> It's just a personal preference. I don't see any issue here. We may try it.
+> As you say, when its address is taken, the "local" variable needs to be
+> treated as is it were shared.  There are exceptions where the pointed-to
+> local is still used only by its process.  Are any of these exceptions
+> problematic?
 
-So I mostly agree with you, but I think it's a shame to unsupport such
-chips, HSW is still a plenty useable chip today.
+Easiest just to rule out the whole can of worms.
 
+> > But even if local variables are treated as non-shared storage locations, 
+> > we should still handle this correctly.  Part of the problem seems to lie 
+> > in the definition of the to-r dependency relation; the relevant portion 
+> > is:
+> > 
+> > 	(dep ; [Marked] ; rfi)
+> > 
+> > Here dep is the control dependency from the READ_ONCE to the 
+> > local-variable store, and the rfi refers to the following load of the 
+> > local variable.  The problem is that the store to the local variable 
+> > doesn't go in the Marked class, because it is notated as a plain C 
+> > assignment.  (And likewise for the following load.)
+> > 
+> > Should we change the model to make loads from and stores to local 
+> > variables always count as Marked?
+> 
+> As long as the initial (possibly unmarked) load would be properly
+> complained about.
 
+Sorry, I don't understand what you mean.
+
+>  And I cannot immediately think of a situation where
+> this approach would break that would not result in a data race being
+> flagged.  Or is this yet another failure of my imagination?
+
+By definition, an access to a local variable cannot participate in a 
+data race because all such accesses are confined to a single thread.
+
+However, there are other aspects to consider, in particular, the 
+ordering relations on local-variable accesses.  But if, as Luc says, 
+local variables are treated just like registers then perhaps the issue 
+doesn't arise.
+
+> > What should have happened if the local variable were instead a shared 
+> > variable which the other thread didn't access at all?  It seems like a 
+> > weak point of the memory model that it treats these two things 
+> > differently.
+> 
+> But is this really any different than the situation where a global
+> variable is only accessed by a single thread?
+
+Indeed; it is the _same_ situation.  Which leads to some interesting 
+questions, such as: What does READ_ONCE(r) mean when r is a local 
+variable?  Should it be allowed at all?  In what way is it different 
+from a plain read of r?
+
+One difference is that the LKMM doesn't allow dependencies to originate 
+from a plain load.  Of course, when you're dealing with a local 
+variable, what matters is not the load from that variable but rather the 
+earlier loads which determined the value that had been stored there.  
+Which brings us back to the case of the
+
+	dep ; rfi
+
+dependency relation, where the accesses in the middle are plain and 
+non-racy.  Should the LKMM be changed to allow this?
+
+There are other differences to consider.  For example:
+
+	r = READ_ONCE(x);
+	smp_wmb();
+	WRITE_ONCE(y, 1);
+
+If the write to r were treated as a marked store, the smp_wmb would 
+order it (and consequently the READ_ONCE) before the WRITE_ONCE.  
+However we don't want to do this when r is a local variable.  Indeed, a 
+plain store wouldn't be ordered this way because the compiler might 
+optimize the store away entirely, leaving the smp_wmb nothing to act on.
+
+So overall the situation is rather puzzling.  Treating local variables 
+as registers is probably the best answer.
+
+Alan
