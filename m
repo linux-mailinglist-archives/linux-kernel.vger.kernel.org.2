@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9198132D645
+	by mail.lfdr.de (Postfix) with ESMTP id DE9E232D646
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbhCDPPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234397AbhCDPOv (ORCPT
+        id S234560AbhCDPPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:15:06 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50444 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234408AbhCDPOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Mar 2021 10:14:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087F2C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 07:14:11 -0800 (PST)
-Message-Id: <20210303132711.754979779@linutronix.de>
+Message-Id: <20210303132711.873509407@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614870849;
+        s=2020; t=1614870850;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9faHMiVNywi4bTvkQWsVt6JBdbgbuuop7i9PAkb1cms=;
-        b=SVWS5Bolf5CbdytCwu1g8bpTWgjuGONk/1VvoNwioM0r2jP2mzpDCzTlalsnz/mJOYDNoU
-        xsnVCuWb4XBOyyhedwfgM9RWywj9Qax2o4rQIMUDt7LVMcTIP3DxHFTwB1p3GEy6oSxI0T
-        V9KMagRFL9ukycpqQxG6d8PG1LKrYj5FW3Ev5X62zBdF/X5ssjfOYcqasHBYGAXOqfM5YT
-        Q9Ojyqx4JFIJC0D6MvFxaZMFkLnEiuINYcJqf19B38N6zPs1TW96JJOPlgn7JTmx7/8BwV
-        qTkwfWwuNLCCX6aZ+R/X6D1CZVdX1+TrzufT4hq34parLO/hrcR+iAvR+21XKw==
+        bh=u3h/+voGfuQZ8vvFWg0Eh8wQJhEpYLRgbzaO7lOW+aI=;
+        b=FSHWAHNsmSIFfiruOKZ8wU93ak4ffq2CPua5ms62JfEDDwQwbdLKDz487hngpO+W3ALSJl
+        gw0M1AXAD9z5g4KvDX/2e4Qdq9jnzWlwlj9X1vy1uJesdrTs1WwFS/vdH8H3v/3R0znXoM
+        oq13YugQEN0jIJfBx9Sesx/SXVJDRRwQw6KW4bn7nVVyUWEBxGL+rT2SrPW8AdlGZ9jxwg
+        /s5zvLwTTNrlyUi2y2imwKPsz2Ll2XZvsF3URJCgFogvFAyAW/QRjoNF0uJTwgkxZWoXV8
+        rPY2lTzr1OpSqGg4wALRcll/sMqZHuaZf87+mMAhe14HCu1/zLU+C/hHOKAr0Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614870849;
+        s=2020e; t=1614870850;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=9faHMiVNywi4bTvkQWsVt6JBdbgbuuop7i9PAkb1cms=;
-        b=cLdq3aFswHqDjXNn0aTKV7h/d8u13KzZkkxyaFKX8IT3A45rlMfbQ+7AzSIcaXaIQEwr/m
-        FoS0nqDw2VyG2qCw==
-Date:   Wed, 03 Mar 2021 14:20:27 +0100
+        bh=u3h/+voGfuQZ8vvFWg0Eh8wQJhEpYLRgbzaO7lOW+aI=;
+        b=BMC8gIgnDEiQOzywif6l/p5mkFIc5cDcrw9v673ZPmN4Z6uYF3ws0c2luovKIVfbNBBvbs
+        HbJiCn5oFqa3koBA==
+Date:   Wed, 03 Mar 2021 14:20:28 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         Christian Koenig <christian.koenig@amd.com>,
         Huang Rui <ray.huang@amd.com>,
         VMware Graphics <linux-graphics-maintainer@vmware.com>,
         Roland Scheidegger <sroland@vmware.com>,
         Zack Rusin <zackr@vmware.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org,
         Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Chris Wilson <chris@chris-wilson.co.uk>,
         intel-gfx@lists.freedesktop.org
-Subject: [patch 4/7] drm/qxl: Replace io_mapping_map_atomic_wc()
+Subject: [patch 5/7] drm/nouveau/device: Replace io_mapping_map_atomic_wc()
 References: <20210303132023.077167457@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,241 +63,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-None of these mapping requires the side effect of disabling pagefaults and
-preemption.
+Neither fbmem_peek() nor fbmem_poke() require to disable pagefaults and
+preemption as a side effect of io_mapping_map_atomic_wc().
 
-Use io_mapping_map_local_wc() instead, rename the related functions
-accordingly and clean up qxl_process_single_command() to use a plain
-copy_from_user() as the local maps are not disabling pagefaults.
+Use io_mapping_map_local_wc() instead.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ben Skeggs <bskeggs@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
-Cc: Gerd Hoffmann <kraxel@redhat.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: virtualization@lists.linux-foundation.org
-Cc: spice-devel@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: nouveau@lists.freedesktop.org
 ---
- drivers/gpu/drm/qxl/qxl_image.c   |   18 +++++++++---------
- drivers/gpu/drm/qxl/qxl_ioctl.c   |   27 +++++++++++++--------------
- drivers/gpu/drm/qxl/qxl_object.c  |   12 ++++++------
- drivers/gpu/drm/qxl/qxl_object.h  |    4 ++--
- drivers/gpu/drm/qxl/qxl_release.c |    4 ++--
- 5 files changed, 32 insertions(+), 33 deletions(-)
+ drivers/gpu/drm/nouveau/nvkm/subdev/devinit/fbmem.h |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/qxl/qxl_image.c
-+++ b/drivers/gpu/drm/qxl/qxl_image.c
-@@ -124,12 +124,12 @@ qxl_image_init_helper(struct qxl_device
- 				  wrong (check the bitmaps are sent correctly
- 				  first) */
- 
--	ptr = qxl_bo_kmap_atomic_page(qdev, chunk_bo, 0);
-+	ptr = qxl_bo_kmap_local_page(qdev, chunk_bo, 0);
- 	chunk = ptr;
- 	chunk->data_size = height * chunk_stride;
- 	chunk->prev_chunk = 0;
- 	chunk->next_chunk = 0;
--	qxl_bo_kunmap_atomic_page(qdev, chunk_bo, ptr);
-+	qxl_bo_kunmap_local_page(qdev, chunk_bo, ptr);
- 
- 	{
- 		void *k_data, *i_data;
-@@ -143,7 +143,7 @@ qxl_image_init_helper(struct qxl_device
- 			i_data = (void *)data;
- 
- 			while (remain > 0) {
--				ptr = qxl_bo_kmap_atomic_page(qdev, chunk_bo, page << PAGE_SHIFT);
-+				ptr = qxl_bo_kmap_local_page(qdev, chunk_bo, page << PAGE_SHIFT);
- 
- 				if (page == 0) {
- 					chunk = ptr;
-@@ -157,7 +157,7 @@ qxl_image_init_helper(struct qxl_device
- 
- 				memcpy(k_data, i_data, size);
- 
--				qxl_bo_kunmap_atomic_page(qdev, chunk_bo, ptr);
-+				qxl_bo_kunmap_local_page(qdev, chunk_bo, ptr);
- 				i_data += size;
- 				remain -= size;
- 				page++;
-@@ -175,10 +175,10 @@ qxl_image_init_helper(struct qxl_device
- 					page_offset = offset_in_page(out_offset);
- 					size = min((int)(PAGE_SIZE - page_offset), remain);
- 
--					ptr = qxl_bo_kmap_atomic_page(qdev, chunk_bo, page_base);
-+					ptr = qxl_bo_kmap_local_page(qdev, chunk_bo, page_base);
- 					k_data = ptr + page_offset;
- 					memcpy(k_data, i_data, size);
--					qxl_bo_kunmap_atomic_page(qdev, chunk_bo, ptr);
-+					qxl_bo_kunmap_local_page(qdev, chunk_bo, ptr);
- 					remain -= size;
- 					i_data += size;
- 					out_offset += size;
-@@ -189,7 +189,7 @@ qxl_image_init_helper(struct qxl_device
- 	qxl_bo_kunmap(chunk_bo);
- 
- 	image_bo = dimage->bo;
--	ptr = qxl_bo_kmap_atomic_page(qdev, image_bo, 0);
-+	ptr = qxl_bo_kmap_local_page(qdev, image_bo, 0);
- 	image = ptr;
- 
- 	image->descriptor.id = 0;
-@@ -212,7 +212,7 @@ qxl_image_init_helper(struct qxl_device
- 		break;
- 	default:
- 		DRM_ERROR("unsupported image bit depth\n");
--		qxl_bo_kunmap_atomic_page(qdev, image_bo, ptr);
-+		qxl_bo_kunmap_local_page(qdev, image_bo, ptr);
- 		return -EINVAL;
- 	}
- 	image->u.bitmap.flags = QXL_BITMAP_TOP_DOWN;
-@@ -222,7 +222,7 @@ qxl_image_init_helper(struct qxl_device
- 	image->u.bitmap.palette = 0;
- 	image->u.bitmap.data = qxl_bo_physical_address(qdev, chunk_bo, 0);
- 
--	qxl_bo_kunmap_atomic_page(qdev, image_bo, ptr);
-+	qxl_bo_kunmap_local_page(qdev, image_bo, ptr);
- 
- 	return 0;
- }
---- a/drivers/gpu/drm/qxl/qxl_ioctl.c
-+++ b/drivers/gpu/drm/qxl/qxl_ioctl.c
-@@ -89,11 +89,11 @@ apply_reloc(struct qxl_device *qdev, str
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/fbmem.h
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/fbmem.h
+@@ -60,19 +60,19 @@ fbmem_fini(struct io_mapping *fb)
+ static inline u32
+ fbmem_peek(struct io_mapping *fb, u32 off)
  {
- 	void *reloc_page;
- 
--	reloc_page = qxl_bo_kmap_atomic_page(qdev, info->dst_bo, info->dst_offset & PAGE_MASK);
-+	reloc_page = qxl_bo_kmap_local_page(qdev, info->dst_bo, info->dst_offset & PAGE_MASK);
- 	*(uint64_t *)(reloc_page + (info->dst_offset & ~PAGE_MASK)) = qxl_bo_physical_address(qdev,
- 											      info->src_bo,
- 											      info->src_offset);
--	qxl_bo_kunmap_atomic_page(qdev, info->dst_bo, reloc_page);
-+	qxl_bo_kunmap_local_page(qdev, info->dst_bo, reloc_page);
+-	u8 __iomem *p = io_mapping_map_atomic_wc(fb, off & PAGE_MASK);
++	u8 __iomem *p = io_mapping_map_local_wc(fb, off & PAGE_MASK);
+ 	u32 val = ioread32(p + (off & ~PAGE_MASK));
+-	io_mapping_unmap_atomic(p);
++	io_mapping_unmap_local(p);
+ 	return val;
  }
  
- static void
-@@ -105,9 +105,9 @@ apply_surf_reloc(struct qxl_device *qdev
- 	if (info->src_bo && !info->src_bo->is_primary)
- 		id = info->src_bo->surface_id;
- 
--	reloc_page = qxl_bo_kmap_atomic_page(qdev, info->dst_bo, info->dst_offset & PAGE_MASK);
-+	reloc_page = qxl_bo_kmap_local_page(qdev, info->dst_bo, info->dst_offset & PAGE_MASK);
- 	*(uint32_t *)(reloc_page + (info->dst_offset & ~PAGE_MASK)) = id;
--	qxl_bo_kunmap_atomic_page(qdev, info->dst_bo, reloc_page);
-+	qxl_bo_kunmap_local_page(qdev, info->dst_bo, reloc_page);
- }
- 
- /* return holding the reference to this object */
-@@ -149,7 +149,6 @@ static int qxl_process_single_command(st
- 	struct qxl_bo *cmd_bo;
- 	void *fb_cmd;
- 	int i, ret, num_relocs;
--	int unwritten;
- 
- 	switch (cmd->type) {
- 	case QXL_CMD_DRAW:
-@@ -184,21 +183,21 @@ static int qxl_process_single_command(st
- 		goto out_free_reloc;
- 
- 	/* TODO copy slow path code from i915 */
--	fb_cmd = qxl_bo_kmap_atomic_page(qdev, cmd_bo, (release->release_offset & PAGE_MASK));
--	unwritten = __copy_from_user_inatomic_nocache
--		(fb_cmd + sizeof(union qxl_release_info) + (release->release_offset & ~PAGE_MASK),
--		 u64_to_user_ptr(cmd->command), cmd->command_size);
-+	fb_cmd = qxl_bo_kmap_local_page(qdev, cmd_bo, (release->release_offset & PAGE_MASK));
- 
--	{
-+	if (copy_from_user(fb_cmd + sizeof(union qxl_release_info) +
-+			   (release->release_offset & ~PAGE_MASK),
-+			   u64_to_user_ptr(cmd->command), cmd->command_size)) {
-+		ret = -EFAULT;
-+	} else {
- 		struct qxl_drawable *draw = fb_cmd;
- 
- 		draw->mm_time = qdev->rom->mm_clock;
- 	}
- 
--	qxl_bo_kunmap_atomic_page(qdev, cmd_bo, fb_cmd);
--	if (unwritten) {
--		DRM_ERROR("got unwritten %d\n", unwritten);
--		ret = -EFAULT;
-+	qxl_bo_kunmap_local_page(qdev, cmd_bo, fb_cmd);
-+	if (ret) {
-+		DRM_ERROR("copy from user failed %d\n", ret);
- 		goto out_free_release;
- 	}
- 
---- a/drivers/gpu/drm/qxl/qxl_object.c
-+++ b/drivers/gpu/drm/qxl/qxl_object.c
-@@ -178,8 +178,8 @@ int qxl_bo_kmap(struct qxl_bo *bo, struc
- 	return 0;
- }
- 
--void *qxl_bo_kmap_atomic_page(struct qxl_device *qdev,
--			      struct qxl_bo *bo, int page_offset)
-+void *qxl_bo_kmap_local_page(struct qxl_device *qdev,
-+			     struct qxl_bo *bo, int page_offset)
+ static inline void
+ fbmem_poke(struct io_mapping *fb, u32 off, u32 val)
  {
- 	unsigned long offset;
- 	void *rptr;
-@@ -195,7 +195,7 @@ void *qxl_bo_kmap_atomic_page(struct qxl
- 		goto fallback;
- 
- 	offset = bo->tbo.mem.start << PAGE_SHIFT;
--	return io_mapping_map_atomic_wc(map, offset + page_offset);
-+	return io_mapping_map_local_wc(map, offset + page_offset);
- fallback:
- 	if (bo->kptr) {
- 		rptr = bo->kptr + (page_offset * PAGE_SIZE);
-@@ -222,14 +222,14 @@ void qxl_bo_kunmap(struct qxl_bo *bo)
- 	ttm_bo_vunmap(&bo->tbo, &bo->map);
+-	u8 __iomem *p = io_mapping_map_atomic_wc(fb, off & PAGE_MASK);
++	u8 __iomem *p = io_mapping_map_local_wc(fb, off & PAGE_MASK);
+ 	iowrite32(val, p + (off & ~PAGE_MASK));
+ 	wmb();
+-	io_mapping_unmap_atomic(p);
++	io_mapping_unmap_local(p);
  }
  
--void qxl_bo_kunmap_atomic_page(struct qxl_device *qdev,
--			       struct qxl_bo *bo, void *pmap)
-+void qxl_bo_kunmap_local_page(struct qxl_device *qdev,
-+			      struct qxl_bo *bo, void *pmap)
- {
- 	if ((bo->tbo.mem.mem_type != TTM_PL_VRAM) &&
- 	    (bo->tbo.mem.mem_type != TTM_PL_PRIV))
- 		goto fallback;
- 
--	io_mapping_unmap_atomic(pmap);
-+	io_mapping_unmap_local(pmap);
- 	return;
-  fallback:
- 	qxl_bo_kunmap(bo);
---- a/drivers/gpu/drm/qxl/qxl_object.h
-+++ b/drivers/gpu/drm/qxl/qxl_object.h
-@@ -65,8 +65,8 @@ extern int qxl_bo_create(struct qxl_devi
- 			 struct qxl_bo **bo_ptr);
- extern int qxl_bo_kmap(struct qxl_bo *bo, struct dma_buf_map *map);
- extern void qxl_bo_kunmap(struct qxl_bo *bo);
--void *qxl_bo_kmap_atomic_page(struct qxl_device *qdev, struct qxl_bo *bo, int page_offset);
--void qxl_bo_kunmap_atomic_page(struct qxl_device *qdev, struct qxl_bo *bo, void *map);
-+void *qxl_bo_kmap_local_page(struct qxl_device *qdev, struct qxl_bo *bo, int page_offset);
-+void qxl_bo_kunmap_local_page(struct qxl_device *qdev, struct qxl_bo *bo, void *map);
- extern struct qxl_bo *qxl_bo_ref(struct qxl_bo *bo);
- extern void qxl_bo_unref(struct qxl_bo **bo);
- extern int qxl_bo_pin(struct qxl_bo *bo);
---- a/drivers/gpu/drm/qxl/qxl_release.c
-+++ b/drivers/gpu/drm/qxl/qxl_release.c
-@@ -408,7 +408,7 @@ union qxl_release_info *qxl_release_map(
- 	union qxl_release_info *info;
- 	struct qxl_bo *bo = release->release_bo;
- 
--	ptr = qxl_bo_kmap_atomic_page(qdev, bo, release->release_offset & PAGE_MASK);
-+	ptr = qxl_bo_kmap_local_page(qdev, bo, release->release_offset & PAGE_MASK);
- 	if (!ptr)
- 		return NULL;
- 	info = ptr + (release->release_offset & ~PAGE_MASK);
-@@ -423,7 +423,7 @@ void qxl_release_unmap(struct qxl_device
- 	void *ptr;
- 
- 	ptr = ((void *)info) - (release->release_offset & ~PAGE_MASK);
--	qxl_bo_kunmap_atomic_page(qdev, bo, ptr);
-+	qxl_bo_kunmap_local_page(qdev, bo, ptr);
- }
- 
- void qxl_release_fence_buffer_objects(struct qxl_release *release)
+ static inline bool
+
 
