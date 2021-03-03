@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7115232BEBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 405C032BEC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575469AbhCCRfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240344AbhCCOQA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:16:00 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1446C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:15:03 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id b18so17364797wrn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:15:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hhgZ1o1QxDX/++S/zN0801JK46wHe1ze9HJ6vvTuFxw=;
-        b=azDs5aFPDrVfWP04fiH2NPWiV+BjGFdRLo3Qq+RRF5BkVon8mdEoknOK8w32jVnIsQ
-         JbQHsmDiRaczWlKtfJSniJdfBdh7ENShMTvZvv8Vhw5mxnBNELMFEEZBm6ogw1sC6awz
-         HFQArGYE45JSrgDGf9UpRZfC5meuFIv73GXK1OvddIA+KL5XL1AhAxMyBEzkakRJhvjt
-         gT3kjVlEOr8ILEfqMQtx9LleVuevf1vrXZkuFrFTuu+Y8CrPYEcYFUlMsTOj75qH6Iqy
-         BnMzk6EwrnDuE6Yqs6b+D2g/6EqAiAlT/yBUCacaEWtmu5qkPcmbGyD6WMEYcOhVSRyJ
-         6L5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hhgZ1o1QxDX/++S/zN0801JK46wHe1ze9HJ6vvTuFxw=;
-        b=aafZnXvtdvXnmenNDLZjMWFFbDjDTxUYdJWNTSsHF0eGiO8z+ix7AC+RcTjdxlKrcf
-         6KDQrdunNHdxLTwDweg3RMHvOOjlkWULjKJird11fLSz4su1Qg8awPQCkaJRTl17f9eL
-         cXUNlxdr4saUXJ/eLJVT5ZEdJ4m0a5P1/iy5qf1C4qUFwmjWHi5XvvSpug3gowFkK+LX
-         ojlELosWJijKQCvDEQEAbJMb/Wd1Nu8RZUejc3GGmIDYOQjbXuwXf5j0OOlTy4goggDJ
-         gVcodFPRLOwMH69jhXjiE0mCjb2pArlaqROd0HFyHkGGvdqFMNPKhL0xKO/DJ3xmn5vq
-         z3XA==
-X-Gm-Message-State: AOAM530OsC1CHk8u5R6twQzU16gRBAhc7B7P+HwqdK48XYGP9seof6KI
-        Efd0d11ywknjGDUuGOWiykp0MQ==
-X-Google-Smtp-Source: ABdhPJzCYayGGpemAa9e/6viaTkLQAEOLRzwYYsuN1S/vemtoz85dgD7qwP/tRJpUoUIs/rzwokrSw==
-X-Received: by 2002:adf:c186:: with SMTP id x6mr17965127wre.253.1614780900022;
-        Wed, 03 Mar 2021 06:15:00 -0800 (PST)
-Received: from dell ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id u2sm9696437wrp.12.2021.03.03.06.14.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 06:14:59 -0800 (PST)
-Date:   Wed, 3 Mar 2021 14:14:57 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: [RESEND 1/1] arch: arm: mach-at91: pm: Move prototypes to
- mutually included header
-Message-ID: <20210303141457.GE2690909@dell>
-References: <20210303124149.3149511-1-lee.jones@linaro.org>
- <YD+N/QVRYbm/Idp3@piout.net>
+        id S1575679AbhCCRfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:35:40 -0500
+Received: from 8bytes.org ([81.169.241.247]:57288 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242977AbhCCOSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:18:25 -0500
+Received: from cap.home.8bytes.org (p549adcf6.dip0.t-ipconnect.de [84.154.220.246])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 4A6AF20C;
+        Wed,  3 Mar 2021 15:17:22 +0100 (CET)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 0/5 v2] x86/sev-es: SEV-ES Fixes for v5.12
+Date:   Wed,  3 Mar 2021 15:17:11 +0100
+Message-Id: <20210303141716.29223-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YD+N/QVRYbm/Idp3@piout.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Mar 2021, Alexandre Belloni wrote:
+From: Joerg Roedel <jroedel@suse.de>
 
-> On 03/03/2021 12:41:49+0000, Lee Jones wrote:
-> > Both the caller and the supplier's source file should have access to
-> > the include file containing the prototypes.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
-> >  1637 | void at91_pinctrl_gpio_suspend(void)
-> >  | ^~~~~~~~~~~~~~~~~~~~~~~~~
-> >  drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
-> >  1661 | void at91_pinctrl_gpio_resume(void)
-> >  | ^~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> I'm pretty sure you had my ack on v3 ;)
-> 
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> 
-> or again, alternatively, I can apply it with Linus' ack
+Hi,
 
-That would be my preference, thanks.
+here are a couple of fixes for 5.12 in the SEV-ES guest support code.
+Patches 1-3 have in a similar form already been posted, so this is v2.
+The last two patches are new an arose from me running an SEV-ES guest
+with more debugging features and instrumentation enabled.  I changed
+the first patches according to the review comments I received.
 
-> > ---
-> >  arch/arm/mach-at91/pm.c        | 19 ++++++++-----------
-> >  drivers/pinctrl/pinctrl-at91.c |  2 ++
-> >  include/soc/at91/pm.h          | 16 ++++++++++++++++
-> >  3 files changed, 26 insertions(+), 11 deletions(-)
-> >  create mode 100644 include/soc/at91/pm.h
+Please review.
+
+Thanks,
+
+	Joerg
+
+Joerg Roedel (5):
+  x86/sev-es: Introduce ip_within_syscall_gap() helper
+  x86/sev-es: Check if regs->sp is trusted before adjusting #VC IST
+    stack
+  x86/sev-es: Optimize __sev_es_ist_enter() for better readability
+  x86/sev-es: Correctly track IRQ states in runtime #VC handler
+  x86/sev-es: Use __copy_from_user_inatomic()
+
+ arch/x86/entry/entry_64_compat.S |  2 +
+ arch/x86/include/asm/insn-eval.h |  2 +
+ arch/x86/include/asm/proto.h     |  1 +
+ arch/x86/include/asm/ptrace.h    | 15 ++++++++
+ arch/x86/kernel/sev-es.c         | 58 ++++++++++++++++++++--------
+ arch/x86/kernel/traps.c          |  3 +-
+ arch/x86/lib/insn-eval.c         | 66 +++++++++++++++++++++++++-------
+ 7 files changed, 114 insertions(+), 33 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.30.1
+
