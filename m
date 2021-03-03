@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9100532BCB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9859432BCE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383484AbhCCObk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:31:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S1447367AbhCCPCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842980AbhCCKXS (ORCPT
+        with ESMTP id S1843070AbhCCKZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF82C08ECB9;
-        Wed,  3 Mar 2021 02:02:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=joX1wjP2CQMPMJzXxyY2kC5PGk/3iLoHVpVOa4ta6dI=; b=OIMW59WHZMU5hqAhrqRewu3zoW
-        umMHO3nHJ3aRZKhoUpG0zleSF38/zF8a9Z/IP9fGoBW/RynTvn/Vd4vpJ+gkLsNgIHCdPeEjc1qI+
-        IL56dJqp0Z4g3NsIHkNVUVl1H2idraDTAN/wDEH4/HDaRonvU6oMlugG6iuNhltzmzTVwg6YhAOuT
-        pGCGAEgFuTYhKuhUGcbgyME0Gh0zzOZjAaOptZxpzFDZGm2kj7RRgVpB65lB0oV+Vr8ICe98HJjzQ
-        +FyOyO2EJ3ODOY4pnUgHNe1WH3NUxQ+YGShbWBkQ7dkOvSUGJwYo59Q4f1gdXw13rlyMBST5PKwUu
-        GMdT3prg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lHOKs-0027A0-68; Wed, 03 Mar 2021 10:02:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8A5583017B7;
-        Wed,  3 Mar 2021 11:02:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6C80F20CC061A; Wed,  3 Mar 2021 11:02:29 +0100 (CET)
-Date:   Wed, 3 Mar 2021 11:02:29 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Clement Courbet <courbet@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH] sched: Optimize __calc_delta.
-Message-ID: <YD9etVMPW5A22jxo@hirez.programming.kicks-ass.net>
-References: <20210226195239.3905966-1-joshdon@google.com>
- <YDliCOPy9s1RdLwd@hirez.programming.kicks-ass.net>
- <CABk29Nv7iJEcDg3rgSvfTkXEM69ZeLByJAsZYuA5qpdj645nZw@mail.gmail.com>
- <CABk29Ntt88BfqGz=Rjd5Mwyj+N0YLv0Z9QsZp8DgB-n+FV1Zgw@mail.gmail.com>
+        Wed, 3 Mar 2021 05:25:13 -0500
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCE4C08ECBA
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:03:08 -0800 (PST)
+Received: by mail-vs1-xe35.google.com with SMTP id a62so12237410vsa.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:03:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0P7a8icA4MGEc1ctz6tQzm2lAG+q8RttLehrVy6dqQk=;
+        b=BfXVjjTnzAg6hl0OV+cHH7Zg0rG+EwIq2L8mFbj/pDSmy6tpBt8gAeob8lONaFwW3r
+         fxAi37TFKZvjmHiLnOlggVFvOQVe3OV9iGWH8hLtyJnBNr1GUotGYD+jOVGuwXFmmHXL
+         x8IxL1lcU/YQkEI50HXwjM6wkEyEdpviCrRP1vMvhiz+SSzR8MPmpoTVJ3CCrR3iuaTj
+         la7tWiYDEGd5/8oiWBxOx51Zf8jXCKcMuj1ybGVnb9gkcv3OaV3eIylnV+eAV/6FVZuh
+         Oa5IxE9EA6AHmUUqQBj+iiJSRGnIkCz3B2IlUJhEb9/DEBC7QM5LX/aLDDt2u0zYjUk5
+         Xdqw==
+X-Gm-Message-State: AOAM530zzhsiWp2JyUtHwQDaPLbVailg34UlWamwPQU+mAHZ29Ji+4J0
+        zYF0hdCvrTxvo2SXN/cOhCN1zSbDKKVW28fm08k=
+X-Google-Smtp-Source: ABdhPJyGxGH50NMFA1uCJ7/0BFG1/bHkNiJl9a/xic6JQ8JgjJ52DQf19Ycr3Bgm4Z9t2NJKd++39NFjQPyFiZGN42M=
+X-Received: by 2002:a67:2245:: with SMTP id i66mr1349923vsi.18.1614765787001;
+ Wed, 03 Mar 2021 02:03:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29Ntt88BfqGz=Rjd5Mwyj+N0YLv0Z9QsZp8DgB-n+FV1Zgw@mail.gmail.com>
+References: <20210302211133.2244281-1-saravanak@google.com>
+ <CAMuHMdU4rJaMFUS8ukUgqYjTGY41Pa3iQQpKiK8qJA6YnDJDkw@mail.gmail.com> <CAGETcx8F+cC5wrSRb8qzLyHfxUNtyOoy6-m+YbxRgp09k9fp9Q@mail.gmail.com>
+In-Reply-To: <CAGETcx8F+cC5wrSRb8qzLyHfxUNtyOoy6-m+YbxRgp09k9fp9Q@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 3 Mar 2021 11:02:55 +0100
+Message-ID: <CAMuHMdUe07Zm833AZg1c0cQZ5ObEoGsNKzwb2eyGtW2Hn_aVnQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 12:57:37PM -0800, Josh Don wrote:
-> On gcc, the asm versions of `fls` are about the same speed as the
-> builtin. On clang, the versions that use fls (fls,fls64) are more than
-> twice as slow as the builtin. This is because the way the `fls` function
-> is written, clang puts the value in memory:
-> https://godbolt.org/z/EfMbYe. This can be fixed in a separate patch.
+Hi Saravana,
 
-Is this because clang gets the asm constraints wrong? ISTR that
-happening before, surely the right thing is to fix clang?
+On Wed, Mar 3, 2021 at 10:24 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Wed, Mar 3, 2021 at 1:22 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, Mar 2, 2021 at 10:11 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > This series fixes the last few remaining issues reported when fw_devlink=on
+> > > by default.
+> >
+> > [...]
+> >
+> > Thanks for your series!
+> >
+> > > Geert/Marek,
+> > >
+> > > As far as I know, there shouldn't have any more issues you reported that
+> > > are still left unfixed after this series. Please correct me if I'm wrong or
+> > > if you find new issues.
+> >
+> > While this fixes the core support, there may still be driver fixes left
+> > that were not developed in time for the v5.12-rc1 merge window.
+> > Personally, I'm aware of "soc: renesas: rmobile-sysc: Mark fwnode
+> > when PM domain is added", which I have queued for v5.13[1].
+> > There may be other fixes for other platforms.
+>
+> Right, I intended this series for 5.13. Is that what you are trying to say too?
+
+OK, v5.13 is fine for me.
+It wasn't clear to me if you intended (the last patch of) this series to
+be merged for v5.12-rcX or v5.13.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
