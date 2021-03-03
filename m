@@ -2,253 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECA632BD51
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6662232BD22
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452415AbhCCPos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:44:48 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:50861 "EHLO mx1.tq-group.com"
+        id S1448343AbhCCPY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:24:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357558AbhCCKvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:51:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1614768702; x=1646304702;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=T/eBxFNvHkWfvpD/x1JUCWE9AtSrYkLy7jW7mmfiJ+Q=;
-  b=nLOKjoxb1looHdq//f8AgpyqryXZI4goeJuObU23Of/MVmrj21Lhkm7a
-   Z3ca0BCGfZkUSJq9WaKKL4z2fj1VbYm26secBnPKUmy6q6cGR1gopQh6p
-   DMhWoBRi0ok5wcopi/xM/tP5e7ZPw80P4en5zcWKk2aUF0D0XK2zOqqI5
-   RovdyXMZInWdGMl+Oyi5Wp8GnqXFlccSEHVRMWJ/tHM5z2LlP5Ir7h2IT
-   CDHLiIavh0N+2GnQTYDkIt01ZgXI5zANq+WXKCjgem2ZzdPE/uyFGw2pP
-   Rqzs29ND5F8xkjMbEhZG77Exm55MTJ89qy8KbSexvZgRtc+dIfLGI36T9
-   w==;
-IronPort-SDR: HJUV1r9+560nIN+napc/LNEX4rqGHnr7R3eseFh8knHX/E2L5Uc+mne05SaXn34mP4QEuFaxb3
- REHstigocbt3ePkH8AFgX0ij1MABQ6gWYUQJ/006igtRObccuV4/uROtT0SUIkuE8nb3DsQxQR
- chG9cs1TrqOXCAL/9Iz50zTaZ+a1UCOE0IcH/Nc/UBg7BzwuQbWFGMlTt+OM15iwFi69jtnr3w
- SrVXSwTKgNDmbZzSRjbhB131yt0wp3LRnLJbGhuXclTSpEB0qRQbuRZiDn+JiVMt3muKr/0Kyi
- OKU=
-X-IronPort-AV: E=Sophos;i="5.81,219,1610406000"; 
-   d="scan'208";a="16258535"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 03 Mar 2021 10:54:40 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 03 Mar 2021 10:54:40 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 03 Mar 2021 10:54:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1614765280; x=1646301280;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=T/eBxFNvHkWfvpD/x1JUCWE9AtSrYkLy7jW7mmfiJ+Q=;
-  b=XbT1OYa5/Kju5b14y69fCDuulFR/uGZTbMxbVst4wSFn3eVaolUmnL80
-   zCd1kd3tJSnPfhTnI0TwCNT3LLSCsR9tLH8ULm5WWsDUl24wcCUf5FiSm
-   lEvI4Q6F6JSWc5vVpZ+rB8jHkgzwHf+VTAPDKAUZS4zRs2NKSqZeFJ9+V
-   ETwOFnKxwMv1jy+SFX5cKi4HwgaDYzNPTLjJ8ulX/5dP3IXCIIq1e8spT
-   xzLNygPNNyYM7DUnE1nNPWrwYnNlfZY6FC5F7eUNDKlKXE26CAkjOdnyb
-   hzE82hqF8hefxv97IZWOkeeG4O6ttYalU7U8cgfxqQ4xtuMnD4EJmW1Yq
-   w==;
-IronPort-SDR: 7Thl3oQlb4EyH44AZq+pVX3hdsQIVB9QhQbf6mhgqEWltKWq1FTLIjjkaig3HfoXd5kFrRZTHL
- X/p3jGvd3oeA51RkZ+0g8uQlpzlbQW1iqs0F1n59l71vzf7qQN/n6redZKVElptrUvTftefu6p
- QLVV1/KfCAOMBkHiy/WHWlowWzEQzZ+Qv9vIc/GR982o6j0LoyofPycTTtUiZ+TNSge35GcBSm
- hK/Ie+uPTAcLM0E9QQWttGuyhhnYeeUkzpwVn32GYGHlb+SBPQ/MeTNNeinltkExrPM6rKVHMS
- G2U=
-X-IronPort-AV: E=Sophos;i="5.81,219,1610406000"; 
-   d="scan'208";a="16258534"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 03 Mar 2021 10:54:40 +0100
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 78377280070;
-        Wed,  3 Mar 2021 10:54:40 +0100 (CET)
-X-CheckPoint: {603F5CDC-2-6615631E-D10D9432}
-X-MAIL-CPID: 4A5C15D4C25CD22AB3AB32338ED60BA4_2
-X-Control-Analysis: str=0001.0A782F1F.603F5CE0.00CA,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 3/3] power: supply: bq27xxx: make status more robust
-Date:   Wed,  3 Mar 2021 10:54:20 +0100
-Message-Id: <20210303095420.29054-3-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210303095420.29054-1-matthias.schiffer@ew.tq-group.com>
-References: <20210303095420.29054-1-matthias.schiffer@ew.tq-group.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S241111AbhCCKcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:32:23 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A147B64EE9;
+        Wed,  3 Mar 2021 09:54:29 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lHOD5-00Grus-9a; Wed, 03 Mar 2021 09:54:27 +0000
+Date:   Wed, 03 Mar 2021 09:54:25 +0000
+Message-ID: <87sg5czhny.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jia He <justin.he@arm.com>
+Cc:     kvmarm@lists.cs.columbia.edu, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Fix unaligned addr case in mmu walking
+In-Reply-To: <20210303024225.2591-1-justin.he@arm.com>
+References: <20210303024225.2591-1-justin.he@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: justin.he@arm.com, kvmarm@lists.cs.columbia.edu, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, gshan@redhat.com, wangyanan55@huawei.com, qperret@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are multiple issues in bq27xxx_battery_status():
+Hi Jia,
 
-- On BQ28Q610 is was observed that the "full" flag may be set even while
-  the battery is charging or discharging. With the current logic to make
-  "full" override everything else, it look a very long time (>20min) for
-  the status to change from "full" to "discharging" after unplugging the
-  supply on a device with low power consumption
-- The POWER_SUPPLY_STATUS_NOT_CHARGING check depends on
-  power_supply_am_i_supplied(), which will not work when the supply
-  doesn't exist as a separate device known to Linux
+On Wed, 03 Mar 2021 02:42:25 +0000,
+Jia He <justin.he@arm.com> wrote:
+> 
+> If the start addr is not aligned with the granule size of that level.
+> loop step size should be adjusted to boundary instead of simple
+> kvm_granual_size(level) increment. Otherwise, some mmu entries might miss
+> the chance to be walked through.
+> E.g. Assume the unmap range [data->addr, data->end] is
+> [0xff00ab2000,0xff00cb2000] in level 2 walking and NOT block mapping.
 
-We can solve both issues by deriving the status from the current instead
-of the flags field. The flags are now only used to distinguish "full"
-from "not charging", and to determine the sign of the current on
-BQ27XXX_O_ZERO devices.
+When does this occur? Upgrade from page mappings to block? Swap out?
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+> And the 1st part of that pmd entry is [0xff00ab2000,0xff00c00000]. The
+> pmd value is 0x83fbd2c1002 (not valid entry). In this case, data->addr
+> should be adjusted to 0xff00c00000 instead of 0xff00cb2000.
 
-v2: no changes
+Let me see if I understand this. Assuming 4k pages, the region
+described above spans *two* 2M entries:
 
- drivers/power/supply/bq27xxx_battery.c | 88 +++++++++++++-------------
- 1 file changed, 43 insertions(+), 45 deletions(-)
+(a) ff00ab2000-ff00c00000, part of ff00a00000-ff00c00000
+(b) ff00c00000-ff00db2000, part of ff00c00000-ff00e00000
 
-diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-index 20e1dc8a87cf..b62a8cfd9d09 100644
---- a/drivers/power/supply/bq27xxx_battery.c
-+++ b/drivers/power/supply/bq27xxx_battery.c
-@@ -1777,14 +1777,27 @@ static void bq27xxx_battery_poll(struct work_struct *work)
- 		schedule_delayed_work(&di->work, poll_interval * HZ);
- }
- 
-+static bool bq27xxx_battery_is_full(struct bq27xxx_device_info *di, int flags)
-+{
-+	if (di->opts & BQ27XXX_O_ZERO)
-+		return (flags & BQ27000_FLAG_FC);
-+	else if (di->opts & BQ27Z561_O_BITS)
-+		return (flags & BQ27Z561_FLAG_FC);
-+	else
-+		return (flags & BQ27XXX_FLAG_FC);
-+}
-+
- /*
-- * Return the battery average current in µA
-+ * Return the battery average current in µA and the status
-  * Note that current can be negative signed as well
-  * Or 0 if something fails.
-  */
--static int bq27xxx_battery_current(struct bq27xxx_device_info *di,
--				   union power_supply_propval *val)
-+static int bq27xxx_battery_current_and_status(
-+	struct bq27xxx_device_info *di,
-+	union power_supply_propval *val_curr,
-+	union power_supply_propval *val_status)
- {
-+	bool single_flags = (di->opts & BQ27XXX_O_ZERO);
- 	int curr;
- 	int flags;
- 
-@@ -1794,17 +1807,39 @@ static int bq27xxx_battery_current(struct bq27xxx_device_info *di,
- 		return curr;
- 	}
- 
-+	flags = bq27xxx_read(di, BQ27XXX_REG_FLAGS, single_flags);
-+	if (flags < 0) {
-+		dev_err(di->dev, "error reading flags\n");
-+		return flags;
-+	}
-+
- 	if (di->opts & BQ27XXX_O_ZERO) {
--		flags = bq27xxx_read(di, BQ27XXX_REG_FLAGS, true);
- 		if (!(flags & BQ27000_FLAG_CHGS)) {
- 			dev_dbg(di->dev, "negative current!\n");
- 			curr = -curr;
- 		}
- 
--		val->intval = curr * BQ27XXX_CURRENT_CONSTANT / BQ27XXX_RS;
-+		curr = curr * BQ27XXX_CURRENT_CONSTANT / BQ27XXX_RS;
- 	} else {
- 		/* Other gauges return signed value */
--		val->intval = (int)((s16)curr) * 1000;
-+		curr = (int)((s16)curr) * 1000;
-+	}
-+
-+	if (val_curr)
-+		val_curr->intval = curr;
-+
-+	if (val_status) {
-+		if (curr > 0) {
-+			val_status->intval = POWER_SUPPLY_STATUS_CHARGING;
-+		} else if (curr < 0) {
-+			val_status->intval = POWER_SUPPLY_STATUS_DISCHARGING;
-+		} else {
-+			if (bq27xxx_battery_is_full(di, flags))
-+				val_status->intval = POWER_SUPPLY_STATUS_FULL;
-+			else
-+				val_status->intval =
-+					POWER_SUPPLY_STATUS_NOT_CHARGING;
-+		}
- 	}
- 
- 	return 0;
-@@ -1836,43 +1871,6 @@ static int bq27xxx_battery_pwr_avg(struct bq27xxx_device_info *di,
- 	return 0;
- }
- 
--static int bq27xxx_battery_status(struct bq27xxx_device_info *di,
--				  union power_supply_propval *val)
--{
--	int status;
--
--	if (di->opts & BQ27XXX_O_ZERO) {
--		if (di->cache.flags & BQ27000_FLAG_FC)
--			status = POWER_SUPPLY_STATUS_FULL;
--		else if (di->cache.flags & BQ27000_FLAG_CHGS)
--			status = POWER_SUPPLY_STATUS_CHARGING;
--		else
--			status = POWER_SUPPLY_STATUS_DISCHARGING;
--	} else if (di->opts & BQ27Z561_O_BITS) {
--		if (di->cache.flags & BQ27Z561_FLAG_FC)
--			status = POWER_SUPPLY_STATUS_FULL;
--		else if (di->cache.flags & BQ27Z561_FLAG_DIS_CH)
--			status = POWER_SUPPLY_STATUS_DISCHARGING;
--		else
--			status = POWER_SUPPLY_STATUS_CHARGING;
--	} else {
--		if (di->cache.flags & BQ27XXX_FLAG_FC)
--			status = POWER_SUPPLY_STATUS_FULL;
--		else if (di->cache.flags & BQ27XXX_FLAG_DSC)
--			status = POWER_SUPPLY_STATUS_DISCHARGING;
--		else
--			status = POWER_SUPPLY_STATUS_CHARGING;
--	}
--
--	if ((status == POWER_SUPPLY_STATUS_DISCHARGING) &&
--	    (power_supply_am_i_supplied(di->bat) > 0))
--		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
--
--	val->intval = status;
--
--	return 0;
--}
--
- static int bq27xxx_battery_capacity_level(struct bq27xxx_device_info *di,
- 					  union power_supply_propval *val)
- {
-@@ -1960,7 +1958,7 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
- 
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_STATUS:
--		ret = bq27xxx_battery_status(di, val);
-+		ret = bq27xxx_battery_current_and_status(di, NULL, val);
- 		break;
- 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
- 		ret = bq27xxx_battery_voltage(di, val);
-@@ -1969,7 +1967,7 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
- 		val->intval = di->cache.flags < 0 ? 0 : 1;
- 		break;
- 	case POWER_SUPPLY_PROP_CURRENT_NOW:
--		ret = bq27xxx_battery_current(di, val);
-+		ret = bq27xxx_battery_current_and_status(di, val, NULL);
- 		break;
- 	case POWER_SUPPLY_PROP_CAPACITY:
- 		ret = bq27xxx_simple_value(di->cache.capacity, val);
+(a) has no valid mapping, but (b) does. Because we fail to correctly
+align on a block boundary when skipping (a), we also skip (b), which
+is then left mapped.
+
+Did I get it right? If so, yes, this is... annoying.
+
+Understanding the circumstances this triggers in would be most
+interesting. This current code seems to assume that we get ranges
+aligned to mapping boundaries, but I seem to remember that the old
+code did use the stage2_*_addr_end() helpers to deal with this case.
+
+Will: I don't think things have changed in that respect, right?
+
+> 
+> Without this fix, userspace "segment fault" error can be easily
+> triggered by running simple gVisor runsc cases on an Ampere Altra
+> server:
+>     docker run --runtime=runsc -it --rm  ubuntu /bin/bash
+> 
+> In container:
+>     for i in `seq 1 100`;do ls;done
+
+The workload on its own isn't that interesting. What I'd like to
+understand is what happens on the host during that time.
+
+> 
+> Reported-by: Howard Zhang <Howard.Zhang@arm.com>
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>  arch/arm64/kvm/hyp/pgtable.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index bdf8e55ed308..4d99d07c610c 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -225,6 +225,7 @@ static inline int __kvm_pgtable_visit(struct kvm_pgtable_walk_data *data,
+>  		goto out;
+>  
+>  	if (!table) {
+> +		data->addr = ALIGN_DOWN(data->addr, kvm_granule_size(level));
+>  		data->addr += kvm_granule_size(level);
+>  		goto out;
+>  	}
+
+It otherwise looks good to me. Quentin, Will: unless you object to
+this, I plan to take it in the next round of fixes with
+
+Fixes: b1e57de62cfb ("KVM: arm64: Add stand-alone page-table walker infrastructure")
+Cc: stable@vger.kernel.org
+
+Thanks,
+
+	M.
+
 -- 
-2.17.1
-
+Without deviation from the norm, progress is not possible.
