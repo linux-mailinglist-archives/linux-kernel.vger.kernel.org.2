@@ -2,123 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE4032BF80
+	by mail.lfdr.de (Postfix) with ESMTP id 83FB932BF82
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835536AbhCCSD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:03:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1448169AbhCCPYJ (ORCPT
+        id S1835565AbhCCSEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:04:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64360 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1448192AbhCCPYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:24:09 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6031DC061764
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 07:23:08 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id 40so15512829otu.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 07:23:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=03LVkMkDFQRNhHiuk8kPbyos2+C08G21+Pb9aPcNsbI=;
-        b=Ma16FxV6movCHSVnqY0o/p4pFQN26Dy2vfqYj+aUKdbCcXC+pvYF1IvC4H1SFt0eRC
-         ZcwnmPLn0PQ8t6fOFcwbdkA3Df5Sk6WzomDYbjMbgKauPVzNKswvHRPitdqefiuuRBHH
-         k+S3oHfjgqhiaxhotzeEgxTue5Hgs+MukBV7K+zM0kVU9aEFVzAK5HdVX3Bq10096DBB
-         u+g/INhCcIeLl6DvOejFyStWY2EQpgPCPHAsvQFvrP4sXl2YhJt+naZGv6A4JYYVuzoM
-         F1vS40QKMvDt9+ow4t4RzvZ0wzKg7kQL8GO+Agy1ejtvVqgukD2uqogtcDShSr+Oiolx
-         3FlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=03LVkMkDFQRNhHiuk8kPbyos2+C08G21+Pb9aPcNsbI=;
-        b=sMaoBpC1Uh2Fyjm1aKvvqFiXMQcem4kxiQaoLJxsjd0GIlTUzl+UzP6uUSeXEYdodz
-         yI+n1Na2ubRYmgqCD3TB0muac/saBQTRJTiUfizldJBu06+KYf1XQtzlZIwL02K6sdb9
-         b8Gtkm3JTh593fwebyrfUmkqzHevfayFLCUx9Zv9ZVhGUPoiY2p7xc200F2dYhsTUwUF
-         uiS+eV2aPD1ITZ+Ja0cTsOfD6YnbMLhy5EtuIZrHKxGUhWiD4+nICrA7iCKvbiwJjiSA
-         wJyFH7zf2bdZam2+16wwD71RDPRcd++K1RGxgX3CC0CujhWrUBJ3oHx5JdfhffAal6Md
-         BdrQ==
-X-Gm-Message-State: AOAM532CrfJMdocmDs9ZLJqvsnFpVbfQzvLL2XOEpxMdbPe6K+2904JN
-        JeglwF58SLDmliof7PwhFmeiF29q0/ZS999LZP4=
-X-Google-Smtp-Source: ABdhPJyvcIB0lg9d4EmsJpSurkNzxjIde6sw+k4XQp+cf3DJ0qN1rBdINSKS5rlxIp3psa2ri4PkN4RsXQY3xu1y9JM=
-X-Received: by 2002:a9d:760a:: with SMTP id k10mr22906018otl.23.1614784987261;
- Wed, 03 Mar 2021 07:23:07 -0800 (PST)
+        Wed, 3 Mar 2021 10:24:23 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123F2QIK144009;
+        Wed, 3 Mar 2021 10:23:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=zWAJxsplEzw8/kWSmP04aU3CVx62dYTr+NwGdiCuCrI=;
+ b=Zc3DxdboLUeerw0AZ0Uz1XLhrfV/gWjqgfyBLrzAcGQ5zD3vPo80bHfHgGBDh814+GJ3
+ B8EChSLj7n6UjqCg6ibs2zEiljxjKU9PF1WRUlsui0EB3IHfEPfitK2jv0h12JNu63Gc
+ /7ZWmlmUqYkGhfBz75A1aCpfuBar6ZVLVlCQO32zchoy6Win6o+Yr/XKmhurc8ULoGRy
+ 3r3NaeWpah+ztng7+4VoEJlJludq9+e6xC5M07Eh6fdTjLhfeNaXNUXnmiFPIgRVE/oH
+ ZCibhCVItnnJBpkRl6BN7UnrlUQngkkAerPwNc6ghfMzRCahLDuzByF2mgS6Dc44Bjjx 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372cp08x70-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 10:23:41 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 123F3PUQ151861;
+        Wed, 3 Mar 2021 10:23:40 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372cp08x5v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 10:23:40 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 123FDjVd031038;
+        Wed, 3 Mar 2021 15:23:38 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3712v510tf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 15:23:38 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 123FNLRq22085970
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Mar 2021 15:23:21 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2169B4207B;
+        Wed,  3 Mar 2021 15:23:35 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71C9142061;
+        Wed,  3 Mar 2021 15:23:34 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.0.197])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed,  3 Mar 2021 15:23:34 +0000 (GMT)
+Date:   Wed, 3 Mar 2021 16:23:32 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v3 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+Message-ID: <20210303162332.4d227dbe.pasic@linux.ibm.com>
+In-Reply-To: <20210302204322.24441-2-akrowiak@linux.ibm.com>
+References: <20210302204322.24441-1-akrowiak@linux.ibm.com>
+        <20210302204322.24441-2-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210303134319.3160762-1-lee.jones@linaro.org> <20210303134319.3160762-8-lee.jones@linaro.org>
-In-Reply-To: <20210303134319.3160762-8-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 3 Mar 2021 10:22:56 -0500
-Message-ID: <CADnq5_O6-Cc3qkO3+qPoSH+M_35f+HgBWDy_Pjuz4fzPuctA_A@mail.gmail.com>
-Subject: Re: [PATCH 07/53] drm/amd/display/dc/bios/command_table: Remove
- unused variable and associated comment
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-03_04:2021-03-03,2021-03-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ adultscore=0 bulkscore=0 clxscore=1011 malwarescore=0 impostorscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103030116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 8:43 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table.c: In functi=
-on =E2=80=98adjust_display_pll_v2=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table.c:1462:11: w=
-arning: unused variable =E2=80=98pixel_clock_10KHz_in=E2=80=99 [-Wunused-va=
-riable]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Tue,  2 Mar 2021 15:43:22 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Same comment as patch 4.
+> This patch fixes a lockdep splat introduced by commit f21916ec4826
+> ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated").
+> The lockdep splat only occurs when starting a Secure Execution guest.
+> Crypto virtualization (vfio_ap) is not yet supported for SE guests;
+> however, in order to avoid this problem when support becomes available,
+> this fix is being provided.
 
+[..]
 
-Alex
-
-> ---
->  drivers/gpu/drm/amd/display/dc/bios/command_table.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table.c b/driver=
-s/gpu/drm/amd/display/dc/bios/command_table.c
-> index 9d3bc3a073821..e879ceb0c49ed 100644
-> --- a/drivers/gpu/drm/amd/display/dc/bios/command_table.c
-> +++ b/drivers/gpu/drm/amd/display/dc/bios/command_table.c
-> @@ -1518,10 +1518,6 @@ static enum bp_result adjust_display_pll_v2(
+> @@ -1038,14 +1116,28 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
 >  {
->         enum bp_result result =3D BP_RESULT_FAILURE;
->
-> -       /* We need to convert from KHz units into 10KHz units and then co=
-nvert
-> -        * output pixel clock back 10KHz-->KHz */
-> -       uint32_t pixel_clock_10KHz_in =3D bp_params->pixel_clock / 10;
-> -
->         bp->cmd_helper->encoder_id_to_atom(
->                 dal_graphics_object_id_get_encoder_id(bp_params->encoder_=
-object_id));
->         bp->cmd_helper->encoder_mode_bp_to_atom(bp_params->signal_type, f=
-alse);
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  	struct ap_matrix_mdev *m;
+> 
+> -	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+> -		if ((m != matrix_mdev) && (m->kvm == kvm))
+> -			return -EPERM;
+> -	}
+> +	if (kvm->arch.crypto.crycbd) {
+> +		matrix_mdev->kvm_busy = true;
+> 
+> -	matrix_mdev->kvm = kvm;
+> -	kvm_get_kvm(kvm);
+> -	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> +		list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+> +			if ((m != matrix_mdev) && (m->kvm == kvm)) {
+> +				wake_up_all(&matrix_mdev->wait_for_kvm);
+
+This ain't no good. kvm_busy will remain true if we take this exit. The
+wake_up_all() is not needed, because we hold the lock, so nobody can
+observe it if we don't forget kvm_busy set.
+
+I suggest moving matrix_mdev->kvm_busy = true; after this loop, maybe right
+before the unlock, and removing the wake_up_all().
+
+> +				return -EPERM;
+> +			}
+> +		}
+> +
+> +		kvm_get_kvm(kvm);
+> +		mutex_unlock(&matrix_dev->lock);
+> +		kvm_arch_crypto_set_masks(kvm,
+> +					  matrix_mdev->matrix.apm,
+> +					  matrix_mdev->matrix.aqm,
+> +					  matrix_mdev->matrix.adm);
+> +		mutex_lock(&matrix_dev->lock);
+> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> +		matrix_mdev->kvm = kvm;
+> +		matrix_mdev->kvm_busy = false;
+> +		wake_up_all(&matrix_mdev->wait_for_kvm);
+> +	}
+> 
+>  	return 0;
+>  }
+
+[..]
+
+> @@ -1300,7 +1406,21 @@ static ssize_t vfio_ap_mdev_ioctl(struct mdev_device *mdev,
+>  		ret = vfio_ap_mdev_get_device_info(arg);
+>  		break;
+>  	case VFIO_DEVICE_RESET:
+> -		ret = vfio_ap_mdev_reset_queues(mdev);
+> +		matrix_mdev = mdev_get_drvdata(mdev);
+> +
+> +		/*
+> +		 * If the KVM pointer is in the process of being set, wait until
+> +		 * the process has completed.
+> +		 */
+> +		wait_event_cmd(matrix_mdev->wait_for_kvm,
+> +			       matrix_mdev->kvm_busy == false,
+> +			       mutex_unlock(&matrix_dev->lock),
+> +			       mutex_lock(&matrix_dev->lock));
+> +
+> +		if (matrix_mdev->kvm)
+> +			ret = vfio_ap_mdev_reset_queues(mdev);
+> +		else
+> +			ret = -ENODEV;
+
+I don't think rejecting the reset is a good idea. I have you a more detailed
+explanation of the list, where we initially discussed this question.
+
+How do you exect userspace to react to this -ENODEV?
+
+Otherwise looks good to me!
+
+I've tested your branch from yesterday (which looks to me like this patch
+without the above check on ->kvm and reset) for the lockdep splat, but I
+didn't do any comprehensive testing -- which would ensure that we didn't
+break something else in the process. With the two issues fixed, and your
+word that the patch was properly tested (except for the lockdep splat
+which I tested myself), I feel comfortable with moving forward with this.
+
+Regards,
+
