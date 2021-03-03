@@ -2,106 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2218432C0C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A3332C0D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579704AbhCCSbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:31:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39196 "EHLO mail.kernel.org"
+        id S1579730AbhCCSb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:31:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241871AbhCCQpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:45:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C3A8614A7;
-        Wed,  3 Mar 2021 16:43:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614789805;
-        bh=Lw05/tYL0RTCnZwEbWPiPAOi1ooTtPKuIysUCncz+l4=;
+        id S241307AbhCCQow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:44:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C591964E6F;
+        Wed,  3 Mar 2021 16:43:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614789811;
+        bh=EupOo0dBtxON4TALIiJGGoqFuZoXf9llA6hE2Cv4p1E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eFcHpnbGMbCdheVIk6h/b8vjSgjFbdic2ZxTtLKmUvwWk3zHgI+ivjHAomB4WBByd
-         ZIV/Hkzm4NlCryf09QThPMdIRKOEoZemRPxp2nU0I7GV9m74HwrP8lj416l2gkC9Yo
-         FglCmG9a7xb+q/NNeVcceFSb8X80v7qvLKtAz6Ig=
-Date:   Wed, 3 Mar 2021 17:43:23 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        taehyun cho <taehyun.cho@samsung.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-Message-ID: <YD+8q/hSWNKQS1tE@kroah.com>
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
- <20210303022628.6540-1-taehyun.cho@samsung.com>
- <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
- <YD9lTjWc25Nn7jAR@kroah.com>
- <20210303103839.it7grj3vtrdmngbd@kozik-lap>
- <YD+XkFAfoKpSsea3@kroah.com>
- <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
- <YD+mkse29UwwYbFB@kroah.com>
- <6e9d6831-f88e-477f-6256-7ab155bfa7ac@kernel.org>
- <CAK8P3a2TAZELiqzy8Xv8hKvZwM6_+rF5OW9_AkP2TBoDRS3skQ@mail.gmail.com>
+        b=mAZZjaiv5NeSmKkmqImyi/McoXryvtx8MumfSLCuy9vg6WZyY2WpYATkJGI80BwoN
+         eFNn+ZjjHJYXCOH+VGEydAZN7IG9F+xR6dgF0fk64XB1WeCzaYl0NuWME1NsqIeXq5
+         LQMjpahg59Gp5pKAWNqD7jvNjb6R+ohlC0PBhr4DXl2nWYyftNsH6GiOxV1gUiSjgd
+         vKEgI0kIG4u4JXFDIA8KbBpR1BIDovvzdSGdkvsuYmM8dgI2x2h39DfGWesroQi/M+
+         K8NNNEtXrbcTlujXHK3W+V6qv3BlxH1ZYixdTApz6OAdr0wY0PMcmK/VATNRq/PhmJ
+         u94YnOnmb9bzg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B87E84038F; Wed,  3 Mar 2021 13:43:27 -0300 (-03)
+Date:   Wed, 3 Mar 2021 13:43:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        amistry@google.com,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        zhangjinhao2@huawei.com
+Subject: Re: [PATCH] perf record: Fix continue profiling after draining the
+ buffer
+Message-ID: <YD+8r/KiCJmnoJ/f@kernel.org>
+References: <20210205065001.23252-1-yangjihong1@huawei.com>
+ <CAM9d7cgGGWtTkReghATVmMnOd=0dBrghBLgEc9AqT_PF-UP1Rg@mail.gmail.com>
+ <YB0h9Gj5lpcuqndo@krava>
+ <YC5ptbU8Mavb1a/t@kernel.org>
+ <YC6fVHohih5giNf7@kernel.org>
+ <5a76a82e-7ec1-d510-309e-a38a1b41027e@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2TAZELiqzy8Xv8hKvZwM6_+rF5OW9_AkP2TBoDRS3skQ@mail.gmail.com>
+In-Reply-To: <5a76a82e-7ec1-d510-309e-a38a1b41027e@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 05:33:46PM +0100, Arnd Bergmann wrote:
-> On Wed, Mar 3, 2021 at 4:46 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > On 03/03/2021 16:09, Greg Kroah-Hartman wrote:
-> > > On Wed, Mar 03, 2021 at 06:56:38AM -0800, Guenter Roeck wrote:
-> > >> On 3/3/21 6:05 AM, Greg Kroah-Hartman wrote:
-> > >> [ ... ]
-> > >>>> Anyway, that's the convention or consensus so far for entire SoC. If we
-> > >>>> want to change it - sure, but let's make it for everyone, not for just
-> > >>>> this one USB driver.
-> > >>>
-> > >>> Great, let's change it for everyone, I don't see a need for ARCH_*
-> > >>> symbols except for people who want to make it simpler for their one
-> > >>> board type.  And for that, use a defconfig.
-> > >>>
-> > >>
-> > >> I don't think that will work in practice. Many ARCH_ symbols for various
-> > >> architectures contradict with each other. Almost all watchdog drivers
-> > >> only _build_ for specific platforms/architectures.
-> > >
-> > > Great, that's horrible to hear, so much for a "generic arm64 kernel
-> > > binary" which I _thought_ was the goal.
-> > >
-> > > ugh, you would have thought we would have learned our lesson with
-> > > arm32...
+Em Mon, Feb 22, 2021 at 09:31:51AM +0800, Yang Jihong escreveu:
+> Hello,
 > 
-> I have no idea what you are talking about here. arm64 kernels have
-> always been generic, but you still need drivers for each piece of
-> hardware, we unfortunately can't stop SoC vendors from reinventing
-> the wheel with each new platform and then having to add yet another
-> driver for each subsystems.
+> On 2021/2/19 1:09, Arnaldo Carvalho de Melo wrote:
+> > Em Thu, Feb 18, 2021 at 10:20:53AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Fri, Feb 05, 2021 at 11:46:12AM +0100, Jiri Olsa escreveu:
+> > > > On Fri, Feb 05, 2021 at 07:35:22PM +0900, Namhyung Kim wrote:
+> > > > > Hello,
+> > > > > 
+> > > > > On Fri, Feb 5, 2021 at 3:50 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+> > > > > > 
+> > > > > > commit da231338ec9c098707c8a1e4d8a50e2400e2fe17 uses eventfd to solve rare race
+> > > > > > where the setting and checking of 'done' which add done_fd to pollfd.
+> > > > > > When draining buffer, revents of done_fd is 0 and evlist__filter_pollfd
+> > > > > > function returns a non-zero value.
+> > > > > > As a result, perf record does not stop profiling.
+> > > > > > 
+> > > > > > The following simple scenarios can trigger this condition:
+> > > > > > 
+> > > > > > sleep 10 &
+> > > > > > perf record -p $!
+> > > > > > 
+> > > > > > After the sleep process exits, perf record should stop profiling and exit.
+> > > > > > However, perf record keeps running.
+> > > > > > 
+> > > > > > If pollfd revents contains only POLLERR or POLLHUP,
+> > > > > > perf record indicates that buffer is draining and need to stop profiling.
+> > > > > > Use fdarray_flag__nonfilterable to set done eventfd to nonfilterable objects,
+> > > > > > so that evlist__filter_pollfd does not filter and check done eventfd.
+> > > > > > 
+> > > > > > Fixes: da231338ec9c (perf record: Use an eventfd to wakeup when done)
+> > > > > > Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> > > > > > ---
+> > > > > >   tools/perf/builtin-record.c | 2 +-
+> > > > > >   tools/perf/util/evlist.c    | 8 ++++++++
+> > > > > >   tools/perf/util/evlist.h    | 4 ++++
+> > > > > >   3 files changed, 13 insertions(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> > > > > > index fd3911650612..51e593e896ea 100644
+> > > > > > --- a/tools/perf/builtin-record.c
+> > > > > > +++ b/tools/perf/builtin-record.c
+> > > > > > @@ -1663,7 +1663,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+> > > > > >                  status = -1;
+> > > > > >                  goto out_delete_session;
+> > > > > >          }
+> > > > > > -       err = evlist__add_pollfd(rec->evlist, done_fd);
+> > > > > > +       err = evlist__add_wakeup_eventfd(rec->evlist, done_fd);
+> > > > > >          if (err < 0) {
+> > > > > >                  pr_err("Failed to add wakeup eventfd to poll list\n");
+> > > > > >                  status = err;
+> > > > > > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> > > > > > index 05363a7247c4..fea4c1e8010d 100644
+> > > > > > --- a/tools/perf/util/evlist.c
+> > > > > > +++ b/tools/perf/util/evlist.c
+> > > > > > @@ -572,6 +572,14 @@ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
+> > > > > >          return perf_evlist__filter_pollfd(&evlist->core, revents_and_mask);
+> > > > > >   }
+> > > > > > 
+> > > > > > +#ifdef HAVE_EVENTFD_SUPPORT
+> > > > > > +int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd)
+> > > > > > +{
+> > > > > > +       return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
+> > > > > > +                                      fdarray_flag__nonfilterable);
+> > > > > > +}
+> > > > > > +#endif
+> > > > > 
+> > > > > Does it build when HAVE_EVENTFD_SUPPORT is not defined?
+> > > > 
+> > > > yea, I was wondering the same.. but it's called only from
+> > > > code within HAVE_EVENTFD_SUPPORT ifdef
+> > > 
+> > > Yes, this can't work on systems without eventfd, it will simply not
+> > > build, and why do we have to make the definition of this function
+> > > conditional on HAVE_EVENTFD_SUPPORT?
+> > > 
+> > > I'm missing something :-\
+> > > 
+> > > Yeah, this whole call to evlist__add_pollfd is already surrounded by
+> > > #ifdef HAVE_EVENTFD_SUPPORT:
+> > > 
+> > > 1656         if (zstd_init(&session->zstd_data, rec->opts.comp_level) < 0) {
+> > > 1657                 pr_err("Compression initialization failed.\n");
+> > > 1658                 return -1;
+> > > 1659         }
+> > > 1660 #ifdef HAVE_EVENTFD_SUPPORT
+> > > 1661         done_fd = eventfd(0, EFD_NONBLOCK);
+> > > 1662         if (done_fd < 0) {
+> > > 1663                 pr_err("Failed to create wakeup eventfd, error: %m\n");
+> > > 1664                 status = -1;
+> > > 1665                 goto out_delete_session;
+> > > 1666         }
+> > > 1667         err = evlist__add_pollfd(rec->evlist, done_fd);
+> > > 1668         if (err < 0) {
+> > > 1669                 pr_err("Failed to add wakeup eventfd to poll list\n");
+> > > 1670                 status = err;
+> > > 1671                 goto out_delete_session;
+> > > 1672         }
+> > > 1673 #endif // HAVE_EVENTFD_SUPPORT
+> > > 1674
+> > > 1675         session->header.env.comp_type  = PERF_COMP_ZSTD;
+> > > 1676         session->header.env.comp_level = rec->opts.comp_level;
+> > > 
+> > > Jiri, does your Acked-by stands? Namhyung?
+> > 
+> > Thanks tested and applied, together with Jiri's Tested-by,
+> > 
+> > - Arnaldo
+> > .
+> > 
+> Is this patch okay? Is there anything that needs to be modified?
 
-That's fine, drivers are easy, but when I see comments like "ARCH_
-symbols contradict" that means that we can not make a generic kernel
-image.  Otherwise there's no contradiction :)
+It was merged:
 
-And "new drivers" are almost always not really "new" as everyone uses
-much the same IP blocks.  As proof of this patch where the DWC3 IP block
-is being used by multiple SoC vendors.  To handle that, you split out
-the SoC-specific portions into sub-drivers, so that you can build a
-single image of the driver that works on multiple platforms.  Nothing
-new, we've been doing this for years, it's just that out-of-mainline SoC
-trees that think they can touch "core IP block code" break this all the
-time, which is what I am pushing back on.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/tools/perf/builtin-record.c?id=e16c2ce7c5ed5de881066c1fd10ba5c09af69559
 
-Anyway, this is just me as a driver subsystem maintainer being grumpy to
-see ARCH_ dependancies on tiny little things like SoC-portions for
-generic IP drivers.  Or on individual drivers (i.e. Samsung serial port
-driver), where they don't belong at all.
-
-So the overall goal of the original patch here is great, I want to see
-that happen, as long as it's done in a way that does not ignore feedback
-of arch maintainers...
-
-thanks,
-
-greg k-h
+- Arnaldo
