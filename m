@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC8C32C168
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5C532C16F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838588AbhCCTBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:01:06 -0500
-Received: from conuserg-09.nifty.com ([210.131.2.76]:63528 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580818AbhCCSfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:35:16 -0500
-Received: from localhost.localdomain (122-103-140-163.kyoto.fdn.vectant.ne.jp [122.103.140.163]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 123IXcJf023524;
-        Thu, 4 Mar 2021 03:33:40 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 123IXcJf023524
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614796420;
-        bh=15Gw1OMyTCRaFX0xouVnd9dK3+GD/W8zTLjDYa/3v+4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nlmwcihYvhHHhQfbIRm8Ub+D4LAi85osdDpldUd7eoMbK1J3dL7fVLi6k8UFQLyXX
-         E99np0tUwTTp7tGcHP7WunVzgLueNPzyy8m1vPmetZMNRxStlIJGyfwpO4NmSSzmqd
-         WA2FTn4/ThaLjmNZRwh+8t0iA0ZwHPU0570rVEqdZ+cqRseiFzaLr2Pj/8CFbiXEG2
-         T2CT79g0dwavGQqeNZoeTqo+pjZVSF06EYOCPrc0OsdBjwF01ODd62qfrXXVro9sPw
-         o4HubnYCPmBgocnALJQbakSgFa8qzJCsUpt/ECKqB6sYgLoTFbSbFOCZi0awcNoI34
-         Ny8eGxoep1Gkg==
-X-Nifty-SrcIP: [122.103.140.163]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] kbuild: dwarf: use AS_VERSION instead of test_dwarf5_support.sh
-Date:   Thu,  4 Mar 2021 03:33:33 +0900
-Message-Id: <20210303183333.46543-4-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210303183333.46543-1-masahiroy@kernel.org>
-References: <20210303183333.46543-1-masahiroy@kernel.org>
+        id S1838618AbhCCTBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:01:13 -0500
+Received: from mga18.intel.com ([134.134.136.126]:48141 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234126AbhCCSfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:35:50 -0500
+IronPort-SDR: ee6TOyeIEDuomTqbzXr3J0xgldnlusRCRozBGHoSdbR5BXugZotUPJNsvkYp7FAnWS0cwYje1C
+ x93FCUUyly4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="174893768"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="174893768"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 10:34:02 -0800
+IronPort-SDR: dNnm3riT/7iRr/+P6cRiMU4ZgdyvTBUh6WFIfxcQD/gSTHhF+ZJY/BVXlhzMZLktWhbLt3oJrC
+ XD4jS0hoN94Q==
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="407363306"
+Received: from schen9-mobl.amr.corp.intel.com ([10.252.135.223])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 10:34:01 -0800
+Subject: Re: [RFC PATCH v4 3/3] scheduler: Add cluster scheduler level for x86
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
+        vincent.guittot@linaro.org, bp@alien8.de, tglx@linutronix.de,
+        mingo@redhat.com, lenb@kernel.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        msys.mizuma@gmail.com, valentin.schneider@arm.com,
+        gregkh@linuxfoundation.org, jonathan.cameron@huawei.com,
+        juri.lelli@redhat.com, mark.rutland@arm.com, sudeep.holla@arm.com,
+        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        x86@kernel.org, xuwei5@huawei.com, prime.zeng@hisilicon.com,
+        guodong.xu@linaro.org, yangyicong@huawei.com,
+        liguozhu@hisilicon.com, linuxarm@openeuler.org, hpa@zytor.com
+References: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
+ <20210301225940.16728-4-song.bao.hua@hisilicon.com>
+ <YD4T0qBBgR6fPbQb@hirez.programming.kicks-ass.net>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <a8474bae-5d9a-8c0b-766a-7188ed71320b@linux.intel.com>
+Date:   Wed, 3 Mar 2021 10:34:00 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YD4T0qBBgR6fPbQb@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test code in scripts/test_dwarf5_support.sh is somewhat difficult
-to understand, but after all, we want to check binutils >= 2.35.2
 
-From the former discussion, the requrement for generating DRAWF v5 from
-C code is as follows:
 
- - gcc + binutils as     -> requires gcc 5.0+ (but 7.0+ for full support)
- - clang + binutils as   -> requires binutils 2.35.2+
- - clang + integrated as -> OK
+On 3/2/21 2:30 AM, Peter Zijlstra wrote:
+> On Tue, Mar 02, 2021 at 11:59:40AM +1300, Barry Song wrote:
+>> From: Tim Chen <tim.c.chen@linux.intel.com>
+>>
+>> There are x86 CPU architectures (e.g. Jacobsville) where L2 cahce
+>> is shared among a cluster of cores instead of being exclusive
+>> to one single core.
+> 
+> Isn't that most atoms one way or another? Tremont seems to have it per 4
+> cores, but earlier it was per 2 cores.
+> 
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Yes, older Atoms have 2 cores sharing L2.  I probably should
+rephrase my comments to not leave the impression that sharing
+L2 among cores is new for Atoms.
 
- lib/Kconfig.debug              | 3 +--
- scripts/test_dwarf5_support.sh | 8 --------
- 2 files changed, 1 insertion(+), 10 deletions(-)
- delete mode 100755 scripts/test_dwarf5_support.sh
+Tremont based Atom CPUs increases the possible load imbalance more
+with 4 cores per L2 instead of 2.  And also with more overall cores on a die, the
+chance increases for packing running tasks on a few clusters while leaving
+others empty on light/medium loaded systems.  We did see
+this effect on Jacobsville.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 2779c29d9981..f3337a38925d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -284,8 +284,7 @@ config DEBUG_INFO_DWARF4
- 
- config DEBUG_INFO_DWARF5
- 	bool "Generate DWARF Version 5 debuginfo"
--	depends on GCC_VERSION >= 50000 || CC_IS_CLANG
--	depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-+	depends on GCC_VERSION >= 50000 || (CC_IS_CLANG && AS_IS_GNU && AS_VERSION >= 23502) || (CC_IS_CLANG && AS_IS_LLVM)
- 	depends on !DEBUG_INFO_BTF
- 	help
- 	  Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5.0+ (gcc
-diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-deleted file mode 100755
-index c46e2456b47a..000000000000
---- a/scripts/test_dwarf5_support.sh
-+++ /dev/null
-@@ -1,8 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
--# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
--# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
--echo '.file 0 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' | \
--  $* -gdwarf-5 -Wno-unused-command-line-argument -c -x assembler -o /dev/null -
--- 
-2.27.0
+So load balancing between the L2 clusters is more
+useful on Tremont based Atom CPUs compared to the older Atoms.
 
+Tim
