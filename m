@@ -2,170 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B75F32BE25
+	by mail.lfdr.de (Postfix) with ESMTP id BD8F632BE26
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376422AbhCCRHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:07:44 -0500
-Received: from mail-dm6nam11on2065.outbound.protection.outlook.com ([40.107.223.65]:31072
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238746AbhCCMq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:46:26 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XdKt5SdJ4xc04GpHjkaq8MYpJ5/BUGTYFqV5CCFpVPbHB7Ge+FYt72pkYFqFQ3FOaeovxowKm3yBRMesm2C9QqEs2Ckne307W/StxLvGmjI8EJa49qjFQCADBdoBBDWFczcrzG+hg5pvqmEkxh+2FkdpTtzDraT9VwqltZ9C/F4vDMPo+W/Xm3d6gjKzlYKqTkrq2451Ot7E4OLcgsjad2gRqs8taYBzR1KArbEhKn2Z6CLAf+LizB1hZf/5Uo35mblCWIuzkdGsEMQIze6e8wCJUHehPtDvYsBhKr1JYx7mpGGyGE+Wbp4U58MvcAvJB4q59CXGiaF9w9FfehKe3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k0A5U7knXA9j7h7Ia+B4z/jzrCVidvM3cu/NXDPVHEs=;
- b=Tgfkq5GcSI+jGXHlDJt2h30FTyfbA117Phanxh77mqtvpPgzc74BL6opJbLhW0T+hjUFDja6G4Khp412Vx5IpFg0dSEwYxHXP07qTTgV3vI7tQ8w2UqIF3r29eM+RaYTNCbHnA+FKMrUo92OUl0V2ZJabIE8pxKZqC0EQzSv8ZY3ZolZLvU4WX/acXBq0dmHxrXDEf5A9LzexPrVjubfZrcSrojx7LpdI7r1IQ4E9uCccgTAXZfk0ldkLdhX+hAyJYejWhGotT4+QdWjNZfx+iT4Tw/F/RwzWW2Bynbgfof50mmE+hXcSKHCyTrx0o5bZQpHsebqSk5BJRfaSP1kzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1376437AbhCCRHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350266AbhCCMqs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:46:48 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45EBC0617A7
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:46:07 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id n22so5073842wmc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:46:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k0A5U7knXA9j7h7Ia+B4z/jzrCVidvM3cu/NXDPVHEs=;
- b=cDLmY+r+Iau+o3R+/ZbT2x3Wum7rgf2qbxXErQkCspy/Dy/u+nOudRHqKTACbQXTVG/WG2ygXqqrVxS4aNSJa5hyDvLNdVCJzVEGoecFOLHaeRkWg8hAhCck1OYOKPdBm3TWBAdAiv71MViJ0T6TjUa6SFlxhD/Q4O/JI1k2eZo=
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BY5PR11MB4484.namprd11.prod.outlook.com (2603:10b6:a03:1c3::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Wed, 3 Mar
- 2021 12:45:10 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3890.029; Wed, 3 Mar 2021
- 12:45:10 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Subject: =?gb2312?B?u9i4tDogcG9zc2libGUgZGVhZGxvY2sgaW4gaW9fcG9sbF9kb3VibGVfd2Fr?=
- =?gb2312?Q?e_(2)?=
-Thread-Topic: possible deadlock in io_poll_double_wake (2)
-Thread-Index: AQHXDWs6oOGJBWdteka1D+n0kQcjUqpuMluAgABWkYCAAmzQgIABNV+igAAPPw0=
-Date:   Wed, 3 Mar 2021 12:45:10 +0000
-Message-ID: <BYAPR11MB2632EF56CC5B6000521A03A1FF989@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <000000000000a52fb105bc71e7b8@google.com>,<586d357d-8c4c-8875-3a1c-0599a0a64da0@kernel.dk>,<BYAPR11MB2632D4973C567EDF64A6728BFF989@BYAPR11MB2632.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB2632D4973C567EDF64A6728BFF989@BYAPR11MB2632.namprd11.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [106.39.148.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 95778b52-2810-41a5-2e81-08d8de422ece
-x-ms-traffictypediagnostic: BY5PR11MB4484:
-x-microsoft-antispam-prvs: <BY5PR11MB4484DC55DABDD220A9273EADFF989@BY5PR11MB4484.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c4MIoFlbl3+c42fLZp9tCGOWqVvQ6cahpkRMNr7sHlG6Vx/sU4Z79OqzANneFCjLuo9H/Zo5Rp+t8KNJ8/KEMHtyUMpqTh/leRBiP3D6807OQAR573+UmaMi6lAo8jfLzAZNdMS0WepIX8Iks/HqwuOH/ptod6Dk/N88cPx2d9MYj2V4sd31DGSJm83igTVS9xE7+dqYa7SmltaLXYY1f9uZXcgNosh/pxd0nZiUr2VqegU/+SeForH+fLgg6oh55zlOkFXefL3jj5ojZ+Zix+sqnyUqJrej6Y78jyJ4pdDzn9m6vBvsBQy6tQrECTyy6Hl+zlGZ8SNhGXBz5yMGbOkoqg1QVOOsoqSKRmmbAgybYhWdVziF7eaT1z2rNUmLWWBZQSA/WV9RghzI0ePJgqtdARSgyYsvd3LYLAUDxswcATQkBbuYZH5iU2iSPvsV4WhXy1PewMvOkTq4mIoTyrfpbq8FZu/oFGAeTpKqbOmwgAVYCuFYvAq6nthlAmdpxAHRTAwedzjFCPRSoC3KYQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39850400004)(366004)(136003)(396003)(91956017)(9686003)(6506007)(86362001)(2906002)(55016002)(8936002)(83380400001)(71200400001)(53546011)(224303003)(52536014)(478600001)(5660300002)(316002)(33656002)(110136005)(64756008)(66446008)(66476007)(7696005)(2940100002)(66946007)(66556008)(186003)(76116006)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?MTFhclpmSVZyWVNjTUM0NTRxaFBBS3VURHVMbFdDVHphUlYyblpwVitLVHZr?=
- =?gb2312?B?ZjR4enFmakw3UVpCUUkwZnlwYVc4aWR2VDA4RmxzS2RWUnJQMDI2L21JbjJz?=
- =?gb2312?B?Q1IwK2hMczAzU0llNUhCV0lmMjVhc291c01GVEJQKy9zU09hWnV2Vi9BdW9G?=
- =?gb2312?B?QTlaVFBoRVlJMGJhV3YrVWEyMmc0ak5PWk51OVJjaGRYSFQxb0JXSG8xWVN1?=
- =?gb2312?B?QzNiaUlOYmlSZFhCdlFpbkQ2N2IvMmRjcjcvdnVLNXpNNk54OGVSYWhJWjd4?=
- =?gb2312?B?aG84TFI0djMzLzd0Sk5lbEFQVDZjSFRrMngzZ0V1Y3hNeHZRQTVMOWNKYURi?=
- =?gb2312?B?Vkp2U2llbmZIY0FFVlE4M2pVL0E3K1d0NWdIc2QzK0lMaEtsNStiRjA3YnV3?=
- =?gb2312?B?KzhCVnRITmZzUjFMTjJWU2ZpNHExbWpERmJEdWNzcWNnQUpDa0tUZWhOQmFm?=
- =?gb2312?B?bGVkeHZtT3BxV3l4TFMzTzdiY0ZOWWV2TXM4cklzREhuUjVXa2tEc1BRdk43?=
- =?gb2312?B?Q0VzVDZSMzROQTNEVnJ6SzFURk4rQXV4V1oxV3psdm1IcTZsd2dkaEhxZ0lN?=
- =?gb2312?B?bUxhcHBLci92TmpRWk1pKzNrdTA5RDk4Tnk2czYzZ1NyMENaTmlRN3Yxa2pt?=
- =?gb2312?B?cTJzYmJpNGJIdmlhbGVSQXNqQkpYMzNkWW9JUFQ0MHhIeGg5Y01OV01PUHZF?=
- =?gb2312?B?RUNQZW5jbEdjME1YSVRFa1BKZUZOZWM0ZERKei93QUVBZzBwdzFaY2pXSnpL?=
- =?gb2312?B?ZnUwSFNEZEp2bHJGMHM3Wjl5djFuT0VmbU9kQ0YxdkJ6S01CMGZIcmVxVWN0?=
- =?gb2312?B?ZjRGc05qeWYxblB2dEJEU3R6VDJpTk42WlprRHlscFFKZUk2V0Rsdk1ienpG?=
- =?gb2312?B?ZXFjeHFKbllGcnZzLy93UFlMUTBzdzJxOFpOQTJicWJyV2RsMlNIeXBIU1NV?=
- =?gb2312?B?WlVLRFB4VkJhMGV2NjRTMVl1aU5xdTJ1bVJoTnBQV3djQk0yZjhoYXZJdVdv?=
- =?gb2312?B?aHNsUWhZbGZraktscWp1MnduZkREdjRxYk9EYnZOOThabmwyTHRkOTEyRXp2?=
- =?gb2312?B?OGxvYk5jT1V0TklrbS9sWE01YmZOVUI5ZkIxYnI0VXh1R0MwTStEM0pDVXpM?=
- =?gb2312?B?anNuTmhZa05KNWJRRTFadjQzR2RBakh4Tm8xUXlkVU1ZbDVnSkdMc0dNWWlm?=
- =?gb2312?B?eXNmOFM3R3dvdytxeVYxMVM1VnpLTTJFQWExenhpOGJwdnZpUXhmWEVCYkcz?=
- =?gb2312?B?VkFrUnMvQWFtejM3ZDNaWTRSdGZpNUtBNFpJNDlDbWgrWGcvZWJCcDVnK29j?=
- =?gb2312?B?eWY3UVlvak9kNUVPQ00vUjMvQ1FDaTRVcGVQK1Q4WG00N0l1aUZtV2pybU9W?=
- =?gb2312?B?akhkbi9yVzFjRTlhTUhZeXJwWWFDMDlrRnJyUFpTYVJUd2t4dnJkLzZSVElH?=
- =?gb2312?B?VitVN2R5cThiMVVCdW1pckZFL1BzQXJobklVNFRJYXRqTms0L1NSNE04VjR4?=
- =?gb2312?B?UGVRNTRKREFweWNNWWxOTDRSaXJLK2k0YXo3alVmS0ROKytac05HbTBGNUVK?=
- =?gb2312?B?M084N043NmRUTGlXQ3ZCdGRYMFlMQm5oaEh4UnVDVlRWbGhZeFpVSis1RkZE?=
- =?gb2312?B?WlpqYWNtdSsrbHpaZnJjNkRlTVJKUUFiZ2liQ0JvWmFDNGdjcDR5ckxKRUNO?=
- =?gb2312?B?SU9qaUV0UjZvMXNUWFFPSXFET0g2NFZaYllqRG5XOUxKRXNCbFBneUlnS0dL?=
- =?gb2312?Q?nzCeS1SnvoZyFh87hM=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LHIHpoWITKla/9IZBsvp5706Sa7D3rYHp0QL+y3tf4c=;
+        b=Sisvz3NrnqtlrK/NrwfvMh2IsHBgzMb+URq0HB3Rp611Z3MFBAI5WPTShD8NSfxQze
+         fOkvPU7NbqDykF9U1MaCEBI2w9cA4RQNTKSvg5ksFbOzyVtV9AYLkyMAUtngE/yjJEwt
+         slR4phu1ikc8lvCi/eYGq3gZiOGrKR6kEiFl1WpwZsQCbRVAfT5/tdCK08WZokyA+XNh
+         wxhUpdYmn2GomjNBXUgYOjaqpOAcVXOfXuvpH9ZgI/N3sJsLQL/WrzMuHKstBKZ+/4dF
+         DWbi4+VA9azhmMpCHlnUcAqsArhj5Aquoe+ZMcBUfYcpShEInuLa2qov/7A9rKSqLYQJ
+         Ke4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LHIHpoWITKla/9IZBsvp5706Sa7D3rYHp0QL+y3tf4c=;
+        b=XKLiPTrmaEuSGCR4hq4Lp97AWBMul+gnIQqnXx/PDiG32uHaaocohXsA6IN/7Iom82
+         nBTDVzqIjVBaF1vv7GrjOL2FXUk18rZ4eOm/CuHaiGLLnIarcDlUFFemqSs5ezr0St6t
+         Ajl3D2Y7GK/C2rEsCyom2Mc1ieBuyZM8T2P0Su8FN34FAWC8yLnOHM8GrNCWALpcTG/i
+         RNjaC13uTgP6X5RHqgzTkJoCBSHUGdyAOqOBcgIF5En4YgsC9sbO5QMVSBZi1NeGAwbr
+         tU3PM+7itR/tva0pF1yXebvtal0/yMBZbZxno3S+zrNAQJMfUXsqp69ioxAUOQ/m+xJM
+         DMRg==
+X-Gm-Message-State: AOAM531ky9sFP9nAxt/S+o5GMuqotjiysLrcc1slfRrvMb7WvzSVptOZ
+        L5ehU/AwdB9ahiuAJMRtaRlQCA==
+X-Google-Smtp-Source: ABdhPJxvfbyWe0xKuFVo6LR++FxzOh/nkBH2FsnVXfGIznDO0CIRicI/8mERVJR35yjKLHD8RhP8fg==
+X-Received: by 2002:a7b:c5d0:: with SMTP id n16mr9011294wmk.27.1614775566661;
+        Wed, 03 Mar 2021 04:46:06 -0800 (PST)
+Received: from dell.default ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id 18sm5581353wmj.21.2021.03.03.04.46.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 04:46:06 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [RESEND 1/1] powerpc: asm: hvconsole: Move 'hvc_vio_init_early's prototype to shared location
+Date:   Wed,  3 Mar 2021 12:46:03 +0000
+Message-Id: <20210303124603.3150175-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95778b52-2810-41a5-2e81-08d8de422ece
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2021 12:45:10.6467
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0pi0C+s80bGss3KKm4Wzwj7OI8V9FLQrI07WZDVRMZtatKA9rQz6RrP3/+c5GBtWFo2rGxsU3Ow/FJdeffbExYq1ZuwH/TDFf5xxUYpwnR4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4484
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogWmhhbmcs
-IFFpYW5nIDxRaWFuZy5aaGFuZ0B3aW5kcml2ZXIuY29tPgq3osvNyrG85DogMjAyMcTqM9TCM8jV
-IDIwOjE1CsrVvP7IyzogSmVucyBBeGJvZTsgc3l6Ym90OyBhc21sLnNpbGVuY2VAZ21haWwuY29t
-OyBpby11cmluZ0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBzeXprYWxsZXItYnVnc0Bnb29nbGVncm91
-cHMuY29tOyB2aXJvQHplbml2LmxpbnV4Lm9yZy51awrW98ziOiC72Li0OiBwb3NzaWJsZSBkZWFk
-bG9jayBpbiBpb19wb2xsX2RvdWJsZV93YWtlICgyKQoKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCreivP7IyzogSmVucyBBeGJvZSA8YXhib2VAa2VybmVsLmRrPgq3
-osvNyrG85DogMjAyMcTqM9TCM8jVIDE6MjAKytW8/sjLOiBzeXpib3Q7IGFzbWwuc2lsZW5jZUBn
-bWFpbC5jb207IGlvLXVyaW5nQHZnZXIua2VybmVsLm9yZzsgbGludXgtZnNkZXZlbEB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHN5emthbGxlci1idWdzQGdv
-b2dsZWdyb3Vwcy5jb207IHZpcm9AemVuaXYubGludXgub3JnLnVrCtb3zOI6IFJlOiBwb3NzaWJs
-ZSBkZWFkbG9jayBpbiBpb19wb2xsX2RvdWJsZV93YWtlICgyKQoKW1BsZWFzZSBub3RlOiBUaGlz
-IGUtbWFpbCBpcyBmcm9tIGFuIEVYVEVSTkFMIGUtbWFpbCBhZGRyZXNzXQoKT24gMi8yOC8yMSA5
-OjE4IFBNLCBzeXpib3Qgd3JvdGU6Cj4gSGVsbG8sCj4KPiBzeXpib3QgaGFzIHRlc3RlZCB0aGUg
-cHJvcG9zZWQgcGF0Y2ggYnV0IHRoZSByZXByb2R1Y2VyIGlzIHN0aWxsIHRyaWdnZXJpbmcgYW4g
-aXNzdWU6Cj4gcG9zc2libGUgZGVhZGxvY2sgaW4gaW9fcG9sbF9kb3VibGVfd2FrZQo+Cj4gPT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiBXQVJOSU5HOiBwb3Nz
-aWJsZSByZWN1cnNpdmUgbG9ja2luZyBkZXRlY3RlZAo+IDUuMTEuMC1zeXprYWxsZXIgIzAgTm90
-IHRhaW50ZWQKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
-IHN5ei1leGVjdXRvci4wLzEwMjQxIGlzIHRyeWluZyB0byBhY3F1aXJlIGxvY2s6Cj4gZmZmZjg4
-ODAxMmUwOTEzMCAoJnJ1bnRpbWUtPnNsZWVwKXsuLi0ufS17MjoyfSwgYXQ6IHNwaW5fbG9jayBp
-bmNsdWRlL2xpbnV4L3NwaW5sb2NrLmg6MzU0IFtpbmxpbmVdCj4gZmZmZjg4ODAxMmUwOTEzMCAo
-JnJ1bnRpbWUtPnNsZWVwKXsuLi0ufS17MjoyfSwgYXQ6IGlvX3BvbGxfZG91YmxlX3dha2UrMHgy
-NWYvMHg2YTAgZnMvaW9fdXJpbmcuYzo0OTIxCj4KPiBidXQgdGFzayBpcyBhbHJlYWR5IGhvbGRp
-bmcgbG9jazoKPiBmZmZmODg4MDEzYjAwMTMwICgmcnVudGltZS0+c2xlZXApey4uLS59LXsyOjJ9
-LCBhdDogX193YWtlX3VwX2NvbW1vbl9sb2NrKzB4YjQvMHgxMzAga2VybmVsL3NjaGVkL3dhaXQu
-YzoxMzcKPgo+IG90aGVyIGluZm8gdGhhdCBtaWdodCBoZWxwIHVzIGRlYnVnIHRoaXM6Cj4gIFBv
-c3NpYmxlIHVuc2FmZSBsb2NraW5nIHNjZW5hcmlvOgo+Cj4gICAgICAgIENQVTAKPiAgICAgICAg
-LS0tLQo+ICAgbG9jaygmcnVudGltZS0+c2xlZXApOwo+ICAgbG9jaygmcnVudGltZS0+c2xlZXAp
-Owo+Cj4gICoqKiBERUFETE9DSyAqKioKPgo+ICBNYXkgYmUgZHVlIHRvIG1pc3NpbmcgbG9jayBu
-ZXN0aW5nIG5vdGF0aW9uCj4KPlNpbmNlIHRoZSBmaXggaXMgaW4geWV0IHRoaXMga2VlcHMgZmFp
-bGluZyAoYW5kIEkgZGlkbid0IGdldCBpdCksID5JIGxvb2tlZAo+Y2xvc2VyIGF0IHRoaXMgcmVw
-b3J0LiBXaGlsZSB0aGUgbmFtZXMgb2YgdGhlIGxvY2tzIGFyZSB0aGUgPnNhbWUsIHRoZXkgYXJl
-Cj5yZWFsbHkgdHdvIGRpZmZlcmVudCBsb2Nrcy4gU28gbGV0J3MgdHJ5IHRoaXMuLi4KCj5IZWxs
-byBKZW5zIEF4Ym9lCgpTb3JyeSBmb3IgSSBtYWtlICBub2lzZSwgcGxlYXNlIGlnbm9yZSB0aGlz
-IGluZm9ybWF0aW9uLgoKPlNvcnJ5LCBJIHByb3ZpZGVkIHRoZSB3cm9uZyBpbmZvcm1hdGlvbiBi
-ZWZvcmUuCj5JJ20gbm90IHZlcnkgZmFtaWxpYXIgd2l0aCBpb191cmluZywgIGJlZm9yZSB3ZSBz
-dGFydCA+dmZzX3BvbGwgYWdhaW4sICBzaG91bGQgd2Ugc2V0ICAncG9sbC0+aGVhZCA9IE5VTEwn
-ICA/Cj4KPmRpZmYgLS1naXQgYS9mcy9pb191cmluZy5jIGIvZnMvaW9fdXJpbmcuYwo+aW5kZXgg
-NDJiNjc1OTM5NTgyLi5jYWU2MDVjMTQ1MTAgMTAwNjQ0Cj4tLS0gYS9mcy9pb191cmluZy5jCj4r
-KysgYi9mcy9pb191cmluZy5jCj5AQCAtNDgyNCw3ICs0ODI0LDcgQEAgc3RhdGljIGJvb2wgaW9f
-cG9sbF9yZXdhaXQoc3RydWN0ID5pb19raW9jYiAqcmVxLCBzdHJ1Y3QgaW9fcG9sbF9pb2NiICpw
-b2xsKQo+Cj4gICAgICAgIGlmICghcmVxLT5yZXN1bHQgJiYgIVJFQURfT05DRShwb2xsLT5jYW5j
-ZWxlZCkpIHsKPiAgICAgICAgICAgICAgICBzdHJ1Y3QgcG9sbF90YWJsZV9zdHJ1Y3QgcHQgPSB7
-IC5fa2V5ID0gcG9sbC0+ZXZlbnRzID59Owo+LQo+KyAgICAgICAgICAgICAgIHBvbGwtPmhlYWQg
-PSBOVUxMOwo+ICAgICAgICAgICAgICAgIHJlcS0+cmVzdWx0ID0gdmZzX3BvbGwocmVxLT5maWxl
-LCAmcHQpICYgPnBvbGwtPmV2ZW50czsKPiAgICAgICAgfQoKCgo+VGhhbmtzCj5RaWFuZwoKPgo+
-I3N5eiB0ZXN0OiBnaXQ6Ly9naXQua2VybmVsLmRrL2xpbnV4LWJsb2NrIHN5emJvdC10ZXN0Cj4K
-Pi0tCj5KZW5zIEF4Ym9lCgo=
+Fixes the following W=1 kernel build warning(s):
+
+ drivers/tty/hvc/hvc_vio.c:385:13: warning: no previous prototype for ‘hvc_vio_init_early’ [-Wmissing-prototypes]
+ 385 | void __init hvc_vio_init_early(void)
+ | ^~~~~~~~~~~~~~~~~~
+
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ arch/powerpc/include/asm/hvconsole.h     | 3 +++
+ arch/powerpc/platforms/pseries/pseries.h | 3 ---
+ arch/powerpc/platforms/pseries/setup.c   | 1 +
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/hvconsole.h b/arch/powerpc/include/asm/hvconsole.h
+index 999ed5ac90531..ccb2034506f0f 100644
+--- a/arch/powerpc/include/asm/hvconsole.h
++++ b/arch/powerpc/include/asm/hvconsole.h
+@@ -24,5 +24,8 @@
+ extern int hvc_get_chars(uint32_t vtermno, char *buf, int count);
+ extern int hvc_put_chars(uint32_t vtermno, const char *buf, int count);
+ 
++/* Provided by HVC VIO */
++void hvc_vio_init_early(void);
++
+ #endif /* __KERNEL__ */
+ #endif /* _PPC64_HVCONSOLE_H */
+diff --git a/arch/powerpc/platforms/pseries/pseries.h b/arch/powerpc/platforms/pseries/pseries.h
+index 4fe48c04c6c20..a13438fca10a8 100644
+--- a/arch/powerpc/platforms/pseries/pseries.h
++++ b/arch/powerpc/platforms/pseries/pseries.h
+@@ -43,9 +43,6 @@ extern void pSeries_final_fixup(void);
+ /* Poweron flag used for enabling auto ups restart */
+ extern unsigned long rtas_poweron_auto;
+ 
+-/* Provided by HVC VIO */
+-extern void hvc_vio_init_early(void);
+-
+ /* Dynamic logical Partitioning/Mobility */
+ extern void dlpar_free_cc_nodes(struct device_node *);
+ extern void dlpar_free_cc_property(struct property *);
+diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
+index 46e1540abc229..145e3f4c999af 100644
+--- a/arch/powerpc/platforms/pseries/setup.c
++++ b/arch/powerpc/platforms/pseries/setup.c
+@@ -71,6 +71,7 @@
+ #include <asm/swiotlb.h>
+ #include <asm/svm.h>
+ #include <asm/dtl.h>
++#include <asm/hvconsole.h>
+ 
+ #include "pseries.h"
+ #include "../../../../drivers/pci/pci.h"
+-- 
+2.27.0
+
