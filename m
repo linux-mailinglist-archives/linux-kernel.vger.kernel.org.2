@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BAA32BCC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BD132BC88
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383535AbhCCOjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:39:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
+        id S239248AbhCCOHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843003AbhCCKXg (ORCPT
+        with ESMTP id S1842922AbhCCKWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:36 -0500
+        Wed, 3 Mar 2021 05:22:35 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6026BC061A29;
-        Wed,  3 Mar 2021 00:45:34 -0800 (PST)
-Date:   Wed, 03 Mar 2021 08:45:32 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A44C061A2B;
+        Wed,  3 Mar 2021 00:45:35 -0800 (PST)
+Date:   Wed, 03 Mar 2021 08:45:33 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614761133;
+        s=2020; t=1614761134;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UlulZOOLEnSPNzDrEDwd1XW+S+DFJjEpojWC5AfxEHQ=;
-        b=qSJ9mEwcYwlxR/bDEy7lwvEynJHvo7vbm5RVK0Hifs/oLmxDp7bChEsOoshXvGcgJU1EkY
-        STs5qjc9To9DOdea1gh7bg3LAFVSsECuLQy1eIY927B7fQSB34wLtQkdgFrefeShdvLU0b
-        2KVkHXJZMxBwV/moxNQvil/52iASPS2Y1oRX5PblFEBE3feK3W6Q/TOjLaUN1hhnvm0b8F
-        FT5tnt2NZnshOMvn4KUKst7D77zVU0fyjWsK5s4Men772d3JPILOZEitoFp8/eYGbwEr/d
-        Nq/bMmDvc6hOqhbjsT+4Im5h8Dkgc4ER+t+b3moDmLCU/T0fYbo5mtI6DnQb5A==
+        bh=PdwCCZLJdhpJ6bcF67VEVoiRGhEBbV515tp++QQcoms=;
+        b=WUdT0u5Em1JrK6Tw2ClOCjsecTz+KsmhsABrFeY1C2eBhu0LI8akPOvmtuuTIr6X+a1+HB
+        2KkemLEPxHv4j+qff29+tXAMA9fYr4H+tiXFSWsNAeLBIUNtD5ofxTqfzR5Z6HJud6/rQr
+        CNmliWW+MM8HtZSNagNlocr/xxO/pK3/w2nZhf6UlTUINSJGDt563Bfz2EUPin7lg5mL/l
+        Ey0ZZxcTZ+f8MloO2vPD7FTzUhRWqo21TgIKFXq5yLrP4JXwKkUJ7EXEPuGpT5ImcoMx0I
+        VA+5H70ACvGG9zatXbXvRo/xdE72E2Vn7x440jalUCdo638ENaPrOMeynfQ7DA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614761133;
+        s=2020e; t=1614761134;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UlulZOOLEnSPNzDrEDwd1XW+S+DFJjEpojWC5AfxEHQ=;
-        b=GAe/cxLBwB2+jUOB0wKu18ZsAxp3bDYjCBWuP3ybH+U82n+zTzGIzGvU/50F6FfSkFc/Iu
-        IvkXul+31pnXyZAg==
+        bh=PdwCCZLJdhpJ6bcF67VEVoiRGhEBbV515tp++QQcoms=;
+        b=ex4BLzyw17teMq7zAgBgPbjshY9Geq/Xb9XuWdLE9RZKY08SaqdlxNAtU8GgTb4sjdFgoE
+        tSaQjRNUk34EAcDw==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Add --backup
-Cc:     Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+Subject: [tip: objtool/core] objtool,x86: Support %riz encodings
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <YD4obT3aoXPWl7Ax@hirez.programming.kicks-ass.net>
-References: <YD4obT3aoXPWl7Ax@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210211173627.472967498@infradead.org>
+References: <20210211173627.472967498@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161476113241.20312.274358186328661318.tip-bot2@tip-bot2>
+Message-ID: <161476113350.20312.2842241634559152746.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,153 +62,188 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     327695eb9e3461b09d5cd5baef5df6526dd240c6
-Gitweb:        https://git.kernel.org/tip/327695eb9e3461b09d5cd5baef5df6526dd240c6
+Commit-ID:     0a8bef63e5bf4496251f7bac4ddadb5f5f489932
+Gitweb:        https://git.kernel.org/tip/0a8bef63e5bf4496251f7bac4ddadb5f5f489932
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Feb 2021 10:59:59 +01:00
+AuthorDate:    Wed, 10 Feb 2021 11:47:35 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 03 Mar 2021 09:38:31 +01:00
+CommitterDate: Wed, 03 Mar 2021 09:38:30 +01:00
 
-objtool: Add --backup
+objtool,x86: Support %riz encodings
 
-Teach objtool to write backups files, such that it becomes easier to
-see what objtool did to the object file.
+When there's a SIB byte, the register otherwise denoted by r/m will
+then be denoted by SIB.base REX.b will now extend this. SIB.index == SP
+is magic and notes an index value zero.
 
-Backup files will be ${name}.orig.
+This means that there's a bunch of alternative (longer) encodings for
+the same thing. Eg. 'ModRM.mod != 3, ModRM.r/m = AX' can be encoded as
+'ModRM.mod != 3, ModRM.r/m = SP, SIB.base = AX, SIB.index = SP' which is actually 4
+different encodings because the value of SIB.scale is irrelevant,
+giving rise to 5 different but equal encodings.
 
-Suggested-by: Borislav Petkov <bp@alien8.de>
+Support these encodings and clean up the SIB handling in general.
+
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Borislav Petkov <bp@suse.de>
 Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/YD4obT3aoXPWl7Ax@hirez.programming.kicks-ass.net
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lkml.kernel.org/r/20210211173627.472967498@infradead.org
 ---
- tools/objtool/builtin-check.c           |  4 +-
- tools/objtool/include/objtool/builtin.h |  3 +-
- tools/objtool/objtool.c                 | 64 ++++++++++++++++++++++++-
- 3 files changed, 69 insertions(+), 2 deletions(-)
+ tools/objtool/arch/x86/decode.c | 67 ++++++++++++++++++++++----------
+ 1 file changed, 48 insertions(+), 19 deletions(-)
 
-diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
-index c3a85d8..97f063d 100644
---- a/tools/objtool/builtin-check.c
-+++ b/tools/objtool/builtin-check.c
-@@ -18,7 +18,8 @@
- #include <objtool/builtin.h>
- #include <objtool/objtool.h>
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 5ce7dc4..78ae5be 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -72,6 +72,25 @@ unsigned long arch_jump_destination(struct instruction *insn)
+ 		return -1; \
+ 	else for (list_add_tail(&op->list, ops_list); op; op = NULL)
  
--bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux, mcount, noinstr;
-+bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats,
-+     validate_dup, vmlinux, mcount, noinstr, backup;
++/*
++ * Helpers to decode ModRM/SIB:
++ *
++ * r/m| AX  CX  DX  BX |  SP |  BP |  SI  DI |
++ *    | R8  R9 R10 R11 | R12 | R13 | R14 R15 |
++ * Mod+----------------+-----+-----+---------+
++ * 00 |    [r/m]       |[SIB]|[IP+]|  [r/m]  |
++ * 01 |  [r/m + d8]    |[S+d]|   [r/m + d8]  |
++ * 10 |  [r/m + d32]   |[S+D]|   [r/m + d32] |
++ * 11 |                   r/ m               |
++ *
++ */
++#define is_RIP()   ((modrm_rm & 7) == CFI_BP && modrm_mod == 0)
++#define have_SIB() ((modrm_rm & 7) == CFI_SP && modrm_mod != 3)
++
++#define rm_is(reg) (have_SIB() ? \
++		    sib_base == (reg) && sib_index == CFI_SP : \
++		    modrm_rm == (reg))
++
+ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+ 			    unsigned int *len, enum insn_type *type,
+@@ -83,7 +102,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 	unsigned char op1, op2,
+ 		      rex = 0, rex_b = 0, rex_r = 0, rex_w = 0, rex_x = 0,
+ 		      modrm = 0, modrm_mod = 0, modrm_rm = 0, modrm_reg = 0,
+-		      sib = 0 /* , sib_scale = 0, sib_index = 0, sib_base = 0 */;
++		      sib = 0, /* sib_scale = 0, */ sib_index = 0, sib_base = 0;
+ 	struct stack_op *op = NULL;
+ 	struct symbol *sym;
  
- static const char * const check_usage[] = {
- 	"objtool check [<options>] file.o",
-@@ -37,6 +38,7 @@ const struct option check_options[] = {
- 	OPT_BOOLEAN('n', "noinstr", &noinstr, "noinstr validation for vmlinux.o"),
- 	OPT_BOOLEAN('l', "vmlinux", &vmlinux, "vmlinux.o validation"),
- 	OPT_BOOLEAN('M', "mcount", &mcount, "generate __mcount_loc"),
-+	OPT_BOOLEAN('B', "backup", &backup, "create .orig files before modification"),
- 	OPT_END(),
- };
+@@ -125,11 +144,9 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
  
-diff --git a/tools/objtool/include/objtool/builtin.h b/tools/objtool/include/objtool/builtin.h
-index 2502bb2..d019210 100644
---- a/tools/objtool/include/objtool/builtin.h
-+++ b/tools/objtool/include/objtool/builtin.h
-@@ -8,7 +8,8 @@
- #include <subcmd/parse-options.h>
+ 	if (insn.sib.nbytes) {
+ 		sib = insn.sib.bytes[0];
+-		/*
+-		sib_scale = X86_SIB_SCALE(sib);
++		/* sib_scale = X86_SIB_SCALE(sib); */
+ 		sib_index = X86_SIB_INDEX(sib) + 8*rex_x;
+ 		sib_base  = X86_SIB_BASE(sib)  + 8*rex_b;
+-		 */
+ 	}
  
- extern const struct option check_options[];
--extern bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux, mcount, noinstr;
-+extern bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats,
-+            validate_dup, vmlinux, mcount, noinstr, backup;
+ 	switch (op1) {
+@@ -218,7 +235,10 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		break;
  
- extern int cmd_check(int argc, const char **argv);
- extern int cmd_orc(int argc, const char **argv);
-diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
-index 7b97ce4..43c1836 100644
---- a/tools/objtool/objtool.c
-+++ b/tools/objtool/objtool.c
-@@ -17,6 +17,7 @@
- #include <stdbool.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <unistd.h>
- #include <subcmd/exec-cmd.h>
- #include <subcmd/pager.h>
- #include <linux/kernel.h>
-@@ -44,6 +45,64 @@ bool help;
- const char *objname;
- static struct objtool_file file;
+ 	case 0x89:
+-		if (rex_w && modrm_reg == CFI_SP) {
++		if (!rex_w)
++			break;
++
++		if (modrm_reg == CFI_SP) {
  
-+static bool objtool_create_backup(const char *_objname)
-+{
-+	int len = strlen(_objname);
-+	char *buf, *base, *name = malloc(len+6);
-+	int s, d, l, t;
-+
-+	if (!name) {
-+		perror("failed backup name malloc");
-+		return false;
-+	}
-+
-+	strcpy(name, _objname);
-+	strcpy(name + len, ".orig");
-+
-+	d = open(name, O_CREAT|O_WRONLY|O_TRUNC, 0644);
-+	if (d < 0) {
-+		perror("failed to create backup file");
-+		return false;
-+	}
-+
-+	s = open(_objname, O_RDONLY);
-+	if (s < 0) {
-+		perror("failed to open orig file");
-+		return false;
-+	}
-+
-+	buf = malloc(4096);
-+	if (!buf) {
-+		perror("failed backup data malloc");
-+		return false;
-+	}
-+
-+	while ((l = read(s, buf, 4096)) > 0) {
-+		base = buf;
-+		do {
-+			t = write(d, base, l);
-+			if (t < 0) {
-+				perror("failed backup write");
-+				return false;
-+			}
-+			base += t;
-+			l -= t;
-+		} while (l);
-+	}
-+
-+	if (l < 0) {
-+		perror("failed backup read");
-+		return false;
-+	}
-+
-+	free(name);
-+	free(buf);
-+	close(d);
-+	close(s);
-+
-+	return true;
-+}
-+
- struct objtool_file *objtool_open_read(const char *_objname)
- {
- 	if (objname) {
-@@ -59,6 +118,11 @@ struct objtool_file *objtool_open_read(const char *_objname)
- 	if (!file.elf)
- 		return NULL;
+ 			if (modrm_mod == 3) {
+ 				/* mov %rsp, reg */
+@@ -231,14 +251,17 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 				break;
  
-+	if (backup && !objtool_create_backup(objname)) {
-+		WARN("can't create backup file");
-+		return NULL;
-+	}
+ 			} else {
+-				/* skip nontrivial SIB */
+-				if ((modrm_rm & 7) == 4 && !(sib == 0x24 && rex_b == rex_x))
+-					break;
+-
+ 				/* skip RIP relative displacement */
+-				if ((modrm_rm & 7) == 5 && modrm_mod == 0)
++				if (is_RIP())
+ 					break;
+ 
++				/* skip nontrivial SIB */
++				if (have_SIB()) {
++					modrm_rm = sib_base;
++					if (sib_index != CFI_SP)
++						break;
++				}
 +
- 	INIT_LIST_HEAD(&file.insn_list);
- 	hash_init(file.insn_hash);
- 	INIT_LIST_HEAD(&file.static_call_list);
+ 				/* mov %rsp, disp(%reg) */
+ 				ADD_OP(op) {
+ 					op->src.type = OP_SRC_REG;
+@@ -253,7 +276,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			break;
+ 		}
+ 
+-		if (rex_w && modrm_mod == 3 && modrm_rm == CFI_SP) {
++		if (modrm_mod == 3 && modrm_rm == CFI_SP) {
+ 
+ 			/* mov reg, %rsp */
+ 			ADD_OP(op) {
+@@ -267,6 +290,9 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 
+ 		/* fallthrough */
+ 	case 0x88:
++		if (!rex_w)
++			break;
++
+ 		if ((modrm_mod == 1 || modrm_mod == 2) && modrm_rm == CFI_BP) {
+ 
+ 			/* mov reg, disp(%rbp) */
+@@ -280,7 +306,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			break;
+ 		}
+ 
+-		if (rex_w && modrm_rm == CFI_SP && sib == 0x24) {
++		if (modrm_mod != 3 && rm_is(CFI_SP)) {
+ 
+ 			/* mov reg, disp(%rsp) */
+ 			ADD_OP(op) {
+@@ -299,7 +325,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		if (!rex_w)
+ 			break;
+ 
+-		if (modrm_mod == 1 && modrm_rm == CFI_BP) {
++		if ((modrm_mod == 1 || modrm_mod == 2) && modrm_rm == CFI_BP) {
+ 
+ 			/* mov disp(%rbp), reg */
+ 			ADD_OP(op) {
+@@ -312,7 +338,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			break;
+ 		}
+ 
+-		if (modrm_mod != 3 && modrm_rm == CFI_SP && sib == 0x24) {
++		if (modrm_mod != 3 && rm_is(CFI_SP)) {
+ 
+ 			/* mov disp(%rsp), reg */
+ 			ADD_OP(op) {
+@@ -337,14 +363,17 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		if (!rex_w)
+ 			break;
+ 
+-		/* skip nontrivial SIB */
+-		if ((modrm_rm & 7) == 4 && !(sib == 0x24 && rex_b == rex_x))
+-			break;
+-
+ 		/* skip RIP relative displacement */
+-		if ((modrm_rm & 7) == 5 && modrm_mod == 0)
++		if (is_RIP())
+ 			break;
+ 
++		/* skip nontrivial SIB */
++		if (have_SIB()) {
++			modrm_rm = sib_base;
++			if (sib_index != CFI_SP)
++				break;
++		}
++
+ 		/* lea disp(%src), %dst */
+ 		ADD_OP(op) {
+ 			op->src.offset = insn.displacement.value;
