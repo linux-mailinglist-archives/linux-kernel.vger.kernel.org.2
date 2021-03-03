@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5101932BBEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6655632BBF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358969AbhCCNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:19:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357088AbhCCIRs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:17:48 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D03C061222
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:16:49 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id c19so3677626pjq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:16:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=Ive6eNucBHIhvqUM+2V1aUkJ4q+fvS0d/eGIj0JQKdQ=;
-        b=Ye1/O8uS83gN/d4J4x+97v9AwnyKBM4o1t+pUeWOKgp7Gw4doOnlRbpWpl2aufrG0i
-         K5uxXFxX4C5e8Ld32GI7QWIXfgEyaUI73RAzLvV3cNE7QZKEmFQS08TwLaWSVNZGVCnQ
-         pmpy/am4xavzpRGeb9zOL3MK230BClbIwRYR4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=Ive6eNucBHIhvqUM+2V1aUkJ4q+fvS0d/eGIj0JQKdQ=;
-        b=pYqGUOy+FmV9BRLQQrBjThIyCNPtQAYGbifmKy4JRvLOojbI7Cw4BFYpLWT7fhwy7s
-         nNe6zPJF3rDDtiunqr/rA6ZF4GxbNE9vgjmuVmmkoeHBUXldJ5pcs+Y8iGhbK3l5CjE+
-         b94hc0QyDKK+cwEkEzTzLd112Cwpr6/9IrNUwroznZ/H0qJkmYo+lMwzDhLR8FGZ+KHk
-         fyypKwbP/yn70d+Lw+BpBoAk0Q4KgP2Pw4086D/SqcvxEIfpM6V3cVDuhpBjPWOGtZyi
-         6c1SQvT/g5yG9gAm1DwSiSj+IZM2PkX5dD8/cxxqajzlMhE703ShIwOkxnDl06PjP2Jy
-         RFQw==
-X-Gm-Message-State: AOAM533srZs2+cm2hpxNXCWir4CEGs9ERPd/9V200CGkdOb5bqiAZaWa
-        NuhHI3UI8w3Lg+IqziTbnOIKTw==
-X-Google-Smtp-Source: ABdhPJzKoq6JbUPoKO146By1DudwwWEZ4yRjh1CiHL9MGSOMUbxqiddoHyP2rXARTxZSWJxIA8YVbg==
-X-Received: by 2002:a17:902:f242:b029:e4:6dfc:8c1f with SMTP id j2-20020a170902f242b02900e46dfc8c1fmr1891334plc.0.1614759409018;
-        Wed, 03 Mar 2021 00:16:49 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id e1sm5865727pjt.10.2021.03.03.00.16.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:16:48 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S1359019AbhCCNUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:20:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357104AbhCCISO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:18:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 315DE64E4A;
+        Wed,  3 Mar 2021 08:17:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614759452;
+        bh=UiQu6fevYpFehrRZuCMSJyx8SynobJ/7rfL9r6cCz4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x3s5cSLc9wrP5L4Sk7wRvHQ6hWxFEP9rM7OE4KEnq7/oarMPWGJepdGCRqe8r4Kc2
+         hg6EgOy/WYdyCyJTHz+qVJ05fXFoNBTO/ueVgonmiMqQgOZ0/GN3yLbjzz0gmGQheW
+         QJpXqzwW+7b1oLyGkCTVTzCGaXb6IemhUnAovW8o=
+Date:   Wed, 3 Mar 2021 09:17:22 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [git pull resend] habanalabs fixes for 5.12-rc2
+Message-ID: <YD9GEtb7yvMyAyab@kroah.com>
+References: <20210303081321.GA6609@CORE.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210301133318.v2.10.Ia3795e192f5bbe17e6714e45fcb0bf5acdbd4c17@changeid>
-References: <20210301213437.4165775-1-dianders@chromium.org> <20210301133318.v2.10.Ia3795e192f5bbe17e6714e45fcb0bf5acdbd4c17@changeid>
-Subject: Re: [PATCH v2 10/13] arm64: dts: qcom: sc7180: Set up lazor r3+ as sc7180-lite SKUs
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>
-Date:   Wed, 03 Mar 2021 00:16:46 -0800
-Message-ID: <161475940685.1478170.2315767506969423960@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303081321.GA6609@CORE.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-03-01 13:34:34)
-> From: Matthias Kaehlcke <mka@chromium.org>
->=20
-> Lazor rev3 and later use the 'lite' version of the SC7180 SoC.
->=20
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> [dianders: Adjust commit message which referred to downstream history]
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+On Wed, Mar 03, 2021 at 10:13:21AM +0200, Oded Gabbay wrote:
+> Hi Greg,
+> 
+> This pull request contains some fixes of the habanalabs driver for
+> 5.12-rc2.
+> Nothing too scary, more details are in the tag.
+> 
+> Thanks,
+> Oded
+> 
+> The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
+> 
+>   Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-03-03
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Pulled and pushed out, thanks.
+
+greg k-h
