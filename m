@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920F332B778
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E28332B771
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351537AbhCCLKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:10:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37644 "EHLO mail.kernel.org"
+        id S1351113AbhCCLJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:09:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237428AbhCCBXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232926AbhCCBXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 20:23:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6182864FAB;
-        Wed,  3 Mar 2021 01:21:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 306C964FB4;
+        Wed,  3 Mar 2021 01:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614734505;
-        bh=VUBb0VvNaMz+gL0iRQlrXVk6Yf5iiLcf60PqNijW8+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o/3nSsQFkf5tA0HiZrE4wsjnRDwnHOBA3//vfm69LtlfEh3jJpDpozNvJ9R6jzssJ
-         MGoFaKt7otLsAOfPWlOudE/OAQJX/gpxRhOaZaM0d4ZjnAZ/wRMNaMKHkPV3HrJD7s
-         KdGxXltmojwBCUs5rRpZANOr2I9onF7LZtaPrkjoAMNBCfE2945XxXSm/W68AH10tk
-         CZrGg2UeFD6Vlt8OOE/ksF2kScckuEDsHvzXJ75gDdMx+90ypYHkk8HXZ0Lj/bZDrt
-         3PxZdS1VN/N83N1tC0Oy/BiZicSO1z8c8K+YYO5NQcMdqxlqe6GCjF4UA5Hh4f7Ffh
-         HDVS6nsFTcAqA==
-Date:   Wed, 3 Mar 2021 09:21:39 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Pawel Laszczak <pawell@cadence.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jacob Wen <jian.w.wen@oracle.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
- from trace events
-Message-ID: <20210303012139.GA11703@nchen>
-References: <20210226185909.100032746@goodmis.org>
- <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
- <20210227141802.5c9aca91@oasis.local.home>
- <20210227190831.56956c80@oasis.local.home>
- <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
- <20210302082355.GA8633@nchen>
- <20210302095605.7b2881cd@gandalf.local.home>
+        s=k20201202; t=1614734550;
+        bh=uYBqMWEu2cum0jtgCVaXQt5AB4RMzXYdMt4CxTKk0fw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Ve9j/TxL2rBLxXwJRfTZy23sV8UIjOVbxxKaUnt4dpCtMxhM86qUgjPJIzt8qSkiq
+         Bd0NSV3Qy2C7Zzb0B4qJh/YFO+LuKyFxuojHv4T6TlkyLkNmGJ5byjqOxBdAl8g9Ja
+         emOZpQpoaNOez4/w/dg8MKBNh0vCrZiMY1iakKG+B7CZgFafrWQW4GnuDbOhHQFkL0
+         tY5S9xox+rgRFIeSWUEjVvkwTgVNglXAZ3T5UYEXmZB4Pv82WDVsZAwk7KSJWZErpk
+         POoEEkC3TFHH73KlN1TlRPhBqbavw2x9ayBfYGvcZJ2VjICDBIdl66Ru5QAl+HFPfG
+         d3gFcHbvanR1Q==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BA1CB3522A62; Tue,  2 Mar 2021 17:22:29 -0800 (PST)
+Date:   Tue, 2 Mar 2021 17:22:29 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 11/13] rcu/nocb: Only cancel nocb timer if not polling
+Message-ID: <20210303012229.GB20917@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-12-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302095605.7b2881cd@gandalf.local.home>
+In-Reply-To: <20210223001011.127063-12-frederic@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-02 09:56:05, Steven Rostedt wrote:
-> On Tue, 2 Mar 2021 16:23:55 +0800
-> Peter Chen <peter.chen@kernel.org> wrote:
+On Tue, Feb 23, 2021 at 01:10:09AM +0100, Frederic Weisbecker wrote:
+> No need to disarm the nocb_timer if rcu_nocb is polling because it
+> shouldn't be armed either.
 > 
-> s it looks like it uses %pa which IIUC from the printk code, it
-> > > >> dereferences the pointer to find it's virtual address. The event has
-> > > >> this as the field:
-> > > >>
-> > > >>                 __field(struct cdns3_trb *, start_trb_addr)
-> > > >>
-> > > >> Assigns it with:
-> > > >>
-> > > >>                 __entry->start_trb_addr = req->trb;
-> > > >>
-> > > >> And prints that with %pa, which will dereference pointer at the time of
-> > > >> reading, where the address in question may no longer be around. That
-> > > >> looks to me as a potential bug.  
-> > 
-> > Steven, thanks for reporting. Do you mind sending patch to fix it?
-> > If you have no time to do it, I will do it later.
-> > 
-> 
-> I would have already fixed it, but I wasn't exactly sure how this is used.
-> 
-> In Documentation/core-api/printk-formats.rst we have:
-> 
->    Physical address types phys_addr_t
->    ----------------------------------
-> 
->    ::
-> 
->            %pa[p]  0x01234567 or 0x0123456789abcdef
-> 
->    For printing a phys_addr_t type (and its derivatives, such as
->    resource_size_t) which can vary based on build options, regardless of the
->    width of the CPU data path.
-> 
-> So it only looks like it is used to for the size of the pointer.
-> 
-> I guess something like this might work:
-> 
-> diff --git a/drivers/usb/cdns3/cdns3-trace.h b/drivers/usb/cdns3/cdns3-trace.h
-> index 8648c7a7a9dd..d3b8624fc427 100644
-> --- a/drivers/usb/cdns3/cdns3-trace.h
-> +++ b/drivers/usb/cdns3/cdns3-trace.h
-> @@ -214,7 +214,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
->  		__field(int, no_interrupt)
->  		__field(int, start_trb)
->  		__field(int, end_trb)
-> -		__field(struct cdns3_trb *, start_trb_addr)
-> +		__field(phys_addr_t, start_trb_addr)
->  		__field(int, flags)
->  		__field(unsigned int, stream_id)
->  	),
-> @@ -230,7 +230,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
->  		__entry->no_interrupt = req->request.no_interrupt;
->  		__entry->start_trb = req->start_trb;
->  		__entry->end_trb = req->end_trb;
-> -		__entry->start_trb_addr = req->trb;
-> +		__entry->start_trb_addr = *(const phys_addr_t *)req->trb;
->  		__entry->flags = req->flags;
->  		__entry->stream_id = req->request.stream_id;
->  	),
-> @@ -244,7 +244,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
->  		__entry->status,
->  		__entry->start_trb,
->  		__entry->end_trb,
-> -		__entry->start_trb_addr,
-> +		/* %pa dereferences */ &__entry->start_trb_addr,
->  		__entry->flags,
->  		__entry->stream_id
->  	)
-> 
-> 
-> Can you please test it? I don't have the hardware, but I also want to make
-> sure I don't break anything.
-> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
 
-Hi Steve,
+OK, so it does make sense to move that del_timer() under the following
+"if" statement, then.  ;-)
 
-Regarding this issue, I have one question:
-- If the virtual address is got from dma_alloc_coherent, can't we print
-this address using %pa to get its physical address (the same with DMA address),
-or its DMA address using %pad? req->trb is the virtual address got from
-dma_alloc_coherent. And what's the logic for this "unsafe dereference" warning?
-Thanks.
-
--- 
-
-Thanks,
-Peter Chen
-
+> ---
+>  kernel/rcu/tree_plugin.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 9da67b0d3997..d8b50ff40e4b 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -2186,18 +2186,18 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+>  	my_rdp->nocb_gp_gp = needwait_gp;
+>  	my_rdp->nocb_gp_seq = needwait_gp ? wait_gp_seq : 0;
+>  	if (bypass) {
+> -		raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+> -		// Avoid race with first bypass CB.
+> -		if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+> -			WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+> -			del_timer(&my_rdp->nocb_timer);
+> -		}
+>  		if (!rcu_nocb_poll) {
+> +			raw_spin_lock_irqsave(&my_rdp->nocb_gp_lock, flags);
+> +			// Avoid race with first bypass CB.
+> +			if (my_rdp->nocb_defer_wakeup > RCU_NOCB_WAKE_NOT) {
+> +				WRITE_ONCE(my_rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+> +				del_timer(&my_rdp->nocb_timer);
+> +			}
+>  			// At least one child with non-empty ->nocb_bypass, so set
+>  			// timer in order to avoid stranding its callbacks.
+>  			mod_timer(&my_rdp->nocb_bypass_timer, j + 2);
+> +			raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+>  		}
+> -		raw_spin_unlock_irqrestore(&my_rdp->nocb_gp_lock, flags);
+>  	}
+>  	if (rcu_nocb_poll) {
+>  		/* Polling, so trace if first poll in the series. */
+> -- 
+> 2.25.1
+> 
