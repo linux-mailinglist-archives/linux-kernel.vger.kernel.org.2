@@ -2,83 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D7432BE36
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDDB32BE37
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385344AbhCCRJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355216AbhCCNBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:01:09 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A151C061788;
-        Wed,  3 Mar 2021 05:00:28 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id h4so28341844ljl.0;
-        Wed, 03 Mar 2021 05:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dOy9ZppsbqJ8d9Vw/01DvHHDmX6JevAG3/in+sKRFV0=;
-        b=CoqsHLxvwbr7yA9q9zfeV9RH6ggxFdA2zDK/DbxJmgWB8Opk3GkcmtDJ2Tdo2Ow+O8
-         7NVdv1mHwj9lNcP5AjB2zWnpNGj2ATseP7Qjk1RDLL6NcOfR0q7Qjpgj8/tcmJQwjozR
-         y+YYwtdAnqMo084syy2ZfDlAKLFNGKSNV/oW+lXe4meuaHbTTms5xRA6MNBwOUV8RFp5
-         0ylzRt79azux2P7JKmBlSMknntiLT+2Fr0LAZkt3yNTupdhnYsVYfhckQ6QOo7pSE2sS
-         KwmQFSURMDOivA/qOV9EWOn0G0bh9+CNnULz0Ji5dEoZiZhXlskasFZFx20dKiOiYBK8
-         b/7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dOy9ZppsbqJ8d9Vw/01DvHHDmX6JevAG3/in+sKRFV0=;
-        b=XVRANtIkcYYFR9i3qcuHaF+gtoELQDosmNLooOAt38K72ryr+UjeyiamgNygYzIL1F
-         H0HHgB+3ZVrIMO7PFWWtCVzbFN/AcEI2R2fsdXmqFd24eaAiMidzFTETNhh0E5deJK29
-         Ziis+t8X8ovOZiuH+SozSd5TFmk0ydY0vavZovxSlMqrXSy0F+612dD1hgVdYpXoGZf9
-         CM7u3kGlg0DKEThuCNqvdcbLQ/avyj7KjDM7SPoOivXm5xbtqyRc0zCGMem3JPorSe4K
-         IGkcUH4IST7D/O1v+a7U9VxtyYxDBrRjGUwuRYfBqzQJmPOVm6k3tFHwqqb1uudpHZd1
-         mIxw==
-X-Gm-Message-State: AOAM531BDuyWQ7k/V2LFc3vo90ldO3MDxIEbqjLdQB5/b9wCAFDGNCPm
-        xiyz+4uJFdPJtddR8r8Qfft8jfPRO0KrjubbFqg=
-X-Google-Smtp-Source: ABdhPJy/vKnaX4CJ0cGGsM1LwtY6tY0tSeDOcU8iV8x233uqYUnrs2z76/qKbL8A6k9nsBu2g8msCvCPTfOIO3Vi1W8=
-X-Received: by 2002:a2e:9a4e:: with SMTP id k14mr12688149ljj.116.1614776427143;
- Wed, 03 Mar 2021 05:00:27 -0800 (PST)
+        id S1385365AbhCCRKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:10:04 -0500
+Received: from mga18.intel.com ([134.134.136.126]:22403 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231439AbhCCNFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:05:13 -0500
+IronPort-SDR: RYehrRKERWhIJE8Vb/KtJ/Y6bcK2Cd6Ovu7Nij3unrLOm50fOVpYdra7SMiuklhgLh6k6KiOjR
+ BjR5BOJ+HMvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174828312"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="174828312"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 05:03:36 -0800
+IronPort-SDR: 55lkj2sT9W6nBoIT5jfZGlpvR3QNgsRPLRZ6KcCJGfd+jDPvdGp2zIqrVA2woFz5+8zu0D5Fz1
+ SHQDve60uRpw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="600150906"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Mar 2021 05:03:34 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lHRA6-0001Vg-7Z; Wed, 03 Mar 2021 13:03:34 +0000
+Date:   Wed, 03 Mar 2021 21:03:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.02.26a] BUILD SUCCESS
+ 4ee0eb7c0cbccaae8e5e3681d852d4e7f50c4378
+Message-ID: <603f8915.g52koxmZcrPY0rND%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210222140756.713-1-heiko.thiery@gmail.com> <20210222140756.713-3-heiko.thiery@gmail.com>
- <CAOMZO5C4bL72mksHG4GfikgLOxib-A659rac7VkpjGsm150O_A@mail.gmail.com> <CAEyMn7akV6G4PkS266pMwi+nro6-Tffc0Zt6LN9sV7Kgi2dKcg@mail.gmail.com>
-In-Reply-To: <CAEyMn7akV6G4PkS266pMwi+nro6-Tffc0Zt6LN9sV7Kgi2dKcg@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 3 Mar 2021 10:00:15 -0300
-Message-ID: <CAOMZO5AdNjr46JYyVDRWemjsCunb6NxUy5hpuRndB9gvgaNqdw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: fsl: add support for Kontron
- pitx-imx8m board
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.02.26a
+branch HEAD: 4ee0eb7c0cbccaae8e5e3681d852d4e7f50c4378  rcu/tree: Add a trace event for RCU CPU stall warnings
 
-On Wed, Mar 3, 2021 at 9:54 AM Heiko Thiery <heiko.thiery@gmail.com> wrote:
+elapsed time: 720m
 
-> > reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
->
-> I used the same name as used on imx8mq-evk. Do you think a better name
-> is the one you proposed?
+configs tested: 94
+configs skipped: 2
 
-Yes, the way I proposed is the preferred one. Thanks
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          urquell_defconfig
+arm                       cns3420vb_defconfig
+sh                   secureedge5410_defconfig
+mips                          malta_defconfig
+arm                         assabet_defconfig
+arm                      tct_hammer_defconfig
+mips                         bigsur_defconfig
+m68k                       bvme6000_defconfig
+arm                          collie_defconfig
+nds32                            alldefconfig
+h8300                    h8300h-sim_defconfig
+powerpc                        cell_defconfig
+mips                      maltasmvp_defconfig
+arm                        spear6xx_defconfig
+parisc                generic-64bit_defconfig
+arm                       versatile_defconfig
+arc                              alldefconfig
+sh                     magicpanelr2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210303
+i386                 randconfig-a003-20210303
+i386                 randconfig-a002-20210303
+i386                 randconfig-a004-20210303
+i386                 randconfig-a006-20210303
+i386                 randconfig-a001-20210303
+i386                 randconfig-a016-20210303
+i386                 randconfig-a012-20210303
+i386                 randconfig-a014-20210303
+i386                 randconfig-a013-20210303
+i386                 randconfig-a011-20210303
+i386                 randconfig-a015-20210303
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210302
+x86_64               randconfig-a016-20210302
+x86_64               randconfig-a015-20210302
+x86_64               randconfig-a014-20210302
+x86_64               randconfig-a012-20210302
+x86_64               randconfig-a011-20210302
+x86_64               randconfig-a006-20210303
+x86_64               randconfig-a001-20210303
+x86_64               randconfig-a004-20210303
+x86_64               randconfig-a002-20210303
+x86_64               randconfig-a005-20210303
+x86_64               randconfig-a003-20210303
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
