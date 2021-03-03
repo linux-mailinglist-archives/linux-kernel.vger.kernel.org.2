@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CE732BE02
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B742832BE05
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445360AbhCCQu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:50:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47158 "EHLO mail.kernel.org"
+        id S1445955AbhCCQu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:50:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350209AbhCCMWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:22:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A2A164DF2;
-        Wed,  3 Mar 2021 08:42:22 +0000 (UTC)
+        id S1350195AbhCCMWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:22:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60AA664EDB;
+        Wed,  3 Mar 2021 08:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614760942;
-        bh=FRgMk+OAmFAEpU9UR2Llp/Xzz5XikkDKRFOVhCQLfOM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=piRHX4X9mqP8OhBnzoEcWJnGVjmsF3VKwjWy/H6p/jP0BVsAXbbR+a8JrSQsB5OVe
-         EYSHmrQtZ6KgHH4dbID61DeG9ubb1A1+O1urXd8g2oLusGHgpoDL+OyA/ZMs86WdIs
-         wvZktXeijQSTqiKjim7b/fBIJDjHt5Qx3xoK7MdhFD8rYqG6KQQ8DqF8xazonPnHgQ
-         +8WjH4TFmho3rfHZWvXyV5ieOnLoglKsXCJt4kwg+wleoXTF3Il7hLH8KNUdCdI+rQ
-         +B2GY8XDkoiu0TYaeV9/N6AOKvDLIrpOdvxlh96FLs32atLdLs6HQTkHTTI+l/jCrt
-         TBVQQTOJBv3vg==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lHN5I-000rIv-2x; Wed, 03 Mar 2021 09:42:20 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts/kernel-doc: ignore identifier on anonymous enums
-Date:   Wed,  3 Mar 2021 09:42:14 +0100
-Message-Id: <055ad57879f1b9381b90879e00f72fde1c3a5647.1614760910.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        s=k20201202; t=1614761070;
+        bh=D4rBZkJRUX3LCLXa+cvsr19cocx6FJQsH84hlT/eZDg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UDd9M3IGP0q8tvAsZ9ho78vKWkU5is2I66XLUyKSs62zdyCO5dOguKY0bvcO8EhoJ
+         26ViNy/bCkghNi6xKYhtp+bsWs5f/IuEzftr81s7ctVVvVvAZH2dF6StvsQVC6Jtg2
+         fzcqWGlVp3xp7F3gs/tjz+0FTJKV6XVj/D03Vqq/Gl2nF8PXlovasMz33DjeRpZP/m
+         qWX0qkhEnNI3kB7fPvYoP1ibI20DeW+LZVs/QgGoscYtMwB5MH2fh4jyHy7EtOvz92
+         ScBNTMnP03KBAQdLKvaNUCgbm53EIzreMjr/PVhk0mOdiPrfbxbcH87HaCAx7WXAlx
+         ueliHzSy1tHSg==
+Date:   Wed, 3 Mar 2021 09:44:26 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
+Subject: Re: anonymous enums in kernel doc
+Message-ID: <20210303094426.1c3f6ff3@coco.lan>
 In-Reply-To: <CAHp75VcG544HZ1j_6jvZoba6kEjKXXfZ8deJWmwNQ08mC35NrA@mail.gmail.com>
-References: <CAHp75VcG544HZ1j_6jvZoba6kEjKXXfZ8deJWmwNQ08mC35NrA@mail.gmail.com>
+References: <CAHp75VfpnGEZcnrQLFYaFQ-HuxTmPw5OnewKmRGfXQf__ztjww@mail.gmail.com>
+        <87r1lgx8fo.fsf@meer.lwn.net>
+        <CAHp75Vc0SwC=WxUOiokUik1G4uPE6bHfX_F_ckgp-eEJaVuWhA@mail.gmail.com>
+        <87mtw4x7rw.fsf@meer.lwn.net>
+        <CAHp75VcG544HZ1j_6jvZoba6kEjKXXfZ8deJWmwNQ08mC35NrA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When anonymous enums are used, the identifier is empty.
+Em Tue, 16 Feb 2021 19:12:58 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
 
-While, IMO, it should be avoided the usage of such enums,
-adding support for it is not hard.
+> On Tue, Feb 16, 2021 at 7:05 PM Jonathan Corbet <corbet@lwn.net> wrote:
+> >
+> > Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> >  
+> > > On Tue, Feb 16, 2021 at 6:51 PM Jonathan Corbet <corbet@lwn.net> wrote:  
+> > >>  
+> > >> > Mauro, can you do some test cases in your workflow against anonymous
+> > >> > enum in ernel doc, please?
+> > >> >
+> > >> > They are broken again, please fix the script!
+> > >> >
+> > >> > drivers/pinctrl/intel/pinctrl-intel.c:204: warning: wrong kernel-doc
+> > >> > identifier on line:
+> > >> > * enum - Locking variants of the pad configuration
+> > >> >
+> > >> > Above is simply a wrong statement.  
+> > >>
+> > >> The real problem, perhaps, is that there seems to be little point in
+> > >> adding kerneldoc comments for anonymous enums; where are you going to
+> > >> use that documentation?  
+> > >
+> > > I had been explicitly told during review (IIRC by maintainers) to make
+> > > it such, while the initial version was exactly like you are thinking
+> > > of. So, I'm not the right person to be asked :-)  
+> 
+> Just for a reference [1].
+> 
+> > >>  The error message could perhaps be changed to
+> > >> say that; meanwhile, perhaps this one could be fixed with an action like
+> > >> s%/**%/*% ?  
+> > >
+> > > See above. I think regression comes from the kernel doc script,
+> > > earlier it was okay. That said, the author of kernel doc changes has
+> > > to submit a patch to amend the driver and maintainers will review it.  
+> >
+> > kerneldoc now warns about various incorrect things that it used to just
+> > silently pass over.  There is no regression here, just a new diagnostic
+> > to point out something that was never going to work right.  Unless you
+> > have a good idea for what kerneldoc should do with a block like that?  
+> 
+> As it does, put description of individual fields and prepend it with a
+> common part.
+> 
+> So,
+> 
+> enum - Bla bla bla
+>  @FOO: ABC
+>  @BAR: DEF
+> Description
+> 
+> Should go in the doc for the corresponding file like (as an example)
+> 
+> Anonymous enumeration Bla bla bla
+> Description
+> 
+> FOO ABC
+> BAR DEF
+> 
+> (not sure about indentation, emphasizing and separators, but I think
+> you got the idea).
+> 
+> > (An alternative fix, of course, would be to give the enum a name so it
+> > can actually be used for type checking.)  
+> 
+> That enum is not used as an enum, it provides the logically unified constants.
 
-So, postpone the check for empty identifiers to happen
-only at the dump phase.
+What's the problem of giving it a name?
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/kernel-doc | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+You could call it as "intel_pinctrl_pad" or something similar.
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 68df17877384..f8ebbf5e9f12 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1412,9 +1412,14 @@ sub dump_enum($$) {
- 
-     if ($members) {
- 	if ($identifier ne $declaration_name) {
--	    print STDERR "${file}:$.: warning: expecting prototype for enum $identifier. Prototype was for enum $declaration_name instead\n";
-+	    if ($identifier eq "") {
-+		print STDERR "${file}:$.: warning: wrong kernel-doc identifier on line:\n";
-+	    } else {
-+		print STDERR "${file}:$.: warning: expecting prototype for enum $identifier. Prototype was for enum $declaration_name instead\n";
-+	    }
- 	    return;
- 	}
-+	$declaration_name = "(anonymous)" if ($declaration_name eq "");
- 
- 	my %_members;
- 
-@@ -2132,7 +2137,7 @@ sub process_name($$) {
- 	    ++$warnings;
- 	}
- 
--	if ($identifier eq "") {
-+	if ($identifier eq "" && $decl_type ne "enum") {
- 	    print STDERR "${file}:$.: warning: wrong kernel-doc identifier on line:\n";
- 	    print STDERR $_;
- 	    ++$warnings;
--- 
-2.29.2
+> Personally I don't see why the kernel doc can't digest this.
 
+It is not hard to add support for this special case. Just sent a
+patch.
+
+Yet, this adds additional complexity on an script that it is
+already complex enough.
+
+> 
+> [1]: https://patchwork.ozlabs.org/project/linux-gpio/patch/20190808132128.13359-1-andriy.shevchenko@linux.intel.com/
+> 
+
+Thanks,
+Mauro
