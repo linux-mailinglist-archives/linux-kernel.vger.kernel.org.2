@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74ED132F16C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FAA32F16A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhCERib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:38:31 -0500
-Received: from mga03.intel.com ([134.134.136.65]:60556 "EHLO mga03.intel.com"
+        id S229982AbhCERi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:38:29 -0500
+Received: from mga05.intel.com ([192.55.52.43]:32194 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229616AbhCERiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:38:11 -0500
-IronPort-SDR: wxJbIinaCZWXw/rufTYD1Erd5Wv/kkJVm0mLfzQFX3ny6M4du2vt9FY4A6TRPJNHT2G18rwdfr
- lfuTNXg+zUVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="187747005"
+        id S229597AbhCERiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:38:09 -0500
+IronPort-SDR: uf0CQD0lQpIw9IyvB4c/h3B2nJkv8yWRttsSC9lyiVeIkSwWWVuZhaBAvJ6NoVs1XE5j134SAZ
+ jsxBhmQKUM7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="272700461"
 X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="187747005"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 09:38:10 -0800
-IronPort-SDR: i/1+a3A7ccysz/lIx9zz1SkMSoP5qxWNfjt55EfMrh3UCPngZ16toJm8JHdM4fMa3K/hUHIwYM
- of7Y3Fwtu94g==
+   d="scan'208";a="272700461"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 09:38:09 -0800
+IronPort-SDR: ypr/s8ZzHBnuvkgrFHZ6GS8A+fBXl/weKpW42fnni5oscP5ifcEJjc0AyzIu6i6465Rewt2JX6
+ DmDQNa9uZd1g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="375069277"
+   d="scan'208";a="436581435"
 Received: from viggo.jf.intel.com (HELO ray) ([10.54.77.144])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Mar 2021 09:38:09 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Mar 2021 09:38:09 -0800
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by ray (Postfix) with ESMTP id 21282E2301;
-        Wed,  3 Mar 2021 10:02:27 -0800 (PST)
-Subject: Re: [PATCH v3 3/5] x86/sgx: Replace section->init_laundry_list with a
- temp list
+        by ray (Postfix) with ESMTP id DD1DDE43D7;
+        Wed,  3 Mar 2021 15:48:46 -0800 (PST)
+Subject: Re: [PATCH v3 4/5] x86/sgx: Replace section->page_list with a global
+ free page list
 To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
 Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -37,7 +37,7 @@ Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         linux-kernel@vger.kernel.org
 References: <20210303150323.433207-1-jarkko@kernel.org>
- <20210303150323.433207-4-jarkko@kernel.org>
+ <20210303150323.433207-5-jarkko@kernel.org>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -82,12 +82,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <5f0c773f-4da1-7418-be42-e11427c2f137@intel.com>
-Date:   Wed, 3 Mar 2021 10:02:27 -0800
+Message-ID: <49b4f4d9-3f49-efd0-ce44-c24d1ee3daa6@intel.com>
+Date:   Wed, 3 Mar 2021 15:48:46 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210303150323.433207-4-jarkko@kernel.org>
+In-Reply-To: <20210303150323.433207-5-jarkko@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -95,189 +95,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> -static void sgx_sanitize_section(struct sgx_epc_section *section)
-> +static void sgx_sanitize_section(struct list_head *laundry)
->  {
+On 3/3/21 7:03 AM, Jarkko Sakkinen wrote:
+> Background
+> ==========
+> 
+> EPC section is covered by one or more SRAT entries that are associated with
+> one and only one PXM (NUMA node). The current implementation overheats a
 
-Does this need a better function name now that it's not literally
-dealing with sections at *all*?
+Overheats?
 
-	sgx_sanitize_pages()
+> single NUMA node, because sgx_alloc_epc_page() always starts looking for
+> pages from the same EPC section everytime.
 
-perhaps.
+"every time"
 
->  	struct sgx_epc_page *page;
->  	LIST_HEAD(dirty);
->  	int ret;
->  
->  	/* init_laundry_list is thread-local, no need for a lock: */
-> -	while (!list_empty(&section->init_laundry_list)) {
-> +	while (!list_empty(laundry)) {
->  		if (kthread_should_stop())
->  			return;
->  
-> -		/* needed for access to ->page_list: */
-> -		spin_lock(&section->lock);
-> -
-> -		page = list_first_entry(&section->init_laundry_list,
-> -					struct sgx_epc_page, list);
-> +		page = list_first_entry(laundry, struct sgx_epc_page, list);
->  
->  		ret = __eremove(sgx_get_epc_virt_addr(page));
-> -		if (!ret)
-> -			list_move(&page->list, &section->page_list);
-> -		else
-> +		if (!ret) {
-> +			/* The page is clean - move to the free list. */
-> +			list_del(&page->list);
-> +			sgx_free_epc_page(page);
-> +		} else {
-> +			/* The page is not yet clean - move to the dirty list. */
->  			list_move_tail(&page->list, &dirty);
-> -
-> -		spin_unlock(&section->lock);
-> +		}
->  
->  		cond_resched();
->  	}
->  
-> -	list_splice(&dirty, &section->init_laundry_list);
-> +	list_splice(&dirty, laundry);
->  }
->  
->  static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
-> @@ -400,6 +398,7 @@ static bool sgx_should_reclaim(unsigned long watermark)
->  
->  static int ksgxd(void *p)
->  {
-> +	struct list_head *laundry = p;
->  	int i;
->  
->  	set_freezable();
-> @@ -408,16 +407,13 @@ static int ksgxd(void *p)
->  	 * Sanitize pages in order to recover from kexec(). The 2nd pass is
->  	 * required for SECS pages, whose child pages blocked EREMOVE.
->  	 */
-> -	for (i = 0; i < sgx_nr_epc_sections; i++)
-> -		sgx_sanitize_section(&sgx_epc_sections[i]);
-> +	sgx_sanitize_section(laundry);
-> +	sgx_sanitize_section(laundry);
+> Only within a section it does pick pages in FIFO fashion, i.e. the oldest
+> freed in that section is the EPC page given back to the caller.  That does
+> not do any good, as the pages in the same node are performance-wise equal.
 
-Did you intend to call this twice?
+I'm not sure why all of this is relevant and it doesn't really tell me
+anything about this patch's place in the *series*.
 
-> -	for (i = 0; i < sgx_nr_epc_sections; i++) {
-> -		sgx_sanitize_section(&sgx_epc_sections[i]);
-> +	if (!list_empty(laundry))
-> +		WARN(1, "EPC section %d has unsanitized pages.\n", i);
->  
-> -		/* Should never happen. */
-> -		if (!list_empty(&sgx_epc_sections[i].init_laundry_list))
-> -			WARN(1, "EPC section %d has unsanitized pages.\n", i);
-> -	}
-> +	kfree(laundry);
+Why are we destroying all of the per-node structures just before adding
+NUMA support?
 
-This is a bit unfortunate.  'laundry' is allocated up in another thread
-and the lifetime isn't obvious.  It's just 32 bytes, but this is just
-asking to be leaked.
-
->  	while (!kthread_should_stop()) {
->  		if (try_to_freeze())
-> @@ -436,11 +432,11 @@ static int ksgxd(void *p)
->  	return 0;
->  }
->  
-> -static bool __init sgx_page_reclaimer_init(void)
-> +static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
->  {
->  	struct task_struct *tsk;
->  
-> -	tsk = kthread_run(ksgxd, NULL, "ksgxd");
-> +	tsk = kthread_run(ksgxd, laundry, "ksgxd");
->  	if (IS_ERR(tsk))
->  		return false;
->  
-> @@ -614,7 +610,8 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
->  
->  static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
->  					 unsigned long index,
-> -					 struct sgx_epc_section *section)
-> +					 struct sgx_epc_section *section,
-> +					 struct list_head *laundry)
->  {
-
-I think this at least need a comment somewhere about what this function
-is doing with 'laundry'.
-
->  	unsigned long nr_pages = size >> PAGE_SHIFT;
->  	unsigned long i;
-> @@ -632,13 +629,12 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
->  	section->phys_addr = phys_addr;
->  	spin_lock_init(&section->lock);
->  	INIT_LIST_HEAD(&section->page_list);
-> -	INIT_LIST_HEAD(&section->init_laundry_list);
->  
->  	for (i = 0; i < nr_pages; i++) {
->  		section->pages[i].section = index;
->  		section->pages[i].flags = 0;
->  		section->pages[i].owner = NULL;
-> -		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
-> +		list_add_tail(&section->pages[i].list, laundry);
->  	}
->  
->  	section->free_cnt = nr_pages;
-> @@ -656,7 +652,7 @@ static inline u64 __init sgx_calc_section_metric(u64 low, u64 high)
->  	       ((high & GENMASK_ULL(19, 0)) << 32);
->  }
->  
-> -static bool __init sgx_page_cache_init(void)
-> +static bool __init sgx_page_cache_init(struct list_head *laundry)
->  {
->  	u32 eax, ebx, ecx, edx, type;
->  	u64 pa, size;
-> @@ -679,7 +675,7 @@ static bool __init sgx_page_cache_init(void)
->  
->  		pr_info("EPC section 0x%llx-0x%llx\n", pa, pa + size - 1);
->  
-> -		if (!sgx_setup_epc_section(pa, size, i, &sgx_epc_sections[i])) {
-> +		if (!sgx_setup_epc_section(pa, size, i, &sgx_epc_sections[i], laundry)) {
->  			pr_err("No free memory for an EPC section\n");
->  			break;
->  		}
-
-This is a great place for a comment about what is coming back on 'laundry'.
-
-> @@ -697,18 +693,25 @@ static bool __init sgx_page_cache_init(void)
->  
->  static int __init sgx_init(void)
->  {
-> +	struct list_head *laundry;
->  	int ret;
->  	int i;
->  
->  	if (!cpu_feature_enabled(X86_FEATURE_SGX))
->  		return -ENODEV;
->  
-> -	if (!sgx_page_cache_init()) {
-> +	laundry = kzalloc(sizeof(*laundry), GFP_KERNEL);
-> +	if (!laundry)
-> +		return -ENOMEM;
-> +
-> +	INIT_LIST_HEAD(laundry);
-> +
-> +	if (!sgx_page_cache_init(laundry)) {
->  		ret = -ENOMEM;
->  		goto err_page_cache;
->  	}
->  
-> -	if (!sgx_page_reclaimer_init()) {
-> +	if (!sgx_page_reclaimer_init(laundry)) {
->  		ret = -ENOMEM;
->  		goto err_page_cache;
->  	}
-
-I really don't like this being dynamically allocated, especially since
-it's freed in another task in a non-obvious place.
-
-Wouldn't this all just be a lot simpler if we had a global list_head?
-That will eat a whopping 16 bytes of space.
+> Replace local lists with a single global free page list, from which pages
+> are borrowed in FIFO fashion.
