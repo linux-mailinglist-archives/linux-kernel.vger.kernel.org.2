@@ -2,474 +2,655 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3D632BF63
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19B732BF61
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835375AbhCCSDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:03:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245207AbhCCPOE (ORCPT
+        id S1835362AbhCCSCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:02:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245101AbhCCPOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:14:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614784349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qHfNfuVrMiks47LKaqZBsrIcwN1DGBx0YYA80i206FI=;
-        b=Rs4HSmGA7IQInVZ9l6n+p2WgP7Yr6XpDrdhv12tQbG7YLcDr+3gryo2xk+FHCXW2SomjpV
-        15zLJvS9/Op5zJ70wGZVTbFpoj+nzQxqI7Zi9hoRn4ujIostA8C6ZpyOFtbCX1sxr/fUrf
-        RowT7IG6kmA6Db3iJBWCiER2zTIJmT4=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-scXBH3D4NuKnuaeaGspH4A-1; Wed, 03 Mar 2021 10:12:28 -0500
-X-MC-Unique: scXBH3D4NuKnuaeaGspH4A-1
-Received: by mail-qk1-f197.google.com with SMTP id 130so8049747qkm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 07:12:28 -0800 (PST)
+        Wed, 3 Mar 2021 10:14:01 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3234C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 07:12:51 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id u125so6650335wmg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 07:12:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QbSzuQXaWQqlVas85i9P22YNEMaYY4GiLoB0CbKxqYU=;
+        b=QXKSKS3fFG4f90a0xyB+pVd1nIJ0RWE4MIks3Ur6yEqanTuTB1hu/6r0VxRy6ZGcup
+         TIE0wMNwk5n2F/Mi62JK+pQPageF8jSEZ8xkwDWjUoyIpJGxmx9r61zCJI0SNEaHp/fI
+         Ov7CgNP7u4kcWFsvI4m5HsGV5MoiJ5TFzcvaBo0QQBY6I/iNE1Avus6S1aYzb7RCLxxx
+         Efp4CiEC251FApjDkkuoZeJGqJsQT1+6lduqZG2wKZSvZZlPULjHKPrwwQ0zhE3bcc75
+         EUNnJrnY10yHIsYpBxbGGpPvN8XEYgdJa84tJieFbjV5i4Be2bUWiEWaRuVKJlSjKiAP
+         xYwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=qHfNfuVrMiks47LKaqZBsrIcwN1DGBx0YYA80i206FI=;
-        b=f7M09yDqGn53uU5izu3lunnKX3LaT2F6DUvLHb3Gsj53wIayi1NVyTR02KCg6YWV0c
-         3214idi/c0q9GblLpG9pNBC1kAyTPuHeW9vT9XwOz1G9vcjC9FrxflI9gwGy82WtNEbf
-         2O9tk5fOSUo841X0G9I7zRYkDTOE3TU9Vg/9pHF9SzzmnKbU9Jb9NdebIDk4T13ajlvP
-         +SNUWHW5bHC4aYpPdAVEktSR7RcWcVXtsFuPSQJzmHMYnUcqlCfoIdrYBOWyOYnNMpcc
-         RD+GDhgqyu2w21RdXuSMkz8PpHk3rE2sQho3AK7EkU0JpYBuDjkGefOJkW5kjGny6/kV
-         jOYg==
-X-Gm-Message-State: AOAM5312l67GPabU7sTehwjhVjvfirTN937oIOD6vojrzOl53k7WLir/
-        HJj0+a5Jsy1/551NELM8uvHdOuqvUgRHVdiZQx21kFgRK8PJeB1T13puQdTAY3Ppv5NgfP5QZBh
-        GmSRxUlRqH0lreoZKxGzggwZ0
-X-Received: by 2002:ac8:35d1:: with SMTP id l17mr23147415qtb.127.1614784347800;
-        Wed, 03 Mar 2021 07:12:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyNQOZ02X2nA4fBhCsZNWwA2J3yIWw5iu8ogSW+HfrOhzLheBYD196oAyHXABmXPMY8TcFNYQ==
-X-Received: by 2002:ac8:35d1:: with SMTP id l17mr23147238qtb.127.1614784345750;
-        Wed, 03 Mar 2021 07:12:25 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q15sm15547232qti.9.2021.03.03.07.12.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 07:12:25 -0800 (PST)
-Subject: Re: [PATCH V3 XRT Alveo 12/18] fpga: xrt: ICAP platform driver
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-13-lizhih@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <6bbcff78-cd3b-fad8-157f-f11dc30cad21@redhat.com>
-Date:   Wed, 3 Mar 2021 07:12:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QbSzuQXaWQqlVas85i9P22YNEMaYY4GiLoB0CbKxqYU=;
+        b=k4XbAC/wHbUxM8+dGghKwR8wTWDGulW3bngk+nh5O4l3XtCsrfNL74sU4EGSh8MPYr
+         36E3+Fl0/Hx+3FDOTvyXjA9Bkdtmr940RBB95Gcxz6ARyIpLecTQ7o5rgHXdL4WNHUtH
+         yL0EKezgWpzhyRMJazsYJ2qcjo+d+nIMux7mr7+pZyjU4cn+FO+yaExTb89FazelPaGf
+         WEZCSoHLgtJBf65SlheWgHocZgQ+TPJdp8txQi5Wf+z9NMscZ5CuxHhIFmz9zjXfW8yr
+         vVzwReh29oSvNsjLlCIw7YwO5Dg0fO78Y/qRz/VyKZNNGjeCLoDM0N2zgxiT1PpMtp7p
+         38YQ==
+X-Gm-Message-State: AOAM5317V0kgy+aS2rGRDoDFBvhG5968SYpm77i8g2HgwlkB7WnWgF9U
+        weQu4cBuW/pDpX4wi+OACNvhOrkbU5mmDMGIbLQ1qg==
+X-Google-Smtp-Source: ABdhPJxPckPIWc+Bf8Kh9j4fIvUOkGQWmPWDBJkCz9OJjT8uQhggZHhxzbZ7D86CzgMlBBYTBFa47AHXKwi2JW8lw9Y=
+X-Received: by 2002:a1c:6a12:: with SMTP id f18mr9718488wmc.31.1614784370016;
+ Wed, 03 Mar 2021 07:12:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210218064019.29189-13-lizhih@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-2-mike.leach@linaro.org>
+ <4aa04906-d762-b51d-40bc-2e701583ef35@arm.com>
+In-Reply-To: <4aa04906-d762-b51d-40bc-2e701583ef35@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Wed, 3 Mar 2021 15:12:39 +0000
+Message-ID: <CAJ9a7Vic-3LS3HJn5o9K3=LX9zptRPStYd-Bj7+FYPZzTfcc-g@mail.gmail.com>
+Subject: Re: [PATCH v4 01/10] coresight: syscfg: Initial coresight system configuration
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Yabin Cui <yabinc@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Suzuki,
 
-On 2/17/21 10:40 PM, Lizhi Hou wrote:
-> Add ICAP driver. ICAP is a hardware function discovered by walking
-What does ICAP stand for ?
-> firmware metadata. A platform device node will be created for it.
-> FPGA bitstream is written to hardware through ICAP.
+On Wed, 3 Mar 2021 at 10:09, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
 >
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
-> ---
->  drivers/fpga/xrt/include/xleaf/icap.h |  29 +++
->  drivers/fpga/xrt/lib/xleaf/icap.c     | 317 ++++++++++++++++++++++++++
->  2 files changed, 346 insertions(+)
->  create mode 100644 drivers/fpga/xrt/include/xleaf/icap.h
->  create mode 100644 drivers/fpga/xrt/lib/xleaf/icap.c
+> On 1/28/21 5:09 PM, Mike Leach wrote:
+> > Creates an system management API to allow complex configurations and
+> > features to be programmed into a CoreSight infrastructure.
+> >
+> > A feature is defined as a programming set for a device or class of
+> > devices.
+> >
+> > A configuration is a set of features across the system that are enabled
+> > for a trace session.
+> >
+> > The API will manage system wide configuration, and allow complex
+> > programmed features to be added to individual device instances, and
+> > provide for system wide configuration selection on trace capture
+> > operations.
+> >
+> > This patch creates the initial data object and the initial API for
+> > loading configurations and features.
+> >
+> > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > ---
+> >   drivers/hwtracing/coresight/Makefile          |   2 +-
+> >   .../hwtracing/coresight/coresight-config.h    | 167 +++++++++++++++
+> >   drivers/hwtracing/coresight/coresight-core.c  |  12 +-
+> >   .../hwtracing/coresight/coresight-etm-perf.c  |   2 +-
+> >   .../hwtracing/coresight/coresight-etm-perf.h  |   2 +-
+> >   .../hwtracing/coresight/coresight-syscfg.c    | 197 ++++++++++++++++++
+> >   .../hwtracing/coresight/coresight-syscfg.h    |  54 +++++
+> >   7 files changed, 432 insertions(+), 4 deletions(-)
+> >   create mode 100644 drivers/hwtracing/coresight/coresight-config.h
+> >   create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.c
+> >   create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.h
+> >
+> > diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+> > index f20e357758d1..4ce854c434b1 100644
+> > --- a/drivers/hwtracing/coresight/Makefile
+> > +++ b/drivers/hwtracing/coresight/Makefile
+> > @@ -4,7 +4,7 @@
+> >   #
+> >   obj-$(CONFIG_CORESIGHT) += coresight.o
+> >   coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
+> > -             coresight-sysfs.o
+> > +             coresight-sysfs.o coresight-syscfg.o
+> >   obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
+> >   coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
+> >                     coresight-tmc-etr.o
+> > diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
+> > new file mode 100644
+> > index 000000000000..3fedf8ab3cee
+> > --- /dev/null
+> > +++ b/drivers/hwtracing/coresight/coresight-config.h
+> > @@ -0,0 +1,167 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (c) 2020 Linaro Limited, All rights reserved.
+> > + * Author: Mike Leach <mike.leach@linaro.org>
+> > + */
+> > +
+> > +#ifndef _CORESIGHT_CORESIGHT_CONFIG_H
+> > +#define _CORESIGHT_CORESIGHT_CONFIG_H
+> > +
+> > +#include <linux/coresight.h>
+> > +#include <linux/types.h>
+> > +
+> > +/* CoreSight Configuration Management - component and system wide configuration */
+> > +
+> > +/*
+> > + * Register type flags for register value descriptor:
+> > + * describe how the value is interpreted, and handled.
+> > + */
+> > +#define CS_CFG_REG_TYPE_STD          0x80    /* reg is standard reg */
+> > +#define CS_CFG_REG_TYPE_RESOURCE     0x40    /* reg is a resource */
+> > +#define CS_CFG_REG_TYPE_VAL_PARAM    0x08    /* reg value uses param */
+> > +#define CS_CFG_REG_TYPE_VAL_MASK     0x04    /* reg value bit masked */
+> > +#define CS_CFG_REG_TYPE_VAL_64BIT    0x02    /* reg value 64 bit */
+> > +#define CS_CFG_REG_TYPE_VAL_SAVE     0x01    /* reg value save on disable */
+> > +
+> > +/*
+> > + * flags defining what device class a feature will match to when processing a
+> > + * system configuration - used by config data and devices.
+> > + */
+> > +#define      CS_CFG_MATCH_CLASS_SRC_ALL      0x0001  /* match any source */
 >
-> diff --git a/drivers/fpga/xrt/include/xleaf/icap.h b/drivers/fpga/xrt/include/xleaf/icap.h
-> new file mode 100644
-> index 000000000000..a14fc0ffa78f
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/include/xleaf/icap.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Header file for XRT ICAP Leaf Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Lizhi Hou <Lizhi.Hou@xilinx.com>
-> + */
-> +
-> +#ifndef _XRT_ICAP_H_
-> +#define _XRT_ICAP_H_
-> +
-> +#include "xleaf.h"
-> +
-> +/*
-> + * ICAP driver IOCTL calls.
-> + */
-> +enum xrt_icap_ioctl_cmd {
-> +	XRT_ICAP_WRITE = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
-maybe XRT_ICAP_GET_IDCODE
-> +	XRT_ICAP_IDCODE,
-> +};
-> +
-> +struct xrt_icap_ioctl_wr {
-> +	void	*xiiw_bit_data;
-> +	u32	xiiw_data_len;
-> +};
-> +
-> +#endif	/* _XRT_ICAP_H_ */
-> diff --git a/drivers/fpga/xrt/lib/xleaf/icap.c b/drivers/fpga/xrt/lib/xleaf/icap.c
-> new file mode 100644
-> index 000000000000..0500a97bdef9
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/xleaf/icap.c
-> @@ -0,0 +1,317 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Xilinx Alveo FPGA ICAP Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
-> + *      Sonal Santan <sonals@xilinx.com>
-> + *      Max Zhen <maxz@xilinx.com>
-> + */
-> +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include "metadata.h"
-> +#include "xleaf.h"
-> +#include "xleaf/icap.h"
-> +#include "xclbin-helper.h"
-> +
-> +#define XRT_ICAP "xrt_icap"
-> +
-> +#define ICAP_ERR(icap, fmt, arg...)	\
-> +	xrt_err((icap)->pdev, fmt "\n", ##arg)
-> +#define ICAP_WARN(icap, fmt, arg...)	\
-> +	xrt_warn((icap)->pdev, fmt "\n", ##arg)
-> +#define ICAP_INFO(icap, fmt, arg...)	\
-> +	xrt_info((icap)->pdev, fmt "\n", ##arg)
-> +#define ICAP_DBG(icap, fmt, arg...)	\
-> +	xrt_dbg((icap)->pdev, fmt "\n", ##arg)
-> +
-> +/*
-> + * AXI-HWICAP IP register layout
-> + */
-> +struct icap_reg {
-> +	u32	ir_rsvd1[7];
-> +	u32	ir_gier;
-> +	u32	ir_isr;
-> +	u32	ir_rsvd2;
-> +	u32	ir_ier;
-> +	u32	ir_rsvd3[53];
-> +	u32	ir_wf;
-> +	u32	ir_rf;
-> +	u32	ir_sz;
-> +	u32	ir_cr;
-> +	u32	ir_sr;
-> +	u32	ir_wfv;
-> +	u32	ir_rfo;
-> +	u32	ir_asr;
-> +} __packed;
-> +
-> +struct icap {
-> +	struct platform_device	*pdev;
-> +	struct icap_reg		*icap_regs;
-> +	struct mutex		icap_lock; /* icap dev lock */
-> +
-> +	unsigned int		idcode;
-returned as a 64 bit value, but could be stored as 32 bit
-> +};
-> +
-> +static inline u32 reg_rd(void __iomem *reg)
-> +{
-> +	if (!reg)
-> +		return -1;
-> +
-> +	return ioread32(reg);
-Look at converting the io access to using regmap* api
-> +}
-> +
-> +static inline void reg_wr(void __iomem *reg, u32 val)
-> +{
-> +	if (!reg)
-> +		return;
-> +
-> +	iowrite32(val, reg);
-> +}
-> +
-> +static int wait_for_done(struct icap *icap)
-> +{
-> +	u32	w;
-> +	int	i = 0;
-> +
-> +	WARN_ON(!mutex_is_locked(&icap->icap_lock));
-is this needed ? wait_for_done is only called in one place.
-> +	for (i = 0; i < 10; i++) {
-> +		udelay(5);
-comment on delay.
-> +		w = reg_rd(&icap->icap_regs->ir_sr);
-> +		ICAP_INFO(icap, "XHWICAP_SR: %x", w);
-> +		if (w & 0x5)
-0x5 is a magic number, should be #defined
-> +			return 0;
-> +	}
-> +
-> +	ICAP_ERR(icap, "bitstream download timeout");
-> +	return -ETIMEDOUT;
-> +}
-> +
-> +static int icap_write(struct icap *icap, const u32 *word_buf, int size)
-> +{
-> +	int i;
-> +	u32 value = 0;
-> +
-> +	for (i = 0; i < size; i++) {
-> +		value = be32_to_cpu(word_buf[i]);
-> +		reg_wr(&icap->icap_regs->ir_wf, value);
-> +	}
-> +
-> +	reg_wr(&icap->icap_regs->ir_cr, 0x1);
-> +
-> +	for (i = 0; i < 20; i++) {
-> +		value = reg_rd(&icap->icap_regs->ir_cr);
-> +		if ((value & 0x1) == 0)
-> +			return 0;
-> +		ndelay(50);
-> +	}
-> +
-> +	ICAP_ERR(icap, "writing %d dwords timeout", size);
-> +	return -EIO;
-> +}
-> +
-> +static int bitstream_helper(struct icap *icap, const u32 *word_buffer,
-> +			    u32 word_count)
-> +{
-> +	u32 remain_word;
-> +	u32 word_written = 0;
-> +	int wr_fifo_vacancy = 0;
-> +	int err = 0;
-> +
-> +	WARN_ON(!mutex_is_locked(&icap->icap_lock));
-> +	for (remain_word = word_count; remain_word > 0;
-> +		remain_word -= word_written, word_buffer += word_written) {
-> +		wr_fifo_vacancy = reg_rd(&icap->icap_regs->ir_wfv);
-> +		if (wr_fifo_vacancy <= 0) {
-> +			ICAP_ERR(icap, "no vacancy: %d", wr_fifo_vacancy);
-> +			err = -EIO;
-> +			break;
-> +		}
-> +		word_written = (wr_fifo_vacancy < remain_word) ?
-> +			wr_fifo_vacancy : remain_word;
-> +		if (icap_write(icap, word_buffer, word_written) != 0) {
-> +			ICAP_ERR(icap, "write failed remain %d, written %d",
-> +				 remain_word, word_written);
-> +			err = -EIO;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int icap_download(struct icap *icap, const char *buffer,
-> +			 unsigned long length)
-> +{
-> +	u32	num_chars_read = DMA_HWICAP_BITFILE_BUFFER_SIZE;
-> +	u32	byte_read;
-> +	int	err = 0;
-> +
-> +	mutex_lock(&icap->icap_lock);
-> +	for (byte_read = 0; byte_read < length; byte_read += num_chars_read) {
-> +		num_chars_read = length - byte_read;
-> +		if (num_chars_read > DMA_HWICAP_BITFILE_BUFFER_SIZE)
-> +			num_chars_read = DMA_HWICAP_BITFILE_BUFFER_SIZE;
-> +
-> +		err = bitstream_helper(icap, (u32 *)buffer, num_chars_read / sizeof(u32));
+> nit: spurious TAB instead of SPACE
+>
+> > +#define CS_CFG_MATCH_CLASS_SRC_ETM4  0x0002  /* match any ETMv4 device */
+> > +
+> > +/* flags defining device instance matching - used in config match desc data. */
+> > +#define CS_CFG_MATCH_INST_ANY                0x80000000 /* any instance of a class */
+> > +
+> > +/*
+> > + * Limit number of presets in a configuration
+> > + * This is related to the number of bits (4) we use to select the preset on
+> > + * the perf command line. Preset 0 is always none selected.
+> > + * See PMU_FORMAT_ATTR(preset, "config:0-3") in coresight-etm-perf.c
+> > + */
+> > +#define CS_CFG_CONFIG_PRESET_MAX 15
+> > +
+> > +/**
+> > + * Parameter descriptor for a device feature.
+> > + *
+> > + * @name:  Name of parameter.
+> > + * @value: Initial or default value.
+> > + */
+> > +struct cscfg_parameter_desc {
+> > +     const char *name;
+> > +     u64 value;
+> > +};
+> > +
+> > +/**
+> > + * Representation of register value.
+> > + *
+> > + * Supports full 64 bit register value, or 32 bit value with optional mask
+> > + * value.
+> > + *
+> > + * @type:    define register usage and interpretation.
+> > + * @offset:  the address offset for register in the hardware device (per device specification).
+> > + * @hw_info: optional hardware device type specific information. (ETM / CTI specific etc)
+> > + * @val64:   64 bit value.
+> > + * @val32:   32 bit value.
+> > + * @mask32:  32 bit mask when using 32 bit value to access device register.
+> > + */
+> > +struct cscfg_regval_desc {
+> > +     struct {
+> > +             u32 type:8;
+> > +             u32 offset:12;
+> > +             u32 hw_info:12;
+> > +     };
+> > +     union {
+> > +             u64 val64;
+> > +             struct {
+> > +                     u32 val32;
+> > +                     u32 mask32;
+> > +             };
+> > +     };
+> > +};
+> > +
+> > +/**
+> > + * Device feature descriptor - combination of registers and parameters to
+> > + * program a device to implement a specific complex function.
+> > + *
+> > + * @name:    feature name.
+> > + * @brief:   brief description of the feature.
+> > + * @item:    List entry.
+> > + * @match_flags: matching information if loading into a device
+> > + * @nr_params:  number of parameters used.
+> > + * @params:  array of parameters used.
+> > + * @nr_regs: number of registers used.
+> > + * @reg:     array of registers used.
+> > + */
+> > +struct cscfg_feature_desc {
+> > +     const char *name;
+> > +     const char *brief;
+> > +     struct list_head item;
+> > +     u32 match_flags;
+>
+> Either we could use the cscfg_match_desc here or, simply follow
+> inlining match_flags everywhere, below (e.g, cscfg_config_feat_ref)
+>
 
-assumption that num_chars_read % 4 == 0
+Following Mathieus comments and a re-think on my part this will be
+addressed in the re-spin. I am planning to drop cfg_config_feat_ref in
+favour of mathing just by name in configs, and having discrete flags
+(and later named devices)  in the feat_desc.
 
-Add a check, or handle.
 
-> +		if (err)
-> +			goto failed;
-> +		buffer += num_chars_read;
-> +	}
-> +
-> +	err = wait_for_done(icap);
-timeout is not handled
-> +
-> +failed:
-> +	mutex_unlock(&icap->icap_lock);
-> +
-> +	return err;
-> +}
-> +
-> +/*
-> + * Run the following sequence of canned commands to obtain IDCODE of the FPGA
-> + */
-> +static void icap_probe_chip(struct icap *icap)
-> +{
-> +	u32 w;
+> > +     int nr_params;
+> > +     struct cscfg_parameter_desc *params;scfg_config_feat_ref
+> > +     int nr_regs;
+> > +     struct cscfg_regval_desc *regs;
+> > +};
+> > +
+> > +/**
+> > + * Match descriptor - Device / feature matching when loading into devices
+> > + *
+> > + * Used by loading configurations to define which class or specific devices
+> > + * they want to match used features to, and registered devices to specify which
+> > + * matching class and information they support.
+> > + *
+> > + * The load process uses these matching pairs to load feature instances into
+> > + * matching devices.
+> > + *
+> > + * @match_flags:     used to match to a particular class of device.
+> > + *
+> > + */
+> > +struct cscfg_match_desc {
+> > +     u32 match_flags;
+> > +};
+> > +
+> > +/**
+> > + * Descriptor for features referenced by a configuration.
+> > + *
+> > + * @name:    name of feature to use. Match against the @name in struct
+> > + *           cscfg_feature_desc.
+> > + * @match:   match info for the feature when used in this configuration -
+> > + *           may be all devices of a class or a specific device in that class.
+> > + */
+> > +struct cscfg_config_feat_ref {
+> > +     const char *name;
+> > +     struct cscfg_match_desc match;
+> > +};
+> > +
+> > +/**
+> > + * Configuration descriptor - describes selectable system configuration.
+> > + *
+> > + * A configuration describes device features in use, and may provide preset
+> > + * values for the parameters in those features.
+> > + *
+> > + * A single set of presets is the sum of the parameters declared by
+> > + * all the features in use - this value is @nr_total_params.
+> > + *
+> > + * @name:    name of the configuration - used for selection.
+> > + * @brief:   description of the purpose of the configuration.
+> > + * @item:    list entry.
+> > + * @nr_refs: Number of features used in this configuration.
+> > + * @refs:    references to features used in this configuration..
+> > + * @nr_presets:      Number of sets of presets supplied by this configuration.
+> > + * @nr_total_params: Sum of all parameters declared by used features
+> > + * @presets: Array of preset values.
+> > + *
+> > + */
+> > +struct cscfg_config_desc {
+> > +     const char *name;
+> > +     const char *brief;
+>
+> super nit: s/brief/desc ?
+>
 
-De magic this.
+Probably 'description' to avoid clash with all the _desc names, but yes.
 
-If this is a documented startup sequence, please add a link to the document.
+> > +     struct list_head item;
+> > +     int nr_refs;
+> > +     struct cscfg_config_feat_ref *refs;
+> > +     int nr_presets;
+> > +     int nr_total_params;
+> > +     const u64 *presets; /* nr_presets * nr_total_params */
+> > +};
+> > +
+> > +#endif /* _CORESIGHT_CORESIGHT_CONFIG_H */
+>
+>
+> > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > new file mode 100644
+> > index 000000000000..f7e396a5f9cb
+> > --- /dev/null
+> > +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > @@ -0,0 +1,197 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2020 Linaro Limited, All rights reserved.
+> > + * Author: Mike Leach <mike.leach@linaro.org>
+> > + */
+> > +
+> > +#include <linux/platform_device.h>
+> > +
+> > +#include "coresight-config.h"
+> > +#include "coresight-syscfg.h"
+> > +
+> > +/*
+> > + * cscfg_ API manages configurations and features for the entire coresight
+> > + * infrastructure.
+> > + *
+> > + * It allows the loading of configurations and features, and loads these into
+> > + * coresight devices as appropriate.
+> > + */
+> > +
+> > +/* protect the cscsg_data and device */
+> > +static DEFINE_MUTEX(cscfg_mutex);
+> > +
+> > +/* only one of these */
+> > +static struct cscfg_manager *cscfg_mgr;
+> > +
+> > +/* load features and configuations into the lists */
+> > +
+> > +/* check feature list for a named feature - call with mutex locked. */
+> > +static bool cscfg_match_list_feat(const char *name)
+> > +{
+> > +     struct cscfg_feature_desc *curr_item;
+> > +
+> > +     list_for_each_entry(curr_item, &cscfg_mgr->data.feat_desc_list, item) {
+> > +             if (strcmp(curr_item->name, name) == 0)
+> > +                     return true;
+> > +     }
+> > +     return false;
+> > +}
+> > +
+> > +/* check all feat needed for cfg are in the list - call with mutex locked. */
+> > +static int cscfg_check_feat_for_cfg(struct cscfg_config_desc *cfg_desc)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < cfg_desc->nr_refs; i++)
+> > +             if (!cscfg_match_list_feat(cfg_desc->refs[i].name))
+> > +                     return -EINVAL;
+> > +     return 0;
+> > +}
+> > +
+> > +/*
+> > + * load feature - add to feature list.
+> > + */
+> > +static int cscfg_load_feat(struct cscfg_feature_desc *feat_desc)
+> > +{
+> > +     list_add(&feat_desc->item, &cscfg_mgr->data.feat_desc_list);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +/*
+> > + * load config into the system - validate used features exist then add to
+> > + * config list.
+> > + */
+> > +static int cscfg_load_config(struct cscfg_config_desc *cfg_desc)
+> > +{
+> > +     int err;
+> > +
+> > +     /* validate features are present */
+> > +     err = cscfg_check_feat_for_cfg(cfg_desc);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     list_add(&cfg_desc->item, &cscfg_mgr->data.config_desc_list);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +/*
+> > + * External API function to load feature and config sets.
+> > + * Take a 0 terminated array of feature descriptors and/or configuration
+> > + * descriptors and load into the system.
+> > + * Features are loaded first to ensure configuration dependencies can be met.
+> > + */
+> > +int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
+> > +                        struct cscfg_feature_desc **feat_descs)
+> > +{
+> > +     int err, i = 0;
+> > +
+> > +     mutex_lock(&cscfg_mutex);
+> > +
+> > +     /* load features first */
+> > +     if (feat_descs) {
+> > +             while (feat_descs[i]) {
+> > +                     err = cscfg_load_feat(feat_descs[i]);
+> > +                     if (err) {
+> > +                             pr_err("coresight-syscfg: Failed to load feature %s\n",
+> > +                                    feat_descs[i]->name);
+> > +                             goto do_unlock;
+> > +                     }
+> > +                     i++;
+> > +             }
+> > +     }
+> > +
+> > +     /* next any configurations to check feature dependencies */
+> > +     i = 0;
+> > +     if (cfg_descs) {
+> > +             while (cfg_descs[i]) {
+> > +                     err = cscfg_load_config(cfg_descs[i]);
+> > +                     if (err) {
+> > +                             pr_err("coresight-syscfg: Failed to load configuration %s\n",
+> > +                                    cfg_descs[i]->name);
+> > +                             goto do_unlock;
+> > +                     }
+> > +                     i++;
+> > +             }
+> > +     }
+> > +
+> > +do_unlock:
+> > +     mutex_unlock(&cscfg_mutex);
+> > +     return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_load_config_sets);
+>
+> It looks like we keep the features and configs in the global list,
+> even when there was a failure halfway. This could be problematic,
+> as the caller could release/free the nodes we added and walking
+> the list is going to explode. So, we either:
+>
+> 1) Do this in 2 pass. Check if the features and the configs can be
+>     loaded in first pass. And load them in the second pass.
+>
+>   OR
+>
+> 2) Add cleanup code to remove the items that were added.
+>
+> Since we do this with the mutex lock, we should be fine.
+>
 
-Else add a comment about what you are doing here.
+In this initial set we are trying to keep to the minimum baseline to
+provide the overall structure, with the autofdo configuration as a
+built in.
+Now we know that this configuration is by definition correct, so for
+this baseline set at least, the code is guaranteed to work. We are not
+allowing
+additional user configs at this point.
 
-Where possible, convert the hex values to #defines.
+There is a follow-up patch set that includes code to allow for dynamic
+loading and unloading of configurations and features, and this
+includes the correct error clean up, dependency locking to prevent
+in-use configs from being unloaded, along with an example of how to
+define a loadable module that loads a new set of configs / features.
+But this adds a whole lot more code that is not needed in this
+baseline set.
 
-Tom
+> > +
+> > +/* Initialise system configuration management device. */
+> > +
+> > +struct device *to_device_cscfg(void)
+>
+> minor nit: to_device_cscfg() implies you are converting
+> something to a device. But since this is a global device
+> it could be better named as :
+>
+> struct device *cscfg_device(void);
+>
 
-> +
-> +	w = reg_rd(&icap->icap_regs->ir_sr);
-> +	w = reg_rd(&icap->icap_regs->ir_sr);
-> +	reg_wr(&icap->icap_regs->ir_gier, 0x0);
-> +	w = reg_rd(&icap->icap_regs->ir_wfv);
-> +	reg_wr(&icap->icap_regs->ir_wf, 0xffffffff);
-> +	reg_wr(&icap->icap_regs->ir_wf, 0xaa995566);
-> +	reg_wr(&icap->icap_regs->ir_wf, 0x20000000);
-> +	reg_wr(&icap->icap_regs->ir_wf, 0x20000000);
-> +	reg_wr(&icap->icap_regs->ir_wf, 0x28018001);
-> +	reg_wr(&icap->icap_regs->ir_wf, 0x20000000);
-> +	reg_wr(&icap->icap_regs->ir_wf, 0x20000000);
-> +	w = reg_rd(&icap->icap_regs->ir_cr);
-> +	reg_wr(&icap->icap_regs->ir_cr, 0x1);
-> +	w = reg_rd(&icap->icap_regs->ir_cr);
-> +	w = reg_rd(&icap->icap_regs->ir_cr);
-> +	w = reg_rd(&icap->icap_regs->ir_sr);
-> +	w = reg_rd(&icap->icap_regs->ir_cr);
-> +	w = reg_rd(&icap->icap_regs->ir_sr);
-> +	reg_wr(&icap->icap_regs->ir_sz, 0x1);
-> +	w = reg_rd(&icap->icap_regs->ir_cr);
-> +	reg_wr(&icap->icap_regs->ir_cr, 0x2);
-> +	w = reg_rd(&icap->icap_regs->ir_rfo);
-> +	icap->idcode = reg_rd(&icap->icap_regs->ir_rf);
-> +	w = reg_rd(&icap->icap_regs->ir_cr);
-> +	(void)w;
-> +}
-> +
-> +static int
-> +xrt_icap_leaf_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
-> +{
-> +	struct xrt_icap_ioctl_wr	*wr_arg = arg;
-> +	struct icap			*icap;
-> +	int				ret = 0;
-> +
-> +	icap = platform_get_drvdata(pdev);
-> +
-> +	switch (cmd) {
-> +	case XRT_XLEAF_EVENT:
-> +		/* Does not handle any event. */
-> +		break;
-> +	case XRT_ICAP_WRITE:
-> +		ret = icap_download(icap, wr_arg->xiiw_bit_data,
-> +				    wr_arg->xiiw_data_len);
-> +		break;
-> +	case XRT_ICAP_IDCODE:
-> +		*(u64 *)arg = icap->idcode;
-> +		break;
-> +	default:
-> +		ICAP_ERR(icap, "unknown command %d", cmd);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int xrt_icap_remove(struct platform_device *pdev)
-> +{
-> +	struct icap	*icap;
-> +
-> +	icap = platform_get_drvdata(pdev);
-> +
-> +	platform_set_drvdata(pdev, NULL);
-> +	devm_kfree(&pdev->dev, icap);
-> +
-> +	return 0;
-> +}
-> +
-> +static int xrt_icap_probe(struct platform_device *pdev)
-> +{
-> +	struct icap	*icap;
-> +	int			ret = 0;
-> +	struct resource		*res;
-> +
-> +	icap = devm_kzalloc(&pdev->dev, sizeof(*icap), GFP_KERNEL);
-> +	if (!icap)
-> +		return -ENOMEM;
-> +
-> +	icap->pdev = pdev;
-> +	platform_set_drvdata(pdev, icap);
-> +	mutex_init(&icap->icap_lock);
-> +
-> +	xrt_info(pdev, "probing");
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (res) {
-> +		icap->icap_regs = ioremap(res->start, res->end - res->start + 1);
-> +		if (!icap->icap_regs) {
-> +			xrt_err(pdev, "map base failed %pR", res);
-> +			ret = -EIO;
-> +			goto failed;
-> +		}
-> +	}
-> +
-> +	icap_probe_chip(icap);
-> +failed:
-> +	return ret;
-> +}
-> +
-> +static struct xrt_subdev_endpoints xrt_icap_endpoints[] = {
-> +	{
-> +		.xse_names = (struct xrt_subdev_ep_names[]) {
-> +			{ .ep_name = XRT_MD_NODE_FPGA_CONFIG },
-> +			{ NULL },
-> +		},
-> +		.xse_min_ep = 1,
-> +	},
-> +	{ 0 },
-> +};
-> +
-> +static struct xrt_subdev_drvdata xrt_icap_data = {
-> +	.xsd_dev_ops = {
-> +		.xsd_ioctl = xrt_icap_leaf_ioctl,
-> +	},
-> +};
-> +
-> +static const struct platform_device_id xrt_icap_table[] = {
-> +	{ XRT_ICAP, (kernel_ulong_t)&xrt_icap_data },
-> +	{ },
-> +};
-> +
-> +static struct platform_driver xrt_icap_driver = {
-> +	.driver = {
-> +		.name = XRT_ICAP,
-> +	},
-> +	.probe = xrt_icap_probe,
-> +	.remove = xrt_icap_remove,
-> +	.id_table = xrt_icap_table,
-> +};
-> +
-> +void icap_leaf_init_fini(bool init)
-> +{
-> +	if (init)
-> +		xleaf_register_driver(XRT_SUBDEV_ICAP, &xrt_icap_driver, xrt_icap_endpoints);
-> +	else
-> +		xleaf_unregister_driver(XRT_SUBDEV_ICAP);
-> +}
+Agreed.
 
+>
+> > +{
+> > +     return cscfg_mgr ? &cscfg_mgr->dev : NULL;
+> > +}
+> > +
+> > +/* Must have a release function or the kernel will complain on module unload */
+> > +void cscfg_dev_release(struct device *dev)
+> > +{
+> > +     kfree(cscfg_mgr);
+> > +     cscfg_mgr = NULL;
+> > +}
+> > +
+> > +/* a device is needed to "own" some kernel elements such as sysfs entries.  */
+> > +int cscfg_create_device(void)
+> > +{
+> > +     struct device *dev;
+> > +     int err = -ENOMEM;
+> > +
+> > +     mutex_lock(&cscfg_mutex);
+> > +     if (cscfg_mgr) {
+> > +             err = -EINVAL;
+> > +             goto create_dev_exit_unlock;
+> > +     }
+> > +
+> > +     cscfg_mgr = kzalloc(sizeof(struct cscfg_manager), GFP_KERNEL);
+> > +     if (!cscfg_mgr)
+> > +             goto create_dev_exit_unlock;
+> > +
+> > +     /* setup the device */
+> > +     dev = to_device_cscfg();
+> > +     dev->release = cscfg_dev_release;
+> > +     dev->init_name = "system_cfg";
+>
+> nit: Does it make sense to have "cs" somewhere in the name ?
+>
+
+It does.
+It's not something that the user would ever see / use, but no doubt
+linux makes hte name visible in a list somewhere.
+
+> > +
+> > +     err = device_register(dev);
+> > +     if (err)
+> > +             cscfg_dev_release(dev);
+> > +
+> > +create_dev_exit_unlock:
+> > +     mutex_unlock(&cscfg_mutex);
+> > +     return err;
+> > +}
+> > +
+> > +void cscfg_clear_device(void)
+> > +{
+> > +     mutex_lock(&cscfg_mutex);
+> > +     device_unregister(to_device_cscfg());
+> > +     mutex_unlock(&cscfg_mutex);
+> > +}
+> > +
+> > +/* Initialise system config management API device  */
+> > +int __init cscfg_init(void)
+> > +{
+> > +     int err = 0;
+> > +
+> > +     err = cscfg_create_device();
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     INIT_LIST_HEAD(&cscfg_mgr->data.csdev_desc_list);
+> > +     INIT_LIST_HEAD(&cscfg_mgr->data.feat_desc_list);
+> > +     INIT_LIST_HEAD(&cscfg_mgr->data.config_desc_list);
+> > +     cscfg_mgr->data.nr_csdev = 0;
+> > +
+> > +     dev_info(to_device_cscfg(), "CoreSight Configuration manager initialised");
+> > +     return 0;
+> > +}
+> > +
+> > +void __exit cscfg_exit(void)
+> > +{
+> > +     cscfg_clear_device();
+> > +}
+> > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > new file mode 100644
+> > index 000000000000..907ba8d3efea
+> > --- /dev/null
+> > +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > @@ -0,0 +1,54 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Coresight system configuration driver.
+> > + */
+> > +
+> > +#ifndef CORESIGHT_SYSCFG_H
+> > +#define CORESIGHT_SYSCFG_H
+> > +
+> > +#include <linux/coresight.h>
+> > +#include <linux/device.h>
+> > +
+> > +#include "coresight-config.h"
+> > +
+> > +/**
+> > + * System configuration manager API data.
+> > + *
+> > + * @csdev_list:              List of coresight devices registered with the configuration manager.
+>
+> Doesn't match the variable name below.
+>
+
+OK - will fix.
+
+> > + * @feat_desc_list:  List of feature descriptors to load into registered devices.
+> > + * @config_desc_list:        List of system configuration descriptors to load into registered devices.
+> > + * @nr_csdev:        Number of registered devices with the cscfg system
+> > + */
+> > +struct cscfg_api_data {
+> > +     struct list_head csdev_desc_list;
+> > +     struct list_head feat_desc_list;
+> > +     struct list_head config_desc_list;
+> > +     int nr_csdev;
+> > +};
+> > +
+> > +/* internal core operations for cscfg */
+> > +int __init cscfg_init(void);
+> > +void __exit cscfg_exit(void);
+> > +
+> > +/* syscfg manager external API */
+> > +int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
+> > +                        struct cscfg_feature_desc **feat_descs);
+> > +
+>
+> ---> Cut here <---
+>
+> > +/**
+> > + * System configuration manager device.
+> > + *
+> > + * Need a device to 'own' some coresight system wide sysfs entries in
+> > + * perf events, configfs etc.
+> > + *
+> > + * @dev:     The device.
+> > + * @data:    The API data.
+> > + */
+> > +struct cscfg_manager {
+> > +     struct device dev;
+> > +     struct cscfg_api_data data;
+> > +};
+> > +
+> > +/* get reference to dev in cscfg_manager */
+> > +struct device *to_device_cscfg(void);
+>
+> --> Cut End <---
+>
+> Do the above need to be exposed outside the core coresight-syscfg.c ?
+>
+
+Yes - they are used in the following patches in this set. They are
+made visible here to avoid changing later in the patchset, which tends
+to attract comments.
+
+> Cheers
+> Suzuki
+
+Thanks for the review
+
+Mike
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
