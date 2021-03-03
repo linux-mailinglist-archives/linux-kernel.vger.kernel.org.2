@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A566732B737
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE70532B736
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442155AbhCCKvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
+        id S1442130AbhCCKu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237769AbhCCAZd (ORCPT
+        with ESMTP id S237782AbhCCAZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 19:25:33 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADB6C061222
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:22:41 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id d20so21373684qkc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 16:22:41 -0800 (PST)
+        Tue, 2 Mar 2021 19:25:32 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0163C061223
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:22:42 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id a9so7781936qkn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 16:22:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=PfFJiiZEssC2qRvy3KJXm7j/Y4Op5RWRizR2E1HngfE=;
-        b=jMDvuz/Zgmq1B1MpVMXtPYeQ4yIQVYunhOd0cuqlnPu73G25rI6A8bbQBy7YIsq+XL
-         QLFaC6VqVzMJKOhhn6eYQS9l2TbV/YMXjSMgRvzpw+kAe19ABWobfO0KCffKshahDMdI
-         bUlq1RwNGtmC7j7E3GIqW51fgJ+qLsCRs7WDT07CRyQw/7RmxffV2qQ5/UKUDv4FWBAd
-         rEakxu/EEIwCQfy3eqO5Nq7V6xiG538snw78opWM2Sc0e/ol/nnofnFY7H9ogH44hG/Y
-         QWBHfv7b8Hjc3HJ2evECDpilQuTYVfBG/XhchNb4WN/jfozGm70uSgAosPcJBkyAtyS7
-         tJWw==
+        bh=FcIEg/sDUKkdURMCkTF1KW5fxOPpkw674yFxDZdydcg=;
+        b=O7cPe49tVOcGseTiLHnzDyJZBZLGwQ8Mqe5Dn8mcQ7k5iBMuCobmbyqA2O4I+bELpB
+         zHLp06elBMsXF5GXqnhfiFgVl8HzIeeAxXZanZh9XuGoGveIfu8Logb3klD20cg4Lajg
+         camd8RfSe3wGmyeRjz3ajPwHXzU4RxSIsDAkaf3k/Ym8xBkcBk/VVx0mn/4+26u0Jk9y
+         E9oPu8omML486M7rrPC5Fi8osaWQbS4+CuhExOmrALnpB9CgOvT1M9JrxHC17qiWLnOl
+         lJtLtc7A4zTfzbV0WqzqanyzS2CyWzkHN3ltfjyEQs54FPOEDCa4pJ3trCc+b9GEUq4a
+         XcFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PfFJiiZEssC2qRvy3KJXm7j/Y4Op5RWRizR2E1HngfE=;
-        b=O/OQIxOCG5iYPAWdQ1qrMFw41we7I8ToF7LU1YSXFWetCd0LYn5HuarIJ7Z9iRYiU4
-         5teTr6M/ITrQeUChQFA3Rr0K5XUahqeqWrwZEfrBwrh1dK+L1d1D5DAQfTUb0botlRgv
-         V8Vc/y9eQ2q9jwWIpppnfVDuNSusK1qpa7xe1Clxrqvrpiq0QYVl5QM3pn1wQffRylHF
-         iaMwcc1NFYRj1sYGPBajYT2Q9julCNy0OyJB1ovmuRmTAf8o2TWxpwA45F6409y29nRp
-         rfM9nTsDYdsqFGqPsGgqATBpTqSrbQppj4T6TJ647g2CAHvuU3TD9r/XEDh1rsOLJ1Tc
-         XVmA==
-X-Gm-Message-State: AOAM530a/8kMMdx1coKTi9CGdDj3owjLUD9sblDc0pTpIjcQmbqNW+vU
-        dAwwOEio4+z0M7NmcvEuEJGJJw==
-X-Google-Smtp-Source: ABdhPJz+uVEaSRAvPV9aeu5i6C2Vj6mlXfoQyiLGMJfrnW+9tKudvptZdZIYZEjfRvwkDzISw2eE+Q==
-X-Received: by 2002:a37:4e01:: with SMTP id c1mr10344514qkb.16.1614730960877;
-        Tue, 02 Mar 2021 16:22:40 -0800 (PST)
+        bh=FcIEg/sDUKkdURMCkTF1KW5fxOPpkw674yFxDZdydcg=;
+        b=TKLBy+FjWPRNcqknZeaC50nzp2VuGpBmomR/UyyjZdZO19I4jgVOczhz/Q2k18fZQX
+         iMoP2EyAPui3YjhJgKXouAXJzXRaKnVqpHHjF7bJTOJ4Pgq2xk2M0WxTPa69YA6Ajd3x
+         d3GZiQ4mnYpfoqcRwkKZFyh0ECnFI0oQ4dmStYcnqOoS/bKL0cwAhfkqAXt0/d4pluv5
+         8yufYZKTq2CwdU9AnxXA/tk9/MFnVBMwC4uARWqiBR/p5RY7WGBJ5ThzkfBHRLD16DX+
+         i2ZK0Y7QOPR2kYyIiczFV7aQ1DWieD3xOXtX2kKHXjhroKWJ5xcWhemj3gzL5BcNJF/6
+         pbrA==
+X-Gm-Message-State: AOAM530g29kD0ydfQSvTysN4umiPZKtazc6Q3PADGbDyQuAe42UlnZtA
+        yBCNo9fi4FpnZ5PlK3LUZhHLDw==
+X-Google-Smtp-Source: ABdhPJwfuxp+t9/gww6zzmUbohUN1pBfabKCa8Gw5J69qpWws0xk/h6jJgeII7h77ZjFF8nEckCeZQ==
+X-Received: by 2002:a37:2795:: with SMTP id n143mr21781313qkn.292.1614730962187;
+        Tue, 02 Mar 2021 16:22:42 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id r3sm16690512qkm.129.2021.03.02.16.22.39
+        by smtp.gmail.com with ESMTPSA id r3sm16690512qkm.129.2021.03.02.16.22.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 16:22:40 -0800 (PST)
+        Tue, 02 Mar 2021 16:22:41 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -58,9 +58,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
         steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
         selindag@gmail.com, tyhicks@linux.microsoft.com
-Subject: [PATCH v12 06/17] arm64: hibernate: abstract ttrb0 setup function
-Date:   Tue,  2 Mar 2021 19:22:19 -0500
-Message-Id: <20210303002230.1083176-7-pasha.tatashin@soleen.com>
+Subject: [PATCH v12 07/17] arm64: kexec: flush image and lists during kexec load time
+Date:   Tue,  2 Mar 2021 19:22:20 -0500
+Message-Id: <20210303002230.1083176-8-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
 References: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
@@ -70,87 +70,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, only hibernate sets custom ttbr0 with safe idmaped function.
-Kexec, is also going to be using this functinality when relocation code
-is going to be idmapped.
+Currently, during kexec load we are copying relocation function and
+flushing it. However, we can also flush kexec relocation buffers and
+if new kernel image is already in place (i.e. crash kernel), we can
+also flush the new kernel image itself.
 
-Move the setup seqeuence to a dedicated cpu_install_ttbr0() for custom
-ttbr0.
-
-Suggested-by: James Morse <james.morse@arm.com>
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/include/asm/mmu_context.h | 24 ++++++++++++++++++++++++
- arch/arm64/kernel/hibernate.c        | 21 +--------------------
- 2 files changed, 25 insertions(+), 20 deletions(-)
+ arch/arm64/kernel/machine_kexec.c | 49 +++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 26 deletions(-)
 
-diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-index 70ce8c1d2b07..c6521c8c06ac 100644
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@ -132,6 +132,30 @@ static inline void cpu_install_idmap(void)
- 	cpu_switch_mm(lm_alias(idmap_pg_dir), &init_mm);
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 90a335c74442..3a034bc25709 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -59,23 +59,6 @@ void machine_kexec_cleanup(struct kimage *kimage)
+ 	/* Empty routine needed to avoid build errors. */
  }
  
-+/*
-+ * Load our new page tables. A strict BBM approach requires that we ensure that
-+ * TLBs are free of any entries that may overlap with the global mappings we are
-+ * about to install.
-+ *
-+ * For a real hibernate/resume/kexec cycle TTBR0 currently points to a zero
-+ * page, but TLBs may contain stale ASID-tagged entries (e.g. for EFI runtime
-+ * services), while for a userspace-driven test_resume cycle it points to
-+ * userspace page tables (and we must point it at a zero page ourselves).
-+ *
-+ * We change T0SZ as part of installing the idmap. This is undone by
-+ * cpu_uninstall_idmap() in __cpu_suspend_exit().
-+ */
-+static inline void cpu_install_ttbr0(phys_addr_t ttbr0, unsigned long t0sz)
+-int machine_kexec_post_load(struct kimage *kimage)
+-{
+-	void *reloc_code = page_to_virt(kimage->control_code_page);
+-
+-	memcpy(reloc_code, arm64_relocate_new_kernel,
+-	       arm64_relocate_new_kernel_size);
+-	kimage->arch.kern_reloc = __pa(reloc_code);
+-	kexec_image_info(kimage);
+-
+-	/* Flush the reloc_code in preparation for its execution. */
+-	__flush_dcache_area(reloc_code, arm64_relocate_new_kernel_size);
+-	flush_icache_range((uintptr_t)reloc_code, (uintptr_t)reloc_code +
+-			   arm64_relocate_new_kernel_size);
+-
+-	return 0;
+-}
+-
+ /**
+  * machine_kexec_prepare - Prepare for a kexec reboot.
+  *
+@@ -152,6 +135,29 @@ static void kexec_segment_flush(const struct kimage *kimage)
+ 	}
+ }
+ 
++int machine_kexec_post_load(struct kimage *kimage)
 +{
-+	cpu_set_reserved_ttbr0();
-+	local_flush_tlb_all();
-+	__cpu_set_tcr_t0sz(t0sz);
++	void *reloc_code = page_to_virt(kimage->control_code_page);
 +
-+	/* avoid cpu_switch_mm() and its SW-PAN and CNP interactions */
-+	write_sysreg(ttbr0, ttbr0_el1);
-+	isb();
++	/* If in place flush new kernel image, else flush lists and buffers */
++	if (kimage->head & IND_DONE)
++		kexec_segment_flush(kimage);
++	else
++		kexec_list_flush(kimage);
++
++	memcpy(reloc_code, arm64_relocate_new_kernel,
++	       arm64_relocate_new_kernel_size);
++	kimage->arch.kern_reloc = __pa(reloc_code);
++	kexec_image_info(kimage);
++
++	/* Flush the reloc_code in preparation for its execution. */
++	__flush_dcache_area(reloc_code, arm64_relocate_new_kernel_size);
++	flush_icache_range((uintptr_t)reloc_code, (uintptr_t)reloc_code +
++			   arm64_relocate_new_kernel_size);
++
++	return 0;
 +}
 +
- /*
-  * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
-  * avoiding the possibility of conflicting TLB entries being allocated.
-diff --git a/arch/arm64/kernel/hibernate.c b/arch/arm64/kernel/hibernate.c
-index 0b8bad8bb6eb..ded5115bcb63 100644
---- a/arch/arm64/kernel/hibernate.c
-+++ b/arch/arm64/kernel/hibernate.c
-@@ -206,26 +206,7 @@ static int create_safe_exec_page(void *src_start, size_t length,
- 	if (rc)
- 		return rc;
+ /**
+  * machine_kexec - Do the kexec reboot.
+  *
+@@ -169,13 +175,6 @@ void machine_kexec(struct kimage *kimage)
+ 	WARN(in_kexec_crash && (stuck_cpus || smp_crash_stop_failed()),
+ 		"Some CPUs may be stale, kdump will be unreliable.\n");
  
--	/*
--	 * Load our new page tables. A strict BBM approach requires that we
--	 * ensure that TLBs are free of any entries that may overlap with the
--	 * global mappings we are about to install.
--	 *
--	 * For a real hibernate/resume cycle TTBR0 currently points to a zero
--	 * page, but TLBs may contain stale ASID-tagged entries (e.g. for EFI
--	 * runtime services), while for a userspace-driven test_resume cycle it
--	 * points to userspace page tables (and we must point it at a zero page
--	 * ourselves).
--	 *
--	 * We change T0SZ as part of installing the idmap. This is undone by
--	 * cpu_uninstall_idmap() in __cpu_suspend_exit().
--	 */
--	cpu_set_reserved_ttbr0();
--	local_flush_tlb_all();
--	__cpu_set_tcr_t0sz(t0sz);
--	write_sysreg(trans_ttbr0, ttbr0_el1);
--	isb();
+-	/* Flush the kimage list and its buffers. */
+-	kexec_list_flush(kimage);
 -
-+	cpu_install_ttbr0(trans_ttbr0, t0sz);
- 	*phys_dst_addr = virt_to_phys(page);
+-	/* Flush the new image if already in place. */
+-	if ((kimage != kexec_crash_image) && (kimage->head & IND_DONE))
+-		kexec_segment_flush(kimage);
+-
+ 	pr_info("Bye!\n");
  
- 	return 0;
+ 	local_daif_mask();
+@@ -250,8 +249,6 @@ void arch_kexec_protect_crashkres(void)
+ {
+ 	int i;
+ 
+-	kexec_segment_flush(kexec_crash_image);
+-
+ 	for (i = 0; i < kexec_crash_image->nr_segments; i++)
+ 		set_memory_valid(
+ 			__phys_to_virt(kexec_crash_image->segment[i].mem),
 -- 
 2.25.1
 
