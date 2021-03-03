@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB02B32B75C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A178932B75E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350142AbhCCLA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:00:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241892AbhCCBPC (ORCPT
+        id S236386AbhCCLB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:01:28 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43003 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242893AbhCCBQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 20:15:02 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14011C06178A;
-        Tue,  2 Mar 2021 17:13:39 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id v12so20875367ott.10;
-        Tue, 02 Mar 2021 17:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y54p/dpKPIzMufJOMByqkZMg0hSldch1m8scSHyXvP4=;
-        b=XCqLfckpDOHLSA4PZVWEJdgH6OwCV6Iq1erGKikHDRf4tZtTNEsQuTV2DmwWoSJjnR
-         bqMSuP5CE2icUXTH86yzUfoqSizD26p3iFTtaI/n1TMVwMpyfUxoSvm0kBrdan6+AJvk
-         ao/ucPcOeGdajhLA1Ebl65YLICpxCMrKMN+B5Hvfhqu6p+WmVJ6kfXZICltspjIgHgnB
-         rouPy9W0BfN2+Nmh12n3CasXXRnDsw6s+pmze4RjhEO4xhw1NQccLuDM/C1Pf7kxmQI5
-         BGHOzq6hMXlJ3DZJyfDW+rAQ4ai477KOrnfBCG0fpIPfk4KcNonPAbHbuIOSyzydtemF
-         6pgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y54p/dpKPIzMufJOMByqkZMg0hSldch1m8scSHyXvP4=;
-        b=fyi8pVzJgcZodp6L4bjTkxdrnQ4LWL20kbHgj+IXFfkxUK2/JssOLfH+i9OtqzMPM2
-         TfwCOJ8MB2eXn5v8dv6PeyfaDi/mRHu7a2wyhS5iLldfkiuGvs5oaauOlZcAO6rF0Gb2
-         t7Bl6qeHPDNQfguvt0U4jPKwJIQNAdZBt22dz44c98O0gkU6CbJOaQjB3VeA89uyLZAh
-         qjiBMR2fYIryjWewMTN8534BfEsBveRdkZMaUSw7EguZVtxiR+e9U5N+Y0zsRa13/7Ur
-         tIhht3JOHzoLO3I6q8SinoQV+lErd527G6GPj+44Q6NbZC3hMvT68zAz8ZPH3HyuqZLp
-         ltaw==
-X-Gm-Message-State: AOAM531ndSww759ByJ72Pl4Y1NelXAwQSFL6JnxOTnY9r+Afdd51f9Mn
-        ssvLb4h6AZwVSpfYaN0iQrAfKV5jPyyJ87W6iWQ=
-X-Google-Smtp-Source: ABdhPJy69FER/IuOKFD5Gvana5EKf4iVtHxc0NZZL4MrZucHLzrHacAF0U+sI/rPLkIlFQgCiStvmz77II6jKOqnZ60=
-X-Received: by 2002:a05:6830:10c1:: with SMTP id z1mr19648521oto.254.1614734018572;
- Tue, 02 Mar 2021 17:13:38 -0800 (PST)
-MIME-Version: 1.0
-References: <1614678202-10808-1-git-send-email-wanpengli@tencent.com> <YD5y+W2nqnZt5bRZ@google.com>
-In-Reply-To: <YD5y+W2nqnZt5bRZ@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 3 Mar 2021 09:13:27 +0800
-Message-ID: <CANRm+Cy_rNAai+u5pyBXKmQP_Qp=3e_hwi2g9bAFMiocCpru1A@mail.gmail.com>
-Subject: Re: [PATCH] KVM: LAPIC: Advancing the timer expiration on guest
- initiated write
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 2 Mar 2021 20:16:46 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id A040C10F3;
+        Tue,  2 Mar 2021 20:15:34 -0500 (EST)
+Received: from imap35 ([10.202.2.85])
+  by compute3.internal (MEProxy); Tue, 02 Mar 2021 20:15:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:message-id:date:from:to:cc:subject:content-type; s=
+        fm2; bh=9FD8F+TWKvse0buYqi4uiNdfXk0YrVryNe2+KxwJxE4=; b=gYD8pcVL
+        6TcQSIXYBfnJ61EoGimU174EVWiZy1rMp4FMx/vMfSwyy090/5AdSu9hZMAp/Zop
+        mnQJho+dwSlzjPQKxs2SkjTJDtKGE1YNo7RVb3n8QWq+Nkrb2EUk2GonUyWyZE8W
+        fHz+mh8S+1lOkNBTvDvH0y3Tg8v3INgBcyWi/wdxS1iOYHg89zCNKIR8fsBbolC/
+        RhEGFTPFO8AMqSk+G5ci7TYiqfTleYAyFtkxSd4hul41vwYogt/y4dNx06crs+82
+        LDBPiCDoycBU2YCV+dqpI7AXUC9XjQATJMHj0kQm94R4A8OjAJzTA5lxjMMSIfa4
+        wSN4Yrvy/dxV+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm2; bh=9FD8F+TWKvse0buYqi4uiNdfXk0Yr
+        VryNe2+KxwJxE4=; b=oxJR9qtnr/ARq80jMHXCFWbFYqrhra5VL5ntorj/gq22i
+        bCY8v2ZSsNnI+dol38EmwEB6kYWPr7O+4BSuogilaXlA3YuG2xO1MKDEjfvUaTx2
+        cmTCzumVZLG9DnSQ107idEhhAH9zJNJiqtCBffrgAQjhN8CgtkdL3lavFMawtEz4
+        I9lTPMXdBBf8iiGgNri4mGUFXShs9KTqdbnp/xz2UJNOxkPui9RLcXLDk/RHKvBA
+        oUndCxYQ2mu2d2UB07nMSWoySgolH3+YjUpBC3gT7dmA/K6c+GNKh1OYKknxFtRH
+        ASP9lVzKccH6XNRfsAHXiHOCKX/M+Xm+HRMDdHynA==
+X-ME-Sender: <xms:NeM-YEXoZe7DX0SAAr4mNzM3p2KjSxTGoDsM7yYSfO97tvsy9YboXQ>
+    <xme:NeM-YIn_o00Nq95ajwoNSHKIWUPuU7G3CKBNO9CQ0uYu6LRIdx513zw412d9Xu8o9
+    19s5F0Jg_AIJbNyFQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtuddgvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefofg
+    ggkfffhffvufgtsehttdertderredtnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceo
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgedvvdeigfdthf
+    ettdfghedtleeuteefueetiefhledvhfelleeutedufedtnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:NuM-YIY7Fb6if0_XPGrmk9R13LPbWO3iTVKT27Fr1gixd5W0XsKOIA>
+    <xmx:NuM-YDUo8FqkYotLKhaYgRakmuDWSOQZMrenQtfN0TW1PKtqQNZwKA>
+    <xmx:NuM-YOmAgL-MC4DgK7ngcpT0qYlEiraixoSaf9jf-byxoVwDQgg4vA>
+    <xmx:NuM-YCsl7rfBUt8K524WUjp-wl-O9CNixx8eDQIxzZUJK0QN6iQehQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C739015A005D; Tue,  2 Mar 2021 20:15:33 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
+Mime-Version: 1.0
+Message-Id: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
+Date:   Tue, 02 Mar 2021 17:15:13 -0800
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     mhiramat@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org
+Subject: Broken kretprobe stack traces
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 01:16, Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Mar 02, 2021, Wanpeng Li wrote:
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > Advancing the timer expiration should only be necessary on guest initiated
-> > writes. Now, we cancel the timer, clear .pending and clear expired_tscdeadline
-> > at the same time during state restore.
->
-> That last sentence is confusing.  kvm_apic_set_state() already clears .pending,
-> by way of __start_apic_timer().  I think what you mean is:
->
->   When we cancel the timer and clear .pending during state restore, clear
->   expired_tscdeadline as well.
+Hi Masami,
 
-Good statement. :)
+Jakub reported a bug with kretprobe stack traces -- wondering if you've gotten
+any bug reports related to stack traces being broken for kretprobes.
 
->
-> With that,
->
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
->
->
-> Side topic, I think there's a theoretical bug where KVM could inject a spurious
-> timer interrupt.  If KVM is using hrtimer, the hrtimer expires early due to an
-> overzealous timer_advance_ns, and the guest writes MSR_TSCDEADLINE after the
-> hrtimer expires but before the vCPU is kicked, then KVM will inject a spurious
-> timer IRQ since the premature expiration should have been canceled by the guest's
-> WRMSR.
->
-> It could also cause KVM to soft hang the guest if the new lapic_timer.tscdeadline
-> is written before apic_timer_expired() captures it in expired_tscdeadline.  In
-> that case, KVM will wait for the new deadline, which could be far in the future.
+I think (can't prove) this used to work:
 
-The hrtimer_cancel() before setting new lapic_timer.tscdeadline in
-kvm_set_lapic_tscdeadline_msr() will wait for the hrtimer callback
-function to finish. Could it solve this issue?
+    # bpftrace -e 'kretprobe:__tcp_retransmit_skb { @[kstack()] = count() }'
+    Attaching 1 probe...
+    ^C
 
-    Wanpeng
+    @[
+        kretprobe_trampoline+0
+    ]: 1
+
+fentry/fexit probes seem to work:
+
+    # bpftrace -e 'kretfunc:__tcp_retransmit_skb { @[kstack()] = count() }'
+    Attaching 1 probe...
+    ^C
+    
+    @[
+        ftrace_trampoline+10799
+        bpf_get_stackid_raw_tp+121
+        ftrace_trampoline+10799
+        __tun_chr_ioctl.isra.0.cold+33312
+        __tcp_retransmit_skb+5
+        tcp_send_loss_probe+254
+        tcp_write_timer_handler+394
+        tcp_write_timer+149
+        call_timer_fn+41
+        __run_timers+493
+        run_timer_softirq+25
+        __softirqentry_text_start+207
+        asm_call_sysvec_on_stack+18
+        do_softirq_own_stack+55
+        irq_exit_rcu+158
+        sysvec_apic_timer_interrupt+54
+        asm_sysvec_apic_timer_interrupt+18
+    ]: 1
+    @[
+        ftrace_trampoline+10799
+        bpf_get_stackid_raw_tp+121
+        ftrace_trampoline+10799
+        __tun_chr_ioctl.isra.0.cold+33312
+        __tcp_retransmit_skb+5
+  <...>
+
+which makes me suspect it's a kprobe specific issue.
+
+Thanks,
+Daniel
