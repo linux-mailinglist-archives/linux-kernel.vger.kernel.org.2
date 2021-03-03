@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C127B32C4E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 497D232C4F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345093AbhCDASP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39424 "EHLO mail.kernel.org"
+        id S1358704AbhCDASm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:18:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234928AbhCDAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353011AbhCDAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:07:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8273364F48;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E198D64F4C;
         Wed,  3 Mar 2021 23:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614815779;
-        bh=lUOmba8vVHnpHV2R1J6JAqgq/r5KVw39qB+bVXwp+f0=;
+        s=k20201202; t=1614815780;
+        bh=xJg00R6d3ySVTLUJzM6dVE6oFWvCNYo+XHZd5o5Muck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uu11XI5ojeNe+/9bDzOsH9XoxJWuVb9PEsY5bpeIWjiJVek0sPj7PW72a6krTb8yC
-         M6e+1QuSnyGC+4CM1fHb09//0Cqn7CsSA1yuHSNlpR+7deJb/LlYXsDyLGP78Y9jy6
-         KsXxMTOCoNRWXYUc5vaUZzpC+TBpkjVnIZfW97/ihwKRFhuTjEn6vw4cl8WKztgpeJ
-         rWPsIBqREDqduFMogG3eIMRIxz8Rhw4c2g/ioiIXUzpWpO41WNC4r1xLS5caWvnIe/
-         Q+I1wejBhYTPV60BJfvYoepk+AAdS849mttw8F8IB6EW6vmN4mWBg5u/WyXAiNsaPQ
-         gIUM1o2Md3fMg==
+        b=KgGdd7kNo1++6RuGcDRRWP+9caQEekrHKf13rstLrEe47g1zLo5TVqmEhPRAFVc20
+         s4BKDGmL+1XoVyXEJWs5lVtc57l6TRg6c08VunN/RvhT3CUG/QHTet20lwQlj+mb0i
+         /WvSXl8XXHNqiu6RyislRUW73DoLIjereQHhZfPOR2qEGMFWX3rWcdSyZfcBkIW/NT
+         UbLbUvo7zMBHRiEOwQ1nfb+rH21z6Y18zd+txLPGD3LwrONB46+jHEaWVA1vxM1A6M
+         PhIG5eTFEcs7NdE/jamnuqdT6ryH8WurX0t5GnRCKPHmVHiooNn5644R+7JTfPDrLt
+         cnrilMFlkU8dQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH lib/bitmap 3/9] lib: test_bitmap: add more start-end:offset/len tests
-Date:   Wed,  3 Mar 2021 15:56:10 -0800
-Message-Id: <20210303235616.22093-3-paulmck@kernel.org>
+Subject: [PATCH lib/bitmap 4/9] lib: bitmap: fold nbits into region struct
+Date:   Wed,  3 Mar 2021 15:56:11 -0800
+Message-Id: <20210303235616.22093-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235526.GA21868@paulmck-ThinkPad-P72>
 References: <20210303235526.GA21868@paulmck-ThinkPad-P72>
@@ -47,68 +47,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-There are inputs to bitmap_parselist() that would probably never
-be entered manually by a person, but might result from some kind of
-automated input generator.  Things like ranges of length 1, or group
-lengths longer than nbits, overlaps, or offsets of zero.
-
-Adding these tests serve two purposes:
-
-1) document what might seem odd but nonetheless valid input.
-
-2) don't regress from what we currently accept as valid.
+This will reduce parameter passing and enable using nbits as part
+of future dynamic region parameter parsing.
 
 Cc: Yury Norov <yury.norov@gmail.com>
 Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Suggested-by: Yury Norov <yury.norov@gmail.com>
 Acked-by: Yury Norov <yury.norov@gmail.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- lib/test_bitmap.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ lib/bitmap.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 0f2e91d..3c1c46d 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -34,6 +34,8 @@ static const unsigned long exp1[] __initconst = {
- 	BITMAP_FROM_U64(0x3333333311111111ULL),
- 	BITMAP_FROM_U64(0xffffffff77777777ULL),
- 	BITMAP_FROM_U64(0),
-+	BITMAP_FROM_U64(0x00008000),
-+	BITMAP_FROM_U64(0x80000000),
+diff --git a/lib/bitmap.c b/lib/bitmap.c
+index 75006c4..162e285 100644
+--- a/lib/bitmap.c
++++ b/lib/bitmap.c
+@@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
+ 
+ /*
+  * Region 9-38:4/10 describes the following bitmap structure:
+- * 0	   9  12    18			38
+- * .........****......****......****......
+- *	    ^  ^     ^			 ^
+- *      start  off   group_len	       end
++ * 0	   9  12    18			38	     N
++ * .........****......****......****..................
++ *	    ^  ^     ^			 ^	     ^
++ *      start  off   group_len	       end	 nbits
+  */
+ struct region {
+ 	unsigned int start;
+ 	unsigned int off;
+ 	unsigned int group_len;
+ 	unsigned int end;
++	unsigned int nbits;
  };
  
- static const unsigned long exp2[] __initconst = {
-@@ -334,6 +336,26 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
- 	{0, " ,  ,,  , ,   ",		&exp1[12 * step], 8, 0},
- 	{0, " ,  ,,  , ,   \n",		&exp1[12 * step], 8, 0},
+-static int bitmap_set_region(const struct region *r,
+-				unsigned long *bitmap, int nbits)
++static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
+ {
+ 	unsigned int start;
  
-+	{0, "0-0",			&exp1[0], 32, 0},
-+	{0, "1-1",			&exp1[1 * step], 32, 0},
-+	{0, "15-15",			&exp1[13 * step], 32, 0},
-+	{0, "31-31",			&exp1[14 * step], 32, 0},
-+
-+	{0, "0-0:0/1",			&exp1[12 * step], 32, 0},
-+	{0, "0-0:1/1",			&exp1[0], 32, 0},
-+	{0, "0-0:1/31",			&exp1[0], 32, 0},
-+	{0, "0-0:31/31",		&exp1[0], 32, 0},
-+	{0, "1-1:1/1",			&exp1[1 * step], 32, 0},
-+	{0, "0-15:16/31",		&exp1[2 * step], 32, 0},
-+	{0, "15-15:1/2",		&exp1[13 * step], 32, 0},
-+	{0, "15-15:31/31",		&exp1[13 * step], 32, 0},
-+	{0, "15-31:1/31",		&exp1[13 * step], 32, 0},
-+	{0, "16-31:16/31",		&exp1[3 * step], 32, 0},
-+	{0, "31-31:31/31",		&exp1[14 * step], 32, 0},
-+
-+	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
-+	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
-+
- 	{-EINVAL, "-1",	NULL, 8, 0},
- 	{-EINVAL, "-0",	NULL, 8, 0},
- 	{-EINVAL, "10-1", NULL, 8, 0},
+-	if (r->end >= nbits)
++	if (r->end >= r->nbits)
+ 		return -ERANGE;
+ 
+ 	for (start = r->start; start <= r->end; start += r->group_len)
+@@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+ 	struct region r;
+ 	long ret;
+ 
+-	bitmap_zero(maskp, nmaskbits);
++	r.nbits = nmaskbits;
++	bitmap_zero(maskp, r.nbits);
+ 
+ 	while (buf) {
+ 		buf = bitmap_find_region(buf);
+@@ -655,7 +656,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = bitmap_set_region(&r, maskp, nmaskbits);
++		ret = bitmap_set_region(&r, maskp);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
 2.9.5
 
