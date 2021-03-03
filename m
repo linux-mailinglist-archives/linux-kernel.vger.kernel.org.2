@@ -2,571 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4906D32BF27
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3678B32BF8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577909AbhCCSBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:01:32 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:9234 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1359814AbhCCPAe (ORCPT
+        id S1835625AbhCCSEW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 13:04:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1448597AbhCCP0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:00:34 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123Ew12m007034;
-        Wed, 3 Mar 2021 15:59:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=92T9jk1GqeaNdUj7VE7tM3zOJWrXiP55EaybpQYEma8=;
- b=s0XgAapWiw5d6J7WEhcn1yGiHWcuz0Bu8HSk+cZ8l3krhN/mfT1OmcGuWU7WbjW5rb/C
- 9Il390mWfMpeuqGGK5rwG9hsDfaeuTRdqX+MwzJyQMgdeh3mVAsMhhHRvzbVakwO2qBu
- q1dtdkxrX71cawrRikhila1rAp6Kb/aB3CA+CdeEVC9y0RgOVtz+z2BdhNqBe8bWPU6t
- JtLJerTRMhGfj4sZwr+Dk1AbgltSKibZH13W1ZfbR+wlr9efeRg4uYy6Ekv/BDyMa34x
- T3yhAOuINmG4x7vYKRiT3jWIFjw4widG8ciH48H/T0Lcu/RAyGTkjlz9wVj+0FctWoir XQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36yfdy9h74-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 15:59:36 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A039110002A;
-        Wed,  3 Mar 2021 15:59:35 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 92B0B244F58;
-        Wed,  3 Mar 2021 15:59:35 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Mar
- 2021 15:59:34 +0100
-Subject: Re: [PATCH v5 06/16] rpmsg: move the rpmsg control device from
- rpmsg_char to rpmsg_ctrl
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-7-arnaud.pouliquen@foss.st.com>
- <20210302183516.GC3791957@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <64760ba3-5b23-bf74-6961-b77813919abc@foss.st.com>
-Date:   Wed, 3 Mar 2021 15:59:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Mar 2021 10:26:35 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E69C0617AB
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:33:42 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHSZE-00035P-Ab; Wed, 03 Mar 2021 15:33:36 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHSZ7-00008R-0c; Wed, 03 Mar 2021 15:33:29 +0100
+Message-ID: <38119c7bab7b550cff0300b596611a7d9d3b6737.camel@pengutronix.de>
+Subject: Re: [PATCH v3 3/5] reset: Add reset driver for IMX8MQ VPU block
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, ezequiel@collabora.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Wed, 03 Mar 2021 15:33:28 +0100
+In-Reply-To: <20210301151754.104749-4-benjamin.gaignard@collabora.com>
+References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+         <20210301151754.104749-4-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <20210302183516.GC3791957@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-03_04:2021-03-03,2021-03-03 signatures=0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/2/21 7:35 PM, Mathieu Poirier wrote:
-> On Fri, Feb 19, 2021 at 12:14:51PM +0100, Arnaud Pouliquen wrote:
->> Move the code related to the rpmsg_ctrl char device to the new
->> rpmsg_ctrl.c module.
->> Manage the dependency in the kconfig.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/Kconfig      |   9 ++
->>  drivers/rpmsg/Makefile     |   1 +
->>  drivers/rpmsg/rpmsg_char.c | 163 ----------------------------
->>  drivers/rpmsg/rpmsg_ctrl.c | 216 +++++++++++++++++++++++++++++++++++++
->>  4 files changed, 226 insertions(+), 163 deletions(-)
->>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
->>
->> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
->> index 0b4407abdf13..2d0cd7fdd710 100644
->> --- a/drivers/rpmsg/Kconfig
->> +++ b/drivers/rpmsg/Kconfig
->> @@ -10,11 +10,20 @@ config RPMSG_CHAR
->>  	tristate "RPMSG device interface"
->>  	depends on RPMSG
->>  	depends on NET
->> +	select RPMSG_CTRL
->>  	help
->>  	  Say Y here to export rpmsg endpoints as device files, usually found
->>  	  in /dev. They make it possible for user-space programs to send and
->>  	  receive rpmsg packets.
->>  
->> +config RPMSG_CTRL
->> +	tristate "RPMSG control interface"
->> +	depends on RPMSG
->> +	help
->> +	  Say Y here to enable the support of the /dev/rpmsg_ctlX API. This API
+On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
+> IMX8MQ SoC got a dedicated hardware block to reset the video processor
+> units (G1 and G2).
 > 
-> s/rpmsg_ctlX/rpmsg_ctrlX
-
-Good catch!
-
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  drivers/reset/Kconfig            |   8 ++
+>  drivers/reset/Makefile           |   1 +
+>  drivers/reset/reset-imx8mq-vpu.c | 169 +++++++++++++++++++++++++++++++
+>  3 files changed, 178 insertions(+)
+>  create mode 100644 drivers/reset/reset-imx8mq-vpu.c
 > 
->> +	  allows user-space programs to create endpoints with specific service name,
->> +	  source and destination addresses.
->> +
->>  config RPMSG_NS
->>  	tristate "RPMSG name service announcement"
->>  	depends on RPMSG
->> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
->> index 8d452656f0ee..58e3b382e316 100644
->> --- a/drivers/rpmsg/Makefile
->> +++ b/drivers/rpmsg/Makefile
->> @@ -1,6 +1,7 @@
->>  # SPDX-License-Identifier: GPL-2.0
->>  obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
->>  obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
->> +obj-$(CONFIG_RPMSG_CTRL)	+= rpmsg_ctrl.o
->>  obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
->>  obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
->>  qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index 23e369a00531..83c10b39b139 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -31,28 +31,12 @@
->>  static dev_t rpmsg_major;
->>  static struct class *rpmsg_class;
->>  
->> -static DEFINE_IDA(rpmsg_ctrl_ida);
->>  static DEFINE_IDA(rpmsg_ept_ida);
->>  static DEFINE_IDA(rpmsg_minor_ida);
->>  
->>  #define dev_to_eptdev(dev) container_of(dev, struct rpmsg_eptdev, dev)
->>  #define cdev_to_eptdev(i_cdev) container_of(i_cdev, struct rpmsg_eptdev, cdev)
->>  
->> -#define dev_to_ctrldev(dev) container_of(dev, struct rpmsg_ctrldev, dev)
->> -#define cdev_to_ctrldev(i_cdev) container_of(i_cdev, struct rpmsg_ctrldev, cdev)
->> -
->> -/**
->> - * struct rpmsg_ctrldev - control device for instantiating endpoint devices
->> - * @rpdev:	underlaying rpmsg device
->> - * @cdev:	cdev for the ctrl device
->> - * @dev:	device for the ctrl device
->> - */
->> -struct rpmsg_ctrldev {
->> -	struct rpmsg_device *rpdev;
->> -	struct cdev cdev;
->> -	struct device dev;
->> -};
-> 
-> This showed up in rpmsg_ctrl.c as rpmsg_ctrl.  The same goes for many functions
-> names - they are removed here and re-introduced under a different name, which
-> makes it very hard to follow.  What ends up in the new file should be a carbon
-> copy of what was moved.
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index 71ab75a46491..fa95380b271a 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -80,6 +80,14 @@ config RESET_IMX7
+>  	help
+>  	  This enables the reset controller driver for i.MX7 SoCs.
+>  
+> +config RESET_VPU_IMX8MQ
+> +	tristate "i.MX8MQ VPU Reset Driver"
+> +	depends on HAS_IOMEM
+> +	depends on (ARM64 && ARCH_MXC) || COMPILE_TEST
+> +	select MFD_SYSCON
+> +	help
+> +	  This enables the VPU reset controller driver for i.MX8MQ SoCs.
+> +
+>  config RESET_INTEL_GW
+>  	bool "Intel Reset Controller Driver"
+>  	depends on OF && HAS_IOMEM
+> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+> index 1054123fd187..6007e0cdfc05 100644
+> --- a/drivers/reset/Makefile
+> +++ b/drivers/reset/Makefile
+> @@ -12,6 +12,7 @@ obj-$(CONFIG_RESET_BRCMSTB) += reset-brcmstb.o
+>  obj-$(CONFIG_RESET_BRCMSTB_RESCAL) += reset-brcmstb-rescal.o
+>  obj-$(CONFIG_RESET_HSDK) += reset-hsdk.o
+>  obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
+> +obj-$(CONFIG_RESET_VPU_IMX8MQ) += reset-imx8mq-vpu.o
+>  obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
+>  obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
+>  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
+> diff --git a/drivers/reset/reset-imx8mq-vpu.c b/drivers/reset/reset-imx8mq-vpu.c
+> new file mode 100644
+> index 000000000000..14c589f19266
+> --- /dev/null
+> +++ b/drivers/reset/reset-imx8mq-vpu.c
+> @@ -0,0 +1,169 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2021, Collabora
+> + *
+> + * i.MX8MQ VPU Reset Controller driver
+> + *
+> + * Author: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reset-controller.h>
+> +#include <linux/regmap.h>
+> +#include <dt-bindings/reset/imx8mq-vpu-reset.h>
+> +
+> +#define CTRL_SOFT_RESET		0x00
+> +#define RESET_G1		((u32)BIT(1))
+> +#define RESET_G2		((u32)BIT(0))
+> +
+> +#define CTRL_ENABLE		0x04
+> +#define ENABLE_G1		BIT(1)
+> +#define ENABLE_G2		BIT(0)
+> +
+> +#define CTRL_G1_DEC_FUSE	0x08
+> +#define CTRL_G1_PP_FUSE		0x0c
+> +#define CTRL_G2_DEC_FUSE	0x10
+> +
+> +struct imx8mq_vpu_reset {
+> +	struct reset_controller_dev rcdev;
+> +	struct regmap *regmap;
+> +	struct clk_bulk_data *clocks;
+> +	int num_clocks;
+> +	struct device *dev;
+> +};
+> +
+> +static inline struct imx8mq_vpu_reset *to_imx8mq_vpu_reset(struct reset_controller_dev *rcdev)
+> +{
+> +	return container_of(rcdev, struct imx8mq_vpu_reset, rcdev);
+> +}
+> +
+> +static int imx8mq_vpu_reset_assert(struct reset_controller_dev *rcdev,
+> +				   unsigned long id)
+> +{
+> +	struct imx8mq_vpu_reset *reset = to_imx8mq_vpu_reset(rcdev);
+> +	int ret = -EINVAL;
+> +
+> +	ret = clk_bulk_prepare_enable(reset->num_clocks, reset->clocks);
+> +	if (ret) {
+> +		dev_err(reset->dev, "Failed to prepare clocks\n");
+> +		return ret;
+> +	}
+> +
+> +	switch (id) {
+> +	case IMX8MQ_RESET_VPU_RESET_G1:
+> +		ret = regmap_update_bits(reset->regmap, CTRL_SOFT_RESET, RESET_G1, ~RESET_G1);
+> +		ret |= regmap_update_bits(reset->regmap, CTRL_ENABLE, ENABLE_G1, ENABLE_G1);
+> +		break;
+> +	case IMX8MQ_RESET_VPU_RESET_G2:
+> +		ret = regmap_update_bits(reset->regmap, CTRL_SOFT_RESET, RESET_G2, ~RESET_G2);
+> +		ret |= regmap_update_bits(reset->regmap, CTRL_ENABLE, ENABLE_G2, ENABLE_G2);
 
-Ok i will split it in 2 steps.
+This doesn't belong in reset_assert.
 
-Thanks
-Arnaud
+> +		break;
+> +	}
+> +
+> +	/* Set values of the fuse registers */
+> +	ret |= regmap_write(reset->regmap, CTRL_G1_DEC_FUSE, 0xffffffff);
+> +	ret |= regmap_write(reset->regmap, CTRL_G1_PP_FUSE, 0xffffffff);
+> +	ret |= regmap_write(reset->regmap, CTRL_G2_DEC_FUSE, 0xffffffff);
 
-> 
-> I'm out of time for today, more comments tomorrow.
-> 
-> Thanks,
-> Mathieu
-> 
->> -
->>  /**
->>   * struct rpmsg_eptdev - endpoint device context
->>   * @dev:	endpoint device
->> @@ -411,145 +395,6 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->>  }
->>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->>  
->> -static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
->> -{
->> -	struct rpmsg_ctrldev *ctrldev = cdev_to_ctrldev(inode->i_cdev);
->> -
->> -	get_device(&ctrldev->dev);
->> -	filp->private_data = ctrldev;
->> -
->> -	return 0;
->> -}
->> -
->> -static int rpmsg_ctrldev_release(struct inode *inode, struct file *filp)
->> -{
->> -	struct rpmsg_ctrldev *ctrldev = cdev_to_ctrldev(inode->i_cdev);
->> -
->> -	put_device(&ctrldev->dev);
->> -
->> -	return 0;
->> -}
->> -
->> -static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->> -				unsigned long arg)
->> -{
->> -	struct rpmsg_ctrldev *ctrldev = fp->private_data;
->> -	void __user *argp = (void __user *)arg;
->> -	struct rpmsg_endpoint_info eptinfo;
->> -	struct rpmsg_channel_info chinfo;
->> -
->> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
->> -		return -EINVAL;
->> -
->> -	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
->> -		return -EFAULT;
->> -
->> -	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
->> -	chinfo.name[RPMSG_NAME_SIZE-1] = '\0';
->> -	chinfo.src = eptinfo.src;
->> -	chinfo.dst = eptinfo.dst;
->> -
->> -	return rpmsg_chrdev_create_eptdev(ctrldev->rpdev, &ctrldev->dev, chinfo);
->> -};
->> -
->> -static const struct file_operations rpmsg_ctrldev_fops = {
->> -	.owner = THIS_MODULE,
->> -	.open = rpmsg_ctrldev_open,
->> -	.release = rpmsg_ctrldev_release,
->> -	.unlocked_ioctl = rpmsg_ctrldev_ioctl,
->> -	.compat_ioctl = compat_ptr_ioctl,
->> -};
->> -
->> -static void rpmsg_ctrldev_release_device(struct device *dev)
->> -{
->> -	struct rpmsg_ctrldev *ctrldev = dev_to_ctrldev(dev);
->> -
->> -	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
->> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
->> -	cdev_del(&ctrldev->cdev);
->> -	kfree(ctrldev);
->> -}
->> -
->> -static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->> -{
->> -	struct rpmsg_ctrldev *ctrldev;
->> -	struct device *dev;
->> -	int ret;
->> -
->> -	ctrldev = kzalloc(sizeof(*ctrldev), GFP_KERNEL);
->> -	if (!ctrldev)
->> -		return -ENOMEM;
->> -
->> -	ctrldev->rpdev = rpdev;
->> -
->> -	dev = &ctrldev->dev;
->> -	device_initialize(dev);
->> -	dev->parent = &rpdev->dev;
->> -
->> -	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->> -	ctrldev->cdev.owner = THIS_MODULE;
->> -
->> -	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
->> -	if (ret < 0)
->> -		goto free_ctrldev;
->> -	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
->> -
->> -	ret = ida_simple_get(&rpmsg_ctrl_ida, 0, 0, GFP_KERNEL);
->> -	if (ret < 0)
->> -		goto free_minor_ida;
->> -	dev->id = ret;
->> -	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
->> -
->> -	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
->> -	if (ret)
->> -		goto free_ctrl_ida;
->> -
->> -	/* We can now rely on the release function for cleanup */
->> -	dev->release = rpmsg_ctrldev_release_device;
->> -
->> -	ret = device_add(dev);
->> -	if (ret) {
->> -		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
->> -		put_device(dev);
->> -	}
->> -
->> -	dev_set_drvdata(&rpdev->dev, ctrldev);
->> -
->> -	return ret;
->> -
->> -free_ctrl_ida:
->> -	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
->> -free_minor_ida:
->> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
->> -free_ctrldev:
->> -	put_device(dev);
->> -	kfree(ctrldev);
->> -
->> -	return ret;
->> -}
->> -
->> -static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
->> -{
->> -	struct rpmsg_ctrldev *ctrldev = dev_get_drvdata(&rpdev->dev);
->> -	int ret;
->> -
->> -	/* Destroy all endpoints */
->> -	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
->> -	if (ret)
->> -		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
->> -
->> -	device_del(&ctrldev->dev);
->> -	put_device(&ctrldev->dev);
->> -}
->> -
->> -static struct rpmsg_driver rpmsg_chrdev_driver = {
->> -	.probe = rpmsg_chrdev_probe,
->> -	.remove = rpmsg_chrdev_remove,
->> -	.drv = {
->> -		.name = "rpmsg_chrdev",
->> -	},
->> -};
->> -
->>  static int rpmsg_chrdev_init(void)
->>  {
->>  	int ret;
->> @@ -567,20 +412,12 @@ static int rpmsg_chrdev_init(void)
->>  		return PTR_ERR(rpmsg_class);
->>  	}
->>  
->> -	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
->> -	if (ret < 0) {
->> -		pr_err("rpmsgchr: failed to register rpmsg driver\n");
->> -		class_destroy(rpmsg_class);
->> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->> -	}
->> -
->>  	return ret;
->>  }
->>  postcore_initcall(rpmsg_chrdev_init);
->>  
->>  static void rpmsg_chrdev_exit(void)
->>  {
->> -	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->>  	class_destroy(rpmsg_class);
->>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>  }
->> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
->> new file mode 100644
->> index 000000000000..fa05b67d24da
->> --- /dev/null
->> +++ b/drivers/rpmsg/rpmsg_ctrl.c
->> @@ -0,0 +1,216 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) 2021, STMicroelectronics
->> + * Copyright (c) 2016, Linaro Ltd.
->> + * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
->> + * Copyright (c) 2012, PetaLogix
->> + * Copyright (c) 2011, Texas Instruments, Inc.
->> + * Copyright (c) 2011, Google, Inc.
->> + *
->> + * Based on rpmsg performance statistics driver by Michal Simek, which in turn
->> + * was based on TI & Google OMX rpmsg driver.
->> + */
->> +#include <linux/cdev.h>
->> +#include <linux/device.h>
->> +#include <linux/fs.h>
->> +#include <linux/idr.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/rpmsg.h>
->> +#include <linux/slab.h>
->> +#include <uapi/linux/rpmsg.h>
->> +
->> +#include "rpmsg_char.h"
->> +#include "rpmsg_internal.h"
->> +
->> +#define RPMSG_DEV_MAX	(MINORMASK + 1)
->> +
->> +static dev_t rpmsg_major;
->> +
->> +static DEFINE_IDA(rpmsg_ctrl_ida);
->> +static DEFINE_IDA(rpmsg_minor_ida);
->> +
->> +#define dev_to_ctrldev(dev) container_of(dev, struct rpmsg_ctrl, dev)
->> +#define cdev_to_ctrldev(i_cdev) container_of(i_cdev, struct rpmsg_ctrl, cdev)
->> +
->> +/**
->> + * struct rpmsg_ctrl - control device for instantiating endpoint devices
->> + * @rpdev:	underlaying rpmsg device
->> + * @cdev:	cdev for the ctrl device
->> + * @dev:	device for the ctrl device
->> + */
->> +struct rpmsg_ctrl {
->> +	struct rpmsg_device *rpdev;
->> +	struct cdev cdev;
->> +	struct device dev;
->> +};
->> +
->> +static int rpmsg_ctrl_open(struct inode *inode, struct file *filp)
->> +{
->> +	struct rpmsg_ctrl *ctrldev = cdev_to_ctrldev(inode->i_cdev);
->> +
->> +	get_device(&ctrldev->dev);
->> +	filp->private_data = ctrldev;
->> +
->> +	return 0;
->> +}
->> +
->> +static int rpmsg_ctrl_release(struct inode *inode, struct file *filp)
->> +{
->> +	struct rpmsg_ctrl *ctrldev = cdev_to_ctrldev(inode->i_cdev);
->> +
->> +	put_device(&ctrldev->dev);
->> +
->> +	return 0;
->> +}
->> +
->> +static long rpmsg_ctrl_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
->> +{
->> +	struct rpmsg_ctrl *ctrldev = fp->private_data;
->> +	void __user *argp = (void __user *)arg;
->> +	struct rpmsg_endpoint_info eptinfo;
->> +	struct rpmsg_channel_info chinfo;
->> +
->> +	if (cmd != RPMSG_CREATE_EPT_IOCTL)
->> +		return -EINVAL;
->> +
->> +	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
->> +		return -EFAULT;
->> +
->> +	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
->> +	chinfo.name[RPMSG_NAME_SIZE - 1] = '\0';
->> +	chinfo.src = eptinfo.src;
->> +	chinfo.dst = eptinfo.dst;
->> +
->> +	return rpmsg_chrdev_create_eptdev(ctrldev->rpdev, &ctrldev->dev, chinfo);
->> +};
->> +
->> +static const struct file_operations rpmsg_ctrl_fops = {
->> +	.owner = THIS_MODULE,
->> +	.open = rpmsg_ctrl_open,
->> +	.release = rpmsg_ctrl_release,
->> +	.unlocked_ioctl = rpmsg_ctrl_ioctl,
->> +	.compat_ioctl = compat_ptr_ioctl,
->> +};
->> +
->> +static void rpmsg_ctrl_release_device(struct device *dev)
->> +{
->> +	struct rpmsg_ctrl *ctrldev = dev_to_ctrldev(dev);
->> +
->> +	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
->> +	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
->> +	cdev_del(&ctrldev->cdev);
->> +	kfree(ctrldev);
->> +}
->> +
->> +static int rpmsg_ctrl_probe(struct rpmsg_device *rpdev)
->> +{
->> +	struct rpmsg_ctrl *ctrldev;
->> +	struct device *dev;
->> +	int ret;
->> +
->> +	ctrldev = kzalloc(sizeof(*ctrldev), GFP_KERNEL);
->> +	if (!ctrldev)
->> +		return -ENOMEM;
->> +
->> +	ctrldev->rpdev = rpdev;
->> +
->> +	dev = &ctrldev->dev;
->> +	device_initialize(dev);
->> +	dev->parent = &rpdev->dev;
->> +
->> +	cdev_init(&ctrldev->cdev, &rpmsg_ctrl_fops);
->> +	ctrldev->cdev.owner = THIS_MODULE;
->> +
->> +	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
->> +	if (ret < 0)
->> +		goto free_ctrldev;
->> +	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
->> +
->> +	ret = ida_simple_get(&rpmsg_ctrl_ida, 0, 0, GFP_KERNEL);
->> +	if (ret < 0)
->> +		goto free_minor_ida;
->> +	dev->id = ret;
->> +	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
->> +
->> +	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
->> +	if (ret)
->> +		goto free_ctrl_ida;
->> +
->> +	/* We can now rely on the release function for cleanup */
->> +	dev->release = rpmsg_ctrl_release_device;
->> +
->> +	ret = device_add(dev);
->> +	if (ret) {
->> +		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
->> +		put_device(dev);
->> +	}
->> +
->> +	dev_set_drvdata(&rpdev->dev, ctrldev);
->> +
->> +	return ret;
->> +
->> +free_ctrl_ida:
->> +	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
->> +free_minor_ida:
->> +	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
->> +free_ctrldev:
->> +	put_device(dev);
->> +	kfree(ctrldev);
->> +
->> +	return ret;
->> +}
->> +
->> +static void rpmsg_ctrl_remove(struct rpmsg_device *rpdev)
->> +{
->> +	struct rpmsg_ctrl *ctrldev = dev_get_drvdata(&rpdev->dev);
->> +	int ret;
->> +
->> +	/* Destroy all endpoints */
->> +	ret = device_for_each_child(&ctrldev->dev, NULL,
->> +				    rpmsg_chrdev_eptdev_destroy);
->> +	if (ret)
->> +		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
->> +
->> +	device_del(&ctrldev->dev);
->> +	put_device(&ctrldev->dev);
->> +}
->> +
->> +static struct rpmsg_driver rpmsg_ctrl_driver = {
->> +	.probe = rpmsg_ctrl_probe,
->> +	.remove = rpmsg_ctrl_remove,
->> +	.drv = {
->> +		.name = "rpmsg_chrdev",
->> +	},
->> +};
->> +
->> +static int rpmsg_ctrl_init(void)
->> +{
->> +	int ret;
->> +
->> +	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg");
->> +	if (ret < 0) {
->> +		pr_err("rpmsg: failed to allocate char dev region\n");
->> +		return ret;
->> +	}
->> +
->> +	ret = register_rpmsg_driver(&rpmsg_ctrl_driver);
->> +	if (ret < 0) {
->> +		pr_err("rpmsg ctrl: failed to register rpmsg driver\n");
->> +		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->> +	}
->> +
->> +	return ret;
->> +}
->> +postcore_initcall(rpmsg_ctrl_init);
->> +
->> +static void rpmsg_ctrl_exit(void)
->> +{
->> +	unregister_rpmsg_driver(&rpmsg_ctrl_driver);
->> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->> +}
->> +module_exit(rpmsg_ctrl_exit);
->> +
->> +MODULE_DESCRIPTION("rpmsg control interface");
->> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
->> +MODULE_LICENSE("GPL v2");
->> -- 
->> 2.17.1
->>
+Same as above, this doesn't belong in reset_assert.
+
+> +	clk_bulk_disable_unprepare(reset->num_clocks, reset->clocks);
+
+Also I assume that only the VPU_DEC_ROOT clock is required to control
+these registers. Enabling the VPU_G1_ROOT and VPU_G2_ROOT clocks
+(presumably to make sure the resets propagate into the respective VPU
+core) would be the reset consumer's responsibility.
+
+regards
+Philipp
