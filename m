@@ -2,76 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF9832BC61
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 258DB32BC28
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348344AbhCCNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 08:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1582440AbhCCKVy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:21:54 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E786AC08EDA0;
-        Wed,  3 Mar 2021 02:18:35 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 246B41F45B37
-Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210302192700.399054668@linuxfoundation.org>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <d26f494c-4906-4ed4-e277-0c486e83e343@collabora.com>
-Date:   Wed, 3 Mar 2021 10:18:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S237743AbhCCNle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:41:34 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:42311 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1449361AbhCCKU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:20:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614766808; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NgawUiqwXp+6LkGutn5iBvxqzt510G1PCZ3d25uDEa4=;
+ b=Yl2o+oO3yd1GLxmMloKbhyYbcEi85wezsPV6e71pkEcqqx6EDGgNeJlHX4dxPv0r4KY6z4Ze
+ FeV+TkaJ99HiFSxsDXQW5TT7fDBjGwwrfAVawDtIWzPZmYvT7/u+7y075u2aDmKPtCrLEUtG
+ TIhZ8dbM5SKrWifkhHSyPuJsnh0=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 603f62a639ef3721149d633a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 10:19:18
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88C67C43463; Wed,  3 Mar 2021 10:19:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2974C433C6;
+        Wed,  3 Mar 2021 10:19:17 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210302192700.399054668@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Mar 2021 18:19:17 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Avri Altman <Avri.Altman@wdc.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Bean Huo <huobean@gmail.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: Re: [PATCH] scsi: ufs: Fix incorrect ufshcd_state after
+ ufshcd_reset_and_restore()
+In-Reply-To: <5fe97f16-406c-c279-b108-d27bb2769ed6@intel.com>
+References: <20210301191940.15247-1-adrian.hunter@intel.com>
+ <DM6PR04MB65753E738C556F035A56F77CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <5fe97f16-406c-c279-b108-d27bb2769ed6@intel.com>
+Message-ID: <80301bea84b7349ca9dbdcc4f2c9a744@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/2021 19:28, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.20 release.
-> There are 657 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2021-03-02 16:14, Adrian Hunter wrote:
+> On 2/03/21 9:01 am, Avri Altman wrote:
+>> 
+>>> If ufshcd_probe_hba() fails it sets ufshcd_state to 
+>>> UFSHCD_STATE_ERROR,
+>>> however, if it is called again, as it is within a loop in
+>>> ufshcd_reset_and_restore(), and succeeds, then it will not set the 
+>>> state
+>>> back to UFSHCD_STATE_OPERATIONAL unless the state was
+>>> UFSHCD_STATE_RESET.
+>>> 
+>>> That can result in the state being UFSHCD_STATE_ERROR even though
+>>> ufshcd_reset_and_restore() is successful and returns zero.
+>>> 
+>>> Fix by initializing the state to UFSHCD_STATE_RESET in the start of 
+>>> each
+>>> loop in ufshcd_reset_and_restore().  If there is an error,
+>>> ufshcd_reset_and_restore() will change the state to 
+>>> UFSHCD_STATE_ERROR,
+>>> otherwise ufshcd_probe_hba() will have set the state appropriately.
+>>> 
+>>> Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and 
+>>> other
+>>> error recovery paths")
+>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>> I think that CanG recent series addressed that issue as well, can you 
+>> take a look?
+>> https://lore.kernel.org/lkml/1614145010-36079-2-git-send-email-cang@codeaurora.org/
 > 
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc4.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Yes, there it is mixed in with other changes.  However it is probably 
+> better
+> as a separate patch.  Can Guo, what do you think?
 
-
-No build errors seen on kernelci.org:
-
-  https://kernelci.org/build/stable-rc/branch/linux-5.10.y/kernel/v5.10.19-658-g083cbba104d9/
-
-
-No test regressions either:
-
-  https://kernelci.org/test/job/stable-rc/branch/linux-5.10.y/kernel/v5.10.19-658-g083cbba104d9/
-
-
-Tested-by: "kernelci.org bot" <bot@kernelci.org>
-
+Oh, I missed this one...
+Sure, I will split it out as a seperate change in next version.
 
 Thanks,
-Guillaume
+Can Guo.
+
+> 
+>> 
+>> 
+>>> ---
+>>>  drivers/scsi/ufs/ufshcd.c | 2 ++
+>>>  1 file changed, 2 insertions(+)
+>>> 
+>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>>> index 77161750c9fb..91a403afe038 100644
+>>> --- a/drivers/scsi/ufs/ufshcd.c
+>>> +++ b/drivers/scsi/ufs/ufshcd.c
+>>> @@ -7031,6 +7031,8 @@ static int ufshcd_reset_and_restore(struct 
+>>> ufs_hba
+>>> *hba)
+>>>         spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>> 
+>>>         do {
+>>> +               hba->ufshcd_state = UFSHCD_STATE_RESET;
+>>> +
+>>>                 /* Reset the attached device */
+>>>                 ufshcd_device_reset(hba);
+>>> 
+>>> --
+>>> 2.17.1
+>> 
