@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A79132BE21
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073AD32BE1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345160AbhCCRGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236283AbhCCMgS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:36:18 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2F5C061788
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:27:41 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id b130so12070457qkc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:27:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mQJvPyDlOt5fHAYYg5Wntf4f/iXvZZKqmxZl2pA3ycA=;
-        b=I7GRODcAo0XnsoKg75ws5i8n9NObImxtE9WMRcW4ElZn2EzPhTCl2vmOJfV9yscLxi
-         0D6s2lMGpwE2rSLse4rszEwt25wzIIwnamMw5rdQFec2liCyFRBb95102aiUBEk5/bGh
-         tkvdipXt9/wuEsBIiEasoh29/FkdW706DNGGvXGC0p/ZxDtN4yfpDCMw5fVRvKB4Hg0r
-         VkY7aCIZEPsr1CZH5u776xKW9/lAA+j5iOlYfi7Bfb333B9lE1wU0Kr5F4QRx9sprfps
-         X2DfUH7lfh3/k2Deh4bNrNFnk6a8aCWoZ6Zxv6SusSb0QUSW/rSWcTedbEEAohEs0Aev
-         MGOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mQJvPyDlOt5fHAYYg5Wntf4f/iXvZZKqmxZl2pA3ycA=;
-        b=BaVVnT4OuzSOK4TDUFHJA/2GlqDYd2LlC+WDGpc4QS/+12yWW3dIiK52sWMzzardjU
-         rThrPjJrZ055SXVEVTAOmQftm3LE/az/FRjjfX5lmpPJnVGQNZV9rquTPMIQ6UMEC7KV
-         WnsnlO0eCVjUUHxvqvtm1njeUQKcgzkl/IZ4en1ZmOtMyO1fs6yZb86rY+5/tObsOmAQ
-         lcJPfkh8gcZDGqgPM3dR2v3vxGNEIQ1D9YFVWoVBE/9ghjZ95RhOONMXKp2kVb0rG79S
-         KyG7eE6dd2Zffp1q6vf7bJ9AWgiwmg6ESgrUafIZYQPB/+9L3NjuN9iKCyNMKENgySMJ
-         le3Q==
-X-Gm-Message-State: AOAM531iq7EBm4h15+rCsu5gNt/dKPWmBHLBg77gJ74cccc8gi2yBSar
-        x5Nr6VcGEfJoXuIENiNDwwLtPQoyqm4crpvdPmFcnw==
-X-Google-Smtp-Source: ABdhPJwgJX+j8CgCGgffgNk0gxz/y7Fxb8hOEIUL8C7EI70yzkFg6bMlbjRKQH40ys5foy7RCInU1cVcExy6kKl955A=
-X-Received: by 2002:a37:630a:: with SMTP id x10mr20824060qkb.326.1614774459988;
- Wed, 03 Mar 2021 04:27:39 -0800 (PST)
+        id S237392AbhCCRCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:02:11 -0500
+Received: from mout.gmx.net ([212.227.17.20]:37019 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238867AbhCCMbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:31:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614774614;
+        bh=AyfrbWOMECCIN32HYOHpFRVWGNqU4udC6MIuB8c7g0w=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=gzxlbvmvNdB14yJi/ntdiiPBfAbnl/OuC9SXFeM/2pbwUq9zmuWcdnzX6KfoVtSJM
+         G+OUTao2lMpnvG490apZw3YQQsGsWYf5qBv/5bNEoGd3xJCn/0jPvxxhn4wh3notCd
+         hBfr0XioNCwt3Rr/YwDB9k8wLdVsblEkTGGDT9lg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.44.246] ([105.80.250.83]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtwUm-1m4s011m8a-00uHwO for
+ <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 13:30:14 +0100
+To:     linux-kernel@vger.kernel.org
+From:   "Artem S. Tashkinov" <aros@gmx.com>
+Subject: A long standing issue with RAM usage reporting
+Message-ID: <6ea673dc-c34b-ff8f-57f3-bce575b989ce@gmx.com>
+Date:   Wed, 3 Mar 2021 12:30:10 +0000
 MIME-Version: 1.0
-References: <20210303121157.3430807-1-elver@google.com>
-In-Reply-To: <20210303121157.3430807-1-elver@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 3 Mar 2021 13:27:28 +0100
-Message-ID: <CAG_fn=W-jmnMWO24ZKdkR13K0h_0vfR=ceCVSrYOCCmDsHUxkQ@mail.gmail.com>
-Subject: Re: [PATCH mm] kfence: fix printk format for ptrdiff_t
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Jann Horn <jannh@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DhUr0e3/POzJ3m1LEIaeE0WwCdj9GJuQMJKLCS7/fZDJBBXif0C
+ le9X1G+R5jlWwUBeHVLUbHymepWxQXAyfwNeufPfA/2tFjT1UgVOe+lYA9DHAq7z1bDF1bw
+ a7aMc/nlA6U+riQWWM+eTf/BSeiRsvgWUSLgeQTyjW5cEFOPg7UPRDV+uET9hoWOAQHDy6C
+ M8uQZTv2y9ZE9Wo84XcUg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+wQOEY3JZ20=:hIlioP0P89AEAoDL/0ZeFK
+ N4p3kbeyUxB0Nf9cuO/z8UV0y/+hpyNLnr2+dIZqnJzAIRe8r1wP16G3q7yoLIjXpllOUkykm
+ d7D9cE0Tv7x0361ERpuTYMB4nd/J8KFpf+f2uds8dfyGTaakTC0hf8OdUgDtIgXveU/pWue1C
+ bc8B/eu9lZhh87QXh7LqdEOsKLXpBXs7FE5ViEMjEuzlz5Be9rd8PBP1YVK2v9RlJojxSE2L5
+ TG6FbiStF6ZqADMF7QGgjpqUo3nv0Oe3dxdnRaZo7m/1ERZYrqD0NvhlqFH2jYOFEzk5j3RcI
+ uTDAQBIIW+5KjnA+Zqiy/RKe4x1FPU6YdM2ylT6SOHEpocWMjkWETesdzeeGxxd9XeBD3XAoV
+ dWVrbXb3KVhb9EZZ3ZZ4UAq9hutqYgcU7zo3MRppLfryHw3W9FA/Y/Me4sIoHqZjekG6yA1eq
+ 7goAyy93PE9VYxBmu/5SgVQ/9olmGv14XFDjErmx9tD21nGOJNrZczsmkvKNOyL0xBzr9ur+p
+ kkBZ6rbVrQLNzRcJ/0/mxqlpc7RniHhlaqmuVQ/VEuiMq5YoqpiuW4rXf6DqqCY1xL5ZKl+nU
+ WJRNsOfsSZ1y6d1+snozHYM5/tKCzpHhWjEPp7kRIkqId8MQUQ6Lo7SeB/w5iFK21JUzS4rEF
+ /X3JVCqqmT6d52d6FvPOJuQldNsOCAKj1ZCKp9dgxy6CoO0csx9J5TwLaw9wNrgu719ImNi8y
+ xsabegRkG+ExfmBwtOMUEfEEn4pa1wyaVkkxwuLlw02hfSM0YaA2czunleWSIGlpbDCS0Uzbt
+ DHY68phTVGaorPmf7eLC5xiIduPg4gfwcsF6YPEkND+rDoWcVz23IBGfunIKknuOhZCEbh9Oh
+ +1QYQNrhHJW5NPS6RaXw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 1:12 PM Marco Elver <elver@google.com> wrote:
->
-> Use %td for ptrdiff_t.
->
-> Link: https://lkml.kernel.org/r/3abbe4c9-16ad-c168-a90f-087978ccd8f7@csgroup.eu
-> Reported-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Signed-off-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+Hello everyone,
+
+I'd love to bring kernel developers' attention to this long standing issue=
+:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=3D201675
+
+It would be great if something was done about it because otherwise htop,
+top and free and numerous other utilities in Linux have to implement
+hacks and workarounds to properly report free/used RAM.
+
+https://github.com/htop-dev/htop/issues/556
+
+https://gitlab.com/procps-ng/procps/-/issues/196
+
+There's also another related issue:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=3D201673 but it will be
+automatically solved once the initial bug report has been dealt with.
+
+Best regards,
+Artem
