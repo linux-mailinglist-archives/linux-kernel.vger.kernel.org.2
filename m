@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F34B32BE57
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B4832BE65
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385600AbhCCRUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        id S1385673AbhCCRVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:21:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349261AbhCCNoQ (ORCPT
+        with ESMTP id S1355334AbhCCNol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:44:16 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2A1C0617AA
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:43:35 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id w7so5210439wmb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:43:35 -0800 (PST)
+        Wed, 3 Mar 2021 08:44:41 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EE0C061222
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:43:42 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id h98so23716209wrh.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:43:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sSYYF9avR+ibuwGTDH+u4wL/4B2uArbe+K5Pi6OSJeE=;
-        b=ycKjNwxVRbCbFBAENcOkX967iuzNILRBy64Agv/v6AoZsMb6fh2R8wRdvYyJH6Cj2D
-         TgcS8VnsiDfrUZ4+cXJGZ7euWyTdOdLNdKMr+YOK635Vr7OgrzD4hBE02dgD7nopt4ZM
-         w0Lut7zaa1OSOrPr2NtQ7k3kyGq7LnzgpWxg/3jlkxOLCPITPG/yUPcRKl6OLgvuy9yI
-         AMlLutx1kgcc7QtPN/Xk2FNrgBpBoYKNVwWWNI0+HI/7NtZ9Vvkzae0XtKZKuVpk3BQ5
-         fDtXc95a7S4ZQr7B2TODC9Z/hm0uLpjbMGGrYxonprBaU5PcGThm2OYN0sDp65mrMGI5
-         7v2w==
+        bh=K5sJeJ74F8ymxQq/7xf9FhHZmcrAt5y0yMPNHooyiic=;
+        b=N3q181yJisryPIByDaizfjLwDLbgVp2sSUSlV1VTGiJIerqGb19KH2SBPvAKguZifR
+         I/iBsFNFweL2WQUEyLnk4hzJijHleRbyOOxWWFxboGtV6plw4vkLLVhRVDF0qymFFDqh
+         w8gomQnPFF0fUFn87WrNRwqG9HWCghz9iplUle3MXnVjy2mHL6Y3m3Ae4i+B2jY23gZp
+         zpMdZFt4R3rikBkgzyz/bOQklHbTOzqFE8FKqLCfx6LT7FdVi9UQS0PBAAmWEXMQr+cv
+         hdTuBN3aQssflEmx5QR+Wmnna7UAkSRvdCRqviYtZRMjwHvmJrflxvVf/+lNtZxIyDrY
+         ZlOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sSYYF9avR+ibuwGTDH+u4wL/4B2uArbe+K5Pi6OSJeE=;
-        b=rPEL21wcIcAhBGfzUx9uberPyRAN9YfEzHg5qwHrN/AhhYfPOa0tEgwoLruqGP3tjn
-         dkK3XXx2k/kBAh2VnWW2t+Zi1qezXhVt0P1JaQ7ZwPsSPEGHd7nwOj16Ow0o6ivQy579
-         wAYi1VFwD6L1eH7Z1K2OOMjwr+mlL2MpNXtUdfCKyDXjeXI59yhvdVUYnGrsYfnpwNRA
-         aijaIBltBhWGBCtMju4FKfmhDky7AjAHBjUk6AhX/m5Q1Sd3NXG+v1JuU563BDGE9BPj
-         FreST67I4CP8cOyaLo3pJdTiYhaKyv6UuJ0LWHSGRfpbWjMWFqfnN6BuEd/qo45ozwnU
-         GpiA==
-X-Gm-Message-State: AOAM531FdBiwb19NDP/YkThkr6LlzoIwbIcN1RXaxy8/yT8jrPC3rtun
-        K7tiD/zLlaGLcLhUDnub7Bxiiw==
-X-Google-Smtp-Source: ABdhPJwiGxjArDO8rR5idnJXWqI7FvnqHY0aib4SalTLxl3V/8oEa/eGolnFiAQ3rvhsAU4vK+Y5xw==
-X-Received: by 2002:a1c:68c5:: with SMTP id d188mr8916602wmc.119.1614779014483;
-        Wed, 03 Mar 2021 05:43:34 -0800 (PST)
+        bh=K5sJeJ74F8ymxQq/7xf9FhHZmcrAt5y0yMPNHooyiic=;
+        b=fK3zS45kvXzsWagnQHuBhcD43T5DXsECUg3ndbZsKy6YFKkYb9/rquWJPvW8r0Ca26
+         Kcux0ozotcXj3Z3m+Jl4gn+MhqG49zRVM7YPRzwBEFwB9V+50gKn5cxg00Iz37UgXq/l
+         C/Nv7o8KCOqrNg6mt5KmoSGzl50kU70xLWZnVBECtus1JrA7REfnHNTpzG6aTQOIe+/V
+         G/JttENOa9xJNg1pwIdaed05j3dzeR/j8FAWgG6GysjXexbgZ/tLbVGqxvpEb5yl00tV
+         NoHjcUe92h4uVUKgMbonMxwPohaqKBh0IlkFRKN3Atg4VgFrGAZ2JkSS10+++T0fu17N
+         WfJA==
+X-Gm-Message-State: AOAM531+mfrvuVdSeCvC+3yeqDFec+1o18c/GmSDm9R7GiDRZEfDlkaf
+        0zL4/lEnyYAwn/CXTQNcGGZCDw==
+X-Google-Smtp-Source: ABdhPJwi4JvCkBousamcRU/iub7Snug2xhsNyhh47wRAiEEVp0mD51d0zPloNpxfNF3p6PXkuyD4wg==
+X-Received: by 2002:a5d:404f:: with SMTP id w15mr22817085wrp.106.1614779015699;
+        Wed, 03 Mar 2021 05:43:35 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.33
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:43:34 -0800 (PST)
+        Wed, 03 Mar 2021 05:43:35 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 05/53] include: drm: drm_atomic: Make use of 'new_plane_state'
-Date:   Wed,  3 Mar 2021 13:42:31 +0000
-Message-Id: <20210303134319.3160762-6-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Subject: [PATCH 06/53] drm/nouveau/nvkm/subdev/volt/gk20a: Demote non-conformant kernel-doc headers
+Date:   Wed,  3 Mar 2021 13:42:32 +0000
+Message-Id: <20210303134319.3160762-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the macro for_each_oldnew_plane_in_state() 'new_plane_state' is provided
-as a container for state->planes[i].new_state, but is not utilised in
-some use-cases, so we fake-use it instead.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function ‘amdgpu_dm_commit_cursors’:
- drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:7649:44: warning: variable ‘new_plane_state’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:53: warning: Function parameter or member 'speedo' not described in 'gk20a_volt_get_cvb_voltage'
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:53: warning: Function parameter or member 's_scale' not described in 'gk20a_volt_get_cvb_voltage'
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:53: warning: Function parameter or member 'coef' not described in 'gk20a_volt_get_cvb_voltage'
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:69: warning: Function parameter or member 'speedo' not described in 'gk20a_volt_get_cvb_t_voltage'
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:69: warning: Function parameter or member 'temp' not described in 'gk20a_volt_get_cvb_t_voltage'
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:69: warning: Function parameter or member 's_scale' not described in 'gk20a_volt_get_cvb_t_voltage'
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:69: warning: Function parameter or member 't_scale' not described in 'gk20a_volt_get_cvb_t_voltage'
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c:69: warning: Function parameter or member 'coef' not described in 'gk20a_volt_get_cvb_t_voltage'
 
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Ben Skeggs <bskeggs@redhat.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Rob Clark <robdclark@gmail.com>
 Cc: dri-devel@lists.freedesktop.org
+Cc: nouveau@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- include/drm/drm_atomic.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/drm/drm_atomic.h b/include/drm/drm_atomic.h
-index ce7023e9115d7..a71c19e1d785c 100644
---- a/include/drm/drm_atomic.h
-+++ b/include/drm/drm_atomic.h
-@@ -867,7 +867,8 @@ void drm_state_dump(struct drm_device *dev, struct drm_printer *p);
- 			     ((plane) = (__state)->planes[__i].ptr,	\
- 			      (void)(plane) /* Only to avoid unused-but-set-variable warning */, \
- 			      (old_plane_state) = (__state)->planes[__i].old_state,\
--			      (new_plane_state) = (__state)->planes[__i].new_state, 1))
-+			      (new_plane_state) = (__state)->planes[__i].new_state, \
-+			      (void)(new_plane_state) /* Only to avoid unused-but-set-variable warning */, 1))
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c b/drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c
+index 8c2faa9645111..ccac88da88648 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c
+@@ -45,7 +45,7 @@ static const struct cvb_coef gk20a_cvb_coef[] = {
+ 	/* 852 */ { 1608418, -21643, -269,     0,    763,  -48},
+ };
  
- /**
-  * for_each_oldnew_plane_in_state_reverse - iterate over all planes in an atomic
+-/**
++/*
+  * cvb_mv = ((c2 * speedo / s_scale + c1) * speedo / s_scale + c0)
+  */
+ static inline int
+@@ -58,7 +58,7 @@ gk20a_volt_get_cvb_voltage(int speedo, int s_scale, const struct cvb_coef *coef)
+ 	return mv;
+ }
+ 
+-/**
++/*
+  * cvb_t_mv =
+  * ((c2 * speedo / s_scale + c1) * speedo / s_scale + c0) +
+  * ((c3 * speedo / s_scale + c4 + c5 * T / t_scale) * T / t_scale)
 -- 
 2.27.0
 
