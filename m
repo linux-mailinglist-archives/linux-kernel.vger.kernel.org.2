@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4972132BFD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D8632BF71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579236AbhCCSap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:30:45 -0500
-Received: from mga06.intel.com ([134.134.136.31]:45588 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382998AbhCCQ2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:28:20 -0500
-IronPort-SDR: X98ptwmCA8JW+xOSZQev0BMOr1Mr6nBRgVFg6bxYqCP9Gz33YFpHCL/3dEj1NQscjHTZxW0BMA
- M+t1RSwapXqw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="248629274"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="248629274"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 08:17:07 -0800
-IronPort-SDR: HK6BqoCOxzow7Nb+DpilmIyDt0ONRht09Opyru2m3nxMWlc57oeZ9IbhzMHuvtnLb6GkVpB1SI
- TFaQCPef4zeA==
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="384042326"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 08:17:04 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lHUBJ-009g4x-EE; Wed, 03 Mar 2021 18:17:01 +0200
-Date:   Wed, 3 Mar 2021 18:17:01 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Stephen Boyd <swboyd@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
-Message-ID: <YD+2fRo4J/ffQF8z@smile.fi.intel.com>
-References: <20210301174749.1269154-1-swboyd@chromium.org>
- <20210301174749.1269154-6-swboyd@chromium.org>
- <YD9kNphaSRPk83KJ@alley>
- <20210303100012.0e6e4de3@gandalf.local.home>
+        id S1386591AbhCCSaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237379AbhCCQWd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:22:33 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899C1C061762
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:20:58 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id bd6so17511949edb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7oMQzTqAOm2hnQffsTaCOfeTj0G+JUHHCY8d/eydSSY=;
+        b=z/W60i9vbwd/cA3kpfvw5073LOzVMbCldbbkRoUuapoRS/tBfyqr/PwXedDrSIthHc
+         b4Da17NVABWXlzLU71V4fhM4bcApBUhA0cerpZkRraT8hlzq7dnNVL86rhn35IDDZvM7
+         uwM59m8FyOpgHu6PU5eqTaaDRqPmhB76X3lEpicTWV7U+eq/pbKrRiYHWGHKO4caPvGj
+         L0q5RpCNgRmvkIbcZcBQeBcp8VPh2yWtGyOypXdVnfXLNs1Vu5q5yrrgyWkv5NmqK2y2
+         OSWEKg+WfcidFJ2uLdGucUQw+T3RgWPffmT3AzspSOHQugsHCPrq3A1UjHAp7hQqz2CL
+         1OHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7oMQzTqAOm2hnQffsTaCOfeTj0G+JUHHCY8d/eydSSY=;
+        b=I1mePs/c0u0EiSKBmgEWKKgiG/al71TlH6rgrONjh8vgPfB3oNJSKngRR7p8dWNNdx
+         6Ciz7ImJwnsOTUDR2LjXZTm3EkZ1v6fyPJpHEZVBm7uTZciJBW/xsHTl2F1fXEKIFwHW
+         kqg5oAfm2IiGIY9Z+P/S4s0eiNqXqRTsDbvXPsqw5W8d/ZmIm2WhWWr69msv6r3XY7dm
+         gETablddJchI+VtuE/wVOrYvre7rXXQmQRRioHO+YPNQoBrjKL5NLGCmgQH5OAoPkKlL
+         WlSmsQwXtre0u+AItQGRb1pLmMg4TXpeboobzDVM7QRm41/Lm/tWDpe22G6kELPURC5i
+         Egig==
+X-Gm-Message-State: AOAM530tfmZrhD0lwo7ipp3qY9ZgcnWHSrMcivrX6zovVn5b9gki4n+M
+        dAvPjYiXe68JQLQDl3DrEmzHjDektHGRXWN/YSW0
+X-Google-Smtp-Source: ABdhPJzU43PvP/dKWjNdyFxXOAyjlNYOQrGgrKdkykxmaK2LCh0f1pMajRbc0LraMTOAnpzVkoO04VSwZUj38qXEBas=
+X-Received: by 2002:aa7:db4f:: with SMTP id n15mr77541edt.12.1614788457018;
+ Wed, 03 Mar 2021 08:20:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303100012.0e6e4de3@gandalf.local.home>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <000000000000f022ff05bca3d9a3@google.com>
+In-Reply-To: <000000000000f022ff05bca3d9a3@google.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 3 Mar 2021 11:20:45 -0500
+Message-ID: <CAHC9VhT5DJzk9MVRHJtO7kR1RVkGW+WRx8xt_xGS01H3HLm3RA@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Write in cipso_v4_doi_putdef
+To:     syzbot <syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 10:00:12AM -0500, Steven Rostedt wrote:
-> On Wed, 3 Mar 2021 11:25:58 +0100
-> Petr Mladek <pmladek@suse.com> wrote:
-> 
-> > Alternative solution would be to minimize the information, for
-> > example, by printing only the modules that appear in the backtrace.
-> > But this might be complicated to implement.
-> 
-> It could be a list after the backtrace perhaps, and not part of the
-> "modules linked in"?
-> 
-> But then you need a generic way of capturing those modules in the backtrace
-> that works for every architecture.
+On Wed, Mar 3, 2021 at 10:53 AM syzbot
+<syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    7a7fd0de Merge branch 'kmap-conversion-for-5.12' of git://..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=164a74dad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=779a2568b654c1c6
+> dashboard link: https://syzkaller.appspot.com/bug?extid=521772a90166b3fca21f
+> compiler:       Debian clang version 11.0.1-2
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com
+>
+> ==================================================================
+> BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+> BUG: KASAN: use-after-free in atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
+> BUG: KASAN: use-after-free in __refcount_sub_and_test include/linux/refcount.h:272 [inline]
+> BUG: KASAN: use-after-free in __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+> BUG: KASAN: use-after-free in refcount_dec_and_test include/linux/refcount.h:333 [inline]
+> BUG: KASAN: use-after-free in cipso_v4_doi_putdef+0x2d/0x190 net/ipv4/cipso_ipv4.c:586
+> Write of size 4 at addr ffff8880179ecb18 by task syz-executor.5/20110
 
-> Honestly, I don't even know what a buildid is, and it is totally useless
-> information for myself. What exactly is it used for?
-
-Dunno Stephen's motivation, but build ID is very useful when you do tracing,
-then based on ID the decoders can know what exactly was the layout of the
-binary and list of (exported) functions, etc.
-
-At least that was my (shallow) experience with perf last time I have tried it.
+Almost surely the same problem as the others, I'm currently chasing
+down a few remaining spots to make sure the fix I'm working on is
+correct.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+paul moore
+www.paul-moore.com
