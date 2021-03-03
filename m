@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C0D32C116
+	by mail.lfdr.de (Postfix) with ESMTP id A59FB32C119
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836466AbhCCSru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:47:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57598 "EHLO mail.kernel.org"
+        id S1836488AbhCCSry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:47:54 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:18075 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1573650AbhCCRrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:47:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E69D64DE8;
-        Wed,  3 Mar 2021 17:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614793593;
-        bh=zHovqmMgSn4g07KjIGQ3GddG/B+TRQhDfe0NCPpSiOw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hEUphPQ96zB/JRoKj9iukjVpFhvPt4O78R/PYwyDsJJCuX1/CS7JwuaoOEH35BCPO
-         PEMEGix9ooCQgp+hbOQENw6SUK1IIm3A+lgyfgp9fpoN7xLENjzuVQ/IUCSakK6oSK
-         XQps8gJRFEm9e2XueANVMhnqazwsU74buqS5004WiXZ5wgyPciFIwXLyh5Azi/QItx
-         +AesAOBL75e28NostLCcUZSnCgvmKjyQGAU/RK9j0tJTyNqgkCclwj8OXUwZlNE4qe
-         JFgAyqC+yZgWr6PSWugGHZKML8mrpCCSajWidxc5wfwh3wy38w9ngkj0ZCq03C4UCi
-         gh11pwSWVe6dQ==
-Date:   Wed, 3 Mar 2021 17:46:28 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, danielwa@cisco.com,
-        robh@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] cmdline: Add generic function to build command
- line.
-Message-ID: <20210303174627.GC19713@willie-the-truck>
-References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
- <d8cf7979ad986de45301b39a757c268d9df19f35.1614705851.git.christophe.leroy@csgroup.eu>
- <20210303172810.GA19713@willie-the-truck>
- <a0cfef11-efba-2e5c-6f58-ed63a2c3bfa0@csgroup.eu>
+        id S1577590AbhCCRsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:48:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614793711; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Fcd2CI16BjPfDlrMPeOLMsbcVTQCVnoyX8FWXapXUqY=;
+ b=GnDx9/GYg35KAio5fixk9BAvgufq71f2X6/QJk97jwr531YCTttrSTHVrPc652LEVs5feofi
+ RWvTJM+eYJNknTXMKBCgryAHaSxrcrT1jfn/QIOqTVUY3ixwp99iKj90AQJX/jvoh7DFXMH3
+ /nfjUoHkvgmrMcfXc3cqDGT9/dQ=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 603fcbc6c862e1b9fdb26fdb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 17:47:50
+ GMT
+Sender: pintu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4B74C433CA; Wed,  3 Mar 2021 17:47:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pintu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 708BEC433ED;
+        Wed,  3 Mar 2021 17:47:49 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a0cfef11-efba-2e5c-6f58-ed63a2c3bfa0@csgroup.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Mar 2021 23:17:49 +0530
+From:   pintu@codeaurora.org
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        iamjoonsoo.kim@lge.com, sh_def@163.com, mateusznosek0@gmail.com,
+        bhe@redhat.com, nigupta@nvidia.com, yzaikin@google.com,
+        keescook@chromium.org, mcgrof@kernel.org,
+        mgorman@techsingularity.net, pintu.ping@gmail.com
+Subject: Re: [PATCH] mm/compaction: remove unused variable
+ sysctl_compact_memory
+In-Reply-To: <486d7af3-95a3-9701-f0f9-706ff49b99d1@suse.cz>
+References: <1614707773-10725-1-git-send-email-pintu@codeaurora.org>
+ <486d7af3-95a3-9701-f0f9-706ff49b99d1@suse.cz>
+Message-ID: <c99eb67f67e4e24b4df1a78a583837b1@codeaurora.org>
+X-Sender: pintu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 06:38:16PM +0100, Christophe Leroy wrote:
-> Le 03/03/2021 à 18:28, Will Deacon a écrit :
-> > On Tue, Mar 02, 2021 at 05:25:17PM +0000, Christophe Leroy wrote:
-> > > This code provides architectures with a way to build command line
-> > > based on what is built in the kernel and what is handed over by the
-> > > bootloader, based on selected compile-time options.
-> > > 
-> > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > > ---
-> > >   include/linux/cmdline.h | 62 +++++++++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 62 insertions(+)
-> > >   create mode 100644 include/linux/cmdline.h
-> > > 
-> > > diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
-> > > new file mode 100644
-> > > index 000000000000..ae3610bb0ee2
-> > > --- /dev/null
-> > > +++ b/include/linux/cmdline.h
-> > > @@ -0,0 +1,62 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +#ifndef _LINUX_CMDLINE_H
-> > > +#define _LINUX_CMDLINE_H
-> > > +
-> > > +static __always_inline size_t cmdline_strlen(const char *s)
-> > > +{
-> > > +	const char *sc;
-> > > +
-> > > +	for (sc = s; *sc != '\0'; ++sc)
-> > > +		; /* nothing */
-> > > +	return sc - s;
-> > > +}
-> > > +
-> > > +static __always_inline size_t cmdline_strlcat(char *dest, const char *src, size_t count)
-> > > +{
-> > > +	size_t dsize = cmdline_strlen(dest);
-> > > +	size_t len = cmdline_strlen(src);
-> > > +	size_t res = dsize + len;
-> > > +
-> > > +	/* This would be a bug */
-> > > +	if (dsize >= count)
-> > > +		return count;
-> > > +
-> > > +	dest += dsize;
-> > > +	count -= dsize;
-> > > +	if (len >= count)
-> > > +		len = count - 1;
-> > > +	memcpy(dest, src, len);
-> > > +	dest[len] = 0;
-> > > +	return res;
-> > > +}
-> > 
-> > Why are these needed instead of using strlen and strlcat directly?
+On 2021-03-03 22:39, Vlastimil Babka wrote:
+> On 3/2/21 6:56 PM, Pintu Kumar wrote:
+>> The sysctl_compact_memory is mostly unsed in mm/compaction.c
+>> It just acts as a place holder for sysctl.
+>> 
+>> Thus we can remove it from here and move the declaration directly
+>> in kernel/sysctl.c itself.
+>> This will also eliminate the extern declaration from header file.
+>> No functionality is broken or changed this way.
+>> 
+>> Signed-off-by: Pintu Kumar <pintu@codeaurora.org>
+>> Signed-off-by: Pintu Agarwal <pintu.ping@gmail.com>
 > 
-> Because on powerpc (at least), it will be used in prom_init, it is very
-> early in the boot and KASAN shadow memory is not set up yet so calling
-> generic string functions would crash the board.
-
-Hmm. We deliberately setup a _really_ early shadow on arm64 for this, can
-you not do something similar? Failing that, I think it would be better to
-offer the option for an arch to implement cmdline_*, but have then point to
-the normal library routines by default.
-
-> > > +/*
-> > > + * This function will append a builtin command line to the command
-> > > + * line provided by the bootloader. Kconfig options can be used to alter
-> > > + * the behavior of this builtin command line.
-> > > + * @dest: The destination of the final appended/prepended string.
-> > > + * @src: The starting string or NULL if there isn't one. Must not equal dest.
-> > > + * @length: the length of dest buffer.
-> > > + */
-> > > +static __always_inline void cmdline_build(char *dest, const char *src, size_t length)
-> > > +{
-> > > +	if (length <= 0)
-> > > +		return;
-> > > +
-> > > +	dest[0] = 0;
-> > > +
-> > > +#ifdef CONFIG_CMDLINE
-> > > +	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !src || !src[0]) {
-> > > +		cmdline_strlcat(dest, CONFIG_CMDLINE, length);
-> > > +		return;
-> > > +	}
-> > > +#endif
-> > 
-> > CONFIG_CMDLINE_FORCE implies CONFIG_CMDLINE, and even if it didn't,
-> > CONFIG_CMDLINE is at worst an empty string. Can you drop the #ifdef?
+> You should be able to remove the variable completely and set .data to 
+> NULL in
+> the corresponding entry. The sysctl_compaction_handler doesn't access 
+> it at all.
 > 
-> Ah yes, since cbe46bd4f510 ("powerpc: remove CONFIG_CMDLINE #ifdef mess") it
-> is feasible. I can change that now.
+> Then you could do the same with drop_caches. Currently
+> drop_caches_sysctl_handler currently writes to it, but that can be 
+> avoided using
+> a local variable - see how sysrq_sysctl_handler avoids the global 
+> variable and
+> its corresponding .data field is NULL.
 > 
-> > 
-> > > +	if (dest != src)
-> > > +		cmdline_strlcat(dest, src, length);
-> > > +#ifdef CONFIG_CMDLINE
-> > > +	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) && sizeof(CONFIG_CMDLINE) > 1)
-> > > +		cmdline_strlcat(dest, " " CONFIG_CMDLINE, length);
-> > > +#endif
-> > 
-> > Likewise, but also I'm not sure why the sizeof() is required.
-> 
-> It is to avoid adding a white space at the end of the command line when
-> CONFIG_CMDLINE is empty. But maybe it doesn't matter ?
 
-If CONFIG_CMDLINE is empty, I don't think you can select
-CONFIG_CMDLINE_EXTEND (but even if you could, I don't think it matters).
+Oh yes, thank you so much for the reference.
+Yes I was looking to do something similar but didn't realize that is 
+possible.
+I will re-submit the new patch.
 
-Will
+And yes, I will try to explore more on drop_caches part as well.
+
+Thanks,
+Pintu
