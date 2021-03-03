@@ -2,113 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8933C32BD3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D161832BD55
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384131AbhCCPg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:36:29 -0500
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:45992 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356812AbhCCKsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:48:23 -0500
-Received: by mail-lf1-f46.google.com with SMTP id k9so16441723lfo.12;
-        Wed, 03 Mar 2021 02:48:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jYgzsnlOAmYZJCXvodiiaS5LSTl/fmjcB2g3B44MqBU=;
-        b=kiKxQTi1UmFpZGW2AB3jjJm0rurOjuD0TSrDUC8W2CSRi3BaAXLHb70YbAXukbaS1U
-         sKWJH9mkj5I/ZxjoJJ05MgD/bG1GqKwoEBLNTdvIlFAs1blZOQlh6IBNdtolYJ+IJ1Mw
-         0N4pSoZxmfvnCasEUR89xoG8qdEv7/wW51FVjnOFd4LJC0F8/fHxiG9462DreYWrambg
-         IoWTTtY6ixXFwTfXBbu9YEx8EX2DQtlsXwDsxtYDVWgF9kZkUp+vwNq2L02IagXuEV5Q
-         kXg1KZwg7H33i/xxS7/GupdygW684pbmQG+vW3FA61UT/oWu8eZWa6jPC6Qo+P4BWZrt
-         nJ0Q==
-X-Gm-Message-State: AOAM532wZ+/+MynSgFjyc1d0TmoSEaFFDdVpMFZXeWe2ZRfynZzrQMkU
-        E9y3gStoX/W8AFPxluPTp6N+lTMKfT0=
-X-Google-Smtp-Source: ABdhPJxWgi3dnPLit7ylRzc3OmTAEL9RYSBCM13MOHiSLsmqvfM1liV4Oac7SYcpo1euA5vnbYeGrQ==
-X-Received: by 2002:adf:b345:: with SMTP id k5mr27360948wrd.14.1614767920947;
-        Wed, 03 Mar 2021 02:38:40 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id a21sm7112918wmb.5.2021.03.03.02.38.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 02:38:40 -0800 (PST)
-Date:   Wed, 3 Mar 2021 11:38:39 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     taehyun cho <taehyun.cho@samsung.com>, balbi@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-Message-ID: <20210303103839.it7grj3vtrdmngbd@kozik-lap>
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
- <20210303022628.6540-1-taehyun.cho@samsung.com>
- <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
- <YD9lTjWc25Nn7jAR@kroah.com>
+        id S230260AbhCCPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:45:19 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:1765 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1444871AbhCCKvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:51:31 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dr9Td42QDz9tygN;
+        Wed,  3 Mar 2021 11:39:01 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id f_Vl0gODMLXr; Wed,  3 Mar 2021 11:39:01 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dr9Td2Nq5z9tygT;
+        Wed,  3 Mar 2021 11:39:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0397B8B7D0;
+        Wed,  3 Mar 2021 11:39:02 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id iHEA4-6VBwMi; Wed,  3 Mar 2021 11:39:01 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 36CFD8B7C3;
+        Wed,  3 Mar 2021 11:39:00 +0100 (CET)
+Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
+ <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
+ <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
+ <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
+ <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
+ <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
+ <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
+ <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu>
+Date:   Wed, 3 Mar 2021 11:38:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YD9lTjWc25Nn7jAR@kroah.com>
+In-Reply-To: <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:30:38AM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Mar 03, 2021 at 11:24:01AM +0100, Krzysztof Kozlowski wrote:
-> > On 03/03/2021 03:26, taehyun cho wrote:
-> > > 'ARCH_EXYNOS' is not suitable for DWC3_EXYNOS config.
-> > > 'USB_DWC3_EXYNOS' is glue layer which can be used with
-> > > Synopsys DWC3 controller on Exynos SoCs. USB_DWC3_EXYNOS'
-> > > can be used from Exynos5 to Exynos9.
-> > > 
-> > > Signed-off-by: taehyun cho <taehyun.cho@samsung.com>
-> > 
-> > NACK because you ignored comments from March. Please respond to them instead
-> > of resending the same patch.
-> > 
-> > Anyway, when resending you need to version your patches and explain the
-> > differences. Please also Cc reviewers and other maintainers. I pointed out
-> > this before:
-> > scripts/get_maintainer.pl -f drivers/usb/dwc3/dwc3-exynos.c
-> > 
-> > The driver - in current form - should not be available for other
-> > architectures. It would clutter other platforms and kernel config selection.
-> > If you want to change this, you need to provide rationale (usually by adding
-> > support to new non-Exynos platform).
+
+
+Le 02/03/2021 à 12:39, Marco Elver a écrit :
+> On Tue, 2 Mar 2021 at 12:21, Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+> [...]
+>>>> Booting with 'no_hash_pointers" I get the following. Does it helps ?
+>>>>
+>>>> [   16.837198] ==================================================================
+>>>> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
+>>>> [   16.848521]
+>>>> [   16.857158] Invalid read at 0xdf98800a:
+>>>> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
+>>>> [   16.865731]  kunit_try_run_case+0x5c/0xd0
+>>>> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
+>>>> [   16.875199]  kthread+0x15c/0x174
+>>>> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
+>>>> [   16.882847]
+>>>> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
+>>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
+>>>> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
+>>>> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
+>>>> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
+>>>> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
+>>>> [   16.918153] DAR: df98800a DSISR: 20000000
+>>>> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
+>>>> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
+>>>> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
+>>>> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
+>>>> [   16.947292] Call Trace:
+>>>> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
+>>>
+>>> The "(unreliable)" might be a clue that it's related to ppc32 stack
+>>> unwinding. Any ppc expert know what this is about?
+>>>
+>>>> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
+>>>> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
+>>>> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
+>>>> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
+>>>> [   16.981896] Instruction dump:
+>>>> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
+>>>> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
+>>>> [   17.000711] ==================================================================
+>>>> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
+>>>> [   17.008223]     Expected report_matches(&expect) to be true, but is false
+>>>> [   17.023243]     not ok 21 - test_invalid_access
+>>>
+>>> On a fault in test_invalid_access, KFENCE prints the stack trace based
+>>> on the information in pt_regs. So we do not think there's anything we
+>>> can do to improve stack printing pe-se.
+>>
+>> stack printing, probably not. Would be good anyway to mark the last level [unreliable] as the ppc does.
 > 
-> No, these crazy "ARCH_FOO" things need to go away.  For systems that
-> want to build "universal" kernels, why are they being forced to enable
-> "ARCH_*" just so they can pick specific drivers?  That is not done on
-> other architectures, why is ARM64 so "special" in this regard.
+> We use stack_trace_save_regs() + stack_trace_print().
 > 
-> How do you "know" that these cores/devices are tied to specific ARCH_
-> platforms?  We don't, so that dependency should not be there.
+>> IIUC, on ppc the address in the stack frame of the caller is written by the caller. In most tests,
+>> there is some function call being done before the fault, for instance
+>> test_kmalloc_aligned_oob_read() does a call to kunit_do_assertion which populates the address of the
+>> call in the stack. However this is fragile.
 > 
-> Just let any arch pick any driver if it can be built, you never know
-> what it might be run on.  Removing ARCH_ dependencies in Kconfig files
-> is a good thing, please do not discourage that from happening.
+> Interesting, this might explain it.
+> 
+>> This works for function calls because in order to call a subfunction, a function has to set up a
+>> stack frame in order to same the value in the Link Register, which contains the address of the
+>> function's parent and that will be clobbered by the sub-function call.
+>>
+>> However, it cannot be done by exceptions, because exceptions can happen in a function that has no
+>> stack frame (because that function has no need to call a subfunction and doesn't need to same
+>> anything on the stack). If the exception handler was writting the caller's address in the stack
+>> frame, it would in fact write it in the parent's frame, leading to a mess.
+>>
+>> But in fact the information is in pt_regs, it is in regs->nip so KFENCE should be able to use that
+>> instead of the stack.
+> 
+> Perhaps stack_trace_save_regs() needs fixing for ppc32? Although that
+> seems to use arch_stack_walk().
+> 
+>>> What's confusing is that it's only this test, and none of the others.
+>>> Given that, it might be code-gen related, which results in some subtle
+>>> issue with stack unwinding. There are a few things to try, if you feel
+>>> like it:
+>>>
+>>> -- Change the unwinder, if it's possible for ppc32.
+>>
+>> I don't think it is possible.
+>>
+>>>
+>>> -- Add code to test_invalid_access(), to get the compiler to emit
+>>> different code. E.g. add a bunch (unnecessary) function calls, or add
+>>> barriers, etc.
+>>
+>> The following does the trick
+>>
+>> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+>> index 4acf4251ee04..22550676cd1f 100644
+>> --- a/mm/kfence/kfence_test.c
+>> +++ b/mm/kfence/kfence_test.c
+>> @@ -631,8 +631,11 @@ static void test_invalid_access(struct kunit *test)
+>>                  .addr = &__kfence_pool[10],
+>>                  .is_write = false,
+>>          };
+>> +       char *buf;
+>>
+>> +       buf = test_alloc(test, 4, GFP_KERNEL, ALLOCATE_RIGHT);
+>>          READ_ONCE(__kfence_pool[10]);
+>> +       test_free(buf);
+>>          KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+>>    }
+>>
+>>
+>> But as I said above, this is fragile. If for some reason one day test_alloc() gets inlined, it may
+>> not work anymore.
+> 
+> Yeah, obviously that's hack, but interesting nevertheless.
+> 
+> Based on what you say above, however, it seems that
+> stack_trace_save_regs()/arch_stack_walk() don't exactly do what they
+> should? Can they be fixed for ppc32?
 
-It's getting more generic topic, so let me Cc Arnd and Guenter (I think
-once I discussed this with Guenter around watchdog).
+Can we really consider they don't do what they should ?
 
-This is so far component of a SoC, so it cannot be re-used outside of
-SoC. Unless it appears in a new SoC (just like recent re-use of Samsung
-serial driver for Apple M1). Because of the architecture, you cannot
-build universal kernel without ARCH_EXYNOS. You need it. Otherwise the
-kernel won't boot on hardware with DWC Exynos.
+I have the feeling that excepting entry[0] of the stack trace to match the instruction pointer is 
+not a valid expectation. That's probably correct on architectures that always have a stack frame for 
+any function, but for powerpc who can have frameless functions, we can't expect that I think.
 
-Since DWC Exynos won't work without ARCH_EXYNOS - the user will not get
-any usable binary - I think all, or almost all, SoC specific drivers are
-limited per ARCH. This limits the amount of choices for distro people
-and other kernel configuring folks, so they won't have to consider
-useless options.
+I have proposed a change to KFENCE in another response to this mail thread, could it be the solution ?
 
-Anyway, that's the convention or consensus so far for entire SoC. If we
-want to change it - sure, but let's make it for everyone, not for just
-this one USB driver.
-
-Best regards,
-Krzysztof
-
+Thanks
+Christophe
