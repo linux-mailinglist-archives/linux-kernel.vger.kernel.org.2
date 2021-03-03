@@ -2,85 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7726132BB3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D19232BB48
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244426AbhCCMQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:16:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842078AbhCCGt3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 01:49:29 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C86C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 22:48:48 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id 81so15120098pfv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 22:48:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=sJTPRU61wkj/8X18GE/NltaTHGeTbWKgfmwT64xhMDQ=;
-        b=K9JfA9BK6FN2k9nXLrdM+xjKw8Sud8sJ/ELtXv1L6e0JEJbjuKTF0ZVgqhyVSlxbYe
-         eoJ+/a3MRLCTZlVgcmaCm6W2BwNePxRqZnCczMzqfdGxYJ4yPt1h8zCikgnu0retndpL
-         VPaCrxawW4gXOB2VR9kqP1jxcp3yRC73mJIDCniUgHFBDvYhmXTqye3FwGcG/kSdJkaC
-         xWSXDHGucG3zlsXKuB96qplAjzt2nOg6ib2lhAPRSFX4IVRcZ7kBqPTMFKXE9+SlpGcY
-         z6gS6X1ZOkNlivb4LMk+KaB7CH/LLExiZBIDU0vjxzDGsBfzHwmUKWmOzZBFkxMAvw4m
-         Wl0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=sJTPRU61wkj/8X18GE/NltaTHGeTbWKgfmwT64xhMDQ=;
-        b=BBmDYJUnRYNCe5NgLTOS+QldBpVsLRtoPVT8qwKPST/B4NiR+sIX5VD0NZBUcfNs1w
-         fbLAmNL031DH5+xG7/RAu8M6Y3h9so8rsXXwkAneXFzdYEc2GWAuLv3OOTU3F6yAOx7D
-         3F9KZlKsWq//ylaeBqQepO5KAfCWX50Fga9NXqsbV87tjJt9qF0wG6znzP8rwS+Hc0Ly
-         hs1jcMQLJJmbGiQZ9F6LeLWzJx3EXAhz8hcruLEaBn+/FbS2IY1lfOz1g+6HiW0lSdiS
-         RJQDL+YE/k/yfeDvCavfxGdSDUAnU/pXtGEWwkHrh78mKIcd20qQmP6ysjLS6Z6XWf4J
-         i3eg==
-X-Gm-Message-State: AOAM532tHGf9Z9vKBYjixAL24rokBeGfHFiDPP72lqPcuqkuZXS2puV1
-        T8ETY+Wj4I89k0NgQk03bXTXjvEIVr8=
-X-Google-Smtp-Source: ABdhPJzPojQhHpe4rIz4wxHM+lTnZFzyssypBGlR4STg1VbckYy/M0hFkIt72SYsxLCslygwj5TISWTzlS0=
-Sender: "raychi via sendgmr" <raychi@raychi.tao.corp.google.com>
-X-Received: from raychi.tao.corp.google.com ([2401:fa00:fc:202:d0b:ce1b:8f7e:f53a])
- (user=raychi job=sendgmr) by 2002:a17:90a:8d83:: with SMTP id
- d3mr775606pjo.0.1614754127807; Tue, 02 Mar 2021 22:48:47 -0800 (PST)
-Date:   Wed,  3 Mar 2021 14:48:42 +0800
-Message-Id: <20210303064842.2723785-1-raychi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] usb: dwc3: document usb_psy in struct dwc3
-From:   Ray Chi <raychi@google.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kyletso@google.com, Ray Chi <raychi@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236556AbhCCMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:21:03 -0500
+Received: from mga14.intel.com ([192.55.52.115]:3867 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347093AbhCCGum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:50:42 -0500
+IronPort-SDR: QJiA6qMhPa4L4bxlcZLMDw2HLSbV7gnXX+typxu8j5S6RwbMWTjuAygVXzMd845TmeQsCcNGqO
+ PQ2nxCff/bzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="186466637"
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="186466637"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 22:49:58 -0800
+IronPort-SDR: VssBJZsPU5CCGfuUTSAkeL4s0ZfjUxlmefOMKoM/bkbswxoxhOCrZ5X4rsicB+FnISrhnzO7yy
+ 90bmBjRM81Ng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="518161551"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 02 Mar 2021 22:49:56 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lHLKV-0000xj-Qp; Wed, 03 Mar 2021 06:49:55 +0000
+Date:   Wed, 03 Mar 2021 14:49:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 0390bf9195b4dd729f8e52416d91120519a51c02
+Message-ID: <603f3173.O9jJB885C4Ln8iXy%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new struct member was added to struct dwc3, but
-a documentation was missing:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 0390bf9195b4dd729f8e52416d91120519a51c02  Merge branch 'locking/urgent'
 
-drivers/usb/dwc3/core.h:1273: warning: Function parameter or member 'usb_psy' not described in 'dwc3'
+elapsed time: 721m
 
-Signed-off-by: Ray Chi <raychi@google.com>
+configs tested: 119
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc8272_ads_defconfig
+sh                           se7751_defconfig
+openrisc                            defconfig
+arm                         lpc32xx_defconfig
+powerpc                      ep88xc_defconfig
+mips                            ar7_defconfig
+sh                         microdev_defconfig
+sh                           se7712_defconfig
+s390                                defconfig
+arm                      tct_hammer_defconfig
+mips                         bigsur_defconfig
+sh                   secureedge5410_defconfig
+m68k                       bvme6000_defconfig
+arm                          collie_defconfig
+h8300                     edosk2674_defconfig
+arm                       cns3420vb_defconfig
+m68k                         amcore_defconfig
+m68k                        m5272c3_defconfig
+mips                            e55_defconfig
+arm                        spear3xx_defconfig
+s390                       zfcpdump_defconfig
+sh                      rts7751r2d1_defconfig
+sparc                               defconfig
+c6x                              alldefconfig
+m68k                       m5208evb_defconfig
+arm                   milbeaut_m10v_defconfig
+xtensa                              defconfig
+sh                        sh7785lcr_defconfig
+arm                         nhk8815_defconfig
+nds32                            alldefconfig
+h8300                    h8300h-sim_defconfig
+powerpc                        cell_defconfig
+mips                      maltasmvp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210302
+x86_64               randconfig-a001-20210302
+x86_64               randconfig-a004-20210302
+x86_64               randconfig-a002-20210302
+x86_64               randconfig-a005-20210302
+x86_64               randconfig-a003-20210302
+i386                 randconfig-a005-20210302
+i386                 randconfig-a003-20210302
+i386                 randconfig-a002-20210302
+i386                 randconfig-a004-20210302
+i386                 randconfig-a006-20210302
+i386                 randconfig-a001-20210302
+i386                 randconfig-a016-20210302
+i386                 randconfig-a012-20210302
+i386                 randconfig-a014-20210302
+i386                 randconfig-a013-20210302
+i386                 randconfig-a011-20210302
+i386                 randconfig-a015-20210302
+i386                 randconfig-a016-20210303
+i386                 randconfig-a012-20210303
+i386                 randconfig-a014-20210303
+i386                 randconfig-a013-20210303
+i386                 randconfig-a011-20210303
+i386                 randconfig-a015-20210303
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210303
+x86_64               randconfig-a001-20210303
+x86_64               randconfig-a004-20210303
+x86_64               randconfig-a002-20210303
+x86_64               randconfig-a005-20210303
+x86_64               randconfig-a003-20210303
+x86_64               randconfig-a013-20210302
+x86_64               randconfig-a016-20210302
+x86_64               randconfig-a015-20210302
+x86_64               randconfig-a014-20210302
+x86_64               randconfig-a012-20210302
+x86_64               randconfig-a011-20210302
+
 ---
- drivers/usb/dwc3/core.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 6708fdf358b3..ce6bd84e2b39 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -988,6 +988,7 @@ struct dwc3_scratchpad_array {
-  * @role_sw: usb_role_switch handle
-  * @role_switch_default_mode: default operation mode of controller while
-  *			usb role is USB_ROLE_NONE.
-+ * @usb_psy: pointer to power supply interface.
-  * @usb2_phy: pointer to USB2 PHY
-  * @usb3_phy: pointer to USB3 PHY
-  * @usb2_generic_phy: pointer to USB2 PHY
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
