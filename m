@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774E432C266
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D36132C27E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376586AbhCCTnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
+        id S230217AbhCCX7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhCCTZp (ORCPT
+        with ESMTP id S1387775AbhCCTe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:25:45 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF0BC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 11:25:01 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id l133so27236490oib.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 11:25:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CpnUMvWVOJdi34gV5Xr4CO6KXX8Go12ukZ8hFpNKPao=;
-        b=RT6QttOzOrQM2tUqzZTRK1txLRiMMB/svOEsSWmZ+y7f7nABd0aMhQkUI8GYStp298
-         EAmOSPeAWegHzMOAiTV524x+Ez6TIeFsukC5qZO1kY48OhJNl2AIcfGvJRhVyn+NPc+s
-         9H+pyZuoslkMUlyTSPRhsN5YPyo4YYD67s9A9dbMX7xja4ntGeyJTKSv9erHMtBiW41A
-         gtxrY2AhPRo/2eU+9fuIlthySu43aGBHs9nXclRlpdL2qfqADr3bNY6wvSBv6IHMDHVM
-         31kS/5z3hVXbF2tL3w3ZhS7RCQh3nXq5/Ojtm9nDKI7EAL8U57gVW2SprC7wEShI1qhf
-         bZ+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CpnUMvWVOJdi34gV5Xr4CO6KXX8Go12ukZ8hFpNKPao=;
-        b=TtqOVPsWvh9hR4LSZeTflnKl6I5/6BZIZncbFz1Zskg9bSgheirly0+aWZZ2jwa1EH
-         JrVig9pGr3Oe2TZplAIwI3QTzpp5qNi0S6PNCnBfhoBo5da3sNNoQt4k//tVR6GQCo9K
-         QOrARhdl3VSa49zun1HQHVmZFulMuxfaJa6ws0j7xF4kAS8VQzXE9ayOq6JkdSruRgPs
-         QaVfcJi3Bz2wbKJyyQVFg09/31EwTZPUNOU9KHYAYrEoTUCKx1KapeNHr79lbTjeGNsy
-         CSEHU1DzkFIGIHkixhu23hqfJfXTVm8pmiMakuXlPdNMTl1Rz0PVPkK5EvPK6nuLv+r9
-         VC4Q==
-X-Gm-Message-State: AOAM531RV8+POTQLBGyX9JF7rix1UmXNhHuf3CMkFw+65PuTR1t+hROj
-        9W4Bv6m/6F8IaF5nWP1tsxdY3A==
-X-Google-Smtp-Source: ABdhPJwlg1YhN8VRFvG9rWwHEDXIDusrKVuVtKQaPnftr+rfmHZMu26YwK+2LetpsUVN1U8gM3DGaw==
-X-Received: by 2002:aca:683:: with SMTP id 125mr304319oig.172.1614799500958;
-        Wed, 03 Mar 2021 11:25:00 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n17sm2965762oos.20.2021.03.03.11.25.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 11:25:00 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ray Chi <raychi@google.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH] usb: dwc3: Flip condition guarding power_supply_put()
-Date:   Wed,  3 Mar 2021 11:26:14 -0800
-Message-Id: <20210303192614.759729-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Wed, 3 Mar 2021 14:34:29 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14C0C061760;
+        Wed,  3 Mar 2021 11:33:04 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id CA9061C0B81; Wed,  3 Mar 2021 20:27:33 +0100 (CET)
+Date:   Wed, 3 Mar 2021 20:27:33 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
+ Industial PCs
+Message-ID: <20210303192733.GA8720@amd>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+ <20210302163309.25528-3-henning.schild@siemens.com>
+ <20210302205452.GA32573@duo.ucw.cz>
+ <20210303183714.62c0f06f@md1za8fc.ad001.siemens.net>
+ <20210303174040.GA3305@amd>
+ <20210303194956.5b36a73c@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
+Content-Disposition: inline
+In-Reply-To: <20210303194956.5b36a73c@md1za8fc.ad001.siemens.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The condition guarding the power_supply_put() calls in error and
-removal paths are backwards, resulting in a guaranteed NULL pointer
-dereference if no power supply was acquired.
 
-Fixes: 59fa3def35de ("usb: dwc3: add a power supply for current control")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/usb/dwc3/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index d15f065849cd..94fdbe502ce9 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1628,7 +1628,7 @@ static int dwc3_probe(struct platform_device *pdev)
- assert_reset:
- 	reset_control_assert(dwc->reset);
- 
--	if (!dwc->usb_psy)
-+	if (dwc->usb_psy)
- 		power_supply_put(dwc->usb_psy);
- 
- 	return ret;
-@@ -1653,7 +1653,7 @@ static int dwc3_remove(struct platform_device *pdev)
- 	dwc3_free_event_buffers(dwc);
- 	dwc3_free_scratch_buffers(dwc);
- 
--	if (!dwc->usb_psy)
-+	if (dwc->usb_psy)
- 		power_supply_put(dwc->usb_psy);
- 
- 	return 0;
--- 
-2.29.2
+On Wed 2021-03-03 19:49:56, Henning Schild wrote:
+> Am Wed, 3 Mar 2021 18:40:40 +0100
+> schrieb Pavel Machek <pavel@ucw.cz>:
+>=20
+> > Hi!
+> >=20
+> > > > > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > > > > index 2a698df9da57..c15e1e3c5958 100644
+> > > > > --- a/drivers/leds/Makefile
+> > > > > +++ b/drivers/leds/Makefile
+> > > > > @@ -93,6 +93,7 @@ obj-$(CONFIG_LEDS_TURRIS_OMNIA)
+> > > > > 	+=3D leds-turris-omnia.o
+> > > > > obj-$(CONFIG_LEDS_WM831X_STATUS)	+=3D leds-wm831x-status.o
+> > > > > obj-$(CONFIG_LEDS_WM8350)		+=3D leds-wm8350.o
+> > > > > obj-$(CONFIG_LEDS_WRAP)			+=3D leds-wrap.o
+> > > > > +obj-$(CONFIG_LEDS_SIEMENS_SIMATIC_IPC)	+=3D
+> > > > > simatic-ipc-leds.o   =20
+> > > >=20
+> > > > Let's put this into drivers/leds/simple. You'll have to create
+> > > > it. =20
+> > >=20
+> > > Can you please go into detail why? We plan to add more devices in
+> > > the future, which might in fact make this a little less simple. But
+> > > we can discuss that when the time is right and start with simple. =20
+> >=20
+> > There's already way too many drivers in the directory, and your driver
+> > is very different from drivers for camera flash (for example).
+>=20
+> Understood, the whole Makefile Kconfig thingy?
 
+You'll need Makefile + Kconfig, yes. No need for CONFIG_LEDS_SIMPLE.
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmA/4yUACgkQMOfwapXb+vK/tgCgqwLKOLfYmIuhh5QZrkHIfSET
+FuoAoI5etED7qEWaPIdY61h5hp+n7gXG
+=i6mJ
+-----END PGP SIGNATURE-----
+
+--ZPt4rx8FFjLCG7dd--
