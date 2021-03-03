@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D7432C30A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC30032C360
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhCCX7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 18:59:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350397AbhCCTmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:42:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF24B64ED0;
-        Wed,  3 Mar 2021 19:31:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614799865;
-        bh=h5FCaQLoCU1eLgBpB+1GspxLjjVwOPWrvQkt3lDgAUc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cEcgKJCSdq6xUFXNdC95YSgTC/uiJvkG0L6ZhxyQLlM/j4QKJH5PJyf053oXS82dR
-         ebHF+Cr1XG27xFKZ+8MVrHy5b8t5zi7N+7vB3QzJ0/++vdoMaNBGT+W/z4WikA1PNZ
-         +j3arvkQC+NwTQecUli9YcrdLDUear4lgJWqluqU=
-Date:   Wed, 3 Mar 2021 20:31:02 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Erwan Le Ray <erwan.leray@foss.st.com>
-Cc:     Jiri Slaby <jslaby@suse.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>
-Subject: Re: [PATCH 00/13] stm32 usart various fixes
-Message-ID: <YD/j9jhkcVbN3zs0@kroah.com>
-References: <20210219174736.1022-1-erwan.leray@foss.st.com>
+        id S233368AbhCCX7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51441 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376802AbhCCTnb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 14:43:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614800525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bv5cAMYlaP5qwIgoi2PUPPqfWwaPF9ayOOCbDPpLsEY=;
+        b=UrcYyEEAWZvAzhhVKdMTad93zo3PxZL1U51d9kGwJuJhnGNfNX7+S4gaVVdxQd1260T8wy
+        sN9iz2y00BXotgIQA6nMMDZsuS7TVS42zycrPX0qTfdWJMRtdA1ZXtSJ4OCUBD/9HCEiwW
+        EHKNcQlGIxccEl4THTeCiifW86Hleo8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-104-3zO5FGdEPoyNzMkrsb1f9Q-1; Wed, 03 Mar 2021 14:38:18 -0500
+X-MC-Unique: 3zO5FGdEPoyNzMkrsb1f9Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4457E10CE780;
+        Wed,  3 Mar 2021 19:38:17 +0000 (UTC)
+Received: from treble (ovpn-114-218.rdu2.redhat.com [10.10.114.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EBD1518AD4;
+        Wed,  3 Mar 2021 19:38:14 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 13:38:06 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <20210303193806.oovupl4ubtkkyiih@treble>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <20210302232649.y2tutffhxsblwqlb@treble>
+ <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+ <20210303191516.6ksxmng4pis7ue4p@treble>
+ <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210219174736.1022-1-erwan.leray@foss.st.com>
+In-Reply-To: <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 06:47:23PM +0100, Erwan Le Ray wrote:
-> This series brings various fixes to stm32-usart driver.
+On Wed, Mar 03, 2021 at 11:25:34AM -0800, Linus Torvalds wrote:
+> On Wed, Mar 3, 2021 at 11:15 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > Adding Linus, who indicated in another thread that we shouldn't force
+> > exact GCC versions because there's no technical reason to do so.
 > 
-> Erwan Le Ray (13):
->   serial: stm32: fix probe and remove order for dma
->   serial: stm32: fix startup by enabling usart for reception
->   serial: stm32: fix incorrect characters on console
->   serial: stm32: fix TX and RX FIFO thresholds
->   serial: stm32: fix a deadlock condition with wakeup event
->   serial: stm32: fix wake-up flag handling
->   serial: stm32: fix a deadlock in set_termios
->   serial: stm32: fix tx dma completion, release channel
->   serial: stm32: call stm32_transmit_chars locked
->   serial: stm32: fix FIFO flush in startup and set_termios
->   serial: stm32: add FIFO flush when port is closed
->   serial: stm32: fix tx_empty condition
->   serial: stm32: add support for "flush_buffer" ops
+> I do not believe we should recompile everything just because the gcc
+> version changes.
 > 
->  drivers/tty/serial/stm32-usart.c | 198 +++++++++++++++++++++----------
->  drivers/tty/serial/stm32-usart.h |   3 -
->  2 files changed, 135 insertions(+), 66 deletions(-)
+> But gcc _plugins_ certainly should depend on the kernel version.
+> 
+> Very few people should be enabling the gcc plugins in the first place.
+> Honestly, most of them are bad, and the people who really care about
+> those things have already moved to clang which does the important
+> parts natively without the need for a plugin. I'm personally waiting
+> for the day when we can just say "let's remove them".
 
-This series does not apply cleanly to my tree.  Can you rebase it
-against 5.12-rc1 and resend?
+You might be sad to learn that some of the plugins are useful for
+hardening of a production distro kernel, like stackleak and structleak.
 
-thanks,
+> But in the meantime, making the plugins depend on the gcc version some
+> way is certainly better than not doing so.
 
-greg k-h
+So currently, the plugins already so that.  They require the GCC version
+to be exact.  If there's a mismatch, then it fails the OOT module build.
+
+But that's not usable for a distro.  When users build OOT modules with a
+slight GCC mismatch, it breaks the build, effectively requiring the
+exact same GCC version for *all* OOT builds going forward.
+
+So there have been a few proposals to better handle GCC version
+mismatches:
+
+1) disable the plugin - this works fine for most plugins except
+   randstruct
+
+2) rebuild the plugin whenever the GCC version changes
+
+3) fail the build, like today - effectively blocks distros from using
+   plugins
+
+-- 
+Josh
+
