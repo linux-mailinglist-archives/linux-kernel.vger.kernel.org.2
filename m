@@ -2,157 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711D432BFB0
+	by mail.lfdr.de (Postfix) with ESMTP id C1AD632BFB3
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580037AbhCCSdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:33:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241311AbhCCRDw (ORCPT
+        id S1580051AbhCCSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:33:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20210 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348044AbhCCRHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:03:52 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44667C0613DE
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:01:34 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id a4so16799599pgc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:01:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NS5lTDaGXttSrOQ5MHO4aoL/JPMPWoX9kViqNvHNTVw=;
-        b=VsTPW062qCBbmWlJ6C89JwMPfX2rDXIXP6PJpEDWU5cAcLYJV//2F9SQV7xbWGyQ6t
-         N/Rrr+z55FyTSfysrWPPFGBI9GzuwfbuCLjvmLihq1RUVnJaIoexXJkZqixLZeCccfIt
-         qgu8mRlb9Glv1h6/OEu5+c6Xh/SwIKfMpq2/E0JcnV1pqjbdfki1j1vR/5H3xQ2moPQI
-         v0WAlKnK9Y3T6+iwkwiLboG/ZK2GiXhnegwLcW4zGDaCuqubIh953KIf0nquF0PWc+0T
-         br0mTrp+RzZOS3Gp9zTRIYGKyfqgWoc9vCbsN2yl3IhVr3pdWDrUGArTIAcV8rFiyJD8
-         yGsA==
+        Wed, 3 Mar 2021 12:07:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614791144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A7hqiiwpzHCv9dcTIz5ZNKi8QEHjE+ALvxN3oPNlRwk=;
+        b=D9SOTeDuuvUZ8r4EHT4ODQLqEAJTZ04tuIkEbQTuvVlM7bFf4WZTaD71ehUZvSrWPJ4qVR
+        gz/99SX4s5T4oTKtntchQjRrUm7aCciuzbQ+vN1kD/Qgns0hyCktAOHVkMSxlMkDXC8w1X
+        y/LzKB3xJHBMsw4HHYRDR08OL+sM6lw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-378-EJSuxWi9Pqans2zV125BAw-1; Wed, 03 Mar 2021 12:05:42 -0500
+X-MC-Unique: EJSuxWi9Pqans2zV125BAw-1
+Received: by mail-wr1-f69.google.com with SMTP id f3so6161622wrt.14
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:05:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NS5lTDaGXttSrOQ5MHO4aoL/JPMPWoX9kViqNvHNTVw=;
-        b=onvWVQsacluUI7njpolCkZ00VUBzjd8nV7ZbGMH2a3GeBOezxjgeoI2cfKsylqDKjA
-         d6xkzHCenqNNopZxBKgzdtZFyydS+BvS1w6ReBPtyEu5bxfy6S+ZBYC7OxhBlwCSIuCu
-         CYs14ZTQjP2knQjuGDd9r7ru+r226yGTOFpj5EHRHYSSAX3od/STzU5TZNd0B1je/LAE
-         JgQYwLPDjTdj2C+N+EnL/7i8znszPKKnD7hbRZ5MYuDp4hIhWyzQDuL7MsVAE4qMDXXs
-         lp/7v3mfPwwZkKKdvlFTjERWxkqmChTFYoi5SA3hnir6Biyvm8KKCiFqKzhCezCa8z++
-         2IeQ==
-X-Gm-Message-State: AOAM530/3j3WOjNKxKykoZOAatPXtsT+vSOzIy3Y1oWm1Avncv1Bmy65
-        g6+CzgRXrxuMHjgq5vXDCUe4Iw==
-X-Google-Smtp-Source: ABdhPJwnSJtlw+7CYzN3TJ1B9S6jcmKYC9LYLbDS05Ed7kcO8bdthFTmHZaaIeoVlr9rJGVEnmxWAQ==
-X-Received: by 2002:a63:4a44:: with SMTP id j4mr23741977pgl.199.1614790893689;
-        Wed, 03 Mar 2021 09:01:33 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 132sm3438070pfu.158.2021.03.03.09.01.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A7hqiiwpzHCv9dcTIz5ZNKi8QEHjE+ALvxN3oPNlRwk=;
+        b=rl901fTiGrgU5pXh64ErDc+qbtPydCnJqGEpYo6d9OoDRfMDCWsyjTrXVsezWAJ111
+         pudyZJp8CdmQ+M+AmeNWmd2yn1jRuBv2wIpocowCyPYFyWE3fm3TT9GXdvtrDtFlo62S
+         BI/HmFstSoeVr68St2TBWC6riyfKTyrnzh/m8FEAfxznxwd8E3L9P5Y6wVLBLbrVmS5V
+         BVtheTmXXbTqgHpGfnmMFiBI8hUMNrI2y82Ws8Jr4eZgGz3CP9iaE2I1QR+SVuowlnR0
+         w5WkUF9Y0lwR3TyzygBAgjjrE4MdXYAfjwKcXFbEs/CeJf83CBgNPtgwT1l/3wwAzOal
+         n+Gg==
+X-Gm-Message-State: AOAM533kodu2E+zpFHxtrj1YR1UvlZkSNkLvXtqUjxRkh5iLnxom4Z1X
+        4sATAlNESvQaVyuQC3sbi2tnlDCrHTkqEQWqvDhFSrYEqEpaU3TKHCmJiHUsCS4VL4yicjzG7z+
+        Lwdmpkn/rF0hz4OjLtbkXw/JHJWb3O/20FAz6qpMBBPy3Ni5RMOwDFzM1PUNoV/s+bRBM2GXOUD
+        i0
+X-Received: by 2002:adf:ed44:: with SMTP id u4mr27999050wro.35.1614791140556;
+        Wed, 03 Mar 2021 09:05:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxzNmPS+Nyc5thLw/E/w0nWRpQjgI2MvRdrlSRg18Nj3Ck6eZLBX+Y2xOLFNKfOZjcTebcU/g==
+X-Received: by 2002:adf:ed44:: with SMTP id u4mr27999022wro.35.1614791140291;
+        Wed, 03 Mar 2021 09:05:40 -0800 (PST)
+Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id d29sm32957827wra.51.2021.03.03.09.05.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:01:31 -0800 (PST)
-Date:   Wed, 3 Mar 2021 10:01:30 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 07/16] rpmsg: update rpmsg_chrdev_register_device
- function
-Message-ID: <20210303170130.GC3817330@xps15>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-8-arnaud.pouliquen@foss.st.com>
+        Wed, 03 Mar 2021 09:05:39 -0800 (PST)
+From:   Julien Thierry <jthierry@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        broonie@kernel.org, ycote@redhat.com,
+        Julien Thierry <jthierry@redhat.com>
+Subject: [RFC PATCH v2 0/8] arm64: Prepare instruction decoder for objtool
+Date:   Wed,  3 Mar 2021 18:05:28 +0100
+Message-Id: <20210303170536.1838032-1-jthierry@redhat.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219111501.14261-8-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:14:52PM +0100, Arnaud Pouliquen wrote:
-> As driver is now the rpmsg_ioctl, rename the function.
-> In addition, initialize the rpdev addresses to RPMSG_ADDR_ANY as not
-> defined.
+To support arm64, objtool will need to be able to decode aarch64
+instructions. This patch series adds some instruction definitions needed
+by objtool and moves out encoding/decoding functionalities that do not
+rely on kernel code in order.
 
-This patch works but the changelog needs a rework.  The title reflects the
-essence of changes but the text of the changelog doesn't.
+Changes since v1[1]:
+- Split the isolation of instruction encoder/decoder capabilities in
+  several steps as suggested by Mark R.
+- Exclude dsb encoding where CRm != 0b0x00
+- Support dsb FEAT_XS encoding
+- Support previously missing barriers
 
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/qcom_glink_native.c |  2 +-
->  drivers/rpmsg/qcom_smd.c          |  2 +-
->  drivers/rpmsg/rpmsg_ctrl.c        |  2 +-
->  drivers/rpmsg/rpmsg_internal.h    | 10 ++++++----
->  4 files changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-> index 27a05167c18c..d4e4dd482614 100644
-> --- a/drivers/rpmsg/qcom_glink_native.c
-> +++ b/drivers/rpmsg/qcom_glink_native.c
-> @@ -1625,7 +1625,7 @@ static int qcom_glink_create_chrdev(struct qcom_glink *glink)
->  	rpdev->dev.parent = glink->dev;
->  	rpdev->dev.release = qcom_glink_device_release;
->  
-> -	return rpmsg_chrdev_register_device(rpdev);
-> +	return rpmsg_ctrl_register_device(rpdev);
->  }
->  
->  struct qcom_glink *qcom_glink_native_probe(struct device *dev,
-> diff --git a/drivers/rpmsg/qcom_smd.c b/drivers/rpmsg/qcom_smd.c
-> index 19903de6268d..40a1c415c775 100644
-> --- a/drivers/rpmsg/qcom_smd.c
-> +++ b/drivers/rpmsg/qcom_smd.c
-> @@ -1097,7 +1097,7 @@ static int qcom_smd_create_chrdev(struct qcom_smd_edge *edge)
->  	qsdev->rpdev.dev.parent = &edge->dev;
->  	qsdev->rpdev.dev.release = qcom_smd_release_device;
->  
-> -	return rpmsg_chrdev_register_device(&qsdev->rpdev);
-> +	return rpmsg_ctrl_register_device(&qsdev->rpdev);
->  }
->  
->  /*
-> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> index fa05b67d24da..2e43b4096aa8 100644
-> --- a/drivers/rpmsg/rpmsg_ctrl.c
-> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> @@ -180,7 +180,7 @@ static struct rpmsg_driver rpmsg_ctrl_driver = {
->  	.probe = rpmsg_ctrl_probe,
->  	.remove = rpmsg_ctrl_remove,
->  	.drv = {
-> -		.name = "rpmsg_chrdev",
-> +		.name = KBUILD_MODNAME,
->  	},
->  };
->  
-> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-> index a76c344253bf..7428f4465d17 100644
-> --- a/drivers/rpmsg/rpmsg_internal.h
-> +++ b/drivers/rpmsg/rpmsg_internal.h
-> @@ -82,16 +82,18 @@ struct rpmsg_device *rpmsg_create_channel(struct rpmsg_device *rpdev,
->  int rpmsg_release_channel(struct rpmsg_device *rpdev,
->  			  struct rpmsg_channel_info *chinfo);
->  /**
-> - * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
-> + * rpmsg_ctrl_register_device() - register a char device for control based on rpdev
->   * @rpdev:	prepared rpdev to be used for creating endpoints
->   *
->   * This function wraps rpmsg_register_device() preparing the rpdev for use as
->   * basis for the rpmsg chrdev.
->   */
-> -static inline int rpmsg_chrdev_register_device(struct rpmsg_device *rpdev)
-> +static inline int rpmsg_ctrl_register_device(struct rpmsg_device *rpdev)
->  {
-> -	strcpy(rpdev->id.name, "rpmsg_chrdev");
-> -	rpdev->driver_override = "rpmsg_chrdev";
-> +	strcpy(rpdev->id.name, "rpmsg_ctrl");
-> +	rpdev->driver_override = "rpmsg_ctrl";
-> +	rpdev->src = RPMSG_ADDR_ANY;
-> +	rpdev->dst = RPMSG_ADDR_ANY;
->  
->  	return rpmsg_register_device(rpdev);
->  }
-> -- 
-> 2.17.1
-> 
+[1] https://lkml.org/lkml/2021/1/20/791
+
+Thanks,
+
+Julien
+
+-->
+
+Julien Thierry (8):
+  arm64: Move patching utilities out of instruction encoding/decoding
+  arm64: Move aarch32 condition check functions
+  arm64: insn: Reduce header dependencies of instruction decoder
+  arm64: Move instruction encoder/decoder under lib/
+  arm64: insn: Add SVE instruction class
+  arm64: insn: Add barrier encodings
+  arm64: insn: Add some opcodes to instruction decoder
+  arm64: insn: Add load/store decoding helpers
+
+ arch/arm64/include/asm/alternative-macros.h |   3 -
+ arch/arm64/include/asm/insn.h               |  70 +++++-
+ arch/arm64/include/asm/patching.h           |  13 +
+ arch/arm64/include/asm/probes.h             |   2 +-
+ arch/arm64/include/asm/traps.h              |   3 +
+ arch/arm64/kernel/Makefile                  |   4 +-
+ arch/arm64/kernel/ftrace.c                  |   1 +
+ arch/arm64/kernel/jump_label.c              |   1 +
+ arch/arm64/kernel/patching.c                | 148 ++++++++++++
+ arch/arm64/kernel/probes/simulate-insn.c    |   1 +
+ arch/arm64/kernel/traps.c                   | 100 +++++++-
+ arch/arm64/lib/Makefile                     |   6 +-
+ arch/arm64/{kernel => lib}/insn.c           | 249 +-------------------
+ 13 files changed, 338 insertions(+), 263 deletions(-)
+ create mode 100644 arch/arm64/include/asm/patching.h
+ create mode 100644 arch/arm64/kernel/patching.c
+ rename arch/arm64/{kernel => lib}/insn.c (86%)
+
+--
+2.25.4
+
