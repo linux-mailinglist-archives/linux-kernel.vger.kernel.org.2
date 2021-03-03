@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4231D32BB8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD8632BB8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348773AbhCCMhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:37:41 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:23646 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1582095AbhCCHfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 02:35:13 -0500
-Received: from localhost.localdomain (unknown [222.205.72.8])
-        by mail-app4 (Coremail) with SMTP id cS_KCgD38WDwOz9gkrD4AQ--.3768S4;
-        Wed, 03 Mar 2021 15:34:12 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] sata_dwc_460ex: Fix missing check in sata_dwc_isr
-Date:   Wed,  3 Mar 2021 15:34:08 +0800
-Message-Id: <20210303073408.461-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgD38WDwOz9gkrD4AQ--.3768S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4xGry7Xw4fKrW3KFWxWFg_yoW8GrWfpr
-        s3ZFyj9rZ3GFWUWrnrZw1kury5C3ykKFWrtFnxAa4IvryYq3s3WFW5K34aqrn8tFWkJ3W2
-        vas8JFZ09F4jyr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvF1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-        fUYMKZDUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgENBlZdtSlmQQAAs4
+        id S1378130AbhCCMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:37:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1582414AbhCCICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:02:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A44D64ECE;
+        Wed,  3 Mar 2021 07:39:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614757151;
+        bh=pZDwedw1hzBopScKR4gcXQohr1UFUVtkW1cq2bvn1pc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AF7UbK65qLhNRMZUhjLV0IZ6Z54Xuyc9G3xTKhOZqyzlP538PVzUcVw8CNfrPvMfH
+         ExRtADFH1Z0KuGSTxWmB9ur8CHFfyVuIAZIzWhWIxXx+ArOduUwrCzsEYxmg2pQzuk
+         WeO0EtjtA6k7HKo0Z41q9kTrbYveBw1wQsNshuuM=
+Date:   Wed, 3 Mar 2021 08:39:09 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Wang, Li" <li.wang@windriver.com>
+Cc:     jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vt: keyboard, fix uninitialized variables warning
+Message-ID: <YD89HVVBREVdqdpJ@kroah.com>
+References: <1614747572-3295-1-git-send-email-li.wang@windriver.com>
+ <YD83RFqtKVB2pA9H@kroah.com>
+ <5f05c3c2-6c72-140f-fd56-cd9ec1c7c4a1@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f05c3c2-6c72-140f-fd56-cd9ec1c7c4a1@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value of ata_qc_from_tag() is checked in the whole
-kernel except for two calls in sata_dwc_isr(), which may lead
-to null-pointer-dereference. Add return value checks to avoid
-such case.
+On Wed, Mar 03, 2021 at 03:33:23PM +0800, Wang, Li wrote:
+> 
+> On 3/3/2021 3:14 PM, Greg KH wrote:
+> > On Wed, Mar 03, 2021 at 12:59:32PM +0800, Li Wang wrote:
+> > > drivers/tty/vt/keyboard.c: In function 'vt_do_kdgkb_ioctl':
+> > > drivers/tty/vt/keyboard.c: warning: 'ret' may be used uninitialized in this function [-Wmaybe-uninitialized]
+> > >    return ret;
+> > >           ^~~
+> > > kernel-source/drivers/tty/vt/keyboard.c: warning: 'kbs' may be used uninitialized in this function [-Wmaybe-uninitialized]
+> > >    kfree(kbs);
+> > >    ^~~~~~~~~~
+> > > 
+> > > Signed-off-by: Li Wang <li.wang@windriver.com>
+> > > ---
+> > >   drivers/tty/vt/keyboard.c | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> > > index 7763862..3e73d55 100644
+> > > --- a/drivers/tty/vt/keyboard.c
+> > > +++ b/drivers/tty/vt/keyboard.c
+> > > @@ -2049,8 +2049,8 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+> > >   {
+> > >   	unsigned char kb_func;
+> > >   	unsigned long flags;
+> > > -	char *kbs;
+> > > -	int ret;
+> > > +	char *kbs = NULL;
+> > > +	int ret = -EINVAL;
+> > >   	if (get_user(kb_func, &user_kdgkb->kb_func))
+> > >   		return -EFAULT;
+> > What compiler is providing these "warnings"?
+> > 
+> > Turns out it is impossible to hit, so this isn't actually fixing
+> > anything...
+> 
+> I tested it with gcc 8.2 for arm
+> 
+> for runtime codes view, indeed it is impossible to hit.
+> 
+> but for compiler view, gcc should give 'used uninitialized' warning, too.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+Odd that no other compiler version does this right now, perhaps upgrade
+to a newer version of gcc?  8.2 is really old :(
 
-Changelog:
+thanks,
 
-v2: - Refine commit message.
-      Add return value check for another ata_qc_from_tag() call.
----
- drivers/ata/sata_dwc_460ex.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/ata/sata_dwc_460ex.c b/drivers/ata/sata_dwc_460ex.c
-index 9dcef6ac643b..f0ef844428bb 100644
---- a/drivers/ata/sata_dwc_460ex.c
-+++ b/drivers/ata/sata_dwc_460ex.c
-@@ -543,6 +543,11 @@ static irqreturn_t sata_dwc_isr(int irq, void *dev_instance)
- 		hsdev->sactive_issued |= qcmd_tag_to_mask(tag);
- 
- 		qc = ata_qc_from_tag(ap, tag);
-+		if (unlikely(!qc)) {
-+			dev_err(ap->dev, "failed to get qc");
-+			handled = 1;
-+			goto DONE;
-+		}
- 		/*
- 		 * Start FP DMA for NCQ command.  At this point the tag is the
- 		 * active tag.  It is the tag that matches the command about to
-@@ -658,6 +663,11 @@ static irqreturn_t sata_dwc_isr(int irq, void *dev_instance)
- 
- 		tag_mask &= (~0x00000001);
- 		qc = ata_qc_from_tag(ap, tag);
-+		if (unlikely(!qc)) {
-+			dev_err(ap->dev, "failed to get qc");
-+			handled = 1;
-+			goto DONE;
-+		}
- 
- 		/* To be picked up by completion functions */
- 		qc->ap->link.active_tag = tag;
--- 
-2.17.1
-
+greg k-h
