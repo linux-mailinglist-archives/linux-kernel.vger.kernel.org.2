@@ -2,279 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B801F32BDB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6302432BDBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573267AbhCCQ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:29:21 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:58924 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350158AbhCCLvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:51:55 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Dr9tR6h0Xz9tygN;
-        Wed,  3 Mar 2021 11:57:03 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id i-a1Nz-ZudRo; Wed,  3 Mar 2021 11:57:03 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dr9tR5VLxz9tyZS;
-        Wed,  3 Mar 2021 11:57:03 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9A0638B7CD;
-        Wed,  3 Mar 2021 11:56:50 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 9UicWIe8FC3n; Wed,  3 Mar 2021 11:56:47 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3B6948B7D8;
-        Wed,  3 Mar 2021 11:56:30 +0100 (CET)
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
- <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
- <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
- <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
- <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <3abbe4c9-16ad-c168-a90f-087978ccd8f7@csgroup.eu>
- <CANpmjNMKEObjf=WyfDQB5vPmR5RuyUMBJyfr6P2ykCd67wyMbA@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <b66d0bbd-d587-cf1c-11df-daafeaf70552@csgroup.eu>
-Date:   Wed, 3 Mar 2021 11:56:28 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1573773AbhCCQ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:29:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234645AbhCCLwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:52:46 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46851C061356
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:56:35 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id a24so13808653plm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:56:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7q/j7uiT6CW13D8ObhzBqHbvkgzpG7ZEAqZ/ZCUXXzI=;
+        b=KzehwLUKvHb1+sFHgkSnV3kQ+sHQoekbGdUgxpLXhwAwfrouwDGrD+5tFFdrOu/SKz
+         qNOGwpV8DVgXBLh1n4d+Z1yvxaKtkLYPR3sdVpx815mW9jfkbhWiUVya3102XafaAhoY
+         wRajJq3WDqinVP55EBDQeTEjXH06SEHIcS71T6XDUpESrrIUkSwaq1GwTubb0eBlqRQm
+         qVt5JcVBawphoKWItFIGeTxbEUVvXYk5gZSx2GzGILJwHAsqi7/+F/+uRBWzQmg1EskC
+         xhwrkb8rD/ZVCHANhbJzifkPUB+ntQ/2jTQhCHOwmVX6Ve32Kt+cO4llhadB4HggxkKL
+         Ff0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7q/j7uiT6CW13D8ObhzBqHbvkgzpG7ZEAqZ/ZCUXXzI=;
+        b=on4MH+yy6ZmdBKhTcL3y6Bkvtc3IazhX2HKcj3VCcWaO/jNHozrxVsCAPQly7w4CI8
+         nLDQBDG/pLPYVwiqR+Yi3x+YZFr5hocuyGnd4UkykwepEgxd89rZvhVjwmcTLbQwuLK3
+         FRlb86vzeAIuFcw3Bpoxyhfa6re4vCLyJSswHWsVVhk0RBkTO9gvzXJrqV6A/QOFG1uO
+         k7dd8lpo0KmVMIeVE+MA5zDf/h2QpNVGW6/CsAoVGdeLoGeEs+nTHdijjvq2m2r40bFt
+         C+1Z/5vz3RSyA2SDRBBmUqzOCXZOaIxWs6/X5LHWDaUemT45qSDzT75tcL4V5R5fCZ+C
+         8Rww==
+X-Gm-Message-State: AOAM532i9YC5kt3nRPfh66OgcLSl2gp72QzyAo8Le5IiAHXfVnupZbDa
+        Jh5TqHSqtRloYaxYRcf7qY/ZEg==
+X-Google-Smtp-Source: ABdhPJx6aUAi5z7HLvt/vc/WXBjRpWduAQZXiTfvXoETfo0Mr84TMmm9G30F5qMvX712L25hjUbNLA==
+X-Received: by 2002:a17:90b:691:: with SMTP id m17mr9348371pjz.191.1614768994752;
+        Wed, 03 Mar 2021 02:56:34 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id fs9sm6483409pjb.40.2021.03.03.02.56.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 02:56:34 -0800 (PST)
+Date:   Wed, 3 Mar 2021 16:26:32 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V9 2/4] kbuild: Add generic rule to apply fdtoverlay
+Message-ID: <20210303105632.osvwsxkku2cpvdb4@vireshk-i7>
+References: <cover.1614745266.git.viresh.kumar@linaro.org>
+ <263ac0777bee9384b66fb4e74ed3abdc45a1bb82.1614745266.git.viresh.kumar@linaro.org>
+ <CAMuHMdUMn4qDLE4z98vDwgBZ5pUAk40o4A4A5JG3bOpPNZj9mg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNMKEObjf=WyfDQB5vPmR5RuyUMBJyfr6P2ykCd67wyMbA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUMn4qDLE4z98vDwgBZ5pUAk40o4A4A5JG3bOpPNZj9mg@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 03/03/2021 à 11:39, Marco Elver a écrit :
-> On Wed, 3 Mar 2021 at 11:32, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->>
->> Le 02/03/2021 à 10:53, Marco Elver a écrit :
->>> On Tue, 2 Mar 2021 at 10:27, Christophe Leroy
->>> <christophe.leroy@csgroup.eu> wrote:
->>>> Le 02/03/2021 à 10:21, Alexander Potapenko a écrit :
->>>>>> [   14.998426] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
->>>>>> [   14.998426]
->>>>>> [   15.007061] Invalid read at 0x(ptrval):
->>>>>> [   15.010906]  finish_task_switch.isra.0+0x54/0x23c
->>>>>> [   15.015633]  kunit_try_run_case+0x5c/0xd0
->>>>>> [   15.019682]  kunit_generic_run_threadfn_adapter+0x24/0x30
->>>>>> [   15.025099]  kthread+0x15c/0x174
->>>>>> [   15.028359]  ret_from_kernel_thread+0x14/0x1c
->>>>>> [   15.032747]
->>>>>> [   15.034251] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
->>>>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
->>>>>> [   15.045811] ==================================================================
->>>>>> [   15.053324]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
->>>>>> [   15.053324]     Expected report_matches(&expect) to be true, but is false
->>>>>> [   15.068359]     not ok 21 - test_invalid_access
->>>>>
->>>>> The test expects the function name to be test_invalid_access, i. e.
->>>>> the first line should be "BUG: KFENCE: invalid read in
->>>>> test_invalid_access".
->>>>> The error reporting function unwinds the stack, skips a couple of
->>>>> "uninteresting" frames
->>>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L43)
->>>>> and uses the first "interesting" one frame to print the report header
->>>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L226).
->>>>>
->>>>> It's strange that test_invalid_access is missing altogether from the
->>>>> stack trace - is that expected?
->>>>> Can you try printing the whole stacktrace without skipping any frames
->>>>> to see if that function is there?
->>>>>
->>>>
->>>> Booting with 'no_hash_pointers" I get the following. Does it helps ?
->>>>
->>>> [   16.837198] ==================================================================
->>>> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
->>>> [   16.848521]
->>>> [   16.857158] Invalid read at 0xdf98800a:
->>>> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
->>>> [   16.865731]  kunit_try_run_case+0x5c/0xd0
->>>> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
->>>> [   16.875199]  kthread+0x15c/0x174
->>>> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
->>>> [   16.882847]
->>>> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
->>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
->>>> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
->>>> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
->>>> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
->>>> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
->>>> [   16.918153] DAR: df98800a DSISR: 20000000
->>>> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
->>>> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
->>>> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
->>>> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
->>>> [   16.947292] Call Trace:
->>>> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
->>>
->>> The "(unreliable)" might be a clue that it's related to ppc32 stack
->>> unwinding. Any ppc expert know what this is about?
->>>
->>>> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
->>>> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
->>>> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
->>>> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
->>>> [   16.981896] Instruction dump:
->>>> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
->>>> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
->>>> [   17.000711] ==================================================================
->>>> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
->>>> [   17.008223]     Expected report_matches(&expect) to be true, but is false
->>>> [   17.023243]     not ok 21 - test_invalid_access
->>>
->>> On a fault in test_invalid_access, KFENCE prints the stack trace based
->>> on the information in pt_regs. So we do not think there's anything we
->>> can do to improve stack printing pe-se.
->>>
->>> What's confusing is that it's only this test, and none of the others.
->>> Given that, it might be code-gen related, which results in some subtle
->>> issue with stack unwinding. There are a few things to try, if you feel
->>> like it:
->>>
->>> -- Change the unwinder, if it's possible for ppc32.
->>>
->>> -- Add code to test_invalid_access(), to get the compiler to emit
->>> different code. E.g. add a bunch (unnecessary) function calls, or add
->>> barriers, etc.
->>>
->>> -- Play with compiler options. We already pass
->>> -fno-optimize-sibling-calls for kfence_test.o to avoid tail-call
->>> optimizations that'd hide stack trace entries. But perhaps there's
->>> something ppc-specific we missed?
->>>
->>> Well, the good thing is that KFENCE detects the bad access just fine.
->>> Since, according to the test, everything works from KFENCE's side, I'd
->>> be happy to give my Ack:
->>>
->>>     Acked-by: Marco Elver <elver@google.com>
->>>
->>
->> Thanks.
->>
->> For you information, I've got a pile of warnings from mm/kfence/report.o . Is that expected ?
->>
->>     CC      mm/kfence/report.o
->> In file included from ./include/linux/printk.h:7,
->>                    from ./include/linux/kernel.h:16,
->>                    from mm/kfence/report.c:10:
->> mm/kfence/report.c: In function 'kfence_report_error':
->> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
->> but argument 6 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
->>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
->>         |                  ^~~~~~
->> ./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
->>      11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
->>         |                  ^~~~~~~~
->> ./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
->>     343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
->>         |         ^~~~~~~~
->> mm/kfence/report.c:207:3: note: in expansion of macro 'pr_err'
->>     207 |   pr_err("Out-of-bounds %s at 0x%p (%luB %s of kfence-#%zd):\n",
->>         |   ^~~~~~
->> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
->> but argument 4 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
->>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
->>         |                  ^~~~~~
->> ./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
->>      11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
->>         |                  ^~~~~~~~
->> ./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
->>     343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
->>         |         ^~~~~~~~
->> mm/kfence/report.c:216:3: note: in expansion of macro 'pr_err'
->>     216 |   pr_err("Use-after-free %s at 0x%p (in kfence-#%zd):\n",
->>         |   ^~~~~~
->> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
->> but argument 2 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
->>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
->>         |                  ^~~~~~
->> ./include/linux/kern_levels.h:24:19: note: in expansion of macro 'KERN_SOH'
->>      24 | #define KERN_CONT KERN_SOH "c"
->>         |                   ^~~~~~~~
->> ./include/linux/printk.h:385:9: note: in expansion of macro 'KERN_CONT'
->>     385 |  printk(KERN_CONT fmt, ##__VA_ARGS__)
->>         |         ^~~~~~~~~
->> mm/kfence/report.c:223:3: note: in expansion of macro 'pr_cont'
->>     223 |   pr_cont(" (in kfence-#%zd):\n", object_index);
->>         |   ^~~~~~~
->> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
->> but argument 3 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
->>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
->>         |                  ^~~~~~
->> ./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
->>      11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
->>         |                  ^~~~~~~~
->> ./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
->>     343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
->>         |         ^~~~~~~~
->> mm/kfence/report.c:233:3: note: in expansion of macro 'pr_err'
->>     233 |   pr_err("Invalid free of 0x%p (in kfence-#%zd):\n", (void *)address,
->>         |   ^~~~~~
->>
->> Christophe
+On 03-03-21, 11:49, Geert Uytterhoeven wrote:
+> Hi Viresh,
 > 
-> No this is not expected. Is 'signed size_t' != 'long int' on ppc32?
+> On Wed, Mar 3, 2021 at 5:36 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > From: Rob Herring <robh@kernel.org>
+> >
+> > Add a generic rule to apply fdtoverlay in Makefile.lib, so every
+> > platform doesn't need to carry the complex rule.
+> >
+> > The platform's Makefile only needs to have this now:
+> >
+> >  DTC_FLAGS_foo_base += -@
+> >  foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
+> >  dtb-y := foo.dtb
 > 
+> Is there a way to autogenerate the DTC_FLAGS_foo_base rule, based on
+> the foo-dtbs rule?
 
-No, it is an 'int' not a 'long int', see arch/powerpc/include/uapi/asm/posix_types.h
+Since the first entry in "foo-dtbs" is always going to be the only
+base file, maybe we can do that.
 
-#ifdef __powerpc64__
-typedef unsigned long	__kernel_old_dev_t;
-#define __kernel_old_dev_t __kernel_old_dev_t
-#else
-typedef unsigned int	__kernel_size_t;
-typedef int		__kernel_ssize_t;
-typedef long		__kernel_ptrdiff_t;
-#define __kernel_size_t __kernel_size_t
-
-
-What is probably specific to powerpc is that ptrdiff_t is not same as ssize_t unlike in 
-include/uapi/asm-generic/posix_types.h :
-
-
-/*
-  * Most 32 bit architectures use "unsigned int" size_t,
-  * and all 64 bit architectures use "unsigned long" size_t.
-  */
-#ifndef __kernel_size_t
-#if __BITS_PER_LONG != 64
-typedef unsigned int	__kernel_size_t;
-typedef int		__kernel_ssize_t;
-typedef int		__kernel_ptrdiff_t;
-#else
-typedef __kernel_ulong_t __kernel_size_t;
-typedef __kernel_long_t	__kernel_ssize_t;
-typedef __kernel_long_t	__kernel_ptrdiff_t;
-#endif
-#endif
-
-
-
-I have no warning on ppc64.
-
-Christophe
+-- 
+viresh
