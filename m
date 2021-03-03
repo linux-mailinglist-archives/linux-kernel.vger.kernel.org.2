@@ -2,102 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B55532C014
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EA432C025
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386448AbhCCSPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:15:32 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44580 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1452460AbhCCPvQ (ORCPT
+        id S1386520AbhCCSQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:16:05 -0500
+Received: from orthanc.universe-factory.net ([104.238.176.138]:34778 "EHLO
+        orthanc.universe-factory.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1452520AbhCCPvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:51:16 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614786631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RN823tMCXXNqDXawfyuWxstSlaVtgyK0k/aEp2eRvyk=;
-        b=0U9z21IpN1HCqcdiZ2uTUflwlGeCWs6jQ4h3F9BkHUVhGti652aa8aH/0mdifLipbYIeMy
-        xRiwXyqWKNlR3d8eYSWIEa9hDxfInDuryeuYK/Uxs0j8Q6x5ipeN6CUQRTJaQjVtd0zZSr
-        8TlPDsBKmRK6JSeeMtsgGwkmsrjSuKOZMd9KWhYnTB6eJjIQFa0XAabDGVmr+Gyn7X1Weh
-        i2kkz8fuWKnXSp+FIFRS4hD4Jsw4Qjn/ZzywP7ESxgMTixV/RpyRlASjEgcM2+Kv4zXZdb
-        t+p1lwVXRoW6M8zBH3tQaYlIo6feE4xTH6S6Dd7X4Tj1b8FrEBBw2T42zQcj2g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614786631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RN823tMCXXNqDXawfyuWxstSlaVtgyK0k/aEp2eRvyk=;
-        b=tRVVKXGXof+ij2V3KBbQFz2yWkwAS8YkvIOlAvXoavyQ/dfcQg2WEqeIIU2cO920EukgZu
-        zyd8hSFBeTjiyTDg==
-To:     Feng Tang <feng.tang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Qais Yousef <qais.yousef@arm.com>, andi.kleen@intel.com
-Subject: Re: [PATCH] clocksource: don't run watchdog forever
-In-Reply-To: <20210302120634.GB76460@shbuild999.sh.intel.com>
-References: <1614653665-20905-1-git-send-email-feng.tang@intel.com> <YD4CdQqX5Lea1rB5@hirez.programming.kicks-ass.net> <20210302120634.GB76460@shbuild999.sh.intel.com>
-Date:   Wed, 03 Mar 2021 16:50:31 +0100
-Message-ID: <875z286xtk.fsf@nanos.tec.linutronix.de>
+        Wed, 3 Mar 2021 10:51:53 -0500
+Received: from avalon.. (unknown [IPv6:2001:19f0:6c01:100::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by orthanc.universe-factory.net (Postfix) with ESMTPSA id BB0AF1F5DB;
+        Wed,  3 Mar 2021 16:51:05 +0100 (CET)
+From:   Matthias Schiffer <mschiffer@universe-factory.net>
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tom Parkin <tparkin@katalix.com>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <mschiffer@universe-factory.net>
+Subject: [PATCH net v2] net: l2tp: reduce log level of messages in receive path, add counter instead
+Date:   Wed,  3 Mar 2021 16:50:49 +0100
+Message-Id: <bd6f117b433969634b613153ec86ccd9d5fa3fb9.1614707999.git.mschiffer@universe-factory.net>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02 2021 at 20:06, Feng Tang wrote:
-> On Tue, Mar 02, 2021 at 10:16:37AM +0100, Peter Zijlstra wrote:
->> On Tue, Mar 02, 2021 at 10:54:24AM +0800, Feng Tang wrote:
->> > clocksource watchdog runs every 500ms, which creates some OS noise.
->> > As the clocksource wreckage (especially for those that has per-cpu
->> > reading hook) usually happens shortly after CPU is brought up or
->> > after system resumes from sleep state, so add a time limit for
->> > clocksource watchdog to only run for a period of time, and make
->> > sure it run at least twice for each CPU.
->> > 
->> > Regarding performance data, there is no improvement data with the
->> > micro-benchmarks we have like hackbench/netperf/fio/will-it-scale
->> > etc. But it obviously reduces periodic timer interrupts, and may
->> > help in following cases:
->> > * When some CPUs are isolated to only run scientific or high
->> >   performance computing tasks on a NOHZ_FULL kernel, where there
->> >   is almost no interrupts, this could make it more quiet
->> > * On a cluster which runs a lot of systems in parallel with
->> >   barriers there are always enough systems which run the watchdog
->> >   and make everyone else wait
->> > 
->> > Signed-off-by: Feng Tang <feng.tang@intel.com>
->> 
->> Urgh.. so this hopes and prays that the TSC wrackage happens in the
->> first 10 minutes after boot.
+Commit 5ee759cda51b ("l2tp: use standard API for warning log messages")
+changed a number of warnings about invalid packets in the receive path
+so that they are always shown, instead of only when a special L2TP debug
+flag is set. Even with rate limiting these warnings can easily cause
+significant log spam - potentially triggered by a malicious party
+sending invalid packets on purpose.
 
-which is wishful thinking....
+In addition these warnings were noticed by projects like Tunneldigger [1],
+which uses L2TP for its data path, but implements its own control
+protocol (which is sufficiently different from L2TP data packets that it
+would always be passed up to userspace even with future extensions of
+L2TP).
 
-> Yes, the 10 minutes part is only based on our past experience and we
-> can make it longer. But if there was real case that the wrackage happened
-> long after CPU is brought up like days, then this patch won't help
-> much.
+Some of the warnings were already redundant, as l2tp_stats has a counter
+for these packets. This commit adds one additional counter for invalid
+packets that are passed up to userspace. Packets with unknown session are
+not counted as invalid, as there is nothing wrong with the format of
+these packets.
 
-It really depends on the BIOS wreckage. On one of my machine it takes up
-to a day depending on the workload.
+With the additional counter, all of these messages are either redundant
+or benign, so we reduce them to pr_debug_ratelimited().
 
-Anything pre TSC_ADJUST wants the watchdog on. With TSC ADJUST available
-we can probably avoid it.
+[1] https://github.com/wlanslovenija/tunneldigger/issues/160
 
-There is a caveat though. If the machine never goes idle then TSC adjust
-is not able to detect a potential wreckage. OTOH, most of the broken
-BIOSes tweak TSC only by a few cycles and that is usually detectable
-during boot. So we might be clever about it and schedule a check every
-hour when during the first 10 minutes a modification of TSC adjust is
-seen on any CPU.
+Fixes: 5ee759cda51b ("l2tp: use standard API for warning log messages")
+Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
+---
 
-Where is this TSC_DISABLE_WRITE bit again?
+v2:
+- Add counter for invalid packets
+- Reduce loglevel of more messages that can be abused for log spam
 
-Thanks,
+ include/uapi/linux/l2tp.h |  1 +
+ net/l2tp/l2tp_core.c      | 41 +++++++++++++++++++++------------------
+ net/l2tp/l2tp_core.h      |  1 +
+ net/l2tp/l2tp_netlink.c   |  6 ++++++
+ 4 files changed, 30 insertions(+), 19 deletions(-)
 
-        tglx
-
+diff --git a/include/uapi/linux/l2tp.h b/include/uapi/linux/l2tp.h
+index 30c80d5ba4bf..bab8c9708611 100644
+--- a/include/uapi/linux/l2tp.h
++++ b/include/uapi/linux/l2tp.h
+@@ -145,6 +145,7 @@ enum {
+ 	L2TP_ATTR_RX_ERRORS,		/* u64 */
+ 	L2TP_ATTR_STATS_PAD,
+ 	L2TP_ATTR_RX_COOKIE_DISCARDS,	/* u64 */
++	L2TP_ATTR_RX_INVALID,		/* u64 */
+ 	__L2TP_ATTR_STATS_MAX,
+ };
+ 
+diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
+index 7be5103ff2a8..8ed889f44d23 100644
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -649,9 +649,9 @@ void l2tp_recv_common(struct l2tp_session *session, struct sk_buff *skb,
+ 	/* Parse and check optional cookie */
+ 	if (session->peer_cookie_len > 0) {
+ 		if (memcmp(ptr, &session->peer_cookie[0], session->peer_cookie_len)) {
+-			pr_warn_ratelimited("%s: cookie mismatch (%u/%u). Discarding.\n",
+-					    tunnel->name, tunnel->tunnel_id,
+-					    session->session_id);
++			pr_debug_ratelimited("%s: cookie mismatch (%u/%u). Discarding.\n",
++					     tunnel->name, tunnel->tunnel_id,
++					     session->session_id);
+ 			atomic_long_inc(&session->stats.rx_cookie_discards);
+ 			goto discard;
+ 		}
+@@ -702,8 +702,8 @@ void l2tp_recv_common(struct l2tp_session *session, struct sk_buff *skb,
+ 		 * If user has configured mandatory sequence numbers, discard.
+ 		 */
+ 		if (session->recv_seq) {
+-			pr_warn_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
+-					    session->name);
++			pr_debug_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
++					     session->name);
+ 			atomic_long_inc(&session->stats.rx_seq_discards);
+ 			goto discard;
+ 		}
+@@ -718,8 +718,8 @@ void l2tp_recv_common(struct l2tp_session *session, struct sk_buff *skb,
+ 			session->send_seq = 0;
+ 			l2tp_session_set_header_len(session, tunnel->version);
+ 		} else if (session->send_seq) {
+-			pr_warn_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
+-					    session->name);
++			pr_debug_ratelimited("%s: recv data has no seq numbers when required. Discarding.\n",
++					     session->name);
+ 			atomic_long_inc(&session->stats.rx_seq_discards);
+ 			goto discard;
+ 		}
+@@ -809,9 +809,9 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ 
+ 	/* Short packet? */
+ 	if (!pskb_may_pull(skb, L2TP_HDR_SIZE_MAX)) {
+-		pr_warn_ratelimited("%s: recv short packet (len=%d)\n",
+-				    tunnel->name, skb->len);
+-		goto error;
++		pr_debug_ratelimited("%s: recv short packet (len=%d)\n",
++				     tunnel->name, skb->len);
++		goto invalid;
+ 	}
+ 
+ 	/* Point to L2TP header */
+@@ -824,9 +824,9 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ 	/* Check protocol version */
+ 	version = hdrflags & L2TP_HDR_VER_MASK;
+ 	if (version != tunnel->version) {
+-		pr_warn_ratelimited("%s: recv protocol version mismatch: got %d expected %d\n",
+-				    tunnel->name, version, tunnel->version);
+-		goto error;
++		pr_debug_ratelimited("%s: recv protocol version mismatch: got %d expected %d\n",
++				     tunnel->name, version, tunnel->version);
++		goto invalid;
+ 	}
+ 
+ 	/* Get length of L2TP packet */
+@@ -834,7 +834,7 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ 
+ 	/* If type is control packet, it is handled by userspace. */
+ 	if (hdrflags & L2TP_HDRFLAG_T)
+-		goto error;
++		goto pass;
+ 
+ 	/* Skip flags */
+ 	ptr += 2;
+@@ -863,21 +863,24 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+ 			l2tp_session_dec_refcount(session);
+ 
+ 		/* Not found? Pass to userspace to deal with */
+-		pr_warn_ratelimited("%s: no session found (%u/%u). Passing up.\n",
+-				    tunnel->name, tunnel_id, session_id);
+-		goto error;
++		pr_debug_ratelimited("%s: no session found (%u/%u). Passing up.\n",
++				     tunnel->name, tunnel_id, session_id);
++		goto pass;
+ 	}
+ 
+ 	if (tunnel->version == L2TP_HDR_VER_3 &&
+ 	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
+-		goto error;
++		goto invalid;
+ 
+ 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
+ 	l2tp_session_dec_refcount(session);
+ 
+ 	return 0;
+ 
+-error:
++invalid:
++	atomic_long_inc(&tunnel->stats.rx_invalid);
++
++pass:
+ 	/* Put UDP header back */
+ 	__skb_push(skb, sizeof(struct udphdr));
+ 
+diff --git a/net/l2tp/l2tp_core.h b/net/l2tp/l2tp_core.h
+index cb21d906343e..98ea98eb9567 100644
+--- a/net/l2tp/l2tp_core.h
++++ b/net/l2tp/l2tp_core.h
+@@ -39,6 +39,7 @@ struct l2tp_stats {
+ 	atomic_long_t		rx_oos_packets;
+ 	atomic_long_t		rx_errors;
+ 	atomic_long_t		rx_cookie_discards;
++	atomic_long_t		rx_invalid;
+ };
+ 
+ struct l2tp_tunnel;
+diff --git a/net/l2tp/l2tp_netlink.c b/net/l2tp/l2tp_netlink.c
+index 83956c9ee1fc..96eb91be9238 100644
+--- a/net/l2tp/l2tp_netlink.c
++++ b/net/l2tp/l2tp_netlink.c
+@@ -428,6 +428,9 @@ static int l2tp_nl_tunnel_send(struct sk_buff *skb, u32 portid, u32 seq, int fla
+ 			      L2TP_ATTR_STATS_PAD) ||
+ 	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_ERRORS,
+ 			      atomic_long_read(&tunnel->stats.rx_errors),
++			      L2TP_ATTR_STATS_PAD) ||
++	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_INVALID,
++			      atomic_long_read(&tunnel->stats.rx_invalid),
+ 			      L2TP_ATTR_STATS_PAD))
+ 		goto nla_put_failure;
+ 	nla_nest_end(skb, nest);
+@@ -771,6 +774,9 @@ static int l2tp_nl_session_send(struct sk_buff *skb, u32 portid, u32 seq, int fl
+ 			      L2TP_ATTR_STATS_PAD) ||
+ 	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_ERRORS,
+ 			      atomic_long_read(&session->stats.rx_errors),
++			      L2TP_ATTR_STATS_PAD) ||
++	    nla_put_u64_64bit(skb, L2TP_ATTR_RX_INVALID,
++			      atomic_long_read(&session->stats.rx_invalid),
+ 			      L2TP_ATTR_STATS_PAD))
+ 		goto nla_put_failure;
+ 	nla_nest_end(skb, nest);
+-- 
+2.30.1
 
