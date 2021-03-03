@@ -2,137 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB2332C46B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7602F32C482
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354569AbhCDANq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
+        id S1392465AbhCDAOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:14:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234512AbhCDAAu (ORCPT
+        with ESMTP id S1352892AbhCDACj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:00:50 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E91DC06175F;
-        Wed,  3 Mar 2021 15:12:08 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id l7so13189751pfd.3;
-        Wed, 03 Mar 2021 15:12:08 -0800 (PST)
+        Wed, 3 Mar 2021 19:02:39 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F283C061762;
+        Wed,  3 Mar 2021 15:14:41 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id w3so5633134oti.8;
+        Wed, 03 Mar 2021 15:14:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wVf1ZzqnDwgRm+R0xLH7iG9bt5jJx65TM96nbApldLk=;
-        b=lCFVWy3OsKPv0U0/aIKwkg6ICvLLETQNliPYx9Hff+VHW043qd+LMVfU2AYUcSwSfZ
-         LLdbjm4s+MzpHPhs1b6067Ot1SsHQ66IZlHd2wffv5kqtkb0o+hDz5DZe+RmKVYUHlSR
-         hwL+GwyKCtWxEhgYhzdMOhcQpkRjgOVTalw2pQ1zhsU6zJSX787dtDVxYhPLpuTaCNUm
-         A5HG0XEFwNEBQaYJ37xDQ1MO4aia1Yd2IWRoBmVLDtRsXUmTcj5kOmxSI3L0jw3pTjNC
-         nMKWYipuI9beDuhPZiGNIHHjQM6zEjVj8wxwqjwHkuqJH7klafouf/KWiFkjjv2NbEC3
-         h2iA==
-X-Gm-Message-State: AOAM530NT8CP2w9nbXtIRrGgSKQ7bbqNKNmzSiTQwefi9A4wgiP0k1TB
-        KgbHVIZngusSdLwQO5kr0j4=
-X-Google-Smtp-Source: ABdhPJypcbsrOH+c1S75BAXn+Z/NciXbC/GIVjTOGWi22I6ehV2xXikPNH2pCSGrGmYCJupDVg9GSQ==
-X-Received: by 2002:a63:e04d:: with SMTP id n13mr1074046pgj.185.1614813127492;
-        Wed, 03 Mar 2021 15:12:07 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id mp19sm8656739pjb.2.2021.03.03.15.12.06
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=yXVmeSl5oOevxfQxlrfETF+M/MDbt5WdR8xryqID+Tw=;
+        b=oQU6nvWULZkiQX21JwzS3zUmIYS3Y9QNCASf3m+dbAZvX/CHjqhP8KRZfTWDfhnAWV
+         6MX6kco8J5FPyk4LsWA6XmXRHcebMLr5+0NHuNb5Izcp0v0A0PUKWk6IeA2ut87StRuk
+         DGF/o4AeGViZlsUmVatRWsWPyBSv9Aq29RiU9FDoD4LiRMtLZh4JfUy7EQB9PNUXqREK
+         a3mCEQOVPG5uVx8I+iLI1FoodnlVVWiIxQMwnlGOpYbatbXQNRJzDsEZ3fnj0gEykX2Q
+         4/e+nZu/ejmb9SoYUno4hnAvH9rw6iH8sMWUafxtzMxI+pg5hkbWd+FECszvbzOGhKfG
+         U2gw==
+X-Gm-Message-State: AOAM531N9BaDDfnXAIx7d3ZsdAN1iJqeZzhRjyjPJsWG9xu/r3UUXVJF
+        o3H7DiTLdNTA87u7jNwgVw==
+X-Google-Smtp-Source: ABdhPJwrBA/11mAg/pOkn/zbVpAwEHWyNgvNOkMVN9xeD9R31M6hU7b8jv46jT4ggUwLalDuSU1VGQ==
+X-Received: by 2002:a9d:20c3:: with SMTP id x61mr1194688ota.311.1614813280679;
+        Wed, 03 Mar 2021 15:14:40 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f193sm1879302oig.8.2021.03.03.15.14.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 15:12:06 -0800 (PST)
-Date:   Wed, 3 Mar 2021 15:12:06 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     Nava kishore Manne <nava.manne@xilinx.com>, trix@redhat.com,
-        robh+dt@kernel.org, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com, chinnikishore369@gmail.com
-Subject: Re: [PATCH 1/2] fpga: mgr: Adds secure BitStream loading support
-Message-ID: <YEAXxuU2J1yaAl3U@archbook>
-References: <20210118025058.10051-1-nava.manne@xilinx.com>
- <YApf1jlEghbnDFo/@archbook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YApf1jlEghbnDFo/@archbook>
+        Wed, 03 Mar 2021 15:14:39 -0800 (PST)
+Received: (nullmailer pid 846313 invoked by uid 1000);
+        Wed, 03 Mar 2021 23:14:36 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     bhelgaas@google.com, hes@sifive.com, p.zabel@pengutronix.de,
+        khilman@baylibre.com, vidyas@nvidia.com,
+        linux-riscv@lists.infradead.org, jh80.chung@samsung.com,
+        lorenzo.pieralisi@arm.com, alex.dewar90@gmail.com,
+        sboyd@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zong.li@sifive.com, paul.walmsley@sifive.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        erik.danie@sifive.com, robh+dt@kernel.org, mturquette@baylibre.com,
+        hayashi.kunihiko@socionext.com
+In-Reply-To: <4e63c5515f9755d0cf4cd65ab70048554d917d89.1614681831.git.greentime.hu@sifive.com>
+References: <cover.1614681831.git.greentime.hu@sifive.com> <4e63c5515f9755d0cf4cd65ab70048554d917d89.1614681831.git.greentime.hu@sifive.com>
+Subject: Re: [RFC PATCH 4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+Date:   Wed, 03 Mar 2021 17:14:36 -0600
+Message-Id: <1614813276.374609.846312.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nava,
-
-On Thu, Jan 21, 2021 at 09:17:10PM -0800, Moritz Fischer wrote:
-> On Mon, Jan 18, 2021 at 08:20:57AM +0530, Nava kishore Manne wrote:
-> > This commit adds secure flags to the framework to support
-> > secure BitStream Loading.
-> > 
-> > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> > ---
-> >  drivers/fpga/of-fpga-region.c | 10 ++++++++++
-> >  include/linux/fpga/fpga-mgr.h | 12 ++++++++++++
-> >  2 files changed, 22 insertions(+)
-> > 
-> > diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
-> > index e405309baadc..3a5eb4808888 100644
-> > --- a/drivers/fpga/of-fpga-region.c
-> > +++ b/drivers/fpga/of-fpga-region.c
-> > @@ -228,6 +228,16 @@ static struct fpga_image_info *of_fpga_region_parse_ov(
-> >  	if (of_property_read_bool(overlay, "encrypted-fpga-config"))
-> >  		info->flags |= FPGA_MGR_ENCRYPTED_BITSTREAM;
-> >  
-> > +	if (of_property_read_bool(overlay, "userkey-encrypted-fpga-config"))
-> > +		info->flags |= FPGA_MGR_USERKEY_ENCRYPTED_BITSTREAM;
+On Tue, 02 Mar 2021 18:59:15 +0800, Greentime Hu wrote:
+> Add PCIe host controller DT bindings of SiFive FU740.
 > 
-> Can this just be encrypted-fpga-config/FPGA_MGR_ENCRYPTED?
-> > +
-> > +	if (of_property_read_bool(overlay, "ddrmem-authenticated-fpga-config"))
-> > +		info->flags |= FPGA_MGR_DDR_MEM_AUTH_BITSTREAM;
-> > +
-> > +	if (of_property_read_bool(overlay,
-> > +				  "securemem-authenticated-fpga-config"))
-> > +		info->flags |= FPGA_MGR_SECURE_MEM_AUTH_BITSTREAM;
-Shouldn't all these get binding docs? I remember Richard adding
-authentication support for an Intel platform, too and I'd like to avoid
-adding random bindings per vendor.
-
-Would it be possible to have an 'authentication method / type' that is more
-extensible with different methods maybe?
-
-> > +
-> >  	if (!of_property_read_string(overlay, "firmware-name",
-> >  				     &firmware_name)) {
-> >  		info->firmware_name = devm_kstrdup(dev, firmware_name,
-> > diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
-> > index 2bc3030a69e5..2f7455a60666 100644
-> > --- a/include/linux/fpga/fpga-mgr.h
-> > +++ b/include/linux/fpga/fpga-mgr.h
-> > @@ -67,12 +67,24 @@ enum fpga_mgr_states {
-> >   * %FPGA_MGR_BITSTREAM_LSB_FIRST: SPI bitstream bit order is LSB first
-> >   *
-> >   * %FPGA_MGR_COMPRESSED_BITSTREAM: FPGA bitstream is compressed
-> > + *
-> > + * %FPGA_MGR_USERKEY_ENCRYPTED_BITSTREAM: indicates bitstream is encrypted with
-> > + *                                        user key
-> > + *
-> > + * %FPGA_MGR_DDR_MEM_AUTH_BITSTREAM: do bitstream authentication using DDR
-> > + *                                   memory if supported
-> > + *
-> > + * %FPGA_MGR_SECURE_MEM_AUTH_BITSTREAM: do bitstream authentication using secure
-> > + *                                      memory if supported
-> >   */
-> >  #define FPGA_MGR_PARTIAL_RECONFIG	BIT(0)
-> >  #define FPGA_MGR_EXTERNAL_CONFIG	BIT(1)
-> >  #define FPGA_MGR_ENCRYPTED_BITSTREAM	BIT(2)
-> >  #define FPGA_MGR_BITSTREAM_LSB_FIRST	BIT(3)
-> >  #define FPGA_MGR_COMPRESSED_BITSTREAM	BIT(4)
-> > +#define FPGA_MGR_USERKEY_ENCRYPTED_BITSTREAM	BIT(5)
-> > +#define FPGA_MGR_DDR_MEM_AUTH_BITSTREAM		BIT(6)
-> > +#define FPGA_MGR_SECURE_MEM_AUTH_BITSTREAM	BIT(7)
-> >  
-> >  /**
-> >   * struct fpga_image_info - information specific to a FPGA image
-> > -- 
-> > 2.18.0
-> > 
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  .../bindings/pci/sifive,fu740-pcie.yaml       | 119 ++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
 > 
-> Thanks,
-> Moritz
-Moritz
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml:114:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/pci/sifive,fu740-pcie.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a block scalar
+  in "<unicode string>", line 88, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 114, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/pci/sifive,fu740-pcie.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml:  while scanning a block scalar
+  in "<unicode string>", line 88, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 114, column 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
+make: *** [Makefile:1380: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1446288
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
