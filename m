@@ -2,120 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA3E32BF44
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D9B32BF4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577950AbhCCSBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:01:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447549AbhCCPEV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:04:21 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612C5C061760;
-        Wed,  3 Mar 2021 07:03:33 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id m25so13242783oie.12;
-        Wed, 03 Mar 2021 07:03:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UFdmdGIL0QMCEr5PKkU9AQdIZLVV8WmqiWX3bdKwEO8=;
-        b=QQauQWBbvUN9iU7ZIBR5QfpryPCDaxW5eGXds6qSe28kjr/VQDd1TFN796AY2l+wEf
-         QzwToGQJPogy9LWjlpAnFUKI3DowbWVkql+8QFSwkamByG9wl/+NzjoEkIop+f7HjvNN
-         EdYxpRj2DXXcwtdY1I2r00QeUix0enLHaYcsPwVpr830DEL8iruObLGMAc8fTJ4cTG/d
-         //DaE22CAK8yoMZaA3yze89IAonfl7zg6EXf2cuWIIuVou7NQNcXQ2P736Mwc9JMqmkI
-         Igep49NceowL4SLIWSHK/UiyPuf/d8SgmDJgZoRB/bkIaLOvAEyXhstbdRE3HdNji3p7
-         DbVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UFdmdGIL0QMCEr5PKkU9AQdIZLVV8WmqiWX3bdKwEO8=;
-        b=pz3/Ry+HqN5Lwlc7Blc2aqACHWo/EHPVwwbNiwzNZxQxDpZMBrpAhX35820HYEnH3/
-         sSxYUkpoDA+ycrocQNaji7pD37sWYxhuXZprVY/6UkrfkckXTbe9fO6gwuhu2AsAGExk
-         b0yMSBz2JJR2fFEjU/1PR1Xo6uWiR0qeEyZrk2vZCk2cFCQ/lC2a32iv5Hm//4HahL2x
-         uesrj8eBQpNR0KxRy7jhLyOmCqUFHpM398HR4WIG7xJ43pad0Clv7qk8INE/aGA26n2T
-         //U4+7A6zxCC4nouFFHuiklhEqcNlcqZIh9D0JbFSVp34ZrwdSbvyVb8g7CNGyh/K72i
-         iABQ==
-X-Gm-Message-State: AOAM530nDX9xjAgd5FA1TW9IigCclD1OAq3PlaNH8tGuIL8upqkATIEa
-        2Z8u7Lo7776CSzAMDopIImVbGjUa9w+Rw6eoaAc=
-X-Google-Smtp-Source: ABdhPJy/Z9v1e0H8KZp7WiXlPIQST+M+l00Z0J29yDOyNADm4PL6rAXPb5X74je0lpVPYXZgHf57Nj4bXaIqH3IfYWw=
-X-Received: by 2002:aca:f485:: with SMTP id s127mr7604275oih.120.1614783812744;
- Wed, 03 Mar 2021 07:03:32 -0800 (PST)
+        id S1577988AbhCCSBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:01:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1447610AbhCCPEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:04:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA2464EE9;
+        Wed,  3 Mar 2021 15:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614783832;
+        bh=MO/4TL7dKn9BPVSY9M+hxMlpKkSMe6bLuTcinRADrCc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iKzhxaB5TmNpFMODWSdY/R4EV5QySIRdQSeX6UofNa7UD4WmROYsBLAU3gZovwPiq
+         JcPj1m8HmhaCvtVj8hzC7U89azQ1rAxfFj3vWC1xqza6xe/cUCZ95ubIt8u6gHxlf7
+         xHSuXPpuU/NIFqWBxJv8gguEubWm3+KdS/MYLApnDHMnPD1S2VdFw7WXkHEZYSr79B
+         fiKMqPa/rogG9PvO6IVNUwg/BluQ6TXC9nS/boL2ET27Bh6BeZXjtJkjSj5hEJjyrI
+         SGsX/3+QJUrziqYnSO7XfAd2nRCR4ybM+KsNnWWt4L4HOixfb1EORqkT9ulpdlUoBi
+         sM5oj+jb6DvuA==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 3/5] x86/sgx: Replace section->init_laundry_list with a temp list
+Date:   Wed,  3 Mar 2021 17:03:21 +0200
+Message-Id: <20210303150323.433207-4-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210303150323.433207-1-jarkko@kernel.org>
+References: <20210303150323.433207-1-jarkko@kernel.org>
 MIME-Version: 1.0
-References: <20210303002759.28752-1-colin.king@canonical.com> <490409f2-9fcb-d402-a6ae-b45c80bae3d2@amd.com>
-In-Reply-To: <490409f2-9fcb-d402-a6ae-b45c80bae3d2@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 3 Mar 2021 10:03:21 -0500
-Message-ID: <CADnq5_N9P5AHF3PFTyR-k_s23sofvATCGbER=Q9qbNzQFp66UA@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: fix copy of uninitialized variable back to userspace
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <marek.olsak@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Build a local laundry list in sgx_init(), and transfer its ownsership to
+ksgxd for sanitization, thus getting rid of useless member in struct
+sgx_epc_section.
 
-Alex
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ arch/x86/kernel/cpu/sgx/main.c | 64 ++++++++++++++++++----------------
+ arch/x86/kernel/cpu/sgx/sgx.h  |  7 ----
+ 2 files changed, 34 insertions(+), 37 deletions(-)
 
-On Wed, Mar 3, 2021 at 2:42 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
->
-> Am 03.03.21 um 01:27 schrieb Colin King:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > Currently the ioctl command RADEON_INFO_SI_BACKEND_ENABLED_MASK can
-> > copy back uninitialised data in value_tmp that pointer *value points
-> > to. This can occur when rdev->family is less than CHIP_BONAIRE and
-> > less than CHIP_TAHITI.  Fix this by adding in a missing -EINVAL
-> > so that no invalid value is copied back to userspace.
-> >
-> > Addresses-Coverity: ("Uninitialized scalar variable)
-> > Cc: stable@vger.kernel.org # 3.13+
-> > Fixes: 439a1cfffe2c ("drm/radeon: expose render backend mask to the use=
-rspace")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> Let's hope that this doesn't break UAPI.
->
-> Christian.
->
-> > ---
-> >   drivers/gpu/drm/radeon/radeon_kms.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/rade=
-on/radeon_kms.c
-> > index 2479d6ab7a36..58876bb4ef2a 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> > @@ -518,6 +518,7 @@ int radeon_info_ioctl(struct drm_device *dev, void =
-*data, struct drm_file *filp)
-> >                       *value =3D rdev->config.si.backend_enable_mask;
-> >               } else {
-> >                       DRM_DEBUG_KMS("BACKEND_ENABLED_MASK is si+ only!\=
-n");
-> > +                     return -EINVAL;
-> >               }
-> >               break;
-> >       case RADEON_INFO_MAX_SCLK:
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index ed99c60024dc..a649010949c2 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -30,35 +30,33 @@ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+  * Reset dirty EPC pages to uninitialized state. Laundry can be left with SECS
+  * pages whose child pages blocked EREMOVE.
+  */
+-static void sgx_sanitize_section(struct sgx_epc_section *section)
++static void sgx_sanitize_section(struct list_head *laundry)
+ {
+ 	struct sgx_epc_page *page;
+ 	LIST_HEAD(dirty);
+ 	int ret;
+ 
+ 	/* init_laundry_list is thread-local, no need for a lock: */
+-	while (!list_empty(&section->init_laundry_list)) {
++	while (!list_empty(laundry)) {
+ 		if (kthread_should_stop())
+ 			return;
+ 
+-		/* needed for access to ->page_list: */
+-		spin_lock(&section->lock);
+-
+-		page = list_first_entry(&section->init_laundry_list,
+-					struct sgx_epc_page, list);
++		page = list_first_entry(laundry, struct sgx_epc_page, list);
+ 
+ 		ret = __eremove(sgx_get_epc_virt_addr(page));
+-		if (!ret)
+-			list_move(&page->list, &section->page_list);
+-		else
++		if (!ret) {
++			/* The page is clean - move to the free list. */
++			list_del(&page->list);
++			sgx_free_epc_page(page);
++		} else {
++			/* The page is not yet clean - move to the dirty list. */
+ 			list_move_tail(&page->list, &dirty);
+-
+-		spin_unlock(&section->lock);
++		}
+ 
+ 		cond_resched();
+ 	}
+ 
+-	list_splice(&dirty, &section->init_laundry_list);
++	list_splice(&dirty, laundry);
+ }
+ 
+ static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
+@@ -400,6 +398,7 @@ static bool sgx_should_reclaim(unsigned long watermark)
+ 
+ static int ksgxd(void *p)
+ {
++	struct list_head *laundry = p;
+ 	int i;
+ 
+ 	set_freezable();
+@@ -408,16 +407,13 @@ static int ksgxd(void *p)
+ 	 * Sanitize pages in order to recover from kexec(). The 2nd pass is
+ 	 * required for SECS pages, whose child pages blocked EREMOVE.
+ 	 */
+-	for (i = 0; i < sgx_nr_epc_sections; i++)
+-		sgx_sanitize_section(&sgx_epc_sections[i]);
++	sgx_sanitize_section(laundry);
++	sgx_sanitize_section(laundry);
+ 
+-	for (i = 0; i < sgx_nr_epc_sections; i++) {
+-		sgx_sanitize_section(&sgx_epc_sections[i]);
++	if (!list_empty(laundry))
++		WARN(1, "EPC section %d has unsanitized pages.\n", i);
+ 
+-		/* Should never happen. */
+-		if (!list_empty(&sgx_epc_sections[i].init_laundry_list))
+-			WARN(1, "EPC section %d has unsanitized pages.\n", i);
+-	}
++	kfree(laundry);
+ 
+ 	while (!kthread_should_stop()) {
+ 		if (try_to_freeze())
+@@ -436,11 +432,11 @@ static int ksgxd(void *p)
+ 	return 0;
+ }
+ 
+-static bool __init sgx_page_reclaimer_init(void)
++static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
+ {
+ 	struct task_struct *tsk;
+ 
+-	tsk = kthread_run(ksgxd, NULL, "ksgxd");
++	tsk = kthread_run(ksgxd, laundry, "ksgxd");
+ 	if (IS_ERR(tsk))
+ 		return false;
+ 
+@@ -614,7 +610,8 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
+ 
+ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 					 unsigned long index,
+-					 struct sgx_epc_section *section)
++					 struct sgx_epc_section *section,
++					 struct list_head *laundry)
+ {
+ 	unsigned long nr_pages = size >> PAGE_SHIFT;
+ 	unsigned long i;
+@@ -632,13 +629,12 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 	section->phys_addr = phys_addr;
+ 	spin_lock_init(&section->lock);
+ 	INIT_LIST_HEAD(&section->page_list);
+-	INIT_LIST_HEAD(&section->init_laundry_list);
+ 
+ 	for (i = 0; i < nr_pages; i++) {
+ 		section->pages[i].section = index;
+ 		section->pages[i].flags = 0;
+ 		section->pages[i].owner = NULL;
+-		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
++		list_add_tail(&section->pages[i].list, laundry);
+ 	}
+ 
+ 	section->free_cnt = nr_pages;
+@@ -656,7 +652,7 @@ static inline u64 __init sgx_calc_section_metric(u64 low, u64 high)
+ 	       ((high & GENMASK_ULL(19, 0)) << 32);
+ }
+ 
+-static bool __init sgx_page_cache_init(void)
++static bool __init sgx_page_cache_init(struct list_head *laundry)
+ {
+ 	u32 eax, ebx, ecx, edx, type;
+ 	u64 pa, size;
+@@ -679,7 +675,7 @@ static bool __init sgx_page_cache_init(void)
+ 
+ 		pr_info("EPC section 0x%llx-0x%llx\n", pa, pa + size - 1);
+ 
+-		if (!sgx_setup_epc_section(pa, size, i, &sgx_epc_sections[i])) {
++		if (!sgx_setup_epc_section(pa, size, i, &sgx_epc_sections[i], laundry)) {
+ 			pr_err("No free memory for an EPC section\n");
+ 			break;
+ 		}
+@@ -697,18 +693,25 @@ static bool __init sgx_page_cache_init(void)
+ 
+ static int __init sgx_init(void)
+ {
++	struct list_head *laundry;
+ 	int ret;
+ 	int i;
+ 
+ 	if (!cpu_feature_enabled(X86_FEATURE_SGX))
+ 		return -ENODEV;
+ 
+-	if (!sgx_page_cache_init()) {
++	laundry = kzalloc(sizeof(*laundry), GFP_KERNEL);
++	if (!laundry)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(laundry);
++
++	if (!sgx_page_cache_init(laundry)) {
+ 		ret = -ENOMEM;
+ 		goto err_page_cache;
+ 	}
+ 
+-	if (!sgx_page_reclaimer_init()) {
++	if (!sgx_page_reclaimer_init(laundry)) {
+ 		ret = -ENOMEM;
+ 		goto err_page_cache;
+ 	}
+@@ -728,6 +731,7 @@ static int __init sgx_init(void)
+ 		memunmap(sgx_epc_sections[i].virt_addr);
+ 	}
+ 
++	kfree(laundry);
+ 	return ret;
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index 5fa42d143feb..bc8af0428640 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -45,13 +45,6 @@ struct sgx_epc_section {
+ 	spinlock_t lock;
+ 	struct list_head page_list;
+ 	unsigned long free_cnt;
+-
+-	/*
+-	 * Pages which need EREMOVE run on them before they can be
+-	 * used.  Only safe to be accessed in ksgxd and init code.
+-	 * Not protected by locks.
+-	 */
+-	struct list_head init_laundry_list;
+ };
+ 
+ extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+-- 
+2.30.1
+
