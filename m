@@ -2,190 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D28132C0EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5276B32C125
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837193AbhCCSsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43768 "EHLO mail.kernel.org"
+        id S1836589AbhCCSsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:48:08 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:3482 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235409AbhCCSHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:07:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3099064EC3;
-        Wed,  3 Mar 2021 17:56:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614794198;
-        bh=rxqkDsnUXU/xxHmy/70519LRN+MNIq89YWq+Ew6dZm4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AT/0RdgZGZ+YB5asCLokCP/sQDsKCO1NI22yI8VfT0uJSDrAiFJD6pyoGH398ut23
-         Jb+sQtIgp2ep0jRorzfnHYoDZF/Ck58txpXPIEjyBpGKgP7DLylPiSnSg0+F+pjeUG
-         C0UnuTORsRO2oeLJpbY/BtlwAJ8qOB1B2n7s7va/yjuj9LuaweMZuleFqbGdG92PLq
-         tbyah6nySDIIOwQfTA9svwUXODPVX0pIGSfBcWLlNE5sb/B4JrKLY7Mlpfsk7Wtfr5
-         8DRldsE862yqjwqEMTrYZKv340qiQvrb5W4kIX+iVgborCLdY+2Bb3ZzJMM7QELzmH
-         wtlg1GLA6tAWg==
-Received: by pali.im (Postfix)
-        id C8B76B91; Wed,  3 Mar 2021 18:56:35 +0100 (CET)
-Date:   Wed, 3 Mar 2021 18:56:35 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede02@gmail.com>
-Subject: Re: RFC: sysfs node for Secondary PCI bus reset (PCIe Hot Reset)
-Message-ID: <20210303175635.nv7kxiulevpy5ax5@pali>
-References: <20210301171221.3d42a55i7h5ubqsb@pali>
- <20210301202817.GA201451@bjorn-Precision-5520>
- <20210302125829.216784cd@omen.home.shazbot.org>
+        id S1352260AbhCCR6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:58:47 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DrMCF1XV1z9v4QZ;
+        Wed,  3 Mar 2021 18:57:13 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id QezXv5b5bs7A; Wed,  3 Mar 2021 18:57:13 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrMCD6mvcz9ttC2;
+        Wed,  3 Mar 2021 18:57:12 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3CFC08B7DB;
+        Wed,  3 Mar 2021 18:57:13 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id HfuXNu-LNDVW; Wed,  3 Mar 2021 18:57:13 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3EC2D8B7E6;
+        Wed,  3 Mar 2021 18:57:12 +0100 (CET)
+Subject: Re: [PATCH v2 1/7] cmdline: Add generic function to build command
+ line.
+To:     Will Deacon <will@kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, danielwa@cisco.com,
+        robh@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+ <d8cf7979ad986de45301b39a757c268d9df19f35.1614705851.git.christophe.leroy@csgroup.eu>
+ <20210303172810.GA19713@willie-the-truck>
+ <a0cfef11-efba-2e5c-6f58-ed63a2c3bfa0@csgroup.eu>
+ <20210303174627.GC19713@willie-the-truck>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <dc6576ac-44ff-7db4-d718-7565b83f50b8@csgroup.eu>
+Date:   Wed, 3 Mar 2021 18:57:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210303174627.GC19713@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210302125829.216784cd@omen.home.shazbot.org>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 02 March 2021 12:58:29 Alex Williamson wrote:
-> On Mon, 1 Mar 2021 14:28:17 -0600
-> Bjorn Helgaas <helgaas@kernel.org> wrote:
+
+
+Le 03/03/2021 à 18:46, Will Deacon a écrit :
+> On Wed, Mar 03, 2021 at 06:38:16PM +0100, Christophe Leroy wrote:
+>> Le 03/03/2021 à 18:28, Will Deacon a écrit :
+>>> On Tue, Mar 02, 2021 at 05:25:17PM +0000, Christophe Leroy wrote:
+>>>> This code provides architectures with a way to build command line
+>>>> based on what is built in the kernel and what is handed over by the
+>>>> bootloader, based on selected compile-time options.
+>>>>
+>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>> ---
+>>>>    include/linux/cmdline.h | 62 +++++++++++++++++++++++++++++++++++++++++
+>>>>    1 file changed, 62 insertions(+)
+>>>>    create mode 100644 include/linux/cmdline.h
+>>>>
+>>>> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+>>>> new file mode 100644
+>>>> index 000000000000..ae3610bb0ee2
+>>>> --- /dev/null
+>>>> +++ b/include/linux/cmdline.h
+>>>> @@ -0,0 +1,62 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +#ifndef _LINUX_CMDLINE_H
+>>>> +#define _LINUX_CMDLINE_H
+>>>> +
+>>>> +static __always_inline size_t cmdline_strlen(const char *s)
+>>>> +{
+>>>> +	const char *sc;
+>>>> +
+>>>> +	for (sc = s; *sc != '\0'; ++sc)
+>>>> +		; /* nothing */
+>>>> +	return sc - s;
+>>>> +}
+>>>> +
+>>>> +static __always_inline size_t cmdline_strlcat(char *dest, const char *src, size_t count)
+>>>> +{
+>>>> +	size_t dsize = cmdline_strlen(dest);
+>>>> +	size_t len = cmdline_strlen(src);
+>>>> +	size_t res = dsize + len;
+>>>> +
+>>>> +	/* This would be a bug */
+>>>> +	if (dsize >= count)
+>>>> +		return count;
+>>>> +
+>>>> +	dest += dsize;
+>>>> +	count -= dsize;
+>>>> +	if (len >= count)
+>>>> +		len = count - 1;
+>>>> +	memcpy(dest, src, len);
+>>>> +	dest[len] = 0;
+>>>> +	return res;
+>>>> +}
+>>>
+>>> Why are these needed instead of using strlen and strlcat directly?
+>>
+>> Because on powerpc (at least), it will be used in prom_init, it is very
+>> early in the boot and KASAN shadow memory is not set up yet so calling
+>> generic string functions would crash the board.
 > 
-> > [+cc Alex, reset expert]
-> > 
-> > On Mon, Mar 01, 2021 at 06:12:21PM +0100, Pali Rohár wrote:
-> > > Hello!
-> > > 
-> > > PCIe card can be reset via in-band Hot Reset signal which can be
-> > > triggered by PCIe bridge via Secondary Bus Reset bit in PCI config
-> > > space.
-> > > 
-> > > Kernel already exports sysfs node "reset" for triggering Functional
-> > > Reset of particular function of PCI device. But in some cases Functional
-> > > Reset is not enough and Hot Reset is required.
-> > > 
-> > > Following RFC patch exports sysfs node "reset_bus" for PCI bridges which
-> > > triggers Secondary Bus Reset and therefore for PCIe bridges it resets
-> > > connected PCIe card.
-> > > 
-> > > What do you think about it?
-> > > 
-> > > Currently there is userspace script which can trigger PCIe Hot Reset by
-> > > modifying PCI config space from userspace:
-> > > 
-> > > https://alexforencich.com/wiki/en/pcie/hot-reset-linux
-> > > 
-> > > But because kernel already provides way how to trigger Functional Reset
-> > > it could provide also way how to trigger PCIe Hot Reset.
+> Hmm. We deliberately setup a _really_ early shadow on arm64 for this, can
+> you not do something similar? Failing that, I think it would be better to
+> offer the option for an arch to implement cmdline_*, but have then point to
+> the normal library routines by default.
+
+I don't think it is possible to setup an earlier early shadow.
+
+At the point we are in prom_init, the code is not yet relocated at the address it was linked for, 
+and it is running with the MMU set by the bootloader, I can't imagine being able to setup MMU 
+entries for the early shadow KASAN yet without breaking everything.
+
+Is it really worth trying to point to the normal library routines by default ? It is really only a 
+few lines of code hence only not many bytes, and anyway they are in __init section so they get 
+discarded at the end.
+
 > 
-> What that script does and what this does, or what the existing reset
-> attribute does, are very different.  The script finds the upstream
-> bridge for a given device, removes the device (ignoring that more than
-> one device might be affected by the bus reset), uses setpci to trigger
-> a secondary bus reset, then rescans devices.  The below only triggers
-> the secondary bus reset, neither saving and restoring affected device
-> state like the existing function level reset attribute, nor removing
-> and rescanning as the script does.  It simply leaves an entire
-> hierarchy of PCI devices entirely un-programmed yet still has struct
-> pci_devs attached to them for untold future misery.
+>>>> +/*
+>>>> + * This function will append a builtin command line to the command
+>>>> + * line provided by the bootloader. Kconfig options can be used to alter
+>>>> + * the behavior of this builtin command line.
+>>>> + * @dest: The destination of the final appended/prepended string.
+>>>> + * @src: The starting string or NULL if there isn't one. Must not equal dest.
+>>>> + * @length: the length of dest buffer.
+>>>> + */
+>>>> +static __always_inline void cmdline_build(char *dest, const char *src, size_t length)
+>>>> +{
+>>>> +	if (length <= 0)
+>>>> +		return;
+>>>> +
+>>>> +	dest[0] = 0;
+>>>> +
+>>>> +#ifdef CONFIG_CMDLINE
+>>>> +	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !src || !src[0]) {
+>>>> +		cmdline_strlcat(dest, CONFIG_CMDLINE, length);
+>>>> +		return;
+>>>> +	}
+>>>> +#endif
+>>>
+>>> CONFIG_CMDLINE_FORCE implies CONFIG_CMDLINE, and even if it didn't,
+>>> CONFIG_CMDLINE is at worst an empty string. Can you drop the #ifdef?
+>>
+>> Ah yes, since cbe46bd4f510 ("powerpc: remove CONFIG_CMDLINE #ifdef mess") it
+>> is feasible. I can change that now.
+>>
+>>>
+>>>> +	if (dest != src)
+>>>> +		cmdline_strlcat(dest, src, length);
+>>>> +#ifdef CONFIG_CMDLINE
+>>>> +	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) && sizeof(CONFIG_CMDLINE) > 1)
+>>>> +		cmdline_strlcat(dest, " " CONFIG_CMDLINE, length);
+>>>> +#endif
+>>>
+>>> Likewise, but also I'm not sure why the sizeof() is required.
+>>
+>> It is to avoid adding a white space at the end of the command line when
+>> CONFIG_CMDLINE is empty. But maybe it doesn't matter ?
 > 
-> In fact, for the case of a single device affected by the bus reset, as
-> intended by the script, the existing reset attribute will already do
-> that if the device supports no other reset mechanism.  There's actually
-> a running LFX mentorship project that aims to allow the user to control
-> the type of reset performed by the existing reset attribute such that a
-> user could force the bus reset behavior over other reset methods.
+> If CONFIG_CMDLINE is empty, I don't think you can select
+> CONFIG_CMDLINE_EXTEND (but even if you could, I don't think it matters).
 
-Hello Alex? Do you have a link for this "reset" project? I'm interesting
-in it as I'm dealing with Compex wifi cards which are causing problems.
+Ok I'll simplify that when I re-spin.
 
-For correct initialization I need to issue PCIe Warm Reset for these
-cards (Warm Reset is done via PERST# pin which most linux controller
-drivers controls via GPIO subsystem). And for now there is no way to
-trigger PCIe Warm Reset for particular PCIe device from userspace. As
-there is no userspace <--> kernel API for it.
-
-> There might be some justification for an attribute that actually
-> implements the referenced script correctly, perhaps in kernel we could
-> avoid races with bus rescans, but simply triggering an SBR to quietly
-> de-program all downstream devices with no state restore or device
-> rescan is not it.  Any affected device would be unusable.  Was this
-> tested?  Thanks,
-
-I have tested my change. First I called 'remove' attribute for PCIe
-card, then I called this 'bus_reset' on parent PCIe bridge and later I
-called 'rescan' attribute on bridge. It correctly rested tested ath9k
-card. So I did something similar as in above script. But I agree that
-there are race conditions and basically lot of other calls needs to be
-done to restore state.
-
-So I see that to make it 'usable' we need to do it automatically in
-kernel and also rescan/restore state of PCIe devices behind bridge after
-reset...
-
-> Alex
-> 
-> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > > index 50fcb62d59b5..f5e11c589498 100644
-> > > --- a/drivers/pci/pci-sysfs.c
-> > > +++ b/drivers/pci/pci-sysfs.c
-> > > @@ -1321,6 +1321,30 @@ static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
-> > >  
-> > >  static DEVICE_ATTR(reset, 0200, NULL, reset_store);
-> > >  
-> > > +static ssize_t reset_bus_store(struct device *dev, struct device_attribute *attr,
-> > > +			       const char *buf, size_t count)
-> > > +{
-> > > +	struct pci_dev *pdev = to_pci_dev(dev);
-> > > +	unsigned long val;
-> > > +	ssize_t result = kstrtoul(buf, 0, &val);
-> > > +
-> > > +	if (result < 0)
-> > > +		return result;
-> > > +
-> > > +	if (val != 1)
-> > > +		return -EINVAL;
-> > > +
-> > > +	pm_runtime_get_sync(dev);
-> > > +	result = pci_bridge_secondary_bus_reset(pdev);
-> > > +	pm_runtime_put(dev);
-> > > +	if (result < 0)
-> > > +		return result;
-> > > +
-> > > +	return count;
-> > > +}
-> > > +
-> > > +static DEVICE_ATTR(reset_bus, 0200, NULL, reset_bus_store);
-> > > +
-> > >  static int pci_create_capabilities_sysfs(struct pci_dev *dev)
-> > >  {
-> > >  	int retval;
-> > > @@ -1332,8 +1356,15 @@ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
-> > >  		if (retval)
-> > >  			goto error;
-> > >  	}
-> > > +	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
-> > > +		retval = device_create_file(&dev->dev, &dev_attr_reset_bus);
-> > > +		if (retval)
-> > > +			goto error_reset_bus;
-> > > +	}
-> > >  	return 0;
-> > >  
-> > > +error_reset_bus:
-> > > +	device_remove_file(&dev->dev, &dev_attr_reset);
-> > >  error:
-> > >  	pcie_vpd_remove_sysfs_dev_files(dev);
-> > >  	return retval;
-> > > @@ -1414,6 +1445,8 @@ static void pci_remove_capabilities_sysfs(struct pci_dev *dev)
-> > >  		device_remove_file(&dev->dev, &dev_attr_reset);
-> > >  		dev->reset_fn = 0;
-> > >  	}
-> > > +	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE)
-> > > +		device_remove_file(&dev->dev, &dev_attr_reset_bus);
-> > >  }
-> > >  
-> > >  /**  
-> > 
-> 
+Christophe
