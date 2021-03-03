@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EC532C055
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A531332C079
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579506AbhCCSbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:31:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232329AbhCCQgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:36:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D3EC614A7;
-        Wed,  3 Mar 2021 16:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614789314;
-        bh=T4vXj1HwpwwEL1qZXN2x2T47akLygg5FZ3/KhQMvm5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q7QC+ENz/GtvoKoiOkKHpkHSupTc//7l5QsEXuBUd7lHHn49iCC1AmYFAubqnzrc6
-         qT4a2f5j+Mx/I5V0IaEen0bserlEhQkjHJNIKnGJ6BeSPDQOP6/o+Hxe0Kn4pf+bu0
-         Pxm8m00zLMaYMGLMMjeOiH+rj3ptCzj1+DI1NS1SlQcyjk6gkNngpK83uwApYOHP0z
-         w+LuWnCGMevTsABVkWYwL70OLDHyI+mvHbExLGhF8meJMb0+UOe7qmsAEf/S3sNdRU
-         jmu5p44AUQc4ksLr38MVBzc/Pb+evtkAd9DIWAkf22OMCUO/vE9Rv7tkwuhSmNRJmc
-         lMQ/QitaIlrVQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3B7604038F; Wed,  3 Mar 2021 13:35:12 -0300 (-03)
-Date:   Wed, 3 Mar 2021 13:35:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, tmricht@linux.ibm.com,
-        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        heiko.carstens@de.ibm.com, atrajeev@linux.vnet.ibm.com,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 1/2] perf test: Fix sample-parsing fails on non-x86
- platforms
-Message-ID: <YD+6wNQq/viQMnA6@kernel.org>
-References: <1614787285-104151-1-git-send-email-kan.liang@linux.intel.com>
+        id S1579578AbhCCSbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242958AbhCCQh4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:37:56 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCDCC0613DB
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:37:05 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id gt32so31886792ejc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vpdvJ23q1oid0H28mLrnVIimUayOznJ9U6AdMVzu7XQ=;
+        b=Pck6m/m37NKs1t408alxl2zct6EFCZ+SOWmMNjrdC4f1Ho+51EDiONONQhe/48fq2F
+         neO+W8oBo97MIVzjpzNg0P3B7SQ2FNVs51j/04W0RrCupaGJnUifTKgs+FnGAU+MAdQu
+         N1DmoEjN/QQqTdg5Pn8isQXk3q1MkQIiJDR7216YJ/qLJ2nanz61ynJavQMFJS0HGpf+
+         HIijVIYC68IjghLiLQ5h0wnXyr6Xg1gUIS+iEFCBo/EdG2FIwOUpsmHHANeSSfIq97cz
+         UekPZZNxpuGW914WoKLYyYU+oPgIClFzdLW6G3sisIqpt3vq6TEbLwIpUcPgeuWqWKDz
+         UDEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vpdvJ23q1oid0H28mLrnVIimUayOznJ9U6AdMVzu7XQ=;
+        b=AKEQMTP5C5zcohLi53Ty5nh2fvm3sEETYCPiTrRCeBLXtiTOqO3EPEiFiAbgukX3qR
+         eAHgq5r5N92NAGsAlEfND+N5mn82HxaqzA1XB//CSjp124DSF30xOQsB1dDv7SRMw/L3
+         MFGUSBprxNNVAxkF3funGjIyrKM6NhxXKSk2br8KA5UY2Q6DpfJk4TbJfKwZtXWpdRJB
+         ojt8s//cYRCA+8A3kJ+vRvdYkonekICZLKv87CZ02TbdAAAdgAAZQaJsg1+IjWDi1ULk
+         xl7/5dnj/0wTUaprrPtHZriLENFjXnCXtIy46NjWaI7QcPKNA6Xp6AtOTndSd4ROH8ta
+         3brw==
+X-Gm-Message-State: AOAM532bDUf+Fuj6NjfZz0tRRuH2cz0fYnHLn01aCm1fJWLP8aFB0uTE
+        JXZMvwKj4N1Ag+SMhCzFboqmsE26ov0yGWGqvr8xh3O2+SM+Gg==
+X-Google-Smtp-Source: ABdhPJwF8MkpPwcSJx52llkHFBetQmF+xwrNFsW12qXmw2Cm0D8kEhFV+UtaVpaxcf1PT/1KKSg9dx4sc9VzvQ+1Kfo=
+X-Received: by 2002:a17:906:c102:: with SMTP id do2mr26650941ejc.305.1614789423964;
+ Wed, 03 Mar 2021 08:37:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614787285-104151-1-git-send-email-kan.liang@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <1ad49a62-41dd-cdcc-2f8c-b7a2ad67c3b6@huawei.com> <a32dfe3c-8821-77c3-23dd-809b659d2e4f@huawei.com>
+In-Reply-To: <a32dfe3c-8821-77c3-23dd-809b659d2e4f@huawei.com>
+From:   Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Date:   Wed, 3 Mar 2021 17:36:28 +0100
+Message-ID: <CAJX1YtboZLrmiNMtRBU8-U5rQNv9GqEPx+TiWyLt0mqqotmksQ@mail.gmail.com>
+Subject: Re: can the idle value of /proc/stat decrease?
+To:     "xuqiang (M)" <xuqiang36@huawei.com>
+Cc:     adobriyan@gmail.com, christian.brauner@ubuntu.com,
+        michael.weiss@aisec.fraunhofer.de, sfr@canb.auug.org.au,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        rui.xiang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Mar 03, 2021 at 08:01:24AM -0800, kan.liang@linux.intel.com escreveu:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> Executing perf test 27 fails on s390:
->  [root@t35lp46 perf]# ./perf test -Fv 27
->  27: Sample parsing
->  --- start ---
->  ---- end ----
->  Sample parsing: FAILED!
->  [root@t35lp46 perf]#
-> 
-> The commit fbefe9c2f87f ("perf tools: Support arch specific
-> PERF_SAMPLE_WEIGHT_STRUCT processing") changes the ins_lat to a
-> model-specific variable only for X86, but perf test still verify the
-> variable in the generic test.
-> 
-> Remove the ins_lat check in the generic test. The following patch will
-> add it in the X86 specific test.
+Hi,
 
-Thanks, applied both patches.
+We found the same problem on our production servers.
 
-- Arnaldo
+For example, prometheus-node-exporter reported below message:
+daemon.info: Feb  8 17:43:12 ps601b-202
+prometheus-node-exporter[2506]: level=3Dwarn ts=3D2021-02-08T17:43:12.052Z
+caller=3Dcpu_linux.go:247 collector=3Dcpu msg=3D"CPU Idle counter jumped
+backwards, possible hotplug event, resetting CPU stats" cpu=3D78
+old_value=3D1.04782328e+06 new_value=3D1.04782178e+06
 
- 
-> Fixes: fbefe9c2f87f ("perf tools: Support arch specific PERF_SAMPLE_WEIGHT_STRUCT processing")
-> Reported-by: Thomas Richter <tmricht@linux.ibm.com>
-> Tested-by: Thomas Richter <tmricht@linux.ibm.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> ---
->  tools/perf/tests/sample-parsing.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-> index 0dbe3aa..8fd8a4e 100644
-> --- a/tools/perf/tests/sample-parsing.c
-> +++ b/tools/perf/tests/sample-parsing.c
-> @@ -129,9 +129,6 @@ static bool samples_same(const struct perf_sample *s1,
->  	if (type & PERF_SAMPLE_WEIGHT)
->  		COMP(weight);
->  
-> -	if (type & PERF_SAMPLE_WEIGHT_STRUCT)
-> -		COMP(ins_lat);
-> -
->  	if (type & PERF_SAMPLE_DATA_SRC)
->  		COMP(data_src);
->  
-> @@ -245,7 +242,6 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
->  		.cgroup		= 114,
->  		.data_page_size = 115,
->  		.code_page_size = 116,
-> -		.ins_lat        = 117,
->  		.aux_sample	= {
->  			.size	= sizeof(aux_data),
->  			.data	= (void *)aux_data,
-> -- 
-> 2.7.4
-> 
+The idle value was changed from 1.04782328e+06 to 1.04782178e+06.
 
--- 
+AND the server rebooted after some minutes.
+There is no other error in the log files.
+I currently suspect the CPU counter decreasing caused the system reboot.
 
-- Arnaldo
+On Mon, Dec 28, 2020 at 8:57 AM xuqiang (M) <xuqiang36@huawei.com> wrote:
+>
+> Our recent test shows that the idle value of /proc/stat can decrease.
+> Is this an unreported bug? or it has been reported and the solution is
+> waiting to get merged.
+>
+> The results of the two readings from /proc/stat are shown as below, the
+> interval between the two readings is 150 ms:
+>
+> cat /proc/stat
+> cpu0 5536 10 14160 4118960 0 0 227128 0 0 0
+>
+> cat /proc/stat
+> cpu0 5536 10 14160 4118959 0 0 227143 0 0 0
+
+
+
+--=20
+Gioh Kim
+
+Cloud server kernel maintainer
+Quality Management (IONOS Cloud)
+
+1&1 IONOS SE | Greifswalder Str. 207 | 10405 Berlin | Germany
+Phone: +49 176 26978962
+E-mail: gi-oh.kim@cloud.ionos.com | Web: www.ionos.de
+
+Hauptsitz Montabaur, Amtsgericht Montabaur, HRB 24498
+
+Vorstand: Dr. Christian B=C3=B6ing, H=C3=BCseyin Dogan, Dr. Martin Endre=C3=
+=9F,
+Hans-Henning Kettler, Arthur Mai, Matthias Steinberg, Achim Wei=C3=9F
+Aufsichtsratsvorsitzender: Markus Kadelke
+
+Member of United Internet
+
+Diese E-Mail kann vertrauliche und/oder gesetzlich gesch=C3=BCtzte
+Informationen enthalten. Wenn Sie nicht der bestimmungsgem=C3=A4=C3=9Fe Adr=
+essat
+sind oder diese E-Mail irrt=C3=BCmlich erhalten haben, unterrichten Sie
+bitte den Absender und vernichten Sie diese E-Mail. Anderen als dem
+bestimmungsgem=C3=A4=C3=9Fen Adressaten ist untersagt, diese E-Mail zu
+speichern, weiterzuleiten oder ihren Inhalt auf welche Weise auch
+immer zu verwenden.
+
+This e-mail may contain confidential and/or privileged information. If
+you are not the intended recipient of this e-mail, you are hereby
+notified that saving, distribution or use of the content of this
+e-mail in any way is prohibited. If you have received this e-mail in
+error, please notify the sender and delete the e-mail.
