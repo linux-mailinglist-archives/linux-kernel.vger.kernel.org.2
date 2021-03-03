@@ -2,54 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DCC32BBD2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C68432BBF7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350375AbhCCMyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:54:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1842743AbhCCIMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:12:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 100FD64EDC;
-        Wed,  3 Mar 2021 07:59:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614758381;
-        bh=Kk5vZ5bewIKfc2mHgHI4/ZeIkuOPpVHLt3iDzWvNhz4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bQ78G9eQnFydvkIiILyEmWL7hA0fYHr0/5tJjeX7kjlMVUfFGRIguODxrVUDDMgww
-         TIp72frsckpCkRUm75oiaD6ue03Ep/viDSZZMA8pkjiR7KAtz505jvNFnnN2QARoTS
-         +EVjTktEBsjrjZO4KWrNzO6j36p3m4EY+cNLQ2gpFpTPnuFg2eVTCZwSHvAlQ4GcgX
-         TX6vUidz+k8uVQLjtDlh9+15s7jPsCh174c73Gi1TA1kbP+nN+1kBxzShReB/pbkSE
-         J3Z+L9yKf0wP4gt/0lBuncLDjcgM40SXQVryuueBLcugMfPULiBT4F9q3tjA7bg6kq
-         JLuTDSiG1dzNw==
-Date:   Wed, 3 Mar 2021 15:59:35 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        j.neuschaefer@gmx.net
-Subject: Re: [PATCH] ARM: dts: imx6sl-tolino-shine2hd: Add Netronix embedded
- controller
-Message-ID: <20210303075935.GC15865@dragon>
-References: <20210124214127.3631530-8-j.neuschaefer@gmx.net>
- <20210125190804.12552-1-andreas@kemnade.info>
+        id S1381161AbhCCN37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:29:59 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13465 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357163AbhCCITd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:19:33 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dr5w64W4rzjVWK;
+        Wed,  3 Mar 2021 15:58:14 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 3 Mar 2021 15:59:50 +0800
+Subject: Re: [PATCH 4.19 000/247] 4.19.178-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210301161031.684018251@linuxfoundation.org>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <17f51bb1-c433-cd52-2f67-58855b09e92b@huawei.com>
+Date:   Wed, 3 Mar 2021 15:59:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125190804.12552-1-andreas@kemnade.info>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:08:04PM +0100, Andreas Kemnade wrote:
-> For now, the driver detects an incompatible version, but since
-> that can be handled by auto-detection, add the controller to the
-> devicetree now. Only PWM seems to be available, there is no RTC
-> in that controller.
+On 2021/3/2 0:10, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.178 release.
+> There are 247 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
+> Anything received after that time might be too late.
 
-Applied, thanks.
+Tested on arm64 and x86 for 4.19.178-rc3+,
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4674
+succeed_num: 4674
+failed_num: 0
+timeout_num: 0
+
+x86 (No kernel failures)
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4674
+succeed_num: 4673
+failed_num: 1
+timeout_num: 0
+
+Tested-by: Hulk Robot <hulkci@huawei.com>
