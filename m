@@ -2,277 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADA532BD13
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4159F32BD15
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1448119AbhCCPRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:17:31 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:52963 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241453AbhCCK3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:29:18 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Dr9F41pSLz9tygt;
-        Wed,  3 Mar 2021 11:28:08 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id FbkezhdaHit1; Wed,  3 Mar 2021 11:28:08 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dr9F403Lxz9tygd;
-        Wed,  3 Mar 2021 11:28:08 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 23E278B7D0;
-        Wed,  3 Mar 2021 11:28:09 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id UzqfpylKXQEC; Wed,  3 Mar 2021 11:28:09 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 074028B7D1;
-        Wed,  3 Mar 2021 11:28:06 +0100 (CET)
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
- <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
- <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
- <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
- <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
- <87h7ltss18.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <f911a6ad-2f7a-7173-7e51-2afc25d127a2@csgroup.eu>
-Date:   Wed, 3 Mar 2021 11:28:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1345928AbhCCPS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232143AbhCCKaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:30:55 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F71C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:30:10 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id q25so16045953lfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ul5d5eo5jjguw4uCkJHVtdEjPOboupeNtSzAVz4Rmio=;
+        b=ThpGElSJaCEbZZncSCI7UVnPIpXqQjO7Q4JJCYgYQ5obCM9YSBam90bydANSj3gDJj
+         goYyHSbLByqsIFWn/0d9nyPpQrSNEwpWzB1GvB89Pmnx90aZRKA/uvkwcHmfaj47ChC/
+         g4MbCiU8TMHgSsfVHS1LWSrMaKVvq+02Hdhak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ul5d5eo5jjguw4uCkJHVtdEjPOboupeNtSzAVz4Rmio=;
+        b=Z0pIqyrGD6uyHuT+lRkZ25NIwwIUcJJUfjhKLBLbS50z2ZlqPfN6lpdvJQ7PwYcv5j
+         V1vfYSITxMwe/xWA0XrvFYpBX0Huj1GUAPeJ+eGKM9x3ZRTSwnWM3e4q9/hAVPqLn5FQ
+         7CshAzdT60cill+Q+EiwrY2WjE+yHqcEtsZFegt7YIiIomahsUUF/LoQNS0uqnFrNH6q
+         WGdK/zwSHDYPhAY+CDdfJhIr+OzoOg4TmZA1DH7/QIPPubgM4SCqFxJMyeqIPmVM/F7z
+         eORe+c5AkMIISjAeWq3XfS5QNCKFfK7Oqd5kClpd2Nf2Yk0t43p067ymTk0/LwnQ00Oj
+         zAKw==
+X-Gm-Message-State: AOAM530OElj+nzoABZAMUY6/h4r+UITuota/MGVJQRBej1a8lJ4rWo6r
+        XpM0DLKje4WZPLI0OKXgnaPNM1nbN/Asjg==
+X-Google-Smtp-Source: ABdhPJzKYMXHunCLE1/2dL31gais9whUWj0O2jXIJTIesAQqDT9IFw4vwjdoA97nmMJzvxrAsoO/xQ==
+X-Received: by 2002:a19:8085:: with SMTP id b127mr15319429lfd.25.1614767408411;
+        Wed, 03 Mar 2021 02:30:08 -0800 (PST)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id s6sm2919649lfe.97.2021.03.03.02.30.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 02:30:07 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id q25so16045825lfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:30:07 -0800 (PST)
+X-Received: by 2002:a19:712:: with SMTP id 18mr14809919lfh.591.1614767406688;
+ Wed, 03 Mar 2021 02:30:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87h7ltss18.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210225101612.2832444-1-acourbot@chromium.org>
+ <20210225101612.2832444-4-acourbot@chromium.org> <4cb93f828695f7f6307077da466a58ba478c9824.camel@ndufresne.ca>
+In-Reply-To: <4cb93f828695f7f6307077da466a58ba478c9824.camel@ndufresne.ca>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Wed, 3 Mar 2021 19:29:55 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MUUDSwRNEiuDy8s-CMwosraS25P2o109XyJCms9RTRBsQ@mail.gmail.com>
+Message-ID: <CAPBb6MUUDSwRNEiuDy8s-CMwosraS25P2o109XyJCms9RTRBsQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] media: add Mediatek's MM21 format
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nicolas,
 
+On Wed, Mar 3, 2021 at 2:38 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrot=
+e:
+>
+> Le jeudi 25 f=C3=A9vrier 2021 =C3=A0 19:16 +0900, Alexandre Courbot a =C3=
+=A9crit :
+> > Add Mediatek's non-compressed 8 bit block video mode. This format is
+> > produced by the MT8183 codec and can be converted to a non-proprietary
+> > format by the MDP3 component.
+> >
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > ---
+> >  Documentation/userspace-api/media/v4l/pixfmt-reserved.rst | 7 +++++++
+> >  drivers/media/v4l2-core/v4l2-ioctl.c                      | 1 +
+> >  include/uapi/linux/videodev2.h                            | 1 +
+> >  3 files changed, 9 insertions(+)
+> >
+> > diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> > b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> > index c9231e18859b..187ea89f7a25 100644
+> > --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> > +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+> > @@ -242,6 +242,13 @@ please make a proposal on the linux-media mailing =
+list.
+> >         It is an opaque intermediate format and the MDP hardware must b=
+e
+> >         used to convert ``V4L2_PIX_FMT_MT21C`` to ``V4L2_PIX_FMT_NV12M`=
+`,
+> >         ``V4L2_PIX_FMT_YUV420M`` or ``V4L2_PIX_FMT_YVU420``.
+> > +    * .. _V4L2-PIX-FMT-MM21:
+> > +
+> > +      - ``V4L2_PIX_FMT_MM21``
+> > +      - 'MM21'
+> > +      - Non-compressed, tiled two-planar format used by Mediatek MT818=
+3.
+> > +       This is an opaque intermediate format and the MDP3 hardware can=
+ be
+> > +       used to convert it to other formats.
+> >      * .. _V4L2-PIX-FMT-SUNXI-TILED-NV12:
+>
+> The SUNXI one was a mistake,  it's linear layout 32x32 tiles. The problem=
+ with
+> calling this a vendor format, is that other vendor might be using it too.=
+ But
+> they won't know and the format might endup duplicated, even if it's the s=
+ame
+> one.
+>
+> So here's my request, have you tried to understand a bit more what the ti=
+ling
+> layout is ? Could be tiled + SAND, could use zigzag layout like Samsung d=
+o. I
+> think if we can avoid vendor formats, we can preserve the pixel format li=
+st
+> sanity here. Most of the HW I've encoutered was very easy to reverse, eve=
+n if
+> undocumented (except the compressed one).
 
-Le 02/03/2021 à 12:40, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Le 02/03/2021 à 10:53, Marco Elver a écrit :
->>> On Tue, 2 Mar 2021 at 10:27, Christophe Leroy
->>> <christophe.leroy@csgroup.eu> wrote:
->>>> Le 02/03/2021 à 10:21, Alexander Potapenko a écrit :
->>>>>> [   14.998426] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
->>>>>> [   14.998426]
->>>>>> [   15.007061] Invalid read at 0x(ptrval):
->>>>>> [   15.010906]  finish_task_switch.isra.0+0x54/0x23c
->>>>>> [   15.015633]  kunit_try_run_case+0x5c/0xd0
->>>>>> [   15.019682]  kunit_generic_run_threadfn_adapter+0x24/0x30
->>>>>> [   15.025099]  kthread+0x15c/0x174
->>>>>> [   15.028359]  ret_from_kernel_thread+0x14/0x1c
->>>>>> [   15.032747]
->>>>>> [   15.034251] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
->>>>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
->>>>>> [   15.045811] ==================================================================
->>>>>> [   15.053324]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
->>>>>> [   15.053324]     Expected report_matches(&expect) to be true, but is false
->>>>>> [   15.068359]     not ok 21 - test_invalid_access
->>>>>
->>>>> The test expects the function name to be test_invalid_access, i. e.
->>>>> the first line should be "BUG: KFENCE: invalid read in
->>>>> test_invalid_access".
->>>>> The error reporting function unwinds the stack, skips a couple of
->>>>> "uninteresting" frames
->>>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L43)
->>>>> and uses the first "interesting" one frame to print the report header
->>>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L226).
->>>>>
->>>>> It's strange that test_invalid_access is missing altogether from the
->>>>> stack trace - is that expected?
->>>>> Can you try printing the whole stacktrace without skipping any frames
->>>>> to see if that function is there?
->>>>>
->>>>
->>>> Booting with 'no_hash_pointers" I get the following. Does it helps ?
->>>>
->>>> [   16.837198] ==================================================================
->>>> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
->>>> [   16.848521]
->>>> [   16.857158] Invalid read at 0xdf98800a:
->>>> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
->>>> [   16.865731]  kunit_try_run_case+0x5c/0xd0
->>>> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
->>>> [   16.875199]  kthread+0x15c/0x174
->>>> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
->>>> [   16.882847]
->>>> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
->>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
->>>> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
->>>> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
->>>> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
->>>> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
->>>> [   16.918153] DAR: df98800a DSISR: 20000000
->>>> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
->>>> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
->>>> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
->>>> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
->>>> [   16.947292] Call Trace:
->>>> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
->>>
->>> The "(unreliable)" might be a clue that it's related to ppc32 stack
->>> unwinding. Any ppc expert know what this is about?
->>>
->>>> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
->>>> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
->>>> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
->>>> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
->>>> [   16.981896] Instruction dump:
->>>> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
->>>> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
->>>> [   17.000711] ==================================================================
->>>> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
->>>> [   17.008223]     Expected report_matches(&expect) to be true, but is false
->>>> [   17.023243]     not ok 21 - test_invalid_access
->>>
->>> On a fault in test_invalid_access, KFENCE prints the stack trace based
->>> on the information in pt_regs. So we do not think there's anything we
->>> can do to improve stack printing pe-se.
->>
->> stack printing, probably not. Would be good anyway to mark the last level [unreliable] as the ppc does.
->>
->> IIUC, on ppc the address in the stack frame of the caller is written by the caller. In most tests,
->> there is some function call being done before the fault, for instance
->> test_kmalloc_aligned_oob_read() does a call to kunit_do_assertion which populates the address of the
->> call in the stack. However this is fragile.
->>
->> This works for function calls because in order to call a subfunction, a function has to set up a
->> stack frame in order to same the value in the Link Register, which contains the address of the
->> function's parent and that will be clobbered by the sub-function call.
->>
->> However, it cannot be done by exceptions, because exceptions can happen in a function that has no
->> stack frame (because that function has no need to call a subfunction and doesn't need to same
->> anything on the stack). If the exception handler was writting the caller's address in the stack
->> frame, it would in fact write it in the parent's frame, leading to a mess.
->>
->> But in fact the information is in pt_regs, it is in regs->nip so KFENCE should be able to use that
->> instead of the stack.
->>
->>>
->>> What's confusing is that it's only this test, and none of the others.
->>> Given that, it might be code-gen related, which results in some subtle
->>> issue with stack unwinding. There are a few things to try, if you feel
->>> like it:
->>>
->>> -- Change the unwinder, if it's possible for ppc32.
->>
->> I don't think it is possible.
-> 
-> I think this actually is the solution.
-> 
-> It seems the good architectures have all added support for
-> arch_stack_walk(), and we have not.
-> 
-> Looking at some of the implementations of arch_stack_walk() it seems
-> it's expected that the first entry emitted includes the PC (or NIP on
-> ppc).
+Unfortunately I don't think I can look too closely into that, for
+non-technical reasons. But if MTK could come forward and document
+their format, that would be indeed ideal.
 
-I don't see a direct link between arch_stack_walk() and that expectation. Looks like those 
-architectures where already doing this before being converted to arch_stack_walk().
+>
+> If not possible, I would like to suggest:
+>
+>   V4L2_PIX_FMT_MTK_NV21
+>
+> The important part is to add a clear seperation for the vendor name, it e=
+asy to
+> recognize then.
 
-> 
-> For us stack_trace_save() calls save_stack_trace() which only emits
-> entries from the stack, which doesn't necessarily include the function
-> NIP is pointing to.
+The MTK prefix makes sense, but I do not know if NV21 is a correct
+denomination for that format. Note that we have another MTK-only
+format currently named V4L2_PIX_FMT_MT21C, which is already public. It
+would be nice to rename it as well, but since it is part of the public
+API I'm afraid the cat is already out of the bag for that one...
 
-Yes, as the name save_stack says, it emits the entries from the stack. I think it is correct.
-
-> 
-> So I think it's probably on us to update to that new API. Or at least
-> update our save_stack_trace() to fabricate an entry using the NIP, as it
-> seems that's what callers expect.
-
-As mentionned above, that doesn't seem to be directly linked to the new API. That new API only is an 
-intermediate step anyway, the consumers like KFENCE still use the old API which is serviced by the 
-generic code now.
-
-For me it looks odd to present a stack trace where entry[0] is not from the stack and where entry[1] 
-is unreliable (possibly non existing) because we don't know if we are coming from a frameless 
-function or not and even if the function as a frame we don't know if it saved LR in the parent's 
-frame or not.
-
-I would deeply prefer if KFENCE could avoid making assumptions on entry[0] of the stack trace.
-
-What about the following change to KFENCE ?
-
-diff --git a/mm/kfence/report.c b/mm/kfence/report.c
-index ab83d5a59bb1..c2fef4eeb192 100644
---- a/mm/kfence/report.c
-+++ b/mm/kfence/report.c
-@@ -171,12 +171,15 @@ void kfence_report_error(unsigned long address, bool is_write, struct pt_regs *r
-  	const ptrdiff_t object_index = meta ? meta - kfence_metadata : -1;
-  	int num_stack_entries;
-  	int skipnr = 0;
-+	void *ip;
-
-  	if (regs) {
-  		num_stack_entries = stack_trace_save_regs(regs, stack_entries, KFENCE_STACK_DEPTH, 0);
-+		ip = (void *)instruction_pointer(regs);
-  	} else {
-  		num_stack_entries = stack_trace_save(stack_entries, KFENCE_STACK_DEPTH, 1);
-  		skipnr = get_stack_skipnr(stack_entries, num_stack_entries, &type);
-+		ip = (void *)stack_entries[skipnr];
-  	}
-
-  	/* Require non-NULL meta, except if KFENCE_ERROR_INVALID. */
-@@ -202,8 +205,7 @@ void kfence_report_error(unsigned long address, bool is_write, struct pt_regs *r
-  	case KFENCE_ERROR_OOB: {
-  		const bool left_of_object = address < meta->addr;
-
--		pr_err("BUG: KFENCE: out-of-bounds %s in %pS\n\n", get_access_type(is_write),
--		       (void *)stack_entries[skipnr]);
-+		pr_err("BUG: KFENCE: out-of-bounds %s in %pS\n\n", get_access_type(is_write), ip);
-  		pr_err("Out-of-bounds %s at 0x%p (%luB %s of kfence-#%zd):\n",
-  		       get_access_type(is_write), (void *)address,
-  		       left_of_object ? meta->addr - address : address - meta->addr,
-@@ -211,25 +213,23 @@ void kfence_report_error(unsigned long address, bool is_write, struct pt_regs *r
-  		break;
-  	}
-  	case KFENCE_ERROR_UAF:
--		pr_err("BUG: KFENCE: use-after-free %s in %pS\n\n", get_access_type(is_write),
--		       (void *)stack_entries[skipnr]);
-+		pr_err("BUG: KFENCE: use-after-free %s in %pS\n\n", get_access_type(is_write), ip);
-  		pr_err("Use-after-free %s at 0x%p (in kfence-#%zd):\n",
-  		       get_access_type(is_write), (void *)address, object_index);
-  		break;
-  	case KFENCE_ERROR_CORRUPTION:
--		pr_err("BUG: KFENCE: memory corruption in %pS\n\n", (void *)stack_entries[skipnr]);
-+		pr_err("BUG: KFENCE: memory corruption in %pS\n\n", ip);
-  		pr_err("Corrupted memory at 0x%p ", (void *)address);
-  		print_diff_canary(address, 16, meta);
-  		pr_cont(" (in kfence-#%zd):\n", object_index);
-  		break;
-  	case KFENCE_ERROR_INVALID:
--		pr_err("BUG: KFENCE: invalid %s in %pS\n\n", get_access_type(is_write),
--		       (void *)stack_entries[skipnr]);
-+		pr_err("BUG: KFENCE: invalid %s in %pS\n\n", get_access_type(is_write), ip);
-  		pr_err("Invalid %s at 0x%p:\n", get_access_type(is_write),
-  		       (void *)address);
-  		break;
-  	case KFENCE_ERROR_INVALID_FREE:
--		pr_err("BUG: KFENCE: invalid free in %pS\n\n", (void *)stack_entries[skipnr]);
-+		pr_err("BUG: KFENCE: invalid free in %pS\n\n", ip);
-  		pr_err("Invalid free of 0x%p (in kfence-#%zd):\n", (void *)address,
-  		       object_index);
-  		break;
----
-
-Christophe
+>
+> >
+> >        - ``V4L2_PIX_FMT_SUNXI_TILED_NV12``
+> > diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-
+> > core/v4l2-ioctl.c
+> > index 31d1342e61e8..0b85b2bbc628 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> > @@ -1384,6 +1384,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc =
+*fmt)
+> >         case V4L2_PIX_FMT_TM6000:       descr =3D "A/V + VBI Mux Packet=
+"; break;
+> >         case V4L2_PIX_FMT_CIT_YYVYUY:   descr =3D "GSPCA CIT YYVYUY"; b=
+reak;
+> >         case V4L2_PIX_FMT_KONICA420:    descr =3D "GSPCA KONICA420"; br=
+eak;
+> > +       case V4L2_PIX_FMT_MM21:         descr =3D "Mediatek 8-bit block=
+ format";
+> > break;
+> >         case V4L2_PIX_FMT_HSV24:        descr =3D "24-bit HSV 8-8-8"; b=
+reak;
+> >         case V4L2_PIX_FMT_HSV32:        descr =3D "32-bit XHSV 8-8-8-8"=
+; break;
+> >         case V4L2_SDR_FMT_CU8:          descr =3D "Complex U8"; break;
+> > diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videod=
+ev2.h
+> > index 79dbde3bcf8d..e6890dae76ec 100644
+> > --- a/include/uapi/linux/videodev2.h
+> > +++ b/include/uapi/linux/videodev2.h
+> > @@ -731,6 +731,7 @@ struct v4l2_pix_format {
+> >  #define V4L2_PIX_FMT_Y12I     v4l2_fourcc('Y', '1', '2', 'I') /* Greys=
+cale
+> > 12-bit L/R interleaved */
+> >  #define V4L2_PIX_FMT_Z16      v4l2_fourcc('Z', '1', '6', ' ') /* Depth=
+ data
+> > 16-bit */
+> >  #define V4L2_PIX_FMT_MT21C    v4l2_fourcc('M', 'T', '2', '1') /* Media=
+tek
+> > compressed block mode  */
+> > +#define V4L2_PIX_FMT_MM21     v4l2_fourcc('M', 'M', '2', '1') /* Media=
+tek 8-
+> > bit block mode, two non-contiguous planes */
+> >  #define V4L2_PIX_FMT_INZI     v4l2_fourcc('I', 'N', 'Z', 'I') /* Intel=
+ Planar
+> > Greyscale 10-bit and Depth 16-bit */
+> >  #define V4L2_PIX_FMT_SUNXI_TILED_NV12 v4l2_fourcc('S', 'T', '1', '2') =
+/*
+> > Sunxi Tiled NV12 Format */
+> >  #define V4L2_PIX_FMT_CNF4     v4l2_fourcc('C', 'N', 'F', '4') /* Intel=
+ 4-bit
+> > packed depth confidence information */
+>
+>
