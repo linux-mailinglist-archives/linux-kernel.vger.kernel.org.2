@@ -2,139 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B2B32BA80
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B7432BA8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357764AbhCCLYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:24:21 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:28055 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243723AbhCCC0h (ORCPT
+        id S234006AbhCCL2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:28:23 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:10617 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244235AbhCCDEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 21:26:37 -0500
+        Tue, 2 Mar 2021 22:04:40 -0500
 Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210303022541epoutp01e3c12121adcd671631f981fd23a2a160~os-di0xjl2944429444epoutp01g
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:25:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210303022541epoutp01e3c12121adcd671631f981fd23a2a160~os-di0xjl2944429444epoutp01g
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210303023147epoutp02f6f65fdf30a3adeb94fa2043f509105d~otEyfZqRA3126431264epoutp02R
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:31:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210303023147epoutp02f6f65fdf30a3adeb94fa2043f509105d~otEyfZqRA3126431264epoutp02R
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614738341;
-        bh=WFo02n4iB9wax/xdPqJhFWU/UDoKMo20zeRVoCJV5bc=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=qVXqu/MudW/bDVSKRUnS7k/Ns8wKJoWo+nd9I/WVTJzFuKXf6Cx1tVuVW0Bp7T2oe
-         8rA9iLGY8o+8CMo8uqQovbqH6+xs0vw9LNprdeGcRS93UlanxMpaJDzcUFbzCZ5AQj
-         8j+AqEWmVI5vHRyizlzJHrHv3iFv/rJddT9O+Baw=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210303022540epcas2p3c118942f347dc9684a7da127da3899b6~os-dCSTxP1464014640epcas2p3Y;
-        Wed,  3 Mar 2021 02:25:40 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.188]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DqyXM4q7jz4x9Py; Wed,  3 Mar
-        2021 02:25:39 +0000 (GMT)
+        s=mail20170921; t=1614738707;
+        bh=l6vq/WBBlvQg1WwwVK0qu86gyKgI6e+2OCjYuFyaH2s=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=V+ndImMJECzQ3hSha1k1jkYpFJI8Tvlv2qFHgiilZ7G+/mfxx9q7jnM/GyHv597u+
+         HOY/novA/u3zQNDMb6D5yQdWGnd8Z7CrRAHYW7BUdd8bY9Qo0fL5N6ilUYu9VxTFYW
+         kRnUmNMIlWGklTeFuXxRR/9N0qeyRxueNDiUf8FY=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210303023146epcas2p2fed4fc2e5d474eec0720ffd8e2402cb1~otExnIdEn1646916469epcas2p2B;
+        Wed,  3 Mar 2021 02:31:46 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DqygP22lgz4x9Q8; Wed,  3 Mar
+        2021 02:31:45 +0000 (GMT)
+X-AuditID: b6c32a46-1d9ff7000000dbf8-ff-603ef5114ab9
 Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2C.03.10621.2A3FE306; Wed,  3 Mar 2021 11:25:38 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b~os-aKt_op2609226092epcas2p1y;
-        Wed,  3 Mar 2021 02:25:37 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210303022537epsmtrp2771194dd94b1b5e07c2981840718d41a~os-aKGawX0055600556epsmtrp2P;
-        Wed,  3 Mar 2021 02:25:37 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-42-603ef3a221d9
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EC.65.13470.1A3FE306; Wed,  3 Mar 2021 11:25:37 +0900 (KST)
-Received: from rack03.dsn.sec.samsung.com (unknown [12.36.155.109]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210303022537epsmtip1c21b4f3e83b02b645dc1f324b429b77c~os-Z96z801460114601epsmtip1k;
-        Wed,  3 Mar 2021 02:25:37 +0000 (GMT)
-From:   taehyun cho <taehyun.cho@samsung.com>
-To:     balbi@kernel.org
-Cc:     taehyun.cho@samsung.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-Date:   Wed,  3 Mar 2021 11:26:28 +0900
-Message-Id: <20210303022628.6540-1-taehyun.cho@samsung.com>
-X-Mailer: git-send-email 2.26.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrEKsWRmVeSWpSXmKPExsWy7bCmhe6iz3YJBmemi1sca3vCbtG8eD2b
-        xeVdc9gsFi1rZbaYdFDUgdVj06pONo/9c9ewe/RtWcXo8XmTXABLVI5NRmpiSmqRQmpecn5K
-        Zl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2Si0+ArltmDtBaJYWyxJxSoFBAYnGxkr6dTVF+
-        aUmqQkZ+cYmtUmpBSk6BoWGBXnFibnFpXrpecn6ulaGBgZEpUGVCTsbivcsYC2ZwVvxaFNbA
-        uIe9i5GTQ0LAROLb3dfMXYxcHEICOxgl5h2awgrhfGKU+Hn0KiOE841R4lrnKbiWH7d2QbXs
-        ZZTYPLMHquUHo8SPk4uZQarYBLQl9jffZAWxRQREJNqez2ACKWIW6GSUuPL4MRNIQljARuL9
-        52WMIDaLgKrEsrNXwOK8AtYS289cYoNYJy+xqOE3VFxQ4uTMJywgNjNQvHnrbLAzJAS2sUv8
-        6PjGCtHgIvG69TNUs7DEq+NboO6Wkvj8bi8bREM7o8SvE2tYIZwpjBIf1p1ihKgylpj1rB3I
-        5gBaoSmxfpc+iCkhoCxx5BbUYj6JjsN/2SHCvBIdbUIQjaoS7RfvQ62Vlri0+SaU7SHRt3wV
-        2AlCArES36edYpvAKD8LyTuzkLwzC2HvAkbmVYxiqQXFuempxUYFhsjRuokRnPi0XHcwTn77
-        Qe8QIxMH4yFGCQ5mJRFe8Ze2CUK8KYmVValF+fFFpTmpxYcYTYEBPJFZSjQ5H5h680riDU2N
-        zMwMLE0tTM2MLJTEeYsNHsQLCaQnlqRmp6YWpBbB9DFxcEo1MAm2/e1LlrGYVyEsvV6tWWRJ
-        u5he/P6HnXGdwnynl34TdVsVtD375MMLGpc8Hh7InHl1sZmXj1NTzNKzhTfv3I9PCH6w7dUZ
-        g1PVHw4UnFUVnfS963zxpUf17+7OLbNbJxnO3yTgMP/mjHrmnXtlOGZ8OZL4RuHoE7XXB3da
-        vGxiS617KHA+7RtDhzvTYlvRA225nO2XM6dwh069cIp1ZfeRc6zXFwaLR6nMCT35f9vLCbx2
-        Xsunn5twZ9l3ZuP5RSuT69blcYjf1zrnzcSp8/GEace10uJ7d17PUHT8X5I0pyPK4LGG17Pf
-        N2b+V2v3X+V6/M0MxwW9P2Uy083Obff8zcrntr+g4rnaglmBnwWUWIozEg21mIuKEwGSKNbO
-        BQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPLMWRmVeSWpSXmKPExsWy7bCSnO7Cz3YJBl8OGFgca3vCbtG8eD2b
-        xeVdc9gsFi1rZbaYdFDUgdVj06pONo/9c9ewe/RtWcXo8XmTXABLFJdNSmpOZllqkb5dAlfG
-        4r3LGAtmcFb8WhTWwLiHvYuRk0NCwETix61dzF2MXBxCArsZJbatXsUIkZCWOPV4ATOELSxx
-        v+UIK0TRN0aJW+dugnWzCWhL7G++yQpiiwiISLQ9n8EEUsQs0M0o0ff0KBNIQljARuL952Vg
-        U1kEVCWWnb0CFucVsJbYfuYSG8QGeYlFDb+h4oISJ2c+YQGxmYHizVtnM09g5JuFJDULSWoB
-        I9MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzgMNTS3MG4fdUHvUOMTByMhxglOJiV
-        RHjFX9omCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cA0
-        n+vcmlvWMxO2z+c2TD70jL0pNKPi4x/GJI9POqtmWvdvOucXX6qrvfGiooCswSON+VLKgZbT
-        OKRCS+ZPyLjRdki87sFLPUl77ft3WFx35Csczz58+MqDx2qhCeWXxLglLH9lm+xtz4zOMo57
-        uXDdv2NylT93CHzbdWpNvcvU2/2/1J8ZLg1WjnlwtvJWW/LdnoLG3ol2NpVSGg2KLuwnMnLq
-        XnK8kPKZkH1v7fuetMs72ixuPf+yhHU31xmO66b+Hb/k9S6lNLTd+Om5LWGXIsPtUvk5mnER
-        re9UQ3/tSNzu2ur3ZNsjL2ZjnoautS+Odv8X/q275E2qVwpnaG38rqAzv1hcjjTv1Z3xXVyJ
-        pTgj0VCLuag4EQBQmClBsgIAAA==
-X-CMS-MailID: 20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b
-X-Msg-Generator: CA
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        85.99.56312.115FE306; Wed,  3 Mar 2021 11:31:45 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bean Huo <huobean@gmail.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <f5cb5a04dd25984c4ddf7713ce0ffbbbbb969ea4.camel@gmail.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210303023144epcms2p58b342049ed4aca3287beaedfcbcedf37@epcms2p5>
+Date:   Wed, 03 Mar 2021 11:31:44 +0900
+X-CMS-MailID: 20210303023144epcms2p58b342049ed4aca3287beaedfcbcedf37
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
 CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMJsWRmVeSWpSXmKPExsWy7bCmha7gV7sEgytz2CwezNvGZrG37QS7
+        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
+        25gs+v+1s1hc3gU0qPv6DjaL5cf/MVnc3sJlsXTrTUaLzulrWCwWLdzN4iDqcfmKt8flvl4m
+        j52z7rJ7TFh0gNFj/9w17B4tJ/ezeHx8eovFo2/LKkaPz5vkPNoPdDMFcEXl2GSkJqakFimk
+        5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYAfaikUJaYUwoUCkgsLlbS
+        t7Mpyi8tSVXIyC8usVVKLUjJKTA0LNArTswtLs1L10vOz7UyNDAwMgWqTMjJ2LXxFXPBYYmK
+        li93mBoYLwt0MXJySAiYSNz+sIKpi5GLQ0hgB6PE2zOPGLsYOTh4BQQl/u4QBqkRFrCX+Hi2
+        nxHEFhJQklh/cRY7RFxP4tbDNWBxNgEdiekn7rODzBERWMoiMeX4MmYQh1ngF5PEiccfGCG2
+        8UrMaH/KAmFLS2xfvhUszingLrFz9iWoGg2JH8t6mSFsUYmbq9+yw9jvj82HqhGRaL13FqpG
+        UOLBz91QcUmJY7s/MEHY9RJb7/xiBDlCQqCHUeLwzlusEAl9iWsdG8GO4BXwldi6fjHYAhYB
+        VYn3Kx8yg3wvIeAisbVVHiTMLCAvsf3tHLAws4CmxPpd+hAVyhJHbrHAfNWw8Tc7OptZgE+i
+        4/BfuPiOeU+gLlOTWPdzPdMERuVZiJCehWTXLIRdCxiZVzGKpRYU56anFhsVGCFH7iZGcGrX
+        ctvBOOXtB71DjEwcjIcYJTiYlUR4xV/aJgjxpiRWVqUW5ccXleakFh9iNAV6ciKzlGhyPjC7
+        5JXEG5oamZkZWJpamJoZWSiJ8xYbPIgXEkhPLEnNTk0tSC2C6WPi4JRqYJp0XaZJ5Oudawyu
+        bc9M919/uX/r/d2xR4JNZ831alFaHiC1z9pKXydYuV/vF6OsVs/amyXf7mgmq0YeUDGNPcEZ
+        z9QbsqXR63/pjk8GVafjp2wR375wrcFjF6YPjd3uLNaaMYv7HOXiLpgvq9dpmRj85OTMq0mv
+        q3l9JHs+feNJ2qZUf/hvD4PE3TVL9gbIbgmeclpYKPZE9c9tDpuFP0t3Kz+QnLBn+rzZPUmK
+        iv/Tdq7JLgiI0jEMORchbGe1ZWHM7elXI3w9/57YnZ0yUWqSuerq8xpdP6dts7p3flKMrk++
+        lOOK35sz+blT3qWY2kjcWf3ZXJWhoGfeAuHi3ZOlvf/4rJln1Jp1d29bqxJLcUaioRZzUXEi
+        ALIfA6R2BAAA
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
+X-CMS-RootMailID: 20210226073233epcms2p80fca2dffabea03143a9414838f757633
+References: <f5cb5a04dd25984c4ddf7713ce0ffbbbbb969ea4.camel@gmail.com>
+        <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
+        <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
+        <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ARCH_EXYNOS' is not suitable for DWC3_EXYNOS config.
-'USB_DWC3_EXYNOS' is glue layer which can be used with
-Synopsys DWC3 controller on Exynos SoCs. USB_DWC3_EXYNOS'
-can be used from Exynos5 to Exynos9.
+> > 
+> >  static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
+> >                                    struct ufshpb_region *rgn)
+> >  {
+> > @@ -1209,6 +1579,16 @@ static void ufshpb_lu_parameter_init(struct
+> > ufs_hba *hba,
+> >          u32 entries_per_rgn;
+> >          u64 rgn_mem_size, tmp;
+> >  
+> > +        /* for pre_req */
+> > +        if (hpb_dev_info->max_hpb_single_cmd)
+> > +                hpb->pre_req_min_tr_len = hpb_dev_info-
+> > >max_hpb_single_cmd;
+> > +        else
+> > +                hpb->pre_req_min_tr_len = HPB_MULTI_CHUNK_LOW;
+>  
+>  
+> Here is not correct. according to Spec:
+>  
+> The size is calculated as ( bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD +1 )*4KB.
+> 00h: 4KB
+> 01h: 8KB
+> 02h: 12KB
+> 03h: 16KB
+> ...
+> FEh: 1020KB
+> FFh: 1024KB
+>  
+> so, here if hpb_dev_info->max_hpb_single_cmd is 0x00, means 4KB, not
+> 36KB.
 
-Signed-off-by: taehyun cho <taehyun.cho@samsung.com>
----
- drivers/usb/dwc3/Kconfig | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
-index 2133acf8ee69..2a339b3b82c2 100644
---- a/drivers/usb/dwc3/Kconfig
-+++ b/drivers/usb/dwc3/Kconfig
-@@ -67,11 +67,12 @@ config USB_DWC3_OMAP
+OK,
  
- config USB_DWC3_EXYNOS
- 	tristate "Samsung Exynos Platform"
--	depends on (ARCH_EXYNOS || COMPILE_TEST) && OF
--	default USB_DWC3
-+	depends on (USB_DWC3 || COMPILE_TEST) && OF
- 	help
--	  Recent Exynos5 SoCs ship with one DesignWare Core USB3 IP inside,
--	  say 'Y' or 'M' if you have one such device.
-+	  'USB_DWC3_EXYNOS' is glue layer which can be used with
-+	  Synopsys DWC3 controller on Exynos SoCs. USB_DWC3_EXYNOS'
-+	  can be used from Exynos5 to Exynos9. say 'Y' or 'M'
-+	  if you have one such devices.
- 
- config USB_DWC3_PCI
- 	tristate "PCIe-based Platforms"
--- 
-2.26.0
+> > +        hpb->pre_req_max_tr_len = max(HPB_MULTI_CHUNK_HIGH,
+> > +                                      hpb->pre_req_min_tr_len);
+> > +
+> > 
+> >  out:
+> >          /* All LUs are initialized */
+> >          if (atomic_dec_and_test(&hba->ufshpb_dev.slave_conf_cnt))
+> > @@ -1812,8 +2307,9 @@ void ufshpb_get_geo_info(struct ufs_hba *hba,
+> > u8 *geo_buf)
+> >  void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
+> >  {
+> >          struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
+> > -        int version;
+> > +        int version, ret;
+> >          u8 hpb_mode;
+> > +        u32 max_hpb_sigle_cmd = 0;
+> >  
+> >          hpb_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
+> >          if (hpb_mode == HPB_HOST_CONTROL) {
+> > @@ -1824,13 +2320,27 @@ void ufshpb_get_dev_info(struct ufs_hba *hba,
+> > u8 *desc_buf)
+> >          }
+> >  
+> >          version = get_unaligned_be16(desc_buf +
+> > DEVICE_DESC_PARAM_HPB_VER);
+> > -        if (version != HPB_SUPPORT_VERSION) {
+> > +        if ((version != HPB_SUPPORT_VERSION) &&
+> > +            (version != HPB_SUPPORT_LEGACY_VERSION)) {
+> >                  dev_err(hba->dev, "%s: HPB %x version is not
+> > supported.\n",
+> >                          __func__, version);
+> >                  hpb_dev_info->hpb_disabled = true;
+> >                  return;
+> >          }
+> >  
+> > +        if (version == HPB_SUPPORT_LEGACY_VERSION)
+> > +                hpb_dev_info->is_legacy = true;
+> > +
+> > +        pm_runtime_get_sync(hba->dev);
+> > +        ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+> > +                QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0,
+> > &max_hpb_sigle_cmd);
+> > +        pm_runtime_put_sync(hba->dev);
+> > +
+> > +        if (ret)
+> > +                dev_err(hba->dev, "%s: idn: read max size of single hpb
+> > cmd query request failed",
+> > +                        __func__);
+> > +        hpb_dev_info->max_hpb_single_cmd = max_hpb_sigle_cmd;
+> > +
+>  
+> Here you didn't add 1, if you read out the
+> QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD == 7, means device can support
+> maximum HPB Data size for using single HPB command is 7+1
+> ((7+1)*4=32KB), not 7.
 
+OK, Done.
+
+Thanks,
+Daejun
