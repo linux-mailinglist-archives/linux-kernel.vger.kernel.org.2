@@ -2,102 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E97B32C006
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C26432BFF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386401AbhCCSPF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 13:15:05 -0500
-Received: from mga06.intel.com ([134.134.136.31]:42743 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452251AbhCCPoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:44:44 -0500
-IronPort-SDR: zz88F/Gjxqvs/Fjg3z1sHEODSFXgPqtDNvXBnRsrW6w0wkTmzk0kbA1kaAnTMnvHifPC4X7sOM
- rtNfN4NIwQhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="248621665"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="248621665"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 07:41:36 -0800
-IronPort-SDR: yXpyJk2j0C04/Bw3RIfI7MJkMU6yQc8k208m+pb6y178O/htKkJuvtbGI8nBza4gRk8qYEZcXm
- rMVoVpqk8uhw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="600194614"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Mar 2021 07:41:36 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 3 Mar 2021 07:41:35 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 3 Mar 2021 07:41:35 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Wed, 3 Mar 2021 07:41:35 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Aili Yao <yaoaili@kingsoft.com>
-CC:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0A==
-Date:   Wed, 3 Mar 2021 15:41:35 +0000
-Message-ID: <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
-References: <20210224151619.67c29731@alex-virtual-machine>
-        <20210224103105.GA16368@linux>  <20210225114329.4e1a41c6@alex-virtual-machine>
-        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
-        <20210225113930.GA7227@localhost.localdomain>
-        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
-        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
-        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
-        <20210226105915.6cf7d2b8@alex-virtual-machine>
-        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
-        <20210303115710.2e9f8e23@alex-virtual-machine>
- <20210303163912.3d508e0f@alex-virtual-machine>
-In-Reply-To: <20210303163912.3d508e0f@alex-virtual-machine>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        id S1386326AbhCCSOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1449031AbhCCPnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:43:21 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068BFC061756;
+        Wed,  3 Mar 2021 07:42:41 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id 2so8748800qtw.1;
+        Wed, 03 Mar 2021 07:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=474jOip4IgCUoyMxBEribCWEBGxFGSV2OmSthT7tIzw=;
+        b=OUl4a0iSBisVMbYesUskXLxC/LPLDhIN0Z0JGTf84f1GApfyQKw6BzripeCpctzhaH
+         +D7phCtY7W74P4MAMDNeGvYAAtxOcvPJwTwYjkvlPb+txGb+DC6yw9LLjjgmdNwNaBLz
+         T+iX1Z5f0zC8hh/Oq4MPpupIK8Xjsq53GLg0aO8HXh+mEfyHxI0LsJ3V1WVo9UY0nEtk
+         0VvSkiHz7Limw2jEyntvTsr41cqWhO/K1Rrur6QvaBoUNUytNHeQY6W0T9h/gLj3Jcox
+         6FVq2aCkhvKl8XALF/xuQlmwzULpBOvkkCmMpA80t6IHJ0shgNDsfE82JWH6mpsFuv8Q
+         m9hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=474jOip4IgCUoyMxBEribCWEBGxFGSV2OmSthT7tIzw=;
+        b=ukwpOc9i0N5mS+7ylyxgpOYfaXxO/rwKJ13Svg6w2NF8Fwt2Vy/xNzzARA1sYnEerT
+         PSJUvsXPvrlYdG/niAhRAwqAuMmIeiC0ebXxTYfioqOmgZF0MhG9WVP1K0Iwt9b0oDH0
+         509IB5yI6fX6lxQWOOiqMb3vQbRSYIJ/XBoQiKdFazpdG4qAikJY78IBeyr84MXSOf/H
+         2CHKirbWMAnFT29ThgvzufvXw/RHQwaAj1scahcmmsL2wBCOKANY0GcA490WWDIwxcOm
+         2kB1Bx3KrFilW+8DaYltbAcjGvCU3JQX0e+qemmxqMMb3TdX/YqdRsaAq/zNsVqfbMcg
+         N+kw==
+X-Gm-Message-State: AOAM533C9ie2rtnSwb80uatIZGVb1dr0qrU+ELhC8VWsX8KSpT5dVIDS
+        ye78jluj6zJpvpxvHFPhWeUARowUhpF9Xg==
+X-Google-Smtp-Source: ABdhPJwLjx1ZIM0IGSCFJl5U/6zxO0tdSMromsGM+JquTtBrWC0ilXZSSOQoOEy0rSaf15B4HSmo9g==
+X-Received: by 2002:ac8:754a:: with SMTP id b10mr23629995qtr.251.1614786160009;
+        Wed, 03 Mar 2021 07:42:40 -0800 (PST)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id j24sm5067992qka.67.2021.03.03.07.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 07:42:39 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 3 Mar 2021 10:42:37 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     mkoutny@suse.com, rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YD+ubbB4Tz0ZlVvp@slm.duckdns.org>
+References: <20210302081705.1990283-1-vipinsh@google.com>
+ <20210302081705.1990283-2-vipinsh@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302081705.1990283-2-vipinsh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> For error address with sigbus, i think this is not an issue resulted by the patch i post, before my patch, the issue is already there.
-> I don't find a realizable way to get the correct address for same reason --- we don't know whether the page mapping is there or not when
-> we got to kill_me_maybe(), in some case, we may get it, but there are a lot of parallel issue need to consider, and if failed we have to fallback
-> to the error brach again, remaining current code may be an easy option;
+Hello,
 
-My RFC patch from yesterday removes the uncertainty about whether the page is there or not. After it walks the page
-tables we know that the poison page isn't mapped (note that patch is RFC for a reason ... I'm 90% sure that it should
-do a bit more that just clear the PRESENT bit).
+On Tue, Mar 02, 2021 at 12:17:04AM -0800, Vipin Sharma wrote:
+> +/**
+> + * struct misc_res: Per cgroup per misc type resource
+> + * @max: Maximum count of the resource.
+> + * @usage: Current usage of the resource.
+> + */
+> +struct misc_res {
+> +	unsigned int max;
+> +	atomic_t usage;
+> +};
 
-So perhaps memory_failure() has queued a SIGBUS for this task, if so, we take it when we return from kill_me_maybe()
+Can we do 64bits so that something which counts memory can use this too?
 
-If not, we will return to user mode and re-execute the failing instruction ... but because the page is unmapped we will take a #PF
+> +/*
+> + * Miscellaneous resources capacity for the entire machine. 0 capacity means
+> + * resource is not initialized or not present in the host.
+> + *
+> + * root_cg.max and capacity are independent of each other. root_cg.max can be
+> + * more than the actual capacity. We are using Limits resource distribution
+> + * model of cgroup for miscellaneous controller. However, root_cg.current for a
+> + * resource will never exceeds the resource capacity.
+                                ^
+                                typo
 
-The x86 page fault handler will see that the page for this physical address is marked HWPOISON, and it will send the SIGBUS
-(just like it does if the page had been removed by an earlier UCNA/SRAO error).
+> +int misc_cg_set_capacity(enum misc_res_type type, unsigned int capacity)
+> +{
+> +	if (!valid_type(type))
+> +		return -EINVAL;
+> +
+> +	for (;;) {
+> +		int usage;
+> +		unsigned int old;
+> +
+> +		/*
+> +		 * Update the capacity while making sure that it's not below
+> +		 * the concurrently-changing usage value.
+> +		 *
+> +		 * The xchg implies two full memory barriers before and after,
+> +		 * so the read-swap-read is ordered and ensures coherency with
+> +		 * misc_cg_try_charge(): that function modifies the usage
+> +		 * before checking the capacity, so if it sees the old
+> +		 * capacity, we see the modified usage and retry.
+> +		 */
+> +		usage = atomic_read(&root_cg.res[type].usage);
+> +
+> +		if (usage > capacity)
+> +			return -EBUSY;
 
-At least that's the theory.
+I'd rather go with allowing bringing down capacity below usage so that the
+users can set it to a lower value to drain existing usages while denying new
+ones. It's not like it's difficult to check the current total usage from the
+caller side, so I'm not sure it's very useful to shift the condition check
+here.
 
--Tony
+> +int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
+> +		       unsigned int amount)
+> +{
+...
+> +	for (i = cg; i; i = parent_misc(i)) {
+> +		res = &i->res[type];
+> +
+> +		/*
+> +		 * The atomic_long_add_return() implies a full memory barrier
+> +		 * between incrementing the count and reading the capacity.
+> +		 * When racing with misc_cg_set_capacity(), we either see the
+> +		 * new capacity or the setter sees the counter has changed and
+> +		 * retries.
+> +		 */
+> +		new_usage = atomic_add_return(amount, &res->usage);
+> +		if (new_usage > res->max ||
+> +		    new_usage > misc_res_capacity[type]) {
+> +			pr_info("cgroup: charge rejected by misc controller for %s resource in ",
+> +				misc_res_name[type]);
+> +			pr_cont_cgroup_path(i->css.cgroup);
+> +			pr_cont("\n");
+
+Should have commented on this in the priv thread but don't print something
+on every rejection. This often becomes a nuisance and can make an easy DoS
+vector at worst. If you wanna do it, print it once per cgroup or sth like
+that.
+
+Otherwise, looks good to me.
+
+Thanks.
+
+-- 
+tejun
