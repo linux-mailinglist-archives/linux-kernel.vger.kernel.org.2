@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA85332C0EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3230B32C0F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837161AbhCCSsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbhCCSGe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:06:34 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2612C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:05:48 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id s16so14470074plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:05:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fi0uubBVxUB+GuaJG69hF0VmSki/WHsri58nDTTvB9Y=;
-        b=OFBbBC/qbuy5DVoTDWKAbIz+evhGUmngQud/1bqxDNXQEMNT1ErJvyZdetAQssoB8V
-         w90jHsRqLy9ZJSBFSa+8YaMR4VBwhokSubrPfwfc6sNsr8FJIuLYDZpySkq1zP41xDnZ
-         ip2zGb6V2byY+jXHnsndQTTEFE8/Tkpl2L9qre4GYYRNyqAoy5BBZyRl4O92ksTIFGBJ
-         G9FEdYtOgCzXoKEhJDyaxoVLZFt1ZeBUbxYTl3ZBLJcV4/nsZDEFUuz3mPNBmUAFxpI+
-         vSVXnOT4C6hp/vgs84OQhAzwiCVq02aEmot3yZxZPF0CB9xYwNEi4d53jTJXAPBnRwg6
-         ws4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fi0uubBVxUB+GuaJG69hF0VmSki/WHsri58nDTTvB9Y=;
-        b=Px98NKCKXWvvvoHyDiahRZaGg0kVfNpiySjM1NC4gVjZE3o2Z7DOQSraY0BgepM6El
-         t+XMf2+PInQCHdxokDvGB7K2WGlHx2r3x1Kw2o4RoG03Jhjt/YcvXzZMwDo3/2+anV3+
-         FljuFu18VyqXq4/1GHbE8lfbgRO07hpPdjmugoJBmT3MR+aMMx3uPAeaLoZ2ikTjwjWU
-         K262qpTAU1n8+Uw3Tk4Xzk631f1PE5kAOS5aqau9ektIbWLOvagaf0ICCtsf8Oztq2PH
-         YiSYSS89r1YMkrICqjyZyKdnGGwNu1AYTRLYBrrsDxVm7m7G8VBdcPBZ3BF0C+HT5JIG
-         J1ig==
-X-Gm-Message-State: AOAM530587rBVnVTnIVVKeB7t2n8/rsxhrQqQWnMQ0zIBeztc7pfQLlp
-        5gkKM0xYCFPDdb4yCftIE6sKkA==
-X-Google-Smtp-Source: ABdhPJxbC8wsZPd378cO0hva1cNnbCyc3RT9K0geIiwmjepkvWVRMfJGjacgj5mU/jhfb3+1+7+USw==
-X-Received: by 2002:a17:902:108:b029:e4:9e1b:b976 with SMTP id 8-20020a1709020108b02900e49e1bb976mr191625plb.67.1614794748200;
-        Wed, 03 Mar 2021 10:05:48 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
-        by smtp.gmail.com with ESMTPSA id z12sm7329506pjz.16.2021.03.03.10.05.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 10:05:47 -0800 (PST)
-Date:   Wed, 3 Mar 2021 10:05:40 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [kvm-unit-tests PATCH] x86: Update guest LBR tests for
- Architectural LBR
-Message-ID: <YD/P9EkihjNHqrLb@google.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-11-like.xu@linux.intel.com>
+        id S1837225AbhCCSsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:48:46 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:31744 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237847AbhCCSIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:08:41 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DrMRT2KJHz9twsP;
+        Wed,  3 Mar 2021 19:07:49 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Oezy_9lCxP9I; Wed,  3 Mar 2021 19:07:49 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrMRT1Nrpz9twsB;
+        Wed,  3 Mar 2021 19:07:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6D9A88B7E6;
+        Wed,  3 Mar 2021 19:07:49 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id mppgCCIWAOu2; Wed,  3 Mar 2021 19:07:49 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A8E2F8B7DB;
+        Wed,  3 Mar 2021 19:07:48 +0100 (CET)
+Subject: Re: [PATCH v2 0/7] Improve boot command line handling
+To:     Daniel Walker <danielwa@cisco.com>, Rob Herring <robh@kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
+        Will Deacon <will@kernel.org>
+References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+ <20210302173523.GE109100@zorba>
+ <CAL_JsqJ7U8QAbJe3zkZiFPJN4PveHz5TZoPk2S8qQWB6cm5e5Q@mail.gmail.com>
+ <20210303173908.GG109100@zorba>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <59b054e8-d85b-fd87-c94d-691af748a2f5@csgroup.eu>
+Date:   Wed, 3 Mar 2021 19:07:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303135756.1546253-11-like.xu@linux.intel.com>
+In-Reply-To: <20210303173908.GG109100@zorba>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021, Like Xu wrote:
-> This unit-test is intended to test the KVM's support for the
-> Architectural LBRs which is a Architectural performance monitor
-> unit (PMU) feature on Intel processors.
 
-These really need negative testing, especially on the MSR values.  IMO, negative
-tests should be mandatory for merging arch LBR support in KVM, it shouldn't be
-too much additional effort.
+
+Le 03/03/2021 à 18:39, Daniel Walker a écrit :
+> On Tue, Mar 02, 2021 at 08:01:01PM -0600, Rob Herring wrote:
+>> +Will D
+>>
+>> On Tue, Mar 2, 2021 at 11:36 AM Daniel Walker <danielwa@cisco.com> wrote:
+>>>
+>>> On Tue, Mar 02, 2021 at 05:25:16PM +0000, Christophe Leroy wrote:
+>>>> The purpose of this series is to improve and enhance the
+>>>> handling of kernel boot arguments.
+>>>>
+>>>> It is first focussed on powerpc but also extends the capability
+>>>> for other arches.
+>>>>
+>>>> This is based on suggestion from Daniel Walker <danielwa@cisco.com>
+>>>>
+>>>
+>>>
+>>> I don't see a point in your changes at this time. My changes are much more
+>>> mature, and you changes don't really make improvements.
+>>
+>> Not really a helpful comment. What we merge here will be from whomever
+>> is persistent and timely in their efforts. But please, work together
+>> on a common solution.
+>>
+>> This one meets my requirements of moving the kconfig and code out of
+>> the arches, supports prepend/append, and is up to date.
+> 
+> 
+> Maintainers are capable of merging whatever they want to merge. However, I
+> wouldn't make hasty choices. The changes I've been submitting have been deployed
+> on millions of router instances and are more feature rich.
+> 
+> I believe I worked with you on this change, or something like it,
+> 
+> https://lkml.org/lkml/2019/3/19/970
+> 
+> I don't think Christophe has even addressed this.
+
+I thing I have, see 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/3b4291271ce4af4941a771e5af5cbba3c8fa1b2a.1614705851.git.christophe.leroy@csgroup.eu/
+
+If you see something missing in that patch, can you tell me.
+
+> I've converted many
+> architectures, and Cisco uses my changes on at least 4 different
+> architecture. With products deployed and tested.
+
+As far as we know, only powerpc was converted in the last series you submitted, see 
+https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=98106&state=*
+
+> 
+> I will resubmit my changes as soon as I can.
+> 
+
+Christophe
