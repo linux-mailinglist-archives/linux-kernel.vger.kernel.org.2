@@ -2,251 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF3F32BF50
+	by mail.lfdr.de (Postfix) with ESMTP id D596532BF52
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835071AbhCCSBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:01:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377930AbhCCPFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:05:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE6664EE1;
-        Wed,  3 Mar 2021 15:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614783838;
-        bh=1TQwL7i+C+Ykj3EZaItYeEh6Eb4hhLbKnyOdnj0pVr0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HW1H83bGkrj9yuExE+YUU/1c0gs58J8m6yLlRdQ+Lyv34iTMtK1TQuQCz1kKtNGi5
-         CfgKhpmrhdiABxpgtwX8XjVEqHXCMA7xYNAdyNksnGa5+2L8oPFKlUfE2bbmKSeBca
-         JhAdBVPPHh+AtfKwqvsUi80E1urbfAWD+MGBrwulZq77b0afmUwn0Ji3Zo/eTP/FAV
-         FqROoW9wCfa44CrHRYjQ1HC0zgREz8ZfWNneyUYF2JOBzwKn0TSznwgGc7AhEGmhVr
-         wHN8w9IIIHZ8p6yjG+5UC2+RM+vdu/X8NK4VOxMZHumT0OMp3ZlTu6WtrA2IlxDTJm
-         08ABvOnlX1TWw==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()
-Date:   Wed,  3 Mar 2021 17:03:23 +0200
-Message-Id: <20210303150323.433207-6-jarkko@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210303150323.433207-1-jarkko@kernel.org>
-References: <20210303150323.433207-1-jarkko@kernel.org>
+        id S1835108AbhCCSCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233724AbhCCPFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:05:52 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA7AC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 07:04:55 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id n16so20658164lfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 07:04:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RAU+oF5abLpOatKR6GoNs0xhW7zYpMa0vIglwnJvvdg=;
+        b=TXjhTZG7o4n5bxO+2rz3ZIatg4fz7wrYFZRfWehMJbbvQvWXqTzvq7Yyxc/V+rxHSP
+         fLDpnURO2RHIGMA0mJnT2UfCmKwc152iZKeIXdKhkO2ZKVx0F7067lsAeLTrO+wteFXE
+         h2C7EnX3ZjEudvNE1bIupubFD88jPsxE+uh8vr5zD8wBjFtgE/hgCEdlCVdsrYs7KwaS
+         6V7VVBhAky65ZFa+aKvy9i8fNgIgTe6ZVsDBYWpjblE++wUpIA+YWuUOf1Uu9dx/qkUW
+         8UDFtPLiF/Vd1jHQnjnJB6FGzbw+gvB1PQB3CC4npvI0IMcllIhbZO7wZytSfUDf38Oe
+         wvUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RAU+oF5abLpOatKR6GoNs0xhW7zYpMa0vIglwnJvvdg=;
+        b=bNS+IHNGwXUmvADnp2m0RPTZI3mwLJbvVVCD2fSkaR8atzonAAJPPKv4OqlD9T9jbi
+         wLyQsKg+aZarjtqA6mi/YBRLTb/jgpB3usGCvoezQIAv32CiU6DA7dsXY5+S5ktChFcL
+         aMt6VL79fIFmmiQrMavhpcVGWqvjE3Orga1uDtnhf2p5DnH1lW4MtB3Ag6wNkD4YFbeF
+         GeS6JOsUPxSX2PmqM/IlAZKtwLGt98QjmllgwQkoO2IsX2CapaOZ4IAE4aC+4K0C3QiT
+         VK5QUMHTdEuwQxJZvVNRF83PabTs7orJ0L3B+695inZZxiMXEVpobNmW+QEyMauNd9rb
+         XFRA==
+X-Gm-Message-State: AOAM530BMtZzVJeZ8e9zZ14gPv6/esilyfZrCnjwnMJIh1e35l57PQ83
+        cHZm7IxypZoo/6xRI2q7t/074U5XEiQiuZpuOKHn4Q==
+X-Google-Smtp-Source: ABdhPJzhn3AMqF86AcKRF6zE/lHio+2SRjlvtPdzQzkcMe7iFMLKCCIbtQi+Q4Qq7MhFPtEH8qf3gLsz5rcxlUqR6Yw=
+X-Received: by 2002:ac2:4d95:: with SMTP id g21mr16105295lfe.29.1614783893687;
+ Wed, 03 Mar 2021 07:04:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210223023125.2265845-1-jiancai@google.com> <20210223023542.2287529-1-jiancai@google.com>
+In-Reply-To: <20210223023542.2287529-1-jiancai@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 3 Mar 2021 16:04:42 +0100
+Message-ID: <CACRpkdYC3iDD23SESM0j2=f56kr6ByKeedDQvkGwXbUC0br0fw@mail.gmail.com>
+Subject: Re: [PATCH v5] ARM: Implement SLS mitigation
+To:     Jian Cai <jiancai@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, manojgupta@google.com,
+        llozano@google.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        James Morse <james.morse@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Background
-==========
+On Tue, Feb 23, 2021 at 3:36 AM Jian Cai <jiancai@google.com> wrote:
 
-EPC section is covered by one or more SRAT entries that are associated with
-one and only one PXM (NUMA node). The motivation behind this patch is to
-provide basic elements of building allocation scheme based on this premise.
+> This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+> -mharden-sls=all, which mitigates the straight-line speculation
+> vulnerability, speculative execution of the instruction following some
+> unconditional jumps. Notice -mharden-sls= has other options as below,
+> and this config turns on the strongest option.
+>
+> all: enable all mitigations against Straight Line Speculation that are implemented.
+> none: disable all mitigations against Straight Line Speculation.
+> retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+> blr: enable the mitigation against Straight Line Speculation for BLR instructions.
 
-Solution
-========
+I heard about compiler protection for this, so nice to see it happening!
 
-Use phys_to_target_node() to associate each NUMA node with the EPC
-sections contained within its range. In sgx_alloc_epc_page(), first try
-to allocate from the NUMA node, where the CPU is executing. If that
-fails, fallback to the legacy allocation.
+Would you happen to know if there is any plan to do the same for GCC?
+I know you folks at Google like LLVM, but if you know let us know.
 
-Link: https://lore.kernel.org/lkml/158188326978.894464.217282995221175417.stgit@dwillia2-desk3.amr.corp.intel.com/
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/Kconfig               |  1 +
- arch/x86/kernel/cpu/sgx/main.c | 84 ++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/sgx.h  |  9 ++++
- 3 files changed, 94 insertions(+)
+> +config HARDEN_SLS_ALL
+> +       bool "enable SLS vulnerability hardening"
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index a5f6a3013138..7eb1e96cfe8a 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1940,6 +1940,7 @@ config X86_SGX
- 	depends on CRYPTO_SHA256=y
- 	select SRCU
- 	select MMU_NOTIFIER
-+	select NUMA_KEEP_MEMINFO if NUMA
- 	help
- 	  Intel(R) Software Guard eXtensions (SGX) is a set of CPU instructions
- 	  that can be used by applications to set aside private regions of code
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 58474480f5be..62cc0e1f0728 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -25,6 +25,23 @@ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
- /* The free page list lock protected variables prepend the lock. */
- static unsigned long sgx_nr_free_pages;
- static LIST_HEAD(sgx_free_page_list);
-+
-+/* Nodes with one or more EPC sections. */
-+static nodemask_t sgx_numa_mask;
-+
-+/*
-+ * Array with one list_head for each possible NUMA node.  Each
-+ * list contains all the sgx_epc_section's which are on that
-+ * node.
-+ */
-+static struct sgx_numa_node *sgx_numa_nodes;
-+
-+/*
-+ * sgx_free_epc_page() uses this to find out the correct struct sgx_numa_node,
-+ * to put the page in.
-+ */
-+static int sgx_section_to_numa_node_id[SGX_MAX_EPC_SECTIONS];
-+
- static DEFINE_SPINLOCK(sgx_free_page_list_lock);
- 
- /*
-@@ -434,6 +451,36 @@ static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
- 	return true;
- }
- 
-+static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
-+{
-+	struct sgx_epc_page *page = NULL;
-+	struct sgx_numa_node *sgx_node;
-+
-+	if (WARN_ON_ONCE(nid < 0 || nid >= num_possible_nodes()))
-+		return NULL;
-+
-+	if (!node_isset(nid, sgx_numa_mask))
-+		return NULL;
-+
-+	sgx_node = &sgx_numa_nodes[nid];
-+
-+	spin_lock(&sgx_free_page_list_lock);
-+
-+	if (list_empty(&sgx_node->free_page_list)) {
-+		spin_unlock(&sgx_free_page_list_lock);
-+		return NULL;
-+	}
-+
-+	page = list_first_entry(&sgx_node->free_page_list, struct sgx_epc_page, numa_list);
-+	list_del_init(&page->numa_list);
-+	list_del_init(&page->list);
-+	sgx_nr_free_pages--;
-+
-+	spin_unlock(&sgx_free_page_list_lock);
-+
-+	return page;
-+}
-+
- /**
-  * __sgx_alloc_epc_page() - Allocate an EPC page
-  *
-@@ -446,8 +493,14 @@ static bool __init sgx_page_reclaimer_init(struct list_head *laundry)
-  */
- struct sgx_epc_page *__sgx_alloc_epc_page(void)
- {
-+	int current_nid = numa_node_id();
- 	struct sgx_epc_page *page;
- 
-+	/* Try to allocate EPC from the current node, first: */
-+	page = __sgx_alloc_epc_page_from_node(current_nid);
-+	if (page)
-+		return page;
-+
- 	spin_lock(&sgx_free_page_list_lock);
- 
- 	if (list_empty(&sgx_free_page_list)) {
-@@ -456,6 +509,7 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
- 	}
- 
- 	page = list_first_entry(&sgx_free_page_list, struct sgx_epc_page, list);
-+	list_del_init(&page->numa_list);
- 	list_del_init(&page->list);
- 	sgx_nr_free_pages--;
- 
-@@ -566,6 +620,8 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-  */
- void sgx_free_epc_page(struct sgx_epc_page *page)
- {
-+	int nid = sgx_section_to_numa_node_id[page->section];
-+	struct sgx_numa_node *sgx_node = &sgx_numa_nodes[nid];
- 	int ret;
- 
- 	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
-@@ -575,7 +631,15 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
- 		return;
- 
- 	spin_lock(&sgx_free_page_list_lock);
-+
-+	/*   Enable NUMA local allocation in sgx_alloc_epc_page(). */
-+	if (!node_isset(nid, sgx_numa_mask)) {
-+		INIT_LIST_HEAD(&sgx_node->free_page_list);
-+		node_set(nid, sgx_numa_mask);
-+	}
-+
- 	list_add_tail(&page->list, &sgx_free_page_list);
-+	list_add_tail(&page->numa_list, &sgx_node->free_page_list);
- 	sgx_nr_free_pages++;
- 	spin_unlock(&sgx_free_page_list_lock);
- }
-@@ -626,8 +690,28 @@ static bool __init sgx_page_cache_init(struct list_head *laundry)
- {
- 	u32 eax, ebx, ecx, edx, type;
- 	u64 pa, size;
-+	int nid;
- 	int i;
- 
-+	nodes_clear(sgx_numa_mask);
-+	sgx_numa_nodes = kmalloc_array(num_possible_nodes(), sizeof(*sgx_numa_nodes), GFP_KERNEL);
-+
-+	/*
-+	 * Create NUMA node lookup table for sgx_free_epc_page() as the very
-+	 * first step, as it is used to populate the free list's during the
-+	 * initialization.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
-+		nid = numa_map_to_online_node(phys_to_target_node(pa));
-+		if (nid == NUMA_NO_NODE) {
-+			/* The physical address is already printed above. */
-+			pr_warn(FW_BUG "Unable to map EPC section to online node. Fallback to the NUMA node 0.\n");
-+			nid = 0;
-+		}
-+
-+		sgx_section_to_numa_node_id[i] = nid;
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
- 		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
- 
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 41ca045a574a..3a3c07fc0c8e 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -27,6 +27,7 @@ struct sgx_epc_page {
- 	unsigned int flags;
- 	struct sgx_encl_page *owner;
- 	struct list_head list;
-+	struct list_head numa_list;
- };
- 
- /*
-@@ -43,6 +44,14 @@ struct sgx_epc_section {
- 
- extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
- 
-+/*
-+ * Contains the tracking data for NUMA nodes having EPC pages. Most importantly,
-+ * the free page list local to the node is stored here.
-+ */
-+struct sgx_numa_node {
-+	struct list_head free_page_list;
-+};
-+
- static inline unsigned long sgx_get_epc_phys_addr(struct sgx_epc_page *page)
- {
- 	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
--- 
-2.30.1
+I would go in and also edit arch/arm/mm/Kconfig under:
+config HARDEN_BRANCH_PREDICTOR add
+select HARDEN_SLS_ALL
 
+Because if the user wants hardening for branch prediction
+in general then the user certainly wants this as well, if
+available. The help text for that option literally says:
+
+ "This config option will take CPU-specific actions to harden
+   the branch predictor against aliasing attacks and may rely on
+   specific instruction sequences or control bits being set by
+   the system firmware."
+
+Notice this only turns on for CPUs with CPU_SPECTRE
+defined which makes sense. Also it is default y which fulfils
+Will's request that it be turned on by default where
+applicable. Notably it will not be turned on for pre-v7 silicon
+which would be unhelpful as they don't suffer from
+these bugs.
+
+Reading Kristofs compiler patch here:
+https://reviews.llvm.org/rG195f44278c4361a4a32377a98a1e3a15203d3647
+
+I take it that for affected CPUs we should also patch all assembly
+in the kernel containing a RET, BR or BLR with
+DSB SYS followed by ISB?
+
+I suppose we would also need to look for any mov PC, <>
+code...
+
+I guess we can invent a "SB" macro to mimic what Aarch64 is
+doing so the code is easy to read. (Thinking aloud.)
+
+Yours,
+Linus Walleij
