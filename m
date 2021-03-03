@@ -2,191 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360FB32BDCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4EC32BCE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243112AbhCCQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:37:50 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16971 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352980AbhCCLzl (ORCPT
+        id S1446219AbhCCPCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843060AbhCCKZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:55:41 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603f4e490001>; Wed, 03 Mar 2021 00:52:25 -0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
- 2021 08:52:23 +0000
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
- 2021 08:52:21 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Wed, 3 Mar 2021 08:52:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IvqxJukbVFQkjVIIwwlMMtsU7H2SsmO9vAYXdvozYiwiStPwu81QQv8M/5hwRjYe9tg2DCZx9WK36okz7C0ZDoWwCADF8lxPvVG465k2hKyLYaai2AlWMTkchSuw47WF5mWWQ5NFWBb7UUGPtfsB8/L16gS/AmAkhp38F6pI97TQCV/Zm/cnfvEnvoteV69fJsy5v1eTMNegq80e5CVCU7vKjA8yreOSJYfgShKQKCejr35ci8e2/UGVo0z2LydEGwsufk6j/Q6/CUc6AtoCi4BqrUdOpWuF84JbY8C9T9p1RW5DPilSyrw+c3JH0nunsCMMiZQQY1t2QCDNxF3nNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JV4+AXTULQaLV9f154tNx+tIA8HDSTl9RZy7LB6k9qM=;
- b=fsnI1hC6HCNvMXHTv72hBhyiWvRApHfHIl4LPqFiLs/pvhGxUwTnGhDPdKPWbj6eCmkGm6u3K57QvBztF9aWjDvjjjRIq68Ym3Cqc2CFCVNKNAs8Rfk81C9pE9OBO8f+Jd9hJR5p9RQvhKBRFf5VKUXL/gbl+sC+YCL4qx1F2ObtH3/aiQHrlgMdiZd0ZrxnwimElXOo+DVwQmoWoie9dO7RVU9wXQDmSCLPGel+MkJPYmM8OnfQGUm+QISanx04uwCzfZbbsksXOWGfmhY+B0HMwhQXlI3bQLRA6mCSL19oJqTSHjFPAZiuHdr+auv8qx7g5xlFsHnvcWrdP9Bvlw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB4330.namprd12.prod.outlook.com (2603:10b6:5:21d::20)
- by DM5PR1201MB0042.namprd12.prod.outlook.com (2603:10b6:4:50::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Wed, 3 Mar
- 2021 08:52:19 +0000
-Received: from DM6PR12MB4330.namprd12.prod.outlook.com
- ([fe80::f432:454e:1731:2a1d]) by DM6PR12MB4330.namprd12.prod.outlook.com
- ([fe80::f432:454e:1731:2a1d%5]) with mapi id 15.20.3890.029; Wed, 3 Mar 2021
- 08:52:19 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     Parav Pandit <parav@nvidia.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] net/mlx5: remove unneeded semicolon
-Thread-Topic: [PATCH] net/mlx5: remove unneeded semicolon
-Thread-Index: AQHXCQFdZeK6pe8bzk+WL+Rwiz5bb6pj8VNAgA4RhGA=
-Date:   Wed, 3 Mar 2021 08:52:19 +0000
-Message-ID: <DM6PR12MB433097A211B6A99DAF690958DC989@DM6PR12MB4330.namprd12.prod.outlook.com>
-References: <1613987819-43161-1-git-send-email-jiapeng.chong@linux.alibaba.com>
- <BY5PR12MB4322C25D61EC6E4549370917DC819@BY5PR12MB4322.namprd12.prod.outlook.com>
-In-Reply-To: <BY5PR12MB4322C25D61EC6E4549370917DC819@BY5PR12MB4322.namprd12.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [122.166.131.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 59a28812-92fc-4712-93a5-08d8de21a779
-x-ms-traffictypediagnostic: DM5PR1201MB0042:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1201MB0042CB46C849C08D4C0030B6DC989@DM5PR1201MB0042.namprd12.prod.outlook.com>
-x-header: ProcessedBy-CMR-outbound
-x-ms-oob-tlc-oobclassifiers: OLM:327;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sL9zwhiuUBdV6/Xco2oqxGM+Q/LLaBal7iZL0wWWbjsqal/DPfQFjbDG0+IzcNXmBWm4eRLDtKzL6bpeYAPmxEK/bfXpjL7DW9WQ9W8dKvFPJX6++U2Ggxp1SemZKQEpBsT/KIZduGpvwxDNWVsTYetGGom9hKrtziy59ethyu1uN9H7+wpLQ92KYVXO9Q9A9HkjzM8aMcoHDVUn0x3aguZOCI2L6Tt40yDkBtxUY9T+0Pw0EgsMptGA1jUOsncIRgyOY/MrlO/j/I03Orr/L58I9ovhlBh7ePMyK2x4Qcns82iII1YEBtJ8UbWl6ApTElrcIoQ4VSvvDLHKnbegXrvr1vPCTKEBNxpVoMaO3vY+zY9PEYKyRIhoR6sSLEvDLBE6Fd84Gu7JGAPOq+SAXZDtHf80AX4WMAKJf6cY5P7/zWpwtk4NawR03CmPkKiyYvBYzefpUgvT68HAB9Lv6QvPKVyU/EBj7JXilveiWIcC7CLOwxniXvQfEBox7ztrUnW52/YD5d2e1Z5N7lXwXierrP+Ig6HpT3G3tIZxu2eyFULDI+gPwNVtk/F4OYV3gvrhaWdUKq+MgcSsa0oB5aqsHokUUPFNL36fY/2/TA0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4330.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(39860400002)(346002)(376002)(55016002)(66476007)(52536014)(6636002)(83380400001)(33656002)(64756008)(4326008)(66946007)(6506007)(66556008)(76116006)(7696005)(71200400001)(966005)(54906003)(110136005)(8676002)(316002)(2906002)(8936002)(66446008)(478600001)(5660300002)(186003)(86362001)(26005)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?eviRKICMceeOFzOQaCs2S2wdSSkYQVP5woZyaQekQ286ChLIUSfFb+NEQ00l?=
- =?us-ascii?Q?ipGHD+KDiAZGt/0pVPF4PBBFW1EbEhuQNAiOPW25AhkUusBGQ11Hl1KStXZv?=
- =?us-ascii?Q?aXjV9g9wpH2wgvLcT+gJ7LOm4ok+38mytHauEaCoVMizHWMbr+1AMs6i16ZD?=
- =?us-ascii?Q?1z6GYM3+ps4jtBryNU4BYicdq9lELLWLgUG7meC+sl75G95uaIN5pVBd2Opn?=
- =?us-ascii?Q?6T0O5qMkBmnFNwMUXSesnp+Y+i84QvZ77ZEtebU9STLNQuq3G2bkEtuM5kbR?=
- =?us-ascii?Q?v4M5lljBaovfuPJ1PKGamgYlQp62+CUs0nQ17TlZezlWmpFhwTiDvUQydrxr?=
- =?us-ascii?Q?Rw+8psAtWzrQ8ivpl/DYZ8o3VmNMy1HILLd8NRPf17y6bkPsMDUk9111zvv2?=
- =?us-ascii?Q?UpBe8bWkm+0QNvK+k5bOCL33n94LsjCc3TJqyCmwj+Z9K1iUd/4geb6N5Is2?=
- =?us-ascii?Q?2cONy07MfVbKTtQn6z4boOwSWn5ozZZPNIEkKgFkVplquM0I+D6tiHcEQZdS?=
- =?us-ascii?Q?3UZVxgK4tBr6dlmV68VMW7dEZePMGMEcANMBjIb3kyLJ51JsRp8QG7+sWZuy?=
- =?us-ascii?Q?NMseTZGsmlfrgWygX/sWetDhdP8/Qc9Q1pfgYts+6I1Q2g557VH/XXT0VmC1?=
- =?us-ascii?Q?ke0Rj3eCftNZw8/+Zh7JgzES6yXQzpeVXVlW4kEJEGNZgviS79b3IBELZIAk?=
- =?us-ascii?Q?ZsQf8jJSvKwDGldV85DoJ5005CK7XkMh9wIznsnwcJP7ZXJkxTv7NbarvXY2?=
- =?us-ascii?Q?ED1drQaLJ9yYYXnvCQkooGGz7hMVJl42ZqFVTBbsA4j1SMvsqLyaBMhN8fgO?=
- =?us-ascii?Q?0voEp4Cw4uf8q66iY/iauwBU2Wc5mod2lPyjRNrIjEnu5WNp6xSEOgewdelL?=
- =?us-ascii?Q?YL9ysuXGec2khbTN+h31jfJnb8PBFxzMJ60hDkhDK9J3JN/D4nq1gtjOKCKT?=
- =?us-ascii?Q?SXXpADD1ZUuZOtJXdR39960vZmgZZUv9HCeGHW2aaRRQraw3pJzOGuvaaiHl?=
- =?us-ascii?Q?V/AAkdyknUjaiRjvZJt8XCqJpRkK8UffEQ9spPLeJdFNd/hfIWm3Fvay9Fl6?=
- =?us-ascii?Q?arC4N0Zhf4mQNpeLc74SyhMcS765tSze6lvYCEfyhBGeLBOg5TDUP6JzjpW0?=
- =?us-ascii?Q?9AufO95IObdiih7iMGqne9c7pFzoD8q59Cn38MyryP0YiUWCuTiHU2hwXlU3?=
- =?us-ascii?Q?eZQlif+6iTni/PqxjWeiXkQc5+vPzw9r0Y8GdafE6io4mSr+qcrSGUUDJu24?=
- =?us-ascii?Q?GdW5k7GS+sfeBfrH0GNZzN2Ra7smK/3f8KQtviW72wbCUhwAzNc99I98Gmw3?=
- =?us-ascii?Q?ZMGE/GfeiWcgG5hiONtr5+6X?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 3 Mar 2021 05:25:09 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA81C0610CE;
+        Wed,  3 Mar 2021 00:55:44 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id i9so4480787wml.0;
+        Wed, 03 Mar 2021 00:55:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zdJ5hx+mYbfNreiVWKd99KRYazRIfUe4brAtRfe/xF4=;
+        b=K+6wg9BUznm5a/+9b9QJ7i9CChtLVD4n5KpT38ZA7QuZ71i/zpE6c5PwKFC5vlJVh6
+         DhhowwzJ76bXSS0tQp4FXcUh1skR513TO5ktNOi0c03sUdRBG73n1d5THMiMZDsmN339
+         wRqGWi4Qi7zNv+UkUWrn5CskAi6Jl9sFYGf3Ygjt7vc9S4QLLZD+0NIPewtfRslu3qdJ
+         j74C1vM98bGMvHT1RfoU5NMfcNVz/NNzY4vZ8Rr5r9IQ/Yo6sOLTs60QygBWVb19pc1S
+         j7KcwVVdncAxdiPLaegbiS4FUQjOedYDq3IzUNFcUw7udfrRHkOQxBeJgtHp53hdwE4c
+         xGxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zdJ5hx+mYbfNreiVWKd99KRYazRIfUe4brAtRfe/xF4=;
+        b=HtumlKycCgRUz413V+rEfk7u1Nu0iW/jLB9dok6x4ET+cpihUOAVdzYggzQMUailXs
+         3JW3Hwy6R0WJu3CCxJbUlGeqTju95Ej7VpCGvN/LntodZjqYNF78wnS7yoWy7ca3E/ge
+         G2qzcImkwwKQRsWVvYRLnxkwvf0Mi8wdtOvQ1Uqi4j2rpVrqCM+iFfnTBjM26sYlwM8/
+         LxHigQamagS1iBpw8PQYEZfqAR8JRLgQs621I+RSpefyKE/LffHn0TCVAHRj69DmwT2O
+         LEPy4dXJesdBUmtw5ObalvP34mIPhGfXW7jQGQrWx1Sbl6OidbH7oNNgXXh8wC0Dlg2V
+         0EbQ==
+X-Gm-Message-State: AOAM533B3u0z1iL2p70QrPgGBRrqqkdb5pCwybEXAWcSESqJQySRkxwC
+        jUf6GC/CVYHe7YHJgsXzUortyFWhiGXWlxSs
+X-Google-Smtp-Source: ABdhPJzJvBnty9HzqVrRuMbMGPJYYS2k+vddEpLtCemcM5SBQTqtepuxSPjcO7s0q2vFbZGw/WguyA==
+X-Received: by 2002:a1c:8041:: with SMTP id b62mr8441707wmd.0.1614761742701;
+        Wed, 03 Mar 2021 00:55:42 -0800 (PST)
+Received: from sf (tunnel547699-pt.tunnel.tserv1.lon2.ipv6.he.net. [2001:470:1f1c:3e6::2])
+        by smtp.gmail.com with ESMTPSA id n6sm11688949wrt.1.2021.03.03.00.55.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 00:55:42 -0800 (PST)
+Date:   Wed, 3 Mar 2021 08:55:33 +0000
+From:   Sergei Trofimovich <slyich@gmail.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Don Brace <don.brace@microchip.com>, storagedev@microchip.com,
+        linux-scsi@vger.kernel.org
+Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joe Szczypek <jszczype@redhat.com>,
+        Scott Benesh <scott.benesh@microchip.com>,
+        Scott Teel <scott.teel@microchip.com>,
+        Tomas Henzl <thenzl@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
+ cmds outstanding for retried cmds" breaks hpsa P600
+Message-ID: <20210303085533.505b1590@sf>
+In-Reply-To: <20210303002236.2f4ec01f@sf>
+References: <20210222230519.73f3e239@sf>
+        <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
+        <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
+        <20210223083507.43b5a6dd@sf>
+        <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
+        <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
+        <20210223192743.0198d4a9@sf>
+        <20210302222630.5056f243@sf>
+        <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
+        <20210303002236.2f4ec01f@sf>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4330.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59a28812-92fc-4712-93a5-08d8de21a779
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2021 08:52:19.6660
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vwyUPJmsl9sB9HlgDuKFzNAIuJj/7Vs9OROrKv8SGYd77MqbGz9Q6y9xqKdZDTZJf7GZNcgSgb5RffePqmCgeA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0042
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614761545; bh=JV4+AXTULQaLV9f154tNx+tIA8HDSTl9RZy7LB6k9qM=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
-         x-microsoft-antispam-prvs:x-header:x-ms-oob-tlc-oobclassifiers:
-         x-ms-exchange-senderadcheck:x-microsoft-antispam:
-         x-microsoft-antispam-message-info:x-forefront-antispam-report:
-         x-ms-exchange-antispam-messagedata:Content-Type:
-         Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=k7qrFrDkG36B5uYNamq8QxKnNCgEqZgiE5ytmSB+mt+JBWGcRcgbIf3g0txJXnHQR
-         EBtfWraP0Do05z/WI7Mb6Jcx6MHfdxfIFN1MKRIbxD8zOo6uZIUEu4087Igf3J6K7M
-         SeKeLVkiTDyJTEdW95XhoJNbmvjYVYx3Sy9PialA4Y/mUhFJ0xAOahXQETveC821fL
-         FNIj3g6Fsmd4YOvzk8thaEcSYgvyPPpgxM41cjIXHxMCd9R049LsfqWOVPV79tA9mv
-         QNak/BWaVg8zSaGpDsl8X5MI5V1JJx2+E/GqkOh9WSup6qH8uj9btn6gEPusGn5Fx2
-         sB74XusqdrSPg==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saeed,
+On Wed, 3 Mar 2021 00:22:36 +0000
+Sergei Trofimovich <slyich@gmail.com> wrote:
 
-> From: Parav Pandit <parav@nvidia.com>
-> Sent: Monday, February 22, 2021 3:32 PM
->=20
->=20
-> > From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > Sent: Monday, February 22, 2021 3:27 PM
-> >
-> > Fix the following coccicheck warnings:
-> >
-> > ./drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c:495:2-3:
-> > Unneeded semicolon.
-> >
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > index c2ba41b..60a6328 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-> > @@ -492,7 +492,7 @@ static int mlx5_sf_esw_event(struct notifier_block
-> > *nb, unsigned long event, voi
-> >  		break;
-> >  	default:
-> >  		break;
-> > -	};
-> > +	}
-> >
-> >  	return 0;
-> >  }
-> > --
-> > 1.8.3.1
->=20
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
+> On Tue, 2 Mar 2021 23:31:32 +0100
+> John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
+> 
+> > Hi Sergei!
+> > 
+> > On 3/2/21 11:26 PM, Sergei Trofimovich wrote:  
+> > > Gave v5.12-rc1 a try today and got a similar boot failure around
+> > > hpsa queue initialization, but my failure is later:
+> > >     https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
+> > > Maybe I get different error because I flipped on most debugging
+> > > kernel options :)
+> > > 
+> > > Looks like 'ERROR: Invalid distance value range' while being
+> > > very scary are harmless. It's just a new spammy way for kernel
+> > > to report lack of NUMA config on the machine (no SRAT and SLIT
+> > > ACPI tables).
+> > > 
+> > > At least I get hpsa detected on PCI bus. But I guess it's discovered
+> > > configuration is very wrong as I get unaligned accesses:
+> > >     [   19.811570] kernel unaligned access to 0xe000000105dd8295, ip=0xa000000100b874d1
+> > > 
+> > > Bisecting now.    
+> > 
+> > Sounds good. I guess we should get Jens' fix for the signal regression
+> > merged as well as your two fixes for strace.  
+> 
+> "bisected" (cheated halfway through) and verified that reverting
+> f749d8b7a9896bc6e5ffe104cc64345037e0b152 makes rx3600 boot again.
+> 
+> CCing authors who might be able to help us here.
+> 
+> commit f749d8b7a9896bc6e5ffe104cc64345037e0b152
+> Author: Don Brace <don.brace@microchip.com>
+> Date:   Mon Feb 15 16:26:57 2021 -0600
+> 
+>     scsi: hpsa: Correct dev cmds outstanding for retried cmds
+> 
+>     Prevent incrementing device->commands_outstanding for ioaccel command
+>     retries that are driver initiated.  If the command goes through the retry
+>     path, the device->commands_outstanding counter has already accounted for
+>     the number of commands outstanding to the device.  Only commands going
+>     through function hpsa_cmd_resolve_events decrement this counter.
+> 
+>      - ioaccel commands go to either HBA disks or to logical volumes comprised
+>        of SSDs.
+> 
+>     The extra increment is causing device resets to hang.
+> 
+>      - Resets wait for all device outstanding commands to complete before
+>        returning.
+> 
+>     Replace unused field abort_pending with retry_pending. This is a
+>     maintenance driver so these changes have the least impact/risk.
+> 
+>     Link: https://lore.kernel.org/r/161342801747.29388.13045495968308188518.stgit@brunhilda
+>     Tested-by: Joe Szczypek <jszczype@redhat.com>
+>     Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
+>     Reviewed-by: Scott Teel <scott.teel@microchip.com>
+>     Reviewed-by: Tomas Henzl <thenzl@redhat.com>
+>     Signed-off-by: Don Brace <don.brace@microchip.com>
+>     Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+> 
+> Don, do you happen to know why this patch caused some controller init failure
+> for device
+>     14:01.0 RAID bus controller: Hewlett-Packard Company Smart Array P600
+> ?
+> 
+> Boot failure: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
+> Boot success: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1-good
+> 
+> The difference between the two boots is 
+> f749d8b7a9896bc6e5ffe104cc64345037e0b152 reverted on top of 5.12-rc1
+> in -good case.
+> 
+> Looks like hpsa controller fails to initialize in bad case (could be a race?).
 
-Will you take this patch [1] to your queue?
+Also CCing hpsa maintainer mailing lists.
 
-[1] https://lore.kernel.org/linux-rdma/1613987819-43161-1-git-send-email-ji=
-apeng.chong@linux.alibaba.com/
+Looking more into the suspect commit
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f749d8b7a9896bc6e5ffe104cc64345037e0b152
+it roughly does the:
+
+@@ -448,7 +448,7 @@ struct CommandList {
+ 	 */
+ 	struct hpsa_scsi_dev_t *phys_disk;
+ 
+-	int abort_pending;
++	bool retry_pending;
+ 	struct hpsa_scsi_dev_t *device;
+ 	atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */
+ } __aligned(COMMANDLIST_ALIGNMENT);
+...
+@@ -1151,7 +1151,10 @@ static void __enqueue_cmd_and_start_io(struct ctlr_info *h,
+ {
+        dial_down_lockup_detection_during_fw_flash(h, c);
+        atomic_inc(&h->commands_outstanding);
+-       if (c->device)
++       /*
++        * Check to see if the command is being retried.
++        */
++       if (c->device && !c->retry_pending)
+                atomic_inc(&c->device->commands_outstanding);
+
+But I don't immediately see anything wrong with it.
+
+-- 
+
+  Sergei
