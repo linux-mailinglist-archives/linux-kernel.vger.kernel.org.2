@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7CC32BCE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B92432BCA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446705AbhCCPC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:02:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        id S1359469AbhCCOaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:30:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843068AbhCCKZM (ORCPT
+        with ESMTP id S1842964AbhCCKXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:12 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE55C0698E4;
-        Wed,  3 Mar 2021 01:29:05 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id l22so4565426wme.1;
-        Wed, 03 Mar 2021 01:29:05 -0800 (PST)
+        Wed, 3 Mar 2021 05:23:09 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F7CC0698E6
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:29:28 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 2so23213228ljr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:29:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KtYq1HpTP4qG/Z06G3RGzOfRpApu9Eyff7VBR8UtufM=;
-        b=iOmmLlLg/Gob/PMma78QYCpMSid4zLKb1asO3y15tjAzdE9yf9GfdHDCxIgp/2XQyd
-         lf36YKZ09D+DkKBJMriB+O6ppxh92EDMldkwYoYxYqKcFTnz5yaR0UQrv4ZBTukL0SiO
-         HKbJwe4A4nSq4FsOR5LmM0FIoV/cfcCQ5orjSJHwAg1xLSaVWEHZ3EzuTpzqY6vtZWJF
-         ocGMZJdtFoimBk2Yji2qcADR36xGTYYp7xTE7LoCuvuieOILU95XSa63n+He0W/LuoOI
-         kFTdKwfjq7Z47kMv7V9bT0t82Ba+Hrc7M7QWF0LZWvyt7+2dzVaN/nfUtSsvHyabU/OB
-         vZyQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Pt7bwWLf4920jEAu2gq6f6qTSZz/ofLlHmtVgGdbwS0=;
+        b=OHCvDategtwfbq1t+iUQ3BUMIX/2u9CSxvhkjo6CHMesJuRzpXLXBCUJIAaN7ZW7hJ
+         QCmELwk+3bp/x8hr+45WHtBDIEeaRo15ff5vIA3y3HjHVu7Fanwx3CTkIiPGdAKMJkYx
+         LlzKJQ5dL/de23YEQr2LtK57p0bty2ozdNAjRqhSEgiBJYxbTwBtiRhvLZt/N4XiPFA4
+         qk3fABIHDrlEdcqit8hVuBLaF87XJhXrcYY7IvWsAWAFhsH3Rhvz/sqfJXaUMvfshTw0
+         W9Ohs9Ru8L+3PQKB64FxeYsQRdo8tdHIFr+1tJdgDlkKIS1t2HNLMvhJ75L3Wqt/CoUW
+         OP0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KtYq1HpTP4qG/Z06G3RGzOfRpApu9Eyff7VBR8UtufM=;
-        b=WF4n4tgTBAPk9UvD2VrfpC/RVQGpMa8kzItiKjdvKsJS+fS0lA/LViNlPkSUDCNQ+5
-         K7/hJd1OWARc+IYdsKkBzWWrxVzhpeMbeMs6Q94hGBH7buYGRVfuc+EhfDegJZGXXktW
-         Jss2qdQPf+NToY5qPkrS4XsKwEikl9vUcNlouDYjaMt94df7BlvwhKfuGB6MC+hFUgdV
-         IcwgaNDWSyoDgHCHmb2NRop8xTETZ65Y5RA+S2QvErxkXrDU12Ewj/7+rcL/iH8f+jZf
-         n5+e9Eke66m7449WgV9N5IZU63QLggAsBjgfO9KoyAFXCdP1eLuPSPjVU1XwZBrpt+OT
-         nqVw==
-X-Gm-Message-State: AOAM533moz0a+06GbUd0x5G39M1H0lT+4W6Pppe2Y92/Bmi9EPghkhvO
-        A5BfazUQAEgaUBPVtExb1qQ=
-X-Google-Smtp-Source: ABdhPJwgxJXWk89e2L4A2Xtp6aMebx3SL+bnYSRlPl07xQAykbvm0TseDj8JNeJ6ozF3qoINBKytmw==
-X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr8132965wml.44.1614763744509;
-        Wed, 03 Mar 2021 01:29:04 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id v9sm31780266wrn.86.2021.03.03.01.29.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Mar 2021 01:29:04 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <20210303092019.GB8134@gondor.apana.org.au>
-Date:   Wed, 3 Mar 2021 10:29:02 +0100
-Cc:     Andrew Lunn <andrew@lunn.ch>, Matt Mackall <mpm@selenic.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Pt7bwWLf4920jEAu2gq6f6qTSZz/ofLlHmtVgGdbwS0=;
+        b=rPYWa9Xflg5mo12JvAZDq+J1C+isanWX2GtM+LCFkQ8Ps1XNFPXimOsVvexfIEa4IS
+         Qqn2PXojk5JTjHQ1XDPSMx7mM/KT1oQ5gKMC1mdh25uj+ZTt4eihmxMiuCrMch/sq83q
+         3cC6lH5OCnd7XNEgdT5BxXzV/20Otv9j51oeIHw9nC3pS8ZZyVFMIbFQsHQYCuknAttC
+         GtF3/o4gWAbpA/IQBYslP0xhc87/xownDK30XfMAdX3q8PxSWkoYnbHcIFaEzbXI+f+Z
+         /jySQaHFRkZUzVV83wlq8n8eUv6jqhcd2yVkcLZb8IqdVdjcWWqhoK5BrKhbpUS2Zajb
+         HSwg==
+X-Gm-Message-State: AOAM532vBeGIQ4kcg+dKHkOE+IhYoMt3hmWhtUvqnVpmJF909w/MqVp3
+        uLhPE894ibL+j69aNTSJT5Hz1JsCi+PB2wfsyFQPhg==
+X-Google-Smtp-Source: ABdhPJyBXKG/RAzEp/BaFV38EdjMQqMd8P9lhGks+0u2avRFMf+e8fP+L9KmneeIp6ivnGu7W2B8pnAFWvKAFliInK4=
+X-Received: by 2002:a2e:9041:: with SMTP id n1mr14590765ljg.273.1614763767393;
+ Wed, 03 Mar 2021 01:29:27 -0800 (PST)
+MIME-Version: 1.0
+References: <20210302191613.29476-1-noltari@gmail.com>
+In-Reply-To: <20210302191613.29476-1-noltari@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 3 Mar 2021 10:29:16 +0100
+Message-ID: <CACRpkdZQRtTi75KMFDpM6eJ9hVuPLNJBBs6bHKMt7_PNW8gcFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] pinctrl: add BCM63XX pincontrol support
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Michael Walle <michael@walle.cc>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stijn@linux-ipv6.be, ynezz@true.cz
+        Rob Herring <robh+dt@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <66AED5A4-3227-47CA-A4A2-B5AD6A571AAC@gmail.com>
-References: <20210220174741.23665-1-noltari@gmail.com>
- <YDFeao/bOxvoXI9D@lunn.ch> <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
- <20210303092019.GB8134@gondor.apana.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+On Tue, Mar 2, 2021 at 8:16 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
+ail.com> wrote:
 
-> El 3 mar 2021, a las 10:20, Herbert Xu <herbert@gondor.apana.org.au> =
-escribi=C3=B3:
->=20
-> On Sat, Feb 20, 2021 at 08:12:45PM +0100, =C3=81lvaro Fern=C3=A1ndez =
-Rojas wrote:
->>=20
->> I ran rngtest and this is what I got:
->=20
-> This is meaningless except for sources that have not been whitened.
->=20
-> Your justification needs to be based on what the hardware does or
-> is documented to do.
+> v2: introduce changes suggested by Linus Walleij and remove interrupts
+>  - In order to use GPIO_REGMAP, the need to get gpio_chip from gpio_regma=
+p
+>  and use it for pinctrl_add_gpio_range() and gpio_chip.direction_input()
+>  and gpio_chip.direction_output().
 
-Ok, so I guess that we=E2=80=99re never setting that value to anything =
-since there=E2=80=99s no public documentation about that =C2=AF\_(=E3=83=84=
-)_/=C2=AF.
+Looking so much better don't you think? :)
 
->=20
-> Thanks,
-> --=20
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+If you also get rid of the exposed struct using DT gpio-ranges we are
+done I think, just need some DT review slack for the DT maintainers
+for the bindings.
 
-Best regards,
-=C3=81lvaro.=
+Yours,
+Linus Walleij
