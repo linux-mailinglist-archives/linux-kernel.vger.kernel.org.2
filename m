@@ -2,134 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FD632C3FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 319C732C3FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354709AbhCDAJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:09:50 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:53393 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1390898AbhCCWSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:18:54 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrT0F5Yrnz9sR4;
-        Thu,  4 Mar 2021 09:18:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614809887;
-        bh=wmOp8R+qJFjoY4UzTY5NdSgLMMwegXgTcKNOkqrFtjM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OHjL5ebtaH90mjqhkglHCx00AnYGd0KUXVY4dc/vMTfKx3vlVUDSOXU2IINAisg1J
-         exOUkR0p0F0QPPCnMrVz0ZmHOSNDtZIc1YyIdZvdjOd4Ok66Kol27DR2scI/B3sVjo
-         sEcWySMBWQnNUhTnxex8hJKT7Tbcdf5ETy3AJRpVu+lBcShCLewh/Q7Qgf6IcYlQCl
-         8zY3bEtCuz/fgtIzNifGAQaqjPHpSir4dpM11027KwqOlQ/jRIbMYHIYVKh4S3GonR
-         HbqyfvpvhIDfB9JJnjsrqmw78iCqPbfevzZa+MhShbYcXfQxr37sc6i30hLzB8uvws
-         Sl4NkqeVsNA5g==
-Date:   Thu, 4 Mar 2021 09:18:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steffen Klassert <steffen.klassert@secunet.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Eyal Birger <eyal.birger@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the ipsec tree with the net tree
-Message-ID: <20210304091804.06055c81@canb.auug.org.au>
+        id S1376311AbhCDAKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:10:00 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:55585 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377179AbhCCWYr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 17:24:47 -0500
+Received: by mail-il1-f198.google.com with SMTP id f2so18874526ils.22
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 14:24:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=U0pQ8UeY3jjvyGIA/GmTExIy024e3Gh7t6G65nu29TY=;
+        b=XfOOaMNTy/0NzdxhJ/QTjmd4BZ7yVD9rt28C7YvPfkDeh3MFd1DCU6Ic8YFRbs7Ew2
+         6T5CBQwXaJD4x9KkEIOmhyRiUZ7k6VVNCeYWZ6ikOQrTcDKYDC+4pSZb11SGTzfS+R1s
+         uKRhsKoDaQ2xrtm4xnhPiuC9FePCkhjbiIezartVvTlt0Da0VKfmLg3/nhpucA7jX0c3
+         nNdbkRJLquCs3DEUl3wUoqiHu8J0pbMDaAYEeTDrdxMBQZqTzFqHmwC7gA3K4kIpfyva
+         iJc3nL71yCMYmBz+bFbyEDynXVeqlw3Qm1HOewiNcpTpV81PRvX2LDIVlu1himYozXdE
+         W8Bg==
+X-Gm-Message-State: AOAM531XBk3M6ckpf2tr0ae8TsXI2mPMnX4/P1ccJ5m3PeAp8Oaqxcpa
+        fOqPeNAluRV3GbD7qGcaZniCHklgU0q7cScIIJtOO0Ky9TKh
+X-Google-Smtp-Source: ABdhPJw4wmNgJQkCl6BM6noRm3a60twCGn3jXdUuhUeeSuXi0iHyQM9FNOTjoTNW5NkzTsNZj8+dmfwxjES+1f2WGoX+VbJ9PlWC
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/l/gWjPPpz17v8Fczr_3KV9m";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6e02:c7:: with SMTP id r7mr1408691ilq.288.1614810244587;
+ Wed, 03 Mar 2021 14:24:04 -0800 (PST)
+Date:   Wed, 03 Mar 2021 14:24:04 -0800
+In-Reply-To: <af143fa7-cff3-48eb-5abc-94e3685d0955@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000002261d05bca94f7b@google.com>
+Subject: Re: memory leak in io_submit_sqes (2)
+From:   syzbot <syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/l/gWjPPpz17v8Fczr_3KV9m
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+memory leak in io_submit_sqes
 
-Today's linux-next merge of the ipsec tree got conflicts in:
+BUG: memory leak
+unreferenced object 0xffff88811043cc00 (size 232):
+  comm "syz-executor.0", pid 10595, jiffies 4294944973 (age 10.850s)
+  hex dump (first 32 bytes):
+    00 f0 40 10 81 88 ff ff 00 00 00 00 00 00 00 00  ..@.............
+    00 7a 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .z_.............
+  backtrace:
+    [<000000005cfa592c>] io_alloc_req fs/io_uring.c:1610 [inline]
+    [<000000005cfa592c>] io_submit_sqes+0x7ae/0x22f0 fs/io_uring.c:6518
+    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
+    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-  net/ipv4/ip_vti.c
-  net/ipv6/ip6_vti.c
+BUG: memory leak
+unreferenced object 0xffff888124dd1300 (size 256):
+  comm "syz-executor.0", pid 10595, jiffies 4294944973 (age 10.850s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000099ea7aac>] kmalloc include/linux/slab.h:559 [inline]
+    [<0000000099ea7aac>] __io_alloc_async_data fs/io_uring.c:3060 [inline]
+    [<0000000099ea7aac>] io_setup_async_rw fs/io_uring.c:3079 [inline]
+    [<0000000099ea7aac>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3072
+    [<0000000002d951db>] io_read+0x1fe/0x560 fs/io_uring.c:3257
+    [<00000000ca56953d>] io_issue_sqe+0x18d/0x23e0 fs/io_uring.c:5933
+    [<00000000a5a737fd>] __io_queue_sqe+0x9a/0x4f0 fs/io_uring.c:6200
+    [<00000000af920b23>] io_queue_sqe+0x361/0x560 fs/io_uring.c:6253
+    [<00000000deecb73d>] io_submit_sqe fs/io_uring.c:6417 [inline]
+    [<00000000deecb73d>] io_submit_sqes+0x1fc1/0x22f0 fs/io_uring.c:6531
+    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
+    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-between commit:
+BUG: memory leak
+unreferenced object 0xffff88810d21fa00 (size 232):
+  comm "syz-executor.0", pid 10613, jiffies 4294944997 (age 10.610s)
+  hex dump (first 32 bytes):
+    00 47 b1 11 81 88 ff ff 00 00 00 00 00 00 00 00  .G..............
+    00 7a 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .z_.............
+  backtrace:
+    [<000000005cfa592c>] io_alloc_req fs/io_uring.c:1610 [inline]
+    [<000000005cfa592c>] io_submit_sqes+0x7ae/0x22f0 fs/io_uring.c:6518
+    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
+    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-  4372339efc06 ("net: always use icmp{,v6}_ndo_send from ndo_start_xmit")
+BUG: memory leak
+unreferenced object 0xffff888124e98500 (size 256):
+  comm "syz-executor.0", pid 10613, jiffies 4294944997 (age 10.610s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000099ea7aac>] kmalloc include/linux/slab.h:559 [inline]
+    [<0000000099ea7aac>] __io_alloc_async_data fs/io_uring.c:3060 [inline]
+    [<0000000099ea7aac>] io_setup_async_rw fs/io_uring.c:3079 [inline]
+    [<0000000099ea7aac>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3072
+    [<0000000002d951db>] io_read+0x1fe/0x560 fs/io_uring.c:3257
+    [<00000000ca56953d>] io_issue_sqe+0x18d/0x23e0 fs/io_uring.c:5933
+    [<00000000a5a737fd>] __io_queue_sqe+0x9a/0x4f0 fs/io_uring.c:6200
+    [<00000000af920b23>] io_queue_sqe+0x361/0x560 fs/io_uring.c:6253
+    [<00000000deecb73d>] io_submit_sqe fs/io_uring.c:6417 [inline]
+    [<00000000deecb73d>] io_submit_sqes+0x1fc1/0x22f0 fs/io_uring.c:6531
+    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
+    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-from the net tree and commits:
+BUG: memory leak
+unreferenced object 0xffff88810edcff00 (size 232):
+  comm "syz-executor.0", pid 10633, jiffies 4294945010 (age 10.480s)
+  hex dump (first 32 bytes):
+    00 99 b3 11 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+    00 7a 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .z_.............
+  backtrace:
+    [<000000005cfa592c>] io_alloc_req fs/io_uring.c:1610 [inline]
+    [<000000005cfa592c>] io_submit_sqes+0x7ae/0x22f0 fs/io_uring.c:6518
+    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
+    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-  c7c1abfd6d42 ("vti: fix ipv4 pmtu check to honor ip header df")
-  4c38255892c0 ("vti6: fix ipv4 pmtu check to honor ip header df")
+BUG: memory leak
+unreferenced object 0xffff888124c06300 (size 256):
+  comm "syz-executor.0", pid 10633, jiffies 4294945010 (age 10.480s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000099ea7aac>] kmalloc include/linux/slab.h:559 [inline]
+    [<0000000099ea7aac>] __io_alloc_async_data fs/io_uring.c:3060 [inline]
+    [<0000000099ea7aac>] io_setup_async_rw fs/io_uring.c:3079 [inline]
+    [<0000000099ea7aac>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3072
+    [<0000000002d951db>] io_read+0x1fe/0x560 fs/io_uring.c:3257
+    [<00000000ca56953d>] io_issue_sqe+0x18d/0x23e0 fs/io_uring.c:5933
+    [<00000000a5a737fd>] __io_queue_sqe+0x9a/0x4f0 fs/io_uring.c:6200
+    [<00000000af920b23>] io_queue_sqe+0x361/0x560 fs/io_uring.c:6253
+    [<00000000deecb73d>] io_submit_sqe fs/io_uring.c:6417 [inline]
+    [<00000000deecb73d>] io_submit_sqes+0x1fc1/0x22f0 fs/io_uring.c:6531
+    [<00000000bffe23f4>] __do_sys_io_uring_enter+0x857/0x10c0 fs/io_uring.c:9108
+    [<000000002e2222f2>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000005e5fec34>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-from the ipsec tree.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
+Tested on:
 
-diff --cc net/ipv4/ip_vti.c
-index eb207089ece0,613741384490..000000000000
---- a/net/ipv4/ip_vti.c
-+++ b/net/ipv4/ip_vti.c
-@@@ -238,8 -238,10 +238,10 @@@ static netdev_tx_t vti_xmit(struct sk_b
-  	if (skb->len > mtu) {
-  		skb_dst_update_pmtu_no_confirm(skb, mtu);
-  		if (skb->protocol =3D=3D htons(ETH_P_IP)) {
-+ 			if (!(ip_hdr(skb)->frag_off & htons(IP_DF)))
-+ 				goto xmit;
- -			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
- -				  htonl(mtu));
- +			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
- +				      htonl(mtu));
-  		} else {
-  			if (mtu < IPV6_MIN_MTU)
-  				mtu =3D IPV6_MIN_MTU;
-diff --cc net/ipv6/ip6_vti.c
-index f10e7a72ea62,2f0be5ac021c..000000000000
---- a/net/ipv6/ip6_vti.c
-+++ b/net/ipv6/ip6_vti.c
-@@@ -521,10 -521,12 +521,12 @@@ vti6_xmit(struct sk_buff *skb, struct n
-  			if (mtu < IPV6_MIN_MTU)
-  				mtu =3D IPV6_MIN_MTU;
- =20
- -			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- +			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
-  		} else {
-+ 			if (!(ip_hdr(skb)->frag_off & htons(IP_DF)))
-+ 				goto xmit;
- -			icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
- -				  htonl(mtu));
- +			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
- +				      htonl(mtu));
-  		}
- =20
-  		err =3D -EMSGSIZE;
+commit:         4f766d6f io_uring: ensure that threads freeze on suspend
+git tree:       git://git.kernel.dk/linux-block io_uring-5.12
+console output: https://syzkaller.appspot.com/x/log.txt?x=143ce02ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c43bda1f1543d72b
+dashboard link: https://syzkaller.appspot.com/bug?extid=91b4b56ead187d35c9d3
+compiler:       
 
---Sig_/l/gWjPPpz17v8Fczr_3KV9m
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBACxwACgkQAVBC80lX
-0GxMCQf/eo2wIC4MrucE//qOZg6XJY4LIaYECtv4rKXVR+Ol2090h9PzB9USPIhD
-AprwJUtkVGhZ/v3af9vlGDXGcDWjJ+PC5NUiXDd1tlDtw1osAaZBZI/ikTUHp/8K
-JxeHl9VrxBCZdf8Efb5KkuDa2TNndOG84I2JUy5z3BGfU51aZbaH2I5W3ENMn5E5
-1WkIugvu0/B27Nrxfwww5haSpkpD2JpAWUbnyzkNUyEkvxaJR/p2j+uXshejWB8A
-M4I9sf1gAL7gib+3F+1/HYP7RlakjtrWQzj1YZ3uXPg9zPiFnMA4Kqwvu/xoae5h
-5a0olNxroDDiBfey1YpkpQ39n6AZng==
-=zTOC
------END PGP SIGNATURE-----
-
---Sig_/l/gWjPPpz17v8Fczr_3KV9m--
