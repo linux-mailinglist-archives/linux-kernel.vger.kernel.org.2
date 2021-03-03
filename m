@@ -2,155 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE4332C062
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F2132C068
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578490AbhCCSR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
+        id S1578575AbhCCSRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:17:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234833AbhCCQOm (ORCPT
+        with ESMTP id S235217AbhCCQOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:14:42 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A178EC061762;
-        Wed,  3 Mar 2021 08:12:38 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id b18so17812186wrn.6;
-        Wed, 03 Mar 2021 08:12:38 -0800 (PST)
+        Wed, 3 Mar 2021 11:14:36 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BC5C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:12:51 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id o38so16697870pgm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:12:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=+esVDoo5iSfzTZlFC03UaiUxOtwcJzAgay1XsaeRfDM=;
-        b=NQzVWHwRMy6kPKhLvaTEp1qFufAbIAoWBrfM30EGM1hDrGCuGDzuXXmMIKz7Ue3KIJ
-         BfHt5gB0+xLuczBamCKjG8NBbnfiTxxb4C/zKqDSp4UthA7aL3RxoQKMB0T5JGu+uZzD
-         sxG1KFIpvxo1Un428cYIC+LoOizyZTNFVV3cNEUCTHcxvrA8+U3i90Rlu00GYAoTTu/0
-         0DtTmg0uwOY/c77SvIXPzvkTJTpHYq91ockLDOdmx8IUjxS8BqNjeegkZgQwaYdh73ri
-         8DBpK8Rgqls/dh+suw125F0ituJCKqsttYbFxD1EXH3hxAdtHKOULJDjoGQIEY3mfTi3
-         DEyg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EisZFm35+8e+0b6JeFIJMc+sANT14O3XGJM3zZNvXm8=;
+        b=jUmj2smBpZsXvifuyxVYJboGtMm1xO2UtgvXTmvnCmSSKvTwo/EKkkHVjYDsSG6ttR
+         NzlRAump7IiQ6FYc1uPeNRURlWsnma/Xg15D0NSgIuDzjHfaqdRcA7ZhMZdnKtCdyvAX
+         QDKQYeAgHNgKaKL1Y4UWKdHMtlROaTD3glYqydOoOGsX3MB7yyK8jXVB4lW5+VrEMFeR
+         D2IvoOIc1oPdV9bj/xnY/9ICgMInrLUdaDk+GhYPVdTkhHDuZ+KsSqSG3eE3mIEhfcu3
+         UxvKXFdc/BYrv1YwUD17vRDrA9km95C8AdHW/TnFaHIAt/FNXIdfHCXPZo1GlHSETye9
+         pA4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=+esVDoo5iSfzTZlFC03UaiUxOtwcJzAgay1XsaeRfDM=;
-        b=gf7s3joM/YzOPTX/HzWttsGLuEFG8b+odMEmzzB4+CEbXqulA+EdGivvYe3Ka8Qjfp
-         B1djJiwplWCCxTeTkhg1aAONyZkhNd70F520IFLteKl7YPZYk/X/No46nMijoVNcG7nB
-         eCjBUajLXCYjGM8xGyznAe0OUvX7nEffKnFRHDSCkr5wED6ijSKP5d8SuLcm9jPDXXoE
-         VW8tKtTaDoZ4PZWfwm45IYMrK6gUy2fnPMlCJNsJqVftr64c4oJjqPzUR6xz4dD5XSBy
-         sqc75uQAFETpfy/JzAb89fdu2njcY4iY3LuMLMGhdOk/b+RE8Cl5+P3gYKMtE7BWW98P
-         5V8g==
-X-Gm-Message-State: AOAM5323MGiNVJVeuFjYCDlCjiMwFiEAAGEh++K/Weg1k9DQ7Fr6wWvv
-        iM4xJJ41NNEAUJ4iQMPn340=
-X-Google-Smtp-Source: ABdhPJwG5MD3K8iGd853L2bIAh2Htqvyzse1GJP9e26dvtDpdzAbLIAA+1XURoR2U16O+rskOglP6g==
-X-Received: by 2002:a5d:528f:: with SMTP id c15mr27955555wrv.142.1614787957367;
-        Wed, 03 Mar 2021 08:12:37 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id o13sm37119531wro.15.2021.03.03.08.12.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Mar 2021 08:12:36 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v3 01/14] gpio: regmap: set gpio_chip of_node
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <40403445ae34e822474e5f39be75fd0b@walle.cc>
-Date:   Wed, 3 Mar 2021 17:12:35 +0100
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E341768B-BF42-4749-8D43-8C5CB24D64C3@gmail.com>
-References: <20210303142310.6371-1-noltari@gmail.com>
- <20210303142310.6371-2-noltari@gmail.com>
- <40403445ae34e822474e5f39be75fd0b@walle.cc>
-To:     Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EisZFm35+8e+0b6JeFIJMc+sANT14O3XGJM3zZNvXm8=;
+        b=R9HgAh0iPhv823hwya/N4LCBSNOrhQNAI5h5QT9m/MKasscPHiBozy9JNPmmtyuPni
+         u7UGBVvYs9XDLahnEakUCVyExC6VyVbvNGjXzQHrPUzsyZqPHqpQT63xkN/K5LJ9AOi5
+         q5TbNPXKIoe2nfGa2zGfF3Dn9SmsDCHOub/ynW+oPx9XiBKfrE2u4EGbr82oXSOBmfYf
+         KgePbDbcUrWGEZicllPDRzjzxWIoMKzAbXP2nNwxU+zcEKX/VtEojJrDEPXavFIMCbC7
+         LifCnzfIjmfw0MFdIrHlXGoXcKOWzO5pBRzs9TOwKE7tqgafdgrAQskaJfN4lGUduRAt
+         03sw==
+X-Gm-Message-State: AOAM532ZRmaai4E/8S+ZFCgT56aqU0IfDZyhCa/jZrVG7hS6uKVcKbf9
+        oR7ifYAoflLziHdTx0QxrIDggQ==
+X-Google-Smtp-Source: ABdhPJz3833pVMK+aWptujeWmaFB/J5T3c+Qp17/0zz4d5NXW9fnQr2lxBo8ueyvHWT7NpjxP0CsHQ==
+X-Received: by 2002:a05:6a00:16cd:b029:1c9:6f5b:3d8c with SMTP id l13-20020a056a0016cdb02901c96f5b3d8cmr8820239pfc.1.1614787970619;
+        Wed, 03 Mar 2021 08:12:50 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
+        by smtp.gmail.com with ESMTPSA id n184sm15584962pfd.205.2021.03.03.08.12.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 08:12:49 -0800 (PST)
+Date:   Wed, 3 Mar 2021 08:12:43 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH] KVM: LAPIC: Advancing the timer expiration on guest
+ initiated write
+Message-ID: <YD+1e1iLyKKWL8FX@google.com>
+References: <1614678202-10808-1-git-send-email-wanpengli@tencent.com>
+ <YD5y+W2nqnZt5bRZ@google.com>
+ <CANRm+Cy_rNAai+u5pyBXKmQP_Qp=3e_hwi2g9bAFMiocCpru1A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANRm+Cy_rNAai+u5pyBXKmQP_Qp=3e_hwi2g9bAFMiocCpru1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Mar 03, 2021, Wanpeng Li wrote:
+> > Side topic, I think there's a theoretical bug where KVM could inject a spurious
+> > timer interrupt.  If KVM is using hrtimer, the hrtimer expires early due to an
+> > overzealous timer_advance_ns, and the guest writes MSR_TSCDEADLINE after the
+> > hrtimer expires but before the vCPU is kicked, then KVM will inject a spurious
+> > timer IRQ since the premature expiration should have been canceled by the guest's
+> > WRMSR.
+> >
+> > It could also cause KVM to soft hang the guest if the new lapic_timer.tscdeadline
+> > is written before apic_timer_expired() captures it in expired_tscdeadline.  In
+> > that case, KVM will wait for the new deadline, which could be far in the future.
+> 
+> The hrtimer_cancel() before setting new lapic_timer.tscdeadline in
+> kvm_set_lapic_tscdeadline_msr() will wait for the hrtimer callback
+> function to finish. Could it solve this issue?
 
-Do you want me to send v4 with these changes?
-Or maybe just this single patch?
-
-Best regards,
-=C3=81lvaro.
-
-> El 3 mar 2021, a las 17:08, Michael Walle <michael@walle.cc> =
-escribi=C3=B3:
->=20
-> Am 2021-03-03 15:22, schrieb =C3=81lvaro Fern=C3=A1ndez Rojas:
->> This is needed for properly registering gpio regmap as a child of a =
-regmap
->> pin controller.
->> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> ---
->> v3: introduce patch needed for properly parsing gpio-ranges.
->> drivers/gpio/gpio-regmap.c  | 1 +
->> include/linux/gpio/regmap.h | 3 +++
->> 2 files changed, 4 insertions(+)
->> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
->> index 5412cb3b0b2a..752ccd780b7d 100644
->> --- a/drivers/gpio/gpio-regmap.c
->> +++ b/drivers/gpio/gpio-regmap.c
->> @@ -249,6 +249,7 @@ struct gpio_regmap *gpio_regmap_register(const
->> struct gpio_regmap_config *config
->> 	chip =3D &gpio->gpio_chip;
->> 	chip->parent =3D config->parent;
->> +	chip->of_node =3D config->of_node;
->=20
-> chip->of_node =3D config->of_node ?: dev_of_node(config->parent);
->=20
-> As mentioned in my previous reply in this thread, for clarity
-> reasons.
->=20
->> 	chip->base =3D -1;
->> 	chip->ngpio =3D config->ngpio;
->> 	chip->names =3D config->names;
->> diff --git a/include/linux/gpio/regmap.h =
-b/include/linux/gpio/regmap.h
->> index ad76f3d0a6ba..f6e638e32d2a 100644
->> --- a/include/linux/gpio/regmap.h
->> +++ b/include/linux/gpio/regmap.h
->> @@ -4,6 +4,7 @@
->> #define _LINUX_GPIO_REGMAP_H
->> struct device;
->> +struct device_node;
->> struct gpio_regmap;
->> struct irq_domain;
->> struct regmap;
->> @@ -14,6 +15,7 @@ struct regmap;
->> /**
->>  * struct gpio_regmap_config - Description of a generic regmap =
-gpio_chip.
->>  * @parent:		The parent device
->> + * @of_node:		The device node
->=20
-> Please add "(Optional)" and move it below @regmap. This should also
-> mention that if not supplied parent->of_node is used.
->=20
->>  * @regmap:		The regmap used to access the registers
->>  *			given, the name of the device is used
->>  * @label:		(Optional) Descriptive name for GPIO controller.
->> @@ -56,6 +58,7 @@ struct regmap;
->>  */
->> struct gpio_regmap_config {
->> 	struct device *parent;
->> +	struct device_node *of_node;
->> 	struct regmap *regmap;
->> 	const char *label;
->=20
-> With these changes:
-> Reviewed-by: Michael Walle <michael@walle.cc>
->=20
-> -michael
-
+Aha!  Yep, that prevents my theoretical bug.  Thanks!
