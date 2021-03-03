@@ -2,98 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2414732C37A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A9132C37E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353637AbhCDAFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:05:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56080 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1388037AbhCCUd0 (ORCPT
+        id S1353646AbhCDAF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:05:28 -0500
+Received: from m-r1.th.seeweb.it ([5.144.164.170]:53285 "EHLO
+        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388041AbhCCUeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:33:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614803519;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rp8C696QhKx8WEsv8npjzvCJHKF8U4KwqfIW0LL6UTo=;
-        b=Pi6r3i72j7HR3ZrAoy9duVv3/4e57Br+IeG+iJZ+AzncZ3r7fK6xrP/rJl9H5m0i1/pyQF
-        zaxugn4zH/9CG0/EkPumQ6eKUPjmFJ9IbkBeXG2eq88VmzlhGyT0bFtLJh+VRPhinR8oF4
-        8eX66NvjcE0sg25Arz8xXVBR2dLmu4g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-ExOu-U9oO0eSbnF6gui41A-1; Wed, 03 Mar 2021 15:31:58 -0500
-X-MC-Unique: ExOu-U9oO0eSbnF6gui41A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 3 Mar 2021 15:34:19 -0500
+Received: from [192.168.1.101] (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42B5C514A;
-        Wed,  3 Mar 2021 20:31:56 +0000 (UTC)
-Received: from treble (ovpn-114-218.rdu2.redhat.com [10.10.114.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A645360BFA;
-        Wed,  3 Mar 2021 20:31:53 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 14:31:50 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210303203150.jwupthv6siil6tn2@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210302232649.y2tutffhxsblwqlb@treble>
- <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
- <20210303191516.6ksxmng4pis7ue4p@treble>
- <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
- <20210303193806.oovupl4ubtkkyiih@treble>
- <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
- <20210303202406.bxgdx5a25j6wc43b@treble>
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id BE569201A5;
+        Wed,  3 Mar 2021 21:33:18 +0100 (CET)
+Subject: Re: [PATCH 08/11] arm64: dts: qcom: pm8994: Add RESIN node
+To:     Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     "angelogioacchino.delregno@somainline.org" 
+        <angelogioacchino.delregno@somainline.org>,
+        "marijn.suijten@somainline.org" <marijn.suijten@somainline.org>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <-8dygFkqlPLCYtnwUWBLrCubmjkNhno40CBzzZ2tmlWdpJC1Ihmoe1dpMSvsgoBQ58Idh2v_rBHNEQLIwpTRtpndQm_8nSarmkXlZo975CU=@protonmail.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <c7e3394a-9cfa-ad9b-8d62-14d7151c54ea@somainline.org>
+Date:   Wed, 3 Mar 2021 21:33:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <-8dygFkqlPLCYtnwUWBLrCubmjkNhno40CBzzZ2tmlWdpJC1Ihmoe1dpMSvsgoBQ58Idh2v_rBHNEQLIwpTRtpndQm_8nSarmkXlZo975CU=@protonmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210303202406.bxgdx5a25j6wc43b@treble>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 02:24:12PM -0600, Josh Poimboeuf wrote:
-> On Wed, Mar 03, 2021 at 11:57:33AM -0800, Linus Torvalds wrote:
-> > On Wed, Mar 3, 2021 at 11:38 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > > But in the meantime, making the plugins depend on the gcc version some
-> > > > way is certainly better than not doing so.
-> > >
-> > > So currently, the plugins already so that.  They require the GCC version
-> > > to be exact.  If there's a mismatch, then it fails the OOT module build.
-> > 
-> > That's not my experience.
-> > 
-> > Yes, the build fails, but it fails not by _rebuilding_, but by failing
-> > with an error.
-> 
-> Um, that's what I said.  It does not rebuild.  It fails with an error.
-> 
-> The *proposal* is to rebuild the plugin -- which Masahiro nacked because
-> he claims GCC mismatches aren't supported for OOT builds (plugin or
-> not).
-> 
-> Your nack is for a different reason: GCC plugins are second-class
-> citizens.  Fair enough...
 
-Or was it a nack? :-)  Reading your message again, I may have
-misinterpreted.  Put simply, should we rebuild plugins when the GCC
-version changes?
+On 03.03.2021 17:43, Yassine Oudjana wrote:
+> In-Reply-To: <20210228130831.203765-8-konrad.dybcio@somainline.org>
+>
+> I've sent a similar patch[1] a while ago, although I didn't disable resin by default:
+> https://lore.kernel.org/lkml/BmEPgqFMiMXOzn9xFz6KSPtOZdWoeJ8zUpGXI_p7U9FBBSgbG2IP6AkuvbWWzy7MVuBkrhOas158Vd9klSLFmrbSRGEpQGouiAFpsf03Ag=@protonmail.com/
+>
+> Yassine
 
--- 
-Josh
+
+I'm totally fine with applying Yassine's patch with a `status = "disabled";` line added instead (we don't want RESIN on all devices!).
+
+
+Konrad
 
