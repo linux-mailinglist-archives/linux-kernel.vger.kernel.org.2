@@ -2,127 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC48132BCC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF2E32BD6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383566AbhCCOjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843004AbhCCKXq (ORCPT
+        id S234288AbhCCQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:02:48 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:64266 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhCCL2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:46 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C8DC06121E;
-        Wed,  3 Mar 2021 00:31:43 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id v9so17989081lfa.1;
-        Wed, 03 Mar 2021 00:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dA8KKHZiMQ0M1dMyQ+8WM+bKH9WXXF3VYD9qxoBSYVM=;
-        b=Q2BL7+lc+ylMlu+ydH2KPz1PqTODp5OqgVZiHR9jqO4OZm50aqIxSjjmz78JiiooFH
-         i7YC35lXSOUX9yg/ckanbCMcDnIlEnFIWaLOgdtj+UDXrH5hO9M8tW0d4lY0F73Zgtv0
-         EP4JLr8ALm6ZBEyiThejlCrrfIVjY9pIOHj19FhIOTMenDf39h9gGiIWXvyNDLGkM5mo
-         m/2nGyP009dWktprR8h6cgF5Vdo4NdkfBfb3BDPwDqJkwoi523txy9Y1R+1aHRYDxFMU
-         pbUa9veKiX8fC3Qy7J68bxgQZFZPn42rhUh6PUmrP6NqhAMjEwXXM5pQ+2lI5jRGc3fG
-         Miaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dA8KKHZiMQ0M1dMyQ+8WM+bKH9WXXF3VYD9qxoBSYVM=;
-        b=f6ZSIMX8nAv5AFjL21Ejo5Bv3NJ3Rp8ijmSTbsKlQYt6Ekl94iKE9TQIHIFyeDf+eT
-         4U32HV13v5mTABQ3WNlZOivEzWGS1py9zHDoZZ6zFdY3g3+sfbqcspgY/f8SK3sTER5N
-         09uXG0t5uD2JUyWzIs0kA838rkFolPnrW+qjLsRR4EdvOGDZQ5dt0oiXEWGDRqNCc1vf
-         6YIgnCjMyKJCssoimM7iGriqww+KbKAaP3idu40E9el3QnDkQ7mdUdKnvVq+pDFA2i35
-         6uVUiZofGRHsrGdBUzcyXf31pXUoMJCHfRBq9hRRhjNCuNChYx9NHWqj2Ba6DxCP+7Ix
-         0Bww==
-X-Gm-Message-State: AOAM530n4Tohk0m88Dm8GcAfvRhgv+oALZsuZxkYrxBffq71r+aHyhk5
-        D6rUONzoAxuMVY/19AH/6iXMbEuXb0s=
-X-Google-Smtp-Source: ABdhPJyVYXtuCpQJixD14PrCS9E2RYkwzmpI6ancOTzzhejj1erUKOBHDXNJht8WUd/TI7wGU6pDCw==
-X-Received: by 2002:a05:6512:110b:: with SMTP id l11mr15110220lfg.468.1614760301712;
-        Wed, 03 Mar 2021 00:31:41 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id 192sm2767251ljj.95.2021.03.03.00.31.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 00:31:41 -0800 (PST)
-Subject: Re: [PATCH 00/31] Introduce devm_pm_opp_* API
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Yangtao Li <tiny.windzz@gmail.com>, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, cw00.choi@samsung.com, krzk@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, yuq825@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, robdclark@gmail.com, sean@poorly.run,
-        robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, stanimir.varbanov@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        lukasz.luba@arm.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rjw@rjwysocki.net, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, groeck@chromium.org, varar@codeaurora.org,
-        mka@chromium.org, harigovi@codeaurora.org,
-        rikard.falkeborn@gmail.com, natechancellor@gmail.com,
-        georgi.djakov@linaro.org, akashast@codeaurora.org,
-        parashar@codeaurora.org, dianders@chromium.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20210101165507.19486-1-tiny.windzz@gmail.com>
- <6bd6730c-6f4e-df93-65cd-93fa4785a8d8@gmail.com>
- <c7a246a4-ab25-a193-f74a-98351780135e@gmail.com>
- <20210303040119.hpeybankxph4fyuj@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <9e5edc16-abfa-632b-97e9-1367c24ef8bc@gmail.com>
-Date:   Wed, 3 Mar 2021 11:31:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20210303040119.hpeybankxph4fyuj@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 3 Mar 2021 06:28:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=qti.qualcomm.com; i=@qti.qualcomm.com; q=dns/txt;
+  s=qcdkim; t=1614770913; x=1646306913;
+  h=from:to:cc:subject:date:message-id;
+  bh=YhmKslpzi+cHH3vU8pK14563hq3M1o4bf8szMh+VDvE=;
+  b=cJ0SlEuGThFCyfhmB2G6RzPWRIjYX3DrfVgsbM0snkVatNHu9ytss6ss
+   M6rrgN4Uv4hnTlF9vvFkvTqeEkiLHOEppU1BdqxdUvu5y1UVGDbGE/grt
+   XCkqRtkc3boKkdHx6hQQuB7KwyaqRF4t0cyKqwRc0Aq5VLlKeXDzcasSY
+   A=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 03 Mar 2021 00:32:40 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Mar 2021 00:32:38 -0800
+X-QCInternal: smtphost
+Received: from hydcbspbld03.qualcomm.com ([10.242.221.48])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 03 Mar 2021 14:02:15 +0530
+Received: by hydcbspbld03.qualcomm.com (Postfix, from userid 2304101)
+        id 4ED122147B; Wed,  3 Mar 2021 14:02:14 +0530 (IST)
+From:   Pradeep P V K <pragalla@qti.qualcomm.com>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        rampraka@codeaurora.org, vbadigan@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pradeep P V K <pragalla@codeaurora.org>
+Subject: [PATCH V2] mmc: sdhci: Check for reset prior to DMA address unmap
+Date:   Wed,  3 Mar 2021 14:02:11 +0530
+Message-Id: <1614760331-43499-1-git-send-email-pragalla@qti.qualcomm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.03.2021 07:01, Viresh Kumar пишет:
-> On 02-03-21, 16:40, Dmitry Osipenko wrote:
->> 20.01.2021 19:01, Dmitry Osipenko пишет:
->>> 01.01.2021 19:54, Yangtao Li пишет:
->>>> Hi,
->>>>
->>>> This patchset add devm_pm_opp_set_clkname, devm_pm_opp_put_clkname,
->>>> devm_pm_opp_set_regulators, devm_pm_opp_put_regulators,
->>>> devm_pm_opp_set_supported_hw, devm_pm_opp_of_add_table and
->>>> devm_pm_opp_register_notifier.
->>>
->>> Hello Yangtao,
->>>
->>> Thank you for your effort, looking forward to v2!
->>
->> Yangtao, could you please let me know what is the status of this series?
->> Will you be able to make a v2 anytime soon?
-> 
-> Dmitry, if Yangtao doesn't reply back this week with a proposal, please go ahead
-> and respin the patches yourself. Thanks.
-> 
+From: Pradeep P V K <pragalla@codeaurora.org>
 
-Alright!
+For data read commands, SDHC may initiate data transfers even before it
+completely process the command response. In case command itself fails,
+driver un-maps the memory associated with data transfer but this memory
+can still be accessed by SDHC for the already initiated data transfer.
+This scenario can lead to un-mapped memory access error.
+
+To avoid this scenario, reset SDHC (when command fails) prior to
+un-mapping memory. Resetting SDHC ensures that all in-flight data
+transfers are either aborted or completed. So we don't run into this
+scenario.
+
+Swap the reset, un-map steps sequence in sdhci_request_done().
+
+Changes since V1:
+- Added an empty line and fixed the comment style.
+- Retained the Acked-by signoff.
+
+Suggested-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Signed-off-by: Pradeep P V K <pragalla@codeaurora.org>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ drivers/mmc/host/sdhci.c | 60 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 31 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 646823d..130fd2d 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -2998,6 +2998,37 @@ static bool sdhci_request_done(struct sdhci_host *host)
+ 	}
+ 
+ 	/*
++	 * The controller needs a reset of internal state machines
++	 * upon error conditions.
++	 */
++	if (sdhci_needs_reset(host, mrq)) {
++		/*
++		 * Do not finish until command and data lines are available for
++		 * reset. Note there can only be one other mrq, so it cannot
++		 * also be in mrqs_done, otherwise host->cmd and host->data_cmd
++		 * would both be null.
++		 */
++		if (host->cmd || host->data_cmd) {
++			spin_unlock_irqrestore(&host->lock, flags);
++			return true;
++		}
++
++		/* Some controllers need this kick or reset won't work here */
++		if (host->quirks & SDHCI_QUIRK_CLOCK_BEFORE_RESET)
++			/* This is to force an update */
++			host->ops->set_clock(host, host->clock);
++
++		/*
++		 * Spec says we should do both at the same time, but Ricoh
++		 * controllers do not like that.
++		 */
++		sdhci_do_reset(host, SDHCI_RESET_CMD);
++		sdhci_do_reset(host, SDHCI_RESET_DATA);
++
++		host->pending_reset = false;
++	}
++
++	/*
+ 	 * Always unmap the data buffers if they were mapped by
+ 	 * sdhci_prepare_data() whenever we finish with a request.
+ 	 * This avoids leaking DMA mappings on error.
+@@ -3060,35 +3091,6 @@ static bool sdhci_request_done(struct sdhci_host *host)
+ 		}
+ 	}
+ 
+-	/*
+-	 * The controller needs a reset of internal state machines
+-	 * upon error conditions.
+-	 */
+-	if (sdhci_needs_reset(host, mrq)) {
+-		/*
+-		 * Do not finish until command and data lines are available for
+-		 * reset. Note there can only be one other mrq, so it cannot
+-		 * also be in mrqs_done, otherwise host->cmd and host->data_cmd
+-		 * would both be null.
+-		 */
+-		if (host->cmd || host->data_cmd) {
+-			spin_unlock_irqrestore(&host->lock, flags);
+-			return true;
+-		}
+-
+-		/* Some controllers need this kick or reset won't work here */
+-		if (host->quirks & SDHCI_QUIRK_CLOCK_BEFORE_RESET)
+-			/* This is to force an update */
+-			host->ops->set_clock(host, host->clock);
+-
+-		/* Spec says we should do both at the same time, but Ricoh
+-		   controllers do not like that. */
+-		sdhci_do_reset(host, SDHCI_RESET_CMD);
+-		sdhci_do_reset(host, SDHCI_RESET_DATA);
+-
+-		host->pending_reset = false;
+-	}
+-
+ 	host->mrqs_done[i] = NULL;
+ 
+ 	spin_unlock_irqrestore(&host->lock, flags);
+-- 
+2.7.4
+
