@@ -2,201 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029BB32C046
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFA032C03F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578243AbhCCSQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:16:54 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:47255 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233516AbhCCQAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:00:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614787217; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=63uD1rKESWU1WACrRV+OsLIaFjlY+XnAo1HvrwgjRqY=;
- b=stC6+EqPPZgy0JQCGKMf2HP1vRE1qG4J4l5NjbMa5xluO8jX5ccI2uq8OveIt6TE/a6rhL0z
- AdT50/2cMEq6UQzVhh1Mr0nyrjUKvXznhqPSA3CS3jt+yYK2GT4HTZgZYcrLW0sukH2Y/1Jb
- wkKoYwj5gB626bbm5BaR1MecpW8=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 603fb26d1a5c93533fec4c0d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 15:59:41
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0819C433ED; Wed,  3 Mar 2021 15:59:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C1A31C433CA;
-        Wed,  3 Mar 2021 15:59:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C1A31C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1578197AbhCCSQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234278AbhCCQCs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:02:48 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD34C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:01:58 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id 192so9565146pfv.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:01:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YlBFJQlEO+lyMRVcd8i9eW1uGtWD1JtQnYATA4mTAks=;
+        b=apLq6nbx2K8jVdej4g1cYPHE1Ioa284puWrnJYtpO1aj5uE7fnlPe2u988Qg49U6au
+         I3/ruUA8+Cc7rYX90yajLnwHT3iIzCjHLmgFpb2CfSfWaRfmhoUkj9xDYIUOAEHx6rmj
+         ZnvdqsaTnMggoJ1Irk9hJMWvi511Okdtp6cNI7ZfGvMZ/Y5ykuuUaWL1x1bXdpqOk2q0
+         a7Em4aKcPyKOeey5a14E15AwGg+bAtUJ0o59HtlutYL7Hxx/uJCOpBPjxH/385Lr0Isq
+         AyXQqISo4dK/dDvkF5mgc5k2kH9MgXwUCj1Mu3jHa7Lanf1PMossFh5ClQYisKuL9UXS
+         oJrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YlBFJQlEO+lyMRVcd8i9eW1uGtWD1JtQnYATA4mTAks=;
+        b=Cn245uigTEC/4+OCtbiHRg79cdpfBQs+Uq1k22cTdZUZxiyIU08S/vCo6EAyB5AP4A
+         I2Kdb7DRasDgIO5+BCzfpLbgWP/iB9PFHV0Kg7aEoawtj1Lpl8prGS4JuhB6xkdT5kHv
+         i/KpSL0+5QufFfDAjKKDxHbtzpFFOqVi94gXkdJZEN69PxcY5Ig+WQoJdmoBB8Iut4Ya
+         xFf6bi3iKwuc8NAsUVfkC0ELHU7HNkvmO+qS72TsZFCvKvPeyuyJxEM5SOUfrjj8Bpe1
+         +L2ON4LJwz9ojk+w00VieCqp0GfAVV0QiG+EMVphRpseQ3eV/RsthJtL9lwa7Z3wyZL6
+         rJTw==
+X-Gm-Message-State: AOAM531C3vXRyD0bcsl8t5/7cFWrdv76ZDqfIInPC2Y4hLDtQhVEMSnv
+        PeepOyYygA9YEYNwNI84bGowF9/gEgFCZmp1L1orCxNYPrzyNJqT
+X-Google-Smtp-Source: ABdhPJywIlwbJQpn67289Ye30Jbxm6kyewXWb73Tj9gazxumHxqSqR+Zp4n+D0YeXyZBttOWLu9E4/kSnyH2MoxVgj4=
+X-Received: by 2002:a63:161c:: with SMTP id w28mr12136789pgl.341.1614787318191;
+ Wed, 03 Mar 2021 08:01:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] iwlwifi: don't call netif_napi_add() with rxq->lock
- held
- (was Re: Lockdep warning in iwl_pcie_rx_handle())
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210303155940.C0819C433ED@smtp.codeaurora.org>
-Date:   Wed,  3 Mar 2021 15:59:40 +0000 (UTC)
+References: <20210303034659.91735-1-zhouchengming@bytedance.com>
+ <20210303034659.91735-5-zhouchengming@bytedance.com> <YD+w6Gbb49LeIQb1@hirez.programming.kicks-ass.net>
+In-Reply-To: <YD+w6Gbb49LeIQb1@hirez.programming.kicks-ass.net>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 4 Mar 2021 00:01:21 +0800
+Message-ID: <CAMZfGtW8kR5yHO=zAdOrfVg=bm8cvXqZp3vieqU7zGhC+BLp_g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 4/4] psi: Optimize task switch inside
+ shared cgroups
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiri Kosina <jikos@kernel.org> wrote:
+On Wed, Mar 3, 2021 at 11:53 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Mar 03, 2021 at 11:46:59AM +0800, Chengming Zhou wrote:
+> > The commit 36b238d57172 ("psi: Optimize switching tasks inside shared
+> > cgroups") only update cgroups whose state actually changes during a
+> > task switch only in task preempt case, not in task sleep case.
+> >
+> > We actually don't need to clear and set TSK_ONCPU state for common cgroups
+> > of next and prev task in sleep case, that can save many psi_group_change
+> > especially when most activity comes from one leaf cgroup.
+> >
+> > sleep before:
+> > psi_dequeue()
+> >   while ((group = iterate_groups(prev)))  # all ancestors
+> >     psi_group_change(prev, .clear=TSK_RUNNING|TSK_ONCPU)
+> > psi_task_switch()
+> >   while ((group = iterate_groups(next)))  # all ancestors
+> >     psi_group_change(next, .set=TSK_ONCPU)
+> >
+> > sleep after:
+> > psi_dequeue()
+> >   nop
+> > psi_task_switch()
+> >   while ((group = iterate_groups(next)))  # until (prev & next)
+> >     psi_group_change(next, .set=TSK_ONCPU)
+> >   while ((group = iterate_groups(prev)))  # all ancestors
+> >     psi_group_change(prev, .clear=common?TSK_RUNNING:TSK_RUNNING|TSK_ONCPU)
+> >
+> > When a voluntary sleep switches to another task, we remove one call of
+> > psi_group_change() for every common cgroup ancestor of the two tasks.
+> >
+> Co-developed-by: Muchun ?
 
-> From: Jiri Kosina <jkosina@suse.cz>
-> 
-> We can't call netif_napi_add() with rxq-lock held, as there is a potential
-> for deadlock as spotted by lockdep (see below). rxq->lock is not
-> protecting anything over the netif_napi_add() codepath anyway, so let's
-> drop it just before calling into NAPI.
-> 
->  ========================================================
->  WARNING: possible irq lock inversion dependency detected
->  5.12.0-rc1-00002-gbada49429032 #5 Not tainted
->  --------------------------------------------------------
->  irq/136-iwlwifi/565 just changed the state of lock:
->  ffff89f28433b0b0 (&rxq->lock){+.-.}-{2:2}, at: iwl_pcie_rx_handle+0x7f/0x960 [iwlwifi]
->  but this lock took another, SOFTIRQ-unsafe lock in the past:
->   (napi_hash_lock){+.+.}-{2:2}
-> 
->  and interrupts could create inverse lock ordering between them.
-> 
->  other info that might help us debug this:
->   Possible interrupt unsafe locking scenario:
-> 
->         CPU0                    CPU1
->         ----                    ----
->    lock(napi_hash_lock);
->                                 local_irq_disable();
->                                 lock(&rxq->lock);
->                                 lock(napi_hash_lock);
->    <Interrupt>
->      lock(&rxq->lock);
-> 
->   *** DEADLOCK ***
-> 
->  1 lock held by irq/136-iwlwifi/565:
->   #0: ffff89f2b1440170 (sync_cmd_lockdep_map){+.+.}-{0:0}, at: iwl_pcie_irq_handler+0x5/0xb30
-> 
->  the shortest dependencies between 2nd lock and 1st lock:
->   -> (napi_hash_lock){+.+.}-{2:2} {
->      HARDIRQ-ON-W at:
->                        lock_acquire+0x277/0x3d0
->                        _raw_spin_lock+0x2c/0x40
->                        netif_napi_add+0x14b/0x270
->                        e1000_probe+0x2fe/0xee0 [e1000e]
->                        local_pci_probe+0x42/0x90
->                        pci_device_probe+0x10b/0x1c0
->                        really_probe+0xef/0x4b0
->                        driver_probe_device+0xde/0x150
->                        device_driver_attach+0x4f/0x60
->                        __driver_attach+0x9c/0x140
->                        bus_for_each_dev+0x79/0xc0
->                        bus_add_driver+0x18d/0x220
->                        driver_register+0x5b/0xf0
->                        do_one_initcall+0x5b/0x300
->                        do_init_module+0x5b/0x21c
->                        load_module+0x1dae/0x22c0
->                        __do_sys_finit_module+0xad/0x110
->                        do_syscall_64+0x33/0x80
->                        entry_SYSCALL_64_after_hwframe+0x44/0xae
->      SOFTIRQ-ON-W at:
->                        lock_acquire+0x277/0x3d0
->                        _raw_spin_lock+0x2c/0x40
->                        netif_napi_add+0x14b/0x270
->                        e1000_probe+0x2fe/0xee0 [e1000e]
->                        local_pci_probe+0x42/0x90
->                        pci_device_probe+0x10b/0x1c0
->                        really_probe+0xef/0x4b0
->                        driver_probe_device+0xde/0x150
->                        device_driver_attach+0x4f/0x60
->                        __driver_attach+0x9c/0x140
->                        bus_for_each_dev+0x79/0xc0
->                        bus_add_driver+0x18d/0x220
->                        driver_register+0x5b/0xf0
->                        do_one_initcall+0x5b/0x300
->                        do_init_module+0x5b/0x21c
->                        load_module+0x1dae/0x22c0
->                        __do_sys_finit_module+0xad/0x110
->                        do_syscall_64+0x33/0x80
->                        entry_SYSCALL_64_after_hwframe+0x44/0xae
->      INITIAL USE at:
->                       lock_acquire+0x277/0x3d0
->                       _raw_spin_lock+0x2c/0x40
->                       netif_napi_add+0x14b/0x270
->                       e1000_probe+0x2fe/0xee0 [e1000e]
->                       local_pci_probe+0x42/0x90
->                       pci_device_probe+0x10b/0x1c0
->                       really_probe+0xef/0x4b0
->                       driver_probe_device+0xde/0x150
->                       device_driver_attach+0x4f/0x60
->                       __driver_attach+0x9c/0x140
->                       bus_for_each_dev+0x79/0xc0
->                       bus_add_driver+0x18d/0x220
->                       driver_register+0x5b/0xf0
->                       do_one_initcall+0x5b/0x300
->                       do_init_module+0x5b/0x21c
->                       load_module+0x1dae/0x22c0
->                       __do_sys_finit_module+0xad/0x110
->                       do_syscall_64+0x33/0x80
->                       entry_SYSCALL_64_after_hwframe+0x44/0xae
->    }
->    ... key      at: [<ffffffffae84ef38>] napi_hash_lock+0x18/0x40
->    ... acquired at:
->     _raw_spin_lock+0x2c/0x40
->     netif_napi_add+0x14b/0x270
->     _iwl_pcie_rx_init+0x1f4/0x710 [iwlwifi]
->     iwl_pcie_rx_init+0x1b/0x3b0 [iwlwifi]
->     iwl_trans_pcie_start_fw+0x2ac/0x6a0 [iwlwifi]
->     iwl_mvm_load_ucode_wait_alive+0x116/0x460 [iwlmvm]
->     iwl_run_init_mvm_ucode+0xa4/0x3a0 [iwlmvm]
->     iwl_op_mode_mvm_start+0x9ed/0xbf0 [iwlmvm]
->     _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
->     iwl_opmode_register+0x71/0xe0 [iwlwifi]
->     iwl_mvm_init+0x34/0x1000 [iwlmvm]
->     do_one_initcall+0x5b/0x300
->     do_init_module+0x5b/0x21c
->     load_module+0x1dae/0x22c0
->     __do_sys_finit_module+0xad/0x110
->     do_syscall_64+0x33/0x80
->     entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> [ ... lockdep output trimmed .... ]
-> 
-> Fixes: 25edc8f259c7106 ("iwlwifi: pcie: properly implement NAPI")
-> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> Acked-by: Luca Coelho <luciano.coelho@intel.com>
+Yes. Should Chengming send another version patch to add Co-developed-by tag?
 
-Patch applied to wireless-drivers.git, thanks.
-
-295d4cd82b01 iwlwifi: don't call netif_napi_add() with rxq->lock held (was Re: Lockdep warning in iwl_pcie_rx_handle())
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
