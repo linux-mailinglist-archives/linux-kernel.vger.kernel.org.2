@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD9F32BCE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7553632BD40
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442707AbhCCPAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:00:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843052AbhCCKY5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:24:57 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157F1C0698D6
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:16:39 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id v9so18179024lfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:16:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=buRZjTCkPRscNUcgouTsLvhNWylzQC2Vu2Jj2dnDvlY=;
-        b=JanEXoUqmSxDacqDR+nKEc/kxryraHtUeHFnwycu6BONzCTOiWRBjALBiBwlfx5e78
-         ZM4cbGNZDa80DIBjWjbZ2BTmh/bTfU/pztwWhDbOXCyuO5Inl7kwcij9ZURFHJn6dGoD
-         UD6u/e6GJGukxlR4C+JGktCNDZNFhYJdJo+HsUD9jewcpNbVAwYRmV9TXTLefeLCaANA
-         FA5vJsiIvKMa/cADkYmxpsh4aeA4oA4nDt98zTYblsM9ibdNDEdD4FamSm1JsFm98Eha
-         3iVWyXyVIs5Cf9aq0+KyuHzX3J8Zv+J7qB2v9YJn8rfo7WOSw4qYG64AzrHWwI0RI4LT
-         PsmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=buRZjTCkPRscNUcgouTsLvhNWylzQC2Vu2Jj2dnDvlY=;
-        b=bDHJh21X7Eus/mfV9Qy0ppQUZkved0GjVRSLWEki30t0DWNz0/lwN62Bd71ZQpdt59
-         PP0LbolIpnAuvL1LAP/EKz4IOszA+JqcEYz/Ld0PUw4qmD0n+Rpqq/O+27eWeSChS0my
-         ohxDAc3FHI1NiJQ/L5P92YD6y0d8qCYHE3yuZyTTFyJeQ6faQ1Cz1D9IMikFngtTEo1q
-         gBcOHyrRCh0VZvDUCEj4E7LuYb3PlBHtw46itRqQciOzt5KSsIvGhrIDZcRKlcCUFsTD
-         sPlwFDqWtQW0SQTu8XtrHoeR5kpfJDHqL9VskzjTZazdTK0WYFVqw8P79S1Bh1tHINC8
-         Asrg==
-X-Gm-Message-State: AOAM533d4hGz1DRhx+jHIOS6OqfiygHTFKRbS+Von1Mb+3WZAtpdPowI
-        GIj51ZLPv3BEnRMbZyyyCDhITXJ5cO93Yk1LrjfXFw==
-X-Google-Smtp-Source: ABdhPJy9aRQHMyc4qKY1gO36BOHVs6AyUE+pwQt9Kzv2pXSSRggMKgV9EEBjNSTc07PFy8N4HS0999U1MZ6NLJp5Nn0=
-X-Received: by 2002:ac2:5d21:: with SMTP id i1mr14044766lfb.649.1614762997648;
- Wed, 03 Mar 2021 01:16:37 -0800 (PST)
+        id S1382696AbhCCPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:37:00 -0500
+Received: from mga12.intel.com ([192.55.52.136]:4472 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357227AbhCCKs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:48:59 -0500
+IronPort-SDR: rJ1FY+Cqd3m7RP5VCLmiOAG+PBG8u8OckMn0yu0CVkC2Quong0jI0Tuug03b9rbVJYa2Pfnw0P
+ dCN/Wba2DrVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="166404618"
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="166404618"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 01:16:54 -0800
+IronPort-SDR: k6s+b6Bbde6pVZUL0UtJY3o1hMgHiCqfbIj6ucu+tm897WjCaG9xKzp6fG60af94FbKk6vZGdT
+ bgPjVwbzDMwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="435147543"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Mar 2021 01:16:52 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 7F103F4; Wed,  3 Mar 2021 11:16:52 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v3 0/3] parport: Introduce module_parport_driver() and use it
+Date:   Wed,  3 Mar 2021 11:16:39 +0200
+Message-Id: <20210303091642.23929-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com> <20210302153451.50593-3-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210302153451.50593-3-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 3 Mar 2021 10:16:26 +0100
-Message-ID: <CACRpkdYX-CuSmNk1Yx24y15+R7q=UbXqdhgKKdeWa+dzy3wKgQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] gpiolib: Introduce acpi_gpio_dev_init() and call
- it from core
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 4:36 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Introduce module_parport_driver() and use it.
+Greg or Mark, since we have this series tagged, can somebody of you pick it up?
 
-> In the ACPI case we may use the firmware node in the similar way
-> as it's done for OF case. We may use that fwnode for other purposes
-> in the future.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Changelog v3:
+- added tag on patch 1 (Sudip)
+- Cc'ed to Greg
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Andy Shevchenko (3):
+  parport: Introduce module_parport_driver() helper macro
+  spi: butterfly: Switch to use module_parport_driver()
+  spi: lm70llp: Switch to use module_parport_driver()
 
-Yours,
-Linus Walleij
+ drivers/spi/spi-butterfly.c | 13 +------------
+ drivers/spi/spi-lm70llp.c   | 13 +------------
+ include/linux/parport.h     | 12 +++++++++++-
+ 3 files changed, 13 insertions(+), 25 deletions(-)
+
+-- 
+2.30.1
+
