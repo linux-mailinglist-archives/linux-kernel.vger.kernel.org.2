@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26F532BEBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1724132BEA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575557AbhCCRfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:35:08 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44167 "EHLO mga11.intel.com"
+        id S1574517AbhCCRdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:33:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48194 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242945AbhCCOSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:18:04 -0500
-IronPort-SDR: skKflAtxweii8+DZcb16U+hqFcOIR/NtUmhzupaQHDYJlAz1ugUZOmG8kweFrBKj75rQX3UTNh
- gcnbpcq3jrMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="183819046"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="183819046"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 06:05:52 -0800
-IronPort-SDR: ZGZV29hhF3391vVbzakTKbsbPpuGvQwk9XF2rJEh4TH6Hi9X/zzV3yovcsRCh7Tns9Cbj2Vi0h
- M9nGT5ZHXmhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="399729508"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Mar 2021 06:05:49 -0800
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-Subject: [kvm-unit-tests PATCH] x86: Update guest LBR tests for Architectural LBR
-Date:   Wed,  3 Mar 2021 21:57:56 +0800
-Message-Id: <20210303135756.1546253-11-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210303135756.1546253-1-like.xu@linux.intel.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
+        id S242031AbhCCOA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:00:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614779976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=50GBfYgxtO29whyJbj1CWzLmypSM5EAt7Qtbs+R82zA=;
+        b=PBaSKQadWq06jmGeraLw5vIaXnGXOlRSVL/6Vzl4kBb+nQhF4nFgv2izar18P7t3mCKFIl
+        42YmoDwsBmONbHnKqmbrq4gDNZ/AtarliFxTq4pO3bV/fAjC8ovDAVbunyUnVU7usYX/tG
+        cWPkrP50tvhEm/JVDwBXSvsNb7Ks3cI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3BBC0AE05;
+        Wed,  3 Mar 2021 13:59:36 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 14:59:35 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Widawsky, Ben" <ben.widawsky@intel.com>,
+        Andi leen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
+ MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
+Message-ID: <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
+References: <1614766858-90344-1-git-send-email-feng.tang@intel.com>
+ <1614766858-90344-15-git-send-email-feng.tang@intel.com>
+ <YD91jTMssJUCupJm@dhcp22.suse.cz>
+ <20210303120717.GA16736@shbuild999.sh.intel.com>
+ <20210303121833.GB16736@shbuild999.sh.intel.com>
+ <YD+BvvM/388AVnmm@dhcp22.suse.cz>
+ <20210303131832.GB78458@shbuild999.sh.intel.com>
+ <20210303134644.GC78458@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303134644.GC78458@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This unit-test is intended to test the KVM's support for the
-Architectural LBRs which is a Architectural performance monitor
-unit (PMU) feature on Intel processors.
+On Wed 03-03-21 21:46:44, Feng Tang wrote:
+> On Wed, Mar 03, 2021 at 09:18:32PM +0800, Tang, Feng wrote:
+> > On Wed, Mar 03, 2021 at 01:32:11PM +0100, Michal Hocko wrote:
+> > > On Wed 03-03-21 20:18:33, Feng Tang wrote:
+[...]
+> > > > One thing I tried which can fix the slowness is:
+> > > > 
+> > > > +	gfp_mask &= ~(__GFP_DIRECT_RECLAIM | __GFP_KSWAPD_RECLAIM);
+> > > > 
+> > > > which explicitly clears the 2 kinds of reclaim. And I thought it's too
+> > > > hacky and didn't mention it in the commit log.
+> > > 
+> > > Clearing __GFP_DIRECT_RECLAIM would be the right way to achieve
+> > > GFP_NOWAIT semantic. Why would you want to exclude kswapd as well? 
+> > 
+> > When I tried gfp_mask &= ~__GFP_DIRECT_RECLAIM, the slowness couldn't
+> > be fixed.
+> 
+> I just double checked by rerun the test, 'gfp_mask &= ~__GFP_DIRECT_RECLAIM'
+> can also accelerate the allocation much! though is still a little slower than
+> this patch. Seems I've messed some of the tries, and sorry for the confusion!
+> 
+> Could this be used as the solution? or the adding another fallback_nodemask way?
+> but the latter will change the current API quite a bit.
 
-If the LBR bit is set to 1 in the MSR_ARCH_LBR_CTL, the processor
-will record a running trace of the most recent branches guest
-taken in the LBR entries for guest to read.
+I haven't got to the whole series yet. The real question is whether the
+first attempt to enforce the preferred mask is a general win. I would
+argue that it resembles the existing single node preferred memory policy
+because that one doesn't push heavily on the preferred node either. So
+dropping just the direct reclaim mode makes some sense to me.
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- x86/pmu_lbr.c | 62 ++++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 52 insertions(+), 10 deletions(-)
-
-diff --git a/x86/pmu_lbr.c b/x86/pmu_lbr.c
-index 3bd9e9f..588aec8 100644
---- a/x86/pmu_lbr.c
-+++ b/x86/pmu_lbr.c
-@@ -6,6 +6,7 @@
- #define MAX_NUM_LBR_ENTRY	  32
- #define DEBUGCTLMSR_LBR	  (1UL <<  0)
- #define PMU_CAP_LBR_FMT	  0x3f
-+#define KVM_ARCH_LBR_CTL_MASK			0x7f000f
- 
- #define MSR_LBR_NHM_FROM	0x00000680
- #define MSR_LBR_NHM_TO		0x000006c0
-@@ -13,6 +14,10 @@
- #define MSR_LBR_CORE_TO	0x00000060
- #define MSR_LBR_TOS		0x000001c9
- #define MSR_LBR_SELECT		0x000001c8
-+#define MSR_ARCH_LBR_CTL		0x000014ce
-+#define MSR_ARCH_LBR_DEPTH		0x000014cf
-+#define MSR_ARCH_LBR_FROM_0		0x00001500
-+#define MSR_ARCH_LBR_TO_0		0x00001600
- 
- volatile int count;
- 
-@@ -66,6 +71,9 @@ int main(int ac, char **av)
- 	struct cpuid id = cpuid(10);
- 	u64 perf_cap;
- 	int max, i;
-+	bool arch_lbr = false;
-+	u32 ctl_msr = MSR_IA32_DEBUGCTLMSR;
-+	u64 ctl_value = DEBUGCTLMSR_LBR;
- 
- 	setup_vm();
- 	perf_cap = rdmsr(MSR_IA32_PERF_CAPABILITIES);
-@@ -80,8 +88,23 @@ int main(int ac, char **av)
- 		return report_summary();
- 	}
- 
-+	/*
-+	 * On processors that support Architectural LBRs,
-+	 * IA32_PERF_CAPABILITIES.LBR_FMT will have the value 03FH.
-+	 */
-+	if (0x3f == (perf_cap & PMU_CAP_LBR_FMT)) {
-+		arch_lbr = true;
-+		ctl_msr = MSR_ARCH_LBR_CTL;
-+		/* DEPTH defaults to the maximum number of LBRs entries. */
-+		max = rdmsr(MSR_ARCH_LBR_DEPTH) - 1;
-+		ctl_value = KVM_ARCH_LBR_CTL_MASK;
-+	}
-+
- 	printf("PMU version:		 %d\n", eax.split.version_id);
--	printf("LBR version:		 %ld\n", perf_cap & PMU_CAP_LBR_FMT);
-+	if (!arch_lbr)
-+		printf("LBR version:		 %ld\n", perf_cap & PMU_CAP_LBR_FMT);
-+	else
-+		printf("Architectural LBR depth:		 %d\n", max + 1);
- 
- 	/* Look for LBR from and to MSRs */
- 	lbr_from = MSR_LBR_CORE_FROM;
-@@ -90,27 +113,46 @@ int main(int ac, char **av)
- 		lbr_from = MSR_LBR_NHM_FROM;
- 		lbr_to = MSR_LBR_NHM_TO;
- 	}
-+	if (test_init_lbr_from_exception(0)) {
-+		lbr_from = MSR_ARCH_LBR_FROM_0;
-+		lbr_to = MSR_ARCH_LBR_TO_0;
-+	}
- 
- 	if (test_init_lbr_from_exception(0)) {
- 		printf("LBR on this platform is not supported!\n");
- 		return report_summary();
- 	}
- 
--	wrmsr(MSR_LBR_SELECT, 0);
--	wrmsr(MSR_LBR_TOS, 0);
--	for (max = 0; max < MAX_NUM_LBR_ENTRY; max++) {
--		if (test_init_lbr_from_exception(max))
--			break;
-+	/* Reset the guest LBR entries. */
-+	if (arch_lbr) {
-+		/* On a software write to IA32_LBR_DEPTH, all LBR entries are reset to 0.*/
-+		wrmsr(MSR_ARCH_LBR_DEPTH, max + 1);
-+	} else {
-+		wrmsr(MSR_LBR_SELECT, 0);
-+		wrmsr(MSR_LBR_TOS, 0);
-+		for (max = 0; max < MAX_NUM_LBR_ENTRY; max++) {
-+			if (test_init_lbr_from_exception(max))
-+				break;
-+		}
- 	}
--
- 	report(max > 0, "The number of guest LBR entries is good.");
- 
-+	/* Check the guest LBR entries are initialized. */
-+	for (i = 0; i < max; ++i) {
-+		if (rdmsr(lbr_to + i) || rdmsr(lbr_from + i))
-+			break;
-+	}
-+	report(i == max, "The guest LBR initialized FROM_IP/TO_IP values are good.");
-+
- 	/* Do some branch instructions. */
--	wrmsr(MSR_IA32_DEBUGCTLMSR, DEBUGCTLMSR_LBR);
-+	wrmsr(ctl_msr, ctl_value);
- 	lbr_test();
--	wrmsr(MSR_IA32_DEBUGCTLMSR, 0);
-+	wrmsr(ctl_msr, 0);
- 
--	report(rdmsr(MSR_LBR_TOS) != 0, "The guest LBR MSR_LBR_TOS value is good.");
-+	/* Check if the guest LBR has recorded some branches. */
-+	if (!arch_lbr) {
-+		report(rdmsr(MSR_LBR_TOS) != 0, "The guest LBR MSR_LBR_TOS value is good.");
-+	}
- 	for (i = 0; i < max; ++i) {
- 		if (!rdmsr(lbr_to + i) || !rdmsr(lbr_from + i))
- 			break;
+IIRC this is something I was recommending in an early proposal of the
+feature.
 -- 
-2.29.2
-
+Michal Hocko
+SUSE Labs
