@@ -2,140 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD6132BD6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B801F32BDB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445091AbhCCP7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:59:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350426AbhCCLAh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:00:37 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561FFC06178B;
-        Wed,  3 Mar 2021 02:59:56 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Dr9qH5dqjz1rx7x;
-        Wed,  3 Mar 2021 11:54:19 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Dr9qH326vz1qqkR;
-        Wed,  3 Mar 2021 11:54:19 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id v6gy5bSX7M2G; Wed,  3 Mar 2021 11:54:16 +0100 (CET)
-X-Auth-Info: roSn6tOU3w5pXrcc+IARpM25f0IDnV9/nFeCPIcD4aU=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed,  3 Mar 2021 11:54:16 +0100 (CET)
-Subject: Re: [PATCH v5 00/14] Add BLK_CTL support for i.MX8MP
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Adam Ford <aford173@gmail.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>, pete.zhang@nxp.com,
-        Claudius Heine <ch@denx.de>
-References: <1604402306-5348-1-git-send-email-abel.vesa@nxp.com>
- <20210303104719.74guq4bfm75dyzvj@fsr-ub1664-175>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <70bac3c5-4ccc-b9dd-05e8-a278a0650601@denx.de>
-Date:   Wed, 3 Mar 2021 11:54:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1573267AbhCCQ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:29:21 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:58924 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350158AbhCCLvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:51:55 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dr9tR6h0Xz9tygN;
+        Wed,  3 Mar 2021 11:57:03 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id i-a1Nz-ZudRo; Wed,  3 Mar 2021 11:57:03 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dr9tR5VLxz9tyZS;
+        Wed,  3 Mar 2021 11:57:03 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9A0638B7CD;
+        Wed,  3 Mar 2021 11:56:50 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 9UicWIe8FC3n; Wed,  3 Mar 2021 11:56:47 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3B6948B7D8;
+        Wed,  3 Mar 2021 11:56:30 +0100 (CET)
+Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
+ <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
+ <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
+ <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
+ <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
+ <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
+ <3abbe4c9-16ad-c168-a90f-087978ccd8f7@csgroup.eu>
+ <CANpmjNMKEObjf=WyfDQB5vPmR5RuyUMBJyfr6P2ykCd67wyMbA@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b66d0bbd-d587-cf1c-11df-daafeaf70552@csgroup.eu>
+Date:   Wed, 3 Mar 2021 11:56:28 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210303104719.74guq4bfm75dyzvj@fsr-ub1664-175>
+In-Reply-To: <CANpmjNMKEObjf=WyfDQB5vPmR5RuyUMBJyfr6P2ykCd67wyMbA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/3/21 11:47 AM, Abel Vesa wrote:
-> On 20-11-03 13:18:12, Abel Vesa wrote:
->> The BLK_CTL according to HW design is basically the wrapper of the entire
->> function specific group of IPs and holds GPRs that usually cannot be placed
->> into one specific IP from that group. Some of these GPRs are used to control
->> some clocks, other some resets, others some very specific function that does
->> not fit into clocks or resets. Since the clocks are registered using the i.MX
->> clock subsystem API, the driver is placed into the clock subsystem, but it
->> also registers the resets. For the other functionalities that other GPRs might
->> have, the syscon is used.
->>
-> 
-> This approach seems to be introducing a possible ABBA deadlock due to
-> the core clock and genpd locking. Here is a backtrace I got from Pete
-> Zhang (he reported the issue on the internal mailing list):
-> 
-> [   11.667711][  T108] -> #1 (&genpd->mlock){+.+.}-{3:3}:
-> [   11.675041][  T108]        __lock_acquire+0xae4/0xef8
-> [   11.680093][  T108]        lock_acquire+0xfc/0x2f8
-> [   11.684888][  T108]        __mutex_lock+0x90/0x870
-> [   11.689685][  T108]        mutex_lock_nested+0x44/0x50
-> [   11.694826][  T108]        genpd_lock_mtx+0x18/0x24
-> [   11.699706][  T108]        genpd_runtime_resume+0x90/0x214 (hold genpd->mlock)
-> [   11.705194][  T108]        __rpm_callback+0x80/0x2c0
-> [   11.710160][  T108]        rpm_resume+0x468/0x650
-> [   11.714866][  T108]        __pm_runtime_resume+0x60/0x88
-> [   11.720180][  T108]        clk_pm_runtime_get+0x28/0x9c
-> [   11.725410][  T108]        clk_disable_unused_subtree+0x8c/0x144
-> [   11.731420][  T108]        clk_disable_unused_subtree+0x124/0x144
-> [   11.737518][  T108]        clk_disable_unused+0xa4/0x11c (hold prepare_lock)
-> [   11.742833][  T108]        do_one_initcall+0x98/0x178
-> [   11.747888][  T108]        do_initcall_level+0x9c/0xb8
-> [   11.753028][  T108]        do_initcalls+0x54/0x94
-> [   11.757736][  T108]        do_basic_setup+0x24/0x30
-> [   11.762614][  T108]        kernel_init_freeable+0x70/0xa4
-> [   11.768014][  T108]        kernel_init+0x14/0x18c
-> [   11.772722][  T108]        ret_from_fork+0x10/0x18
-> 
-> [   11.777512][  T108] -> #0 (prepare_lock){+.+.}-{3:3}:
-> [   11.784749][  T108]        check_noncircular+0x134/0x13c
-> [   11.790064][  T108]        validate_chain+0x590/0x2a04
-> [   11.795204][  T108]        __lock_acquire+0xae4/0xef8
-> [   11.800258][  T108]        lock_acquire+0xfc/0x2f8
-> [   11.805050][  T108]        __mutex_lock+0x90/0x870
-> [   11.809841][  T108]        mutex_lock_nested+0x44/0x50
-> [   11.814983][  T108]        clk_unprepare+0x5c/0x100 ((hold prepare_lock))
-> [   11.819864][  T108]        imx8m_pd_power_off+0xac/0x110
-> [   11.825179][  T108]        genpd_power_off+0x1b4/0x2dc
-> [   11.830318][  T108]        genpd_power_off_work_fn+0x38/0x58 (hold genpd->mlock)
-> [   11.835981][  T108]        process_one_work+0x270/0x444
-> [   11.841208][  T108]        worker_thread+0x280/0x4e4
-> [   11.846176][  T108]        kthread+0x13c/0x14
-> [   11.850621][  T108]        ret_from_fork+0x10/0x18
-> 
-> Now, this has been reproduced only on the NXP internal tree, but I think
-> it is pretty obvious this could happen in upstream too, with this
-> patchset applied.
-> 
-> First, my thought was to change the prepare_lock/enable_lock in clock
-> core, from a global approach to a per clock basis. But that doesn't
-> actually fix the issue.
-> 
-> The usecase seen above is due to clk_disable_unused, but the same could
-> happen when a clock consumer calls prepare/unprepare on a clock.
-> 
-> I guess the conclusion is that the current state of the clock core and
-> genpd implementation does not support a usecase where a clock controller
-> has a PD which in turn uses another clock (from another clock controller).
-> 
-> Jacky, Pete, did I miss anything here ?
 
-Just for completeness, I have a feeling I already managed to trigger 
-this and discussed this with Lucas before, so this concern is certainly 
-valid.
+
+Le 03/03/2021 à 11:39, Marco Elver a écrit :
+> On Wed, 3 Mar 2021 at 11:32, Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 02/03/2021 à 10:53, Marco Elver a écrit :
+>>> On Tue, 2 Mar 2021 at 10:27, Christophe Leroy
+>>> <christophe.leroy@csgroup.eu> wrote:
+>>>> Le 02/03/2021 à 10:21, Alexander Potapenko a écrit :
+>>>>>> [   14.998426] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
+>>>>>> [   14.998426]
+>>>>>> [   15.007061] Invalid read at 0x(ptrval):
+>>>>>> [   15.010906]  finish_task_switch.isra.0+0x54/0x23c
+>>>>>> [   15.015633]  kunit_try_run_case+0x5c/0xd0
+>>>>>> [   15.019682]  kunit_generic_run_threadfn_adapter+0x24/0x30
+>>>>>> [   15.025099]  kthread+0x15c/0x174
+>>>>>> [   15.028359]  ret_from_kernel_thread+0x14/0x1c
+>>>>>> [   15.032747]
+>>>>>> [   15.034251] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
+>>>>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
+>>>>>> [   15.045811] ==================================================================
+>>>>>> [   15.053324]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
+>>>>>> [   15.053324]     Expected report_matches(&expect) to be true, but is false
+>>>>>> [   15.068359]     not ok 21 - test_invalid_access
+>>>>>
+>>>>> The test expects the function name to be test_invalid_access, i. e.
+>>>>> the first line should be "BUG: KFENCE: invalid read in
+>>>>> test_invalid_access".
+>>>>> The error reporting function unwinds the stack, skips a couple of
+>>>>> "uninteresting" frames
+>>>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L43)
+>>>>> and uses the first "interesting" one frame to print the report header
+>>>>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L226).
+>>>>>
+>>>>> It's strange that test_invalid_access is missing altogether from the
+>>>>> stack trace - is that expected?
+>>>>> Can you try printing the whole stacktrace without skipping any frames
+>>>>> to see if that function is there?
+>>>>>
+>>>>
+>>>> Booting with 'no_hash_pointers" I get the following. Does it helps ?
+>>>>
+>>>> [   16.837198] ==================================================================
+>>>> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
+>>>> [   16.848521]
+>>>> [   16.857158] Invalid read at 0xdf98800a:
+>>>> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
+>>>> [   16.865731]  kunit_try_run_case+0x5c/0xd0
+>>>> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
+>>>> [   16.875199]  kthread+0x15c/0x174
+>>>> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
+>>>> [   16.882847]
+>>>> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
+>>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
+>>>> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
+>>>> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
+>>>> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
+>>>> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
+>>>> [   16.918153] DAR: df98800a DSISR: 20000000
+>>>> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
+>>>> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
+>>>> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
+>>>> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
+>>>> [   16.947292] Call Trace:
+>>>> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
+>>>
+>>> The "(unreliable)" might be a clue that it's related to ppc32 stack
+>>> unwinding. Any ppc expert know what this is about?
+>>>
+>>>> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
+>>>> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
+>>>> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
+>>>> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
+>>>> [   16.981896] Instruction dump:
+>>>> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
+>>>> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
+>>>> [   17.000711] ==================================================================
+>>>> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
+>>>> [   17.008223]     Expected report_matches(&expect) to be true, but is false
+>>>> [   17.023243]     not ok 21 - test_invalid_access
+>>>
+>>> On a fault in test_invalid_access, KFENCE prints the stack trace based
+>>> on the information in pt_regs. So we do not think there's anything we
+>>> can do to improve stack printing pe-se.
+>>>
+>>> What's confusing is that it's only this test, and none of the others.
+>>> Given that, it might be code-gen related, which results in some subtle
+>>> issue with stack unwinding. There are a few things to try, if you feel
+>>> like it:
+>>>
+>>> -- Change the unwinder, if it's possible for ppc32.
+>>>
+>>> -- Add code to test_invalid_access(), to get the compiler to emit
+>>> different code. E.g. add a bunch (unnecessary) function calls, or add
+>>> barriers, etc.
+>>>
+>>> -- Play with compiler options. We already pass
+>>> -fno-optimize-sibling-calls for kfence_test.o to avoid tail-call
+>>> optimizations that'd hide stack trace entries. But perhaps there's
+>>> something ppc-specific we missed?
+>>>
+>>> Well, the good thing is that KFENCE detects the bad access just fine.
+>>> Since, according to the test, everything works from KFENCE's side, I'd
+>>> be happy to give my Ack:
+>>>
+>>>     Acked-by: Marco Elver <elver@google.com>
+>>>
+>>
+>> Thanks.
+>>
+>> For you information, I've got a pile of warnings from mm/kfence/report.o . Is that expected ?
+>>
+>>     CC      mm/kfence/report.o
+>> In file included from ./include/linux/printk.h:7,
+>>                    from ./include/linux/kernel.h:16,
+>>                    from mm/kfence/report.c:10:
+>> mm/kfence/report.c: In function 'kfence_report_error':
+>> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
+>> but argument 6 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+>>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+>>         |                  ^~~~~~
+>> ./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
+>>      11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
+>>         |                  ^~~~~~~~
+>> ./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
+>>     343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+>>         |         ^~~~~~~~
+>> mm/kfence/report.c:207:3: note: in expansion of macro 'pr_err'
+>>     207 |   pr_err("Out-of-bounds %s at 0x%p (%luB %s of kfence-#%zd):\n",
+>>         |   ^~~~~~
+>> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
+>> but argument 4 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+>>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+>>         |                  ^~~~~~
+>> ./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
+>>      11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
+>>         |                  ^~~~~~~~
+>> ./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
+>>     343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+>>         |         ^~~~~~~~
+>> mm/kfence/report.c:216:3: note: in expansion of macro 'pr_err'
+>>     216 |   pr_err("Use-after-free %s at 0x%p (in kfence-#%zd):\n",
+>>         |   ^~~~~~
+>> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
+>> but argument 2 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+>>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+>>         |                  ^~~~~~
+>> ./include/linux/kern_levels.h:24:19: note: in expansion of macro 'KERN_SOH'
+>>      24 | #define KERN_CONT KERN_SOH "c"
+>>         |                   ^~~~~~~~
+>> ./include/linux/printk.h:385:9: note: in expansion of macro 'KERN_CONT'
+>>     385 |  printk(KERN_CONT fmt, ##__VA_ARGS__)
+>>         |         ^~~~~~~~~
+>> mm/kfence/report.c:223:3: note: in expansion of macro 'pr_cont'
+>>     223 |   pr_cont(" (in kfence-#%zd):\n", object_index);
+>>         |   ^~~~~~~
+>> ./include/linux/kern_levels.h:5:18: warning: format '%zd' expects argument of type 'signed size_t',
+>> but argument 3 has type 'ptrdiff_t' {aka 'const long int'} [-Wformat=]
+>>       5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+>>         |                  ^~~~~~
+>> ./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
+>>      11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
+>>         |                  ^~~~~~~~
+>> ./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
+>>     343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+>>         |         ^~~~~~~~
+>> mm/kfence/report.c:233:3: note: in expansion of macro 'pr_err'
+>>     233 |   pr_err("Invalid free of 0x%p (in kfence-#%zd):\n", (void *)address,
+>>         |   ^~~~~~
+>>
+>> Christophe
+> 
+> No this is not expected. Is 'signed size_t' != 'long int' on ppc32?
+> 
+
+No, it is an 'int' not a 'long int', see arch/powerpc/include/uapi/asm/posix_types.h
+
+#ifdef __powerpc64__
+typedef unsigned long	__kernel_old_dev_t;
+#define __kernel_old_dev_t __kernel_old_dev_t
+#else
+typedef unsigned int	__kernel_size_t;
+typedef int		__kernel_ssize_t;
+typedef long		__kernel_ptrdiff_t;
+#define __kernel_size_t __kernel_size_t
+
+
+What is probably specific to powerpc is that ptrdiff_t is not same as ssize_t unlike in 
+include/uapi/asm-generic/posix_types.h :
+
+
+/*
+  * Most 32 bit architectures use "unsigned int" size_t,
+  * and all 64 bit architectures use "unsigned long" size_t.
+  */
+#ifndef __kernel_size_t
+#if __BITS_PER_LONG != 64
+typedef unsigned int	__kernel_size_t;
+typedef int		__kernel_ssize_t;
+typedef int		__kernel_ptrdiff_t;
+#else
+typedef __kernel_ulong_t __kernel_size_t;
+typedef __kernel_long_t	__kernel_ssize_t;
+typedef __kernel_long_t	__kernel_ptrdiff_t;
+#endif
+#endif
+
+
+
+I have no warning on ppc64.
+
+Christophe
