@@ -2,80 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72A632BCFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9AA32BCD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245238AbhCCPOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:14:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241095AbhCCK0t (ORCPT
+        id S1359665AbhCCOuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843034AbhCCKYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:26:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614767122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vMUUJSbWiaKTXgtpt8GHYmtHVmZoDHu1V86PH+IT7A0=;
-        b=gKSyR3LXr/zD8dLGnPTk0SHwospUbNN9Qrg0Jw1ipKh0jPCWgCkctpUr2iHPcmkq7i3RL0
-        mQ2ThlceCo0ZV0SkoZLuW7ADQ9mIhA9a7UucWhT4iM0HN3eT8QMPTTG4nC6ZjjEIr67DoB
-        o5JhBubwDwjauanHXU4Zphx63Zv4U4k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-390-719A2JaVNDKjt3KlIWojNA-1; Wed, 03 Mar 2021 04:24:44 -0500
-X-MC-Unique: 719A2JaVNDKjt3KlIWojNA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E756835E21;
-        Wed,  3 Mar 2021 09:24:43 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 84D1B60BFA;
-        Wed,  3 Mar 2021 09:24:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210303034418.106762-1-eric.snowberg@oracle.com>
-References: <20210303034418.106762-1-eric.snowberg@oracle.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, rdunlap@infradead.org, dwmw2@infradead.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] certs: Fix wrong kconfig option used for x509_revocation_list
+        Wed, 3 Mar 2021 05:24:40 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59730C0698E3;
+        Wed,  3 Mar 2021 01:27:51 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id u18so7516530plc.12;
+        Wed, 03 Mar 2021 01:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s6hjvIUW2bHosaip4kPRUurnF/6m14XdG9Exrn+bnXA=;
+        b=QmtZTimjkEL4C+AdQxJ7CUItbuqw8SrBlSivDznS7YkiJhJEV5USAeC2IA1aCzI/4I
+         4453Sfz+7TEAqJG8WLtM0mO1yeoeoHdwLp2GQyYDNRCvPtkNUCnTzjEA8y/dlO7uxZp4
+         p4yxBtmyyiUZoG6++yupi3oTHuSDhzi0qQT427mCH2SVh92xentLIzj2dArvNUgJ6ee/
+         wvmpL+pKs6gHymG+KnmNwjRTXPwZLu8T0HaS8ij2NrDRphi8LqTCLi0OpVJCRTa52Ld5
+         +zjvwli6SI/ZciKZSyGydqdGG4R6WOVVnJfIFb6w93GmUc0T5HPj+ybZXJw5ef6aKk+l
+         yPzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s6hjvIUW2bHosaip4kPRUurnF/6m14XdG9Exrn+bnXA=;
+        b=UkKckDARoDp6HKPyfizY/vLol6iuhkiUWIBZr8Luv0ttLuanggKj3U3ZLOw+64SUqB
+         nkNWeeUZkrdYSpUKFK2jjv4Cqr7GQyExOmjdaCR/HfKK+oVJmprCnB7PVKYN47dcUsoF
+         qM8H2QkWz6AhJqJtrVUg6P5vuclxSWVlrcWn3Af/17QTWzEFj3PJ3n0RkQ/NsR+FfPxm
+         WbxpLvjiZaU2hsrbxmHLenBKzNi5Ts1xMKm8s2GRMp/2YY8KFyB4D2xbGPzaoO4kmOr9
+         D9+5xGU6bn9jNm6dr43Ymr23PyDyauNMAk71dCBQvr1Mvc3vtrQWrdeOQGgcykw+64gE
+         NYHA==
+X-Gm-Message-State: AOAM531V9rxor9UE6qnf49HlXBc+vUdqXd8EBjrSjoyYe+S9AadWbYrr
+        WAU5ydHZKqH246DXWh+hD8UGiPMC0p7Iw2eNE0o=
+X-Google-Smtp-Source: ABdhPJxBHtBkJYB3Vi2vDSobGNT6l9vpi3k8ps++zZkMsJYxt1s9S/JIUNVwIMQU2XRRpBIy5Gu3rBWKh20PvrI63GY=
+X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr8889364pja.228.1614763670630;
+ Wed, 03 Mar 2021 01:27:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2033456.1614763481.1@warthog.procyon.org.uk>
-Date:   Wed, 03 Mar 2021 09:24:41 +0000
-Message-ID: <2033457.1614763481@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <CAHp75VfpnGEZcnrQLFYaFQ-HuxTmPw5OnewKmRGfXQf__ztjww@mail.gmail.com>
+ <87r1lgx8fo.fsf@meer.lwn.net> <CAHp75Vc0SwC=WxUOiokUik1G4uPE6bHfX_F_ckgp-eEJaVuWhA@mail.gmail.com>
+ <87mtw4x7rw.fsf@meer.lwn.net> <CAHp75VcG544HZ1j_6jvZoba6kEjKXXfZ8deJWmwNQ08mC35NrA@mail.gmail.com>
+ <20210303094426.1c3f6ff3@coco.lan>
+In-Reply-To: <20210303094426.1c3f6ff3@coco.lan>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 3 Mar 2021 11:27:34 +0200
+Message-ID: <CAHp75Vc3DkW=T=kDhqNYFNTguLrHdb3nF4pS5_VjquNMJOXUvA@mail.gmail.com>
+Subject: Re: anonymous enums in kernel doc
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+On Wed, Mar 3, 2021 at 10:44 AM Mauro Carvalho Chehab
+<mchehab@kernel.org> wrote:
+> Em Tue, 16 Feb 2021 19:12:58 +0200
+> Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
+> > On Tue, Feb 16, 2021 at 7:05 PM Jonathan Corbet <corbet@lwn.net> wrote:
+> > > Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> > > > On Tue, Feb 16, 2021 at 6:51 PM Jonathan Corbet <corbet@lwn.net> wrote:
+> > > >>
+> > > >> > Mauro, can you do some test cases in your workflow against anonymous
+> > > >> > enum in ernel doc, please?
+> > > >> >
+> > > >> > They are broken again, please fix the script!
+> > > >> >
+> > > >> > drivers/pinctrl/intel/pinctrl-intel.c:204: warning: wrong kernel-doc
+> > > >> > identifier on line:
+> > > >> > * enum - Locking variants of the pad configuration
+> > > >> >
+> > > >> > Above is simply a wrong statement.
+> > > >>
+> > > >> The real problem, perhaps, is that there seems to be little point in
+> > > >> adding kerneldoc comments for anonymous enums; where are you going to
+> > > >> use that documentation?
+> > > >
+> > > > I had been explicitly told during review (IIRC by maintainers) to make
+> > > > it such, while the initial version was exactly like you are thinking
+> > > > of. So, I'm not the right person to be asked :-)
+> >
+> > Just for a reference [1].
+> >
+> > > >>  The error message could perhaps be changed to
+> > > >> say that; meanwhile, perhaps this one could be fixed with an action like
+> > > >> s%/**%/*% ?
+> > > >
+> > > > See above. I think regression comes from the kernel doc script,
+> > > > earlier it was okay. That said, the author of kernel doc changes has
+> > > > to submit a patch to amend the driver and maintainers will review it.
+> > >
+> > > kerneldoc now warns about various incorrect things that it used to just
+> > > silently pass over.  There is no regression here, just a new diagnostic
+> > > to point out something that was never going to work right.  Unless you
+> > > have a good idea for what kerneldoc should do with a block like that?
+> >
+> > As it does, put description of individual fields and prepend it with a
+> > common part.
+> >
+> > So,
+> >
+> > enum - Bla bla bla
+> >  @FOO: ABC
+> >  @BAR: DEF
+> > Description
+> >
+> > Should go in the doc for the corresponding file like (as an example)
+> >
+> > Anonymous enumeration Bla bla bla
+> > Description
+> >
+> > FOO ABC
+> > BAR DEF
+> >
+> > (not sure about indentation, emphasizing and separators, but I think
+> > you got the idea).
+> >
+> > > (An alternative fix, of course, would be to give the enum a name so it
+> > > can actually be used for type checking.)
+> >
+> > That enum is not used as an enum, it provides the logically unified constants.
+>
+> What's the problem of giving it a name?
 
-> +ifeq ($(CONFIG_SYSTEM_REVOCATION_LIST),y)
-> +obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += revocation_certificates.o
-> +endif
+Because why should I do this? It's a perfect C language which has no
+issues so far.
 
-Should the ifeq be referring to CONFIG_SYSTEM_REVOCATION_KEYS rather than
-CONFIG_SYSTEM_REVOCATION_LIST?  In fact, since S_R_K depends indirectly on
-S_B_K, you should be able to just do:
+> You could call it as "intel_pinctrl_pad" or something similar.
+>
+> > Personally I don't see why the kernel doc can't digest this.
+>
+> It is not hard to add support for this special case. Just sent a
+> patch.
 
-	+obj-$(CONFIG_SYSTEM_REVOCATION_KEYS) += revocation_certificates.o
+Thanks, I will test it!
 
-> +#ifdef CONFIG_SYSTEM_REVOCATION_LIST
+> Yet, this adds additional complexity on an script that it is
+> already complex enough.
 
-Here also?
+> > [1]: https://patchwork.ozlabs.org/project/linux-gpio/patch/20190808132128.13359-1-andriy.shevchenko@linux.intel.com/
 
-> + hostprogs-always-$(CONFIG_SYSTEM_BLACKLIST_KEYRING)   += extract-cert
-
-And here too?
-
-(As an aside, I wonder if SYSTEM_REVOCATION_CERTS would be a better name, but
-I'm okay with leaving it as-is for now).
-
-David
-
+-- 
+With Best Regards,
+Andy Shevchenko
