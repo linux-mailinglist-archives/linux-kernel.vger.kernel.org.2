@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB8232BB67
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0996232BB68
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446402AbhCCMXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:23:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238129AbhCCHPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 02:15:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F364E64ED4;
-        Wed,  3 Mar 2021 07:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614755655;
-        bh=20Cl48DRvMwy2OE345MXY2fQfXpiGBWIqaXxZ1H4Y70=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h12ydsbTN+SxQu77TyBX8P+5E539ZbZSHsrfj0F/yGf+nXIyZIiTjAH5kyhVR3EtR
-         rQ+BK9N1POyeMr0c9t50L5DowqlNCgCack9rPg2nWCzGqkLwd/DQMs/2VSDazw7+jr
-         UMzL9vvimj83djq0/o6K38cMYnXppRKg4wbv/qX8=
-Date:   Wed, 3 Mar 2021 08:14:12 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Li Wang <li.wang@windriver.com>
-Cc:     jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vt: keyboard, fix uninitialized variables warning
-Message-ID: <YD83RFqtKVB2pA9H@kroah.com>
-References: <1614747572-3295-1-git-send-email-li.wang@windriver.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614747572-3295-1-git-send-email-li.wang@windriver.com>
+        id S1446513AbhCCMX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:23:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356174AbhCCHQy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 02:16:54 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1959C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 23:16:13 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id o8so19267367qkl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 23:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Mnua9sIpK4opv1bat3S4YMVM0wLz7zG7EDFUzDE8sqE=;
+        b=hrT1ZnLtQU+yhwzRAN83U2EvzE0FXH5gAcsU/4kIr7dt6WlCWitE6Zo4dcHWpT/xfN
+         S8Bksk5PZK8jeiXjD3s91Eplec/+1eTPJGl5rTAqIP5GwQhD7rkPpSDBNy+UEBF+GySd
+         yCQK23q5uHZGpA+bBUBVNvdpdbPfjlK/dAwuAZbwJIikjS6GuWDXmi8wpp/tPT/etAoE
+         b+A8MIprP6qE2T5WH+CIedjotGXMb8fopDkdIz/3vVqc2Eq5EGdfaiiP7woksQ3PNuiy
+         PU0A2wwI+DE+6DCtmliZw9cDO+GMbnlHE1ymcc9olNm474R/F45cdVnbVOLwlAEy37UL
+         nNrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Mnua9sIpK4opv1bat3S4YMVM0wLz7zG7EDFUzDE8sqE=;
+        b=C+x2HEPutSYdEKNr3mVOCBRMU2fc6/Y2auz9n+Y+XfSz2RIHjwpPQPuK6BI/xKmdV1
+         lLprfiqqJAxlu9dZnLtF7pn3sxDuKqdUw0DEVR3FVu4z7Cm4oS8K1YmFBv3s8GE4dnzA
+         5LQBMkBsjEznPODnn1gOEoUMTGEHueiZubMlLWlBIdqzfWy8JSv4YqnD4UN2B8943p5r
+         bvZCAAZs69zRfwT+FvpVHqH5zqgly9mxOSNk6QnlSDYsbY58BI1/PanqyNu4bGTVYfZ/
+         n7Bzo+SgrUXTrHUi+sDJpx6HM+P8bbtsMq6dOtf5QHA5Hy5MCGdxyh7dEAbB5fe8YX0T
+         4v5A==
+X-Gm-Message-State: AOAM531iTiwARz8G4kSFT1wu3TWEgiLXobYUZx7sPGvK+ZH4lNId2V+S
+        1stAfTKmImrHaSud51A0oMwlCTQ0uM8=
+X-Google-Smtp-Source: ABdhPJyGSB4z+pduFim01lG0Bb1doDwpJf2J5Ka4e2MdOhYE45ZwWhwKA0kUzFI/+t2Id2aBe4JXpHo/vKI=
+Sender: "yuzhao via sendgmr" <yuzhao@yuzhao.bld.corp.google.com>
+X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:4877:a627:46e9:4b6])
+ (user=yuzhao job=sendgmr) by 2002:a0c:e84d:: with SMTP id l13mr7151041qvo.28.1614755772802;
+ Tue, 02 Mar 2021 23:16:12 -0800 (PST)
+Date:   Wed,  3 Mar 2021 00:16:08 -0700
+Message-Id: <20210303071609.797782-1-yuzhao@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH 1/2] mm: correctly determine LAST_CPUPID_WIDTH
+From:   Yu Zhao <yuzhao@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 12:59:32PM +0800, Li Wang wrote:
-> drivers/tty/vt/keyboard.c: In function 'vt_do_kdgkb_ioctl':
-> drivers/tty/vt/keyboard.c: warning: 'ret' may be used uninitialized in this function [-Wmaybe-uninitialized]
->   return ret;
->          ^~~
-> kernel-source/drivers/tty/vt/keyboard.c: warning: 'kbs' may be used uninitialized in this function [-Wmaybe-uninitialized]
->   kfree(kbs);
->   ^~~~~~~~~~
-> 
-> Signed-off-by: Li Wang <li.wang@windriver.com>
-> ---
->  drivers/tty/vt/keyboard.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-> index 7763862..3e73d55 100644
-> --- a/drivers/tty/vt/keyboard.c
-> +++ b/drivers/tty/vt/keyboard.c
-> @@ -2049,8 +2049,8 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
->  {
->  	unsigned char kb_func;
->  	unsigned long flags;
-> -	char *kbs;
-> -	int ret;
-> +	char *kbs = NULL;
-> +	int ret = -EINVAL;
->  
->  	if (get_user(kb_func, &user_kdgkb->kb_func))
->  		return -EFAULT;
+The naming convention used in include/linux/page-flags-layout.h:
+  *_SHIFT: the number of bits trying to allocate
+  *_WIDTH: the number of bits successfully allocated
 
-What compiler is providing these "warnings"?
+So when it comes to LAST_CPUPID_WIDTH, we need to check whether all
+previous *_WIDTH and LAST_CPUPID_SHIFT can fit into page flags. This
+means we need to use NODES_WIDTH, not NODES_SHIFT.
 
-Turns out it is impossible to hit, so this isn't actually fixing
-anything...
+Signed-off-by: Yu Zhao <yuzhao@google.com>
+---
+ include/linux/page-flags-layout.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/include/linux/page-flags-layout.h b/include/linux/page-flags-layout.h
+index 7d4ec26d8a3e..295c2c687d2c 100644
+--- a/include/linux/page-flags-layout.h
++++ b/include/linux/page-flags-layout.h
+@@ -83,7 +83,7 @@
+ #define KASAN_TAG_WIDTH 0
+ #endif
+ 
+-#if SECTIONS_WIDTH+ZONES_WIDTH+NODES_SHIFT+LAST_CPUPID_SHIFT+KASAN_TAG_WIDTH \
++#if SECTIONS_WIDTH+ZONES_WIDTH+NODES_WIDTH+LAST_CPUPID_SHIFT+KASAN_TAG_WIDTH \
+ 	<= BITS_PER_LONG - NR_PAGEFLAGS
+ #define LAST_CPUPID_WIDTH LAST_CPUPID_SHIFT
+ #else
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
-greg k-h
