@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CDA32BE9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C940E32BE93
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385966AbhCCRdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
+        id S1385857AbhCCRcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:32:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242273AbhCCNwB (ORCPT
+        with ESMTP id S1344932AbhCCNwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:52:01 -0500
+        Wed, 3 Mar 2021 08:52:19 -0500
 Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEBAC0698CD
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:29 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id e10so23497424wro.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486A3C0698CF
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:30 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id 7so23757915wrz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9a8uG82AXGJJSEoRJJovLig/Ib2BpsFPbqufrjPoPFE=;
-        b=HffZHJVgQU5P83AadrIRV6kXhbhGJisP4W7b8otP0l/09h8RopTD8AL57+IPoMuxWH
-         js+ROx/MDvMANLCUB9CyNR/x2FKJwnDELJQnh4+ac0bXc31jeBOfT3ewtZg/8yvpnmDp
-         qIE4t59LPglLuXZo0+53Y3BK7gkBowNzY8yiDgfrBlnm91X9JixLzZFxO9uFBR1I/kj5
-         OvOsE1aUyrTuj4+Amvtt+mc8m6dfwxBPwty2SEvO6mACifZA+bcWDtAPiHK9hKVipUrs
-         HzzmA9SYmLPC2T+qee/iCGuZNUkVVyeADeW1TA86UxlHyJ5EOoQLVC2KdYPFG7Whf7td
-         inwQ==
+        bh=UZJKNhLRXc9aoEUlg60mpCU3bbdn2u+HfyOeJ90k/g4=;
+        b=IwKQ0n8S1aPrrgbMmJrQkxt9jO0zGLong8mRdLUcm4bLTCRQCscWGXmbesP2pAaCj1
+         KVQvWMt7U2Bh4XLHxlmDHJdRw510PtfXw1U0vG3Js+p2DL0DRvmm8YKtfVuQS5Us/3v+
+         Id6LAkTfKW7yFddEx3M0+VzuBlePAZ0t+pzxJb/fRVoewrv5/U7PzFAwW4vBzmlsFU/V
+         KZW8MFmUxaJ8fVujnwvdDa/2ht6IQ5yvOcXqYsljYx1sV1tKc9pKecEr5Chw8INcqHi5
+         LBvh9ixQF6gSYz0Qxw/b1aCqym2pCLWTi68wISXhKkqlXr2+hgcyf0bFjPuPVOs8G03E
+         6FqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9a8uG82AXGJJSEoRJJovLig/Ib2BpsFPbqufrjPoPFE=;
-        b=WtKYcG7Kgf4A1UaB7i3bgTa99Dtctj/4bQyBBbmdkuX9vv37azwZFUuqaAIzp3Gl0h
-         IlUH64cG05O8xdZLan4e5mCGXn1kcDko264a+7LGbYB+Xl7RPQyWE4uzUyQ+jMLdNuFh
-         BC8DdnauhhcjS8D9OLI5Ss0RgF4jjmNNXYfrhy87WKGQEG+Oa5ao1YrT3BPVxy9H4loa
-         cdjSXku1O8c7uogn9pagi3gtoOuGwL6WwtCsgn1lhbpBMRiWMidSVfY1Z7R7E8NK9nZs
-         gXxpyLFoLjPf6UdR1YH/aKtLOyBQc2RJYEblH9Kc7vsRvnXZPWVWafdvVx2y9nVJnP13
-         Qt3Q==
-X-Gm-Message-State: AOAM532Vj0//GJvRg4NIbSTTyq3u6+5Ri4TRcQwJCiMTfQ3euw8SZDS8
-        jj8CDH9tSssZcd1bykj0BxGmXg==
-X-Google-Smtp-Source: ABdhPJzonK3MB46SdxZ8jVQFWi3OAvLxvQxNMnEt1RFxnv9c3LrkIa/7bpy0cvq/azCvtaXzAfKT4g==
-X-Received: by 2002:adf:9bcf:: with SMTP id e15mr26672762wrc.276.1614779067956;
-        Wed, 03 Mar 2021 05:44:27 -0800 (PST)
+        bh=UZJKNhLRXc9aoEUlg60mpCU3bbdn2u+HfyOeJ90k/g4=;
+        b=MiL/0H0HnYcQNWcFhqzSYfuz2JDlA7J5RYA+Jwr1OuZ2yFoaTKFuDpD7szdmNyEk5j
+         zXGnxz/ntRNMLdPwO2kfxMRdngtitTGeaQGfkg0v9dqBlxjptg/43gRv3lHWd6gAxbbX
+         sSYsd0Mv1m8B4STrrJiZ+yNEzKTlBi6mNWyLVyuq+c8HDmFS81AozsVmiy8jYj5m5zPI
+         lLGfTcKKh/UOB4A9BrO5I5VAGN2aKWS8h/QhFxtasgIZmlqZLw95tCWxD8QUW4DDFOQh
+         /ZZbjr2FinmLnFx0vgTg+RftUaUph/FHtUxcHT3KiDkG4B7nZcKdXe2uv9nVzP/VN5ag
+         gFCw==
+X-Gm-Message-State: AOAM533ZFEpo7jTIE7l75v95e1jTno+k7cQ/g4v294G9/HgrvgJBrssR
+        ePQ02u+7T+C0yobA20fKw6SOLg==
+X-Google-Smtp-Source: ABdhPJwNpTbE4CpOl/WCCXL4tCN0hvpax+mSVBRm8rrn8WDuO4RzuyWynCmDiMQT7zoV4BLcbGV9+g==
+X-Received: by 2002:a5d:570c:: with SMTP id a12mr27653085wrv.209.1614779069069;
+        Wed, 03 Mar 2021 05:44:29 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.26
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:44:27 -0800 (PST)
+        Wed, 03 Mar 2021 05:44:28 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,20 +55,14 @@ Cc:     linux-kernel@vger.kernel.org,
         Roland Scheidegger <sroland@vmware.com>,
         Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 51/53] drm/vmwgfx/ttm_object: Demote half-assed headers and fix-up another
-Date:   Wed,  3 Mar 2021 13:43:17 +0000
-Message-Id: <20210303134319.3160762-52-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 52/53] drm/vmwgfx/vmwgfx_thp: Add description for 'vmw_thp_manager's member 'manager'
+Date:   Wed,  3 Mar 2021 13:43:18 +0000
+Message-Id: <20210303134319.3160762-53-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -76,67 +70,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/ttm_object.c:60: error: Cannot parse struct or union!
- drivers/gpu/drm/vmwgfx/ttm_object.c:97: warning: Function parameter or member 'mem_glob' not described in 'ttm_object_device'
- drivers/gpu/drm/vmwgfx/ttm_object.c:97: warning: Function parameter or member 'ops' not described in 'ttm_object_device'
- drivers/gpu/drm/vmwgfx/ttm_object.c:97: warning: Function parameter or member 'dmabuf_release' not described in 'ttm_object_device'
- drivers/gpu/drm/vmwgfx/ttm_object.c:97: warning: Function parameter or member 'dma_buf_size' not described in 'ttm_object_device'
- drivers/gpu/drm/vmwgfx/ttm_object.c:97: warning: Function parameter or member 'idr' not described in 'ttm_object_device'
- drivers/gpu/drm/vmwgfx/ttm_object.c:128: warning: Function parameter or member 'rcu_head' not described in 'ttm_ref_object'
- drivers/gpu/drm/vmwgfx/ttm_object.c:128: warning: Function parameter or member 'tfile' not described in 'ttm_ref_object'
- drivers/gpu/drm/vmwgfx/ttm_object.c:582: warning: Function parameter or member 'dmabuf' not described in 'get_dma_buf_unless_doomed'
- drivers/gpu/drm/vmwgfx/ttm_object.c:582: warning: Excess function parameter 'dma_buf' description in 'get_dma_buf_unless_doomed'
+ drivers/gpu/drm/vmwgfx/vmwgfx_thp.c:21: warning: Function parameter or member 'manager' not described in 'vmw_thp_manager'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
 Cc: Zack Rusin <zackr@vmware.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Dave Airlie <airlied@redhat.com>
-Cc: Rob Clark <rob.clark@linaro.org>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210115181601.3432599-10-lee.jones@linaro.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115181601.3432599-11-lee.jones@linaro.org
 ---
- drivers/gpu/drm/vmwgfx/ttm_object.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_thp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/vmwgfx/ttm_object.c b/drivers/gpu/drm/vmwgfx/ttm_object.c
-index 0fe869d0fad12..b3fdc630497cb 100644
---- a/drivers/gpu/drm/vmwgfx/ttm_object.c
-+++ b/drivers/gpu/drm/vmwgfx/ttm_object.c
-@@ -73,7 +73,7 @@ struct ttm_object_file {
- 	struct kref refcount;
- };
- 
--/**
-+/*
-  * struct ttm_object_device
-  *
-  * @object_lock: lock that protects the object_hash hash table.
-@@ -96,7 +96,7 @@ struct ttm_object_device {
- 	struct idr idr;
- };
- 
--/**
-+/*
-  * struct ttm_ref_object
-  *
-  * @hash: Hash entry for the per-file object reference hash.
-@@ -568,7 +568,7 @@ void ttm_object_device_release(struct ttm_object_device **p_tdev)
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_thp.c b/drivers/gpu/drm/vmwgfx/vmwgfx_thp.c
+index e8e79de255cf7..eb63cbe64909d 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_thp.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_thp.c
+@@ -11,6 +11,7 @@
  /**
-  * get_dma_buf_unless_doomed - get a dma_buf reference if possible.
+  * struct vmw_thp_manager - Range manager implementing huge page alignment
   *
-- * @dma_buf: Non-refcounted pointer to a struct dma-buf.
-+ * @dmabuf: Non-refcounted pointer to a struct dma-buf.
-  *
-  * Obtain a file reference from a lookup structure that doesn't refcount
-  * the file, but synchronizes with its release method to make sure it has
++ * @manager: TTM resource manager.
+  * @mm: The underlying range manager. Protected by @lock.
+  * @lock: Manager lock.
+  */
 -- 
 2.27.0
 
