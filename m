@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4690832C52F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C127B32C4E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444404AbhCDATk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:19:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39412 "EHLO mail.kernel.org"
+        id S1345093AbhCDASP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:18:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352586AbhCDAHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:07:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2CAC64F44;
-        Wed,  3 Mar 2021 23:56:18 +0000 (UTC)
+        id S234928AbhCDAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:07:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8273364F48;
+        Wed,  3 Mar 2021 23:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614815779;
-        bh=3Gb3GiZpHrzq0CQisU0ovLCOUcvPqMKtN8rs++El1QA=;
+        bh=lUOmba8vVHnpHV2R1J6JAqgq/r5KVw39qB+bVXwp+f0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dwKF1VdjqXR7KTjyhhYazdeBUSGW6SiH93DzJjeHZUY9x3yOmIfoSz6fU1wJo1q/B
-         L6caOJT8xNvcKbY3ctaHdi62+D93TUEGiVKw7SFv58OVTEOA4dmn6tcp+/To138nND
-         QwMgdLdGAbhiZN5d5A96ni1y+C1tZbeQ6Clg9SrFY7eqEOFM6/o9YJm1nhfs5LbEah
-         ho9yXcJ0UwE/zHJ7MxiKYw+XaikiNRLhJTqAF2MosfQlTRUbDvicYRPq0+oXklE//x
-         ysziW3BrxFAiW8LpWMRJSbSE49wycathDwLSpFMVVndMRvJE1dnuCz76Pr5sUvje+u
-         YGDxa53PP6/uw==
+        b=Uu11XI5ojeNe+/9bDzOsH9XoxJWuVb9PEsY5bpeIWjiJVek0sPj7PW72a6krTb8yC
+         M6e+1QuSnyGC+4CM1fHb09//0Cqn7CsSA1yuHSNlpR+7deJb/LlYXsDyLGP78Y9jy6
+         KsXxMTOCoNRWXYUc5vaUZzpC+TBpkjVnIZfW97/ihwKRFhuTjEn6vw4cl8WKztgpeJ
+         rWPsIBqREDqduFMogG3eIMRIxz8Rhw4c2g/ioiIXUzpWpO41WNC4r1xLS5caWvnIe/
+         Q+I1wejBhYTPV60BJfvYoepk+AAdS849mttw8F8IB6EW6vmN4mWBg5u/WyXAiNsaPQ
+         gIUM1o2Md3fMg==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH lib/bitmap 2/9] lib: test_bitmap: add tests to trigger ERANGE case.
-Date:   Wed,  3 Mar 2021 15:56:09 -0800
-Message-Id: <20210303235616.22093-2-paulmck@kernel.org>
+Subject: [PATCH lib/bitmap 3/9] lib: test_bitmap: add more start-end:offset/len tests
+Date:   Wed,  3 Mar 2021 15:56:10 -0800
+Message-Id: <20210303235616.22093-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235526.GA21868@paulmck-ThinkPad-P72>
 References: <20210303235526.GA21868@paulmck-ThinkPad-P72>
@@ -47,9 +47,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-Add tests that specify a valid range, but one that is outside the
-width of the bitmap for which it is to be applied to.  These should
-trigger an -ERANGE response from the code.
+There are inputs to bitmap_parselist() that would probably never
+be entered manually by a person, but might result from some kind of
+automated input generator.  Things like ranges of length 1, or group
+lengths longer than nbits, overlaps, or offsets of zero.
+
+Adding these tests serve two purposes:
+
+1) document what might seem odd but nonetheless valid input.
+
+2) don't regress from what we currently accept as valid.
 
 Cc: Yury Norov <yury.norov@gmail.com>
 Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
@@ -59,22 +66,49 @@ Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- lib/test_bitmap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ lib/test_bitmap.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 853a3a6..0f2e91d 100644
+index 0f2e91d..3c1c46d 100644
 --- a/lib/test_bitmap.c
 +++ b/lib/test_bitmap.c
-@@ -337,6 +337,8 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
+@@ -34,6 +34,8 @@ static const unsigned long exp1[] __initconst = {
+ 	BITMAP_FROM_U64(0x3333333311111111ULL),
+ 	BITMAP_FROM_U64(0xffffffff77777777ULL),
+ 	BITMAP_FROM_U64(0),
++	BITMAP_FROM_U64(0x00008000),
++	BITMAP_FROM_U64(0x80000000),
+ };
+ 
+ static const unsigned long exp2[] __initconst = {
+@@ -334,6 +336,26 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
+ 	{0, " ,  ,,  , ,   ",		&exp1[12 * step], 8, 0},
+ 	{0, " ,  ,,  , ,   \n",		&exp1[12 * step], 8, 0},
+ 
++	{0, "0-0",			&exp1[0], 32, 0},
++	{0, "1-1",			&exp1[1 * step], 32, 0},
++	{0, "15-15",			&exp1[13 * step], 32, 0},
++	{0, "31-31",			&exp1[14 * step], 32, 0},
++
++	{0, "0-0:0/1",			&exp1[12 * step], 32, 0},
++	{0, "0-0:1/1",			&exp1[0], 32, 0},
++	{0, "0-0:1/31",			&exp1[0], 32, 0},
++	{0, "0-0:31/31",		&exp1[0], 32, 0},
++	{0, "1-1:1/1",			&exp1[1 * step], 32, 0},
++	{0, "0-15:16/31",		&exp1[2 * step], 32, 0},
++	{0, "15-15:1/2",		&exp1[13 * step], 32, 0},
++	{0, "15-15:31/31",		&exp1[13 * step], 32, 0},
++	{0, "15-31:1/31",		&exp1[13 * step], 32, 0},
++	{0, "16-31:16/31",		&exp1[3 * step], 32, 0},
++	{0, "31-31:31/31",		&exp1[14 * step], 32, 0},
++
++	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
++	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
++
  	{-EINVAL, "-1",	NULL, 8, 0},
  	{-EINVAL, "-0",	NULL, 8, 0},
  	{-EINVAL, "10-1", NULL, 8, 0},
-+	{-ERANGE, "8-8", NULL, 8, 0},
-+	{-ERANGE, "0-31", NULL, 8, 0},
- 	{-EINVAL, "0-31:", NULL, 32, 0},
- 	{-EINVAL, "0-31:0", NULL, 32, 0},
- 	{-EINVAL, "0-31:0/", NULL, 32, 0},
 -- 
 2.9.5
 
