@@ -2,87 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DEC32BF8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D20232C01F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579853AbhCCScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347322AbhCCQuH (ORCPT
+        id S1386498AbhCCSP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:15:58 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:41434 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231582AbhCCPyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:50:07 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB5FC061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:49:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UgK6CdUmVmia3F32TSqVm1rGFuB6oMqXqSZlCi1K1AA=; b=duaUVIGPobMFDZfqpJdAQfeR/U
-        Lf82qEMloQKwNyG6quGc3BDub7P0dT0k0CIYRkRGzec3vT4+UzvmKDsxIohkEuY0vyNp1hxznx7nJ
-        GRUraaCyC/uCOp6v8P1FhkLXB8Bms4yTxrpjGwmk/mc4KYKHZjw2FGxRHlMsu4iyJ9IMbEBkYv+IP
-        tTJRB7ccd/hd/3dr59/2rTIaonz9EYwdJEe6OC57zyLssT7STGvAvn47g06YPi2mF1cwK0Mwlx/J5
-        8wm8NEEto+4sPQnu0pAGD49zKnqFIpScSpsIBjW9ZoiJpgTgif1eIIUuqhnykAp2iEJG+OjDqEGPc
-        gSroglCw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lHToH-005Tcr-F4; Wed, 03 Mar 2021 15:53:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00736303205;
-        Wed,  3 Mar 2021 16:53:13 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E44C923662BEE; Wed,  3 Mar 2021 16:53:12 +0100 (CET)
-Date:   Wed, 3 Mar 2021 16:53:12 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com
-Subject: Re: [PATCH v2 4/4] psi: Optimize task switch inside shared cgroups
-Message-ID: <YD+w6Gbb49LeIQb1@hirez.programming.kicks-ass.net>
-References: <20210303034659.91735-1-zhouchengming@bytedance.com>
- <20210303034659.91735-5-zhouchengming@bytedance.com>
+        Wed, 3 Mar 2021 10:54:21 -0500
+Received: by mail-io1-f72.google.com with SMTP id n1so15940282iob.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 07:53:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=KechlHkOlhWRy8Q4Ei8QQDGED6Oj1MoCxkdFSBmmls4=;
+        b=XYApqRhpoRuVIOgEiqSgygNubWNFI0VUwmK2XRr+d4J/1viFTP4iRPTcnHK3bTLMe9
+         xYAJfZW6HtQ0pL0h5ZkUYCGoFRF/AUwBljWE1aEqDNWwY+NEwJcO1Uh0I27Fr8k5lYQ/
+         fCG0WNJXpRIiXtzgy0sUGc0fxQmEXsKzcFtjjZwpPEvY/1DA5FoYenfq/6p0NIEwdASb
+         tOTDc2QSnY/r40YokbIxnkpmIcpI/6f4geBqG3wc8EfSk8LLJP5RV25I4TvAMX2UYIvR
+         +NSRNbISfPb2xt2lUYfSLe1w/stpbOHJCGrLtG5zkx1+kTZScZ5e5rspfx5zFx2NvUtO
+         n0jQ==
+X-Gm-Message-State: AOAM530UcBfhiMJp7UkWc+Msx0BNQMSIDplrES75Q5TkPgo9XhlllX2X
+        wG41qw4gH1wLADrYe31OPtLDEMmqtGl71n7TgORiGlPwILQ1
+X-Google-Smtp-Source: ABdhPJyYRx7urpK9LKZNgRsQDVymQEEnjN/Qd3DKU6uu/gSbbIKls29SKoQGSkx4CyYVLhU7hz17cnYd6liczhYhrue7YESJgxoN
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303034659.91735-5-zhouchengming@bytedance.com>
+X-Received: by 2002:a05:6602:1406:: with SMTP id t6mr23267984iov.154.1614786805636;
+ Wed, 03 Mar 2021 07:53:25 -0800 (PST)
+Date:   Wed, 03 Mar 2021 07:53:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f022ff05bca3d9a3@google.com>
+Subject: KASAN: use-after-free Write in cipso_v4_doi_putdef
+From:   syzbot <syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        paul@paul-moore.com, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:46:59AM +0800, Chengming Zhou wrote:
-> The commit 36b238d57172 ("psi: Optimize switching tasks inside shared
-> cgroups") only update cgroups whose state actually changes during a
-> task switch only in task preempt case, not in task sleep case.
-> 
-> We actually don't need to clear and set TSK_ONCPU state for common cgroups
-> of next and prev task in sleep case, that can save many psi_group_change
-> especially when most activity comes from one leaf cgroup.
-> 
-> sleep before:
-> psi_dequeue()
->   while ((group = iterate_groups(prev)))  # all ancestors
->     psi_group_change(prev, .clear=TSK_RUNNING|TSK_ONCPU)
-> psi_task_switch()
->   while ((group = iterate_groups(next)))  # all ancestors
->     psi_group_change(next, .set=TSK_ONCPU)
-> 
-> sleep after:
-> psi_dequeue()
->   nop
-> psi_task_switch()
->   while ((group = iterate_groups(next)))  # until (prev & next)
->     psi_group_change(next, .set=TSK_ONCPU)
->   while ((group = iterate_groups(prev)))  # all ancestors
->     psi_group_change(prev, .clear=common?TSK_RUNNING:TSK_RUNNING|TSK_ONCPU)
-> 
-> When a voluntary sleep switches to another task, we remove one call of
-> psi_group_change() for every common cgroup ancestor of the two tasks.
-> 
-Co-developed-by: Muchun ?
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    7a7fd0de Merge branch 'kmap-conversion-for-5.12' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=164a74dad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=779a2568b654c1c6
+dashboard link: https://syzkaller.appspot.com/bug?extid=521772a90166b3fca21f
+compiler:       Debian clang version 11.0.1-2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+521772a90166b3fca21f@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
+BUG: KASAN: use-after-free in __refcount_sub_and_test include/linux/refcount.h:272 [inline]
+BUG: KASAN: use-after-free in __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+BUG: KASAN: use-after-free in refcount_dec_and_test include/linux/refcount.h:333 [inline]
+BUG: KASAN: use-after-free in cipso_v4_doi_putdef+0x2d/0x190 net/ipv4/cipso_ipv4.c:586
+Write of size 4 at addr ffff8880179ecb18 by task syz-executor.5/20110
+
+CPU: 0 PID: 20110 Comm: syz-executor.5 Not tainted 5.12.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x125/0x19e lib/dump_stack.c:120
+ print_address_description+0x5f/0x3a0 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report+0x15e/0x210 mm/kasan/report.c:416
+ check_region_inline mm/kasan/generic.c:135 [inline]
+ kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:186
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
+ __refcount_sub_and_test include/linux/refcount.h:272 [inline]
+ __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+ refcount_dec_and_test include/linux/refcount.h:333 [inline]
+ cipso_v4_doi_putdef+0x2d/0x190 net/ipv4/cipso_ipv4.c:586
+ netlbl_domhsh_remove_entry+0x344/0xaa0 net/netlabel/netlabel_domainhash.c:634
+ netlbl_domhsh_remove+0xe9/0x230 net/netlabel/netlabel_domainhash.c:807
+ smk_cipso_doi+0x163/0x4e0 security/smack/smackfs.c:691
+ smk_write_doi+0x123/0x190 security/smack/smackfs.c:1613
+ vfs_write+0x220/0xab0 fs/read_write.c:603
+ ksys_write+0x11b/0x220 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fda2dfcc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465ef9
+RDX: 0000000000000014 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00000000004bcd1c R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffd0c1095df R14: 00007fda2dfcc300 R15: 0000000000022000
+
+Allocated by task 19918:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ ____kasan_kmalloc+0xc2/0xf0 mm/kasan/common.c:506
+ kasan_kmalloc include/linux/kasan.h:233 [inline]
+ __kmalloc+0xb4/0x370 mm/slub.c:4055
+ kmalloc include/linux/slab.h:559 [inline]
+ kzalloc include/linux/slab.h:684 [inline]
+ tomoyo_encode2+0x25a/0x560 security/tomoyo/realpath.c:45
+ tomoyo_encode security/tomoyo/realpath.c:80 [inline]
+ tomoyo_realpath_from_path+0x5c3/0x610 security/tomoyo/realpath.c:288
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x191/0x570 security/tomoyo/file.c:822
+ security_inode_getattr+0xc0/0x140 security/security.c:1288
+ vfs_getattr fs/stat.c:131 [inline]
+ vfs_fstat fs/stat.c:156 [inline]
+ __do_sys_newfstat fs/stat.c:396 [inline]
+ __se_sys_newfstat fs/stat.c:393 [inline]
+ __x64_sys_newfstat+0x97/0x150 fs/stat.c:393
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 19918:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:357
+ ____kasan_slab_free+0x100/0x140 mm/kasan/common.c:360
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x13a/0x200 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xcf/0x2b0 mm/slub.c:4213
+ tomoyo_path_perm+0x447/0x570 security/tomoyo/file.c:842
+ security_inode_getattr+0xc0/0x140 security/security.c:1288
+ vfs_getattr fs/stat.c:131 [inline]
+ vfs_fstat fs/stat.c:156 [inline]
+ __do_sys_newfstat fs/stat.c:396 [inline]
+ __se_sys_newfstat fs/stat.c:393 [inline]
+ __x64_sys_newfstat+0x97/0x150 fs/stat.c:393
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0x12f/0x8a0 kernel/rcu/tree.c:3114
+ cipso_v4_doi_remove+0x2e2/0x310 net/ipv4/cipso_ipv4.c:531
+ netlbl_cipsov4_remove+0x219/0x390 net/netlabel/netlabel_cipso_v4.c:715
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x9ae/0xd50 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x2bf/0x370 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff8880179ecb00
+ which belongs to the cache kmalloc-64 of size 64
+The buggy address is located 24 bytes inside of
+ 64-byte region [ffff8880179ecb00, ffff8880179ecb40)
+The buggy address belongs to the page:
+page:000000005a6eec83 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x179ec
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 ffffea0000513400 0000000800000008 ffff888010841640
+raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880179eca00: 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc
+ ffff8880179eca80: 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc
+>ffff8880179ecb00: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+                            ^
+ ffff8880179ecb80: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
+ ffff8880179ecc00: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
