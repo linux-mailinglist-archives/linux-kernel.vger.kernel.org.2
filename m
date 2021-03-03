@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3082332C01C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1B632BF90
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386487AbhCCSPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:15:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhCCPxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:53:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D605064EDB;
-        Wed,  3 Mar 2021 15:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614786780;
-        bh=Qir6h85tLUNfIn6uJz8Y84MHbyM/X4B4pLrnZucP8gU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=khjcIyCotfWfzxI9bMEDhiLsdxUCLpaTUGCExZSZA2JgUxc4RyOoBGpV9jZ63TxgF
-         GuTHbad7alv97mC7ZEOrSX10ZVWRDE+GiXjAFcfq9+j9bvQi9aRR/lURr1dUNUoNoh
-         Sbpqr+P3fIEtUX5tkK5zyuupToCZZ59IfBxWJTkPxnxmqDuCMLZJJo1WBrXX+7phG2
-         lMnLMT0slzrjl9Ahd/m/m0IIxAMydpCXcw9lXKb632IDj47QDzH0Iy7E2llRrZAINa
-         mU3d1LxPEgIhNbdgHoFC2mJmQptcj641i0jQA+o56Nq6KN64RlYj4GmMwA8om28kqw
-         ahb0AZVCOgKLA==
-Date:   Wed, 3 Mar 2021 17:52:40 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
-Subject: [GIT PULL] TPM DEVICE DRIVER changes for v5.12-rc2
-Message-ID: <YD+wyJzpguBWP33i@kernel.org>
+        id S1579878AbhCCSc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1441811AbhCCQuY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:50:24 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112B2C061765
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:49:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0DzFIM+EUTjiOjJVBMqKyqS4BHki234n3r4/jWOomlM=; b=C+MPKxnaArUY0J/dzHwZ6PfuGy
+        P5yvOQnDgBJy9qLyYrTTVYo8dOl+ttvdFuY8M5OGYfBk6s8tcSgHxc+hsnmDODGozvZabI31z9KEv
+        vTPbDuuCyhjA4wsjaTfpJ3DxrbVDstm/Z3P09enQdBlAlDdUpMwpIQoC0wmexw8Wqt8upFuzVPt2j
+        TqU/55rv3WA6k3UBTxd4R9zcVcnvrKVGRFsvx9MUCw+r8B7sMigOwBKXNJEbXWDTcCadpwuSwdefw
+        JEebpC9+j+bsMF9a97zgUj8SckQdBiKK8Xgm6XPo3ood9FapawPfkpdDcsUOaBSiGeJ+pidPCrMNk
+        LqFZEqyw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lHTo0-005TYo-I9; Wed, 03 Mar 2021 15:52:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EECB0303205;
+        Wed,  3 Mar 2021 16:52:54 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF08723662BED; Wed,  3 Mar 2021 16:52:54 +0100 (CET)
+Date:   Wed, 3 Mar 2021 16:52:54 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH v2 2/4] psi: Use ONCPU state tracking machinery to detect
+ reclaim
+Message-ID: <YD+w1i6ndWNkgo4t@hirez.programming.kicks-ass.net>
+References: <20210303034659.91735-1-zhouchengming@bytedance.com>
+ <20210303034659.91735-3-zhouchengming@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210303034659.91735-3-zhouchengming@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Three urgent fixes for rc2.
-
-/Jarkko
-
-The following changes since commit c03c21ba6f4e95e406a1a7b4c34ef334b977c194:
-
-  Merge tag 'keys-misc-20210126' of git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs (2021-02-23 16:09:23 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.12-rc2
-
-for you to fetch changes up to 232a37ea3aee9cb37bbc154fb1440a66ae4743f4:
-
-  tpm: Remove unintentional dump_stack() call (2021-03-03 17:43:52 +0200)
-
-----------------------------------------------------------------
-tpmdd updates for Linux v5.12-rc2
-
-----------------------------------------------------------------
-Jarkko Sakkinen (2):
-      tpm, tpm_tis: Decorate tpm_get_timeouts() with request_locality()
-      tpm: Remove unintentional dump_stack() call
-
-Lukasz Majczak (1):
-      tpm, tpm_tis: Decorate tpm_tis_gen_interrupt() with request_locality()
-
- drivers/char/tpm/tpm-chip.c     |  2 --
- drivers/char/tpm/tpm_tis_core.c | 30 +++++++++++++++++++++++++-----
- 2 files changed, 25 insertions(+), 7 deletions(-)
+On Wed, Mar 03, 2021 at 11:46:57AM +0800, Chengming Zhou wrote:
+> Move the reclaim detection from the timer tick to the task state
+> tracking machinery using the recently added ONCPU state. And we
+> also add task psi_flags changes checking in the psi_task_switch()
+> optimization to update the parents properly.
+> 
+> In terms of performance and cost, this ONCPU task state tracking
+> is not cheaper than previous timer tick in aggregate. But the code is
+> simpler and shorter this way, so it's a maintainability win. And
+> Johannes did some testing with perf bench, the performace and cost
+> changes would be acceptable for real workloads.
+> 
+> Thanks to Johannes Weiner for pointing out the psi_task_switch()
+> optimization things and the clearer changelog.
+> 
+Co-developed-by: Muchun ?
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
