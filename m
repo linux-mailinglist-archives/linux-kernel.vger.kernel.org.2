@@ -2,228 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C5A32BEEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0D632BEF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386193AbhCCRrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S1575996AbhCCRrS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 12:47:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383590AbhCCOja (ORCPT
+        with ESMTP id S234148AbhCCOkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:39:30 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093A6C061226
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:39:13 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id f33so23702998otf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:39:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ydBX+pGjF/hly9LCkDMks/XbfuRt2icO3LWw0ubnZBg=;
-        b=BipVVFvFZNSKC5Sq1DHK1KCd2wj2EtBh2kHvVE0HndwFfkwpIAdy0hddwyFpISP/hB
-         gKkb6pX13Sqsp8jCQJehXkky1QLNkq7J43BSiV8cK65k3qb8fpV8SvqQaBO9123NTawu
-         gIWhNmlD8oaqhOTZ8pXWjCjwZ3BS6baG1wTN0+jlajtEky0JxPrawqaadBROjkJc7EeQ
-         kNS0vjRkBHUUCiqIvN7dA3+CB9eZgTm3Y0OnVwT8hKRFhfVn/lLlOED4HB3JKB0YYcXe
-         RCugbz1s/+qqCTmCwqE87Au8n5uGKwzPpuZNWgKh13ocmtKVsLEmCW98dcRxXbdTbh7d
-         lVPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ydBX+pGjF/hly9LCkDMks/XbfuRt2icO3LWw0ubnZBg=;
-        b=ATri+p9wFVKmW6ooIGcP3a4gElDM/3ah2oE/YI9MDxj1sqYQ0xZsCbMygS7F+fOMFv
-         RDsjHQtpn3KiXGfq/W3ob2GgAEDseFogsUx/DXDDUoxrr4TsRD6elgoFg34M42AS+Ztz
-         fqhYDXHyqSHwFvuTJzHmAYP7qKQH4K7BxCjgT3HTZHDXGHeLUE4LKTz3bMWUVIRBd3TU
-         J8uLa/vsrqhYUre2nvN44T9R2QgJ7wm2U/9fVIpNCtBZXu8QFUrCQUmZmlFjE3WyUPpC
-         D3bDh2v8v9u9512efLJWSHVi0130TdPayfpSZjDUmTrlwI+267q/wGaKH9zpyVNokjay
-         HJZg==
-X-Gm-Message-State: AOAM533flmPRmpwSMhCwhI4uQHxj/potFgOA9R8cUhjV2NG/Mk3ZmT/9
-        DiwxVqrGkhXYmuPXZQoGr3E5rQO1HuG/TOntBbFWbg==
-X-Google-Smtp-Source: ABdhPJweXHPm4CwYRyWdlTFWK/3BUsDddAUhfYjRv5NkSivbrepGK/Cfmou9AvKZN8Ll0jcTjeGPNDJ7SG8d71Ri7hg=
-X-Received: by 2002:a9d:644a:: with SMTP id m10mr23005815otl.233.1614782352144;
- Wed, 03 Mar 2021 06:39:12 -0800 (PST)
-MIME-Version: 1.0
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 3 Mar 2021 15:38:59 +0100
-Message-ID: <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
+        Wed, 3 Mar 2021 09:40:35 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4178C0611C2
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:39:39 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHSez-0003rD-RS; Wed, 03 Mar 2021 15:39:33 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHSey-0000i4-TA; Wed, 03 Mar 2021 15:39:32 +0100
+Message-ID: <29bf66f4b531ec701e85c23a411e40e3621b0ff8.camel@pengutronix.de>
+Subject: Re: [PATCH v3 4/5] media: hantro: Use reset driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, ezequiel@collabora.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Wed, 03 Mar 2021 15:39:32 +0100
+In-Reply-To: <20210301151754.104749-5-benjamin.gaignard@collabora.com>
+References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+         <20210301151754.104749-5-benjamin.gaignard@collabora.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 15:09, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> It seems like all other sane architectures, namely x86 and arm64
-> at least, include the running function as top entry when saving
-> stack trace.
->
-> Functionnalities like KFENCE expect it.
->
-> Do the same on powerpc, it allows KFENCE to properly identify the faulting
-> function as depicted below. Before the patch KFENCE was identifying
-> finish_task_switch.isra as the faulting function.
->
-> [   14.937370] ==================================================================
-> [   14.948692] BUG: KFENCE: invalid read in test_invalid_access+0x54/0x108
-> [   14.948692]
-> [   14.956814] Invalid read at 0xdf98800a:
-> [   14.960664]  test_invalid_access+0x54/0x108
-> [   14.964876]  finish_task_switch.isra.0+0x54/0x23c
-> [   14.969606]  kunit_try_run_case+0x5c/0xd0
-> [   14.973658]  kunit_generic_run_threadfn_adapter+0x24/0x30
-> [   14.979079]  kthread+0x15c/0x174
-> [   14.982342]  ret_from_kernel_thread+0x14/0x1c
-> [   14.986731]
-> [   14.988236] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B             5.12.0-rc1-01537-g95f6e2088d7e-dirty #4682
-> [   14.999795] NIP:  c016ec2c LR: c02f517c CTR: c016ebd8
-> [   15.004851] REGS: e2449d90 TRAP: 0301   Tainted: G    B              (5.12.0-rc1-01537-g95f6e2088d7e-dirty)
-> [   15.015274] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
-> [   15.022043] DAR: df98800a DSISR: 20000000
-> [   15.022043] GPR00: c02f517c e2449e50 c1142080 e100dd24 c084b13c 00000008 c084b32b c016ebd8
-> [   15.022043] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
-> [   15.040581] NIP [c016ec2c] test_invalid_access+0x54/0x108
-> [   15.046010] LR [c02f517c] kunit_try_run_case+0x5c/0xd0
-> [   15.051181] Call Trace:
-> [   15.053637] [e2449e50] [c005a68c] finish_task_switch.isra.0+0x54/0x23c (unreliable)
-> [   15.061338] [e2449eb0] [c02f517c] kunit_try_run_case+0x5c/0xd0
-> [   15.067215] [e2449ed0] [c02f648c] kunit_generic_run_threadfn_adapter+0x24/0x30
-> [   15.074472] [e2449ef0] [c004e7b0] kthread+0x15c/0x174
-> [   15.079571] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
-> [   15.085798] Instruction dump:
-> [   15.088784] 8129d608 38e7ebd8 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
-> [   15.096613] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
-> [   15.104612] ==================================================================
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-
-Acked-by: Marco Elver <elver@google.com>
-
-Thank you, I think this looks like the right solution. Just a question below:
-
+On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
+> Rather use a reset like feature inside the driver use the reset
+> controller API to get the same result.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
->  arch/powerpc/kernel/stacktrace.c | 42 +++++++++++++++++++++-----------
->  1 file changed, 28 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/stacktrace.c b/arch/powerpc/kernel/stacktrace.c
-> index b6440657ef92..67c2b8488035 100644
-> --- a/arch/powerpc/kernel/stacktrace.c
-> +++ b/arch/powerpc/kernel/stacktrace.c
-> @@ -22,16 +22,32 @@
->  #include <asm/kprobes.h>
->
->  #include <asm/paca.h>
-> +#include <asm/switch_to.h>
->
->  /*
->   * Save stack-backtrace addresses into a stack_trace buffer.
->   */
-> +static void save_entry(struct stack_trace *trace, unsigned long ip, int savesched)
-> +{
-> +       if (savesched || !in_sched_functions(ip)) {
-> +               if (!trace->skip)
-> +                       trace->entries[trace->nr_entries++] = ip;
-> +               else
-> +                       trace->skip--;
-> +       }
-> +}
-> +
->  static void save_context_stack(struct stack_trace *trace, unsigned long sp,
-> -                       struct task_struct *tsk, int savesched)
-> +                              unsigned long ip, struct task_struct *tsk, int savesched)
->  {
-> +       save_entry(trace, ip, savesched);
-> +
-> +       if (trace->nr_entries >= trace->max_entries)
-> +               return;
-> +
->         for (;;) {
->                 unsigned long *stack = (unsigned long *) sp;
-> -               unsigned long newsp, ip;
-> +               unsigned long newsp;
->
->                 if (!validate_sp(sp, tsk, STACK_FRAME_OVERHEAD))
->                         return;
-> @@ -39,12 +55,7 @@ static void save_context_stack(struct stack_trace *trace, unsigned long sp,
->                 newsp = stack[0];
->                 ip = stack[STACK_FRAME_LR_SAVE];
->
-> -               if (savesched || !in_sched_functions(ip)) {
-> -                       if (!trace->skip)
-> -                               trace->entries[trace->nr_entries++] = ip;
-> -                       else
-> -                               trace->skip--;
-> -               }
-> +               save_entry(trace, ip, savesched);
->
->                 if (trace->nr_entries >= trace->max_entries)
->                         return;
-> @@ -59,23 +70,26 @@ void save_stack_trace(struct stack_trace *trace)
->
->         sp = current_stack_frame();
->
-> -       save_context_stack(trace, sp, current, 1);
-> +       save_context_stack(trace, sp, (unsigned long)save_stack_trace, current, 1);
+>  drivers/staging/media/hantro/Kconfig        |  1 +
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c | 61 ++++-----------------
+>  2 files changed, 12 insertions(+), 50 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/Kconfig b/drivers/staging/media/hantro/Kconfig
+> index 5b6cf9f62b1a..dd1d4dde2658 100644
+> --- a/drivers/staging/media/hantro/Kconfig
+> +++ b/drivers/staging/media/hantro/Kconfig
+> @@ -20,6 +20,7 @@ config VIDEO_HANTRO_IMX8M
+>  	bool "Hantro VPU i.MX8M support"
+>  	depends on VIDEO_HANTRO
+>  	depends on ARCH_MXC || COMPILE_TEST
+> +	select RESET_VPU_IMX8MQ
+>  	default y
+>  	help
+>  	  Enable support for i.MX8M SoCs.
+> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> index c222de075ef4..d5b4312b9391 100644
+> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> @@ -7,49 +7,12 @@
+>  
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> +#include <linux/reset.h>
+>  
+>  #include "hantro.h"
+>  #include "hantro_jpeg.h"
+>  #include "hantro_g1_regs.h"
+>  
+> -#define CTRL_SOFT_RESET		0x00
+> -#define RESET_G1		BIT(1)
+> -#define RESET_G2		BIT(0)
+> -
+> -#define CTRL_CLOCK_ENABLE	0x04
+> -#define CLOCK_G1		BIT(1)
+> -#define CLOCK_G2		BIT(0)
+> -
+> -#define CTRL_G1_DEC_FUSE	0x08
+> -#define CTRL_G1_PP_FUSE		0x0c
+> -#define CTRL_G2_DEC_FUSE	0x10
+> -
+> -static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
+> -{
+> -	u32 val;
+> -
+> -	/* Assert */
+> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+> -	val &= ~reset_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+> -
+> -	udelay(2);
+> -
+> -	/* Release */
+> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+> -	val |= reset_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+> -}
+> -
+> -static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
+> -{
+> -	u32 val;
+> -
+> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+> -	val |= clock_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
 
-This causes ip == save_stack_trace and also below for
-save_stack_trace_tsk. Does this mean save_stack_trace() is included in
-the trace? Looking at kernel/stacktrace.c, I think the library wants
-to exclude itself from the trace, as it does '.skip = skipnr + 1' (and
-'.skip   = skipnr + (current == tsk)' for the _tsk variant).
+The way it is implemented in the reset driver, the clocks are now
+ungated between assert and deassert instead of afterwards. Is this on
+purpose?
 
-If the arch-helper here is included, should this use _RET_IP_ instead?
-
-Thanks,
--- Marco
-
->  }
->  EXPORT_SYMBOL_GPL(save_stack_trace);
->
->  void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
->  {
-> -       unsigned long sp;
-> +       unsigned long sp, ip;
->
->         if (!try_get_task_stack(tsk))
->                 return;
->
-> -       if (tsk == current)
-> +       if (tsk == current) {
-> +               ip = (unsigned long)save_stack_trace_tsk;
->                 sp = current_stack_frame();
-> -       else
-> +       } else {
-> +               ip = (unsigned long)_switch;
->                 sp = tsk->thread.ksp;
-> +       }
->
-> -       save_context_stack(trace, sp, tsk, 0);
-> +       save_context_stack(trace, sp, ip, tsk, 0);
->
->         put_task_stack(tsk);
->  }
-> @@ -84,7 +98,7 @@ EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
->  void
->  save_stack_trace_regs(struct pt_regs *regs, struct stack_trace *trace)
->  {
-> -       save_context_stack(trace, regs->gpr[1], current, 0);
-> +       save_context_stack(trace, regs->gpr[1], regs->nip, current, 0);
->  }
->  EXPORT_SYMBOL_GPL(save_stack_trace_regs);
->
-> --
-> 2.25.0
->
+regards
+Philipp
