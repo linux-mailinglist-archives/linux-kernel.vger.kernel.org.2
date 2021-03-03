@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9618632C077
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB0A32C0A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386602AbhCCSok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574212AbhCCRWT (ORCPT
+        id S1386640AbhCCSpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:45:07 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19966 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231162AbhCCRXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:22:19 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C54C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:21:37 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id n4so7056120wmq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:21:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=snvF1oZRAeOuQ652xF7hxq8e8Xbivy9W17OCql8Ju58=;
-        b=N4GzE8TYwDr5X4gxi0SyFxRoTBr18n1OZjxbvypLvGP0Y4FoY0LysvNlydxCGejw5o
-         /cBkCZJLNvfwhcIGdhFCqyxDwdKIZ6qjVhtXO7fN9azK3VGGOf3w8vj2aAp59oSB8xdN
-         0dPT6MSfpozH0a30HioSChw0qmgAqCUYwcaapdq7uWhX/Cau9DcgXlxcfIWQUMNLc/LK
-         TFzBMXyK/zWnYtJMBqnKSmu5upeKLdHMql2kQ6zKb0XVFDIJl4dEbHe0xo7Qskg90KJL
-         JLt1qlFufE95dlru/PO4iXTOUfQzsqlVCf9J3BlUkcK+TVC4CiGinPkkPQSne2U/TFlH
-         LzWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=snvF1oZRAeOuQ652xF7hxq8e8Xbivy9W17OCql8Ju58=;
-        b=cHoRStumNtXkt2z5yIAaCsW1wW1TaP54mA7VsnnDBxLISdkTZn435BOBAxn+HBdb+Z
-         XtIpSKJ92sKLhNu1Cm229ojrLIqJsGzjFOBUXn/TvsPJYRPmXJoq3ntd9nbvcUYT6f3o
-         4GXf7Ph+TLF4j7Culc7unvSUsSWVViKCN9dL+QZSTj7FUeS077d1UYVhJ4jn8QtbBibI
-         3WiP3RyIrx7hP5nifXifCMhfqHFLk6cmYyP/MliiOBqnCxQ0Xa1bYLIuG9CB7QPfmKTx
-         1AZq2pyRGQ3qYCwrRzqj+aGQh1maz8QLrSr2YWw5ZnWcf3qfxHPzvyvQixsJ/UVc+axe
-         6MYA==
-X-Gm-Message-State: AOAM530tCwgRH1kvY2rsOeyAZVohgpCOv+/vOV87v97roXQZ/Rgw6mv6
-        zcXIYTfpmXGUv9pvkdJAg7y7aQ==
-X-Google-Smtp-Source: ABdhPJz0FpEULBkKSmdBklW+Kq2/Ls1+mEtrqGKqrnMSwdqjEtdd4QHizAokDIN5S9VOM4P4MLCxhg==
-X-Received: by 2002:a1c:7715:: with SMTP id t21mr74337wmi.132.1614792096379;
-        Wed, 03 Mar 2021 09:21:36 -0800 (PST)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id s23sm6477150wmc.35.2021.03.03.09.21.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:21:35 -0800 (PST)
-Date:   Wed, 3 Mar 2021 18:21:14 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Vivek Gautam <vivek.gautam@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, joro@8bytes.org,
-        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
-        eric.auger@redhat.com, alex.williamson@redhat.com,
-        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        yi.l.liu@intel.com, lorenzo.pieralisi@arm.com,
-        shameerali.kolothum.thodi@huawei.com
-Subject: Re: [PATCH RFC v1 09/15] iommu/virtio: Update table format probing
- header
-Message-ID: <YD/Fiuxd9/kThGxt@myrica>
-References: <20210115121342.15093-1-vivek.gautam@arm.com>
- <20210115121342.15093-10-vivek.gautam@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Wed, 3 Mar 2021 12:23:32 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603fc5e60000>; Wed, 03 Mar 2021 09:22:46 -0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
+ 2021 17:22:44 +0000
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
+ 2021 17:22:43 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.50) by
+ HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Wed, 3 Mar 2021 17:22:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WyGqvJf5315XGJ3hfugT/7DtWfIk/xuhLesAaBwmqiVM6+ihVQF9gwaejBk/2mslJR7camxbOjOVLkMxGhenFb67zz/HYTg4cD9z++j9fIj+1EDiHIQ/a0S/oLPF2AhWlC/E6uouyF616FlOSJwShIS5WpqIkeTXr5NusGBvrUm1XvmwZugOi+2HfZG1ntlOCf4MBxCMlzCEDz+zd3L9ECYW5va3XAzPf+GT43/mjgfqKzV+82/q8dgZw8XVuXa5pDJzp7n6RRHVSbCUpnBixX9Eu/9hNhfqdUHQDwYQH3HJ87eMbXWjkaL+CFeZf7r2xL1FgoEL9s8dh0kt8jTLEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2e6R/C8ZOjRryQI4cwzXwsw6pike1c728++lnFWjNEA=;
+ b=A1juvSih+rhywG/p60x6PkLbOerUatiBcXdz9T5W+5GR8+2B3tud16dn4LsgPP83KX4UU2XXSQRZcNqxKGRCASWVFAlu5eBZzavCVi0ikxIDmMtPOEaFOLLgE6gdIXF3tWDy8SF/rXW/ng2r+ibWgmBOrRFxFAyodNh3u803l+i7JJQnyui+R58Rztj8MSAuHL0QJfDv0JMgh4jzOPrJKvNa9JjQ/PgOKj9ucwlShAAZUWdgxA+gmWZFPND0mM+lfoIfoNOY22Kb4a1hxSi1F/LPjnS0zaQSvzUnjkeSU2Szbz39cGcCYNWRWS0Vq7POXgeS7Z4CW2lvfglxu1zsQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4356.namprd12.prod.outlook.com (2603:10b6:5:2aa::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Wed, 3 Mar
+ 2021 17:22:41 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.017; Wed, 3 Mar 2021
+ 17:22:41 +0000
+Date:   Wed, 3 Mar 2021 13:22:39 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-rc 0/2] W=1 compilation fixes leftovers
+Message-ID: <20210303172239.GA1480968@nvidia.com>
+References: <20210302074214.1054299-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210115121342.15093-10-vivek.gautam@arm.com>
+In-Reply-To: <20210302074214.1054299-1-leon@kernel.org>
+X-ClientProxiedBy: BL1PR13CA0481.namprd13.prod.outlook.com
+ (2603:10b6:208:2c7::6) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0481.namprd13.prod.outlook.com (2603:10b6:208:2c7::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.13 via Frontend Transport; Wed, 3 Mar 2021 17:22:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lHVCp-006DHa-CJ; Wed, 03 Mar 2021 13:22:39 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614792166; bh=2e6R/C8ZOjRryQI4cwzXwsw6pike1c728++lnFWjNEA=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=fJnltdO8UI9W4jJ5xuOFL+ivryfsrRHRASi2DiBUt/aFkJCrIfqqIWFDP/G8KoD0Y
+         zVzDkoeag6gYa0q+dpstD6+3l1llE7t37YwJLJXiOZ9UTFwlHcCcDPNVnwZQUHPnOX
+         m+hlu9YHT6HhCQ8WYuEFb0BnUK/Pkco+23PVBeLW0EEUQ3AElN0RxoTl+UE70riWFV
+         /xp2YiGV5HBfVV6L8JPNO2uDGVGKEqsba88GLE8GNxFROF4moyUXUoDnZEqYNfDSyR
+         any0/PeiJfBr7FD4Iii3PJqPkSKvkrZVLTc4yOcJdisOCMzi2F5sLkJZH+1IRHrGOD
+         UL0RPAlxNvWRg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:43:36PM +0530, Vivek Gautam wrote:
-> Add info about asid_bits and additional flags to table format
-> probing header.
+On Tue, Mar 02, 2021 at 09:42:12AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Will Deacon <will.deacon@arm.com>
-> Cc: Michael S. Tsirkin <mst@redhat.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Cc: Eric Auger <eric.auger@redhat.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Cc: Liu Yi L <yi.l.liu@intel.com>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> ---
->  include/uapi/linux/virtio_iommu.h | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> Two extra fixes that were missed in Lee's W=1 cleanup.
 > 
-> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
-> index 43821e33e7af..8a0624bab4b2 100644
-> --- a/include/uapi/linux/virtio_iommu.h
-> +++ b/include/uapi/linux/virtio_iommu.h
-> @@ -169,7 +169,10 @@ struct virtio_iommu_probe_pasid_size {
->  struct virtio_iommu_probe_table_format {
->  	struct virtio_iommu_probe_property	head;
->  	__le16					format;
-> -	__u8					reserved[2];
-> +	__le16					asid_bits;
-> +
-> +	__le32					flags;
+> Leon Romanovsky (2):
+>   RDMA/mlx5: Set correct kernel-doc identifier
+>   RDMA/uverbs: Fix kernel-doc warning of _uverbs_alloc
 
-This struct should only contain the head and format fields. asid and flags
-should go in a specialized structure - virtio_iommu_probe_pgt_arm64 in the
-latest spec draft, where I dropped the asid_bits field in favor of an
-"ASID16" flag.
+Applied to for-rc, thanks
 
-Thanks,
-Jean
-
+Jason
