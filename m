@@ -2,132 +2,497 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20E632C462
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B4132C45E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350114AbhCDANd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:13:33 -0500
-Received: from mail-co1nam11on2114.outbound.protection.outlook.com ([40.107.220.114]:41312
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1388972AbhCCVb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 16:31:29 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OEu3TNf9xC7esRi6fnmki1eiXAmpRiiWdvf1N5JBeAeARoJxc4Ll/rHZKD3FrKet6ujh2lZv2X8SxYV//bo8ryr9GdDVaI9M+SqUd4U3lCugFkmzi78UIcLYTwo8nRXnYy15D2dNTgznwjjeLUvwqGOoBDFFCEyzgoIUMeqy+TafBDaFaZAOZXlTX18nR2QK7CpT+oeKl/gaiEZchmXMcRw3lIawwEDZdZ79gRoq3+76BScH8FMEtvWkba5wy8dNl/fc+4AO9YGFUv0RTADigOk1csq0lBojg4d1DCkk3hehblL9a71nB3amTbAUNwROsxdvbwvW3uatsP+BribF3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JYfS8Ej9aBhwNV8XNRPfQBIb964tqeNhzWCMMk3M8aI=;
- b=BuM2JO/cM7QTzgrvLLnFqt1e5SOavOQftbzir7udjo9yqFV+4GPMpLinYdXJ+G/vpI/T2n7Zgky65PmqkSFKN/AJzSk0Ty1CYZ229cm4GZE56JuKKPtD2tzC1vQYE7qRd8L/8O6qh8RqZvQvFCG4+EIUFxq6ScgTAmRnoiUfI+0frMamCfKz3zRRP5J4MwYHV18aVMuzm56my3WZiA0PqMTO+VC5N3gbQ7eJ4JA8phzZKCgSpfHQuuWD0V+0Y1gAKH1qhPFMVqcG0LimNQTLHqNmLXy0F0NVgoM794kq0ejMTmC7OtefadX2LoyvycfvVAOm2tDgZDsqprXKL29sfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JYfS8Ej9aBhwNV8XNRPfQBIb964tqeNhzWCMMk3M8aI=;
- b=U1aiHRJ49K0kiRiBEbk4fwRxXrl6ROmMJzK70SVrG91hLqFI2dEa5nZKuxKgnyeIAB7//jTE4ESph4lkOxmuUaHQP3ubu+ARgD0nzoes7IvO/FwnLYseTz56K1uZQ7UHLQdgrO68ImH9CgBYpNl9VNjtw6Y9DgFvH0RtFGTG6FA=
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- (2603:10b6:803:51::33) by SN6PR2101MB0925.namprd21.prod.outlook.com
- (2603:10b6:805:a::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.9; Wed, 3 Mar
- 2021 21:29:43 +0000
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::c01:cceb:3ece:dd61]) by SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::c01:cceb:3ece:dd61%8]) with mapi id 15.20.3912.011; Wed, 3 Mar 2021
- 21:29:43 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-CC:     "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: RE: [PATCH v8 3/6] arm64: hyperv: Add kexec and panic handlers
-Thread-Topic: [PATCH v8 3/6] arm64: hyperv: Add kexec and panic handlers
-Thread-Index: AQHXDwVuGuMCLtr0l0qRwiIIh5sEOapyuVmQ
-Date:   Wed, 3 Mar 2021 21:29:43 +0000
-Message-ID: <SN4PR2101MB08803661D7BA9E30C9D26971C0989@SN4PR2101MB0880.namprd21.prod.outlook.com>
-References: <1614649360-5087-1-git-send-email-mikelley@microsoft.com>
- <1614649360-5087-4-git-send-email-mikelley@microsoft.com>
-In-Reply-To: <1614649360-5087-4-git-send-email-mikelley@microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:602:9400:570:3132:9d16:d3c9:b7bf]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 23b7cc63-418e-44ff-3b0a-08d8de8b75ea
-x-ms-traffictypediagnostic: SN6PR2101MB0925:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <SN6PR2101MB092540648CA220A4F6C50FCBC0989@SN6PR2101MB0925.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: J9Y3LDR0eh05ys1S7jokdM5tIrRsomUffW92lPZGQgwjmBaRPLuqAQ12/P6fRW/L4XgATf2r4Ewr8qXeIlYlTs/rLtqLoywDpU6vsil6rWKceH4Av7zucfhKizNCk06m3K4TAh1NlDqwgEDLMsZjXs+YdW7uqKrx2cv4GpmDVbClNh5w3Aw97bcLJp7LB2UYps4R6CIzKI97f10R/h5oP0VHraZUjbDZrSdOLYFu//gGNyBYJBC4asjGV2hY6EblJGUKr7lxJQp4RrxozKmZxh7UDqRGkY9lSkGjEGniR080YQcyE1hLcrHxFqmquXW+PFCZvBNjymRubFt9pZHBaNpyu3p4kV+kJa3fi/NI/JaQ1hMkU5gHRKrAR+/l41xOOuY0ffEdMqSFhV/uwzldVRzT8sxkyU88PehHwL0pk+Gp7QbEjpjBlYHdsg/GMZQ4Igt/amdZhQNH2XSE3SwcfgV56cB7fpqf8UjsxIFPAM+Ko1J5CBNXJsbnQAPsnBBvNX2t5qo3Gd1wy/dwHH6wc5FK08MXnnLmo8dr9Z4mnz1CuWnSX0XmVkwSK6TRhhFQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR2101MB0880.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(39860400002)(376002)(136003)(54906003)(8936002)(8990500004)(6636002)(186003)(316002)(66446008)(64756008)(5660300002)(33656002)(66476007)(107886003)(9686003)(8676002)(6862004)(66556008)(10290500003)(86362001)(7416002)(2906002)(66946007)(6506007)(71200400001)(55016002)(478600001)(558084003)(76116006)(7696005)(82960400001)(52536014)(82950400001)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yXs58DKYHdU3BEHRSyrKdIcAmDK3+MW5lGY/x5oU2mNd9oK7E/tr70kdh1nO?=
- =?us-ascii?Q?IeotSv6SUOv3c2DU/sw9VUVuAu+/4rxoBWThqkqthhwSntXl9JvT/JwnVEmX?=
- =?us-ascii?Q?vLIaAuLHQC2zq/2NaAbfnv3gZc/qD7+Up6S2dDjO0D3Qwx8tXlcqQMntobwo?=
- =?us-ascii?Q?MHy7TkPKNvGRMdCE9z7EzOgAXjPHTUvX37ZUgEifQhK3H1sCTS7+rTcqYt+f?=
- =?us-ascii?Q?kzyDwMyJU1cOhZzpcmN1zIGiHW5aaWUroptOJaeA3RFsBCrl4NY48QUazzUy?=
- =?us-ascii?Q?udkYL/UGv0ksxIK9xd2yLeDIJ1PopHClotoBOqjmit1pMIc05CWyy+1+RfUQ?=
- =?us-ascii?Q?FH74cyZMfT7CkmfX1JYzb6y6sLIMmC1YatgEopQNcUnl5DrOTDIZyNedUlYT?=
- =?us-ascii?Q?pGG7kj8ktUu/WIQfucQK1cNmowv1sGtVZ2azJVxGAo0tfCRS0dzU800KgnQT?=
- =?us-ascii?Q?ZPRBKhIstAYAyTXA/OintPLhigsIT6/oTaS4upJdzo2VbWHDEYyniiPQ0m7k?=
- =?us-ascii?Q?w5yudSbH5Q+2LMHXkWjxR4UE66bBtXWWABsFiT2dwPX7AldKlvRUg9AEzxea?=
- =?us-ascii?Q?NzAKDZxBuqzQs+9zHlT4pyvcTt8qBSqGiAzyyidYJ4NclR2gXBK4df87ceJY?=
- =?us-ascii?Q?jh+bMPMVqteyJdjPnEc+fjl8pkmO0bqNTgi4fhVsJwQrrhGQ86gbc9U9qTzW?=
- =?us-ascii?Q?3gnO8wFdcPRYRZ9owb8JNA3P+zPMcjAj4nEMpOXDQ+z8pcoO8bPw9GubNyA/?=
- =?us-ascii?Q?LXL65sjm5KiymEZtzjd+qIWYC0YXlvvRQIavyKLWFANQKKLfz0FLMhQH09DA?=
- =?us-ascii?Q?hrzEMYvztLY6vgvJ/xal4L1j2ce82mVX8pzNJYNo5Bq7RMpDxMiu2wRr28wq?=
- =?us-ascii?Q?dgcTbyZe2RGnMDAQ72DbH8Q4/MGWh0A+DxuEHk7MakxJ0Zp9JNgd+D3s3lZH?=
- =?us-ascii?Q?c7XLMhD4DO2v3DwGGMncUTShhbOtGysLaNsP75dSiiGLXO/Mwwfmp3jwij8g?=
- =?us-ascii?Q?Im6JTvw4LXW5wtLcAGOzR9zFmakd/oa4gpPXN6m9+ca1PgeIOwSzJg8eqjWX?=
- =?us-ascii?Q?kYdDp08Lfxv2IM/QsOAan7L8cVfoVPOvUzLK9FdD3Gdrm/pAXg/yX2soCAmU?=
- =?us-ascii?Q?iP3ChO0h94snobPTa4NUop93EoyhozBL+yPz5l760OCfyKp4cIfYifJHLmMy?=
- =?us-ascii?Q?Uhu79vdTJKaUJHw+5FDl+aK7Gh1piV4HdwtmoQhy5WVp7DBbbsZgt6Sas7h6?=
- =?us-ascii?Q?rlx0+1T/g5NbzyAbtH0RcexpnvSgWZMjPgfFSKrMzHVhgeAS4jq2kISeFIe/?=
- =?us-ascii?Q?dQbhDxcaasvwWLEQx5UeKTRIlw4nd0r7LnR49jqxi+3ZUDjhNYVPvl+6SrIT?=
- =?us-ascii?Q?S0p5zGVrODCU1svXc3oL6YgPq+sv?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S235662AbhCDANa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:13:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388987AbhCCVbi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 16:31:38 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1F4C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 13:30:26 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id w1so45175833ejf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 13:30:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gz6/fn0MA6ieuQdfGlLO0r7rhZF3LTjYPpwbfwdmdwQ=;
+        b=0/BAuiqJixT2tW+jYrcnO5pt2xRPDpV9QCp+A1R2IzaJgxIu4BFJkrie+yVeZzjtTI
+         cZfvxJ7SUK0pb1hc9Vl7AaAq8KLl/+6Y0pWIJTJ1kv0rqlC86g8Y/qZtp6qlMALvsC2J
+         0Z/SMpAloe64Lghu8e/ZQKg6YwOktzoZqS49wyRMitMyZ8NSgBs+dROcnsER3jygypR6
+         4rILBQNOLN3kfMMMa8WI/e9RUsjbht0okpVSYKf0tBfK/PnPDnqgaBcnuQEqmjL9NAIv
+         WaxXSGfY41AMctmM7S3iIZMLlfr/wwYmhECOH86QI1MGMtsSRhSya/jJ+RIhTpGr9fG5
+         iXpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gz6/fn0MA6ieuQdfGlLO0r7rhZF3LTjYPpwbfwdmdwQ=;
+        b=CvlmePMqJSYMQiWe7cLzAOwaGcbUOn2pnYAVeMVdLuvAbA/BdPVvR/ns4DebkJ973B
+         z07cZJ308IcIvcyAJV7K1Mv7ZHzhxdxAhUIvZvpKsR+/zEyx1c6v5yRSvW55dZ3Urh9f
+         b4/SH+okMBX9MPVmnAEBCnXHbBmp0htDKdsXKpcN5rjamLVBfXJtj7MbBuxboxGMuFnP
+         KhwO6ZEOCaLMjIvBkHv0lpjA18b2SEf6yZMRZIoU+x+sThN9ZMSlbcu85xu99Gi9MhUF
+         0ayyGSIR1QWOBXorWOGpiCWcewYFQF7L4jdB84awaPJHwzSnwfPyTBc5FTEBDdNmB2BL
+         bxiQ==
+X-Gm-Message-State: AOAM531x9BWgNp8DNg3M360Q4UTT0+DdYkXxwJO0Fx3OxzyQXEnACE5M
+        xfApzS/oayjEPptc+WeEhQsP8BulyAiTRtBrETm4Zg==
+X-Google-Smtp-Source: ABdhPJx/Ww50xcbxMCXAhqIJNlvSZj5dJOIGwmT9jDly92NvUIWsVDsivQ7xXU33zDPntqx83j2iB/DewF93ye2XQ84=
+X-Received: by 2002:a17:906:a3d1:: with SMTP id ca17mr765839ejb.92.1614807024886;
+ Wed, 03 Mar 2021 13:30:24 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR2101MB0880.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23b7cc63-418e-44ff-3b0a-08d8de8b75ea
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2021 21:29:43.1471
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +0shhBMY/3hA9DKz0Yy5lnvOk5geSqzfhyUi2oLdpIC4XbZDaJcvp2vulnssM22kTiGDDBQBu6dEyP6r96LJBqyE4wMQ+wWn7x8l1ftwwrI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB0925
+References: <20210226100148.1663389-1-acourbot@chromium.org> <20210226100148.1663389-6-acourbot@chromium.org>
+In-Reply-To: <20210226100148.1663389-6-acourbot@chromium.org>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Wed, 3 Mar 2021 18:30:12 -0300
+Message-ID: <CAAEAJfDyHYGf+J6WDHchVATOvj5AJpO8dkAStiNGNobJ9Uz8Yw@mail.gmail.com>
+Subject: Re: [PATCH v3 05/15] media: mtk-vcodec: vdec: support stateless API
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +EXPORT_SYMBOL_GPL(hv_setup_crash_handler);
-> +
-> +void hv_remove_crash_handler(void)
-> +{
-> +}
-> +EXPORT_SYMBOL_GPL(hv_remove_crash_handler);
-> --
-> 1.8.3.1
+Hello Alex,
 
-Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+Thanks for the patch.
+
+On Fri, 26 Feb 2021 at 07:06, Alexandre Courbot <acourbot@chromium.org> wrote:
+>
+> From: Yunfei Dong <yunfei.dong@mediatek.com>
+>
+> Support the stateless codec API that will be used by MT8183.
+>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> [acourbot: refactor, cleanup and split]
+> Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> ---
+>  drivers/media/platform/mtk-vcodec/Makefile    |   1 +
+>  .../platform/mtk-vcodec/mtk_vcodec_dec.c      |  66 ++-
+>  .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   9 +-
+>  .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 427 ++++++++++++++++++
+>  .../platform/mtk-vcodec/mtk_vcodec_drv.h      |   3 +
+>  5 files changed, 503 insertions(+), 3 deletions(-)
+>  create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
+>
+[..]
+
+> +
+> +static const struct mtk_stateless_control mtk_stateless_controls[] = {
+> +       {
+> +               .cfg = {
+> +                       .id = V4L2_CID_STATELESS_H264_SPS,
+> +               },
+> +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
+> +               .needed_in_request = true,
+
+This "needed_in_request" is not really required, as controls
+are not volatile, and their value is stored per-context (per-fd).
+
+It's perfectly valid for an application to pass the SPS control
+at the beginning of the sequence, and then omit it
+in further requests.
+
+> +       },
+> +       {
+> +               .cfg = {
+> +                       .id = V4L2_CID_STATELESS_H264_PPS,
+> +               },
+> +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
+> +               .needed_in_request = true,
+> +       },
+> +       {
+> +               .cfg = {
+> +                       .id = V4L2_CID_STATELESS_H264_SCALING_MATRIX,
+> +               },
+> +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
+> +               .needed_in_request = true,
+> +       },
+> +       {
+> +               .cfg = {
+> +                       .id = V4L2_CID_STATELESS_H264_DECODE_PARAMS,
+> +               },
+> +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
+> +               .needed_in_request = true,
+> +       },
+> +       {
+> +               .cfg = {
+> +                       .id = V4L2_CID_MPEG_VIDEO_H264_PROFILE,
+> +                       .def = V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
+> +                       .max = V4L2_MPEG_VIDEO_H264_PROFILE_HIGH,
+> +                       .menu_skip_mask =
+> +                               BIT(V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE) |
+> +                               BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
+> +               },
+> +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
+> +       },
+> +       {
+> +               .cfg = {
+> +                       .id = V4L2_CID_STATELESS_H264_DECODE_MODE,
+> +                       .min = V4L2_STATELESS_H264_DECODE_MODE_FRAME_BASED,
+> +                       .def = V4L2_STATELESS_H264_DECODE_MODE_FRAME_BASED,
+> +                       .max = V4L2_STATELESS_H264_DECODE_MODE_FRAME_BASED,
+> +               },
+> +               .codec_type = V4L2_PIX_FMT_H264_SLICE,
+> +       },
+> +};
+
+Applications also need to know which V4L2_CID_STATELESS_H264_START_CODE
+the driver supports. From a next patch, this case seems to be
+V4L2_STATELESS_H264_START_CODE_ANNEX_B.
+
+> +#define NUM_CTRLS ARRAY_SIZE(mtk_stateless_controls)
+> +
+> +static const struct mtk_video_fmt mtk_video_formats[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
+> +               .type = MTK_FMT_DEC,
+> +               .num_planes = 1,
+> +       },
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_MM21,
+> +               .type = MTK_FMT_FRAME,
+> +               .num_planes = 2,
+> +       },
+> +};
+> +#define NUM_FORMATS ARRAY_SIZE(mtk_video_formats)
+> +#define DEFAULT_OUT_FMT_IDX    0
+> +#define DEFAULT_CAP_FMT_IDX    1
+> +
+> +static const struct mtk_codec_framesizes mtk_vdec_framesizes[] = {
+> +       {
+> +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
+> +               .stepwise = {
+> +                       MTK_VDEC_MIN_W, MTK_VDEC_MAX_W, 16,
+> +                       MTK_VDEC_MIN_H, MTK_VDEC_MAX_H, 16,
+> +               },
+> +       },
+> +};
+> +
+> +#define NUM_SUPPORTED_FRAMESIZE ARRAY_SIZE(mtk_vdec_framesizes)
+> +
+> +static void mtk_vdec_stateless_set_dst_payload(struct mtk_vcodec_ctx *ctx,
+> +                                              struct vdec_fb *fb)
+> +{
+> +       struct mtk_video_dec_buf *vdec_frame_buf =
+> +               container_of(fb, struct mtk_video_dec_buf, frame_buffer);
+> +       struct vb2_v4l2_buffer *vb = &vdec_frame_buf->m2m_buf.vb;
+> +       unsigned int cap_y_size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[0];
+> +
+> +       vb2_set_plane_payload(&vb->vb2_buf, 0, cap_y_size);
+> +       if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2) {
+> +               unsigned int cap_c_size =
+> +                       ctx->q_data[MTK_Q_DATA_DST].sizeimage[1];
+> +
+> +               vb2_set_plane_payload(&vb->vb2_buf, 1, cap_c_size);
+> +       }
+> +}
+> +
+> +static struct vdec_fb *vdec_get_cap_buffer(struct mtk_vcodec_ctx *ctx,
+> +                                          struct vb2_v4l2_buffer *vb2_v4l2)
+> +{
+> +       struct mtk_video_dec_buf *framebuf =
+> +               container_of(vb2_v4l2, struct mtk_video_dec_buf, m2m_buf.vb);
+> +       struct vdec_fb *pfb = &framebuf->frame_buffer;
+> +       struct vb2_buffer *dst_buf = &vb2_v4l2->vb2_buf;
+> +
+> +       pfb = &framebuf->frame_buffer;
+> +       pfb->base_y.va = vb2_plane_vaddr(dst_buf, 0);
+
+Are you sure you need a CPU mapping? It seems strange.
+I'll comment some more on the next patch(es).
+
+> +       pfb->base_y.dma_addr = vb2_dma_contig_plane_dma_addr(dst_buf, 0);
+> +       pfb->base_y.size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[0];
+> +
+> +       if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2) {
+> +               pfb->base_c.va = vb2_plane_vaddr(dst_buf, 1);
+> +               pfb->base_c.dma_addr =
+> +                       vb2_dma_contig_plane_dma_addr(dst_buf, 1);
+> +               pfb->base_c.size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[1];
+> +       }
+> +       mtk_v4l2_debug(1,
+> +               "id=%d Framebuf  pfb=%p VA=%p Y_DMA=%pad C_DMA=%pad Size=%zx frame_count = %d",
+> +               dst_buf->index, pfb,
+> +               pfb->base_y.va, &pfb->base_y.dma_addr,
+> +               &pfb->base_c.dma_addr, pfb->base_y.size,
+> +               ctx->decoded_frame_cnt);
+> +
+> +       return pfb;
+> +}
+> +
+> +static void vb2ops_vdec_buf_request_complete(struct vb2_buffer *vb)
+> +{
+> +       struct mtk_vcodec_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
+> +
+> +       v4l2_ctrl_request_complete(vb->req_obj.req, &ctx->ctrl_hdl);
+> +}
+> +
+> +static int fops_media_request_validate(struct media_request *mreq)
+> +{
+> +       const unsigned int buffer_cnt = vb2_request_buffer_cnt(mreq);
+> +       struct mtk_vcodec_ctx *ctx = NULL;
+> +       struct media_request_object *req_obj;
+> +       struct v4l2_ctrl_handler *parent_hdl, *hdl;
+> +       struct v4l2_ctrl *ctrl;
+> +       unsigned int i;
+> +
+> +       switch (buffer_cnt) {
+> +       case 1:
+> +               /* We expect exactly one buffer with the request */
+> +               break;
+> +       case 0:
+> +               mtk_v4l2_err("No buffer provided with the request");
+> +               return -ENOENT;
+> +       default:
+> +               mtk_v4l2_err("Too many buffers (%d) provided with the request",
+> +                            buffer_cnt);
+> +               return -EINVAL;
+> +       }
+> +
+> +       list_for_each_entry(req_obj, &mreq->objects, list) {
+> +               struct vb2_buffer *vb;
+> +
+> +               if (vb2_request_object_is_buffer(req_obj)) {
+> +                       vb = container_of(req_obj, struct vb2_buffer, req_obj);
+> +                       ctx = vb2_get_drv_priv(vb->vb2_queue);
+> +                       break;
+> +               }
+> +       }
+> +
+> +       if (!ctx) {
+> +               mtk_v4l2_err("Cannot find buffer for request");
+> +               return -ENOENT;
+> +       }
+> +
+> +       parent_hdl = &ctx->ctrl_hdl;
+> +
+> +       hdl = v4l2_ctrl_request_hdl_find(mreq, parent_hdl);
+> +       if (!hdl) {
+> +               mtk_v4l2_err("Cannot find control handler for request\n");
+> +               return -ENOENT;
+> +       }
+> +
+> +       for (i = 0; i < NUM_CTRLS; i++) {
+> +               if (mtk_stateless_controls[i].codec_type != ctx->current_codec)
+> +                       continue;
+> +               if (!mtk_stateless_controls[i].needed_in_request)
+> +                       continue;
+> +
+> +               ctrl = v4l2_ctrl_request_hdl_ctrl_find(hdl,
+> +                                         mtk_stateless_controls[i].cfg.id);
+> +               if (!ctrl) {
+> +                       mtk_v4l2_err("Missing required codec control\n");
+> +                       return -ENOENT;
+> +               }
+> +       }
+> +
+> +       v4l2_ctrl_request_hdl_put(hdl);
+> +
+> +       return vb2_request_validate(mreq);
+> +}
+> +
+> +static void mtk_vdec_worker(struct work_struct *work)
+> +{
+> +       struct mtk_vcodec_ctx *ctx =
+> +               container_of(work, struct mtk_vcodec_ctx, decode_work);
+> +       struct mtk_vcodec_dev *dev = ctx->dev;
+> +       struct vb2_v4l2_buffer *vb2_v4l2_src, *vb2_v4l2_dst;
+> +       struct vb2_buffer *vb2_src;
+> +       struct mtk_vcodec_mem *bs_src;
+> +       struct mtk_video_dec_buf *dec_buf_src;
+> +       struct media_request *src_buf_req;
+> +       struct vdec_fb *dst_buf;
+> +       bool res_chg = false;
+> +       int ret;
+> +
+> +       vb2_v4l2_src = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
+> +       if (vb2_v4l2_src == NULL) {
+> +               v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> +               mtk_v4l2_debug(1, "[%d] no available source buffer", ctx->id);
+> +               return;
+> +       }
+> +
+> +       vb2_v4l2_dst = v4l2_m2m_next_dst_buf(ctx->m2m_ctx);
+> +       if (vb2_v4l2_dst == NULL) {
+> +               v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> +               mtk_v4l2_debug(1, "[%d] no available destination buffer", ctx->id);
+> +               return;
+> +       }
+> +
+> +       vb2_src = &vb2_v4l2_src->vb2_buf;
+> +       dec_buf_src = container_of(vb2_v4l2_src, struct mtk_video_dec_buf,
+> +                                  m2m_buf.vb);
+> +       bs_src = &dec_buf_src->bs_buffer;
+> +
+> +       mtk_v4l2_debug(3, "[%d] (%d) id=%d, vb=%p buf_info = %p",
+> +                       ctx->id, src_buf->vb2_queue->type,
+> +                       src_buf->index, src_buf, src_buf_info);
+> +
+> +       bs_src->va = vb2_plane_vaddr(vb2_src, 0);
+> +       bs_src->dma_addr = vb2_dma_contig_plane_dma_addr(vb2_src, 0);
+> +       bs_src->size = (size_t)vb2_src->planes[0].bytesused;
+> +       if (!bs_src->va) {
+> +               v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> +               mtk_v4l2_err("[%d] id=%d source buffer is NULL", ctx->id,
+> +                            vb2_src->index);
+> +               return;
+> +       }
+> +
+> +       mtk_v4l2_debug(3, "[%d] Bitstream VA=%p DMA=%pad Size=%zx vb=%p",
+> +                       ctx->id, buf->va, &buf->dma_addr, buf->size, src_buf);
+> +       /* Apply request controls. */
+> +       src_buf_req = vb2_src->req_obj.req;
+> +       if (src_buf_req)
+> +               v4l2_ctrl_request_setup(src_buf_req, &ctx->ctrl_hdl);
+> +       else
+> +               mtk_v4l2_err("vb2 buffer media request is NULL");
+> +
+> +       dst_buf = vdec_get_cap_buffer(ctx, vb2_v4l2_dst);
+> +       v4l2_m2m_buf_copy_metadata(vb2_v4l2_src, vb2_v4l2_dst, true);
+> +       ret = vdec_if_decode(ctx, bs_src, dst_buf, &res_chg);
+> +       if (ret) {
+> +               mtk_v4l2_err(
+> +                       " <===[%d], src_buf[%d] sz=0x%zx pts=%llu vdec_if_decode() ret=%d res_chg=%d===>",
+> +                       ctx->id, vb2_src->index, bs_src->size,
+> +                       vb2_src->timestamp, ret, res_chg);
+> +               if (ret == -EIO) {
+> +                       mutex_lock(&ctx->lock);
+> +                       dec_buf_src->error = true;
+> +                       mutex_unlock(&ctx->lock);
+> +               }
+> +       }
+> +
+> +       mtk_vdec_stateless_set_dst_payload(ctx, dst_buf);
+> +
+> +       v4l2_m2m_buf_done_and_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx,
+> +               ret ? VB2_BUF_STATE_ERROR : VB2_BUF_STATE_DONE);
+> +
+> +       v4l2_ctrl_request_complete(src_buf_req, &ctx->ctrl_hdl);
+> +}
+> +
+> +static void vb2ops_vdec_stateless_buf_queue(struct vb2_buffer *vb)
+> +{
+> +       struct mtk_vcodec_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
+> +       struct vb2_v4l2_buffer *vb2_v4l2 = to_vb2_v4l2_buffer(vb);
+> +
+> +       mtk_v4l2_debug(3, "[%d] (%d) id=%d, vb=%p",
+> +                       ctx->id, vb->vb2_queue->type,
+> +                       vb->index, vb);
+> +
+> +       mutex_lock(&ctx->lock);
+> +       v4l2_m2m_buf_queue(ctx->m2m_ctx, vb2_v4l2);
+> +       mutex_unlock(&ctx->lock);
+> +       if (vb->vb2_queue->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> +               return;
+> +
+> +       mtk_v4l2_debug(3, "(%d) id=%d, bs=%p",
+> +               vb->vb2_queue->type, vb->index, src_buf);
+> +
+> +       /* If an OUTPUT buffer, we may need to update the state */
+> +       if (ctx->state == MTK_STATE_INIT) {
+> +               ctx->state = MTK_STATE_HEADER;
+> +               mtk_v4l2_debug(1, "Init driver from init to header.");
+
+This state thing seems just something to make the rest
+of the stateful-based driver happy, right?
+
+Makes me wonder a bit if just splitting the stateless part to its
+own driver, wouldn't make your maintenance easier.
+
+What's the motivation for sharing the driver?
+
+> +       } else {
+> +               mtk_v4l2_debug(3, "[%d] already init driver %d",
+> +                               ctx->id, ctx->state);
+> +       }
+> +}
+> +
+> +static int mtk_vdec_flush_decoder(struct mtk_vcodec_ctx *ctx)
+> +{
+> +       bool res_chg;
+> +
+> +       return vdec_if_decode(ctx, NULL, NULL, &res_chg);
+> +}
+> +
+> +static const struct v4l2_ctrl_ops mtk_vcodec_dec_ctrl_ops = {
+> +       .g_volatile_ctrl = mtk_vdec_g_v_ctrl,
+> +};
+> +
+> +static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_ctx *ctx)
+> +{
+> +       struct v4l2_ctrl *ctrl;
+> +       unsigned int i;
+> +
+> +       v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS);
+> +       if (ctx->ctrl_hdl.error) {
+> +               mtk_v4l2_err("v4l2_ctrl_handler_init failed\n");
+> +               return ctx->ctrl_hdl.error;
+> +       }
+> +
+> +       ctrl = v4l2_ctrl_new_std(&ctx->ctrl_hdl,
+> +                               &mtk_vcodec_dec_ctrl_ops,
+> +                               V4L2_CID_MIN_BUFFERS_FOR_CAPTURE,
+> +                               0, 32, 1, 1);
+> +       ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
+
+Hm, this volatile control for MIN_BUFFERS_FOR_CAPTURE seems
+to return the DPB size. However, isn't this something userspace already knows?
+
+> +
+> +       for (i = 0; i < NUM_CTRLS; i++) {
+> +               struct v4l2_ctrl_config cfg = mtk_stateless_controls[i].cfg;
+> +
+> +               v4l2_ctrl_new_custom(&ctx->ctrl_hdl, &cfg, NULL);
+> +               if (ctx->ctrl_hdl.error) {
+> +                       mtk_v4l2_err("Adding control %d failed %d",
+> +                                       i, ctx->ctrl_hdl.error);
+> +                       return ctx->ctrl_hdl.error;
+> +               }
+> +       }
+> +
+> +       v4l2_ctrl_handler_setup(&ctx->ctrl_hdl);
+> +
+> +       return 0;
+> +}
+> +
+> +const struct media_device_ops mtk_vcodec_media_ops = {
+> +       .req_validate   = fops_media_request_validate,
+> +       .req_queue      = v4l2_m2m_request_queue,
+> +};
+> +
+> +static void mtk_init_vdec_params(struct mtk_vcodec_ctx *ctx)
+> +{
+> +       struct vb2_queue *src_vq;
+> +
+> +       src_vq = v4l2_m2m_get_vq(ctx->m2m_ctx,
+> +                                V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
+> +
+> +       /* Support request api for output plane */
+> +       src_vq->supports_requests = true;
+> +       src_vq->requires_requests = true;
+> +}
+> +
+> +static int vb2ops_vdec_out_buf_validate(struct vb2_buffer *vb)
+> +{
+
+I have to admit I do not remember exactly the reason,
+but this should set the buffer field to V4L2_FIELD_NONE.
+
+Thanks,
+Ezequiel
