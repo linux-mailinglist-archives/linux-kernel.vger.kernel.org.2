@@ -2,122 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2861B32BCD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156A932BD42
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359610AbhCCOt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:49:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843027AbhCCKYe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:24:34 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE85C061222
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:32:33 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id ci14so21501459ejc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:32:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BqekrOVrolDpMG5/JmcfAVvwbTu8RV0j7Se99VtBEcc=;
-        b=P/uquj684daW3A9Yv0Xkt8CYVBwRo6rBr82FZNHKB2DuIJdQC8PDPM/3w45UUn9gYj
-         SQkWWvqCBUmN6HhFSCsVTygg7Rs5JqBTo6nfEjpDFz10wooVgcphM0qYiCzvpHt7i5tX
-         IqxkmEOymk5/q8KAtpF0bG8WdlVSlahvvPZAjSQSr9VwJOgE9KLeoklPAv08UPQTuoqr
-         ZnHyWSXxDul0pcgPraS8bYVyMqdidsx5PhINDgqOpD72W5SYxJxU6uIfdydQ8eZOyNMn
-         lrmIdtT6l7RUpsiE5bD9L9cFBNwSXwjFmSBWFlJt9BRF2SqLAcIKtXZ8aars7BmtIhYj
-         uPWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BqekrOVrolDpMG5/JmcfAVvwbTu8RV0j7Se99VtBEcc=;
-        b=JrHWA1IXSTAhx2fALoxcwAjtvYhuNdv4mzlH5VtF9EGCP+fRW3EoYmXymbT7LatndH
-         if3xVnT+VmoAfbAdg+Dz9DRqH8OolInQXARA/eNyirGg9N4XhE1zO4xJW22BphqllAOq
-         Xdn4Bszz5Cu2yN51SvI8pxFB+GkwV8ReXLtyTPbkA4ThD8ypQH3IglQlk9hgXixWupqx
-         o1ZWDWQhz/5G4bpVf65987Kitxl9+6r5kXN6O7A0/qSuSPQdS+A1NzhfPtVMgauRSYvQ
-         cC1Lt5FmuYO9Xcn0bdL89+7wS5MI8L5k0YPm18LFvVYbh7MN+eHlTAQC22KXb/fNg/Uk
-         BYdw==
-X-Gm-Message-State: AOAM531Ge5F7p+4R8CftpQf/UKmxkob0Bu6AaYfFKoiEBKPoTEF0MVmE
-        W2qMrpjw6GAa1wereE6lsmYZ1bT6MJpFmUzk9PWtZA==
-X-Google-Smtp-Source: ABdhPJxLGkewqef2ptqvWfzIQC0wsO06AMlom/LK9nRXq1YbtxPiX/brbeeo/8lskFM/06A0G+ZRg92pBd4v5pf4mqM=
-X-Received: by 2002:a17:906:b2c3:: with SMTP id cf3mr23862604ejb.133.1614760352304;
- Wed, 03 Mar 2021 00:32:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20210302192719.741064351@linuxfoundation.org>
-In-Reply-To: <20210302192719.741064351@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Mar 2021 14:02:20 +0530
-Message-ID: <CA+G9fYvkW+84U9e0Cjft_pq9bGnBBqCXST7Hg+gx4pKNyuGPFQ@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/773] 5.11.3-rc3 review
+        id S1384370AbhCCPkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:40:32 -0500
+Received: from mga17.intel.com ([192.55.52.151]:50703 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357299AbhCCKtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:49:20 -0500
+IronPort-SDR: IPxL63WntVsqux/rrNdHodLYaF8ZwULpKsZZCPcIlIHkpXPCv5C/cuKsvY96CKk1tv143tRoaB
+ g4D1SjqDpcYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="167037834"
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="167037834"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 00:32:36 -0800
+IronPort-SDR: gsw+uUzHeCVlJYu9SjV0EzjX2PdXUTAUl2aK2r7sTsDfSH5NX1FwfN2Ph8NhwLm6U6knAF+CFu
+ IycjEXa5ev7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="367523932"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 03 Mar 2021 00:32:33 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 509CBF4; Wed,  3 Mar 2021 10:32:32 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] vt: keyboard, Fix typo in the doc for vt_get_shift_state()
+Date:   Wed,  3 Mar 2021 10:32:29 +0200
+Message-Id: <20210303083229.75784-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.3 release.
-> There are 773 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.3-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Kernel documentation validator is not happy:
 
+.../keyboard.c:2195: warning: expecting prototype for vt_get_shiftstate(). Prototype was for vt_get_shift_state() instead
 
-Results from Linaro=E2=80=99s test farm.
-All our builds are getting PASS now.
-But,
-Regressions detected on all devices (arm64, arm, x86_64 and i386).
-LTP pty test case hangup01 failed on all devices
+This is due to typo, fix it here.
 
-hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/tty/vt/keyboard.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 77638629c562..5d2309742718 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -2186,7 +2186,7 @@ void vt_reset_unicode(int console)
+ }
+ 
+ /**
+- *	vt_get_shiftstate	-	shift bit state
++ *	vt_get_shift_state	-	shift bit state
+  *
+  *	Report the shift bits from the keyboard state. We have to export
+  *	this to support some oddities in the vt layer.
+-- 
+2.30.1
 
-This failure is specific to stable-rc v5.10.20-rc4 and v5.11.3-rc3
-Test PASS on the v5.12-rc1 mainline and Linux next kernel.
-
-Following two commits caused this test failure,
-
-   Linus Torvalds <torvalds@linux-foundation.org>
-       tty: implement read_iter
-
-   Linus Torvalds <torvalds@linux-foundation.org>
-       tty: convert tty_ldisc_ops 'read()' function to take a kernel pointe=
-r
-
-Test case failed link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
-.2-774-g6ca52dbc58df/testrun/4070143/suite/ltp-pty-tests/test/hangup01/log
-
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
