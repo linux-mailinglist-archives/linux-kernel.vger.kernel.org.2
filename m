@@ -2,60 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA9A32BBCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F79632BBD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239441AbhCCMwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:52:22 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:47459 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1842580AbhCCIH5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:07:57 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UQD.Zw3_1614757930;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UQD.Zw3_1614757930)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Mar 2021 15:52:15 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     shuah@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: Simplify the calculation of variables
-Date:   Wed,  3 Mar 2021 15:52:10 +0800
-Message-Id: <1614757930-17197-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1350284AbhCCMyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:54:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1842745AbhCCIMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:12:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BAAD64EAE;
+        Wed,  3 Mar 2021 07:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614758358;
+        bh=JjnnxrV4J+6mEkOXKozS9ispJERNvaiOE044Pm3tY1I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OjSg/6HUPLnBmGdLAPNLFWk2dv8fx//IhKHY1qgtQvREnxAbbaJc5eBznrQxGzJl7
+         Q/rnIcMPPZoHcCWqt2RwNus+/idQDB/L5niWmLZ5KBiIL9nBKog6Ilo7wiKXOyafos
+         Crm4mGV2hrYJcVq8TTVpVpDiC/4eb0AtoO3dxOadkZ3G/uUEe51k5Pj8ryMu7p5yPx
+         ZzM7DswLHqzxdEJGeXe6Cuqy1VXT4hmtxbh8nU734Xw2EHYSNiG8sqfZdtfN6VquVW
+         swMjEE274n3KfE8FaKJiwH540tOljGFm9d9yvYD5vQlUEbn/s5UnPl4sJPkn2lHyVO
+         K2AXG7r2bpTgQ==
+Date:   Wed, 3 Mar 2021 15:59:08 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v9 7/7] ARM: dts: imx50-kobo-aura: Add Netronix embedded
+ controller
+Message-ID: <20210303075907.GB15865@dragon>
+References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
+ <20210124214127.3631530-8-j.neuschaefer@gmx.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210124214127.3631530-8-j.neuschaefer@gmx.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Sun, Jan 24, 2021 at 10:41:27PM +0100, Jonathan Neuschäfer wrote:
+> Enable the Netronix EC on the Kobo Aura ebook reader.
+> 
+> Several features are still missing:
+>  - Frontlight/backlight. The vendor kernel drives the frontlight LED
+>    using the PWM output of the EC and an additional boost pin that
+>    increases the brightness.
+>  - Battery monitoring
+>  - Interrupts for RTC alarm and low-battery events
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-./tools/testing/selftests/bpf/test_sockmap.c:735:35-37: WARNING !A || A
-&& B is equivalent to !A || B.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/selftests/bpf/test_sockmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 427ca00..eefd445 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -732,7 +732,7 @@ static int sendmsg_test(struct sockmap_options *opt)
- 		 * socket is not a valid test. So in this case lets not
- 		 * enable kTLS but still run the test.
- 		 */
--		if (!txmsg_redir || (txmsg_redir && txmsg_ingress)) {
-+		if (!txmsg_redir || txmsg_ingress) {
- 			err = sockmap_init_ktls(opt->verbose, rx_fd);
- 			if (err)
- 				return err;
--- 
-1.8.3.1
-
+Applied, thanks.
