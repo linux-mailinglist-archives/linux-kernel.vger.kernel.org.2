@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5941932C3DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482D332C3F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354353AbhCDAIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S1354523AbhCDAJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234281AbhCCWH3 (ORCPT
+        with ESMTP id S230215AbhCCWLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:07:29 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8433C061765;
-        Wed,  3 Mar 2021 13:56:35 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 8B8851F45F5B
-Message-ID: <22a8ea464f4c7dcb7a90889f53d85f003b7c739a.camel@collabora.com>
-Subject: Re: [PATCH v4 03/11] media: hantro: change hantro_codec_ops run
- prototype to return errors
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Date:   Wed, 03 Mar 2021 18:56:23 -0300
-In-Reply-To: <20210303113952.178519-4-benjamin.gaignard@collabora.com>
-References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
-         <20210303113952.178519-4-benjamin.gaignard@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Wed, 3 Mar 2021 17:11:35 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAADC0613D8
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 13:59:14 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id j3so3168262qtj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 13:59:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lQvMooYXTqFSXvQJbwHhwZB/VRpYE9wlYhCe9YGfbL8=;
+        b=Dt0X3mUQd/DUkNeuvAMV/W3X95HyHC/aM6ZOqeylnVIOQ2d/HZgPp07QkFrKNMFmZI
+         I+May3xRHjkE8CvywD5YUBeiAgtaxogu4JyKD9wbdaAWYbzMI6Hd5ai9mgieMsLX9En1
+         nQWo7cUP33IFgH9TKlIyFS5eBILD2HDrz+YX9Vpt8Nwah1e447SW96G1gg5yptJwmbBv
+         eDqvY9hijk5zPfBUYwZ1qQsJ8wJ1RHwpS0scc1LGpdCoM1ctja0dq1DCjQsT2Nhw2veO
+         9cj8v7LD6DUqDULb+runiba0Wx28zMY+tN8y2d1RPuCAOe6nycPkp/R7KNsM/qiA+4Kk
+         QxhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lQvMooYXTqFSXvQJbwHhwZB/VRpYE9wlYhCe9YGfbL8=;
+        b=ZA0MzP5r2wZkbKqSDzvy2KzDmBbH7Zt/8ameV9+fO6XVddEkVYoAt7+rn5oHvojyOZ
+         hHn++yHRa1vfE5nz7LV0xgiAXY47VbLzfCfcYsH7ddanQ/mQoYfinF4I5GJGsBDYL95E
+         HcGtNjmbE5KG/kDwYnQziAs69NfNDwZ4+Alzlu5LyAUNwjPnrbUGw1zOO9gWAid6IiyA
+         f0P/eiSmZZsuZwwzeKsSHDWDvuGNAZIzgXXlfySmgQzNu/1Qr1R88up+1VwQ/bxMkR8L
+         RA/YjKZHg3j/nkfINez6kzSqr6mdwqtUS8M61IAObUhG3rJfv6Urj/WCh+1Wv5GLC7J2
+         pLVA==
+X-Gm-Message-State: AOAM5311coDwRbGxHPRkZpwfRtv1xFAW0dEVMX74r9kAZ1XKBnGw5+ye
+        hf5tfkfRTdMG9GDXVjMZjuVdJOmymDyLGApURhLS5Q==
+X-Google-Smtp-Source: ABdhPJy5zBIdRBS64nEYKgi3rKCV9ZVp7hRddaxFdADyhwwmq7aPJyFzXiyQW1Czf8MMt97PfXj9OBbs0xz/EVP0xus=
+X-Received: by 2002:ac8:4e8f:: with SMTP id 15mr1299223qtp.317.1614808753179;
+ Wed, 03 Mar 2021 13:59:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210226195239.3905966-1-joshdon@google.com> <YDliCOPy9s1RdLwd@hirez.programming.kicks-ass.net>
+ <CABk29Nv7iJEcDg3rgSvfTkXEM69ZeLByJAsZYuA5qpdj645nZw@mail.gmail.com>
+ <CABk29Ntt88BfqGz=Rjd5Mwyj+N0YLv0Z9QsZp8DgB-n+FV1Zgw@mail.gmail.com> <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
+In-Reply-To: <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Wed, 3 Mar 2021 13:59:02 -0800
+Message-ID: <CABk29NtgjoKb0-hH71XtUfQ8H=58VJh2aAY4Vs6ZaJfOpJGMrA@mail.gmail.com>
+Subject: Re: [PATCH] sched: Optimize __calc_delta.
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Clement Courbet <courbet@google.com>,
+        Oleg Rombakh <olegrom@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-03 at 12:39 +0100, Benjamin Gaignard wrote:
-> Change hantro_codec_ops run prototype from 'void' to 'int'.
-> This allow to cancel the job if an error occur while configuring
-> the hardware.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  drivers/staging/media/hantro/hantro_drv.c     |  4 +++-
->  .../staging/media/hantro/hantro_g1_h264_dec.c |  6 ++++--
->  .../media/hantro/hantro_g1_mpeg2_dec.c        |  4 +++-
->  .../staging/media/hantro/hantro_g1_vp8_dec.c  |  6 ++++--
->  .../staging/media/hantro/hantro_h1_jpeg_enc.c |  4 +++-
->  drivers/staging/media/hantro/hantro_hw.h      | 19 ++++++++++---------
->  .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |  4 +++-
->  .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |  4 +++-
->  .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |  6 ++++--
->  9 files changed, 37 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index e5f200e64993..ac1429f00b33 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -161,7 +161,9 @@ static void device_run(void *priv)
->  
->         v4l2_m2m_buf_copy_metadata(src, dst, true);
->  
-> -       ctx->codec_ops->run(ctx);
-> +       if (ctx->codec_ops->run(ctx))
-> +               goto err_cancel_job;
-> +
->         return;
->  
->  err_cancel_job:
-> diff --git a/drivers/staging/media/hantro/hantro_g1_h264_dec.c b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-> index 845bef73d218..fcd4db13c9fe 100644
-> --- a/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-> +++ b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-> @@ -273,13 +273,13 @@ static void set_buffers(struct hantro_ctx *ctx)
->         vdpu_write_relaxed(vpu, ctx->h264_dec.priv.dma, G1_REG_ADDR_QTABLE);
->  }
->  
-> -void hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
-> +int hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
->  {
->         struct hantro_dev *vpu = ctx->dev;
->  
->         /* Prepare the H264 decoder context. */
->         if (hantro_h264_dec_prepare_run(ctx))
-> -               return;
-> +               return -EINVAL;
+> you made fact_hi u32, why can't we unconditionally use fls() ?
 
-This should be returning the value from hantro_h264_dec_prepare_run.
-
-Thanks!
-Ezequiel
-
+Thanks for clarifying with ILP32; will remove this macro and simplify
+to just fls().
