@@ -2,257 +2,561 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF06632BECB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E536F32BECD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575847AbhCCRgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:36:12 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44200 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443809AbhCCOVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:21:10 -0500
-Date:   Wed, 3 Mar 2021 15:20:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614781226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Uygo4+pN9ZU+8SJPswqacGqnDLCgMpJOpodWvXLFwxo=;
-        b=IHN2RlA7MqSG+MK8+7hHOuyUr0Gec8kXqm/Pu1TJb3O7tQ6w5JRM/si7zgZzdB771l2dt7
-        l9NluabgSEOTjFLDXKn0JoIN5RdzhqhUfrfSv3u0osyfbRryp6W3NLYmlowwjiPrhKvniA
-        aKj8+pr5PbaalW4WEguvnNT+wT7Uub6686shCWeWvxUVjmt3wF8iuP5xvILrRz+8Ck7JUy
-        QPpHaC8uIRtvG+TEAjbYc22TPYvCb+gZCgdDlV4oen7pUdMdvP5ysCGwZRfJH18LIVv/VT
-        3GhBb3OhZEF2W4sp+fwwghsjd8YEUa1dOoRg77rigWHsZl35/1ctURvm8sdKnw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614781226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Uygo4+pN9ZU+8SJPswqacGqnDLCgMpJOpodWvXLFwxo=;
-        b=DjdEZKqvRRMWo4z4Lawa4+aVY/rfFn8XJosEqfnftJZNDI6+pkWIVfNPR00g+tCNM9Z74/
-        K/BE8mNB5UA9mODg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Subject: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
-Message-ID: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de>
+        id S1575914AbhCCRgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:36:18 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:51519 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237308AbhCCO1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:27:19 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 123EL7s9028790
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Mar 2021 15:21:07 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.44.113])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 123EL6ui021664;
+        Wed, 3 Mar 2021 15:21:06 +0100
+Date:   Wed, 3 Mar 2021 15:21:05 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH 3/4] watchdog: simatic-ipc-wdt: add new driver for
+ Siemens Industrial PCs
+Message-ID: <20210303152105.1ca683eb@md1za8fc.ad001.siemens.net>
+In-Reply-To: <fa73ed42-dcbc-26c8-f119-244d4f4eea03@roeck-us.net>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+        <20210302163309.25528-4-henning.schild@siemens.com>
+        <fa73ed42-dcbc-26c8-f119-244d4f4eea03@roeck-us.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Hi, 
 
-Allow realtime tasks to cache one sigqueue in task struct. This avoids an
-allocation which can increase the latency or fail.
-Ideally the sigqueue is cached after first successful delivery and will be
-available for next signal delivery. This works under the assumption that the RT
-task has never an unprocessed signal while a one is about to be queued.
+thanks for the fast and thorough review!
 
-The caching is not used for SIGQUEUE_PREALLOC because this kind of sigqueue is
-handled differently (and not used for regular signal delivery).
+Am Tue, 2 Mar 2021 10:38:19 -0800
+schrieb Guenter Roeck <linux@roeck-us.net>:
 
-[bigeasy: With a fix from Matt Fleming <matt@codeblueprint.co.uk>]
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/sched.h  |  1 +
- include/linux/signal.h |  1 +
- kernel/exit.c          |  2 +-
- kernel/fork.c          |  1 +
- kernel/signal.c        | 65 +++++++++++++++++++++++++++++++++++++++---
- 5 files changed, 65 insertions(+), 5 deletions(-)
+> On 3/2/21 8:33 AM, Henning Schild wrote:
+> > From: Henning Schild <henning.schild@siemens.com>
+> > 
+> > This driver adds initial support for several devices from Siemens.
+> > It is based on a platform driver introduced in an earlier commit.
+> > 
+> > Signed-off-by: Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> > Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> > ---
+> >  drivers/watchdog/Kconfig           |  11 ++
+> >  drivers/watchdog/Makefile          |   1 +
+> >  drivers/watchdog/simatic-ipc-wdt.c | 305
+> > +++++++++++++++++++++++++++++ 3 files changed, 317 insertions(+)
+> >  create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+> > 
+> > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> > index 1fe0042a48d2..948497eb4bef 100644
+> > --- a/drivers/watchdog/Kconfig
+> > +++ b/drivers/watchdog/Kconfig
+> > @@ -1575,6 +1575,17 @@ config NIC7018_WDT
+> >  	  To compile this driver as a module, choose M here: the
+> > module will be called nic7018_wdt.
+> >  
+> > +config SIEMENS_SIMATIC_IPC_WDT
+> > +	tristate "Siemens Simatic IPC Watchdog"
+> > +	depends on SIEMENS_SIMATIC_IPC
+> > +	select WATCHDOG_CORE
+> > +	help
+> > +	  This driver adds support for several watchdogs found in
+> > Industrial
+> > +	  PCs from Siemens.
+> > +
+> > +	  To compile this driver as a module, choose M here: the
+> > module will be
+> > +	  called simatic-ipc-wdt.
+> > +
+> >  # M68K Architecture
+> >  
+> >  config M54xx_WATCHDOG
+> > diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> > index f3a6540e725e..7f5c73ec058c 100644
+> > --- a/drivers/watchdog/Makefile
+> > +++ b/drivers/watchdog/Makefile
+> > @@ -142,6 +142,7 @@ obj-$(CONFIG_NI903X_WDT) += ni903x_wdt.o
+> >  obj-$(CONFIG_NIC7018_WDT) += nic7018_wdt.o
+> >  obj-$(CONFIG_MLX_WDT) += mlx_wdt.o
+> >  obj-$(CONFIG_KEEMBAY_WATCHDOG) += keembay_wdt.o
+> > +obj-$(CONFIG_SIEMENS_SIMATIC_IPC_WDT) += simatic-ipc-wdt.o
+> >  
+> >  # M68K Architecture
+> >  obj-$(CONFIG_M54xx_WATCHDOG) += m54xx_wdt.o
+> > diff --git a/drivers/watchdog/simatic-ipc-wdt.c
+> > b/drivers/watchdog/simatic-ipc-wdt.c new file mode 100644
+> > index 000000000000..b5c8b7ceb404
+> > --- /dev/null
+> > +++ b/drivers/watchdog/simatic-ipc-wdt.c
+> > @@ -0,0 +1,305 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Siemens SIMATIC IPC driver for Watchdogs
+> > + *
+> > + * Copyright (c) Siemens AG, 2020-2021
+> > + *
+> > + * Authors:
+> > + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> > + *
+> > + * This program is free software; you can redistribute it and/or
+> > modify
+> > + * it under the terms of the GNU General Public License version 2
+> > as
+> > + * published by the Free Software Foundation.  
+> 
+> Covered by SPDX-License-Identifier
+> 
+> > + */
+> > +
+> > +#include <linux/device.h>
+> > +#include <linux/init.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/errno.h>
+> > +#include <linux/watchdog.h>
+> > +#include <linux/ioport.h>
+> > +#include <linux/sizes.h>> +#include <linux/io.h>
+> > +#include <linux/platform_data/x86/simatic-ipc-base.h>  
+> 
+> Alphabetic order please
+> 
+> > +
+> > +#define WD_ENABLE_IOADR		0x62
+> > +#define WD_TRIGGER_IOADR	0x66
+> > +#define GPIO_COMMUNITY0_PORT_ID 0xaf
+> > +#define PAD_CFG_DW0_GPP_A_23	0x4b8  
+> 
+> Please increase indentation and spare another tab
+> 
+> > +#define SAFE_EN_N_427E		0x01
+> > +#define SAFE_EN_N_227E		0x04
+> > +#define WD_ENABLED		0x01
+> > +
+> > +#define TIMEOUT_MIN	2
+> > +#define TIMEOUT_DEF	64
+> > +#define TIMEOUT_MAX	64
+> > +
+> > +#define GP_STATUS_REG_227E	0x404D	/* IO PORT for
+> > SAFE_EN_N on 227E */ +
+> > +static bool nowayout = WATCHDOG_NOWAYOUT;
+> > +module_param(nowayout, bool, 0000);
+> > +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once
+> > started (default="
+> > +		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> > +
+> > +static DEFINE_SPINLOCK(io_lock);	/* the lock for io
+> > operations */ +static struct watchdog_device wdd;
+> > +  
+> 
+> Having two variables named 'wdd' is confusing. Please chose another
+> name.
+> 
+> > +static struct resource gp_status_reg_227e_res =
+> > +	DEFINE_RES_IO_NAMED(GP_STATUS_REG_227E, SZ_1,
+> > KBUILD_MODNAME); +
+> > +static struct resource io_resource =
+> > +	DEFINE_RES_IO_NAMED(WD_ENABLE_IOADR, SZ_1,
+> > +			    KBUILD_MODNAME " WD_ENABLE_IOADR");
+> > +
+> > +/* the actual start will be discovered with pci, 0 is a
+> > placeholder */ +static struct resource mem_resource =
+> > +	DEFINE_RES_MEM_NAMED(0, SZ_4, "WD_RESET_BASE_ADR");
+> > +
+> > +static u32 wd_timeout_table[] = {2, 4, 6, 8, 16, 32, 48, 64 };
+> > +static void __iomem *wd_reset_base_addr;
+> > +
+> > +static int get_timeout_idx(u32 timeout)
+> > +{
+> > +	int i;
+> > +
+> > +	i = ARRAY_SIZE(wd_timeout_table) - 1;
+> > +	for (; i >= 0; i--) {
+> > +		if (timeout >= wd_timeout_table[i])
+> > +			break;
+> > +	}
+> > +
+> > +	return i;
+> > +}  
+> 
+> Please add a comment explaining why you don't use find_closest().
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ef00bb22164cd..7009b25f48160 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -985,6 +985,7 @@ struct task_struct {
- 	/* Signal handlers: */
- 	struct signal_struct		*signal;
- 	struct sighand_struct __rcu		*sighand;
-+	struct sigqueue			*sigqueue_cache;
- 	sigset_t			blocked;
- 	sigset_t			real_blocked;
- 	/* Restored if set_restore_sigmask() was used: */
-diff --git a/include/linux/signal.h b/include/linux/signal.h
-index 205526c4003aa..d47a86790edc8 100644
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -265,6 +265,7 @@ static inline void init_sigpending(struct sigpending *sig)
- }
- 
- extern void flush_sigqueue(struct sigpending *queue);
-+extern void flush_task_sigqueue(struct task_struct *tsk);
- 
- /* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
- static inline int valid_signal(unsigned long sig)
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e35e69af..346f7b76cecaa 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -152,7 +152,7 @@ static void __exit_signal(struct task_struct *tsk)
- 	 * Do this under ->siglock, we can race with another thread
- 	 * doing sigqueue_free() if we have SIGQUEUE_PREALLOC signals.
- 	 */
--	flush_sigqueue(&tsk->pending);
-+	flush_task_sigqueue(tsk);
- 	tsk->sighand = NULL;
- 	spin_unlock(&sighand->siglock);
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index d66cd1014211b..a767e4e49a692 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1993,6 +1993,7 @@ static __latent_entropy struct task_struct *copy_process(
- 	spin_lock_init(&p->alloc_lock);
- 
- 	init_sigpending(&p->pending);
-+	p->sigqueue_cache = NULL;
- 
- 	p->utime = p->stime = p->gtime = 0;
- #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ba4d1ef39a9ea..d99273b798085 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -20,6 +20,7 @@
- #include <linux/sched/task.h>
- #include <linux/sched/task_stack.h>
- #include <linux/sched/cputime.h>
-+#include <linux/sched/rt.h>
- #include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/proc_fs.h>
-@@ -404,13 +405,30 @@ void task_join_group_stop(struct task_struct *task)
- 	task_set_jobctl_pending(task, mask | JOBCTL_STOP_PENDING);
- }
- 
-+static struct sigqueue *sigqueue_from_cache(struct task_struct *t)
-+{
-+	struct sigqueue *q = t->sigqueue_cache;
-+
-+	if (q && cmpxchg(&t->sigqueue_cache, q, NULL) == q)
-+		return q;
-+	return NULL;
-+}
-+
-+static bool sigqueue_add_cache(struct task_struct *t, struct sigqueue *q)
-+{
-+	if (!t->sigqueue_cache && cmpxchg(&t->sigqueue_cache, NULL, q) == NULL)
-+		return true;
-+	return false;
-+}
-+
- /*
-  * allocate a new signal queue record
-  * - this may be called without locks if and only if t == current, otherwise an
-  *   appropriate lock must be held to stop the target task from exiting
-  */
- static struct sigqueue *
--__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimit)
-+__sigqueue_do_alloc(int sig, struct task_struct *t, gfp_t flags,
-+		    int override_rlimit, bool fromslab)
- {
- 	struct sigqueue *q = NULL;
- 	struct user_struct *user;
-@@ -432,7 +450,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
- 	rcu_read_unlock();
- 
- 	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
--		q = kmem_cache_alloc(sigqueue_cachep, flags);
-+		if (!fromslab)
-+			q = sigqueue_from_cache(t);
-+		if (!q)
-+			q = kmem_cache_alloc(sigqueue_cachep, flags);
- 	} else {
- 		print_dropped_signal(sig);
- 	}
-@@ -449,6 +470,13 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
- 	return q;
- }
- 
-+static struct sigqueue *
-+__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags,
-+		 int override_rlimit)
-+{
-+	return __sigqueue_do_alloc(sig, t, flags, override_rlimit, false);
-+}
-+
- static void __sigqueue_free(struct sigqueue *q)
- {
- 	if (q->flags & SIGQUEUE_PREALLOC)
-@@ -458,6 +486,20 @@ static void __sigqueue_free(struct sigqueue *q)
- 	kmem_cache_free(sigqueue_cachep, q);
- }
- 
-+static void __sigqueue_cache_or_free(struct sigqueue *q)
-+{
-+	struct user_struct *up;
-+
-+	if (q->flags & SIGQUEUE_PREALLOC)
-+		return;
-+
-+	up = q->user;
-+	if (atomic_dec_and_test(&up->sigpending))
-+		free_uid(up);
-+	if (!task_is_realtime(current) || !sigqueue_add_cache(current, q))
-+		kmem_cache_free(sigqueue_cachep, q);
-+}
-+
- void flush_sigqueue(struct sigpending *queue)
- {
- 	struct sigqueue *q;
-@@ -470,6 +512,21 @@ void flush_sigqueue(struct sigpending *queue)
- 	}
- }
- 
-+/*
-+ * Called from __exit_signal. Flush tsk->pending and
-+ * tsk->sigqueue_cache
-+ */
-+void flush_task_sigqueue(struct task_struct *tsk)
-+{
-+	struct sigqueue *q;
-+
-+	flush_sigqueue(&tsk->pending);
-+
-+	q = sigqueue_from_cache(tsk);
-+	if (q)
-+		kmem_cache_free(sigqueue_cachep, q);
-+}
-+
- /*
-  * Flush all pending signals for this kthread.
-  */
-@@ -594,7 +651,7 @@ static void collect_signal(int sig, struct sigpending *list, kernel_siginfo_t *i
- 			(info->si_code == SI_TIMER) &&
- 			(info->si_sys_private);
- 
--		__sigqueue_free(first);
-+		__sigqueue_cache_or_free(first);
- 	} else {
- 		/*
- 		 * Ok, it wasn't in the queue.  This must be
-@@ -1807,7 +1864,7 @@ EXPORT_SYMBOL(kill_pid);
-  */
- struct sigqueue *sigqueue_alloc(void)
- {
--	struct sigqueue *q = __sigqueue_alloc(-1, current, GFP_KERNEL, 0);
-+	struct sigqueue *q = __sigqueue_do_alloc(-1, current, GFP_KERNEL, 0, true);
- 
- 	if (q)
- 		q->flags |= SIGQUEUE_PREALLOC;
--- 
-2.30.1
+Will not be a comment but we will switch to using this, thanks for
+pointing it out.
+
+> > +
+> > +static int wd_start(struct watchdog_device *wdd)
+> > +{
+> > +	u8 regval;
+> > +
+> > +	spin_lock(&io_lock);
+> > +  
+> The watchdog subsystem already provides locking
+> since the watchdog device can only be opened once.
+> 
+> Why is the additional lock needed ?
+
+We had this under internal review and somehow came to the conclusion
+that we "might" need it. I think we will remove it or come back with
+reasons.
+
+> > +	regval = inb(WD_ENABLE_IOADR);
+> > +	regval |= WD_ENABLED;
+> > +	outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +	spin_unlock(&io_lock);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int wd_stop(struct watchdog_device *wdd)
+> > +{
+> > +	u8 regval;
+> > +
+> > +	spin_lock(&io_lock);
+> > +
+> > +	regval = inb(WD_ENABLE_IOADR);
+> > +	regval &= ~WD_ENABLED;
+> > +	outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +	spin_unlock(&io_lock);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int wd_ping(struct watchdog_device *wdd)
+> > +{
+> > +	inb(WD_TRIGGER_IOADR);
+> > +	return 0;
+> > +}
+> > +
+> > +static int wd_set_timeout(struct watchdog_device *wdd, unsigned
+> > int t) +{
+> > +	u8 regval;
+> > +	int timeout_idx = get_timeout_idx(t);
+> > +
+> > +	spin_lock(&io_lock);
+> > +
+> > +	regval = inb(WD_ENABLE_IOADR) & 0xc7;
+> > +	regval |= timeout_idx << 3;
+> > +	outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +	spin_unlock(&io_lock);
+> > +	wdd->timeout = wd_timeout_table[timeout_idx];
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct watchdog_info wdt_ident = {
+> > +	.options	= WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
+> > +			  WDIOF_SETTIMEOUT,
+> > +	.identity	= KBUILD_MODNAME,
+> > +};
+> > +
+> > +static const struct watchdog_ops wdt_ops = {
+> > +	.owner		= THIS_MODULE,
+> > +	.start		= wd_start,
+> > +	.stop		= wd_stop,
+> > +	.ping		= wd_ping,
+> > +	.set_timeout	= wd_set_timeout,
+> > +};
+> > +
+> > +static void wd_set_safe_en_n(u32 wdtmode, bool safe_en_n)
+> > +{
+> > +	u16 resetbit;
+> > +
+> > +	if (wdtmode == SIMATIC_IPC_DEVICE_227E) {
+> > +		/* enable SAFE_EN_N on GP_STATUS_REG_227E */
+> > +		resetbit = inw(GP_STATUS_REG_227E);
+> > +		if (safe_en_n)
+> > +			resetbit &= ~SAFE_EN_N_227E;
+> > +		else
+> > +			resetbit |= SAFE_EN_N_227E;
+> > +
+> > +		outw(resetbit, GP_STATUS_REG_227E);
+> > +	} else {
+> > +		/* enable SAFE_EN_N on PCH D1600 */
+> > +		resetbit = ioread16(wd_reset_base_addr);
+> > +
+> > +		if (safe_en_n)
+> > +			resetbit &= ~SAFE_EN_N_427E;
+> > +		else
+> > +			resetbit |= SAFE_EN_N_427E;
+> > +
+> > +		iowrite16(resetbit, wd_reset_base_addr);
+> > +	}
+> > +}
+> > +
+> > +static int wd_setup(u32 wdtmode, bool safe_en_n)
+> > +{
+> > +	u8 regval;
+> > +	int timeout_idx = 0;  
+> 
+> Unnecessary initialization
+> 
+> > +	bool alarm_active;
+> > +
+> > +	timeout_idx = get_timeout_idx(TIMEOUT_DEF);
+> > +
+> > +	wd_set_safe_en_n(wdtmode, safe_en_n);
+> > +
+> > +	/* read wd register to determine alarm state */
+> > +	regval = inb(WD_ENABLE_IOADR);
+> > +	if (regval & 0x80) {
+> > +		pr_warn("Watchdog alarm active.\n");  
+> 
+> Why does that warrant a warning, and what does it mean ? The context
+> suggests that it means the previous reset was caused by the watchdog,
+> but that is not what the message says.
+> 
+> > +		regval = 0x82;	/* use only macro mode,
+> > reset alarm bit */
+> > +		alarm_active = true;
+> > +	} else {
+> > +		regval = 0x02;	/* use only macro mode */
+> > +		alarm_active = false;
+> > +	}  
+> 
+> Would it hurt to just always write 0x82 ?
+> 	alarm_active = regval & 0x80;
+> 	regval = 0x82 | timeout_idx << 3;
+> 
+> would be much simpler. Or, if you prefer,
+> 	alarm_active = !!(regval & 0x80);
+> 	regval = 0x82 | timeout_idx << 3;
+> 
+> Actually, regval isn't even needed in that case.
+> 	alarm_active = !!(regval & 0x80);
+> 	outb(0x82 | timeout_idx << 3, WD_ENABLE_IOADR);
+> 
+> 
+> Either case, please use defines for the bits. WD_ENABLED is already
+> defined, thus the other bits should be set using defines as well.
+> 
+> > +
+> > +	regval |= timeout_idx << 3;
+> > +	if (nowayout)
+> > +		regval |= WD_ENABLED;  
+> 
+> This is not the purpose of nowayout. nowayout prevents stopping
+> the watchdog after it has been started. It is not expected to start
+> the watchdog on boot.
+
+Thanks, that was misunderstood by the author, will fix.
+
+> > +
+> > +	outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +	return alarm_active;
+> > +}
+> > +
+> > +static int simatic_ipc_wdt_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	int rc = 0;
+> > +	struct simatic_ipc_platform *plat =
+> > pdev->dev.platform_data;
+> > +	struct resource *res;
+> > +  
+> 
+> Is it guaranteed that the device will always be instantiated only
+> once ? If so, how it it guaranteed ?
+
+I suppose if anything did register two platform devices on the platform
+bus this might not be guaranteed. The assumption is that simatic-ipc
+will only ever register one, and the machines always have 0-1 "Siemens
+watchdogs" so at the moment there will never be a need for more than
+one.
+
+> Because if there are ever multiple instances the various static
+> variables will cause major trouble (which is why it is always better
+> to not use static variables).
+> 
+> > +	pr_debug(KBUILD_MODNAME ":%s(#%d) WDT mode: %d\n",
+> > +		 __func__, __LINE__, plat->devmode);
+> > +  
+> 
+> This is a platform device. Please use dev_ messages (dev_warn,
+> dev_dbg etc) throughout.
+> 
+> > +	switch (plat->devmode) {
+> > +	case SIMATIC_IPC_DEVICE_227E:
+> > +		if (!devm_request_region(dev,
+> > gp_status_reg_227e_res.start,
+> > +
+> > resource_size(&gp_status_reg_227e_res),
+> > +					 KBUILD_MODNAME)) {
+> > +			dev_err(dev,
+> > +				"Unable to register IO resource at
+> > %pR\n",
+> > +				&gp_status_reg_227e_res);
+> > +			return -EBUSY;
+> > +		}
+> > +		fallthrough;
+> > +	case SIMATIC_IPC_DEVICE_427E:
+> > +		wdd.info = &wdt_ident;
+> > +		wdd.ops = &wdt_ops;
+> > +		wdd.min_timeout = TIMEOUT_MIN;
+> > +		wdd.max_timeout = TIMEOUT_MAX;  
+> 
+> Why not use static initialization ?
+> 
+> > +		wdd.parent = NULL;  
+> 
+> parent should be the platform device.
+> 
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (!devm_request_region(dev, io_resource.start,
+> > +				 resource_size(&io_resource),
+> > +				 io_resource.name)) {
+> > +		dev_err(dev,
+> > +			"Unable to register IO resource at %#x\n",
+> > +			WD_ENABLE_IOADR);
+> > +		return -EBUSY;
+> > +	}  
+> 
+> If this is what prevents multiple registrations, it is too late: wdd
+> is already overwritten.
+
+As said, there will be no double-registration.
+
+> > +
+> > +	if (plat->devmode == SIMATIC_IPC_DEVICE_427E) {
+> > +		res = &mem_resource;
+> > +
+> > +		/* get GPIO base from PCI */
+> > +		res->start =
+> > simatic_ipc_get_membase0(PCI_DEVFN(0x1f, 1));
+> > +		if (res->start == 0)
+> > +			return -ENODEV;
+> > +
+> > +		/* do the final address calculation */
+> > +		res->start = res->start + (GPIO_COMMUNITY0_PORT_ID
+> > << 16) +
+> > +			     PAD_CFG_DW0_GPP_A_23;
+> > +		res->end += res->start;
+> > +
+> > +		wd_reset_base_addr = devm_ioremap_resource(dev,
+> > res);
+> > +		if (IS_ERR(wd_reset_base_addr))
+> > +			return -ENOMEM;  
+> 
+> 			return PTR_ERR(wd_reset_base_addr);
+> 
+> > +	}
+> > +
+> > +	wdd.bootstatus = wd_setup(plat->devmode, true);  
+> 
+> bootstatus does not report a boolean. This translates to
+> WDIOF_OVERHEAT which is almost certainly wrong.
+> 
+> > +	if (wdd.bootstatus)
+> > +		pr_warn(KBUILD_MODNAME ": last reboot caused by
+> > watchdog reset\n");  
+> 
+> Why two messages ?
+> 
+> > +
+> > +	watchdog_set_nowayout(&wdd, nowayout);
+> > +	watchdog_stop_on_reboot(&wdd);
+> > +
+> > +	rc = devm_watchdog_register_device(dev, &wdd);
+> > +  
+> Extra empty line not needed
+> 
+> > +	if (rc == 0)
+> > +		pr_debug("initialized. nowayout=%d\n",
+> > +			 nowayout);  
+> 
+> What is the value of this message (especially since there is no
+> message if there is an error) ?
+> 
+> > +
+> > +	return rc;
+> > +}
+> > +
+> > +static int simatic_ipc_wdt_remove(struct platform_device *pdev)
+> > +{
+> > +	struct simatic_ipc_platform *plat =
+> > pdev->dev.platform_data; +
+> > +	wd_setup(plat->devmode, false);  
+> 
+> This warrants an explanation. What is the point of updating the
+> timeout here ? And what does SAFE_EN actually do ?
+
+The idea was that module unloading should disable the watchdog, but
+that code will be removed and aligned with other watchdogs.
+
+SAFE_EN is a second enable bit, if it is not set the watchdog will fire
+into the void. Pretty pointless will keep that always armed or set it
+always when toggling "enable".
+
+All the other open points are pretty clear, and will all be dealt with
+in v2.
+
+regards,
+Henning
+
+> The watchdog is stopped on reboot, but this function won't
+> be called in that case, making this call even more questionable.
+> Please document what it does and why it is needed here (but not
+> when rebooting).
+> 
+> > +	return 0;
+> > +}
+> > +
+> > +static struct platform_driver wdt_driver = {
+> > +	.probe = simatic_ipc_wdt_probe,
+> > +	.remove = simatic_ipc_wdt_remove,
+> > +	.driver = {
+> > +		.name = KBUILD_MODNAME,
+> > +	},
+> > +};
+> > +
+> > +static int __init simatic_ipc_wdt_init(void)
+> > +{
+> > +	return platform_driver_register(&wdt_driver);
+> > +}
+> > +
+> > +static void __exit simatic_ipc_wdt_exit(void)
+> > +{
+> > +	platform_driver_unregister(&wdt_driver);
+> > +}
+> > +
+> > +module_init(simatic_ipc_wdt_init);
+> > +module_exit(simatic_ipc_wdt_exit);  
+> 
+> Why not module_platform_driver() ?
+> 
+> > +
+> > +MODULE_LICENSE("GPL");
+> > +MODULE_ALIAS("platform:" KBUILD_MODNAME);
+> > +MODULE_AUTHOR("Gerd Haeussler <gerd.haeussler.ext@siemens.com>");
+> >   
+> 
 
