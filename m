@@ -2,137 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2055F32C0F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0558D32C139
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837248AbhCCSsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:51 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:41745 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236477AbhCCSIN (ORCPT
+        id S1837049AbhCCSs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1577891AbhCCSB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:08:13 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MWhxY-1lJgSG3ouu-00X4M5; Wed, 03 Mar 2021 18:52:01 +0100
-Received: by mail-ot1-f52.google.com with SMTP id e45so24373157ote.9;
-        Wed, 03 Mar 2021 09:52:00 -0800 (PST)
-X-Gm-Message-State: AOAM532iIqwn/5Jd4IbaN/F8hhMqgD2ZsOGmGVFLdX7Oyn11ptroFLBE
-        nti+jyAH987ZUo+osdYFI6iudyxMAtLP4kGZ9JU=
-X-Google-Smtp-Source: ABdhPJyZgFHUFofWUTXeg3MMV6dTME4mgPmK7Qu2uOA2JDhmP2sb3P0PM0oD4uxx9M963W2C6eq2lvdKqMI/0mYWmok=
-X-Received: by 2002:a9d:7f11:: with SMTP id j17mr152425otq.251.1614793919578;
- Wed, 03 Mar 2021 09:51:59 -0800 (PST)
-MIME-Version: 1.0
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
- <20210303022628.6540-1-taehyun.cho@samsung.com> <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
- <YD9lTjWc25Nn7jAR@kroah.com> <20210303103839.it7grj3vtrdmngbd@kozik-lap> <YD+XkFAfoKpSsea3@kroah.com>
-In-Reply-To: <YD+XkFAfoKpSsea3@kroah.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 3 Mar 2021 18:51:42 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1GN-g07hi8xCQ8AcTk1Cioj=ro6oqQFa844OnmFQ0MEQ@mail.gmail.com>
-Message-ID: <CAK8P3a1GN-g07hi8xCQ8AcTk1Cioj=ro6oqQFa844OnmFQ0MEQ@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        taehyun cho <taehyun.cho@samsung.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Wed, 3 Mar 2021 13:01:27 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C8DC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:53:03 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id f81so27484887yba.8
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:53:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=eQ1N4syBqhEslbSb0mdNs2OlZNLITnu4bJ8FJAo60h4=;
+        b=OLQjJT0J9gD2SzMgodm1GHn6v88aUuM7RgUuzmOJG3tKUlRF4p/HNeovouVQxPrtDQ
+         W3cfRVvYPVJf0PUgUTTg9KacNDQGjtV0t41hSbwQbAvjBMnZuTFT0x9eS3UEQXMttKn5
+         ltADl2+jM89/kQclQtWNkvS4ijrLyucXx0nZ0G4250rFdxWhgpLFaNyjqkIjosUfi07f
+         sxRA7jMw0Py89UrFDAZ05uf6A7fvoblcOv74/leSiKt2Rn7WthMRqXMWZxSbJNoxNPsb
+         Yyw+KEashPMBUEdqc6pmvhLyZ6GOk4foNIMP/6DrXY9D1XhFPoR0Yi1Y+cwIFFGlZmbv
+         8CCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=eQ1N4syBqhEslbSb0mdNs2OlZNLITnu4bJ8FJAo60h4=;
+        b=ftN6T9+3V49KrrYy70HXWxnheaqheQ+z0DtPw9Pp04N2mtFs4FgfLAyFZt28zYcqdF
+         d2fvMn142n3QpSbWN7J06uCH1pWjOpl5NZQBbEl8PVI3ALvyVXv4DdBiPLbrG3YQcOou
+         dbNeiMrjo6DAPTJzH5zopXaQHEgXs+clhbO83CasKy5O3ecY4g4V75RX6u6amKma0zFy
+         cS/yTRqBKyjDzh0AjKjRMy3d4Z9Oa+6fdNTlw8S8D9h0FNoXt8KxOshY7qPMmH+r3aux
+         C2bMYE17RHtWlOyFkR0w2Zk7uUspfgkVk3wjr9L3Xlr/sUhgoPgZrQAOn/97HKkS05TL
+         LrLA==
+X-Gm-Message-State: AOAM5313rNkAwQlerRNJ3nXMSfpf8WMf+TuS5+ilOdD1HMGnlsd4A+a5
+        1dbHNY9Qod6bMn1uUoru2/o2B3GiBpbD
+X-Google-Smtp-Source: ABdhPJwnyqDHV+MfT760BeCIxgKo4yidtHHzI6Ce9X1wfCm1ty1jRfE6ZB+qqj7wRE676p0RC6J7UICzudl5
+Sender: "bgeffon via sendgmr" <bgeffon@bg.sfo.corp.google.com>
+X-Received: from bg.sfo.corp.google.com ([2620:15c:8:10:60ab:b78:20ae:fc05])
+ (user=bgeffon job=sendgmr) by 2002:a25:e795:: with SMTP id
+ e143mr523308ybh.509.1614793981739; Wed, 03 Mar 2021 09:53:01 -0800 (PST)
+Date:   Wed,  3 Mar 2021 09:52:35 -0800
+Message-Id: <20210303175235.3308220-1-bgeffon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc0.254.gbdcc3b1a9d-goog
+Subject: [PATCH] mm: Allow shmem mappings with MREMAP_DONTUNMAP
+From:   Brian Geffon <bgeffon@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Brian Geffon <bgeffon@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:+betIC5tW5QZLNZtTZm60dhIJMGOOeTkC0zt6RZZcK0WFzr7/2C
- avnORCt4Lbf4XFYJGGUTsHDDjnNObX9IkThsIg4/bl0B6TLbbKvMvSKZlfAPW2UpIpb9Xxz
- D9HfeA7ItE5F6pUErxeJWOK5P1IaAfw+jr8P4N6GJyL5tQD9DQa1CmHGziF/JglVpoY6we/
- EC9xNgKuSx5GhC0CJAr0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hRqmoWF4L1k=:etCBzdVpxQgfNxO+Nm1+iR
- kRiBbw4HXXJBHk8j9WNtQzlnUHiZc2qVpVb9/55bbz5C0GcejILlPJTY4ulNOruQ0lT+NUrqn
- 0yKMYgrjGpq1q9rgDjI6yejL0ny/7GKKAErgCBD2yg7gU5KYQE75SPxUHUkhxc8vqBAAd0Xl+
- 8Z9/80C95o0nfyvaN1VF2vIWtUpuZuUOdHeFzBeQGujyo1o6Hj3PaN/v13Xb7iBtEEtBe6Mwr
- cznr567eoVjxi08+owimMG4TxuWOy+r+BFxqY2xUdOV4rB8xg+/iNxFbi9s9N+OtYl3US7beR
- 3MnTtAcZyGh8Bd7/VRsF66vkv3B6WtAo2pvFSkxOS/4PDs7popy6SagUJl924RRII/ab9ob6v
- Bk8Wn55HyX1nCwj2Na0iolWvCQ8NuIe6fgJ0a1/jTXXTXHTDPWptPC6HmS4bp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 3:05 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Wed, Mar 03, 2021 at 11:38:39AM +0100, Krzysztof Kozlowski wrote:
-> > On Wed, Mar 03, 2021 at 11:30:38AM +0100, Greg Kroah-Hartman wrote: >
-> > It's getting more generic topic, so let me Cc Arnd and Guenter (I think
-> > once I discussed this with Guenter around watchdog).
-> >
-> > This is so far component of a SoC, so it cannot be re-used outside of
-> > SoC. Unless it appears in a new SoC (just like recent re-use of Samsung
-> > serial driver for Apple M1). Because of the architecture, you cannot
-> > build universal kernel without ARCH_EXYNOS. You need it. Otherwise the
-> > kernel won't boot on hardware with DWC Exynos.
->
-> So, to create a "generic" arm64 kernel, I need to go enable all of the
-> ARCH_* variants as well?  I thought we were trying to NOT do the same
-> mess that arm32 had for this type of thing.
+Currently MREMAP_DONTUNMAP only accepts private anonymous mappings. This change
+will widen the support to include shmem mappings. The primary use case
+is to support MREMAP_DONTUNMAP on mappings which may have been created from
+a memfd.
 
-Yes, same as on any other architecture that supports more than one
-platform at a time.
+Lokesh Gidra who works on the Android JVM, provided an explanation of how such
+a feature will improve Android JVM garbage collection:
+"Android is developing a new garbage collector (GC), based on userfaultfd. The
+garbage collector will use userfaultfd (uffd) on the java heap during compaction.
+On accessing any uncompacted page, the application threads will find it missing,
+at which point the thread will create the compacted page and then use UFFDIO_COPY
+ioctl to get it mapped and then resume execution. Before starting this compaction,
+in a stop-the-world pause the heap will be mremap(MREMAP_DONTUNMAP) so that the
+java heap is ready to receive UFFD_EVENT_PAGEFAULT events after resuming execution.
 
-> > Since DWC Exynos won't work without ARCH_EXYNOS - the user will not get
-> > any usable binary - I think all, or almost all, SoC specific drivers are
-> > limited per ARCH. This limits the amount of choices for distro people
-> > and other kernel configuring folks, so they won't have to consider
-> > useless options.
->
-> Why do we have ARCH_EXYNOS at all?  x86-64 doesn't have this, why is
-> arm64 somehow special here?
+To speedup mremap operations, pagetable movement was optimized by moving PUD entries
+instead of PTE entries [1]. It was necessary as mremap of even modest sized memory
+ranges also took several milliseconds, and stopping the application for that long
+isn't acceptable in response-time sensitive cases. With UFFDIO_CONTINUE feature [2],
+it will be even more efficient to implement this GC, particularly the 'non-moveable'
+portions of the heap. It will also help in reducing the need to copy (UFFDIO_COPY)
+the pages. However, for this to work, the java heap has to be on a 'shared' vma.
+Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this patch will
+enable using UFFDIO_CONTINUE for the new userfaultfd-based heap compaction."
 
-There are only about five chip vendors for x86-64, and they largely
-just use the same drivers. You still have platform support that you need to
-enable to run on all machines, see:
+[1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
+[2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
+---
+ mm/mremap.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-CONFIG_X86_NUMACHIP
-CONFIG_X86_VSMP
-CONFIG_X86_UV
-CONFIG_X86_GOLDFISH
-CONFIG_X86_INTEL_CE
-CONFIG_X86_INTEL_MID
-CONFIG_X86_AMD_PLATFORM_DEVICE
-CONFIG_KVM_GUEST
-CONFIG_JAILHOUSE_GUEST
-CONFIG_ACRN_GUEST
-CONFIG_CHROME_PLATFORMS
-CONFIG_MELLANOX_PLATFORM
-CONFIG_SURFACE_PLATFORMS
-laptop vendors in drivers/platform/x86/Kconfig
+diff --git a/mm/mremap.c b/mm/mremap.c
+index ec8f840399ed..6934d199da54 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -653,8 +653,7 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+-	if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
+-			vma->vm_flags & VM_SHARED))
++	if (flags & MREMAP_DONTUNMAP && !(vma_is_anonymous(vma) || vma_is_shmem(vma)))
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	if (is_vm_hugetlb_page(vma))
+-- 
+2.31.0.rc0.254.gbdcc3b1a9d-goog
 
-Most of these have only a few drivers, while none of the interesting
-x86 platforms that modified from ARM or MIPS SoCs
-(Allwinner/Rockchip Sofia, Unisoc SC9861G-IA, Maxlinear
-XWAY, MobilEye EyeQ6) made it upstream so far, and probably
-never will.
-
-> That's my complaint, it feels wrong that I have to go and enable all
-> different ARCH_ symbols just to build these drivers.  If people want
-> 'default' configurations, then provide an exynos default config file,
-> right?
-
-It is very intentional that there is only one defconfig, this helps ensure
-that none of the platform specific drivers conflicts with other platforms.
-
-> I've complained about this before, from a driver subsystem maintainer
-> point of view, this is crazy, drivers should be building and working on
-> everything.  Worst case, it's a cpu-type issue, to build or not build a
-> driver (i.e. s390, i386), best case it's a feature-type issue to depend
-> on (i.e. USB, TTY, etc.).  But never a "this one sub-architecture of
-> this one cpu"-type issue.  That feels crazy to me...
-
-Basing on the CPU type seems way crazier to me, these have
-almost nothing to do with what kind of drivers one gets to use.
-
-SoC designers rarely care much about the CPU core they put
-in a SoC, they just license a part fits their needs.
-At the moment everyone is using ARM, but before that they had
-the same platforms on powerpc, mips, sh, or their own custom
-architecture. Some get acquired by Intel and start using x86
-cores, and some others move to RISC-V.
-
-       Arnd
