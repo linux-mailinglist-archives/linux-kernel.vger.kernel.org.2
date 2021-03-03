@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5C532C16F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4284032C161
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838618AbhCCTBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:01:13 -0500
-Received: from mga18.intel.com ([134.134.136.126]:48141 "EHLO mga18.intel.com"
+        id S1838555AbhCCTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:00:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:54028 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234126AbhCCSfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:35:50 -0500
-IronPort-SDR: ee6TOyeIEDuomTqbzXr3J0xgldnlusRCRozBGHoSdbR5BXugZotUPJNsvkYp7FAnWS0cwYje1C
- x93FCUUyly4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="174893768"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="174893768"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 10:34:02 -0800
-IronPort-SDR: dNnm3riT/7iRr/+P6cRiMU4ZgdyvTBUh6WFIfxcQD/gSTHhF+ZJY/BVXlhzMZLktWhbLt3oJrC
- XD4jS0hoN94Q==
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="407363306"
-Received: from schen9-mobl.amr.corp.intel.com ([10.252.135.223])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 10:34:01 -0800
-Subject: Re: [RFC PATCH v4 3/3] scheduler: Add cluster scheduler level for x86
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, lenb@kernel.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        msys.mizuma@gmail.com, valentin.schneider@arm.com,
-        gregkh@linuxfoundation.org, jonathan.cameron@huawei.com,
-        juri.lelli@redhat.com, mark.rutland@arm.com, sudeep.holla@arm.com,
-        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        x86@kernel.org, xuwei5@huawei.com, prime.zeng@hisilicon.com,
-        guodong.xu@linaro.org, yangyicong@huawei.com,
-        liguozhu@hisilicon.com, linuxarm@openeuler.org, hpa@zytor.com
-References: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
- <20210301225940.16728-4-song.bao.hua@hisilicon.com>
- <YD4T0qBBgR6fPbQb@hirez.programming.kicks-ass.net>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <a8474bae-5d9a-8c0b-766a-7188ed71320b@linux.intel.com>
-Date:   Wed, 3 Mar 2021 10:34:00 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1580795AbhCCSfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:35:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D2B031B;
+        Wed,  3 Mar 2021 10:34:23 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A45643F7D7;
+        Wed,  3 Mar 2021 10:34:20 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
+        yu.c.chen@intel.com
+Subject: Re: [sched/fair]  b360fb5e59:  stress-ng.vm-segv.ops_per_sec -13.9% regression
+In-Reply-To: <jhjim6jhsfp.mognet@arm.com>
+References: <20210223023004.GB25487@xsang-OptiPlex-9020> <jhjim6jhsfp.mognet@arm.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Wed, 03 Mar 2021 18:34:13 +0000
+Message-ID: <jhjy2f46q8q.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YD4T0qBBgR6fPbQb@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/2/21 2:30 AM, Peter Zijlstra wrote:
-> On Tue, Mar 02, 2021 at 11:59:40AM +1300, Barry Song wrote:
->> From: Tim Chen <tim.c.chen@linux.intel.com>
+On 23/02/21 12:36, Valentin Schneider wrote:
+> On 23/02/21 10:30, kernel test robot wrote:
+>> Greeting,
 >>
->> There are x86 CPU architectures (e.g. Jacobsville) where L2 cahce
->> is shared among a cluster of cores instead of being exclusive
->> to one single core.
-> 
-> Isn't that most atoms one way or another? Tremont seems to have it per 4
-> cores, but earlier it was per 2 cores.
-> 
+>> FYI, we noticed a -13.9% regression of stress-ng.vm-segv.ops_per_sec due to commit:
+>>
+>>
+>> commit: b360fb5e5954a8a440ef95bf11257e2e7ea90340 ("[PATCH v2 1/7] sched/fair: Ignore percpu threads for imbalance pulls")
+>> url: https://github.com/0day-ci/linux/commits/Valentin-Schneider/sched-fair-misfit-task-load-balance-tweaks/20210219-211028
+>> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git c5e6fc08feb2b88dc5dac2f3c817e1c2a4cafda4
+>>
+>> in testcase: stress-ng
+>> on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 512G memory
+>> with following parameters:
+>>
+>>      nr_threads: 10%
+>>      disk: 1HDD
+>>      testtime: 60s
+>>      fs: ext4
+>>      class: vm
+>>      test: vm-segv
+>>      cpufreq_governor: performance
+>>      ucode: 0x5003003
+>>
 
-Yes, older Atoms have 2 cores sharing L2.  I probably should
-rephrase my comments to not leave the impression that sharing
-L2 among cores is new for Atoms.
+So I've been running this on my 32 CPU arm64 desktop with:
+  nr_threads: 10%
+  nr_threads: 50%
+  (20 iterations each)
 
-Tremont based Atom CPUs increases the possible load imbalance more
-with 4 cores per L2 instead of 2.  And also with more overall cores on a die, the
-chance increases for packing running tasks on a few clusters while leaving
-others empty on light/medium loaded systems.  We did see
-this effect on Jacobsville.
-
-So load balancing between the L2 clusters is more
-useful on Tremont based Atom CPUs compared to the older Atoms.
-
-Tim
+In the 50% case I see a ~2% improvement, in the 10% a -0.3%
+regression (another batch showed -0.08%)... Still far off from the reported
+-14%. If it's really required I can go find an x86 box to test this on, but
+so far it looks like a fluke.
