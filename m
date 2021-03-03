@@ -2,167 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800F732BAA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A668A32BAA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhCCLlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:41:55 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:46014 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236347AbhCCD6h (ORCPT
+        id S232776AbhCCLpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:45:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352668AbhCCEAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 22:58:37 -0500
-X-AuditID: 0a580155-713ff700000550c6-c2-603f01d33099
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id A6.9D.20678.3D10F306; Wed,  3 Mar 2021 11:26:11 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 3 Mar 2021
- 11:57:11 +0800
-Date:   Wed, 3 Mar 2021 11:57:10 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        <yaoaili@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210303115710.2e9f8e23@alex-virtual-machine>
-In-Reply-To: <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
-References: <20210224151619.67c29731@alex-virtual-machine>
-        <20210224103105.GA16368@linux>
-        <20210225114329.4e1a41c6@alex-virtual-machine>
-        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
-        <20210225113930.GA7227@localhost.localdomain>
-        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
-        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
-        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
-        <20210226105915.6cf7d2b8@alex-virtual-machine>
-        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Tue, 2 Mar 2021 23:00:18 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12978C061797
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 19:59:38 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id e7so34902212lft.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 19:59:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bKpoC3J4YgBOA8Lql8xpYica6gBEcGbcCojRmFUiU44=;
+        b=QJY+fdcAWaHs2JlBp+MFbv/MUjuLEpDoEM2RYzK/clfBJqqjFCpeD87HhHTnvb3Nwr
+         usvG5G0Pritxbdrr8e5XahEZe13S85WimA82MjZbWMHjF2QCry/H5shU+MBvTCyDE0wY
+         dYwScetM1lY0U10eFHy+84DJwxcMzGKIauKINBgPp318lIZ/2AunSsQdPv8TKhfAoKs9
+         Una+VZNVkdxX2iPEAAgLBXq6BTjlrR6XNL7+qulk1tToP484csKnymL/IQTrlzZFP+Ri
+         36zQ+6B+VGTQbXQk+L9jxqtB7nCcLpl7NghErrmNR/OcQB42WAcECHv/GPCXoYWwtaWE
+         4P/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bKpoC3J4YgBOA8Lql8xpYica6gBEcGbcCojRmFUiU44=;
+        b=ltfaiW3t9+ft/jCozZOD7JsnTiUu4qPIuLG/Zygq5hObanyWCV4RQpT47sDxVvLAjc
+         xdXr5LDj3vwEOdELs5gjRHw+Cxj0nNs8zyCtM8h9E1Lio9SewdvxznGnwy7cKSmz8YPF
+         V/ruSFCPEcjXrMmob2EgSMnbg/9VrbhOkW2eFvSuPUVpjKZ/A6Bfep0zchTmfUywF70I
+         QoywDh0I2tYrCV/nUNcV1Ezq46BURE5B+itCAe6ATva1raBCeVe7F8DOUW2qkvjAWSWw
+         mRy1sCC3NQMZbfM/+0FGQ1aZLE00Jvps0nsBLNd6avEnBt+8crIz7wPFh7AXQnWrUIWf
+         KDxQ==
+X-Gm-Message-State: AOAM5322bdYIyT3YKlfQO5bzQSuIdRb+8tC+eev2wTLTKHeOPgwyzOuR
+        HXiCF8kVZUS90KtmkJlFp3AExo5qM3AU9ZKQNvnkGQ==
+X-Google-Smtp-Source: ABdhPJx3IcTjNJQcxvnUo6pt+ZuB5f+NIxbcFmdB/KskCL7IZtwIqr8wPqsD8EI70PiGIwabnTAwBGagj9Ui9tVGeuk=
+X-Received: by 2002:a19:ee19:: with SMTP id g25mr13603347lfb.83.1614743975183;
+ Tue, 02 Mar 2021 19:59:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXCFcGooHuZ0T7B4P9GOYs569ewWXze8I/N
-        4uv6X8wW0zaKW1w41cBkcXnXHDaLe2v+s1pcOrCAyeJi4wFGizPTiiw2b5rKbPHmwj0Wix8b
-        HrM68Hp8b+1j8Vi85yWTx6ZVnWwemz5NYvd4d+4cu8eJGb9ZPF5c3cji8X7fVTaPzaerPT5v
-        kvM40fKFNYA7issmJTUnsyy1SN8ugStj+Y7nTAVTZSvuNrQxNzD+Futi5OSQEDCR6JrdwNjF
-        yMUhJDCdSeLut1fsEM5LRomO5qmsIFUsAioSK+aeZAKx2QRUJXbdmwUWFxFQk7i0+AEzSAOz
-        wGxWiVOTzzKDJIQFvCS+3F/LCGLzClhJnNvwEMzmFHCT+LtoDhPEhi4WiduzH7GDJPgFxCR6
-        r/xngrjJXqJtyyKoZkGJkzOfsIDYzAI6EidWHWOGsOUltr+dA2YLCShKHF7yix2iV0niSPcM
-        Ngg7VmLZvFesExiFZyEZNQvJqFlIRi1gZF7FyFKcm260iRESg6E7GGc0fdQ7xMjEwXiIUYKD
-        WUmEV/ylbYIQb0piZVVqUX58UWlOavEhRmkOFiVx3qlbTRKEBNITS1KzU1MLUotgskwcnFIN
-        TPGhXNOne97Ymc+5+uocPYPt/5bU/JDJjlxxYuK3I46Z7sx/+aR3n+vafujpgtNGX1w+737k
-        pSohyVRnc0PTeOucSwmWJQYJpc/m3jbOvNqkWKLBomd8OYz9e+fFwNRpBZp9ybOe65YttHNq
-        uXM3rLSah2mSj8xZkVt3L9hOn76e0TTTtJftYEWfsWV/c0VDlNQR6eJVz04YTH6/5Hc8z+ba
-        6SpzN8ge/uwwdZeeYuUF6wbmH3GpJ7OLru7OPM2w6dKU1RkTI3LelCp32ef7l3MFn343q2bb
-        7vMzkh88nVS5Za+GzU7WCJad1Xn3KzNZ+C49Vt69njPpWKO92PEmIQHlg55Oeu8f9ztaVCjx
-        KLEUZyQaajEXFScCABnB2towAwAA
+References: <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com>
+ <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
+ <YDzaAWK41K4gD35V@dhcp22.suse.cz> <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
+ <YD0OzXTmYm8M58Vo@dhcp22.suse.cz> <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
+ <YD0jLTciK0M7P+Hc@dhcp22.suse.cz> <122e8c5d-60b8-52d9-c6a1-00cd61b2e1b6@oracle.com>
+ <YD4I+VPr3UNt063H@dhcp22.suse.cz> <CALvZod7XHbjfoGGVH=h17u8-FruMaiPMWxXJz5JBmeJkNHBqNQ@mail.gmail.com>
+ <YD5L1K3EWVWh1ULr@dhcp22.suse.cz> <06edda9a-dce9-accd-11a3-97f6d5243ed1@oracle.com>
+In-Reply-To: <06edda9a-dce9-accd-11a3-97f6d5243ed1@oracle.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 2 Mar 2021 19:59:22 -0800
+Message-ID: <CALvZod6VdegSbtWTrL8wnxhPmtrqC8mKULVR1VeND31m0KftVg@mail.gmail.com>
+Subject: Re: possible deadlock in sk_clone_lock
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 19:39:53 -0800
-"Luck, Tony" <tony.luck@intel.com> wrote:
+On Tue, Mar 2, 2021 at 1:19 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 3/2/21 6:29 AM, Michal Hocko wrote:
+> > On Tue 02-03-21 06:11:51, Shakeel Butt wrote:
+> >> On Tue, Mar 2, 2021 at 1:44 AM Michal Hocko <mhocko@suse.com> wrote:
+> >>>
+> >>> On Mon 01-03-21 17:16:29, Mike Kravetz wrote:
+> >>>> On 3/1/21 9:23 AM, Michal Hocko wrote:
+> >>>>> On Mon 01-03-21 08:39:22, Shakeel Butt wrote:
+> >>>>>> On Mon, Mar 1, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
+> >>>>> [...]
+> >>>>>>> Then how come this can ever be a problem? in_task() should exclude soft
+> >>>>>>> irq context unless I am mistaken.
+> >>>>>>>
+> >>>>>>
+> >>>>>> If I take the following example of syzbot's deadlock scenario then
+> >>>>>> CPU1 is the one freeing the hugetlb pages. It is in the process
+> >>>>>> context but has disabled softirqs (see __tcp_close()).
+> >>>>>>
+> >>>>>>         CPU0                    CPU1
+> >>>>>>         ----                    ----
+> >>>>>>    lock(hugetlb_lock);
+> >>>>>>                                 local_irq_disable();
+> >>>>>>                                 lock(slock-AF_INET);
+> >>>>>>                                 lock(hugetlb_lock);
+> >>>>>>    <Interrupt>
+> >>>>>>      lock(slock-AF_INET);
+> >>>>>>
+> > [...]
+> >>> Wouldn't something like this help? It is quite ugly but it would be
+> >>> simple enough and backportable while we come up with a more rigorous
+> >>> solution. What do you think?
+> >>>
+> >>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> >>> index 4bdb58ab14cb..c9a8b39f678d 100644
+> >>> --- a/mm/hugetlb.c
+> >>> +++ b/mm/hugetlb.c
+> >>> @@ -1495,9 +1495,11 @@ static DECLARE_WORK(free_hpage_work, free_hpage_workfn);
+> >>>  void free_huge_page(struct page *page)
+> >>>  {
+> >>>         /*
+> >>> -        * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+> >>> +        * Defer freeing if in non-task context or when put_page is called
+> >>> +        * with IRQ disabled (e.g from via TCP slock dependency chain) to
+> >>> +        * avoid hugetlb_lock deadlock.
+> >>>          */
+> >>> -       if (!in_task()) {
+> >>> +       if (!in_task() || irqs_disabled()) {
+> >>
+> >> Does irqs_disabled() also check softirqs?
+> >
+> > Nope it doesn't AFAICS. I was referring to the above lockdep splat which
+> > claims irq disabled to be the trigger. But now that you are mentioning
+> > that it would be better to replace in_task() along the way. We have
+> > discussed that in another email thread and I was suggesting to use
+> > in_atomic() which should catch also bh disabled situation. The big IF is
+> > that this needs preempt count to be enabled unconditionally. There are
+> > changes in the RCU tree heading that direction.
+>
+> I have not been following developments in preemption and the RCU tree.
+> The comment for in_atomic() says:
+>
+> /*
+>  * Are we running in atomic context?  WARNING: this macro cannot
+>  * always detect atomic context; in particular, it cannot know about
+>  * held spinlocks in non-preemptible kernels.  Thus it should not be
+>  * used in the general case to determine whether sleeping is possible.
+>  * Do not use in_atomic() in driver code.
+>  */
+>
+> That does seem to be the case.  I verified in_atomic can detect softirq
+> context even in non-preemptible kernels.  But, as the comment says it
+> will not detect a held spinlock in non-preemptible kernels.  So, I think
+> in_atomic would be better than the current check for !in_task.  That
+> would handle this syzbot issue, but we could still have issues if the
+> hugetlb put_page path is called while someone is holding a spinlock with
+> all interrupts enabled.  Looks like there is no way to detect this
+> today in non-preemptible kernels.  in_atomic does detect spinlocks held
+> in preemptible kernels.
+>
+> I might suggest changing !in_task to in_atomic for now, and then work on
+> a more robust solution.  I'm afraid such a robust solution will
+> require considerable effort.  It would need to handle put_page being
+> called in any context: hardirq, softirq, spinlock held ...  The
+> put_page/free_huge_page path will need to offload (workqueue or
+> something else) any processing that can possibly sleep.
+>
+> Is it worth making the in_atomic change now, or should we just start
+> working on the more robust complete solution?
 
-> On Fri, Feb 26, 2021 at 10:59:15AM +0800, Aili Yao wrote:
-> > Hi naoya, tony:  
-> > > > 
-> > > > Idea for what we should do next ... Now that x86 is calling memory_failure()
-> > > > from user context ... maybe parallel calls for the same page should
-> > > > be blocked until the first caller completes so we can:
-> > > > a) know that pages are unmapped (if that happens)
-> > > > b) all get the same success/fail status    
-> > > 
-> > > One memory_failure() call changes the target page's status and
-> > > affects all mappings to all affected processes, so I think that
-> > > (ideally) we don't have to block other threads (letting them
-> > > early return seems fine).  Sometimes memory_failure() fails,
-> > > but even in such case, PG_hwpoison is set on the page and other
-> > > threads properly get SIGBUSs with this patch, so I think that
-> > > we can avoid the worst scenario (like system stall by MCE loop).
-> > >   
-> > I agree with naoya's point, if we block for this issue, Does this change the result
-> > that the process should be killed? Or is there something other still need to be considered?  
-> 
-> Ok ... no blocking ... I think someone in this thread suggested
-> scanning the page tables to make sure the poisoned page had been
-> unmapped.
-> 
-> There's a walk_page_range() function that does all the work for that.
-> Just need to supply some callback routines that check whether a
-> mapping includes the bad PFN and clear the PRESENT bit.
-> 
-> RFC patch below against v5.12-rc1
-> 
-> -Tony
-> 
-> From 8de23b7f1be00ad38e129690dfe0b1558fad5ff8 Mon Sep 17 00:00:00 2001
-> From: Tony Luck <tony.luck@intel.com>
-> Date: Tue, 2 Mar 2021 15:06:33 -0800
-> Subject: [PATCH] x86/mce: Handle races between machine checks
-> 
-> When multiple CPUs hit the same poison memory there is a race. The
-> first CPU into memory_failure() atomically marks the page as poison
-> and continues processing to hunt down all the tasks that map this page
-> so that the virtual addresses can be marked not-present and SIGBUS
-> sent to the task that did the access.
-> 
-> Later CPUs get an early return from memory_failure() and may return
-> to user mode and access the poison again.
-> 
-> Add a new argument to memory_failure() so that it can indicate when
-> the race has been lost. Fix kill_me_maybe() to scan page tables in
-> this case to unmap pages.
-
-> +
->  static void kill_me_now(struct callback_head *ch)
->  {
->  	force_sig(SIGBUS);
-> @@ -1257,15 +1304,19 @@ static void kill_me_maybe(struct callback_head *cb)
->  {
->  	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
->  	int flags = MF_ACTION_REQUIRED;
-> +	int already = 0;
->  
->  	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
->  
->  	if (!p->mce_ripv)
->  		flags |= MF_MUST_KILL;
->  
-> -	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
-> +	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags, &already) &&
->  	    !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
-> -		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
-> +		if (already)
-> +			walk_page_range(current->mm, 0, TASK_SIZE_MAX, &walk, (void *)(p->mce_addr >> PAGE_SHIFT));
-> +		else
-> +			set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
->  		sync_core();
->  		return;
-
->  	MF_MUST_KILL = 1 << 2,
->  	MF_SOFT_OFFLINE = 1 << 3,
->  };
-
-I have one doubt here, when "walk_page_range(current->mm, 0, TASK_SIZE_MAX, &walk, (void *)(p->mce_addr >> PAGE_SHIFT));" is done,
-so how is the process triggering this error returned if it have taken the wrong data?
-
--- 
-Thanks!
-Aili Yao
+IMHO the change to in_atomic is beneficial because it will at least
+fix this specific issue. No reason to keep the users of TCP TX
+zerocopy from hugetlb pages broken for a more comprehensive solution.
