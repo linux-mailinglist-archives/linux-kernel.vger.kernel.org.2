@@ -2,115 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1276E32BE9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F00732BE53
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385937AbhCCRdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:33:05 -0500
-Received: from mga18.intel.com ([134.134.136.126]:25320 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242317AbhCCNwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:52:10 -0500
-IronPort-SDR: wC4pn15P/Rve+Ihi0RpJZQ48ZMUfppHQ8o8M3sfHlg22qZQrHIP5gsO2nsvRunV+3zNC94W9pv
- Gm9kzHEERrxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174835367"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="174835367"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 05:47:29 -0800
-IronPort-SDR: kW6FgmkA7MBBHETZicJVqQovPVtm+iV1UQE0fnSOR1gBtEqLNdMtGFLrEJX7qDiv5xjh7CLF1c
- wuOsOUXY0Dtg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="383988777"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 03 Mar 2021 05:47:29 -0800
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
-Subject: [PATCH] Revert "perf/x86: Allow zero PEBS status with only single active event"
-Date:   Wed,  3 Mar 2021 05:42:18 -0800
-Message-Id: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1385563AbhCCRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:20:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349329AbhCCNoS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:44:18 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F0EC06121D
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:43:37 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id n4so6385106wmq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:43:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QBm1TtnSOgkIdE+poP2XHRBabvEfYrHEJwcqomHGK4I=;
+        b=CobjywY2f31xvahThtnf+1J/tPkCZZLUOzDN9k925p+K3ljoBNUuwGN6Z04oqnMIPI
+         WS1MUrwyT0+HPr+bF9JgzQWmvgClLWJo5rzB40dMh9V5sv/Yq8nYX3E/F1e9qb0ufBpc
+         5R8UsMIhy7JVlgVo1/18XfYf+wP4uLAb+RWHY37577RbXX6pd5jXuE34eefan1RAvX/m
+         GvImGq+2Q4Rmx4plYwdwDh6zhOaXjXOA9Dhsa/U9Qym0hc8ELB2Y8W5EzXNViMZFdKHL
+         jm+T25PBHcD0TK81K8m8O8oDvH2G4UqZTtjl3pd1izvptFsGjlScPG2R+aJxykccdEAg
+         zjyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QBm1TtnSOgkIdE+poP2XHRBabvEfYrHEJwcqomHGK4I=;
+        b=Gfb/JLhr1AILn6YY03Fpd3qxXrbWpDf/VqNZ7Lgkwl5y3GQRhtL+HRcOE6xa5Mh/9O
+         j5xz+dvGVeIBx1/Qpeyx9LvO1nst+n1IroePgtP1fy3EC94nCxugMcnfk/Sk/aHvNxhM
+         bPQ8y6sZuF2XQBmrPWzaxcnLlVajHXCIVpqy2XQPfMUofcV2RNPt771/YFETSCMG6dfG
+         69pQ2JMI/Z05pyQsfPFuCfzEb9g2kF6RArw6/ji5tSY0kT/VdW/FSgKrR+idC4ZOyLU9
+         1RMnpCX54/eURjwn1ivzuEUHm0gXs9LzJgZRAE5QT80xLhMyK8nejdCbB/7WtrlWLbPR
+         HaKQ==
+X-Gm-Message-State: AOAM533UU9ETHE/Ojr2c0spMCs1mE0PNZHEy6r5/zxn16w7lFzotsxTr
+        0Z2+Q1T/0VKcN7v/XJnE7gZWyA==
+X-Google-Smtp-Source: ABdhPJxDWAS0QekMYikPudJ4qNiYAhq/iWdMPZuZl8uyYTy6BkFNsfoxpNYhdQ/7ZfCkCJrNbg2EpA==
+X-Received: by 2002:a1c:a98a:: with SMTP id s132mr9567391wme.12.1614779009161;
+        Wed, 03 Mar 2021 05:43:29 -0800 (PST)
+Received: from dell.default ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 05:43:28 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Jeremy Kolb <jkolb@brandeis.edu>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        nouveau@lists.freedesktop.org,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Sean Paul <sean@poorly.run>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>
+Subject: [RESEND 00/53] Rid GPU from W=1 warnings
+Date:   Wed,  3 Mar 2021 13:42:26 +0000
+Message-Id: <20210303134319.3160762-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+This is a resend.  All of these patches have been sent before.
 
-This reverts commit 01330d7288e0 ("perf/x86: Allow zero PEBS status with
-only single active event")
+The vmwgfx ones were even applied, but were dropped for some reason.
 
-A repeatable crash can be triggered by the perf_fuzzer on some Haswell
-system.
-https://lore.kernel.org/lkml/7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu/
+Lee Jones (53):
+  drm/nouveau/nvkm/subdev/bios/init: Demote obvious abuse of kernel-doc
+  drm/nouveau/dispnv50/disp: Remove unused variable 'ret'
+  drm/msm/dp/dp_display: Remove unused variable 'hpd'
+  drm/amd/display/dc/bios/command_table: Remove unused variable
+  include: drm: drm_atomic: Make use of 'new_plane_state'
+  drm/nouveau/nvkm/subdev/volt/gk20a: Demote non-conformant kernel-doc
+    headers
+  drm/amd/display/dc/bios/command_table: Remove unused variable and
+    associated comment
+  drm/amd/display/dc/calcs/dce_calcs: Move some large variables from the
+    stack to the heap
+  drm/amd/display/dc/calcs/dce_calcs: Remove some large variables from
+    the stack
+  drm/amd/display/dc/dce/dce_aux: Remove duplicate line causing 'field
+    overwritten' issue
+  drm/amd/display/dc/dce80/dce80_resource: Make local functions static
+  drm/nouveau/nvkm/engine/gr/gf100: Demote non-conformant kernel-doc
+    header
+  drm/nouveau/nouveau_bo: Remove unused variables 'dev'
+  drm/nouveau/nouveau_display: Remove set but unused variable 'width'
+  drm/nouveau/dispnv04/crtc: Demote non-conforming kernel-doc headers
+  drm/nouveau/dispnv50/disp: Remove unused variable 'ret' from function
+    returning void
+  drm/nouveau/dispnv50/headc57d: Make local function 'headc57d_olut'
+    static
+  drm/nouveau/nv50_display: Remove superfluous prototype for local
+    static functions
+  drm/nouveau/dispnv50/disp: Include header containing our prototypes
+  drm/nouveau/nouveau_ioc32: File headers are not good candidates for
+    kernel-doc
+  drm/nouveau/nouveau_svm: Remove unused variable 'ret' from void
+    function
+  drm/nouveau/nouveau_ioc32: Demote kernel-doc abuse to standard comment
+    block
+  drm/vmwgfx/vmwgfx_execbuf: Fix some kernel-doc related issues
+  drm/vmwgfx/vmwgfx_kms: Remove unused variable 'ret' from
+    'vmw_du_primary_plane_atomic_check()'
+  drm/vmwgfx/vmwgfx_kms: Mark vmw_{cursor,primary}_plane_formats as
+    __maybe_unused
+  drm/vmwgfx/vmwgfx_drv: Fix some kernel-doc misdemeanours
+  drm/vmwgfx/vmwgfx_ioctl: Provide missing '@' sign required by
+    kernel-doc
+  drm/vmwgfx/vmwgfx_resource: Fix worthy function headers demote some
+    others
+  drm/vmwgfx/vmwgfx_ttm_buffer: Supply some missing parameter
+    descriptions
+  drm/vmwgfx/vmwgfx_fifo: Demote non-conformant kernel-doc header
+  drm/vmwgfx/vmwgfx_ldu: Supply descriptions for 'state' function
+    parameter
+  drm/vmwgfx/vmwgfx_kms: Update worthy function headers and demote
+    others
+  drm/vmwgfx/vmwgfx_overlay: Demote kernel-doc abuses to standard
+    comment blocks
+  drm/vmwgfx/vmwgfx_fence: Add, remove and demote various documentation
+    params/headers
+  drm/vmwgfx/vmwgfx_bo: Remove superfluous param description and supply
+    another
+  drm/vmwgfx/vmwgfx_context: Demote kernel-doc abuses
+  drm/vmwgfx/vmwgfx_scrn: Demote unworthy kernel-doc headers and update
+    others
+  drm/vmwgfx/vmwgfx_surface: Fix some kernel-doc related issues
+  drm/vmwgfx/vmwgfx_cmdbuf_res: Rename param description and remove
+    another
+  drm/vmwgfx/vmwgfx_shader: Demote kernel-doc abuses and fix-up worthy
+    headers
+  drm/vmwgfx/vmwgfx_cmdbuf: Fix a bunch of missing or incorrectly
+    formatted/named params
+  drm/vmwgfx/vmwgfx_cmdbuf_res: Remove unused variable 'ret'
+  drm/vmwgfx/vmwgfx_stdu: Add some missing param/member descriptions
+  drm/vmwgfx/vmwgfx_cmdbuf: Fix misnaming of 'headers' should be plural
+  drm/vmwgfx/vmwgfx_cotable: Fix a couple of simple documentation
+    problems
+  drm/vmwgfx/vmwgfx_so: Add description for 'vmw_view's 'rcu' member
+  drm/vmwgfx/vmwgfx_binding: Provide some missing param descriptions and
+    remove others
+  drm/vmwgfx/vmwgfx_msg: Fix misspelling of 'msg'
+  drm/vmwgfx/vmwgfx_blit: Add description for 'vmw_bo_cpu_blit's 'diff'
+    param
+  drm/vmwgfx/vmwgfx_validation: Add some missing struct member/function
+    param descriptions
+  drm/vmwgfx/ttm_object: Demote half-assed headers and fix-up another
+  drm/vmwgfx/vmwgfx_thp: Add description for 'vmw_thp_manager's member
+    'manager'
+  drm/vmwgfx/ttm_object: Reorder header to immediately precede its
+    struct
 
-For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
-may be mistakenly set to 0. To minimize the impact of the defect, the
-commit was introduced to try to avoid dropping the PEBS record for some
-cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
-the local pebs_status accordingly. However, it doesn't correct the PEBS
-status in the PEBS record, which may trigger the crash, especially for
-the large PEBS.
+ .../drm/amd/display/dc/bios/command_table.c   |   16 +-
+ .../gpu/drm/amd/display/dc/calcs/dce_calcs.c  | 1151 +++++++++--------
+ drivers/gpu/drm/amd/display/dc/dce/dce_aux.h  |    1 -
+ .../drm/amd/display/dc/dce80/dce80_resource.c |   16 +-
+ drivers/gpu/drm/msm/dp/dp_display.c           |    3 -
+ drivers/gpu/drm/nouveau/dispnv04/crtc.c       |    4 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.c       |   10 +-
+ drivers/gpu/drm/nouveau/dispnv50/headc57d.c   |    2 +-
+ drivers/gpu/drm/nouveau/nouveau_bo.c          |    4 -
+ drivers/gpu/drm/nouveau/nouveau_display.c     |    8 +-
+ drivers/gpu/drm/nouveau/nouveau_ioc32.c       |    4 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.c         |    5 +-
+ drivers/gpu/drm/nouveau/nv50_display.h        |    3 -
+ .../gpu/drm/nouveau/nvkm/engine/gr/gf100.c    |    2 +-
+ .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   |  204 +--
+ .../gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c  |    4 +-
+ drivers/gpu/drm/vmwgfx/ttm_object.c           |   25 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_binding.c       |    9 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_blit.c          |    1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_bo.c            |    2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c           |    2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf.c        |   14 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmdbuf_res.c    |    8 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_context.c       |    6 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_cotable.c       |    3 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c           |    8 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c       |   20 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_fence.c         |   18 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c         |    2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           |   16 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.h           |    4 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_ldu.c           |    4 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c           |    2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_overlay.c       |   16 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_resource.c      |   10 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_scrn.c          |   10 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_shader.c        |   10 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_so.c            |    1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c          |    9 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_surface.c       |   17 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_thp.c           |    1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c    |    2 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_validation.c    |    5 +-
+ include/drm/drm_atomic.h                      |    3 +-
+ 44 files changed, 818 insertions(+), 847 deletions(-)
 
-It's possible that all the PEBS records in a large PEBS have the PEBS
-status 0. If so, the first get_next_pebs_record_by_bit() in the
-__intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
-PEBS, the 'count' parameter must > 1. The second
-get_next_pebs_record_by_bit() will crash.
-
-Two solutions were considered to fix the crash.
-- Keep the SW workaround and add extra checks in the
-  get_next_pebs_record_by_bit() to workaround the issue. The
-  get_next_pebs_record_by_bit() is a critical path. The extra checks
-  will bring extra overhead for the latest CPUs which don't have the
-  defect. Also, the defect can only be observed on some old CPUs
-  (For example, the issue can be reproduced on an HSW client, but I
-  didn't observe the issue on my Haswell server machine.). The impact
-  of the defect should be limit.
-  This solution is dropped.
-- Drop the SW workaround and revert the commit.
-  It seems that the commit never works, because the PEBS status in the
-  PEBS record never be changed. The get_next_pebs_record_by_bit() only
-  checks the PEBS status in the PEBS record. The record is dropped
-  eventually. Reverting the commit should not change the current
-  behavior.
-
-Fixes: 01330d7288e0 ("perf/x86: Allow zero PEBS status with only single active event")
-Reported-by: Vince Weaver <vincent.weaver@maine.edu>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/events/intel/ds.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 7ebae18..9c90d1e 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
- 			continue;
- 		}
- 
--		/*
--		 * On some CPUs the PEBS status can be zero when PEBS is
--		 * racing with clearing of GLOBAL_STATUS.
--		 *
--		 * Normally we would drop that record, but in the
--		 * case when there is only a single active PEBS event
--		 * we can assume it's for that event.
--		 */
--		if (!pebs_status && cpuc->pebs_enabled &&
--			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
--			pebs_status = cpuc->pebs_enabled;
--
- 		bit = find_first_bit((unsigned long *)&pebs_status,
- 					x86_pmu.max_pebs_events);
- 		if (bit >= x86_pmu.max_pebs_events)
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Anthony Koo <Anthony.Koo@amd.com>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Colin Ian King <colin.king@canonical.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Dave Airlie <airlied@redhat.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: freedreno@lists.freedesktop.org
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Jeremy Kolb <jkolb@brandeis.edu>
+Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Leo Li <sunpeng.li@amd.com>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: nouveau@lists.freedesktop.org
+Cc: Qinglang Miao <miaoqinglang@huawei.com>
+Cc: Rob Clark <rob.clark@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Roland Scheidegger <sroland@vmware.com>
+Cc: Sean Paul <sean@poorly.run>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+Cc: Zack Rusin <zackr@vmware.com>
 -- 
-2.7.4
+2.27.0
 
