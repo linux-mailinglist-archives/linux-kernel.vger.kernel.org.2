@@ -2,114 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A12832BDE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8736232BE1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346980AbhCCQjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:39:16 -0500
-Received: from mail6.tencent.com ([220.249.245.26]:40384 "EHLO
-        mail6.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358186AbhCCL5R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:57:17 -0500
-X-Greylist: delayed 4183 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 06:57:10 EST
-Received: from EX-SZ018.tencent.com (unknown [10.28.6.39])
-        by mail6.tencent.com (Postfix) with ESMTP id BCE37CC18E;
-        Wed,  3 Mar 2021 17:28:11 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
-        s=s202002; t=1614763691;
-        bh=0DHu7YSHfuZpObjRsOBKHAFPCxsRH9TW5j6O5SKoe9k=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=X+pEBCV/6eYCwRgDue7cZsWhG3wPeimxju3wmtzIT8Ljm49YAZj2bml/1VKhUoNUc
-         RPkQWkwQaEfmbBhPkGNgD/DBn7ioIry6I3KtsJBHt4pOv1/T0VhHHjW80k6PXDViUI
-         egcZE1A/LZ4D+dT1VPMjhZmCJ8smK08WyrRxIGxw=
-Received: from EX-SZ001.tencent.com (10.28.6.13) by EX-SZ018.tencent.com
- (10.28.6.39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 3 Mar 2021
- 17:28:11 +0800
-Received: from EX-SZ008.tencent.com (10.28.6.32) by EX-SZ001.tencent.com
- (10.28.6.13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 3 Mar 2021
- 17:28:11 +0800
-Received: from EX-SZ008.tencent.com ([fe80::a445:9f31:1c10:bf51]) by
- EX-SZ008.tencent.com ([fe80::a445:9f31:1c10:bf51%10]) with mapi id
- 15.01.2106.002; Wed, 3 Mar 2021 17:28:11 +0800
-From:   =?utf-8?B?a2l5aW4o5bC55LquKQ==?= <kiyin@tencent.com>
-To:     Xiaoming Ni <nixiaoming@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "linville@tuxdriver.com" <linville@tuxdriver.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        "stefan@datenfreihafen.org" <stefan@datenfreihafen.org>,
-        "matthieu.baerts@tessares.net" <matthieu.baerts@tessares.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "wangle6@huawei.com" <wangle6@huawei.com>,
-        "xiaoqian9@huawei.com" <xiaoqian9@huawei.com>
-Subject: RE: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
- llcp_sock_connect()(Internet mail)
-Thread-Topic: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
- llcp_sock_connect()(Internet mail)
-Thread-Index: AQHXD/Teu1rU3sSMBUSAy4tsrXSR0apx/YwQ
-Date:   Wed, 3 Mar 2021 09:28:11 +0000
-Message-ID: <2965a9b88d254b7f8e7f4356875bbedb@tencent.com>
-References: <20210303061654.127666-1-nixiaoming@huawei.com>
- <20210303061654.127666-5-nixiaoming@huawei.com>
-In-Reply-To: <20210303061654.127666-5-nixiaoming@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.14.87.252]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1452982AbhCCQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:58:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232777AbhCCMcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:32:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA1F64EE6;
+        Wed,  3 Mar 2021 09:57:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614765464;
+        bh=m5ZgB2uhhBpzt73LsJTxuAhJfKD5R+vFHoUx+9V28SE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R69mIedG6TCe/QyLb4VgW3wV+3ODZJzZrp11MBZDlqNhK4Iw35dsx5UJKGqa9xTBJ
+         5McGaTAS/Kpp7NaG0xPizZq4iWOUbZ4RmTY+y8Yf34WuJ8rNj8UEMpoy8hBjbCfZzm
+         DU2ITVOsJL2Kr3VE3DonCKaa92HMx+Z2GMgCFshQ=
+Date:   Wed, 3 Mar 2021 10:57:41 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Marco Elver <elver@google.com>
+Cc:     rafael@kernel.org, paulmck@kernel.org, dvyukov@google.com,
+        glider@google.com, andreyknvl@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] kcsan, debugfs: Move debugfs file creation out of early
+ init
+Message-ID: <YD9dld26cz0RWHg7@kroah.com>
+References: <20210303093845.2743309-1-elver@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303093845.2743309-1-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgeGlhb21pbmcsDQogIHRoZSBwYXRoIGNhbiBvbmx5IGZpeCB0aGUgZW5kbGVzcyBsb29wIHBy
-b2JsZW0uIGl0IGNhbid0IGZpeCB0aGUgbWVhbmluZ2xlc3MgbGxjcF9zb2NrLT5zZXJ2aWNlX25h
-bWUgcHJvYmxlbS4NCiAgaWYgd2Ugc2V0IGxsY3Bfc29jay0+c2VydmljZV9uYW1lIHRvIG1lYW5p
-bmdsZXNzIHN0cmluZywgdGhlIGNvbm5lY3Qgd2lsbCBiZSBmYWlsZWQuIGFuZCBzay0+c2tfc3Rh
-dGUgd2lsbCBub3QgYmUgTExDUF9DT05ORUNURUQuIHRoZW4gd2UgY2FuIGNhbGwgbGxjcF9zb2Nr
-X2Nvbm5lY3QoKSBtYW55IHRpbWVzLiB0aGF0IGxlYWtzIGV2ZXJ5dGhpbmc6IGxsY3Bfc29jay0+
-ZGV2LCBsbGNwX3NvY2stPmxvY2FsLCBsbGNwX3NvY2stPnNzYXAsIGxsY3Bfc29jay0+c2Vydmlj
-ZV9uYW1lLi4uDQoNClJlZ2FyZHMsDQpraXlpbi4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KPiBGcm9tOiBYaWFvbWluZyBOaSBbbWFpbHRvOm5peGlhb21pbmdAaHVhd2VpLmNvbV0N
-Cj4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAzLCAyMDIxIDI6MTcgUE0NCj4gVG86IGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGtpeWluKOWwueS6rikgPGtpeWluQHRlbmNlbnQuY29tPjsN
-Cj4gc3RhYmxlQHZnZXIua2VybmVsLm9yZzsgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc7IHNh
-bWVvQGxpbnV4LmludGVsLmNvbTsNCj4gbGludmlsbGVAdHV4ZHJpdmVyLmNvbTsgZGF2ZW1AZGF2
-ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3JnOw0KPiBta2xAcGVuZ3V0cm9uaXguZGU7IHN0ZWZh
-bkBkYXRlbmZyZWloYWZlbi5vcmc7DQo+IG1hdHRoaWV1LmJhZXJ0c0B0ZXNzYXJlcy5uZXQ7IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IG5peGlhb21pbmdAaHVhd2VpLmNvbTsgd2FuZ2xl
-NkBodWF3ZWkuY29tOyB4aWFvcWlhbjlAaHVhd2VpLmNvbQ0KPiBTdWJqZWN0OiBbUEFUQ0ggNC80
-XSBuZmM6IEF2b2lkIGVuZGxlc3MgbG9vcHMgY2F1c2VkIGJ5IHJlcGVhdGVkDQo+IGxsY3Bfc29j
-a19jb25uZWN0KCkoSW50ZXJuZXQgbWFpbCkNCj4gDQo+IFdoZW4gc29ja193YWl0X3N0YXRlKCkg
-cmV0dXJucyAtRUlOUFJPR1JFU1MsICJzay0+c2tfc3RhdGUiIGlzDQo+IExMQ1BfQ09OTkVDVElO
-Ry4gSW4gdGhpcyBjYXNlLCBsbGNwX3NvY2tfY29ubmVjdCgpIGlzIHJlcGVhdGVkbHkgaW52b2tl
-ZCwNCj4gIG5mY19sbGNwX3NvY2tfbGluaygpIHdpbGwgYWRkIHNrIHRvIGxvY2FsLT5jb25uZWN0
-aW5nX3NvY2tldHMgdHdpY2UuDQo+ICBzay0+c2tfbm9kZS0+bmV4dCB3aWxsIHBvaW50IHRvIGl0
-c2VsZiwgdGhhdCB3aWxsIG1ha2UgYW4gZW5kbGVzcyBsb29wICBhbmQNCj4gaGFuZy11cCB0aGUg
-c3lzdGVtLg0KPiBUbyBmaXggaXQsIGNoZWNrIHdoZXRoZXIgc2stPnNrX3N0YXRlIGlzIExMQ1Bf
-Q09OTkVDVElORyBpbg0KPiAgbGxjcF9zb2NrX2Nvbm5lY3QoKSB0byBhdm9pZCByZXBlYXRlZCBp
-bnZva2luZy4NCj4gDQo+IGZpeCBDVkUtMjAyMC0yNTY3Mw0KPiBGaXhlczogYjQwMTEyMzlhMDhl
-ICgiTkZDOiBsbGNwOiBGaXggbm9uIGJsb2NraW5nIHNvY2tldHMgY29ubmVjdGlvbnMiKQ0KPiBS
-ZXBvcnRlZC1ieTogImtpeWluKOWwueS6rikiIDxraXlpbkB0ZW5jZW50LmNvbT4NCj4gTGluazog
-aHR0cHM6Ly93d3cub3BlbndhbGwuY29tL2xpc3RzL29zcy1zZWN1cml0eS8yMDIwLzExLzAxLzEN
-Cj4gQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPiAjdjMuMTENCj4gU2lnbmVkLW9mZi1ieTog
-WGlhb21pbmcgTmkgPG5peGlhb21pbmdAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBuZXQvbmZjL2xs
-Y3Bfc29jay5jIHwgNCArKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvbmV0L25mYy9sbGNwX3NvY2suYyBiL25ldC9uZmMvbGxjcF9zb2Nr
-LmMgaW5kZXgNCj4gNTkxNzI2MTRiMjQ5Li5hM2I0NmY4ODg4MDMgMTAwNjQ0DQo+IC0tLSBhL25l
-dC9uZmMvbGxjcF9zb2NrLmMNCj4gKysrIGIvbmV0L25mYy9sbGNwX3NvY2suYw0KPiBAQCAtNjcz
-LDYgKzY3MywxMCBAQCBzdGF0aWMgaW50IGxsY3Bfc29ja19jb25uZWN0KHN0cnVjdCBzb2NrZXQg
-KnNvY2ssDQo+IHN0cnVjdCBzb2NrYWRkciAqX2FkZHIsDQo+ICAJCXJldCA9IC1FSVNDT05OOw0K
-PiAgCQlnb3RvIGVycm9yOw0KPiAgCX0NCj4gKwlpZiAoc2stPnNrX3N0YXRlID09IExMQ1BfQ09O
-TkVDVElORykgew0KPiArCQlyZXQgPSAtRUlOUFJPR1JFU1M7DQo+ICsJCWdvdG8gZXJyb3I7DQo+
-ICsJfQ0KPiANCj4gIAlkZXYgPSBuZmNfZ2V0X2RldmljZShhZGRyLT5kZXZfaWR4KTsNCj4gIAlp
-ZiAoZGV2ID09IE5VTEwpIHsNCj4gLS0NCj4gMi4yNy4wDQo+IA0KDQo=
+On Wed, Mar 03, 2021 at 10:38:45AM +0100, Marco Elver wrote:
+> Commit 56348560d495 ("debugfs: do not attempt to create a new file
+> before the filesystem is initalized") forbids creating new debugfs files
+> until debugfs is fully initialized. This breaks KCSAN's debugfs file
+> creation, which happened at the end of __init().
+
+How did it "break" it?  The files shouldn't have actually been created,
+right?
+
+> There is no reason to create the debugfs file during early
+> initialization. Therefore, move it into a late_initcall() callback.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: stable <stable@vger.kernel.org>
+> Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> I've marked this for 'stable', since 56348560d495 is also intended for
+> stable, and would subsequently break KCSAN in all stable kernels where
+> KCSAN is available (since 5.8).
+
+No objection from me, just odd that this actually fixes anything :)
+
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
