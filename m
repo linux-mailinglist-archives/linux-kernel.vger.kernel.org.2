@@ -2,181 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D19232BB48
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155A132BB41
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236556AbhCCMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:21:03 -0500
-Received: from mga14.intel.com ([192.55.52.115]:3867 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347093AbhCCGum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 01:50:42 -0500
-IronPort-SDR: QJiA6qMhPa4L4bxlcZLMDw2HLSbV7gnXX+typxu8j5S6RwbMWTjuAygVXzMd845TmeQsCcNGqO
- PQ2nxCff/bzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="186466637"
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="186466637"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 22:49:58 -0800
-IronPort-SDR: VssBJZsPU5CCGfuUTSAkeL4s0ZfjUxlmefOMKoM/bkbswxoxhOCrZ5X4rsicB+FnISrhnzO7yy
- 90bmBjRM81Ng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="518161551"
-Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 02 Mar 2021 22:49:56 -0800
-Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lHLKV-0000xj-Qp; Wed, 03 Mar 2021 06:49:55 +0000
-Date:   Wed, 03 Mar 2021 14:49:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 0390bf9195b4dd729f8e52416d91120519a51c02
-Message-ID: <603f3173.O9jJB885C4Ln8iXy%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232987AbhCCMQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:16:51 -0500
+Received: from smtprelay0151.hostedemail.com ([216.40.44.151]:43614 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1344494AbhCCGue (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:50:34 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 33F8C100E7B42;
+        Wed,  3 Mar 2021 06:49:46 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3743:3865:3866:3868:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4384:5007:6117:6120:7652:7901:9025:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13208:13229:13311:13357:13439:14181:14659:14721:14764:21060:21067:21080:21611:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: thumb56_150e8a6276c3
+X-Filterd-Recvd-Size: 1626
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  3 Mar 2021 06:49:44 +0000 (UTC)
+Message-ID: <70f35c99165ac4dd1846ea2e30b9a1745c364903.camel@perches.com>
+Subject: Re: [PATCH V3 XRT Alveo 00/18] XRT Alveo driver overview
+From:   Joe Perches <joe@perches.com>
+To:     Moritz Fischer <mdf@kernel.org>, Lizhi Hou <lizhi.hou@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, Lizhi Hou <lizhih@xilinx.com>,
+        linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, trix@redhat.com,
+        robh@kernel.org
+Date:   Tue, 02 Mar 2021 22:49:43 -0800
+In-Reply-To: <YDLF2Bi3oEhP6A7Q@archbook>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+         <YDLF2Bi3oEhP6A7Q@archbook>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 0390bf9195b4dd729f8e52416d91120519a51c02  Merge branch 'locking/urgent'
+On Sun, 2021-02-21 at 12:43 -0800, Moritz Fischer wrote:
+> On Wed, Feb 17, 2021 at 10:40:01PM -0800, Lizhi Hou wrote:
+> > This is V3 of patch series which adds management physical function driver for Xilinx
+> > Alveo PCIe accelerator cards, https://www.xilinx.com/products/boards-and-kits/alveo.html
+> > This driver is part of Xilinx Runtime (XRT) open source stack.
+[]
+> Please fix the indents all across this patchset. Doesn't checkpatch with
+> --strict complain about this?
 
-elapsed time: 721m
+I glanced at a couple bits of these patches and didn't
+notice any of what I consider poor indentation style.
 
-configs tested: 119
-configs skipped: 2
+What indent is wrong here?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc8272_ads_defconfig
-sh                           se7751_defconfig
-openrisc                            defconfig
-arm                         lpc32xx_defconfig
-powerpc                      ep88xc_defconfig
-mips                            ar7_defconfig
-sh                         microdev_defconfig
-sh                           se7712_defconfig
-s390                                defconfig
-arm                      tct_hammer_defconfig
-mips                         bigsur_defconfig
-sh                   secureedge5410_defconfig
-m68k                       bvme6000_defconfig
-arm                          collie_defconfig
-h8300                     edosk2674_defconfig
-arm                       cns3420vb_defconfig
-m68k                         amcore_defconfig
-m68k                        m5272c3_defconfig
-mips                            e55_defconfig
-arm                        spear3xx_defconfig
-s390                       zfcpdump_defconfig
-sh                      rts7751r2d1_defconfig
-sparc                               defconfig
-c6x                              alldefconfig
-m68k                       m5208evb_defconfig
-arm                   milbeaut_m10v_defconfig
-xtensa                              defconfig
-sh                        sh7785lcr_defconfig
-arm                         nhk8815_defconfig
-nds32                            alldefconfig
-h8300                    h8300h-sim_defconfig
-powerpc                        cell_defconfig
-mips                      maltasmvp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210302
-x86_64               randconfig-a001-20210302
-x86_64               randconfig-a004-20210302
-x86_64               randconfig-a002-20210302
-x86_64               randconfig-a005-20210302
-x86_64               randconfig-a003-20210302
-i386                 randconfig-a005-20210302
-i386                 randconfig-a003-20210302
-i386                 randconfig-a002-20210302
-i386                 randconfig-a004-20210302
-i386                 randconfig-a006-20210302
-i386                 randconfig-a001-20210302
-i386                 randconfig-a016-20210302
-i386                 randconfig-a012-20210302
-i386                 randconfig-a014-20210302
-i386                 randconfig-a013-20210302
-i386                 randconfig-a011-20210302
-i386                 randconfig-a015-20210302
-i386                 randconfig-a016-20210303
-i386                 randconfig-a012-20210303
-i386                 randconfig-a014-20210303
-i386                 randconfig-a013-20210303
-i386                 randconfig-a011-20210303
-i386                 randconfig-a015-20210303
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210303
-x86_64               randconfig-a001-20210303
-x86_64               randconfig-a004-20210303
-x86_64               randconfig-a002-20210303
-x86_64               randconfig-a005-20210303
-x86_64               randconfig-a003-20210303
-x86_64               randconfig-a013-20210302
-x86_64               randconfig-a016-20210302
-x86_64               randconfig-a015-20210302
-x86_64               randconfig-a014-20210302
-x86_64               randconfig-a012-20210302
-x86_64               randconfig-a011-20210302
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
