@@ -2,203 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A156732C189
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE6E32C197
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386905AbhCCTMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382986AbhCCSoa (ORCPT
+        id S245266AbhCCTWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:22:31 -0500
+Received: from condef-06.nifty.com ([202.248.20.71]:52345 "EHLO
+        condef-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1838283AbhCCTAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:44:30 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7C5C061761
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:43:49 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id e9so4928599pjj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:43:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gVzR7oLstl6ac4ZTkA4CIGL1WR32C+kvWFg+bT72InI=;
-        b=Kdp0z6TouC9vsp6Gaa4T0X4l/lsXsHfBSgHsbjgBgBPnZs72XvLOn3wMnlX2wWvV+U
-         zAMijtl3Db+skGKokSbjFctHPeDghD+JPckIzTRM+Fx2LFOFfIymQelQrxwLgZlOYD4j
-         YO2yBXWtCdBIUxFcBE1BbMM/MVUOP60rUwUdqaOe9MTiaIxQZBVKN3o3iJyV5pEm3h1U
-         pz+M9M2KJbAiQoZiDGGSSqkcchEre8O5f/3u2SuaFDxXZBbBV4J74E4O05bgZTa54tad
-         9oD8BVbYvPaWNc7HCsQkWiYbEST7gerlhWe9ONUT1GMXJcWy7IjXVQfVNn3IHTPjp0rS
-         lpjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gVzR7oLstl6ac4ZTkA4CIGL1WR32C+kvWFg+bT72InI=;
-        b=EgBvgfE5z6WbA1JOGDRgJgpnJRzdZb5AGBt77iN0mXGCToCGt2Pmxcm24dins+5BTv
-         VIZ3EcEjlz6ftricamdXRn5R6y9jBmFH0OF0iyT5dubMqW/qBmfcyj3t6rKWsXxKILQ3
-         I8rsQ0rtwzNReX76iEXcRWoX4QQrF4oCK+jlpCO1YM9bJwquJcojKVgE7Dhka05HU5Ii
-         qByauhEbgdcAYUs7s8UMSa9mf7jSdRuBk6Hn3hVBfdVBmGW21KA6vhAr+6a2O8un87PY
-         +BZYeQCq0PgqyO99cWrVwY9ITCVWYrZJgP/3SvrnF7JxTZbJmivHzgKa7sSULRWJnf+2
-         C7dg==
-X-Gm-Message-State: AOAM533SEs8Rz8Jh/Y0v+IcQ4stwzvQ910r0mJuKd5625c6R+xaBLhm2
-        gvuB4h3dQucdzwpdDKZXAcLaxg==
-X-Google-Smtp-Source: ABdhPJyaZX7NAFW2wCjv1k35xfC/hJogQ35MtOZEOH1TxdzZzw44BBaFYPLSKZlYUZq4CWNEHQPUwQ==
-X-Received: by 2002:a17:90a:4882:: with SMTP id b2mr474911pjh.69.1614797028306;
-        Wed, 03 Mar 2021 10:43:48 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id v126sm23944372pfv.163.2021.03.03.10.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 10:43:47 -0800 (PST)
-Date:   Wed, 3 Mar 2021 11:43:45 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 11/16] rpmsg: virtio: register the rpmsg_ctrl device
-Message-ID: <20210303184345.GD3817330@xps15>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-12-arnaud.pouliquen@foss.st.com>
+        Wed, 3 Mar 2021 14:00:03 -0500
+Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-06.nifty.com with ESMTP id 123IuAkm015717
+        for <linux-kernel@vger.kernel.org>; Thu, 4 Mar 2021 03:56:10 +0900
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 123IoDLr006152;
+        Thu, 4 Mar 2021 03:50:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 123IoDLr006152
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614797413;
+        bh=fvTDpDKpHB2RoYVt26aVSfRN8H+EkrwI+Rs0xBOTnaY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=x056maJ4bLhrtmh+om8k4pFwPKY7SUSf9fSjaV61pzOCe+r54ANja43k/dNlMyfKT
+         viwScA1dES2h6rSh+y8sxfXG50bhOUTFL50oo+aGXOopPxi1KGwpoxuXoGfiT/0XJn
+         K/HDajcgWeaxF79vOsyd1HbV/PXQxNf6tCJwPRSKb4kqI0g+2H04+Jiz4pjEUoaZ1G
+         VdnQuEAn3+bb3l8+b7TbVnr4hU8tij4eL24zMCrYmtb+BPNI8ZuquwvA0EJufn+93R
+         UZouzZ2hY5rr/81r8aLXZRR8oM17llg0B0UCDpp/2+T0ludvTD2Uf9yEdhS62DmQvP
+         Xo8EMzomXHMnQ==
+X-Nifty-SrcIP: [209.85.215.182]
+Received: by mail-pg1-f182.google.com with SMTP id t25so17053281pga.2;
+        Wed, 03 Mar 2021 10:50:13 -0800 (PST)
+X-Gm-Message-State: AOAM533Iy1qEQBUJU3+Iu8yHslbsYEvkWk3TspHToky1aKaonaVNDN0g
+        t0UC61vAQHBjah6nmQVr1FaHw/vt9p7/nOtq5u8=
+X-Google-Smtp-Source: ABdhPJxJeSO/hkm+twwtXdqQxYmlQhQvuY5QvILOCuJ2lY3fPjFUNkrsevggNJm/rQDa4DHuSRNV0XWfvtHG038rb6o=
+X-Received: by 2002:a65:428b:: with SMTP id j11mr292481pgp.47.1614797412617;
+ Wed, 03 Mar 2021 10:50:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219111501.14261-12-arnaud.pouliquen@foss.st.com>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <20210302232649.y2tutffhxsblwqlb@treble>
+In-Reply-To: <20210302232649.y2tutffhxsblwqlb@treble>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 4 Mar 2021 03:49:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+Message-ID: <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:14:56PM +0100, Arnaud Pouliquen wrote:
-> Instantiate the rpmsg_ioctl device on virtio RPMsg bus creation.
+On Wed, Mar 3, 2021 at 8:27 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Mon, Jan 25, 2021 at 02:42:10PM -0600, Josh Poimboeuf wrote:
+> > When building out-of-tree kernel modules, the build system doesn't
+> > require the GCC version to match the version used to build the original
+> > kernel.  That's probably [1] fine.
+> >
+> > In fact, for many distros, the version of GCC used to build the latest
+> > kernel doesn't necessarily match the latest released GCC, so a GCC
+> > mismatch turns out to be pretty common.  And with CONFIG_MODVERSIONS
+> > it's probably more common.
+> >
+> > So a lot of users have come to rely on being able to use a different
+> > version of GCC when building OOT modules.
+> >
+> > But with GCC plugins enabled, that's no longer allowed:
+> >
+> >   cc1: error: incompatible gcc/plugin versions
+> >   cc1: error: failed to initialize plugin ./scripts/gcc-plugins/structleak_plugin.so
+> >
+> > That error comes from the plugin's call to
+> > plugin_default_version_check(), which strictly enforces the GCC version.
+> > The strict check makes sense, because there's nothing to prevent the GCC
+> > plugin ABI from changing -- and it often does.
+> >
+> > But failing the build isn't necessary.  For most plugins, OOT modules
+> > will otherwise work just fine without the plugin instrumentation.
+> >
+> > When a GCC version mismatch is detected, print a warning and disable the
+> > plugin.  The only exception is the RANDSTRUCT plugin which needs all
+> > code to see the same struct layouts.  In that case print an error.
+>
+> Hi Masahiro,
+>
+> This problem is becoming more prevalent.  We will need to fix it one way
+> or another, if we want to support distro adoption of these GCC
+> plugin-based features.
+>
+> Frank suggested a possibly better idea: always rebuild the plugins when
+> the GCC version changes.
 
-s/rpmsg_ioctl/rpmsg_ctrl
 
-Now I understand what you meant in patch 05.
+That is just another form of the previous patch,
+which was already rejected.
 
-> This provides the possibility to expose the RPMSG_CREATE_EPT_IOCTL
-> to create RPMsg chdev endpoints.
 
-You mean RPMSG device endpoints, i.e rpmsg_eptdev?  If so I think it should be
-added to the changelog.  Otherwiser someone could be tempted to look for "chdev"
-and find anything but a rpmsg_eptdev.
+- That is a hack just for external modules
+- Our consensus is, use the same version for the kernel and external modules
 
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> 
-> ---
-> V5:
-> Fix compilation issue
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 57 +++++++++++++++++++++++++++++---
->  1 file changed, 52 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index e87d4cf926eb..2e6b34084012 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -813,14 +813,52 @@ static void rpmsg_xmit_done(struct virtqueue *svq)
->  	wake_up_interruptible(&vrp->sendq);
->  }
->  
-> +static struct rpmsg_device *rpmsg_virtio_add_ctrl_dev(struct virtio_device *vdev)
-> +{
-> +	struct virtproc_info *vrp = vdev->priv;
-> +	struct virtio_rpmsg_channel *vch;
-> +	struct rpmsg_device *rpdev_ctrl;
-> +	int err = 0;
-> +
-> +	vch = kzalloc(sizeof(*vch), GFP_KERNEL);
-> +	if (!vch)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	/* Link the channel to the vrp */
-> +	vch->vrp = vrp;
-> +
-> +	/* Assign public information to the rpmsg_device */
-> +	rpdev_ctrl = &vch->rpdev;
-> +	rpdev_ctrl->ops = &virtio_rpmsg_ops;
-> +
-> +	rpdev_ctrl->dev.parent = &vrp->vdev->dev;
-> +	rpdev_ctrl->dev.release = virtio_rpmsg_release_device;
-> +	rpdev_ctrl->little_endian = virtio_is_little_endian(vrp->vdev);
-> +
-> +	err = rpmsg_ctrl_register_device(rpdev_ctrl);
-> +	if (err) {
-> +		kfree(vch);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	return rpdev_ctrl;
-> +}
-> +
-> +static void rpmsg_virtio_del_ctrl_dev(struct rpmsg_device *rpdev_ctrl)
-> +{
-> +	if (!rpdev_ctrl)
-> +		return;
-> +	kfree(to_virtio_rpmsg_channel(rpdev_ctrl));
-> +}
-> +
->  static int rpmsg_probe(struct virtio_device *vdev)
->  {
->  	vq_callback_t *vq_cbs[] = { rpmsg_recv_done, rpmsg_xmit_done };
->  	static const char * const names[] = { "input", "output" };
->  	struct virtqueue *vqs[2];
->  	struct virtproc_info *vrp;
-> -	struct virtio_rpmsg_channel *vch;
-> -	struct rpmsg_device *rpdev_ns;
-> +	struct virtio_rpmsg_channel *vch = NULL;
-> +	struct rpmsg_device *rpdev_ns = NULL, *rpdev_ctrl;
 
-As far as I can tell @rpdev_ns doesn't have to be initialized.
 
->  	void *bufs_va;
->  	int err = 0, i;
->  	size_t total_buf_space;
-> @@ -894,12 +932,18 @@ static int rpmsg_probe(struct virtio_device *vdev)
->  
->  	vdev->priv = vrp;
->  
-> +	rpdev_ctrl = rpmsg_virtio_add_ctrl_dev(vdev);
-> +	if (IS_ERR(rpdev_ctrl)) {
-> +		err = PTR_ERR(rpdev_ctrl);
-> +		goto free_coherent;
-> +	}
-> +
->  	/* if supported by the remote processor, enable the name service */
->  	if (virtio_has_feature(vdev, VIRTIO_RPMSG_F_NS)) {
->  		vch = kzalloc(sizeof(*vch), GFP_KERNEL);
->  		if (!vch) {
->  			err = -ENOMEM;
-> -			goto free_coherent;
-> +			goto free_ctrldev;
->  		}
->  
->  		/* Link the channel to our vrp */
-> @@ -915,7 +959,7 @@ static int rpmsg_probe(struct virtio_device *vdev)
->  
->  		err = rpmsg_ns_register_device(rpdev_ns);
->  		if (err)
-> -			goto free_coherent;
-> +			goto free_vch;
->  	}
->  
->  	/*
-> @@ -939,8 +983,11 @@ static int rpmsg_probe(struct virtio_device *vdev)
->  
->  	return 0;
->  
-> -free_coherent:
-> +free_vch:
->  	kfree(vch);
-> +free_ctrldev:
-> +	rpmsg_virtio_del_ctrl_dev(rpdev_ctrl);
-> +free_coherent:
->  	dma_free_coherent(vdev->dev.parent, total_buf_space,
->  			  bufs_va, vrp->bufs_dma);
->  vqs_del:
-> -- 
-> 2.17.1
-> 
+I use Ubuntu, and I do not see such a problem.
+(I have never seen it on Debian either, except sid.)
+
+I see Fedora providing GCC whose version is different
+from the one used for building the kernel.
+That is a problem on the distribution side.
+
+
+
+In my ubuntu.
+
+$ grep CC_VERSION_TEXT   /lib/modules/$(uname -r)/build/.config
+CONFIG_CC_VERSION_TEXT="gcc (Ubuntu 10.2.0-13ubuntu1) 10.2.0"
+$ gcc --version  | head -n1
+gcc (Ubuntu 10.2.0-13ubuntu1) 10.2.0
+
+
+
+> What do you think?
+
+NACK.
+
+
+>  Any suggestions on how to
+> implement that?  Otherwise I can try to hack something together.
+>
+> --
+> Josh
+>
+--
+Best Regards
+Masahiro Yamada
