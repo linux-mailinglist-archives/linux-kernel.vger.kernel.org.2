@@ -2,134 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022B032C10C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C8A32C102
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836342AbhCCSrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386141AbhCCRqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:46:46 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06428C0613DA
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:43:31 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id u4so38485019lfs.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:43:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=mikpPCKqiawoZCyFMz/JZszyNAgG2MWQqRABlKUmtPE=;
-        b=qPag2lIKx7lybT1A8UT7VBqWbqmI/IzPDWnJI60OE5N6mh3ngTzRKXzJO9ugnhQiDg
-         5GbvPCRPJwVx2vAItSFv2FKFNu2VyQDmLQaWfLBnu/V19VNOoMNojrDNQA5WfyssEzWC
-         bxc/dde1HAtqp8MsUPGbTNb7D99TmItDbVpz5N0J3sSVVsP7/pls9OaQSs/qW/SGFxsk
-         4mWyWhXsfqe53vmNFe8PDYRjIVlihqEfUcWsjXFwY4hmgwT7cckKL462+1TqEF61NeQX
-         V9rW3218DHYK59+fJ6KPEhWngR9A3GkF043BZuQUf4fov0RggHvHu3K0E8QqDfVm8d+C
-         arqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=mikpPCKqiawoZCyFMz/JZszyNAgG2MWQqRABlKUmtPE=;
-        b=QVbL9wxg9RGkm1M6dPWciRQ0wcvq5GtvvuuWtcu+Dc1Jbez47YKqgNEGhTj76JRBrN
-         DC2yYyzTzwkWzFP/4U+Bgqi+6cEaangYILe2ATXKgDqOYtqTPM277sQ7BSh5HcQ6OwOf
-         EhJlL1pDSLEZzTgSiazGL+KmdoCXVfvxKrFkFloMe2meKQnIZf1Lz/dJB9XzEgnWlPwV
-         UW9nvOBlamxnrzEKCJffRrwcP4pF5rV3fCrLKs1dCIIOwSccAObN0Rtdu0J3xjxSkxql
-         JUjZC3ltPAu2jApj0Hcku4eE8TxiupZJ7LzdUECYX+aRE6TGK0tQeGoXQ5N7RdUmV7km
-         oYBw==
-X-Gm-Message-State: AOAM533kssSkigGVJE1LXiaODcxpmpOe7i2jquImmMhmlf2TDor0soWA
-        3kU8rN8w/J67ZP+GN1zU/8d5JQ==
-X-Google-Smtp-Source: ABdhPJz24Nt4zTWXCh0P8CSKaTk4yAMhHXahLWxwJBGz1RSR42b/HhFny15eAaawuAsKINhR/37ykw==
-X-Received: by 2002:a19:4042:: with SMTP id n63mr16165938lfa.256.1614793409462;
-        Wed, 03 Mar 2021 09:43:29 -0800 (PST)
-Received: from localhost.localdomain ([85.249.43.69])
-        by smtp.googlemail.com with ESMTPSA id s7sm2101441lfi.140.2021.03.03.09.43.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:43:28 -0800 (PST)
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-To:     junak.pub@gmail.com, robert.foss@linaro.org,
-        sakari.ailus@linux.intel.com
-Cc:     todor.too@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
-        mchehab@kernel.org, laurent.pinchart@ideasonboard.com,
-        jacopo@jmondi.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH v3 3/3] media: qcom: camss: Fix overflows in clock rate calculations
-Date:   Wed,  3 Mar 2021 20:42:50 +0300
-Message-Id: <20210303174250.11405-4-andrey.konovalov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210303174250.11405-1-andrey.konovalov@linaro.org>
-References: <20210303174250.11405-1-andrey.konovalov@linaro.org>
+        id S1836176AbhCCSr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:47:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1377230AbhCCRps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:45:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93FEE64EE6;
+        Wed,  3 Mar 2021 17:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614793506;
+        bh=zELkp4DNAyIEUoFE4261Eb7wL5eM9wd3KWyAjMTI7Fk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pq1cz/L2XCYD5sM/udKF6bFLhojr3pj13Z3dPvZZPmAgWj1LxbwPHz65/cietlKcI
+         wvIAAs5pjg7LTLXlgJahe/QN184yR/sico+FXt/MvaUvEESNKrNKAEJEaj00i5H3Ct
+         RaklB+Fbl2F4XLlHhal4n0+XrZBTNyp4ANHJT4cHNeYxWT2gQZHZHprD9pVxcr6xDj
+         wh6v7vi/uW99PjtGRg6QKdUjgPz9sk3RSJs3QVJ0cd2QVkDT2uTewUuA5mRCLwm+7x
+         oJfhsU6stOqpnzcU8tT1jfXbR8h7hD8l7cpYt1dS0y9IGhpBdSC2N8Vd3IL8h2dy5b
+         pc8/I53jBAPyw==
+Date:   Wed, 3 Mar 2021 10:45:01 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Bernhard =?utf-8?Q?Rosenkr=C3=A4nzer?= <bero@lindev.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] Fix ld-version.sh script if LLD was built with LLD_VENDOR
+Message-ID: <20210303174501.x7dwsgdzhrbqubz5@archlinux-ax161>
+References: <20210302221211.1620858-1-bero@lindev.ch>
+ <20210303040237.tvwo34j322tzqnwz@archlinux-ax161>
+ <CAK7LNAQ8zvEv50HgD4HOzjMBYB7UAHggTsQ7OwoGgktXSDjzYQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNAQ8zvEv50HgD4HOzjMBYB7UAHggTsQ7OwoGgktXSDjzYQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Lypak <junak.pub@gmail.com>
+On Wed, Mar 03, 2021 at 08:38:06PM +0900, Masahiro Yamada wrote:
+> On Wed, Mar 3, 2021 at 1:02 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > Hi Bernhard,
+> >
+> > I have added the ClangBuiltLinux mailing list, kbuild mailing list, and
+> > Masahiro and Nick to CC. Maybe ld-version.sh and cc-version.sh should be
+> > added to a MAINTAINERS entry to make sure we get CC'd (I can send one
+> > along tomorrow).
+> >
+> > On Tue, Mar 02, 2021 at 11:12:11PM +0100, Bernhard Rosenkränzer wrote:
+> > > If LLD was built with -DLLD_VENDOR="xyz", ld.lld --version output
+> > > will prefix LLD_VENDOR. Since LLD_VENDOR can contain spaces, the
+> > > LLD identifier isn't guaranteed to be $2 either.
+> >
+> > TIL about LLD_VENDOR...
+> >
+> > > Adjust the version checker to handle such versions of lld.
+> > >
+> > > Signed-off-by: Bernhard Rosenkränzer <bero@lindev.ch>
+> > > ---
+> > >  scripts/ld-version.sh | 12 ++++++++++++
+> > >  1 file changed, 12 insertions(+)
+> > >
+> > > diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+> > > index a463273509b5..4c042a306e22 100755
+> > > --- a/scripts/ld-version.sh
+> > > +++ b/scripts/ld-version.sh
+> > > @@ -49,6 +49,18 @@ elif [ "$1" = LLD ]; then
+> > >       min_version=$lld_min_version
+> > >       name=LLD
+> > >       disp_name=LLD
+> > > +elif echo "$@" |grep -q ' LLD '; then
+> > > +     # if LLD was built with -DLLD_VENDOR="xyz", it ld.lld --version
+> > > +     # says "xyz LLD [...]". Since LLD_VENDOR may contain spaces, we
+> > > +     # don't know the exact position of "LLD" and the version info
+> > > +     # at this point
+> > > +     while [ "$1" != "LLD" ]; do
+> > > +             shift
+> > > +     done
+> > > +     version=$2
+> > > +     min_version=$lld_min_version
+> > > +     name=LLD
+> > > +     disp_name=LLD
+> > >  else
+> > >       echo "$orig_args: unknown linker" >&2
+> > >       exit 1
+> > > --
+> > > 2.30.1
+> > >
+> >
+> > I am not sure what a better fix would be of the top of my head but
+> > wouldn't it be better to avoid the duplication? This diff below works
+> > for me with or without LLD_VENDOR defined.
+> >
+> > diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+> > index a463273509b5..84f9fc741f09 100755
+> > --- a/scripts/ld-version.sh
+> > +++ b/scripts/ld-version.sh
+> > @@ -44,7 +44,10 @@ if [ "$1" = GNU -a "$2" = ld ]; then
+> >  elif [ "$1" = GNU -a "$2" = gold ]; then
+> >         echo "gold linker is not supported as it is not capable of linking the kernel proper." >&2
+> >         exit 1
+> > -elif [ "$1" = LLD ]; then
+> > +elif echo "$*" | grep -q LLD; then
+> > +       while [ "$1" != "LLD" ]; do
+> > +               shift
+> > +       done
+> >         version=$2
+> >         min_version=$lld_min_version
+> >         name=LLD
+> 
+> 
+> 
+> You do not need to use grep.
+> How about this?
+> 
+> 
+> 
+> 
+>         ...
+> else
+>         while [ $# -gt 1 -a "$1" != "LLD" ]; do
+>                shift
+>         done
+> 
+>         if [ "$1" = LLD ]; then
+>                 version=$2
+>                 min_version=$lld_min_version
+>                 name=LLD
+>                 disp_name=LLD
+>         else
+>                 echo "$orig_args: unknown linker" >&2
+>                 exit 1
+>         fi
+> fi
+> 
+> 
+> 
+> 
+> -- 
+> Best Regards
+> Masahiro Yamada
 
-Because of u32 type being used to store pixel clock rate, expression used
-to calculate pipeline clocks (pixel_clock * bpp) produces wrong value due
-to integer overflow. This patch changes data type used to store, pass and
-retrieve pixel_clock from u32 to u64 to make this mistake less likely to
-be repeated in the future.
+Yes, that as the following diff works for me.
 
-Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
-Acked-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
----
- drivers/media/platform/qcom/camss/camss-vfe.c | 4 ++--
- drivers/media/platform/qcom/camss/camss.c     | 2 +-
- drivers/media/platform/qcom/camss/camss.h     | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-index fae2b513b2f9..b2c95b46ce66 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.c
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-@@ -1112,7 +1112,7 @@ static inline void vfe_isr_halt_ack(struct vfe_device *vfe)
- static int vfe_set_clock_rates(struct vfe_device *vfe)
- {
- 	struct device *dev = vfe->camss->dev;
--	u32 pixel_clock[MSM_VFE_LINE_NUM];
-+	u64 pixel_clock[MSM_VFE_LINE_NUM];
- 	int i, j;
- 	int ret;
+diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+index a463273509b5..30debf78aa09 100755
+--- a/scripts/ld-version.sh
++++ b/scripts/ld-version.sh
+@@ -44,14 +44,20 @@ if [ "$1" = GNU -a "$2" = ld ]; then
+ elif [ "$1" = GNU -a "$2" = gold ]; then
+ 	echo "gold linker is not supported as it is not capable of linking the kernel proper." >&2
+ 	exit 1
+-elif [ "$1" = LLD ]; then
+-	version=$2
+-	min_version=$lld_min_version
+-	name=LLD
+-	disp_name=LLD
+ else
+-	echo "$orig_args: unknown linker" >&2
+-	exit 1
++	while [ $# -gt 1 -a "$1" != "LLD" ]; do
++		shift
++	done
++
++	if [ "$1" = LLD ]; then
++		version=$2
++		min_version=$lld_min_version
++		name=LLD
++		disp_name=LLD
++	else
++		echo "$orig_args: unknown linker" >&2
++		exit 1
++	fi
+ fi
  
-@@ -1194,7 +1194,7 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
-  */
- static int vfe_check_clock_rates(struct vfe_device *vfe)
- {
--	u32 pixel_clock[MSM_VFE_LINE_NUM];
-+	u64 pixel_clock[MSM_VFE_LINE_NUM];
- 	int i, j;
- 	int ret;
- 
-diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index eb8fb8c34acd..d82bbc2213a6 100644
---- a/drivers/media/platform/qcom/camss/camss.c
-+++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -578,7 +578,7 @@ s64 camss_get_link_freq(struct media_entity *entity, unsigned int bpp,
-  *
-  * Return 0 on success or a negative error code otherwise
-  */
--int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock)
-+int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock)
- {
- 	struct media_entity *sensor;
- 	struct v4l2_subdev *subdev;
-diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
-index 86cdc25189eb..e29466d07ad2 100644
---- a/drivers/media/platform/qcom/camss/camss.h
-+++ b/drivers/media/platform/qcom/camss/camss.h
-@@ -110,7 +110,7 @@ void camss_disable_clocks(int nclocks, struct camss_clock *clock);
- struct media_entity *camss_find_sensor(struct media_entity *entity);
- s64 camss_get_link_freq(struct media_entity *entity, unsigned int bpp,
- 			unsigned int lanes);
--int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
-+int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock);
- int camss_pm_domain_on(struct camss *camss, int id);
- void camss_pm_domain_off(struct camss *camss, int id);
- void camss_delete(struct camss *camss);
--- 
-2.17.1
-
+ # Some distributions append a package release number, as in 2.34-4.fc32
