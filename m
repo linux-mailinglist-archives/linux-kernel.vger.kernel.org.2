@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B0A32BDFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8987D32BE0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347196AbhCCQtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S237203AbhCCQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:56:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236758AbhCCMVr (ORCPT
+        with ESMTP id S1377150AbhCCMWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:21:47 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E01AC06178C
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:20:54 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id v9so18969476lfa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:20:54 -0800 (PST)
+        Wed, 3 Mar 2021 07:22:32 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC5DC061794
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 04:20:56 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id e7so36798940lft.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:20:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hA5MnWnH4b98jsrotQXDzoePbCFhv2AxGnot/fu2+EE=;
-        b=DLlkMoi1+ZjRGJoWSN/yLilCPcqaxU21fi+/pyC8IcGigkQFRPgOgHmHopwpRolB5G
-         ZnwXsVCsy4abkc8JEg+jOJXY7OBy2qaBFAwa8xRYIvW+3rBK7Qi7Kfh9M+h8B/WgiIlv
-         76wOYf9NAOJAKSP1DmE1nxWL6FgT4dvwTRTK8/KHLEMZAGmnbBxYKmbO4WTX5xLL/lVk
-         MOclwmp8259qTHietYbJ/oBgvdgJ7oFtdPmJ3Zq4BiUozx/Dnm1TwSFk4hSYuOUfgT0S
-         Cwmj4CbfeBGzgqGa6boik1fbhY9WB6GZTXaQl4EyYoyzmowj1mYXbY1jIPOohoPeVlGL
-         iF5Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=soyM9wPlLASUiUbmRQQtsdUjbF417QlwKml+91jIMqs=;
+        b=H8fTVYBkdNNsM4NQ2zrh58J24JrxnUp/sbzJz+tslBM2fXthmdZg8PunTTxX5PeqZS
+         wYB0hPGkc8fGLG2e26Y2ceHPXGShqZJ3egDGkhZUZ/fb72ew+VImxGywy/Jb7PiTCliF
+         pW+kFtx3NpztdYl7ku0T3Q0A+CqiXg5nQJ0DIofQX1XrBw82M4XifHsHgHtqZVIF1tFh
+         96lG5SdY/uKjKkP+p7vcTIpNCU00AWHHGaSNr/9RlrczOeG2/ftzIfZRBarbCI1KI2Vs
+         Zu6roEFOCAYzwiYyRpMY58cJ+d5uzvVprYR7BFzeOsJTBJnANQkM+jZJEMgbix0QKwvx
+         MyOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hA5MnWnH4b98jsrotQXDzoePbCFhv2AxGnot/fu2+EE=;
-        b=oJoC6qDCl34jF6eylMIw6Gvhyl1lmY9MVXyUtGmxwxXrBfGvi19D9QssMG2t1g+cQs
-         ON5m46lF72NSl0KZ8jvpN8/59vvoc8gKowXYOGTNO6+9dkwN3obqQb9nupSqNpS5refR
-         eq14d/Qcjf53jY5gr+j9RyzehDKnG5j6+Wd8mY31hW5R1tfoJkL5OJSNuOZyWy6AaIZL
-         TbkvRLYGQb+Cx7mjlGY5+XBKs4+FnQl5En9hYJezbyMANmnnZN4gujAcIzTob/YE2QAn
-         f7ctEDzyMJOJ8sy0oOSI3QAK+Tb6o+OV8Jh5Vk0tMtH3iZgf5M/RCkKbwrGLpEUweOCk
-         Eijg==
-X-Gm-Message-State: AOAM533CH10uYx+7rmb0hfaUk/HT65Rk0DreEpV0zRLnqhc17qZ4RJ0O
-        2og4OmcDsex2oerUMCWz/evAww==
-X-Google-Smtp-Source: ABdhPJyC8DmkA2DFtAwigbc46smsN7jy7jbnqc1TpM0VC+8BqYa6SmI9pmBOUwovZMnl9Zlt5Tc4pQ==
-X-Received: by 2002:ac2:5149:: with SMTP id q9mr13810577lfd.619.1614774052598;
-        Wed, 03 Mar 2021 04:20:52 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=soyM9wPlLASUiUbmRQQtsdUjbF417QlwKml+91jIMqs=;
+        b=SxS4ldJ3z4C77A44CsQWIpZ7T3GDURt9ij9/wZSNCBUIsBQMkHSg7Duhby6kKihiHR
+         AYYPERz3KfPjBLhvQEyRBFHF1JbpD+hZEs3S4TVZIXnOuz4Osidu3ViLcKN+8iGtUbDN
+         NlX9VxT78uzeqeOv9m6WivCDZ38Nn2uRm+BTF7TFw+FmpIdRoJ/msGkpj911xpHRTa7h
+         RNcSXeGaDdrlPPVY67/YkK4JNNrvvfK0K1u0SqmU5k5wvFgMSr49AaZBgxTRxVb4PoK7
+         /7zo52aMQ26hs2lRbN45/YR8/NRTC4T2EOLXcQ+bAtjXNDIjajfPJjArwjx21vCQ3rd3
+         jUNA==
+X-Gm-Message-State: AOAM532Dmy1SA9vzKtrHm1fIo143OMD3skkLvwRxrnnY5tFM6cQrmPkm
+        OTqi3lsxRMFKEdRtJNJl62g+vA==
+X-Google-Smtp-Source: ABdhPJxhQ8IEPAejaPoXzG/IU+//OTOpt03Evjcamw7wzwgLwru5/CGFu9Rsa774rOsyYUKUJqMmIA==
+X-Received: by 2002:ac2:5e21:: with SMTP id o1mr14773513lfg.435.1614774055042;
+        Wed, 03 Mar 2021 04:20:55 -0800 (PST)
 Received: from localhost.localdomain (h-155-4-129-234.NA.cust.bahnhof.se. [155.4.129.234])
-        by smtp.gmail.com with ESMTPSA id d3sm811519lfq.249.2021.03.03.04.20.51
+        by smtp.gmail.com with ESMTPSA id d3sm811519lfq.249.2021.03.03.04.20.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 04:20:51 -0800 (PST)
+        Wed, 03 Mar 2021 04:20:54 -0800 (PST)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] mmc: block: Cleanup mmc_blk_probe() path
-Date:   Wed,  3 Mar 2021 13:20:46 +0100
-Message-Id: <20210303122049.151986-1-ulf.hansson@linaro.org>
+Subject: [PATCH 1/3] mmc: block: Drop use of unlikely() in mmc_blk_probe()
+Date:   Wed,  3 Mar 2021 13:20:47 +0100
+Message-Id: <20210303122049.151986-2-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210303122049.151986-1-ulf.hansson@linaro.org>
+References: <20210303122049.151986-1-ulf.hansson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While working on fixing KASAN splats for the mmc block device driver, I stumbled
-over a couple of annoying things in the mmc_blk_probe() path. This series takes
-care of them.
+mmc_blk_probe() isn't a hotpath, which makes it's questionable to use
+unlikely(). Therefore let's simply drop it.
 
-Ulf Hansson (3):
-  mmc: block: Drop use of unlikely() in mmc_blk_probe()
-  mmc: block: Simplify logging during probe about added partitions
-  mmc: block: Fix error path in mmc_blk_probe()
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/mmc/core/block.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/mmc/core/block.c | 49 ++++++++++++++++++++--------------------
- 1 file changed, 25 insertions(+), 24 deletions(-)
-
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 8e6a623b35de..dc6b2e8f4f95 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -2888,7 +2888,7 @@ static int mmc_blk_probe(struct mmc_card *card)
+ 
+ 	card->complete_wq = alloc_workqueue("mmc_complete",
+ 					WQ_MEM_RECLAIM | WQ_HIGHPRI, 0);
+-	if (unlikely(!card->complete_wq)) {
++	if (!card->complete_wq) {
+ 		pr_err("Failed to create mmc completion workqueue");
+ 		return -ENOMEM;
+ 	}
 -- 
 2.25.1
 
