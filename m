@@ -2,129 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4C532BCE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CF732BD09
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446068AbhCCPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:01:45 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:46049 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1843057AbhCCKZH (ORCPT
+        id S1447704AbhCCPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:16:13 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:59074 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240080AbhCCK2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:07 -0500
-X-AuditID: 0a580157-f39ff7000005df43-14-603f44bd783d
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id B2.CB.57155.DB44F306; Wed,  3 Mar 2021 16:11:41 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 3 Mar 2021
- 16:39:12 +0800
-Date:   Wed, 3 Mar 2021 16:39:12 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        <yaoaili@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210303163912.3d508e0f@alex-virtual-machine>
-In-Reply-To: <20210303115710.2e9f8e23@alex-virtual-machine>
-References: <20210224151619.67c29731@alex-virtual-machine>
-        <20210224103105.GA16368@linux>
-        <20210225114329.4e1a41c6@alex-virtual-machine>
-        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
-        <20210225113930.GA7227@localhost.localdomain>
-        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
-        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
-        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
-        <20210226105915.6cf7d2b8@alex-virtual-machine>
-        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
-        <20210303115710.2e9f8e23@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Wed, 3 Mar 2021 05:28:08 -0500
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1238eOTu9009089, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs04.realtek.com.tw[172.21.6.97])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 1238eOTu9009089
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 3 Mar 2021 16:40:24 +0800
+Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 3 Mar 2021
+ 16:40:24 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <netdev@vger.kernel.org>
+CC:     <nic_swsd@realtek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, Hayes Wang <hayeswang@realtek.com>
+Subject: [PATCH net] Revert "r8152: adjust the settings about MAC clock speed down for RTL8153"
+Date:   Wed, 3 Mar 2021 16:39:47 +0800
+Message-ID: <1394712342-15778-347-Taiwan-albertk@realtek.com>
+X-Mailer: Microsoft Office Outlook 11
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsXCFcGooLvXxT7BYHaLkcWc9WvYLD5v+Mdm
-        8XX9L2aLaRvFLS6camCyuLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
-        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
-        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJXxvHMte8Et8YojX34wNjCuFupi5OSQEDCReDplFmMX
-        IxeHkMB0Jokl0zcxgiSEBF4ySmzf5g1iswioSFyZ+5ANxGYTUJXYdW8WK4gtIqAmcWnxA2aQ
-        ZmaB2awSpyafZQZJCAt4SXy5vxZsEK+AlcSDN91MXYwcHJwC1hLTDvpAzN/NInG7tQbE5hcQ
-        k+i98p8J4iB7ibYti6BaBSVOznzCAmIzC+hInFh1jBnClpfY/nYOM8QcRYnDS36xQ/QqSRzp
-        nsEGYcdKLJv3inUCo/AsJKNmIRk1C8moBYzMqxhZinPTDTcxQqIvfAfjvKaPeocYmTgYDzFK
-        cDArifCKv7RNEOJNSaysSi3Kjy8qzUktPsQozcGiJM7b4mSfICSQnliSmp2aWpBaBJNl4uCU
-        amBqfTJD8vP2G72bu4LDN6fcK1y8O3rm3OTzvDd22qX+4J78QuEQ8664Jy9uLnv9yn7D46LA
-        nbN4NaXiA05veBWW1jq7Wu2DBkcH14LV0tfY3gXoNj+uD+Di3D6nuofzBE/S5RbzNa7b7si9
-        fP3Nx+pFSO5dKYeu+umBL/d+PCh5cItOPFvdl997BcK+Pk+x/bDT4q+S9Lrtu2O26fvvfr92
-        u61YN0PPRq5rUsqTDtvJTbR4rpa16M1+sc27vfZ/OMnP/utq8J/2bVu/BbdFxU6a5TObRSjq
-        kY49x4cw3hlxIZOlSza90Jwad9agfsfkUwt9SuZNXVg5T2v7IY53j22rdv3a//t9ot6P5hsZ
-        0pXn85VYijMSDbWYi4oTAQ4ONl0tAwAA
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi tony:
+This reverts commit 134f98bcf1b898fb9d6f2b91bc85dd2e5478b4b8.
 
-> On Tue, 2 Mar 2021 19:39:53 -0800
-> "Luck, Tony" <tony.luck@intel.com> wrote:
-> 
-> > On Fri, Feb 26, 2021 at 10:59:15AM +0800, Aili Yao wrote:  
-> > > Hi naoya, tony:    
-> > > > > 
-> > > > > Idea for what we should do next ... Now that x86 is calling memory_failure()
-> > > > > from user context ... maybe parallel calls for the same page should
-> > > > > be blocked until the first caller completes so we can:
-> > > > > a) know that pages are unmapped (if that happens)
-> > > > > b) all get the same success/fail status      
-> > > > 
-> > > > One memory_failure() call changes the target page's status and
-> > > > affects all mappings to all affected processes, so I think that
-> > > > (ideally) we don't have to block other threads (letting them
-> > > > early return seems fine).  Sometimes memory_failure() fails,
-> > > > but even in such case, PG_hwpoison is set on the page and other
-> > > > threads properly get SIGBUSs with this patch, so I think that
-> > > > we can avoid the worst scenario (like system stall by MCE loop).
-> > > >     
-> > > I agree with naoya's point, if we block for this issue, Does this change the result
-> > > that the process should be killed? Or is there something other still need to be considered?    
-> > 
-> > Ok ... no blocking ... 
+The r8153_mac_clk_spd() is used for RTL8153A only, because the register
+table of RTL8153B is different from RTL8153A. However, this function would
+be called when RTL8153B calls r8153_first_init() and r8153_enter_oob().
+That causes RTL8153B becomes unstable when suspending and resuming. The
+worst case may let the device stop working.
 
-I do think about blocking method and the error address issue with sigbus,here is my opinion, maybe helpful:
+Besides, revert this commit to disable MAC clock speed down for RTL8153A.
+It would avoid the known issue when enabling U1. The data of the first
+control transfer may be wrong when exiting U1.
 
-For blocking, if we block here, there are some undefine work i think should be done.
-As we don't know the process B triggering this error again is early-kill or not, so the previous memory_failure() call may 
-not add B on kill_list, even if B is on kill_list, the error level for B is not proper set, as B should get an AR SIGBUS;
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+---
+ drivers/net/usb/r8152.c | 35 ++++++-----------------------------
+ 1 file changed, 6 insertions(+), 29 deletions(-)
 
-So we can't just wait, We must have some logic adding the process B to kill list, and as this is an AR error
-another change should be done to current code, we need more logic in kill_proc or some other place.
-
-Even if all the work is done right. There is one more serious scenario though, we even don't know the current step the previous memory_failure() is on,
-So previous modification may not be usefull at all; When this scenario happens, what we can do?  block or return ?
-if finally we return, an error code should be taken back; so we have to go to error process logic and a signal without right address will be sent;
-
-For error address with sigbus, i think this is not an issue resulted by the patch i post, before my patch, the issue is already there.
-I don't find a realizable way to get the correct address for same reason --- we don't know whether the page mapping is there or not when
-we got to kill_me_maybe(), in some case, we may get it, but there are a lot of parallel issue need to consider, and if failed we have to fallback
-to the error brach again, remaining current code may be an easy option;
-
-Any methods or patchs can solve the issue in a better way is OK to me, i want this issue fixed and in more complete way!
-
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index b246817f3405..90f1c0200042 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -3021,29 +3021,6 @@ static void __rtl_set_wol(struct r8152 *tp, u32 wolopts)
+ 		device_set_wakeup_enable(&tp->udev->dev, false);
+ }
+ 
+-static void r8153_mac_clk_spd(struct r8152 *tp, bool enable)
+-{
+-	/* MAC clock speed down */
+-	if (enable) {
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL,
+-			       ALDPS_SPDWN_RATIO);
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL2,
+-			       EEE_SPDWN_RATIO);
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL3,
+-			       PKT_AVAIL_SPDWN_EN | SUSPEND_SPDWN_EN |
+-			       U1U2_SPDWN_EN | L1_SPDWN_EN);
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL4,
+-			       PWRSAVE_SPDWN_EN | RXDV_SPDWN_EN | TX10MIDLE_EN |
+-			       TP100_SPDWN_EN | TP500_SPDWN_EN | EEE_SPDWN_EN |
+-			       TP1000_SPDWN_EN);
+-	} else {
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL, 0);
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL2, 0);
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL3, 0);
+-		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL4, 0);
+-	}
+-}
+-
+ static void r8153_u1u2en(struct r8152 *tp, bool enable)
+ {
+ 	u8 u1u2[8];
+@@ -3338,11 +3315,9 @@ static void rtl8153_runtime_enable(struct r8152 *tp, bool enable)
+ 	if (enable) {
+ 		r8153_u1u2en(tp, false);
+ 		r8153_u2p3en(tp, false);
+-		r8153_mac_clk_spd(tp, true);
+ 		rtl_runtime_suspend_enable(tp, true);
+ 	} else {
+ 		rtl_runtime_suspend_enable(tp, false);
+-		r8153_mac_clk_spd(tp, false);
+ 
+ 		switch (tp->version) {
+ 		case RTL_VER_03:
+@@ -4718,7 +4693,6 @@ static void r8153_first_init(struct r8152 *tp)
+ {
+ 	u32 ocp_data;
+ 
+-	r8153_mac_clk_spd(tp, false);
+ 	rxdy_gated_en(tp, true);
+ 	r8153_teredo_off(tp);
+ 
+@@ -4769,8 +4743,6 @@ static void r8153_enter_oob(struct r8152 *tp)
+ {
+ 	u32 ocp_data;
+ 
+-	r8153_mac_clk_spd(tp, true);
+-
+ 	ocp_data = ocp_read_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL);
+ 	ocp_data &= ~NOW_IS_OOB;
+ 	ocp_write_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL, ocp_data);
+@@ -5496,10 +5468,15 @@ static void r8153_init(struct r8152 *tp)
+ 
+ 	ocp_write_word(tp, MCU_TYPE_USB, USB_CONNECT_TIMER, 0x0001);
+ 
++	/* MAC clock speed down */
++	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL, 0);
++	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL2, 0);
++	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL3, 0);
++	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL4, 0);
++
+ 	r8153_power_cut_en(tp, false);
+ 	rtl_runtime_suspend_enable(tp, false);
+ 	r8153_u1u2en(tp, true);
+-	r8153_mac_clk_spd(tp, false);
+ 	usb_enable_lpm(tp->udev);
+ 
+ 	ocp_data = ocp_read_byte(tp, MCU_TYPE_PLA, PLA_CONFIG6);
 -- 
-Thanks!
-Aili Yao
+2.26.2
+
