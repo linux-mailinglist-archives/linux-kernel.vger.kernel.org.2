@@ -2,136 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5462D32C2D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F06932C2E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352971AbhCDACu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387998AbhCCUSG (ORCPT
+        id S1353016AbhCDAC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:02:57 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:35199 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388000AbhCCUTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:18:06 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE68C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 12:17:26 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 18so30649930lff.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:17:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WJU47HfLr24C5iHZ6QnN66/JheJ0eDT25q9fy/MswAI=;
-        b=QLA9VfftBNrxhMy11KY7iYzpDwYXuC99/HWIBxltPnMI5ztG9/vW21kc1NVhBQ/G5m
-         kKYXenXZCPFpBe/SQLVhcB/mrEA88dF0aV5ReqvCDpu3eopgJZPnBvojk7pBjyjLHpHb
-         aIaG3jG6p0K8uMEl9uNHlxdJPHLRoguFi63uw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WJU47HfLr24C5iHZ6QnN66/JheJ0eDT25q9fy/MswAI=;
-        b=C7odhaCF34ZiIq/J/WdFRfmYelKp3ukero04Qkv3vEMqx2kDCzCTL13mMFk3IdQO3L
-         ZUTL4HlSRho/f0EPGPuowyhIpYeuiBNvu1WkcjxEGFKT3YaSJafCiHA4+bo0UW1fboly
-         5mT7fYmJqBcmcwTCH+4P93pG21R93UBYKIFuSI/zsSVHFN5zW8dwFk3dCProjeN+fW3J
-         e5y9hOsh+P/emLXaKTVT620E+EPB3scFi7hGnWs9sx5tDhJNrqs12I6eCqGellSwkKAD
-         HFHSuTtASpQvkl0rbqafuPkxLHj4e04S04e2QSq6kdFvbGVcwZlx+JDqgnrXsKNGtYSC
-         zTpg==
-X-Gm-Message-State: AOAM533J3CVrqS++Y3GZ3P8Vxf2gZgvbidTJMcqrTtJtPmWHMwWQNqH+
-        98ZoER1MXzVFxrVIi7jBM2DRb/uIHZy3Mg==
-X-Google-Smtp-Source: ABdhPJzp+p3N0CfKojt1+Tx5BWiCdOeKuiAkZvYuszlL/fKcj+gIMxAMpG6vDSJc8rPQ6l1hV54QMA==
-X-Received: by 2002:ac2:51ac:: with SMTP id f12mr176601lfk.605.1614802643975;
-        Wed, 03 Mar 2021 12:17:23 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id j1sm711414lfb.18.2021.03.03.12.17.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 12:17:23 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id q25so18989593lfc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:17:23 -0800 (PST)
-X-Received: by 2002:a19:ed03:: with SMTP id y3mr226039lfy.377.1614802642636;
- Wed, 03 Mar 2021 12:17:22 -0800 (PST)
+        Wed, 3 Mar 2021 15:19:14 -0500
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 5A5232223A;
+        Wed,  3 Mar 2021 21:18:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1614802710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bH5OIkVqJBqAQ09VIrZoFL+fgJq/hfQAqXuKtC2hFko=;
+        b=fzN6MJMnfbZg9AaRVlOKMsI9HmE9rktmpJz+tjAiqpFuwq9dcRJiiQIxzNaMjR6gT1Wr0B
+        3Lrgl6DybeyDsYNEhQSxe1fPfzh5tbDkF8qifpMPmARkiERM9ZI8icFrSvgTZ56PO6FNkN
+        FBFiw92krw7WR2QOHEMHAMdvruzWhak=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor.Ambarus@microchip.com, Michael Walle <michael@walle.cc>
+Subject: [PATCH] mtd: add OTP (one-time-programmable) erase ioctl
+Date:   Wed,  3 Mar 2021 21:18:19 +0100
+Message-Id: <20210303201819.2752-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <YDvLYzsGu+l1pQ2y@localhost.localdomain> <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
- <YDvwVlG/fqVxVYlQ@localhost.localdomain> <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
- <877dmo10m3.fsf@tromey.com>
-In-Reply-To: <877dmo10m3.fsf@tromey.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 3 Mar 2021 12:17:06 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
-Message-ID: <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
-Subject: Re: [PATCH 00/11] pragma once: treewide conversion
-To:     Tom Tromey <tom@tromey.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 11:46 AM Tom Tromey <tom@tromey.com> wrote:
->
-> It's also worth noting that in GCC it is slower than include guards.
-> See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58770
->
-> It's just a bug, probably easy to fix.  On the other hand, nobody has
-> ever bothered to do so.
+This may sound like a contradiction but some SPI-NOR flashes really
+support erasing their OTP region until it is finally locked. Having the
+possibility to erase an OTP region might come in handy during
+development.
 
-That bugzilla is actually worth reading, if only to explain how the
-include guard is more robust technology compared to #pragma once.
+The ioctl argument follows the OTPLOCK style.
 
-The traditional include guarding with #ifndef/#define/#endif around
-the contents has the advantage that a compiler _can_ generate the
-obvious trivial optimizations of just memoizing that "oh, I've seen
-this filename already, and it had that include guard pattern, so I
-don't need to include it again".
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+Changes since RFC:
+ - check write permissions for OTPERASE
+ - use correct ioctl macro (_IOW)
 
-But, I hear you say "that's exactly what '#pragma once' does too!".
+ drivers/mtd/mtdchar.c      |  7 ++++++-
+ drivers/mtd/mtdcore.c      | 12 ++++++++++++
+ include/linux/mtd/mtd.h    |  3 +++
+ include/uapi/mtd/mtd-abi.h |  2 ++
+ 4 files changed, 23 insertions(+), 1 deletion(-)
 
-No, it's not. There's actually two huge and very fundamental
-differences between '#pragma once' and the traditional include guard
-optimization:
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 57c4a2f0b703..b9b56eb9457e 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -666,6 +666,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	case MEMWRITEOOB:
+ 	case MEMWRITEOOB64:
+ 	case MEMWRITE:
++	case OTPERASE:
+ 		if (!(file->f_mode & FMODE_WRITE))
+ 			return -EPERM;
+ 		break;
+@@ -930,6 +931,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	}
+ 
+ 	case OTPLOCK:
++	case OTPERASE:
+ 	{
+ 		struct otp_info oinfo;
+ 
+@@ -937,7 +939,10 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 			return -EINVAL;
+ 		if (copy_from_user(&oinfo, argp, sizeof(oinfo)))
+ 			return -EFAULT;
+-		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
++		if (cmd == OTPLOCK)
++			ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
++		else
++			ret = mtd_erase_user_prot_reg(mtd, oinfo.start, oinfo.length);
+ 		break;
+ 	}
+ 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 38782ceea1f6..aea58366a94e 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1919,6 +1919,18 @@ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+ }
+ EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
+ 
++int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
++{
++	struct mtd_info *master = mtd_get_master(mtd);
++
++	if (!master->_erase_user_prot_reg)
++		return -EOPNOTSUPP;
++	if (!len)
++		return 0;
++	return master->_erase_user_prot_reg(master, from, len);
++}
++EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
++
+ /* Chip-supported device locking */
+ int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index ceabc2cae8a4..4aac200ca8b5 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -337,6 +337,8 @@ struct mtd_info {
+ 				     size_t len, size_t *retlen, u_char *buf);
+ 	int (*_lock_user_prot_reg) (struct mtd_info *mtd, loff_t from,
+ 				    size_t len);
++	int (*_erase_user_prot_reg) (struct mtd_info *mtd, loff_t from,
++				     size_t len);
+ 	int (*_writev) (struct mtd_info *mtd, const struct kvec *vecs,
+ 			unsigned long count, loff_t to, size_t *retlen);
+ 	void (*_sync) (struct mtd_info *mtd);
+@@ -518,6 +520,7 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+ int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+ 			    size_t *retlen, u_char *buf);
+ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
++int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len);
+ 
+ int mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ 	       unsigned long count, loff_t to, size_t *retlen);
+diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+index 65b9db936557..b869990c2db2 100644
+--- a/include/uapi/mtd/mtd-abi.h
++++ b/include/uapi/mtd/mtd-abi.h
+@@ -205,6 +205,8 @@ struct otp_info {
+  * without OOB, e.g., NOR flash.
+  */
+ #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
++/* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
++#define OTPERASE		_IOW('M', 25, struct otp_info)
+ 
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
+-- 
+2.20.1
 
- (a) the traditional include guard optimization HAS NO HIDDEN SEMANTIC
-MEANING. It's a pure optimization that doesn't actually change
-anything else. If you don't do the optimization, absolutely nothing
-changes.
-
- (b) the traditional include guard model allows for overriding and is
-simply more flexible
-
-And the GCC bugzilla talks about some of the issues with (a), and I
-already mentioned one similar issue with (a) wrt sparse: exactly what
-is it that "#pragma once" really protects?
-
-Is it the filename? Is it the _canonical_ filename? What about
-symbolic links or hardlinks? Is it the inode number? What about
-filesystems that don't really have those concepts?
-
-The above questions aren't some made-up example. They are literally
-FUNDAMENTAL DESIGN MISTAKES in "#pragma once".
-
-In contrast, include guards just work. You give the guard an explicit
-name, and that solves all the problems above, and allows for extra
-flexibility (ie the (b) issue: you can override things and include
-things twice if you know you're playing games, but you can also use
-the guard name to see "have I already included this file" for when you
-have possible nasty circular include file issues etc).
-
-So the traditional include guard model is simply technically the superior model.
-
-This is why I'm NAK'ing "#pragma once". It was never a good idea, and
-the alleged advantage ("faster builds by avoiding double includes")
-was always pure garbage because preprocessors could do the same
-optimization using the traditional include guards. In fact, because
-the traditional include guards have well-defined meaning and doesn't
-have any of the questions about what makes a file unique, and a missed
-optimization doesn't cause any semantic differences, a compiler has a
-much _easier_ time with that optimization than with the ostensibly
-simpler "#pragma once".
-
-Most #pragma things are not wonderful. But '#pragma once' is actively bad.
-
-             Linus
