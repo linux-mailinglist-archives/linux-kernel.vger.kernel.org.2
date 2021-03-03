@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3822932BC83
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A72F32BCC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359245AbhCCOE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:04:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
+        id S1383591AbhCCOja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842916AbhCCKW3 (ORCPT
+        with ESMTP id S1843007AbhCCKXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:29 -0500
+        Wed, 3 Mar 2021 05:23:47 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CD6C061A28;
-        Wed,  3 Mar 2021 00:45:34 -0800 (PST)
-Date:   Wed, 03 Mar 2021 08:45:31 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E90BC061A32;
+        Wed,  3 Mar 2021 00:45:37 -0800 (PST)
+Date:   Wed, 03 Mar 2021 08:45:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614761132;
+        s=2020; t=1614761133;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yb+bqoD+X245ondH2TPCv3xBe4JKVU//+6GIBcRKW1A=;
-        b=pWXvAseRzGVX72p8yvQueg6xNSTTCtQ2S19X83jBdVBSk0Hs36epxVcGodetzCjncsSTmu
-        ABiMwmXFSAGfMWYETmqJxpwN/9kxEVNqIISuw42hGACPvSR9VsNEtGOZgJshII+9GoH8gA
-        14F/6PBaKVLy2qpnRnFcr9XVTSdjpIUgZqhf5Y/xr9IbKrkEBtZZd+x3ML9jTRCgcGG5Qj
-        XAaOrrPvFtTjZxREqq4BNsRbHDKLAJRs03zKK+KYYwDKQCvWpRwbL6xGGuDMfD5AOQC5v6
-        4CMgjZpuDZQ3MGkDFy/D1lBm6rp5VtV2EPDvh3dKGxixWNNy7mIwGpXJuRzHgA==
+        bh=A7HqsQ0FVYZqNqC6gYTKD7/zoMnZg6iR+TYNp05qU14=;
+        b=odtasLBA9CQm5NQMo6uCdB2opplnVxpQW0vSgw/pERZkcUGu9L1VuJs01VHpIvtZyyMRLZ
+        oTGaGmUrIDEWqtARa5mcH/kaqNkIcao3mn4GhVz3bdF9RLTqvY+osj/kK7fDbalFlP3XgH
+        YD3acAP5T6o1ipb5GWm5RRb/EHZlF5J0PxynP5JgXKHElFb2QpOI2jpxXVWfBru9Gbv2ah
+        yAwkYKcrrQ/iAqDOrU8yKyxm1Dg/y4/mAEwGhoHBSxZQ/ZHKdZL5TWnznG85mGnAzUR6iA
+        DQKV3YHkUAo+j5g4tk0x5Xp68lQPAopjOjVzFJ3cXt5dhn4uhNEAzYbpVsu0KA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614761132;
+        s=2020e; t=1614761133;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yb+bqoD+X245ondH2TPCv3xBe4JKVU//+6GIBcRKW1A=;
-        b=AW8pyjDSRUj1jr5rk/JrFp3XBrMo1ANJV3D1IyGMJ9luFRmm5iMeuVahW0QhbEmTLZIb7U
-        Id20i7fgm4wHWkBw==
+        bh=A7HqsQ0FVYZqNqC6gYTKD7/zoMnZg6iR+TYNp05qU14=;
+        b=80rH+eYzKtJ4ZCCx+9D+9X6rScN2QLglS2ckNdeqeAMcRY7vhka2I7nxQHLyoVerzKNX0r
+        oVUGD4ZDJBEezfCQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Parse options from OBJTOOL_ARGS
-Cc:     Borislav Petkov <bp@alien8.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: objtool/core] objtool,x86: More ModRM sugar
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210226110004.252553847@infradead.org>
-References: <20210226110004.252553847@infradead.org>
+In-Reply-To: <ljatFXqQbm8@hirez.programming.kicks-ass.net>
+References: <ljatFXqQbm8@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <161476113169.20312.14290136035364654285.tip-bot2@tip-bot2>
+Message-ID: <161476113270.20312.10287338824461806523.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,80 +61,130 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     b52eb21aeca75790869c26b91b1d7b80b3946430
-Gitweb:        https://git.kernel.org/tip/b52eb21aeca75790869c26b91b1d7b80b3946430
+Commit-ID:     7e1b2eb05787d1c7f18445b7cfdfc612e827ca7b
+Gitweb:        https://git.kernel.org/tip/7e1b2eb05787d1c7f18445b7cfdfc612e827ca7b
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Feb 2021 11:32:30 +01:00
+AuthorDate:    Fri, 12 Feb 2021 09:13:00 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 03 Mar 2021 09:38:32 +01:00
+CommitterDate: Wed, 03 Mar 2021 09:38:31 +01:00
 
-objtool: Parse options from OBJTOOL_ARGS
+objtool,x86: More ModRM sugar
 
-Teach objtool to parse options from the OBJTOOL_ARGS environment
-variable.
+Better helpers to decode ModRM.
 
-This enables things like:
-
-  $ OBJTOOL_ARGS="--backup" make O=defconfig-build/ kernel/ponies.o
-
-to obtain both defconfig-build/kernel/ponies.o{,.orig} and easily
-inspect what objtool actually did.
-
-Suggested-by: Borislav Petkov <bp@alien8.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/20210226110004.252553847@infradead.org
+Link: https://lkml.kernel.org/r/YCZB/ljatFXqQbm8@hirez.programming.kicks-ass.net
 ---
- tools/objtool/builtin-check.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ tools/objtool/arch/x86/decode.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
-index 0399752..8b38b5d 100644
---- a/tools/objtool/builtin-check.c
-+++ b/tools/objtool/builtin-check.c
-@@ -15,6 +15,7 @@
- 
- #include <subcmd/parse-options.h>
- #include <string.h>
-+#include <stdlib.h>
- #include <objtool/builtin.h>
- #include <objtool/objtool.h>
- 
-@@ -26,6 +27,11 @@ static const char * const check_usage[] = {
- 	NULL,
- };
- 
-+static const char * const env_usage[] = {
-+	"OBJTOOL_ARGS=\"<options>\"",
-+	NULL,
-+};
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index b42e5ec..431bafb 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -82,15 +82,21 @@ unsigned long arch_jump_destination(struct instruction *insn)
+  * 01 |  [r/m + d8]    |[S+d]|   [r/m + d8]  |
+  * 10 |  [r/m + d32]   |[S+D]|   [r/m + d32] |
+  * 11 |                   r/ m               |
+- *
+  */
 +
- const struct option check_options[] = {
- 	OPT_BOOLEAN('f', "no-fp", &no_fp, "Skip frame pointer validation"),
- 	OPT_BOOLEAN('u', "no-unreachable", &no_unreachable, "Skip 'unreachable instruction' warnings"),
-@@ -44,6 +50,25 @@ const struct option check_options[] = {
++#define mod_is_mem()	(modrm_mod != 3)
++#define mod_is_reg()	(modrm_mod == 3)
++
+ #define is_RIP()   ((modrm_rm & 7) == CFI_BP && modrm_mod == 0)
+-#define have_SIB() ((modrm_rm & 7) == CFI_SP && modrm_mod != 3)
++#define have_SIB() ((modrm_rm & 7) == CFI_SP && mod_is_mem())
  
- int cmd_parse_options(int argc, const char **argv, const char * const usage[])
- {
-+	const char *envv[16] = { };
-+	char *env;
-+	int envc;
+ #define rm_is(reg) (have_SIB() ? \
+ 		    sib_base == (reg) && sib_index == CFI_SP : \
+ 		    modrm_rm == (reg))
+ 
++#define rm_is_mem(reg)	(mod_is_mem() && !is_RIP() && rm_is(reg))
++#define rm_is_reg(reg)	(mod_is_reg() && modrm_rm == (reg))
 +
-+	env = getenv("OBJTOOL_ARGS");
-+	if (env) {
-+		envv[0] = "OBJTOOL_ARGS";
-+		for (envc = 1; envc < ARRAY_SIZE(envv); ) {
-+			envv[envc++] = env;
-+			env = strchr(env, ' ');
-+			if (!env)
-+				break;
-+			*env = '\0';
-+			env++;
-+		}
-+
-+		parse_options(envc, envv, check_options, env_usage, 0);
-+	}
-+
- 	argc = parse_options(argc, argv, check_options, usage, 0);
- 	if (argc != 1)
- 		usage_with_options(usage, check_options);
+ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			    unsigned long offset, unsigned int maxlen,
+ 			    unsigned int *len, enum insn_type *type,
+@@ -154,7 +160,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 
+ 	case 0x1:
+ 	case 0x29:
+-		if (rex_w && modrm_mod == 3 && modrm_rm == CFI_SP) {
++		if (rex_w && rm_is_reg(CFI_SP)) {
+ 
+ 			/* add/sub reg, %rsp */
+ 			ADD_OP(op) {
+@@ -219,7 +225,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			break;
+ 
+ 		/* %rsp target only */
+-		if (!(modrm_mod == 3 && modrm_rm == CFI_SP))
++		if (!rm_is_reg(CFI_SP))
+ 			break;
+ 
+ 		imm = insn.immediate.value;
+@@ -272,7 +278,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 
+ 		if (modrm_reg == CFI_SP) {
+ 
+-			if (modrm_mod == 3) {
++			if (mod_is_reg()) {
+ 				/* mov %rsp, reg */
+ 				ADD_OP(op) {
+ 					op->src.type = OP_SRC_REG;
+@@ -308,7 +314,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			break;
+ 		}
+ 
+-		if (modrm_mod == 3 && modrm_rm == CFI_SP) {
++		if (rm_is_reg(CFI_SP)) {
+ 
+ 			/* mov reg, %rsp */
+ 			ADD_OP(op) {
+@@ -325,7 +331,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		if (!rex_w)
+ 			break;
+ 
+-		if ((modrm_mod == 1 || modrm_mod == 2) && modrm_rm == CFI_BP) {
++		if (rm_is_mem(CFI_BP)) {
+ 
+ 			/* mov reg, disp(%rbp) */
+ 			ADD_OP(op) {
+@@ -338,7 +344,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			break;
+ 		}
+ 
+-		if (modrm_mod != 3 && rm_is(CFI_SP)) {
++		if (rm_is_mem(CFI_SP)) {
+ 
+ 			/* mov reg, disp(%rsp) */
+ 			ADD_OP(op) {
+@@ -357,7 +363,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		if (!rex_w)
+ 			break;
+ 
+-		if ((modrm_mod == 1 || modrm_mod == 2) && modrm_rm == CFI_BP) {
++		if (rm_is_mem(CFI_BP)) {
+ 
+ 			/* mov disp(%rbp), reg */
+ 			ADD_OP(op) {
+@@ -370,7 +376,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			break;
+ 		}
+ 
+-		if (modrm_mod != 3 && rm_is(CFI_SP)) {
++		if (rm_is_mem(CFI_SP)) {
+ 
+ 			/* mov disp(%rsp), reg */
+ 			ADD_OP(op) {
+@@ -386,7 +392,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 		break;
+ 
+ 	case 0x8d:
+-		if (modrm_mod == 3) {
++		if (mod_is_reg()) {
+ 			WARN("invalid LEA encoding at %s:0x%lx", sec->name, offset);
+ 			break;
+ 		}
