@@ -2,65 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8736232BE1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CC232BE1B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452982AbhCCQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:58:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53904 "EHLO mail.kernel.org"
+        id S1453000AbhCCQ6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:58:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232777AbhCCMcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231510AbhCCMcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 07:32:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA1F64EE6;
-        Wed,  3 Mar 2021 09:57:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614765464;
-        bh=m5ZgB2uhhBpzt73LsJTxuAhJfKD5R+vFHoUx+9V28SE=;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4175A64EE7;
+        Wed,  3 Mar 2021 09:57:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614765475;
+        bh=mJdUrPvBXGzIpDLQLBgzh53mg/qR4CPh9qbZvMfmU4Q=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R69mIedG6TCe/QyLb4VgW3wV+3ODZJzZrp11MBZDlqNhK4Iw35dsx5UJKGqa9xTBJ
-         5McGaTAS/Kpp7NaG0xPizZq4iWOUbZ4RmTY+y8Yf34WuJ8rNj8UEMpoy8hBjbCfZzm
-         DU2ITVOsJL2Kr3VE3DonCKaa92HMx+Z2GMgCFshQ=
-Date:   Wed, 3 Mar 2021 10:57:41 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Marco Elver <elver@google.com>
-Cc:     rafael@kernel.org, paulmck@kernel.org, dvyukov@google.com,
-        glider@google.com, andreyknvl@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH] kcsan, debugfs: Move debugfs file creation out of early
- init
-Message-ID: <YD9dld26cz0RWHg7@kroah.com>
-References: <20210303093845.2743309-1-elver@google.com>
+        b=n/tlMuePzVTgcFya7fvbvgtDXVZ1+hJz7UF+ZuMWI3q8yi18DCwTE3OtXaTyYt4Og
+         uaPNlEAr9e5VBhFaIV3C54h4hjj2+VwxNoOgbKSk914j2w+y2n3AEHihY+uNxM5gWJ
+         /GbJ+OqFoqkqUfg9VJOzp2jpQ7Uhvb/5i6k+5xPuFL8vxettXvZZc86OwbS8GlaISg
+         N/UPOhTp5fg5w5LbieerJ1DzVUr6XaHD6sT9+BW4L1tXIwkLoP4x8cEFq/3jubK5mu
+         tsyAw5I7V5vSf0w6qwmI5KKSG2AdkKIS3kGWhgCqLf4CEpG1Dc5wf/9BRA/ERNodTo
+         G8MAzN7Oo9wsw==
+Date:   Wed, 3 Mar 2021 17:57:49 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 0/2] Add i.MX51/i.MX53 serial number support
+Message-ID: <20210303095748.GD15865@dragon>
+References: <20210127174024.170408-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303093845.2743309-1-elver@google.com>
+In-Reply-To: <20210127174024.170408-1-sebastian.reichel@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 10:38:45AM +0100, Marco Elver wrote:
-> Commit 56348560d495 ("debugfs: do not attempt to create a new file
-> before the filesystem is initalized") forbids creating new debugfs files
-> until debugfs is fully initialized. This breaks KCSAN's debugfs file
-> creation, which happened at the end of __init().
+On Wed, Jan 27, 2021 at 06:40:22PM +0100, Sebastian Reichel wrote:
+> Sebastian Reichel (2):
+>   ARM: dts: imx: Mark IIM as syscon on i.MX51/i.MX53
+>   soc: imx: add i.MX51/i.MX53 unique id support
 
-How did it "break" it?  The files shouldn't have actually been created,
-right?
-
-> There is no reason to create the debugfs file during early
-> initialization. Therefore, move it into a late_initcall() callback.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: stable <stable@vger.kernel.org>
-> Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> I've marked this for 'stable', since 56348560d495 is also intended for
-> stable, and would subsequently break KCSAN in all stable kernels where
-> KCSAN is available (since 5.8).
-
-No objection from me, just odd that this actually fixes anything :)
-
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Applied both, thanks.
