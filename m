@@ -2,156 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDDB32BE37
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D75D32BE52
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385365AbhCCRKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:10:04 -0500
-Received: from mga18.intel.com ([134.134.136.126]:22403 "EHLO mga18.intel.com"
+        id S1385553AbhCCRUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:20:32 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:43242 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231439AbhCCNFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:05:13 -0500
-IronPort-SDR: RYehrRKERWhIJE8Vb/KtJ/Y6bcK2Cd6Ovu7Nij3unrLOm50fOVpYdra7SMiuklhgLh6k6KiOjR
- BjR5BOJ+HMvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174828312"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="174828312"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 05:03:36 -0800
-IronPort-SDR: 55lkj2sT9W6nBoIT5jfZGlpvR3QNgsRPLRZ6KcCJGfd+jDPvdGp2zIqrVA2woFz5+8zu0D5Fz1
- SHQDve60uRpw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="600150906"
-Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Mar 2021 05:03:34 -0800
-Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lHRA6-0001Vg-7Z; Wed, 03 Mar 2021 13:03:34 +0000
-Date:   Wed, 03 Mar 2021 21:03:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.02.26a] BUILD SUCCESS
- 4ee0eb7c0cbccaae8e5e3681d852d4e7f50c4378
-Message-ID: <603f8915.g52koxmZcrPY0rND%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S240964AbhCCNnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:43:20 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 123DBEi5032384
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Mar 2021 14:11:14 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.44.113])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 123DBDdd020542;
+        Wed, 3 Mar 2021 14:11:13 +0100
+Date:   Wed, 3 Mar 2021 14:11:12 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
+ Industial PCs
+Message-ID: <20210303141052.30641e6b@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210302205452.GA32573@duo.ucw.cz>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+        <20210302163309.25528-3-henning.schild@siemens.com>
+        <20210302205452.GA32573@duo.ucw.cz>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.02.26a
-branch HEAD: 4ee0eb7c0cbccaae8e5e3681d852d4e7f50c4378  rcu/tree: Add a trace event for RCU CPU stall warnings
+Hi Pavel,
 
-elapsed time: 720m
+thanks for looking into this.
 
-configs tested: 94
-configs skipped: 2
+Am Tue, 2 Mar 2021 21:54:52 +0100
+schrieb Pavel Machek <pavel@ucw.cz>:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Hi!
+> 
+> > This driver adds initial support for several devices from Siemens.
+> > It is based on a platform driver introduced in an earlier commit.  
+> 
+> Ok.
+> 
+> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > index 2a698df9da57..c15e1e3c5958 100644
+> > --- a/drivers/leds/Makefile
+> > +++ b/drivers/leds/Makefile
+> > @@ -93,6 +93,7 @@ obj-$(CONFIG_LEDS_TURRIS_OMNIA)		+=
+> > leds-turris-omnia.o obj-$(CONFIG_LEDS_WM831X_STATUS)	+=
+> > leds-wm831x-status.o obj-$(CONFIG_LEDS_WM8350)		+=
+> > leds-wm8350.o obj-$(CONFIG_LEDS_WRAP)			+=
+> > leds-wrap.o +obj-$(CONFIG_LEDS_SIEMENS_SIMATIC_IPC)	+=
+> > simatic-ipc-leds.o  
+> 
+> Let's put this into drivers/leds/simple. You'll have to create it.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          urquell_defconfig
-arm                       cns3420vb_defconfig
-sh                   secureedge5410_defconfig
-mips                          malta_defconfig
-arm                         assabet_defconfig
-arm                      tct_hammer_defconfig
-mips                         bigsur_defconfig
-m68k                       bvme6000_defconfig
-arm                          collie_defconfig
-nds32                            alldefconfig
-h8300                    h8300h-sim_defconfig
-powerpc                        cell_defconfig
-mips                      maltasmvp_defconfig
-arm                        spear6xx_defconfig
-parisc                generic-64bit_defconfig
-arm                       versatile_defconfig
-arc                              alldefconfig
-sh                     magicpanelr2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210303
-i386                 randconfig-a003-20210303
-i386                 randconfig-a002-20210303
-i386                 randconfig-a004-20210303
-i386                 randconfig-a006-20210303
-i386                 randconfig-a001-20210303
-i386                 randconfig-a016-20210303
-i386                 randconfig-a012-20210303
-i386                 randconfig-a014-20210303
-i386                 randconfig-a013-20210303
-i386                 randconfig-a011-20210303
-i386                 randconfig-a015-20210303
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Ok will do
 
-clang tested configs:
-x86_64               randconfig-a013-20210302
-x86_64               randconfig-a016-20210302
-x86_64               randconfig-a015-20210302
-x86_64               randconfig-a014-20210302
-x86_64               randconfig-a012-20210302
-x86_64               randconfig-a011-20210302
-x86_64               randconfig-a006-20210303
-x86_64               randconfig-a001-20210303
-x86_64               randconfig-a004-20210303
-x86_64               randconfig-a002-20210303
-x86_64               randconfig-a005-20210303
-x86_64               randconfig-a003-20210303
+> > + *
+> > + * This program is free software; you can redistribute it and/or
+> > modify
+> > + * it under the terms of the GNU General Public License version 2
+> > as
+> > + * published by the Free Software Foundation.
+> > + */  
+> 
+> Remove?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Sure, was found in wdt as well. Thx
+
+> > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
+> > +	{1 << 15, "simatic-ipc:green:run-stop"},
+> > +	{1 << 7,  "simatic-ipc:yellow:run-stop"},
+> > +	{1 << 14, "simatic-ipc:red:error"},
+> > +	{1 << 6,  "simatic-ipc:yellow:error"},
+> > +	{1 << 13, "simatic-ipc:red:maint"},
+> > +	{1 << 5,  "simatic-ipc:yellow:maint"},
+> > +	{0, ""},
+> > +};  
+> 
+> Please use names consistent with other systems, this is user
+> visible. If you have two-color power led, it should be
+> :green:power... See include/dt-bindings/leds/common.h .
+
+Well we wanted to pick names that are printed on the devices and would
+like to stick to those. Has been a discussion ...
+Can we have symlinks to have multiple names per LED?
+
+How strong would you feel about us using our names?
+
+> Please avoid // comments in the code.
+
+Ok
+
+> > +module_init(simatic_ipc_led_init_module);
+> > +module_exit(simatic_ipc_led_exit_module);  
+> 
+> No need for such verbosity for functions that are static.
+> 
+> > +MODULE_LICENSE("GPL");  
+> 
+> GPL v2?
+
+Will do.
+
+Stay tuned for v2.
+
+regards,
+Henning
+
+
+> Best regards,
+> 								Pavel
+> 
+
