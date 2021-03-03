@@ -2,174 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A3332C0D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C80932C0F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579730AbhCCSb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:31:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241307AbhCCQow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:44:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C591964E6F;
-        Wed,  3 Mar 2021 16:43:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614789811;
-        bh=EupOo0dBtxON4TALIiJGGoqFuZoXf9llA6hE2Cv4p1E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mAZZjaiv5NeSmKkmqImyi/McoXryvtx8MumfSLCuy9vg6WZyY2WpYATkJGI80BwoN
-         eFNn+ZjjHJYXCOH+VGEydAZN7IG9F+xR6dgF0fk64XB1WeCzaYl0NuWME1NsqIeXq5
-         LQMjpahg59Gp5pKAWNqD7jvNjb6R+ohlC0PBhr4DXl2nWYyftNsH6GiOxV1gUiSjgd
-         vKEgI0kIG4u4JXFDIA8KbBpR1BIDovvzdSGdkvsuYmM8dgI2x2h39DfGWesroQi/M+
-         K8NNNEtXrbcTlujXHK3W+V6qv3BlxH1ZYixdTApz6OAdr0wY0PMcmK/VATNRq/PhmJ
-         u94YnOnmb9bzg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B87E84038F; Wed,  3 Mar 2021 13:43:27 -0300 (-03)
-Date:   Wed, 3 Mar 2021 13:43:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        amistry@google.com,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        zhangjinhao2@huawei.com
-Subject: Re: [PATCH] perf record: Fix continue profiling after draining the
- buffer
-Message-ID: <YD+8r/KiCJmnoJ/f@kernel.org>
-References: <20210205065001.23252-1-yangjihong1@huawei.com>
- <CAM9d7cgGGWtTkReghATVmMnOd=0dBrghBLgEc9AqT_PF-UP1Rg@mail.gmail.com>
- <YB0h9Gj5lpcuqndo@krava>
- <YC5ptbU8Mavb1a/t@kernel.org>
- <YC6fVHohih5giNf7@kernel.org>
- <5a76a82e-7ec1-d510-309e-a38a1b41027e@huawei.com>
+        id S1579777AbhCCScQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345096AbhCCQse (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:48:34 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C15C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:47:07 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id c19so4504278pjq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:47:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=quBPDIsZ4Pg/fHm1dZ2YOsP83yrlR5G0gmwAov0iPyo=;
+        b=nfnyTmPdcBN35cVH4mQoqKGQwKxUIU+7bFPPpRTO/bfdltKL1RD81f4xmocbhz/sHy
+         ukGt1KfjKrIK3SD/vETYWTLmLsFk5wdrsbenp+/QiTwEvJj8dBcXxyaGwsBiSJ+f3Su4
+         CSvnmbzeeCsAedpiEBYNKTTRJH1JIcs6lEoreSCCdmtHKHpUwW84yAf4otQCfxdiwDBk
+         Bg2MiLTEDe+yKxI9r+U+0WJ15+GgklyS8cLL8yv6nDGt4xm6SePOB5U3ePru+ZRSmgU4
+         z6/yT7Da/3gvHycP89VebSJps7CUECkgtkdV6ckfDkpMEs/NYj43P1MxBmYb9MCpWOCB
+         ep3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=quBPDIsZ4Pg/fHm1dZ2YOsP83yrlR5G0gmwAov0iPyo=;
+        b=rwSEBePSvmSHU5dnSKv6quxXAwOb8TTLFDhilrtpnlVKtA/Rgbte4MQtQoGKeyvY+7
+         d5wNddPcR0EDF6EN6oemr3uXBUjckgoD6e7YcMh7XxY0pHECHlO3gXiB3AHSYxXnsAdF
+         GJoUzYlD0c9mAkoolnPSGOqD9Tkzsamx5Dj2vTHQXNYTgQH32fKzLaj6a4IzCb1vhKUV
+         7+Ynxjr5FTYSFUSoXF8iNOUx/4SJaaWMZYISIIjJYSaYuQbr2vT7veZxo3zapmk1yljV
+         0d0JLoOy+qyZw8SNMvAeAWrQxx1JbSW/q9cjspzFmJTb/nlQy1TbYrOghiBNjqBX1K6N
+         RRBw==
+X-Gm-Message-State: AOAM53042AOv0TQ7vggqfeL0Xx+MWUxGyWlfWO8DigdaLFwiPCqSEsan
+        Qm94jsYrvV5Aw1wFTDyV7qdg1w==
+X-Google-Smtp-Source: ABdhPJzfAf5L6Yvs7GUoW/T2RWwJONBtnku3HRK5pysZy15dBYKacthlXUZTDpbKT9JIpvcwi1FyMQ==
+X-Received: by 2002:a17:902:464:b029:e2:ebb4:9251 with SMTP id 91-20020a1709020464b02900e2ebb49251mr3407638ple.29.1614790026969;
+        Wed, 03 Mar 2021 08:47:06 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
+        by smtp.gmail.com with ESMTPSA id u17sm32036pgl.80.2021.03.03.08.47.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 08:47:06 -0800 (PST)
+Date:   Wed, 3 Mar 2021 08:46:59 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH 03/15] KVM: x86/mmu: Ensure MMU pages are available when
+ allocating roots
+Message-ID: <YD+9gwhfFCS7Xghe@google.com>
+References: <20210302184540.2829328-1-seanjc@google.com>
+ <20210302184540.2829328-4-seanjc@google.com>
+ <CANgfPd95G-01ObzeKeMTUu0yXBJ=0+ZGQwr_5WCNH-NmR03f9w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5a76a82e-7ec1-d510-309e-a38a1b41027e@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CANgfPd95G-01ObzeKeMTUu0yXBJ=0+ZGQwr_5WCNH-NmR03f9w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Feb 22, 2021 at 09:31:51AM +0800, Yang Jihong escreveu:
-> Hello,
+On Tue, Mar 02, 2021, Ben Gardon wrote:
+> > @@ -3241,16 +3237,10 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+> >
+> >         if (is_tdp_mmu_enabled(vcpu->kvm)) {
+> >                 root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
+> > -
+> > -               if (!VALID_PAGE(root))
+> > -                       return -ENOSPC;
+> >                 vcpu->arch.mmu->root_hpa = root;
+> >         } else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
+> >                 root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level,
+> >                                       true);
+> > -
+> > -               if (!VALID_PAGE(root))
+> > -                       return -ENOSPC;
 > 
-> On 2021/2/19 1:09, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Feb 18, 2021 at 10:20:53AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Fri, Feb 05, 2021 at 11:46:12AM +0100, Jiri Olsa escreveu:
-> > > > On Fri, Feb 05, 2021 at 07:35:22PM +0900, Namhyung Kim wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > On Fri, Feb 5, 2021 at 3:50 PM Yang Jihong <yangjihong1@huawei.com> wrote:
-> > > > > > 
-> > > > > > commit da231338ec9c098707c8a1e4d8a50e2400e2fe17 uses eventfd to solve rare race
-> > > > > > where the setting and checking of 'done' which add done_fd to pollfd.
-> > > > > > When draining buffer, revents of done_fd is 0 and evlist__filter_pollfd
-> > > > > > function returns a non-zero value.
-> > > > > > As a result, perf record does not stop profiling.
-> > > > > > 
-> > > > > > The following simple scenarios can trigger this condition:
-> > > > > > 
-> > > > > > sleep 10 &
-> > > > > > perf record -p $!
-> > > > > > 
-> > > > > > After the sleep process exits, perf record should stop profiling and exit.
-> > > > > > However, perf record keeps running.
-> > > > > > 
-> > > > > > If pollfd revents contains only POLLERR or POLLHUP,
-> > > > > > perf record indicates that buffer is draining and need to stop profiling.
-> > > > > > Use fdarray_flag__nonfilterable to set done eventfd to nonfilterable objects,
-> > > > > > so that evlist__filter_pollfd does not filter and check done eventfd.
-> > > > > > 
-> > > > > > Fixes: da231338ec9c (perf record: Use an eventfd to wakeup when done)
-> > > > > > Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> > > > > > ---
-> > > > > >   tools/perf/builtin-record.c | 2 +-
-> > > > > >   tools/perf/util/evlist.c    | 8 ++++++++
-> > > > > >   tools/perf/util/evlist.h    | 4 ++++
-> > > > > >   3 files changed, 13 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> > > > > > index fd3911650612..51e593e896ea 100644
-> > > > > > --- a/tools/perf/builtin-record.c
-> > > > > > +++ b/tools/perf/builtin-record.c
-> > > > > > @@ -1663,7 +1663,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
-> > > > > >                  status = -1;
-> > > > > >                  goto out_delete_session;
-> > > > > >          }
-> > > > > > -       err = evlist__add_pollfd(rec->evlist, done_fd);
-> > > > > > +       err = evlist__add_wakeup_eventfd(rec->evlist, done_fd);
-> > > > > >          if (err < 0) {
-> > > > > >                  pr_err("Failed to add wakeup eventfd to poll list\n");
-> > > > > >                  status = err;
-> > > > > > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> > > > > > index 05363a7247c4..fea4c1e8010d 100644
-> > > > > > --- a/tools/perf/util/evlist.c
-> > > > > > +++ b/tools/perf/util/evlist.c
-> > > > > > @@ -572,6 +572,14 @@ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
-> > > > > >          return perf_evlist__filter_pollfd(&evlist->core, revents_and_mask);
-> > > > > >   }
-> > > > > > 
-> > > > > > +#ifdef HAVE_EVENTFD_SUPPORT
-> > > > > > +int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd)
-> > > > > > +{
-> > > > > > +       return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
-> > > > > > +                                      fdarray_flag__nonfilterable);
-> > > > > > +}
-> > > > > > +#endif
-> > > > > 
-> > > > > Does it build when HAVE_EVENTFD_SUPPORT is not defined?
-> > > > 
-> > > > yea, I was wondering the same.. but it's called only from
-> > > > code within HAVE_EVENTFD_SUPPORT ifdef
-> > > 
-> > > Yes, this can't work on systems without eventfd, it will simply not
-> > > build, and why do we have to make the definition of this function
-> > > conditional on HAVE_EVENTFD_SUPPORT?
-> > > 
-> > > I'm missing something :-\
-> > > 
-> > > Yeah, this whole call to evlist__add_pollfd is already surrounded by
-> > > #ifdef HAVE_EVENTFD_SUPPORT:
-> > > 
-> > > 1656         if (zstd_init(&session->zstd_data, rec->opts.comp_level) < 0) {
-> > > 1657                 pr_err("Compression initialization failed.\n");
-> > > 1658                 return -1;
-> > > 1659         }
-> > > 1660 #ifdef HAVE_EVENTFD_SUPPORT
-> > > 1661         done_fd = eventfd(0, EFD_NONBLOCK);
-> > > 1662         if (done_fd < 0) {
-> > > 1663                 pr_err("Failed to create wakeup eventfd, error: %m\n");
-> > > 1664                 status = -1;
-> > > 1665                 goto out_delete_session;
-> > > 1666         }
-> > > 1667         err = evlist__add_pollfd(rec->evlist, done_fd);
-> > > 1668         if (err < 0) {
-> > > 1669                 pr_err("Failed to add wakeup eventfd to poll list\n");
-> > > 1670                 status = err;
-> > > 1671                 goto out_delete_session;
-> > > 1672         }
-> > > 1673 #endif // HAVE_EVENTFD_SUPPORT
-> > > 1674
-> > > 1675         session->header.env.comp_type  = PERF_COMP_ZSTD;
-> > > 1676         session->header.env.comp_level = rec->opts.comp_level;
-> > > 
-> > > Jiri, does your Acked-by stands? Namhyung?
-> > 
-> > Thanks tested and applied, together with Jiri's Tested-by,
-> > 
-> > - Arnaldo
-> > .
-> > 
-> Is this patch okay? Is there anything that needs to be modified?
+> There's so much going on in mmu_alloc_root that removing this check
+> makes me nervous, but I think it should be safe.
 
-It was merged:
+Just think of it as a variant of kvm_mmu_get_page(), then all your fears will
+melt away. ;-)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/tools/perf/builtin-record.c?id=e16c2ce7c5ed5de881066c1fd10ba5c09af69559
+> I checked though the function because I was worried it might yield
+> somewhere in there, which could result in the page cache being emptied
+> and the allocation failing, but I don't think mmu_alloc_root this
+> function will yield.
 
-- Arnaldo
+Ugh, mmu_alloc_root() won't yield, but get_zeroed_page() used to allocate pae_root
+and lm_root on-demand in mmu_alloc_shadow_roots() will.  The two options are
+(a) allocate the fake roots before taking the lock and (b) allocate them from
+vcpu->arch.mmu_shadow_page_cache.  I probably prefer (a).  (b) will slide
+directly into the existing code, but would require bumping the min number of
+objects for mmu_shadow_page_cache in mmu_topup_memory_caches().  I'd prefer not
+to have yet more code that has to deal with this insanity.
