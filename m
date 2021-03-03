@@ -2,81 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D0C32B75B
+	by mail.lfdr.de (Postfix) with ESMTP id CB02B32B75C
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349484AbhCCLAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:00:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232956AbhCCAmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 19:42:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7498964F8C;
-        Wed,  3 Mar 2021 00:41:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1614732080;
-        bh=NJFM8ypXGB8CAwTG3IODGhNTCzeklS9Cmkn4gelagqc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eHhP3Y6TUhObWtFqyaunxUjAwcLsc1/IkbJla6YZsScy1tLRwTz5vuZohf6UqFLHF
-         QCB7g+3ktloWMkTBSFMaeU8SLzBCjbi6NhfndlRJhUdjfV3ANxksAVi4/7cezD5xIQ
-         nfdklbk1ZPDuiMmmt52swFT2mmflnkNwqVNM11Nc=
-Date:   Tue, 2 Mar 2021 16:41:19 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Lior Ribak <liorribak@gmail.com>
-Cc:     deller@gmx.de, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] binfmt_misc: Fix possible deadlock in
- bm_register_write
-Message-Id: <20210302164119.406098356cdea37b999b0b0a@linux-foundation.org>
-In-Reply-To: <20210228224414.95962-1-liorribak@gmail.com>
-References: <20201224111533.24719-1-liorribak@gmail.com>
-        <20210228224414.95962-1-liorribak@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1350142AbhCCLA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241892AbhCCBPC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 20:15:02 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14011C06178A;
+        Tue,  2 Mar 2021 17:13:39 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id v12so20875367ott.10;
+        Tue, 02 Mar 2021 17:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y54p/dpKPIzMufJOMByqkZMg0hSldch1m8scSHyXvP4=;
+        b=XCqLfckpDOHLSA4PZVWEJdgH6OwCV6Iq1erGKikHDRf4tZtTNEsQuTV2DmwWoSJjnR
+         bqMSuP5CE2icUXTH86yzUfoqSizD26p3iFTtaI/n1TMVwMpyfUxoSvm0kBrdan6+AJvk
+         ao/ucPcOeGdajhLA1Ebl65YLICpxCMrKMN+B5Hvfhqu6p+WmVJ6kfXZICltspjIgHgnB
+         rouPy9W0BfN2+Nmh12n3CasXXRnDsw6s+pmze4RjhEO4xhw1NQccLuDM/C1Pf7kxmQI5
+         BGHOzq6hMXlJ3DZJyfDW+rAQ4ai477KOrnfBCG0fpIPfk4KcNonPAbHbuIOSyzydtemF
+         6pgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y54p/dpKPIzMufJOMByqkZMg0hSldch1m8scSHyXvP4=;
+        b=fyi8pVzJgcZodp6L4bjTkxdrnQ4LWL20kbHgj+IXFfkxUK2/JssOLfH+i9OtqzMPM2
+         TfwCOJ8MB2eXn5v8dv6PeyfaDi/mRHu7a2wyhS5iLldfkiuGvs5oaauOlZcAO6rF0Gb2
+         t7Bl6qeHPDNQfguvt0U4jPKwJIQNAdZBt22dz44c98O0gkU6CbJOaQjB3VeA89uyLZAh
+         qjiBMR2fYIryjWewMTN8534BfEsBveRdkZMaUSw7EguZVtxiR+e9U5N+Y0zsRa13/7Ur
+         tIhht3JOHzoLO3I6q8SinoQV+lErd527G6GPj+44Q6NbZC3hMvT68zAz8ZPH3HyuqZLp
+         ltaw==
+X-Gm-Message-State: AOAM531ndSww759ByJ72Pl4Y1NelXAwQSFL6JnxOTnY9r+Afdd51f9Mn
+        ssvLb4h6AZwVSpfYaN0iQrAfKV5jPyyJ87W6iWQ=
+X-Google-Smtp-Source: ABdhPJy69FER/IuOKFD5Gvana5EKf4iVtHxc0NZZL4MrZucHLzrHacAF0U+sI/rPLkIlFQgCiStvmz77II6jKOqnZ60=
+X-Received: by 2002:a05:6830:10c1:: with SMTP id z1mr19648521oto.254.1614734018572;
+ Tue, 02 Mar 2021 17:13:38 -0800 (PST)
+MIME-Version: 1.0
+References: <1614678202-10808-1-git-send-email-wanpengli@tencent.com> <YD5y+W2nqnZt5bRZ@google.com>
+In-Reply-To: <YD5y+W2nqnZt5bRZ@google.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Wed, 3 Mar 2021 09:13:27 +0800
+Message-ID: <CANRm+Cy_rNAai+u5pyBXKmQP_Qp=3e_hwi2g9bAFMiocCpru1A@mail.gmail.com>
+Subject: Re: [PATCH] KVM: LAPIC: Advancing the timer expiration on guest
+ initiated write
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 28 Feb 2021 14:44:14 -0800 Lior Ribak <liorribak@gmail.com> wrote:
+On Wed, 3 Mar 2021 at 01:16, Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Mar 02, 2021, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > Advancing the timer expiration should only be necessary on guest initiated
+> > writes. Now, we cancel the timer, clear .pending and clear expired_tscdeadline
+> > at the same time during state restore.
+>
+> That last sentence is confusing.  kvm_apic_set_state() already clears .pending,
+> by way of __start_apic_timer().  I think what you mean is:
+>
+>   When we cancel the timer and clear .pending during state restore, clear
+>   expired_tscdeadline as well.
 
-> There is a deadlock in bm_register_write:
-> First, in the beggining of the function, a lock is taken on the
-> binfmt_misc root inode with inode_lock(d_inode(root))
-> Then, if the user used the MISC_FMT_OPEN_FILE flag, the function will
-> call open_exec on the user-provided interpreter.
-> open_exec will call a path lookup, and if the path lookup process
-> includes the root of binfmt_misc, it will try to take a shared lock
-> on its inode again, but it is already locked, and the code will
-> get stuck in a deadlock
-> 
-> To reproduce the bug:
-> $ echo ":iiiii:E::ii::/proc/sys/fs/binfmt_misc/bla:F" > /proc/sys/fs/binfmt_misc/register
-> 
-> backtrace of where the lock occurs (#5):
-> 0  schedule () at ./arch/x86/include/asm/current.h:15
-> 1  0xffffffff81b51237 in rwsem_down_read_slowpath (sem=0xffff888003b202e0, count=<optimized out>, state=state@entry=2) at kernel/locking/rwsem.c:992
-> 2  0xffffffff81b5150a in __down_read_common (state=2, sem=<optimized out>) at kernel/locking/rwsem.c:1213
-> 3  __down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1222
-> 4  down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1355
-> 5  0xffffffff811ee22a in inode_lock_shared (inode=<optimized out>) at ./include/linux/fs.h:783
-> 6  open_last_lookups (op=0xffffc9000022fe34, file=0xffff888004098600, nd=0xffffc9000022fd10) at fs/namei.c:3177
-> 7  path_openat (nd=nd@entry=0xffffc9000022fd10, op=op@entry=0xffffc9000022fe34, flags=flags@entry=65) at fs/namei.c:3366
-> 8  0xffffffff811efe1c in do_filp_open (dfd=<optimized out>, pathname=pathname@entry=0xffff8880031b9000, op=op@entry=0xffffc9000022fe34) at fs/namei.c:3396
-> 9  0xffffffff811e493f in do_open_execat (fd=fd@entry=-100, name=name@entry=0xffff8880031b9000, flags=<optimized out>, flags@entry=0) at fs/exec.c:913
-> 10 0xffffffff811e4a92 in open_exec (name=<optimized out>) at fs/exec.c:948
-> 11 0xffffffff8124aa84 in bm_register_write (file=<optimized out>, buffer=<optimized out>, count=19, ppos=<optimized out>) at fs/binfmt_misc.c:682
-> 12 0xffffffff811decd2 in vfs_write (file=file@entry=0xffff888004098500, buf=buf@entry=0xa758d0 ":iiiii:E::ii::i:CF\n", count=count@entry=19, pos=pos@entry=0xffffc9000022ff10) at fs/read_write.c:603
-> 13 0xffffffff811defda in ksys_write (fd=<optimized out>, buf=0xa758d0 ":iiiii:E::ii::i:CF\n", count=19) at fs/read_write.c:658
-> 14 0xffffffff81b49813 in do_syscall_64 (nr=<optimized out>, regs=0xffffc9000022ff58) at arch/x86/entry/common.c:46
-> 15 0xffffffff81c0007c in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
-> 
-> To solve the issue, the open_exec call is moved to before the write
-> lock is taken by bm_register_write
-> 
+Good statement. :)
 
-Looks good to me.
+>
+> With that,
+>
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+>
+>
+> Side topic, I think there's a theoretical bug where KVM could inject a spurious
+> timer interrupt.  If KVM is using hrtimer, the hrtimer expires early due to an
+> overzealous timer_advance_ns, and the guest writes MSR_TSCDEADLINE after the
+> hrtimer expires but before the vCPU is kicked, then KVM will inject a spurious
+> timer IRQ since the premature expiration should have been canceled by the guest's
+> WRMSR.
+>
+> It could also cause KVM to soft hang the guest if the new lapic_timer.tscdeadline
+> is written before apic_timer_expired() captures it in expired_tscdeadline.  In
+> that case, KVM will wait for the new deadline, which could be far in the future.
 
-I assume this is an ancient bug and that a backport to -stable trees
-(with a cc:stable) is warranted?
+The hrtimer_cancel() before setting new lapic_timer.tscdeadline in
+kvm_set_lapic_tscdeadline_msr() will wait for the hrtimer callback
+function to finish. Could it solve this issue?
+
+    Wanpeng
