@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59FB32C119
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B7A32C11C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836488AbhCCSry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:47:54 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:18075 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1577590AbhCCRsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:48:55 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614793711; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Fcd2CI16BjPfDlrMPeOLMsbcVTQCVnoyX8FWXapXUqY=;
- b=GnDx9/GYg35KAio5fixk9BAvgufq71f2X6/QJk97jwr531YCTttrSTHVrPc652LEVs5feofi
- RWvTJM+eYJNknTXMKBCgryAHaSxrcrT1jfn/QIOqTVUY3ixwp99iKj90AQJX/jvoh7DFXMH3
- /nfjUoHkvgmrMcfXc3cqDGT9/dQ=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 603fcbc6c862e1b9fdb26fdb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 17:47:50
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C4B74C433CA; Wed,  3 Mar 2021 17:47:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1836510AbhCCSr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:47:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35499 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234049AbhCCRu5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:50:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614793732;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XgGS/s/8WlRgw3FyEQZnL/peYUyqO0Kr8QQUVUAZzb8=;
+        b=S2hFuSMgR+L+5G9uSXDvTUJYhGKmOcsoIJiamXFHPspvBcHLmbvJjbYPCNiMsgBPfp7SE8
+        K7yaUzYLSiSuBEYy6PaS/x/Mw89f5OCxXGlT/viWGyMgSGFADjILTAIQcnuptiJ3jT+wY/
+        s3BhQ6QffCWRpGEZAwAr9iOFNh8j+e8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-l-AnTYKWMH6hyIacArNycg-1; Wed, 03 Mar 2021 12:48:50 -0500
+X-MC-Unique: l-AnTYKWMH6hyIacArNycg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 708BEC433ED;
-        Wed,  3 Mar 2021 17:47:49 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D9101846097;
+        Wed,  3 Mar 2021 17:48:47 +0000 (UTC)
+Received: from localhost (ovpn-114-24.ams2.redhat.com [10.36.114.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 965E37094A;
+        Wed,  3 Mar 2021 17:48:40 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 17:48:39 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YD/L9/Dj+3dSZJXa@stefanha-x1.localdomain>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <CAK8P3a1ZXbodV07TTErnQunCLWOBnzRiVdLCxBD743fn-6FbXg@mail.gmail.com>
+ <56fdef9a-b373-32f2-6dac-e687caa813c8@intel.com>
+ <YD4KovxeoNG/c8QC@stefanha-x1.localdomain>
+ <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Mar 2021 23:17:49 +0530
-From:   pintu@codeaurora.org
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        iamjoonsoo.kim@lge.com, sh_def@163.com, mateusznosek0@gmail.com,
-        bhe@redhat.com, nigupta@nvidia.com, yzaikin@google.com,
-        keescook@chromium.org, mcgrof@kernel.org,
-        mgorman@techsingularity.net, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm/compaction: remove unused variable
- sysctl_compact_memory
-In-Reply-To: <486d7af3-95a3-9701-f0f9-706ff49b99d1@suse.cz>
-References: <1614707773-10725-1-git-send-email-pintu@codeaurora.org>
- <486d7af3-95a3-9701-f0f9-706ff49b99d1@suse.cz>
-Message-ID: <c99eb67f67e4e24b4df1a78a583837b1@codeaurora.org>
-X-Sender: pintu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0Z13hpXB9yg/SJqi"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-03 22:39, Vlastimil Babka wrote:
-> On 3/2/21 6:56 PM, Pintu Kumar wrote:
->> The sysctl_compact_memory is mostly unsed in mm/compaction.c
->> It just acts as a place holder for sysctl.
->> 
->> Thus we can remove it from here and move the declaration directly
->> in kernel/sysctl.c itself.
->> This will also eliminate the extern declaration from header file.
->> No functionality is broken or changed this way.
->> 
->> Signed-off-by: Pintu Kumar <pintu@codeaurora.org>
->> Signed-off-by: Pintu Agarwal <pintu.ping@gmail.com>
-> 
-> You should be able to remove the variable completely and set .data to 
-> NULL in
-> the corresponding entry. The sysctl_compaction_handler doesn't access 
-> it at all.
-> 
-> Then you could do the same with drop_caches. Currently
-> drop_caches_sysctl_handler currently writes to it, but that can be 
-> avoided using
-> a local variable - see how sysrq_sysctl_handler avoids the global 
-> variable and
-> its corresponding .data field is NULL.
-> 
 
-Oh yes, thank you so much for the reference.
-Yes I was looking to do something similar but didn't realize that is 
-possible.
-I will re-submit the new patch.
+--0Z13hpXB9yg/SJqi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And yes, I will try to explore more on drop_caches part as well.
+On Tue, Mar 02, 2021 at 11:54:02AM +0100, Arnd Bergmann wrote:
+> On Tue, Mar 2, 2021 at 10:51 AM Stefan Hajnoczi <stefanha@redhat.com> wro=
+te:
+> > On Tue, Mar 02, 2021 at 10:42:06AM +0800, Jie Deng wrote:
+> > > > > +/*
+> > > > > + * Definitions for virtio I2C Adpter
+> > > > > + *
+> > > > > + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> > > > > + */
+> > > > > +
+> > > > > +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+> > > > > +#define _UAPI_LINUX_VIRTIO_I2C_H
+> > > > Why is this a uapi header? Can't this all be moved into the driver
+> > > > itself?
+> >
+> > Linux VIRTIO drivers provide a uapi header with structs and constants
+> > that describe the device interface. This allows other software like
+> > QEMU, other operating systems, etc to reuse these headers instead of
+> > redefining everything.
+> >
+> > These files should contain:
+> > 1. Device-specific feature bits (VIRTIO_<device>_F_<feature>)
+> > 2. VIRTIO Configuration Space layout (struct virtio_<device>_config)
+> > 3. Virtqueue request layout (struct virtio_<device>_<req/resp>)
+> >
+> > For examples, see <linux/virtio_net.h> and <linux/virtio_blk.h>.
+>=20
+> Ok, makes sense. So it's not strictly uapi but just helpful for
+> virtio applications to reference these. I suppose it is slightly harder
+> when building qemu on other operating systems though, how does
+> it get these headers on BSD or Windows?
 
-Thanks,
-Pintu
+qemu.git imports Linux headers from time to time and can use them
+instead of system headers:
+
+  https://gitlab.com/qemu-project/qemu/-/blob/master/scripts/update-linux-h=
+eaders.sh
+
+Stefan
+
+--0Z13hpXB9yg/SJqi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmA/y/cACgkQnKSrs4Gr
+c8gvvwgAl//yH6nIM39C8033YVTMLn56fBWlMw7olnJWN4P4JpytEX5MLIkIoRrw
+vkM13V7TSV0lHJKKDc8erHKfahXFJFc7vJV5cn69icEpv+HCzB8Knfk+wePViUAF
+/vpfFH3K4/nutqb3eWfJ3yUQqFRrqXa4l7O+20e5H5j8REBK/R7NnOs6i3jBJ5su
+eW1XJKy//Jwnyih0Bxifxxf56JIOgNz/82Zg1sF0BY6TGF9uVwyYcSzTm3dny5tI
+E163vh02TFoNtMODr1aEEuQrR1gay5Cd+dE+YC+ba/Q0EBNj116O9yLid2xbipyb
+B5MY41s7CLQj5ESoEgyO2pKStZ0H/w==
+=2uM5
+-----END PGP SIGNATURE-----
+
+--0Z13hpXB9yg/SJqi--
+
