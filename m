@@ -2,133 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C51532BF18
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3FF32BF1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577658AbhCCSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237995AbhCCOxX (ORCPT
+        id S1577686AbhCCSAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:00:43 -0500
+Received: from smtprelay0097.hostedemail.com ([216.40.44.97]:41356 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234736AbhCCOxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:53:23 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8980AC0613DF;
-        Wed,  3 Mar 2021 06:50:32 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id b7so16802126edz.8;
-        Wed, 03 Mar 2021 06:50:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AFppenI13kjsXfrjDViwOVysKoaD+KTI7ZPsYdTTtaU=;
-        b=dT78zq+u6JDAHwBcf6rjNXYywZcIUiPljmXBmw1naqiOJaOHG2VBfuCgwM8QumONhD
-         Rr9K1ZqhbLgnUJYDdcMKpqUk4/n/7czVKmqLvQSsLqnfmRb2sVznA7rItpRwp9/neQy9
-         8pOmlYWqvsgUYl06iQeV5u0Yo6wFRJC4e2VdmjnF/gbtUnv0KTzQpMNNNyXCrYUSgIHg
-         TUk9bmp+PBRu4ZX3cv0AVkRnfeGlzmbNPr1KxCq2phsIAyJrVGl923LAKkxoeRBMNrmy
-         BrJWyJ1OfEmcaNIYPjnwVoqzdDW37in/ImlvRKwJ4J42Xy+cH8gu06JByQ0X3uFLDF37
-         W3HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AFppenI13kjsXfrjDViwOVysKoaD+KTI7ZPsYdTTtaU=;
-        b=iApzVEtJv9kL/nwr+6GwAJfN9JWTyGGD9XVy2UmB9lTA1a8/jLygKC1PTuOH1dn4W9
-         uSd5Rzb9VFn167Wg39rw0IREDTGL75KgkvZ5p4F0C4wCHDxuBvrl3kboNqTfvNvlWnYc
-         feY0jyMHYcSoSTNBbiHBibleYbYWOduQLjEZXJYhD0m/VL1nvczuq/ovIBn0Z1eF4h5B
-         cIc8jNeF84OugAm901nwHfITljUHPdON8P22MQ6/gSCzW1KRBMhWV0VdRc1HfpJQi3EV
-         5n84lJiSGt+vpRZp9M/IJbokOhu7kr8Wwz5TPfVaKZovs7kfjd9xrRGkGmyjH6+E3hfa
-         hLgg==
-X-Gm-Message-State: AOAM532i99LUvV6eQmLH7oNdDvnrYbc0UL5OuKbUGPndwBjSHTtKYlC/
-        BarHP6YME/V6Njn1dPjmQ9c=
-X-Google-Smtp-Source: ABdhPJxOO25yiQcpfQk0ftl6p78LCmoJFLgqEqgjIrnxMPe2qSIYwILNpozOGvseZzEr4SdPV83erg==
-X-Received: by 2002:aa7:c94a:: with SMTP id h10mr26697075edt.41.1614783031163;
-        Wed, 03 Mar 2021 06:50:31 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id t16sm23680538edi.60.2021.03.03.06.50.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 03 Mar 2021 06:50:30 -0800 (PST)
-Message-ID: <2f1b8ff5aec540ef731bf5b2c3691dd23ea2e6b0.camel@gmail.com>
-Subject: Re: [PATCH v26 4/4] scsi: ufs: Add HPB 2.0 support
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Wed, 03 Mar 2021 15:50:29 +0100
-In-Reply-To: <20210303062926epcms2p6aa6737e5ed3916eed9ab80011aad3d83@epcms2p6>
-References: <20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p2>
-         <CGME20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p6>
-         <20210303062926epcms2p6aa6737e5ed3916eed9ab80011aad3d83@epcms2p6>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 3 Mar 2021 09:53:00 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 486F81800CDE0;
+        Wed,  3 Mar 2021 14:51:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4031:4250:4321:5007:6119:7652:7903:9025:10004:10400:10848:11232:11658:11783:11914:12043:12048:12297:12438:12555:12663:12740:12895:12986:13069:13311:13357:13439:13845:13869:13894:14096:14097:14181:14659:14721:21063:21080:21433:21611:21627:21740:21939:30005:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: crib64_1f0b27a276c6
+X-Filterd-Recvd-Size: 2443
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  3 Mar 2021 14:51:04 +0000 (UTC)
+Message-ID: <a186c9d063663ac6de66db944d1925146393bec5.camel@perches.com>
+Subject: Re: linux-kernel janitorial RFP: Mark static arrays as const
+From:   Joe Perches <joe@perches.com>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        cocci <cocci@systeme.lip6.fr>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 03 Mar 2021 06:51:02 -0800
+In-Reply-To: <a15e5c4d-a60f-14b9-90e5-4e600771aa9d@prevas.dk>
+References: <053b06c47f08631675c295b5c893b90be4248347.camel@perches.com>
+         <a15e5c4d-a60f-14b9-90e5-4e600771aa9d@prevas.dk>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-03 at 15:29 +0900, Daejun Park wrote:
-> +
-> +static inline void ufshpb_put_pre_req(struct ufshpb_lu *hpb,
-> +                                     struct ufshpb_req *pre_req)
-> +{
-> +       pre_req->req = NULL;
-> +       pre_req->bio = NULL;
-> +       list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
-> +       hpb->num_inflight_pre_req--;
-> +}
-> +
-> +static void ufshpb_pre_req_compl_fn(struct request *req,
-> blk_status_t error)
-> +{
-> +       struct ufshpb_req *pre_req = (struct ufshpb_req *)req-
-> >end_io_data;
-> +       struct ufshpb_lu *hpb = pre_req->hpb;
-> +       unsigned long flags;
-> +       struct scsi_sense_hdr sshdr;
-> +
-> +       if (error) {
-> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev, "block status
-> %d", error);
-> +               scsi_normalize_sense(pre_req->sense,
-> SCSI_SENSE_BUFFERSIZE,
-> +                                    &sshdr);
-> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> +                       "code %x sense_key %x asc %x ascq %x",
-> +                       sshdr.response_code,
-> +                       sshdr.sense_key, sshdr.asc, sshdr.ascq);
-> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> +                       "byte4 %x byte5 %x byte6 %x additional_len
-> %x",
-> +                       sshdr.byte4, sshdr.byte5,
-> +                       sshdr.byte6, sshdr.additional_length);
-> +       }
+On Wed, 2021-03-03 at 10:41 +0100, Rasmus Villemoes wrote:
+> On 02/03/2021 18.42, Joe Perches wrote:
+> > Here is a possible opportunity to reduce data usage in the kernel.
+> > 
+> > $ git grep -P -n '^static\s+(?!const|struct)(?:\w+\s+){1,3}\w+\s*\[\s*\]' drivers/ | \
+> >   grep -v __initdata | \
+> >   wc -l
+> > 3250
+> > 
+> > Meaning there are ~3000 declarations of arrays with what appears to be
+> > file static const content that are not marked const.
+> > 
+> > So there are many static arrays that could be marked const to move the
+> > compiled object code from data to text minimizing the total amount of
+> > exposed r/w data.
+> 
+> You can add const if you like, but it will rarely change the generated
+> code. gcc is already smart enough to take a static array whose contents
+> are provably never modified within the TU and put it in .rodata:
 
+At least some or perhaps even most of the time, true, but the gcc compiler
+from v5 through at least v10 seems inconsistent about when it does the
+appropriate conversion.
 
-How can you print out sense_key and sense code here? sense code will
-not be copied to pre_req->sense. you should directly use
-scsi_request->sense or let pre_req->sense point to scsi_request->sense.
+See the example I posted:
+https://lore.kernel.org/lkml/6b8b250a06a98ce42120a14824531a8641f5e8aa.camel@perches.com/
 
-You update the new version patch so quickly. In another word, I am
-wondering if you tested your patch before submitting?
+It was a randomly chosen source file conversion btw, I had no prior
+knowledge of whether the text/data use would change.
 
-Bean
-
-
-
+I'm unsure about clang consistently moving static but provably const arrays
+from data to text.  I rarely use clang.  At least for v11 it seems to be
+better though.  I didn't try 10.1.
 
 
