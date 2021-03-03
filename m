@@ -2,134 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1015B32C3DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D8732C45A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354330AbhCDAIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:08:07 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:50980 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390139AbhCCWCC (ORCPT
+        id S238115AbhCDANU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1390183AbhCCWCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 17:02:02 -0500
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 59C4F72C8B8;
-        Thu,  4 Mar 2021 00:51:07 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-        id 47F467CC8A2; Thu,  4 Mar 2021 00:51:07 +0300 (MSK)
-Date:   Thu, 4 Mar 2021 00:51:07 +0300
-From:   "Dmitry V. Levin" <ldv@altlinux.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
-        linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        linux-ia64@vger.kernel.org
-Subject: Re: [PATCH] ia64: fix ia64_syscall_get_set_arguments() for
- break-based syscalls
-Message-ID: <20210303215107.GC19445@altlinux.org>
-References: <20210221002554.333076-1-slyfox@gentoo.org>
+        Wed, 3 Mar 2021 17:02:00 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC523C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 13:52:55 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id x24so32848pfn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 13:52:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U4O+yoeWHzagedfUZbZH3qiIab8SJ8X8eM+Tksp4UhY=;
+        b=YYN0VZ5WcAWAdy5YeXEE1zzzPSpAz9ryE+zz2Xjricab0JVxyluPP4MCa4XoxvZyfy
+         PfoXpn+gE9tdYbkr5nG+wTiMmd0FKuwgAulwdpx7KWHw8T7g/kR8Q+EDGF6YJwapvUHQ
+         BTZa6v14yrVnKiN9VM1L5Am+qXRvEVRvEOeE4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U4O+yoeWHzagedfUZbZH3qiIab8SJ8X8eM+Tksp4UhY=;
+        b=KxYx8jtj81RZqXZoEqNZY5pcGPsk68KPts0DFUUdhwVIbENLGKGvN6wXvcNjN6V/o/
+         s3B8ZH4UH5vw9VMRxoL1jsDawiq1Clua8+9kJQjkjmUzxx+teiXUgZRlOCXVwUeKnv5D
+         h2jq4/ZizWy0Le2AqIch9uiFh7WAsKxdf0s66mGpTBCxodYONoZbFr0EX/fyhRPCHr5S
+         Hg6nbfBXSDIcoUd+9pbHLFAQHS1CM1+hL720kwIaKWfdAhrQXz/AoH+r6/+IOOLQoB0P
+         cd0AQAgK/XiuhFarx+P0chw5GNZDafjIZqw2KKhOWfsgui/ZNiM61Hc3huxSuYJfSXlA
+         fc7Q==
+X-Gm-Message-State: AOAM530L4gK5ND7O+fPwJgxfAARha3jtnQCd/JJguFxkoZkzAe36jT17
+        DI+9++8/ftVhPHvwrTx7z2npjA==
+X-Google-Smtp-Source: ABdhPJzRbr7qT0eiEBpzaXHBBfgfy8P7f5UDk1iAQYT1T8aUAdJl816Nk43z6fbffM6tjXW+X0hvoA==
+X-Received: by 2002:a63:3e03:: with SMTP id l3mr427004pga.452.1614808375205;
+        Wed, 03 Mar 2021 13:52:55 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k69sm25568517pfd.4.2021.03.03.13.52.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 13:52:54 -0800 (PST)
+Date:   Wed, 3 Mar 2021 13:52:53 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <202103031334.8D898CA@keescook>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <20210302232649.y2tutffhxsblwqlb@treble>
+ <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+ <20210303191516.6ksxmng4pis7ue4p@treble>
+ <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
+ <20210303193806.oovupl4ubtkkyiih@treble>
+ <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210221002554.333076-1-slyfox@gentoo.org>
+In-Reply-To: <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 21, 2021 at 12:25:53AM +0000, Sergei Trofimovich wrote:
-> In https://bugs.gentoo.org/769614 Dmitry noticed that
-> `ptrace(PTRACE_GET_SYSCALL_INFO)` does not work for syscalls called
-> via glibc's syscall() wrapper.
-> 
-> ia64 has two ways to call syscalls from userspace: via `break` and via
-> `eps` instructions.
-> 
-> The difference is in stack layout:
-> 
-> 1. `eps` creates simple stack frame: no locals, in{0..7} == out{0..8}
-> 2. `break` uses userspace stack frame: may be locals (glibc provides
->    one), in{0..7} == out{0..8}.
-> 
-> Both work fine in syscall handling cde itself.
-> 
-> But `ptrace(PTRACE_GET_SYSCALL_INFO)` uses unwind mechanism to
-> re-extract syscall arguments but it does not account for locals.
-> 
-> The change always skips locals registers. It should not change `eps`
-> path as kernel's handler already enforces locals=0 and fixes `break`.
-> 
-> Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
-> 
-> CC: Oleg Nesterov <oleg@redhat.com>
-> CC: linux-ia64@vger.kernel.org
-> CC: linux-kernel@vger.kernel.org
-> CC: Andrew Morton <akpm@linux-foundation.org>
-> Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-> Bug: https://bugs.gentoo.org/769614
-> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> ---
->  arch/ia64/kernel/ptrace.c | 24 ++++++++++++++++++------
->  1 file changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
-> index c3490ee2daa5..e14f5653393a 100644
-> --- a/arch/ia64/kernel/ptrace.c
-> +++ b/arch/ia64/kernel/ptrace.c
-> @@ -2013,27 +2013,39 @@ static void syscall_get_set_args_cb(struct unw_frame_info *info, void *data)
->  {
->  	struct syscall_get_set_args *args = data;
->  	struct pt_regs *pt = args->regs;
-> -	unsigned long *krbs, cfm, ndirty;
-> +	unsigned long *krbs, cfm, ndirty, nlocals, nouts;
->  	int i, count;
->  
->  	if (unw_unwind_to_user(info) < 0)
->  		return;
->  
-> +	/*
-> +	 * We get here via a few paths:
-> +	 * - break instruction: cfm is shared with caller.
-> +	 *   syscall args are in out= regs, locals are non-empty.
-> +	 * - epsinstruction: cfm is set by br.call
-> +	 *   locals don't exist.
+On Wed, Mar 03, 2021 at 11:57:33AM -0800, Linus Torvalds wrote:
+> End result: gcc plugins are pure garbage, and you should shun them. If
 
-typo: epsinstruction
+I think that's pretty harsh, but okay, opinions are opinions. As Josh
+says, people are interested in them for not-uncommon real-world uses:
 
-> +	 *
-> +	 * For both cases argguments are reachable in cfm.sof - cfm.sol.
+- stackleak has data-lifetime wiping coverage that -ftrivial-auto-var-init=zero
+  for either Clang or GCC doesn't cover. There are no plans to provide
+  such coverage under Clang yet. It's arguable that stackleak's benefits
+  are smaller than it's maintenance burden compared to having
+  -ftrivial-auto-var-init=zero, but we can have that conversation when
+  we get there. :)
 
-typo: argguments
+- structleak is likely to vanish as soon as GCC supports
+  -ftrivial-auto-var-init=zero. Clang's implementation is done and in
+  use by every Clang-built kernel I know of.
 
-> +	 * CFM: [ ... | sor: 17..14 | sol : 13..7 | sof : 6..0 ]
-> +	 */
->  	cfm = pt->cr_ifs;
-> +	nlocals = (cfm >> 7) & 0x7f; /* aka sol */
-> +	nouts = (cfm & 0x7f) - nlocals; /* aka sof - sol */
->  	krbs = (unsigned long *)info->task + IA64_RBS_OFFSET/8;
->  	ndirty = ia64_rse_num_regs(krbs, krbs + (pt->loadrs >> 19));
->  
->  	count = 0;
->  	if (in_syscall(pt))
-> -		count = min_t(int, args->n, cfm & 0x7f);
-> +		count = min_t(int, args->n, nouts);
->  
-> +	/* Iterate over outs. */
->  	for (i = 0; i < count; i++) {
-> +		int j = ndirty + nlocals + i + args->i;
->  		if (args->rw)
-> -			*ia64_rse_skip_regs(krbs, ndirty + i + args->i) =
-> -				args->args[i];
-> +			*ia64_rse_skip_regs(krbs, j) = args->args[i];
->  		else
-> -			args->args[i] = *ia64_rse_skip_regs(krbs,
-> -				ndirty + i + args->i);
-> +			args->args[i] = *ia64_rse_skip_regs(krbs, j);
->  	}
->  
->  	if (!args->rw) {
+- latent_entropy is likely less useful since the jitter entropy was added,
+  but I've not seen anyone analyze it. No "upstream" GCC nor Clang support
+  is planned.
 
-This stuff is too ia64 specific, so I cannot properly review this patch,
-but it definitely fixes ia64 PTRACE_GET_SYSCALL_INFO on entering syscall.
+- arm32 per-task stack protector canary meaningfully reduces the risk of
+  stack content exposures vs stack frame overwrites, but neither GCC
+  nor Clang seem interested in implementing this "correctly" (as done
+  for arm64 on GCC -- Clang doesn't have this for arm64 yet). I want this
+  fixed for arm64 on Clang, and maybe arm32 can be done at the same time.
 
+- randstruct is likely not used for distro kernels, but very much for
+  end users where security has a giant priority over performance.
+  There's no "upstream" GCC plan for this, and the Clang support has
+  stalled.
+
+> you really believe you need compiler plugins, you should look at
+> clang.
+
+This is currently true only in 1 case (structleak), and only a few
+"traditional" distros are building the kernel with Clang right now. I
+don't disagree: doing this via LLVM IR would be much easier, but the
+implementations for the other above features don't exist yet. I expect
+this to change over time (I expect Clang's randstruct and GCC's
+-ftrivial-auto-var-init=zero to likely be the next two things to
+appear), but it's not the case right now.
 
 -- 
-ldv
+Kees Cook
