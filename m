@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC4B32BCA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72A632BCFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377915AbhCCOab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:30:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842963AbhCCKXJ (ORCPT
+        id S245238AbhCCPOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:14:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50118 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241095AbhCCK0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:09 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C75C0698E2
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:24:54 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id p186so23809723ybg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:24:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OlxeqDLui4YIX/OHi7qYVIzSW877dMsjl/oW0nGbxr8=;
-        b=EKe3D+8/PZd2Ys+eUG7dyHPeS9nF9J0DwTHbXufUVvf/c/DAFoKoR2uIa2wxf2gvOs
-         Iaw9mQFwbWTmPBOdsKVavrKmIq8+YlI4UQxfkt0OqJRGodp0vdvsjvsTLk/d7TQkxwBT
-         qF0ghhUY45wKrLdkOee3+M53tSKIncDB2MvYxFC5wHVFwF5vJT/ADY7i7D+VsfTB8ET9
-         yz806ii6HlsFf8HIepDfSsVugP27mm2g8aRNwAGNgntDdRlim3aybhKf2ZIdf9MKSGnb
-         5vXqpjEU0hqikQj4595pLbGztShkqFWNozZxTDQ09urCYN9d32fPHpwBiD1fZ3ZIpQPz
-         Airg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OlxeqDLui4YIX/OHi7qYVIzSW877dMsjl/oW0nGbxr8=;
-        b=ioWhS49Rbw2k4szhlabmSAVvivCLQFSeiQ61+4Kio3+AnUkD89Vrj05NVMpPpD9hxw
-         Q2Z+6ZUX60/SRzdpASX59P2CsJezFU5lGtG+wfAhmSL4dcnqxmMzBG/LpqLF35SlXwPV
-         rKI+Op53eJ+gwa5RWgP7ge4Npg0HHDY0iiVMaOE/KahPy1eMdpf9CEPAY4Kfb8wiRtzp
-         XRaJbXFA6axjI6ZTm0Mp/6mtEgdfN3o75iVNWzzyPo2izyPuufJWhfUP/zoIt5va9a60
-         uBTP7/ljTab2iADCTqIuO3LZeVyZAMSs8GXt1s8D7yNHwGmpPqWWWYnql5J3wQO3PbcJ
-         XQGw==
-X-Gm-Message-State: AOAM531RjzSb3koHRGLzCk1vtVpD44ko54Oa3sxkFApKPl1HJPHwOPaL
-        8hhrs2E64MrarQHQJcUwZTXE7yjjFqLw0UIhNR74hg==
-X-Google-Smtp-Source: ABdhPJxDhlwvDHh2ueUCUXGNtxH32QmSZuQ4/Fj8d64FWXWkDEabIEG3KntXg7pq9IXIZqKWvBFgPYrDSmUUZO+u7wc=
-X-Received: by 2002:a25:dd43:: with SMTP id u64mr2786208ybg.96.1614763493934;
- Wed, 03 Mar 2021 01:24:53 -0800 (PST)
+        Wed, 3 Mar 2021 05:26:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614767122;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vMUUJSbWiaKTXgtpt8GHYmtHVmZoDHu1V86PH+IT7A0=;
+        b=gKSyR3LXr/zD8dLGnPTk0SHwospUbNN9Qrg0Jw1ipKh0jPCWgCkctpUr2iHPcmkq7i3RL0
+        mQ2ThlceCo0ZV0SkoZLuW7ADQ9mIhA9a7UucWhT4iM0HN3eT8QMPTTG4nC6ZjjEIr67DoB
+        o5JhBubwDwjauanHXU4Zphx63Zv4U4k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-719A2JaVNDKjt3KlIWojNA-1; Wed, 03 Mar 2021 04:24:44 -0500
+X-MC-Unique: 719A2JaVNDKjt3KlIWojNA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E756835E21;
+        Wed,  3 Mar 2021 09:24:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 84D1B60BFA;
+        Wed,  3 Mar 2021 09:24:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210303034418.106762-1-eric.snowberg@oracle.com>
+References: <20210303034418.106762-1-eric.snowberg@oracle.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, rdunlap@infradead.org, dwmw2@infradead.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] certs: Fix wrong kconfig option used for x509_revocation_list
 MIME-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com> <CAMuHMdU4rJaMFUS8ukUgqYjTGY41Pa3iQQpKiK8qJA6YnDJDkw@mail.gmail.com>
-In-Reply-To: <CAMuHMdU4rJaMFUS8ukUgqYjTGY41Pa3iQQpKiK8qJA6YnDJDkw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 3 Mar 2021 01:24:18 -0800
-Message-ID: <CAGETcx8F+cC5wrSRb8qzLyHfxUNtyOoy6-m+YbxRgp09k9fp9Q@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2033456.1614763481.1@warthog.procyon.org.uk>
+Date:   Wed, 03 Mar 2021 09:24:41 +0000
+Message-ID: <2033457.1614763481@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 1:22 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Tue, Mar 2, 2021 at 10:11 PM Saravana Kannan <saravanak@google.com> wrote:
-> > This series fixes the last few remaining issues reported when fw_devlink=on
-> > by default.
->
-> [...]
->
-> Thanks for your series!
->
-> > Geert/Marek,
-> >
-> > As far as I know, there shouldn't have any more issues you reported that
-> > are still left unfixed after this series. Please correct me if I'm wrong or
-> > if you find new issues.
->
-> While this fixes the core support, there may still be driver fixes left
-> that were not developed in time for the v5.12-rc1 merge window.
-> Personally, I'm aware of "soc: renesas: rmobile-sysc: Mark fwnode
-> when PM domain is added", which I have queued for v5.13[1].
-> There may be other fixes for other platforms.
+Eric Snowberg <eric.snowberg@oracle.com> wrote:
 
-Right, I intended this series for 5.13. Is that what you are trying to say too?
+> +ifeq ($(CONFIG_SYSTEM_REVOCATION_LIST),y)
+> +obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += revocation_certificates.o
+> +endif
 
--Saravana
+Should the ifeq be referring to CONFIG_SYSTEM_REVOCATION_KEYS rather than
+CONFIG_SYSTEM_REVOCATION_LIST?  In fact, since S_R_K depends indirectly on
+S_B_K, you should be able to just do:
 
+	+obj-$(CONFIG_SYSTEM_REVOCATION_KEYS) += revocation_certificates.o
 
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git/commit/?h=renesas-drivers-for-v5.13&id=fb13bbd6c90ee4fb983c0e9a341bd2832a3857cf
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> +#ifdef CONFIG_SYSTEM_REVOCATION_LIST
+
+Here also?
+
+> + hostprogs-always-$(CONFIG_SYSTEM_BLACKLIST_KEYRING)   += extract-cert
+
+And here too?
+
+(As an aside, I wonder if SYSTEM_REVOCATION_CERTS would be a better name, but
+I'm okay with leaving it as-is for now).
+
+David
+
