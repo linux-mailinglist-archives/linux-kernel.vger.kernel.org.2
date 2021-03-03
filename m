@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F22532BEEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B02732BEF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386211AbhCCRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        id S1576581AbhCCRrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:47:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244586AbhCCOs0 (ORCPT
+        with ESMTP id S244598AbhCCOs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 09:48:26 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E52C0613E7
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:46:48 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id o16so6597097wmh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:46:48 -0800 (PST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C28EC0613E8
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:46:50 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id e10so23729346wro.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:46:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GDZddnpJba/Pn4dRuDBATAXJPUWXaNHEAc/aEwqe0w8=;
-        b=Ua/75M0QhR8/drEWLtFBQrIsnqyLuPVFUJjnLiJNBN2hoIsvh/UU52in5+buLcIkFa
-         d8c2BpEoZIupANMs+/h10v8Gvxf25g8awXnaTNzkUmJDNro9b43l9kcMzGa37d/s7lUw
-         9qrP5XrmGetmklGmKz5c/183AaUjzzuqcG+j4/3fANVPrIQUnOhaF+TodFznz4At4Slf
-         RdRijxmLIilHcYZ7q/r5uZofsjrQvKGpOIuQO30Xsy18fDKlowOWX0RnbkoJKnx14MR6
-         5PBu3HVkW47lwQV/QCHy5OC2gOj4zmM4bhatPOh8leUXuvllrKOKE1SX60aHQxLG/TJi
-         VdIg==
+        bh=tQl7mbrrhEKHC32TkV4fz8OFde4Lv3Zz/lWsaXzMeiU=;
+        b=jP6UzxQWWLZBBh1M+Mr7owpCzEHSd63thoMd19rKf62xiOl9dDBnKZ0en9mOwRrD1o
+         Q5P5LKTT+tUTRE/6uSIHmVUWxV0qC4zUYcM7qV82ZnVZeWCeyaMAUmgJS+Vsd3ZRLjmy
+         dZaOSh8OikJ2677ZdCplpZMPTxu91oBlWaPtHx5C+kP7XzMU+4S6k/wBms/Eg0a+tez4
+         ZtFpbmbSE9Ri0YK40ds52QW0yx/wBkvPWKI8jrZlMQHnDlA/FKtwaDGHOfDcjqWnPAnV
+         WGG/5fiZMF0Nzo0Grd+wyY55Pv0wn5FP7ovMaPJOf4qwXRGaRaWRTsc9lQhdPoPz+85l
+         TmDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GDZddnpJba/Pn4dRuDBATAXJPUWXaNHEAc/aEwqe0w8=;
-        b=MnUYJJJhsmbetguqG0kBJa7QsC+2qX5FFBP1nnyhf9LcJ9h/z59g1cyQkunH6cSiXX
-         LaaWWTOxJVDnMYgDl4HC/rF3FvzEMxvqdcnfQSAb2dKe8kOektxJNpXnFrxELy9zs20u
-         WB9hEQau5MYNJfaWBioWxCennT+n2oPaq/6IoqDuuv9aJ5buRSjLeFgaC2biODAGKPmD
-         /LlAJtbeE8YRO4GEPPR2LsKSHy3BsAPzUFWKXUmkbp+23eC5kf4oUJAoFPDpvTSHX45Q
-         WbIYIcZJTUuzUQf+9j8nBZjLfFP3cNR4laB0MRUozQ36M0H3da7k31+JWve3OqWQYTr4
-         3FFA==
-X-Gm-Message-State: AOAM533byInAwCNfWG3ptXityhxHP0egJfYnbC/EN3d7d6fZql0h8YWb
-        YkVtlARGYek+hQx/Qeoef67wQg==
-X-Google-Smtp-Source: ABdhPJzC/yJRQcCFUJ3VLRPBZ1oNcc73HDGPnWdcOLFcyKW4fuXspgpB4PoiOZB3LiEGlIbp6koTTw==
-X-Received: by 2002:a7b:c3c1:: with SMTP id t1mr9352438wmj.47.1614782807074;
-        Wed, 03 Mar 2021 06:46:47 -0800 (PST)
+        bh=tQl7mbrrhEKHC32TkV4fz8OFde4Lv3Zz/lWsaXzMeiU=;
+        b=onR/OIdmrTndBdTADxNDz/3YuzvZJvYPyRxZoeWqevS6a+C2dpNDbVJhtya9zkTasT
+         WQSUIT4MZhO779jf4BcBalvKrTnVs8R+94XJVKX54+bsL9WixOg9GXxPojM7qcebw0cR
+         SqLXlFD2Vst+TjIf/ipFBc536qGOpUgpMOYBOG+9UnKBH+Qk3LnyqPyP9kfhvaSfxF+0
+         uM8pp5FysSoVYe1kL6cblB72zRzQCG83MDcUV3FCxjqD+3vOi9bGtyHrLVa7c/6Aomj/
+         2L9CQE50JtP7jNgr6RaCcfx/CRuQnqJpUz3COpFo+yCEAhhTOx3kUNQfyjUqrs6O4YVy
+         OKJA==
+X-Gm-Message-State: AOAM531wcIjSAyOtt5dMkFHIoLkfOjsWOs7LyDQcM1dLZm5l2SdDRnJk
+        4T33ypoM5hqFvHXNqMTcXU4Ekw==
+X-Google-Smtp-Source: ABdhPJxoSvJV6na+LIJDkg36WaYm1zxX4VejesfMcT4qguGDAPY2K2EfM0rY+0T2Wz/oYqLtE80dOA==
+X-Received: by 2002:adf:a2c2:: with SMTP id t2mr27327939wra.47.1614782809025;
+        Wed, 03 Mar 2021 06:46:49 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id a14sm36567233wrg.84.2021.03.03.06.46.45
+        by smtp.gmail.com with ESMTPSA id a14sm36567233wrg.84.2021.03.03.06.46.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 06:46:46 -0800 (PST)
+        Wed, 03 Mar 2021 06:46:47 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Luben Tuikov <luben_tuikov@adaptec.com>,
+        "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 06/30] scsi: aic94xx: aic94xx_hwi: Fix a couple of misnamed function names
-Date:   Wed,  3 Mar 2021 14:46:07 +0000
-Message-Id: <20210303144631.3175331-7-lee.jones@linaro.org>
+Subject: [PATCH 07/30] scsi: aacraid: aachba: Fix a few incorrectly named functions
+Date:   Wed,  3 Mar 2021 14:46:08 +0000
+Message-Id: <20210303144631.3175331-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303144631.3175331-1-lee.jones@linaro.org>
 References: <20210303144631.3175331-1-lee.jones@linaro.org>
@@ -69,41 +70,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/aic94xx/aic94xx_hwi.c:910: warning: expecting prototype for ads_rbi_exsi_isr(). Prototype was for asd_rbi_exsi_isr() instead
- drivers/scsi/aic94xx/aic94xx_hwi.c:1156: warning: expecting prototype for asd_start_timers(). Prototype was for asd_start_scb_timers() instead
+ drivers/scsi/aacraid/aachba.c:796: warning: expecting prototype for aac_probe_container(). Prototype was for aac_probe_container_callback1() instead
+ drivers/scsi/aacraid/aachba.c:850: warning: expecting prototype for InqStrCopy(). Prototype was for inqstrcpy() instead
+ drivers/scsi/aacraid/aachba.c:1814: warning: expecting prototype for Process topology change(). Prototype was for aac_get_safw_ciss_luns() instead
 
+Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Luben Tuikov <luben_tuikov@adaptec.com>
+Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/aic94xx/aic94xx_hwi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/aacraid/aachba.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/aic94xx/aic94xx_hwi.c b/drivers/scsi/aic94xx/aic94xx_hwi.c
-index 9256ab7b25227..3dd1101434715 100644
---- a/drivers/scsi/aic94xx/aic94xx_hwi.c
-+++ b/drivers/scsi/aic94xx/aic94xx_hwi.c
-@@ -903,7 +903,7 @@ static void asd_dch_sas_isr(struct asd_ha_struct *asd_ha)
+diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
+index 4ca5e13a26a62..8e06604370c4c 100644
+--- a/drivers/scsi/aacraid/aachba.c
++++ b/drivers/scsi/aacraid/aachba.c
+@@ -786,8 +786,8 @@ static int _aac_probe_container(struct scsi_cmnd * scsicmd, int (*callback)(stru
  }
  
  /**
-- * ads_rbi_exsi_isr -- process external system interface interrupt (INITERR)
-+ * asd_rbi_exsi_isr -- process external system interface interrupt (INITERR)
-  * @asd_ha: pointer to host adapter structure
-  */
- static void asd_rbi_exsi_isr(struct asd_ha_struct *asd_ha)
-@@ -1144,7 +1144,7 @@ static void asd_swap_head_scb(struct asd_ha_struct *asd_ha,
- }
- 
- /**
-- * asd_start_timers -- (add and) start timers of SCBs
-+ * asd_start_scb_timers -- (add and) start timers of SCBs
-  * @list: pointer to struct list_head of the scbs
+- *	aac_probe_container		-	query a logical volume
+- * @scsicmd: the scsi command block
++ *	aac_probe_container_callback1	-	query a logical volume
++ *	@scsicmd: the scsi command block
   *
-  * If an SCB in the @list has no timer function, assign the default
+  *	Queries the controller about the given volume. The volume information
+  *	is updated in the struct fsa_dev_info structure rather than returned.
+@@ -838,7 +838,7 @@ struct scsi_inq {
+ };
+ 
+ /**
+- *	InqStrCopy	-	string merge
++ *	inqstrcpy	-	string merge
+  *	@a:	string to copy from
+  *	@b:	string to copy to
+  *
+@@ -1804,7 +1804,7 @@ static inline void aac_free_safw_ciss_luns(struct aac_dev *dev)
+ }
+ 
+ /**
+- *	aac_get_safw_ciss_luns()	Process topology change
++ *	aac_get_safw_ciss_luns() - Process topology change
+  *	@dev:		aac_dev structure
+  *
+  *	Execute a CISS REPORT PHYS LUNS and process the results into
 -- 
 2.27.0
 
