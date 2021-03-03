@@ -2,136 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6C232C1A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C10632C216
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387330AbhCCTXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:23:48 -0500
-Received: from mail.efficios.com ([167.114.26.124]:41054 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349563AbhCCTE6 (ORCPT
+        id S1351311AbhCCTdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350609AbhCCTGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:04:58 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 64221322273;
-        Wed,  3 Mar 2021 13:55:39 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id nzmyisAEtpyn; Wed,  3 Mar 2021 13:55:39 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 21F7D3224BB;
-        Wed,  3 Mar 2021 13:55:39 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 21F7D3224BB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1614797739;
-        bh=/+Cqqku+yj2v49ObRIAAYZyDmnbTz9LGncxn1fI29Ps=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=GbxlIVqm7efnQ45RtVCzOCfqdFevWnV4Wyzn7JHHpWE+0kW93ElqMjI6yq7dxzt8l
-         2WSXEedfphWhw6AYPFWyvpLK3G4CgbjsKgPvcbVMxE+hZr9w/SRnut1hmufF0EqRPn
-         KEWcysdPcD3O3rqaWGuheyIyrdjF8s8WjULftPOz7JT9Ecerk/QvFsEbHCPrjxiLIX
-         bQyl7wpB14EYEWRAGflHweOC9547veDzzjHeKTMYkR0LFbUn61awhCuCK5Jp2QtLZm
-         vxWNO+i6I/PWSt/4u0hde3c1CSJsbgHjBvJzG/Zpaep3cex7+psgOkSGqQ7Da80P9G
-         wDXxuw/fAZsLg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RSvuoPlpXd8c; Wed,  3 Mar 2021 13:55:39 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 11C6A3226AB;
-        Wed,  3 Mar 2021 13:55:39 -0500 (EST)
-Date:   Wed, 3 Mar 2021 13:55:39 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Piotr Figiel <figiel@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Oskolkov <posk@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Paul Turner <pjt@google.com>, emmir <emmir@google.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>
-Message-ID: <1647666880.9529.1614797739047.JavaMail.zimbra@efficios.com>
-In-Reply-To: <YDkchUnCe5ctDwYB@google.com>
-References: <20210226135156.1081606-1-figiel@google.com> <192824546.8190.1614353555831.JavaMail.zimbra@efficios.com> <YDkchUnCe5ctDwYB@google.com>
-Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+        Wed, 3 Mar 2021 14:06:34 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9213AC061763
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:56:28 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id n14so26917436iog.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:56:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ds8+wlVYW22u+FvDveNLC8T5YKYXydqAheuVMnQ2glo=;
+        b=1N9kJmXlRVXKr1ssqHsLMfnQdUJsvft54ke5srmBSqvNkm7t62BWRhmTPkG9imXBo5
+         Eh1sptAsffoVVKtOfN5TTCK2uWCJELt2JG3zkhjaPEYvyle8XiZPqNppQP5UcFhEIfFX
+         QM9OXOEBjiLqp19Rss6PbJ65sQFDfzoXup+7sBKGYo0lqt5EJJz5sh5+aTZRlPLdHnFe
+         RXCAa/d/GrLFRmV2FIhvL2lZZFXJAKAE1HkmKfrzeO1dSA7K+H5Fxx7BC03As9jk4FxX
+         awGs5Q9YyBrQpisbyeJtO/xDviWr6JFigstVXA1FeJ4Kbf1aeIik6eG5Gp500s10p0gb
+         +UGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ds8+wlVYW22u+FvDveNLC8T5YKYXydqAheuVMnQ2glo=;
+        b=CgbyJZy7JrYzMj8AaXb40im/nEyawTlte7JWPU1AGOxem7ZAr5UxwfzFZqxnzI1rLN
+         2JZnTudU5x4cTH6YOnFe2jUIN4nTYvf8kk485HwUZHqwfqoRDiZ/YenwUOoEwgMgapc3
+         o2oKB/XDWMfwVH3jWKB6Ry26jrGfosULCZ5CQ4f9Frfz3HUV9QvBS3xw6qelzAahyqM5
+         650PD89K6vlJ+SjEnUl4fxw/1mpdUt/XVIcCVg4swZo6l//PtTmKypUXVdRCN/4vy7xI
+         nG1PAsW51jaZnjN78HlryDlBMyugFuUuHA3UJ2if7QXPN8xWFG0+GbwjXsfMk3xR3qWS
+         liYA==
+X-Gm-Message-State: AOAM532GXRBSmclkCgG+6Bf+bKSqN3dp/9VHUkb5LspwuRyjUgIprBiC
+        UVESCBqUuKVPc52tDcMZpuuqWA==
+X-Google-Smtp-Source: ABdhPJxxd75Cn/jNciHpoDvcyoOEh07vk6AJrir6Eim4ZxpBT1WAjS2mE5/iJiWvH6d7SIjQqH8tzg==
+X-Received: by 2002:a5e:aa04:: with SMTP id s4mr540979ioe.30.1614797788029;
+        Wed, 03 Mar 2021 10:56:28 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id y3sm3943224iot.15.2021.03.03.10.56.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 10:56:27 -0800 (PST)
+Subject: Re: memory leak in io_submit_sqes (2)
+To:     syzbot <syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000005d1fe305bca62b07@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <af143fa7-cff3-48eb-5abc-94e3685d0955@kernel.dk>
+Date:   Wed, 3 Mar 2021 11:56:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <0000000000005d1fe305bca62b07@google.com>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
-Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
-Thread-Index: +gCa2M7/7eePF4mAiSVH9mBBgTSE+w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Feb 26, 2021, at 11:06 AM, Piotr Figiel figiel@google.com wrote:
-
-> Hi,
+On 3/3/21 11:39 AM, syzbot wrote:
+> Hello,
 > 
-> On Fri, Feb 26, 2021 at 10:32:35AM -0500, Mathieu Desnoyers wrote:
->> > +static long ptrace_get_rseq_configuration(struct task_struct *task,
->> > +					  unsigned long size, void __user *data)
->> > +{
->> > +	struct ptrace_rseq_configuration conf = {
->> > +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
->> > +		.rseq_abi_size = sizeof(*task->rseq),
->> > +		.signature = task->rseq_sig,
->> > +		.flags = 0,
->> > +	};
->> > +
->> > +	size = min_t(unsigned long, size, sizeof(conf));
->> > +	if (copy_to_user(data, &conf, size))
->> > +		return -EFAULT;
->> > +	return sizeof(conf);
->> > +}
->> 
->> I think what Florian was after would be:
->> 
->> struct ptrace_rseq_configuration {
->> 	__u32 size;  /* size of struct ptrace_rseq_configuration */
->> 	__u32 flags;
->> 	__u64 rseq_abi_pointer;
->> 	__u32 signature;
->> 	__u32 pad;
->> };
->> 
->> where:
->> 
->>     .size = sizeof(struct ptrace_rseq_configuration),
->> 
->> This way, the configuration structure can be expanded in the future. The
->> rseq ABI structure is by definition fixed-size, so there is no point in
->> having its size here.
-> 
-> Still rseq syscall accepts the rseq ABI structure size as a paremeter.
-> I think this way the information returned from ptrace is consistent with
-> the userspace view of the rseq state and allows expansion in case the
-> ABI structure would have to be extended (in spite of it's current
-> definition).
-> 
-> The configuration structure still can be expanded as its size is
-> reported to userspace as return value from the request (in line with
-> Dmitry's comments).
+> syzbot found the following issue on:
 
-Fair enough. And now with the reply from Florian I see that I misunderstood his
-point.
-
-Thanks,
-
-Mathieu
-
-> 
-> Best regards, Piotr.
+#syz test: git://git.kernel.dk/linux-block io_uring-5.12
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Jens Axboe
+
