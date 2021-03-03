@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C614E32BD16
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4296932BCC0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381884AbhCCPUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:20:45 -0500
-Received: from ms9.eaxlabs.cz ([147.135.177.209]:50630 "EHLO ms9.eaxlabs.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231521AbhCCKa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:30:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
-        h=Message-Id:Date:Subject:Cc:To:From; bh=Kubqf6k/HZUq1mdBnL+ASxzPtFgpk8F6M2q021zdR3Y=;
-        b=q3cEGdXKm06swwTo/nG33yAV4xWpwl9cd3gHGbMo7xPwKclbVADUPWxqJpNBTIE84lg7Tzy0jJH1TOUM1FEzrJXY+d4na5onNrb/wE+pZ4eFd4atmjrksToShNzAywwidXKqtRnPb7k1sx9IB+Zxx/KwZDakFrJGL9wOGbu5FuE=;
-Received: from [82.99.129.6] (helo=localhost.localdomain)
-        by ms9.eaxlabs.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <devik@eaxlabs.cz>)
-        id 1lHNSf-00081H-L1; Wed, 03 Mar 2021 10:06:31 +0100
-From:   Martin Devera <devik@eaxlabs.cz>
-To:     linux-kernel@vger.kernel.org
-Cc:     Martin Devera <devik@eaxlabs.cz>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH] ubifs: Report max LEB count at mount time
-Date:   Wed,  3 Mar 2021 10:05:19 +0100
-Message-Id: <20210303090519.9716-1-devik@eaxlabs.cz>
-X-Mailer: git-send-email 2.11.0
+        id S1382781AbhCCOjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:39:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843000AbhCCKXf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:23:35 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACC7C0698C7
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:07:03 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d11so16240185qtx.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:07:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xKpRIV0nBsirWLUBi5T/YqLwJUbvRGd0l5J76HxqqQY=;
+        b=i93FVC4prisYD3tUaa4qTULSzppFJdnwqaI0axKLqk4E1KHLGl0ajxMpSx/Tbcz5gz
+         cB+p+QCfBLFfjgNlV1gpaGUgstlS9F/9xajs3I7SB+BpptWiAPSxxY5Bf/9oiNmWwWx5
+         iImSH5q2b+x5PftlRI6vcph/A+eUGLveFSsOVWgp6xIAet72Oo3bSy6BHl1JZiHZjGi9
+         uvz9PBafoUuLvJ9kZdOPmWYbpzXTTt39rbO+031348ZQbxY6CD3J/+YmoQT3dJ1awTCf
+         8S3Tyc99ojTXxhyesNABrGX29I/Qyj0IqyrgPWjyPtXROEULfbOANHQPoiJ3gh8xbsWJ
+         VO3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xKpRIV0nBsirWLUBi5T/YqLwJUbvRGd0l5J76HxqqQY=;
+        b=eW42jnpasXk8A+Y8wj1QxifRPpV7TXbCuGYr5sK4kuC+LNnl1GGkreewggstvww7Rt
+         Sp3yWNGfkCgNcL0HasMcy2FXWDQg/XYE1rxRrEuyEFm82nZnR/rPr1KzRITB2wEVR4Bi
+         mz89yxCkn+byAqiyc8CD7Y9t60bJ7F7qSY8QlUGcctHWunS+RERTgv1julYHA5PebZLW
+         63XmIfoUNQvCiOHzcRUi/iH/3rg0+ltkPmV84WYVr8ETlRwhiUa9/NkWQGEXZDi4ROHe
+         uFdlFR4+v3pvpwK+4RzmpwVvvlVjkBgpnfbXQTeOq2Z5vtnPUu3lgZ1tNzruB307PQww
+         ZeAg==
+X-Gm-Message-State: AOAM5301P9TTRKimUE4fOCaaQhjlJY5CY7sUrxaMZ/0vetLX2bjO769d
+        mV5bWNWV2Xf5CsCQbbfB5EyjtQSKJqWfk/NirYIt/w==
+X-Google-Smtp-Source: ABdhPJx8+N6LxjQ2TqesKmjDhe9IP8WsEr+KW8d/OM0/MKlgrV9PLrRVbVZT/kcWCKVmkhK0QwJAnR1Edcir13+sqW8=
+X-Received: by 2002:ac8:6f3b:: with SMTP id i27mr10377291qtv.67.1614762422440;
+ Wed, 03 Mar 2021 01:07:02 -0800 (PST)
+MIME-Version: 1.0
+References: <00000000000039404305bc049fa5@google.com> <20210224023026.3001-1-hdanton@sina.com>
+ <0a0573f07a7e1468f83d52afcf8f5ba356725740.camel@sipsolutions.net> <20210303085912.1647-1-hdanton@sina.com>
+In-Reply-To: <20210303085912.1647-1-hdanton@sina.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 3 Mar 2021 10:06:51 +0100
+Message-ID: <CACT4Y+ZEdh6WJB8b5dg+jgv7thnrt=pVW6BzPngOyT3KKMaMtw@mail.gmail.com>
+Subject: Re: BUG: soft lockup in ieee80211_tasklet_handler
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        syzbot <syzbot+27df43cf7ae73de7d8ee@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no other way to directly report/query this
-quantity. It is useful when planing how given filesystem
-can be resized.
+On Wed, Mar 3, 2021 at 9:59 AM Hillf Danton <hdanton@sina.com> wrote:
+>
+> On Tue, 02 Mar 2021 15:18:16 +0100  Johannes Berg wrote:
+> > On Wed, 2021-02-24 at 10:30 +0800, Hillf Danton wrote:
+> > >
+> > > Add budget for the 80211 softint handler - it's feasible not to try to
+> > > build the giant pyramid in a week.
+> > >
+> > > --- x/net/mac80211/main.c
+> > > +++ y/net/mac80211/main.c
+> > > @@ -224,9 +224,15 @@ static void ieee80211_tasklet_handler(un
+> > >  {
+> > >     struct ieee80211_local *local = (struct ieee80211_local *) data;
+> > >     struct sk_buff *skb;
+> > > +   int i = 0;
+> > > +
+> > > +   while (i++ < 64) {
+> > > +           skb = skb_dequeue(&local->skb_queue);
+> > > +           if (!skb)
+> > > +                   skb = skb_dequeue(&local->skb_queue_unreliable);
+> > > +           if (!skb)
+> > > +                   return;
+> >
+> > I guess that's not such a bad idea, but I do wonder how we get here,
+> > userspace can submit packets faster than we can process?
+>
+> I wonder why syzbot did not make other handlers stand out than
+> ieee80211_tasklet_handler.
 
-Signed-off-by: Martin Devera <devik@eaxlabs.cz>
----
- fs/ubifs/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+syzbot has no relation to this whatsoever. It's just a proxy between
+the kernel and you. Ask the kernel ;)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index ddb2ca636c93..178680d2338f 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1552,8 +1552,8 @@ static int mount_ubifs(struct ubifs_info *c)
- 	ubifs_msg(c, "LEB size: %d bytes (%d KiB), min./max. I/O unit sizes: %d bytes/%d bytes",
- 		  c->leb_size, c->leb_size >> 10, c->min_io_size,
- 		  c->max_write_size);
--	ubifs_msg(c, "FS size: %lld bytes (%lld MiB, %d LEBs), journal size %lld bytes (%lld MiB, %d LEBs)",
--		  x, x >> 20, c->main_lebs,
-+	ubifs_msg(c, "FS size: %lld bytes (%lld MiB, %d LEBs), max %d LEBs, journal size %lld bytes (%lld MiB, %d LEBs)",
-+		  x, x >> 20, c->main_lebs, c->max_leb_cnt,
- 		  y, y >> 20, c->log_lebs + c->max_bud_cnt);
- 	ubifs_msg(c, "reserved for root: %llu bytes (%llu KiB)",
- 		  c->report_rp_size, c->report_rp_size >> 10);
--- 
-2.11.0
-
+> > It feels like a simulation-only case, tbh, since over the air you have
+> > limits how much bandwidth you can get ... unless you have a very slow
+> > CPU?
+>
+> Even with a slower CPU I want to run a FIFO task every tick - it can bear
+> latencies like two seconds.
+> >
+> > In any case, if you want anything merged you're going to have to submit
+> > a proper patch with a real commit message and Signed-off-by, etc.
+> >
+> > johannes
