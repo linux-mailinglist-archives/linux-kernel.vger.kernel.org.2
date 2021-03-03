@@ -2,165 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4047432BBA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C267432BB97
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239680AbhCCMqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842520AbhCCIGQ (ORCPT
+        id S1446750AbhCCMih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:38:37 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9625 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1842503AbhCCIFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:06:16 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117D6C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 23:54:34 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id l2so15780741pgb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 23:54:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1OHNpV5o7TZ/CsTPSnfCsiR7j00EOgl+1+rL+aenzg8=;
-        b=E6aTq4IzcdgHTaVB46rDkYllEEMGl8JV+5cuhSotwMfh09YnMZXpUfd8YJm82ztZaW
-         OI7yYuwqNEo0e77PYkrE9DUEpsxBBKmRRBMs5ug77ekHJlCi7sIkR01rZ2N4OaHIoRwa
-         D7ppHFidESKVcGTKT8xs0bCVQHXSW+WQWNRxKlChMCd68oHpqCwZ0nt2EOqNoYBx1qKS
-         pXubDFViPEkA24rc+T4Dhat/jrdNAqrOizovXnACjoDj1VgddZIc4RAGahfai5nzM211
-         IV36HsDzzAD9Qh6xh1nDD1bik0/5OVqST8j9+6QeLcwVe82k9c4XH5YBJbGl53qels9U
-         aPoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1OHNpV5o7TZ/CsTPSnfCsiR7j00EOgl+1+rL+aenzg8=;
-        b=SVjCNgkVfdjlEJo5BahOvhsEzXuJ3lCi6jWIbcL0IXG5apXlKLcUSONc4jJeJ7Z4J0
-         vxJrMMN7j8JyKisl5BiC/I3h/mFsTKo57f5ZX7cghxCTfYMwheZLZB7ewPm5mSBjp3my
-         M23Snpc42sy6QxGzNDFaJsk7IXdn2+fzATN/SdPrLA4neRGAMh93a7g+Mn5KtshZPqow
-         aEPLeIXT2Eb4G+d73yMPMMgF+CsxZ8IJmSGFUYNC+uQLAuqwzepvpMGuJCFOJ47BITHR
-         ibpx/sOyQpI+3sblC6IAEYbH970vk7+xPmTZNxu2vkFZ8CSldXa8HXX7RwWM5oJ4TLyv
-         pOnQ==
-X-Gm-Message-State: AOAM530LgSCUH+TCGgA7T8PGsjaCDY/aLv6JkQP3tn7NwXcsATrowzQp
-        m9DkK1ukLbfYdlfKcFwIx8mLGA==
-X-Google-Smtp-Source: ABdhPJxU2Pb2IsjDSyaYgpyK6YHgNLiha4rdcYZpod8JO49hKBKueY8CQGeH5WDMGK83u6EtOv7DWg==
-X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id 144-20020a6218960000b0290197491cbe38mr7006426pfy.15.1614758073259;
-        Tue, 02 Mar 2021 23:54:33 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id a23sm23693188pfk.80.2021.03.02.23.54.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 23:54:32 -0800 (PST)
-Date:   Wed, 3 Mar 2021 13:24:30 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210303075430.n7ewkots6cgbbabi@vireshk-i7>
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+        Wed, 3 Mar 2021 03:05:45 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603f40d20003>; Tue, 02 Mar 2021 23:54:58 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
+ 2021 07:54:58 +0000
+Received: from [172.27.14.101] (172.20.145.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar 2021
+ 07:54:54 +0000
+Subject: Re: [PATCH] net/mlx5: use kvfree() for memory allocated with
+ kvzalloc()
+To:     angkery <angkery@163.com>, <saeedm@nvidia.com>, <leon@kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <vladbu@nvidia.com>,
+        <dlinkin@nvidia.com>, <dan.carpenter@oracle.com>
+CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Junlin Yang <yangjunlin@yulong.com>
+References: <20210303024019.2245-1-angkery@163.com>
+From:   Roi Dayan <roid@nvidia.com>
+Message-ID: <0c195a3a-53cc-dbd2-f656-54a92e5a569b@nvidia.com>
+Date:   Wed, 3 Mar 2021 09:54:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210303024019.2245-1-angkery@163.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614758098; bh=jptEHTTqU5i9Rk44hkt2Xk1fTTxJd4Czd+BJtbXzJQg=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=EmeeFnPDOYL2h8bUEC9Ejsn5cAia9/0b8bJow1firBmPU8Lnu9e2HHmF6j1QKLtsv
+         PL2ecK2g0MXdNSKzUl76YCTYujMMij+nY7Et/seSfa8ObdBrvt87pGFZdmMj7cX10M
+         Fp3H/TklXsfwQRqgKsa27saB7qqZhqwyTtEqfSkso0PolQ2UegYcGYgUuToojwqlSb
+         MKnEtV1eDr4AiUhCxcNNu+prlYGyzeoqOIoR3Tgh4xzZVqLnSKfMtyN7fYOX0InFKS
+         sUikkrI1WERiorGXKfh4ujrXYOdTY18OpfFjY6a/heqDG15FccbG6bHErCeiYlUgel
+         zY3qvb1m95ukQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-03-21, 14:41, Jie Deng wrote:
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
-> +				struct virtio_i2c_req *reqs,
-> +				struct i2c_msg *msgs, int nr)
-> +{
-> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
-> +	int i, outcnt, incnt, err = 0;
-> +	u8 *buf;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		if (!msgs[i].len)
-> +			break;
-> +
-> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
-> +
-> +		if (i != nr - 1)
-> +			reqs[i].out_hdr.flags |= VIRTIO_I2C_FLAGS_FAIL_NEXT;
-> +
-> +		outcnt = incnt = 0;
-> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
-> +		sgs[outcnt++] = &out_hdr;
-> +
-> +		buf = kzalloc(msgs[i].len, GFP_KERNEL);
-> +		if (!buf)
-> +			break;
-> +
-> +		if (msgs[i].flags & I2C_M_RD) {
-> +			reqs[i].read_buf = buf;
-> +			sg_init_one(&msg_buf, reqs[i].read_buf, msgs[i].len);
-> +			sgs[outcnt + incnt++] = &msg_buf;
-> +		} else {
-> +			reqs[i].write_buf = buf;
-> +			memcpy(reqs[i].write_buf, msgs[i].buf, msgs[i].len);
-> +			sg_init_one(&msg_buf, reqs[i].write_buf, msgs[i].len);
-> +			sgs[outcnt++] = &msg_buf;
-> +		}
-> +
-> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
-> +		sgs[outcnt + incnt++] = &in_hdr;
-> +
-> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
-> +		if (err < 0) {
-> +			pr_err("failed to add msg[%d] to virtqueue.\n", i);
-> +			if (msgs[i].flags & I2C_M_RD) {
-> +				kfree(reqs[i].read_buf);
-> +				reqs[i].read_buf = NULL;
-> +			} else {
-> +				kfree(reqs[i].write_buf);
-> +				reqs[i].write_buf = NULL;
-> +			}
-> +			break;
-> +		}
-> +	}
-> +
-> +	return i;
-> +}
 
-> diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
-> +/**
-> + * struct virtio_i2c_out_hdr - the virtio I2C message OUT header
-> + * @addr: the controlled device address
-> + * @padding: used to pad to full dword
-> + * @flags: used for feature extensibility
-> + */
-> +struct virtio_i2c_out_hdr {
-> +	__le16 addr;
-> +	__le16 padding;
-> +	__le32 flags;
-> +};
 
-Both this code and the virtio spec (which is already merged) are
-missing msgs[i].flags and they are never sent to backend. The only
-flags available here are the ones defined by virtio spec and these are
-not i2c flags.
+On 2021-03-03 4:40 AM, angkery wrote:
+> From: Junlin Yang <yangjunlin@yulong.com>
+> 
+> It is allocated with kvzalloc(), the corresponding release function
+> should not be kfree(), use kvfree() instead.
+> 
+> Generated by: scripts/coccinelle/api/kfree_mismatch.cocci
+> 
+> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+> index 6f6772b..3da7bec 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+> @@ -248,7 +248,7 @@ static int mlx5_esw_indir_table_rule_get(struct mlx5_eswitch *esw,
+>   err_ethertype:
+>   	kfree(rule);
+>   out:
+> -	kfree(rule_spec);
+> +	kvfree(rule_spec);
+>   	return err;
+>   }
+>   
+> @@ -328,7 +328,7 @@ static int mlx5_create_indir_recirc_group(struct mlx5_eswitch *esw,
+>   	e->recirc_cnt = 0;
+>   
+>   out:
+> -	kfree(in);
+> +	kvfree(in);
+>   	return err;
+>   }
+>   
+> @@ -347,7 +347,7 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
+>   
+>   	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
+>   	if (!spec) {
+> -		kfree(in);
+> +		kvfree(in);
+>   		return -ENOMEM;
+>   	}
+>   
+> @@ -371,8 +371,8 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
+>   	}
+>   
+>   err_out:
+> -	kfree(spec);
+> -	kfree(in);
+> +	kvfree(spec);
+> +	kvfree(in);
+>   	return err;
+>   }
+>   
+> 
 
-I also looked at your i2c backend for acrn and it mistakenly copies
-the hdr.flag, which is the virtio flag and not i2c flag.
+thanks!
 
-https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/hw/pci/virtio/virtio_i2c.c#L539
+Reviewed-by: Roi Dayan <roid@nvidia.com>
 
-I will send a fix for the specs if you agree that there is a problem
-here.
-
-what am I missing here ? This should have been caught in your testing
-and so I feel I must be missing something.
-
--- 
-viresh
