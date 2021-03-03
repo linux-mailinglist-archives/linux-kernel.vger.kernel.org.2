@@ -2,70 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6652132C2C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84DC32C34F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353823AbhCDAGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388061AbhCCUsh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:48:37 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE69C061760;
-        Wed,  3 Mar 2021 12:47:56 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id BC9D12223A;
-        Wed,  3 Mar 2021 21:47:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614804474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PAQHlS6gYpWsW1jh0ROjDz7dh8e7aK3uynRqpy1F1SM=;
-        b=bljYJDrLnSBP+x1H/dcbjGvZO3vB2OI3asaL5Qe/v9AggX7zBceTgjsy7owTKs/mvw9JGO
-        udqMqV3u0qsMSdwUzUZhF74sAQTBuhLW/UqUpjkJX4eqAndv1nIEnehsYNNHGZzsrkplbr
-        tuCPC9ZWr4/6IPWyPEeF+ZEEqpion0E=
+        id S1353839AbhCDAGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:06:07 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:35476 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1388063AbhCCUta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 15:49:30 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 123KmOxH011929
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Mar 2021 21:48:24 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.36.86])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 123KmNG7020262;
+        Wed, 3 Mar 2021 21:48:23 +0100
+Date:   Wed, 3 Mar 2021 21:48:21 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
+ Industial PCs
+Message-ID: <20210303214810.511ad65a@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210303193134.GB8720@amd>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+        <20210302163309.25528-3-henning.schild@siemens.com>
+        <20210302205452.GA32573@duo.ucw.cz>
+        <20210303141052.30641e6b@md1za8fc.ad001.siemens.net>
+        <20210303193134.GB8720@amd>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Mar 2021 21:47:54 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH] arm64: dts: ls1028a: add interrupt to Root Complex Event
- Collector
-In-Reply-To: <20210209005259.29725-1-michael@walle.cc>
-References: <20210209005259.29725-1-michael@walle.cc>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <da92fd760606934b84521dcc50e75f33@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Am Wed, 3 Mar 2021 20:31:34 +0100
+schrieb Pavel Machek <pavel@ucw.cz>:
 
-Am 2021-02-09 01:52, schrieb Michael Walle:
-> The legacy interrupt INT_A is hardwired to the event collector. RCEC is
-> bascially supported starting with v5.11. Having a correct interrupt, 
-> will
-> make RCEC at least probe correctly.
+> Hi!
 > 
-> There are still issues with how RCEC is implemented in the RCiEP on the
-> LS1028A. RCEC will report an error, but it cannot find the correct
-> subdevice.
+> > > > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
+> > > > +	{1 << 15, "simatic-ipc:green:run-stop"},
+> > > > +	{1 << 7,  "simatic-ipc:yellow:run-stop"},
+> > > > +	{1 << 14, "simatic-ipc:red:error"},
+> > > > +	{1 << 6,  "simatic-ipc:yellow:error"},
+> > > > +	{1 << 13, "simatic-ipc:red:maint"},
+> > > > +	{1 << 5,  "simatic-ipc:yellow:maint"},
+> > > > +	{0, ""},
+> > > > +};    
+> > > 
+> > > Please use names consistent with other systems, this is user
+> > > visible. If you have two-color power led, it should be
+> > > :green:power... See include/dt-bindings/leds/common.h .  
+> > 
+> > Well we wanted to pick names that are printed on the devices and
+> > would like to stick to those. Has been a discussion ...
+> > Can we have symlinks to have multiple names per LED?  
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> No symlinks. We plan to have command line tool to manipulate LEDs,
+> aliases might be possible there.
 
-Any news on this?
+Sounds like a future plan. sysfs and "cat" "echo" are mighty tools and
+"everything is a file" is the best idea ever. So i would say any
+aliasing should live in the kernel, but that is just me. Tools will
+just get out of sync, be missing in busybox or a random yocto ... or
+whichever distro you like.
+On the other hand you have "complexity should be userland" ... i do not
+have the answer.
 
--michael
+> > How strong would you feel about us using our names?  
+> 
+> Strongly. :-)
+
+OK, will try to find a match where possible. 
+
+> Do you have a picture how the leds look like?
+
+I could even find chassis photos in our internal review but that would
+be too much.
+
+Our idea is probably the same as yours. We want the same names across
+all devices. But we struggle with colors because on some boxes we have
+red+green, while other offer yellow ... implemented in HW and messing
+with red+green in some cases.
+
+But so far we only looked at Siemens devices and thought we could get
+our own "namespace".
+
+To be honest i could not even tell how our names map on the known ones,
+but we will do our best to find a match. They all are "high-level" so
+"power" and other basic things are not exposed.
+
+regards,
+Henning
+ 
+> Best regards,
+> 							Pavel
+
