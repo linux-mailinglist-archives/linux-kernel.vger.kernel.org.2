@@ -2,208 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5CE32BDF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CE732BE02
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385068AbhCCQkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:40:42 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:45012 "EHLO inva020.nxp.com"
+        id S1445360AbhCCQu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:50:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232960AbhCCMKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:10:46 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BE6F21A0B19;
-        Wed,  3 Mar 2021 09:31:19 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B01B61A0B38;
-        Wed,  3 Mar 2021 09:31:19 +0100 (CET)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 9B5AC20308;
-        Wed,  3 Mar 2021 09:31:19 +0100 (CET)
-Date:   Wed, 3 Mar 2021 10:31:19 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3] clk: imx: Fix reparenting of UARTs not associated
- with sdout
-Message-ID: <20210303083119.wadme5a7j4zf7vuz@fsr-ub1664-175>
-References: <20210120151305.GC19063@pengutronix.de>
- <20210120152813.x2pbs5vprevkly23@fsr-ub1664-175>
- <20210120155001.GD19063@pengutronix.de>
- <20210120161421.h3yng57m3fetwwih@fsr-ub1664-175>
- <20210121095617.GI19063@pengutronix.de>
- <20210121102450.lisl3mzqczdsmzda@fsr-ub1664-175>
- <CAHCN7x+eMHncRya3KWm5g=stzVf0fzNojS5mFxwvGW-sVoLsYQ@mail.gmail.com>
- <CAHCN7xLc6dnkA5Fw4cC1_nDG3KrrR4AffUzy-8gG4UKLn-rhzQ@mail.gmail.com>
- <20210215130620.3la4bexamozzcvjx@fsr-ub1664-175>
- <CAHCN7xK1rWkDK6JE6MvN1UoV0b3Z5dQjeWZDNgnZHRwD1XkuZQ@mail.gmail.com>
+        id S1350209AbhCCMWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:22:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A2A164DF2;
+        Wed,  3 Mar 2021 08:42:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614760942;
+        bh=FRgMk+OAmFAEpU9UR2Llp/Xzz5XikkDKRFOVhCQLfOM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=piRHX4X9mqP8OhBnzoEcWJnGVjmsF3VKwjWy/H6p/jP0BVsAXbbR+a8JrSQsB5OVe
+         EYSHmrQtZ6KgHH4dbID61DeG9ubb1A1+O1urXd8g2oLusGHgpoDL+OyA/ZMs86WdIs
+         wvZktXeijQSTqiKjim7b/fBIJDjHt5Qx3xoK7MdhFD8rYqG6KQQ8DqF8xazonPnHgQ
+         +8WjH4TFmho3rfHZWvXyV5ieOnLoglKsXCJt4kwg+wleoXTF3Il7hLH8KNUdCdI+rQ
+         +B2GY8XDkoiu0TYaeV9/N6AOKvDLIrpOdvxlh96FLs32atLdLs6HQTkHTTI+l/jCrt
+         TBVQQTOJBv3vg==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lHN5I-000rIv-2x; Wed, 03 Mar 2021 09:42:20 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/kernel-doc: ignore identifier on anonymous enums
+Date:   Wed,  3 Mar 2021 09:42:14 +0100
+Message-Id: <055ad57879f1b9381b90879e00f72fde1c3a5647.1614760910.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <CAHp75VcG544HZ1j_6jvZoba6kEjKXXfZ8deJWmwNQ08mC35NrA@mail.gmail.com>
+References: <CAHp75VcG544HZ1j_6jvZoba6kEjKXXfZ8deJWmwNQ08mC35NrA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHCN7xK1rWkDK6JE6MvN1UoV0b3Z5dQjeWZDNgnZHRwD1XkuZQ@mail.gmail.com>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-02 13:03:04, Adam Ford wrote:
-> On Mon, Feb 15, 2021 at 7:06 AM Abel Vesa <abel.vesa@nxp.com> wrote:
-> >
-> > On 21-02-13 08:44:28, Adam Ford wrote:
-> > > On Wed, Feb 3, 2021 at 3:22 PM Adam Ford <aford173@gmail.com> wrote:
-> > > >
-> > > > On Thu, Jan 21, 2021 at 4:24 AM Abel Vesa <abel.vesa@nxp.com> wrote:
-> > > > >
-> > > > > On 21-01-21 10:56:17, Sascha Hauer wrote:
-> > > > > > On Wed, Jan 20, 2021 at 06:14:21PM +0200, Abel Vesa wrote:
-> > > > > > > On 21-01-20 16:50:01, Sascha Hauer wrote:
-> > > > > > > > On Wed, Jan 20, 2021 at 05:28:13PM +0200, Abel Vesa wrote:
-> > > > > > > > > On 21-01-20 16:13:05, Sascha Hauer wrote:
-> > > > > > > > > > Hi Abel,
-> > > > > > > > > >
-> > > > > > > > > > On Wed, Jan 20, 2021 at 04:44:54PM +0200, Abel Vesa wrote:
-> > > > > > > > > > > On 21-01-18 08:00:43, Adam Ford wrote:
-> > > > > > > > > > > > On Mon, Jan 18, 2021 at 6:52 AM Abel Vesa <abel.vesa@nxp.com> wrote:
-> > > > > > > > >
-> > > > > > > > > ...
-> > > > > > > > >
-> > > > > > > > > > > >
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > TBH, I'm against the idea of having to call consumer API from a clock provider driver.
-> > > > > > > > > > > > > I'm still investigating a way of moving the uart clock control calls in drivers/serial/imx,
-> > > > > > > > > > > > > where they belong.
-> > > > > > > > > > > >
-> > > > > > > > > > > > That makes sense.
-> > > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > Just a thought. The uart clock used for console remains on from u-boot,
-> > > > > > > > > > > so maybe it's enough to just add the CLK_IGNORE_UNUSED flag to all the
-> > > > > > > > > > > uart root clocks and remove the prepare/enable calls for uart clocks
-> > > > > > > > > > > for good. I don't really have a way to test it right now, but maybe
-> > > > > > > > > > > you could give it a try.
-> > > > > > > > > >
-> > > > > > > > > > That would mean that UART clocks will never be disabled, regardless of
-> > > > > > > > > > whether they are used for console or not. That doesn't sound very
-> > > > > > > > > > appealing.
-> > > > > > > > >
-> > > > > > > > > AFAIK, the only uart clock that is enabled by u-boot is the one used for
-> > > > > > > > > the console. Later on, when the serial driver probes, it will enable it itself.
-> > > > > > > > >
-> > > > > > > > > Unless I'm missing something, this is exactly what we need.
-> > > > > > > >
-> > > > > > > > It might enable it, but with CLK_IGNORE_UNUSED the clock won't be
-> > > > > > > > disabled again when a port is closed after usage
-> > > > > > >
-> > > > > > > OK, tell me what I'm getting wrong in the following scenario:
-> > > > > > >
-> > > > > > > U-boot leaves the console uart clock enabled. All the other ones are disabled.
-> > > > > > >
-> > > > > > > Kernel i.MX clk driver registers the uart clocks with flag CLK_IGNORE_UNUSED.
-> > > > > >
-> > > > > > I was wrong at that point. I originally thought the kernel will never
-> > > > > > disable these clocks, but in fact it only leaves them enabled during the
-> > > > > > clk_disable_unused call.
-> > > > > >
-> > > > > > However, when CLK_IGNORE_UNUSED becomes relevant it's too late already.
-> > > > > > I just chatted with Lucas and he told me what the original problem was
-> > > > > > that his patch solved.
-> > > > > >
-> > > > > > The problem comes when an unrelated device and the earlycon UART have
-> > > > > > the same parent clocks. The parent clock is enabled, but it's reference
-> > > > > > count is zero. Now when the unrelated device probes and toggles its
-> > > > > > clocks then the shared parent clock will be disabled due to the
-> > > > > > reference count being zero. Next time earlycon prints a character the
-> > > > > > system hangs because the UART gates are still enabled, but their parent
-> > > > > > clocks no longer are.
-> > > > > >
-> > > > >
-> > > > > Hmm, that is indeed a problem. That's why I think there should be some
-> > > > > kind of NOCACHE flag for almost all the types of clocks. For example,
-> > > > > in this case, it makes sense for the core to check the bit in the register
-> > > > > and then disable the parent based on that instead of relying on the refcount.
-> > > > > Anyway, that's something that needs to be added in the CCF.
-> > > > >
-> > > > > > Overall I think Lucas' patches are still valid and relevant and with
-> > > > > > Adams patches we even no longer have to enable all UART clocks, but
-> > > > > > only the ones which are actually needed.
-> > > > >
-> > > > > Yeah, for now, I think we can go with Adam's patches. But longterm, I would
-> > > > > like to remove the special case of the uart clocks we have right now in all
-> > > > > the i.MX clock drivers.
-> > >
-> > > I looked around at other serial drivers, and I found nothing like this
-> > > function for enabling all UART clocks.  There are generic functions
-> > > for registering consoles, earlycon etc, and the serial driver fetches
-> > > the per and igp clocks from the device tree, so I attempted to simply
-> > > remove imx_register_uart_clocks().  I booted an i.MX8M Nano from a
-> > > fully-powered off state, and my serial console came up just fine.
-> >
-> > Just because it works, doesn't mean it is safe. To put it simply, the
-> > risk of some  driver disabling a clock that is parent of the uart clock
-> > would render the earlycon broken.
-> >
-> > >
-> > > I checked the clk_summary, and the clock parents are set correctly and
-> > > the respective clock rates appear to be correct (ie, the console is
-> > > working at the desired baud rate, and Bluetooth is happy)
-> > >
-> > > Since I don't fully understand the serial driver and the clock
-> > > dependencies, I don't want to just simply remove the function without
-> > > discussing it, because I don't know the ramifications.  However, when
-> > > testing on the i.MX8M Nano, things look OK.
-> > > I also tested suspend-resume and the console UART appears to return
-> > > and the Bluetooth UART set to 4Mbps works just fine too.
-> > >
-> > > I'd like to post a V4 which just removes imx_register_uart_clocks and
-> > > the corresponding calls to it.  I don't know enough about the older
-> > > 32-bit i.MX SoC's, but I have build-tested it, and I can generate a
-> > > patch. Are there any objections and/or concerns?
-> > >
-> >
-> > Please don't remove the imx_register_uart_clocks for now. As much as I
-> > would like it gone, the way the earlycon could end up broken is
-> > so ugly that it would make it a real pain to debug it later on.
-> 
-> I won't do a V4, but where do we go from here?  I have a V3 that was
-> waiting for reviews, but there were some concerns.  We currently
-> cannot re-parent the UART's on iMX8MM or iMX8MN.  Should I resend V3,
-> or are there fixes/changes requested to V3?
-> 
+When anonymous enums are used, the identifier is empty.
 
-The v3 is fine. No need to resend.
+While, IMO, it should be avoided the usage of such enums,
+adding support for it is not hard.
 
-Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+So, postpone the check for empty identifiers to happen
+only at the dump phase.
 
-> adam
-> >
-> > > adam
-> > > > >
-> > > >
-> > > > Is the patch I submitted good enough for someone's acked-by or
-> > > > reviewed-by, or are there changes I need to implement?
-> > > >
-> > > > adam
-> > > >
-> > > > > >
-> > > > > > Sascha
-> > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Pengutronix e.K.                           |                             |
-> > > > > > Steuerwalder Str. 21                       | https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fwww.pengutronix.de%2F&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C900fb6f7dfdf49776eb208d8ddadd7b7%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637503086023262296%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=ulZnxvilARLN03%2BEr%2BTKmVOPxRTukN%2FDg3oPY8UJ2AU%3D&amp;reserved=0  |
-> > > > > > 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> > > > > > Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ scripts/kernel-doc | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 68df17877384..f8ebbf5e9f12 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1412,9 +1412,14 @@ sub dump_enum($$) {
+ 
+     if ($members) {
+ 	if ($identifier ne $declaration_name) {
+-	    print STDERR "${file}:$.: warning: expecting prototype for enum $identifier. Prototype was for enum $declaration_name instead\n";
++	    if ($identifier eq "") {
++		print STDERR "${file}:$.: warning: wrong kernel-doc identifier on line:\n";
++	    } else {
++		print STDERR "${file}:$.: warning: expecting prototype for enum $identifier. Prototype was for enum $declaration_name instead\n";
++	    }
+ 	    return;
+ 	}
++	$declaration_name = "(anonymous)" if ($declaration_name eq "");
+ 
+ 	my %_members;
+ 
+@@ -2132,7 +2137,7 @@ sub process_name($$) {
+ 	    ++$warnings;
+ 	}
+ 
+-	if ($identifier eq "") {
++	if ($identifier eq "" && $decl_type ne "enum") {
+ 	    print STDERR "${file}:$.: warning: wrong kernel-doc identifier on line:\n";
+ 	    print STDERR $_;
+ 	    ++$warnings;
+-- 
+2.29.2
+
