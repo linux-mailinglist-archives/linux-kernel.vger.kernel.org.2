@@ -2,189 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B6632BE14
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADC932BE23
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382659AbhCCQ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:58:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344857AbhCCM3t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:29:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614774493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EOe4fqSyksQ+t6iqfEbs4KKusbmAebZtw4sO0NgAswg=;
-        b=aiLHQ2pygfBtj6bR7ttR8IvK2SxSkpszNYQx4Ya4zWC3sy+DCHEBP6sFUEZOQxOTR+HNo0
-        uJLvSX7z+GBZabrtIBsNFn4tAKbsv6arbbPV0dFDjoQuIt5kUlNPZSm0leB00D5bJheS1A
-        Mn9rzCH0gUPO1kLu4+OntHwMeuPVFqk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-GugYBVXPNnu5CP42Ez43kA-1; Wed, 03 Mar 2021 07:24:11 -0500
-X-MC-Unique: GugYBVXPNnu5CP42Ez43kA-1
-Received: by mail-wm1-f69.google.com with SMTP id m17so1714167wml.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 04:24:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EOe4fqSyksQ+t6iqfEbs4KKusbmAebZtw4sO0NgAswg=;
-        b=X6JYLfQF9NdEFUBUU+Z7gbQFwivM7JO875uyiq2SlV992+JerFSO5HIMbN+xaF2OET
-         rozzHUNGR+v/V+dd/fwbS9nv2d6cgPphEkKe/oz0ju+g2tq1I0QimhS/clscF8yjX33E
-         D9NuARQtoBSh7ghoGN5yVMWuTtd/Z+qT2DXt8oWcnfQ3hnLK+//684ocAqiHs3QobHc2
-         QakupyPNloIvrBuqMl0DzLM96GkUH3U7bAEPVROU3gugfA0yJRFTTDabl0lYmR8Qe6wn
-         78/1gPI192BL6leFFgQjKleeiKHLUhe92in+YqOcJTVXg0vXQgjhwhQ8AJ9MGtrjMfzf
-         F3zQ==
-X-Gm-Message-State: AOAM5300s2TUjQObnVA+8fghONK4EJOuKGlbBOkP4WVDjwnXGCUusvFm
-        2HvKCkeQV34NtEF2wYmcMxad/R9Er2YllSlMQAcOobXK008UQLzmPxnTSkthJhALhXKRW4TDh6J
-        GsABBeJNCyKSLjUn4ul4whhnqjXKRiZoEdkFoE3e9E7TinGAWIwP6tIkqQE3ham0MePrdHwmGad
-        Vt
-X-Received: by 2002:a1c:f702:: with SMTP id v2mr8695757wmh.131.1614774249560;
-        Wed, 03 Mar 2021 04:24:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9/yjlUuKaPWmHfker1GqCi1i/CgJOHrb6s/ZNwHlFIiyYN9twj1rMIJahF8tf71Tg2E4/uQ==
-X-Received: by 2002:a1c:f702:: with SMTP id v2mr8695738wmh.131.1614774249334;
-        Wed, 03 Mar 2021 04:24:09 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id m132sm5810002wmf.45.2021.03.03.04.24.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 04:24:08 -0800 (PST)
-Subject: Re: [PATCH v3] KVM: nVMX: Sync L2 guest CET states between L1/L2
-To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        vkuznets@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210303060435.8158-1-weijiang.yang@intel.com>
- <20210303060435.8158-2-weijiang.yang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <073a7e70-33a0-4ce4-9e15-77c4e13e2af3@redhat.com>
-Date:   Wed, 3 Mar 2021 13:24:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S1348117AbhCCRHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:07:18 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:46147 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233019AbhCCMjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:39:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614775121; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=PtMq7GNMoeu6+0qiGV3pBsJu4dFPWHqMkKNpr2j9aPE=;
+ b=idVDpOQqNek/SpQFV6CMTCr/OrUEJSS6Bj++J/GtTT/YnWarFeob+L9zupwL0GbA+Jq2nlrZ
+ KtT6AAqX+DU0rsRJygAb4r/QWNPxMUwZy2G0ZVXw6no1Y/9bdMu99u9eazWPsveVw3ST+M3q
+ UUW9m0KvA/9vDnXf6QSJoKVx7l0=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 603f804439ef372114108b56 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 12:25:40
+ GMT
+Sender: pintu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 74DDEC43465; Wed,  3 Mar 2021 12:25:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pintu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7AA2FC433CA;
+        Wed,  3 Mar 2021 12:25:38 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210303060435.8158-2-weijiang.yang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Mar 2021 17:55:38 +0530
+From:   pintu@codeaurora.org
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
+        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
+        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
+        lokeshgidra@google.com, nigupta@nvidia.com, famzheng@amazon.com,
+        andrew.a.klychkov@gmail.com, bigeasy@linutronix.de,
+        ping.ping@gmail.com, vbabka@suse.cz, yzaikin@google.com,
+        keescook@chromium.org, mcgrof@kernel.org, corbet@lwn.net,
+        pintu.ping@gmail.com
+Subject: Re: [PATCH] mm: introduce clear all vm events counters
+In-Reply-To: <YD5gFYalXJh0dMLn@cmpxchg.org>
+References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
+ <YD0EOyW3pZXDnuuJ@cmpxchg.org>
+ <419bb403c33b7e48291972df938d0cae@codeaurora.org>
+ <YD5gFYalXJh0dMLn@cmpxchg.org>
+Message-ID: <2f816fe9682d9b066ba630951db75eac@codeaurora.org>
+X-Sender: pintu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/03/21 07:04, Yang Weijiang wrote:
-> These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
-> read/write them and after they're changed. If CET guest entry-load bit is not
-> set by L1 guest, migrate them to L2 manaully.
+On 2021-03-02 21:26, Johannes Weiner wrote:
+> On Tue, Mar 02, 2021 at 04:00:34PM +0530, pintu@codeaurora.org wrote:
+>> On 2021-03-01 20:41, Johannes Weiner wrote:
+>> > On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
+>> > > At times there is a need to regularly monitor vm counters while we
+>> > > reproduce some issue, or it could be as simple as gathering some
+>> > > system
+>> > > statistics when we run some scenario and every time we like to start
+>> > > from
+>> > > beginning.
+>> > > The current steps are:
+>> > > Dump /proc/vmstat
+>> > > Run some scenario
+>> > > Dump /proc/vmstat again
+>> > > Generate some data or graph
+>> > > reboot and repeat again
+>> >
+>> > You can subtract the first vmstat dump from the second to get the
+>> > event delta for the scenario run. That's what I do, and I'd assume
+>> > most people are doing. Am I missing something?
+>> 
+>> Thanks so much for your comments.
+>> Yes in most cases it works.
+>> 
+>> But I guess there are sometimes where we need to compare with fresh 
+>> data
+>> (just like reboot) at least for some of the counters.
+>> Suppose we wanted to monitor pgalloc_normal and pgfree.
 > 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-
-Hi Weijiang, can you post the complete series again?  Thanks!
-
-Paolo
-
-> ---
->   arch/x86/kvm/cpuid.c      |  1 -
->   arch/x86/kvm/vmx/nested.c | 30 ++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/vmx.h    |  3 +++
->   3 files changed, 33 insertions(+), 1 deletion(-)
+> Hopefully these would already be balanced out pretty well before you
+> run a test, or there is a risk that whatever outstanding allocations
+> there are can cause a large number of frees during your test that
+> don't match up to your recorded allocation events. Resetting to zero
+> doesn't eliminate the risk of such background noise.
 > 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index d191de769093..8692f53b8cd0 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
->   		}
->   		vcpu->arch.guest_supported_xss =
->   			(((u64)best->edx << 32) | best->ecx) & supported_xss;
-> -
->   	} else {
->   		vcpu->arch.guest_supported_xss = 0;
->   	}
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 9728efd529a1..24cace55e1f9 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2516,6 +2516,13 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
->   	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
->   
->   	set_cr4_guest_host_mask(vmx);
-> +
-> +	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
-> +	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
-> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
-> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
-> +	}
->   }
->   
->   /*
-> @@ -2556,6 +2563,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->   	if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
->   	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
->   		vmcs_write64(GUEST_BNDCFGS, vmx->nested.vmcs01_guest_bndcfgs);
-> +
-> +	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
-> +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE))) {
-> +		vmcs_writel(GUEST_SSP, vmx->nested.vmcs01_guest_ssp);
-> +		vmcs_writel(GUEST_S_CET, vmx->nested.vmcs01_guest_s_cet);
-> +		vmcs_writel(GUEST_INTR_SSP_TABLE,
-> +			    vmx->nested.vmcs01_guest_ssp_tbl);
-> +	}
-> +
->   	vmx_set_rflags(vcpu, vmcs12->guest_rflags);
->   
->   	/* EXCEPTION_BITMAP and CR0_GUEST_HOST_MASK should basically be the
-> @@ -3375,6 +3391,12 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->   	if (kvm_mpx_supported() &&
->   		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
->   		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> +	if (kvm_cet_supported() &&
-> +		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> +		vmx->nested.vmcs01_guest_ssp = vmcs_readl(GUEST_SSP);
-> +		vmx->nested.vmcs01_guest_s_cet = vmcs_readl(GUEST_S_CET);
-> +		vmx->nested.vmcs01_guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> +	}
->   
->   	/*
->   	 * Overwrite vmcs01.GUEST_CR3 with L1's CR3 if EPT is disabled *and*
-> @@ -4001,6 +4023,9 @@ static bool is_vmcs12_ext_field(unsigned long field)
->   	case GUEST_IDTR_BASE:
->   	case GUEST_PENDING_DBG_EXCEPTIONS:
->   	case GUEST_BNDCFGS:
-> +	case GUEST_SSP:
-> +	case GUEST_INTR_SSP_TABLE:
-> +	case GUEST_S_CET:
->   		return true;
->   	default:
->   		break;
-> @@ -4052,6 +4077,11 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
->   		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
->   	if (kvm_mpx_supported())
->   		vmcs12->guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> +	if (kvm_cet_supported()) {
-> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
-> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
-> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> +	}
->   
->   	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
->   }
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 9d3a557949ac..36dc4fdb0909 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -155,6 +155,9 @@ struct nested_vmx {
->   	/* to migrate it to L2 if VM_ENTRY_LOAD_DEBUG_CONTROLS is off */
->   	u64 vmcs01_debugctl;
->   	u64 vmcs01_guest_bndcfgs;
-> +	u64 vmcs01_guest_ssp;
-> +	u64 vmcs01_guest_s_cet;
-> +	u64 vmcs01_guest_ssp_tbl;
->   
->   	/* to migrate it to L1 if L2 writes to L1's CR8 directly */
->   	int l1_tpr_threshold;
+>> Or, suppose we want to monitor until the field becomes non-zero..
+>> Or, how certain values are changing compared to fresh reboot.
+>> Or, suppose we want to reset all counters after boot and start 
+>> capturing
+>> fresh stats.
 > 
+> Again, there simply is no mathematical difference between
+> 
+> 	reset events to 0
+> 	run test
+> 	look at events - 0
+> 
+> and
+> 
+> 	read events baseline
+> 	run test
+> 	look at events - baseline
+> 
+>> Some of the counters could be growing too large and too fast. Will 
+>> there be
+>> chances of overflow ?
+>> Then resetting using this could help without rebooting.
+> 
+> Overflows are just a fact of life on 32 bit systems. However, they can
+> also be trivially handled - you can always subtract a ulong start
+> state from a ulong end state and get a reliable delta of up to 2^32
+> events, whether the end state has overflowed or not.
+> 
+> The bottom line is that the benefit of this patch adds a minor
+> convenience for something that can already be done in userspace. But
+> the downside is that there would be one more possible source of noise
+> for kernel developers to consider when looking at a bug report. Plus
+> the extra code and user interface that need to be maintained.
+> 
+> I don't think we should merge this patch.
+
+Okay no problem.Thank you so much for your review and feedback.
+Yes I agree the benefits are minor but I thought might be useful for 
+someone somewhere.
+I worked on it and found it easy and convinient and thus proposed it.
+If others feel not important I am okay to drop it.
+
+Thanks once again to all who helped to review it.
 
