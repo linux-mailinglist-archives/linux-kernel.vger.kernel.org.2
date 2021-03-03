@@ -2,164 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C26432BFF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6705832BFF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386326AbhCCSOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:14:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449031AbhCCPnV (ORCPT
+        id S1386347AbhCCSOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:14:43 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:36551 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1449286AbhCCPoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:43:21 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068BFC061756;
-        Wed,  3 Mar 2021 07:42:41 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id 2so8748800qtw.1;
-        Wed, 03 Mar 2021 07:42:40 -0800 (PST)
+        Wed, 3 Mar 2021 10:44:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1614786239; x=1646322239;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=iYlE76sMi6RoE2zZ2UAVek5NzgKjFO6xX9AqZXR7QDs=;
+  b=R5rwYjOf8pWLx8Gcb8qBoeoqxDFrEeiSMsB8exnUxE56cSNqIrxfCkSf
+   xoB9TEEp5KEaX4iMf+9weg2tsBUIDEvi0UtWuZEVqLaPtrqn4C9cpbyx4
+   b6gOot3ohIz76tPGd9bgi8GUl+L7SGjZpPkW7b2LgcU4iwgSsU9G2FSId
+   JnI1yWr/Z9lqOMhyRCaa8ntBBkJppq3sS6ul7YCPAj8BLxFFpwbtJP+8c
+   zUfXvS2Gc1qmW9Hn0WOvQjf+2wAst7cd1MpTLo9nb/ascWuGLYW1bFngU
+   oozscoXeOgRweEazMUdcrAngaqPYy6zohFYG6f7YXpcVoiwyI/DeW/piy
+   w==;
+IronPort-SDR: 37UYwhfKIDiNQij6vQB/IK+MOgkzNPKCqvSMD53S+jh6PZqWSPcFb30ImNpoPjPoE/wTtLuz5N
+ VrB5DAtBtnG8G20GASwhROre1x1p/7IhOmyA0Nt4bn/ZHWWCOTlbcjpRfEklqcNssdkdCV0ZFb
+ hkXWAxNUS+dENBfoCl9ZExvbynea2P1DGC5eFSV862d1awG3OgKU3DVXvCciiM/OpDMqjuTDvb
+ xMM/2jaYxCx+aF3uzySIhYQ3yH/dfi10nCR5uHpApUoZsThV11qpZn0SPkE7J7ZwByVTh1pNMP
+ A/o=
+X-IronPort-AV: E=Sophos;i="5.81,220,1610434800"; 
+   d="scan'208";a="108624761"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Mar 2021 08:42:41 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 3 Mar 2021 08:42:41 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
+ Transport; Wed, 3 Mar 2021 08:42:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V27mLiy6Nmm1oMiT633mkuXpKgnWAiDNgUNurekTrVMy68nBl11NRRuvZrNoasm9jXlKstWkBDQbgZh1rOnO5nWjbuVa2LQFEP1TrW/i3i/1voc85wAth9oDl1j+pghbf0EUUTi1bCPaHLfZ1g3CaWxPPqJU8oaq9Hz66CYxYcMuJvmU3oXLqidV54z4AsrYTcpZBF9Va8K+A9wA3oaZqpbix+XK/pmytW+rpLcKQljJTtWXyrr8wrpSR6gc8DHkAij/4hU8A/rZcCYvFrdOR+8RHMKd+QYvhRrSwwOXs/fRiZL8zO/q1v/kK65h90xpHhZ5944Sr08o8Fz7ygeJnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OOIpPg8oLReTGZVxYCrGx//uCdW0X5J+qMU06CphduY=;
+ b=S+lnx3Ko5dl+Y7kOFUmD6SrJWUCvDcwJRNjAHjD1a/Q8gtfO3p5vBDsllb63qM+v3LFfWCKRp+sL8c0zocYXz6DpI/wWJ0JAEplku6KJ58OJlPRj/ZZZf7NgxK0G85MYMyAKiBJJ6VpihDGzCwE3+vQ0/HtS7IN5Crg4Tdzx852n2YV1A10YqWBV0aZ1orlPI4izHXH0NDaStAr44cSKMuNoqjb217o8bL00E26M/ckkffh3F+qYRkkQOr5QJwVsXzLz8iw2e9ryEPEKDjgBBMro0gcX9xjvZCuxJ4KI3FzF+53cWr9YIKZ51EEy2B6p4xc27WU2soP6EElAgsVxVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=474jOip4IgCUoyMxBEribCWEBGxFGSV2OmSthT7tIzw=;
-        b=OUl4a0iSBisVMbYesUskXLxC/LPLDhIN0Z0JGTf84f1GApfyQKw6BzripeCpctzhaH
-         +D7phCtY7W74P4MAMDNeGvYAAtxOcvPJwTwYjkvlPb+txGb+DC6yw9LLjjgmdNwNaBLz
-         T+iX1Z5f0zC8hh/Oq4MPpupIK8Xjsq53GLg0aO8HXh+mEfyHxI0LsJ3V1WVo9UY0nEtk
-         0VvSkiHz7Limw2jEyntvTsr41cqWhO/K1Rrur6QvaBoUNUytNHeQY6W0T9h/gLj3Jcox
-         6FVq2aCkhvKl8XALF/xuQlmwzULpBOvkkCmMpA80t6IHJ0shgNDsfE82JWH6mpsFuv8Q
-         m9hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=474jOip4IgCUoyMxBEribCWEBGxFGSV2OmSthT7tIzw=;
-        b=ukwpOc9i0N5mS+7ylyxgpOYfaXxO/rwKJ13Svg6w2NF8Fwt2Vy/xNzzARA1sYnEerT
-         PSJUvsXPvrlYdG/niAhRAwqAuMmIeiC0ebXxTYfioqOmgZF0MhG9WVP1K0Iwt9b0oDH0
-         509IB5yI6fX6lxQWOOiqMb3vQbRSYIJ/XBoQiKdFazpdG4qAikJY78IBeyr84MXSOf/H
-         2CHKirbWMAnFT29ThgvzufvXw/RHQwaAj1scahcmmsL2wBCOKANY0GcA490WWDIwxcOm
-         2kB1Bx3KrFilW+8DaYltbAcjGvCU3JQX0e+qemmxqMMb3TdX/YqdRsaAq/zNsVqfbMcg
-         N+kw==
-X-Gm-Message-State: AOAM533C9ie2rtnSwb80uatIZGVb1dr0qrU+ELhC8VWsX8KSpT5dVIDS
-        ye78jluj6zJpvpxvHFPhWeUARowUhpF9Xg==
-X-Google-Smtp-Source: ABdhPJwLjx1ZIM0IGSCFJl5U/6zxO0tdSMromsGM+JquTtBrWC0ilXZSSOQoOEy0rSaf15B4HSmo9g==
-X-Received: by 2002:ac8:754a:: with SMTP id b10mr23629995qtr.251.1614786160009;
-        Wed, 03 Mar 2021 07:42:40 -0800 (PST)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id j24sm5067992qka.67.2021.03.03.07.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 07:42:39 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 3 Mar 2021 10:42:37 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     mkoutny@suse.com, rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YD+ubbB4Tz0ZlVvp@slm.duckdns.org>
-References: <20210302081705.1990283-1-vipinsh@google.com>
- <20210302081705.1990283-2-vipinsh@google.com>
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OOIpPg8oLReTGZVxYCrGx//uCdW0X5J+qMU06CphduY=;
+ b=ay93GcnHpY+q0mfVOnY/Gqqw0JE76iA2itN1JY4MOmvTw0SKiXu9u7E4Mw12+KozJOGW7g6+l/8xYJHaL1T4eeubDwYFSBkwUsU1IEzRPdiWxSFRAtVCgKwXGbclbhuT9CkN8tPM8wQ3shg0Cd+x1z3Go/on2U79kES3L0e9ggI=
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com (2603:10b6:805:5d::20)
+ by SA2PR11MB5067.namprd11.prod.outlook.com (2603:10b6:806:111::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Wed, 3 Mar
+ 2021 15:42:39 +0000
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::ccd1:992c:7bc5:4b00]) by SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::ccd1:992c:7bc5:4b00%3]) with mapi id 15.20.3912.017; Wed, 3 Mar 2021
+ 15:42:39 +0000
+From:   <Don.Brace@microchip.com>
+To:     <slyich@gmail.com>, <glaubitz@physik.fu-berlin.de>
+CC:     <linux-ia64@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jszczype@redhat.com>, <Scott.Benesh@microchip.com>,
+        <Scott.Teel@microchip.com>, <thenzl@redhat.com>,
+        <martin.petersen@oracle.com>
+Subject: RE: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
+ cmds outstanding for retried cmds" breaks hpsa P600
+Thread-Topic: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
+ cmds outstanding for retried cmds" breaks hpsa P600
+Thread-Index: AQHXD8NYByGFLRaE+E6Jw8YXZ2CxsqpyZ9Dg
+Date:   Wed, 3 Mar 2021 15:42:39 +0000
+Message-ID: <SN6PR11MB284899AF468190BE10031BA7E1989@SN6PR11MB2848.namprd11.prod.outlook.com>
+References: <20210222230519.73f3e239@sf>
+        <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
+        <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
+        <20210223083507.43b5a6dd@sf>
+        <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
+        <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
+        <20210223192743.0198d4a9@sf>    <20210302222630.5056f243@sf>
+        <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
+ <20210303002236.2f4ec01f@sf>
+In-Reply-To: <20210303002236.2f4ec01f@sf>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [76.30.208.15]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0c8b974a-1d37-442b-86a0-08d8de5af9f4
+x-ms-traffictypediagnostic: SA2PR11MB5067:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR11MB5067ADC77DC71D3659086F56E1989@SA2PR11MB5067.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W9yGcnGqyNWasCRRHvzl0OziJV3J2KkWAF6pSVaHNQhlKAhfV3OmjxNQybrxJeSiSIKLmy605yhjFyVPCbvboOimbClfashcy4grRjcxDDgOTiJlrl+f4PVQxj2xXhVKDLhhwYWzRToyshcJGKs+slKUDnoyCNLdwhTjZ2Tw+zds1ITu9mjqCZpYKZZPsz48k9/WegahRFlP5YvJCxC52UfOcM0L4Zwqcal+1pMZ+EOVtgMsZ8DBysQziLsst45p+iSds28RpJp5zR+AXaGSBC7mPghy/GW0f736naLrZLYfVbJ76B9pvYyn/0/q7gyL55iuxQerkVrs3TdmOEAjSVIjMMDJ2S52FLyxhAtGBR2SJPUTa3Re4lpqsBrMMLwQAuPwz+Pfx4U2LsihQtwNugL926lM8n+UUB9YI8xFYpc8WjLygpSq5AATk3zbaxeNzsbK5hfD8yBnnkBKgPgxajhWEgCYAbLswbkZprIq2gMI+wCD97io6myA+DG8WM1yTgkSkWdhhBIaS65pbyqtKo7B+mSjKM2ohA4K3VYVshXhERI5oFlzkRu/yN1XGFEy+gQtooEUDdemwSUS/9ZllsuZdGmc+murP+plDD6ZLTY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2848.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(396003)(376002)(346002)(54906003)(316002)(9686003)(8936002)(55016002)(33656002)(53546011)(966005)(186003)(6506007)(8676002)(52536014)(86362001)(5660300002)(71200400001)(76116006)(83380400001)(66556008)(66476007)(2906002)(66446008)(64756008)(66946007)(7696005)(110136005)(478600001)(4326008)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FoiMNvWYkoCrZpcNYjDdFr54wXGca3ANlwX0uPyMEOhKSB3Y76/OMOTaTn/6?=
+ =?us-ascii?Q?viEBUee7/OhWG29Talw6/Uru/lsSPLYnMLe+ZXnvp/r+ygDxkZyC+rh4eYaw?=
+ =?us-ascii?Q?CvYCStY2eNIBgqbdrjf8d+8MkIujnWw9rJil8gOTDE9Gsdpr3Q1k7u68ye0l?=
+ =?us-ascii?Q?WipBbAhHJ5ei4oBT3miPYTY79d5U2ZviCY232FBD6D8xQk5hl4/bcrx1qeAo?=
+ =?us-ascii?Q?tU42BCDsL07lJXOxI7VxiODrEUbnB2U+dXeMXJJZPeb1/c+bs3PRAMO0HmaZ?=
+ =?us-ascii?Q?GuCbossK3YtPCyiCS7Psx03nfc6i/iJcAX1qd3q5pL+I7nS7g4yC7ms+uo7A?=
+ =?us-ascii?Q?kSVw26lyvPG+V7wHUhblgVmNkugqEtr6neJZ0V/+KwNNg/+pURvye7D60mt0?=
+ =?us-ascii?Q?fZ0UQ2Mp13PrnKnw+KqYH93gTtSB2ExUtCqkYBHU/I92uhRl45UV/O/JVBIe?=
+ =?us-ascii?Q?Peq2U9/HlsPmVm3yTxUuTOZkwz+D/p7vI7M9aQFLjfVR3J7pEyZXhPCJajR9?=
+ =?us-ascii?Q?XrDES/7Fi/A5BAZ8AgpJjBTKCQoOTVu9Bne0cRoC5sUPSk0lbgtM2TJD5pMc?=
+ =?us-ascii?Q?keq1Em3m6zGPBr41gMZN9Q4ecGGMxj8E7Z1LL3+c5UHftD6fFeIhzv1lZ4R8?=
+ =?us-ascii?Q?OHhHWsZyc97EoMHcoXrGDngD+bUO2b78N6h3+wNYi3I26OdpgEULRwWh7Um8?=
+ =?us-ascii?Q?k6DpQP46viufNrkpzWjTyUzOerWGVwRBbfi5kwAosWNrirHZSgnZyt9DqZoa?=
+ =?us-ascii?Q?zCs26mPUcBeVgRsmNd8scCJn7c/PNJ1HlH9IsMqVgD4xqnMyY12FZL5PGAWS?=
+ =?us-ascii?Q?ETjPjxKzFDOL4wpg6dA9EM/EFV3oPoJzVgb3aZZG2Q7hz2tJq+qxyJwpyfxy?=
+ =?us-ascii?Q?+LIDMYGDVsZVhNoglTGN0+u7MraidJ5GpR/NEw+EdyOtXQaSWRWPpk492l72?=
+ =?us-ascii?Q?RwW8C4zGQtGg/64vYwW4ZfXSWaZX5zeZ6M5N28pIXcFo4pSjukgD64srhrHu?=
+ =?us-ascii?Q?uNdGU24T0jIWl4EqicGI8SlMWCsHD2yoHj29htwhg6/CPt999/VPieqBcEQT?=
+ =?us-ascii?Q?rDlZ5RQkcSPbBhOCu/eXY9+8gSJjNa3I0GRsb9L2/nOIdeuhdL84E1YOEnO5?=
+ =?us-ascii?Q?pGsglmTV74Tyg9zkNAfLRSiggI0lOPh5kQ8IebYbvpWFgKDXE6Dy00GZp+QZ?=
+ =?us-ascii?Q?N3x+9NmVLQEX0136CChmX1ChQddSnDMuuJegLDXG5eSvqyMXtHyMWSzfBgvy?=
+ =?us-ascii?Q?ekK6OZufe1EqspJNW5y1g6yPBPLjZPovLDhfBMlUy4snm4cUadZtf4jZXfx/?=
+ =?us-ascii?Q?7GY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302081705.1990283-2-vipinsh@google.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2848.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c8b974a-1d37-442b-86a0-08d8de5af9f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2021 15:42:39.4000
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Cr6lxm2uY/crCLI+61yqRYYu6DY3ytf/pWActAsTL0fdmM5bjlm7PDjpHhQpvFtEJ6cqfd146r2oQuE7JNfLgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+-----Original Message-----
+From: Sergei Trofimovich [mailto:slyich@gmail.com]=20
+Sent: Tuesday, March 2, 2021 6:23 PM
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>; Don Brace - C=
+33706 <Don.Brace@microchip.com>
+Cc: linux-ia64@vger.kernel.org; linux-kernel@vger.kernel.org; Joe Szczypek =
+<jszczype@redhat.com>; Scott Benesh - C33703 <Scott.Benesh@microchip.com>; =
+Scott Teel - C33730 <Scott.Teel@microchip.com>; Tomas Henzl <thenzl@redhat.=
+com>; Martin K. Petersen <martin.petersen@oracle.com>
+Subject: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev cmds=
+ outstanding for retried cmds" breaks hpsa P600
 
-On Tue, Mar 02, 2021 at 12:17:04AM -0800, Vipin Sharma wrote:
-> +/**
-> + * struct misc_res: Per cgroup per misc type resource
-> + * @max: Maximum count of the resource.
-> + * @usage: Current usage of the resource.
-> + */
-> +struct misc_res {
-> +	unsigned int max;
-> +	atomic_t usage;
-> +};
+EXTERNAL EMAIL: Do not click links or open attachments unless you know the =
+content is safe
 
-Can we do 64bits so that something which counts memory can use this too?
+On Tue, 2 Mar 2021 23:31:32 +0100
+John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
 
-> +/*
-> + * Miscellaneous resources capacity for the entire machine. 0 capacity means
-> + * resource is not initialized or not present in the host.
-> + *
-> + * root_cg.max and capacity are independent of each other. root_cg.max can be
-> + * more than the actual capacity. We are using Limits resource distribution
-> + * model of cgroup for miscellaneous controller. However, root_cg.current for a
-> + * resource will never exceeds the resource capacity.
-                                ^
-                                typo
+> Hi Sergei!
+>
+> On 3/2/21 11:26 PM, Sergei Trofimovich wrote:
+> > Gave v5.12-rc1 a try today and got a similar boot failure around=20
+> > hpsa queue initialization, but my failure is later:
+> >     https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
+> > Maybe I get different error because I flipped on most debugging=20
+> > kernel options :)
+> >
+> > Looks like 'ERROR: Invalid distance value range' while being very=20
+> > scary are harmless. It's just a new spammy way for kernel to report=20
+> > lack of NUMA config on the machine (no SRAT and SLIT ACPI tables).
+> >
+> > At least I get hpsa detected on PCI bus. But I guess it's discovered=20
+> > configuration is very wrong as I get unaligned accesses:
+> >     [   19.811570] kernel unaligned access to 0xe000000105dd8295, ip=3D=
+0xa000000100b874d1
+> >
+> > Bisecting now.
+>
+> Sounds good. I guess we should get Jens' fix for the signal regression=20
+> merged as well as your two fixes for strace.
 
-> +int misc_cg_set_capacity(enum misc_res_type type, unsigned int capacity)
-> +{
-> +	if (!valid_type(type))
-> +		return -EINVAL;
-> +
-> +	for (;;) {
-> +		int usage;
-> +		unsigned int old;
-> +
-> +		/*
-> +		 * Update the capacity while making sure that it's not below
-> +		 * the concurrently-changing usage value.
-> +		 *
-> +		 * The xchg implies two full memory barriers before and after,
-> +		 * so the read-swap-read is ordered and ensures coherency with
-> +		 * misc_cg_try_charge(): that function modifies the usage
-> +		 * before checking the capacity, so if it sees the old
-> +		 * capacity, we see the modified usage and retry.
-> +		 */
-> +		usage = atomic_read(&root_cg.res[type].usage);
-> +
-> +		if (usage > capacity)
-> +			return -EBUSY;
+"bisected" (cheated halfway through) and verified that reverting
+f749d8b7a9896bc6e5ffe104cc64345037e0b152 makes rx3600 boot again.
 
-I'd rather go with allowing bringing down capacity below usage so that the
-users can set it to a lower value to drain existing usages while denying new
-ones. It's not like it's difficult to check the current total usage from the
-caller side, so I'm not sure it's very useful to shift the condition check
-here.
+CCing authors who might be able to help us here.
 
-> +int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
-> +		       unsigned int amount)
-> +{
-...
-> +	for (i = cg; i; i = parent_misc(i)) {
-> +		res = &i->res[type];
-> +
-> +		/*
-> +		 * The atomic_long_add_return() implies a full memory barrier
-> +		 * between incrementing the count and reading the capacity.
-> +		 * When racing with misc_cg_set_capacity(), we either see the
-> +		 * new capacity or the setter sees the counter has changed and
-> +		 * retries.
-> +		 */
-> +		new_usage = atomic_add_return(amount, &res->usage);
-> +		if (new_usage > res->max ||
-> +		    new_usage > misc_res_capacity[type]) {
-> +			pr_info("cgroup: charge rejected by misc controller for %s resource in ",
-> +				misc_res_name[type]);
-> +			pr_cont_cgroup_path(i->css.cgroup);
-> +			pr_cont("\n");
+commit f749d8b7a9896bc6e5ffe104cc64345037e0b152
+Author: Don Brace <don.brace@microchip.com>
+Date:   Mon Feb 15 16:26:57 2021 -0600
 
-Should have commented on this in the priv thread but don't print something
-on every rejection. This often becomes a nuisance and can make an easy DoS
-vector at worst. If you wanna do it, print it once per cgroup or sth like
-that.
+    scsi: hpsa: Correct dev cmds outstanding for retried cmds
 
-Otherwise, looks good to me.
+    Prevent incrementing device->commands_outstanding for ioaccel command
+    retries that are driver initiated.  If the command goes through the ret=
+ry
+    path, the device->commands_outstanding counter has already accounted fo=
+r
+    the number of commands outstanding to the device.  Only commands going
+    through function hpsa_cmd_resolve_events decrement this counter.
 
-Thanks.
+     - ioaccel commands go to either HBA disks or to logical volumes compri=
+sed
+       of SSDs.
 
--- 
-tejun
+    The extra increment is causing device resets to hang.
+
+     - Resets wait for all device outstanding commands to complete before
+       returning.
+
+    Replace unused field abort_pending with retry_pending. This is a
+    maintenance driver so these changes have the least impact/risk.
+
+    Link: https://lore.kernel.org/r/161342801747.29388.13045495968308188518=
+.stgit@brunhilda
+    Tested-by: Joe Szczypek <jszczype@redhat.com>
+    Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
+    Reviewed-by: Scott Teel <scott.teel@microchip.com>
+    Reviewed-by: Tomas Henzl <thenzl@redhat.com>
+    Signed-off-by: Don Brace <don.brace@microchip.com>
+    Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+Don, do you happen to know why this patch caused some controller init failu=
+re for device
+    14:01.0 RAID bus controller: Hewlett-Packard Company Smart Array P600 ?
+
+Boot failure: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
+Boot success: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1-g=
+ood
+
+The difference between the two boots is
+f749d8b7a9896bc6e5ffe104cc64345037e0b152 reverted on top of 5.12-rc1 in -go=
+od case.
+
+Looks like hpsa controller fails to initialize in bad case (could be a race=
+?).
+
+--
+
+  Sergei
+
+Don:
+I see aligned access. Let me run pahole to see if anything jumps out.
+What controller are you using?
