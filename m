@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686A232C22F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C7032C233
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387868AbhCCTed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:34:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43458 "EHLO mail.kernel.org"
+        id S1387884AbhCCTeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:34:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241393AbhCCTUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243806AbhCCTUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 14:20:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABDCA64EF3;
-        Wed,  3 Mar 2021 19:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614799177;
-        bh=foliZiz3rI2vyKLIHWNgT7LIMdi0MA4Hbv+MqoW7wR0=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=petoCf703nrmUXLuxW+FbHQpB4MLYYSf85UQvamRzAs5gkulHW/6iIeiGZ+pAdnJk
-         +QjhfFawL7p9U1FL+Z3lPZ46Jx7BzEZeWQD3Uwcogl0zGmlEiukicpwQBjsNXTwJMZ
-         lsuP1P7EcG7/ddHpwmZoRfiinFyXnOypinWjomf5d3PfLMzL63xW6HSHySsfz2KQpp
-         q/hMpUFn+TtID2YeAM8b3F7GKhPqr3M19V0FKAX30QPlMdzkdwK3jw1lL0HazT6z+o
-         YZjYXebeSb1dhB4l4RGQGCIF15QlayyAQ3gAvfjEXdeSAyS3EFY2p3Mbj6T855mHXK
-         CYzFQQ2V4xwIg==
-Date:   Wed, 3 Mar 2021 20:19:33 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iwlwifi: don't call netif_napi_add() with rxq->lock
- held (was Re: Lockdep warning in iwl_pcie_rx_handle())
-In-Reply-To: <87y2f46qai.fsf@codeaurora.org>
-Message-ID: <nycvar.YFH.7.76.2103032018080.12405@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm> <20210303155941.25521C43463@smtp.codeaurora.org> <nycvar.YFH.7.76.2103031901140.12405@cbobk.fhfr.pm> <87y2f46qai.fsf@codeaurora.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5CEC64EDF;
+        Wed,  3 Mar 2021 19:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614799201;
+        bh=C7U8ej2WJqieYKc0vbEaH8G40r7cuNpoJwxGOEd0Cvg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0JktOmwdpowrN4EsCbrh4rgLsiudmCqaa9k+BXGFFRkq9MkoGtzv2a0mk7r3uSoaw
+         qtuCwZ6CnFba0JYYboN8o4xSd8E4u78oquTCknYRIZvVefkxCYEfOA5AjwfwVxtlzd
+         mWjUSBt29h6OzsjFe/364VC9ymZ6LUl7h6/flaD0=
+Date:   Wed, 3 Mar 2021 20:19:58 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/44] MAINTAINERS: orphan mxser
+Message-ID: <YD/hXtUHE9WKdXcQ@kroah.com>
+References: <20210302062214.29627-1-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302062214.29627-1-jslaby@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021, Kalle Valo wrote:
-
-> > ... i believe you want to drop the "(was ...") part from the patch 
-> > subject.
+On Tue, Mar 02, 2021 at 07:21:31AM +0100, Jiri Slaby wrote:
+> I cannot maintain this driver for years due to missing HW. Let's orphan
+> the entry in MAINTAINERS. And likely drop the driver later as these
+> devices are likely gone from this world. Mxser provides different
+> (out-of-tree) drivers for their current devices.
 > 
-> Too late now, it's already applied and pull request sent. Why was it
-> there in the first place?
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> ---
+>  MAINTAINERS | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-Yeah, it was, but I don't think it's a big issue :) So let it be.
+Thanks for the series, and dropping the abandonded drivers.  All now
+queued up except for the 2 usb-serial driver cleanups.
 
-BTW, how about the other fix I sent? It's also fixing a real functional 
-issue, so it IMHO is a -rc material
+thanks,
 
-	https://lore.kernel.org/linux-wireless/nycvar.YFH.7.76.2103021125430.12405@cbobk.fhfr.pm/
-
-Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
-
+greg k-h
