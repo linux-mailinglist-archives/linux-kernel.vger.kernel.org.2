@@ -2,144 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D542432C130
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D1732C12E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838307AbhCCTAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:00:09 -0500
-Received: from mail-mw2nam10on2124.outbound.protection.outlook.com ([40.107.94.124]:11623
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1386532AbhCCS3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:29:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cSdGdtlQjR6JEi7ypIFN6k1AvrYT6P+JMXxXr3lGFlSU946xiMOVmdXM72a3X3NEJYgyfeut//CodKN1YgUoBd1Dvoqug3Ih3PmSys8oBadhlOahXBjycd/wYQ5gZzqOsHsNobAphngxw4dlWP+PlFVQGWS/VsKus7KoU7Ml0rfD3C5j7FYtOlKnrBd5eqltL3ZWBOk/Qck8i9ruj2CuThLIMUNzGq1enG4s6pIZadqkPwYwOZGwvPIqqKiA5ZNFayspExhAAQX3d2ZFouiP+tMkZbNgMeqUlMxHSpc1AnSP0wC0xZbO9myeqGP0eAD+emD36dEWfb16MCiSmXSsLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PCaTJYv1PGUgqsmnq3TTdSNdQwwQAp00eGMpIvWuD/4=;
- b=DYAc6e0mhebZmu7rWFQEyayB86tL8yxgEnFN9ZLAbYSe4yXBWXtEyf7j/qOYF27qssVN4KyynFoWiPfm5IizCuwjGtn+TN6GJ/UXCq52jNRJ07XhNHWnEYedKJRVuhcx/TbLMoDdmZl5xkzit/qbVQN2Nqhk8eQiGBCXp2/kD3yutaPVYZu4lIqXuFXrK+Tht4NdtZuEm/7CS8dQeRFYyA5431XN2pCZQm24iIXOhlMnd9mjjTtMir4E9kzsRnr5hUY19yiczES7b9QHhniO7IVK8qpSCiEV8NZSuxxu63SAN+PqqhW49UhWf560I6CsNsC1toNkPCL1I5j24cPBbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PCaTJYv1PGUgqsmnq3TTdSNdQwwQAp00eGMpIvWuD/4=;
- b=FBHnbiFbY2Z84ZS7wmiNv4kzGdFK9n6lAx7oDx5Vdxwi8OyZUMHPXTTQUPEACh2Cb+e5sr+jrvCv5UPBS0EvIYzGhJTTy9u642ZMuRrWB9tZB2+DWMM+pUMSzSXxA942A+s/V9BQwBBs2G3nUReOlFAArZLfufB04t6OvL0xJBI=
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- (2603:10b6:803:51::33) by SN6PR2101MB1664.namprd21.prod.outlook.com
- (2603:10b6:805:62::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.4; Wed, 3 Mar
- 2021 18:28:16 +0000
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::c01:cceb:3ece:dd61]) by SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::c01:cceb:3ece:dd61%8]) with mapi id 15.20.3912.011; Wed, 3 Mar 2021
- 18:28:16 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>
-CC:     "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: RE: [PATCH v8 1/6] arm64: hyperv: Add Hyper-V hypercall and register
- access utilities
-Thread-Topic: [PATCH v8 1/6] arm64: hyperv: Add Hyper-V hypercall and register
- access utilities
-Thread-Index: AQHXDwVm7IanFUbz6UeLdWLFekPIfapxZzMggAEuN+A=
-Date:   Wed, 3 Mar 2021 18:28:16 +0000
-Message-ID: <SN4PR2101MB0880BC201B64BF4274539951C0989@SN4PR2101MB0880.namprd21.prod.outlook.com>
-References: <1614649360-5087-1-git-send-email-mikelley@microsoft.com>
- <1614649360-5087-2-git-send-email-mikelley@microsoft.com>
- <SN4PR2101MB0880C47188DAC6446BF5E156C0989@SN4PR2101MB0880.namprd21.prod.outlook.com>
-In-Reply-To: <SN4PR2101MB0880C47188DAC6446BF5E156C0989@SN4PR2101MB0880.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:602:9400:570:3132:9d16:d3c9:b7bf]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 89f19a60-e025-4c73-1d2b-08d8de721cbb
-x-ms-traffictypediagnostic: SN6PR2101MB1664:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <SN6PR2101MB1664A8FCB4087A3A79B2BCA7C0989@SN6PR2101MB1664.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: y2cFjlAptUahYzVR93P+YgX5ikbhIK4nK10hWWNrb/k8XuDfg7mxeuOJMa2r3KNG6WnKVy50aku4IOKieGZF8cgmfbe9wRGAWzg8N28wpn44jbruLbfSUhomyqCeWBAXaoTc0xeYg4H2ekDOrYLlX/cpEeFnvOKE/4xzruYtWEvLSniB4BE52RQTJKceIrOadZsoGud73Gi4SBfexj5r3qqUrCwOFkw9vVd9CU2WJQDbwIwIdIBQuAR1pyvY6uG10Yd6vD1mGDpBDoyjS/N1gmVPQF65u4mW9hsrIqwLD8n4CemrQ+8Be4GuQ3EYnu46Xp0DQNvQoWQ4jItef6gv46h5aEOnEYh5vl3AxHqY9eVDC1Qszgkcs7kZbQSByRTIjS+Lg9XOzODtiO6H0OwbSPS1SmphWWco57PD2QbcIxYhNoTVi3mhjM1aj3ky4i3NIjwTndH2VJ/17C3OddkmjNZtskrJKMNeE04+d3V67N7VFTS9fVp2jReIB6UA9kHJ2O6OhtxTwm9bqnTZsBK6lg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR2101MB0880.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(366004)(39860400002)(396003)(8676002)(86362001)(71200400001)(76116006)(7416002)(2940100002)(316002)(33656002)(66476007)(7696005)(9686003)(5660300002)(4326008)(66446008)(64756008)(110136005)(107886003)(55016002)(186003)(8990500004)(82950400001)(10290500003)(52536014)(4744005)(6636002)(82960400001)(478600001)(66556008)(6506007)(54906003)(66946007)(2906002)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uQCGJNRpXkkIWGeEcnhDYyuVD5TrsWO1ZXwGn+8d3CNIJ1f4CPj/e781qvLp?=
- =?us-ascii?Q?I6B4xsm7rXZpiIYQSe31jNmWxShHfFnIhXZVDYWrpsl1wi+mJNfY89UsurEE?=
- =?us-ascii?Q?cMR5yLiAg0ysWQoaX88bDGTLdJiyymvnM+QgSkaWWreJ+SDJ215vSnYz1wqo?=
- =?us-ascii?Q?IZLLWxbjQtTNVczKlG0NVuQy5PttpH8vv/kWBtRayp33jdQCwwaPj7IpdxHI?=
- =?us-ascii?Q?1+dI3ShzbwpM6GltWqIioktThdhlWQ33pyv9eGziRU1b9M3aO6E4EEaXMSl9?=
- =?us-ascii?Q?tVefep1WQ7hNg3yWdWHN/Yl5GtZ6xrW4CVjNUXHd9siI9MNd4qDLefsJ6mEF?=
- =?us-ascii?Q?z46seKeSa+9Y1I4AdtlNUSRvb1AJeqdy0DnmpaoSNihJ426Xv4L+ZUHVd/vp?=
- =?us-ascii?Q?jZ2nP5DKD2t4ByDkKyjRLPAMO+qvcVg3s47YyF/wlA5q8RwFhRDPufL8vkxf?=
- =?us-ascii?Q?2mfRLkRoCFFsEjxFH0LBP4UDk1p5f/97WuNSBdYE00OWAjrmpK+AAlYhnRDU?=
- =?us-ascii?Q?fupQ2UnUeNlb8/WoABfw1AhZm0te/VJt0/b2GS0p8WuMy6ptmgZPT8nyUqic?=
- =?us-ascii?Q?8u3LfAFpBqmoblkfGKJyzvPqbLt/9GvsnBSXlfpcfd1jieVoEa6MYcHKe4r0?=
- =?us-ascii?Q?Gjda18oI0U+j9Bv4U+S6my1EuUnYSQG3CZQV7RqH3WgL1O8ajWHDE4Qw8Vvq?=
- =?us-ascii?Q?vpuEMPKraAEM1lyg8CIGlZtDAYlf2pJwDS11oNLuLipUYn5rx4oN/LThAOIz?=
- =?us-ascii?Q?a/WC/3/ihGSzmUi+CADBFgTyy0OSXte3hvK5X3/+J3eojRl06eSSYrEycGCX?=
- =?us-ascii?Q?wW2/RRG2gdpHTeZS+ghz0WjEBEx0bttAnw9A4O6hmDx//YKAgHnWn9XyvUBu?=
- =?us-ascii?Q?pdxRCu6LsOJmT5l55fpwqSPO0ZJBSprc8RXlAkQOLr1fa7tR6PQHwumsdFoq?=
- =?us-ascii?Q?Tt9jgfUlZww4T8EEabXW/w2zsI7wHEUda/ppOAiwF65OruHMmRDvEgS7edyh?=
- =?us-ascii?Q?xkKAAJE1200sTFsGiDVZuefCwJTNDfWAK4tA3kQ28XIW+QjNYeQaijDcVoA+?=
- =?us-ascii?Q?JbYyqtjoGqMhuxi1MGvzZuhxBo5ftxsLw2OklR0092ILnGyJZJHSBvPViZCM?=
- =?us-ascii?Q?Ry+P1bPEtZPCSDOSOxQkdiuGMhtdVA4j4oUApnC7rzO+vFtwz5TAIVmG7PLe?=
- =?us-ascii?Q?9g17Qp8grWmSJmXWbPSdf3fsN/fkxM4SQBVxNJrfAlss2LNYLBAbys+YZTcC?=
- =?us-ascii?Q?+U6QKLYXfsg3i7dhjGzkMdpJJyWO3bDsQMRCzu/IRjfP+o/wX59sQysorrlm?=
- =?us-ascii?Q?mQEDSXdvO2zUFKrLGhQxvftmmBgY5kCo27WJHkCFJ+GVdJaghW6TiIUcoBd6?=
- =?us-ascii?Q?oXpqrGl4rMCvwGpCMAArzOMpCsV9?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1838293AbhCCTAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:00:04 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60722 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350093AbhCCS2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:28:36 -0500
+IronPort-SDR: eRw2tVSf+tmaBTb1JxaGZeShx5IIw7yaZHCfLXiCeFQx/0dxmA4ug18hvtmLdjUkWGbl+3MPrE
+ Y0+7uwpDLcgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="184838833"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="184838833"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 10:26:33 -0800
+IronPort-SDR: flZ7ydHew/uLhmA0gDtrMwbn8pEMwFG07GAmfz4SHyILz2W2OCSJgnBR1uJ6kAa/Ww7OBC5TmT
+ S3ny2ZIn3+Ww==
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="428367968"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 10:26:33 -0800
+Date:   Wed, 3 Mar 2021 10:28:48 -0800
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Vivek Gautam <vivek.gautam@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, joro@8bytes.org,
+        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
+        jean-philippe@linaro.org, eric.auger@redhat.com,
+        alex.williamson@redhat.com, kevin.tian@intel.com,
+        yi.l.liu@intel.com, lorenzo.pieralisi@arm.com,
+        shameerali.kolothum.thodi@huawei.com, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH RFC v1 12/15] iommu/virtio: Add support for INVALIDATE
+ request
+Message-ID: <20210303102848.5d879f0e@jacob-builder>
+In-Reply-To: <20210115121342.15093-13-vivek.gautam@arm.com>
+References: <20210115121342.15093-1-vivek.gautam@arm.com>
+        <20210115121342.15093-13-vivek.gautam@arm.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR2101MB0880.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89f19a60-e025-4c73-1d2b-08d8de721cbb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2021 18:28:16.1748
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wNitiuIIw0D0gu7dz9HbOQp52A46aaQiqrPzo17fefdK+bJU869z/hSOd2cYJv3CJc6jPN9Q/DqGKHzrNr05zgkML9Dc4DMsR4BNG3PpyEM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB1664
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +
-> > +	/*
-> > +	 * Allocate a power of 2 size so alignment to that size is
-> > +	 * guaranteed, since the hypercall input and output areas
-> > +	 * must not cross a page boundary.
-> > +	 */
-> > +	input =3D kzalloc(roundup_pow_of_two(sizeof(input->header) +
-> > +				sizeof(input->element[0])), GFP_ATOMIC);
-> > +	output =3D kmalloc(roundup_pow_of_two(sizeof(*output)), GFP_ATOMIC);
-> > +
-> Check for null from these malloc routines? Here and in other places.
+Hi Vivek,
 
-Between, is there a plan to setup a percpu input/output page for hypercall
-input/output on ARM (like we do for x64)? I didn't check the specific size =
-requirement
-for this particular call, but, that generally will remove the need for thes=
-e
-allocations.
+On Fri, 15 Jan 2021 17:43:39 +0530, Vivek Gautam <vivek.gautam@arm.com>
+wrote:
+
+> From: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
+> 
+> Add support for tlb invalidation ops that can send invalidation
+> requests to back-end virtio-iommu when stage-1 page tables are
+> supported.
+> 
+Just curious if it possible to reuse the iommu uapi for invalidation and others.
+When we started out designing the iommu uapi, the intention was to support
+both emulated and virtio iommu.
+
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
+> [Vivek: Refactoring the iommu_flush_ops, and adding only one pasid sync
+>         op that's needed with current iommu-pasid-table infrastructure.
+> 	Also updating uapi defines as required by latest changes]
+> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Liu Yi L <yi.l.liu@intel.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> ---
+>  drivers/iommu/virtio-iommu.c | 95 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index ae5dfd3f8269..004ea94e3731 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/freezer.h>
+>  #include <linux/interval_tree.h>
+>  #include <linux/iommu.h>
+> +#include <linux/io-pgtable.h>
+>  #include <linux/module.h>
+>  #include <linux/of_iommu.h>
+>  #include <linux/of_platform.h>
+> @@ -63,6 +64,8 @@ struct viommu_mapping {
+>  };
+>  
+>  struct viommu_mm {
+> +	int				pasid;
+> +	u64				archid;
+>  	struct io_pgtable_ops		*ops;
+>  	struct viommu_domain		*domain;
+>  };
+> @@ -692,6 +695,98 @@ static void viommu_event_handler(struct virtqueue
+> *vq) virtqueue_kick(vq);
+>  }
+>  
+> +/* PASID and pgtable APIs */
+> +
+> +static void __viommu_flush_pasid_tlb_all(struct viommu_domain *vdomain,
+> +					 int pasid, u64 arch_id, int
+> type) +{
+> +	struct virtio_iommu_req_invalidate req = {
+> +		.head.type	= VIRTIO_IOMMU_T_INVALIDATE,
+> +		.inv_gran	=
+> cpu_to_le32(VIRTIO_IOMMU_INVAL_G_PASID),
+> +		.flags		=
+> cpu_to_le32(VIRTIO_IOMMU_INVAL_F_PASID),
+> +		.inv_type	= cpu_to_le32(type),
+> +
+> +		.domain		= cpu_to_le32(vdomain->id),
+> +		.pasid		= cpu_to_le32(pasid),
+> +		.archid		= cpu_to_le64(arch_id),
+> +	};
+> +
+> +	if (viommu_send_req_sync(vdomain->viommu, &req, sizeof(req)))
+> +		pr_debug("could not send invalidate request\n");
+> +}
+> +
+> +static void viommu_flush_tlb_add(struct iommu_iotlb_gather *gather,
+> +				 unsigned long iova, size_t granule,
+> +				 void *cookie)
+> +{
+> +	struct viommu_mm *viommu_mm = cookie;
+> +	struct viommu_domain *vdomain = viommu_mm->domain;
+> +	struct iommu_domain *domain = &vdomain->domain;
+> +
+> +	iommu_iotlb_gather_add_page(domain, gather, iova, granule);
+> +}
+> +
+> +static void viommu_flush_tlb_walk(unsigned long iova, size_t size,
+> +				  size_t granule, void *cookie)
+> +{
+> +	struct viommu_mm *viommu_mm = cookie;
+> +	struct viommu_domain *vdomain = viommu_mm->domain;
+> +	struct virtio_iommu_req_invalidate req = {
+> +		.head.type	= VIRTIO_IOMMU_T_INVALIDATE,
+> +		.inv_gran	= cpu_to_le32(VIRTIO_IOMMU_INVAL_G_VA),
+> +		.inv_type	= cpu_to_le32(VIRTIO_IOMMU_INV_T_IOTLB),
+> +		.flags		=
+> cpu_to_le32(VIRTIO_IOMMU_INVAL_F_ARCHID), +
+> +		.domain		= cpu_to_le32(vdomain->id),
+> +		.pasid		= cpu_to_le32(viommu_mm->pasid),
+> +		.archid		= cpu_to_le64(viommu_mm->archid),
+> +		.virt_start	= cpu_to_le64(iova),
+> +		.nr_pages	= cpu_to_le64(size / granule),
+> +		.granule	= ilog2(granule),
+> +	};
+> +
+> +	if (viommu_add_req(vdomain->viommu, &req, sizeof(req)))
+> +		pr_debug("could not add invalidate request\n");
+> +}
+> +
+> +static void viommu_flush_tlb_all(void *cookie)
+> +{
+> +	struct viommu_mm *viommu_mm = cookie;
+> +
+> +	if (!viommu_mm->archid)
+> +		return;
+> +
+> +	__viommu_flush_pasid_tlb_all(viommu_mm->domain, viommu_mm->pasid,
+> +				     viommu_mm->archid,
+> +				     VIRTIO_IOMMU_INV_T_IOTLB);
+> +}
+> +
+> +static struct iommu_flush_ops viommu_flush_ops = {
+> +	.tlb_flush_all		= viommu_flush_tlb_all,
+> +	.tlb_flush_walk		= viommu_flush_tlb_walk,
+> +	.tlb_add_page		= viommu_flush_tlb_add,
+> +};
+> +
+> +static void viommu_flush_pasid(void *cookie, int pasid, bool leaf)
+> +{
+> +	struct viommu_domain *vdomain = cookie;
+> +	struct virtio_iommu_req_invalidate req = {
+> +		.head.type	= VIRTIO_IOMMU_T_INVALIDATE,
+> +		.inv_gran	=
+> cpu_to_le32(VIRTIO_IOMMU_INVAL_G_PASID),
+> +		.inv_type	= cpu_to_le32(VIRTIO_IOMMU_INV_T_PASID),
+> +		.flags		=
+> cpu_to_le32(VIRTIO_IOMMU_INVAL_F_PASID), +
+> +		.domain		= cpu_to_le32(vdomain->id),
+> +		.pasid		= cpu_to_le32(pasid),
+> +	};
+> +
+> +	if (leaf)
+> +		req.flags	|=
+> cpu_to_le32(VIRTIO_IOMMU_INVAL_F_LEAF); +
+> +	if (viommu_send_req_sync(vdomain->viommu, &req, sizeof(req)))
+> +		pr_debug("could not send invalidate request\n");
+> +}
+> +
+>  /* IOMMU API */
+>  
+>  static struct iommu_domain *viommu_domain_alloc(unsigned type)
+
+
+Thanks,
+
+Jacob
