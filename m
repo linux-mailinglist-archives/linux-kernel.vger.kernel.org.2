@@ -2,247 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DEB32BCB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A8A32BCCB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445961AbhCCOcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:32:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842986AbhCCKXZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:25 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E50C08ED29
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:06:49 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id p1so24659883edy.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:06:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=j6Z35wE+MtULjBnHD6+ImGDCWHNfojb4HqKmprrxy5Q=;
-        b=gHkn2s4WYKafodlkDzVVCJEUlKiWzt99WW62l6Zjg6YwXQIE6X88bDLh2KjyDKbeWX
-         8mEvwA8cJZiLTCRDGGFHvxMX7keDtjtAMwmueDVZV3aqHl306awX3wRVLSnoqb5v7rt0
-         XS4XL+Ihz2CicgRJ+qql73C38ZF7WeSXnsFCl+AQhZBf6buTU+LZwLDYaqUCj8PqgylV
-         6fsSGt/6EH6bhvgEZedJ00rnI8K4j/enPr1FEn57ZIpdKF8zUWSCfAl0QAAR3k9JxskO
-         AhHpZ545Qb+k33hmnQbaV5F/rgWJiFKCZ8ZBGV9Ai/80NxnYbO5QfE54eue0yL4ilpP7
-         8mIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j6Z35wE+MtULjBnHD6+ImGDCWHNfojb4HqKmprrxy5Q=;
-        b=tpbQZuE/6iuqMbtkqtq63PnSDVr+sIuRDRaaqYB1twoGvrdI1sXCAjTeKiV782vG8u
-         NJtduTfke0sG4RASaK0UBCxS9pSb1Ar/3i2pMnXDqbgbr3+o6jQCUEuVQfItvHSvPr6N
-         nzsXaJ8JVQv7Oxpav5z5CqvmBekaao194BXjwr4SXUCDcZUEm24r8DLTL6msajKvjox8
-         jhwHy5zljhsHbE0MJRf4aJ9OJsr8rnIQLpLUNRXi9HL4GyDmLuSyiE6drAfm7HMzuSf0
-         o1wHAaThYfWo5IJmYtpF7Wt+1SE9IWu03Mbdxis80mwFaRduruA5q8jjCEp4M2EwGAnH
-         R9hw==
-X-Gm-Message-State: AOAM5303HML5QXCCslhdUkcs3JQKKtnFJXE6WUvJhCOh4RxoR/7H+AM9
-        nnfph3ZLX2VvCU2rnq+XumEcK5rtfvehYZQsWB/sXw==
-X-Google-Smtp-Source: ABdhPJzFLDM6A6Jm5LfUDsEGiucIZUnp8kAfbfkJoUPepCOBrkYocWzW22ah04hphLEZNNPLgJA2dlYcd6dcEudFAUU=
-X-Received: by 2002:aa7:d416:: with SMTP id z22mr24277955edq.239.1614766007878;
- Wed, 03 Mar 2021 02:06:47 -0800 (PST)
+        id S1359509AbhCCOsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:48:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:44942 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1843017AbhCCKX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:23:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B47AED6E;
+        Wed,  3 Mar 2021 02:06:40 -0800 (PST)
+Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A3FD3F73B;
+        Wed,  3 Mar 2021 02:06:39 -0800 (PST)
+Date:   Wed, 3 Mar 2021 10:06:40 +0000
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH v2] sched/pelt: Fix task util_est update filtering
+Message-ID: <20210303100640.GA12437@e124901.cambridge.arm.com>
+References: <20210225165820.1377125-1-vincent.donnefort@arm.com>
+ <YDi0Ip11fpOubQqz@hirez.programming.kicks-ass.net>
+ <b1471e3a-e8c5-3ab4-5db4-0084612ade55@arm.com>
+ <YD0ik65KwwU5R4Rv@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210302192606.592235492@linuxfoundation.org>
-In-Reply-To: <20210302192606.592235492@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Mar 2021 15:36:36 +0530
-Message-ID: <CA+G9fYur3FxTmQGdsnPbFUUh1YMTGK2UMFVdML4TgfMfvi8vcg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/337] 5.4.102-rc5 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YD0ik65KwwU5R4Rv@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.102 release.
-> There are 337 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.102-rc5.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Mon, Mar 01, 2021 at 06:21:23PM +0100, Peter Zijlstra wrote:
+> On Mon, Mar 01, 2021 at 05:34:09PM +0100, Dietmar Eggemann wrote:
+> > On 26/02/2021 09:41, Peter Zijlstra wrote:
+> > > On Thu, Feb 25, 2021 at 04:58:20PM +0000, Vincent Donnefort wrote:
+> > >> +#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
+> > >> +
+> > >>  /*
+> > >> - * Check if a (signed) value is within a specified (unsigned) margin,
+> > >> + * Check if a (signed) value is within the (unsigned) util_est margin,
+> > >>   * based on the observation that:
+> > >>   *
+> > >>   *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
+> > >>   *
+> > >> - * NOTE: this only works when value + maring < INT_MAX.
+> > >> + * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
+> > >>   */
+> > >> -static inline bool within_margin(int value, int margin)
+> > >> +static inline bool util_est_within_margin(int value)
+> > >>  {
+> > >> -	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
+> > >> +	return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
+> > >> +		(2 * UTIL_EST_MARGIN - 1));
+> > >>  }
+> > > 
+> > >> -	if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
+> > >> +	if (util_est_within_margin(last_ewma_diff)) {
+> > > 
+> > > What was the purpose of this change? What was a generic helper is now
+> > > super specific.
+> > 
+> > I guess because it was only ever used in util_est for last_ewma_diff.
+> > 
+> > It's now used for last_ewma_diff and last_enqueued_diff, still only for
+> > util_est though and both times with the same margin
+> > (SCHED_CAPACITY_SCALE / 100)).
+> > 
+> > Vincent D. should be back on Wed from hols.
+> 
+> Fair enough; I've un-done it but kept the rest of the patch.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Indeed I was off for couple of days. Apologies for the delay and thanks for
+applying the patch.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.102-rc5
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 44433bdfc6fdb454620f64bf0148f3480a45afdd
-git describe: v5.4.101-338-g44433bdfc6fd
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.101-338-g44433bdfc6fd
-
-No regressions (compared to build v5.4.101)
-
-No fixes (compared to build v5.4.101)
-
-Ran 44094 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-ptrace
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* v4l2-compliance
-* fwts
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* ltp-cve-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* kselftest-kexec
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-open-posix-tests
-* perf
-* kvm-unit-tests
-* rcutorture
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Vincent
