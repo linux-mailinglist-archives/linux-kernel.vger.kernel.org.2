@@ -2,155 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F4532BD3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E36B32BC84
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384184AbhCCPgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:36:43 -0500
-Received: from verein.lst.de ([213.95.11.211]:36165 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356550AbhCCKrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:47:42 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9A87668BEB; Wed,  3 Mar 2021 10:28:08 +0100 (CET)
-Date:   Wed, 3 Mar 2021 10:28:08 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
-Subject: Re: [PATCH v2 02/10] fsdax: Factor helper: dax_fault_actor()
-Message-ID: <20210303092808.GC12784@lst.de>
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com> <20210226002030.653855-3-ruansy.fnst@fujitsu.com>
+        id S1359269AbhCCOFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1842919AbhCCKWd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:22:33 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8790CC0698E5
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:29:25 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id l8so23770618ybe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:29:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aiFQyvccotyAOCkOFmkIp2oEvU8YKFbNPpPL2ECS/lY=;
+        b=vg6Br5lDqRi+2sxN3awq9vrZpYxVUyJjIJhV+UvfLccaJ/bBWcDzxTAgjOryLW0jxp
+         ehUGhERTefh4PcNurwRtltDCZzjHo1ifIorAjRHv48e6v+1EowrqWHH+6y6A7nnaOQBQ
+         pLILC7teU8PhBRUvGPXm26JJxAF825tmPhtmVd3v707JxE0tBzDu/cAWbVfzkiFNaV7c
+         eWvFr6BAQKmCf6/B+4h8jOxX/uG3oMAeNNg6I4u5B2gtmL+S6PX7djefJODSTpgyYT1P
+         OSnOUHjb986CZmX0mbxlsXoLkbp+6uHgvIox2xuWOTuQCwrkF4zfPIxvhdN2hCnxY1+y
+         AMXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aiFQyvccotyAOCkOFmkIp2oEvU8YKFbNPpPL2ECS/lY=;
+        b=m81gF6o99nuU+cntkEOJa7BB11mVOx8uGMbEtRUGFNvuUyYe5YR5SVyuGKPzn4eNQa
+         fyIXQFNL4w5LSXkHLl3tC2QSDna9PDMISbq3D+edstFBH34rC9IBBlDr04rjmU8syoCm
+         0ZGYfgUl9qrQuHYgim4EyMFY9IeskKK9QnHnJfg0ou4pKyXqcOySBNnFc6aCK4c1x1Ls
+         VSD/E2RnSxqdAEUtruQeT/ze6tiX+I6qpQoYupLa/PaONaW1P5zLtI4JGMu013egX/QP
+         0xCd+t5G08vKkHbfl3Nr3yj6MHvJ3cxC48nl4eWGoAK9MhYU41NlbjfBiQHh9fs4C//f
+         C4mg==
+X-Gm-Message-State: AOAM532lkd+8kddQ4xC+SBzmoHpf3c/Qt1A1rZ1QD91HlMnmywIHfxtn
+        co1teoSCYokRlxUVhKS2XuxJ+XQWhbZzvAFcqEwXgg==
+X-Google-Smtp-Source: ABdhPJyVtLnD0blyjYEv+Vvw/Z0kvQGEo9oVRw5D6cmt8TOkMT9NcSWARXScuCfQIdQTGPzsfkNfDLLZ0uXqpN4FvBA=
+X-Received: by 2002:a25:dd43:: with SMTP id u64mr2806563ybg.96.1614763764660;
+ Wed, 03 Mar 2021 01:29:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226002030.653855-3-ruansy.fnst@fujitsu.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210302211133.2244281-1-saravanak@google.com>
+ <b2dd44c2720fb96093fc4feeb64f0f4e@walle.cc> <CAGETcx_xCpid3QW0gQJWLL6ZfT-VJJq-SYX4tG09GRQWucw=qg@mail.gmail.com>
+ <CAGETcx__oG2XrQ8RwZ57cVgV+Ukfni4qUQCe11kbL8E1U+4a_g@mail.gmail.com> <12f31a46e8dc3f0e53c1a7440a4ce087@walle.cc>
+In-Reply-To: <12f31a46e8dc3f0e53c1a7440a4ce087@walle.cc>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 3 Mar 2021 01:28:48 -0800
+Message-ID: <CAGETcx8hAX2iv3KakM+pXeBPu_RFsUFLBBZvwDVxG95mAY=woA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
+To:     Michael Walle <michael@walle.cc>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 08:20:22AM +0800, Shiyang Ruan wrote:
-> The core logic in the two dax page fault functions is similar. So, move
-> the logic into a common helper function. Also, to facilitate the
-> addition of new features, such as CoW, switch-case is no longer used to
-> handle different iomap types.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/dax.c | 211 ++++++++++++++++++++++++++++++-------------------------
->  1 file changed, 117 insertions(+), 94 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 7031e4302b13..9dea1572868e 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1289,6 +1289,93 @@ static int dax_fault_cow_page(struct vm_fault *vmf, struct iomap *iomap,
->  	return 0;
->  }
->  
-> +static vm_fault_t dax_fault_insert_pfn(struct vm_fault *vmf, pfn_t pfn,
-> +		bool pmd, bool write)
-> +{
-> +	vm_fault_t ret;
-> +
-> +	if (!pmd) {
-> +		struct vm_area_struct *vma = vmf->vma;
-> +		unsigned long address = vmf->address;
-> +
-> +		if (write)
-> +			ret = vmf_insert_mixed_mkwrite(vma, address, pfn);
-> +		else
-> +			ret = vmf_insert_mixed(vma, address, pfn);
-> +	} else
-> +		ret = vmf_insert_pfn_pmd(vmf, pfn, write);
+On Wed, Mar 3, 2021 at 12:59 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2021-03-02 23:47, schrieb Saravana Kannan:
+> > On Tue, Mar 2, 2021 at 2:42 PM Saravana Kannan <saravanak@google.com>
+> > wrote:
+> >>
+> >> On Tue, Mar 2, 2021 at 2:24 PM Michael Walle <michael@walle.cc> wrote:
+> >> >
+> >> > Am 2021-03-02 22:11, schrieb Saravana Kannan:
+> >> > > I think Patch 1 should fix [4] without [5]. Can you test the series
+> >> > > please?
+> >> >
+> >> > Mh, I'm on latest linux-next (next-20210302) and I've applied patch 3/3
+> >> > and
+> >> > reverted commit 7007b745a508 ("PCI: layerscape: Convert to
+> >> > builtin_platform_driver()"). I'd assumed that PCIe shouldn't be working,
+> >> > right? But it is. Did I miss something?
+> >>
+> >> You need to revert [5].
+> >
+> > My bad. You did revert it. Ah... I wonder if it was due to
+> > fw_devlink.strict that I added. To break PCI again, also set
+> > fw_devlink.strict=1 in the kernel command line.
+>
+> Indeed, adding fw_devlink.strict=1 will break PCI again. But if
+> I then apply 1/3 and 2/3 again, PCI is still broken. Just to be clear:
+> I'm keeping the fw_devlink.strict=1 parameter.
 
-What about simplifying this a little bit more, something like:
+Thanks for your testing! I assume you are also setting fw_devlink=on?
 
-	if (pmd)
-		return vmf_insert_pfn_pmd(vmf, pfn, write);
+Hmmm... ok. In the working case, does your PCI probe before IOMMU? If
+yes, then your results make sense.
 
-	if (write)
-		return vmf_insert_mixed_mkwrite(vmf->vma, vmf->address, pfn);
-	return vmf_insert_mixed(vmf->vma, vmf->address, pfn);
+If your PCI does probe after IOMMU and uses IOMMU, then I'm not sure
+what else could be changing the order of the device probing. In any
+case, glad that the default case works and we have a fix merged even
+for .strict=1.
 
-also given that this only has a single user, why not keep open coding
-it in the caller?
-
-> +#ifdef CONFIG_FS_DAX_PMD
-> +static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
-> +		struct iomap *iomap, void **entry);
-> +#else
-> +static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
-> +		struct iomap *iomap, void **entry)
-> +{
-> +	return VM_FAULT_FALLBACK;
-> +}
-> +#endif
-
-Can we try to avoid the forward declaration?  Also is there a reason
-dax_pmd_load_hole does not compile for the !CONFIG_FS_DAX_PMD case?
-If it compiles fine we can just rely on IS_ENABLED() based dead code
-elimination entirely.
-
-> +	/* if we are reading UNWRITTEN and HOLE, return a hole. */
-> +	if (!write &&
-> +	    (iomap->type == IOMAP_UNWRITTEN || iomap->type == IOMAP_HOLE)) {
-> +		if (!pmd)
-> +			return dax_load_hole(xas, mapping, &entry, vmf);
-> +		else
-> +			return dax_pmd_load_hole(xas, vmf, iomap, &entry);
-> +	}
-> +
-> +	if (iomap->type != IOMAP_MAPPED) {
-> +		WARN_ON_ONCE(1);
-> +		return VM_FAULT_SIGBUS;
-> +	}
-
-Nit: I'd use a switch statement here for a clarity:
-
-	switch (iomap->type) {
-	case IOMAP_MAPPED:
-		break;
-	case IOMAP_UNWRITTEN:
-	case IOMAP_HOLE:
-		if (!write) {
-			if (!pmd)
-				return dax_load_hole(xas, mapping, &entry, vmf);
-			return dax_pmd_load_hole(xas, vmf, iomap, &entry);
-		}
-		break;
-	default:
-		WARN_ON_ONCE(1);
-		return VM_FAULT_SIGBUS;
-	}
-
-
-> +	err = dax_iomap_pfn(iomap, pos, size, &pfn);
-> +	if (err)
-> +		goto error_fault;
-> +
-> +	entry = dax_insert_entry(xas, mapping, vmf, entry, pfn, 0,
-> +				 write && !sync);
-> +
-> +	if (sync)
-> +		return dax_fault_synchronous_pfnp(pfnp, pfn);
-> +
-> +	ret = dax_fault_insert_pfn(vmf, pfn, pmd, write);
-> +
-> +error_fault:
-> +	if (err)
-> +		ret = dax_fault_return(err);
-> +
-> +	return ret;
-
-It seems like the only place that sets err is the dax_iomap_pfn case
-above.  So I'd move the dax_fault_return there, which then allows a direct
-return for everyone else, including the open coded version of
-dax_fault_insert_pfn.
-
-I really like where this is going!
+-Saravana
