@@ -2,81 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D83632BEC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAAA32BECA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575777AbhCCRfz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 12:35:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237416AbhCCOSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:18:44 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5413DC061797
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:18:02 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHSK3-00014Z-9q; Wed, 03 Mar 2021 15:17:55 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHSK2-00075d-0s; Wed, 03 Mar 2021 15:17:54 +0100
-Message-ID: <e6f8537d2a1f34d0a424b68e056c0ae556c93efd.camel@pengutronix.de>
-Subject: Re: [PATCH v3 0/5] Reset driver for IMX8MQ VPU hardware block
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, ezequiel@collabora.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Date:   Wed, 03 Mar 2021 15:17:53 +0100
-In-Reply-To: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
-References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1575830AbhCCRgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:36:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:48782 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1379183AbhCCOUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:20:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99E90D6E;
+        Wed,  3 Mar 2021 06:19:15 -0800 (PST)
+Received: from [10.57.12.223] (unknown [10.57.12.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FD333F766;
+        Wed,  3 Mar 2021 06:19:13 -0800 (PST)
+Subject: Re: [PATCH 1/8] ARM: ARMv7-M: Fix register restore corrupt after svc
+ call
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com
+References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+ <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
+ <5284d390-c03a-4035-df5a-10d6cd60e47b@arm.com>
+ <CAL9mu0KUhctbBzmem1ZSgEwf5CebivHOSUr9Q7VTyzib8pW=Cw@mail.gmail.com>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+Message-ID: <5efe3d44-8045-e376-003e-3ccbff54fb23@arm.com>
+Date:   Wed, 3 Mar 2021 14:19:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAL9mu0KUhctbBzmem1ZSgEwf5CebivHOSUr9Q7VTyzib8pW=Cw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+On 3/3/21 1:35 PM, dillon min wrote:
+> Hi Vladimir,
+> 
+> Thanks for the review.
+> 
+> On Wed, Mar 3, 2021 at 5:52 PM Vladimir Murzin <vladimir.murzin@arm.com> wrote:
+>>
+>> On 3/3/21 8:05 AM, dillon.minfei@gmail.com wrote:
+>>> From: dillon min <dillon.minfei@gmail.com>
+>>>
+>>> For some case, kernel not boot by u-boot(single thread),
+>>> but by rtos , as most rtos use pendsv to do context switch.
+>>
+>>
+>> Hmm, does it mean that it starts kernel from process context?
+>    Yes, kernel might be started from process context, since u-boot not
+> switch context, so kernel always startup under msp.
+>>
+>> I'd assume that it is not only kernel who expects MSP. So, what
+>> if RTOS you mentioned want to boot other RTOS (even itself)? What
+>> if you have no access to the source code for those RTOS(es) to
+>> patch MSP/PSP switch?
+> 
+> My case is a little complicated.
+> stm32h7 only have 128Kbytes internal flash, can't store u-boot.bin (>200K),
+> so, set a bootloader (rt-thread rtos) to internal flash, load
+> linux/u-boot from serial port via ymodem
+> store to qspi flash(8Mbytes), then jump to u-boot.
+> 
+> qspi flash layout:
+> 0 - 512K:    u-boot
+> 512K- 8M : kernel(xip)
+> 
+> load process : rt-thread -> u-boot -> linux
+> 
+> before add psp/msp check after svc call, register restore corrupt.
+> add a printhex8 around svc call, found the sp stack is 0x24040000c0ffcff8
+> it should be 0xc0ffcdf8c0ffcff8. 0x24040000 is the sp stack address
+> assigned by u-boot
+> i've no idea how it's become to u-boot's sp.
+> 
+> I have the rtos code, and will try to fix it on the rtos side.
 
-On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
-> The two VPUs inside IMX8MQ share the same control block which can be see
-> as a reset hardware block.
+That would be great!
 
-This isn't a reset controller though. The control block also contains
-clock gates of some sort and a filter register for the featureset fuses.
-Those shouldn't be manipulated via the reset API.
+> 
+> Can you give more explanation about why linux relies on MSP ? thanks
 
-> In order to be able to add the second VPU (for HECV decoding) it will be
-> more handy if the both VPU drivers instance don't have to share the
-> control block registers. This lead to implement it as an independ reset 
-> driver and to change the VPU driver to use it.
+MSP is what set from boot, thus it is natural assumption that boot code
+would preserve that illusion.
 
-Why not switch to a syscon regmap for the control block? That should
-also allow to keep backwards compatibility with the old binding with
-minimal effort.
+I'd guess that kernel is in line in such assumption across different
+(RT)OS capable to run on M-class cores (please, note that some variants
+might not have two stack pointers)
 
-> Please note that this series break the compatibility between the DTB and
-> kernel. This break is limited to IMX8MQ SoC and is done when the driver
-> is still in staging directory.
+Cheers
+Vladimir
 
-I know in this case we are pretty sure there are no users of this
-binding except for a staging driver, but it would still be nice to keep
-support for the deprecated binding, to avoid the requirement of updating
-kernel and DT in lock-step.
+> 
+>>
+>> I'd very much prefer to keep stack switching logic outside kernel,
+>> say, in some shim which RTOS/bootloader can maintain.
+>>
+>> Cheers
+>> Vladimir
+>>
+>>>
+>>> So, we need add an lr check after svc call, to find out should
+>>> use psp or msp. else register restore after svc call might be
+>>> corrupted.
+>>>
+>>> Fixes: b70cd406d7fe ("ARM: 8671/1: V7M: Preserve registers across switch from Thread to Handler mode")
+>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+>>> ---
+>>>  arch/arm/mm/proc-v7m.S | 5 ++++-
+>>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm/mm/proc-v7m.S b/arch/arm/mm/proc-v7m.S
+>>> index 84459c1d31b8..c93d2757312d 100644
+>>> --- a/arch/arm/mm/proc-v7m.S
+>>> +++ b/arch/arm/mm/proc-v7m.S
+>>> @@ -137,7 +137,10 @@ __v7m_setup_cont:
+>>>  1:   cpsid   i
+>>>       /* Calculate exc_ret */
+>>>       orr     r10, lr, #EXC_RET_THREADMODE_PROCESSSTACK
+>>> -     ldmia   sp, {r0-r3, r12}
+>>> +     tst     lr, #EXC_RET_STACK_MASK
+>>> +     mrsne   r4, psp
+>>> +     moveq   r4, sp
+>>> +     ldmia   r4!, {r0-r3, r12}
+>>>       str     r5, [r12, #11 * 4]      @ restore the original SVC vector entry
+>>>       mov     lr, r6                  @ restore LR
+>>>
+>>>
+>>
+> 
 
-regards
-Philipp
