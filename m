@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBBD32C049
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A604232C035
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578278AbhCCSQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:16:59 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:60637 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343964AbhCCP61 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:58:27 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 84BB32223A;
-        Wed,  3 Mar 2021 16:57:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614787063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4p1DEoVyZ0ul8zQDDAxlxC/Kk9l9swD/AvRf7fZLd+4=;
-        b=XZ+1FoQBNNGvpzi04s+0FINOgnBBSq2AMuVWXQnR+eSts0E2Znv9gr9YMLNazvAgnfovB1
-        Bp8BykjoDDmRDmeOAD4g/Cx9xW+ENvb1TMupm/IiOa5WSe/C3lGcECXI8fxT40lrS61997
-        r0ynvzFZk/7FTTJZr5jyuHHwT1bTPBg=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] mtd: require write permissions for locking and badblock ioctls
-Date:   Wed,  3 Mar 2021 16:57:35 +0100
-Message-Id: <20210303155735.25887-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        id S1578123AbhCCSQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:16:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345134AbhCCP6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:58:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CFC64EDB;
+        Wed,  3 Mar 2021 15:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614787084;
+        bh=GKrMTWwEh1kLtPzdDB87gc1HSZh5O2LMmCKt9KLcS9o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nnrvgGQ4NiILw1zfzLL4bQjkcZ1FKnZ6lrIZUWBIMVZw8A/jfK9HgmKc5JCz7O85s
+         DK4BIms+p/PM3cgwvpyW/lBpYSSgelOHbcUtDWiBDbEiAYcUs1G2SRJkKadCm2tkpw
+         lRj8ISpU0Zh7mfmGtUF8FR/Gtsy5jC32gFV8zT6tiU0m3+ZlhfREB9gpvtT20sOs+q
+         ifKkcciKrRsb/4xxQDql46pZOXDKn8/02jh6S1WycGUa+1xTq2pP2swe/nnfeiIsfj
+         l0gsXnb41nyeVXUaOK6e5WF6StdKT007adzrmld7NPq3PCViSGLSn1pKAswOHNFGTZ
+         hTgW8XMTgGTBg==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lHTsv-001iva-Tt; Wed, 03 Mar 2021 16:58:01 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: conf.py: adjust the LaTeX document output
+Date:   Wed,  3 Mar 2021 16:58:00 +0100
+Message-Id: <911fbac185dd09c7df715cf4153361b81f04b7ad.1614787053.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MEMLOCK, MEMUNLOCK and OTPLOCK modify protection bits. Thus require
-write permission. Depending on the hardware MEMLOCK might even be
-write-once, e.g. for SPI-NOR flashes with their WP# tied to GND. OTPLOCK
-is always write-once.
+Changeset f546ff0c0c07 ("Move our minimum Sphinx version to 1.7")
+cleaned up some compatibility issues with previous Sphinx
+versions, but it also dropped the PDF margin sets.
 
-MEMSETBADBLOCK modifies the bad block table.
+Without that, the media documentation won't build fine, as
+the margins are too wide to display texts with monospaced
+fonts.
 
-Fixes: f7e6b19bc764 ("mtd: properly check all write ioctls for permissions")
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/mtdchar.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+While here, align the  "latex_elements = {" values, and add
+a few other sphinxsetup configs in order to allow Sphinx to
+wrap long lines on literal blocks.
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 57c4a2f0b703..30c8273c1eff 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -643,16 +643,12 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	case MEMGETINFO:
- 	case MEMREADOOB:
- 	case MEMREADOOB64:
--	case MEMLOCK:
--	case MEMUNLOCK:
- 	case MEMISLOCKED:
- 	case MEMGETOOBSEL:
- 	case MEMGETBADBLOCK:
--	case MEMSETBADBLOCK:
- 	case OTPSELECT:
- 	case OTPGETREGIONCOUNT:
- 	case OTPGETREGIONINFO:
--	case OTPLOCK:
- 	case ECCGETLAYOUT:
- 	case ECCGETSTATS:
- 	case MTDFILEMODE:
-@@ -663,9 +659,13 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	/* "dangerous" commands */
- 	case MEMERASE:
- 	case MEMERASE64:
-+	case MEMLOCK:
-+	case MEMUNLOCK:
-+	case MEMSETBADBLOCK:
- 	case MEMWRITEOOB:
- 	case MEMWRITEOOB64:
- 	case MEMWRITE:
-+	case OTPLOCK:
- 		if (!(file->f_mode & FMODE_WRITE))
- 			return -EPERM;
- 		break;
+Fixes: f546ff0c0c07 ("Move our minimum Sphinx version to 1.7")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+ Documentation/conf.py | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
+
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index fd65168c10f8..879e86dbea66 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -331,27 +331,34 @@ htmlhelp_basename = 'TheLinuxKerneldoc'
+ # -- Options for LaTeX output ---------------------------------------------
+ 
+ latex_elements = {
+-# The paper size ('letterpaper' or 'a4paper').
+-'papersize': 'a4paper',
++    # The paper size ('letterpaper' or 'a4paper').
++    'papersize': 'a4paper',
+ 
+-# The font size ('10pt', '11pt' or '12pt').
+-'pointsize': '11pt',
++    # The font size ('10pt', '11pt' or '12pt').
++    'pointsize': '11pt',
+ 
+-# Latex figure (float) alignment
+-#'figure_align': 'htbp',
++    # Latex figure (float) alignment
++    #'figure_align': 'htbp',
+ 
+-# Don't mangle with UTF-8 chars
+-'inputenc': '',
+-'utf8extra': '',
++    # Don't mangle with UTF-8 chars
++    'inputenc': '',
++    'utf8extra': '',
+ 
+-# Additional stuff for the LaTeX preamble.
++    # Set document margins
++    'sphinxsetup': '''
++        hmargin=0.5in, vmargin=1in,
++        parsedliteralwraps=true,
++        verbatimhintsturnover=false,
++    ''',
++
++    # Additional stuff for the LaTeX preamble.
+     'preamble': '''
+-	% Use some font with UTF-8 support with XeLaTeX
++        % Use some font with UTF-8 support with XeLaTeX
+         \\usepackage{fontspec}
+         \\setsansfont{DejaVu Sans}
+         \\setromanfont{DejaVu Serif}
+         \\setmonofont{DejaVu Sans Mono}
+-     '''
++     ''',
+ }
+ 
+ # At least one book (translations) may have Asian characters
 -- 
-2.20.1
+2.29.2
+
 
