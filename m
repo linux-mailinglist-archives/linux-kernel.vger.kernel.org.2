@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3C732BE78
+	by mail.lfdr.de (Postfix) with ESMTP id BDD6432BE79
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242678AbhCCRaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
+        id S1345221AbhCCRao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:30:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444842AbhCCNrF (ORCPT
+        with ESMTP id S1444859AbhCCNrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:47:05 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E567C061A32
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:03 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id e10so23495950wro.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:03 -0800 (PST)
+        Wed, 3 Mar 2021 08:47:10 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694C8C0610CC
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:04 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id w11so23713791wrr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=40rMkjxWXVqNvj5udKCXGKEGtGQzZwRj2q8fY5x7CYk=;
-        b=gwL9DeMnKXuT9d0yT8cDU0ip7wM4OSKTBI33zHiN5YgYPTQKSZoL8U48t0HgUWgPsy
-         B92nExhX6Y/6Fi+iwlWRIe/IfTCwMKNaURr1k9mdlklZZX6MdJM5ZPi3UgaZZVpOm66l
-         vo+u1h7vsrL50rG6qMxSqy6U/HKLaF0xUyvN4YZXAGOLLV6zNCUUPNY5eYQkJ/zmCBXw
-         d8qk0/sfFHzoh5SLVrKDrolCgP2iZhufccuQszm+wbti42BRfknoJAl1zxUsMgQDCDE6
-         KLAJXM2tas5wfsHbvuLV4UOT5dVJT0KaRQXdma6pRJEieYc47vUKVnrweEPudfuH5kiy
-         Pyzg==
+        bh=ZKXL5BSpeJS4vDI/7s0Xoa8UxotBBglASR7mfOE+iBg=;
+        b=hNtRCCCeLUyw2wuwWNSPLsnqiGi3UnjiOYd/907z/VkaGS03CORudaoeEzoKYZ21wW
+         +3n5IBsv3gkbasx+n2cCWCAVea13G1Q2ZSB42y0CxowYWrDBqA8kfycGf+Er+H0FFCao
+         eOSqiLNTpDXNLn+wzbAXzjtF7CDA2C9NOgQidByinmGlam0z4LrTrH+o4lYwzfAyY4cf
+         pFoNb7a7tau9SJERVtEOs1XJvnlQYlOHvSXJy21Bqs3m4amKs0motl60th9pOXMi8xb1
+         OP+1xku4Uf7V/QHBacsXBTLLPOqCCGr8UP9Ad8BEGyrrgUA5Jg6BxQ03ADsmG/MePKtP
+         pCTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=40rMkjxWXVqNvj5udKCXGKEGtGQzZwRj2q8fY5x7CYk=;
-        b=cIRA/R0ecORdtdjWVHysjec3nyPQl1Nf8eLJyyT0shFTrMnfMcYAoAk6v/mip/GMB7
-         3bOFWWxifin6TeWmTIqq7cp8hwJVksQwdySDK6uLP3WBz9iKIrE+xmSEWBTYs6NrLctO
-         YjVUhcT5IMmaw7URYvRm7Jw5vPRgzwto7pHisLIwsXHKQaYKo0GWLKSlhKyK2lAGzAqz
-         myaNMtT8sirg9Htjji1uO8OKBRkmIajYU/B+z/Hsa7XVfyTZBP8pUopY+hGxloSC9DYG
-         FW1IVxWN2kUktmft0BLt9qm7VAJuB3kkuis/LYZxZmkRV1Or18bJCBcw86z2vlTGW2TT
-         TcPw==
-X-Gm-Message-State: AOAM532NNHxK5+YU4sWyuUrYJ8OU3xs+01NHhfCVthWy6bRoVL6zZiTv
-        eAGr6+dHL4rmQZKKoquQ+lJpSg==
-X-Google-Smtp-Source: ABdhPJym3fR2N7g/JkPKr8nL4bDsjbrpbqQMqWMxXmv0FteJpKM96qHRu+NezUT8QspacHihZxOEoA==
-X-Received: by 2002:adf:fec5:: with SMTP id q5mr16914657wrs.43.1614779042019;
-        Wed, 03 Mar 2021 05:44:02 -0800 (PST)
+        bh=ZKXL5BSpeJS4vDI/7s0Xoa8UxotBBglASR7mfOE+iBg=;
+        b=nRQZ/B5K5PxE5CvJuoXAi0x6Bifu+iUgJbaOyoZirT/BkO5N9ZqlASLR0MCkqaTykk
+         +tafKRov7y7V9PhxnA5U28boXNLuKVdfJot3Do7vQ5Q4NGSd9GWLxGdUvL2fTeCsWPJH
+         lB6t4rf0QH66mxWM1te86S1r0pmXe5D4Wwygg9XH5Lm4aCMhyg/QJF7ahFG9x4Z/P9mb
+         LNUWVHCEzsm+T4lA4uHL7YA+7P8Lc4KXyuV/qaqNAfU6T5MPeiCDTIjIikLOIm66LcKl
+         Kp+qo4J5q4at22Amkkk9nbvwCBTz4jtYxBpndXLLnKBIy7yRpsivADesEFFBjacRoMa1
+         GHUA==
+X-Gm-Message-State: AOAM532hNR5wP7pgRXLB7/tTq7E/pez2l8UNm0lnYXJwEIuAiD4F/4Pd
+        x7qOr4BQk5/tSN/Qfh+hXnYUrg==
+X-Google-Smtp-Source: ABdhPJwNCO3+9KCWRQseXqqpuCUbrFtzHY3to+3rr+R+ZVPWB8etjMgXEtTt0twcjo+u4u2lpoLRhA==
+X-Received: by 2002:adf:b641:: with SMTP id i1mr27693700wre.295.1614779043159;
+        Wed, 03 Mar 2021 05:44:03 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.00
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.44.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:44:01 -0800 (PST)
+        Wed, 03 Mar 2021 05:44:02 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, Zack Rusin <zackr@vmware.com>
-Subject: [PATCH 28/53] drm/vmwgfx/vmwgfx_resource: Fix worthy function headers demote some others
-Date:   Wed,  3 Mar 2021 13:42:54 +0000
-Message-Id: <20210303134319.3160762-29-lee.jones@linaro.org>
+Subject: [PATCH 29/53] drm/vmwgfx/vmwgfx_ttm_buffer: Supply some missing parameter descriptions
+Date:   Wed,  3 Mar 2021 13:42:55 +0000
+Message-Id: <20210303134319.3160762-30-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
@@ -70,17 +70,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:215: warning: Excess function parameter 'obj_type' description in 'vmw_resource_init'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:303: warning: Excess function parameter 'p_res' description in 'vmw_user_resource_noref_lookup_handle'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:328: warning: Function parameter or member 'dev_priv' not described in 'vmw_user_lookup_handle'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:328: warning: Function parameter or member 'tfile' not described in 'vmw_user_lookup_handle'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:328: warning: Function parameter or member 'handle' not described in 'vmw_user_lookup_handle'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:328: warning: Function parameter or member 'out_surf' not described in 'vmw_user_lookup_handle'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:328: warning: Function parameter or member 'out_buf' not described in 'vmw_user_lookup_handle'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:398: warning: Function parameter or member 'dirtying' not described in 'vmw_resource_do_validate'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:601: warning: Function parameter or member 'interruptible' not described in 'vmw_resource_reserve'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:601: warning: Function parameter or member 'no_backup' not described in 'vmw_resource_reserve'
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c:987: warning: Function parameter or member 'interruptible' not described in 'vmw_resource_pin'
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c:275: warning: Function parameter or member 'p_offset' not described in 'vmw_piter_start'
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c:676: warning: Function parameter or member 'evict' not described in 'vmw_move_notify'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -89,67 +80,31 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-11-lee.jones@linaro.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-12-lee.jones@linaro.org
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_resource.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c b/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c
-index d1e7b9608145b..c4df51a2a9262 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_resource.c
-@@ -202,7 +202,6 @@ int vmw_resource_alloc_id(struct vmw_resource *res)
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
+index dbb068830d800..6a44567e4ba52 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c
+@@ -265,6 +265,7 @@ static dma_addr_t __vmw_piter_sg_addr(struct vmw_piter *viter)
   *
-  * @dev_priv:       Pointer to a device private struct.
-  * @res:            The struct vmw_resource to initialize.
-- * @obj_type:       Resource object type.
-  * @delay_id:       Boolean whether to defer device id allocation until
-  *                  the first validation.
-  * @res_free:       Resource destructor.
-@@ -288,8 +287,6 @@ int vmw_user_resource_lookup_handle(struct vmw_private *dev_priv,
-  * @tfile:        Pointer to a struct ttm_object_file identifying the caller
-  * @handle:       The TTM user-space handle
-  * @converter:    Pointer to an object describing the resource type
-- * @p_res:        On successful return the location pointed to will contain
-- *                a pointer to a refcounted struct vmw_resource.
+  * @viter: Pointer to the iterator to initialize
+  * @vsgt: Pointer to a struct vmw_sg_table to initialize from
++ * @p_offset: Pointer offset used to update current array position
   *
-  * If the handle can't be found or is associated with an incorrect resource
-  * type, -EINVAL will be returned.
-@@ -315,7 +312,7 @@ vmw_user_resource_noref_lookup_handle(struct vmw_private *dev_priv,
- 	return converter->base_obj_to_res(base);
- }
- 
--/**
-+/*
-  * Helper function that looks either a surface or bo.
+  * Note that we're following the convention of __sg_page_iter_start, so that
+  * the iterator doesn't point to a valid page after initialization; it has
+@@ -664,6 +665,7 @@ static int vmw_ttm_io_mem_reserve(struct ttm_bo_device *bdev, struct ttm_resourc
+  * vmw_move_notify - TTM move_notify_callback
   *
-  * The pointer this pointed at by out_surf and out_buf needs to be null.
-@@ -388,6 +385,7 @@ static int vmw_resource_buf_alloc(struct vmw_resource *res,
-  * @res:            The resource to make visible to the device.
-  * @val_buf:        Information about a buffer possibly
-  *                  containing backup data if a bind operation is needed.
-+ * @dirtying:       Transfer dirty regions.
+  * @bo: The TTM buffer object about to move.
++ * @evict: Unused
+  * @mem: The struct ttm_resource indicating to what memory
+  *       region the move is taking place.
   *
-  * On hardware resource shortage, this function returns -EBUSY and
-  * should be retried once resources have been freed up.
-@@ -586,7 +584,7 @@ vmw_resource_check_buffer(struct ww_acquire_ctx *ticket,
- 	return ret;
- }
- 
--/**
-+/*
-  * vmw_resource_reserve - Reserve a resource for command submission
-  *
-  * @res:            The resource to reserve.
-@@ -973,7 +971,7 @@ void vmw_resource_evict_all(struct vmw_private *dev_priv)
- 	mutex_unlock(&dev_priv->cmdbuf_mutex);
- }
- 
--/**
-+/*
-  * vmw_resource_pin - Add a pin reference on a resource
-  *
-  * @res: The resource to add a pin reference on
 -- 
 2.27.0
 
