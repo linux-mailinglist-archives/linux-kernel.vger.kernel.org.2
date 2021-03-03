@@ -2,110 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE8732BF6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E89C32BF75
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835467AbhCCSDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:03:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382004AbhCCPWE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:22:04 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29546C061761
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 07:08:37 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id l12so30384997edt.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 07:08:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ma0aLe7L7wfc2EcnaVyjvoNiREEF5DORKFdfo+QCWX0=;
-        b=CiV7tOZtuvuWalzzsFt6r7jq9QI429v5CtstMoU2Mlw5gsHzio9Rdi9Qei8nTJmNC2
-         UZcMSJ7vOAqYq9RgLfGs3RhYh7LrMX1BZzm3Sa4DMjNAiSv2ZCQsYT903mkCoAsC+sc4
-         d1Vufc9PByAn6O+VJVCeDzkb2+8QUuI1j5ZcwGfusUYjAfllOENS5VATrJREFRKOFu2r
-         KxptPp7mLsOK/kAr5hZUQSijC08U2vc1uT4CwmpaSuiidh/nHwiHMIicJlQxuD2jJr2x
-         KIdiWAxX8hjn0hNs5jFDrf1pOJC4Ax/D1L3mFKLy42aZPIVMwoT19c7sqvR73vTjxlNq
-         Swbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ma0aLe7L7wfc2EcnaVyjvoNiREEF5DORKFdfo+QCWX0=;
-        b=VIaJBWmNpYuuOCRzy8UJIsMs0n6GaOsa2DgglIZ6N7NMwKmRaxJ/tkeckoDGY1LaCA
-         SFNi5WBZF/LDLYk/5YysiTELMVb5tHJGRgX8A9itIjFKJ7qzJQaGS73drLwSKJ0ophpr
-         OQ0A56yE4lR6rfrTQ6UzdP8BY0YFNucOaRB8KMaNAztE9B/rtFtp8WY3tjCjxRbLrfv9
-         ylbm6t/dObFPDOxexyFOo8OwkuPn4gXn1g2VKZcOHHeAKUAZEqj/jT6IXkTorICzxvsb
-         JGJRzjGr9uvEHOgFKklIuOJ/QYRs5fbCT4N2fBresed/PYeQG/6pZGxInzlmt8gTqEBi
-         +qEw==
-X-Gm-Message-State: AOAM531nBQ7ZVsFa56i74arhJEdS3Rk+KEjVOaJ37UjeLicE9cU70ZLO
-        GHZS/aRkU3Wp5rYcFxAT5Xc5ve3EfYSKXWswxnVJPQ==
-X-Google-Smtp-Source: ABdhPJybVSS6YuAyjr24XGif6t4uCJxDSC8Dg1F94QRJFCb33vMmF58z4GFFNzf14hSLatqaLJEyS70Y970qbVtg2D4=
-X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr20074891edr.52.1614784115667;
- Wed, 03 Mar 2021 07:08:35 -0800 (PST)
+        id S1835501AbhCCSDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:03:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1382128AbhCCPWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:22:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4D964EE6;
+        Wed,  3 Mar 2021 15:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614784149;
+        bh=kuSlFyqS0esHp6a9WfeHEtn7CGyzwnqKO7imFdyzNGg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bnU/BRK1bn9yIFBSrdz+SxcaRejYSiommzyqQjTxS/gEUJb2zQwJSnEB6/8NPVSN1
+         ZLYI4M2yFVY00TTjTdg8aw4E5VuiM7QRhCmmxn43RSl4VJTNDKuX6Pzwyuw599D/yy
+         4evYEdxZ8RoNOXYnjOEP2+q42CGNfu6l8l/YdUhs=
+Date:   Wed, 3 Mar 2021 16:09:06 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        taehyun cho <taehyun.cho@samsung.com>, balbi@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
+Message-ID: <YD+mkse29UwwYbFB@kroah.com>
+References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
+ <20210303022628.6540-1-taehyun.cho@samsung.com>
+ <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
+ <YD9lTjWc25Nn7jAR@kroah.com>
+ <20210303103839.it7grj3vtrdmngbd@kozik-lap>
+ <YD+XkFAfoKpSsea3@kroah.com>
+ <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
 MIME-Version: 1.0
-References: <20210302192550.512870321@linuxfoundation.org>
-In-Reply-To: <20210302192550.512870321@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 3 Mar 2021 20:38:22 +0530
-Message-ID: <CA+G9fYvxnS5iiQJEe2dHbKJjQyeU=G_YWDYJK-e1UL_C6hPvLQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/246] 4.19.178-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 00:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.178 release.
-> There are 246 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.178-rc4.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, Mar 03, 2021 at 06:56:38AM -0800, Guenter Roeck wrote:
+> On 3/3/21 6:05 AM, Greg Kroah-Hartman wrote:
+> [ ... ]
+> >> Anyway, that's the convention or consensus so far for entire SoC. If we
+> >> want to change it - sure, but let's make it for everyone, not for just
+> >> this one USB driver.
+> > 
+> > Great, let's change it for everyone, I don't see a need for ARCH_*
+> > symbols except for people who want to make it simpler for their one
+> > board type.  And for that, use a defconfig.
+> > 
+> 
+> I don't think that will work in practice. Many ARCH_ symbols for various
+> architectures contradict with each other. Almost all watchdog drivers
+> only _build_ for specific platforms/architectures.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Great, that's horrible to hear, so much for a "generic arm64 kernel
+binary" which I _thought_ was the goal.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+ugh, you would have thought we would have learned our lesson with
+arm32...
 
-Summary
-------------------------------------------------------------------------
-kernel: 4.19.178-rc4
-git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
-able-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-git branch: linux-4.19.y
-git commit: 26e47b79f5ec2ea5c7a46e578dc0b46b9073effe
-git describe: v4.19.177-247-g26e47b79f5ec
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.177-247-g26e47b79f5ec
-
---
-Linaro LKFT
-https://lkft.linaro.org
+greg k-h
