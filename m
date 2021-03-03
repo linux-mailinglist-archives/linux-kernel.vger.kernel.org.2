@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C99232BEEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F22532BEEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575956AbhCCRrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S1386211AbhCCRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244420AbhCCOs0 (ORCPT
+        with ESMTP id S244586AbhCCOs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 09:48:26 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66117C0613E3
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:46:46 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id u187so5389927wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:46:46 -0800 (PST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E52C0613E7
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:46:48 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id o16so6597097wmh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:46:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LQo94ZcfBBuoFY/1jYEsk/EDMJmQ504CLIYBmOmNlDo=;
-        b=ERgJAswEWwGJcDUkR52X8TC8ezcOCCa6+8alb64vHVFwshhU4Gm2kFN4zKH/+7aHr+
-         2k67F1awD2Roqqo2RG6++tlvEY9Prf3wENCLCTfyjbg7HULZQoSdkRFyXzoXPOngbHkb
-         BtRtpHemEXNtobp14or4D2hLNo46tcV8e4+mEuu2Nl03JNQZeV1dNQopa07/2rSinanS
-         9ib3CNZUf4RHpdxrbrCpeqM75UUAMo3tXUkhOV8mcjJX6oH1ttfRAbJJaTR/TApUe1A8
-         yy1QyqUbe9COAc5bzP7yj2x9Q8b7iPztsqbtQKoAULqDcZFg7LF75YApXwLnVlK/Epmi
-         pvrA==
+        bh=GDZddnpJba/Pn4dRuDBATAXJPUWXaNHEAc/aEwqe0w8=;
+        b=Ua/75M0QhR8/drEWLtFBQrIsnqyLuPVFUJjnLiJNBN2hoIsvh/UU52in5+buLcIkFa
+         d8c2BpEoZIupANMs+/h10v8Gvxf25g8awXnaTNzkUmJDNro9b43l9kcMzGa37d/s7lUw
+         9qrP5XrmGetmklGmKz5c/183AaUjzzuqcG+j4/3fANVPrIQUnOhaF+TodFznz4At4Slf
+         RdRijxmLIilHcYZ7q/r5uZofsjrQvKGpOIuQO30Xsy18fDKlowOWX0RnbkoJKnx14MR6
+         5PBu3HVkW47lwQV/QCHy5OC2gOj4zmM4bhatPOh8leUXuvllrKOKE1SX60aHQxLG/TJi
+         VdIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LQo94ZcfBBuoFY/1jYEsk/EDMJmQ504CLIYBmOmNlDo=;
-        b=McJf5kDGG3w8W/++DeNPsTSytcXqgBAQKsLDgfEU8Sivf0+PukdqhZn8sALA4AL/EX
-         FLNxqWrjHJGK1CqrSDgK8GxdBnIDQzBkAbNYIich66e+EY9OyA2On7pGfGubTZiqV20g
-         kQnj+/XyWUlvO/pMfEePV3oxBYlNsJxC+T++gN6pqGbfOj5M124O/bv0JFo472wLAnpz
-         zBXKCq5G+vyc7MprUbh0R5yGz8u1Y4hJddSfMnEatVBhkRBVdmwEx8ywy30WBmv1gZLc
-         u+x7ZDHPF04/4EXKpS3raIHx4hBICrzG24JmTyNgWKzZslyOZP+a2xfuyi47jq+8tb+d
-         aSFA==
-X-Gm-Message-State: AOAM533Fg0pfR8k9clqf9+sp7KKgj++SD47XxwQvcdTUReLaF2k79COf
-        JytjX5Qc3Ld2kr1thiJ9IeQK3A==
-X-Google-Smtp-Source: ABdhPJyY3dGJO9LEZjajUPaKUxzIN5qx3Ifi9H/Au4nQ0TT37FozWbX0DBkV6eljG6DOvXBrf23QZQ==
-X-Received: by 2002:a1c:2403:: with SMTP id k3mr9542103wmk.130.1614782805138;
-        Wed, 03 Mar 2021 06:46:45 -0800 (PST)
+        bh=GDZddnpJba/Pn4dRuDBATAXJPUWXaNHEAc/aEwqe0w8=;
+        b=MnUYJJJhsmbetguqG0kBJa7QsC+2qX5FFBP1nnyhf9LcJ9h/z59g1cyQkunH6cSiXX
+         LaaWWTOxJVDnMYgDl4HC/rF3FvzEMxvqdcnfQSAb2dKe8kOektxJNpXnFrxELy9zs20u
+         WB9hEQau5MYNJfaWBioWxCennT+n2oPaq/6IoqDuuv9aJ5buRSjLeFgaC2biODAGKPmD
+         /LlAJtbeE8YRO4GEPPR2LsKSHy3BsAPzUFWKXUmkbp+23eC5kf4oUJAoFPDpvTSHX45Q
+         WbIYIcZJTUuzUQf+9j8nBZjLfFP3cNR4laB0MRUozQ36M0H3da7k31+JWve3OqWQYTr4
+         3FFA==
+X-Gm-Message-State: AOAM533byInAwCNfWG3ptXityhxHP0egJfYnbC/EN3d7d6fZql0h8YWb
+        YkVtlARGYek+hQx/Qeoef67wQg==
+X-Google-Smtp-Source: ABdhPJzC/yJRQcCFUJ3VLRPBZ1oNcc73HDGPnWdcOLFcyKW4fuXspgpB4PoiOZB3LiEGlIbp6koTTw==
+X-Received: by 2002:a7b:c3c1:: with SMTP id t1mr9352438wmj.47.1614782807074;
+        Wed, 03 Mar 2021 06:46:47 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id a14sm36567233wrg.84.2021.03.03.06.46.43
+        by smtp.gmail.com with ESMTPSA id a14sm36567233wrg.84.2021.03.03.06.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 06:46:44 -0800 (PST)
+        Wed, 03 Mar 2021 06:46:46 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+Cc:     linux-kernel@vger.kernel.org,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Luben Tuikov <luben_tuikov@adaptec.com>,
         linux-scsi@vger.kernel.org
-Subject: [PATCH 05/30] scsi: fcoe: fcoe_ctlr: Fix a couple of incorrectly named functions
-Date:   Wed,  3 Mar 2021 14:46:06 +0000
-Message-Id: <20210303144631.3175331-6-lee.jones@linaro.org>
+Subject: [PATCH 06/30] scsi: aic94xx: aic94xx_hwi: Fix a couple of misnamed function names
+Date:   Wed,  3 Mar 2021 14:46:07 +0000
+Message-Id: <20210303144631.3175331-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303144631.3175331-1-lee.jones@linaro.org>
 References: <20210303144631.3175331-1-lee.jones@linaro.org>
@@ -68,40 +69,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/fcoe/fcoe_ctlr.c:1314: warning: expecting prototype for fcoe_ctlr_recv_els(). Prototype was for fcoe_ctlr_recv_clr_vlink() instead
- drivers/scsi/fcoe/fcoe_ctlr.c:2963: warning: expecting prototype for fcoe_ctlr_vlan_disk_reply(). Prototype was for fcoe_ctlr_vlan_disc_reply() instead
+ drivers/scsi/aic94xx/aic94xx_hwi.c:910: warning: expecting prototype for ads_rbi_exsi_isr(). Prototype was for asd_rbi_exsi_isr() instead
+ drivers/scsi/aic94xx/aic94xx_hwi.c:1156: warning: expecting prototype for asd_start_timers(). Prototype was for asd_start_scb_timers() instead
 
-Cc: Hannes Reinecke <hare@suse.de>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Luben Tuikov <luben_tuikov@adaptec.com>
 Cc: linux-scsi@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/fcoe/fcoe_ctlr.c | 4 ++--
+ drivers/scsi/aic94xx/aic94xx_hwi.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/fcoe/fcoe_ctlr.c b/drivers/scsi/fcoe/fcoe_ctlr.c
-index 5ea426effa609..1756a0ac6f083 100644
---- a/drivers/scsi/fcoe/fcoe_ctlr.c
-+++ b/drivers/scsi/fcoe/fcoe_ctlr.c
-@@ -1302,7 +1302,7 @@ static void fcoe_ctlr_recv_els(struct fcoe_ctlr *fip, struct sk_buff *skb)
+diff --git a/drivers/scsi/aic94xx/aic94xx_hwi.c b/drivers/scsi/aic94xx/aic94xx_hwi.c
+index 9256ab7b25227..3dd1101434715 100644
+--- a/drivers/scsi/aic94xx/aic94xx_hwi.c
++++ b/drivers/scsi/aic94xx/aic94xx_hwi.c
+@@ -903,7 +903,7 @@ static void asd_dch_sas_isr(struct asd_ha_struct *asd_ha)
  }
  
  /**
-- * fcoe_ctlr_recv_els() - Handle an incoming link reset frame
-+ * fcoe_ctlr_recv_clr_vlink() - Handle an incoming link reset frame
-  * @fip: The FCoE controller that received the frame
-  * @skb: The received FIP packet
-  *
-@@ -2952,7 +2952,7 @@ static void fcoe_ctlr_vlan_send(struct fcoe_ctlr *fip,
+- * ads_rbi_exsi_isr -- process external system interface interrupt (INITERR)
++ * asd_rbi_exsi_isr -- process external system interface interrupt (INITERR)
+  * @asd_ha: pointer to host adapter structure
+  */
+ static void asd_rbi_exsi_isr(struct asd_ha_struct *asd_ha)
+@@ -1144,7 +1144,7 @@ static void asd_swap_head_scb(struct asd_ha_struct *asd_ha,
  }
  
  /**
-- * fcoe_ctlr_vlan_disk_reply() - send FIP VLAN Discovery Notification.
-+ * fcoe_ctlr_vlan_disc_reply() - send FIP VLAN Discovery Notification.
-  * @fip: The FCoE controller
-  * @frport: The newly-parsed FCoE rport from the Discovery Request
+- * asd_start_timers -- (add and) start timers of SCBs
++ * asd_start_scb_timers -- (add and) start timers of SCBs
+  * @list: pointer to struct list_head of the scbs
   *
+  * If an SCB in the @list has no timer function, assign the default
 -- 
 2.27.0
 
