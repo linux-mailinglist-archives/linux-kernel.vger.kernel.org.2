@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4E632BFA3
+	by mail.lfdr.de (Postfix) with ESMTP id E382F32BFA6
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579952AbhCCSct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238157AbhCCQ4o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:56:44 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B26C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:56:03 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id f4so25243213ybk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 08:56:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f6hRodqlypzDTU/FWJHNKjGc5kzBJYYfZMRX7NCfZYA=;
-        b=sc2roBejCsQFy/zRpBsVsbEXdtW3DO19gqmh5SAViA8lzGIBsjeuWEb6BCySU8ebe1
-         qDXv/LNcRV7M3Q1scLuF3/9ERDQwFq7ImefjqEXefjHvE63NSrPcRyXfVV/yEcAHvCzQ
-         NKJ0lMRkCeO6ChsGXhRTi097PZggGZV2Msq22+o04VkqALwMg8QedbLP3gKlTCV1sAS/
-         NurdjO7HiOQz2BenmzysRTsOsIyzF74XSV4o6SLMD+t7AnH2acG1wo6VkpMtswO/Cuaa
-         xBRuyKl1Vdm/hlCVsqyvsvQrU38xdCGhgR6TkR/s1orAt7KJT1WE9a/lOuD0oPZWQGDC
-         KCEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f6hRodqlypzDTU/FWJHNKjGc5kzBJYYfZMRX7NCfZYA=;
-        b=a9BbptuSX+S248Dce7JakIHvTklGxPzx4fFmmLfqc0WMJI823fyvKtNEx4G+YrV6O2
-         WgdDSwagPHP2D5lWrqaMUT1XcbgEumzix/GY3G0bKLyAxdg/e1xj4eofyiw6hIwAayHV
-         sAo5F/+YjoF7BcgJqF0A4vBnApnaLjTPELTzTQX0TRzY5xksnS33WL17dXUliqBMQtf3
-         IwsB1FQMCQEndAior4WhhHPzyCBI9Qbt85Vovhx+aiQYPMtbguqjBuUpT+9LQSVWvBvc
-         sgoypw7dGQJ+6Q+u7CvCtFq866vHwKqxxXLKfg1c8OaV2RFsSsWvtZOtHYWY+d8H5d6a
-         AoDA==
-X-Gm-Message-State: AOAM530aQMKqrI3HoOysL5Nn2r4sxIfTK74O6hPVnuAkncgIUGB7u5yg
-        Nr4+dugpKlWQfuWxaur87klrS/4JxngOLhhn6coocQ==
-X-Google-Smtp-Source: ABdhPJw6Fus9Eo62yqZ+8MzV7BUptx8VxonkRYuEC1/62eweE46H34CO16ZeHa4s88JqcLE269cZ2W93PBx4Rj3clOY=
-X-Received: by 2002:a25:c283:: with SMTP id s125mr268374ybf.310.1614790562309;
- Wed, 03 Mar 2021 08:56:02 -0800 (PST)
+        id S1579968AbhCCScv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:32:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239034AbhCCQ47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:56:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C50D64ECF;
+        Wed,  3 Mar 2021 16:56:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614790576;
+        bh=F6xuDrHfR9Jmp0/snl1bNYDQLnsZiMMqZS6KHJ5mxok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oEQXkui2P9iB2CXW8HhgVHm4Ms9NRBze5rF4F7RU6s89K1kzptwp97CPQztfhQBtV
+         4AC09+oAKfG4XkagFWtjFPR0pAmH6VuoJkzQQw9jBoDpaVx8nFw1GTFR3BNZ9mfaq7
+         A0e+4WUTIoQxqIXPbFbI6LO9P89rBBBh9KLYHIP4=
+Date:   Wed, 3 Mar 2021 17:56:13 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <linux@roeck-us.net>,
+        taehyun cho <taehyun.cho@samsung.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
+Message-ID: <YD+/rdM5xzVDC97F@kroah.com>
+References: <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
+ <YD9lTjWc25Nn7jAR@kroah.com>
+ <20210303103839.it7grj3vtrdmngbd@kozik-lap>
+ <YD+XkFAfoKpSsea3@kroah.com>
+ <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
+ <YD+mkse29UwwYbFB@kroah.com>
+ <6e9d6831-f88e-477f-6256-7ab155bfa7ac@kernel.org>
+ <CAK8P3a2TAZELiqzy8Xv8hKvZwM6_+rF5OW9_AkP2TBoDRS3skQ@mail.gmail.com>
+ <YD+8q/hSWNKQS1tE@kroah.com>
+ <a6ac3887-38d0-48f4-e06f-81b45484a54a@kernel.org>
 MIME-Version: 1.0
-References: <20210302211133.2244281-1-saravanak@google.com>
- <CAMuHMdU4rJaMFUS8ukUgqYjTGY41Pa3iQQpKiK8qJA6YnDJDkw@mail.gmail.com>
- <CAGETcx8F+cC5wrSRb8qzLyHfxUNtyOoy6-m+YbxRgp09k9fp9Q@mail.gmail.com> <CAMuHMdUe07Zm833AZg1c0cQZ5ObEoGsNKzwb2eyGtW2Hn_aVnQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUe07Zm833AZg1c0cQZ5ObEoGsNKzwb2eyGtW2Hn_aVnQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 3 Mar 2021 08:55:26 -0800
-Message-ID: <CAGETcx-srp_e2o+9jtFMZRKn5H_w3WwQbedzVoj-S1DKSTr1HA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a6ac3887-38d0-48f4-e06f-81b45484a54a@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 2:03 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Wed, Mar 3, 2021 at 10:24 AM Saravana Kannan <saravanak@google.com> wrote:
-> > On Wed, Mar 3, 2021 at 1:22 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Tue, Mar 2, 2021 at 10:11 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > This series fixes the last few remaining issues reported when fw_devlink=on
-> > > > by default.
-> > >
-> > > [...]
-> > >
-> > > Thanks for your series!
-> > >
-> > > > Geert/Marek,
-> > > >
-> > > > As far as I know, there shouldn't have any more issues you reported that
-> > > > are still left unfixed after this series. Please correct me if I'm wrong or
-> > > > if you find new issues.
-> > >
-> > > While this fixes the core support, there may still be driver fixes left
-> > > that were not developed in time for the v5.12-rc1 merge window.
-> > > Personally, I'm aware of "soc: renesas: rmobile-sysc: Mark fwnode
-> > > when PM domain is added", which I have queued for v5.13[1].
-> > > There may be other fixes for other platforms.
-> >
-> > Right, I intended this series for 5.13. Is that what you are trying to say too?
->
-> OK, v5.13 is fine for me.
-> It wasn't clear to me if you intended (the last patch of) this series to
-> be merged for v5.12-rcX or v5.13.
+On Wed, Mar 03, 2021 at 05:49:01PM +0100, Krzysztof Kozlowski wrote:
+> On 03/03/2021 17:43, Greg Kroah-Hartman wrote:
+> > > > > > I don't think that will work in practice. Many ARCH_ symbols for various
+> > > > > > architectures contradict with each other. Almost all watchdog drivers
+> > > > > > only _build_ for specific platforms/architectures.
+> > > > > 
+> > > > > Great, that's horrible to hear, so much for a "generic arm64 kernel
+> > > > > binary" which I _thought_ was the goal.
+> > > > > 
+> > > > > ugh, you would have thought we would have learned our lesson with
+> > > > > arm32...
+> > > 
+> > > I have no idea what you are talking about here. arm64 kernels have
+> > > always been generic, but you still need drivers for each piece of
+> > > hardware, we unfortunately can't stop SoC vendors from reinventing
+> > > the wheel with each new platform and then having to add yet another
+> > > driver for each subsystems.
+> > 
+> > That's fine, drivers are easy, but when I see comments like "ARCH_
+> > symbols contradict" that means that we can not make a generic kernel
+> > image.  Otherwise there's no contradiction :)
+> 
+> No, they don't contradict.
+> 
+> > 
+> > And "new drivers" are almost always not really "new" as everyone uses
+> > much the same IP blocks.  As proof of this patch where the DWC3 IP block
+> > is being used by multiple SoC vendors.  To handle that, you split out
+> > the SoC-specific portions into sub-drivers, so that you can build a
+> > single image of the driver that works on multiple platforms.  Nothing
+> > new, we've been doing this for years, it's just that out-of-mainline SoC
+> > trees that think they can touch "core IP block code" break this all the
+> > time, which is what I am pushing back on.
+> 
+> I am perfectly fine with (and like it!) putting dwc3 exynos back into
+> base/main dwc3  and getting rid of USB_DWC3_EXYNOS entirely. But this was
+> not part of this patch...
 
-The entire series is meant for 5.13.
+I doubt that will happen, and it's not something that I expect.  It's ok
+to have platform-specific "sub-drivers" for common IP blocks, we do it
+all the time.  But making it separate is good, much like has been done
+for xhci as well.
 
-I don't want to land the Patch 1/3 in 5.12 in case it causes some
-regression. And 2/3 isn't urgent.
+> > Anyway, this is just me as a driver subsystem maintainer being grumpy to
+> > see ARCH_ dependancies on tiny little things like SoC-portions for
+> > generic IP drivers.  Or on individual drivers (i.e. Samsung serial port
+> > driver), where they don't belong at all.
+> 
+> At least with Samsung serial driver we see adding new SoC - Apple M1.
+> 
+> Here, the guys in Samsung want to tweak several kernel parts to work with
+> their out-of-tree code without contributing this code back. It's not a
+> community-friendly approach. The upstream kernel should be tweaked to the
+> out-of-tree unknown, hidden and uncontrollable code.
 
--Saravana
+Totally agreed, that's not ok.  But a different issue than what is
+happening here.
 
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+thanks,
+
+greg k-h
