@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7BA32BA8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5544432BA92
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350845AbhCCLgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:36:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245366AbhCCDG5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 22:06:57 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED39C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 19:06:16 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id bm21so20533230ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 19:06:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RKwqvjc2wk7e2+JEpQKXBE74c6T76PfSJ5fS7l5tMvw=;
-        b=bFfFxkZfnEuSe+zD3dOESM/J8Phx3ou9kd9mPXToUzSdfQAb53Qs3YeQEEyLDTBDzM
-         SqXy56RHCu+89Z6rlaZ/G920014szsVlNvAyH3Js+p9W5gbReYP9j83NcTH5tGY8rHar
-         1OQ3ZP6fXm2KK4F4y19TLAygolEdoc7d0+vHt6kmmMTyL5wDi3Oaw09zpmACmxMt0eNw
-         tgbsGnzfLfgUA/ccDdv/wDDoOIiCS4AiK7jHapszlkpK19V7XFeoVOBWUb/5RDW1OzhT
-         csD+LtfQ/zQCYu+SdJ3LE8Dzpgc9/pR9p9mLmlAs2SdCrwCO5KE//k0c4i9nH3P9dxix
-         hFcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RKwqvjc2wk7e2+JEpQKXBE74c6T76PfSJ5fS7l5tMvw=;
-        b=HQLiuU3iLsnr6aZ61ll0FG6u42PyRu7jJQSDCq42Xls8DGxc2JOyue5PCOGi8KgnbX
-         5LiWgF2jX6kyRWgjbMLXDGHisqDyT/cq01jhhyUXFpY8T3BhueibbrOwAXDBWhdtP1qd
-         SmneB+BqdOeVlhpW0fF441hasLjS4MJL2jmMXbBTD71t8TtRhMhtMKwjqqkqVQm8CGpE
-         QfyGXhLYIEt0lFIkhHpQOErOuRuNMM0xhCOSwMxAIk3/16U6AzO5M29O8SowGOLCWtrJ
-         P/ZeaubD9YpSVjl9s787qDXnlEfnPNAYqs338mg3w0Alft4KEN56dtLiZJykNIXPQJ4+
-         TiIQ==
-X-Gm-Message-State: AOAM530nxGyfND3N1jcj8N26B7kZuN4GdLEshdVWYgeR7LOIyVQIr2rR
-        ioOQVaf1XaMucqr1PPNU8Mi7pcoDfaCN8vuvmeE2nw==
-X-Google-Smtp-Source: ABdhPJyYqGm/IkXBg72idjlWOcasJpO+3VO1/ceWLHr+GEA9ohQQX4RYUV2o/t1wOsx2Xn55vwqBtBe54xMV9cUzjVI=
-X-Received: by 2002:a17:906:4c8b:: with SMTP id q11mr23806065eju.270.1614740775721;
- Tue, 02 Mar 2021 19:06:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20210303025636.795-1-leilk.liu@mediatek.com>
-In-Reply-To: <20210303025636.795-1-leilk.liu@mediatek.com>
-From:   Axel Lin <axel.lin@ingics.com>
-Date:   Wed, 3 Mar 2021 11:05:39 +0800
-Message-ID: <CAFRkauDpNmPRpnM-iz8az2N_cUEhEtDKMq6qfP-f++2iyxqVTw@mail.gmail.com>
-Subject: Re: [PATCH] spi: mediatek: Re-license MTK SPI driver as Dual MIT/GPL
-To:     Leilk Liu <leilk.liu@mediatek.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "luhua . xu" <luhua.xu@mediatek.com>,
-        Wei Yongjun <weiyj.lk@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Markus Elfring <elfring@users.sourceforge.net>,
-        Javier Martinez Canillas <javier@osg.samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fengguang Wu <fengguang.wu@intel.com>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org, fparent@baylibre.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1357932AbhCCLhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:37:17 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:39720 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349853AbhCCDV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 22:21:56 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E8BA6200024;
+        Wed,  3 Mar 2021 04:20:20 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D8323200154;
+        Wed,  3 Mar 2021 04:20:13 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7B7EE402C1;
+        Wed,  3 Mar 2021 04:20:05 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, shengjiu.wang@nxp.com,
+        ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
+        peter.ujfalusi@ti.com, gustavoars@kernel.org,
+        pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: wm8960: Remove bitclk relax condition in wm8960_configure_sysclk
+Date:   Wed,  3 Mar 2021 11:07:42 +0800
+Message-Id: <1614740862-30196-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leilk Liu <leilk.liu@mediatek.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=883=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8810:57=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: "leilk.liu" <leilk.liu@mediatek.com>
->
-> It is wanted to use MTK spi bus driver with GPL-2.0 or MIT license.
-> But now it is only licensed as GPL-2.0, so re-license it as dual
-> MIT/GPL.
->
-> Signed-off-by: leilk.liu <leilk.liu@mediatek.com>
-Acked-by: Axel Lin <axel.lin@ingics.com>
+The call sequence in wm8960_configure_clocking is
+
+   ret = wm8960_configure_sysclk();
+   if (ret >= 0)
+        goto configure_clock;
+
+   ....
+
+   ret = wm8960_configure_pll();
+
+configure_clock:
+   ...
+
+wm8960_configure_sysclk is called before wm8960_configure_pll, as
+there is bitclk relax on both functions, so wm8960_configure_sysclk
+always return success, then wm8960_configure_pll() never be called.
+
+With this case:
+aplay -Dhw:0,0 -d 5 -r 48000 -f S24_LE -c 2 audio48k24b2c.wav
+the required bitclk is 48000 * 24 * 2 = 2304000, bitclk got from
+wm8960_configure_sysclk is 3072000, but if go to wm8960_configure_pll.
+it can get correct bitclk 2304000.
+
+So bitclk relax condition should be removed in wm8960_configure_sysclk,
+then wm8960_configure_pll can be called, and there is also bitclk relax
+function in wm8960_configure_pll.
+
+Fixes: 3c01b9ee2ab9 ("ASoC: codec: wm8960: Relax bit clock computation")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+changes in v2:
+- Find the real reason for the case, just patially remove bitclk relax
+
+ sound/soc/codecs/wm8960.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index df351519a3a6..847ca16b9841 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -608,10 +608,6 @@ static const int bclk_divs[] = {
+  *		- lrclk      = sysclk / dac_divs
+  *		- 10 * bclk  = sysclk / bclk_divs
+  *
+- *	If we cannot find an exact match for (sysclk, lrclk, bclk)
+- *	triplet, we relax the bclk such that bclk is chosen as the
+- *	closest available frequency greater than expected bclk.
+- *
+  * @wm8960: codec private data
+  * @mclk: MCLK used to derive sysclk
+  * @sysclk_idx: sysclk_divs index for found sysclk
+@@ -629,7 +625,7 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+ {
+ 	int sysclk, bclk, lrclk;
+ 	int i, j, k;
+-	int diff, closest = mclk;
++	int diff;
+ 
+ 	/* marker for no match */
+ 	*bclk_idx = -1;
+@@ -653,12 +649,6 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+ 					*bclk_idx = k;
+ 					break;
+ 				}
+-				if (diff > 0 && closest > diff) {
+-					*sysclk_idx = i;
+-					*dac_idx = j;
+-					*bclk_idx = k;
+-					closest = diff;
+-				}
+ 			}
+ 			if (k != ARRAY_SIZE(bclk_divs))
+ 				break;
+-- 
+2.27.0
+
