@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E3532BEAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458C332BEB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574879AbhCCReY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:34:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1359314AbhCCOFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:05:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF49E64E90;
-        Wed,  3 Mar 2021 14:05:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614780307;
-        bh=Eqh28vIRPFMJo7qe41AKhvYlOMF/qtQH6xKEWSHRMZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G8KCrY2uk0jVaQI43XIjQP6AgLP0VOAShQRNDqvwBmPcmKCv/uxI0Gc6M1Gz884uo
-         BMqCU953ZEQNGz/0X1de2/kBPTijy0RP7aZ68leuL09Bii/tANEL3Ulk57YbW8FoRq
-         EgmreE3GnrGAj0NBIRIZT0egHfGef/mRkjEI/UnA=
-Date:   Wed, 3 Mar 2021 15:05:04 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@arndb.de>,
-        taehyun cho <taehyun.cho@samsung.com>, balbi@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-Message-ID: <YD+XkFAfoKpSsea3@kroah.com>
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
- <20210303022628.6540-1-taehyun.cho@samsung.com>
- <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
- <YD9lTjWc25Nn7jAR@kroah.com>
- <20210303103839.it7grj3vtrdmngbd@kozik-lap>
+        id S1574945AbhCCRe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:34:27 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55186 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236153AbhCCOHQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:07:16 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 123E5KbK030138;
+        Wed, 3 Mar 2021 08:05:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614780320;
+        bh=sny2YcpGa4DQa7cTGGJ00vnhQUe+5Yv3lyKxESu3egQ=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=qoii31p7VqP9cyjdUjx5aw4dxClyQ4Wm6uITtyWExRNAxzyOP2k3ycT9g4LKYvoz6
+         kG2SFS23dVMP++HuoQzfYwRWQwcdbz0EmrXcT+/uBzqP81IXlChq9hLsyA15WQFrC/
+         VzYIlSKAfYrBB1gVUaIyOT7zXi8l45hGAsQHCcTg=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 123E5KNx032649
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 3 Mar 2021 08:05:20 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
+ 2021 08:05:19 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 3 Mar 2021 08:05:19 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 123E5Jht107458;
+        Wed, 3 Mar 2021 08:05:19 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Tero Kristo <kristo@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, Bao Cheng Su <baocheng.su@siemens.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, Le Jin <le.jin@siemens.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] arm64: Add TI AM65x-based IOT2050 boards
+Date:   Wed, 3 Mar 2021 08:05:18 -0600
+Message-ID: <161477999018.19253.13540036146776431880.b4-ty@ti.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <cover.1613071976.git.jan.kiszka@siemens.com>
+References: <cover.1613071976.git.jan.kiszka@siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303103839.it7grj3vtrdmngbd@kozik-lap>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:38:39AM +0100, Krzysztof Kozlowski wrote:
-> On Wed, Mar 03, 2021 at 11:30:38AM +0100, Greg Kroah-Hartman wrote:
-> > On Wed, Mar 03, 2021 at 11:24:01AM +0100, Krzysztof Kozlowski wrote:
-> > > On 03/03/2021 03:26, taehyun cho wrote:
-> > > > 'ARCH_EXYNOS' is not suitable for DWC3_EXYNOS config.
-> > > > 'USB_DWC3_EXYNOS' is glue layer which can be used with
-> > > > Synopsys DWC3 controller on Exynos SoCs. USB_DWC3_EXYNOS'
-> > > > can be used from Exynos5 to Exynos9.
-> > > > 
-> > > > Signed-off-by: taehyun cho <taehyun.cho@samsung.com>
-> > > 
-> > > NACK because you ignored comments from March. Please respond to them instead
-> > > of resending the same patch.
-> > > 
-> > > Anyway, when resending you need to version your patches and explain the
-> > > differences. Please also Cc reviewers and other maintainers. I pointed out
-> > > this before:
-> > > scripts/get_maintainer.pl -f drivers/usb/dwc3/dwc3-exynos.c
-> > > 
-> > > The driver - in current form - should not be available for other
-> > > architectures. It would clutter other platforms and kernel config selection.
-> > > If you want to change this, you need to provide rationale (usually by adding
-> > > support to new non-Exynos platform).
-> > 
-> > No, these crazy "ARCH_FOO" things need to go away.  For systems that
-> > want to build "universal" kernels, why are they being forced to enable
-> > "ARCH_*" just so they can pick specific drivers?  That is not done on
-> > other architectures, why is ARM64 so "special" in this regard.
-> > 
-> > How do you "know" that these cores/devices are tied to specific ARCH_
-> > platforms?  We don't, so that dependency should not be there.
-> > 
-> > Just let any arch pick any driver if it can be built, you never know
-> > what it might be run on.  Removing ARCH_ dependencies in Kconfig files
-> > is a good thing, please do not discourage that from happening.
+On Thu, 11 Feb 2021 20:32:52 +0100, Jan Kiszka wrote:
+> Changes in v2:
+>  - address board-specific issues found by kernel_verify_patch
+>  - remove dead l2-cache node from iot2050-basic DT
+>  - add binding for Siemens vendor prefix
+>  - factor out board bindings into separate patch
+>  - add missing device_type to common ti,am654-pcie-rc nodes
 > 
-> It's getting more generic topic, so let me Cc Arnd and Guenter (I think
-> once I discussed this with Guenter around watchdog).
-> 
-> This is so far component of a SoC, so it cannot be re-used outside of
-> SoC. Unless it appears in a new SoC (just like recent re-use of Samsung
-> serial driver for Apple M1). Because of the architecture, you cannot
-> build universal kernel without ARCH_EXYNOS. You need it. Otherwise the
-> kernel won't boot on hardware with DWC Exynos.
+> [...]
 
-So, to create a "generic" arm64 kernel, I need to go enable all of the
-ARCH_* variants as well?  I thought we were trying to NOT do the same
-mess that arm32 had for this type of thing.
+Hi Jan Kiszka,
 
-> Since DWC Exynos won't work without ARCH_EXYNOS - the user will not get
-> any usable binary - I think all, or almost all, SoC specific drivers are
-> limited per ARCH. This limits the amount of choices for distro people
-> and other kernel configuring folks, so they won't have to consider
-> useless options.
+I have picked patch #4 in your series to the following to branch
+ti-k3-dts-next on [1]. Thank you! Rest of the series will have to be
+reposted *after* Rob Herring Acks the bindings (monitor status in
+queue [2]).
 
-Why do we have ARCH_EXYNOS at all?  x86-64 doesn't have this, why is
-arm64 somehow special here?
+[4/4] arm64: dts: ti: k3-am65-main: Add device_type to pcie*_rc nodes
+      commit: 0d7571c36331aafce485fa105959b498c86615d7
 
-That's my complaint, it feels wrong that I have to go and enable all
-different ARCH_ symbols just to build these drivers.  If people want
-'default' configurations, then provide an exynos default config file,
-right?
+I have picked patch #4 for the next kernel window for now, given it is
+a trivial fix.
 
-> Anyway, that's the convention or consensus so far for entire SoC. If we
-> want to change it - sure, but let's make it for everyone, not for just
-> this one USB driver.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Great, let's change it for everyone, I don't see a need for ARCH_*
-symbols except for people who want to make it simpler for their one
-board type.  And for that, use a defconfig.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I've complained about this before, from a driver subsystem maintainer
-point of view, this is crazy, drivers should be building and working on
-everything.  Worst case, it's a cpu-type issue, to build or not build a
-driver (i.e. s390, i386), best case it's a feature-type issue to depend
-on (i.e. USB, TTY, etc.).  But never a "this one sub-architecture of
-this one cpu"-type issue.  That feels crazy to me...
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-thanks,
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-greg k-h
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+[2] https://patchwork.ozlabs.org/project/devicetree-bindings/list/?param=3&page=2
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
