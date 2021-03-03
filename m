@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C59D32BEC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D83632BEC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575809AbhCCRgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:36:00 -0500
-Received: from mga01.intel.com ([192.55.52.88]:14596 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381270AbhCCOUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:20:17 -0500
-IronPort-SDR: 6bn2ODiGUlqbQAniCuTqZTE5H/QDH4CHO6/bHLZ1L9uBs12VWzDMSCawMhj5GFuseqmuz8WqZa
- H/PucElZzyqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="206888516"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="206888516"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 06:18:42 -0800
-IronPort-SDR: NfkQeCsjP2sVjHY9wVMwnwbs0q21vq8tvbtyoZercfEkiV4TZjBRvMf41C7O7ZCP522bPBoxXL
- IuRe/i3t6t2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="373990436"
-Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Mar 2021 06:18:41 -0800
-Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lHSKn-0001XT-27; Wed, 03 Mar 2021 14:18:41 +0000
-Date:   Wed, 03 Mar 2021 22:17:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/drm/radeon/si_dpm] BUILD SUCCESS
- 1f0ec6f175331d2aa83986dfc2e5208ae250b03f
-Message-ID: <603f9a8f.aDLrpMFzzSApzVYQ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1575777AbhCCRfz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 12:35:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237416AbhCCOSo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:18:44 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5413DC061797
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:18:02 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHSK3-00014Z-9q; Wed, 03 Mar 2021 15:17:55 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHSK2-00075d-0s; Wed, 03 Mar 2021 15:17:54 +0100
+Message-ID: <e6f8537d2a1f34d0a424b68e056c0ae556c93efd.camel@pengutronix.de>
+Subject: Re: [PATCH v3 0/5] Reset driver for IMX8MQ VPU hardware block
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, ezequiel@collabora.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Wed, 03 Mar 2021 15:17:53 +0100
+In-Reply-To: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/drm/radeon/si_dpm
-branch HEAD: 1f0ec6f175331d2aa83986dfc2e5208ae250b03f  drm/radeon/si_dpm: Replace one-element array with flexible-array in struct SISLANDS_SMC_SWSTATE
+Hi Benjamin,
 
-elapsed time: 721m
+On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
+> The two VPUs inside IMX8MQ share the same control block which can be see
+> as a reset hardware block.
 
-configs tested: 81
-configs skipped: 2
+This isn't a reset controller though. The control block also contains
+clock gates of some sort and a filter register for the featureset fuses.
+Those shouldn't be manipulated via the reset API.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> In order to be able to add the second VPU (for HECV decoding) it will be
+> more handy if the both VPU drivers instance don't have to share the
+> control block registers. This lead to implement it as an independ reset 
+> driver and to change the VPU driver to use it.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                         cm_x300_defconfig
-m68k                        mvme16x_defconfig
-arm                       cns3420vb_defconfig
-arm                       omap2plus_defconfig
-sh                          urquell_defconfig
-mips                            ar7_defconfig
-mips                          malta_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                            dove_defconfig
-s390                       zfcpdump_defconfig
-sh                      rts7751r2d1_defconfig
-c6x                              alldefconfig
-m68k                        m5407c3_defconfig
-s390                             alldefconfig
-m68k                           sun3_defconfig
-sh                          rsk7201_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210302
-i386                 randconfig-a003-20210302
-i386                 randconfig-a002-20210302
-i386                 randconfig-a004-20210302
-i386                 randconfig-a006-20210302
-i386                 randconfig-a001-20210302
-i386                 randconfig-a016-20210303
-i386                 randconfig-a012-20210303
-i386                 randconfig-a014-20210303
-i386                 randconfig-a013-20210303
-i386                 randconfig-a011-20210303
-i386                 randconfig-a015-20210303
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Why not switch to a syscon regmap for the control block? That should
+also allow to keep backwards compatibility with the old binding with
+minimal effort.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> Please note that this series break the compatibility between the DTB and
+> kernel. This break is limited to IMX8MQ SoC and is done when the driver
+> is still in staging directory.
+
+I know in this case we are pretty sure there are no users of this
+binding except for a staging driver, but it would still be nice to keep
+support for the deprecated binding, to avoid the requirement of updating
+kernel and DT in lock-step.
+
+regards
+Philipp
