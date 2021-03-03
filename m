@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689CE32BA86
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34C232BA81
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346796AbhCCLYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:24:54 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:28990 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232171AbhCCC7D (ORCPT
+        id S1357784AbhCCLYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234570AbhCCCkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 21:59:03 -0500
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210303023229epoutp04741cc31718ba468ca37d8c3ba53292ee~otFZSrMaY0357203572epoutp04Z
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:32:29 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210303023229epoutp04741cc31718ba468ca37d8c3ba53292ee~otFZSrMaY0357203572epoutp04Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614738749;
-        bh=i3E2/xKVUq7q+TKnA0ChUWF73Ydf8977NkXsMuAKG1M=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=dhRVu28h/7km9VRct0JH4ljkk9DBBn3UKPwQdcvPBWl7QQGOwLmb/da+DjIFo/0LY
-         xF2F1aOf95olxggaeVhtrM03/6dD21LAc61sZabxMsiWyie0sJEGdRSbufKkZxEzjJ
-         iRzEi1Va8jZEY/qXhCgiLtMgVbwqnH5+d+WlOJ2g=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210303023228epcas2p213d6724cf19532c9b582994130826eb0~otFYZ4eDW3238732387epcas2p2x;
-        Wed,  3 Mar 2021 02:32:28 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DqyhC1QR4z4x9Pt; Wed,  3 Mar
-        2021 02:32:27 +0000 (GMT)
-X-AuditID: b6c32a46-1d9ff7000000dbf8-ee-603ef53b5ec3
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        88.2A.56312.B35FE306; Wed,  3 Mar 2021 11:32:27 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bean Huo <huobean@gmail.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <c3560201c8dad085b0c5a661256eef837095b24b.camel@gmail.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210303023226epcms2p4b7a87abe2993806df0a1957628a5fba6@epcms2p4>
-Date:   Wed, 03 Mar 2021 11:32:26 +0900
-X-CMS-MailID: 20210303023226epcms2p4b7a87abe2993806df0a1957628a5fba6
+        Tue, 2 Mar 2021 21:40:25 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEE4C061797;
+        Tue,  2 Mar 2021 18:39:41 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id h4so15192891pgf.13;
+        Tue, 02 Mar 2021 18:39:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EGVG4WkVl5pFpBjbmr9YGkCtEq1i3vWKYOcjQG1R/v0=;
+        b=aS2Uf5dAX41dzyG77xCrLK1TGmya8ecK4+YhOlzcqqsTSkEuXC56qYFBPV0qZ5AokF
+         U1IZ2uNq4U6kIX9oRa42X00OpuSFbq2FjtuDXhprPoLZZer5qI2u1ucLXVEDWEJix57b
+         slwzL4TMyf6hYBH2vyHO6DV7n+1ob4g5K4AnsnHsmcb5Sj58xXxhD/n7+9afq76e5GwW
+         UcTNyVtZ+70xaz+a6rwbuiJExyp3ySWrDbu3ethvOT0WXZdB2VBXYp3ey9sMoIk2TzXT
+         DFw0zMf4+go0l5NdnamfzDJqp1S4hKinnX01Kh3f85oojOfVluEPIwk+jkLAQipNLpmT
+         2XaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EGVG4WkVl5pFpBjbmr9YGkCtEq1i3vWKYOcjQG1R/v0=;
+        b=cfuXUxenT2e3KCDejA/ZlO7BD3CI17rmGDbHWI3UqKYdDO63hs/rkHs2ngGIeqHrw7
+         kAqxVEbZExlTeeFw7vn2VuELCmoM53HqDxKinMdKxU5j6oVRtipUMGe06f7WQAKXsQ78
+         Doj46jBMRkOn/GIS6AqzLAACzMXl8KqOhVFOUlH31jXBfLyUPt6CwmWxL2Qawi54ebc6
+         nbkDVQXoVHFIaE9FcaTuk2ZmPxP2FGcKzInVTul0ZeWE9e/40PGDwGQWkixr9JOiNsow
+         97Go5K6NurZ2pPXXuN24Ui9rZEJ4wlpACeGjjz4ytS9V2ynziYmiSszMAKSQmyAAfHBj
+         IiOg==
+X-Gm-Message-State: AOAM530VxAFz+fRRLMh8UIQ9/xw2pFuq0wml7cIxH3gWF+5osJnRFROy
+        u6W5fDPzuOuqAjywL8T8og==
+X-Google-Smtp-Source: ABdhPJyks6SodkO5sqbqFQUQZ/9OziaBwHkURJyyyVxkHE4I9p4DH0accCxHjQEUk8hg9uGmf6yrPg==
+X-Received: by 2002:a63:741:: with SMTP id 62mr1302468pgh.70.1614739180726;
+        Tue, 02 Mar 2021 18:39:40 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.56])
+        by smtp.gmail.com with ESMTPSA id v1sm9289197pgh.17.2021.03.02.18.39.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 18:39:40 -0800 (PST)
+Subject: Re: [PATCH] kvm: lapic: add module parameters for
+ LAPIC_TIMER_ADVANCE_ADJUST_MAX/MIN
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        Haiwei Li <lihaiwei@tencent.com>
+References: <20210303020946.26083-1-lihaiwei.kernel@gmail.com>
+Message-ID: <03239d81-df56-a6c9-c79d-c14d22f62705@gmail.com>
+Date:   Wed, 3 Mar 2021 10:39:29 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210303020946.26083-1-lihaiwei.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMJsWRmVeSWpSXmKPExsWy7bCmua71V7sEg4Uz2SwezNvGZrG37QS7
-        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
-        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gsFi3czeIg6nH5irfH5b5e
-        Jo+ds+6ye0xYdIDRY//cNeweLSf3s3h8fHqLxaNvyypGj8+b5DzaD3QzBXBF5dhkpCampBYp
-        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAH2opFCWmFMKFApILC5W
-        0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIyXjy6gxLwT7m
-        ir4Ja9gaGM8xdTFyckgImEg8u9jG1sXIxSEksINRYuGHY8xdjBwcvAKCEn93CIPUCAvYS3w8
-        288IYgsJKEmsvziLHSKuJ3Hr4RqwOJuAjsT0E/fZQeaICCxlkZhyfBkziMMs8ItJ4sTjD4wQ
-        23glZrQ/ZYGwpSW2L98KFucUcJc4+/oHO0RcQ+LHsl5mCFtU4ubqt+ww9vtj86HmiEi03jsL
-        VSMo8eDnbqi4pMSx3R+gPquX2HrnFyPIERICPYwSh3feYoVI6Etc69gIdgSvgK/E06/LmUA+
-        ZhFQlXhwTxqixEViza8DYPOZBeQltr+dAw4UZgFNifW79EFMCQFliSO3WGC+atj4mx2dzSzA
-        J9Fx+C9cfMe8J1CXqUms+7meaQKj8ixESM9CsmsWwq4FjMyrGMVSC4pz01OLjQqMkCN3EyM4
-        tWu57WCc8vaD3iFGJg7GQ4wSHMxKIrziL20ThHhTEiurUovy44tKc1KLDzGaAj05kVlKNDkf
-        mF3ySuINTY3MzAwsTS1MzYwslMR5iw0exAsJpCeWpGanphakFsH0MXFwSjUwxeaduHB1tU7F
-        H27m8m9dDhc/BS56w7Lk313Lab9fs/Bwfjj4I/V26dx5FkHarhuCIxZHdscp/TVi/cx+p89h
-        fdbvpzeWWrGof73GsHrmV+8VM8KXvJjBZu5ou+t8b/LR/qA/GndnXj2s5dknPOtkof8rAQ5f
-        uRP7rzHyCxqx+u/WvnNY45mkcf3p/5xf955lvWjufE5/8/dzJ/kZ8szMF/67tm/B3zdPg/8H
-        i7W7cK9R7zvytTNI1Xyf0PM2a40p8q9VxQ31k6/PWVD+aVvKzfTkt/9E9i//0fN90nPXvOuJ
-        uic/NF+19nkwcV33xWfNMX4tf4xffz9mrPzrv9PC6xxnjJuts4/MyOCqdeX/e0qJpTgj0VCL
-        uag4EQCDcB0kdgQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210226073233epcms2p80fca2dffabea03143a9414838f757633
-References: <c3560201c8dad085b0c5a661256eef837095b24b.camel@gmail.com>
-        <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
-        <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
-        <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +
-> > +/*
-> > + * In this driver, WRITE_BUFFER CMD support 36KB (len=9) ~ 512KB
-> > (len=128) as
-> > + * default. It is possible to change range of transfer_len through
-> > sysfs.
-> > + */
-> > +static inline bool ufshpb_is_required_wb(struct ufshpb_lu *hpb, int
-> > len)
-> > +{
-> > +       return (len >= hpb->pre_req_min_tr_len &&
->  
-> Here is wrong, should be : len > hpb->pre_req_min_tr_len.
+On 21/3/3 10:09, lihaiwei.kernel@gmail.com wrote:
+> From: Haiwei Li <lihaiwei@tencent.com>
+> 
+> In my test environment, advance_expire_delta is frequently greater than
+> the fixed LAPIC_TIMER_ADVANCE_ADJUST_MAX. And this will hinder the
+> adjustment.
 
-OK, Done.
+Supplementary details:
 
-Thanks,
-Daejun 
+I have tried to backport timer related features to our production
+kernel.
+
+After completed, i found that advance_expire_delta is frequently greater
+than the fixed value. It's necessary to trun the fixed to dynamically
+values.
+
+-- 
+Haiwei Li
