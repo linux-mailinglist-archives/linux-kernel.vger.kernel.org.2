@@ -2,193 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDBA32BCF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2109032BD47
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572957AbhCCPEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:04:51 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7754 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232698AbhCCK0c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:26:32 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1239iKST177489;
-        Wed, 3 Mar 2021 04:53:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=GiMYhcqP64MDO+8UvWA5bM2tZfeXB9Mta2yfwV7bUNg=;
- b=i6vW56P1CPxvzztV4BveFIb5helupK9zwDNl6sCy4u+egFFZuIT9jipBrgCgIlgJqVpf
- z/JWgzR1G2RWsgMlHKznkEGICIiwQGFyvoc3rgeEo7tjgPtzwU51sqcrzGfBgUzJP/vb
- yrzxvdidJC3rqq1Wo9C3Of6O6OSJZgS1tIyRymEPko+IG1cakmMMtjoNGPEHNapuurc5
- H05qO7opXczkEPZnGdDXydyo4XMaK6LZwf+X6D+lENFnoBXjAZQ4WE40v5AYMlUEE+kc
- 5mhWxrhCn1PxZosyXzmGB6eP71jH+NZznXUWpicMe8APGYn4/yRIV//I2oBah7fgedjR 7g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3728390cer-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 04:53:51 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1239l5ex183414;
-        Wed, 3 Mar 2021 04:53:02 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3728390c99-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 04:53:02 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1239iIxx009812;
-        Wed, 3 Mar 2021 09:52:54 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 371a8erpwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 09:52:54 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1239qbh533948068
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Mar 2021 09:52:37 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20FBB42045;
-        Wed,  3 Mar 2021 09:52:51 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4F4542047;
-        Wed,  3 Mar 2021 09:52:50 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  3 Mar 2021 09:52:50 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Narendra K <narendra_k@dell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Viktor Mihajlovski <mihajlov@linux.ibm.com>,
-        Stefan Raspl <raspl@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: [RFC 1/1] s390/pci: expose a PCI device's UID as its index
-Date:   Wed,  3 Mar 2021 10:52:50 +0100
-Message-Id: <20210303095250.1360007-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210303095250.1360007-1-schnelle@linux.ibm.com>
-References: <20210303095250.1360007-1-schnelle@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 phishscore=0 impostorscore=0 suspectscore=0
- adultscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- spamscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030072
+        id S1449020AbhCCPnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:43:20 -0500
+Received: from mx1.tq-group.com ([93.104.207.81]:50861 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357485AbhCCKuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:50:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1614768599; x=1646304599;
+  h=from:to:cc:subject:date:message-id;
+  bh=Lk8fMpF0BlGCPbPFLfDRN183I0CaSpoMX3F4ElWcTBQ=;
+  b=aKwJ6Ufy9RxeRN6Jqk/CVlGZ6hWvjayl2jAeRhX5hnfhJuaVvr9fLOqi
+   Duv0J1AjNi/IEndg0PBkO8STf2EpLe2QNZlp3QsOoq7ScpFsRwjKxp5Oq
+   rDS2V542mRdMNtvpSzXI0gUNCfjo6R8PBgz1GwAEjOT1uOEovC4wiXYuo
+   deXy4w5quk1MimM5nM7dNupxIAIKC+FMe6irkuo919NiiDV+jx91GtTFx
+   CbqmhX9oEqcucFc4b0RV+3GpZt1oY0RVE4W+3ywKKcN2dDfVJ8Mf+ZCGo
+   kDyPewTFncgSW7Z/Lu0yTAqWX9O/eQ9aTgjLDg4PfzZXpM+EGaVVio8UT
+   w==;
+IronPort-SDR: NYOsdZeS9zpQ4EHROOlzU537W1uPHSrS6hesMcOy9wPzv2uoMVaBuQgErTmCGiNt6OBWaokaiN
+ u0BtzgyPrfuIjLwe2uF4YAHCR3E7dIady6moJmalMY9Hi1Huk662AuAJ/5aPNzXKF8zPMObBwN
+ wjVbdY4gspOBSKBd+SlMpVhzWT/YJsV0sSGeWL4t4czyeqyPueZh2Qv0j2R/U92BdV2YtEgXep
+ cO8J2AcVKkEo1/6cuT7tcy/N1gF26cqnlz2yb2pP/4BdhgtiJSdLNtdDCmfRTbINuBc99/HE5K
+ fWw=
+X-IronPort-AV: E=Sophos;i="5.81,219,1610406000"; 
+   d="scan'208";a="16258530"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 03 Mar 2021 10:54:40 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 03 Mar 2021 10:54:40 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 03 Mar 2021 10:54:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1614765280; x=1646301280;
+  h=from:to:cc:subject:date:message-id;
+  bh=Lk8fMpF0BlGCPbPFLfDRN183I0CaSpoMX3F4ElWcTBQ=;
+  b=p/M+Ska/H9lyRz4kadHfbXhf5C6sZwDqi+lN0NCAilEY3CCpGh/Q0MRO
+   RsbWGjvvfumBFMS/jIRbTlH+860DbxF5YcBRYkTs5aKvONS4Z0FN6SL4K
+   8L2tJu6jyhoPgpg1NrksuM+8DibeI8Wpwlrt/4kfGPa4WMcB5PPdB7v8G
+   AOO6d71Q/XTG4MRYbLpxN0eJ8EJETN+vfyVdWA0ubzP5VbMM4NxMkLEfQ
+   lrUiM9MHwoKL1ebo7IaAjbSDDStOzUvdjT3U/GtCEoSiAQFMtneMXaAwa
+   bcjRDKHkaqvRKptCSDKNLFqdKqZj47aJcV5l+2jsEfExu4GuZ7QAT0H7x
+   g==;
+IronPort-SDR: z9+Bf9AS9rc7mlWXH6r2Y9TNt04GEQrbf0GJD9vb93NVKtnY60ZiuMpWgrWFzSEyxp7rwa61UF
+ UPjh43W4Uk2h2NlGqbw9XM8sDFeKY7dDxt4TKeVLFiRco5VLdquhpNiSOqXh61CUdUz2x77Kdg
+ m+d4espDuQYlBO0mnNRZzYC69IairUDIQpfIsptvvjiqdVmurWNKUfzBknbAqnyRjK7BTY8/qL
+ xHlg9y+WGGOTXDkS9yWZds12cFAPfDvFCfa6mAXY8XTxbb6CPc2XeURZBRndhKxVoK4KmYInOv
+ pys=
+X-IronPort-AV: E=Sophos;i="5.81,219,1610406000"; 
+   d="scan'208";a="16258529"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 03 Mar 2021 10:54:40 +0100
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id C6E29280070;
+        Wed,  3 Mar 2021 10:54:39 +0100 (CET)
+X-CheckPoint: {603F5CDC-2-6615631E-D10D9432}
+X-MAIL-CPID: 0F55706C1DA52CCAE30BBBD14F1BC4BB_2
+X-Control-Analysis: str=0001.0A782F1F.603F5CE0.0018,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH v2 1/3] power: supply: bq27xxx: fix sign of current_now for newer ICs
+Date:   Wed,  3 Mar 2021 10:54:18 +0100
+Message-Id: <20210303095420.29054-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On s390 each PCI device has a user-defined ID (UID) exposed under
-/sys/bus/pci/devices/<dev>/uid. This ID was designed to serve as the PCI
-device's primary index and to match the device within Linux to the
-device configured in the hypervisor. To serve as a primary identifier
-the UID must be unique within the Linux instance, this is guaranteed by
-the platform if and only if the UID Uniqueness Checking flag is set
-within the CLP List PCI Functions response.
+Commit cd060b4d0868 ("power: supply: bq27xxx: fix polarity of current_now")
+changed the sign of current_now for all bq27xxx variants, but on BQ28Z610
+I'm now seeing negated values *with* that patch.
 
-In this the UID serves an analogous function as the SMBIOS instance
-number or ACPI index exposed as the "index" respectively "acpi_index"
-device attributes and used by e.g. systemd to set interface names. As
-s390 does not use and will likely never use ACPI nor SMBIOS there is no
-conflict and we can just expose the UID under the "index" attribute
-whenever UID Uniqueness Checking is active and get systemd's interface
-naming support for free.
+The GTA04/Openmoko device that was used for testing uses a BQ27000 or
+BQ27010 IC, so I assume only the BQ27XXX_O_ZERO code path was incorrect.
+Revert the behaviour for newer ICs.
 
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Acked-by: Viktor Mihajlovski <mihajlov@linux.ibm.com>
+Fixes: cd060b4d0868 "power: supply: bq27xxx: fix polarity of current_now"
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- Documentation/ABI/testing/sysfs-bus-pci | 11 +++++---
- arch/s390/pci/pci_sysfs.c               | 36 +++++++++++++++++++++++++
- 2 files changed, 43 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-index 25c9c39770c6..1241b6d11a52 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci
-+++ b/Documentation/ABI/testing/sysfs-bus-pci
-@@ -195,10 +195,13 @@ What:		/sys/bus/pci/devices/.../index
- Date:		July 2010
- Contact:	Narendra K <narendra_k@dell.com>, linux-bugs@dell.com
- Description:
--		Reading this attribute will provide the firmware
--		given instance (SMBIOS type 41 device type instance) of the
--		PCI device. The attribute will be created only if the firmware
--		has given an instance number to the PCI device.
-+		Reading this attribute will provide the firmware given instance
-+		number of the PCI device.  Depending on the platform this can
-+		be for example the SMBIOS type 41 device type instance or the
-+		user-defined ID (UID) on s390. The attribute will be created
-+		only if the firmware has given an instance number to the PCI
-+		device and that number is guaranteed to uniquely identify the
-+		device in the system.
- Users:
- 		Userspace applications interested in knowing the
- 		firmware assigned device type instance of the PCI
-diff --git a/arch/s390/pci/pci_sysfs.c b/arch/s390/pci/pci_sysfs.c
-index 5c028bee91b9..30f48e8a1156 100644
---- a/arch/s390/pci/pci_sysfs.c
-+++ b/arch/s390/pci/pci_sysfs.c
-@@ -131,6 +131,38 @@ static ssize_t report_error_write(struct file *filp, struct kobject *kobj,
- }
- static BIN_ATTR(report_error, S_IWUSR, NULL, report_error_write, PAGE_SIZE);
+v2: no changes
+
+ drivers/power/supply/bq27xxx_battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
+index 4c4a7b1c64c5..cb6ebd2f905e 100644
+--- a/drivers/power/supply/bq27xxx_battery.c
++++ b/drivers/power/supply/bq27xxx_battery.c
+@@ -1827,7 +1827,7 @@ static int bq27xxx_battery_current(struct bq27xxx_device_info *di,
+ 		val->intval = curr * BQ27XXX_CURRENT_CONSTANT / BQ27XXX_RS;
+ 	} else {
+ 		/* Other gauges return signed value */
+-		val->intval = -(int)((s16)curr) * 1000;
++		val->intval = (int)((s16)curr) * 1000;
+ 	}
  
-+#ifndef CONFIG_DMI
-+/* analogous to smbios index */
-+static ssize_t index_show(struct device *dev,
-+			  struct device_attribute *attr, char *buf)
-+{
-+	struct zpci_dev *zdev = to_zpci(to_pci_dev(dev));
-+	u32 index = ~0;
-+
-+	if (zpci_unique_uid)
-+		index = zdev->uid;
-+
-+	return sprintf(buf, "%u\n", index);
-+}
-+static DEVICE_ATTR_RO(index);
-+
-+static umode_t zpci_unique_uids(struct kobject *kobj,
-+				struct attribute *attr, int n)
-+{
-+	return zpci_unique_uid ? attr->mode : 0;
-+}
-+
-+static struct attribute *zpci_ident_attrs[] = {
-+	&dev_attr_index.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group zpci_ident_attr_group = {
-+	.attrs = zpci_ident_attrs,
-+	.is_visible = zpci_unique_uids,
-+};
-+#endif
-+
- static struct bin_attribute *zpci_bin_attrs[] = {
- 	&bin_attr_util_string,
- 	&bin_attr_report_error,
-@@ -150,6 +182,7 @@ static struct attribute *zpci_dev_attrs[] = {
- 	&dev_attr_mio_enabled.attr,
- 	NULL,
- };
-+
- static struct attribute_group zpci_attr_group = {
- 	.attrs = zpci_dev_attrs,
- 	.bin_attrs = zpci_bin_attrs,
-@@ -170,5 +203,8 @@ static struct attribute_group pfip_attr_group = {
- const struct attribute_group *zpci_attr_groups[] = {
- 	&zpci_attr_group,
- 	&pfip_attr_group,
-+#ifndef CONFIG_DMI
-+	&zpci_ident_attr_group,
-+#endif
- 	NULL,
- };
+ 	return 0;
 -- 
-2.25.1
+2.17.1
 
