@@ -2,196 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0566832C137
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E1D32C135
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837029AbhCCSs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:26 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30034 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1835207AbhCCSCg (ORCPT
+        id S1837011AbhCCSsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1835190AbhCCSCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:02:36 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123Hwe50028424;
-        Wed, 3 Mar 2021 10:01:44 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=ZiLe2FQD8KWfmHZgeOZnHprqHwqyjEilvIJF++JW96Q=;
- b=m28M/xgIKRQjA7/22BPY0P9jjRulIhBXRAvf8yLki0jDX5JX9Lp5mGR8xkmKWhB6Jr1D
- hGTBLeqI/Yv0fcPGYTvcxqyP2aUjdtzKXj4rTQTAhbi1kAYUz+yBis+l8HlgoDQSjOf/
- VG/JVWGqqKWpTZu28IEg7KwQvZVfkDOKoQc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3727gujm27-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 03 Mar 2021 10:01:44 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 3 Mar 2021 10:01:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YPVow65mE7fupAewxhV8VDcJCQMhsUf1QbMfd/4zdu86vmna/a7OyZrdauiOobkbWG9RXh2Su9cDaD53yIpxjucqqEbsuh/7WksAc7beOVx9YkpyYLSLEMR0oA5Zzqr5Hh6tZsSRK5nDNnmrOWzBCXvfqyOY3gfeBHbyQEYguPkHT6wDewJ1Qy/5b9jJuUJ4N+8mwKTuP8GSt7pR2YGRQxZukZqwJozyiDwRuow0U94PAnyCaLrurpGfRxJjYtdqoT9iSUp8SCoz2sdN6R6ivHlmTIIuaK6irEwGI6AJCrTzb9mFsSTRmYJHW2l6mH5WKCmMznp+ECbh4ZlueVZl7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZiLe2FQD8KWfmHZgeOZnHprqHwqyjEilvIJF++JW96Q=;
- b=RfpSakIVDcp9h0urm5V3DOXoFc9z+AlxtTO5DULh0D7VwWLvNZWUsfKDUVaRBfKY/R3l89uGRzD755jyle7jSuOqCTO/UFl6gYbyU2FusKTi6GCETfg7L5Gx2tESmyORSwkyauUKcagrgCOp9VW8FfgMDH/S96XV9vftVvR/0qAOkSv9AzWtnaiDtWwGyDu4t+suLX/V8fjAtobOUpmNTrb3+Z17DBblnfHM7q1J02GBlaGZLhu4xVBQR5hVWxwQVNEIn9EQGBTbtzDlVBal1GKsXaJn+T3PE3DNaFbBqL8AJJOjb8wI9gNqZVe0nB2k8VeZzIJtRUv7NsgqMPzytQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3159.namprd15.prod.outlook.com (2603:10b6:a03:101::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Wed, 3 Mar
- 2021 18:01:42 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3912.017; Wed, 3 Mar 2021
- 18:01:42 +0000
-Date:   Wed, 3 Mar 2021 10:01:37 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <akpm@linux-foundation.org>, <shakeelb@google.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v3] mm: memcontrol: fix kernel stack account
-Message-ID: <YD/PAVqLRWayfioT@carbon.dhcp.thefacebook.com>
-References: <20210303151843.81156-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210303151843.81156-1-songmuchun@bytedance.com>
-X-Originating-IP: [2620:10d:c090:400::5:eac2]
-X-ClientProxiedBy: MWHPR17CA0053.namprd17.prod.outlook.com
- (2603:10b6:300:93::15) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Wed, 3 Mar 2021 13:02:33 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECA1C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:01:51 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id s7so7282065plg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fN9kN40P4Zb0ukn4Ugrf+KcpYX4t7X0lCi/CEaratbo=;
+        b=HR9HE4CMDqeLv5C4sWclwl7s5hfMoIrfjNf3jN8ZfWfTFiDoND8rTi8dzYei7fRnnG
+         8CEI8u1jdw+BLbKMKrzcydeZ8f3J+72cdzt8W1IMx1C14U5S4QoCBC0kf894CuFZQ/cW
+         e8ajp6S0OR4owY2zjwEKJvEMcq5VIWPKu6lwc3O1ewxsbct508b2NSMNjdofJQfRa/At
+         FignDJwRpKNgc8QOw/06M9O7ZSRUo1ou6O6ktmu4veCYeAgpJxEaKMID+hmPbDst8M32
+         h2iy5nEEA6V/T0ZY+PwDEBsW39qZkrIQwka+beRRpY34dEvprsIPGrg685z+N60f1Q1U
+         tIWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fN9kN40P4Zb0ukn4Ugrf+KcpYX4t7X0lCi/CEaratbo=;
+        b=nKUuX105yjytk+rJsr78YKU4q5meu42JiJjt0NeFKNQDVA0ffUoD3mgds6dQji/6kP
+         afTFCyNvGtPeNgjKz/TLbMRbFahglL+SojV0OVCq3JBcMqagb0OmVnMAsUAKneTSRdvv
+         UGoeYH4Aj9ixyUo1hqyasSVzs9J0+RhEmuI44eehigzoZT/0cj3pAZErgyrbfQBKfxln
+         oElHtS0NhjZBNa/QPqiSutWzi9DXZqkWHi9CERPOzqHKOFZQORNUXDL/x9KB+3UTFkrk
+         mzXYhOdaLrnyYo+gF5WaxxH+FBuViHaNNhIXEoEfBZbgUINXspu/IErSwAGsEC+szkt5
+         YGEg==
+X-Gm-Message-State: AOAM532TAT9Y5vkdv5y37XgqCOx2LmU0zDsYiKwcHcjOUU0xgdQzZkpv
+        M1bYRXGvW4xSixlxhYu+NVbgyQ==
+X-Google-Smtp-Source: ABdhPJxNGP2ojm9WBMUOuIrgKMhdSc9v7P8W4g6NZqjn4VtIHtI3ni07XFYu+J2/K28y5xiMoKZ5rw==
+X-Received: by 2002:a17:903:22cb:b029:e5:b8b0:b935 with SMTP id y11-20020a17090322cbb02900e5b8b0b935mr211991plg.66.1614794510591;
+        Wed, 03 Mar 2021 10:01:50 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
+        by smtp.gmail.com with ESMTPSA id r15sm25659314pfh.97.2021.03.03.10.01.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 10:01:50 -0800 (PST)
+Date:   Wed, 3 Mar 2021 10:01:43 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 8/9] KVM: x86: Expose Architectural LBR CPUID leaf
+Message-ID: <YD/PB18qLqS7noKH@google.com>
+References: <20210303135756.1546253-1-like.xu@linux.intel.com>
+ <20210303135756.1546253-9-like.xu@linux.intel.com>
+ <YD/IeTdqbK9kEDNp@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:eac2) by MWHPR17CA0053.namprd17.prod.outlook.com (2603:10b6:300:93::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 3 Mar 2021 18:01:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bc29de44-42db-4807-c7c1-08d8de6e6681
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3159:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3159AED1A2F03803A0560A64BE989@BYAPR15MB3159.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5PdtfQNCdaPgSd2R9x1jDWHx0U8vOIWJaSg3l+Un+AedpMFX7d9eXE39kAEaf+riEO1CCP/yj3BauycwXPxbp/g9FYpwGWk6j76zxJ//FTS9qSMMQXH4QkYyHchISNzQY7Mb57y87q+LgxuXR400VxjDw/vyxoV8LOd2meVdEZUItiRAKiiJcVhZTxE5QxKiV17sTRh8Z48dmHA/H2gDmwN4gHIRdbaCfaSVgjMfC2ve/DOK9KCY5PKrFtE1RQWqLI9MUAQiCigu4w6rz8unaXDNs/GGrBsei5bjrMwzObeFZRFkl32CFRe+iozsmh3+JVbDKxdlLD0pLL+ypKgRZ0lqTrysSina2k9n7XQS43dEuWvnbD5dqtWlylW1TB0DHL67rGCpuNA/ft4Frpm3IvvLoPiLGXFmuuvewIPZ9DUNu32fSZsl52aCC/3Srmk9RPrk2DIMK5nVwdUqe5hk9R800aTdWWKQkrm37rTRRkNWlYrysz3lq25sTA0MbkGSyFgKwgwW2Z6zBUZWnszVLQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(346002)(39860400002)(366004)(16526019)(186003)(5660300002)(8936002)(316002)(86362001)(66556008)(66476007)(66946007)(6506007)(6916009)(15650500001)(8676002)(4326008)(9686003)(55016002)(83380400001)(52116002)(478600001)(6666004)(2906002)(7696005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?AZHMgrFQxM2KreYs4kPNYWGeEyW7ydAt9LdwM+8dAHkRgdDv+9wTHC55NZsB?=
- =?us-ascii?Q?HRhC1WBx9FUbojj6zThh7lyucI59ZQUqmRhuW/aMVrZNMpHKa3u+FxjBkwLT?=
- =?us-ascii?Q?pTXCaCkragxBGqyxhii8rt2QvFzxqu5Yhs36dd9fulRS9jjl2/P9Hq2DV77F?=
- =?us-ascii?Q?qHhkVFiIEoqHXlu9YVlfTeRx2T/mLIvUGEBy++RpS2k7d//LBVYklOmLvSej?=
- =?us-ascii?Q?083uqnT0neAgzTH6iP+gPsZm2i/pwFP6Kk3H1jQh8T6vvdOq0u0S6SvoedX+?=
- =?us-ascii?Q?VqVO4LDWTcmWLC1CebLzPNILyko1btMvolC6objgngsM5/xazSCbGfumHeOf?=
- =?us-ascii?Q?jG2p3mYdxSkDE2dmOpWKQ+YqEAOQfzGGpVkRmTZE7wSAlr6Ynrc86olInZH3?=
- =?us-ascii?Q?y3zLpdZXrKPrZu4GC/A8qEYh5DzOM9Y9G8uYlQMyY8hL4ewwnNJz/KYgqbyC?=
- =?us-ascii?Q?txjnpOVUsOH9tteQwLSsicN/PZG1eo+Aqw31baaul8JdV8naWTR3FEWCuY0x?=
- =?us-ascii?Q?xNZ1tSF7rtM53e6kxEyZYlCcrfhMAUT2cPuNR86isTZFlq7qSMC+eFiiBPj7?=
- =?us-ascii?Q?dIcv1h5BEm1FQfniXl4DpyXkXrf032chq4FZAHiC5LT488yqkQPspM7PtF8v?=
- =?us-ascii?Q?4Xezz2p+ErBobRQwuWnc8JWAfL20LPiUcImZrErX0zNAjmQlCk+e1qCwt4+6?=
- =?us-ascii?Q?EeLaEoFQ/gFhb8Y7v0HV7EQMyN0nKhUWRy0u/UiBP6cogXN19aG5YAEOe7kf?=
- =?us-ascii?Q?PmOz6lYCnxlBiC5fyb0H0kqiRLkeCCnBUZ84eQe8InziemK2uxvSpQ5j0myb?=
- =?us-ascii?Q?8ltOa8Ii7n1YKmZdwTvCScK/sdGWjDmzmco8QhbQo0bvWNe6SfPgUWRQ8GDm?=
- =?us-ascii?Q?u3NFxjzBmlDF60bt53jpzO5XdnJfHfiZYxHFkSVubqR5umLMp5zXXkHmXVp0?=
- =?us-ascii?Q?jJMhWSK3EZsU5nEnW0EDaqUUgRzleZL3/36scyy1LFTJKSGMytaIMTwQubCx?=
- =?us-ascii?Q?1IWvWZjFTrM+D1GBdogH5P8rs/yg9lKYDh/66gDQBw9lpZG3ajXN/suFns6O?=
- =?us-ascii?Q?+lr1f/DAWCf3hqCVaOk1fISFtELDfABsgjntkUoY0Msq+atDuMvV/iqjTavL?=
- =?us-ascii?Q?8v54TH1oXdrUuXvd6lFDVz7hA0cexCXjseRdbeWWq1mNLQ6tQlCFmzuEYjo2?=
- =?us-ascii?Q?36xbuXD3Y4dGQCafjz85bMmoPtdthuKBlHbF4QYex6sAMMWZfLWCfqw9UWhL?=
- =?us-ascii?Q?79RyEu/aKHRKpLPDWfl/vraLJwuQm7iP2MxlY36ZsZkl8Nc0n4VjGDcY6qu7?=
- =?us-ascii?Q?4xRvzMQMxsbnkcwlQbRn7XDYnfKYBlqe6yp5e4W6ZqfZyg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc29de44-42db-4807-c7c1-08d8de6e6681
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2021 18:01:42.2833
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 35X2biIFx2Ix6t6hbPAz9D63Fs2orLVGzuvdiWqqAvTpyIxS9BmBP8YTKyGiIXlZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3159
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-03_05:2021-03-03,2021-03-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
- impostorscore=0 bulkscore=0 phishscore=0 spamscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030127
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YD/IeTdqbK9kEDNp@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:18:43PM +0800, Muchun Song wrote:
-> For simplification 991e7673859e ("mm: memcontrol: account kernel stack
-> per node") has changed the per zone vmalloc backed stack pages
-> accounting to per node. By doing that we have lost a certain precision
-> because those pages might live in different NUMA nodes. In the end
-> NR_KERNEL_STACK_KB exported to the userspace might be over estimated on
-> some nodes while underestimated on others. But this is not a real world
-> problem, just a problem found by reading the code. So there is no actual
-> data to showing how much impact it has on users.
+On Wed, Mar 03, 2021, Sean Christopherson wrote:
+> On Wed, Mar 03, 2021, Like Xu wrote:
+> > If CPUID.(EAX=07H, ECX=0):EDX[19] is set to 1, then KVM supports Arch
+> > LBRs and CPUID leaf 01CH indicates details of the Arch LBRs capabilities.
+> > Currently, KVM only supports the current host LBR depth for guests,
+> > which is also the maximum supported depth on the host.
+> > 
+> > Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> > ---
+> >  arch/x86/kvm/cpuid.c   | 25 ++++++++++++++++++++++++-
+> >  arch/x86/kvm/vmx/vmx.c |  2 ++
+> >  2 files changed, 26 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > index b4247f821277..4473324fe7be 100644
+> > --- a/arch/x86/kvm/cpuid.c
+> > +++ b/arch/x86/kvm/cpuid.c
+> > @@ -450,7 +450,7 @@ void kvm_set_cpu_caps(void)
+> >  		F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
+> >  		F(SPEC_CTRL_SSBD) | F(ARCH_CAPABILITIES) | F(INTEL_STIBP) |
+> >  		F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM) |
+> > -		F(SERIALIZE) | F(TSXLDTRK) | F(AVX512_FP16)
+> > +		F(SERIALIZE) | F(TSXLDTRK) | F(AVX512_FP16) | F(ARCH_LBR)
+> >  	);
+> >  
+> >  	/* TSC_ADJUST and ARCH_CAPABILITIES are emulated in software. */
 > 
-> This doesn't impose any real problem to correctnes of the kernel
-> behavior as the counter is not used for any internal processing but it
-> can cause some confusion to the userspace.
+> ...
 > 
-> Address the problem by accounting each vmalloc backing page to its own
-> node.
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 2f307689a14b..034708a3df20 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -7258,6 +7258,8 @@ static __init void vmx_set_cpu_caps(void)
+> >  		kvm_cpu_cap_clear(X86_FEATURE_INVPCID);
+> >  	if (vmx_pt_mode_is_host_guest())
+> >  		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
+> > +	if (cpu_has_vmx_arch_lbr())
+> > +		kvm_cpu_cap_check_and_set(X86_FEATURE_ARCH_LBR);
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Using kvm_cpu_cap_check_and_set(), which queries boot_cpu_has(), is only
+> necessary if a feature is not exposed by default in kvm_set_cpu_caps().  That's
+> why INTEL_PT uses it.  ARCH_LBR on the other hand is set in the "enable by
+> default" mask.
+> 
+> That being said, it's probably a bad idea to advertise ARCH_LBR by default.  In
+> the unlikely case that AMD adds support for ARCH_LBR, enable-by-default means
+> guest will be able to use ARCH_LBR on old KVMs that presumably would lack support
+> for ARCH_LBR on SVM.
+> 
+> TL;DR: omit F(ARCH_LBR) or replace it with "0 /* ARCH_LBR */".
 
-Acked-by: Roman Gushchin <guro@fb.com>
+Actually, I take that back.  It'll require changing SVM, but due to the XSS
+interaction it's probably cleaner to leaf F(ARCH_LBR) as is, and do:
 
-Thanks!
+	if (!cpu_has_vmx_arch_lbr())
+		kvm_cpu_cap_clear(X86_FEATURE_ARCH_LBR);
 
-> ---
-> Changelog in v3:
->  - Remove BUG_ON().
->  - Update commit log.
-> 
-> Changelog in v2:
->  - Rework commit log suggested by Michal.
-> 
->  Thanks to Michal and Shakeel for review.
-> 
->  kernel/fork.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d66cd1014211..242fdad6972b 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -379,14 +379,17 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
->  	void *stack = task_stack_page(tsk);
->  	struct vm_struct *vm = task_stack_vm_area(tsk);
->  
-> +	if (vm) {
-> +		int i;
->  
-> -	/* All stack pages are in the same node. */
-> -	if (vm)
-> -		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
-> -				      account * (THREAD_SIZE / 1024));
-> -	else
-> +		for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
-> +			mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
-> +					      account * (PAGE_SIZE / 1024));
-> +	} else {
-> +		/* All stack pages are in the same node. */
->  		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
->  				      account * (THREAD_SIZE / 1024));
-> +	}
->  }
->  
->  static int memcg_charge_kernel_stack(struct task_struct *tsk)
-> -- 
-> 2.11.0
-> 
+and then unconditionally clear the cap for SVM.  In a way, that's arguably
+better documentation as it explicitly shows that SVM lacks supports.
+
+More thoughts in the next patch...
