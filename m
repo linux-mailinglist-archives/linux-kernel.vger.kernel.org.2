@@ -2,111 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9822132BAA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1652D32BAA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 21:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245711AbhCCLsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:48:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41114 "EHLO mail.kernel.org"
+        id S1345624AbhCCLtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:49:04 -0500
+Received: from mga11.intel.com ([192.55.52.93]:29262 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1449771AbhCCEDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 23:03:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7D1664E59;
-        Wed,  3 Mar 2021 04:02:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614744162;
-        bh=91G6ZKRf37fWuu1odP9b28TaOBkx5TQKKg1BV00uG20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mPOHOyWws7WAZ3FG0F4n7Gw7c3z2FelRnIziscQ+Hwo8JHQGWBvsxKfFe5IrcMpfG
-         FIadSedZhN2xmV1kNCwAsskmuwANw1DtF68gqcbghrqz9Ij0iLxLRlVyJ/qAzK0GeN
-         8eyS67lkLf14lgICuuqM4FT2lG1wx9ZPdRw0Aibx1N4qpu6udah8dUXSarsqCDnFD6
-         l+k0SwH92ib/wkH9J209QWa5p1NBAppzrLMGBlB+EkDQDQspIec2zqraFm/EmXJROt
-         jVE3+hyubtnWOWCi7Nb2+hZ2r/opYSlC2TuDpq27PFHeeN0ez21M2aOlYlLvUCrI5y
-         62cwf1R9PPvJw==
-Date:   Tue, 2 Mar 2021 21:02:37 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Bernhard =?utf-8?Q?Rosenkr=C3=A4nzer?= <bero@lindev.ch>
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] Fix ld-version.sh script if LLD was built with LLD_VENDOR
-Message-ID: <20210303040237.tvwo34j322tzqnwz@archlinux-ax161>
-References: <20210302221211.1620858-1-bero@lindev.ch>
+        id S1449960AbhCCEFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 23:05:14 -0500
+IronPort-SDR: VoEGlyNwM7oFW1wFhoVqhA6Ll2x79i+7w4SPgpoh12ZIHMTuvkBh1R4Q2xUn9ztEE24YO9uVZY
+ eVUNbmMR3LxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="183707240"
+X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
+   d="scan'208";a="183707240"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 20:04:18 -0800
+IronPort-SDR: gOgFT9zLnrnOd1i3Qj0G+t/SxQxiMNZGE6OuQ3QEu0nr0ODlB9fZbbtagu7I5h11tQsgcm6uFP
+ oQko0Y6fg05Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
+   d="scan'208";a="435897228"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Mar 2021 20:03:48 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lHIja-0000t2-5g; Wed, 03 Mar 2021 04:03:38 +0000
+Date:   Wed, 03 Mar 2021 12:03:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ 191d799ecaca4d5c7f87c624ae36581237ab8a87
+Message-ID: <603f0a83.Z0Hr6ciyBc4MCCUP%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210302221211.1620858-1-bero@lindev.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bernhard,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+branch HEAD: 191d799ecaca4d5c7f87c624ae36581237ab8a87  x86/cpu/hygon: Set __max_die_per_package on Hygon
 
-I have added the ClangBuiltLinux mailing list, kbuild mailing list, and
-Masahiro and Nick to CC. Maybe ld-version.sh and cc-version.sh should be
-added to a MAINTAINERS entry to make sure we get CC'd (I can send one
-along tomorrow).
+elapsed time: 722m
 
-On Tue, Mar 02, 2021 at 11:12:11PM +0100, Bernhard Rosenkränzer wrote:
-> If LLD was built with -DLLD_VENDOR="xyz", ld.lld --version output
-> will prefix LLD_VENDOR. Since LLD_VENDOR can contain spaces, the
-> LLD identifier isn't guaranteed to be $2 either.
+configs tested: 105
+configs skipped: 18
 
-TIL about LLD_VENDOR...
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Adjust the version checker to handle such versions of lld.
-> 
-> Signed-off-by: Bernhard Rosenkränzer <bero@lindev.ch>
-> ---
->  scripts/ld-version.sh | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> index a463273509b5..4c042a306e22 100755
-> --- a/scripts/ld-version.sh
-> +++ b/scripts/ld-version.sh
-> @@ -49,6 +49,18 @@ elif [ "$1" = LLD ]; then
->  	min_version=$lld_min_version
->  	name=LLD
->  	disp_name=LLD
-> +elif echo "$@" |grep -q ' LLD '; then
-> +	# if LLD was built with -DLLD_VENDOR="xyz", it ld.lld --version
-> +	# says "xyz LLD [...]". Since LLD_VENDOR may contain spaces, we
-> +	# don't know the exact position of "LLD" and the version info
-> +	# at this point
-> +	while [ "$1" != "LLD" ]; do
-> +		shift
-> +	done
-> +	version=$2
-> +	min_version=$lld_min_version
-> +	name=LLD
-> +	disp_name=LLD
->  else
->  	echo "$orig_args: unknown linker" >&2
->  	exit 1
-> -- 
-> 2.30.1
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      ep88xc_defconfig
+sh                         microdev_defconfig
+sh                           se7712_defconfig
+s390                                defconfig
+arm                       omap2plus_defconfig
+sh                          urquell_defconfig
+mips                            ar7_defconfig
+mips                          malta_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                            dove_defconfig
+s390                       zfcpdump_defconfig
+sh                      rts7751r2d1_defconfig
+sparc                               defconfig
+c6x                              alldefconfig
+arm                            zeus_defconfig
+m68k                         apollo_defconfig
+mips                     loongson1b_defconfig
+arm                           h3600_defconfig
+arm                         s3c2410_defconfig
+sh                        sh7763rdp_defconfig
+sh                   secureedge5410_defconfig
+arm                        mvebu_v5_defconfig
+arc                            hsdk_defconfig
+arm                           viper_defconfig
+powerpc                 mpc834x_mds_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210302
+x86_64               randconfig-a001-20210302
+x86_64               randconfig-a004-20210302
+x86_64               randconfig-a002-20210302
+x86_64               randconfig-a005-20210302
+x86_64               randconfig-a003-20210302
+i386                 randconfig-a005-20210303
+i386                 randconfig-a003-20210303
+i386                 randconfig-a002-20210303
+i386                 randconfig-a004-20210303
+i386                 randconfig-a006-20210303
+i386                 randconfig-a001-20210303
+i386                 randconfig-a005-20210302
+i386                 randconfig-a003-20210302
+i386                 randconfig-a002-20210302
+i386                 randconfig-a004-20210302
+i386                 randconfig-a006-20210302
+i386                 randconfig-a001-20210302
+i386                 randconfig-a016-20210303
+i386                 randconfig-a012-20210303
+i386                 randconfig-a014-20210303
+i386                 randconfig-a013-20210303
+i386                 randconfig-a011-20210303
+i386                 randconfig-a015-20210303
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-I am not sure what a better fix would be of the top of my head but
-wouldn't it be better to avoid the duplication? This diff below works
-for me with or without LLD_VENDOR defined.
+clang tested configs:
+x86_64               randconfig-a013-20210302
+x86_64               randconfig-a016-20210302
+x86_64               randconfig-a015-20210302
+x86_64               randconfig-a014-20210302
+x86_64               randconfig-a012-20210302
+x86_64               randconfig-a011-20210302
 
-diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-index a463273509b5..84f9fc741f09 100755
---- a/scripts/ld-version.sh
-+++ b/scripts/ld-version.sh
-@@ -44,7 +44,10 @@ if [ "$1" = GNU -a "$2" = ld ]; then
- elif [ "$1" = GNU -a "$2" = gold ]; then
- 	echo "gold linker is not supported as it is not capable of linking the kernel proper." >&2
- 	exit 1
--elif [ "$1" = LLD ]; then
-+elif echo "$*" | grep -q LLD; then
-+	while [ "$1" != "LLD" ]; do
-+		shift
-+	done
- 	version=$2
- 	min_version=$lld_min_version
- 	name=LLD
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
