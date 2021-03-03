@@ -2,76 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE4A32C32A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF10D32C335
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355580AbhCDAHK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 19:07:10 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:4450 "EHLO pegase1.c-s.fr"
+        id S1344156AbhCDAHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:07:24 -0500
+Received: from mga11.intel.com ([192.55.52.93]:13808 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1389049AbhCCVb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 16:31:59 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DrRxd2k33z9ttBL;
-        Wed,  3 Mar 2021 22:30:45 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id EOp0jFdqMqTs; Wed,  3 Mar 2021 22:30:45 +0100 (CET)
-Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrRxd0kG9z9ttRk;
-        Wed,  3 Mar 2021 22:30:45 +0100 (CET)
-Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
-        id 6B58D65A; Wed,  3 Mar 2021 22:33:58 +0100 (CET)
-Received: from 37.173.125.231 ([37.173.125.231]) by messagerie.c-s.fr (Horde
- Framework) with HTTP; Wed, 03 Mar 2021 22:33:58 +0100
-Date:   Wed, 03 Mar 2021 22:33:58 +0100
-Message-ID: <20210303223358.Horde.OAg4JN_IZgwz7hkYuMwiTg3@messagerie.c-s.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     maqiang <maqianga@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        paulus@samba.org, benh@kernel.crashing.org, mpe@ellerman.id.au
-Subject: Re: [PATCH] powerpc: remove redundant space
-In-Reply-To: <20210303115710.30886-1-maqianga@uniontech.com>
-User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
+        id S1388459AbhCCVpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 16:45:23 -0500
+IronPort-SDR: sq2tdrpQyTK4Gnn6vhw/xx8ZnaCgm8ZO2ZS9t6aY5PZSd6RwHvVWjeN0WuMBld72f1x8B3Z4be
+ V7GuhrJMNOYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="183904124"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="183904124"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 13:40:29 -0800
+IronPort-SDR: blUPsZDC6cQQ6GuPWP0ox/tBvX2OzYCl6pS1wC71wtoMzlMk6MEXyo60o9KLEoLic+qDsbnI9M
+ 4fhGu6956PaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="367755835"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 03 Mar 2021 13:40:27 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lHZEI-0001lu-UU; Wed, 03 Mar 2021 21:40:26 +0000
+Date:   Thu, 04 Mar 2021 05:39:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:objtool/core] BUILD SUCCESS
+ b52eb21aeca75790869c26b91b1d7b80b3946430
+Message-ID: <60400229.U1h/yzo8yiTafn2N%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-maqiang <maqianga@uniontech.com> a écrit :
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool/core
+branch HEAD: b52eb21aeca75790869c26b91b1d7b80b3946430  objtool: Parse options from OBJTOOL_ARGS
 
-> These one line of code don't meet the kernel coding style,
-> so remove the redundant space.
+elapsed time: 722m
 
-There seems to be several other style issues in this function and in  
-the following one too. You should fix them all at once I think.
+configs tested: 135
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> Signed-off-by: maqiang <maqianga@uniontech.com>
-> ---
->  arch/powerpc/kernel/syscalls.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
-> index 078608ec2e92..9248288752d5 100644
-> --- a/arch/powerpc/kernel/syscalls.c
-> +++ b/arch/powerpc/kernel/syscalls.c
-> @@ -81,7 +81,7 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
->  int
->  ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set  
-> __user *exp, struct __kernel_old_timeval __user *tvp)
->  {
-> -	if ( (unsigned long)n >= 4096 )
-> +	if ((unsigned long)n >= 4096)
->  	{
->  		unsigned long __user *buffer = (unsigned long __user *)n;
->  		if (!access_ok(buffer, 5*sizeof(unsigned long))
-> --
-> 2.20.1
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         at91_dt_defconfig
+powerpc                 mpc832x_mds_defconfig
+sh                              ul2_defconfig
+m68k                        mvme16x_defconfig
+arm                          pcm027_defconfig
+arm                      pxa255-idp_defconfig
+arm                         s5pv210_defconfig
+xtensa                           alldefconfig
+arm                       spear13xx_defconfig
+m68k                            q40_defconfig
+mips                     loongson1c_defconfig
+arm                          pxa168_defconfig
+powerpc                     skiroot_defconfig
+powerpc                       maple_defconfig
+xtensa                         virt_defconfig
+sh                          rsk7203_defconfig
+csky                             alldefconfig
+powerpc                  iss476-smp_defconfig
+sh                      rts7751r2d1_defconfig
+arm                        clps711x_defconfig
+arc                            hsdk_defconfig
+arm                         lpc32xx_defconfig
+arc                     nsimosci_hs_defconfig
+arm                       aspeed_g4_defconfig
+mips                      fuloong2e_defconfig
+x86_64                           alldefconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                      acadia_defconfig
+sh                             sh03_defconfig
+arc                    vdk_hs38_smp_defconfig
+microblaze                          defconfig
+sh                        sh7757lcr_defconfig
+mips                           ip27_defconfig
+arm                            pleb_defconfig
+ia64                        generic_defconfig
+powerpc                         wii_defconfig
+sh                           sh2007_defconfig
+arm                        shmobile_defconfig
+arm                          exynos_defconfig
+microblaze                      mmu_defconfig
+arm                        oxnas_v6_defconfig
+mips                malta_kvm_guest_defconfig
+arm                      footbridge_defconfig
+alpha                            allyesconfig
+powerpc                        cell_defconfig
+arm                         orion5x_defconfig
+xtensa                          iss_defconfig
+mips                          ath79_defconfig
+arm                      jornada720_defconfig
+arc                          axs101_defconfig
+arm                          pxa3xx_defconfig
+mips                     cu1830-neo_defconfig
+arc                        vdk_hs38_defconfig
+nds32                               defconfig
+c6x                              allyesconfig
+powerpc                      chrp32_defconfig
+arm                           tegra_defconfig
+sh                     magicpanelr2_defconfig
+xtensa                           allyesconfig
+sh                         ap325rxa_defconfig
+powerpc                     ep8248e_defconfig
+arm                        multi_v5_defconfig
+arm                        trizeps4_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210303
+i386                 randconfig-a003-20210303
+i386                 randconfig-a002-20210303
+i386                 randconfig-a004-20210303
+i386                 randconfig-a006-20210303
+i386                 randconfig-a001-20210303
+x86_64               randconfig-a013-20210303
+x86_64               randconfig-a016-20210303
+x86_64               randconfig-a015-20210303
+x86_64               randconfig-a014-20210303
+x86_64               randconfig-a012-20210303
+x86_64               randconfig-a011-20210303
+i386                 randconfig-a016-20210303
+i386                 randconfig-a012-20210303
+i386                 randconfig-a014-20210303
+i386                 randconfig-a013-20210303
+i386                 randconfig-a011-20210303
+i386                 randconfig-a015-20210303
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+x86_64                           allyesconfig
 
+clang tested configs:
+x86_64               randconfig-a006-20210303
+x86_64               randconfig-a001-20210303
+x86_64               randconfig-a004-20210303
+x86_64               randconfig-a002-20210303
+x86_64               randconfig-a005-20210303
+x86_64               randconfig-a003-20210303
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
