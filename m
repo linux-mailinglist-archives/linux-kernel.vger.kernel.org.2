@@ -2,64 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E2B32BC7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5F232BCD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238677AbhCCN7p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 08:59:45 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:49669 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842906AbhCCKWW (ORCPT
+        id S1359587AbhCCOtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843026AbhCCKYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:22 -0500
-Received: from relay4-d.mail.gandi.net (unknown [217.70.183.196])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 5E7503B0C2F;
-        Wed,  3 Mar 2021 09:47:16 +0000 (UTC)
-X-Originating-IP: 86.206.8.148
-Received: from xps13 (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 87D3BE0003;
-        Wed,  3 Mar 2021 09:46:52 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 10:46:51 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] mtd: nand: Fix error handling in
- nand_prog_page_op
-Message-ID: <20210303104651.2d49fb2c@xps13>
-In-Reply-To: <20210303094246.5724-1-colin.king@canonical.com>
-References: <20210303094246.5724-1-colin.king@canonical.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 3 Mar 2021 05:24:34 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF722C08EB2F;
+        Wed,  3 Mar 2021 01:47:31 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id z11so36037157lfb.9;
+        Wed, 03 Mar 2021 01:47:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5LbPB3SpTXsri4vi58yOUepQCtx4lRVynCRCrXYDWhk=;
+        b=iBM34Nq5+BjX+uL4bxGvM1OldEbB8bsiriV6mA0YdKunWfydVZxt3BQE8NZkBQ5A4l
+         MUsL+8TPfqMlgKLk7mtcz6iLPwP4DQlmmmwqCUTpSXLeTBGsvA9iynKHaNeS8lGv2d1t
+         I1zQlao/FYaW2hTwuANkJNvihvwp00XYtwjwfTPrY0YoVYwPCQIbyhe6P3IGSU5dHAyE
+         MziklxFAWZqwEgtjlr0FiyJywx5DJYw5vhS1HGoAeZdCjtIxS10kyKaYtxQA+Iy7zZy+
+         Qs+IZqqznZE8DF3EPcwZBbA9pQEbo9htOdISZ3cn/DsR3sX+9vRSkSDQ9ZNcMkMHjvoX
+         WVLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5LbPB3SpTXsri4vi58yOUepQCtx4lRVynCRCrXYDWhk=;
+        b=USBlfKwU/b6Mu6n7gqkafkVKs0UFlfD/YFSZphwqW/kvQ5ZALInasutI7kFeZN3O0a
+         2NCwZz/gIntHqe3vfmTp0SlOos6EASAmB1ls4hSsUIyF+Voht+IGtvPD4BmcFD6U1OUd
+         a+YZORZNJwgMYpXZPSf/eiurE/DtNFjdf9UERVWPHRvVUNXQqhAAzBj4oLuVrEepZC6+
+         6DgqXtYicvUtCVUAEPA+cwJtEmLJR++1sWI8x3sutxqQzNyg4KsPYgEDRvpgR/77veVy
+         yPmY61XZSgZB+Z8Uv65gvCWFKF4g8ASKgbOszz+LYEsOv+gQS+jgBUmY0NNxnvfgqzMo
+         mDBA==
+X-Gm-Message-State: AOAM531WAroJgiPvPkzWoaVlRy4GXUgg6klccgcG4kUOf8gW1ahGrFBu
+        zc0y7bCGfkss1gOWMa6iBLHL9OlUGsw=
+X-Google-Smtp-Source: ABdhPJy0ChQDSEQFEFYwJAY/lp6QPtMzorgpdnThkpJMvj+mgwIDqI2VfCm7n5De5jouxa1PQd6U1Q==
+X-Received: by 2002:a19:8197:: with SMTP id c145mr14892915lfd.655.1614764849889;
+        Wed, 03 Mar 2021 01:47:29 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id k8sm2920796lfg.41.2021.03.03.01.47.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 01:47:29 -0800 (PST)
+Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
+        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
+ <9d6445c0-9574-1650-e327-32b11716f87e@gmail.com>
+ <20210223021343.GA6539@Asurada-Nvidia>
+ <79bb1248-497f-8adf-663b-74448bea3849@gmail.com>
+ <20210225062742.GA13353@Asurada-Nvidia>
+ <ee0f40f4-dffe-2987-5d4b-c5896f27ec24@gmail.com>
+ <20210302230856.GA22992@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4a407ad8-33cb-94e9-398a-78fa65178e08@gmail.com>
+Date:   Wed, 3 Mar 2021 12:47:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210302230856.GA22992@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
-
-Colin King <colin.king@canonical.com> wrote on Wed,  3 Mar 2021
-09:42:46 +0000:
-
-> From: Colin Ian King <colin.king@canonical.com>
+03.03.2021 02:08, Nicolin Chen пишет:
+> On Sat, Feb 27, 2021 at 12:59:17PM +0300, Dmitry Osipenko wrote:
+>> 25.02.2021 09:27, Nicolin Chen пишет:
+>> ...
+>>>> The partially revert should be okay, but it's not clear to me what makes
+>>>> difference for T124 since I don't see that problem on T30, which also
+>>>> has active display at a boot time.
+>>>
+>>> Hmm..do you see ->attach_dev() is called from host1x_client_iommu_attach
+>>> or from of_dma_configure_id/arch_setup_dma_ops?
+>>>
+>>
+>> I applied yours debug-patch, please see dmesg.txt attached to the email.
+>> Seems probe-defer of the tegra-dc driver prevents the implicit
+>> tegra_smmu_attach_dev, so it happens to work by accident.
 > 
-> The less than zero comparison with status is always false because status
-> is a u8. Fix this by using ret as the return check for the call to
-> chip->legacy.waitfunc() and checking on this and assigning status to ret
-> if it is OK.
+>> [    0.327826] tegra-dc 54200000.dc: -------tegra_smmu_of_xlate: id 1
+>> [    0.328641] [<c052ec75>] (tegra_smmu_of_xlate) from [<c052e591>] (of_iommu_xlate+0x51/0x70)
+>> [    0.328740] [<c052e591>] (of_iommu_xlate) from [<c052e6d7>] (of_iommu_configure+0x127/0x150)
+>> [    0.328896] [<c052e6d7>] (of_iommu_configure) from [<c073f697>] (of_dma_configure_id+0x1fb/0x2ec)
+>> [    0.329060] [<c073f697>] (of_dma_configure_id) from [<c059743f>] (really_probe+0x7b/0x2a0)
+>> [    0.331438] tegra-dc 54200000.dc: --------tegra_smmu_probe_device, 822
+>> [    0.332234] [<c052ebed>] (tegra_smmu_probe_device) from [<c052bd6d>] (__iommu_probe_device+0x35/0x1c4)
+>> [    0.332391] [<c052bd6d>] (__iommu_probe_device) from [<c052c3cd>] (iommu_probe_device+0x19/0xec)
+>> [    0.332545] [<c052c3cd>] (iommu_probe_device) from [<c052e6ab>] (of_iommu_configure+0xfb/0x150)
+>> [    0.332701] [<c052e6ab>] (of_iommu_configure) from [<c073f697>] (of_dma_configure_id+0x1fb/0x2ec)
+>> [    0.332804] [<c073f697>] (of_dma_configure_id) from [<c059743f>] (really_probe+0x7b/0x2a0)
+>> [    0.335202] tegra-dc 54200000.dc: ---------iommu_group_get_for_dev, 1572
+>> [    0.335292] tegra-dc 54200000.dc: ---------tegra_smmu_device_group, 862
+>> [    0.335474] tegra-dc 54200000.dc: ---------tegra_smmu_device_group, 909: 1: drm
+>> [    0.335566] tegra-dc 54200000.dc: ---------iommu_group_get_for_dev, 1574
+>> [    0.335718] tegra-dc 54200000.dc: ---------iommu_group_add_device, 858
+>> [    0.335862] tegra-dc 54200000.dc: Adding to iommu group 1
+>> [    0.335955] tegra-dc 54200000.dc: ---------iommu_alloc_default_domain, 1543: type 3
+>> [    0.336101] iommu: ------iommu_group_alloc_default_domain: platform, (null), drm
+>> [    0.336187] ---------tegra_smmu_domain_alloc, 284: type 3
+>  [    0.336968] [<c0a0ff45>] (tegra_smmu_domain_alloc) from [<c0a0f87b>] (iommu_group_alloc_default_domain+0x4b/0xfa)
+>> [    0.337127] [<c0a0f87b>] (iommu_group_alloc_default_domain) from [<c052c41d>] (iommu_probe_device+0x69/0xec)
+>> [    0.337285] [<c052c41d>] (iommu_probe_device) from [<c052e6ab>] (of_iommu_configure+0xfb/0x150)
+>> [    0.337441] [<c052e6ab>] (of_iommu_configure) from [<c073f697>] (of_dma_configure_id+0x1fb/0x2ec)
+>> [    0.337599] [<c073f697>] (of_dma_configure_id) from [<c059743f>] (really_probe+0x7b/0x2a0)
+>> [    0.339913] tegra-dc 54200000.dc: ---------iommu_probe_device, 272
+>> [    0.348144] tegra-dc 54200000.dc: failed to probe RGB output: -517
 > 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: 52f67def97f1 ("mtd: nand: fix error handling in nand_prog_page_op() #1")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Hmm..not sure where this EPROBE_DEFER comes from.
 
-Thanks for the fix, but this has been handled just an hour ago :)
+DC driver on Nexus 7 depends on LVDS bridge and display panel, which
+cause the probe defer.
 
-Cheers,
-Miquèl
+> But you are right,
+> as of_dma_configure_id() returns because of that so it didn't run to
+> arch_setup_dma_ops() call, which allocates an UNMANAGED iommu domain
+> and attaches DC to it on Tegra124.
+> 
+> By the way, anyone can accept this change? It doesn't feel right to
+> leave a regression in the newer release...
+> 
+
+I think Thierry should give ack.
