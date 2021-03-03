@@ -2,94 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B5032C107
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0138832C0FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836233AbhCCSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
+        id S1836125AbhCCSrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:47:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386122AbhCCRql (ORCPT
+        with ESMTP id S243029AbhCCRoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:46:41 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84264C061764
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:43:23 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id p21so38422782lfu.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:43:23 -0800 (PST)
+        Wed, 3 Mar 2021 12:44:23 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3BFC061756;
+        Wed,  3 Mar 2021 09:42:50 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id i21so24587808oii.2;
+        Wed, 03 Mar 2021 09:42:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=843Cqu10do3AOcdjRFPledKrGoMFl6vHJzmaFjeMBSM=;
-        b=zix6/HFrJghHi2HtjcVyWLj0N+uc6HhJDfNpB38u08KjESRVwSyspbvWr93KTIwSfl
-         4cbcUGdgY8NwVv5x/WJWPg/BDaMShLrKU+xdao/Sqsrk2WMrmhH1B2xMXh5h+UGckrms
-         JLmOflDgf8EGD3FsfoxRr/JupQHIkt2hkS3RFbkFWze5IyS8KmVpzFsHGxsO35F/JWni
-         i7Q/FSwCvrva4MASIHcRp4+t5ncbfkg0gB3ZYXNOWFoBgTKVlb5lVkOMAS6A0tLWM4iD
-         zfrgGoMRkbuF0wddNl5ovU0IlkSzfTFIZYZdRQjnPxl07z3KSSLeOlCpLwUSM9D4QQ9D
-         hXdg==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V8VdtQXYDN09uyRdvFGWLLCv0BtBl70U4TGMNFxWvsk=;
+        b=eiNtvc6DIc7fJXWHQIi7eK3t4gkBo6+wljNxYJ4bmYqpZDkMF9lYXRR+1GeLLkg8++
+         hRKEr7ZVWzBUfM/PHJ7vsArNsxUMAj36eEIxyklgfKZAXbFSx0KI320MRHFJM+RDk00R
+         Uj8XGEG231KeL5kt99vvl1xKd25wokgACiOuSq2kMykXRa1EKQ51JWvvfFlID7AcWdYd
+         IWe8uIo0DHyw4JN9L+mrBOxDpr2Fq6MnE1jFx6NEaUgWq6AZGC510n4UQCCn90bx9kmg
+         AOH4IaHvmxexZK2/C5guXYx2qQJhXFBVXeb9Aki5tg5jUwTPNe2lBsUhCtHJz4wU4aPp
+         fKrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=843Cqu10do3AOcdjRFPledKrGoMFl6vHJzmaFjeMBSM=;
-        b=SzVgZA4Su2CfJsGqas7sd9riqNgQQ63fhnhmRpJZypHk1yWYPEN6hJ+E4VLCOf8+GB
-         k7v/jODMUtLI2/J+0jzRruZ6YhfH9mJHYf9T7Hh41XGuEzt9ATIm+veoq0BrJAWfl2iF
-         Jw38qpjLymRjXdTbaXRehDRCFabRlIVfLCAP5StJ9sAEQIRNK/PKBx1hJd2HT3iS+4ck
-         bUnl/IXbkKIpNHAQ4eGOtSXze1LUmYUYCA9eU1j6GvgtYGUWhd6qNvNX/CiBIkmSoMVy
-         en8ij6BZmiWAGyENuYjSYmnus3WFF9BMfpy8xVbyteXntiTFHNokIiuMnhIENxeFMtRh
-         CcFQ==
-X-Gm-Message-State: AOAM531brviPS8Qx6+P8/1wkbzmdS/psK2npVpUkUnnGLIeZTnYxI1Z9
-        F6FmsgD0UPvSVJk8wsuRwIVUvg==
-X-Google-Smtp-Source: ABdhPJzaAvVl7zIW7ODmVHAFeI6Rkd3rf7v10ndmHfmNMb50G2CfnOjWagvTE+aUo0mJvzdSYzvKVA==
-X-Received: by 2002:a05:6512:3081:: with SMTP id z1mr15929096lfd.257.1614793401892;
-        Wed, 03 Mar 2021 09:43:21 -0800 (PST)
-Received: from localhost.localdomain ([85.249.43.69])
-        by smtp.googlemail.com with ESMTPSA id s7sm2101441lfi.140.2021.03.03.09.43.20
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V8VdtQXYDN09uyRdvFGWLLCv0BtBl70U4TGMNFxWvsk=;
+        b=gmnuNOUr1X9j2SjZcu3Iz1Zc1yHY9KW+zq/ieJV89ATDNsyY/Mj9FUWT+IztNdbYjt
+         N9FGhPr6N89JXOdxxk+ImnLFF2YxBXi9cFKAo8mBfgTt2pY5gkBlRwuxVg5iDkVClKXZ
+         JGrh7dEqUCLKCjztLS4kzfWBevrM50BSPXHOs8ZzxdxJDELXnCWejsX75OTd7tlzJ6yR
+         gXdb77XyhqIkdL2ZCV0RwcLBOv/b96SIZDhb/dhN201r/69dcccZXJ2ZimYIigV3wsCo
+         ldROKh3yVWQQHx6TWgJ0hMKrV1A+cMl45bpFj7yyamRHm0IsE8aiC62T13RJQtHGo/Gb
+         /1zQ==
+X-Gm-Message-State: AOAM531aHUYbtqAg2eIOlzzfLIreaJgBH+K40wxMbIkl2z7K/U1ufIQ6
+        WPdUJCtteKpBHySLAT1sMug=
+X-Google-Smtp-Source: ABdhPJxiePPrQ0snF3RwizYrHyFQFMG97OHMNPdmHiZm2MqdGwGNxIqVhCUW0RlemfHF+W2+rQT6/Q==
+X-Received: by 2002:a05:6808:14ce:: with SMTP id f14mr8058486oiw.59.1614793370042;
+        Wed, 03 Mar 2021 09:42:50 -0800 (PST)
+Received: from ruiqi-desktop.lan (072-177-087-193.res.spectrum.com. [72.177.87.193])
+        by smtp.gmail.com with ESMTPSA id r13sm4791277oot.41.2021.03.03.09.42.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 09:43:21 -0800 (PST)
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-To:     junak.pub@gmail.com, robert.foss@linaro.org,
-        sakari.ailus@linux.intel.com
-Cc:     todor.too@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
-        mchehab@kernel.org, laurent.pinchart@ideasonboard.com,
-        jacopo@jmondi.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Subject: [PATCH v3 1/3] v4l: common: v4l2_get_link_freq: add printing a warning
-Date:   Wed,  3 Mar 2021 20:42:48 +0300
-Message-Id: <20210303174250.11405-2-andrey.konovalov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210303174250.11405-1-andrey.konovalov@linaro.org>
-References: <20210303174250.11405-1-andrey.konovalov@linaro.org>
+        Wed, 03 Mar 2021 09:42:49 -0800 (PST)
+From:   Frank Li <lznuaa@gmail.com>
+X-Google-Original-From: Frank Li <Frank.Li@nxp.com>
+To:     lznuaa@gmail.com, adrian.hunter@intel.com, riteshh@codeaurora.org,
+        asutoshd@codeaurora.org, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        haibo.chen@nxp.com
+Subject: [PATCH v2 1/1] mmc: cqhci: fix random crash when remove mmc module
+Date:   Wed,  3 Mar 2021 11:42:48 -0600
+Message-Id: <20210303174248.542175-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print a warning if V4L2_CID_LINK_FREQ control is not implemented.
+[ 6684.493350] Unable to handle kernel paging request at virtual address ffff800011c5b0f0
+[ 6684.498531] mmc0: card 0001 removed
+[ 6684.501556] Mem abort info:
+[ 6684.509681]   ESR = 0x96000047
+[ 6684.512786]   EC = 0x25: DABT (current EL), IL = 32 bits
+[ 6684.518394]   SET = 0, FnV = 0
+[ 6684.521707]   EA = 0, S1PTW = 0
+[ 6684.524998] Data abort info:
+[ 6684.528236]   ISV = 0, ISS = 0x00000047
+[ 6684.532986]   CM = 0, WnR = 1
+[ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081b22000
+[ 6684.543923] [ffff800011c5b0f0] pgd=00000000bffff003, p4d=00000000bffff003, pud=00000000bfffe003, pmd=00000000900e1003, pte=0000000000000000
+[ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
+[ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_dev caam error [last unloaded: mmc_core]
+[ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01410-g3ba33182767b-dirty #10
+[ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
+[ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
 
-Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+[ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+[ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
+^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr : cqhci_request+0x314/0x4e8 [cqhci]
+[ 6684.626734] sp : ffff80001243b9f0
+[ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
+[ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
+[ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
+[ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
+[ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
+[ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
+[ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
+[ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
+[ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
+[ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
+[ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
+[ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
+[ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
+[ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
+[ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
+[ 6684.709854] Call trace:
+[ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
+[ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
+[ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
+[ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
+
+cqhci_request was called after cqhci_disable.
+
+cqhci_disable                                 cqhci_request
+{                                             {
+	dmam_free_coherent();  (1) free
+                                                  if(!cq_host->enable)
+                                                       return
+				         (2) pass check here
+	cq_host->enable = false;
+
+                                                  task_desc= get_desc(cq_host,tag);
+                                                             ^^^^ crash here
+                                         (3) access memory which is already free
+
+}                                             }
+
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- drivers/media/v4l2-core/v4l2-common.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
-index 133d20e40f82..04af03285a20 100644
---- a/drivers/media/v4l2-core/v4l2-common.c
-+++ b/drivers/media/v4l2-core/v4l2-common.c
-@@ -469,6 +469,11 @@ s64 v4l2_get_link_freq(struct v4l2_ctrl_handler *handler, unsigned int mul,
- 			return -ENOENT;
+Change from v1 to v2
+ - use Adrian Hunter suggested method to fix this problem
+
+ drivers/mmc/core/bus.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+index c2e70b757dd1..4383c262b3f5 100644
+--- a/drivers/mmc/core/bus.c
++++ b/drivers/mmc/core/bus.c
+@@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
+ 	mmc_remove_card_debugfs(card);
+ #endif
  
- 		freq = div_u64(v4l2_ctrl_g_ctrl_int64(ctrl) * mul, div);
-+
-+		pr_warn("%s: Link frequency estimated using pixel rate: result might be inaccurate\n",
-+			__func__);
-+		pr_warn("%s: Consider implementing support for V4L2_CID_LINK_FREQ in the transmitter driver\n",
-+			__func__);
+-	if (host->cqe_enabled) {
+-		host->cqe_ops->cqe_disable(host);
+-		host->cqe_enabled = false;
+-	}
+-
+ 	if (mmc_card_present(card)) {
+ 		if (mmc_host_is_spi(card->host)) {
+ 			pr_info("%s: SPI card removed\n",
+@@ -416,6 +411,10 @@ void mmc_remove_card(struct mmc_card *card)
+ 		of_node_put(card->dev.of_node);
  	}
  
- 	return freq > 0 ? freq : -EINVAL;
++	if (host->cqe_enabled) {
++		host->cqe_ops->cqe_disable(host);
++		host->cqe_enabled = false;
++	}
++
+ 	put_device(&card->dev);
+ }
+-
 -- 
-2.17.1
+2.25.1
 
