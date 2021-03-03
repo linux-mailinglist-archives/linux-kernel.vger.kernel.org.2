@@ -2,231 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7B632BE50
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1276E32BE9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385530AbhCCRUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383016AbhCCNjq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:39:46 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4649C061797
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:39:01 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id b21so16375398pgk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:39:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sdhrJGZid5mivManhqm8jfbYhoV6GMjSvozJvC0qrHU=;
-        b=1NMzupzNtaEjVHH9pb9ijIJyV7FoHFUtd9Z/80FiqGzI8FTIaVLli9GICSGvoVadET
-         vAkipuSnAWoYMiYkPQFhZXM8NEZQYObpi28M+wniJWN0RQ2Msfbox2cbZ0WDYhzoQUxF
-         25lv+QodqOkdqfGYNQJY1duY22dG0KUmv7Rg1G4cno2OVpFtMMsbDvOLkujiukd6nqhW
-         MWEHDUzOkHJYNQHnHwhAWjJyoCO7+tLfHX6pSHMTu6vDmwxHVOrThdQhcK2g4DWt0tJw
-         mK5tHdPxgv1qi4YLHK0p1BCKX2kP9TrqKhfuK9JkbDU3d5zZjkhCSc1GrQNPd/ceH8bD
-         81ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sdhrJGZid5mivManhqm8jfbYhoV6GMjSvozJvC0qrHU=;
-        b=Msf0/0M5JXZOgO10RZmcKyhniuMR0cyy4/yDS5UJL7KXBGJy2lCOMqfLiBWZoJHBnY
-         2NH45NSlzDz/tTMuYfNGrzliQjrX60cUN2UPJH1IdONXuMZerMJ6fHNfm/SEi3f8GI4+
-         w/tTqBt/4NQxOhklfuHb7xinCd1RVhnL8kfTTKCoalym1UV+WgKBMsiHwmnlZ+ePzN6u
-         dNHevvbp/IVb9UdDU+keSBsifKrZJhMZawC8rFnIG6lA53XJiab+yHBtUQop+dpL4KbG
-         ajOMmK5rKcBrHFvzRjS7WhRS3ssDy29TS48DK9afY+PAz+5tnVfxOJPf+WayDfShCMpx
-         CXMg==
-X-Gm-Message-State: AOAM533DeKyV4uogE+RrLNyZL8vzwETULfdIdKOj+4IxLX0lK9Oed0g+
-        ZKNetSrU/gWWBibquoRrs5JQoA==
-X-Google-Smtp-Source: ABdhPJyh3dK0WitJz08MnAgSaosA4leJ7YbUnT8JKdqgTn7Deq1uNBUpg7Z0iVDD2NqlvcbQVaKTGQ==
-X-Received: by 2002:a62:8c05:0:b029:1d8:7f36:bcd8 with SMTP id m5-20020a628c050000b02901d87f36bcd8mr3352300pfd.43.1614778741225;
-        Wed, 03 Mar 2021 05:39:01 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id j20sm6941638pjn.27.2021.03.03.05.39.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 05:39:00 -0800 (PST)
-Subject: Re: possible deadlock in io_poll_double_wake (2)
-To:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>
-Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <586d357d-8c4c-8875-3a1c-0599a0a64da0@kernel.dk>
- <20210303065231.1589-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ae9bf2e1-8a29-672d-88eb-2367374df9f5@kernel.dk>
-Date:   Wed, 3 Mar 2021 06:39:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210303065231.1589-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1385937AbhCCRdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:33:05 -0500
+Received: from mga18.intel.com ([134.134.136.126]:25320 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242317AbhCCNwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:52:10 -0500
+IronPort-SDR: wC4pn15P/Rve+Ihi0RpJZQ48ZMUfppHQ8o8M3sfHlg22qZQrHIP5gsO2nsvRunV+3zNC94W9pv
+ Gm9kzHEERrxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174835367"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="174835367"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 05:47:29 -0800
+IronPort-SDR: kW6FgmkA7MBBHETZicJVqQovPVtm+iV1UQE0fnSOR1gBtEqLNdMtGFLrEJX7qDiv5xjh7CLF1c
+ wuOsOUXY0Dtg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="383988777"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga002.jf.intel.com with ESMTP; 03 Mar 2021 05:47:29 -0800
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
+Subject: [PATCH] Revert "perf/x86: Allow zero PEBS status with only single active event"
+Date:   Wed,  3 Mar 2021 05:42:18 -0800
+Message-Id: <1614778938-93092-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 11:52 PM, Hillf Danton wrote:
-> Tue, 02 Mar 2021 10:59:05 -0800
->> Hello,
->>
->> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
->> possible deadlock in io_poll_double_wake
->>
->> ============================================
->> WARNING: possible recursive locking detected
->> 5.12.0-rc1-syzkaller #0 Not tainted
->> --------------------------------------------
->> syz-executor.4/10454 is trying to acquire lock:
->> ffff8880343cc130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
->> ffff8880343cc130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4925
->>
->> but task is already holding lock:
->> ffff888034e3b130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
->>
->> other info that might help us debug this:
->>  Possible unsafe locking scenario:
->>
->>        CPU0
->>        ----
->>   lock(&runtime->sleep);
->>   lock(&runtime->sleep);
->>
->>  *** DEADLOCK ***
->>
->>  May be due to missing lock nesting notation
->>
->> 4 locks held by syz-executor.4/10454:
->>  #0: ffff888018cc8128 (&ctx->uring_lock){+.+.}-{3:3}, at: __do_sys_io_uring_enter+0x1146/0x2200 fs/io_uring.c:9113
->>  #1: ffff888021692440 (&runtime->oss.params_lock){+.+.}-{3:3}, at: snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1087 [inline]
->>  #1: ffff888021692440 (&runtime->oss.params_lock){+.+.}-{3:3}, at: snd_pcm_oss_make_ready+0xc7/0x1b0 sound/core/oss/pcm_oss.c:1149
->>  #2: ffff888020273908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
->>  #3: ffff888034e3b130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
->>
->> stack backtrace:
->> CPU: 0 PID: 10454 Comm: syz-executor.4 Not tainted 5.12.0-rc1-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->>  <IRQ>
->>  __dump_stack lib/dump_stack.c:79 [inline]
->>  dump_stack+0xfa/0x151 lib/dump_stack.c:120
->>  print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
->>  check_deadlock kernel/locking/lockdep.c:2872 [inline]
->>  validate_chain kernel/locking/lockdep.c:3661 [inline]
->>  __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
->>  lock_acquire kernel/locking/lockdep.c:5510 [inline]
->>  lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
->>  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
->>  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
->>  spin_lock include/linux/spinlock.h:354 [inline]
->>  io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4925
->>  __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
->>  __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
->>  snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
->>  snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
->>  snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
->>  dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
->>  __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
->>  __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
->>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
->>  __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
->>  invoke_softirq kernel/softirq.c:221 [inline]
->>  __irq_exit_rcu kernel/softirq.c:422 [inline]
->>  irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
->>  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
->>  </IRQ>
->>  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
->> RIP: 0010:unwind_next_frame+0xde0/0x2000 arch/x86/kernel/unwind_orc.c:611
->> Code: 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 83 0f 00 00 41 3b 2f 0f 84 c1 05 00 00 <bf> 01 00 00 00 e8 16 95 1b 00 b8 01 00 00 00 65 8b 15 ca a8 cf 7e
->> RSP: 0018:ffffc9000b447168 EFLAGS: 00000287
->> RAX: ffffc9000b448001 RBX: 1ffff92001688e35 RCX: 1ffff92001688e01
->> RDX: ffffc9000b447ae8 RSI: ffffc9000b447ab0 RDI: ffffc9000b447250
->> RBP: ffffc9000b447ae0 R08: ffffffff8dac0810 R09: 0000000000000001
->> R10: 0000000000084087 R11: 0000000000000001 R12: ffffc9000b440000
->> R13: ffffc9000b447275 R14: ffffc9000b447290 R15: ffffc9000b447240
->>  arch_stack_walk+0x7d/0xe0 arch/x86/kernel/stacktrace.c:25
->>  stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
->>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
->>  ____kasan_slab_free mm/kasan/common.c:360 [inline]
->>  ____kasan_slab_free mm/kasan/common.c:325 [inline]
->>  __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
->>  kasan_slab_free include/linux/kasan.h:199 [inline]
->>  slab_free_hook mm/slub.c:1562 [inline]
->>  slab_free_freelist_hook+0x72/0x1b0 mm/slub.c:1600
->>  slab_free mm/slub.c:3161 [inline]
->>  kfree+0xe5/0x7b0 mm/slub.c:4213
->>  snd_pcm_hw_param_near.constprop.0+0x7b0/0x8f0 sound/core/oss/pcm_oss.c:438
->>  snd_pcm_oss_change_params_locked+0x18c6/0x39a0 sound/core/oss/pcm_oss.c:936
->>  snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1090 [inline]
->>  snd_pcm_oss_make_ready+0xe7/0x1b0 sound/core/oss/pcm_oss.c:1149
->>  snd_pcm_oss_set_trigger.isra.0+0x30f/0x6e0 sound/core/oss/pcm_oss.c:2057
->>  snd_pcm_oss_poll+0x661/0xb10 sound/core/oss/pcm_oss.c:2841
->>  vfs_poll include/linux/poll.h:90 [inline]
->>  __io_arm_poll_handler+0x354/0xa20 fs/io_uring.c:5073
->>  io_arm_poll_handler fs/io_uring.c:5142 [inline]
->>  __io_queue_sqe+0x6ef/0xc40 fs/io_uring.c:6213
->>  io_queue_sqe+0x60d/0xf60 fs/io_uring.c:6259
->>  io_submit_sqe fs/io_uring.c:6423 [inline]
->>  io_submit_sqes+0x519a/0x6320 fs/io_uring.c:6537
->>  __do_sys_io_uring_enter+0x1152/0x2200 fs/io_uring.c:9114
->>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x465ef9
->> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
->> RSP: 002b:00007f818e00e188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
->> RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 0000000000465ef9
->> RDX: 0000000000000000 RSI: 0000000000002039 RDI: 0000000000000004
->> RBP: 00000000004bcd1c R08: 0000000000000000 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
->> R13: 0000000000a9fb1f R14: 00007f818e00e300 R15: 0000000000022000
->>
->>
->> Tested on:
->>
->> commit:         c9387501 sound: name fiddling
->> git tree:       git://git.kernel.dk/linux-block syzbot-test
->> console output: https://syzkaller.appspot.com/x/log.txt?x=16a51856d00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=fa0e4e0c3e0cf6e0
->> dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
->> compiler:       
->>
-> 
-> Walk around recursive lock before adding fix to io_poll_get_single().
-> 
-> --- x/fs/io_uring.c
-> +++ y/fs/io_uring.c
-> @@ -4945,6 +4945,7 @@ static int io_poll_double_wake(struct wa
->  			       int sync, void *key)
->  {
->  	struct io_kiocb *req = wait->private;
-> +	struct io_poll_iocb *self = container_of(wait, struct io_poll_iocb, wait); 
->  	struct io_poll_iocb *poll = io_poll_get_single(req);
->  	__poll_t mask = key_to_poll(key);
->  
-> @@ -4954,7 +4955,7 @@ static int io_poll_double_wake(struct wa
->  
->  	list_del_init(&wait->entry);
->  
-> -	if (poll && poll->head) {
-> +	if (poll && poll->head && poll->head != self->head) {
->  		bool done;
->  
->  		spin_lock(&poll->head->lock);
+From: Kan Liang <kan.liang@linux.intel.com>
 
-The trace and the recent test shows that they are different, this
-case is already caught when we arm the double poll handling:
+This reverts commit 01330d7288e0 ("perf/x86: Allow zero PEBS status with
+only single active event")
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.12&id=9e27652c987541aa7cc062e59343e321fff539ae
+A repeatable crash can be triggered by the perf_fuzzer on some Haswell
+system.
+https://lore.kernel.org/lkml/7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu/
 
-I don't think there's a real issue here, I'm just poking to see why
-syzbot/lockdep thinks there is.
+For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
+may be mistakenly set to 0. To minimize the impact of the defect, the
+commit was introduced to try to avoid dropping the PEBS record for some
+cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
+the local pebs_status accordingly. However, it doesn't correct the PEBS
+status in the PEBS record, which may trigger the crash, especially for
+the large PEBS.
 
+It's possible that all the PEBS records in a large PEBS have the PEBS
+status 0. If so, the first get_next_pebs_record_by_bit() in the
+__intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
+PEBS, the 'count' parameter must > 1. The second
+get_next_pebs_record_by_bit() will crash.
+
+Two solutions were considered to fix the crash.
+- Keep the SW workaround and add extra checks in the
+  get_next_pebs_record_by_bit() to workaround the issue. The
+  get_next_pebs_record_by_bit() is a critical path. The extra checks
+  will bring extra overhead for the latest CPUs which don't have the
+  defect. Also, the defect can only be observed on some old CPUs
+  (For example, the issue can be reproduced on an HSW client, but I
+  didn't observe the issue on my Haswell server machine.). The impact
+  of the defect should be limit.
+  This solution is dropped.
+- Drop the SW workaround and revert the commit.
+  It seems that the commit never works, because the PEBS status in the
+  PEBS record never be changed. The get_next_pebs_record_by_bit() only
+  checks the PEBS status in the PEBS record. The record is dropped
+  eventually. Reverting the commit should not change the current
+  behavior.
+
+Fixes: 01330d7288e0 ("perf/x86: Allow zero PEBS status with only single active event")
+Reported-by: Vince Weaver <vincent.weaver@maine.edu>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/events/intel/ds.c | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index 7ebae18..9c90d1e 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -2000,18 +2000,6 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs, struct perf_sample_d
+ 			continue;
+ 		}
+ 
+-		/*
+-		 * On some CPUs the PEBS status can be zero when PEBS is
+-		 * racing with clearing of GLOBAL_STATUS.
+-		 *
+-		 * Normally we would drop that record, but in the
+-		 * case when there is only a single active PEBS event
+-		 * we can assume it's for that event.
+-		 */
+-		if (!pebs_status && cpuc->pebs_enabled &&
+-			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
+-			pebs_status = cpuc->pebs_enabled;
+-
+ 		bit = find_first_bit((unsigned long *)&pebs_status,
+ 					x86_pmu.max_pebs_events);
+ 		if (bit >= x86_pmu.max_pebs_events)
 -- 
-Jens Axboe
+2.7.4
 
