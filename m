@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D8F32BD0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3491032BD43
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447970AbhCCPRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:17:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:45036 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238857AbhCCK24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:28:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F066A1FB;
-        Wed,  3 Mar 2021 01:52:01 -0800 (PST)
-Received: from [10.57.12.223] (unknown [10.57.12.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33BFD3F73B;
-        Wed,  3 Mar 2021 01:52:00 -0800 (PST)
-Subject: Re: [PATCH 1/8] ARM: ARMv7-M: Fix register restore corrupt after svc
- call
-To:     dillon.minfei@gmail.com, robh+dt@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com
-References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
- <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
-From:   Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <5284d390-c03a-4035-df5a-10d6cd60e47b@arm.com>
-Date:   Wed, 3 Mar 2021 09:52:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1448647AbhCCPmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:42:17 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12234 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1357308AbhCCKtW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:49:22 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1239qSnq016127;
+        Wed, 3 Mar 2021 04:52:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=bEM35y539zYTdo9MMllIZYjN9DigfWFlSWBSMTVulRk=;
+ b=YU5d30IzyI+2zGSUqXZKN3wWlFNPpE3w7f5x4wshBz2zjCPP/crEzFBbZKNFxdtUVSz5
+ gO0SLa1OBsVvdswq7IfeIly8H+dvvootg6lVTaLgq6c2VEm0fUryu3TzTLo7rkcuj/OQ
+ rCLC26MrFTCRffM49K8qQx4xgmORUQkkPe5zxmWnajH794pMBZRVqqfHUJYzat9kAfdn
+ FYejBDOMqRuMI8TB/TNnkKLo4za/EiXfAPE/7RtPrKC569fPaRdjrJ/33kqEkWGk4x+n
+ z6TNgx2LLAto3fHzly3ZwH0wBuSlmJ089OnYaHgmh5ZNczfPUmp5Vln2ITAkG0QtytBf hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37287281c6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 04:52:58 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1239qf7p017753;
+        Wed, 3 Mar 2021 04:52:58 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3728728164-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 04:52:58 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1239qJWc028806;
+        Wed, 3 Mar 2021 09:52:53 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma01fra.de.ibm.com with ESMTP id 370atn1ee1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 09:52:53 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1239qa1a37159250
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Mar 2021 09:52:36 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B862042045;
+        Wed,  3 Mar 2021 09:52:50 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6668242041;
+        Wed,  3 Mar 2021 09:52:50 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  3 Mar 2021 09:52:50 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Narendra K <narendra_k@dell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Viktor Mihajlovski <mihajlov@linux.ibm.com>,
+        Stefan Raspl <raspl@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: [RFC 0/1] s390/pci: expose a PCI device's UID as its index
+Date:   Wed,  3 Mar 2021 10:52:49 +0100
+Message-Id: <20210303095250.1360007-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ mlxscore=0 bulkscore=0 suspectscore=0 mlxlogscore=897 spamscore=0
+ lowpriorityscore=0 malwarescore=0 adultscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103030072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/3/21 8:05 AM, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> For some case, kernel not boot by u-boot(single thread),
-> but by rtos , as most rtos use pendsv to do context switch.
+Hi,
 
+On s390 each PCI device has a user-defined ID (UID).  This ID was
+designed to serve as the PCI device's primary index and to match the
+device within Linux to the with the view in the hypervisor
+configuration. To serve as a primary identifier the UID must be unique
+within the Linux instance, this is guaranteed by the platform if and
+only if the UID Uniqueness Checking flag is set within the CLP List PCI
+Functions response which is also currently used to determine whether the
+UID is also used as the Domain part of the geographical PCI address of
+the device.
 
-Hmm, does it mean that it starts kernel from process context?
+As primary identifier of a PCI device, the UID serves an analogous
+function as the SMBIOS instance number or ACPI index exposed as the
+"index" respectively "acpi_index" device attributes. These attributes
+are used by e.g. systemd/udev to set network interface names. As s390
+does not use  ACPI nor SMBIOS there is no conflict and we can expose the
+UID under the "index" attribute whenever UID Uniqueness Checking is
+active and systemd/udev will then create "eno<UID>.." interface names.
 
-I'd assume that it is not only kernel who expects MSP. So, what
-if RTOS you mentioned want to boot other RTOS (even itself)? What
-if you have no access to the source code for those RTOS(es) to
-patch MSP/PSP switch?
+Note: This is an evolution of an earlier patch I sent for exposing the
+UID Uniqueness Checking flag directly. Thank you Greg for making me
+realize that we were looking too much at just exposing platform details
+instead of looking how existing interfaces could suit our purpose.
 
-I'd very much prefer to keep stack switching logic outside kernel,
-say, in some shim which RTOS/bootloader can maintain.
+Thanks,
+Niklas Schnelle
 
-Cheers
-Vladimir
+Niklas Schnelle (1):
+  s390/pci: expose a PCI device's UID as its index
 
-> 
-> So, we need add an lr check after svc call, to find out should
-> use psp or msp. else register restore after svc call might be
-> corrupted.
-> 
-> Fixes: b70cd406d7fe ("ARM: 8671/1: V7M: Preserve registers across switch from Thread to Handler mode")
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
->  arch/arm/mm/proc-v7m.S | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mm/proc-v7m.S b/arch/arm/mm/proc-v7m.S
-> index 84459c1d31b8..c93d2757312d 100644
-> --- a/arch/arm/mm/proc-v7m.S
-> +++ b/arch/arm/mm/proc-v7m.S
-> @@ -137,7 +137,10 @@ __v7m_setup_cont:
->  1:	cpsid	i
->  	/* Calculate exc_ret */
->  	orr	r10, lr, #EXC_RET_THREADMODE_PROCESSSTACK
-> -	ldmia	sp, {r0-r3, r12}
-> +	tst	lr, #EXC_RET_STACK_MASK
-> +	mrsne	r4, psp
-> +	moveq	r4, sp
-> +	ldmia	r4!, {r0-r3, r12}
->  	str	r5, [r12, #11 * 4]	@ restore the original SVC vector entry
->  	mov	lr, r6			@ restore LR
->  
-> 
+ Documentation/ABI/testing/sysfs-bus-pci | 11 +++++---
+ arch/s390/pci/pci_sysfs.c               | 36 +++++++++++++++++++++++++
+ 2 files changed, 43 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
 
