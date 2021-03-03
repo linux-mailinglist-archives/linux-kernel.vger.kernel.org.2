@@ -2,205 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C0B32BAC3
+	by mail.lfdr.de (Postfix) with ESMTP id C3D3632BAC4
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358212AbhCCL50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 06:57:26 -0500
-Received: from mga01.intel.com ([192.55.52.88]:30750 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353687AbhCCFUV (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 00:20:21 -0500
-IronPort-SDR: Ss3+zxOlqa78OL8z4nwrxIaOFU90/8l58GlZZs10kebQxPnnC/uwbXKQ5tllcBkBzAW8kdsEpW
- uxKkvnP9Hspg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="206783410"
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="206783410"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 21:18:37 -0800
-IronPort-SDR: TyoxfolEA/zGv+88c4x1iRb6uOsfuSJzIveQbZXxyadY5csJ9brkJpXgPfhOjL/eR6oWOF/miC
- OjtFIDBJy7ZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
-   d="scan'208";a="506656331"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Mar 2021 21:18:33 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf pmu: Validate raw event with sysfs exported format bits
-Date:   Wed,  3 Mar 2021 13:17:36 +0800
-Message-Id: <20210303051736.26974-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1358236AbhCCL5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236101AbhCCFWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 00:22:13 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02CEC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 21:21:28 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id c16so3917787ply.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 21:21:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jGdvbu0FrsOZa6Rq/Yom9taOBE4Ik/ZEHiXZKsv0uRI=;
+        b=GPNx/T4z+1ZeuJgxHzD53mXPB6Msnm9jX+CktVmXhjy5egAoDwYonMJ1t3b6OR/UQN
+         U77XRK8W3FACHStST2UYo+AqSHpHNJjmSJxKLRJ325itlIlVGxSJFX2JmxoRtZqMpsQt
+         wa2TZvE4gCI6E33DPEEa1NGcv1ecJxFDpZGIRWu5KjLMsYG7cWfONDYjewPgH0eBqqJK
+         SuhPtKHM7E/9HeavGZBmeIPh3iSDiFSDpCQ8a4A1qnjnWTIYdY/StT/QPmUxj36OWJi9
+         gmEDoBUXGY6QocgnfRw5aWsMmzDdLetJPUT3S9BC1sdx+W8UYXCP5PWIBovbu7hz8W3e
+         QF9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jGdvbu0FrsOZa6Rq/Yom9taOBE4Ik/ZEHiXZKsv0uRI=;
+        b=Gz1eW4YCdDp91kn+e3Fb/mP+SHWOrTNbNmpLXdA3m6Yt5Sj+KIaI5CsfS95gaJXxhQ
+         bAuWX4kg6fWxBhl7TEcs7wHt72gnXPtb7iR+7O+F5l+9i31VbRm84Rfs19apVuAGXpPD
+         K5NAsK74ZjGdvGrS2teDVABTJB2sbx+3I30d6DeWSHtiZLjCoeVumzDgdh9X1TIll7DH
+         jIoanP7piRxT/XAKcFBmz6M/ZAUWhuL5Wdi0OHzF9THSzCcdY1iS95qu7gNo0SIeWeH5
+         xQpmnGHN8SEstw8aPCUIZnRi7Kr2nwp9nhEnQht2rbAo3IpJEBV7XLL4eHsRt4zaqDyr
+         V4BA==
+X-Gm-Message-State: AOAM533rnZoDMGPM7mMoQxFN9/lYAwuWOhpmG7T6te0YOHWxezDM/e7N
+        PLDaTGHjFS2EdWtPxkN0GC1rdg==
+X-Google-Smtp-Source: ABdhPJw6GlpfyE7P8dvwW1CesEsCPrq8AC/kChySl3CPk8cQ1uYFOq6bzHsnWmMmpc+RdGAWqyi5sQ==
+X-Received: by 2002:a17:90a:6342:: with SMTP id v2mr7739878pjs.150.1614748888349;
+        Tue, 02 Mar 2021 21:21:28 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id q95sm5314450pjq.20.2021.03.02.21.21.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Mar 2021 21:21:27 -0800 (PST)
+Date:   Wed, 3 Mar 2021 10:51:25 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH V7 4/6] kbuild: Add support to build overlays (%.dtbo)
+Message-ID: <20210303052125.uh32ndnu5d6mem7c@vireshk-i7>
+References: <cover.1611904394.git.viresh.kumar@linaro.org>
+ <434ba2467dd0cd011565625aeb3450650afe0aae.1611904394.git.viresh.kumar@linaro.org>
+ <CAMuHMdVp0vGMqoEoP9A7Y7-ph-DYUWdddtChdq_eZcROYTBMHg@mail.gmail.com>
+ <20210205092507.fdxotdjlq5rjs2yh@vireshk-i7>
+ <CAMuHMdWUMcMcJxnC+oML8P0+r72_+d6RWGY50dOWCUECdJGWPA@mail.gmail.com>
+ <20210205095545.woevnkxg3ar7ctys@vireshk-i7>
+ <CAMuHMdXKT3LD3ojMJEg-oHsEKO5TN5P1BTJMyf2fYkhnC8PU=Q@mail.gmail.com>
+ <20210205210814.GA3707622@robh.at.kernel.org>
+ <02728dac-5666-9c2b-bd46-9c2eabbb2ed8@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02728dac-5666-9c2b-bd46-9c2eabbb2ed8@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A raw PMU event (eventsel+umask) in the form of rNNN is supported
-by perf but lacks of checking for the validity of raw encoding.
+On 24-02-21, 19:32, Frank Rowand wrote:
+> I overlooked this and mistakenly thought that the move to .dtbo also
+> involved changing to .dtso.  My bad.
+> 
+> My favorite color here is to use .dtso for the source file that will
+> be compiled to create a .dtbo.
+> 
+> Linus has already accepted patch 4/6 to 5.12-rc1, so changing to .dtso
+> will require another patch.
 
-For example, bit 16 and bit 17 are not valid on KBL but perf doesn't
-report warning when encoding with these bits.
+Looks like this is what many people desire, lets do it and make it a
+standard even if it wasn't followed earlier.
 
-Before:
+What about this ?
 
-  # ./perf stat -e cpu/r031234/ -a -- sleep 1
-
-   Performance counter stats for 'system wide':
-
-                   0      cpu/r031234/
-
-         1.003798924 seconds time elapsed
-
-It may silently measure the wrong event!
-
-The kernel supported bits have been exported through
-/sys/devices/<pmu>/format/. Perf collects the information to
-'struct perf_pmu_format' and links it to 'pmu->format' list.
-
-The 'struct perf_pmu_format' has a bitmap which records the
-valid bits for this format. For example,
-
-  root@kbl-ppc:/sys/devices/cpu/format# cat umask
-  config:8-15
-
-bit8-bit15 are recorded in bitmap of format 'umask'.
-
-We collect total valid bits of all formats, save to a local variable
-'masks' and reverse it. Now '~masks' represents total invalid bits.
-
-bits = config & ~masks;
-
-The set bits in 'bits' indicate the invalid bits used in config.
-Finally use strbuf to report the invalid bits.
-
-Some architectures may not export supported bits through sysfs,
-so if masks is 0, perf_pmu__config_valid just returns true.
-
-After:
-
-Single event:
-
-  # ./perf stat -e cpu/r031234/ -a -- sleep 1
-  WARNING: event config '31234' not valid (bits 16 17 not supported by kernel)!
-
-   Performance counter stats for 'system wide':
-
-                   0      cpu/r031234/
-
-         1.001403757 seconds time elapsed
-
-Multiple events:
-
-  # ./perf stat -e cpu/rf01234/,cpu/r031234/ -a -- sleep 1
-  WARNING: event config 'f01234' not valid (bits 20 22 not supported by kernel)!
-  WARNING: event config '31234' not valid (bits 16 17 not supported by kernel)!
-
-   Performance counter stats for 'system wide':
-
-                   0      cpu/rf01234/
-                   0      cpu/r031234/
-
-The warning is reported for invalid bits.
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/parse-events.c | 11 ++++++++++
- tools/perf/util/pmu.c          | 38 ++++++++++++++++++++++++++++++++++
- tools/perf/util/pmu.h          |  4 ++++
- 3 files changed, 53 insertions(+)
-
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 42c84adeb2fb..1820b2c0a241 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -356,6 +356,17 @@ __add_event(struct list_head *list, int *idx,
- 	struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
- 			       cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index c430fbb36763..0dbedb61835f 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -337,7 +337,7 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
  
-+	if (pmu && attr->type == PERF_TYPE_RAW) {
-+		struct strbuf buf = STRBUF_INIT;
-+
-+		if (!perf_pmu__config_valid(pmu, attr->config, &buf)) {
-+			pr_warning("WARNING: event config '%llx' not valid ("
-+				   "bits%s not supported by kernel)!\n",
-+				   attr->config, buf.buf);
-+		}
-+		strbuf_release(&buf);
-+	}
-+
- 	if (init_attr)
- 		event_attr_init(attr);
+ quiet_cmd_dtc = DTC     $@
+ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
+-       $(DTC) -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
++       $(DTC) -I dts -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
+                $(addprefix -i,$(dir $<) $(DTC_INCLUDE)) $(DTC_FLAGS) \
+                -d $(depfile).dtc.tmp $(dtc-tmp) ; \
+        cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
+@@ -348,6 +348,9 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+ $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+        $(call if_changed_dep,dtc)
  
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 44ef28302fc7..5e361adb2698 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1812,3 +1812,41 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
++$(obj)/%.dtbo: $(src)/%.dtso $(DTC) FORCE
++       $(call if_changed_dep,dtc)
++
+ overlay-y := $(addprefix $(obj)/, $(overlay-y))
  
- 	return nr_caps;
- }
-+
-+bool perf_pmu__config_valid(struct perf_pmu *pmu, __u64 config,
-+			    struct strbuf *buf)
-+{
-+	struct perf_pmu_format *format;
-+	__u64 masks = 0, bits;
-+	int i;
-+
-+	list_for_each_entry(format, &pmu->format, list)	{
-+		/*
-+		 * Skip extra configs such as config1/config2.
-+		 */
-+		if (format->value > 0)
-+			continue;
-+
-+		for_each_set_bit(i, format->bits, PERF_PMU_FORMAT_BITS)
-+			masks |= 1ULL << i;
-+	}
-+
-+	/*
-+	 * Kernel doesn't export any valid format bits.
-+	 */
-+	if (masks == 0)
-+		return true;
-+
-+	bits = config & ~masks;
-+	if (bits == 0)
-+		return true;
-+
-+	for (i = 0; i < PERF_PMU_FORMAT_BITS; i++) {
-+		if (bits & 0x1)
-+			strbuf_addf(buf, " %d", i);
-+
-+		bits >>= 1;
-+	}
-+
-+	return false;
-+}
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 8164388478c6..980d6430c833 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -8,6 +8,7 @@
- #include <stdbool.h>
- #include "parse-events.h"
- #include "pmu-events/pmu-events.h"
-+#include "strbuf.h"
+ quiet_cmd_fdtoverlay = DTOVL   $@
+@@ -373,6 +376,9 @@ endef
+ $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
+        $(call if_changed_rule,dtc,yaml)
  
- struct evsel_config_term;
- 
-@@ -123,4 +124,7 @@ int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
- 
- int perf_pmu__caps_parse(struct perf_pmu *pmu);
- 
-+bool perf_pmu__config_valid(struct perf_pmu *pmu, __u64 config,
-+			    struct strbuf *buf);
++$(obj)/%.dt.yaml: $(src)/%.dtso $(DTC) $(DT_TMP_SCHEMA) FORCE
++       $(call if_changed_rule,dtc,yaml)
 +
- #endif /* __PMU_H */
+ dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+ 
+ # Bzip2
+
+-------------------------8<-------------------------
+
+I had to keep the original line as is:
+
+ $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+
+to support the unittest stuff as there are no dtso files there. There
+are few things we can do here:
+
+- Don't follow the dtso/dtbo convention for unittest, build files as
+  dtb only and everything will continue to work I suppose as
+  fdtoverlay won't complain.
+
+- Keep the above line in Makefile, this doesn't sound right, isn't it
+  ?
+
+- Make .dts links for unittest file, maybe from the Makefile itself.
+
+- Something else ?
+
 -- 
-2.17.1
-
+viresh
