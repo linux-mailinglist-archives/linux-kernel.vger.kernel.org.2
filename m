@@ -2,150 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E2732C0C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BC432C0C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386744AbhCCSqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:46:18 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:1236 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237638AbhCCR3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:29:23 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DrLYC63phz9tygT;
-        Wed,  3 Mar 2021 18:27:43 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id hir2rm8ii5Yn; Wed,  3 Mar 2021 18:27:43 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrLYC4z7Cz9tygS;
-        Wed,  3 Mar 2021 18:27:43 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0BCED8B7E8;
-        Wed,  3 Mar 2021 18:27:42 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id RsjDGPmwO4Gn; Wed,  3 Mar 2021 18:27:41 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9BFAA8B7DB;
-        Wed,  3 Mar 2021 18:27:41 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 40E9C674B7; Wed,  3 Mar 2021 17:27:41 +0000 (UTC)
-Message-Id: <20dad21f9446938697573e6642db583bdb874656.1614792440.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2] powerpc: Fix save_stack_trace_regs() to have running
- function as first entry
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, elver@google.com,
-        rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kasan-dev@googlegroups.com
-Date:   Wed,  3 Mar 2021 17:27:41 +0000 (UTC)
+        id S1386753AbhCCSqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240212AbhCCR3a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:29:30 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84D4C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:28:15 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id n14so26597073iog.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ck2w+e5yXkndn1hHoEc40G+HBVTFOBYH8jC+XKOicDs=;
+        b=YSXBefMpnQeJLVXH2u/6vizQTN7Ho5xCOwqne2UzKric8QgKjoWznBVtMcKZnJS/l1
+         CBnEZvshehyDRI6+CSUort61MlyKAsJWSQX4iNx8LTtWnAx0ZooLoqt9xt9hQQJejuSe
+         twEl2M4gyaFVNQ2iP6xie+uaMefYX9aCP80ei1oK/F+tZHUXS5SZ2xli/Rnla2iuH35y
+         HQZkHEa7zBKqwz7GkNafuRf42QHtHxEi6u2lUhgTbjam2v8oO0920jY4bUX1JS5JTMx7
+         4uM7pMSEYFh1V0twXIR172Ux54s64w07d8DapzsMG53O+pBTaow42w+Euq+zmJW+PWbN
+         XOsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ck2w+e5yXkndn1hHoEc40G+HBVTFOBYH8jC+XKOicDs=;
+        b=V5CeACNIbiF44KWeOmw5NlZVsVZ/FHC3G1oRKRpLyKwh5Gya+DdE8cxXTLeqCQlQn2
+         bail7CVFhzhxu4C+aUX8AOGo7ibrKsVkPPuGOzJf1l33rmqLt01d8/xAyIFJGneFQIkt
+         o5hTNPzPULLXdBc/N8kfQEbN7mCvElD/QTM+cvXSxe/88KycVit/BBxX5hgt/HUroarp
+         JjXfHZZkx5vrOxzp6qUFs1vaX2iK4K7u2VSA5x+M/E0nDqHUMSlgFtaeYCeXia5cbkB1
+         vYS5jOWT+2NDLFIBdmCbvWTExatbk1i42YChga2oPA2M0zEvl3stX92dVf2eMA0hOhY/
+         faDQ==
+X-Gm-Message-State: AOAM531tJq6LD0+nWP8ULtQF07F3arE41UOcZeKmZAtb9g1HO4aSazyV
+        f6gWAxzJg0St5VLG/XsK+KfEylf9VN7/Cxd5ZLGUFw==
+X-Google-Smtp-Source: ABdhPJzD8aRdltFXM/NaTn95qOpABgQeAMXTFWz8XzmWvbiOwMUQmg4Z4Z7jc4RFL5cM1+dGliVOWFz6VT9q9Cgnqxg=
+X-Received: by 2002:a05:6638:1648:: with SMTP id a8mr25394286jat.25.1614792494837;
+ Wed, 03 Mar 2021 09:28:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20210302184540.2829328-1-seanjc@google.com> <20210302184540.2829328-3-seanjc@google.com>
+In-Reply-To: <20210302184540.2829328-3-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 3 Mar 2021 09:28:03 -0800
+Message-ID: <CANgfPd9n3HjFOR5230i9_W9-CZjKKQSp+wzDB+Eymqrr3F8xeQ@mail.gmail.com>
+Subject: Re: [PATCH 02/15] KVM: x86/mmu: Alloc page for PDPTEs when shadowing
+ 32-bit NPT with 64-bit
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems like other architectures, namely x86 and arm64
-at least, include the running function as top entry when saving
-stack trace with save_stack_trace_regs().
+On Tue, Mar 2, 2021 at 10:45 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Allocate the so called pae_root page on-demand, along with the lm_root
+> page, when shadowing 32-bit NPT with 64-bit NPT, i.e. when running a
+> 32-bit L1.  KVM currently only allocates the page when NPT is disabled,
+> or when L0 is 32-bit (using PAE paging).
+>
+> Note, there is an existing memory leak involving the MMU roots, as KVM
+> fails to free the PAE roots on failure.  This will be addressed in a
+> future commit.
+>
+> Fixes: ee6268ba3a68 ("KVM: x86: Skip pae_root shadow allocation if tdp enabled")
+> Fixes: b6b80c78af83 ("KVM: x86/mmu: Allocate PAE root array when using SVM's 32-bit NPT")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Functionnalities like KFENCE expect it.
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-Do the same on powerpc, it allows KFENCE to properly identify the faulting
-function as depicted below. Before the patch KFENCE was identifying
-finish_task_switch.isra as the faulting function.
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 44 ++++++++++++++++++++++++++++--------------
+>  1 file changed, 29 insertions(+), 15 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 0987cc1d53eb..2ed3fac1244e 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3187,14 +3187,14 @@ void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>                 if (mmu->shadow_root_level >= PT64_ROOT_4LEVEL &&
+>                     (mmu->root_level >= PT64_ROOT_4LEVEL || mmu->direct_map)) {
+>                         mmu_free_root_page(kvm, &mmu->root_hpa, &invalid_list);
+> -               } else {
+> +               } else if (mmu->pae_root) {
+>                         for (i = 0; i < 4; ++i)
+>                                 if (mmu->pae_root[i] != 0)
 
-[   14.937370] ==================================================================
-[   14.948692] BUG: KFENCE: invalid read in test_invalid_access+0x54/0x108
-[   14.948692]
-[   14.956814] Invalid read at 0xdf98800a:
-[   14.960664]  test_invalid_access+0x54/0x108
-[   14.964876]  finish_task_switch.isra.0+0x54/0x23c
-[   14.969606]  kunit_try_run_case+0x5c/0xd0
-[   14.973658]  kunit_generic_run_threadfn_adapter+0x24/0x30
-[   14.979079]  kthread+0x15c/0x174
-[   14.982342]  ret_from_kernel_thread+0x14/0x1c
-[   14.986731]
-[   14.988236] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B             5.12.0-rc1-01537-g95f6e2088d7e-dirty #4682
-[   14.999795] NIP:  c016ec2c LR: c02f517c CTR: c016ebd8
-[   15.004851] REGS: e2449d90 TRAP: 0301   Tainted: G    B              (5.12.0-rc1-01537-g95f6e2088d7e-dirty)
-[   15.015274] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
-[   15.022043] DAR: df98800a DSISR: 20000000
-[   15.022043] GPR00: c02f517c e2449e50 c1142080 e100dd24 c084b13c 00000008 c084b32b c016ebd8
-[   15.022043] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
-[   15.040581] NIP [c016ec2c] test_invalid_access+0x54/0x108
-[   15.046010] LR [c02f517c] kunit_try_run_case+0x5c/0xd0
-[   15.051181] Call Trace:
-[   15.053637] [e2449e50] [c005a68c] finish_task_switch.isra.0+0x54/0x23c (unreliable)
-[   15.061338] [e2449eb0] [c02f517c] kunit_try_run_case+0x5c/0xd0
-[   15.067215] [e2449ed0] [c02f648c] kunit_generic_run_threadfn_adapter+0x24/0x30
-[   15.074472] [e2449ef0] [c004e7b0] kthread+0x15c/0x174
-[   15.079571] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
-[   15.085798] Instruction dump:
-[   15.088784] 8129d608 38e7ebd8 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
-[   15.096613] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
-[   15.104612] ==================================================================
+I was about to comment on how weird this check is since pae_root can
+also be INVALID_PAGE but that case is handled in mmu_free_root_page...
+but then I realized that you're already addressing that problem in
+patch 7.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Fixes: 35de3b1aa168 ("powerpc: Implement save_stack_trace_regs() to enable kprobe stack tracing")
-Cc: stable@vger.kernel.org
-Acked-by: Marco Elver <elver@google.com>
----
- arch/powerpc/kernel/stacktrace.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
-
-diff --git a/arch/powerpc/kernel/stacktrace.c b/arch/powerpc/kernel/stacktrace.c
-index b6440657ef92..a99bd3697286 100644
---- a/arch/powerpc/kernel/stacktrace.c
-+++ b/arch/powerpc/kernel/stacktrace.c
-@@ -23,6 +23,18 @@
- 
- #include <asm/paca.h>
- 
-+static bool save_entry(struct stack_trace *trace, unsigned long ip, int savesched)
-+{
-+	if (savesched || !in_sched_functions(ip)) {
-+		if (!trace->skip)
-+			trace->entries[trace->nr_entries++] = ip;
-+		else
-+			trace->skip--;
-+	}
-+	/* Returns true when the trace is full */
-+	return trace->nr_entries >= trace->max_entries;
-+}
-+
- /*
-  * Save stack-backtrace addresses into a stack_trace buffer.
-  */
-@@ -39,14 +51,7 @@ static void save_context_stack(struct stack_trace *trace, unsigned long sp,
- 		newsp = stack[0];
- 		ip = stack[STACK_FRAME_LR_SAVE];
- 
--		if (savesched || !in_sched_functions(ip)) {
--			if (!trace->skip)
--				trace->entries[trace->nr_entries++] = ip;
--			else
--				trace->skip--;
--		}
--
--		if (trace->nr_entries >= trace->max_entries)
-+		if (save_entry(trace, ip, savesched))
- 			return;
- 
- 		sp = newsp;
-@@ -84,6 +89,9 @@ EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
- void
- save_stack_trace_regs(struct pt_regs *regs, struct stack_trace *trace)
- {
-+	if (save_entry(trace, regs->nip, 0))
-+		return;
-+
- 	save_context_stack(trace, regs->gpr[1], current, 0);
- }
- EXPORT_SYMBOL_GPL(save_stack_trace_regs);
--- 
-2.25.0
-
+>                                         mmu_free_root_page(kvm,
+>                                                            &mmu->pae_root[i],
+>                                                            &invalid_list);
+> -                       mmu->root_hpa = INVALID_PAGE;
+>                 }
+> +               mmu->root_hpa = INVALID_PAGE;
+>                 mmu->root_pgd = 0;
+>         }
+>
+> @@ -3306,9 +3306,23 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>          * the shadow page table may be a PAE or a long mode page table.
+>          */
+>         pm_mask = PT_PRESENT_MASK;
+> -       if (vcpu->arch.mmu->shadow_root_level == PT64_ROOT_4LEVEL)
+> +       if (vcpu->arch.mmu->shadow_root_level == PT64_ROOT_4LEVEL) {
+>                 pm_mask |= PT_ACCESSED_MASK | PT_WRITABLE_MASK | PT_USER_MASK;
+>
+> +               /*
+> +                * Allocate the page for the PDPTEs when shadowing 32-bit NPT
+> +                * with 64-bit only when needed.  Unlike 32-bit NPT, it doesn't
+> +                * need to be in low mem.  See also lm_root below.
+> +                */
+> +               if (!vcpu->arch.mmu->pae_root) {
+> +                       WARN_ON_ONCE(!tdp_enabled);
+> +
+> +                       vcpu->arch.mmu->pae_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+> +                       if (!vcpu->arch.mmu->pae_root)
+> +                               return -ENOMEM;
+> +               }
+> +       }
+> +
+>         for (i = 0; i < 4; ++i) {
+>                 MMU_WARN_ON(VALID_PAGE(vcpu->arch.mmu->pae_root[i]));
+>                 if (vcpu->arch.mmu->root_level == PT32E_ROOT_LEVEL) {
+> @@ -3331,21 +3345,19 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>         vcpu->arch.mmu->root_hpa = __pa(vcpu->arch.mmu->pae_root);
+>
+>         /*
+> -        * If we shadow a 32 bit page table with a long mode page
+> -        * table we enter this path.
+> +        * When shadowing 32-bit or PAE NPT with 64-bit NPT, the PML4 and PDP
+> +        * tables are allocated and initialized at MMU creation as there is no
+> +        * equivalent level in the guest's NPT to shadow.  Allocate the tables
+> +        * on demand, as running a 32-bit L1 VMM is very rare.  The PDP is
+> +        * handled above (to share logic with PAE), deal with the PML4 here.
+>          */
+>         if (vcpu->arch.mmu->shadow_root_level == PT64_ROOT_4LEVEL) {
+>                 if (vcpu->arch.mmu->lm_root == NULL) {
+> -                       /*
+> -                        * The additional page necessary for this is only
+> -                        * allocated on demand.
+> -                        */
+> -
+>                         u64 *lm_root;
+>
+>                         lm_root = (void*)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+> -                       if (lm_root == NULL)
+> -                               return 1;
+> +                       if (!lm_root)
+> +                               return -ENOMEM;
+>
+>                         lm_root[0] = __pa(vcpu->arch.mmu->pae_root) | pm_mask;
+>
+> @@ -5248,9 +5260,11 @@ static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
+>          * while the PDP table is a per-vCPU construct that's allocated at MMU
+>          * creation.  When emulating 32-bit mode, cr3 is only 32 bits even on
+>          * x86_64.  Therefore we need to allocate the PDP table in the first
+> -        * 4GB of memory, which happens to fit the DMA32 zone.  Except for
+> -        * SVM's 32-bit NPT support, TDP paging doesn't use PAE paging and can
+> -        * skip allocating the PDP table.
+> +        * 4GB of memory, which happens to fit the DMA32 zone.  TDP paging
+> +        * generally doesn't use PAE paging and can skip allocating the PDP
+> +        * table.  The main exception, handled here, is SVM's 32-bit NPT.  The
+> +        * other exception is for shadowing L1's 32-bit or PAE NPT on 64-bit
+> +        * KVM; that horror is handled on-demand by mmu_alloc_shadow_roots().
+>          */
+>         if (tdp_enabled && kvm_mmu_get_tdp_level(vcpu) > PT32E_ROOT_LEVEL)
+>                 return 0;
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
+>
