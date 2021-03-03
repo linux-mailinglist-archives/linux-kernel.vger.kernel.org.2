@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4194032BDF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C036A32BDF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhCCQlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:41:12 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:13204 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1358536AbhCCMNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:13:50 -0500
-Received: from localhost.localdomain (unknown [222.205.72.8])
-        by mail-app4 (Coremail) with SMTP id cS_KCgCXnT01fT9gGtX6AQ--.1282S4;
-        Wed, 03 Mar 2021 20:12:46 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Sebastian Reichel <sre@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] power: supply: axp20x_usb_power: Add missing check in axp20x_usb_power_probe
-Date:   Wed,  3 Mar 2021 20:12:36 +0800
-Message-Id: <20210303121237.15284-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgCXnT01fT9gGtX6AQ--.1282S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF1fAF4rZFWUtFyfAr1kKrg_yoWDZwbEk3
-        yxur9rtry8WF4jyrn0kw1fZFZYkFnrXF9rZ3WUtFs3Jw13Ka4kJr48ZrW3u345XrWUCFsx
-        Zr4DXF47AFyxujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ryUMxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUb1rW5UUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgENBlZdtSlmQgABs6
+        id S1445271AbhCCQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:40:57 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:48432 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1356800AbhCCMNb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:13:31 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UQGMJow_1614773561;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UQGMJow_1614773561)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Mar 2021 20:12:42 +0800
+Subject: Re: [PATCH] selftests/sgx: fix EINIT failure dueto
+ SGX_INVALID_SIGNATURE
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210301051836.30738-1-tianjia.zhang@linux.alibaba.com>
+ <YDy51R2Wva7s+k/x@kernel.org>
+ <3bcdcf04-4bed-ed95-84b6-790675f18240@linux.alibaba.com>
+ <YD40viWEQVBPU4LW@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <c3c336f4-31d1-4cd0-7e7e-a014f7cf8a83@linux.alibaba.com>
+Date:   Wed, 3 Mar 2021 20:12:41 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <YD40viWEQVBPU4LW@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two regmap_update_bits() calls but only one of them has
-return value check, which is odd. Add a return value check and
-terminate the execution flow on failure just like the other call.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/power/supply/axp20x_usb_power.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
-index 8933ae26c3d6..7ed76eef8417 100644
---- a/drivers/power/supply/axp20x_usb_power.c
-+++ b/drivers/power/supply/axp20x_usb_power.c
-@@ -614,8 +614,10 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
- 
- 	if (power->axp20x_id == AXP813_ID) {
- 		/* Enable USB Battery Charging specification detection */
--		regmap_update_bits(axp20x->regmap, AXP288_BC_GLOBAL,
-+		ret = regmap_update_bits(axp20x->regmap, AXP288_BC_GLOBAL,
- 				   AXP813_BC_EN, AXP813_BC_EN);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	psy_cfg.of_node = pdev->dev.of_node;
--- 
-2.17.1
+On 3/2/21 8:51 PM, Jarkko Sakkinen wrote:
+> Nit: "due to"
+> 
+> Start with capital letter "Fix"
+> 
 
+Will do in the next patch.
+
+> On Tue, Mar 02, 2021 at 01:06:52PM +0800, Tianjia Zhang wrote:
+>>
+>>
+>> On 3/1/21 5:54 PM, Jarkko Sakkinen wrote:
+>>> On Mon, Mar 01, 2021 at 01:18:36PM +0800, Tianjia Zhang wrote:
+>>>> q2 is not always 384-byte length. Sometimes it only has 383-byte.
+>>>
+>>> What does determine this?
+>>>
+>>>> In this case, the valid portion of q2 is reordered reversely for
+>>>> little endian order, and the remaining portion is filled with zero.
+>>>
+>>> I'm presuming that you want to say "In this case, q2 needs to be reversed because...".
+>>>
+>>> I'm lacking these details:
+>>>
+>>> 1. Why the length of Q2 can vary?
+>>> 2. Why reversing the bytes is the correct measure to counter-measure
+>>>      this variation?
+>>>
+>>> /Jarkko
+>>>
+>>
+>> When use openssl to generate a key instead of using the built-in
+>> sign_key.pem, there is a probability that will encounter this problem.
+>>
+>> Here is a problematic key I encountered. The calculated q1 and q2 of this
+>> key are both 383 bytes, If the length is not processed, the hardware
+>> signature will fail.
+> 
+> Why is reversing bytes the correct way to fix the issue?
+> 
+
+This is caused by the incorrect length of the reversed data. If the 
+length of q2 is 383 bytes, the inversion will cause the first byte to be 
+zero. For this, please refer to the signature tool in sgx sdk:
+
+https://github.com/intel/linux-sgx/blob/master/sdk/sign_tool/SignTool/sign_tool.cpp#L381
+
+If it can be repaired, it may be possible to use to generate 
+sign_key.pem key on fly instead of using the static key.
+
+Best regards,
+Tianjia
