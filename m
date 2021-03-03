@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB9632B75A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D0C32B75B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344132AbhCCK7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:59:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28333 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240936AbhCCAll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 19:41:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614732014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eJ8fhS+O4Rb8GZGJYkmyko8OHt98hIay+OTIrXCbPnE=;
-        b=Czt/YkzAempczxZYUXyqpdOb/8vFsWulT/OiUna3FOvVX6MtZbtZTT0YPwOwL/r8KozBDY
-        8qYQKhbyJKFZLBq4x6sOTuvnlFFQ2SFtqAydDcJt4aOYxt/XjXMxuR3fG5jhpKS3mRZW1Q
-        y4HBxjiiPg2SmjKbvIi3SMcbbbSgOMw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-17-ruB1zOTSNRy5GP62OfiObw-1; Tue, 02 Mar 2021 19:40:10 -0500
-X-MC-Unique: ruB1zOTSNRy5GP62OfiObw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7A35803F47;
-        Wed,  3 Mar 2021 00:40:07 +0000 (UTC)
-Received: from localhost (ovpn-12-93.pek2.redhat.com [10.72.12.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C12FB6FEE2;
-        Wed,  3 Mar 2021 00:40:01 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 08:39:59 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH v3 1/2] x86/setup: consolidate early memory reservations
-Message-ID: <20210303003959.GB2962@MiWiFi-R3L-srv>
-References: <20210302100406.22059-1-rppt@kernel.org>
- <20210302100406.22059-2-rppt@kernel.org>
- <20210302130409.GA2962@MiWiFi-R3L-srv>
- <YD5XJrtJDgdmMt42@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YD5XJrtJDgdmMt42@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1349484AbhCCLAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 06:00:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232956AbhCCAmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 19:42:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7498964F8C;
+        Wed,  3 Mar 2021 00:41:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1614732080;
+        bh=NJFM8ypXGB8CAwTG3IODGhNTCzeklS9Cmkn4gelagqc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eHhP3Y6TUhObWtFqyaunxUjAwcLsc1/IkbJla6YZsScy1tLRwTz5vuZohf6UqFLHF
+         QCB7g+3ktloWMkTBSFMaeU8SLzBCjbi6NhfndlRJhUdjfV3ANxksAVi4/7cezD5xIQ
+         nfdklbk1ZPDuiMmmt52swFT2mmflnkNwqVNM11Nc=
+Date:   Tue, 2 Mar 2021 16:41:19 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Lior Ribak <liorribak@gmail.com>
+Cc:     deller@gmx.de, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] binfmt_misc: Fix possible deadlock in
+ bm_register_write
+Message-Id: <20210302164119.406098356cdea37b999b0b0a@linux-foundation.org>
+In-Reply-To: <20210228224414.95962-1-liorribak@gmail.com>
+References: <20201224111533.24719-1-liorribak@gmail.com>
+        <20210228224414.95962-1-liorribak@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/21 at 05:17pm, Mike Rapoport wrote:
-> On Tue, Mar 02, 2021 at 09:04:09PM +0800, Baoquan He wrote:
-...
-> > > +static void __init early_reserve_memory(void)
-> > > +{
-> > > +	/*
-> > > +	 * Reserve the memory occupied by the kernel between _text and
-> > > +	 * __end_of_kernel_reserve symbols. Any kernel sections after the
-> > > +	 * __end_of_kernel_reserve symbol must be explicitly reserved with a
-> > > +	 * separate memblock_reserve() or they will be discarded.
-> > > +	 */
-> > > +	memblock_reserve(__pa_symbol(_text),
-> > > +			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
-> > > +
-> > > +	/*
-> > > +	 * Make sure page 0 is always reserved because on systems with
-> > > +	 * L1TF its contents can be leaked to user processes.
-> > > +	 */
-> > > +	memblock_reserve(0, PAGE_SIZE);
-> > > +
-> > > +	early_reserve_initrd();
-> > > +
-> > > +	if (efi_enabled(EFI_BOOT))
-> > > +		efi_memblock_x86_reserve_range();
-> > > +
-> > > +	memblock_x86_reserve_range_setup_data();
-> > 
-> > This patch looks good to me, thanks for the effort.
-> > 
-> > While at it, wondering if we can rename the above function to
-> > memblock_reserve_setup_data() just as its e820 counterpart
-> > e820__reserve_setup_data(), adding 'x86' to a function under arch/x86
-> > seems redundant.
+On Sun, 28 Feb 2021 14:44:14 -0800 Lior Ribak <liorribak@gmail.com> wrote:
+
+> There is a deadlock in bm_register_write:
+> First, in the beggining of the function, a lock is taken on the
+> binfmt_misc root inode with inode_lock(d_inode(root))
+> Then, if the user used the MISC_FMT_OPEN_FILE flag, the function will
+> call open_exec on the user-provided interpreter.
+> open_exec will call a path lookup, and if the path lookup process
+> includes the root of binfmt_misc, it will try to take a shared lock
+> on its inode again, but it is already locked, and the code will
+> get stuck in a deadlock
 > 
-> I'd rather keep these names for now. First, it's easier to dig to them in the git
-> history and second, I'm planning more changes in this area and these names
-> are as good as FIXME: to remind what still needs to be checked :)
+> To reproduce the bug:
+> $ echo ":iiiii:E::ii::/proc/sys/fs/binfmt_misc/bla:F" > /proc/sys/fs/binfmt_misc/register
+> 
+> backtrace of where the lock occurs (#5):
+> 0  schedule () at ./arch/x86/include/asm/current.h:15
+> 1  0xffffffff81b51237 in rwsem_down_read_slowpath (sem=0xffff888003b202e0, count=<optimized out>, state=state@entry=2) at kernel/locking/rwsem.c:992
+> 2  0xffffffff81b5150a in __down_read_common (state=2, sem=<optimized out>) at kernel/locking/rwsem.c:1213
+> 3  __down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1222
+> 4  down_read (sem=<optimized out>) at kernel/locking/rwsem.c:1355
+> 5  0xffffffff811ee22a in inode_lock_shared (inode=<optimized out>) at ./include/linux/fs.h:783
+> 6  open_last_lookups (op=0xffffc9000022fe34, file=0xffff888004098600, nd=0xffffc9000022fd10) at fs/namei.c:3177
+> 7  path_openat (nd=nd@entry=0xffffc9000022fd10, op=op@entry=0xffffc9000022fe34, flags=flags@entry=65) at fs/namei.c:3366
+> 8  0xffffffff811efe1c in do_filp_open (dfd=<optimized out>, pathname=pathname@entry=0xffff8880031b9000, op=op@entry=0xffffc9000022fe34) at fs/namei.c:3396
+> 9  0xffffffff811e493f in do_open_execat (fd=fd@entry=-100, name=name@entry=0xffff8880031b9000, flags=<optimized out>, flags@entry=0) at fs/exec.c:913
+> 10 0xffffffff811e4a92 in open_exec (name=<optimized out>) at fs/exec.c:948
+> 11 0xffffffff8124aa84 in bm_register_write (file=<optimized out>, buffer=<optimized out>, count=19, ppos=<optimized out>) at fs/binfmt_misc.c:682
+> 12 0xffffffff811decd2 in vfs_write (file=file@entry=0xffff888004098500, buf=buf@entry=0xa758d0 ":iiiii:E::ii::i:CF\n", count=count@entry=19, pos=pos@entry=0xffffc9000022ff10) at fs/read_write.c:603
+> 13 0xffffffff811defda in ksys_write (fd=<optimized out>, buf=0xa758d0 ":iiiii:E::ii::i:CF\n", count=19) at fs/read_write.c:658
+> 14 0xffffffff81b49813 in do_syscall_64 (nr=<optimized out>, regs=0xffffc9000022ff58) at arch/x86/entry/common.c:46
+> 15 0xffffffff81c0007c in entry_SYSCALL_64 () at arch/x86/entry/entry_64.S:120
+> 
+> To solve the issue, the open_exec call is moved to before the write
+> lock is taken by bm_register_write
+> 
 
-I see, thanks for explanation.
+Looks good to me.
 
+I assume this is an ancient bug and that a backport to -stable trees
+(with a cc:stable) is warranted?
