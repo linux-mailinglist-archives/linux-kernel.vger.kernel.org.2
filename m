@@ -2,139 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED7D32BD63
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C91E32BD76
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhCCPyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:54:05 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:43913 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357596AbhCCLLB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:11:01 -0500
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 03 Mar 2021 03:10:19 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 03 Mar 2021 03:10:16 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 03 Mar 2021 16:40:09 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 2540F21308; Wed,  3 Mar 2021 16:40:08 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v7 2/2] venus: venc: Add support for Long Term Reference (LTR) controls
-Date:   Wed,  3 Mar 2021 16:39:47 +0530
-Message-Id: <1614769787-26922-3-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614769787-26922-1-git-send-email-dikshita@codeaurora.org>
-References: <1614769787-26922-1-git-send-email-dikshita@codeaurora.org>
+        id S1384403AbhCCQH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:07:56 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:22515 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234042AbhCCL3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:29:31 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614770889; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=zGllyD3huHikD+ztAVK3+Lep3BJxE04HCiJpfzCmsIQ=; b=K4XJzGxmXacY2fd2kyrWAEzGT+l+mu/VxVNOt9m/9E6uXjeQVNuczT4nq+qGOco5E1vzpeaM
+ vdulVGg2tpaAwFR0C6nStLByD0JN5hs95wr5+u4II0/4IpItMfLP+cDTIV1Uj3v0Evg7zJOp
+ oaJ20eBlmTgP52sFgEcFCagIUHU=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 603f6fd07b9e2700a3fa4b7e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 11:15:28
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B40BDC433CA; Wed,  3 Mar 2021 11:15:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.101] (unknown [124.123.173.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22FB2C433C6;
+        Wed,  3 Mar 2021 11:15:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22FB2C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH 01/13] rcu/nocb: Fix potential missed nocb_timer rearm
+To:     paulmck@kernel.org, Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-2-frederic@kernel.org>
+ <20210224183709.GI2743@paulmck-ThinkPad-P72>
+ <20210224220606.GA3179@lothringen>
+ <20210302014829.GK2696@paulmck-ThinkPad-P72>
+ <20210302123444.GA97498@lothringen>
+ <20210302181729.GN2696@paulmck-ThinkPad-P72>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <7c301dfa-0acf-3dc2-733b-5831b2990cb2@codeaurora.org>
+Date:   Wed, 3 Mar 2021 16:45:21 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210302181729.GN2696@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for below LTR controls in encoder:
-- V4L2_CID_MPEG_VIDEO_LTR_COUNT
-- V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX
-- V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES
+Hi,
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/venc_ctrls.c | 49 +++++++++++++++++++++++++-
- 1 file changed, 48 insertions(+), 1 deletion(-)
+On 3/2/2021 11:47 PM, Paul E. McKenney wrote:
+> On Tue, Mar 02, 2021 at 01:34:44PM +0100, Frederic Weisbecker wrote:
+>> On Mon, Mar 01, 2021 at 05:48:29PM -0800, Paul E. McKenney wrote:
+>>> On Wed, Feb 24, 2021 at 11:06:06PM +0100, Frederic Weisbecker wrote:
+>>>> On Wed, Feb 24, 2021 at 10:37:09AM -0800, Paul E. McKenney wrote:
+>>>>> On Tue, Feb 23, 2021 at 01:09:59AM +0100, Frederic Weisbecker wrote:
+>>>>>> Two situations can cause a missed nocb timer rearm:
+>>>>>>
+>>>>>> 1) rdp(CPU A) queues its nocb timer. The grace period elapses before
+>>>>>>     the timer get a chance to fire. The nocb_gp kthread is awaken by
+>>>>>>     rdp(CPU B). The nocb_cb kthread for rdp(CPU A) is awaken and
+>>>>>>     process the callbacks, again before the nocb_timer for CPU A get a
+>>>>>>     chance to fire. rdp(CPU A) queues a callback and wakes up nocb_gp
+>>>>>>     kthread, cancelling the pending nocb_timer without resetting the
+>>>>>>     corresponding nocb_defer_wakeup.
+>>>>>
+>>>>> As discussed offlist, expanding the above scenario results in this
+>>>>> sequence of steps:
+>>>
+>>> I renumbered the CPUs, since the ->nocb_gp_kthread would normally be
+>>> associated with CPU 0.  If the first CPU to enqueue a callback was also
+>>> CPU 0, nocb_gp_wait() might clear that CPU's ->nocb_defer_wakeup, which
+>>> would prevent this scenario from playing out.  (But admittedly only if
+>>> some other CPU handled by this same ->nocb_gp_kthread used its bypass.)
+>>
+>> Ok good point.
+>>
+>>>
+>>>>> 1.	There are no callbacks queued for any CPU covered by CPU 0-2's
+>>>>> 	->nocb_gp_kthread.
+>>>
+>>> And ->nocb_gp_kthread is associated with CPU 0.
+>>>
+>>>>> 2.	CPU 1 enqueues its first callback with interrupts disabled, and
+>>>>> 	thus must defer awakening its ->nocb_gp_kthread.  It therefore
+>>>>> 	queues its rcu_data structure's ->nocb_timer.
+>>>
+>>> At this point, CPU 1's rdp->nocb_defer_wakeup is RCU_NOCB_WAKE.
+>>
+>> Right.
+>>
+>>>>> 7.	The grace period ends, so rcu_gp_kthread awakens the
+>>>>> 	->nocb_gp_kthread, which in turn awakens both CPU 1's and
+>>>>> 	CPU 2's ->nocb_cb_kthread.
+>>>
+>>> And then ->nocb_cb_kthread sleeps waiting for more callbacks.
+>>
+>> Yep
+>>
+>>>> I managed to recollect some pieces of my brain. So keep the above but
+>>>> let's change the point 10:
+>>>>
+>>>> 10.	CPU 1 enqueues its second callback, this time with interrupts
+>>>>   	enabled so it can wake directly	->nocb_gp_kthread.
+>>>> 	It does so with calling __wake_nocb_gp() which also cancels the
+>>>
+>>> wake_nocb_gp() in current -rcu, correct?
+>>
+>> Heh, right.
+>>
+>>>>> So far so good, but why isn't the timer still queued from back in step 2?
+>>>>> What am I missing here?  Either way, could you please update the commit
+>>>>> logs to tell the full story?  At some later time, you might be very
+>>>>> happy that you did.  ;-)
+>>>>>
+>>>>>> 2) The "nocb_bypass_timer" ends up calling wake_nocb_gp() which deletes
+>>>>>>     the pending "nocb_timer" (note they are not the same timers) for the
+>>>>>>     given rdp without resetting the matching state stored in nocb_defer
+>>>>>>     wakeup.
+>>>
+>>> Would like to similarly expand this one, or would you prefer to rest your
+>>> case on Case 1) above?
+>>
+>> I was about to say that we can skip that one, the changelog will already be
+>> big enough but the "Fixes:" tag refers to the second scenario, since it's the
+>> oldest vulnerable commit AFAICS.
+>>
+>>>>>> Fixes: d1b222c6be1f (rcu/nocb: Add bypass callback queueing)
+> 
+> OK, how about if I queue a temporary commit (shown below) that just
+> calls out the first scenario so that I can start testing, and you get
+> me more detail on the second scenario?  I can then update the commit.
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 302fd54b9ae98f678624cbf9bf7a4ca88455a8f9
+> Author: Frederic Weisbecker <frederic@kernel.org>
+> Date:   Tue Feb 23 01:09:59 2021 +0100
+> 
+>      rcu/nocb: Fix missed nocb_timer requeue
+>      
+>      This sequence of events can lead to a failure to requeue a CPU's
+>      ->nocb_timer:
+>      
+>      1.      There are no callbacks queued for any CPU covered by CPU 0-2's
+>              ->nocb_gp_kthread.  Note that ->nocb_gp_kthread is associated
+>              with CPU 0.
+>      
+>      2.      CPU 1 enqueues its first callback with interrupts disabled, and
+>              thus must defer awakening its ->nocb_gp_kthread.  It therefore
+>              queues its rcu_data structure's ->nocb_timer.  At this point,
+>              CPU 1's rdp->nocb_defer_wakeup is RCU_NOCB_WAKE.
+>      
+>      3.      CPU 2, which shares the same ->nocb_gp_kthread, also enqueues a
+>              callback, but with interrupts enabled, allowing it to directly
+>              awaken the ->nocb_gp_kthread.
+>      
+>      4.      The newly awakened ->nocb_gp_kthread associates both CPU 1's
+>              and CPU 2's callbacks with a future grace period and arranges
+>              for that grace period to be started.
+>      
+>      5.      This ->nocb_gp_kthread goes to sleep waiting for the end of this
+>              future grace period.
+>      
+>      6.      This grace period elapses before the CPU 1's timer fires.
+>              This is normally improbably given that the timer is set for only
+>              one jiffy, but timers can be delayed.  Besides, it is possible
+>              that kernel was built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
+>      
+>      7.      The grace period ends, so rcu_gp_kthread awakens the
+>              ->nocb_gp_kthread, which in turn awakens both CPU 1's and
+>              CPU 2's ->nocb_cb_kthread.  Then ->nocb_gb_kthread sleeps
+>              waiting for more newly queued callbacks.
+>      
+>      8.      CPU 1's ->nocb_cb_kthread invokes its callback, then sleeps
+>              waiting for more invocable callbacks.
+>      
+>      9.      Note that neither kthread updated any ->nocb_timer state,
+>              so CPU 1's ->nocb_defer_wakeup is still set to RCU_NOCB_WAKE.
+>      
+>      10.     CPU 1 enqueues its second callback, this time with interrupts
+>              enabled so it can wake directly ->nocb_gp_kthread.
+>              It does so with calling wake_nocb_gp() which also cancels the
+>              pending timer that got queued in step 2. But that doesn't reset
+>              CPU 1's ->nocb_defer_wakeup which is still set to RCU_NOCB_WAKE.
+>              So CPU 1's ->nocb_defer_wakeup and its ->nocb_timer are now
+>              desynchronized.
+>      
+>      11.     ->nocb_gp_kthread associates the callback queued in 10 with a new
+>              grace period, arranges for that grace period to start and sleeps
+>              waiting for it to complete.
+>      
+>      12.     The grace period ends, rcu_gp_kthread awakens ->nocb_gp_kthread,
+>              which in turn wakes up CPU 1's ->nocb_cb_kthread which then
+>              invokes the callback queued in 10.
+>      
+>      13.     CPU 1 enqueues its third callback, this time with interrupts
+>              disabled so it must queue a timer for a deferred wakeup. However
+>              the value of its ->nocb_defer_wakeup is RCU_NOCB_WAKE which
+>              incorrectly indicates that a timer is already queued.  Instead,
+>              CPU 1's ->nocb_timer was cancelled in 10.  CPU 1 therefore fails
+>              to queue the ->nocb_timer.
+>      
+>      14.     CPU 1 has its pending callback and it may go unnoticed until
+>              some other CPU ever wakes up ->nocb_gp_kthread or CPU 1 ever
+>              calls an explicit deferred wakeup, for example, during idle entry.
+>      
+>      This commit fixes this bug by resetting rdp->nocb_defer_wakeup everytime
+>      we delete the ->nocb_timer.
+>      
+>      Fixes: d1b222c6be1f (rcu/nocb: Add bypass callback queueing)
+>      Cc: Stable <stable@vger.kernel.org>
+>      Cc: Josh Triplett <josh@joshtriplett.org>
+>      Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+>      Cc: Joel Fernandes <joel@joelfernandes.org>
+>      Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+>      Cc: Boqun Feng <boqun.feng@gmail.com>
+>      Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 44746d8..429491d 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1721,7 +1721,11 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force,
+>   		rcu_nocb_unlock_irqrestore(rdp, flags);
+>   		return false;
+>   	}
+> -	del_timer(&rdp->nocb_timer);
+> +
+> +	if (READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT) {
+> +		WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+> +		del_timer(&rdp->nocb_timer);
+> +	}
+>   	rcu_nocb_unlock_irqrestore(rdp, flags);
+>   	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+>   	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
+> @@ -2350,7 +2354,6 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp)
+>   		return false;
+>   	}
+>   	ndw = READ_ONCE(rdp->nocb_defer_wakeup);
+> -	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+>   	ret = wake_nocb_gp(rdp, ndw == RCU_NOCB_WAKE_FORCE, flags);
+>   	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("DeferredWake"));
+>   
+> 
 
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index a52b800..2e7a69b 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -20,6 +20,7 @@
- #define INTRA_REFRESH_MBS_MAX	300
- #define AT_SLICE_BOUNDARY	\
- 	V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY
-+#define MAX_LTR_FRAME_COUNT 4
- 
- static int venc_calc_bpframes(u32 gop_size, u32 conseq_b, u32 *bf, u32 *pf)
- {
-@@ -72,6 +73,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	struct venc_controls *ctr = &inst->controls.enc;
- 	struct hfi_enable en = { .enable = 1 };
- 	struct hfi_bitrate brate;
-+	struct hfi_ltr_use ltr_use;
-+	struct hfi_ltr_mark ltr_mark;
-+	struct hfi_ltr_mode ltr_mode;
- 	u32 bframes;
- 	u32 ptype;
- 	int ret;
-@@ -276,6 +280,37 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID:
- 		ctr->base_priority_id = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-+		ptype = HFI_PROPERTY_PARAM_VENC_LTRMODE;
-+		ltr_mode.ltr_count = ctrl->val;
-+		ltr_mode.ltr_mode = HFI_LTR_MODE_MANUAL;
-+		ltr_mode.trust_mode = 1;
-+		ret = hfi_session_set_property(inst, ptype, &ltr_mode);
-+		if (ret) {
-+			mutex_unlock(&inst->lock);
-+			return ret;
-+		}
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-+		ptype = HFI_PROPERTY_CONFIG_VENC_MARKLTRFRAME;
-+		ltr_mark.mark_frame = ctrl->val;
-+		ret = hfi_session_set_property(inst, ptype, &ltr_mark);
-+		if (ret) {
-+			mutex_unlock(&inst->lock);
-+			return ret;
-+		}
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
-+		ptype = HFI_PROPERTY_CONFIG_VENC_USELTRFRAME;
-+		ltr_use.ref_ltr = ctrl->val;
-+		ltr_use.use_constrnt = true;
-+		ltr_use.frames = 0;
-+		ret = hfi_session_set_property(inst, ptype, &ltr_use);
-+		if (ret) {
-+			mutex_unlock(&inst->lock);
-+			return ret;
-+		}
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -291,7 +326,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 51);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 54);
- 	if (ret)
- 		return ret;
- 
-@@ -498,6 +533,18 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID, 0,
- 			  6, 1, 0);
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES, 0,
-+			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_LTR_COUNT, 0,
-+			  MAX_LTR_FRAME_COUNT, 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX, 0,
-+			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+
+
+Thanks
+Neeraj
+
 -- 
-2.7.4
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
