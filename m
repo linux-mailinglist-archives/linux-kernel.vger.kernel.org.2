@@ -2,162 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F7932C200
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE78C32C1AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387628AbhCCTcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:32:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350709AbhCCTHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:07:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A50B460295;
-        Wed,  3 Mar 2021 18:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614797686;
-        bh=VvdHgeO+iQVf3eIjuMwh61McP98q/nFsCYMgj2hHtHY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F+3vRqPw29Z34PJSpXoiojQjxz+xVAP2QoOiLhr1TYNJpnpJ9wZ1mL8hManZDugh4
-         cYgJLjGjUSOHa4IaW3rObM7WSl7wnkMAg7jjh/4aazxCC9p7dJu/YTIplwEj/w2cNa
-         GOQ6eKCSjU0qWhAdxqUtdeJMmfX7Sg7udBlkVSt0M18aLgVIVRHzf/AM/Q/J5KXLJ4
-         FP1izSPsRg06eSzw/UZrUBe4THImi3mkqbyWuLJeLpHaEbZpYxHMYNCBzA8B08aXZq
-         hXSfzZ23DIclBgG9arVJJdDZGbz1KdpESzYmJ1+So2oZs7IdUwdKxtiZLllqTc/HQg
-         5hQXMHeYFkNKw==
-Date:   Wed, 3 Mar 2021 18:54:41 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        Quentin Perret <qperret@google.com>, maz@kernel.org
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Message-ID: <20210303185441.GA19944@willie-the-truck>
-References: <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
- <YCxrV4u98ZQtInOE@google.com>
- <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
- <20210224175122.GA19661@ashkalra_ubuntu_server>
- <YDaZacLqNQ4nK/Ex@google.com>
- <20210225202008.GA5208@ashkalra_ubuntu_server>
- <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
- <20210226140432.GB5950@ashkalra_ubuntu_server>
- <YDkzibkC7tAYbfFQ@google.com>
- <20210302145543.GA29994@ashkalra_ubuntu_server>
+        id S1387348AbhCCTXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:23:53 -0500
+Received: from mail.efficios.com ([167.114.26.124]:41052 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349597AbhCCTFJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 14:05:09 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D15D43220FC;
+        Wed,  3 Mar 2021 13:55:00 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id aAXDIHMqpOpt; Wed,  3 Mar 2021 13:55:00 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 6A56B3220FB;
+        Wed,  3 Mar 2021 13:55:00 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 6A56B3220FB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1614797700;
+        bh=rCq90Cemnj8uIDnzvWa7FZTmINWyPkoJYeBmJ7lHhLM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=GTVjsfF3WiOHC2+vY+c6TYY9cvcQDkrU+9bfM2NO0e0kcGRUbJPZ0w9WB4tmtup/O
+         /LgQNvgx5blMss5mLTbGC9t8q4ylQ16nXq7t1NqOuSDMIkpVJNKhkDhZTLiytPfJSw
+         MRhu+8V5EYuKKUx76PvITOIXlmpXwlhmi0HxnUZD8Uwp3x4PFWgi0ciJxLXAWirSOL
+         ooJYN9AFHuC1x9a/aVWn5SAfeEHXL/ZH/hbwr8bZKq2wQu8X1Aepe5ZPVag69T3yK2
+         wNgkYVqjbqXR69ZZ5TlGr/Fhhts25RH9eLhlk55OZ1icgBvm/5YTBHk+GeFxjls+Ga
+         T+VjiPIxCa9pQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id z7lHbMmAUfH0; Wed,  3 Mar 2021 13:55:00 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 562F43224B8;
+        Wed,  3 Mar 2021 13:55:00 -0500 (EST)
+Date:   Wed, 3 Mar 2021 13:55:00 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Piotr Figiel <figiel@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>, emmir <emmir@google.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Message-ID: <1698111952.9528.1614797700222.JavaMail.zimbra@efficios.com>
+In-Reply-To: <YDkBlYp76PGsgUZs@google.com>
+References: <20210222100443.4155938-1-figiel@google.com> <1521573573.29432.1614005597395.JavaMail.zimbra@efficios.com> <YDkBlYp76PGsgUZs@google.com>
+Subject: Re: [PATCH] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302145543.GA29994@ashkalra_ubuntu_server>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
+Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+Thread-Index: cQoLUNh7wF6cm+pfSb0FxCqp8YWzpA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Marc]
+----- On Feb 26, 2021, at 9:11 AM, Piotr Figiel figiel@google.com wrote:
 
-On Tue, Mar 02, 2021 at 02:55:43PM +0000, Ashish Kalra wrote:
-> On Fri, Feb 26, 2021 at 09:44:41AM -0800, Sean Christopherson wrote:
-> > On Fri, Feb 26, 2021, Ashish Kalra wrote:
-> > > On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
-> > > > On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
-> > > > Thanks for grabbing the data!
-> > > > 
-> > > > I am fine with both paths. Sean has stated an explicit desire for
-> > > > hypercall exiting, so I think that would be the current consensus.
-> > 
-> > Yep, though it'd be good to get Paolo's input, too.
-> > 
-> > > > If we want to do hypercall exiting, this should be in a follow-up
-> > > > series where we implement something more generic, e.g. a hypercall
-> > > > exiting bitmap or hypercall exit list. If we are taking the hypercall
-> > > > exit route, we can drop the kvm side of the hypercall.
-> > 
-> > I don't think this is a good candidate for arbitrary hypercall interception.  Or
-> > rather, I think hypercall interception should be an orthogonal implementation.
-> > 
-> > The guest, including guest firmware, needs to be aware that the hypercall is
-> > supported, and the ABI needs to be well-defined.  Relying on userspace VMMs to
-> > implement a common ABI is an unnecessary risk.
-> > 
-> > We could make KVM's default behavior be a nop, i.e. have KVM enforce the ABI but
-> > require further VMM intervention.  But, I just don't see the point, it would
-> > save only a few lines of code.  It would also limit what KVM could do in the
-> > future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to userspace,
-> > then mandatory interception would essentially make it impossible for KVM to do
-> > bookkeeping while still honoring the interception request.
-> > 
-> > However, I do think it would make sense to have the userspace exit be a generic
-> > exit type.  But hey, we already have the necessary ABI defined for that!  It's
-> > just not used anywhere.
-> > 
-> > 	/* KVM_EXIT_HYPERCALL */
-> > 	struct {
-> > 		__u64 nr;
-> > 		__u64 args[6];
-> > 		__u64 ret;
-> > 		__u32 longmode;
-> > 		__u32 pad;
-> > 	} hypercall;
-> > 
-> > 
-> > > > Userspace could also handle the MSR using MSR filters (would need to
-> > > > confirm that).  Then userspace could also be in control of the cpuid bit.
-> > 
-> > An MSR is not a great fit; it's x86 specific and limited to 64 bits of data.
-> > The data limitation could be fudged by shoving data into non-standard GPRs, but
-> > that will result in truly heinous guest code, and extensibility issues.
-> > 
-> > The data limitation is a moot point, because the x86-only thing is a deal
-> > breaker.  arm64's pKVM work has a near-identical use case for a guest to share
-> > memory with a host.  I can't think of a clever way to avoid having to support
-> > TDX's and SNP's hypervisor-agnostic variants, but we can at least not have
-> > multiple KVM variants.
+> Hi,
 > 
-> Looking at arm64's pKVM work, i see that it is a recently introduced RFC
-> patch-set and probably relevant to arm64 nVHE hypervisor
-> mode/implementation, and potentially makes sense as it adds guest
-> memory protection as both host and guest kernels are running on the same
-> privilege level ?
+> On Mon, Feb 22, 2021 at 09:53:17AM -0500, Mathieu Desnoyers wrote:
 > 
-> Though i do see that the pKVM stuff adds two hypercalls, specifically :
+>> I notice that other structures defined in this UAPI header are not
+>> packed as well.  Should we add an attribute packed on new structures ?
+>> It seems like it is generally a safer course of action, even though
+>> each field is naturally aligned here (there is no padding/hole in the
+>> structure).
 > 
-> pkvm_create_mappings() ( I assume this is for setting shared memory
-> regions between host and guest) &
-> pkvm_create_private_mappings().
+> I considered this for quite a while. There are some gains for this
+> approach, i.e. it's safer towards the ISO C, as theoretically compiler
+> can generate arbitrary offsets as long as struct elements have correct
+> order in memory.
+> Also with packed attribute it would be harder to make it incorrect in
+> future modifications.
+> User code also could theoretically put the structure on any misaligned
+> address.
 > 
-> And the use-cases are quite similar to memory protection architectues
-> use cases, for example, use with virtio devices, guest DMA I/O, etc.
+> But the drawback is that all accesses to the structure contents are
+> inefficient and some compilers may generate large chunks of code
+> whenever the structure elements are accessed (I recall at least one ARM
+> compiler which generates series of single-byte accesses for those). For
+> kernel it doesn't matter much because the structure type is used in one
+> place, but it may be different for the application code.
+> 
+> The change would be also inconsistent with the rest of the file and IMO
+> the gains are only theoretical.
+> 
+> If there are more opinions on this or you have some argument I'm missing
+> please let me know I can send v3 with packed and explicit padding
+> removed. I think this is rather borderline trade off.
 
-These hypercalls are both private to the host kernel communicating with
-its hypervisor counterpart, so I don't think they're particularly
-relevant here. As far as I can see, the more useful thing is to allow
-the guest to communicate back to the host (and the VMM) that it has opened
-up a memory window, perhaps for virtio rings or some other shared memory.
+I personally don't have a strong opinion on this and completely agree with
+your analysis. Maybe for pre-existing system calls adding more non-packed
+structures might be kind-of OK if some were already exposed, even though
+it seems rather fragile wrt ISO C.
 
-We hacked this up as a prototype in the past:
+Thanks,
 
-https://android-kvm.googlesource.com/linux/+/d12a9e2c12a52cf7140d40cd9fa092dc8a85fac9%5E%21/
+Mathieu
 
-but that's all arm64-specific and if we're solving the same problem as
-you, then let's avoid arch-specific stuff if possible. The way in which
-the guest discovers the interface will be arch-specific (we already have
-a mechanism for that and some hypercalls are already allocated by specs
-from Arm), but the interface back to the VMM and some (most?) of the host
-handling could be shared.
+> 
+> Best regards and thanks for looking at this,
+> Piotr.
 
-> But, isn't this patch set still RFC, and though i agree that it adds
-> an infrastructure for standardised communication between the host and
-> it's guests for mutually controlled shared memory regions and
-> surely adds some kind of portability between hypervisor
-> implementations, but nothing is standardised still, right ?
-
-No, and it seems that you're further ahead than us in terms of
-implementation in this area. We're happy to review patches though, to
-make sure we end up with something that works for us both.
-
-Will
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
