@@ -2,77 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC7D32BD7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C3532BDB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384708AbhCCQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:08:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47150 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233560AbhCCLlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:41:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614771603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/0ADgNDESPnWNN/oQj1Z1pQMpSA2u1PUuIFJNPh0PdE=;
-        b=Z0fL32v3uoFnrNsSJM9jrH3D21lchZOXqg4FNMgPgDbtpu5U788eCxH1oCmNVg1XaVsxYH
-        9QgruwEJImbeNT8nSyzGT6JMKK8mKcUmGMp16k8xoLVRyFxC6UzQXgz7i96xFnNZuWAtEE
-        smv6eJrU6mX6+yiKxXJ1pH6R1JcMvyA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7FD99AD5C;
-        Wed,  3 Mar 2021 11:40:03 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 12:39:57 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andi leen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
- MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
-Message-ID: <YD91jTMssJUCupJm@dhcp22.suse.cz>
-References: <1614766858-90344-1-git-send-email-feng.tang@intel.com>
- <1614766858-90344-15-git-send-email-feng.tang@intel.com>
+        id S1349345AbhCCQ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:27:51 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:22149 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245530AbhCCLrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:47:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1614772248; x=1646308248;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Lr5Ig5uYNa8ZQsywnU8fc+8RlgUSssheYvJJkYLPYjo=;
+  b=YU2dZktu/ilneYVearwX/4Z7L44tsKhvN/ze3g7iq1SkqLvn+90SIn/5
+   bbGJrF8WDOyey0NQ805hdzW3tDoOcvdt5zpP3lrRMoIiGq/IMVMCirXY+
+   XvIKjvPBGVxioNt/V5hrQ3suejGDAdNkK5CTKI55QfnqzBhpDX6gCkp72
+   Fh5zZWPceoaGdQ30PkAiFSd5YOHIpqh1LOC69TGzr8tVC24R9OoLbeLI7
+   h05jWHVlEjt37s2Qfrr9Kmxccev/emYyWjfsHcrY7Obmoxbk5CZRZRX0P
+   Ax1eRNsVzMfr+8QVq9IPPBoE9o9jHJO7B2F3oek6LTpA61zQpYnSY9OAs
+   Q==;
+IronPort-SDR: 27TxiZQR7kFQFTeS+e8TKimp/yXvd3cL8KFDN39Y5WCDLfTnp58X3zBzLgQb4zldF09OFLQPKW
+ OxAzdBXHKm4+QVErzm+nkKHTgDMwlMNDnrRrRnB9HgYuZcqwOAyYzoek9vyifEOcHyVewpERLq
+ uwkBiqCmNsqISJo0g+ZujppPSXI5RR/8q5tvmAWs1j1H6g618N1D/6iTyT/2oZdWw8+lAegxVD
+ jzD7hypJaRS5IgIKzkn1JypeKYmGhQDyJ4xSyD4CSKTdLPHrsCqNWxW7yiaCmuT9ckFxRNJ+Ss
+ bwE=
+X-IronPort-AV: E=Sophos;i="5.81,219,1610380800"; 
+   d="scan'208";a="265543320"
+Received: from mail-dm6nam12lp2172.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.172])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Mar 2021 19:44:07 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D+/IWmad98Rss3yVb+FPkVo8K9QywAQwFrQ2jiGalAUOyzMCNfo6EGvqVUo09aVa7J3W8wDIZBL3Mj0Moo4SM64cLhpqo0jffB2bD/34SxGf6I8tQOZDGrKZeeFZNSVtdWUomvIrwOmKMmo6mNI9H1SwDosTgeJz5SKS8WeJmAXbo0+N9Nook5diOfX3TJUO0KIEpTaCy9k5fYTikR3BJnwtq/BHo/GKo1wj4+DBcf5ouqTE+dYKCZlRZUUw57J4WxbtbBnxFd/8ny+rhUwA3S+jcRcZmDoyn5Ng4xqH+JZcrQgQrUFYHWHItwxP6YWn1qcQo+nxi667zvMuMa4d7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rwHQnIqUvw5uye542MJW4jfW5WvShQp+/IPY/uD0P+w=;
+ b=F+a1WsRMyvEQLL+1upTvS0VYKmkiJk1qdi27CZHUje+SC6h6Hnlepp8+pc8IH8kKdnkgSxKNfI12Ldq7xHzl6z8/00Wgq5eoIWAcrUtQDmorHtf5fl7U8+5N71gM6qkZge2N0LmnpDgmg61rWlg4nHvyDrXVTxCN3C+nAW7jvM1fDmW6TnIOliIfWEFse6iP7Albjq6eBP5ChvDxImKoqNYToVjIaJZiqGzBBMcvWwoUd9z/RsG2/UrrCLnqwKIYZeGhUKnAX/879VYm/CFu0PaCdvdkdT92nyJMPWblqgg6c3oz4bzqslf+dZ6LH1Czpi8Vz6X7SxbnQORVYv9A8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rwHQnIqUvw5uye542MJW4jfW5WvShQp+/IPY/uD0P+w=;
+ b=FH4KvEOlslVoBnK3yiD6mpl9lTaUv5MNuygCQQ+dKUsB2Cu8QjMe72CFCTArUEQ1Z0u1OyZdbTKkBSamlfmMgToX+5g/1funfQ93NuTWz+HAyz4PlIP+kJ8VRmHyDLSTh/m13K1CeQ9KpEjrfqxxZ0c1B+Bzb63MLAyG4WyznBo=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB4428.namprd04.prod.outlook.com (2603:10b6:5:9b::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3890.28; Wed, 3 Mar 2021 11:43:20 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3890.030; Wed, 3 Mar 2021
+ 11:43:19 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Can Guo <cang@codeaurora.org>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
+        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>
+CC:     Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/3] scsi: ufs: Minor adjustments to error handling
+Thread-Topic: [PATCH v2 1/3] scsi: ufs: Minor adjustments to error handling
+Thread-Index: AQHXCm8VGyJQOUJ72k+Gqmf0n4Zi1KpyL8Yw
+Date:   Wed, 3 Mar 2021 11:43:19 +0000
+Message-ID: <DM6PR04MB6575A96167ACB04BDB8ABBE2FC989@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <1614145010-36079-1-git-send-email-cang@codeaurora.org>
+ <1614145010-36079-2-git-send-email-cang@codeaurora.org>
+In-Reply-To: <1614145010-36079-2-git-send-email-cang@codeaurora.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 96e84d15-50a9-4a79-c50d-08d8de398b05
+x-ms-traffictypediagnostic: DM6PR04MB4428:
+x-microsoft-antispam-prvs: <DM6PR04MB442873C9F8DD68BBDF3ECB77FC989@DM6PR04MB4428.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W0+pNdJ7O0GrGbf2zE1Fw8bItTl9TOtETtAGDnBkAlF3cC6aNpK7LM5WPP1LiNmCFIF6thRF7gWTf3IPcQmZN71tasi0h3IQ6Qp9536fNjC0OpAw8qNYFgIb3qQ1uoXiBUtcOANxoI3xdPpkdcp9wSnKFgZcXZ3Gh3Mx0+eH76PnbPDfUIY8lpJkhajLnWNJsgo7O55IGhkJkSFYER9PyAiKLzvHYQqgGswXpT1VSv/lBJoRsOJhAU3KjKGPUqiZKgTCx8UEeVODn1y5Ua7h3+owOxOu8lQ43EEjemd5h+1lG4RMvgtsUi0+6oXIu1uv+kOsC63GC3O9oRbNOxCJNcYIfFWPsPZKOK7WFJpRIH31J3a/+wcC3DNufWscNrpPL15JfNCqyxuxvtWGJmdbWRI2rujOm6yE6D6mg2galYb+Xbr53sgo9tjDEel58YYvAyJ9pRb99QhvYlkpkaFbwpf9gfSlsGhBbxA07IJ0B+wo0NdqjoV/J4QqJ5uDA+/dFWujlaL3HTSqffdeuSZ3sA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(346002)(376002)(136003)(26005)(83380400001)(5660300002)(55016002)(64756008)(6506007)(478600001)(66476007)(76116006)(66446008)(8936002)(66946007)(186003)(52536014)(110136005)(86362001)(316002)(2906002)(71200400001)(9686003)(66556008)(4326008)(7416002)(54906003)(8676002)(7696005)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ABDQnoK5oJlveNKoTANo5PXcfWwBw4zDiFIGH2XpjhteKIIifbXw3lJuRFxK?=
+ =?us-ascii?Q?vmcZ263npabLpmfym17c3AmRz2wirMsh71H2sBgvFyGvJofTUtgwO99/CFD2?=
+ =?us-ascii?Q?RcYXtpJ8mcGSLWlJYc/wwOukr/eH2SjdnnOlZjdSuuHjTy7VS3Lwawo2Z0s6?=
+ =?us-ascii?Q?J99k6ixoU0Tmz/GKuRbA4Wm/woM1jRN7fMpoiMfitOrWKSDRIQ7yYPqLIIZS?=
+ =?us-ascii?Q?Xri4nkiPzuFpUn71/9HZO55HvyF8YWNaWyz9ZpVoBEpsfickbHfZ6kWgYbsU?=
+ =?us-ascii?Q?3valk4k8/xCyVgxut0kCEBhBp8gu7ZnhIBbVs2lllwKtNmDB/oPJGfTL0p5U?=
+ =?us-ascii?Q?aqMcoW7Lw7YHkU4QMewlHFGvZdrACczUSPdv2RPPuMqfxOrmRKaFCGpQIczN?=
+ =?us-ascii?Q?QdBu4tg+Lj/F7M3oKn9RzKpjboHzDoLpTBH1+7lm0d0BPbAv5j6sFH8z5cCa?=
+ =?us-ascii?Q?UMZ4NoxgWygCipHS5hjL8U+HnXJCmMIIQ01pJSzRnhK8iMOPM42moi8YwcO8?=
+ =?us-ascii?Q?8UIvjouQYRoVi+qemZx7AccEQGQlBxGbHJYgzECWJfvBXpd2LGajQxfGrHkk?=
+ =?us-ascii?Q?WZIKVvlM9G1E13erfO5/lqFB0XPqaq/hOIK9oLjCz01J40VnUK0j7XVkbROx?=
+ =?us-ascii?Q?CZfyOwasQJY+KSJT7VsllUhWXjOo0gcVck4K+1Ol8Q4HhI5xX93C8lqTX97G?=
+ =?us-ascii?Q?GIMxc43Fq0hZHK14Haq1t253UMue022F4mq1v6UbG7b3N1JB31fkRs7xiALD?=
+ =?us-ascii?Q?+2NDJJRxvL5XdcWiuE9FiLbJquulDbjn7m8R7RVIofIrZC96Bz6ScPPCD1lt?=
+ =?us-ascii?Q?EnUUL5hLikjV5sG7WoAfx5dcHaHZCKEN52vniBGGLLAuy3Af60T74XJIAVOW?=
+ =?us-ascii?Q?+ZndZikCDONa70lgVS/Qh0r5mOeFqo8LagpGuWNGnpENd6n8UVnqcYBUCqhX?=
+ =?us-ascii?Q?vE1RCdOmPFkCSD0ShHohR9V2hPy5FHSFeuDGsmNWqU/1z5+bgY2/EgyjgYi5?=
+ =?us-ascii?Q?FBB62dnYJq2EyDUjscOBjwDw8cfTWuJ91JohQFaUec4HxW5YSkctBEbXocdT?=
+ =?us-ascii?Q?UnplN/iFopxBUCYtkHKsJ0iroRnc049cBeHhNdzrGQhs3BV5pcRg8nwm+3C6?=
+ =?us-ascii?Q?SQFnssfq3Bc5M5hE/MR9a91MjhkkPa2zzQfL4Qq8u9cwk2lISIKtoOFtpMFS?=
+ =?us-ascii?Q?0sz41WAaGuhN8sSaCOkJwhe0wHevg4yGs2DdJIKrsbkRcekS9w0mq/9JRNup?=
+ =?us-ascii?Q?vy9vibA8kvM74Ac1mvLZvCI5NiniRFpXPjK26pWUb/P03e00P5ZvA6EMP6JY?=
+ =?us-ascii?Q?yNf74GxLgLrxpFfAE96HIgUS?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614766858-90344-15-git-send-email-feng.tang@intel.com>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96e84d15-50a9-4a79-c50d-08d8de398b05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2021 11:43:19.7747
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gFJmuIlH6rnsaEu308NpAZ5pLccW+0E8i/mKp4QftlqJRhiJRMLB/nI6LQXRZe1G4pO/+HRi5UaSK74sqnRwHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4428
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 03-03-21 18:20:58, Feng Tang wrote:
-> When doing broader test, we noticed allocation slowness in one test
-> case that malloc memory with size which is slightly bigger than free
-> memory of targeted nodes, but much less then the total free memory
-> of system.
-> 
-> The reason is the code enters the slowpath of __alloc_pages_nodemask(),
-> which takes quite some time. As alloc_pages_policy() will give it a 2nd
-> try with NULL nodemask, so there is no need to enter the slowpath for
-> the first try. Add a new gfp bit to skip the slowpath, so that user cases
-> like this can leverage.
-> 
-> With it, the malloc in such case is much accelerated as it never enters
-> the slowpath.
-> 
-> Adding a new gfp_mask bit is generally not liked, and another idea is to
-> add another nodemask to struct 'alloc_context', so it has 2: 'preferred-nmask'
-> and 'fallback-nmask', and they will be tried in turn if not NULL, with
-> it we can call __alloc_pages_nodemask() only once.
+>=20
+> In error handling prepare stage, after SCSI requests are blocked, do a
+> down/up_write(clk_scaling_lock) to clean up the queuecommand() path.
+> Meanwhile, stop eeh_work in case it disturbs error recovery. Moreover,
+> reset ufshcd_state at the entrance of ufshcd_probe_hba(), since it may be
+> called multiple times during error recovery.
+>=20
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
 
-Yes, it is very much disliked. Is there any reason why you cannot use
-GFP_NOWAIT for that purpose?
--- 
-Michal Hocko
-SUSE Labs
+
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 80620c8..013eb73 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -4987,6 +4987,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba,
+> struct ufshcd_lrb *lrbp)
+>                          * UFS device needs urgent BKOPs.
+>                          */
+>                         if (!hba->pm_op_in_progress &&
+> +                           !ufshcd_eh_in_progress(hba) &&
+>                             ufshcd_is_exception_event(lrbp->ucd_rsp_ptr) =
+&&
+>                             schedule_work(&hba->eeh_work)) {
+>                                 /*
+> @@ -5784,13 +5785,20 @@ static void ufshcd_err_handling_prepare(struct
+> ufs_hba *hba)
+>                         ufshcd_suspend_clkscaling(hba);
+>                 ufshcd_clk_scaling_allow(hba, false);
+>         }
+> +       ufshcd_scsi_block_requests(hba);
+> +       /* Drain ufshcd_queuecommand() */
+> +       down_write(&hba->clk_scaling_lock);
+> +       up_write(&hba->clk_scaling_lock);
+> +       cancel_work_sync(&hba->eeh_work);
+>  }
+>=20
+>  static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>  {
+> +       ufshcd_scsi_unblock_requests(hba);
+>         ufshcd_release(hba);
+>         if (ufshcd_is_clkscaling_supported(hba))
+>                 ufshcd_clk_scaling_suspend(hba, false);
+> +       ufshcd_clear_ua_wluns(hba);
+>         pm_runtime_put(hba->dev);
+>  }
+>=20
+> @@ -5882,8 +5890,8 @@ static void ufshcd_err_handler(struct work_struct
+> *work)
+>         spin_unlock_irqrestore(hba->host->host_lock, flags);
+>         ufshcd_err_handling_prepare(hba);
+>         spin_lock_irqsave(hba->host->host_lock, flags);
+> -       ufshcd_scsi_block_requests(hba);
+> -       hba->ufshcd_state =3D UFSHCD_STATE_RESET;
+> +       if (hba->ufshcd_state !=3D UFSHCD_STATE_ERROR)
+> +               hba->ufshcd_state =3D UFSHCD_STATE_RESET;
+>=20
+>         /* Complete requests that have door-bell cleared by h/w */
+>         ufshcd_complete_requests(hba);
+> @@ -6042,12 +6050,8 @@ static void ufshcd_err_handler(struct work_struct
+> *work)
+>         }
+>         ufshcd_clear_eh_in_progress(hba);
+>         spin_unlock_irqrestore(hba->host->host_lock, flags);
+> -       ufshcd_scsi_unblock_requests(hba);
+>         ufshcd_err_handling_unprepare(hba);
+>         up(&hba->host_sem);
+> -
+> -       if (!err && needs_reset)
+> -               ufshcd_clear_ua_wluns(hba);
+>  }
+>=20
+>  /**
+> @@ -7858,6 +7862,8 @@ static int ufshcd_probe_hba(struct ufs_hba *hba,
+> bool async)
+>         unsigned long flags;
+>         ktime_t start =3D ktime_get();
+>=20
+> +       hba->ufshcd_state =3D UFSHCD_STATE_RESET;
+> +
+>         ret =3D ufshcd_link_startup(hba);
+>         if (ret)
+>                 goto out;
+> --
+> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linu=
+x
+> Foundation Collaborative Project.
+
