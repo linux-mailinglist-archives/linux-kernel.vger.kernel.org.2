@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483F932C498
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E089832C47B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446374AbhCDAPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:15:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58960 "EHLO mail.kernel.org"
+        id S1358805AbhCDAOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:14:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353534AbhCDAE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:04:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCAE564F40;
-        Wed,  3 Mar 2021 23:51:41 +0000 (UTC)
+        id S1353210AbhCDADq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:03:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D9B364F41;
+        Wed,  3 Mar 2021 23:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614815502;
-        bh=4yS5iyJsfhsmr+JcD2q/iH0huGBVo0X7ndYyoZeb90s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Wcwfy2oLdCegFM+NSj5hIFVc7IO8f2MbMGQGKYiV4XONi62oteEtvl+UFt7TgUooX
-         xiruDUU4P/IxGiiuoopVydls3hf2BifOFr2bt8yvypmBGYvhHvLEn6m6Ktj44nFMRj
-         7ZOo6u6VD2EG9ooX02rLJ3SYXMg7kraYH/js/b7pXTTCo4o4Q8l5NPm7DhpBExYjrN
-         IyFDCuHCiNN3XddxFZxvFnaBHSFfJyOjNp6dYsuCwvMxp3zL8ky0CqyQAa5uqaF/ls
-         ST/IYm6MOPIVvf4xZ9X8MfzmxAy6Y0APTx5JZhlHvEuFTk+wD8xY8ix3gm1zdHZEsT
-         gR9zYjPEVUKgQ==
-Received: by mail-ej1-f52.google.com with SMTP id hs11so45783049ejc.1;
-        Wed, 03 Mar 2021 15:51:41 -0800 (PST)
-X-Gm-Message-State: AOAM530Zr9Z+Pb8gehO52d9gfzM1armEbh0yO0Ca2acbmJ379XmihWdw
-        TzeAvUDvE2H78312cNB92m8OhujwmxHLpy2k+g==
-X-Google-Smtp-Source: ABdhPJxjTF125VBav37vNTxcoNrEEtc96QdczKSVNaMWeC6x43SJnAkfM2Ubk2nF5FkmmMzIcHZNXpwWfscGCx+RprI=
-X-Received: by 2002:a17:906:a106:: with SMTP id t6mr1209918ejy.63.1614815500452;
- Wed, 03 Mar 2021 15:51:40 -0800 (PST)
+        s=k20201202; t=1614815727;
+        bh=NCIVjhT0woBYxIeC5INLVFPUlPl2KGykKUv0wnLajJc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=ibkPEplFYbDFZssuSaJeQeKDdPxe6EnXsGSjdW+LI0kYVCRA4OS4kvzSR0wUrYh+a
+         APzxryE+sl3s2BcthSka3QIx+//N+FB4oJdZfaBGVqk8uNx+cgDWG3+d6bbUrX+S+L
+         lcNPRYHhtsClm0vqfkJmnACJ20V76RX/lFupS15kg/Z4FgpJepA/v/eGOnyTwmI+n7
+         BTiT5/nNhq6Sdt2EzXLmXkviDmi+uHEdYg0jOjBFfeeApLnbhCcTxLKcfFfPsIHa1p
+         HqGt/Ex5aqHHGVhTAojOpgntnxdIK6S4L1M70u3bxWhP3EPVZ3qcZugoJl614bf+Oc
+         GbYUfm6rn+cxQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E4FA63522591; Wed,  3 Mar 2021 15:55:26 -0800 (PST)
+Date:   Wed, 3 Mar 2021 15:55:26 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        paul.gortmaker@windriver.com
+Subject: [PATCH tip/core/rcu 0/9] Add bitmap (thus CPU) ranges
+Message-ID: <20210303235526.GA21868@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-References: <20210223215057.125708-1-robh@kernel.org>
-In-Reply-To: <20210223215057.125708-1-robh@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 4 Mar 2021 07:51:29 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-x2RTU9c0=ibRdiO8-o8F0GU0DNa5UDSeKsmboSJfHDw@mail.gmail.com>
-Message-ID: <CAAOTY_-x2RTU9c0=ibRdiO8-o8F0GU0DNa5UDSeKsmboSJfHDw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: display: mediatek,dpi: Convert to use graph schema
-To:     Rob Herring <robh@kernel.org>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        CK Hu <ck.hu@mediatek.com>, Jitao shi <jitao.shi@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Rob:
+Hello!
 
-Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B42=E6=9C=8824=E6=97=A5 =
-=E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=885:51=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Update the mediatek,dpi binding to use the graph schema. Missed
-> this one from the mass conversion since it's not part of drm-misc.
+This series adds ranges to bitmaps, and thus to CPU numbers, so that a
+kernel boot parameter such as "rcu_nocbs=2-N" is now permitted.
 
-Applied to mediatek-drm-next [1], thanks.
+1.	test_bitmap: clearly separate ERANGE from EINVAL tests, courtesy
+	of Paul Gortmaker.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+2.	test_bitmap: add tests to trigger ERANGE case, courtesy of
+	Paul Gortmaker.
 
-Regards,
-Chun-Kuang.
+3.	test_bitmap: add more start-end:offset/len tests, courtesy of
+	Paul Gortmaker.
 
->
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: CK Hu <ck.hu@mediatek.com>
-> Cc: Jitao shi <jitao.shi@mediatek.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-mediatek@lists.infradead.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/display/mediatek/mediatek,dpi.yaml       | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-dpi.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.=
-yaml
-> index 6cdb734c91a9..eb84b53cabb1 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yam=
-l
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yam=
-l
-> @@ -50,15 +50,10 @@ properties:
->        - const: sleep
->
->    port:
-> -    type: object
-> +    $ref: /schemas/graph.yaml#/properties/port
->      description:
-> -      Output port node with endpoint definitions as described in
-> -      Documentation/devicetree/bindings/graph.txt. This port should be c=
-onnected
-> -      to the input port of an attached HDMI or LVDS encoder chip.
-> -
-> -    properties:
-> -      endpoint:
-> -        type: object
-> +      Output port node. This port should be connected to the input port =
-of an
-> +      attached HDMI or LVDS encoder chip.
->
->  required:
->    - compatible
-> --
-> 2.27.0
->
+4.	bitmap: fold nbits into region struct, courtesy of Paul Gortmaker.
+
+5.	bitmap: move ERANGE check from set_region to check_region,
+	courtesy of Paul Gortmaker.
+
+6.	bitmap: support "N" as an alias for size of bitmap, courtesy of
+	Paul Gortmaker.
+
+7.	test_bitmap: add tests for "N" alias, courtesy of Paul Gortmaker.
+
+8.	deprecate "all" option to rcu_nocbs=, courtesy of Paul Gortmaker.
+
+9.	Use "all" and "N" in "nohz_full" and "rcu_nocbs".
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.rst            |    7 +
+ Documentation/admin-guide/kernel-parameters.txt            |    4 
+ kernel/rcu/tree_plugin.h                                   |    6 -
+ lib/bitmap.c                                               |   55 +++++++------
+ lib/test_bitmap.c                                          |   46 +++++++++-
+ tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot |    2 
+ tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot |    2 
+ 7 files changed, 84 insertions(+), 38 deletions(-)
