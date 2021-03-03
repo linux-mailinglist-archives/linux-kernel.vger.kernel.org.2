@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF7832BD5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD76732BC96
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452537AbhCCPvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:51:49 -0500
-Received: from bin-mail-out-06.binero.net ([195.74.38.229]:47621 "EHLO
-        bin-mail-out-06.binero.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350020AbhCCLA0 (ORCPT
+        id S243065AbhCCOSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1842939AbhCCKWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:00:26 -0500
-X-Halon-ID: 745b473b-7bf9-11eb-b73f-0050569116f7
-Authorized-sender: andreas@gaisler.com
-Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
-        by bin-vsp-out-03.atm.binero.net (Halon) with ESMTPA
-        id 745b473b-7bf9-11eb-b73f-0050569116f7;
-        Wed, 03 Mar 2021 09:21:34 +0100 (CET)
-Subject: Re: [PATCH AUTOSEL 4.4 4/8] sparc32: Limit memblock allocation to low
- memory
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org
-References: <20210302115935.63777-1-sashal@kernel.org>
- <20210302115935.63777-4-sashal@kernel.org>
-From:   Andreas Larsson <andreas@gaisler.com>
-Message-ID: <c9573605-e4e3-92a5-3a21-1b324277a345@gaisler.com>
-Date:   Wed, 3 Mar 2021 09:21:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Mar 2021 05:22:43 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D70C061797
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 00:21:54 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id h9so7027872qtq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 00:21:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u4NW6pVd55BVysXdGT9j2mN9N0jqN4OssY4y20JP5Tk=;
+        b=fkd/r7Nk6TKGUmo21/5ScKGNyY1XZVKDnKh3WzZ5MGyaqRpNGTDS0zz71/2IGFs7+A
+         j2RNv6QW821we60GeAaBAzInbkCNC7BnQd6E56vS0I+S47CHqX9vxSyMZQfZNgRHDSTi
+         cVL3jknZrlyBDjsDrmeV/kYmXS++qxWtJD0VuiTK0Mu8gS4hUyczmBHYNDzKgB1pMgzW
+         beLPBoxPckYpBHn7/BecxYr6EHkRNFdSatH5YHmRM0CQslemaboAxMbefrFm7ZfOxbvY
+         MYoyzRW/PEaoJJ1yjlpHZ5dqyclt1JsNj/VCSBRQjyYTFvaiiIbH6CbrpKrGcJqkLGUy
+         NINw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u4NW6pVd55BVysXdGT9j2mN9N0jqN4OssY4y20JP5Tk=;
+        b=YNBad35t1niUHY6xHslJ1W6Qq5tTlybIJ2vBaAIJJOyvpiqBTvbl0RGnwlIg/pOytn
+         fVAML2LwBQSghaJk6XTLzrn1ih6DKti18jtjZeZVN3PAn/moM3Ye1bBlFaZZGhTuUfzi
+         EztYG9CZmuHj7qBN0fxsYzFwoIdsilU6jRuHupY3ARDgJL2OOK16pKdeWYJUd+WmG2wi
+         BSZi5uR5sTDrcMPt0nxU4CvfqbaI3EUgMn1P1xI3wxTV8rO4YH75iK/OFDfnWdIYQY5h
+         SgFUe9ynDeWiO0xvcPe2VWb2z6F0NEggfrUpSldG/WYNjmRxakEZPeF3DhC5nMTZss0N
+         owIQ==
+X-Gm-Message-State: AOAM531xE+7JrLUy3q9+sqofTkvgE7AABb8+P4/avyfCCQyY71MKbswE
+        2HEGy3LUf3hH4opthdVA0OtZQ8hov8neuQfSMRe4aA==
+X-Google-Smtp-Source: ABdhPJzr/7vquNM3mrxZ3jm9E4gx993nP272v7aKwR6SRzfJgdcxWsvvzwwDgwU0bG514ImSii708d0CzyhXNZVQE+I=
+X-Received: by 2002:a05:622a:c9:: with SMTP id p9mr21103012qtw.337.1614759712453;
+ Wed, 03 Mar 2021 00:21:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210302115935.63777-4-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200808040440.255578-1-yepeilin.cs@gmail.com>
+In-Reply-To: <20200808040440.255578-1-yepeilin.cs@gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 3 Mar 2021 09:21:41 +0100
+Message-ID: <CACT4Y+b6m7kRS82iRNcmaEPKN8fbvOUmztuGJSw6OketyxM8Kw@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH net] Bluetooth: Fix NULL pointer
+ dereference in amp_read_loc_assoc_final_data()
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Andrei Emeltchenko <andrei.emeltchenko@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, gtiwari@redhat.com,
+        syzbot+f4fb0eaafdb51c32a153@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 12:59, Sasha Levin wrote:
-> From: Andreas Larsson <andreas@gaisler.com>
-> 
-> [ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
-> 
-> Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
-> memblocks instead of bootmem, but also made high memory available via
-> memblock allocation which does not work together with e.g. phys_to_virt
-> and can lead to kernel panic.
-> 
-> This changes back to only low memory being allocatable in the early
-> stages, now using memblock allocation.
-> 
-> Signed-off-by: Andreas Larsson <andreas@gaisler.com>
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Sat, Aug 8, 2020 at 6:06 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+>
+> Prevent amp_read_loc_assoc_final_data() from dereferencing `mgr` as NULL.
+>
+> Reported-and-tested-by: syzbot+f4fb0eaafdb51c32a153@syzkaller.appspotmail.com
+> Fixes: 9495b2ee757f ("Bluetooth: AMP: Process Chan Selected event")
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 > ---
->   arch/sparc/mm/init_32.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-> index 3b7092d9ea8f..4abe4bf08377 100644
-> --- a/arch/sparc/mm/init_32.c
-> +++ b/arch/sparc/mm/init_32.c
-> @@ -240,6 +240,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
->   	reserve_bootmem((bootmap_pfn << PAGE_SHIFT), size, BOOTMEM_DEFAULT);
->   	*pages_avail -= PAGE_ALIGN(size) >> PAGE_SHIFT;
->   
-> +	/* Only allow low memory to be allocated via memblock allocation */
-> +	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
+>  net/bluetooth/amp.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/net/bluetooth/amp.c b/net/bluetooth/amp.c
+> index 9c711f0dfae3..be2d469d6369 100644
+> --- a/net/bluetooth/amp.c
+> +++ b/net/bluetooth/amp.c
+> @@ -297,6 +297,9 @@ void amp_read_loc_assoc_final_data(struct hci_dev *hdev,
+>         struct hci_request req;
+>         int err;
+>
+> +       if (!mgr)
+> +               return;
 > +
->   	return max_pfn;
->   }
->   
-> 
+>         cp.phy_handle = hcon->handle;
+>         cp.len_so_far = cpu_to_le16(0);
+>         cp.max_len = cpu_to_le16(hdev->amp_assoc_size);
 
-This is not needed for 4.4, and will not compile, as the problem it
-fixes was introduced in 4.19.
-
--- 
-Andreas Larsson
+Not sure what happened here, but the merged patch somehow has a
+different author and no Reported-by tag:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e8bd76ede155fd54d8c41d045dda43cd3174d506
+so let's tell syzbot what fixed it manually:
+#syz fix:
+Bluetooth: Fix null pointer dereference in amp_read_loc_assoc_final_data
