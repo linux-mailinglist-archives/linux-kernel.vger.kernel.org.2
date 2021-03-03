@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE2232C2BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E552432C2B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351112AbhCDACJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:02:09 -0500
-Received: from mout.kundenserver.de ([212.227.126.130]:49639 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387985AbhCCUKI (ORCPT
+        id S237774AbhCDAA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:00:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1387975AbhCCUIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:10:08 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mg6Na-1liMQ52ib8-00hh0G for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021
- 21:07:35 +0100
-Received: by mail-ot1-f51.google.com with SMTP id h22so24853462otr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:07:35 -0800 (PST)
-X-Gm-Message-State: AOAM530t4TKC1VqHWIm8sgH995D8zIlCIX1Rw7ILh7Ii8AHL5h43maye
-        ZgpH/ml6GExtg9QcTc2UmOuO9amtdXlK15g0CZo=
-X-Google-Smtp-Source: ABdhPJxv/7ZtZ1Vrev+3ZiD+ZQuUiDcKrt3mECSCn1uhptL/wvua5yWVTUq0K2mw/w7pqtD2GZGGaKThUFn+Fc98Osc=
-X-Received: by 2002:a9d:7f11:: with SMTP id j17mr624298otq.251.1614802054390;
- Wed, 03 Mar 2021 12:07:34 -0800 (PST)
+        Wed, 3 Mar 2021 15:08:04 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24F2C06175F;
+        Wed,  3 Mar 2021 12:07:24 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id f3so27363827oiw.13;
+        Wed, 03 Mar 2021 12:07:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=c1MBOBMWN8XJxY79ciuSGoEQnkKI5LGY49UfY78oMr8=;
+        b=QODXLp6ddfMYwkWjYVTmyqT7+ub9T3sXL6tzyA0EGoTTklzrUhrbXti1znhzEBusgW
+         m+2eNzDeCrJrVK+HFM9Dm+8ve/0c2VtawvFf29AXk0djI93OKUwBn6+oZMkuFyKAW54R
+         gF06jt3xWi+nWfzVvaCds+rbqbFOuRmZwAP463WG6aGJ1BNAgW0K5/ySQkDQWwUX0ioH
+         kRMlokwam38CmsuHxLPnHad2hqTblw8DSKjUCE4Sslh8L05k4v4o1iPjdKNqLJfOlwdh
+         q9BB5m8nzpqcj+KtaGReRfvuiKIajNOXzwgy0tn1//YiUPpRV4frKuttfJ6XiJCCSb0r
+         QoFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=c1MBOBMWN8XJxY79ciuSGoEQnkKI5LGY49UfY78oMr8=;
+        b=lb4PZxqhK7AdJ26l3gRSut5EyAsL8DMRdrw+ks2OEVXSlYaqc8TSiOn8ZFkGiyCpTR
+         MAfIj4euSW+/uTtvaAOB+XTnOcoG1yE8Y0xkmqoKLq6SbPuklAmy81dDjIHPsw/EhX/q
+         1B6etyt9y8yioYBoyOAi11BkNxwN0iIj0ZLR2igRocG0QxcXRT8kJc+rxIrPaceNU5iY
+         W8rwRae7wjyt4NPzPIb9t2xuzMItdrRKBnaxcn7yr9wHlnjxHOxPZa0xkk6/ogJucegm
+         FL65QGdgBHMZUBelJ9tUiXOwKcPMresTj3pO/WMlmUOlCwzfS0jRBg4as1Ty1EdfgzCw
+         pxIw==
+X-Gm-Message-State: AOAM531EhK/MEWKJC/fUbFOrKtjHnbAj8aZs1RVEzVTSAUOAMXnWKNve
+        hB5U0sZup2MlWt/GxzKj9zI=
+X-Google-Smtp-Source: ABdhPJwWrvLCknc5k5JT+HUW54oyu66KSaGFshhxWNtsrqZ0+7luE0Zn6kiTazNujcfDP9QdlVm5cw==
+X-Received: by 2002:aca:3742:: with SMTP id e63mr442555oia.158.1614802044149;
+        Wed, 03 Mar 2021 12:07:24 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p12sm4931057oon.12.2021.03.03.12.07.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Mar 2021 12:07:22 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 3 Mar 2021 12:07:21 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/246] 4.19.178-rc4 review
+Message-ID: <20210303200721.GD33580@roeck-us.net>
+References: <20210302192550.512870321@linuxfoundation.org>
 MIME-Version: 1.0
-References: <202103040304.DTElvlrq-lkp@intel.com>
-In-Reply-To: <202103040304.DTElvlrq-lkp@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 3 Mar 2021 21:07:18 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3x+JnCDVsNpCn0sSChXG41hCKmQMVAOuiLovGJSStUgA@mail.gmail.com>
-Message-ID: <CAK8P3a3x+JnCDVsNpCn0sSChXG41hCKmQMVAOuiLovGJSStUgA@mail.gmail.com>
-Subject: Re: COPYING CREDITS Documentation Kbuild Kconfig LICENSES MAINTAINERS
- Makefile README arch block certs crypto drivers fs include init ipc kernel
- lib mm net samples scripts security sound tools usr virt No rule to make
- target 'arch/c6x/Makefile'.
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:PTWNyf113yrihFsWbkAEEKW5NqTAIwmeL+7bHmYvnPmBcwFai1p
- XzWUJnwnSVUwmSQMoCe4dwF407Vg3KuWCYke6+oUrDphvQNe8lVKbSakVwVv1go80CwkrBm
- VDeitkVESz9DtLjVgMjC+RyU4CP28Yr9c+HjOB7IasE86CRYBjSDllXFat89BHSZGif9228
- +36VbHLaNxapY9LV+9/6A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3geSkNoVqZQ=:/H7qUG/f50ulp55eWOCzPF
- kwHWVIAV0oMX+KYPPiTF8QbNMvcOcBc7UV9nYeLN5q8BWjcyzy/So0onhfWejHjch9jQwCzWq
- ISSumI+gKXiZFicav9ZQinj3rP6T81oq63WaD2K7PLsLCpZ9li+vvuEKOiW9cWFPRMteTsB2i
- YDo7MBrGtrbVF5t9WlEgF87fRER7+5vPbvbHJ+J3qesl/pDpDckdXl/84iDM9+SkYrWt7miW/
- jKn0YL7Tia+SpRT8pAZK7nGYMtDdIYNBIb1ohtkkhUZwqjKD8hGp+QB3IpTRCIw/wGnZAPr+p
- X/Mgywzdwi8DXI3IWrje9RcnkA/3AZSTYPh5LujaqU1oeJV0L9nvzf17MCpqJZA3iqvKU2CBn
- qwAKWStxsyMXDGSGV0IDy4AuDwzInm7MKKxwIHcWbQ3FqmQIlM7N1IRXXE3hyIl8yeHdDzV1F
- 1BxKaHtvlSHG9VfTmEBhXzKZ0pjriJEDc4K0bQPIXDvghEFFbJwhoYTfX/uDo84x75csb4Nsu
- 8D9Q9aPQhI4X3EwyURoLMBAwPHXctBTrr0NqHbGlMxkC7Vu5YogL53xPS4zPI2PyA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302192550.512870321@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 8:44 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Arnd,
->
-> FYI, the error/warning still remains.
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f69d02e37a85645aa90d18cacfff36dba370f797
-> commit: a579fcfa8e49cc77ad59211bb18bc5004133e6a0 c6x: remove architecture
-> date:   6 weeks ago
-> config: c6x-randconfig-r026-20210303 (attached as .config)
-> compiler: c6x-elf-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a579fcfa8e49cc77ad59211bb18bc5004133e6a0
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout a579fcfa8e49cc77ad59211bb18bc5004133e6a0
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=c6x
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    Makefile:681: arch/c6x/Makefile: No such file or directory
+On Tue, Mar 02, 2021 at 08:28:20PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.178 release.
+> There are 246 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> Anything received after that time might be too late.
+> 
 
-Yes, arch/c6x is gone and unlikely to return. Please fix the 0day scripts
-to no longer build it on v5.12-rc1 or higher.
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 420 pass: 420 fail: 0
 
-        Arnd
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
