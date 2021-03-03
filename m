@@ -2,291 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F82C32C236
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F7932C200
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387899AbhCCTey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:34:54 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:13340 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244732AbhCCTV3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:21:29 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123IrMkN001579;
-        Wed, 3 Mar 2021 12:53:53 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=igFcdf/3f5FdhOX4Kt43hJX8noQgBxmX37+z9Q96TJE=;
- b=RJ81jTOpgCCHc6pGY15huQwvWFbOkEFHEPplYz3ScvmzJT0oFOVJLnIobG7zXL6NPPYx
- XSsuhPNDMJsTIMCler7NR0v4+ZSzjLlrf50aAe8dogQOHygCjAHvTMsSZc8ntQivGNWY
- bk7VsVH8As4BAxQipiuECnbbP5rxt3x1j1bPs7X4+tMV+QkpEkzB/UaVjy+a6P+XIBL5
- xbz0zVgd/LyFR8pCDcq979Qq3D1S4fxKSd7jKhrziuVQ0pyCn3aVMDXTP/KMsr5Nfymj
- Btzm9kAC5vz2ruf//Khb3n2NQBiQXncmVHVc3eES3m6WI0TZBmHZwHHQYeZCVyB8HXvx 7g== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 36ykctnd7x-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 03 Mar 2021 12:53:53 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 3 Mar 2021
- 18:53:52 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 3 Mar 2021 18:53:52 +0000
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 40AAB11D5;
-        Wed,  3 Mar 2021 18:53:51 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH 4/4] ALSA: hda/cirrus: Add Headphone and Headset MIC Volume Control
-Date:   Wed, 3 Mar 2021 18:53:49 +0000
-Message-ID: <20210303185349.6227-5-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210303185349.6227-1-vitalyr@opensource.cirrus.com>
-References: <20210303185349.6227-1-vitalyr@opensource.cirrus.com>
+        id S1387628AbhCCTcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:32:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350709AbhCCTHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 14:07:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A50B460295;
+        Wed,  3 Mar 2021 18:54:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614797686;
+        bh=VvdHgeO+iQVf3eIjuMwh61McP98q/nFsCYMgj2hHtHY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F+3vRqPw29Z34PJSpXoiojQjxz+xVAP2QoOiLhr1TYNJpnpJ9wZ1mL8hManZDugh4
+         cYgJLjGjUSOHa4IaW3rObM7WSl7wnkMAg7jjh/4aazxCC9p7dJu/YTIplwEj/w2cNa
+         GOQ6eKCSjU0qWhAdxqUtdeJMmfX7Sg7udBlkVSt0M18aLgVIVRHzf/AM/Q/J5KXLJ4
+         FP1izSPsRg06eSzw/UZrUBe4THImi3mkqbyWuLJeLpHaEbZpYxHMYNCBzA8B08aXZq
+         hXSfzZ23DIclBgG9arVJJdDZGbz1KdpESzYmJ1+So2oZs7IdUwdKxtiZLllqTc/HQg
+         5hQXMHeYFkNKw==
+Date:   Wed, 3 Mar 2021 18:54:41 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        Quentin Perret <qperret@google.com>, maz@kernel.org
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
+ ioctl
+Message-ID: <20210303185441.GA19944@willie-the-truck>
+References: <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com>
+ <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <20210224175122.GA19661@ashkalra_ubuntu_server>
+ <YDaZacLqNQ4nK/Ex@google.com>
+ <20210225202008.GA5208@ashkalra_ubuntu_server>
+ <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+ <20210226140432.GB5950@ashkalra_ubuntu_server>
+ <YDkzibkC7tAYbfFQ@google.com>
+ <20210302145543.GA29994@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
- malwarescore=0 priorityscore=1501 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103030131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302145543.GA29994@ashkalra_ubuntu_server>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+[+Marc]
 
-CS8409 does not support Volume Control for NIDs 0x24 (the Headphones),
-or 0x34 (The Headset Mic).
-However, CS42L42 codec does support gain control for both.
-We can add support for Volume Controls, by writing the the CS42L42
-regmap via i2c commands, using custom info, get and put volume
-functions, saved in the control.
+On Tue, Mar 02, 2021 at 02:55:43PM +0000, Ashish Kalra wrote:
+> On Fri, Feb 26, 2021 at 09:44:41AM -0800, Sean Christopherson wrote:
+> > On Fri, Feb 26, 2021, Ashish Kalra wrote:
+> > > On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
+> > > > On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
+> > > > Thanks for grabbing the data!
+> > > > 
+> > > > I am fine with both paths. Sean has stated an explicit desire for
+> > > > hypercall exiting, so I think that would be the current consensus.
+> > 
+> > Yep, though it'd be good to get Paolo's input, too.
+> > 
+> > > > If we want to do hypercall exiting, this should be in a follow-up
+> > > > series where we implement something more generic, e.g. a hypercall
+> > > > exiting bitmap or hypercall exit list. If we are taking the hypercall
+> > > > exit route, we can drop the kvm side of the hypercall.
+> > 
+> > I don't think this is a good candidate for arbitrary hypercall interception.  Or
+> > rather, I think hypercall interception should be an orthogonal implementation.
+> > 
+> > The guest, including guest firmware, needs to be aware that the hypercall is
+> > supported, and the ABI needs to be well-defined.  Relying on userspace VMMs to
+> > implement a common ABI is an unnecessary risk.
+> > 
+> > We could make KVM's default behavior be a nop, i.e. have KVM enforce the ABI but
+> > require further VMM intervention.  But, I just don't see the point, it would
+> > save only a few lines of code.  It would also limit what KVM could do in the
+> > future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to userspace,
+> > then mandatory interception would essentially make it impossible for KVM to do
+> > bookkeeping while still honoring the interception request.
+> > 
+> > However, I do think it would make sense to have the userspace exit be a generic
+> > exit type.  But hey, we already have the necessary ABI defined for that!  It's
+> > just not used anywhere.
+> > 
+> > 	/* KVM_EXIT_HYPERCALL */
+> > 	struct {
+> > 		__u64 nr;
+> > 		__u64 args[6];
+> > 		__u64 ret;
+> > 		__u32 longmode;
+> > 		__u32 pad;
+> > 	} hypercall;
+> > 
+> > 
+> > > > Userspace could also handle the MSR using MSR filters (would need to
+> > > > confirm that).  Then userspace could also be in control of the cpuid bit.
+> > 
+> > An MSR is not a great fit; it's x86 specific and limited to 64 bits of data.
+> > The data limitation could be fudged by shoving data into non-standard GPRs, but
+> > that will result in truly heinous guest code, and extensibility issues.
+> > 
+> > The data limitation is a moot point, because the x86-only thing is a deal
+> > breaker.  arm64's pKVM work has a near-identical use case for a guest to share
+> > memory with a host.  I can't think of a clever way to avoid having to support
+> > TDX's and SNP's hypervisor-agnostic variants, but we can at least not have
+> > multiple KVM variants.
+> 
+> Looking at arm64's pKVM work, i see that it is a recently introduced RFC
+> patch-set and probably relevant to arm64 nVHE hypervisor
+> mode/implementation, and potentially makes sense as it adds guest
+> memory protection as both host and guest kernels are running on the same
+> privilege level ?
+> 
+> Though i do see that the pKVM stuff adds two hypercalls, specifically :
+> 
+> pkvm_create_mappings() ( I assume this is for setting shared memory
+> regions between host and guest) &
+> pkvm_create_private_mappings().
+> 
+> And the use-cases are quite similar to memory protection architectues
+> use cases, for example, use with virtio devices, guest DMA I/O, etc.
 
-Tested on DELL Inspiron-3500, DELL Inspiron-3501, DELL Inspiron-3500
+These hypercalls are both private to the host kernel communicating with
+its hypervisor counterpart, so I don't think they're particularly
+relevant here. As far as I can see, the more useful thing is to allow
+the guest to communicate back to the host (and the VMM) that it has opened
+up a memory window, perhaps for virtio rings or some other shared memory.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/patch_cirrus.c | 177 +++++++++++++++++++++++++++++++++++
- 1 file changed, 177 insertions(+)
+We hacked this up as a prototype in the past:
 
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index fa417f7adc7d..caad844fd047 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -1258,6 +1258,14 @@ static int patch_cs4213(struct hda_codec *codec)
- #define CIR_I2C_QWRITE	0x005D
- #define CIR_I2C_QREAD	0x005E
- 
-+#define CS8409_CS42L42_HP_VOL_REAL_MIN   (-63)
-+#define CS8409_CS42L42_HP_VOL_REAL_MAX   (0)
-+#define CS8409_CS42L42_AMIC_VOL_REAL_MIN (-97)
-+#define CS8409_CS42L42_AMIC_VOL_REAL_MAX (12)
-+#define CS8409_CS42L42_REG_HS_VOLUME_CHA (0x2301)
-+#define CS8409_CS42L42_REG_HS_VOLUME_CHB (0x2303)
-+#define CS8409_CS42L42_REG_AMIC_VOLUME   (0x1D03)
-+
- static struct mutex cs8409_i2c_mux;
- 
- struct cs8409_i2c_param {
-@@ -1584,6 +1592,166 @@ static unsigned int cs8409_i2c_write(struct hda_codec *codec,
- 	return retval;
- }
- 
-+static int cs8409_cs42l42_volume_info(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_info *uinfo)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	u16 nid = get_amp_nid(kcontrol);
-+	u8 chs = get_amp_channels(kcontrol);
-+
-+	codec_dbg(codec, "%s() nid: %d\n", __func__, nid);
-+	switch (nid) {
-+	case CS8409_CS42L42_HP_PIN_NID:
-+		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+		uinfo->count = chs == 3 ? 2 : 1;
-+		uinfo->value.integer.min = CS8409_CS42L42_HP_VOL_REAL_MIN;
-+		uinfo->value.integer.max = CS8409_CS42L42_HP_VOL_REAL_MAX;
-+		break;
-+	case CS8409_CS42L42_AMIC_PIN_NID:
-+		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+		uinfo->count = chs == 3 ? 2 : 1;
-+		uinfo->value.integer.min = CS8409_CS42L42_AMIC_VOL_REAL_MIN;
-+		uinfo->value.integer.max = CS8409_CS42L42_AMIC_VOL_REAL_MAX;
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int cs8409_cs42l42_volume_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = get_amp_nid(kcontrol);
-+	int chs = get_amp_channels(kcontrol);
-+	long *valp = ucontrol->value.integer.value;
-+	char vol = 0;
-+
-+	codec_dbg(codec, "%s() nid: %d\n", __func__, nid);
-+	snd_hda_power_up(codec);
-+	switch (nid) {
-+	case CS8409_CS42L42_HP_PIN_NID:
-+		mutex_lock(&cs8409_i2c_mux);
-+		if (chs & 1) {
-+			vol = -(cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_HS_VOLUME_CHA, 1));
-+			codec_dbg(codec, "%s() vol(a) = %d\n", __func__, vol);
-+			*valp++ = vol;
-+		}
-+		if (chs & 2) {
-+			vol = -(cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_HS_VOLUME_CHB, 1));
-+			codec_dbg(codec, "%s() vol(b) = %d\n", __func__, vol);
-+			*valp++ = vol;
-+		}
-+		mutex_unlock(&cs8409_i2c_mux);
-+		break;
-+	case CS8409_CS42L42_AMIC_PIN_NID:
-+		mutex_lock(&cs8409_i2c_mux);
-+		if (chs & 1) {
-+			vol = cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_AMIC_VOLUME, 1);
-+			codec_dbg(codec, "%s() vol() = %d\n", __func__, vol);
-+			*valp++ = vol;
-+		}
-+		mutex_unlock(&cs8409_i2c_mux);
-+		break;
-+	default:
-+		break;
-+	}
-+	snd_hda_power_down(codec);
-+	return 0;
-+}
-+
-+static int cs8409_cs42l42_volume_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t nid = get_amp_nid(kcontrol);
-+	int chs = get_amp_channels(kcontrol);
-+	long *valp = ucontrol->value.integer.value;
-+	int change = 0;
-+	char vol = 0;
-+
-+	codec_dbg(codec, "%s() nid: %d\n", __func__, nid);
-+	snd_hda_power_up(codec);
-+	switch (nid) {
-+	case CS8409_CS42L42_HP_PIN_NID:
-+		mutex_lock(&cs8409_i2c_mux);
-+		if (chs & 1) {
-+			vol = -(*valp);
-+			codec_dbg(codec, "%s() vol(a) = %d\n", __func__, vol);
-+			change = cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_HS_VOLUME_CHA, vol, 1);
-+			valp++;
-+		}
-+		if (chs & 2) {
-+			vol = -(*valp);
-+			codec_dbg(codec, "%s() vol(b) = %d\n", __func__, vol);
-+			change |= cs8409_i2c_write(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_HS_VOLUME_CHB, vol, 1);
-+		}
-+		mutex_unlock(&cs8409_i2c_mux);
-+		break;
-+	case CS8409_CS42L42_AMIC_PIN_NID:
-+		mutex_lock(&cs8409_i2c_mux);
-+		if (chs & 1) {
-+			codec_dbg(codec, "%s() vol() = %d\n", __func__, (char)*valp);
-+			change = cs8409_i2c_write(
-+				codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_AMIC_VOLUME, (char)*valp, 1);
-+			valp++;
-+		}
-+		mutex_unlock(&cs8409_i2c_mux);
-+		break;
-+	default:
-+		break;
-+	}
-+	snd_hda_power_down(codec);
-+	return change;
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(
-+	cs8409_cs42l42_hp_db_scale,
-+	CS8409_CS42L42_HP_VOL_REAL_MIN * 100, 100, 1);
-+
-+static const DECLARE_TLV_DB_SCALE(
-+	cs8409_cs42l42_amic_db_scale,
-+	CS8409_CS42L42_AMIC_VOL_REAL_MIN * 100, 100, 1);
-+
-+static const struct snd_kcontrol_new cs8409_cs42l42_hp_volume_mixer = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.index = 0,
-+	.name = "Headphone Playback Volume",
-+	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
-+	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE
-+			 | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-+	.info = cs8409_cs42l42_volume_info,
-+	.get = cs8409_cs42l42_volume_get,
-+	.put = cs8409_cs42l42_volume_put,
-+	.tlv = { .p = cs8409_cs42l42_hp_db_scale },
-+	.private_value = HDA_COMPOSE_AMP_VAL(
-+		CS8409_CS42L42_HP_PIN_NID, 3, 0, HDA_OUTPUT)
-+		| HDA_AMP_VAL_MIN_MUTE
-+};
-+
-+static const struct snd_kcontrol_new cs8409_cs42l42_amic_volume_mixer = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.index = 0,
-+	.name = "Headset Mic Capture Volume",
-+	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
-+	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE
-+			 | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-+	.info = cs8409_cs42l42_volume_info,
-+	.get = cs8409_cs42l42_volume_get,
-+	.put = cs8409_cs42l42_volume_put,
-+	.tlv = { .p = cs8409_cs42l42_amic_db_scale },
-+	.private_value = HDA_COMPOSE_AMP_VAL(
-+		CS8409_CS42L42_AMIC_PIN_NID, 1, 0, HDA_INPUT)
-+		| HDA_AMP_VAL_MIN_MUTE
-+};
-+
- /* Assert/release RTS# line to CS42L42 */
- static void cs8409_cs42l42_reset(struct hda_codec *codec)
- {
-@@ -1969,6 +2137,14 @@ static int cs8409_cs42l42_fixup(struct hda_codec *codec)
- 	if (err < 0)
- 		return err;
- 
-+	if (!snd_hda_gen_add_kctl(
-+			&spec->gen, NULL, &cs8409_cs42l42_hp_volume_mixer))
-+		return -1;
-+
-+	if (!snd_hda_gen_add_kctl(
-+			&spec->gen, NULL, &cs8409_cs42l42_amic_volume_mixer))
-+		return -1;
-+
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
- 
- 	return err;
-@@ -2051,6 +2227,7 @@ static int patch_cs8409(struct hda_codec *codec)
- 
- 		spec->gen.suppress_auto_mute = 1;
- 		spec->gen.no_primary_hp = 1;
-+		spec->gen.suppress_vmaster = 1;
- 
- 		spec->cs42l42_hp_jack_in = 0;
- 		spec->cs42l42_mic_jack_in = 0;
--- 
-2.25.1
+https://android-kvm.googlesource.com/linux/+/d12a9e2c12a52cf7140d40cd9fa092dc8a85fac9%5E%21/
 
+but that's all arm64-specific and if we're solving the same problem as
+you, then let's avoid arch-specific stuff if possible. The way in which
+the guest discovers the interface will be arch-specific (we already have
+a mechanism for that and some hypercalls are already allocated by specs
+from Arm), but the interface back to the VMM and some (most?) of the host
+handling could be shared.
+
+> But, isn't this patch set still RFC, and though i agree that it adds
+> an infrastructure for standardised communication between the host and
+> it's guests for mutually controlled shared memory regions and
+> surely adds some kind of portability between hypervisor
+> implementations, but nothing is standardised still, right ?
+
+No, and it seems that you're further ahead than us in terms of
+implementation in this area. We're happy to review patches though, to
+make sure we end up with something that works for us both.
+
+Will
