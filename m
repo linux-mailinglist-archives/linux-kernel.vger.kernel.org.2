@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9E432C535
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4690832C52F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446874AbhCDATn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39434 "EHLO mail.kernel.org"
+        id S1444404AbhCDATk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:19:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353073AbhCDAHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1352586AbhCDAHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:07:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C04564EE6;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2CAC64F44;
         Wed,  3 Mar 2021 23:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614815778;
-        bh=oYSbdeuNIkGi8aexQolwyr9QZCxFAFATGZ2D0UKvF/A=;
+        s=k20201202; t=1614815779;
+        bh=3Gb3GiZpHrzq0CQisU0ovLCOUcvPqMKtN8rs++El1QA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m8yHDOzAIm0d8nWlSWWWBzZivcBacjAekIQdIW+obN2Hi3ZM2yy4Rmlc+WSf9V8EO
-         DjssTWaq394RDtqbMA3RnZFfjoBMQwQA8ZTbKIG7FnprrjwhyBX2qUlUt9YHeudIvL
-         knbSeuOh9/J/ZTcMiHGLEcoIViML3Hn4uStd0xYORiYZSdvdUHg9n1EelX9RGekOFY
-         NcQT/KqsrO6Xv1WCi/+ubSI3KtsbnxJTxR/l4LIKWaA1MupTJS+3VqZrKiQzGdagc1
-         I0IG5QqoEFwOtJIVzfprYxzaPdWGJWZMYMaH4EXb0KGYr84C2c8eQDyIbztMhL6boR
-         X7VG7t5sSDSHQ==
+        b=dwKF1VdjqXR7KTjyhhYazdeBUSGW6SiH93DzJjeHZUY9x3yOmIfoSz6fU1wJo1q/B
+         L6caOJT8xNvcKbY3ctaHdi62+D93TUEGiVKw7SFv58OVTEOA4dmn6tcp+/To138nND
+         QwMgdLdGAbhiZN5d5A96ni1y+C1tZbeQ6Clg9SrFY7eqEOFM6/o9YJm1nhfs5LbEah
+         ho9yXcJ0UwE/zHJ7MxiKYw+XaikiNRLhJTqAF2MosfQlTRUbDvicYRPq0+oXklE//x
+         ysziW3BrxFAiW8LpWMRJSbSE49wycathDwLSpFMVVndMRvJE1dnuCz76Pr5sUvje+u
+         YGDxa53PP6/uw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH lib/bitmap 1/9] lib: test_bitmap: clearly separate ERANGE from EINVAL tests.
-Date:   Wed,  3 Mar 2021 15:56:08 -0800
-Message-Id: <20210303235616.22093-1-paulmck@kernel.org>
+Subject: [PATCH lib/bitmap 2/9] lib: test_bitmap: add tests to trigger ERANGE case.
+Date:   Wed,  3 Mar 2021 15:56:09 -0800
+Message-Id: <20210303235616.22093-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235526.GA21868@paulmck-ThinkPad-P72>
 References: <20210303235526.GA21868@paulmck-ThinkPad-P72>
@@ -47,15 +47,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-This block of tests was meant to find/flag incorrect use of the ":"
-and "/" separators (syntax errors) and invalid (zero) group len.
-
-However they were specified with an 8 bit width and 32 bit operations,
-so they really contained two errors (EINVAL and ERANGE).
-
-Promote them to 32 bit so it is clear what they are meant to target.
-Then we can add tests specific for ERANGE (no syntax errors, just
-doing 32bit op on 8 bit width, plus a typical 9-on-8 fencepost error).
+Add tests that specify a valid range, but one that is outside the
+width of the bitmap for which it is to be applied to.  These should
+trigger an -ERANGE response from the code.
 
 Cc: Yury Norov <yury.norov@gmail.com>
 Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
@@ -65,32 +59,22 @@ Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- lib/test_bitmap.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ lib/test_bitmap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 0ea0e82..853a3a6 100644
+index 853a3a6..0f2e91d 100644
 --- a/lib/test_bitmap.c
 +++ b/lib/test_bitmap.c
-@@ -337,12 +337,12 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
+@@ -337,6 +337,8 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
  	{-EINVAL, "-1",	NULL, 8, 0},
  	{-EINVAL, "-0",	NULL, 8, 0},
  	{-EINVAL, "10-1", NULL, 8, 0},
--	{-EINVAL, "0-31:", NULL, 8, 0},
--	{-EINVAL, "0-31:0", NULL, 8, 0},
--	{-EINVAL, "0-31:0/", NULL, 8, 0},
--	{-EINVAL, "0-31:0/0", NULL, 8, 0},
--	{-EINVAL, "0-31:1/0", NULL, 8, 0},
--	{-EINVAL, "0-31:10/1", NULL, 8, 0},
-+	{-EINVAL, "0-31:", NULL, 32, 0},
-+	{-EINVAL, "0-31:0", NULL, 32, 0},
-+	{-EINVAL, "0-31:0/", NULL, 32, 0},
-+	{-EINVAL, "0-31:0/0", NULL, 32, 0},
-+	{-EINVAL, "0-31:1/0", NULL, 32, 0},
-+	{-EINVAL, "0-31:10/1", NULL, 32, 0},
- 	{-EOVERFLOW, "0-98765432123456789:10/1", NULL, 8, 0},
- 
- 	{-EINVAL, "a-31", NULL, 8, 0},
++	{-ERANGE, "8-8", NULL, 8, 0},
++	{-ERANGE, "0-31", NULL, 8, 0},
+ 	{-EINVAL, "0-31:", NULL, 32, 0},
+ 	{-EINVAL, "0-31:0", NULL, 32, 0},
+ 	{-EINVAL, "0-31:0/", NULL, 32, 0},
 -- 
 2.9.5
 
