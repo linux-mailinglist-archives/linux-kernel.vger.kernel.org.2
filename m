@@ -2,83 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0D632C1A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7F732C18F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351070AbhCCTXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:23:34 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:36180 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1838579AbhCCTBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 14:01:06 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 123IxwIh025455
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Mar 2021 19:59:58 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.36.86])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 123InvaB000593;
-        Wed, 3 Mar 2021 19:49:57 +0100
-Date:   Wed, 3 Mar 2021 19:49:56 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-Message-ID: <20210303194956.5b36a73c@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210303174040.GA3305@amd>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
-        <20210302163309.25528-3-henning.schild@siemens.com>
-        <20210302205452.GA32573@duo.ucw.cz>
-        <20210303183714.62c0f06f@md1za8fc.ad001.siemens.net>
-        <20210303174040.GA3305@amd>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1387030AbhCCTO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:14:28 -0500
+Received: from rcdn-iport-9.cisco.com ([173.37.86.80]:2909 "EHLO
+        rcdn-iport-9.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1580955AbhCCS65 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:58:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=2586; q=dns/txt; s=iport;
+  t=1614797935; x=1616007535;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=NhiyH3foSNEt6lkCV9u0ibo4udmRICreeAo5BgksPTA=;
+  b=cWROdOooLRakjip97rCirB8wN/6FzqqPcSO7bRm8TAbdmJT/SwzaRuq2
+   5JshQxeiLzwmCsx112yhzgrbPEKVzXIPN6EMvZ6juAlUOkoq6b0j7MpMh
+   oUp4urFB554BDD9Y7+9u9Hy3gjFjE0VnN8QYY33lyZycxyyodT/oHr48P
+   E=;
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BOAwB12j9g/5NdJa1iHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQFAgU+CK3ZWATkxlh6PehaMOwsBAQENAQEjEQQBAYEUgzQDAgK?=
+ =?us-ascii?q?BegIlOBMCAwEBCwEBBQEBAQIBBgRxhWENhkQBAQEDATIBRhALEgYuPA0OBhM?=
+ =?us-ascii?q?bglaCZiEPrT10gTSEPwELAYRTgT4GIoEWjUMmHIFJQoQrPoJcBBeHPASCRoE?=
+ =?us-ascii?q?7c4IBkEuCS4otm3uDBoEfiCCSUjEQgyeKT5VQoBKSGg2EOQIEBgUCFoFrI4F?=
+ =?us-ascii?q?XMxoIGxU7gjUBMxMMMRkNlyKFZiADLwIBAQEzAgYBCQEBAwmMEwEB?=
+X-IronPort-AV: E=Sophos;i="5.81,220,1610409600"; 
+   d="scan'208";a="778466374"
+Received: from rcdn-core-11.cisco.com ([173.37.93.147])
+  by rcdn-iport-9.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 03 Mar 2021 18:53:10 +0000
+Received: from zorba ([10.24.1.194])
+        by rcdn-core-11.cisco.com (8.15.2/8.15.2) with ESMTPS id 123Ir8xP021729
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 3 Mar 2021 18:53:10 GMT
+Date:   Wed, 3 Mar 2021 10:53:08 -0800
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Rob Herring <robh@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v2 0/7] Improve boot command line handling
+Message-ID: <20210303185308.GH109100@zorba>
+References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+ <20210302173523.GE109100@zorba>
+ <CAL_JsqJ7U8QAbJe3zkZiFPJN4PveHz5TZoPk2S8qQWB6cm5e5Q@mail.gmail.com>
+ <20210303173908.GG109100@zorba>
+ <59b054e8-d85b-fd87-c94d-691af748a2f5@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <59b054e8-d85b-fd87-c94d-691af748a2f5@csgroup.eu>
+X-Outbound-SMTP-Client: 10.24.1.194, [10.24.1.194]
+X-Outbound-Node: rcdn-core-11.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Wed, 3 Mar 2021 18:40:40 +0100
-schrieb Pavel Machek <pavel@ucw.cz>:
-
-> Hi!
+On Wed, Mar 03, 2021 at 07:07:45PM +0100, Christophe Leroy wrote:
 > 
-> > > > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> > > > index 2a698df9da57..c15e1e3c5958 100644
-> > > > --- a/drivers/leds/Makefile
-> > > > +++ b/drivers/leds/Makefile
-> > > > @@ -93,6 +93,7 @@ obj-$(CONFIG_LEDS_TURRIS_OMNIA)
-> > > > 	+= leds-turris-omnia.o
-> > > > obj-$(CONFIG_LEDS_WM831X_STATUS)	+= leds-wm831x-status.o
-> > > > obj-$(CONFIG_LEDS_WM8350)		+= leds-wm8350.o
-> > > > obj-$(CONFIG_LEDS_WRAP)			+= leds-wrap.o
-> > > > +obj-$(CONFIG_LEDS_SIEMENS_SIMATIC_IPC)	+=
-> > > > simatic-ipc-leds.o    
+> 
+> Le 03/03/2021 à 18:39, Daniel Walker a écrit :
+> > On Tue, Mar 02, 2021 at 08:01:01PM -0600, Rob Herring wrote:
+> > > +Will D
 > > > 
-> > > Let's put this into drivers/leds/simple. You'll have to create
-> > > it.  
+> > > On Tue, Mar 2, 2021 at 11:36 AM Daniel Walker <danielwa@cisco.com> wrote:
+> > > > 
+> > > > On Tue, Mar 02, 2021 at 05:25:16PM +0000, Christophe Leroy wrote:
+> > > > > The purpose of this series is to improve and enhance the
+> > > > > handling of kernel boot arguments.
+> > > > > 
+> > > > > It is first focussed on powerpc but also extends the capability
+> > > > > for other arches.
+> > > > > 
+> > > > > This is based on suggestion from Daniel Walker <danielwa@cisco.com>
+> > > > > 
+> > > > 
+> > > > 
+> > > > I don't see a point in your changes at this time. My changes are much more
+> > > > mature, and you changes don't really make improvements.
+> > > 
+> > > Not really a helpful comment. What we merge here will be from whomever
+> > > is persistent and timely in their efforts. But please, work together
+> > > on a common solution.
+> > > 
+> > > This one meets my requirements of moving the kconfig and code out of
+> > > the arches, supports prepend/append, and is up to date.
 > > 
-> > Can you please go into detail why? We plan to add more devices in
-> > the future, which might in fact make this a little less simple. But
-> > we can discuss that when the time is right and start with simple.  
+> > 
+> > Maintainers are capable of merging whatever they want to merge. However, I
+> > wouldn't make hasty choices. The changes I've been submitting have been deployed
+> > on millions of router instances and are more feature rich.
+> > 
+> > I believe I worked with you on this change, or something like it,
+> > 
+> > https://lkml.org/lkml/2019/3/19/970
+> > 
+> > I don't think Christophe has even addressed this.
 > 
-> There's already way too many drivers in the directory, and your driver
-> is very different from drivers for camera flash (for example).
+> I thing I have, see https://patchwork.ozlabs.org/project/linuxppc-dev/patch/3b4291271ce4af4941a771e5af5cbba3c8fa1b2a.1614705851.git.christophe.leroy@csgroup.eu/
+> 
+> If you see something missing in that patch, can you tell me.
+ 
+Ok, must have missed that one.
 
-Understood, the whole Makefile Kconfig thingy?
 
-Henning
+> > I've converted many
+> > architectures, and Cisco uses my changes on at least 4 different
+> > architecture. With products deployed and tested.
+> 
+> As far as we know, only powerpc was converted in the last series you
+> submitted, see
+> https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=98106&state=*
 
-> Best regards,
-> 								Pavel
 
+Me and others submitted my changes many times, and other architectures have been included. The patch
+you submitted I've submitted similar at Rob's request years ago.
+
+Here a fuller submissions some time ago,
+
+https://lore.kernel.org/patchwork/cover/992768/
+
+You've only been involved in prior powerpc only submissions.
+
+Daniel
