@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC6432C344
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4BE32C349
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353293AbhCDAEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:04:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1388021AbhCCU0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:26:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE3CB64EEF;
-        Wed,  3 Mar 2021 20:25:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614803141;
-        bh=LpWfD3rHOMB8ouLQKR28xxNUDGgTmhb/W2lE5TK/P+Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V9i/j7DGzpTHEwhTMj8BxosEZ4cA5oYZJ1VEFwssB9oBjFm/nKPQdka6ntnA8xJ02
-         CjOEUSKsPA/N92SA4Sys4VLRazprYVSRI8WK9kw5wlZC+NOtTBnJKEJytp+xL7VD6Q
-         W7z7DOM3LWGa8gMANWlZre8EmSWcKb46OCRs5BV6ZczRHcOMgxCj5QhGhPhupyzN4d
-         fKrlOGSxd1k0nPyhjizFoxCRJVHpxcunuIqFzJj2SakAPWjQO6vID7n2eWqRZSfDuu
-         KP3Lnkt1MY6uJtn12wKGNChX9qrVTNuaJ1uGL4TO5d/cd+58u4DfdaWa2iOw4Jgz1Y
-         VqU4W6O6IqprQ==
-Date:   Wed, 3 Mar 2021 20:24:32 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 0/3] parport: Introduce module_parport_driver() and
- use it
-Message-ID: <20210303202432.GD5027@sirena.org.uk>
-References: <20210303091642.23929-1-andriy.shevchenko@linux.intel.com>
+        id S1353409AbhCDAEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:04:37 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38998 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388022AbhCCU2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 15:28:06 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id D5FFF1F46025
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>, kernel@collabora.com
+Subject: [PATCH v2 0/8] V4L2 stateless VP8 de-staging
+Date:   Wed,  3 Mar 2021 17:27:06 -0300
+Message-Id: <20210303202714.212394-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2Z2K0IlrPCVsbNpk"
-Content-Disposition: inline
-In-Reply-To: <20210303091642.23929-1-andriy.shevchenko@linux.intel.com>
-X-Cookie: Results are not typical.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After close scrutiny of the VP8 specification, it seems
+the VP8 stateless API is ready.
 
---2Z2K0IlrPCVsbNpk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series contains a series of clean-ups and improvement:
+renaming symbols for consistency, documenting things for clarity,
+and then moves the control to proper V4L2 headers.
 
-On Wed, Mar 03, 2021 at 11:16:39AM +0200, Andy Shevchenko wrote:
-> Introduce module_parport_driver() and use it.
-> Greg or Mark, since we have this series tagged, can somebody of you pick it up?
+It must be noted that, unlike parsed H.264, V4L2_PIX_FMT_VP8_FRAME
+buffers must contain the VP8 frame header. In others words
+a VP8 parsed frame buffer is:
 
-Greg, are you OK with me applying this?
+  +--------+-----------------------------------------------------+-----+------------+  
+  | tag 3B | extra 7B | header | MB data | DCT size | DCT part 0 | ... | DCT part N |  
+  +--------+-----------------------------------------------------+-----+------------+  
 
---2Z2K0IlrPCVsbNpk
-Content-Type: application/pgp-signature; name="signature.asc"
+Hopefully the pixel format documentation is now clear about that.
 
------BEGIN PGP SIGNATURE-----
+Support in Cedrus and Hantro is available upstream, and Mediatek
+support is available downstream [1] which uses the API as-is.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA/8H8ACgkQJNaLcl1U
-h9B45Qf/Sqb09N87wbsEpeYUOOY8kyQrdv8nbqrSyTDFuZ3rBies2Zuw//T43SKI
-RqZmWxyBe/+BrsGEutC/uAV9zmT7HS2m7Swa6+zK8neQFCSdByKAktpnlfAcitul
-Q+k3utLpDj8mNvpz1693rRikopZGX7o9kjcn4hP5p5Ds9RoZPOhnHGFDM31gmGTy
-ky1iXC82GEi/Kf+IVdLOKr0rvHYWjyynfQBDPAZvFhtB5fCtAU39vKeiL1A3c8z/
-PfIDMuNC6of/e7IZAkDNZ6mHL52fE/35jqS6UOW1a7vToWfGY1aQ9njzQu52k5jW
-X2nRcs00YTzr+PyohhrjwhCXthFymw==
-=wg95
------END PGP SIGNATURE-----
+This was tested with GStreamer v4l2codec element and Fluster [2]
+conformance test, on a Hantro G1 device.
 
---2Z2K0IlrPCVsbNpk--
+Changelog:
+
+v2: * Rename VP8_FRAME_IS_KEY_FRAME
+
+[1] https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2614338/21/
+[2] https://github.com/fluendo/fluster
+
+Ezequiel Garcia (8):
+  media: uapi: vp8: Remove "header" from symbol names and macros
+  media: uapi: vp8: Rename v4l2_vp8_loopfilter to v4l2_vp8_loop_filter
+  media: uapi: vp8: Add proper kernel-doc documentation
+  media: uapi: Move parsed VP8 pixel format out of staging
+  media: uapi: Move the VP8 stateless control type out of staging
+  media: controls: Log VP8 stateless control in .std_log
+  media: uapi: Rename V4L2 VP8 specific macro to V4L2_VP8_
+  media: uapi: move VP8 stateless controls out of staging
+
+ .../media/v4l/ext-ctrls-codec-stateless.rst   | 318 +++++++++++++++++
+ .../media/v4l/ext-ctrls-codec.rst             | 323 ------------------
+ .../media/v4l/pixfmt-compressed.rst           |  15 +-
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |   4 +
+ .../media/v4l/vidioc-queryctrl.rst            |   6 +
+ .../media/videodev2.h.rst.exceptions          |   1 +
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  39 ++-
+ drivers/staging/media/hantro/hantro_drv.c     |   2 +-
+ .../staging/media/hantro/hantro_g1_vp8_dec.c  |  55 ++-
+ drivers/staging/media/hantro/hantro_hw.h      |   2 +-
+ drivers/staging/media/hantro/hantro_vp8.c     |  10 +-
+ .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |  55 ++-
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |   2 +-
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   2 +-
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +-
+ .../staging/media/sunxi/cedrus/cedrus_vp8.c   | 113 +++---
+ include/media/v4l2-ctrls.h                    |   5 +-
+ include/media/vp8-ctrls.h                     | 114 -------
+ include/uapi/linux/v4l2-controls.h            | 195 +++++++++++
+ include/uapi/linux/videodev2.h                |   4 +
+ 20 files changed, 677 insertions(+), 590 deletions(-)
+ delete mode 100644 include/media/vp8-ctrls.h
+
+-- 
+2.30.0
+
