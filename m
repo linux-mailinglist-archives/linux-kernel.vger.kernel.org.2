@@ -2,133 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D75D32BE52
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B1A32BE3A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385553AbhCCRUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:20:32 -0500
-Received: from lizzard.sbs.de ([194.138.37.39]:43242 "EHLO lizzard.sbs.de"
+        id S236330AbhCCRMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:12:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240964AbhCCNnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:43:20 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 123DBEi5032384
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Mar 2021 14:11:14 +0100
-Received: from md1za8fc.ad001.siemens.net ([167.87.44.113])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 123DBDdd020542;
-        Wed, 3 Mar 2021 14:11:13 +0100
-Date:   Wed, 3 Mar 2021 14:11:12 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-Message-ID: <20210303141052.30641e6b@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210302205452.GA32573@duo.ucw.cz>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
-        <20210302163309.25528-3-henning.schild@siemens.com>
-        <20210302205452.GA32573@duo.ucw.cz>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S240903AbhCCNWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:22:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC9EF601FF;
+        Wed,  3 Mar 2021 13:12:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614777171;
+        bh=v9xaJ8OzavzrXrL/dKUBylNt92OheY14Ppsso/1Q/dk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sn/QA8i8arLz4hdx+s5S2lrDRWJXrPVAVOX3sCqEWIr2aQnLwRfXea7LSFluzXzRr
+         k1buGV6247pKtkspUZJVmY1/AZ9TgebakIkCAwrnccZt3yXjlHtJHRqcO3ohM5QK/H
+         sp+8qB/mb5NzwC7qygYrMzLrP4DR7So5g0q0+L+SVaNNN/y3tpKCRqIEZQyC2BPUiQ
+         UhDJUNQdFFDerv83QcFvGvSdZOk++IvA5JQ5U5Oo/Y413llEIvI+PaLBifQuh/3SHT
+         XVAyj3HoSgXS0MrKLJ6ExACvAC5AyII7eLv3/vYJ/djwR3dO9eaBfeZjnsdRZAF3u3
+         vZcm3XVsj5oaw==
+Date:   Wed, 3 Mar 2021 13:12:45 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Li Huafei <lihuafei1@huawei.com>, gregory.herrero@oracle.com,
+        catalin.marinas@arm.com, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, zhangjinhao2@huawei.com,
+        yangjihong1@huawei.com, xukuohai@huawei.com,
+        linux-arm-kernel@lists.infradead.org,
+        Chen Jun <chenjun102@huawei.com>
+Subject: Re: [PATCH] recordmcount: Fix the wrong use of w* in
+ arm64_is_fake_mcount()
+Message-ID: <20210303131244.GA18661@willie-the-truck>
+References: <20210225140747.10818-1-lihuafei1@huawei.com>
+ <20210225094426.7729b9cc@gandalf.local.home>
+ <20210225160116.GA13604@willie-the-truck>
+ <20210302173058.28fd3d36@gandalf.local.home>
+ <20210302173335.71eded37@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302173335.71eded37@gandalf.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-thanks for looking into this.
-
-Am Tue, 2 Mar 2021 21:54:52 +0100
-schrieb Pavel Machek <pavel@ucw.cz>:
-
-> Hi!
+On Tue, Mar 02, 2021 at 05:33:35PM -0500, Steven Rostedt wrote:
+> On Tue, 2 Mar 2021 17:30:58 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> > This driver adds initial support for several devices from Siemens.
-> > It is based on a platform driver introduced in an earlier commit.  
+> > I just realized that I received this patch twice, and thought it was the
+> > same patch! Chen was three days ahead of you, so he get's the credit ;-)
+> > 
+> >  https://lore.kernel.org/r/20210222135840.56250-1-chenjun102@huawei.com
 > 
-> Ok.
+> I'm applying this patch (same one here but came earlier).
 > 
-> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> > index 2a698df9da57..c15e1e3c5958 100644
-> > --- a/drivers/leds/Makefile
-> > +++ b/drivers/leds/Makefile
-> > @@ -93,6 +93,7 @@ obj-$(CONFIG_LEDS_TURRIS_OMNIA)		+=
-> > leds-turris-omnia.o obj-$(CONFIG_LEDS_WM831X_STATUS)	+=
-> > leds-wm831x-status.o obj-$(CONFIG_LEDS_WM8350)		+=
-> > leds-wm8350.o obj-$(CONFIG_LEDS_WRAP)			+=
-> > leds-wrap.o +obj-$(CONFIG_LEDS_SIEMENS_SIMATIC_IPC)	+=
-> > simatic-ipc-leds.o  
-> 
-> Let's put this into drivers/leds/simple. You'll have to create it.
+> Will, you still OK with your acked-by on it?
 
-Ok will do
+Absolutely!
 
-> > + *
-> > + * This program is free software; you can redistribute it and/or
-> > modify
-> > + * it under the terms of the GNU General Public License version 2
-> > as
-> > + * published by the Free Software Foundation.
-> > + */  
-> 
-> Remove?
-
-Sure, was found in wdt as well. Thx
-
-> > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
-> > +	{1 << 15, "simatic-ipc:green:run-stop"},
-> > +	{1 << 7,  "simatic-ipc:yellow:run-stop"},
-> > +	{1 << 14, "simatic-ipc:red:error"},
-> > +	{1 << 6,  "simatic-ipc:yellow:error"},
-> > +	{1 << 13, "simatic-ipc:red:maint"},
-> > +	{1 << 5,  "simatic-ipc:yellow:maint"},
-> > +	{0, ""},
-> > +};  
-> 
-> Please use names consistent with other systems, this is user
-> visible. If you have two-color power led, it should be
-> :green:power... See include/dt-bindings/leds/common.h .
-
-Well we wanted to pick names that are printed on the devices and would
-like to stick to those. Has been a discussion ...
-Can we have symlinks to have multiple names per LED?
-
-How strong would you feel about us using our names?
-
-> Please avoid // comments in the code.
-
-Ok
-
-> > +module_init(simatic_ipc_led_init_module);
-> > +module_exit(simatic_ipc_led_exit_module);  
-> 
-> No need for such verbosity for functions that are static.
-> 
-> > +MODULE_LICENSE("GPL");  
-> 
-> GPL v2?
-
-Will do.
-
-Stay tuned for v2.
-
-regards,
-Henning
-
-
-> Best regards,
-> 								Pavel
-> 
-
+Will
