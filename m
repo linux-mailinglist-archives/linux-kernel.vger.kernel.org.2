@@ -2,158 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7231832BE3C
+	by mail.lfdr.de (Postfix) with ESMTP id E459D32BE3D
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345154AbhCCRQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380706AbhCCN3m (ORCPT
+        id S1345273AbhCCRRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:17:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48086 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1380751AbhCCN3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:29:42 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820E5C06178C
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:28:01 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id s16so14029580plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:28:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GDH7lgjRH5u3RTqXMq5Tl04VvG/bzdMWK3DmgGuHjNg=;
-        b=bazKNP9smhGB0AaA3ZgST/1l2rLawqsYZX+v6I4r9lrS8ig/5GAQoWRLViI7EZf1sY
-         y7PTVw012LS0dGujFogrqhAWzA2YAuxRwfJP4pzs+mnb/mJK/Df3OnvAd3115XKogSdv
-         i4BQ92i9aL6wzN5TtptJuew9+X2mIWnnu2b3KlRnoL6azIjyUlgw1BT6AoClmmfqOWb7
-         DHUhVdJJn9iwnSj951+gBTJrgMTla6tqo/rmI/NM/gtuETmNJ7TleDB8TTTzdfuUw6yn
-         OaFaUMcPnyuFQgEy9QilQwkmmJnCsqRVi63N4hKP6JxiztStR28iXv8mmA8T28RcqGoN
-         VxQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GDH7lgjRH5u3RTqXMq5Tl04VvG/bzdMWK3DmgGuHjNg=;
-        b=oYhJOc8tYaRZhBxEqyqcr06y3OOzyAdmUxBDohnrC3dvIQ/ZkDpvFTbQMwAhaopKLH
-         ruVQa8W3Hbt689PwZDpwozISKS0NcikaUrIFGr78SlsSUyiQAn7NR+0FcfcPJM9w/6s1
-         EKy5xulVPrXJ1ovffxbxtm7ffIUjVSCWHoTKjn81nfxCeXyFJF6zCOJyclI9OVKE27Nw
-         XjliqzJDlMKJloIrcDLMQDFkpSCgWsx0uL7T2BAZBXVZ9ZXw9jGZApactYou4qObaeCH
-         8R38PHJ6MpVcgqRrhbWQolhrFoE1+QHZ0uokR7plDUi+wAp711cyNUWAV6NxlRR5FBU1
-         NI5g==
-X-Gm-Message-State: AOAM533H0YBmaeFHYTqyLQdpdlZMZd22NbGUwyWZN9pTRD72bywBmXtj
-        FqZhHwkyTOyUZQFNhQkqzdZdRImDMhBTQlkr+pG8sA==
-X-Google-Smtp-Source: ABdhPJw0LwArSdnvTDr+Hc6zokLHVmsmS5LG8oVeZyn9/01/gqylWDQXxsUWCHfelRedXOK5pHQY8aBf6SPZcfd4/Uw=
-X-Received: by 2002:a17:90a:778a:: with SMTP id v10mr9402005pjk.229.1614778081078;
- Wed, 03 Mar 2021 05:28:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20210303093956.72318-1-songmuchun@bytedance.com> <YD9kCLlckn9evWuw@dhcp22.suse.cz>
-In-Reply-To: <YD9kCLlckn9evWuw@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 3 Mar 2021 21:27:24 +0800
-Message-ID: <CAMZfGtVdU9KWD8U_0CbctMpYo5SbzJEW2pSa1Qdr9tFcwaWcoQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] mm: memcontrol: fix kernel stack account
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
+        Wed, 3 Mar 2021 08:29:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614778080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJFVk9Prwjkxdm586ACwDtBMKBVeZRi7IzKPe/DvaFI=;
+        b=hErmplPYcuy9JYr5U0+O+j+nsfeI2pSwip1oPv/fxbbFtYEvVx5V34nCqc1FB4+ulF5XlT
+        W7PWfZyohYcMDiU6Ee7TiJBtY7ZJABsj2vhWu5WQVjrCyusU2W0Us1V69ESKfkqzAioFbs
+        5ylvXPmpTvsIx61ZkPx+q1Yike357Vk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-YJ8FY7OuMBiHiY1HqX1Adg-1; Wed, 03 Mar 2021 08:27:56 -0500
+X-MC-Unique: YJ8FY7OuMBiHiY1HqX1Adg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 795176D4E0;
+        Wed,  3 Mar 2021 13:27:54 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 614936F999;
+        Wed,  3 Mar 2021 13:27:51 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed,  3 Mar 2021 14:27:54 +0100 (CET)
+Date:   Wed, 3 Mar 2021 14:27:50 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-ID: <20210303132749.GA28955@redhat.com>
+References: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
+ <968E85AE-75B8-42D7-844A-0D61B32063B3@amacapital.net>
+ <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 6:25 PM Michal Hocko <mhocko@suse.com> wrote:
+On 03/02, Alexei Starovoitov wrote:
 >
-> On Wed 03-03-21 17:39:56, Muchun Song wrote:
-> > For simplification 991e7673859e ("mm: memcontrol: account kernel stack
-> > per node") has changed the per zone vmalloc backed stack pages
-> > accounting to per node. By doing that we have lost a certain precision
-> > because those pages might live in different NUMA nodes. In the end
-> > NR_KERNEL_STACK_KB exported to the userspace might be over estimated on
-> > some nodes while underestimated on others.
-> >
-> > This doesn't impose any real problem to correctnes of the kernel
-> > behavior as the counter is not used for any internal processing but it
-> > can cause some confusion to the userspace.
->
-> You have skipped over one part of the changelog I have proposed and that
-> is to provide an actual data.
+> Especially if such tightening will come with performance boost for
+> uprobe on a nop and unprobe at the start (which is typically push or
+> alu on %sp).
+> That would be a great step forward.
 
-Because this is a problem I found by looking at the code, not a real world
-problem. I do not have any actual data. :-(
+Just in case, nop and push are emulated without additional overhead.
 
->
-> > Address the problem by accounting each vmalloc backing page to its own
-> > node.
-> >
-> > Fixes: 991e7673859e ("mm: memcontrol: account kernel stack per node")
->
-> Fixes tag might make somebody assume this is worth backporting but I
-> highly doubt so.
+Oleg.
 
-OK. I can remove the Fixes tag.
-
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
->
-> Anyway
-> Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks for your review.
-
->
-> as the patch is correct with one comment below
->
-> > ---
-> > Changelog in v2:
-> >  - Rework commit log suggested by Michal.
-> >
-> >  Thanks to Michal and Shakeel for review.
-> >
-> >  kernel/fork.c | 15 ++++++++++-----
-> >  1 file changed, 10 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/kernel/fork.c b/kernel/fork.c
-> > index d66cd1014211..6e2201feb524 100644
-> > --- a/kernel/fork.c
-> > +++ b/kernel/fork.c
-> > @@ -379,14 +379,19 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
-> >       void *stack = task_stack_page(tsk);
-> >       struct vm_struct *vm = task_stack_vm_area(tsk);
-> >
-> > +     if (vm) {
-> > +             int i;
-> >
-> > -     /* All stack pages are in the same node. */
-> > -     if (vm)
-> > -             mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
-> > -                                   account * (THREAD_SIZE / 1024));
-> > -     else
-> > +             BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
->
-> I do not think we need this BUG_ON. What kind of purpose does it serve?
-
-vm->nr_pages should be always equal to THREAD_SIZE / PAGE_SIZE
-if the system is not corrupted. It makes sense to remove the BUG_ON.
-I will remove it in the next version. Thanks.
-
->
-> > +
-> > +             for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
-> > +                     mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
-> > +                                           account * (PAGE_SIZE / 1024));
-> > +     } else {
-> > +             /* All stack pages are in the same node. */
-> >               mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
-> >                                     account * (THREAD_SIZE / 1024));
-> > +     }
-> >  }
-> >
-> >  static int memcg_charge_kernel_stack(struct task_struct *tsk)
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
