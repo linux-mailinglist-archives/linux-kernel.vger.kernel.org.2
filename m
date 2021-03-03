@@ -2,77 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073AD32BE1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2708932BE17
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237392AbhCCRCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:02:11 -0500
-Received: from mout.gmx.net ([212.227.17.20]:37019 "EHLO mout.gmx.net"
+        id S1452923AbhCCQ63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:58:29 -0500
+Received: from mx4.veeam.com ([104.41.138.86]:58134 "EHLO mx4.veeam.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238867AbhCCMbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:31:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614774614;
-        bh=AyfrbWOMECCIN32HYOHpFRVWGNqU4udC6MIuB8c7g0w=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=gzxlbvmvNdB14yJi/ntdiiPBfAbnl/OuC9SXFeM/2pbwUq9zmuWcdnzX6KfoVtSJM
-         G+OUTao2lMpnvG490apZw3YQQsGsWYf5qBv/5bNEoGd3xJCn/0jPvxxhn4wh3notCd
-         hBfr0XioNCwt3Rr/YwDB9k8wLdVsblEkTGGDT9lg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.44.246] ([105.80.250.83]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtwUm-1m4s011m8a-00uHwO for
- <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 13:30:14 +0100
-To:     linux-kernel@vger.kernel.org
-From:   "Artem S. Tashkinov" <aros@gmx.com>
-Subject: A long standing issue with RAM usage reporting
-Message-ID: <6ea673dc-c34b-ff8f-57f3-bce575b989ce@gmx.com>
-Date:   Wed, 3 Mar 2021 12:30:10 +0000
+        id S1380627AbhCCMbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:31:22 -0500
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx4.veeam.com (Postfix) with ESMTPS id 45D99114A78;
+        Wed,  3 Mar 2021 15:30:33 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1614774633; bh=aBSfpMXxxV9PaecPo4foX+saJn6ZV4rfSlstLXcgSh0=;
+        h=From:To:CC:Subject:Date:From;
+        b=DWwf8vhFH+qdbdQhd26ZLMQmdas5SvBkwUc0e/wZojIPeg/9Ogy0QMcYVNYiGfpma
+         x+EmcHTdyiJ2Lcp7RSdnF2PNTIYTC9xyLQ9gQsR4G2UTYjTo6nxY3Qbr5tGz0u3Kgj
+         5w7IkRv/RLqSEg42G4kNupGG5u0YzL/KIqAXSDt8=
+Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
+ prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Wed, 3 Mar 2021 13:30:31 +0100
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     <snitzer@redhat.com>, <agk@redhat.com>, <hare@suse.de>,
+        <song@kernel.org>, <axboe@kernel.dk>, <dm-devel@redhat.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-raid@vger.kernel.org>, <linux-api@vger.kernel.org>
+CC:     <sergei.shtepa@veeam.com>, <pavel.tide@veeam.com>
+Subject: [PATCH v6 0/4] block-layer interposer
+Date:   Wed, 3 Mar 2021 15:30:14 +0300
+Message-ID: <1614774618-22410-1-git-send-email-sergei.shtepa@veeam.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DhUr0e3/POzJ3m1LEIaeE0WwCdj9GJuQMJKLCS7/fZDJBBXif0C
- le9X1G+R5jlWwUBeHVLUbHymepWxQXAyfwNeufPfA/2tFjT1UgVOe+lYA9DHAq7z1bDF1bw
- a7aMc/nlA6U+riQWWM+eTf/BSeiRsvgWUSLgeQTyjW5cEFOPg7UPRDV+uET9hoWOAQHDy6C
- M8uQZTv2y9ZE9Wo84XcUg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+wQOEY3JZ20=:hIlioP0P89AEAoDL/0ZeFK
- N4p3kbeyUxB0Nf9cuO/z8UV0y/+hpyNLnr2+dIZqnJzAIRe8r1wP16G3q7yoLIjXpllOUkykm
- d7D9cE0Tv7x0361ERpuTYMB4nd/J8KFpf+f2uds8dfyGTaakTC0hf8OdUgDtIgXveU/pWue1C
- bc8B/eu9lZhh87QXh7LqdEOsKLXpBXs7FE5ViEMjEuzlz5Be9rd8PBP1YVK2v9RlJojxSE2L5
- TG6FbiStF6ZqADMF7QGgjpqUo3nv0Oe3dxdnRaZo7m/1ERZYrqD0NvhlqFH2jYOFEzk5j3RcI
- uTDAQBIIW+5KjnA+Zqiy/RKe4x1FPU6YdM2ylT6SOHEpocWMjkWETesdzeeGxxd9XeBD3XAoV
- dWVrbXb3KVhb9EZZ3ZZ4UAq9hutqYgcU7zo3MRppLfryHw3W9FA/Y/Me4sIoHqZjekG6yA1eq
- 7goAyy93PE9VYxBmu/5SgVQ/9olmGv14XFDjErmx9tD21nGOJNrZczsmkvKNOyL0xBzr9ur+p
- kkBZ6rbVrQLNzRcJ/0/mxqlpc7RniHhlaqmuVQ/VEuiMq5YoqpiuW4rXf6DqqCY1xL5ZKl+nU
- WJRNsOfsSZ1y6d1+snozHYM5/tKCzpHhWjEPp7kRIkqId8MQUQ6Lo7SeB/w5iFK21JUzS4rEF
- /X3JVCqqmT6d52d6FvPOJuQldNsOCAKj1ZCKp9dgxy6CoO0csx9J5TwLaw9wNrgu719ImNi8y
- xsabegRkG+ExfmBwtOMUEfEEn4pa1wyaVkkxwuLlw02hfSM0YaA2czunleWSIGlpbDCS0Uzbt
- DHY68phTVGaorPmf7eLC5xiIduPg4gfwcsF6YPEkND+rDoWcVz23IBGfunIKknuOhZCEbh9Oh
- +1QYQNrhHJW5NPS6RaXw==
+Content-Type: text/plain
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29C604D265637363
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone,
+Hi all.
 
-I'd love to bring kernel developers' attention to this long standing issue=
-:
+I'm joyful to suggest the block-layer interposer (blk_interposer) v6.
+blk_interposer allows to intercept bio requests, remap bio to another
+devices or add new bios.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D201675
+This series of patches adds the ability to use blk_interposer for
+any dm-target using the DM_INTERPOSED_FLAG flag.
 
-It would be great if something was done about it because otherwise htop,
-top and free and numerous other utilities in Linux have to implement
-hacks and workarounds to properly report free/used RAM.
+The first patch adds the function blk_mq_is_queue_frozen(). It allows to
+assert a queue state.
 
-https://github.com/htop-dev/htop/issues/556
+The second patch is dedicated to blk_interposer itself, which provides
+the ability to intercept bio.
 
-https://gitlab.com/procps-ng/procps/-/issues/196
+The third one adds support for blk_interposer from the device mapper.
 
-There's also another related issue:
+The fourth patch adds the DM_INTERPOSED_FLAG flag. When this flag is
+applied with the ioctl DM_TABLE_LOAD_CMD, the underlying devices are
+opened without the FMODE_EXCL flag and connected via blk_interposer.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D201673 but it will be
-automatically solved once the initial bug report has been dealt with.
+Changes:
+v6 - current patch set
+  * designed for 5.12;
+  * thanks to the new design of the bio structure in v5.12, it is
+    possible to perform interception not for the entire disk, but
+    for each block device;
+  * instead of the new ioctl DM_DEV_REMAP_CMD and the 'noexcl' option,
+    the DM_INTERPOSED_FLAG flag for the ioctl DM_TABLE_LOAD_CMD is
+    applied.
 
-Best regards,
-Artem
+v5 - https://patchwork.kernel.org/project/linux-block/cover/1612881028-7878-1-git-send-email-sergei.shtepa@veeam.com/
+ * rebase for v5.11-rc7;
+ * patch set organization;
+ * fix defects in documentation;
+ * add some comments;
+ * change mutex names for better code readability;
+ * remove calling bd_unlink_disk_holder() for targets with non-exclusive
+   flag;
+ * change type for struct dm_remap_param from uint8_t to __u8.
+
+v4 - https://patchwork.kernel.org/project/linux-block/cover/1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com/
+Mostly changes were made, due to Damien's comments:
+ * on the design of the code;
+ * by the patch set organization;
+ * bug with passing a wrong parameter to dm_get_device();
+ * description of the 'noexcl' parameter in the linear.rst.
+Also added remap_and_filter.rst.
+
+v3 - https://patchwork.kernel.org/project/linux-block/cover/1611853955-32167-1-git-send-email-sergei.shtepa@veeam.com/
+In this version, I already suggested blk_interposer to apply to dm-linear.
+Problems were solved:
+ * Interception of bio requests from a specific device on the disk, not
+   from the entire disk. To do this, we added the dm_interposed_dev
+   structure and an interval tree to store these structures.
+ * Implemented ioctl DM_DEV_REMAP_CMD. A patch with changes in the lvm2
+   project was sent to the team lvm-devel@redhat.com.
+ * Added the 'noexcl' option for dm-linear, which allows you to open
+   the underlying block-device without FMODE_EXCL mode.
+
+v2 - https://patchwork.kernel.org/project/linux-block/cover/1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com/
+I tried to suggest blk_interposer without using it in device mapper,
+but with the addition of a sample of its use. It was then that I learned
+about the maintainers' attitudes towards the samples directory :).
+
+v1 - https://lwn.net/ml/linux-block/20201119164924.74401-1-hare@suse.de/
+This Hannes's patch can be considered as a starting point, since this is
+where the interception mechanism and the term blk_interposer itself
+appeared. It became clear that blk_interposer can be useful for
+device mapper.
+
+before v1 - https://patchwork.kernel.org/project/linux-block/cover/1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com/
+I tried to offer a rather cumbersome blk-filter and a monster-like
+blk-snap module for creating snapshots.
+
+Thank you to everyone who was able to take the time to review
+the previous versions.
+I hope that this time I achieved the required quality.
+
+Thanks,
+Sergei.
+
+Sergei Shtepa (4):
+  block: add blk_mq_is_queue_frozen()
+  block: add blk_interposer
+  dm: introduce dm-interposer
+  dm: add DM_INTERPOSED_FLAG
+
+ block/bio.c                   |   2 +
+ block/blk-core.c              |  36 +++++
+ block/blk-mq.c                |  12 ++
+ block/genhd.c                 |  93 ++++++++++++
+ drivers/md/Makefile           |   2 +-
+ drivers/md/dm-core.h          |   6 +
+ drivers/md/dm-interposer.c    | 258 ++++++++++++++++++++++++++++++++++
+ drivers/md/dm-interposer.h    |  40 ++++++
+ drivers/md/dm-ioctl.c         |   9 ++
+ drivers/md/dm-table.c         | 115 +++++++++++++--
+ drivers/md/dm.c               |  38 +++--
+ include/linux/blk-mq.h        |   1 +
+ include/linux/blk_types.h     |   4 +
+ include/linux/blkdev.h        |  17 +++
+ include/linux/device-mapper.h |   1 +
+ include/uapi/linux/dm-ioctl.h |   6 +
+ 16 files changed, 618 insertions(+), 22 deletions(-)
+ create mode 100644 drivers/md/dm-interposer.c
+ create mode 100644 drivers/md/dm-interposer.h
+
+-- 
+2.20.1
+
