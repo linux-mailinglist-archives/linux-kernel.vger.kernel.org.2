@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90D632C4F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343D432C529
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355052AbhCDAS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39420 "EHLO mail.kernel.org"
+        id S1392596AbhCDATZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:19:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353125AbhCDAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:07:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5470F64F56;
+        id S1352589AbhCDAHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:07:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96A6A64F59;
         Wed,  3 Mar 2021 23:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614815780;
-        bh=KqbXaZIE78Z0YPuE9W5+U7xsgoAgLUndh2Wmk7Hbmkg=;
+        bh=Rk8lbsRx2Lj/ReqjdC1N2YYxcEhLMBywPigAOlTTJ4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fzblqZLXbtjsnEVrhluRfLvR7rQ4N0gWWytF/nnfuDeIOWwjn/5EKiv3OkFGOvja+
-         k6VUK6vYUZLIHJc6asFys9B45QKpqk82ieiLjjWHp9qaiW4lr4BgHVG/CFcsfnprJt
-         xgs5HTQcDnJ6stZ0pwHaTJO6xWYIc8Mt88Y+sO10/V7D4ZYCOxhY331F5RMrganxda
-         Dc0Wp3uMNavo7RgyG+UFhU2R83BhgI/hX0BKqG1WiT9m8xxnPqz5opI6EhekDaXRQt
-         bbDmPhjlxHYTwAOpJWlUiLE5VPiFeH6gpFyDPZX6uq2epKXFEwC4d7lkYnCbUYx5yV
-         BgLvcLBzP/8eQ==
+        b=lAsJwWynYb46n36E6DbloYuemn47EOTRb+qUDhQ+HccmyI3r4P8cDoFw2GnSeGpB8
+         DiHugMBojWlLh7u/l06Wc00/DNz+HJpGXhhQjHkhtl9b3bRKM8f2TUULE53o+Fzisb
+         kAeh4katsYa2i02JXb4IzmUbbS7BbcvdgdunWtdLQHVokkxfe90P6HtKO2HT3e/aNT
+         +vzdGUrNXX8vYZQ+YnnCu/0iWJjWQQQC/m14Fdj/8nIWMSQMQXLS3mgqEbob8yecJe
+         n+PoCENB5w3LbaYSp2ToKPRSpNMOdlwaNFZt9K1U1O7XDO15bm7/vhl7QTLhzDjlc2
+         JD69QH5BgOoLw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,12 +32,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         paul.gortmaker@windriver.com, Yury Norov <yury.norov@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH lib/bitmap 6/9] lib: bitmap: support "N" as an alias for size of bitmap
-Date:   Wed,  3 Mar 2021 15:56:13 -0800
-Message-Id: <20210303235616.22093-6-paulmck@kernel.org>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH lib/bitmap 7/9] lib: test_bitmap: add tests for "N" alias
+Date:   Wed,  3 Mar 2021 15:56:14 -0800
+Message-Id: <20210303235616.22093-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235526.GA21868@paulmck-ThinkPad-P72>
 References: <20210303235526.GA21868@paulmck-ThinkPad-P72>
@@ -47,128 +47,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-While this is done for all bitmaps, the original use case in mind was
-for CPU masks and cpulist_parse() as described below.
-
-It seems that a common configuration is to use the 1st couple cores for
-housekeeping tasks.  This tends to leave the remaining ones to form a
-pool of similarly configured cores to take on the real workload of
-interest to the user.
-
-So on machine A - with 32 cores, it could be 0-3 for "system" and then
-4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
-setting up the worker pool of CPUs.
-
-But then newer machine B is added, and it has 48 cores, and so while
-the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
-
-Multiple deployment becomes easier when we can just simply replace 31
-and 47 with "N" and let the system substitute in the actual number at
-boot; a number that it knows better than we do.
+These are copies of existing tests, with just 31 --> N.  This ensures
+the recently added "N" alias transparently works in any normally
+numeric fields of a region specification.
 
 Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Suggested-by: Yury Norov <yury.norov@gmail.com> # move it from CPU code
 Acked-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.rst |  7 +++++++
- lib/bitmap.c                                    | 22 +++++++++++++++++-----
- 2 files changed, 24 insertions(+), 5 deletions(-)
+ lib/test_bitmap.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 1132796..d6e3f67 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -68,6 +68,13 @@ For example one can add to the command line following parameter:
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 3c1c46d..9cd5755 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -353,6 +353,16 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
+ 	{0, "16-31:16/31",		&exp1[3 * step], 32, 0},
+ 	{0, "31-31:31/31",		&exp1[14 * step], 32, 0},
  
- where the final item represents CPUs 100,101,125,126,150,151,...
- 
-+The value "N" can be used to represent the numerically last CPU on the system,
-+i.e "foo_cpus=16-N" would be equivalent to "16-31" on a 32 core system.
++	{0, "N-N",			&exp1[14 * step], 32, 0},
++	{0, "0-0:1/N",			&exp1[0], 32, 0},
++	{0, "0-0:N/N",			&exp1[0], 32, 0},
++	{0, "0-15:16/N",		&exp1[2 * step], 32, 0},
++	{0, "15-15:N/N",		&exp1[13 * step], 32, 0},
++	{0, "15-N:1/N",			&exp1[13 * step], 32, 0},
++	{0, "16-N:16/N",		&exp1[3 * step], 32, 0},
++	{0, "N-N:N/N",			&exp1[14 * step], 32, 0},
 +
-+Keep in mind that "N" is dynamic, so if system changes cause the bitmap width
-+to change, such as less cores in the CPU list, then N and any ranges using N
-+will also change.  Use the same on a small 4 core system, and "16-N" becomes
-+"16-3" and now the same boot input will be flagged as invalid (start > end).
++	{0, "0-N:1/3,1-N:1/3,2-N:1/3",		&exp1[8 * step], 32, 0},
+ 	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
+ 	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
  
- 
- This document may not be entirely up to date and comprehensive. The command
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 833f152a..9f4626a 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -519,11 +519,17 @@ static int bitmap_check_region(const struct region *r)
- 	return 0;
- }
- 
--static const char *bitmap_getnum(const char *str, unsigned int *num)
-+static const char *bitmap_getnum(const char *str, unsigned int *num,
-+				 unsigned int lastbit)
- {
- 	unsigned long long n;
- 	unsigned int len;
- 
-+	if (str[0] == 'N') {
-+		*num = lastbit;
-+		return str + 1;
-+	}
-+
- 	len = _parse_integer(str, 10, &n);
- 	if (!len)
- 		return ERR_PTR(-EINVAL);
-@@ -571,7 +577,9 @@ static const char *bitmap_find_region_reverse(const char *start, const char *end
- 
- static const char *bitmap_parse_region(const char *str, struct region *r)
- {
--	str = bitmap_getnum(str, &r->start);
-+	unsigned int lastbit = r->nbits - 1;
-+
-+	str = bitmap_getnum(str, &r->start, lastbit);
- 	if (IS_ERR(str))
- 		return str;
- 
-@@ -581,7 +589,7 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- 	if (*str != '-')
- 		return ERR_PTR(-EINVAL);
- 
--	str = bitmap_getnum(str + 1, &r->end);
-+	str = bitmap_getnum(str + 1, &r->end, lastbit);
- 	if (IS_ERR(str))
- 		return str;
- 
-@@ -591,14 +599,14 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- 	if (*str != ':')
- 		return ERR_PTR(-EINVAL);
- 
--	str = bitmap_getnum(str + 1, &r->off);
-+	str = bitmap_getnum(str + 1, &r->off, lastbit);
- 	if (IS_ERR(str))
- 		return str;
- 
- 	if (*str != '/')
- 		return ERR_PTR(-EINVAL);
- 
--	return bitmap_getnum(str + 1, &r->group_len);
-+	return bitmap_getnum(str + 1, &r->group_len, lastbit);
- 
- no_end:
- 	r->end = r->start;
-@@ -625,6 +633,10 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
-  * From each group will be used only defined amount of bits.
-  * Syntax: range:used_size/group_size
-  * Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
-+ * The value 'N' can be used as a dynamically substituted token for the
-+ * maximum allowed value; i.e (nmaskbits - 1).  Keep in mind that it is
-+ * dynamic, so if system changes cause the bitmap width to change, such
-+ * as more cores in a CPU list, then any ranges using N will also change.
-  *
-  * Returns: 0 on success, -errno on invalid input strings. Error values:
-  *
 -- 
 2.9.5
 
