@@ -2,107 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4296932BCC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6093132BD65
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382781AbhCCOjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:39:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843000AbhCCKXf (ORCPT
+        id S233491AbhCCP5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:57:47 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53732 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1357589AbhCCLK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:35 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACC7C0698C7
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:07:03 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id d11so16240185qtx.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:07:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xKpRIV0nBsirWLUBi5T/YqLwJUbvRGd0l5J76HxqqQY=;
-        b=i93FVC4prisYD3tUaa4qTULSzppFJdnwqaI0axKLqk4E1KHLGl0ajxMpSx/Tbcz5gz
-         cB+p+QCfBLFfjgNlV1gpaGUgstlS9F/9xajs3I7SB+BpptWiAPSxxY5Bf/9oiNmWwWx5
-         iImSH5q2b+x5PftlRI6vcph/A+eUGLveFSsOVWgp6xIAet72Oo3bSy6BHl1JZiHZjGi9
-         uvz9PBafoUuLvJ9kZdOPmWYbpzXTTt39rbO+031348ZQbxY6CD3J/+YmoQT3dJ1awTCf
-         8S3Tyc99ojTXxhyesNABrGX29I/Qyj0IqyrgPWjyPtXROEULfbOANHQPoiJ3gh8xbsWJ
-         VO3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xKpRIV0nBsirWLUBi5T/YqLwJUbvRGd0l5J76HxqqQY=;
-        b=eW42jnpasXk8A+Y8wj1QxifRPpV7TXbCuGYr5sK4kuC+LNnl1GGkreewggstvww7Rt
-         Sp3yWNGfkCgNcL0HasMcy2FXWDQg/XYE1rxRrEuyEFm82nZnR/rPr1KzRITB2wEVR4Bi
-         mz89yxCkn+byAqiyc8CD7Y9t60bJ7F7qSY8QlUGcctHWunS+RERTgv1julYHA5PebZLW
-         63XmIfoUNQvCiOHzcRUi/iH/3rg0+ltkPmV84WYVr8ETlRwhiUa9/NkWQGEXZDi4ROHe
-         uFdlFR4+v3pvpwK+4RzmpwVvvlVjkBgpnfbXQTeOq2Z5vtnPUu3lgZ1tNzruB307PQww
-         ZeAg==
-X-Gm-Message-State: AOAM5301P9TTRKimUE4fOCaaQhjlJY5CY7sUrxaMZ/0vetLX2bjO769d
-        mV5bWNWV2Xf5CsCQbbfB5EyjtQSKJqWfk/NirYIt/w==
-X-Google-Smtp-Source: ABdhPJx8+N6LxjQ2TqesKmjDhe9IP8WsEr+KW8d/OM0/MKlgrV9PLrRVbVZT/kcWCKVmkhK0QwJAnR1Edcir13+sqW8=
-X-Received: by 2002:ac8:6f3b:: with SMTP id i27mr10377291qtv.67.1614762422440;
- Wed, 03 Mar 2021 01:07:02 -0800 (PST)
-MIME-Version: 1.0
-References: <00000000000039404305bc049fa5@google.com> <20210224023026.3001-1-hdanton@sina.com>
- <0a0573f07a7e1468f83d52afcf8f5ba356725740.camel@sipsolutions.net> <20210303085912.1647-1-hdanton@sina.com>
-In-Reply-To: <20210303085912.1647-1-hdanton@sina.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 3 Mar 2021 10:06:51 +0100
-Message-ID: <CACT4Y+ZEdh6WJB8b5dg+jgv7thnrt=pVW6BzPngOyT3KKMaMtw@mail.gmail.com>
-Subject: Re: BUG: soft lockup in ieee80211_tasklet_handler
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        syzbot <syzbot+27df43cf7ae73de7d8ee@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Mar 2021 06:10:57 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UQDrPLL_1614762482;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UQDrPLL_1614762482)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Mar 2021 17:08:02 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     lgirdwood@gmail.com
+Cc:     broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] SoC: codecs: fix platform_no_drv_owner.cocci warnings
+Date:   Wed,  3 Mar 2021 17:08:01 +0800
+Message-Id: <1614762481-102466-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 9:59 AM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Tue, 02 Mar 2021 15:18:16 +0100  Johannes Berg wrote:
-> > On Wed, 2021-02-24 at 10:30 +0800, Hillf Danton wrote:
-> > >
-> > > Add budget for the 80211 softint handler - it's feasible not to try to
-> > > build the giant pyramid in a week.
-> > >
-> > > --- x/net/mac80211/main.c
-> > > +++ y/net/mac80211/main.c
-> > > @@ -224,9 +224,15 @@ static void ieee80211_tasklet_handler(un
-> > >  {
-> > >     struct ieee80211_local *local = (struct ieee80211_local *) data;
-> > >     struct sk_buff *skb;
-> > > +   int i = 0;
-> > > +
-> > > +   while (i++ < 64) {
-> > > +           skb = skb_dequeue(&local->skb_queue);
-> > > +           if (!skb)
-> > > +                   skb = skb_dequeue(&local->skb_queue_unreliable);
-> > > +           if (!skb)
-> > > +                   return;
-> >
-> > I guess that's not such a bad idea, but I do wonder how we get here,
-> > userspace can submit packets faster than we can process?
->
-> I wonder why syzbot did not make other handlers stand out than
-> ieee80211_tasklet_handler.
+./sound/soc/codecs/lpass-rx-macro.c:3588:3-8: No need to set .owner here. 
+The core will do it.
 
-syzbot has no relation to this whatsoever. It's just a proxy between
-the kernel and you. Ask the kernel ;)
+Remove .owner field if calls are used which set it automatically
 
-> > It feels like a simulation-only case, tbh, since over the air you have
-> > limits how much bandwidth you can get ... unless you have a very slow
-> > CPU?
->
-> Even with a slower CPU I want to run a FIFO task every tick - it can bear
-> latencies like two seconds.
-> >
-> > In any case, if you want anything merged you're going to have to submit
-> > a proper patch with a real commit message and Signed-off-by, etc.
-> >
-> > johannes
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ sound/soc/codecs/lpass-rx-macro.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index c9c21d22..5b9d4e9 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -3585,7 +3585,6 @@ static int rx_macro_remove(struct platform_device *pdev)
+ static struct platform_driver rx_macro_driver = {
+ 	.driver = {
+ 		.name = "rx_macro",
+-		.owner = THIS_MODULE,
+ 		.of_match_table = rx_macro_dt_match,
+ 		.suppress_bind_attrs = true,
+ 	},
+-- 
+1.8.3.1
+
