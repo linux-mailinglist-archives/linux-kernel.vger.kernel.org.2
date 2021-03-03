@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428C332BBBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECFB32BBCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446925AbhCCMrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842534AbhCCIG3 (ORCPT
+        id S240118AbhCCMxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:53:41 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60740 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1842732AbhCCILK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:06:29 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D9DC061797;
-        Wed,  3 Mar 2021 00:05:47 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id c19so3661016pjq.3;
-        Wed, 03 Mar 2021 00:05:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sDbztN44X/B/8dJkz0MmLiQc+JMIMWoneNFLgfTEAQg=;
-        b=V18aHYAjb+sB7qRw721z+elzxN9FQUiIKjmzgUevEjnfPIOycyzsaOTwMoWZvI2f8O
-         /87tyRjLuwT+MVqNxtVPjMzgE4TDQEwWwK/3rsAWY5t/b2oO0WlFW65jUAG/CuJvPDt4
-         oaDcWbNI0Cee29rSQx3roq11xg4U8LBZK27I7ysA3vLChWzT5aMd/CrNy9+Spg8rRkqV
-         HXE9GP21dXlMGeO0CHvyn2EpkINRIloS5fZV1YyXnu1D9/MVkW91YrdnXdR/6swF5fBT
-         SUvGtVO46Uz16aGaxKXF1mKwBZ/H/e/gTxwS+cnSTIwM9+ofA0c44oMLgerZ8L9Wa/2y
-         1eJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sDbztN44X/B/8dJkz0MmLiQc+JMIMWoneNFLgfTEAQg=;
-        b=NqPNmOZh2AeriTzczYadZCoH4fniq8AQYgk6v+5EDmyiye076ddhSpqWmNiIceSEga
-         An1Ou71HimKV61ad5ccY239A/LWgzZjkZq13oqPwqHSd9FRoikOfk95ZTAN5hg9w1iXb
-         yuPLAG6JAgZ9Is7Y0DWy+VgxcdPuJ3bIJAvtQDW/96BBRWQ4rM0jQRnTMvq+GOaHHLxF
-         yh7mYZarB1WJP9gO9OMn8POhalN62BFewf4rcgTedhdQ5S2HJFM9DEq57rfJF0S8MIg8
-         JH0IT890HXadu4FbQ9Yr8VYiqUuERQzyWhCic0t+f32MQxGPL6IkRohC3JQRLMG8zsJs
-         yrhw==
-X-Gm-Message-State: AOAM530GhIiLlKrgMe0nL0xQTt4KEqhPqnpUxeuOzdCUDaxh48tjP5R1
-        AQMCft8JhTQqXSHoKQzzB9w=
-X-Google-Smtp-Source: ABdhPJw35HqF3ZjssyHn/UOSrDZ5l/gwsM+pD3UYkZksJ9N/8eqHLXTzgTIoUI0o2SZXNpEJJUULnQ==
-X-Received: by 2002:a17:90a:4f85:: with SMTP id q5mr8157503pjh.42.1614758747054;
-        Wed, 03 Mar 2021 00:05:47 -0800 (PST)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id h6sm22260887pfv.84.2021.03.03.00.05.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Mar 2021 00:05:46 -0800 (PST)
-From:   dillon.minfei@gmail.com
-To:     robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, vladimir.murzin@arm.com,
-        afzal.mohd.ma@gmail.com
-Cc:     dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH 8/8] ARM: stm32: add initial support for stm32h750
-Date:   Wed,  3 Mar 2021 16:05:17 +0800
-Message-Id: <1614758717-18223-9-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
-References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+        Wed, 3 Mar 2021 03:11:10 -0500
+X-UUID: 068f4a0470aa42498db92df92c488324-20210303
+X-UUID: 068f4a0470aa42498db92df92c488324-20210303
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <vic.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1551120669; Wed, 03 Mar 2021 16:10:19 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 3 Mar 2021 16:10:12 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Mar 2021 16:10:12 +0800
+From:   Vic Wu <vic.wu@mediatek.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Vic Wu <vic.wu@mediatek.com>
+Subject: [PATCH] crypto: mediatek - remove obsolete documentation
+Date:   Wed, 3 Mar 2021 16:09:23 +0800
+Message-ID: <20210303080923.16761-1-vic.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+The crypto mediatek driver has been replaced by the inside-secure driver now.
+Remove DT bindings documentation and update crypto engine nodes to the mt7623.dtsi files.
 
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
+Signed-off-by: Vic Wu <vic.wu@mediatek.com>
+Acked-by: Ryder Lee <ryder.lee@mediatek.com>
 ---
- arch/arm/mach-stm32/board-dt.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/crypto/mediatek-crypto.txt       | 25 -------------------
+ arch/arm/boot/dts/mt7623.dtsi                 |  8 +++---
+ 2 files changed, 3 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
 
-diff --git a/arch/arm/mach-stm32/board-dt.c b/arch/arm/mach-stm32/board-dt.c
-index 011d57b488c2..a766310d8dca 100644
---- a/arch/arm/mach-stm32/board-dt.c
-+++ b/arch/arm/mach-stm32/board-dt.c
-@@ -17,6 +17,7 @@ static const char *const stm32_compat[] __initconst = {
- 	"st,stm32f746",
- 	"st,stm32f769",
- 	"st,stm32h743",
-+	"st,stm32h750",
- 	"st,stm32mp157",
- 	NULL
- };
+diff --git a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt b/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
+deleted file mode 100644
+index 450da3661cad..000000000000
+--- a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
++++ /dev/null
+@@ -1,25 +0,0 @@
+-MediaTek cryptographic accelerators
+-
+-Required properties:
+-- compatible: Should be "mediatek,eip97-crypto"
+-- reg: Address and length of the register set for the device
+-- interrupts: Should contain the five crypto engines interrupts in numeric
+-	order. These are global system and four descriptor rings.
+-- clocks: the clock used by the core
+-- clock-names: Must contain "cryp".
+-- power-domains: Must contain a reference to the PM domain.
+-
+-
+-Example:
+-	crypto: crypto@1b240000 {
+-		compatible = "mediatek,eip97-crypto";
+-		reg = <0 0x1b240000 0 0x20000>;
+-		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
+-		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
+-		clock-names = "cryp";
+-		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
+-	};
+diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
+index aea6809500d7..25e3f3b04123 100644
+--- a/arch/arm/boot/dts/mt7623.dtsi
++++ b/arch/arm/boot/dts/mt7623.dtsi
+@@ -949,16 +949,14 @@
+ 	};
+ 
+ 	crypto: crypto@1b240000 {
+-		compatible = "mediatek,eip97-crypto";
++		compatible = "inside-secure,safexcel-eip97";
+ 		reg = <0 0x1b240000 0 0x20000>;
+ 		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
+ 			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
+ 			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
++			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names = "ring0", "ring1", "ring2", "ring3";
+ 		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
+-		clock-names = "cryp";
+-		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
+ 		status = "disabled";
+ 	};
+ 
 -- 
-2.7.4
+2.18.0
 
