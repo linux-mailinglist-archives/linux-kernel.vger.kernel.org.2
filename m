@@ -2,176 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4612132C4E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483F932C498
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355013AbhCDASG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39408 "EHLO mail.kernel.org"
+        id S1446374AbhCDAPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:15:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353109AbhCDAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:07:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA4CE64F38;
-        Wed,  3 Mar 2021 23:46:38 +0000 (UTC)
+        id S1353534AbhCDAE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:04:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCAE564F40;
+        Wed,  3 Mar 2021 23:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614815198;
-        bh=XPBSnqYNbLadROWp2s8xZFTZNulMYA/qPBxSSGN7gSs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pxm5tEXe0Fq4/Ij/3nBx2ovq3fMIvcfFCV+P8r7Yf7xAk3VUkQHyrmZdV/O0TTpNN
-         ePPPBxO/bUJCJTf6d+l0ZzadZ65kyX0U70OLJu8hM2Cdp9I9/TDIlQszbfiVIY+Fnr
-         FerxXaI9njjVouYYyRThD3bvMb0RTs1yPzlP/8FvMyfrSRLVhkmhKGjFCF77eabvdk
-         mNkA51gzIVmreMv2ggWDHcgrc4ziNeaVYyevZfsz77T8vLq+rYAxY0J1kKjtrjGYrk
-         RvEvedhvOqar4BtDvJhs5+pKEmyXhmHEt/VwU1h5crLvzlNXAXOlY+hfkBMD56next
-         pgH+XhDYlEUlw==
-Date:   Wed, 3 Mar 2021 15:46:37 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Changman Lee <cm224.lee@samsung.com>,
-        Chao Yu <chao2.yu@samsung.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: f2fs_convert_inline_inode causing rebalance based on random
- uninitialized value in dn.node_changed
-Message-ID: <YEAf3W6BEUc7L3FL@google.com>
-References: <9fcca081-9a60-8ae3-5cac-d8aa38c38ff2@canonical.com>
- <YD/nFt6Gswnyogfa@google.com>
- <9b586bbb-bb94-6fdf-c9a4-9415dbc6d8d0@canonical.com>
+        s=k20201202; t=1614815502;
+        bh=4yS5iyJsfhsmr+JcD2q/iH0huGBVo0X7ndYyoZeb90s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Wcwfy2oLdCegFM+NSj5hIFVc7IO8f2MbMGQGKYiV4XONi62oteEtvl+UFt7TgUooX
+         xiruDUU4P/IxGiiuoopVydls3hf2BifOFr2bt8yvypmBGYvhHvLEn6m6Ktj44nFMRj
+         7ZOo6u6VD2EG9ooX02rLJ3SYXMg7kraYH/js/b7pXTTCo4o4Q8l5NPm7DhpBExYjrN
+         IyFDCuHCiNN3XddxFZxvFnaBHSFfJyOjNp6dYsuCwvMxp3zL8ky0CqyQAa5uqaF/ls
+         ST/IYm6MOPIVvf4xZ9X8MfzmxAy6Y0APTx5JZhlHvEuFTk+wD8xY8ix3gm1zdHZEsT
+         gR9zYjPEVUKgQ==
+Received: by mail-ej1-f52.google.com with SMTP id hs11so45783049ejc.1;
+        Wed, 03 Mar 2021 15:51:41 -0800 (PST)
+X-Gm-Message-State: AOAM530Zr9Z+Pb8gehO52d9gfzM1armEbh0yO0Ca2acbmJ379XmihWdw
+        TzeAvUDvE2H78312cNB92m8OhujwmxHLpy2k+g==
+X-Google-Smtp-Source: ABdhPJxjTF125VBav37vNTxcoNrEEtc96QdczKSVNaMWeC6x43SJnAkfM2Ubk2nF5FkmmMzIcHZNXpwWfscGCx+RprI=
+X-Received: by 2002:a17:906:a106:: with SMTP id t6mr1209918ejy.63.1614815500452;
+ Wed, 03 Mar 2021 15:51:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b586bbb-bb94-6fdf-c9a4-9415dbc6d8d0@canonical.com>
+References: <20210223215057.125708-1-robh@kernel.org>
+In-Reply-To: <20210223215057.125708-1-robh@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 4 Mar 2021 07:51:29 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-x2RTU9c0=ibRdiO8-o8F0GU0DNa5UDSeKsmboSJfHDw@mail.gmail.com>
+Message-ID: <CAAOTY_-x2RTU9c0=ibRdiO8-o8F0GU0DNa5UDSeKsmboSJfHDw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: display: mediatek,dpi: Convert to use graph schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>, Jitao shi <jitao.shi@mediatek.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/03, Colin Ian King wrote:
-> On 03/03/2021 19:44, Jaegeuk Kim wrote:
-> > On 03/02, Colin Ian King wrote:
-> >> Hi,
-> >>
-> >> Static analysis on linux-next detected a potential uninitialized
-> >> variable dn.node_changed that does not get set when a call to
-> >> f2fs_get_node_page() fails.  This uninitialized value gets used in the
-> >> call to f2fs_balance_fs() that may or not may not balances dirty node
-> >> and dentry pages depending on the uninitialized state of the variable.
-> >>
-> >> I believe the issue was introduced by commit:
-> >>
-> >> commit 2a3407607028f7c780f1c20faa4e922bf631d340
-> >> Author: Jaegeuk Kim <jaegeuk@kernel.org>
-> >> Date:   Tue Dec 22 13:23:35 2015 -0800
-> >>
-> >>     f2fs: call f2fs_balance_fs only when node was changed
-> >>
-> >>
-> >> The analysis is a follows:
-> >>
-> >> 184 int f2fs_convert_inline_inode(struct inode *inode)
-> >> 185 {
-> >> 186        struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> >>
-> >>    1. var_decl: Declaring variable dn without initializer.
-> >>
-> >> 187        struct dnode_of_data dn;
-> >>
-> >>    NOTE dn is not initialized here.
-> >>
-> >> 188        struct page *ipage, *page;
-> >> 189        int err = 0;
-> >> 190
-> >>
-> >>    2. Condition !f2fs_has_inline_data(inode), taking false branch.
-> >>    3. Condition f2fs_hw_is_readonly(sbi), taking false branch.
-> >>    4. Condition f2fs_readonly(sbi->sb), taking false branch.
-> >>
-> >> 191        if (!f2fs_has_inline_data(inode) ||
-> >> 192                        f2fs_hw_is_readonly(sbi) ||
-> >> f2fs_readonly(sbi->sb))
-> >> 193                return 0;
-> >> 194
-> >> 195        err = dquot_initialize(inode);
-> >>
-> >>    5. Condition err, taking false branch.
-> >>
-> >> 196        if (err)
-> >> 197                return err;
-> >> 198
-> >> 199        page = f2fs_grab_cache_page(inode->i_mapping, 0, false);
-> >>
-> >>    6. Condition !page, taking false branch.
-> >>
-> >> 200        if (!page)
-> >> 201                return -ENOMEM;
-> >> 202
-> >> 203        f2fs_lock_op(sbi);
-> >> 204
-> >> 205        ipage = f2fs_get_node_page(sbi, inode->i_ino);
-> >>
-> >>    7. Condition IS_ERR(ipage), taking true branch.
-> >>
-> >> 206        if (IS_ERR(ipage)) {
-> >> 207                err = PTR_ERR(ipage);
-> >>
-> >>    8. Jumping to label out.
-> >>
-> >> 208                goto out;
-> >> 209        }
-> >> 210
-> >>
-> >>    NOTE: set_new_dnode memset's dn so sets the flag to false, but we
-> >> don't get to this memset if IS_ERR(ipage) above is true.
-> >>
-> >> 211        set_new_dnode(&dn, inode, ipage, ipage, 0);
-> >> 212
-> >> 213        if (f2fs_has_inline_data(inode))
-> >> 214                err = f2fs_convert_inline_page(&dn, page);
-> >> 215
-> >> 216        f2fs_put_dnode(&dn);
-> >> 217 out:
-> >> 218        f2fs_unlock_op(sbi);
-> >> 219
-> >> 220        f2fs_put_page(page, 1);
-> >> 221
-> >>
-> >> Uninitialized scalar variable:
-> >>
-> >>    9. uninit_use_in_call: Using uninitialized value dn.node_changed when
-> >> calling f2fs_balance_fs.
-> >>
-> >> 222        f2fs_balance_fs(sbi, dn.node_changed);
-> >> 223
-> >> 224        return err;
-> >> 225 }
-> >>
-> >> I think a suitable fix will be to set dn.node_changed to false on in
-> >> line 207-208 but I'm concerned if I'm missing something subtle to the
-> >> rebalancing if I do this.
-> >>
-> >> Comments?
-> > 
-> > Thank you for the report. Yes, it seems that's a right call and we need to
-> > check the error to decide calling f2fs_balance_fs() in line 222, since
-> > set_new_dnode() is used to set all the fields in dnode_of_data. So, if you
-> > don't mind, could you please post a patch?
-> 
-> Just to clarify, just setting dn.node_changes to false is enough?
-> 
-> I'm not entirely sure what you meant when you wrote "and we need to
-> check the error to decide calling f2fs_balance_fs() in line 222".
+Hi, Rob:
 
-I meant:
+Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B42=E6=9C=8824=E6=97=A5 =
+=E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=885:51=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Update the mediatek,dpi binding to use the graph schema. Missed
+> this one from the mass conversion since it's not part of drm-misc.
 
-222	if (!err)
-223		f2fs_balance_fs(sbi, dn.node_changed);
+Applied to mediatek-drm-next [1], thanks.
 
-Thanks,
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
-> 
-> Colin
-> 
-> > 
-> > Thanks,
-> > 
-> >>
-> >> Colin
-> >>
+Regards,
+Chun-Kuang.
+
+>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: CK Hu <ck.hu@mediatek.com>
+> Cc: Jitao shi <jitao.shi@mediatek.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-mediatek@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/display/mediatek/mediatek,dpi.yaml       | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+dpi.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.=
+yaml
+> index 6cdb734c91a9..eb84b53cabb1 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yam=
+l
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yam=
+l
+> @@ -50,15 +50,10 @@ properties:
+>        - const: sleep
+>
+>    port:
+> -    type: object
+> +    $ref: /schemas/graph.yaml#/properties/port
+>      description:
+> -      Output port node with endpoint definitions as described in
+> -      Documentation/devicetree/bindings/graph.txt. This port should be c=
+onnected
+> -      to the input port of an attached HDMI or LVDS encoder chip.
+> -
+> -    properties:
+> -      endpoint:
+> -        type: object
+> +      Output port node. This port should be connected to the input port =
+of an
+> +      attached HDMI or LVDS encoder chip.
+>
+>  required:
+>    - compatible
+> --
+> 2.27.0
+>
