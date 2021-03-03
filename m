@@ -2,66 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B1A32BE3A
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8E332BE39
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236330AbhCCRMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:12:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56194 "EHLO mail.kernel.org"
+        id S231439AbhCCRKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:10:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59826 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240903AbhCCNWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:22:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC9EF601FF;
-        Wed,  3 Mar 2021 13:12:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614777171;
-        bh=v9xaJ8OzavzrXrL/dKUBylNt92OheY14Ppsso/1Q/dk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sn/QA8i8arLz4hdx+s5S2lrDRWJXrPVAVOX3sCqEWIr2aQnLwRfXea7LSFluzXzRr
-         k1buGV6247pKtkspUZJVmY1/AZ9TgebakIkCAwrnccZt3yXjlHtJHRqcO3ohM5QK/H
-         sp+8qB/mb5NzwC7qygYrMzLrP4DR7So5g0q0+L+SVaNNN/y3tpKCRqIEZQyC2BPUiQ
-         UhDJUNQdFFDerv83QcFvGvSdZOk++IvA5JQ5U5Oo/Y413llEIvI+PaLBifQuh/3SHT
-         XVAyj3HoSgXS0MrKLJ6ExACvAC5AyII7eLv3/vYJ/djwR3dO9eaBfeZjnsdRZAF3u3
-         vZcm3XVsj5oaw==
-Date:   Wed, 3 Mar 2021 13:12:45 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Li Huafei <lihuafei1@huawei.com>, gregory.herrero@oracle.com,
-        catalin.marinas@arm.com, christophe.leroy@csgroup.eu,
-        linux-kernel@vger.kernel.org, zhangjinhao2@huawei.com,
-        yangjihong1@huawei.com, xukuohai@huawei.com,
-        linux-arm-kernel@lists.infradead.org,
-        Chen Jun <chenjun102@huawei.com>
-Subject: Re: [PATCH] recordmcount: Fix the wrong use of w* in
- arm64_is_fake_mcount()
-Message-ID: <20210303131244.GA18661@willie-the-truck>
-References: <20210225140747.10818-1-lihuafei1@huawei.com>
- <20210225094426.7729b9cc@gandalf.local.home>
- <20210225160116.GA13604@willie-the-truck>
- <20210302173058.28fd3d36@gandalf.local.home>
- <20210302173335.71eded37@gandalf.local.home>
+        id S1358952AbhCCNUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 08:20:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614777516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fTjwCAs8NFhD6G8Me32PjCtQRtajdWLNU8hPxq2kLwY=;
+        b=OG2D8K0+PfCuA5USdfd+Vx6vvOPTyS3EUyRmE7sqZ415QTN8GcaX9NJMw0mxPVVFu1pGLR
+        m/nhsBzCaOzVYjLB8Jp0BgoRT32O09qY+clnqr6yXiqa/1CU+6464zYukujhq7ChdCD79P
+        71x09r4i/F0vei3pckPBC7HbLpQl/ms=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 531B1AD29;
+        Wed,  3 Mar 2021 13:18:36 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 14:18:29 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linuxppc-dev@lists.ozlabs.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Kelley <mikelley@microsoft.com>,
+        linux-hyperv@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
+Subject: lkml delivery: was: Re: [PATCH next v4 00/15] printk: remove
+ logbuf_lock
+Message-ID: <YD+MpccJp4gX6bOP@alley>
+References: <20210303101528.29901-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210302173335.71eded37@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210303101528.29901-1-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:33:35PM -0500, Steven Rostedt wrote:
-> On Tue, 2 Mar 2021 17:30:58 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > I just realized that I received this patch twice, and thought it was the
-> > same patch! Chen was three days ahead of you, so he get's the credit ;-)
-> > 
-> >  https://lore.kernel.org/r/20210222135840.56250-1-chenjun102@huawei.com
-> 
-> I'm applying this patch (same one here but came earlier).
-> 
-> Will, you still OK with your acked-by on it?
+Hi John,
 
-Absolutely!
+On Wed 2021-03-03 11:15:13, John Ogness wrote:
+> Hello,
+> 
+> Here is v4 of a series to remove @logbuf_lock, exposing the
+> ringbuffer locklessly to both readers and writers. v3 is
+> here [0].
 
-Will
+Have you got some reply from lkml that it has not delivered there,
+please?
+
+I am not able to get the patchset using b4 tool:
+
+$> b4 am -o test 20210303101528.29901-1-john.ogness@linutronix.de
+Looking up https://lore.kernel.org/r/20210303101528.29901-1-john.ogness%40linutronix.de
+Grabbing thread from lore.kernel.org/linux-hyperv
+Analyzing 2 messages in the thread
+---
+Thread incomplete, attempting to backfill
+Grabbing thread from lore.kernel.org/lkml
+Server returned an error: 404
+Grabbing thread from lore.kernel.org/linux-mtd
+Server returned an error: 404
+Grabbing thread from lore.kernel.org/linuxppc-dev
+Loaded 2 messages from https://lore.kernel.org/linuxppc-dev/
+---
+Writing test/v4_20210303_john_ogness_printk_remove_logbuf_lock.mbx
+  ERROR: missing [1/15]!
+  ERROR: missing [2/15]!
+  ERROR: missing [3/15]!
+  ERROR: missing [4/15]!
+  ERROR: missing [5/15]!
+  ERROR: missing [6/15]!
+  ERROR: missing [7/15]!
+  ERROR: missing [8/15]!
+  ERROR: missing [9/15]!
+  ERROR: missing [10/15]!
+  [PATCH next v4 11/15] printk: kmsg_dumper: remove @active field
+  ✓ [PATCH next v4 12/15] printk: introduce a kmsg_dump iterator
+  ERROR: missing [13/15]!
+  [PATCH next v4 14/15] printk: kmsg_dump: remove _nolock() variants
+  ERROR: missing [15/15]!
+---
+Total patches: 3
+---
+WARNING: Thread incomplete!
+Cover: test/v4_20210303_john_ogness_printk_remove_logbuf_lock.cover
+ Link: https://lore.kernel.org/r/20210303101528.29901-1-john.ogness@linutronix.de
+ Base: not found
+       git am test/v4_20210303_john_ogness_printk_remove_logbuf_lock.mbx
+
+
+and I do not see it at lore. It has only found copies in linux-hyperv
+and linux-ppcdev mailing lists,
+see https://lore.kernel.org/lkml/20210303101528.29901-2-john.ogness@linutronix.de/
+
+Best Regards,
+Petr
