@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CD932BCFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D5832BCFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244925AbhCCPMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:12:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54078 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241090AbhCCK0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:26:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614767159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=62KK1EtrPwDpveUviuINUmjHcRrckD3Hrdf208FRBvY=;
-        b=NpZLN3MbUIPglvtn76MoeqxABY4sIVponKFYMpU/RMBDzXGNDYLccQP9CFwhpmcBJ89XOq
-        KvpSufVHkZNN9Pz9Mqhi/pWxhQcVdDurgnHvg/EU3guj1mopTFoDy2mQmMZeJFW41deuYY
-        BX/DB2mg7p7e58bJINgTUW4V3+4aSnU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8308FAC54;
-        Wed,  3 Mar 2021 10:25:59 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 11:25:58 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
-Message-ID: <YD9kNphaSRPk83KJ@alley>
-References: <20210301174749.1269154-1-swboyd@chromium.org>
- <20210301174749.1269154-6-swboyd@chromium.org>
+        id S1347392AbhCCPOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:14:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241098AbhCCK1D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:27:03 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69710C061788;
+        Wed,  3 Mar 2021 02:26:21 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id w7so4696794wmb.5;
+        Wed, 03 Mar 2021 02:26:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ma2HB9E5H3KHA4WWM5KO4LEHsZhrnd0lev/W5XpOJBI=;
+        b=uFnkDTh4CHyxgbYj+CNPtDrs37vUhVntKwvYUFMhdcKqtVQE/BpC2zgHu7Wc1kb8JB
+         fZWhXFn/O5I2IXikx3emJFdGhDai7DcsXEUUTm9j2UcbI4vQbu9cw2fGw+WRD68/YzgE
+         9vujTiDiZboJpoSUC6Jg+lX4dfu588KtqRpuQiZXy5HFKKFtMq6yF6nePomQaptv/a0t
+         4YHNVtxea0x/Dbo2c6zd2mxhP+WMaZwxwHR6NIRloYKRsRP+yv9mqtJZkKD2XunN8sjb
+         /IQ0pgVnpgdRwikZdEHTVIBk7pXvtIKXvubT1UxxJWnxL3C+1vYP5o6H854S8JOSyqWw
+         jJuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ma2HB9E5H3KHA4WWM5KO4LEHsZhrnd0lev/W5XpOJBI=;
+        b=dh61gXBLYPJxoS7smEvOIvLpGei7PV7uc0HhcCDHKn0egcBygRDk2JmtM2Z/1UoVRd
+         aUCadkH1ryEzxST6Q9KKVgsE6U98+FlEQxhSH3sjzs1C2XcwhxLVQ5HNBrQ1vFJmu+eU
+         QZ/BeJPzxW7szAFIs5yyQTB4VIS9zd0jp7as5u6zM++uzRykl4zBcyoZklL0O7Ws+9bd
+         pJ8xFF8rJg/K7Ec/trL4XrWvMTiXq4Q8DnSEzsXL0WpsRpUrixgg0KVRgA0LLqgSn2Z5
+         XNu2H12oQlcJnArr5nll8LIEEk7Jy6B4gmI1KyECMZ8t64T4aQKlOsGr3fazvGcPwMD+
+         3PwA==
+X-Gm-Message-State: AOAM533fIatjLsL5L1FtdM4M5S5MEI69qLHA8bUNM11b8Et6Vqw6+Dgr
+        8If6FF1POPCOyXwmaS4WAgE=
+X-Google-Smtp-Source: ABdhPJx+rDKlvtD8GjAb5KlxMsjjGMJvdU+p1wNENYYD1nqVCOJ8h4m65/Cl8Z7OukL5+KDszgQc/Q==
+X-Received: by 2002:a05:600c:1550:: with SMTP id f16mr4464261wmg.97.1614767180168;
+        Wed, 03 Mar 2021 02:26:20 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f1f:bb00:75b1:c098:325a:ae1? (p200300ea8f1fbb0075b1c098325a0ae1.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:75b1:c098:325a:ae1])
+        by smtp.googlemail.com with ESMTPSA id i8sm20158999wrx.43.2021.03.03.02.26.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 02:26:19 -0800 (PST)
+Subject: Re: next-20210302 - build issue with linux-firmware and rtl_nic/
+ firmware.
+To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <199898.1614751762@turing-police>
+ <02b966f5-a056-b799-dd6d-c5dc762d42f3@gmail.com>
+ <205633.1614757174@turing-police>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <c0a272c2-1e7d-022a-88b6-29fca298e7d7@gmail.com>
+Date:   Wed, 3 Mar 2021 11:26:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301174749.1269154-6-swboyd@chromium.org>
+In-Reply-To: <205633.1614757174@turing-police>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-03-01 09:47:47, Stephen Boyd wrote:
-> The %pS printk format (among some others) is used to print kernel
-> addresses symbolically. When the kernel prints an address inside of a
-> module, the kernel prints the addresses' symbol name along with the
-> module's name that contains the address. Let's make kernel stacktraces
-> easier to identify on KALLSYMS builds by including the build ID of a
-> module when we print the address.
+On 03.03.2021 08:39, Valdis Klētnieks wrote:
+> On Wed, 03 Mar 2021 07:51:06 +0100, Heiner Kallweit said:
+>>> # Firmware loader
+>>> CONFIG_EXTRA_FIRMWARE="rtl_nic/rtl8106e-1.fw"
+>>> CONFIG_EXTRA_FIRMWARE_DIR="/lib/firmware"
+>>>
+>> This is wrong, simply remove it.
 > 
-> This is especially helpful for crash debugging with pstore or crashdump
-> kernels. If we have the build ID for the module in the stacktrace we can
-> request the debug symbols for the module from a remote debuginfod server
+>>> But then I take a closer look at  drivers/net/ethernet/realtek/r8169_main.c
+>>> #define FIRMWARE_8168D_1	"rtl_nic/rtl8168d-1.fw"
+>>> #define FIRMWARE_8168D_2	"rtl_nic/rtl8168d-2.fw"
+>>> #define FIRMWARE_8168E_1	"rtl_nic/rtl8168e-1.fw"
+> 
+> Yes, but then how are *these* filenames supposed to work? Is a userspace helper
+> supposed to be smart enough to append the .xz, and the EXTRA_FIRMWARE variant
+> for embedding out-of-tree firmware has to point at an uncompressed version? 
+> 
+There is no such thing as compressed firmware files, see here:
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/rtl_nic
 
-I have read the thread so for. IMHO, all mentioned variants complicate
-the logs a lot. Either the backtrace lines are hard to parse.
-Or the OOps/panic blocks gets too long when the ID is mentioned
-for every loaded module. IMHO, neither proposed solution
-is acceptable to be always used.
-
-First, I think that only I some developers would actually use
-this information. Many of them either know what module was
-used or they do not have an easy way to get the debugging
-information by the ID. So, it should be configurable
-at minimum.
-
-Second, I am not sure that it should be part of each OOps/panic blob.
-One solution would be to print the ID by the module loader when
-the module gets loaded. It would be mentioned earlier in the log
-then.
-
-Or we could make it available, for example, via /proc. It is a kind
-of information that might be gathered later on a rebooted system.
-SUSE has "supportconfig" command that allows to gather a lot
-of similar information about the system. We use it when
-analyzing crashdumps and kernel bugs in general.
-
-Anyway, I consider this a very detailed information that is not
-suitable for everyone. It should be availabe on request, like
-for example, backtraces from all CPUs, list of tasks, memory info.
-
-Alternative solution would be to minimize the information, for
-example, by printing only the modules that appear in the backtrace.
-But this might be complicated to implement.
-
-Best Regards,
-Petr
+Your issue may be distro-specific, so you should check in a support forum of
+your respective distro.
