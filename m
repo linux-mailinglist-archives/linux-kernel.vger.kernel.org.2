@@ -2,215 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F414032C0AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB79C32C08A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237924AbhCCSXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:23:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346279AbhCCQ0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:26:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB23664ED7;
-        Wed,  3 Mar 2021 16:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614788628;
-        bh=xidrDhecGP6CNp1WbvEb+2by3BdO1w+m3Yqw9X4ZQKU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tNtqLs272LmTWPImnmDa7KBFiBC4TQdgRv5ieOdhPBuHU24cUpJwgDIVa9ImRcXt3
-         +D2Xxn5mu/dwiyPTikLZ5WG4U7s65gMHWJykrawzmFFidQhAKbnweVAqzciIBa39AD
-         bYPlnC3hRVLouSLXMvsRBKwz0Iy7A/ijcH2oe23eJvFvszDee+tjwhIi2+bKWMlQzU
-         YOHSBPEQ8gSb/pzaj9f9YN3GFKIay3FczR7H8ummNW0+C1JuKXErey1KetJ+dkH9cX
-         kE+eqSxeOTl8oCNXuoIFCC7JHT245VfX3hHSy/RQvhEbT9h6U1em9Nr+1+X3euExO5
-         DuFp/dFKedl7g==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH v18 7/9] PM: hibernate: disable when there are active secretmem users
-Date:   Wed,  3 Mar 2021 18:22:07 +0200
-Message-Id: <20210303162209.8609-8-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210303162209.8609-1-rppt@kernel.org>
-References: <20210303162209.8609-1-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1578841AbhCCSSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241597AbhCCQZ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:25:26 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A49C06175F;
+        Wed,  3 Mar 2021 08:23:23 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id m1so6900850wml.2;
+        Wed, 03 Mar 2021 08:23:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=0rnULfJA+dYkhzmaotW5cjGQwlA6v+gAKaZV3ZR+x3k=;
+        b=cgxPBvWJIqEXf2Us8oeryoY9S0BtbIfK0ujDM0ov1KuQ2B7smEuDfeKA1vmqEgXuaI
+         l7a9bfW+mAY1ldg+9vN4QmZDDHaKT9pWprGPANBmotUkfSlTtIg7doQ8dC1sjNrRcZMI
+         Dt0esyI5GZucPenCoZszXf8KOWoaGgzIDtY0k5rdfjYuoqDXaPfC4PkVbxorqxQ6c/7X
+         VGgmRVDUiYSD4JmdX692zI3auwtH1uwDl3wVLUaQoY74OEp1awbHUr+rIwZO0A5YScek
+         s9lvE7Y8ihcQb/nVLQohNGwVjOKVTKqkw5cI6Aqip8YGnIqjawRucNtUnbtgT8RiVQCh
+         wtDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=0rnULfJA+dYkhzmaotW5cjGQwlA6v+gAKaZV3ZR+x3k=;
+        b=cVs8gPu1+zqugHt+lY7s6wP++MInv3IzPIx+o/bHHR/Y0S1nxNB6Qi2vNO4F/7Ug6X
+         ZMcJJhWUmjqq40eRmrA/MheJSpgYZDHAymq7qtr3uldS0mtMCvVhMM+IMNCLCV34teV5
+         fRiIXFPtOmjAJ1lRkHhA8bjsb7lRmBRWjj5jim3Em3O6TVak09uIsfRdT7WbuD+D4NWC
+         0mjzgE81E+Fngf/c8Q8i8apmBOchBUraFtz+4O0iQwYkaQ9gnTNoYeajAGgeA35ZoiCE
+         JLJVlW4BXvmpiVbB6PXpU/fk44ogq0hQxebuZljwwsRZrOB/Iu8pAAj5gN+NQREdaSFx
+         nU7w==
+X-Gm-Message-State: AOAM530D6lrYXPR54zZWTGx5IkEGmHb49UmFCk1UYzpFMLJGPC8Hx1iU
+        fRfTlTXhOHNURrye80RSYGM=
+X-Google-Smtp-Source: ABdhPJwyElgMdoeajhuX8+SusPE3j4+qg9nI1cOEAOZrhiOnZthD6B5B8i2EjrA0QvPHChek6gos9A==
+X-Received: by 2002:a1c:7312:: with SMTP id d18mr9689530wmb.155.1614788602097;
+        Wed, 03 Mar 2021 08:23:22 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id n6sm8575079wmd.27.2021.03.03.08.23.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 08:23:21 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v3 00/14] pinctrl: add BCM63XX pincontrol support
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <CACRpkdbi77SBsssMOnx43fP9RgqnzkUUw=TXaE2_LDexpE2WEg@mail.gmail.com>
+Date:   Wed, 3 Mar 2021 17:23:20 +0100
+Cc:     Rob Herring <robh+dt@kernel.org>, Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D875EBA4-F881-4F1E-A251-78CEF8E6A40B@gmail.com>
+References: <20210303142310.6371-1-noltari@gmail.com>
+ <CACRpkdbi77SBsssMOnx43fP9RgqnzkUUw=TXaE2_LDexpE2WEg@mail.gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi Linus,
 
-It is unsafe to allow saving of secretmem areas to the hibernation
-snapshot as they would be visible after the resume and this essentially
-will defeat the purpose of secret memory mappings.
+> El 3 mar 2021, a las 16:29, Linus Walleij <linus.walleij@linaro.org> =
+escribi=C3=B3:
+>=20
+> On Wed, Mar 3, 2021 at 3:23 PM =C3=81lvaro Fern=C3=A1ndez Rojas =
+<noltari@gmail.com> wrote:
+>=20
+>> v3: introduce new files for shared code and add more changes =
+suggested by
+>> Linus Walleij. Also add a new patch needed for properly parsing =
+gpio-ranges.
+>=20
+> This looks very appetizing, I am ready to merge this once we cut some
+> slack for DT review (a week or two).
+>=20
+> I'd like to merge it soon so you can start working on the IRQ add-on.
+>=20
+> I'd probably drop the IRQ-related selects from Kconfig
+> when applying though (no big deal, no need to resend over that).
 
-Prevent hibernation whenever there are active secret memory users.
+About that, it seems that GPIO_REGMAP should select GPIOLIB_IRQCHIP, =
+since I couldn=E2=80=99t build the kernel due to the following error =
+when I removed the IRQ-related selects:
+  LD      vmlinux.o
+  MODPOST vmlinux.symvers
+  MODINFO modules.builtin.modinfo
+  GEN     modules.builtin
+  LD      .tmp_vmlinux.kallsyms1
+mips-linux-gnu-ld: drivers/gpio/gpio-regmap.o: in function =
+`gpio_regmap_register':
+gpio-regmap.c:(.text+0x704): undefined reference to =
+`gpiochip_irqchip_add_domain'
+make: *** [Makefile:1197: vmlinux] Error 1
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christopher Lameter <cl@linux.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Elena Reshetova <elena.reshetova@intel.com>
-Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James Bottomley <jejb@linux.ibm.com>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tycho Andersen <tycho@tycho.ws>
-Cc: Will Deacon <will@kernel.org>
----
- include/linux/secretmem.h |  6 ++++++
- kernel/power/hibernate.c  |  5 ++++-
- mm/secretmem.c            | 15 +++++++++++++++
- 3 files changed, 25 insertions(+), 1 deletion(-)
+Or maybe we could guard these lines of gpio-regmap.c with #ifdef =
+GPIOLIB_IRQCHIP:
+=
+https://github.com/torvalds/linux/blob/f69d02e37a85645aa90d18cacfff36dba37=
+0f797/drivers/gpio/gpio-regmap.c#L282-L286
 
-diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
-index 70e7db9f94fe..907a6734059c 100644
---- a/include/linux/secretmem.h
-+++ b/include/linux/secretmem.h
-@@ -6,6 +6,7 @@
- 
- bool vma_is_secretmem(struct vm_area_struct *vma);
- bool page_is_secretmem(struct page *page);
-+bool secretmem_active(void);
- 
- #else
- 
-@@ -19,6 +20,11 @@ static inline bool page_is_secretmem(struct page *page)
- 	return false;
- }
- 
-+static inline bool secretmem_active(void)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_SECRETMEM */
- 
- #endif /* _LINUX_SECRETMEM_H */
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index da0b41914177..559acef3fddb 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -31,6 +31,7 @@
- #include <linux/genhd.h>
- #include <linux/ktime.h>
- #include <linux/security.h>
-+#include <linux/secretmem.h>
- #include <trace/events/power.h>
- 
- #include "power.h"
-@@ -81,7 +82,9 @@ void hibernate_release(void)
- 
- bool hibernation_available(void)
- {
--	return nohibernate == 0 && !security_locked_down(LOCKDOWN_HIBERNATION);
-+	return nohibernate == 0 &&
-+		!security_locked_down(LOCKDOWN_HIBERNATION) &&
-+		!secretmem_active();
- }
- 
- /**
-diff --git a/mm/secretmem.c b/mm/secretmem.c
-index fa6738e860c2..f2ae3f32a193 100644
---- a/mm/secretmem.c
-+++ b/mm/secretmem.c
-@@ -40,6 +40,13 @@ module_param_named(enable, secretmem_enable, bool, 0400);
- MODULE_PARM_DESC(secretmem_enable,
- 		 "Enable secretmem and memfd_secret(2) system call");
- 
-+static atomic_t secretmem_users;
-+
-+bool secretmem_active(void)
-+{
-+	return !!atomic_read(&secretmem_users);
-+}
-+
- static vm_fault_t secretmem_fault(struct vm_fault *vmf)
- {
- 	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-@@ -94,6 +101,12 @@ static const struct vm_operations_struct secretmem_vm_ops = {
- 	.fault = secretmem_fault,
- };
- 
-+static int secretmem_release(struct inode *inode, struct file *file)
-+{
-+	atomic_dec(&secretmem_users);
-+	return 0;
-+}
-+
- static int secretmem_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	unsigned long len = vma->vm_end - vma->vm_start;
-@@ -116,6 +129,7 @@ bool vma_is_secretmem(struct vm_area_struct *vma)
- }
- 
- static const struct file_operations secretmem_fops = {
-+	.release	= secretmem_release,
- 	.mmap		= secretmem_mmap,
- };
- 
-@@ -212,6 +226,7 @@ SYSCALL_DEFINE1(memfd_secret, unsigned long, flags)
- 	file->f_flags |= O_LARGEFILE;
- 
- 	fd_install(fd, file);
-+	atomic_inc(&secretmem_users);
- 	return fd;
- 
- err_put_fd:
--- 
-2.28.0
+>=20
+> Yours,
+> Linus Walleij
 
+Best regards,
+=C3=81lvaro.=
