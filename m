@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ACA32C384
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A76B32C38B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354108AbhCDAHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:07:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45856 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1389804AbhCCVrP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 16:47:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614807945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/LUNLY/w0+Bzk+kXfX0uauiVFlX2RwNcK9iVLBJ9IPA=;
-        b=dg5zI/zy3aUNkARrmQIj+ylWwpGy0D7Qie0G2oseLUZHDEZbqUtIDbx5NAYLR5RQv3drkC
-        3/uTYgnrPx+VkNAM8yrNy//s5H/2Boi2d3I3b8QriJ0/j4n+ieCVbneU2Zs9As4mauvuZ4
-        PBwYgrFtYmfK9GmC2WPtus5QPBJLN+E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-xR35m5hIMDWHSE7CU3j2Fg-1; Wed, 03 Mar 2021 16:45:42 -0500
-X-MC-Unique: xR35m5hIMDWHSE7CU3j2Fg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1357409AbhCDAHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:07:50 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:39843 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1389846AbhCCVsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 16:48:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614808057; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=oHL2QLuF0yTmY0Us4bq25wLVQqk2jf6gVgZs2Pe951s=; b=wlCEVhPAIcYwebmkIxkV/IigL/GCidYGpEmhShei5ZfYpZxFb5ooHUi+rHUlLnnsAEYriyIj
+ VLNNh0Z1bZLBIsKFTN+Ka2JLNa5pCQ0NvOsc+BxFmqHyX9YELP8coqKnlOfiWFCiM0xaPh0j
+ sRtK0R0D+WF3fUsCnWl/H6zd2+s=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 604003df7b648e24363cfac4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 21:47:11
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AED14C433C6; Wed,  3 Mar 2021 21:47:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C6CB1E561;
-        Wed,  3 Mar 2021 21:45:40 +0000 (UTC)
-Received: from treble (ovpn-114-218.rdu2.redhat.com [10.10.114.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 75A435D741;
-        Wed,  3 Mar 2021 21:45:37 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 15:45:34 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210303214534.guyoxcwrgxgcqzy4@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210302232649.y2tutffhxsblwqlb@treble>
- <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
- <20210303191516.6ksxmng4pis7ue4p@treble>
- <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
- <20210303193806.oovupl4ubtkkyiih@treble>
- <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
- <20210303202406.bxgdx5a25j6wc43b@treble>
- <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AB3FBC433CA;
+        Wed,  3 Mar 2021 21:47:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AB3FBC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Raghavendra Rao Ananta <rananta@codeaurora.org>,
+        Siddharth Gupta <sidgup@codeaurora.org>
+Subject: [PATCH v2] remoteproc: sysfs: Use sysfs_emit instead of sprintf
+Date:   Wed,  3 Mar 2021 13:47:02 -0800
+Message-Id: <1614808022-26062-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 12:56:52PM -0800, Linus Torvalds wrote:
-> On Wed, Mar 3, 2021 at 12:24 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > Your nack is for a different reason: GCC plugins are second-class
-> > citizens.  Fair enough...
-> 
-> MNo, I didn't NAK it. Quite the reverser.
-> 
-> I am ABSOLUTELY against rebuilding normal object files just because
-> gcc versions change. A compiler version change makes zero difference
-> for any normal object file.
-> 
-> But the gcc plugins are different. They very much _are_ tied to a
-> particular gcc version.
-> 
-> Now, they are tied to a particular gcc version because they are
-> horribly badly done, and bad technology, and I went off on a bit of a
-> rant about just how bad they are, but the point is that gcc plugins
-> depend on the exact gcc version in ways that normal object files do
-> _not_.
+From: Raghavendra Rao Ananta <rananta@codeaurora.org>
 
-Thanks, reading comprehension is hard.  I realized after re-reading that
-I interpreted your "plugins should depend on the kernel version"
-statement too broadly.
+For security reasons sysfs_emit() is preferred over sprintf().
+Hence, convert the remoteproc's sysfs show functions accordingly.
 
-Masahiro, any idea how I can make the GCC version a build dependency?
+Signed-off-by: Raghavendra Rao Ananta <rananta@codeaurora.org>
+Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+---
+ drivers/remoteproc/remoteproc_sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+index 1dbef89..6840dad 100644
+--- a/drivers/remoteproc/remoteproc_sysfs.c
++++ b/drivers/remoteproc/remoteproc_sysfs.c
+@@ -15,7 +15,7 @@ static ssize_t recovery_show(struct device *dev,
+ {
+ 	struct rproc *rproc = to_rproc(dev);
+ 
+-	return sprintf(buf, "%s", rproc->recovery_disabled ? "disabled\n" : "enabled\n");
++	return sysfs_emit(buf, "%s", rproc->recovery_disabled ? "disabled\n" : "enabled\n");
+ }
+ 
+ /*
+@@ -82,7 +82,7 @@ static ssize_t coredump_show(struct device *dev,
+ {
+ 	struct rproc *rproc = to_rproc(dev);
+ 
+-	return sprintf(buf, "%s\n", rproc_coredump_str[rproc->dump_conf]);
++	return sysfs_emit(buf, "%s\n", rproc_coredump_str[rproc->dump_conf]);
+ }
+ 
+ /*
 -- 
-Josh
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
