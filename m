@@ -2,891 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B042B32C176
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A156732C189
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838681AbhCCTBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:01:23 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:37776 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243806AbhCCSkH (ORCPT
+        id S1386905AbhCCTMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:12:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1382986AbhCCSoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:40:07 -0500
-Received: by mail-il1-f200.google.com with SMTP id g3so18367744ild.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:39:47 -0800 (PST)
+        Wed, 3 Mar 2021 13:44:30 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7C5C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:43:49 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id e9so4928599pjj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:43:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gVzR7oLstl6ac4ZTkA4CIGL1WR32C+kvWFg+bT72InI=;
+        b=Kdp0z6TouC9vsp6Gaa4T0X4l/lsXsHfBSgHsbjgBgBPnZs72XvLOn3wMnlX2wWvV+U
+         zAMijtl3Db+skGKokSbjFctHPeDghD+JPckIzTRM+Fx2LFOFfIymQelQrxwLgZlOYD4j
+         YO2yBXWtCdBIUxFcBE1BbMM/MVUOP60rUwUdqaOe9MTiaIxQZBVKN3o3iJyV5pEm3h1U
+         pz+M9M2KJbAiQoZiDGGSSqkcchEre8O5f/3u2SuaFDxXZBbBV4J74E4O05bgZTa54tad
+         9oD8BVbYvPaWNc7HCsQkWiYbEST7gerlhWe9ONUT1GMXJcWy7IjXVQfVNn3IHTPjp0rS
+         lpjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=twiBAGSXeQOsvCjesuCZeg8swb+act6s62X+SsOEbkg=;
-        b=Oq6r5YDlEtg73uZo7q7riPt0bQv71qHVwPQXm7jvsvIxQCbKwhkf96TS6EWP8T2zHa
-         uhdRlQUPckvCSfGbiBsTQ7QHvIpaBGIupY9GDLSRt9Phl7Qd1Ri1sMOhtRjPdF6Qj4+b
-         Pph+u5kdlCbp2VuH66ygxum+LTtZZPQoMSR17uRX981cFxAQ3uTLROW6pqZqeakeJ73S
-         pUmrcloHVU4f7BkWQegD0ljidz5BmPjmaemhjaFiZ3ISLEeIaDnQL8/3ZhUWHbjI3cl+
-         WSV9GpYHdTjMFTMrYABzNzp4BeWvhYfwea0zaRYKSb3hYFtf7p5FKt/CILkNUMqwrxFs
-         XWjw==
-X-Gm-Message-State: AOAM530EMbg03hThBfl1/bc3nMav6stTzYBtmGQWgx9AzbV6tHrss9TQ
-        rhhB+1sbTO4NH22JoieEloIftrgf2hWQDt/tVMiBxjqk5aXN
-X-Google-Smtp-Source: ABdhPJzN+UGe0UNaMPg9sxOGawtltlw4Xn2xlz4uns/sntD9AXsFZZVVtEWQpBondkRogM8IwJkbbY07XwQUI9jC9dtPST844Tti
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gVzR7oLstl6ac4ZTkA4CIGL1WR32C+kvWFg+bT72InI=;
+        b=EgBvgfE5z6WbA1JOGDRgJgpnJRzdZb5AGBt77iN0mXGCToCGt2Pmxcm24dins+5BTv
+         VIZ3EcEjlz6ftricamdXRn5R6y9jBmFH0OF0iyT5dubMqW/qBmfcyj3t6rKWsXxKILQ3
+         I8rsQ0rtwzNReX76iEXcRWoX4QQrF4oCK+jlpCO1YM9bJwquJcojKVgE7Dhka05HU5Ii
+         qByauhEbgdcAYUs7s8UMSa9mf7jSdRuBk6Hn3hVBfdVBmGW21KA6vhAr+6a2O8un87PY
+         +BZYeQCq0PgqyO99cWrVwY9ITCVWYrZJgP/3SvrnF7JxTZbJmivHzgKa7sSULRWJnf+2
+         C7dg==
+X-Gm-Message-State: AOAM533SEs8Rz8Jh/Y0v+IcQ4stwzvQ910r0mJuKd5625c6R+xaBLhm2
+        gvuB4h3dQucdzwpdDKZXAcLaxg==
+X-Google-Smtp-Source: ABdhPJyaZX7NAFW2wCjv1k35xfC/hJogQ35MtOZEOH1TxdzZzw44BBaFYPLSKZlYUZq4CWNEHQPUwQ==
+X-Received: by 2002:a17:90a:4882:: with SMTP id b2mr474911pjh.69.1614797028306;
+        Wed, 03 Mar 2021 10:43:48 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id v126sm23944372pfv.163.2021.03.03.10.43.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 10:43:47 -0800 (PST)
+Date:   Wed, 3 Mar 2021 11:43:45 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v5 11/16] rpmsg: virtio: register the rpmsg_ctrl device
+Message-ID: <20210303184345.GD3817330@xps15>
+References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
+ <20210219111501.14261-12-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b27:: with SMTP id e7mr556205ilu.253.1614796761667;
- Wed, 03 Mar 2021 10:39:21 -0800 (PST)
-Date:   Wed, 03 Mar 2021 10:39:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005d1fe305bca62b07@google.com>
-Subject: memory leak in io_submit_sqes (2)
-From:   syzbot <syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219111501.14261-12-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Feb 19, 2021 at 12:14:56PM +0100, Arnaud Pouliquen wrote:
+> Instantiate the rpmsg_ioctl device on virtio RPMsg bus creation.
 
-syzbot found the following issue on:
+s/rpmsg_ioctl/rpmsg_ctrl
 
-HEAD commit:    7a7fd0de Merge branch 'kmap-conversion-for-5.12' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=152ae9cad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c66ab79a61c783f3
-dashboard link: https://syzkaller.appspot.com/bug?extid=91b4b56ead187d35c9d3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148cf242d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172bb6dad00000
+Now I understand what you meant in patch 05.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com
+> This provides the possibility to expose the RPMSG_CREATE_EPT_IOCTL
+> to create RPMsg chdev endpoints.
 
-executing program
-executing program
-executing program
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 19.500s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+You mean RPMSG device endpoints, i.e rpmsg_eptdev?  If so I think it should be
+added to the changelog.  Otherwiser someone could be tempted to look for "chdev"
+and find anything but a rpmsg_eptdev.
 
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 19.500s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> 
+> ---
+> V5:
+> Fix compilation issue
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 57 +++++++++++++++++++++++++++++---
+>  1 file changed, 52 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index e87d4cf926eb..2e6b34084012 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -813,14 +813,52 @@ static void rpmsg_xmit_done(struct virtqueue *svq)
+>  	wake_up_interruptible(&vrp->sendq);
+>  }
+>  
+> +static struct rpmsg_device *rpmsg_virtio_add_ctrl_dev(struct virtio_device *vdev)
+> +{
+> +	struct virtproc_info *vrp = vdev->priv;
+> +	struct virtio_rpmsg_channel *vch;
+> +	struct rpmsg_device *rpdev_ctrl;
+> +	int err = 0;
+> +
+> +	vch = kzalloc(sizeof(*vch), GFP_KERNEL);
+> +	if (!vch)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	/* Link the channel to the vrp */
+> +	vch->vrp = vrp;
+> +
+> +	/* Assign public information to the rpmsg_device */
+> +	rpdev_ctrl = &vch->rpdev;
+> +	rpdev_ctrl->ops = &virtio_rpmsg_ops;
+> +
+> +	rpdev_ctrl->dev.parent = &vrp->vdev->dev;
+> +	rpdev_ctrl->dev.release = virtio_rpmsg_release_device;
+> +	rpdev_ctrl->little_endian = virtio_is_little_endian(vrp->vdev);
+> +
+> +	err = rpmsg_ctrl_register_device(rpdev_ctrl);
+> +	if (err) {
+> +		kfree(vch);
+> +		return ERR_PTR(err);
+> +	}
+> +
+> +	return rpdev_ctrl;
+> +}
+> +
+> +static void rpmsg_virtio_del_ctrl_dev(struct rpmsg_device *rpdev_ctrl)
+> +{
+> +	if (!rpdev_ctrl)
+> +		return;
+> +	kfree(to_virtio_rpmsg_channel(rpdev_ctrl));
+> +}
+> +
+>  static int rpmsg_probe(struct virtio_device *vdev)
+>  {
+>  	vq_callback_t *vq_cbs[] = { rpmsg_recv_done, rpmsg_xmit_done };
+>  	static const char * const names[] = { "input", "output" };
+>  	struct virtqueue *vqs[2];
+>  	struct virtproc_info *vrp;
+> -	struct virtio_rpmsg_channel *vch;
+> -	struct rpmsg_device *rpdev_ns;
+> +	struct virtio_rpmsg_channel *vch = NULL;
+> +	struct rpmsg_device *rpdev_ns = NULL, *rpdev_ctrl;
 
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 19.490s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+As far as I can tell @rpdev_ns doesn't have to be initialized.
 
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 19.490s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 19.490s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 19.490s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 20.620s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 20.620s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 20.610s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 20.610s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 20.610s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 20.610s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 21.750s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 21.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 21.740s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 21.740s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 21.740s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 21.740s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 22.860s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 22.860s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 22.850s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 22.850s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 22.850s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 22.850s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 23.970s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 23.970s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 23.960s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 23.960s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 23.960s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 23.960s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 25.110s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 25.110s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 25.100s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 25.100s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 25.100s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 25.100s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 26.240s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 26.240s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 26.230s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 26.230s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 26.230s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 26.230s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f335800 (size 232):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 27.390s)
-  hex dump (first 32 bytes):
-    00 62 7e 01 81 88 ff ff 00 00 00 00 00 00 00 00  .b~.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0300 (size 256):
-  comm "syz-executor079", pid 8386, jiffies 4294945178 (age 27.390s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888110916200 (size 232):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 27.380s)
-  hex dump (first 32 bytes):
-    00 fa b7 0f 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0200 (size 256):
-  comm "syz-executor079", pid 8398, jiffies 4294945179 (age 27.380s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8a2800 (size 232):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 27.380s)
-  hex dump (first 32 bytes):
-    00 5c 33 0f 81 88 ff ff 00 00 00 00 00 00 00 00  .\3.............
-    f0 98 5f 81 ff ff ff ff 00 00 00 00 00 00 00 00  .._.............
-  backtrace:
-    [<000000008b690cb4>] io_alloc_req fs/io_uring.c:1680 [inline]
-    [<000000008b690cb4>] io_submit_sqes+0x803/0x2340 fs/io_uring.c:6553
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810f8c0100 (size 256):
-  comm "syz-executor079", pid 8404, jiffies 4294945179 (age 27.380s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e2e0a7ef>] kmalloc include/linux/slab.h:559 [inline]
-    [<00000000e2e0a7ef>] __io_alloc_async_data fs/io_uring.c:3104 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw fs/io_uring.c:3123 [inline]
-    [<00000000e2e0a7ef>] io_setup_async_rw+0xa3/0x1e0 fs/io_uring.c:3116
-    [<0000000066815854>] io_read+0x1fe/0x540 fs/io_uring.c:3299
-    [<00000000cfdf0aa9>] io_issue_sqe+0xb6/0x1c50 fs/io_uring.c:5957
-    [<00000000ae810f5a>] __io_queue_sqe+0x118/0x5c0 fs/io_uring.c:6226
-    [<000000001fd21177>] io_queue_sqe+0x2af/0x4d0 fs/io_uring.c:6282
-    [<00000000a078f546>] io_submit_sqe fs/io_uring.c:6452 [inline]
-    [<00000000a078f546>] io_submit_sqes+0x2016/0x2340 fs/io_uring.c:6566
-    [<000000007cfdba48>] __do_sys_io_uring_enter+0x86f/0x1110 fs/io_uring.c:9175
-    [<00000000d605a0db>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000005fafd51e>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>  	void *bufs_va;
+>  	int err = 0, i;
+>  	size_t total_buf_space;
+> @@ -894,12 +932,18 @@ static int rpmsg_probe(struct virtio_device *vdev)
+>  
+>  	vdev->priv = vrp;
+>  
+> +	rpdev_ctrl = rpmsg_virtio_add_ctrl_dev(vdev);
+> +	if (IS_ERR(rpdev_ctrl)) {
+> +		err = PTR_ERR(rpdev_ctrl);
+> +		goto free_coherent;
+> +	}
+> +
+>  	/* if supported by the remote processor, enable the name service */
+>  	if (virtio_has_feature(vdev, VIRTIO_RPMSG_F_NS)) {
+>  		vch = kzalloc(sizeof(*vch), GFP_KERNEL);
+>  		if (!vch) {
+>  			err = -ENOMEM;
+> -			goto free_coherent;
+> +			goto free_ctrldev;
+>  		}
+>  
+>  		/* Link the channel to our vrp */
+> @@ -915,7 +959,7 @@ static int rpmsg_probe(struct virtio_device *vdev)
+>  
+>  		err = rpmsg_ns_register_device(rpdev_ns);
+>  		if (err)
+> -			goto free_coherent;
+> +			goto free_vch;
+>  	}
+>  
+>  	/*
+> @@ -939,8 +983,11 @@ static int rpmsg_probe(struct virtio_device *vdev)
+>  
+>  	return 0;
+>  
+> -free_coherent:
+> +free_vch:
+>  	kfree(vch);
+> +free_ctrldev:
+> +	rpmsg_virtio_del_ctrl_dev(rpdev_ctrl);
+> +free_coherent:
+>  	dma_free_coherent(vdev->dev.parent, total_buf_space,
+>  			  bufs_va, vrp->bufs_dma);
+>  vqs_del:
+> -- 
+> 2.17.1
+> 
