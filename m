@@ -2,193 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4EC32BCE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FCF32BCE8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446219AbhCCPCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843060AbhCCKZJ (ORCPT
+        id S1447405AbhCCPDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:03:14 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:59581 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1843067AbhCCKZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:09 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA81C0610CE;
-        Wed,  3 Mar 2021 00:55:44 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id i9so4480787wml.0;
-        Wed, 03 Mar 2021 00:55:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zdJ5hx+mYbfNreiVWKd99KRYazRIfUe4brAtRfe/xF4=;
-        b=K+6wg9BUznm5a/+9b9QJ7i9CChtLVD4n5KpT38ZA7QuZ71i/zpE6c5PwKFC5vlJVh6
-         DhhowwzJ76bXSS0tQp4FXcUh1skR513TO5ktNOi0c03sUdRBG73n1d5THMiMZDsmN339
-         wRqGWi4Qi7zNv+UkUWrn5CskAi6Jl9sFYGf3Ygjt7vc9S4QLLZD+0NIPewtfRslu3qdJ
-         j74C1vM98bGMvHT1RfoU5NMfcNVz/NNzY4vZ8Rr5r9IQ/Yo6sOLTs60QygBWVb19pc1S
-         j7KcwVVdncAxdiPLaegbiS4FUQjOedYDq3IzUNFcUw7udfrRHkOQxBeJgtHp53hdwE4c
-         xGxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zdJ5hx+mYbfNreiVWKd99KRYazRIfUe4brAtRfe/xF4=;
-        b=HtumlKycCgRUz413V+rEfk7u1Nu0iW/jLB9dok6x4ET+cpihUOAVdzYggzQMUailXs
-         3JW3Hwy6R0WJu3CCxJbUlGeqTju95Ej7VpCGvN/LntodZjqYNF78wnS7yoWy7ca3E/ge
-         G2qzcImkwwKQRsWVvYRLnxkwvf0Mi8wdtOvQ1Uqi4j2rpVrqCM+iFfnTBjM26sYlwM8/
-         LxHigQamagS1iBpw8PQYEZfqAR8JRLgQs621I+RSpefyKE/LffHn0TCVAHRj69DmwT2O
-         LEPy4dXJesdBUmtw5ObalvP34mIPhGfXW7jQGQrWx1Sbl6OidbH7oNNgXXh8wC0Dlg2V
-         0EbQ==
-X-Gm-Message-State: AOAM533B3u0z1iL2p70QrPgGBRrqqkdb5pCwybEXAWcSESqJQySRkxwC
-        jUf6GC/CVYHe7YHJgsXzUortyFWhiGXWlxSs
-X-Google-Smtp-Source: ABdhPJzJvBnty9HzqVrRuMbMGPJYYS2k+vddEpLtCemcM5SBQTqtepuxSPjcO7s0q2vFbZGw/WguyA==
-X-Received: by 2002:a1c:8041:: with SMTP id b62mr8441707wmd.0.1614761742701;
-        Wed, 03 Mar 2021 00:55:42 -0800 (PST)
-Received: from sf (tunnel547699-pt.tunnel.tserv1.lon2.ipv6.he.net. [2001:470:1f1c:3e6::2])
-        by smtp.gmail.com with ESMTPSA id n6sm11688949wrt.1.2021.03.03.00.55.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 00:55:42 -0800 (PST)
-Date:   Wed, 3 Mar 2021 08:55:33 +0000
-From:   Sergei Trofimovich <slyich@gmail.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Don Brace <don.brace@microchip.com>, storagedev@microchip.com,
-        linux-scsi@vger.kernel.org
-Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joe Szczypek <jszczype@redhat.com>,
-        Scott Benesh <scott.benesh@microchip.com>,
-        Scott Teel <scott.teel@microchip.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
- cmds outstanding for retried cmds" breaks hpsa P600
-Message-ID: <20210303085533.505b1590@sf>
-In-Reply-To: <20210303002236.2f4ec01f@sf>
-References: <20210222230519.73f3e239@sf>
-        <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
-        <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
-        <20210223083507.43b5a6dd@sf>
-        <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
-        <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
-        <20210223192743.0198d4a9@sf>
-        <20210302222630.5056f243@sf>
-        <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
-        <20210303002236.2f4ec01f@sf>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 3 Mar 2021 05:25:14 -0500
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id CFAAF3A91CD
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 08:56:11 +0000 (UTC)
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id DA873FF805;
+        Wed,  3 Mar 2021 08:55:45 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 09:55:45 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v7 2/3] reset: mchp: sparx5: add switch reset driver
+Message-ID: <YD9PEaC4qsahQpcZ@piout.net>
+References: <20210303081158.684532-1-steen.hegelund@microchip.com>
+ <20210303081158.684532-3-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303081158.684532-3-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 00:22:36 +0000
-Sergei Trofimovich <slyich@gmail.com> wrote:
+On 03/03/2021 09:11:57+0100, Steen Hegelund wrote:
+> The Sparx5 Switch SoC has a number of components that can be reset
+> indiviually, but at least the Switch Core needs to be in a well defined
+> state at power on, when any of the Sparx5 drivers starts to access the
+> Switch Core, this reset driver is available.
+> 
+> The reset driver is loaded early via the postcore_initcall interface, and
+> will then be available for the other Sparx5 drivers (SGPIO, SwitchDev etc)
+> that are loaded next, and the first of them to be loaded can perform the
+> one-time Switch Core reset that is needed.
+> 
+> The driver has protection so that the system busses, DDR controller, PCI-E
+> and ARM A53 CPU and a few other subsystems are not touched by the reset.
+> 
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-> On Tue, 2 Mar 2021 23:31:32 +0100
-> John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
+> ---
+>  drivers/reset/Kconfig                  |   8 ++
+>  drivers/reset/Makefile                 |   1 +
+>  drivers/reset/reset-microchip-sparx5.c | 146 +++++++++++++++++++++++++
+>  3 files changed, 155 insertions(+)
+>  create mode 100644 drivers/reset/reset-microchip-sparx5.c
 > 
-> > Hi Sergei!
-> > 
-> > On 3/2/21 11:26 PM, Sergei Trofimovich wrote:  
-> > > Gave v5.12-rc1 a try today and got a similar boot failure around
-> > > hpsa queue initialization, but my failure is later:
-> > >     https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
-> > > Maybe I get different error because I flipped on most debugging
-> > > kernel options :)
-> > > 
-> > > Looks like 'ERROR: Invalid distance value range' while being
-> > > very scary are harmless. It's just a new spammy way for kernel
-> > > to report lack of NUMA config on the machine (no SRAT and SLIT
-> > > ACPI tables).
-> > > 
-> > > At least I get hpsa detected on PCI bus. But I guess it's discovered
-> > > configuration is very wrong as I get unaligned accesses:
-> > >     [   19.811570] kernel unaligned access to 0xe000000105dd8295, ip=0xa000000100b874d1
-> > > 
-> > > Bisecting now.    
-> > 
-> > Sounds good. I guess we should get Jens' fix for the signal regression
-> > merged as well as your two fixes for strace.  
+> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+> index 4171c6f76385..c26798092ccf 100644
+> --- a/drivers/reset/Kconfig
+> +++ b/drivers/reset/Kconfig
+> @@ -111,6 +111,14 @@ config RESET_LPC18XX
+>  	help
+>  	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
+>  
+> +config RESET_MCHP_SPARX5
+> +	bool "Microchip Sparx5 reset driver"
+> +	depends on HAS_IOMEM || COMPILE_TEST
+> +	default y if SPARX5_SWITCH
+> +	select MFD_SYSCON
+> +	help
+> +	  This driver supports switch core reset for the Microchip Sparx5 SoC.
+> +
+>  config RESET_MESON
+>  	tristate "Meson Reset Driver"
+>  	depends on ARCH_MESON || COMPILE_TEST
+> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+> index 65a118a91b27..c1d6aa9b1b52 100644
+> --- a/drivers/reset/Makefile
+> +++ b/drivers/reset/Makefile
+> @@ -16,6 +16,7 @@ obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
+>  obj-$(CONFIG_RESET_K210) += reset-k210.o
+>  obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
+>  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
+> +obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
+>  obj-$(CONFIG_RESET_MESON) += reset-meson.o
+>  obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
+>  obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
+> diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset-microchip-sparx5.c
+> new file mode 100644
+> index 000000000000..cff39a643a14
+> --- /dev/null
+> +++ b/drivers/reset/reset-microchip-sparx5.c
+> @@ -0,0 +1,146 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/* Microchip Sparx5 Switch Reset driver
+> + *
+> + * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
+> + *
+> + * The Sparx5 Chip Register Model can be browsed at this location:
+> + * https://github.com/microchip-ung/sparx-5_reginfo
+> + */
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/of_device.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset-controller.h>
+> +
+> +#define PROTECT_REG    0x84
+> +#define PROTECT_BIT    BIT(10)
+> +#define SOFT_RESET_REG 0x00
+> +#define SOFT_RESET_BIT BIT(1)
+> +
+> +struct mchp_reset_context {
+> +	struct regmap *cpu_ctrl;
+> +	struct regmap *gcb_ctrl;
+> +	struct reset_controller_dev rcdev;
+> +};
+> +
+> +static struct regmap_config sparx5_reset_regmap_config = {
+> +	.reg_bits	= 32,
+> +	.val_bits	= 32,
+> +	.reg_stride	= 4,
+> +};
+> +
+> +static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
+> +			       unsigned long id)
+> +{
+> +	struct mchp_reset_context *ctx =
+> +		container_of(rcdev, struct mchp_reset_context, rcdev);
+> +	u32 val;
+> +
+> +	/* Make sure the core is PROTECTED from reset */
+> +	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
+> +
+> +	/* Start soft reset */
+> +	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
+> +
+> +	/* Wait for soft reset done */
+> +	return regmap_read_poll_timeout(ctx->gcb_ctrl, SOFT_RESET_REG, val,
+> +					(val & SOFT_RESET_BIT) == 0,
+> +					1, 100);
+> +}
+> +
+> +static const struct reset_control_ops sparx5_reset_ops = {
+> +	.reset = sparx5_switch_reset,
+> +};
+> +
+> +static int mchp_sparx5_map_syscon(struct platform_device *pdev, char *name,
+> +				  struct regmap **target)
+> +{
+> +	struct device_node *syscon_np;
+> +	struct regmap *regmap;
+> +	int err;
+> +
+> +	syscon_np = of_parse_phandle(pdev->dev.of_node, name, 0);
+> +	if (!syscon_np)
+> +		return -ENODEV;
+> +	regmap = syscon_node_to_regmap(syscon_np);
+> +	of_node_put(syscon_np);
+> +	if (IS_ERR(regmap)) {
+> +		err = PTR_ERR(regmap);
+> +		dev_err(&pdev->dev, "No '%s' map: %d\n", name, err);
+> +		return err;
+> +	}
+> +	*target = regmap;
+> +	return 0;
+> +}
+> +
+> +static int mchp_sparx5_map_io(struct platform_device *pdev, int index,
+> +			      struct regmap **target)
+> +{
+> +	struct resource *res;
+> +	struct regmap *map;
+> +	void __iomem *mem;
+> +
+> +	mem = devm_platform_get_and_ioremap_resource(pdev, index, &res);
+> +	if (!mem) {
+> +		dev_err(&pdev->dev, "Could not map resource %d\n", index);
+> +		return -ENXIO;
+> +	}
+> +	sparx5_reset_regmap_config.name = res->name;
+> +	map = devm_regmap_init_mmio(&pdev->dev, mem, &sparx5_reset_regmap_config);
+> +	if (IS_ERR(map))
+> +		return PTR_ERR(map);
+> +	*target = map;
+> +	return 0;
+> +}
+> +
+> +static int mchp_sparx5_reset_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *dn = pdev->dev.of_node;
+> +	struct mchp_reset_context *ctx;
+> +	int err;
+> +
+> +	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +
+> +	err = mchp_sparx5_map_syscon(pdev, "cpu-syscon", &ctx->cpu_ctrl);
+> +	if (err)
+> +		return err;
+> +	err = mchp_sparx5_map_io(pdev, 0, &ctx->gcb_ctrl);
+> +	if (err)
+> +		return err;
+> +
+> +	ctx->rcdev.owner = THIS_MODULE;
+> +	ctx->rcdev.nr_resets = 1;
+> +	ctx->rcdev.ops = &sparx5_reset_ops;
+> +	ctx->rcdev.of_node = dn;
+> +
+> +	return devm_reset_controller_register(&pdev->dev, &ctx->rcdev);
+> +}
+> +
+> +static const struct of_device_id mchp_sparx5_reset_of_match[] = {
+> +	{
+> +		.compatible = "microchip,sparx5-switch-reset",
+> +	},
+> +	{ }
+> +};
+> +
+> +static struct platform_driver mchp_sparx5_reset_driver = {
+> +	.probe = mchp_sparx5_reset_probe,
+> +	.driver = {
+> +		.name = "sparx5-switch-reset",
+> +		.of_match_table = mchp_sparx5_reset_of_match,
+> +	},
+> +};
+> +
+> +static int __init mchp_sparx5_reset_init(void)
+> +{
+> +	return platform_driver_register(&mchp_sparx5_reset_driver);
+> +}
+> +
+> +postcore_initcall(mchp_sparx5_reset_init);
+> +
+> +MODULE_DESCRIPTION("Microchip Sparx5 switch reset driver");
+> +MODULE_AUTHOR("Steen Hegelund <steen.hegelund@microchip.com>");
+> +MODULE_LICENSE("Dual MIT/GPL");
+> -- 
+> 2.30.1
 > 
-> "bisected" (cheated halfway through) and verified that reverting
-> f749d8b7a9896bc6e5ffe104cc64345037e0b152 makes rx3600 boot again.
-> 
-> CCing authors who might be able to help us here.
-> 
-> commit f749d8b7a9896bc6e5ffe104cc64345037e0b152
-> Author: Don Brace <don.brace@microchip.com>
-> Date:   Mon Feb 15 16:26:57 2021 -0600
-> 
->     scsi: hpsa: Correct dev cmds outstanding for retried cmds
-> 
->     Prevent incrementing device->commands_outstanding for ioaccel command
->     retries that are driver initiated.  If the command goes through the retry
->     path, the device->commands_outstanding counter has already accounted for
->     the number of commands outstanding to the device.  Only commands going
->     through function hpsa_cmd_resolve_events decrement this counter.
-> 
->      - ioaccel commands go to either HBA disks or to logical volumes comprised
->        of SSDs.
-> 
->     The extra increment is causing device resets to hang.
-> 
->      - Resets wait for all device outstanding commands to complete before
->        returning.
-> 
->     Replace unused field abort_pending with retry_pending. This is a
->     maintenance driver so these changes have the least impact/risk.
-> 
->     Link: https://lore.kernel.org/r/161342801747.29388.13045495968308188518.stgit@brunhilda
->     Tested-by: Joe Szczypek <jszczype@redhat.com>
->     Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
->     Reviewed-by: Scott Teel <scott.teel@microchip.com>
->     Reviewed-by: Tomas Henzl <thenzl@redhat.com>
->     Signed-off-by: Don Brace <don.brace@microchip.com>
->     Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-> 
-> Don, do you happen to know why this patch caused some controller init failure
-> for device
->     14:01.0 RAID bus controller: Hewlett-Packard Company Smart Array P600
-> ?
-> 
-> Boot failure: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
-> Boot success: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1-good
-> 
-> The difference between the two boots is 
-> f749d8b7a9896bc6e5ffe104cc64345037e0b152 reverted on top of 5.12-rc1
-> in -good case.
-> 
-> Looks like hpsa controller fails to initialize in bad case (could be a race?).
-
-Also CCing hpsa maintainer mailing lists.
-
-Looking more into the suspect commit
-    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f749d8b7a9896bc6e5ffe104cc64345037e0b152
-it roughly does the:
-
-@@ -448,7 +448,7 @@ struct CommandList {
- 	 */
- 	struct hpsa_scsi_dev_t *phys_disk;
- 
--	int abort_pending;
-+	bool retry_pending;
- 	struct hpsa_scsi_dev_t *device;
- 	atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */
- } __aligned(COMMANDLIST_ALIGNMENT);
-...
-@@ -1151,7 +1151,10 @@ static void __enqueue_cmd_and_start_io(struct ctlr_info *h,
- {
-        dial_down_lockup_detection_during_fw_flash(h, c);
-        atomic_inc(&h->commands_outstanding);
--       if (c->device)
-+       /*
-+        * Check to see if the command is being retried.
-+        */
-+       if (c->device && !c->retry_pending)
-                atomic_inc(&c->device->commands_outstanding);
-
-But I don't immediately see anything wrong with it.
 
 -- 
-
-  Sergei
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
