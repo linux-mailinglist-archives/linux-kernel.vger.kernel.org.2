@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D6D32BE70
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDECA32BE7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574161AbhCCRWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:22:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S1345343AbhCCRax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444542AbhCCNqh (ORCPT
+        with ESMTP id S1444813AbhCCNrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 08:46:37 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F13CC061A2E
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:43:59 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id w7so5211549wmb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:43:59 -0800 (PST)
+        Wed, 3 Mar 2021 08:47:01 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E0EC061A30
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 05:44:00 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id i9so5241373wml.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 05:44:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=87fsu4OIs39RkiShLHPl5EVCCmtcdhx0DNDxe5fguYo=;
-        b=yCtW0Uu0wfAY7fOoVNPYGtXF8o5hem7JHg0aQPaKs1sqYNr2HI1Kz92nBLlu9Sgyzp
-         gWRNdVmIkZmVmLYE87d51DQTZHDHFkInhe/0uWOYHxNS8ylaiX2lc4+/1L2qlCYAJU83
-         2I6YOzEaC4vuqy2Anc91mviMDAV3TFqX9FlV9TOgUfzYTAm6uXMDo6ZSFTxzgFmT4o2e
-         EL6Xwwx7p4d4NvcyXm1e2ZuX2otL/va7ZXsp+vQRLQdgNJUZ10wrAs0RU+n+aM+s0KtK
-         9eEzRhiUuu1U2KC5dk77+h1PMAqrexS05ly8M7vuiqWh+vjHhwDdW8L5JTU/IqEifW2c
-         kaqA==
+        bh=b0iGOR+oUMpMNe+ms/bEjIiPtMEjVOFpPaMripgJlBc=;
+        b=H3A2bX0qU2J5eGZ//pel/mRnd6dBhTswU4+t4zHgTV1HaBUd95Rb0EzZSbPgzbZrjq
+         j8ESjAX9QTleaddGPj46Px/f02U74SKXKsnFH2XyTcqMSfbp+1XAD5FLrihvK8hM+EhA
+         2ASRRySAxjh/USI9McXkFJpFLpzo9+Cg7uFLx6Xb5QDNMaihiJ3Slp/Y4qpVN3DMfBIu
+         xFGZJIGlBr/M83m8F/+IbGa3yazSF3ygRCyOMPnZ8yoAUy4BWCfWQ+jS3gylTb1AIgRs
+         VKb0OC//m7ammGv/OHvD29p4+5R5ui6nO1sYFJZyinjRzkAkz/VWvti6q5motDgxnvBH
+         KdSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=87fsu4OIs39RkiShLHPl5EVCCmtcdhx0DNDxe5fguYo=;
-        b=cjtEKFD2Df/EtFB96YWWPgU6gdZmLVveIuuFXJhmzjq9GauQOUy1nzbrNNr5/CxpRJ
-         T4AxX9sNi1hgVF1UTkmBq2yeDX18nz47VdWG46aYQ7c86lImVU4Mo+GXphx6pnAzeCvv
-         Hwq3DG+em24pMzIOcpEovsN93qsNeI6ipB50dgQdSf78bHIWa6aEq5jXofSNXuYjYh/3
-         yIdGf3i7fXwXdrqowRpbClMD0WEtB2hKIw8xCWIPKnKOzBRZnq6x/YgqURzowAZmkw+C
-         Ti0942qa2FK33HVJez+by+5rMZVPNo8PvZIdXZJynCUWpXLT9AzrxRDTYUVYEu93wg3A
-         AL2g==
-X-Gm-Message-State: AOAM5321W+eHOfUc4C9A5jFN4ysK/yhQaWhCaJRDFo/E4Ha1O6kP3/+p
-        xAlxWix2ivfaUEpl/G0ppqbkOA==
-X-Google-Smtp-Source: ABdhPJwSSP5ajXSVF3sb05fD5DeVWuPDpNytZZZIY8O8dSnjhFg+WNyoynnV8pKhuEapCttCgPGPBg==
-X-Received: by 2002:a05:600c:d1:: with SMTP id u17mr9479504wmm.64.1614779038337;
-        Wed, 03 Mar 2021 05:43:58 -0800 (PST)
+        bh=b0iGOR+oUMpMNe+ms/bEjIiPtMEjVOFpPaMripgJlBc=;
+        b=KkDAfMeEVSoE63O4+GF5X+2opioCMDaZVghpx/TZuXzQs/yYqJ/PQY1BTLDtCPcd0G
+         fK0vJCZT/a33gPOqxDjtAdte3AgL/v0xIgnWgEhBKi1mFGIuUoeBJi5Ri1wxUOUWXzzv
+         s2HwfnNZH/cKW2ZvEydpc+9vcxA8DyoiuMTQnVxKlbgKIuWs4WOWJkOEHAF67EqX6hZo
+         3qtQTd4qZII3SEzfIXBPUsYDX8shhslkE6QErdgwCsKATGcSTOZ2RHTMRGbBnGWT5h6A
+         Asj/J3tc1tCKBjkVJv1AOOYfiBCfxAMec0Y8KG3v9qfOF5Fe6Z87MhmxoCRjL9o8ILts
+         C31w==
+X-Gm-Message-State: AOAM532ufungGepryktcO4MGh8yzw5Kv9sGrtXClFdfKxJfltP9vbIG7
+        G3Zj7WsYLe7pc9NAsQqGkYTlPg==
+X-Google-Smtp-Source: ABdhPJxc7emTJGKEjU9Wo29D+VPtdHhPYwwuByMM/om5mfLeEVGGuVWbdFK9Ox6gGaBrHg5C5yenmQ==
+X-Received: by 2002:a7b:cb05:: with SMTP id u5mr9207361wmj.46.1614779039360;
+        Wed, 03 Mar 2021 05:43:59 -0800 (PST)
 Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.57
+        by smtp.gmail.com with ESMTPSA id w18sm6109524wrr.7.2021.03.03.05.43.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 05:43:57 -0800 (PST)
+        Wed, 03 Mar 2021 05:43:58 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,14 +56,13 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, Zack Rusin <zackr@vmware.com>
-Subject: [PATCH 25/53] drm/vmwgfx/vmwgfx_kms: Mark vmw_{cursor,primary}_plane_formats as __maybe_unused
-Date:   Wed,  3 Mar 2021 13:42:51 +0000
-Message-Id: <20210303134319.3160762-26-lee.jones@linaro.org>
+Subject: [PATCH 26/53] drm/vmwgfx/vmwgfx_drv: Fix some kernel-doc misdemeanours
+Date:   Wed,  3 Mar 2021 13:42:52 +0000
+Message-Id: <20210303134319.3160762-27-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210303134319.3160762-1-lee.jones@linaro.org>
 References: <20210303134319.3160762-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,12 +70,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h:256:23: warning: ‘vmw_cursor_plane_formats’ defined but not used [-Wunused-const-variable=]
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h:248:23: warning: ‘vmw_primary_plane_formats’ defined but not used [-Wunused-const-variable=]
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h:256:23: warning: ‘vmw_cursor_plane_formats’ defined but not used [-Wunused-const-variable=]
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h:248:23: warning: ‘vmw_primary_plane_formats’ defined but not used [-Wunused-const-variable=]
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h:256:23: warning: ‘vmw_cursor_plane_formats’ defined but not used [-Wunused-const-variable=]
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h:248:23: warning: ‘vmw_primary_plane_formats’ defined but not used [-Wunused-const-variable=]
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:164: warning: Function parameter or member 'ioctl' not described in 'VMW_IOCTL_DEF'
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:164: warning: Function parameter or member 'func' not described in 'VMW_IOCTL_DEF'
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:164: warning: Function parameter or member 'flags' not described in 'VMW_IOCTL_DEF'
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:170: warning: cannot understand function prototype: 'const struct drm_ioctl_desc vmw_ioctls[] = '
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:542: warning: Function parameter or member 'dev_priv' not described in 'vmw_get_initial_size'
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:611: warning: Function parameter or member 'dev_priv' not described in 'vmw_dma_masks'
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:611: warning: Excess function parameter 'dev' description in 'vmw_dma_masks'
 
 Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
 Cc: Roland Scheidegger <sroland@vmware.com>
@@ -85,33 +85,51 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-8-lee.jones@linaro.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115181313.3431493-9-lee.jones@linaro.org
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
-index 03f3694015cec..6267ccf54944e 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
-@@ -245,7 +245,7 @@ struct vmw_framebuffer_bo {
- };
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+index dd69b51c40e41..ef81a68dd4bd4 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+@@ -153,7 +153,7 @@
+ 	DRM_IOWR(DRM_COMMAND_BASE + DRM_VMW_MSG,			\
+ 		struct drm_vmw_msg_arg)
  
+-/**
++/*
+  * The core DRM version of this macro doesn't account for
+  * DRM_COMMAND_BASE.
+  */
+@@ -161,7 +161,7 @@
+ #define VMW_IOCTL_DEF(ioctl, func, flags) \
+   [DRM_IOCTL_NR(DRM_IOCTL_##ioctl) - DRM_COMMAND_BASE] = {DRM_IOCTL_##ioctl, flags, func}
  
--static const uint32_t vmw_primary_plane_formats[] = {
-+static const uint32_t __maybe_unused vmw_primary_plane_formats[] = {
- 	DRM_FORMAT_XRGB1555,
- 	DRM_FORMAT_RGB565,
- 	DRM_FORMAT_RGB888,
-@@ -253,7 +253,7 @@ static const uint32_t vmw_primary_plane_formats[] = {
- 	DRM_FORMAT_ARGB8888,
- };
+-/**
++/*
+  * Ioctl definitions.
+  */
  
--static const uint32_t vmw_cursor_plane_formats[] = {
-+static const uint32_t __maybe_unused vmw_cursor_plane_formats[] = {
- 	DRM_FORMAT_ARGB8888,
- };
+@@ -526,7 +526,7 @@ static void vmw_release_device_late(struct vmw_private *dev_priv)
+ 	vmw_fifo_release(dev_priv, &dev_priv->fifo);
+ }
  
+-/**
++/*
+  * Sets the initial_[width|height] fields on the given vmw_private.
+  *
+  * It does so by reading SVGA_REG_[WIDTH|HEIGHT] regs and then
+@@ -599,7 +599,7 @@ static int vmw_dma_select_mode(struct vmw_private *dev_priv)
+ /**
+  * vmw_dma_masks - set required page- and dma masks
+  *
+- * @dev: Pointer to struct drm-device
++ * @dev_priv: Pointer to struct drm-device
+  *
+  * With 32-bit we can only handle 32 bit PFNs. Optionally set that
+  * restriction also for 64-bit systems.
 -- 
 2.27.0
 
