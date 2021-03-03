@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357DA32BD74
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E6D32BD71
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345390AbhCCQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:07:39 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:37594 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346986AbhCCLfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:35:18 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 800442004F6;
-        Wed,  3 Mar 2021 12:34:08 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C5829200507;
-        Wed,  3 Mar 2021 12:34:01 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0B94C402C1;
-        Wed,  3 Mar 2021 12:33:53 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, shengjiu.wang@nxp.com,
-        ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
-        peter.ujfalusi@ti.com, gustavoars@kernel.org,
-        pierre-louis.bossart@linux.intel.com,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: wm8962: Relax bit clock divider searching
-Date:   Wed,  3 Mar 2021 19:21:28 +0800
-Message-Id: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S229526AbhCCQGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234698AbhCCLam (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 06:30:42 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EBDC061756;
+        Wed,  3 Mar 2021 03:29:26 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrBbY6T37z9sXh;
+        Wed,  3 Mar 2021 22:29:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614770962;
+        bh=/wsM2mA+T5A4Y8Ehx50y1a70I8AFyZO1tygp3HzNI1c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZfVTiyPkbEaLdB22CkQvYCUefdNn/ooA9t9/yqpAID/nt4co+tXPO82BYDJ5zg1Hc
+         g8MREH27zYtGeUPtaOwXYO372IYSZOZF4s//fyUgh646BLtzAMW9BEOSSMrb5eQ725
+         OIhaDMGqAFipDYne3VssUXeM11wcJ/CCCmYMJwQr97F3LN+ZUptjQ7d5av76fsIV4I
+         +5VQq2q0JJDdXXMmuMMNLYUVq1UYMbLuAqjvGz3Zli2nMPhV5RezYXfGD9jWgzqv26
+         MOCt94Fhh/jB+mRmfuEXLYz+2/erZh2TL67WO6pmELIkPzNn3eHBi/U7Wswm4cQoEv
+         sduFvGQBc5Prg==
+Date:   Wed, 3 Mar 2021 22:29:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the tip tree
+Message-ID: <20210303222908.4b46ea60@canb.auug.org.au>
+In-Reply-To: <YD9agIC1d6bOGYu3@hirez.programming.kicks-ass.net>
+References: <20210303103842.1a0ccc8f@canb.auug.org.au>
+        <YD9agIC1d6bOGYu3@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/GGvPOwNS.q8f79ify8yTE3Y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With S20_3LE format case, the sysclk = rate * 384,
-the bclk = rate * 20 * 2, there is no proper bclk divider
-for 384 / 40, because current condition needs exact match.
-So driver fails to configure the clocking:
+--Sig_/GGvPOwNS.q8f79ify8yTE3Y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-wm8962 3-001a: Unsupported BCLK ratio 9
+Hi Peter,
 
-Fix this by relaxing bitclk divider searching, so that when
-no exact value can be derived from sysclk pick the closest
-value greater than expected bitclk.
+On Wed, 3 Mar 2021 10:44:32 +0100 Peter Zijlstra <peterz@infradead.org> wro=
+te:
+>
+> Damn, sorry about that. I've rebased tip/sched/core and all should be
+> well now.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/wm8962.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+Excellent, thanks.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index ce4666a74793..f5cd22450190 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2403,6 +2403,7 @@ static const int sysclk_rates[] = {
- static void wm8962_configure_bclk(struct snd_soc_component *component)
- {
- 	struct wm8962_priv *wm8962 = snd_soc_component_get_drvdata(component);
-+	int best, min_diff, diff;
- 	int dspclk, i;
- 	int clocking2 = 0;
- 	int clocking4 = 0;
-@@ -2473,23 +2474,23 @@ static void wm8962_configure_bclk(struct snd_soc_component *component)
- 
- 	dev_dbg(component->dev, "DSPCLK is %dHz, BCLK %d\n", dspclk, wm8962->bclk);
- 
--	/* We're expecting an exact match */
-+	/* Search a proper bclk, not exact match. */
-+	best = 0;
-+	min_diff = INT_MAX;
- 	for (i = 0; i < ARRAY_SIZE(bclk_divs); i++) {
- 		if (bclk_divs[i] < 0)
- 			continue;
- 
--		if (dspclk / bclk_divs[i] == wm8962->bclk) {
--			dev_dbg(component->dev, "Selected BCLK_DIV %d for %dHz\n",
--				bclk_divs[i], wm8962->bclk);
--			clocking2 |= i;
-+		diff = (dspclk / bclk_divs[i]) - wm8962->bclk;
-+		if (diff < 0) /* Table is sorted */
- 			break;
-+		if (diff < min_diff) {
-+			best = i;
-+			min_diff = diff;
- 		}
- 	}
--	if (i == ARRAY_SIZE(bclk_divs)) {
--		dev_err(component->dev, "Unsupported BCLK ratio %d\n",
--			dspclk / wm8962->bclk);
--		return;
--	}
-+	wm8962->bclk = dspclk / bclk_divs[best];
-+	clocking2 |= best;
- 
- 	aif2 |= wm8962->bclk / wm8962->lrclk;
- 	dev_dbg(component->dev, "Selected LRCLK divisor %d for %dHz\n",
--- 
-2.27.0
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/GGvPOwNS.q8f79ify8yTE3Y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA/cwQACgkQAVBC80lX
+0GxShAgAhLizB08Kmvrr6JFLYVLN+iQcYk8bpJXGrYD/dnHCRepwaz3VAt8yiY/l
+zO7N9hPtNBBiP9BB/srGJHLbD8Y+KON495GCBIkPdFOQKYBeeDTJcP431CKyZq5W
+luc/CztIuWp6W/JIIhtroqDx7As/cuytB9CItFv8nqL2NNfyWFz70c5mJvrYkOPO
+2ZYakkGoPz7hlsFmgQoz09gAG3EdGcKrV+dvGq2RvWZp5ciYe9cAQFGg9eSZvStc
+jBhA/D4n3dCS8YlIT3Lt4JUnxxBQ3uaFDpGWl7I5MpFoMHKT8wPiB9YXgYXb2MNi
+0+BydjzcNIv3d+oV4H7NbUogJaKzJA==
+=9W8q
+-----END PGP SIGNATURE-----
+
+--Sig_/GGvPOwNS.q8f79ify8yTE3Y--
