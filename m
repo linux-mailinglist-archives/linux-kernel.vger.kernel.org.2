@@ -2,150 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084BE32C121
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B3632C185
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836533AbhCCSsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:48:00 -0500
-Received: from mga05.intel.com ([192.55.52.43]:24500 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233969AbhCCRu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:50:57 -0500
-IronPort-SDR: 7h2OmpTfRD1hjR54l3G29yuKwpp5dc0tLoTPiPbDZpjxGlqYk5gDkut0xFFyQZkI1T+MKFZsSa
- GSkbQBzDyV3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="272246022"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="272246022"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 09:49:27 -0800
-IronPort-SDR: s3zWAmWsgRQdPTkEF0qxVAoyJTgvQ/7p8tv/XMEU2A28UY+/J6H+3qPecnHmBPIjV3Th3iGGeT
- cvlN3F3WmhzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
-   d="scan'208";a="406549230"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by orsmga007.jf.intel.com with ESMTP; 03 Mar 2021 09:49:24 -0800
-Subject: Re: [PATCH v2 1/1] mmc: cqhci: fix random crash when remove mmc
- module
-To:     Frank Li <lznuaa@gmail.com>, asutoshd@codeaurora.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, haibo.chen@nxp.com
-References: <20210303174248.542175-1-Frank.Li@nxp.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <1b8c461b-a286-9099-3c63-fd98340bf3c6@intel.com>
-Date:   Wed, 3 Mar 2021 19:49:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1349147AbhCCTEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:04:54 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:43124 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376364AbhCCSn7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:43:59 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123Hf1lb021617;
+        Wed, 3 Mar 2021 18:50:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=tZbRr9XduT63pSmgY3cChQ8LE10buNg7X9yGMbcw3f0=;
+ b=ardA4KVhqVSHNapkXWguss+YzAkKTJ4/Si+Qc2uto69LpMN6basP6lmXe8s4A800i5AZ
+ KCY79sh54JtHXmf435C+bAngY1OW3lIYZwA+/UV7wkjHOZ5vFVUl58LR/lPjIDATw7Sn
+ X9vfKXIEuUtaJqVKKnHOS2qT0z/G6SwkEdGdfCM+iR211dYdkRluAv+zJWSt6KN3WBGs
+ nRI/X23kiWS68z5Lf4SiI6pBewG14hPbobmLu96UDaKSecyVRWakG25PFZHzOYy9t+Jx
+ XLtA4Hb0ZKDiIpQSXYYLgirztJpQaQDoQ3eaVBZHyBdKlRH5U+HgfSQpdyH0KWJao5A9 mw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 370xehy4vt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 18:50:20 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CA66F10002A;
+        Wed,  3 Mar 2021 18:50:19 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B5B9225D036;
+        Wed,  3 Mar 2021 18:50:19 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Mar 2021 18:50:19
+ +0100
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     <vilhelm.gray@gmail.com>, <jic23@kernel.org>
+CC:     <alexandre.torgue@foss.st.com>, <mcoquelin.stm32@gmail.com>,
+        <olivier.moysan@foss.st.com>, <fabrice.gasnier@foss.st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] counter: stm32-timer-cnt: fix ceiling miss-alignment with reload register
+Date:   Wed, 3 Mar 2021 18:49:49 +0100
+Message-ID: <1614793789-10346-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210303174248.542175-1-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-03_05:2021-03-03,2021-03-03 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/03/21 7:42 pm, Frank Li wrote:
-> [ 6684.493350] Unable to handle kernel paging request at virtual address ffff800011c5b0f0
-> [ 6684.498531] mmc0: card 0001 removed
-> [ 6684.501556] Mem abort info:
-> [ 6684.509681]   ESR = 0x96000047
-> [ 6684.512786]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [ 6684.518394]   SET = 0, FnV = 0
-> [ 6684.521707]   EA = 0, S1PTW = 0
-> [ 6684.524998] Data abort info:
-> [ 6684.528236]   ISV = 0, ISS = 0x00000047
-> [ 6684.532986]   CM = 0, WnR = 1
-> [ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081b22000
-> [ 6684.543923] [ffff800011c5b0f0] pgd=00000000bffff003, p4d=00000000bffff003, pud=00000000bfffe003, pmd=00000000900e1003, pte=0000000000000000
-> [ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
-> [ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_dev caam error [last unloaded: mmc_core]
-> [ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01410-g3ba33182767b-dirty #10
-> [ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
-> [ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
-> 
-> [ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-> [ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
-> ^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr : cqhci_request+0x314/0x4e8 [cqhci]
-> [ 6684.626734] sp : ffff80001243b9f0
-> [ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
-> [ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
-> [ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
-> [ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
-> [ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
-> [ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
-> [ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
-> [ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
-> [ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
-> [ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
-> [ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
-> [ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
-> [ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
-> [ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
-> [ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
-> [ 6684.709854] Call trace:
-> [ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
-> [ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
-> [ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
-> [ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
-> 
-> cqhci_request was called after cqhci_disable.
-> 
-> cqhci_disable                                 cqhci_request
-> {                                             {
-> 	dmam_free_coherent();  (1) free
->                                                   if(!cq_host->enable)
->                                                        return
-> 				         (2) pass check here
-> 	cq_host->enable = false;
-> 
->                                                   task_desc= get_desc(cq_host,tag);
->                                                              ^^^^ crash here
->                                          (3) access memory which is already free
-> 
-> }                                             }
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Ceiling value may be miss-aligned with what's actually configured into the
+ARR register. This is seen after probe as currently the ARR value is zero,
+whereas ceiling value is set to the maximum. So:
+- reading ceiling reports zero
+- in case the counter gets enabled without any prior configuration,
+  it won't count.
+- in case the function gets set by the user 1st, (priv->ceiling) is used.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Fix it by getting rid of the cached "priv->ceiling" variable. Rather use
+the ARR register value directly by using regmap read or write when needed.
+There should be no drawback on performance as priv->ceiling isn't used in
+performance critical path.
+There's also no point in writing ARR while setting function (sms), so
+it can be safely removed.
 
-> ---
-> 
-> Change from v1 to v2
->  - use Adrian Hunter suggested method to fix this problem
-> 
->  drivers/mmc/core/bus.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-> index c2e70b757dd1..4383c262b3f5 100644
-> --- a/drivers/mmc/core/bus.c
-> +++ b/drivers/mmc/core/bus.c
-> @@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
->  	mmc_remove_card_debugfs(card);
->  #endif
->  
-> -	if (host->cqe_enabled) {
-> -		host->cqe_ops->cqe_disable(host);
-> -		host->cqe_enabled = false;
-> -	}
-> -
->  	if (mmc_card_present(card)) {
->  		if (mmc_host_is_spi(card->host)) {
->  			pr_info("%s: SPI card removed\n",
-> @@ -416,6 +411,10 @@ void mmc_remove_card(struct mmc_card *card)
->  		of_node_put(card->dev.of_node);
->  	}
->  
-> +	if (host->cqe_enabled) {
-> +		host->cqe_ops->cqe_disable(host);
-> +		host->cqe_enabled = false;
-> +	}
-> +
->  	put_device(&card->dev);
->  }
-> -
-> 
+Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
+
+Suggested-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+---
+Note: this applies on top of:
+- "counter: stm32-timer-cnt: fix ceiling write max value"
+---
+ drivers/counter/stm32-timer-cnt.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+index 2295be3..75bc401 100644
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -31,7 +31,6 @@ struct stm32_timer_cnt {
+ 	struct counter_device counter;
+ 	struct regmap *regmap;
+ 	struct clk *clk;
+-	u32 ceiling;
+ 	u32 max_arr;
+ 	bool enabled;
+ 	struct stm32_timer_regs bak;
+@@ -75,8 +74,10 @@ static int stm32_count_write(struct counter_device *counter,
+ 			     const unsigned long val)
+ {
+ 	struct stm32_timer_cnt *const priv = counter->priv;
++	u32 ceiling;
+ 
+-	if (val > priv->ceiling)
++	regmap_read(priv->regmap, TIM_ARR, &ceiling);
++	if (val > ceiling)
+ 		return -EINVAL;
+ 
+ 	return regmap_write(priv->regmap, TIM_CNT, val);
+@@ -138,10 +139,6 @@ static int stm32_count_function_set(struct counter_device *counter,
+ 
+ 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_CEN, 0);
+ 
+-	/* TIMx_ARR register shouldn't be buffered (ARPE=0) */
+-	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
+-	regmap_write(priv->regmap, TIM_ARR, priv->ceiling);
+-
+ 	regmap_update_bits(priv->regmap, TIM_SMCR, TIM_SMCR_SMS, sms);
+ 
+ 	/* Make sure that registers are updated */
+@@ -199,7 +196,6 @@ static ssize_t stm32_count_ceiling_write(struct counter_device *counter,
+ 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
+ 	regmap_write(priv->regmap, TIM_ARR, ceiling);
+ 
+-	priv->ceiling = ceiling;
+ 	return len;
+ }
+ 
+@@ -374,7 +370,6 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
+ 
+ 	priv->regmap = ddata->regmap;
+ 	priv->clk = ddata->clk;
+-	priv->ceiling = ddata->max_arr;
+ 	priv->max_arr = ddata->max_arr;
+ 
+ 	priv->counter.name = dev_name(dev);
+-- 
+2.7.4
 
