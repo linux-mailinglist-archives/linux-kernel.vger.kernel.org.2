@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE9E32BCAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CC932BC8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381315AbhCCOam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:30:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
+        id S1359341AbhCCOLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:11:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842965AbhCCKXK (ORCPT
+        with ESMTP id S1842931AbhCCKWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:23:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD2EC08ECA4
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:49:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RRqVDNmqK8qWgfS2O35qxiJ4bts6fZ0niwzW8fuS1pE=; b=RZxNeBzv4lnmfhVYK840iREUeF
-        W6lHMxTpkq+4pRUUJ3aOlWBf6ktD2mMo0UptaXOfuzkV/Z2RDN32ZJA/aMTTCsWkpM9cNEcS1sI3i
-        /ns/0khSsg3vlB84N5dd0erf87ZjTK0rKw9AaixgMgUNKMioP7Ip7XAZHqXbm2km6XM7pE6Le3yEZ
-        km+RvqDGMKiKRdiWjAGNuq3B6LQ0IohV2MDQeQPi0BUW9Q/jwOmgvmxqQEHFeumkhYZW06ZK6c7dN
-        XC4YV16WVQmyIJKlaT5iIvEXcgg+5gVvYs/aatti7GwnBSbeJTyy9YvqZlCfmSaRABQLFC0XY/s1P
-        2Nf/5SFg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lHO8G-0023te-UB; Wed, 03 Mar 2021 09:49:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26027303205;
-        Wed,  3 Mar 2021 10:49:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D520E264F0E2E; Wed,  3 Mar 2021 10:49:27 +0100 (CET)
-Date:   Wed, 3 Mar 2021 10:49:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Clement Courbet <courbet@google.com>,
-        Oleg Rombakh <olegrom@google.com>
-Subject: Re: [PATCH] sched: Optimize __calc_delta.
-Message-ID: <YD9bp7C9k6ojjq/5@hirez.programming.kicks-ass.net>
-References: <20210226195239.3905966-1-joshdon@google.com>
- <YDliCOPy9s1RdLwd@hirez.programming.kicks-ass.net>
- <CABk29Nv7iJEcDg3rgSvfTkXEM69ZeLByJAsZYuA5qpdj645nZw@mail.gmail.com>
+        Wed, 3 Mar 2021 05:22:39 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF6CC08EC2B;
+        Wed,  3 Mar 2021 01:49:38 -0800 (PST)
+Date:   Wed, 03 Mar 2021 09:49:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614764975;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgOPFoYyiw8NY2vGV+0scutbfVbhkpkyvQHNVX42788=;
+        b=VVs5ZsVJGHgLCbrc0NBP+zNGhO2y4lof3U1THGtSQBV8Recg7mVnQQ8kJwCNHrYgtClLZV
+        DjDDlQcxQrzcwWZYGO4UvviZXdJo1UBKaCo4UcjxVGaQC3+ydbPmOYfpOqNEl1g1wFTFpp
+        22cZlnIh6L9BjRyxhLbJa+oy8G47g6YSF4KYSYwO44/zwb2UDtB58oFJG4SvsWlgjihDt8
+        FayK6eW6VMYgt/L4ljChCspSBHp330e5VpKvitLdMflVJStb3Oq+UcFNnAodoE7I2mLUaY
+        OSl4WdW81tXtrECgF2SspBOl5SeHcYVl4eC49zwXI2HExBXeNl9i3Kce+lN4ig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614764975;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgOPFoYyiw8NY2vGV+0scutbfVbhkpkyvQHNVX42788=;
+        b=Vogyc8ShRcM9ybwP3l2T65Mi4mvsbDqkEkd1t0A5xpnh740R5cJgUdDZOzRiCsakjHCJF4
+        U36U3Pd+UrtpIIAw==
+From:   "tip-bot2 for Vincent Donnefort" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] cpu/hotplug: CPUHP_BRINGUP_CPU failure exception
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210216103506.416286-3-vincent.donnefort@arm.com>
+References: <20210216103506.416286-3-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29Nv7iJEcDg3rgSvfTkXEM69ZeLByJAsZYuA5qpdj645nZw@mail.gmail.com>
+Message-ID: <161476497481.20312.7532268175021230545.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 12:55:07PM -0800, Josh Don wrote:
-> On Fri, Feb 26, 2021 at 1:03 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Fri, Feb 26, 2021 at 11:52:39AM -0800, Josh Don wrote:
-> > > From: Clement Courbet <courbet@google.com>
-> > >
-> > > A significant portion of __calc_delta time is spent in the loop
-> > > shifting a u64 by 32 bits. Use a __builtin_clz instead of iterating.
-> > >
-> > > This is ~7x faster on benchmarks.
-> >
-> > Have you tried on hardware without such fancy instructions?
-> 
-> Was not able to find any on hand unfortunately. Clement did rework the
-> patch to use fls() instead, and has benchmarks for the generic and asm
-> variations. All of which are faster than the loop. In my next reply,
-> I'll include the updated patch inline.
+The following commit has been merged into the sched/core branch of tip:
 
-Excellent; I have some vague memories where using fls ended up slower
-for some ARMs, but I can't seem to remember enough to even Google it :/
+Commit-ID:     5e7f238920174248049ff840eff43c94f3a2e67e
+Gitweb:        https://git.kernel.org/tip/5e7f238920174248049ff840eff43c94f3a2e67e
+Author:        Vincent Donnefort <vincent.donnefort@arm.com>
+AuthorDate:    Tue, 16 Feb 2021 10:35:05 
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 03 Mar 2021 10:33:00 +01:00
+
+cpu/hotplug: CPUHP_BRINGUP_CPU failure exception
+
+The atomic states (between CPUHP_AP_IDLE_DEAD and CPUHP_AP_ONLINE) are
+triggered by the CPUHP_BRINGUP_CPU step. If the latter fails, no atomic
+state can be rolled back.
+
+DEAD callbacks too can't fail and disallow recovery. As a consequence,
+during hotunplug, the fail injection interface should prohibit all states
+from CPUHP_BRINGUP_CPU to CPUHP_ONLINE.
+
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210216103506.416286-3-vincent.donnefort@arm.com
+---
+ kernel/cpu.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 9121edf..680ed8f 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1045,9 +1045,13 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+ 	 * to do the further cleanups.
+ 	 */
+ 	ret = cpuhp_down_callbacks(cpu, st, target);
+-	if (ret && st->state == CPUHP_TEARDOWN_CPU && st->state < prev_state) {
+-		cpuhp_reset_state(st, prev_state);
+-		__cpuhp_kick_ap(st);
++	if (ret && st->state < prev_state) {
++		if (st->state == CPUHP_TEARDOWN_CPU) {
++			cpuhp_reset_state(st, prev_state);
++			__cpuhp_kick_ap(st);
++		} else {
++			WARN(1, "DEAD callback error for CPU%d", cpu);
++		}
+ 	}
+ 
+ out:
+@@ -2222,6 +2226,15 @@ static ssize_t write_cpuhp_fail(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	/*
++	 * DEAD callbacks cannot fail...
++	 * ... neither can CPUHP_BRINGUP_CPU during hotunplug. The latter
++	 * triggering STARTING callbacks, a failure in this state would
++	 * hinder rollback.
++	 */
++	if (fail <= CPUHP_BRINGUP_CPU && st->state > CPUHP_BRINGUP_CPU)
++		return -EINVAL;
++
++	/*
+ 	 * Cannot fail anything that doesn't have callbacks.
+ 	 */
+ 	mutex_lock(&cpuhp_state_mutex);
