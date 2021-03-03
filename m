@@ -2,57 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EAF32C0FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371E732C101
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836148AbhCCSrW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 13:47:22 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:35460 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243100AbhCCRoY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:44:24 -0500
-X-IronPort-AV: E=Sophos;i="5.81,220,1610406000"; 
-   d="scan'208";a="495963565"
-Received: from lfbn-idf1-1-708-183.w86-245.abo.wanadoo.fr (HELO mp-66156.home) ([86.245.159.183])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 18:39:15 +0100
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: XDP socket rings, and LKMM litmus tests
-From:   maranget <luc.maranget@inria.fr>
-In-Reply-To: <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
-Date:   Wed, 3 Mar 2021 18:39:14 +0100
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <F6EF0AE0-F0AA-4158-988B-C2638738B054@inria.fr>
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
-To:     Alan Stern <stern@rowland.harvard.edu>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        id S245068AbhCCS5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:57:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244869AbhCCSNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:13:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A1064EDC;
+        Wed,  3 Mar 2021 17:39:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614793169;
+        bh=7MVw5UDEd1Xvs+II9tNU1UACiyEi/PQdUEbmoIFcK6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XENxLR/0Wum5UkY2MnJTucpt2FDgT/0cITCxXkBT1SmguNemOxTJR7z3vpRT6GexG
+         OhkxkpgSVSkw1mCsleAFoNDbOldAVdI7hFx9PvgkglRoBOKJtYo6ASvgGk0fB/H6N4
+         QGP3PIB7sd+LG6lmPmjjPk1F6feMc5NGQrKdjfKaCeUmIE4cR5G1LFE9aLMJIDZzGu
+         Xie+YDBcOIes+S0L1l+fg1XYmkzNmN1Zzc7eazCNYYfjjySr5vjPbdn5CbRRKb8CXX
+         zwGV34z/YzVLb79eujME7s3rxBqfmwn24opeawzXD2+BpwLT3RJYewNl+nK9WSHC5X
+         wgQ9dTUwA5Fng==
+Date:   Wed, 3 Mar 2021 17:39:24 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, danielwa@cisco.com,
+        robh@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] cmdline: Add generic function to build command
+ line.
+Message-ID: <20210303173923.GB19713@willie-the-truck>
+References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+ <d8cf7979ad986de45301b39a757c268d9df19f35.1614705851.git.christophe.leroy@csgroup.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d8cf7979ad986de45301b39a757c268d9df19f35.1614705851.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On 3 Mar 2021, at 18:37, maranget <luc.maranget@inria.fr> wrote:
+On Tue, Mar 02, 2021 at 05:25:17PM +0000, Christophe Leroy wrote:
+> This code provides architectures with a way to build command line
+> based on what is built in the kernel and what is handed over by the
+> bootloader, based on selected compile-time options.
 > 
-> I have made a PR to herd7 that performs the change. The commit message states the new definition.
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/linux/cmdline.h | 62 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 include/linux/cmdline.h
 
-For those who are interested
-<https://github.com/herd/herdtools7/pull/183>
+Sorry, spotted a couple of other things...
 
-—Luc
+> +/*
+> + * This function will append a builtin command line to the command
+> + * line provided by the bootloader. Kconfig options can be used to alter
+> + * the behavior of this builtin command line.
+> + * @dest: The destination of the final appended/prepended string.
+> + * @src: The starting string or NULL if there isn't one. Must not equal dest.
+> + * @length: the length of dest buffer.
+> + */
+> +static __always_inline void cmdline_build(char *dest, const char *src, size_t length)
+> +{
+> +	if (length <= 0)
+> +		return;
 
+length is unsigned
+
+> +
+> +	dest[0] = 0;
+> +
+> +#ifdef CONFIG_CMDLINE
+> +	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !src || !src[0]) {
+> +		cmdline_strlcat(dest, CONFIG_CMDLINE, length);
+> +		return;
+> +	}
+> +#endif
+> +	if (dest != src)
+
+The kernel-doc says that @src "Must not equal dest".
+
+Will
