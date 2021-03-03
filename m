@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57AB32C113
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BC432C0F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836435AbhCCSrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S1836090AbhCCSrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386182AbhCCRq7 (ORCPT
+        with ESMTP id S243071AbhCCRoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:46:59 -0500
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450F5C061756;
-        Wed,  3 Mar 2021 09:46:15 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id F25D51C0B8E; Wed,  3 Mar 2021 18:40:40 +0100 (CET)
-Date:   Wed, 3 Mar 2021 18:40:40 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-Message-ID: <20210303174040.GA3305@amd>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
- <20210302163309.25528-3-henning.schild@siemens.com>
- <20210302205452.GA32573@duo.ucw.cz>
- <20210303183714.62c0f06f@md1za8fc.ad001.siemens.net>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ibTvN161/egqYuK8"
-Content-Disposition: inline
-In-Reply-To: <20210303183714.62c0f06f@md1za8fc.ad001.siemens.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        Wed, 3 Mar 2021 12:44:23 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA55C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:43:15 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id h4so29609227ljl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 09:43:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=+dhB3YrJVlTSxFCA6Z/e42UCJspJWfH2abZXmJ1XC4M=;
+        b=i7iOOBQrYR1nHjFHl9efeWLvpEwwqWdbDME3Hb1qx60ZFDs24dYf79cH5Dh7sQgXx3
+         i2djTXa+lgkuwyUjYXCCfpehzZO5T5Hsc6n42jFgT2iZwXDO5DUaxBuE3LerIEPGnUIN
+         rprCzy8t4HugYBS5SeJoK4TuGQS7mcciQh3spAy0rAv/rGOiQylsDqM0xhgT7iX4ScyN
+         hbbFtDROXGZC9mLCWtPfEUEh/srEC+WnKIxms9E+udmlNtcl9uwdQENHAOYNogEpfZVu
+         G9mgyRF1tn0XH1GG64WSYaZJz0woNEhbBmVokhLvmP8rJlUg69N3BTfthYXW97klvqub
+         GBcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+dhB3YrJVlTSxFCA6Z/e42UCJspJWfH2abZXmJ1XC4M=;
+        b=irIBvJvFKCTQhTysgPH3haK8oMDC1U2whX2IwEOxBfb+4auv2/B2wpwykIcqkyIOkH
+         J6kEe+AgLujpyat5Pj0rscred7pUA3hKsG7ECgxBZDKgd69ObesFm7YjSMNGOO/U0xCb
+         k7o1iTEtaS7lMLndaeC0OKKeYpmoLGfBIcB8Wd2F4FheYi75eFh1w0/WGCevwhXSsuRY
+         OciWbUX6dGurt3mfhp0OvHwyMYn9xnRtD6cOvK4ykrvpYJlZD+M5ldLXxQssEpY+b35i
+         eiqoqK0DclFr30zFNOHd4Kma2A3oqHBX31e7Jpi012VTUqyQ6269S3rUMWOom4O6kfdb
+         mGzA==
+X-Gm-Message-State: AOAM531IINSqPMzu8xbBB+APkXW8d6lgXz5X40E5QfYjLyHODo+RMp5p
+        tzbqk/V7aZsxYRtpG5R3d8jB0ibNqYPpBQ==
+X-Google-Smtp-Source: ABdhPJzuDUOJRhDvWgdy8lAlBYZ0zeNkinZA/knIsk7X9BzWhHaJ1dZ8YYTA5DmS6Eg7a4h8cRYlcQ==
+X-Received: by 2002:a2e:9047:: with SMTP id n7mr15373ljg.291.1614793393677;
+        Wed, 03 Mar 2021 09:43:13 -0800 (PST)
+Received: from localhost.localdomain ([85.249.43.69])
+        by smtp.googlemail.com with ESMTPSA id s7sm2101441lfi.140.2021.03.03.09.43.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 09:43:12 -0800 (PST)
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+To:     junak.pub@gmail.com, robert.foss@linaro.org,
+        sakari.ailus@linux.intel.com
+Cc:     todor.too@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
+        mchehab@kernel.org, laurent.pinchart@ideasonboard.com,
+        jacopo@jmondi.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] media: qcom: camss: V4L2_CID_PIXEL_RATE/LINK_FREQ fixes
+Date:   Wed,  3 Mar 2021 20:42:47 +0300
+Message-Id: <20210303174250.11405-1-andrey.konovalov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The first patch adds printing a warning in v4l2_get_link_freq() if
+V4L2_CID_LINK_FREQ isn't implemented (this is a mandatory control for
+CSI-2 transmitter drivers [1], but many sensor drivers don't have it
+currently).
 
---ibTvN161/egqYuK8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The second patch is the start of the work discussed in the "[RFC] Repurpose
+V4L2_CID_PIXEL_RATE for the sampling rate in the pixel array" thread [2].
+I'll send the similar patches for the rest of CSI receiver drivers which
+use V4L2_CID_PIXEL_RATE to calculate the link frequency as a separate
+patchset following this one: I don't have the hardware to test the changes
+to these drivers, so the second patchset will be build tested only.
 
-Hi!
+The third patch in this series is the patch by Vladimir Lypak [3] rebased
+onto the changes done by the second patch. By replacing getting the pixel
+clock with v4l2_get_link_freq() the second patch also fixes the integer
+overflow which Vladimir's patch addresses. So the third patch only needs
+to fix drivers/media/platform/qcom/camss/camss-vfe.c which the second patch
+doesn't touch.
 
-> > > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> > > index 2a698df9da57..c15e1e3c5958 100644
-> > > --- a/drivers/leds/Makefile
-> > > +++ b/drivers/leds/Makefile
-> > > @@ -93,6 +93,7 @@ obj-$(CONFIG_LEDS_TURRIS_OMNIA)		+=3D
-> > > leds-turris-omnia.o obj-$(CONFIG_LEDS_WM831X_STATUS)	+=3D
-> > > leds-wm831x-status.o obj-$(CONFIG_LEDS_WM8350)		+=3D
-> > > leds-wm8350.o obj-$(CONFIG_LEDS_WRAP)			+=3D
-> > > leds-wrap.o +obj-$(CONFIG_LEDS_SIEMENS_SIMATIC_IPC)	+=3D
-> > > simatic-ipc-leds.o =20
-> >=20
-> > Let's put this into drivers/leds/simple. You'll have to create it.
->=20
-> Can you please go into detail why? We plan to add more devices in the
-> future, which might in fact make this a little less simple. But we can
-> discuss that when the time is right and start with simple.
+The resulting patchset is free from the "undefined reference to `__udivdi3'"
+issue [4] as the u64 value is only divided by a power of 2, which doesn't
+need do_div().
 
-There's already way too many drivers in the directory, and your driver
-is very different from drivers for camera flash (for example).
+This patchset has been tested on db410c board with imx219 and ov5647
+sensors (RPi camera modules v2 and v1) attached to AISTARVISION MIPI
+Adapter V2.0.
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+[1] https://linuxtv.org/downloads/v4l-dvb-apis-new/driver-api/csi2.html
+[2] https://www.spinics.net/lists/linux-media/msg183183.html
+[3] https://www.spinics.net/lists/linux-media/msg186875.html
+[4] https://www.spinics.net/lists/linux-media/msg186918.html
 
---ibTvN161/egqYuK8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Changes in v2:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+* Added [PATCH 1/3] v4l: common: v4l2_get_link_freq: add printing a warning
 
-iEYEARECAAYFAmA/yhgACgkQMOfwapXb+vJwawCff7t7AFisGfmOn1cjlZXTC+KH
-ZiYAni5b8V20pcW5uaex2w2HX/rRX3RA
-=W9Dz
------END PGP SIGNATURE-----
+* camss_get_link_freq() changed to take the actual number of lanes as the
+  third arg vs the number of lanes multiplied by 2 in the first version
 
---ibTvN161/egqYuK8--
+* Fixed checkpatch warnings and bad indentation
+
+Changes in v3:
+
+* The warning message in v4l2_get_link_freq() improved as suggested by
+  Jacopo Mondi
+
+
