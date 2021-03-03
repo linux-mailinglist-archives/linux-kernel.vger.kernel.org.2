@@ -2,60 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A9132C37E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B070732C34B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353646AbhCDAF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:05:28 -0500
-Received: from m-r1.th.seeweb.it ([5.144.164.170]:53285 "EHLO
-        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388041AbhCCUeT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:34:19 -0500
-Received: from [192.168.1.101] (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id BE569201A5;
-        Wed,  3 Mar 2021 21:33:18 +0100 (CET)
-Subject: Re: [PATCH 08/11] arm64: dts: qcom: pm8994: Add RESIN node
-To:     Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     "angelogioacchino.delregno@somainline.org" 
-        <angelogioacchino.delregno@somainline.org>,
-        "marijn.suijten@somainline.org" <marijn.suijten@somainline.org>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <-8dygFkqlPLCYtnwUWBLrCubmjkNhno40CBzzZ2tmlWdpJC1Ihmoe1dpMSvsgoBQ58Idh2v_rBHNEQLIwpTRtpndQm_8nSarmkXlZo975CU=@protonmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <c7e3394a-9cfa-ad9b-8d62-14d7151c54ea@somainline.org>
-Date:   Wed, 3 Mar 2021 21:33:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1353680AbhCDAFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:05:37 -0500
+Received: from mout.gmx.net ([212.227.15.19]:57301 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1388046AbhCCUhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 15:37:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614803744;
+        bh=krf83YAsrVMgeh7UXqPBmCfNvjfc4y0k3/eS3xhnn14=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=YxyZuBaoGYx94U8HmohLN2/BPqMQwYh6YRJwQO4YhfG7j06rU5nJNB0kycH3zfu/0
+         9o/0lOEFqJZRObJYD5FDpSuGK3rwvUB3TeWigoMsewJ2mCAANsr98rHsbtnUL7t98s
+         CIiFZgusEa3ZUjMYTeqZRdAmNH1dsdXv726TYLS8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mplc7-1lZnXZ0J5x-00qBjz; Wed, 03
+ Mar 2021 21:35:44 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-gpio@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: driver-api: gpio: consumer: Mark another line of code as such
+Date:   Wed,  3 Mar 2021 21:34:43 +0100
+Message-Id: <20210303203444.3140677-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <-8dygFkqlPLCYtnwUWBLrCubmjkNhno40CBzzZ2tmlWdpJC1Ihmoe1dpMSvsgoBQ58Idh2v_rBHNEQLIwpTRtpndQm_8nSarmkXlZo975CU=@protonmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:n4fnNw5p0yFhEdNKY4BFARpZidn1Dc9Nu4bu+BXyFCIblOoK4Xg
+ CaftcURAz72LR07sKYma2OpID0Ae4hYOjgP1VohK6VVHmolHmy6HtJNVpMKE2BugjH6hO0G
+ ujvPhJIJEz8IDb6oq7SOPdEj1DN1Xy3mouvqBWKRfbCEJHnVynzdlz1LjTRblZ9X66SipL8
+ 2oRAZgv0HyJU2fVTbSQ2A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DHNKB4Uq6iw=:maW3EVuHLenWGldgqYI1dJ
+ +eM/3u3ykE+vu/Zy2zv9afrh3uWBpiVYJAsSBb5Fp8nY+dhERnqZedhuPBcQco2rKb1Lmpxgv
+ uQbjh+/XUselFWRJmIkBb7+f//iIAQ05ruBqFfv1ktkowOdhspfRkc5S5x9zvfife/pEgXB4l
+ W13eAIH5c36c6kNLJvig7bidbD/f+b/3RWUIooTf8IlW1vXGIpKc6YprlT7Dj7h3uGNAgJWih
+ fIXMEfei0sIruz8XOl19r/ULIWWVUPNhSYJt1pdDgSEO3QD4CXoyrbl+Lei/229bvB4voHNKu
+ ZVQ6FZS69R5cfpkkLSfXQhZaPFVmBdvQiwnk9UD+CFqND4Qb3LeF4Llj+7Th//ocFmRYXjh+7
+ yePXwJ9r+3wrcDb2OoZuU+TtgWU0K+7k4O/jkfA1SvXjJ/6qqh2SKxjaXSKdSWh8NyQgiEUfx
+ OyytOuUX8BwhVGsju8lLvHmKj6emttq7U24jGkK8WvS1GKox8QlqSv4woVcawOFPFo8W1dn7x
+ 37GwCUxzBUnDeqn2B3m9sNmJT5XM9XvOsKnBkrLRreDM1smeY95J3fW7VXgjgmJvkVwsvyh7m
+ jvv7uLKQv8GEKNn4szoIBfLcuFjKIl4CvdA1OsikB1P4fqUrzMIzYXoh+kh9DnLZxivEm6JqD
+ aBo5t8PBQEeromOcWNeg2OEO/S+jjqG9LxBIVduZdL0eI0Y2HN5i2gsfkraRNEiATrhU3bIlJ
+ ZmMDZzH17iMZhEmX6kexF0gkI14w72ADA+icDDCe3nq/fDlId1qDRG30MFPHBpcGp0JNNkqmH
+ aLr1J+W8PQCcRufDcWvXNnysjVsxniOnDrPv5JoKDVjU139yGqqMgPLNumf+Ld6Y5MJ3DFerJ
+ DEXh6JhzCNy9g9rnCv/A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Make it so that this #include line is rendered in monospace, like other
+code blocks.
 
-On 03.03.2021 17:43, Yassine Oudjana wrote:
-> In-Reply-To: <20210228130831.203765-8-konrad.dybcio@somainline.org>
->
-> I've sent a similar patch[1] a while ago, although I didn't disable resin by default:
-> https://lore.kernel.org/lkml/BmEPgqFMiMXOzn9xFz6KSPtOZdWoeJ8zUpGXI_p7U9FBBSgbG2IP6AkuvbWWzy7MVuBkrhOas158Vd9klSLFmrbSRGEpQGouiAFpsf03Ag=@protonmail.com/
->
-> Yassine
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ Documentation/driver-api/gpio/consumer.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/Documentation/driver-api/gpio/consumer.rst b/Documentation/dr=
+iver-api/gpio/consumer.rst
+index 22271c342d923..3366a991b4aa7 100644
+=2D-- a/Documentation/driver-api/gpio/consumer.rst
++++ b/Documentation/driver-api/gpio/consumer.rst
+@@ -12,7 +12,7 @@ Guidelines for GPIOs consumers
 
-I'm totally fine with applying Yassine's patch with a `status = "disabled";` line added instead (we don't want RESIN on all devices!).
+ Drivers that can't work without standard GPIO calls should have Kconfig e=
+ntries
+ that depend on GPIOLIB or select GPIOLIB. The functions that allow a driv=
+er to
+-obtain and use GPIOs are available by including the following file:
++obtain and use GPIOs are available by including the following file::
 
+ 	#include <linux/gpio/consumer.h>
 
-Konrad
+=2D-
+2.30.1
 
