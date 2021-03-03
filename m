@@ -2,273 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0D732B731
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3E632B72D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383151AbhCCKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:50:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S1382886AbhCCKua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:50:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237495AbhCCAYB (ORCPT
+        with ESMTP id S237505AbhCCAYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 19:24:01 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F54C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:21:58 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id k2so18357108ioh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 16:21:58 -0800 (PST)
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C2FC0617AA
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:22:34 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id l4so7558009qkl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 16:22:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kpiUQP6yqizB0jZgYrPrualAhkks3FicXbCdjJrCNNI=;
-        b=JEvgf94g+fjRu1svrWxoW3y9J+S5tOEbgbJXGdDJl1PWUxn1YlWfjwRvmPeukn2TVa
-         giAB/pZo759K97elLC/vrpzIYKW2dx4Xwwwl0URbhOEfzFq47YOeTrG0SeNH4zR2RkFC
-         TZVjtzHLbgXyRmHLo99X4zp0sHOZBzQ2w9TJ55IO0gniGnyDXnPmnmrVKRuK5yQR+bsO
-         QNtvUEyloSG5G7Aii2kk5ik8ADdEQmw8VHW10wUrowoTljiRfjFQVmzy0rmeYsAScTf1
-         a2+KFdK81sUFsBRU2vDg8rYXC6p+o77ZwLGC7eOTn2CLyv5DSZolgF/WB43EIdXKBAm9
-         GEaQ==
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=efakAXhKZOAUHSnbP86G3aAJQXHi2Yfrvfv0WcsUUNo=;
+        b=J71jb3ILqIgJmOHwDtyqGiXEBoljE56D7GVBTUxlZFgU6Uwdpgv/0c0cc43Saj6XX6
+         BuetAD0XAGNhjjaUQoBoShKZ/hGnVuswprah1wKqKpSHxmuDzzmCNbYavietJcOM5FCY
+         cVynFuqRIJwfFhExTj4hbDv/TxqIf/pUv8zqLpEtIlGuH4NkkukV0dIdiiDiGLfWnI5H
+         3zm1f305heXGWsSWyv2/H6vWLszvWShLjox1X/j6almswNSETnyHIi2L6kGV/CrSM/Yz
+         N6ouFH16WZtfj4S77zu8HDsDqO2Xdq9Uoy1MtZZYpLI9UfYGmpGfiYhUMxpAHyaAWogz
+         ZbKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kpiUQP6yqizB0jZgYrPrualAhkks3FicXbCdjJrCNNI=;
-        b=exIQHVUy62iXUdLih18EZ7x3oGC193pmOx1cOO2xZFQbGjLQOGGSo/74cOd6vj/xnd
-         yfoO9HccrBSAj8AJOoNSzVQrcrgNVq301ykqG4kLLim4xE12zASPnGDnhZ4sbvjcdrSk
-         vLyLKNnGo10Y3lhyM32ucdUTcdIdBx7lYcirmsSum+37RXxVLGFV8jc5yMnlQbM0if4t
-         ElJZgoOpxpdg2dTzAS6nzaabtoiLdirap12Szd6MY8IuQkxBkj8LEmLb/qNmysLptEoI
-         NvRqZZrdc2fIb/m+mbfJDE2X6tlIohlBYcgqrUSAfnNgh/a88ja66vmv1xyFBshMjPZm
-         TcLw==
-X-Gm-Message-State: AOAM530p3LKDMS/s8qQ3uRHRQjhg6Do5JS4qYcQUCKt7aJE/oHpoFtTe
-        cntAMTIf5S7b8PvE4Y7FBC9H8sIzH03UeJ2M+pOcZA==
-X-Google-Smtp-Source: ABdhPJx1jQBeJwmYJm/bvo2lepkA0zfkgW3Z7yCjNddmFWlCIVwbfydJbuwYPv8H78iyxd7Ka4EvGGJugMa2R4fdxE8=
-X-Received: by 2002:a05:6602:2e95:: with SMTP id m21mr15664266iow.9.1614730917421;
- Tue, 02 Mar 2021 16:21:57 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=efakAXhKZOAUHSnbP86G3aAJQXHi2Yfrvfv0WcsUUNo=;
+        b=NPuznGyWfspq3oVz1cUYV5e2yiRaDO+y5ygPqXXVsfcrmZ6067jx5TsTQo/IdKIOxu
+         i9tMZeHfB4eZIuIrbQbI6MrnG+NnnqKCtgHp1rrryhwtMGYEw1/KSU1xCdlElxaRY1xg
+         6Uf2FfgwSfCfYNs18ckzFzMRhaNYxWl/+ax4berTcXNgOxBePc044MHpn6dEFsMQRYyN
+         OZGq1XycSTJsug2YomnNm+abhg3pHE1l85o3WcaPFJN+iOkSbtW3C2wFftB2/KjEMFKV
+         zNuSSgC2DvqgGCUmrHmfIrzo8QhsxUQuC1XnZkGjpaFHzZ2UQO0yo8BbFM/ta1b1KSyy
+         /YSA==
+X-Gm-Message-State: AOAM533FFXqt98zGImpkk10q1tdzju1MKpWGtg8zrl7iuXPc7HgB/wwv
+        4SNB1FRq6VbUC1erGZU97XHy5w==
+X-Google-Smtp-Source: ABdhPJyXxQr7XiD0RHWzaZiMKtXDN/sYtc5KLxNPd5SXn9l1gip9qBLA/7vE6ctFQ7WxEhQnCmWgDg==
+X-Received: by 2002:ae9:e50c:: with SMTP id w12mr16229374qkf.13.1614730953100;
+        Tue, 02 Mar 2021 16:22:33 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id r3sm16690512qkm.129.2021.03.02.16.22.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 16:22:32 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
+        ebiederm@xmission.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        james.morse@arm.com, vladimir.murzin@arm.com,
+        matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
+        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
+        selindag@gmail.com, tyhicks@linux.microsoft.com
+Subject: [PATCH v12 00/17] arm64: MMU enabled kexec relocation
+Date:   Tue,  2 Mar 2021 19:22:13 -0500
+Message-Id: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210302184540.2829328-1-seanjc@google.com> <20210302184540.2829328-4-seanjc@google.com>
-In-Reply-To: <20210302184540.2829328-4-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 2 Mar 2021 16:21:46 -0800
-Message-ID: <CANgfPd95G-01ObzeKeMTUu0yXBJ=0+ZGQwr_5WCNH-NmR03f9w@mail.gmail.com>
-Subject: Re: [PATCH 03/15] KVM: x86/mmu: Ensure MMU pages are available when
- allocating roots
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 10:46 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Hold the mmu_lock for write for the entire duration of allocating and
-> initializing an MMU's roots.  This ensures there are MMU pages available
-> and thus prevents root allocations from failing.  That in turn fixes a
-> bug where KVM would fail to free valid PAE roots if a one of the later
-> roots failed to allocate.
->
-> Note, KVM still leaks the PAE roots if the lm_root allocation fails.
-> This will be addressed in a future commit.
->
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Changelog:
+v12:
+	- A major change compared to previous version. Instead of using
+	  contiguous VA range a copy of linear map is now used to perform
+	  copying of segments during relocation as it was agreed in the
+	  discussion of version 11 of this project.
+	- In addition to using linear map, I also took several ideas from
+	  James Morse to better organize the kexec relocation:
+	  	1. skip relocation function entirely if that is not needed
+		2. remove the PoC flushing function since it is not needed
+		   anymore with MMU enabled.
+v11:
+	- Fixed missing KEXEC_CORE dependency for trans_pgd.c
+	- Removed useless "if(rc) return rc" statement (thank you Tyler Hicks)
+	- Another 12 patches were accepted into maintainer's get.
+	  Re-based patches against:
+	  https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+	  Branch: for-next/kexec
+v10:
+	- Addressed a lot of comments form James Morse and from  Marc Zyngier
+	- Added review-by's
+	- Synchronized with mainline
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+v9:	- 9 patches from previous series landed in upstream, so now series
+	  is smaller
+	- Added two patches from James Morse to address idmap issues for machines
+	  with high physical addresses.
+	- Addressed comments from Selin Dag about compiling issues. He also tested
+	  my series and got similar performance results: ~60 ms instead of ~580 ms
+	  with an initramfs size of ~120MB.
+v8:
+	- Synced with mainline to keep series up-to-date
+v7:
+	-- Addressed comments from James Morse
+	- arm64: hibernate: pass the allocated pgdp to ttbr0
+	  Removed "Fixes" tag, and added Added Reviewed-by: James Morse
+	- arm64: hibernate: check pgd table allocation
+	  Sent out as a standalone patch so it can be sent to stable
+	  Series applies on mainline + this patch
+	- arm64: hibernate: add trans_pgd public functions
+	  Remove second allocation of tmp_pg_dir in swsusp_arch_resume
+	  Added Reviewed-by: James Morse <james.morse@arm.com>
+	- arm64: kexec: move relocation function setup and clean up
+	  Fixed typo in commit log
+	  Changed kern_reloc to phys_addr_t types.
+	  Added explanation why kern_reloc is needed.
+	  Split into four patches:
+	  arm64: kexec: make dtb_mem always enabled
+	  arm64: kexec: remove unnecessary debug prints
+	  arm64: kexec: call kexec_image_info only once
+	  arm64: kexec: move relocation function setup
+	- arm64: kexec: add expandable argument to relocation function
+	  Changed types of new arguments from unsigned long to phys_addr_t.
+	  Changed offset prefix to KEXEC_*
+	  Split into four patches:
+	  arm64: kexec: cpu_soft_restart change argument types
+	  arm64: kexec: arm64_relocate_new_kernel clean-ups
+	  arm64: kexec: arm64_relocate_new_kernel don't use x0 as temp
+	  arm64: kexec: add expandable argument to relocation function
+	- arm64: kexec: configure trans_pgd page table for kexec
+	  Added invalid entries into EL2 vector table
+	  Removed KEXEC_EL2_VECTOR_TABLE_SIZE and KEXEC_EL2_VECTOR_TABLE_OFFSET
+	  Copy relocation functions and table into separate pages
+	  Changed types in kern_reloc_arg.
+	  Split into three patches:
+	  arm64: kexec: offset for relocation function
+	  arm64: kexec: kexec EL2 vectors
+	  arm64: kexec: configure trans_pgd page table for kexec
+	- arm64: kexec: enable MMU during kexec relocation
+	  Split into two patches:
+	  arm64: kexec: enable MMU during kexec relocation
+	  arm64: kexec: remove head from relocation argument
+v6:
+	- Sync with mainline tip
+	- Added Acked's from Dave Young
+v5:
+	- Addressed comments from Matthias Brugger: added review-by's, improved
+	  comments, and made cleanups to swsusp_arch_resume() in addition to
+	  create_safe_exec_page().
+	- Synced with mainline tip.
+v4:
+	- Addressed comments from James Morse.
+	- Split "check pgd table allocation" into two patches, and moved to
+	  the beginning of series  for simpler backport of the fixes.
+	  Added "Fixes:" tags to commit logs.
+	- Changed "arm64, hibernate:" to "arm64: hibernate:"
+	- Added Reviewed-by's
+	- Moved "add PUD_SECT_RDONLY" earlier in series to be with other
+	  clean-ups
+	- Added "Derived from:" to arch/arm64/mm/trans_pgd.c
+	- Removed "flags" from trans_info
+	- Changed .trans_alloc_page assumption to return zeroed page.
+	- Simplify changes to trans_pgd_map_page(), by keeping the old
+	  code.
+	- Simplify changes to trans_pgd_create_copy, by keeping the old
+	  code.
+	- Removed: "add trans_pgd_create_empty"
+	- replace init_mm with NULL, and keep using non "__" version of
+	  populate functions.
+v3:
+	- Split changes to create_safe_exec_page() into several patches for
+	  easier review as request by Mark Rutland. This is why this series
+	  has 3 more patches.
+	- Renamed trans_table to tans_pgd as agreed with Mark. The header
+	  comment in trans_pgd.c explains that trans stands for
+	  transitional page tables. Meaning they are used in transition
+	  between two kernels.
+v2:
+	- Fixed hibernate bug reported by James Morse
+	- Addressed comments from James Morse:
+	  * More incremental changes to trans_table
+	  * Removed TRANS_FORCEMAP
+	  * Added kexec reboot data for image with 380M in size.
 
-Very tidy cleanup!
+Enable MMU during kexec relocation in order to improve reboot performance.
 
-> ---
->  arch/x86/kvm/mmu/mmu.c     | 41 ++++++++++++--------------------------
->  arch/x86/kvm/mmu/tdp_mmu.c | 23 +++++----------------
->  2 files changed, 18 insertions(+), 46 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2ed3fac1244e..1f129001a30c 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2398,6 +2398,9 @@ static int make_mmu_pages_available(struct kvm_vcpu *vcpu)
->  {
->         unsigned long avail = kvm_mmu_available_pages(vcpu->kvm);
->
-> +       /* Ensure all four PAE roots can be allocated in a single pass. */
-> +       BUILD_BUG_ON(KVM_MIN_FREE_MMU_PAGES < 4);
-> +
+If kexec functionality is used for a fast system update, with a minimal
+downtime, the relocation of kernel + initramfs takes a significant portion
+of reboot.
 
-For a second I thought that this should be 5 since a page is needed to
-hold the 4 PAE roots, but that page is allocated at vCPU creation and
-reused, so no need to check for it here.
+The reason for slow relocation is because it is done without MMU, and thus
+not benefiting from D-Cache.
 
->         if (likely(avail >= KVM_MIN_FREE_MMU_PAGES))
->                 return 0;
->
-> @@ -3220,16 +3223,9 @@ static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, gva_t gva,
->  {
->         struct kvm_mmu_page *sp;
->
-> -       write_lock(&vcpu->kvm->mmu_lock);
-> -
-> -       if (make_mmu_pages_available(vcpu)) {
-> -               write_unlock(&vcpu->kvm->mmu_lock);
-> -               return INVALID_PAGE;
-> -       }
->         sp = kvm_mmu_get_page(vcpu, gfn, gva, level, direct, ACC_ALL);
->         ++sp->root_count;
->
-> -       write_unlock(&vcpu->kvm->mmu_lock);
->         return __pa(sp->spt);
->  }
->
-> @@ -3241,16 +3237,10 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
->
->         if (is_tdp_mmu_enabled(vcpu->kvm)) {
->                 root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
-> -
-> -               if (!VALID_PAGE(root))
-> -                       return -ENOSPC;
->                 vcpu->arch.mmu->root_hpa = root;
->         } else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
->                 root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level,
->                                       true);
-> -
-> -               if (!VALID_PAGE(root))
-> -                       return -ENOSPC;
+Performance data
+----------------
+For this experiment, the size of kernel plus initramfs is small, only 25M.
+If initramfs was larger, than the improvements would be greater, as time
+spent in relocation is proportional to the size of relocation.
 
-There's so much going on in mmu_alloc_root that removing this check
-makes me nervous, but I think it should be safe.
-I checked though the function because I was worried it might yield
-somewhere in there, which could result in the page cache being emptied
-and the allocation failing, but I don't think mmu_alloc_root this
-function will yield.
+Previously:
+kernel shutdown	0.022131328s
+relocation	0.440510736s
+kernel startup	0.294706768s
 
->                 vcpu->arch.mmu->root_hpa = root;
->         } else if (shadow_root_level == PT32E_ROOT_LEVEL) {
->                 for (i = 0; i < 4; ++i) {
-> @@ -3258,8 +3248,6 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
->
->                         root = mmu_alloc_root(vcpu, i << (30 - PAGE_SHIFT),
->                                               i << 30, PT32_ROOT_LEVEL, true);
-> -                       if (!VALID_PAGE(root))
-> -                               return -ENOSPC;
->                         vcpu->arch.mmu->pae_root[i] = root | PT_PRESENT_MASK;
->                 }
->                 vcpu->arch.mmu->root_hpa = __pa(vcpu->arch.mmu->pae_root);
-> @@ -3294,8 +3282,6 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
->
->                 root = mmu_alloc_root(vcpu, root_gfn, 0,
->                                       vcpu->arch.mmu->shadow_root_level, false);
-> -               if (!VALID_PAGE(root))
-> -                       return -ENOSPC;
->                 vcpu->arch.mmu->root_hpa = root;
->                 goto set_root_pgd;
->         }
-> @@ -3325,6 +3311,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
->
->         for (i = 0; i < 4; ++i) {
->                 MMU_WARN_ON(VALID_PAGE(vcpu->arch.mmu->pae_root[i]));
-> +
->                 if (vcpu->arch.mmu->root_level == PT32E_ROOT_LEVEL) {
->                         pdptr = vcpu->arch.mmu->get_pdptr(vcpu, i);
->                         if (!(pdptr & PT_PRESENT_MASK)) {
-> @@ -3338,8 +3325,6 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
->
->                 root = mmu_alloc_root(vcpu, root_gfn, i << 30,
->                                       PT32_ROOT_LEVEL, false);
-> -               if (!VALID_PAGE(root))
-> -                       return -ENOSPC;
->                 vcpu->arch.mmu->pae_root[i] = root | pm_mask;
->         }
->         vcpu->arch.mmu->root_hpa = __pa(vcpu->arch.mmu->pae_root);
-> @@ -3373,14 +3358,6 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
->         return 0;
->  }
->
-> -static int mmu_alloc_roots(struct kvm_vcpu *vcpu)
-> -{
-> -       if (vcpu->arch.mmu->direct_map)
-> -               return mmu_alloc_direct_roots(vcpu);
-> -       else
-> -               return mmu_alloc_shadow_roots(vcpu);
-> -}
-> -
->  void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
->  {
->         int i;
-> @@ -4822,7 +4799,15 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
->         r = mmu_topup_memory_caches(vcpu, !vcpu->arch.mmu->direct_map);
->         if (r)
->                 goto out;
-> -       r = mmu_alloc_roots(vcpu);
-> +       write_lock(&vcpu->kvm->mmu_lock);
-> +       if (make_mmu_pages_available(vcpu))
-> +               r = -ENOSPC;
-> +       else if (vcpu->arch.mmu->direct_map)
-> +               r = mmu_alloc_direct_roots(vcpu);
-> +       else
-> +               r = mmu_alloc_shadow_roots(vcpu);
-> +       write_unlock(&vcpu->kvm->mmu_lock);
-> +
->         kvm_mmu_sync_roots(vcpu);
->         if (r)
->                 goto out;
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 70226e0875fe..50ef757c5586 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -137,22 +137,21 @@ static struct kvm_mmu_page *alloc_tdp_mmu_page(struct kvm_vcpu *vcpu, gfn_t gfn,
->         return sp;
->  }
->
-> -static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
-> +hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
->  {
->         union kvm_mmu_page_role role;
->         struct kvm *kvm = vcpu->kvm;
->         struct kvm_mmu_page *root;
->
-> +       lockdep_assert_held_write(&kvm->mmu_lock);
-> +
->         role = page_role_for_level(vcpu, vcpu->arch.mmu->shadow_root_level);
->
-> -       write_lock(&kvm->mmu_lock);
-> -
->         /* Check for an existing root before allocating a new one. */
->         for_each_tdp_mmu_root(kvm, root) {
->                 if (root->role.word == role.word) {
->                         kvm_mmu_get_root(kvm, root);
-> -                       write_unlock(&kvm->mmu_lock);
-> -                       return root;
-> +                       goto out;
->                 }
->         }
->
-> @@ -161,19 +160,7 @@ static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
->
->         list_add(&root->link, &kvm->arch.tdp_mmu_roots);
->
-> -       write_unlock(&kvm->mmu_lock);
-> -
-> -       return root;
-> -}
-> -
-> -hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
-> -{
-> -       struct kvm_mmu_page *root;
-> -
-> -       root = get_tdp_mmu_vcpu_root(vcpu);
-> -       if (!root)
-> -               return INVALID_PAGE;
-> -
-> +out:
->         return __pa(root->spt);
->  }
->
-> --
-> 2.30.1.766.gb4fecdf3b7-goog
->
+Relocation was taking: 58.2% of reboot time
+
+Now:
+kernel shutdown	0.032066576s
+relocation	0.022158152s
+kernel startup	0.296055880s
+
+Now: Relocation takes 6.3% of reboot time
+
+Total reboot is x2.16 times faster.
+
+With bigger userland (fitImage 380M), the reboot time is improved by 3.57s,
+and is reduced from 3.9s down to 0.33s
+
+Previous approaches and discussions
+-----------------------------------
+v11: https://lore.kernel.org/lkml/20210127172706.617195-1-pasha.tatashin@soleen.com
+v10: https://lore.kernel.org/linux-arm-kernel/20210125191923.1060122-1-pasha.tatashin@soleen.com
+v9: https://lore.kernel.org/lkml/20200326032420.27220-1-pasha.tatashin@soleen.com
+v8: https://lore.kernel.org/lkml/20191204155938.2279686-1-pasha.tatashin@soleen.com
+v7: https://lore.kernel.org/lkml/20191016200034.1342308-1-pasha.tatashin@soleen.com
+v6: https://lore.kernel.org/lkml/20191004185234.31471-1-pasha.tatashin@soleen.com
+v5: https://lore.kernel.org/lkml/20190923203427.294286-1-pasha.tatashin@soleen.com
+v4: https://lore.kernel.org/lkml/20190909181221.309510-1-pasha.tatashin@soleen.com
+v3: https://lore.kernel.org/lkml/20190821183204.23576-1-pasha.tatashin@soleen.com
+v2: https://lore.kernel.org/lkml/20190817024629.26611-1-pasha.tatashin@soleen.com
+v1: https://lore.kernel.org/lkml/20190801152439.11363-1-pasha.tatashin@soleen.com
+
+James Morse (4):
+  arm64: hyp-stub: Check the size of the HYP stub's vectors
+  arm64: hyp-stub: Move invalid vector entries into the vectors
+  arm64: hyp-stub: Move el1_sync into the vectors
+  arm64: kexec: Use dcache ops macros instead of open-coding
+
+Pavel Tatashin (13):
+  arm64: kernel: add helper for booted at EL2 and not VHE
+  arm64: trans_pgd: hibernate: Add trans_pgd_copy_el2_vectors
+  arm64: hibernate: abstract ttrb0 setup function
+  arm64: kexec: flush image and lists during kexec load time
+  arm64: kexec: skip relocation code for inplace kexec
+  arm64: kexec: pass kimage as the only argument to relocation function
+  arm64: kexec: kexec may require EL2 vectors
+  arm64: kexec: relocate in EL1 mode
+  arm64: kexec: use ld script for relocation function
+  arm64: kexec: install a copy of the linear-map
+  arm64: kexec: keep MMU enabled during kexec relocation
+  arm64: kexec: remove the pre-kexec PoC maintenance
+  arm64: kexec: Remove cpu-reset.h
+
+ arch/arm64/Kconfig                   |   2 +-
+ arch/arm64/include/asm/assembler.h   |  31 ++++-
+ arch/arm64/include/asm/kexec.h       |  12 ++
+ arch/arm64/include/asm/mmu_context.h |  24 ++++
+ arch/arm64/include/asm/sections.h    |   1 +
+ arch/arm64/include/asm/trans_pgd.h   |   3 +
+ arch/arm64/include/asm/virt.h        |   8 ++
+ arch/arm64/kernel/asm-offsets.c      |  11 ++
+ arch/arm64/kernel/cpu-reset.S        |   7 +-
+ arch/arm64/kernel/cpu-reset.h        |  32 -----
+ arch/arm64/kernel/hibernate-asm.S    |  20 ----
+ arch/arm64/kernel/hibernate.c        |  56 +++------
+ arch/arm64/kernel/hyp-stub.S         |  95 +++++++--------
+ arch/arm64/kernel/machine_kexec.c    | 168 +++++++++++++++------------
+ arch/arm64/kernel/relocate_kernel.S  |  72 ++++++------
+ arch/arm64/kernel/sdei.c             |   2 +-
+ arch/arm64/kernel/vmlinux.lds.S      |  19 +++
+ arch/arm64/mm/trans_pgd.c            |  20 ++++
+ 18 files changed, 314 insertions(+), 269 deletions(-)
+ delete mode 100644 arch/arm64/kernel/cpu-reset.h
+
+-- 
+2.25.1
+
