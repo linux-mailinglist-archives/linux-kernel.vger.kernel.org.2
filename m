@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BF132C0D5
+	by mail.lfdr.de (Postfix) with ESMTP id F111A32C0DA
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386779AbhCCSqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:46:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46310 "EHLO mail.kernel.org"
+        id S1386797AbhCCSqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:46:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39946 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243006AbhCCRaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:30:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFE9B64EDB;
-        Wed,  3 Mar 2021 17:29:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614792597;
-        bh=b5SxC+H+cvkxpArFsunrLLawT4SeX25oPPqB53vqkdw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sJXKvt6W9xR2eYDqhvM6JYd7pUhz5eI6bMUcy5F5lIn94G8TJ+BcgPwxoGHWSVgZd
-         gig5fXkj87IXrC/Tuf8Avvo8MDGbQXvF0G7IPUIPnnkhOSC9NNvfNTeSk2XLzcMVVh
-         PCewE90xx0vpX/cmePISmhOeyrpw/mKmsTCD5LXX9Q9Qsg1vvxmWV42e0/tR1eu3dI
-         Fxtp8oyWfTbxOkvghM7ArEtcSKfVNnFVgJ6iTEJ58RD3F7MpuTDEG9Zgm05Gf1z98t
-         sD2FQSOApc9K5C1OFO2xQw9LDH/4Jnl1B1jYuDC3TJGV7SxUoy9H4863kR5IsCneTp
-         edfNHINyvdF4w==
-Date:   Wed, 3 Mar 2021 19:29:50 +0200
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull resend] habanalabs fixes for 5.12-rc2
-Message-ID: <20210303172950.GA3624@CORE.localdomain>
+        id S1359034AbhCCRbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:31:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614792635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=egCST0Rney7JPu2RYQem6LVUwo8s+4euh2SRmmo9eVM=;
+        b=cAXBQI+qNeBUJXGyjZkZPTVerspuX5S3hVS/whxo5bEk4HcJAyN3wgJbnpW2dLUDu9LQgj
+        ISRy6RYv/DgPHpi0wjC0ar/wLUuaJQLi9uCi54CyrTigVAnG+lCsZjiBOUSt671jzp+tAc
+        HpERgrxQ6YoHMoNSW9xQWtPPOchiFFM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6A546AC24;
+        Wed,  3 Mar 2021 17:30:35 +0000 (UTC)
+Message-ID: <66a9b7ff4958ab990f58a3dad8152d00c59775ce.camel@suse.com>
+Subject: Re: [PATCH] block: Suppress uevent for hidden device when removed
+From:   Martin Wilck <mwilck@suse.com>
+To:     Daniel Wagner <dwagner@suse.de>, linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>
+Date:   Wed, 03 Mar 2021 18:30:34 +0100
+In-Reply-To: <20210303171201.8432-1-dwagner@suse.de>
+References: <20210303171201.8432-1-dwagner@suse.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, 2021-03-03 at 18:12 +0100, Daniel Wagner wrote:
+> register_disk() suppress uevents for devices with the GENHD_FL_HIDDEN
+> but enables uevents at the end again in order to announce disk after
+> possible partitions are created.
+> 
+> When the device is removed the uevents are still on and user land
+> sees
+> 'remove' messages for devices which were never 'add'ed to the system.
+> 
+>   KERNEL[95481.571887] remove   /devices/virtual/nvme-
+> fabrics/ctl/nvme5/nvme0c5n1 (block)
+> 
+> Let's suppress the uevents for GENHD_FL_HIDDEN again before calling
+> device_del() which will write trigger uevents.
+> 
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+>  block/genhd.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/block/genhd.c b/block/genhd.c
+> index c55e8f0fced1..ab9ed355bdef 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -731,6 +731,9 @@ void del_gendisk(struct gendisk *disk)
+>         if (!sysfs_deprecated)
+>                 sysfs_remove_link(block_depr,
+> dev_name(disk_to_dev(disk)));
+>         pm_runtime_set_memalloc_noio(disk_to_dev(disk), false);
+> +
+> +       if (disk->flags & GENHD_FL_HIDDEN)
+> +               dev_set_uevent_suppress(disk_to_dev(disk), 1);
+>         device_del(disk_to_dev(disk));
+>  }
+>  EXPORT_SYMBOL(del_gendisk);
 
-This pull request contains some fixes of the habanalabs driver for
-5.12-rc2.
-Nothing too scary, more details are in the tag.
+I wonder if it wouldn't be wiser to remove this code
 
-Thanks,
-Oded
+        if (disk->flags & GENHD_FL_HIDDEN) {
+                dev_set_uevent_suppress(ddev, 0);
+                return;
+        }
 
-The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
+from register_disk(). The way you did it now, we would receive neither
+"add" nor "remove" events in user space, but there might be change
+events in between ?
 
-  Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
+This said, I'd like to raise the question whether it was the right
+decision to suppress these uevents in the first place. 8ddcd653257c
+("block: introduce GENHD_FL_HIDDEN") simply stated that they aren't
+registered as usable block devices. Maybe the kernel should leave the
+decision whether or not they are interesting to user space itself?
 
-are available in the Git repository at:
+For example, I've written an extension for multipath-tools some time
+ago which displays the topology of NVMe native multipath devices, and
+uses sysfs data from the hidden NVMe private namespaces for that
+purpose. Not receiving  uevents for them makes it practically
+impossible to track the status of these devices.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-03-03
+Regards,
+Martin
 
-for you to fetch changes up to 3612e9f5df4c0c605ab2e4b569214786cc701cb9:
 
-  habanalabs: fix debugfs address translation (2021-03-03 09:56:58 +0200)
-
-----------------------------------------------------------------
-This tag contains the following fixes for 5.12-rc2:
-
-- Call put_pid() when the user releases the control device.
-- Disable file operations after a PCI device is removed.
-- Fix address translation when displaying the memory mappings
-  through our debugFS.
-- Remove unused dentry pointer for debugFS files.
-
-----------------------------------------------------------------
-Greg Kroah-Hartman (1):
-      drivers: habanalabs: remove unused dentry pointer for debugfs files
-
-Oded Gabbay (1):
-      habanalabs: mark hl_eq_inc_ptr() as static
-
-Tomer Tayar (2):
-      habanalabs: Call put_pid() when releasing control device
-      habanalabs: Disable file operations after device is removed
-
-farah kassabri (1):
-      habanalabs: fix debugfs address translation
-
- drivers/misc/habanalabs/common/debugfs.c          |  5 +--
- drivers/misc/habanalabs/common/device.c           | 40 ++++++++++++++++++++---
- drivers/misc/habanalabs/common/habanalabs.h       |  2 --
- drivers/misc/habanalabs/common/habanalabs_ioctl.c | 12 +++++++
- drivers/misc/habanalabs/common/irq.c              |  2 +-
- drivers/misc/habanalabs/common/mmu/mmu.c          | 38 ++++++++++++++-------
- 6 files changed, 75 insertions(+), 24 deletions(-)
