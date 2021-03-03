@@ -2,54 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33B732BD04
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3822932BC83
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378028AbhCCPPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:15:40 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:37046 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241217AbhCCK1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:27:35 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lHN87-0000Ec-Hg; Wed, 03 Mar 2021 19:45:16 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 03 Mar 2021 19:45:15 +1100
-Date:   Wed, 3 Mar 2021 19:45:15 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Vic Wu <vic.wu@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: mediatek - remove obsolete documentation
-Message-ID: <20210303084515.GA8036@gondor.apana.org.au>
-References: <20210303080923.16761-1-vic.wu@mediatek.com>
+        id S1359245AbhCCOE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 09:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1842916AbhCCKW3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:22:29 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CD6C061A28;
+        Wed,  3 Mar 2021 00:45:34 -0800 (PST)
+Date:   Wed, 03 Mar 2021 08:45:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614761132;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yb+bqoD+X245ondH2TPCv3xBe4JKVU//+6GIBcRKW1A=;
+        b=pWXvAseRzGVX72p8yvQueg6xNSTTCtQ2S19X83jBdVBSk0Hs36epxVcGodetzCjncsSTmu
+        ABiMwmXFSAGfMWYETmqJxpwN/9kxEVNqIISuw42hGACPvSR9VsNEtGOZgJshII+9GoH8gA
+        14F/6PBaKVLy2qpnRnFcr9XVTSdjpIUgZqhf5Y/xr9IbKrkEBtZZd+x3ML9jTRCgcGG5Qj
+        XAaOrrPvFtTjZxREqq4BNsRbHDKLAJRs03zKK+KYYwDKQCvWpRwbL6xGGuDMfD5AOQC5v6
+        4CMgjZpuDZQ3MGkDFy/D1lBm6rp5VtV2EPDvh3dKGxixWNNy7mIwGpXJuRzHgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614761132;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yb+bqoD+X245ondH2TPCv3xBe4JKVU//+6GIBcRKW1A=;
+        b=AW8pyjDSRUj1jr5rk/JrFp3XBrMo1ANJV3D1IyGMJ9luFRmm5iMeuVahW0QhbEmTLZIb7U
+        Id20i7fgm4wHWkBw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] objtool: Parse options from OBJTOOL_ARGS
+Cc:     Borislav Petkov <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210226110004.252553847@infradead.org>
+References: <20210226110004.252553847@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303080923.16761-1-vic.wu@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <161476113169.20312.14290136035364654285.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 04:09:23PM +0800, Vic Wu wrote:
-> The crypto mediatek driver has been replaced by the inside-secure driver now.
-> Remove DT bindings documentation and update crypto engine nodes to the mt7623.dtsi files.
-> 
-> Signed-off-by: Vic Wu <vic.wu@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/crypto/mediatek-crypto.txt       | 25 -------------------
->  arch/arm/boot/dts/mt7623.dtsi                 |  8 +++---
->  2 files changed, 3 insertions(+), 30 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
+The following commit has been merged into the objtool/core branch of tip:
 
-Shouldn't this go through Matthias Brugger <matthias.bgg@gmail.com>?
+Commit-ID:     b52eb21aeca75790869c26b91b1d7b80b3946430
+Gitweb:        https://git.kernel.org/tip/b52eb21aeca75790869c26b91b1d7b80b3946430
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Fri, 26 Feb 2021 11:32:30 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 03 Mar 2021 09:38:32 +01:00
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+objtool: Parse options from OBJTOOL_ARGS
+
+Teach objtool to parse options from the OBJTOOL_ARGS environment
+variable.
+
+This enables things like:
+
+  $ OBJTOOL_ARGS="--backup" make O=defconfig-build/ kernel/ponies.o
+
+to obtain both defconfig-build/kernel/ponies.o{,.orig} and easily
+inspect what objtool actually did.
+
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lkml.kernel.org/r/20210226110004.252553847@infradead.org
+---
+ tools/objtool/builtin-check.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
+index 0399752..8b38b5d 100644
+--- a/tools/objtool/builtin-check.c
++++ b/tools/objtool/builtin-check.c
+@@ -15,6 +15,7 @@
+ 
+ #include <subcmd/parse-options.h>
+ #include <string.h>
++#include <stdlib.h>
+ #include <objtool/builtin.h>
+ #include <objtool/objtool.h>
+ 
+@@ -26,6 +27,11 @@ static const char * const check_usage[] = {
+ 	NULL,
+ };
+ 
++static const char * const env_usage[] = {
++	"OBJTOOL_ARGS=\"<options>\"",
++	NULL,
++};
++
+ const struct option check_options[] = {
+ 	OPT_BOOLEAN('f', "no-fp", &no_fp, "Skip frame pointer validation"),
+ 	OPT_BOOLEAN('u', "no-unreachable", &no_unreachable, "Skip 'unreachable instruction' warnings"),
+@@ -44,6 +50,25 @@ const struct option check_options[] = {
+ 
+ int cmd_parse_options(int argc, const char **argv, const char * const usage[])
+ {
++	const char *envv[16] = { };
++	char *env;
++	int envc;
++
++	env = getenv("OBJTOOL_ARGS");
++	if (env) {
++		envv[0] = "OBJTOOL_ARGS";
++		for (envc = 1; envc < ARRAY_SIZE(envv); ) {
++			envv[envc++] = env;
++			env = strchr(env, ' ');
++			if (!env)
++				break;
++			*env = '\0';
++			env++;
++		}
++
++		parse_options(envc, envv, check_options, env_usage, 0);
++	}
++
+ 	argc = parse_options(argc, argv, check_options, usage, 0);
+ 	if (argc != 1)
+ 		usage_with_options(usage, check_options);
