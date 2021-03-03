@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D86D32BF13
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FE332BF0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386217AbhCCR6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
+        id S233734AbhCCRtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 12:49:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244846AbhCCO7G (ORCPT
+        with ESMTP id S244858AbhCCO6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:59:06 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00B6C0613E3;
-        Wed,  3 Mar 2021 06:57:25 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id x10so5748623oor.3;
-        Wed, 03 Mar 2021 06:57:25 -0800 (PST)
+        Wed, 3 Mar 2021 09:58:53 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6850BC0613E8
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:57:46 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id j3so1998480qtj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:57:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qt5wXwklMsm6s5Zb+eD9YN9oX2rhIgEmQ1SsEPhvWyc=;
-        b=nVMMGUMobAMEySPNKmp/GvwtfCn8twa9qGl3V2/yBfUPYitFWdp/2Ulqi+3lBJV7jk
-         FFrhkBwRkcUxEzdMjR0W52HDWRRBo96sj9s4REwN5U6mknHKvkvGlucquRTtQFIqEsCq
-         N+auS/TTDoqNWo4tbTMBdHRC6oIr7hbdFe0fY+D/2LwAK3RL9SSU7SHPDCJlyphKjbEy
-         1X1eOMKNy2z7Jzb2DyxS3Mh1xRsTyBtxhDYLQ98WQtLZq0eYPZwPmE1JJkKfpmVRytoC
-         O9eDVSxANWIvF8tjvL6P6LxkF32Lba6EwwdVCk6dVlfxcnA3X3JNIOQqBK/ID71yZRjZ
-         nzfw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j7/BRFveM1y09hb1VH1ITCBiQfybwUMVyrYKD7X1lLg=;
+        b=Gt94H0c7cWXv59/dBmL/E73Cm4gP+iyknhhTviwccKk8XRfkdVDfDICX17I4XI0VJq
+         K00H6n+MiD1X8Yw+aT/2x6gP5Q2HYiuSX2eSZOMVw1KKJA8ZcmlFNLctR9u6jmyFRwUq
+         g9QFIrRqgfBZ3urZP/hQrOOfEgbJTKZCRbZuBtOpWKCA/uBFj1FAMtSEcvOStPGoiEJm
+         DP3qc/3sm0EdXV674qjxSWgMzJpdXNJnUdTo1vOdpwWwE0DJmPMcylHcdDIqTtr4dE6l
+         JWfnKPpj6b4TuggrizmVY7q1+WHTfRpQ1yFdaWqXBDc2PDBpVhf9kYWjbt98828NeByn
+         dbzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qt5wXwklMsm6s5Zb+eD9YN9oX2rhIgEmQ1SsEPhvWyc=;
-        b=OdcJ/9ObL00ql/iSd9RZtqLcxJSnaGcb95+mwlHb9HrVL8dqnk5SwgqHFyLO9Gliku
-         CksOa4/xc/AyDLSAP9RPU7WMRnn93+qtm0SsLZ68fijHgItVSUXoq7og+B5rov9YOwcW
-         qZZA3Tw6B67y7cm17kM+YBrurmHftDIXY40Jj17+CQMDMXUTrKbM+KrTLd2mGpIOT9DZ
-         PiEZvz0UWnHgirCUxS9auou781CdiJdE+0VtabdSMc8PIWoKag1jykhhGFeZfXtNFBv+
-         1p5F+v0U+3rP0g9s9IPLZFelC9LWdqeD+tAkSuntRWcvs/8VZ709USoNzKfURdqHjHFu
-         uHXA==
-X-Gm-Message-State: AOAM5327n/jfpWCPpYcrWkyS5nB9QMa+XfEinvCRjbNGWcYFxMAG2Qop
-        jstmsgmd8emtzJO/evBooIZV0FmEk2XMmdBLwSQ=
-X-Google-Smtp-Source: ABdhPJxCv+I6j1jzZfjyYLdp+mYWLwPR3jdJK2Nb20n18ezv35ZR6OF8qMWWIVzO/17rhWFlEGpY/BRJoE8Bt7mhc8c=
-X-Received: by 2002:a4a:88ee:: with SMTP id q43mr21478044ooh.61.1614783445212;
- Wed, 03 Mar 2021 06:57:25 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j7/BRFveM1y09hb1VH1ITCBiQfybwUMVyrYKD7X1lLg=;
+        b=dEygCf89vAg40CxwJ/uf5w/yzPUHWDz35NSXoX64ygDeFrUB3oKbk4YsJaGV3ftKm2
+         RWNEHST4hJA7D1hbBVhV1XwgQAQ/NZLd7ejoEqrvPCTbgFd1CvY+MRZZcP8mBkE/QqI6
+         VtYZTiS67q2k3i9nUkUUPCsFLmpRF4/3L3g0tm3ZLrmJb9CPwN1ZjJyR6wgMAP5dG0B0
+         r1pZLCCke6wwDp0wmP9XfHGaQiseEIY1QxwAZoezsVvTQeerv7JNr6cfshNMfrf1Oakn
+         Ed9Pw6dxmfneWaa6375ntWJufjWpAsEhwW6S1/tAaiMYLmmra6QgCBAULHIaEpPr1Ehm
+         V4Aw==
+X-Gm-Message-State: AOAM530w+BI4gPuVCqSbvpbhHIAqdxL3+QaTE3znFdYtZSuZoVU4j0kd
+        +OjZDsKtR4rEfpup3E7b6AT2xA==
+X-Google-Smtp-Source: ABdhPJw9wEzb5Gotz5Io/lsw3Oe4dUrQkh9ImPPKEEFHtjNwwIGUOQJzWpVaf4hiH92D0jpmr5SPDw==
+X-Received: by 2002:ac8:1494:: with SMTP id l20mr23566295qtj.151.1614783465688;
+        Wed, 03 Mar 2021 06:57:45 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:5636])
+        by smtp.gmail.com with ESMTPSA id 79sm2529960qki.37.2021.03.03.06.57.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 06:57:45 -0800 (PST)
+Date:   Wed, 3 Mar 2021 09:57:43 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH v2 4/4] psi: Optimize task switch inside shared cgroups
+Message-ID: <YD+j56JtFTfOjNjt@cmpxchg.org>
+References: <20210303034659.91735-1-zhouchengming@bytedance.com>
+ <20210303034659.91735-5-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-References: <1614763065-114245-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1614763065-114245-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 3 Mar 2021 09:57:13 -0500
-Message-ID: <CADnq5_OXuJbZpaaW7m+skg9zgdS5Buwi6ANSttz41yjBP+HxLQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Remove unnecessary conversion to bool
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303034659.91735-5-zhouchengming@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 4:18 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warnings:
->
-> ./drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c:2252:40-45: WARNING: conversion
-> to bool not needed here.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Wed, Mar 03, 2021 at 11:46:59AM +0800, Chengming Zhou wrote:
+> The commit 36b238d57172 ("psi: Optimize switching tasks inside shared
+> cgroups") only update cgroups whose state actually changes during a
+> task switch only in task preempt case, not in task sleep case.
+> 
+> We actually don't need to clear and set TSK_ONCPU state for common cgroups
+> of next and prev task in sleep case, that can save many psi_group_change
+> especially when most activity comes from one leaf cgroup.
+> 
+> sleep before:
+> psi_dequeue()
+>   while ((group = iterate_groups(prev)))  # all ancestors
+>     psi_group_change(prev, .clear=TSK_RUNNING|TSK_ONCPU)
+> psi_task_switch()
+>   while ((group = iterate_groups(next)))  # all ancestors
+>     psi_group_change(next, .set=TSK_ONCPU)
+> 
+> sleep after:
+> psi_dequeue()
+>   nop
+> psi_task_switch()
+>   while ((group = iterate_groups(next)))  # until (prev & next)
+>     psi_group_change(next, .set=TSK_ONCPU)
+>   while ((group = iterate_groups(prev)))  # all ancestors
+>     psi_group_change(prev, .clear=common?TSK_RUNNING:TSK_RUNNING|TSK_ONCPU)
+> 
+> When a voluntary sleep switches to another task, we remove one call of
+> psi_group_change() for every common cgroup ancestor of the two tasks.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Applied.  Thanks!
-
-Alex
-
-> ---
->  drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-> index c8c22c1..00d3773 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c
-> @@ -2249,7 +2249,7 @@ static int sdma_v4_0_set_powergating_state(void *handle,
->         case CHIP_RAVEN:
->         case CHIP_RENOIR:
->                 sdma_v4_1_update_power_gating(adev,
-> -                               state == AMD_PG_STATE_GATE ? true : false);
-> +                               state == AMD_PG_STATE_GATE);
->                 break;
->         default:
->                 break;
-> --
-> 1.8.3.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
