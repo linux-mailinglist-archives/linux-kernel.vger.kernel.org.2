@@ -2,120 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB7632C0F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FBD32C124
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836063AbhCCSrM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 13:47:12 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:35025 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236532AbhCCRjp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:39:45 -0500
-X-IronPort-AV: E=Sophos;i="5.81,220,1610406000"; 
-   d="scan'208";a="495963342"
-Received: from lfbn-idf1-1-708-183.w86-245.abo.wanadoo.fr (HELO mp-66156.home) ([86.245.159.183])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 18:37:38 +0100
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: XDP socket rings, and LKMM litmus tests
-From:   maranget <luc.maranget@inria.fr>
-In-Reply-To: <20210303171221.GA1574518@rowland.harvard.edu>
-Date:   Wed, 3 Mar 2021 18:37:36 +0100
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
-To:     Alan Stern <stern@rowland.harvard.edu>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        id S1838260AbhCCS7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:59:44 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:61453 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234278AbhCCSVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:21:25 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DrLpz2xdqz9tylR;
+        Wed,  3 Mar 2021 18:39:39 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id YBZwzXhxA9In; Wed,  3 Mar 2021 18:39:39 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrLpz09Xkz9tylQ;
+        Wed,  3 Mar 2021 18:39:39 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 264978B7E8;
+        Wed,  3 Mar 2021 18:39:39 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id oNwRvWSyIn_a; Wed,  3 Mar 2021 18:39:39 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 609DB8B7E6;
+        Wed,  3 Mar 2021 18:39:38 +0100 (CET)
+Subject: Re: [PATCH v2 1/7] cmdline: Add generic function to build command
+ line.
+To:     Will Deacon <will@kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, danielwa@cisco.com,
+        robh@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+ <d8cf7979ad986de45301b39a757c268d9df19f35.1614705851.git.christophe.leroy@csgroup.eu>
+ <20210303172810.GA19713@willie-the-truck>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <a0cfef11-efba-2e5c-6f58-ed63a2c3bfa0@csgroup.eu>
+Date:   Wed, 3 Mar 2021 18:38:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210303172810.GA19713@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On 3 Mar 2021, at 18:12, Alan Stern <stern@rowland.harvard.edu> wrote:
+Le 03/03/2021 à 18:28, Will Deacon a écrit :
+> On Tue, Mar 02, 2021 at 05:25:17PM +0000, Christophe Leroy wrote:
+>> This code provides architectures with a way to build command line
+>> based on what is built in the kernel and what is handed over by the
+>> bootloader, based on selected compile-time options.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   include/linux/cmdline.h | 62 +++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 62 insertions(+)
+>>   create mode 100644 include/linux/cmdline.h
+>>
+>> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+>> new file mode 100644
+>> index 000000000000..ae3610bb0ee2
+>> --- /dev/null
+>> +++ b/include/linux/cmdline.h
+>> @@ -0,0 +1,62 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _LINUX_CMDLINE_H
+>> +#define _LINUX_CMDLINE_H
+>> +
+>> +static __always_inline size_t cmdline_strlen(const char *s)
+>> +{
+>> +	const char *sc;
+>> +
+>> +	for (sc = s; *sc != '\0'; ++sc)
+>> +		; /* nothing */
+>> +	return sc - s;
+>> +}
+>> +
+>> +static __always_inline size_t cmdline_strlcat(char *dest, const char *src, size_t count)
+>> +{
+>> +	size_t dsize = cmdline_strlen(dest);
+>> +	size_t len = cmdline_strlen(src);
+>> +	size_t res = dsize + len;
+>> +
+>> +	/* This would be a bug */
+>> +	if (dsize >= count)
+>> +		return count;
+>> +
+>> +	dest += dsize;
+>> +	count -= dsize;
+>> +	if (len >= count)
+>> +		len = count - 1;
+>> +	memcpy(dest, src, len);
+>> +	dest[len] = 0;
+>> +	return res;
+>> +}
 > 
-> On Tue, Mar 02, 2021 at 03:50:19PM -0800, Paul E. McKenney wrote:
->> On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
-> 
->>> This result is wrong, apparently because of a bug in herd7.  There 
->>> should be control dependencies from each of the two loads in P0 to each 
->>> of the two stores, but herd7 doesn't detect them.
->>> 
->>> Maybe Luc can find some time to check whether this really is a bug and 
->>> if it is, fix it.
->> 
->> I agree that herd7's control dependency tracking could be improved.
->> 
->> But sadly, it is currently doing exactly what I asked Luc to make it do,
->> which is to confine the control dependency to its "if" statement.  But as
->> usual I wasn't thinking globally enough.  And I am not exactly sure what
->> to ask for.  Here a store to a local was control-dependency ordered after
->> a read, and so that should propagate to a read from that local variable.
->> Maybe treat local variables as if they were registers, so that from
->> herd7's viewpoint the READ_ONCE()s are able to head control-dependency
->> chains in multiple "if" statements?
->> 
->> Thoughts?
-> 
-> Local variables absolutely should be treated just like CPU registers, if 
-> possible.  In fact, the compiler has the option of keeping local 
-> variables stored in registers.
-> 
+> Why are these needed instead of using strlen and strlcat directly?
 
-And indeed local variables are treated as registers by herd7.
-
-
-> (Of course, things may get complicated if anyone writes a litmus test 
-> that uses a pointer to a local variable,  Especially if the pointer 
-> could hold the address of a local variable in one execution and a 
-> shared variable in another!  Or if the pointer is itself a shared 
-> variable and is dereferenced in another thread!)
-> 
-> But even if local variables are treated as non-shared storage locations, 
-> we should still handle this correctly.  Part of the problem seems to lie 
-> in the definition of the to-r dependency relation; the relevant portion 
-> is:
-
-In fact, I’d rather change the computation of “dep” here control-dependency “ctrl”. Notice that “ctrl” is computed by herd7 and present in the initial environment of the Cat interpreter.
-
-I have made a PR to herd7 that performs the change. The commit message states the new definition.
-
+Because on powerpc (at least), it will be used in prom_init, it is very early in the boot and KASAN 
+shadow memory is not set up yet so calling generic string functions would crash the board.
 
 > 
-> 	(dep ; [Marked] ; rfi)
+>> +/*
+>> + * This function will append a builtin command line to the command
+>> + * line provided by the bootloader. Kconfig options can be used to alter
+>> + * the behavior of this builtin command line.
+>> + * @dest: The destination of the final appended/prepended string.
+>> + * @src: The starting string or NULL if there isn't one. Must not equal dest.
+>> + * @length: the length of dest buffer.
+>> + */
+>> +static __always_inline void cmdline_build(char *dest, const char *src, size_t length)
+>> +{
+>> +	if (length <= 0)
+>> +		return;
+>> +
+>> +	dest[0] = 0;
+>> +
+>> +#ifdef CONFIG_CMDLINE
+>> +	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !src || !src[0]) {
+>> +		cmdline_strlcat(dest, CONFIG_CMDLINE, length);
+>> +		return;
+>> +	}
+>> +#endif
 > 
-> Here dep is the control dependency from the READ_ONCE to the 
-> local-variable store, and the rfi refers to the following load of the 
-> local variable.  The problem is that the store to the local variable 
-> doesn't go in the Marked class, because it is notated as a plain C 
-> assignment.  (And likewise for the following load.)
+> CONFIG_CMDLINE_FORCE implies CONFIG_CMDLINE, and even if it didn't,
+> CONFIG_CMDLINE is at worst an empty string. Can you drop the #ifdef?
+
+Ah yes, since cbe46bd4f510 ("powerpc: remove CONFIG_CMDLINE #ifdef mess") it is feasible. I can 
+change that now.
+
 > 
-This is a related issue, I am not sure, but perhaps it can be formulated as
-"should rfi and rf on registers behave the  same?”
-
-
-
-> Should we change the model to make loads from and stores to local 
-> variables always count as Marked?
+>> +	if (dest != src)
+>> +		cmdline_strlcat(dest, src, length);
+>> +#ifdef CONFIG_CMDLINE
+>> +	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) && sizeof(CONFIG_CMDLINE) > 1)
+>> +		cmdline_strlcat(dest, " " CONFIG_CMDLINE, length);
+>> +#endif
 > 
-> What should have happened if the local variable were instead a shared 
-> variable which the other thread didn't access at all?  It seems like a 
-> weak point of the memory model that it treats these two things 
-> differently.
-> 
-> Alan
+> Likewise, but also I'm not sure why the sizeof() is required.
 
+It is to avoid adding a white space at the end of the command line when CONFIG_CMDLINE is empty. But 
+maybe it doesn't matter ?
+
+Christophe
