@@ -2,198 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ABE32B73B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D14332B735
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442888AbhCCKvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S1383453AbhCCKuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:50:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238043AbhCCA0U (ORCPT
+        with ESMTP id S237600AbhCCAZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 19:26:20 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BB2C0611BE
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:22:55 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id j3so578371qtj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 16:22:55 -0800 (PST)
+        Tue, 2 Mar 2021 19:25:01 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F14CC061221;
+        Tue,  2 Mar 2021 16:22:41 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id u16so3742556wrt.1;
+        Tue, 02 Mar 2021 16:22:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=xvI3SX7JlP3yoyw6A9a93CvHYXbBacBuW7cN/tDXEXM=;
-        b=oPIjUKZfKiJwU7NlOxCWJ5OPY57CbXoshRc624GxpBnFgpup2P/nV58n0kK9/w2XTx
-         brLP+1+u8lqb56VBhBgco7Y8J95WM0noHIV2xeYo4P7naJMOF8jyTmpN1bSO7ZzqBYkf
-         wLnTE9IuEPsdQ9DhW53OsI8CGals1KWGCUuu9oUKLerRbT0Eefa0xtN6bNdQt8IR07uA
-         2nsXk3Z0vFKr1jZmw1N75kg8R6bKWnQATRIxJn4n7gJcwpld3SrUrVk/3xub3eHr43iP
-         T9Uf5ZzJh8r4nx+VCew3/uiDHEi1lSTdW1/r3/oOd9UBCwABx/E9DzUpEJ1T7iG2PJER
-         ybYQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FSX72t9mSiVVDShOFhuPdJIwlyXLwCJpyaMqc/D0w1g=;
+        b=e9sMs7OGKVI0kgnPShsxFR/Re/t4foivHNL+5tD3WjkzztjMnmrJr8qcrwDKzfendx
+         Kf4vJqHo82I1LwHS6nZH75NK+GdSgMmK6a/HhgwB6SPddp/0ICgkrbKbiliTau/LcPSq
+         x1oZrvi2v2Q7fmnGpXhabu4PRqeyo8UfEq+4TARJuGTpB2RuZDm6URulJpks/x1YGlvR
+         jINUKVXZTvRo0A0Epl2d1FzGnMqgc+pzeGxc6zgECdshLrkmcYPmDgaPUFJVWSDsN5cp
+         AmI1wpi+xGZfmqKa+lR1etx5F89rGIFAv3lwPMEEsiS9s7+GM36LYLVaN2KFQ/ulzbnD
+         +xtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xvI3SX7JlP3yoyw6A9a93CvHYXbBacBuW7cN/tDXEXM=;
-        b=cxVdTL1dHj4IVkOi2mJPEdJIwamP/yFq0Wbk1lnEvnojIoJaGlrfuOPdK27ldBKsay
-         3t9mzDug84IpgEWZ62tTRCVOkSUQ7qEYV55RBN0D8EPhkvWDeourePODTPe3IQ3j9J73
-         aNkzPh0eEhRKmcm+M17CVsO9qkADIf4xV1v6NbjLRc4uddKl9DwsBc+fPic6oy8xOGTR
-         Ki6SgdMw6HWX+nEKVgasbMg5Y7o4RAlmz67Hzv1JDl77JOT+Wnn/a+uIY1lQNy1NpNWM
-         8kLxmknVSCXDSWRSi5iuuas3tNQnGtGokfwHxNo0DlDFArUB4wq/04hTmo4CeIcLSpAr
-         jevw==
-X-Gm-Message-State: AOAM533DSe9aqYQRIjqTtWcWghngnuvt+PEuWpaSwvHhYkwYtRN1j4KY
-        Qkah+aQvIY8d0yh+zaY5/4NPyQ==
-X-Google-Smtp-Source: ABdhPJx5815Pblab/QccqNxqmgkFadcK+ZfVV2aeyidjFjH4QiHxtUtFGn8129DzTiPluIgZh9HpDw==
-X-Received: by 2002:ac8:64c:: with SMTP id e12mr20040140qth.103.1614730975050;
-        Tue, 02 Mar 2021 16:22:55 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id r3sm16690512qkm.129.2021.03.02.16.22.53
+        bh=FSX72t9mSiVVDShOFhuPdJIwlyXLwCJpyaMqc/D0w1g=;
+        b=uFy5e3z4hHvml4Jb9QS3cs80l9P+N+mhuvexKfEbjasK4d5/tTJ72yQ1o0m81YVdQ1
+         iwoSWtEwCsnT9xCm+rBfZSLRsb8G0aBFtwS96CoIT1c8IULcOe03JgWKfQB2jcXJJbRg
+         Lm5H8Fc8tQlZhUmvoMpnhq6JJ318TAf0CY9LvbKe73GSaz84eZgPlmB6DBbSaGP13XRa
+         5JMlDJydQtj+mzxcu/X8gO8sir3V/o9IfxSWR4mRmv2WphwT+z5qLnQd79yEJZL/BdXz
+         rMMoI8QsORJviVmoGVas9DZWKgHHEntbKwXWHbaXHic8IVkkN8dBFX3EsUn/GFOrFcqo
+         ACIw==
+X-Gm-Message-State: AOAM530jjZj7qcnOxAA4iWxFUnnQVfKnsj9OH7AEaJr2B6wjXWG65PZ+
+        pjAVKOWXVYaxoUKepLEInBE=
+X-Google-Smtp-Source: ABdhPJwpEzIbfcQLh67sRjZhl/TzteAqI5j8QdU7YpOP9fz20sZB/1SyFhMvejfi8wkm7dQAtPpD7Q==
+X-Received: by 2002:adf:f148:: with SMTP id y8mr23964390wro.107.1614730960262;
+        Tue, 02 Mar 2021 16:22:40 -0800 (PST)
+Received: from sf (tunnel547699-pt.tunnel.tserv1.lon2.ipv6.he.net. [2001:470:1f1c:3e6::2])
+        by smtp.gmail.com with ESMTPSA id o10sm28655767wrx.5.2021.03.02.16.22.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 16:22:54 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
-        ebiederm@xmission.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
-        james.morse@arm.com, vladimir.murzin@arm.com,
-        matthias.bgg@gmail.com, linux-mm@kvack.org, mark.rutland@arm.com,
-        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
-        selindag@gmail.com, tyhicks@linux.microsoft.com
-Subject: [PATCH v12 17/17] arm64: kexec: Remove cpu-reset.h
-Date:   Tue,  2 Mar 2021 19:22:30 -0500
-Message-Id: <20210303002230.1083176-18-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
-References: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
+        Tue, 02 Mar 2021 16:22:39 -0800 (PST)
+Date:   Wed, 3 Mar 2021 00:22:36 +0000
+From:   Sergei Trofimovich <slyich@gmail.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Don Brace <don.brace@microchip.com>
+Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joe Szczypek <jszczype@redhat.com>,
+        Scott Benesh <scott.benesh@microchip.com>,
+        Scott Teel <scott.teel@microchip.com>,
+        Tomas Henzl <thenzl@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev cmds
+ outstanding for retried cmds" breaks hpsa P600
+Message-ID: <20210303002236.2f4ec01f@sf>
+In-Reply-To: <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
+References: <20210222230519.73f3e239@sf>
+        <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
+        <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
+        <20210223083507.43b5a6dd@sf>
+        <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
+        <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
+        <20210223192743.0198d4a9@sf>
+        <20210302222630.5056f243@sf>
+        <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This header contains only cpu_soft_restart() which is never used directly
-anymore. So, remove this header, and rename the helper to be
-cpu_soft_restart().
+On Tue, 2 Mar 2021 23:31:32 +0100
+John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
 
-Suggested-by: James Morse <james.morse@arm.com>
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
----
- arch/arm64/include/asm/kexec.h    |  6 ++++++
- arch/arm64/kernel/cpu-reset.S     |  7 +++----
- arch/arm64/kernel/cpu-reset.h     | 30 ------------------------------
- arch/arm64/kernel/machine_kexec.c |  6 ++----
- 4 files changed, 11 insertions(+), 38 deletions(-)
- delete mode 100644 arch/arm64/kernel/cpu-reset.h
+> Hi Sergei!
+> 
+> On 3/2/21 11:26 PM, Sergei Trofimovich wrote:
+> > Gave v5.12-rc1 a try today and got a similar boot failure around
+> > hpsa queue initialization, but my failure is later:
+> >     https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
+> > Maybe I get different error because I flipped on most debugging
+> > kernel options :)
+> > 
+> > Looks like 'ERROR: Invalid distance value range' while being
+> > very scary are harmless. It's just a new spammy way for kernel
+> > to report lack of NUMA config on the machine (no SRAT and SLIT
+> > ACPI tables).
+> > 
+> > At least I get hpsa detected on PCI bus. But I guess it's discovered
+> > configuration is very wrong as I get unaligned accesses:
+> >     [   19.811570] kernel unaligned access to 0xe000000105dd8295, ip=0xa000000100b874d1
+> > 
+> > Bisecting now.  
+> 
+> Sounds good. I guess we should get Jens' fix for the signal regression
+> merged as well as your two fixes for strace.
 
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index 5fc87b51f8a9..ee71ae3b93ed 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -90,6 +90,12 @@ static inline void crash_prepare_suspend(void) {}
- static inline void crash_post_resume(void) {}
- #endif
- 
-+#if defined(CONFIG_KEXEC_CORE)
-+void cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
-+		      unsigned long arg0, unsigned long arg1,
-+		      unsigned long arg2);
-+#endif
-+
- #define ARCH_HAS_KIMAGE_ARCH
- 
- struct kimage_arch {
-diff --git a/arch/arm64/kernel/cpu-reset.S b/arch/arm64/kernel/cpu-reset.S
-index 37721eb6f9a1..5d47d6c92634 100644
---- a/arch/arm64/kernel/cpu-reset.S
-+++ b/arch/arm64/kernel/cpu-reset.S
-@@ -16,8 +16,7 @@
- .pushsection    .idmap.text, "awx"
- 
- /*
-- * __cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2) - Helper for
-- * cpu_soft_restart.
-+ * cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2)
-  *
-  * @el2_switch: Flag to indicate a switch to EL2 is needed.
-  * @entry: Location to jump to for soft reset.
-@@ -29,7 +28,7 @@
-  * branch to what would be the reset vector. It must be executed with the
-  * flat identity mapping.
-  */
--SYM_CODE_START(__cpu_soft_restart)
-+SYM_CODE_START(cpu_soft_restart)
- 	/* Clear sctlr_el1 flags. */
- 	mrs	x12, sctlr_el1
- 	mov_q	x13, SCTLR_ELx_FLAGS
-@@ -51,6 +50,6 @@ SYM_CODE_START(__cpu_soft_restart)
- 	mov	x1, x3				// arg1
- 	mov	x2, x4				// arg2
- 	br	x8
--SYM_CODE_END(__cpu_soft_restart)
-+SYM_CODE_END(cpu_soft_restart)
- 
- .popsection
-diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
-deleted file mode 100644
-index f6d95512fec6..000000000000
---- a/arch/arm64/kernel/cpu-reset.h
-+++ /dev/null
-@@ -1,30 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * CPU reset routines
-- *
-- * Copyright (C) 2015 Huawei Futurewei Technologies.
-- */
--
--#ifndef _ARM64_CPU_RESET_H
--#define _ARM64_CPU_RESET_H
--
--#include <asm/virt.h>
--
--void __cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
--	unsigned long arg0, unsigned long arg1, unsigned long arg2);
--
--static inline void __noreturn cpu_soft_restart(unsigned long entry,
--					       unsigned long arg0,
--					       unsigned long arg1,
--					       unsigned long arg2)
--{
--	typeof(__cpu_soft_restart) *restart;
--
--	restart = (void *)__pa_symbol(__cpu_soft_restart);
--
--	cpu_install_idmap();
--	restart(0, entry, arg0, arg1, arg2);
--	unreachable();
--}
--
--#endif
-diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-index a1c9bee0cddd..ef7ba93f2bd6 100644
---- a/arch/arm64/kernel/machine_kexec.c
-+++ b/arch/arm64/kernel/machine_kexec.c
-@@ -23,8 +23,6 @@
- #include <asm/sections.h>
- #include <asm/trans_pgd.h>
- 
--#include "cpu-reset.h"
--
- /**
-  * kexec_image_info - For debugging output.
-  */
-@@ -197,10 +195,10 @@ void machine_kexec(struct kimage *kimage)
- 	 * In kexec_file case, the kernel starts directly without purgatory.
- 	 */
- 	if (kimage->head & IND_DONE) {
--		typeof(__cpu_soft_restart) *restart;
-+		typeof(cpu_soft_restart) *restart;
- 
- 		cpu_install_idmap();
--		restart = (void *)__pa_symbol(__cpu_soft_restart);
-+		restart = (void *)__pa_symbol(cpu_soft_restart);
- 		restart(is_hyp_callable(), kimage->start, kimage->arch.dtb_mem,
- 			0, 0);
- 	} else {
+"bisected" (cheated halfway through) and verified that reverting
+f749d8b7a9896bc6e5ffe104cc64345037e0b152 makes rx3600 boot again.
+
+CCing authors who might be able to help us here.
+
+commit f749d8b7a9896bc6e5ffe104cc64345037e0b152
+Author: Don Brace <don.brace@microchip.com>
+Date:   Mon Feb 15 16:26:57 2021 -0600
+
+    scsi: hpsa: Correct dev cmds outstanding for retried cmds
+
+    Prevent incrementing device->commands_outstanding for ioaccel command
+    retries that are driver initiated.  If the command goes through the retry
+    path, the device->commands_outstanding counter has already accounted for
+    the number of commands outstanding to the device.  Only commands going
+    through function hpsa_cmd_resolve_events decrement this counter.
+
+     - ioaccel commands go to either HBA disks or to logical volumes comprised
+       of SSDs.
+
+    The extra increment is causing device resets to hang.
+
+     - Resets wait for all device outstanding commands to complete before
+       returning.
+
+    Replace unused field abort_pending with retry_pending. This is a
+    maintenance driver so these changes have the least impact/risk.
+
+    Link: https://lore.kernel.org/r/161342801747.29388.13045495968308188518.stgit@brunhilda
+    Tested-by: Joe Szczypek <jszczype@redhat.com>
+    Reviewed-by: Scott Benesh <scott.benesh@microchip.com>
+    Reviewed-by: Scott Teel <scott.teel@microchip.com>
+    Reviewed-by: Tomas Henzl <thenzl@redhat.com>
+    Signed-off-by: Don Brace <don.brace@microchip.com>
+    Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+Don, do you happen to know why this patch caused some controller init failure
+for device
+    14:01.0 RAID bus controller: Hewlett-Packard Company Smart Array P600
+?
+
+Boot failure: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1
+Boot success: https://dev.gentoo.org/~slyfox/configs/guppy-dmesg-5.12-rc1-good
+
+The difference between the two boots is 
+f749d8b7a9896bc6e5ffe104cc64345037e0b152 reverted on top of 5.12-rc1
+in -good case.
+
+Looks like hpsa controller fails to initialize in bad case (could be a race?).
+
 -- 
-2.25.1
 
+  Sergei
