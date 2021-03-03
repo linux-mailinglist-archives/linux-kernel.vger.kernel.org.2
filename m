@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB0A32C0A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB9D32C0B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386640AbhCCSpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:45:07 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19966 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhCCRXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:23:32 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603fc5e60000>; Wed, 03 Mar 2021 09:22:46 -0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
- 2021 17:22:44 +0000
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
- 2021 17:22:43 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.50) by
- HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Wed, 3 Mar 2021 17:22:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WyGqvJf5315XGJ3hfugT/7DtWfIk/xuhLesAaBwmqiVM6+ihVQF9gwaejBk/2mslJR7camxbOjOVLkMxGhenFb67zz/HYTg4cD9z++j9fIj+1EDiHIQ/a0S/oLPF2AhWlC/E6uouyF616FlOSJwShIS5WpqIkeTXr5NusGBvrUm1XvmwZugOi+2HfZG1ntlOCf4MBxCMlzCEDz+zd3L9ECYW5va3XAzPf+GT43/mjgfqKzV+82/q8dgZw8XVuXa5pDJzp7n6RRHVSbCUpnBixX9Eu/9hNhfqdUHQDwYQH3HJ87eMbXWjkaL+CFeZf7r2xL1FgoEL9s8dh0kt8jTLEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2e6R/C8ZOjRryQI4cwzXwsw6pike1c728++lnFWjNEA=;
- b=A1juvSih+rhywG/p60x6PkLbOerUatiBcXdz9T5W+5GR8+2B3tud16dn4LsgPP83KX4UU2XXSQRZcNqxKGRCASWVFAlu5eBZzavCVi0ikxIDmMtPOEaFOLLgE6gdIXF3tWDy8SF/rXW/ng2r+ibWgmBOrRFxFAyodNh3u803l+i7JJQnyui+R58Rztj8MSAuHL0QJfDv0JMgh4jzOPrJKvNa9JjQ/PgOKj9ucwlShAAZUWdgxA+gmWZFPND0mM+lfoIfoNOY22Kb4a1hxSi1F/LPjnS0zaQSvzUnjkeSU2Szbz39cGcCYNWRWS0Vq7POXgeS7Z4CW2lvfglxu1zsQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4356.namprd12.prod.outlook.com (2603:10b6:5:2aa::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Wed, 3 Mar
- 2021 17:22:41 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.017; Wed, 3 Mar 2021
- 17:22:41 +0000
-Date:   Wed, 3 Mar 2021 13:22:39 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-rc 0/2] W=1 compilation fixes leftovers
-Message-ID: <20210303172239.GA1480968@nvidia.com>
-References: <20210302074214.1054299-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210302074214.1054299-1-leon@kernel.org>
-X-ClientProxiedBy: BL1PR13CA0481.namprd13.prod.outlook.com
- (2603:10b6:208:2c7::6) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1386657AbhCCSpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:45:18 -0500
+Received: from mga04.intel.com ([192.55.52.120]:55554 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232816AbhCCRXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:23:37 -0500
+IronPort-SDR: eeWUMD5TmW44ehesPTe0dDv3zRkGFeu22ePdMUC1BgZBId4XPB5SRxhIFoqXjxWsstSaTkiqzS
+ cr324eVhKYFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="184826045"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="184826045"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 09:22:53 -0800
+IronPort-SDR: QCMEmJVGU4YRIlf3c8nrQuc6htZOOa+ZRn+Sspn6ODAOJkoxoLLiK0AydEmNBGlFp5GTZYixn3
+ KkjqwcEajcnQ==
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="600227031"
+Received: from tsaijane-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.136.84])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 09:22:52 -0800
+Date:   Wed, 3 Mar 2021 09:22:50 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Andi leen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
+ MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
+Message-ID: <20210303172250.wbp47skyuf6r37wi@intel.com>
+Mail-Followup-To: Michal Hocko <mhocko@suse.com>,
+        Feng Tang <feng.tang@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Andi leen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+References: <1614766858-90344-15-git-send-email-feng.tang@intel.com>
+ <YD91jTMssJUCupJm@dhcp22.suse.cz>
+ <20210303120717.GA16736@shbuild999.sh.intel.com>
+ <20210303121833.GB16736@shbuild999.sh.intel.com>
+ <YD+BvvM/388AVnmm@dhcp22.suse.cz>
+ <20210303131832.GB78458@shbuild999.sh.intel.com>
+ <20210303134644.GC78458@shbuild999.sh.intel.com>
+ <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
+ <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
+ <YD/D9hckPOA+41+D@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0481.namprd13.prod.outlook.com (2603:10b6:208:2c7::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.13 via Frontend Transport; Wed, 3 Mar 2021 17:22:40 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lHVCp-006DHa-CJ; Wed, 03 Mar 2021 13:22:39 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614792166; bh=2e6R/C8ZOjRryQI4cwzXwsw6pike1c728++lnFWjNEA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=fJnltdO8UI9W4jJ5xuOFL+ivryfsrRHRASi2DiBUt/aFkJCrIfqqIWFDP/G8KoD0Y
-         zVzDkoeag6gYa0q+dpstD6+3l1llE7t37YwJLJXiOZ9UTFwlHcCcDPNVnwZQUHPnOX
-         m+hlu9YHT6HhCQ8WYuEFb0BnUK/Pkco+23PVBeLW0EEUQ3AElN0RxoTl+UE70riWFV
-         /xp2YiGV5HBfVV6L8JPNO2uDGVGKEqsba88GLE8GNxFROF4moyUXUoDnZEqYNfDSyR
-         any0/PeiJfBr7FD4Iii3PJqPkSKvkrZVLTc4yOcJdisOCMzi2F5sLkJZH+1IRHrGOD
-         UL0RPAlxNvWRg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YD/D9hckPOA+41+D@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 09:42:12AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On 21-03-03 18:14:30, Michal Hocko wrote:
+> On Wed 03-03-21 08:31:41, Ben Widawsky wrote:
+> > On 21-03-03 14:59:35, Michal Hocko wrote:
+> > > On Wed 03-03-21 21:46:44, Feng Tang wrote:
+> > > > On Wed, Mar 03, 2021 at 09:18:32PM +0800, Tang, Feng wrote:
+> > > > > On Wed, Mar 03, 2021 at 01:32:11PM +0100, Michal Hocko wrote:
+> > > > > > On Wed 03-03-21 20:18:33, Feng Tang wrote:
+> > > [...]
+> > > > > > > One thing I tried which can fix the slowness is:
+> > > > > > > 
+> > > > > > > +	gfp_mask &= ~(__GFP_DIRECT_RECLAIM | __GFP_KSWAPD_RECLAIM);
+> > > > > > > 
+> > > > > > > which explicitly clears the 2 kinds of reclaim. And I thought it's too
+> > > > > > > hacky and didn't mention it in the commit log.
+> > > > > > 
+> > > > > > Clearing __GFP_DIRECT_RECLAIM would be the right way to achieve
+> > > > > > GFP_NOWAIT semantic. Why would you want to exclude kswapd as well? 
+> > > > > 
+> > > > > When I tried gfp_mask &= ~__GFP_DIRECT_RECLAIM, the slowness couldn't
+> > > > > be fixed.
+> > > > 
+> > > > I just double checked by rerun the test, 'gfp_mask &= ~__GFP_DIRECT_RECLAIM'
+> > > > can also accelerate the allocation much! though is still a little slower than
+> > > > this patch. Seems I've messed some of the tries, and sorry for the confusion!
+> > > > 
+> > > > Could this be used as the solution? or the adding another fallback_nodemask way?
+> > > > but the latter will change the current API quite a bit.
+> > > 
+> > > I haven't got to the whole series yet. The real question is whether the
+> > > first attempt to enforce the preferred mask is a general win. I would
+> > > argue that it resembles the existing single node preferred memory policy
+> > > because that one doesn't push heavily on the preferred node either. So
+> > > dropping just the direct reclaim mode makes some sense to me.
+> > > 
+> > > IIRC this is something I was recommending in an early proposal of the
+> > > feature.
+> > 
+> > My assumption [FWIW] is that the usecases we've outlined for multi-preferred
+> > would want more heavy pushing on the preference mask. However, maybe the uapi
+> > could dictate how hard to try/not try.
 > 
-> Two extra fixes that were missed in Lee's W=1 cleanup.
+> What does that mean and what is the expectation from the kernel to be
+> more or less cast in stone?
 > 
-> Leon Romanovsky (2):
->   RDMA/mlx5: Set correct kernel-doc identifier
->   RDMA/uverbs: Fix kernel-doc warning of _uverbs_alloc
 
-Applied to for-rc, thanks
+(I'm not positive I've understood your question, so correct me if I
+misunderstood)
 
-Jason
+I'm not sure there is a stone-cast way to define it nor should we. At the very
+least though, something in uapi that has a general mapping to GFP flags
+(specifically around reclaim) for the first round of allocation could make
+sense.
+
+In my head there are 3 levels of request possible for multiple nodes:
+1. BIND: Those nodes or die.
+2. Preferred hard: Those nodes and I'm willing to wait. Fallback if impossible.
+3. Preferred soft: Those nodes but I don't want to wait.
+
+Current UAPI in the series doesn't define a distinction between 2, and 3. As I
+understand the change, Feng is defining the behavior to be #3, which makes #2
+not an option. I sort of punted on defining it entirely, in the beginning.
