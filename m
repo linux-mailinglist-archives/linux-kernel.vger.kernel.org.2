@@ -2,114 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B03632BD5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A5932BD69
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452564AbhCCPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:52:04 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:55210 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350011AbhCCLAZ (ORCPT
+        id S1345241AbhCCP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350429AbhCCLAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:00:25 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123AwrsY076562;
-        Wed, 3 Mar 2021 10:59:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=XZsFqSQ50liVCZbNlbeb8g8IToLinTVb61e+knYF4S0=;
- b=c9XoJVjFMHOZ4VuStylJmiwj6eCiI4mHM8oJX7iw6pmKgw2wq4oD6w2l7h1LEUlWaGwM
- Ql9YvoRdenYgl4D6h6/O3d3UjQ2qUPP6rT4DHTJAHADaSkJS7DCebaamXjEP0jssHqdq
- X6zKrL7Z9wrDzG1lpusko6M35PjYd1z7phvTnSZAsl8Gqaj9J+K/2H8ISmMsR0ATJauS
- KC1DAJcdpT2Kc5294P1opDCMIovl1oy1TrfWy5rU0XoxcbFoUCEM9GtOhUx7Ay6/1KUW
- b7140MDB3ulgjdL/amAYLMB6JCCUOuMmDQLfcZ7ksXib2BcJ7h6UGLVWg1JPlTBZE++5 QA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 36yeqn2w1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Mar 2021 10:59:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123At2RW117974;
-        Wed, 3 Mar 2021 10:59:30 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 36yynqdbbj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Mar 2021 10:59:30 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 123AxLCf023593;
-        Wed, 3 Mar 2021 10:59:24 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Mar 2021 02:59:21 -0800
-Date:   Wed, 3 Mar 2021 13:59:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH RESEND] rsxx: Return -EFAULT if copy_to_user() fails
-Message-ID: <20210303105912.GZ2222@kadam>
+        Wed, 3 Mar 2021 06:00:38 -0500
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7243CC0617AA
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:59:58 -0800 (PST)
+Received: by mail-vk1-xa31.google.com with SMTP id i27so2827225vkp.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:59:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qYeQ+NFtTLUpACjemsdiHMG/NCOie4ro9CLEsAjhtuI=;
+        b=jcFAKEL534YPyAxFXGKOJVFO2btNyVhC6s5kEAGYFX+670ERVHjaZ33CMDqb+GM/ZJ
+         dQQ9GvY200Q9Q7o0oQqNRVvOHoYqJzk1ZHQ9nxYT8hGZ3/wcc4DWIadFydb6N8HR8p+f
+         oDZ7Y0nCg5PJseN48pPsKbXWrHFuNTLQjoAZmhWuDILwU+Ce28YePQSxnoLfhyEoO7FX
+         SoT11MqTSP16MWfiiJ339biCFDTouJwIaP7Ydbz94Zot1OhsE43ejjVFsW760badaGgW
+         +3caVh/CiRrAwO9YZfOoPnWtL1ZuE0wnuYl4es+eqC5RK15eMUPiF2cHuFWn2A0ePtWf
+         UhWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qYeQ+NFtTLUpACjemsdiHMG/NCOie4ro9CLEsAjhtuI=;
+        b=Vnufm6+WbL/ldq7Hu2usl5XqAsuWY9/tT4vtrHhpWUxngVodcUIdAfB5jgnIGO2xSW
+         i58zN+vD5kb6BGJcswQT37tgJuBuLUm8NmuYpPXzLaDp6uQTTA8RSOIHHIq242rl/SJn
+         nckL8UH1ZhnUUF/TUlGjECdPeKL7B0E0BXm4FolVTjI3LXLhkzNna9H+K8XAS5I9d5nu
+         G/0yRXumWJ37kAgkJ2gfPSvXB0nfbFbt+8dg4W3Obw20ioybMbrSX5XwYDtS0IN0FJwG
+         8bgrDFhxbBiJhg7cMIR3Asg28XANHGeiVRYUShy7ZXnxRr/tq8CYAL9t5TXMjbrsO/M0
+         u6dA==
+X-Gm-Message-State: AOAM533MheC/+25KKrYMQsTscQNK5ZtxfqzxqaO8rWVfCLyB2uzAE2jM
+        asouXg53H1BibTwv0DATORFV6bGwLRSBCA9w7VEHkA==
+X-Google-Smtp-Source: ABdhPJySAeA/1d5EsayQ94SdoHcpOpkYbKU8KfewwcSREocfquLPnUDq8QChpEe3WhrUC3jF6gQ8uPYeZU7qfB62W/U=
+X-Received: by 2002:a1f:a68d:: with SMTP id p135mr5747751vke.6.1614769197495;
+ Wed, 03 Mar 2021 02:59:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200610172359.GB90634@mwanda>
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103030084
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1011
- priorityscore=1501 mlxlogscore=999 suspectscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030085
+References: <CGME20210210051209epcas1p3e55c0cbab7313731bc6e425da6189bb4@epcas1p3.samsung.com>
+ <20210210045936.7809-1-dh0421.hwang@samsung.com> <CAPDyKFpQyoNELdh3FrFF++HXKjH_Tn9oaY=PzUXHcE8o=KK-hg@mail.gmail.com>
+ <01df01d70ff6$bc9dd230$35d97690$@samsung.com>
+In-Reply-To: <01df01d70ff6$bc9dd230$35d97690$@samsung.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 3 Mar 2021 11:59:19 +0100
+Message-ID: <CAPDyKFpVjxKziPmyF+MXG--LKNSVOYaCUuaNBHCzMGCvSzE--Q@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: add a power cycle when CMD11 fails
+To:     DooHyun Hwang <dh0421.hwang@samsung.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Satya Tangirala <satyat@google.com>,
+        Ludovic Barre <ludovic.barre@st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        grant.jung@samsung.com, jt77.jang@samsung.com,
+        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
+        Seunghui Lee <sh043.lee@samsung.com>,
+        Chanwoo Lee <cw9316.lee@samsung.com>, sh8267.baek@samsung.com,
+        wkon.kim@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The copy_to_user() function returns the number of bytes remaining but
-we want to return -EFAULT to the user if it can't complete the copy.
-The "st" variable only holds zero on success or negative error codes on
-failure so the type should be int.
+On Wed, 3 Mar 2021 at 07:30, DooHyun Hwang <dh0421.hwang@samsung.com> wrote:
+>
+> On Tue, 2 Mar 2021 at 10:38, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >On Wed, 10 Feb 2021 at 06:12, DooHyun Hwang <dh0421.hwang@samsung.com>
+> >wrote:
+> >>
+> >> A power cycle is required if CMD11 fails.
+> >> CMD11 failure should be handled as no response.
+> >>
+> >> If there is a timeout error that means no response to the CMD11, do
+> >> not send the CMD11 again and the power cycle is required.
+> >> Any other errors for CMD11 are the same because CMD11 failed.
+> >>
+> >> On some bad SD Card, CMD11 may fail but the card may have already
+> >> invoked the voltage switch sequence.
+> >> In this case, it is necessary to retry without voltage switching after
+> >> power cycle.
+> >>
+> >> Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
+> >
+> >Applied for next, thanks!
+> >
+> >I took the liberty of updating the commit message a bit, to try to clarify
+> >things. Moreover, I have tagged this for stable kernels.
+> >
+> >BTW, did you try to force the error to -EAGAIN, to keep retrying for a
+> >couple of times? If so, did it end up with the same kind of errors?
+>
+> Thank you for reviewing this.
+>
+> Yes. I tested with 2 SD cards.
+> I think the power cycle is needed before retrying
+> because SD card doesn't respond SD_ROCR_S18A when retrying without power cycle.
 
-Fixes: 36f988e978f8 ("rsxx: Adding in debugfs entries.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-I sent this last June as part of a 2 patch series.  No one responded
-to the patches.  The first patch was a NULL derefence fix but I now
-think that the correct fix for that is to remove the "enable_blkdev"
-module option...  Anyway, this patch is uncontroversial so I'm going to
-resend it.
+Thanks for sharing the logs and the details below!
 
- drivers/block/rsxx/core.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+If I understand correctly, forcing the error to -EAGAIN combined with
+the power cycle when the CMD11 fails, actually makes us succeed with
+the voltage switch in the second retry. Correct?
 
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 6207449fa716f..558fa263acbc0 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -165,15 +165,17 @@ static ssize_t rsxx_cram_read(struct file *fp, char __user *ubuf,
- {
- 	struct rsxx_cardinfo *card = file_inode(fp)->i_private;
- 	char *buf;
--	ssize_t st;
-+	int st;
- 
- 	buf = kzalloc(cnt, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
- 
- 	st = rsxx_creg_read(card, CREG_ADD_CRAM + (u32)*ppos, cnt, buf, 1);
--	if (!st)
--		st = copy_to_user(ubuf, buf, cnt);
-+	if (!st) {
-+		if (copy_to_user(ubuf, buf, cnt))
-+			st = -EFAULT;
-+	}
- 	kfree(buf);
- 	if (st)
- 		return st;
--- 
-2.26.2
+In that case, it seems like a good idea to extend $subject patch to
+return -EAGAIN in case we get an error from the CMD11, right?
+
+[...]
+
+>
+> #4. SD card responded with SD_ROCR_S18A from ACMD41 after power cycle, and change CMD11's error value to -EAGAIN
+> // send ACMD41 + with SD_OCR_S18R (bit[24])
+> <7>[  156.884623]  [0:    kworker/0:1:    7] mmc0: starting CMD41 arg 51040000 flags 000000e1
+> // resp ACMD41 + with SD_ROCR_S18A (bit[24])
+> <7>[  156.884975] I[0:    highpool[3]: 5440] mmc0: req done (CMD41): 0: c1ff8000 00000000 00000000 00000000
+> // send CMD11 and error occurs
+> <7>[  156.885051]  [0:    kworker/0:1:    7] mmc0: starting CMD11 arg 00000000 flags 00000015
+> <7>[  156.885759] I[0:    highpool[3]: 5440] mmc0: req done (CMD11): -84: 00000000 00000000 00000000 00000000
+> // retry with power cycle (tested with this patch)
+> <7>[  156.885834]  [0:    kworker/0:1:    7] mmc0: Signal voltage switch failed, power cycling card
+> <7>[  156.885875]  [0:    kworker/0:1:    7] mmc0: clock 0Hz busmode 2 powermode 0 cs 0 Vdd 0 width 1 timing 0
+> <7>[  156.920185]  [0:    kworker/0:1:    7] mmc0: clock 400000Hz busmode 2 powermode 2 cs 0 Vdd 18 width 1 timing 0
+> // change CMD11's error value to -EAGAIN
+> <3>[  156.932288]  [0:    kworker/0:1:    7] mmc_sd_get_cid: rocr=0xc1ff8000, retries=10. err=-84 -> -11.
+> <7>[  156.932336]  [0:    kworker/0:1:    7] mmc0: clock 400000Hz busmode 2 powermode 2 cs 1 Vdd 18 width 1 timing 0
+> <7>[  156.933834]  [0:    kworker/0:1:    7] mmc0: starting CMD0 arg 00000000 flags 000000c0
+> <7>[  156.934101] I[0:ung.android.mdx:10229] mmc0: req done (CMD0): 0: 00000000 00000000 00000000 00000000
+> <7>[  156.935562]  [0:    kworker/0:1:    7] mmc0: clock 400000Hz busmode 2 powermode 2 cs 0 Vdd 18 width 1 timing 0
+> <7>[  156.937009]  [0:    kworker/0:1:    7] mmc0: starting CMD8 arg 000001aa flags 000002f5
+> <7>[  156.937372] I[0:ung.android.mdx:10229] mmc0: req done (CMD8): 0: 000001aa 00000000 00000000 00000000
+> // send ACMD41 + with SD_OCR_S18R (bit[24])
+> <7>[  157.044190]  [0:    kworker/0:1:    7] mmc0: starting CMD55 arg 00000000 flags 000000f5
+> <7>[  157.044924] I[0:ung.android.mdx:10229] mmc0: req done (CMD55): 0: 00000120 00000000 00000000 00000000
+> <7>[  157.045023]  [0:    kworker/0:1:    7] mmc0: starting CMD41 arg 51040000 flags 000000e1
+> // resp ACMD41 + with SD_ROCR_S18A (bit[24])
+> <7>[  157.045389] I[0:ung.android.mdx:10229] mmc0: req done (CMD41): 0: c1ff8000 00000000 00000000 00000000
+> // send CMD11 and complete
+> <7>[  157.045467]  [0:    kworker/0:1:    7] mmc0: starting CMD11 arg 00000000 flags 00000015
+> <7>[  157.045855] I[0:   Binder:798_2:  805] mmc0: req done (CMD11): 0: 00000320 00000000 00000000 00000000
+>
+>
+> >
+> >> ---
+> >>  drivers/mmc/core/core.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c index
+> >> 1136b859ddd8..a6674df2a7bb 100644
+> >> --- a/drivers/mmc/core/core.c
+> >> +++ b/drivers/mmc/core/core.c
+> >> @@ -1207,7 +1207,7 @@ int mmc_set_uhs_voltage(struct mmc_host *host,
+> >> u32 ocr)
+> >>
+> >>         err = mmc_wait_for_cmd(host, &cmd, 0);
+> >>         if (err)
+> >> -               return err;
+> >> +               goto power_cycle;
+> >>
+> >>         if (!mmc_host_is_spi(host) && (cmd.resp[0] & R1_ERROR))
+> >>                 return -EIO;
+> >> --
+> >> 2.29.0
+> >>
+
+Kind regards
+Uffe
