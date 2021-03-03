@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497D232C4F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2673432C524
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358704AbhCDASm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39414 "EHLO mail.kernel.org"
+        id S242106AbhCDATW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:19:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353011AbhCDAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:07:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E198D64F4C;
-        Wed,  3 Mar 2021 23:56:19 +0000 (UTC)
+        id S239237AbhCDAHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:07:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E98364F52;
+        Wed,  3 Mar 2021 23:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614815780;
-        bh=xJg00R6d3ySVTLUJzM6dVE6oFWvCNYo+XHZd5o5Muck=;
+        bh=PzAaZTYuI9PF2LsmFBWc0xST52WqSacAJGYpWDdxMeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KgGdd7kNo1++6RuGcDRRWP+9caQEekrHKf13rstLrEe47g1zLo5TVqmEhPRAFVc20
-         s4BKDGmL+1XoVyXEJWs5lVtc57l6TRg6c08VunN/RvhT3CUG/QHTet20lwQlj+mb0i
-         /WvSXl8XXHNqiu6RyislRUW73DoLIjereQHhZfPOR2qEGMFWX3rWcdSyZfcBkIW/NT
-         UbLbUvo7zMBHRiEOwQ1nfb+rH21z6Y18zd+txLPGD3LwrONB46+jHEaWVA1vxM1A6M
-         PhIG5eTFEcs7NdE/jamnuqdT6ryH8WurX0t5GnRCKPHmVHiooNn5644R+7JTfPDrLt
-         cnrilMFlkU8dQ==
+        b=OtZbPHy4xvoTY2/NzaP13K0Qi1o7O4JR3Mpzr4Mpzcl9cWDO4hzrjW8VzYHycOuCA
+         IcSLNRbZoH0K0QsSF7DR5WEsAVkHGsZ4qZmjiw1thHwJLj1Y2J1yGTre+NqLN1QeK5
+         af3UZhmsoftek7A6d9qGWTQ2G9dS1htNCHiwRi9tI+4VdYXZidwULcdGjqu6itDmMy
+         QXB1/+r6dAZbtpO+jx0/4BP2VhAD1mxt3Ram0NJKfQ+xezsD6+2QT6ZsDK0DC+IyGE
+         iraTUKu3Pooo7dOdYwIIlsKLZiaOPF6dnEUlM5buOEyrhoT66Wvkazlvct5H4u9GHd
+         QBobBHusLlBPQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH lib/bitmap 4/9] lib: bitmap: fold nbits into region struct
-Date:   Wed,  3 Mar 2021 15:56:11 -0800
-Message-Id: <20210303235616.22093-4-paulmck@kernel.org>
+Subject: [PATCH lib/bitmap 5/9] lib: bitmap: move ERANGE check from set_region to check_region
+Date:   Wed,  3 Mar 2021 15:56:12 -0800
+Message-Id: <20210303235616.22093-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235526.GA21868@paulmck-ThinkPad-P72>
 References: <20210303235526.GA21868@paulmck-ThinkPad-P72>
@@ -47,76 +47,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-This will reduce parameter passing and enable using nbits as part
-of future dynamic region parameter parsing.
+It makes sense to do all the checks in check_region() and not 1/2
+in check_region and 1/2 in set_region.
+
+Since set_region is called immediately after check_region, the net
+effect on runtime is zero, but it gets rid of an if (...) return...
 
 Cc: Yury Norov <yury.norov@gmail.com>
 Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Suggested-by: Yury Norov <yury.norov@gmail.com>
 Acked-by: Yury Norov <yury.norov@gmail.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- lib/bitmap.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ lib/bitmap.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 75006c4..162e285 100644
+index 162e285..833f152a 100644
 --- a/lib/bitmap.c
 +++ b/lib/bitmap.c
-@@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
- 
- /*
-  * Region 9-38:4/10 describes the following bitmap structure:
-- * 0	   9  12    18			38
-- * .........****......****......****......
-- *	    ^  ^     ^			 ^
-- *      start  off   group_len	       end
-+ * 0	   9  12    18			38	     N
-+ * .........****......****......****..................
-+ *	    ^  ^     ^			 ^	     ^
-+ *      start  off   group_len	       end	 nbits
-  */
- struct region {
- 	unsigned int start;
- 	unsigned int off;
- 	unsigned int group_len;
- 	unsigned int end;
-+	unsigned int nbits;
+@@ -500,17 +500,12 @@ struct region {
+ 	unsigned int nbits;
  };
  
--static int bitmap_set_region(const struct region *r,
--				unsigned long *bitmap, int nbits)
-+static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
+-static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
++static void bitmap_set_region(const struct region *r, unsigned long *bitmap)
  {
  	unsigned int start;
  
--	if (r->end >= nbits)
-+	if (r->end >= r->nbits)
- 		return -ERANGE;
- 
+-	if (r->end >= r->nbits)
+-		return -ERANGE;
+-
  	for (start = r->start; start <= r->end; start += r->group_len)
-@@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
- 	struct region r;
- 	long ret;
+ 		bitmap_set(bitmap, start, min(r->end - start + 1, r->off));
+-
+-	return 0;
+ }
  
--	bitmap_zero(maskp, nmaskbits);
-+	r.nbits = nmaskbits;
-+	bitmap_zero(maskp, r.nbits);
+ static int bitmap_check_region(const struct region *r)
+@@ -518,6 +513,9 @@ static int bitmap_check_region(const struct region *r)
+ 	if (r->start > r->end || r->group_len == 0 || r->off > r->group_len)
+ 		return -EINVAL;
  
- 	while (buf) {
- 		buf = bitmap_find_region(buf);
-@@ -655,7 +656,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
++	if (r->end >= r->nbits)
++		return -ERANGE;
++
+ 	return 0;
+ }
+ 
+@@ -656,9 +654,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
  		if (ret)
  			return ret;
  
--		ret = bitmap_set_region(&r, maskp, nmaskbits);
-+		ret = bitmap_set_region(&r, maskp);
- 		if (ret)
- 			return ret;
+-		ret = bitmap_set_region(&r, maskp);
+-		if (ret)
+-			return ret;
++		bitmap_set_region(&r, maskp);
  	}
+ 
+ 	return 0;
 -- 
 2.9.5
 
