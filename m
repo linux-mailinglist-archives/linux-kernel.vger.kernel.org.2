@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9D732BCDC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D520D32BC73
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244577AbhCCOvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843046AbhCCKYy (ORCPT
+        id S1350206AbhCCN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:57:14 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52980 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1582447AbhCCKWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:24:54 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534DEC08EB24
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 01:38:58 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id h21so19557021qkl.12
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 01:38:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=06CCmBMLbXxMNmm2C3sV6HK1skcr37rdo4zP3bjD240=;
-        b=BABNwRFoNRuKVO2/1k0kWsWMaH2Ytj69DQM6xrDt/c7pq3j1Ztj1kYgx71JEZn3LYW
-         w1zjHH7r5a1eWfCL2+l1Hzl8xftOlRSRA1rYchzUrv36cdLGx5i8YwKvbMon9JZYROSZ
-         mDseW26BwqOr7wulffylfQykQ5V3swv3FHkrXSFMQLp8hIQ7pm+X3Un+XN+3/eV/kaEy
-         WnhSZyDT+o2gWP2YJgwmEt0iDTtR18QrjlkBk4leqHlZq+mXICVBvZAKmGwU+MHGOCty
-         HlO+Bie8Tpk/boSW2zMGDLn9QwddR00Vnfm7L2QSkQGTjcP8Bb1549s2YUnXQKVVI9fs
-         2ApQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=06CCmBMLbXxMNmm2C3sV6HK1skcr37rdo4zP3bjD240=;
-        b=g31hFg5msHxYUhIWZMAjCDbT8z4IWO23SkDHL2kyEZFXhhKaK94PigqGV96B1xCqjI
-         CGBl4JRQnz0IcT8bDZVzqo4YUP40S2ulN9DkacfmmKboC+VkZsOFCV72vnPBlM7uR4KL
-         rAJbpCS/WWJJsN2APw5H1PtKDYORjztkc/lU3smjDE7rHFDfiUrtmO5zUR+AgYGkFQ6y
-         vH2aghfIe9dK8hLwGQI8wVqRlf7wEX8ZRVIoNm/hs/Si4R0mxDYqOxSBwL8PCTmR/bT6
-         ivqKhvK4OzExsuBwmE/uFdzFKklvrYUxf5JDN5gKQfbIuncmHdaMUdkHGNkgaGqNs4pe
-         T8TQ==
-X-Gm-Message-State: AOAM531F/rhBn2URN1HyFyn28VGmmrJzDvdolw+/7YD/fkDsJckmQMrT
-        uvCLDlG+NcDYG7uGadaALHDmZOnqdQ==
-X-Google-Smtp-Source: ABdhPJzVPT7JrZ0AyCVKEOFLcjB3h7Pf4NzZlDrY2O8FNi/lvc8WslssJU2+PArRaY+iS7JKbVidY/gySw==
-Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:811:228c:e84:3381])
- (user=elver job=sendgmr) by 2002:a05:6214:6f1:: with SMTP id
- bk17mr7605939qvb.53.1614764337502; Wed, 03 Mar 2021 01:38:57 -0800 (PST)
-Date:   Wed,  3 Mar 2021 10:38:45 +0100
-Message-Id: <20210303093845.2743309-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] kcsan, debugfs: Move debugfs file creation out of early init
-From:   Marco Elver <elver@google.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
-        andreyknvl@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 3 Mar 2021 05:22:01 -0500
+X-UUID: f7d82a628d8d41d49dc3aef8ee823e63-20210303
+X-UUID: f7d82a628d8d41d49dc3aef8ee823e63-20210303
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <vic.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 427815017; Wed, 03 Mar 2021 17:40:58 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 3 Mar 2021 17:40:48 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Mar 2021 17:40:48 +0800
+From:   Vic Wu <vic.wu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Ryder Lee <ryder.lee@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Vic Wu <vic.wu@mediatek.com>
+Subject: [PATCH] crypto: mediatek - remove obsolete documentation
+Date:   Wed, 3 Mar 2021 17:39:50 +0800
+Message-ID: <20210303093950.20309-1-vic.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 56348560d495 ("debugfs: do not attempt to create a new file
-before the filesystem is initalized") forbids creating new debugfs files
-until debugfs is fully initialized. This breaks KCSAN's debugfs file
-creation, which happened at the end of __init().
+The crypto mediatek driver has been replaced by the inside-secure driver now.
+Remove DT bindings documentation and update crypto engine nodes to the mt7623.dtsi files.
 
-There is no reason to create the debugfs file during early
-initialization. Therefore, move it into a late_initcall() callback.
-
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Vic Wu <vic.wu@mediatek.com>
+Acked-by: Ryder Lee <ryder.lee@mediatek.com>
 ---
-I've marked this for 'stable', since 56348560d495 is also intended for
-stable, and would subsequently break KCSAN in all stable kernels where
-KCSAN is available (since 5.8).
----
- kernel/kcsan/core.c    | 2 --
- kernel/kcsan/debugfs.c | 4 +++-
- kernel/kcsan/kcsan.h   | 5 -----
- 3 files changed, 3 insertions(+), 8 deletions(-)
+ Documentation/devicetree/bindings/crypto/mediatek-crypto.txt       | 25 -------------------
+ arch/arm/boot/dts/mt7623.dtsi                 |  8 +++---
+ 2 files changed, 3 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
 
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 8c3867640c21..45c821d4e8bd 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -644,8 +644,6 @@ void __init kcsan_init(void)
- 
- 	BUG_ON(!in_task());
- 
--	kcsan_debugfs_init();
+diff --git a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt b/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
+deleted file mode 100644
+index 450da3661cad..000000000000
+--- a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
++++ /dev/null
+@@ -1,25 +0,0 @@
+-MediaTek cryptographic accelerators
 -
- 	for_each_possible_cpu(cpu)
- 		per_cpu(kcsan_rand_state, cpu) = (u32)get_cycles();
- 
-diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
-index c837ce6c52e6..c1dd02f3be8b 100644
---- a/kernel/kcsan/debugfs.c
-+++ b/kernel/kcsan/debugfs.c
-@@ -266,7 +266,9 @@ static const struct file_operations debugfs_ops =
- 	.release = single_release
- };
- 
--void __init kcsan_debugfs_init(void)
-+static void __init kcsan_debugfs_init(void)
- {
- 	debugfs_create_file("kcsan", 0644, NULL, NULL, &debugfs_ops);
- }
-+
-+late_initcall(kcsan_debugfs_init);
-diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
-index 594a5dd4842a..9881099d4179 100644
---- a/kernel/kcsan/kcsan.h
-+++ b/kernel/kcsan/kcsan.h
-@@ -31,11 +31,6 @@ extern bool kcsan_enabled;
- void kcsan_save_irqtrace(struct task_struct *task);
- void kcsan_restore_irqtrace(struct task_struct *task);
- 
--/*
-- * Initialize debugfs file.
-- */
--void kcsan_debugfs_init(void);
+-Required properties:
+-- compatible: Should be "mediatek,eip97-crypto"
+-- reg: Address and length of the register set for the device
+-- interrupts: Should contain the five crypto engines interrupts in numeric
+-	order. These are global system and four descriptor rings.
+-- clocks: the clock used by the core
+-- clock-names: Must contain "cryp".
+-- power-domains: Must contain a reference to the PM domain.
 -
- /*
-  * Statistics counters displayed via debugfs; should only be modified in
-  * slow-paths.
+-
+-Example:
+-	crypto: crypto@1b240000 {
+-		compatible = "mediatek,eip97-crypto";
+-		reg = <0 0x1b240000 0 0x20000>;
+-		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
+-		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
+-		clock-names = "cryp";
+-		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
+-	};
+diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
+index aea6809500d7..25e3f3b04123 100644
+--- a/arch/arm/boot/dts/mt7623.dtsi
++++ b/arch/arm/boot/dts/mt7623.dtsi
+@@ -949,16 +949,14 @@
+ 	};
+ 
+ 	crypto: crypto@1b240000 {
+-		compatible = "mediatek,eip97-crypto";
++		compatible = "inside-secure,safexcel-eip97";
+ 		reg = <0 0x1b240000 0 0x20000>;
+ 		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
+ 			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
+ 			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
+-			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
++			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names = "ring0", "ring1", "ring2", "ring3";
+ 		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
+-		clock-names = "cryp";
+-		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
+ 		status = "disabled";
+ 	};
+ 
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+2.18.0
 
