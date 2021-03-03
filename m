@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B80732C15A
+	by mail.lfdr.de (Postfix) with ESMTP id A8A7932C15D
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838539AbhCCTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 14:00:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1580486AbhCCSeP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1838547AbhCCTAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 14:00:52 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:10478 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1580475AbhCCSeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 13:34:15 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6C8C061761
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 10:33:35 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id lr13so44140425ejb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 10:33:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LnOC0uNXUE44ciK8bmce/8ac0cOgTk35A1lz1/wb5qE=;
-        b=gdw7UI+zewj3nObPzpoPiss8jEu67twJtLHiwjA4wUJLX/GBBq07jjBzbdt8CSycJ9
-         K4KKVM4nx+GzXyzlqYw6t8MQynABCmQU51lybNZI/Pbw3GG1Oz+WpLuB6RWxBtfcOza7
-         ebu0KVo+vc8P4ZdpDLZrL7veBg4849Cc98WASlBbfvkuSg77WLd8duztW58Qpvw2LOSa
-         YGUGWWbWr+g/eJaaZgCfAf81PoQb27DALWd7l65GFlKN63yX8/CcOkgHiEQvMT88NwPr
-         ykKaxZduItQSBQ/WOuwxn5cIUAy1ae2u9EsscU3OGfgFIYQnflA+5v0HXvh7axE9TDwi
-         1XPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LnOC0uNXUE44ciK8bmce/8ac0cOgTk35A1lz1/wb5qE=;
-        b=HHVLWUGRSvwuCL97/lRdeuRRWiw8+5U3/zGQFa8zYUBrFgVW/Z/TLQK9FpVydhKPMd
-         mHdJwzGE9gs2h5cZ9UdbkqNDTJsWnZkRjGYE0IymIBHPpH1FS2bvbxDmBNvRN8phHobP
-         tP4TYcCCMpf8Mo5/TnTkgwrc5myHgjhcC7KnzI8UVy6FiYgLl5bAVwi5iwY/zB/99lvP
-         0S2swvDnjTOryYyp/f8ExjAz/3fPYCRuS7fz21p+M+BhTPZm/yoOk2iz366AG+MUdw5g
-         YX3bByJd2e5m+B/aXJ+AJiPuG4CFxrzQSpMkvAz9nRkCh8Ms/6ini5Jzz5WyD4TuZ5Q1
-         MX8g==
-X-Gm-Message-State: AOAM5300uEPjF38McnY8KrucJGUoWEN7qxePk70SzQ3uDCoRThmbilbq
-        J895oOIRdp9cJ6xI4MiICz0=
-X-Google-Smtp-Source: ABdhPJzP3qyzdjg/SeT6+FHs9/3xFZp9/7bMChd92Zf7Pynh8Tm+3nEnto2nU44dFKryitTtwu11+Q==
-X-Received: by 2002:a17:906:3685:: with SMTP id a5mr196771ejc.352.1614796413722;
-        Wed, 03 Mar 2021 10:33:33 -0800 (PST)
-Received: from localhost.localdomain (dynamic-046-114-034-198.46.114.pool.telefonica.de. [46.114.34.198])
-        by smtp.googlemail.com with ESMTPSA id q12sm14951405ejd.51.2021.03.03.10.33.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 10:33:33 -0800 (PST)
-From:   Gon Solo <gonsolo@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Gon Solo <gonsolo@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Perf: Clean beauty directory.
-Date:   Wed,  3 Mar 2021 19:32:47 +0100
-Message-Id: <20210303183247.217385-2-gonsolo@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210303183247.217385-1-gonsolo@gmail.com>
-References: <20210303183247.217385-1-gonsolo@gmail.com>
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614796436; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=Ac+Gd3GM2hW82Saxrw1wKrEC8rkJjEHWwfXpNzzaSa0=; b=A5W/GxFhDcGmy97O/0K+jrU6b1kIKpdjqkOiHd7+AkSJH21YPoQxUUFIO2Zab1Dy60DqNT8j
+ HEwudMRVt/+DkP4N+SX0HX5bSg4unxBt7tUZQp+RHCvB0r0NLYcAk/Rjp7s/vPzFL6A6L1KE
+ 5WFsEbwEdieYzzmKuj3rbwNIYFM=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 603fd66b7b648e2436a0677a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 18:33:15
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2B3D4C433ED; Wed,  3 Mar 2021 18:33:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2EFB5C43462;
+        Wed,  3 Mar 2021 18:33:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2EFB5C43462
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iwlwifi: don't call netif_napi_add() with rxq->lock held (was Re: Lockdep warning in iwl_pcie_rx_handle())
+References: <nycvar.YFH.7.76.2103021134060.12405@cbobk.fhfr.pm>
+        <20210303155941.25521C43463@smtp.codeaurora.org>
+        <nycvar.YFH.7.76.2103031901140.12405@cbobk.fhfr.pm>
+Date:   Wed, 03 Mar 2021 20:33:09 +0200
+In-Reply-To: <nycvar.YFH.7.76.2103031901140.12405@cbobk.fhfr.pm> (Jiri
+        Kosina's message of "Wed, 3 Mar 2021 19:01:45 +0100 (CET)")
+Message-ID: <87y2f46qai.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- tools/perf/Makefile.perf | 1 +
- 1 file changed, 1 insertion(+)
+Jiri Kosina <jikos@kernel.org> writes:
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 5345ac70cd83..293e297f719d 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1087,6 +1087,7 @@ clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clea
- 		$(OUTPUT)$(sync_file_range_arrays)
- 	$(call QUIET_CLEAN, Documentation) \
- 	$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) clean >/dev/null
-+	$(call QUIET_CLEAN, beauty) $(RM) -r $(beauty_outdir)
- 
- #
- # To provide FEATURE-DUMP into $(FEATURE_DUMP_COPY)
+> On Wed, 3 Mar 2021, Kalle Valo wrote:
+>
+>> Patch applied to wireless-drivers.git, thanks.
+>
+> Thanks, but ...
+>
+>> 295d4cd82b01 iwlwifi: don't call netif_napi_add() with rxq->lock
+>> held (was Re: Lockdep warning in iwl_pcie_rx_handle())
+>
+> ... i believe you want to drop the "(was ...") part from the patch 
+> subject.
+
+Too late now, it's already applied and pull request sent. Why was it
+there in the first place?
+
 -- 
-2.27.0
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
