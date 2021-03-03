@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B575032BADC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4F532BADD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 22:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358376AbhCCMGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 07:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42402 "EHLO
+        id S1358393AbhCCMGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 07:06:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354915AbhCCGI0 (ORCPT
+        with ESMTP id S1451571AbhCCGKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 01:08:26 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD58C061756;
-        Tue,  2 Mar 2021 22:07:46 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dr3Sc0g41z9sW5;
-        Wed,  3 Mar 2021 17:07:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614751664;
-        bh=0o5aIi2qjzi0mE36JTrLm3NjOuZ7+Jo6eQZPy66Pq7Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IC8zn6KUlXL0KBzXBgyD/QSNb/bLY4XACsP6niPFZntVgIMu+VKtUPZ6h0/fM7Qu6
-         pq1IVUoCNUayXJDXxwTSRs4khOaNCRZtgwgO+TlZny9Fw7e071rk8VV11OKjLlpQZo
-         pDSurBovxQnR5FrB9pzcJJKNUncLHak+MGc82TWFlP1lfI9AWcIwp8VYpyEhDyPqzg
-         kzNHon1nmPaG9gEnlGZedzz6z4+q+FKAmiwSseiGJqiyN6+sU4GQ4l7Fiw3K716QtF
-         ezJPI24ARGv3flamaJYtyo6wsI2SVCMmwwFhpr4AM8s5pAIrUuZ5xWV7IzC1Z+Dpt1
-         yfMOPChNGI9Jg==
-Date:   Wed, 3 Mar 2021 17:07:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the fscache tree
-Message-ID: <20210303170743.69ceaeb8@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XdPmex1RJKaKBXh9yKZIVeF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 3 Mar 2021 01:10:05 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E281C06178B
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 22:09:24 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id 130so8321411qkh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 22:09:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:mime-version:date:message-id;
+        bh=KOGOKvRSzoNPFZQryb8VGK9fT5tcMe0OoD6HHUH2Lxg=;
+        b=Bi12P9AOAIL8ie09CdRp3QX8XoD0z0Ee9KBtLgBtV/JPuNqq9a7doMIDpxeqsCWccN
+         502Q6n0Hb93dD7tC1uvOpSvGXUsYKqAp3iTY/v/hjqLJatBDxm5GZGBgscEwNpYo0yPb
+         aBGXGjjwQfGCpJWS0LZIUcKJqr5QUPGl6Ts2MSU3XsjnbvGDmPbmIreS+Jhz4XYeVZ/H
+         L+vM0mG3s8a9QVyljmDLHv54JU7YJc2Ypv/PFaydIXx4JZLGEzTwFveQCYJAViXbh/Ez
+         2Dv6Vb/D8/WftzLEVtcR6Qh1TpT0URWkcgDSzWo92vtxO+D1jG5U9dU/vXZEw9WlOtSP
+         lu5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
+         :message-id;
+        bh=KOGOKvRSzoNPFZQryb8VGK9fT5tcMe0OoD6HHUH2Lxg=;
+        b=NbGyjOCkdJO4K7uThXxIuniVCJzWDhdzsItinnjjDOgm8arb2rgiAE1WEwh5MXrnZk
+         xXi9UcYW6nGGEK1RVCNN0Sr0TIpn/FRykAtsWKQDxnGnRdkdIcZYZPPaRfNWjDA3MuX0
+         C2jrM22HCOmUkPMEIrAS+aKyTcCnPX/bpqAxy/3QhEyXDSde7PgMLt0x7HHMYeomSDsr
+         SrfrHmtIPm38vZpgX/VFk7EOfnSo2pGVKE6xdvmSKTuenTsxMl1WsM251/jmc8kOydMf
+         ZYKVXZC4kfUb1VgB5Xr2Vk67HNd+X9zGHULXC0zIpvBijYTUhMeawKk2wnJEXIZUqBN8
+         ppmA==
+X-Gm-Message-State: AOAM531AluXOAi0sUCp4nnXxcSXQQHAJDaIs5hHZRQZjp/ZqtuyowW/B
+        YREfnPFXp4wZI9jdOSwiNB/WVw==
+X-Google-Smtp-Source: ABdhPJyyS94moCcVTiYItlptxqX3tKO7r+u9zG1zGn1qvs4uV2MfNAjtsei9B8JmvKtmlRNz8deVMQ==
+X-Received: by 2002:a37:3c8:: with SMTP id 191mr22964562qkd.90.1614751763714;
+        Tue, 02 Mar 2021 22:09:23 -0800 (PST)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id 19sm16590523qkv.95.2021.03.02.22.09.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 22:09:23 -0800 (PST)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: next-20210302 - build issue with linux-firmware and rtl_nic/ firmware.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date:   Wed, 03 Mar 2021 01:09:22 -0500
+Message-ID: <199898.1614751762@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XdPmex1RJKaKBXh9yKZIVeF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+So my kernel build died..
 
-Hi all,
+  UPD     drivers/base/firmware_loader/builtin/rtl_nic/rtl8106e-1.fw.gen.S
+make[4]: *** No rule to make target '/lib/firmware/rtl_nic/rtl8106e-1.fw', needed by 'drivers/base/firmware_loader/builtin/rtl_nic/rtl8106e-1.fw.gen.o'.  Stop.
+make[3]: *** [scripts/Makefile.build:514: drivers/base/firmware_loader/builtin] Error 2
 
-After merging the fscache tree, today's linux-next build (htmldocs)
-produced this warning:
+I tracked it down to a linux-firmware update that shipped everything with .xz compression:
 
-Documentation/filesystems/netfs_library.rst: WARNING: document isn't includ=
-ed in any toctree
+% rpm2cpio linux-firmware-20201218-116.fc34.noarch.rpm | cpio -itv | grep 8106e-1
+-rw-r--r--   1 root     root         1856 Dec 19 04:43 ./usr/lib/firmware/rtl_nic/rtl8106e-1.fw
+631034 blocks
+% rpm2cpio linux-firmware-20210208-117.fc34.noarch.rpm | cpio -itv|  grep 8106e-1
+-rw-r--r--   1 root     root          848 Feb  8 16:38 ./usr/lib/firmware/rtl_nic/rtl8106e-1.fw.xz
+340217 blocks
 
-Introduced by commit
+and my .config shows it's self-inflicted (no, I don't remember why it's in there):
 
-  cefbac2d6fc5 ("netfs: Documentation for helper library")
+# Firmware loader
+CONFIG_EXTRA_FIRMWARE="rtl_nic/rtl8106e-1.fw"
+CONFIG_EXTRA_FIRMWARE_DIR="/lib/firmware"
 
---=20
-Cheers,
-Stephen Rothwell
+But then I take a closer look at  drivers/net/ethernet/realtek/r8169_main.c
+#define FIRMWARE_8168D_1	"rtl_nic/rtl8168d-1.fw"
+#define FIRMWARE_8168D_2	"rtl_nic/rtl8168d-2.fw"
+#define FIRMWARE_8168E_1	"rtl_nic/rtl8168e-1.fw"
 
---Sig_/XdPmex1RJKaKBXh9yKZIVeF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA/J68ACgkQAVBC80lX
-0GzV5QgAlToWg9Uw3xHSibsruvaK3HXnKZ2hIat2x/DLCCpkoKEBrmH1MY78PlZQ
-Ma6OeCMGVAZ5RD1xn1noLEhdikeI/Afit9zLhqsII+jojWSF+gcQeF6l0ioz+qwW
-/VpUN8pLMtWCXznAhNUP8d4nFcb4c0tA3cYu9/IISSwcS330PraO1Yb1zsaFv5Ow
-255Vx8RD+9VJchuDBu0N0oeAD28IFI9YdboIExKBFQjzuZoO5/n0dsm4mTJWJCKG
-MUuvDQzOZjzZ8RV20ZCbKBVvaalDK0/P7NLDhMUF34ZoCLnaxk71uBur1ldQpxwu
-and2k6o6TxqEQOINMLqGMchYfrGtSQ==
-=RsUL
------END PGP SIGNATURE-----
-
---Sig_/XdPmex1RJKaKBXh9yKZIVeF--
+So now I'm mystified how this compressing all the firmware files is supposed to work...
