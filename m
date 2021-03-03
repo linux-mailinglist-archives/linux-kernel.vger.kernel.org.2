@@ -2,149 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F1932C49A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3A432C50B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446549AbhCDAPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353558AbhCDAFD (ORCPT
+        id S240942AbhCDATE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:19:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20640 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1388903AbhCDAMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:05:03 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7A9C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 15:45:49 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id i14so5217775pjz.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 15:45:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=viX38uAFosgjfxzIEwtp5/9ccsD8S6gdRKmkOGqC4ZM=;
-        b=tFw0tarov1iJTLDTtNFsY2OxaIaZkTz7n2/ahcBHcHPiq9cvYu60bFUCM4aRbJGqlZ
-         as3OtvGnOee5YgEPLwEkaHn1SKn1xzvecBx496QS5UY4NzAn2gWyhbF0RgJyPKxBxav+
-         y43XeDofv7CRWcYyMPhmufgMMue8wz748Nqj7aQoTa4yFpY5i3Ub2SnesvOCHWuK354l
-         PofuS4LjSPn0ExF/HAhym9QS0VNGjR1Vji4fSbQWFasw/0gfkEZiDdcxPh6nmOxBd4qp
-         Jm6KmxgroFH/aUjq5D3q7j9N50r3xDphm12o5ViVf10BrexxBkEB9n0KC2x6isEpzxn7
-         UJqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=viX38uAFosgjfxzIEwtp5/9ccsD8S6gdRKmkOGqC4ZM=;
-        b=oTtpB3NHLM4cYlrG6S7ie4vS89rmcO+AG6duFuxhY1ZS7IJ8uKvF5VaLeoNAr6m1f8
-         rtuh5EEjNrqKVEZ6x9WJDkHUqPNrniqsJjTWkm9esm/Fc9+ASVBF8bR8H0Z/dpYGNr9d
-         KnW/6SWlPstu7Bo1isSq9lIUzO6S6Y3/6JiskQXh7fp1xXHyUlA/+lwhBbied+vCCW/o
-         h3SO9DwSmur0CA/blc7WAzNHvp8WN9yRwDEzzhzDYdxtv9YQOBFjbVHKnD7PFeUtzHgs
-         K/yqzIGgwAp6A08qGgqxzIWGBiOWVRs6j5hi6Jp5V3zN351EUnUhs7AR8T5ckkRjZc/G
-         XoDQ==
-X-Gm-Message-State: AOAM530Ezp0sU+P4POLQGnGNdAVhvExxGUNrQRwU0i73SwTcDFv2x489
-        sv8BXVHW02s6a2DOQohELFk=
-X-Google-Smtp-Source: ABdhPJxn3OSRLrQuZ4nBXaa8upf3S/fO9o5Z1S7dSoMRGMJjVVU9S7YOZ/bt29oVlETpRFTHHd/vBQ==
-X-Received: by 2002:a17:902:b601:b029:e3:7aab:704d with SMTP id b1-20020a170902b601b02900e37aab704dmr1485394pls.58.1614815148698;
-        Wed, 03 Mar 2021 15:45:48 -0800 (PST)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id q15sm8823607pje.28.2021.03.03.15.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 15:45:48 -0800 (PST)
-Date:   Thu, 4 Mar 2021 08:45:43 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     lee.jones@linaro.org, alexandre.torgue@foss.st.com,
-        mcoquelin.stm32@gmail.com, olivier.moysan@foss.st.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] mfd: stm32-timers: avoid clearing auto reload register
-Message-ID: <YEAfpzWhfkfh0xTs@shinobu>
-References: <1614793895-10504-1-git-send-email-fabrice.gasnier@foss.st.com>
+        Wed, 3 Mar 2021 19:12:22 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123NiF7E187060;
+        Wed, 3 Mar 2021 18:46:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=9hmufHBx8zEm/lSY8SP5hpZIAwhMnmA4N+Y9juxescc=;
+ b=ndGszCqaTZThXbYE1yudxey01QJ3extFyMAhKY9vvbjzwn9o3X0yGhGuPlncqJp0Ng4g
+ C9w3LBP0VxlDpqFVOOYxcWQjB3sYv53APMpzK7e1GZR1z5C0PNy31lxP0dnYB2LpPuaK
+ 9pOsek4ANiPN65o0I5X+ebFQCGgNM9kAt3SWVzmXW4r0Ryfb1sPu2AYcR3SWj4anI4WZ
+ gxRf32psbmVnphSwzvaX/uGJZMWdbXGrcBAq4mW4Dw0DvE9j+++GMfvTpN4nh+XI6CDb
+ FvcsEhewXrz28SW44VV+rcmRiR+kA4iiT9zHwEBxKzMYNRhxfZpPuUAwwxgM6hN4N6+f VA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372mcx80yd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 18:46:15 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 123NjJeQ193130;
+        Wed, 3 Mar 2021 18:46:14 -0500
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372mcx80xw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 18:46:14 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 123Nh1JL010430;
+        Wed, 3 Mar 2021 23:46:13 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma01dal.us.ibm.com with ESMTP id 371qmunegh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 03 Mar 2021 23:46:13 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 123NkDes26739058
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Mar 2021 23:46:13 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DA49AE05F;
+        Wed,  3 Mar 2021 23:46:13 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2EE6AE062;
+        Wed,  3 Mar 2021 23:46:12 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  3 Mar 2021 23:46:12 +0000 (GMT)
+Subject: Re: [PATCH v9 2/9] x509: Detect sm2 keys by their parameters OID
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
+ <20210225160802.2478700-3-stefanb@linux.vnet.ibm.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <048e22c7-45e3-022c-cd5b-a6bc127958d3@linux.ibm.com>
+Date:   Wed, 3 Mar 2021 18:46:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ufg0QVK99FQVDHYN"
-Content-Disposition: inline
-In-Reply-To: <1614793895-10504-1-git-send-email-fabrice.gasnier@foss.st.com>
+In-Reply-To: <20210225160802.2478700-3-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-03_07:2021-03-03,2021-03-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1015 mlxscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 impostorscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103030169
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tianjia,
 
---ufg0QVK99FQVDHYN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    can you say whether SM2 support works for you before and after 
+applying this patch? I cannot verify it with an sm2 key I have created 
+using a sequence of commands like this:
 
-On Wed, Mar 03, 2021 at 06:51:35PM +0100, Fabrice Gasnier wrote:
-> The ARR register is cleared unconditionally upon probing, after the maxim=
-um
-> value has been read. This initial condition is rather not intuitive, when
-> considering the counter child driver. It rather expects the maximum value
-> by default:
-> - The counter interface shows a zero value by default for 'ceiling'
->   attribute.
-> - Enabling the counter without any prior configuration makes it doesn't
->   count.
->=20
-> The reset value of ARR register is the maximum. So Choice here
-> is to backup it, and restore it then, instead of clearing its value.
-> It also fixes the initial condition seen by the counter driver.
->=20
-> Fixes: d0f949e220fd ("mfd: Add STM32 Timers driver")
->=20
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ > modprobe sm2_generic
+ > id=$(keyctl newring test @u)
+ > keyctl padd asymmetric "" $id < sm2.der
+add_key: Key was rejected by service
+ > keyctl padd asymmetric "" $id < eckeys/cert-prime192v1-0.der
+88506426
 
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+The sm2 key is reject but the pime192v1 key works just fine. SM2 support 
+neither worked for me before nor after this patch here. The difference 
+is that before it returned 'add_key: Package not installed'.
 
+This is my sm2 cert:
+
+ > base64 < sm2.der
+MIIBbzCCARWgAwIBAgIUfqwndeAy7reymWLwvCHOgYPU2YUwCgYIKoZIzj0EAwIwDTELMAkGA1UE
+AwwCbWUwHhcNMjEwMTI0MTgwNjQ3WhcNMjIwMTI0MTgwNjQ3WjANMQswCQYDVQQDDAJtZTBZMBMG
+ByqGSM49AgEGCCqBHM9VAYItA0IABEtiMaczdk46MEugmOsY/u+puf5qoi7JdLd/w3VpdixvDd26
+vrxLKL7lCTVn5w3a07G7QB1dgdMDpzIRgWrVXC6jUzBRMB0GA1UdDgQWBBSxOVnE7ihvTb6Nczb4
+/mow+HIc9TAfBgNVHSMEGDAWgBSxOVnE7ihvTb6Nczb4/mow+HIc9TAPBgNVHRMBAf8EBTADAQH/
+MAoGCCqGSM49BAMCA0gAMEUCIE1kiji2ABUy663NANe0iCPjCeeqg02Yk4b3K+Ci/Qh4AiEA/cFB
+eJEVklyveRMvuTP7BN7FG4U8iRdtedjiX+YrNio=
+
+Regards,
+    Stefan
+
+
+
+On 2/25/21 11:07 AM, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
+>
+> Detect whether a key is an sm2 type of key by its OID in the parameters
+> array rather than assuming that everything under OID_id_ecPublicKey
+> is sm2, which is not the case.
+>
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: keyrings@vger.kernel.org
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > ---
->  drivers/mfd/stm32-timers.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
-> index add6033..44ed2fc 100644
-> --- a/drivers/mfd/stm32-timers.c
-> +++ b/drivers/mfd/stm32-timers.c
-> @@ -158,13 +158,18 @@ static const struct regmap_config stm32_timers_regm=
-ap_cfg =3D {
-> =20
->  static void stm32_timers_get_arr_size(struct stm32_timers *ddata)
->  {
-> +	u32 arr;
+>   crypto/asymmetric_keys/x509_cert_parser.c | 12 +++++++++++-
+>   include/linux/oid_registry.h              |  1 +
+>   lib/oid_registry.c                        | 13 +++++++++++++
+>   3 files changed, 25 insertions(+), 1 deletion(-)
+>
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> index 52c9b455fc7d..1621ceaf5c95 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>   			  const void *value, size_t vlen)
+>   {
+>   	struct x509_parse_context *ctx = context;
+> +	enum OID oid;
+>   
+>   	ctx->key_algo = ctx->last_oid;
+>   	switch (ctx->last_oid) {
+> @@ -470,7 +471,16 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>   		ctx->cert->pub->pkey_algo = "ecrdsa";
+>   		break;
+>   	case OID_id_ecPublicKey:
+> -		ctx->cert->pub->pkey_algo = "sm2";
+> +		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
+> +			return -EBADMSG;
 > +
-> +	/* Backup ARR to restore it after getting the maximum value */
-> +	regmap_read(ddata->regmap, TIM_ARR, &arr);
+> +		switch (oid) {
+> +		case OID_sm2:
+> +			ctx->cert->pub->pkey_algo = "sm2";
+> +			break;
+> +		default:
+> +			return -ENOPKG;
+> +		}
+>   		break;
+>   	default:
+>   		return -ENOPKG;
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index b504e2f36b25..f32d91895e4d 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -121,6 +121,7 @@ enum OID {
+>   };
+>   
+>   extern enum OID look_up_OID(const void *data, size_t datasize);
+> +extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
+>   extern int sprint_oid(const void *, size_t, char *, size_t);
+>   extern int sprint_OID(enum OID, char *, size_t);
+>   
+> diff --git a/lib/oid_registry.c b/lib/oid_registry.c
+> index f7ad43f28579..508e0b34b5f0 100644
+> --- a/lib/oid_registry.c
+> +++ b/lib/oid_registry.c
+> @@ -11,6 +11,7 @@
+>   #include <linux/kernel.h>
+>   #include <linux/errno.h>
+>   #include <linux/bug.h>
+> +#include <linux/asn1.h>
+>   #include "oid_registry_data.c"
+>   
+>   MODULE_DESCRIPTION("OID Registry");
+> @@ -92,6 +93,18 @@ enum OID look_up_OID(const void *data, size_t datasize)
+>   }
+>   EXPORT_SYMBOL_GPL(look_up_OID);
+>   
+> +int parse_OID(const void *data, size_t datasize, enum OID *oid)
+> +{
+> +	const unsigned char *v = data;
 > +
->  	/*
->  	 * Only the available bits will be written so when readback
->  	 * we get the maximum value of auto reload register
->  	 */
->  	regmap_write(ddata->regmap, TIM_ARR, ~0L);
->  	regmap_read(ddata->regmap, TIM_ARR, &ddata->max_arr);
-> -	regmap_write(ddata->regmap, TIM_ARR, 0x0);
-> +	regmap_write(ddata->regmap, TIM_ARR, arr);
->  }
-> =20
->  static int stm32_timers_dma_probe(struct device *dev,
-> --=20
-> 2.7.4
->=20
+> +	if (datasize < 2 || v[0] != ASN1_OID || v[1] != datasize - 2)
+> +		return -EBADMSG;
+> +
+> +	*oid = look_up_OID(data + 2, datasize - 2);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(parse_OID);
+> +
+>   /*
+>    * sprint_OID - Print an Object Identifier into a buffer
+>    * @data: The encoded OID to print
 
---ufg0QVK99FQVDHYN
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmBAH6cACgkQhvpINdm7
-VJJxoxAAvmyLErbMqKfNrxP50BUUqWebF1D4DmGUYCIujUBwxU6POmqvwMt5QEV8
-hlIOgqb2eDTONsRi5Dv7egYSwfkIInRUcNKGsfXxOUaDYl3/Z2mEnJSPd4d8pQen
-Zd2+Cz7TFpT4Rtl10oVXR+LQJMGTHvcsmrF9yjobD3NHAqoOV0d4/3DUusm7BGdt
-qUEF7BY7nCyiJYQkWChUhSFx/pyW1rtfl0Y5kAaF3+GOvLhCY+2qzo3yGNy3mMfz
-tQEZ1BWs92cBdZMAjpzUM3dnMlTRWd1LwfWv5wzK/i9ATK+g5xoSqYwuWYP+5vqU
-PxyfEfuLTTU+dfYJ5cqxGZk7Clwogw7OuauF/i9CLrAuV/ZWMkxUtBiTUnLkgcn3
-IHiVYFmoKihOkobzi/uJf75KSBeDJnyFnf8tuV78i5ii1tGukeUU6gaj6mF2dUae
-0l3ML9KTNSW5SXFNO9IalrlWp/5xQYZFkbArUZxVfuCDe+AEDfmiyI603DOHsDfi
-4qY/3l1t6gOG3oqpnaUDTruDtCKbvQ00Q7rnoqBmlWrXGskxnwmhwPdqnArwQZLG
-+7HJhkDV4u37OuEsGIoc1+lDAzZUgW1wMf0xhfgQ/qxet33WcQGbjyInq7OH0Vy/
-N/tCPeqwcfEJaNOoqOxqUZ2HogY1m/d9QoZqCKja2gyhlKGRBXI=
-=GfL2
------END PGP SIGNATURE-----
-
---ufg0QVK99FQVDHYN--
