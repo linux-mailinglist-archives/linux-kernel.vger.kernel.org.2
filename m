@@ -2,103 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83F632C031
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D242132BFFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578089AbhCCSQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:16:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhCCPpQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:45:16 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8931C06175F;
-        Wed,  3 Mar 2021 07:44:31 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id s17so7334739qvr.12;
-        Wed, 03 Mar 2021 07:44:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yAenZ2k324Y74inyHnLSpf4GKMijWe+eb5zJ0f7us3Y=;
-        b=Yo/WbLtNEcukoBaVIbtOmoJkqQ78eohGvlv9L6yTWcdDIuU+1DKAsD3fh1HE47Xrp+
-         QFlB7j0powGVx/NAToiiojNwZYwizMSL3bMhnmCO5LXvVsufMjP7GNnPm8L/4Z04DNED
-         PwkvridEsCPsRoNu/6CyDKV6GbFO6q2fPyLhHKJnUfbBGoKhaEDc7kAAkZXc5ASnjGnj
-         COSukL6HNRaAnW+dWsCVUTEWV6O1Sj57SBKzdk7nqI1XHIiwgqRSH+n321SqE/5pCgGy
-         ZRtUeRAi9hqP8qbDLI7pXQc3l3kAvlrBrJ0G4HVsFGa3WxRqSwAhAuIuaJFI+TFc8FpN
-         EZ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yAenZ2k324Y74inyHnLSpf4GKMijWe+eb5zJ0f7us3Y=;
-        b=GOPo44OjVFNC9CLZGaKYRfU+mn2tolvjltWa3daK+7ZlcpvFxAwq2hdmkJLsmQBTSE
-         +PDZQ8p2iZm1odp2wxytxbXAlUxIu//KYIN97JTUbfTfkfJn+1JWmMOeAHEgnQ76g1oa
-         mX2redR5lC67iGBY92ma3ZR26+TNxWLWImWfh4n6XKTQ169oTuEGk9pge1NrdXKw4HU+
-         ApyMrc2L/35etDuQjxfvm2/hKUnh4ECraMlj1yEbFLTKQNq9uXVMSIE3z8V3xG3yxK4W
-         gcrpY0yVG/JYIsYKC6TGX6/xI/7SICj6mxmRl2Nj1M+vBAa0Dj3bolMuRrYbE1xBakVL
-         dBcw==
-X-Gm-Message-State: AOAM531wBswscg5TgokYVxEh8Y8lSMLtFfpf4+qxCoJxLRdsEo+JQM39
-        ymVEFo5Jt28D5WGvXh+xL8oBVANgJ1a/Tg==
-X-Google-Smtp-Source: ABdhPJzfFnuZzOw9IZBrOfo12BzAhQPTqGWB0InFeznSDVw2hz00sFHfeQE8i+h+temYeCDQwJeU0A==
-X-Received: by 2002:ad4:4581:: with SMTP id x1mr3253236qvu.9.1614786270710;
-        Wed, 03 Mar 2021 07:44:30 -0800 (PST)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id g6sm1590177qtg.91.2021.03.03.07.44.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 07:44:29 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 3 Mar 2021 10:44:28 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
-Message-ID: <YD+u3CXhwOi2LC+4@slm.duckdns.org>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1386384AbhCCSOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:14:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230455AbhCCPqm (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:46:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5142E64EE3;
+        Wed,  3 Mar 2021 15:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614786341;
+        bh=Uztb3V5t1uv1l7fFRkll6pv7RzKcCHjqQDl33IP+Al0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EceJCyuXMg8eobQduEk/AfhNdWCf4dKT1O+9P8qFd9pO0o+tMQX78KMembGFCR2lv
+         S/r3tsEmkX+oXk89k8pMA558cuZiKJfel2Du+XnBpXQp36Goo8n8MMCDbEoD9b1sGm
+         UDX+iBsnj37pzYfVoivFF9oFM6qUAN0F0S6s3zihe6Mh7VfgnU6u9sExMH/BSvWcnS
+         SRP2bt2wCBm7+t12eDaOyj34ukDYonxjyCUGPmSVN68f2kIdKJEC76+rJBxRw63FeL
+         2tfN3v93ax+2mK5auNlm0Nv3E3Nh6inSO2Dyy5AwVUaZRdw6YNa9XZJ0cooBWgspFB
+         S6HNN7Y7YnbLQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1F7C840CD9; Wed,  3 Mar 2021 12:45:39 -0300 (-03)
+Date:   Wed, 3 Mar 2021 12:45:39 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        ying.huang@intel.com
+Subject: Re: [PATCH v9] perf stat: Fix wrong skipping for per-die aggregation
+Message-ID: <YD+vI+WuSCjX6dWu@kernel.org>
+References: <20210128013417.25597-1-yao.jin@linux.intel.com>
+ <YBcuvN106bsa7F+9@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+In-Reply-To: <YBcuvN106bsa7F+9@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:
-> IOASIDs are used to associate DMA requests with virtual address spaces.
-> They are a system-wide limited resource made available to the userspace
-> applications. Let it be VMs or user-space device drivers.
+Em Sun, Jan 31, 2021 at 11:27:08PM +0100, Jiri Olsa escreveu:
+> On Thu, Jan 28, 2021 at 09:34:17AM +0800, Jin Yao wrote:
+> > Uncore becomes die-scope on Xeon Cascade Lake-AP and perf has supported
+> > --per-die aggregation yet.
+> > 
+> > One issue is found in check_per_pkg() for uncore events running on
+> > AP system. On cascade Lake-AP, we have:
+> > 
+> > S0-D0
+> > S0-D1
+> > S1-D0
+> > S1-D1
+> > 
+> > But in check_per_pkg(), S0-D1 and S1-D1 are skipped because the
+> > mask bits for S0 and S1 have been set for S0-D0 and S1-D0. It doesn't
+> > check die_id. So the counting for S0-D1 and S1-D1 are set to zero.
+> > That's not correct.
+> > 
+> > root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+> >      1.001460963 S0-D0           1            1317376 Bytes llc_misses.mem_read
+> >      1.001460963 S0-D1           1             998016 Bytes llc_misses.mem_read
+> >      1.001460963 S1-D0           1             970496 Bytes llc_misses.mem_read
+> >      1.001460963 S1-D1           1            1291264 Bytes llc_misses.mem_read
+> >      2.003488021 S0-D0           1            1082048 Bytes llc_misses.mem_read
+> >      2.003488021 S0-D1           1            1919040 Bytes llc_misses.mem_read
+> >      2.003488021 S1-D0           1             890752 Bytes llc_misses.mem_read
+> >      2.003488021 S1-D1           1            2380800 Bytes llc_misses.mem_read
+> >      3.005613270 S0-D0           1            1126080 Bytes llc_misses.mem_read
+> >      3.005613270 S0-D1           1            2898176 Bytes llc_misses.mem_read
+> >      3.005613270 S1-D0           1             870912 Bytes llc_misses.mem_read
+> >      3.005613270 S1-D1           1            3388608 Bytes llc_misses.mem_read
+> >      4.007627598 S0-D0           1            1124608 Bytes llc_misses.mem_read
+> >      4.007627598 S0-D1           1            3884416 Bytes llc_misses.mem_read
+> >      4.007627598 S1-D0           1             921088 Bytes llc_misses.mem_read
+> >      4.007627598 S1-D1           1            4451840 Bytes llc_misses.mem_read
+> >      5.001479927 S0-D0           1             963328 Bytes llc_misses.mem_read
+> >      5.001479927 S0-D1           1            4831936 Bytes llc_misses.mem_read
+> >      5.001479927 S1-D0           1             895104 Bytes llc_misses.mem_read
+> >      5.001479927 S1-D1           1            5496640 Bytes llc_misses.mem_read
+> > 
+> > From above output, we can see S0-D1 and S1-D1 don't report the interval
+> > values, they are continued to grow. That's because check_per_pkg() wrongly
+> > decides to use zero counts for S0-D1 and S1-D1.
+> > 
+> > So in check_per_pkg(), we should use hashmap(socket,die) to decide if
+> > the cpu counts needs to skip. Only considering socket is not enough.
+> > 
+> > Now with this patch,
+> > 
+> > root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+> >      1.001586691 S0-D0           1            1229440 Bytes llc_misses.mem_read
+> >      1.001586691 S0-D1           1             976832 Bytes llc_misses.mem_read
+> >      1.001586691 S1-D0           1             938304 Bytes llc_misses.mem_read
+> >      1.001586691 S1-D1           1            1227328 Bytes llc_misses.mem_read
+> >      2.003776312 S0-D0           1            1586752 Bytes llc_misses.mem_read
+> >      2.003776312 S0-D1           1             875392 Bytes llc_misses.mem_read
+> >      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
+> >      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
+> >      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
+> >      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
+> >      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
+> >      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
+> >      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
+> >      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
+> >      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
+> >      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
+> >      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
+> >      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
+> >      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
+> >      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
+> > 
+> > On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+> > is not changed.
+> > 
+> > Reported-by: Huang Ying <ying.huang@intel.com>
+> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> > ---
+> > v9:
+> >  Rename zero_per_pkg to evsel__zero_per_pkg and move it to evsel.c. Then
+> >  evsel__zero_per_pkg can be called under different code path.
+> > 
+> >  Call evsel__zero_per_pkg in evsel__exit().
 > 
-> This RFC patch introduces a cgroup controller to address the following
-> problems:
-> 1. Some user applications exhaust all the available IOASIDs thus
-> depriving others of the same host.
-> 2. System admins need to provision VMs based on their needs for IOASIDs,
-> e.g. the number of VMs with assigned devices that perform DMA requests
-> with PASID.
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Please take a look at the proposed misc controller:
+Thanks, applied.
 
- http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
+- Arnaldo
 
-Would that fit your bill?
-
-Thanks.
-
--- 
-tejun
