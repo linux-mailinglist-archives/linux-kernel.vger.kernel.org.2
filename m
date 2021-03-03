@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ACF32BC7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E506432BC75
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242919AbhCCOCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 09:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        id S1350543AbhCCN5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 08:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842909AbhCCKWZ (ORCPT
+        with ESMTP id S1582449AbhCCKWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:25 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FDCC08ED80
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:15:43 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614766537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aIgzcClqdt8bamaPognH+cXAeOEvrwnEOvhbMvR50pI=;
-        b=aafh14V6g/BpVLvTFZJ7nDVt57Jccy7Q9ityXev4cYHgvH1FHnu1jcrchhDbQuibJ3sV9E
-        QE5jSwXmxeRadGgtfWqtOf4Z+ZD3/WlgEPz2aD6qThAXpX9jVQkhE3cuRhAyJ5a/61Bc4u
-        6qhN9ZiA79BP7a4Xb2ag4AjzTRmzwmc1SP8IvDMPVeb+UH3rMAZsTwMlqw2N+xIsUfkhy3
-        EXBjWZQwJFcnTHU8qpJQaxjKDYdttnxAbq4Vt0hAbnAf8oMJjbUpSQBHoMXiWZjqlhHv4w
-        6h4Wrbk6xkl4EqMjd0ei4yLu0W4B1zweQI91iD0HNhP7XcpTm1AH7KcytX80Ng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614766537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aIgzcClqdt8bamaPognH+cXAeOEvrwnEOvhbMvR50pI=;
-        b=3fXbWMFJGw/M9KaXwDPYNFR+jv54S+zBhf1/bza8k/IwvV5O+hzcOaaXlbg/scKpgH5OZM
-        HkOfm4v8ByGcDEDA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH next v4 15/15] printk: console: remove unnecessary safe buffer usage
-Date:   Wed,  3 Mar 2021 11:15:28 +0100
-Message-Id: <20210303101528.29901-16-john.ogness@linutronix.de>
-In-Reply-To: <20210303101528.29901-1-john.ogness@linutronix.de>
-References: <20210303101528.29901-1-john.ogness@linutronix.de>
+        Wed, 3 Mar 2021 05:22:09 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC95C08ED84
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 02:18:18 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id l64so25354397oig.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 02:18:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tizoAoxj1MkSbHFp7V2+QcWvWzsNKthubw4LeYpfuqI=;
+        b=jxIUAfJ3U4ZH+UI3+YAb5ouL3zRfORY+g1i2znUqOgAQFlcRT6fkHhFuyPimU0bSgd
+         5fY7NR+Tpxpa4XPzHRklpoOFqdHh/9qbI89Ym39gbhw6CMUTsKGDGC8jsQ4oensYFBub
+         aGP5hHiXsGeRG+4ZLvbrGn5pwknc+1BuWtbJEEcbfYIK4yzzdx+WCn0jnJIKb2+uL5WK
+         +iNOKwxcPc2hS94atEabN1H+4VWjFcxvZvo8gYZgay6Wmu28G2YfC1JI5+S7qCC7Qfn6
+         SKZ2FZ3dX9HRdBmH/yuxrEH8l63ReiOwVoVtQqeRHThkH2wJJBcVR3f9t095Zed86tsy
+         ztuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tizoAoxj1MkSbHFp7V2+QcWvWzsNKthubw4LeYpfuqI=;
+        b=FOPSjZMi9gZq833dtjNOxRZWdBIPfQzyM2+yypguVSRXV34/6vsn3OIUFvuw+pgIwW
+         WbvnFvDFvhIfMXJkIm2IjldZ2kAUbKGNBOyKmo0T2RJeXG5me3hCEl8tJt0XuZbGRIGI
+         VxQbTvmY3C9AY8ZmGuqsXLyZ+OfLxHsD6h6FUSmoIkDQekqat/cCvUZDrjeWJEn5JGAf
+         teUOO0fDinZ+ty29Gr2+Ka1diQshQDpU7yDl1oxhsL0NISvseno8NkRLr0muFjnm+ipc
+         AzgpvwW0gLh8rIKtS1GkGLOEP3Y16+j6chBfAwVwZ8Ojr/bIuhTxToWZr2CbakhDtef9
+         2DoQ==
+X-Gm-Message-State: AOAM533sh72dX0SgOj0aZAYl/e07Ep+VS8Rqre1V7N8ul5UQgkej+jIO
+        vQJyv1SlWoVLE/RO9zobvRJKHJG5t/w8L35OshqsRw==
+X-Google-Smtp-Source: ABdhPJzdmqr3s1PdsFaTVC5h0Mz4OupyGWT58ZE5Juec8iUCfkOdYJUhF0QINsNBRXqkk0CJ57WTzoEpqRacWa5abMo=
+X-Received: by 2002:aca:d515:: with SMTP id m21mr6810808oig.172.1614766697628;
+ Wed, 03 Mar 2021 02:18:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210303093845.2743309-1-elver@google.com> <YD9dld26cz0RWHg7@kroah.com>
+In-Reply-To: <YD9dld26cz0RWHg7@kroah.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 3 Mar 2021 11:18:06 +0100
+Message-ID: <CANpmjNMxuj23ryjDCr+ShcNy_oZ=t3MrxFa=pVBXjODBopEAnw@mail.gmail.com>
+Subject: Re: [PATCH] kcsan, debugfs: Move debugfs file creation out of early init
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upon registering a console, safe buffers are activated when setting
-up the sequence number to replay the log. However, these are already
-protected by @console_sem and @syslog_lock. Remove the unnecessary
-safe buffer usage.
+On Wed, 3 Mar 2021 at 10:57, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Mar 03, 2021 at 10:38:45AM +0100, Marco Elver wrote:
+> > Commit 56348560d495 ("debugfs: do not attempt to create a new file
+> > before the filesystem is initalized") forbids creating new debugfs files
+> > until debugfs is fully initialized. This breaks KCSAN's debugfs file
+> > creation, which happened at the end of __init().
+>
+> How did it "break" it?  The files shouldn't have actually been created,
+> right?
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
----
- kernel/printk/printk.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+Right, with 56348560d495 the debugfs file isn't created anymore, which
+is the problem. Before 56348560d495 the file exists (syzbot wants the
+file to exist.)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 602de86d4e76..2f829fbf0a13 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2967,9 +2967,7 @@ void register_console(struct console *newcon)
- 		/*
- 		 * console_unlock(); will print out the buffered messages
- 		 * for us.
--		 */
--		printk_safe_enter_irqsave(flags);
--		/*
-+		 *
- 		 * We're about to replay the log buffer.  Only do this to the
- 		 * just-registered console to avoid excessive message spam to
- 		 * the already-registered consoles.
-@@ -2982,11 +2980,9 @@ void register_console(struct console *newcon)
- 		exclusive_console_stop_seq = console_seq;
- 
- 		/* Get a consistent copy of @syslog_seq. */
--		raw_spin_lock(&syslog_lock);
-+		raw_spin_lock_irqsave(&syslog_lock, flags);
- 		console_seq = syslog_seq;
--		raw_spin_unlock(&syslog_lock);
--
--		printk_safe_exit_irqrestore(flags);
-+		raw_spin_unlock_irqrestore(&syslog_lock, flags);
- 	}
- 	console_unlock();
- 	console_sysfs_notify();
--- 
-2.20.1
+> > There is no reason to create the debugfs file during early
+> > initialization. Therefore, move it into a late_initcall() callback.
+> >
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Cc: stable <stable@vger.kernel.org>
+> > Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> > I've marked this for 'stable', since 56348560d495 is also intended for
+> > stable, and would subsequently break KCSAN in all stable kernels where
+> > KCSAN is available (since 5.8).
+>
+> No objection from me, just odd that this actually fixes anything :)
 
+56348560d495 causes the file to just not be created if we try to
+create at the end of __init(). Having it created as late as
+late_initcall() gets us the file back.
+
+When you say "fixes anything", should the file be created even though
+it's at the end of __init()? Perhaps I misunderstood what 56348560d495
+changes, but I verified it to be the problem by reverting (upon which
+the file exists as expected).
+
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Thanks! Would it be possible to get this into 5.12?
+
+-- Marco
