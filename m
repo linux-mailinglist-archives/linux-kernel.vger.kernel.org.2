@@ -2,171 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A79732C0A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3266F32C0E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579654AbhCCSbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:31:47 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:29916 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346514AbhCCQil (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:38:41 -0500
-X-IronPort-AV: E=Sophos;i="5.81,220,1610406000"; 
-   d="scan'208";a="495951182"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 17:37:54 +0100
-Date:   Wed, 3 Mar 2021 17:37:54 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] coccinelle: misc: add swap script
-In-Reply-To: <20210219092448.13760-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2103031736290.2980@hadrien>
-References: <20210216080133.455456-1-efremov@linux.com> <20210219092448.13760-1-efremov@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1579763AbhCCScH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:32:07 -0500
+Received: from mga04.intel.com ([192.55.52.120]:51369 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234743AbhCCQsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:48:31 -0500
+IronPort-SDR: R4QS8hHr7VM3sE3oiaYNbuLaN4/xDJyVVIZdyBkIEyon8SQXDV2kuT58MQm9wS4clVSjvJxcyJ
+ cwm489Xohzew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="184815986"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="184815986"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 08:40:35 -0800
+IronPort-SDR: 0XYFIBMlOFlhWrfU3MSu1x9ikTgf40abOhUWdwDLCGy2CZdDDLAmlj71YmJ3iUYccdsxg6kSbq
+ YXr27WKPzxQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="406518537"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga007.jf.intel.com with SMTP; 03 Mar 2021 08:40:30 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Wed, 03 Mar 2021 18:40:29 +0200
+Date:   Wed, 3 Mar 2021 18:40:29 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH -next v2] fbdev: atyfb: use LCD management functions for
+ PPC_PMAC also
+Message-ID: <YD+7/alPK5NtDnTq@intel.com>
+References: <20210226173008.18236-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210226173008.18236-1-rdunlap@infradead.org>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 19 Feb 2021, Denis Efremov wrote:
-
-> Check for opencoded swap() implementation.
->
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+On Fri, Feb 26, 2021 at 09:30:08AM -0800, Randy Dunlap wrote:
+> Include PPC_PMAC in the configs that use aty_ld_lcd() and
+> aty_st_lcd() implementations so that the PM code may work
+> correctly for PPC_PMAC.
+> 
+> Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
 > ---
-> Changes in v2:
->  - additional patch rule to drop excessive {}
->  - fix indentation in patch mode by anchoring ;
->
->  scripts/coccinelle/misc/swap.cocci | 101 +++++++++++++++++++++++++++++
->  1 file changed, 101 insertions(+)
->  create mode 100644 scripts/coccinelle/misc/swap.cocci
->
-> diff --git a/scripts/coccinelle/misc/swap.cocci b/scripts/coccinelle/misc/swap.cocci
-> new file mode 100644
-> index 000000000000..d5da9888c222
-> --- /dev/null
-> +++ b/scripts/coccinelle/misc/swap.cocci
-> @@ -0,0 +1,101 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +///
-> +/// Check for opencoded swap() implementation.
-> +///
-> +// Confidence: High
-> +// Copyright: (C) 2021 Denis Efremov ISPRAS
-> +// Options: --no-includes --include-headers
-> +//
-> +// Keywords: swap
-> +//
-> +
-> +virtual patch
-> +virtual org
-> +virtual report
-> +virtual context
-> +
-> +@r depends on !patch@
-> +identifier tmp;
-> +expression a, b;
-> +type T;
-> +position p;
-> +@@
-> +
-> +(
-> +* T tmp;
-> +|
-> +* T tmp = 0;
-> +|
-> +* T *tmp = NULL;
-> +)
-> +... when != tmp
-> +* tmp = a;
-> +* a = b;@p
-> +* b = tmp;
-> +... when != tmp
-> +
-> +@rpvar depends on patch@
-> +identifier tmp;
-> +expression a, b;
-> +type T;
-> +@@
-> +
-> +(
-> +- T tmp;
-> +|
-> +- T tmp = 0;
-> +|
-> +- T *tmp = NULL;
-> +)
-> +... when != tmp
-> +- tmp = a;
-> +- a = b;
-> +- b = tmp
-> ++ swap(a, b)
-> +  ;
-> +... when != tmp
-> +
-> +
-> +@rp depends on patch@
-> +identifier tmp;
-> +expression a, b;
-> +@@
-> +
-> +- tmp = a;
-> +- a = b;
-> +- b = tmp
-> ++ swap(a, b)
-> +  ;
+> Daniel- We also need this patch:
+> https://lore.kernel.org/dri-devel/20210224215528.822-1-rdunlap@infradead.org/
+> to fix a kernel test robot build error.
+> 
+> v2: send the correct version of this patch (thanks, Ville)
 
-A rule like the above should also appear in the non-patch case.
+Both patches pushed to drm-misc-fixes. Thanks.
 
-> +
-> +@depends on (rpvar || rp)@
+> 
+>  drivers/video/fbdev/aty/atyfb_base.c |    9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> --- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
+> +++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
+> @@ -133,7 +133,7 @@
+>  #define PRINTKE(fmt, args...)	printk(KERN_ERR "atyfb: " fmt, ## args)
+>  
+>  #if defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_GENERIC_LCD) || \
+> -defined(CONFIG_FB_ATY_BACKLIGHT)
+> +defined(CONFIG_FB_ATY_BACKLIGHT) || defined (CONFIG_PPC_PMAC)
+>  static const u32 lt_lcd_regs[] = {
+>  	CNFG_PANEL_LG,
+>  	LCD_GEN_CNTL_LG,
+> @@ -175,8 +175,8 @@ u32 aty_ld_lcd(int index, const struct a
+>  		return aty_ld_le32(LCD_DATA, par);
+>  	}
+>  }
+> -#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
+> -	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
+> +#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) ||
+> +	 defined(CONFIG_FB_ATY_GENERIC_LCD) || defined(CONFIG_PPC_PMAC) */
+>  void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
+>  { }
+>  
+> @@ -184,7 +184,8 @@ u32 aty_ld_lcd(int index, const struct a
+>  {
+>  	return 0;
+>  }
+> -#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
+> +#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) ||
+> +	  defined (CONFIG_FB_ATY_GENERIC_LCD) || defined(CONFIG_PPC_PMAC) */
+>  
+>  #ifdef CONFIG_FB_ATY_GENERIC_LCD
+>  /*
 
-This needs to be depends on patch && (rpvar || rp).  It doesn't make much
-sense, because rpvar and rp both depend on patch, but at the moment that
-information isn't propagate everywhere that it is needed.
-
-thanks,
-julia
-
-> +@@
-> +
-> +(
-> +  for (...;...;...)
-> +- {
-> +	swap(...);
-> +- }
-> +|
-> +  while (...)
-> +- {
-> +	swap(...);
-> +- }
-> +|
-> +  if (...)
-> +- {
-> +	swap(...);
-> +- }
-> +)
-> +
-> +
-> +@script:python depends on report@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
-> +
-> +@script:python depends on org@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
-> --
-> 2.26.2
->
->
+-- 
+Ville Syrjälä
+Intel
