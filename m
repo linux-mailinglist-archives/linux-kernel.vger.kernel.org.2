@@ -2,89 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDA832C321
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEA832C32C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353188AbhCDADi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
+        id S1353212AbhCDADp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:03:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388010AbhCCUXo (ORCPT
+        with ESMTP id S1388011AbhCCUYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:23:44 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDE9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 12:23:03 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id a9so10869931qkn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 12:23:03 -0800 (PST)
+        Wed, 3 Mar 2021 15:24:06 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9A6C061756;
+        Wed,  3 Mar 2021 12:23:26 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id e6so17221676pgk.5;
+        Wed, 03 Mar 2021 12:23:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maine.edu; s=google;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=aYIGK66WS1KcA2ZXHhqfbQI3240kSMVHBkovtDH7WnQ=;
-        b=Sby88J53BdDHPl6ryOwymuczmGeC0Ehpj6baNLJ6q/E5MmpUsDOdP2DMoW8TLlOS0P
-         MzWA1qomUvAC5p5+h4tsfyyugqNKhG+BgsowZzvpMPgaBAynHYPKMoD/8uQdVnzl8YG8
-         1G7bY84o2wPITS5nbto1j+Q6zTNATzfmxb6oQ=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0FH7LxOsmxIsgoTenyw1jRon/uhYAlBiA4+ZL3nwHtQ=;
+        b=AIxxwOFh8H6cXbMpEdUcTMgTdPU74pl6sVrvlULaxh05OgQMd7JETuqq6JECoOf+1t
+         SNlWMPlsbvKX8LXBSllxuBVY4Fh4k3kT9RciAiOqo70OYzQagHRgd1TTACTGBOS8a1Zl
+         D4GuPN//j2pELtPdyiQ6YCP7l9V8CtyHtz5llwdzhNs2iAmYf7f01+tlPM6xPuDFMTgR
+         d2tWa8VGxraO/6LahwJzsCNWcC3FzO7b85LnyOymqMgzzk9Q3NBzwLnZApS4/VdWzR3s
+         Ejev7zAmc8y9v2fFS2VwEjmP+tfa70h2/0Jw85ETgMA7OR9zaP47plt7PYF6SxvTT5kS
+         PO5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=aYIGK66WS1KcA2ZXHhqfbQI3240kSMVHBkovtDH7WnQ=;
-        b=ewb1AUsCbvJiXyxFkYLaJMKspa38V9gnFUxUWEsvY4mJQYfLy/JahyPsJORiB5pU9f
-         ajPSfi/hvIwNtAGox5C18UdaVdOEEz39nT5aEbWJA5XC2dxb2hDDofuct2NCEA7cbhJm
-         qJLID8e97Yhe67BrUj54i8q0tLoT4MD0Q6mIgO6jPO9zS1LGyqxY9IHIvZ6qwnD5VcH5
-         gOeMOkqZYIM1h53q7kHxxZq8VqywugVRKrjpsi8NaLSB66BKcMHyoKfxF8yhKATeFcej
-         5jP8Rvbre3SFgMG10owtUApivMzvtLelb/znZVVMX+02GvWwznd+JCBdNVLSftIingue
-         xJRQ==
-X-Gm-Message-State: AOAM531wh6TdumXiK4Nkf+jOq2gL2sNKClrVvnoW3VFJItnUsdv4uBxU
-        f0TgEopmRd91hoWP0HnUoZUPfw==
-X-Google-Smtp-Source: ABdhPJxR94rnbvC/WKPK655xYGFt/+PWcp5ZWzXl2hB/jE6DrwAw+yMmCwRZ1d8KtF7N2Cwnswy3wA==
-X-Received: by 2002:a37:5088:: with SMTP id e130mr789061qkb.321.1614802982849;
-        Wed, 03 Mar 2021 12:23:02 -0800 (PST)
-Received: from macbook-air-2.local (weaver.eece.maine.edu. [130.111.218.23])
-        by smtp.gmail.com with ESMTPSA id p12sm15764423qtw.27.2021.03.03.12.23.01
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=0FH7LxOsmxIsgoTenyw1jRon/uhYAlBiA4+ZL3nwHtQ=;
+        b=ClfWi/wOKB23vs1bJG0OCtPQXOMBQCH8+veGg92nipXw6evdmAHivTSvnwle6YG9vD
+         akYgRroqjYd8OX6YRtM64SfFhZoAonYfSJkkZAJPO1nch8AXjGj3rP0LZ84IhG9uinj7
+         ziUr/KW0aOGMkBQyudW9fLtZ72NYAmOzoaGvnYPb4U85Jmchwj7ws/gyd5NGI4W35KDr
+         q8UO3AJlIZNr40/49NQBW03va+AoXYw8BZVzk8sFmF+z63+fsKuqVq1XQwumerjqfeVr
+         Qe/+oCcFknRC1rKY5IP/xi/NUSsjNs3X+fLYvqK7NtWhEKJbQihlIrvDOT9WhlP1Dv55
+         QNCw==
+X-Gm-Message-State: AOAM532WFwhmqEgL5jsP5bbW0N7EupEsdxIyZhktlYrG7GxPxdYhK/HB
+        GbC3/VAdMC2L/Wtbh3Czv3g=
+X-Google-Smtp-Source: ABdhPJzjTbg+doQsb4ri01ZrBnPufRMmByvBrcHUbX8wMYPuO9f//uSNLvMzwnmMPt3noGJiw4BXEA==
+X-Received: by 2002:a63:74d:: with SMTP id 74mr619392pgh.316.1614803006263;
+        Wed, 03 Mar 2021 12:23:26 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:c87:c34:99dc:ba23])
+        by smtp.gmail.com with ESMTPSA id g15sm25192777pfb.30.2021.03.03.12.23.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 12:23:02 -0800 (PST)
-From:   Vince Weaver <vincent.weaver@maine.edu>
-X-Google-Original-From: Vince Weaver <vince@maine.edu>
-Date:   Wed, 3 Mar 2021 15:22:57 -0500 (EST)
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-cc:     Stephane Eranian <eranian@google.com>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [perf] perf_fuzzer causes unchecked MSR access error
-In-Reply-To: <9df5f72d-a959-fe46-400a-7dca6c596478@linux.intel.com>
-Message-ID: <a8cebd2-a0fe-2ade-30d6-d592b3423db@maine.edu>
-References: <61a56699-aab4-ef6-ed8d-a22b6bf532d@maine.edu> <7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu> <YCVE8q4MlbcU4fnV@hirez.programming.kicks-ass.net> <32888c33-c286-c600-66cb-8b1b03beeb8b@linux.intel.com> <6c1f8e-f81-a781-e594-368e7adef0c0@maine.edu>
- <CABPqkBRp17EMqgoO3LTC-hTkpbv2njFO-Kkf-RifrSksdGfEaA@mail.gmail.com> <9df5f72d-a959-fe46-400a-7dca6c596478@linux.intel.com>
+        Wed, 03 Mar 2021 12:23:24 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 3 Mar 2021 12:23:22 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
+        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YD/wOq3lf9I5HK85@google.com>
+References: <20210302210949.2440120-1-minchan@kernel.org>
+ <YD+F4LgPH0zMBDGW@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YD+F4LgPH0zMBDGW@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021, Liang, Kan wrote:
+On Wed, Mar 03, 2021 at 01:49:36PM +0100, Michal Hocko wrote:
+> On Tue 02-03-21 13:09:48, Minchan Kim wrote:
+> > LRU pagevec holds refcount of pages until the pagevec are drained.
+> > It could prevent migration since the refcount of the page is greater
+> > than the expection in migration logic. To mitigate the issue,
+> > callers of migrate_pages drains LRU pagevec via migrate_prep or
+> > lru_add_drain_all before migrate_pages call.
+> > 
+> > However, it's not enough because pages coming into pagevec after the
+> > draining call still could stay at the pagevec so it could keep
+> > preventing page migration. Since some callers of migrate_pages have
+> > retrial logic with LRU draining, the page would migrate at next trail
+> > but it is still fragile in that it doesn't close the fundamental race
+> > between upcoming LRU pages into pagvec and migration so the migration
+> > failure could cause contiguous memory allocation failure in the end.
+> > 
+> > To close the race, this patch disables lru caches(i.e, pagevec)
+> > during ongoing migration until migrate is done.
+> > 
+> > Since it's really hard to reproduce, I measured how many times
+> > migrate_pages retried with force mode below debug code.
+> > 
+> > int migrate_pages(struct list_head *from, new_page_t get_new_page,
+> > 			..
+> > 			..
+> > 
+> > if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
+> >        printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), rc);
+> >        dump_page(page, "fail to migrate");
+> > }
+> > 
+> > The test was repeating android apps launching with cma allocation
+> > in background every five seconds. Total cma allocation count was
+> > about 500 during the testing. With this patch, the dump_page count
+> > was reduced from 400 to 30.
+> 
+> Have you seen any improvement on the CMA allocation success rate?
 
-> We never use bit 58. It should be a new issue.
-> Is it repeatable?
+Unfortunately, the cma alloc failure rate with reasonable margin
+of error is really hard to reproduce under real workload.
+That's why I measured the soft metric instead of direct cma fail
+under real workload(I don't want to make some adhoc artificial
+benchmark and keep tunes system knobs until it could show 
+extremly exaggerated result to convice patch effect).
 
-yes, it's repeatable.  
+Please say if you belive this work is pointless unless there is
+stable data under reproducible scenario. I am happy to drop it.
 
-(which I'm glad to see because it looks suspiciously like a memory bit 
-flip)
+> 
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > ---
+> > * from RFC - http://lore.kernel.org/linux-mm/20210216170348.1513483-1-minchan@kernel.org
+> >   * use atomic and lru_add_drain_all for strict ordering - mhocko
+> >   * lru_cache_disable/enable - mhocko
+> > 
+> >  fs/block_dev.c          |  2 +-
+> >  include/linux/migrate.h |  6 +++--
+> >  include/linux/swap.h    |  4 ++-
+> >  mm/compaction.c         |  4 +--
+> >  mm/fadvise.c            |  2 +-
+> >  mm/gup.c                |  2 +-
+> >  mm/khugepaged.c         |  2 +-
+> >  mm/ksm.c                |  2 +-
+> >  mm/memcontrol.c         |  4 +--
+> >  mm/memfd.c              |  2 +-
+> >  mm/memory-failure.c     |  2 +-
+> >  mm/memory_hotplug.c     |  2 +-
+> >  mm/mempolicy.c          |  6 +++++
+> >  mm/migrate.c            | 15 ++++++-----
+> >  mm/page_alloc.c         |  5 +++-
+> >  mm/swap.c               | 55 +++++++++++++++++++++++++++++++++++------
+> >  16 files changed, 85 insertions(+), 30 deletions(-)
+> 
+> The churn seems to be quite big for something that should have been a
+> very small change. Have you considered not changing lru_add_drain_all
+> but rather introduce __lru_add_dain_all that would implement the
+> enforced flushing?
 
-Though since it's a WARN_ONCE I have to reboot each time I want to test.
+Good idea.
 
-If I get a chance I'll try to come up with a reduced test case but 
-probably won't have time for that today.
+> 
+> [...]
+> > +static atomic_t lru_disable_count = ATOMIC_INIT(0);
+> > +
+> > +bool lru_cache_disabled(void)
+> > +{
+> > +	return atomic_read(&lru_disable_count);
+> > +}
+> > +
+> > +void lru_cache_disable(void)
+> > +{
+> > +	/*
+> > +	 * lru_add_drain_all's IPI will make sure no new pages are added
+> > +	 * to the pcp lists and drain them all.
+> > +	 */
+> > +	atomic_inc(&lru_disable_count);
+> 
+> As already mentioned in the last review. The IPI reference is more
+> cryptic than useful. I would go with something like this instead
+> 
+> 	/*
+> 	 * lru_add_drain_all in the force mode will schedule draining on
+> 	 * all online CPUs so any calls of lru_cache_disabled wrapped by
+> 	 * local_lock or preemption disabled would be  ordered by that.
+> 	 * The atomic operation doesn't need to have stronger ordering
+> 	 * requirements because that is enforece by the scheduling
+> 	 * guarantees.
+> 	 */
 
-Vince
-
-
+Thanks for the nice description.
+I will use it in next revision if you believe this work is useful.
