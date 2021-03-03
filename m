@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E89C32BF75
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A6432BF5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835501AbhCCSDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:03:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382128AbhCCPWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:22:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4D964EE6;
-        Wed,  3 Mar 2021 15:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614784149;
-        bh=kuSlFyqS0esHp6a9WfeHEtn7CGyzwnqKO7imFdyzNGg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bnU/BRK1bn9yIFBSrdz+SxcaRejYSiommzyqQjTxS/gEUJb2zQwJSnEB6/8NPVSN1
-         ZLYI4M2yFVY00TTjTdg8aw4E5VuiM7QRhCmmxn43RSl4VJTNDKuX6Pzwyuw599D/yy
-         4evYEdxZ8RoNOXYnjOEP2+q42CGNfu6l8l/YdUhs=
-Date:   Wed, 3 Mar 2021 16:09:06 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        taehyun cho <taehyun.cho@samsung.com>, balbi@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-Message-ID: <YD+mkse29UwwYbFB@kroah.com>
-References: <CGME20210303022537epcas2p1b85ab825ceca3a411a177cc1af8a2c7b@epcas2p1.samsung.com>
- <20210303022628.6540-1-taehyun.cho@samsung.com>
- <c9ac155c-56c2-4025-d1ae-d0c6c95533b8@kernel.org>
- <YD9lTjWc25Nn7jAR@kroah.com>
- <20210303103839.it7grj3vtrdmngbd@kozik-lap>
- <YD+XkFAfoKpSsea3@kroah.com>
- <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
+        id S1835300AbhCCSCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:02:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53808 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244834AbhCCPL4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:11:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614784220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2x8FmaHqNoFWbYN+V4sFpeQTKKF9zJmBr4OukRyZ06M=;
+        b=XbKsEVS6oXWLfCIejhu+urieXVIfvHop00Ytzbm6IEyf2nwvQxUKRivgts6/cTK1VSLlTH
+        aJM3gE/Cf5PpdQDrMDJcemebgCv7a9eoEed3ei3aoCgNqtpGgkPMWlDnpne3s1K16wZtO0
+        h+WOeL78tEigCFSxQIfWgSnYTwrHEVg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-54E5Z947OkWGeCxK13k7dw-1; Wed, 03 Mar 2021 10:10:18 -0500
+X-MC-Unique: 54E5Z947OkWGeCxK13k7dw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AFAC910160;
+        Wed,  3 Mar 2021 15:10:08 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AA9CD60C13;
+        Wed,  3 Mar 2021 15:10:07 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM changes for 5.12-rc2
+Date:   Wed,  3 Mar 2021 10:10:07 -0500
+Message-Id: <20210303151007.383323-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf330a12-82b9-3d6a-eeeb-28630e0a5f2b@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 06:56:38AM -0800, Guenter Roeck wrote:
-> On 3/3/21 6:05 AM, Greg Kroah-Hartman wrote:
-> [ ... ]
-> >> Anyway, that's the convention or consensus so far for entire SoC. If we
-> >> want to change it - sure, but let's make it for everyone, not for just
-> >> this one USB driver.
-> > 
-> > Great, let's change it for everyone, I don't see a need for ARCH_*
-> > symbols except for people who want to make it simpler for their one
-> > board type.  And for that, use a defconfig.
-> > 
-> 
-> I don't think that will work in practice. Many ARCH_ symbols for various
-> architectures contradict with each other. Almost all watchdog drivers
-> only _build_ for specific platforms/architectures.
+Linus,
 
-Great, that's horrible to hear, so much for a "generic arm64 kernel
-binary" which I _thought_ was the goal.
+The following changes since commit 2df8d3807ce7f75bb975f1aeae8fc6757527c62d:
 
-ugh, you would have thought we would have learned our lesson with
-arm32...
+  KVM: SVM: Fix nested VM-Exit on #GP interception handling (2021-02-25 05:13:05 -0500)
 
-greg k-h
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 9e46f6c6c959d9bb45445c2e8f04a75324a0dfd0:
+
+  KVM: SVM: Clear the CR4 register on reset (2021-03-02 14:39:11 -0500)
+
+----------------------------------------------------------------
+* Doc fixes
+* selftests fixes
+* Add runstate information to the new Xen support
+* Allow compiling out the Xen interface
+* 32-bit PAE without EPT bugfix
+* NULL pointer dereference bugfix
+
+----------------------------------------------------------------
+Aaron Lewis (1):
+      selftests: kvm: Mmap the entire vcpu mmap area
+
+Babu Moger (1):
+      KVM: SVM: Clear the CR4 register on reset
+
+Chenyi Qiang (1):
+      KVM: Documentation: rectify rst markup in kvm_run->flags
+
+David Woodhouse (2):
+      KVM: x86/xen: Fix return code when clearing vcpu_info and vcpu_time_info
+      KVM: x86/xen: Add support for vCPU runstate information
+
+Dongli Zhang (1):
+      KVM: x86: remove misplaced comment on active_mmu_pages
+
+Kai Huang (1):
+      KVM: Documentation: Fix index for KVM_CAP_PPC_DAWR1
+
+Paolo Bonzini (3):
+      Documentation: kvm: fix messy conversion from .txt to .rst
+      KVM: xen: flush deferred static key before checking it
+      KVM: x86: allow compiling out the Xen hypercall interface
+
+Sean Christopherson (1):
+      KVM: x86/mmu: Set SPTE_AD_WRPROT_ONLY_MASK if and only if PML is enabled
+
+Wanpeng Li (1):
+      KVM: x86: hyper-v: Fix Hyper-V context null-ptr-deref
+
+ Documentation/virt/kvm/api.rst                     | 115 ++++----
+ arch/x86/include/asm/kvm_host.h                    |   9 +-
+ arch/x86/kvm/Kconfig                               |   9 +
+ arch/x86/kvm/Makefile                              |   3 +-
+ arch/x86/kvm/hyperv.c                              |   2 +-
+ arch/x86/kvm/mmu/mmu_internal.h                    |  16 +-
+ arch/x86/kvm/svm/svm.c                             |   1 +
+ arch/x86/kvm/x86.c                                 |  22 +-
+ arch/x86/kvm/xen.c                                 | 290 +++++++++++++++++++++
+ arch/x86/kvm/xen.h                                 |  64 ++++-
+ include/uapi/linux/kvm.h                           |  13 +
+ tools/testing/selftests/kvm/lib/kvm_util.c         |   6 +-
+ .../testing/selftests/kvm/x86_64/xen_shinfo_test.c | 159 ++++++++++-
+ 13 files changed, 633 insertions(+), 76 deletions(-)
+
