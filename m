@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1514232BF26
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0556F32BF24
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 00:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577896AbhCCSB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:01:29 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:47973 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351065AbhCCPAe (ORCPT
+        id S1577876AbhCCSBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:01:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350910AbhCCPA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 10:00:34 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123EvxNC032645;
-        Wed, 3 Mar 2021 15:58:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=vRm8bwSPJgkfRJocoNDq21I3g5Iz0nJ0Oe0Q61WfJaE=;
- b=Jz78D8JecEgrynfgvqJwgZDMncQ3IQHrqilHhKgppgkEMIS9nbQ+Q9kfz5XH3qSHZify
- e3jbIVkB5iAtMFDOA9IDjh8VBzQjpYKLJkDoRYPR8HvoJWzOdC9YZfxFqNDHmzwtfMLs
- iItOsRpTfQQv5FS7c/yuM230YiLWgb88Cnr8ZyddTOmqNks/arW7mDV4JjCIsS6RZ/8V
- Fv94O8VprG0ITZVq/G83RL+HlWwAtoc3+8r2XGa2Ra7WltIPSdnqTJ1bPGd87RPtEcyu
- R0Oth4y6gxSNenacFrkSBSQHMqpCme4YHzzxVkkeoT4+MKYvUZKY+L4WPCkVTAkfMoA9 HA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36yfc41huy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 15:58:59 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B12A2100038;
-        Wed,  3 Mar 2021 15:58:58 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 21FE025F403;
-        Wed,  3 Mar 2021 15:58:58 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Mar
- 2021 15:58:57 +0100
-Subject: Re: [PATCH v5 05/16] rpmsg: char: dissociate the control device from
- the rpmsg class
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-6-arnaud.pouliquen@foss.st.com>
- <20210302180111.GB3791957@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <21d27324-3735-ee93-f3aa-813475b64b93@foss.st.com>
-Date:   Wed, 3 Mar 2021 15:58:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Mar 2021 10:00:27 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13493C0613E4
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 06:59:15 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id n79so12596938qke.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 06:59:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pJZXq2Sc9eDC6LWgGqw2Nfh7xd04n05s4qGwqtA30FM=;
+        b=cC4DY5nuQsmSPZzgYXABD/Lkm8Ms27XL4nYL+LBlPodLXzNm3msHYjaB/kwno5uibV
+         +ZZ9vteAAOu45PCBSYrxTsRd39Bd/KMfZCOr+zcCV29Hp/H6sAWhbLw6NR0bKypraxhx
+         pYGFn4Eu24lZqIJrmavcn4SWLkJvQ4edLrzYbpIDRG0fJLgh1Lg2hk/ooQYbcW2RDodk
+         qZ79mu8kATs1maicjJ9b9j7yKlScLIeZHzxyb8V31D3eU8kttffbgeHnqoicT0zazQtB
+         LHJ+Qeh5gjz99GTM1ZPF2X+yUu5KZFhCnaL0qrjqIrWXwDiwGNXIQEqlop/Ahyn/+afD
+         aZ5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pJZXq2Sc9eDC6LWgGqw2Nfh7xd04n05s4qGwqtA30FM=;
+        b=FB2m8FdORwKsAzUryvOPDIuQ6IAciwKJrnNURffg0Jx1TA/tgxXD1+rn6jIOkC5Vcj
+         B12LwkfJyMFmgzFj5sNZFOA1WirXCzTxurTKgB5PNgLXSPXd4xn+/pQs60gpjGQUSNt3
+         6etCT013thllymgCXDV6S2xN3KT6UOInIeay1Mis4E0s1rUkTEX3kA/Qe5uLLoVDNTS/
+         5EPOabO/TiPYseBEoxgl6uS4qbsRCZExbv1vQ7GYFHlJ8YCnt50q+MyaU8D0puknoMui
+         DV7qzLw0wj/n5CV5PSgyoWLnJNBfcye+YBCxLquaPgP1ZsWXBJv/aUKhUYZF0DAbCsg1
+         wcPA==
+X-Gm-Message-State: AOAM530V9FE/THKBjKzA3rgoV6i8CcFdMRH8lQqF8k2foj1L/bFh4bji
+        mEpDHevts4IyAl5cPXqNeolNmw==
+X-Google-Smtp-Source: ABdhPJxmpLqlOivb8kIeXad+FTwROHhPsa9WCiJ/qawhuL1TjcH6IBYrgpVkbnKxWtOICLXeS00BvQ==
+X-Received: by 2002:a37:9e4e:: with SMTP id h75mr10848018qke.180.1614783554353;
+        Wed, 03 Mar 2021 06:59:14 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:5636])
+        by smtp.gmail.com with ESMTPSA id q65sm6514888qkb.51.2021.03.03.06.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 06:59:13 -0800 (PST)
+Date:   Wed, 3 Mar 2021 09:59:11 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     peterz@infradead.org
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
+Subject: Re: [PATCH v2 0/4] psi: Add PSI_CPU_FULL state and some code
+ optimization
+Message-ID: <YD+kP0z0yWm9UeDK@cmpxchg.org>
+References: <20210303034659.91735-1-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <20210302180111.GB3791957@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-03_04:2021-03-03,2021-03-03 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303034659.91735-1-zhouchengming@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/2/21 7:01 PM, Mathieu Poirier wrote:
-> On Fri, Feb 19, 2021 at 12:14:50PM +0100, Arnaud Pouliquen wrote:
->> The RPMsg control device is a RPMsg device, it is already
->> referenced in the RPMsg bus. There is only an interest to
->> reference the ept char devices in the rpmsg class.
->> This patch prepares the code split of the control and end point
->> devices in two separate files.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/rpmsg_char.c | 1 -
->>  1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index 78a6d19fdf82..23e369a00531 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -485,7 +485,6 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->>  	dev = &ctrldev->dev;
->>  	device_initialize(dev);
->>  	dev->parent = &rpdev->dev;
->> -	dev->class = rpmsg_class;
+On Wed, Mar 03, 2021 at 11:46:55AM +0800, Chengming Zhou wrote:
+> This patch series is RESEND of the previous patches on psi subsystem. A few
+> weeks passed since the last review, so I put them together and resend for
+> more convenient review and merge.
 > 
-> This may break user space...  It has been around for so long that even if the
-> information is redundant we have to keep it.
-
-Yes, this point is part of the grey space of my series...
-I did it on the assumption that the "rpmsg" class interface is not used for the
-control part. Indeed, the group associated to the class provides information
-about the name service, the source address and the destination address of the
-endpoint.These group is not defined for the control device.
-
-That said, to preserve the interface, I can move the class creation in rpmsg
-control driver, to share it between the both drivers. As consequence I will need
-to manage the probe ordering of the char and control modules to ensure that the
-class is created before used. This should be solved by reintroducing patch[1]
-with a fix for the compilation warning.
-
-[1]https://lkml.org/lkml/2021/2/4/197
-
-Thanks,
-Arnaud
-
+> Patch 1 add PSI_CPU_FULL state means all non-idle tasks in a cgroup are delayed
+> on the CPU resource which used by others outside of the cgroup or throttled
+> by the cgroup cpu.max configuration.
 > 
->>  
->>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->>  	ctrldev->cdev.owner = THIS_MODULE;
->> -- 
->> 2.17.1
->>
+> Patch 2 use ONCPU state and the current in_memstall flag to detect reclaim,
+> remove the hook in timer tick to make code more concise and maintainable.
+> And patch 3 adds unlikely() annotations to move the pressure state branches
+> out of line to eliminate undesirable jumps during wakeup and sleeps.
+> 
+> Patch 4 optimize the voluntary sleep switch by remove one call of
+> psi_group_change() for every common cgroup ancestor of the two tasks.
+> 
+> Chengming Zhou (3):
+>   psi: Add PSI_CPU_FULL state
+>   psi: Use ONCPU state tracking machinery to detect reclaim
+>   psi: Optimize task switch inside shared cgroups
+> 
+> Johannes Weiner (1):
+>   psi: pressure states are unlikely
+
+Peter, would you mind routing these through the sched tree for 5.13?
