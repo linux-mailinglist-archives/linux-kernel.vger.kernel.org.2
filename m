@@ -2,176 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650B832BDB2
+	by mail.lfdr.de (Postfix) with ESMTP id E1BE632BDB3
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352127AbhCCQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245546AbhCCLr6 (ORCPT
+        id S1384808AbhCCQ20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:28:26 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:56105 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1345573AbhCCLtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:47:58 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F193EC061225
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 03:46:14 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id a18so15122112wrc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 03:46:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MeQqLKfUpWUw4m4oMpwWQScKW8kK3AHyes4EBhAmAkY=;
-        b=HhgsIYiiTod2dmWWRk3//eBmB2MYwsQLBC29KvdiN6vETMyE+ZMNnNqWQL9Q/yCDRg
-         Yg7jpXpcAlfCciQCb1dhadnF1MPG3VwptYH/Ffc5eM5IfYHwxK1t23w8y4ntWhdpi+hX
-         BIdAy9ioa8VWsHKWh1hl1XsGVsLbZ9vzImWgu2vPeKZlly2rSxusiAHRfNCBs86+vq9L
-         olhq+VMNM4Pu76UAGBI/m9kUSvPY0HVIku76Yb6QYkeBp3nUkcM8Ef8f8KMwHu3fumMR
-         Uk0aD7BckV9mia2RFglhuobhexzKfCjQt53ygUBx6ogiReBN9axN2qTu5jFGUVE/4b0H
-         4YQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MeQqLKfUpWUw4m4oMpwWQScKW8kK3AHyes4EBhAmAkY=;
-        b=Q2S1YixUuWFkdNiLjqXR/PfbcPptcIXz2w9YtjfYoZI2KVCzf6osWLeUvT/ZFK4UcW
-         zOl7WtGX8fBoG/aLs/9sVMsrd0kDHaZUInFMiurASvuk+60xxrFLQsRllUIqB+14Re26
-         qrirfsMAvqIfBxFER4+J8oUdYP0C4ZEdE7pAxBM0JkUFawiKfappEEApiKpNu6VjfVYU
-         RxNvYSZpoGt2TYToAmzrQO2oR2CkPvJTd4uwGHkRJ6p92Bqj2ounihGit3lr8QBYgfX/
-         tWb3PscPd/N7PQxHhzvpcFRmx8flVodiYAwYgwUcW1kACEJBN81POzccVtPBF0S9CyKp
-         lNGw==
-X-Gm-Message-State: AOAM532YKh4lHYxXlqTgT5c1AxsI9Qq3mGNNPTvA42uAOFk9Nwh/SlL2
-        OiLPUA/sW23ffXTcwFXXm/+7P+YbbC5xNQ==
-X-Google-Smtp-Source: ABdhPJx6TiVE2WzgqGC5H4bW+t5fZtoXZpTTF4vyAcjFnqKb7ufY0KvoXlWsJCX56BMIZ1QB/VTfFQ==
-X-Received: by 2002:adf:fe8d:: with SMTP id l13mr26294650wrr.81.1614771973791;
-        Wed, 03 Mar 2021 03:46:13 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id y10sm23512424wrl.19.2021.03.03.03.46.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Mar 2021 03:46:13 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 3/3] soundwire: qcom: add clock stop via runtime pm
- support
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        vkoul@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
-References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
- <20210226170250.9067-4-srinivas.kandagatla@linaro.org>
- <2899ca9e-2938-4d8d-5e56-49eba8cdb920@linux.intel.com>
-Message-ID: <75a7a05c-d34d-aa3f-e8e8-4bbb89e1beca@linaro.org>
-Date:   Wed, 3 Mar 2021 11:46:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 3 Mar 2021 06:49:10 -0500
+X-UUID: bf94fc6dbc884a68af9043a4831a3edf-20210303
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=AWzLvF5Mphj2LxOTWlI1vkLJVO/ce4uOqjBNnFlwD1A=;
+        b=BbGfO3XYJn8WQGjuNe7KPQh7xrD6hCNEn2Kz9s75glO/Agr//PqawyeRZSod0+0LWZKYj1DQfdXiqJiqcSGThA1hVzH5TLCQWv2LqKFegL3/03jCmn7PtCs5XN+o1mI3oaUuam+SsabC4VoFb5nXg3/LvNR625OjtAAk6r5dKdk=;
+X-UUID: bf94fc6dbc884a68af9043a4831a3edf-20210303
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 304542194; Wed, 03 Mar 2021 19:48:20 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 3 Mar 2021 19:48:19 +0800
+Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Mar 2021 19:48:19 +0800
+Message-ID: <1614772099.26785.3.camel@mtksdccf07>
+Subject: Re: [PATCH v4] kasan: remove redundant config option
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Date:   Wed, 3 Mar 2021 19:48:19 +0800
+In-Reply-To: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+References: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <2899ca9e-2938-4d8d-5e56-49eba8cdb920@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Pierre for reviewing this in detail!
+T24gRnJpLCAyMDIxLTAyLTI2IGF0IDA5OjI1ICswODAwLCBXYWx0ZXIgV3Ugd3JvdGU6DQo+IENP
+TkZJR19LQVNBTl9TVEFDSyBhbmQgQ09ORklHX0tBU0FOX1NUQUNLX0VOQUJMRSBib3RoIGVuYWJs
+ZSBLQVNBTiBzdGFjaw0KPiBpbnN0cnVtZW50YXRpb24sIGJ1dCB3ZSBzaG91bGQgb25seSBuZWVk
+IG9uZSBjb25maWcsIHNvIHRoYXQgd2UgcmVtb3ZlDQo+IENPTkZJR19LQVNBTl9TVEFDS19FTkFC
+TEUgYW5kIG1ha2UgQ09ORklHX0tBU0FOX1NUQUNLIHdvcmthYmxlLiAgc2VlIFsxXS4NCj4gDQo+
+IFdoZW4gZW5hYmxlIEtBU0FOIHN0YWNrIGluc3RydW1lbnRhdGlvbiwgdGhlbiBmb3IgZ2NjIHdl
+IGNvdWxkIGRvIG5vDQo+IHByb21wdCBhbmQgZGVmYXVsdCB2YWx1ZSB5LCBhbmQgZm9yIGNsYW5n
+IHByb21wdCBhbmQgZGVmYXVsdCB2YWx1ZSBuLg0KPiANCj4gWzFdOiBodHRwczovL2J1Z3ppbGxh
+Lmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIxMDIyMQ0KPiANCj4gU2lnbmVkLW9mZi1ieTog
+V2FsdGVyIFd1IDx3YWx0ZXItemgud3VAbWVkaWF0ZWsuY29tPg0KPiBTdWdnZXN0ZWQtYnk6IERt
+aXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IE5hdGhhbiBD
+aGFuY2VsbG9yIDxuYXRlY2hhbmNlbGxvckBnbWFpbC5jb20+DQo+IEFja2VkLWJ5OiBBcm5kIEJl
+cmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KPiBSZXZpZXdlZC1ieTogQW5kcmV5IEtvbm92YWxvdiA8
+YW5kcmV5a252bEBnb29nbGUuY29tPg0KPiBDYzogQW5kcmV5IFJ5YWJpbmluIDxyeWFiaW5pbi5h
+LmFAZ21haWwuY29tPg0KPiBDYzogRG1pdHJ5IFZ5dWtvdiA8ZHZ5dWtvdkBnb29nbGUuY29tPg0K
+PiBDYzogQWxleGFuZGVyIFBvdGFwZW5rbyA8Z2xpZGVyQGdvb2dsZS5jb20+DQo+IENjOiBBbmRy
+ZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiAtLS0NCj4gDQo+IHY0OiBB
+ZnRlciB0aGlzIHBhdGNoIHNlbnQsIHNvbWVvbmUgaGFkIG1vZGlmaWNhdGlvbiBhYm91dCBLQVNB
+Tl9TVEFDSywNCj4gICAgIHNvIEkgbmVlZCB0byByZWJhc2UgY29kZWJhc2UuIFRoYW5rIEFuZHJl
+eSBmb3IgeW91ciBwb2ludGluZy4NCj4gDQpIaSBBbmRyZXcsDQoNCkNvdWxkIHlvdSBwaWNrIHRo
+aXMgdjQgcGF0Y2ggdXAgaW50byBtbT8NClRoYW5rcy4NCg0KV2FsdGVyDQoNCj4gLS0tDQo+ICBh
+cmNoL2FybTY0L2tlcm5lbC9zbGVlcC5TICAgICAgICB8ICAyICstDQo+ICBhcmNoL3g4Ni9rZXJu
+ZWwvYWNwaS93YWtldXBfNjQuUyB8ICAyICstDQo+ICBpbmNsdWRlL2xpbnV4L2thc2FuLmggICAg
+ICAgICAgICB8ICAyICstDQo+ICBsaWIvS2NvbmZpZy5rYXNhbiAgICAgICAgICAgICAgICB8ICA4
+ICsrLS0tLS0tDQo+ICBtbS9rYXNhbi9jb21tb24uYyAgICAgICAgICAgICAgICB8ICAyICstDQo+
+ICBtbS9rYXNhbi9rYXNhbi5oICAgICAgICAgICAgICAgICB8ICAyICstDQo+ICBtbS9rYXNhbi9y
+ZXBvcnRfZ2VuZXJpYy5jICAgICAgICB8ICAyICstDQo+ICBzY3JpcHRzL01ha2VmaWxlLmthc2Fu
+ICAgICAgICAgICB8IDEwICsrKysrKysrLS0NCj4gIHNlY3VyaXR5L0tjb25maWcuaGFyZGVuaW5n
+ICAgICAgIHwgIDQgKystLQ0KPiAgOSBmaWxlcyBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCAx
+NiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2tlcm5lbC9zbGVl
+cC5TIGIvYXJjaC9hcm02NC9rZXJuZWwvc2xlZXAuUw0KPiBpbmRleCA1YmZkOWI4N2Y4NWQuLjRl
+YTkzOTJmODZlMCAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm02NC9rZXJuZWwvc2xlZXAuUw0KPiAr
+KysgYi9hcmNoL2FybTY0L2tlcm5lbC9zbGVlcC5TDQo+IEBAIC0xMzQsNyArMTM0LDcgQEAgU1lN
+X0ZVTkNfU1RBUlQoX2NwdV9yZXN1bWUpDQo+ICAJICovDQo+ICAJYmwJY3B1X2RvX3Jlc3VtZQ0K
+PiAgDQo+IC0jaWYgZGVmaW5lZChDT05GSUdfS0FTQU4pICYmIENPTkZJR19LQVNBTl9TVEFDSw0K
+PiArI2lmIGRlZmluZWQoQ09ORklHX0tBU0FOKSAmJiBkZWZpbmVkKENPTkZJR19LQVNBTl9TVEFD
+SykNCj4gIAltb3YJeDAsIHNwDQo+ICAJYmwJa2FzYW5fdW5wb2lzb25fdGFza19zdGFja19iZWxv
+dw0KPiAgI2VuZGlmDQo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rZXJuZWwvYWNwaS93YWtldXBf
+NjQuUyBiL2FyY2gveDg2L2tlcm5lbC9hY3BpL3dha2V1cF82NC5TDQo+IGluZGV4IDU2YjY4NjVh
+ZmIyYS4uZDVkOGEzNTJlYWZhIDEwMDY0NA0KPiAtLS0gYS9hcmNoL3g4Ni9rZXJuZWwvYWNwaS93
+YWtldXBfNjQuUw0KPiArKysgYi9hcmNoL3g4Ni9rZXJuZWwvYWNwaS93YWtldXBfNjQuUw0KPiBA
+QCAtMTE1LDcgKzExNSw3IEBAIFNZTV9GVU5DX1NUQVJUKGRvX3N1c3BlbmRfbG93bGV2ZWwpDQo+
+ICAJbW92cQlwdF9yZWdzX3IxNCglcmF4KSwgJXIxNA0KPiAgCW1vdnEJcHRfcmVnc19yMTUoJXJh
+eCksICVyMTUNCj4gIA0KPiAtI2lmIGRlZmluZWQoQ09ORklHX0tBU0FOKSAmJiBDT05GSUdfS0FT
+QU5fU1RBQ0sNCj4gKyNpZiBkZWZpbmVkKENPTkZJR19LQVNBTikgJiYgZGVmaW5lZChDT05GSUdf
+S0FTQU5fU1RBQ0spDQo+ICAJLyoNCj4gIAkgKiBUaGUgc3VzcGVuZCBwYXRoIG1heSBoYXZlIHBv
+aXNvbmVkIHNvbWUgYXJlYXMgZGVlcGVyIGluIHRoZSBzdGFjaywNCj4gIAkgKiB3aGljaCB3ZSBu
+b3cgbmVlZCB0byB1bnBvaXNvbi4NCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgva2FzYW4u
+aCBiL2luY2x1ZGUvbGludXgva2FzYW4uaA0KPiBpbmRleCBiOTE3MzJiZDA1ZDcuLjE0ZjcyZWM5
+NjQ5MiAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9rYXNhbi5oDQo+ICsrKyBiL2luY2x1
+ZGUvbGludXgva2FzYW4uaA0KPiBAQCAtMzMwLDcgKzMzMCw3IEBAIHN0YXRpYyBpbmxpbmUgYm9v
+bCBrYXNhbl9jaGVja19ieXRlKGNvbnN0IHZvaWQgKmFkZHJlc3MpDQo+ICANCj4gICNlbmRpZiAv
+KiBDT05GSUdfS0FTQU4gKi8NCj4gIA0KPiAtI2lmIGRlZmluZWQoQ09ORklHX0tBU0FOKSAmJiBD
+T05GSUdfS0FTQU5fU1RBQ0sNCj4gKyNpZiBkZWZpbmVkKENPTkZJR19LQVNBTikgJiYgZGVmaW5l
+ZChDT05GSUdfS0FTQU5fU1RBQ0spDQo+ICB2b2lkIGthc2FuX3VucG9pc29uX3Rhc2tfc3RhY2so
+c3RydWN0IHRhc2tfc3RydWN0ICp0YXNrKTsNCj4gICNlbHNlDQo+ICBzdGF0aWMgaW5saW5lIHZv
+aWQga2FzYW5fdW5wb2lzb25fdGFza19zdGFjayhzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2spIHt9
+DQo+IGRpZmYgLS1naXQgYS9saWIvS2NvbmZpZy5rYXNhbiBiL2xpYi9LY29uZmlnLmthc2FuDQo+
+IGluZGV4IDYyNGFlMWRmNzk4NC4uY2ZmYzJlYmJmMTg1IDEwMDY0NA0KPiAtLS0gYS9saWIvS2Nv
+bmZpZy5rYXNhbg0KPiArKysgYi9saWIvS2NvbmZpZy5rYXNhbg0KPiBAQCAtMTM4LDkgKzEzOCwx
+MCBAQCBjb25maWcgS0FTQU5fSU5MSU5FDQo+ICANCj4gIGVuZGNob2ljZQ0KPiAgDQo+IC1jb25m
+aWcgS0FTQU5fU1RBQ0tfRU5BQkxFDQo+ICtjb25maWcgS0FTQU5fU1RBQ0sNCj4gIAlib29sICJF
+bmFibGUgc3RhY2sgaW5zdHJ1bWVudGF0aW9uICh1bnNhZmUpIiBpZiBDQ19JU19DTEFORyAmJiAh
+Q09NUElMRV9URVNUDQo+ICAJZGVwZW5kcyBvbiBLQVNBTl9HRU5FUklDIHx8IEtBU0FOX1NXX1RB
+R1MNCj4gKwlkZWZhdWx0IHkgaWYgQ0NfSVNfR0NDDQo+ICAJaGVscA0KPiAgCSAgVGhlIExMVk0g
+c3RhY2sgYWRkcmVzcyBzYW5pdGl6ZXIgaGFzIGEga25vdyBwcm9ibGVtIHRoYXQNCj4gIAkgIGNh
+dXNlcyBleGNlc3NpdmUgc3RhY2sgdXNhZ2UgaW4gYSBsb3Qgb2YgZnVuY3Rpb25zLCBzZWUNCj4g
+QEAgLTE1NCwxMSArMTU1LDYgQEAgY29uZmlnIEtBU0FOX1NUQUNLX0VOQUJMRQ0KPiAgCSAgQ09O
+RklHX0NPTVBJTEVfVEVTVC4JT24gZ2NjIGl0IGlzIGFzc3VtZWQgdG8gYWx3YXlzIGJlIHNhZmUN
+Cj4gIAkgIHRvIHVzZSBhbmQgZW5hYmxlZCBieSBkZWZhdWx0Lg0KPiAgDQo+IC1jb25maWcgS0FT
+QU5fU1RBQ0sNCj4gLQlpbnQNCj4gLQlkZWZhdWx0IDEgaWYgS0FTQU5fU1RBQ0tfRU5BQkxFIHx8
+IENDX0lTX0dDQw0KPiAtCWRlZmF1bHQgMA0KPiAtDQo+ICBjb25maWcgS0FTQU5fU1dfVEFHU19J
+REVOVElGWQ0KPiAgCWJvb2wgIkVuYWJsZSBtZW1vcnkgY29ycnVwdGlvbiBpZGVudGlmaWNhdGlv
+biINCj4gIAlkZXBlbmRzIG9uIEtBU0FOX1NXX1RBR1MNCj4gZGlmZiAtLWdpdCBhL21tL2thc2Fu
+L2NvbW1vbi5jIGIvbW0va2FzYW4vY29tbW9uLmMNCj4gaW5kZXggYjVlMDhkNGNlZmVjLi43YjUz
+MjkxZGFmYTEgMTAwNjQ0DQo+IC0tLSBhL21tL2thc2FuL2NvbW1vbi5jDQo+ICsrKyBiL21tL2th
+c2FuL2NvbW1vbi5jDQo+IEBAIC02Myw3ICs2Myw3IEBAIHZvaWQgX19rYXNhbl91bnBvaXNvbl9y
+YW5nZShjb25zdCB2b2lkICphZGRyZXNzLCBzaXplX3Qgc2l6ZSkNCj4gIAlrYXNhbl91bnBvaXNv
+bihhZGRyZXNzLCBzaXplKTsNCj4gIH0NCj4gIA0KPiAtI2lmIENPTkZJR19LQVNBTl9TVEFDSw0K
+PiArI2lmZGVmIENPTkZJR19LQVNBTl9TVEFDSw0KPiAgLyogVW5wb2lzb24gdGhlIGVudGlyZSBz
+dGFjayBmb3IgYSB0YXNrLiAqLw0KPiAgdm9pZCBrYXNhbl91bnBvaXNvbl90YXNrX3N0YWNrKHN0
+cnVjdCB0YXNrX3N0cnVjdCAqdGFzaykNCj4gIHsNCj4gZGlmZiAtLWdpdCBhL21tL2thc2FuL2th
+c2FuLmggYi9tbS9rYXNhbi9rYXNhbi5oDQo+IGluZGV4IDhjNTU2MzRkNmVkZC4uMzQzNmM2YmY3
+YzBjIDEwMDY0NA0KPiAtLS0gYS9tbS9rYXNhbi9rYXNhbi5oDQo+ICsrKyBiL21tL2thc2FuL2th
+c2FuLmgNCj4gQEAgLTIzMSw3ICsyMzEsNyBAQCB2b2lkICprYXNhbl9maW5kX2ZpcnN0X2JhZF9h
+ZGRyKHZvaWQgKmFkZHIsIHNpemVfdCBzaXplKTsNCj4gIGNvbnN0IGNoYXIgKmthc2FuX2dldF9i
+dWdfdHlwZShzdHJ1Y3Qga2FzYW5fYWNjZXNzX2luZm8gKmluZm8pOw0KPiAgdm9pZCBrYXNhbl9t
+ZXRhZGF0YV9mZXRjaF9yb3coY2hhciAqYnVmZmVyLCB2b2lkICpyb3cpOw0KPiAgDQo+IC0jaWYg
+ZGVmaW5lZChDT05GSUdfS0FTQU5fR0VORVJJQykgJiYgQ09ORklHX0tBU0FOX1NUQUNLDQo+ICsj
+aWYgZGVmaW5lZChDT05GSUdfS0FTQU5fR0VORVJJQykgJiYgZGVmaW5lZChDT05GSUdfS0FTQU5f
+U1RBQ0spDQo+ICB2b2lkIGthc2FuX3ByaW50X2FkZHJlc3Nfc3RhY2tfZnJhbWUoY29uc3Qgdm9p
+ZCAqYWRkcik7DQo+ICAjZWxzZQ0KPiAgc3RhdGljIGlubGluZSB2b2lkIGthc2FuX3ByaW50X2Fk
+ZHJlc3Nfc3RhY2tfZnJhbWUoY29uc3Qgdm9pZCAqYWRkcikgeyB9DQo+IGRpZmYgLS1naXQgYS9t
+bS9rYXNhbi9yZXBvcnRfZ2VuZXJpYy5jIGIvbW0va2FzYW4vcmVwb3J0X2dlbmVyaWMuYw0KPiBp
+bmRleCA0MWYzNzQ1ODUxNDQuLmRlNzMyYmMzNDFjNSAxMDA2NDQNCj4gLS0tIGEvbW0va2FzYW4v
+cmVwb3J0X2dlbmVyaWMuYw0KPiArKysgYi9tbS9rYXNhbi9yZXBvcnRfZ2VuZXJpYy5jDQo+IEBA
+IC0xMjgsNyArMTI4LDcgQEAgdm9pZCBrYXNhbl9tZXRhZGF0YV9mZXRjaF9yb3coY2hhciAqYnVm
+ZmVyLCB2b2lkICpyb3cpDQo+ICAJbWVtY3B5KGJ1ZmZlciwga2FzYW5fbWVtX3RvX3NoYWRvdyhy
+b3cpLCBNRVRBX0JZVEVTX1BFUl9ST1cpOw0KPiAgfQ0KPiAgDQo+IC0jaWYgQ09ORklHX0tBU0FO
+X1NUQUNLDQo+ICsjaWZkZWYgQ09ORklHX0tBU0FOX1NUQUNLDQo+ICBzdGF0aWMgYm9vbCBfX211
+c3RfY2hlY2sgdG9rZW5pemVfZnJhbWVfZGVzY3IoY29uc3QgY2hhciAqKmZyYW1lX2Rlc2NyLA0K
+PiAgCQkJCQkgICAgICBjaGFyICp0b2tlbiwgc2l6ZV90IG1heF90b2tfbGVuLA0KPiAgCQkJCQkg
+ICAgICB1bnNpZ25lZCBsb25nICp2YWx1ZSkNCj4gZGlmZiAtLWdpdCBhL3NjcmlwdHMvTWFrZWZp
+bGUua2FzYW4gYi9zY3JpcHRzL01ha2VmaWxlLmthc2FuDQo+IGluZGV4IDFlMDAwY2MyZTdiNC4u
+YWJmMjMxZDIwOWIxIDEwMDY0NA0KPiAtLS0gYS9zY3JpcHRzL01ha2VmaWxlLmthc2FuDQo+ICsr
+KyBiL3NjcmlwdHMvTWFrZWZpbGUua2FzYW4NCj4gQEAgLTIsNiArMiwxMiBAQA0KPiAgQ0ZMQUdT
+X0tBU0FOX05PU0FOSVRJWkUgOj0gLWZuby1idWlsdGluDQo+ICBLQVNBTl9TSEFET1dfT0ZGU0VU
+ID89ICQoQ09ORklHX0tBU0FOX1NIQURPV19PRkZTRVQpDQo+ICANCj4gK2lmZGVmIENPTkZJR19L
+QVNBTl9TVEFDSw0KPiArCXN0YWNrX2VuYWJsZSA6PSAxDQo+ICtlbHNlDQo+ICsJc3RhY2tfZW5h
+YmxlIDo9IDANCj4gK2VuZGlmDQo+ICsNCj4gIGlmZGVmIENPTkZJR19LQVNBTl9HRU5FUklDDQo+
+ICANCj4gIGlmZGVmIENPTkZJR19LQVNBTl9JTkxJTkUNCj4gQEAgLTI3LDcgKzMzLDcgQEAgZWxz
+ZQ0KPiAgCUNGTEFHU19LQVNBTiA6PSAkKENGTEFHU19LQVNBTl9TSEFET1cpIFwNCj4gIAkgJChj
+YWxsIGNjLXBhcmFtLGFzYW4tZ2xvYmFscz0xKSBcDQo+ICAJICQoY2FsbCBjYy1wYXJhbSxhc2Fu
+LWluc3RydW1lbnRhdGlvbi13aXRoLWNhbGwtdGhyZXNob2xkPSQoY2FsbF90aHJlc2hvbGQpKSBc
+DQo+IC0JICQoY2FsbCBjYy1wYXJhbSxhc2FuLXN0YWNrPSQoQ09ORklHX0tBU0FOX1NUQUNLKSkg
+XA0KPiArCSAkKGNhbGwgY2MtcGFyYW0sYXNhbi1zdGFjaz0kKHN0YWNrX2VuYWJsZSkpIFwNCj4g
+IAkgJChjYWxsIGNjLXBhcmFtLGFzYW4taW5zdHJ1bWVudC1hbGxvY2FzPTEpDQo+ICBlbmRpZg0K
+PiAgDQo+IEBAIC00Miw3ICs0OCw3IEBAIGVsc2UNCj4gIGVuZGlmDQo+ICANCj4gIENGTEFHU19L
+QVNBTiA6PSAtZnNhbml0aXplPWtlcm5lbC1od2FkZHJlc3MgXA0KPiAtCQktbWxsdm0gLWh3YXNh
+bi1pbnN0cnVtZW50LXN0YWNrPSQoQ09ORklHX0tBU0FOX1NUQUNLKSBcDQo+ICsJCS1tbGx2bSAt
+aHdhc2FuLWluc3RydW1lbnQtc3RhY2s9JChzdGFja19lbmFibGUpIFwNCj4gIAkJLW1sbHZtIC1o
+d2FzYW4tdXNlLXNob3J0LWdyYW51bGVzPTAgXA0KPiAgCQkkKGluc3RydW1lbnRhdGlvbl9mbGFn
+cykNCj4gIA0KPiBkaWZmIC0tZ2l0IGEvc2VjdXJpdHkvS2NvbmZpZy5oYXJkZW5pbmcgYi9zZWN1
+cml0eS9LY29uZmlnLmhhcmRlbmluZw0KPiBpbmRleCAyNjk5NjdjNGZjMWIuLmE1NmMzNjQ3MGNi
+MSAxMDA2NDQNCj4gLS0tIGEvc2VjdXJpdHkvS2NvbmZpZy5oYXJkZW5pbmcNCj4gKysrIGIvc2Vj
+dXJpdHkvS2NvbmZpZy5oYXJkZW5pbmcNCj4gQEAgLTY0LDcgKzY0LDcgQEAgY2hvaWNlDQo+ICAJ
+Y29uZmlnIEdDQ19QTFVHSU5fU1RSVUNUTEVBS19CWVJFRg0KPiAgCQlib29sICJ6ZXJvLWluaXQg
+c3RydWN0cyBwYXNzZWQgYnkgcmVmZXJlbmNlIChzdHJvbmcpIg0KPiAgCQlkZXBlbmRzIG9uIEdD
+Q19QTFVHSU5TDQo+IC0JCWRlcGVuZHMgb24gIShLQVNBTiAmJiBLQVNBTl9TVEFDSz0xKQ0KPiAr
+CQlkZXBlbmRzIG9uICEoS0FTQU4gJiYgS0FTQU5fU1RBQ0spDQo+ICAJCXNlbGVjdCBHQ0NfUExV
+R0lOX1NUUlVDVExFQUsNCj4gIAkJaGVscA0KPiAgCQkgIFplcm8taW5pdGlhbGl6ZSBhbnkgc3Ry
+dWN0dXJlcyBvbiB0aGUgc3RhY2sgdGhhdCBtYXkNCj4gQEAgLTgyLDcgKzgyLDcgQEAgY2hvaWNl
+DQo+ICAJY29uZmlnIEdDQ19QTFVHSU5fU1RSVUNUTEVBS19CWVJFRl9BTEwNCj4gIAkJYm9vbCAi
+emVyby1pbml0IGFueXRoaW5nIHBhc3NlZCBieSByZWZlcmVuY2UgKHZlcnkgc3Ryb25nKSINCj4g
+IAkJZGVwZW5kcyBvbiBHQ0NfUExVR0lOUw0KPiAtCQlkZXBlbmRzIG9uICEoS0FTQU4gJiYgS0FT
+QU5fU1RBQ0s9MSkNCj4gKwkJZGVwZW5kcyBvbiAhKEtBU0FOICYmIEtBU0FOX1NUQUNLKQ0KPiAg
+CQlzZWxlY3QgR0NDX1BMVUdJTl9TVFJVQ1RMRUFLDQo+ICAJCWhlbHANCj4gIAkJICBaZXJvLWlu
+aXRpYWxpemUgYW55IHN0YWNrIHZhcmlhYmxlcyB0aGF0IG1heSBiZSBwYXNzZWQNCg0K
 
-
-On 26/02/2021 17:41, Pierre-Louis Bossart wrote:
-...
-
->>       return 0;
->>   err_master_add:
->> @@ -1214,6 +1261,47 @@ static int qcom_swrm_remove(struct 
->> platform_device *pdev)
->>       return 0;
->>   }
->> +static int swrm_runtime_resume(struct device *dev)
->> +{
->> +    struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
->> +
->> +    reinit_completion(&ctrl->enumeration);
->> +    clk_prepare_enable(ctrl->hclk);
->> +    ctrl->reg_write(ctrl, SWRM_COMP_SW_RESET, 0x01);
->> +    qcom_swrm_get_device_status(ctrl);
->> +    sdw_handle_slave_status(&ctrl->bus, ctrl->status);
->> +    qcom_swrm_init(ctrl);
->> +    wait_for_completion_timeout(&ctrl->enumeration,
->> +                    msecs_to_jiffies(TIMEOUT_MS));
->> +    usleep_range(100, 105);
->> +
->> +    pm_runtime_mark_last_busy(dev);
-> 
-> Humm, what 'clock stop' are we talking about here?
-> 
-> In SoundWire 1.x devices, you can stop the BUS clock and not have to 
-> redo any enumeration on resume, devices are required to save their 
-> context.  You have to also follow the pattern of preparing and 
-> broadcasting the CLOCK STOP NOW message.
-> 
-> It looks like you are stopping something else, and completely resetting 
-> the hardware. It's fine, it's just a reset but not clock stop support as 
-> defined in the SoundWire spec.
-> 
-
-This is clock stop that Soundwire Spec refers to.
-
-However I think I messed up this patch! :-)
-
-
-
-
->> +
->> +    return 0;
->> +}
->> +
->> +static int __maybe_unused swrm_runtime_suspend(struct device *dev)
->> +{
->> +    struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
->> +
->> +    /* Mask bus clash interrupt */
->> +    ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
->> +    ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
->> +    ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
->> +    /* clock stop sequence */
->> +    qcom_swrm_cmd_fifo_wr_cmd(ctrl, 0x2, 0xF, SDW_SCP_CTRL);
-> 
-> Humm, this looks like writing in SCP_CTRL::ClockStopNow, so why is 
-> enumeration required on restart?
-> 
-One of the controller instance needed a full reset so there is a mix of 
-code for both clock stop and reset here!
-
-Am working on cleaning up this in a better way!
-
-I will also address the runtime pm comments that you have noticed in 
-next version!
-
---srini
-
-
-> If you take down the bus and reset everything, you don't need to do this 
-> sequence. a hardware reset will do...
-> 
->> +
->> +    clk_disable_unprepare(ctrl->hclk);
->> +
->> +    usleep_range(100, 105);
->> +
->> +    return 0;
->> +}
->> +
->> +static const struct dev_pm_ops swrm_dev_pm_ops = {
->> +    SET_RUNTIME_PM_OPS(swrm_runtime_suspend, swrm_runtime_resume, NULL)
->> +};
->> +
->>   static const struct of_device_id qcom_swrm_of_match[] = {
->>       { .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
->>       { .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
->> @@ -1228,6 +1316,7 @@ static struct platform_driver qcom_swrm_driver = {
->>       .driver = {
->>           .name    = "qcom-soundwire",
->>           .of_match_table = qcom_swrm_of_match,
->> +        .pm = &swrm_dev_pm_ops,
->>       }
->>   };
->>   module_platform_driver(qcom_swrm_driver);
->>
