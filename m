@@ -2,96 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8701D32BD32
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F67332BD56
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383695AbhCCPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 10:33:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356221AbhCCKrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:47:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80E8364E66;
-        Wed,  3 Mar 2021 10:34:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614767646;
-        bh=vWDVz8UCSoRB11Joz2z1uFnWKF/SYql5zesbu2Mh24s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iOAGRzITI37KeU3j4Drdz3m+qTcXh2WNv7D722PY37n6kWrqJ7SqNrh8r72rjJCQX
-         4QFJH6N01DpDZWkRC8kr4wlyjtKwhN40e1HtnP8T6SN5zuPSIrciKvb9LDB71XzNdj
-         JVIVtnroeGw1yul51ifiYrXkWJcp9HuWm9ByqbeGTn+iCBOeTzlJtWm9zno6gmtzvM
-         1kI1dE1ji7cBMkr3A/Wec43FrrhZwlT1sM4BGWF3JVxIf+/btZbIlHFSpibktmHSuu
-         RuwblBEnNbr9YVbziMZ+b1Op7u3dxkCTZcJ6d/zdeer05PKnq1Y1w4eV77BWhD4ZYu
-         +d1KFFdTwk8Ew==
-Date:   Wed, 3 Mar 2021 11:34:00 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Nikolai Kostrigin <nickel@basealt.ru>
-Cc:     linux-i2c@vger.kernel.org,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "jingle.wu" <jingle.wu@emc.com.tw>
-Subject: Re: Need some help on "Input: elantech - add LEN2146 to SMBus
- blacklist for ThinkPad L13 Gen2"
-Message-ID: <20210303103400.GA3689@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Nikolai Kostrigin <nickel@basealt.ru>, linux-i2c@vger.kernel.org,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "jingle.wu" <jingle.wu@emc.com.tw>
-References: <0d1eaadd-5350-63a4-fe6d-f8f357c49504@basealt.ru>
- <CAO-hwJLmByHHULhJF60qOUAqprkqZpSvVh-GFXLZ_ndL0guvPQ@mail.gmail.com>
- <e1fd99ae-8e46-0b21-1011-db73cd75523b@basealt.ru>
- <20210225093801.GA1008@ninjato>
- <3ffc29f8-cdf1-15fe-6406-28872bba5716@basealt.ru>
+        id S237786AbhCCPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1442903AbhCCKvR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:51:17 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C64C061793;
+        Wed,  3 Mar 2021 02:37:40 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 255631F40F32
+Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org,
+        Suram Suram <suram@nxp.com>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>
+References: <20210301193642.707301430@linuxfoundation.org>
+ <32a6c609-642c-71cf-0a84-d5e8ccd104b1@collabora.com>
+ <YD4yUu6YH3wNQbwa@kroah.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <a0a72d78-1153-6dbb-7234-8ae1bc7c04fd@collabora.com>
+Date:   Wed, 3 Mar 2021 10:34:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
-Content-Disposition: inline
-In-Reply-To: <3ffc29f8-cdf1-15fe-6406-28872bba5716@basealt.ru>
+In-Reply-To: <YD4yUu6YH3wNQbwa@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/03/2021 12:40, Greg Kroah-Hartman wrote:
+> On Tue, Mar 02, 2021 at 11:38:36AM +0000, Guillaume Tucker wrote:
+>> On 01/03/2021 19:37, Greg Kroah-Hartman wrote:
+>>> This is the start of the stable review cycle for the 5.10.20 release.
+>>> There are 661 patches in this series, all will be posted as a response
+>>> to this one.  If anyone has any issues with these being applied, please
+>>> let me know.
+>>>
+>>> Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
+>>> Anything received after that time might be too late.
+>>>
+>>> The whole patch series can be found in one patch at:
+>>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc2.gz
+>>> or in the git tree and branch at:
+>>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+>>> and the diffstat can be found below.
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>
+>>
+>> I've been through the KernelCI results for v5.10.20-rc2 and made
+>> this manual reply, hoping to eventually get it all automated.
+>>
+>>
+>>
+>> First there was one build regression with the arm
+>> realview_defconfig:
+>>
+>> kernel/rcu/tree.c:683:2: error: implicit declaration of function ‘IRQ_WORK_INIT’; did you mean ‘IRQMASK_I_BIT’? [-Werror=implicit-function-declaration]
+>>   IRQ_WORK_INIT(late_wakeup_func);
+>>   ^~~~~~~~~~~~~
+>>   IRQMASK_I_BIT
+>> kernel/rcu/tree.c:683:2: error: invalid initializer
+>>
+>>
+>> Full log:
+>>
+>>   https://storage.kernelci.org/stable-rc/linux-5.10.y/v5.10.19-662-g92929e15cdc0/arm/realview_defconfig/gcc-8/build.log
+> 
+> That should now be resolved with a new -rc release for 5.4.y and 5.10.y.
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Confirmed in my other email for v5.10.20-rc4.
 
+>> There were also a few new build warnings.  Here's a comparison of
+>> the number of builds that completed with no warnings, with at
+>> least one warning, and with an error between current stable and
+>> stable-rc:
+>>
+>>               pass  warn  error
+>> v5.10.19      188      6      0  
+>> v5.10.20-rc2  180     15      1
+>>
+>> Full details for these 2 revisions respectively:
+>>
+>>   https://kernelci.org/build/stable/branch/linux-5.10.y/kernel/v5.10.19/
+>>   https://kernelci.org/build/stable-rc/branch/linux-5.10.y/kernel/v5.10.19-662-g92929e15cdc0/
+> 
+> That error should be resolved.
+> 
+> Warnings for non-x86 arches I have not been tracking to try to get down
+> to 0.  That would be a good project for someone to work on...
 
-> Happily Jingle Wu has pointed me to a couple of=C2=A0 patches of his
-> (co-authored by Dmitry Torokhov):
+OK, so until we get to 0 we should probably ignore warnings when
+replying to the -rc review threads.  If someone wants to pick
+this up in the meantime, kernelci.org can definitely help.
 
-Yep, this looks like the proper place to fix things. Good it is already
-solved.
+>> Then on the runtime testing side, there was one boot regression
+>> detected on imx8mp-evk as detailed here:
+>>
+>>   https://kernelci.org/test/case/id/603d69ec2924db6b9baddcb2/
+>>
+>> I've re-run a couple of tests with both v5.10.19 and v5.10.20-rc2
+>> and also got a failure with v5.10.19, so it looks like it's not
+>> really a new regression but more of an intermittent problem.
+>> Bisections are not enabled in NXP's lab so we don't have results
+>> about which commit caused it.  We should chase this up, I've
+>> already asked if they're OK to enable bisection.  Then we may
+>> bisect with an older revision that is really booting to find the
+>> root cause...
+> 
+> Finding that root cause would be good, but doesn't really sound like a
+> regression yet :)
 
+Yep.  Bisections are now getting enabled in the NXP test lab, so
+we'll share the news if it leads to something.  FWIW the same
+test passed with v5.10.20-rc4.
 
---1yeeQ81UyVL57Vl7
-Content-Type: application/pgp-signature; name="signature.asc"
+>> Presumably it's not OK to have this build error in the v5.10.20
+>> release, assuming the boot regression is not new and can be
+>> ignored, but that's your call.  So it seems a bit early for
+>> KernelCI to stamp it with Tested-by, even though it was tested
+>> but it's more a matter of clarifying the semantics and whether
+>> Tested-by implicitly means "works for me".  What do you think?
+> 
+> Try the new release to see if that fixes the build errors for you.
 
------BEGIN PGP SIGNATURE-----
+All passing now.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmA/ZhQACgkQFA3kzBSg
-KbbCHw//X+iKQMH2lAIAvwVP4wXZNSsK1QsyUSbLcKgEPWaZ96Hcq1oFvkaJHWnA
-mXWewlu0BA2sC+GNMpD/0EewZpqOPcjmaO7j7yFYIC2HhwfAYZu7DO7EpIeH5N9x
-VXW8QaBWXejr78lLClwexAGGY1sPq1yud8m1wNZBtAWczFkeTAU1VJZ0biAsw7XC
-5mgV9gAg7nzmfJT1IDRVb8nUpjO0GjWBPaAm1jVUjX+rDqTeAWS/5AHv/ekpIbve
-Z0H0fHWnh//+WwLT+R3+TK9NXvIeRIiOEghNqvDOhSJ5bxAqIlSrSeEWBWhITlMq
-i5BKFvv5TQ8ux85IynISlxqkXGokz+P+fK7ZnbXZwK0hBMDo28n2Fx34CNSy7D1H
-NdhckCGFPzvRrffjim0OmLxf2+VWZhdOWqiBjCL90JV7ZrVvl9yUa6ssqOEWwyf3
-JVXHP2fIpRrViIPiUCqP58ZRPdmGTGFICgE7fGFU1PY/0Ri7rp1BTCVJ/F6v8afT
-4VZoDOYxs1a3L5gEXA5yB7mNLIgEMJc8wkf1eO8Okn+OejdUCBdrM72wC/AkYd09
-f6EruUvsXDivaOY227orPWtUSEmggDDSzy/fgA/T7OfSIbr4V2bZ/flgI5G3RJlu
-Qd4FISK/OFC/yuUFjLZvw7EaZmifRTeapFAXM5amFHOImuABoo4=
-=sFlp
------END PGP SIGNATURE-----
+> And thanks for doing all of the testing here, this round was a rough one
+> for a variety of different reasons...
 
---1yeeQ81UyVL57Vl7--
+You're welcome.  That's what KernelCI is here for :)
+
+It'll just take a bit more typing to automate the replies and use
+the last stable release as a reference to detect new regressions
+on stable-rc.  I think patches@kernelci.org you're putting on CC
+will make things easier in this respect, in fact that's what it
+was originally created for.
+
+Best wishes,
+Guillaume
