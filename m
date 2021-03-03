@@ -2,136 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B7A32C11C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084BE32C121
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836510AbhCCSr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 13:47:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35499 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234049AbhCCRu5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1836533AbhCCSsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 13:48:00 -0500
+Received: from mga05.intel.com ([192.55.52.43]:24500 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233969AbhCCRu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 12:50:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614793732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XgGS/s/8WlRgw3FyEQZnL/peYUyqO0Kr8QQUVUAZzb8=;
-        b=S2hFuSMgR+L+5G9uSXDvTUJYhGKmOcsoIJiamXFHPspvBcHLmbvJjbYPCNiMsgBPfp7SE8
-        K7yaUzYLSiSuBEYy6PaS/x/Mw89f5OCxXGlT/viWGyMgSGFADjILTAIQcnuptiJ3jT+wY/
-        s3BhQ6QffCWRpGEZAwAr9iOFNh8j+e8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-l-AnTYKWMH6hyIacArNycg-1; Wed, 03 Mar 2021 12:48:50 -0500
-X-MC-Unique: l-AnTYKWMH6hyIacArNycg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D9101846097;
-        Wed,  3 Mar 2021 17:48:47 +0000 (UTC)
-Received: from localhost (ovpn-114-24.ams2.redhat.com [10.36.114.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 965E37094A;
-        Wed,  3 Mar 2021 17:48:40 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 17:48:39 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YD/L9/Dj+3dSZJXa@stefanha-x1.localdomain>
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
- <CAK8P3a1ZXbodV07TTErnQunCLWOBnzRiVdLCxBD743fn-6FbXg@mail.gmail.com>
- <56fdef9a-b373-32f2-6dac-e687caa813c8@intel.com>
- <YD4KovxeoNG/c8QC@stefanha-x1.localdomain>
- <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
+IronPort-SDR: 7h2OmpTfRD1hjR54l3G29yuKwpp5dc0tLoTPiPbDZpjxGlqYk5gDkut0xFFyQZkI1T+MKFZsSa
+ GSkbQBzDyV3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="272246022"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="272246022"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 09:49:27 -0800
+IronPort-SDR: s3zWAmWsgRQdPTkEF0qxVAoyJTgvQ/7p8tv/XMEU2A28UY+/J6H+3qPecnHmBPIjV3Th3iGGeT
+ cvlN3F3WmhzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="406549230"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by orsmga007.jf.intel.com with ESMTP; 03 Mar 2021 09:49:24 -0800
+Subject: Re: [PATCH v2 1/1] mmc: cqhci: fix random crash when remove mmc
+ module
+To:     Frank Li <lznuaa@gmail.com>, asutoshd@codeaurora.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, haibo.chen@nxp.com
+References: <20210303174248.542175-1-Frank.Li@nxp.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <1b8c461b-a286-9099-3c63-fd98340bf3c6@intel.com>
+Date:   Wed, 3 Mar 2021 19:49:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0Z13hpXB9yg/SJqi"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210303174248.542175-1-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/03/21 7:42 pm, Frank Li wrote:
+> [ 6684.493350] Unable to handle kernel paging request at virtual address ffff800011c5b0f0
+> [ 6684.498531] mmc0: card 0001 removed
+> [ 6684.501556] Mem abort info:
+> [ 6684.509681]   ESR = 0x96000047
+> [ 6684.512786]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [ 6684.518394]   SET = 0, FnV = 0
+> [ 6684.521707]   EA = 0, S1PTW = 0
+> [ 6684.524998] Data abort info:
+> [ 6684.528236]   ISV = 0, ISS = 0x00000047
+> [ 6684.532986]   CM = 0, WnR = 1
+> [ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081b22000
+> [ 6684.543923] [ffff800011c5b0f0] pgd=00000000bffff003, p4d=00000000bffff003, pud=00000000bfffe003, pmd=00000000900e1003, pte=0000000000000000
+> [ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
+> [ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_dev caam error [last unloaded: mmc_core]
+> [ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01410-g3ba33182767b-dirty #10
+> [ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
+> [ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
+> 
+> [ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> [ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
+> ^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr : cqhci_request+0x314/0x4e8 [cqhci]
+> [ 6684.626734] sp : ffff80001243b9f0
+> [ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
+> [ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
+> [ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
+> [ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
+> [ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
+> [ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
+> [ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
+> [ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
+> [ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
+> [ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
+> [ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
+> [ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
+> [ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
+> [ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
+> [ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
+> [ 6684.709854] Call trace:
+> [ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
+> [ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
+> [ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
+> [ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
+> 
+> cqhci_request was called after cqhci_disable.
+> 
+> cqhci_disable                                 cqhci_request
+> {                                             {
+> 	dmam_free_coherent();  (1) free
+>                                                   if(!cq_host->enable)
+>                                                        return
+> 				         (2) pass check here
+> 	cq_host->enable = false;
+> 
+>                                                   task_desc= get_desc(cq_host,tag);
+>                                                              ^^^^ crash here
+>                                          (3) access memory which is already free
+> 
+> }                                             }
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
---0Z13hpXB9yg/SJqi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-On Tue, Mar 02, 2021 at 11:54:02AM +0100, Arnd Bergmann wrote:
-> On Tue, Mar 2, 2021 at 10:51 AM Stefan Hajnoczi <stefanha@redhat.com> wro=
-te:
-> > On Tue, Mar 02, 2021 at 10:42:06AM +0800, Jie Deng wrote:
-> > > > > +/*
-> > > > > + * Definitions for virtio I2C Adpter
-> > > > > + *
-> > > > > + * Copyright (c) 2021 Intel Corporation. All rights reserved.
-> > > > > + */
-> > > > > +
-> > > > > +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
-> > > > > +#define _UAPI_LINUX_VIRTIO_I2C_H
-> > > > Why is this a uapi header? Can't this all be moved into the driver
-> > > > itself?
-> >
-> > Linux VIRTIO drivers provide a uapi header with structs and constants
-> > that describe the device interface. This allows other software like
-> > QEMU, other operating systems, etc to reuse these headers instead of
-> > redefining everything.
-> >
-> > These files should contain:
-> > 1. Device-specific feature bits (VIRTIO_<device>_F_<feature>)
-> > 2. VIRTIO Configuration Space layout (struct virtio_<device>_config)
-> > 3. Virtqueue request layout (struct virtio_<device>_<req/resp>)
-> >
-> > For examples, see <linux/virtio_net.h> and <linux/virtio_blk.h>.
->=20
-> Ok, makes sense. So it's not strictly uapi but just helpful for
-> virtio applications to reference these. I suppose it is slightly harder
-> when building qemu on other operating systems though, how does
-> it get these headers on BSD or Windows?
-
-qemu.git imports Linux headers from time to time and can use them
-instead of system headers:
-
-  https://gitlab.com/qemu-project/qemu/-/blob/master/scripts/update-linux-h=
-eaders.sh
-
-Stefan
-
---0Z13hpXB9yg/SJqi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmA/y/cACgkQnKSrs4Gr
-c8gvvwgAl//yH6nIM39C8033YVTMLn56fBWlMw7olnJWN4P4JpytEX5MLIkIoRrw
-vkM13V7TSV0lHJKKDc8erHKfahXFJFc7vJV5cn69icEpv+HCzB8Knfk+wePViUAF
-/vpfFH3K4/nutqb3eWfJ3yUQqFRrqXa4l7O+20e5H5j8REBK/R7NnOs6i3jBJ5su
-eW1XJKy//Jwnyih0Bxifxxf56JIOgNz/82Zg1sF0BY6TGF9uVwyYcSzTm3dny5tI
-E163vh02TFoNtMODr1aEEuQrR1gay5Cd+dE+YC+ba/Q0EBNj116O9yLid2xbipyb
-B5MY41s7CLQj5ESoEgyO2pKStZ0H/w==
-=2uM5
------END PGP SIGNATURE-----
-
---0Z13hpXB9yg/SJqi--
+> ---
+> 
+> Change from v1 to v2
+>  - use Adrian Hunter suggested method to fix this problem
+> 
+>  drivers/mmc/core/bus.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+> index c2e70b757dd1..4383c262b3f5 100644
+> --- a/drivers/mmc/core/bus.c
+> +++ b/drivers/mmc/core/bus.c
+> @@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
+>  	mmc_remove_card_debugfs(card);
+>  #endif
+>  
+> -	if (host->cqe_enabled) {
+> -		host->cqe_ops->cqe_disable(host);
+> -		host->cqe_enabled = false;
+> -	}
+> -
+>  	if (mmc_card_present(card)) {
+>  		if (mmc_host_is_spi(card->host)) {
+>  			pr_info("%s: SPI card removed\n",
+> @@ -416,6 +411,10 @@ void mmc_remove_card(struct mmc_card *card)
+>  		of_node_put(card->dev.of_node);
+>  	}
+>  
+> +	if (host->cqe_enabled) {
+> +		host->cqe_ops->cqe_disable(host);
+> +		host->cqe_enabled = false;
+> +	}
+> +
+>  	put_device(&card->dev);
+>  }
+> -
+> 
 
