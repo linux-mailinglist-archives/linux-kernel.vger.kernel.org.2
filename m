@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC7832BDAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6253532BD12
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346417AbhCCQ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 11:26:15 -0500
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:52995 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243405AbhCCLrK (ORCPT
+        id S1448053AbhCCPRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 10:17:21 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58334 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240619AbhCCK3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:47:10 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id B972DCCB24
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 09:18:28 +0000 (GMT)
-Received: (qmail 8195 invoked from network); 3 Mar 2021 09:18:28 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 3 Mar 2021 09:18:28 -0000
-Date:   Wed, 3 Mar 2021 09:18:25 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 4/5] net: page_pool: refactor dma_map into own function
- page_pool_dma_map
-Message-ID: <20210303091825.GO3697@techsingularity.net>
-References: <20210301161200.18852-1-mgorman@techsingularity.net>
- <20210301161200.18852-5-mgorman@techsingularity.net>
- <YD6IosORkdRN9B2x@enceladus>
+        Wed, 3 Mar 2021 05:29:06 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lHNeO-0007ZG-6W; Wed, 03 Mar 2021 09:18:36 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ASoC: fsl: fsl_easrc: Fix uninitialized variable st2_mem_alloc
+Date:   Wed,  3 Mar 2021 09:18:35 +0000
+Message-Id: <20210303091835.5024-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YD6IosORkdRN9B2x@enceladus>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:49:06PM +0200, Ilias Apalodimas wrote:
-> Hi Mel,
-> 
-> Can you please CC me in future revisions. I almost missed that!
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Will do.
+A previous cleanup commit removed the ininitialization of st2_mem_alloc.
+Fix this by restoring the original behaviour by initializing it to zero.
 
-> On Mon, Mar 01, 2021 at 04:11:59PM +0000, Mel Gorman wrote:
-> > From: Jesper Dangaard Brouer <brouer@redhat.com>
-> > 
-> > In preparation for next patch, move the dma mapping into its own
-> > function, as this will make it easier to follow the changes.
-> > 
-> > V2: make page_pool_dma_map return boolean (Ilias)
-> > 
-> 
-> [...]
-> 
-> > @@ -211,30 +234,14 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
-> >  	if (!page)
-> >  		return NULL;
-> >  
-> > -	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
-> > -		goto skip_dma_map;
-> > -
-> > -	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
-> > -	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
-> > -	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
-> > -	 * This mapping is kept for lifetime of page, until leaving pool.
-> > -	 */
-> > -	dma = dma_map_page_attrs(pool->p.dev, page, 0,
-> > -				 (PAGE_SIZE << pool->p.order),
-> > -				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
-> > -	if (dma_mapping_error(pool->p.dev, dma)) {
-> > +	if (pp_flags & PP_FLAG_DMA_MAP &&
-> 
-> Nit pick but can we have if ((pp_flags & PP_FLAG_DMA_MAP) && ...
-> 
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: e80382fe721f ("ASoC: fsl: fsl_easrc: remove useless assignments")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/fsl/fsl_easrc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Done.
-
-> [...]
->
-> > 
-> 
-> Otherwise 
-> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org> 
-
-Thanks. I'll wait for other review feedback before sending a V2.
-
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index 725a5d3aaa02..e823c9c13764 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -710,7 +710,7 @@ static int fsl_easrc_max_ch_for_slot(struct fsl_asrc_pair *ctx,
+ 				     struct fsl_easrc_slot *slot)
+ {
+ 	struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
+-	int st1_mem_alloc = 0, st2_mem_alloc;
++	int st1_mem_alloc = 0, st2_mem_alloc = 0;
+ 	int pf_mem_alloc = 0;
+ 	int max_channels = 8 - slot->num_channel;
+ 	int channels = 0;
 -- 
-Mel Gorman
-SUSE Labs
+2.30.0
+
