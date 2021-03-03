@@ -2,150 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADC932BE23
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302AA32BE15
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 23:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348117AbhCCRHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 12:07:18 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:46147 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233019AbhCCMjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:39:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614775121; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=PtMq7GNMoeu6+0qiGV3pBsJu4dFPWHqMkKNpr2j9aPE=;
- b=idVDpOQqNek/SpQFV6CMTCr/OrUEJSS6Bj++J/GtTT/YnWarFeob+L9zupwL0GbA+Jq2nlrZ
- KtT6AAqX+DU0rsRJygAb4r/QWNPxMUwZy2G0ZVXw6no1Y/9bdMu99u9eazWPsveVw3ST+M3q
- UUW9m0KvA/9vDnXf6QSJoKVx7l0=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 603f804439ef372114108b56 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 03 Mar 2021 12:25:40
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 74DDEC43465; Wed,  3 Mar 2021 12:25:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7AA2FC433CA;
-        Wed,  3 Mar 2021 12:25:38 +0000 (UTC)
+        id S1385105AbhCCQ6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 11:58:16 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13049 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234738AbhCCM3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:29:49 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DrCqw2qlCzMYFX;
+        Wed,  3 Mar 2021 20:25:00 +0800 (CST)
+Received: from localhost (10.174.150.118) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Wed, 3 Mar 2021
+ 20:26:59 +0800
+From:   <ann.zhuangyanying@huawei.com>
+To:     <pbonzini@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <weidong.huang@huawei.com>,
+        Zhuang Yanying <ann.zhuangyanying@huawei.com>
+Subject: [PATCH] KVM: x86: fix cpu hang due to tsc adjustment when kvmclock in use
+Date:   Wed, 3 Mar 2021 20:26:57 +0800
+Message-ID: <20210303122657.23400-1-ann.zhuangyanying@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 03 Mar 2021 17:55:38 +0530
-From:   pintu@codeaurora.org
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
-        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
-        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
-        lokeshgidra@google.com, nigupta@nvidia.com, famzheng@amazon.com,
-        andrew.a.klychkov@gmail.com, bigeasy@linutronix.de,
-        ping.ping@gmail.com, vbabka@suse.cz, yzaikin@google.com,
-        keescook@chromium.org, mcgrof@kernel.org, corbet@lwn.net,
-        pintu.ping@gmail.com
-Subject: Re: [PATCH] mm: introduce clear all vm events counters
-In-Reply-To: <YD5gFYalXJh0dMLn@cmpxchg.org>
-References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
- <YD0EOyW3pZXDnuuJ@cmpxchg.org>
- <419bb403c33b7e48291972df938d0cae@codeaurora.org>
- <YD5gFYalXJh0dMLn@cmpxchg.org>
-Message-ID: <2f816fe9682d9b066ba630951db75eac@codeaurora.org>
-X-Sender: pintu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.150.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-02 21:26, Johannes Weiner wrote:
-> On Tue, Mar 02, 2021 at 04:00:34PM +0530, pintu@codeaurora.org wrote:
->> On 2021-03-01 20:41, Johannes Weiner wrote:
->> > On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
->> > > At times there is a need to regularly monitor vm counters while we
->> > > reproduce some issue, or it could be as simple as gathering some
->> > > system
->> > > statistics when we run some scenario and every time we like to start
->> > > from
->> > > beginning.
->> > > The current steps are:
->> > > Dump /proc/vmstat
->> > > Run some scenario
->> > > Dump /proc/vmstat again
->> > > Generate some data or graph
->> > > reboot and repeat again
->> >
->> > You can subtract the first vmstat dump from the second to get the
->> > event delta for the scenario run. That's what I do, and I'd assume
->> > most people are doing. Am I missing something?
->> 
->> Thanks so much for your comments.
->> Yes in most cases it works.
->> 
->> But I guess there are sometimes where we need to compare with fresh 
->> data
->> (just like reboot) at least for some of the counters.
->> Suppose we wanted to monitor pgalloc_normal and pgfree.
-> 
-> Hopefully these would already be balanced out pretty well before you
-> run a test, or there is a risk that whatever outstanding allocations
-> there are can cause a large number of frees during your test that
-> don't match up to your recorded allocation events. Resetting to zero
-> doesn't eliminate the risk of such background noise.
-> 
->> Or, suppose we want to monitor until the field becomes non-zero..
->> Or, how certain values are changing compared to fresh reboot.
->> Or, suppose we want to reset all counters after boot and start 
->> capturing
->> fresh stats.
-> 
-> Again, there simply is no mathematical difference between
-> 
-> 	reset events to 0
-> 	run test
-> 	look at events - 0
-> 
-> and
-> 
-> 	read events baseline
-> 	run test
-> 	look at events - baseline
-> 
->> Some of the counters could be growing too large and too fast. Will 
->> there be
->> chances of overflow ?
->> Then resetting using this could help without rebooting.
-> 
-> Overflows are just a fact of life on 32 bit systems. However, they can
-> also be trivially handled - you can always subtract a ulong start
-> state from a ulong end state and get a reliable delta of up to 2^32
-> events, whether the end state has overflowed or not.
-> 
-> The bottom line is that the benefit of this patch adds a minor
-> convenience for something that can already be done in userspace. But
-> the downside is that there would be one more possible source of noise
-> for kernel developers to consider when looking at a bug report. Plus
-> the extra code and user interface that need to be maintained.
-> 
-> I don't think we should merge this patch.
+From: Zhuang Yanying <ann.zhuangyanying@huawei.com>
 
-Okay no problem.Thank you so much for your review and feedback.
-Yes I agree the benefits are minor but I thought might be useful for 
-someone somewhere.
-I worked on it and found it easy and convinient and thus proposed it.
-If others feel not important I am okay to drop it.
+If the TSC frequency of the VM is not equal to the host, hot-plugging vCPU
+will cause the VM to be hang. The time of hang depends on the current TSC
+value of the VM.
 
-Thanks once again to all who helped to review it.
+System time calculation of kvmclock is based on (tsc_timestamp, system_time),
+and adjusted by delta ( = rdtsc_ordered() - src->tsc_timestamp).The tsc of the
+hotplugged cpu is initialized to 0, which will trigger check_tsc_sync_target()
+to adjust the tsc of the hotplugged cpu according to another online cpu, that
+is, rdtsc_ordered() will change abruptly to a large value. Then system time
+based on kvmclock is modified at the same time.
+
+So after modifying the tsc offset, update vcpu->hv_clock immediately.
+
+Signed-off-by: Zhuang Yanying <ann.zhuangyanying@huawei.com>
+---
+ Host:
+  Intel(R) Xeon(R) Gold 6161 CPU @ 2.20GHz
+  linux-5.11
+  qemu-5.1
+    <cpu mode='host-passthrough' check='none'>
+      <feature policy='require' name='invtsc'/>
+    </cpu>
+    <clock offset='utc'>
+      <timer name='hpet' present='no'/>
+      <timer name='pit' tickpolicy='delay'/>
+      <timer name='tsc' frequency='3000000000'/>
+    </clock>
+ Guest:
+  Centos8.1 (4.18.0-147.el8.x86_64)
+
+ After Hotplug cpu, vm hang for 290s:
+  [  283.224026] CPU3 has been hot-added
+  [  283.226118] smpboot: Booting Node 0 Processor 3 APIC 0x3
+  [  283.226964] kvm-clock: cpu 3, msr 9e5e010c1, secondary cpu clock
+  [  283.247200] TSC ADJUST compensate: CPU3 observed 867529151959 warp. Adjust: 867529151959
+  [  572.445543] KVM setup async PF for cpu 3
+  [  572.446412] kvm-stealtime: cpu 3, msr a16ce5040
+  [  572.448108] Will online and init hotplugged CPU: 3
+  Feb 27 18:47:28 localhost kernel: CPU3 has been hot-added
+  Feb 27 18:47:28 localhost kernel: smpboot: Booting Node 0 Processor 3 APIC 0x3
+  Feb 27 18:47:28 localhost kernel: kvm-clock: cpu 3, msr 9e5e010c1, secondary cpu clock
+  Feb 27 18:47:28 localhost kernel: TSC ADJUST compensate: CPU3 observed 867529151959 warp. Adjust: 867529151959
+  Feb 27 18:47:28 localhost kernel: KVM setup async PF for cpu 3
+  Feb 27 18:47:28 localhost kernel: kvm-stealtime: cpu 3, msr a16ce5040
+  Feb 27 18:47:28 localhost kernel: Will online and init hotplugged CPU: 3
+  Feb 27 18:47:28 localhost systemd[1]: Started /usr/lib/udev/kdump-udev-throttler.
+  [  572.495181] clocksource: timekeeping watchdog on CPU2: Marking clocksource 'tsc' as unstable because the skew is too large:
+  [  572.495181] clocksource:                       'kvm-clock' wd_now: 86ab1286a2 wd_last: 4344b44d09 mask: ffffffffffffffff
+  [  572.495181] clocksource:                       'tsc' cs_now: ca313c563b cs_last: c9d88b54d2 mask: ffffffffffffffff
+  [  572.495181] tsc: Marking TSC unstable due to clocksource watchdog
+  [  572.495181] clocksource: Switched to clocksource kvm-clock
+  Feb 27 18:47:28 localhost kernel: clocksource: timekeeping watchdog on CPU2: Marking clocksource 'tsc' as unstable because the skew 
+  Feb 27 18:47:28 localhost kernel: clocksource:                       'kvm-clock' wd_now: 86ab1286a2 wd_last: 4344b44d09 mask: ffffff
+  Feb 27 18:47:28 localhost kernel: clocksource:                       'tsc' cs_now: ca313c563b cs_last: c9d88b54d2 mask: ffffffffffff
+  Feb 27 18:47:28 localhost kernel: tsc: Marking TSC unstable due to clocksource watchdog
+  Feb 27 18:47:28 localhost kernel: clocksource: Switched to clocksource kvm-clock
+  Feb 27 18:47:28 localhost systemd[1]: Started Getty on tty2.
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: kexec: unloaded kdump kernel
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: Stopping kdump: [OK]
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: kexec: loaded kdump kernel
+  Feb 27 18:47:29 localhost kdump-udev-throttler[3530]: Starting kdump: [OK]
+---
+ arch/x86/kvm/x86.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 3712bb5245eb..429206d65989 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3078,6 +3078,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			if (!msr_info->host_initiated) {
+ 				s64 adj = data - vcpu->arch.ia32_tsc_adjust_msr;
+ 				adjust_tsc_offset_guest(vcpu, adj);
++				kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
+ 			}
+ 			vcpu->arch.ia32_tsc_adjust_msr = data;
+ 		}
+-- 
+2.23.0
 
