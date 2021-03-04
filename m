@@ -2,78 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D11132DB14
+	by mail.lfdr.de (Postfix) with ESMTP id C8F0832DB15
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbhCDUTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:19:36 -0500
-Received: from mga09.intel.com ([134.134.136.24]:51897 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235677AbhCDUTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:19:16 -0500
-IronPort-SDR: QFWDWj4J7UHn3UWbZZ2v8Jm4G9bdNMInGK2YnlA7GoSMBv1+y1s9yXuHont+q3QRoqp8YM5xhQ
- Kjmtq+Fw0dOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="187608061"
-X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
-   d="scan'208";a="187608061"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 12:17:39 -0800
-IronPort-SDR: mMh51xlzxR7B1k/L0dJG0k44Oel3shCrKFHrGY8UO6UceiV+ywkSrPQyl8Ect80vnNBXqrcq5A
- t6Su39TXPgcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
-   d="scan'208";a="518785122"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
-  by orsmga004.jf.intel.com with ESMTP; 04 Mar 2021 12:17:39 -0800
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id B20EF302859; Thu,  4 Mar 2021 12:17:39 -0800 (PST)
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: [PATCHv2 0/4] perf/core: Add support to exclude kernel mode PMU tracing
-References: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org>
-        <871rcuvgfq.fsf@linux.intel.com>
-Date:   Thu, 04 Mar 2021 12:17:39 -0800
-In-Reply-To: <871rcuvgfq.fsf@linux.intel.com> (Andi Kleen's message of "Thu,
-        04 Mar 2021 11:59:05 -0800")
-Message-ID: <87tupqu10c.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S238849AbhCDUTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:19:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57293 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236405AbhCDUTZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 15:19:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614889079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NcEeIM4rSQOyEW+04ey55syfNFH6fXFOkJ0byNZRhLc=;
+        b=JP+q9C4wzOq9DtvS0ep5EHBNun3hf1zBVg76i7x9BnDbkqAwVktndhVvdfvP/o/q8XsceR
+        H6WFwUNz9/vV9wM9qnQfbEmhoRfo1g56/bGyQrV3bfgLgPd0QJumA9Af/LbeoWumAUIgKZ
+        9Jh09UFgQOXBPaEYPLo5a1QCzoXBzk8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-yGDbhkT-PQKrKN2212R9TQ-1; Thu, 04 Mar 2021 15:17:55 -0500
+X-MC-Unique: yGDbhkT-PQKrKN2212R9TQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3690883DD21;
+        Thu,  4 Mar 2021 20:17:54 +0000 (UTC)
+Received: from krava (unknown [10.40.196.20])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 193ED100164C;
+        Thu,  4 Mar 2021 20:17:51 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 21:17:51 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf pmu: Validate raw event with sysfs exported format
+ bits
+Message-ID: <YEFAb7Q7yhkw6g9s@krava>
+References: <20210303051736.26974-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303051736.26974-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andi Kleen <ak@linux.intel.com> writes:
->
-> Normally disk encryption is in specialized work queues. It's total
-> overkill to restrict all of the kernel if you just want to restrict
-> those work queues.
->
-> I would suggest some more analysis where secrets are actually stored
-> and handled first.
+On Wed, Mar 03, 2021 at 01:17:36PM +0800, Jin Yao wrote:
 
-Also thinking about this more:
+SNIP
 
-You really only want to limit data tracing here.
+> The set bits in 'bits' indicate the invalid bits used in config.
+> Finally use strbuf to report the invalid bits.
+> 
+> Some architectures may not export supported bits through sysfs,
+> so if masks is 0, perf_pmu__config_valid just returns true.
+> 
+> After:
+> 
+> Single event:
+> 
+>   # ./perf stat -e cpu/r031234/ -a -- sleep 1
+>   WARNING: event config '31234' not valid (bits 16 17 not supported by kernel)!
+> 
+>    Performance counter stats for 'system wide':
+> 
+>                    0      cpu/r031234/
+> 
+>          1.001403757 seconds time elapsed
+> 
+> Multiple events:
+> 
+>   # ./perf stat -e cpu/rf01234/,cpu/r031234/ -a -- sleep 1
+>   WARNING: event config 'f01234' not valid (bits 20 22 not supported by kernel)!
+>   WARNING: event config '31234' not valid (bits 16 17 not supported by kernel)!
 
-If tracing branches could reveal secrets the crypto code would be
-already insecure due to timing side channels. If that's the
-case it would already require fixing the crypto code.
+right, seems useful
 
--Andi
+> 
+>    Performance counter stats for 'system wide':
+> 
+>                    0      cpu/rf01234/
+>                    0      cpu/r031234/
+> 
+> The warning is reported for invalid bits.
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>  tools/perf/util/parse-events.c | 11 ++++++++++
+>  tools/perf/util/pmu.c          | 38 ++++++++++++++++++++++++++++++++++
+>  tools/perf/util/pmu.h          |  4 ++++
+>  3 files changed, 53 insertions(+)
+> 
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 42c84adeb2fb..1820b2c0a241 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -356,6 +356,17 @@ __add_event(struct list_head *list, int *idx,
+>  	struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
+>  			       cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
+>  
+
+if we want it just for raw/numeric, we could add it earlier on,
+like to parse_events_add_numeric call
+
+but perhaps it might be helpful to check any pmu event,
+could perhaps reveal some broken format 
+
+> +	if (pmu && attr->type == PERF_TYPE_RAW) {
+> +		struct strbuf buf = STRBUF_INIT;
+> +
+> +		if (!perf_pmu__config_valid(pmu, attr->config, &buf)) {
+> +			pr_warning("WARNING: event config '%llx' not valid ("
+> +				   "bits%s not supported by kernel)!\n",
+> +				   attr->config, buf.buf);
+> +		}
+> +		strbuf_release(&buf);
+> +	}
+> +
+>  	if (init_attr)
+>  		event_attr_init(attr);
+>  
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 44ef28302fc7..5e361adb2698 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -1812,3 +1812,41 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
+>  
+>  	return nr_caps;
+>  }
+> +
+> +bool perf_pmu__config_valid(struct perf_pmu *pmu, __u64 config,
+> +			    struct strbuf *buf)
+> +{
+> +	struct perf_pmu_format *format;
+> +	__u64 masks = 0, bits;
+> +	int i;
+> +
+> +	list_for_each_entry(format, &pmu->format, list)	{
+> +		/*
+> +		 * Skip extra configs such as config1/config2.
+> +		 */
+> +		if (format->value > 0)
+> +			continue;
+> +
+> +		for_each_set_bit(i, format->bits, PERF_PMU_FORMAT_BITS)
+> +			masks |= 1ULL << i;
+> +	}
+> +
+> +	/*
+> +	 * Kernel doesn't export any valid format bits.
+> +	 */
+> +	if (masks == 0)
+> +		return true;
+> +
+> +	bits = config & ~masks;
+> +	if (bits == 0)
+> +		return true;
+
+so in here you now that there's something wrong, so why
+bother with the outside strbuf, when we can easily just
+do all the printing in here?
+
+> +
+> +	for (i = 0; i < PERF_PMU_FORMAT_BITS; i++) {
+> +		if (bits & 0x1)
+> +			strbuf_addf(buf, " %d", i);
+> +
+> +		bits >>= 1;
+
+could you use the for_each_set_bit in here?
+
+thanks,
+jirka
+
