@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E4C32CECF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D7B32CED7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236832AbhCDIwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        id S236848AbhCDIwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:52:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236805AbhCDIv7 (ORCPT
+        with ESMTP id S236841AbhCDIwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:51:59 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29EAC061756;
-        Thu,  4 Mar 2021 00:51:18 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id h7so6242846qvm.2;
-        Thu, 04 Mar 2021 00:51:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I4gktfqxylGB3DlwpHUJlo46LXTYxo6+TuJCmtDgwqg=;
-        b=WYjdeOOvSLFpvDoGjRRqZlAOwzlmZdzsKW62eY2+C+MatfU5IHlRHugMRRHognkKJa
-         7I/NGS3uGqF63bl8cu+Sd8jPUj2wa8lNZWhg6s7FdnFPLRsxr7AK4HzzeD65KBmPz6wN
-         VQcjeJJbBgX5qiMV1/Cq6/FQCVXVPWIa+tMGhn9gGdfcb2+PL56qDI1QfMLy9cayAD8R
-         QXnYX4JEzS6BN9ANqF2JSjPoHHX1U+rqiF5qO+KIN6ax+4qAeRnkp97wMpAOHuQIRs5o
-         Kj46nYkNjqGS+ndlohRvyB8MUQ4HYU2dQPbGtA8rAwwGGcZ43FjhtD3OMnmovFe3Uaft
-         0aqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=I4gktfqxylGB3DlwpHUJlo46LXTYxo6+TuJCmtDgwqg=;
-        b=SCssvo3JnDfv2x8MNnb1/0o+1zLiG2oje8dRx4H1mu3yQalM9G/sMrsYMNayyjE51W
-         sCSb5goftX0iIsrtcfVzhxMcUL7ngF4pW+yzTuM0fwH/mCb1GoG9fcn5O5yIxghzliR0
-         0YezW/4DwQkIjzDV7SUCH0gAvwfkrleLMaEbwynXHPgQHbyo2S+3igidli5SB8zei8yZ
-         whfSFSkj1i8EIiIOlYd+3Iend4J7BapyEn5YMveSeBeihBljxq4uqKPNBQSrP5nTOgOx
-         0R1eP+vMPA+0IWVAAKadCbWMh8Op6LcgJf82lSkL0rLgwsJwXITO1TLJkPt1YKHopkYM
-         f4IA==
-X-Gm-Message-State: AOAM5310QWmMUK2qvXWN5TcTp/zSFJlNBoihJskbq3tpgY0GIh1CBB42
-        3VNl1VlyHSY8VuhWLBkBqyc=
-X-Google-Smtp-Source: ABdhPJzBUoqqJVrNBlQvGGRR49f0+8IuJLMipV5zoSogL0KIUeUBdiMnYRbldFvy1u4CXAnQ7dzQOw==
-X-Received: by 2002:ad4:53ac:: with SMTP id j12mr2877734qvv.3.1614847877771;
-        Thu, 04 Mar 2021 00:51:17 -0800 (PST)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id m16sm1347504qkm.100.2021.03.04.00.51.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 00:51:17 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 4 Mar 2021 03:51:16 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     Jacob Pan <jacob.jun.pan@intel.com>, mkoutny@suse.com,
-        rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <YECfhCJtHUL9cB2L@slm.duckdns.org>
-References: <20210302081705.1990283-1-vipinsh@google.com>
- <20210302081705.1990283-3-vipinsh@google.com>
- <20210303185513.27e18fce@jacob-builder>
- <YEB8i6Chq4K/GGF6@google.com>
+        Thu, 4 Mar 2021 03:52:20 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C970C061574;
+        Thu,  4 Mar 2021 00:51:40 -0800 (PST)
+Date:   Thu, 04 Mar 2021 08:51:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614847896;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZpY9xrjaVQfgAvdH5+f0wRgCrdGcIsGgKyjkDkEdEBA=;
+        b=lJMQXLD2SlxgcawdKsKfqCRfpobCaBn7DvLfMpQtW1mWE1HtEqiL5v/VzENk6pxKc8byzF
+        7+CMfyWm1pY4lQ9jSmgcY9pRRiabooP7ax36aAhbA9r5k0oJ38U+gd5HhXewDI1OFOAxGi
+        3sY1qYE1C1T3Eqx3I3aGlJij0Wvq3EIacZFliWZp1eT03Z+dr6IGhMTiicrZZ14gMEuhXN
+        13FGo8P1X975GxtIy80OP8Bpx9vqggwqXpHY5ee6N1X/gNjIhGBwpbz04EU+wIEDbqFJkI
+        Ov4xs9iKITBl/CQW7U9zGMoHd3iRWti7WLoqVCeHagEV3njkVIULVTXIUiwGmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614847896;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZpY9xrjaVQfgAvdH5+f0wRgCrdGcIsGgKyjkDkEdEBA=;
+        b=1u0iuChaDTPke2h95/Gdqa682hVfewhqwoyRtZKUzSbxNx3dZXiG3VMavq5AW/UDbYFVv/
+        Tx8eNbwkFnmyK/Dw==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/unwind/orc: Silence warnings caused by missing ORC data
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ivan Babrou <ivan@cloudflare.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
+References: <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEB8i6Chq4K/GGF6@google.com>
+Message-ID: <161484789468.398.5338977176281362987.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following commit has been merged into the x86/urgent branch of tip:
 
-On Wed, Mar 03, 2021 at 10:22:03PM -0800, Vipin Sharma wrote:
-> > I am trying to see if IOASIDs cgroup can also fit in this misc controller
-> > as yet another resource type.
-> > https://lore.kernel.org/linux-iommu/20210303131726.7a8cb169@jacob-builder/T/#u
-> > However, unlike sev IOASIDs need to be migrated if the process is moved to
-> > another cgroup. i.e. charge the destination and uncharge the source.
-> > 
-> > Do you think this behavior can be achieved by differentiating resource
-> > types? i.e. add attach callbacks for certain types. Having a single misc
-> > interface seems cleaner than creating another controller.
-> 
-> I think it makes sense to add support for migration for the resources
-> which need it. Resources like SEV, SEV-ES will not participate in
-> migration and won't stop can_attach() to succeed, other resources which
-> need migration will allow or stop based on their limits and capacity in
-> the destination.
+Commit-ID:     86402dcc894951c0a363b6aee12d955ff923b35e
+Gitweb:        https://git.kernel.org/tip/86402dcc894951c0a363b6aee12d955ff923b35e
+Author:        Josh Poimboeuf <jpoimboe@redhat.com>
+AuthorDate:    Fri, 05 Feb 2021 08:24:03 -06:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 03 Mar 2021 16:56:30 +01:00
 
-Please note that cgroup2 by and large don't really like or support charge
-migration or even migrations themselves. We tried that w/ memcg on cgroup1
-and it turned out horrible. The expected usage model as decribed in the doc
-is using migration to seed a cgroup (or even better, use the new clone call
-to start in the target cgroup) and then stay there until exit. All existing
-controllers assume this usage model and I'm likely to nack deviation unless
-there are some super strong justifications.
+x86/unwind/orc: Silence warnings caused by missing ORC data
 
-Thanks.
+The ORC unwinder attempts to fall back to frame pointers when ORC data
+is missing for a given instruction.  It sets state->error, but then
+tries to keep going as a best-effort type of thing.  That may result in
+further warnings if the unwinder gets lost.
 
--- 
-tejun
+Until we have some way to register generated code with the unwinder,
+missing ORC will be expected, and occasionally going off the rails will
+also be expected.  So don't warn about it.
+
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Ivan Babrou <ivan@cloudflare.com>
+Link: https://lkml.kernel.org/r/06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com
+---
+ arch/x86/kernel/unwind_orc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 1bcc14c..a120253 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -13,7 +13,7 @@
+ 
+ #define orc_warn_current(args...)					\
+ ({									\
+-	if (state->task == current)					\
++	if (state->task == current && !state->error)			\
+ 		orc_warn(args);						\
+ })
+ 
