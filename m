@@ -2,106 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E87532D13B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3082832D13F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239077AbhCDKz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:55:29 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48902 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhCDKzD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:55:03 -0500
-Date:   Thu, 04 Mar 2021 10:54:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614855262;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kr2AYH2r5OfwUqHQsDSdPUZHn/tXpVHWgeafjo/UTKI=;
-        b=av8s+J8F3rZydYOtSE00pi27pAOig75+yad0O2UR+P/HG8Wt7fApFIC74zNbiohLACECRd
-        Q912GABr+J3Q4stV4l4xXQbfFh2ymjfNQxxFWu8oeKJeHjNf3GKbFsUFv3ukyju8Yp8KCt
-        7L2iHcwZb6EF8kqD/8hx3n9FPUhidFdAaVtIFcZfxMsi6sthT52fEcCd9wUnWFOIhZz6U8
-        DGHSg3WCKkw53xoPWgO2o1kNydtBMVOgUoqUuEETCeiHGyvyjRoyoC1jvbnNCIlN7MAL0j
-        IyQ7A3JPCzUHexV1cCaQEIX0xKb/BSCEYRAmxpoZvEFw0L3flu3J/gWdnHBNaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614855262;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kr2AYH2r5OfwUqHQsDSdPUZHn/tXpVHWgeafjo/UTKI=;
-        b=Ysa/11zkHII1Ajjk8JjpknC58EuLUdJxZ9SJDxcj+guIAei2lQCAgI/VvG+Ma9+1Wkg/fa
-        R8k+9dP8Ax7stvCQ==
-From:   "tip-bot2 for Jiri Slaby" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/vdso] x86/vdso: Use proper modifier for len's format
- specifier in extract()
-Cc:     Jiri Slaby <jslaby@suse.cz>, Borislav Petkov <bp@suse.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210303064357.17056-1-jslaby@suse.cz>
-References: <20210303064357.17056-1-jslaby@suse.cz>
+        id S239099AbhCDK4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:56:35 -0500
+Received: from mga09.intel.com ([134.134.136.24]:57040 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239104AbhCDK4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:56:25 -0500
+IronPort-SDR: 2b4TZsXRF5MmGfoVZBlVZBPWT2uVwKtAyuzJPFCJVZx2GxNVkTYlpiNPBFcbEfdwolrFS9s62e
+ 0sw2TRkqM96w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="187502557"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="187502557"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 02:54:39 -0800
+IronPort-SDR: BBjc4ASGZrl9v6kZbw0YBwGuvrIQCG30tqgAv2gDH73ac2+9gjjKz+w/OBYNvsJPBPjZI+wj2j
+ qWlugjb0vdRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="600483580"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 04 Mar 2021 02:54:38 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id CB5EC1F4; Thu,  4 Mar 2021 12:54:37 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v1 1/1] pinctrl: intel: No need to disable IRQs in the handler
+Date:   Thu,  4 Mar 2021 12:54:32 +0200
+Message-Id: <20210304105432.36544-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Message-ID: <161485526193.398.16290223266017455926.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/vdso branch of tip:
+In IRQ handler interrupts are already disabled, hence no need
+to repeat it. Even in the threaded case, which is disabled here,
+it is not a problem because IRQ framework serializes descriptor
+handling. Remove disabling IRQ part in the handler.
 
-Commit-ID:     6bdbe1760651484b0fe6f6d0cc3a2fe8741e6f87
-Gitweb:        https://git.kernel.org/tip/6bdbe1760651484b0fe6f6d0cc3a2fe8741e6f87
-Author:        Jiri Slaby <jslaby@suse.cz>
-AuthorDate:    Wed, 03 Mar 2021 07:43:57 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 04 Mar 2021 11:47:01 +01:00
-
-x86/vdso: Use proper modifier for len's format specifier in extract()
-
-Commit
-
-  8382c668ce4f ("x86/vdso: Add support for exception fixup in vDSO functions")
-
-prints length "len" which is size_t. Compilers now complain on 32-bit:
-
-  In file included from arch/x86/entry/vdso/vdso2c.c:162:
-  arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
-  arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of \
-	type 'long unsigned int', but argument 4 has type 'size_t' {aka 'unsigned int'}
-
-So use proper modifier (%zu) for size_t.
-
- [ bp: Massage commit message. ]
-
-Fixes: 8382c668ce4f ("x86/vdso: Add support for exception fixup in vDSO functions")
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/20210303064357.17056-1-jslaby@suse.cz
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/x86/entry/vdso/vdso2c.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/intel/pinctrl-intel.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
-index 1c7cfac..5264daa 100644
---- a/arch/x86/entry/vdso/vdso2c.h
-+++ b/arch/x86/entry/vdso/vdso2c.h
-@@ -35,7 +35,7 @@ static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
- 	if (offset + len > data_len)
- 		fail("section to extract overruns input data");
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 93237d6e4316..268aaad3bb08 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -1173,16 +1173,15 @@ static int intel_gpio_community_irq_handler(struct intel_pinctrl *pctrl,
+ 	for (gpp = 0; gpp < community->ngpps; gpp++) {
+ 		const struct intel_padgroup *padgrp = &community->gpps[gpp];
+ 		unsigned long pending, enabled, gpp_offset;
+-		unsigned long flags;
  
--	fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-+	fprintf(outfile, "static const unsigned char %s[%zu] = {", name, len);
- 	BITSFUNC(copy)(outfile, data + offset, len);
- 	fprintf(outfile, "\n};\n\n");
- }
+-		raw_spin_lock_irqsave(&pctrl->lock, flags);
++		raw_spin_lock(&pctrl->lock);
+ 
+ 		pending = readl(community->regs + community->is_offset +
+ 				padgrp->reg_num * 4);
+ 		enabled = readl(community->regs + community->ie_offset +
+ 				padgrp->reg_num * 4);
+ 
+-		raw_spin_unlock_irqrestore(&pctrl->lock, flags);
++		raw_spin_unlock(&pctrl->lock);
+ 
+ 		/* Only interrupts that are enabled */
+ 		pending &= enabled;
+-- 
+2.30.1
+
