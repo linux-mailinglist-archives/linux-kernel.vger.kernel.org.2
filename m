@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AC032DDEF
+	by mail.lfdr.de (Postfix) with ESMTP id 4D06E32DDF0
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbhCDXkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 18:40:55 -0500
-Received: from mga07.intel.com ([134.134.136.100]:36422 "EHLO mga07.intel.com"
+        id S233232AbhCDXk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 18:40:56 -0500
+Received: from mga05.intel.com ([192.55.52.43]:19552 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230527AbhCDXky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 18:40:54 -0500
-IronPort-SDR: LHhzhypB8hEoQvPrRjtq3bCzHa1cyxKl0t3GeGxVm2JXOAmxVhyBvIoa1iGncwacDDtZLQDnDu
- qMBcVae8PtcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="251567133"
+        id S233118AbhCDXkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 18:40:55 -0500
+IronPort-SDR: X4XxD7qi4FhDDJXJ6LK5JmFQElXNRkZXic2ojILGJW5jiZm4Av6hhYJ7yi9bWBs5yiWFrwG91/
+ pWHAQ/WSZlXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="272531737"
 X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
-   d="scan'208";a="251567133"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 15:40:53 -0800
-IronPort-SDR: mYuGjV/vP6g7Jqmf1Hzbb/JiAJ5ZnKHgY87gDWbzjWdRe4f8fe4KCm0xO9iUUHNWRdkD39eOO2
- 9OR7GevaxEDQ==
+   d="scan'208";a="272531737"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 15:40:54 -0800
+IronPort-SDR: gQ8qcIIrM58NgMarWSbdGpP6S6QfzTh+E3eg1sDzh5eODY29ag2biM+pSfSUVAb52KGPV2eKXB
+ kgWX06Iwfi2A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
-   d="scan'208";a="384675551"
+   d="scan'208";a="518837057"
 Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 04 Mar 2021 15:40:51 -0800
+  by orsmga004.jf.intel.com with ESMTP; 04 Mar 2021 15:40:52 -0800
 Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lHxaN-0002SS-16; Thu, 04 Mar 2021 23:40:51 +0000
-Date:   Fri, 05 Mar 2021 07:40:07 +0800
+        id 1lHxaN-0002SU-1W; Thu, 04 Mar 2021 23:40:51 +0000
+Date:   Fri, 05 Mar 2021 07:40:10 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/vdso] BUILD SUCCESS
- 6bdbe1760651484b0fe6f6d0cc3a2fe8741e6f87
-Message-ID: <60416fd7.GswkRetgPW+vmAjQ%lkp@intel.com>
+Subject: [tip:irq/core] BUILD SUCCESS
+ e749df1bbd23f4472082210650514548d8a39e9b
+Message-ID: <60416fda.2XQF9AUKBoj+u/FE%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,13 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/vdso
-branch HEAD: 6bdbe1760651484b0fe6f6d0cc3a2fe8741e6f87  x86/vdso: Use proper modifier for len's format specifier in extract()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: e749df1bbd23f4472082210650514548d8a39e9b  genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
 
 elapsed time: 724m
 
-configs tested: 99
-configs skipped: 38
+configs tested: 96
+configs skipped: 2
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -81,11 +81,6 @@ x86_64                           alldefconfig
 m68k                       m5275evb_defconfig
 mips                        bcm47xx_defconfig
 arm                         nhk8815_defconfig
-m68k                        m5407c3_defconfig
-arm64                            alldefconfig
-mips                          rb532_defconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc8315_rdb_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -114,6 +109,8 @@ sparc                            allyesconfig
 sparc                               defconfig
 i386                               tinyconfig
 i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
