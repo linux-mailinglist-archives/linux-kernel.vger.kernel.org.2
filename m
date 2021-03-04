@@ -2,69 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC11332D12F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3326832D130
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239036AbhCDKvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239011AbhCDKve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:51:34 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F78BC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 02:50:54 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0f5900e15878ab9d7a3926.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:5900:e158:78ab:9d7a:3926])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7FF231EC04D3;
-        Thu,  4 Mar 2021 11:50:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614855052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=EMFWSIOJL9yUaUl/Q8ozyjU4IOFaaWCO1QDdvg1FdCQ=;
-        b=rgrcN51EQtPgf+5Xq2kh6mz0dUjHQIAjf5UK7pwmIAcowfbuJC2eSeP4GY68oFMaaHxf0D
-        KnMwRYrnR4G2m5I3ttd8fSHM88I5HwT6CU3bQSHI0YKQNblcmJlklfsanL6tM3hCvPuAJu
-        VxSZcrsMCNuvlrG+jzIIJV67h1BfNYU=
-Date:   Thu, 4 Mar 2021 11:50:52 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shuo A Liu <shuo.a.liu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v9 17/18] virt: acrn: Introduce an interface for Service
- VM to control vCPU
-Message-ID: <20210304105052.GB15496@zn.tnic>
-References: <20210207031040.49576-1-shuo.a.liu@intel.com>
- <20210207031040.49576-18-shuo.a.liu@intel.com>
- <20210303173719.GA30356@zn.tnic>
- <20210304013657.GC9695@shuo-intel.sh.intel.com>
+        id S239049AbhCDKwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:52:15 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:4140 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239038AbhCDKv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:51:58 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DrnjG6PdJz9v1rj;
+        Thu,  4 Mar 2021 11:51:14 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 4JLot1x6by_Q; Thu,  4 Mar 2021 11:51:14 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrnjG4kybz9v1rX;
+        Thu,  4 Mar 2021 11:51:14 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 03B058B7FA;
+        Thu,  4 Mar 2021 11:51:15 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id zkrp1iWXFZBy; Thu,  4 Mar 2021 11:51:15 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9E3628B773;
+        Thu,  4 Mar 2021 11:51:13 +0100 (CET)
+Subject: Re: [PATCH v3] powerpc/uprobes: Validation for prefixed instruction
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     jniethe5@gmail.com, oleg@redhat.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, paulus@samba.org,
+        sandipan@linux.ibm.com, naveen.n.rao@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au
+References: <20210304050529.59391-1-ravi.bangoria@linux.ibm.com>
+ <ac7aa126-59dd-31be-1084-6d3a2f0e4eb4@csgroup.eu>
+ <4d365b9f-6f25-a4bc-c145-c06ee33f1f9f@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f1a61cd9-436e-b486-b99c-0c06f2956a89@csgroup.eu>
+Date:   Thu, 4 Mar 2021 11:51:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210304013657.GC9695@shuo-intel.sh.intel.com>
+In-Reply-To: <4d365b9f-6f25-a4bc-c145-c06ee33f1f9f@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 09:36:57AM +0800, Shuo A Liu wrote:
-> This patchset could fix it.
-> https://lore.kernel.org/lkml/20210221134339.57851-1-shuo.a.liu@intel.com/.
 
-Yap, it does, thx.
 
-Tested-by: Borislav Petkov <bp@suse.de>
+Le 04/03/2021 à 11:13, Ravi Bangoria a écrit :
+> 
+> 
+> On 3/4/21 1:02 PM, Christophe Leroy wrote:
+>>
+>>
+>> Le 04/03/2021 à 06:05, Ravi Bangoria a écrit :
+>>> As per ISA 3.1, prefixed instruction should not cross 64-byte
+>>> boundary. So don't allow Uprobe on such prefixed instruction.
+>>>
+>>> There are two ways probed instruction is changed in mapped pages.
+>>> First, when Uprobe is activated, it searches for all the relevant
+>>> pages and replace instruction in them. In this case, if that probe
+>>> is on the 64-byte unaligned prefixed instruction, error out
+>>> directly. Second, when Uprobe is already active and user maps a
+>>> relevant page via mmap(), instruction is replaced via mmap() code
+>>> path. But because Uprobe is invalid, entire mmap() operation can
+>>> not be stopped. In this case just print an error and continue.
+>>>
+>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>> ---
+>>> v2: https://lore.kernel.org/r/20210204104703.273429-1-ravi.bangoria@linux.ibm.com
+>>> v2->v3:
+>>>    - Drop restriction for Uprobe on suffix of prefixed instruction.
+>>>      It needs lot of code change including generic code but what
+>>>      we get in return is not worth it.
+>>>
+>>>   arch/powerpc/kernel/uprobes.c | 8 ++++++++
+>>>   1 file changed, 8 insertions(+)
+>>>
+>>> diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+>>> index e8a63713e655..c400971ebe70 100644
+>>> --- a/arch/powerpc/kernel/uprobes.c
+>>> +++ b/arch/powerpc/kernel/uprobes.c
+>>> @@ -41,6 +41,14 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+>>>       if (addr & 0x03)
+>>>           return -EINVAL;
+>>> +    if (!IS_ENABLED(CONFIG_PPC64) || !cpu_has_feature(CPU_FTR_ARCH_31))
+>>
+>> cpu_has_feature(CPU_FTR_ARCH_31) should return 'false' when CONFIG_PPC64 is not enabled, no need 
+>> to double check.
+> 
+> Ok.
+> 
+> I'm going to drop CONFIG_PPC64 check because it's not really
+> required as I replied to Naveen. So, I'll keep CPU_FTR_ARCH_31
+> check as is.
+> 
+>>
+>>> +        return 0;
+>>> +
+>>> +    if (ppc_inst_prefixed(auprobe->insn) && (addr & 0x3F) == 0x3C) {
+>>
+>> Maybe 3C instead of 4F ? : (addr & 0x3C) == 0x3C
+> 
+> Didn't follow. It's not (addr & 0x3C), it's (addr & 0x3F).
 
--- 
-Regards/Gruss,
-    Boris.
+Sorry I meant 3c instead of 3f (And usually we don't use capital letters for that).
+The last two bits are supposed to always be 0, so it doesn't really matter, I just thought it would 
+look better having the same value both sides of the test, ie (addr & 0x3c) == 0x3c.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+>>
+>> What about
+>>
+>> (addr & (SZ_64 - 4)) == SZ_64 - 4 to make it more explicit ?
+> 
+> Yes this is bit better. Though, it should be:
+> 
+>      (addr & (SZ_64 - 1)) == SZ_64 - 4
+
+-1 or -4 should give the same results as instructions are always 32 bits aligned though.
+
+Christophe
