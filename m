@@ -2,92 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F163732D07F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5751432D086
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238324AbhCDKNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238312AbhCDKNk (ORCPT
+        id S238405AbhCDKP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:15:59 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48920 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238396AbhCDKPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:13:40 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A245C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 02:13:00 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id v64so19944241qtd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 02:13:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UYWuSYhmTrr35SLSt9f/OLEiFf8bDbL0/zVWYuoe+Pw=;
-        b=APIlleCuhC/JKMPEqEAaCCf9/seFZzJr+aiI0HhsKREvPnEr7Ks5HeuuEHx0sc0cvc
-         PlPMNjVFBbwuYjQMJUueTzXxD8ri6AzG+FYlr/o7JaCTUZHd09ONYDItNcM2FatDrHOi
-         KENEROYAvkcJ9rRUS9QpG2lYyjWmYakK8GoUs/7YUEnuiOXmYoeEiYrpuclgR/NYVMS3
-         gF5Cxbpz6d1LEeVrwNM2eWd8WaW8RHGsOIxDjltkCAk29UDre6eCUrMdP4LfAKrv2wpr
-         OCyVD1Y651hC2PPNSI18EPtdgFgr2Y3F6KXaYMqyjAcg/kc2iBJ/2jKwB5Vs59LIMoGo
-         uL2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UYWuSYhmTrr35SLSt9f/OLEiFf8bDbL0/zVWYuoe+Pw=;
-        b=MOlOeGNQTjiiWJexjkUbUQGODX9b7eqEls2yK3ErNbOgff9WNVedf7OdOlBc2MiEi9
-         VktOQIwJQ+XoubLYWvWjlt8kqtZk4L4+IrJiy/flmAK1kiVJzDAzWzFm0VLJN++VFrFD
-         Esuv3YZPANc7kkbNZKPkpl8EjZP1a7LQ9zYSoQMQGmC/PcJC06J4f2lbtJLy4KPhmS0C
-         y51VB6PO2k8GSlkvdhjUNx/TKJbjcs32DNT9yJcozyPgZdGcCnKofXYy/zF7REqS8IsW
-         6Kf4pNSkb99lI2cVOJvc9cPu+uygzWd6wkwytQNtDeOLDxgTFrVyAUkKfCHAroACbiyc
-         9g/w==
-X-Gm-Message-State: AOAM5335FLnHOBk8VdHI+OYLMnrA+rEQgvg8k4uwsV1tLzoGk1sYSu+A
-        a6lmM4hkfOwtZqReiVdSX8P5a8s9Wlo5YmGkRuVThA==
-X-Google-Smtp-Source: ABdhPJyEnJXLSv6fgwoe6NTlxqqP44HAsiEYJKflDmMF5M72e4E6XHg+yJye0njFZbIADmtybEq7PUyO6FPpSb/sxpA=
-X-Received: by 2002:ac8:5847:: with SMTP id h7mr1661367qth.43.1614852779537;
- Thu, 04 Mar 2021 02:12:59 -0800 (PST)
+        Thu, 4 Mar 2021 05:15:36 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124A4TbP136574;
+        Thu, 4 Mar 2021 05:13:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/6BKRbfjqMK36fGe1S8mGJRD00PPSG/87LrHB7cqsss=;
+ b=kOtMPLmDunm3BGsCwHvD3yUWL4l+EkbXlX+rJYxEYNbu/5uVAz+tHmDTLGEgsbOI+mrM
+ +pTZS/H6yrDarhXbmGbSiiO7/F7qXc/oH1ILf1ao12YZ0NsdSuhcQtpgiSbI4F+jB6dE
+ KQTBogVpBtKvNw0H0wTfiu0QzD8LyXxMUgPXDeuHCFXYi1H9ntXMgxBkMozQSQdp+a7g
+ gro7Zm4kALbd2DWzkRLhd0SkTrP7Q7d/irT6zbi2838fu4J4AIb/aSl1hmZ6V9IOzTZJ
+ oLkzmQtSou54sSGJFoUbysg5MyM5Dp4Qr0VeTO6r0T/sSEjEKZImlC+0a1dOLD9WRcdF Xg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 372qakafwa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 05:13:56 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 124A5AdW139922;
+        Thu, 4 Mar 2021 05:13:56 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 372qakafus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 05:13:56 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124A8AW1032542;
+        Thu, 4 Mar 2021 10:13:54 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04fra.de.ibm.com with ESMTP id 37150csb8c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 10:13:54 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124ADpIK40239538
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 10:13:51 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 10A654C050;
+        Thu,  4 Mar 2021 10:13:51 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 61FFE4C058;
+        Thu,  4 Mar 2021 10:13:48 +0000 (GMT)
+Received: from [9.199.37.77] (unknown [9.199.37.77])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Mar 2021 10:13:48 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Subject: Re: [PATCH v3] powerpc/uprobes: Validation for prefixed instruction
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     jniethe5@gmail.com, oleg@redhat.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, paulus@samba.org,
+        sandipan@linux.ibm.com, naveen.n.rao@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>, mpe@ellerman.id.au
+References: <20210304050529.59391-1-ravi.bangoria@linux.ibm.com>
+ <ac7aa126-59dd-31be-1084-6d3a2f0e4eb4@csgroup.eu>
+Message-ID: <4d365b9f-6f25-a4bc-c145-c06ee33f1f9f@linux.ibm.com>
+Date:   Thu, 4 Mar 2021 15:43:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210128024316.1425-1-hdanton@sina.com> <20210128105830.7d8aa91d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <60139ef4.1c69fb81.8d2f9.f26bSMTPIN_ADDED_MISSING@mx.google.com>
- <CACT4Y+Z7152DKY=TKOUe17=z=yJmO3oTYmD66Qa-eOmV+XZCsw@mail.gmail.com>
- <603e0005.1c69fb81.e3eed.6025SMTPIN_ADDED_MISSING@mx.google.com>
- <CACT4Y+Zv-p56cbs3P7ZEUXdYaN7jXB4AELG5=S19wVH4kj3a9g@mail.gmail.com> <20210302151037.2dc70600@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210302151037.2dc70600@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 4 Mar 2021 11:12:48 +0100
-Message-ID: <CACT4Y+aLi6EWnbucxVd0oHKTHEVWuu6A4_TWrxo66t7uJKe5kQ@mail.gmail.com>
-Subject: Re: [PATCH] netdevsim: init u64 stats for 32bit hardware
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com" 
-        <syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Simon Horman <simon.horman@netronome.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ac7aa126-59dd-31be-1084-6d3a2f0e4eb4@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_03:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 adultscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103040043
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 12:10 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 2 Mar 2021 12:55:47 +0100 Dmitry Vyukov wrote:
-> > On Tue, Mar 2, 2021 at 10:06 AM Hillf Danton <hdanton@sina.com> wrote:
-> > > On Mar 2, 2021 at 16:40 Dmitry Vyukov wrote:
-> > > >I hoped this would get at least into 5.12. syzbot can't start testing
-> > > >arm32 because of this.
->
-> FWIW the submission never got into patchwork or lore so we had
-> no public source to apply from.
->
-> > > Or what is more feasible is you send a fix to Jakub today.
-> >
-> > So far I can't figure out how to make git work with my Gmail account
-> > with 1.5-factor auth enabled, neither password nor asp work...
->
-> LMK if you get overly frustrated, I can get the patch from my inbox and
-> resend it for you :)
 
-This would be great, thanks Jakub.
+
+On 3/4/21 1:02 PM, Christophe Leroy wrote:
+> 
+> 
+> Le 04/03/2021 à 06:05, Ravi Bangoria a écrit :
+>> As per ISA 3.1, prefixed instruction should not cross 64-byte
+>> boundary. So don't allow Uprobe on such prefixed instruction.
+>>
+>> There are two ways probed instruction is changed in mapped pages.
+>> First, when Uprobe is activated, it searches for all the relevant
+>> pages and replace instruction in them. In this case, if that probe
+>> is on the 64-byte unaligned prefixed instruction, error out
+>> directly. Second, when Uprobe is already active and user maps a
+>> relevant page via mmap(), instruction is replaced via mmap() code
+>> path. But because Uprobe is invalid, entire mmap() operation can
+>> not be stopped. In this case just print an error and continue.
+>>
+>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>> ---
+>> v2: https://lore.kernel.org/r/20210204104703.273429-1-ravi.bangoria@linux.ibm.com
+>> v2->v3:
+>>    - Drop restriction for Uprobe on suffix of prefixed instruction.
+>>      It needs lot of code change including generic code but what
+>>      we get in return is not worth it.
+>>
+>>   arch/powerpc/kernel/uprobes.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+>> index e8a63713e655..c400971ebe70 100644
+>> --- a/arch/powerpc/kernel/uprobes.c
+>> +++ b/arch/powerpc/kernel/uprobes.c
+>> @@ -41,6 +41,14 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+>>       if (addr & 0x03)
+>>           return -EINVAL;
+>> +    if (!IS_ENABLED(CONFIG_PPC64) || !cpu_has_feature(CPU_FTR_ARCH_31))
+> 
+> cpu_has_feature(CPU_FTR_ARCH_31) should return 'false' when CONFIG_PPC64 is not enabled, no need to double check.
+
+Ok.
+
+I'm going to drop CONFIG_PPC64 check because it's not really
+required as I replied to Naveen. So, I'll keep CPU_FTR_ARCH_31
+check as is.
+
+> 
+>> +        return 0;
+>> +
+>> +    if (ppc_inst_prefixed(auprobe->insn) && (addr & 0x3F) == 0x3C) {
+> 
+> Maybe 3C instead of 4F ? : (addr & 0x3C) == 0x3C
+
+Didn't follow. It's not (addr & 0x3C), it's (addr & 0x3F).
+
+> 
+> What about
+> 
+> (addr & (SZ_64 - 4)) == SZ_64 - 4 to make it more explicit ?
+
+Yes this is bit better. Though, it should be:
+
+     (addr & (SZ_64 - 1)) == SZ_64 - 4
+
+Ravi
