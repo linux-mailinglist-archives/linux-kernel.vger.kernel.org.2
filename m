@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3082832D13F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2B632D13D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239099AbhCDK4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:56:35 -0500
-Received: from mga09.intel.com ([134.134.136.24]:57040 "EHLO mga09.intel.com"
+        id S239089AbhCDK4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:56:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51410 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239104AbhCDK4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:56:25 -0500
-IronPort-SDR: 2b4TZsXRF5MmGfoVZBlVZBPWT2uVwKtAyuzJPFCJVZx2GxNVkTYlpiNPBFcbEfdwolrFS9s62e
- 0sw2TRkqM96w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="187502557"
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="187502557"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 02:54:39 -0800
-IronPort-SDR: BBjc4ASGZrl9v6kZbw0YBwGuvrIQCG30tqgAv2gDH73ac2+9gjjKz+w/OBYNvsJPBPjZI+wj2j
- qWlugjb0vdRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="600483580"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 04 Mar 2021 02:54:38 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CB5EC1F4; Thu,  4 Mar 2021 12:54:37 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v1 1/1] pinctrl: intel: No need to disable IRQs in the handler
-Date:   Thu,  4 Mar 2021 12:54:32 +0200
-Message-Id: <20210304105432.36544-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S229436AbhCDK4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:56:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 28D77AD21;
+        Thu,  4 Mar 2021 10:55:19 +0000 (UTC)
+Subject: Re: [PATCH] x86/vdso: Use proper modifier for len's printf in extract
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+References: <20210303064357.17056-1-jslaby@suse.cz>
+ <20210303183650.GG22305@zn.tnic>
+ <1804463d-bb45-ea75-b4b0-1238c35638a0@suse.cz>
+ <20210304104853.GA15496@zn.tnic>
+From:   Jiri Slaby <jslaby@suse.cz>
+Message-ID: <f397fa13-5cec-ca09-7c5e-9e99c223bb24@suse.cz>
+Date:   Thu, 4 Mar 2021 11:55:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210304104853.GA15496@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In IRQ handler interrupts are already disabled, hence no need
-to repeat it. Even in the threaded case, which is disabled here,
-it is not a problem because IRQ framework serializes descriptor
-handling. Remove disabling IRQ part in the handler.
+On 04. 03. 21, 11:48, Borislav Petkov wrote:
+> On Thu, Mar 04, 2021 at 06:18:25AM +0100, Jiri Slaby wrote:
+>> It's built with gcc 10 from tumbleweed and it's a standard config from
+>> kerncvs:
+>> https://github.com/openSUSE/kernel-source/blob/stable/config/i386/pae
+> 
+> Nope, can't trigger with that one either. :-\
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/intel/pinctrl-intel.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Beware:
+HOSTCC  arch/x86/entry/vdso/vdso2c
+^^^^^^
+You would need to _be_ on i586. Or try with -m32:
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index 93237d6e4316..268aaad3bb08 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -1173,16 +1173,15 @@ static int intel_gpio_community_irq_handler(struct intel_pinctrl *pctrl,
- 	for (gpp = 0; gpp < community->ngpps; gpp++) {
- 		const struct intel_padgroup *padgrp = &community->gpps[gpp];
- 		unsigned long pending, enabled, gpp_offset;
--		unsigned long flags;
- 
--		raw_spin_lock_irqsave(&pctrl->lock, flags);
-+		raw_spin_lock(&pctrl->lock);
- 
- 		pending = readl(community->regs + community->is_offset +
- 				padgrp->reg_num * 4);
- 		enabled = readl(community->regs + community->ie_offset +
- 				padgrp->reg_num * 4);
- 
--		raw_spin_unlock_irqrestore(&pctrl->lock, flags);
-+		raw_spin_unlock(&pctrl->lock);
- 
- 		/* Only interrupts that are enabled */
- 		pending &= enabled;
+> gcc -m32 -Wp,-MMD,arch/x86/entry/vdso/.vdso2c.d -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89     -I/dev/shm/jslaby/linux/tools/include -I/dev/shm/jslaby/linux/include/uapi -I/dev/shm/jslaby/linux/arch/i386/include/uapi  -I ./arch/x86/entry/vdso   -o /dev/null /dev/shm/jslaby/linux/arch/x86/entry/vdso/vdso2c.c
+> In file included from /dev/shm/jslaby/linux/arch/x86/entry/vdso/vdso2c.c:162:0:
+> /dev/shm/jslaby/linux/arch/x86/entry/vdso/vdso2c.h: In function ‘extract64’:
+> /dev/shm/jslaby/linux/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 4 has type ‘size_t {aka unsigned int}’ [-Wformat=]
+>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+>                                                   ~~^
+>                                                   %u
+> In file included from /dev/shm/jslaby/linux/arch/x86/entry/vdso/vdso2c.c:166:0:
+> /dev/shm/jslaby/linux/arch/x86/entry/vdso/vdso2c.h: In function ‘extract32’:
+> /dev/shm/jslaby/linux/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 4 has type ‘size_t {aka unsigned int}’ [-Wformat=]
+>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+>                                                   ~~^
+>                                                   %u
+
+regards,
 -- 
-2.30.1
-
+js
+suse labs
