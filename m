@@ -2,149 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB3A32D7D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7357A32D7DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbhCDQcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:32:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237690AbhCDQcW (ORCPT
+        id S237868AbhCDQd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:33:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58466 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237815AbhCDQdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:32:22 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D582C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:31:42 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id t29so19298732pfg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:31:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tfjZcU3b9XBszi13RocA+Z9H6iZikjohZpktcKNP5fc=;
-        b=Y1vfUPKT1GHGCBY0dM8C+w9CbN7Ip3h+88hNE/NlXWIcyElau962o/KQMx8jYFFaOo
-         s2ff2PW6zQeC0DAxTi73sAU727e23c9eIkfhmmGUV9eojoG9/dZdXs04VEz8v7+hOGMg
-         EQfobU3ygD/63hSoTHfW+EPeV4h01iMofeqHyFYoNcZqRMUtlEOR5PEsYyH7ZCoXTuQj
-         TiLwrg9psTBYOCSIAjKkR104Oj1wKyNecLlipeJeMoQ6WFNWUsiW5h1xiBKCDBL7doHs
-         uuWgnizHmyXUNb1BBTLmLZXdkFl1G6o6FFXNBaiCUxTCqrgj301lyqEgjmQ4ToGwhBtE
-         RamA==
+        Thu, 4 Mar 2021 11:33:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614875505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZUXTrjCiBnFBfW3I1AJm2v8RBKCC0eFrzGXvwdchW8I=;
+        b=Vq7dMBd5/37pyKP4CDv5u7k3OQuVBdZfCSMwEvguDrHYKV+2Wb+ISwT02XUSHQpd9qRLeM
+        vA+FKxzde6kY2ZuKAdJVH1gFFWVqyeXNDO1k4FYbbFe/zs8F4zMGLUSFyZhBaq0ae8ZPyK
+        BFIYhbETVl+7Afdrf0YaN54LpdaxjP4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-CNdN2SOAOyuNoKEs3_saSA-1; Thu, 04 Mar 2021 11:31:43 -0500
+X-MC-Unique: CNdN2SOAOyuNoKEs3_saSA-1
+Received: by mail-qt1-f200.google.com with SMTP id r1so19320050qtu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:31:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tfjZcU3b9XBszi13RocA+Z9H6iZikjohZpktcKNP5fc=;
-        b=cV1v0RmCbFIw4XnGmhSzReKSWzAqkybnGUMQRZ1Vd4MpgcEftrNLsNaZ3Lpde9p5Cp
-         vcUuojUyIMPD5loiCkYw33B0C6rKtuyfm/UFikib/aI/Iryyou+H/LWOMZcf7bld0Y7u
-         qqGP6LDJ7n2nRkxYwvUv+2Udc5t1AeJeNui7Zl1lQjdF0HXYhu6VXkriDvVzsrLwtPC3
-         q+N3xTzXppGELckGHLri19bcw3YuJnTmxRrBM+w3DkOeFke+Nxg6+mXwljaQ8xYdAEHY
-         mbVuuTj4kh0mFygzZRhzFXNO66F+LQcHbCigV3QC5+dOzyNcHBIkSUfe5YbFMSg4Yl+R
-         Y1+w==
-X-Gm-Message-State: AOAM533h/d01uA/leXXQLkoVCeG+HizKgCV6GBI4nImLVsXWCCVBfDcD
-        lWkX36tsFukGWZAAD3+q8dYTtg==
-X-Google-Smtp-Source: ABdhPJwNoHZ/3Js5xWBwohw3D7AGveEJqPGqJ+cg/f6v1ML2WyYoZUdZilbK5gLPT5Eleqo+4lgizQ==
-X-Received: by 2002:aa7:93a6:0:b029:1ed:8b81:6a2e with SMTP id x6-20020aa793a60000b02901ed8b816a2emr4560406pff.29.1614875501447;
-        Thu, 04 Mar 2021 08:31:41 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
-        by smtp.gmail.com with ESMTPSA id h7sm3156541pfo.45.2021.03.04.08.31.39
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZUXTrjCiBnFBfW3I1AJm2v8RBKCC0eFrzGXvwdchW8I=;
+        b=eLDxNp+KRAc5od6y8aP/hkbAeFcuGhUD6djdVX0VhMj2t/O12EyMR3Yl9NJieoLwwl
+         lr+PHQa6QmZsnFnUx7dM2MfUWBpoAWjAzWAoa+o3upxeNhIu/rRRTybFfD0XYsV3jDf4
+         FYh6k1tm7wNczAqKY5ALgy3CF8rZmJ5MpwtOnEyqEmL81JiqhC03HlDCFPhZFz3ZV/KU
+         ++Djf3RQNiJZab85rnwA3O/anF5cRfj+SYYB2Z8e1od4+P35pE4lm96jXKV3QbY0sqs+
+         UzktOatrGPS7pEDtfkDbGuFPPsBQq3q7dRVdFg43DxsZGEjmr/dpKOZsCMp7782dw3fs
+         EAww==
+X-Gm-Message-State: AOAM532j97DbhavjmS1ZV95GQ7z3ZufsbpyuVSbLuhBIUsPlLlJrOE85
+        HlFPupS4JJFCnZytDRt0PUauBW5kWPKWz2UCt79nHxBe/ZuK7J9TYmem82iutcY2audY277Ilj9
+        LJ2HJvPRtMWg0Sfhe2VZ1Hr88
+X-Received: by 2002:a05:620a:887:: with SMTP id b7mr4600091qka.215.1614875503059;
+        Thu, 04 Mar 2021 08:31:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxRwA8NqRHMC76ampCa9culrt7kttzspJbhFtBwbLgYJh88JCUd4TvyBMqBdtoeCEtTi0yNxg==
+X-Received: by 2002:a05:620a:887:: with SMTP id b7mr4600063qka.215.1614875502794;
+        Thu, 04 Mar 2021 08:31:42 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
+        by smtp.gmail.com with ESMTPSA id r2sm51753qti.4.2021.03.04.08.31.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 08:31:40 -0800 (PST)
-Date:   Thu, 4 Mar 2021 08:31:33 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 9/9] KVM: x86: Add XSAVE Support for Architectural LBRs
-Message-ID: <YEELZUP3BjStSvHq@google.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-10-like.xu@linux.intel.com>
- <YD/PYp0DtZaw2HYh@google.com>
- <b6b3476b-3278-9a40-33a9-0014fed9bbfb@linux.intel.com>
+        Thu, 04 Mar 2021 08:31:42 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-man@vger.kernel.org
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM Mailing List <linux-mm@kvack.org>,
+        peterx@redhat.com
+Subject: [PATCH v2 0/4] man2: udpate mm/userfaultfd manpages to latest
+Date:   Thu,  4 Mar 2021 11:31:36 -0500
+Message-Id: <20210304163140.543171-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6b3476b-3278-9a40-33a9-0014fed9bbfb@linux.intel.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021, Like Xu wrote:
-> On 2021/3/4 2:03, Sean Christopherson wrote:
-> >          if (vmx_umip_emulated())
-> >                  kvm_cpu_cap_set(X86_FEATURE_UMIP);
-> > 
-> >          /* CPUID 0xD.1 */
-> > -       supported_xss = 0;
-> >          if (!cpu_has_vmx_xsaves())
-> >                  kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
-> 
-> if (!cpu_has_vmx_xsaves())
-> 	supported_xss = 0;
+v2 changes:=0D
+- Fix wordings as suggested [MikeR]=0D
+- convert ".BR" to ".B" where proper for the patchset [Alex]=0D
+- rearrange a few lines in the last two patches where they got messed up=0D
+- document more things, e.g. UFFDIO_COPY_MODE_WP; and also on how to resolv=
+e a=0D
+  wr-protect page fault.=0D
+=0D
+There're two features missing in current manpage, namely:=0D
+=0D
+  (1) Userfaultfd Thread-ID feature=0D
+  (2) Userfaultfd write protect mode=0D
+=0D
+There's also a 3rd one which was just contributed from Axel - Axel, I think=
+ it=0D
+would be great if you can add that part too, probably after the whole=0D
+hugetlbfs/shmem minor mode reaches the linux master branch.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (4):=0D
+  userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs=0D
+  userfaultfd.2: Add write-protect mode=0D
+  ioctl_userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs=0D
+  ioctl_userfaultfd.2: Add write-protect mode docs=0D
+=0D
+ man2/ioctl_userfaultfd.2 |  81 ++++++++++++++++++++++++++--=0D
+ man2/userfaultfd.2       | 111 ++++++++++++++++++++++++++++++++++++++-=0D
+ 2 files changed, 187 insertions(+), 5 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-Argh, I forgot XSAVES has a VMCS control.  That's why kvm_arch_hardware_setup()
-clears supported_xss if !XSAVES.  I guess just leave that existing code, but
-maybe add a comment.
-
-Paolo, any thoughts on how to keep supported_xss aligned with support_xcr0,
-without spreading the logic around too much?
-
-> 	kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
-> 
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 7b0adebec1ef..5f9eb1f5b840 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -205,6 +205,8 @@ static struct kvm_user_return_msrs __percpu *user_return_msrs;
-> >                                  | XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
-> >                                  | XFEATURE_MASK_PKRU)
-> > 
-> > +#define KVM_SUPPORTED_XSS      XFEATURE_MASK_LBR
-> > +
-> >   u64 __read_mostly host_efer;
-> >   EXPORT_SYMBOL_GPL(host_efer);
-> > 
-> > @@ -8037,6 +8039,11 @@ int kvm_arch_init(void *opaque)
-> >                  supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
-> >          }
-> > 
-> > +       if (boot_cpu_has(X86_FEATURE_XSAVES))
-> 
-> {
-> 
-> > +               rdmsrl(MSR_IA32_XSS, host_xss);
-> > +               supported_xss = host_xss & KVM_SUPPORTED_XSS;
-> > +       }
-> > +
-> >          if (pi_inject_timer == -1)
-> >                  pi_inject_timer = housekeeping_enabled(HK_FLAG_TIMER);
-> >   #ifdef CONFIG_X86_64
-> > @@ -10412,9 +10419,6 @@ int kvm_arch_hardware_setup(void *opaque)
-> > 
-> >          rdmsrl_safe(MSR_EFER, &host_efer);
-> > 
-> > -       if (boot_cpu_has(X86_FEATURE_XSAVES))
-> > -               rdmsrl(MSR_IA32_XSS, host_xss);
-> > -
-> >          r = ops->hardware_setup();
-> >          if (r != 0)
-> >                  return r;
-> > @@ -10422,9 +10426,6 @@ int kvm_arch_hardware_setup(void *opaque)
-> >          memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
-> >          kvm_ops_static_call_update();
-> > 
-> > -       if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
-> > -               supported_xss = 0;
-> > -
-> >   #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
-> >          cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
-> >   #undef __kvm_cpu_cap_has
-> > 
-> 
