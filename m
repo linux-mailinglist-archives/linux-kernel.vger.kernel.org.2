@@ -2,28 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296A732D741
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6B832D743
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbhCDQAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:00:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54002 "EHLO
+        id S236151AbhCDQB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236150AbhCDQAb (ORCPT
+        with ESMTP id S236146AbhCDQBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:00:31 -0500
+        Thu, 4 Mar 2021 11:01:24 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDFCC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 07:59:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E4FC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:00:44 -0800 (PST)
 Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28] helo=dude02.pengutronix.de.)
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <p.zabel@pengutronix.de>)
-        id 1lHqOD-0005ia-Qp; Thu, 04 Mar 2021 16:59:49 +0100
+        id 1lHqP4-0005mj-TD; Thu, 04 Mar 2021 17:00:42 +0100
 From:   Philipp Zabel <p.zabel@pengutronix.de>
 To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] reset: berlin: replace unsigned with unsigned int
-Date:   Thu,  4 Mar 2021 16:59:48 +0100
-Message-Id: <20210304155948.14959-1-p.zabel@pengutronix.de>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] reset: zynqmp: replace spaces with tabs
+Date:   Thu,  4 Mar 2021 17:00:42 +0100
+Message-Id: <20210304160042.15316-1-p.zabel@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -35,30 +37,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes a checkpatch warning:
+Fixes checkpatch issues:
 
-  WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
-  #55: FILE: drivers/reset/reset-berlin.c:55:
-  +	unsigned offset, bit;
+  ERROR: code indent should use tabs where possible
+  #86: FILE: drivers/reset/reset-zynqmp.c:86:
+  +        .reset_id = 0,$
+
+  WARNING: please, no spaces at the start of a line
+  #86: FILE: drivers/reset/reset-zynqmp.c:86:
+  +        .reset_id = 0,$
+
+  ERROR: code indent should use tabs where possible
+  #87: FILE: drivers/reset/reset-zynqmp.c:87:
+  +        .num_resets = VERSAL_NR_RESETS,$
+
+  WARNING: please, no spaces at the start of a line
+  #87: FILE: drivers/reset/reset-zynqmp.c:87:
+  +        .num_resets = VERSAL_NR_RESETS,$
 
 Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- drivers/reset/reset-berlin.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/reset/reset-zynqmp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/reset/reset-berlin.c b/drivers/reset/reset-berlin.c
-index 371197bbd055..094dba98cebc 100644
---- a/drivers/reset/reset-berlin.c
-+++ b/drivers/reset/reset-berlin.c
-@@ -55,7 +55,7 @@ static const struct reset_control_ops berlin_reset_ops = {
- static int berlin_reset_xlate(struct reset_controller_dev *rcdev,
- 			      const struct of_phandle_args *reset_spec)
- {
--	unsigned offset, bit;
-+	unsigned int offset, bit;
+diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
+index ebd433fa09dd..daa425e74c96 100644
+--- a/drivers/reset/reset-zynqmp.c
++++ b/drivers/reset/reset-zynqmp.c
+@@ -83,8 +83,8 @@ static const struct zynqmp_reset_soc_data zynqmp_reset_data = {
+ };
  
- 	offset = reset_spec->args[0];
- 	bit = reset_spec->args[1];
+ static const struct zynqmp_reset_soc_data versal_reset_data = {
+-        .reset_id = 0,
+-        .num_resets = VERSAL_NR_RESETS,
++	.reset_id = 0,
++	.num_resets = VERSAL_NR_RESETS,
+ };
+ 
+ static const struct reset_control_ops zynqmp_reset_ops = {
 -- 
 2.29.2
 
