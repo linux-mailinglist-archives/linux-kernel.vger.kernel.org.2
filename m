@@ -2,176 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A19A32D92A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C37732D92E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbhCDSBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:01:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbhCDSBR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:01:17 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0494C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:00:36 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id a18so20449389wrc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:00:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=8R7Ifb0lG6B9vvUmi1oPee7NhyKlrhTZle2Mf9WBYdQ=;
-        b=xsl1yZ6gGZXAoEu02jhqZeM0rHDiFWFH/3g3Kq+bb5AL3RAImOHMR2VPDce9buhUs5
-         wgXVWxcIDm9seZmzGULizGtbzfErxlddmAsquXMb40FHvDKf8fo6y7v+HGes/L8Iu2mq
-         9k5QhKMJfYOo5VqfsPP//nDxQiT68+5sO9lG6aYhXIvdl3m4dihgCZOElKMozwREOaGD
-         I85a/Sgq+RxIR2SAVRmMwpKXeghOUj/PyjpayUbjN4I6l47bJReBrH4pYk6cq3qygw1g
-         QuqdlirqO7QM7NxQg4BEOH0ozHE5EMpcX+HEBKztSiZHe48YNFB1km4pJKkNcVApJwk1
-         P8ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=8R7Ifb0lG6B9vvUmi1oPee7NhyKlrhTZle2Mf9WBYdQ=;
-        b=FbnXR/WmgFUpIfD7jqgBmVPVOzkQaiPTkEcDMNsHytpmBy/2xjIWyqHveu4UYTQPAc
-         VwCU1O45O2gRRBy7uRaBPOezTh9iEuNLX79uHsA52f7pyMBc+sEDDmOUpPFJF81xRC7n
-         mLXLo8ZYYmGV3aXtv4upBUnTU6sjsxwRm7a6eqNeQbeB3v9OtxEyVCyNnuPm37ARIS0E
-         HVOSI8DCJLzVoq+ssGM8E+3w7qBq01BUjhcaL/E5qS4pYa4lL9+PdpxzK8QTUATRzEi5
-         F4Iuq4d911Sc66sZbNZ0ecXWDWqu3I6LN4rv5OXY16bhMRtdywxAC4lQpqODv/sH8XXU
-         tfwA==
-X-Gm-Message-State: AOAM530Cdt6sYJZxS+4RN2BcRNVVgEf8kG/csQsmsW0PYOVa5TMIf/aC
-        WFttKs1uGLFC1wQIweEa9jIF6w==
-X-Google-Smtp-Source: ABdhPJzhkm+tkyOCMF8OnkU0x7xGFO/OwotnOJ7F3gwaZPtm3sEslFvYxW4NxGROAFsxgOn4fhDKgA==
-X-Received: by 2002:adf:dd4f:: with SMTP id u15mr5426860wrm.260.1614880835435;
-        Thu, 04 Mar 2021 10:00:35 -0800 (PST)
-Received: from zen.linaroharston ([51.148.130.216])
-        by smtp.gmail.com with ESMTPSA id o20sm322634wmq.5.2021.03.04.10.00.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 10:00:34 -0800 (PST)
-Received: from zen (localhost [127.0.0.1])
-        by zen.linaroharston (Postfix) with ESMTP id 9CC271FF7E;
-        Thu,  4 Mar 2021 18:00:33 +0000 (GMT)
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-3-alex.bennee@linaro.org>
- <ff78164cc13b4855911116c2d48929a2@intel.com> <87eegvgr0w.fsf@linaro.org>
- <590e0157d6c44d55aa166ccad6355db5@intel.com>
-User-agent: mu4e 1.5.8; emacs 28.0.50
-From:   Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
-To:     "Winkler, Tomas" <tomas.winkler@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maxim.uvarov@linaro.org" <maxim.uvarov@linaro.org>,
-        "joakim.bech@linaro.org" <joakim.bech@linaro.org>,
-        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
-        "arnd@linaro.org" <arnd@linaro.org>,
-        "ruchika.gupta@linaro.org" <ruchika.gupta@linaro.org>,
-        "Huang, Yang" <yang.huang@intel.com>,
-        "Zhu, Bing" <bing.zhu@intel.com>,
-        "Matti.Moell@opensynergy.com" <Matti.Moell@opensynergy.com>,
-        "hmo@opensynergy.com" <hmo@opensynergy.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        linux-nvme@lists.infradead.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
-        Avri Altman <avri.altman@sandisk.com>
-Subject: Re: [RFC PATCH  2/5] char: rpmb: provide a user space interface
-Date:   Thu, 04 Mar 2021 17:52:01 +0000
-In-reply-to: <590e0157d6c44d55aa166ccad6355db5@intel.com>
-Message-ID: <87wnumg5oe.fsf@linaro.org>
+        id S232788AbhCDSCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:02:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:42354 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232520AbhCDSCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 13:02:44 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3662731B;
+        Thu,  4 Mar 2021 10:01:59 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.53.210])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38B273F7D7;
+        Thu,  4 Mar 2021 10:01:57 -0800 (PST)
+Date:   Thu, 4 Mar 2021 18:01:54 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        broonie@kernel.org, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
+ save_stack_trace() and friends
+Message-ID: <20210304180154.GD60457@C02TD0UTHF1T.local>
+References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
+ <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
+ <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
+ <YD+o5QkCZN97mH8/@elver.google.com>
+ <20210304145730.GC54534@C02TD0UTHF1T.local>
+ <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
+ <20210304165923.GA60457@C02TD0UTHF1T.local>
+ <YEEYDSJeLPvqRAHZ@elver.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEEYDSJeLPvqRAHZ@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 04, 2021 at 06:25:33PM +0100, Marco Elver wrote:
+> On Thu, Mar 04, 2021 at 04:59PM +0000, Mark Rutland wrote:
+> > On Thu, Mar 04, 2021 at 04:30:34PM +0100, Marco Elver wrote:
+> > > On Thu, 4 Mar 2021 at 15:57, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > [adding Mark Brown]
+> > > >
+> > > > The bigger problem here is that skipping is dodgy to begin with, and
+> > > > this is still liable to break in some cases. One big concern is that
+> > > > (especially with LTO) we cannot guarantee the compiler will not inline
+> > > > or outline functions, causing the skipp value to be too large or too
+> > > > small. That's liable to happen to callers, and in theory (though
+> > > > unlikely in practice), portions of arch_stack_walk() or
+> > > > stack_trace_save() could get outlined too.
+> > > >
+> > > > Unless we can get some strong guarantees from compiler folk such that we
+> > > > can guarantee a specific function acts boundary for unwinding (and
+> > > > doesn't itself get split, etc), the only reliable way I can think to
+> > > > solve this requires an assembly trampoline. Whatever we do is liable to
+> > > > need some invasive rework.
+> > > 
+> > > Will LTO and friends respect 'noinline'?
+> > 
+> > I hope so (and suspect we'd have more problems otherwise), but I don't
+> > know whether they actually so.
+> > 
+> > I suspect even with 'noinline' the compiler is permitted to outline
+> > portions of a function if it wanted to (and IIUC it could still make
+> > specialized copies in the absence of 'noclone').
+> > 
+> > > One thing I also noticed is that tail calls would also cause the stack
+> > > trace to appear somewhat incomplete (for some of my tests I've
+> > > disabled tail call optimizations).
+> > 
+> > I assume you mean for a chain A->B->C where B tail-calls C, you get a
+> > trace A->C? ... or is A going missing too?
+> 
+> Correct, it's just the A->C outcome.
 
-Winkler, Tomas <tomas.winkler@intel.com> writes:
+I'd assumed that those cases were benign, e.g. for livepatching what
+matters is what can be returned to, so B disappearing from the trace
+isn't a problem there.
 
->> "Winkler, Tomas" <tomas.winkler@intel.com> writes:
->>=20
->> >> The user space API is achieved via a number of synchronous IOCTLs.
->> >>
->> >>   * RPMB_IOC_VER_CMD - simple versioning API
->> >>   * RPMB_IOC_CAP_CMD - query of underlying capabilities
->> >>   * RPMB_IOC_PKEY_CMD - one time programming of access key
->> >>   * RPMB_IOC_COUNTER_CMD - query the write counter
->> >>   * RPMB_IOC_WBLOCKS_CMD - write blocks to device
->> >>   * RPMB_IOC_RBLOCKS_CMD - read blocks from device
->> >>
->> >> The keys used for programming and writing blocks to the device are
->> >> key_serial_t handles as provided by the keyctl() interface.
->> >>
->> >> [AJB: here there are two key differences between this and the
->> >> original proposal. The first is the dropping of the sequence of
->> >> preformated frames in favour of explicit actions. The second is the
->> >> introduction of key_serial_t and the keyring API for referencing the
->> >> key to use]
->> >
->> > Putting it gently I'm not sure this is good idea, from the security po=
-int of
->> view.
->> > The key has to be possession of the one that signs the frames as they =
-are,
->> it doesn't mean it is linux kernel keyring, it can be other party on dif=
-ferent
->> system.
->> > With this approach you will make the other usecases not applicable. It
->> > is less then trivial to move key securely from one system to another.
->>=20
->> OK I can understand the desire for such a use-case but it does constrain=
- the
->> interface on the kernel with access to the hardware to purely providing a
->> pipe to the raw hardware while also having to expose the details of the =
-HW
->> to userspace.=20
-> This is the use case in Android. The key is in the "trusty" which
-> different os running in a virtual environment. The file storage
-> abstraction is implemented there. I'm not sure the point of
-> constraining the kernel, can you please elaborate on that.
+Is the concern debugability, or is there a functional issue you have in
+mind?
 
-Well the kernel is all about abstracting differences not baking in
-assumptions. However can I ask a bit more about this security model?
+> > > Is there a way to also mark a function non-tail-callable?
+> > 
+> > I think this can be bodged using __attribute__((optimize("$OPTIONS")))
+> > on a caller to inhibit TCO (though IIRC GCC doesn't reliably support
+> > function-local optimization options), but I don't expect there's any way
+> > to mark a callee as not being tail-callable.
+> 
+> I don't think this is reliable. It'd be
+> __attribute__((optimize("-fno-optimize-sibling-calls"))), but doesn't
+> work if applied to the function we do not want to tail-call-optimize,
+> but would have to be applied to the function that does the tail-calling.
 
-Is the secure enclave just a separate userspace process or is it in a
-separate virtual machine? Is it accessible at all by the kernel running
-the driver?
+Yup; that's what I meant then I said you could do that on the caller but
+not the callee.
 
-The fact that key id is passed down into the kernel doesn't have to
-imply the kernel does the final cryptographic operation. In the ARM
-world you could make a call to the secure world to do the operation for
-you. I note the keyctl() interface already has support for going to
-userspace to make queries of the keyring. Maybe what is really needed is
-an abstraction for the kernel to delegate the MAC calculation to some other
-trusted process that also understands the keyid.
+I don't follow why you'd want to put this on the callee, though, so I
+think I'm missing something. Considering a set of functions in different
+compilation units:
 
->
-> Also doesn't this break down after a PROGRAM_KEY event as
->> the key will have had to traverse into the "untrusted" kernel?
->
-> This is one in a life event of the card happening on the manufacturing
-> floor, maybe even not performed on Linux.
+  A->B->C->D->E->F->G->H->I->J->K
 
-In an off list conversation it was suggested that maybe the PROGRAM_KEY
-ioctl should be disabled for locked down kernels to dissuade production
-use of the facility (it is handy for testing though!).
+... if K were marked in this way, and J was compiled with visibility of
+this, J would stick around, but J's callers might not, and so the a
+trace might see:
 
->> I wonder if virtio-rpmb may be of help here? You could wrap up up the fr=
-ont-
->> end in the security domain that has the keys although I don't know how e=
-asy
->> it would be for a backend to work with real hardware?
->
-> I'm open to see any proposal, not sure I can wrap may head about it right=
- now.=20
->
-> Anyway I was about to send the new round of my code,  but let's come to c=
-ommon ground first.=20
->
+  A->J->K
 
-OK - I'll see what the others say.
+... do you just care about the final caller, i.e. you just need
+certainty that J will be in the trace?
 
---=20
-Alex Benn=C3=A9e
+If so, we can somewhat bodge that by having K have an __always_inline
+wrapper which has a barrier() or similar after the real call to K, so
+the call couldn't be TCO'd.
+
+Otherwise I'd expect we'd probably need to disable TCO generally.
+
+> So it's a bit backwards, even if it worked.
+> 
+> > Accoding to the GCC documentation, GCC won't TCO noreturn functions, but
+> > obviously that's not something we can use generally.
+> > 
+> > https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes
+> 
+> Perhaps we can ask the toolchain folks to help add such an attribute. Or
+> maybe the feature already exists somewhere, but hidden.
+> 
+> +Cc linux-toolchains@vger.kernel.org
+> 
+> > > But I'm also not sure if with all that we'd be guaranteed the code we
+> > > want, even though in practice it might.
+> > 
+> > True! I'd just like to be on the least dodgy ground we can be.
+> 
+> It's been dodgy for a while, and I'd welcome any low-cost fixes to make
+> it less dodgy in the short-term at least. :-)
+
+:)
+
+Thanks,
+Mark.
