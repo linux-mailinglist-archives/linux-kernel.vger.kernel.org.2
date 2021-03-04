@@ -2,231 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A12132D5BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC3F32D5BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhCDO55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:57:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhCDO5e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:57:34 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D594C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 06:56:54 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id d9so27450838ote.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 06:56:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metztli-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=Egt7O0hrtmxmw6ied+hJV1grz0SHUeSD2SQDlj862Pk=;
-        b=fUI/6ZYJMWbUFwjm8jmBfNsfDL4299KeFqYaRVzK5VlqyLXiWQm4/KkiD9Z+Aus4TL
-         0SoZiCvH/Ri7z14bYhnrrgIMuW7Ur1qGeL1MTIBofB8C5SS4PqqPd6vZs8GPNvyI803Y
-         SAsc1nOg4EcGqdnjZ1mWcKrYWvjWjbz0MNuH0rsY3jkH2jQ32elwCupKgkiSKjTnnHuY
-         lCAgnBTLoG/7A07pGFEopN8Bi0hlk1RAyf+7e5rEVh5MwhVNLGs9TfBcGw4fsDuM5LeD
-         o9nCfgnaqlrIy2K/AT2ZicNDCCSh4YB7NRYScdEvRVop5ht+cTAOkkk9Fp87MJI2kvf5
-         BwGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=Egt7O0hrtmxmw6ied+hJV1grz0SHUeSD2SQDlj862Pk=;
-        b=Ep0A9AG8mI9WjMDuLiDNMPk3mpXG9lYaSEYJCnSw26Ahaoj7S6REaLZc9fAKU2Aap+
-         R1729Fo/hHtLpexnvy2N6vM7QcwPIrdgm35cmR+RJDwjvFmRe8noLi2rhpNqvnj/DC0I
-         WmHxqwNZTjxo+IfUaqqfNjsgEEJcvFFFa527rtDn09DDoD61dAXuQhKqkV5FdBULJfXK
-         QrZrQrtA+9yhDUVy7/z0BYU4pk8G+wSP08NQl/GyEhquqIm1RrOykGOKPjHRQV4p2Oc4
-         guh/p9aXLpb4D5JPMgPToJ0qrV4vRVVLns0kTCFDxte6DRZWuMCtkc7+0DOpw+vCd/mL
-         SPVA==
-X-Gm-Message-State: AOAM532s3l4SRAtpAqLqbQr2gtpkCfmke1wbfzOi23wo5kivhY+bCBTp
-        eAEiuIY0dyHYoU3nJKq/zuqoZw==
-X-Google-Smtp-Source: ABdhPJxkNQEB58oZZK3MLqb8eVT35aclKdHIFuP+UL5QdOgSBqHXSzTlszl4v2CAnz/kmCtQxy/h8g==
-X-Received: by 2002:a05:6830:1afc:: with SMTP id c28mr3734282otd.99.1614869813366;
-        Thu, 04 Mar 2021 06:56:53 -0800 (PST)
-Received: from ?IPv6:2600:1700:6470:27a0:682c:9aef:c4a9:8393? ([2600:1700:6470:27a0:682c:9aef:c4a9:8393])
-        by smtp.gmail.com with ESMTPSA id i3sm5834233otk.56.2021.03.04.06.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 06:56:52 -0800 (PST)
-Message-ID: <f709dc80a94fa6ee0f34dc785e7f30ba58850122.camel@metztli.com>
-Subject: Re: unexpected kernel reboot (3)
-From:   Jose R Rodriguez <jose.r.r@metztli.com>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     syzbot <syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Gargi Sharma <gs051095@gmail.com>, jhugo@codeaurora.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Laura Abbott <lauraa@codeaurora.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux@dominikbrodowski.net,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>, thomas.lendacky@amd.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Radim =?UTF-8?Q?Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
-        KVM list <kvm@vger.kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Edward Shishkin <edward.shishkin@gmail.com>
-Date:   Thu, 04 Mar 2021 06:56:50 -0800
-In-Reply-To: <CACT4Y+b1HC5CtFSQJEDBJrP8u1brKxXaFcYKE=g+h3aOW6K3Kg@mail.gmail.com>
-References: <000000000000eb546f0570e84e90@google.com>
-         <20180713145811.683ffd0043cac26a5a5af725@linux-foundation.org>
-         <CACT4Y+b1HC5CtFSQJEDBJrP8u1brKxXaFcYKE=g+h3aOW6K3Kg@mail.gmail.com>
-Organization: Metztli Information Technology
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S232801AbhCDO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:58:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:39434 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232710AbhCDO6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:58:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B40671FB;
+        Thu,  4 Mar 2021 06:57:36 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.53.210])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E80F43F766;
+        Thu,  4 Mar 2021 06:57:33 -0800 (PST)
+Date:   Thu, 4 Mar 2021 14:57:30 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, broonie@kernel.org
+Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
+ save_stack_trace() and friends
+Message-ID: <20210304145730.GC54534@C02TD0UTHF1T.local>
+References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
+ <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
+ <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
+ <YD+o5QkCZN97mH8/@elver.google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YD+o5QkCZN97mH8/@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2018-07-16 at 12:09 +0200, Dmitry Vyukov wrote:
-> On Fri, Jul 13, 2018 at 11:58 PM, Andrew Morton
-> <akpm@linux-foundation.org> wrote:
-> > On Fri, 13 Jul 2018 14:39:02 -0700 syzbot <
-> > syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com> wrote:
-> > 
-> > > Hello,
+[adding Mark Brown]
+
+On Wed, Mar 03, 2021 at 04:20:43PM +0100, Marco Elver wrote:
+> On Wed, Mar 03, 2021 at 03:52PM +0100, Christophe Leroy wrote:
+> > Le 03/03/2021 ï¿½ 15:38, Marco Elver a ï¿½critï¿½:
+> > > On Wed, 3 Mar 2021 at 15:09, Christophe Leroy
+> > > <christophe.leroy@csgroup.eu> wrote:
+> > > > 
+> > > > It seems like all other sane architectures, namely x86 and arm64
+> > > > at least, include the running function as top entry when saving
+> > > > stack trace.
+> > > > 
+> > > > Functionnalities like KFENCE expect it.
+> > > > 
+> > > > Do the same on powerpc, it allows KFENCE to properly identify the faulting
+> > > > function as depicted below. Before the patch KFENCE was identifying
+> > > > finish_task_switch.isra as the faulting function.
+> > > > 
+> > > > [   14.937370] ==================================================================
+> > > > [   14.948692] BUG: KFENCE: invalid read in test_invalid_access+0x54/0x108
+> > > > [   14.948692]
+> > > > [   14.956814] Invalid read at 0xdf98800a:
+> > > > [   14.960664]  test_invalid_access+0x54/0x108
+> > > > [   14.964876]  finish_task_switch.isra.0+0x54/0x23c
+> > > > [   14.969606]  kunit_try_run_case+0x5c/0xd0
+> > > > [   14.973658]  kunit_generic_run_threadfn_adapter+0x24/0x30
+> > > > [   14.979079]  kthread+0x15c/0x174
+> > > > [   14.982342]  ret_from_kernel_thread+0x14/0x1c
+> > > > [   14.986731]
+> > > > [   14.988236] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B             5.12.0-rc1-01537-g95f6e2088d7e-dirty #4682
+> > > > [   14.999795] NIP:  c016ec2c LR: c02f517c CTR: c016ebd8
+> > > > [   15.004851] REGS: e2449d90 TRAP: 0301   Tainted: G    B              (5.12.0-rc1-01537-g95f6e2088d7e-dirty)
+> > > > [   15.015274] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
+> > > > [   15.022043] DAR: df98800a DSISR: 20000000
+> > > > [   15.022043] GPR00: c02f517c e2449e50 c1142080 e100dd24 c084b13c 00000008 c084b32b c016ebd8
+> > > > [   15.022043] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
+> > > > [   15.040581] NIP [c016ec2c] test_invalid_access+0x54/0x108
+> > > > [   15.046010] LR [c02f517c] kunit_try_run_case+0x5c/0xd0
+> > > > [   15.051181] Call Trace:
+> > > > [   15.053637] [e2449e50] [c005a68c] finish_task_switch.isra.0+0x54/0x23c (unreliable)
+> > > > [   15.061338] [e2449eb0] [c02f517c] kunit_try_run_case+0x5c/0xd0
+> > > > [   15.067215] [e2449ed0] [c02f648c] kunit_generic_run_threadfn_adapter+0x24/0x30
+> > > > [   15.074472] [e2449ef0] [c004e7b0] kthread+0x15c/0x174
+> > > > [   15.079571] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
+> > > > [   15.085798] Instruction dump:
+> > > > [   15.088784] 8129d608 38e7ebd8 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
+> > > > [   15.096613] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
+> > > > [   15.104612] ==================================================================
+> > > > 
+> > > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > > > 
-> > > syzbot found the following crash on:
-> > 
-> > hm, I don't think I've seen an "unexpected reboot" report before.
-> > 
-> > Can you expand on specifically what happened here?  Did the machine
-> > simply magically reboot itself?  Or did an external monitor whack it,
-> > or...
-> 
-> We put some user-space workload (not involving reboot syscall), and
-> the machine suddenly rebooted. We don't know what triggered the
-> reboot, we only see the consequences. We've seen few such bugs before,
-> e.g.:
-> https://syzkaller.appspot.com/bug?id=4f1db8b5e7dfcca55e20931aec0ee707c5cafc99
-> Usually it involves KVM. Potentially it's a bug in the outer
-> kernel/VMM, it may or may not be present in tip kernel.
-
-I have been using GCE with my custom VirtualBox -created reiser4 root fs VMs
-since at least 2018, long term mainly as web servers with LAMP / LEMP --
-including some Ruby apps with Postgresql -- and short term to build our Debian
-Linux kernels. I have not experienced 'suddenly rebooted' scenarios.
-
-Note that I have been usin Intel CPUs at the Los Angeles zone us-west2-a, as
-well as us-east1-b zone, and AMD Epyc CPUs at us-central1-a zone, without
-abnormalities (other than it's becoming more expensive ;-)
-
-As a matter of fact, I am currently testing a Debian'ized reiser4 (AMD Epyc -
-flavored reizer4 label) -enabled Linux kernel 5.10.15-2 which has logged 17 days
-+hours already and sustaining most of the apps already mentioned.
-< https://metztli.it/buster/r4-5.10.15-gce.png >
-
-> 
-> 
-> > Does this test distinguish from a kernel which simply locks up?
-> 
-> Yes. If you look at the log:
-> 
-> https://syzkaller.appspot.com/x/log.txt?x=17c6a6d0400000
-> 
-> We've booted the machine, started running a program, and them boom! it
-> reboots without any other diagnostics. It's not a hang.
-> 
-> 
-> 
-> > > HEAD commit:    1e4b044d2251 Linux 4.18-rc4
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=17c6a6d0400000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=25856fac4e580aa7
-> > > dashboard link: 
-> > > https://syzkaller.appspot.com/bug?extid=cce9ef2dd25246f815ee
-> > > compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
-> > > syzkaller repro:https://syzkaller.appspot.com/x/repro.syz?x=165012c2400000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1571462c400000
-> > 
-> > I assume the "C reproducer" is irrelevant here.
-> > 
-> > Is it reproducible?
-> 
-> Yes, it is reproducible and the C reproducer is relevant.
-> If syzbot provides a reproducer, it means that it booted a clean
-> machine, run the provided program (nothing else besides typical init
-> code and ssh/scp invocation) and that's the kernel output it observed
-> running this exact program.
-> However in this case, the exact setup can be relevant. syzbot uses GCE
-> VMs, it may or may not reproduce with other VMMs/physical hardware,
-> sometimes such bugs depend on exact CPU type.
-> 
-> 
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
+> > > Acked-by: Marco Elver <elver@google.com>
 > > > 
-> > > output_len: 0x00000000092459b0
-> > > kernel_total_size: 0x000000000a505000
-> > > trampoline_32bit: 0x000000000009d000
+> > > Thank you, I think this looks like the right solution. Just a question below:
 > > > 
-> > > Decompressing Linux... Parsing ELF... done.
-> > > Booting the kernel.
-> > > [    0.000000] Linux version 4.18.0-rc4+ (syzkaller@ci) (gcc version 8.0.1
-> > > 20180413 (experimental) (GCC)) #138 SMP Mon Jul 9 10:45:11 UTC 2018
-> > > [    0.000000] Command line: BOOT_IMAGE=/vmlinuz root=/dev/sda1
-> > > console=ttyS0 earlyprintk=serial vsyscall=native rodata=n
-> > > ftrace_dump_on_oops=orig_cpu oops=panic panic_on_warn=1 nmi_watchdog=panic
-> > > panic=86400 workqueue.watchdog_thresh=140 kvm-intel.nested=1
+> > ...
+> > 
+> > > > @@ -59,23 +70,26 @@ void save_stack_trace(struct stack_trace *trace)
+> > > > 
+> > > >          sp = current_stack_frame();
+> > > > 
+> > > > -       save_context_stack(trace, sp, current, 1);
+> > > > +       save_context_stack(trace, sp, (unsigned long)save_stack_trace, current, 1);
 > > > 
-> > > ...
+> > > This causes ip == save_stack_trace and also below for
+> > > save_stack_trace_tsk. Does this mean save_stack_trace() is included in
+> > > the trace? Looking at kernel/stacktrace.c, I think the library wants
+> > > to exclude itself from the trace, as it does '.skip = skipnr + 1' (and
+> > > '.skip   = skipnr + (current == tsk)' for the _tsk variant).
 > > > 
-> > > regulatory database
-> > > [    4.519364] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-> > > [    4.520839] platform regulatory.0: Direct firmware load for
-> > > regulatory.db failed with error -2
-> > > [    4.522155] cfg80211: failed to load regulatory.db
-> > > [    4.522185] ALSA device list:
-> > > [    4.523499]   #0: Dummy 1
-> > > [    4.523951]   #1: Loopback 1
-> > > [    4.524389]   #2: Virtual MIDI Card 1
-> > > [    4.825991] input: ImExPS/2 Generic Explorer Mouse as
-> > > /devices/platform/i8042/serio1/input/input4
-> > > [    4.829533] md: Waiting for all devices to be available before
-> > > autodetect
-> > > [    4.830562] md: If you don't use raid, use raid=noautodetect
-> > > [    4.835237] md: Autodetecting RAID arrays.
-> > > [    4.835882] md: autorun ...
-> > > [    4.836364] md: ... autorun DONE.
+> > > If the arch-helper here is included, should this use _RET_IP_ instead?
+> > > 
 > > 
-> > Can we assume that the failure occurred in or immediately after the MD code,
-> > or might some output have been truncated?
+> > Don't really know, I was inspired by arm64 which has:
 > > 
-> > It would be useful to know what the kernel was initializing immediately
-> > after MD.  Do you have a kernel log for the same config when the kerenl
-> > didn't fail?  Or maybe enable initcall_debug?
+> > void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+> > 		     struct task_struct *task, struct pt_regs *regs)
+> > {
+> > 	struct stackframe frame;
 > > 
-> > --
-> > You received this message because you are subscribed to the Google Groups
-> > "syzkaller-bugs" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an
-> > email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit 
-> > https://groups.google.com/d/msgid/syzkaller-bugs/20180713145811.683ffd0043cac26a5a5af725%40linux-foundation.org
-> > .
-> > For more options, visit https://groups.google.com/d/optout.
+> > 	if (regs)
+> > 		start_backtrace(&frame, regs->regs[29], regs->pc);
+> > 	else if (task == current)
+> > 		start_backtrace(&frame,
+> > 				(unsigned long)__builtin_frame_address(0),
+> > 				(unsigned long)arch_stack_walk);
+> > 	else
+> > 		start_backtrace(&frame, thread_saved_fp(task),
+> > 				thread_saved_pc(task));
+> > 
+> > 	walk_stackframe(task, &frame, consume_entry, cookie);
+> > }
+> > 
+> > But looking at x86 you may be right, so what should be done really ?
+> 
+> x86:
+> 
+> [    2.843292] calling stack_trace_save:
+> [    2.843705]  test_func+0x6c/0x118
+> [    2.844184]  do_one_initcall+0x58/0x270
+> [    2.844618]  kernel_init_freeable+0x1da/0x23a
+> [    2.845110]  kernel_init+0xc/0x166
+> [    2.845494]  ret_from_fork+0x22/0x30
+> 
+> [    2.867525] calling stack_trace_save_tsk:
+> [    2.868017]  test_func+0xa9/0x118
+> [    2.868530]  do_one_initcall+0x58/0x270
+> [    2.869003]  kernel_init_freeable+0x1da/0x23a
+> [    2.869535]  kernel_init+0xc/0x166
+> [    2.869957]  ret_from_fork+0x22/0x30
+> 
+> arm64:
+> 
+> [    3.786911] calling stack_trace_save:
+> [    3.787147]  stack_trace_save+0x50/0x78
+> [    3.787443]  test_func+0x84/0x13c
+> [    3.787738]  do_one_initcall+0x5c/0x310
+> [    3.788099]  kernel_init_freeable+0x214/0x294
+> [    3.788363]  kernel_init+0x18/0x164
+> [    3.788585]  ret_from_fork+0x10/0x30
+> 
+> [    3.803615] calling stack_trace_save_tsk:
+> [    3.804266]  stack_trace_save_tsk+0x9c/0x100
+> [    3.804541]  test_func+0xc4/0x13c
+> [    3.804803]  do_one_initcall+0x5c/0x310
+> [    3.805031]  kernel_init_freeable+0x214/0x294
+> [    3.805284]  kernel_init+0x18/0x164
+> [    3.805505]  ret_from_fork+0x10/0x30
+> 
+> +Cc arm64 folks.
+> 
+> So I think the arm64 version also has a bug, because I think a user of
+> <linux/stacktrace.h> really doesn't care about the library function
+> itself. And from reading kernel/stacktrace.c I think it wants to exclude
+> itself entirely.
+>
+> It's a shame that <linux/stacktrace.h> isn't better documented, but I'm
+> pretty sure that including the library functions in the trace is not
+> useful.
 
-(saw your last message of just a couple of hours and...)
+I agree this behaviour isn't desireable, and that the lack of
+documentation is unfortunate.
 
-Hope provided info helps.
+It looks like GCC is happy to give us the function-entry-time FP if we use
+__builtin_frame_address(1), and assuming clang is similarly happy we can do:
 
-Best Professional Regards.
+| diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+| index ad20981dfda4..5dfbf915eb7f 100644
+| --- a/arch/arm64/kernel/stacktrace.c
+| +++ b/arch/arm64/kernel/stacktrace.c
+| @@ -203,8 +203,8 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+|                 start_backtrace(&frame, regs->regs[29], regs->pc);
+|         else if (task == current)
+|                 start_backtrace(&frame,
+| -                               (unsigned long)__builtin_frame_address(0),
+| -                               (unsigned long)arch_stack_walk);
+| +                               (unsigned long)__builtin_frame_address(1),
+| +                               (unsigned long)__builtin_return_address(0));
+|         else
+|                 start_backtrace(&frame, thread_saved_fp(task),
+|                                 thread_saved_pc(task));
 
--- 
--- 
-Jose R R
-http://metztli.it
------------------------------------------------------------------------
-Download Metztli Reiser4: Debian Buster w/ Linux 5.9.16 AMD64
------------------------------------------------------------------------
-feats ZSTD compression https://sf.net/projects/metztli-reiser4/
------------------------------------------------------------------------
-or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
------------------------------------------------------------------------
-Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
+... such that arch_stack_walk() will try to avoid including itself in a
+trace, and so the existing skipping should (w/ caveats below) skip
+stack_trace_save() or stack_trace_save_tsk().
 
+If that works for you, I can spin that as a patch, though we'll need to
+check that doesn't introduce a new fencepost error elsewhere.
+
+The bigger problem here is that skipping is dodgy to begin with, and
+this is still liable to break in some cases. One big concern is that
+(especially with LTO) we cannot guarantee the compiler will not inline
+or outline functions, causing the skipp value to be too large or too
+small. That's liable to happen to callers, and in theory (though
+unlikely in practice), portions of arch_stack_walk() or
+stack_trace_save() could get outlined too.
+
+Unless we can get some strong guarantees from compiler folk such that we
+can guarantee a specific function acts boundary for unwinding (and
+doesn't itself get split, etc), the only reliable way I can think to
+solve this requires an assembly trampoline. Whatever we do is liable to
+need some invasive rework.
+
+Thanks,
+Mark.
