@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE2C32CF99
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9F232CF9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237571AbhCDJZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:25:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237560AbhCDJYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:24:55 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65CFC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:24:14 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id v13so17386891edw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:24:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JebE8TY928/TYrhiI1PZtztecVetWhEGTVhpa+X2Das=;
-        b=k41QvMldGbj46kYV8i5S8N5KLPY7fSnL8qTdMCSMYo3PCr4n/C1v24bEm2bFzvausk
-         VJedmjAnuUJLgb/7cDqo6CKpy76JykVtOEhO5q1FQyxNpxxDgBanNBiaGBvCuvdWi+xt
-         COs5ogUqlZryy4BGekg+bCyJ/aY0Jpv7otJkXDXzLTugZrCxsRnnvJhh1O+nvQpPm413
-         7vImEo3DUc6EoJ7Faddlpck7UdUPLDmZ/n3oyIBjjv/DqS66zxJbbmcr3ANmnVgeaFm3
-         uIcd9TcydDaR/zYh0ifCSfO0VrocldPHtHjSmF29+ZMK9DV4M1arhF3yO7YJUFgq2wrv
-         Ajmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JebE8TY928/TYrhiI1PZtztecVetWhEGTVhpa+X2Das=;
-        b=aV0cHnSH52Id3QQsw2O0SP1ceG4qItVU/6F7m38juyxY0c5hAan1Gq7g8mSzQow9m7
-         yHuBFzt+VxoT62I7iGf3OZogIuVyDx37Uv9lFPkVtOdsFTtDIgzMy53BMZ0pqssChcks
-         gMUNqG4UT5oRlm1PpNskbGi/Hg9xafYXCmYyYv5lla6Bkv+2aOFhAHkjFc9wM6M0VK8q
-         AJI6N/STyIQGqbYMX1hYZrv80iQxcUZKwwv0FLfJeiUg6Dc/PuDwNYXogrui5UkjvM/r
-         2fZzQLDmkW7t0t7dGAiXlDWewXT8vJ0Hnt+W4y0gnKSzAX4qFhnLsHJTJfeuPJhPpUAO
-         VMhQ==
-X-Gm-Message-State: AOAM530TVoXp50LnLn0sMOyvNjR0xadGGUW7m5WV1nfYej4AuMUaLm45
-        Qvl9wBApduXi7TIOp7m+hrxDGEraMJNB8w==
-X-Google-Smtp-Source: ABdhPJyWCqQcQKYdHuJu9mkxP34suqvDhdjCF4yryRfZMFGWXTzZcVOnohFdsJ53UnhFd8M2O5FzaA==
-X-Received: by 2002:a05:6402:50ce:: with SMTP id h14mr2975039edb.279.1614849853435;
-        Thu, 04 Mar 2021 01:24:13 -0800 (PST)
-Received: from localhost.localdomain ([95.87.199.88])
-        by smtp.gmail.com with ESMTPSA id d5sm23758032edu.12.2021.03.04.01.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 01:24:13 -0800 (PST)
-From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     rostedt@goodmis.org,
-        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH] tracing: Remove duplicate declaration from trace.h
-Date:   Thu,  4 Mar 2021 11:23:48 +0200
-Message-Id: <20210304092348.208033-1-y.karadz@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S237498AbhCDJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:27:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235321AbhCDJ1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:27:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAFAA60230;
+        Thu,  4 Mar 2021 09:26:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614850002;
+        bh=Di34rcAItgxIKwuN+0FDjI2roNL7uVmzSNg4wqjcyLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gISDi5JyH/Ud+CvoZxvQ+gYGtLLF1do/evROU1kzVJczKAPjT1TGZiwGVpoOhOCFQ
+         RVWzdDzggJVjjoZuelxCQCoqTy208sbQuaoATIPmKOO6oNEomQORmdX9T0nOgbkMhJ
+         dnVhoWBb1ugOT1hAv/2v7L+NaVm27Hbsud080J0k=
+Date:   Thu, 4 Mar 2021 10:26:39 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hanjun Guo <guohanjun@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/340] 5.4.102-rc1 review
+Message-ID: <YECnz8ceaBAk3Opa@kroah.com>
+References: <20210301161048.294656001@linuxfoundation.org>
+ <c689884d-6418-98ff-f535-da022ba527f7@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c689884d-6418-98ff-f535-da022ba527f7@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A declaration of function "int trace_empty(struct trace_iterator *iter)"
-shows up twice in the header file kernel/trace/trace.h
+On Wed, Mar 03, 2021 at 04:11:09PM +0800, Hanjun Guo wrote:
+> On 2021/3/2 0:09, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.4.102 release.
+> > There are 340 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
+> > Anything received after that time might be too late.
+> 
+> Tested on arm64 and x86 for 5.4.102-rc4+,
+> 
+> arm64:
+> --------------------------------------------------------------------
+> Testcase Result Summary:
+> total_num: 4716
+> succeed_num: 4716
+> failed_num: 0
+> timeout_num: 0
+> 
+> x86 (No kernel failures)
+> --------------------------------------------------------------------
+> Testcase Result Summary:
+> total_num: 4716
+> succeed_num: 4715
+> failed_num: 1
+> timeout_num: 0
+> 
+> Tested-by: Hulk Robot <hulkci@huawei.com>
 
-Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
----
- kernel/trace/trace.h | 1 -
- 1 file changed, 1 deletion(-)
+Thanks for testing some of these releases and letting me know.
 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index dec13ff66077..a6446c03cfbc 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -605,7 +605,6 @@ void trace_graph_function(struct trace_array *tr,
- void trace_latency_header(struct seq_file *m);
- void trace_default_header(struct seq_file *m);
- void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
--int trace_empty(struct trace_iterator *iter);
- 
- void trace_graph_return(struct ftrace_graph_ret *trace);
- int trace_graph_entry(struct ftrace_graph_ent *trace);
--- 
-2.25.1
-
+greg k-h
