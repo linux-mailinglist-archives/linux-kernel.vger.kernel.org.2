@@ -2,162 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D91832D3E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3CD32D3F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241157AbhCDNJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:09:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43478 "EHLO mail.kernel.org"
+        id S241139AbhCDNLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:11:47 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:39460 "EHLO mail.pqgruber.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241138AbhCDNJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:09:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A3BE60200;
-        Thu,  4 Mar 2021 13:08:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614863318;
-        bh=2QR5McJgn4rfMKUP2x+w+ee1woXk/Fx6uAArQBOUhZk=;
-        h=Date:From:To:cc:Subject:From;
-        b=KXr20cgjKyUOLfbRMXjPhr3ZbvtClRo2LROxYyA69BgHWZgiSTBe4yeibbupe5u8n
-         3k9e6iKZlMYYk6+5SV741lDisVHEmRD2TZbj4pcZwkAe5wTVfiWZ+Cp+G3jLz/RvkY
-         Uix2yjpgKW0x1yGC1s9/CvkPDr1p3Q1//Ycn1rl5mkSRRshQe7JSN1lvvilR9qlPDU
-         Ybxh2SSD/kd2rZSiArP3/zV5s9VomvD5LbTOrCRSB3K8GRznrVxFVddmSP3aFoyNaj
-         61iCgtEudFdm7wP4LqsusR4rMlHvYGcGZ9tPdM6fbbuy0i+4GFfzZb4ms3h6gVEjOK
-         /Bq5TBP/K7COQ==
-Date:   Thu, 4 Mar 2021 14:08:34 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Lockdep report for hci_conn_get_phy()
-Message-ID: <nycvar.YFH.7.76.2103041405420.12405@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S241136AbhCDNLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:11:39 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id A3803C72819;
+        Thu,  4 Mar 2021 14:10:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1614863458;
+        bh=zi1uK+zkf8Cgx3t0AT2qIAjy7nM1fwlN1EPUn/BXkj8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n5LjpydTpkWqoXhs832+EtisbJ5GibaVksKmxZyFKAauph4aC8VxhiWOkd+DXvwWF
+         dNDytUlNJOSPRVNWFfYGsKU6gyJAdW7WgM9vBQeC07c2PYOtzQ6QTgIs9Wcomx1OPY
+         U9Gw9ypaJxPqabegMrGO/ZKrXAB7tgnwpDpcTc1o=
+Date:   Thu, 4 Mar 2021 14:10:56 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>, linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v5 1/7] pwm: pca9685: Switch to atomic API
+Message-ID: <YEDcYN70TIPlPXv7@workstation.tuxnet>
+References: <20201215212228.185517-1-clemens.gruber@pqgruber.com>
+ <CAGngYiWbQ2STTgh2OwJTqQ-niBDbbn+OdMkk7PMzYnrZWzSy9Q@mail.gmail.com>
+ <X9uL13GA1uDbLJiG@workstation.tuxnet>
+ <CAGngYiW7vcJjz36xsBYx5n7=j1_5sE5a1AGpqC3Jj+tw0+FAXQ@mail.gmail.com>
+ <20210301214115.xolncig676tgnxwn@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210301214115.xolncig676tgnxwn@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Uwe,
 
-I am getting the lockdep splat below with current Linus' tree (5.12-rc1). 
-I haven't yet analyzed the dependency chain and the code, but sending out 
-early in case someone has seen this before and analyzed / fixed it 
-already.
+On Mon, Mar 01, 2021 at 10:41:15PM +0100, Uwe Kleine-König wrote:
+> On Thu, Dec 17, 2020 at 12:10:10PM -0500, Sven Van Asbroeck wrote:
+> > On Thu, Dec 17, 2020 at 11:48 AM Clemens Gruber
+> > <clemens.gruber@pqgruber.com> wrote:
+> > >
+> > > I can initialize the values to 0 of course and check the file for other
+> > > places with missing initializations.
+> > >
+> > > Or would it be better to check the return codes of regmap_read/write in
+> > > such cases? I'm not sure.
+> > 
+> > I think that checking the regmap_read/write return values is overkill
+> > in this driver. These functions can't realistically fail, except if the i2c
+> > bus is bad, i.e. h/w failure or intermittency. And that's an externality
+> > which I believe we can ignore.
+> > 
+> > Maybe Thierry or Uwe have further insights here.
+> 
+> I'm a fan of full checking, but I'm not sure what's Thierry's position
+> on that.
+> 
+> My reasoning is: If the bus is bad and a request to modify the PWM fails
+> because of that, the PWM consumer probably wants to know.
 
-Thanks.
+I see. Then I'd suggest that we postpone adding these checks until we
+get a response from Thierry and if he agrees with you, we could add
+these checks in a separate patch series?
 
- ======================================================
- WARNING: possible circular locking dependency detected
- 5.12.0-rc1-00026-g73d464503354 #10 Not tainted
- ------------------------------------------------------
- bluetoothd/1118 is trying to acquire lock:
- ffff8f078383c078 (&hdev->lock){+.+.}-{3:3}, at: hci_conn_get_phy+0x1c/0x150 [bluetooth]
- 
- but task is already holding lock:
- ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 
-
- 
- which lock already depends on the new lock.
-
- 
- the existing dependency chain (in reverse order) is:
- 
- -> #3 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}:
-        lock_sock_nested+0x72/0xa0
-        l2cap_sock_ready_cb+0x18/0x70 [bluetooth]
-        l2cap_config_rsp+0x27a/0x520 [bluetooth]
-        l2cap_sig_channel+0x658/0x1330 [bluetooth]
-        l2cap_recv_frame+0x1ba/0x310 [bluetooth]
-        hci_rx_work+0x1cc/0x640 [bluetooth]
-        process_one_work+0x244/0x5f0
-        worker_thread+0x3c/0x380
-        kthread+0x13e/0x160
-        ret_from_fork+0x22/0x30
- 
- -> #2 (&chan->lock#2/1){+.+.}-{3:3}:
-        __mutex_lock+0xa3/0xa10
-        l2cap_chan_connect+0x33a/0x940 [bluetooth]
-        l2cap_sock_connect+0x141/0x2a0 [bluetooth]
-        __sys_connect+0x9b/0xc0
-        __x64_sys_connect+0x16/0x20
-        do_syscall_64+0x33/0x80
-        entry_SYSCALL_64_after_hwframe+0x44/0xae
- 
- -> #1 (&conn->chan_lock){+.+.}-{3:3}:
-        __mutex_lock+0xa3/0xa10
-        l2cap_chan_connect+0x322/0x940 [bluetooth]
-        l2cap_sock_connect+0x141/0x2a0 [bluetooth]
-        __sys_connect+0x9b/0xc0
-        __x64_sys_connect+0x16/0x20
-        do_syscall_64+0x33/0x80
-        entry_SYSCALL_64_after_hwframe+0x44/0xae
- 
- -> #0 (&hdev->lock){+.+.}-{3:3}:
-        __lock_acquire+0x147a/0x1a50
-        lock_acquire+0x277/0x3d0
-        __mutex_lock+0xa3/0xa10
-        hci_conn_get_phy+0x1c/0x150 [bluetooth]
-        l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
-        __sys_getsockopt+0xcc/0x200
-        __x64_sys_getsockopt+0x20/0x30
-        do_syscall_64+0x33/0x80
-        entry_SYSCALL_64_after_hwframe+0x44/0xae
- 
- other info that might help us debug this:
-
- Chain exists of:
-   &hdev->lock --> &chan->lock#2/1 --> sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP
-  Possible unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
-                                lock(&chan->lock#2/1);
-                                lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
-   lock(&hdev->lock);
- 
-  *** DEADLOCK ***
-
- 1 lock held by bluetoothd/1118:
-  #0: ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 [bluetooth]
- 
- stack backtrace:
- CPU: 3 PID: 1118 Comm: bluetoothd Not tainted 5.12.0-rc1-00026-g73d464503354 #10
- Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
- Call Trace:
-  dump_stack+0x7f/0xa1
-  check_noncircular+0x105/0x120
-  ? __lock_acquire+0x147a/0x1a50
-  __lock_acquire+0x147a/0x1a50
-  lock_acquire+0x277/0x3d0
-  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
-  ? __lock_acquire+0x2e1/0x1a50
-  ? lock_is_held_type+0xb4/0x120
-  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
-  __mutex_lock+0xa3/0xa10
-  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
-  ? lock_acquire+0x277/0x3d0
-  ? mark_held_locks+0x49/0x70
-  ? mark_held_locks+0x49/0x70
-  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
-  hci_conn_get_phy+0x1c/0x150 [bluetooth]
-  l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
-  __sys_getsockopt+0xcc/0x200
-  __x64_sys_getsockopt+0x20/0x30
-  do_syscall_64+0x33/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7fb73df33eee
- Code: 48 8b 0d 85 0f 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 52 0f 0c 00 f7 d8 64 89 01 48
- RSP: 002b:00007fffcfbbbf08 EFLAGS: 00000203 ORIG_RAX: 0000000000000037
- RAX: ffffffffffffffda RBX: 0000000000000019 RCX: 00007fb73df33eee
- RDX: 000000000000000e RSI: 0000000000000112 RDI: 0000000000000018
- RBP: 0000000000000000 R08: 00007fffcfbbbf44 R09: 0000000000000000
- R10: 00007fffcfbbbf3c R11: 0000000000000203 R12: 0000000000000000
- R13: 0000000000000018 R14: 0000000000000000 R15: 0000556fcefc70d0
-
-
--- 
-Jiri Kosina
-SUSE Labs
-
+Thanks,
+Clemens
