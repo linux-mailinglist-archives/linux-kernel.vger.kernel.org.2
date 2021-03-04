@@ -2,143 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EE132D921
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A19A32D92A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhCDR7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51358 "EHLO
+        id S232630AbhCDSBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:01:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbhCDR7A (ORCPT
+        with ESMTP id S232321AbhCDSBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:59:00 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA49EC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:58:19 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id w1so51179845ejf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:58:19 -0800 (PST)
+        Thu, 4 Mar 2021 13:01:17 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0494C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:00:36 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id a18so20449389wrc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:00:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8otJ+QXVNuhO+CoL5UIOP2Zpn78jb+0u14xT9NO0oaI=;
-        b=I7RLdKPz+0nbiE/tPyyi3RBbc1Ko7eWuyqgqwNPZWg3uWi+MybCjsLbqkfhES0iLjh
-         lYipu0bJm0/360fjG8Q+Y/f50vMIeoOUfNTcWb5uSN+cAuTO5MW11/eF2tgC6Yctw43k
-         vdlE+oPrTr4SV8E7Ubi4EyRYKl7JLiba82EXBs7Ex07SGVCbDZ81mPCBxmWOP0BkyvpM
-         DENEwmLdV9CcdspmvRE8yDH30lss9YVNopUq9xhIKEdj3o9YbjnYASOxdIkKKKnpscSj
-         /aC5WQcLzXYQSEiyf1pyWASemsmwoyyKeERTrF7hdsJ2YMG8ZbaRF6GaO8RjNP7K+vdh
-         L1Hg==
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version:content-transfer-encoding;
+        bh=8R7Ifb0lG6B9vvUmi1oPee7NhyKlrhTZle2Mf9WBYdQ=;
+        b=xsl1yZ6gGZXAoEu02jhqZeM0rHDiFWFH/3g3Kq+bb5AL3RAImOHMR2VPDce9buhUs5
+         wgXVWxcIDm9seZmzGULizGtbzfErxlddmAsquXMb40FHvDKf8fo6y7v+HGes/L8Iu2mq
+         9k5QhKMJfYOo5VqfsPP//nDxQiT68+5sO9lG6aYhXIvdl3m4dihgCZOElKMozwREOaGD
+         I85a/Sgq+RxIR2SAVRmMwpKXeghOUj/PyjpayUbjN4I6l47bJReBrH4pYk6cq3qygw1g
+         QuqdlirqO7QM7NxQg4BEOH0ozHE5EMpcX+HEBKztSiZHe48YNFB1km4pJKkNcVApJwk1
+         P8ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8otJ+QXVNuhO+CoL5UIOP2Zpn78jb+0u14xT9NO0oaI=;
-        b=LCA62LvkICDY5LIOedSLskz+/SAva9XjyLp0RI68kUnnvXERyZ+K/XXLx6mKjCbhp9
-         Kuu6L+KHlqjBLGJULp2yVP8Cekjcq0rv6VtgAoD94VE2iEhhTEQD7rmOCDmQMjhdRbV2
-         Ai14GZRrQAj63TtCtv2n91s3dfl0+hA7/4+w34iLxO+czPG+/Nzcz5XysSJAEg+VUVsH
-         B94SbkOgxtxg/s+UstFniOJibSpIOgZ+Myv5D0lwwwQTYJxd5H5PpeWrUsHTSnwqusPQ
-         wbQU9JMA+h1olf3TvdTmc6LkmJPjDNGYk0sEvbQZ1BpCNHfJtJTm7OU8sigpWZ2yrNDX
-         D2Ow==
-X-Gm-Message-State: AOAM531XQ3ioPGfiRml89R/G2ZG0untjCI80SHBxY5ASWrC0gfeGibiv
-        Aolm/UL+xsLoejMjQMKubbnFXHN6zK2zojGrhPgfFw==
-X-Google-Smtp-Source: ABdhPJwP32cWgTZhbgugyJHSgv+e/cuMqlUseyqjVdSzyz0wZa2hqLQIEzpOesuCH/cL407aI0R8O8N+dZ0/euh/NRU=
-X-Received: by 2002:a17:906:d8ca:: with SMTP id re10mr5665674ejb.18.1614880698539;
- Thu, 04 Mar 2021 09:58:18 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version:content-transfer-encoding;
+        bh=8R7Ifb0lG6B9vvUmi1oPee7NhyKlrhTZle2Mf9WBYdQ=;
+        b=FbnXR/WmgFUpIfD7jqgBmVPVOzkQaiPTkEcDMNsHytpmBy/2xjIWyqHveu4UYTQPAc
+         VwCU1O45O2gRRBy7uRaBPOezTh9iEuNLX79uHsA52f7pyMBc+sEDDmOUpPFJF81xRC7n
+         mLXLo8ZYYmGV3aXtv4upBUnTU6sjsxwRm7a6eqNeQbeB3v9OtxEyVCyNnuPm37ARIS0E
+         HVOSI8DCJLzVoq+ssGM8E+3w7qBq01BUjhcaL/E5qS4pYa4lL9+PdpxzK8QTUATRzEi5
+         F4Iuq4d911Sc66sZbNZ0ecXWDWqu3I6LN4rv5OXY16bhMRtdywxAC4lQpqODv/sH8XXU
+         tfwA==
+X-Gm-Message-State: AOAM530Cdt6sYJZxS+4RN2BcRNVVgEf8kG/csQsmsW0PYOVa5TMIf/aC
+        WFttKs1uGLFC1wQIweEa9jIF6w==
+X-Google-Smtp-Source: ABdhPJzhkm+tkyOCMF8OnkU0x7xGFO/OwotnOJ7F3gwaZPtm3sEslFvYxW4NxGROAFsxgOn4fhDKgA==
+X-Received: by 2002:adf:dd4f:: with SMTP id u15mr5426860wrm.260.1614880835435;
+        Thu, 04 Mar 2021 10:00:35 -0800 (PST)
+Received: from zen.linaroharston ([51.148.130.216])
+        by smtp.gmail.com with ESMTPSA id o20sm322634wmq.5.2021.03.04.10.00.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 10:00:34 -0800 (PST)
+Received: from zen (localhost [127.0.0.1])
+        by zen.linaroharston (Postfix) with ESMTP id 9CC271FF7E;
+        Thu,  4 Mar 2021 18:00:33 +0000 (GMT)
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-3-alex.bennee@linaro.org>
+ <ff78164cc13b4855911116c2d48929a2@intel.com> <87eegvgr0w.fsf@linaro.org>
+ <590e0157d6c44d55aa166ccad6355db5@intel.com>
+User-agent: mu4e 1.5.8; emacs 28.0.50
+From:   Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
+To:     "Winkler, Tomas" <tomas.winkler@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maxim.uvarov@linaro.org" <maxim.uvarov@linaro.org>,
+        "joakim.bech@linaro.org" <joakim.bech@linaro.org>,
+        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
+        "arnd@linaro.org" <arnd@linaro.org>,
+        "ruchika.gupta@linaro.org" <ruchika.gupta@linaro.org>,
+        "Huang, Yang" <yang.huang@intel.com>,
+        "Zhu, Bing" <bing.zhu@intel.com>,
+        "Matti.Moell@opensynergy.com" <Matti.Moell@opensynergy.com>,
+        "hmo@opensynergy.com" <hmo@opensynergy.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        linux-nvme@lists.infradead.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        Avri Altman <avri.altman@sandisk.com>
+Subject: Re: [RFC PATCH  2/5] char: rpmb: provide a user space interface
+Date:   Thu, 04 Mar 2021 17:52:01 +0000
+In-reply-to: <590e0157d6c44d55aa166ccad6355db5@intel.com>
+Message-ID: <87wnumg5oe.fsf@linaro.org>
 MIME-Version: 1.0
-References: <20210302192719.741064351@linuxfoundation.org> <CA+G9fYvkW+84U9e0Cjft_pq9bGnBBqCXST7Hg+gx4pKNyuGPFQ@mail.gmail.com>
- <YEDDIzz32JqSvi1S@kroah.com> <20210304165247.GA131220@roeck-us.net> <YEESn1JboVRjfJGN@kroah.com>
-In-Reply-To: <YEESn1JboVRjfJGN@kroah.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 4 Mar 2021 23:28:07 +0530
-Message-ID: <CA+G9fYuDQ9Ph8-Y3dRzNi7odmcLX4shE5rbCvHekn+wTnzj4Dg@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/773] 5.11.3-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 22:32, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Mar 04, 2021 at 08:52:47AM -0800, Guenter Roeck wrote:
-> > On Thu, Mar 04, 2021 at 12:23:15PM +0100, Greg Kroah-Hartman wrote:
-> > > On Wed, Mar 03, 2021 at 02:02:20PM +0530, Naresh Kamboju wrote:
-> > > > On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > This is the start of the stable review cycle for the 5.11.3 relea=
-se.
-> > > > > There are 773 patches in this series, all will be posted as a res=
-ponse
-> > > > > to this one.  If anyone has any issues with these being applied, =
-please
-> > > > > let me know.
-> > > > >
-> > > > > Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> > > > > Anything received after that time might be too late.
-> > > > >
-> > > > > The whole patch series can be found in one patch at:
-> > > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-revie=
-w/patch-5.11.3-rc3.gz
-> > > > > or in the git tree and branch at:
-> > > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linu=
-x-stable-rc.git linux-5.11.y
-> > > > > and the diffstat can be found below.
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
-> > > >
-> > > >
-> > > > Results from Linaro=E2=80=99s test farm.
-> > > > All our builds are getting PASS now.
-> > > > But,
-> > > > Regressions detected on all devices (arm64, arm, x86_64 and i386).
-> > > > LTP pty test case hangup01 failed on all devices
-> > > >
-> > > > hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
-> > > >
-> > > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > >
-> > > > This failure is specific to stable-rc v5.10.20-rc4 and v5.11.3-rc3
-> > > > Test PASS on the v5.12-rc1 mainline and Linux next kernel.
-> > > >
-> > > > Following two commits caused this test failure,
-> > > >
-> > > >    Linus Torvalds <torvalds@linux-foundation.org>
-> > > >        tty: implement read_iter
-> > > >
-> > > >    Linus Torvalds <torvalds@linux-foundation.org>
-> > > >        tty: convert tty_ldisc_ops 'read()' function to take a kerne=
-l pointer
-> > > >
-> > > > Test case failed link,
-> > > > https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/bui=
-ld/v5.11.2-774-g6ca52dbc58df/testrun/4070143/suite/ltp-pty-tests/test/hangu=
-p01/log
-> > > >
-> > >
-> > > Thanks for testing them all, I'll try to debug this later today...
-> > >
-> >
-> > Did you see my response to v5.10.y ? It looks like two related patches
-> > may be missing from v5.10.y and v5.11.y.
->
-> I did, thank you, I need to get through some other tasks first before
-> trying the reproducer and see if the patches you list fix it or not...
 
-I have applied those two patches and the reported problem did not solve
-on v5.10.20.
+Winkler, Tomas <tomas.winkler@intel.com> writes:
 
-- Naresh
+>> "Winkler, Tomas" <tomas.winkler@intel.com> writes:
+>>=20
+>> >> The user space API is achieved via a number of synchronous IOCTLs.
+>> >>
+>> >>   * RPMB_IOC_VER_CMD - simple versioning API
+>> >>   * RPMB_IOC_CAP_CMD - query of underlying capabilities
+>> >>   * RPMB_IOC_PKEY_CMD - one time programming of access key
+>> >>   * RPMB_IOC_COUNTER_CMD - query the write counter
+>> >>   * RPMB_IOC_WBLOCKS_CMD - write blocks to device
+>> >>   * RPMB_IOC_RBLOCKS_CMD - read blocks from device
+>> >>
+>> >> The keys used for programming and writing blocks to the device are
+>> >> key_serial_t handles as provided by the keyctl() interface.
+>> >>
+>> >> [AJB: here there are two key differences between this and the
+>> >> original proposal. The first is the dropping of the sequence of
+>> >> preformated frames in favour of explicit actions. The second is the
+>> >> introduction of key_serial_t and the keyring API for referencing the
+>> >> key to use]
+>> >
+>> > Putting it gently I'm not sure this is good idea, from the security po=
+int of
+>> view.
+>> > The key has to be possession of the one that signs the frames as they =
+are,
+>> it doesn't mean it is linux kernel keyring, it can be other party on dif=
+ferent
+>> system.
+>> > With this approach you will make the other usecases not applicable. It
+>> > is less then trivial to move key securely from one system to another.
+>>=20
+>> OK I can understand the desire for such a use-case but it does constrain=
+ the
+>> interface on the kernel with access to the hardware to purely providing a
+>> pipe to the raw hardware while also having to expose the details of the =
+HW
+>> to userspace.=20
+> This is the use case in Android. The key is in the "trusty" which
+> different os running in a virtual environment. The file storage
+> abstraction is implemented there. I'm not sure the point of
+> constraining the kernel, can you please elaborate on that.
+
+Well the kernel is all about abstracting differences not baking in
+assumptions. However can I ask a bit more about this security model?
+
+Is the secure enclave just a separate userspace process or is it in a
+separate virtual machine? Is it accessible at all by the kernel running
+the driver?
+
+The fact that key id is passed down into the kernel doesn't have to
+imply the kernel does the final cryptographic operation. In the ARM
+world you could make a call to the secure world to do the operation for
+you. I note the keyctl() interface already has support for going to
+userspace to make queries of the keyring. Maybe what is really needed is
+an abstraction for the kernel to delegate the MAC calculation to some other
+trusted process that also understands the keyid.
+
+>
+> Also doesn't this break down after a PROGRAM_KEY event as
+>> the key will have had to traverse into the "untrusted" kernel?
+>
+> This is one in a life event of the card happening on the manufacturing
+> floor, maybe even not performed on Linux.
+
+In an off list conversation it was suggested that maybe the PROGRAM_KEY
+ioctl should be disabled for locked down kernels to dissuade production
+use of the facility (it is handy for testing though!).
+
+>> I wonder if virtio-rpmb may be of help here? You could wrap up up the fr=
+ont-
+>> end in the security domain that has the keys although I don't know how e=
+asy
+>> it would be for a backend to work with real hardware?
+>
+> I'm open to see any proposal, not sure I can wrap may head about it right=
+ now.=20
+>
+> Anyway I was about to send the new round of my code,  but let's come to c=
+ommon ground first.=20
+>
+
+OK - I'll see what the others say.
+
+--=20
+Alex Benn=C3=A9e
