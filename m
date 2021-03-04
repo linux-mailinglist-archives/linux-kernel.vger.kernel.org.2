@@ -2,105 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2C732D14D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065EC32D14E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239140AbhCDK6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:58:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53284 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239108AbhCDK6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:58:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C4E35AD21;
-        Thu,  4 Mar 2021 10:57:36 +0000 (UTC)
-Subject: Re: [PATCH v2] mm/compaction: remove unused variable
- sysctl_compact_memory
-To:     Pintu Kumar <pintu@codeaurora.org>, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, iamjoonsoo.kim@lge.com,
-        sh_def@163.com, mateusznosek0@gmail.com, bhe@redhat.com,
-        nigupta@nvidia.com, yzaikin@google.com, keescook@chromium.org,
-        mcgrof@kernel.org, mgorman@techsingularity.net
-Cc:     pintu.ping@gmail.com
-References: <c99eb67f67e4e24b4df1a78a583837b1@codeaurora.org>
- <1614852224-14671-1-git-send-email-pintu@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <9df94aca-7121-5d7a-8f92-890d8d5e8223@suse.cz>
-Date:   Thu, 4 Mar 2021 11:57:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S239151AbhCDK6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:58:41 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48932 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239126AbhCDK6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:58:21 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614855459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4yU7nKv2xxiwOwNthg9CVnROsFvbEw5swN2tdMBE1Ks=;
+        b=YqlSVXHcYiU8x7bIkwHzGeC4mg0j7fJused5tycVd90fcrA9tk5WtT6WClwvc+LCP7YapZ
+        F0yKubuBzIfIK8jpRvskKVk64+hWfni+hGwo+U8HZoRGawzmNNlc5J3WkDBP37Qo+FBzP1
+        bwapOwqU5FmwugqvIrmtH4/GK40Yc4adTPWroE3anXkvKqMiPlsx5JPJBm5IUTc3WGGQ5T
+        wYfPlbmiOMoNSV2gsF45MzckuUjdYwX0z6/6A/wAvMyvO2T1KT0ATG22NJXVevzbKZSECd
+        EPxz1ZLeG/JDz2RJoqDp0QEIBEvYYQ8oP+x0nNOe7fEGjzXjyEjPR4g0WcwQqA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614855459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4yU7nKv2xxiwOwNthg9CVnROsFvbEw5swN2tdMBE1Ks=;
+        b=Ikk67V0NAANBFo88YOq5GuslctliZWmirgADu1VvljbVXCza1uwJMjQy7LU/zi4PtC9BqR
+        0gYJPv0PrB/WKcBQ==
+To:     tip-bot2 for Barry Song <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org
+Cc:     Barry Song <song.bao.hua@hisilicon.com>, dmitry.torokhov@gmail.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+Subject: Re: [tip: irq/core] genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
+In-Reply-To: <161485523394.398.10007682711343433706.tip-bot2@tip-bot2>
+References: <20210302224916.13980-2-song.bao.hua@hisilicon.com> <161485523394.398.10007682711343433706.tip-bot2@tip-bot2>
+Date:   Thu, 04 Mar 2021 11:57:39 +0100
+Message-ID: <87zgzj5gpo.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1614852224-14671-1-git-send-email-pintu@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 11:03 AM, Pintu Kumar wrote:
-> The sysctl_compact_memory is mostly unused in mm/compaction.c
-> It just acts as a place holder for sysctl to store .data.
-> 
-> But the .data itself is not needed here.
-> So we can get ride of this variable completely and make .data as NULL.
-> This will also eliminate the extern declaration from header file.
-> No functionality is broken or changed this way.
-> 
-> Signed-off-by: Pintu Kumar <pintu@codeaurora.org>
-> Signed-off-by: Pintu Agarwal <pintu.ping@gmail.com>
+Dmitry,
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+On Thu, Mar 04 2021 at 10:53, tip-bot wrote:
 
-> ---
-> v2: completely get rid of this variable and set .data to NULL
->     Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> 
->  include/linux/compaction.h | 1 -
->  kernel/sysctl.c            | 2 +-
->  mm/compaction.c            | 3 ---
->  3 files changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index ed4070e..4221888 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -81,7 +81,6 @@ static inline unsigned long compact_gap(unsigned int order)
->  }
->  
->  #ifdef CONFIG_COMPACTION
-> -extern int sysctl_compact_memory;
->  extern unsigned int sysctl_compaction_proactiveness;
->  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->  			void *buffer, size_t *length, loff_t *ppos);
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index c9fbdd8..07ef240 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -2856,7 +2856,7 @@ static struct ctl_table vm_table[] = {
->  #ifdef CONFIG_COMPACTION
->  	{
->  		.procname	= "compact_memory",
-> -		.data		= &sysctl_compact_memory,
-> +		.data		= NULL,
->  		.maxlen		= sizeof(int),
->  		.mode		= 0200,
->  		.proc_handler	= sysctl_compaction_handler,
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 190ccda..ede2886 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2650,9 +2650,6 @@ static void compact_nodes(void)
->  		compact_node(nid);
->  }
->  
-> -/* The written value is actually unused, all memory is compacted */
-> -int sysctl_compact_memory;
-> -
->  /*
->   * Tunable for proactive compaction. It determines how
->   * aggressively the kernel should compact memory in the
-> 
+> The following commit has been merged into the irq/core branch of tip:
+>
+> Commit-ID:     e749df1bbd23f4472082210650514548d8a39e9b
+> Gitweb:        https://git.kernel.org/tip/e749df1bbd23f4472082210650514548d8a39e9b
+> Author:        Barry Song <song.bao.hua@hisilicon.com>
+> AuthorDate:    Wed, 03 Mar 2021 11:49:15 +13:00
+> Committer:     Thomas Gleixner <tglx@linutronix.de>
+> CommitterDate: Thu, 04 Mar 2021 11:47:52 +01:00
+>
+> genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
 
+this commit is immutable and I tagged it so you can pull it into your
+tree to add the input changes on top:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-no-autoen-2021-03-04
+
+Thanks,
+
+        tglx
