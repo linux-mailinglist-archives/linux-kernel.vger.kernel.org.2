@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26F032CEAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7069732CEB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236334AbhCDInm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234547AbhCDInX (ORCPT
+        id S236459AbhCDIoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:44:46 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56162 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236435AbhCDIo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:43:23 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA230C061574;
-        Thu,  4 Mar 2021 00:42:42 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id u3so27653428ybk.6;
-        Thu, 04 Mar 2021 00:42:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NmRM3sYIpc+JfeFcnqxyssqX3kzXz1bFb3jPIvzSdLI=;
-        b=dH55nG50FKKcIOxaEqqn/FpjNQnbFAV3Gu5yWHUOa88BbsbsADU78KJXJvtJ6AWsYj
-         vwDlINbI8F0ol3zThwSuspll3yNYnUpMfmeH0qWOylwskbL4szfJkRMkbaDnfrZTAvk+
-         S+Z44z6Kl0UmtFXGk0SZ4eLY12q8jBnXqMg08xbt7hpA0Et3ZGBf88gp9NnKlxtRSkfs
-         96QEqwrAvu2WnOEMtUhpch9v3Qhrm+ABAP/6Q8+PokpzB4bHAjhmVQKhqdcDBnwmNxwd
-         jC3Qdyh/EshvM7V/kRk67c5sEMw6fflO75KhXluF/vWfwODo8IVTY08kxoAkrVqEsMck
-         hf8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NmRM3sYIpc+JfeFcnqxyssqX3kzXz1bFb3jPIvzSdLI=;
-        b=e1Eepk+xDzl4OFR+IPp+zAaTXVIcTQnSiQ9/JoPnGioSxczG+qy6I26FgobNnijgJa
-         LR8gjZ2OmK7cZHa6F0QJwfQ8REq2ojMuJlcBqoQ+FecNVfyiyFtJVKccz7x+lmZWACe4
-         oVHGX5Wt8nW7S+4TWwdZJORZV9TrZVdgTLgwjZCpcOKDut8kDXXshqOtEvvFKLEgOecm
-         FmNh5Ylycm9ixJ9wpNGszHmBYOuodYvnh5YXvODcNSGz4FgVSOibVSuFTXfvcsVdfibS
-         OkBFc01iohzaGm8yN9L8idsNFy4jl6nB06dRvQDAfIdOq7e3gB2T9cMtQGbfrbAQuccx
-         V7rA==
-X-Gm-Message-State: AOAM532neBzQ+7ziMMnX94vGQIOiXGdNOCM6CQyshT/ck2Cp3Zd9RD/D
-        zwVdFtBsyR8l1XdRazjAVL798+Eg9VXbgWqt30s=
-X-Google-Smtp-Source: ABdhPJzAP9t4/OaHGhx76NmbSxvIxX80uTL22LyDwlvMGCs1RrGt/GyaXvH+lca2eqjZzmSZZXO2vG/IEI3QtExWt1M=
-X-Received: by 2002:a25:b6c3:: with SMTP id f3mr4989236ybm.117.1614847362088;
- Thu, 04 Mar 2021 00:42:42 -0800 (PST)
+        Thu, 4 Mar 2021 03:44:29 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A5AFD1C0B87; Thu,  4 Mar 2021 09:43:30 +0100 (CET)
+Date:   Thu, 4 Mar 2021 09:43:29 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Yong Wu <yong.wu@mediatek.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 337/663] iommu: Move iotlb_sync_map out from
+ __iommu_map
+Message-ID: <20210304084329.GA25188@amd>
+References: <20210301161141.760350206@linuxfoundation.org>
+ <20210301161158.520692499@linuxfoundation.org>
 MIME-Version: 1.0
-References: <CABXGCsP63mN+G1xE7UBfVRuDRcJiRRC7EXU2y25f9rXkoU-0LQ@mail.gmail.com>
-In-Reply-To: <CABXGCsP63mN+G1xE7UBfVRuDRcJiRRC7EXU2y25f9rXkoU-0LQ@mail.gmail.com>
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Thu, 4 Mar 2021 16:42:30 +0800
-Message-ID: <CACVXFVOy8928GNowCQRGQKQxuLtHn0V+pYk1kzeOyc0pyDvkjQ@mail.gmail.com>
-Subject: Re: [bugreport 5.9-rc8] general protection fault, probably for
- non-canonical address 0x46b1b0f0d8856e4a: 0000 [#1] SMP NOPTI
-To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@fb.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
+In-Reply-To: <20210301161158.520692499@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 1:40 PM Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
->
-> Paolo, Jens I am sorry for the noise.
-> But today I hit the kernel panic and git blame said that you have
-> created the file in which happened panic (this I saw from trace)
->
-> $ /usr/src/kernels/`uname -r`/scripts/faddr2line
-> /lib/debug/lib/modules/`uname -r`/vmlinux
-> __bfq_deactivate_entity+0x15a
-> __bfq_deactivate_entity+0x15a/0x240:
-> bfq_gt at block/bfq-wf2q.c:20
-> (inlined by) bfq_insert at block/bfq-wf2q.c:381
-> (inlined by) bfq_idle_insert at block/bfq-wf2q.c:621
-> (inlined by) __bfq_deactivate_entity at block/bfq-wf2q.c:1203
->
-> https://github.com/torvalds/linux/blame/master/block/bfq-wf2q.c#L1203
->
-> $ head /sys/block/*/queue/scheduler
-> ==> /sys/block/nvme0n1/queue/scheduler <==
-> [none] mq-deadline kyber bfq
->
-> ==> /sys/block/sda/queue/scheduler <==
-> mq-deadline kyber [bfq] none
->
-> ==> /sys/block/zram0/queue/scheduler <==
-> none
->
-> Trace:
-> general protection fault, probably for non-canonical address
-> 0x46b1b0f0d8856e4a: 0000 [#1] SMP NOPTI
-> CPU: 27 PID: 1018 Comm: kworker/27:1H Tainted: G        W
-> --------- ---  5.9.0-0.rc8.28.fc34.x86_64 #1
-> Hardware name: System manufacturer System Product Name/ROG STRIX
-> X570-I GAMING, BIOS 2606 08/13/2020
-> Workqueue: kblockd blk_mq_run_work_fn
-> RIP: 0010:__bfq_deactivate_entity+0x15a/0x240
-> Code: 48 2b 41 28 48 85 c0 7e 05 49 89 5c 24 18 49 8b 44 24 08 4d 8d
-> 74 24 08 48 85 c0 0f 84 d6 00 00 00 48 8b 7b 28 eb 03 48 89 c8 <48> 8b
-> 48 28 48 8d 70 10 48 8d 50 08 48 29 f9 48 85 c9 48 0f 4f d6
-> RSP: 0018:ffffadf6c0c6fc00 EFLAGS: 00010002
-> RAX: 46b1b0f0d8856e4a RBX: ffff8dc2773b5c88 RCX: 46b1b0f0d8856e4a
-> RDX: ffff8dc7d02ed0a0 RSI: ffff8dc7d02ed0a8 RDI: 0000584e64e96beb
-> RBP: ffff8dc2773b5c00 R08: ffff8dc9054cb938 R09: 0000000000000000
-> R10: 0000000000000018 R11: 0000000000000018 R12: ffff8dc904927150
-> R13: 0000000000000001 R14: ffff8dc904927158 R15: ffff8dc2773b5c88
-> FS:  0000000000000000(0000) GS:ffff8dc90e0c0000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000003e8ebe4000 CR3: 00000007c2546000 CR4: 0000000000350ee0
-> Call Trace:
->  bfq_deactivate_entity+0x4f/0xc0
 
-Hello,
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The same stack trace was observed in RH internal test too, and kernel
-is 5.11.0-0.rc6,
-but there isn't reproducer yet.
+Hi!
 
+> [ Upstream commit d8c1df02ac7f2c802a9b2afc0f5c888c4217f1d5 ]
+>=20
+> In the end of __iommu_map, It alway call iotlb_sync_map.
+>=20
+> This patch moves iotlb_sync_map out from __iommu_map since it is
+> unnecessary to call this for each sg segment especially iotlb_sync_map
+> is flush tlb all currently. Add a little helper _iommu_map for this.
 
--- 
-Ming Lei
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+AFAICT this is slight performance optimalization, not a bugfix. It
+actually introduces a bug, fixed by the next patch. I'd preffer not to
+have it in stable.
+
+Best regards,
+								Pavel
+
+> @@ -2421,18 +2418,31 @@ static int __iommu_map(struct iommu_domain *domai=
+n, unsigned long iova,
+> =20
+> +static int _iommu_map(struct iommu_domain *domain, unsigned long iova,
+> +		      phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+> +{
+> +	const struct iommu_ops *ops =3D domain->ops;
+> +	int ret;
+> +
+> +	ret =3D __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
+> +	if (ret =3D=3D 0 && ops->iotlb_sync_map)
+> +		ops->iotlb_sync_map(domain);
+> +
+> +	return ret;
+> +}
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBAnbEACgkQMOfwapXb+vIVvACgshwz5xeQjuPBx5Me4eiCuLPc
+H2cAn0tp1BDr8V0rf+DIijdLJ4J+w/f+
+=5sHE
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
