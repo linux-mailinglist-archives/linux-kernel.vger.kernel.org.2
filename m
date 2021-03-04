@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E81332D1E7
+	by mail.lfdr.de (Postfix) with ESMTP id 76E3532D1E8
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239486AbhCDLhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 06:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238942AbhCDLhk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:37:40 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEA6C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 03:37:00 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Drpjz4ZPsz9s1l;
-        Thu,  4 Mar 2021 22:36:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1614857817;
-        bh=xB2NH2RDnNFxOP2JfengPRlNHO42YuHU5/2Vw/S7pOg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=h+SU9xNxDWKhrRHWY/w+mIUHKv4safweEwbe083MPF1DIbA7ozVlnplRYLYEjYAJ9
-         wmqzCycYy60nUrMIYRuUbUc8kfqkqyoXVfHOhL1PrnVbCGfQoikWh8cwN3Px8TDDal
-         iPykVzq3qLmTkoF12otE7RCTAO94F5bXu9pENzh2D6xV+cphX+YS6+pydN/uTFbjVn
-         NGqsD1AYnCk6lTCcv3zCzqYeWc8SzeOJgerEiFcKSnSiv3iYaIdfWNjWqJPbCiRhgQ
-         o4LWE4StUWHNoBxWpYGN7JxTSJ3k2Poipicav9hVjHVnv3Fl8tWaC6HcUjZJUHuGYz
-         gMeTf6WFlNGfw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, elver@google.com,
-        rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kasan-dev@googlegroups.com,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH v2] powerpc: Fix save_stack_trace_regs() to have running
- function as first entry
-In-Reply-To: <20dad21f9446938697573e6642db583bdb874656.1614792440.git.christophe.leroy@csgroup.eu>
-References: <20dad21f9446938697573e6642db583bdb874656.1614792440.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 04 Mar 2021 22:36:49 +1100
-Message-ID: <878s73rvzi.fsf@mpe.ellerman.id.au>
+        id S239497AbhCDLhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 06:37:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238943AbhCDLhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 06:37:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF3CA64EDF;
+        Thu,  4 Mar 2021 11:37:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614857825;
+        bh=lCDSwJ74OmvlKz5hZIDCsA90A6//34lLgcYAEC2sM+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NDaFwIDlQYoQkwavVKQyD+6VkWmaN2DDWWXmG0tDQv5LlZwNaNCxNSmPyqo5AJneG
+         3txPXmHiNa3pXyO53zAA3mUFC57bE7/5vxMIw9b+TZG97xdztAZ2G9oQ8Fm5z2OMY+
+         y0/RMpilXTAVTlTZVFc35MaDJUaJ8Zv2uaTbRAVn4U2bHhE/Y6+oy3ZqpQuQgt9RLa
+         AbVJ9mdSBBynXnasvXkSVhph/n9odjsnpcZ+UZNgCzzdd/b8GYsZjHtNWlo0Ymgi1p
+         luKiQOS3S6Wn3Q894qsZE5/Dj9pZyV53u2u1s5vgmfwKVmmqhClB/vq3Z4gn6jUFIy
+         k6uZRpns/vqsg==
+Date:   Thu, 4 Mar 2021 19:37:00 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1028a: add interrupt to Root Complex Event
+ Collector
+Message-ID: <20210304113659.GQ15865@dragon>
+References: <20210209005259.29725-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209005259.29725-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> It seems like other architectures, namely x86 and arm64
-> at least, include the running function as top entry when saving
-> stack trace with save_stack_trace_regs().
+On Tue, Feb 09, 2021 at 01:52:59AM +0100, Michael Walle wrote:
+> The legacy interrupt INT_A is hardwired to the event collector. RCEC is
+> bascially supported starting with v5.11. Having a correct interrupt, will
+> make RCEC at least probe correctly.
+> 
+> There are still issues with how RCEC is implemented in the RCiEP on the
+> LS1028A. RCEC will report an error, but it cannot find the correct
+> subdevice.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> index 262fbad8f0ec..c1f2f402ad53 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> @@ -1114,6 +1114,12 @@
+>  					full-duplex;
+>  				};
+>  			};
+> +
+> +			rcec@1f,0 {
 
-Also riscv AFAICS.
+Just curious how unit-address comes to '1f,0'?
 
-> Functionnalities like KFENCE expect it.
->
-> Do the same on powerpc, it allows KFENCE to properly identify the faulting
-> function as depicted below. Before the patch KFENCE was identifying
-> finish_task_switch.isra as the faulting function.
+Shawn
 
-Thanks, I think this is the right approach. There's kfence but also
-several other users from what I can see with a quick grep.
-
-...
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Fixes: 35de3b1aa168 ("powerpc: Implement save_stack_trace_regs() to enable kprobe stack tracing")
-> Cc: stable@vger.kernel.org
-
-I'm not sure about the Cc to stable. I think we are fixing the behaviour
-to match the (implied) intent of the API, but that doesn't mean we won't
-break something by accident. I'll think about it :)
-
-cheers
+> +				reg = <0x00f800 0 0 0 0>;
+> +				/* IEP INT_A */
+> +				interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+> +			};
+>  		};
+>  
+>  		rcpm: power-controller@1e34040 {
+> -- 
+> 2.20.1
+> 
