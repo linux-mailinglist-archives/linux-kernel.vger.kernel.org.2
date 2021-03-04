@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C3F32C9E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F05632C9E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbhCDBPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:15:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39990 "EHLO mail.kernel.org"
+        id S237319AbhCDBPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:15:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238406AbhCDBAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239562AbhCDBAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 20:00:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8226864F5E;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7B37964F47;
         Thu,  4 Mar 2021 01:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614819613;
-        bh=KSAWwbHb73EOPg5kPH2hKmEoVXP1BNoKlW+Hi1Bcse0=;
+        bh=pbLbqUe2ezgPfIqCgBPpfZI6aj64Lg26MM3O9GwA58I=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=H7mFgg08GUXFggoHDxaWut1SV4wsorIeXYYYNxGKcmXbfYb2YEDKNNcgxqaH4rucL
-         9h4Velz4pVMLLg9z0dlQ/VUxtb9ahJh73q4r+dyyKTBbTFAk73Ei4cEixRhkDUw/lX
-         pRVHPD/a4zvry4/6A+y6VbbaLz7KPNoXf2iLuxRceO6pysEk4qXYk1sz/nc0xv9Cgt
-         wa+efFS2hMyGg03Dsns9ita8cU0Pkm6k6iwXKoE5INxIgXMoSCS2qZBag5N3MiCSlS
-         X9xynModSskA8QXf71jkcse0xUHJTxBX7pG1bOA1H0JvvbVhZ7gi8ESfRpZCSGdfo2
-         v22ox4TOGtyAw==
+        b=Zf0V9WQWONy5P2DVlciUi2otNy2C3FIcqNK8EfS91UXzCe7IITX9D34roJcFhTf+I
+         NfATcUhhiZfzAswZTO/5x7F7418tFqpNFcey9PruffyV8pj01lKUw8E1MQqiqivW/A
+         FOrplg4r0znukubXmW4mNDtMuJRzijeH29VXqpmLc8vaWqC84OdXaL5PrwpAojbcCq
+         jxYdgExEklJ6FU4ozA/It66Spzmr5Lb9N57ZxaamqohdzIiI9m8C/O0ZsqC+UnDduM
+         aYl5b7+M+TRBUyXBUfvfbMDEpzqTr8XlYBluPR8xfeETNoVTw8Sms5DpJoty+ypcVr
+         YoOI2TUFhQn7w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7691A609EA;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6D2BB600DF;
         Thu,  4 Mar 2021 01:00:13 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] Revert "r8152: adjust the settings about MAC clock speed
- down for RTL8153"
+Subject: Re: [PATCH net v2] net: l2tp: reduce log level of messages in receive
+ path, add counter instead
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161481961348.28060.14733317250155775339.git-patchwork-notify@kernel.org>
+Message-Id: <161481961344.28060.10946640973574514262.git-patchwork-notify@kernel.org>
 Date:   Thu, 04 Mar 2021 01:00:13 +0000
-References: <1394712342-15778-347-Taiwan-albertk@realtek.com>
-In-Reply-To: <1394712342-15778-347-Taiwan-albertk@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     netdev@vger.kernel.org, nic_swsd@realtek.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+References: <bd6f117b433969634b613153ec86ccd9d5fa3fb9.1614707999.git.mschiffer@universe-factory.net>
+In-Reply-To: <bd6f117b433969634b613153ec86ccd9d5fa3fb9.1614707999.git.mschiffer@universe-factory.net>
+To:     Matthias Schiffer <mschiffer@universe-factory.net>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        tparkin@katalix.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,20 +47,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Wed, 3 Mar 2021 16:39:47 +0800 you wrote:
-> This reverts commit 134f98bcf1b898fb9d6f2b91bc85dd2e5478b4b8.
-> 
-> The r8153_mac_clk_spd() is used for RTL8153A only, because the register
-> table of RTL8153B is different from RTL8153A. However, this function would
-> be called when RTL8153B calls r8153_first_init() and r8153_enter_oob().
-> That causes RTL8153B becomes unstable when suspending and resuming. The
-> worst case may let the device stop working.
+On Wed,  3 Mar 2021 16:50:49 +0100 you wrote:
+> Commit 5ee759cda51b ("l2tp: use standard API for warning log messages")
+> changed a number of warnings about invalid packets in the receive path
+> so that they are always shown, instead of only when a special L2TP debug
+> flag is set. Even with rate limiting these warnings can easily cause
+> significant log spam - potentially triggered by a malicious party
+> sending invalid packets on purpose.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] Revert "r8152: adjust the settings about MAC clock speed down for RTL8153"
-    https://git.kernel.org/netdev/net/c/4b5dc1a94d4f
+  - [net,v2] net: l2tp: reduce log level of messages in receive path, add counter instead
+    https://git.kernel.org/netdev/net/c/3e59e8856758
 
 You are awesome, thank you!
 --
