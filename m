@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78F732C946
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C0132C93F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1389254AbhCDBGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:06:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39714 "EHLO mail.kernel.org"
+        id S1382901AbhCDBGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:06:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452973AbhCDAkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:40:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9949F64F09;
+        id S1452947AbhCDAjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:39:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C44C564F0B;
         Thu,  4 Mar 2021 00:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614818297;
-        bh=9IGzbVIPgkV9C891g0qV4xr/QDAgESm9Ufcw0nIBUak=;
+        bh=+w+p+gupWYvEy3sjfA3W9Rzwm53ldTeseYBMwSJG4PI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Njj9O8hh0801NhEojZKItjqu/fx4hTN1azAWPxu5h1HQVFCnSXTf7d4mjmI32jCJp
-         j7f55iY5/i4yJjeCwUAHRyY26L4H4S7vFXrb/PYYGd0ZCcyd3qgVnrIWgTlK7IQyGC
-         6OQVg4DKz8ToL+PWQVkFvPW26PbWoL77WGuOTxiQDkFdztkUgSP2uNRoOQnT8IFNNr
-         7VzjqfTJaHbEQaqaXJpcbDXcSg4KHQj2eaReB8cPxsw0x3bTTaUdRMY4AJ0VGsEshg
-         UND7Kkj/r/8fEz8h5IZQLTK19+5h2d6482T0iC1BIJkShj/TTD5ZyeLEehl2BprIWx
-         uZxeQq6xuDz4w==
+        b=tkvAe8XkP1qEPXKmlFOHh7Fi0YJ+QldQUgKSc38JG/W7PGjcYDQrNSqt+iN0wpo0G
+         XB+Pp1IeynZZSiSo90Tsbs0leO/rPm8RrlfgvCpxOjn10g433/1GE/vwCEohA0V9dY
+         zKks79J9MvvNeiujNDe8mgJWzapOk+Bb1QBFGKeX4YK2g5QD/NVXLBxys7tK+Liob2
+         PS7IaVvJKT+hYv89OrplA8UknX+hiKFEYtffkNKjwHKu11xyFUcp3FPzrWQfuQeJA8
+         xZ2dGGZditHtyCXMnLzobpjzqOcprzwj0WpruQoxssvShRL4KXiruOrFJiIs4G2rgA
+         ohpTNCzxFBAoA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 23/28] torture: Add --duration argument to kvm-again.sh
-Date:   Wed,  3 Mar 2021 16:38:07 -0800
-Message-Id: <20210304003812.24833-23-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 24/28] torture: Make kvm-transform.sh update jitter commands
+Date:   Wed,  3 Mar 2021 16:38:08 -0800
+Message-Id: <20210304003812.24833-24-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
@@ -44,128 +44,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds a --duration argument to kvm-again.sh to allow the user
-to override the --duration specified for the original kvm.sh run.
+When rerunning an old run using kvm-again.sh, the jitter commands
+will re-use the original "res" directory.  This works, but is clearly
+an accident waiting to happen.  And this accident will happen with
+remote runs, where the original directory lives on some other system.
+This commit therefore updates the qemu-cmd commands to use the new res
+directory created for this specific run.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../testing/selftests/rcutorture/bin/kvm-again.sh  | 25 ++++++++++++++++++-
- .../selftests/rcutorture/bin/kvm-transform.sh      | 29 +++++++++++++++++-----
- 2 files changed, 47 insertions(+), 7 deletions(-)
+ .../testing/selftests/rcutorture/bin/kvm-again.sh  |  3 ++-
+ .../selftests/rcutorture/bin/kvm-transform.sh      | 23 +++++++++++++++++++---
+ 2 files changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-index 92cf396..4de576495 100755
+index 4de576495..21d1e99 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
-@@ -52,6 +52,7 @@ PATH=${KVM}/bin:$PATH; export PATH
- . functions.sh
- 
- dryrun=
-+dur=
- default_link="cp -R"
- rundir="`pwd`/tools/testing/selftests/rcutorture/res/`date +%Y.%m.%d-%H.%M.%S-again`"
- 
-@@ -61,6 +62,7 @@ starttime="`get_starttime`"
- usage () {
- 	echo "Usage: $scriptname $oldrun [ arguments ]:"
- 	echo "       --dryrun"
-+	echo "       --duration minutes | <seconds>s | <hours>h | <days>d"
- 	echo "       --link hard|soft|copy"
- 	echo "       --remote"
- 	echo "       --rundir /new/res/path"
-@@ -73,6 +75,23 @@ do
- 	--dryrun)
- 		dryrun=1
- 		;;
-+	--duration)
-+		checkarg --duration "(minutes)" $# "$2" '^[0-9][0-9]*\(s\|m\|h\|d\|\)$' '^error'
-+		mult=60
-+		if echo "$2" | grep -q 's$'
-+		then
-+			mult=1
-+		elif echo "$2" | grep -q 'h$'
-+		then
-+			mult=3600
-+		elif echo "$2" | grep -q 'd$'
-+		then
-+			mult=86400
-+		fi
-+		ts=`echo $2 | sed -e 's/[smhd]$//'`
-+		dur=$(($ts*mult))
-+		shift
-+		;;
- 	--link)
- 		checkarg --link "hard|soft|copy" "$#" "$2" 'hard\|soft\|copy' '^--'
- 		case "$2" in
-@@ -134,7 +153,11 @@ do
+@@ -153,7 +153,8 @@ do
  	cp "$i" $T
  	qemu_cmd_dir="`dirname "$i"`"
  	kernel_dir="`echo $qemu_cmd_dir | sed -e 's/\.[0-9]\+$//'`"
--	kvm-transform.sh $kernel_dir/bzImage $qemu_cmd_dir/console.log < $T/qemu-cmd > $i
-+	kvm-transform.sh $kernel_dir/bzImage $qemu_cmd_dir/console.log $dur < $T/qemu-cmd > $i
-+	if test -n "$dur"
-+	then
-+		echo "# seconds=$dur" >> $i
-+	fi
- 	echo "# TORTURE_KCONFIG_GDB_ARG=''" >> $i
- done
- grep -v '^#' $T/batches.oldrun | awk '
+-	kvm-transform.sh $kernel_dir/bzImage $qemu_cmd_dir/console.log $dur < $T/qemu-cmd > $i
++	jitter_dir="`dirname "$kernel_dir"`"
++	kvm-transform.sh "$kernel_dir/bzImage" "$qemu_cmd_dir/console.log" "$jitter_dir" $dur < $T/qemu-cmd > $i
+ 	if test -n "$dur"
+ 	then
+ 		echo "# seconds=$dur" >> $i
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-transform.sh b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
-index c45a953..162dddb 100755
+index 162dddb..e9dcbce 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-transform.sh
 @@ -3,7 +3,7 @@
  #
  # Transform a qemu-cmd file to allow reuse.
  #
--# Usage: kvm-transform.sh bzImage console.log < qemu-cmd-in > qemu-cmd-out
-+# Usage: kvm-transform.sh bzImage console.log [ seconds ] < qemu-cmd-in > qemu-cmd-out
+-# Usage: kvm-transform.sh bzImage console.log [ seconds ] < qemu-cmd-in > qemu-cmd-out
++# Usage: kvm-transform.sh bzImage console.log jitter_dir [ seconds ] < qemu-cmd-in > qemu-cmd-out
  #
  #	bzImage: Kernel and initrd from the same prior kvm.sh run.
  #	console.log: File into which to place console output.
-@@ -29,20 +29,37 @@ then
+@@ -29,14 +29,31 @@ then
  	echo "Need console log file name."
  	exit 1
  fi
-+seconds=$3
-+if test -n "$seconds" && echo $seconds | grep -q '[^0-9]'
+-seconds=$3
++jitter_dir="$3"
++if test -z "$jitter_dir" || ! test -d "$jitter_dir"
 +then
-+	echo "Invalid duration, should be numeric in seconds: '$seconds'"
++	echo "Need valid jitter directory: '$jitter_dir'"
 +	exit 1
 +fi
-+
-+awk -v image="$image" -v consolelog="$consolelog" -v seconds="$seconds" '
-+/^#/ {
-+	print $0;
++seconds="$4"
+ if test -n "$seconds" && echo $seconds | grep -q '[^0-9]'
+ then
+ 	echo "Invalid duration, should be numeric in seconds: '$seconds'"
+ 	exit 1
+ fi
+ 
+-awk -v image="$image" -v consolelog="$consolelog" -v seconds="$seconds" '
++awk -v image="$image" -v consolelog="$consolelog" -v jitter_dir="$jitter_dir" \
++    -v seconds="$seconds" '
++/^# TORTURE_JITTER_START=/ {
++	print "# TORTURE_JITTER_START=\". jitterstart.sh " $4 " " jitter_dir " " $6 " " $7;
 +	next;
 +}
- 
--awk -v image="$image" -v consolelog="$consolelog" '
- {
- 	line = "";
- 	for (i = 1; i <= NF; i++) {
--		if (line == "")
-+		if ("" seconds != "" && $i ~ /\.shutdown_secs=[0-9]*$/) {
-+			sub(/[0-9]*$/, seconds, $i);
-+			if (line == "")
-+				line = $i;
-+			else
-+				line = line " " $i;
-+		} else if (line == "") {
- 			line = $i;
--		else
-+		} else {
- 			line = line " " $i;
-+		}
- 		if ($i == "-serial") {
- 			i++;
- 			line = line " file:" consolelog;
--		}
--		if ($i == "-kernel") {
-+		} else if ($i == "-kernel") {
- 			i++;
- 			line = line " " image;
- 		}
++
++/^# TORTURE_JITTER_STOP=/ {
++	print "# TORTURE_JITTER_STOP=\". jitterstop.sh " " " jitter_dir " " $5;
++	next;
++}
++
+ /^#/ {
+ 	print $0;
+ 	next;
 -- 
 2.9.5
 
