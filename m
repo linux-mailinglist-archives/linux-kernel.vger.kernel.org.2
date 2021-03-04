@@ -2,185 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0EF32D5A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A12132D5BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhCDOrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        id S232664AbhCDO55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:57:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhCDOrO (ORCPT
+        with ESMTP id S229793AbhCDO5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:47:14 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078FBC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 06:46:34 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id d11so27933014wrj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 06:46:33 -0800 (PST)
+        Thu, 4 Mar 2021 09:57:34 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D594C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 06:56:54 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id d9so27450838ote.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 06:56:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oPjdoY3IchTxSeEVo8a3bj2scxE+31WbW/AYcYPh3QM=;
-        b=rWuP9MybS+aGNANpU21WEPXzBZdbNfgJBQDKLXXyKxTGG0Cz8tNdUtYfvz/OuVuCCl
-         CVRGV6hVWxzz6SfQEDifFlLbj/P1hl9an9J4kSJltsh4DorFGVan0EEMGGno5Dmodz1f
-         UZt9qqcvs5WUHgMo3cQ8XeiSyLubYIX3riytWVynvcAsOrh11nthtYMtVtvbj1MQA9sN
-         tkCW8To5JT3qdfBrBI5MaGPMrFKSURAXdeXkbcO8uqO7qi6spY2caiScQ3iQZY6Y9SVg
-         nUZPgSvgt61iAxNbamg3s3Mwr2sR7jAgu+V3pID6X+DSXpgwj5jgDQAQUUXuaLIIk8X9
-         GbjQ==
+        d=metztli-com.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=Egt7O0hrtmxmw6ied+hJV1grz0SHUeSD2SQDlj862Pk=;
+        b=fUI/6ZYJMWbUFwjm8jmBfNsfDL4299KeFqYaRVzK5VlqyLXiWQm4/KkiD9Z+Aus4TL
+         0SoZiCvH/Ri7z14bYhnrrgIMuW7Ur1qGeL1MTIBofB8C5SS4PqqPd6vZs8GPNvyI803Y
+         SAsc1nOg4EcGqdnjZ1mWcKrYWvjWjbz0MNuH0rsY3jkH2jQ32elwCupKgkiSKjTnnHuY
+         lCAgnBTLoG/7A07pGFEopN8Bi0hlk1RAyf+7e5rEVh5MwhVNLGs9TfBcGw4fsDuM5LeD
+         o9nCfgnaqlrIy2K/AT2ZicNDCCSh4YB7NRYScdEvRVop5ht+cTAOkkk9Fp87MJI2kvf5
+         BwGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oPjdoY3IchTxSeEVo8a3bj2scxE+31WbW/AYcYPh3QM=;
-        b=F7VUZQCf+1ZD0m7nANn3zAoXH+V5PoJt7JiqO7SUQzkKGVXBxFrEzxifD03mAuqCCM
-         Jx0Wgw6GapIM6hNDTe95/u1D1ChSt5x27FpTsukhfKONvn+70qiUc12F9H/BSGM4Tgeg
-         dZkJ17uwHD9nYZdEC2xltCdyQ0b8AqKQiKzuARIyRtRSvwEPmwzq61ccqJxazNiSDReG
-         S9C8qthH7HhI57dLgDJh+ScAqh0H3CN+ZiAdgT6Yw0vkoze28r64NBDPEzc3B6lGRCZJ
-         HJQCk5ZphurIdTt3X55XPq3xJDn4fS8fbqu4v2eI9ijKBrZdImNoexuMpNZDldJxfcwD
-         m28A==
-X-Gm-Message-State: AOAM532zYj0Nc80dt55mIrumjrFuJ5dG8Yzbjq/HhwoHWtk9Z+2QRI+R
-        qr8HHUgrnNClfrIzUdsYhENTlpAUE691GaLaYcH1UA==
-X-Google-Smtp-Source: ABdhPJxMrhGvW7HaiafS+5gzz8xlNld8dYnSjUSYnfDHMPCyjqWwP0NmkfwcNhxBxz2381/J9tn7v+J/rwg60YsUCu8=
-X-Received: by 2002:a5d:4688:: with SMTP id u8mr4392324wrq.39.1614869192777;
- Thu, 04 Mar 2021 06:46:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-5-mike.leach@linaro.org>
- <641a0d20-bf3d-24e2-8402-d99de9117584@arm.com> <CAJ9a7Vi5dTJTNRNC36UEwAeCayd_HF9jN8rXSggRF_4cPZ1NrA@mail.gmail.com>
- <921225a2-14a8-2a4f-4726-f61224cafa28@arm.com>
-In-Reply-To: <921225a2-14a8-2a4f-4726-f61224cafa28@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Thu, 4 Mar 2021 14:46:22 +0000
-Message-ID: <CAJ9a7VhWqkDeSWeZnGi2JdrYv-d8=R6He_zfd+L3Za3WoPRXOg@mail.gmail.com>
-Subject: Re: [PATCH v4 04/10] coresight: etm-perf: update to handle
- configuration selection
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Yabin Cui <yabinc@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=Egt7O0hrtmxmw6ied+hJV1grz0SHUeSD2SQDlj862Pk=;
+        b=Ep0A9AG8mI9WjMDuLiDNMPk3mpXG9lYaSEYJCnSw26Ahaoj7S6REaLZc9fAKU2Aap+
+         R1729Fo/hHtLpexnvy2N6vM7QcwPIrdgm35cmR+RJDwjvFmRe8noLi2rhpNqvnj/DC0I
+         WmHxqwNZTjxo+IfUaqqfNjsgEEJcvFFFa527rtDn09DDoD61dAXuQhKqkV5FdBULJfXK
+         QrZrQrtA+9yhDUVy7/z0BYU4pk8G+wSP08NQl/GyEhquqIm1RrOykGOKPjHRQV4p2Oc4
+         guh/p9aXLpb4D5JPMgPToJ0qrV4vRVVLns0kTCFDxte6DRZWuMCtkc7+0DOpw+vCd/mL
+         SPVA==
+X-Gm-Message-State: AOAM532s3l4SRAtpAqLqbQr2gtpkCfmke1wbfzOi23wo5kivhY+bCBTp
+        eAEiuIY0dyHYoU3nJKq/zuqoZw==
+X-Google-Smtp-Source: ABdhPJxkNQEB58oZZK3MLqb8eVT35aclKdHIFuP+UL5QdOgSBqHXSzTlszl4v2CAnz/kmCtQxy/h8g==
+X-Received: by 2002:a05:6830:1afc:: with SMTP id c28mr3734282otd.99.1614869813366;
+        Thu, 04 Mar 2021 06:56:53 -0800 (PST)
+Received: from ?IPv6:2600:1700:6470:27a0:682c:9aef:c4a9:8393? ([2600:1700:6470:27a0:682c:9aef:c4a9:8393])
+        by smtp.gmail.com with ESMTPSA id i3sm5834233otk.56.2021.03.04.06.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 06:56:52 -0800 (PST)
+Message-ID: <f709dc80a94fa6ee0f34dc785e7f30ba58850122.camel@metztli.com>
+Subject: Re: unexpected kernel reboot (3)
+From:   Jose R Rodriguez <jose.r.r@metztli.com>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     syzbot <syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Gargi Sharma <gs051095@gmail.com>, jhugo@codeaurora.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Laura Abbott <lauraa@codeaurora.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux@dominikbrodowski.net,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, thomas.lendacky@amd.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Radim =?UTF-8?Q?Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
+        KVM list <kvm@vger.kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Edward Shishkin <edward.shishkin@gmail.com>
+Date:   Thu, 04 Mar 2021 06:56:50 -0800
+In-Reply-To: <CACT4Y+b1HC5CtFSQJEDBJrP8u1brKxXaFcYKE=g+h3aOW6K3Kg@mail.gmail.com>
+References: <000000000000eb546f0570e84e90@google.com>
+         <20180713145811.683ffd0043cac26a5a5af725@linux-foundation.org>
+         <CACT4Y+b1HC5CtFSQJEDBJrP8u1brKxXaFcYKE=g+h3aOW6K3Kg@mail.gmail.com>
+Organization: Metztli Information Technology
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Mon, 2018-07-16 at 12:09 +0200, Dmitry Vyukov wrote:
+> On Fri, Jul 13, 2018 at 11:58 PM, Andrew Morton
+> <akpm@linux-foundation.org> wrote:
+> > On Fri, 13 Jul 2018 14:39:02 -0700 syzbot <
+> > syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com> wrote:
+> > 
+> > > Hello,
+> > > 
+> > > syzbot found the following crash on:
+> > 
+> > hm, I don't think I've seen an "unexpected reboot" report before.
+> > 
+> > Can you expand on specifically what happened here?  Did the machine
+> > simply magically reboot itself?  Or did an external monitor whack it,
+> > or...
+> 
+> We put some user-space workload (not involving reboot syscall), and
+> the machine suddenly rebooted. We don't know what triggered the
+> reboot, we only see the consequences. We've seen few such bugs before,
+> e.g.:
+> https://syzkaller.appspot.com/bug?id=4f1db8b5e7dfcca55e20931aec0ee707c5cafc99
+> Usually it involves KVM. Potentially it's a bug in the outer
+> kernel/VMM, it may or may not be present in tip kernel.
 
-On Thu, 4 Mar 2021 at 14:25, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> On 3/4/21 2:19 PM, Mike Leach wrote:
-> > Hi Suzuki,
-> >
-> > On Thu, 4 Mar 2021 at 12:13, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
-> >>
-> >> On 1/28/21 5:09 PM, Mike Leach wrote:
-> >>> Loaded coresight configurations are registered in the cs_etm\cs_config sub
-> >>> directory. This extends the etm-perf code to handle these registrations,
-> >>> and the cs_syscfg driver to perform the registration on load.
-> >>>
-> >>> Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> >>> ---
-> >>>    .../hwtracing/coresight/coresight-config.h    |   5 +-
-> >>>    .../hwtracing/coresight/coresight-etm-perf.c  | 164 +++++++++++++++---
-> >>>    .../hwtracing/coresight/coresight-etm-perf.h  |   8 +
-> >>>    .../hwtracing/coresight/coresight-syscfg.c    |  13 +-
-> >>>    4 files changed, 166 insertions(+), 24 deletions(-)
-> >>>
->
->
-> >>> +static ssize_t etm_perf_cscfg_event_show(struct device *dev,
-> >>> +                                      struct device_attribute *dattr,
-> >>> +                                      char *buf)
-> >>> +{
-> >>> +     struct dev_ext_attribute *ea;
-> >>> +
-> >>> +     ea = container_of(dattr, struct dev_ext_attribute, attr);
-> >>> +     return scnprintf(buf, PAGE_SIZE, "%s\n", (const char *)(ea->var));
-> >>> +}
-> >>
-> >> "configid=0x%lx", (unsigned long)ea->var ?
-> >>
-> >
-> > ea->var _is_ "configid=0x%lx" due to the way perf handles the events
-> > sub-dir entries.
-> >
->
-> This must be combined with the suggestion below.
->
-> >>> +
-> >>> +static int etm_perf_add_cscfg_event(struct device *dev, struct cscfg_config_desc *cs_cfg)
-> >>> +{
-> >>> +     struct dev_ext_attribute *ea;
-> >>> +     unsigned long hash;
-> >>> +     int ret;
-> >>> +     struct device *pmu_dev = etm_pmu.dev;
-> >>> +
-> >>> +     ea = devm_kzalloc(dev, sizeof(*ea), GFP_KERNEL);
-> >>> +     if (!ea)
-> >>> +             return -ENOMEM;
-> >>> +
-> >>> +     hash = (unsigned long)cs_cfg->id_ea->var;
-> >>> +
-> >>> +     sysfs_attr_init(&ea->attr.attr);
-> >>> +     ea->attr.attr.name = devm_kstrdup(dev, cs_cfg->name, GFP_KERNEL);
-> >>> +     if (!ea->attr.attr.name)
-> >>> +             return -ENOMEM;
-> >>> +
-> >>> +     /*
-> >>> +      * attribute value is "configid=<hash>".
-> >>> +      * this will be what perf evaluates when the config name is used
-> >>> +      * on the command line.
-> >>> +      */
-> >>> +     ea->var = devm_kzalloc(dev, CSCFG_EVENT_STR_SIZE, GFP_KERNEL);
-> >>> +     if (!ea->var)
-> >>> +             return -ENOMEM;
-> >>
-> >> Could we drop this string and use the "hash" instead ?
-> >>
-> >
-> > No. My understanding is that we have added an events directory to
-> > cs_etm, and add the configurations in there:-
-> >
-> > cs_etm/events/autofdo
-> >
-> > Now the contents of autofdo are "configid=0x<hash-value>" - where
-> > hash-value is the hash of "autofdo".
-> >
-> > On the perf command line:-
-> >
-> > perf record -e cs_etm/autofdo/ .....
-> >
-> > will result in perf parsing autofdo, looking in the events dir for
-> > cs_etm, seeing the configid=-string, and parsing that to assign to
-> > configid attribute - which we have allocated to config2:63:32 - this
-> > will then appear as a value in the perf_event and we can load the
-> > configuration when starting up the event on the ETM etc.
->
-> Sorry, I was not explicit in my comments. You could drop the string and
-> have ea->var = hash. And the _show() could simply do
->
-> "configid=0x%lx" , hash
->
-> as mentioned above.
->
-> That would avoid another string allocation, with the same interface.
->
+I have been using GCE with my custom VirtualBox -created reiser4 root fs VMs
+since at least 2018, long term mainly as web servers with LAMP / LEMP --
+including some Ruby apps with Postgresql -- and short term to build our Debian
+Linux kernels. I have not experienced 'suddenly rebooted' scenarios.
 
-OK, that makes sense.
+Note that I have been usin Intel CPUs at the Los Angeles zone us-west2-a, as
+well as us-east1-b zone, and AMD Epyc CPUs at us-central1-a zone, without
+abnormalities (other than it's becoming more expensive ;-)
 
-Mike
+As a matter of fact, I am currently testing a Debian'ized reiser4 (AMD Epyc -
+flavored reizer4 label) -enabled Linux kernel 5.10.15-2 which has logged 17 days
++hours already and sustaining most of the apps already mentioned.
+< https://metztli.it/buster/r4-5.10.15-gce.png >
 
-> Suzuki
+> 
+> 
+> > Does this test distinguish from a kernel which simply locks up?
+> 
+> Yes. If you look at the log:
+> 
+> https://syzkaller.appspot.com/x/log.txt?x=17c6a6d0400000
+> 
+> We've booted the machine, started running a program, and them boom! it
+> reboots without any other diagnostics. It's not a hang.
+> 
+> 
+> 
+> > > HEAD commit:    1e4b044d2251 Linux 4.18-rc4
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=17c6a6d0400000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=25856fac4e580aa7
+> > > dashboard link: 
+> > > https://syzkaller.appspot.com/bug?extid=cce9ef2dd25246f815ee
+> > > compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
+> > > syzkaller repro:https://syzkaller.appspot.com/x/repro.syz?x=165012c2400000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1571462c400000
+> > 
+> > I assume the "C reproducer" is irrelevant here.
+> > 
+> > Is it reproducible?
+> 
+> Yes, it is reproducible and the C reproducer is relevant.
+> If syzbot provides a reproducer, it means that it booted a clean
+> machine, run the provided program (nothing else besides typical init
+> code and ssh/scp invocation) and that's the kernel output it observed
+> running this exact program.
+> However in this case, the exact setup can be relevant. syzbot uses GCE
+> VMs, it may or may not reproduce with other VMMs/physical hardware,
+> sometimes such bugs depend on exact CPU type.
+> 
+> 
+> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > Reported-by: syzbot+cce9ef2dd25246f815ee@syzkaller.appspotmail.com
+> > > 
+> > > output_len: 0x00000000092459b0
+> > > kernel_total_size: 0x000000000a505000
+> > > trampoline_32bit: 0x000000000009d000
+> > > 
+> > > Decompressing Linux... Parsing ELF... done.
+> > > Booting the kernel.
+> > > [    0.000000] Linux version 4.18.0-rc4+ (syzkaller@ci) (gcc version 8.0.1
+> > > 20180413 (experimental) (GCC)) #138 SMP Mon Jul 9 10:45:11 UTC 2018
+> > > [    0.000000] Command line: BOOT_IMAGE=/vmlinuz root=/dev/sda1
+> > > console=ttyS0 earlyprintk=serial vsyscall=native rodata=n
+> > > ftrace_dump_on_oops=orig_cpu oops=panic panic_on_warn=1 nmi_watchdog=panic
+> > > panic=86400 workqueue.watchdog_thresh=140 kvm-intel.nested=1
+> > > 
+> > > ...
+> > > 
+> > > regulatory database
+> > > [    4.519364] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+> > > [    4.520839] platform regulatory.0: Direct firmware load for
+> > > regulatory.db failed with error -2
+> > > [    4.522155] cfg80211: failed to load regulatory.db
+> > > [    4.522185] ALSA device list:
+> > > [    4.523499]   #0: Dummy 1
+> > > [    4.523951]   #1: Loopback 1
+> > > [    4.524389]   #2: Virtual MIDI Card 1
+> > > [    4.825991] input: ImExPS/2 Generic Explorer Mouse as
+> > > /devices/platform/i8042/serio1/input/input4
+> > > [    4.829533] md: Waiting for all devices to be available before
+> > > autodetect
+> > > [    4.830562] md: If you don't use raid, use raid=noautodetect
+> > > [    4.835237] md: Autodetecting RAID arrays.
+> > > [    4.835882] md: autorun ...
+> > > [    4.836364] md: ... autorun DONE.
+> > 
+> > Can we assume that the failure occurred in or immediately after the MD code,
+> > or might some output have been truncated?
+> > 
+> > It would be useful to know what the kernel was initializing immediately
+> > after MD.  Do you have a kernel log for the same config when the kerenl
+> > didn't fail?  Or maybe enable initcall_debug?
+> > 
+> > --
+> > You received this message because you are subscribed to the Google Groups
+> > "syzkaller-bugs" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an
+> > email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit 
+> > https://groups.google.com/d/msgid/syzkaller-bugs/20180713145811.683ffd0043cac26a5a5af725%40linux-foundation.org
+> > .
+> > For more options, visit https://groups.google.com/d/optout.
 
+(saw your last message of just a couple of hours and...)
 
+Hope provided info helps.
+
+Best Professional Regards.
 
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+-- 
+Jose R R
+http://metztli.it
+-----------------------------------------------------------------------
+Download Metztli Reiser4: Debian Buster w/ Linux 5.9.16 AMD64
+-----------------------------------------------------------------------
+feats ZSTD compression https://sf.net/projects/metztli-reiser4/
+-----------------------------------------------------------------------
+or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
+-----------------------------------------------------------------------
+Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
+
