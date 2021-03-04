@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122C132D02B
+	by mail.lfdr.de (Postfix) with ESMTP id A7DF032D02D
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238050AbhCDJxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:53:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
+        id S238077AbhCDJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238051AbhCDJx3 (ORCPT
+        with ESMTP id S238053AbhCDJxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:53:29 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5268DC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:52:49 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id jt13so48217777ejb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:52:49 -0800 (PST)
+        Thu, 4 Mar 2021 04:53:31 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18FFC061761;
+        Thu,  4 Mar 2021 01:52:50 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id d11so19202675qtx.9;
+        Thu, 04 Mar 2021 01:52:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yTv8ns99iDjsNYF6DJGXhF2BaQsgZOApT0z1Peuz2dM=;
-        b=Olt3Fh0oAHXVbOPOyfZu3Fkf63T9Bzgd3CIQpPpECW9DIM3bVgp09fgRlgjy/VGncp
-         M1O8ARLFKdgOCjwhXz3nJm1QqLbOiW9xQz7Hz/X8IjEW8e9EWQ+QqpH1aGsrLXg00Bwz
-         eqEiRuC7fz5YoGjmXDKVpIQRdbvH8JposY7mFgmi2vqWtSlQprnzz0QTt06hqTjXtntZ
-         6CC4qAB0Jk8HknkJYrRqXgHiha6iiq5OS2Xz8OH8atniceinZvvVrR2+6XSiIfZQWYtK
-         tVjIluJENE73Ds6lGvYhXZ4QEkIt+Yzk/CL/7j3yJyIdJBeEUMf51S+Ccp1TpZzjCjRY
-         Fegw==
+        bh=OQqd7MKj8Re6kTuY9Kq2ebhYDPJcIlWVpSJHWhFglbs=;
+        b=L3OQXVwVYJvE4QAQvwRqbrAQi7N7F2CEtCnqPbSTyx6j6JWH7K20Uv7/Mi48ZYjTkw
+         n4sKuuR+IC0rdlKm+vbElNJtm0BVwMnlLWdE/4Rc4L7blqGSPTElVbVXqDuxcCya/uYI
+         +hpvVSmlpCCH4DG81P0mNXvYJbt4uvqO86GYY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yTv8ns99iDjsNYF6DJGXhF2BaQsgZOApT0z1Peuz2dM=;
-        b=nJU74ztGMCqJ9bitQHa61AyZ5Xk24XKB6akD5/IrUCeqsfYJ/NBGJfpUCAa7KBNhIy
-         TFP1ZXiEmhZVnsfRfoNYIDGhHYUv7l+9/syzp+Vd/jtVfy0zNlMkC2km9kdIlTSvpRc9
-         y2KNIPFh9BVlgMAqe9hRShzAY2zTfUVPRmSPoqOlOahuEaqO8Rkt0BgPoJSiVi2aiJuQ
-         Idp/ANogJ7dY/bH+rLTtrNSocYY9M73en5xOSJ9FCwzaLSJcwqgBwV0Yr01idqLUHcq8
-         YyjLDoalW/uqqhHpyqoUftZzoIp+RjvaKGgeXIVYA1ELv5enqYFOlr4hG+rxG81N8Tdq
-         leKQ==
-X-Gm-Message-State: AOAM530hz8T/YySYWRUBuWOZmfmwqNoTXtRm4NDMPPaW1iZOmX8eecSL
-        gb0sIDrqABxQcDr3uwH1yyA77Y53GLQ7GDTWBLCS1A==
-X-Google-Smtp-Source: ABdhPJw9+UMEHt8R+CuVGe8UGeZKwjPXUG67gkw6+jSuXcXepDwqzaZg8BmKaTSe3lCLDc3HwcrYqCSkWpZss4Irzv4=
-X-Received: by 2002:a17:906:cf90:: with SMTP id um16mr3302448ejb.389.1614851568111;
- Thu, 04 Mar 2021 01:52:48 -0800 (PST)
+        bh=OQqd7MKj8Re6kTuY9Kq2ebhYDPJcIlWVpSJHWhFglbs=;
+        b=G8790XOFvLNxWvjEGWmjkENwayYkBYE8rAYeDG3AY9S6dPBKncV98Vck+QdHJKLcsq
+         0+WV8pPKJw3LS/iXL7KpuWomJdzfGtNeuJJJz0PO0sAhTQasrszIweiKBF7hpRNYdCzA
+         Wnsqblpg2RK6tQ0jMfIGpw/Llw4uHjy3DgyxSipiAtAKbnHrebOgDGRIISEoBQToarU4
+         td0KGqznv6tW7S+sqml2xVBF284hMxwIRImXiufY6cxGsXohBJsSnsJ0Ne6qrQXk3gBR
+         +BqV6Cbzwj2FCgI34mGz2KOaCegIpfBC4MpShw9Vsub3t3F1BooxQoeM3BVwcGJ6v39/
+         tYrQ==
+X-Gm-Message-State: AOAM530sr/3ptafdCqmhBUgU5OJcZrJH40g4+HTmpReu5UhDbG3ZidR1
+        OIxJ3eO9wIAiKzDvppupDHpTtLsKRT+sHfMukug=
+X-Google-Smtp-Source: ABdhPJzlCKXSuOs0/05oaz9/C2tl2sY0tyAx+P0+0sxxacx9TpsnGobdQSzTM8vo+MbsrebJEgGaXVSoBRkgTtpZ6Yo=
+X-Received: by 2002:a05:622a:143:: with SMTP id v3mr3207635qtw.363.1614851569477;
+ Thu, 04 Mar 2021 01:52:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303144631.3175331-1-lee.jones@linaro.org> <20210303144631.3175331-14-lee.jones@linaro.org>
-In-Reply-To: <20210303144631.3175331-14-lee.jones@linaro.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 4 Mar 2021 10:52:37 +0100
-Message-ID: <CAMGffEkigSZ8TqM0Q5mi7Q6d7oU_+Bzzzp9S87jgjqOWMEqjaQ@mail.gmail.com>
-Subject: Re: [PATCH 13/30] scsi: pm8001: pm8001_ctl: Fix incorrectly named
- functions in headers
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>
+References: <20210301161031.684018251@linuxfoundation.org> <20210301161034.369309830@linuxfoundation.org>
+ <CACPK8XeoKfNCR9diNZoLCM04=G9BRVxY_VZhXr+XQcpq2+rCdQ@mail.gmail.com>
+ <BY5PR11MB38788139CE6E4BA6A667CB84D2999@BY5PR11MB3878.namprd11.prod.outlook.com>
+ <YECWglSMg0EKAhgd@kroah.com>
+In-Reply-To: <YECWglSMg0EKAhgd@kroah.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 4 Mar 2021 09:52:37 +0000
+Message-ID: <CACPK8XcCVZfi8n7v-dDwKN0PCN6sUUxXVCCBbC1c3aqR8eQJhw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 055/247] soc: aspeed: snoop: Add clock control logic
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Yoo, Jae Hyun" <jae.hyun.yoo@intel.com>,
+        John Wang <wangzhiqiang.bj@bytedance.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 3:47 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Thu, 4 Mar 2021 at 08:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Fixes the following W=1 kernel build warning(s):
+> On Tue, Mar 02, 2021 at 12:09:21AM +0000, Yoo, Jae Hyun wrote:
+
+> > > From: Joel Stanley <joel@jms.id.au>
+
+> > > Jae, John; with this backported do we need to also provide a corresponding
+> > > device tree change for the stable tree, otherwise this driver will no longer
+> > > probe?
+> >
+> > Right. The second patch
+> > https://lore.kernel.org/linux-arm-kernel/20201208091748.1920-2-wangzhiqiang.bj@bytedance.com/
+> > John submitted should be applied to stable tree too to make this module be probed
+> > correctly.
 >
->  drivers/scsi/pm8001/pm8001_ctl.c:313: warning: expecting prototype for pm8001_ctl_sas_address_show(). Prototype was for pm8001_ctl_host_sas_address_show() instead
->  drivers/scsi/pm8001/pm8001_ctl.c:530: warning: expecting prototype for pm8001_ctl_aap_log_show(). Prototype was for pm8001_ctl_iop_log_show() instead
->
-> Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> Cc: linux-scsi@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Thanks
-> ---
->  drivers/scsi/pm8001/pm8001_ctl.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/scsi/pm8001/pm8001_ctl.c b/drivers/scsi/pm8001/pm8001_ctl.c
-> index 12035baf0997b..1921e69bc2328 100644
-> --- a/drivers/scsi/pm8001/pm8001_ctl.c
-> +++ b/drivers/scsi/pm8001/pm8001_ctl.c
-> @@ -299,7 +299,7 @@ static DEVICE_ATTR(sas_spec_support, S_IRUGO,
->                    pm8001_ctl_sas_spec_support_show, NULL);
->
->  /**
-> - * pm8001_ctl_sas_address_show - sas address
-> + * pm8001_ctl_host_sas_address_show - sas address
->   * @cdev: pointer to embedded class device
->   * @attr: device attribute (unused)
->   * @buf: the buffer returned
-> @@ -518,7 +518,7 @@ static ssize_t event_log_size_show(struct device *cdev,
->  }
->  static DEVICE_ATTR_RO(event_log_size);
->  /**
-> - * pm8001_ctl_aap_log_show - IOP event log
-> + * pm8001_ctl_iop_log_show - IOP event log
->   * @cdev: pointer to embedded class device
->   * @attr: device attribute (unused)
->   * @buf: the buffer returned
-> --
-> 2.27.0
->
+> Now queued up, thanks.
+
+Thanks Jae and Greg.
