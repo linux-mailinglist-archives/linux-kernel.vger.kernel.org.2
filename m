@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751DA32D7E7
+	by mail.lfdr.de (Postfix) with ESMTP id C09FD32D7E8
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238124AbhCDQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:34:31 -0500
-Received: from foss.arm.com ([217.140.110.172]:41068 "EHLO foss.arm.com"
+        id S238153AbhCDQed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:34:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:41094 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237738AbhCDQeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:34:03 -0500
+        id S238001AbhCDQeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 11:34:08 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A3FDD6E;
-        Thu,  4 Mar 2021 08:33:17 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B7B4113E;
+        Thu,  4 Mar 2021 08:33:23 -0800 (PST)
 Received: from e125528.arm.com (unknown [10.57.51.148])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E635D3F766;
-        Thu,  4 Mar 2021 08:33:12 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BC9AD3F766;
+        Thu,  4 Mar 2021 08:33:17 -0800 (PST)
 From:   Alexandre Truong <alexandre.truong@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
 Cc:     Alexandre Truong <alexandre.truong@arm.com>,
@@ -40,9 +40,9 @@ Cc:     Alexandre Truong <alexandre.truong@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Al Grant <al.grant@arm.com>, James Clark <james.clark@arm.com>,
         Wilco Dijkstra <wilco.dijkstra@arm.com>
-Subject: [PATCH RESEND WITH CCs v3 2/4] perf tools: add a mechanism to inject stack frames
-Date:   Thu,  4 Mar 2021 16:32:53 +0000
-Message-Id: <20210304163255.10363-2-alexandre.truong@arm.com>
+Subject: [PATCH RESEND WITH CCs v3 3/4] perf tools: enable dwarf_callchain_users on aarch64
+Date:   Thu,  4 Mar 2021 16:32:54 +0000
+Message-Id: <20210304163255.10363-3-alexandre.truong@arm.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20210304163255.10363-1-alexandre.truong@arm.com>
 References: <20210304163255.10363-1-alexandre.truong@arm.com>
@@ -52,9 +52,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a mechanism for platforms to inject stack frames for the leaf
-frame caller if there is enough information to determine a frame
-is missing from dwarf or other post processing mechanisms.
+On arm64, enable dwarf_callchain_users which will be needed
+to do a dwarf unwind in order to get the caller of the leaf frame.
 
 Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
 Cc: John Garry <john.garry@huawei.com>
@@ -79,57 +78,24 @@ Cc: Al Grant <al.grant@arm.com>
 Cc: James Clark <james.clark@arm.com>
 Cc: Wilco Dijkstra <wilco.dijkstra@arm.com>
 ---
- tools/perf/util/machine.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ tools/perf/builtin-report.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index ab8a6b3e801d..7f03ffa016b0 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2671,6 +2671,12 @@ static int find_prev_cpumode(struct ip_callchain *chain, struct thread *thread,
- 	return err;
- }
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 2a845d6cac09..93661a3eaeb1 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -405,6 +405,10 @@ static int report__setup_sample_type(struct report *rep)
  
-+static u64 get_leaf_frame_caller(struct perf_sample *sample __maybe_unused,
-+		struct thread *thread __maybe_unused)
-+{
-+	return 0;
-+}
-+
- static int thread__resolve_callchain_sample(struct thread *thread,
- 					    struct callchain_cursor *cursor,
- 					    struct evsel *evsel,
-@@ -2687,6 +2693,8 @@ static int thread__resolve_callchain_sample(struct thread *thread,
- 	int i, j, err, nr_entries;
- 	int skip_idx = -1;
- 	int first_call = 0;
-+	u64 leaf_frame_caller;
-+	int pos;
+ 	callchain_param_setup(sample_type);
  
- 	if (chain)
- 		chain_nr = chain->nr;
-@@ -2811,6 +2819,21 @@ static int thread__resolve_callchain_sample(struct thread *thread,
- 			continue;
- 		}
- 
-+		pos = callchain_param.order == ORDER_CALLEE ? 2 : chain_nr - 2;
++	if (callchain_param.record_mode == CALLCHAIN_FP &&
++			strncmp(rep->session->header.env.arch, "aarch64", 7) == 0)
++		dwarf_callchain_users = true;
 +
-+		if (i == pos) {
-+			leaf_frame_caller = get_leaf_frame_caller(sample, thread);
-+
-+			if (leaf_frame_caller && leaf_frame_caller != ip) {
-+
-+				err = add_callchain_ip(thread, cursor, parent,
-+					       root_al, &cpumode, leaf_frame_caller,
-+					       false, NULL, NULL, 0);
-+				if (err)
-+					return (err < 0) ? err : 0;
-+			}
-+		}
-+
- 		err = add_callchain_ip(thread, cursor, parent,
- 				       root_al, &cpumode, ip,
- 				       false, NULL, NULL, 0);
+ 	if (rep->stitch_lbr && (callchain_param.record_mode != CALLCHAIN_LBR)) {
+ 		ui__warning("Can't find LBR callchain. Switch off --stitch-lbr.\n"
+ 			    "Please apply --call-graph lbr when recording.\n");
 -- 
 2.23.0
 
