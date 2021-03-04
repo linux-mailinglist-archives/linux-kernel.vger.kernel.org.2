@@ -2,131 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CF532CB4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5539932CB57
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhCDEU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:20:57 -0500
-Received: from mail.kingsoft.com ([114.255.44.145]:13116 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233293AbhCDEUZ (ORCPT
+        id S233444AbhCDE0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:26:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233418AbhCDE0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:20:25 -0500
-X-AuditID: 0a580155-6fbff700000550c6-2c-6040589268fb
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 73.82.20678.29850406; Thu,  4 Mar 2021 11:48:34 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 4 Mar 2021
- 12:19:42 +0800
-Date:   Thu, 4 Mar 2021 12:19:41 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        <yaoaili@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210304121941.667047c3@alex-virtual-machine>
-In-Reply-To: <20210304101653.546a9da1@alex-virtual-machine>
-References: <20210224151619.67c29731@alex-virtual-machine>
-        <20210224103105.GA16368@linux>
-        <20210225114329.4e1a41c6@alex-virtual-machine>
-        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
-        <20210225113930.GA7227@localhost.localdomain>
-        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
-        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
-        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
-        <20210226105915.6cf7d2b8@alex-virtual-machine>
-        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
-        <20210303115710.2e9f8e23@alex-virtual-machine>
-        <20210303163912.3d508e0f@alex-virtual-machine>
-        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
-        <20210304101653.546a9da1@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Wed, 3 Mar 2021 23:26:07 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DCEC061756;
+        Wed,  3 Mar 2021 20:25:27 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id d2so5966222pjs.4;
+        Wed, 03 Mar 2021 20:25:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rojC4O0oCsktRJUTt9F3mKHBIJy66/QAZjlv2XNqG9M=;
+        b=I2fjb4+gTRiS9zXNfpHISoj4+i/hs8bn9HlryVoijTmVc5KEDQsXn33Z9WMRqNd2iP
+         C6DC4LGIa+hlX34ePqUfU+Mr7iUym5fErKEtRbpMGZhNrM9+SlpyecJNQYArAhQT4NSg
+         R9Wn3o5gfqTgkVpnPJwfuCLflOMF0gyPW7+KoqRmJZ9p+/i8yx7vUpM9j8ZEqD/b8KX3
+         z7DR/ASUQxdRkkZ6OtROlG6YvHfvUr2Q8DLpHECOt5tj4yHdQHMyeRI4WLN8wL69X1Ey
+         g1iS2w6YP1QxYZGNh09xvEStaFHYG5PwGIkbjFgiiXsqL0M4JiZP/FDgUVZeSotnL9j4
+         yH8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rojC4O0oCsktRJUTt9F3mKHBIJy66/QAZjlv2XNqG9M=;
+        b=d7PLsom75UZmyOixX/X9WmcJIhDJm9JNBDbd5ZalZRjzMy4xIQsGMJ4iPg/r6Gs5GQ
+         rrR6OTeABBNVqWCl8aCDJ839IUF43/eX2ToujUtRJFQAm1pPZA1GbwQWe+qRCJ4f/iiN
+         fwNplnD753tT0gMLwfjFZLwYIMu5NLfXPzHIVOjZDncN/VLYf0iz6C8pMaDyULhLRVl6
+         LNFimjRP3B1z7pAfcpVP8ydzBytZVLl/nHbqGb6EME260xJlVa/IJL/Bf2A7wyx3eFha
+         n59EXxkgHP27V1D5aFmMKzQNUhBJgaU8jx0odN3B2m/Uqsv+GDKfcRMU3LKZGblxN9HF
+         8VAw==
+X-Gm-Message-State: AOAM533jT/ZqISu+Y8nUuxErKyTtGifQAxWCfNQQT5gM8t16VxAJVQQA
+        4rFaJpiPdKExrvSMwxlO9tQ=
+X-Google-Smtp-Source: ABdhPJxv9ZcbTRlgi8DGVf8G6sra9zwdlN564fVZ2DoXBhOo1lHDm3G/xPoKlwGAhwI5NszdyV0u2w==
+X-Received: by 2002:a17:90a:c202:: with SMTP id e2mr2389462pjt.73.1614831926690;
+        Wed, 03 Mar 2021 20:25:26 -0800 (PST)
+Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
+        by smtp.gmail.com with ESMTPSA id gg22sm8141915pjb.20.2021.03.03.20.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 20:25:25 -0800 (PST)
+Date:   Thu, 4 Mar 2021 15:25:21 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v17 0/9] Free some vmemmap pages of
+ HugeTLB page
+Message-ID: <20210304042521.GA1223287@balbir-desktop>
+References: <20210225132130.26451-1-songmuchun@bytedance.com>
+ <e9ef3479-24f1-9304-ee0e-6f06fb457d50@gmail.com>
+ <CAMZfGtWeyo8+uWf7oB4ODqpyOw_--K+LdYeJDhdFj+ob0OaoeA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXCFcGooDspwiHB4NhVSYs569ewWXze8I/N
-        4uv6X8wW0zaKW1w41cBkcXnXHDaLe2v+s1pcOrCAyeJi4wFGizPTiiw2b5rKbPHmwj0Wix8b
-        HrM68Hp8b+1j8Vi85yWTx6ZVnWwemz5NYvd4d+4cu8eJGb9ZPF5c3cji8X7fVTaPzaerPT5v
-        kvM40fKFNYA7issmJTUnsyy1SN8ugSvjzbdepoLvIhUztr1nbmDcw9fFyMkhIWAicXfCO8Yu
-        Ri4OIYHpTBInbixjgnBeMkpMefCTCaSKRUBFor37IjOIzSagKrHr3ixWEFtEQE3i0uIHzCAN
-        zAKzWSVOTT4LViQs4CXx5f5aRhCbV8BKYkXnYrAGTgFriUudvewQG86wSmxdvxmsgV9ATKL3
-        yn8miJvsJdq2LIJqFpQ4OfMJC4jNLKAjcWLVMWYIW15i+9s5YLaQgKLE4SW/2CF6lSSOdM9g
-        g7BjJZbNe8U6gVF4FpJRs5CMmoVk1AJG5lWMLMW56UabGCExGLqDcUbTR71DjEwcjIcYJTiY
-        lUR4xV/aJgjxpiRWVqUW5ccXleakFh9ilOZgURLnnbrVJEFIID2xJDU7NbUgtQgmy8TBKdXA
-        FCW3eqVdQk1akQV/x5cF6yX3ihzbbPhv/sWXvz7b6OZ3HK3QcgsuZIg+/+624rpKb6dtcunb
-        VDZfPC68k/Wkuf7Phu4LRu/bJUNsWdncLLoOfTnw2fGhTgGLjKlUy7UT/Wd33l2p1DDjUglD
-        dnF+0L/q+X+mvg9q32ZWWnrQZMszMwtl+50m5wwFdl6IX5e55K7PxQefOJdxaFf0LXZc7M7C
-        w9irF1upkrBNoPmf9D4HF/ZH30LdfDUfTpiyVrj3jQWvR/eZp9Y+ruVd+hrd3/iv8UkF74jy
-        yd4TxVklffsDc6yDDQ+n2XIbka7GlQxfpntXd6XpXHN/mye2O+zTQ9bFNgsYL7/4+TNiq6QS
-        S3FGoqEWc1FxIgDh9yT2MAMAAA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtWeyo8+uWf7oB4ODqpyOw_--K+LdYeJDhdFj+ob0OaoeA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 10:16:53 +0800
-Aili Yao <yaoaili@kingsoft.com> wrote:
+On Thu, Mar 04, 2021 at 11:36:44AM +0800, Muchun Song wrote:
+> On Thu, Mar 4, 2021 at 11:14 AM Singh, Balbir <bsingharora@gmail.com> wrote:
+> >
+> > On 26/2/21 12:21 am, Muchun Song wrote:
+> > > Hi all,
+> > >
+> > > This patch series will free some vmemmap pages(struct page structures)
+> > > associated with each hugetlbpage when preallocated to save memory.
+> > >
+> > > In order to reduce the difficulty of the first version of code review.
+> > > From this version, we disable PMD/huge page mapping of vmemmap if this
+> > > feature was enabled. This accutualy eliminate a bunch of the complex code
+> > > doing page table manipulation. When this patch series is solid, we cam add
+> > > the code of vmemmap page table manipulation in the future.
+> > >
+> > > The struct page structures (page structs) are used to describe a physical
+> > > page frame. By default, there is a one-to-one mapping from a page frame to
+> > > it's corresponding page struct.
+> > >
+> > > The HugeTLB pages consist of multiple base page size pages and is supported
+> > > by many architectures. See hugetlbpage.rst in the Documentation directory
+> > > for more details. On the x86 architecture, HugeTLB pages of size 2MB and 1GB
+> > > are currently supported. Since the base page size on x86 is 4KB, a 2MB
+> > > HugeTLB page consists of 512 base pages and a 1GB HugeTLB page consists of
+> > > 4096 base pages. For each base page, there is a corresponding page struct.
+> > >
+> > > Within the HugeTLB subsystem, only the first 4 page structs are used to
+> > > contain unique information about a HugeTLB page. HUGETLB_CGROUP_MIN_ORDER
+> > > provides this upper limit. The only 'useful' information in the remaining
+> > > page structs is the compound_head field, and this field is the same for all
+> > > tail pages.
+> >
+> > The HUGETLB_CGROUP_MIN_ORDER is only when CGROUP_HUGETLB is enabled, but I guess
+> > that does not matter
+> 
+> Agree.
+> 
+> >
+> > >
+> > > By removing redundant page structs for HugeTLB pages, memory can returned to
+> > > the buddy allocator for other uses.
+> > >
+> > > When the system boot up, every 2M HugeTLB has 512 struct page structs which
+> > > size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+> > >
+> > >     HugeTLB                  struct pages(8 pages)         page frame(8 pages)
+> > >  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+> > >  |           |                     |     0     | -------------> |     0     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     1     | -------------> |     1     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     2     | -------------> |     2     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     3     | -------------> |     3     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     4     | -------------> |     4     |
+> > >  |    2MB    |                     +-----------+                +-----------+
+> > >  |           |                     |     5     | -------------> |     5     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     6     | -------------> |     6     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     7     | -------------> |     7     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |
+> > >  |           |
+> > >  |           |
+> > >  +-----------+
+> > >
+> > > The value of page->compound_head is the same for all tail pages. The first
+> > > page of page structs (page 0) associated with the HugeTLB page contains the 4
+> > > page structs necessary to describe the HugeTLB. The only use of the remaining
+> > > pages of page structs (page 1 to page 7) is to point to page->compound_head.
+> > > Therefore, we can remap pages 2 to 7 to page 1. Only 2 pages of page structs
+> > > will be used for each HugeTLB page. This will allow us to free the remaining
+> > > 6 pages to the buddy allocator.
+> >
+> > What is page 1 used for? page 0 carries the 4 struct pages needed, does compound_head
+> > need a full page? IOW, why do we need two full pages -- may be the patches have the
+> > answer to something I am missing?
+> 
+> Yeah. It really can free 7 pages. But we need some work to support this. Why?
+> 
+> Now for the 2MB HugeTLB page, we only free 6 vmemmap pages. we really can
+> free 7 vmemmap pages. In this case, we can see 8 of the 512 struct page
+> structures have been set PG_head flag. If we can adjust compound_head()
+> slightly and make compound_head() return the real head struct page when
+> the parameter is the tail struct page but with PG_head flag set.
+> 
+> In order to make the code evolution route clearer. This feature can be
+> a separate patch (and send it out) after this patchset is solid and applied.
+>
 
-> On Wed, 3 Mar 2021 15:41:35 +0000
-> "Luck, Tony" <tony.luck@intel.com> wrote:
+Makes sense!
+ 
+> >
+> > >
+> > > Here is how things look after remapping.
+> > >
+> > >     HugeTLB                  struct pages(8 pages)         page frame(8 pages)
+> > >  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+> > >  |           |                     |     0     | -------------> |     0     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     1     | -------------> |     1     |
+> > >  |           |                     +-----------+                +-----------+
+> > >  |           |                     |     2     | ----------------^ ^ ^ ^ ^ ^
+> > >  |           |                     +-----------+                   | | | | |
+> > >  |           |                     |     3     | ------------------+ | | | |
+> > >  |           |                     +-----------+                     | | | |
+> > >  |           |                     |     4     | --------------------+ | | |
+> > >  |    2MB    |                     +-----------+                       | | |
+> > >  |           |                     |     5     | ----------------------+ | |
+> > >  |           |                     +-----------+                         | |
+> > >  |           |                     |     6     | ------------------------+ |
+> > >  |           |                     +-----------+                           |
+> > >  |           |                     |     7     | --------------------------+
+> > >  |           |                     +-----------+
+> > >  |           |
+> > >  |           |
+> > >  |           |
+> > >  +-----------+
+> > >
+> > > When a HugeTLB is freed to the buddy system, we should allocate 6 pages for
+> > > vmemmap pages and restore the previous mapping relationship.
+> > >
+> >
+> > Can these 6 pages come from the hugeTLB page itself? When you say 6 pages,
+> > I presume you mean 6 pages of PAGE_SIZE
 > 
-> > > For error address with sigbus, i think this is not an issue resulted by the patch i post, before my patch, the issue is already there.
-> > > I don't find a realizable way to get the correct address for same reason --- we don't know whether the page mapping is there or not when
-> > > we got to kill_me_maybe(), in some case, we may get it, but there are a lot of parallel issue need to consider, and if failed we have to fallback
-> > > to the error brach again, remaining current code may be an easy option;    
-> > 
-> > My RFC patch from yesterday removes the uncertainty about whether the page is there or not. After it walks the page
-> > tables we know that the poison page isn't mapped (note that patch is RFC for a reason ... I'm 90% sure that it should
-> > do a bit more that just clear the PRESENT bit).
-> > 
-> > So perhaps memory_failure() has queued a SIGBUS for this task, if so, we take it when we return from kill_me_maybe()
+> There was a decent discussion about this in a previous version of the
+> series starting here:
+> 
+> https://lore.kernel.org/linux-mm/20210126092942.GA10602@linux/
+> 
+> In this thread various other options were suggested and discussed.
+>
 
-And when this happen, the process will receive an SIGBUS with AO level, is it proper as not an AR?
-
-> > If not, we will return to user mode and re-execute the failing instruction ... but because the page is unmapped we will take a #PF  
-> 
-> Got this, I have some error thoughts here.
-> 
-> 
-> > The x86 page fault handler will see that the page for this physical address is marked HWPOISON, and it will send the SIGBUS
-> > (just like it does if the page had been removed by an earlier UCNA/SRAO error).  
-> 
-> if your methods works, should it be like this?
-> 
-> 1582                         pteval = swp_entry_to_pte(make_hwpoison_entry(subpage));
-> 1583                         if (PageHuge(page)) {
-> 1584                                 hugetlb_count_sub(compound_nr(page), mm);
-> 1585                                 set_huge_swap_pte_at(mm, address,
-> 1586                                                      pvmw.pte, pteval,
-> 1587                                                      vma_mmu_pagesize(vma));
-> 1588                         } else {
-> 1589                                 dec_mm_counter(mm, mm_counter(page));
-> 1590                                 set_pte_at(mm, address, pvmw.pte, pteval);
-> 1591                         }
-> 
-> the page fault check if it's a poison page using is_hwpoison_entry(),
-> 
-
-And if it works, does we need some locking mechanism before we call walk_page_range();
-if we lock, does we need to process the blocking interrupted error as other places will do?
-
--- 
-Thanks!
-Aili Yao
+Thanks,
+Balbir Singh 
