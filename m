@@ -2,52 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B490132CE35
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C830132CE38
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236445AbhCDIOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:14:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236409AbhCDIOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:14:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 457E964EE8;
-        Thu,  4 Mar 2021 08:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614845643;
-        bh=qvGKQQ/3gs/95luBMqaV03qAu1GRU8xELCFiFKOQ8FM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gENbnEzFENFvBe0entO4I94ELoRrKDcJjAIBO+TFEET4yuN44RetcFa35FZjys9BN
-         cNB7Z9dfYBP8WujtjvenNmN+8u/4AyPm9qbnxffTFeLagFQi+0gRIySEG/4ADPekvo
-         cjajrlcunZT8h8k+bUBxjXg5/juCAHCMndVKBPGY=
-Date:   Thu, 4 Mar 2021 09:14:01 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 4.19 209/247] staging/mt7621-dma:
- mtk-hsdma.c->hsdma-mt7621.c
-Message-ID: <YECWyczIicq5Hl0X@kroah.com>
-References: <20210301161031.684018251@linuxfoundation.org>
- <20210301161041.907312533@linuxfoundation.org>
- <CALCv0x36mPwPwFpB8P6nc4kfu_PB=U81RoY9=q31Osx4sGtC3g@mail.gmail.com>
+        id S236487AbhCDIO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:14:58 -0500
+Received: from relay11.mail.gandi.net ([217.70.178.231]:53283 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236415AbhCDIOu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:14:50 -0500
+Received: from localhost (unknown [180.94.32.211])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 80912100004;
+        Thu,  4 Mar 2021 08:14:06 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 13:44:03 +0530
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     Eric Sunshine <sunshine@sunshineco.com>,
+        Git List <git@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Subject: Re: [ANNOUNCE] Git v2.31.0-rc1
+Message-ID: <20210304081403.vmtpxfi75jimxlmx@yadavpratyush.com>
+References: <xmqqr1kwk0h9.fsf@gitster.c.googlers.com>
+ <CAPig+cSC8uNfoAjDKdBNheod9_0-pCD-K_2kwt+J8USnoyQ7Aw@mail.gmail.com>
+ <xmqqmtvje993.fsf@gitster.c.googlers.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCv0x36mPwPwFpB8P6nc4kfu_PB=U81RoY9=q31Osx4sGtC3g@mail.gmail.com>
+In-Reply-To: <xmqqmtvje993.fsf@gitster.c.googlers.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 09:41:39AM -0800, Ilya Lipnitskiy wrote:
-> Sorry, I should have been more clear in my original email, but we
-> don't strictly need this in 4.19 as the check only became fatal in
-> 5.10 (actually, before 5.10, but 5.10 is the first stable release with
-> it). Feel free to take or omit this from 4.19.
+On 03/03/21 10:14PM, Junio C Hamano wrote:
+> Eric Sunshine <sunshine@sunshineco.com> writes:
+> 
+> > On Wed, Mar 3, 2021 at 7:23 PM Junio C Hamano <gitster@pobox.com> wrote:
+> >> Pratyush Yadav (1):
+> >>       git-gui: remove lines starting with the comment character
+> >
+> > Is there some way that this can be removed from v2.31.0 before final
+> > release? It badly breaks git-gui on macOS[1,2] to the point of making
+> > it unusable (Tcl throws errors at launch time and when trying to
+> > commit, and committing is 100% broken).
+> 
+> Thanks.
+> 
+> I could revert the merge with the problematic changes to git-gui,
+> i.e. 0917373 (Merge https://github.com/prati0100/git-gui,
+> 2021-03-01), but if possible, I'd rather merge a revert made on the
+> git-gui side.  If b1056f60 (Merge branch 'py/commit-comments',
+> 2021-02-22) is the tip of git-gui repository, and b9a43869 (git-gui:
+> remove lines starting with the comment character, 2021-02-03) is
+> what breaks, perhaps 
+> 
+>     $ git checkout b1056f60^2 &&
+>       git revert b9a43869 &&
+>       git checkout b1056f60 &&
+>       git merge @{-1}
+> 
+> would be what we want to have at the tip of git-gui until the
+> breakage gets sorted out.
+> 
+> Pratyush?
 
-I'll leave it in as having duplicate module names is not good no matter
-what kernel tree it is in.
+I will send a follow-up PR with the patch reverted. I'll then apply 
+Eric's patch to fix breakage on MacOS and let it simmer till the next 
+release. Let's not risk any breaking changes close to release.
 
-thanks for the review!
-
-greg k-h
+-- 
+Regards,
+Pratyush Yadav
