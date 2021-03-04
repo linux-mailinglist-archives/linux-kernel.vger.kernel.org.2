@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59D532CE91
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A181B32CE94
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235973AbhCDIeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
+        id S235983AbhCDIfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:35:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235815AbhCDIeO (ORCPT
+        with ESMTP id S235976AbhCDIfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:34:14 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2914C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 00:33:33 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id e9so6389627pjj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:33:33 -0800 (PST)
+        Thu, 4 Mar 2021 03:35:21 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2767DC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 00:34:41 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id t26so18462775pgv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:34:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vK6Lt8euuS8LNbKtC7Id3+j0iAnrBmyT5nqiNFGSlaI=;
-        b=Cqgg7gGsyU8uRWO/DFpkff6fKBYjCKzePX33EjsPDWkQYATWodr4lr+Z7r6wR6Nv+G
-         66hz3o85sJMvaSDz49GL5eGVMrxA3U5xpW4M/YpppFnNPtICfxd7Uy793TsnBW9FbpgC
-         AixIc3Bo37r+qkTat2Zql4RSENpQNjnjI0Gt3xadmpBJWgTmHGZkQP6n5bkcZGvTcu9h
-         0M/VUS7SoYH4dHsDroE0oEZWQvtDAVs6Nkggg4+hGqJEg3gjFE+pzTQD3lvz75qGFadB
-         B7iXDXSZEz5yLMUt0CGQyfSerPH7Wi3+Y5beRaBqRah5tS5hR7jN7vRyO2EHhRdmWss0
-         u+ww==
+        bh=cXzOr5VqG+rnasBiUZd59HK+G0nM0Guy74H/GlHyP1g=;
+        b=sFgke0U0UHnUmiR8mylnIke8SooEK7XC5l3kBLbvfDHsCun8G5vVrhkxB8UuQL0wHy
+         TLqdBl2Ex9u2Y3VZE571S8xEfxMLKGiIUrxlZ2QYlGHF6RKyTJfp1wJGKjYy+qjHQ3CS
+         93cltc+ajJq2U9D/RKrWWfOtGIst+r2Yqrt9s+4j5dl7jI2l1L8bwZ10o8OzTjxcY9LD
+         pCT5RmSAyGUCEk65tSDO9mfge3iMNIROkiKblmEQAttz9UI2APP+FHTRXUJAZkkORcMq
+         z9q580VuSHokVWmFXxub1kX3DSMOfy89ZXiMx0DqP4oFHZSEszAUXqaiioCh7O7Swnmk
+         g7rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vK6Lt8euuS8LNbKtC7Id3+j0iAnrBmyT5nqiNFGSlaI=;
-        b=GSqRwrX0zS7NDyzwwSLPoKKlKa8+BbpN15VUkEc/o0q80b4R2TtwbIrDYcg6XIWh3o
-         ewNlp0oKTRGOltS2/hW8OZ5shHXouYfBGt/Q2nUrydoHk5acNJ17Fl9jdGRPA2RvuaAP
-         NFJMCz7UD8/e4gOSw1feKCj7O81YJJOVUDoyEb/aBMb5tMSGstnUl3PgDCqnp9NURoi/
-         eF+ypfwWKFXMSHzagga2nKaOTY1lSS9vCr0RR8/6H31KGW9xqgyqbRzSTmdKrJ/TTx2F
-         hBbQ0NmiCeI8btO8KEfG19B0gk/lVr9m/phFrEk+DCkuxkYyANifYTCXbUJeg8/W4Gun
-         YabQ==
-X-Gm-Message-State: AOAM533RVPaB/R5GXy6QirIMsNd6JTtHK47W2QH09YEG7t3KuTmDTs8r
-        PLL28q6si4XjimXP05H85V41PRSvevQjrfq6ewJaY/0twmnz5w==
-X-Google-Smtp-Source: ABdhPJwpVyWNISZE9LFWgFblMnlxdc8ClJrcBBvyNsSqmUamMjZT8dfLQRdFlxwe8z7C8zdPbWrockdM0TsIzYTdkVk=
-X-Received: by 2002:a17:902:b697:b029:e5:d83e:3757 with SMTP id
- c23-20020a170902b697b02900e5d83e3757mr2779703pls.67.1614846813340; Thu, 04
- Mar 2021 00:33:33 -0800 (PST)
+        bh=cXzOr5VqG+rnasBiUZd59HK+G0nM0Guy74H/GlHyP1g=;
+        b=FP9rICrsVQPR6rbfoK9jFtzzIzKouFD7pI4g5ymrS6zsv0iREu0JfcTzeWfA8WkEs3
+         +H/2flpjZSG4Q4iZPDHsgd22X2xbdxmXWXnVQT3hONulNCcl2uRIQtJ4EgEnxUXeF7e/
+         DNesOkFZs6ZMiyJvbuXLZ7mwQMoOEEfsR/ik5DCmuYMwrvMJ6yES+YA21BtasYyM2qE8
+         FbuYlHjm4l7ZL7o4IWXMIsmpMPppfjVP/v7i8c9lDxdV8kK9HbvlpZtNEko8W+LmOnqQ
+         9tnw9fFko2CRJnc8/msNehH0ni6+IZNktHwruZugiKCU7nfLvW2VLLyQ4nQcmLU+Pi9E
+         XLRQ==
+X-Gm-Message-State: AOAM532ehsqA3AtEu3otc/0VpLZrLn7xjv6SgczF7N5iMIu70O2wUZr9
+        hASfb9UyGky2U6rZjI6nJfTmMydLw4/RmfxDKP56Iw==
+X-Google-Smtp-Source: ABdhPJwhvmrlKD8pgVXzFBFTr0MP9OaV3vaG4euZYV71BujM21czOEnZcoRceNXWTDDxUHc89tA4kYaYVGTyM82PijI=
+X-Received: by 2002:a63:511:: with SMTP id 17mr2712356pgf.173.1614846880646;
+ Thu, 04 Mar 2021 00:34:40 -0800 (PST)
 MIME-Version: 1.0
-References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org> <1614208985-20851-2-git-send-email-bbhatt@codeaurora.org>
-In-Reply-To: <1614208985-20851-2-git-send-email-bbhatt@codeaurora.org>
+References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org> <1614208985-20851-3-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <1614208985-20851-3-git-send-email-bbhatt@codeaurora.org>
 From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 4 Mar 2021 09:41:12 +0100
-Message-ID: <CAMZdPi98VBe5R=zVv+bXyi44N2gsDa1WiYQk5oYHnsxRTfDMYA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] bus: mhi: core: Destroy SBL devices when moving to
- mission mode
+Date:   Thu, 4 Mar 2021 09:42:19 +0100
+Message-ID: <CAMZdPi_8sxhzNs0SVf7ap-nmufmB5UuPrtYWcP4PK6wmj0FgJA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/4] bus: mhi: core: Download AMSS image from
+ appropriate function
 To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
 Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         linux-arm-msm <linux-arm-msm@vger.kernel.org>,
@@ -68,17 +67,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, 25 Feb 2021 at 00:23, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
 >
-> Currently, client devices are created in SBL or AMSS (mission
-> mode) and only destroyed after power down or SYS ERROR. When
-> moving between certain execution environments, such as from SBL
-> to AMSS, no clean-up is required. This presents an issue where
-> SBL-specific channels are left open and client drivers now run in
-> an execution environment where they cannot operate. Fix this by
-> expanding the mhi_destroy_device() to do an execution environment
-> specific clean-up if one is requested. Close the gap and destroy
-> devices in such scenarios that allow SBL client drivers to clean
-> up once device enters mission mode.
+> During full boot chain firmware download, the PM state worker
+> downloads the AMSS image after a blocking wait for the SBL
+> execution environment change when running in PBL transition
+> itself. Improve this design by having the host download the AMSS
+> image from the SBL transition of PM state worker thread when a
+> DEV_ST_TRANSITION_SBL is queued instead of the blocking wait.
 >
 > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
 Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
