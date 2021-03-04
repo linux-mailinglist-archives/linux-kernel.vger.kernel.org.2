@@ -2,213 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DC332D90B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C11CE32D8F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhCDRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:54:53 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6624 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239274AbhCDRpz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:45:55 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124HWkJk026321;
-        Thu, 4 Mar 2021 12:43:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=O2bpJMovIuAP9ZczXDaRB1F9vrADuLVM4xgG+5AK7CY=;
- b=Zcxc1UYp+R7Iv9MuHrZ/gTrqZliRTRzNJ4Y70G2bO5kEiQaic4UquwJpWwLUKs+dp+LQ
- hImDdWKuMJWgOJY8DC7A6XjkDMU0U2rr/Qw2uoFRkH0jZezJeFtdeTPG32G9D8yKPQCd
- /yxcTfSK3E3z86NFon6j0iJM3tNR9O23KyEryikLn9TBHYzKvLi9KMYh1FJNIylMuYPS
- ZbyshjrofgRmgLADQr12V/ytCe+lTEY3VjH0RNblNzzhQHQO4GEU9NmeBsHi4SQkG70u
- GcIAyZ8h5myZ6yGalussM5mPoL1KwQWdxw5UNG5EIYq6kcZ6IAf3pKJn5B2Wh9RU4EWO vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3733vn8ux6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 12:43:50 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 124HWm7s026717;
-        Thu, 4 Mar 2021 12:43:50 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3733vn8uww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 12:43:50 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124HclqU001274;
-        Thu, 4 Mar 2021 17:43:49 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04dal.us.ibm.com with ESMTP id 36ydq9tssu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 17:43:49 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124HhlF523986604
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Mar 2021 17:43:47 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DBDE66E062;
-        Thu,  4 Mar 2021 17:43:46 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D6B66E052;
-        Thu,  4 Mar 2021 17:43:45 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.150.254])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Mar 2021 17:43:45 +0000 (GMT)
-Subject: Re: [PATCH v3 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-References: <20210302204322.24441-1-akrowiak@linux.ibm.com>
- <20210302204322.24441-2-akrowiak@linux.ibm.com>
- <20210303162332.4d227dbe.pasic@linux.ibm.com>
- <14665bcf-2224-e313-43ff-357cadd177cf@linux.ibm.com>
- <20210303204706.0538e84f.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <8f5ab6fa-8fd3-27d8-8561-d03ff457df16@linux.ibm.com>
-Date:   Thu, 4 Mar 2021 12:43:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S240096AbhCDRrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 12:47:31 -0500
+Received: from mga03.intel.com ([134.134.136.65]:29565 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238885AbhCDRrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 12:47:16 -0500
+IronPort-SDR: X1zaUizYHujaNnDwhrb1aZT5qTgFJI1/epypBMovzeMCqkdtCx8bmefoKEFEiTDKythBVxKptS
+ eGbXFr5qAI+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="187517195"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="187517195"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 09:43:47 -0800
+IronPort-SDR: mAlWpKOZKEpvY0SmGMBDm5RRe6QJJdnh0KUxB8DpjbEG7MHIzGWbj1rly16CjcOejbx4bxe9LP
+ bGhX6pFCtY4w==
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="368260744"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 09:43:47 -0800
+Date:   Thu, 4 Mar 2021 09:46:03 -0800
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
+Message-ID: <20210304094603.4ab6c1c4@jacob-builder>
+In-Reply-To: <YECtMZNqSgh7jkGP@myrica>
+References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+        <YD+u3CXhwOi2LC+4@slm.duckdns.org>
+        <20210303131726.7a8cb169@jacob-builder>
+        <20210303160205.151d114e@jacob-builder>
+        <YECtMZNqSgh7jkGP@myrica>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210303204706.0538e84f.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-04_05:2021-03-03,2021-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- malwarescore=0 clxscore=1015 impostorscore=0 mlxlogscore=999 bulkscore=0
- phishscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103040082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jean-Philippe,
+
+On Thu, 4 Mar 2021 10:49:37 +0100, Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+
+> On Wed, Mar 03, 2021 at 04:02:05PM -0800, Jacob Pan wrote:
+> > Hi Jacob,
+> > 
+> > On Wed, 3 Mar 2021 13:17:26 -0800, Jacob Pan
+> > <jacob.jun.pan@linux.intel.com> wrote:
+> >   
+> > > Hi Tejun,
+> > > 
+> > > On Wed, 3 Mar 2021 10:44:28 -0500, Tejun Heo <tj@kernel.org> wrote:
+> > >   
+> > > > On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:    
+> > > > > IOASIDs are used to associate DMA requests with virtual address
+> > > > > spaces. They are a system-wide limited resource made available to
+> > > > > the userspace applications. Let it be VMs or user-space device
+> > > > > drivers.
+> > > > > 
+> > > > > This RFC patch introduces a cgroup controller to address the
+> > > > > following problems:
+> > > > > 1. Some user applications exhaust all the available IOASIDs thus
+> > > > > depriving others of the same host.
+> > > > > 2. System admins need to provision VMs based on their needs for
+> > > > > IOASIDs, e.g. the number of VMs with assigned devices that perform
+> > > > > DMA requests with PASID.      
+> > > > 
+> > > > Please take a look at the proposed misc controller:
+> > > > 
+> > > >  http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
+> > > > 
+> > > > Would that fit your bill?    
+> > > The interface definitely can be reused. But IOASID has a different
+> > > behavior in terms of migration and ownership checking. I guess SEV key
+> > > IDs are not tied to a process whereas IOASIDs are. Perhaps this can be
+> > > solved by adding
+> > > +	.can_attach	= ioasids_can_attach,
+> > > +	.cancel_attach	= ioasids_cancel_attach,
+> > > Let me give it a try and come back.
+> > >   
+> > While I am trying to fit the IOASIDs cgroup in to the misc cgroup
+> > proposal. I'd like to have a direction check on whether this idea of
+> > using cgroup for IOASID/PASID resource management is viable.  
+> 
+> Yes, even for host SVA it would be good to have a cgroup. Currently the
+> number of shared address spaces is naturally limited by number of
+> processes, which can be controlled with rlimit and cgroup. But on Arm the
+> hardware limit on shared address spaces is 64k (number of ASIDs), easily
+> exhausted with the default PASID and PID limits. So a cgroup for managing
+> this resource is more than welcome.
+> 
+> It looks like your current implementation is very dependent on
+> IOASID_SET_TYPE_MM?  I'll need to do more reading about cgroup to see how
+> easily it can be adapted to host SVA which uses IOASID_SET_TYPE_NULL.
+> 
+Right, I was assuming have three use cases of IOASIDs:
+1. host supervisor SVA (not a concern, just one init_mm to bind)
+2. host user SVA, either one IOASID per process or perhaps some private
+IOASID for private address space
+3. VM use for guest SVA, each IOASID is bound to a guest process
+
+My current cgroup proposal applies to #3 with IOASID_SET_TYPE_MM, which is
+allocated by the new /dev/ioasid interface.
+
+For #2, I was thinking you can limit the host process via PIDs cgroup? i.e.
+limit fork. So the host IOASIDs are currently allocated from the system pool
+with quota of chosen by iommu_sva_init() in my patch, 0 means unlimited use
+whatever is available. https://lkml.org/lkml/2021/2/28/18
 
 
-On 3/3/21 2:47 PM, Halil Pasic wrote:
-> On Wed, 3 Mar 2021 12:10:11 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> On 3/3/21 10:23 AM, Halil Pasic wrote:
->>> On Tue,  2 Mar 2021 15:43:22 -0500
->>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>>   
->>>> This patch fixes a lockdep splat introduced by commit f21916ec4826
->>>> ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated").
->>>> The lockdep splat only occurs when starting a Secure Execution guest.
->>>> Crypto virtualization (vfio_ap) is not yet supported for SE guests;
->>>> however, in order to avoid this problem when support becomes available,
->>>> this fix is being provided.
->>> [..]
->>>   
->>>> @@ -1038,14 +1116,28 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
->>>>    {
->>>>    	struct ap_matrix_mdev *m;
->>>>
->>>> -	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
->>>> -		if ((m != matrix_mdev) && (m->kvm == kvm))
->>>> -			return -EPERM;
->>>> -	}
->>>> +	if (kvm->arch.crypto.crycbd) {
->>>> +		matrix_mdev->kvm_busy = true;
->>>>
->>>> -	matrix_mdev->kvm = kvm;
->>>> -	kvm_get_kvm(kvm);
->>>> -	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
->>>> +		list_for_each_entry(m, &matrix_dev->mdev_list, node) {
->>>> +			if ((m != matrix_mdev) && (m->kvm == kvm)) {
->>>> +				wake_up_all(&matrix_mdev->wait_for_kvm);
->>> This ain't no good. kvm_busy will remain true if we take this exit. The
->>> wake_up_all() is not needed, because we hold the lock, so nobody can
->>> observe it if we don't forget kvm_busy set.
->>>
->>> I suggest moving matrix_mdev->kvm_busy = true; after this loop, maybe right
->>> before the unlock, and removing the wake_up_all().
->>>   
->>>> +				return -EPERM;
->>>> +			}
->>>> +		}
->>>> +
->>>> +		kvm_get_kvm(kvm);
->>>> +		mutex_unlock(&matrix_dev->lock);
->>>> +		kvm_arch_crypto_set_masks(kvm,
->>>> +					  matrix_mdev->matrix.apm,
->>>> +					  matrix_mdev->matrix.aqm,
->>>> +					  matrix_mdev->matrix.adm);
->>>> +		mutex_lock(&matrix_dev->lock);
->>>> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
->>>> +		matrix_mdev->kvm = kvm;
->>>> +		matrix_mdev->kvm_busy = false;
->>>> +		wake_up_all(&matrix_mdev->wait_for_kvm);
->>>> +	}
->>>>
->>>>    	return 0;
->>>>    }
->>> [..]
->>>   
->>>> @@ -1300,7 +1406,21 @@ static ssize_t vfio_ap_mdev_ioctl(struct mdev_device *mdev,
->>>>    		ret = vfio_ap_mdev_get_device_info(arg);
->>>>    		break;
->>>>    	case VFIO_DEVICE_RESET:
->>>> -		ret = vfio_ap_mdev_reset_queues(mdev);
->>>> +		matrix_mdev = mdev_get_drvdata(mdev);
->>>> +
->>>> +		/*
->>>> +		 * If the KVM pointer is in the process of being set, wait until
->>>> +		 * the process has completed.
->>>> +		 */
->>>> +		wait_event_cmd(matrix_mdev->wait_for_kvm,
->>>> +			       matrix_mdev->kvm_busy == false,
->>>> +			       mutex_unlock(&matrix_dev->lock),
->>>> +			       mutex_lock(&matrix_dev->lock));
->>>> +
->>>> +		if (matrix_mdev->kvm)
->>>> +			ret = vfio_ap_mdev_reset_queues(mdev);
->>>> +		else
->>>> +			ret = -ENODEV;
->>> I don't think rejecting the reset is a good idea. I have you a more detailed
->>> explanation of the list, where we initially discussed this question.
->>>
->>> How do you exect userspace to react to this -ENODEV?
->> After reading your more detailed explanation, I have come to the
->> conclusion that the test for matrix_mdev->kvm should not be
->> performed here and the the vfio_ap_mdev_reset_queues() function
->> should be called regardless. Each queue assigned to the mdev
->> that is also bound to the vfio_ap driver will get reset and its
->> IRQ resources cleaned up if they haven't already been and the
->> other required conditions are met (i.e., see
->> vfio_ap_mdev_free_irq_resources()).
-> My point is if !->kvm the other required conditions are not met. But
-> yes we can go back to unconditional vfio_ap_mdev_reset_queues(mdev),
-> and think about the necessity of performing a
-> vfio_ap_mdev_reset_queues() if !->kvm later as I proposed in the other
-> mail.
-
-The other conditions may or may not have been met depending
-upon whether ->kvm is NULL because the VFIO_DEVICE_RESET
-ioctl was invoked while the matrix_dev->lock was released
-in the vfio_ap_mdev_unset_kvm() function. If that was the case,
-then there is no need to clean up the IRQ resources because it
-will already have been done.
-
-On the other hand, if we don't have ->kvm because something broke,
-then we may be out of luck anyway. There will certainly be no
-way to unregister the GISC; however, it may still be possible
-to unpin the pages if we still have q->saved_pfn.
-
-The point is, if the queue is bound to vfio_ap, it can be reset. If we can't
-clean up the IRQ resources because something is broken, then there
-is nothing we can do about that.
+> Thanks,
+> Jean
 
 
->
-> Regards,
-> Halil
+Thanks,
 
+Jacob
