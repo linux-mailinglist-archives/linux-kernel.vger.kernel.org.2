@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B2432D465
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C475332D46C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241455AbhCDNmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:42:44 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:33947 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241435AbhCDNmQ (ORCPT
+        id S241482AbhCDNow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:44:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34093 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241491AbhCDNob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:42:16 -0500
-Received: by mail-ot1-f51.google.com with SMTP id h10so16586563otm.1;
-        Thu, 04 Mar 2021 05:42:00 -0800 (PST)
+        Thu, 4 Mar 2021 08:44:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614865386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P6jU/+yi/gu3OyKqfKyKelNq/M1F72u6d5gyrBV0tQk=;
+        b=X5OE87kB1sg5y8U0K0n7pUD23j23keMT4SHy+eC4ENgU3TO+NKFjU5Pjz0wvPnTbX/Sd8J
+        a9v7+ylzmUWI1xs/pc6jKfVml58qRC2a6no2IJnLY5gbub+A3yfdFL4kH9oSz8Gb2n9xDs
+        2Hc5a0vm4JGmrP5+ZsuWUg1IoYPoAp4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-ajWLjgjPM8qavEGeq_TVYQ-1; Thu, 04 Mar 2021 08:43:03 -0500
+X-MC-Unique: ajWLjgjPM8qavEGeq_TVYQ-1
+Received: by mail-ed1-f70.google.com with SMTP id i6so7667554edq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:43:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=adr2A02C2ODe/GaRHmNeDmesx1atf5kI628+vx2QNc8=;
-        b=iMORlcUzsARoighOCNzGW5kOTDFZYb7xB7Iio4Ep9J785RHZR/47trW/7L2gdTYYEy
-         AYzFQP24HK4Hx7oH+3hZYla3GU9mYIfrWgpbiAkvONNTf/5TlQcZSZL9fZi1wzOoCzPx
-         GscIhH5nrHcTihUrM0I/XqSls9BmFyU+duJfshT5M7hYhIpDBSOZLrYjIA0VuEOPt7Pd
-         MjOCfn1m+jEyNJx/LPRvl5E3e9f+K5EhLowHIkKDFt7vGJKPi39P8vea4Q9GM/ceguWu
-         +FLfu1PluX9a43hq9Va+xGvPMMkDHqik48mTvIdizCofGFXfQMRevQLSC4K84VUmK/Rs
-         HpTA==
-X-Gm-Message-State: AOAM532+kquAB9+ww1wgG8ViZUkgnUdQR/r1mh7VCTgGV6JJsPbt0+nW
-        AU1CpcXbtBNyfbhCO0C/aGa4UGfMCU1C2qQI8Wg=
-X-Google-Smtp-Source: ABdhPJzCEF2ArS3PqCCa18MbS8XtkgKjz5QmaIw6cP6KDzoL/C7t/bm9s4LxiIJSjxuMcKyQC8kHbSGAoPdTRkyXPoI=
-X-Received: by 2002:a9d:4d17:: with SMTP id n23mr3027661otf.321.1614865295136;
- Thu, 04 Mar 2021 05:41:35 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P6jU/+yi/gu3OyKqfKyKelNq/M1F72u6d5gyrBV0tQk=;
+        b=tXZFI6HEt8Chgb6tIFC6w+E6HwCHUpglYiEoDwzF33aoJEmNGB/amwGWN52Iik4wP6
+         iocNpcb/NBIIT42O0tMuoI26T3RUijiXlz9K+M40wjl9KxKPOOLVgNWXa8i/LxYtRQOD
+         M7escNURFI3sjGeM2bTm35vaGdR3VUGlDWFNtJRfj686irZsNJ3ZTAPL56OeHjxFUxd9
+         jnehODbbm/V8jcKyuMQR51mxXb9hTeebl8APrlTUdfX+hr77g+yxBkGIjkorutUWFOOb
+         qmwiQsWHsemLrqGLh33A5I1C5Ldp2RwtVkW5cLdcnG0xYQ8f9jNIipwrvqwtL4megHwJ
+         UiTg==
+X-Gm-Message-State: AOAM531ooGMYY7hGBegmPxupxUmsncyWDBMDSl3NQSf6K2jb0JAvvz01
+        nX6K7uddAsRKyn+G+fTgK9nXAGe2Expa5wxXL7ohbrKLrY0uLNHrOt5RGQsNKmjfe1Q3lKGPPcG
+        RU467gIBi3JyTuZ9Wp5wCTtUWra4gn4WTZKGsZWEjA+eziqB9i2MNzAetCqadITYpLUa2+lIJo/
+        iy
+X-Received: by 2002:a17:906:e116:: with SMTP id gj22mr4189039ejb.398.1614865382428;
+        Thu, 04 Mar 2021 05:43:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxbu02THzqMMzc7eoXDwlkDR2xZFT4tZXRpBbfiihYAqMjd7SGEXM9lhm+I7/clbghLxThcNw==
+X-Received: by 2002:a17:906:e116:: with SMTP id gj22mr4189018ejb.398.1614865382225;
+        Thu, 04 Mar 2021 05:43:02 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id h2sm22162425ejk.32.2021.03.04.05.43.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 05:43:01 -0800 (PST)
+Subject: Re: [PATCH] platform/x86: intel-hid: Support Lenovo ThinkPad X1
+ Tablet Gen 2
+To:     Alban Bedel <albeu@free.fr>, Alex Hung <alex.hung@canonical.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210222141559.3775-1-albeu@free.fr>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <5fd625f4-eb41-b057-fab3-6e53be404dc3@redhat.com>
+Date:   Thu, 4 Mar 2021 14:43:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
- <20210302153451.50593-4-andriy.shevchenko@linux.intel.com>
- <CACRpkdYjs7y=YMoQmFc2iXoMEtSAk7S+zYsz1Y=yPYw=97T+Nw@mail.gmail.com>
- <YD9YTGnFbmcnJKsR@smile.fi.intel.com> <CACRpkdYEd+zv36Ghet2WxNavV=1-RkR06c3OxBEoxCqXoAY3Zg@mail.gmail.com>
- <YEDROJcQLDlYkatS@smile.fi.intel.com>
-In-Reply-To: <YEDROJcQLDlYkatS@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Mar 2021 14:41:24 +0100
-Message-ID: <CAJZ5v0jdF7Ro47kbWh2Hz1HH0781pv==OTNAxzkJWuEzbJyMew@mail.gmail.com>
-Subject: Re: [PATCH v1 4/4] gpiolib: Reuse device's fwnode to create IRQ domain
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210222141559.3775-1-albeu@free.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 1:25 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Mar 04, 2021 at 09:06:08AM +0100, Linus Walleij wrote:
-> > On Wed, Mar 3, 2021 at 10:35 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Wed, Mar 03, 2021 at 10:22:02AM +0100, Linus Walleij wrote:
-> >
-> > > > But this:
-> > > >
-> > > > > @@ -1504,15 +1497,14 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
-> > > > >                         return ret;
-> > > > >         } else {
-> > > > >                 /* Some drivers provide custom irqdomain ops */
-> > > > > -               if (gc->irq.domain_ops)
-> > > > > -                       ops = gc->irq.domain_ops;
-> > > > > -
-> > > > > -               if (!ops)
-> > > > > -                       ops = &gpiochip_domain_ops;
-> > > > > -               gc->irq.domain = irq_domain_add_simple(np,
-> > > > > -                       gc->ngpio,
-> > > > > -                       gc->irq.first,
-> > > > > -                       ops, gc);
-> > > > > +               ops = gc->irq.domain_ops ?: &gpiochip_domain_ops;
-> > > > > +               if (gc->irq.first)
-> > > > > +                       gc->irq.domain = irq_domain_create_legacy(fwnode, gc->ngpio,
-> > > > > +                                                                 gc->irq.first, 0,
-> > > > > +                                                                 ops, gc);
-> > > > > +               else
-> > > > > +                       gc->irq.domain = irq_domain_create_linear(fwnode, gc->ngpio,
-> > > > > +                                                                 ops, gc);
-> > > >
-> > > > This looks like a refactoring and reimplementation of irq_domain_add_simple()?
-> > >
-> > > If you named it as irq_domain_create_simple(), then yes, but the problem is
-> > > that we don't have irq_domain_create_simple() API right now.
-> > >
-> > > > Why, and should it rather be a separate patch?
-> > >
-> > > Nope.
-> >
-> > OK I looked closer at irq_domain_add_simple(), and what it does different
-> > is to call irq_alloc_descs() for all lines if using sparse IRQs and then
-> > associate them. irq_domain_create_linear|legacy() does not allocate IRQ
-> > descriptors because it assumes something like DT or ACPI will do that
-> > on-demand when drivers request IRQs.
-> >
-> > This may be dangerous because some old platforms do not resolve IRQs
-> > at runtime and you will get NULL pointer exceptions.
-> >
-> > We then need to make sure all callers do what is done in e.g.
-> > drivers/gpio/gpio-omap.c in the #ifdef CONFIG_ARCH_OMAP1 clause:
-> > they need to be augmented to call irq_alloc_descs() explicitly,
-> > and I don't think all of them do it as nicely for us as OMAP1.
-> >
-> > I might be overly cautious though, however that is why this code
-> > uses irq_domain_add_simple(), came in commit
-> > commit 2854d167cc545d0642277bf8b77f972a91146fc6
->
-> Ah, thanks! I was puzzled how and why the approach above had been extended like
-> now. This explains it. Okay, I will introduce irq_domain_create_simple().
+Hi,
 
-OK
+On 2/22/21 3:15 PM, Alban Bedel wrote:
+> Like a few other system the Lenovo ThinkPad X1 Tablet Gen 2 miss the
+> HEBC method, which prevent the power button from working. Add a quirk
+> to enable the button array on this system family and fix the power
+> button.
+> 
+> Signed-off-by: Alban Bedel <albeu@free.fr>
 
-So please resend the series with that done and with the R-bys from
-Linus added.  I'll apply it from Patchwork.
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Thanks!
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+> ---
+>  drivers/platform/x86/intel-hid.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
+> index 2f5b8d09143e..57cc92891a57 100644
+> --- a/drivers/platform/x86/intel-hid.c
+> +++ b/drivers/platform/x86/intel-hid.c
+> @@ -90,6 +90,13 @@ static const struct dmi_system_id button_array_table[] = {
+>  			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x2 Detachable"),
+>  		},
+>  	},
+> +	{
+> +		.ident = "Lenovo ThinkPad X1 Tablet Gen 2",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "ThinkPad X1 Tablet Gen 2"),
+> +		},
+> +	},
+>  	{ }
+>  };
+>  
+> 
+
