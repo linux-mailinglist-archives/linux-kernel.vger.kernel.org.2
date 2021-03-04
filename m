@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5E132DA2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515DD32DA32
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:16:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbhCDTN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:13:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233928AbhCDTNn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:13:43 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269A8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:13:03 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id y12so21826526ljj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:13:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3VGWnxMaYg51SC+CxXKHH3eAPL9wuuzDkZF08z83fw8=;
-        b=YjEV8ZKjqX5sDh5Hyzb1VXQwrKtsCFgC3DUoJnWlSMmU+/Ymq5zQZGQvCpBUGj6XAF
-         cKGiYfDOxUHayg993eCDtsDljJANZOJzsD1f4SbxY7aEqrunpDihnbvQL719yQnZ2XPe
-         Pb3HPXMnMRstiN8DRtWeiWiENVa48hs7Ibo8g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3VGWnxMaYg51SC+CxXKHH3eAPL9wuuzDkZF08z83fw8=;
-        b=MDK9uCmlAP7ARjkmj/NrNHLZfyIbn6P9sLQtxfQrEaMXGIOYughNmEcby2ORZBLfF6
-         rA26BXA81o+776uJ4G2aznxTB9PtnBkqAtVWnrsCOjjzlNYp6VLmYp+V46DYprRfVQ1I
-         viUjy59vG4ZMKiY5MEwT5mTH1mhu+RQZuiVrXzee1J8lohRAmJH/GV0MsRJS269L3Z9L
-         qjkM+/ZcWCe+5gHG3qlYvZ/cn6oM2WvSfesJaFaDpvPDynKB46mZmpgh0SBwBxIIN4TW
-         A3/0llPFw10pmuEGoORYjdzPiinNzHqsw5/acsL9IM7DFWvkaxUEdTF+2OPYywLrzxAe
-         pNdQ==
-X-Gm-Message-State: AOAM531HWFr3KbdbPrTDBp7J2CUHYIDfJq/I2aM5mzMjxoP2VOjl7/IB
-        zw/diwrMT6p51iD4v51BEhP9IrKfP1dc+g==
-X-Google-Smtp-Source: ABdhPJxczFYBdldUHlqceP0Z9LWfGLoQ9MTx3kui84SKomDn60OZ5bClBP5zNlEGU6ZGOO7zOfUEkg==
-X-Received: by 2002:a2e:9047:: with SMTP id n7mr3104037ljg.291.1614885181368;
-        Thu, 04 Mar 2021 11:13:01 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id x26sm31101lfe.16.2021.03.04.11.12.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 11:13:01 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id n16so28144583lfb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:12:59 -0800 (PST)
-X-Received: by 2002:ac2:41d5:: with SMTP id d21mr2980850lfi.487.1614885178880;
- Thu, 04 Mar 2021 11:12:58 -0800 (PST)
+        id S233365AbhCDTQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:16:04 -0500
+Received: from gecko.sbs.de ([194.138.37.40]:46849 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230472AbhCDTP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 14:15:56 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 124JEm13026341
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 20:14:48 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.11.66])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 124JElDY004306;
+        Thu, 4 Mar 2021 20:14:47 +0100
+Date:   Thu, 4 Mar 2021 20:14:46 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH 0/4] add device drivers for Siemens Industrial PCs
+Message-ID: <20210304201446.6989f2a4@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VeYN_q0OVoTGQ5fe-08exfGgpM3-ohG8iF4D8B_fKar=g@mail.gmail.com>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+        <CAHp75VeYN_q0OVoTGQ5fe-08exfGgpM3-ohG8iF4D8B_fKar=g@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210302232649.y2tutffhxsblwqlb@treble> <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
- <20210303191516.6ksxmng4pis7ue4p@treble> <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
- <20210303193806.oovupl4ubtkkyiih@treble> <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
- <20210303202406.bxgdx5a25j6wc43b@treble> <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
- <20210303214534.guyoxcwrgxgcqzy4@treble> <CAK7LNAQaAgg+mVSw_U3_FuuqcqJNnonyhVD1M-ezv71Y+dyAww@mail.gmail.com>
- <20210304150812.rzya7ewmerwhe4m4@treble> <CAK7LNAR0kNJ=DLuvRzRG+-rgMfcrSOZu8Mn6JBJ5do7TzJWLcA@mail.gmail.com>
-In-Reply-To: <CAK7LNAR0kNJ=DLuvRzRG+-rgMfcrSOZu8Mn6JBJ5do7TzJWLcA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 4 Mar 2021 11:12:42 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiT3FGuKuqLniBN2T_PZwD0GH4kf3XNCzq2tfChqn0+SQ@mail.gmail.com>
-Message-ID: <CAHk-=wiT3FGuKuqLniBN2T_PZwD0GH4kf3XNCzq2tfChqn0+SQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 7:36 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> All the kernel-space objects are rebuilt
-> when the compiler is upgraded.
+Thanks Andy,
 
-I very much NAK'ed that one. Why did that go in?
+Am Thu, 4 Mar 2021 12:19:44 +0200
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-Or maybe I NAK'ed another version of it (I think the one I NAK'ed was
-from Josh), and didn't realize that there were multiple ones.
+> On Thu, Mar 4, 2021 at 9:29 AM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> 
+> > This series adds support for watchdogs and leds of several x86
+> > devices from Siemens.
+> >
+> > It is structured with a platform driver that mainly does
+> > identification of the machines. It might trigger loading of the
+> > actual device drivers by attaching devices to the platform bus.
+> >
+> > The identification is vendor specific, parsing a special binary DMI
+> > entry. The implementation of that platform identification is
+> > applied on pmc_atom clock quirks in the final patch.
+> >
+> > It is all structured in a way that we can easily add more devices
+> > and more platform drivers later. Internally we have some more code
+> > for hardware monitoring, more leds, watchdogs etc. This will follow
+> > some day.
+> >
+> > But the idea here is to share early, and hopefully not fail early.  
+> 
+> I have given a few comments here and there, so please check the entire
+> series and address them in _all_ similar locations. As I have noticed,
+> I have different approach about P2SB code, I have to give the series a
+> dust and see if you can utilize it.
 
-> Linus complaint about GCC plugins not being rebuilt.
+You did find some things that others found as well. SPDX vs blabla,
+header ordering, some other style.
+Some things are already done and will be in v2.
 
-Yes, and that was a separate complaint and not at all tied to the other objects.
+Other findings are new, and we will look into them. The only thing that
+did stick out is P2SB, also was a point in internal pre-review.
+Let us see what you have, i can include a patch of yours into the q.
+But i am kind of afraid once it is there, several existing users should
+be touched with it, and this series would come later. Or this series
+comes first and you come later and clean up our "mess". Not sure i
+would want to take over all P2SB unhiders, but with you on board it
+will work.
 
-Gcc plugins aren't kernel object files at all. They are very much like
-dynamically loadable libraries to gcc itself.
+> I would like to be Cc'ed on the next version.
 
-               Linus
+Sure thing.
+
+regards,
+Henning
+
+
+> 
+
