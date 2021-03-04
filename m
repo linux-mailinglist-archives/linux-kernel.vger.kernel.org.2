@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639BD32D370
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BCA32D386
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhCDMoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:44:05 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52504 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbhCDMn6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:43:58 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2BFAA1C0B87; Thu,  4 Mar 2021 13:43:15 +0100 (CET)
-Date:   Thu, 4 Mar 2021 13:43:14 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: A note on the 5.12-rc1 tag
-Message-ID: <20210304124314.GA9979@duo.ucw.cz>
-References: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
+        id S231345AbhCDMrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:47:47 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:52003 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231294AbhCDMrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 07:47:16 -0500
+Received: from localhost.localdomain (ip5f5aed34.dynamic.kabel-deutschland.de [95.90.237.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2E1AB20647918;
+        Thu,  4 Mar 2021 13:46:34 +0100 (CET)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Eric Biederman <ebiederm@xmission.com>
+Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Guohan Lu <lguohan@gmail.com>,
+        Joe LeVeque <jolevequ@microsoft.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: [PATCH] kexec: Add kexec reboot string
+Date:   Thu,  4 Mar 2021 13:46:26 +0100
+Message-Id: <20210304124626.13927-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Joe LeVeque <jolevequ@microsoft.com>
 
---EVF5PPMfhYS0aIcm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The purpose is to notify the kernel module for fast reboot.
 
-Hi!
+Upstream a patch from the SONiC network operating system [1].
 
-> Hey peeps - some of you may have already noticed that in my public git
-> tree, the "v5.12-rc1" tag has magically been renamed to
-> "v5.12-rc1-dontuse". It's still the same object, it still says
-> "v5.12-rc1" internally, and it is still is signed by me, but the
-> user-visible name of the tag has changed.
->=20
-> The reason is fairly straightforward: this merge window, we had a very
-> innocuous code cleanup and simplification that raised no red flags at
-> all, but had a subtle and very nasty bug in it: swap files stopped
-> working right.  And they stopped working in a particularly bad way:
-> the offset of the start of the swap file was lost.
->=20
-> Swapping still happened, but it happened to the wrong part of the
-> filesystem, with the obvious catastrophic end results.
+[1]: https://github.com/Azure/sonic-linux-kernel/pull/46
 
-Fun :-(.
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+ kernel/kexec_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> One additional reason for this note is that I want to not just warn
-> people to not run this if you have a swapfile - even if you are
-> personally not impacted (like I am, and probably most people are -
-> swap partitions all around) - I want to make sure that nobody starts
-> new topic branches using that 5.12-rc1 tag. I know a few developers
-> tend to go "Ok, rc1 is out, I got all my development work into this
-> merge window, I will now fast-forward to rc1 and use that as a base
-> for the next release". Don't do it this time. It may work perfectly
-> well for you because you have the common partition setup, but it can
-> end up being a horrible base for anybody else that might end up
-> bisecting into that area.
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index a0b6780740c8..f04d04d1b855 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -1165,7 +1165,7 @@ int kernel_kexec(void)
+ #endif
+ 	{
+ 		kexec_in_progress = true;
+-		kernel_restart_prepare(NULL);
++		kernel_restart_prepare("kexec reboot");
+ 		migrate_to_reboot_cpu();
+ 
+ 		/*
+-- 
+2.30.1
 
-Would it make sense to do a -rc2, now, so new topic branches can be
-started on that one?
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---EVF5PPMfhYS0aIcm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEDV4gAKCRAw5/Bqldv6
-8nTqAKCDoqcnnX2pETJIK3lSxsFt1rzDRACcCT8RzKKz/hPm21N+/SdbLff1HyY=
-=yeY7
------END PGP SIGNATURE-----
-
---EVF5PPMfhYS0aIcm--
