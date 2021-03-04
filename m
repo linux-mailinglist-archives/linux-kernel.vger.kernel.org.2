@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FA032CB8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A6932CB79
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbhCDEnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:43:35 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36590 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233698AbhCDEnO (ORCPT
+        id S233634AbhCDEm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:42:59 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47100 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233557AbhCDEm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:43:14 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244fV4P101783;
-        Wed, 3 Mar 2021 22:41:31 -0600
+        Wed, 3 Mar 2021 23:42:29 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244fYKo052726;
+        Wed, 3 Mar 2021 22:41:34 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614832891;
-        bh=g5+aTTWp+7oIxei7wR77xO2oMY4/n+0nCu4fMGvEBw8=;
-        h=From:To:CC:Subject:Date;
-        b=FQtiF9PcP5I4NoL7GyvHRFGe9OG7oibRzQzVwOKXccdrsQ367Z35/HUaH1kpssmoq
-         2CenFGGkIiSjuonj6N1k4mTXRhRyPwY5zv0f+a21pWUI7AhzuaovIzw+JZSlaF2P12
-         mLlKtQiMBlNllBAqy+tXGMukq+uw1MaYYwm1XUJA=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244fUds067894
+        s=ti-com-17Q1; t=1614832894;
+        bh=HHTvmMjtTJRPNFpN3zkcx0PIiGXY1RMP1eK0a1ouBO4=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Q+sF68pnb33I4wcR61zZ5mYu/WLg39P07W8zX0Yr1c6t9R9yPkJ3grgvX5MmuCZ3r
+         JOsLBFUk2iBjCO33hkqPatG1XYBNdHpLkbiBJkV36z0kl4pchSrqY9h3Q9JIQKZ2vo
+         nyjgnz3mpktfy7O8sTP/p/5J3z0gSBmOunWVyYVY=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244fY9e087940
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 3 Mar 2021 22:41:31 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 3 Mar 2021 22:41:34 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
- 2021 22:41:30 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ 2021 22:41:34 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 3 Mar 2021 22:41:30 -0600
+ Frontend Transport; Wed, 3 Mar 2021 22:41:34 -0600
 Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244fQfh042911;
-        Wed, 3 Mar 2021 22:41:27 -0600
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244fQfi042911;
+        Wed, 3 Mar 2021 22:41:31 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -44,11 +44,13 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Swapnil Jakhade <sjakhade@cadence.com>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v4 00/13] PHY: Add support in Sierra to use external clock
-Date:   Thu, 4 Mar 2021 10:11:09 +0530
-Message-ID: <20210304044122.15166-1-kishon@ti.com>
+        Lokesh Vutla <lokeshvutla@ti.com>, <stable@vger.kernel.org>
+Subject: [PATCH v4 01/13] phy: cadence: Sierra: Fix PHY power_on sequence
+Date:   Thu, 4 Mar 2021 10:11:10 +0530
+Message-ID: <20210304044122.15166-2-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210304044122.15166-1-kishon@ti.com>
+References: <20210304044122.15166-1-kishon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -56,76 +58,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch series adds support in Sierra driver to use external clock.
+Commit 44d30d622821d ("phy: cadence: Add driver for Sierra PHY")
+de-asserts PHY_RESET even before the configurations are loaded in
+phy_init(). However PHY_RESET should be de-asserted only after
+all the configurations has been initialized, instead of de-asserting
+in probe. Fix it here.
 
-v1 of the patch series can be found @ [1]
-v2 of the patch series can be found @ [2]
-v3 of the patch series can be found @ [3]
+Fixes: 44d30d622821d ("phy: cadence: Add driver for Sierra PHY")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: <stable@vger.kernel.org> # v5.4+
+---
+ drivers/phy/cadence/phy-cadence-sierra.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Changes from v3:
-1) Instead of adding separate subnodes for each clock, just add
-#clock-cells in Sierra SERDES nodes and model the clocks. This is
-in alignment with Rob's comment for a different series [4]
-2) Removed device tree changes from the series.
-
-Changes from v2:
-1) Add depends on COMMON_CLK in Sierra
-2) Add modelling PLL_CMNLC and PLL_CMNLC1 as clocks into a separate
-patch
-3) Disable clocks in Sierra driver remove
-
-Changes from v1:
-1) Remove the part that prevents configuration if the SERDES is already
-   configured and focus only on using external clock and the associated
-   cleanups
-2) Change patch ordering
-3) Use exclusive reset control APIs
-4) Fix error handling code
-5) Include DT patches in this series (I can send this separately to DT
-MAINTAINER once the driver patches are merged)
-
-[1] -> http://lore.kernel.org/r/20201103035556.21260-1-kishon@ti.com
-[2] -> http://lore.kernel.org/r/20201222070520.28132-1-kishon@ti.com
-[3] -> http://lore.kernel.org/r/20201224111627.32590-1-kishon@ti.com
-[4] -> http://lore.kernel.org/r/20210108025943.GA1790601@robh.at.kernel.org
-
-Kishon Vijay Abraham I (13):
-  phy: cadence: Sierra: Fix PHY power_on sequence
-  phy: ti: j721e-wiz: Invoke wiz_init() before
-    of_platform_device_create()
-  phy: cadence: cadence-sierra: Create PHY only for "phy" or "link"
-    sub-nodes
-  phy: ti: j721e-wiz: Get PHY properties only for "phy" or "link"
-    subnode
-  phy: cadence: cadence-sierra: Move all clk_get_*() to a separate
-    function
-  phy: cadence: cadence-sierra: Move all reset_control_get*() to a
-    separate function
-  phy: cadence: cadence-sierra: Explicitly request exclusive reset
-    control
-  phy: cadence-torrent: Use a common header file for Cadence SERDES
-  phy: cadence: cadence-sierra: Add array of input clocks in "struct
-    cdns_sierra_phy"
-  phy: cadence: cadence-sierra: Add missing clk_disable_unprepare() in
-    .remove callback
-  dt-bindings: phy: phy-cadence-sierra: Add binding to model Sierra as
-    clock provider
-  phy: cadence: phy-cadence-sierra: Model PLL_CMNLC and PLL_CMNLC1 as
-    clocks (mux clocks)
-  phy: cadence: phy-cadence-sierra: Enable pll_cmnlc and pll_cmnlc1
-    clocks
-
- .../bindings/phy/phy-cadence-sierra.yaml      |  17 +-
- drivers/phy/cadence/Kconfig                   |   1 +
- drivers/phy/cadence/phy-cadence-sierra.c      | 419 ++++++++++++++++--
- drivers/phy/cadence/phy-cadence-torrent.c     |   2 +-
- drivers/phy/ti/phy-j721e-wiz.c                |  21 +-
- include/dt-bindings/phy/phy-cadence-torrent.h |  15 -
- include/dt-bindings/phy/phy-cadence.h         |  20 +
- 7 files changed, 428 insertions(+), 67 deletions(-)
- delete mode 100644 include/dt-bindings/phy/phy-cadence-torrent.h
- create mode 100644 include/dt-bindings/phy/phy-cadence.h
-
+diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
+index 26a0badabe38..19f32ae877b9 100644
+--- a/drivers/phy/cadence/phy-cadence-sierra.c
++++ b/drivers/phy/cadence/phy-cadence-sierra.c
+@@ -319,6 +319,12 @@ static int cdns_sierra_phy_on(struct phy *gphy)
+ 	u32 val;
+ 	int ret;
+ 
++	ret = reset_control_deassert(sp->phy_rst);
++	if (ret) {
++		dev_err(dev, "Failed to take the PHY out of reset\n");
++		return ret;
++	}
++
+ 	/* Take the PHY lane group out of reset */
+ 	ret = reset_control_deassert(ins->lnk_rst);
+ 	if (ret) {
+@@ -616,7 +622,6 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(dev);
+ 	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+-	reset_control_deassert(sp->phy_rst);
+ 	return PTR_ERR_OR_ZERO(phy_provider);
+ 
+ put_child:
 -- 
 2.17.1
 
