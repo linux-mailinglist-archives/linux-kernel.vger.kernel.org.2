@@ -2,145 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C5832D3C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E959132D3C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhCDM7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:59:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54584 "EHLO mx2.suse.de"
+        id S240434AbhCDNBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:01:07 -0500
+Received: from mga04.intel.com ([192.55.52.120]:11881 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234267AbhCDM6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:58:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614862681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YPoEl0/ZdIZ5t+vbQ1ZaJR9fgonDCSo8hg3leKsMxqY=;
-        b=pj0foXFEm1W7tfnc6IOXp8mMr1OSC0buLLlE8AjgzXJjd/dz+1fh3V9tbZmfojiSyfzbCD
-        scCwXndV3eRqXmmAl9HGBU4zFGOB7b2Zx+uKeY9r41Yj+v0X1sU62D1uPeuXmkeHEM+b3t
-        TfxbqoXL1w4vqUaHJGvv9MQHgpiHxjo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 21BC8AD57;
-        Thu,  4 Mar 2021 12:58:01 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 13:57:55 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Andi leen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
- MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
-Message-ID: <YEDZU0lYVxntQ/rt@dhcp22.suse.cz>
-References: <YD91jTMssJUCupJm@dhcp22.suse.cz>
- <20210303120717.GA16736@shbuild999.sh.intel.com>
- <20210303121833.GB16736@shbuild999.sh.intel.com>
- <YD+BvvM/388AVnmm@dhcp22.suse.cz>
- <20210303131832.GB78458@shbuild999.sh.intel.com>
- <20210303134644.GC78458@shbuild999.sh.intel.com>
- <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
- <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
- <YD/D9hckPOA+41+D@dhcp22.suse.cz>
- <20210303172250.wbp47skyuf6r37wi@intel.com>
+        id S239330AbhCDNAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:00:45 -0500
+IronPort-SDR: aAFXd8LnZIpOYVKetIh9Kr9hjRSGb2S2EgPcpblRRze9kBHaDm5BEl0cY7sE91ZQSOHyuERnvk
+ rmK9NC88KOcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="184997457"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="184997457"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 04:58:59 -0800
+IronPort-SDR: ZZZ7kEP9y3axdZgEWfJ6N+AEIkqRNw1rEYbOirvsuFx78i3F73BDRCFNhnjHVuB84ghGHp+vYv
+ Sgpl+OihZBqg==
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="507370733"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 04:58:55 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lHnZ6-009sbW-EF; Thu, 04 Mar 2021 14:58:52 +0200
+Date:   Thu, 4 Mar 2021 14:58:52 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 05/12] lib: bitmap: remove the 'extern' keyword from
+ function declarations
+Message-ID: <YEDZjM5kTJPgx1WU@smile.fi.intel.com>
+References: <20210304102452.21726-1-brgl@bgdev.pl>
+ <20210304102452.21726-6-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303172250.wbp47skyuf6r37wi@intel.com>
+In-Reply-To: <20210304102452.21726-6-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 03-03-21 09:22:50, Ben Widawsky wrote:
-> On 21-03-03 18:14:30, Michal Hocko wrote:
-> > On Wed 03-03-21 08:31:41, Ben Widawsky wrote:
-> > > On 21-03-03 14:59:35, Michal Hocko wrote:
-> > > > On Wed 03-03-21 21:46:44, Feng Tang wrote:
-> > > > > On Wed, Mar 03, 2021 at 09:18:32PM +0800, Tang, Feng wrote:
-> > > > > > On Wed, Mar 03, 2021 at 01:32:11PM +0100, Michal Hocko wrote:
-> > > > > > > On Wed 03-03-21 20:18:33, Feng Tang wrote:
-> > > > [...]
-> > > > > > > > One thing I tried which can fix the slowness is:
-> > > > > > > > 
-> > > > > > > > +	gfp_mask &= ~(__GFP_DIRECT_RECLAIM | __GFP_KSWAPD_RECLAIM);
-> > > > > > > > 
-> > > > > > > > which explicitly clears the 2 kinds of reclaim. And I thought it's too
-> > > > > > > > hacky and didn't mention it in the commit log.
-> > > > > > > 
-> > > > > > > Clearing __GFP_DIRECT_RECLAIM would be the right way to achieve
-> > > > > > > GFP_NOWAIT semantic. Why would you want to exclude kswapd as well? 
-> > > > > > 
-> > > > > > When I tried gfp_mask &= ~__GFP_DIRECT_RECLAIM, the slowness couldn't
-> > > > > > be fixed.
-> > > > > 
-> > > > > I just double checked by rerun the test, 'gfp_mask &= ~__GFP_DIRECT_RECLAIM'
-> > > > > can also accelerate the allocation much! though is still a little slower than
-> > > > > this patch. Seems I've messed some of the tries, and sorry for the confusion!
-> > > > > 
-> > > > > Could this be used as the solution? or the adding another fallback_nodemask way?
-> > > > > but the latter will change the current API quite a bit.
-> > > > 
-> > > > I haven't got to the whole series yet. The real question is whether the
-> > > > first attempt to enforce the preferred mask is a general win. I would
-> > > > argue that it resembles the existing single node preferred memory policy
-> > > > because that one doesn't push heavily on the preferred node either. So
-> > > > dropping just the direct reclaim mode makes some sense to me.
-> > > > 
-> > > > IIRC this is something I was recommending in an early proposal of the
-> > > > feature.
-> > > 
-> > > My assumption [FWIW] is that the usecases we've outlined for multi-preferred
-> > > would want more heavy pushing on the preference mask. However, maybe the uapi
-> > > could dictate how hard to try/not try.
-> > 
-> > What does that mean and what is the expectation from the kernel to be
-> > more or less cast in stone?
-> > 
+On Thu, Mar 04, 2021 at 11:24:45AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> (I'm not positive I've understood your question, so correct me if I
-> misunderstood)
+> The 'extern' keyword doesn't have any benefits in header files. Remove it.
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+A few nitpicks below.
+
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  include/linux/bitmap.h | 115 ++++++++++++++++++++---------------------
+>  1 file changed, 57 insertions(+), 58 deletions(-)
 > 
-> I'm not sure there is a stone-cast way to define it nor should we.
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 70a932470b2d..6939a8983026 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -118,54 +118,53 @@
+>   * Allocation and deallocation of bitmap.
+>   * Provided in lib/bitmap.c to avoid circular dependency.
+>   */
+> -extern unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
+> -extern unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
+> -extern void bitmap_free(const unsigned long *bitmap);
+> +unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
+> +unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
+> +void bitmap_free(const unsigned long *bitmap);
+>  
+>  /*
+>   * lib/bitmap.c provides these functions:
+>   */
+>  
+> -extern int __bitmap_equal(const unsigned long *bitmap1,
+> -			  const unsigned long *bitmap2, unsigned int nbits);
+> -extern bool __pure __bitmap_or_equal(const unsigned long *src1,
+> -				     const unsigned long *src2,
+> -				     const unsigned long *src3,
+> -				     unsigned int nbits);
+> -extern void __bitmap_complement(unsigned long *dst, const unsigned long *src,
+> -			unsigned int nbits);
+> -extern void __bitmap_shift_right(unsigned long *dst, const unsigned long *src,
+> -				unsigned int shift, unsigned int nbits);
+> -extern void __bitmap_shift_left(unsigned long *dst, const unsigned long *src,
+> -				unsigned int shift, unsigned int nbits);
+> -extern void bitmap_cut(unsigned long *dst, const unsigned long *src,
+> -		       unsigned int first, unsigned int cut,
+> -		       unsigned int nbits);
+> -extern int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
+> +int __bitmap_equal(const unsigned long *bitmap1,
+> +		   const unsigned long *bitmap2, unsigned int nbits);
 
-OK, I thought you want the behavior to diverge from the existing
-MPOL_PREFERRED which only prefers the configured node as a default but
-the allocator is free to fallback to any other node under memory
-pressure. For the multiple preferred nodes the same should be applied
-and only attempt lightweight attempt before falling back to full
-nodeset. Your paragraph I was replying to is not in line with this
-though.
+Logically better to have
 
-> At the very
-> least though, something in uapi that has a general mapping to GFP flags
-> (specifically around reclaim) for the first round of allocation could make
-> sense.
+int __bitmap_equal(const unsigned long *bitmap1, const unsigned long *bitmap2,
+		   unsigned int nbits);
 
-I do not think this is a good idea.
+> +bool __pure __bitmap_or_equal(const unsigned long *src1,
+> +			      const unsigned long *src2,
+> +			      const unsigned long *src3,
+> +			      unsigned int nbits);
+> +void __bitmap_complement(unsigned long *dst, const unsigned long *src,
+> +			 unsigned int nbits);
+> +void __bitmap_shift_right(unsigned long *dst, const unsigned long *src,
+> +			  unsigned int shift, unsigned int nbits);
+> +void __bitmap_shift_left(unsigned long *dst, const unsigned long *src,
+> +			 unsigned int shift, unsigned int nbits);
+> +void bitmap_cut(unsigned long *dst, const unsigned long *src,
+> +		unsigned int first, unsigned int cut, unsigned int nbits);
+> +int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
+> +		 const unsigned long *bitmap2, unsigned int nbits);
+> +void __bitmap_or(unsigned long *dst, const unsigned long *bitmap1,
+> +		 const unsigned long *bitmap2, unsigned int nbits);
+> +void __bitmap_xor(unsigned long *dst, const unsigned long *bitmap1,
+> +		  const unsigned long *bitmap2, unsigned int nbits);
+> +int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
+> +		    const unsigned long *bitmap2, unsigned int nbits);
+> +void __bitmap_replace(unsigned long *dst,
+> +		      const unsigned long *old, const unsigned long *new,
+> +		      const unsigned long *mask, unsigned int nbits);
+> +int __bitmap_intersects(const unsigned long *bitmap1,
+>  			const unsigned long *bitmap2, unsigned int nbits);
+> -extern void __bitmap_or(unsigned long *dst, const unsigned long *bitmap1,
+> -			const unsigned long *bitmap2, unsigned int nbits);
+> -extern void __bitmap_xor(unsigned long *dst, const unsigned long *bitmap1,
+> -			const unsigned long *bitmap2, unsigned int nbits);
+> -extern int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
+> -			const unsigned long *bitmap2, unsigned int nbits);
+> -extern void __bitmap_replace(unsigned long *dst,
+> -			const unsigned long *old, const unsigned long *new,
+> -			const unsigned long *mask, unsigned int nbits);
+> -extern int __bitmap_intersects(const unsigned long *bitmap1,
+> -			const unsigned long *bitmap2, unsigned int nbits);
+> -extern int __bitmap_subset(const unsigned long *bitmap1,
+> -			const unsigned long *bitmap2, unsigned int nbits);
+> -extern int __bitmap_weight(const unsigned long *bitmap, unsigned int nbits);
+> -extern void __bitmap_set(unsigned long *map, unsigned int start, int len);
+> -extern void __bitmap_clear(unsigned long *map, unsigned int start, int len);
+> -
+> -extern unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
+> -						    unsigned long size,
+> -						    unsigned long start,
+> -						    unsigned int nr,
+> -						    unsigned long align_mask,
+> -						    unsigned long align_offset);
+> +int __bitmap_subset(const unsigned long *bitmap1,
+> +		    const unsigned long *bitmap2, unsigned int nbits);
+> +int __bitmap_weight(const unsigned long *bitmap, unsigned int nbits);
+> +void __bitmap_set(unsigned long *map, unsigned int start, int len);
+> +void __bitmap_clear(unsigned long *map, unsigned int start, int len);
+> +
+> +unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
+> +					     unsigned long size,
+> +					     unsigned long start,
+> +					     unsigned int nr,
+> +					     unsigned long align_mask,
+> +					     unsigned long align_offset);
+>  
+>  /**
+>   * bitmap_find_next_zero_area - find a contiguous aligned zero area
+> @@ -190,33 +189,33 @@ bitmap_find_next_zero_area(unsigned long *map,
+>  					      align_mask, 0);
+>  }
+>  
+> -extern int bitmap_parse(const char *buf, unsigned int buflen,
+> +int bitmap_parse(const char *buf, unsigned int buflen,
+>  			unsigned long *dst, int nbits);
 
-> In my head there are 3 levels of request possible for multiple nodes:
-> 1. BIND: Those nodes or die.
-> 2. Preferred hard: Those nodes and I'm willing to wait. Fallback if impossible.
-> 3. Preferred soft: Those nodes but I don't want to wait.
+Can be
 
-I do agree that an intermediate "preference" can be helpful because
-binding is just too strict and OOM semantic is far from ideal. But this
-would need a new policy.
- 
-> Current UAPI in the series doesn't define a distinction between 2, and 3. As I
-> understand the change, Feng is defining the behavior to be #3, which makes #2
-> not an option. I sort of punted on defining it entirely, in the beginning.
+int bitmap_parse(const char *buf, unsigned int buflen, unsigned long *dst,
+		 int nbits);
 
-I really think it should be in line with the existing preferred policy
-behavior.
+And I wonder why nbits here is signed.
+
+> -extern int bitmap_parse_user(const char __user *ubuf, unsigned int ulen,
+> +int bitmap_parse_user(const char __user *ubuf, unsigned int ulen,
+>  			unsigned long *dst, int nbits);
+
+Ditto.
+
+> -extern int bitmap_parselist(const char *buf, unsigned long *maskp,
+
+> +int bitmap_parselist(const char *buf, unsigned long *maskp,
+>  			int nmaskbits);
+
+Now can be one line.
+
+> -extern int bitmap_parselist_user(const char __user *ubuf, unsigned int ulen,
+> +int bitmap_parselist_user(const char __user *ubuf, unsigned int ulen,
+>  			unsigned long *dst, int nbits);
+> -extern void bitmap_remap(unsigned long *dst, const unsigned long *src,
+> +void bitmap_remap(unsigned long *dst, const unsigned long *src,
+>  		const unsigned long *old, const unsigned long *new, unsigned int nbits);
+> -extern int bitmap_bitremap(int oldbit,
+
+> +int bitmap_bitremap(int oldbit,
+>  		const unsigned long *old, const unsigned long *new, int bits);
+
+More logical
+
+int bitmap_bitremap(int oldbit, const unsigned long *old,
+		    const unsigned long *new, int bits);
+
+Or even
+
+int bitmap_bitremap(int oldbit, const unsigned long *old, const unsigned long *new,
+		    int bits);
+
+> -extern void bitmap_onto(unsigned long *dst, const unsigned long *orig,
+> +void bitmap_onto(unsigned long *dst, const unsigned long *orig,
+>  		const unsigned long *relmap, unsigned int bits);
+> -extern void bitmap_fold(unsigned long *dst, const unsigned long *orig,
+> +void bitmap_fold(unsigned long *dst, const unsigned long *orig,
+>  		unsigned int sz, unsigned int nbits);
+> -extern int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order);
+> -extern void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order);
+> -extern int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order);
+> +int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order);
+> +void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order);
+> +int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order);
+>  
+>  #ifdef __BIG_ENDIAN
+> -extern void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int nbits);
+> +void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int nbits);
+>  #else
+>  #define bitmap_copy_le bitmap_copy
+>  #endif
+> -extern unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
+> -extern int bitmap_print_to_pagebuf(bool list, char *buf,
+> +unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
+> +int bitmap_print_to_pagebuf(bool list, char *buf,
+>  				   const unsigned long *maskp, int nmaskbits);
+>  
+>  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+> @@ -265,9 +264,9 @@ static inline void bitmap_copy_clear_tail(unsigned long *dst,
+>   * therefore conversion is not needed when copying data from/to arrays of u32.
+>   */
+>  #if BITS_PER_LONG == 64
+> -extern void bitmap_from_arr32(unsigned long *bitmap, const u32 *buf,
+> +void bitmap_from_arr32(unsigned long *bitmap, const u32 *buf,
+>  							unsigned int nbits);
+
+One line?
+
+> -extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
+> +void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
+>  							unsigned int nbits);
+
+Ditto.
+
+>  #else
+>  #define bitmap_from_arr32(bitmap, buf, nbits)			\
+> -- 
+> 2.29.1
+> 
+
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
