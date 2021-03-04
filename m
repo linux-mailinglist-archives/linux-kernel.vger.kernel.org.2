@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A7532D5D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B5A32D5E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhCDPDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:03:18 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:50204 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbhCDPCr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:02:47 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614870126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yVvkw9RDbs10tqMMQB/pBeMdzmi4nKP3nDo8iaP1ruc=;
-        b=TDWHEyc2FMTVPZyLAtGluLIN1dnW8cKI30XwOPhohMs3da21+jVj+9ampeZOnQ1yVmNZJm
-        UgRFy2dri7n3LmyosLkDISFUdWIBHATZIUIVg5svdZH6DXU4nAWSUkHRyUN6zhWQn+Cmku
-        njRbGN9vuGQyPTEGztEAey+HXM9yyslPJX7k8gujto+fTitKJhFoeI4QCEXmht8OmyQRlS
-        O2SodqHxiEZ6p2zB4MMwVS7JZJD00R5WNpZSYQHNxuOs91Gswe1ljd9hB1yLVpIYm/6JU0
-        NPsdU8roYtjrv71Y5N/3ywE536y55z4b0VFF/6XmIbrBdHsN8+AqvVFcffJi1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614870126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yVvkw9RDbs10tqMMQB/pBeMdzmi4nKP3nDo8iaP1ruc=;
-        b=ayKzHysVkCDtUq3cBgGjGK8+Acwb3i+zsEqN6iMHrOwJ7eb9XV3q97z8fm3dlSNJ0KNWxr
-        r81THeLtZsAJTwCg==
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
-In-Reply-To: <20210304081142.digtkddajkadwwq5@linutronix.de>
-References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de> <m1zgzj7uv2.fsf@fess.ebiederm.org> <20210304081142.digtkddajkadwwq5@linutronix.de>
-Date:   Thu, 04 Mar 2021 16:02:05 +0100
-Message-ID: <87tupr55ea.fsf@nanos.tec.linutronix.de>
+        id S233173AbhCDPEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:04:23 -0500
+Received: from mga05.intel.com ([192.55.52.43]:45930 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233133AbhCDPEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 10:04:16 -0500
+IronPort-SDR: Zo4zdZXTnekuS2g1zk5giu5yinYDaFLKZbzBgSzH0tcfNWk7wCl43tVcomEMtwaHpVnMTV555h
+ SxsahD5b3whg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="272434293"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="272434293"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 07:02:28 -0800
+IronPort-SDR: c7E+e/77C6cbOs08NKsRoyDeWLORjfhidlqk5LwX29INUmE0+c1g02/l9lxno+hA3PjNdeKnUQ
+ MYXbozP4eBJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="445758443"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 04 Mar 2021 07:02:25 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1B1A329E; Thu,  4 Mar 2021 17:02:24 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc:     Marc Zyngier <maz@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v2 0/5] gpiolib: switch to fwnode in the core
+Date:   Thu,  4 Mar 2021 17:02:10 +0200
+Message-Id: <20210304150215.80652-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04 2021 at 09:11, Sebastian Andrzej Siewior wrote:
-> On 2021-03-03 16:09:05 [-0600], Eric W. Biederman wrote:
->> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
->>=20
->> > From: Thomas Gleixner <tglx@linutronix.de>
->> >
->> > Allow realtime tasks to cache one sigqueue in task struct. This avoids=
- an
->> > allocation which can increase the latency or fail.
->> > Ideally the sigqueue is cached after first successful delivery and wil=
-l be
->> > available for next signal delivery. This works under the assumption th=
-at the RT
->> > task has never an unprocessed signal while a one is about to be queued.
->> >
->> > The caching is not used for SIGQUEUE_PREALLOC because this kind of sig=
-queue is
->> > handled differently (and not used for regular signal delivery).
->>=20
->> What part of this is about real time tasks?  This allows any task
->> to cache a sigqueue entry.
->
-> It is limited to realtime tasks (SCHED_FIFO/RR/DL):
->
-> +static void __sigqueue_cache_or_free(struct sigqueue *q)
-> +{
-> =E2=80=A6
-> +	if (!task_is_realtime(current) || !sigqueue_add_cache(current, q))
-> +		kmem_cache_free(sigqueue_cachep, q);
-> +}
+GPIO library uses of_node and fwnode in the core in non-unified way.
+The series cleans this up and improves IRQ domain creation for non-OF cases
+where currently the names of the domain are 'unknown'.
 
-We could of course do the caching unconditionally for all tasks.
+This has been tested on Intel Galileo Gen 2.
 
-Thanks,
+In v2:
+- added a new patch due to functionality in irq_comain_add_simple() (Linus)
+- tagged patches 2-4 (Linus)
+- Cc'ed to Rafael
 
-        tglx
+Andy Shevchenko (5):
+  irqdomain: Introduce irq_domain_create_simple() API
+  gpiolib: Unify the checks on fwnode type
+  gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
+  gpiolib: Introduce acpi_gpio_dev_init() and call it from core
+  gpiolib: Reuse device's fwnode to create IRQ domain
+
+ Documentation/core-api/irq/irq-domain.rst | 22 ++++----
+ drivers/gpio/gpiolib-acpi.c               |  7 +++
+ drivers/gpio/gpiolib-acpi.h               |  4 ++
+ drivers/gpio/gpiolib-of.c                 |  6 ++-
+ drivers/gpio/gpiolib.c                    | 66 +++++++++--------------
+ include/linux/irqdomain.h                 |  5 ++
+ kernel/irq/irqdomain.c                    | 16 ++++--
+ 7 files changed, 71 insertions(+), 55 deletions(-)
+
+-- 
+2.30.1
+
