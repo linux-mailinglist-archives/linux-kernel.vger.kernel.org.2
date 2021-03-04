@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D5B32D9A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A53E32D9AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235203AbhCDSu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:50:28 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13934 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235111AbhCDSuI (ORCPT
+        id S235322AbhCDSvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:51:31 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:51736 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235257AbhCDSvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:50:08 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124IYT4b165664;
-        Thu, 4 Mar 2021 13:49:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=NQ12GuvXHspGybmK53e54xawvK/ZlV9uYf88vxw3ECM=;
- b=odAqV6or4D/XdgCrvQUjHalBUcDTF5nSWvzxVozT8X1MDwUzCBKCO6ViQQ93a0nMT1m8
- XV3m8abckFQpvCYUqf3o3GtNjz4ZQ0P61pIyIabuQgjkzF1rAZgoS4A95u/a75taixHu
- T7ZcMZpWel17o55s5b3HAyr+5/QXkR2dXeXX34yC/rw8pIpPzXARd+OrSqd0A+7xT062
- Q+iKc862/loSOLXam4gLacTsJf5+2Ia5J7WSg6Iy6tGslMqUCMpndt0MO43QePinmGZ2
- ys7gcoYTF3p08ZObYs9JuJLNjQJOVno4x6Uv/05Xk9i9duGSeGoVMr7L6bhsrHiuUh8Z cA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3734nss34u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 13:49:02 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 124IYdmT166313;
-        Thu, 4 Mar 2021 13:49:02 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3734nss33v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 13:49:02 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124IWGrU005854;
-        Thu, 4 Mar 2021 18:49:01 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03dal.us.ibm.com with ESMTP id 3720r0s3ty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 18:49:01 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124Imxle30277932
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Mar 2021 18:49:00 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E2BC0BE051;
-        Thu,  4 Mar 2021 18:48:59 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1D03CBE054;
-        Thu,  4 Mar 2021 18:48:58 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Mar 2021 18:48:57 +0000 (GMT)
-Subject: Re: [PATCH] scsi: ibmvfc: Switch to using the new API kobj_to_dev()
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <1614850124-54111-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <87514c42-eb5a-ee68-ff21-49d08bd42a4e@linux.ibm.com>
-Date:   Thu, 4 Mar 2021 10:48:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 4 Mar 2021 13:51:13 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614883832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UlpktAyvlXWS4xtFajsvPPK4M1rR/ipWuKYVyEDaYD4=;
+        b=d+/46lRy6Kpj45L4juv6QdrjQr+GxoSqbW5fplrtwfaD/UjY5wpVHKrj1Fr79IDSV7QcHF
+        8VjiMXz7c/FjQ7e6I2ZAVhCipUpQyD5Wxzm9mzOLtcYpwgc56Zf30XhsWwm7qVotrHWfc7
+        A/tQz8eacyrRrgBm64t+DqYGpr2pbD/F0sGPXSzehktrv+zC13nJcw0fbiasecjWY7TI8Z
+        JcLQtaNA/W+3xiPmw401Y00O+7tAwn8BWO40gd96gDGluc3g0FESuD74A0xTJI0kazxYnF
+        pxkfSh8KkAOfQm/MSj4lorVT8nnt8STK4qA7OvnW0iI/+ueIZ6x1TlE21EBe0w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614883832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UlpktAyvlXWS4xtFajsvPPK4M1rR/ipWuKYVyEDaYD4=;
+        b=wJ5loI+ayFNXU2yfV1Ond+NHpRFYELPwTQ63QQSafK64v3Edd4HhKcsAXR1Dq//tCkfBhm
+        AK3S8pORD/Rb3iDg==
+To:     tip-bot2 for Barry Song <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org
+Cc:     Barry Song <song.bao.hua@hisilicon.com>, dmitry.torokhov@gmail.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+Subject: Re: [tip: irq/core] genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
+In-Reply-To: <87zgzj5gpo.fsf@nanos.tec.linutronix.de>
+References: <20210302224916.13980-2-song.bao.hua@hisilicon.com> <161485523394.398.10007682711343433706.tip-bot2@tip-bot2> <87zgzj5gpo.fsf@nanos.tec.linutronix.de>
+Date:   Thu, 04 Mar 2021 19:50:31 +0100
+Message-ID: <87o8fy69e0.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1614850124-54111-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-04_05:2021-03-03,2021-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 phishscore=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0 clxscore=1011
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103040088
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 1:28 AM, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
-> 
-> ./drivers/scsi/ibmvscsi/ibmvfc.c:3483:60-61: WARNING opportunity for
-> kobj_to_dev().
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Dmitry,
 
-Acked-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+On Thu, Mar 04 2021 at 11:57, Thomas Gleixner wrote:
+> On Thu, Mar 04 2021 at 10:53, tip-bot wrote:
+>
+>> The following commit has been merged into the irq/core branch of tip:
+>>
+>> Commit-ID:     e749df1bbd23f4472082210650514548d8a39e9b
+>> Gitweb:        https://git.kernel.org/tip/e749df1bbd23f4472082210650514548d8a39e9b
+>> Author:        Barry Song <song.bao.hua@hisilicon.com>
+>> AuthorDate:    Wed, 03 Mar 2021 11:49:15 +13:00
+>> Committer:     Thomas Gleixner <tglx@linutronix.de>
+>> CommitterDate: Thu, 04 Mar 2021 11:47:52 +01:00
+>>
+>> genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
+>
+> this commit is immutable and I tagged it so you can pull it into your
+> tree to add the input changes on top:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-no-autoen-2021-03-04
 
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index 755313b..e5f1ca7 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -3480,7 +3480,7 @@ static ssize_t ibmvfc_read_trace(struct file *filp, struct kobject *kobj,
->  				 struct bin_attribute *bin_attr,
->  				 char *buf, loff_t off, size_t count)
->  {
-> -	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct device *dev = kobj_to_dev(kobj);
->  	struct Scsi_Host *shost = class_to_shost(dev);
->  	struct ibmvfc_host *vhost = shost_priv(shost);
->  	unsigned long flags = 0;
-> 
+Please hold on:
 
+  https://lkml.kernel.org/r/CAHk-=wgZjJ89jeH72TC3i6N%2Bz9WEY=3ysp8zR9naRUcSqcAvTA@mail.gmail.com
+
+I'll recreate a tag for you once rc2 is out.
+
+Thanks,
+
+        tglx
