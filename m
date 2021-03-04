@@ -2,130 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A01132D411
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A9932D41B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241062AbhCDNW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:22:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236534AbhCDNWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:22:55 -0500
-X-Greylist: delayed 608 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 04 Mar 2021 05:22:15 PST
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F84C061574;
-        Thu,  4 Mar 2021 05:22:15 -0800 (PST)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id B19FCC72819;
-        Thu,  4 Mar 2021 14:22:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1614864133;
-        bh=s42k8uAo9kxNjLeN9HuZ/mbV6dmUP2yAZhrHu3lt1ec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YXoNOhNHQqlx4d8o+UngFwqgEBNUw4B9vfkQGLTIeM2p3lHG+GKpqzNJJ4hgOeDJ6
-         zn1A3q2Cx0UPQqAejx2yQfpmuSP8e0PEH1gcogqnjSCuimEDnHKnB8TGnKQA1b9TMC
-         XH9DDSXhuOdwyVaJ0mueNyaIok/mqn9ZHAXzcQhQ=
-Date:   Thu, 4 Mar 2021 14:22:12 +0100
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <YEDfBPsbZ5uxj/PP@workstation.tuxnet>
-References: <X9uYqGboZg5DuEtf@workstation.tuxnet>
- <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
- <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
- <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
- <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
- <YBRyG0vv3gRzygSB@workstation.tuxnet>
- <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
- <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
- <YBg5MlvJQ0N2u+j6@workstation.tuxnet>
- <20210301215248.ekclgxc7dq6asdz5@pengutronix.de>
+        id S241246AbhCDNZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:25:40 -0500
+Received: from mout.gmx.net ([212.227.17.21]:53011 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241086AbhCDNZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:25:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614864208;
+        bh=gJRe0AoMraU9x0n2REXSwjSEb1jWncPwJ3G/GKIwfjs=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=HNVvTiJqcs1KdrYfJZ6MoP2TDpy5sRZooSu80R6dbAL6LIYZrtYp3/+fDWfWBYvwB
+         eCBc/Cz49FufyTgY8ij+UR+C0AE/bww2XCWJZ/EblB5DqFDP8TAQDHo3KRueDvDCsI
+         NFA0RBrQronuDe0edGMb2IGZ250NuWo4SB1kIVjk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.219.128]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MwQXN-1laZDp3ABB-00sMMR; Thu, 04
+ Mar 2021 14:23:28 +0100
+Message-ID: <a751252ee17f64ec82e44ae2d64fc217e3849202.camel@gmx.de>
+Subject: Re: futex breakage in 4.9 stable branch
+From:   Mike Galbraith <efault@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ben Hutchings <ben@decadent.org.uk>, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        stable@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>, lwn@lwn.net,
+        jslaby@suse.cz, Thomas Gleixner <tglx@linutronix.de>
+Date:   Thu, 04 Mar 2021 14:23:27 +0100
+In-Reply-To: <YEDckK+g7VosvtGK@kroah.com>
+References: <161408880177110@kroah.com>
+         <66826ac72356b00814f51487dd1008298e52ed9b.camel@decadent.org.uk>
+         <YDygp3WYafzcgt+s@kroah.com> <YD0kkNH+I4xyoTwy@decadent.org.uk>
+         <5d9c74ad033e898111e5a1e931b266912487b595.camel@gmx.de>
+         <YEDckK+g7VosvtGK@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210301215248.ekclgxc7dq6asdz5@pengutronix.de>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XfLjWg1thbqE+db4lHtlw6iuHTz/QTcBIgtlFq7H0imWU6KMjHm
+ wcDRBPTtMo8d5tKmboELi2JAhJRhkCsTTZiOXLqiVk4EnSLTbin7eWBwBPrdTK0Id3+gatE
+ n9LXE8iucbiPSaWWSV2SnbPhwp3EYNQyS8AGV+Hpvn65gmxFDz76h531ZTMbhuCIY8+nP3u
+ Diis1q9lzwrI3NIvPNqEw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IMWncCc3n+U=:4FWa8MNVvKgKGYwFqiCSmM
+ VDGpq/mdJ7r+T1YHXR5YiUZpH01wWhb1hdU4dsmPtmVyU1wxbYCCAiFAhGZ6uq8Ix9ctVET2X
+ Nx4Ruzh545TYaiv3XOJTS/3/JUlUXx0CH5kh9udiCcyJNA1djFa8vlDN1S6KtA5J+f/rYZm7q
+ 9Sm90jlReliyMLvSo8DkbxcTWPYSb2X9bQUB0D3VdGAnqD13ZMCBNLq2RB9yvlcSaRkwJRaiX
+ d5/QSD6mpDedvGf+fom4/IrAOIJEMyuYYhXjKo4dg4f27jZ1O/dNnQeAAu9HahvvuOmePqiZO
+ guyM9w4GdFl+LVlguD+Rf8hkfVo5fp97NWJCdLcDwiRSdx5qkBFu6U+7GQXgQ9jawm1fHCEYJ
+ xI0qsXTeiE6eQF8GKXHZs/Zowy3yqACBbVxkSZ9VldVVbb+uz3lbkuacExx84ohMOrgkYO2ZP
+ +CjqHm6rz7Gk0j/lcxvmr3eVtb2ScgfgHcKr2snZ6VB97rQCH2u+FiCUVhgnT7T1tSomXQjsF
+ 7lmP3cN6VXSvEjTY304spwOYhkrmZjNfYz7+XYYl3k6Da/mQ1SfC+EzmZ7pzx2a1uxCusfmHT
+ d7ze7uJaEG/8mhkuIVMm0I7o+BXsWtaD/W68iAOyclOBAAxm2mLXliNFh7skqIMT0eSr+9Nyp
+ di6oPQ+yGgcNFy3RgKvEYSks3Ag/6raz2Rus7LZlQd1CWhFKlxo3++UWyOTe0qVMkLv8P1ss/
+ iqnMbnaWy1D0sOGNiJFPw+dhFfRjcRwuZzeMzR8KsjPSoJbDIQZFpbUZwSwutn16F/3UlKI2E
+ D9nhSAUW8pv9spsgWT/ftKiqKjewA6eXezmNt795TP3msXeefzC7ITWuNHPTuW1M7fyNhRvyx
+ YM8kTBDIHZAaVGyEOhjQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+On Thu, 2021-03-04 at 14:11 +0100, Greg Kroah-Hartman wrote:
+> On Thu, Mar 04, 2021 at 10:12:56AM +0100, Mike Galbraith wrote:
+>
+> > futex: fix 4.4-stable 34c8e1c2c025 backport inspired lockdep complaint
+> >
+> > 1. 34c8e1c2c025 "futex: Provide and use pi_state_update_owner()" was b=
+ackported
+> > to stable, leading to the therein assertion that pi_state->pi_mutex.wa=
+it_lock
+> > be held triggering in 4.4-stable.  Fixing that leads to lockdep moan p=
+art 2.
+> >
+> > 2: b4abf91047cf "rtmutex: Make wait_lock irq safe" is absent in 4.4-st=
+able, but
+> > wake_futex_pi() nonetheless managed to acquire an unbalanced raw_spin_=
+lock()
+> > raw_spin_inlock_irq() pair, which inspires lockdep to moan after afore=
+mentioned
+> > assert has been appeased.
+> >
+> > With this applied, futex tests pass, and no longer inspire lockdep gri=
+peage.
+> >
+> > Not-Signed-off-by: Mike Galbraith <efault@gmx.de>
+> > ---
+> >  kernel/futex.c |    6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > --- a/kernel/futex.c
+> > +++ b/kernel/futex.c
+> > @@ -874,8 +874,12 @@ static void free_pi_state(struct futex_p
+> >  	 * and has cleaned up the pi_state already
+> >  	 */
+> >  	if (pi_state->owner) {
+> > +		unsigned long flags;
+> > +
+> > +		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
+> >  		pi_state_update_owner(pi_state, NULL);
+> >  		rt_mutex_proxy_unlock(&pi_state->pi_mutex);
+> > +		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
+> >  	}
+> >
+> >  	if (current->pi_state_cache)
+> > @@ -1406,7 +1410,7 @@ static int wake_futex_pi(u32 __user *uad
+> >  	if (pi_state->owner !=3D current)
+> >  		return -EINVAL;
+> >
+> > -	raw_spin_lock(&pi_state->pi_mutex.wait_lock);
+> > +	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
+> >  	new_owner =3D rt_mutex_next_owner(&pi_state->pi_mutex);
+> >
+> >  	/*
+> >
+>
+> Care to sign-off on it so that if this is correct, I can apply it?  :)
 
-On Mon, Mar 01, 2021 at 10:52:48PM +0100, Uwe Kleine-König wrote:
-> Hello,
-> 
-> On Mon, Feb 01, 2021 at 06:24:02PM +0100, Clemens Gruber wrote:
-> > Hi Sven, Thierry, Uwe,
-> > 
-> > On Fri, Jan 29, 2021 at 05:16:51PM -0500, Sven Van Asbroeck wrote:
-> > > Hi Clemens,
-> > > 
-> > > On Fri, Jan 29, 2021 at 4:24 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
-> > > >
-> > > > LEN_ON = 409, LED_OFF = 1228 and
-> > > > LED_ON = 419, LED_OFF = 1238
-> > > > produce the same result. you can't see the difference between the two
-> > > > when scoping the channel. there are probably more ways to do this,
-> > > > some might surprise us. It's a tricky chip.
-> > > 
-> > > Please ignore this example, it's bogus. In my defence, it's a Friday
-> > > afternoon here :)
-> > 
-> > Happens to the best of us :)
-> > 
-> > > 
-> > > But consider the following: imagine the bootloader has enabled a few
-> > > pwm channels, and the driver's .probe() has left them on/unchanged.
-> > > Then the user enables another pwm channel, and tries to change the
-> > > period/prescaler. How would pca9685_may_change_prescaler() know
-> > > if changing the prescaler is allowed?
-> > > 
-> > > And the following: imagine the bootloader has enabled a few
-> > > pwm channels, and the driver's .probe() has left them on/unchanged.
-> > > After .probe(), the runtime_pm will immediately put the chip to sleep,
-> > > because it's unaware that some channels are alive.
-> > 
-> > (We could read out the state in .probe. If a pwm is already enabled by
-> > the bootloader, then the user can't change the period. Also, the chip
-> > would not be put to sleep.
-> > 
-> > The user then can export channels and see if they are enabled. If he
-> > wants to change the period, he needs to find the one enabled by the
-> > bootloader and change the period there, before he requests more.
-> > If the bootloader enabled more than one, then he has to disable all but
-> > one to change the period.
-> > 
-> > Or did I miss something?)
-> > 
-> > > 
-> > > I'm sure I'm overlooking a few complications here. probe not changing
-> > > the existing configuration, will add a lot of complexity to the driver.
-> > > I'm not saying this is necessarily bad, just a tradeoff. Or, a management
-> > > decision.
-> > 
-> > But I agree that it is simpler if we keep the resets in probe. It would
-> > also avoid a potentially breaking change for users that do not reset
-> > their pca9685 chips in their bootloader code.
-> 
-> I would prefer to drop the reset. If the bootloader left with an invalid
-> state, this is active for sure until the PWM driver is loaded. If you
-> don't reset, the time is extended (usually) until the consumer comes
-> along and corrects the setting. So the downside of not resetting is
-> quite limited, but if you disable the PWM in .probe() the effect can be
-> worse. And consistency dictates to not reset.
-> 
-> > Removing the resets could then be left as something to discuss further
-> > in the future and something that belongs in a separate patch series?
-> 
-> That would be fine for me, too.
+Consider it signed off iff Thomas acks it.  I think it's correct.. just
+like the guys who have installed every other bug in the damn things,
+just a wee bit less over-confident :)
 
-Great, then I will prepare a new series next week.
+	-Mike
 
-Thanks,
-Clemens
