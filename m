@@ -2,187 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851ED32D56D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE9F32D570
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbhCDOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:36:08 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:1553 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231259AbhCDOgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:36:01 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Drtgh5FPfzB09ZW;
-        Thu,  4 Mar 2021 15:35:12 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id UTqvgVdxCf17; Thu,  4 Mar 2021 15:35:12 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Drtgh4CJGzB09ZR;
-        Thu,  4 Mar 2021 15:35:12 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 938AB8B814;
-        Thu,  4 Mar 2021 15:35:14 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id PcsqHWhc5Zke; Thu,  4 Mar 2021 15:35:14 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4DEC18B812;
-        Thu,  4 Mar 2021 15:35:13 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 28DBA674E6; Thu,  4 Mar 2021 14:35:13 +0000 (UTC)
-Message-Id: <afaec81a551ef15345cb7d7563b3fac3d7041c3a.1614868445.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <8dfe1bd2abde26337c1d8c1ad0acfcc82185e0d5.1614868445.git.christophe.leroy@csgroup.eu>
-References: <8dfe1bd2abde26337c1d8c1ad0acfcc82185e0d5.1614868445.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 4/4] powerpc: Enable KFENCE on BOOK3S/64
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kasan-dev@googlegroups.com
-Date:   Thu,  4 Mar 2021 14:35:13 +0000 (UTC)
+        id S234161AbhCDOhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:37:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50439 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231697AbhCDOgv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:36:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614868526;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQdAv9dqu3ihNNDosTCrUef7IjrV7jjJSl91dhkxJnE=;
+        b=YkEMsurc8x+a8VbmWYrTfgut2ddaZ552pvLKOGqrQRDHjMpn3eCu41dYu25SlLm7lvtJdd
+        FMECRAD8mNh59QpucKW2duMGIf2jQr5R+PLRW10q2XHAbnntAtgYp8ZznglSydf5glT4/3
+        u44fikwwcfxkxMGnRf9pqsV4BpoR0OU=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-8Tnb-s9kMu-SSbbnmb3s5Q-1; Thu, 04 Mar 2021 09:35:24 -0500
+X-MC-Unique: 8Tnb-s9kMu-SSbbnmb3s5Q-1
+Received: by mail-ej1-f70.google.com with SMTP id rl7so6869717ejb.16
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 06:35:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wQdAv9dqu3ihNNDosTCrUef7IjrV7jjJSl91dhkxJnE=;
+        b=uH2hCDcfOjEkIGG3QBMlLJE7w4F645u45Jf6SWTfWeFcg/Od3Agr0/rkTwViDHee6l
+         z7668une2ElyAKifXFxc0LoIZjPbMFsUjnz736m9+twklEOrGRhRLYuJc2sPQPCNipVC
+         EycYbMjVwLucO1nBdQa4AL7y8WCFTj42y+gor3HSJoa7Qcm9B6G1hAqzxhlRF3tCVNri
+         uHqi27kKWjXTxIzMApMLf2sCortGp2/9AqWd0jdl7aVTiu3+OpzqTJCL4u+sc+YCDRsx
+         g35cCTiXeF3irn0w+kqUT8V5mf6XHDooYfJ3nrs6CJeOltw9jyf7AlY+mMTfi6cmWzS3
+         KQAQ==
+X-Gm-Message-State: AOAM530HAAteyjkqV9pr9m0nXgqgI/oSC8feWgOjw8IoQvshq9n9rySW
+        e6a5yqHq+Ve9oFhMCcmsFOjSPWamdK9aK0dftpIBB2K93rdTSVIPQclLY7PcZhfRoJp5rgOveLC
+        UHT2lU/dSO7Zoeh0Gjfbr6996fLoaQy/5cvq3brtRpUAMaYWkDuIiGMMDun35QH8LV/A5a6XH5B
+        C5
+X-Received: by 2002:a17:906:1457:: with SMTP id q23mr4508886ejc.43.1614868523164;
+        Thu, 04 Mar 2021 06:35:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw/m/4pak71VMA+lhDsQUxoTU6Jn9KvocqxwMH+AgtYyMjtnCXrXhDbUsBh951EbKBIsrbWhA==
+X-Received: by 2002:a17:906:1457:: with SMTP id q23mr4508682ejc.43.1614868520976;
+        Thu, 04 Mar 2021 06:35:20 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id n25sm2592851edq.55.2021.03.04.06.35.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 06:35:20 -0800 (PST)
+Subject: Re: [PATCH] WMI: asus: Reduce G14 and G15 match to min product name
+To:     Luke D Jones <luke@ljones.dev>, platform-driver-x86@vger.kernel.org
+Cc:     corentin.chary@gmail.com, mgross@linux.intel.com,
+        acpi4asus-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20210227102010.65429-1-luke@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <94e01965-1511-c687-1c20-fe1f01041ac3@redhat.com>
+Date:   Thu, 4 Mar 2021 15:35:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210227102010.65429-1-luke@ljones.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reuses the DEBUG_PAGEALLOC logic.
+Hi,
 
-Tested on qemu with ppc64_defconfig + CONFIG_KFENCE + CONFIG_KUNIT +
-CONFIG_KFENCE_KUNIT_TEST.
+On 2/27/21 11:20 AM, Luke D Jones wrote:
+> This patch reduces the product match for GA401 series laptops to
+> the minimum string required.
+> 
+> The GA401 series of laptops has a lengthy list of product
+> variations in the 2020 series and the 2021 series refresh
+> is using the same base product ID of GA401.
+> 
+> The same is also true for the GA502 series, and the new GA503
+> series which is added in this patch as a variant of the G15.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: New
----
- arch/powerpc/Kconfig                  |  2 +-
- arch/powerpc/include/asm/kfence.h     |  8 ++++++++
- arch/powerpc/mm/book3s64/hash_utils.c | 29 +++++++++++++++++++++------
- 3 files changed, 32 insertions(+), 7 deletions(-)
+Thank you for your patch.
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index d46db0bfb998..67c47b60cc84 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -185,7 +185,7 @@ config PPC
- 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KGDB
--	select HAVE_ARCH_KFENCE			if PPC32
-+	select HAVE_ARCH_KFENCE			if ARCH_SUPPORTS_DEBUG_PAGEALLOC
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
- 	select HAVE_ARCH_NVRAM_OPS
-diff --git a/arch/powerpc/include/asm/kfence.h b/arch/powerpc/include/asm/kfence.h
-index a9846b68c6b9..532cc1a92fa5 100644
---- a/arch/powerpc/include/asm/kfence.h
-+++ b/arch/powerpc/include/asm/kfence.h
-@@ -11,11 +11,18 @@
- #include <linux/mm.h>
- #include <asm/pgtable.h>
- 
-+#if defined(CONFIG_PPC64) && !defined(PPC64_ELF_ABI_v2)
-+#define ARCH_FUNC_PREFIX "."
-+#endif
-+
- static inline bool arch_kfence_init_pool(void)
- {
- 	return true;
- }
- 
-+#ifdef CONFIG_PPC64
-+bool kfence_protect_page(unsigned long addr, bool protect);
-+#else
- static inline bool kfence_protect_page(unsigned long addr, bool protect)
- {
- 	pte_t *kpte = virt_to_kpte(addr);
-@@ -29,5 +36,6 @@ static inline bool kfence_protect_page(unsigned long addr, bool protect)
- 
- 	return true;
- }
-+#endif
- 
- #endif /* __ASM_POWERPC_KFENCE_H */
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index cb09a49be798..b967a6403e59 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -323,8 +323,8 @@ int htab_bolt_mapping(unsigned long vstart, unsigned long vend,
- 			break;
- 
- 		cond_resched();
--		if (debug_pagealloc_enabled() &&
--			(paddr >> PAGE_SHIFT) < linear_map_hash_count)
-+		if (debug_pagealloc_enabled_or_kfence() &&
-+		    (paddr >> PAGE_SHIFT) < linear_map_hash_count)
- 			linear_map_hash_slots[paddr >> PAGE_SHIFT] = ret | 0x80;
- 	}
- 	return ret < 0 ? ret : 0;
-@@ -661,7 +661,7 @@ static void __init htab_init_page_sizes(void)
- 	bool aligned = true;
- 	init_hpte_page_sizes();
- 
--	if (!debug_pagealloc_enabled()) {
-+	if (!debug_pagealloc_enabled_or_kfence()) {
- 		/*
- 		 * Pick a size for the linear mapping. Currently, we only
- 		 * support 16M, 1M and 4K which is the default
-@@ -949,7 +949,7 @@ static void __init htab_initialize(void)
- 
- 	prot = pgprot_val(PAGE_KERNEL);
- 
--	if (debug_pagealloc_enabled()) {
-+	if (debug_pagealloc_enabled_or_kfence()) {
- 		linear_map_hash_count = memblock_end_of_DRAM() >> PAGE_SHIFT;
- 		linear_map_hash_slots = memblock_alloc_try_nid(
- 				linear_map_hash_count, 1, MEMBLOCK_LOW_LIMIT,
-@@ -1927,7 +1927,7 @@ long hpte_insert_repeating(unsigned long hash, unsigned long vpn,
- 	return slot;
- }
- 
--#ifdef CONFIG_DEBUG_PAGEALLOC
-+#if defined(CONFIG_DEBUG_PAGEALLOC) || defined(CONFIG_KFENCE)
- static DEFINE_SPINLOCK(linear_map_hash_lock);
- 
- static void kernel_map_linear_page(unsigned long vaddr, unsigned long lmi)
-@@ -1982,6 +1982,21 @@ static void kernel_unmap_linear_page(unsigned long vaddr, unsigned long lmi)
- 				     mmu_kernel_ssize, 0);
- }
- 
-+#ifdef CONFIG_KFENCE
-+bool kfence_protect_page(unsigned long addr, bool protect)
-+{
-+	unsigned long lmi = __pa(addr) >> PAGE_SHIFT;
-+
-+	if (protect)
-+		kernel_unmap_linear_page(addr, lmi);
-+	else
-+		kernel_map_linear_page(addr, lmi);
-+
-+	return true;
-+}
-+#endif
-+
-+#ifdef CONFIG_DEBUG_PAGEALLOC
- void __kernel_map_pages(struct page *page, int numpages, int enable)
- {
- 	unsigned long flags, vaddr, lmi;
-@@ -2000,7 +2015,9 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
- 	}
- 	local_irq_restore(flags);
- }
--#endif /* CONFIG_DEBUG_PAGEALLOC */
-+#endif
-+
-+#endif /* CONFIG_DEBUG_PAGEALLOC || CONFIG_KFENCE */
- 
- void hash__setup_initial_memory_limit(phys_addr_t first_memblock_base,
- 				phys_addr_t first_memblock_size)
--- 
-2.25.0
+I msut say that I find it very strange that 2021 series laptops need
+to use the Asus vendor specific WMI interface for backlight control.
+
+I see that the GA401 GA502 and GA503 models are all models with
+AMD 4000/5000 series CPUs + Nvidia 2060 series GPUs.
+So I guess it may be possible that this is the right thing
+to do, and I do realize that we are already doing this for the
+listed models. But it seems weird.
+
+Modern laptops almost always use the native backlight control
+build into the drm/kms driver. And in some special cases
+(hybrid GPU setups) they might use the good old ACPI-video
+interface. But using vendor specific interfaces sounds very
+wrong to me. That is something which was typically done on
+pre Windows XP era hardware.
+
+Have you tried passing acpi_backlight=video on the kernel commandline?
+
+What is the output of ls /sys/class/backlight before and after this
+patch?
+
+What is the output of ls /sys/class/backlight when using
+acpi_backlight=video on the kernel commandline?
+
+If the ls output shows multiple interfaces have you tried using all
+listed interfaces directly from sysfs / the commandline ?
+
+(perhaps userspace is picking the wrong interface in the case there
+are multiple interfaces?)
+
+Note what you are doing now is the equivalent of passing
+acpi_backlight=vendor, which again is a weird thing to do on
+recent / new hardware.
+
+Also your commit message seems to lack a lot of details like:
+
+1. Do you own an effected or multiple affected models yourself on
+which you tested this?
+
+2. Was this tested by others on other models of these series?
+
+3. I assume this was discussed with others in some mailinglist /
+forum discussion please provide links to this discussion.
+
+4. Has this been tested with with both the nouveau and the
+nvidia binary driver or only with the nvidia binary driver ?
+
+5. What were the symptoms / problems noticed before making this change
+and how do things work after making the change?
+
+Regards,
+
+Hans
+
+
+
+
+
+> 
+> Signed-off-by: Luke D Jones <luke@ljones.dev>
+> ---
+>  drivers/platform/x86/asus-nb-wmi.c | 57 ++++--------------------------
+>  1 file changed, 6 insertions(+), 51 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+> index d41d7ad14be0..f4db67c3eba2 100644
+> --- a/drivers/platform/x86/asus-nb-wmi.c
+> +++ b/drivers/platform/x86/asus-nb-wmi.c
+> @@ -427,73 +427,28 @@ static const struct dmi_system_id asus_quirks[] = {
+>  	},
+>  	{
+>  		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IH",
+> +		.ident = "ASUSTeK COMPUTER INC. GA401",
+>  		.matches = {
+>  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IH"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "GA401"),
+>  		},
+>  		.driver_data = &quirk_asus_vendor_backlight,
+>  	},
+>  	{
+>  		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401II",
+> +		.ident = "ASUSTeK COMPUTER INC. GA502",
+>  		.matches = {
+>  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401II"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "GA502"),
+>  		},
+>  		.driver_data = &quirk_asus_vendor_backlight,
+>  	},
+>  	{
+>  		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IU",
+> +		.ident = "ASUSTeK COMPUTER INC. GA503",
+>  		.matches = {
+>  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IU"),
+> -		},
+> -		.driver_data = &quirk_asus_vendor_backlight,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IV",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IV"),
+> -		},
+> -		.driver_data = &quirk_asus_vendor_backlight,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA401IVC",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IVC"),
+> -		},
+> -		.driver_data = &quirk_asus_vendor_backlight,
+> -	},
+> -		{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA502II",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502II"),
+> -		},
+> -		.driver_data = &quirk_asus_vendor_backlight,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA502IU",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IU"),
+> -		},
+> -		.driver_data = &quirk_asus_vendor_backlight,
+> -	},
+> -	{
+> -		.callback = dmi_matched,
+> -		.ident = "ASUSTeK COMPUTER INC. GA502IV",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IV"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "GA503"),
+>  		},
+>  		.driver_data = &quirk_asus_vendor_backlight,
+>  	},
+> 
 
