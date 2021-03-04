@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8825A32D556
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6EB32D566
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhCDOd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:33:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230390AbhCDOdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:33:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFD2164F2C;
-        Thu,  4 Mar 2021 14:32:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614868375;
-        bh=tXeyflvi5gXEFLfWrEhyPYpQ9H6G+alEokJ1yiiFZAs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SUFTMJXCghhXPTfTU7DVatK7XQYGDso/6+901ptTAr+6UkFzvVY3LMy1bIBwg4Q82
-         isDF6GXrYzW1tsDNFKNmrnfQGi9Pq81iowaq3SFhnU9RUHy15KF384r3EJ495u9xU3
-         NCq881YQgUwtaNX3jPN2E0VR267kElrANWeJxmprwDTzSzDN1p8sT8jooPzXarYvDy
-         mtBUdM42PWgJcC5evM+Re9wAYHKdY7ascu2Ek0ewIpvA8DtzgZz7SB9ab2syZ5KtWl
-         VoNwX5CEdlZXGVJHEGyKYrWFY4mx9bYABQrAxfY4zQG8EPOnKH7l5Y26oldHmtbElN
-         VJRGrvRWooQLg==
-Received: by mail-ed1-f46.google.com with SMTP id b7so21610116edz.8;
-        Thu, 04 Mar 2021 06:32:54 -0800 (PST)
-X-Gm-Message-State: AOAM532ouOycI6Al4VVty7+nROx9MFQaXnS2SEq10S8e1r/sQNZ+NUmk
-        hUrNWqVfSCerICKJTKdw8eKxm37z7v1HctTmIQ==
-X-Google-Smtp-Source: ABdhPJzabdQJ8ncT4i9Jv5kLvVwXJ4FdjdlgX7bAUmE7phJTm1J2xtfPKQoM5FboSII3Jp66Lb89kLcDHwPLvNaueFU=
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr4615939edq.137.1614868373460;
- Thu, 04 Mar 2021 06:32:53 -0800 (PST)
+        id S231846AbhCDOff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:35:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231340AbhCDOfA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:35:00 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5664AC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 06:34:20 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lHp37-0003ae-2R; Thu, 04 Mar 2021 15:33:57 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3b3:61f5:ff65:ce3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CAB235EDC4E;
+        Thu,  4 Mar 2021 14:33:51 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 15:33:50 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
+        Federico Vaga <federico.vaga@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] can: c_can: add support to 64 message objects
+Message-ID: <20210304143350.7vddiwb7slghuvhb@pengutronix.de>
+References: <20210302215435.18286-1-dariobin@libero.it>
 MIME-Version: 1.0
-References: <20210304044803.812204-2-danielwa@cisco.com>
-In-Reply-To: <20210304044803.812204-2-danielwa@cisco.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 4 Mar 2021 08:32:37 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKnAMp0bkXzU-B8b8xx5fPC1R1NdOBn9Kpk=SONJL5paQ@mail.gmail.com>
-Message-ID: <CAL_JsqKnAMp0bkXzU-B8b8xx5fPC1R1NdOBn9Kpk=SONJL5paQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] CMDLINE: drivers: of: ifdef out cmdline section
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mew7tbg2zbjzh4dd"
+Content-Disposition: inline
+In-Reply-To: <20210302215435.18286-1-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 10:48 PM Daniel Walker <danielwa@cisco.com> wrote:
->
-> It looks like there's some seepage of cmdline stuff into
-> the generic device tree code. This conflicts with the
-> generic cmdline implementation so I remove it in the case
-> when that's enabled.
->
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> ---
->  drivers/of/fdt.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index feb0f2d67fc5..cfe4f8d3c9f5 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -25,6 +25,7 @@
->  #include <linux/serial_core.h>
->  #include <linux/sysfs.h>
->  #include <linux/random.h>
-> +#include <linux/cmdline.h>
->
->  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
->  #include <asm/page.h>
-> @@ -1048,8 +1049,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
->
->         early_init_dt_check_for_initrd(node);
->
-> +#ifdef CONFIG_GENERIC_CMDLINE
 
-What I like about Christophe's version is it removes the old DT
-implementation. Who's going to convert the rest of the DT based
-arches? That's arm, arm64, hexagon, microblaze, nios2, openrisc,
-riscv, sh, and xtensa. Either separate the common code from the config
-like Christophe's version or these all need converting. Though it's
-fine to hash out patch 1 with a couple of arches first.
+--mew7tbg2zbjzh4dd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->         /* Retrieve command line */
->         p = of_get_flat_dt_prop(node, "bootargs", &l);
+On 02.03.2021 22:54:29, Dario Binacchi wrote:
+>=20
+> The D_CAN controller supports up to 128 messages. Until now the driver
+> only managed 32 messages although Sitara processors and DRA7 SOC can
+> handle 64.
+>=20
+> The series was tested on a beaglebone board.
+>=20
+> Note:
+> I have not changed the type of tx_field (belonging to the c_can_priv
+> structure) to atomic64_t because I think the atomic_t type has size
+> of at least 32 bits on x86 and arm, which is enough to handle 64
+> messages.
+> http://marc.info/?l=3Dlinux-can&m=3D139746476821294&w=3D2 reports the res=
+ults
+> of tests performed just on x86 and arm architectures.
 
-This needs to be outside the ifdef.
+Applied to linux-can-next/testing.
 
-> +
-> +       /*
-> +        * The builtin command line will be added here, or it can override
-> +        * with the DT bootargs.
-> +        */
-> +       cmdline_add_builtin(data,
-> +                           ((p != NULL && l > 0) ? p : NULL), /* This is sanity checking */
-> +                           COMMAND_LINE_SIZE);
-> +#else
->         if (p != NULL && l > 0)
->                 strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
->
-> @@ -1070,6 +1081,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
->                 strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
->  #endif
->  #endif /* CONFIG_CMDLINE */
-> +#endif /* CONFIG_GENERIC_CMDLINE */
->
->         pr_debug("Command line is: %s\n", (char *)data);
->
-> --
-> 2.25.1
->
+I've added some cleanup patches to the series. I'll send it around soon,
+please test.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--mew7tbg2zbjzh4dd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBA78wACgkQqclaivrt
+76ljZAgAseVI7B24JPuI6qKYxxc0qy4xsQeQM/4OYXK/pziAHW7soRQrZvpnuIvg
++yWPtqaWjHT5TVK0HH6PTUPGRBWZemAgJdcgP/QgC4ETTbyjEdJw2N2aGhrS8PGF
+F6rBddSgUWCaF1JL7xrUKi1R/x5amHfGQrYnadAk3fMISb8mZ906chxCev1omXlP
+ZSM0gqCORls/s2F07kHoHQgyeR65oTVV5twUudwtxebBB35Ll4rBDbO1jC2Zr6YN
+J3ib6iKz7Q6kgGrQTZ2iOacu9O3KiSrbHGHnvKID2B9De0b+ynxfN05rzHlHwmhr
+jXh99FbVRSIaYnqpSQCPLYLoUWIa1g==
+=1bZI
+-----END PGP SIGNATURE-----
+
+--mew7tbg2zbjzh4dd--
