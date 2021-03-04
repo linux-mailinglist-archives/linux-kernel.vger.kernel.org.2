@@ -2,107 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3D032CCCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED83B32CCCC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbhCDGXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 01:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235072AbhCDGWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:22:49 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6670EC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 22:22:09 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d12so15631752pfo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 22:22:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wa5muaXHut4hfwXTsUBvUfthAuhKwhmv9/hS3aAHRxQ=;
-        b=Ei8dVn1tS3L8d+KCjI+VuCzSj+Cfa7yV0HFL1DM94rBiWSDms9SHkHwivMYn04bjmx
-         OY7XuGQpzmXg0EUzXpFAvpzAbXLTJKYqOnctbovAHMT8rOH5KdM45V87GeUhl5QmBmOf
-         9SsmlkYM/nbtIcpXpwLUik8NdP/SeznAYt/+RCuNSN4C49b2N8+qrYgTtMsFHLPlCq3i
-         oFaz4h5lYyjePLRasP1ShTXGMxKB4OpTzRm53eQV4pK89hTc9zr8XIMmx5W/jGKNj+L3
-         M9VgZ1z/fQqUt6B/WABIinlH+Kr151hgBCYsKRas0sZSUw/S+UXNv+4IxVwtGr+bxBZB
-         7OiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wa5muaXHut4hfwXTsUBvUfthAuhKwhmv9/hS3aAHRxQ=;
-        b=rsCSmMbvVsMEZ/tEvJcp7b9umNOHiY6fvD3oS5Kd2YzOsvL6EDVTdRLeQ595VWHe8x
-         h0d3nfISSXQfFK8aUhVZLhJ3Tq4qkx+zXnBL/nv8Ab0f38ItgzfUx8GnENY9Cp3ZAkKP
-         xNKNAGoONMAOZdpCVef0Oj/BbniK/YztUTimyRsYq2BaN6q69Bt8Z5ft+JlQEq6KEaFv
-         nERW3+KuY6dliGbarLZGp7Y3ocOW9jKZm+zYYRRMCGF6tk++oFCxEAG0AWap068RMlg3
-         ikC3VpygwSDUOcQ8amLcrMlBhCgTtzmlL00mmFN9e/Q5jssiXp6Xn7V/Abd+AwXRd4zK
-         d4Ug==
-X-Gm-Message-State: AOAM531cl5en6JHQvhva3V5xXKhtgmZxT1AbGmGyZpw41Nr+woBEjQRq
-        LkFRwo0I/IJVm2OPHxhyFwBQOA==
-X-Google-Smtp-Source: ABdhPJxxhHevBDuxsi5CHKFWK0/YIVXgJSyzO2vm7eUTrnkAE2fGT16nVrdFVJcwBDOhVAjGBkGaQg==
-X-Received: by 2002:a63:3e03:: with SMTP id l3mr1928769pga.452.1614838928731;
-        Wed, 03 Mar 2021 22:22:08 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:5ddf:a7e:5239:ef47])
-        by smtp.gmail.com with ESMTPSA id q128sm26609812pfb.51.2021.03.03.22.22.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 22:22:08 -0800 (PST)
-Date:   Wed, 3 Mar 2021 22:22:03 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Jacob Pan <jacob.jun.pan@intel.com>
-Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <YEB8i6Chq4K/GGF6@google.com>
-References: <20210302081705.1990283-1-vipinsh@google.com>
- <20210302081705.1990283-3-vipinsh@google.com>
- <20210303185513.27e18fce@jacob-builder>
+        id S235140AbhCDGYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 01:24:01 -0500
+Received: from mga06.intel.com ([134.134.136.31]:7746 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235148AbhCDGXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 01:23:46 -0500
+IronPort-SDR: FiRnWB+1BvQa5yt69i/Iiy4unKcwRrNYTuB/Dt09H/53+ZFDKigsPoLrrHt3vUkhnZp1Mm+pc8
+ L+/nEBx7qmCg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="248750351"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="248750351"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 22:23:05 -0800
+IronPort-SDR: q4dO7eG/ozSMZdvigmiqvcVR6wXxn/ook95LGOEL3un8xxi13uLXFKB6nuCt4nB1wMygfbWKJV
+ BO8Pyo0RLzQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="518545252"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 03 Mar 2021 22:23:04 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lHhO3-00023i-TA; Thu, 04 Mar 2021 06:23:03 +0000
+Date:   Thu, 04 Mar 2021 14:22:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:tglx-pc.2021.03.03a] BUILD SUCCESS
+ 614745c470c1cc6c2becaec5d0b4435f83dc3c99
+Message-ID: <60407c95.7KjXxapd44S3uh71%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303185513.27e18fce@jacob-builder>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 06:55:13PM -0800, Jacob Pan wrote:
-> Hi Vipin,
-> 
-> On Tue,  2 Mar 2021 00:17:05 -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> 
-> > +Migration and Ownership
-> > +~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +A miscellaneous scalar resource is charged to the cgroup in which it is
-> > used +first, and stays charged to that cgroup until that resource is
-> > freed. Migrating +a process to a different cgroup does not move the
-> > charge to the destination +cgroup where the process has moved.
-> > +
-> I am trying to see if IOASIDs cgroup can also fit in this misc controller
-> as yet another resource type.
-> https://lore.kernel.org/linux-iommu/20210303131726.7a8cb169@jacob-builder/T/#u
-> However, unlike sev IOASIDs need to be migrated if the process is moved to
-> another cgroup. i.e. charge the destination and uncharge the source.
-> 
-> Do you think this behavior can be achieved by differentiating resource
-> types? i.e. add attach callbacks for certain types. Having a single misc
-> interface seems cleaner than creating another controller.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tglx-pc.2021.03.03a
+branch HEAD: 614745c470c1cc6c2becaec5d0b4435f83dc3c99  rcu/tree: Allocate a page when caller is preemptible
 
-I think it makes sense to add support for migration for the resources
-which need it. Resources like SEV, SEV-ES will not participate in
-migration and won't stop can_attach() to succeed, other resources which
-need migration will allow or stop based on their limits and capacity in
-the destination.
+elapsed time: 725m
+
+configs tested: 96
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                  colibri_pxa300_defconfig
+mips                          malta_defconfig
+h8300                               defconfig
+ia64                      gensparse_defconfig
+powerpc                      pmac32_defconfig
+arc                          axs103_defconfig
+arm                        clps711x_defconfig
+m68k                       m5249evb_defconfig
+powerpc                       holly_defconfig
+arm                        mini2440_defconfig
+arm                        vexpress_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                     tqm5200_defconfig
+mips                          rm200_defconfig
+arm64                            alldefconfig
+arm                        oxnas_v6_defconfig
+mips                  cavium_octeon_defconfig
+mips                            ar7_defconfig
+arm                        realview_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                      ppc44x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210303
+i386                 randconfig-a003-20210303
+i386                 randconfig-a002-20210303
+i386                 randconfig-a004-20210303
+i386                 randconfig-a006-20210303
+i386                 randconfig-a001-20210303
+x86_64               randconfig-a013-20210303
+x86_64               randconfig-a016-20210303
+x86_64               randconfig-a015-20210303
+x86_64               randconfig-a014-20210303
+x86_64               randconfig-a012-20210303
+x86_64               randconfig-a011-20210303
+i386                 randconfig-a016-20210304
+i386                 randconfig-a012-20210304
+i386                 randconfig-a013-20210304
+i386                 randconfig-a014-20210304
+i386                 randconfig-a011-20210304
+i386                 randconfig-a015-20210304
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210303
+x86_64               randconfig-a001-20210303
+x86_64               randconfig-a004-20210303
+x86_64               randconfig-a002-20210303
+x86_64               randconfig-a005-20210303
+x86_64               randconfig-a003-20210303
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
