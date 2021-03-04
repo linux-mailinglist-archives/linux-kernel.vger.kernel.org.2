@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED31032C937
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BB932C92C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355087AbhCDBDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:03:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48826 "EHLO mail.kernel.org"
+        id S1355744AbhCDBD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:03:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345169AbhCDA0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1450979AbhCDA0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:26:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F020464E51;
-        Thu,  4 Mar 2021 00:26:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 291D464E2E;
+        Thu,  4 Mar 2021 00:26:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614817594;
-        bh=yXGcZW2wWfu41VYgk2M2ElY38HMuoYksAX7Pf7DoV/E=;
+        bh=+GBdYJSR46rekQeBYnYr5OD6KmiT2KIfh+2gyAHrJkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=et1zxteZXdmCPsXOcrSLXdf8B24TIXjD8xuPMjc3vLoIgcmde59CcbkGWGJkPjhXQ
-         3mIgle1hkRFARcygVdO3FCzwgQ9PGne4HCLKxsnOL0Rldruy91DJsyCxbwtnWTCSAr
-         W4YPEH92WncXYo2KqEnyXXMr++CeGFo8LiWhBesVhzYvMrDzT9nrTAIJeKg+Rlnj4A
-         MXU0HKdx61/KBeMjpqQ3BUdVQaQfHJM9GvUvzFLJ1lGLB8wKAuy71gAoXj9rftO1xG
-         aywrxorsfYu3YAej2eqpJjnFgeW42UNPdtmmDZzu6Cqlpcx52mPwvOoRNLYBnVtEQO
-         whVGeDAmwyueA==
+        b=c+aBikY9O5FxuRG+7k+5K1H3Mw4EGHQoZg6b2GrzhK3ZYIwNP/H4qdx2j0bINIOVa
+         MVDwSLFa+gr1qLe4ow7CZtVslvgI04ZmOXGTmMJRQq4/3sS+1ofYN1o8tOq63hoKx/
+         W1bvswLWCjq/ARyAENLZl1fTkO2atxD/X5QWwdmgQrXcnvfX0R/fhHsVQYXwhnyO+z
+         2uv4ZuKKBRd/Jh7ykoG0UvQrGODfe1CJFNFfxu36Y3c+Z8exg8N/k/V+BLsw8NJyCp
+         0Y+nOZW4CnqHLTyg3nJZSqtFImIMnD2yJErGG1r+/1uKfKmOZ1/eO0ObpNWVKY1cCJ
+         LzYjM8OX9YhHQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for Tree RCU grace periods
-Date:   Wed,  3 Mar 2021 16:26:30 -0800
-Message-Id: <20210304002632.23870-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for Tiny RCU grace periods
+Date:   Wed,  3 Mar 2021 16:26:31 -0800
+Message-Id: <20210304002632.23870-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304002605.GA23785@paulmck-ThinkPad-P72>
 References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
@@ -62,123 +62,106 @@ to a later call to either poll_state_synchronize_rcu() or the existing
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcutree.h |  2 ++
- kernel/rcu/tree.c       | 70 +++++++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 67 insertions(+), 5 deletions(-)
+ include/linux/rcutiny.h | 11 ++++++-----
+ kernel/rcu/tiny.c       | 40 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index df578b7..b89b541 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -41,6 +41,8 @@ void rcu_momentary_dyntick_idle(void);
- void kfree_rcu_scheduler_running(void);
- bool rcu_gp_might_be_stalled(void);
- unsigned long get_state_synchronize_rcu(void);
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 2a97334..69108cf4 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -17,14 +17,15 @@
+ /* Never flag non-existent other CPUs! */
+ static inline bool rcu_eqs_special_set(int cpu) { return false; }
+ 
+-static inline unsigned long get_state_synchronize_rcu(void)
+-{
+-	return 0;
+-}
++unsigned long get_state_synchronize_rcu(void);
 +unsigned long start_poll_synchronize_rcu(void);
 +bool poll_state_synchronize_rcu(unsigned long oldstate);
- void cond_synchronize_rcu(unsigned long oldstate);
  
- void rcu_idle_enter(void);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index da6f521..8e0a140 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3774,8 +3774,8 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
-  * get_state_synchronize_rcu - Snapshot current RCU state
-  *
-  * Returns a cookie that is used by a later call to cond_synchronize_rcu()
-- * to determine whether or not a full grace period has elapsed in the
-- * meantime.
-+ * or poll_state_synchronize_rcu() to determine whether or not a full
-+ * grace period has elapsed in the meantime.
-  */
- unsigned long get_state_synchronize_rcu(void)
+ static inline void cond_synchronize_rcu(unsigned long oldstate)
  {
-@@ -3789,13 +3789,73 @@ unsigned long get_state_synchronize_rcu(void)
- EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+-	might_sleep();
++	if (poll_state_synchronize_rcu(oldstate))
++		return;
++	synchronize_rcu();
+ }
  
- /**
-+ * start_poll_state_synchronize_rcu - Snapshot and start RCU grace period
-+ *
-+ * Returns a cookie that is used by a later call to cond_synchronize_rcu()
-+ * or poll_state_synchronize_rcu() to determine whether or not a full
-+ * grace period has elapsed in the meantime.  If the needed grace period
-+ * is not already slated to start, notifies RCU core of the need for that
-+ * grace period.
-+ *
-+ * Interrupts must be enabled for the case where it is necessary to awaken
-+ * the grace-period kthread.
+ extern void rcu_barrier(void);
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index aa897c3..c8a029f 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -32,12 +32,14 @@ struct rcu_ctrlblk {
+ 	struct rcu_head *rcucblist;	/* List of pending callbacks (CBs). */
+ 	struct rcu_head **donetail;	/* ->next pointer of last "done" CB. */
+ 	struct rcu_head **curtail;	/* ->next pointer of last CB. */
++	unsigned long gp_seq;		/* Grace-period counter. */
+ };
+ 
+ /* Definition for rcupdate control block. */
+ static struct rcu_ctrlblk rcu_ctrlblk = {
+ 	.donetail	= &rcu_ctrlblk.rcucblist,
+ 	.curtail	= &rcu_ctrlblk.rcucblist,
++	.gp_seq		= 0 - 300UL,
+ };
+ 
+ void rcu_barrier(void)
+@@ -56,6 +58,7 @@ void rcu_qs(void)
+ 		rcu_ctrlblk.donetail = rcu_ctrlblk.curtail;
+ 		raise_softirq_irqoff(RCU_SOFTIRQ);
+ 	}
++	WRITE_ONCE(rcu_ctrlblk.gp_seq, rcu_ctrlblk.gp_seq + 1);
+ 	local_irq_restore(flags);
+ }
+ 
+@@ -177,6 +180,43 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ }
+ EXPORT_SYMBOL_GPL(call_rcu);
+ 
++/*
++ * Return a grace-period-counter "cookie".  For more information,
++ * see the Tree RCU header comment.
++ */
++unsigned long get_state_synchronize_rcu(void)
++{
++	return READ_ONCE(rcu_ctrlblk.gp_seq);
++}
++EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
++
++/*
++ * Return a grace-period-counter "cookie" and ensure that a future grace
++ * period completes.  For more information, see the Tree RCU header comment.
 + */
 +unsigned long start_poll_synchronize_rcu(void)
 +{
-+	unsigned long flags;
 +	unsigned long gp_seq = get_state_synchronize_rcu();
-+	bool needwake;
-+	struct rcu_data *rdp;
-+	struct rcu_node *rnp;
 +
-+	lockdep_assert_irqs_enabled();
-+	local_irq_save(flags);
-+	rdp = this_cpu_ptr(&rcu_data);
-+	rnp = rdp->mynode;
-+	raw_spin_lock_rcu_node(rnp); // irqs already disabled.
-+	needwake = rcu_start_this_gp(rnp, rdp, gp_seq);
-+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+	if (needwake)
-+		rcu_gp_kthread_wake();
++	if (unlikely(is_idle_task(current))) {
++		/* force scheduling for rcu_qs() */
++		resched_cpu(0);
++	}
 +	return gp_seq;
 +}
 +EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
 +
-+/**
-+ * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
-+ *
-+ * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-+ *
-+ * If a full RCU grace period has elapsed since the earlier call from
-+ * which oldstate was obtained, return @true, otherwise return @false.
-+ * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
-+ *
-+ * Yes, this function does not take counter wrap into account.
-+ * But counter wrap is harmless.  If the counter wraps, we have waited for
-+ * more than 2 billion grace periods (and way more on a 64-bit system!).
-+ * Those needing to keep oldstate values for very long time periods
-+ * (many hours even on 32-bit systems) should check them occasionally
-+ * and either refresh them or set a flag indicating that the grace period
-+ * has completed.
++/*
++ * Return true if the grace period corresponding to oldstate has completed
++ * and false otherwise.  For more information, see the Tree RCU header
++ * comment.
 + */
 +bool poll_state_synchronize_rcu(unsigned long oldstate)
 +{
-+	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
-+		smp_mb(); /* Ensure GP ends before subsequent accesses. */
-+		return true;
-+	}
-+	return false;
++	return READ_ONCE(rcu_ctrlblk.gp_seq) != oldstate;
 +}
 +EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
 +
-+/**
-  * cond_synchronize_rcu - Conditionally wait for an RCU grace period
-  *
-  * @oldstate: return value from earlier call to get_state_synchronize_rcu()
-  *
-  * If a full RCU grace period has elapsed since the earlier call to
-- * get_state_synchronize_rcu(), just return.  Otherwise, invoke
-- * synchronize_rcu() to wait for a full grace period.
-+ * get_state_synchronize_rcu() or start_poll_synchronize_rcu(), just return.
-+ * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
-  *
-  * Yes, this function does not take counter wrap into account.  But
-  * counter wrap is harmless.  If the counter wraps, we have waited for
-@@ -3804,7 +3864,7 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
-  */
- void cond_synchronize_rcu(unsigned long oldstate)
+ void __init rcu_init(void)
  {
--	if (!rcu_seq_done(&rcu_state.gp_seq, oldstate))
-+	if (!poll_state_synchronize_rcu(oldstate))
- 		synchronize_rcu();
- 	else
- 		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+ 	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
 -- 
 2.9.5
 
