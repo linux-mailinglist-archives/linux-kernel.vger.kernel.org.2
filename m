@@ -2,177 +2,534 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F2932CF6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A82C32CF7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhCDJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:15:17 -0500
-Received: from mout.gmx.net ([212.227.15.18]:47865 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237660AbhCDJOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:14:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614849177;
-        bh=8xkDQhRbXDIKJkE9Bu6qvOnT1kfHnnGbUW0lasJbK3c=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=LKiK4UOcGmShqNWnqOzj4DGO3nTjVijTy3a9iBz1nKgaWJooD69Iq0hOagixMggA5
-         9rwIuFZbtD47WPygBjJh3jCbJxtBIPuwzl6xztH588kNm50qHdzr3T21/DZj6JgOZ8
-         Bp84cBMUd6hpRS+/iEY3U81BR5ZN3OPtPE1Ni+2c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.219.128]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ygO-1lNo2p0cMg-0069ef; Thu, 04
- Mar 2021 10:12:57 +0100
-Message-ID: <5d9c74ad033e898111e5a1e931b266912487b595.camel@gmx.de>
-Subject: Re: futex breakage in 4.9 stable branch
-From:   Mike Galbraith <efault@gmx.de>
-To:     Ben Hutchings <ben@decadent.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>, lwn@lwn.net,
-        jslaby@suse.cz, Thomas Gleixner <tglx@linutronix.de>
-Date:   Thu, 04 Mar 2021 10:12:56 +0100
-In-Reply-To: <YD0kkNH+I4xyoTwy@decadent.org.uk>
-References: <161408880177110@kroah.com>
-         <66826ac72356b00814f51487dd1008298e52ed9b.camel@decadent.org.uk>
-         <YDygp3WYafzcgt+s@kroah.com> <YD0kkNH+I4xyoTwy@decadent.org.uk>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S237341AbhCDJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:17:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48716 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237331AbhCDJRe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:17:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614849368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tNu6rMQ9UeOVw4l5UVgXfA4i18yudC5UO6wop5upkuI=;
+        b=Crd/hLN8meLLH6Jjgnl/L4PItu6IwRD5bjLZC7bgYg4/lF+L5aZD3RI5Q4p3H0Hk1ZQphf
+        zQWXjgTcBRH182+S82poh1G6yryve/d02WZVMDWF4XfTUAJ+cMCIKshWZgZVtWslp1qUCp
+        e/Y/aiu8xcOKmk/hV8pQXZ/xx3cwEnM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-P2-1XeV4NZyZAOVYmP-N2g-1; Thu, 04 Mar 2021 04:16:06 -0500
+X-MC-Unique: P2-1XeV4NZyZAOVYmP-N2g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E031107466B;
+        Thu,  4 Mar 2021 09:16:03 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-64.pek2.redhat.com [10.72.12.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FF5462680;
+        Thu,  4 Mar 2021 09:15:45 +0000 (UTC)
+Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
+To:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa@kernel.org, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com>
+Date:   Thu, 4 Mar 2021 17:15:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tHbckRnynUxA5tqlBOhhA8J+V8zcD7voddSk2nnY5g12A5gfcXR
- xB2kMnVWoC+V6O1v/QQEQumneEZad+s5XI52VP/x4N+qx/g56VA8wvZTSoVD6l6Pe0E9hzK
- I77CCtITR/f0TFO+yf6GvVYYf2OQJ2sBjdpXEgVt4gP7yZqozuDad+cS+h/IKDRvdeQNEfC
- kKXutpND0XaP7uyAjjxlw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:spPeGLxciHw=:gJdpKxnMrESlWJPgp6zWwC
- nPZznwT6nkxC97k4X20aqId1yPggsjzIvnvS4qKlKRAxFh23kh0PMELNPoP1Wq/dFS2+S5ldG
- 96PUWBkih2/ds+03cLCB7WkPDTfvdZj2qlla79Njfzy9czmGGrcD3/u1gAb79GD70G4mqoh9/
- S+3NG7qsHYzP+YXHwa/qBGfIojibQMc8mmWOg2R5edbaUHpsdGQiulMFL75lt0KgVbV1zzyGR
- KUcmW7m6gsSyaIXQmUdNZoVOzmp19HnAf5Jt/Gk335Huj/H3aPOpFwt+CemW8/hNO/4XLzWWT
- 0jGc1gs1IAg9SCrwjLY63g3iCkenqesZ24dHfYgKiozK44gQQHPuDThikHhmGESwWfH0ZBYkz
- TnTRg5Fff7Owc+W42mBsnjd+PJ22zrgjvbZwuEly8iFEXXNaLAbtiIzACvlaV02kfBoqJSXZL
- aiqMxTeDMDs3UQBeddl3jpq4MSplmwX2dxgm5WKrBbJ/I2gbcpNjj8sOI+9rSzcaUqR1rd139
- f/8C/DqE8vAVJcQ8T9afiyCGyNYg3La2pPk6AZBFOI1tB3qs3LyjOQ8tnmdJ2OYm5yF7wZiXw
- ReUa/HvyuX8s7Uwis4Anyb3Y6C802c/a6GQ6G/ZIk8GnPjDEutSIIAdkWXSXDhUnKO77DUXoZ
- 6z8uxf0o0wMgzy5CHIqyoNXsOmhVtqvuQsWiBDW9W//CU+57CGnzpQEqdDHG3mPGNX3/Yb+1Y
- LCS5LQanjd4RI2+9egsmJTmNCPb/80wRsY6U1k4dbAOwO+q4SyL7GaerzFUh43B3Hr4i0Agh0
- mytJFykGdnDAwFaP5f/10vABy48fQzMmalQqyy7MJNbBI5yhy7TczNQCD7V5mUY1SVJgCh8jD
- VJ0lrNWo/tl9ZV1oJTTw==
+In-Reply-To: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-01 at 18:29 +0100, Ben Hutchings wrote:
-> On Mon, Mar 01, 2021 at 09:07:03AM +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Mar 01, 2021 at 01:13:08AM +0100, Ben Hutchings wrote:
-> > > On Tue, 2021-02-23 at 15:00 +0100, Greg Kroah-Hartman wrote:
-> > > > I'm announcing the release of the 4.9.258 kernel.
-> > > >
-> > > > All users of the 4.9 kernel series must upgrade.
-> > > >
-> > > > The updated 4.9.y git tree can be found at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux=
--stable.git linux-4.9.y
-> > > > and can be browsed at the normal kernel.org git web browser:
-> > > >
-> > >
-> > > The backported futex fixes are still incomplete/broken in this versi=
-on.
-> > > If I enable lockdep and run the futex self-tests (from 5.10):
-> > >
-> > > - on 4.9.246, they pass with no lockdep output
-> > > - on 4.9.257 and 4.9.258, they pass but futex_requeue_pi trigers a
-> > >   lockdep splat
-> > >
-> > > I have a local branch that essentially updates futex and rtmutex in
-> > > 4.9-stable to match 4.14-stable.  With this, the tests pass and lock=
-dep
-> > > is happy.
-> > >
-> > > Unfortunately, that branch has about another 60 commits.
+
+On 2021/3/4 9:59 上午, Jie Deng wrote:
+> Add an I2C bus driver for virtio para-virtualization.
 >
-> I have now rebased that on top of 4.9.258, and there are "only" 39
-> commits.
+> The controller can be emulated by the backend driver in
+> any device model software by following the virtio protocol.
 >
-> > > Further, the
-> > > more we change futex in 4.9, the more difficult it is going to be to
-> > > update the 4.9-rt branch.  But I don't see any better option availab=
-le
-> > > at the moment.
-> > >
-> > > Thoughts?
-> >
-> > There were some posted futex fixes for 4.9 (and 4.4) on the stable lis=
-t
-> > that I have not gotten to yet.
-> >
-> > Hopefully after these are merged (this week), these issues will be
-> > resolved.
+> The device specification can be found on
+> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
 >
-> I'm afraid they are not sufficient.
+> By following the specification, people may implement different
+> backend drivers to emulate different controllers according to
+> their needs.
 >
-> > If not, then yes, they need to be fixed and any help you can provide
-> > would be appreciated.
-> >
-> > As for "difficulty", yes, it's rough, but the changes backported were
-> > required, for obvious reasons :(
+> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Jie Deng <jie.deng@intel.com>
+> ---
+>   drivers/i2c/busses/Kconfig      |  11 ++
+>   drivers/i2c/busses/Makefile     |   3 +
+>   drivers/i2c/busses/i2c-virtio.c | 289 ++++++++++++++++++++++++++++++++++++++++
+>   include/uapi/linux/virtio_i2c.h |  42 ++++++
+>   include/uapi/linux/virtio_ids.h |   1 +
+>   5 files changed, 346 insertions(+)
+>   create mode 100644 drivers/i2c/busses/i2c-virtio.c
+>   create mode 100644 include/uapi/linux/virtio_i2c.h
 >
-> I had another look at the locking bug and I was able to make a series
-> of 7 commits (on top of the 2 already queued) that is sufficient to
-> make lockdep happy.  But I am not very confident that there won't be
-> other regressions.  I'll send that over shortly.
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index 05ebf75..0860395 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -21,6 +21,17 @@ config I2C_ALI1535
+>   	  This driver can also be built as a module.  If so, the module
+>   	  will be called i2c-ali1535.
+>   
+> +config I2C_VIRTIO
+> +	tristate "Virtio I2C Adapter"
+> +	depends on VIRTIO
 
-This is all I had to do to make 4.4-stable a happy camper again.
 
-futex: fix 4.4-stable 34c8e1c2c025 backport inspired lockdep complaint
+Please use select here. There's no prompt for VIRTIO.
 
-1. 34c8e1c2c025 "futex: Provide and use pi_state_update_owner()" was backp=
-orted
-to stable, leading to the therein assertion that pi_state->pi_mutex.wait_l=
-ock
-be held triggering in 4.4-stable.  Fixing that leads to lockdep moan part =
-2.
 
-2: b4abf91047cf "rtmutex: Make wait_lock irq safe" is absent in 4.4-stable=
-, but
-wake_futex_pi() nonetheless managed to acquire an unbalanced raw_spin_lock=
-()
-raw_spin_inlock_irq() pair, which inspires lockdep to moan after aforement=
-ioned
-assert has been appeased.
+> +	help
+> +	  If you say yes to this option, support will be included for the virtio
+> +	  I2C adapter driver. The hardware can be emulated by any device model
+> +	  software according to the virtio protocol.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called i2c-virtio.
+> +
+>   config I2C_ALI1563
+>   	tristate "ALI 1563"
+>   	depends on PCI
+> diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
+> index 615f35e..b88da08 100644
+> --- a/drivers/i2c/busses/Makefile
+> +++ b/drivers/i2c/busses/Makefile
+> @@ -6,6 +6,9 @@
+>   # ACPI drivers
+>   obj-$(CONFIG_I2C_SCMI)		+= i2c-scmi.o
+>   
+> +# VIRTIO I2C host controller driver
+> +obj-$(CONFIG_I2C_VIRTIO)	+= i2c-virtio.o
+> +
+>   # PC SMBus host controller drivers
+>   obj-$(CONFIG_I2C_ALI1535)	+= i2c-ali1535.o
+>   obj-$(CONFIG_I2C_ALI1563)	+= i2c-ali1563.o
+> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+> new file mode 100644
+> index 0000000..98c0fcc
+> --- /dev/null
+> +++ b/drivers/i2c/busses/i2c-virtio.c
+> @@ -0,0 +1,289 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Virtio I2C Bus Driver
+> + *
+> + * The Virtio I2C Specification:
+> + * https://raw.githubusercontent.com/oasis-tcs/virtio-spec/master/virtio-i2c.tex
+> + *
+> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/completion.h>
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/io.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/wait.h>
+> +
+> +#include <linux/virtio.h>
+> +#include <linux/virtio_i2c.h>
+> +
+> +/**
+> + * struct virtio_i2c - virtio I2C data
+> + * @vdev: virtio device for this controller
+> + * @completion: completion of virtio I2C message
+> + * @adap: I2C adapter for this controller
+> + * @i2c_lock: lock for virtqueue processing
+> + * @vq: the virtio virtqueue for communication
+> + */
+> +struct virtio_i2c {
+> +	struct virtio_device *vdev;
+> +	struct completion completion;
+> +	struct i2c_adapter adap;
+> +	struct mutex i2c_lock;
+> +	struct virtqueue *vq;
+> +};
+> +
+> +/**
+> + * struct virtio_i2c_req - the virtio I2C request structure
+> + * @out_hdr: the OUT header of the virtio I2C message
+> + * @buf: the buffer into which data is read, or from which it's written
+> + * @in_hdr: the IN header of the virtio I2C message
+> + */
+> +struct virtio_i2c_req {
+> +	struct virtio_i2c_out_hdr out_hdr;
+> +	u8 *buf;
+> +	struct virtio_i2c_in_hdr in_hdr;
+> +};
+> +
+> +static void virtio_i2c_msg_done(struct virtqueue *vq)
+> +{
+> +	struct virtio_i2c *vi = vq->vdev->priv;
+> +
+> +	complete(&vi->completion);
+> +}
+> +
+> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
+> +				struct virtio_i2c_req *reqs,
+> +				struct i2c_msg *msgs, int nr)
+> +{
+> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
+> +	int i, outcnt, incnt, err = 0;
+> +	u8 *buf;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		if (!msgs[i].len)
+> +			break;
+> +
+> +		/* Only 7-bit mode supported for this moment. For the address format,
+> +		 * Please check the Virtio I2C Specification.
+> +		 */
+> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+> +
+> +		if (i != nr - 1)
+> +			reqs[i].out_hdr.flags |= VIRTIO_I2C_FLAGS_FAIL_NEXT;
+> +
+> +		outcnt = incnt = 0;
+> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
+> +		sgs[outcnt++] = &out_hdr;
+> +
+> +		buf = kzalloc(msgs[i].len, GFP_KERNEL);
+> +		if (!buf)
+> +			break;
+> +
+> +		reqs[i].buf = buf;
+> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
+> +
+> +		if (msgs[i].flags & I2C_M_RD) {
+> +			sgs[outcnt + incnt++] = &msg_buf;
+> +		} else {
+> +			memcpy(reqs[i].buf, msgs[i].buf, msgs[i].len);
+> +			sgs[outcnt++] = &msg_buf;
+> +		}
+> +
+> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
+> +		sgs[outcnt + incnt++] = &in_hdr;
+> +
+> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
+> +		if (err < 0) {
+> +			pr_err("failed to add msg[%d] to virtqueue.\n", i);
+> +			kfree(reqs[i].buf);
+> +			reqs[i].buf = NULL;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+> +					struct virtio_i2c_req *reqs,
+> +					struct i2c_msg *msgs, int nr)
+> +{
+> +	struct virtio_i2c_req *req;
+> +	unsigned int len;
+> +	int i;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		req = (struct virtio_i2c_req *)virtqueue_get_buf(vq, &len);
 
-With this applied, futex tests pass, and no longer inspire lockdep gripeag=
-e.
 
-Not-Signed-off-by: Mike Galbraith <efault@gmx.de>
-=2D--
- kernel/futex.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+The case is unnecessary.
 
-=2D-- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -874,8 +874,12 @@ static void free_pi_state(struct futex_p
- 	 * and has cleaned up the pi_state already
- 	 */
- 	if (pi_state->owner) {
-+		unsigned long flags;
-+
-+		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
- 		pi_state_update_owner(pi_state, NULL);
- 		rt_mutex_proxy_unlock(&pi_state->pi_mutex);
-+		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
- 	}
 
- 	if (current->pi_state_cache)
-@@ -1406,7 +1410,7 @@ static int wake_futex_pi(u32 __user *uad
- 	if (pi_state->owner !=3D current)
- 		return -EINVAL;
+> +		if (!(req && req == &reqs[i])) {
+> +			pr_err("msg[%d]: addr=0x%x virtqueue error.\n", i, msgs[i].addr);
+> +			break;
+> +		}
 
--	raw_spin_lock(&pi_state->pi_mutex.wait_lock);
-+	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
- 	new_owner =3D rt_mutex_next_owner(&pi_state->pi_mutex);
 
- 	/*
+It's better to be more specific here, e.g we can say we saw out of order 
+completion here.
+
+
+> +
+> +		if (req->in_hdr.status != VIRTIO_I2C_MSG_OK) {
+> +			pr_err("msg[%d]: addr=0x%x backend error.\n", i, msgs[i].addr);
+> +			break;
+
+
+Don't we need to clean used ring by keeping calling virtqueue_get_buf() 
+here?
+
+
+> +		}
+> +
+> +		if (msgs[i].flags & I2C_M_RD)
+> +			memcpy(msgs[i].buf, req->buf, msgs[i].len);
+
+
+Sorry if I had asked this before but any rason not to use msg[i].buf 
+directly?
+
+
+> +
+> +		kfree(req->buf);
+> +		req->buf = NULL;
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+> +{
+> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> +	struct virtqueue *vq = vi->vq;
+> +	struct virtio_i2c_req *reqs;
+> +	unsigned long time_left;
+> +	int ret, nr;
+> +
+> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+> +	if (!reqs)
+> +		return -ENOMEM;
+> +
+> +	mutex_lock(&vi->i2c_lock);
+> +
+> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
+> +	if (ret == 0)
+> +		goto err_unlock_free;
+> +
+> +	nr = ret;
+> +
+> +	virtqueue_kick(vq);
+> +
+> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
+> +	if (!time_left) {
+> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
+> +		ret = -ETIMEDOUT;
+> +		goto err_unlock_free;
+
+
+So if the request is finished after the timerout, all the following 
+request will fail, is this expected?
+
+
+> +	}
+> +
+> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, nr);
+
+
+So consider driver queue N requests, can device raise interrupt if it 
+completes the first request? If yes, the code break, if not it need to 
+be clarified in the spec.
+
+Acaultly I remember there's no VIRTIO_I2C_FLAGS_FAIL_NEXT in previous 
+versions, and after reading the spec I still don't get the motivation 
+for that (it may complicates both driver and device actually).
+
+
+> +
+> +	reinit_completion(&vi->completion);
+
+
+So if a request it timeout but interrupt is raised here, everything is 
+broken.
+
+Thanks
+
+
+> +
+> +err_unlock_free:
+> +	mutex_unlock(&vi->i2c_lock);
+> +	kfree(reqs);
+> +	return ret;
+> +}
+> +
+> +static void virtio_i2c_del_vqs(struct virtio_device *vdev)
+> +{
+> +	vdev->config->reset(vdev);
+> +	vdev->config->del_vqs(vdev);
+> +}
+> +
+> +static int virtio_i2c_setup_vqs(struct virtio_i2c *vi)
+> +{
+> +	struct virtio_device *vdev = vi->vdev;
+> +
+> +	vi->vq = virtio_find_single_vq(vdev, virtio_i2c_msg_done, "msg");
+> +	return PTR_ERR_OR_ZERO(vi->vq);
+> +}
+> +
+> +static u32 virtio_i2c_func(struct i2c_adapter *adap)
+> +{
+> +	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+> +}
+> +
+> +static struct i2c_algorithm virtio_algorithm = {
+> +	.master_xfer = virtio_i2c_xfer,
+> +	.functionality = virtio_i2c_func,
+> +};
+> +
+> +static struct i2c_adapter virtio_adapter = {
+> +	.owner = THIS_MODULE,
+> +	.name = "Virtio I2C Adapter",
+> +	.class = I2C_CLASS_DEPRECATED,
+> +	.algo = &virtio_algorithm,
+> +};
+> +
+> +static int virtio_i2c_probe(struct virtio_device *vdev)
+> +{
+> +	struct device *pdev = vdev->dev.parent;
+> +	struct virtio_i2c *vi;
+> +	int ret;
+> +
+> +	vi = devm_kzalloc(&vdev->dev, sizeof(*vi), GFP_KERNEL);
+> +	if (!vi)
+> +		return -ENOMEM;
+> +
+> +	vdev->priv = vi;
+> +	vi->vdev = vdev;
+> +
+> +	mutex_init(&vi->i2c_lock);
+> +	init_completion(&vi->completion);
+> +
+> +	ret = virtio_i2c_setup_vqs(vi);
+> +	if (ret)
+> +		return ret;
+> +
+> +	vi->adap = virtio_adapter;
+> +	i2c_set_adapdata(&vi->adap, vi);
+> +	vi->adap.dev.parent = &vdev->dev;
+> +	/* Setup ACPI node for controlled devices which will be probed through ACPI */
+> +	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
+> +	vi->adap.timeout = HZ / 10;
+> +
+> +	ret = i2c_add_adapter(&vi->adap);
+> +	if (ret) {
+> +		virtio_i2c_del_vqs(vdev);
+> +		dev_err(&vdev->dev, "failed to add virtio-i2c adapter.\n");
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void virtio_i2c_remove(struct virtio_device *vdev)
+> +{
+> +	struct virtio_i2c *vi = vdev->priv;
+> +
+> +	i2c_del_adapter(&vi->adap);
+> +	virtio_i2c_del_vqs(vdev);
+> +}
+> +
+> +static struct virtio_device_id id_table[] = {
+> +	{ VIRTIO_ID_I2C_ADPTER, VIRTIO_DEV_ANY_ID },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(virtio, id_table);
+> +
+> +static int __maybe_unused virtio_i2c_freeze(struct virtio_device *vdev)
+> +{
+> +	virtio_i2c_del_vqs(vdev);
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused virtio_i2c_restore(struct virtio_device *vdev)
+> +{
+> +	return virtio_i2c_setup_vqs(vdev->priv);
+> +}
+> +
+> +static struct virtio_driver virtio_i2c_driver = {
+> +	.id_table	= id_table,
+> +	.probe		= virtio_i2c_probe,
+> +	.remove		= virtio_i2c_remove,
+> +	.driver	= {
+> +		.name	= "i2c_virtio",
+> +	},
+> +#ifdef CONFIG_PM_SLEEP
+> +	.freeze = virtio_i2c_freeze,
+> +	.restore = virtio_i2c_restore,
+> +#endif
+> +};
+> +module_virtio_driver(virtio_i2c_driver);
+> +
+> +MODULE_DESCRIPTION("Virtio i2c bus driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
+> new file mode 100644
+> index 0000000..00f4508
+> --- /dev/null
+> +++ b/include/uapi/linux/virtio_i2c.h
+> @@ -0,0 +1,42 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+> +/*
+> + * Definitions for virtio I2C Adpter
+> + *
+> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+> +#define _UAPI_LINUX_VIRTIO_I2C_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/virtio_ids.h>
+> +#include <linux/virtio_config.h>
+> +
+> +/**
+> + * struct virtio_i2c_out_hdr - the virtio I2C message OUT header
+> + * @addr: the controlled device address
+> + * @padding: used to pad to full dword
+> + * @flags: used for feature extensibility
+> + */
+> +struct virtio_i2c_out_hdr {
+> +	__le16 addr;
+> +	__le16 padding;
+> +	__le32 flags;
+> +};
+> +
+> +/* The bit 0 of the @virtio_i2c_out_hdr.@flags, used to group the requests */
+> +#define VIRTIO_I2C_FLAGS_FAIL_NEXT	0x00000001
+> +
+> +/**
+> + * struct virtio_i2c_in_hdr - the virtio I2C message IN header
+> + * @status: the processing result from the backend
+> + */
+> +struct virtio_i2c_in_hdr {
+> +	u8 status;
+> +};
+> +
+> +/* The final status written by the device */
+> +#define VIRTIO_I2C_MSG_OK	0
+> +#define VIRTIO_I2C_MSG_ERR	1
+> +
+> +#endif /* _UAPI_LINUX_VIRTIO_I2C_H */
+> diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
+> index bc1c062..6ae32db 100644
+> --- a/include/uapi/linux/virtio_ids.h
+> +++ b/include/uapi/linux/virtio_ids.h
+> @@ -54,5 +54,6 @@
+>   #define VIRTIO_ID_FS			26 /* virtio filesystem */
+>   #define VIRTIO_ID_PMEM			27 /* virtio pmem */
+>   #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
+> +#define VIRTIO_ID_I2C_ADPTER		34 /* virtio i2c adpter */
+>   
+>   #endif /* _LINUX_VIRTIO_IDS_H */
 
