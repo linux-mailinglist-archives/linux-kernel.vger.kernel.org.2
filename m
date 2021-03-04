@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CC032D9DA
+	by mail.lfdr.de (Postfix) with ESMTP id 62C3232D9DC
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbhCDS7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:59:01 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54832 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236077AbhCDS65 (ORCPT
+        id S235987AbhCDS7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:59:31 -0500
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:41758 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235947AbhCDS7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:58:57 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 481E91F46675
-Subject: Re: [RFC PATCH v2 00/13] Add futex2 syscall
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, Jonathan Corbet <corbet@lwn.net>
-References: <20210304004219.134051-1-andrealmeid@collabora.com>
- <CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <bc54423b-753f-44be-4e4f-4535e27ad35c@collabora.com>
-Date:   Thu, 4 Mar 2021 15:58:07 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 4 Mar 2021 13:59:05 -0500
+Received: by mail-oo1-f48.google.com with SMTP id h38so6844939ooi.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:58:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gEZbPMlm6OKVSsymypk8thSJ+cPHhsgbRxpP5e0RVR0=;
+        b=k09kGhA+9d+mwovvbc3apQXyLRZNbPlPOXd83ttEKlrPE05xtOfkEyiENAFug6jaSq
+         K97hnaovcDWs0oklEOnajQ2wScFvTQQLh3twxTPStyyfYo+/GfcIguyDHwudYTKwkGu0
+         eU5M1RIsL98SYYDuiLS08qitcF2V471So06uWpRviGAEdt3PX7OIAbaGIlntjw/skT05
+         BoyzW/vUFMZf3pz9g0egZ04iUzfZZW8Mha/EjWxtj0LwdCwfBAzOLS+5r4zIc/QDcQFe
+         nGYlWLN8joPMzmrY8E+u9NbtaoagBqZ4WTAdptG1s4qK3tTAxAesTm+a944G7nusqul7
+         c2xw==
+X-Gm-Message-State: AOAM533FzCGhnaALsExmfilei3WkMJuT+J2us8OPDAsyX5AVRYOZT9Az
+        Rj9zXMxWsD1gZMfuFvyNEfBwvVJPBpyRmwXi6o67MCTs/tM=
+X-Google-Smtp-Source: ABdhPJxEzd0UhcOSI5CJVmhnWROZnYW5D76yRU0JCJKOuAoR45zotq8Rzr8Jww28ep+cvToCU9by2nHK3F/5Q2xasqI=
+X-Received: by 2002:a4a:d50d:: with SMTP id m13mr4452966oos.2.1614884304439;
+ Thu, 04 Mar 2021 10:58:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
+ <CAMuHMdWn7GPkLrRnTJRT=9W-PVwoWOVBTqdM-gR180c66vGfOQ@mail.gmail.com> <79c3603cb086435b87030227d3d39443@AcuMS.aculab.com>
+In-Reply-To: <79c3603cb086435b87030227d3d39443@AcuMS.aculab.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 4 Mar 2021 19:58:11 +0100
+Message-ID: <CAMuHMdXv8P-wiNVRv6VLX2OFuy5AxgP3Gk49eLFBGGaQLf46bg@mail.gmail.com>
+Subject: Re: A note on the 5.12-rc1 tag
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi David,
 
-Às 02:44 de 04/03/21, Peter Oskolkov escreveu:
-> On Wed, Mar 3, 2021 at 5:22 PM André Almeida <andrealmeid@collabora.com> wrote:
->>
->> Hi,
->>
->> This patch series introduces the futex2 syscalls.
->>
->> * FAQ
->>
->>   ** "And what's about FUTEX_64?"
->>
->>   By supporting 64 bit futexes, the kernel structure for futex would
->>   need to have a 64 bit field for the value, and that could defeat one of
->>   the purposes of having different sized futexes in the first place:
->>   supporting smaller ones to decrease memory usage. This might be
->>   something that could be disabled for 32bit archs (and even for
->>   CONFIG_BASE_SMALL).
->>
->>   Which use case would benefit for FUTEX_64? Does it worth the trade-offs?
-> 
-> The ability to store a pointer value on 64bit platforms is an
-> important use case.
-> Imagine a simple producer/consumer scenario, with the producer updating
-> some shared memory data and waking the consumer. Storing the pointer
-> in the futex makes it so that only one shared memory location needs to be
-> accessed "atomically", etc. With two atomics synchronization becomes
-> more involved (= slower).
-> 
+On Thu, Mar 4, 2021 at 5:56 PM David Laight <David.Laight@aculab.com> wrote:
+> > On Thu, Mar 4, 2021 at 1:59 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > > And, as far as I know, all the normal distributions set things up with
+> > > swap partitions, not files, because honestly, swapfiles tend to be
+> > > slower and have various other complexity issues.
+> >
+> > Looks like this has changed in at least Ubuntu: my desktop machine,
+> > which got Ubuntu 18.04LTS during initial installation, is using a (small)
+> > swapfile instead of a swap partition.
+>
+> My older ubuntu (13.04) didn't have swap at all.
 
-So the idea is to, instead of doing this:
+IIRC, the small swapfile was the default suggestion. I don't really
+need swap (yummy, 53 GiB in buff/cache ;-)
 
-T1:
-atomic_set(&shm_addr, buffer_addr);
-atomic_set(&futex, 0);
-futex_wake(&futex, 1);
+> I had to add some when running multiple copies of the Altera
+> fpga software started causing grief.
+> That will be a file.
 
-T2:
-consume(shm_addr);
+Or switch FPGA, and use yosys ;-)
 
-To do that:
+> After all once you start swapping it is all horrid and slow.
+> Swap to file may be slower, but apart from dumping out inactive
+> pages you really don't want to be doing it - so it doesn't matter.
+>
+> Historically swap was a partition and larger than physical memory.
+> This allows simple 'dump to swap' on panic (for many disk types).
+> But I've not seen that support in linux.
 
-T1:
-atomic_set(&futex, buffer_addr);
-futex_wake(&futex, 1);
+I know.  We started with lots of small partitions, but nowadays the
+distros wan't to install everything in a single[*] partition, even swap.
 
-T2:
-consume(futex);
+[*] Ignoring /boot/efi, which didn't exist in the good ol' days.
 
-Right?
+Gr{oetje,eeting}s,
 
-I'll try to write a small test to see how the perf numbers looks like.
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
