@@ -2,110 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D042632CADC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1575F32CAE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhCDDga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:36:30 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:40289 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232398AbhCDDgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:36:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614828944; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
- Subject: From: Sender; bh=pYHprIq1cj2b9eWi8f6XWlXtmT7SshWJ34swi6hZK/o=;
- b=GEIyl5njCjnZaz1sxN8GVcI+KJSsSGKDLQUFB4xQFe/l1cJFPCtYtujFs26zu7i+8pTzE3rd
- 3gNGMziAnwq66RyFddz20htWmtrQ5n+7b8JpzdyyWqyrXiVRlSS2Cj+ZBtggYfF6uP8FisX6
- 5KZ4ZD3vXmCrdDZcChI2tT21A5w=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6040557060050cf4d0d541b3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Mar 2021 03:35:12
- GMT
-Sender: eberman=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 87257C43461; Thu,  4 Mar 2021 03:35:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.70] (cpe-76-167-231-33.san.res.rr.com [76.167.231.33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: eberman)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF30AC433C6;
-        Thu,  4 Mar 2021 03:35:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AF30AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
-From:   Elliot Berman <eberman@codeaurora.org>
-Subject: Re: [PATCH 6/6] firmware: qcom_scm: Only compile legacy calls on ARM
-To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-References: <20210223214539.1336155-1-swboyd@chromium.org>
- <20210223214539.1336155-7-swboyd@chromium.org>
-Message-ID: <b9174acc-9826-eb82-b399-ed95f7e83085@codeaurora.org>
-Date:   Wed, 3 Mar 2021 19:35:08 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232650AbhCDDiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:38:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232676AbhCDDiC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:38:02 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2857DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 19:37:22 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id s7so8158099plg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 19:37:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V5aaETOTZkHBTtEXphmw/cUhBvHYGOGg2bi64gc0COM=;
+        b=fZ7WA8txY9uXEXqTFaVbB4DIu0hZ0dICn+uHs2p4lCHU4k3P47Yo0zFYBBq7GpxFH+
+         NRN/Iz/ofK337vNhjF8Ttoyok/6H25rgUDLSkYtumyFREI78IqpOuNJEU4YtAt++YJNA
+         67QO5GDhjSaqve0o0ZH2ujiGkGQ60l6raKjrMw7Unc/KHTCOxJZc+OnXC5RMu/ESzfC0
+         +QwEAaNeGndLDHeZgven22q6jpxUt00LwhdFxPtyE1s/lKjiVZ+8kNVQCmHmRFrh13dR
+         +3Fe8JsYKC6e5qK1PDz5rkeqMlMIwccy5FdQaL2yEjluQ3A57xKCCUXuwtEEqu2IzbA8
+         2Wdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V5aaETOTZkHBTtEXphmw/cUhBvHYGOGg2bi64gc0COM=;
+        b=RoHTFo0MmMLb1CvuL/Jh/qEou5wcDeZLBQwASdofw5VgfRwaDAY9fNX8s8SQOQcpdS
+         yUy+h87BRhD0Fyvjtx1VLCVVZK4b9Jr5HUyLFQcsM2qQrdU1jmW7+C50uUG7joJYhZyD
+         RY4TnL3RLhK7V9RBleovz9vAExfiFBrb7VC0H7KdefVxs5/rfTVakeCH/W0+0HbuK22l
+         wlZQT8BVnucziND/Vt91fRMtqxRb3Gv108W/15hDTZi8hDoLOjYJ5ya8R5DCezAK0INy
+         UFJDm6XNdWrhJ+8/klPpptvKNFPGQD2KCGH7jL1TJ/IkHC9tseVtuyPQAMQmF4qXl/AH
+         av0w==
+X-Gm-Message-State: AOAM5306kn4KPJsa6bPFislaa2hEpqPhm9qndJsqlsRH7TRm1EWJd5WN
+        OnZzRoIsc6HPc3MbuzKBBaFkch9pA+uKK/YWw+ZLWg==
+X-Google-Smtp-Source: ABdhPJw+Pt8GPG27iErHvkZjPIsoVxDhuetCkdHSYGA/hC/MW/L8FCiOy4ferytRGPCEKiUQQmnWNi6Pibpf7dqHNls=
+X-Received: by 2002:a17:90a:f008:: with SMTP id bt8mr2359360pjb.13.1614829041551;
+ Wed, 03 Mar 2021 19:37:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210223214539.1336155-7-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210225132130.26451-1-songmuchun@bytedance.com> <e9ef3479-24f1-9304-ee0e-6f06fb457d50@gmail.com>
+In-Reply-To: <e9ef3479-24f1-9304-ee0e-6f06fb457d50@gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 4 Mar 2021 11:36:44 +0800
+Message-ID: <CAMZfGtWeyo8+uWf7oB4ODqpyOw_--K+LdYeJDhdFj+ob0OaoeA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v17 0/9] Free some vmemmap pages of HugeTLB page
+To:     "Singh, Balbir" <bsingharora@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 4, 2021 at 11:14 AM Singh, Balbir <bsingharora@gmail.com> wrote:
+>
+> On 26/2/21 12:21 am, Muchun Song wrote:
+> > Hi all,
+> >
+> > This patch series will free some vmemmap pages(struct page structures)
+> > associated with each hugetlbpage when preallocated to save memory.
+> >
+> > In order to reduce the difficulty of the first version of code review.
+> > From this version, we disable PMD/huge page mapping of vmemmap if this
+> > feature was enabled. This accutualy eliminate a bunch of the complex code
+> > doing page table manipulation. When this patch series is solid, we cam add
+> > the code of vmemmap page table manipulation in the future.
+> >
+> > The struct page structures (page structs) are used to describe a physical
+> > page frame. By default, there is a one-to-one mapping from a page frame to
+> > it's corresponding page struct.
+> >
+> > The HugeTLB pages consist of multiple base page size pages and is supported
+> > by many architectures. See hugetlbpage.rst in the Documentation directory
+> > for more details. On the x86 architecture, HugeTLB pages of size 2MB and 1GB
+> > are currently supported. Since the base page size on x86 is 4KB, a 2MB
+> > HugeTLB page consists of 512 base pages and a 1GB HugeTLB page consists of
+> > 4096 base pages. For each base page, there is a corresponding page struct.
+> >
+> > Within the HugeTLB subsystem, only the first 4 page structs are used to
+> > contain unique information about a HugeTLB page. HUGETLB_CGROUP_MIN_ORDER
+> > provides this upper limit. The only 'useful' information in the remaining
+> > page structs is the compound_head field, and this field is the same for all
+> > tail pages.
+>
+> The HUGETLB_CGROUP_MIN_ORDER is only when CGROUP_HUGETLB is enabled, but I guess
+> that does not matter
 
-On 2/23/2021 1:45 PM, Stephen Boyd wrote:
-> These scm calls are never used outside of legacy ARMv7 based platforms.
-> That's because PSCI, mandated on arm64, implements them for modern SoCs
-> via the PSCI spec. Let's move them to the legacy file and only compile
-> the legacy file into the kernel when CONFIG_ARM=y. Otherwise provide
-> stubs and fail the calls. This saves a little bit of space in an
-> arm64 allmodconfig >
->   $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
->   add/remove: 0/8 grow/shrink: 5/7 up/down: 509/-4405 (-3896)
->   Function                                     old     new   delta
->   __qcom_scm_set_dload_mode.constprop          312     452    +140
->   qcom_scm_qsmmu500_wait_safe_toggle           288     416    +128
->   qcom_scm_io_writel                           288     408    +120
->   qcom_scm_io_readl                            376     492    +116
->   __param_str_download_mode                     23      28      +5
->   __warned                                    4327    4326      -1
->   qcom_iommu_init                              272     268      -4
->   e843419@0b3f_00010432_324                      8       -      -8
->   qcom_scm_call                                228     208     -20
->   CSWTCH                                      5925    5877     -48
->   _sub_I_65535_1                            163100  163040     -60
->   _sub_D_65535_0                            163100  163040     -60
->   qcom_scm_wb                                   64       -     -64
->   qcom_scm_lock                                320     160    -160
->   qcom_scm_call_atomic                         212       -    -212
->   qcom_scm_cpu_power_down                      308       -    -308
->   scm_legacy_call_atomic                       520       -    -520
->   qcom_scm_set_warm_boot_addr                  720       -    -720
->   qcom_scm_set_cold_boot_addr                  728       -    -728
->   scm_legacy_call                             1492       -   -1492
->   Total: Before=66737642, After=66733746, chg -0.01%
-> 
-> Commit 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and
-> legacy conventions") didn't mention any motivating factors for keeping
-> the legacy code around on arm64 kernels, i.e. presumably that commit
-> wasn't trying to support these legacy APIs on arm64 kernels.
+Agree.
 
-There are arm targets which support SMCCC convention and use some of 
-these removed functions. Can these functions be kept in qcom-scm.c and 
-wrapped with #if IS_ENABLED(CONFIG_ARM)?
+>
+> >
+> > By removing redundant page structs for HugeTLB pages, memory can returned to
+> > the buddy allocator for other uses.
+> >
+> > When the system boot up, every 2M HugeTLB has 512 struct page structs which
+> > size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+> >
+> >     HugeTLB                  struct pages(8 pages)         page frame(8 pages)
+> >  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+> >  |           |                     |     0     | -------------> |     0     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     1     | -------------> |     1     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     2     | -------------> |     2     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     3     | -------------> |     3     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     4     | -------------> |     4     |
+> >  |    2MB    |                     +-----------+                +-----------+
+> >  |           |                     |     5     | -------------> |     5     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     6     | -------------> |     6     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     7     | -------------> |     7     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |
+> >  |           |
+> >  |           |
+> >  +-----------+
+> >
+> > The value of page->compound_head is the same for all tail pages. The first
+> > page of page structs (page 0) associated with the HugeTLB page contains the 4
+> > page structs necessary to describe the HugeTLB. The only use of the remaining
+> > pages of page structs (page 1 to page 7) is to point to page->compound_head.
+> > Therefore, we can remap pages 2 to 7 to page 1. Only 2 pages of page structs
+> > will be used for each HugeTLB page. This will allow us to free the remaining
+> > 6 pages to the buddy allocator.
+>
+> What is page 1 used for? page 0 carries the 4 struct pages needed, does compound_head
+> need a full page? IOW, why do we need two full pages -- may be the patches have the
+> answer to something I am missing?
 
+Yeah. It really can free 7 pages. But we need some work to support this. Why?
+
+Now for the 2MB HugeTLB page, we only free 6 vmemmap pages. we really can
+free 7 vmemmap pages. In this case, we can see 8 of the 512 struct page
+structures have been set PG_head flag. If we can adjust compound_head()
+slightly and make compound_head() return the real head struct page when
+the parameter is the tail struct page but with PG_head flag set.
+
+In order to make the code evolution route clearer. This feature can be
+a separate patch (and send it out) after this patchset is solid and applied.
+
+>
+> >
+> > Here is how things look after remapping.
+> >
+> >     HugeTLB                  struct pages(8 pages)         page frame(8 pages)
+> >  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+> >  |           |                     |     0     | -------------> |     0     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     1     | -------------> |     1     |
+> >  |           |                     +-----------+                +-----------+
+> >  |           |                     |     2     | ----------------^ ^ ^ ^ ^ ^
+> >  |           |                     +-----------+                   | | | | |
+> >  |           |                     |     3     | ------------------+ | | | |
+> >  |           |                     +-----------+                     | | | |
+> >  |           |                     |     4     | --------------------+ | | |
+> >  |    2MB    |                     +-----------+                       | | |
+> >  |           |                     |     5     | ----------------------+ | |
+> >  |           |                     +-----------+                         | |
+> >  |           |                     |     6     | ------------------------+ |
+> >  |           |                     +-----------+                           |
+> >  |           |                     |     7     | --------------------------+
+> >  |           |                     +-----------+
+> >  |           |
+> >  |           |
+> >  |           |
+> >  +-----------+
+> >
+> > When a HugeTLB is freed to the buddy system, we should allocate 6 pages for
+> > vmemmap pages and restore the previous mapping relationship.
+> >
+>
+> Can these 6 pages come from the hugeTLB page itself? When you say 6 pages,
+> I presume you mean 6 pages of PAGE_SIZE
+
+There was a decent discussion about this in a previous version of the
+series starting here:
+
+https://lore.kernel.org/linux-mm/20210126092942.GA10602@linux/
+
+In this thread various other options were suggested and discussed.
+
+Thanks.
+
+>
+> > Apart from 2MB HugeTLB page, we also have 1GB HugeTLB page. It is similar
+> > to the 2MB HugeTLB page. We also can use this approach to free the vmemmap
+> > pages.
+> >
+> > In this case, for the 1GB HugeTLB page, we can save 4094 pages. This is a
+> > very substantial gain. On our server, run some SPDK/QEMU applications which
+> > will use 1024GB hugetlbpage. With this feature enabled, we can save ~16GB
+> > (1G hugepage)/~12GB (2MB hugepage) memory.
+>
+> Thanks,
+> Balbir Singh
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
