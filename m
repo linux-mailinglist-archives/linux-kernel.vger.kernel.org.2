@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A78732F172
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B7D32F16B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhCERih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:38:37 -0500
-Received: from mga18.intel.com ([134.134.136.126]:54203 "EHLO mga18.intel.com"
+        id S230084AbhCERia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:38:30 -0500
+Received: from mga02.intel.com ([134.134.136.20]:17653 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhCERiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:38:13 -0500
-IronPort-SDR: oRSyUQ3+AFSKbSk9VAC7gvgA965VhcESwJ6o8AA9DJAW1ky/QzUAfK8LAV3FQ752uIteH8BN4m
- gtkhpVR+aKnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="175318629"
+        id S229637AbhCERiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:38:11 -0500
+IronPort-SDR: F6J+Kgk7lAOFy5tX+zHiII0IEWoNr8/KbDp2RlTcpXQzu1in6Vumu7m8H6R2cHt1Oi0pq/XlCd
+ UJFOmu+yNFOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="174806716"
 X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="175318629"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 09:38:12 -0800
-IronPort-SDR: LAoMgUUG1bcM1qI+tdQWpzfeJhs/LCAnVEgHl76WGxjgcxqk8OA2T9H8/nuM0tFGlSpZYUebGw
- eJovUTB/U0DQ==
+   d="scan'208";a="174806716"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 09:38:10 -0800
+IronPort-SDR: V8S+r/m6WCCO93Id+ivB5a55PlSLR6x9/YP2YufFy5dgDG/IthDhHx7IkRWyqUP5fDy6/ZJ8Iq
+ Vbj/h8O2pCUg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="601199823"
+   d="scan'208";a="401752423"
 Received: from viggo.jf.intel.com (HELO ray) ([10.54.77.144])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Mar 2021 09:38:11 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 05 Mar 2021 09:38:09 -0800
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by ray (Postfix) with ESMTP id 46D03E12A4;
-        Thu,  4 Mar 2021 09:08:37 -0800 (PST)
-Subject: Re: [PATCH v4 3/3] x86/vmemmap: Handle unpopulated sub-pmd ranges
+        by ray (Postfix) with ESMTP id 5A751E3E90;
+        Thu,  4 Mar 2021 10:42:59 -0800 (PST)
+Subject: Re: [PATCH v4 2/3] x86/vmemmap: Drop handling of 1GB vmemmap ranges
 To:     Oscar Salvador <osalvador@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -41,8 +41,7 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 References: <20210301083230.30924-1-osalvador@suse.de>
- <20210301083230.30924-4-osalvador@suse.de>
- <b1aff368-8321-0fa7-05ab-3d6c856c00f8@intel.com>
+ <20210301083230.30924-3-osalvador@suse.de>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -87,12 +86,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <3d49fdca-de12-aa7d-ffc4-b2a8c7d79bee@intel.com>
-Date:   Thu, 4 Mar 2021 09:08:37 -0800
+Message-ID: <62c5b490-353a-ca3a-d2c8-f02189210c32@intel.com>
+Date:   Thu, 4 Mar 2021 10:42:59 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <b1aff368-8321-0fa7-05ab-3d6c856c00f8@intel.com>
+In-Reply-To: <20210301083230.30924-3-osalvador@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -100,20 +99,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 9:02 AM, Dave Hansen wrote:
->> +#define PAGE_UNUSED 0xFD
->> +/*
->> + * The unused vmemmap range, which was not yet memset(PAGE_UNUSED) ranges
->> + * from unused_pmd_start to next PMD_SIZE boundary.
->> + */
->> +static unsigned long unused_pmd_start __meminitdata;
-> This whole 'unused_pmd_start' thing was unmentioned in the changelog.
+On 3/1/21 12:32 AM, Oscar Salvador wrote:
+> We never get to allocate 1GB pages when mapping the vmemmap range.
+> Drop the dead code both for the aligned and unaligned cases and leave
+> only the direct map handling.
 
-One tiny suggestion: *Sometimes* for these optimizations, it's easiest
-to write the code up without it in one patch, then add the optimization
-in the next patch.
-
-It makes it 100% clear what is part of the "core" algorithm and what is
-pure optimization.
-
-I don't know if it will work here, but it might be worth taking a look.
+Could you elaborate a bit on why 1GB pages are never used?  It is just
+unlikely to have a 64GB contiguous area of memory that needs 1GB of
+contiguous vmemmap?  Or, does the fact that sections are smaller than
+64GB keeps this from happening?
