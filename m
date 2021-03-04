@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E1832D735
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A904A32D738
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235944AbhCDPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:55:34 -0500
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:41696 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236060AbhCDPzL (ORCPT
+        id S236062AbhCDP4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234366AbhCDPzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:55:11 -0500
-Received: by mail-oi1-f171.google.com with SMTP id o3so30576371oic.8;
-        Thu, 04 Mar 2021 07:54:56 -0800 (PST)
+        Thu, 4 Mar 2021 10:55:55 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3959C061574;
+        Thu,  4 Mar 2021 07:55:15 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id e6so19151231pgk.5;
+        Thu, 04 Mar 2021 07:55:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U3iTluQgGyqxe4+jJndhNTExcQnQsciF6nhWB0kk+pw=;
+        b=ei+wYitBRmGEEn/UcyXoLKra3hocBkpQN/35lFTbFSvabwNZKmRexsZ9R9hvjzxVSl
+         mytwFZSkZJqRySVE/m4MMhASeuhRSKW3HH7+6Zvl0a2c3dyAyCDWsmQKa8v/CYQMNbgY
+         KCohb0qYJ+9ruOM3pkm/zoYVonzIgVDu3Ty2ezKU7P7EoCEDFc704qQ+H2eRTsWE4a12
+         CkNy2S64lGzcdpt1yNvUPvBFUMD/xPqzzYHRvunH9GR7g7bICR18EamWIgkYCN9uRYFB
+         2kVxp7NM0m4s96vpwXXAdKYYvD7Cmb9lPMQNKyczsIAoVzExeF0QLPmAhTnxLjLYTB8r
+         bvSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=daZNlIKY92X6YgEv0ZD1e+vZyl3dSjPaZ1AGgzT78pM=;
-        b=DMzCbctYz1K3nFX6VLnKisOnwpQh2SGBiyLxCNePTO7sS/ySduVRyrRgJNZQzxIQIO
-         NYVtjgdJdMqHqTexHf9TI3BVd1u9RZPik/SCgYAhHcsKSxUnHXzMO3b23VECPq8Y9GzG
-         /xPDS+jJBgYKFLtud6KDMsn6wUFGHF7LL6JOHrRmdnGVZ+yzLAkes/k40ijAXcdKBkpB
-         lTrayZYsCRh+LzC6zf6ByrczwJjc7qGnUS7JC9XopMT0DcgDBk0BStOUwQ8OSNpPsQsG
-         aiyY1pBL21cSOeMuGM/Sbymwl6rBtjfmVG/hbaijqM9ZSkWl6FIHUM2vNEltBE/VKugi
-         w3yQ==
-X-Gm-Message-State: AOAM530/aF8+qsKlm/i68fAA9fr/pNIGCEgEznptkYnrkfkmKDL3wcJf
-        HU9Z74PWkLMGT9KWmjQ6GKqctTbXGb0RBulh/x8=
-X-Google-Smtp-Source: ABdhPJyzDojcLpO0Xp0g5RXK7KOOj2AWDDkTGk5Nscmlt7+eqBGQP+OoNbgErgIEOFCeuukwXd41auPJB2jy0mIyb2I=
-X-Received: by 2002:aca:3d85:: with SMTP id k127mr3544227oia.157.1614873270809;
- Thu, 04 Mar 2021 07:54:30 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=U3iTluQgGyqxe4+jJndhNTExcQnQsciF6nhWB0kk+pw=;
+        b=jGmpS88Ss1Tm2XzzcZfIbC1MyVs0g4Be3S8jl1jrmoiKKMm3152V2CuVWtRnxfJP5W
+         1LwiNMzQVFFIh8qz17arMDz89g+OlEly7E8ZfNmxGEB2kSI4Ia7sNviGszYg0hRjV8HL
+         uDkTa8r++P47ZwJFrJB5LU14/lmQ/BQYwpWW1oJjV14Vxj1PCy6X/+GkI7LC10S9xrIS
+         4MW+Wqkj8EYqcUxGMSmhsJN9+DKDSt3wCrHKz/tddfToat7AkP0Q5xH3qrKZGuKo0Gf5
+         MPtor6sue1DVi7avyvvvccKPTKIHr69CRLBx5o+K3Wj5ypxn5IlAJ+V6fR6zpgHb7QqX
+         OHxg==
+X-Gm-Message-State: AOAM532lwaCz1y9xqsH1GQJfbyF7+F861Ee/wbj1eL3dNN2DFMsEGwoX
+        xQUdcgLNSAr9+zmfMmK2gf0=
+X-Google-Smtp-Source: ABdhPJz8Xzi+8fVrR6B2TEpOBJ3j4oO00zfVw3RtfA4v1iffBj4R4AC4xnLpAvhDgp6wiUUwBP5pvw==
+X-Received: by 2002:a63:e442:: with SMTP id i2mr4094318pgk.12.1614873315168;
+        Thu, 04 Mar 2021 07:55:15 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:edb1:8010:5c27:a8cc])
+        by smtp.gmail.com with ESMTPSA id l3sm28030868pfc.81.2021.03.04.07.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 07:55:14 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 4 Mar 2021 07:55:12 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
+        vbabka@suse.cz, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YEEC4EjxKB5+zl6t@google.com>
+References: <20210302210949.2440120-1-minchan@kernel.org>
+ <YD+F4LgPH0zMBDGW@dhcp22.suse.cz>
+ <YD/wOq3lf9I5HK85@google.com>
+ <fc76eca3-f986-3980-065f-64c8dc92530a@redhat.com>
 MIME-Version: 1.0
-References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
- <20210302153451.50593-4-andriy.shevchenko@linux.intel.com>
- <CACRpkdYjs7y=YMoQmFc2iXoMEtSAk7S+zYsz1Y=yPYw=97T+Nw@mail.gmail.com>
- <YD9YTGnFbmcnJKsR@smile.fi.intel.com> <CACRpkdYEd+zv36Ghet2WxNavV=1-RkR06c3OxBEoxCqXoAY3Zg@mail.gmail.com>
- <YEDROJcQLDlYkatS@smile.fi.intel.com> <CAJZ5v0jdF7Ro47kbWh2Hz1HH0781pv==OTNAxzkJWuEzbJyMew@mail.gmail.com>
- <YED/aRaxCgz15It/@smile.fi.intel.com>
-In-Reply-To: <YED/aRaxCgz15It/@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Mar 2021 16:54:19 +0100
-Message-ID: <CAJZ5v0jzBBdiLp9SCW4-yUnz1PhHMT=zEetenSkzzp4aS99r3Q@mail.gmail.com>
-Subject: Re: [PATCH v1 4/4] gpiolib: Reuse device's fwnode to create IRQ domain
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc76eca3-f986-3980-065f-64c8dc92530a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 4:40 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Mar 04, 2021 at 02:41:24PM +0100, Rafael J. Wysocki wrote:
-> > On Thu, Mar 4, 2021 at 1:25 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Thu, Mar 04, 2021 at 09:06:08AM +0100, Linus Walleij wrote:
-> > > > On Wed, Mar 3, 2021 at 10:35 AM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Wed, Mar 03, 2021 at 10:22:02AM +0100, Linus Walleij wrote:
-> > > >
-> > > > > > But this:
-> > > > > >
-> > > > > > > @@ -1504,15 +1497,14 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
-> > > > > > >                         return ret;
-> > > > > > >         } else {
-> > > > > > >                 /* Some drivers provide custom irqdomain ops */
-> > > > > > > -               if (gc->irq.domain_ops)
-> > > > > > > -                       ops = gc->irq.domain_ops;
-> > > > > > > -
-> > > > > > > -               if (!ops)
-> > > > > > > -                       ops = &gpiochip_domain_ops;
-> > > > > > > -               gc->irq.domain = irq_domain_add_simple(np,
-> > > > > > > -                       gc->ngpio,
-> > > > > > > -                       gc->irq.first,
-> > > > > > > -                       ops, gc);
-> > > > > > > +               ops = gc->irq.domain_ops ?: &gpiochip_domain_ops;
-> > > > > > > +               if (gc->irq.first)
-> > > > > > > +                       gc->irq.domain = irq_domain_create_legacy(fwnode, gc->ngpio,
-> > > > > > > +                                                                 gc->irq.first, 0,
-> > > > > > > +                                                                 ops, gc);
-> > > > > > > +               else
-> > > > > > > +                       gc->irq.domain = irq_domain_create_linear(fwnode, gc->ngpio,
-> > > > > > > +                                                                 ops, gc);
-> > > > > >
-> > > > > > This looks like a refactoring and reimplementation of irq_domain_add_simple()?
-> > > > >
-> > > > > If you named it as irq_domain_create_simple(), then yes, but the problem is
-> > > > > that we don't have irq_domain_create_simple() API right now.
-> > > > >
-> > > > > > Why, and should it rather be a separate patch?
-> > > > >
-> > > > > Nope.
-> > > >
-> > > > OK I looked closer at irq_domain_add_simple(), and what it does different
-> > > > is to call irq_alloc_descs() for all lines if using sparse IRQs and then
-> > > > associate them. irq_domain_create_linear|legacy() does not allocate IRQ
-> > > > descriptors because it assumes something like DT or ACPI will do that
-> > > > on-demand when drivers request IRQs.
-> > > >
-> > > > This may be dangerous because some old platforms do not resolve IRQs
-> > > > at runtime and you will get NULL pointer exceptions.
-> > > >
-> > > > We then need to make sure all callers do what is done in e.g.
-> > > > drivers/gpio/gpio-omap.c in the #ifdef CONFIG_ARCH_OMAP1 clause:
-> > > > they need to be augmented to call irq_alloc_descs() explicitly,
-> > > > and I don't think all of them do it as nicely for us as OMAP1.
-> > > >
-> > > > I might be overly cautious though, however that is why this code
-> > > > uses irq_domain_add_simple(), came in commit
-> > > > commit 2854d167cc545d0642277bf8b77f972a91146fc6
-> > >
-> > > Ah, thanks! I was puzzled how and why the approach above had been extended like
-> > > now. This explains it. Okay, I will introduce irq_domain_create_simple().
-> >
-> > OK
-> >
-> > So please resend the series with that done and with the R-bys from
-> > Linus added.  I'll apply it from Patchwork.
->
-> Done!
+On Thu, Mar 04, 2021 at 09:07:28AM +0100, David Hildenbrand wrote:
+> On 03.03.21 21:23, Minchan Kim wrote:
+> > On Wed, Mar 03, 2021 at 01:49:36PM +0100, Michal Hocko wrote:
+> > > On Tue 02-03-21 13:09:48, Minchan Kim wrote:
+> > > > LRU pagevec holds refcount of pages until the pagevec are drained.
+> > > > It could prevent migration since the refcount of the page is greater
+> > > > than the expection in migration logic. To mitigate the issue,
+> > > > callers of migrate_pages drains LRU pagevec via migrate_prep or
+> > > > lru_add_drain_all before migrate_pages call.
+> > > > 
+> > > > However, it's not enough because pages coming into pagevec after the
+> > > > draining call still could stay at the pagevec so it could keep
+> > > > preventing page migration. Since some callers of migrate_pages have
+> > > > retrial logic with LRU draining, the page would migrate at next trail
+> > > > but it is still fragile in that it doesn't close the fundamental race
+> > > > between upcoming LRU pages into pagvec and migration so the migration
+> > > > failure could cause contiguous memory allocation failure in the end.
+> > > > 
+> > > > To close the race, this patch disables lru caches(i.e, pagevec)
+> > > > during ongoing migration until migrate is done.
+> > > > 
+> > > > Since it's really hard to reproduce, I measured how many times
+> > > > migrate_pages retried with force mode below debug code.
+> > > > 
+> > > > int migrate_pages(struct list_head *from, new_page_t get_new_page,
+> > > > 			..
+> > > > 			..
+> > > > 
+> > > > if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
+> > > >         printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), rc);
+> > > >         dump_page(page, "fail to migrate");
+> > > > }
+> > > > 
+> > > > The test was repeating android apps launching with cma allocation
+> > > > in background every five seconds. Total cma allocation count was
+> > > > about 500 during the testing. With this patch, the dump_page count
+> > > > was reduced from 400 to 30.
+> > > 
+> > > Have you seen any improvement on the CMA allocation success rate?
+> > 
+> > Unfortunately, the cma alloc failure rate with reasonable margin
+> > of error is really hard to reproduce under real workload.
+> > That's why I measured the soft metric instead of direct cma fail
+> > under real workload(I don't want to make some adhoc artificial
+> > benchmark and keep tunes system knobs until it could show
+> > extremly exaggerated result to convice patch effect).
+> > 
+> > Please say if you belive this work is pointless unless there is
+> > stable data under reproducible scenario. I am happy to drop it.
+> 
+> Do you have *some* application that triggers such a high retry count?
 
-Thanks.
+I have no idea what the specific appliction could trigger the high
+retry count since the LRUs(the VM LRU and buffer_head LRU) are
+common place everybody could use and every process could trigger.
 
-> https://lore.kernel.org/linux-gpio/20210304150215.80652-1-andriy.shevchenko@linux.intel.com/T/#u
->
-> P.S. you seems haven't switched yet to b4 :-)
+> 
+> I'd love to run it along with virtio-mem and report the actual allocation
+> success rate / necessary retries. That could give an indication of how
+> helpful your work would be.
 
-Nope.
+If it could give stable report, that would be very helpful.
+
+> 
+> Anything that improves the reliability of alloc_contig_range() is of high
+> interest to me. If it doesn't increase the reliability but merely does some
+> internal improvements (less retries), it might still be valuable, but not
+> that important.
+
+less retrial is good but I'd like to put more effort to close the race
+I mentioned completely since the cma allocation failure for our usecases
+are critical for user experience.
