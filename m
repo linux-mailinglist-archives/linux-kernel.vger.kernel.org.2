@@ -2,124 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD20032CDFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D94132CDFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbhCDH4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:56:46 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13123 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234551AbhCDH4P (ORCPT
+        id S234942AbhCDH7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:59:25 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35938 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234568AbhCDH65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:56:15 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Drjmb4h3lz16GGG;
-        Thu,  4 Mar 2021 15:53:51 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 4 Mar 2021
- 15:55:29 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: expose # of overprivision segments
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210302054233.3886681-1-jaegeuk@kernel.org>
- <920469a9-45d3-68e3-1f8d-a436bdd60cfe@huawei.com>
- <YD5wQRX+HnltBvEM@google.com> <YD6HjZG7QMS6Z3Tb@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <05b43d3e-d735-ae34-5a4f-3d81a4fc8a9b@huawei.com>
-Date:   Thu, 4 Mar 2021 15:55:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 4 Mar 2021 02:58:57 -0500
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lHisC-0003a9-Gj
+        for linux-kernel@vger.kernel.org; Thu, 04 Mar 2021 07:58:16 +0000
+Received: by mail-ed1-f71.google.com with SMTP id o15so8205919edv.7
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 23:58:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NZS+Wjj9yifYGxgztVZfL5BlLqq5E4PMFpP+6y9L/pU=;
+        b=dBFTQQToU0E/09bAGrKOoF1SBybRw2lAotd1/nCmyajjX0U33jUhb691eJb5WjwFG6
+         qXJw0QJ8lxVMgof5n4gsxa8z679XZYTeejb5fwMiuvyQjfbwrLNKakrW+0B4Ho9J9f5W
+         /8LBI+gm6DnP9oGroSUTUvdC0Fm9hG7V9Hm57/c5hvWcLOUt6yt2xNtem5bMc6fC4eAg
+         HLXrHcrTLYD5HWotk0eJq/8EigUILM1icXjWlkiikAuGlyAaJnV0unL/bw8qnLGqiiKY
+         kO2dyYH1lvVzn6tnmeVUlaPWBsHgyOAcGnJ16EehCMUbXW5ftQsFaNN8opnjpDth2BwR
+         4BFg==
+X-Gm-Message-State: AOAM533YeNCme7cbDPOSWMudpVpLwSY4Zx9Dm5J0E2t59xE2lEjEekL2
+        X0xMqaRpVlClCpyVVZi+TD4FfJoH0vk8LJc5EEmZq1jgCq128wIuORrlrv0F2Yp7u4pybVFhMTw
+        DRoCyYhPrD5uUF+cUCQIV4wdedesY8jjBV/wMVEHykA==
+X-Received: by 2002:a17:906:5d06:: with SMTP id g6mr2946698ejt.216.1614844695855;
+        Wed, 03 Mar 2021 23:58:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx5dcwJ/TO31H0otx97FsiYbczrVgHQVISPQNcxBSA18N6EMSggzX74CUtObMjvnlulxjHazw==
+X-Received: by 2002:a17:906:5d06:: with SMTP id g6mr2946682ejt.216.1614844695730;
+        Wed, 03 Mar 2021 23:58:15 -0800 (PST)
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id j24sm10181150eja.61.2021.03.03.23.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 23:58:15 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] MAINTAINERS: use Krzysztof Kozlowski's Canonical address
+Date:   Thu,  4 Mar 2021 08:57:51 +0100
+Message-Id: <20210304075751.9201-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YD6HjZG7QMS6Z3Tb@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/3 2:44, Jaegeuk Kim wrote:
-> On 03/02, Jaegeuk Kim wrote:
->> On 03/02, Chao Yu wrote:
->>> On 2021/3/2 13:42, Jaegeuk Kim wrote:
->>>> This is useful when checking conditions during checkpoint=disable in Android.
->>>
->>> This sysfs entry is readonly, how about putting this at
->>> /sys/fs/f2fs/<disk>/stat/?
->>
->> Urg.. "stat" is a bit confused. I'll take a look a better ones.
+Since I plan to use my Canonical address for reviews and other
+maintenance activities, reflect this in MAINTAINERS to avoid any
+confusion.
 
-Oh, I mean put it into "stat" directory, not "stat" entry, something like this:
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Olof Johansson <olof@lixom.net>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ MAINTAINERS | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-/sys/fs/f2fs/<disk>/stat/ovp_segments
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2d3b62796495..27adef3975b3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2375,7 +2375,7 @@ F:	sound/soc/rockchip/
+ N:	rockchip
+ 
+ ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+@@ -10879,7 +10879,7 @@ F:	drivers/regulator/max77802-regulator.c
+ F:	include/dt-bindings/*/*max77802.h
+ 
+ MAXIM MUIC CHARGER DRIVERS FOR EXYNOS BASED BOARDS
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+ L:	linux-pm@vger.kernel.org
+ S:	Supported
+@@ -10888,7 +10888,7 @@ F:	drivers/power/supply/max77693_charger.c
+ 
+ MAXIM PMIC AND MUIC DRIVERS FOR EXYNOS BASED BOARDS
+ M:	Chanwoo Choi <cw00.choi@samsung.com>
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Supported
+@@ -11540,7 +11540,7 @@ F:	include/linux/memblock.h
+ F:	mm/memblock.c
+ 
+ MEMORY CONTROLLER DRIVERS
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git
+@@ -12887,7 +12887,7 @@ F:	Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+ F:	drivers/regulator/pf8x00-regulator.c
+ 
+ NXP PTN5150A CC LOGIC AND EXTCON DRIVER
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/extcon/extcon-ptn5150.yaml
+@@ -14178,7 +14178,7 @@ F:	drivers/pinctrl/renesas/
+ 
+ PIN CONTROLLER - SAMSUNG
+ M:	Tomasz Figa <tomasz.figa@gmail.com>
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ L:	linux-samsung-soc@vger.kernel.org
+@@ -15701,7 +15701,7 @@ W:	http://www.ibm.com/developerworks/linux/linux390/
+ F:	drivers/s390/scsi/zfcp_*
+ 
+ S3C ADC BATTERY DRIVER
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ L:	linux-samsung-soc@vger.kernel.org
+ S:	Odd Fixes
+ F:	drivers/power/supply/s3c_adc_battery.c
+@@ -15746,7 +15746,7 @@ F:	Documentation/admin-guide/LSM/SafeSetID.rst
+ F:	security/safesetid/
+ 
+ SAMSUNG AUDIO (ASoC) DRIVERS
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Supported
+@@ -15754,7 +15754,7 @@ F:	Documentation/devicetree/bindings/sound/samsung*
+ F:	sound/soc/samsung/
+ 
+ SAMSUNG EXYNOS PSEUDO RANDOM NUMBER GENERATOR (RNG) DRIVER
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ L:	linux-crypto@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+@@ -15789,7 +15789,7 @@ S:	Maintained
+ F:	drivers/platform/x86/samsung-laptop.c
+ 
+ SAMSUNG MULTIFUNCTION PMIC DEVICE DRIVERS
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+ L:	linux-kernel@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+@@ -15814,7 +15814,7 @@ F:	drivers/media/platform/s3c-camif/
+ F:	include/media/drv-intf/s3c_camif.h
+ 
+ SAMSUNG S3FWRN5 NFC DRIVER
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Krzysztof Opasiak <k.opasiak@samsung.com>
+ L:	linux-nfc@lists.01.org (moderated for non-subscribers)
+ S:	Maintained
+@@ -15834,7 +15834,7 @@ S:	Supported
+ F:	drivers/media/i2c/s5k5baf.c
+ 
+ SAMSUNG S5P Security SubSystem (SSS) DRIVER
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Vladimir Zapolskiy <vz@mleia.com>
+ L:	linux-crypto@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+@@ -15866,7 +15866,7 @@ F:	include/linux/clk/samsung.h
+ F:	include/linux/platform_data/clk-s3c2410.h
+ 
+ SAMSUNG SPI DRIVERS
+-M:	Krzysztof Kozlowski <krzk@kernel.org>
++M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ M:	Andi Shyti <andi@etezian.org>
+ L:	linux-spi@vger.kernel.org
+ L:	linux-samsung-soc@vger.kernel.org
+-- 
+2.25.1
 
-> 
-> Taking a look at other entries using in Android, I feel that this one can't be
-> in stat or whatever other location, since I worry about the consistency with
-> similar dirty/free segments. It seems it's not easy to clean up the existing
-> ones anymore.
-
-Well, actually, the entry number are still increasing continuously, the result is
-that it becomes more and more slower and harder for me to find target entry name
-from that directory.
-
-IMO, once new readonly entry was added to "<disk>" directory, there is no chance
-to reloacate it due to interface compatibility. So I think this is the only
-chance to put it to the appropriate place at this time.
-
-Thanks,
-
-> 
->>
->>>
->>>>
->>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->>>> ---
->>>>    fs/f2fs/sysfs.c | 8 ++++++++
->>>>    1 file changed, 8 insertions(+)
->>>>
->>>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
->>>> index e38a7f6921dd..254b6fa17406 100644
->>>> --- a/fs/f2fs/sysfs.c
->>>> +++ b/fs/f2fs/sysfs.c
->>>> @@ -91,6 +91,13 @@ static ssize_t free_segments_show(struct f2fs_attr *a,
->>>>    			(unsigned long long)(free_segments(sbi)));
->>>>    }
->>>> +static ssize_t ovp_segments_show(struct f2fs_attr *a,
->>>> +		struct f2fs_sb_info *sbi, char *buf)
->>>> +{
->>>> +	return sprintf(buf, "%llu\n",
->>>> +			(unsigned long long)(overprovision_segments(sbi)));
->>>> +}
->>>> +
->>>>    static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
->>>>    		struct f2fs_sb_info *sbi, char *buf)
->>>>    {
->>>> @@ -629,6 +636,7 @@ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, node_io_flag, node_io_flag);
->>>>    F2FS_RW_ATTR(CPRC_INFO, ckpt_req_control, ckpt_thread_ioprio, ckpt_thread_ioprio);
->>>>    F2FS_GENERAL_RO_ATTR(dirty_segments);
->>>>    F2FS_GENERAL_RO_ATTR(free_segments);
->>>> +F2FS_GENERAL_RO_ATTR(ovp_segments);
->>>
->>> Missed to add document entry in Documentation/ABI/testing/sysfs-fs-f2fs?
->>
->> Yeah, thanks.
->>
->>>
->>> Thanks,
->>>
->>>>    F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
->>>>    F2FS_GENERAL_RO_ATTR(features);
->>>>    F2FS_GENERAL_RO_ATTR(current_reserved_blocks);
->>>>
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> .
-> 
