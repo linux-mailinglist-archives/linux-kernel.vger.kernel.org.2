@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDC832D40D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A01132D411
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhCDNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:21:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
+        id S241062AbhCDNW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:22:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232942AbhCDNVJ (ORCPT
+        with ESMTP id S236534AbhCDNWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:21:09 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31A2C06175F;
-        Thu,  4 Mar 2021 05:20:29 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id jx13so6569208pjb.1;
-        Thu, 04 Mar 2021 05:20:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7TuebsGZ7PfFLh+7VtFFI1adnwVCzaRy+r3d2bkdQFc=;
-        b=ezgmgckKXwMf1XnQDpICKsBKNtIMTaEjBtWq2osVrPLrJBXdavfge9eoYCtdZCCzSa
-         MCH+ayceOvwj0c2+KGgjKphFRufEr1GqkU5H20NTxwuLtZcMQ19p7e8t+y1oL4SyqoFk
-         /Werxajx3XgBNvxdAJH+WqIlW5wuRAZ8f8owXo3hBvLGqQ6wnJc5lQeEH1m3yCyvGDAY
-         0QnpMK0qOJJivxyCm8QrYhlVrFg3bt5spfQsoEZGavewM5F4hOPsIZa+8ipbGxUsZmq4
-         Asfb0undkcPDPe916S51XllzdpWRW9av5aTC/zC/vz2idEcyEdOCZ2T4nTBsWlo30r6c
-         4/6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7TuebsGZ7PfFLh+7VtFFI1adnwVCzaRy+r3d2bkdQFc=;
-        b=X12+b5l5ox1mlljXQM1GTP8xD6/r2Yvw9FGWHISnWK6OPel/K7Um+4ulQM+UT7nl0T
-         NNDUbRuT+YDMTGMLs3jFCAK0ZDxWKdcFMyFGyOtfs6QT9o7kfmp759YhMEX+238cQlq2
-         fFpdIJQsTMP44q7IraoaxDC7dNHbIXUPjKnjFgaeRJUvZK8c4N1TGDkY2DZZVeglTOC0
-         /xI2xmOeX+NwE+QIkJXObWnkaH230DUlaU44zSLW9PCChpN1xuKdH3OQyvJpMr4jwPTA
-         Q6eSntJgIgDD5rDMUp0ANv4atyiQvl5oB1VRLN6xhEOofH6TVj1NAtk0QieK7xzSDtta
-         DhAQ==
-X-Gm-Message-State: AOAM53392WLCEjyMORQ3NJYOp7tskhf+ePAN7Jp1txU5XEyAx+ZthulX
-        puJ6H4BmZ1fD6AaYCxSdSC8=
-X-Google-Smtp-Source: ABdhPJw5mop7Q05iwGPVDPv/TV7muVAYEl+QpfM+dzp7wGwLuxJ9xrmHLzyFf9+5Z90KHfNnJQiWeA==
-X-Received: by 2002:a17:902:ea09:b029:e3:a720:b83 with SMTP id s9-20020a170902ea09b02900e3a7200b83mr4023689plg.51.1614864028293;
-        Thu, 04 Mar 2021 05:20:28 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id u9sm26809374pgc.59.2021.03.04.05.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 05:20:27 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     aneesh.kumar@linux.ibm.com
-Cc:     will@kernel.org, akpm@linux-foundation.org, npiggin@gmail.com,
-        peterz@infradead.org, ysato@users.sourceforge.jp, dalias@libc.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: [PATCH] sh: remove duplicate include in tlb.h
-Date:   Thu,  4 Mar 2021 05:20:20 -0800
-Message-Id: <20210304132020.196811-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 4 Mar 2021 08:22:55 -0500
+X-Greylist: delayed 608 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 04 Mar 2021 05:22:15 PST
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F84C061574;
+        Thu,  4 Mar 2021 05:22:15 -0800 (PST)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id B19FCC72819;
+        Thu,  4 Mar 2021 14:22:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1614864133;
+        bh=s42k8uAo9kxNjLeN9HuZ/mbV6dmUP2yAZhrHu3lt1ec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YXoNOhNHQqlx4d8o+UngFwqgEBNUw4B9vfkQGLTIeM2p3lHG+GKpqzNJJ4hgOeDJ6
+         zn1A3q2Cx0UPQqAejx2yQfpmuSP8e0PEH1gcogqnjSCuimEDnHKnB8TGnKQA1b9TMC
+         XH9DDSXhuOdwyVaJ0mueNyaIok/mqn9ZHAXzcQhQ=
+Date:   Thu, 4 Mar 2021 14:22:12 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <YEDfBPsbZ5uxj/PP@workstation.tuxnet>
+References: <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet>
+ <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
+ <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
+ <YBg5MlvJQ0N2u+j6@workstation.tuxnet>
+ <20210301215248.ekclgxc7dq6asdz5@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210301215248.ekclgxc7dq6asdz5@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Hi Uwe,
 
-'asm-generic/tlb.h' included in 'asm/tlb.h' is duplicated.
+On Mon, Mar 01, 2021 at 10:52:48PM +0100, Uwe Kleine-König wrote:
+> Hello,
+> 
+> On Mon, Feb 01, 2021 at 06:24:02PM +0100, Clemens Gruber wrote:
+> > Hi Sven, Thierry, Uwe,
+> > 
+> > On Fri, Jan 29, 2021 at 05:16:51PM -0500, Sven Van Asbroeck wrote:
+> > > Hi Clemens,
+> > > 
+> > > On Fri, Jan 29, 2021 at 4:24 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+> > > >
+> > > > LEN_ON = 409, LED_OFF = 1228 and
+> > > > LED_ON = 419, LED_OFF = 1238
+> > > > produce the same result. you can't see the difference between the two
+> > > > when scoping the channel. there are probably more ways to do this,
+> > > > some might surprise us. It's a tricky chip.
+> > > 
+> > > Please ignore this example, it's bogus. In my defence, it's a Friday
+> > > afternoon here :)
+> > 
+> > Happens to the best of us :)
+> > 
+> > > 
+> > > But consider the following: imagine the bootloader has enabled a few
+> > > pwm channels, and the driver's .probe() has left them on/unchanged.
+> > > Then the user enables another pwm channel, and tries to change the
+> > > period/prescaler. How would pca9685_may_change_prescaler() know
+> > > if changing the prescaler is allowed?
+> > > 
+> > > And the following: imagine the bootloader has enabled a few
+> > > pwm channels, and the driver's .probe() has left them on/unchanged.
+> > > After .probe(), the runtime_pm will immediately put the chip to sleep,
+> > > because it's unaware that some channels are alive.
+> > 
+> > (We could read out the state in .probe. If a pwm is already enabled by
+> > the bootloader, then the user can't change the period. Also, the chip
+> > would not be put to sleep.
+> > 
+> > The user then can export channels and see if they are enabled. If he
+> > wants to change the period, he needs to find the one enabled by the
+> > bootloader and change the period there, before he requests more.
+> > If the bootloader enabled more than one, then he has to disable all but
+> > one to change the period.
+> > 
+> > Or did I miss something?)
+> > 
+> > > 
+> > > I'm sure I'm overlooking a few complications here. probe not changing
+> > > the existing configuration, will add a lot of complexity to the driver.
+> > > I'm not saying this is necessarily bad, just a tradeoff. Or, a management
+> > > decision.
+> > 
+> > But I agree that it is simpler if we keep the resets in probe. It would
+> > also avoid a potentially breaking change for users that do not reset
+> > their pca9685 chips in their bootloader code.
+> 
+> I would prefer to drop the reset. If the bootloader left with an invalid
+> state, this is active for sure until the PWM driver is loaded. If you
+> don't reset, the time is extended (usually) until the consumer comes
+> along and corrects the setting. So the downside of not resetting is
+> quite limited, but if you disable the PWM in .probe() the effect can be
+> worse. And consistency dictates to not reset.
+> 
+> > Removing the resets could then be left as something to discuss further
+> > in the future and something that belongs in a separate patch series?
+> 
+> That would be fine for me, too.
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- arch/sh/include/asm/tlb.h | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Great, then I will prepare a new series next week.
 
-diff --git a/arch/sh/include/asm/tlb.h b/arch/sh/include/asm/tlb.h
-index 360f713d009b..aeb8915e9254 100644
---- a/arch/sh/include/asm/tlb.h
-+++ b/arch/sh/include/asm/tlb.h
-@@ -4,12 +4,11 @@
- 
- #ifndef __ASSEMBLY__
- #include <linux/pagemap.h>
-+#include <asm-generic/tlb.h>
- 
- #ifdef CONFIG_MMU
- #include <linux/swap.h>
- 
--#include <asm-generic/tlb.h>
--
- #if defined(CONFIG_CPU_SH4)
- extern void tlb_wire_entry(struct vm_area_struct *, unsigned long, pte_t);
- extern void tlb_unwire_entry(void);
-@@ -24,12 +23,7 @@ static inline void tlb_unwire_entry(void)
- {
- 	BUG();
- }
--#endif
--
--#else /* CONFIG_MMU */
--
--#include <asm-generic/tlb.h>
--
-+#endif /* CONFIG_CPU_SH4 */
- #endif /* CONFIG_MMU */
- #endif /* __ASSEMBLY__ */
- #endif /* __ASM_SH_TLB_H */
--- 
-2.25.1
-
+Thanks,
+Clemens
