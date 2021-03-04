@@ -2,93 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F3732CF37
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C64432CF38
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhCDJCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:02:55 -0500
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:36096 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237089AbhCDJCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:02:38 -0500
-Received: by mail-vs1-f50.google.com with SMTP id a12so7526320vsd.3;
-        Thu, 04 Mar 2021 01:02:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GF6ztfiSNzs2kNgCpQbALc2l2RC8cPrPW1MDspQG+Pw=;
-        b=n8M/7L5Yz3Xp93LwBHAPFGxasLsyivkUi1IkL5F6pu9Z5hP3JcmE1qL2BaenIw3dRN
-         o+ZP7g4F/v0m5H1U+7BQU59LSJcKyuzDbGIVUduccECXxNqgQ8cNDECi7wguE7JCCeuy
-         nbCD/0Ed8kb2PjDXqTq3yQADFeDpcNuEnCFl2cP1VbsbpebitsgKk6oEXtZavrIqJil9
-         yw1+EJdgQvzXiIoIiqtxu9BN/TwZSq3QDJa01WL5+XJmt3fW5DvlDCfVEEmnRR6QlAQ6
-         XL3UuhbdvrvbB1zi+u7ZMICRjuPBXpp5ZZZ6czUvurA9Hk66KsLbHx4azV5Su4gmN2pL
-         vwtg==
-X-Gm-Message-State: AOAM530AmmWPtfFm2LEbNXmYjkPIW44Vvk4iz10gjStrKfCylRO0s263
-        5ZjWEQaNfWtUiW4piyiu3M0a0ezZwXngUulpnoDKkgjH
-X-Google-Smtp-Source: ABdhPJxOuPPgctc/TTBejCpNuyNf4Q7cAEPGx8BFtjXiA7h//HwfoKdzl9GCxCdd4fUioJCUUQn9X9QFDNIJ48GdgKg=
-X-Received: by 2002:a67:fb86:: with SMTP id n6mr1856293vsr.3.1614848518144;
- Thu, 04 Mar 2021 01:01:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210301165932.62352-1-andriy.shevchenko@linux.intel.com> <20210301165932.62352-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210301165932.62352-2-andriy.shevchenko@linux.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 4 Mar 2021 10:01:46 +0100
-Message-ID: <CAMuHMdXdjN+8DzNOMbs4Xde39sVYjU-7zqPiYLw1iy=cm_-Aeg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] gpio: aggregator: Replace custom get_arg() with a
- generic next_arg()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        id S237112AbhCDJC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:02:56 -0500
+Received: from foss.arm.com ([217.140.110.172]:35436 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237100AbhCDJCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:02:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B6CD1FB;
+        Thu,  4 Mar 2021 01:02:01 -0800 (PST)
+Received: from [10.57.17.29] (unknown [10.57.17.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 935153F73B;
+        Thu,  4 Mar 2021 01:01:58 -0800 (PST)
+Subject: Re: [PATCH 1/8] ARM: ARMv7-M: Fix register restore corrupt after svc
+ call
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com
+References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
+ <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
+ <5284d390-c03a-4035-df5a-10d6cd60e47b@arm.com>
+ <CAL9mu0KUhctbBzmem1ZSgEwf5CebivHOSUr9Q7VTyzib8pW=Cw@mail.gmail.com>
+ <5efe3d44-8045-e376-003e-3ccbff54fb23@arm.com>
+ <CAL9mu0JoHqo_wnpNN9ZqRnzzKjhOwEktZ5yPtO8-6WBh51g1BQ@mail.gmail.com>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+Message-ID: <703c43f1-7b83-32ec-7c50-baab00b6bb34@arm.com>
+Date:   Thu, 4 Mar 2021 09:02:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAL9mu0JoHqo_wnpNN9ZqRnzzKjhOwEktZ5yPtO8-6WBh51g1BQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On 3/4/21 5:42 AM, dillon min wrote:
+> Okay， got it. after adding msp/psp switch code in RTOS, now the kernel
+> can be loaded normally
+> without any modification.
 
-On Mon, Mar 1, 2021 at 5:59 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> cmdline library provides next_arg() helper to traverse over parameters
-> and their values given in command line. Replace custom approach in the driver
-> by it.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Yay!
 
-Thanks for your patch!
+> 
+> So, just drop the changes in proc-v7m.S.
 
-> --- a/drivers/gpio/gpio-aggregator.c
-> +++ b/drivers/gpio/gpio-aggregator.c
-> @@ -93,13 +68,9 @@ static int aggr_parse(struct gpio_aggregator *aggr)
->         if (!bitmap)
->                 return -ENOMEM;
->
-> -       for (name = get_arg(&args), offsets = get_arg(&args); name;
-> -            offsets = get_arg(&args)) {
-> -               if (IS_ERR(name)) {
-> -                       pr_err("Cannot get GPIO specifier: %pe\n", name);
-> -                       error = PTR_ERR(name);
-> -                       goto free_bitmap;
-> -               }
-> +       args = next_arg(args, &name, &p);
-> +       while (*args) {
-> +               args = next_arg(args, &offsets, &p);
+Glad to see they are not strictly necessary :)
 
-As name and offsets should not contain equal signs (can they?),
-I guess using next_arg() is fine.
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks
+Vladimir
