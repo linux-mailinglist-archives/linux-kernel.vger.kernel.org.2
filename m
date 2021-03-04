@@ -2,150 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA3F32D48F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2237032D494
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241552AbhCDNtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:49:41 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:20525 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241576AbhCDNtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:49:18 -0500
+        id S241584AbhCDNuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:50:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241567AbhCDNt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:49:57 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3CDC061574;
+        Thu,  4 Mar 2021 05:49:17 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id m1so9756961wml.2;
+        Thu, 04 Mar 2021 05:49:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1614865758;
-  x=1646401758;
-  h=date:to:cc:subject:message-id:references:mime-version:
-   content-transfer-encoding:in-reply-to:from;
-  bh=pvW1cr6C8vMTfIXRPLqxLsq2XODT6Ks7EDNeGRY1fIg=;
-  b=jeuoVGXp0nOjzeswz3rcwd6SDHSy2laaWt4Auw7unEDZDZcGNiq/72k3
-   ri6GwPYfDZAfDDO6pxAUWhywiG3QmdLLZPurG/gfMtDLffz6PJLi07I4U
-   U4XNhazW4iM4bpzINuLwLVFKSD4ik5NnePK3SMGgFSHbTr3v8Ml2eQ/SV
-   XPoulA2w+GdoSVKfRD6aDF+4JDpDtL77/AnQSL8Dq2XEFuBF9Ohd/RnCv
-   sULGsAON/qRt49wYLKwISwVYojlqkS0Mt9Jdw02066W11n51Mhj3Wb6p3
-   rCJ2G4UkhRue731XTuCbaTbzbfKF/rxr7IsuQgEZAlBth1zPKNRsRMRLQ
-   A==;
-Date:   Thu, 4 Mar 2021 14:48:37 +0100
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     =?iso-8859-1?Q?M=E5rten?= Lindahl <Marten.Lindahl@axis.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        kernel <kernel@axis.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mmc: Try power cycling card if command request times out
-Message-ID: <20210304134836.xlw7wbbvkc5bqzmm@axis.com>
-References: <20210216224252.22187-1-marten.lindahl@axis.com>
- <CAPDyKFoASx=U8b1Oqtuo6ikiM=gXfL2x1Gsz=rfAn9zxP0y_iA@mail.gmail.com>
- <20210301215923.6jfg6mg5ntorttan@axis.com>
- <CAPDyKFoaKfuwweaEMf1Pz+ECAPU3P9-gmCJcpq+MADH5gH1c=Q@mail.gmail.com>
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=3+SX3U1VXxjbBb3AFkilt3hNXMs9Ccf8nN8eBgzxjZU=;
+        b=CvZl9GQ1BZZAyv6izOJnS5InuxmDYt4uJJVB1al7+eRTagi8Hp3agEdzup8pVHR/sf
+         o3Vni2I3nVEYqJ9YTi40pEy9V8Qptwls9CmdNMGLfHZP3vRLsuO6SyliaChK2n/BroJ/
+         vncTY+vrj7cP8TGVeX56PYMc+KRVuD0mDbdi32PasHZq96URRUPwfpRJAxt4xNKtUcjE
+         L7h7mihpJrDKOBwbVJVb6hB4brAiB2kKcow05wFQaVPl/InxsPVWCLuW9mPGJx4BrGRQ
+         Sq6ZzZ+PEZzUPqHEw/BmBp3Qh/Up+uqFI0XmQhw1n4Pm7juaFRc+T9hQw8SRbNT6xCD0
+         Pdww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=3+SX3U1VXxjbBb3AFkilt3hNXMs9Ccf8nN8eBgzxjZU=;
+        b=U+srqDIEHIpNVpqkUoQcFWptfkSYbwDL4FcAiUR6T3Yl3T7ess5Lwc7794IyA1pfIC
+         EX/aoPlfBU1lEV8qqyBjomYBYw3FFc9iEVW9loqXLAmVyGuPg9pqsUM9c0yFVFldpTEb
+         vRpxdeHUoi/fXSjtK4RIqCLsyV6jRYT1zqVPY1DOuXssOIaBF3QqF4mqh/sp6CLl7A/d
+         YuEhRGNmxoMwR/BVKFs0C/7f4XW9CffvFh3s/kWFdARn5FsXSCi9SBUgWoQKOjHMkY6r
+         VM0Btzyg0BK2g1y30bXFUsCnDb1zZTj2GV20QCCdjmVkCT8YWQz28xAQ3CChi113j4nG
+         K1eQ==
+X-Gm-Message-State: AOAM531CqOLKPu/USiAj1VwGmGblCJ9HSgXaViA8Sun0xSAU4HFKGZTE
+        39CxaWJXyW9LIKaNGVGzBu8=
+X-Google-Smtp-Source: ABdhPJyRx+2m1kvS4rKn8ipRK5BYpQzYTY5VuQm9zqKGv70JdXH343ORRDLD6NwYhwkDbuBwDpb87A==
+X-Received: by 2002:a05:600c:47d7:: with SMTP id l23mr4105259wmo.155.1614865756142;
+        Thu, 04 Mar 2021 05:49:16 -0800 (PST)
+Received: from [192.168.1.211] ([2.26.187.30])
+        by smtp.gmail.com with ESMTPSA id l15sm10022214wmh.21.2021.03.04.05.49.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 05:49:15 -0800 (PST)
+Subject: Re: [PATCH v3 0/6] Introduce intel_skl_int3472 module
+To:     Hans de Goede <hdegoede@redhat.com>, tfiga@chromium.org,
+        sakari.ailus@linux.intel.com, rajmohan.mani@intel.com,
+        rjw@rjwysocki.net, lenb@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org
+Cc:     andriy.shevchenko@linux.intel.com,
+        kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com, mgross@linux.intel.com,
+        luzmaximilian@gmail.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, me@fabwu.ch, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org
+References: <20210222130735.1313443-1-djrscally@gmail.com>
+ <fd2fbee6-e620-a594-8377-d2f22131af29@redhat.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <5d336f50-5f25-fce2-04eb-5ad450c9cd5b@gmail.com>
+Date:   Thu, 4 Mar 2021 13:49:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPDyKFoaKfuwweaEMf1Pz+ECAPU3P9-gmCJcpq+MADH5gH1c=Q@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-From:   Marten Lindahl <martenli@axis.com>
+In-Reply-To: <fd2fbee6-e620-a594-8377-d2f22131af29@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf! My apologies for the delay.
+Hi Hans
 
-On Tue, Mar 02, 2021 at 09:45:02AM +0100, Ulf Hansson wrote:
-> On Mon, 1 Mar 2021 at 22:59, Marten Lindahl <martenli@axis.com> wrote:
-> >
-> > Hi Ulf!
-> >
-> > Thank you for your comments!
-> >
-> > On Mon, Mar 01, 2021 at 09:50:56AM +0100, Ulf Hansson wrote:
-> > > + Adrian
-> > >
-> > > On Tue, 16 Feb 2021 at 23:43, Mårten Lindahl <marten.lindahl@axis.com> wrote:
-> > > >
-> > > > Sometimes SD cards that has been run for a long time enters a state
-> > > > where it cannot by itself be recovered, but needs a power cycle to be
-> > > > operational again. Card status analysis has indicated that the card can
-> > > > end up in a state where all external commands are ignored by the card
-> > > > since it is halted by data timeouts.
-> > > >
-> > > > If the card has been heavily used for a long time it can be weared out,
-> > > > and should typically be replaced. But on some tests, it shows that the
-> > > > card can still be functional after a power cycle, but as it requires an
-> > > > operator to do it, the card can remain in a non-operational state for a
-> > > > long time until the problem has been observed by the operator.
-> > > >
-> > > > This patch adds function to power cycle the card in case it does not
-> > > > respond to a command, and then resend the command if the power cycle
-> > > > was successful. This procedure will be tested 1 time before giving up,
-> > > > and resuming host operation as normal.
-> > >
-> > > I assume the context above is all about the ioctl interface?
-> > >
-> >
-> > Yes, that's correct. The problem we have seen is triggered by ioctls.
-> >
-> > > So, when the card enters this non functional state, have you tried
-> > > just reading a block through the regular I/O interface. Does it
-> > > trigger a power cycle of the card - and then makes it functional
-> > > again?
-> > >
-> >
-> > Yes, we have tried that, and it does trigger a power cycle, making the card
-> > operational again. But as it requires an operator to trigger it, I thought
-> > it might be something that could be automated here. At least once.
-> 
-> Not sure what you mean by operator here? In the end it's a userspace
-> program running and I assume it can deal with error paths. :-)
-> 
-> In any case, I understand your point.
-> 
+On 04/03/2021 13:37, Hans de Goede wrote:
+> Hi,
+>
+> On 2/22/21 2:07 PM, Daniel Scally wrote:
+>> v1 for this series was originally 14-18 of this series:
+>> https://lore.kernel.org/linux-media/20201130133129.1024662-1-djrscally@gmail.com/T/#m91934e12e3d033da2e768e952ea3b4a125ee3e67
+>>
+>> v2 was here:
+>> https://lore.kernel.org/platform-driver-x86/20210118003428.568892-1-djrscally@gmail.com/
+>>
+>> Series level changelog:
+>>
+>> 	- Dropped the patch moving acpi_lpss_dep() to utils since it's not used
+>> 	in acpi_dev_get_dependent_dev() anymore.
+>> 	- Replaced it with a patch extending acpi_walk_dep_device_list() to be
+>> 	able to apply a given callback against each device in acpi_dep_list
+>> 	- Dropped the patch creating acpi_i2c_dev_name() and simply open coded
+>> 	that functionality.
+>>
+>> This has been tested on a number of devices, but currently **not** on a device
+>> designed for ChromeOS, which we ideally need to do to ensure no regression
+>> caused by replacing the tps68470 MFD driver. Sakari / Tomasz, is there any way
+>> you could help with that? Unfortunately, I don't have a device to test it on
+>> myself.
+>>
+>> Original cover letter: 
+>>
+>> At the moment in the kernel the ACPI _HID INT3472 is taken by the tps68470
+>> MFD driver, but that driver can only handle some of the cases of that _HID
+>> that we see. There are at least these three possibilities:
+>>
+>> 1. INT3472 devices that provide GPIOs through the usual framework and run
+>>    power and clocks through an operation region; this is the situation that
+>>    the current module handles and is seen on ChromeOS devices
+>> 2. INT3472 devices that provide GPIOs, plus clocks and regulators that are
+>>    meant to be driven through the usual frameworks, usually seen on devices
+>>    designed to run Windows
+>> 3. INT3472 devices that don't actually represent a physical tps68470, but
+>>    are being used as a convenient way of grouping a bunch of system GPIO
+>>    lines that are intended to enable power and clocks for sensors which
+>>    are called out as dependent on them. Also seen on devices designed to
+>>    run Windows.
+>>
+>> This series introduces a new module which registers:
+>>
+>> 1. An i2c driver that determines which scenario (#1 or #2) applies to the
+>>    machine and registers platform devices to be bound to GPIO, OpRegion,
+>>    clock and regulator drivers as appropriate.
+>> 2. A platform driver that binds to the dummy INT3472 devices described in
+>>    #3
+>>
+>> The platform driver for the dummy device registers the GPIO lines that
+>> enable the clocks and regulators to the sensors via those frameworks so
+>> that sensor drivers can consume them in the usual fashion. The existing
+>> GPIO and OpRegion tps68470 drivers will work with the i2c driver that's
+>> registered. Clock and regulator drivers are available but have not so far been
+>> tested, so aren't part of this series.
+>>
+>> The existing mfd/tps68470.c driver being thus superseded, it is removed.
+> Thank you for this patch series. Since there have already been a whole
+> bunch of review-comments, I've not taken a detailed look at this yet.
 
-Yes, we have a userspace program. So if the userspace program will try to
-restore the card in a situation such as the one we are trying to solve
-here, how shall it perform it? Is it expected that a ioctl CMD0 request
-should be enough, or is there any other support for a userspace program to
-reset the card?
 
-If it falls on a ioctl command to reset the card, how do we handle the case
-where the ioctl times out anyway? Or is the only way for a userspace program
-to restore the card, to make a block transfer that fails?
+No problem, I'm hoping to do a v3 over the weekend anyway.
 
-Kind regards
-Mårten
 
-> >
-> > > >
-> > > > Signed-off-by: Mårten Lindahl <marten.lindahl@axis.com>
-> > > > ---
-> > > > Please note: This might not be the way we want to handle these cases,
-> > > > but at least it lets us start the discussion. In which cases should the
-> > > > mmc framework deal with error messages like ETIMEDOUT, and in which
-> > > > cases should it be handled by userspace?
-> > > > The mmc framework tries to recover a failed block request
-> > > > (mmc_blk_mq_rw_recovery) which may end up in a HW reset of the card.
-> > > > Would it be an idea to act in a similar way when an ioctl times out?
-> > >
-> > > Maybe, it's a good idea to allow the similar reset for ioctls as we do
-> > > for regular I/O requests. My concern with this though, is that we
-> > > might allow user space to trigger a HW resets a bit too easily - and
-> > > that could damage the card.
-> > >
-> > > Did you consider this?
-> > >
-> >
-> > Yes, that is a valid point, and that is why the power cycle is only tried
-> > once. But the conditon for this reset is a -ETIMEDOUT, and this is the part of
-> > this patch where I am myself not sure of if it is enough to check for. Would
-> > this be an error that you could expect to happen with ioctl requests in other
-> > situations also, but not necessarily cause by a stalled card?
-> 
-> Exactly.
-> 
-> Many different commands can get pushed down to the card through the
-> mmc ioctl interface. It's difficult to know what error path we should
-> pick, other than reporting and propagating the error codes.
-> 
-> [...]
-> 
-> Kind regards
-> Uffe
+> I do wonder if you have thought about how this series should be merged?
+> This series is spread over quite a few subsytems and since there are
+> various interdependencies in the patches it is probably best if it gets
+> merged in its entirety through a single tree.
+>
+> I guess that merging though either Rafael's (drivers/acpi) tree or
+> Lee's (drivers/mfd) tree makes the most sense.
+>
+> As drivers/platform/x86 maintainer I'm happy with whatever solution
+> works for the other subsystem maintainers.
+
+
+I also think it's a good idea to go through a single tree, and my plan
+was to raise that probably after the next review round or so, but I
+hadn't gotten as far as thinking about whos tree it should be or
+anything yet. To be honest I'm not sure what factors dictate which
+choice is best in that regard; handling complex git merges is a bit
+outside my experience.
+
+>
+> Regards,
+>
+> Hans
+>
+>
+>
+>
+>> Thanks
+>> Dan
+>>
+>> Daniel Scally (6):
+>>   ACPI: scan: Extend acpi_walk_dep_device_list()
+>>   ACPI: scan: Add function to fetch dependent of acpi device
+>>   i2c: core: Add a format macro for I2C device names
+>>   gpiolib: acpi: Export acpi_get_gpiod()
+>>   platform/x86: Add intel_skl_int3472 driver
+>>   mfd: tps68470: Remove tps68470 MFD driver
+>>
+>>  MAINTAINERS                                   |   5 +
+>>  drivers/acpi/ec.c                             |   2 +-
+>>  drivers/acpi/pmic/Kconfig                     |   2 +-
+>>  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |   2 +-
+>>  drivers/acpi/scan.c                           |  92 ++-
+>>  drivers/gpio/Kconfig                          |   2 +-
+>>  drivers/gpio/gpiolib-acpi.c                   |  38 +-
+>>  drivers/i2c/i2c-core-acpi.c                   |   2 +-
+>>  drivers/i2c/i2c-core-base.c                   |   4 +-
+>>  drivers/mfd/Kconfig                           |  18 -
+>>  drivers/mfd/Makefile                          |   1 -
+>>  drivers/mfd/tps68470.c                        |  97 ---
+>>  drivers/platform/surface/surface3_power.c     |   2 +-
+>>  drivers/platform/x86/Kconfig                  |   2 +
+>>  drivers/platform/x86/Makefile                 |   1 +
+>>  drivers/platform/x86/intel-int3472/Kconfig    |  31 +
+>>  drivers/platform/x86/intel-int3472/Makefile   |   4 +
+>>  .../intel-int3472/intel_skl_int3472_common.c  | 106 ++++
+>>  .../intel-int3472/intel_skl_int3472_common.h  | 110 ++++
+>>  .../intel_skl_int3472_discrete.c              | 592 ++++++++++++++++++
+>>  .../intel_skl_int3472_tps68470.c              | 113 ++++
+>>  include/acpi/acpi_bus.h                       |   8 +
+>>  include/linux/acpi.h                          |   4 +-
+>>  include/linux/gpio/consumer.h                 |   7 +
+>>  include/linux/i2c.h                           |   3 +
+>>  25 files changed, 1100 insertions(+), 148 deletions(-)
+>>  delete mode 100644 drivers/mfd/tps68470.c
+>>  create mode 100644 drivers/platform/x86/intel-int3472/Kconfig
+>>  create mode 100644 drivers/platform/x86/intel-int3472/Makefile
+>>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.c
+>>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
+>>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+>>  create mode 100644 drivers/platform/x86/intel-int3472/intel_skl_int3472_tps68470.c
+>>
