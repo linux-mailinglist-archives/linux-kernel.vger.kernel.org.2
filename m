@@ -2,55 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C5232DD10
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAB232DD14
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhCDWbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:31:40 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:36660 "EHLO fornost.hmeau.com"
+        id S231688AbhCDWdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:33:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231688AbhCDWbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:31:39 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lHwV8-0007Yu-3l; Fri, 05 Mar 2021 09:31:23 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Mar 2021 09:31:21 +1100
-Date:   Fri, 5 Mar 2021 09:31:21 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Saulo Alessandre <saulo.alessandre@tse.jus.br>
-Subject: Re: [PATCH v9 6/9] crypto: Add NIST P384 curve parameters
-Message-ID: <20210304223121.GA19322@gondor.apana.org.au>
-References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
- <20210225160802.2478700-7-stefanb@linux.vnet.ibm.com>
- <20210304052809.GB25972@gondor.apana.org.au>
- <37e5c232-11e8-0533-ab3e-676829091d19@linux.ibm.com>
+        id S230210AbhCDWdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:33:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A92E64FEA;
+        Thu,  4 Mar 2021 22:33:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614897182;
+        bh=2cT/45u+HTHpywFreqnSM8/ZpheiSbzvRRU3M8Ug8ds=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JGXFa+uE+MMfrDJt69p7O2WLC6tQWvpHFANp8q0Y9ClTlIWFaadDvkBHdErpYbmUy
+         px2cA+HRZ7K+gCL4UW/y703PHRaerEujR2Le0VuQ+49HCcnhwqC6fw6iorHwtNnufV
+         8zRUW+ygm9S+RwhA7oPFfKh47mcU3vWX4w0Du0qKROx6bxj5PBEGSpEjvUEuJQjH2t
+         4cxHz1qYGZv+Z1MmQprLHdsNDPkoGustAI9rL/hE/Wp5/eJ9c/FWflwMMC5qOPqX6c
+         wy0lh9afy322iMZlXf6u/uaP/HfLQUmSngzfd7OWJDehOB3d7Hf6bdDi9jhgqkZASB
+         WSokL+0Yyp7jQ==
+Date:   Thu, 4 Mar 2021 17:33:01 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.11 16/67] net: sfp: add mode quirk for GPON
+ module Ubiquiti U-Fiber Instant
+Message-ID: <YEFgHQt6bp7yBjH/@sashalap>
+References: <20210224125026.481804-16-sashal@kernel.org>
+ <20210224125212.482485-12-sashal@kernel.org>
+ <20210225190306.65jnl557vvs6d7o3@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
-In-Reply-To: <37e5c232-11e8-0533-ab3e-676829091d19@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210225190306.65jnl557vvs6d7o3@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 08:59:36AM -0500, Stefan Berger wrote:
+On Thu, Feb 25, 2021 at 08:03:06PM +0100, Pali Rohár wrote:
+>On Wednesday 24 February 2021 07:49:34 Sasha Levin wrote:
+>> From: Pali Rohár <pali@kernel.org>
+>>
+>> [ Upstream commit f0b4f847673299577c29b71d3f3acd3c313d81b7 ]
 >
-> Are you going to take the other patches as well, except for maybe 9/9, which
-> depends on Nayan's patch series. Mimi suggested to me to ask you whether you
-> could create a topic branch where we can apply other patches to, such as
-> Nayna's?
+>Hello! This commit requires also commit~1 from that patch series:
+>https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=426c6cbc409cbda9ab1a9dbf15d3c2ef947eb8c1
+>
+>Without it kernel cannot read EEPROM from Ubiquiti U-Fiber Instant
+>module and therefore the hook based on EEPROM data which is below would
+>not be applied.
 
-Yes I can do a topic branch.  Please let me know which patches
-I should take when you resubmit.
+Looks like that commit is already in, thanks!
 
-Thanks,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Thanks,
+Sasha
