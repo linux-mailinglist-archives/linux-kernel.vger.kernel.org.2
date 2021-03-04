@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3770E32CD9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2539832CDA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhCDHai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhCDHaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:30:14 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573DFC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 23:29:34 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id 18so3448897pfo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 23:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VdsqpWwdEeY8aJX19dV6yy4QxSmnpc0PvPEJST03Ftw=;
-        b=SBllmr7z0guUOiLqKiI/ztyELVCFIzx0GeOzVAxDWimvy5kFp1YEUArlJDnGUIvfcL
-         vn1EPExQyvaivS2ubCkjN8MBIwi0x+1c8y+ymN5nyK5ihK6kUJTr88EF6Euc1drKY47u
-         tkiBRC8rDsxUrQIpJxCP1H1icjMZiDsZog1r/9tOtS21iIKJoXgirlNeAqY6VLXlnwgt
-         PSkwxcd5NB+cHTQFSx7vWNkc8YnlOTXHSXXTQHKNSbRt1k++O450gn63c+0isrkC/i5x
-         qQ7ks+3z3AcRSm1v5SkI/Z6TjJP60HX7cfyjPebcX4E+an+b6NeqN98ogxwMzLvOkHd5
-         Z0lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VdsqpWwdEeY8aJX19dV6yy4QxSmnpc0PvPEJST03Ftw=;
-        b=EupZcItJlNGWX65QuW6Ud1GTHvtpXs+WCNWz/Kl+Yjlt+LHYfWIZ1xuzA4lLNhcES7
-         696Ome/wlg9RIagPy3H8IwC9XhC23KJIQt/QoafNx0NFvEPNyDlONWCrryFy6yWoPCxH
-         moC3h+tuvxftnwJF1AByt5XxOlicoOkM7VATeD6wQ/iOEwnQ/ffmlWFBwV70N66dslUk
-         3eoH6SVIEnlUyrT9k3Fz0459KHjToescUISWHeZl3a/joOO0YstICVuichiWMPLow/GM
-         rcYRNgNXrZMYIPRgozpN02l7Ow7CVE1b2KYFBzTpF6BAb56xzTeup92XHpWwjpgBr0rr
-         KLWA==
-X-Gm-Message-State: AOAM533qZbrTsDVS0RV+6DVe7FMBip4EF2vhhEwFbG/XUa1hhIV76ATN
-        TBy7c8R3XpfajTNdP/zSW163sTOkg/mQjq8S
-X-Google-Smtp-Source: ABdhPJyfMZG1CtknVJRfzGR12b3WSU2BAr4Rux0Iqvsh2TIsPjSTBYnUZJZyALZGRd6fDwpolGDJAw==
-X-Received: by 2002:a63:1503:: with SMTP id v3mr2565575pgl.240.1614842973739;
-        Wed, 03 Mar 2021 23:29:33 -0800 (PST)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:a76a:a553:bfca:caa6])
-        by smtp.gmail.com with ESMTPSA id t36sm1451005pfg.111.2021.03.03.23.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 23:29:33 -0800 (PST)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        WenZhang <zhangwen@yulong.com>, zuoqilin <zuoqilin@yulong.com>,
-        Joe Perches <joe@perches.com>,
-        Naoki Hayama <naoki.hayama@lineo.co.jp>,
-        Wang Qing <wangqing@vivo.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        dingsenjie <dingsenjie@yulong.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH] scripts/spelling.txt: add "overlfow"
-Date:   Wed,  3 Mar 2021 23:26:58 -0800
-Message-Id: <20210304072657.64577-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.27.0
+        id S231537AbhCDHdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:33:50 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:12250 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230045AbhCDHdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:33:42 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DrjJW42bKz9v1CH;
+        Thu,  4 Mar 2021 08:32:59 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Ad7PxQ5yUtUO; Thu,  4 Mar 2021 08:32:59 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrjJW2W77z9v1DM;
+        Thu,  4 Mar 2021 08:32:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C69468B773;
+        Thu,  4 Mar 2021 08:33:00 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id iw7dwOrwWfIZ; Thu,  4 Mar 2021 08:33:00 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1D9388B7F6;
+        Thu,  4 Mar 2021 08:33:00 +0100 (CET)
+Subject: Re: [PATCH v3] powerpc/uprobes: Validation for prefixed instruction
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>, mpe@ellerman.id.au
+Cc:     jniethe5@gmail.com, oleg@redhat.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, paulus@samba.org,
+        sandipan@linux.ibm.com, naveen.n.rao@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210304050529.59391-1-ravi.bangoria@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ac7aa126-59dd-31be-1084-6d3a2f0e4eb4@csgroup.eu>
+Date:   Thu, 4 Mar 2021 08:32:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210304050529.59391-1-ravi.bangoria@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add typo "overlfow" for "overflow". This typo was found and fixed in
-net/sctp/tsnmap.c.
 
-Link: https://lore.kernel.org/netdev/20210304055548.56829-1-drew@beagleboard.org/
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- scripts/spelling.txt | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 2e3ba91a5072..f57e3e9538b0 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -1013,6 +1013,7 @@ oustanding||outstanding
- overaall||overall
- overhread||overhead
- overlaping||overlapping
-+overlfow||overflow
- overide||override
- overrided||overridden
- overriden||overridden
--- 
-2.27.0
+Le 04/03/2021 à 06:05, Ravi Bangoria a écrit :
+> As per ISA 3.1, prefixed instruction should not cross 64-byte
+> boundary. So don't allow Uprobe on such prefixed instruction.
+> 
+> There are two ways probed instruction is changed in mapped pages.
+> First, when Uprobe is activated, it searches for all the relevant
+> pages and replace instruction in them. In this case, if that probe
+> is on the 64-byte unaligned prefixed instruction, error out
+> directly. Second, when Uprobe is already active and user maps a
+> relevant page via mmap(), instruction is replaced via mmap() code
+> path. But because Uprobe is invalid, entire mmap() operation can
+> not be stopped. In this case just print an error and continue.
+> 
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+> v2: https://lore.kernel.org/r/20210204104703.273429-1-ravi.bangoria@linux.ibm.com
+> v2->v3:
+>    - Drop restriction for Uprobe on suffix of prefixed instruction.
+>      It needs lot of code change including generic code but what
+>      we get in return is not worth it.
+> 
+>   arch/powerpc/kernel/uprobes.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+> index e8a63713e655..c400971ebe70 100644
+> --- a/arch/powerpc/kernel/uprobes.c
+> +++ b/arch/powerpc/kernel/uprobes.c
+> @@ -41,6 +41,14 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+>   	if (addr & 0x03)
+>   		return -EINVAL;
+>   
+> +	if (!IS_ENABLED(CONFIG_PPC64) || !cpu_has_feature(CPU_FTR_ARCH_31))
 
+cpu_has_feature(CPU_FTR_ARCH_31) should return 'false' when CONFIG_PPC64 is not enabled, no need to 
+double check.
+
+> +		return 0;
+> +
+> +	if (ppc_inst_prefixed(auprobe->insn) && (addr & 0x3F) == 0x3C) {
+
+Maybe 3C instead of 4F ? : (addr & 0x3C) == 0x3C
+
+What about
+
+(addr & (SZ_64 - 4)) == SZ_64 - 4 to make it more explicit ?
+
+Or ALIGN(addr, SZ_64) != ALIGN(addr + 8, SZ_64)
+
+> +		pr_info_ratelimited("Cannot register a uprobe on 64 byte unaligned prefixed instruction\n");
+> +		return -EINVAL;
+> +	}
+> +
+>   	return 0;
+>   }
+>   
+> 
+
+Christophe
