@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2514032DE02
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4450332DE05
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233319AbhCDXuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 18:50:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232543AbhCDXuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 18:50:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F7F64FEA;
-        Thu,  4 Mar 2021 23:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614901809;
-        bh=la+/LlUFeQYvhLySDR4vAFpG+8JYc37BPuVHhh/Xkwo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AKCe315TTti7vXaDkftIB9RAiJKo7klEiBS5CoaUGufcb2RT0N6rraHjbpFBjG670
-         zodPbs7P67fX4UvV0tbq0GuaoGMl+f1YGJH0AEnJlMT0VvH9OaDMjs0G7F+djIB13h
-         a0QayLF3Cc7bYfl/Z5x44VhKF8ijlhkS0SIFIfcYQF0tTzhgzvM3R806Sptq/7AztU
-         cSeOmck9FCU63eeS3robzcrzFCv5XDlbI2/l9MdYA8V6nKY80KiwbQ5zc0waiij5NO
-         TkD8cNwNDDV3xmipHZWxB8s3i4hBiAdk6vwUDsVQrT1O3ZqiSHDlshsRU2xFJoEbjj
-         pT3Qz5nwZR4SQ==
-Date:   Thu, 4 Mar 2021 15:50:06 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Luis Henriques <lhenriques@suse.de>,
-        Steve French <sfrench@samba.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Walter Harms <wharms@bfs.de>
-Subject: Re: [RFC v4] copy_file_range.2: Update cross-filesystem support for
- 5.12
-Message-ID: <20210304235006.GW7269@magnolia>
-References: <20210224142307.7284-1-lhenriques@suse.de>
- <20210304093806.10589-1-alx.manpages@gmail.com>
- <20210304171350.GC7267@magnolia>
- <37df00f9-a88e-3f16-d0b4-3297248aee66@gmail.com>
+        id S233340AbhCDXuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 18:50:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232543AbhCDXub (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 18:50:31 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7DCC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 15:50:31 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d11so337949plo.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 15:50:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fBM3x2Jvh9yrxQ8ou6SaTNUrWPPxI8MhXrn4+8d/y8c=;
+        b=Hmor8MyonFhRh2pbmVfovEH002W6qy4lse5CAJQ+/Zm17vWvpD3lWwFdzOICcX+QIu
+         3DYCK7YULgmVXv0tlY2ijCUyzXAMvvKpjroy9rkuXavrpG98/mg7Vx24VTJf4VNpvZmb
+         NfdaAdu7K432oYrEjhmMEANSWaJU2yeh3J/TI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fBM3x2Jvh9yrxQ8ou6SaTNUrWPPxI8MhXrn4+8d/y8c=;
+        b=QoRS4CN04DSlXR/P3Um8z4R9mJNaH6z1+PdWbVJlQjrHgBgFe+eQqTJPCuBh0TjCgw
+         AfVD8fKgtTTXXMWD0zvbqCCawlhPfWEBLERqnW5Lpwsfuyf27x/Oz7r4d8D+m4vb9m4R
+         /EVFkm37IJxiUsDmrp1Eg0ArkOmfsAFSW5z75tfcDUzl2pbd9EJvRgpIJuaLol96xL4R
+         Bz+znOBkLWb6ih/I8SZuduTUsfiKyMEE8cCP9SRAQCBSWoHbI97EzENx8EItXU4Wkvpb
+         cuEXoI5pTk8YHO7QhkMgTcn8judkegD3IcjzvHIKSDqZRwzE/xkvX7VGh4NmMug9GgNs
+         +Zqg==
+X-Gm-Message-State: AOAM53323vSKUlB0tT3tTR/DahpDycf3TRD4ks6b9ghjY9OfyOjqC2tx
+        y0QwWX4tm24wtdDjqGBftsP34A==
+X-Google-Smtp-Source: ABdhPJyaoW1Ju/pSLOkgKfHs1exljGevVAWLF0woDDaC82pKsBL/28eSt8LgZmiOkVSWk05IonrI5w==
+X-Received: by 2002:a17:90a:16d6:: with SMTP id y22mr7360453pje.55.1614901830516;
+        Thu, 04 Mar 2021 15:50:30 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k128sm426613pfd.137.2021.03.04.15.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 15:50:29 -0800 (PST)
+Date:   Thu, 4 Mar 2021 15:50:29 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     zhaojiele <unclexiaole@gmail.com>
+Cc:     jmorris@namei.org, serge@hallyn.com,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] security/loadpin: Replace "kernel_read_file_str[j]" with
+ function                   "kernel_read_file_id_str(j)".
+Message-ID: <202103041547.2D77671E92@keescook>
+References: <20210304083638.174767-1-unclexiaole@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <37df00f9-a88e-3f16-d0b4-3297248aee66@gmail.com>
+In-Reply-To: <20210304083638.174767-1-unclexiaole@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 07:24:02PM +0100, Alejandro Colomar (man-pages) wrote:
-> Hi Darrick,
+On Thu, Mar 04, 2021 at 08:36:38AM +0000, zhaojiele wrote:
+> Actually Linux kernel already provide function "kernel_read_file_id_str()"
+> for secure access in "kernel_read_file.h".And, in "parse_exclude()"
+> function, there is no need for
+> "BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) <
+> ARRAY_SIZE(ignore_read_file_id))"
+> when access array by functon "kernel_read_file_id_str(j)".
 > 
-> On 3/4/21 6:13 PM, Darrick J. Wong wrote:
-> > On Thu, Mar 04, 2021 at 10:38:07AM +0100, Alejandro Colomar wrote:
-> > > +However, on some virtual filesystems,
-> > > +the call failed to copy, while still reporting success.
-> > 
-> > ...success, or merely a short copy?
+> Signed-off-by: zhaojiele <unclexiaole@gmail.com>
+> ---
+>  security/loadpin/loadpin.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> Okay.
-> 
-> > 
-> > (The rest looks reasonable (at least by c_f_r standards) to me.)
-> 
-> I'm curious, what does "c_f_r standards" mean? :)
+> diff --git a/security/loadpin/loadpin.c b/security/loadpin/loadpin.c
+> index b12f7d986b1e..3e8bdcd06600 100644
+> --- a/security/loadpin/loadpin.c
+> +++ b/security/loadpin/loadpin.c
+> @@ -210,8 +210,6 @@ static void __init parse_exclude(void)
+>  	 */
+>  	BUILD_BUG_ON(ARRAY_SIZE(exclude_read_files) !=
+>  		     ARRAY_SIZE(ignore_read_file_id));
+> -	BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) <
+> -		     ARRAY_SIZE(ignore_read_file_id));
 
-c_f_r is shorthand for "copy_file_range".
+This should stay to make sure kernel_read_file_str doesn't diverge from
+the other two. However, maybe it should be tightened to:
 
-As for standards... well... I'll just say that this being the /second/
-major shift in behavior reflects our poor community development
-processes.  The door to general cross-fs copies should not have been
-thrown open with as little testing as it did.  There are legendary
-dchinner rants about how obviously broken the generic fallback was when
-it was introduced.
+	BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) - 1 ==
+		     ARRAY_SIZE(ignore_read_file_id));
 
-There's a reason why we usually wire up new kernel functionality on an
-opt-in basis, and that is to foster gradual enablement as QA resources
-permit.  It's one thing for maintainers to blow up their own subsystems
-in isolation, and an entirely different thing to do it between projects
-with no coordination.
+>  
+>  	for (i = 0; i < ARRAY_SIZE(exclude_read_files); i++) {
+>  		cur = exclude_read_files[i];
+> @@ -221,9 +219,9 @@ static void __init parse_exclude(void)
+>  			continue;
+>  
+>  		for (j = 0; j < ARRAY_SIZE(ignore_read_file_id); j++) {
+> -			if (strcmp(cur, kernel_read_file_str[j]) == 0) {
+> +			if (strcmp(cur, kernel_read_file_id_str(j)) == 0) {
+>  				pr_info("excluding: %s\n",
+> -					kernel_read_file_str[j]);
+> +					kernel_read_file_id_str(j));
+>  				ignore_read_file_id[j] = 1;
+>  				/*
+>  				 * Can not break, because one read_file_str
 
-Did c_f_r work between an ext4 and an xfs?  I have no idea.  It seemed
-to work between xfses of a similar vintage and featureset, at least, but
-that's about as much testing as I have ever managed.
+I feel funny about making these into function calls when we've already
+validated the index, but yeah, that would be fine. Can you send a v2
+with the earlier suggestion addressed?
 
---D
+Thanks!
 
-> 
-> Cheers,
-> 
-> Alex
-> 
-> -- 
-> Alejandro Colomar
-> Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-> http://www.alejandro-colomar.es/
+-Kees
+
+-- 
+Kees Cook
