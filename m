@@ -2,352 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B57E32C97C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1331E32C95D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449907AbhCDBHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:07:09 -0500
-Received: from mga01.intel.com ([192.55.52.88]:48154 "EHLO mga01.intel.com"
+        id S1450456AbhCDBHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:07:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1453076AbhCDAoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:44:34 -0500
-IronPort-SDR: 21Jrno7b384ZJAB/5sDprjCF5f19PRfL1uyeBC8eX2FbsUBFiCn2pStBAK99NONj+9k439HUgN
- wgxmcsY7yDtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="207006953"
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="207006953"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 16:43:53 -0800
-IronPort-SDR: N7D+3EvlNR8UwvdwOPucLAM6Aik2z5DkxQd+lTINUGQRjKhToOYwUXkTBrKmR3hHeArqmZt36T
- 8bOo7+m6Hh3g==
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="407476586"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 16:43:51 -0800
-Subject: Re: [kbuild-all] Re: net/ceph/messenger_v1.c:1204:5: warning: stack
- frame size of 2944 bytes in function 'ceph_con_v1_try_read'
-To:     Ilya Dryomov <idryomov@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>
-References: <202103011657.ttO1k7BO-lkp@intel.com>
- <CAOi1vP8nq6fOC+coHdq8w63k5uq8kXHY9zgtxDs0k_aVWY88wQ@mail.gmail.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <b34f6a4e-a779-a319-a948-5036a0c9b62b@intel.com>
-Date:   Thu, 4 Mar 2021 08:43:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1453090AbhCDApT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:45:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA19D64E56;
+        Thu,  4 Mar 2021 00:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614818678;
+        bh=8wUvzvMV9XoVLQ9s0QU1nWZT0dd0CJC4pPcE0vc7trM=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=m8qrEh7xqoIYY6TjnJNQ7ZbWIo1Kg/RgdA872Sx4xSw3erYLxdIayemAOBHQlp3E5
+         DMWjn4xVnWUDcfmJ7ovzxu1+vZpQ4hc5+O20Zh+fAIAr/qcygPOZHhBy6w8ALNeFpE
+         TZbfysXoDDyw8EM6C4sYeMftcfjd0a8SZFVuX7Fl6Z4gWYQQ050rfgehENApz8yOFc
+         d2FuXHZmaRH1dCQYLe0qRney71YDfvFPkyU4v+Zj3ZQ0fs9ceuBn3kQZGy0E7TqsEA
+         /j44JFY7YmLKvsCBNzktW+3YYYO0A/zOnvjVg1BvZ9CBrZfk8yC+D+c2vbmxigXoGh
+         fB/hikz2W6MHA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 780663522591; Wed,  3 Mar 2021 16:44:38 -0800 (PST)
+Date:   Wed, 3 Mar 2021 16:44:38 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com
+Subject: [PATCH memory-model 0/3] LKMM updates for v5.13
+Message-ID: <20210304004438.GA25271@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <CAOi1vP8nq6fOC+coHdq8w63k5uq8kXHY9zgtxDs0k_aVWY88wQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
+This series contains LKMM updates:
 
-On 3/1/21 7:42 PM, Ilya Dryomov wrote:
-> On Mon, Mar 1, 2021 at 9:36 AM kernel test robot <lkp@intel.com> wrote:
->> Hi Ilya,
->>
->> FYI, the error/warning still remains.
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8
->> commit: 2f713615ddd9d805b6c5e79c52e0e11af99d2bf1 libceph: move msgr1 protocol implementation to its own file
->> date:   3 months ago
-> It's fine.  This commit just moved the code which has been this way for
-> years and never caused any real issues.  Please add it to the allowlist
-> if possible.
+1.	Update rcu_dereference.rst reference, courtesy of Mauro Carvalho
+	Chehab.
 
-Hi llya,
+2.	tools/memory-model: Remove reference to atomic_ops.rst, courtesy
+	of Akira Yokosawa.
 
-Thanks for the suggestion, we have added to the allowlist.
+3.	tools/memory-model: Add access-marking documentation.
 
-Best Regards,
-Rong Chen
+						Thanx, Paul
 
->
->> config: powerpc64-randconfig-r001-20210301 (attached as .config)
->> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 5de09ef02e24d234d9fc0cd1c6dfe18a1bb784b0)
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # install powerpc64 cross compiling tool for clang build
->>          # apt-get install binutils-powerpc64-linux-gnu
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2f713615ddd9d805b6c5e79c52e0e11af99d2bf1
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout 2f713615ddd9d805b6c5e79c52e0e11af99d2bf1
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>     __do_insb
->>     ^
->>     arch/powerpc/include/asm/io.h:541:56: note: expanded from macro '__do_insb'
->>     #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>     In file included from net/ceph/messenger_v1.c:8:
->>     In file included from include/net/sock.h:38:
->>     In file included from include/linux/hardirq.h:10:
->>     In file included from arch/powerpc/include/asm/hardirq.h:6:
->>     In file included from include/linux/irq.h:20:
->>     In file included from include/linux/io.h:13:
->>     In file included from arch/powerpc/include/asm/io.h:604:
->>     arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>     DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
->>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                     __do_##name al;                                 \
->>                     ^~~~~~~~~~~~~~
->>     <scratch space>:32:1: note: expanded from here
->>     __do_insw
->>     ^
->>     arch/powerpc/include/asm/io.h:542:56: note: expanded from macro '__do_insw'
->>     #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>     In file included from net/ceph/messenger_v1.c:8:
->>     In file included from include/net/sock.h:38:
->>     In file included from include/linux/hardirq.h:10:
->>     In file included from arch/powerpc/include/asm/hardirq.h:6:
->>     In file included from include/linux/irq.h:20:
->>     In file included from include/linux/io.h:13:
->>     In file included from arch/powerpc/include/asm/io.h:604:
->>     arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>     DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
->>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                     __do_##name al;                                 \
->>                     ^~~~~~~~~~~~~~
->>     <scratch space>:36:1: note: expanded from here
->>     __do_insl
->>     ^
->>     arch/powerpc/include/asm/io.h:543:56: note: expanded from macro '__do_insl'
->>     #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->>                                            ~~~~~~~~~~~~~~~~~~~~~^
->>     In file included from net/ceph/messenger_v1.c:8:
->>     In file included from include/net/sock.h:38:
->>     In file included from include/linux/hardirq.h:10:
->>     In file included from arch/powerpc/include/asm/hardirq.h:6:
->>     In file included from include/linux/irq.h:20:
->>     In file included from include/linux/io.h:13:
->>     In file included from arch/powerpc/include/asm/io.h:604:
->>     arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>     DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
->>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                     __do_##name al;                                 \
->>                     ^~~~~~~~~~~~~~
->>     <scratch space>:40:1: note: expanded from here
->>     __do_outsb
->>     ^
->>     arch/powerpc/include/asm/io.h:544:58: note: expanded from macro '__do_outsb'
->>     #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                             ~~~~~~~~~~~~~~~~~~~~~^
->>     In file included from net/ceph/messenger_v1.c:8:
->>     In file included from include/net/sock.h:38:
->>     In file included from include/linux/hardirq.h:10:
->>     In file included from arch/powerpc/include/asm/hardirq.h:6:
->>     In file included from include/linux/irq.h:20:
->>     In file included from include/linux/io.h:13:
->>     In file included from arch/powerpc/include/asm/io.h:604:
->>     arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>     DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
->>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                     __do_##name al;                                 \
->>                     ^~~~~~~~~~~~~~
->>     <scratch space>:44:1: note: expanded from here
->>     __do_outsw
->>     ^
->>     arch/powerpc/include/asm/io.h:545:58: note: expanded from macro '__do_outsw'
->>     #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                             ~~~~~~~~~~~~~~~~~~~~~^
->>     In file included from net/ceph/messenger_v1.c:8:
->>     In file included from include/net/sock.h:38:
->>     In file included from include/linux/hardirq.h:10:
->>     In file included from arch/powerpc/include/asm/hardirq.h:6:
->>     In file included from include/linux/irq.h:20:
->>     In file included from include/linux/io.h:13:
->>     In file included from arch/powerpc/include/asm/io.h:604:
->>     arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->>     DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
->>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->>                     __do_##name al;                                 \
->>                     ^~~~~~~~~~~~~~
->>     <scratch space>:48:1: note: expanded from here
->>     __do_outsl
->>     ^
->>     arch/powerpc/include/asm/io.h:546:58: note: expanded from macro '__do_outsl'
->>     #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->>                                             ~~~~~~~~~~~~~~~~~~~~~^
->>>> net/ceph/messenger_v1.c:1204:5: warning: stack frame size of 2944 bytes in function 'ceph_con_v1_try_read' [-Wframe-larger-than=]
->>     int ceph_con_v1_try_read(struct ceph_connection *con)
->>         ^
->>     13 warnings generated.
->>
->>
->> vim +/ceph_con_v1_try_read +1204 net/ceph/messenger_v1.c
->>
->>    1200
->>    1201  /*
->>    1202   * Read what we can from the socket.
->>    1203   */
->>> 1204  int ceph_con_v1_try_read(struct ceph_connection *con)
->>    1205  {
->>    1206          int ret = -1;
->>    1207
->>    1208  more:
->>    1209          dout("try_read start %p state %d\n", con, con->state);
->>    1210          if (con->state != CEPH_CON_S_V1_BANNER &&
->>    1211              con->state != CEPH_CON_S_V1_CONNECT_MSG &&
->>    1212              con->state != CEPH_CON_S_OPEN)
->>    1213                  return 0;
->>    1214
->>    1215          BUG_ON(!con->sock);
->>    1216
->>    1217          dout("try_read tag %d in_base_pos %d\n", (int)con->in_tag,
->>    1218               con->in_base_pos);
->>    1219
->>    1220          if (con->state == CEPH_CON_S_V1_BANNER) {
->>    1221                  ret = read_partial_banner(con);
->>    1222                  if (ret <= 0)
->>    1223                          goto out;
->>    1224                  ret = process_banner(con);
->>    1225                  if (ret < 0)
->>    1226                          goto out;
->>    1227
->>    1228                  con->state = CEPH_CON_S_V1_CONNECT_MSG;
->>    1229
->>    1230                  /*
->>    1231                   * Received banner is good, exchange connection info.
->>    1232                   * Do not reset out_kvec, as sending our banner raced
->>    1233                   * with receiving peer banner after connect completed.
->>    1234                   */
->>    1235                  ret = prepare_write_connect(con);
->>    1236                  if (ret < 0)
->>    1237                          goto out;
->>    1238                  prepare_read_connect(con);
->>    1239
->>    1240                  /* Send connection info before awaiting response */
->>    1241                  goto out;
->>    1242          }
->>    1243
->>    1244          if (con->state == CEPH_CON_S_V1_CONNECT_MSG) {
->>    1245                  ret = read_partial_connect(con);
->>    1246                  if (ret <= 0)
->>    1247                          goto out;
->>    1248                  ret = process_connect(con);
->>    1249                  if (ret < 0)
->>    1250                          goto out;
->>    1251                  goto more;
->>    1252          }
->>    1253
->>    1254          WARN_ON(con->state != CEPH_CON_S_OPEN);
->>    1255
->>    1256          if (con->in_base_pos < 0) {
->>    1257                  /*
->>    1258                   * skipping + discarding content.
->>    1259                   */
->>    1260                  ret = ceph_tcp_recvmsg(con->sock, NULL, -con->in_base_pos);
->>    1261                  if (ret <= 0)
->>    1262                          goto out;
->>    1263                  dout("skipped %d / %d bytes\n", ret, -con->in_base_pos);
->>    1264                  con->in_base_pos += ret;
->>    1265                  if (con->in_base_pos)
->>    1266                          goto more;
->>    1267          }
->>    1268          if (con->in_tag == CEPH_MSGR_TAG_READY) {
->>    1269                  /*
->>    1270                   * what's next?
->>    1271                   */
->>    1272                  ret = ceph_tcp_recvmsg(con->sock, &con->in_tag, 1);
->>    1273                  if (ret <= 0)
->>    1274                          goto out;
->>    1275                  dout("try_read got tag %d\n", (int)con->in_tag);
->>    1276                  switch (con->in_tag) {
->>    1277                  case CEPH_MSGR_TAG_MSG:
->>    1278                          prepare_read_message(con);
->>    1279                          break;
->>    1280                  case CEPH_MSGR_TAG_ACK:
->>    1281                          prepare_read_ack(con);
->>    1282                          break;
->>    1283                  case CEPH_MSGR_TAG_KEEPALIVE2_ACK:
->>    1284                          prepare_read_keepalive_ack(con);
->>    1285                          break;
->>    1286                  case CEPH_MSGR_TAG_CLOSE:
->>    1287                          ceph_con_close_socket(con);
->>    1288                          con->state = CEPH_CON_S_CLOSED;
->>    1289                          goto out;
->>    1290                  default:
->>    1291                          goto bad_tag;
->>    1292                  }
->>    1293          }
->>    1294          if (con->in_tag == CEPH_MSGR_TAG_MSG) {
->>    1295                  ret = read_partial_message(con);
->>    1296                  if (ret <= 0) {
->>    1297                          switch (ret) {
->>    1298                          case -EBADMSG:
->>    1299                                  con->error_msg = "bad crc/signature";
->>    1300                                  fallthrough;
->>    1301                          case -EBADE:
->>    1302                                  ret = -EIO;
->>    1303                                  break;
->>    1304                          case -EIO:
->>    1305                                  con->error_msg = "io error";
->>    1306                                  break;
->>    1307                          }
->>    1308                          goto out;
->>    1309                  }
->>    1310                  if (con->in_tag == CEPH_MSGR_TAG_READY)
->>    1311                          goto more;
->>    1312                  ceph_con_process_message(con);
->>    1313                  if (con->state == CEPH_CON_S_OPEN)
->>    1314                          prepare_read_tag(con);
->>    1315                  goto more;
->>    1316          }
->>    1317          if (con->in_tag == CEPH_MSGR_TAG_ACK ||
->>    1318              con->in_tag == CEPH_MSGR_TAG_SEQ) {
->>    1319                  /*
->>    1320                   * the final handshake seq exchange is semantically
->>    1321                   * equivalent to an ACK
->>    1322                   */
->>    1323                  ret = read_partial_ack(con);
->>    1324                  if (ret <= 0)
->>    1325                          goto out;
->>    1326                  process_ack(con);
->>    1327                  goto more;
->>    1328          }
->>    1329          if (con->in_tag == CEPH_MSGR_TAG_KEEPALIVE2_ACK) {
->>    1330                  ret = read_keepalive_ack(con);
->>    1331                  if (ret <= 0)
->>    1332                          goto out;
->>    1333                  goto more;
->>    1334          }
->>    1335
->>    1336  out:
->>    1337          dout("try_read done on %p ret %d\n", con, ret);
->>    1338          return ret;
->>    1339
->>    1340  bad_tag:
->>    1341          pr_err("try_read bad con->in_tag = %d\n", (int)con->in_tag);
->>    1342          con->error_msg = "protocol error, garbage tag";
->>    1343          ret = -1;
->>    1344          goto out;
->>    1345  }
->>    1346
-> Thanks,
->
->                  Ilya
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+------------------------------------------------------------------------
 
+ access-marking.txt |  474 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ glossary.txt       |    2 
+ simple.txt         |    1 
+ 3 files changed, 475 insertions(+), 2 deletions(-)
