@@ -2,140 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F9A32DD1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991BB32DD20
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhCDWeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:34:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S232082AbhCDWeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhCDWea (ORCPT
+        with ESMTP id S232039AbhCDWeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:34:30 -0500
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EEBC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 14:34:30 -0800 (PST)
-Received: by mail-vk1-xa2a.google.com with SMTP id l17so74194vkk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 14:34:30 -0800 (PST)
+        Thu, 4 Mar 2021 17:34:36 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D71C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 14:34:35 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id g9so200068ilc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 14:34:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rajd7yQJWJDe7aYct9nFV0g6FXEt/vXGJuGQS9x6yXw=;
-        b=oUka736fvVmqzp5RZlMPVQlOWSDNz4htaYj7uuL247K09QoorKATvBeitoXWE8gl+X
-         r94pJWxWaxqv79liStuj+r+wOq9fKTa2NVLKprtxD75cZnVmt9BEMnKCn4Xd9zs4UWJ6
-         CQ6jtxH67C/5rnyDzukP5k1FYOYfssSHIFSyNA7WdjiO/frwnnkVeZoO7o+Gc9I57FTo
-         u/S0ZsgZwgdx5YNwzOLc4j3eZMAZpI2wZLGK5WsqjQgS6eiEvoJewqz2ADLgJI4oWCKz
-         gj3GrX4nrKqtReA0fKuEEoPzn+FxbRqEKhIr5E0rCzeUqMUCAyfLv51punQn6wxGiPA0
-         JyeQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g83f2dlo6XSV17iDyGbs3sPOEycLtqsQH7T1v32RPh0=;
+        b=W0q033fJH7tNWISgDHNOiAHBqFyPAqcFDhvCP8lWUkIvMQrvcwt9TcJPy12rVaVXe7
+         vcoHfh7Ar3XrBrwB11eSrtVWTNoznoWVaqQ6KQd2Yr9dmfdpqy567N7bqkRMpPQ3a2UU
+         Jdt8tc9IoDghMCqfOQF0OX2iFFGsDwcbJv0DL7+fiiRGwPw0KYKaJGiJuEhIjEnECIhm
+         8hadPBDtq4wIlclDp6LjnJzUamcMQEl0Uh8pzrRiTKBYYE5/74ueP0pwD+HgIp8L8iU1
+         /HAaaEIK1RPltdXv4cTweBFwKjaXaluI0HPu/djHBEd/0JmPEpAsfcojeKjiC4V7GivY
+         prkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rajd7yQJWJDe7aYct9nFV0g6FXEt/vXGJuGQS9x6yXw=;
-        b=OkC/8Q98RfwPEVsrf8FtqL8aWUBeWJql7hxmnTXLGAvrBrRYxLcqjgEK+hgzRCapRL
-         2VNtY+IkJEg8zSXyYeeOEA31rklV7pqpOIssdWfbm8XJzK6YqMsUAhIZWrPBEhSrl04e
-         OHZPOrjaAqwFnJCLX5fs0J80B1+2hbROyIXvWzgSY58jADUefjBZEsEzHGytGHRTv4H7
-         apftC35A5i6fjGHOvRlVluN74DIMFACbFzIZ3cTQDaASguJ9fWFUIVY7D2CnMSTm3GbD
-         i3ezOXQ65O4eKBkpE07Z9d2wxzlVWS94sETUQtXon3rwMmHvXZFxABIAjacjiob0mKHb
-         YoZg==
-X-Gm-Message-State: AOAM532kdjU0su/y7IskYBYCpoS5F66lD65BM2JrnAhkOZY9mIRy9yIS
-        9pX6l/DI7aBUvpUZq1DHIb/1xuq5nLIKOtOc7rqBRw==
-X-Google-Smtp-Source: ABdhPJw9hVzk/M0ZP7TpOX5Yz4NgqYdBHM97WKO8NA9JuMXAIsUjqPbiWDl2C+auPNVj7KxAWJlH8sBOEJlhhiJycZs=
-X-Received: by 2002:a1f:99c2:: with SMTP id b185mr4516009vke.3.1614897269361;
- Thu, 04 Mar 2021 14:34:29 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g83f2dlo6XSV17iDyGbs3sPOEycLtqsQH7T1v32RPh0=;
+        b=fg9piPwk8n2LHgLmzyAQyHAlctVyg3JnLjx5j4jDQzriJH9QLuWoPbSw57qQx0vfEn
+         zVvzi3XK4zWpTYutj1Bkae87TlxdPu0MyIVfCb3C8brwksLRcWRLwYXJOJ3FlciXUp3C
+         U73U6YXhzzngddYux/gsA1hjBhTCw3z/EMDNfpqKdKTvrf0gFnpCnsuy0paNJKUcSqLy
+         pDj2DrFQfZS4oISFacCDGjr05oXmzqIkVJoSCOaXSRA+SzDHvNoeWi+1AZHp3N+2OIxG
+         DjNho3KNuvtAQTBmXBdIuPpUKzIGjnbMz8+ISY9R5GOKw8PRcp7YuAiahYC70FV8yoPV
+         n89A==
+X-Gm-Message-State: AOAM530zQcb+tNiWSponV2rSiCUwzaEN3mkxrKLgJt/PKxk6PkGvYQdu
+        yQR+/R9tVupHo+GmIPCGU6u7vA==
+X-Google-Smtp-Source: ABdhPJwtJCrgTPdNXkvn5NvXOCP61XzpKnQWDIrKubA1P9lw67ILDLYrHvd3pYNg/N+IQXpf31RMfg==
+X-Received: by 2002:a05:6e02:1908:: with SMTP id w8mr5553201ilu.235.1614897274868;
+        Thu, 04 Mar 2021 14:34:34 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id s18sm399790ilt.9.2021.03.04.14.34.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 14:34:34 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     subashab@codeaurora.org, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: qualcomm: rmnet: stop using C bit-fields
+Date:   Thu,  4 Mar 2021 16:34:25 -0600
+Message-Id: <20210304223431.15045-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210304184544.2014171-1-samitolvanen@google.com>
- <87k0qmzq5u.wl-maz@kernel.org> <CABCJKufmjMT8+hGEnL3aJM7-OSwhYSHiJA=i8e7dHSGDWXYtsg@mail.gmail.com>
- <878s72sgwt.wl-maz@kernel.org>
-In-Reply-To: <878s72sgwt.wl-maz@kernel.org>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 4 Mar 2021 14:34:18 -0800
-Message-ID: <CABCJKud1EmXmmQj-YOUNCFhE3P1W6Uhqpwe1G0zcR5zw71ksJA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: arm64: Disable LTO in hyp
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        James Morse <james.morse@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 2:17 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Thu, 04 Mar 2021 21:25:41 +0000,
-> Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > On Thu, Mar 4, 2021 at 11:15 AM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > On Thu, 04 Mar 2021 18:45:44 +0000,
-> > > Sami Tolvanen <samitolvanen@google.com> wrote:
-> > > >
-> > > > allmodconfig + CONFIG_LTO_CLANG_THIN=y fails to build due to following
-> > > > linker errors:
-> > > >
-> > > >   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21CC):
-> > >
-> > > I assume this message is only an oddity, right? Because
-> > > __guest_enter() is as far as you can imagine from irqbypass.c...
-> >
-> > I'm not sure what's up with the filename in the error message. Fangrui
-> > or Nick probably have a better idea.
-> >
-> > > >   relocation R_AARCH64_CONDBR19 out of range: 2031220 is not in
-> > > >   [-1048576, 1048575]; references hyp_panic
-> > > >   >>> defined in vmlinux.o
-> > > >
-> > > >   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21E0):
-> > > >   relocation R_AARCH64_ADR_PREL_LO21 out of range: 2031200 is not in
-> > > >   [-1048576, 1048575]; references hyp_panic
-> > > >   >>> defined in vmlinux.o
-> > > >
-> > > > As LTO is not really necessary for the hypervisor code, disable it for
-> > > > the hyp directory to fix the build.
-> > >
-> > > Can you shed some light on what the problem is exactly?
-> >
-> > I assume hyp_panic() ends up being placed too far from __guest_enter()
-> > when the kernel is large enough. Possibly something to do with LLVM
-> > always splitting functions into separate sections with LTO. I'm not
-> > sure why the linker cannot shuffle things around to make everyone
-> > happy in this case, but I confirmed that this patch also fixes the
-> > build issue for me:
-> >
-> > diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switch.c
-> > index af8e940d0f03..128197b7c794 100644
-> > --- a/arch/arm64/kvm/hyp/vhe/switch.c
-> > +++ b/arch/arm64/kvm/hyp/vhe/switch.c
-> > @@ -214,7 +214,7 @@ static void __hyp_call_panic(u64 spsr, u64 elr, u64 par)
-> >  }
-> >  NOKPROBE_SYMBOL(__hyp_call_panic);
-> >
-> > -void __noreturn hyp_panic(void)
-> > +void __noreturn hyp_panic(void) __section(".text")
-> >  {
-> >         u64 spsr = read_sysreg_el2(SYS_SPSR);
-> >         u64 elr = read_sysreg_el2(SYS_ELR);
-> >
->
-> We're getting into black-magic territory here. Why wouldn't hyp_panic
-> be in the .text section already?
+This series converts data structures defined in <linux/if_rmnet.h>
+so they use integral field values with bitfield masks rather than
+rely on C bit-fields.
 
-It's not quite black magic. LLVM essentially flips on
--ffunction-sections with LTO and therefore, hyp_panic() will be in
-.text.hyp_panic in vmlinux.o, while __guest_enter() will be in .text.
-Everything ends up in .text when we link vmlinux, of course.
+I first proposed doing something like this long ago when my confusion
+about this code (and the memory layout it was supposed to represent)
+led me to believe it was erroneous:
+  https://lore.kernel.org/netdev/20190520135354.18628-1-elder@linaro.org/
 
-$ readelf --sections vmlinux.o | grep hyp_panic
-  [3936] .text.hyp_panic   PROGBITS         0000000000000000  004b56e4
+It came up again recently, when Sharath Chandra Vurukala proposed
+a new structure in "if_rmnet.h", again using C bit-fields.  I asked
+whether the new structure could use field masks, and Jakub requested
+that this be done.
+  https://lore.kernel.org/netdev/1613079324-20166-1-git-send-email-sharathv@codeaurora.org/
+I volunteered to convert the existing RMNet code to use bitfield
+masks, and that is what I'm doing here.
 
-Sami
+The first three patches are more or less preparation work for the
+last three.
+  - The first marks two fields in an existing structure explicitly
+    big endian.  They are unused by current code, so this should
+    have no impact.
+  - The second simplifies some code that computes the value of a
+    field in a header in a somewhat obfuscated way.
+  - The third eliminates some trivial accessor macros, open-coding
+    them instead.  I believe the accessors actually do more harm
+    than good.
+  - The last three convert the structures defined in "if_rmnet.h"
+    so they are defined only with integral fields, each having
+    well-defined byte order.  Where sub-fields are needed, field
+    masks are defined so they can be encoded or extracted using
+    functions like be16_get_bits() or u8_encode_bits(), defined
+    in <linux/bitfield.h>.  The three structures converted are,
+    in order:  rmnet_map_header, rmnet_map_dl_csum_trailer, and
+    rmnet_map_ul_csum_header.
+
+					-Alex
+
+Alex Elder (6):
+  net: qualcomm: rmnet: mark trailer field endianness
+  net: qualcomm: rmnet: simplify some byte order logic
+  net: qualcomm: rmnet: kill RMNET_MAP_GET_*() accessor macros
+  net: qualcomm: rmnet: use field masks instead of C bit-fields
+  net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum trailer
+  net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
+
+ .../ethernet/qualcomm/rmnet/rmnet_handlers.c  | 11 ++--
+ .../net/ethernet/qualcomm/rmnet/rmnet_map.h   | 12 ----
+ .../qualcomm/rmnet/rmnet_map_command.c        | 11 +++-
+ .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 60 ++++++++---------
+ include/linux/if_rmnet.h                      | 65 +++++++++----------
+ 5 files changed, 70 insertions(+), 89 deletions(-)
+
+-- 
+2.20.1
+
