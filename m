@@ -2,158 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5C932CA1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F7532CA1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhCDBjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:39:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        id S232755AbhCDBlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:41:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbhCDBiz (ORCPT
+        with ESMTP id S232712AbhCDBlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:38:55 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF9FC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 17:38:15 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id q204so16617013pfq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 17:38:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5RzlHn4xFRh1Zx79ORyn6MfrsS+lNJ1vPReW80eTB3E=;
-        b=UzzJplrA+FoaUIs6vVFqHpyo+BUwyG1DYilJI6kodVPoMKbAuSZUkPY0cxTEppgWBN
-         mzKtQZ3FsnmBKJU2uw+t50HaT27+0nkKaaNSAJ7sNDlt7IBDhsAJ34AAxvdV3khyD8DT
-         pJWXqYN+MPQ1+8kFodjaSjg1ZRoGH4b4EWOxeDEFDBWKzRerXEM74HSznqJYv6exjd6Y
-         POmfygtbtp5ULsCvaS9Ahawb4Qwm0MI2KOfos69+M1Xm0RDIKh2RxRPdiIgm1fYf5ykS
-         IDpOHNWnFqbQd6uhA/wmsegEeLRYyIRyOTt7bj/A3twy4DDXI9SblgWtZFn+QUzL9KkC
-         eObw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5RzlHn4xFRh1Zx79ORyn6MfrsS+lNJ1vPReW80eTB3E=;
-        b=Orhz7ieYpWzV7/1CtMyYXcE3NonTh/PsNnyQ/n/o/gyfLfGuGJxbUlGMcdXiaNrI7D
-         Oj4imZ7/z1hXw8cz31FmI+UCqZs0XyZfAKGw6xwg9Lgu25U9uJ4aXQNcBA/aKGXlMJ/g
-         kpWvK/etisKeb5mfMF+eVYCHiTKlBhQ5vuAP+9DIoHN980ASVQfENjoRptinfD9X4O6s
-         F2R0t9U4tGn6e47LWzB3Ai29sIY2HM95ful6wndeDRX95wowfm+kn3LK5oPnmr+sZAZO
-         u17jkOIcqstyuzPKEdpQ+EFM8YywgrUiTSuV4OhqWPbn2w5T5gGfo1wGE7laq0lcRuL6
-         HzSw==
-X-Gm-Message-State: AOAM531cWVKdSAx32jGqTgGrVoWxoKT2ycVBN9cGiVH0GFBx4EuQL+RS
-        eZsjBBf75tO0T7t5TMNZCF9lFSotOrU=
-X-Google-Smtp-Source: ABdhPJyR3HXwyIFHBX5fFAFE7aa3y92ete2pVPs9zFiKehki51VmjR9w7IYuXCTJ5sVabeX5vxqRbA==
-X-Received: by 2002:aa7:8d92:0:b029:1ee:75d1:c87 with SMTP id i18-20020aa78d920000b02901ee75d10c87mr1547429pfr.9.1614821895386;
-        Wed, 03 Mar 2021 17:38:15 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:c87:c34:99dc:ba23])
-        by smtp.gmail.com with ESMTPSA id m9sm7562093pjl.4.2021.03.03.17.38.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 17:38:14 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 3 Mar 2021 17:38:12 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, willy@infradead.org, surenb@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH v3] mm: cma: support sysfs
-Message-ID: <YEA6BGHO0I1hSjLq@google.com>
-References: <20210303205053.2906924-1-minchan@kernel.org>
- <20210303144449.aa69518bfbaec9c71f799dc7@linux-foundation.org>
+        Wed, 3 Mar 2021 20:41:50 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDB3C061574;
+        Wed,  3 Mar 2021 17:41:09 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrYVV1Cckz9s1l;
+        Thu,  4 Mar 2021 12:41:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614822066;
+        bh=UblDfmf0pR8nO78Latk89CJcPDsjlnVTl63VKsuauCE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gSkLOyjfZzKLBg9/x74jKWDvTneREmUpmRLdM5vinc5jazsAhhNZ2lSEooGRir4kq
+         SGaH8wxDgCpY3kriGNaQKEX/Ejc7D4Klyu3gvvL0oyBGth39YDB2OR25r+OTWcErMC
+         2MObFgJ0CoYfCXH1y10/Lr9MuMR7O4Mbm4lKPpwF+gmG77LyrW/CugFdslvAYfAMBg
+         SKnhBDeIt/jRJU7LQa3C30lEVN94xMxNDyeb4l/VDqItwxm94XLIWKo+gLhBeDdm1T
+         pMn3rPB6iTXWlYwFGQ+XyUXfAOsuYVu9OFJYigCaOaxkRyIIEBKs9GUzatXqCGCLQq
+         bOqePfg+Z/Gsg==
+Date:   Thu, 4 Mar 2021 12:41:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the rcu tree
+Message-ID: <20210304124105.7844dca6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303144449.aa69518bfbaec9c71f799dc7@linux-foundation.org>
+Content-Type: multipart/signed; boundary="Sig_/WfRQtgs5qEyUeWKmN8xXGnG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 02:44:49PM -0800, Andrew Morton wrote:
-> On Wed,  3 Mar 2021 12:50:53 -0800 Minchan Kim <minchan@kernel.org> wrote:
-> 
-> > Since CMA is getting used more widely, it's more important to
-> > keep monitoring CMA statistics for system health since it's
-> > directly related to user experience.
-> > 
-> > This patch introduces sysfs statistics for CMA, in order to provide
-> > some basic monitoring of the CMA allocator.
-> > 
-> >  * the number of CMA page allocation attempts
-> >  * the number of CMA page allocation failures
-> > 
-> > These two values allow the user to calcuate the allocation
-> > failure rate for each CMA area.
-> > 
-> > e.g.)
-> >   /sys/kernel/mm/cma/WIFI/cma_alloc_pages_[attempts|fails]
-> >   /sys/kernel/mm/cma/SENSOR/cma_alloc_pages_[attempts|fails]
-> >   /sys/kernel/mm/cma/BLUETOOTH/cma_alloc_pages_[attempts|fails]
-> > 
-> > ...
-> >
-> > --- a/mm/cma.h
-> > +++ b/mm/cma.h
-> > @@ -3,6 +3,14 @@
-> >  #define __MM_CMA_H__
-> >  
-> >  #include <linux/debugfs.h>
-> > +#include <linux/kobject.h>
-> > +
-> > +struct cma_stat {
-> > +	spinlock_t lock;
-> > +	unsigned long pages_attempts;	/* the number of CMA page allocation attempts */
-> > +	unsigned long pages_fails;	/* the number of CMA page allocation failures */
-> > +	struct kobject kobj;
-> > +};
-> >  
-> >  struct cma {
-> >  	unsigned long   base_pfn;
-> > @@ -16,6 +24,9 @@ struct cma {
-> >  	struct debugfs_u32_array dfs_bitmap;
-> >  #endif
-> >  	char name[CMA_MAX_NAME];
-> > +#ifdef CONFIG_CMA_SYSFS
-> > +	struct cma_stat	*stat;
-> > +#endif
-> >  };
-> 
-> Why aren't the stat fields simply placed directly into struct cma_stat?
+--Sig_/WfRQtgs5qEyUeWKmN8xXGnG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It have a related long discussion.
-https://lore.kernel.org/linux-mm/YCIoHBGELFWAyfMi@kroah.com/
-https://lore.kernel.org/linux-mm/YCLLKDEQ4NYqb5Y5@kroah.com/
+Hi all,
 
-TLDR - Greg really want to see kobject stuff working as dynamic
-property.
+After merging the rcu tree, today's linux-next build (htmldocs) produced
+this warning:
 
-> 
-> > ...
-> >
-> > +static int __init cma_sysfs_init(void)
-> > +{
-> > +	int i = 0;
-> > +	struct cma *cma;
-> > +
-> > +	cma_kobj = kobject_create_and_add("cma", mm_kobj);
-> > +	if (!cma_kobj) {
-> > +		pr_err("failed to create cma kobject\n");
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
-> > +				cma_area_count), GFP_KERNEL);
-> 
-> kmalloc_array(..., GFP_KERNEL|__GFP_ZERO);
+kernel/rcu/tree.c:3824: warning: expecting prototype for start_poll_state_s=
+ynchronize_rcu(). Prototype was for start_poll_synchronize_rcu() instead
 
-Yub.
+Introduced by commit
 
-> 
-> ?
-> 
-> > +	if (!cma_stats) {
-> > +		pr_err("failed to create cma_stats\n");
-> 
-> Probably unneeded - the ENOMEM stack backtrace will point straight here.
+  7f9a26bbfff2 ("rcu: Provide polling interfaces for Tree RCU grace periods=
+")
 
-I failed to find the point you mentioned to print backtrace.
-Where code do you mean to dump the backtrace?
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/WfRQtgs5qEyUeWKmN8xXGnG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBAOrEACgkQAVBC80lX
+0Gz1Mgf8Dal56GFCDvFQsmMwQOJ2sFvzeMCHCt6WQaXe9ys/9W83EivNH6S2tYFh
+cz/MC1ZIMUIsnlpIbh9PHWOgUkJWqvXhXy5rocAj1ejO+EvwLKdGPik3oqzeQGo5
+zDOqOwT0zxybUeviS4OYHUdctW6HXI84efR/UjflCOnPg4xdR53GhzQR3er60VIA
+QaJmYvX0E9Udtc9MtsdLrNSsH7ePK0prh71bQQXPsMc3KV/D4+UeZHaQjEgHi/lh
+XPCLzuGPZ/Hd9go7x8i3dqEZU/zKndFNhS9+LfkifiuX0u9FBZSvHiyEhB1zgcFN
+Swqml0ekbKvcNpUBJDdURR29pvC8bw==
+=4Ik4
+-----END PGP SIGNATURE-----
+
+--Sig_/WfRQtgs5qEyUeWKmN8xXGnG--
