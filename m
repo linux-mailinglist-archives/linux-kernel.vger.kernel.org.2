@@ -2,129 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A1032D80B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7926132D80D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238320AbhCDQru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238241AbhCDQrd (ORCPT
+        id S238388AbhCDQsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:48:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42176 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238327AbhCDQsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:47:33 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B96C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:46:52 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id z5so3607138plg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:46:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HykUYsSsCm1IFF5m9E/k7YQYE5w/GX/AcJ5dFtF+PPY=;
-        b=Bu/HtmPQyoZWTuTrnyk3UonPFCw0rkRVZjaDulB6nziD1cO8Dg0oS4UMfOoKtEy/ta
-         xzY7+dyLHjEG5b06Ets5SAKwEXTVvubhNeElmMbf5QVxfq/KMhmbR4G9G/Pj9gAg8vCR
-         UX5i8kesGIELWFRFvI9Q4NAsounGXg/uFpGlvZSCr47Vt2+McHGCFCOWst6GNKMTjRvl
-         Ta3OIwXuWaEj+msk5nd2b50OvOswgXD6/xbpJMb1BRVPKVSY/29v+Aqtwr5akmfMRgiz
-         /ct6wcLYYMuNh6J2/STdwV1mOkucwRmfr7vCO0QGeO9Ukkjp8Z8bOn94S8PvWePPkrnn
-         ytyw==
+        Thu, 4 Mar 2021 11:48:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614876419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZB1BYdhnS28mvVlHU1SQfHJ74JIHfhkk8EnsSzDlslM=;
+        b=G3GVNHhzO+wnxhQfPz08B/vRtEAXOqd6o6y5JLD+64CESm5eIQGUPfE1BMEgEv4COmsIYS
+        EDVUJQOuL+gFk6louiHgtj1DnbFfxtJgvtozWbcdzHUj87hF7hhg+oOt1K+aqyhZy6dnRr
+        QslCFpPRMqxVRx04UfjGITSB9PcaAN8=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-293-ddN1yo0aMwyazPvLatloLw-1; Thu, 04 Mar 2021 11:46:56 -0500
+X-MC-Unique: ddN1yo0aMwyazPvLatloLw-1
+Received: by mail-qv1-f71.google.com with SMTP id q104so20962926qvq.20
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:46:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HykUYsSsCm1IFF5m9E/k7YQYE5w/GX/AcJ5dFtF+PPY=;
-        b=uUXXGgv21PFdi9/JtAPpmfh871Dc2Dkmrg9AfMlVHe1alf4f4HmNsJ7RWTp6SMAF38
-         0D2aqlV/sqPiFl96zKP5i041Yst+T4mPaxuzv7TdwWW7CZ0NukAQGoYOysa6F5eOIp++
-         6E+AeTPhpxqRcgXWt8uxEHkuR25BYfPYN+YduS1RFyW7gC6DidSXlo8n5QZeHSbSbKY7
-         7gl7uUfPUnA5rYQvZchRvc5xDNyubD+d7Tcxqv2PeKRwAEex90t+wWHj54d0uadmeywQ
-         3LfIK2icZ7DmLnM56ZOpI1pZlvchcIRF3MrmlkpudcdeX9Dif99+tspwEQ8Vvaev0bVY
-         mDhw==
-X-Gm-Message-State: AOAM533JmXAZ7vS6fTRiYVc4S3TSMZcaM4/bjV/VIcEJQxaWOK7XR4do
-        B5CF/ESp0bgKencdQZ4bbSY4fQ==
-X-Google-Smtp-Source: ABdhPJzIXTyPntut7N7hgGC3heqthHAeAhMGGV92UhYXavHskIqEBcgq+UInjamoip17yFYoR9IjUA==
-X-Received: by 2002:a17:902:b711:b029:e5:ba7a:d2ee with SMTP id d17-20020a170902b711b02900e5ba7ad2eemr4805470pls.13.1614876412330;
-        Thu, 04 Mar 2021 08:46:52 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
-        by smtp.gmail.com with ESMTPSA id u17sm2925695pgl.80.2021.03.04.08.46.51
+        bh=ZB1BYdhnS28mvVlHU1SQfHJ74JIHfhkk8EnsSzDlslM=;
+        b=NEXfWV9egDqUkOFdAiw4OF+U7ukfioc8/X4Os3Jnc1fSGQHJa6DkAKCizBu/P+KSfO
+         0inCjtDBYIP3WbaOtJG8MOtvq1viLGvQ2W43MkEiMX+y6Md4H2DtVVLkOEzC5WVwl4M5
+         U2DKYGxDhEqtt3LbZ+FyqU5nPiCxL2HPbkJCmNjEbcQfBiosy5svQVShwY5PVO1sq61x
+         luQ6kL3HHQL5hgUlLgfhfsfo2BFkMGTIDK219zDFBj169HIIT50fOsyooVa+a1MZwIYE
+         nmASlCvlQG4kO8HomS9YEaJyOo5zxMBIVqNPXMvIEDutJxXMcEEo8sC5Os0mT4ED7qUl
+         euiQ==
+X-Gm-Message-State: AOAM532OMbaMhD/8oAWpZVrxs5++uVCMWWIbfjBCv1Cz2D5juQJMg1bC
+        ZF0flPYn6MSFvkVGRAZ7q0WVaEuQ+Lq1EUX5uNyB32E49gi3mnQaHbielyLpvxGnOiXNfq36ZuC
+        AZDhKpdlc5IekLHzqbfRtM3t7
+X-Received: by 2002:ac8:1209:: with SMTP id x9mr4114057qti.89.1614876416135;
+        Thu, 04 Mar 2021 08:46:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxYkIsLzg6JUUcyZVUmA4NY4lPA+155G5Kne2Lt5u80pP60k8ZWh3uE4h4ro2+NZCPvyt/Low==
+X-Received: by 2002:ac8:1209:: with SMTP id x9mr4114023qti.89.1614876415803;
+        Thu, 04 Mar 2021 08:46:55 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
+        by smtp.gmail.com with ESMTPSA id e15sm51099qtp.58.2021.03.04.08.46.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 08:46:51 -0800 (PST)
-Date:   Thu, 4 Mar 2021 08:46:45 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] KVM: nVMX: Sync L2 guest CET states between L1/L2
-Message-ID: <YEEO9bcLnc0gyLyP@google.com>
-References: <20210304060740.11339-1-weijiang.yang@intel.com>
- <20210304060740.11339-2-weijiang.yang@intel.com>
+        Thu, 04 Mar 2021 08:46:54 -0800 (PST)
+Date:   Thu, 4 Mar 2021 11:46:53 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     kernel test robot <lkp@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH v4 1/4] hugetlb: Pass vma into huge_pte_alloc() and
+ huge_pmd_share()
+Message-ID: <20210304164653.GB397383@xz-x1>
+References: <20210218230633.15028-2-peterx@redhat.com>
+ <202103050012.xQIxbA9h-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210304060740.11339-2-weijiang.yang@intel.com>
+In-Reply-To: <202103050012.xQIxbA9h-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021, Yang Weijiang wrote:
-> @@ -3375,6 +3391,12 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->  	if (kvm_mpx_supported() &&
->  		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
->  		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> +	if (kvm_cet_supported() &&
-> +		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-
-Alignment.
-
-> +		vmx->nested.vmcs01_guest_ssp = vmcs_readl(GUEST_SSP);
-> +		vmx->nested.vmcs01_guest_s_cet = vmcs_readl(GUEST_S_CET);
-> +		vmx->nested.vmcs01_guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> +	}
->  
->  	/*
->  	 * Overwrite vmcs01.GUEST_CR3 with L1's CR3 if EPT is disabled *and*
-> @@ -4001,6 +4023,9 @@ static bool is_vmcs12_ext_field(unsigned long field)
->  	case GUEST_IDTR_BASE:
->  	case GUEST_PENDING_DBG_EXCEPTIONS:
->  	case GUEST_BNDCFGS:
-> +	case GUEST_SSP:
-> +	case GUEST_INTR_SSP_TABLE:
-> +	case GUEST_S_CET:
->  		return true;
->  	default:
->  		break;
-> @@ -4052,6 +4077,11 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
->  		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
->  	if (kvm_mpx_supported())
->  		vmcs12->guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> +	if (kvm_cet_supported()) {
-
-Isn't the existing kvm_mpx_supported() check wrong in the sense that KVM only
-needs to sync to vmcs12 if KVM and the guest both support MPX?  Same would
-apply to CET.  Not sure it'd be a net positive in terms of performance since
-guest_cpuid_has() can be quite slow, but overwriting vmcs12 fields that
-technically don't exist feels wrong.
-
-> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
-> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
-> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> +	}
->  
->  	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
->  }
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 9d3a557949ac..36dc4fdb0909 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -155,6 +155,9 @@ struct nested_vmx {
->  	/* to migrate it to L2 if VM_ENTRY_LOAD_DEBUG_CONTROLS is off */
->  	u64 vmcs01_debugctl;
->  	u64 vmcs01_guest_bndcfgs;
-> +	u64 vmcs01_guest_ssp;
-> +	u64 vmcs01_guest_s_cet;
-> +	u64 vmcs01_guest_ssp_tbl;
->  
->  	/* to migrate it to L1 if L2 writes to L1's CR8 directly */
->  	int l1_tpr_threshold;
-> -- 
-> 2.26.2
+On Fri, Mar 05, 2021 at 12:31:00AM +0800, kernel test robot wrote:
+> Hi Peter,
 > 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on arm64/for-next/core]
+> [also build test ERROR on linux/master linus/master v5.12-rc1 next-20210304]
+> [cannot apply to hnaz-linux-mm/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Peter-Xu/hugetlb-Disable-huge-pmd-unshare-for-uffd-wp/20210219-071334
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> config: mips-randconfig-m031-20210304 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/7ede06d6f63e59db4b9dee54f78eeac0c9ca17e4
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Peter-Xu/hugetlb-Disable-huge-pmd-unshare-for-uffd-wp/20210219-071334
+>         git checkout 7ede06d6f63e59db4b9dee54f78eeac0c9ca17e4
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> mm/hugetlb.c:5376:8: error: conflicting types for 'huge_pmd_share'
+>     5376 | pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
+>          |        ^~~~~~~~~~~~~~
+>    In file included from mm/hugetlb.c:39:
+>    include/linux/hugetlb.h:155:8: note: previous declaration of 'huge_pmd_share' was here
+>      155 | pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+>          |        ^~~~~~~~~~~~~~
+> 
+> 
+> vim +/huge_pmd_share +5376 mm/hugetlb.c
+> 
+>   5343	
+>   5344	/*
+>   5345	 * unmap huge page backed by shared pte.
+>   5346	 *
+>   5347	 * Hugetlb pte page is ref counted at the time of mapping.  If pte is shared
+>   5348	 * indicated by page_count > 1, unmap is achieved by clearing pud and
+>   5349	 * decrementing the ref count. If count == 1, the pte page is not shared.
+>   5350	 *
+>   5351	 * Called with page table lock held and i_mmap_rwsem held in write mode.
+>   5352	 *
+>   5353	 * returns: 1 successfully unmapped a shared pte page
+>   5354	 *	    0 the underlying pte page is not shared, or it is the last user
+>   5355	 */
+>   5356	int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+>   5357						unsigned long *addr, pte_t *ptep)
+>   5358	{
+>   5359		pgd_t *pgd = pgd_offset(mm, *addr);
+>   5360		p4d_t *p4d = p4d_offset(pgd, *addr);
+>   5361		pud_t *pud = pud_offset(p4d, *addr);
+>   5362	
+>   5363		i_mmap_assert_write_locked(vma->vm_file->f_mapping);
+>   5364		BUG_ON(page_count(virt_to_page(ptep)) == 0);
+>   5365		if (page_count(virt_to_page(ptep)) == 1)
+>   5366			return 0;
+>   5367	
+>   5368		pud_clear(pud);
+>   5369		put_page(virt_to_page(ptep));
+>   5370		mm_dec_nr_pmds(mm);
+>   5371		*addr = ALIGN(*addr, HPAGE_SIZE * PTRS_PER_PTE) - HPAGE_SIZE;
+>   5372		return 1;
+>   5373	}
+>   5374	#define want_pmd_share()	(1)
+>   5375	#else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
+> > 5376	pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
+>   5377			      unsigned long addr, pud_t *pud)
+>   5378	{
+>   5379		return NULL;
+>   5380	}
+>   5381	
+
+Sorry for this!  I think we need to squash below into this patch for
+!CONFIG_ARCH_WANT_HUGE_PMD_SHARE:
+
+-----8<-----
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index fc62932c31cb..94ac419f88cd 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5415,7 +5415,7 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+ }
+ 
+ #else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
+-pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
++pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+                      unsigned long addr, pud_t *pud)
+ {
+        return NULL;
+-----8<-----
+
+Andrew, please kindly let me know when a repost is needed.
+
+Thanks,
+
+-- 
+Peter Xu
+
