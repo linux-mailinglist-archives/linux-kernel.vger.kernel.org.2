@@ -2,123 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C1932CBCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3B632CBD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhCDFTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 00:19:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234076AbhCDFTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 00:19:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAA6964EE1;
-        Thu,  4 Mar 2021 05:18:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614835137;
-        bh=ks396mxGbJMDwWqDM77TaVb8yzjRnPxdJhthci3VPbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cfhmrj4+vqKGW5GDt2BkhI6povBO+2MCsBi0yGxi3sIo4iCIaBED9PpT9H+e9+Sjw
-         18EDHsRpCWUxblIOEQBG3YoK0CwQ4S5yg3jGakpRXzobsW4DonxGRu+Fg4pS3c09py
-         zUryEzu4Elq+LGHXUhTG0xi6Hgoof4c2aNSAZmIOvFDtR/pw7UGW0DfOPzMR1hPQFb
-         7D2uIUwghEvyMB0rDlhRFTpSJWwjxTu8UKMSpUaSNbib0z1R3OfdaBhcoq3HZQu8Yq
-         0I4A+N+lB8zh09X38nWyDSt8owVluIIDjhppRtQmUDKcolcSVE8s6csleQdSwLcOD7
-         zEdFsLRSK2eAA==
-Date:   Wed, 3 Mar 2021 22:18:52 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS: Add comment about CONFIG_MIPS32_O32 in
- loongson3_defconfig when build with Clang
-Message-ID: <20210304051852.6gf7ry26n3fct3ud@archlinux-ax161>
-References: <1614820544-10686-1-git-send-email-yangtiezhu@loongson.cn>
- <20210304020244.pza6xd4ixziysrom@archlinux-ax161>
- <958c5df5-76aa-9161-9519-07a03ee864a0@loongson.cn>
+        id S234125AbhCDFV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 00:21:59 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13814 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234013AbhCDFVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 00:21:38 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60406e3a0000>; Wed, 03 Mar 2021 21:20:58 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Mar
+ 2021 05:20:56 +0000
+Received: from nvdebian.localnet (172.20.145.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Mar 2021
+ 05:20:54 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
+        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
+        <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 5/8] mm: Device exclusive memory access
+Date:   Thu, 4 Mar 2021 16:20:52 +1100
+Message-ID: <2083651.v4LkQjjfQp@nvdebian>
+In-Reply-To: <20210302124152.GF4247@nvidia.com>
+References: <20210226071832.31547-1-apopple@nvidia.com> <2758096.Z30Q8iEM0t@nvdebian> <20210302124152.GF4247@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <958c5df5-76aa-9161-9519-07a03ee864a0@loongson.cn>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614835258; bh=9xq8FfvlXkYAk6gs2678CTOmYbDE3Qd9No1oNQX9mU8=;
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Transfer-Encoding:Content-Type:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=pdZOZqStw2k9kfUFThuG08SuNOI+mxN+x8dJw3XY+pM3XOS0KNusvlx7Jc8OmFDTP
+         1yLQwxTNBqHauziGi82t9z4NolEGpl064lNuH+GMljlF7shSZzhkX0cOxfFgsigt6T
+         xTZCkHQHNCzFRImpRR2ildShmJcGlzmD9S2WSCmPGvQz1AuZIgLx2/B/LWMWl3Uygq
+         22c/GzkFoGtVRvbdCQ/ffN0LnSmAmIJ4CxK9n7vAY+aaqagzn/7jl6GH6UwXw4Y54x
+         fg7uzjwBKZt6NGVv2TKGuIXUv2P0JIZsIRJkaFC//mQiZr15JDiQyleyVMMn4J8u0M
+         pFKBKhvcVbdbQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 11:48:09AM +0800, Tiezhu Yang wrote:
-> On 03/04/2021 10:02 AM, Nathan Chancellor wrote:
-> > On Thu, Mar 04, 2021 at 09:15:44AM +0800, Tiezhu Yang wrote:
-> > > When build kernel with Clang [1]:
-> > > 
-> > > $ make CC=clang loongson3_defconfig
-> > > $ make CC=clang
+On Tuesday, 2 March 2021 11:41:52 PM AEDT Jason Gunthorpe wrote:
+> > However try_to_protect() scans the PTEs again under the PTL so checking 
+the 
+> > mapping of interest actually gets replaced during the rmap walk seems like 
+a 
+> > reasonable solution. Thanks for the comments.
 > 
-> [snip]
-> 
-> > I think this might be a better solution. I know that I personally never
-> > read defconfig files if a build fails.
-> > 
-> > If CONFIG_MIPS32_O32 is broken with clang and the MIPS backend
-> > maintainer has said that it will not be supported due to lack of
-> > resources, then the config should not even be selectable in my opinion.
-> > 
-> > Cheers,
-> > Nathan
-> > 
-> > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> > index d89efba3d8a4..ed35318a759d 100644
-> > --- a/arch/mips/Kconfig
-> > +++ b/arch/mips/Kconfig
-> > @@ -3315,6 +3315,8 @@ config SYSVIPC_COMPAT
-> >   config MIPS32_O32
-> >   	bool "Kernel support for o32 binaries"
-> >   	depends on 64BIT
-> > +	# https://bugs.llvm.org/show_bug.cgi?id=38063
-> > +	depends on $(success,$(CC) $(CLANG_FLAGS) -march=mips64 -o32 -c -x c /dev/null -o /dev/null)
-> >   	select ARCH_WANT_OLD_COMPAT_IPC
-> >   	select COMPAT
-> >   	select MIPS32_COMPAT
-> 
-> Hi Nathan,
-> 
-> Thank you very much for your reply and suggestion, maybe the following
-> change is simple, clear and better? If yes, I will send v2 later.
+> It does seem cleaner if you can manage it, the notifier will still be
+> needd to program the HW though
 
-Hi Tiezhu,
+Checking during the rmap walk wasn't hard but ultimately pointless. As you say 
+a range notifier and lock is required to program the hardware, which requires 
+checking the mappings with a mmu notifier sequence anyway.
 
-I think that the change is simpler but better is subjective. I tend to
-prefer tests like mine so that it is not dependent on someone going "oh
-hey, this LLVM bug has been fixed so we can turn this config on!".
-Instead, the config will just turn on automatically as soon as that bug
-is fixed.
+ - Alistair
 
-However, in this particular case, it does not seem like that will happen
-unless someone steps but there have been times where an independent
-party will implement some change that benefits them and nobody notices
-for a while. Plus, I periodically grep the tree for CC_IS_CLANG to see
-if there are any configuration options that can be re-enabled..
 
-Regardless, if Thomas is happy with the below change, so am I, as it
-will allow us to test more 64-bit MIPS configurations. I can add an ack
-or review at that point in time.
 
-Cheers,
-Nathan
-
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 3a38d27..f6ba59f 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -3318,6 +3318,8 @@ config SYSVIPC_COMPAT
->  config MIPS32_O32
->         bool "Kernel support for o32 binaries"
->         depends on 64BIT
-> +       # https://bugs.llvm.org/show_bug.cgi?id=38063
-> +       depends on !CC_IS_CLANG
->         select ARCH_WANT_OLD_COMPAT_IPC
->         select COMPAT
->         select MIPS32_COMPAT
-> 
-> Thanks,
-> Tiezhu
-> 
