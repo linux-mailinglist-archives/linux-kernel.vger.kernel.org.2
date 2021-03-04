@@ -2,137 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B858032DA3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA61832DA42
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234232AbhCDTRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbhCDTRW (ORCPT
+        id S234460AbhCDTVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:21:23 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:40276 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232049AbhCDTVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:17:22 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F622C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:16:42 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id f1so45112713lfu.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:16:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tEYLAkWXfIgfP7fN6enyTQ7KNootMuXnuOlaJWRoUXA=;
-        b=fw5AHhTB8itnkvy4Aiuz4loWvAWlmpJISRhGT+ghjKbEtKJZXm8YMUxeRMtbstlbwE
-         DeoeOI1Ktif8vGcdJn6SHavKP3yQKdt28xEl3PPPt6Mqb89FDZ79DFMbLl/tNVC7n3Ms
-         2kJdpf7FOtKEQPIfZFVbQs84WJnWC0mdQkTieHoW/sVZdUIv+1RUTE5v4i+FqM6yDiGJ
-         y360W4AVqnwEJUwTeSY9N7TG8cAySxyPinYNcn8pL+JdgG6YN9p6NGa0Pu5cdvgogiB1
-         bgS9X0nHI7BVYZFZ+STxgBa5Bv1MTiQEj201CG/mTClJ6KzP5p1ZWoi80MWX6mcCB59W
-         dVTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tEYLAkWXfIgfP7fN6enyTQ7KNootMuXnuOlaJWRoUXA=;
-        b=i3Pm31998CJ44aAY43A3VLpkS2RYDrMXx805+uEy6gjpyP5YYHMxeAEL77/HYGCg5A
-         fphelCu5uGrsly0qSXb/wLcA3/GnYYIqaY2VYKHzwLweRdqtcAYMdYMfmGbq8G5BMLBk
-         oFellIPzLviwIxHBDgut+WYbnX29ztZXxfD1BQ9rCByslv23JTATCjQT1l49cL1ltZ35
-         j7k1CEcOv1oFXeoY2JJfVbolkCfvS4s0u5alR4aOTcmNzPxVMKAmpkR6BrsN8sFQCCx2
-         eFvQZJBbrCvqsUUGTUxJdwVcCKIzQx8TLru4bMMDNltfDOC1hxvnCbqNFbmIkUywcQd4
-         L9/Q==
-X-Gm-Message-State: AOAM531MpL1pQv/JOxw+1JFOflg/7ttYsqXAbO0mvN7Qy1DlfaAclrhw
-        J86tbI+SCtkX8WNiiDYNTF3E7SCUZRV60Hnzjtkvgg==
-X-Google-Smtp-Source: ABdhPJwafySaTxpVVmraTNMlT31arSMhfCTtnApPjOPWQxgFm/aeI3IuzlZ+f+2JO8XPnMABoHPLrlh3E0KzoXIB3KY=
-X-Received: by 2002:a05:6512:547:: with SMTP id h7mr3170339lfl.529.1614885401016;
- Thu, 04 Mar 2021 11:16:41 -0800 (PST)
+        Thu, 4 Mar 2021 14:21:09 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 609E520B83EA;
+        Thu,  4 Mar 2021 11:20:28 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 609E520B83EA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614885628;
+        bh=WE/MH9d3tOO+W5gxFbytmnbQMgefyJG0bPMyC3ufH9Q=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=p9bX9RtNIuF06hN//hknaNnwcs9bpUi1fLCCGT0YyuIJNL46CebL0Go6fyvhdwZHp
+         P9vQgtLOyY7XoDMHReJ2An9MyCFf/p6Xmvyk9trbqtBbsZ1ktA6aryKmk1aXzLOfPC
+         UAXI0zmXiEph8XRKHylJL+v+MRrGpSU80gWhGjUA=
+Subject: Re: [PATCH v3] selinux: measure state and policy capabilities
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com
+Cc:     tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210212163709.3139-1-nramas@linux.microsoft.com>
+Message-ID: <87273030-2303-e791-4e5d-25373faf0880@linux.microsoft.com>
+Date:   Thu, 4 Mar 2021 11:20:27 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210211023324.2331377-1-minchan@kernel.org>
-In-Reply-To: <20210211023324.2331377-1-minchan@kernel.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 4 Mar 2021 11:16:29 -0800
-Message-ID: <CALAqxLXHv3hxxDsAeJHJJnfCTmUNKDzAqLkwt7UkYN4qPuk1BA@mail.gmail.com>
-Subject: Re: [PATCH v2] dma-buf: system_heap: do not warn for costly allocation
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        John Dias <joaodias@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210212163709.3139-1-nramas@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 6:33 PM Minchan Kim <minchan@kernel.org> wrote:
->
-> Dmabuf system_heap allocation logic starts with the highest necessary
-> allocation order before falling back to lower orders. The requested
-> order can be higher than PAGE_ALLOC_COSTLY_ODER and failures to
-> allocate will flood dmesg with warnings. Such high-order allocations
-> are not unexpected and are handled by the system_heap's allocation
-> fallback mechanism.
-> Prevent these warnings when allocating higher than
-> PAGE_ALLOC_COSTLY_ODER pages using __GFP_NOWARN flag.
->
-> Below is ION warning example I got but dmabuf system heap is nothing different:
->
-> [ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
-> [ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
-> [ 1233.926235][  T460] Call trace:
-> [ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
-> [ 1233.933704][  T460]  show_stack+0x18/0x24
-> [ 1233.937701][  T460]  dump_stack+0xc0/0x140
-> [ 1233.941783][  T460]  warn_alloc+0xf4/0x148
-> [ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
-> [ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
-> [ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
-> [ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
-> [ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
-> [ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
-> [ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
-> [ 1233.980248][  T460]  ion_ioctl+0x100/0x320
-> [ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
-> [ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
-> [ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
-> [ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
-> [ 1234.001989][  T460]  el0_sync+0x148/0x180
->
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
+On 2/12/21 8:37 AM, Lakshmi Ramasubramanian wrote:
+
+Hi Paul,
+
+> SELinux stores the configuration state and the policy capabilities
+> in kernel memory.  Changes to this data at runtime would have an impact
+> on the security guarantees provided by SELinux.  Measuring this data
+> through IMA subsystem provides a tamper-resistant way for
+> an attestation service to remotely validate it at runtime.
+> 
+> Measure the configuration state and policy capabilities by calling
+> the IMA hook ima_measure_critical_data().
+> 
+
+I have addressed your comments on the v2 patch for selinux measurement 
+using IMA. Could you please let me know if there are any other comments 
+that I need to address in this patch?
+
+Thanks for your review and help so far.
+
+  -lakshmi
+
+> 
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> Suggested-by: Paul Moore <paul@paul-moore.com>
 > ---
-> * from v1 - https://lore.kernel.org/lkml/20210210162632.3903128-1-minchan@kernel.org/
->  * better description - surenb
->  * use mid_order_gfp - john.stultz
->
->  drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> index 29e49ac17251..e5f545ada587 100644
-> --- a/drivers/dma-buf/heaps/system_heap.c
-> +++ b/drivers/dma-buf/heaps/system_heap.c
-> @@ -40,11 +40,16 @@ struct dma_heap_attachment {
->         bool mapped;
->  };
->
-> +#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+>   security/selinux/ima.c         | 87 ++++++++++++++++++++++++++++++++--
+>   security/selinux/include/ima.h |  6 +++
+>   security/selinux/selinuxfs.c   |  6 +++
+>   security/selinux/ss/services.c |  2 +-
+>   4 files changed, 96 insertions(+), 5 deletions(-)
+> 
+> diff --git a/security/selinux/ima.c b/security/selinux/ima.c
+> index 03715893ff97..34d421861bfc 100644
+> --- a/security/selinux/ima.c
+> +++ b/security/selinux/ima.c
+> @@ -13,18 +13,83 @@
+>   #include "ima.h"
+>   
+>   /*
+> - * selinux_ima_measure_state - Measure hash of the SELinux policy
+> + * selinux_ima_collect_state - Read selinux configuration settings
+>    *
+> - * @state: selinux state struct
+> + * @state: selinux_state
+>    *
+> - * NOTE: This function must be called with policy_mutex held.
+> + * On success returns the configuration settings string.
+> + * On error, returns NULL.
+>    */
+> -void selinux_ima_measure_state(struct selinux_state *state)
+> +static char *selinux_ima_collect_state(struct selinux_state *state)
+>   {
+> +	const char *on = "=1;", *off = "=0;";
+> +	char *buf;
+> +	int buf_len, len, i, rc;
+> +
+> +	buf_len = strlen("initialized=0;enforcing=0;checkreqprot=0;") + 1;
+> +
+> +	len = strlen(on);
+> +	for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++)
+> +		buf_len += strlen(selinux_policycap_names[i]) + len;
+> +
+> +	buf = kzalloc(buf_len, GFP_KERNEL);
+> +	if (!buf)
+> +		return NULL;
+> +
+> +	rc = strscpy(buf, "initialized", buf_len);
+> +	WARN_ON(rc < 0);
+> +
+> +	rc = strlcat(buf, selinux_initialized(state) ? on : off, buf_len);
+> +	WARN_ON(rc >= buf_len);
+> +
+> +	rc = strlcat(buf, "enforcing", buf_len);
+> +	WARN_ON(rc >= buf_len);
+> +
+> +	rc = strlcat(buf, enforcing_enabled(state) ? on : off, buf_len);
+> +	WARN_ON(rc >= buf_len);
+> +
+> +	rc = strlcat(buf, "checkreqprot", buf_len);
+> +	WARN_ON(rc >= buf_len);
+> +
+> +	rc = strlcat(buf, checkreqprot_get(state) ? on : off, buf_len);
+> +	WARN_ON(rc >= buf_len);
+> +
+> +	for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
+> +		rc = strlcat(buf, selinux_policycap_names[i], buf_len);
+> +		WARN_ON(rc >= buf_len);
+> +
+> +		rc = strlcat(buf, state->policycap[i] ? on : off, buf_len);
+> +		WARN_ON(rc >= buf_len);
+> +	}
+> +
+> +	return buf;
+> +}
+> +
 > +/*
-> + * Avoid warning on order-4 allocation failures as we'll fall back to
-> + * order-0 in that case.
+> + * selinux_ima_measure_state_locked - Measure SELinux state and hash of policy
+> + *
+> + * @state: selinux state struct
 > + */
-> +#define MID_ORDER_GFP (LOW_ORDER_GFP | __GFP_NOWARN)
->  #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
->                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
->                                 | __GFP_COMP)
-> -#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-> -static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
-> +static gfp_t order_flags[] = {HIGH_ORDER_GFP, MID_ORDER_GFP, LOW_ORDER_GFP};
->  /*
->   * The selection of the orders used for allocation (1MB, 64K, 4K) is designed
->   * to match with the sizes often found in IOMMUs. Using order 4 pages instead
+> +void selinux_ima_measure_state_locked(struct selinux_state *state)
+> +{
+> +	char *state_str = NULL;
+>   	void *policy = NULL;
+>   	size_t policy_len;
+>   	int rc = 0;
+>   
+> +	WARN_ON(!mutex_is_locked(&state->policy_mutex));
+> +
+> +	state_str = selinux_ima_collect_state(state);
+> +	if (!state_str) {
+> +		pr_err("SELinux: %s: failed to read state.\n", __func__);
+> +		return;
+> +	}
+> +
+> +	ima_measure_critical_data("selinux", "selinux-state",
+> +				  state_str, strlen(state_str), false);
+> +
+> +	kfree(state_str);
+> +
+>   	/*
+>   	 * Measure SELinux policy only after initialization is completed.
+>   	 */
+> @@ -42,3 +107,17 @@ void selinux_ima_measure_state(struct selinux_state *state)
+>   
+>   	vfree(policy);
+>   }
+> +
+> +/*
+> + * selinux_ima_measure_state - Measure SELinux state and hash of policy
+> + *
+> + * @state: selinux state struct
+> + */
+> +void selinux_ima_measure_state(struct selinux_state *state)
+> +{
+> +	WARN_ON(mutex_is_locked(&state->policy_mutex));
+> +
+> +	mutex_lock(&state->policy_mutex);
+> +	selinux_ima_measure_state_locked(state);
+> +	mutex_unlock(&state->policy_mutex);
+> +}
+> diff --git a/security/selinux/include/ima.h b/security/selinux/include/ima.h
+> index d69c36611423..75ca92b4a462 100644
+> --- a/security/selinux/include/ima.h
+> +++ b/security/selinux/include/ima.h
+> @@ -15,10 +15,16 @@
+>   
+>   #ifdef CONFIG_IMA
+>   extern void selinux_ima_measure_state(struct selinux_state *selinux_state);
+> +extern void selinux_ima_measure_state_locked(
+> +			struct selinux_state *selinux_state);
+>   #else
+>   static inline void selinux_ima_measure_state(struct selinux_state *selinux_state)
+>   {
+>   }
+> +static inline void selinux_ima_measure_state_locked(
+> +			struct selinux_state *selinux_state)
+> +{
+> +}
+>   #endif
+>   
+>   #endif	/* _SELINUX_IMA_H_ */
+> diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
+> index 4bde570d56a2..26ec58593ba1 100644
+> --- a/security/selinux/selinuxfs.c
+> +++ b/security/selinux/selinuxfs.c
+> @@ -41,6 +41,7 @@
+>   #include "security.h"
+>   #include "objsec.h"
+>   #include "conditional.h"
+> +#include "ima.h"
+>   
+>   enum sel_inos {
+>   	SEL_ROOT_INO = 2,
+> @@ -182,6 +183,8 @@ static ssize_t sel_write_enforce(struct file *file, const char __user *buf,
+>   		selinux_status_update_setenforce(state, new_value);
+>   		if (!new_value)
+>   			call_blocking_lsm_notifier(LSM_POLICY_CHANGE, NULL);
+> +
+> +		selinux_ima_measure_state(state);
+>   	}
+>   	length = count;
+>   out:
+> @@ -762,6 +765,9 @@ static ssize_t sel_write_checkreqprot(struct file *file, const char __user *buf,
+>   
+>   	checkreqprot_set(fsi->state, (new_value ? 1 : 0));
+>   	length = count;
+> +
+> +	selinux_ima_measure_state(fsi->state);
+> +
+>   out:
+>   	kfree(page);
+>   	return length;
+> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+> index 2106b5d383e7..cb2866489363 100644
+> --- a/security/selinux/ss/services.c
+> +++ b/security/selinux/ss/services.c
+> @@ -2179,7 +2179,7 @@ static void selinux_notify_policy_change(struct selinux_state *state,
+>   	selinux_status_update_policyload(state, seqno);
+>   	selinux_netlbl_cache_invalidate();
+>   	selinux_xfrm_notify_policyload();
+> -	selinux_ima_measure_state(state);
+> +	selinux_ima_measure_state_locked(state);
+>   }
+>   
+>   void selinux_policy_commit(struct selinux_state *state,
+> 
 
-This looks good to me! Thanks for sending this and apologies for the
-slow reply, the patch slipped by me!
-
-Reviewed-by: John Stultz <john.stultz@linaro.org>
-
-thanks again!
--john
