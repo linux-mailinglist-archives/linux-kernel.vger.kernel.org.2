@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3329732C9E9
+	by mail.lfdr.de (Postfix) with ESMTP id CFE9E32C9EB
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240956AbhCDBPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:15:30 -0500
-Received: from ozlabs.org ([203.11.71.1]:37311 "EHLO ozlabs.org"
+        id S240576AbhCDBPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:15:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343695AbhCDBMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:12:54 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrXs452QFz9t25;
-        Thu,  4 Mar 2021 12:12:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614820331;
-        bh=uMm4y/vfuu3fINQ0NjirOSzSr0A0AGa7QAJ4LOTrf+8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZAIKH71wxhpcU9bp267diQo0NaXz+jKSQDx94KVdex976C//99/LiqKBzk2dQqCVg
-         ItHNkda2VWAOI8fXnE3b9Z5pyG07k4X2iS+OFAELlrsoFMzJ6whZoNJRIMCpQNkO6t
-         IXAcwPfIGRU7xr/cKsigvULjRdwXK5oDwnqbAM2yBuPBRIklfkilgWjbL4wH5fSmEC
-         YPhipEPyFc6vN1XwuFSjLPVPrJ/2MFTcl4wcSYR5aSuAu/wiFLqjwjBjjBhbHIEf8Y
-         iu3/XP31QZxWj2O8cWpXdq2U2xcxoMv6KSTbXXJ63zmmVaeDGc4ufSFXa9veu2keha
-         vhHGLQLVIic8A==
-Date:   Thu, 4 Mar 2021 12:12:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pinctrl tree
-Message-ID: <20210304121206.3a7ed310@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/81bds_vhIYZRU8e49ynuD0D";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1344028AbhCDBNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 20:13:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2242064F72;
+        Thu,  4 Mar 2021 01:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1614820341;
+        bh=sDMsuyroAM4Dr89dR9qRBdSjF4cx7se980bqsh/ms3c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=blg3CYhel1Xr5b7L9LBwmPAmkLPi4LzX86fWS7FvMc7pGgPd2hrxHUrA7ye2hQxmc
+         lh2mhGWmpceneiLmtDuq+ufDyZ5lOjUg1dn+hyEz+cuXsRV2eiX6v1mnxCMrT5duvv
+         jdbUOLZd437hqvZmA4I40BDVTCV57CMCUx6R7RgI=
+Date:   Wed, 3 Mar 2021 17:12:20 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Eric Gao <eric.tech@foxmail.com>
+Cc:     jbi.octave@gmail.com, linux-kernel@vger.kernel.org,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [PATCH] ipc/msg: add msgsnd_timed and msgrcv_timed syscall for
+ system V message queue
+Message-Id: <20210303171220.79faee7108f846b8e140e44d@linux-foundation.org>
+In-Reply-To: <tencent_E0772A5A82FD941DB0B488DF366F3F509F07@qq.com>
+References: <tencent_E0772A5A82FD941DB0B488DF366F3F509F07@qq.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/81bds_vhIYZRU8e49ynuD0D
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 23 Feb 2021 23:11:43 +0800 Eric Gao <eric.tech@foxmail.com> wrote:
 
-Hi all,
+> sometimes, we need the msgsnd or msgrcv syscall can return after a limited
+> time, so that the business thread do not be blocked here all the time. In
+> this case, I add the msgsnd_timed and msgrcv_timed syscall that with time
+> parameter, which has a unit of ms.
 
-After merging the pinctrl tree, today's linux-next build (x86_64
-allmodconfig ) failed like this:
+Please cc Manfred and Davidlohr on ipc/ changes.
 
+The above is a very brief description for a new syscall!  Please go to
+great lengths to tell us why this is considered useful - what are the
+use cases?
 
-Presumably caused by commit
+Also, please fully describe the proposed syscall interface right here
+in the changelog.  Please be prepared to later prepare a full manpage.
 
-  c9e84d46cc03 ("pinctrl: rockchip: make driver be tristate module")
+> ...
+> +SYSCALL_DEFINE5(msgsnd_timed, int, msqid, struct msgbuf __user *, msgp, size_t, msgsz,
+> +		int, msgflg, long, timeoutms)
 
-I have used the pinctrl tree from next-20210303 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/81bds_vhIYZRU8e49ynuD0D
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBAM+YACgkQAVBC80lX
-0GxcEQf/aIGK5hPznrO2Fx+f/qQjugzoxmpjvY+/DdX0cMS5T1Qu4QZx++GVWVrY
-2j4aENBat8DRrpG3tilX2iNqJpp0Ub+wyt42sXLmISn4L3311Vx+ks7DdXTwKsfj
-2sK3Q+e1tHc+4cj/hEJskmoiClTuy9+eDQD2+Z88nTRpiPwmh373aZcvSPnUK4QH
-b8WvHT0O0uwbLBjETXU91uMn5wDkApUqKIfaA/tutC0ELOf93qG6ZQpVKcN3+hRZ
-BVOn3+0Q/pKSwf4YBZhSGgiouAMQR2Gq4L8rP1eEHCSiCHQCV6mv6/aIlX2zRqj9
-FvAjhQ+SSrR1WFguWr06qT+q3qdZHw==
-=v0bY
------END PGP SIGNATURE-----
-
---Sig_/81bds_vhIYZRU8e49ynuD0D--
+Specifying the timeout in milliseconds is problematic - it's very
+coarse.  See sys_epoll_pwait2()'s use of timespecs.
