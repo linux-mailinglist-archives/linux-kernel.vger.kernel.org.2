@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB1E32CE9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF92C32CE9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236191AbhCDIiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:38:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54112 "EHLO mail.kernel.org"
+        id S236280AbhCDIiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:38:24 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:61262 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235938AbhCDIhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:37:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE66C64EFE;
-        Thu,  4 Mar 2021 08:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614847030;
-        bh=QT2ORfbTBUd5cxY+IDZbENy/xwp9khoZXS4cpegFUak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PvdOBBkBBhyRVWE2g/99cH+tHjhf1vd0QIKJdYhQgHPxIQHxx/qgZbzaUXfM0n9/l
-         cx86nfcgfooxXdYSmMn7meKQUJnJivFuG7nBqKzzyw5yC44M9sdVROGay1SzO6RMh6
-         UPiJnk1CS/gQD7fh/BN1GeJkp+m7dfHe1Ge6YbgE=
-Date:   Thu, 4 Mar 2021 09:37:07 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Qiang Ma <maqianga@uniontech.com>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] char: lp: remove redundant space
-Message-ID: <YECcMwNJiXo5D7Do@kroah.com>
-References: <20210304081752.23986-1-maqianga@uniontech.com>
+        id S236134AbhCDIiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:38:12 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614847074; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=mEqUGAmQIw80rVkgfOpohiF/Cg6qjh2EbNOd+LrIMdU=;
+ b=nzimcUHOK+LvSjVbHFfD2cViIWwypiS0bMeVBC54a2oy1a+Qo93WkRXsE3+4PDkzDnC1j6aK
+ aQ7ELBO7KH/EEeVkvmL9+0h1QMJde0/VYd1oMekyiRHG68oiVeWqgfCXbpJcSLCPjTORDzAW
+ qaw0i0/dJKHLUbSCE/ima1k01V8=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60409c431a5c93533f2ab50f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Mar 2021 08:37:23
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 993F8C43462; Thu,  4 Mar 2021 08:37:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF3DFC433C6;
+        Thu,  4 Mar 2021 08:37:21 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304081752.23986-1-maqianga@uniontech.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 04 Mar 2021 16:37:21 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v26 4/4] scsi: ufs: Add HPB 2.0 support
+In-Reply-To: <2f1b8ff5aec540ef731bf5b2c3691dd23ea2e6b0.camel@gmail.com>
+References: <20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p2>
+ <CGME20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p6>
+ <20210303062926epcms2p6aa6737e5ed3916eed9ab80011aad3d83@epcms2p6>
+ <2f1b8ff5aec540ef731bf5b2c3691dd23ea2e6b0.camel@gmail.com>
+Message-ID: <bffa984b28a4b3a8af3eefba39de6b18@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 04:17:52PM +0800, Qiang Ma wrote:
-> These two lines of code don't meet the kernel coding style,
-> so remove the redundant space.
+On 2021-03-03 22:50, Bean Huo wrote:
+> On Wed, 2021-03-03 at 15:29 +0900, Daejun Park wrote:
+>> +
+>> +static inline void ufshpb_put_pre_req(struct ufshpb_lu *hpb,
+>> +                                     struct ufshpb_req *pre_req)
+>> +{
+>> +       pre_req->req = NULL;
+>> +       pre_req->bio = NULL;
+>> +       list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
+>> +       hpb->num_inflight_pre_req--;
+>> +}
+>> +
+>> +static void ufshpb_pre_req_compl_fn(struct request *req,
+>> blk_status_t error)
+>> +{
+>> +       struct ufshpb_req *pre_req = (struct ufshpb_req *)req-
+>> >end_io_data;
+>> +       struct ufshpb_lu *hpb = pre_req->hpb;
+>> +       unsigned long flags;
+>> +       struct scsi_sense_hdr sshdr;
+>> +
+>> +       if (error) {
+>> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev, "block status
+>> %d", error);
+>> +               scsi_normalize_sense(pre_req->sense,
+>> SCSI_SENSE_BUFFERSIZE,
+>> +                                    &sshdr);
+>> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+>> +                       "code %x sense_key %x asc %x ascq %x",
+>> +                       sshdr.response_code,
+>> +                       sshdr.sense_key, sshdr.asc, sshdr.ascq);
+>> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+>> +                       "byte4 %x byte5 %x byte6 %x additional_len
+>> %x",
+>> +                       sshdr.byte4, sshdr.byte5,
+>> +                       sshdr.byte6, sshdr.additional_length);
+>> +       }
 > 
-> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
-> ---
->  drivers/char/lp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/char/lp.c b/drivers/char/lp.c
-> index 862c2fd933c7..0e22e3b0a04e 100644
-> --- a/drivers/char/lp.c
-> +++ b/drivers/char/lp.c
-> @@ -546,7 +546,7 @@ static int lp_open(struct inode *inode, struct file *file)
->  	}
->  	/* Determine if the peripheral supports ECP mode */
->  	lp_claim_parport_or_block(&lp_table[minor]);
-> -	if ( (lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
-> +	if ((lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
->  	     !parport_negotiate(lp_table[minor].dev->port,
->  				 IEEE1284_MODE_ECP)) {
->  		printk(KERN_INFO "lp%d: ECP mode\n", minor);
-> @@ -590,7 +590,7 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
->  		return -ENODEV;
->  	if ((LP_F(minor) & LP_EXIST) == 0)
->  		return -ENODEV;
-> -	switch ( cmd ) {
-> +	switch (cmd) {
->  		case LPTIME:
->  			if (arg > UINT_MAX / HZ)
->  				return -EINVAL;
-> -- 
-> 2.20.1
+> How can you print out sense_key and sense code here? sense code will
+> not be copied to pre_req->sense. you should directly use
+> scsi_request->sense or let pre_req->sense point to scsi_request->sense.
 > 
+> You update the new version patch so quickly. In another word, I am
+> wondering if you tested your patch before submitting?
 > 
-> 
+> Bean
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+Bean is right about the sense buffer...
