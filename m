@@ -2,156 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C37732D92E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2641632D933
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhCDSCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:02:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:42354 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232520AbhCDSCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:02:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3662731B;
-        Thu,  4 Mar 2021 10:01:59 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.53.210])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38B273F7D7;
-        Thu,  4 Mar 2021 10:01:57 -0800 (PST)
-Date:   Thu, 4 Mar 2021 18:01:54 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        broonie@kernel.org, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-Message-ID: <20210304180154.GD60457@C02TD0UTHF1T.local>
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
- <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
- <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
- <YD+o5QkCZN97mH8/@elver.google.com>
- <20210304145730.GC54534@C02TD0UTHF1T.local>
- <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
- <20210304165923.GA60457@C02TD0UTHF1T.local>
- <YEEYDSJeLPvqRAHZ@elver.google.com>
+        id S232915AbhCDSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhCDSD4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 13:03:56 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B914C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:03:16 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id u13so1588567uap.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:03:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ot0pBmNC9C2X+nBkx9lvZxGNQE3VnPlcBNxjMI2kl+A=;
+        b=fG6Yc8BxmivwsyBhxPN1l4Usla51wPxUb9C+NJKw79QMnmmdMxSKukhr9vHrPDsG9S
+         0g23BMN5bI2LBgTYDB4apV4a5icGjwB5ZqPDM+aHN3H5bE+G1mzAxLxqK8pItyJ3Tngy
+         gTOWsJJVQlOhdqP328V3kJdm+R0lSBOBvQ5cIwXhEttI1D/l/hkg3O0tFsIvvp+hsKwu
+         Bh2izbfPWkw7g5fVQ2ITw2dpwZSZXzwZ0SK2z4xftMe9Drhiyg4unRjrbfqT4SLTrsx1
+         X1U7O0O/7sUUuBqLaNWWFMmi/Fwsk8FvjcZ1G10xwccF/Um6gWFn4+Bpy+oWk6n/o0oX
+         jKYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ot0pBmNC9C2X+nBkx9lvZxGNQE3VnPlcBNxjMI2kl+A=;
+        b=I2lF0Nykb1IMMj1ZMXYrpvZeKveqYCaxVdfWgzT2CJsyILpjbbMP6GldQmPmdI5FcM
+         G9xKsmh1pjKKqDEBza2iBI8amzBKUej6Zr8ItnNZ9MADYjh06qqegEPtByjzv4wEIGI4
+         7ra4tEBlBm99PQDA3WBEEse4VZFi49EwcOgvSKTGsVjRwwCt0T56fsFT7WHwrmeLGlbE
+         49ZQrZaNjhIJJf36S+BGdJPLt7PGH+1luzvMShcGOnOrhKD6Wy/iu8E/NB6A+qgFRQKs
+         xda1qbRTuc6hKasLyyge7NbtAg8g3AtyD7oR3nL71KGJTeoR7BtS0g8VmvBtz1rGFS5P
+         46iQ==
+X-Gm-Message-State: AOAM533lqItIrWQtcnetqaljGeC3k+VH8gvv2BgBbswvJGmhPxXkGWKq
+        mSb/+9n9WzLX3pshijktHgiIVBNLe7J3gKuSEvLc8Q==
+X-Google-Smtp-Source: ABdhPJzytwgL73ZPP1K08fGAHeN5ehDIPgAIh1Ry5wIZKXT9Gb2rtJUPv8Stfn3sJQFKv9Ay2SrZvQYLvDwrweiH8mY=
+X-Received: by 2002:ab0:6045:: with SMTP id o5mr3525813ual.100.1614880995595;
+ Thu, 04 Mar 2021 10:03:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEEYDSJeLPvqRAHZ@elver.google.com>
+References: <20210216224252.22187-1-marten.lindahl@axis.com>
+ <CAPDyKFoASx=U8b1Oqtuo6ikiM=gXfL2x1Gsz=rfAn9zxP0y_iA@mail.gmail.com>
+ <20210301215923.6jfg6mg5ntorttan@axis.com> <CAPDyKFoaKfuwweaEMf1Pz+ECAPU3P9-gmCJcpq+MADH5gH1c=Q@mail.gmail.com>
+ <20210304134836.xlw7wbbvkc5bqzmm@axis.com> <CAPDyKFous2oDwcUgPkZV8bZzpd+yA8m9LwC3+yk0uxqWcrJx1w@mail.gmail.com>
+ <20210304145946.tnbbd4qq6nvc2mcb@axis.com>
+In-Reply-To: <20210304145946.tnbbd4qq6nvc2mcb@axis.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 4 Mar 2021 19:02:38 +0100
+Message-ID: <CAPDyKFqF3MSfatooLQyXsz3Yu_zNSpzKaGWUP0nJsQjJZ+0FGQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: Try power cycling card if command request times out
+To:     Marten Lindahl <martenli@axis.com>
+Cc:     =?UTF-8?Q?M=C3=A5rten_Lindahl?= <Marten.Lindahl@axis.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        kernel <kernel@axis.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 06:25:33PM +0100, Marco Elver wrote:
-> On Thu, Mar 04, 2021 at 04:59PM +0000, Mark Rutland wrote:
-> > On Thu, Mar 04, 2021 at 04:30:34PM +0100, Marco Elver wrote:
-> > > On Thu, 4 Mar 2021 at 15:57, Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > [adding Mark Brown]
+On Thu, 4 Mar 2021 at 15:59, Marten Lindahl <martenli@axis.com> wrote:
+>
+> On Thu, Mar 04, 2021 at 03:06:54PM +0100, Ulf Hansson wrote:
+> > On Thu, 4 Mar 2021 at 14:48, Marten Lindahl <martenli@axis.com> wrote:
+> > >
+> > > Hi Ulf! My apologies for the delay.
+> > >
+> > > On Tue, Mar 02, 2021 at 09:45:02AM +0100, Ulf Hansson wrote:
+> > > > On Mon, 1 Mar 2021 at 22:59, Marten Lindahl <martenli@axis.com> wro=
+te:
+> > > > >
+> > > > > Hi Ulf!
+> > > > >
+> > > > > Thank you for your comments!
+> > > > >
+> > > > > On Mon, Mar 01, 2021 at 09:50:56AM +0100, Ulf Hansson wrote:
+> > > > > > + Adrian
+> > > > > >
+> > > > > > On Tue, 16 Feb 2021 at 23:43, M=C3=A5rten Lindahl <marten.linda=
+hl@axis.com> wrote:
+> > > > > > >
+> > > > > > > Sometimes SD cards that has been run for a long time enters a=
+ state
+> > > > > > > where it cannot by itself be recovered, but needs a power cyc=
+le to be
+> > > > > > > operational again. Card status analysis has indicated that th=
+e card can
+> > > > > > > end up in a state where all external commands are ignored by =
+the card
+> > > > > > > since it is halted by data timeouts.
+> > > > > > >
+> > > > > > > If the card has been heavily used for a long time it can be w=
+eared out,
+> > > > > > > and should typically be replaced. But on some tests, it shows=
+ that the
+> > > > > > > card can still be functional after a power cycle, but as it r=
+equires an
+> > > > > > > operator to do it, the card can remain in a non-operational s=
+tate for a
+> > > > > > > long time until the problem has been observed by the operator=
+.
+> > > > > > >
+> > > > > > > This patch adds function to power cycle the card in case it d=
+oes not
+> > > > > > > respond to a command, and then resend the command if the powe=
+r cycle
+> > > > > > > was successful. This procedure will be tested 1 time before g=
+iving up,
+> > > > > > > and resuming host operation as normal.
+> > > > > >
+> > > > > > I assume the context above is all about the ioctl interface?
+> > > > > >
+> > > > >
+> > > > > Yes, that's correct. The problem we have seen is triggered by ioc=
+tls.
+> > > > >
+> > > > > > So, when the card enters this non functional state, have you tr=
+ied
+> > > > > > just reading a block through the regular I/O interface. Does it
+> > > > > > trigger a power cycle of the card - and then makes it functiona=
+l
+> > > > > > again?
+> > > > > >
+> > > > >
+> > > > > Yes, we have tried that, and it does trigger a power cycle, makin=
+g the card
+> > > > > operational again. But as it requires an operator to trigger it, =
+I thought
+> > > > > it might be something that could be automated here. At least once=
+.
 > > > >
-> > > > The bigger problem here is that skipping is dodgy to begin with, and
-> > > > this is still liable to break in some cases. One big concern is that
-> > > > (especially with LTO) we cannot guarantee the compiler will not inline
-> > > > or outline functions, causing the skipp value to be too large or too
-> > > > small. That's liable to happen to callers, and in theory (though
-> > > > unlikely in practice), portions of arch_stack_walk() or
-> > > > stack_trace_save() could get outlined too.
+> > > > Not sure what you mean by operator here? In the end it's a userspac=
+e
+> > > > program running and I assume it can deal with error paths. :-)
 > > > >
-> > > > Unless we can get some strong guarantees from compiler folk such that we
-> > > > can guarantee a specific function acts boundary for unwinding (and
-> > > > doesn't itself get split, etc), the only reliable way I can think to
-> > > > solve this requires an assembly trampoline. Whatever we do is liable to
-> > > > need some invasive rework.
-> > > 
-> > > Will LTO and friends respect 'noinline'?
-> > 
-> > I hope so (and suspect we'd have more problems otherwise), but I don't
-> > know whether they actually so.
-> > 
-> > I suspect even with 'noinline' the compiler is permitted to outline
-> > portions of a function if it wanted to (and IIUC it could still make
-> > specialized copies in the absence of 'noclone').
-> > 
-> > > One thing I also noticed is that tail calls would also cause the stack
-> > > trace to appear somewhat incomplete (for some of my tests I've
-> > > disabled tail call optimizations).
-> > 
-> > I assume you mean for a chain A->B->C where B tail-calls C, you get a
-> > trace A->C? ... or is A going missing too?
-> 
-> Correct, it's just the A->C outcome.
+> > > > In any case, I understand your point.
+> > > >
+> > >
+> > > Yes, we have a userspace program. So if the userspace program will tr=
+y to
+> > > restore the card in a situation such as the one we are trying to solv=
+e
+> > > here, how shall it perform it? Is it expected that a ioctl CMD0 reque=
+st
+> > > should be enough, or is there any other support for a userspace progr=
+am to
+> > > reset the card?
+> >
+> > Correct, there is no way for userspace to reset cards through an ioctl.
+> >
+> > >
+> > > If it falls on a ioctl command to reset the card, how do we handle th=
+e case
+> > > where the ioctl times out anyway? Or is the only way for a userspace =
+program
+> > > to restore the card, to make a block transfer that fails?
+> >
+> > Yes, that is what I was thinking. According to the use case you have
+> > described, this should be possible for you to implement as a part of
+> > your userspace program, no?
+>
+> Ok, I will discuss that with the people maintaining the userspace program=
+ :)
+>
+> But would it be of interest to review a patch introducing a more clean ca=
+rd
+> reset request, without block transfers?
 
-I'd assumed that those cases were benign, e.g. for livepatching what
-matters is what can be returned to, so B disappearing from the trace
-isn't a problem there.
+Well, if you can solve it with block transfers that's the preferred
+option, in my opinion.
 
-Is the concern debugability, or is there a functional issue you have in
-mind?
+As I stated earlier, my main issue with the HW reset through the ioctl
+interface, is that we don't know what combination of
+request/command/response we should be doing a reset for.
 
-> > > Is there a way to also mark a function non-tail-callable?
-> > 
-> > I think this can be bodged using __attribute__((optimize("$OPTIONS")))
-> > on a caller to inhibit TCO (though IIRC GCC doesn't reliably support
-> > function-local optimization options), but I don't expect there's any way
-> > to mark a callee as not being tail-callable.
-> 
-> I don't think this is reliable. It'd be
-> __attribute__((optimize("-fno-optimize-sibling-calls"))), but doesn't
-> work if applied to the function we do not want to tail-call-optimize,
-> but would have to be applied to the function that does the tail-calling.
-
-Yup; that's what I meant then I said you could do that on the caller but
-not the callee.
-
-I don't follow why you'd want to put this on the callee, though, so I
-think I'm missing something. Considering a set of functions in different
-compilation units:
-
-  A->B->C->D->E->F->G->H->I->J->K
-
-... if K were marked in this way, and J was compiled with visibility of
-this, J would stick around, but J's callers might not, and so the a
-trace might see:
-
-  A->J->K
-
-... do you just care about the final caller, i.e. you just need
-certainty that J will be in the trace?
-
-If so, we can somewhat bodge that by having K have an __always_inline
-wrapper which has a barrier() or similar after the real call to K, so
-the call couldn't be TCO'd.
-
-Otherwise I'd expect we'd probably need to disable TCO generally.
-
-> So it's a bit backwards, even if it worked.
-> 
-> > Accoding to the GCC documentation, GCC won't TCO noreturn functions, but
-> > obviously that's not something we can use generally.
-> > 
-> > https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes
-> 
-> Perhaps we can ask the toolchain folks to help add such an attribute. Or
-> maybe the feature already exists somewhere, but hidden.
-> 
-> +Cc linux-toolchains@vger.kernel.org
-> 
-> > > But I'm also not sure if with all that we'd be guaranteed the code we
-> > > want, even though in practice it might.
-> > 
-> > True! I'd just like to be on the least dodgy ground we can be.
-> 
-> It's been dodgy for a while, and I'd welcome any low-cost fixes to make
-> it less dodgy in the short-term at least. :-)
-
-:)
-
-Thanks,
-Mark.
+Kind regards
+Uffe
