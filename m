@@ -2,142 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE5532DBE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F1332DBEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240059AbhCDVju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:39:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24076 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240028AbhCDVjd (ORCPT
+        id S240117AbhCDVkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:40:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240091AbhCDVkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:39:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614893887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BO9b8O4TUFxzzCNk8BcCTrE/6CnVHbeBBT/h0w31kNc=;
-        b=eDb0+Jp3xE9mTC7wUTO85nOWLXqpn1P037tEDkStgEmhJVY9lA8JX3eMhy3NQMu59fANM0
-        Ga9uZqgc4WF3mbV8bnAZOk8g+o3hMJgAuC82d+eiqql7yrW48LbLfpNnZeoC4ujeOsw9LG
-        RDoOscW100507+oPV3l+7KUQ/G00Rng=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-JroqD7OGOHGDCrZMZgOZ6g-1; Thu, 04 Mar 2021 16:38:04 -0500
-X-MC-Unique: JroqD7OGOHGDCrZMZgOZ6g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 4 Mar 2021 16:40:10 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F923C061574;
+        Thu,  4 Mar 2021 13:39:29 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F26D680006E;
-        Thu,  4 Mar 2021 21:38:02 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C0CF18E38;
-        Thu,  4 Mar 2021 21:37:58 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 14:37:57 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [RFC PATCH 05/10] vfio: Create a vfio_device from vma lookup
-Message-ID: <20210304143757.1ca42cfc@omen.home.shazbot.org>
-In-Reply-To: <20210225234949.GV4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
-        <161401268537.16443.2329805617992345365.stgit@gimli.home>
-        <20210222172913.GP4247@nvidia.com>
-        <20210224145506.48f6e0b4@omen.home.shazbot.org>
-        <20210225000610.GP4247@nvidia.com>
-        <20210225152113.3e083b4a@omen.home.shazbot.org>
-        <20210225234949.GV4247@nvidia.com>
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 143BC3FA1B;
+        Thu,  4 Mar 2021 21:39:19 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFT PATCH v3 00/27] Apple M1 SoC platform bring-up
+Date:   Fri,  5 Mar 2021 06:38:35 +0900
+Message-Id: <20210304213902.83903-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 19:49:49 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+This series brings up initial support for the Apple M1 SoC, used in the
+2020 Mac Mini, MacBook Pro, and MacBook Air models.
 
-> On Thu, Feb 25, 2021 at 03:21:13PM -0700, Alex Williamson wrote:
-> 
-> > This is where it gets tricky.  The vm_pgoff we get from
-> > file_operations.mmap is already essentially describing an offset from
-> > the base of a specific resource.  We could convert that from an absolute
-> > offset to a pfn offset, but it's only the bus driver code (ex.
-> > vfio-pci) that knows how to get the base, assuming there is a single
-> > base per region (we can't assume enough bits per region to store
-> > absolute pfn).  Also note that you're suggesting that all vfio mmaps
-> > would need to standardize on the vfio-pci implementation of region
-> > layouts.  Not that most drivers haven't copied vfio-pci, but we've
-> > specifically avoided exposing it as a fixed uAPI such that we could have
-> > the flexibility for a bus driver to implement regions offsets however
-> > they need.  
-> 
-> Okay, well the bus driver owns the address space and the bus driver is
-> in control of the vm_pgoff. If it doesn't want to zap then it doesn't
-> need to do anything
-> 
-> vfio-pci can consistently use the index encoding and be fine
->  
-> > So I'm not really sure what this looks like.  Within vfio-pci we could
-> > keep the index bits in place to allow unmmap_mapping_range() to
-> > selectively zap matching vm_pgoffs but expanding that to a vfio
-> > standard such that the IOMMU backend can also extract a pfn looks very
-> > limiting, or ugly.  Thanks,  
-> 
-> Lets add a op to convert a vma into a PFN range. The map code will
-> pass the vma to the op and get back a pfn (or failure).
-> 
-> pci will switch the vm_pgoff to an index, find the bar base and
-> compute the pfn.
-> 
-> It is starting to look more and more like dma buf though
+The following features are supported in this initial port:
 
-How terrible would it be if vfio-core used a shared vm_private_data
-structure and inserted itself into the vm_ops call chain to reference
-count that structure?  We already wrap the device file descriptor via
-vfio_device_fops.mmap, so we could:
+- UART (samsung-style) with earlycon support
+- Interrupts, including affinity and IPIs (Apple Interrupt Controller)
+- SMP (through standard spin-table support)
+- simplefb-based framebuffer
+- Devicetree for the Mac Mini (should work for the others too at this
+  stage)
 
-	struct vfio_vma_private_data *priv;
+See below for an overview of changes since v2.
 
-	priv = kzalloc(...
-	
-	priv->device = device;
-	vma->vm_private_data = priv;
+== Merge notes ==
 
-	device->ops->mmap(device->device_data, vma);
+This patchset depends on both the nVHE changes that are already in
+5.12-rc1, as well as the FIQ support work currently being reviewed
+at [1]. A tree containing this patchset on top of the required
+dependencies is available at [2][3]. Alternatively, you may apply
+this series on top of Mark's tree at the arm64-fiq-20210302 tag [4][5].
 
-	if (vma->vm_private_data == priv) {
-		priv->vm_ops = vma->vm_ops;
-		vma->vm_ops = &vfio_vm_ops;
-	} else
-		kfree(priv);
+This series is expected to be merged by Arnd via the SoC tree.
+Maintainers, please ack if you are happy with the patches. We will
+coordinate with Arnd and Mark on the FIQ series to make sure all
+that goes smoothly.
 
-Where:
+This is marked RFT as it needs some basic testing on other on other
+ARM platforms; in particular the Samsung UART driver changes need to be
+tested, and the ioremap()/timer changes could use at least a smoke test
+on some other arm64 platform. I would appreciate any test reports.
 
-struct vfio_vma_private_data {
-	struct vfio_device *device;
-	unsigned long pfn_base;
-	void *private_data; // maybe not needed
-	const struct vm_operations_struct *vm_ops;
-	struct kref kref;
-	unsigned int release_notification:1;
-};
+[1] https://lore.kernel.org/linux-arm-kernel/20210302101211.2328-1-mark.rutland@arm.com/T/#t
+[2] git://github.com/AsahiLinux/linux.git upstream-bringup-v3
+[3] https://github.com/AsahiLinux/linux/tree/upstream-bringup-v3
+[4] git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64-fiq-20210302
+[5] https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/tag/?h=arm64-fiq-20210302
 
-Therefore unless a bus driver opts-out by replacing vm_private_data, we
-can identify participating vmas by the vm_ops and have flags indicating
-if the vma maps device memory such that vfio_get_device_from_vma()
-should produce a device reference.  The vfio IOMMU backends would also
-consume this, ie. if they get a valid vfio_device from the vma, use the
-pfn_base field directly.  vfio_vm_ops would wrap the bus driver
-callbacks and provide reference counting on open/close to release this
-object.
+== Testing notes ==
 
-I'm not thrilled with a vfio_device_ops callback plumbed through
-vfio-core to do vma-to-pfn translation, so I thought this might be a
-better alternative.  Thanks,
+This has been tested on an Apple M1 Mac Mini booting to a framebuffer
+and serial console, with SMP and (newly tested since v2) KASLR, with
+an arm64 defconfig (+ CONFIG_FB_SIMPLE for the fb).
 
-Alex
+An arm32 build has been smoke-tested in qemu with the smdkc210 machine,
+to test the samsung_tty changes on non-Apple (emulated) hardware.
+
+== Patch overview ==
+
+- 01    Cope with CPUs stuck in VHE mode
+        This is a follow-up to the recent nVHE/cpufeature changes in
+        mainline by Mark, adding a workaround for the M1's lack of
+        nVHE mode.
+- 02-03 Core platform DT bindings
+- 04-05 CPU DT bindings and MIDR defines
+- 06-07 Add interrupt-names support to the ARM timer driver
+        This is used to cleanly express the lack of a secure timer;
+        platforms in the past have used various hacks like dummy
+        IRQs here.
+- 08-12 ioremap_np() (nGnRnE) support
+        The fabric in these SoCs only supports nGnRnE accesses for
+        standard MMIO, except for PCI ranges which use nGnRE. Linux
+        currently defaults to the latter on ARM64, so this adds a new
+        ioremap type and DT properties to automatically select it for
+        drivers using OF and devm abstractions, under buses specified
+        in DT.
+- 13-16 AIC (Apple Interrupt Controller) driver and support defines
+        This also embeds FIQ handling for this platform.
+- 17    Introduce CONFIG_ARCH_APPLE & add it to defconfig
+- 18-25 Add Apple SoC support to the samsung_tty driver
+        This includes several refactoring patches to be able to more
+        cleanly introduce this, as well as a switch to
+        devm_ioremap_resource to be able to use the nGnRnE support
+        introduced above. Earlycon support is included with a
+        special-case nGnRnE hack, as earlycon is too early to use the
+        generic infrastructure.
+- 26    simple-framebuffer bindings for Apple (trivial)
+- 27    Add the initial M1 Mac Mini (j274) devicetree
+
+== About the hardware ==
+
+These machines officially support booting unsigned/user-provided
+XNU-like kernels, with a very different boot protocol and devicetree
+format. We are developing an initial bootloader, m1n1 [1], to take care
+of as many hardware peculiarities as possible and present a standard
+Linux arm64 boot protocol and device tree. In the future, I expect that
+production setups will add U-Boot and perhaps GRUB into the boot chain,
+to make the boot process similar to other ARM64 platforms.
+
+The machines expose their debug UART over USB Type C, triggered with
+vendor-specific USB-PD commands. Currently, the easiest way to get a
+serial console on these machines is to use a second M1 box and a simple
+USB C cable [2]. You can also build a DIY interface using an Arduino, a
+FUSB302 chip or board, and a 1.2V UART-TTL adapter [3]. In the coming
+weeks we will be designing an open hardware project to provide
+serial/debug connectivity to these machines (and, hopefully, also
+support other UART-over-Type C setups from other vendors). Please
+contact me privately if you are interested in getting an early prototype
+version of one of these devices.
+
+A quickstart guide to booting Linux kernels on these machines is
+available at [4], and we are documenting the hardware at [5].
+
+[1] https://github.com/AsahiLinux/m1n1/
+[2] https://github.com/AsahiLinux/macvdmtool/
+[3] https://github.com/AsahiLinux/vdmtool/
+[4] https://github.com/AsahiLinux/docs/wiki/Developer-Quickstart
+[5] https://github.com/AsahiLinux/docs/wiki
+
+== Project Blurb ==
+
+Asahi Linux is an open community project dedicated to developing and
+maintaining mainline support for Apple Silicon on Linux. Feel free to
+drop by #asahi and #asahi-dev on freenode to chat with us, or check
+our website for more information on the project:
+
+https://asahilinux.org/
+
+== Changes since v2 ==
+
+* Removed FIQ support patches, as this is now being handled as a
+  separate series.
+* Added nVHE workaround patch from Marc
+* Renamed dts(i) files to better match conventions used in other
+  platforms
+* Renamed 'm1' in compatible/dts names to 't8103', to be better
+  prepared for the chance of multiple SoCs being released under the
+  same marketing name.
+* Reworded device tree binding text for the platform.
+* Changed the default ioremap_np() implementation to return NULL,
+  like ioremap_uc().
+* Added general documentation for ioremap() variants, including the
+  newly introduced one.
+* Reworked virtual IPI support in the AIC driver, and attempted
+  to thoroughly shave the memory ordering yak.
+* Moved GIC registers to sysregs.h instead of including that in the AIC
+  driver.
+* Added _EL1 suffixes to Apple sysregs.
+* Addressed further review comments and feedback.
+
+
+Arnd Bergmann (1):
+  docs: driver-api: device-io: Document I/O access functions
+
+Hector Martin (25):
+  dt-bindings: vendor-prefixes: Add apple prefix
+  dt-bindings: arm: apple: Add bindings for Apple ARM platforms
+  dt-bindings: arm: cpus: Add apple,firestorm & icestorm compatibles
+  arm64: cputype: Add CPU implementor & types for the Apple M1 cores
+  dt-bindings: timer: arm,arch_timer: Add interrupt-names support
+  arm64: arch_timer: implement support for interrupt-names
+  asm-generic/io.h:  Add a non-posted variant of ioremap()
+  docs: driver-api: device-io: Document ioremap() variants & access
+    funcs
+  arm64: Implement ioremap_np() to map MMIO as nGnRnE
+  of/address: Add infrastructure to declare MMIO as non-posted
+  arm64: Add Apple vendor-specific system registers
+  arm64: move ICH_ sysreg bits from arm-gic-v3.h to sysreg.h
+  dt-bindings: interrupt-controller: Add DT bindings for apple-aic
+  irqchip/apple-aic: Add support for the Apple Interrupt Controller
+  arm64: Kconfig: Introduce CONFIG_ARCH_APPLE
+  tty: serial: samsung_tty: Separate S3C64XX ops structure
+  tty: serial: samsung_tty: Add ucon_mask parameter
+  tty: serial: samsung_tty: Add s3c24xx_port_type
+  tty: serial: samsung_tty: IRQ rework
+  tty: serial: samsung_tty: Use devm_ioremap_resource
+  dt-bindings: serial: samsung: Add apple,s5l-uart compatible
+  tty: serial: samsung_tty: Add support for Apple UARTs
+  tty: serial: samsung_tty: Add earlycon support for Apple UARTs
+  dt-bindings: display: Add apple,simple-framebuffer
+  arm64: apple: Add initial Apple Mac mini (M1, 2020) devicetree
+
+Marc Zyngier (1):
+  arm64: Cope with CPUs stuck in VHE mode
+
+ .../devicetree/bindings/arm/apple.yaml        |  64 ++
+ .../devicetree/bindings/arm/cpus.yaml         |   2 +
+ .../bindings/display/simple-framebuffer.yaml  |   5 +
+ .../interrupt-controller/apple,aic.yaml       |  88 +++
+ .../bindings/serial/samsung_uart.yaml         |   4 +-
+ .../bindings/timer/arm,arch_timer.yaml        |  14 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ Documentation/driver-api/device-io.rst        | 356 +++++++++
+ .../driver-api/driver-model/devres.rst        |   1 +
+ MAINTAINERS                                   |  15 +
+ arch/arm64/Kconfig.platforms                  |   8 +
+ arch/arm64/boot/dts/Makefile                  |   1 +
+ arch/arm64/boot/dts/apple/Makefile            |   2 +
+ arch/arm64/boot/dts/apple/t8103-j274.dts      |  45 ++
+ arch/arm64/boot/dts/apple/t8103.dtsi          | 135 ++++
+ arch/arm64/configs/defconfig                  |   1 +
+ arch/arm64/include/asm/cputype.h              |   6 +
+ arch/arm64/include/asm/io.h                   |   1 +
+ arch/arm64/include/asm/sysreg.h               |  60 ++
+ arch/arm64/include/asm/sysreg_apple.h         |  69 ++
+ arch/arm64/kernel/head.S                      |  33 +-
+ arch/arm64/kernel/hyp-stub.S                  |  28 +-
+ arch/sparc/include/asm/io_64.h                |   4 +
+ drivers/clocksource/arm_arch_timer.c          |  24 +-
+ drivers/irqchip/Kconfig                       |   8 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-apple-aic.c               | 710 ++++++++++++++++++
+ drivers/of/address.c                          |  72 +-
+ drivers/tty/serial/Kconfig                    |   2 +-
+ drivers/tty/serial/samsung_tty.c              | 496 +++++++++---
+ include/asm-generic/io.h                      |  22 +-
+ include/asm-generic/iomap.h                   |   9 +
+ include/clocksource/arm_arch_timer.h          |   1 +
+ .../interrupt-controller/apple-aic.h          |  15 +
+ include/linux/cpuhotplug.h                    |   1 +
+ include/linux/io.h                            |   2 +
+ include/linux/ioport.h                        |   1 +
+ include/linux/irqchip/arm-gic-v3.h            |  56 --
+ include/linux/of_address.h                    |   1 +
+ include/linux/serial_s3c.h                    |  16 +
+ lib/devres.c                                  |  22 +
+ 41 files changed, 2228 insertions(+), 175 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/apple.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+ create mode 100644 arch/arm64/boot/dts/apple/Makefile
+ create mode 100644 arch/arm64/boot/dts/apple/t8103-j274.dts
+ create mode 100644 arch/arm64/boot/dts/apple/t8103.dtsi
+ create mode 100644 arch/arm64/include/asm/sysreg_apple.h
+ create mode 100644 drivers/irqchip/irq-apple-aic.c
+ create mode 100644 include/dt-bindings/interrupt-controller/apple-aic.h
+
+--
+2.30.0
 
