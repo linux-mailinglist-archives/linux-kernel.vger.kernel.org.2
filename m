@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2536E32CFDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649A232CFE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237791AbhCDJkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:40:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237779AbhCDJjx (ORCPT
+        id S237778AbhCDJlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:41:53 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:61791 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237769AbhCDJlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:39:53 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02A7C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:39:13 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id y67so641134pfb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:39:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65HofbFXNPmHhJuN/k4T5gVkYUBqP/y0ZFlXkMjyOLE=;
-        b=sR46qH9grg4grsLC5c10/xrAmCFEcF4SGO23ENB426T/RngIyN/lgQGJWiCVGETzzU
-         +pV2mmEMJX9eyt36YVndEnI24Xt3KvY1t9Ow786t9kwAqo6TXrkS52GVIp7kc1YlvByV
-         NtK/TG0w8/XJMb6JuU58pUNYo1RIgvJMQhhWL0fx64yD8aE7CkNr+rOs4GoW8v/LAL0H
-         x8JTdOHrNHRnFteoVyaGHWDHQ57iRBtp2g2lapxn+/2amOeuSjtKbJAbwt9RnBz6zj5h
-         i0SjaV7Ss52QlRsjMe3AUZr1693C9TIEuEkoLUCKwedWVMxta4g/7p7XDRqC7MSDFPDM
-         Z8eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65HofbFXNPmHhJuN/k4T5gVkYUBqP/y0ZFlXkMjyOLE=;
-        b=K/2X7sH0VPEaYzubaQHxDcGhFZLCe9HU1a5gYNADQvsOLKIiuvXGSdcKTqKiuDMSYY
-         9YrWcc62Sh4QTTDtsXLlrPE0fSI8iqmo6s9I30mFuDRIEg+xDQMC/Gv6phrmYc70hdue
-         04luPO0M3kihdPp80zGZ8Vx8Ks/fZbaNBytaInr97AtfHvrd5tw2sXDJ0j9nVFXhU+wI
-         zrvAq0WwtBAH14bW2IcxpMZAfuYqtMuD3gmRH3ZkZHAczP3ZywVBLkhEC96h3Y7s8U15
-         6INg8zo/bGao3lepzt+rWIxq8R9XUGj1HQ0yN3Sqitc9ydOeZ2C9lMWBFOP+I6G4SuK/
-         lqYQ==
-X-Gm-Message-State: AOAM533h2UIzuku7ZsMqr6IymXoahSpz+gzMb6+clZm1xZ5zEqcMlrxO
-        dJ4ctmFkywxZg9sOcN6SWREC4yUhQFP9U393CqE=
-X-Google-Smtp-Source: ABdhPJz63tZi0kSTx3jYhmSWXkT+tUcP2dXia7SiQzAAKzquBnAQgE6J5N31CwGMv2AweN4MnPhZNgxfl6uybYLmTfU=
-X-Received: by 2002:a65:5ac9:: with SMTP id d9mr3002639pgt.74.1614850752963;
- Thu, 04 Mar 2021 01:39:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20210223203004.7219-1-daniel.lezcano@linaro.org>
- <CAHp75VcJwoye5KOYXF3Fs1F-82JPP-7VaU4z5OqBrYDr+AGQ5w@mail.gmail.com>
- <CAHp75Vcqug9qC_ejHE03YguiSy-XpsZV6g36-pe3VOFgTS2-tA@mail.gmail.com> <20210303163125.dcc0a086a939a58ed30750e8@linux-foundation.org>
-In-Reply-To: <20210303163125.dcc0a086a939a58ed30750e8@linux-foundation.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 4 Mar 2021 11:38:56 +0200
-Message-ID: <CAHp75Vd5u1jHKPALfBTTqEoXf-4OAdLhsn3A-fzPw3Me=7hhMA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] units: Add the HZ_PER_KHZ macro
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 4 Mar 2021 04:41:40 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 04 Mar 2021 01:41:00 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Mar 2021 01:40:58 -0800
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Mar 2021 15:10:31 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id C62D63D38; Thu,  4 Mar 2021 01:40:31 -0800 (PST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        dan.carpenter@oracle.com
+Subject: [v1] drm/msm/disp/dpu1: fix warning reported by kernel bot in dpu driver
+Date:   Thu,  4 Mar 2021 01:40:29 -0800
+Message-Id: <1614850829-31802-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <y>
+References: <y>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 2:31 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> On Wed, 24 Feb 2021 10:39:36 +0200 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Fix a warning, pointing to an early deference of a variable before
+check. This bug was introduced in the following commit.
 
-...
+commit 4259ff7ae509
+("drm/msm/dpu: add support for pcc color block in dpu driver")
 
-> Also, why make them signed types?  Negative Hz is physically
-> nonsensical.  If that upsets some code somewhere because it was dealing
-> with signed types then, well, that code needed fixing anyway.
->
-> Ditto MILLIWATT_PER_WATT and friends, sigh.
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-And all seconds also. I guess it's historically like this and in any
-case I don't expect we will have multipliers that don't fit long long.
-
-There might be some subtle integral promotion rules that screw the
-flow up, but I have not much experience with it to be honest.
-
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c
+index a7a2453..0f9974c 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dspp.c
+@@ -26,10 +26,16 @@ static void dpu_setup_dspp_pcc(struct dpu_hw_dspp *ctx,
+ 		struct dpu_hw_pcc_cfg *cfg)
+ {
+ 
+-	u32 base = ctx->cap->sblk->pcc.base;
++	u32 base;
+ 
+-	if (!ctx || !base) {
+-		DRM_ERROR("invalid ctx %pK pcc base 0x%x\n", ctx, base);
++	if (!ctx) {
++		DRM_ERROR("invalid dspp ctx %pK\n", ctx);
++		return;
++	}
++
++	base = ctx->cap->sblk->pcc.base;
++	if (!base) {
++		DRM_ERROR("invalid pcc base 0x%x\n", base);
+ 		return;
+ 	}
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
+
