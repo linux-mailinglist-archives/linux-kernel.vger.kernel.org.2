@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3AC32CFCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F1032CFCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237678AbhCDJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:37:04 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:48449 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237653AbhCDJgo (ORCPT
+        id S237710AbhCDJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:37:37 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2618 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237692AbhCDJhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:36:44 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N30VJ-1llby93tLJ-013P6q; Thu, 04 Mar 2021 10:34:09 +0100
-Received: by mail-ot1-f51.google.com with SMTP id v12so25508865ott.10;
-        Thu, 04 Mar 2021 01:34:08 -0800 (PST)
-X-Gm-Message-State: AOAM531K6U4Pz/T2CG3GZQplToTbh/nZo/W2EWUFwx7iNrwMhobKsdkZ
-        +nIq13nIr7vthMybEJHBToovOmPv2S6Tj5zW9+0=
-X-Google-Smtp-Source: ABdhPJzdWUmRHp4/lKLXv6+q2Thn0Sc0nr1QD99ZxxURYeZleIgI699G+WxW+sTjwSsYr4dfIETXbVshldOB36R2nMg=
-X-Received: by 2002:a9d:6b8b:: with SMTP id b11mr2798119otq.210.1614850447259;
- Thu, 04 Mar 2021 01:34:07 -0800 (PST)
+        Thu, 4 Mar 2021 04:37:23 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Drlwd2XNSz67vMY;
+        Thu,  4 Mar 2021 17:30:57 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 4 Mar 2021 10:36:41 +0100
+Received: from [10.210.170.213] (10.210.170.213) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Thu, 4 Mar 2021 09:36:40 +0000
+Subject: Re: [PATCH v7 2/4] perf tools: Add lexical definition of event name
+To:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>, <will@kernel.org>,
+        <mathieu.poirier@linaro.org>, <leo.yan@linaro.org>,
+        <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210304032610.3112996-1-nakamura.shun@fujitsu.com>
+ <20210304032610.3112996-3-nakamura.shun@fujitsu.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <74955041-45ab-10df-e044-5d64898c81d9@huawei.com>
+Date:   Thu, 4 Mar 2021 09:34:44 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-5-brad@pensando.io>
-In-Reply-To: <20210304034141.7062-5-brad@pensando.io>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 4 Mar 2021 10:33:51 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0Wi5YrTFvfMopzBPdWrZi03abDhL_PanJ4HZ=Ycx8s3g@mail.gmail.com>
-Message-ID: <CAK8P3a0Wi5YrTFvfMopzBPdWrZi03abDhL_PanJ4HZ=Ycx8s3g@mail.gmail.com>
-Subject: Re: [PATCH 4/8] spidev: Add Pensando CPLD compatible
-To:     Brad Larson <brad@pensando.io>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:seRvg0yhGSVe9OKFJx/AdzC6Z6J8W7Yhhtv/pNsPzHNCOpa2R8R
- pTnmKCxJLaq3piXSLbEnZz7mAd0jrIaqYbktGLZIaFX8EnXHi9blsl854kTWlCfaAxnCjrq
- jmmA1KZ55lEIR4Vrmynv6H9fFTgvgj2eecHwhMXNEvpANqv9IDV2IhqodpAFs8kKNV+EmPx
- inae/8YJeTb6T6VIgX+tQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3JkiklS7VkA=:JoShOBsLn/zRSJOhd3kGMH
- +W+e8xEZ/rGtTFkcsHuoCYTRpHai47x2AgPTZ4q/VFJMsgIDfJwhBGaZAI8ZqSFGfmIh+drD7
- xQmkCMKOeMyVNELSR6vYcr9P39qsaWDQu2WsPumzan5UNnRmBCdiIK9XswCe4I5yqhhBD0KTk
- mEauzZ7k398LG7O6CByBeUfFJEPqiRB8v2mLrkS9jkPE1dw9ZFVWw6t+nnE8RqNh9fROLcwgl
- +J/7LsPASVnJNecoHsCLv3m3YkYcFWZldgA7BgcsQDlyv5cir77p6/qCn2ZpsFLeTlHoif32m
- BQTbgf55gNmWDhrs0YmEatIAPtCRuMvBxQ2br6PllQWwqdMPzrIH0l5a1GJSQ3B/AILVg+6rD
- nXmLsaNzvY2oRZIDK8trqA+GwfKoXiPLdOC9zUlouOxX8ymWOLExvXmVGiFJt6YDdPpmy+7Iu
- LW5yk53WfbN+UbiHTyQoLZXvsGAAWmWQF6wmamqhkJNwnEinWTDoOypW0nOnyIQ/pBNRv2f/l
- D5hYetov2nd1exf9wJR/vM1Qi3vFPgSxROGjmxoQurZSBwnS7OKR+TyRsgqXJzpwg==
+In-Reply-To: <20210304032610.3112996-3-nakamura.shun@fujitsu.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.170.213]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 4:41 AM Brad Larson <brad@pensando.io> wrote:
->
-> Pensando Elba SoC platforms have a SPI connected CPLD
-> for platform management.
->
-> Signed-off-by: Brad Larson <brad@pensando.io>
+On 04/03/2021 03:26, Shunsuke Nakamura wrote:
+> From: Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
+> 
+> Add the lexical definition of event name so that the numbers are recognizable.
+> 
+
+Sorry for the hassle, but it's not clear that we got a definitive 
+conclusion on this patch from v6 series:
+
+https://lore.kernel.org/lkml/YCuo01Wxxe%2FMCrC5@krava/
+
+Would it be so much worse for you to change format of these event names 
+to not start with a numberic?
+
+Thanks
+
+
+
+> A64FX defines an event name that starts with a number.
+>   - 0inst_commit
+>   - 1inst_commit
+>   - 2inst_commit
+>   - 3inst_commit
+>   - 4inst_commit
+> 
+> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+> Acked-by: John Garry <john.garry@huawei.com>
 > ---
->  drivers/spi/spidev.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-> index 8cb4d923aeaa..8b285852ce82 100644
-> --- a/drivers/spi/spidev.c
-> +++ b/drivers/spi/spidev.c
-> @@ -683,6 +683,7 @@ static const struct of_device_id spidev_dt_ids[] = {
->         { .compatible = "dh,dhcom-board" },
->         { .compatible = "menlo,m53cpld" },
->         { .compatible = "cisco,spi-petra" },
-> +       { .compatible = "pensando,cpld" },
->         {},
->  };
+>   tools/perf/util/parse-events.l | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+> index 0b36285a9435..33f627187415 100644
+> --- a/tools/perf/util/parse-events.l
+> +++ b/tools/perf/util/parse-events.l
+> @@ -205,7 +205,7 @@ bpf_source	[^,{}]+\.c[a-zA-Z0-9._]*
+>   num_dec		[0-9]+
+>   num_hex		0x[a-fA-F0-9]+
+>   num_raw_hex	[a-fA-F0-9]+
+> -name		[a-zA-Z_*?\[\]][a-zA-Z0-9_*?.\[\]]*
+> +name		[a-zA-Z0-9_*?\[\]][a-zA-Z0-9_*?.\[\]]*
+>   name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
+>   name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+>   drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
+> 
 
-This does not seem appropriate, I think a platform management driver should
-have a proper kernel abstraction instead of a user passthrough.
-
-As mentioned elsewhere, it also needs to be way more specific. If this
-is a programmable block, the compatible string might in fact need to
-contain both a board identifier and a revision number for the programmable
-logic, to ensure that the driver knows how to talk to it.
-
-      Arnd
