@@ -2,138 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD7832D200
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E2C32D202
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238933AbhCDLuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 06:50:10 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:12714 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233491AbhCDLtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:49:43 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Drpzp3xTYz9v1sK;
-        Thu,  4 Mar 2021 12:48:54 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id h-mitI98mN7r; Thu,  4 Mar 2021 12:48:54 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Drpzp2DxPz9v1sG;
-        Thu,  4 Mar 2021 12:48:54 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2270C8B7FF;
-        Thu,  4 Mar 2021 12:48:56 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id VRrx4alowTpf; Thu,  4 Mar 2021 12:48:56 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 665B48B773;
-        Thu,  4 Mar 2021 12:48:55 +0100 (CET)
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
- <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
- <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
- <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
- <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
- <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
- <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu>
- <CANpmjNOnVzei7frKcMzMHxaDXh5NvTA-Wpa29C2YC1GUxyKfhQ@mail.gmail.com>
- <f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu>
- <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu>
-Date:   Thu, 4 Mar 2021 12:48:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234142AbhCDLwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 06:52:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22004 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236802AbhCDLwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 06:52:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614858646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=99MUBK1PvmbjadqNyXoXltNHyy9tKF3v5o2dtu4z4Lg=;
+        b=TpoeaJW0Cr4giXm2RxJrX9I8iMxD5SLW0zPV1flO0uAexvNqX12FhOMPmjrGOBE/stpx/J
+        k8RBKV0k1Ewnp5co6SH3HUanAoeZFc7XwJpp9gqJBst8v/KULk+wy8zWzLUaN4Q2BPL74q
+        pL1bDuDmE9D+Gdn7bNAWnUJueziea+c=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-ub0QuRerNp-RZR6cBostZg-1; Thu, 04 Mar 2021 06:50:45 -0500
+X-MC-Unique: ub0QuRerNp-RZR6cBostZg-1
+Received: by mail-ej1-f69.google.com with SMTP id 3so12055057ejx.17
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 03:50:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=99MUBK1PvmbjadqNyXoXltNHyy9tKF3v5o2dtu4z4Lg=;
+        b=pnsED1phGs6Md0hrTXu2xzX8TUfngwaePlgyJvqbEilAImLsacuBGNzmgLTHblw7ju
+         VsptJ/fFFpAutUGOgXqw63L1FGk84ALEZMAACdFrWululUYr2KwMfb4csSltd495r0nW
+         NsvNL5Dhu73lxqqu1acq3xZ3tREwwrybDclGVU3NFfbr69dgor+cTbVWDqompw/TReGC
+         m1mWnPvxBSZWDk/J8vHGLvfcbkjXn/2ZFUQ1Jh+TYtTLi7GjzMkBVGcyPmzie+NSCBPC
+         7UArpMLD0Ccj8X8j0tlEavQIN+xHN1MCJA7mbLLcjxpyKWKop/hO28EU+CPxi8AhWW5T
+         R4mQ==
+X-Gm-Message-State: AOAM532G/V1B1YQlZ5YPKy/o0lU2oe1otu3Nj1m2q2R5E5Ci06rVSE+y
+        osgvIOOi5SXLy/TkkZeM76HCqqq9z5v2Awy7mjo9I/uhQf74lOxvepurO3YMm9sXAKrXL+2uJMG
+        dl1qESoOQDEwY8H0kxq94YPGueM3LxPql6qNDpSxE7zfGE8Qt/6T+XUf6Hq7DDa8exwLu9aOYnw
+        y4
+X-Received: by 2002:a17:906:39a:: with SMTP id b26mr3876996eja.158.1614858643861;
+        Thu, 04 Mar 2021 03:50:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzfPEbs7ly83kta4b31zv6GGKKL5nQTg/yi2k8E3urFCl9bzq2wVpVHXZGvfGATJ5Hiw1Syfg==
+X-Received: by 2002:a17:906:39a:: with SMTP id b26mr3876983eja.158.1614858643718;
+        Thu, 04 Mar 2021 03:50:43 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t17sm6439035edr.36.2021.03.04.03.50.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 03:50:43 -0800 (PST)
+Subject: Re: [PATCH] platform/x86: fix typo in Kconfig
+To:     =?UTF-8?Q?Petr_Van=c4=9bk?= <arkamar@atlas.cz>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <YCw6zavnfeHRGWgr@arkam>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <b808963a-e02b-866d-cf53-e181451b65aa@redhat.com>
+Date:   Thu, 4 Mar 2021 12:50:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <YCw6zavnfeHRGWgr@arkam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On 2/16/21 10:36 PM, Petr Vaněk wrote:
+> uses by -> used by
+> 
+> Signed-off-by: Petr Vaněk <arkamar@atlas.cz>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
 
 
-Le 04/03/2021 à 12:31, Marco Elver a écrit :
-> On Thu, 4 Mar 2021 at 12:23, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->> Le 03/03/2021 à 11:56, Marco Elver a écrit :
->>>
->>> Somewhat tangentially, I also note that e.g. show_regs(regs) (which
->>> was printed along the KFENCE report above) didn't include the top
->>> frame in the "Call Trace", so this assumption is definitely not
->>> isolated to KFENCE.
->>>
->>
->> Now, I have tested PPC64 (with the patch I sent yesterday to modify save_stack_trace_regs()
->> applied), and I get many failures. Any idea ?
->>
->> [   17.653751][   T58] ==================================================================
->> [   17.654379][   T58] BUG: KFENCE: invalid free in .kfence_guarded_free+0x2e4/0x530
->> [   17.654379][   T58]
->> [   17.654831][   T58] Invalid free of 0xc00000003c9c0000 (in kfence-#77):
->> [   17.655358][   T58]  .kfence_guarded_free+0x2e4/0x530
->> [   17.655775][   T58]  .__slab_free+0x320/0x5a0
->> [   17.656039][   T58]  .test_double_free+0xe0/0x198
->> [   17.656308][   T58]  .kunit_try_run_case+0x80/0x110
->> [   17.656523][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
->> [   17.657161][   T58]  .kthread+0x18c/0x1a0
->> [   17.659148][   T58]  .ret_from_kernel_thread+0x58/0x70
->> [   17.659869][   T58]
->> [   17.663954][   T58] kfence-#77 [0xc00000003c9c0000-0xc00000003c9c001f, size=32, cache=kmalloc-32]
->> allocated by task 58:
->> [   17.666113][   T58]  .__kfence_alloc+0x1bc/0x510
->> [   17.667069][   T58]  .__kmalloc+0x280/0x4f0
->> [   17.667452][   T58]  .test_alloc+0x19c/0x430
->> [   17.667732][   T58]  .test_double_free+0x88/0x198
->> [   17.667971][   T58]  .kunit_try_run_case+0x80/0x110
->> [   17.668283][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
->> [   17.668553][   T58]  .kthread+0x18c/0x1a0
->> [   17.669315][   T58]  .ret_from_kernel_thread+0x58/0x70
->> [   17.669711][   T58]
->> [   17.669711][   T58] freed by task 58:
->> [   17.670116][   T58]  .kfence_guarded_free+0x3d0/0x530
->> [   17.670421][   T58]  .__slab_free+0x320/0x5a0
->> [   17.670603][   T58]  .test_double_free+0xb4/0x198
->> [   17.670827][   T58]  .kunit_try_run_case+0x80/0x110
->> [   17.671073][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
->> [   17.671410][   T58]  .kthread+0x18c/0x1a0
->> [   17.671618][   T58]  .ret_from_kernel_thread+0x58/0x70
->> [   17.671972][   T58]
->> [   17.672638][   T58] CPU: 0 PID: 58 Comm: kunit_try_catch Tainted: G    B
->> 5.12.0-rc1-01540-g0783285cc1b8-dirty #4685
->> [   17.673768][   T58] ==================================================================
->> [   17.677031][   T58]     # test_double_free: EXPECTATION FAILED at mm/kfence/kfence_test.c:380
->> [   17.677031][   T58]     Expected report_matches(&expect) to be true, but is false
->> [   17.684397][    T1]     not ok 7 - test_double_free
->> [   17.686463][   T59]     # test_double_free-memcache: setup_test_cache: size=32, ctor=0x0
->> [   17.688403][   T59]     # test_double_free-memcache: test_alloc: size=32, gfp=cc0, policy=any,
->> cache=1
+> ---
+>  drivers/platform/x86/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Looks like something is prepending '.' to function names. We expect
-> the function name to appear as-is, e.g. "kfence_guarded_free",
-> "test_double_free", etc.
-> 
-> Is there something special on ppc64, where the '.' is some convention?
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 91e6176cdfbd..94f2f05bc133 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1372,7 +1372,7 @@ config INTEL_PMT_CLASS
+>  	tristate "Intel Platform Monitoring Technology (PMT) Class driver"
+>  	help
+>  	  The Intel Platform Monitoring Technology (PMT) class driver provides
+> -	  the basic sysfs interface and file hierarchy uses by PMT devices.
+> +	  the basic sysfs interface and file hierarchy used by PMT devices.
+>  
+>  	  For more information, see:
+>  	  <file:Documentation/ABI/testing/sysfs-class-intel_pmt>
 > 
 
-I think so, see https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html#FUNC-DES
-
-Also see commit https://github.com/linuxppc/linux/commit/02424d896
-
-Christophe
