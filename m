@@ -2,61 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04E132CD82
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226EE32CD90
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236292AbhCDHWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:22:41 -0500
-Received: from muru.com ([72.249.23.125]:39300 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236210AbhCDHW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:22:29 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id F00F981BC;
-        Thu,  4 Mar 2021 07:22:26 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Keerthy <j-keerthy@ti.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] clocksource/drivers/timer-ti-dm: Add missing set_state_oneshot_stopped
-Date:   Thu,  4 Mar 2021 09:21:35 +0200
-Message-Id: <20210304072135.52712-4-tony@atomide.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210304072135.52712-1-tony@atomide.com>
-References: <20210304072135.52712-1-tony@atomide.com>
+        id S231164AbhCDHYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:24:45 -0500
+Received: from lucky1.263xmail.com ([211.157.147.132]:39324 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231710AbhCDHYh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:24:37 -0500
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id C772AF2FD3;
+        Thu,  4 Mar 2021 15:21:54 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P19727T140185228531456S1614842509960455_;
+        Thu, 04 Mar 2021 15:21:55 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <a1a171b876f5606bfe1a7465d5d77f7f>
+X-RL-SENDER: maqianga@uniontech.com
+X-SENDER: maqianga@uniontech.com
+X-LOGIN-NAME: maqianga@uniontech.com
+X-FST-TO: arnd@arndb.de
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   maqiang <maqianga@uniontech.com>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, maqiang <maqianga@uniontech.com>
+Subject: [PATCH] char: lp: remove redundant space
+Date:   Thu,  4 Mar 2021 15:21:47 +0800
+Message-Id: <20210304072147.10354-1-maqianga@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid spurious timer interrupts when KTIME_MAX is used, we need to
-configure set_state_oneshot_stopped(). Although implementing this is
-optional, it still affects things like power management for the extra
-timer interrupt.
+These two lines of code don't meet the kernel coding style,
+so remove the redundant space.
 
-For more information, please see commit 8fff52fd5093 ("clockevents:
-Introduce CLOCK_EVT_STATE_ONESHOT_STOPPED state") and commit cf8c5009ee37
-("clockevents/drivers/arm_arch_timer: Implement
-->set_state_oneshot_stopped()").
-
-Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+Signed-off-by: maqiang <maqianga@uniontech.com>
 ---
- drivers/clocksource/timer-ti-dm-systimer.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/lp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
---- a/drivers/clocksource/timer-ti-dm-systimer.c
-+++ b/drivers/clocksource/timer-ti-dm-systimer.c
-@@ -552,6 +552,7 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
- 	dev->set_state_shutdown = dmtimer_clockevent_shutdown;
- 	dev->set_state_periodic = dmtimer_set_periodic;
- 	dev->set_state_oneshot = dmtimer_clockevent_shutdown;
-+	dev->set_state_oneshot_stopped = dmtimer_clockevent_shutdown;
- 	dev->tick_resume = dmtimer_clockevent_shutdown;
- 	dev->cpumask = cpu_possible_mask;
- 
+diff --git a/drivers/char/lp.c b/drivers/char/lp.c
+index 862c2fd933c7..0e22e3b0a04e 100644
+--- a/drivers/char/lp.c
++++ b/drivers/char/lp.c
+@@ -546,7 +546,7 @@ static int lp_open(struct inode *inode, struct file *file)
+ 	}
+ 	/* Determine if the peripheral supports ECP mode */
+ 	lp_claim_parport_or_block(&lp_table[minor]);
+-	if ( (lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
++	if ((lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
+ 	     !parport_negotiate(lp_table[minor].dev->port,
+ 				 IEEE1284_MODE_ECP)) {
+ 		printk(KERN_INFO "lp%d: ECP mode\n", minor);
+@@ -590,7 +590,7 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
+ 		return -ENODEV;
+ 	if ((LP_F(minor) & LP_EXIST) == 0)
+ 		return -ENODEV;
+-	switch ( cmd ) {
++	switch (cmd) {
+ 		case LPTIME:
+ 			if (arg > UINT_MAX / HZ)
+ 				return -EINVAL;
 -- 
-2.30.1
+2.20.1
+
+
+
