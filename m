@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE76B32C92A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F269932C92D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356895AbhCDBFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1451797AbhCDAiJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:38:09 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7B7C0613F0
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 16:35:49 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id t29so17542064pfg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 16:35:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Rlj4D0v5bpekL9ZaI7FDQkL4vH4D+M9HhI76IRu/Vd8=;
-        b=vcidAvXUFJ5S3F/YYqF0IMaBhef7A9GhmSY50pMOvgDEDXJXVBEmw3Ag1eeyPR/Dh7
-         q3PK4MSEMxFsioI/cj5bI8w+OiqvsfnZ+47+p1/ymzKZXgZkM4x9K9Q3ijtr8STi20dS
-         48GpjPHezERblpAiwrVycGBbRDTlLUXSXn+Prkw1V6L1Q99DioRlHA5X7yfL441LVK4+
-         4NTrVzEG0eiRxOYMszBuNV2+7KsvBv+f2iCHeSSbKCw2+XKfwfL/lJwIpg1CYc46Qkph
-         7IHrkeXwpLU8TF/lnXGiA55aUitUBPA86uq7vOA2lpcFdl47RIjNS1EQRYg6t/4ylBo1
-         2mDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Rlj4D0v5bpekL9ZaI7FDQkL4vH4D+M9HhI76IRu/Vd8=;
-        b=kDuZzWNVzTFGUPfnZnwQVIULsSh7eeAnGx80Q3T+z0frMURxSFiLhPD+h7UHTYaz8f
-         zsIgzwPkFtRTITYr68KkEq5l3mRPDDH8tWbUtpvcIB1wj/sFsvdphtb6vy6836sBJIlQ
-         t6L4yKg8fLiegOYLWqm6hoShe5cO1u/zsVRbvS0ae2OZ5jQISUnbxUrBmkGrfnwykOfT
-         GbWWD8+MRYjMOaCd1+XydCEXmFl6LpWWYD1WR34+gE/nqPrFEnjLM2IlSj9OdEswe4B+
-         edxOE7X+C4QOzAtKJb+5FWWIMeAmCFAWSH3Bx+hP2ViZdN6PNGnBp+nrhAKeHE9iGMc+
-         LQww==
-X-Gm-Message-State: AOAM530drh+9SbBWegVvhEjRKxjMRANenp9+5z8CLdpoYEhyToZn4ilt
-        EQq91uwNpYCmH3558KW2KCn/odXG6EmJb8yh
-X-Google-Smtp-Source: ABdhPJwRQAn94MhcX8TKlZS+MSRaKoYOW66JAkTdlFY0xdUVssxjuQJG7SXBUSlpXdVuyBdNO6bsYw==
-X-Received: by 2002:a63:c702:: with SMTP id n2mr1331072pgg.382.1614818148909;
-        Wed, 03 Mar 2021 16:35:48 -0800 (PST)
-Received: from ?IPv6:2600:380:7540:52b5:3f01:150c:3b2:bf47? ([2600:380:7540:52b5:3f01:150c:3b2:bf47])
-        by smtp.gmail.com with ESMTPSA id y8sm27901045pfe.36.2021.03.03.16.35.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 16:35:48 -0800 (PST)
-Subject: Re: [PATCH] [v2] sata_dwc_460ex: Fix missing check in sata_dwc_isr
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210303073408.461-1-dinghao.liu@zju.edu.cn>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0e734791-d008-eb93-c6f9-b054e9c6bb88@kernel.dk>
-Date:   Wed, 3 Mar 2021 17:35:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210303073408.461-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1356941AbhCDBFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:05:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1452460AbhCDAix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:38:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70E8264E56;
+        Thu,  4 Mar 2021 00:38:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614818293;
+        bh=aycJ7YO1tkcyfSFzXyFQppItvLCrJkHQ0uQw/Zi17DU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hRgu7CXKI2Zqr6cWruRpW7fMdfJ3B0hpj9p5tD3MK754kzD7EGqiq24nUqUiNi40Q
+         65CWYw+itkj1fvCkDAzqi0uOskWYtFSU02WTcRg1K1BuZRwxSB1el03YH04C0brkjn
+         KxM4dYV9ir+tMS/aDvNawI9XScOsrpGMGE/DfMicOifeb4TzmZXHniVqRAQ1MGxsqf
+         M7wUTzbslC75LusP75XwKiHITKHe1vzm623655qYQ78QFVyBdleB/pgWEE5JswIBXA
+         oUEtK5OdOuFcJfS7tonLRA2gdGZYFPBsTgcBJEpB7epuIeTEakOc52H0MzO9qQIn+H
+         NdAcVfSr0QJwg==
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/28] torturescript: Don't rerun failed rcutorture builds
+Date:   Wed,  3 Mar 2021 16:37:45 -0800
+Message-Id: <20210304003812.24833-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
+References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/3/21 12:34 AM, Dinghao Liu wrote:
-> The return value of ata_qc_from_tag() is checked in the whole
-> kernel except for two calls in sata_dwc_isr(), which may lead
-> to null-pointer-dereference. Add return value checks to avoid
-> such case.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Applied, thanks.
+If the build fails when running multiple instances of a given rcutorture
+scenario, for example, using the kvm.sh --configs "8*RUDE01" argument,
+the build will be rerun an additional seven times.  This is in some sense
+correct, but it can waste significant time.  This commit therefore checks
+for a prior failed build and simply copies over that build's output.
 
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 536d103..9d8a82c 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -73,7 +73,7 @@ config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_ARG"
+ cp $T/KcList $resdir/ConfigFragment
+ 
+ base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
+-if test "$base_resdir" != "$resdir" -a -f $base_resdir/bzImage -a -f $base_resdir/vmlinux
++if test "$base_resdir" != "$resdir" && test -f $base_resdir/bzImage && test -f $base_resdir/vmlinux
+ then
+ 	# Rerunning previous test, so use that test's kernel.
+ 	QEMU="`identify_qemu $base_resdir/vmlinux`"
+@@ -83,6 +83,17 @@ then
+ 	ln -s $base_resdir/.config $resdir  # for kvm-recheck.sh
+ 	# Arch-independent indicator
+ 	touch $resdir/builtkernel
++elif test "$base_resdir" != "$resdir"
++then
++	# Rerunning previous test for which build failed
++	ln -s $base_resdir/Make*.out $resdir  # for kvm-recheck.sh
++	ln -s $base_resdir/.config $resdir  # for kvm-recheck.sh
++	echo Initial build failed, not running KVM, see $resdir.
++	if test -f $builddir.wait
++	then
++		mv $builddir.wait $builddir.ready
++	fi
++	exit 1
+ elif kvm-build.sh $T/KcList $resdir
+ then
+ 	# Had to build a kernel for this test.
 -- 
-Jens Axboe
+2.9.5
 
