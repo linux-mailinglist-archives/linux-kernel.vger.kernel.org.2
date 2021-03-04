@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D509632DB68
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9799132DB64
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237860AbhCDUs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:48:58 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:43146 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235648AbhCDUsc (ORCPT
+        id S237307AbhCDUs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:48:57 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:32832 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233550AbhCDUs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:48:32 -0500
-Received: by mail-ot1-f46.google.com with SMTP id v12so27544423ott.10;
-        Thu, 04 Mar 2021 12:48:16 -0800 (PST)
+        Thu, 4 Mar 2021 15:48:29 -0500
+Received: by mail-ot1-f50.google.com with SMTP id j8so3214699otc.0;
+        Thu, 04 Mar 2021 12:48:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=2OoGTJOyct6c2S8dv3hmx3zLqIL0twuJ2fEgd59m/TU=;
-        b=VZwxrZ5bA/QdC0MS7WdX3QbMN4hfMXIkI1TDesxNvVMN9KMYmCs9WJ5ncBEJLb1ftw
-         DzinOM30H/PZDFCU0sT/rnikrq1FimmdCG2kYyCVe1L34kg0TKlkKgo6d01bPu37R199
-         VMfZ8Uy7Kjozo/YAhG276N7VE9L8D79n73nZpZYBd9GF3lXeDN+Bi/MtpOMXz2zIBnMn
-         fDS3fJfOtlVorTkoX80VqrZqSYTy8Sk8395FIYmlJAaNU6aL8MsEl3Eeg79HIIgjfTHW
-         9rpSjC10ZMBhQxWZQzCydSZYm9+LQy+GpTLvNETUN5JctwnGehOR7msuvRu1ypPTi3zO
-         tokA==
-X-Gm-Message-State: AOAM533Oc+d6wXDAKp/4x/uIDHq7TYldc31r18I1GJiUOJ6qNcbQenFB
-        1c246niHGvmEYpJLQz4alg==
-X-Google-Smtp-Source: ABdhPJzd3nJvYXZhRJFS+SMlJsLzkWd0UMzd0TMfhc3TUuc6jKDJCflKn9KZ8VetSGIqdeybqOJ9ew==
-X-Received: by 2002:a9d:3422:: with SMTP id v31mr653634otb.260.1614890871544;
-        Thu, 04 Mar 2021 12:47:51 -0800 (PST)
+        bh=5AWDMa0Ub2tddxjvezSReCn39zZbL35lDyXyuobd+Vw=;
+        b=snk/8ZVSiOZxSWFpQYv10CqqP68BXRaJclgzuEBlNgJmyJJ8q/ownUnQzyri6cp2g3
+         ZoRVnDn4ClhugESxffgluFxF7LkQjJ7n5+ZEfjPAEH7vtaiw4WKFmGOcKUds0rakSwXA
+         oUAze5aYnxpWHK/9bIiFfITpJmqB4QFjZciAgwTJ7MYUpSUtPeGqUKCEekwP+tA1r3hY
+         C2bDNQcMO9wIigg5t14urlnkhxzm1x5X68HrsW2QUz98ldLvQfsFdlil+Hysusnn4kIg
+         Yt+wSBDLmGL/uysX/gWG0UAe4+3hmNE5ybJl4N4L+TSMCdpaGUFaG9qe+qIAzaGHKqj5
+         VaRg==
+X-Gm-Message-State: AOAM53023i7N5juF6JrHCmcFIq3jRq/Hk5PCgFBzakODIF3WKTSwpn56
+        DvwiqwQgyBOZtiDyFViipwpjkHlWaQ==
+X-Google-Smtp-Source: ABdhPJzNMjwXzRMUqriEzvqRxgRAqHXrkgrZR8sUIgJTVkbNvEoJPHJyiSN926Ze26yiDV78te7z1A==
+X-Received: by 2002:a9d:1785:: with SMTP id j5mr5294120otj.31.1614890868679;
+        Thu, 04 Mar 2021 12:47:48 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t4sm98452ooh.4.2021.03.04.12.47.49
+        by smtp.gmail.com with ESMTPSA id u110sm130280otb.32.2021.03.04.12.47.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 12:47:50 -0800 (PST)
-Received: (nullmailer pid 2778955 invoked by uid 1000);
+        Thu, 04 Mar 2021 12:47:46 -0800 (PST)
+Received: (nullmailer pid 2778959 invoked by uid 1000);
         Thu, 04 Mar 2021 20:47:29 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Brad Larson <brad@pensando.io>
-Cc:     arnd@arndb.de, linux-spi@vger.kernel.org,
-        bgolaszewski@baylibre.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        broonie@kernel.org, olof@lixom.net, devicetree@vger.kernel.org,
-        fancer.lancer@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-In-Reply-To: <20210304034141.7062-8-brad@pensando.io>
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-8-brad@pensando.io>
-Subject: Re: [PATCH 7/8] arm64: dts: Add Pensando Elba SoC support
+To:     =?utf-8?q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, Ray Jui <rjui@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matt Mackall <mpm@selenic.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210304073308.25906-2-noltari@gmail.com>
+References: <20210304073308.25906-1-noltari@gmail.com> <20210304073308.25906-2-noltari@gmail.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: rng: bcm2835: document reset support
 Date:   Thu, 04 Mar 2021 14:47:29 -0600
-Message-Id: <1614890849.092166.2778954.nullmailer@robh.at.kernel.org>
+Message-Id: <1614890849.112497.2778958.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Mar 2021 19:41:40 -0800, Brad Larson wrote:
-> Add Pensando common and Elba SoC specific device nodes
-> and corresponding binding documentation.
+On Thu, 04 Mar 2021 08:33:07 +0100, Álvaro Fernández Rojas wrote:
+> Some devices may need to perform a reset before using the RNG, such as the
+> BCM6368.
 > 
-> Signed-off-by: Brad Larson <brad@pensando.io>
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 > ---
->  .../bindings/gpio/pensando,elba-spics.txt     |  24 ++
->  .../devicetree/bindings/mmc/cdns,sdhci.yaml   |   2 +-
->  .../bindings/spi/cadence-quadspi.txt          |   1 +
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  arch/arm64/boot/dts/Makefile                  |   1 +
->  arch/arm64/boot/dts/pensando/Makefile         |   6 +
->  arch/arm64/boot/dts/pensando/elba-16core.dtsi | 171 ++++++++++
->  .../boot/dts/pensando/elba-asic-common.dtsi   | 113 +++++++
->  arch/arm64/boot/dts/pensando/elba-asic.dts    |   8 +
->  .../boot/dts/pensando/elba-flash-parts.dtsi   |  80 +++++
->  arch/arm64/boot/dts/pensando/elba.dtsi        | 310 ++++++++++++++++++
->  11 files changed, 717 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/gpio/pensando,elba-spics.txt
->  create mode 100644 arch/arm64/boot/dts/pensando/Makefile
->  create mode 100644 arch/arm64/boot/dts/pensando/elba-16core.dtsi
->  create mode 100644 arch/arm64/boot/dts/pensando/elba-asic-common.dtsi
->  create mode 100644 arch/arm64/boot/dts/pensando/elba-asic.dts
->  create mode 100644 arch/arm64/boot/dts/pensando/elba-flash-parts.dtsi
->  create mode 100644 arch/arm64/boot/dts/pensando/elba.dtsi
+>  v5: no changes.
+>  v4: pass dt_binding_check.
+>  v3: make resets required if brcm,bcm6368-rng.
+>  v2: document reset support.
+> 
+>  .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -86,12 +85,10 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/cdns,sdhci.example.dt.yaml: mmc@5a000000: compatible: ['socionext,uniphier-sd4hc', 'cdns,sd4hc', 'pensando,elba-emmc'] is too long
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/cdns,sdhci.example.dt.yaml: mmc@5a000000: compatible: Additional items are not allowed ('pensando,elba-emmc' was unexpected)
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/brcm,bcm2835.example.dt.yaml: rng@10004180: 'resets' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
 
-See https://patchwork.ozlabs.org/patch/1447072
+See https://patchwork.ozlabs.org/patch/1447144
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
