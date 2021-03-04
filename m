@@ -2,50 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5FC32D2DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643A232D2E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240481AbhCDM13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240478AbhCDM1G (ORCPT
+        id S240572AbhCDM2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:28:34 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:21218 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240540AbhCDM2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:27:06 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED27C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:26:26 -0800 (PST)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id BA31A447; Thu,  4 Mar 2021 13:26:24 +0100 (CET)
-Date:   Thu, 4 Mar 2021 13:26:23 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Will Deacon <will@kernel.org>, ashok.raj@intel.com,
-        kevin.tian@intel.com, jacob.jun.pan@intel.com, yi.l.liu@intel.com,
-        sanjay.k.kumar@intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] iommu/vt-d: Remove WO permissions on second-level
- paging entries
-Message-ID: <20210304122623.GD26414@8bytes.org>
-References: <20210225062654.2864322-1-baolu.lu@linux.intel.com>
- <20210225062654.2864322-3-baolu.lu@linux.intel.com>
+        Thu, 4 Mar 2021 07:28:14 -0500
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 124CRL6O022357;
+        Thu, 4 Mar 2021 21:27:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 124CRL6O022357
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614860842;
+        bh=K1n8abg19tbJt4HLdCItAkYqr2CXKH4BHG6ea09tldY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=id7zM4g1tb7as+yaQD1bXa1YI/8i3Jnp+q1nZoBhyC1TWZSytotVDAY6vioem5XMl
+         FJEGn+q1HriH2uWetSR6ld2pUrRw1RmetI1+SNZgFyJZofNad160OVqqh8sWtOIR3S
+         In9D62w2vuayvNC1vRfBwXqbJHcPgtN9vXh4/kvbibm9q/aGSylcJAiRDGmWs2Armp
+         SHmMerbwtSBx/fKI5/71XUxYvWT7s4cASNwsegEra1h8xdMOPfiCkNLQZCOmpkaMMZ
+         iPmUiycn0/QOYXCfuaNIRZj24zIeGTLPPPCVypqerp/IGNVAUQlmVu1qrTL6bJlP5f
+         ISnfX7AnvOzbg==
+X-Nifty-SrcIP: [209.85.215.173]
+Received: by mail-pg1-f173.google.com with SMTP id t25so18811673pga.2;
+        Thu, 04 Mar 2021 04:27:22 -0800 (PST)
+X-Gm-Message-State: AOAM533OqQmp1AJWjUXi7Om8Mp5MERBTbLIOOiIz8V+Ww671mFvCjDh5
+        HakpTJNzMLgsLgH0iosu0ZRyQZycL3kkEfm63nA=
+X-Google-Smtp-Source: ABdhPJydaxOVDIRSR3zkg2rR/wPg+9722gh5UJfR9yVEU8tak6XmKRI1oL2RgrEk/19rvxp6xN8MaXsrnOggaoeZe28=
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr3423612pgq.7.1614860841381;
+ Thu, 04 Mar 2021 04:27:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225062654.2864322-3-baolu.lu@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <20210302232649.y2tutffhxsblwqlb@treble> <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+ <20210303191516.6ksxmng4pis7ue4p@treble>
+In-Reply-To: <20210303191516.6ksxmng4pis7ue4p@treble>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 4 Mar 2021 21:26:43 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS5h2s5ZDx3xOiE2upyGXtPf44f5A76YYUeM1Tk93QXNg@mail.gmail.com>
+Message-ID: <CAK7LNAS5h2s5ZDx3xOiE2upyGXtPf44f5A76YYUeM1Tk93QXNg@mail.gmail.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:26:51PM +0800, Lu Baolu wrote:
-> When the first level page table is used for IOVA translation, it only
-> supports Read-Only and Read-Write permissions. The Write-Only permission
-> is not supported as the PRESENT bit (implying Read permission) should
-> always set. When using second level, we still give separate permissions
-> that allows WriteOnly which seems inconsistent and awkward. There is no
-> use case we can think off, hence remove that configuration to make it
-> consistent.
+On Thu, Mar 4, 2021 at 4:15 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Thu, Mar 04, 2021 at 03:49:35AM +0900, Masahiro Yamada wrote:
+> > > This problem is becoming more prevalent.  We will need to fix it one way
+> > > or another, if we want to support distro adoption of these GCC
+> > > plugin-based features.
+> > >
+> > > Frank suggested a possibly better idea: always rebuild the plugins when
+> > > the GCC version changes.
+> >
+> >
+> > That is just another form of the previous patch,
+> > which was already rejected.
+> >
+> >
+> > - That is a hack just for external modules
+> > - Our consensus is, use the same version for the kernel and external modules
+> >
+> >
+> >
+> > I use Ubuntu, and I do not see such a problem.
+> > (I have never seen it on Debian either, except sid.)
+> >
+> > I see Fedora providing GCC whose version is different
+> > from the one used for building the kernel.
+> > That is a problem on the distribution side.
+>
+> I don't understand.  Are you suggesting that a distro should always
+> release GCC and kernel updates simultaneously?
 
-No use-case for WriteOnly mappings? How about DMA_FROM_DEVICE mappings?
+Well, as Greg says, given that GCC is less frequently upgraded
+than the kernel, this should not be a big deal.
 
+https://lore.kernel.org/lkml/YBBML2eB%2FIXcTvcn@kroah.com/
+
+
+
+> How is this problem specific to Fedora?  Please be specific about what
+> Ubuntu and Debian do, which Fedora doesn't do.
+
+I do not know what they exactly do. Looking at only the result,
+Ubuntu and Debian do proper engineering, which Fedora doesn't.
+
+
+
+
+>
+> Adding Linus, who indicated in another thread that we shouldn't force
+> exact GCC versions because there's no technical reason to do so.
+>
+> --
+> Josh
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
