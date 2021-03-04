@@ -2,245 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F2332C4C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EAC432C500
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240926AbhCDARR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:17:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1391322AbhCDAMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:12:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 398EF64EA4;
-        Thu,  4 Mar 2021 00:11:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614816705;
-        bh=m4L5RvaxaTE08bGOKFwv2wIZz3/lswQliNHK3hL5tcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J+WyZeDLgVRZjHzQ7sTPh8z/TXwdFp0YZzhgo5zLWMannz5HK5g8qo4OzbD3i0QAB
-         qgdfbUnChZh97AQws6J3pgDvkd5+Eaapq4GI+YmAd4N3iNJPp7LucpdjANZilT71V0
-         A7I3Wg3I8QPnRZ74KZQANunaFqtf7APxYpGoHsjPX1lxXYMCnmewYsLT+jjtr9aIcV
-         5IrAjjJLNg117iSpYIKJ/q8HsENs/IzbJYnY9bJFZ9TiLsdyrhihq7mOFbB2w5U696
-         JJXLgsSo9gfNM2Poew4rsUpVAyKvKjcyXTzpcCRMzKTB8+qO5lBmzsbcOr94TU1Rik
-         VaDRbCa/vjmTA==
-Date:   Wed, 3 Mar 2021 17:11:41 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] kbuild: collect minimum tool versions into
- scripts/tool-version.sh
-Message-ID: <20210304001141.7lejurony2poqkid@archlinux-ax161>
-References: <20210303183333.46543-1-masahiroy@kernel.org>
- <20210303183333.46543-2-masahiroy@kernel.org>
+        id S1345702AbhCDASy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1392547AbhCDAO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:14:56 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658A5C0613DB
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 16:12:15 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id q204so16452968pfq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 16:12:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=zrZaRySN+9uvnnWf26Ar1YrONmr8qtTnIcY5RCO/cMw=;
+        b=AFbG0vNF10pAZ+e9ePDz/jZ+K2PhqZIKN0imVriWbB//y+kS5qAaLe5oNaVfbLvJOQ
+         T3pzSHyGp3wWwnGKn211iWlN1nChhHj3tL59KvZ6s0RQAYDcqgJbqxsCTD4S23eMlXHf
+         ItteAgk3+sC14VDZ0g9+Z81t451nCxJBZsA9k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=zrZaRySN+9uvnnWf26Ar1YrONmr8qtTnIcY5RCO/cMw=;
+        b=HSTmpn5RKkt4t9PDMprFdMVKIngbW0CliJ1u4DurjhMUTBp0CxjGCQtriaLL8Ipkb0
+         op/aZE23VyWyXFS37Gn3qjFLKCGxAIifY8X+tB7OTizy7lThnP8ykbQkzpmIzrO5Vz/r
+         2HiY1Ud40tpXsaLhIDqugFFFxFezKRF5LGhrrzX+k3y+pgx06TlLUVUL/OW9xqdYyAr2
+         bjcWRDdE/yxFa6N6u1Gs1wkFX4osYiCPwWiAb+m5Xrvhyl3RDRBW8dJyOEfzBECRkqFh
+         jomYsT40qqPyk9IWuJu4iiErdwYM/dBJJBJRIC5pUDwpqTwtttZ85BbbBxCVK2AdCn68
+         u1LQ==
+X-Gm-Message-State: AOAM531D7KFZusKZiLeCy2tBsIkq5Fpyu/E/YWUTFNjriY3a+okFCDVS
+        mcekz9jUMWXzItGPonZe5VlwIw==
+X-Google-Smtp-Source: ABdhPJzPaqYplfJzoHe2p00Q429Svrwvd0rrUs/LcKn5Qok0Uf0FqCrAMwhWaI4VItI1BmUuFtyAKw==
+X-Received: by 2002:a05:6a00:15cc:b029:1ba:5282:3ab8 with SMTP id o12-20020a056a0015ccb02901ba52823ab8mr1268929pfu.77.1614816734882;
+        Wed, 03 Mar 2021 16:12:14 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
+        by smtp.gmail.com with ESMTPSA id o4sm25339685pfg.107.2021.03.03.16.12.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 16:12:14 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303183333.46543-2-masahiroy@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1614773878-8058-13-git-send-email-rnayak@codeaurora.org>
+References: <1614773878-8058-1-git-send-email-rnayak@codeaurora.org> <1614773878-8058-13-git-send-email-rnayak@codeaurora.org>
+Subject: Re: [PATCH v2 12/14] arm64: dts: qcom: sc7280: Add SPMI PMIC arbiter device for SC7280
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, satya priya <skakit@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Date:   Wed, 03 Mar 2021 16:12:12 -0800
+Message-ID: <161481673286.1478170.13034581527644587648@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 03:33:31AM +0900, Masahiro Yamada wrote:
-> The kernel build uses various tools, many of which are provided by the
-> same software suite, for example, LLVM and Binutils.
-> 
-> When we raise the minimal version of Clang/LLVM, we need to update
-> clang_min_version in scripts/cc-version.sh and also lld_min_version in
-> scripts/ld-version.sh.
-> 
-> In fact, Kbuild can handle CC=clang and LD=ld.lld independently, and we
-> could manage their minimal version separately, but it does not make
-> much sense.
-> 
-> Make scripts/tool-version.sh a central place of minimum tool versions
-> so that we do not need to touch multiple files.
-> 
-> This script prints the minimal version of the given tool.
-> 
->   $ scripts/tool-version.sh gcc
->   4.9.0
->   $ scripts/tool-version.sh llvm
->   10.0.1
->   $ scripts/tool-version.sh binutils
->   2.23.0
->   $ scripts/tool-version.sh foo
->   foo: unknown tool
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Quoting Rajendra Nayak (2021-03-03 04:17:56)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
+com/sc7280.dtsi
+> index fe4fdb9..aa6f847 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -239,6 +239,25 @@
+>                         interrupt-controller;
+>                 };
+> =20
+> +               spmi_bus: spmi@c440000 {
+> +                       compatible =3D "qcom,spmi-pmic-arb";
+> +                       reg =3D <0 0x0c440000 0 0x1100>,
+> +                             <0 0x0c600000 0 0x2000000>,
+> +                             <0 0x0e600000 0 0x100000>,
+> +                             <0 0x0e700000 0 0xa0000>,
+> +                             <0 0x0c40a000 0 0x26000>;
+> +                       reg-names =3D "core", "chnls", "obsrvr", "intr", =
+"cnfg";
+> +                       interrupt-names =3D "periph_irq";
+> +                       interrupts-extended =3D <&pdc 1 IRQ_TYPE_LEVEL_HI=
+GH>;
+> +                       qcom,ee =3D <0>;
+> +                       qcom,channel =3D <0>;
+> +                       #address-cells =3D <1>;
+> +                       #size-cells =3D <1>;
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+I see the binding says these should be 2 instead of 1 but I suspect that
+is incorrect.
 
-Two comments below.
+> +                       interrupt-controller;
+> +                       #interrupt-cells =3D <4>;
+> +                       cell-index =3D <0>;
 
-> ---
-> 
->  scripts/cc-version.sh   | 20 +++++---------------
->  scripts/ld-version.sh   | 11 ++++-------
->  scripts/tool-version.sh | 27 +++++++++++++++++++++++++++
->  3 files changed, 36 insertions(+), 22 deletions(-)
->  create mode 100755 scripts/tool-version.sh
-> 
-> diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
-> index 3f2ee885b116..4772f1ef9cac 100755
-> --- a/scripts/cc-version.sh
-> +++ b/scripts/cc-version.sh
-> @@ -6,18 +6,6 @@
->  
->  set -e
->  
-> -# When you raise the minimum compiler version, please update
-> -# Documentation/process/changes.rst as well.
-> -gcc_min_version=4.9.0
-> -clang_min_version=10.0.1
-> -icc_min_version=16.0.3 # temporary
-> -
-> -# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-> -# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-> -if [ "$SRCARCH" = arm64 ]; then
-> -	gcc_min_version=5.1.0
-> -fi
-> -
->  # Print the compiler name and some version components.
->  get_compiler_info()
->  {
-> @@ -48,18 +36,20 @@ set -- $(get_compiler_info "$@")
->  
->  name=$1
->  
-> +tool_version=$(dirname $0)/tool-version.sh
+Is cell-index used? Please remove as I don't see it used anywhere and
+not in the binding.
 
-I realize these scripts are currently called by their full path but is
-it worth making this '$(dirname "$(readlink -f "$0")")' here and in
-ld-version.sh just in case that does not happen?
-
->  case "$name" in
->  GCC)
->  	version=$2.$3.$4
-> -	min_version=$gcc_min_version
-> +	min_version=$($tool_version gcc)
->  	;;
->  Clang)
->  	version=$2.$3.$4
-> -	min_version=$clang_min_version
-> +	min_version=$($tool_version llvm)
->  	;;
->  ICC)
->  	version=$(($2 / 100)).$(($2 % 100)).$3
-> -	min_version=$icc_min_version
-> +	min_version=$($tool_version icc)
->  	;;
->  *)
->  	echo "$orig_args: unknown compiler" >&2
-> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> index a463273509b5..e824f7675693 100755
-> --- a/scripts/ld-version.sh
-> +++ b/scripts/ld-version.sh
-> @@ -6,11 +6,6 @@
->  
->  set -e
->  
-> -# When you raise the minimum linker version, please update
-> -# Documentation/process/changes.rst as well.
-> -bfd_min_version=2.23.0
-> -lld_min_version=10.0.1
-> -
->  # Convert the version string x.y.z to a canonical 5 or 6-digit form.
->  get_canonical_version()
->  {
-> @@ -35,10 +30,12 @@ set -- $("$@" --version)
->  IFS=' '
->  set -- $1
->  
-> +tool_version=$(dirname $0)/tool-version.sh
+> +               };
 > +
->  if [ "$1" = GNU -a "$2" = ld ]; then
->  	shift $(($# - 1))
->  	version=$1
-> -	min_version=$bfd_min_version
-> +	min_version=$($tool_version binutils)
->  	name=BFD
->  	disp_name="GNU ld"
->  elif [ "$1" = GNU -a "$2" = gold ]; then
-> @@ -46,7 +43,7 @@ elif [ "$1" = GNU -a "$2" = gold ]; then
->  	exit 1
->  elif [ "$1" = LLD ]; then
->  	version=$2
-> -	min_version=$lld_min_version
-> +	min_version=$($tool_version llvm)
->  	name=LLD
->  	disp_name=LLD
->  else
-> diff --git a/scripts/tool-version.sh b/scripts/tool-version.sh
-> new file mode 100755
-> index 000000000000..b4aa27e2c3d3
-> --- /dev/null
-> +++ b/scripts/tool-version.sh
-> @@ -0,0 +1,27 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Print the minimum supported version of the given tool.
-> +
-> +set -e
-> +
-> +# When you raise the minimum version, please update
-> +# Documentation/process/changes.rst as well.
-> +gcc_min_version=4.9.0
-> +llvm_min_version=10.0.1
-> +icc_min_version=16.0.3 # temporary
-> +binutils_min_version=2.23.0
-> +
-> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-> +# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-> +if [ "$SRCARCH" = arm64 ]; then
-> +	gcc_min_version=5.1.0
-> +fi
-> +
-> +eval min_version="\$${1}_min_version"
-> +if [ -z "$min_version" ]; then
-> +	echo "$1: unknown tool" >&2
-> +	exit 1
-> +fi
-> +
-> +echo "$min_version"
-> -- 
-> 2.27.0
-> 
-
-Would scripts/tool-version.sh be easier to read and interpret using a
-case statement?
-
-#!/bin/sh
-# SPDX-License-Identifier: GPL-2.0-only
-#
-# Print the minimum supported version of the given tool.
-# When you raise the minimum version, please update
-# Documentation/process/changes.rst as well.
-
-case "$1" in
-binutils)
-    echo "2.23.0"
-    ;;
-gcc)
-    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-    # https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-    if [ "$SRCARCH" = arm64 ]; then
-        echo "5.1.0"
-    else
-        echo "4.9.0"
-    fi
-    ;;
-icc)
-    # temporary
-    echo "16.0.3"
-    ;;
-llvm)
-    echo "10.0.1"
-    ;;
-*)
-    echo "$1: unknown tool" >&2
-    exit 1
-    ;;
-esac
+>                 tlmm: pinctrl@f100000 {
+>                         compatible =3D "qcom,sc7280-pinctrl";
+>                         reg =3D <0 0x0f100000 0 0x1000000>;
