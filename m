@@ -2,86 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF58132CE2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A38232CE31
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236348AbhCDINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:13:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43974 "EHLO mail.kernel.org"
+        id S236403AbhCDIOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:14:23 -0500
+Received: from verein.lst.de ([213.95.11.211]:40865 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236327AbhCDINd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:13:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35F8E64EA4;
-        Thu,  4 Mar 2021 08:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614845572;
-        bh=Dh3Ev/dCrImACq8JWfEYsh8ZVySaYfX1dN8xgdk2QZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PzL/jrBFNamXglkuTttehjc037jgOVP78DjEl4JCAMSuM9evF4NuYe6gpNi3zQwgC
-         S3XjEOft2/H6asBQ90PjwSc0jn+ad5gfHzi8k9PAcMNTHELD0YqASMox8Cts467AWM
-         0V9mcIf7Kj35A+xu31euLYR0L64XA+fbAenzdTMw=
-Date:   Thu, 4 Mar 2021 09:12:50 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Yoo, Jae Hyun" <jae.hyun.yoo@intel.com>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        John Wang <wangzhiqiang.bj@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Vernon Mauery <vernon.mauery@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 055/247] soc: aspeed: snoop: Add clock control logic
-Message-ID: <YECWglSMg0EKAhgd@kroah.com>
-References: <20210301161031.684018251@linuxfoundation.org>
- <20210301161034.369309830@linuxfoundation.org>
- <CACPK8XeoKfNCR9diNZoLCM04=G9BRVxY_VZhXr+XQcpq2+rCdQ@mail.gmail.com>
- <BY5PR11MB38788139CE6E4BA6A667CB84D2999@BY5PR11MB3878.namprd11.prod.outlook.com>
+        id S234006AbhCDIOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:14:11 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B527D68B05; Thu,  4 Mar 2021 09:13:29 +0100 (CET)
+Date:   Thu, 4 Mar 2021 09:13:29 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Art Nikpal <email2tema@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: using deprecated initrd support, will be removed in 2021
+Message-ID: <20210304081329.GA12996@lst.de>
+References: <CAKaHn9KMef4ahpEFEYiS+V2CnJSDK_w+MWLfPkgUb_+vJEGH4Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BY5PR11MB38788139CE6E4BA6A667CB84D2999@BY5PR11MB3878.namprd11.prod.outlook.com>
+In-Reply-To: <CAKaHn9KMef4ahpEFEYiS+V2CnJSDK_w+MWLfPkgUb_+vJEGH4Q@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 12:09:21AM +0000, Yoo, Jae Hyun wrote:
-> > -----Original Message-----
-> > From: Joel Stanley <joel@jms.id.au>
-> > Sent: Monday, March 1, 2021 2:44 PM
-> > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; John Wang
-> > <wangzhiqiang.bj@bytedance.com>; Yoo, Jae Hyun
-> > <jae.hyun.yoo@intel.com>
-> > Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>;
-> > stable@vger.kernel.org; Vernon Mauery <vernon.mauery@linux.intel.com>;
-> > Sasha Levin <sashal@kernel.org>
-> > Subject: Re: [PATCH 4.19 055/247] soc: aspeed: snoop: Add clock control logic
-> > 
-> > On Mon, 1 Mar 2021 at 16:37, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > From: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
-> > >
-> > > [ Upstream commit 3f94cf15583be554df7aaa651b8ff8e1b68fbe51 ]
-> > >
-> > > If LPC SNOOP driver is registered ahead of lpc-ctrl module, LPC SNOOP
-> > > block will be enabled without heart beating of LCLK until lpc-ctrl
-> > > enables the LCLK. This issue causes improper handling on host
-> > > interrupts when the host sends interrupt in that time frame.
-> > > Then kernel eventually forcibly disables the interrupt with dumping
-> > > stack and printing a 'nobody cared this irq' message out.
-> > >
-> > > To prevent this issue, all LPC sub-nodes should enable LCLK
-> > > individually so this patch adds clock control logic into the LPC SNOOP
-> > > driver.
-> > 
-> > Jae, John; with this backported do we need to also provide a corresponding
-> > device tree change for the stable tree, otherwise this driver will no longer
-> > probe?
+On Wed, Mar 03, 2021 at 05:18:05PM +0800, Art Nikpal wrote:
+> hello Christoph
+> i have see your patch https://lkml.org/lkml/2020/7/14/1508
+> /* using deprecated initrd support, will be removed in 2021*/
 > 
-> Right. The second patch
-> https://lore.kernel.org/linux-arm-kernel/20201208091748.1920-2-wangzhiqiang.bj@bytedance.com/
-> John submitted should be applied to stable tree too to make this module be probed
-> correctly.
+> How can I clarify the situation ?!
+> 
+> im using squashfs as ramdisk / all system works  as all in ram kernel +
+> initrd (squashfs)
+> and i think it's very useful  - how can we replace it ?
 
-Now queued up, thanks.
+With a simple initramfs, you should be able to chose the same compression
+algorithms as you do for squashfs right now and generate a better image.
 
-greg k-h
+> and another question:  why need to remove it - if it works fine ?
+
+It causes a fair amount of maintainance burden in the kernel, and also
+is less efficient for the user.
