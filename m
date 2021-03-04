@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71EE32CD25
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD6D32CD27
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbhCDGq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 01:46:28 -0500
-Received: from mail.kingsoft.com ([114.255.44.145]:13134 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235695AbhCDGqI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:46:08 -0500
-X-AuditID: 0a580157-f39ff7000005df43-85-60407b8a4c2d
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id F2.0D.57155.A8B70406; Thu,  4 Mar 2021 14:17:46 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 4 Mar 2021
- 14:45:24 +0800
-Date:   Thu, 4 Mar 2021 14:45:24 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        <yaoaili@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210304144524.795872d7@alex-virtual-machine>
-In-Reply-To: <20210304121941.667047c3@alex-virtual-machine>
-References: <20210224151619.67c29731@alex-virtual-machine>
-        <20210224103105.GA16368@linux>
-        <20210225114329.4e1a41c6@alex-virtual-machine>
-        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
-        <20210225113930.GA7227@localhost.localdomain>
-        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
-        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
-        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
-        <20210226105915.6cf7d2b8@alex-virtual-machine>
-        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
-        <20210303115710.2e9f8e23@alex-virtual-machine>
-        <20210303163912.3d508e0f@alex-virtual-machine>
-        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
-        <20210304101653.546a9da1@alex-virtual-machine>
-        <20210304121941.667047c3@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S235710AbhCDGq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 01:46:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235720AbhCDGqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 01:46:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14DB764F07;
+        Thu,  4 Mar 2021 06:45:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614840357;
+        bh=Xo7k97276NMtjJzpn3yMOv0/arfH5GEYmdV9H5zfdqM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AZZ89bHkTUtKyxN55fkmVqdZWIMPR/teInYbk2epCyQoQ12eUNhFFBmBf/rarESi+
+         svfsPVPBP2ek/KGNwpTsdmEMwyV40OKYOvA1o2H+kSkg244xN1RinB3CsOu28TWqGD
+         6sfWoS7g58+M8CvYqiBUDHTkbVTxJsKRUQ7b+KBD6BGuoZb09I0ICiDous//gEVgEC
+         kvPZkyB7qhj3Gy5PWVIEgG7i7syg6AH1tI9BU/ZM2wNEZDwgha5rHxyBJojdavrznG
+         B1F2O2ocECXroMi/sC2OXYRMEN8h1oJz6SeSq3Djk8XolM8zEMbMqrhX45gbgf8n34
+         ULu6EVmBsrLyA==
+Date:   Wed, 3 Mar 2021 23:45:52 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Make MIPS32_O32 depends on !CC_IS_CLANG
+Message-ID: <20210304064552.xzjqbhltghmd5vfa@archlinux-ax161>
+References: <1614838778-3696-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXCFcGooNtV7ZBgsHiDicWc9WvYLD5v+Mdm
-        8XX9L2aLaRvFLS6camCyuLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
-        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
-        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJUxs+UCU8E88Yp/r/cwNTA2CHQxcnJICJhI7D60gqmL
-        kYtDSGA6k8S+3xvYIJyXjBLP7vxmBqliEVCRWHzrByuIzSagKrHr3iwwW0RATeLS4gfMIA3M
-        ArNZJU5NPgvWICzgJfHl/lpGEJtXwEriV8MkFhCbU8BaYsb8r1Dr/rJK/FqzEyzBLyAm0Xvl
-        PxPETfYSbVsWQTULSpyc+QSshllAR+LEqmPMELa8xPa3c8BsIQFFicNLfrFD9CpJHOmewQZh
-        x0osm/eKdQKj8Cwko2YhGTULyagFjMyrGFmKc9MNNzFCYjB8B+O8po96hxiZOBgPMUpwMCuJ
-        8Iq/tE0Q4k1JrKxKLcqPLyrNSS0+xCjNwaIkztviZJ8gJJCeWJKanZpakFoEk2Xi4JRqYCp8
-        GxAUHvPQfqHY5ruffj2PCfjyTqBuWaHjT/Ptv3cyhO35sWuR42z+plDlzV/Mn062CjWfud4p
-        g0flxaq7DConf56r3nXIY/2qP7JHHrIdPvHh8g0JuTNlkekpqrmPfiZfijj5K/jEEsEl7vbH
-        E6a4VFz/ca/ElzHqZMz3iwtXHBWb89SCeWvUJzuDnpvLDaIesb6Zo8cw2Trp3/zX/lePnFv9
-        PdHfdMMi4W2puyzfR1YK349kebstetPj9xw5AXefxmhzOURMnPrmxM3DEwQ0PUSby5M8BNse
-        /PjCuVn53+ZdDssnrFzGOmt+eWn8kT8enXaMJ+/uX9H/52yBiU5Lx6y75tFXJidxxH77UKJe
-        rcRSnJFoqMVcVJwIAHV2eBkwAwAA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614838778-3696-1-git-send-email-yangtiezhu@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 12:19:41 +0800
-Aili Yao <yaoaili@kingsoft.com> wrote:
+On Thu, Mar 04, 2021 at 02:19:38PM +0800, Tiezhu Yang wrote:
+> When build kernel with Clang [1]:
 
-> On Thu, 4 Mar 2021 10:16:53 +0800
-> Aili Yao <yaoaili@kingsoft.com> wrote:
-> 
-> > On Wed, 3 Mar 2021 15:41:35 +0000
-> > "Luck, Tony" <tony.luck@intel.com> wrote:
-> >   
-> > > > For error address with sigbus, i think this is not an issue resulted by the patch i post, before my patch, the issue is already there.
-> > > > I don't find a realizable way to get the correct address for same reason --- we don't know whether the page mapping is there or not when
-> > > > we got to kill_me_maybe(), in some case, we may get it, but there are a lot of parallel issue need to consider, and if failed we have to fallback
-> > > > to the error brach again, remaining current code may be an easy option;      
-> > > 
-> > > My RFC patch from yesterday removes the uncertainty about whether the page is there or not. After it walks the page
-> > > tables we know that the poison page isn't mapped (note that patch is RFC for a reason ... I'm 90% sure that it should
-> > > do a bit more that just clear the PRESENT bit).
-> > > 
-> > > So perhaps memory_failure() has queued a SIGBUS for this task, if so, we take it when we return from kill_me_maybe()  
-> 
-> And when this happen, the process will receive an SIGBUS with AO level, is it proper as not an AR?
-> 
-> > > If not, we will return to user mode and re-execute the failing instruction ... but because the page is unmapped we will take a #PF    
-> > 
-> > Got this, I have some error thoughts here.
-> > 
-> >   
-> > > The x86 page fault handler will see that the page for this physical address is marked HWPOISON, and it will send the SIGBUS
-> > > (just like it does if the page had been removed by an earlier UCNA/SRAO error).    
-> > 
-> > if your methods works, should it be like this?
-> > 
-> > 1582                         pteval = swp_entry_to_pte(make_hwpoison_entry(subpage));
-> > 1583                         if (PageHuge(page)) {
-> > 1584                                 hugetlb_count_sub(compound_nr(page), mm);
-> > 1585                                 set_huge_swap_pte_at(mm, address,
-> > 1586                                                      pvmw.pte, pteval,
-> > 1587                                                      vma_mmu_pagesize(vma));
-> > 1588                         } else {
-> > 1589                                 dec_mm_counter(mm, mm_counter(page));
-> > 1590                                 set_pte_at(mm, address, pvmw.pte, pteval);
-> > 1591                         }
-> > 
-> > the page fault check if it's a poison page using is_hwpoison_entry(),
-> >   
-> 
-> And if it works, does we need some locking mechanism before we call walk_page_range();
-> if we lock, does we need to process the blocking interrupted error as other places will do?
-> 
+Sorry I did not catch this in the first revision but I think this would
+sound better as:
 
-And another thing:
-Do we need a call to flush_tlb_page(vma, address) to make the pte changes into effect?
+When building with Clang [1]:
 
--- 
-Thanks!
-Aili Yao
+I think the kernel part is obvious :) couple more comments about the
+commit message inline.
+
+> 
+> $ make CC=clang loongson3_defconfig
+> $ make CC=clang
+> 
+> there exists the following error:
+> 
+>   Checking missing-syscalls for O32
+>   CALL    scripts/checksyscalls.sh
+> error: ABI 'o32' is not supported on CPU 'mips64r2'
+> make[1]: *** [Kbuild:48: missing-syscalls] Error 1
+> make: *** [arch/mips/Makefile:419: archprepare] Error 2
+> 
+> This is a known bug [2] with Clang, as Simon Atanasyan said,
+> "There is no plan on support O32 for MIPS64 due to lack of
+> resources".
+> 
+> It is not a good idea to remove CONFIG_MIPS32_O32=y directly
+> in defconfig due to GCC works well, as Nathan said, the config
+
+in defconfig because GCC works, as...
+
+> should not even be selectable when build kernel with Clang, so
+
+                                     building with Clang
+
+> just make MIPS32_O32 depends on !CC_IS_CLANG.
+> 
+> [1] https://www.kernel.org/doc/html/latest/kbuild/llvm.html
+> [2] https://bugs.llvm.org/show_bug.cgi?id=38063
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+
+I don't know if Nick will have any comments but for me:
+
+Acked-by: Nathan Chancellor <nathan@kernel.org>
+
+I have added this patch and the LLVM bug to our issue tracker:
+
+https://github.com/ClangBuiltLinux/linux/issues/884
+
+> ---
+>  arch/mips/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 3a38d27..f6ba59f 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -3318,6 +3318,8 @@ config SYSVIPC_COMPAT
+>  config MIPS32_O32
+>  	bool "Kernel support for o32 binaries"
+>  	depends on 64BIT
+> +	# https://bugs.llvm.org/show_bug.cgi?id=38063
+> +	depends on !CC_IS_CLANG
+>  	select ARCH_WANT_OLD_COMPAT_IPC
+>  	select COMPAT
+>  	select MIPS32_COMPAT
+> -- 
+> 2.1.0
+> 
