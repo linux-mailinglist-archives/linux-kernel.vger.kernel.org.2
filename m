@@ -2,159 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5569F32D4EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D758932D4F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbhCDOIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237908AbhCDOIM (ORCPT
+        id S239553AbhCDOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:08:52 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:51530 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235239AbhCDOIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:08:12 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5CFC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 06:07:31 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id c44so9272810uad.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 06:07:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9dTkEDAWuipSwEUEz6FUWxAZBayw5+HD87LY50xpX7E=;
-        b=n7WG4bsvdGds89CSDqh7alsOK4tO2O6WdIVFrvKschtHWXCulKHfmabgoQTUqHZwdj
-         CbLSQUEi5VqtNp9TeB00YVeml+W2pQer42tO8VPu4xHfmz0ZZoSKX1ksA0utLlR8o2xt
-         ejSJkDkp0SabO6ZPNo8hRWBlPvWk2w0RqtYEtO0IBRcsLbLnV8u/YnT7w2kot12eM2aS
-         2L3Y+8/3YVznVYanQRK69AZK6/r0QDFJNjz2+iNOZnFbJhky/wZh8nf/CI9LNmbEXR7C
-         xFvE6ID7acgHDeX5L4L4VkLvaBhptgRXbEIhBewl0dliCtXn3psFmux/alD0rcdssRKt
-         9sJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9dTkEDAWuipSwEUEz6FUWxAZBayw5+HD87LY50xpX7E=;
-        b=JiZyCx3LKwJxxHWeR2yE+BiEeY0PBz3zH9G4mN4F0TfOtcle1AcDSANVnN70/buEsV
-         fCWqu7/cQLIpXIhq7UlgQRpDFNqNZvnUoPnb5KLXjVB7J6czTd3vTeqsF2AnzjSIGRUq
-         KCLHXmoCGdQglWx/49yKIw31nk2ngGCV8uMDj0ooZYVmueM/OfXjdzbwpM3YIfqskvR+
-         9EwjoV3shdUMQ3i9IEbDbrowacb3riN3hM3+sXD8IZk6HBTWms/XRgJkVJ9Ann6a2ezi
-         Kny5+2Vv1K+F4S70OBtkmtQMCMcbzfA5NJBI1qxTLcmgX6Xvx3sS/NYXzCzjCUFVNa5Z
-         +nWA==
-X-Gm-Message-State: AOAM533Z64qEXm/AZG047LxNgjvwd4kaqL9fgGY+VuE3IGtF6vDIcQwT
-        6chxTIJxKeeWy4PR+ikbbgCkcL0H1mjkx1wIH2qVKQ==
-X-Google-Smtp-Source: ABdhPJwK19dXZ6vaYcFXhCp6tF7d+VYkikOlrtYmzgvLCNoBqDo76kYh1DilPZxUZWHeFyejjvMv8zkkPpS4I6C5HIM=
-X-Received: by 2002:ab0:1581:: with SMTP id i1mr2245315uae.15.1614866851042;
- Thu, 04 Mar 2021 06:07:31 -0800 (PST)
+        Thu, 4 Mar 2021 09:08:46 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id BA6FC1F46443
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>, kernel@collabora.com
+Subject: [PATCH v3 0/8] V4L2 stateless VP8 de-staging
+Date:   Thu,  4 Mar 2021 11:07:47 -0300
+Message-Id: <20210304140755.85581-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210216224252.22187-1-marten.lindahl@axis.com>
- <CAPDyKFoASx=U8b1Oqtuo6ikiM=gXfL2x1Gsz=rfAn9zxP0y_iA@mail.gmail.com>
- <20210301215923.6jfg6mg5ntorttan@axis.com> <CAPDyKFoaKfuwweaEMf1Pz+ECAPU3P9-gmCJcpq+MADH5gH1c=Q@mail.gmail.com>
- <20210304134836.xlw7wbbvkc5bqzmm@axis.com>
-In-Reply-To: <20210304134836.xlw7wbbvkc5bqzmm@axis.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 4 Mar 2021 15:06:54 +0100
-Message-ID: <CAPDyKFous2oDwcUgPkZV8bZzpd+yA8m9LwC3+yk0uxqWcrJx1w@mail.gmail.com>
-Subject: Re: [PATCH] mmc: Try power cycling card if command request times out
-To:     Marten Lindahl <martenli@axis.com>
-Cc:     =?UTF-8?Q?M=C3=A5rten_Lindahl?= <Marten.Lindahl@axis.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        kernel <kernel@axis.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 14:48, Marten Lindahl <martenli@axis.com> wrote:
->
-> Hi Ulf! My apologies for the delay.
->
-> On Tue, Mar 02, 2021 at 09:45:02AM +0100, Ulf Hansson wrote:
-> > On Mon, 1 Mar 2021 at 22:59, Marten Lindahl <martenli@axis.com> wrote:
-> > >
-> > > Hi Ulf!
-> > >
-> > > Thank you for your comments!
-> > >
-> > > On Mon, Mar 01, 2021 at 09:50:56AM +0100, Ulf Hansson wrote:
-> > > > + Adrian
-> > > >
-> > > > On Tue, 16 Feb 2021 at 23:43, M=C3=A5rten Lindahl <marten.lindahl@a=
-xis.com> wrote:
-> > > > >
-> > > > > Sometimes SD cards that has been run for a long time enters a sta=
-te
-> > > > > where it cannot by itself be recovered, but needs a power cycle t=
-o be
-> > > > > operational again. Card status analysis has indicated that the ca=
-rd can
-> > > > > end up in a state where all external commands are ignored by the =
-card
-> > > > > since it is halted by data timeouts.
-> > > > >
-> > > > > If the card has been heavily used for a long time it can be weare=
-d out,
-> > > > > and should typically be replaced. But on some tests, it shows tha=
-t the
-> > > > > card can still be functional after a power cycle, but as it requi=
-res an
-> > > > > operator to do it, the card can remain in a non-operational state=
- for a
-> > > > > long time until the problem has been observed by the operator.
-> > > > >
-> > > > > This patch adds function to power cycle the card in case it does =
-not
-> > > > > respond to a command, and then resend the command if the power cy=
-cle
-> > > > > was successful. This procedure will be tested 1 time before givin=
-g up,
-> > > > > and resuming host operation as normal.
-> > > >
-> > > > I assume the context above is all about the ioctl interface?
-> > > >
-> > >
-> > > Yes, that's correct. The problem we have seen is triggered by ioctls.
-> > >
-> > > > So, when the card enters this non functional state, have you tried
-> > > > just reading a block through the regular I/O interface. Does it
-> > > > trigger a power cycle of the card - and then makes it functional
-> > > > again?
-> > > >
-> > >
-> > > Yes, we have tried that, and it does trigger a power cycle, making th=
-e card
-> > > operational again. But as it requires an operator to trigger it, I th=
-ought
-> > > it might be something that could be automated here. At least once.
-> >
-> > Not sure what you mean by operator here? In the end it's a userspace
-> > program running and I assume it can deal with error paths. :-)
-> >
-> > In any case, I understand your point.
-> >
->
-> Yes, we have a userspace program. So if the userspace program will try to
-> restore the card in a situation such as the one we are trying to solve
-> here, how shall it perform it? Is it expected that a ioctl CMD0 request
-> should be enough, or is there any other support for a userspace program t=
-o
-> reset the card?
+After close scrutiny of the VP8 specification, it seems
+the VP8 stateless API is ready.
 
-Correct, there is no way for userspace to reset cards through an ioctl.
+This series contains a series of clean-ups and improvement:
+renaming symbols for consistency, documenting things for clarity,
+and then moves the control to proper V4L2 headers.
 
->
-> If it falls on a ioctl command to reset the card, how do we handle the ca=
-se
-> where the ioctl times out anyway? Or is the only way for a userspace prog=
-ram
-> to restore the card, to make a block transfer that fails?
+It must be noted that, unlike parsed H.264, V4L2_PIX_FMT_VP8_FRAME
+buffers must contain the VP8 frame header. In others words
+a VP8 parsed frame buffer is:
 
-Yes, that is what I was thinking. According to the use case you have
-described, this should be possible for you to implement as a part of
-your userspace program, no?
+  +--------+-----------------------------------------------------+-----+------------+  
+  | tag 3B | extra 7B | header | MB data | DCT size | DCT part 0 | ... | DCT part N |  
+  +--------+-----------------------------------------------------+-----+------------+  
 
-[...]
+Hopefully the pixel format documentation is now clear about that.
 
-Kind regards
-Uffe
+Support in Cedrus and Hantro is available upstream, and Mediatek
+support is available downstream [1] which uses the API as-is.
+
+This was tested with GStreamer v4l2codec [2] element and Fluster [3]
+conformance test, on a Hantro G1 device.
+
+Changelog:
+
+v3:
+* Rebased on latest media/master branch.
+* Rename "seg" field to "segment" as noted by Alex, (thanks!)
+
+v2: * Rename VP8_FRAME_IS_KEY_FRAME
+
+[1] https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2614338/21/
+[2] https://gitlab.freedesktop.org/ezequielgarcia/gst-plugins-bad/-/tree/vp8-api-update
+[3] https://github.com/fluendo/fluster
+
+Ezequiel Garcia (8):
+  media: uapi: vp8: Remove "header" from symbol names and macros
+  media: uapi: vp8: Rename v4l2_vp8_loopfilter to v4l2_vp8_loop_filter
+  media: uapi: vp8: Add proper kernel-doc documentation
+  media: uapi: Move parsed VP8 pixel format out of staging
+  media: uapi: Move the VP8 stateless control type out of staging
+  media: controls: Log VP8 stateless control in .std_log
+  media: vp8: Rename V4L2 VP8 specific macro to V4L2_VP8_
+  media: uapi: move VP8 stateless controls out of staging
+
+ .../media/v4l/ext-ctrls-codec-stateless.rst   | 334 +++++++++++++++++
+ .../media/v4l/ext-ctrls-codec.rst             | 339 ------------------
+ .../media/v4l/pixfmt-compressed.rst           |  15 +-
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |   4 +
+ .../media/v4l/vidioc-queryctrl.rst            |   6 +
+ .../media/videodev2.h.rst.exceptions          |   1 +
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  39 +-
+ drivers/staging/media/hantro/hantro_drv.c     |   2 +-
+ .../staging/media/hantro/hantro_g1_vp8_dec.c  |  55 ++-
+ drivers/staging/media/hantro/hantro_hw.h      |   2 +-
+ drivers/staging/media/hantro/hantro_vp8.c     |  10 +-
+ .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |  55 ++-
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |   2 +-
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   2 +-
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +-
+ .../staging/media/sunxi/cedrus/cedrus_vp8.c   | 113 +++---
+ include/media/v4l2-ctrls.h                    |   5 +-
+ include/media/vp8-ctrls.h                     | 114 ------
+ include/uapi/linux/v4l2-controls.h            | 195 ++++++++++
+ include/uapi/linux/videodev2.h                |   4 +
+ 20 files changed, 693 insertions(+), 606 deletions(-)
+ delete mode 100644 include/media/vp8-ctrls.h
+
+-- 
+2.30.0
+
