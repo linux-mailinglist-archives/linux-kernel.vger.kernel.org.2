@@ -2,91 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE03832CAE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D002232CAE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbhCDDij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232682AbhCDDif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:38:35 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A42AC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 19:37:55 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id b21so17988737pgk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 19:37:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lwoBHUochKSoN7y5wxuuHeqVXjjHuR5y3IgAjCllxOw=;
-        b=q026x+6KUHrBMJfJZiwK1XhQUrO2/YLwBhRT8ygxRCf9rE9qB7lZOuu+o0FVf2NRVy
-         fF78CGKre6JeUiH3ANQxlmFzvNS0SSu0E4bQ6NPJKggcFxzxG61qr1nnlkQDoGMl6qTr
-         Rh5aoq5zzvQ6pmTiFcWI8TvOLm8MGGSEiFyVkGx/AWGBsfGdPWsHrZx1s83dZLXygdTp
-         NRiTcYxhhSWtgTkJXEdWvlXOsf7kXeOlnfQznw7Z5eIXk7COwDqu2I5Wg4bZj5F9GJIE
-         nixKS5KKNqV/urDmL+1U5yPsofGStIfeL41fLbA7Ry7duQ9jtYFgGM9wC85rcY4FPKjy
-         iu2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lwoBHUochKSoN7y5wxuuHeqVXjjHuR5y3IgAjCllxOw=;
-        b=BYZIG4EOVaGaWNrGQk4v6hGB8EPBSbNCKQk9gPwu0Mg2s/C1vWYjKPhUZXgD6gKOjX
-         SWWmtqKvf3m8TdOMLzR8E92/h1fUagYZWcOHrC+ELFkFK0Thpc+ftka+WYCmYvBysQbH
-         B6nJp0BoAphvP6EBYJQ9Cxvia1FaNFBxMVnW08xjB0JJCN80FG52FVgMeJnfKfE9aRZR
-         q00hHZsBW0drS2FSUEuDFvUJezGXwFeoxfkT3Hd6uAR2kPFscT62jsVt/Wv84OkuBS59
-         1a4D/bu2zE1kqhN+r59i8iT9Zdmm0UqMK3J19DDeOpLF9zaqg0GJ8sSsJudeiXsoOWf1
-         NZWQ==
-X-Gm-Message-State: AOAM531zw6NiOZVAd76X1L/W9MT8nlSHuZR1p7Eg6bfEQxHuRT547Weo
-        vI1gYmJTG1Q9/yNQywYAqcc=
-X-Google-Smtp-Source: ABdhPJyDZVPlwhy/hQc/5twP4MdW4dbJKj65FddlnUK2WW7w2lrPVv3dhEqqDfg0lUUUHUvsyKbFqA==
-X-Received: by 2002:a63:eb42:: with SMTP id b2mr1971898pgk.284.1614829075104;
-        Wed, 03 Mar 2021 19:37:55 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id m9sm7727382pjl.4.2021.03.03.19.37.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 19:37:54 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org, msuchanek@suse.de,
-        npiggin@gmail.com, axboe@kernel.dk, zhang.yunkai@zte.com.cn,
-        aneesh.kumar@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arch/powerpc/include: remove duplicate include in thread_info.h
-Date:   Wed,  3 Mar 2021 19:37:47 -0800
-Message-Id: <20210304033747.189298-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S232760AbhCDDkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:40:23 -0500
+Received: from mail.jvpinto.com ([65.49.11.60]:6155 "EHLO mail.JVPinto.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232735AbhCDDjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:39:14 -0500
+Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
+ RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 3 Mar 2021 19:38:26 -0800
+Received: from User (104.215.53.169) by RW-EXC1.JVPinto.com (172.32.1.13) with
+ Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Wed, 3 Mar 2021
+ 19:38:14 -0800
+Reply-To: <ms.reem@yandex.com>
+From:   "Ms. Reem" <johnpinto@jvpinto.com>
+Subject: Hello okay
+Date:   Thu, 4 Mar 2021 03:38:27 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <12716bded4ec449b9a1a8725fcdeecf1@RW-EXC1.JVPinto.com>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Hello,
 
-'asm/page.h' included in 'arch/powerpc/include/asm/thread_info.h'
-is duplicated.It is also included in 13th line.
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (3) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home in Cambodia on their behalf and
+for our "Mutual Benefits".
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- arch/powerpc/include/asm/thread_info.h | 1 -
- 1 file changed, 1 deletion(-)
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Cambodian/Vietnam Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-diff --git a/arch/powerpc/include/asm/thread_info.h b/arch/powerpc/include/asm/thread_info.h
-index 386d576673a1..9d6402402b9b 100644
---- a/arch/powerpc/include/asm/thread_info.h
-+++ b/arch/powerpc/include/asm/thread_info.h
-@@ -38,7 +38,6 @@
- #ifndef __ASSEMBLY__
- #include <linux/cache.h>
- #include <asm/processor.h>
--#include <asm/page.h>
- #include <asm/accounting.h>
- 
- #define SLB_PRELOAD_NR	16U
--- 
-2.25.1
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+ms.reem@yandex.com
 
+Regards,
+Ms. Reem.
