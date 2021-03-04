@@ -2,67 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395D232CFA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED9232CFAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237510AbhCDJ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:28:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237503AbhCDJ2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:28:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F375F64ED7;
-        Thu,  4 Mar 2021 09:27:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614850048;
-        bh=oDbXo7l7EhH9lPSgxNeGOV0sHf+Ht0HyTZR4LDwhgIc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mvJXjA8uWRqPN0b7HFkZvI/FVorFTI1Z81s2T974wnmUhoWaJpuj0vJ8FthiC8NoW
-         dGst7AIxMG4XiBm2nMNOn9A8zFw/s5PB5iEcmsJfiOrDaKQ5N54M0HQGywEJk7cTLU
-         cDK4cPHVYKXQt/oF9nuNi6EVpbAOZe3MOeGJBKP4=
-Date:   Thu, 4 Mar 2021 10:27:26 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/338] 5.4.102-rc2 review
-Message-ID: <YECn/tQRxN26NtRn@kroah.com>
-References: <20210301194420.658523615@linuxfoundation.org>
- <ef02a144-343a-dbbf-a650-a90d179e74ad@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef02a144-343a-dbbf-a650-a90d179e74ad@gmail.com>
+        id S237608AbhCDJaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:30:08 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:20470 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237553AbhCDJ3f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:29:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UQMzAus_1614850125;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UQMzAus_1614850125)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Mar 2021 17:28:52 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     tyreld@linux.ibm.com
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: ibmvfc: Switch to using the new API kobj_to_dev()
+Date:   Thu,  4 Mar 2021 17:28:44 +0800
+Message-Id: <1614850124-54111-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 02:20:23PM -0800, Florian Fainelli wrote:
-> On 3/1/21 11:47 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.102 release.
-> > There are 338 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 03 Mar 2021 19:43:25 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.102-rc2.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
-> 
-> Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Fix the following coccicheck warnings:
 
-Thanks for testing and letting me know.
+./drivers/scsi/ibmvscsi/ibmvfc.c:3483:60-61: WARNING opportunity for
+kobj_to_dev().
 
-greg k-h
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/ibmvscsi/ibmvfc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 755313b..e5f1ca7 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -3480,7 +3480,7 @@ static ssize_t ibmvfc_read_trace(struct file *filp, struct kobject *kobj,
+ 				 struct bin_attribute *bin_attr,
+ 				 char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 	unsigned long flags = 0;
+-- 
+1.8.3.1
+
