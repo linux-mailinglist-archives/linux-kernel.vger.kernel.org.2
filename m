@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9457032C973
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E19932C974
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355386AbhCDBD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:03:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48838 "EHLO mail.kernel.org"
+        id S1356018AbhCDBEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:04:00 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:10467 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1450980AbhCDA0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:26:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5653D64E67;
-        Thu,  4 Mar 2021 00:26:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614817594;
-        bh=wniLB1TxgvumUojHEAHMXuGZIzDZFhceB41We0iTPwI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=puY7oayPLWaX13rkWvOS8SGPyL5epEGzVV8CM64rFodTHzgtaZLgxRvshoFnUKjjU
-         W0XIXVKcUfh7q+y+fSQHZQf2VI0mMzlpk51yAAM3dVsh0S/exZbAkLPo4iKMQf1y9Q
-         15vxQs0T5lIVh5mGElbJtCR4XNR9C3YtUhQOhIji0GCXvombXrnECwirPFiWPzl+aY
-         p3rVHg80jgQaz1OHBN914sNrVfUIdx7qMslJarDGIcBffqtxZVBQFflOMyT+9yspR0
-         cME+2btPPSI81znZv0ZALxAGUsFZRoq+sgIp4E/MuGrjsJiDAGxB0RhBeggKdTgvdY
-         x4OXhLUdywh0A==
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 3/3] rcutorture: Test start_poll_synchronize_rcu() and poll_state_synchronize_rcu()
-Date:   Wed,  3 Mar 2021 16:26:32 -0800
-Message-Id: <20210304002632.23870-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210304002605.GA23785@paulmck-ThinkPad-P72>
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+        id S1348096AbhCDA1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:27:40 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614817639; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=DQuJwU+yBVNVJcwr5yhLqN2EijKkTbjs9TDNvZZto8Q=;
+ b=gcu3zBEL6r6gk9Q1jTPKeBaVVcGqeeV333MUWH3X1ZFIzqibiWJNmRdvcy0JSGIVKYhbaOQ4
+ Fnz8hZ5SJIdPHrFm/TMugFAoKx/F5g3RV+MQvEp/8tWWb2W6vX/v9oXfqLmNbH7OdZiLvwXk
+ 7QNE/hFVPStUKVdRAG9o6jqaTZg=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6040294acb774affa9819efa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Mar 2021 00:26:50
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4B1ABC53835; Thu,  4 Mar 2021 00:26:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC6DEC53834;
+        Thu,  4 Mar 2021 00:26:47 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 03 Mar 2021 16:26:47 -0800
+From:   abhinavk@codeaurora.org
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, Chandan Uddaraju <chandanu@codeaurora.org>,
+        lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: Re: drivers/gpu/drm/msm/dp/dp_hpd.c:37 dp_hpd_connect() error: we
+ previously assumed 'hpd_priv->dp_cb' could be null (see line 37)
+In-Reply-To: <20210301070235.GM2087@kadam>
+References: <20210301070235.GM2087@kadam>
+Message-ID: <3e209334ecda37998ba7bc0982b1a463@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hi Dan
 
-This commit causes rcutorture to test the new start_poll_synchronize_rcu()
-and poll_state_synchronize_rcu() functions.  Because of the difficulty of
-determining the nature of a synchronous RCU grace (expedited or not),
-the test that insisted that poll_state_synchronize_rcu() detect an
-intervening synchronize_rcu() had to be dropped.
+Thanks for reporting this, will submit a change to fix this.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcutorture.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+Abhinav
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 99657ff..956e6bf 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -494,6 +494,8 @@ static struct rcu_torture_ops rcu_ops = {
- 	.sync		= synchronize_rcu,
- 	.exp_sync	= synchronize_rcu_expedited,
- 	.get_gp_state	= get_state_synchronize_rcu,
-+	.start_gp_poll	= start_poll_synchronize_rcu,
-+	.poll_gp_state	= poll_state_synchronize_rcu,
- 	.cond_sync	= cond_synchronize_rcu,
- 	.call		= call_rcu,
- 	.cb_barrier	= rcu_barrier,
-@@ -1223,14 +1225,6 @@ rcu_torture_writer(void *arg)
- 				WARN_ON_ONCE(1);
- 				break;
- 			}
--			if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
--				WARN_ONCE(rcu_torture_writer_state != RTWS_DEF_FREE &&
--					  !cur_ops->poll_gp_state(cookie),
--					  "%s: Cookie check 2 failed %s(%d) %lu->%lu\n",
--					  __func__,
--					  rcu_torture_writer_state_getname(),
--					  rcu_torture_writer_state,
--					  cookie, cur_ops->get_gp_state());
- 		}
- 		WRITE_ONCE(rcu_torture_current_version,
- 			   rcu_torture_current_version + 1);
-@@ -1589,7 +1583,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
- 	preempt_enable();
- 	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
- 		WARN_ONCE(cur_ops->poll_gp_state(cookie),
--			  "%s: Cookie check 3 failed %s(%d) %lu->%lu\n",
-+			  "%s: Cookie check 2 failed %s(%d) %lu->%lu\n",
- 			  __func__,
- 			  rcu_torture_writer_state_getname(),
- 			  rcu_torture_writer_state,
--- 
-2.9.5
-
+On 2021-02-28 23:02, Dan Carpenter wrote:
+> tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> master
+> head:   fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8
+> commit: c943b4948b5848fc0e07f875edbd35a973879e22 drm/msm/dp: add
+> displayPort driver support
+> config: arm64-randconfig-m031-20210301 (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> smatch warnings:
+> drivers/gpu/drm/msm/dp/dp_hpd.c:37 dp_hpd_connect() error: we
+> previously assumed 'hpd_priv->dp_cb' could be null (see line 37)
+> drivers/gpu/drm/msm/dp/dp_power.c:203 dp_power_clk_enable() warn:
+> inconsistent indenting
+> 
+> vim +37 drivers/gpu/drm/msm/dp/dp_hpd.c
+> 
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  27  static int
+> dp_hpd_connect(struct dp_usbpd *dp_usbpd, bool hpd)
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  28  {
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  29  	int rc = 0;
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  30  	struct dp_hpd_private
+> *hpd_priv;
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  31
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  32  	hpd_priv =
+> container_of(dp_usbpd, struct dp_hpd_private,
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  33  					dp_usbpd);
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  34
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  35  	dp_usbpd->hpd_high = 
+> hpd;
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  36
+> c943b4948b5848 Chandan Uddaraju 2020-08-27 @37  	if (!hpd_priv->dp_cb
+> && !hpd_priv->dp_cb->configure
+> 
+> ^^^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Probably || was intended instead of &&.  If "hpd_priv->dp_cb" is NULL
+> this will Oops.
+> 
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  38  				&&
+> !hpd_priv->dp_cb->disconnect) {
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  39  		pr_err("hpd dp_cb
+> not initialized\n");
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  40  		return -EINVAL;
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  41  	}
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  42  	if (hpd)
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  43
+> 		hpd_priv->dp_cb->configure(hpd_priv->dev);
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  44  	else
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  45
+> 		hpd_priv->dp_cb->disconnect(hpd_priv->dev);
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  46
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  47  	return rc;
+> c943b4948b5848 Chandan Uddaraju 2020-08-27  48  }
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
