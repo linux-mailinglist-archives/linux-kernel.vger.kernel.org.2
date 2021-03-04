@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4253B32D4C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7A232D4C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhCDOAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:00:52 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54618 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232591AbhCDOAb (ORCPT
+        id S234736AbhCDODc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:03:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234767AbhCDODW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:00:31 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124DcIPr170802;
-        Thu, 4 Mar 2021 08:59:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=AR0H8gw8Jtn8ZcHHNn5tbGNJ1AS3AbzB1oQc+pxjvo0=;
- b=EqcZb7u8cIbQ2KuK2xSkb3wW+sqm3m0vdgQQmd3EbAOzLEWmJmnIHilCJwnFAR56ltlI
- XEKQgVzXPfK0u9mbYKUfyzIQ+Fp6cF7NN8/I3jZ3PBK1l8X575SvdiiETJqrSUFJvzmd
- Awidpml/HJy9bEhOwGkOOJMRZ0nCDSP6pRNg/Gdg+OQawn8p6YqfJopSXUi7ZcMf3yOo
- Raz/FHejtDXE72uAZ7UwhlcHk0B+PA/W2kiJGz0s2/om7++5aUs3jvLsg1l2GVCFd/LL
- xpPw6fdZmCjxSIqPH/AwHMnWBilZfZBO3WL4JvUR9tFRqygBu6tYSU1vlnPCWhd1Niko nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 372yd9au0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 08:59:38 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 124DcMcR171101;
-        Thu, 4 Mar 2021 08:59:37 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 372yd9atyt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 08:59:37 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124DwHEk031000;
-        Thu, 4 Mar 2021 13:59:37 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 3720r0pjwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 13:59:37 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124DxaK87996006
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Mar 2021 13:59:36 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4647AAE062;
-        Thu,  4 Mar 2021 13:59:36 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 35E89AE05C;
-        Thu,  4 Mar 2021 13:59:36 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Mar 2021 13:59:36 +0000 (GMT)
-Subject: Re: [PATCH v9 6/9] crypto: Add NIST P384 curve parameters
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Saulo Alessandre <saulo.alessandre@tse.jus.br>
-References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
- <20210225160802.2478700-7-stefanb@linux.vnet.ibm.com>
- <20210304052809.GB25972@gondor.apana.org.au>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <37e5c232-11e8-0533-ab3e-676829091d19@linux.ibm.com>
-Date:   Thu, 4 Mar 2021 08:59:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210304052809.GB25972@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-04_03:2021-03-03,2021-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 spamscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103040063
+        Thu, 4 Mar 2021 09:03:22 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59216C061574;
+        Thu,  4 Mar 2021 06:02:42 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id kx1so819326pjb.3;
+        Thu, 04 Mar 2021 06:02:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/dTebcdcxUQXXbJ4HBiTmegx9W3AXj6bSgb3FLSFk3Q=;
+        b=I7jZuAqDs4LWK0bz4wZkKZuNUtR2fskbpmjBRqtjdvVpzUW58ExS42c29QC7mMoDQt
+         itxl8CCiZ6gKDIKXQU0L/03henGHSxfd3ugF7OIbnRw45lcqPjGOV9694WmszOEIxa9B
+         kL7vqVD4ckJsVZkFGmDECfmv2hEPkCMhVw1H5i+FqcrTNqdobk8Ln7APsxP0F03ZxuGz
+         r81WnKe/vaOXN23S6W+4mBKJYq5Tm67OUTcp2Dgv7+RHcf3PmYDZU7IdksFZ6q2NisxS
+         y0EykuBQkYQPZfiENJ4gJiVMvrLJnHHPD/dtRjfyzUkHQSxHfATnlr8jc3PthdxvmmoG
+         OAcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/dTebcdcxUQXXbJ4HBiTmegx9W3AXj6bSgb3FLSFk3Q=;
+        b=J/2E4CF7kRplP0oYu2ttMuQfdHnyNKP++xfJTwwLJ1Vni/n0+Zk7hKxVmFktfZILuQ
+         WgtzbYqpy6R0qBH3HiNdChBlj3Zc9joSC37gpbRa65NmiaEEWlwepKTFxOsAi6YfrC4x
+         qcCkPhcLoz4ETE05avMN58v0zMMqGvo69BKEtd4Danr6CvaGZXjUvymKL4FHqJXYBAUP
+         jG/2d+m98lxcdlnUktrdARWx2F2Xvh91zS4XvMwMthq4Z4fn/d/9ZuSeMJtbdRa8f2vc
+         9hVOVpPsz4X70lxUwvSNa2Y34KW9EqytEETaPfkzr9oSpC2UHYmdbjFJGFfRf/ZN0uRQ
+         q6Xw==
+X-Gm-Message-State: AOAM531+XEK4VYLkhCV/aiGmhBo29Dj1oCAzwfy57LLns3IIupTwSGOU
+        oUTT0G92zZbV/rnhIW4y8rU=
+X-Google-Smtp-Source: ABdhPJy+D9OmNGckphIwW0x1NlSGLAzSAvkg2ZpC3WBwW8JOHi3t0ME3PGQF3+6vKCYThLmNvMWLIQ==
+X-Received: by 2002:a17:902:6845:b029:e4:4d0f:c207 with SMTP id f5-20020a1709026845b02900e44d0fc207mr4078231pln.36.1614866561954;
+        Thu, 04 Mar 2021 06:02:41 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id l15sm10197668pjq.9.2021.03.04.06.02.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 06:02:41 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] staging: media: omap4iss: fix error return code in iss_probe()
+Date:   Thu,  4 Mar 2021 06:02:33 -0800
+Message-Id: <20210304140233.8030-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 12:28 AM, Herbert Xu wrote:
-> On Thu, Feb 25, 2021 at 11:07:59AM -0500, Stefan Berger wrote:
->> From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
->>
->> * crypto/ecc_curve_defs.h
->>    - add nist_p384 params
->>
->> * include/crypto/ecdh.h
->>    - add ECC_CURVE_NIST_P384
->>
->> Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
->> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
->> ---
->>   crypto/ecc_curve_defs.h | 32 ++++++++++++++++++++++++++++++++
->>   include/crypto/ecdh.h   |  1 +
->>   2 files changed, 33 insertions(+)
-> Can you reorder the patches so that the crypto patches come first
-> and then I can apply them?
+When omap4iss_get() returns NULL, no error return code is assigned.
+To fix this bug, ret is assigned with -EINVAL as error return code.
 
-Yes, sounds good.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/staging/media/omap4iss/iss.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Are you going to take the other patches as well, except for maybe 9/9, 
-which depends on Nayan's patch series. Mimi suggested to me to ask you 
-whether you could create a topic branch where we can apply other patches 
-to, such as Nayna's?
-
-The NIST P384 patch temporarily introduces this warning, which goes away 
-when the immediately following patch (current 7/9) is applied. Is this 
-an issue or should I squash Saulo's patches or put the top hunk from 7/9 
-into 6/9?
-
-
-In file included from crypto/ecc.c:38:
-crypto/ecc_curve_defs.h:76:25: warning: ?nist_p384? defined but not used 
-[-Wunused-variable]
-    76 | static struct ecc_curve nist_p384 = {
-       |                         ^~~~~~~~~
-
-    Stefan
-
-
->
-> Thanks,
-
+diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
+index dae9073e7d3c..085397045b36 100644
+--- a/drivers/staging/media/omap4iss/iss.c
++++ b/drivers/staging/media/omap4iss/iss.c
+@@ -1236,8 +1236,10 @@ static int iss_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto error;
+ 
+-	if (!omap4iss_get(iss))
++	if (!omap4iss_get(iss)) {
++		ret = -EINVAL;
+ 		goto error;
++	}
+ 
+ 	ret = iss_reset(iss);
+ 	if (ret < 0)
+-- 
+2.17.1
 
