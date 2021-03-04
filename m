@@ -2,227 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C958E32DB95
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C8832DB97
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238693AbhCDVJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238317AbhCDVJK (ORCPT
+        id S239047AbhCDVKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:10:51 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52476 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239044AbhCDVKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:09:10 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C35AC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 13:08:30 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id l5so6939754ooj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 13:08:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=J50JP3psap6N5U8PJK0VaCpx/DyKv1Z4rwk0hsyasT8=;
-        b=ShyKNcNe0s0B6TrwHg0Wrd8VbmCyL1Xz57elLS6JF0EdStg0/ngISbRwFn1CLIPeLQ
-         YVvSUGEXyQEVCph+woW0FUxzpLDFcTabpL6xX2i6/WRjXhXFGlDskORQ9B0mQPxYtg2t
-         YBOAb+kBsnKPty8uVhU13LF9HCQXVeE1A3sfx5Rd0lPsTBk5mKU6u9mDI6SUQaYc3hev
-         ux40KnR+33BvAXJuy2pCJQPqGqlQnNh22/SGf8FykKSMx5xvrUF5toRcH3XbkFQ4C94h
-         Oa3J5nicZhpc/BfNjgNlE84ecbz4LPkHu1RRHzgVIMGV7bkFr9233JD85rsrbV1cRosI
-         qROw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=J50JP3psap6N5U8PJK0VaCpx/DyKv1Z4rwk0hsyasT8=;
-        b=noFycInWpBJJOzlY3RxiIdnMBHllMmCfYm4kO35U7Pf9p5oY8+5R2EGXaYYKAlwGky
-         3FYEVVZPzt3e88QsbXDD0YI6ulk9tz/rUtxydqXuNjoXqBpPmCvicZtuttT54Aza9met
-         Q/u2v8wUVdmryawAVteWKn1beAmQZ2zW8GlaAqFvwbnefZ3GE38NSvQuVLW/MT+h02ve
-         zVzsFgR/APwqzEd8frbxfaVO1ufLx5cQFnsGSwgNGX+bsA1DmcYi21Rc00jWsZVRBUIX
-         QYW8wD5g0VMkZ6D3IOnJKJvM44P0NWOv4b71vK0b7lGwF+ENTKB8TSMjriZTq6vDU+W2
-         AxgA==
-X-Gm-Message-State: AOAM531qDWrxh/ezUH4u9hVLrSj6SF5HkbVAWowjV1CgsThtn+xofEv1
-        uNa88kmRMOlhDFjKZqGGAMz2y83NpFQx33YzyuM=
-X-Google-Smtp-Source: ABdhPJzWucZnTdO/uERt2VBCoCRe2xsIaNV+ExSTp8LMx7Rb5gJc0pZ8OQWp63VN1VXTBobe38tUdQ==
-X-Received: by 2002:a4a:9019:: with SMTP id i25mr4896429oog.8.1614892108728;
-        Thu, 04 Mar 2021 13:08:28 -0800 (PST)
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com. [209.85.167.177])
-        by smtp.gmail.com with ESMTPSA id n11sm66378oij.51.2021.03.04.13.08.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 13:08:28 -0800 (PST)
-Received: by mail-oi1-f177.google.com with SMTP id f3so31663539oiw.13;
-        Thu, 04 Mar 2021 13:08:28 -0800 (PST)
-X-Received: by 2002:aca:4fd3:: with SMTP id d202mr4233275oib.11.1614892107343;
- Thu, 04 Mar 2021 13:08:27 -0800 (PST)
+        Thu, 4 Mar 2021 16:10:45 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614892204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2+VnMvEvSXZzNuMQTq1YMznMBaWnu0FKr4Suh2och8=;
+        b=npDHvh0dps504ou84ECUWWR+K3afvndhhOK6XeXZQ8lVBynxTy2LTNUdhGpWZTh4GucY8P
+        w17Nt84W9NILn3dphMgedxlwpSIN8HQKdQuJbUqk6dZJiseHUdhqizcuxRG+v0RO2u3wnP
+        6zggCi+Dp7qXH1wjMI2Uh50Xuh4vrXCX6k5VAA+fvksZ72hMQKBOno0bA3Hv0NNxwpCzc9
+        xTk670P6e94WVgkGRUgts2gFErqTH77tuSLC7Fk6zo+X8HvHXx4HQ6hNfRSI82y6KVyrcp
+        /d4QLN7yp3VxdYuX72+Usptt/FxQ2ezJEJELhVdRnNv/Xu7Px1lsxG4mEbpQtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614892204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2+VnMvEvSXZzNuMQTq1YMznMBaWnu0FKr4Suh2och8=;
+        b=YD6hZ297R1S7yLhrtJdkZrJ+RFIkqMfasXpRk8AeeaHjCd0g3Fsuw6tmZh5UCA+EWsW10V
+        dO9RNJqohGu6sABg==
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>
+Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
+In-Reply-To: <20210303153732.GC28955@redhat.com>
+References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de> <20210303153732.GC28955@redhat.com>
+Date:   Thu, 04 Mar 2021 22:10:03 +0100
+Message-ID: <87im6662xg.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org> <20210303135500.24673-3-alex.bennee@linaro.org>
-In-Reply-To: <20210303135500.24673-3-alex.bennee@linaro.org>
-From:   Arnd Bergmann <arnd@linaro.org>
-Date:   Thu, 4 Mar 2021 22:08:11 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2e3zNqMJSN-LAAjYmy8Gr=wjn5MMDMinxawOWcMgo7Ww@mail.gmail.com>
-Message-ID: <CAK8P3a2e3zNqMJSN-LAAjYmy8Gr=wjn5MMDMinxawOWcMgo7Ww@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/5] char: rpmb: provide a user space interface
-To:     =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        ruchika.gupta@linaro.org,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Avri Altman <avri.altman@sandisk.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 2:54 PM Alex Benn=C3=A9e <alex.bennee@linaro.org> wr=
-ote:
+On Wed, Mar 03 2021 at 16:37, Oleg Nesterov wrote:
+> On 03/03, Sebastian Andrzej Siewior wrote:
+>>
+>> +static struct sigqueue *sigqueue_from_cache(struct task_struct *t)
+>> +{
+>> +	struct sigqueue *q = t->sigqueue_cache;
+>> +
+>> +	if (q && cmpxchg(&t->sigqueue_cache, q, NULL) == q)
+>> +		return q;
+>> +	return NULL;
+>> +}
+>> +
+>> +static bool sigqueue_add_cache(struct task_struct *t, struct sigqueue *q)
+>> +{
+>> +	if (!t->sigqueue_cache && cmpxchg(&t->sigqueue_cache, NULL, q) == NULL)
+>> +		return true;
+>> +	return false;
+>> +}
 >
-> +       /* the rpmb is single open! */
-> +       if (test_and_set_bit(RPMB_DEV_OPEN, &rdev->status))
-> +               return -EBUSY;
+> Do we really need cmpxchg? It seems they are always called with
+> spinlock held.
 
-open counters on device nodes are fundamentally broken, because
-they do not stop you from using dup() or sharing the file descriptor
-across a fork. Just remove this.
+With which spinlock held?
 
-> +static long rpmb_ioctl_ver_cmd(struct rpmb_dev *rdev,
-> +                              struct rpmb_ioc_ver_cmd __user *ptr)
-> +{
-> +       struct rpmb_ioc_ver_cmd ver =3D {
-> +               .api_version =3D RPMB_API_VERSION,
-> +       };
-> +
-> +       return copy_to_user(ptr, &ver, sizeof(ver)) ? -EFAULT : 0;
-> +}
+__send_signal()         <- sighand::siglock held
+  __sigqueue_alloc()
 
-Similarly, API versions are fundamentally flawed, as the kernel requires
-us to keep compatibility with existing user space. Remove this as well.
+alloc_posix_timer()
+  sigqueue_alloc()      <- No lock held
+    __sigqueue_alloc()
 
-> +static long rpmb_ioctl_cap_cmd(struct rpmb_dev *rdev,
-> +                              struct rpmb_ioc_cap_cmd __user *ptr)
-> +{
-> +       struct rpmb_ioc_cap_cmd cap;
+and on the free side we have a bunch of callers which do not hold
+sighand::siglock either. So the cmpxchg() is required.
 
-Better do a memset() here to ensure this does not leak kernel
-stack data to user space.
+Thanks,
 
+        tglx
 
-> +static const struct file_operations rpmb_fops =3D {
-> +       .open           =3D rpmb_open,
-> +       .release        =3D rpmb_release,
-> +       .unlocked_ioctl =3D rpmb_ioctl,
-> +       .owner          =3D THIS_MODULE,
-> +       .llseek         =3D noop_llseek,
-> +};
-
-Add
-
-       .compat_ioctl =3D compat_ptr_ioctl
-
-to make it work for 32-bit user space on 64-bit kernels.
-
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 */
-> +/*
-> + * Copyright (C) 2015-2018 Intel Corp. All rights reserved
-> + */
-> +#ifdef CONFIG_RPMB_INTF_DEV
-> +int __init rpmb_cdev_init(void);
-> +void __exit rpmb_cdev_exit(void);
-> +void rpmb_cdev_prepare(struct rpmb_dev *rdev);
-> +void rpmb_cdev_add(struct rpmb_dev *rdev);
-> +void rpmb_cdev_del(struct rpmb_dev *rdev);
-> +#else
-> +static inline int __init rpmb_cdev_init(void) { return 0; }
-
-I don't think it's necessary to make the user interface optional,
-I'd just always provide these.
-
->
-> +#define RPMB_API_VERSION 0x80000001
-
-Remove this
-
-> + */
-> +struct rpmb_ioc_ver_cmd {
-> +       __u32 api_version;
-> +} __packed;
-
-And this
-
-> +
-> +enum rpmb_auth_method {
-> +       RPMB_HMAC_ALGO_SHA_256 =3D 0,
-> +};
-> +
-> +/**
-> + * struct rpmb_ioc_cap_cmd - rpmb capabilities
-> + *
-> + * @target: rpmb target/region within RPMB partition.
-> + * @capacity: storage capacity (in units of 128K)
-> + * @block_size: storage data block size (in units of 256B)
-> + * @wr_cnt_max: maximal number of block that can be written in a single =
-request.
-> + * @rd_cnt_max: maximal number of block that can be read in a single req=
-uest.
-> + * @auth_method: authentication method: currently always HMAC_SHA_256
-> + * @reserved: reserved to align to 4 bytes.
-> + */
-> +struct rpmb_ioc_cap_cmd {
-> +       __u16 target;
-> +       __u16 capacity;
-> +       __u16 block_size;
-> +       __u16 wr_cnt_max;
-> +       __u16 rd_cnt_max;
-> +       __u16 auth_method;
-> +       __u16 reserved;
-> +} __attribute__((packed));
-> +
-
-Remove the packed attribute, it does not change the structure layout but
-just makes it less efficient to access on architectures that turn unaligned
-loads and stores into byte accesses.
-
-> +/**
-> + * struct rpmb_ioc_blocks_cmd - read/write blocks to/from RPMB
-> + *
-> + * @keyid: key_serial_t of key to use
-> + * @addr: index into device (units of 256B blocks)
-> + * @count: number of 256B blocks
-> + * @data: pointer to data to write/read
-> + */
-> +struct rpmb_ioc_blocks_cmd {
-> +       __s32 key; /* key_serial_t */
-> +       __u32 addr;
-> +       __u32 count;
-> +       __u8 __user *data;
-> +} __attribute__((packed));
-
-ioctl structures should generally not have pointers in them. If this can be=
- done
-one block at a time, you can have the 256 bytes as part of the structure.
-
-This probably needs a redesign anyway based on Tomas' feedback though.
-
-If you end up needing a pointer, use a __u64 member  with
-u64_to_user_ptr() as described in Documentation/driver-api/ioctl.rst
-
-> +#define RPMB_IOC_VER_CMD     _IOR(0xB8, 80, struct rpmb_ioc_ver_cmd)
-> +#define RPMB_IOC_CAP_CMD     _IOR(0xB8, 81, struct rpmb_ioc_cap_cmd)
-> +#define RPMB_IOC_PKEY_CMD    _IOW(0xB8, 82, key_serial_t)
-> +#define RPMB_IOC_COUNTER_CMD _IOR(0xB8, 84, int)
-> +#define RPMB_IOC_WBLOCKS_CMD _IOW(0xB8, 85, struct rpmb_ioc_blocks_cmd)
-> +#define RPMB_IOC_RBLOCKS_CMD _IOR(0xB8, 86, struct rpmb_ioc_blocks_cmd)
-
-The last one should be _IOWR(), not _IOR(), since you write the metadata an=
-d
-read the data.
-
-      Arnd
