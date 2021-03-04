@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B19732DB6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D750432DB71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236910AbhCDUta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:49:30 -0500
-Received: from rcdn-iport-7.cisco.com ([173.37.86.78]:42469 "EHLO
-        rcdn-iport-7.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238317AbhCDUtM (ORCPT
+        id S238737AbhCDUvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238693AbhCDUvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:49:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2263; q=dns/txt; s=iport;
-  t=1614890952; x=1616100552;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GjLbEy4mzc1GE+5Hnhb3oU35QJXDVH6Er8mIRNVDXJg=;
-  b=aDpcGJfqeMyD/Yj6nCt6jiMPGT+r039JkrAUN/6LkvI/ay/NFguqJigF
-   RlKVv1AlnReDfO5ZCYoxF62HFwjllXC7sXozOKUZ6/yx5MCrL0RNR4jfc
-   +r76M6bkK6dCTP3GVYz3brS1v6H6j9O+cejs121EqeFxWndosfAoaJ6QT
-   s=;
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0DHAABGRkFg/4wNJK1iHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgT4EAQELAYIqgUwBOTGWHY96Fow7CwEBAQ0BATQEAQGETQK?=
- =?us-ascii?q?BegIlNwYOAgMBAQsBAQUBAQECAQYEcYVuhkUBBTo/EAsYLjwbBhOFeK4YdIE?=
- =?us-ascii?q?0iR+BRBQOgRYBjUImHIFJQoQrPoQVhh4EgkAHgQ57gS0Sk3sBii2be4MGgR+?=
- =?us-ascii?q?acjEQo0a2cgIEBgUCFoFqJIFXMxoIGxWDJFAZDY4qF45HIAMvOAIGCgEBAwm?=
- =?us-ascii?q?JT4JEAQE?=
-X-IronPort-AV: E=Sophos;i="5.81,223,1610409600"; 
-   d="scan'208";a="855671246"
-Received: from alln-core-7.cisco.com ([173.36.13.140])
-  by rcdn-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 04 Mar 2021 20:48:31 +0000
-Received: from zorba ([10.24.1.42])
-        by alln-core-7.cisco.com (8.15.2/8.15.2) with ESMTPS id 124KmTRL023920
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 4 Mar 2021 20:48:30 GMT
-Date:   Thu, 4 Mar 2021 12:48:23 -0800
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] CMDLINE: drivers: of: ifdef out cmdline section
-Message-ID: <20210304204823.GI109100@zorba>
-References: <20210304044803.812204-2-danielwa@cisco.com>
- <CAL_JsqKnAMp0bkXzU-B8b8xx5fPC1R1NdOBn9Kpk=SONJL5paQ@mail.gmail.com>
+        Thu, 4 Mar 2021 15:51:02 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7735C061574;
+        Thu,  4 Mar 2021 12:50:22 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id z5so3999630plg.3;
+        Thu, 04 Mar 2021 12:50:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nQR76nEKRwImSbpknXBAkPnCcRjHjuCtw+g6ieOUiMU=;
+        b=fnURJyD1+RQGEJkpq5+GNw1nH27VkZ7dk5ePc2DCUwvxO0ZhL7SufgUKqVzI4igp0z
+         dJghKyR7qV1zdw1d/cSfSaPFqwOO10mh6eud0YmB9XTx2YWc1zqidytjRd/yzByJJFAe
+         hvBd4T2qKfJQS/5ueeKyP62seAV998NlgOqE9WMGFw40ujnkK/pzEjqo2CTJ8stDI7wW
+         CuSAX16bmlV0akTw8Kgp5WU/Oe1R3E+uOVHmXekgRV4k26iqZOlJ0HJN5N484DEAl46F
+         6t7gZu13iStRaKs/83XH6S81ztSzM/EiTfQtxz9+Bfb3RMxUvHBTo4BwDLtmkFaGpTcK
+         RMpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nQR76nEKRwImSbpknXBAkPnCcRjHjuCtw+g6ieOUiMU=;
+        b=P7U6NUUZ40qkzPUhfH0bxKPvZEMjQjpbHlF6lOYqpPDe/aOA7WUzkFnOYmbg0k3BOF
+         4S7omyuXzG1GpP8iILGed90EqxfcwdNaMhPiQhwfmX4MYkOerjgigFoh4tVweGuh2LmU
+         CBuXDPDOBHDf23JGxLZOYb3g5XIT5Tmb3fi+RE9E/MDafECR4efv+1fZi+KrNyEjzL4G
+         EgI8sPqTYchrbKsMF1Ptz1h6fP1rDfc8Ge63Mthu2/JaKBtyb4UXltJBJaknEal4RXce
+         wRF9wDtxCeHb8E8aKWoPTscIIMYIViSzEbc6K7Q/VmG/MndWCdUwH4t15CT3iB7A/mnd
+         y1Qg==
+X-Gm-Message-State: AOAM532psEtoahb/G/tWSg56i+Q8+JOfpE2ZTo0UokffqhH6h5Qd0QXU
+        Z9PQu65UGLm+beIgz5+1Eig/zaxYNs9+3QsQeJE=
+X-Google-Smtp-Source: ABdhPJyjai1bP1CWf/fqbpbPk1Kj8GpoRphVOCQX07vyopsTZMXh6Ddbm+zkwQI0BIPWymSonWpmt1SBG/RlYa4Wg4I=
+X-Received: by 2002:a17:90a:8594:: with SMTP id m20mr6350792pjn.215.1614891022280;
+ Thu, 04 Mar 2021 12:50:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKnAMp0bkXzU-B8b8xx5fPC1R1NdOBn9Kpk=SONJL5paQ@mail.gmail.com>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.1.42, [10.24.1.42]
-X-Outbound-Node: alln-core-7.cisco.com
+References: <20210304144317.78065-1-mheyne@amazon.de>
+In-Reply-To: <20210304144317.78065-1-mheyne@amazon.de>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 4 Mar 2021 12:50:10 -0800
+Message-ID: <CAM_iQpWv2qhqmn_kcpO5i=Y8qpTFGoZe7HAVJ5NEGKrjuS0QQQ@mail.gmail.com>
+Subject: Re: [PATCH] net: sched: avoid duplicates in classes dump
+To:     Maximilian Heyne <mheyne@amazon.de>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 08:32:37AM -0600, Rob Herring wrote:
-> On Wed, Mar 3, 2021 at 10:48 PM Daniel Walker <danielwa@cisco.com> wrote:
-> >
-> > It looks like there's some seepage of cmdline stuff into
-> > the generic device tree code. This conflicts with the
-> > generic cmdline implementation so I remove it in the case
-> > when that's enabled.
-> >
-> > Cc: xe-linux-external@cisco.com
-> > Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-> > Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> > ---
-> >  drivers/of/fdt.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > index feb0f2d67fc5..cfe4f8d3c9f5 100644
-> > --- a/drivers/of/fdt.c
-> > +++ b/drivers/of/fdt.c
-> > @@ -25,6 +25,7 @@
-> >  #include <linux/serial_core.h>
-> >  #include <linux/sysfs.h>
-> >  #include <linux/random.h>
-> > +#include <linux/cmdline.h>
-> >
-> >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> >  #include <asm/page.h>
-> > @@ -1048,8 +1049,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
-> >
-> >         early_init_dt_check_for_initrd(node);
-> >
-> > +#ifdef CONFIG_GENERIC_CMDLINE
-> 
-> What I like about Christophe's version is it removes the old DT
-> implementation. Who's going to convert the rest of the DT based
-> arches? That's arm, arm64, hexagon, microblaze, nios2, openrisc,
-> riscv, sh, and xtensa. Either separate the common code from the config
-> like Christophe's version or these all need converting. Though it's
-> fine to hash out patch 1 with a couple of arches first.
- 
-I'm limited in what I can test, so I can't know for sure that I have something
-which works on those architectures. Even powerpc 64 is part of this series but
-I can't really test it at this time. Also Cisco's needs out strip the
-implementation of extend or override.
+On Thu, Mar 4, 2021 at 6:44 AM Maximilian Heyne <mheyne@amazon.de> wrote:
+>
+> This is a follow up of commit ea3274695353 ("net: sched: avoid
+> duplicates in qdisc dump") which has fixed the issue only for the qdisc
+> dump.
+>
+> The duplicate printing also occurs when dumping the classes via
+>   tc class show dev eth0
+>
+> Fixes: 59cc1f61f09c ("net: sched: convert qdisc linked list to hashtable")
+> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
 
-I have un-tested conversions for arm32, arm64, c6x, microblaze, nios2, and
-openrisc. These could go into -next and we can see who complains. The
-implementation on these architectures isn't all uniform.
+Seems reasonable. If you can show the difference of tc class dump
+before and after this patch in your changelog, it would be helpful to
+understand the bug here.
 
-> >         /* Retrieve command line */
-> >         p = of_get_flat_dt_prop(node, "bootargs", &l);
-> 
-> This needs to be outside the ifdef.
-
-Ok ..
-
-Daniel
+Thanks.
