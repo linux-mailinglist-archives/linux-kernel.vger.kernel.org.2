@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F8F32D5D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A7532D5D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhCDPDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:03:19 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51200 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232988AbhCDPDF (ORCPT
+        id S233024AbhCDPDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:03:18 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50204 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232924AbhCDPCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:03:05 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 124F1E6c002357
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 4 Mar 2021 10:01:15 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A243015C3A88; Thu,  4 Mar 2021 10:01:14 -0500 (EST)
-Date:   Thu, 4 Mar 2021 10:01:14 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
+        Thu, 4 Mar 2021 10:02:47 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614870126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yVvkw9RDbs10tqMMQB/pBeMdzmi4nKP3nDo8iaP1ruc=;
+        b=TDWHEyc2FMTVPZyLAtGluLIN1dnW8cKI30XwOPhohMs3da21+jVj+9ampeZOnQ1yVmNZJm
+        UgRFy2dri7n3LmyosLkDISFUdWIBHATZIUIVg5svdZH6DXU4nAWSUkHRyUN6zhWQn+Cmku
+        njRbGN9vuGQyPTEGztEAey+HXM9yyslPJX7k8gujto+fTitKJhFoeI4QCEXmht8OmyQRlS
+        O2SodqHxiEZ6p2zB4MMwVS7JZJD00R5WNpZSYQHNxuOs91Gswe1ljd9hB1yLVpIYm/6JU0
+        NPsdU8roYtjrv71Y5N/3ywE536y55z4b0VFF/6XmIbrBdHsN8+AqvVFcffJi1Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614870126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yVvkw9RDbs10tqMMQB/pBeMdzmi4nKP3nDo8iaP1ruc=;
+        b=ayKzHysVkCDtUq3cBgGjGK8+Acwb3i+zsEqN6iMHrOwJ7eb9XV3q97z8fm3dlSNJ0KNWxr
+        r81THeLtZsAJTwCg==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net
-Subject: Re: [RFC PATCH v2 00/13] Add futex2 syscall
-Message-ID: <YED2OrBdsiYWMqpp@mit.edu>
-References: <20210304004219.134051-1-andrealmeid@collabora.com>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>
+Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
+In-Reply-To: <20210304081142.digtkddajkadwwq5@linutronix.de>
+References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de> <m1zgzj7uv2.fsf@fess.ebiederm.org> <20210304081142.digtkddajkadwwq5@linutronix.de>
+Date:   Thu, 04 Mar 2021 16:02:05 +0100
+Message-ID: <87tupr55ea.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210304004219.134051-1-andrealmeid@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 09:42:06PM -0300, André Almeida wrote:
->  ** Performance
-> 
->  - For comparing futex() and futex2() performance, I used the artificial
->    benchmarks implemented at perf (wake, wake-parallel, hash and
->    requeue). The setup was 200 runs for each test and using 8, 80, 800,
->    8000 for the number of threads, Note that for this test, I'm not using
->    patch 14 ("kernel: Enable waitpid() for futex2") , for reasons explained
->    at "The patchset" section.
+On Thu, Mar 04 2021 at 09:11, Sebastian Andrzej Siewior wrote:
+> On 2021-03-03 16:09:05 [-0600], Eric W. Biederman wrote:
+>> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+>>=20
+>> > From: Thomas Gleixner <tglx@linutronix.de>
+>> >
+>> > Allow realtime tasks to cache one sigqueue in task struct. This avoids=
+ an
+>> > allocation which can increase the latency or fail.
+>> > Ideally the sigqueue is cached after first successful delivery and wil=
+l be
+>> > available for next signal delivery. This works under the assumption th=
+at the RT
+>> > task has never an unprocessed signal while a one is about to be queued.
+>> >
+>> > The caching is not used for SIGQUEUE_PREALLOC because this kind of sig=
+queue is
+>> > handled differently (and not used for regular signal delivery).
+>>=20
+>> What part of this is about real time tasks?  This allows any task
+>> to cache a sigqueue entry.
+>
+> It is limited to realtime tasks (SCHED_FIFO/RR/DL):
+>
+> +static void __sigqueue_cache_or_free(struct sigqueue *q)
+> +{
+> =E2=80=A6
+> +	if (!task_is_realtime(current) || !sigqueue_add_cache(current, q))
+> +		kmem_cache_free(sigqueue_cachep, q);
+> +}
 
-How heavily contended where the benchmarks?  One of the benefits of
-the original futex was that no system call was necessary in the happy
-path when the lock is uncontended.  Especially on a non-NUMA system
-(which are the far more common case), since that's where relying on a
-single memory access was a huge win for the original futex.  I would
-expect that futex2 will fare worse in this particular case, since it
-requires a system call entry for all operations --- the question is
-how large is the delta in this worst case (for futex2) and best case
-(for futex) scenario.
+We could of course do the caching unconditionally for all tasks.
 
-Cheers,
+Thanks,
 
-						- Ted
+        tglx
