@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B3932D91D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DE132D920
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbhCDR5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
+        id S232528AbhCDR7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 12:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbhCDR5D (ORCPT
+        with ESMTP id S231201AbhCDR6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:57:03 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D923C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:56:17 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id e19so219721ejt.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:56:17 -0800 (PST)
+        Thu, 4 Mar 2021 12:58:44 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6D8C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:58:03 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id q25so24476327lfc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:58:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+ruJecJd7EOFEws1Yrx7o1yatnr4qLLm/7nk+06U75U=;
-        b=p5otBQGQwZYOnbYxbE1LdapAvezxmx+V5fGRlF421cgoSCo6xcD1/dmcfgI6dBVpi8
-         6/8ye2TPBofCuZmw4gCzcM6ymilKi8imi8/pjipCP32SPRILqzczclIe1Q42jRqRHzfP
-         jDu6EC4OkucFLFF0cmwtITipIlJc9qECmgI6BAG0+8h1dmwX/gBNu4fxXKrOchE1BJgG
-         IkvLr6B4mJZ89YQGuEFzS+QpLSh74OQ76HMGLMmZA1lA1VEWfeNUnwhxg4wKQ0+EfTNt
-         uK5mNMZVK9bmcVncc0Zl24PJMlUdnFoww/b4P4DvT1ffjAEtsWKLvf4krHBZdMzhPsOu
-         9Mwg==
+         :cc;
+        bh=lSqs9wkEbEk2a0S3R8mYygMHzF8HMXmInLPhb6U+SXg=;
+        b=VEB/XXL0+AWnFaPuEUNRf/teQR+a76YuFn9Fk99/N91ZgOCFXDd5Pcq6NacZvKfz40
+         Xrud7IbAtGsnwD+aJvwEiegsYP4UNWLIjU7nZSZds/Kn7VR2B7EviJ+N4QiSSn+OWZu6
+         S3m29DTN7ZtRipXMh8+MOF4bZG8HyIsPM8Shc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+ruJecJd7EOFEws1Yrx7o1yatnr4qLLm/7nk+06U75U=;
-        b=UjlDPcBmoYOOs66gJn4rd5DUyvR7/pur6O13kTk17Y9GbqI/OOGtjHcwiiC04jx52A
-         tZbWnlyLn7EO1GWiDf9dRPI7cweFEZJyC3GP8AKJCYIWdDTG8HeqrZERB7TSeALrN7AR
-         OsTXYSH7gnmHxoCgPUYi8mVcZjkcfOQQhSOUIFTvmbNPjEZ/p2tzn+V0ZgAOpM6tSYVK
-         987oHkN6h4vqWx/Pg2fb0OU2hErYiLR1/tJLjWt3/nx5crzcjgKniltRa6weaNRcAy0r
-         PmZK6Zs+7O6q9blGQj34eDbIxfcA5bl8SvvrnmtxQijsC/ZyCtRlMJCr3M/whwVZ4ryn
-         XosQ==
-X-Gm-Message-State: AOAM5339vYfD6M0ltluRfd0I+MPk9Kq1d6v/5zU0N8UsrHMonqWv8L+X
-        a6VzhlQR74SpnBUUha28RHHBkCp73Qy0E3jeu/wW+r2fWxs5cA==
-X-Google-Smtp-Source: ABdhPJwIjY1L+21KRQRTMStDHQsUGdaStrDDtkG8oceZVy++aoNpEhRoYb+ehu9LSGDL09wN2Htg64qWKhJJVaS7m18=
-X-Received: by 2002:a17:906:229b:: with SMTP id p27mr5712013eja.287.1614880575956;
- Thu, 04 Mar 2021 09:56:15 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=lSqs9wkEbEk2a0S3R8mYygMHzF8HMXmInLPhb6U+SXg=;
+        b=F4S5EILoQ4YPIL+bN6QFvUfqP4z0O0iIbWDzi7nOW10DS1R2Nyb3McPcs1NzhWHGHW
+         vkMgzki34j2vp4G/utjGNn9PtN+hjpZSSMmjleXQXciRpnP80K5c5cLCRDt3t1iVcGsT
+         p7p752y2pBVDJJCD/j+foSnm2juyJAppPsPO/7iqJDUOfDL59SIswbJtPcAXW/wdzE7e
+         3FnJaxVXGxFv7rDAd4ZYHhS6NWRwjGX+RgltLqyCAbt4zv6yyO09oLvzXt6IQQNpZZJt
+         LuVc1KzHrdxoxyqlAjaUgK+ksAsmJBzfDclJNgBRLoz6Fco9hTyeE6XS8yRMIyGawMqT
+         G+IQ==
+X-Gm-Message-State: AOAM531qyrvfvGuOeFfh8zU1Uv1wnGoQb+NFs2E1p5CZR/Z/XqUlDlY7
+        Zi9LfwargFiW3PRuvu+24K5dYunCygd4rQ==
+X-Google-Smtp-Source: ABdhPJzJ9Q6xZsRpxPxqy7xPvvmDCXYdr71npz2zGJB8Vg6xuUduK60jV6HcpfHn22SqZlFEtuUQjQ==
+X-Received: by 2002:a19:6b13:: with SMTP id d19mr2899064lfa.291.1614880681910;
+        Thu, 04 Mar 2021 09:58:01 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id h17sm8821lfc.289.2021.03.04.09.58.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 09:58:01 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id u18so20801195ljd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:58:01 -0800 (PST)
+X-Received: by 2002:a2e:864d:: with SMTP id i13mr2844609ljj.48.1614880680763;
+ Thu, 04 Mar 2021 09:58:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302192700.399054668@linuxfoundation.org> <CA+G9fYsA7U7rzd=yGYQ=uWViY3_dXc4iY_pC-DM1K3R+gac19g@mail.gmail.com>
- <175fac9c-ac3f-bd82-9e5d-2c2970cfc519@roeck-us.net>
-In-Reply-To: <175fac9c-ac3f-bd82-9e5d-2c2970cfc519@roeck-us.net>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 4 Mar 2021 23:26:04 +0530
-Message-ID: <CA+G9fYtkrAs=ASaVVu6-Lnck8A6Pt_LGODxnpTYouvppbw_rbQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+References: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
+ <20210304124314.GA9979@duo.ucw.cz>
+In-Reply-To: <20210304124314.GA9979@duo.ucw.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Mar 2021 09:57:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgZjJ89jeH72TC3i6N+z9WEY=3ysp8zR9naRUcSqcAvTA@mail.gmail.com>
+Message-ID: <CAHk-=wgZjJ89jeH72TC3i6N+z9WEY=3ysp8zR9naRUcSqcAvTA@mail.gmail.com>
+Subject: Re: A note on the 5.12-rc1 tag
+To:     Pavel Machek <pavel@ucw.cz>, Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 01:34, Guenter Roeck <linux@roeck-us.net> wrote:
+On Thu, Mar 4, 2021 at 4:43 AM Pavel Machek <pavel@ucw.cz> wrote:
 >
-> On 3/3/21 8:12 AM, Naresh Kamboju wrote:
-> > On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> >>
-> >> This is the start of the stable review cycle for the 5.10.20 release.
-> >> There are 657 patches in this series, all will be posted as a response
-> >> to this one.  If anyone has any issues with these being applied, pleas=
-e
-> >> let me know.
-> >>
-> >> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> >> Anything received after that time might be too late.
-> >>
-> >> The whole patch series can be found in one patch at:
-> >>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/pat=
-ch-5.10.20-rc4.gz
-> >> or in the git tree and branch at:
-> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-sta=
-ble-rc.git linux-5.10.y
-> >> and the diffstat can be found below.
-> >>
-> >> thanks,
-> >>
-> >> greg k-h
-> >
-> > Results from Linaro=E2=80=99s test farm.
-> > All our builds are getting PASS now.
-> > But,
-> > Regressions detected on all devices (arm64, arm, x86_64 and i386).
-> > LTP pty test case hangup01 failed on all devices
-> >
-> > hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> >
-> > This failure is specific to stable-rc v5.10.20-rc4 and v5.11.3-rc3
-> > Test PASS on the v5.12-rc1 mainline and Linux next kernel.
-> >
-> > Following two commits caused this test failure,
-> >
-> >    Linus Torvalds <torvalds@linux-foundation.org>
-> >        tty: implement read_iter
-> >
-> >    Linus Torvalds <torvalds@linux-foundation.org>
-> >        tty: convert tty_ldisc_ops 'read()' function to take a kernel po=
-inter
-> >
->
-> Upstream has:
->
-> e71a8d5cf4b4 tty: fix up iterate_tty_read() EOVERFLOW handling
-> ddc5fda74561 tty: fix up hung_up_tty_read() conversion
->
-> Those are not present in v5.10.20-rc4, which may possibly
-> explain the problem.
+> Would it make sense to do a -rc2, now, so new topic branches can be
+> started on that one?
 
-I have applied these two patches and the reported problem did not solve.
+I was planning on doing an rc2 earlier, just not "this minute" early.
+I was expecting to see a few more of the normal fixes pulls come in,
+and perhaps do it Friday instead of the usual Sunday.
 
-- Naresh
+Because regardless of an accelerated rc2, I thought it was much more
+important to rename rc1 and let people know to avoid it.
+
+And yes, obviously it was inevitably too late for some people, but
+doing an rc2 wouldn't have helped those people either. So the most
+important part was making rc1 itself less reachable by doing that
+"dontuse" rename.
+
+(And I should probably have done that rename even earlier, but I was
+waiting to see if I could get more confirmation that it really was
+fixed. And in hindsight that was entirely pointless and stupid of me -
+we knew there was some serious rc1 problem, and the renaming had
+nothing to do with whether it was fixed or not. Oh well. Water under
+the bridge).
+
+But I also can heartily just recommend that people who already _did_
+start on rc1 to rebase their current - hopefully not extensive - work.
+I know I've ranted about rebasing for years, and it has huge
+downsides, but the operation does exist because sometimes you just
+need to fix serious errors. So _mindful_ rebasing, understanding why
+it shouldn't be a normal thing, but doing it when something
+exceptional happens - that's not wrong.
+
+               Linus
