@@ -2,162 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34AC32D9E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C53E32D9E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236046AbhCDTAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:00:36 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:44402 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232474AbhCDTAS (ORCPT
+        id S236192AbhCDTCN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Mar 2021 14:02:13 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:60962 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236166AbhCDTBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:00:18 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124IujVs026128;
-        Thu, 4 Mar 2021 12:59:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=AlTMCerrUAg3Nk6mF7nb9+dbxC8AujF2woftsi5XpLo=;
- b=H9Jzk0IkTw0QC7TJIxI9AFo74X8gPwZqgcxNZ5PpvZyoci5rEIeRnKA4uaJzrKnJ2GpO
- HhqiJznVHRc4oGjm7RiPPKK8ZUqcY3nPRb5TdzE0/pW5sTLWZG0DJLFhhBq+NeduOTx2
- 8otyhuOYdFU1K3+LYXvcGJBzdK7ck9ir1zOOmwvxYp/+a95hLWobHE1O/6A+S1xzQJbT
- EjIsBvOkhtyNF9HVIR4ElQ+kMAN/ff7O6AXcdI+d4KCmj3753El4H9k0OENE6uM+0R4s
- pPWehXzy/JFf71Diet6fJ1E9goBK6c2NpE4VvypHLhImdpjnunK7Q635yp8niAoH2ZOo mw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 36ykctq0vv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 04 Mar 2021 12:59:19 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 4 Mar 2021
- 18:44:15 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Thu, 4 Mar 2021 18:44:15 +0000
-Received: from [198.90.238.45] (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4D3EA11CB;
-        Thu,  4 Mar 2021 18:44:15 +0000 (UTC)
-Subject: Re: [PATCH 3/4] ALSA: hda/cirrus: Add jack detect interrupt support
- from CS42L42 companion codec.
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20210303182959.5322-1-vitalyr@opensource.cirrus.com>
- <20210303182959.5322-4-vitalyr@opensource.cirrus.com>
- <s5h7dmn9gmo.wl-tiwai@suse.de>
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Message-ID: <d5387324-6eb3-1cb1-e8e1-1fb9604a6149@opensource.cirrus.com>
-Date:   Thu, 4 Mar 2021 18:44:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 4 Mar 2021 14:01:55 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lHtDh-00162g-HP; Thu, 04 Mar 2021 12:01:09 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lHtDc-000869-Kd; Thu, 04 Mar 2021 12:01:09 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>
+References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de>
+        <m1zgzj7uv2.fsf@fess.ebiederm.org>
+        <20210304081142.digtkddajkadwwq5@linutronix.de>
+Date:   Thu, 04 Mar 2021 13:01:04 -0600
+In-Reply-To: <20210304081142.digtkddajkadwwq5@linutronix.de> (Sebastian
+        Andrzej Siewior's message of "Thu, 4 Mar 2021 09:11:42 +0100")
+Message-ID: <m1czwe7ngv.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <s5h7dmn9gmo.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
- malwarescore=0 priorityscore=1501 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103040089
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1lHtDc-000869-Kd;;;mid=<m1czwe7ngv.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19FylJH7fH0IlwEew6Xhnp2mnptXINtycQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_Unicode,
+        XM_B_Unicode3 autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4931]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  0.0 XM_B_Unicode3 BODY: Testing for specific types of unicode
+        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4584 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.4 (0.1%), b_tie_ro: 3.0 (0.1%), parse: 1.12
+        (0.0%), extract_message_metadata: 11 (0.2%), get_uri_detail_list: 1.83
+        (0.0%), tests_pri_-1000: 4.3 (0.1%), tests_pri_-950: 1.14 (0.0%),
+        tests_pri_-900: 0.85 (0.0%), tests_pri_-90: 142 (3.1%), check_bayes:
+        140 (3.0%), b_tokenize: 5 (0.1%), b_tok_get_all: 7 (0.1%),
+        b_comp_prob: 1.62 (0.0%), b_tok_touch_all: 123 (2.7%), b_finish: 0.94
+        (0.0%), tests_pri_0: 4402 (96.0%), check_dkim_signature: 0.40 (0.0%),
+        check_dkim_adsp: 2.4 (0.1%), poll_dns_idle: 1.06 (0.0%), tests_pri_10:
+        2.6 (0.1%), tests_pri_500: 12 (0.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/03/2021 1:45 pm, Takashi Iwai wrote:
-> On Wed, 03 Mar 2021 19:29:58 +0100,
-> Vitaly Rodionov wrote:
->> @@ -1243,6 +1258,8 @@ static int patch_cs4213(struct hda_codec *codec)
->>   #define CIR_I2C_QWRITE	0x005D
->>   #define CIR_I2C_QREAD	0x005E
->>   
->> +static struct mutex cs8409_i2c_mux;
-> Any reason that this must be the global mutex?  I suppose it can fit
-> in own spec->i2c_mutex instead?
-No,  there is no reason to have global mutex, will move it out to spec.
->
->
->> +static void cs8409_cs42l42_cap_sync_hook(struct hda_codec *codec,
->> +					 struct snd_kcontrol *kcontrol,
->> +					 struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct cs_spec *spec = codec->spec;
->> +	unsigned int curval, expval;
->> +	/* CS8409 DMIC Pin only allows the setting of the Stream Parameters in
->> +	 * Power State D0. When a headset is unplugged, and the path is switched to
->> +	 * the DMIC, the Stream is restarted with the new ADC, but this is done in
->> +	 * Power State D3. Restart the Stream now DMIC is in D0.
->> +	 */
->> +	if (spec->gen.cur_adc == CS8409_CS42L42_DMIC_ADC_PIN_NID) {
->> +		curval = snd_hda_codec_read(codec, spec->gen.cur_adc,
->> +			0, AC_VERB_GET_CONV, 0);
->> +		expval = (spec->gen.cur_adc_stream_tag << 4) | 0;
->> +		if (curval != expval) {
->> +			codec_dbg(codec, "%s Restarting Stream after DMIC switch\n", __func__);
->> +			__snd_hda_codec_cleanup_stream(codec, spec->gen.cur_adc, 1);
->> +			snd_hda_codec_setup_stream(codec, spec->gen.cur_adc,
->> +					   spec->gen.cur_adc_stream_tag, 0,
->> +					   spec->gen.cur_adc_format);
-> Hrm, this looks a big scary.  We may need to reconsider how to handle
-> this better later, but it's OK as long as you've tested with this
-> code...
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
 
-We have been thinking about this code, and we have some ideas , it was 
-tested by us, DELL and Canonical and works.
-
-But we would like to change it a bit later, and handle it in a more 
-generic way.
-
+> On 2021-03-03 16:09:05 [-0600], Eric W. Biederman wrote:
+>> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+>> 
+>> > From: Thomas Gleixner <tglx@linutronix.de>
+>> >
+>> > Allow realtime tasks to cache one sigqueue in task struct. This avoids an
+>> > allocation which can increase the latency or fail.
+>> > Ideally the sigqueue is cached after first successful delivery and will be
+>> > available for next signal delivery. This works under the assumption that the RT
+>> > task has never an unprocessed signal while a one is about to be queued.
+>> >
+>> > The caching is not used for SIGQUEUE_PREALLOC because this kind of sigqueue is
+>> > handled differently (and not used for regular signal delivery).
+>> 
+>> What part of this is about real time tasks?  This allows any task
+>> to cache a sigqueue entry.
 >
->> +static int cs8409_cs42l42_init(struct hda_codec *codec)
->> +{
->> +	int ret = 0;
->> +
->> +	ret = snd_hda_gen_init(codec);
->> +
->> +	if (!ret) {
->> +		/* On Dell platforms with suspend D3 mode support we
->> +		 * have to re-initialise cs8409 bridge and companion
->> +		 * cs42l42 codec
->> +		 */
->> +		snd_hda_sequence_write(codec, cs8409_cs42l42_init_verbs);
->> +		snd_hda_sequence_write(codec, cs8409_cs42l42_add_verbs);
->> +
->> +		cs8409_cs42l42_hw_init(codec);
-> Ah... the init stuff at resume appears finally here.  This part should
-> be in the second patch instead.
-Yes, moving this into second patch.
+> It is limited to realtime tasks (SCHED_FIFO/RR/DL):
 >
->> +static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
->> +		unsigned int cmd, unsigned int flags, unsigned int *res)
->> +{
->> +	struct hda_codec *codec = container_of(dev, struct hda_codec, core);
->> +	struct cs_spec *spec = codec->spec;
->> +
->> +	unsigned int nid = 0;
->> +	unsigned int verb = 0;
-> The blank line above should be removed.
+> +static void __sigqueue_cache_or_free(struct sigqueue *q)
+> +{
+> …
+> +	if (!task_is_realtime(current) || !sigqueue_add_cache(current, q))
+> +		kmem_cache_free(sigqueue_cachep, q);
+> +}
+
+I see now.  I was looking for it somewhere in the allocation side.
+Oleg's suggestion of simply adding a few additional lines to
+__sigqueue_free would have made this stand out more.
+
+A __sigqueue_free that takes the relevant task_struct instead of always
+assuming current would be nice here.
+
+
+>> Either the patch is buggy or the description is.  Overall caching one
+>> sigqueue entry doesn't look insane. But it would help to have a clear
+>> description of what is going on.
 >
->> +	case CS8409_CS42L42_HP_PIN_NID:
->> +		if (verb == AC_VERB_GET_PIN_SENSE) {
->> +			*res = (spec->cs42l42_hp_jack_in)?AC_PINSENSE_PRESENCE:0;
-> The spaces are needed around operators.
-> Similar coding-style issues are seen other places.  Please try to run
-> scripts/checkpatch.pl.
+> Does this clear things up or is my logic somehow broken here?
 
-Fixed, and checked with scripts/checkpatch.pl. Base has 19 warnings. 
-This patch will not introduce any new.
+No I just missed the task_is_realtime limitation.
 
->
->
-> thanks,
->
-> Takashi
-
-Thanks,
-
-Vitaly
-
+Eric
 
