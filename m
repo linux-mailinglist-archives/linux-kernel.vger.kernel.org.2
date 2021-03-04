@@ -2,72 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FDF32DA85
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA27832DA63
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhCDTmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:42:44 -0500
-Received: from lizzard.sbs.de ([194.138.37.39]:35469 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234995AbhCDTmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:42:39 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 124JfZAS016197
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Mar 2021 20:41:35 +0100
-Received: from md1za8fc.ad001.siemens.net ([167.87.11.66])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 124JQYBn014606;
-        Thu, 4 Mar 2021 20:26:34 +0100
-Date:   Thu, 4 Mar 2021 20:26:33 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH 0/4] add device drivers for Siemens Industrial PCs
-Message-ID: <20210304202633.49f3244d@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75VfBhMHUxM_CnGRTZuYg19cRpEKuyZ284hMg=MZpinnX_w@mail.gmail.com>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
-        <CAHp75VeYN_q0OVoTGQ5fe-08exfGgpM3-ohG8iF4D8B_fKar=g@mail.gmail.com>
-        <CAHp75VfBhMHUxM_CnGRTZuYg19cRpEKuyZ284hMg=MZpinnX_w@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S235879AbhCDT3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231590AbhCDT3f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 14:29:35 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2009FC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:28:55 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id m22so45164950lfg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:28:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d606i726IOli9oaA/A1UIGosXPZBxIF73t+6qPltjYY=;
+        b=W6TcUhVA8o1KNj6cyRxqjLYWI/eYSQkBdTDGOcHvXZYVKQV8RP8itZeHjPmlPTR09P
+         3s/rmQi6RAzhnWsppERLi59CV2Wvys81vXH30eAF3Gsj61AB/tmqKhEB5eC/BDGUx7Ed
+         vibsYf7C/4tINooKIFU1NOnzSUB734QiyJ1Ozub8o7br2RwwJ7iUxRvDidQmo9FHtyqb
+         FjQ0pVt8SNaoydj7uUfMcp7uyKzWVyXpJGlpGpotKlfePCdnCdnMKytfcMKsXLpTvA2K
+         5WwO8VrlrtyqxCQMVVtxjmZxm2t9GInhl+lZh1hYSrPkESgZMWQh3a9UhJnmq3B4nwt3
+         fG+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d606i726IOli9oaA/A1UIGosXPZBxIF73t+6qPltjYY=;
+        b=AyPMnkKieXGpapXQXJSw9KCg3SY2vxeId/WkWHzX28iJbU4JbhsPvRZ/s7LTJDLPp5
+         +Z/vLAkfxs7zJgimPAX9tcfVyoreBS2NDc69Q5hoPczimfxcAEnnkRyIiFNtHJBYIvLg
+         3+VpDO+Om2BcxyiuKb5NutFwN/7+Z/xvQBYG67U7hEhQ5KGM/GzE03w1Ak9QKOJBMzRd
+         PybA0syxYpuCExiYUAd3nOltKWlpijIBip4EpZ40PLW/hMgReihYpP+Aa8MIt/bUisME
+         +gWYVX/H6Tocf2d1VY/ambt7ewAKd5V9lxE5/IxepRFP1QPW0+7RAeMJrgfntu4GDnuL
+         eFsg==
+X-Gm-Message-State: AOAM530bApqSL8YMZ3Xc/MnjkcFki7uTb2wtWDMqanWEy5rXyD49ng73
+        mrOKfv4TklZwBNN6aoPNdnkPLg==
+X-Google-Smtp-Source: ABdhPJyjMHuu8+FmTrRPZUxbrIUpNi7K2AS1y2F9oonw9iSrgXQ+QULRweMde5R/ePU4TS/RWzRcQA==
+X-Received: by 2002:a05:6512:3a84:: with SMTP id q4mr3094421lfu.382.1614886133558;
+        Thu, 04 Mar 2021 11:28:53 -0800 (PST)
+Received: from localhost.localdomain (h-155-4-129-234.NA.cust.bahnhof.se. [155.4.129.234])
+        by smtp.gmail.com with ESMTPSA id z6sm34281lfr.34.2021.03.04.11.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 11:28:52 -0800 (PST)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
+Cc:     Lina Iyer <ilina@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] PM: domains: Don't runtime resume devices at genpd_prepare()
+Date:   Thu,  4 Mar 2021 20:28:43 +0100
+Message-Id: <20210304192843.216829-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Thu, 4 Mar 2021 12:20:22 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+Runtime resuming a device upfront in the genpd_prepare() callback, to check
+if there is a wakeup pending for it, seems like an unnecessary thing to do.
+The PM core already manages these kind of things in a common way in
+__device_suspend(), via calling pm_runtime_barrier() and
+pm_wakeup_pending().
 
-> On Thu, Mar 4, 2021 at 12:19 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Thu, Mar 4, 2021 at 9:29 AM Henning Schild
-> > <henning.schild@siemens.com> wrote:  
-> 
-> > I have given a few comments here and there, so please check the
-> > entire series and address them in _all_ similar locations. As I
-> > have noticed, I have different approach about P2SB code, I have to
-> > give the series a dust and see if you can utilize it.
-> >
-> > I would like to be Cc'ed on the next version.  
-> 
-> One more thing, is it Apollo Lake based?
+Therefore, let's simply drop this behaviour from genpd_prepare().
 
-Not sure i can answer that, or what you even refer to. The whole series
-is about a range of devices, some even have sub-models with differing
-CPUs and Lakes
+Note that, this change is applicable only for devices that are attached to
+a genpd that has the GENPD_FLAG_ACTIVE_WAKEUP set (Renesas, Mediatek, and
+Rockchip platforms). Moreover, a driver that needs to restore power for its
+device to re-configure it for a system wakeup, may still call
+pm_runtime_get_sync(), for example, to do this.
 
-regards,
-Henning
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/base/power/domain.c | 36 ------------------------------------
+ 1 file changed, 36 deletions(-)
+
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 78c310d3179d..b6a782c31613 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -1087,34 +1087,6 @@ static void genpd_sync_power_on(struct generic_pm_domain *genpd, bool use_lock,
+ 	genpd->status = GENPD_STATE_ON;
+ }
+ 
+-/**
+- * resume_needed - Check whether to resume a device before system suspend.
+- * @dev: Device to check.
+- * @genpd: PM domain the device belongs to.
+- *
+- * There are two cases in which a device that can wake up the system from sleep
+- * states should be resumed by genpd_prepare(): (1) if the device is enabled
+- * to wake up the system and it has to remain active for this purpose while the
+- * system is in the sleep state and (2) if the device is not enabled to wake up
+- * the system from sleep states and it generally doesn't generate wakeup signals
+- * by itself (those signals are generated on its behalf by other parts of the
+- * system).  In the latter case it may be necessary to reconfigure the device's
+- * wakeup settings during system suspend, because it may have been set up to
+- * signal remote wakeup from the system's working state as needed by runtime PM.
+- * Return 'true' in either of the above cases.
+- */
+-static bool resume_needed(struct device *dev,
+-			  const struct generic_pm_domain *genpd)
+-{
+-	bool active_wakeup;
+-
+-	if (!device_can_wakeup(dev))
+-		return false;
+-
+-	active_wakeup = genpd_is_active_wakeup(genpd);
+-	return device_may_wakeup(dev) ? active_wakeup : !active_wakeup;
+-}
+-
+ /**
+  * genpd_prepare - Start power transition of a device in a PM domain.
+  * @dev: Device to start the transition of.
+@@ -1135,14 +1107,6 @@ static int genpd_prepare(struct device *dev)
+ 	if (IS_ERR(genpd))
+ 		return -EINVAL;
+ 
+-	/*
+-	 * If a wakeup request is pending for the device, it should be woken up
+-	 * at this point and a system wakeup event should be reported if it's
+-	 * set up to wake up the system from sleep states.
+-	 */
+-	if (resume_needed(dev, genpd))
+-		pm_runtime_resume(dev);
+-
+ 	genpd_lock(genpd);
+ 
+ 	if (genpd->prepared_count++ == 0)
+-- 
+2.25.1
 
