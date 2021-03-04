@@ -2,96 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC58632CA38
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB02D32CA2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234648AbhCDBxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:53:44 -0500
-Received: from mga11.intel.com ([192.55.52.93]:53136 "EHLO mga11.intel.com"
+        id S236016AbhCDBtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:49:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234496AbhCDBxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:53:36 -0500
-IronPort-SDR: yhfcXpu9hn6RsrmrqK/FJ8GDwD+NRvrb0HpNzEMU0FVg2wkCILi5hZxzOPbDOztY8LymGzX0y3
- Vwl0eA4SOLKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="183940685"
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="183940685"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 17:52:56 -0800
-IronPort-SDR: 9hg6fpsmucV/VDtjkzokIe8zB32Lhd6w4Hu1WfPRuU4C58Cgb7Z/bWUgeg5amMwkAM6oBHVdk+
- GVDCwulaHrMA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="436167928"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Mar 2021 17:48:14 -0800
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
- <20210303075430.n7ewkots6cgbbabi@vireshk-i7>
- <876371c3-ba9a-5176-493b-5a883cba3b07@intel.com>
- <20210303093836.ftgq62yw7i6cd3q6@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <263160ce-50f0-a7a0-de18-ca10fee48bec@intel.com>
-Date:   Thu, 4 Mar 2021 09:47:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S235982AbhCDBs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 20:48:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 360B464FA3;
+        Thu,  4 Mar 2021 01:48:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614822497;
+        bh=a2KXA7WnwL2NzhJ+uXzFZCP1Wr57S1e/uDhPNo9ua7c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ArMDygbjqy+WqxRaVFGljGr6DmEnyw3mcvdvjzP4SmmWEMjaUO8Gygzhd2PO6ChoG
+         AKu5YxvPC6NkdVIjroVMhS1bltt/W6rg31ezyhfarDTJiUrB4R/qKo2F2VI6luIGF4
+         hsegn+LGJorncuY5ynEwIyrGMJ83YZSer+FUkmsmd9hsVc20jVtsVs/hJdK4rCLNie
+         jVYv4GWnOJ7EIaczGTat1jzvc6be2SJtrTI9N6LVYtNmdP94Jly9cDwPFdmUzd1h6T
+         KJcqlPyw3LhFVOcODIDfyuL+re8iaeRULGGweFIezn4oODytPctDjP5M1B/eMoYcAZ
+         XtjIECzY4UD9g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id ED158352274A; Wed,  3 Mar 2021 17:48:16 -0800 (PST)
+Date:   Wed, 3 Mar 2021 17:48:16 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the rcu tree
+Message-ID: <20210304014816.GM2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210304124105.7844dca6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210303093836.ftgq62yw7i6cd3q6@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304124105.7844dca6@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 04, 2021 at 12:41:05PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the rcu tree, today's linux-next build (htmldocs) produced
+> this warning:
+> 
+> kernel/rcu/tree.c:3824: warning: expecting prototype for start_poll_state_synchronize_rcu(). Prototype was for start_poll_synchronize_rcu() instead
+> 
+> Introduced by commit
+> 
+>   7f9a26bbfff2 ("rcu: Provide polling interfaces for Tree RCU grace periods")
 
-On 2021/3/3 17:38, Viresh Kumar wrote:
-> On 03-03-21, 16:46, Jie Deng wrote:
->> This is not a problem. My original proposal was to mirror the struct
->> i2c_msg.
->> The code you looked at was based on that.
->> However, the virtio TC prefer not to mirror it. They have some concerns.
->> For example, there is a bit I2C_M_RD in i2c_msg.flag which has the same
->> meaning with
->> the R/W in virtio descriptor. This is a repetition which may cause problems.
->> So the virtio_i2c_out_hdr.flags is used to instead of i2c_msg.flags for
->> extension.
-> So by default we don't support any of the existing flags except
-> I2C_M_RD?
-Yes. That's the current status.
-> #define I2C_M_TEN		0x0010	/* this is a ten bit chip address */
-> #define I2C_M_RD		0x0001	/* read data, from slave to master */
-> #define I2C_M_STOP		0x8000	/* if I2C_FUNC_PROTOCOL_MANGLING */
-> #define I2C_M_NOSTART		0x4000	/* if I2C_FUNC_NOSTART */
-> #define I2C_M_REV_DIR_ADDR	0x2000	/* if I2C_FUNC_PROTOCOL_MANGLING */
-> #define I2C_M_IGNORE_NAK	0x1000	/* if I2C_FUNC_PROTOCOL_MANGLING */
-> #define I2C_M_NO_RD_ACK		0x0800	/* if I2C_FUNC_PROTOCOL_MANGLING */
-> #define I2C_M_RECV_LEN		0x0400	/* length will be first received byte */
->
-> How do we work with clients who want to use such flags now ?
-My plan is to have a minimum driver get merged. Then we have a base and 
-we can
-update virtio_i2c_out_hdr.flags for the feature extensibility. Then, If 
-you want to help to develop
-this stuff, you can just follow the same flow. First, you can update the 
-Spec by sending
-comments to virtio-comment@lists.oasis-open.org. Once your Spec patch is 
-acked by the
-virtio TC, you can then send patches to update the corresponding drivers.
+Apologies and thank you, will fix!
 
-Thanks.
-
+							Thanx, Paul
