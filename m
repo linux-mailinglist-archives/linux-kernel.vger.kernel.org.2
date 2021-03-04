@@ -2,49 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072BA32CB78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEF932CB8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhCDEm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:42:57 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:47810 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233529AbhCDEmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:42:14 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lHfnS-000610-45; Thu, 04 Mar 2021 15:41:11 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Mar 2021 15:41:10 +1100
-Date:   Thu, 4 Mar 2021 15:41:10 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     wangzhou1@hisilicon.com, xuzaibo@huawei.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 3/3] crypto: hisilicon/sec - fixes shash test error
-Message-ID: <20210304044109.GA25972@gondor.apana.org.au>
-References: <1612519857-30714-1-git-send-email-liulongfang@huawei.com>
- <1612519857-30714-4-git-send-email-liulongfang@huawei.com>
- <20210205114435.GA17031@gondor.apana.org.au>
- <6e5d529d-07df-5db0-d5c0-72e90e13852d@huawei.com>
+        id S233778AbhCDEng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:43:36 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47112 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233699AbhCDEnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 23:43:18 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244fclP052737;
+        Wed, 3 Mar 2021 22:41:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614832898;
+        bh=2gdcGvIiei2/gTTob5OagdVE47Jl6d4UbQfoaMc8G3o=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Tvntns1O9mFwr8M97BUwCpT6H8JQS6F8qX1mYCeFaoRcVBHqH4X415QeogWucA6Xz
+         JT3Pva19t+sXEUYeXg5yvKr2c3rvl+GPP1D5fyXIUGgkycRacMfr6m1Hl+uwUKm0AU
+         XyJZvnr44s38fq5RFW+ml8WA/oJDAif5cbYpirts=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244fcLC087978
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 3 Mar 2021 22:41:38 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
+ 2021 22:41:38 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 3 Mar 2021 22:41:38 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244fQfj042911;
+        Wed, 3 Mar 2021 22:41:34 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Swapnil Jakhade <sjakhade@cadence.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>, <stable@vger.kernel.org>
+Subject: [PATCH v4 02/13] phy: ti: j721e-wiz: Invoke wiz_init() before of_platform_device_create()
+Date:   Thu, 4 Mar 2021 10:11:11 +0530
+Message-ID: <20210304044122.15166-3-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210304044122.15166-1-kishon@ti.com>
+References: <20210304044122.15166-1-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e5d529d-07df-5db0-d5c0-72e90e13852d@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 05:51:22PM +0800, liulongfang wrote:
-.
-> Since patch3 is an unnecessary patch,
-> can you just remove it and merge patch1 and patch2?
+Invoke wiz_init() before configuring anything else in Sierra/Torrent
+(invoked as part of of_platform_device_create()). wiz_init() resets the
+SERDES device and any configuration done in the probe() of
+Sierra/Torrent will be lost. In order to prevent SERDES configuration
+from getting reset, invoke wiz_init() immediately before invoking
+of_platform_device_create().
 
-Please repost.
+Fixes: 091876cc355d ("phy: ti: j721e-wiz: Add support for WIZ module present in TI J721E SoC")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: <stable@vger.kernel.org> # v5.10
+---
+ drivers/phy/ti/phy-j721e-wiz.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-Thanks,
+diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+index 995c7dbec77b..1bb73822f44a 100644
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -1262,27 +1262,24 @@ static int wiz_probe(struct platform_device *pdev)
+ 		goto err_get_sync;
+ 	}
+ 
++	ret = wiz_init(wiz);
++	if (ret) {
++		dev_err(dev, "WIZ initialization failed\n");
++		goto err_wiz_init;
++	}
++
+ 	serdes_pdev = of_platform_device_create(child_node, NULL, dev);
+ 	if (!serdes_pdev) {
+ 		dev_WARN(dev, "Unable to create SERDES platform device\n");
+ 		ret = -ENOMEM;
+-		goto err_pdev_create;
+-	}
+-	wiz->serdes_pdev = serdes_pdev;
+-
+-	ret = wiz_init(wiz);
+-	if (ret) {
+-		dev_err(dev, "WIZ initialization failed\n");
+ 		goto err_wiz_init;
+ 	}
++	wiz->serdes_pdev = serdes_pdev;
+ 
+ 	of_node_put(child_node);
+ 	return 0;
+ 
+ err_wiz_init:
+-	of_platform_device_destroy(&serdes_pdev->dev, NULL);
+-
+-err_pdev_create:
+ 	wiz_clock_cleanup(wiz, node);
+ 
+ err_get_sync:
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.17.1
+
