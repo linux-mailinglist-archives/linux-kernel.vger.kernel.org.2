@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4D232D521
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3B632D526
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241814AbhCDOS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:18:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241785AbhCDOSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:18:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38AC164EF6;
-        Thu,  4 Mar 2021 14:17:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614867456;
-        bh=5SFoOpkNOISja2bka7WY1xY3Xu6DHtOUpfvK1KKO0Ho=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KmSdKQPpfL8NUZTjBgr8+DvFEaxjKTvLNf2mi07XjFMqkkhK2Wdm0PdGbpJ1Ml5uQ
-         dnNvPSaNnj9YiUrkr3hPxBKjrOs8rA1yvnUUv3ONmKgy5v87x3AASqOgqtnN02pDa2
-         z1hwXqWqpgjmYJN7O8sM35kkT/bZypmcKNvWHPqk=
-Date:   Thu, 4 Mar 2021 15:17:34 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, rppt@kernel.org, lorenzo.pieralisi@arm.com,
-        guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        lenb@kernel.org, song.bao.hua@hisilicon.com, ardb@kernel.org,
-        anshuman.khandual@arm.com, bhelgaas@google.com, guro@fb.com,
-        robh+dt@kernel.org, stable@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, frowand.list@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-Message-ID: <YEDr/lYZHew88/Ip@kroah.com>
-References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
- <YEDkmj6cchMPAq2h@kroah.com>
- <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
+        id S241888AbhCDOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241785AbhCDOTC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:19:02 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F99C061756;
+        Thu,  4 Mar 2021 06:18:22 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id a4so18963467pgc.11;
+        Thu, 04 Mar 2021 06:18:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LBqlEZyPcKTt510snqgHtrJs4QRW+RndpggZVW6Cb+U=;
+        b=qtwFImKXhr7tSBAHx4h06wq7ZHcxq94ai6Fpd1sBmD+6WVbNfohmeL8bkmQZtT3Xn4
+         BPsC2/bYDPPP/cFr+PoTaySPMZ36aZFfSqKJLvhEXXMFCJscqv+qNpjHdaMiqCWQwZMg
+         4XgjY8eiphEDPWolW9izecbXkm+L5Hljb05iHeHlvKmFIOIfpun57GkrdZuJ9iAlSK7L
+         kX+DZRRVmI9C1CdyvVw4tJS8Gf/6P/lF1VPEQMWAfKUza50s28hJBCVPwbpC+LxNh4UO
+         3R2CmAi6HJEXAU3MF9SDKlr5nxP12NdSaCk6AnIpE6e0DbtA/rJ3YHHzoRGOiQSUReQB
+         g6kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LBqlEZyPcKTt510snqgHtrJs4QRW+RndpggZVW6Cb+U=;
+        b=Tpns1et2D12YHwBPFJ289ip57QUzNI777/Mqatd3Ta5SUSUeppHBq7fiydA0jBqXeA
+         Z7gXBH/7fTeCq3NT7LLeieFCehIn1TWI/jV80EI59NngEf0nwyXR8wkE4dTEnwepilKE
+         OQLx40izqOHTuWvcCHrftyOfYyf1CbAsd0RyMzP8OVY+KUiz37bW3ngT88Ug1QfO3QTC
+         aeYueWVhlMbXZ1dmrsZEgcbuHDbjoZvSOqY2eKId5IK3CfUAwJE0nbrq/FDfNGi/rETb
+         Gz27qsPxqlkIcYrO3KTS9eW9JHIX8npmzTC8WwO5Fr6Z8mbpOqWfE8YbUo07rY0Llf1k
+         UjBw==
+X-Gm-Message-State: AOAM533K+KbuQ2IIvXOkAdb4YgiC2Wgdaf5/bGtSk2ePO0MN1opOShfa
+        Y+cAIYckYKfoBhqY5MdXSGE=
+X-Google-Smtp-Source: ABdhPJww6ZarzP1NxytLeX4O77IoK8O14A+I26ZWyCHmv/GKzvzp2A+zZQhVsCpgeb7RB9Hr2pBSbw==
+X-Received: by 2002:aa7:9711:0:b029:1ee:b2c7:ecfe with SMTP id a17-20020aa797110000b02901eeb2c7ecfemr3928358pfg.58.1614867502027;
+        Thu, 04 Mar 2021 06:18:22 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id x14sm28445213pfm.207.2021.03.04.06.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 06:18:21 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] net: mellanox: mlx5: fix error return code in mlx5_fpga_device_start()
+Date:   Thu,  4 Mar 2021 06:18:14 -0800
+Message-Id: <20210304141814.8508-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 03:05:32PM +0100, Nicolas Saenz Julienne wrote:
-> Hi Greg.
-> 
-> On Thu, 2021-03-04 at 14:46 +0100, Greg KH wrote:
-> > On Wed, Mar 03, 2021 at 03:33:12PM +0800, Jing Xiangfeng wrote:
-> > > Using two distinct DMA zones turned out to be problematic. Here's an
-> > > attempt go back to a saner default.
-> > 
-> > What problem does this solve?  How does this fit into the stable kernel
-> > rules?
-> 
-> We changed the way we setup memory zones in arm64 in order to cater for
-> Raspberry Pi 4's weird DMA constraints: ZONE_DMA spans the lower 1GB of memory
-> and ZONE_DMA32 the rest of the 32bit address space. Since you can't allocate
-> memory that crosses zone boundaries, this broke crashkernel allocations on big
-> machines. This series fixes all this by parsing the HW description and checking
-> for DMA constrained buses. When not found, the unnecessary zone creation is
-> skipped.
+When mlx5_is_fpga_lookaside() returns a non-zero value, no error 
+return code is assigned.
+To fix this bug, err is assigned with -EINVAL as error return code.
 
-What kernel/commit caused this "breakage"?
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+index 2ce4241459ce..c9e6da97126f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+@@ -198,8 +198,10 @@ int mlx5_fpga_device_start(struct mlx5_core_dev *mdev)
+ 	mlx5_fpga_info(fdev, "FPGA card %s:%u\n", mlx5_fpga_name(fpga_id), fpga_id);
+ 
+ 	/* No QPs if FPGA does not participate in net processing */
+-	if (mlx5_is_fpga_lookaside(fpga_id))
++	if (mlx5_is_fpga_lookaside(fpga_id)) {
++		err = -EINVAL;
+ 		goto out;
++	}
+ 
+ 	mlx5_fpga_info(fdev, "%s(%d): image, version %u; SBU %06x:%04x version %d\n",
+ 		       mlx5_fpga_image_name(fdev->last_oper_image),
+-- 
+2.17.1
 
-greg k-h
