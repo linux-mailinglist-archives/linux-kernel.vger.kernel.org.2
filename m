@@ -2,151 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505BF32D7B4
+	by mail.lfdr.de (Postfix) with ESMTP id 053D932D7B3
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237360AbhCDQYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:24:34 -0500
-Received: from mail-mw2nam12on2066.outbound.protection.outlook.com ([40.107.244.66]:31942
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237025AbhCDQYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236967AbhCDQYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:24:32 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:25704 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237024AbhCDQYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Mar 2021 11:24:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AIVI4vTt35YSCmyD4xy0ESfnI21j4a5pi+s7HFGel8+apsVQO+ppgWMpTt8J2KqUhD6S5R/NpzLtBsSl3u6reKzx2eANhQ8kXzr5b9KrSHglqxuhcrsIHZFgQctL0BSrNWyyOO/FBLHhTH7WdVl7W5dSpGvEkmahq9dDmZw5UTxac02dRQ9/UyNQuE3yuz7/+ATWtoaQP7+th3RClum0B4DeEp31h75z5xNQx19fGs0lPnA06PlmofbWRMF0quHDyxa3CNJ8tu4Ok/Xs2urKFFxY0JJOBg2uZjm3W1R197MzKjzDzt7rHsbfLSiOo+RVoSe4WSDkoeOCDjEot/O5RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grs4ht2fzCEH3vYJtRZuum08JZ56Ujx+ot+6Tcw+tUY=;
- b=HzzT1XsL6uahPbltxDWachvTMZ9pLtyLFisj33IkIZ9J3JB6AZr/egsiWW/a4tpd21sKVTlLjWghYg6wM1Voyt7BA1NnkrXT0+bUayJoNfluDL8i2BzFtiY3rlY2v4FIbfe0n4Bq9mhBMA+TTGLFmx+/cL5uMrHkk2R8PKyceONCble1um5NUvYxyxUIp5KJg5KNjeF0iDsc0YVDRKF8eZnEgA57giMALcwhTa+9R8yJqmbd+lwTCSBhG384g0UPvcQoW1I7uHm+P+QJKWywMB+MUew8LPsrVlvkgZCB1+hJ4OBmfL/UY7x9q4S/8/TFbs/SZKO/YX/NLWvFM5bsoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=grs4ht2fzCEH3vYJtRZuum08JZ56Ujx+ot+6Tcw+tUY=;
- b=EB+/+uvlAqDLcQaMZR+6OPib5DZKpLhb2HFbUiBZ9lgGc4B5+8v/SYo3zXZCbbRKWxt//vA+GoF7W/kXm6YfD6KOWOomGGI/3LpZadEHkt1HbJxXUVDiPzifWj0syv0QZwNWqax0QNNytHu5acYR/rT/Wb5tRed/1NEJ6lQ7UOA=
-Received: from DM6PR06CA0031.namprd06.prod.outlook.com (2603:10b6:5:120::44)
- by DM6PR02MB4217.namprd02.prod.outlook.com (2603:10b6:5:9a::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Thu, 4 Mar
- 2021 16:23:16 +0000
-Received: from DM3NAM02FT003.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:120:cafe::eb) by DM6PR06CA0031.outlook.office365.com
- (2603:10b6:5:120::44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18 via Frontend
- Transport; Thu, 4 Mar 2021 16:23:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT003.mail.protection.outlook.com (10.13.4.168) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3890.19 via Frontend Transport; Thu, 4 Mar 2021 16:23:15 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Thu, 4 Mar 2021 08:23:02 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Thu, 4 Mar 2021 08:23:02 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- linux-kernel@vger.kernel.org,
- linux-ide@vger.kernel.org,
- axboe@kernel.dk
-Received: from [172.30.17.109] (port=52412)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1lHqkf-0000Oz-Q5; Thu, 04 Mar 2021 08:23:02 -0800
-Subject: Re: [PATCH] ata: ahci: ceva: Updated code by using dev_err_probe()
-To:     Piyush Mehta <piyush.mehta@xilinx.com>, <axboe@kernel.dk>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, <sgoud@xilinx.com>, <michal.simek@xilinx.com>
-References: <20210304155309.17878-1-piyush.mehta@xilinx.com>
- <20210304155309.17878-2-piyush.mehta@xilinx.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <d67580bc-6178-6c7f-54c8-a3dffe8d554d@xilinx.com>
-Date:   Thu, 4 Mar 2021 17:22:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124GC66Q021017;
+        Thu, 4 Mar 2021 17:23:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=+ZgqbViCMtQFWW0otyQRlC9BLZeUmAniGAv1NlQmOpw=;
+ b=fnF3agxyVPqggneAglsHgvG3SEVED18PO8QXgMVOMslq453F/EAqydkKmMXx9vnvYPBE
+ xpo/usai2rXuwKbPwpzeueq5USVSGs5PtE5QiUFvbIz6H3+EgjPs3TY4BVepO9IJt4vD
+ irkhEdCe0SuS7a9UkEBEwSFK+GIZZSXADnh0UvnaaCE3XBdZfQ1e8Ff9u6AUSA48KIO6
+ D6ZCtRcDcEVdIURSkFU4Fyk44M3gx15WtveVhI3QycNjP4Dywy/NKQISuMnSBRkqPCs0
+ A21JARmLF/S0Hi9jdDZWQkOGNNVXR1Dhr5YZUXjOYk6toGkk1gHmA1j6OPVbJI7axlMO XA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfc48j8r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 17:23:16 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A54A4100034;
+        Thu,  4 Mar 2021 17:23:15 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 98DCD20741B;
+        Thu,  4 Mar 2021 17:23:15 +0100 (CET)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Mar 2021 17:23:15
+ +0100
+From:   Erwan Le Ray <erwan.leray@foss.st.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-serial@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+Subject: [PATCH v2 05/13] serial: stm32: fix a deadlock condition with wakeup event
+Date:   Thu, 4 Mar 2021 17:23:00 +0100
+Message-ID: <20210304162308.8984-6-erwan.leray@foss.st.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210304162308.8984-1-erwan.leray@foss.st.com>
+References: <20210304162308.8984-1-erwan.leray@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <20210304155309.17878-2-piyush.mehta@xilinx.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e51ad6c1-6800-4f7d-ba8d-08d8df29d0ac
-X-MS-TrafficTypeDiagnostic: DM6PR02MB4217:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB4217893410529DD57F0C2821C6979@DM6PR02MB4217.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EkN0tWsjBlrhwY2pZsjioh/RHFFLm0Co2j1ZLr/YhnHxp7qU8TrzRDxTu72BJFcgwJF492EoU6wufKXD4PDPZ0LHltHgoYMHBnyAg1QoJCUf0Pyi+4UlXzpSHOFWZ3bw6Aj5NpU5NTkQordYlDCuUGksczTKh1b/D6bxh3ket9hpsgOmTcictt53sTMw5w0l1GBLTJQN6ncOUA0/9uauK5bbjCAv7hn2cR17U6pbGoKsXX2A38LR9L8GZPZcv9XWQQ15jOGTyww7Igxga71UtdKkZs+44J/H4X5lHws8AsEuvfncjh18Ejs9GC7UETzwf3pr5pd996GqKu8x+fTUY38P9DAt9VLK2jB21y2Y9g4vP5gL2ITiwc4wyeDmvdo0HbvktEW08mmC73e4lgiu9m0Symo+Utu448mYgkNWUyEef73Ww/4+rzcx2MN5/ThNpqizaUExYUQsJguUGF18Ie85l+W8rD+GkGlK64ijbhmx/1rS1+ol2gb/x/scuIrk6KZowZCwpG0ob3oH7itHUGof9Nu5K/uSFB94Z2rnpkOgg8tSFHZzuQmELztHLRQ+EocloqS1XIf0wwhZLzatS97nGpTjIgRtw5bFceksOrlvHuiTrLsA0oc03oxwlFX880LsewEA2ZKIP7ajRQrzq7/T+PEN0afDJQpMOvd1+cNd8D0PzQci59Lj8Ue9ChHr5YQsR8dh+u+OdHQgaOg2c34PcvLyfn6m/pH4V0RgFoclMs7liHPF9/o/V9cLgmVib2ZNSVoc4kodhlXS6l11e/jts1TYsNMCzvl2k0SehWU=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(46966006)(36840700001)(54906003)(356005)(186003)(8936002)(110136005)(7636003)(9786002)(31686004)(36860700001)(8676002)(83380400001)(53546011)(478600001)(15650500001)(2616005)(107886003)(47076005)(5660300002)(4326008)(426003)(2906002)(31696002)(70206006)(82310400003)(966005)(36756003)(336012)(82740400003)(70586007)(44832011)(36906005)(6666004)(316002)(26005)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2021 16:23:15.9669
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e51ad6c1-6800-4f7d-ba8d-08d8df29d0ac
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT003.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4217
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_05:2021-03-03,2021-03-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Deadlock issue is seen when enabling CONFIG_PROVE_LOCKING=Y, and uart
+console as wakeup source. Deadlock occurs when resuming from low power
+mode if system is waked up via usart console.
+The deadlock is triggered 100% when also disabling console suspend prior
+to go to suspend.
 
+Simplified call stack, deadlock condition:
+- stm32_console_write <-- spin_lock already held
+- print_circular_bug
+- pm_wakeup_dev_event <-- triggers lockdep as seen above
+- stm32_receive_chars
+- stm32_interrupt <-- wakeup via uart console, takes the lock
 
-On 3/4/21 4:53 PM, Piyush Mehta wrote:
-> Updated code with already prepared dev_err_probe(). It reduces code size
-> and simplifies EPROBE_DEFER handling.
-> 
-> Also, unify message format for similar error cases.
-> 
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-> ---
-> This patch is based on ahci-ceva patches:
-> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=5542fabd9e07d6c49c07862e73070c325f93d390
-> 
-> Tree: https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/tree/?h=for-next
-> ---
->  drivers/ata/ahci_ceva.c |    5 ++---
->  1 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
-> index b980218..a935209 100644
-> --- a/drivers/ata/ahci_ceva.c
-> +++ b/drivers/ata/ahci_ceva.c
-> @@ -207,9 +207,8 @@ static int ceva_ahci_probe(struct platform_device *pdev)
->  	cevapriv->rst = devm_reset_control_get_optional_exclusive(&pdev->dev,
->  								  NULL);
->  	if (IS_ERR(cevapriv->rst)) {
-> -		if (PTR_ERR(cevapriv->rst) != -EPROBE_DEFER)
-> -			dev_err(&pdev->dev, "failed to get reset: %ld\n",
-> -				PTR_ERR(cevapriv->rst));
-> +		dev_err_probe(&pdev->dev, PTR_ERR(cevapriv->rst),
-> +			      "failed to get reset\n");
->  	}
+So, revisit spin_lock in stm32-usart driver:
+- there is no need to hold the lock to access ICR (atomic clear of status
+  flags)
+- only hold the lock inside stm32_receive_chars() routine (no need to
+  call pm_wakeup_dev_event with lock held)
+- keep stm32_transmit_chars() routine called with lock held
 
-I got it twice not sure why.
+Fixes: 48a6092fb41f ("serial: stm32-usart: Add STM32 USART Driver")
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-nit: Sorry I didn't spot it in the first internal review.
-But you can also remove that {} around.
-
-With that fixed please add my
-Acked-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 223cec70c57c..370141445780 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -214,13 +214,18 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+ 	struct tty_port *tport = &port->state->port;
+ 	struct stm32_port *stm32_port = to_stm32_port(port);
+ 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+-	unsigned long c;
++	unsigned long c, flags;
+ 	u32 sr;
+ 	char flag;
+ 
+ 	if (irqd_is_wakeup_set(irq_get_irq_data(port->irq)))
+ 		pm_wakeup_event(tport->tty->dev, 0);
+ 
++	if (threaded)
++		spin_lock_irqsave(&port->lock, flags);
++	else
++		spin_lock(&port->lock);
++
+ 	while (stm32_usart_pending_rx(port, &sr, &stm32_port->last_res,
+ 				      threaded)) {
+ 		sr |= USART_SR_DUMMY_RX;
+@@ -276,9 +281,12 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+ 		uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+ 	}
+ 
+-	spin_unlock(&port->lock);
++	if (threaded)
++		spin_unlock_irqrestore(&port->lock, flags);
++	else
++		spin_unlock(&port->lock);
++
+ 	tty_flip_buffer_push(tport);
+-	spin_lock(&port->lock);
+ }
+ 
+ static void stm32_usart_tx_dma_complete(void *arg)
+@@ -459,8 +467,6 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+ 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+ 	u32 sr;
+ 
+-	spin_lock(&port->lock);
+-
+ 	sr = readl_relaxed(port->membase + ofs->isr);
+ 
+ 	if ((sr & USART_SR_RTOF) && ofs->icr != UNDEF_REG)
+@@ -474,10 +480,11 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+ 	if ((sr & USART_SR_RXNE) && !(stm32_port->rx_ch))
+ 		stm32_usart_receive_chars(port, false);
+ 
+-	if ((sr & USART_SR_TXE) && !(stm32_port->tx_ch))
++	if ((sr & USART_SR_TXE) && !(stm32_port->tx_ch)) {
++		spin_lock(&port->lock);
+ 		stm32_usart_transmit_chars(port);
+-
+-	spin_unlock(&port->lock);
++		spin_unlock(&port->lock);
++	}
+ 
+ 	if (stm32_port->rx_ch)
+ 		return IRQ_WAKE_THREAD;
+@@ -490,13 +497,9 @@ static irqreturn_t stm32_usart_threaded_interrupt(int irq, void *ptr)
+ 	struct uart_port *port = ptr;
+ 	struct stm32_port *stm32_port = to_stm32_port(port);
+ 
+-	spin_lock(&port->lock);
+-
+ 	if (stm32_port->rx_ch)
+ 		stm32_usart_receive_chars(port, true);
+ 
+-	spin_unlock(&port->lock);
+-
+ 	return IRQ_HANDLED;
+ }
+ 
+-- 
+2.17.1
 
