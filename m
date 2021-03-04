@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D750432DB71
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2283232DB77
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238737AbhCDUvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:51:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238693AbhCDUvC (ORCPT
+        id S232674AbhCDUxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:53:12 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:55419 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232444AbhCDUwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:51:02 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7735C061574;
-        Thu,  4 Mar 2021 12:50:22 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id z5so3999630plg.3;
-        Thu, 04 Mar 2021 12:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nQR76nEKRwImSbpknXBAkPnCcRjHjuCtw+g6ieOUiMU=;
-        b=fnURJyD1+RQGEJkpq5+GNw1nH27VkZ7dk5ePc2DCUwvxO0ZhL7SufgUKqVzI4igp0z
-         dJghKyR7qV1zdw1d/cSfSaPFqwOO10mh6eud0YmB9XTx2YWc1zqidytjRd/yzByJJFAe
-         hvBd4T2qKfJQS/5ueeKyP62seAV998NlgOqE9WMGFw40ujnkK/pzEjqo2CTJ8stDI7wW
-         CuSAX16bmlV0akTw8Kgp5WU/Oe1R3E+uOVHmXekgRV4k26iqZOlJ0HJN5N484DEAl46F
-         6t7gZu13iStRaKs/83XH6S81ztSzM/EiTfQtxz9+Bfb3RMxUvHBTo4BwDLtmkFaGpTcK
-         RMpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nQR76nEKRwImSbpknXBAkPnCcRjHjuCtw+g6ieOUiMU=;
-        b=P7U6NUUZ40qkzPUhfH0bxKPvZEMjQjpbHlF6lOYqpPDe/aOA7WUzkFnOYmbg0k3BOF
-         4S7omyuXzG1GpP8iILGed90EqxfcwdNaMhPiQhwfmX4MYkOerjgigFoh4tVweGuh2LmU
-         CBuXDPDOBHDf23JGxLZOYb3g5XIT5Tmb3fi+RE9E/MDafECR4efv+1fZi+KrNyEjzL4G
-         EgI8sPqTYchrbKsMF1Ptz1h6fP1rDfc8Ge63Mthu2/JaKBtyb4UXltJBJaknEal4RXce
-         wRF9wDtxCeHb8E8aKWoPTscIIMYIViSzEbc6K7Q/VmG/MndWCdUwH4t15CT3iB7A/mnd
-         y1Qg==
-X-Gm-Message-State: AOAM532psEtoahb/G/tWSg56i+Q8+JOfpE2ZTo0UokffqhH6h5Qd0QXU
-        Z9PQu65UGLm+beIgz5+1Eig/zaxYNs9+3QsQeJE=
-X-Google-Smtp-Source: ABdhPJyjai1bP1CWf/fqbpbPk1Kj8GpoRphVOCQX07vyopsTZMXh6Ddbm+zkwQI0BIPWymSonWpmt1SBG/RlYa4Wg4I=
-X-Received: by 2002:a17:90a:8594:: with SMTP id m20mr6350792pjn.215.1614891022280;
- Thu, 04 Mar 2021 12:50:22 -0800 (PST)
+        Thu, 4 Mar 2021 15:52:39 -0500
+X-Originating-IP: 50.39.163.217
+Received: from localhost (unknown [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B096E1C0005;
+        Thu,  4 Mar 2021 20:51:43 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 12:51:40 -0800
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     linux-kernel@vger.kernel.org, git@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: A note on the 5.12-rc1 tag
+Message-ID: <YEFIXFyP5tWrPDMw@localhost>
 MIME-Version: 1.0
-References: <20210304144317.78065-1-mheyne@amazon.de>
-In-Reply-To: <20210304144317.78065-1-mheyne@amazon.de>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 4 Mar 2021 12:50:10 -0800
-Message-ID: <CAM_iQpWv2qhqmn_kcpO5i=Y8qpTFGoZe7HAVJ5NEGKrjuS0QQQ@mail.gmail.com>
-Subject: Re: [PATCH] net: sched: avoid duplicates in classes dump
-To:     Maximilian Heyne <mheyne@amazon.de>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 6:44 AM Maximilian Heyne <mheyne@amazon.de> wrote:
->
-> This is a follow up of commit ea3274695353 ("net: sched: avoid
-> duplicates in qdisc dump") which has fixed the issue only for the qdisc
-> dump.
->
-> The duplicate printing also occurs when dumping the classes via
->   tc class show dev eth0
->
-> Fixes: 59cc1f61f09c ("net: sched: convert qdisc linked list to hashtable")
-> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+[CCing the git list]
 
-Seems reasonable. If you can show the difference of tc class dump
-before and after this patch in your changelog, it would be helpful to
-understand the bug here.
+On Wed, Mar 03, 2021 at 12:53:18PM -0800, Linus Torvalds wrote:
+> Hey peeps - some of you may have already noticed that in my public git
+> tree, the "v5.12-rc1" tag has magically been renamed to
+> "v5.12-rc1-dontuse". It's still the same object, it still says
+> "v5.12-rc1" internally, and it is still is signed by me, but the
+> user-visible name of the tag has changed.
+> 
+> The reason is fairly straightforward: this merge window, we had a very
+> innocuous code cleanup and simplification that raised no red flags at
+> all, but had a subtle and very nasty bug in it: swap files stopped
+> working right.  And they stopped working in a particularly bad way:
+> the offset of the start of the swap file was lost.
+> 
+> Swapping still happened, but it happened to the wrong part of the
+> filesystem, with the obvious catastrophic end results.
+[...]
+> One additional reason for this note is that I want to not just warn
+> people to not run this if you have a swapfile - even if you are
+> personally not impacted (like I am, and probably most people are -
+> swap partitions all around) - I want to make sure that nobody starts
+> new topic branches using that 5.12-rc1 tag. I know a few developers
+> tend to go "Ok, rc1 is out, I got all my development work into this
+> merge window, I will now fast-forward to rc1 and use that as a base
+> for the next release". Don't do it this time. It may work perfectly
+> well for you because you have the common partition setup, but it can
+> end up being a horrible base for anybody else that might end up
+> bisecting into that area.
 
-Thanks.
+Even if people avoid basing their topic branches on 5.12-rc1, it's still
+possible for a future bisect to end up wandering to one of the existing
+dangerous commits, if someone's trying to find a historical bug and git
+happens to choose that as a halfway point. And if they happen to be
+using a swap file, they could end up with serious data loss, years from
+now when "5.12-rc1 is broken" isn't on the top of their mind or even
+something they heard about originally.
+
+Would it make sense to add a feature to git that allows defining a
+"dangerous" region for bisect? Rough sketch:
+- Add a `/.git-bisect-dangerous` file to the repository, containing a
+  list of of commit range expressions (contains commit X, doesn't
+  contain commit Y) and associated messages ("Do not use these kernels
+  if you have a swap file; if you need to bisect into here, disable swap
+  files first").
+- git-bisect, as it navigates commits, always checks that file for any
+  commit it processes, and adds any new entries it sees into
+  `.git/bisect-dangerous`; it never removes entries from there.
+- git-bisect avoids choosing bisection points anywhere in that range
+  until it absolutely has to (because it's narrowed an issue to that
+  range). This can use something similar to the existing `git bisect
+  skip` machinery. Manual bisections print the message at that point.
+  Automated bisections (`git bisect run`) stop and print the range
+  without narrowing further, unless the user passes something like
+  `--dangerous-ok=commit-range`.
+
+(git notes would be nice for this, but they're hard to share reliably;
+the above mechanism to accumulate entries from a file in the repo seems
+simpler. I can imagine other possibilities.)
+
+Does something like this seem potentially reasonable, and worth doing to
+help people avoid future catastrophic data loss?
+
+
+- Josh Triplett
