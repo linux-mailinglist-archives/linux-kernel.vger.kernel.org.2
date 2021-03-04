@@ -2,108 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F2F32D99B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BA832D99E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhCDSqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:46:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234691AbhCDSq2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:46:28 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A708C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:45:48 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id x7so5068247plg.18
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=FHJbv/IQitHrDrqVV5Zv3feuTlL4Ima66irM/2+LBrM=;
-        b=wRgnh5UtXhuDMEX4WcxzBYAuLiE44UoxjjEiFelNA/MY0cFHVj48pME9fSr35jrMFE
-         tSuyPw2CTDTdDIuy2+baTjYoz/wY8tQa6exgABVRCswBJrn+hjSwzUZWXny19wggiVrw
-         ivQTLxairGocBLde57e2olP4slyQ5tt92+sSshb63VLs1P9CrtqXtbWWE4wQEonyL86d
-         uOhNhNe3NpndX/wFly+2qibRgAe2Q1QOjFOJNAJ6S1weKBl9tZmhscVg489lt3wLn8wB
-         IlD2/WxJkMUZ/Nvsb6yivdGf5ni3Beh+AXoUzorwOrU/794T4T4gKoxVoQDad1XkunUz
-         wRVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=FHJbv/IQitHrDrqVV5Zv3feuTlL4Ima66irM/2+LBrM=;
-        b=eIQAjXeqMMEcSIAyt9f8VD4j92DERJ3/mdDdY8suIxGDOgkwXNx6fN32VYzVxUmuqg
-         IgDUl7e2+kBPp+24PORmRsZDWesCq0oFcjSxS4DevzoYDUpFp/srtwhvPwh/S4L2GE0y
-         t4bMKuOM65QxRhaPpUlBzUdCfeqSNlgzTrfg1wn6YBtcoBY3Ce9lLY+WTXAW48r20szt
-         /y9q7YjkrLjF3UJOxyy3czcNbkCB5sZio7ekuMSUDP5c2G/JMN4VOKffylDofalBtuL+
-         RzqBig5y5q/9jTAHeZLtg4fUBaLsEmw6EkEsEzTebO/SxdoPXGEnkF+n0qGrQPRW+txF
-         FstA==
-X-Gm-Message-State: AOAM532JmBk7RNPk3FNlecs4y3GT/1PkYac8jqCoOh5eUiZAXjCmgxEU
-        49yjgnJG8Qx6DRzX5BPwk/WivCkY25snZv+9xnI=
-X-Google-Smtp-Source: ABdhPJwfgFOcLFg9DksNl5+x+5Ik41PWFI2fJWyTU8ahVjM+/AOUwJrkCCQX7ndFdpkYHpBGBfgJrt3sQ6pNyQya1sQ=
-Sender: "samitolvanen via sendgmr" 
-        <samitolvanen@samitolvanen1.mtv.corp.google.com>
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c931:40c9:b7a5:6cc8])
- (user=samitolvanen job=sendgmr) by 2002:a17:90b:1b46:: with SMTP id
- nv6mr5948244pjb.45.1614883547630; Thu, 04 Mar 2021 10:45:47 -0800 (PST)
-Date:   Thu,  4 Mar 2021 10:45:44 -0800
-Message-Id: <20210304184544.2014171-1-samitolvanen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] KVM: arm64: Disable LTO in hyp
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235020AbhCDSsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:48:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234985AbhCDSsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 13:48:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E6AB64F62;
+        Thu,  4 Mar 2021 18:47:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614883645;
+        bh=S7ckbpy5k+FMYq7pq6vAO3yRrbvaZRD48psVeKkEYws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lmub3J0ySh9kg/YLOGmK63ZbK4yI7/sglPxmzJMzMwvqJxE0oghLQQSsHTkhaxGc4
+         NRpLwz3FaDRDzrthiSL/C/y3P7P051jjtBZ2ExkZcisAeTmryPNf/pkxg4deSP/nM1
+         0VrYJ2dZKWW3EfQ0Uu71CqKtLX3t5w5zSwyR86aoM/TVojE169AJrUTm6VIh9z5+mr
+         elIjgsFyBf+pRcuvSUfZGz+bFS3Hvzfvv2mjPx3QxT3Iq1FGvsxg9iE3F0NHMOrwH3
+         fiqLrWI6x98xdPeFFudWVgSrScA3kkHyaB2LelAmsrNTwT2f3rD+unKJ3rSGn44QFo
+         8SMiBub77GgJg==
+Date:   Thu, 4 Mar 2021 18:47:17 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org
+Subject: Re: [PATCH v3 15/32] KVM: arm64: Prepare the creation of s1 mappings
+ at EL2
+Message-ID: <20210304184717.GB21795@willie-the-truck>
+References: <20210302150002.3685113-1-qperret@google.com>
+ <20210302150002.3685113-16-qperret@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302150002.3685113-16-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-allmodconfig + CONFIG_LTO_CLANG_THIN=y fails to build due to following
-linker errors:
+Hi Quentin,
 
-  ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21CC):
-  relocation R_AARCH64_CONDBR19 out of range: 2031220 is not in
-  [-1048576, 1048575]; references hyp_panic
-  >>> defined in vmlinux.o
+On Tue, Mar 02, 2021 at 02:59:45PM +0000, Quentin Perret wrote:
+> When memory protection is enabled, the EL2 code needs the ability to
+> create and manage its own page-table. To do so, introduce a new set of
+> hypercalls to bootstrap a memory management system at EL2.
+> 
+> This leads to the following boot flow in nVHE Protected mode:
+> 
+>  1. the host allocates memory for the hypervisor very early on, using
+>     the memblock API;
+> 
+>  2. the host creates a set of stage 1 page-table for EL2, installs the
+>     EL2 vectors, and issues the __pkvm_init hypercall;
+> 
+>  3. during __pkvm_init, the hypervisor re-creates its stage 1 page-table
+>     and stores it in the memory pool provided by the host;
+> 
+>  4. the hypervisor then extends its stage 1 mappings to include a
+>     vmemmap in the EL2 VA space, hence allowing to use the buddy
+>     allocator introduced in a previous patch;
+> 
+>  5. the hypervisor jumps back in the idmap page, switches from the
+>     host-provided page-table to the new one, and wraps up its
+>     initialization by enabling the new allocator, before returning to
+>     the host.
+> 
+>  6. the host can free the now unused page-table created for EL2, and
+>     will now need to issue hypercalls to make changes to the EL2 stage 1
+>     mappings instead of modifying them directly.
+> 
+> Note that for the sake of simplifying the review, this patch focuses on
+> the hypervisor side of things. In other words, this only implements the
+> new hypercalls, but does not make use of them from the host yet. The
+> host-side changes will follow in a subsequent patch.
+> 
+> Credits to Will for __pkvm_init_switch_pgd.
+> 
+> Co-authored-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_asm.h     |   4 +
+>  arch/arm64/include/asm/kvm_host.h    |   7 +
+>  arch/arm64/include/asm/kvm_hyp.h     |   8 ++
+>  arch/arm64/include/asm/kvm_pgtable.h |   2 +
+>  arch/arm64/kernel/image-vars.h       |  16 +++
+>  arch/arm64/kvm/hyp/Makefile          |   2 +-
+>  arch/arm64/kvm/hyp/include/nvhe/mm.h |  71 ++++++++++
+>  arch/arm64/kvm/hyp/nvhe/Makefile     |   4 +-
+>  arch/arm64/kvm/hyp/nvhe/hyp-init.S   |  31 +++++
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c   |  49 +++++++
+>  arch/arm64/kvm/hyp/nvhe/mm.c         | 173 ++++++++++++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/setup.c      | 195 +++++++++++++++++++++++++++
+>  arch/arm64/kvm/hyp/pgtable.c         |   2 -
+>  arch/arm64/kvm/hyp/reserved_mem.c    |  92 +++++++++++++
+>  arch/arm64/mm/init.c                 |   3 +
+>  15 files changed, 654 insertions(+), 5 deletions(-)
 
-  ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21E0):
-  relocation R_AARCH64_ADR_PREL_LO21 out of range: 2031200 is not in
-  [-1048576, 1048575]; references hyp_panic
-  >>> defined in vmlinux.o
+This mostly looks good to me, but in a patch this size I was bound to spot
+a few niggles. It is _huge_!
 
-As LTO is not really necessary for the hypervisor code, disable it for
-the hyp directory to fix the build.
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+> index c631e29fb001..bc56ea92b812 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+> @@ -244,4 +244,35 @@ alternative_else_nop_endif
+>  
+>  SYM_CODE_END(__kvm_handle_stub_hvc)
+>  
+> +SYM_FUNC_START(__pkvm_init_switch_pgd)
+> +	/* Turn the MMU off */
+> +	pre_disable_mmu_workaround
+> +	mrs	x2, sctlr_el2
+> +	bic	x3, x2, #SCTLR_ELx_M
+> +	msr	sctlr_el2, x3
+> +	isb
+> +
+> +	tlbi	alle2
+> +
+> +	/* Install the new pgtables */
+> +	ldr	x3, [x0, #NVHE_INIT_PGD_PA]
+> +	phys_to_ttbr x4, x3
+> +alternative_if ARM64_HAS_CNP
+> +	orr	x4, x4, #TTBR_CNP_BIT
+> +alternative_else_nop_endif
+> +	msr	ttbr0_el2, x4
+> +
+> +	/* Set the new stack pointer */
+> +	ldr	x0, [x0, #NVHE_INIT_STACK_HYP_VA]
+> +	mov	sp, x0
+> +
+> +	/* And turn the MMU back on! */
+> +	dsb	nsh
+> +	isb
+> +	msr	sctlr_el2, x2
+> +	ic	iallu
+> +	isb
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1317
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
----
- arch/arm64/kvm/hyp/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+Comparing with the new-fangled set_sctlr_el1 macro we have, this sequence
+isn't quite right. Probably best to introduce set_sctlr_el2, and implement
+that and the existing macro in terms of set_sctlr_elX or something like
+that.
 
-diff --git a/arch/arm64/kvm/hyp/Makefile b/arch/arm64/kvm/hyp/Makefile
-index 687598e41b21..e8116016e6a8 100644
---- a/arch/arm64/kvm/hyp/Makefile
-+++ b/arch/arm64/kvm/hyp/Makefile
-@@ -11,3 +11,6 @@ subdir-ccflags-y := -I$(incdir)				\
- 		    $(DISABLE_STACKLEAK_PLUGIN)
- 
- obj-$(CONFIG_KVM) += vhe/ nvhe/ pgtable.o
-+
-+# Disable LTO for the files in this directory
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO), $(KBUILD_CFLAGS))
+> +void __noreturn __pkvm_init_finalise(void)
+> +{
+> +	struct kvm_host_data *host_data = this_cpu_ptr(&kvm_host_data);
+> +	struct kvm_cpu_context *host_ctxt = &host_data->host_ctxt;
+> +	unsigned long nr_pages, reserved_pages, pfn;
+> +	int ret;
+> +
+> +	/* Now that the vmemmap is backed, install the full-fledged allocator */
+> +	pfn = hyp_virt_to_pfn(hyp_pgt_base);
+> +	nr_pages = hyp_s1_pgtable_pages();
+> +	reserved_pages = hyp_early_alloc_nr_used_pages();
+> +	ret = hyp_pool_init(&hpool, pfn, nr_pages, reserved_pages);
+> +	if (ret)
+> +		goto out;
+> +
+> +	pkvm_pgtable_mm_ops.zalloc_page = hyp_zalloc_hyp_page;
+> +	pkvm_pgtable_mm_ops.phys_to_virt = hyp_phys_to_virt;
+> +	pkvm_pgtable_mm_ops.virt_to_phys = hyp_virt_to_phys;
+> +	pkvm_pgtable_mm_ops.get_page = hyp_get_page;
+> +	pkvm_pgtable_mm_ops.put_page = hyp_put_page;
+> +	pkvm_pgtable.mm_ops = &pkvm_pgtable_mm_ops;
 
-base-commit: f69d02e37a85645aa90d18cacfff36dba370f797
--- 
-2.30.1.766.gb4fecdf3b7-goog
+Can you do:
 
+	pkvm_pgtable_mm_ops = (struct kvm_pgtable_mm_ops) {
+		.zalloc_page	= hyp_zalloc_hyp_page,
+		.phys_to_virt	= ...,
+		...
+	};
+
+here?
+
+> +
+> +out:
+> +	/*
+> +	 * We tail-called to here from handle___pkvm_init() and will not return,
+> +	 * so make sure to propagate the return value to the host.
+> +	 */
+> +	cpu_reg(host_ctxt, 1) = ret;
+> +
+> +	__host_enter(host_ctxt);
+> +}
+> +
+> +int __pkvm_init(phys_addr_t phys, unsigned long size, unsigned long nr_cpus,
+> +		unsigned long *per_cpu_base, u32 hyp_va_bits)
+> +{
+> +	struct kvm_nvhe_init_params *params;
+> +	void *virt = hyp_phys_to_virt(phys);
+> +	void (*fn)(phys_addr_t params_pa, void *finalize_fn_va);
+> +	int ret;
+> +
+> +	if (phys % PAGE_SIZE || size % PAGE_SIZE)
+> +		return -EINVAL;
+
+Either PAGE_ALIGNED or '& ~PAGE_MASK' would be better than spelling this
+with '%', I reckon.
+
+Anyway, other than these nits:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
