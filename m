@@ -2,144 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9350832D3C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B9832D3E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240048AbhCDNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:00:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55656 "EHLO mx2.suse.de"
+        id S241108AbhCDNEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:04:21 -0500
+Received: from mga04.intel.com ([192.55.52.120]:12076 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239330AbhCDNA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:00:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614862781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ARETMDmrnoIKUwLwM3yWLvY0xN8oIu75OlSuWmhP6c=;
-        b=YVZipQj4lihqCZsf8NqE3Ye6VPBR+XKX9pzlfuuD1bBuLxbvJz4oPGivveBxKJ90elChtR
-        Mk3sQ7yI/MuCups4BVl+rlnfYeiUf1ZvOakCHzWh0R17Hq3ZvQfLoDBTFl/X6ZGj3YetEz
-        kfz2mbXMP3SiDgMuiNllw11QqRYorvw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1A12AAAC5;
-        Thu,  4 Mar 2021 12:59:41 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 13:59:40 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Andi leen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
- MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
-Message-ID: <YEDZvKdurj+zCXEL@dhcp22.suse.cz>
-References: <20210303120717.GA16736@shbuild999.sh.intel.com>
- <20210303121833.GB16736@shbuild999.sh.intel.com>
- <YD+BvvM/388AVnmm@dhcp22.suse.cz>
- <20210303131832.GB78458@shbuild999.sh.intel.com>
- <20210303134644.GC78458@shbuild999.sh.intel.com>
- <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
- <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
- <YD/D9hckPOA+41+D@dhcp22.suse.cz>
- <20210303172250.wbp47skyuf6r37wi@intel.com>
- <20210304081414.GC43191@shbuild999.sh.intel.com>
+        id S241107AbhCDNEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:04:02 -0500
+IronPort-SDR: aBsC3JAZAeRfOTRJ+LdnPKDg6lIkJBH0EVLHPorzwuvwAgp1xHawMwtZVfyvp07dqU/+JSloPb
+ iQovZHCuamlA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="184997986"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="184997986"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 05:01:31 -0800
+IronPort-SDR: rsBAzZMzBpokqlLFNORlDxZXjohLA7ZGTxLSmJFAxVgp6xQrEvaIk2BmGrEyiWDHSpMP+dowQU
+ 4/L1nh9T017Q==
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="507371623"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 05:01:26 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lHnbX-009sd7-E0; Thu, 04 Mar 2021 15:01:23 +0200
+Date:   Thu, 4 Mar 2021 15:01:23 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 07/12] lib: bitmap: provide devm_bitmap_alloc() and
+ devm_bitmap_zalloc()
+Message-ID: <YEDaI/G+Qb9Q1dxR@smile.fi.intel.com>
+References: <20210304102452.21726-1-brgl@bgdev.pl>
+ <20210304102452.21726-8-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304081414.GC43191@shbuild999.sh.intel.com>
+In-Reply-To: <20210304102452.21726-8-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04-03-21 16:14:14, Feng Tang wrote:
-> On Wed, Mar 03, 2021 at 09:22:50AM -0800, Ben Widawsky wrote:
-> > On 21-03-03 18:14:30, Michal Hocko wrote:
-> > > On Wed 03-03-21 08:31:41, Ben Widawsky wrote:
-> > > > On 21-03-03 14:59:35, Michal Hocko wrote:
-> > > > > On Wed 03-03-21 21:46:44, Feng Tang wrote:
-> > > > > > On Wed, Mar 03, 2021 at 09:18:32PM +0800, Tang, Feng wrote:
-> > > > > > > On Wed, Mar 03, 2021 at 01:32:11PM +0100, Michal Hocko wrote:
-> > > > > > > > On Wed 03-03-21 20:18:33, Feng Tang wrote:
-> > > > > [...]
-> > > > > > > > > One thing I tried which can fix the slowness is:
-> > > > > > > > > 
-> > > > > > > > > +	gfp_mask &= ~(__GFP_DIRECT_RECLAIM | __GFP_KSWAPD_RECLAIM);
-> > > > > > > > > 
-> > > > > > > > > which explicitly clears the 2 kinds of reclaim. And I thought it's too
-> > > > > > > > > hacky and didn't mention it in the commit log.
-> > > > > > > > 
-> > > > > > > > Clearing __GFP_DIRECT_RECLAIM would be the right way to achieve
-> > > > > > > > GFP_NOWAIT semantic. Why would you want to exclude kswapd as well? 
-> > > > > > > 
-> > > > > > > When I tried gfp_mask &= ~__GFP_DIRECT_RECLAIM, the slowness couldn't
-> > > > > > > be fixed.
-> > > > > > 
-> > > > > > I just double checked by rerun the test, 'gfp_mask &= ~__GFP_DIRECT_RECLAIM'
-> > > > > > can also accelerate the allocation much! though is still a little slower than
-> > > > > > this patch. Seems I've messed some of the tries, and sorry for the confusion!
-> > > > > > 
-> > > > > > Could this be used as the solution? or the adding another fallback_nodemask way?
-> > > > > > but the latter will change the current API quite a bit.
-> > > > > 
-> > > > > I haven't got to the whole series yet. The real question is whether the
-> > > > > first attempt to enforce the preferred mask is a general win. I would
-> > > > > argue that it resembles the existing single node preferred memory policy
-> > > > > because that one doesn't push heavily on the preferred node either. So
-> > > > > dropping just the direct reclaim mode makes some sense to me.
-> > > > > 
-> > > > > IIRC this is something I was recommending in an early proposal of the
-> > > > > feature.
-> > > > 
-> > > > My assumption [FWIW] is that the usecases we've outlined for multi-preferred
-> > > > would want more heavy pushing on the preference mask. However, maybe the uapi
-> > > > could dictate how hard to try/not try.
-> > > 
-> > > What does that mean and what is the expectation from the kernel to be
-> > > more or less cast in stone?
-> > > 
-> > 
-> > (I'm not positive I've understood your question, so correct me if I
-> > misunderstood)
-> > 
-> > I'm not sure there is a stone-cast way to define it nor should we. At the very
-> > least though, something in uapi that has a general mapping to GFP flags
-> > (specifically around reclaim) for the first round of allocation could make
-> > sense.
-> > 
-> > In my head there are 3 levels of request possible for multiple nodes:
-> > 1. BIND: Those nodes or die.
-> > 2. Preferred hard: Those nodes and I'm willing to wait. Fallback if impossible.
-> > 3. Preferred soft: Those nodes but I don't want to wait.
-> > 
-> > Current UAPI in the series doesn't define a distinction between 2, and 3. As I
-> > understand the change, Feng is defining the behavior to be #3, which makes #2
-> > not an option. I sort of punted on defining it entirely, in the beginning.
+On Thu, Mar 04, 2021 at 11:24:47AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> As discussed earlier in the thread, one less hacky solution is to clear
-> __GFP_DIRECT_RECLAIM bit so that it won't go into direct reclaim, but still
-> wakeup the kswapd of target nodes and retry, which sits now between 'Preferred hard'
-> and 'Preferred soft' :)
+> Provide managed variants of bitmap_alloc() and bitmap_zalloc().
 
-Yes that is what I've had in mind when talking about a lightweight
-attempt.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+A few nit-picks below.
 
-> For current MPOL_PREFERRED, its semantic is also 'Preferred hard', that it
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  include/linux/bitmap.h | 10 ++++++++++
+>  lib/bitmap.c           | 33 +++++++++++++++++++++++++++++++++
+>  2 files changed, 43 insertions(+)
+> 
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 3282db97e06c..e41c622db1b8 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -9,6 +9,8 @@
+>  #include <linux/string.h>
+>  #include <linux/types.h>
+>  
+> +struct device;
+> +
+>  /*
+>   * bitmaps provide bit arrays that consume one or more unsigned
+>   * longs.  The bitmap interface and available operations are listed
+> @@ -122,6 +124,14 @@ unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
+>  unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
+>  void bitmap_free(const unsigned long *bitmap);
 
-Did you mean to say prefer soft? Because the direct reclaim is attempted
-only when node reclaim is enabled.
+> +/*
+> + * Managed variants of the above.
+> + */
 
-> will check free memory of other nodes before entering slowpath waiting.
+One line?
 
-Yes, hence "soft" semantic.
+> +unsigned long *devm_bitmap_alloc(struct device *dev,
+> +				 unsigned int nbits, gfp_t flags);
+> +unsigned long *devm_bitmap_zalloc(struct device *dev,
+> +				  unsigned int nbits, gfp_t flags);
+
+Both can be oneliners.
+
+>  /*
+>   * lib/bitmap.c provides these functions:
+>   */
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 78f70d9007ad..b4fd7fd084c6 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/bug.h>
+>  #include <linux/ctype.h>
+> +#include <linux/device.h>
+>  #include <linux/errno.h>
+>  #include <linux/export.h>
+>  #include <linux/kernel.h>
+> @@ -1263,6 +1264,38 @@ void bitmap_free(const unsigned long *bitmap)
+>  }
+>  EXPORT_SYMBOL(bitmap_free);
+>  
+> +static void devm_bitmap_free(void *data)
+> +{
+> +	unsigned long *bitmap = data;
+> +
+> +	bitmap_free(bitmap);
+> +}
+
+> +unsigned long *devm_bitmap_alloc(struct device *dev,
+> +				 unsigned int nbits, gfp_t flags)
+
+One line?
+
+> +{
+> +	unsigned long *bitmap;
+> +	int ret;
+> +
+> +	bitmap = bitmap_alloc(nbits, flags);
+> +	if (!bitmap)
+> +		return NULL;
+> +
+> +	ret = devm_add_action_or_reset(dev, devm_bitmap_free, bitmap);
+> +	if (ret)
+> +		return NULL;
+> +
+> +	return bitmap;
+> +}
+> +EXPORT_SYMBOL(devm_bitmap_alloc);
+
+> +unsigned long *devm_bitmap_zalloc(struct device *dev,
+> +				  unsigned int nbits, gfp_t flags)
+
+One line?
+
+> +{
+> +	return devm_bitmap_alloc(dev, nbits, flags | __GFP_ZERO);
+> +}
+> +EXPORT_SYMBOL(devm_bitmap_zalloc);
+> +
+>  #if BITS_PER_LONG == 64
+>  /**
+>   * bitmap_from_arr32 - copy the contents of u32 array of bits to bitmap
+> -- 
+> 2.29.1
+> 
 
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
