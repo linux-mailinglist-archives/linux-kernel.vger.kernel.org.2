@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB61332DAC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD95532DAC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236830AbhCDUB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:01:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237503AbhCDUBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:01:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5010A64F65;
-        Thu,  4 Mar 2021 20:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614888051;
-        bh=UH/6WrQiM34nfHG2XS5TT/G5/0kfI/kksSdM/0P/Kfg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bYR6f8cxrOMRb34jioQTsd1SLiLYV1KrLhOxoa/UFlla225aOMoeU9KLwametgZGX
-         e5UxygIrCjFHk727snrTlAC+zc1THCyYWXRHNW6bhw920Ttnj9NCS5X2Ih+o5ALWVK
-         8bzcdOJECfCuzr/vbSR1rZ8v1jVXMhWhNw+DbirPaQMEpoASd9ZqARx+ehcehxJknU
-         SpENUYmOkDJnSdSwOWCMFlHYV9oxLgBfqvI9lx0K5oHBwfTbiME3Cs5py0GaxJAIlR
-         biv8pRass1hSrt2fSlv8I3qPqJs7DpFaEMb2CjobCejwGpfx5/2Bf8XJ5QX/3hqHDq
-         ZjtqlYWz2nibg==
-Date:   Thu, 4 Mar 2021 20:00:45 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 26/32] KVM: arm64: Introduce PROT_NONE mappings for
- stage 2
-Message-ID: <20210304200044.GF21950@willie-the-truck>
-References: <20210302150002.3685113-1-qperret@google.com>
- <20210302150002.3685113-27-qperret@google.com>
+        id S237012AbhCDUB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237541AbhCDUBi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 15:01:38 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DAEC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 12:00:58 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id h13so1343189pjt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 12:00:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DZ9JIPjRlQrxm5gBVz908554FQTvWTlvFh8a4RdvXkQ=;
+        b=FiGeRXYjnThBVK1bW7nY3KGkcqjRiuiPibElJxzUfzveAM7XCAJXO2APF55vEzdRzT
+         E0GvRofOT0x06iptzB3bTppkX3PXQoScIltG+brYFPhmqEEg4QZMlCWaqCqacMh83NKm
+         bUvq7MfwVVNX+QLjeReDLSWUeEB/YUyqBo36Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DZ9JIPjRlQrxm5gBVz908554FQTvWTlvFh8a4RdvXkQ=;
+        b=qLkSoFhKl6z7BshH71vYdDI1wsyItD+wnoZL4eX7TM2G+cW+xcry306OVqaXIcbQW2
+         ljjXaFVqgPQyAE8f6NnCaBJV3oaoV5nHwjboG+MRZA2tDbzYvdEeQkgvAdEWcXRZWPvn
+         Qx108JiN4mAm5/C9HwdL6rqMtbvdfYig/0zp9b1oj1TSazIFAjyw+zv7RQZZSLfV6EIQ
+         hIx7V39vfpzCSwxhLsNSvIMAXCGovuQ7sbKGbBDTEX5TYZLVHp5NZYDrQJCcaH3gJfM6
+         ydDIKUu+hz77kjt2KDZsf4rdXwmjLj/u6Gro/hQbbu2usgSKsbrniHvcXDaTtveMOolX
+         loMw==
+X-Gm-Message-State: AOAM533kZPaV4NYvHng321LyayN/lbiRu1W/dVdUAdql6hwZo8VRVBl0
+        Eegj48fDHOSbxbpiKzGnY/bCZg==
+X-Google-Smtp-Source: ABdhPJxcp2ZPgYliuHW2Dbu754tmWlf9YNiow/ZD+SJfh1QGOVwkN/PYVSiXnpEdgeEQJU1Ul58FvQ==
+X-Received: by 2002:a17:90a:8505:: with SMTP id l5mr6146108pjn.100.1614888057676;
+        Thu, 04 Mar 2021 12:00:57 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 138sm194942pfv.192.2021.03.04.12.00.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 12:00:57 -0800 (PST)
+Date:   Thu, 4 Mar 2021 12:00:56 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Hsuan-Chi Kuo <hckuo2@illinois.edu>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: Possible bug kernel/seccomp.c
+Message-ID: <202103041200.54C6009@keescook>
+References: <83ebb916-20de-dba5-a5a2-c7f120ba7b21@illinois.edu>
+ <84856991-dd5e-c2d6-0a0e-1c05097a1b86@illinois.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302150002.3685113-27-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <84856991-dd5e-c2d6-0a0e-1c05097a1b86@illinois.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 02:59:56PM +0000, Quentin Perret wrote:
-> Once we start unmapping portions of memory from the host stage 2 (such
-> as e.g. the hypervisor memory sections, or pages that belong to
-> protected guests), we will need a way to track page ownership. And
-> given that all mappings in the host stage 2 will be identity-mapped, we
-> can use the host stage 2 page-table itself as a simplistic rmap.
+On Thu, Mar 04, 2021 at 01:14:16PM -0600, Hsuan-Chi Kuo wrote:
+> cc mailing list.
 > 
-> As a first step towards this, introduce a new protection attribute
-> in the stage 2 page table code, called KVM_PGTABLE_PROT_NONE, which
-> allows to annotate portions of the IPA space as inaccessible. For
-> simplicity, PROT_NONE mappings are created as invalid mappings with a
-> software bit set.
+> On 3/4/21 1:10 PM, Hsuan-Chi Kuo wrote:
+> > Hello,
+> > 
+> > Should this line be atomic_read(&caller->seccomp.filter_count));
+> > 
+> > https://elixir.bootlin.com/linux/latest/source/kernel/seccomp.c#L600
+> > 
+> > I think the desired behavior is to synchronize the filter count.
 
-Just as an observation, but given that they're invalid we can use any bit
-from [63:2] to indicate that it's a PROT_NONE mapping, and that way we
-can keep the real "software bits" for live mappings.
+Yecch. Yeah, that's a bug. Thanks for noticing that! Can you send a
+patch to fix it?
 
-But we can of course change that later when we need the bit for something
-else.
-
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_pgtable.h |  2 ++
->  arch/arm64/kvm/hyp/pgtable.c         | 26 ++++++++++++++++++++++++--
->  2 files changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> index 9935dbae2cc1..c9f6ed76e0ad 100644
-> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> @@ -80,6 +80,7 @@ struct kvm_pgtable {
->   * @KVM_PGTABLE_PROT_W:		Write permission.
->   * @KVM_PGTABLE_PROT_R:		Read permission.
->   * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
-> + * @KVM_PGTABLE_PROT_NONE:	No permission.
->   */
->  enum kvm_pgtable_prot {
->  	KVM_PGTABLE_PROT_X			= BIT(0),
-> @@ -87,6 +88,7 @@ enum kvm_pgtable_prot {
->  	KVM_PGTABLE_PROT_R			= BIT(2),
->  
->  	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
-> +	KVM_PGTABLE_PROT_NONE			= BIT(4),
-
-Why do we need an extra entry here? Couldn't we just create PROT_NONE
-entries when none of R,W or X are set?
-
->  };
->  
->  #define PAGE_HYP		(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index bdd6e3d4eeb6..8e7059fcfd40 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -48,6 +48,8 @@
->  					 KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
->  					 KVM_PTE_LEAF_ATTR_HI_S2_XN)
->  
-> +#define KVM_PTE_LEAF_SW_BIT_PROT_NONE	BIT(55)
-> +
->  struct kvm_pgtable_walk_data {
->  	struct kvm_pgtable		*pgt;
->  	struct kvm_pgtable_walker	*walker;
-> @@ -120,6 +122,16 @@ static bool kvm_pte_valid(kvm_pte_t pte)
->  	return pte & KVM_PTE_VALID;
->  }
->  
-> +static bool kvm_pte_prot_none(kvm_pte_t pte)
-> +{
-> +	return pte & KVM_PTE_LEAF_SW_BIT_PROT_NONE;
-> +}
-
-I think it would be a good idea to check !kvm_pte_valid() in here too,
-since it doesn't make sense to report true for valid (or table) entries.
-
-Will
+-- 
+Kees Cook
