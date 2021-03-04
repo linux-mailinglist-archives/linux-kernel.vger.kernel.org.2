@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E4832D6B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B34632D6B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbhCDPcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:32:07 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:58297 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234913AbhCDPcC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:32:02 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S234968AbhCDPdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:33:08 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:15755 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234924AbhCDPdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 10:33:06 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614871963; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=yw6X0hE3R/LaSfjE+hVC/k0iGKiHH/AiRqtO+CmPa8M=; b=HplxyOffidVBt80UMyiiT9o52WFBvCafzWZ+zBYbS+FvLaYD7mU6xJ5mcxpXclFsU+hPKZJ9
+ TnO+6JuIU9Ht7nB5m+zI+2oLXiuPCgznL6KRLm+Pp1CUjy99uUFB2gc38sXgSGmx9QcJulPp
+ tc7HAnQdnFovQUJ5Fm/CGf9Xxk4=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6040fd772a5e6d1bfa9e1bb3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Mar 2021 15:32:07
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 213A5C43465; Thu,  4 Mar 2021 15:32:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 306F822234;
-        Thu,  4 Mar 2021 16:31:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614871880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DA30murhEvgKpAf+gX5S/ctkqDo3ACRWN/3NimWCRKk=;
-        b=hXXJHypQ4ojCx17slQ/Qf+ED9+PcbAhcz3rt1c8l/U7N1ONSuf9iRqgpzoNFCkqz+ayjHh
-        dbxmUiJew4zIa1w3FVpIqu4O+Ysb7wWaA9WM1ZkYRNTFEVBB7Zk9a3eqNNP4GWqb7U2UFz
-        uO/4YP4adt8M2Hx3wDSbA4kNd5hVnHc=
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C0A27C43461;
+        Thu,  4 Mar 2021 15:32:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C0A27C43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Date:   Thu, 4 Mar 2021 07:32:04 -0800
+From:   Asutosh Das <asutoshd@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     cang@codeaurora.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Nitin Rawat <nitirawa@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 2/2] ufs: sysfs: Resume the proper scsi device
+Message-ID: <20210304153204.GI12147@stor-presley.qualcomm.com>
+References: <cover.1614725302.git.asutoshd@codeaurora.org>
+ <5d7c0cd1ff4bc5295015244f057d252fe9040993.1614725302.git.asutoshd@codeaurora.org>
+ <9edf7047-4845-5bb5-3307-fa6e11e5c923@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 04 Mar 2021 16:31:20 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] gpio: regmap: set gpio_chip of_node
-In-Reply-To: <CAHp75Vc6azROSAc=ZUjY+VhAjZDMsukr2ZY1fQHMFwncL7_AbQ@mail.gmail.com>
-References: <20210304071506.18434-1-noltari@gmail.com>
- <CAHp75Vc6azROSAc=ZUjY+VhAjZDMsukr2ZY1fQHMFwncL7_AbQ@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <7b12985726c898d63d882486f01a60d7@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <9edf7047-4845-5bb5-3307-fa6e11e5c923@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-04 16:22, schrieb Andy Shevchenko:
-> On Thu, Mar 4, 2021 at 5:18 PM Álvaro Fernández Rojas 
-> <noltari@gmail.com> wrote:
->> 
->> This is needed for properly registering gpio regmap as a child of a 
->> regmap
->> pin controller.
-> 
->> +       chip->of_node = config->of_node ?: 
->> dev_of_node(config->parent);
-> 
-> After a closer look I have no clue why you need this patch at all.
-> The second part, i.e. assigning parent's fwnode, is done already in
-> the GPIO library core.
-> The first part, keeping fwnode in the regmap configuration puzzles me. 
-> Why?
+On Thu, Mar 04 2021 at 23:45 -0800, Adrian Hunter wrote:
+>On 3/03/21 12:52 am, Asutosh Das wrote:
+>> Resumes the actual scsi device the unit descriptor of which
+>> is being accessed instead of the hba alone.
+>
+>Since "scsi: ufs: ufs-debugfs: Add user-defined exception_event_mask"
+>is now in linux-next, a similar change is needed for ufs-debugfs.c.
+>Probably best it is a separate patch though.
+>
+Ok Sure, I'll push a separate patch.
+If there're not any other concerns, please can you ack these changes.
 
-You're right if chip->of_node is not set it will eventually be set to
-node of the parent device.
-
-In case of the BCM driver the parent device is the pinctrl device and
-the node is a children (if that is correct I cannot say). So, in this
-case you cannot use the node of the parent, because that would be the
-pinctrl one.
-
-You could just use
-   chip->of_node = dev_of_node(config->parent)
-
-But then it is not obvious that it is optional. Hence my suggestion
-to explicitly set to the parent of_node if none is supplied.
-
--michael
+Thanks,
+-asd
