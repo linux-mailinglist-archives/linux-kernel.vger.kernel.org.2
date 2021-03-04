@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C23F32C470
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDAC32C479
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357186AbhCDAN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:13:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
+        id S1392317AbhCDAOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:14:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240516AbhCDABD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:01:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFF0B64F4B;
-        Thu,  4 Mar 2021 00:00:21 +0000 (UTC)
+        id S1352939AbhCDACo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:02:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B1B064FA5;
+        Thu,  4 Mar 2021 00:00:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614816022;
-        bh=ZNOxLKNlBGfyZrpu0Qsz3RIOaw62Am55XbSLBEJKILg=;
+        bh=Kp0pUDwbc2/Wi2wONM2Pspfg5qtgiwIcASHFHauAdjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MsfNia68ku6fDo/51dwayamk1BUiY/2v6Irc9ckn8M/yFWuIrTjyZaM0I4SsaIinh
-         Dko9h943mASJwfXiB/soflVOVPzjTK9RLsA/WndfZ4CRNmL6vUqLK61382D62wflWy
-         cBW2S0dTEAlC+LeVk1BBbXasVnGpB940alZvdi2YWmjZ56+OmTGBAMl5XQuUA8vaQk
-         U7a7JRVflfdB9cpMYs8iwbi/+bCFWsuVWS1d0evcAR4rA2EpxEsEXqkY6L/mVe6Rne
-         lW6q/ADaQrdAfZCluBl36RwwbZQtfA7RzJw+vFx7/mw0mcrsNkXsqJbRrS+OuF3YyY
-         LdxiTvpCyXrhw==
+        b=P1q8tESvo8YtTXrAEAJNUwqOkPSD3NhBeEdkShGvvdfH9DgbUHaMrdYENHrL8ZI3B
+         xuBFXrSEFviwHN0ji7Nt2sM0QRiJWPqU/UKSfauq8dYxzx0if5N4pH/MLK4wr9Gyl3
+         P+YE5V/aiSHerqgcIO9IQlBWEXn/gedboHoqh8Wqd9bRqU9AHRinnmFUvLG6oUunNo
+         L14s0yhubBtb357g1uqlucmJVaT2pAkoc2A4Rf4epcDl4AVrzTObABzFviIXY6pP2z
+         zjhjs8PCS7sIBO4NoGBeoa5Bv1Y3wMVpCu1biGo/dIK9yGx3HGs93hXyng8bl4zzLw
+         5iEnZTbbVvFPw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,11 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Akira Yokosawa <akiyks@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/10] rculist: Replace reference to atomic_ops.rst
-Date:   Wed,  3 Mar 2021 16:00:13 -0800
-Message-Id: <20210304000019.22459-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/10] rcu: Fix kfree_rcu() docbook errors
+Date:   Wed,  3 Mar 2021 16:00:14 -0800
+Message-Id: <20210304000019.22459-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210303235958.GA22373@paulmck-ThinkPad-P72>
 References: <20210303235958.GA22373@paulmck-ThinkPad-P72>
@@ -43,33 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Akira Yokosawa <akiyks@gmail.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-The hlist_nulls_for_each_entry_rcu() docbook header references the
-atomic_ops.rst file, which was removed in commit f0400a77ebdc ("atomic:
-Delete obsolete documentation").  This commit therefore substitutes a
-section in memory-barriers.txt discussing the use of barrier() in loops.
+After commit 5130b8fd0690 ("rcu: Introduce kfree_rcu() single-argument macro"),
+kernel-doc now emits two warnings:
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+	./include/linux/rcupdate.h:884: warning: Excess function parameter 'ptr' description in 'kfree_rcu'
+	./include/linux/rcupdate.h:884: warning: Excess function parameter 'rhf' description in 'kfree_rcu'
+
+This commit added some macro magic in order to call two different versions
+of kfree_rcu(), the first having just one argument and the second having
+two arguments.  That makes it difficult to document the kfree_rcu() arguments
+in the docboook header.
+
+In order to make clearer that this macro accepts optional arguments,
+this commit uses macro concatenation so that this macro changes from:
+	#define kfree_rcu kvfree_rcu
+
+to:
+	#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
+
+That not only helps kernel-doc understand the macro arguments, but also
+provides a better C definition that makes clearer that the first argument
+is mandatory and the second one is optional.
+
+Fixes: 5130b8fd0690 ("rcu: Introduce kfree_rcu() single-argument macro")
+Tested-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rculist_nulls.h | 2 +-
+ include/linux/rcupdate.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index ff3e947..d8afdb8 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -161,7 +161,7 @@ static inline void hlist_nulls_add_fake(struct hlist_nulls_node *n)
-  *
-  * The barrier() is needed to make sure compiler doesn't cache first element [1],
-  * as this loop can be restarted [2]
-- * [1] Documentation/core-api/atomic_ops.rst around line 114
-+ * [1] Documentation/memory-barriers.txt around line 1533
-  * [2] Documentation/RCU/rculist_nulls.rst around line 146
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index bd04f72..5cc6dea 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -881,7 +881,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * The BUILD_BUG_ON check must not involve any function calls, hence the
+  * checks are done in macros here.
   */
- #define hlist_nulls_for_each_entry_rcu(tpos, pos, head, member)			\
+-#define kfree_rcu kvfree_rcu
++#define kfree_rcu(ptr, rhf...) kvfree_rcu(ptr, ## rhf)
+ 
+ /**
+  * kvfree_rcu() - kvfree an object after a grace period.
 -- 
 2.9.5
 
