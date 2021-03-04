@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD8D32DA12
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D687D32DA11
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238052AbhCDTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238001AbhCDTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 4 Mar 2021 14:07:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39314 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:39316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237790AbhCDTH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237800AbhCDTH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Mar 2021 14:07:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62CA764F6A;
-        Thu,  4 Mar 2021 19:06:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E85764F73;
+        Thu,  4 Mar 2021 19:06:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614884773;
-        bh=iJuDAEs8wTPplNyBhVDGDcDHMjFj9a6SiXNImJt+0aU=;
+        s=k20201202; t=1614884774;
+        bh=aFKUH0krluhOoaCz52J3tQyV7plfsO/cehhJwNOfKq0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h2zvMyu61UKTHM8ucwT0ULSYotGTvim3FItFS9rEiWi4FSVbzBKEGl4Ykqp9xnruH
-         IyS1Lu9GRAKz1UxKXi8W0AGjKEMcnqBNfDO66crLcwi0Ppy1q0ghBfk+LUDfqvg/GB
-         BRn5eZV+DAITwLhe4k7J6E5nBiuNLlHYu9rhDTFq5hf1grBtoMn63waqQJ4pczuwva
-         MDJjAW4KH+qmAIYAd4PvIAbil52I1bJMdAy3FVUtUpeIiTfmlqZq0IPpXgRH4WmWM9
-         fQW5JwreeLRx+Us/AFWnbJw/AYi/BXU80UxcIORGSNXOkrYWsz1DAhcMk2zfQbc8/1
-         spaaGi4dbe0Lw==
+        b=ENINXNEyIy6I/ZUhjh43mh2IEjQi8cyXnPYnYJnVlwf8tLKGgKWKrsuzzIDHhpZGU
+         A/tBpy+ayLdUWpZJ2gMAADDhSWouB8zxvQGobbofu52s3I9HOPlijc/EpQzXAl+Pno
+         IznOrEhHq/DbNxMq0kZn8DSxccnie5BV+zYFaW6x3Gx3Wt6U08cyFvEqzPwAqQ9GqK
+         rKvk/TuXi1W1am3DTIFF8XdON7r8ZQoGGsNEtsaZRL5n8B2bw29InYHAoKHn5V1LQq
+         rAASBhyklBOIgey6aUCvLJony1UHPWfJcH0dcMPbQ/amlCjveHsLu4s/lAlLrAHgea
+         goo1vpGRxRgKw==
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v3 07/11] kentry: Make entry/exit_to_user_mode() arm64-only
-Date:   Thu,  4 Mar 2021 11:06:00 -0800
-Message-Id: <e8ad39b0e268caec5cc9ff52371438badedd0737.1614884673.git.luto@kernel.org>
+Subject: [PATCH v3 08/11] entry: Make CONFIG_DEBUG_ENTRY available outside x86
+Date:   Thu,  4 Mar 2021 11:06:01 -0800
+Message-Id: <d5b13da88adf4e732a07fe709263e572cb5ca8de.1614884673.git.luto@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1614884673.git.luto@kernel.org>
 References: <cover.1614884673.git.luto@kernel.org>
@@ -40,113 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-exit_to_user_mode() does part, but not all, of the exit-to-user-mode work.
-It's used only by arm64, and arm64 should stop using it (hint, hint!).
-Compile it out on other architectures to minimize the chance of error.
+In principle, the generic entry code is generic, and the goal is to use it
+in many architectures once it settles down more.  Move CONFIG_DEBUG_ENTRY
+to the generic config so that it can be used in the generic entry code and
+not just in arch/x86.
 
-enter_from_user_mode() is a legacy way to spell
-kentry_enter_from_user_mode().  It's also only used by arm64.  Give it
-the same treatment.
+Disable it on arm64.  arm64 uses some but not all of the kentry
+code, and trying to debug the resulting state machine will be painful.
+arm64 can turn it back on when it starts using the entire generic
+path.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- include/linux/entry-common.h | 34 ++++++----------------------------
- kernel/entry/common.c        |  4 ++++
- 2 files changed, 10 insertions(+), 28 deletions(-)
+ arch/x86/Kconfig.debug | 10 ----------
+ lib/Kconfig.debug      | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index 5287c6c15a66..a75374f87258 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -97,26 +97,15 @@ static inline __must_check int arch_syscall_enter_tracehook(struct pt_regs *regs
- }
- #endif
+diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
+index 80b57e7f4947..a5a52133730c 100644
+--- a/arch/x86/Kconfig.debug
++++ b/arch/x86/Kconfig.debug
+@@ -170,16 +170,6 @@ config CPA_DEBUG
+ 	help
+ 	  Do change_page_attr() self-tests every 30 seconds.
  
-+#ifdef CONFIG_ARM64
- /**
-  * enter_from_user_mode - Establish state when coming from user mode
-  *
-- * Syscall/interrupt entry disables interrupts, but user mode is traced as
-- * interrupts enabled. Also with NO_HZ_FULL RCU might be idle.
-+ * Legacy variant of kentry_enter_from_user_mode().  Used only by arm64.
-  *
-- * 1) Tell lockdep that interrupts are disabled
-- * 2) Invoke context tracking if enabled to reactivate RCU
-- * 3) Trace interrupts off state
-- *
-- * Invoked from architecture specific syscall entry code with interrupts
-- * disabled. The calling code has to be non-instrumentable. When the
-- * function returns all state is correct and interrupts are still
-- * disabled. The subsequent functions can be instrumented.
-- *
-- * This is invoked when there is architecture specific functionality to be
-- * done between establishing state and enabling interrupts. The caller must
-- * enable interrupts before invoking syscall_enter_from_user_mode_work().
-  */
- void enter_from_user_mode(struct pt_regs *regs);
-+#endif
+-config DEBUG_ENTRY
+-	bool "Debug low-level entry code"
+-	depends on DEBUG_KERNEL
+-	help
+-	  This option enables sanity checks in x86's low-level entry code.
+-	  Some of these sanity checks may slow down kernel entries and
+-	  exits or otherwise impact performance.
+-
+-	  If unsure, say N.
+-
+ config DEBUG_NMI_SELFTEST
+ 	bool "NMI Selftest"
+ 	depends on DEBUG_KERNEL && X86_LOCAL_APIC
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 7937265ef879..76549c8afa8a 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1411,6 +1411,17 @@ config CSD_LOCK_WAIT_DEBUG
  
- /**
-  * kentry_syscall_begin - Prepare to invoke a syscall handler
-@@ -261,25 +250,14 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
- }
- #endif
+ endmenu # lock debugging
  
-+#ifdef CONFIG_ARM64
- /**
-  * exit_to_user_mode - Fixup state when exiting to user mode
-  *
-- * Syscall/interrupt exit enables interrupts, but the kernel state is
-- * interrupts disabled when this is invoked. Also tell RCU about it.
-- *
-- * 1) Trace interrupts on state
-- * 2) Invoke context tracking if enabled to adjust RCU state
-- * 3) Invoke architecture specific last minute exit code, e.g. speculation
-- *    mitigations, etc.: arch_exit_to_user_mode()
-- * 4) Tell lockdep that interrupts are enabled
-- *
-- * Invoked from architecture specific code when syscall_exit_to_user_mode()
-- * is not suitable as the last step before returning to userspace. Must be
-- * invoked with interrupts disabled and the caller must be
-- * non-instrumentable.
-- * The caller has to invoke syscall_exit_to_user_mode_work() before this.
-+ * Does the latter part of irqentry_exit_to_user_mode().  Only used by arm64.
-  */
- void exit_to_user_mode(void);
-+#endif
- 
- /**
-  * kentry_syscall_end - Finish syscall processing
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 800ad406431b..4ba82c684189 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -25,10 +25,12 @@ static __always_inline void __enter_from_user_mode(struct pt_regs *regs)
- 	instrumentation_end();
- }
- 
-+#ifdef CONFIG_ARM64
- void noinstr enter_from_user_mode(struct pt_regs *regs)
- {
- 	__enter_from_user_mode(regs);
- }
-+#endif
- 
- static inline void syscall_enter_audit(struct pt_regs *regs, long syscall)
- {
-@@ -106,10 +108,12 @@ static __always_inline void __exit_to_user_mode(void)
- 	lockdep_hardirqs_on(CALLER_ADDR0);
- }
- 
-+#ifdef CONFIG_ARM64
- void noinstr exit_to_user_mode(void)
- {
- 	__exit_to_user_mode();
- }
-+#endif
- 
- /* Workaround to allow gradual conversion of architecture code */
- void __weak arch_do_signal_or_restart(struct pt_regs *regs, bool has_signal) { }
++config DEBUG_ENTRY
++	bool "Debug low-level entry code"
++	depends on DEBUG_KERNEL
++	depends on !ARM64
++	help
++	  This option enables sanity checks in the low-level entry code.
++	  Some of these sanity checks may slow down kernel entries and
++	  exits or otherwise impact performance.
++
++	  If unsure, say N.
++
+ config TRACE_IRQFLAGS
+ 	depends on TRACE_IRQFLAGS_SUPPORT
+ 	bool
 -- 
 2.29.2
 
