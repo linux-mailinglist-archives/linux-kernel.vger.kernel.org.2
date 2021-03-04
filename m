@@ -2,137 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3450032CBA2
+	by mail.lfdr.de (Postfix) with ESMTP id 7F31932CBA3
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbhCDEsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:48:25 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48130 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233857AbhCDEsH (ORCPT
+        id S233911AbhCDEs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:48:57 -0500
+Received: from rcdn-iport-3.cisco.com ([173.37.86.74]:24687 "EHLO
+        rcdn-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233912AbhCDEsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:48:07 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244jp9U053936;
-        Wed, 3 Mar 2021 22:45:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614833151;
-        bh=u9Fq9fIcV8m7q8E+GxjFecB7Rn7qfqMQABRRfIQPQ20=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=U7AUjuUC2GePB6TOCvKlXOErPWvIBabL0u2hKgcX4tjWItsT1YShQ5PJG6BwvLFC2
-         1a0PODXcFRL9A1MxGhkd4fuLPd0aA3/bt7fBsNqfdIQqOvTjlxlOGLmnjqGFZ4APga
-         0LXrjlI+JQScEtebPVQZALC1mT58YCwqY5OfnAP4=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244jpKF074566
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 3 Mar 2021 22:45:51 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
- 2021 22:45:51 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 3 Mar 2021 22:45:51 -0600
-Received: from [10.250.233.159] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244jmBx090114;
-        Wed, 3 Mar 2021 22:45:49 -0600
-Subject: Re: [PATCH v2 1/9] dt-bindings: phy: ti,phy-j721e-wiz: Add bindings
- for AM64 SERDES Wrapper
-To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Peter Rosin <peda@axentia.se>,
-        Swapnil Jakhade <sjakhade@cadence.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-References: <20210222112314.10772-1-kishon@ti.com>
- <20210222112314.10772-2-kishon@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <8fc3e9a0-573e-01b1-1054-55d3c19e42f6@ti.com>
-Date:   Thu, 4 Mar 2021 10:15:47 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 3 Mar 2021 23:48:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=6395; q=dns/txt; s=iport;
+  t=1614833332; x=1616042932;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nvJpEND9kOGoIR+3S0EgBmAZax9IS2XBul8csiRffVQ=;
+  b=K+4TUeTipuya+hAge3zwZookA5maCPpZcIruQoPvJspI/tNKam0Ql6en
+   OzsKxFzzXiPI6GI0g2STwqtwVLAuKbAOspiiPeMnDJj7L5ssPYTmkcNDO
+   YLA5ipbhYUbT0H77/arghZNsoX5aS9HboS1fSO/GXoZBkiVwViFzp66D3
+   U=;
+X-IronPort-AV: E=Sophos;i="5.81,221,1610409600"; 
+   d="scan'208";a="843437001"
+Received: from alln-core-8.cisco.com ([173.36.13.141])
+  by rcdn-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 04 Mar 2021 04:48:10 +0000
+Received: from zorba.cisco.com ([10.24.7.178])
+        by alln-core-8.cisco.com (8.15.2/8.15.2) with ESMTP id 1244m4Wv015988;
+        Thu, 4 Mar 2021 04:48:07 GMT
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        ob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     xe-linux-external@cisco.com, Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] CMDLINE: add generic builtin command line
+Date:   Wed,  3 Mar 2021 20:47:58 -0800
+Message-Id: <20210304044803.812204-1-danielwa@cisco.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210222112314.10772-2-kishon@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.7.178, [10.24.7.178]
+X-Outbound-Node: alln-core-8.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+This code allows architectures to use a generic builtin command line.
+The state of the builtin command line options across architecture is
+diverse. On x86 and mips they have pretty much the same code and the
+code prepends the builtin command line onto the boot loader provided
+one. On powerpc there is only a builtin override and nothing else.
 
-On 22/02/21 4:53 pm, Kishon Vijay Abraham I wrote:
-> Add bindings for AM64 SERDES Wrapper.
+The code in this commit unifies the code into a generic
+header file under the CONFIG_GENERIC_CMDLINE option. When this
+option is enabled the architecture can call the cmdline_add_builtin()
+to add the builtin command line.
 
-I've fixed all your comments provided in the previous version. Can you
-review this and give your ACKs please?
+Cc: xe-linux-external@cisco.com
+Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+---
+ include/linux/cmdline.h | 75 +++++++++++++++++++++++++++++++++++++++++
+ init/Kconfig            | 68 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 143 insertions(+)
+ create mode 100644 include/linux/cmdline.h
 
-Best Regards,
-Kishon
+diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+new file mode 100644
+index 000000000000..f44011d1a9ee
+--- /dev/null
++++ b/include/linux/cmdline.h
+@@ -0,0 +1,75 @@
++#ifndef _LINUX_CMDLINE_H
++#define _LINUX_CMDLINE_H
++
++/*
++ *
++ * Copyright (C) 2006,2021. Cisco Systems, Inc.
++ *
++ * Generic Append/Prepend cmdline support.
++ */
++
++#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_CMDLINE_BOOL)
++
++#ifndef CONFIG_CMDLINE_OVERRIDE
++/*
++ * This function will append or prepend a builtin command line to the command
++ * line provided by the bootloader. Kconfig options can be used to alter
++ * the behavior of this builtin command line.
++ * @dest: The destination of the final appended/prepended string
++ * @src: The starting string or NULL if there isn't one.
++ * @tmp: temporary space used for prepending
++ * @length: the maximum length of the strings above.
++ */
++static inline void
++__cmdline_add_builtin(char *dest, const char *src, char *tmp, unsigned long length,
++		size_t (*strlcpy)(char *dest, const char *src, size_t size),
++		size_t (*strlcat)(char *dest, const char *src, size_t count)
++		)
++{
++	if (src != dest && src != NULL) {
++		strlcpy(dest, " ", length);
++		strlcat(dest, src, length);
++	}
++
++	if (sizeof(CONFIG_CMDLINE_APPEND) > 1)
++		strlcat(dest, " " CONFIG_CMDLINE_APPEND, length);
++
++	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) {
++		strlcpy(tmp, CONFIG_CMDLINE_PREPEND " ", length);
++		strlcat(tmp, dest, length);
++		strlcpy(dest, tmp, length);
++	}
++}
++
++#define cmdline_add_builtin_custom(dest, src, length, label, strlcpy, strlcat) 			\
++{ 												\
++	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) { 						\
++		static label char cmdline_tmp_space[length]; 					\
++		__cmdline_add_builtin(dest, src, cmdline_tmp_space, length, strlcpy, strlcat); 	\
++	} else if (sizeof(CONFIG_CMDLINE_APPEND) > 1) { 					\
++		__cmdline_add_builtin(dest, src, NULL, length, strlcpy, strlcat); 		\
++	} 											\
++}
++#define cmdline_add_builtin(dest, src, length)	                           \
++	cmdline_add_builtin_custom(dest, src, length, __initdata, &strlcpy, &strlcat)
++#else
++#define cmdline_add_builtin(dest, src, length)				   \
++{								  	   \
++	strlcpy(dest, CONFIG_CMDLINE_PREPEND " " CONFIG_CMDLINE_APPEND,    \
++		length);		   				   \
++}
++#endif /* !CONFIG_CMDLINE_OVERRIDE */
++
++#else
++#define cmdline_add_builtin_custom(dest, src, length, label, strlcpy, strlcat) { \
++	if (src != NULL) 							 \
++		strlcpy(dest, src, length);	 				 \
++}
++
++#define cmdline_add_builtin(dest, src, length) { 				\
++	cmdline_add_builtin_custom(dest, src, length, strlcpy, strlcat); 	\
++}
++#endif /* CONFIG_GENERIC_CMDLINE */
++
++
++#endif /* _LINUX_CMDLINE_H */
+diff --git a/init/Kconfig b/init/Kconfig
+index 29ad68325028..28363ab07cd4 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2032,6 +2032,74 @@ config PROFILING
+ config TRACEPOINTS
+ 	bool
+ 
++config GENERIC_CMDLINE
++	bool
++
++if GENERIC_CMDLINE
++
++config CMDLINE_BOOL
++	bool "Built-in kernel command line"
++	help
++	  Allow for specifying boot arguments to the kernel at
++	  build time.  On some systems (e.g. embedded ones), it is
++	  necessary or convenient to provide some or all of the
++	  kernel boot arguments with the kernel itself (that is,
++	  to not rely on the boot loader to provide them.)
++
++	  To compile command line arguments into the kernel,
++	  set this option to 'Y', then fill in the
++	  the boot arguments in CONFIG_CMDLINE.
++
++	  Systems with fully functional boot loaders (i.e. non-embedded)
++	  should leave this option set to 'N'.
++
++config CMDLINE_APPEND
++	string "Built-in kernel command string append"
++	depends on CMDLINE_BOOL
++	default ""
++	help
++	  Enter arguments here that should be compiled into the kernel
++	  image and used at boot time.  If the boot loader provides a
++	  command line at boot time, this string is appended to it to
++	  form the full kernel command line, when the system boots.
++
++	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
++	  change this behavior.
++
++	  In most cases, the command line (whether built-in or provided
++	  by the boot loader) should specify the device for the root
++	  file system.
++
++config CMDLINE_PREPEND
++	string "Built-in kernel command string prepend"
++	depends on CMDLINE_BOOL
++	default ""
++	help
++	  Enter arguments here that should be compiled into the kernel
++	  image and used at boot time.  If the boot loader provides a
++	  command line at boot time, this string is prepended to it to
++	  form the full kernel command line, when the system boots.
++
++	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
++	  change this behavior.
++
++	  In most cases, the command line (whether built-in or provided
++	  by the boot loader) should specify the device for the root
++	  file system.
++
++config CMDLINE_OVERRIDE
++	bool "Built-in command line overrides boot loader arguments"
++	depends on CMDLINE_BOOL
++	help
++	  Set this option to 'Y' to have the kernel ignore the boot loader
++	  command line, and use ONLY the built-in command line. In this case
++	  append and prepend strings are concatenated to form the full
++	  command line.
++
++	  This is used to work around broken boot loaders.  This should
++	  be set to 'N' under normal conditions.
++endif
++
+ endmenu		# General setup
+ 
+ source "arch/Kconfig"
+-- 
+2.25.1
 
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../bindings/phy/ti,phy-j721e-wiz.yaml        | 10 ++++++---
->  include/dt-bindings/phy/phy-ti.h              | 21 +++++++++++++++++++
->  2 files changed, 28 insertions(+), 3 deletions(-)
->  create mode 100644 include/dt-bindings/phy/phy-ti.h
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-> index c33e9bc79521..bf431f98e6ea 100644
-> --- a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-> +++ b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-> @@ -12,9 +12,10 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    enum:
-> -      - ti,j721e-wiz-16g
-> -      - ti,j721e-wiz-10g
-> +    oneOf:
-> +      - const: ti,j721e-wiz-16g
-> +      - const: ti,j721e-wiz-10g
-> +      - const: ti,am64-wiz-10g
->  
->    power-domains:
->      maxItems: 1
-> @@ -42,6 +43,9 @@ properties:
->    "#reset-cells":
->      const: 1
->  
-> +  "#clock-cells":
-> +    const: 1
-> +
->    ranges: true
->  
->    assigned-clocks:
-> diff --git a/include/dt-bindings/phy/phy-ti.h b/include/dt-bindings/phy/phy-ti.h
-> new file mode 100644
-> index 000000000000..ad955d3a56b4
-> --- /dev/null
-> +++ b/include/dt-bindings/phy/phy-ti.h
-> @@ -0,0 +1,21 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * This header provides constants for TI SERDES.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_TI_SERDES
-> +#define _DT_BINDINGS_TI_SERDES
-> +
-> +/* Clock index for output clocks from WIZ */
-> +
-> +/* MUX Clocks */
-> +#define TI_WIZ_PLL0_REFCLK	0
-> +#define TI_WIZ_PLL1_REFCLK	1
-> +#define TI_WIZ_REFCLK_DIG	2
-> +
-> +/* Reserve index here for future additions */
-> +
-> +/* MISC Clocks */
-> +#define TI_WIZ_PHY_EN_REFCLK	16
-> +
-> +#endif /* _DT_BINDINGS_TI_SERDES */
-> 
