@@ -2,208 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1653532D96E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B3A32D973
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbhCDS0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234236AbhCDS0A (ORCPT
+        id S234576AbhCDS23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:28:29 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:55142 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234559AbhCDS20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:26:00 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B418C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:25:20 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id k2so25726109ili.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:25:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=7HgUeD5bwOAzWP+7Vvt95HJxa5oED3iD/QXXgkxTfuw=;
-        b=Lw9zWDpzVQL6diXW1yWmA1qg8USl85oru0diHvjwbksPBzyuZcLx6kFL6baPA1LwLj
-         LFnS1+7mzUdVzMhq8ZrGUrtsttJC2H+usnC3ogBZX9eW3H8pL4B43KMO/82uJ7RcKmA+
-         Bai662H7nONhiylejAJgzYWH5ME+6I7/t/nMGimipsBLvVq97D3bP0ohF98P4KRGc4ov
-         15js4LV5Uaovz13vI+ETN6tAo3zjE04lgRti/ON+VpGU/8XPFkqErgqIs7CcttMSrCII
-         5UnAcM1wb1bZNtxGvYeVp0p9YF1oaIEMyLdvO/I2yL1IO3QukHCq88LPuMin3lgMRZcn
-         lOkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=7HgUeD5bwOAzWP+7Vvt95HJxa5oED3iD/QXXgkxTfuw=;
-        b=Tl9Ak88uhsOgJ0zBaTrLcjAqXbhvkyhMe4bliM2q5TsB8N+vmXTSB/0Z0jWDYkS8u+
-         p+HxDlwouoKgefSdfsG3mZUs2+ldQnJFV4+VrpFGDvo+Y+QzgzCJCRe9G6e0zL72ozez
-         tQsb+6XufBBqF5a4Mh5XypRd7KXOuydPR99P4NWZZsY/gQDJNHA5YZlyVNmlImADhMhn
-         Iy3eOg8ID8oawk4Nx9JDWx8pyrW3Sg16WGDCNmSUxUBJk8FF7u/6VvAtZz9Cilq70tRb
-         7peX0QiE5ydEY//SU0gEKYgr403bVUPqKKXRfeRtyBzWhnbHvekeBpT55jTnxLUl72jq
-         orVA==
-X-Gm-Message-State: AOAM533ysz4UKAZ3/PaGTky6wBTkMnQLW1r+E5JYawYrWNMl0SE1KSYY
-        81Gs5BjQxRKSEl4mRjP0lwfs7Y9acKU3MmHJtvk=
-X-Google-Smtp-Source: ABdhPJzhXTm9SuTeONXi/X7SWOA6c8STfxv9um06to7v2eslll3wP/8jHfyXmIPsjvMBYVQci5Mlh6ycaMwpcn6Cabg=
-X-Received: by 2002:a92:444e:: with SMTP id a14mr4969120ilm.215.1614882319769;
- Thu, 04 Mar 2021 10:25:19 -0800 (PST)
+        Thu, 4 Mar 2021 13:28:26 -0500
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 04 Mar 2021 10:27:36 -0800
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 04 Mar 2021 10:27:35 -0800
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id CD0E9174F; Thu,  4 Mar 2021 10:27:35 -0800 (PST)
+Date:   Thu, 4 Mar 2021 10:27:35 -0800
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] regmap-irq: Add support for peripheral offsets
+Message-ID: <20210304182735.GA31587@codeaurora.org>
+References: <cover.1603402280.git.gurus@codeaurora.org>
+ <40581a58bd16442f03db1abea014ca1eedc94d3c.1603402280.git.gurus@codeaurora.org>
+ <20201112193312.GE4742@sirena.org.uk>
 MIME-Version: 1.0
-References: <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
- <20210303224653.2579656-1-joshdon@google.com> <CAKwvOdmijctJfM3gNfwEVjaQyp3LZkhnAwgsT7EBhsSBJyfLAA@mail.gmail.com>
-In-Reply-To: <CAKwvOdmijctJfM3gNfwEVjaQyp3LZkhnAwgsT7EBhsSBJyfLAA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 4 Mar 2021 19:24:43 +0100
-Message-ID: <CA+icZUUw0T2NpTcN4witbzYr1L7dF=rHKWq14ji_426G02QoEw@mail.gmail.com>
-Subject: Re: [PATCH v2] sched: Optimize __calc_delta.
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Clement Courbet <courbet@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Bill Wendling <morbo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112193312.GE4742@sirena.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 6:34 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Wed, Mar 3, 2021 at 2:48 PM Josh Don <joshdon@google.com> wrote:
-> >
-> > From: Clement Courbet <courbet@google.com>
-> >
-> > A significant portion of __calc_delta time is spent in the loop
-> > shifting a u64 by 32 bits. Use `fls` instead of iterating.
-> >
-> > This is ~7x faster on benchmarks.
-> >
-> > The generic `fls` implementation (`generic_fls`) is still ~4x faster
-> > than the loop.
-> > Architectures that have a better implementation will make use of it. Fo=
-r
-> > example, on X86 we get an additional factor 2 in speed without dedicate=
-d
-> > implementation.
-> >
-> > On gcc, the asm versions of `fls` are about the same speed as the
-> > builtin. On clang, the versions that use fls are more than twice as
-> > slow as the builtin. This is because the way the `fls` function is
-> > written, clang puts the value in memory:
-> > https://godbolt.org/z/EfMbYe. This bug is filed at
-> > https://bugs.llvm.org/show_bug.cgi?id=3D49406.
->
-> Hi Josh, Thanks for helping get this patch across the finish line.
-> Would you mind updating the commit message to point to
-> https://bugs.llvm.org/show_bug.cgi?id=3D20197?
->
-> >
-> > ```
-> > name                                   cpu/op
-> > BM_Calc<__calc_delta_loop>             9.57ms =C2=B112%
-> > BM_Calc<__calc_delta_generic_fls>      2.36ms =C2=B113%
-> > BM_Calc<__calc_delta_asm_fls>          2.45ms =C2=B113%
-> > BM_Calc<__calc_delta_asm_fls_nomem>    1.66ms =C2=B112%
-> > BM_Calc<__calc_delta_asm_fls64>        2.46ms =C2=B113%
-> > BM_Calc<__calc_delta_asm_fls64_nomem>  1.34ms =C2=B115%
-> > BM_Calc<__calc_delta_builtin>          1.32ms =C2=B111%
-> > ```
-> >
-> > Signed-off-by: Clement Courbet <courbet@google.com>
-> > Signed-off-by: Josh Don <joshdon@google.com>
-> > ---
-> >  kernel/sched/fair.c  | 19 +++++++++++--------
-> >  kernel/sched/sched.h |  1 +
-> >  2 files changed, 12 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 8a8bd7b13634..a691371960ae 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -229,22 +229,25 @@ static void __update_inv_weight(struct load_weigh=
-t *lw)
-> >  static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct l=
-oad_weight *lw)
-> >  {
-> >         u64 fact =3D scale_load_down(weight);
-> > +       u32 fact_hi =3D (u32)(fact >> 32);
-> >         int shift =3D WMULT_SHIFT;
-> > +       int fs;
-> >
-> >         __update_inv_weight(lw);
-> >
-> > -       if (unlikely(fact >> 32)) {
-> > -               while (fact >> 32) {
-> > -                       fact >>=3D 1;
-> > -                       shift--;
-> > -               }
-> > +       if (unlikely(fact_hi)) {
-> > +               fs =3D fls(fact_hi);
-> > +               shift -=3D fs;
-> > +               fact >>=3D fs;
-> >         }
-> >
-> >         fact =3D mul_u32_u32(fact, lw->inv_weight);
-> >
-> > -       while (fact >> 32) {
-> > -               fact >>=3D 1;
-> > -               shift--;
-> > +       fact_hi =3D (u32)(fact >> 32);
-> > +       if (fact_hi) {
-> > +               fs =3D fls(fact_hi);
-> > +               shift -=3D fs;
-> > +               fact >>=3D fs;
-> >         }
-> >
-> >         return mul_u64_u32_shr(delta_exec, fact, shift);
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index 10a1522b1e30..714af71cf983 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -36,6 +36,7 @@
-> >  #include <uapi/linux/sched/types.h>
-> >
-> >  #include <linux/binfmts.h>
-> > +#include <linux/bitops.h>
->
-> This hunk of the patch is curious.  I assume that bitops.h is needed
-> for fls(); if so, why not #include it in kernel/sched/fair.c?
-> Otherwise this potentially hurts compile time for all TUs that include
-> kernel/sched/sched.h.
->
+Hi Mark,
 
-I have v2 as-is in my custom patchset and booted right now on bare metal.
+Sorry for the delay in my response.
 
-As Nick points out moving the include makes sense to me.
-We have a lot of include at the wrong places increasing build-time.
+On Thu, Nov 12, 2020 at 07:33:12PM +0000, Mark Brown wrote:
+> It is difficult to follow what this change is supposed to do, in part
+> because it looks like this is in fact two separate changes, one adding
+> the _base feature and another adding the polarity feature.  These should
+> each be in a separate patch if that is the case, and I think each needs
+> a clearer changelog - I'm not entirely sure what the polarity feature is
+> supposed to do.  Nothing here says what POLARITY_HI and POLARITY_LO are,
+> how they interact or anything.
 
-- Sedat -
+Sure, I can split this into two patches for easier review.
 
-> >  #include <linux/blkdev.h>
-> >  #include <linux/compat.h>
-> >  #include <linux/context_tracking.h>
-> > --
-> > 2.30.1.766.gb4fecdf3b7-goog
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/clang-built-linux/CAKwvOdmijctJfM3gNfwEVjaQyp3LZkhnAwgsT7EBhsSBJyfLAA%40m=
-ail.gmail.com.
+The POLARITY_HI and POLARITY_LO registers were described very briefly in
+the cover letter. If an interrupt is already configured as either edge-
+or level-triggered, setting the corresponding bit for it in the
+POLARITY_HI register further configures it as rising-edge or level-high
+triggered (as the case may be), while setting the same bit in
+POLARITY_LO further configures it as falling-edge or level-low
+triggered. I could certainly add this information to the commit message
+as well.
+
+> 
+> For the address offsets I'm not sure that this is the best way to
+> represent things.  It looks like the hardware this is trying to describe
+> is essentially a bunch of separate interrupt controllers that happen to
+> share an upstream interrupt
+
+Sorry but isn't this essentially the same as what the framework already knows as
+the "sub-irq" concept, with the key difference that the register stride
+is not fixed? Everything else is the same (except for a couple of minor
+points noted below) - a main IRQ register that indicates sub-irq blocks
+that have unhandled interrupts, as well as interrupt handling and
+servicing.
+
+The two minor differences are:
+  - type_buf handling in regmap_irq_set_type() for IRQ_TYPE_LEVEL_HIGH and
+    IRQ_TYPE_LEVEL_LOW
+  - Two extra registers: POLARITY_HI and POLARITY_LO
+
+> clearer if at least the implementation looked like this.  Instead of
+> having to check for this array of offsets at every use point (which is
+> going to be rarely used and hence prone to bugs)
+
+Well, using irq_reg_stride already does exactly this - calculating the
+right register to access at every use point, as an offset from the _base
+register (status, ack, type, et c.). Peripheral offsets would just be
+another way of calculating the right register, that's all. And we could
+have a macro as well.
+
+> we'd have a set of separate regmap-irqs and then we'd mostly only have
+> to loop through them on handling, the bulk of the implementation
+> wouldn't have to worry about this special case.
+> 
+> Historically genirq didn't support sharing threaded interrupts, if
+> that's not changed we'd need to open code everything inside regmap-irq
+> but it would be doable, or ideally genirq could grow this feature.  If
+> it's done inside regmap you'd have a separate API that took an array of
+> regmap-irq configurations instead of just one and then when an interrupt
+> is delivered just loops through all of them handling it.  A quick scan
+> through the interrupt code suggests it might be able to cope with shared
+> IRQs now though which would make life easier.
+
+Sure, I can look into how this approach would look like, but given that
+the QCOM register arrangement of main vs sub-irq is essentially the same
+as what the framework currently understands, couldn't we simply have a
+macro to change the way the right register offset is calculated
+(irq_reg_stride vs. peripheral offsets)?
+
+Also, could you elaborate more on the genirq route? I'm not sure where
+to start looking to evaluate one route vs the other.
+
+Thank you.
+
+Guru Das.
