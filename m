@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378A432DAB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 003FB32DABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237086AbhCDT7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237227AbhCDT7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:59:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237162AbhCDT7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Mar 2021 14:59:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236228AbhCDT7N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:59:13 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F2BC061756;
-        Thu,  4 Mar 2021 11:58:33 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id u125so10843007wmg.4;
-        Thu, 04 Mar 2021 11:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ufO59/K3ib2osgQjLy4qf9rcrYtYFA8DbgdmA9HSULY=;
-        b=LKbzn1c08HAvcPo24SBUhPtBSfAAsG1CJNYoXuZUdp2+xtnXl4pjNE/rpFRyExt6FC
-         cnLiwu5s3AEzZ32fU9q5pLyzMMId0b90TuTMcdO/Ldb3mO3zDNcW+wlohUScoxf0qEY8
-         Xxb6kYy9NGrvUbU+23o8BpaAb6unEcgXvVir6UdS1GeS2HCy4wWmB1ROw2KLW3rsK8LY
-         lp8VvFspCsWder+pUMCFeGF0J23Ltkxco+tBX6AHKkuE0prfO9i8r8omKsdbYjHmi4vg
-         JvE1ImD/mm5qPOzpTAcmpciJnT413Znpxu4Ytrv7f7riR8zHlCOguC+slcF0qTrWBXw4
-         BlkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ufO59/K3ib2osgQjLy4qf9rcrYtYFA8DbgdmA9HSULY=;
-        b=XSHumuzoax8THHQ1NzSzyilvReVRRL5WlceoUomPFSlxldbbVayybttkQ/LbB8Nex7
-         NIGOi7Fy3rK9yyYfM4wAkgcTBPkPvu6pIwDIpO5MVO+9nopDDGLzxSekX2pDo0txsm6X
-         JDsE8zj85t3Bq2BOQeXf7d37/GBuTFnrjunUroRTwVALH3wngPVtpOOJaE/kiozbZHBp
-         aeX0nvJ587zmSDH31oegbejYgsiACf4Ka7SdYo1kkHEQ7Sv4w7mmYwcAsnqJCzp1neX9
-         j2O7JuFQXm7YWl/sXGCP+ERZOFK3Wsu6t/tPFwCz2bjgyQgh8qXE9ujRuIb/IbEKSXRh
-         /gkw==
-X-Gm-Message-State: AOAM530yWMfvH2bLBdTu1z3HC+cZ7wgyJgYdWSTj1OwUZ+NHPzIE42fW
-        X/XxuT80GioxNW33Z401OFBHXe0HunV1zA==
-X-Google-Smtp-Source: ABdhPJwAERYGeI7ldiKI+/ZMbOlbRXBPJZPsgnfu/H+Fy60UEDvzWdTpT6MlRXS1pu9emJ03pOR8bw==
-X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr5000708wml.86.1614887911924;
-        Thu, 04 Mar 2021 11:58:31 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f1f:bb00:f14c:f8a9:e599:34af? (p200300ea8f1fbb00f14cf8a9e59934af.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:f14c:f8a9:e599:34af])
-        by smtp.googlemail.com with ESMTPSA id j125sm716630wmb.44.2021.03.04.11.58.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 11:58:31 -0800 (PST)
-Subject: Re: [PATCH] net: mellanox: mlx5: fix error return code in
- mlx5_fpga_device_start()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>, borisp@nvidia.com,
-        saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210304141814.8508-1-baijiaju1990@gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <cac36164-c8d3-415e-ca43-20b16b57b3fc@gmail.com>
-Date:   Thu, 4 Mar 2021 20:58:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E1064F73;
+        Thu,  4 Mar 2021 19:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614887916;
+        bh=5eVG1QojNvi5xJz0510TStz08VpthyxwTc2HsKYiG14=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FRzQI6ByFfv7SALpWHRZwcT0PxN9SvISIr0q2GP73qW+ZMo4nWYdj5J6KWG+6V603
+         DCOBlq+BjwjCFkKCDkLVjyZe+40VKpIfgmG+ZxGnu3YdHFSyoWeBWP+fIBDYKiUryi
+         E7XrH1hOPD2hsLW8wKuRs2rLMPkwCwlITleYeWgbUJanxe7VdfaDK6uOCaXm1UljQ7
+         zW/qW8Tne2Z464Utz4YUolea9a3KD++b74/P66ts/w7R0neAfMz9ms7wT5HAOvNGox
+         tMgf/QzsJhau867OniE3kL4IzvmQ4A0xWZUYvNhGeP+7VPEBUuTAnY0le8srzTx4sJ
+         D+mB1OcKYgEQg==
+Received: by mail-ej1-f45.google.com with SMTP id w17so3906636ejc.6;
+        Thu, 04 Mar 2021 11:58:36 -0800 (PST)
+X-Gm-Message-State: AOAM533bD06rfF2eKeJ35M5iQ/QaQWEQ0XFgeL4f2dJdN+TGv+y6lCFd
+        aCCBX0ZGm9IDk3tfru0N0GMvTIr0JIN2+prXNg==
+X-Google-Smtp-Source: ABdhPJzzk280RX8Y/hNoVgVVF7BJlQJEkkZZ8rREmHwhKb7GjB7zG9V1c/YqRPom6zwb7aD5tDoPwk42uNMvar/us/c=
+X-Received: by 2002:a17:906:c405:: with SMTP id u5mr6110312ejz.341.1614887914676;
+ Thu, 04 Mar 2021 11:58:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210304141814.8508-1-baijiaju1990@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210222194510.14004-1-noltari@gmail.com> <20210223170006.29558-1-noltari@gmail.com>
+ <20210223170006.29558-2-noltari@gmail.com> <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
+In-Reply-To: <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 4 Mar 2021 13:58:21 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+o73atGxyj2Xpwb8rFj5m0AEQrvJWEyEU1UCXqnm5k1A@mail.gmail.com>
+Message-ID: <CAL_Jsq+o73atGxyj2Xpwb8rFj5m0AEQrvJWEyEU1UCXqnm5k1A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: rng: bcm2835: document reset support
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@protonmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, devicetree@vger.kernel.org,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.03.2021 15:18, Jia-Ju Bai wrote:
-> When mlx5_is_fpga_lookaside() returns a non-zero value, no error 
-> return code is assigned.
-> To fix this bug, err is assigned with -EINVAL as error return code.
-> 
-To me it looks like the current behavior is intentional.
-Did you verify that it's actually an error condition if the
-function returns true? Please don't blindly trust such code checkers.
+On Thu, Mar 4, 2021 at 6:07 AM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Hi Alvaro,
+>
+> On Tue, 2021-02-23 at 18:00 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas wrote=
+:
+> > Some devices may need to perform a reset before using the RNG, such as =
+the
+> > BCM6368.
+> >
+> > Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> > ---
+> >  v3: make resets required if brcm,bcm6368-rng.
+> >  v2: document reset support.
+> >
+> >  .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml b/=
+Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> > index c147900f9041..11c23e1f6988 100644
+> > --- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> > +++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> > @@ -37,6 +37,21 @@ required:
+> >
+> >
+> >  additionalProperties: false
+>
+> I can't claim I fully understand all the meta stuff in shemas, so I gener=
+ally
+> just follow the patterns already available out there. That said, shoudln'=
+t this
+> be at the end, just before the examples? Maybe the cause of that odd warn=
+ing
+> you got there?
 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
-> index 2ce4241459ce..c9e6da97126f 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
-> @@ -198,8 +198,10 @@ int mlx5_fpga_device_start(struct mlx5_core_dev *mdev)
->  	mlx5_fpga_info(fdev, "FPGA card %s:%u\n", mlx5_fpga_name(fpga_id), fpga_id);
->  
->  	/* No QPs if FPGA does not participate in net processing */
-> -	if (mlx5_is_fpga_lookaside(fpga_id))
-> +	if (mlx5_is_fpga_lookaside(fpga_id)) {
-> +		err = -EINVAL;
->  		goto out;
-> +	}
->  
->  	mlx5_fpga_info(fdev, "%s(%d): image, version %u; SBU %06x:%04x version %d\n",
->  		       mlx5_fpga_image_name(fdev->last_oper_image),
-> 
+Yes, 'resets' needs to be defined under 'properties' as
+additionalProperties can't 'see' into if/then schemas. The top level
+needs to define everything and then if/then schema just add additional
+constraints.
 
+>
+> > +if:
+> > +  properties:
+> > +    compatible:
+> > +      enum:
+> > +        - brcm,bcm6368-rng
+> > +then:
+> > +  properties:
+> > +    resets:
+> > +      maxItems: 1
+> > +  required:
+> > +    - resets
+>
+> I belive you can't really make a property required when the bindings for
+> 'brcm,bcm6368-rng' were already defined. This will break the schema for t=
+hose
+> otherwise correct devicetrees.
+
+Right, unless not having the property meant the device never would have wor=
+ked.
+
+Rob
