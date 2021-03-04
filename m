@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2E032D68C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B8232D678
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbhCDP0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
+        id S231596AbhCDPXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:23:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbhCDPZv (ORCPT
+        with ESMTP id S232106AbhCDPXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:25:51 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42885C061756;
-        Thu,  4 Mar 2021 07:25:11 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id q25so23608421lfc.8;
-        Thu, 04 Mar 2021 07:25:11 -0800 (PST)
+        Thu, 4 Mar 2021 10:23:10 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D381C061574;
+        Thu,  4 Mar 2021 07:22:29 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id t29so19154340pfg.11;
+        Thu, 04 Mar 2021 07:22:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aeN2LKdORXb0lZrwnrlpd8qrBTJtdHVZ+ffDq501Us8=;
-        b=i+DknTjhTVuXq7MZUlypiuq2JeQK4/edGuiLVDG8YUHG3exXaY/yG8yLBtjp1r6zwu
-         xBCfPXSbY5SpQFOAV5/at+WrDVti0dDvr/nmHTeoNuGKcqwQTb9WyzERXzyjKwjcl65l
-         bTmQDbzaUFJFusDofGxg4vdMrRxa5XT2maO4+dFgSbuV8fXD9kp+tFctJm2jhtYsdp7W
-         S8HGt333upLNPULnrmgk55nDQT+Ij37chqPpzuj2xfYsTNts9Ah1/lAAoP+MbP4uovbN
-         BtesAzVJ/OW95zoaLiVJFxkR9KR5PuhF2TfQQ1sDbD9+wBteNpPr1N8wmkUkzBIOYP2f
-         PcBA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=atSELy0kJkaLfPDLN0I+MRUbpt/zMrHl2Liz6NDMJ8o=;
+        b=PrNMM0+YxgepB8MISEqtpdazT0tpSXEz4/gop4d9Kyl1hEGe3NtyYr3rR+4fzI1MTQ
+         xb6b8Yjg/5RapHQTMjkeIa3vlSHC92/1xQJ/JVFBt3N3JZUWzxrhLqhWLz2QlVXuvMY6
+         c4vyjweT+SQ+VfpMgC55gAxQzNFdvzE/ysD6o3S9u9iLfhsROC/zco1TeeNYrlH1O3GZ
+         V7KC9GGDoXHsneBZpJrO3yp98EsVnBolCVYRLPaT/8LmPX1l/hZEjUr43TsiJkJXd389
+         GMIU9vPw/hYhEZ+Sm5G9ckYgqGQtLpnz7GCQUCByThqx0biTLLzDaOh396Twb70uJHDa
+         8ZEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aeN2LKdORXb0lZrwnrlpd8qrBTJtdHVZ+ffDq501Us8=;
-        b=KDS8v07OXXQ0s/HyfICTfv67Dec+R++3AFUSrhmcPFgFmAmwfgp0gA/93V2i7IYDCE
-         BS9RbAlaO+d2/5RP+PdvkCGTRL+i/hl+lGI3NmjUfhYMSEppvEJOntZqzeO0gb4NYYZb
-         lBrsOuRzCluPryJ4v3uvLUYMPRMDpOGQTFyhUCyxgcRpCr+vM+aQkgx8uSV0DHY0+hgs
-         EWQyyUqj64/adoumDVSPtrcFsXPGCvk6X8pYvLwM6XSuzEwZhCS3fslkxziXX8QD5DiK
-         ZGVRRK1DA7a1f1YdBHxpxCMvGTWMxNapcfxjGEFiO9nLSj1pxH6j8W8ukKM8S4YKZiF7
-         ZKtQ==
-X-Gm-Message-State: AOAM533QFicX6Hs3i8oh3nl4uIl+M9DcJLX8nDIsSt5SlQZ8gFaDmuiU
-        39pwL41ZETDtZmRionxbLbv64X2gtMFJDNTVGak=
-X-Google-Smtp-Source: ABdhPJwKMUQh9PtBYqbGI/8c5OxKmNVwr0F+4JArX5VTcw9L9vOFzh/5/DLlV1N2jv4ludGo8Dkv0w==
-X-Received: by 2002:a05:6512:906:: with SMTP id e6mr2644644lft.224.1614871509714;
-        Thu, 04 Mar 2021 07:25:09 -0800 (PST)
-Received: from localhost.localdomain ([94.103.235.167])
-        by smtp.gmail.com with ESMTPSA id d8sm467647ljc.129.2021.03.04.07.25.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 07:25:09 -0800 (PST)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     alex.aring@gmail.com, stefan@datenfreihafen.org,
-        davem@davemloft.net
-Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
-Subject: [PATCH v2] net: mac802154: Fix general protection fault
-Date:   Thu,  4 Mar 2021 18:21:25 +0300
-Message-Id: <20210304152125.1052825-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAB_54W7v1Dk9KjytfO8hAGfiqPJ6qO0SdgwDQ-s4ybA2yvuoCg@mail.gmail.com>
-References: <CAB_54W7v1Dk9KjytfO8hAGfiqPJ6qO0SdgwDQ-s4ybA2yvuoCg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=atSELy0kJkaLfPDLN0I+MRUbpt/zMrHl2Liz6NDMJ8o=;
+        b=EAQ9Uy+D7yeOG3Qhh+PZnIdYlj20aWCxOAgcEuN3I/if43xF4w6Zat3TebbFDRzERC
+         cnH5Plm+my3Xa2PZTfNsWH6/AhF8Tf9cX4zyi0yWFE+EFDURH5fK6Gv3c5ZnyNM+nbig
+         ixMNlCmqHYWmVUhBIZm7Lbw2mkZC61Z5IBcMscfBj/X08jtfhTHh4gQZ6I2NAU7mDsVk
+         +VgDSXXcG2q+T6T9FoZNKmr1V8403BxeXgltAGQhtywihOXQvqNiUm7pWHOSO81ndVKL
+         9IgFHBu9nJfw3KkGPpn5oMkWTEOVoloIufeXetn9OotUWax2hOqktDdbbbM6CKHM9gqy
+         cwNg==
+X-Gm-Message-State: AOAM533CS8oDFqvbNN1NeJE8HjjNDgB/vmo0cipI4jS6REd5vfjMnEJ/
+        iIbuSiz3Z4XScBaEJ9jyNN1pUzwrGkbYHhbbttVx6UxYJj4+5Q==
+X-Google-Smtp-Source: ABdhPJyZG617gGSQmcyprwXC3l7R47IPORVt4MrdXvU/+i8H2Dsobr3f5z0HJD2uaACxT1kspDzeshhPyDKmNyDjxUA=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr4295129pfk.73.1614871349267; Thu, 04
+ Mar 2021 07:22:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210304071506.18434-1-noltari@gmail.com>
+In-Reply-To: <20210304071506.18434-1-noltari@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 4 Mar 2021 17:22:13 +0200
+Message-ID: <CAHp75Vc6azROSAc=ZUjY+VhAjZDMsukr2ZY1fQHMFwncL7_AbQ@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: regmap: set gpio_chip of_node
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found general protection fault in crypto_destroy_tfm()[1].
-It was caused by wrong clean up loop in llsec_key_alloc().
-If one of the tfm array members is in IS_ERR() range it will
-cause general protection fault in clean up function [1].
+On Thu, Mar 4, 2021 at 5:18 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
+ail.com> wrote:
+>
+> This is needed for properly registering gpio regmap as a child of a regma=
+p
+> pin controller.
 
-Call Trace:
- crypto_free_aead include/crypto/aead.h:191 [inline] [1]
- llsec_key_alloc net/mac802154/llsec.c:156 [inline]
- mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
- ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
- rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
- nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+> +       chip->of_node =3D config->of_node ?: dev_of_node(config->parent);
 
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
-Change-Id: I29f7ac641a039096d63d1e6070bb32cb5a3beb07
----
- net/mac802154/llsec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+After a closer look I have no clue why you need this patch at all.
+The second part, i.e. assigning parent's fwnode, is done already in
+the GPIO library core.
+The first part, keeping fwnode in the regmap configuration puzzles me. Why?
 
-diff --git a/net/mac802154/llsec.c b/net/mac802154/llsec.c
-index 585d33144c33..55550ead2ced 100644
---- a/net/mac802154/llsec.c
-+++ b/net/mac802154/llsec.c
-@@ -152,7 +152,7 @@ llsec_key_alloc(const struct ieee802154_llsec_key *template)
- 	crypto_free_sync_skcipher(key->tfm0);
- err_tfm:
- 	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
--		if (key->tfm[i])
-+		if (!IS_ERR_OR_NULL(key->tfm[i]))
- 			crypto_free_aead(key->tfm[i]);
- 
- 	kfree_sensitive(key);
--- 
-2.25.1
-
+--=20
+With Best Regards,
+Andy Shevchenko
