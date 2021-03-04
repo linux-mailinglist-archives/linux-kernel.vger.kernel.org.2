@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F7532CA1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE1B32CA22
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhCDBlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:41:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232712AbhCDBlu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:41:50 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDB3C061574;
-        Wed,  3 Mar 2021 17:41:09 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrYVV1Cckz9s1l;
-        Thu,  4 Mar 2021 12:41:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614822066;
-        bh=UblDfmf0pR8nO78Latk89CJcPDsjlnVTl63VKsuauCE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gSkLOyjfZzKLBg9/x74jKWDvTneREmUpmRLdM5vinc5jazsAhhNZ2lSEooGRir4kq
-         SGaH8wxDgCpY3kriGNaQKEX/Ejc7D4Klyu3gvvL0oyBGth39YDB2OR25r+OTWcErMC
-         2MObFgJ0CoYfCXH1y10/Lr9MuMR7O4Mbm4lKPpwF+gmG77LyrW/CugFdslvAYfAMBg
-         SKnhBDeIt/jRJU7LQa3C30lEVN94xMxNDyeb4l/VDqItwxm94XLIWKo+gLhBeDdm1T
-         pMn3rPB6iTXWlYwFGQ+XyUXfAOsuYVu9OFJYigCaOaxkRyIIEBKs9GUzatXqCGCLQq
-         bOqePfg+Z/Gsg==
-Date:   Thu, 4 Mar 2021 12:41:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the rcu tree
-Message-ID: <20210304124105.7844dca6@canb.auug.org.au>
+        id S234249AbhCDBnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:43:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233804AbhCDBmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 20:42:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6C2265072;
+        Thu,  4 Mar 2021 01:42:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614822135;
+        bh=PWhqhd3JZP5YyenXrqX5M48LkYh1EtYwhFTaMI2Di7s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NkGZ754xeICF8FkTo4VNxeBlZ+6wvnQAL12ivvs7BCmsRg2BVsJrdJK/aulgO1r1q
+         jo3Ixoo/OZ6gGj+q2nhaCw2eq5etMQloArhNNRQAOsUXvWCV6QjmB9W7+jNDUwjEDa
+         Coi09rLVhFkoAjZ/ha9YmjatPH8z0ZxsqB05mlVSxTUZAIY7KEXv+WCbp8vjeIT5F5
+         YDcpW4rrYIcuKZ0RoTpdyZEc4+knfdxwxu7dtbQX4Yx7o64sIvO7i0Sog+5MQ6XVHI
+         Fzz35Gm72Pcarv68VMKUCRKzHu8HqIvAL2+P9S9Hk/kI5pIA4Qvp8AqY53rWW0lXth
+         Ua6p87YD/ZiFQ==
+Date:   Wed, 3 Mar 2021 19:42:12 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] media: venus: hfi_cmds.h: Replace one-element
+ array with flexible-array member
+Message-ID: <20210304014212.GA43221@embeddedor>
+References: <20210210225720.GA13710@embeddedor>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WfRQtgs5qEyUeWKmN8xXGnG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210225720.GA13710@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WfRQtgs5qEyUeWKmN8xXGnG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
 Hi all,
 
-After merging the rcu tree, today's linux-next build (htmldocs) produced
-this warning:
+Friendly ping: who can take this, please?
 
-kernel/rcu/tree.c:3824: warning: expecting prototype for start_poll_state_s=
-ynchronize_rcu(). Prototype was for start_poll_synchronize_rcu() instead
+Thanks
+--
+Gustavo
 
-Introduced by commit
-
-  7f9a26bbfff2 ("rcu: Provide polling interfaces for Tree RCU grace periods=
-")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WfRQtgs5qEyUeWKmN8xXGnG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBAOrEACgkQAVBC80lX
-0Gz1Mgf8Dal56GFCDvFQsmMwQOJ2sFvzeMCHCt6WQaXe9ys/9W83EivNH6S2tYFh
-cz/MC1ZIMUIsnlpIbh9PHWOgUkJWqvXhXy5rocAj1ejO+EvwLKdGPik3oqzeQGo5
-zDOqOwT0zxybUeviS4OYHUdctW6HXI84efR/UjflCOnPg4xdR53GhzQR3er60VIA
-QaJmYvX0E9Udtc9MtsdLrNSsH7ePK0prh71bQQXPsMc3KV/D4+UeZHaQjEgHi/lh
-XPCLzuGPZ/Hd9go7x8i3dqEZU/zKndFNhS9+LfkifiuX0u9FBZSvHiyEhB1zgcFN
-Swqml0ekbKvcNpUBJDdURR29pvC8bw==
-=4Ik4
------END PGP SIGNATURE-----
-
---Sig_/WfRQtgs5qEyUeWKmN8xXGnG--
+On Wed, Feb 10, 2021 at 04:57:20PM -0600, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare having
+> a dynamically sized set of trailing elements in a structure. Kernel code
+> should always use “flexible array members”[1] for these cases. The older
+> style of one-element or zero-length arrays should no longer be used[2].
+> 
+> Use flexible-array member in struct hfi_sys_set_property_pkt instead of
+> one-element array.
+> 
+> Also, this helps with the ongoing efforts to enable -Warray-bounds and
+> fix the following warnings:
+> 
+> drivers/media/platform/qcom/venus/hfi_cmds.c: In function ‘pkt_sys_coverage_config’:
+> drivers/media/platform/qcom/venus/hfi_cmds.c:57:11: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>    57 |  pkt->data[1] = mode;
+>       |  ~~~~~~~~~^~~
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Link: https://github.com/KSPP/linux/issues/109
+> Build-tested-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/602416da.iZqae7Dbk7nyl6OY%25lkp@intel.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/media/platform/qcom/venus/hfi_cmds.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.h b/drivers/media/platform/qcom/venus/hfi_cmds.h
+> index 83705e237f1c..327ed90a2788 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_cmds.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.h
+> @@ -68,7 +68,7 @@ struct hfi_sys_release_resource_pkt {
+>  struct hfi_sys_set_property_pkt {
+>  	struct hfi_pkt_hdr hdr;
+>  	u32 num_properties;
+> -	u32 data[1];
+> +	u32 data[];
+>  };
+>  
+>  struct hfi_sys_get_property_pkt {
+> -- 
+> 2.27.0
+> 
