@@ -2,154 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A2A32C9FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB47832CA05
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbhCDBT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239181AbhCDBTG (ORCPT
+        id S236162AbhCDBVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:21:13 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13466 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236199AbhCDBUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:19:06 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DCFC0613D7
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 17:17:56 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id h82so12914799ybc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 17:17:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cDGMmdlKM20UbxSk1D5HECStpUJywJgGf1k2Ph58Sv4=;
-        b=Biwa5C9LBzhQgtedUPAK6nj6XvZwKukqS173MEMYHs8EnBOalCdRzddBpT28z/s4M1
-         C8jiWaLWV/QeBcbnLZuTVpheAwE2sHqBop6iq/q/mBXyF34ewhHxWbtn+X0gHy3oR7U9
-         upFl7iFJXW9cxs22jmCAvu5tsd8n2xCN4g7YTATbMYcezrCQ5pwIF8GgMsOfhUHej2M9
-         NvjUIMacn8ixwWQreNum7fI/cxxMiNbKqyDmZ4BiA2UNW9f61p6vQqOKHOtVPqzoyfo5
-         C32W6Q8M4FOHGBaX5TSrasEPYyOGQLtl8k2JNOOYsoBsLWPWoGB9e1hMX/uuTzqrC7pF
-         TuAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cDGMmdlKM20UbxSk1D5HECStpUJywJgGf1k2Ph58Sv4=;
-        b=dCKg/S9g3ZKnHQtfoBRS2Djz51ZK19K8T3Gfegi8ZoPYdn6/iaX9w117Z0rq0ctPTC
-         aQpfmxaNQ1zs262l+mx4RMwq0GxcZkuZV3ZH/vx91RM9gGOCfnemHNTOBYzLM78c7DOh
-         CDQ5QJerZflqMzhEJxmkaXf9pu2Yqv5+l+7NQIsjU48lCo8+NtyP0e+5/mRu0Chw8lSK
-         sMPW6xKPrDg4gcn3PjdlRkRUVo/FMecGHOPwVXkFbES3OfWlaiNcAg/3uusHB2pa9uE2
-         IqUDYRasT+xtF6v8BIC/WK5GmTgPgg8MuEqlgwCQ7bmCsieNnuuefD268cexk2zRw84J
-         7TTg==
-X-Gm-Message-State: AOAM530BGrGYSDXKqmYvvC7RC/gD/7U6Pj3AEyW2AGq3gnsLR8r6q5KQ
-        q0BRTABlX5azuaVO4mrUtzPxgwhggxKZf16LVly6Xw==
-X-Google-Smtp-Source: ABdhPJyfPshyKfeDIOoqAVg5Fwk8zLy1gznd2y9ophif2UxaiMhTBt3pbqxOJ6plYf+5MPVAog6sGYQXCN5R/Gnxis0=
-X-Received: by 2002:a5b:751:: with SMTP id s17mr3016364ybq.111.1614820675298;
- Wed, 03 Mar 2021 17:17:55 -0800 (PST)
+        Wed, 3 Mar 2021 20:20:25 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DrXzq4CSJzjTZL;
+        Thu,  4 Mar 2021 09:17:59 +0800 (CST)
+Received: from [10.67.102.248] (10.67.102.248) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 4 Mar 2021 09:19:32 +0800
+Subject: Re: [PATCH] perf record: Fix continue profiling after draining the
+ buffer
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        <amistry@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <zhangjinhao2@huawei.com>
+References: <20210205065001.23252-1-yangjihong1@huawei.com>
+ <CAM9d7cgGGWtTkReghATVmMnOd=0dBrghBLgEc9AqT_PF-UP1Rg@mail.gmail.com>
+ <YB0h9Gj5lpcuqndo@krava> <YC5ptbU8Mavb1a/t@kernel.org>
+ <YC6fVHohih5giNf7@kernel.org>
+ <5a76a82e-7ec1-d510-309e-a38a1b41027e@huawei.com>
+ <YD+8r/KiCJmnoJ/f@kernel.org>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <b28a2b0d-99a0-88e3-873d-9963640a6fdd@huawei.com>
+Date:   Thu, 4 Mar 2021 09:19:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210303185807.2160264-1-surenb@google.com> <CALvZod73Uem8jzP3QQdQ6waXbx80UUOTJQS7WBwnmaCdq++8xw@mail.gmail.com>
- <CAJuCfpFgDRezmQMjCajXzBp86UbMLMJbqEaeo0_J+pneZ5XOgg@mail.gmail.com> <CALvZod4nZ6W05N-4ostUEz5EbCuEvuBpc4LRYfAFgwQU-wb9dQ@mail.gmail.com>
-In-Reply-To: <CALvZod4nZ6W05N-4ostUEz5EbCuEvuBpc4LRYfAFgwQU-wb9dQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 3 Mar 2021 17:17:44 -0800
-Message-ID: <CAJuCfpFGoG0KaBKqpCzdPP+yXbY=jR24o+TvUkYDiw3uXJJfAw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Linux MM <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YD+8r/KiCJmnoJ/f@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 4:04 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Wed, Mar 3, 2021 at 3:34 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> >
-> > On Wed, Mar 3, 2021 at 3:17 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Wed, Mar 3, 2021 at 10:58 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> > > >
-> > > > process_madvise currently requires ptrace attach capability.
-> > > > PTRACE_MODE_ATTACH gives one process complete control over another
-> > > > process. It effectively removes the security boundary between the
-> > > > two processes (in one direction). Granting ptrace attach capability
-> > > > even to a system process is considered dangerous since it creates an
-> > > > attack surface. This severely limits the usage of this API.
-> > > > The operations process_madvise can perform do not affect the correctness
-> > > > of the operation of the target process; they only affect where the data
-> > > > is physically located (and therefore, how fast it can be accessed).
-> > > > What we want is the ability for one process to influence another process
-> > > > in order to optimize performance across the entire system while leaving
-> > > > the security boundary intact.
-> > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> > > > and CAP_SYS_NICE for influencing process performance.
-> > > >
-> > > > Cc: stable@vger.kernel.org # 5.10+
-> > > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > > Acked-by: Minchan Kim <minchan@kernel.org>
-> > > > Acked-by: David Rientjes <rientjes@google.com>
-> > > > ---
-> > > > changes in v3
-> > > > - Added Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > > - Created man page for process_madvise per Andrew's request: https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=a144f458bad476a3358e3a45023789cb7bb9f993
-> > > > - cc'ed stable@vger.kernel.org # 5.10+ per Andrew's request
-> > > > - cc'ed linux-security-module@vger.kernel.org per James Morris's request
-> > > >
-> > > >  mm/madvise.c | 13 ++++++++++++-
-> > > >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/mm/madvise.c b/mm/madvise.c
-> > > > index df692d2e35d4..01fef79ac761 100644
-> > > > --- a/mm/madvise.c
-> > > > +++ b/mm/madvise.c
-> > > > @@ -1198,12 +1198,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> > > >                 goto release_task;
-> > > >         }
-> > > >
-> > > > -       mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
-> > > > +       /* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
-> > > > +       mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
-> > > >         if (IS_ERR_OR_NULL(mm)) {
-> > > >                 ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
-> > > >                 goto release_task;
-> > > >         }
-> > > >
-> > > > +       /*
-> > > > +        * Require CAP_SYS_NICE for influencing process performance. Note that
-> > > > +        * only non-destructive hints are currently supported.
-> > >
-> > > How is non-destructive defined? Is MADV_DONTNEED non-destructive?
-> >
-> > Non-destructive in this context means the data is not lost and can be
-> > recovered. I follow the logic described in
-> > https://lwn.net/Articles/794704/ where Minchan was introducing
-> > MADV_COLD and MADV_PAGEOUT as non-destructive versions of MADV_FREE
-> > and MADV_DONTNEED. Following that logic, MADV_FREE and MADV_DONTNEED
-> > would be considered destructive hints.
-> > Note that process_madvise_behavior_valid() allows only MADV_COLD and
-> > MADV_PAGEOUT at the moment, which are both non-destructive.
-> >
->
-> There is a plan to support MADV_DONTNEED for this syscall. Do we need
-> to change these access checks again with that support?
 
-I think so. Destructive hints affect the data, so we will probably
-need stricter checks for those hints.
+
+On 2021/3/4 0:43, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Feb 22, 2021 at 09:31:51AM +0800, Yang Jihong escreveu:
+>> Hello,
+>>
+>> On 2021/2/19 1:09, Arnaldo Carvalho de Melo wrote:
+>>> Em Thu, Feb 18, 2021 at 10:20:53AM -0300, Arnaldo Carvalho de Melo escreveu:
+>>>> Em Fri, Feb 05, 2021 at 11:46:12AM +0100, Jiri Olsa escreveu:
+>>>>> On Fri, Feb 05, 2021 at 07:35:22PM +0900, Namhyung Kim wrote:
+>>>>>> Hello,
+>>>>>>
+>>>>>> On Fri, Feb 5, 2021 at 3:50 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>>>>>>
+>>>>>>> commit da231338ec9c098707c8a1e4d8a50e2400e2fe17 uses eventfd to solve rare race
+>>>>>>> where the setting and checking of 'done' which add done_fd to pollfd.
+>>>>>>> When draining buffer, revents of done_fd is 0 and evlist__filter_pollfd
+>>>>>>> function returns a non-zero value.
+>>>>>>> As a result, perf record does not stop profiling.
+>>>>>>>
+>>>>>>> The following simple scenarios can trigger this condition:
+>>>>>>>
+>>>>>>> sleep 10 &
+>>>>>>> perf record -p $!
+>>>>>>>
+>>>>>>> After the sleep process exits, perf record should stop profiling and exit.
+>>>>>>> However, perf record keeps running.
+>>>>>>>
+>>>>>>> If pollfd revents contains only POLLERR or POLLHUP,
+>>>>>>> perf record indicates that buffer is draining and need to stop profiling.
+>>>>>>> Use fdarray_flag__nonfilterable to set done eventfd to nonfilterable objects,
+>>>>>>> so that evlist__filter_pollfd does not filter and check done eventfd.
+>>>>>>>
+>>>>>>> Fixes: da231338ec9c (perf record: Use an eventfd to wakeup when done)
+>>>>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>>>>> ---
+>>>>>>>    tools/perf/builtin-record.c | 2 +-
+>>>>>>>    tools/perf/util/evlist.c    | 8 ++++++++
+>>>>>>>    tools/perf/util/evlist.h    | 4 ++++
+>>>>>>>    3 files changed, 13 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>>>>>>> index fd3911650612..51e593e896ea 100644
+>>>>>>> --- a/tools/perf/builtin-record.c
+>>>>>>> +++ b/tools/perf/builtin-record.c
+>>>>>>> @@ -1663,7 +1663,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>>>>>>                   status = -1;
+>>>>>>>                   goto out_delete_session;
+>>>>>>>           }
+>>>>>>> -       err = evlist__add_pollfd(rec->evlist, done_fd);
+>>>>>>> +       err = evlist__add_wakeup_eventfd(rec->evlist, done_fd);
+>>>>>>>           if (err < 0) {
+>>>>>>>                   pr_err("Failed to add wakeup eventfd to poll list\n");
+>>>>>>>                   status = err;
+>>>>>>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+>>>>>>> index 05363a7247c4..fea4c1e8010d 100644
+>>>>>>> --- a/tools/perf/util/evlist.c
+>>>>>>> +++ b/tools/perf/util/evlist.c
+>>>>>>> @@ -572,6 +572,14 @@ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
+>>>>>>>           return perf_evlist__filter_pollfd(&evlist->core, revents_and_mask);
+>>>>>>>    }
+>>>>>>>
+>>>>>>> +#ifdef HAVE_EVENTFD_SUPPORT
+>>>>>>> +int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd)
+>>>>>>> +{
+>>>>>>> +       return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
+>>>>>>> +                                      fdarray_flag__nonfilterable);
+>>>>>>> +}
+>>>>>>> +#endif
+>>>>>>
+>>>>>> Does it build when HAVE_EVENTFD_SUPPORT is not defined?
+>>>>>
+>>>>> yea, I was wondering the same.. but it's called only from
+>>>>> code within HAVE_EVENTFD_SUPPORT ifdef
+>>>>
+>>>> Yes, this can't work on systems without eventfd, it will simply not
+>>>> build, and why do we have to make the definition of this function
+>>>> conditional on HAVE_EVENTFD_SUPPORT?
+>>>>
+>>>> I'm missing something :-\
+>>>>
+>>>> Yeah, this whole call to evlist__add_pollfd is already surrounded by
+>>>> #ifdef HAVE_EVENTFD_SUPPORT:
+>>>>
+>>>> 1656         if (zstd_init(&session->zstd_data, rec->opts.comp_level) < 0) {
+>>>> 1657                 pr_err("Compression initialization failed.\n");
+>>>> 1658                 return -1;
+>>>> 1659         }
+>>>> 1660 #ifdef HAVE_EVENTFD_SUPPORT
+>>>> 1661         done_fd = eventfd(0, EFD_NONBLOCK);
+>>>> 1662         if (done_fd < 0) {
+>>>> 1663                 pr_err("Failed to create wakeup eventfd, error: %m\n");
+>>>> 1664                 status = -1;
+>>>> 1665                 goto out_delete_session;
+>>>> 1666         }
+>>>> 1667         err = evlist__add_pollfd(rec->evlist, done_fd);
+>>>> 1668         if (err < 0) {
+>>>> 1669                 pr_err("Failed to add wakeup eventfd to poll list\n");
+>>>> 1670                 status = err;
+>>>> 1671                 goto out_delete_session;
+>>>> 1672         }
+>>>> 1673 #endif // HAVE_EVENTFD_SUPPORT
+>>>> 1674
+>>>> 1675         session->header.env.comp_type  = PERF_COMP_ZSTD;
+>>>> 1676         session->header.env.comp_level = rec->opts.comp_level;
+>>>>
+>>>> Jiri, does your Acked-by stands? Namhyung?
+>>>
+>>> Thanks tested and applied, together with Jiri's Tested-by,
+>>>
+>>> - Arnaldo
+>>> .
+>>>
+>> Is this patch okay? Is there anything that needs to be modified?
+> 
+> It was merged:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/tools/perf/builtin-record.c?id=e16c2ce7c5ed5de881066c1fd10ba5c09af69559
+> 
+> - Arnaldo
+> .
+> Thanks.
+Yang
