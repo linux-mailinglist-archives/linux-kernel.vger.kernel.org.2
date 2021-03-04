@@ -2,355 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8969F32CD55
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867B132CD58
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235945AbhCDHIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:08:46 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3288 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbhCDHIP (ORCPT
+        id S236042AbhCDHKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236031AbhCDHKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:08:15 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Drhgv6Ydqz13vl8;
-        Thu,  4 Mar 2021 15:04:43 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 4 Mar 2021 15:07:28 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 4 Mar 2021 15:07:27 +0800
-Subject: Re: [RFC PATCH 3/4] KVM: arm64: Install the block entry before
- unmapping the page mappings
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-CC:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "Gavin Shan" <gshan@redhat.com>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210208112250.163568-1-wangyanan55@huawei.com>
- <20210208112250.163568-4-wangyanan55@huawei.com>
- <33a9999e-2cc5-52ca-3da8-38f7e7702529@arm.com>
- <93c13a04-6fcc-7544-d6ed-2ebb81d209fe@huawei.com>
- <1b8be8a3-2fb9-be8a-a052-44872355f8cb@arm.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <b84f41b8-3555-9c8a-126e-34d97643fc95@huawei.com>
-Date:   Thu, 4 Mar 2021 15:07:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <1b8be8a3-2fb9-be8a-a052-44872355f8cb@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+        Thu, 4 Mar 2021 02:10:15 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72DCC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 23:09:35 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 131so2749764ybp.16
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 23:09:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=6SYKOly+jweugIylMFB95EbkQpY3TPkXyF08BjG+EYk=;
+        b=pir1oZAyUls7R39beNX8rUtSrLX+skRk3aAi9rhfDi6PNKwuxwKaRzM0Ya1ou874d+
+         IyYZK/KjNBF0Hnqi+7bLNQRLxdcBm8x9+sJ0tSrz+HNiBzSRrUrWYWufOi6eGzpqN7Jl
+         d61BDFGS84Cbr8fIHfU9IxEkb8EUYDY1PXna0XKvZXmmauWLVeJjcxXr7xqT8/T7C7vK
+         TFQf9LzKiVsBxALCf1XZcuAWWLzpATs1YEU0VgFkmA408cuHQMAb3yOOPTo9vWWSzpUs
+         8nxpwlmRGU+NNMnJbWz4fdykIPQjo5yOCdz+uCEGrxfALeSO7CpWEmA2S71q2pqDi1hq
+         d96w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=6SYKOly+jweugIylMFB95EbkQpY3TPkXyF08BjG+EYk=;
+        b=FFoiSkA5slVwnC1qIGXqIEE79MI6amfTMbqTed0x9QmpdKAj8fmjnvpTizMmnbMvoP
+         iG9Y/ageC8Rgvj03ffDCw4X93Lr+GviPJjNQ2YfroZ06Wkng7BR1PJ83u8KGSLA6FQze
+         o2u3YT9SUZEWNtNTWnteOfCoA8yr4aLiLH5E3n77iTWLL5yVoC0bNcqGl78cgx/mf10+
+         2GGv44x6RtoYQWxSSM31HtEuzkuMQnOJqJ92doIzD42GjC0Uxv0/356QNsH8P30pH8BF
+         XzKBb21FDOxag6gJtmjLFi7klx72nFFLvq94AtOYXsCgBO3f6kFAXOssszg7EDStNHwS
+         1BQw==
+X-Gm-Message-State: AOAM5314JfKHzaQkdQ+VYzbAQeVM8ZiDGZdwLEKt2+f8WWYaP1Hjcf0T
+        qPLcUU8BJRJLiRgVs/mTiJPqmi+rxZE=
+X-Google-Smtp-Source: ABdhPJwz9/qlY/4sHrDsgAhu1Tjex6y12rlx/rEieWUpOFcszT7Bqn0mNl1TPE0F5Xsf6YGYIDDa7h2Saps=
+Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:543f:67ae:599c:e076])
+ (user=badhri job=sendgmr) by 2002:a25:c006:: with SMTP id c6mr4556819ybf.353.1614841775027;
+ Wed, 03 Mar 2021 23:09:35 -0800 (PST)
+Date:   Wed,  3 Mar 2021 23:09:31 -0800
+Message-Id: <20210304070931.1947316-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v1] usb: typec: tcpci: Check ROLE_CONTROL while interpreting CC_STATUS
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+While interpreting CC_STATUS, ROLE_CONTROL has to be read to make
+sure that CC1/CC2 is not forced presenting Rp/Rd.
 
-On 2021/3/4 1:27, Alexandru Elisei wrote:
-> Hi Yanan,
->
-> On 3/3/21 11:04 AM, wangyanan (Y) wrote:
->> Hi Alex,
->>
->> On 2021/3/3 1:13, Alexandru Elisei wrote:
->>> Hello,
->>>
->>> On 2/8/21 11:22 AM, Yanan Wang wrote:
->>>> When KVM needs to coalesce the normal page mappings into a block mapping,
->>>> we currently invalidate the old table entry first followed by invalidation
->>>> of TLB, then unmap the page mappings, and install the block entry at last.
->>>>
->>>> It will cost a long time to unmap the numerous page mappings, which means
->>>> there will be a long period when the table entry can be found invalid.
->>>> If other vCPUs access any guest page within the block range and find the
->>>> table entry invalid, they will all exit from guest with a translation fault
->>>> which is not necessary. And KVM will make efforts to handle these faults,
->>>> especially when performing CMOs by block range.
->>>>
->>>> So let's quickly install the block entry at first to ensure uninterrupted
->>>> memory access of the other vCPUs, and then unmap the page mappings after
->>>> installation. This will reduce most of the time when the table entry is
->>>> invalid, and avoid most of the unnecessary translation faults.
->>> I'm not convinced I've fully understood what is going on yet, but it seems to me
->>> that the idea is sound. Some questions and comments below.
->> What I am trying to do in this patch is to adjust the order of rebuilding block
->> mappings from page mappings.
->> Take the rebuilding of 1G block mappings as an example.
->> Before this patch, the order is like:
->> 1) invalidate the table entry of the 1st level(PUD)
->> 2) flush TLB by VMID
->> 3) unmap the old PMD/PTE tables
->> 4) install the new block entry to the 1st level(PUD)
->>
->> So entry in the 1st level can be found invalid by other vcpus in 1), 2), and 3),
->> and it's a long time in 3) to unmap
->> the numerous old PMD/PTE tables, which means the total time of the entry being
->> invalid is long enough to
->> affect the performance.
->>
->> After this patch, the order is like:
->> 1) invalidate the table ebtry of the 1st level(PUD)
->> 2) flush TLB by VMID
->> 3) install the new block entry to the 1st level(PUD)
->> 4) unmap the old PMD/PTE tables
->>
->> The change ensures that period of entry in the 1st level(PUD) being invalid is
->> only in 1) and 2),
->> so if other vcpus access memory within 1G, there will be less chance to find the
->> entry invalid
->> and as a result trigger an unnecessary translation fault.
-> Thank you for the explanation, that was my understand of it also, and I believe
-> your idea is correct. I was more concerned that I got some of the details wrong,
-> and you have kindly corrected me below.
->
->>>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->>>> ---
->>>>    arch/arm64/kvm/hyp/pgtable.c | 26 ++++++++++++--------------
->>>>    1 file changed, 12 insertions(+), 14 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>>> index 78a560446f80..308c36b9cd21 100644
->>>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>>> @@ -434,6 +434,7 @@ struct stage2_map_data {
->>>>        kvm_pte_t            attr;
->>>>          kvm_pte_t            *anchor;
->>>> +    kvm_pte_t            *follow;
->>>>          struct kvm_s2_mmu        *mmu;
->>>>        struct kvm_mmu_memory_cache    *memcache;
->>>> @@ -553,15 +554,14 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end,
->>>> u32 level,
->>>>        if (!kvm_block_mapping_supported(addr, end, data->phys, level))
->>>>            return 0;
->>>>    -    kvm_set_invalid_pte(ptep);
->>>> -
->>>>        /*
->>>> -     * Invalidate the whole stage-2, as we may have numerous leaf
->>>> -     * entries below us which would otherwise need invalidating
->>>> -     * individually.
->>>> +     * If we need to coalesce existing table entries into a block here,
->>>> +     * then install the block entry first and the sub-level page mappings
->>>> +     * will be unmapped later.
->>>>         */
->>>> -    kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
->>>>        data->anchor = ptep;
->>>> +    data->follow = kvm_pte_follow(*ptep);
->>>> +    stage2_coalesce_tables_into_block(addr, level, ptep, data);
->>> Here's how stage2_coalesce_tables_into_block() is implemented from the previous
->>> patch (it might be worth merging it with this patch, I found it impossible to
->>> judge if the function is correct without seeing how it is used and what is
->>> replacing):
->> Ok, will do this if v2 is going to be post.
->>> static void stage2_coalesce_tables_into_block(u64 addr, u32 level,
->>>                             kvm_pte_t *ptep,
->>>                             struct stage2_map_data *data)
->>> {
->>>       u64 granule = kvm_granule_size(level), phys = data->phys;
->>>       kvm_pte_t new = kvm_init_valid_leaf_pte(phys, data->attr, level);
->>>
->>>       kvm_set_invalid_pte(ptep);
->>>
->>>       /*
->>>        * Invalidate the whole stage-2, as we may have numerous leaf entries
->>>        * below us which would otherwise need invalidating individually.
->>>        */
->>>       kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
->>>       smp_store_release(ptep, new);
->>>       data->phys += granule;
->>> }
->>>
->>> This works because __kvm_pgtable_visit() saves the *ptep value before calling the
->>> pre callback, and it visits the next level table based on the initial pte value,
->>> not the new value written by stage2_coalesce_tables_into_block().
->> Right. So before replacing the initial pte value with the new value, we have to use
->> *data->follow = kvm_pte_follow(*ptep)* in stage2_map_walk_table_pre() to save
->> the initial pte value in advance. And data->follow will be used when  we start to
->> unmap the old sub-level tables later.
-> Right, stage2_map_walk_table_post() will use data->follow to free the table page
-> which is no longer needed because we've replaced the entire next level table with
-> a block mapping.
->
->>> Assuming the first patch in the series is merged ("KVM: arm64: Move the clean of
->>> dcache to the map handler"), this function is missing the CMOs from
->>> stage2_map_walker_try_leaf().
->> Yes, the CMOs are not performed in stage2_coalesce_tables_into_block() currently,
->> because I thought they were not needed when we rebuild the block mappings from
->> normal page mappings.
-> This assumes that the *only* situation when we replace a table entry with a block
-> mapping is when the next level table (or tables) is *fully* populated. Is there a
-> way to prove that this is true? I think it's important to prove it unequivocally,
-> because if there's a corner case where this doesn't happen and we remove the
-> dcache maintenance, we can end up with hard to reproduce and hard to diagnose
-> errors in a guest.
-So there is still one thing left about this patch to determine, and that 
-is whether we can straightly
-discard CMOs in stage2_coalesce_tables_into_block() or we should 
-distinguish different situations.
+From the TCPCI spec:
 
-Now we know that the situation you have described won't happen, then I 
-think we will only end up
-in stage2_coalesce_tables_into_block() in the following situation:
-1) KVM create a new block mapping in stage2_map_walker_try_leaf() for 
-the first time, if guest accesses
-     memory backed by a THP/HUGETLB huge page. And CMOs will be 
-performed here.
-2) KVM split this block mapping in dirty logging, and build only one new 
-page mapping.
-3) KVM will build other new page mappings in dirty logging lazily, if 
-guest access any other pages
-     within the block. *In this stage, pages in this block may be fully 
-mapped, or may be not.*
-4) After dirty logging is disabled, KVM decides to rebuild the block 
-mapping.
+4.4.5.2 ROLE_CONTROL (Normative):
+The TCPM shall write B6 (DRP) = 0b and B3..0 (CC1/CC2) if it wishes
+to control the Rp/Rd directly instead of having the TCPC perform
+DRP toggling autonomously. When controlling Rp/Rd directly, the
+TCPM writes to B3..0 (CC1/CC2) each time it wishes to change the
+CC1/CC2 values. This control is used for TCPM-TCPC implementing
+Source or Sink only as well as when a connection has been detected
+via DRP toggling but the TCPM wishes to attempt Try.Src or Try.Snk.
 
-Do we still have to perform CMOs when rebuilding the block mapping in 
-step 4, if pages in the block
-were not fully mapped in step 3 ? I'm not completely sure about this.
+Table 4-22. CC_STATUS Register Definition:
+If (ROLE_CONTROL.CC1 = Rd) or ConnectResult=1)
+00b: SNK.Open (Below maximum vRa)
+01b: SNK.Default (Above minimum vRd-Connect)
+10b: SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp-1.5A
+11b: SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp-3.0A
 
-Thanks,
+If (ROLE_CONTROL.CC2=Rd) or (ConnectResult=1)
+00b: SNK.Open (Below maximum vRa)
+01b: SNK.Default (Above minimum vRd-Connect)
+10b: SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp 1.5A
+11b: SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp 3.0A
 
-Yanan
->> At least, they are not needed if we rebuild the block mappings backed by hugetlbfs
->> pages, because we must have built the new block mappings for the first time before
->> and now need to rebuild them after they were split in dirty logging. Can we
->> agree on this?
->> Then let's see the following situation.
->>> I can think of the following situation where they
->>> are needed:
->>>
->>> 1. The 2nd level (PMD) table that will be turned into a block is mapped at stage 2
->>> because one of the pages in the 3rd level (PTE) table it points to is accessed by
->>> the guest.
->>>
->>> 2. The kernel decides to turn the userspace mapping into a transparent huge page
->>> and calls the mmu notifier to remove the mapping from stage 2. The 2nd level table
->>> is still valid.
->> I have a question here. Won't the PMD entry been invalidated too in this case?
->> If remove of the stage2 mapping by mmu notifier is an unmap operation of a range,
->> then it's correct and reasonable to both invalidate the PMD entry and free the
->> PTE table.
->> As I know, kvm_pgtable_stage2_unmap() does so when unmapping a range.
->>
->> And if I was right about this, we will not end up in
->> stage2_coalesce_tables_into_block()
->> like step 3 describes, but in stage2_map_walker_try_leaf() instead. Because the
->> PMD entry
->> is invalid, so KVM will create the new 2M block mapping.
-> Looking at the code for stage2_unmap_walker(), I believe you are correct. After
-> the entire PTE table has been unmapped, the function will mark the PMD entry as
-> invalid. In the situation I described, at step 3 we would end up in the leaf
-> mapper function because the PMD entry is invalid. My example was wrong.
->
->> If I'm wrong about this, then I think this is a valid situation.
->>> 3. Guest accesses a page which is not the page it accessed at step 1, which causes
->>> a translation fault. KVM decides we can use a PMD block mapping to map the address
->>> and we end up in stage2_coalesce_tables_into_block(). We need CMOs in this case
->>> because the guest accesses memory it didn't access before.
->>>
->>> What do you think, is that a valid situation?
->>>>        return 0;
->>>>    }
->>>>    @@ -614,20 +614,18 @@ static int stage2_map_walk_table_post(u64 addr, u64
->>>> end, u32 level,
->>>>                          kvm_pte_t *ptep,
->>>>                          struct stage2_map_data *data)
->>>>    {
->>>> -    int ret = 0;
->>>> -
->>>>        if (!data->anchor)
->>>>            return 0;
->>>>    -    free_page((unsigned long)kvm_pte_follow(*ptep));
->>>> -    put_page(virt_to_page(ptep));
->>>> -
->>>> -    if (data->anchor == ptep) {
->>>> +    if (data->anchor != ptep) {
->>>> +        free_page((unsigned long)kvm_pte_follow(*ptep));
->>>> +        put_page(virt_to_page(ptep));
->>>> +    } else {
->>>> +        free_page((unsigned long)data->follow);
->>>>            data->anchor = NULL;
->>>> -        ret = stage2_map_walk_leaf(addr, end, level, ptep, data);
->>> stage2_map_walk_leaf() -> stage2_map_walk_table_post calls put_page() and
->>> get_page() once in our case (valid old mapping). It looks to me like we're missing
->>> a put_page() call when the function is called for the anchor. Have you found the
->>> call to be unnecessary?
->> Before this patch:
->> When we find data->anchor == ptep, put_page() has been called once in advance
->> for the anchor
->> in stage2_map_walk_table_post(). Then we call stage2_map_walk_leaf() ->
->> stage2_map_walker_try_leaf()
->> to install the block entry, and only get_page() will be called once in
->> stage2_map_walker_try_leaf().
->> There is a put_page() followed by a get_page() for the anchor, and there will
->> not be a problem about
->> page_counts.
-> This is how I'm reading the code before your patch:
->
-> - stage2_map_walk_table_post() returns early if there is no anchor.
->
-> - stage2_map_walk_table_pre() sets the anchor and marks the entry as invalid. The
-> entry was a table so the leaf visitor is not called in __kvm_pgtable_visit().
->
-> - __kvm_pgtable_visit() visits the next level table.
->
-> - stage2_map_walk_table_post() calls put_page(), calls stage2_map_walk_leaf() ->
-> stage2_map_walker_try_leaf(). The old entry was invalidated by the pre visitor, so
-> it only calls get_page() (and not put_page() + get_page().
->
-> I agree with your conclusion, I didn't realize that because the pre visitor marks
-> the entry as invalid, stage2_map_walker_try_leaf() will not call put_page().
->
->> After this patch:
->> Before we find data->anchor == ptep and after it, there is not a put_page() call
->> for the anchor.
->> This is because that we didn't call get_page() either in
->> stage2_coalesce_tables_into_block() when
->> install the block entry. So I think there will not be a problem too.
-> I agree, the refcount will be identical.
->
->> Is above the right answer for your point?
-> Yes, thank you clearing that up for me.
->
-> Thanks,
->
-> Alex
->
->>>>        }
->>>>    -    return ret;
->>>> +    return 0;
->>> I think it's correct for this function to succeed unconditionally. The error was
->>> coming from stage2_map_walk_leaf() -> stage2_map_walker_try_leaf(). The function
->>> can return an error code if block mapping is not supported, which we know is
->>> supported because we have an anchor, and if only the permissions are different
->>> between the old and the new entry, but in our case we've changed both the valid
->>> and type bits.
->> Agreed. Besides, we will definitely not end up updating an old valid entry for
->> the anchor
->> in stage2_map_walker_try_leaf(), because *anchor has already been invalidated in
->> stage2_map_walk_table_pre() before set the anchor, so it will look like a build
->> of new mapping.
->>
->> Thanks,
->>
->> Yanan
->>> Thanks,
->>>
->>> Alex
->>>
->>>>    }
->>>>      /*
->>> .
-> .
+Fixes: 74e656d6b0551 ("staging: typec: Type-C Port Controller
+Interface driver (tcpci)")
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/usb/typec/tcpm/tcpci.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+index a27deb0b5f03..027afd7dfdce 100644
+--- a/drivers/usb/typec/tcpm/tcpci.c
++++ b/drivers/usb/typec/tcpm/tcpci.c
+@@ -24,6 +24,15 @@
+ #define	AUTO_DISCHARGE_PD_HEADROOM_MV		850
+ #define	AUTO_DISCHARGE_PPS_HEADROOM_MV		1250
+ 
++#define tcpc_presenting_cc1_rd(reg) \
++	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
++	 (((reg) & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) == \
++	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC1_SHIFT)))
++#define tcpc_presenting_cc2_rd(reg) \
++	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
++	 (((reg) & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) == \
++	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC2_SHIFT)))
++
+ struct tcpci {
+ 	struct device *dev;
+ 
+@@ -178,19 +187,25 @@ static int tcpci_get_cc(struct tcpc_dev *tcpc,
+ 			enum typec_cc_status *cc1, enum typec_cc_status *cc2)
+ {
+ 	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+-	unsigned int reg;
++	unsigned int reg, role_control;
+ 	int ret;
+ 
++	ret = regmap_read(tcpci->regmap, TCPC_ROLE_CTRL, &role_control);
++	if (ret < 0)
++		return ret;
++
+ 	ret = regmap_read(tcpci->regmap, TCPC_CC_STATUS, &reg);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	*cc1 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC1_SHIFT) &
+ 				 TCPC_CC_STATUS_CC1_MASK,
+-				 reg & TCPC_CC_STATUS_TERM);
++				 reg & TCPC_CC_STATUS_TERM ||
++				 tcpc_presenting_cc1_rd(role_control));
+ 	*cc2 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC2_SHIFT) &
+ 				 TCPC_CC_STATUS_CC2_MASK,
+-				 reg & TCPC_CC_STATUS_TERM);
++				 reg & TCPC_CC_STATUS_TERM ||
++				 tcpc_presenting_cc2_rd(role_control));
+ 
+ 	return 0;
+ }
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
