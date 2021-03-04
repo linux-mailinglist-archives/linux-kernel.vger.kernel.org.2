@@ -2,63 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95AB32CDEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB0F32CDEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhCDHqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:46:38 -0500
-Received: from mga09.intel.com ([134.134.136.24]:9626 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233784AbhCDHqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:46:10 -0500
-IronPort-SDR: o08KycUjwuDIKeDJ8nDczSjBdROl5NW+aj9Qy/ldRW16qN76kfHKHZmGtH/xro0cL9sdiR/IOF
- /XerZ4uU1spg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="187474885"
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="187474885"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 23:45:30 -0800
-IronPort-SDR: hkY77I0G+KUTEO604Z8Tm2pPYH4M5J4u+v9DAEWK93PyUI6UcFSjKovoamnImrgpXtNRD1ASTN
- YyZuu9fQLw5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="406765459"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by orsmga007.jf.intel.com with ESMTP; 03 Mar 2021 23:45:25 -0800
-Subject: Re: [PATCH v10 2/2] ufs: sysfs: Resume the proper scsi device
-To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <cover.1614725302.git.asutoshd@codeaurora.org>
- <5d7c0cd1ff4bc5295015244f057d252fe9040993.1614725302.git.asutoshd@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <9edf7047-4845-5bb5-3307-fa6e11e5c923@intel.com>
-Date:   Thu, 4 Mar 2021 09:45:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233958AbhCDHrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:47:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233888AbhCDHrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:47:31 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACC4C061574;
+        Wed,  3 Mar 2021 23:46:51 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1lHih6-0007VN-FI; Thu, 04 Mar 2021 08:46:48 +0100
+Date:   Thu, 4 Mar 2021 08:46:48 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] netfilter: x_tables: Use correct memory barriers.
+Message-ID: <20210304074648.GJ17911@breakpoint.cc>
+References: <20210304013116.8420-1-mark.tomlinson@alliedtelesis.co.nz>
+ <20210304013116.8420-4-mark.tomlinson@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <5d7c0cd1ff4bc5295015244f057d252fe9040993.1614725302.git.asutoshd@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304013116.8420-4-mark.tomlinson@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/03/21 12:52 am, Asutosh Das wrote:
-> Resumes the actual scsi device the unit descriptor of which
-> is being accessed instead of the hba alone.
+Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz> wrote:
+> When a new table value was assigned, it was followed by a write memory
+> barrier. This ensured that all writes before this point would complete
+> before any writes after this point. However, to determine whether the
+> rules are unused, the sequence counter is read. To ensure that all
+> writes have been done before these reads, a full memory barrier is
+> needed, not just a write memory barrier. The same argument applies when
+> incrementing the counter, before the rules are read.
+> 
+> Changing to using smp_mb() instead of smp_wmb() fixes the kernel panic
+> reported in cc00bcaa5899,
 
-Since "scsi: ufs: ufs-debugfs: Add user-defined exception_event_mask"
-is now in linux-next, a similar change is needed for ufs-debugfs.c.
-Probably best it is a separate patch though.
+Can you reproduce the crashes without this change?
+
+> while still maintaining the same speed of replacing tables.
+
+How much of an impact is the MB change on the packet path?
+
+Please also CC authors of the patches you want reverted when reposting.
