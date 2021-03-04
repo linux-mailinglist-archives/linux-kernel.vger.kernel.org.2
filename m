@@ -2,132 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4592E32D355
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C4F32D36B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240902AbhCDMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:37:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
+        id S231132AbhCDMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:42:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240892AbhCDMgp (ORCPT
+        with ESMTP id S231161AbhCDMmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:36:45 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7DEC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:36:04 -0800 (PST)
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1lHnD1-0006w2-1Q; Thu, 04 Mar 2021 13:36:03 +0100
-Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1lHnD0-00044V-2W; Thu, 04 Mar 2021 13:36:02 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, kernel@pengutronix.de,
-        Jan Kara <jack@suse.com>, Richard Weinberger <richard@nod.at>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] quotactl.2: Add documentation for quotactl_path()
-Date:   Thu,  4 Mar 2021 13:35:41 +0100
-Message-Id: <20210304123541.30749-4-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210304123541.30749-1-s.hauer@pengutronix.de>
-References: <20210304123541.30749-1-s.hauer@pengutronix.de>
+        Thu, 4 Mar 2021 07:42:11 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C55C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:41:30 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id f12so23684641wrx.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 04:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E6GCI19Zx79Up+MyTNmAWldPWN/2JegMjMID49ZpRnQ=;
+        b=pGXEh8gcQ7KQtvRKjnTaKd3pYO0YZk/iQ0vlSDZU/KmqNg7sQt5DzlYQfYrTUyFrKg
+         avycEFbbpBmyT5eSJt28wZ6g2bTwlGvFEcEkKyidnNf5KkuALHsgFZfKEw8IJj1Shua1
+         6DAoFgpjxALPjf1TflsZk0oFmmTHJ4qG7pgj7kQvJzhC7zhoTVIEGg04wodLzXsWfUH0
+         RjANQO1YAlyNMCJXHXa5x+3As0MBcazCMusnOu7VVHY0uYjRWxZuvlTmnDFMJD1sdlaU
+         Wj4+HcE/7n4TkLKoUhg855gYxug0P3/1JoDxuK18gGgnPipJb4kZEizuPr680cCzI8Ph
+         nizw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E6GCI19Zx79Up+MyTNmAWldPWN/2JegMjMID49ZpRnQ=;
+        b=CZOKhCeLQJTqj6jRex9YszRrbU3Lc7K3t/lVUAuAKq2gTXgwcoRytlL4h9Vwg+hHTa
+         EaHmgg4X4lYe7desa24dsLNsOJXHUipV/LFl3Yf9YH1OE7LL4cpoQ/+vDMF4k+qU2oCJ
+         H8T9cn0UKG15V0Sadp5FaWCQ+IgSiOez66XYwj8YKBO4JkWJV4uHjmeTAskmyhgA7UtS
+         kKA8dfjt2A3LNJwLFYaM+gk4R4H60J9/4i5NnCYhmz6AweIOrXFYuhIOtTqcRBUxObVv
+         IZb4U5ByiBHrDWS9y4XXCW+PmOH07EHWLwsC2hIVVVvBuLb1W3iVFAyE1WyB3N2VcO1m
+         pY2w==
+X-Gm-Message-State: AOAM530mZuFGZrlLRJWE/hnsF7Q8GxvZmMN8dY5I7dhjaaCWObHG5sSp
+        vtx9u5jEwMBVLFn2KpIOWW7cOfxPO8j4jg==
+X-Google-Smtp-Source: ABdhPJwyeYM/k/ZCCDJ1m8OrVVCxXxMSXRVF7e/IPgAc6L8V81HGLKHf9tfvf0EIjKLY+/CmvGQOUQ==
+X-Received: by 2002:a5d:404d:: with SMTP id w13mr3913196wrp.230.1614861689385;
+        Thu, 04 Mar 2021 04:41:29 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.googlemail.com with ESMTPSA id o3sm9035740wmq.46.2021.03.04.04.41.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 04:41:28 -0800 (PST)
+Subject: Re: [PATCH 1/2] units: Add the HZ_PER_KHZ macro
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "rafael@kernel.org" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210223203004.7219-1-daniel.lezcano@linaro.org>
+ <CAHp75VcJwoye5KOYXF3Fs1F-82JPP-7VaU4z5OqBrYDr+AGQ5w@mail.gmail.com>
+ <CAHp75Vcqug9qC_ejHE03YguiSy-XpsZV6g36-pe3VOFgTS2-tA@mail.gmail.com>
+ <20210303163125.dcc0a086a939a58ed30750e8@linux-foundation.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <3ffdd3de-c30e-f237-7bd7-2700d426e53a@linaro.org>
+Date:   Thu, 4 Mar 2021 13:41:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210303163125.dcc0a086a939a58ed30750e8@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expand the quotactl.2 manpage with a description for quotactl_path()
-that takes a mountpoint path instead of a path to a block device.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- man2/quotactl.2      | 31 ++++++++++++++++++++++++++++---
- man2/quotactl_path.2 |  1 +
- 2 files changed, 29 insertions(+), 3 deletions(-)
- create mode 100644 man2/quotactl_path.2
+Hi Andrew,
 
-diff --git a/man2/quotactl.2 b/man2/quotactl.2
-index 7869c64ea..76505c668 100644
---- a/man2/quotactl.2
-+++ b/man2/quotactl.2
-@@ -34,6 +34,8 @@ quotactl \- manipulate disk quotas
- .PP
- .BI "int quotactl(int " cmd ", const char *" special ", int " id \
- ", caddr_t " addr );
-+.BI "int quotactl_path(int " cmd ", const char *" mountpoint ", int " id \
-+", caddr_t " addr );
- .fi
- .SH DESCRIPTION
- The quota system can be used to set per-user, per-group, and per-project limits
-@@ -48,7 +50,11 @@ after this, the soft limit counts as a hard limit.
- .PP
- The
- .BR quotactl ()
--call manipulates disk quotas.
-+and
-+.BR quotactl_path ()
-+calls manipulate disk quotas. The difference between both functions is the way
-+how the filesystem being manipulated is specified, see description of the arguments
-+below.
- The
- .I cmd
- argument indicates a command to be applied to the user or
-@@ -75,10 +81,19 @@ value is described below.
- .PP
- The
- .I special
--argument is a pointer to a null-terminated string containing the pathname
-+argument to
-+.BR quotactl ()
-+is a pointer to a null-terminated string containing the pathname
- of the (mounted) block special device for the filesystem being manipulated.
- .PP
- The
-+.I mountpoint
-+argument to
-+.BR quotactl_path ()
-+is a pointer to a null-terminated string containing the pathname
-+of the mountpoint for the filesystem being manipulated.
-+.PP
-+The
- .I addr
- argument is the address of an optional, command-specific, data structure
- that is copied in or out of the system.
-@@ -133,7 +148,17 @@ flag in the
- .I dqi_flags
- field returned by the
- .B Q_GETINFO
--operation.
-+operation. The
-+.BR quotactl_path ()
-+variant of this syscall generally ignores the
-+.IR addr
-+and
-+.IR id
-+arguments, so the
-+.B Q_QUOTAON
-+operation of
-+.BR quotactl_path ()
-+is only suitable for work with hidden system inodes.
- .IP
- This operation requires privilege
- .RB ( CAP_SYS_ADMIN ).
-diff --git a/man2/quotactl_path.2 b/man2/quotactl_path.2
-new file mode 100644
-index 000000000..5f63187c6
---- /dev/null
-+++ b/man2/quotactl_path.2
-@@ -0,0 +1 @@
-+.so man2/quotactl.2
+On 04/03/2021 01:31, Andrew Morton wrote:
+> On Wed, 24 Feb 2021 10:39:36 +0200 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> 
+>> On Wednesday, February 24, 2021, Andy Shevchenko <andy.shevchenko@gmail.com>
+>> wrote:
+>>
+>>>
+>>>
+>>> On Tuesday, February 23, 2021, Daniel Lezcano <daniel.lezcano@linaro.org>
+>>> wrote:
+>>>
+>>>> The macro for the unit conversion for frequency is duplicated in
+>>>> different places.
+>>>>
+>>>> Provide this macro in the 'units' header, so it can be reused.
+>>>>
+>>>>
+>>>
+>>> Thanks! That was the idea behind my reviews to add those definitions
+>>> explicitly in the users. I just want to be sure you covered them all. Also
+>>> there are few non-standard names for above in some drivers (they can be
+>>> fixed on per driver basis in separate patches though).
+>>>
+>>>
+>>
+>> Seems you introduced a common macro and forget about dropping it elsewhere.
+>>
+>> https://elixir.bootlin.com/linux/latest/A/ident/HZ_PER_MHZ
+> 
+> Yes.  And HZ_PER_KHZ.
+
+Thanks for the review, it is fixed it in the v2.
+
+> Also, why make them signed types?  Negative Hz is physically
+> nonsensical.  If that upsets some code somewhere because it was dealing
+> with signed types then, well, that code needed fixing anyway.
+> 
+> Ditto MILLIWATT_PER_WATT and friends, sigh.
+
+At the first glance converting to unsigned long should not hurt the
+users of this macro.
+
+The current series introduces the macro and its usage but by converting
+the existing type.
+
+Is it ok if I send a separate series to change the units from L to UL?
+
 -- 
-2.20.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
