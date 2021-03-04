@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928AC32D224
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FD732D229
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239680AbhCDL7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 06:59:46 -0500
-Received: from mga04.intel.com ([192.55.52.120]:8070 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239682AbhCDL7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:59:42 -0500
-IronPort-SDR: UrnLBjMoHGx5EbNWMihUGN2hLj93FjDOvntr84cW3U/qiN3i/HYG25519sTA9tXK9kKMw38tRz
- 7AW3zPoQyTaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="184989654"
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="184989654"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 03:59:01 -0800
-IronPort-SDR: VblYH86PkOAJfSht4+uTOTPNr/R/oWUW0zBJP7aRvjGaRGXI1E+bPeE0sycFlrtFS0P+ykApj1
- iVy14uplVX2w==
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="445704561"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.135.211]) ([10.249.135.211])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 03:58:56 -0800
-Subject: Re: [PATCH tip/core/rcu 02/12] timer: Report ignored local enqueue in
- nohz mode
-To:     paulmck@kernel.org, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>
-References: <20210304002225.GA23492@paulmck-ThinkPad-P72>
- <20210304002311.23655-2-paulmck@kernel.org>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <a1bac9f6-cc67-943d-0f88-aad2f2b46bd7@intel.com>
-Date:   Thu, 4 Mar 2021 12:58:54 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S239714AbhCDMAS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Mar 2021 07:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239682AbhCDL7r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 06:59:47 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD7BC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 03:59:06 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHmcz-0002LK-IC; Thu, 04 Mar 2021 12:58:49 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHmct-0005HU-9M; Thu, 04 Mar 2021 12:58:43 +0100
+Message-ID: <81c45bf40b397b57343f159baae896528fa32d89.camel@pengutronix.de>
+Subject: Re: [RFC PATCH 2/6] clk: sifive: Use reset-simple in prci driver
+ for PCIe driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Greentime Hu <greentime.hu@sifive.com>, paul.walmsley@sifive.com,
+        hes@sifive.com, erik.danie@sifive.com, zong.li@sifive.com,
+        bhelgaas@google.com, robh+dt@kernel.org, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
+        lorenzo.pieralisi@arm.com, alex.dewar90@gmail.com,
+        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
+        vidyas@nvidia.com, jh80.chung@samsung.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Date:   Thu, 04 Mar 2021 12:58:43 +0100
+In-Reply-To: <e2bd7db9db3c196b9b0399f0655a56939a0f3d62.1614681831.git.greentime.hu@sifive.com>
+References: <cover.1614681831.git.greentime.hu@sifive.com>
+         <e2bd7db9db3c196b9b0399f0655a56939a0f3d62.1614681831.git.greentime.hu@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <20210304002311.23655-2-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/2021 1:23 AM, paulmck@kernel.org wrote:
-> From: Frederic Weisbecker <frederic@kernel.org>
->
-> Enqueuing a local timer after the tick has been stopped will result in
-> the timer being ignored until the next random interrupt.
->
-> Perform sanity checks to report these situations.
->
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar<mingo@kernel.org>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-
+On Tue, 2021-03-02 at 18:59 +0800, Greentime Hu wrote:
+> We use reset-simple in this patch so that pcie driver can use
+> devm_reset_control_get() to get this reset data structure and use
+> reset_control_deassert() to deassert pcie_power_up_rst_n.
+> 
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 > ---
->   kernel/sched/core.c | 24 +++++++++++++++++++++++-
->   1 file changed, 23 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index ca2bb62..4822371 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -674,6 +674,26 @@ int get_nohz_timer_target(void)
->   	return cpu;
->   }
->   
-> +static void wake_idle_assert_possible(void)
-> +{
-> +#ifdef CONFIG_SCHED_DEBUG
-> +	/* Timers are re-evaluated after idle IRQs */
-> +	if (in_hardirq())
-> +		return;
-> +	/*
-> +	 * Same as hardirqs, assuming they are executing
-> +	 * on IRQ tail. Ksoftirqd shouldn't reach here
-> +	 * as the timer base wouldn't be idle. And inline
-> +	 * softirq processing after a call to local_bh_enable()
-> +	 * within idle loop sound too fun to be considered here.
-> +	 */
-> +	if (in_serving_softirq())
-> +		return;
+>  drivers/clk/sifive/Kconfig       |  2 ++
+>  drivers/clk/sifive/sifive-prci.c | 14 ++++++++++++++
+>  drivers/clk/sifive/sifive-prci.h |  4 ++++
+>  drivers/reset/Kconfig            |  3 ++-
+>  4 files changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/sifive/Kconfig b/drivers/clk/sifive/Kconfig
+> index 1c14eb20c066..9132c3c4aa86 100644
+> --- a/drivers/clk/sifive/Kconfig
+> +++ b/drivers/clk/sifive/Kconfig
+> @@ -10,6 +10,8 @@ if CLK_SIFIVE
+>  
+>  config CLK_SIFIVE_PRCI
+>  	bool "PRCI driver for SiFive SoCs"
+> +	select RESET_CONTROLLER
+> +	select RESET_SIMPLE
+>  	select CLK_ANALOGBITS_WRPLL_CLN28HPC
+>  	help
+>  	  Supports the Power Reset Clock interface (PRCI) IP block found in
+> diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
+> index baf7313dac92..925affc6de55 100644
+> --- a/drivers/clk/sifive/sifive-prci.c
+> +++ b/drivers/clk/sifive/sifive-prci.c
+> @@ -583,7 +583,21 @@ static int sifive_prci_probe(struct platform_device *pdev)
+>  	if (IS_ERR(pd->va))
+>  		return PTR_ERR(pd->va);
+>  
+> +	pd->reset.rcdev.owner = THIS_MODULE;
+> +	pd->reset.rcdev.nr_resets = PRCI_RST_NR;
+> +	pd->reset.rcdev.ops = &reset_simple_ops;
+> +	pd->reset.rcdev.of_node = pdev->dev.of_node;
+> +	pd->reset.active_low = true;
+> +	pd->reset.membase = pd->va + PRCI_DEVICESRESETREG_OFFSET;
+> +	spin_lock_init(&pd->reset.lock);
 > +
-> +	WARN_ON_ONCE("Late timer enqueue may be ignored\n");
-> +#endif
-> +}
-> +
->   /*
->    * When add_timer_on() enqueues a timer into the timer wheel of an
->    * idle CPU then this timer might expire before the next timer event
-> @@ -688,8 +708,10 @@ static void wake_up_idle_cpu(int cpu)
->   {
->   	struct rq *rq = cpu_rq(cpu);
->   
-> -	if (cpu == smp_processor_id())
-> +	if (cpu == smp_processor_id()) {
-> +		wake_idle_assert_possible();
->   		return;
+> +	r = devm_reset_controller_register(&pdev->dev, &pd->reset.rcdev);
+> +	if (r) {
+> +		dev_err(dev, "could not register reset controller: %d\n", r);
+> +		return r;
 > +	}
->   
->   	if (set_nr_and_not_polling(rq->idle))
->   		smp_send_reschedule(cpu);
+>  	r = __prci_register_clocks(dev, pd, desc);
+> +
 
+Accidental whitespace?
 
+Otherwise,
+
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+
+regards
+Philipp
