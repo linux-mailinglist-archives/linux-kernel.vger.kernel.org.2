@@ -2,348 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DED32D0D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D18332D0B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238682AbhCDKcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238585AbhCDKb6 (ORCPT
+        id S238552AbhCDKbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:31:31 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:59707 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238485AbhCDKbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:31:58 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9CAC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 02:30:17 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id j2so14171385wrx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 02:30:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XNP0GOSaV6O38FdFUyX0Qx0YcxxArEepxK+Me+y1rLM=;
-        b=bm+cIjTxkth9i1+gyCY7gEOOY/uhQ2lR2vLD0gXNi4iSQJSy6dAgKUmKhdlLO3lNub
-         +ZUwYCb2CprGcCF+1M04Y/U/zl2IXZxJr17oz01qfua/DYletcuFUZuEKNruIr/ML4Zu
-         HP7zun7OCGpENTpYnBritQ9eS0A4iiMyAmRd+TC6XGGa0daoxt0drrZwXBTnJ4ubXKQT
-         wRsVhZBFjtGvARzTzV1lQZDcqfaaWmpm16I5ZkG/nsAEY3ENux5ttklSaBjdrHUdaUvC
-         iqAvACDTQWQiAYWzX4GhHrZw6xh/WDaaDNfuFh8kBMFjo5DF2VJYO77W0paGyWXzCNT5
-         aq5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XNP0GOSaV6O38FdFUyX0Qx0YcxxArEepxK+Me+y1rLM=;
-        b=RsAYf4LQhlvooe06rdb/fDpnlnjlWHMFNt+aU4/IytmpxUjiLvNY2qz3ia6NjJuc71
-         /GXfd2QvRpBz/SwW+am5M3p6HUlJ/EkaBq2ea0JT/2ebkwO7/hGjw1gsL7j0vO2SB8wT
-         /vESUF+TyswA+buxKwAyWlExG/JH4ANk7SQvDPMj08YurJLbmGUTUS/5v22G2jPc/X+s
-         pk2xZOrCm1590MJkGT9g6iYFpVO3RN/uU9evFsNn4qgpmI6TShruN7mvJkgc1lzoJhqY
-         AoVIoVmxDCAj8JMPWk/hBURi59K4Cidp1swDQ1ApdFwPvfaO0dEpyyjchb2OkFQgplIy
-         pNBQ==
-X-Gm-Message-State: AOAM5339XeEyQKAWAxIC0z9yUvrrwp4e9qsB8fu254HF2j2nw98/dRU2
-        GvWJqU5ebDHhy0tIdX/nqTMYVw==
-X-Google-Smtp-Source: ABdhPJzXcOg37JPCvCRkmoG/VR1TucC/GjNfp6BeXHvfBBfTHfG4HjNy0I0yVw1jzcBbgW6isMF8wA==
-X-Received: by 2002:adf:a4d1:: with SMTP id h17mr3238842wrb.57.1614853816427;
-        Thu, 04 Mar 2021 02:30:16 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id f7sm35501854wre.78.2021.03.04.02.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 02:30:16 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 12/12] selftests: gpio: add test cases for gpio-sim
-Date:   Thu,  4 Mar 2021 11:24:52 +0100
-Message-Id: <20210304102452.21726-13-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20210304102452.21726-1-brgl@bgdev.pl>
-References: <20210304102452.21726-1-brgl@bgdev.pl>
+        Thu, 4 Mar 2021 05:31:08 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id HlFOlZa1XOruFHlFRlFGfJ; Thu, 04 Mar 2021 11:30:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1614853826; bh=8dBoIGD5WJNO8NYeWqPRnVSei9pgkj34EmYskMKbeU8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=IOpZqX7UtlTAdP472xCUC392I88rohl7tVX9+6dFEXdYfTs4gBrYINiwjBVgf/j59
+         snvndlQh+pg/Z/5x2dQkI1fO6bdxZIMC7oUIdI86yX/sbclCsvxcSbWxoQ7RaA1/Wm
+         yGlVgA46dAE++8TYLm4ZoKqutnPSvJ7KO8vIgaru9rngD+K8TigraiL+NEvfatUPmv
+         PSd7I3gViUxZe95tIFwsKqmH22rA6nepCsmdwN+T3flQ9TDq7ho6CnrcQXj8VopqCg
+         mEnPdFdQuCNz1s3DPVn6eGdpd9VXQFE8VmWpzeSIQrL33ATc9lRyTBUiL4t+M9uxHt
+         B/oWVYKJXODWA==
+Subject: Re: [PATCH] media: qcom: camss: Fix overflows in clock rate
+ calculations
+To:     Vladimir Lypak <junak.pub@gmail.com>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+References: <20210210122906.3037085-1-junak.pub@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <df806bab-297a-b362-c961-a6fee7d9d1ca@xs4all.nl>
+Date:   Thu, 4 Mar 2021 11:30:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210122906.3037085-1-junak.pub@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfG9Km1B3GtcTV0dg9fu7u9EoQUFciWGz3cCjBZl1JN2L+XUKBFTwxFSdDfiUuVTN7iZbPYEtJI8DEx7zUNnhKTkJs3xgHhJyxGXyZ0S+/KWBxdjLzXJe
+ 6eT6UxorjILfGTno4rMNeCZWj6KchDZZdpE0OyICFbR/aQuGNCO5ETSklXHKiOdXQ8s29okRHRfrpzF8PsXWXv/XES0LeDTyiDSV5yhN7IzvHi5EoyawedRJ
+ NCz/3TLZNmQ6/Xz/Y/O7e2mWzEhCtLC3x+e2Nw7nbhzuy3eDOquIKrnwa4yAinpQ2tmVMnIsp7v5hx3/NgS59s8yfTEocUhpo2Rgj1BTL/viMOTeOGxhI9ZS
+ lT3roc+NraR2Oc+Zz/p7DsdggAHpLGzTVBckWrI16Mm3HOsjE5X37OzJndNwZmjNWfwePI1o8TMl/RnXRXY/Icfv6JOBUw7pAS+3fSL7YWYPqL6RKq87rEb+
+ f8aNpwqJXRqOBHtVRm5FUetI2lypd1ltR+ls6qrALNnc/+t22XyZqZhGFYs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 10/02/2021 13:29, Vladimir Lypak wrote:
+> Because of u32 type being used to store pixel clock rate, expression used
+> to calculate pipeline clocks (pixel_clock * bpp) produces wrong value due
+> to integer overflow. This patch changes data type used to store, pass and
+> retrieve pixel_clock from u32 to u64 to make this mistake less likely to
+> be repeated in the future.
 
-Add a set of tests for the new gpio-sim module. This is a pure shell
-test-suite and uses the helper programs available in the gpio selftests
-directory. These test-cases only test the functionalities exposed by the
-gpio-sim driver, not those handled by core gpiolib code.
+This patch conflicts with Andrey's patch:
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- tools/testing/selftests/gpio/Makefile    |   2 +-
- tools/testing/selftests/gpio/config      |   1 +
- tools/testing/selftests/gpio/gpio-sim.sh | 229 +++++++++++++++++++++++
- 3 files changed, 231 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+https://patchwork.linuxtv.org/project/linux-media/patch/20210217221134.2606-4-andrey.konovalov@linaro.org/
 
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index d7d8f1985d99..4c6df61c76a8 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--TEST_PROGS := gpio-mockup.sh
-+TEST_PROGS := gpio-mockup.sh gpio-sim.sh
- TEST_FILES := gpio-mockup-sysfs.sh
- TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev gpio-chip-info gpio-line-name
- 
-diff --git a/tools/testing/selftests/gpio/config b/tools/testing/selftests/gpio/config
-index ce100342c20b..409a8532facc 100644
---- a/tools/testing/selftests/gpio/config
-+++ b/tools/testing/selftests/gpio/config
-@@ -1,3 +1,4 @@
- CONFIG_GPIOLIB=y
- CONFIG_GPIO_CDEV=y
- CONFIG_GPIO_MOCKUP=m
-+CONFIG_GPIO_SIM=m
-diff --git a/tools/testing/selftests/gpio/gpio-sim.sh b/tools/testing/selftests/gpio/gpio-sim.sh
-new file mode 100755
-index 000000000000..9fd13ab8bec6
---- /dev/null
-+++ b/tools/testing/selftests/gpio/gpio-sim.sh
-@@ -0,0 +1,229 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Bartosz Golaszewski <bgolaszewski@baylibre.com>
-+
-+BASE_DIR=`dirname $0`
-+CONFIGFS_DIR="/sys/kernel/config/gpio-sim"
-+PENDING_DIR=$CONFIGFS_DIR/pending
-+LIVE_DIR=$CONFIGFS_DIR/live
-+MODULE="gpio-sim"
-+
-+fail() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test FAIL"
-+	exit 1
-+}
-+
-+skip() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test SKIP"
-+	exit 4
-+}
-+
-+configfs_cleanup() {
-+	for DIR in `ls $LIVE_DIR`; do
-+		mv $LIVE_DIR/$DIR $PENDING_DIR
-+	done
-+
-+	for DIR in `ls $PENDING_DIR`; do
-+		rmdir $PENDING_DIR/$DIR
-+	done
-+}
-+
-+create_pending_chip() {
-+	local NAME="$1"
-+	local LABEL="$2"
-+	local NUM_LINES="$3"
-+	local LINE_NAMES="$4"
-+	local CHIP_DIR="$PENDING_DIR/$NAME"
-+
-+	mkdir $CHIP_DIR
-+	test -n "$LABEL" && echo $LABEL > $CHIP_DIR/label
-+	test -n "$NUM_LINES" && echo $NUM_LINES > $CHIP_DIR/num_lines
-+	if [ -n "$LINE_NAMES" ]; then
-+		echo $LINE_NAMES 2> /dev/null > $CHIP_DIR/line_names
-+		# This one can fail
-+		if [ "$?" -ne "0" ]; then
-+			return 1
-+		fi
-+	fi
-+}
-+
-+create_live_chip() {
-+	local CHIP_DIR="$PENDING_DIR/$1"
-+
-+	create_pending_chip "$@" || fail "unable to create the chip configfs item"
-+	mv $CHIP_DIR $LIVE_DIR || fail "unable to commit the chip configfs item"
-+}
-+
-+remove_pending_chip() {
-+	local NAME="$1"
-+
-+	rmdir $PENDING_DIR/$NAME || fail "unable to remove the chip configfs item"
-+}
-+
-+remove_live_chip() {
-+	local NAME="$1"
-+
-+	mv $LIVE_DIR/$NAME $PENDING_DIR || fail "unable to uncommit the chip configfs item"
-+	remove_pending_chip "$@"
-+}
-+
-+configfs_chip_name() {
-+	local CHIP="$1"
-+
-+	cat $LIVE_DIR/$CHIP/chip_name 2> /dev/null || return 1
-+}
-+
-+configfs_dev_name() {
-+	local CHIP="$1"
-+
-+	cat $LIVE_DIR/$CHIP/dev_name 2> /dev/null || return 1
-+}
-+
-+get_chip_num_lines() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` num-lines
-+}
-+
-+get_chip_label() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` label
-+}
-+
-+get_line_name() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+
-+	$BASE_DIR/gpio-line-name /dev/`configfs_chip_name $CHIP` $OFFSET
-+}
-+
-+sysfs_set_pull() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+	local PULL="$3"
-+	local SYSFSPATH="/sys/devices/platform/`configfs_dev_name $CHIP`/line-ctrl/gpio$OFFSET"
-+
-+	echo $PULL > $SYSFSPATH
-+}
-+
-+# Load the gpio-sim module. This will pull in configfs if needed too.
-+modprobe gpio-sim || skip "unable to load the gpio-sim module"
-+# Make sure configfs is mounted at /sys/kernel/config. Wait a bit if needed.
-+for IDX in `seq 5`; do
-+	if [ "$IDX" -eq "5" ]; then
-+		skip "configfs not mounted at /sys/kernel/config"
-+	fi
-+
-+	mountpoint -q /sys/kernel/config && break
-+	sleep 0.1
-+done
-+# If the module was already loaded: remove all previous chips
-+configfs_cleanup
-+
-+trap "exit 1" SIGTERM SIGINT
-+trap configfs_cleanup EXIT
-+
-+echo "1. chip_name and dev_name attributes"
-+
-+echo "1.1. Chip name is communicated to user"
-+create_live_chip chip
-+test -n `cat $LIVE_DIR/chip/chip_name` || fail "chip_name doesn't work"
-+remove_live_chip chip
-+
-+echo "1.2. chip_name returns an error if chip is still pending"
-+create_pending_chip chip
-+configfs_chip_name chip && fail "chip_name doesn't return error for a pending chip"
-+remove_pending_chip chip
-+
-+echo "1.3. Device name is communicated to user"
-+create_live_chip chip
-+test -n `cat $LIVE_DIR/chip/dev_name` || fail "dev_name doesn't work"
-+remove_live_chip chip
-+
-+echo "1.4. dev_name returns an error if chip is still pending"
-+create_pending_chip chip
-+configfs_dev_name chip && fail "dev_name doesn't return error for a pending chip"
-+remove_pending_chip chip
-+
-+echo "2. Creating simulated chips"
-+
-+echo "2.1. Default number of lines is 1"
-+create_live_chip chip
-+test "`get_chip_num_lines chip`" = "1" || fail "default number of lines is not 1"
-+remove_live_chip chip
-+
-+echo "2.2. Number of lines can be specified"
-+create_live_chip chip test-label 16
-+test "`get_chip_num_lines chip`" = "16" || fail "number of lines is not 16"
-+remove_live_chip chip
-+
-+echo "2.3. Label can be set"
-+create_live_chip chip foobar
-+test "`get_chip_label chip`" = "foobar" || fail "label is incorrect"
-+remove_live_chip chip
-+
-+echo "2.4. Label can be left empty"
-+create_live_chip chip
-+test -z "`cat $LIVE_DIR/chip/label`" || fail "label is not empty"
-+remove_live_chip chip
-+
-+echo "2.5. Line names can be configured"
-+create_live_chip chip test-label 16 '"foo", "", "bar"'
-+test "`get_line_name chip 0`" = "foo" || fail "line name is incorrect"
-+test "`get_line_name chip 2`" = "bar" || fail "line name is incorrect"
-+remove_live_chip chip
-+
-+echo "2.6. Errors in line names are detected"
-+create_pending_chip chip test-label 8 '"foo", bar' && fail "incorrect line name accepted"
-+remove_pending_chip chip
-+create_pending_chip chip test-label 8 '"foo" "bar"' && fail "incorrect line name accepted"
-+remove_pending_chip chip
-+
-+echo "2.7. Multiple chips can be created"
-+create_live_chip chip0
-+create_live_chip chip1
-+create_live_chip chip2
-+remove_live_chip chip0
-+remove_live_chip chip1
-+remove_live_chip chip2
-+
-+echo "3. Controlling simulated chips"
-+
-+echo "3.3. Pull can be set over sysfs"
-+create_live_chip chip test-label 8
-+sysfs_set_pull chip 0 1
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 0
-+test "$?" = "1" || fail "pull set incorrectly"
-+sysfs_set_pull chip 0 0
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 1
-+test "$?" = "0" || fail "pull set incorrectly"
-+remove_live_chip chip
-+
-+echo "3.4. Incorrect input in sysfs is rejected"
-+create_live_chip chip test-label 8
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/line-ctrl/gpio0"
-+echo 2 > $SYSFS_PATH 2> /dev/null && fail "invalid input not detectec"
-+remove_live_chip chip
-+
-+echo "4. Simulated GPIO chips are functional"
-+
-+echo "4.1. Values can be read from sysfs"
-+create_live_chip chip test-label 8
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/line-ctrl/gpio0"
-+test `cat $SYSFS_PATH` = "0" || fail "incorrect value read from sysfs"
-+$BASE_DIR/gpio-mockup-cdev -s 1 /dev/`configfs_chip_name chip` 0 &
-+sleep 0.1 # FIXME Any better way?
-+test `cat $SYSFS_PATH` = "1" || fail "incorrect value read from sysfs"
-+kill $!
-+remove_live_chip chip
-+
-+echo "4.2. Bias settings work correctly"
-+create_live_chip chip test-label 8
-+$BASE_DIR/gpio-mockup-cdev -b pull-up /dev/`configfs_chip_name chip` 0
-+test `cat $SYSFS_PATH` = "1" || fail "bias setting does not work"
-+remove_live_chip chip
-+
-+echo "GPIO $MODULE test PASS"
--- 
-2.29.1
+I've picked up Andrey's patch in a pull request (not yet merged in our media master tree),
+but you should rebase your patch on top of his if it is still needed.
+
+Regards,
+
+	Hans
+
+> 
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid.c           | 2 +-
+>  drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c | 4 ++--
+>  drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c | 4 ++--
+>  drivers/media/platform/qcom/camss/camss-csiphy.c         | 4 ++--
+>  drivers/media/platform/qcom/camss/camss-csiphy.h         | 2 +-
+>  drivers/media/platform/qcom/camss/camss-vfe.c            | 4 ++--
+>  drivers/media/platform/qcom/camss/camss.c                | 2 +-
+>  drivers/media/platform/qcom/camss/camss.h                | 2 +-
+>  8 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+> index be3fe76f3dc30..6307b889baa69 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
+> @@ -462,7 +462,7 @@ static irqreturn_t csid_isr(int irq, void *dev)
+>  static int csid_set_clock_rates(struct csid_device *csid)
+>  {
+>  	struct device *dev = csid->camss->dev;
+> -	u32 pixel_clock;
+> +	u64 pixel_clock;
+>  	int i, j;
+>  	int ret;
+>  
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
+> index 12bce391d71fd..ec66d1557b8b1 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
+> @@ -57,7 +57,7 @@ static void csiphy_reset(struct csiphy_device *csiphy)
+>   * Return settle count value or 0 if the CSI2 pixel clock
+>   * frequency is not available
+>   */
+> -static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
+> +static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
+>  				 u32 timer_clk_rate)
+>  {
+>  	u32 mipi_clock; /* Hz */
+> @@ -83,7 +83,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
+>  
+>  static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+>  				struct csiphy_config *cfg,
+> -				u32 pixel_clock, u8 bpp, u8 lane_mask)
+> +				u64 pixel_clock, u8 bpp, u8 lane_mask)
+>  {
+>  	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
+>  	u8 settle_cnt;
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+> index 97cb9de850315..cd6eb88a7c153 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+> @@ -113,7 +113,7 @@ static irqreturn_t csiphy_isr(int irq, void *dev)
+>   * Return settle count value or 0 if the CSI2 pixel clock
+>   * frequency is not available
+>   */
+> -static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
+> +static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
+>  				 u32 timer_clk_rate)
+>  {
+>  	u32 mipi_clock; /* Hz */
+> @@ -137,7 +137,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
+>  
+>  static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+>  				struct csiphy_config *cfg,
+> -				u32 pixel_clock, u8 bpp, u8 lane_mask)
+> +				u64 pixel_clock, u8 bpp, u8 lane_mask)
+>  {
+>  	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
+>  	u8 settle_cnt;
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> index 509c9a59c09cd..61628f55c4f63 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> @@ -102,7 +102,7 @@ static u8 csiphy_get_bpp(const struct csiphy_format *formats,
+>  static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
+>  {
+>  	struct device *dev = csiphy->camss->dev;
+> -	u32 pixel_clock;
+> +	u64 pixel_clock;
+>  	int i, j;
+>  	int ret;
+>  
+> @@ -238,7 +238,7 @@ static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
+>  static int csiphy_stream_on(struct csiphy_device *csiphy)
+>  {
+>  	struct csiphy_config *cfg = &csiphy->cfg;
+> -	u32 pixel_clock;
+> +	u64 pixel_clock;
+>  	u8 lane_mask = csiphy_get_lane_mask(&cfg->csi2->lane_cfg);
+>  	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
+>  				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
+> index f7967ef836dcc..450c8247bd533 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy.h
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
+> @@ -50,7 +50,7 @@ struct csiphy_hw_ops {
+>  	void (*reset)(struct csiphy_device *csiphy);
+>  	void (*lanes_enable)(struct csiphy_device *csiphy,
+>  			     struct csiphy_config *cfg,
+> -			     u32 pixel_clock, u8 bpp, u8 lane_mask);
+> +			     u64 pixel_clock, u8 bpp, u8 lane_mask);
+>  	void (*lanes_disable)(struct csiphy_device *csiphy,
+>  			      struct csiphy_config *cfg);
+>  	irqreturn_t (*isr)(int irq, void *dev);
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+> index fae2b513b2f9d..b2c95b46ce661 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+> @@ -1112,7 +1112,7 @@ static inline void vfe_isr_halt_ack(struct vfe_device *vfe)
+>  static int vfe_set_clock_rates(struct vfe_device *vfe)
+>  {
+>  	struct device *dev = vfe->camss->dev;
+> -	u32 pixel_clock[MSM_VFE_LINE_NUM];
+> +	u64 pixel_clock[MSM_VFE_LINE_NUM];
+>  	int i, j;
+>  	int ret;
+>  
+> @@ -1194,7 +1194,7 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
+>   */
+>  static int vfe_check_clock_rates(struct vfe_device *vfe)
+>  {
+> -	u32 pixel_clock[MSM_VFE_LINE_NUM];
+> +	u64 pixel_clock[MSM_VFE_LINE_NUM];
+>  	int i, j;
+>  	int ret;
+>  
+> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> index 8fefce57bc49f..eb55cf436b717 100644
+> --- a/drivers/media/platform/qcom/camss/camss.c
+> +++ b/drivers/media/platform/qcom/camss/camss.c
+> @@ -555,7 +555,7 @@ struct media_entity *camss_find_sensor(struct media_entity *entity)
+>   *
+>   * Return 0 on success or a negative error code otherwise
+>   */
+> -int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock)
+> +int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock)
+>  {
+>  	struct media_entity *sensor;
+>  	struct v4l2_subdev *subdev;
+> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+> index 3a0484683cd6e..fabfce9a3496c 100644
+> --- a/drivers/media/platform/qcom/camss/camss.h
+> +++ b/drivers/media/platform/qcom/camss/camss.h
+> @@ -108,7 +108,7 @@ int camss_enable_clocks(int nclocks, struct camss_clock *clock,
+>  			struct device *dev);
+>  void camss_disable_clocks(int nclocks, struct camss_clock *clock);
+>  struct media_entity *camss_find_sensor(struct media_entity *entity);
+> -int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
+> +int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock);
+>  int camss_pm_domain_on(struct camss *camss, int id);
+>  void camss_pm_domain_off(struct camss *camss, int id);
+>  void camss_delete(struct camss *camss);
+> 
 
