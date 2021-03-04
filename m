@@ -2,630 +2,456 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D7F32CF2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2FE32CF6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237253AbhCDI7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:59:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237131AbhCDI6w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:58:52 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF46BC0613DD;
-        Thu,  4 Mar 2021 00:57:28 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id k66so8834948wmf.1;
-        Thu, 04 Mar 2021 00:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=FyueWMGIZ+3xiXlknjczOxt+nSBFQh0TD/15JK/IAmA=;
-        b=pyJ2j7RbcVn0yzgNfIPjoXUjlUimu5cp/xuVjrlKtJ0s6zJ6OvTUUbBmv9x/eHQ/US
-         Va9jl8DDDUZlHx01EU5anIyXtwE8FmD/U4QHMiTfOewPsqQdG9nobKp9pB/QuCngzJF3
-         OQlipde8y/Nj7LEViiO9Mv+LgS8MmPnCUyh5YTjAoqHQ45vDGRj2RM33XMAkC2hVUlIf
-         KhEuWiYNfDHGtbzJEykwoVuhvS3LVPcCS4bDW+/8M8REqI5MjQ3EdquUTzJQnhcrho3p
-         saFvSuUVuQQnoMklTopflDXQ6E87c2NlnbPbzT6AAGKwrfYkMkNMTcn1OkDLQWV9SKNg
-         4ctw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FyueWMGIZ+3xiXlknjczOxt+nSBFQh0TD/15JK/IAmA=;
-        b=H9KIMhhT4AOzgYuBlIuCAwyzE9pN9FLd0IqsbbMwpv0gUGLxTkOQuFgNAR0RN2RazU
-         RXi7/XT1W2gJ3tEmXN+89scUGO+XdhG/1fJuPKJlhKu+NKzIayKLVi8ixuvi4Yr5vMHF
-         VJO9JktPm/W0LemY3z8bL1z6FCkSIPaUaGquL3FEzXOdGWCJteRTT3l7MPok1Qnsigxa
-         Vl7gJQFkGggOmZAcsYs0LD5MZfGvbErz2vUTzvQe85j86o7xUuATqL9GezEBEkfos8cr
-         ld6N9RLXSYcTve+nX9YIwr6NFJvRoODD2pZoR4v2gQ/41cQqkmu4+TvHoXprUfUHORtw
-         IYkw==
-X-Gm-Message-State: AOAM530uEzcXUUToOY1XJbmj59yzS+xXFdVGv8G0iM5UiVquYDgQ/m+X
-        96MFJj0V0ilOzJs51hK4XCo=
-X-Google-Smtp-Source: ABdhPJwD5zyR+icuB9cYxqrXibt1dLTFVh7Xg3QXQPkte0h9oEuOBtyk2G/TnhbhjekimSXU/GZ+zQ==
-X-Received: by 2002:a05:600c:2102:: with SMTP id u2mr2867380wml.22.1614848247416;
-        Thu, 04 Mar 2021 00:57:27 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id q15sm2828976wrx.56.2021.03.04.00.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 00:57:27 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 15/15] pinctrl: add a pincontrol driver for BCM6318
-Date:   Thu,  4 Mar 2021 09:57:10 +0100
-Message-Id: <20210304085710.7128-16-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210304085710.7128-1-noltari@gmail.com>
-References: <20210304085710.7128-1-noltari@gmail.com>
+        id S237418AbhCDJL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:11:59 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:52442 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237404AbhCDJLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:11:51 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1249Afw7008777
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 10:10:41 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.11.66])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12490dlC023232;
+        Thu, 4 Mar 2021 10:00:39 +0100
+Date:   Thu, 4 Mar 2021 10:00:38 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH 3/4] watchdog: simatic-ipc-wdt: add new driver for
+ Siemens Industrial PCs
+Message-ID: <20210304100038.01318bcd@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VdUXWDg-2o8fmeo7EoMtRLfCnFOw5ptwjXTv9fKMmHv2A@mail.gmail.com>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+        <20210302163309.25528-4-henning.schild@siemens.com>
+        <CAHp75VdUXWDg-2o8fmeo7EoMtRLfCnFOw5ptwjXTv9fKMmHv2A@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a pincontrol driver for BCM6318. BCM6318 allows muxing most GPIOs
-to different functions. BCM6318 is similar to BCM6328 with the addition
-of a pad register, and the GPIO meaning of the mux register changes
-based on the GPIO number.
+Am Thu, 4 Mar 2021 10:27:07 +0200
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
----
- v4: no changes
- v3: use new shared code
- v2: switch to GPIO_REGMAP
+> On Tuesday, March 2, 2021, Henning Schild <henning.schild@siemens.com>
+> wrote:
+> 
+> > From: Henning Schild <henning.schild@siemens.com>
+> >
+> > This driver adds initial support for several devices from Siemens.
+> > It is based on a platform driver introduced in an earlier commit.
+> >
+> >  
+> 
+> Is it ACPI based? Why it can not provide WDAT table instead?
 
- drivers/pinctrl/bcm/Kconfig           |   8 +
- drivers/pinctrl/bcm/Makefile          |   1 +
- drivers/pinctrl/bcm/pinctrl-bcm6318.c | 496 ++++++++++++++++++++++++++
- 3 files changed, 505 insertions(+)
- create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6318.c
+Yes it is. We strongly urged the BIOS guys to look into that for future
+products and BIOS updates for current products. But for existing
+products they will not add "features". One fear is breaking Windows
+where custom drivers have been the way they did it so far.
 
-diff --git a/drivers/pinctrl/bcm/Kconfig b/drivers/pinctrl/bcm/Kconfig
-index 186985846120..33660e8fec05 100644
---- a/drivers/pinctrl/bcm/Kconfig
-+++ b/drivers/pinctrl/bcm/Kconfig
-@@ -36,6 +36,14 @@ config PINCTRL_BCM63XX
- 	select PINCONF
- 	select PINMUX
- 
-+config PINCTRL_BCM6318
-+	bool "Broadcom BCM6318 GPIO driver"
-+	depends on (BMIPS_GENERIC || COMPILE_TEST)
-+	select PINCTRL_BCM63XX
-+	default BMIPS_GENERIC
-+	help
-+	   Say Y here to enable the Broadcom BCM6318 GPIO driver.
-+
- config PINCTRL_BCM6328
- 	bool "Broadcom BCM6328 GPIO driver"
- 	depends on (BMIPS_GENERIC || COMPILE_TEST)
-diff --git a/drivers/pinctrl/bcm/Makefile b/drivers/pinctrl/bcm/Makefile
-index 4117847fd279..00c7b7775e63 100644
---- a/drivers/pinctrl/bcm/Makefile
-+++ b/drivers/pinctrl/bcm/Makefile
-@@ -4,6 +4,7 @@
- obj-$(CONFIG_PINCTRL_BCM281XX)		+= pinctrl-bcm281xx.o
- obj-$(CONFIG_PINCTRL_BCM2835)		+= pinctrl-bcm2835.o
- obj-$(CONFIG_PINCTRL_BCM63XX)		+= pinctrl-bcm63xx.o
-+obj-$(CONFIG_PINCTRL_BCM6318)		+= pinctrl-bcm6318.o
- obj-$(CONFIG_PINCTRL_BCM6328)		+= pinctrl-bcm6328.o
- obj-$(CONFIG_PINCTRL_BCM6358)		+= pinctrl-bcm6358.o
- obj-$(CONFIG_PINCTRL_BCM6362)		+= pinctrl-bcm6362.o
-diff --git a/drivers/pinctrl/bcm/pinctrl-bcm6318.c b/drivers/pinctrl/bcm/pinctrl-bcm6318.c
-new file mode 100644
-index 000000000000..57fa64180df1
---- /dev/null
-+++ b/drivers/pinctrl/bcm/pinctrl-bcm6318.c
-@@ -0,0 +1,496 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Driver for BCM6318 GPIO unit (pinctrl + GPIO)
-+ *
-+ * Copyright (C) 2021 Álvaro Fernández Rojas <noltari@gmail.com>
-+ * Copyright (C) 2016 Jonas Gorski <jonas.gorski@gmail.com>
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/kernel.h>
-+#include <linux/of.h>
-+#include <linux/pinctrl/pinmux.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#include "../pinctrl-utils.h"
-+
-+#include "pinctrl-bcm63xx.h"
-+
-+#define BCM6318_NUM_GPIOS	50
-+#define BCM6318_NUM_MUX		48
-+
-+#define BCM6318_MODE_REG	0x18
-+#define BCM6318_MUX_REG		0x1c
-+#define BCM6318_PAD_REG		0x54
-+
-+struct bcm6318_pingroup {
-+	const char *name;
-+	const unsigned * const pins;
-+	const unsigned num_pins;
-+};
-+
-+struct bcm6318_function {
-+	const char *name;
-+	const char * const *groups;
-+	const unsigned num_groups;
-+
-+	unsigned mode_val:1;
-+	unsigned mux_val:2;
-+};
-+
-+static const struct pinctrl_pin_desc bcm6318_pins[] = {
-+	PINCTRL_PIN(0, "gpio0"),
-+	PINCTRL_PIN(1, "gpio1"),
-+	PINCTRL_PIN(2, "gpio2"),
-+	PINCTRL_PIN(3, "gpio3"),
-+	PINCTRL_PIN(4, "gpio4"),
-+	PINCTRL_PIN(5, "gpio5"),
-+	PINCTRL_PIN(6, "gpio6"),
-+	PINCTRL_PIN(7, "gpio7"),
-+	PINCTRL_PIN(8, "gpio8"),
-+	PINCTRL_PIN(9, "gpio9"),
-+	PINCTRL_PIN(10, "gpio10"),
-+	PINCTRL_PIN(11, "gpio11"),
-+	PINCTRL_PIN(12, "gpio12"),
-+	PINCTRL_PIN(13, "gpio13"),
-+	PINCTRL_PIN(14, "gpio14"),
-+	PINCTRL_PIN(15, "gpio15"),
-+	PINCTRL_PIN(16, "gpio16"),
-+	PINCTRL_PIN(17, "gpio17"),
-+	PINCTRL_PIN(18, "gpio18"),
-+	PINCTRL_PIN(19, "gpio19"),
-+	PINCTRL_PIN(20, "gpio20"),
-+	PINCTRL_PIN(21, "gpio21"),
-+	PINCTRL_PIN(22, "gpio22"),
-+	PINCTRL_PIN(23, "gpio23"),
-+	PINCTRL_PIN(24, "gpio24"),
-+	PINCTRL_PIN(25, "gpio25"),
-+	PINCTRL_PIN(26, "gpio26"),
-+	PINCTRL_PIN(27, "gpio27"),
-+	PINCTRL_PIN(28, "gpio28"),
-+	PINCTRL_PIN(29, "gpio29"),
-+	PINCTRL_PIN(30, "gpio30"),
-+	PINCTRL_PIN(31, "gpio31"),
-+	PINCTRL_PIN(32, "gpio32"),
-+	PINCTRL_PIN(33, "gpio33"),
-+	PINCTRL_PIN(34, "gpio34"),
-+	PINCTRL_PIN(35, "gpio35"),
-+	PINCTRL_PIN(36, "gpio36"),
-+	PINCTRL_PIN(37, "gpio37"),
-+	PINCTRL_PIN(38, "gpio38"),
-+	PINCTRL_PIN(39, "gpio39"),
-+	PINCTRL_PIN(40, "gpio40"),
-+	PINCTRL_PIN(41, "gpio41"),
-+	PINCTRL_PIN(42, "gpio42"),
-+	PINCTRL_PIN(43, "gpio43"),
-+	PINCTRL_PIN(44, "gpio44"),
-+	PINCTRL_PIN(45, "gpio45"),
-+	PINCTRL_PIN(46, "gpio46"),
-+	PINCTRL_PIN(47, "gpio47"),
-+	PINCTRL_PIN(48, "gpio48"),
-+	PINCTRL_PIN(49, "gpio49"),
-+};
-+
-+static unsigned gpio0_pins[] = { 0 };
-+static unsigned gpio1_pins[] = { 1 };
-+static unsigned gpio2_pins[] = { 2 };
-+static unsigned gpio3_pins[] = { 3 };
-+static unsigned gpio4_pins[] = { 4 };
-+static unsigned gpio5_pins[] = { 5 };
-+static unsigned gpio6_pins[] = { 6 };
-+static unsigned gpio7_pins[] = { 7 };
-+static unsigned gpio8_pins[] = { 8 };
-+static unsigned gpio9_pins[] = { 9 };
-+static unsigned gpio10_pins[] = { 10 };
-+static unsigned gpio11_pins[] = { 11 };
-+static unsigned gpio12_pins[] = { 12 };
-+static unsigned gpio13_pins[] = { 13 };
-+static unsigned gpio14_pins[] = { 14 };
-+static unsigned gpio15_pins[] = { 15 };
-+static unsigned gpio16_pins[] = { 16 };
-+static unsigned gpio17_pins[] = { 17 };
-+static unsigned gpio18_pins[] = { 18 };
-+static unsigned gpio19_pins[] = { 19 };
-+static unsigned gpio20_pins[] = { 20 };
-+static unsigned gpio21_pins[] = { 21 };
-+static unsigned gpio22_pins[] = { 22 };
-+static unsigned gpio23_pins[] = { 23 };
-+static unsigned gpio24_pins[] = { 24 };
-+static unsigned gpio25_pins[] = { 25 };
-+static unsigned gpio26_pins[] = { 26 };
-+static unsigned gpio27_pins[] = { 27 };
-+static unsigned gpio28_pins[] = { 28 };
-+static unsigned gpio29_pins[] = { 29 };
-+static unsigned gpio30_pins[] = { 30 };
-+static unsigned gpio31_pins[] = { 31 };
-+static unsigned gpio32_pins[] = { 32 };
-+static unsigned gpio33_pins[] = { 33 };
-+static unsigned gpio34_pins[] = { 34 };
-+static unsigned gpio35_pins[] = { 35 };
-+static unsigned gpio36_pins[] = { 36 };
-+static unsigned gpio37_pins[] = { 37 };
-+static unsigned gpio38_pins[] = { 38 };
-+static unsigned gpio39_pins[] = { 39 };
-+static unsigned gpio40_pins[] = { 40 };
-+static unsigned gpio41_pins[] = { 41 };
-+static unsigned gpio42_pins[] = { 42 };
-+static unsigned gpio43_pins[] = { 43 };
-+static unsigned gpio44_pins[] = { 44 };
-+static unsigned gpio45_pins[] = { 45 };
-+static unsigned gpio46_pins[] = { 46 };
-+static unsigned gpio47_pins[] = { 47 };
-+static unsigned gpio48_pins[] = { 48 };
-+static unsigned gpio49_pins[] = { 49 };
-+
-+#define BCM6318_GROUP(n)					\
-+	{							\
-+		.name = #n,					\
-+		.pins = n##_pins,				\
-+		.num_pins = ARRAY_SIZE(n##_pins),		\
-+	}
-+
-+static struct bcm6318_pingroup bcm6318_groups[] = {
-+	BCM6318_GROUP(gpio0),
-+	BCM6318_GROUP(gpio1),
-+	BCM6318_GROUP(gpio2),
-+	BCM6318_GROUP(gpio3),
-+	BCM6318_GROUP(gpio4),
-+	BCM6318_GROUP(gpio5),
-+	BCM6318_GROUP(gpio6),
-+	BCM6318_GROUP(gpio7),
-+	BCM6318_GROUP(gpio8),
-+	BCM6318_GROUP(gpio9),
-+	BCM6318_GROUP(gpio10),
-+	BCM6318_GROUP(gpio11),
-+	BCM6318_GROUP(gpio12),
-+	BCM6318_GROUP(gpio13),
-+	BCM6318_GROUP(gpio14),
-+	BCM6318_GROUP(gpio15),
-+	BCM6318_GROUP(gpio16),
-+	BCM6318_GROUP(gpio17),
-+	BCM6318_GROUP(gpio18),
-+	BCM6318_GROUP(gpio19),
-+	BCM6318_GROUP(gpio20),
-+	BCM6318_GROUP(gpio21),
-+	BCM6318_GROUP(gpio22),
-+	BCM6318_GROUP(gpio23),
-+	BCM6318_GROUP(gpio24),
-+	BCM6318_GROUP(gpio25),
-+	BCM6318_GROUP(gpio26),
-+	BCM6318_GROUP(gpio27),
-+	BCM6318_GROUP(gpio28),
-+	BCM6318_GROUP(gpio29),
-+	BCM6318_GROUP(gpio30),
-+	BCM6318_GROUP(gpio31),
-+	BCM6318_GROUP(gpio32),
-+	BCM6318_GROUP(gpio33),
-+	BCM6318_GROUP(gpio34),
-+	BCM6318_GROUP(gpio35),
-+	BCM6318_GROUP(gpio36),
-+	BCM6318_GROUP(gpio37),
-+	BCM6318_GROUP(gpio38),
-+	BCM6318_GROUP(gpio39),
-+	BCM6318_GROUP(gpio40),
-+	BCM6318_GROUP(gpio41),
-+	BCM6318_GROUP(gpio42),
-+	BCM6318_GROUP(gpio43),
-+	BCM6318_GROUP(gpio44),
-+	BCM6318_GROUP(gpio45),
-+	BCM6318_GROUP(gpio46),
-+	BCM6318_GROUP(gpio47),
-+	BCM6318_GROUP(gpio48),
-+	BCM6318_GROUP(gpio49),
-+};
-+
-+/* GPIO_MODE */
-+static const char * const led_groups[] = {
-+	"gpio0",
-+	"gpio1",
-+	"gpio2",
-+	"gpio3",
-+	"gpio4",
-+	"gpio5",
-+	"gpio6",
-+	"gpio7",
-+	"gpio8",
-+	"gpio9",
-+	"gpio10",
-+	"gpio11",
-+	"gpio12",
-+	"gpio13",
-+	"gpio14",
-+	"gpio15",
-+	"gpio16",
-+	"gpio17",
-+	"gpio18",
-+	"gpio19",
-+	"gpio20",
-+	"gpio21",
-+	"gpio22",
-+	"gpio23",
-+};
-+
-+/* PINMUX_SEL */
-+static const char * const ephy0_spd_led_groups[] = {
-+	"gpio0",
-+};
-+
-+static const char * const ephy1_spd_led_groups[] = {
-+	"gpio1",
-+};
-+
-+static const char * const ephy2_spd_led_groups[] = {
-+	"gpio2",
-+};
-+
-+static const char * const ephy3_spd_led_groups[] = {
-+	"gpio3",
-+};
-+
-+static const char * const ephy0_act_led_groups[] = {
-+	"gpio4",
-+};
-+
-+static const char * const ephy1_act_led_groups[] = {
-+	"gpio5",
-+};
-+
-+static const char * const ephy2_act_led_groups[] = {
-+	"gpio6",
-+};
-+
-+static const char * const ephy3_act_led_groups[] = {
-+	"gpio7",
-+};
-+
-+static const char * const serial_led_data_groups[] = {
-+	"gpio6",
-+};
-+
-+static const char * const serial_led_clk_groups[] = {
-+	"gpio7",
-+};
-+
-+static const char * const inet_act_led_groups[] = {
-+	"gpio8",
-+};
-+
-+static const char * const inet_fail_led_groups[] = {
-+	"gpio9",
-+};
-+
-+static const char * const dsl_led_groups[] = {
-+	"gpio10",
-+};
-+
-+static const char * const post_fail_led_groups[] = {
-+	"gpio11",
-+};
-+
-+static const char * const wlan_wps_led_groups[] = {
-+	"gpio12",
-+};
-+
-+static const char * const usb_pwron_groups[] = {
-+	"gpio13",
-+};
-+
-+static const char * const usb_device_led_groups[] = {
-+	"gpio13",
-+};
-+
-+static const char * const usb_active_groups[] = {
-+	"gpio40",
-+};
-+
-+#define BCM6318_MODE_FUN(n)				\
-+	{						\
-+		.name = #n,				\
-+		.groups = n##_groups,			\
-+		.num_groups = ARRAY_SIZE(n##_groups),	\
-+		.mode_val = 1,				\
-+	}
-+
-+#define BCM6318_MUX_FUN(n, mux)				\
-+	{						\
-+		.name = #n,				\
-+		.groups = n##_groups,			\
-+		.num_groups = ARRAY_SIZE(n##_groups),	\
-+		.mux_val = mux,				\
-+	}
-+
-+static const struct bcm6318_function bcm6318_funcs[] = {
-+	BCM6318_MODE_FUN(led),
-+	BCM6318_MUX_FUN(ephy0_spd_led, 1),
-+	BCM6318_MUX_FUN(ephy1_spd_led, 1),
-+	BCM6318_MUX_FUN(ephy2_spd_led, 1),
-+	BCM6318_MUX_FUN(ephy3_spd_led, 1),
-+	BCM6318_MUX_FUN(ephy0_act_led, 1),
-+	BCM6318_MUX_FUN(ephy1_act_led, 1),
-+	BCM6318_MUX_FUN(ephy2_act_led, 1),
-+	BCM6318_MUX_FUN(ephy3_act_led, 1),
-+	BCM6318_MUX_FUN(serial_led_data, 3),
-+	BCM6318_MUX_FUN(serial_led_clk, 3),
-+	BCM6318_MUX_FUN(inet_act_led, 1),
-+	BCM6318_MUX_FUN(inet_fail_led, 1),
-+	BCM6318_MUX_FUN(dsl_led, 1),
-+	BCM6318_MUX_FUN(post_fail_led, 1),
-+	BCM6318_MUX_FUN(wlan_wps_led, 1),
-+	BCM6318_MUX_FUN(usb_pwron, 1),
-+	BCM6318_MUX_FUN(usb_device_led, 2),
-+	BCM6318_MUX_FUN(usb_active, 2),
-+};
-+
-+static inline unsigned int bcm6318_mux_off(unsigned int pin)
-+{
-+	return BCM6318_MUX_REG + (pin / 16) * 4;
-+}
-+
-+static inline unsigned int bcm6318_pad_off(unsigned int pin)
-+{
-+	return BCM6318_PAD_REG + (pin / 8) * 4;
-+}
-+
-+static int bcm6318_pinctrl_get_group_count(struct pinctrl_dev *pctldev)
-+{
-+	return ARRAY_SIZE(bcm6318_groups);
-+}
-+
-+static const char *bcm6318_pinctrl_get_group_name(struct pinctrl_dev *pctldev,
-+						  unsigned group)
-+{
-+	return bcm6318_groups[group].name;
-+}
-+
-+static int bcm6318_pinctrl_get_group_pins(struct pinctrl_dev *pctldev,
-+					  unsigned group, const unsigned **pins,
-+					  unsigned *num_pins)
-+{
-+	*pins = bcm6318_groups[group].pins;
-+	*num_pins = bcm6318_groups[group].num_pins;
-+
-+	return 0;
-+}
-+
-+static int bcm6318_pinctrl_get_func_count(struct pinctrl_dev *pctldev)
-+{
-+	return ARRAY_SIZE(bcm6318_funcs);
-+}
-+
-+static const char *bcm6318_pinctrl_get_func_name(struct pinctrl_dev *pctldev,
-+						 unsigned selector)
-+{
-+	return bcm6318_funcs[selector].name;
-+}
-+
-+static int bcm6318_pinctrl_get_groups(struct pinctrl_dev *pctldev,
-+				      unsigned selector,
-+				      const char * const **groups,
-+				      unsigned * const num_groups)
-+{
-+	*groups = bcm6318_funcs[selector].groups;
-+	*num_groups = bcm6318_funcs[selector].num_groups;
-+
-+	return 0;
-+}
-+
-+static inline void bcm6318_rmw_mux(struct bcm63xx_pinctrl *pc, unsigned pin,
-+				   unsigned int mode, unsigned int mux)
-+{
-+	if (pin < BCM63XX_BANK_GPIOS)
-+		regmap_update_bits(pc->regs, BCM6318_MODE_REG, BIT(pin),
-+				   mode ? BIT(pin) : 0);
-+
-+	if (pin < BCM6318_NUM_MUX)
-+		regmap_update_bits(pc->regs,
-+				   bcm6318_mux_off(pin),
-+				   3UL << ((pin % 16) * 2),
-+				   mux << ((pin % 16) * 2));
-+}
-+
-+static inline void bcm6318_set_pad(struct bcm63xx_pinctrl *pc, unsigned pin,
-+				   uint8_t val)
-+{
-+	regmap_update_bits(pc->regs, bcm6318_pad_off(pin),
-+			   0xfUL << ((pin % 8) * 4),
-+			   val << ((pin % 8) * 4));
-+}
-+
-+static int bcm6318_pinctrl_set_mux(struct pinctrl_dev *pctldev,
-+				   unsigned selector, unsigned group)
-+{
-+	struct bcm63xx_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
-+	const struct bcm6318_pingroup *pg = &bcm6318_groups[group];
-+	const struct bcm6318_function *f = &bcm6318_funcs[selector];
-+
-+	bcm6318_rmw_mux(pc, pg->pins[0], f->mode_val, f->mux_val);
-+
-+	return 0;
-+}
-+
-+static int bcm6318_gpio_request_enable(struct pinctrl_dev *pctldev,
-+				       struct pinctrl_gpio_range *range,
-+				       unsigned offset)
-+{
-+	struct bcm63xx_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* disable all functions using this pin */
-+	if (offset < 13) {
-+		/* GPIOs 0-12 use mux 0 as GPIO function */
-+		bcm6318_rmw_mux(pc, offset, 0, 0);
-+	} else if (offset < 42) {
-+		/* GPIOs 13-41 use mux 3 as GPIO function */
-+		bcm6318_rmw_mux(pc, offset, 0, 3);
-+
-+		bcm6318_set_pad(pc, offset, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct pinctrl_ops bcm6318_pctl_ops = {
-+	.get_groups_count = bcm6318_pinctrl_get_group_count,
-+	.get_group_name = bcm6318_pinctrl_get_group_name,
-+	.get_group_pins = bcm6318_pinctrl_get_group_pins,
-+	.dt_node_to_map = pinconf_generic_dt_node_to_map_pin,
-+	.dt_free_map = pinctrl_utils_free_map,
-+};
-+
-+static struct pinmux_ops bcm6318_pmx_ops = {
-+	.get_functions_count = bcm6318_pinctrl_get_func_count,
-+	.get_function_name = bcm6318_pinctrl_get_func_name,
-+	.get_function_groups = bcm6318_pinctrl_get_groups,
-+	.set_mux = bcm6318_pinctrl_set_mux,
-+	.gpio_request_enable = bcm6318_gpio_request_enable,
-+	.strict = true,
-+};
-+
-+static const struct bcm63xx_pinctrl_soc bcm6318_soc = {
-+	.ngpios = BCM6318_NUM_GPIOS,
-+	.npins = ARRAY_SIZE(bcm6318_pins),
-+	.pctl_ops = &bcm6318_pctl_ops,
-+	.pins = bcm6318_pins,
-+	.pmx_ops = &bcm6318_pmx_ops,
-+};
-+
-+static int bcm6318_pinctrl_probe(struct platform_device *pdev)
-+{
-+	return bcm63xx_pinctrl_probe(pdev, &bcm6318_soc, NULL);
-+}
-+
-+static const struct of_device_id bcm6318_pinctrl_match[] = {
-+	{ .compatible = "brcm,bcm6318-pinctrl", },
-+	{ },
-+};
-+
-+static struct platform_driver bcm6318_pinctrl_driver = {
-+	.probe = bcm6318_pinctrl_probe,
-+	.driver = {
-+		.name = "bcm6318-pinctrl",
-+		.of_match_table = bcm6318_pinctrl_match,
-+	},
-+};
-+
-+builtin_platform_driver(bcm6318_pinctrl_driver);
--- 
-2.20.1
+So we are dealing with legacy here, that is why. Hope that is not a
+show-stopper.
+
+Maybe we can carry ACPI quirk snippets instead, did not yet look into
+this. And i am not sure which version would be easier to maintain and
+more acceptable to the kernel.
+
+regards,
+Henning
+
+> 
+> > Signed-off-by: Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> > Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> > ---
+> >  drivers/watchdog/Kconfig           |  11 ++
+> >  drivers/watchdog/Makefile          |   1 +
+> >  drivers/watchdog/simatic-ipc-wdt.c | 305
+> > +++++++++++++++++++++++++++++ 3 files changed, 317 insertions(+)
+> >  create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+> >
+> > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> > index 1fe0042a48d2..948497eb4bef 100644
+> > --- a/drivers/watchdog/Kconfig
+> > +++ b/drivers/watchdog/Kconfig
+> > @@ -1575,6 +1575,17 @@ config NIC7018_WDT
+> >           To compile this driver as a module, choose M here: the
+> > module will be
+> >           called nic7018_wdt.
+> >
+> > +config SIEMENS_SIMATIC_IPC_WDT
+> > +       tristate "Siemens Simatic IPC Watchdog"
+> > +       depends on SIEMENS_SIMATIC_IPC
+> > +       select WATCHDOG_CORE
+> > +       help
+> > +         This driver adds support for several watchdogs found in
+> > Industrial
+> > +         PCs from Siemens.
+> > +
+> > +         To compile this driver as a module, choose M here: the
+> > module will be
+> > +         called simatic-ipc-wdt.
+> > +
+> >  # M68K Architecture
+> >
+> >  config M54xx_WATCHDOG
+> > diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> > index f3a6540e725e..7f5c73ec058c 100644
+> > --- a/drivers/watchdog/Makefile
+> > +++ b/drivers/watchdog/Makefile
+> > @@ -142,6 +142,7 @@ obj-$(CONFIG_NI903X_WDT) += ni903x_wdt.o
+> >  obj-$(CONFIG_NIC7018_WDT) += nic7018_wdt.o
+> >  obj-$(CONFIG_MLX_WDT) += mlx_wdt.o
+> >  obj-$(CONFIG_KEEMBAY_WATCHDOG) += keembay_wdt.o
+> > +obj-$(CONFIG_SIEMENS_SIMATIC_IPC_WDT) += simatic-ipc-wdt.o
+> >
+> >  # M68K Architecture
+> >  obj-$(CONFIG_M54xx_WATCHDOG) += m54xx_wdt.o
+> > diff --git a/drivers/watchdog/simatic-ipc-wdt.c
+> > b/drivers/watchdog/simatic-ipc-wdt.c
+> > new file mode 100644
+> > index 000000000000..b5c8b7ceb404
+> > --- /dev/null
+> > +++ b/drivers/watchdog/simatic-ipc-wdt.c
+> > @@ -0,0 +1,305 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Siemens SIMATIC IPC driver for Watchdogs
+> > + *
+> > + * Copyright (c) Siemens AG, 2020-2021
+> > + *
+> > + * Authors:
+> > + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> > + *
+> > + * This program is free software; you can redistribute it and/or
+> > modify
+> > + * it under the terms of the GNU General Public License version 2
+> > as
+> > + * published by the Free Software Foundation.
+> > + */
+> > +
+> > +#include <linux/device.h>
+> > +#include <linux/init.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/errno.h>
+> > +#include <linux/watchdog.h>
+> > +#include <linux/ioport.h>
+> > +#include <linux/sizes.h>
+> > +#include <linux/io.h>
+> > +#include <linux/platform_data/x86/simatic-ipc-base.h>
+> > +
+> > +#define WD_ENABLE_IOADR                0x62
+> > +#define WD_TRIGGER_IOADR       0x66
+> > +#define GPIO_COMMUNITY0_PORT_ID 0xaf
+> > +#define PAD_CFG_DW0_GPP_A_23   0x4b8
+> > +#define SAFE_EN_N_427E         0x01
+> > +#define SAFE_EN_N_227E         0x04
+> > +#define WD_ENABLED             0x01
+> > +
+> > +#define TIMEOUT_MIN    2
+> > +#define TIMEOUT_DEF    64
+> > +#define TIMEOUT_MAX    64
+> > +
+> > +#define GP_STATUS_REG_227E     0x404D  /* IO PORT for SAFE_EN_N on
+> > 227E */ +
+> > +static bool nowayout = WATCHDOG_NOWAYOUT;
+> > +module_param(nowayout, bool, 0000);
+> > +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started
+> > (default="
+> > +                __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> > +
+> > +static DEFINE_SPINLOCK(io_lock);       /* the lock for io
+> > operations */ +static struct watchdog_device wdd;
+> > +
+> > +static struct resource gp_status_reg_227e_res =
+> > +       DEFINE_RES_IO_NAMED(GP_STATUS_REG_227E, SZ_1,
+> > KBUILD_MODNAME); +
+> > +static struct resource io_resource =
+> > +       DEFINE_RES_IO_NAMED(WD_ENABLE_IOADR, SZ_1,
+> > +                           KBUILD_MODNAME " WD_ENABLE_IOADR");
+> > +
+> > +/* the actual start will be discovered with pci, 0 is a
+> > placeholder */ +static struct resource mem_resource =
+> > +       DEFINE_RES_MEM_NAMED(0, SZ_4, "WD_RESET_BASE_ADR");
+> > +
+> > +static u32 wd_timeout_table[] = {2, 4, 6, 8, 16, 32, 48, 64 };
+> > +static void __iomem *wd_reset_base_addr;
+> > +
+> > +static int get_timeout_idx(u32 timeout)
+> > +{
+> > +       int i;
+> > +
+> > +       i = ARRAY_SIZE(wd_timeout_table) - 1;
+> > +       for (; i >= 0; i--) {
+> > +               if (timeout >= wd_timeout_table[i])
+> > +                       break;
+> > +       }
+> > +
+> > +       return i;
+> > +}
+> > +
+> > +static int wd_start(struct watchdog_device *wdd)
+> > +{
+> > +       u8 regval;
+> > +
+> > +       spin_lock(&io_lock);
+> > +
+> > +       regval = inb(WD_ENABLE_IOADR);
+> > +       regval |= WD_ENABLED;
+> > +       outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +       spin_unlock(&io_lock);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int wd_stop(struct watchdog_device *wdd)
+> > +{
+> > +       u8 regval;
+> > +
+> > +       spin_lock(&io_lock);
+> > +
+> > +       regval = inb(WD_ENABLE_IOADR);
+> > +       regval &= ~WD_ENABLED;
+> > +       outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +       spin_unlock(&io_lock);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int wd_ping(struct watchdog_device *wdd)
+> > +{
+> > +       inb(WD_TRIGGER_IOADR);
+> > +       return 0;
+> > +}
+> > +
+> > +static int wd_set_timeout(struct watchdog_device *wdd, unsigned
+> > int t) +{
+> > +       u8 regval;
+> > +       int timeout_idx = get_timeout_idx(t);
+> > +
+> > +       spin_lock(&io_lock);
+> > +
+> > +       regval = inb(WD_ENABLE_IOADR) & 0xc7;
+> > +       regval |= timeout_idx << 3;
+> > +       outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +       spin_unlock(&io_lock);
+> > +       wdd->timeout = wd_timeout_table[timeout_idx];
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static const struct watchdog_info wdt_ident = {
+> > +       .options        = WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
+> > +                         WDIOF_SETTIMEOUT,
+> > +       .identity       = KBUILD_MODNAME,
+> > +};
+> > +
+> > +static const struct watchdog_ops wdt_ops = {
+> > +       .owner          = THIS_MODULE,
+> > +       .start          = wd_start,
+> > +       .stop           = wd_stop,
+> > +       .ping           = wd_ping,
+> > +       .set_timeout    = wd_set_timeout,
+> > +};
+> > +
+> > +static void wd_set_safe_en_n(u32 wdtmode, bool safe_en_n)
+> > +{
+> > +       u16 resetbit;
+> > +
+> > +       if (wdtmode == SIMATIC_IPC_DEVICE_227E) {
+> > +               /* enable SAFE_EN_N on GP_STATUS_REG_227E */
+> > +               resetbit = inw(GP_STATUS_REG_227E);
+> > +               if (safe_en_n)
+> > +                       resetbit &= ~SAFE_EN_N_227E;
+> > +               else
+> > +                       resetbit |= SAFE_EN_N_227E;
+> > +
+> > +               outw(resetbit, GP_STATUS_REG_227E);
+> > +       } else {
+> > +               /* enable SAFE_EN_N on PCH D1600 */
+> > +               resetbit = ioread16(wd_reset_base_addr);
+> > +
+> > +               if (safe_en_n)
+> > +                       resetbit &= ~SAFE_EN_N_427E;
+> > +               else
+> > +                       resetbit |= SAFE_EN_N_427E;
+> > +
+> > +               iowrite16(resetbit, wd_reset_base_addr);
+> > +       }
+> > +}
+> > +
+> > +static int wd_setup(u32 wdtmode, bool safe_en_n)
+> > +{
+> > +       u8 regval;
+> > +       int timeout_idx = 0;
+> > +       bool alarm_active;
+> > +
+> > +       timeout_idx = get_timeout_idx(TIMEOUT_DEF);
+> > +
+> > +       wd_set_safe_en_n(wdtmode, safe_en_n);
+> > +
+> > +       /* read wd register to determine alarm state */
+> > +       regval = inb(WD_ENABLE_IOADR);
+> > +       if (regval & 0x80) {
+> > +               pr_warn("Watchdog alarm active.\n");
+> > +               regval = 0x82;  /* use only macro mode, reset alarm
+> > bit */
+> > +               alarm_active = true;
+> > +       } else {
+> > +               regval = 0x02;  /* use only macro mode */
+> > +               alarm_active = false;
+> > +       }
+> > +
+> > +       regval |= timeout_idx << 3;
+> > +       if (nowayout)
+> > +               regval |= WD_ENABLED;
+> > +
+> > +       outb(regval, WD_ENABLE_IOADR);
+> > +
+> > +       return alarm_active;
+> > +}
+> > +
+> > +static int simatic_ipc_wdt_probe(struct platform_device *pdev)
+> > +{
+> > +       struct device *dev = &pdev->dev;
+> > +       int rc = 0;
+> > +       struct simatic_ipc_platform *plat = pdev->dev.platform_data;
+> > +       struct resource *res;
+> > +
+> > +       pr_debug(KBUILD_MODNAME ":%s(#%d) WDT mode: %d\n",
+> > +                __func__, __LINE__, plat->devmode);
+> > +
+> > +       switch (plat->devmode) {
+> > +       case SIMATIC_IPC_DEVICE_227E:
+> > +               if (!devm_request_region(dev,
+> > gp_status_reg_227e_res.start,
+> > +
+> > resource_size(&gp_status_reg_ 227e_res),
+> > +                                        KBUILD_MODNAME)) {
+> > +                       dev_err(dev,
+> > +                               "Unable to register IO resource at
+> > %pR\n",
+> > +                               &gp_status_reg_227e_res);
+> > +                       return -EBUSY;
+> > +               }
+> > +               fallthrough;
+> > +       case SIMATIC_IPC_DEVICE_427E:
+> > +               wdd.info = &wdt_ident;
+> > +               wdd.ops = &wdt_ops;
+> > +               wdd.min_timeout = TIMEOUT_MIN;
+> > +               wdd.max_timeout = TIMEOUT_MAX;
+> > +               wdd.parent = NULL;
+> > +               break;
+> > +       default:
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       if (!devm_request_region(dev, io_resource.start,
+> > +                                resource_size(&io_resource),
+> > +                                io_resource.name)) {
+> > +               dev_err(dev,
+> > +                       "Unable to register IO resource at %#x\n",
+> > +                       WD_ENABLE_IOADR);
+> > +               return -EBUSY;
+> > +       }
+> > +
+> > +       if (plat->devmode == SIMATIC_IPC_DEVICE_427E) {
+> > +               res = &mem_resource;
+> > +
+> > +               /* get GPIO base from PCI */
+> > +               res->start =
+> > simatic_ipc_get_membase0(PCI_DEVFN(0x1f, 1));
+> > +               if (res->start == 0)
+> > +                       return -ENODEV;
+> > +
+> > +               /* do the final address calculation */
+> > +               res->start = res->start + (GPIO_COMMUNITY0_PORT_ID
+> > << 16) +
+> > +                            PAD_CFG_DW0_GPP_A_23;
+> > +               res->end += res->start;
+> > +
+> > +               wd_reset_base_addr = devm_ioremap_resource(dev,
+> > res);
+> > +               if (IS_ERR(wd_reset_base_addr))
+> > +                       return -ENOMEM;
+> > +       }
+> > +
+> > +       wdd.bootstatus = wd_setup(plat->devmode, true);
+> > +       if (wdd.bootstatus)
+> > +               pr_warn(KBUILD_MODNAME ": last reboot caused by
+> > watchdog reset\n");
+> > +
+> > +       watchdog_set_nowayout(&wdd, nowayout);
+> > +       watchdog_stop_on_reboot(&wdd);
+> > +
+> > +       rc = devm_watchdog_register_device(dev, &wdd);
+> > +
+> > +       if (rc == 0)
+> > +               pr_debug("initialized. nowayout=%d\n",
+> > +                        nowayout);
+> > +
+> > +       return rc;
+> > +}
+> > +
+> > +static int simatic_ipc_wdt_remove(struct platform_device *pdev)
+> > +{
+> > +       struct simatic_ipc_platform *plat = pdev->dev.platform_data;
+> > +
+> > +       wd_setup(plat->devmode, false);
+> > +       return 0;
+> > +}
+> > +
+> > +static struct platform_driver wdt_driver = {
+> > +       .probe = simatic_ipc_wdt_probe,
+> > +       .remove = simatic_ipc_wdt_remove,
+> > +       .driver = {
+> > +               .name = KBUILD_MODNAME,
+> > +       },
+> > +};
+> > +
+> > +static int __init simatic_ipc_wdt_init(void)
+> > +{
+> > +       return platform_driver_register(&wdt_driver);
+> > +}
+> > +
+> > +static void __exit simatic_ipc_wdt_exit(void)
+> > +{
+> > +       platform_driver_unregister(&wdt_driver);
+> > +}
+> > +
+> > +module_init(simatic_ipc_wdt_init);
+> > +module_exit(simatic_ipc_wdt_exit);
+> > +
+> > +MODULE_LICENSE("GPL");
+> > +MODULE_ALIAS("platform:" KBUILD_MODNAME);
+> > +MODULE_AUTHOR("Gerd Haeussler <gerd.haeussler.ext@siemens.com>");
+> > --
+> > 2.26.2
+> >
+> >  
+> 
 
