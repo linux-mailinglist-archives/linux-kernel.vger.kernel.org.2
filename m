@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941F532CBC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1995832CBCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233884AbhCDFPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 00:15:05 -0500
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:43130 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbhCDFO6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 00:14:58 -0500
-Received: by mail-ej1-f50.google.com with SMTP id p8so20583416ejb.10;
-        Wed, 03 Mar 2021 21:14:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qSIypw1gJds7lAPyMLE7FS5X4k+fvlO0M2Uln3WKofI=;
-        b=IEDe16jnhyW+cWqA0dPLFBKF0U04iVnQ2rVMKb6ki7lizaC1D14HSTsk5WEv+qVgLj
-         N8CpO2jbLttKSdOyjgmc/YImkgnnUpY7osTSZR2orrBj4t5g5LSspEniKd33lJri+zrO
-         a/WkvA7mgyOUnPK/B4m9CLmNFYJF5SqPoRflb0SiF5nDLEKetbcSCalSA7iyanlLfEpW
-         LJ92Hso3mPOfKlMyR9CeKLpy0dxGCOL+ZUo3810eK0MIojtGgyka5TMwFS7hi2CQE89Z
-         87oLBEUVuPrwNNNXUdWlYtr57MdxJ8bJd0MbfGAlDlS9fYHEj266Kij/G0eZ9H11zsET
-         TxLQ==
-X-Gm-Message-State: AOAM5311vNSbvzaNtznyQfq/rcFFY5e9He+vJBueJKk2c/YX1Bm63oy3
-        y4yAF5aehQmyzTWzdV0S6wpNFyBtrSrPKshJalY=
-X-Google-Smtp-Source: ABdhPJzRlgTmF5hN4QBDxejbDzbAXOew/il/TLHwchMUXKBA6NZGM+g9jAoz+gnvE3T1HudvDor7ZtiuQA8jvNEbubc=
-X-Received: by 2002:a17:906:3105:: with SMTP id 5mr2361861ejx.168.1614834856800;
- Wed, 03 Mar 2021 21:14:16 -0800 (PST)
+        id S234091AbhCDFTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 00:19:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43126 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234076AbhCDFTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 00:19:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 094B5AC54;
+        Thu,  4 Mar 2021 05:18:26 +0000 (UTC)
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+References: <20210303064357.17056-1-jslaby@suse.cz>
+ <20210303183650.GG22305@zn.tnic>
+From:   Jiri Slaby <jslaby@suse.cz>
+Subject: Re: [PATCH] x86/vdso: Use proper modifier for len's printf in extract
+Message-ID: <1804463d-bb45-ea75-b4b0-1238c35638a0@suse.cz>
+Date:   Thu, 4 Mar 2021 06:18:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <xmqqr1kwk0h9.fsf@gitster.c.googlers.com>
-In-Reply-To: <xmqqr1kwk0h9.fsf@gitster.c.googlers.com>
-From:   Eric Sunshine <sunshine@sunshineco.com>
-Date:   Thu, 4 Mar 2021 00:14:06 -0500
-Message-ID: <CAPig+cSC8uNfoAjDKdBNheod9_0-pCD-K_2kwt+J8USnoyQ7Aw@mail.gmail.com>
-Subject: Re: [ANNOUNCE] Git v2.31.0-rc1
-To:     Junio C Hamano <gitster@pobox.com>
-Cc:     Git List <git@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210303183650.GG22305@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 7:23 PM Junio C Hamano <gitster@pobox.com> wrote:
-> Pratyush Yadav (1):
->       git-gui: remove lines starting with the comment character
+On 03. 03. 21, 19:36, Borislav Petkov wrote:
+> On Wed, Mar 03, 2021 at 07:43:57AM +0100, Jiri Slaby wrote:
+>> Commit 8382c668ce4f ("x86/vdso: Add support for exception fixup in vDSO
+>> functions") added a printf of len which is size_t. Compilers now
+>> complain on 32b:
+>> In file included from arch/x86/entry/vdso/vdso2c.c:162:
+>> arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
+>> arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t' {aka 'unsigned int'}
+>>
+> 
+> I know it is obvious but how do you trigger this?
+> 
+> A 32-bit allmodconfig with both debian's gcc-10 and leap15's gcc-7 don't
+> trigger that warning. Which might answer your question why I haven't
+> caught it yet. :-)
 
-Is there some way that this can be removed from v2.31.0 before final
-release? It badly breaks git-gui on macOS[1,2] to the point of making
-it unusable (Tcl throws errors at launch time and when trying to
-commit, and committing is 100% broken).
+It was caught by suse's build bot while merging the stable branch. But 
+it can be also seen in OBS in Kernel:stable:
 
-[1]: https://lore.kernel.org/git/CAPig+cT-sfgMDi9-6AEKF85NtOiXeqddJjk-pYuhDtTVAE-UEw@mail.gmail.com/
-[2]: https://lore.kernel.org/git/20210228231110.24076-1-sunshine@sunshineco.com/
+https://build.opensuse.org/public/build/Kernel:stable/standard/i586/kernel-pae/_log
+https://build.opensuse.org/public/build/Kernel:stable/standard/i586/kernel-vanilla/_log
+
+It's built with gcc 10 from tumbleweed and it's a standard config from 
+kerncvs:
+https://github.com/openSUSE/kernel-source/blob/stable/config/i386/pae
+
+thanks,
+-- 
+js
+suse labs
