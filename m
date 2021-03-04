@@ -2,307 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60C932DBE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE5532DBE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239832AbhCDVhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:37:10 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:56800 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237752AbhCDVgk (ORCPT
+        id S240059AbhCDVju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:39:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24076 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240028AbhCDVjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:36:40 -0500
-Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B046B20B83EA;
-        Thu,  4 Mar 2021 13:35:59 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B046B20B83EA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614893759;
-        bh=7mhngE8I/BbA3nTURuQYFVGs1sytzgPZq5C1GiVHzZI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=TFSa9t/GFns08kzCTRG5KFgjlScburuHwonCqXjyv50X7Z50Kqg6vNwldhFFt6BQP
-         gjTdOF09uGI5wnAzB2lPJpzK8cMZeV2miFArvyRS3isMH7vAnLTi8D9OHBFZLiUMPt
-         CEipZ3OTvkfVBGiCaoB6lRV0uHmFztXmhFrNdKs8=
-Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
-To:     Michael Kelley <mikelley@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Cc:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>
-References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
- <MWHPR21MB1593E77D2E079F123AC1766DD78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Message-ID: <d11a84b0-d95e-452f-f74e-c960e50270b5@linux.microsoft.com>
-Date:   Thu, 4 Mar 2021 13:35:59 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 4 Mar 2021 16:39:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614893887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BO9b8O4TUFxzzCNk8BcCTrE/6CnVHbeBBT/h0w31kNc=;
+        b=eDb0+Jp3xE9mTC7wUTO85nOWLXqpn1P037tEDkStgEmhJVY9lA8JX3eMhy3NQMu59fANM0
+        Ga9uZqgc4WF3mbV8bnAZOk8g+o3hMJgAuC82d+eiqql7yrW48LbLfpNnZeoC4ujeOsw9LG
+        RDoOscW100507+oPV3l+7KUQ/G00Rng=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-JroqD7OGOHGDCrZMZgOZ6g-1; Thu, 04 Mar 2021 16:38:04 -0500
+X-MC-Unique: JroqD7OGOHGDCrZMZgOZ6g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F26D680006E;
+        Thu,  4 Mar 2021 21:38:02 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C0CF18E38;
+        Thu,  4 Mar 2021 21:37:58 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 14:37:57 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
+Subject: Re: [RFC PATCH 05/10] vfio: Create a vfio_device from vma lookup
+Message-ID: <20210304143757.1ca42cfc@omen.home.shazbot.org>
+In-Reply-To: <20210225234949.GV4247@nvidia.com>
+References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
+        <161401268537.16443.2329805617992345365.stgit@gimli.home>
+        <20210222172913.GP4247@nvidia.com>
+        <20210224145506.48f6e0b4@omen.home.shazbot.org>
+        <20210225000610.GP4247@nvidia.com>
+        <20210225152113.3e083b4a@omen.home.shazbot.org>
+        <20210225234949.GV4247@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB1593E77D2E079F123AC1766DD78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/2021 11:41 AM, Michael Kelley wrote:
-> From: Nuno Das Neves <nunodasneves@linux.microsoft.com> Sent: Friday, November 20, 2020 4:30 PM
->>
->> Reserve ioctl number in userpsace-api/ioctl/ioctl-number.rst
->> Introduce MSHV_REQUEST_VERSION ioctl.
->> Introduce documentation for /dev/mshv in Documentation/virt/mshv
->>
->> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
->> ---
->>  .../userspace-api/ioctl/ioctl-number.rst      |  2 +
->>  Documentation/virt/mshv/api.rst               | 62 +++++++++++++++++++
->>  include/linux/mshv.h                          | 11 ++++
->>  include/uapi/linux/mshv.h                     | 19 ++++++
->>  virt/mshv/mshv_main.c                         | 49 +++++++++++++++
->>  5 files changed, 143 insertions(+)
->>  create mode 100644 Documentation/virt/mshv/api.rst
->>  create mode 100644 include/linux/mshv.h
->>  create mode 100644 include/uapi/linux/mshv.h
->>
->> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst
->> b/Documentation/userspace-api/ioctl/ioctl-number.rst
->> index 55a2d9b2ce33..13a4d3ecafca 100644
->> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
->> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
->> @@ -343,6 +343,8 @@ Code  Seq#    Include File                                           Comments
->>  0xB5  00-0F  uapi/linux/rpmsg.h                                      <mailto:linux-
->> remoteproc@vger.kernel.org>
->>  0xB6  all    linux/fpga-dfl.h
->>  0xB7  all    uapi/linux/remoteproc_cdev.h                            <mailto:linux-
->> remoteproc@vger.kernel.org>
->> +0xB8  all    uapi/linux/mshv.h                                       Microsoft Hypervisor root partition APIs
->> +                                                                     <mailto:linux-hyperv@vger.kernel.org>
->>  0xC0  00-0F  linux/usb/iowarrior.h
->>  0xCA  00-0F  uapi/misc/cxl.h
->>  0xCA  10-2F  uapi/misc/ocxl.h
->> diff --git a/Documentation/virt/mshv/api.rst b/Documentation/virt/mshv/api.rst
->> new file mode 100644
->> index 000000000000..82e32de48d03
->> --- /dev/null
->> +++ b/Documentation/virt/mshv/api.rst
->> @@ -0,0 +1,62 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +=====================================================
->> +Microsoft Hypervisor Root Partition API Documentation
->> +=====================================================
->> +
->> +1. Overview
->> +===========
->> +
->> +This document describes APIs for creating and managing guest virtual machines
->> +when running Linux as the root partition on the Microsoft Hypervisor.
->> +
->> +This API is not yet stable.
->> +
->> +2. Glossary/Terms
->> +=================
->> +
->> +hv
->> +--
->> +Short for Hyper-V. This name is used in the kernel to describe interfaces to
->> +the Microsoft Hypervisor.
->> +
->> +mshv
->> +----
->> +Short for Microsoft Hypervisor. This is the name of the userland API module
->> +described in this document.
->> +
->> +Partition
->> +---------
->> +A virtual machine running on the Microsoft Hypervisor.
->> +
->> +Root Partition
->> +--------------
->> +The partition that is created and assumes control when the machine boots. The
->> +root partition can use mshv APIs to create guest partitions.
->> +
->> +3. API description
->> +==================
->> +
->> +The module is named mshv and can be configured with CONFIG_HYPERV_ROOT_API.
->> +
->> +Mshv is file descriptor-based, following a similar pattern to KVM.
->> +
->> +To get a handle to the mshv driver, use open("/dev/mshv").
->> +
->> +3.1 MSHV_REQUEST_VERSION
->> +------------------------
->> +:Type: /dev/mshv ioctl
->> +:Parameters: pointer to a u32
->> +:Returns: 0 on success
->> +
->> +Before issuing any other ioctls, a MSHV_REQUEST_VERSION ioctl must be called to
->> +establish the interface version with the kernel module.
->> +
->> +The caller should pass the MSHV_VERSION as an argument.
->> +
->> +The kernel module will check which interface versions it supports and return 0
->> +if one of them matches.
->> +
->> +This /dev/mshv file descriptor will remain 'locked' to that version as long as
->> +it is open - this ioctl can only be called once per open.
-> 
-> To clarify the wording:
-> 
-> The caller should pass the requested version as an argument.  If the requested
-> version is one that the kernel module supports, the ioctl will return 0.  If the
-> requested version is not supported by the kernel module, the caller may try
-> the ioctl repeatedly to find a version that the caller supports and that the kernel
-> module supports.   Once a match is found, the /dev/mshv file descriptor is
-> 'locked' to that version as long as it is open; i.e., the ioctl can succeed
-> only once per open.
-> 
+On Thu, 25 Feb 2021 19:49:49 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Thanks, yes that's a bit clearer!
-
->> +
->> diff --git a/include/linux/mshv.h b/include/linux/mshv.h
->> new file mode 100644
->> index 000000000000..a0982fe2c0b8
->> --- /dev/null
->> +++ b/include/linux/mshv.h
->> @@ -0,0 +1,11 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +#ifndef _LINUX_MSHV_H
->> +#define _LINUX_MSHV_H
->> +
->> +/*
->> + * Microsoft Hypervisor root partition driver for /dev/mshv
->> + */
->> +
->> +#include <uapi/linux/mshv.h>
->> +
->> +#endif
->> diff --git a/include/uapi/linux/mshv.h b/include/uapi/linux/mshv.h
->> new file mode 100644
->> index 000000000000..dd30fc2f0a80
->> --- /dev/null
->> +++ b/include/uapi/linux/mshv.h
->> @@ -0,0 +1,19 @@
->> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->> +#ifndef _UAPI_LINUX_MSHV_H
->> +#define _UAPI_LINUX_MSHV_H
->> +
->> +/*
->> + * Userspace interface for /dev/mshv
->> + * Microsoft Hypervisor root partition APIs
->> + */
->> +
->> +#include <linux/types.h>
->> +
->> +#define MSHV_VERSION	0x0
->> +
->> +#define MSHV_IOCTL 0xB8
->> +
->> +/* mshv device */
->> +#define MSHV_REQUEST_VERSION	_IOW(MSHV_IOCTL, 0x00, __u32)
->> +
->> +#endif
->> diff --git a/virt/mshv/mshv_main.c b/virt/mshv/mshv_main.c
->> index ecb9089761fe..62f631f85301 100644
->> --- a/virt/mshv/mshv_main.c
->> +++ b/virt/mshv/mshv_main.c
->> @@ -11,25 +11,74 @@
->>  #include <linux/module.h>
->>  #include <linux/fs.h>
->>  #include <linux/miscdevice.h>
->> +#include <linux/slab.h>
->> +#include <linux/mshv.h>
->>
->>  MODULE_AUTHOR("Microsoft");
->>  MODULE_LICENSE("GPL");
->>
->> +#define MSHV_INVALID_VERSION	0xFFFFFFFF
->> +#define MSHV_CURRENT_VERSION	MSHV_VERSION
->> +
->> +static u32 supported_versions[] = {
->> +	MSHV_CURRENT_VERSION,
->> +};
+> On Thu, Feb 25, 2021 at 03:21:13PM -0700, Alex Williamson wrote:
 > 
-> I'm not sure that the concept of "CURRENT_VERSION" makes sense
-> as a fixed constant.  We have an array of supported versions, any of
-> which are valid and supported by the kernel module.   The array
-> should list individual versions.   The current version is 0, which 
-> might be labelled as MSHV_VERSION_PRERELEASE, or something
-> similar.  Then later we might have MSHV_VERSION_RELEASE_1,
-> HSMV_VERSION_RELEASE_2, as needed.  Or maybe the versions
-> are tied to releases of the Microsoft Hypervisor.
+> > This is where it gets tricky.  The vm_pgoff we get from
+> > file_operations.mmap is already essentially describing an offset from
+> > the base of a specific resource.  We could convert that from an absolute
+> > offset to a pfn offset, but it's only the bus driver code (ex.
+> > vfio-pci) that knows how to get the base, assuming there is a single
+> > base per region (we can't assume enough bits per region to store
+> > absolute pfn).  Also note that you're suggesting that all vfio mmaps
+> > would need to standardize on the vfio-pci implementation of region
+> > layouts.  Not that most drivers haven't copied vfio-pci, but we've
+> > specifically avoided exposing it as a fixed uAPI such that we could have
+> > the flexibility for a bus driver to implement regions offsets however
+> > they need.  
 > 
+> Okay, well the bus driver owns the address space and the bus driver is
+> in control of the vm_pgoff. If it doesn't want to zap then it doesn't
+> need to do anything
+> 
+> vfio-pci can consistently use the index encoding and be fine
+>  
+> > So I'm not really sure what this looks like.  Within vfio-pci we could
+> > keep the index bits in place to allow unmmap_mapping_range() to
+> > selectively zap matching vm_pgoffs but expanding that to a vfio
+> > standard such that the IOMMU backend can also extract a pfn looks very
+> > limiting, or ugly.  Thanks,  
+> 
+> Lets add a op to convert a vma into a PFN range. The map code will
+> pass the vma to the op and get back a pfn (or failure).
+> 
+> pci will switch the vm_pgoff to an index, find the bar base and
+> compute the pfn.
+> 
+> It is starting to look more and more like dma buf though
 
-The idea was that CURRENT_VERSION matches the version in the shared
-header file, which would change each release. I can see how this would
-be confusing - I will change it as you suggest.
+How terrible would it be if vfio-core used a shared vm_private_data
+structure and inserted itself into the vm_ops call chain to reference
+count that structure?  We already wrap the device file descriptor via
+vfio_device_fops.mmap, so we could:
 
->> +
->> +static long
->> +mshv_ioctl_request_version(u32 *version, void __user *user_arg)
->> +{
->> +	u32 arg;
->> +	int i;
->> +
->> +	if (copy_from_user(&arg, user_arg, sizeof(arg)))
->> +		return -EFAULT;
->> +
->> +	for (i = 0; i < ARRAY_SIZE(supported_versions); ++i) {
->> +		if (supported_versions[i] == arg) {
->> +			*version = supported_versions[i];
->> +			return 0;
->> +		}
->> +	}
->> +	return -ENOTSUPP;
->> +}
->> +
->>  static long
->>  mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
->>  {
->> +	u32 *version = (u32 *)filp->private_data;
->> +
->> +	if (ioctl == MSHV_REQUEST_VERSION) {
->> +		/* Version can only be set once */
->> +		if (*version != MSHV_INVALID_VERSION)
->> +			return -EBADFD;
->> +
->> +		return mshv_ioctl_request_version(version, (void __user *)arg);
->> +	}
->> +
->> +	/* Version must be set before other ioctls can be called */
->> +	if (*version == MSHV_INVALID_VERSION)
->> +		return -EBADFD;
->> +
->> +	/* TODO other ioctls */
->> +
->>  	return -ENOTTY;
->>  }
->>
->>  static int
->>  mshv_dev_open(struct inode *inode, struct file *filp)
->>  {
->> +	filp->private_data = kmalloc(sizeof(u32), GFP_KERNEL);
->> +	if (!filp->private_data)
->> +		return -ENOMEM;
->> +	*(u32 *)filp->private_data = MSHV_INVALID_VERSION;
->> +
->>  	return 0;
->>  }
->>
->>  static int
->>  mshv_dev_release(struct inode *inode, struct file *filp)
->>  {
->> +	kfree(filp->private_data);
->>  	return 0;
->>  }
->>
->> --
->> 2.25.1
+	struct vfio_vma_private_data *priv;
+
+	priv = kzalloc(...
+	
+	priv->device = device;
+	vma->vm_private_data = priv;
+
+	device->ops->mmap(device->device_data, vma);
+
+	if (vma->vm_private_data == priv) {
+		priv->vm_ops = vma->vm_ops;
+		vma->vm_ops = &vfio_vm_ops;
+	} else
+		kfree(priv);
+
+Where:
+
+struct vfio_vma_private_data {
+	struct vfio_device *device;
+	unsigned long pfn_base;
+	void *private_data; // maybe not needed
+	const struct vm_operations_struct *vm_ops;
+	struct kref kref;
+	unsigned int release_notification:1;
+};
+
+Therefore unless a bus driver opts-out by replacing vm_private_data, we
+can identify participating vmas by the vm_ops and have flags indicating
+if the vma maps device memory such that vfio_get_device_from_vma()
+should produce a device reference.  The vfio IOMMU backends would also
+consume this, ie. if they get a valid vfio_device from the vma, use the
+pfn_base field directly.  vfio_vm_ops would wrap the bus driver
+callbacks and provide reference counting on open/close to release this
+object.
+
+I'm not thrilled with a vfio_device_ops callback plumbed through
+vfio-core to do vma-to-pfn translation, so I thought this might be a
+better alternative.  Thanks,
+
+Alex
+
