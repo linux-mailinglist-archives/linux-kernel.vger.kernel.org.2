@@ -2,69 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE32532DBD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60C932DBE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239773AbhCDVbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:31:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239763AbhCDVbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:31:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D25A964FE1;
-        Thu,  4 Mar 2021 21:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614893444;
-        bh=uxC+OSAfuVYvvoWdm7rpwbwHMidZTVl9vdI9BVGO684=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8gCX3lAdL+4kW2yZ5dn3RhaT/dylZXzW/zlmhcTGeAz/jK9QfpTRaqM7EbOeW+ZQ
-         aEBDOy5hl2d2D+YqB+Sv9KKVPM9n7nC6Wxa3NuSOy4H2SpVFJxLHYBJtYHgkWzgyOJ
-         DgFZJoDtj+RVacV1jweKKhgtY+Uh+sgBCFYijZZq2uNCJYWOuvyAok6FgzSrLE726p
-         FXUWM2c5mgtpsu/xXqDz4kOkspE0BTb71l/w4Ej07guBzRgDq4xhE3rsjJIxrR673t
-         67Wx2Bupbq2NUV+Z/aPVTSD4v2zuHR1ACidW1MHS1KUaYZJ1UiU2fGlDkDtAjAxj3g
-         V5gzxrYEyBsFQ==
-Date:   Thu, 4 Mar 2021 16:30:42 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 26/52] clk: qcom: gdsc: Implement
- NO_RET_PERIPH flag
-Message-ID: <YEFRgsJr4qwxbpTO@sashalap>
-References: <20210302115534.61800-1-sashal@kernel.org>
- <20210302115534.61800-26-sashal@kernel.org>
- <161472614572.1254594.7093847798808554286@swboyd.mtv.corp.google.com>
+        id S239832AbhCDVhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:37:10 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56800 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237752AbhCDVgk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 16:36:40 -0500
+Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B046B20B83EA;
+        Thu,  4 Mar 2021 13:35:59 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B046B20B83EA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614893759;
+        bh=7mhngE8I/BbA3nTURuQYFVGs1sytzgPZq5C1GiVHzZI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TFSa9t/GFns08kzCTRG5KFgjlScburuHwonCqXjyv50X7Z50Kqg6vNwldhFFt6BQP
+         gjTdOF09uGI5wnAzB2lPJpzK8cMZeV2miFArvyRS3isMH7vAnLTi8D9OHBFZLiUMPt
+         CEipZ3OTvkfVBGiCaoB6lRV0uHmFztXmhFrNdKs8=
+Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Cc:     "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
+ <MWHPR21MB1593E77D2E079F123AC1766DD78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Message-ID: <d11a84b0-d95e-452f-f74e-c960e50270b5@linux.microsoft.com>
+Date:   Thu, 4 Mar 2021 13:35:59 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <161472614572.1254594.7093847798808554286@swboyd.mtv.corp.google.com>
+In-Reply-To: <MWHPR21MB1593E77D2E079F123AC1766DD78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 03:02:25PM -0800, Stephen Boyd wrote:
->Quoting Sasha Levin (2021-03-02 03:55:07)
->> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On 2/8/2021 11:41 AM, Michael Kelley wrote:
+> From: Nuno Das Neves <nunodasneves@linux.microsoft.com> Sent: Friday, November 20, 2020 4:30 PM
 >>
->> [ Upstream commit 785c02eb35009a4be6dbc68f4f7d916e90b7177d ]
+>> Reserve ioctl number in userpsace-api/ioctl/ioctl-number.rst
+>> Introduce MSHV_REQUEST_VERSION ioctl.
+>> Introduce documentation for /dev/mshv in Documentation/virt/mshv
 >>
->> In some rare occasions, we want to only set the RETAIN_MEM bit, but
->> not the RETAIN_PERIPH one: this is seen on at least SDM630/636/660's
->> GPU-GX GDSC, where unsetting and setting back the RETAIN_PERIPH bit
->> will generate chaos and panics during GPU suspend time (mainly, the
->> chaos is unaligned access).
+>> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> ---
+>>  .../userspace-api/ioctl/ioctl-number.rst      |  2 +
+>>  Documentation/virt/mshv/api.rst               | 62 +++++++++++++++++++
+>>  include/linux/mshv.h                          | 11 ++++
+>>  include/uapi/linux/mshv.h                     | 19 ++++++
+>>  virt/mshv/mshv_main.c                         | 49 +++++++++++++++
+>>  5 files changed, 143 insertions(+)
+>>  create mode 100644 Documentation/virt/mshv/api.rst
+>>  create mode 100644 include/linux/mshv.h
+>>  create mode 100644 include/uapi/linux/mshv.h
 >>
->> For this reason, introduce a new NO_RET_PERIPH flag to the GDSC
->> driver to address this corner case.
->
->Is there a patch that's going to use this in stable trees? On its own
->this patch doesn't make sense to backport.
+>> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst
+>> b/Documentation/userspace-api/ioctl/ioctl-number.rst
+>> index 55a2d9b2ce33..13a4d3ecafca 100644
+>> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+>> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+>> @@ -343,6 +343,8 @@ Code  Seq#    Include File                                           Comments
+>>  0xB5  00-0F  uapi/linux/rpmsg.h                                      <mailto:linux-
+>> remoteproc@vger.kernel.org>
+>>  0xB6  all    linux/fpga-dfl.h
+>>  0xB7  all    uapi/linux/remoteproc_cdev.h                            <mailto:linux-
+>> remoteproc@vger.kernel.org>
+>> +0xB8  all    uapi/linux/mshv.h                                       Microsoft Hypervisor root partition APIs
+>> +                                                                     <mailto:linux-hyperv@vger.kernel.org>
+>>  0xC0  00-0F  linux/usb/iowarrior.h
+>>  0xCA  00-0F  uapi/misc/cxl.h
+>>  0xCA  10-2F  uapi/misc/ocxl.h
+>> diff --git a/Documentation/virt/mshv/api.rst b/Documentation/virt/mshv/api.rst
+>> new file mode 100644
+>> index 000000000000..82e32de48d03
+>> --- /dev/null
+>> +++ b/Documentation/virt/mshv/api.rst
+>> @@ -0,0 +1,62 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +=====================================================
+>> +Microsoft Hypervisor Root Partition API Documentation
+>> +=====================================================
+>> +
+>> +1. Overview
+>> +===========
+>> +
+>> +This document describes APIs for creating and managing guest virtual machines
+>> +when running Linux as the root partition on the Microsoft Hypervisor.
+>> +
+>> +This API is not yet stable.
+>> +
+>> +2. Glossary/Terms
+>> +=================
+>> +
+>> +hv
+>> +--
+>> +Short for Hyper-V. This name is used in the kernel to describe interfaces to
+>> +the Microsoft Hypervisor.
+>> +
+>> +mshv
+>> +----
+>> +Short for Microsoft Hypervisor. This is the name of the userland API module
+>> +described in this document.
+>> +
+>> +Partition
+>> +---------
+>> +A virtual machine running on the Microsoft Hypervisor.
+>> +
+>> +Root Partition
+>> +--------------
+>> +The partition that is created and assumes control when the machine boots. The
+>> +root partition can use mshv APIs to create guest partitions.
+>> +
+>> +3. API description
+>> +==================
+>> +
+>> +The module is named mshv and can be configured with CONFIG_HYPERV_ROOT_API.
+>> +
+>> +Mshv is file descriptor-based, following a similar pattern to KVM.
+>> +
+>> +To get a handle to the mshv driver, use open("/dev/mshv").
+>> +
+>> +3.1 MSHV_REQUEST_VERSION
+>> +------------------------
+>> +:Type: /dev/mshv ioctl
+>> +:Parameters: pointer to a u32
+>> +:Returns: 0 on success
+>> +
+>> +Before issuing any other ioctls, a MSHV_REQUEST_VERSION ioctl must be called to
+>> +establish the interface version with the kernel module.
+>> +
+>> +The caller should pass the MSHV_VERSION as an argument.
+>> +
+>> +The kernel module will check which interface versions it supports and return 0
+>> +if one of them matches.
+>> +
+>> +This /dev/mshv file descriptor will remain 'locked' to that version as long as
+>> +it is open - this ioctl can only be called once per open.
+> 
+> To clarify the wording:
+> 
+> The caller should pass the requested version as an argument.  If the requested
+> version is one that the kernel module supports, the ioctl will return 0.  If the
+> requested version is not supported by the kernel module, the caller may try
+> the ioctl repeatedly to find a version that the caller supports and that the kernel
+> module supports.   Once a match is found, the /dev/mshv file descriptor is
+> 'locked' to that version as long as it is open; i.e., the ioctl can succeed
+> only once per open.
+> 
 
-Right, I'll also grab a59c16c80bd7 ("clk: qcom: gpucc-msm8998: Add
-resets, cxc, fix flags on gpu_gx_gdsc") for 5.10 and 5.11. Thanks!
+Thanks, yes that's a bit clearer!
 
--- 
-Thanks,
-Sasha
+>> +
+>> diff --git a/include/linux/mshv.h b/include/linux/mshv.h
+>> new file mode 100644
+>> index 000000000000..a0982fe2c0b8
+>> --- /dev/null
+>> +++ b/include/linux/mshv.h
+>> @@ -0,0 +1,11 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +#ifndef _LINUX_MSHV_H
+>> +#define _LINUX_MSHV_H
+>> +
+>> +/*
+>> + * Microsoft Hypervisor root partition driver for /dev/mshv
+>> + */
+>> +
+>> +#include <uapi/linux/mshv.h>
+>> +
+>> +#endif
+>> diff --git a/include/uapi/linux/mshv.h b/include/uapi/linux/mshv.h
+>> new file mode 100644
+>> index 000000000000..dd30fc2f0a80
+>> --- /dev/null
+>> +++ b/include/uapi/linux/mshv.h
+>> @@ -0,0 +1,19 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +#ifndef _UAPI_LINUX_MSHV_H
+>> +#define _UAPI_LINUX_MSHV_H
+>> +
+>> +/*
+>> + * Userspace interface for /dev/mshv
+>> + * Microsoft Hypervisor root partition APIs
+>> + */
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +#define MSHV_VERSION	0x0
+>> +
+>> +#define MSHV_IOCTL 0xB8
+>> +
+>> +/* mshv device */
+>> +#define MSHV_REQUEST_VERSION	_IOW(MSHV_IOCTL, 0x00, __u32)
+>> +
+>> +#endif
+>> diff --git a/virt/mshv/mshv_main.c b/virt/mshv/mshv_main.c
+>> index ecb9089761fe..62f631f85301 100644
+>> --- a/virt/mshv/mshv_main.c
+>> +++ b/virt/mshv/mshv_main.c
+>> @@ -11,25 +11,74 @@
+>>  #include <linux/module.h>
+>>  #include <linux/fs.h>
+>>  #include <linux/miscdevice.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/mshv.h>
+>>
+>>  MODULE_AUTHOR("Microsoft");
+>>  MODULE_LICENSE("GPL");
+>>
+>> +#define MSHV_INVALID_VERSION	0xFFFFFFFF
+>> +#define MSHV_CURRENT_VERSION	MSHV_VERSION
+>> +
+>> +static u32 supported_versions[] = {
+>> +	MSHV_CURRENT_VERSION,
+>> +};
+> 
+> I'm not sure that the concept of "CURRENT_VERSION" makes sense
+> as a fixed constant.  We have an array of supported versions, any of
+> which are valid and supported by the kernel module.   The array
+> should list individual versions.   The current version is 0, which 
+> might be labelled as MSHV_VERSION_PRERELEASE, or something
+> similar.  Then later we might have MSHV_VERSION_RELEASE_1,
+> HSMV_VERSION_RELEASE_2, as needed.  Or maybe the versions
+> are tied to releases of the Microsoft Hypervisor.
+> 
+
+The idea was that CURRENT_VERSION matches the version in the shared
+header file, which would change each release. I can see how this would
+be confusing - I will change it as you suggest.
+
+>> +
+>> +static long
+>> +mshv_ioctl_request_version(u32 *version, void __user *user_arg)
+>> +{
+>> +	u32 arg;
+>> +	int i;
+>> +
+>> +	if (copy_from_user(&arg, user_arg, sizeof(arg)))
+>> +		return -EFAULT;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(supported_versions); ++i) {
+>> +		if (supported_versions[i] == arg) {
+>> +			*version = supported_versions[i];
+>> +			return 0;
+>> +		}
+>> +	}
+>> +	return -ENOTSUPP;
+>> +}
+>> +
+>>  static long
+>>  mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>>  {
+>> +	u32 *version = (u32 *)filp->private_data;
+>> +
+>> +	if (ioctl == MSHV_REQUEST_VERSION) {
+>> +		/* Version can only be set once */
+>> +		if (*version != MSHV_INVALID_VERSION)
+>> +			return -EBADFD;
+>> +
+>> +		return mshv_ioctl_request_version(version, (void __user *)arg);
+>> +	}
+>> +
+>> +	/* Version must be set before other ioctls can be called */
+>> +	if (*version == MSHV_INVALID_VERSION)
+>> +		return -EBADFD;
+>> +
+>> +	/* TODO other ioctls */
+>> +
+>>  	return -ENOTTY;
+>>  }
+>>
+>>  static int
+>>  mshv_dev_open(struct inode *inode, struct file *filp)
+>>  {
+>> +	filp->private_data = kmalloc(sizeof(u32), GFP_KERNEL);
+>> +	if (!filp->private_data)
+>> +		return -ENOMEM;
+>> +	*(u32 *)filp->private_data = MSHV_INVALID_VERSION;
+>> +
+>>  	return 0;
+>>  }
+>>
+>>  static int
+>>  mshv_dev_release(struct inode *inode, struct file *filp)
+>>  {
+>> +	kfree(filp->private_data);
+>>  	return 0;
+>>  }
+>>
+>> --
+>> 2.25.1
