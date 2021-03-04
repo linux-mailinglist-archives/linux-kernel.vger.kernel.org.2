@@ -2,78 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A53E32D9AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4F032D9AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235322AbhCDSvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:51:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:51736 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235257AbhCDSvN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:51:13 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614883832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UlpktAyvlXWS4xtFajsvPPK4M1rR/ipWuKYVyEDaYD4=;
-        b=d+/46lRy6Kpj45L4juv6QdrjQr+GxoSqbW5fplrtwfaD/UjY5wpVHKrj1Fr79IDSV7QcHF
-        8VjiMXz7c/FjQ7e6I2ZAVhCipUpQyD5Wxzm9mzOLtcYpwgc56Zf30XhsWwm7qVotrHWfc7
-        A/tQz8eacyrRrgBm64t+DqYGpr2pbD/F0sGPXSzehktrv+zC13nJcw0fbiasecjWY7TI8Z
-        JcLQtaNA/W+3xiPmw401Y00O+7tAwn8BWO40gd96gDGluc3g0FESuD74A0xTJI0kazxYnF
-        pxkfSh8KkAOfQm/MSj4lorVT8nnt8STK4qA7OvnW0iI/+ueIZ6x1TlE21EBe0w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614883832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UlpktAyvlXWS4xtFajsvPPK4M1rR/ipWuKYVyEDaYD4=;
-        b=wJ5loI+ayFNXU2yfV1Ond+NHpRFYELPwTQ63QQSafK64v3Edd4HhKcsAXR1Dq//tCkfBhm
-        AK3S8pORD/Rb3iDg==
-To:     tip-bot2 for Barry Song <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org
-Cc:     Barry Song <song.bao.hua@hisilicon.com>, dmitry.torokhov@gmail.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-Subject: Re: [tip: irq/core] genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
-In-Reply-To: <87zgzj5gpo.fsf@nanos.tec.linutronix.de>
-References: <20210302224916.13980-2-song.bao.hua@hisilicon.com> <161485523394.398.10007682711343433706.tip-bot2@tip-bot2> <87zgzj5gpo.fsf@nanos.tec.linutronix.de>
-Date:   Thu, 04 Mar 2021 19:50:31 +0100
-Message-ID: <87o8fy69e0.fsf@nanos.tec.linutronix.de>
+        id S235277AbhCDSxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:53:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:42844 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231315AbhCDSwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 13:52:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EEE5331B;
+        Thu,  4 Mar 2021 10:51:52 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.53.210])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5FF23F7D7;
+        Thu,  4 Mar 2021 10:51:50 -0800 (PST)
+Date:   Thu, 4 Mar 2021 18:51:48 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        broonie@kernel.org, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
+ save_stack_trace() and friends
+Message-ID: <20210304185148.GE60457@C02TD0UTHF1T.local>
+References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
+ <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
+ <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
+ <YD+o5QkCZN97mH8/@elver.google.com>
+ <20210304145730.GC54534@C02TD0UTHF1T.local>
+ <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
+ <20210304165923.GA60457@C02TD0UTHF1T.local>
+ <YEEYDSJeLPvqRAHZ@elver.google.com>
+ <20210304180154.GD60457@C02TD0UTHF1T.local>
+ <CANpmjNOZWuhqXATDjH3F=DMbpg2xOy0XppVJ+Wv2XjFh_crJJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOZWuhqXATDjH3F=DMbpg2xOy0XppVJ+Wv2XjFh_crJJg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry,
+On Thu, Mar 04, 2021 at 07:22:53PM +0100, Marco Elver wrote:
+> On Thu, 4 Mar 2021 at 19:02, Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Thu, Mar 04, 2021 at 06:25:33PM +0100, Marco Elver wrote:
+> > > On Thu, Mar 04, 2021 at 04:59PM +0000, Mark Rutland wrote:
+> > > > On Thu, Mar 04, 2021 at 04:30:34PM +0100, Marco Elver wrote:
+> > > > > On Thu, 4 Mar 2021 at 15:57, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > > [adding Mark Brown]
+> > > > > >
+> > > > > > The bigger problem here is that skipping is dodgy to begin with, and
+> > > > > > this is still liable to break in some cases. One big concern is that
+> > > > > > (especially with LTO) we cannot guarantee the compiler will not inline
+> > > > > > or outline functions, causing the skipp value to be too large or too
+> > > > > > small. That's liable to happen to callers, and in theory (though
+> > > > > > unlikely in practice), portions of arch_stack_walk() or
+> > > > > > stack_trace_save() could get outlined too.
+> > > > > >
+> > > > > > Unless we can get some strong guarantees from compiler folk such that we
+> > > > > > can guarantee a specific function acts boundary for unwinding (and
+> > > > > > doesn't itself get split, etc), the only reliable way I can think to
+> > > > > > solve this requires an assembly trampoline. Whatever we do is liable to
+> > > > > > need some invasive rework.
+> > > > >
+> > > > > Will LTO and friends respect 'noinline'?
+> > > >
+> > > > I hope so (and suspect we'd have more problems otherwise), but I don't
+> > > > know whether they actually so.
+> > > >
+> > > > I suspect even with 'noinline' the compiler is permitted to outline
+> > > > portions of a function if it wanted to (and IIUC it could still make
+> > > > specialized copies in the absence of 'noclone').
+> > > >
+> > > > > One thing I also noticed is that tail calls would also cause the stack
+> > > > > trace to appear somewhat incomplete (for some of my tests I've
+> > > > > disabled tail call optimizations).
+> > > >
+> > > > I assume you mean for a chain A->B->C where B tail-calls C, you get a
+> > > > trace A->C? ... or is A going missing too?
+> > >
+> > > Correct, it's just the A->C outcome.
+> >
+> > I'd assumed that those cases were benign, e.g. for livepatching what
+> > matters is what can be returned to, so B disappearing from the trace
+> > isn't a problem there.
+> >
+> > Is the concern debugability, or is there a functional issue you have in
+> > mind?
+> 
+> For me, it's just been debuggability, and reliable test cases.
+> 
+> > > > > Is there a way to also mark a function non-tail-callable?
+> > > >
+> > > > I think this can be bodged using __attribute__((optimize("$OPTIONS")))
+> > > > on a caller to inhibit TCO (though IIRC GCC doesn't reliably support
+> > > > function-local optimization options), but I don't expect there's any way
+> > > > to mark a callee as not being tail-callable.
+> > >
+> > > I don't think this is reliable. It'd be
+> > > __attribute__((optimize("-fno-optimize-sibling-calls"))), but doesn't
+> > > work if applied to the function we do not want to tail-call-optimize,
+> > > but would have to be applied to the function that does the tail-calling.
+> >
+> > Yup; that's what I meant then I said you could do that on the caller but
+> > not the callee.
+> >
+> > I don't follow why you'd want to put this on the callee, though, so I
+> > think I'm missing something. Considering a set of functions in different
+> > compilation units:
+> >
+> >   A->B->C->D->E->F->G->H->I->J->K
+> 
+> I was having this problem with KCSAN, where the compiler would
+> tail-call-optimize __tsan_X instrumentation.
 
-On Thu, Mar 04 2021 at 11:57, Thomas Gleixner wrote:
-> On Thu, Mar 04 2021 at 10:53, tip-bot wrote:
->
->> The following commit has been merged into the irq/core branch of tip:
->>
->> Commit-ID:     e749df1bbd23f4472082210650514548d8a39e9b
->> Gitweb:        https://git.kernel.org/tip/e749df1bbd23f4472082210650514548d8a39e9b
->> Author:        Barry Song <song.bao.hua@hisilicon.com>
->> AuthorDate:    Wed, 03 Mar 2021 11:49:15 +13:00
->> Committer:     Thomas Gleixner <tglx@linutronix.de>
->> CommitterDate: Thu, 04 Mar 2021 11:47:52 +01:00
->>
->> genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
->
-> this commit is immutable and I tagged it so you can pull it into your
-> tree to add the input changes on top:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-no-autoen-2021-03-04
+Those are compiler-generated calls, right? When those are generated the
+compilation unit (and whatever it has included) might not have provided
+a prototype anyway, and the compiler has special knowledge of the
+functions, so it feels like the compiler would need to inhibit TCO here
+for this to be robust. For their intended usage subjecting them to TCO
+doesn't seem to make sense AFAICT.
 
-Please hold on:
+I suspect that compilers have some way of handling that; otherwise I'd
+expect to have heard stories of mcount/fentry calls getting TCO'd and
+causing problems. So maybe there's an easy fix there?
 
-  https://lkml.kernel.org/r/CAHk-=wgZjJ89jeH72TC3i6N%2Bz9WEY=3ysp8zR9naRUcSqcAvTA@mail.gmail.com
+> This would mean that KCSAN runtime functions ended up in the trace,
+> but the function where the access happened would not. However, I don't
+> care about the runtime functions, and instead want to see the function
+> where the access happened. In that case, I'd like to just mark
+> __tsan_X and any other kcsan instrumentation functions as
+> do-not-tail-call-optimize, which would solve the problem.
 
-I'll recreate a tag for you once rc2 is out.
+I understand why we don't want to TCO these calls, but given the calls
+are implicitly generated, I strongly suspect it's better to fix the
+implicit call generation to not be TCO'd to begin with.
+
+> The solution today is that when you compile a kernel with KCSAN, every
+> instrumented TU is compiled with -fno-optimize-sibling-calls. The
+> better solution would be to just mark KCSAN runtime functions somehow,
+> but permit tail calling other things. Although, I probably still want
+> to see the full trace, and would decide that having
+> -fno-optimize-sibling-calls is a small price to pay in a
+> debug-only-kernel to get complete traces.
+> 
+> > ... if K were marked in this way, and J was compiled with visibility of
+> > this, J would stick around, but J's callers might not, and so the a
+> > trace might see:
+> >
+> >   A->J->K
+> >
+> > ... do you just care about the final caller, i.e. you just need
+> > certainty that J will be in the trace?
+> 
+> Yes. But maybe it's a special problem that only sanitizers have.
+
+I reckon for basically any instrumentation we don't want calls to be
+TCO'd, though I'm not immediately sure of cases beyond sanitizers and
+mcount/fentry.
 
 Thanks,
-
-        tglx
+Mark.
