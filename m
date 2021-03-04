@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA08132DAD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5D432DADA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238152AbhCDUHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:07:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237970AbhCDUHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:07:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD9D664F70;
-        Thu,  4 Mar 2021 20:06:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614888384;
-        bh=1E47zo1UX1daMBkM4qjbkmwt7RCf0Z/zmzP302jpzvk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ESZ1zD1BDEfhn5vcQuVXG+O8rmO8vwR8D7S60IGkdnckssg0c6zRGrHTAD5mOgJeg
-         HrLj/a7PYOcsipO8oRlm89deUoCaekzKLGn1LUI/YbYiN8B7AVGqPUMC/9Cak+Ez2o
-         +VseoP761bOmvHFRXK+GiaGe4Wj5H/IoDS5bfc/XojrA48r5RWWPWqXjwyL+dF+Hf/
-         NB/t0EvER4fJcRQHbxGl5mmVZ6sS+aJA37L7MUFxm5iBBymrjgM0plKSfY21gmZgJ9
-         fnUR5wx1OTmMU9/IIJ5oN0nj6txa18DaPT6tMG2YKZfoTrPOwrnF/IwU2tWEytTsAF
-         RVgAlyP9IOp0g==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8A38035226C1; Thu,  4 Mar 2021 12:06:24 -0800 (PST)
-Date:   Thu, 4 Mar 2021 12:06:24 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH tip/core/rcu 02/12] timer: Report ignored local enqueue
- in nohz mode
-Message-ID: <20210304200624.GU2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210304002225.GA23492@paulmck-ThinkPad-P72>
- <20210304002311.23655-2-paulmck@kernel.org>
- <a1bac9f6-cc67-943d-0f88-aad2f2b46bd7@intel.com>
+        id S238364AbhCDUIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232049AbhCDUHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 15:07:55 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F78C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 12:07:15 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id z5so3935591plg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 12:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CdhEZrwSuOVhldsfNLdTiXC9JhrXAlkTpu/9CV7h/XM=;
+        b=FOhy2RHXyNmaiynRJ6OJVOsr6iGV+sH35EWTdC/Rd72R4e+WYLOiNFxWEf+oz2j3jN
+         fdWh0q2Jpr+DeeM4cTJKvzS7nEsoBE2vuLJ3sFS2nz6IbrfEREw8DNOOZrVmZuWaJ3GX
+         GYu8SofSwg7r1/DcZfl0C3S4H17G6NO+daIxU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CdhEZrwSuOVhldsfNLdTiXC9JhrXAlkTpu/9CV7h/XM=;
+        b=tIlxZZRMBy+ynHrcp9WM8EQqKn1H/FyP/9us9OJJbV8wn2+aksT6l6BSdJWpSc7NgY
+         Lem860IRfZ9SyvtqMVuD3nd48sltON+vEJGuE6wYk3r+5YwNbbyqsFNIJwJvhR4hfPYz
+         Lqk31yCa0dD9WyI+qr5lQTC+JLrmw6gmWVpUfQvhF7uBz/OHje1knSPz/XwpuznAQZgF
+         OsRBy84Wdx5JjlWzg+cgadka0HQKG2s8jP/88vqay2rn/eyetC3Rszv/MQHiMbgFDwJg
+         IgVQKp9vUiKRJwB64bIjwXo1yi2aeLtiGf/JNQhhjOp9jzGyEHvlNkLtcc4hyGnlQiY5
+         d5gw==
+X-Gm-Message-State: AOAM532XZ0Mdwhd3JnWe6VdNJO7zBV/31lXpCKra/wlyK9RFUeiAWCIw
+        ZgshSRrytdTkeFrb+nzBOUA/QQ==
+X-Google-Smtp-Source: ABdhPJz2+mOvPRX4zGlgCIgXYYSdslem4rOP3anxwM/w/fm3B9IfKX42PYes3WpJTXBNnQuvN9kI1g==
+X-Received: by 2002:a17:90a:6385:: with SMTP id f5mr6370751pjj.91.1614888434755;
+        Thu, 04 Mar 2021 12:07:14 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k64sm241882pga.52.2021.03.04.12.07.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 12:07:13 -0800 (PST)
+Date:   Thu, 4 Mar 2021 12:07:12 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        WenZhang <zhangwen@yulong.com>, zuoqilin <zuoqilin@yulong.com>,
+        Joe Perches <joe@perches.com>,
+        Naoki Hayama <naoki.hayama@lineo.co.jp>,
+        Wang Qing <wangqing@vivo.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        dingsenjie <dingsenjie@yulong.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scripts/spelling.txt: add "overlfow"
+Message-ID: <202103041207.D8B1059@keescook>
+References: <20210304072657.64577-1-drew@beagleboard.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a1bac9f6-cc67-943d-0f88-aad2f2b46bd7@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210304072657.64577-1-drew@beagleboard.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 12:58:54PM +0100, Rafael J. Wysocki wrote:
-> On 3/4/2021 1:23 AM, paulmck@kernel.org wrote:
-> > From: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > Enqueuing a local timer after the tick has been stopped will result in
-> > the timer being ignored until the next random interrupt.
-> > 
-> > Perform sanity checks to report these situations.
-> > 
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar<mingo@kernel.org>
-> > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Wed, Mar 03, 2021 at 11:26:58PM -0800, Drew Fustini wrote:
+> Add typo "overlfow" for "overflow". This typo was found and fixed in
+> net/sctp/tsnmap.c.
 > 
-> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Link: https://lore.kernel.org/netdev/20210304055548.56829-1-drew@beagleboard.org/
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
 
-Applied, thank you!
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-							Thanx, Paul
-
-> > ---
-> >   kernel/sched/core.c | 24 +++++++++++++++++++++++-
-> >   1 file changed, 23 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index ca2bb62..4822371 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -674,6 +674,26 @@ int get_nohz_timer_target(void)
-> >   	return cpu;
-> >   }
-> > +static void wake_idle_assert_possible(void)
-> > +{
-> > +#ifdef CONFIG_SCHED_DEBUG
-> > +	/* Timers are re-evaluated after idle IRQs */
-> > +	if (in_hardirq())
-> > +		return;
-> > +	/*
-> > +	 * Same as hardirqs, assuming they are executing
-> > +	 * on IRQ tail. Ksoftirqd shouldn't reach here
-> > +	 * as the timer base wouldn't be idle. And inline
-> > +	 * softirq processing after a call to local_bh_enable()
-> > +	 * within idle loop sound too fun to be considered here.
-> > +	 */
-> > +	if (in_serving_softirq())
-> > +		return;
-> > +
-> > +	WARN_ON_ONCE("Late timer enqueue may be ignored\n");
-> > +#endif
-> > +}
-> > +
-> >   /*
-> >    * When add_timer_on() enqueues a timer into the timer wheel of an
-> >    * idle CPU then this timer might expire before the next timer event
-> > @@ -688,8 +708,10 @@ static void wake_up_idle_cpu(int cpu)
-> >   {
-> >   	struct rq *rq = cpu_rq(cpu);
-> > -	if (cpu == smp_processor_id())
-> > +	if (cpu == smp_processor_id()) {
-> > +		wake_idle_assert_possible();
-> >   		return;
-> > +	}
-> >   	if (set_nr_and_not_polling(rq->idle))
-> >   		smp_send_reschedule(cpu);
-> 
-> 
+-- 
+Kees Cook
