@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9434032DAB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378A432DAB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236242AbhCDT6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:58:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
+        id S237086AbhCDT7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:59:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbhCDT6n (ORCPT
+        with ESMTP id S236228AbhCDT7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:58:43 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8704C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:58:02 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id x9so4787687edd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:58:02 -0800 (PST)
+        Thu, 4 Mar 2021 14:59:13 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F2BC061756;
+        Thu,  4 Mar 2021 11:58:33 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id u125so10843007wmg.4;
+        Thu, 04 Mar 2021 11:58:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=/BriSpcy9LU3hOjUA17kvD5P5X48lwv8ftAZizprRcs=;
-        b=BIvd7NpT3EHkS9O1bloXlk6jHwftF7Tx7KifnWUtshc8a+6DAR2bi1Kjo9QEkNgO1k
-         XEmbKKlN+m11njhNggCHJJ7mQsVMUbTnZGb3pU6w5O7W7seRklc+Y9HVsL4s4giDsazY
-         JMCr7YCu6Aq1Jn6GVk0fz0qrGm+SpaSjyvAFVJsxj6kFTEaStD35QyO0UWpACUMh1mCg
-         6uTY9P/MZrCYglxVMwWT19yAGLBjZZzfT+gTlzUOpzQ2k4hCIhSOMFfSi2gFVOsAoCsU
-         5h8KdQ+XRy1Nm/kpIeWOG7wgiMhvIAOQqz/4QYTHG5zzGwZYpDt9afwcmBXjdwd6ncfZ
-         cLnw==
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ufO59/K3ib2osgQjLy4qf9rcrYtYFA8DbgdmA9HSULY=;
+        b=LKbzn1c08HAvcPo24SBUhPtBSfAAsG1CJNYoXuZUdp2+xtnXl4pjNE/rpFRyExt6FC
+         cnLiwu5s3AEzZ32fU9q5pLyzMMId0b90TuTMcdO/Ldb3mO3zDNcW+wlohUScoxf0qEY8
+         Xxb6kYy9NGrvUbU+23o8BpaAb6unEcgXvVir6UdS1GeS2HCy4wWmB1ROw2KLW3rsK8LY
+         lp8VvFspCsWder+pUMCFeGF0J23Ltkxco+tBX6AHKkuE0prfO9i8r8omKsdbYjHmi4vg
+         JvE1ImD/mm5qPOzpTAcmpciJnT413Znpxu4Ytrv7f7riR8zHlCOguC+slcF0qTrWBXw4
+         BlkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/BriSpcy9LU3hOjUA17kvD5P5X48lwv8ftAZizprRcs=;
-        b=qW8G0Uo60FSuLDei9k3QPD2w0+1zCwcyyK5Ewl3lfFsyP2UNWH4ZQdlw5v6iG4ox2R
-         IvoAyc9Ij/Bw8dZt3OPUteqbBKvxNCMfs5GWejJUjaLMLexeo+gGqwNQxvdCsTSrPd33
-         wTuCWvmQQc+bO7BrZhVDjIssLP2jWsSNSNWePtNExQmE/v+XyjDcEHZCHiHlXGUeHLMh
-         yOcSiFl6iVnnwBQCOPUa/b1dTn/XuPa7HsTeJ5d7V5oX86KGVlwMg1F8BS1WdfCaLz1o
-         +i4GBMMhWM70dhiNzuThKml8gjSLi+WCIWIPT4gBOaXG8TdtNVF2C/9793+P45ri9Xcf
-         T5Kw==
-X-Gm-Message-State: AOAM531dvqY/qltEOTpwM6NuKaDeJANEOZxr/QjE9UtXQ5tFgeyxEXMF
-        cjWMamVc+ZsIxQZ8z4l8xmmk+A==
-X-Google-Smtp-Source: ABdhPJyeQPIkbs3ZXchnX1XGB3rUpJPxEzyWtnfArEqicHZX8f1sUMLtsVWQkKWi2oOgSH0A9QrPlQ==
-X-Received: by 2002:aa7:cd0e:: with SMTP id b14mr1609276edw.354.1614887881376;
-        Thu, 04 Mar 2021 11:58:01 -0800 (PST)
-Received: from ?IPv6:2003:d9:970b:e100:5aee:8298:cfca:a055? (p200300d9970be1005aee8298cfcaa055.dip0.t-ipconnect.de. [2003:d9:970b:e100:5aee:8298:cfca:a055])
-        by smtp.googlemail.com with ESMTPSA id v8sm215093edq.76.2021.03.04.11.58.00
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ufO59/K3ib2osgQjLy4qf9rcrYtYFA8DbgdmA9HSULY=;
+        b=XSHumuzoax8THHQ1NzSzyilvReVRRL5WlceoUomPFSlxldbbVayybttkQ/LbB8Nex7
+         NIGOi7Fy3rK9yyYfM4wAkgcTBPkPvu6pIwDIpO5MVO+9nopDDGLzxSekX2pDo0txsm6X
+         JDsE8zj85t3Bq2BOQeXf7d37/GBuTFnrjunUroRTwVALH3wngPVtpOOJaE/kiozbZHBp
+         aeX0nvJ587zmSDH31oegbejYgsiACf4Ka7SdYo1kkHEQ7Sv4w7mmYwcAsnqJCzp1neX9
+         j2O7JuFQXm7YWl/sXGCP+ERZOFK3Wsu6t/tPFwCz2bjgyQgh8qXE9ujRuIb/IbEKSXRh
+         /gkw==
+X-Gm-Message-State: AOAM530yWMfvH2bLBdTu1z3HC+cZ7wgyJgYdWSTj1OwUZ+NHPzIE42fW
+        X/XxuT80GioxNW33Z401OFBHXe0HunV1zA==
+X-Google-Smtp-Source: ABdhPJwAERYGeI7ldiKI+/ZMbOlbRXBPJZPsgnfu/H+Fy60UEDvzWdTpT6MlRXS1pu9emJ03pOR8bw==
+X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr5000708wml.86.1614887911924;
+        Thu, 04 Mar 2021 11:58:31 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f1f:bb00:f14c:f8a9:e599:34af? (p200300ea8f1fbb00f14cf8a9e59934af.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:f14c:f8a9:e599:34af])
+        by smtp.googlemail.com with ESMTPSA id j125sm716630wmb.44.2021.03.04.11.58.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 11:58:00 -0800 (PST)
-Subject: Re: [PATCH] ipc/msg: add msgsnd_timed and msgrcv_timed syscall for
- system V message queue
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Eric Gao <eric.tech@foxmail.com>
-Cc:     jbi.octave@gmail.com, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dave@stgolabs.net>
-References: <tencent_E0772A5A82FD941DB0B488DF366F3F509F07@qq.com>
- <20210303171220.79faee7108f846b8e140e44d@linux-foundation.org>
-From:   Manfred Spraul <manfred@colorfullife.com>
-Message-ID: <9727c4d0-c65c-a95a-1661-fc6da3a85045@colorfullife.com>
-Date:   Thu, 4 Mar 2021 20:57:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 04 Mar 2021 11:58:31 -0800 (PST)
+Subject: Re: [PATCH] net: mellanox: mlx5: fix error return code in
+ mlx5_fpga_device_start()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210304141814.8508-1-baijiaju1990@gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <cac36164-c8d3-415e-ca43-20b16b57b3fc@gmail.com>
+Date:   Thu, 4 Mar 2021 20:58:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210303171220.79faee7108f846b8e140e44d@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210304141814.8508-1-baijiaju1990@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On 04.03.2021 15:18, Jia-Ju Bai wrote:
+> When mlx5_is_fpga_lookaside() returns a non-zero value, no error 
+> return code is assigned.
+> To fix this bug, err is assigned with -EINVAL as error return code.
+> 
+To me it looks like the current behavior is intentional.
+Did you verify that it's actually an error condition if the
+function returns true? Please don't blindly trust such code checkers.
 
-
-On 3/4/21 2:12 AM, Andrew Morton wrote:
-> On Tue, 23 Feb 2021 23:11:43 +0800 Eric Gao <eric.tech@foxmail.com> wrote:
->
->> sometimes, we need the msgsnd or msgrcv syscall can return after a limited
->> time, so that the business thread do not be blocked here all the time. In
->> this case, I add the msgsnd_timed and msgrcv_timed syscall that with time
->> parameter, which has a unit of ms.
-> Please cc Manfred and Davidlohr on ipc/ changes.
->
-> The above is a very brief description for a new syscall!  Please go to
-> great lengths to tell us why this is considered useful - what are the
-> use cases?
->
-> Also, please fully describe the proposed syscall interface right here
-> in the changelog.  Please be prepared to later prepare a full manpage.
->
->> ...
->> +SYSCALL_DEFINE5(msgsnd_timed, int, msqid, struct msgbuf __user *, msgp, size_t, msgsz,
->> +		int, msgflg, long, timeoutms)
-> Specifying the timeout in milliseconds is problematic - it's very
-> coarse.  See sys_epoll_pwait2()'s use of timespecs.
-
-What about using an absolute timeout, like in mq_timedsend()?
-
-That makes restart handling after signals far simpler.
-
-> > -               schedule();
-> > +
-> > +               /* sometimes, we need msgsnd syscall return after a given time */
-> > +               if (timeoutms <= 0) {
-> > +                       schedule();
-> > +               } else {
-> > +                       timeoutms = schedule_timeout(timeoutms);
-> > +                       if (timeoutms == 0)
-> > +                               timeoutflag = true;
-> > +               }
->
-> I wonder if this should be schedule_timeout_interruptible() or at least
-> schedule_timeout_killable() instead of schedule_timeout(). If it should,
-> this should probably be done as a separate change.
-No. schedule_timeout_interruptible() just means that 
-__set_current_state() is called before the schedule_timeout().
-
-The __set_current_state() is done directly in msg.c, before dropping the 
-lock.
-
---
-
-     Manfred
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+> index 2ce4241459ce..c9e6da97126f 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+> @@ -198,8 +198,10 @@ int mlx5_fpga_device_start(struct mlx5_core_dev *mdev)
+>  	mlx5_fpga_info(fdev, "FPGA card %s:%u\n", mlx5_fpga_name(fpga_id), fpga_id);
+>  
+>  	/* No QPs if FPGA does not participate in net processing */
+> -	if (mlx5_is_fpga_lookaside(fpga_id))
+> +	if (mlx5_is_fpga_lookaside(fpga_id)) {
+> +		err = -EINVAL;
+>  		goto out;
+> +	}
+>  
+>  	mlx5_fpga_info(fdev, "%s(%d): image, version %u; SBU %06x:%04x version %d\n",
+>  		       mlx5_fpga_image_name(fdev->last_oper_image),
+> 
 
