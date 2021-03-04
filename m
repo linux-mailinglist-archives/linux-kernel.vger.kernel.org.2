@@ -2,184 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7926132D80D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DC532D812
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238388AbhCDQsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:48:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42176 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238327AbhCDQsY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:48:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614876419;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZB1BYdhnS28mvVlHU1SQfHJ74JIHfhkk8EnsSzDlslM=;
-        b=G3GVNHhzO+wnxhQfPz08B/vRtEAXOqd6o6y5JLD+64CESm5eIQGUPfE1BMEgEv4COmsIYS
-        EDVUJQOuL+gFk6louiHgtj1DnbFfxtJgvtozWbcdzHUj87hF7hhg+oOt1K+aqyhZy6dnRr
-        QslCFpPRMqxVRx04UfjGITSB9PcaAN8=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-ddN1yo0aMwyazPvLatloLw-1; Thu, 04 Mar 2021 11:46:56 -0500
-X-MC-Unique: ddN1yo0aMwyazPvLatloLw-1
-Received: by mail-qv1-f71.google.com with SMTP id q104so20962926qvq.20
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:46:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZB1BYdhnS28mvVlHU1SQfHJ74JIHfhkk8EnsSzDlslM=;
-        b=NEXfWV9egDqUkOFdAiw4OF+U7ukfioc8/X4Os3Jnc1fSGQHJa6DkAKCizBu/P+KSfO
-         0inCjtDBYIP3WbaOtJG8MOtvq1viLGvQ2W43MkEiMX+y6Md4H2DtVVLkOEzC5WVwl4M5
-         U2DKYGxDhEqtt3LbZ+FyqU5nPiCxL2HPbkJCmNjEbcQfBiosy5svQVShwY5PVO1sq61x
-         luQ6kL3HHQL5hgUlLgfhfsfo2BFkMGTIDK219zDFBj169HIIT50fOsyooVa+a1MZwIYE
-         nmASlCvlQG4kO8HomS9YEaJyOo5zxMBIVqNPXMvIEDutJxXMcEEo8sC5Os0mT4ED7qUl
-         euiQ==
-X-Gm-Message-State: AOAM532OMbaMhD/8oAWpZVrxs5++uVCMWWIbfjBCv1Cz2D5juQJMg1bC
-        ZF0flPYn6MSFvkVGRAZ7q0WVaEuQ+Lq1EUX5uNyB32E49gi3mnQaHbielyLpvxGnOiXNfq36ZuC
-        AZDhKpdlc5IekLHzqbfRtM3t7
-X-Received: by 2002:ac8:1209:: with SMTP id x9mr4114057qti.89.1614876416135;
-        Thu, 04 Mar 2021 08:46:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxYkIsLzg6JUUcyZVUmA4NY4lPA+155G5Kne2Lt5u80pP60k8ZWh3uE4h4ro2+NZCPvyt/Low==
-X-Received: by 2002:ac8:1209:: with SMTP id x9mr4114023qti.89.1614876415803;
-        Thu, 04 Mar 2021 08:46:55 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
-        by smtp.gmail.com with ESMTPSA id e15sm51099qtp.58.2021.03.04.08.46.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 08:46:54 -0800 (PST)
-Date:   Thu, 4 Mar 2021 11:46:53 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     kernel test robot <lkp@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH v4 1/4] hugetlb: Pass vma into huge_pte_alloc() and
- huge_pmd_share()
-Message-ID: <20210304164653.GB397383@xz-x1>
-References: <20210218230633.15028-2-peterx@redhat.com>
- <202103050012.xQIxbA9h-lkp@intel.com>
+        id S238432AbhCDQu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:50:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:41420 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238407AbhCDQuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 11:50:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E9AAD6E;
+        Thu,  4 Mar 2021 08:49:16 -0800 (PST)
+Received: from [10.57.63.81] (unknown [10.57.63.81])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C0C83F7D7;
+        Thu,  4 Mar 2021 08:49:13 -0800 (PST)
+Subject: Re: [PATCH v4 05/10] coresight: syscfg: Add API to activate and
+ enable configurations
+To:     Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mathieu.poirier@linaro.org, linux-doc@vger.kernel.org
+Cc:     yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
+        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+References: <20210128170936.9222-1-mike.leach@linaro.org>
+ <20210128170936.9222-6-mike.leach@linaro.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <2ff0fd68-969f-292b-f8d3-5dace8f1a435@arm.com>
+Date:   Thu, 4 Mar 2021 16:49:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202103050012.xQIxbA9h-lkp@intel.com>
+In-Reply-To: <20210128170936.9222-6-mike.leach@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 12:31:00AM +0800, kernel test robot wrote:
-> Hi Peter,
+On 1/28/21 5:09 PM, Mike Leach wrote:
+> Configurations are first activated, then when any coresight device is
+> enabled, the active configurations are checked and any matching
+> one is enabled.
 > 
-> Thank you for the patch! Yet something to improve:
+> This patch provides the activation / enable API.
 > 
-> [auto build test ERROR on arm64/for-next/core]
-> [also build test ERROR on linux/master linus/master v5.12-rc1 next-20210304]
-> [cannot apply to hnaz-linux-mm/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> ---
+>   .../hwtracing/coresight/coresight-config.h    |   2 +
+>   .../hwtracing/coresight/coresight-syscfg.c    | 127 ++++++++++++++++++
+>   .../hwtracing/coresight/coresight-syscfg.h    |  10 +-
+>   include/linux/coresight.h                     |   2 +
+>   4 files changed, 140 insertions(+), 1 deletion(-)
 > 
-> url:    https://github.com/0day-ci/linux/commits/Peter-Xu/hugetlb-Disable-huge-pmd-unshare-for-uffd-wp/20210219-071334
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-> config: mips-randconfig-m031-20210304 (attached as .config)
-> compiler: mipsel-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/7ede06d6f63e59db4b9dee54f78eeac0c9ca17e4
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Peter-Xu/hugetlb-Disable-huge-pmd-unshare-for-uffd-wp/20210219-071334
->         git checkout 7ede06d6f63e59db4b9dee54f78eeac0c9ca17e4
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> mm/hugetlb.c:5376:8: error: conflicting types for 'huge_pmd_share'
->     5376 | pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
->          |        ^~~~~~~~~~~~~~
->    In file included from mm/hugetlb.c:39:
->    include/linux/hugetlb.h:155:8: note: previous declaration of 'huge_pmd_share' was here
->      155 | pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
->          |        ^~~~~~~~~~~~~~
-> 
-> 
-> vim +/huge_pmd_share +5376 mm/hugetlb.c
-> 
->   5343	
->   5344	/*
->   5345	 * unmap huge page backed by shared pte.
->   5346	 *
->   5347	 * Hugetlb pte page is ref counted at the time of mapping.  If pte is shared
->   5348	 * indicated by page_count > 1, unmap is achieved by clearing pud and
->   5349	 * decrementing the ref count. If count == 1, the pte page is not shared.
->   5350	 *
->   5351	 * Called with page table lock held and i_mmap_rwsem held in write mode.
->   5352	 *
->   5353	 * returns: 1 successfully unmapped a shared pte page
->   5354	 *	    0 the underlying pte page is not shared, or it is the last user
->   5355	 */
->   5356	int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
->   5357						unsigned long *addr, pte_t *ptep)
->   5358	{
->   5359		pgd_t *pgd = pgd_offset(mm, *addr);
->   5360		p4d_t *p4d = p4d_offset(pgd, *addr);
->   5361		pud_t *pud = pud_offset(p4d, *addr);
->   5362	
->   5363		i_mmap_assert_write_locked(vma->vm_file->f_mapping);
->   5364		BUG_ON(page_count(virt_to_page(ptep)) == 0);
->   5365		if (page_count(virt_to_page(ptep)) == 1)
->   5366			return 0;
->   5367	
->   5368		pud_clear(pud);
->   5369		put_page(virt_to_page(ptep));
->   5370		mm_dec_nr_pmds(mm);
->   5371		*addr = ALIGN(*addr, HPAGE_SIZE * PTRS_PER_PTE) - HPAGE_SIZE;
->   5372		return 1;
->   5373	}
->   5374	#define want_pmd_share()	(1)
->   5375	#else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
-> > 5376	pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
->   5377			      unsigned long addr, pud_t *pud)
->   5378	{
->   5379		return NULL;
->   5380	}
->   5381	
+> diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
+> index 98380b496046..26396b70c826 100644
+> --- a/drivers/hwtracing/coresight/coresight-config.h
+> +++ b/drivers/hwtracing/coresight/coresight-config.h
+> @@ -156,6 +156,7 @@ struct cscfg_config_feat_ref {
+>    * @presets:	Array of preset values.
+>    * @id_ea:	Extended attribute for perf configid value
+>    * @event_ea:	Extended attribute for perf event value
+> + * @active_cnt: ref count for activate on this configuration.
+>    */
+>   struct cscfg_config_desc {
+>   	const char *name;
+> @@ -168,6 +169,7 @@ struct cscfg_config_desc {
+>   	const u64 *presets; /* nr_presets * nr_total_params */
+>   	struct dev_ext_attribute *id_ea;
+>   	struct dev_ext_attribute *event_ea;
+> +	atomic_t active_cnt;
+>   };
+>   
+>   /**
+> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+> index a070f135eca3..d79cf5b36758 100644
+> --- a/drivers/hwtracing/coresight/coresight-syscfg.c
+> +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+> @@ -298,6 +298,7 @@ static int cscfg_load_config(struct cscfg_config_desc *cfg_desc)
+>   		return err;
+>   
+>   	list_add(&cfg_desc->item, &cscfg_mgr->data.config_desc_list);
+> +	atomic_set(&cfg_desc->active_cnt, 0);
+>   	return 0;
+>   }
+>   
+> @@ -477,6 +478,131 @@ void cscfg_unregister_csdev(struct coresight_device *csdev)
+>   }
+>   EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
+>   
+> +void cscfg_csdev_reset_feats(struct coresight_device *csdev)
+> +{
+> +	struct cscfg_feature_csdev *feat;
+> +
+> +	mutex_lock(&cscfg_csdev_mutex);
+> +	if (list_empty(&csdev->feature_csdev_list))
+> +		goto unlock_exit;
+> +
+> +	list_for_each_entry(feat, &csdev->feature_csdev_list, node)
+> +		cscfg_reset_feat(feat);
+> +
+> +unlock_exit:
+> +	mutex_unlock(&cscfg_csdev_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(cscfg_csdev_reset_feats);
+> +
+> +/**
+> + * Mark a config descriptor as active.
+> + * This will be seen when csdev devices are activated in the system.
+> + *
+> + * Selection by hash value - generated from the configuration name when it
+> + * was loaded and added to the cs_etm/configurations file system for selection
+> + * by perf.
+> + *
+> + * @cfg_hash: Hash value of the selected configuration name.
+> + */
+> +int cscfg_activate_config(unsigned long cfg_hash)
+> +{
+> +	struct cscfg_config_desc *curr_item, *match_item = 0;
 
-Sorry for this!  I think we need to squash below into this patch for
-!CONFIG_ARCH_WANT_HUGE_PMD_SHARE:
+nit: s/0/NULL
+	
+> +
+> +	mutex_lock(&cscfg_mutex);
+> +
+> +	list_for_each_entry(curr_item, &cscfg_mgr->data.config_desc_list, item) {
+> +		if ((unsigned long)curr_item->id_ea->var == cfg_hash) {
+> +			match_item = curr_item;
+> +			atomic_inc(&cscfg_mgr->data.sys_active_cnt);
+> +			break;
+> +		}
+> +	}
+> +	mutex_unlock(&cscfg_mutex);
+> +
+> +	if (!match_item)
+> +		return -EINVAL;
+> +
+> +	dev_dbg(to_device_cscfg(), "Activate config %s.\n", match_item->name);
+> +
+> +	/* mark the descriptors as active so enable config will use them */
+> +	mutex_lock(&cscfg_csdev_mutex);
+> +	atomic_inc(&match_item->active_cnt);
+> +	mutex_unlock(&cscfg_csdev_mutex);
 
------8<-----
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index fc62932c31cb..94ac419f88cd 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5415,7 +5415,7 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
- }
- 
- #else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
--pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
-+pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
-                      unsigned long addr, pud_t *pud)
- {
-        return NULL;
------8<-----
+Is there a guarantee that this item is active and present in the list after
+we dropped the mutex above ? We could certainly nest the mutex as long as
+we follow the order everywhere to prevent such a race.
 
-Andrew, please kindly let me know when a repost is needed.
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(cscfg_activate_config);
+> +
+> +void cscfg_deactivate_config(unsigned long cfg_hash)
+> +{
+> +	struct cscfg_config_desc *curr_item, *match_item = 0;
+> +
+> +	mutex_lock(&cscfg_mutex);
+> +
+> +	list_for_each_entry(curr_item, &cscfg_mgr->data.config_desc_list, item) {
+> +		if ((unsigned long)curr_item->id_ea->var == cfg_hash) {
+> +			match_item = curr_item;
+> +			break;
+> +		}
+> +	}
+> +	mutex_unlock(&cscfg_mutex);
+> +	if (!match_item)
+> +		return;
+> +
+> +	dev_dbg(to_device_cscfg(), "Deactivate config %s.\n", match_item->name);
+> +
+> +	mutex_lock(&cscfg_csdev_mutex);
+> +	atomic_dec(&match_item->active_cnt);
+> +	mutex_unlock(&cscfg_csdev_mutex);
+> +
+> +	atomic_dec(&cscfg_mgr->data.sys_active_cnt);
+> +}
+> +EXPORT_SYMBOL_GPL(cscfg_deactivate_config);
+> +
+> +/* Find and program any active config for the supplied device.*/
+> +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> +				     unsigned long id_hash, int preset)
+> +{
+> +	struct cscfg_config_csdev *cfg = NULL, *item;
+> +	const struct cscfg_config_desc *desc;
+> +	int err = 0;
+> +
+> +	/* quickly check global count */
+> +	if (!atomic_read(&cscfg_mgr->data.sys_active_cnt))
+> +		return 0;
+> +
+> +	mutex_lock(&cscfg_csdev_mutex);
+> +	list_for_each_entry(item, &csdev->config_csdev_list, node) {
+> +		desc = item->desc;
+> +		if ((atomic_read(&desc->active_cnt)) &&
+> +		    ((unsigned long)desc->id_ea->var == id_hash)) {
+> +			cfg = item;
+> +			break;
+> +		}
+> +	}
+> +	if (cfg) {
+> +		err = cscfg_csdev_enable_config(cfg, preset);
+> +		if (!err)
+> +			csdev->active_cfg_ctxt = (void *)cfg;
+> +	}
+> +	mutex_unlock(&cscfg_csdev_mutex);
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(cscfg_csdev_enable_active_config);
+> +
+> +/* save and disable the active config for the device */
+> +void cscfg_csdev_disable_active_config(struct coresight_device *csdev)
+> +{
+> +	struct cscfg_config_csdev *cfg;
+> +
+> +	mutex_lock(&cscfg_csdev_mutex);
+> +	cfg = (struct cscfg_config_csdev *)csdev->active_cfg_ctxt;
+> +	if (cfg)
+> +		cscfg_csdev_disable_config(cfg);
+> +	mutex_unlock(&cscfg_csdev_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(cscfg_csdev_disable_active_config);
+> +
+>   /* Initialise system configuration management device. */
+>   
+>   struct device *to_device_cscfg(void)
+> @@ -546,6 +672,7 @@ int __init cscfg_init(void)
+>   	INIT_LIST_HEAD(&cscfg_mgr->data.feat_desc_list);
+>   	INIT_LIST_HEAD(&cscfg_mgr->data.config_desc_list);
+>   	cscfg_mgr->data.nr_csdev = 0;
+> +	atomic_set(&cscfg_mgr->data.sys_active_cnt, 0);
+>   
+>   	dev_info(to_device_cscfg(), "CoreSight Configuration manager initialised");
+>   	return 0;
+> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
+> index ebf5e1491d86..301e26e1e98f 100644
+> --- a/drivers/hwtracing/coresight/coresight-syscfg.h
+> +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
+> @@ -17,13 +17,15 @@
+>    * @csdev_list:		List of coresight devices registered with the configuration manager.
+>    * @feat_desc_list:	List of feature descriptors to load into registered devices.
 
-Thanks,
+nit: Is this aligned ? (It is from Patch 1, though).
 
--- 
-Peter Xu
+>    * @config_desc_list:	List of system configuration descriptors to load into registered devices.
+> - * @nr_csdev:	Number of registered devices with the cscfg system
+> + * @nr_csdev:		Number of registered devices with the cscfg system
+
+Spurious change ?
+
+> + * @sys_active_cnt:	Total number of active config descriptor references.
+>    */
+>   struct cscfg_api_data {
+>   	struct list_head csdev_desc_list;
+>   	struct list_head feat_desc_list;
+>   	struct list_head config_desc_list;
+>   	int nr_csdev;
+> +	atomic_t sys_active_cnt;
+>   };
+>   
+>   /**
+> @@ -53,6 +55,12 @@ int cscfg_register_csdev(struct coresight_device *csdev,
+>   			 struct cscfg_match_desc *info,
+>   			 struct cscfg_csdev_feat_ops *ops);
+>   void cscfg_unregister_csdev(struct coresight_device *csdev);
+> +int cscfg_activate_config(unsigned long cfg_hash);
+> +void cscfg_deactivate_config(unsigned long cfg_hash);
+> +void cscfg_csdev_reset_feats(struct coresight_device *csdev);
+> +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> +				     unsigned long id_hash, int preset);
+> +void cscfg_csdev_disable_active_config(struct coresight_device *csdev);
+>   
+>   /**
+>    * System configuration manager device.
+> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> index d0126ed326a6..3941854e8280 100644
+> --- a/include/linux/coresight.h
+> +++ b/include/linux/coresight.h
+> @@ -221,6 +221,7 @@ struct coresight_sysfs_link {
+>    * @has_conns_grp: Have added a "connections" group for sysfs links.
+>    * @feature_csdev_list: List of complex feature programming added to the device.
+>    * @config_csdev_list:  List of system configurations added to the device.
+> + * @active_cfg_ctxt:    Context information for current active congfig.
+>    */
+>   struct coresight_device {
+>   	struct coresight_platform_data *pdata;
+> @@ -245,6 +246,7 @@ struct coresight_device {
+>   	/* system configuration and feature lists */
+>   	struct list_head feature_csdev_list;
+>   	struct list_head config_csdev_list;
+> +	void *active_cfg_ctxt;
+>   };
+>   
+
+Suzuki
 
