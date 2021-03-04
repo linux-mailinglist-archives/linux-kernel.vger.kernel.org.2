@@ -2,142 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F5932D71A
+	by mail.lfdr.de (Postfix) with ESMTP id 156C232D718
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235743AbhCDPto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S235727AbhCDPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234226AbhCDPtX (ORCPT
+        with ESMTP id S235678AbhCDPtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:49:23 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FF6C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 07:48:43 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id u3so28974298ybk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 07:48:43 -0800 (PST)
+        Thu, 4 Mar 2021 10:49:13 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F67FC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 07:48:33 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id b130so16578699qkc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 07:48:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C2GfwX8BAsutusYxwRoGwg9Tjy9ZmGXPqTmJyveNAWY=;
-        b=Varx3y3jXJVUubA3WfuStWPFpbarbln1G5ZoZ8EhzOFuHj8d+REr+pacf9Oi3KX/iZ
-         cw/a8PANrcwTCJceTanz7vcs0rEhHJ0XLO+9s80Mjp+MKgL7p38c7HTg2LJAxR9ODdI9
-         f+cEn09FAaXpD2nNX52eTdkxcBrVkqBrYpTwmxOEBeIq9w8+9qnyQYfaOl756mCjcKT0
-         ZmfaOXHOOgWdhZmXNBCOLcOMyocEJ0f2M6G0XxpUKXZGL0WhJKilBa68glK4nM4FkZ/J
-         gUrgGNFRcX6UncJqpqThPmhWJYwHP/DUlhmbiM7918ZwZuqsItyR8pogrQyeWNqYT3eh
-         k9tg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BPzzifR3jmKfmhbVLe6vXoybjuDrovQTeCnMZN/atRQ=;
+        b=WWef2GAfbou80N5BMcLGOfy0SRUKVjvprQBlt+eQ+fl9znRom4oEqDUkcVMMFRhCsH
+         HsSgPUCsRxtfs2w2UEYQT8vJ7rEWDZ2ACkOnMGQe65sLG88PHpR+1P/F+9hK0PA7JVeG
+         7UuWOMl76v8wjCcKe7UDA5MFirmoqXx4dzCu/bQ3QKktRLHNXPLldgF4/HqlPEFukYzz
+         vrmARnzD/btz1fvFlMRfqt0RDiFQX5hbc2fi1W0JrT8ItDNEy+F/ItC7C9js8zRa2q9Y
+         Mld0Q+guocOpuvIvtAEx8d0GvDnv1b/zleQfkTOv0IL7WjOCaqoUCmjMVWgUCbcSx4Lv
+         k/RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2GfwX8BAsutusYxwRoGwg9Tjy9ZmGXPqTmJyveNAWY=;
-        b=KXaZ/Ak7WpYJ7Ln2QFnOk7FXEo/2f+kE33ScHIC1+b+ThZQtP8Pk8OlmAS9YLsUSyT
-         930Q+HO6VcpPNpmRiCVAGemzL2/DWmw1JEaOHh+mVa0Y5EznnJ6udxdfFrYUxwC7MKL7
-         7axfV98Uqz4nt1rdWELARfdKeykv2B5qTGCs+6mF0hjl2Q/DDI+xyxNEdCwgyqOebjZt
-         d6yRP5Px7q/hENehigBggdffyL+tU6pg9HrphpQpvT8Fo7M9fPbYKgLRbS+WWHDvohXI
-         JXPnKdhtzbji7WVSWYLU6RBKtKPAwj0Lbi4nw4OJHAAkYpmlkSo5A27w0osyFUp1dl+y
-         E+Aw==
-X-Gm-Message-State: AOAM5308xUFp1+wqvqkq3n/mW2RapoggAFSNuLRX/r2zj5GO1VAVhiR0
-        euUoml859aS2LXr4iLH7jNd42sc+v2Ebatj5jpngfA==
-X-Google-Smtp-Source: ABdhPJyoPLo40CyXER4Db7DYGJtecHOzhyXxbovtbc2ozdql8F1XjOp0z4j+PCuluuP6b727HNgT2ZD5ML5iWBCNeeg=
-X-Received: by 2002:a25:c283:: with SMTP id s125mr6540496ybf.310.1614872922114;
- Thu, 04 Mar 2021 07:48:42 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BPzzifR3jmKfmhbVLe6vXoybjuDrovQTeCnMZN/atRQ=;
+        b=b4z5jS51/zWe6i/1YR6+Cv2nvmmpUadh+87/VRfeziQK3TQ4z06WgwwPfXctkyhbXI
+         qeuQlkQTak/jL+6M5uyvpg+m038q4flpZjNZS6ew2pxu6k2pogwAfYYkRZOrOdpljFMG
+         VtTbdNSrZy+ka4BXKNrXjPvgJfr9JUwlDoeR87I0sjOq6PAtK+zZPmDoiXHcDf+4LkJG
+         Aa8GO54NvR6E0blas3J9OJb/vgdygR3PBmfh2BBzk8CCmDnsaHZcosXg6phZcf9CC8eY
+         NFmBMjFX3LiGXgQEYfu8TE0aRT7hhFecxwQJymoD2654uwZor0klUGo9GFjtvM5nVW8+
+         uZgQ==
+X-Gm-Message-State: AOAM531RyP23NRMEsUFtXbJIj8yIQ2hGTRHlZ0OPBdpssMtqHbAwXIGl
+        tyGHZXMFDlAr204fJJnS95d7Dw==
+X-Google-Smtp-Source: ABdhPJxHWNi0keQbMNoJsGuf4uKSTRrd3e3gnQprSCI2sh41sPnTTTzbepxGjVS3MrOEBSsK107UVg==
+X-Received: by 2002:a37:4e01:: with SMTP id c1mr4577182qkb.16.1614872912480;
+        Thu, 04 Mar 2021 07:48:32 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:b28e])
+        by smtp.gmail.com with ESMTPSA id h3sm15841551qtp.8.2021.03.04.07.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 07:48:31 -0800 (PST)
+Date:   Thu, 4 Mar 2021 10:48:30 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] memcg: charge before adding to swapcache on swapin
+Message-ID: <YEEBTm/NIugjQWG5@cmpxchg.org>
+References: <20210304014229.521351-1-shakeelb@google.com>
 MIME-Version: 1.0
-References: <20210304035958.3657121-1-saravanak@google.com>
- <CAGETcx8KQ7cm7irv-vsBzqYfZqSMz4c3_hD_V55gxjVM1vd=PA@mail.gmail.com> <20210304141205.GC1463@shell.armlinux.org.uk>
-In-Reply-To: <20210304141205.GC1463@shell.armlinux.org.uk>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 4 Mar 2021 07:48:06 -0800
-Message-ID: <CAGETcx_WHkZOtF+iv4gx3KnNDYiAg1Ys8MQbW89E4H2bRAUCkw@mail.gmail.com>
-Subject: Re: [PATCH v2] amba: Remove deferred device addition
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304014229.521351-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 6:12 AM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Wed, Mar 03, 2021 at 08:08:44PM -0800, Saravana Kannan wrote:
-> > Marek,
-> >
-> > I tested it and saw the device get added before the resources were
-> > available and the uevent file looked okay. Would you mind testing it
-> > further?
->
-> To put it bluntly, if you have tested this, the testing was not very
-> effective. Deleting the lines that are removed by the patch so we can
-> see what the new code looks like below:
->
-> > > +int amba_device_add(struct amba_device *dev, struct resource *parent)
-> > >  {
-> > > +       int ret;
-> > >
-> > >         WARN_ON(dev->irq[0] == (unsigned int)-1);
-> > >         WARN_ON(dev->irq[1] == (unsigned int)-1);
-> > >
-> > >         ret = request_resource(parent, &dev->res);
-> > >         if (ret)
-> > > +               return ret;
-> > >
-> > > +       /* If primecell ID isn't hard-coded, figure it out */
-> > > +       if (dev->periphid) {
-> > > +               ret = amba_read_periphid(dev);
->
-> So, if the peripheral ID has _already_ been set, we attempt to read the
-> peripheral ID from the device. Isn't that just wrong?
->
-> > > +               if (ret && ret != -EPROBE_DEFER)
-> > > +                       goto err_release;
-> > >                 /*
-> > > +                * AMBA device uevents require reading its pid and cid
-> > > +                * registers.  To do this, the device must be on, clocked and
-> > > +                * out of reset.  However in some cases those resources might
-> > > +                * not yet be available.  If that's the case, we suppress the
-> > > +                * generation of uevents until we can read the pid and cid
-> > > +                * registers.  See also amba_match().
-> > >                  */
-> > > +               if (ret)
-> > > +                       dev_set_uevent_suppress(&dev->dev, true);
-> > >         }
->
-> If the peripheral ID has not been set, we don't attempt to read it, and
-> we generate an add event when the amba device is added with a zero
-> peripheral ID.
->
-> I guess that if() statement should be negated - and with such an error,
-> I fail to see how this code could have been properly tested.
+On Wed, Mar 03, 2021 at 05:42:29PM -0800, Shakeel Butt wrote:
+> Currently the kernel adds the page, allocated for swapin, to the
+> swapcache before charging the page. This is fine but now we want a
+> per-memcg swapcache stat which is essential for folks who wants to
+> transparently migrate from cgroup v1's memsw to cgroup v2's memory and
+> swap counters. In addition charging a page before exposing it to other
+> parts of the kernel is a step in the right direction.
+> 
+> To correctly maintain the per-memcg swapcache stat, this patch has
+> adopted to charge the page before adding it to swapcache. One
+> challenge in this option is the failure case of add_to_swap_cache() on
+> which we need to undo the mem_cgroup_charge(). Specifically undoing
+> mem_cgroup_uncharge_swap() is not simple.
+> 
+> To resolve the issue, this patch introduces transaction like interface
+> to charge a page for swapin. The function mem_cgroup_charge_swapin_page()
+> initiates the charging of the page and mem_cgroup_finish_swapin_page()
+> completes the charging process. So, the kernel starts the charging
+> process of the page for swapin with mem_cgroup_charge_swapin_page(),
+> adds the page to the swapcache and on success completes the charging
+> process with mem_cgroup_finish_swapin_page().
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-Yeah, the if() needs to be flipped. I even flipped it and then
-unflipped it before I sent the patch. Thanks for catching it.
+The patch looks good to me, I have just a minor documentation nit
+below. But with that addressed, please add:
 
-It worked in my testing because the device didn't have hard coded PID.
-So it worked out fine.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-But I now realize I still have a chicken-and-egg problem if ALL amba
-drivers are modules. amba_match() will never be called because none of
-the amba drivers have been loaded. None of the amba drivers would be
-loaded (depending on the set up) because none of the uevents were sent
-out. But there's a simple fix for this. I'll send that as part of v3.
+> +/**
+> + * mem_cgroup_charge_swapin_page - charge a newly allocated page for swapin
+> + * @page: page to charge
+> + * @mm: mm context of the victim
+> + * @gfp: reclaim mode
+> + * @entry: swap entry for which the page is allocated
+> + *
+> + * This function marks the start of the transaction of charging the page for
+> + * swapin. Complete the transaction with mem_cgroup_finish_swapin_page().
+> + *
+> + * Returns 0 on success. Otherwise, an error code is returned.
+> + */
+> +int mem_cgroup_charge_swapin_page(struct page *page, struct mm_struct *mm,
+> +				  gfp_t gfp, swp_entry_t entry)
+> +{
+> +	struct mem_cgroup *memcg;
+> +	unsigned short id;
+> +	int ret;
+>  
+> -	if (!memcg)
+> -		memcg = get_mem_cgroup_from_mm(mm);
+> +	if (mem_cgroup_disabled())
+> +		return 0;
+>  
+> -	ret = try_charge(memcg, gfp_mask, nr_pages);
+> -	if (ret)
+> -		goto out_put;
+> +	id = lookup_swap_cgroup_id(entry);
+> +	rcu_read_lock();
+> +	memcg = mem_cgroup_from_id(id);
+> +	if (!memcg || !css_tryget_online(&memcg->css))
+> +		memcg = get_mem_cgroup_from_mm(mm);
+> +	rcu_read_unlock();
+>  
+> -	css_get(&memcg->css);
+> -	commit_charge(page, memcg);
+> +	ret = __mem_cgroup_charge(page, memcg, gfp);
+>  
+> -	local_irq_disable();
+> -	mem_cgroup_charge_statistics(memcg, page, nr_pages);
+> -	memcg_check_events(memcg, page);
+> -	local_irq_enable();
+> +	css_put(&memcg->css);
+> +	return ret;
+> +}
+>  
+> +/*
+> + * mem_cgroup_finish_swapin_page - complete the swapin page charge transaction
+> + * @page: page charged for swapin
+> + * @entry: swap entry for which the page is charged
+> + *
+> + * This function completes the transaction of charging the page allocated for
+> + * swapin.
 
-Marek,
+It's possible somebody later needs to change things around in the
+swapin path and it's not immediately obvious when exactly these two
+functions need to be called in the swapin sequence.
 
-It'd still be nice if you can test this with the if() above flipped.
-If all your amba drivers are modules and loaded based on uevents,
-manually loading one of them will kick off everything.
-
--Saravana
+Maybe add here and above that charge_swapin_page needs to be called
+before we try adding the page to the swapcache, and finish_swapin_page
+needs to be called when swapcache insertion has been successful?
