@@ -2,185 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEE132D49B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E1432D4A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241621AbhCDNvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:51:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241608AbhCDNvf (ORCPT
+        id S241613AbhCDNxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:53:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241651AbhCDNw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:51:35 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCE4C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 05:50:55 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id g68so4537562vkb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:50:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WfBNuUrd/opuKzkgtwMeHEBHTqndp4QteWKqmlqjrkk=;
-        b=EV27IFZ+KtpLSZGMRFgQ2JSb1S+71I7aezbRUK4i7JX7v1rbFFIQgMMOECEg7IfmR0
-         tYC91rQ8L8/j0Yi6kQnpdJPFcEPrgrxMX4oUpgxzqPbbDskKkGVfAWiaN37YULwZZeoP
-         wGQD5UlgQ9UVfP3EwqZmkxddmqr4bh4/67/pGcb54zeJgmMFDoAjkxYsAf2hWlCvFB9H
-         em07LWlHSICrZLayhSEhVU9+BhBujQavIswpkSB4DHMY0aVg3121uTr4z1cNIYe0gIQD
-         TugaTLqaw2uog3ICI37ePDFDGGIufKtYzKdPYIJEnqUy+GKyE9S2TZ6Wj/PTq4RbbveV
-         lCcw==
+        Thu, 4 Mar 2021 08:52:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614865891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lXMZR9NYDhRem8zZDsBYRp3qs3UWS1OqKUVN3Wolnks=;
+        b=E6lcqrXI1Nm/0M/i7JAO112QFRkDOmk/gjSXei6q3Igv8x/vzN6c9PpNjkr53Nkga9Ncg1
+        RweuwpT5v5eqZ35xXaPU7Mvk+XI7jbYkmTPWl8DPSq8jAxBVD9lydvSwEdw4yITvytvqiN
+        zL/FJtgPQJExhwGqo7ijHE+Znsp9lv0=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-AxivtlA6MLam6dbRvg4hWA-1; Thu, 04 Mar 2021 08:51:27 -0500
+X-MC-Unique: AxivtlA6MLam6dbRvg4hWA-1
+Received: by mail-qt1-f200.google.com with SMTP id i16so10236985qtv.18
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:51:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WfBNuUrd/opuKzkgtwMeHEBHTqndp4QteWKqmlqjrkk=;
-        b=eI6T+YwiqDYqdA58o8A6BFaV7Cr/Cvx9aNkyNRCFs90B7p18cxmnzQ4+LyWnoYwnXD
-         kXTaxHm872DHpPRY88mKBGw5KhDD0w2vX18fHztY9kwdukzfHenrljPf7KfMr7WRi0mA
-         qcwbHpef48yDIYdCCjHFjHjnhOIx6zS12moAW6/I7b5/Ng3ySYETeTqXrrz+yaczFD4f
-         ZTjnbq8QphTLKpB8y9aVxpd04zuA4DYTdedsaBbYJNAit+PzesW9P97/El/AjaS4Owf2
-         3/JkEdA9c4+n5EdnbeX3vTcFW24XCjJchzlEXGbteLmAvgAXlmsT6XAGQRE9felUUdhM
-         Xa5w==
-X-Gm-Message-State: AOAM5312A11etb/UJ+T50FXkTu2o/srmyOUJXHO3YEgicz9xE/w/H8Qh
-        qoODUX3rXPa5Zq4dBakqQve8hAspX2F22t+DcayC3w==
-X-Google-Smtp-Source: ABdhPJyOw8Ivbs5I2MbmiW7PCGlUo1so5zhUDrOfGB44xQi6GqIBDItt+f25Di8kQdBmoZJFN0vhArCpH9GkQGXWNz4=
-X-Received: by 2002:a1f:a68d:: with SMTP id p135mr2712297vke.6.1614865854678;
- Thu, 04 Mar 2021 05:50:54 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=lXMZR9NYDhRem8zZDsBYRp3qs3UWS1OqKUVN3Wolnks=;
+        b=kT43wNqyzSC0D+xBVvLMEYS3VWzqk3HHa1oM2DOJuXBjfkoWyIY8uvIArla5YNfuZ2
+         SbYo8XQaMw3Qn6/kgiUVYWb/z5XOq6jBduKskGfMSqD6BBYvy8ySkVUFXkKPt6LqqZ9O
+         oVVj6O6PBZErWUMUaehhsqLfNM0cYl+wIO18pjbInNyC1gaID7Tniy/QHUQRPyoeutAJ
+         vRRXluUPEqJXpdZCAEa4D4hUlzDTDpTuo+mFYAbrQa5plADsqFTe2lf8VwsmYNcBbwu/
+         YI2nkWjYK48761trno8ozknXLwGqfK2wUxhIDaDM+4C3ItIZbljE3sBXK6WTFmpCiex3
+         nSzA==
+X-Gm-Message-State: AOAM533JciuzJpzLLYTHh5jAFx0A2y1+RH/RtfIwv/6/AacJV0Dypr/i
+        +WSg8jHZHbmsAnWNSCXEihuWWd39D6Ab6FTjqvUfCCP+zwTOI93YWGPe11GbNXNk/4qGvuAtonT
+        1djW5SK5eXmvtlUrPY84UsvR7
+X-Received: by 2002:a0c:c488:: with SMTP id u8mr4207331qvi.9.1614865887157;
+        Thu, 04 Mar 2021 05:51:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJydKS0YxaVm2uUcf5l7dt7ZzBbAEphGXDYwwuYbgKa51KOqdSpIeFGKh+wa05uWEvmNF6ixrA==
+X-Received: by 2002:a0c:c488:: with SMTP id u8mr4207320qvi.9.1614865886891;
+        Thu, 04 Mar 2021 05:51:26 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id z5sm3703621qtc.42.2021.03.04.05.51.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 05:51:26 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] fpga: Add support for Xilinx DFX AXI Shutdown
+ manager
+To:     Nava kishore Manne <nava.manne@xilinx.com>, mdf@kernel.org,
+        robh+dt@kernel.org, michal.simek@xilinx.com,
+        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        chinnikishore369@gmail.com
+Cc:     git@xilinx.com
+References: <20210211051148.16722-1-nava.manne@xilinx.com>
+ <20210211051148.16722-3-nava.manne@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <156f2240-2360-b47a-26af-cfd4eb88ddf5@redhat.com>
+Date:   Thu, 4 Mar 2021 05:51:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210303174248.542175-1-Frank.Li@nxp.com>
-In-Reply-To: <20210303174248.542175-1-Frank.Li@nxp.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 4 Mar 2021 14:50:18 +0100
-Message-ID: <CAPDyKFoHRfvKHS6NWrkkLD4Ek6DyXPyPd2ey5zhsWMCY=cCOZw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mmc: cqhci: fix random crash when remove mmc module
-To:     Frank Li <lznuaa@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Harjani Ritesh <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Haibo Chen <haibo.chen@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210211051148.16722-3-nava.manne@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 18:42, Frank Li <lznuaa@gmail.com> wrote:
->
-> [ 6684.493350] Unable to handle kernel paging request at virtual address =
-ffff800011c5b0f0
-> [ 6684.498531] mmc0: card 0001 removed
-> [ 6684.501556] Mem abort info:
-> [ 6684.509681]   ESR =3D 0x96000047
-> [ 6684.512786]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> [ 6684.518394]   SET =3D 0, FnV =3D 0
-> [ 6684.521707]   EA =3D 0, S1PTW =3D 0
-> [ 6684.524998] Data abort info:
-> [ 6684.528236]   ISV =3D 0, ISS =3D 0x00000047
-> [ 6684.532986]   CM =3D 0, WnR =3D 1
-> [ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000081b2=
-2000
-> [ 6684.543923] [ffff800011c5b0f0] pgd=3D00000000bffff003, p4d=3D00000000b=
-ffff003, pud=3D00000000bfffe003, pmd=3D00000000900e1003, pte=3D000000000000=
-0000
-> [ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
-> [ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cq=
-hci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc ca=
-amalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_d=
-ev caam error [last unloaded: mmc_core]
-> [ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01=
-410-g3ba33182767b-dirty #10
-> [ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
-> [ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
->
-> [ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
-> [ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
-> ^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr=
- : cqhci_request+0x314/0x4e8 [cqhci]
-> [ 6684.626734] sp : ffff80001243b9f0
-> [ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
-> [ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
-> [ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
-> [ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
-> [ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
-> [ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
-> [ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
-> [ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
-> [ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
-> [ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
-> [ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
-> [ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
-> [ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
-> [ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
-> [ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
-> [ 6684.709854] Call trace:
-> [ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
-> [ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
-> [ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
-> [ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
->
-> cqhci_request was called after cqhci_disable.
->
-> cqhci_disable                                 cqhci_request
-> {                                             {
->         dmam_free_coherent();  (1) free
->                                                   if(!cq_host->enable)
->                                                        return
->                                          (2) pass check here
->         cq_host->enable =3D false;
->
->                                                   task_desc=3D get_desc(c=
-q_host,tag);
->                                                              ^^^^ crash h=
-ere
->                                          (3) access memory which is alrea=
-dy free
->
-> }                                             }
->
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Applied for fixes, thanks! I added a fixes tag and a stable tag.
-
-Kind regards
-Uffe
-
-
+On 2/10/21 9:11 PM, Nava kishore Manne wrote:
+> This patch adds support for Xilinx Dynamic Function eXchange(DFX) AXI
+> shutdown manager IP. It can be used to safely handling the AXI traffic
+> on a Reconfigurable Partition when it is undergoing dynamic reconfiguration
+> and there by preventing system deadlock that may occur if AXI transactions
+> are interrupted during reconfiguration.
+>
+> PR-Decoupler and AXI shutdown manager are completely different IPs.
+> But both the IP registers are compatible and also both belong to the
+> same sub-system (fpga-bridge).So using same driver for both IP's.
+>
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
 > ---
+> Changes for v2:
+>                 -Fixed some minor coding issues as suggested by
+>                  Tom Rix.
 >
-> Change from v1 to v2
->  - use Adrian Hunter suggested method to fix this problem
+>  drivers/fpga/Kconfig               |  9 +++++++-
+>  drivers/fpga/xilinx-pr-decoupler.c | 37 ++++++++++++++++++++++++++----
+>  2 files changed, 40 insertions(+), 6 deletions(-)
 >
->  drivers/mmc/core/bus.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-> index c2e70b757dd1..4383c262b3f5 100644
-> --- a/drivers/mmc/core/bus.c
-> +++ b/drivers/mmc/core/bus.c
-> @@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
->         mmc_remove_card_debugfs(card);
->  #endif
->
-> -       if (host->cqe_enabled) {
-> -               host->cqe_ops->cqe_disable(host);
-> -               host->cqe_enabled =3D false;
-> -       }
-> -
->         if (mmc_card_present(card)) {
->                 if (mmc_host_is_spi(card->host)) {
->                         pr_info("%s: SPI card removed\n",
-> @@ -416,6 +411,10 @@ void mmc_remove_card(struct mmc_card *card)
->                 of_node_put(card->dev.of_node);
->         }
->
-> +       if (host->cqe_enabled) {
-> +               host->cqe_ops->cqe_disable(host);
-> +               host->cqe_enabled =3D false;
-> +       }
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 5645226ca3ce..bf85b9a65ec2 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -118,10 +118,17 @@ config XILINX_PR_DECOUPLER
+>  	depends on FPGA_BRIDGE
+>  	depends on HAS_IOMEM
+>  	help
+> -	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler.
+> +	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler
+> +	  or Xilinx Dynamic Function eXchnage AIX Shutdown Manager.
+>  	  The PR Decoupler exists in the FPGA fabric to isolate one
+>  	  region of the FPGA from the busses while that region is
+>  	  being reprogrammed during partial reconfig.
+> +	  The Dynamic Function eXchange AXI shutdown manager prevents
+> +	  AXI traffic from passing through the bridge. The controller
+> +	  safely handles AXI4MM and AXI4-Lite interfaces on a
+> +	  Reconfigurable Partition when it is undergoing dynamic
+> +	  reconfiguration, preventing the system deadlock that can
+> +	  occur if AXI transactions are interrupted by DFX.
+>  
+>  config FPGA_REGION
+>  	tristate "FPGA Region"
+> diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-pr-decoupler.c
+> index 7d69af230567..78a6f5324193 100644
+> --- a/drivers/fpga/xilinx-pr-decoupler.c
+> +++ b/drivers/fpga/xilinx-pr-decoupler.c
+> @@ -1,7 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /*
+>   * Copyright (c) 2017, National Instruments Corp.
+> - * Copyright (c) 2017, Xilix Inc
+> + * Copyright (c) 2017, Xilinx Inc
+>   *
+>   * FPGA Bridge Driver for the Xilinx LogiCORE Partial Reconfiguration
+>   * Decoupler IP Core.
+> @@ -18,7 +18,12 @@
+>  #define CTRL_CMD_COUPLE		0
+>  #define CTRL_OFFSET		0
+>  
+> +struct xlnx_config_data {
+> +	const char *name;
+> +};
 > +
->         put_device(&card->dev);
->  }
-> -
-> --
-> 2.25.1
->
+>  struct xlnx_pr_decoupler_data {
+> +	const struct xlnx_config_data *ipconfig;
+>  	void __iomem *io_base;
+>  	struct clk *clk;
+>  };
+> @@ -76,15 +81,28 @@ static const struct fpga_bridge_ops xlnx_pr_decoupler_br_ops = {
+>  	.enable_show = xlnx_pr_decoupler_enable_show,
+>  };
+>  
+> +static const struct xlnx_config_data decoupler_config = {
+> +	.name = "Xilinx PR Decoupler",
+> +};
+> +
+> +static const struct xlnx_config_data shutdown_config = {
+> +	.name = "Xilinx DFX AXI Shutdown Manager",
+> +};
+> +
+>  static const struct of_device_id xlnx_pr_decoupler_of_match[] = {
+> -	{ .compatible = "xlnx,pr-decoupler-1.00", },
+> -	{ .compatible = "xlnx,pr-decoupler", },
+> +	{ .compatible = "xlnx,pr-decoupler-1.00", .data = &decoupler_config },
+> +	{ .compatible = "xlnx,pr-decoupler", .data = &decoupler_config },
+> +	{ .compatible = "xlnx,dfx-axi-shutdown-manager-1.00",
+> +					.data = &shutdown_config },
+> +	{ .compatible = "xlnx,dfx-axi-shutdown-manager",
+> +					.data = &shutdown_config },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, xlnx_pr_decoupler_of_match);
+>  
+>  static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
+>  {
+> +	struct device_node *np = pdev->dev.of_node;
+>  	struct xlnx_pr_decoupler_data *priv;
+>  	struct fpga_bridge *br;
+>  	int err;
+> @@ -94,6 +112,14 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
+>  	if (!priv)
+>  		return -ENOMEM;
+>  
+> +	if (np) {
+> +		const struct of_device_id *match;
+> +
+> +		match = of_match_node(xlnx_pr_decoupler_of_match, np);
+> +		if (match && match->data)
+> +			priv->ipconfig = match->data;
+> +	}
+> +
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	priv->io_base = devm_ioremap_resource(&pdev->dev, res);
+>  	if (IS_ERR(priv->io_base))
+> @@ -114,7 +140,7 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
+>  
+>  	clk_disable(priv->clk);
+>  
+> -	br = devm_fpga_bridge_create(&pdev->dev, "Xilinx PR Decoupler",
+> +	br = devm_fpga_bridge_create(&pdev->dev, priv->ipconfig->name,
+>  				     &xlnx_pr_decoupler_br_ops, priv);
+>  	if (!br) {
+>  		err = -ENOMEM;
+> @@ -125,7 +151,8 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
+>  
+>  	err = fpga_bridge_register(br);
+>  	if (err) {
+> -		dev_err(&pdev->dev, "unable to register Xilinx PR Decoupler");
+> +		dev_err(&pdev->dev, "unable to register %s",
+> +			priv->ipconfig->name);
+>  		goto err_clk;
+>  	}
+>  
+
+The changes I asked for were made.
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
