@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D607B32DA6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DBC32DA6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhCDTbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:31:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44420 "EHLO mail.kernel.org"
+        id S236574AbhCDTbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:31:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236098AbhCDTba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:31:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6479964F5F;
+        id S236055AbhCDTb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 14:31:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7581C64F65;
         Thu,  4 Mar 2021 19:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614886249;
-        bh=KM9+FUcEaPklWZy9Z1oXj8NOVoR5Gwh+Tr9RnmZFoBw=;
+        bh=h9qPn2Kx11kI8Hp/+bCOBWOPD7CmEbnAbLKNeWgZZ/g=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=O1u2CviFfCz5K954vEVSUa7DsOMb49cAan6vr5AefWgNmJOQ9TCTQVnJSKjguzhr2
-         4O4/hFeltpGZAf3b1zkOFv7IsOjhPZd3sLVY8eFsU8RrWhDlcuH5K75aYH1I5bGENC
-         m+/i4LsOh85uorrkS3KcMyAa7QTq1crhLOvM+dceSsTCW71J+exzvhE79JyHFNVdkI
-         6DLN1cwnj30uBFSILI2XAP32ALUgAqvVpEBaQEn+PtLOYjvXVeRYCDZjZEJjGg5Ebb
-         TXl8gtsMTuG01A+ocAb2k9vxhiNQ26b/F7yrwESuLgE89y301G/BuzmpCKDHiTnnfY
-         RgexsUMV46xPQ==
+        b=NtowSFvzeJtS+xVoUuyPIp4gffquDzcQ9qPKmrvuFBHqzlag0FEnqljEVSVqDeisc
+         6QeXIzebgrYvVCHjVtu8gC0GFPyngFSyy6RgceRo/G2RKV1KytqyLbFowe7LcfMKiY
+         xj7vzNc1SapCNk7uil7eiKaJj7I9zJtDNd4kppnFZKV9UHKC1yrFK/7V1aIgBARw+u
+         7KL7oEZVpz2EKoPs/8ORVVU8OxTt7WBO61lEHXZJ7ruZzGEnJdJDm2FABM7tmhV7k6
+         19HTl80xj7obrq7bDnLggfjZYffXC847OAAnDP1B7BBbWO/qpleZgzRzAKAMvi1W7z
+         iP8lKyMkImgZA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4F569609E7;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6B461600DF;
         Thu,  4 Mar 2021 19:30:49 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM changes for 5.12-rc2
+Subject: Re: [GIT PULL] sound fixes for 5.12-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210303151007.383323-1-pbonzini@redhat.com>
-References: <20210303151007.383323-1-pbonzini@redhat.com>
+In-Reply-To: <s5h35xbb648.wl-tiwai@suse.de>
+References: <s5h35xbb648.wl-tiwai@suse.de>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210303151007.383323-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 9e46f6c6c959d9bb45445c2e8f04a75324a0dfd0
+X-PR-Tracked-Message-Id: <s5h35xbb648.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc2
+X-PR-Tracked-Commit-Id: 26af17722a07597d3e556eda92c6fce8d528bc9f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cee407c5cc427a7d9b21ee964fbda613e368bdff
-Message-Id: <161488624926.28500.3551606696689046612.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 43df5242af4ed67e8811257ab1bfe6a07e4a5858
+Message-Id: <161488624943.28500.8177618805608265586.pr-tracker-bot@kernel.org>
 Date:   Thu, 04 Mar 2021 19:30:49 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed,  3 Mar 2021 10:10:07 -0500:
+The pull request you sent on Thu, 04 Mar 2021 10:49:59 +0100:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cee407c5cc427a7d9b21ee964fbda613e368bdff
+https://git.kernel.org/torvalds/c/43df5242af4ed67e8811257ab1bfe6a07e4a5858
 
 Thank you!
 
