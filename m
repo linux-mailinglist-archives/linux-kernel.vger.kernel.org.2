@@ -2,136 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF6F32C4CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F2332C4C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243884AbhCDAR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:17:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47646 "EHLO mail.kernel.org"
+        id S240926AbhCDARR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1391222AbhCDAMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1391322AbhCDAMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:12:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2808E64EFD;
-        Thu,  4 Mar 2021 00:11:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 398EF64EA4;
+        Thu,  4 Mar 2021 00:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614816697;
-        bh=TKqsDjx/j8OKoVI1MdZNosI+1XeHU5vViJP4279S/KM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wfmv3/n9Bl7Q69I9zn45aIZ8SGqjZAbhav9F+NttvQmOGdCE7ZF/SL77VUzwYiwA7
-         FsRL6UZLJXVeT8tAmdCETSAQeWeFIw2O9nsMB0Q752b5+iysbLKWVj/PeN0ccyVIeS
-         CKVUjuwi047Cnl0H7IJRresRpMlNTnXaQ4/1qdlgHPSCXUmTAmJM6a2MI4JGTxmZI4
-         tYyX5iPUzLQPWNEg4ylaFhBW3/W40dfQg2E7AOZyIFdjIRQ5x/Ua31rpozUt/j2cwt
-         xlda0ats/a9IZnumcZZbRVYoXmoLtI4o4ZmNpYt07qY+XSwgkp7Zuw6cgYv6C7URLo
-         vJ9e4Cl8I18ng==
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 6/6] rcuscale: Add kfree_rcu() single-argument scale test
-Date:   Wed,  3 Mar 2021 16:11:34 -0800
-Message-Id: <20210304001134.22977-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210304001044.GA22871@paulmck-ThinkPad-P72>
-References: <20210304001044.GA22871@paulmck-ThinkPad-P72>
+        s=k20201202; t=1614816705;
+        bh=m4L5RvaxaTE08bGOKFwv2wIZz3/lswQliNHK3hL5tcw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J+WyZeDLgVRZjHzQ7sTPh8z/TXwdFp0YZzhgo5zLWMannz5HK5g8qo4OzbD3i0QAB
+         qgdfbUnChZh97AQws6J3pgDvkd5+Eaapq4GI+YmAd4N3iNJPp7LucpdjANZilT71V0
+         A7I3Wg3I8QPnRZ74KZQANunaFqtf7APxYpGoHsjPX1lxXYMCnmewYsLT+jjtr9aIcV
+         5IrAjjJLNg117iSpYIKJ/q8HsENs/IzbJYnY9bJFZ9TiLsdyrhihq7mOFbB2w5U696
+         JJXLgsSo9gfNM2Poew4rsUpVAyKvKjcyXTzpcCRMzKTB8+qO5lBmzsbcOr94TU1Rik
+         VaDRbCa/vjmTA==
+Date:   Wed, 3 Mar 2021 17:11:41 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] kbuild: collect minimum tool versions into
+ scripts/tool-version.sh
+Message-ID: <20210304001141.7lejurony2poqkid@archlinux-ax161>
+References: <20210303183333.46543-1-masahiroy@kernel.org>
+ <20210303183333.46543-2-masahiroy@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303183333.46543-2-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+On Thu, Mar 04, 2021 at 03:33:31AM +0900, Masahiro Yamada wrote:
+> The kernel build uses various tools, many of which are provided by the
+> same software suite, for example, LLVM and Binutils.
+> 
+> When we raise the minimal version of Clang/LLVM, we need to update
+> clang_min_version in scripts/cc-version.sh and also lld_min_version in
+> scripts/ld-version.sh.
+> 
+> In fact, Kbuild can handle CC=clang and LD=ld.lld independently, and we
+> could manage their minimal version separately, but it does not make
+> much sense.
+> 
+> Make scripts/tool-version.sh a central place of minimum tool versions
+> so that we do not need to touch multiple files.
+> 
+> This script prints the minimal version of the given tool.
+> 
+>   $ scripts/tool-version.sh gcc
+>   4.9.0
+>   $ scripts/tool-version.sh llvm
+>   10.0.1
+>   $ scripts/tool-version.sh binutils
+>   2.23.0
+>   $ scripts/tool-version.sh foo
+>   foo: unknown tool
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-The single-argument variant of kfree_rcu() is currently not
-tested by any member of the rcutoture test suite.  This
-commit therefore adds rcuscale code to test it.  This
-testing is controlled by two new boolean module parameters,
-kfree_rcu_test_single and kfree_rcu_test_double.  If one
-is set and the other not, only the corresponding variant
-is tested, otherwise both are tested, with the variant to
-be tested determined randomly on each invocation.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Both of these module parameters are initialized to false,
-so setting either to true will test only that variant.
+Two comments below.
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/admin-guide/kernel-parameters.txt | 12 ++++++++++++
- kernel/rcu/rcuscale.c                           | 15 ++++++++++++++-
- 2 files changed, 26 insertions(+), 1 deletion(-)
+> ---
+> 
+>  scripts/cc-version.sh   | 20 +++++---------------
+>  scripts/ld-version.sh   | 11 ++++-------
+>  scripts/tool-version.sh | 27 +++++++++++++++++++++++++++
+>  3 files changed, 36 insertions(+), 22 deletions(-)
+>  create mode 100755 scripts/tool-version.sh
+> 
+> diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
+> index 3f2ee885b116..4772f1ef9cac 100755
+> --- a/scripts/cc-version.sh
+> +++ b/scripts/cc-version.sh
+> @@ -6,18 +6,6 @@
+>  
+>  set -e
+>  
+> -# When you raise the minimum compiler version, please update
+> -# Documentation/process/changes.rst as well.
+> -gcc_min_version=4.9.0
+> -clang_min_version=10.0.1
+> -icc_min_version=16.0.3 # temporary
+> -
+> -# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
+> -# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
+> -if [ "$SRCARCH" = arm64 ]; then
+> -	gcc_min_version=5.1.0
+> -fi
+> -
+>  # Print the compiler name and some version components.
+>  get_compiler_info()
+>  {
+> @@ -48,18 +36,20 @@ set -- $(get_compiler_info "$@")
+>  
+>  name=$1
+>  
+> +tool_version=$(dirname $0)/tool-version.sh
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0454572..84fce41 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4259,6 +4259,18 @@
- 	rcuscale.kfree_rcu_test= [KNL]
- 			Set to measure performance of kfree_rcu() flooding.
- 
-+	rcuscale.kfree_rcu_test_double= [KNL]
-+			Test the double-argument variant of kfree_rcu().
-+			If this parameter has the same value as
-+			rcuscale.kfree_rcu_test_single, both the single-
-+			and double-argument variants are tested.
-+
-+	rcuscale.kfree_rcu_test_single= [KNL]
-+			Test the single-argument variant of kfree_rcu().
-+			If this parameter has the same value as
-+			rcuscale.kfree_rcu_test_double, both the single-
-+			and double-argument variants are tested.
-+
- 	rcuscale.kfree_nthreads= [KNL]
- 			The number of threads running loops of kfree_rcu().
- 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 06491d5..dca51fe 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
- torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
- torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
- torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-+torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
-+torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
- 
- static struct task_struct **kfree_reader_tasks;
- static int kfree_nrealthreads;
-@@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
- 	struct kfree_obj *alloc_ptr;
- 	u64 start_time, end_time;
- 	long long mem_begin, mem_during = 0;
-+	bool kfree_rcu_test_both;
-+	DEFINE_TORTURE_RANDOM(tr);
- 
- 	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
- 	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
- 	set_user_nice(current, MAX_NICE);
-+	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
- 
- 	start_time = ktime_get_mono_fast_ns();
- 
-@@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
- 			if (!alloc_ptr)
- 				return -ENOMEM;
- 
--			kfree_rcu(alloc_ptr, rh);
-+			// By default kfree_rcu_test_single and kfree_rcu_test_double are
-+			// initialized to false. If both have the same value (false or true)
-+			// both are randomly tested, otherwise only the one with value true
-+			// is tested.
-+			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
-+					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
-+				kfree_rcu(alloc_ptr);
-+			else
-+				kfree_rcu(alloc_ptr, rh);
- 		}
- 
- 		cond_resched();
--- 
-2.9.5
+I realize these scripts are currently called by their full path but is
+it worth making this '$(dirname "$(readlink -f "$0")")' here and in
+ld-version.sh just in case that does not happen?
 
+>  case "$name" in
+>  GCC)
+>  	version=$2.$3.$4
+> -	min_version=$gcc_min_version
+> +	min_version=$($tool_version gcc)
+>  	;;
+>  Clang)
+>  	version=$2.$3.$4
+> -	min_version=$clang_min_version
+> +	min_version=$($tool_version llvm)
+>  	;;
+>  ICC)
+>  	version=$(($2 / 100)).$(($2 % 100)).$3
+> -	min_version=$icc_min_version
+> +	min_version=$($tool_version icc)
+>  	;;
+>  *)
+>  	echo "$orig_args: unknown compiler" >&2
+> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+> index a463273509b5..e824f7675693 100755
+> --- a/scripts/ld-version.sh
+> +++ b/scripts/ld-version.sh
+> @@ -6,11 +6,6 @@
+>  
+>  set -e
+>  
+> -# When you raise the minimum linker version, please update
+> -# Documentation/process/changes.rst as well.
+> -bfd_min_version=2.23.0
+> -lld_min_version=10.0.1
+> -
+>  # Convert the version string x.y.z to a canonical 5 or 6-digit form.
+>  get_canonical_version()
+>  {
+> @@ -35,10 +30,12 @@ set -- $("$@" --version)
+>  IFS=' '
+>  set -- $1
+>  
+> +tool_version=$(dirname $0)/tool-version.sh
+> +
+>  if [ "$1" = GNU -a "$2" = ld ]; then
+>  	shift $(($# - 1))
+>  	version=$1
+> -	min_version=$bfd_min_version
+> +	min_version=$($tool_version binutils)
+>  	name=BFD
+>  	disp_name="GNU ld"
+>  elif [ "$1" = GNU -a "$2" = gold ]; then
+> @@ -46,7 +43,7 @@ elif [ "$1" = GNU -a "$2" = gold ]; then
+>  	exit 1
+>  elif [ "$1" = LLD ]; then
+>  	version=$2
+> -	min_version=$lld_min_version
+> +	min_version=$($tool_version llvm)
+>  	name=LLD
+>  	disp_name=LLD
+>  else
+> diff --git a/scripts/tool-version.sh b/scripts/tool-version.sh
+> new file mode 100755
+> index 000000000000..b4aa27e2c3d3
+> --- /dev/null
+> +++ b/scripts/tool-version.sh
+> @@ -0,0 +1,27 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Print the minimum supported version of the given tool.
+> +
+> +set -e
+> +
+> +# When you raise the minimum version, please update
+> +# Documentation/process/changes.rst as well.
+> +gcc_min_version=4.9.0
+> +llvm_min_version=10.0.1
+> +icc_min_version=16.0.3 # temporary
+> +binutils_min_version=2.23.0
+> +
+> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
+> +# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
+> +if [ "$SRCARCH" = arm64 ]; then
+> +	gcc_min_version=5.1.0
+> +fi
+> +
+> +eval min_version="\$${1}_min_version"
+> +if [ -z "$min_version" ]; then
+> +	echo "$1: unknown tool" >&2
+> +	exit 1
+> +fi
+> +
+> +echo "$min_version"
+> -- 
+> 2.27.0
+> 
+
+Would scripts/tool-version.sh be easier to read and interpret using a
+case statement?
+
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Print the minimum supported version of the given tool.
+# When you raise the minimum version, please update
+# Documentation/process/changes.rst as well.
+
+case "$1" in
+binutils)
+    echo "2.23.0"
+    ;;
+gcc)
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
+    # https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
+    if [ "$SRCARCH" = arm64 ]; then
+        echo "5.1.0"
+    else
+        echo "4.9.0"
+    fi
+    ;;
+icc)
+    # temporary
+    echo "16.0.3"
+    ;;
+llvm)
+    echo "10.0.1"
+    ;;
+*)
+    echo "$1: unknown tool" >&2
+    exit 1
+    ;;
+esac
