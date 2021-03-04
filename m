@@ -2,42 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C549C32C964
+	by mail.lfdr.de (Postfix) with ESMTP id 7513532C963
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1453498AbhCDBHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:07:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
+        id S1453425AbhCDBHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:07:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452905AbhCDA5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:57:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CE3C64E86;
-        Thu,  4 Mar 2021 00:56:30 +0000 (UTC)
+        id S1451635AbhCDA5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:57:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89E9064E7C;
+        Thu,  4 Mar 2021 00:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614819390;
-        bh=HTFsv6Fv1iYZbTyUPYTDVHFZqM3lA61amO6iQi9gLgU=;
+        s=k20201202; t=1614819380;
+        bh=W6uJ0LRqqdSu0y1TNFM4Cx4MwH09KexgWtJhcfuKeUc=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=RmOiUzLtiSBt3o6wiPFTH/7CT6WnBQdjuEL4dQjWNhho1+B5vpNaFuEBU1P6uVTlY
-         jGXkSWC3Ei62k9+vSdzEEYKWn4LRUPvAvZZNmAgWHa3ahVuIShNcjKbkWKStqZ//uI
-         zbCnkL96OGJdTfNcanMJ8tujdTxYJGDmCVzFHL5GNAE4VjAVhxp+VBgNzU7VnkBC53
-         U44g+O0RvJ6s3nEao8PxuCphPWOB1GP8HQyz8wzILRFQ3vCkZuxpaFyjfPCbDklEXx
-         qvKYf4snK+6fjxHfF5zd6r7R0BAkXs7xGX0p0Ge4hO99r20Z6SImNUx0UVSKElmqcv
-         mIILruaj7Jc0A==
+        b=jxHEpJbasDjsC7LnOAP+1N8JfdQfyInxClGESqtIUUxSeoBErDdFdTmiOYOZqESrI
+         hSp/2bJVM2zkUD5Rxns26ejmWpPhhObNGiUHFHgOVRaRaaptceLYnAxbeBfPbn+QtU
+         kmwO0aHYGZFOJgxpP8Qvg/+xEm7mDCKRSzbVLPAW1nQ+u9azQxqSu6EOtLyYN8smyS
+         v72YAv7mIiglLDKohcNXEwkeyc43Ii3slzCJrxMmRme0ARmiGVYYAW5++0eq+KFJDw
+         KTQsavmBJ0M1ViV+sUGC+CR27GbSxutO2eOigQJuIfhnfEz0V6Wl6JbxAYqYFlkVXb
+         Ags9Vdv61g8Ow==
 From:   Mark Brown <broonie@kernel.org>
-To:     Colin King <colin.king@canonical.com>,
-        linuxppc-dev@lists.ozlabs.org, Jaroslav Kysela <perex@perex.cz>,
-        alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20210303091835.5024-1-colin.king@canonical.com>
-References: <20210303091835.5024-1-colin.king@canonical.com>
-Subject: Re: [PATCH][next] ASoC: fsl: fsl_easrc: Fix uninitialized variable st2_mem_alloc
-Message-Id: <161481924070.9553.9267870549828564094.b4-ty@kernel.org>
+To:     paul@crapouillou.net, perex@perex.cz, lgirdwood@gmail.com,
+        tiwai@suse.com, Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20210302135630.11456-1-tangbin@cmss.chinamobile.com>
+References: <20210302135630.11456-1-tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH v2] ASoC: codec: Omit superfluous error message in jz4760_codec_probe()
+Message-Id: <161481924070.9553.9652910375356726257.b4-ty@kernel.org>
 Date:   Thu, 04 Mar 2021 00:54:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -46,9 +39,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 3 Mar 2021 09:18:35 +0000, Colin King wrote:
-> A previous cleanup commit removed the ininitialization of st2_mem_alloc.
-> Fix this by restoring the original behaviour by initializing it to zero.
+On Tue, 2 Mar 2021 21:56:30 +0800, Tang Bin wrote:
+> The function devm_platform_ioremap_resource has already contained
+> error message, so remove the redundant dev_err here.
 
 Applied to
 
@@ -56,8 +49,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: fsl_easrc: Fix uninitialized variable st2_mem_alloc
-      commit: 84e4eb57ed620adc0371579a5662c4924a72a306
+[1/1] ASoC: codec: Omit superfluous error message in jz4760_codec_probe()
+      commit: 046c4e329066c50ff3ffd174ab95a0ac638807b4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
