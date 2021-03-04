@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C83A32CABF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C893B32CABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhCDDOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232220AbhCDDOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232142AbhCDDOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 3 Mar 2021 22:14:06 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1353C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 19:13:25 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 192so10888846pfv.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 19:13:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ihoKSZ2JtK+MDtefdQWwboq2xXWO3Hg5YVvclpQVx5g=;
-        b=P1RKrCmcyt72RM+mT5U3wv+Y6ZCAlh1TDPusj76xHpMxld6aqdApN0VbV6bdw1UOTm
-         RwOKeE1skOWwGJn3D0e58HcwuqTf3nX2MbV9WtlXH55e++I8cFj4CvqjnCZ2AAbYMd00
-         MzGMed8W5X6pfJFE0kHgF3lbvu4E0N1KmycLLuas+Qe9Jv8mCzS8fTdSHoulSI+FHp4h
-         rygNL3TCbzSo8MlPG232oDXtcw4aetTXMzFRpPpJNdeDfXOAVD8LZUKtYjqCRye7uQCy
-         glpyo58HUH7nytBHPr3kB90vcgdxNIV+bYTIzSWTsNjc8D2wXTUSC9OvwkJMcOlDlVg3
-         S5Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ihoKSZ2JtK+MDtefdQWwboq2xXWO3Hg5YVvclpQVx5g=;
-        b=mwr0+hU/wmOch1l9XvWFDcMMCHALl37xCQ1y5xKyouFb01hLhdTOGccynZrWbdFTSJ
-         wC3TM/9J9geD+M1vAPkjJRCPskvLi5krRSVUTBmATuAvkSynbCT8nlDjNyAId9Llpzby
-         bhTWO+0ikeX0HC/3szP8Kv8oZCaCmmjj14RiuZHa8NfG3RiJ9nG1hnq9+bMkiSwVsj2Q
-         drMrKPA5BdXi7je0UnWodQxZJNH14fvKewuE9GFmEosgV+DdqVMvXNgvh7TYLWvmFqs3
-         LT/wuRuwSYGqQucni2MSzqWsLzwHdEFnwg+lMZHY4Yjes0W/0aJ18JJrptkVc15dF/hn
-         Gt4w==
-X-Gm-Message-State: AOAM533sDgoAOkx+VXCStZXGcBcgjkkYiwUydTx7aja1WtmL/qeDdNzc
-        afyhx217GmfhRcyY+9tUUW8=
-X-Google-Smtp-Source: ABdhPJxRoYgeG9aLI7U1DV8vNSoXvmH+4j6ry8B4mBA8KTEj9Gza8qAiTHGa1ohkLtxDB9OAhWWRug==
-X-Received: by 2002:aa7:93af:0:b029:1ef:1bb9:b1a1 with SMTP id x15-20020aa793af0000b02901ef1bb9b1a1mr1078028pff.49.1614827605544;
-        Wed, 03 Mar 2021 19:13:25 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id 192sm23447754pfx.193.2021.03.03.19.13.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 19:13:25 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        christophe.leroy@csgroup.eu, zhang.yunkai@zte.com.cn,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arch/powerpc/include:fix misspellings in tlbflush.h
-Date:   Wed,  3 Mar 2021 19:13:18 -0800
-Message-Id: <20210304031318.188447-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+Received: from netrider.rowland.org ([192.131.102.5]:57049 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232255AbhCDDOD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:14:03 -0500
+Received: (qmail 1595805 invoked by uid 1000); 3 Mar 2021 22:13:22 -0500
+Date:   Wed, 3 Mar 2021 22:13:22 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210304031322.GA1594980@rowland.harvard.edu>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+ <YEA3RwYixQPt6gul@boqun-archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEA3RwYixQPt6gul@boqun-archlinux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Thu, Mar 04, 2021 at 09:26:31AM +0800, Boqun Feng wrote:
+> On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
 
-Some typos are found out.The information at the end of the file
-does not match the beginning.
+> > Which brings us back to the case of the
+> > 
+> > 	dep ; rfi
+> > 
+> > dependency relation, where the accesses in the middle are plain and 
+> > non-racy.  Should the LKMM be changed to allow this?
+> > 
+> 
+> For this particular question, do we need to consider code as the follow?
+> 
+> 	r1 = READ_ONCE(x);  // f
+> 	if (r == 1) {
+> 		local_v = &y; // g
+> 		do_something_a();
+> 	}
+> 	else {
+> 		local_v = &y;
+> 		do_something_b();
+> 	}
+> 
+> 	r2 = READ_ONCE(*local_v); // e
+> 
+> , do we have the guarantee that the first READ_ONCE() happens before the
+> second one? Can compiler optimize the code as:
+> 
+> 	r2 = READ_ONCE(y);
+> 	r1 = READ_ONCE(x);
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- arch/powerpc/include/asm/book3s/32/tlbflush.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Well, it can't do that because the compiler isn't allowed to reorder
+volatile accesses (which includes READ_ONCE).  But the compiler could
+do:
 
-diff --git a/arch/powerpc/include/asm/book3s/32/tlbflush.h b/arch/powerpc/include/asm/book3s/32/tlbflush.h
-index d941c06d4f2e..ba1743c52b56 100644
---- a/arch/powerpc/include/asm/book3s/32/tlbflush.h
-+++ b/arch/powerpc/include/asm/book3s/32/tlbflush.h
-@@ -79,4 +79,4 @@ static inline void local_flush_tlb_mm(struct mm_struct *mm)
- 	flush_tlb_mm(mm);
- }
- 
--#endif /* _ASM_POWERPC_TLBFLUSH_H */
-+#endif /* _ASM_POWERPC_BOOK3S_32_TLBFLUSH_H */
--- 
-2.25.1
+	r1 = READ_ONCE(x);
+	r2 = READ_ONCE(y);
 
+> 	if (r == 1) {
+> 		do_something_a();
+> 	}
+> 	else {
+> 		do_something_b();
+> 	}
+> 
+> ? Although we have:
+> 
+> 	f ->dep g ->rfi ->addr e
+
+This would be an example of a problem Paul has described on several
+occasions, where both arms of an "if" statement store the same value
+(in this case to local_v).  This problem arises even when local
+variables are not involved.  For example:
+
+	if (READ_ONCE(x) == 0) {
+		WRITE_ONCE(y, 1);
+		do_a();
+	} else {
+		WRITE_ONCE(y, 1);
+		do_b();
+	}
+
+The compiler can change this to:
+
+	r = READ_ONCE(x);
+	WRITE_ONCE(y, 1);
+	if (r == 0)
+		do_a();
+	else
+		do_b();
+
+thus allowing the marked accesses to be reordered by the CPU and
+breaking the apparent control dependency.
+
+So the answer to your question is: No, we don't have this guarantee,
+but the reason is because of doing the same store in both arms, not
+because of the use of local variables.
+
+Alan
