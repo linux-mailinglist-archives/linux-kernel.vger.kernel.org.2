@@ -2,216 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7A632D7FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D088532D80A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238239AbhCDQnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:43:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S238268AbhCDQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234351AbhCDQnZ (ORCPT
+        with ESMTP id S233320AbhCDQrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:43:25 -0500
+        Thu, 4 Mar 2021 11:47:17 -0500
 Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E05C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:42:45 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id r5so19318656pfh.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:42:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14221C061574;
+        Thu,  4 Mar 2021 08:46:37 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id 192so12334849pfv.0;
+        Thu, 04 Mar 2021 08:46:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxMFtpQXBw8+Teasy1N+8sAYQpWswbzlBxa6vG+wy8E=;
-        b=P8VyWheessx6KTbE4i7UGhVaOjZhuvD88bWMyUXOqoCRgF9kaNs3dsLa5n/3xCmYR9
-         tbNfn+L5JCnN6ZPLKHL4cZjdiawIrwGkAD4Q91UEuSgJLXuqtggozjKE5cXHH4z/uwt9
-         Yk3jVYtvFfSZf5XclgoKPk0XHI82vJUl+9DBKlrR6zrXi33Sn3t54L4h2vMfJ6qfWveA
-         Egf7V/DK3FDqrWcOvBShodrbVMxeRi6MR8vziSx+sDn/65QaS3FVsue/vcpNvHRYhwaM
-         WJdpscqGQyeg0GiYYkxKMywEaA2qKqZDxlCE7kKQIZF+xk0YZZlf42jnk9IV3hxZ9qbq
-         soHw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6Rk2foZ0joo8zW1+GRn0pyh0ek8eq+0AnIdr4tRBx58=;
+        b=AgCwHqQwPe61JjaEYkIGwVPz43Ic9LhNEfkOl9tMNTxbrjcVnLiijqY5xGshch1FuF
+         oTNvjemGzV6/o6gUkeMCAGtxxbAShWKHi4Z3pecR0ufNL4GB2dGUUwsl2KGZdL9LyGm7
+         WwzNN/VxcP2cjXY/Noq9PGApkA7bgOFd7CgRR2qWQPNyIDaqAae6sXImS5AoNsF+kVRg
+         MwwJoRA4g1c2r3IsuOkoy2JZMCDRKoITolaChCaDRTBk6lnH7UVg48em+N9eidk311KP
+         1MT7kLOu/VF7ZCaxnn5JNJzRvH5oW9pjKAgTfDgXCdbRS2FdZcY7WJumsYrgzYCpXSAB
+         Faug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxMFtpQXBw8+Teasy1N+8sAYQpWswbzlBxa6vG+wy8E=;
-        b=JZpPHT4sa7dwCERmn2l34jdNwcSicEDkCX8vwJdT3XgAEZyJ3dhdeGUXyiYFYuwB0H
-         3pMz6/rifUXGoq1fQMwiEDPSk2gwdlVtsIoyZF9MDVL6ZnQGJLwX2av1vnfKjBFDfZJS
-         Oq5SZ8fFpIFYYk4xryCubpVUY/oTyVEjtMZddAroQgJleH73OF9kEJjkE4op+1VCHQA3
-         TtusuL/jt9dS0N+XBeGgy0qO2XcZY7onbMvJHnvAax/tv+c6nRpzp0n3PuDr6H1kH/hq
-         DFNxrfyQD4MIUqBu9ToCb945oQAOhvFYFdL9CYBfRrR8r3MuEanFenEHk5EU9/5y7TfH
-         C3kg==
-X-Gm-Message-State: AOAM533sQ2sxHXa+4v69kGugkQJXanw+av0y6j5yDrJB2ZSWT3WxHWWo
-        PmHFsEU8GPprENMym7a3BUs=
-X-Google-Smtp-Source: ABdhPJyWua5tkLF52KUNjTQ3p3oHFXeHG3+coeIgdK99/J9XbzAJkv98YsQfuqfLpbiA9sHIs+E2dQ==
-X-Received: by 2002:a63:1d01:: with SMTP id d1mr4229438pgd.361.1614876165138;
-        Thu, 04 Mar 2021 08:42:45 -0800 (PST)
-Received: from vultr.guest ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id n4sm27881488pfa.188.2021.03.04.08.42.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 08:42:44 -0800 (PST)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v2] perf stat: improve readability of shadow stats
-Date:   Fri,  5 Mar 2021 00:42:35 +0800
-Message-Id: <20210304164235.11384-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6Rk2foZ0joo8zW1+GRn0pyh0ek8eq+0AnIdr4tRBx58=;
+        b=MYODzr+//GdFdMlg5zC78uNfkXRJKCfXjLIpx+f5JnhKJVBVja4OAG2/CfqOPk/noa
+         Jx/p2BsogEdTsubsUdBuXy+ho3KIuE/rcuXD/IP/R7WUa8+qRZb2ky3HLN1NOyCv2z33
+         W9ESNShKMi/WzKePBndhR2aVjoRbOOnIJuIrXXT9duM4sBnZp521DnXUeaTKtSPQcDG0
+         Skens9QKqd6h8m6ZD9Hz+0tEfX+lHZN1TEZcPQW7r8j/rbPDcoxR6bskBzfVh6bLHpZF
+         ySCNiSUuoFlQjAteg03bgiWJEdqcU2CXYbqLK0gdLh/6EV6dlXljZ/qp+2TP7TQkAOiC
+         NC9A==
+X-Gm-Message-State: AOAM5337+oCcfz582wxDUtviSEKe+opV0ooiBSlhjCixvLokKARkx0rz
+        cSXBNKrl93YDg0WVrsIgt6vASv/oU4LqnGyk0+g=
+X-Google-Smtp-Source: ABdhPJyUCKAmwZGFOVWC83aTt17r+nfX1XcVZYzSamHZ4q32ECJlBF9Z+5MGBsJJwBpLYfkwpq4irxO3BAjfg7+P6g0=
+X-Received: by 2002:a65:5ac9:: with SMTP id d9mr4343451pgt.74.1614876396217;
+ Thu, 04 Mar 2021 08:46:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210304085710.7128-1-noltari@gmail.com> <20210304085710.7128-3-noltari@gmail.com>
+ <CAHp75VcpGNaQDR5puEX3nTGOQC0vHNjCje3MLLynoBHdjEi0_w@mail.gmail.com>
+ <9A8A595D-2556-4493-AA96-41A3C3E39292@gmail.com> <CAHp75VdJGh=Vy=kJr2CemPbSa-amYykNoYd0-jaz0utdC_bkbg@mail.gmail.com>
+ <0504ADC2-0DD5-4E9E-B7DF-353B4EBAB6B4@gmail.com> <CAHp75VdkCxBeh_cWwN9dKRpEMntMp22yVjWRCuYumhMzrWi+SA@mail.gmail.com>
+ <68F60F3F-33DD-4183-84F9-8D62BFA8A8F1@gmail.com> <CAHp75VdJ0=EewuHW2Ja5MQ=e9q0njGun8iN5Q6JWUxe=CLB=MQ@mail.gmail.com>
+In-Reply-To: <CAHp75VdJ0=EewuHW2Ja5MQ=e9q0njGun8iN5Q6JWUxe=CLB=MQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 4 Mar 2021 18:46:19 +0200
+Message-ID: <CAHp75Ve9uW6+kpNmsG2BaaOymoAKXPdebNCfRnxUpAZoQnfZ0Q@mail.gmail.com>
+Subject: Re: [PATCH v4 02/15] gpio: regmap: set gpio_chip of_node
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds function convert_unit_double() and selects appropriate
-unit for shadow stats between K/M/G.
+On Thu, Mar 4, 2021 at 6:33 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Thu, Mar 4, 2021 at 5:44 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@=
+gmail.com> wrote:
 
-$ sudo ./perf stat -a -- sleep 1
+Let me summarize what we can do this independently on any of my
+patches and be okay with.
 
-Before: Unit 'M' is selected even the number is very small.
- Performance counter stats for 'system wide':
+In the regmap GPIO configuration you supply struct fwnode_handle *fwnode.
+You can you fwnode API in the actual GPIO controller driver.
+Inside gpio-regmap simply do this for now
 
-          4,003.06 msec cpu-clock                 #    3.998 CPUs utilized
-            16,179      context-switches          #    0.004 M/sec
-               161      cpu-migrations            #    0.040 K/sec
-             4,699      page-faults               #    0.001 M/sec
-     6,135,801,925      cycles                    #    1.533 GHz                      (83.21%)
-     5,783,308,491      stalled-cycles-frontend   #   94.26% frontend cycles idle     (83.21%)
-     4,543,694,050      stalled-cycles-backend    #   74.05% backend cycles idle      (66.49%)
-     4,720,130,587      instructions              #    0.77  insn per cycle
-                                                  #    1.23  stalled cycles per insn  (83.28%)
-       753,848,078      branches                  #  188.318 M/sec                    (83.61%)
-        37,457,747      branch-misses             #    4.97% of all branches          (83.48%)
+gc->of_node =3D to_of_node(config->fwnode);
 
-       1.001283725 seconds time elapsed
+The last part is an amendment I have told about, but it can be done
+later on by switching the entire GPIO chip to use fwnode instead of
+of_node.
 
-After:
-$ sudo ./perf stat -a -- sleep 2
-
- Performance counter stats for 'system wide':
-
-          8,005.52 msec cpu-clock                 #    3.999 CPUs utilized
-            10,715      context-switches          #    1.338 K/sec
-               785      cpu-migrations            #   98.057 /sec
-               102      page-faults               #   12.741 /sec
-     1,948,202,279      cycles                    #    0.243 GHz
-     2,816,470,932      stalled-cycles-frontend   #  144.57% frontend cycles idle
-     2,661,172,207      stalled-cycles-backend    #  136.60% backend cycles idle
-       464,172,105      instructions              #    0.24  insn per cycle
-                                                  #    6.07  stalled cycles per insn
-        91,567,662      branches                  #   11.438 M/sec
-         7,756,054      branch-misses             #    8.47% of all branches
-
-       2.002040043 seconds time elapsed
-
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-
-v2:
-  o do not change 'sec' to 'cpu-sec'.
-  o use convert_unit_double to implement convert_unit.
----
- tools/perf/util/stat-shadow.c | 16 +++++++---------
- tools/perf/util/units.c       | 21 ++++++++++++++-------
- tools/perf/util/units.h       |  1 +
- 3 files changed, 22 insertions(+), 16 deletions(-)
-
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index 6ccf21a72f06..3f800e71126f 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -9,6 +9,7 @@
- #include "expr.h"
- #include "metricgroup.h"
- #include "cgroup.h"
-+#include "units.h"
- #include <linux/zalloc.h>
- 
- /*
-@@ -1270,18 +1271,15 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
- 		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
- 				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
- 	} else if (runtime_stat_n(st, STAT_NSECS, cpu, &rsd) != 0) {
--		char unit = 'M';
--		char unit_buf[10];
-+		char unit = ' ';
-+		char unit_buf[10] = "/sec";
- 
- 		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
--
- 		if (total)
--			ratio = 1000.0 * avg / total;
--		if (ratio < 0.001) {
--			ratio *= 1000;
--			unit = 'K';
--		}
--		snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
-+			ratio = convert_unit_double(1000000000.0 * avg / total, &unit);
-+
-+		if (unit != ' ')
-+			snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
- 		print_metric(config, ctxp, NULL, "%8.3f", unit_buf, ratio);
- 	} else if (perf_stat_evsel__is(evsel, SMI_NUM)) {
- 		print_smi_cost(config, cpu, out, st, &rsd);
-diff --git a/tools/perf/util/units.c b/tools/perf/util/units.c
-index a46762aec4c9..32c39cfe209b 100644
---- a/tools/perf/util/units.c
-+++ b/tools/perf/util/units.c
-@@ -33,28 +33,35 @@ unsigned long parse_tag_value(const char *str, struct parse_tag *tags)
- 	return (unsigned long) -1;
- }
- 
--unsigned long convert_unit(unsigned long value, char *unit)
-+double convert_unit_double(double value, char *unit)
- {
- 	*unit = ' ';
- 
--	if (value > 1000) {
--		value /= 1000;
-+	if (value > 1000.0) {
-+		value /= 1000.0;
- 		*unit = 'K';
- 	}
- 
--	if (value > 1000) {
--		value /= 1000;
-+	if (value > 1000.0) {
-+		value /= 1000.0;
- 		*unit = 'M';
- 	}
- 
--	if (value > 1000) {
--		value /= 1000;
-+	if (value > 1000.0) {
-+		value /= 1000.0;
- 		*unit = 'G';
- 	}
- 
- 	return value;
- }
- 
-+unsigned long convert_unit(unsigned long value, char *unit)
-+{
-+	double v = convert_unit_double((double)value, unit);
-+
-+	return (unsigned long)v;
-+}
-+
- int unit_number__scnprintf(char *buf, size_t size, u64 n)
- {
- 	char unit[4] = "BKMG";
-diff --git a/tools/perf/util/units.h b/tools/perf/util/units.h
-index 99263b6a23f7..ea43e74e3240 100644
---- a/tools/perf/util/units.h
-+++ b/tools/perf/util/units.h
-@@ -12,6 +12,7 @@ struct parse_tag {
- 
- unsigned long parse_tag_value(const char *str, struct parse_tag *tags);
- 
-+double convert_unit_double(double value, char *unit);
- unsigned long convert_unit(unsigned long value, char *unit);
- int unit_number__scnprintf(char *buf, size_t size, u64 n);
- 
--- 
-2.25.1
-
+--=20
+With Best Regards,
+Andy Shevchenko
