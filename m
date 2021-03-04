@@ -2,184 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EB932D01C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44DA32D019
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237993AbhCDJwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:52:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32908 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237843AbhCDJvk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:51:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614851415;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uylkGuKA1QvnEOMM2uLHXNkUqdOnowekW+lRTSaD2mY=;
-        b=absLI6bf9SfKdo3RIsZTPVQ9fZIxWhV8vN8rnC3+MmjdDO0VJqA5FV6kn2WzQN9FPE+Gb5
-        6CHfqf2l+avv/dOWk+sFMjxBSysCVaR+YDTKyTONbPFiPsOn0463lzu+6rYD+UKaZ8PK/I
-        m6CR0xkarUXfMF0LgHo9lwlIo0fsces=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-zqfZQ3jXP_GE1jLOmywo4g-1; Thu, 04 Mar 2021 04:50:13 -0500
-X-MC-Unique: zqfZQ3jXP_GE1jLOmywo4g-1
-Received: by mail-ej1-f71.google.com with SMTP id r26so6358682eja.22
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:50:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=uylkGuKA1QvnEOMM2uLHXNkUqdOnowekW+lRTSaD2mY=;
-        b=oDIeDh1+5g8U0mx0kCcgiA3CkQiR5ao9YeYHZ3letNePHvhuA8KiXw42MmWxA0wLZa
-         ruizIiR1HN3fC/vPTIbl0chGfIDtM8b9ndrLRbJ+b78q3sVgDO2z0gpo+KdzZvIyg5x4
-         sgonWRddxp4UMalVPI/WBSyLqG2xHOdefgVLdm+Z8BMXiqDgcHi8UoaKpCJhxtGJYxig
-         7IPvFz0gAL8polat8Bz4kMGsm87vD0a2UW+Fibhajv6WIExjide5UVjxABUEu2ibzv4t
-         pme9l9ZVShvk63QuXdKmpUjLTcXmZ6iG4b9L81zHZAlAnfsCHZwk8eGKYP6dBkqYZJrc
-         s5vw==
-X-Gm-Message-State: AOAM532NG5lNnR0igmx2fckjiSmVdEkl0krKVkDFY6PvIR9V9/Ya5L+y
-        Z41vhoLluCpWVKv9pNBYe1CQjRStYnRClWMJPgySbMdsHj+Wl2M7Xcn4vtRvtBbydOkKCbRBTsA
-        j8snzhdXNPA6S+sbAl9uUFPkAIw70MF6ZtcnVygXFAYIqj/qOtpoNRF6orAg1Txa/Z+3m1FNB8V
-        94
-X-Received: by 2002:a17:906:12db:: with SMTP id l27mr3221571ejb.500.1614851412324;
-        Thu, 04 Mar 2021 01:50:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzujsuOWwrj8tpClxPDBcVEpxWrvBUd+CkRq1WJICydmv3lTZrtBjJJnDKrio/zc5v49Uj+8A==
-X-Received: by 2002:a17:906:12db:: with SMTP id l27mr3221555ejb.500.1614851412049;
-        Thu, 04 Mar 2021 01:50:12 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id pg2sm10031493ejb.49.2021.03.04.01.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 01:50:11 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] KVM: nVMX: Sync L2 guest CET states between L1/L2
-In-Reply-To: <20210304060740.11339-2-weijiang.yang@intel.com>
-References: <20210304060740.11339-1-weijiang.yang@intel.com>
- <20210304060740.11339-2-weijiang.yang@intel.com>
-Date:   Thu, 04 Mar 2021 10:50:10 +0100
-Message-ID: <87k0qnckod.fsf@vitty.brq.redhat.com>
+        id S237842AbhCDJwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:52:00 -0500
+Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:63008
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237836AbhCDJv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:51:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cQTr9LWcXgMFegrZ3FSzK+mx8FKJHjLFaJYmLprarxXXkwFWhOI/XG2B+p4+6kpYxacXbQDXQENKuXAYrJI3U2ClvmC5UabM67tXZDN5U+S0vVoNXvVZXeGKWN/Px8CvtDLis0n4/j5cwzCeGS8P/eT4FA8Lt9CsdZ/4jfKMBmt73ufeqCjDVlzXpVZs+SHDZBUHsyIIyP0c2PuJ+IcYiXV2lWalFZnkpFYur8gny4AxbLH57qRT71nYfj5HrAIxKhUDqamcHe+7v05yU7kC08Pbboso+2ejJ6rMxNCvOMNMmVuAO+aEIPCUPmySnFt2EtO0oeROMt3KJlTB89kFmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oe9+YHDSONBuwscslnQwC03XF5B2v38Pohg5j/8+8sc=;
+ b=TdEqcbAEnL72u2g51G1gmwMD9jnAUFGWWjepRdXKazkk0yduYrUhLbQkxYgsLMw082jWb+YV+GEkU4xG3RXD0h7vcQ63PhszD7dr9JwFS3sWel3Gp/Ju5/DtylDcut2Lyvnm3nD+KhAxvlrXYzBH10vVh/YqeXrsJOEhvxDas9tdJZ34bWa+NzG4PD7CoOePhPrve1kzK7CEPyYLSCi5TpBTRsx8IfEK7htcKpG07kAiu2TMLR3gA960hWwA7YHCRt78ARSroO0smHPKV2uVhFZwNVp2b10Hy9iqVDBKa2qp/TW4F+9xp/dr5eTJHlEL7pi60VPU4iu44kqHm8A2Hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oe9+YHDSONBuwscslnQwC03XF5B2v38Pohg5j/8+8sc=;
+ b=Eg/yvP6gY/DfJRyEt40po4bFydTAuaQps4Gmm/Q/dHAU1MU84HRw8RK+Lzm8mTt/bxoTQEsSQ6sSo+TOfFzYgvfMbS4iSGm/cM4siM0BjzRIJx5q3HRgF4kdBYL2d0oPqs4zDg5ku09SW4f8Cjmy9iurrSYD0AbYlGfUtq3xshI=
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ (2603:10b6:910:45::21) by CY4PR10MB1480.namprd10.prod.outlook.com
+ (2603:10b6:903:28::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.26; Thu, 4 Mar
+ 2021 09:50:36 +0000
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79]) by CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79%5]) with mapi id 15.20.3912.021; Thu, 4 Mar 2021
+ 09:50:36 +0000
+From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To:     "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+        "tiwai@suse.com" <tiwai@suse.com>
+CC:     "crwulff@gmail.com" <crwulff@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "dylan_robinson@motu.com" <dylan_robinson@motu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dmitry@d-systems.ee" <dmitry@d-systems.ee>,
+        "livvy@base.nu" <livvy@base.nu>,
+        "joe@perches.com" <joe@perches.com>,
+        "alexander@tsoy.me" <alexander@tsoy.me>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH] ALSA: usb-audio: Disable USB autosuspend properly in
+ setup_disable_autosuspend()
+Thread-Topic: [PATCH] ALSA: usb-audio: Disable USB autosuspend properly in
+ setup_disable_autosuspend()
+Thread-Index: AQHXEK+x7chO7/RMg0++vC8hryQEBqpzlkcA
+Date:   Thu, 4 Mar 2021 09:50:36 +0000
+Message-ID: <1ece75aa13b1ab161473dd153598256e58289dec.camel@infinera.com>
+References: <20210304043419.287191-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210304043419.287191-1-kai.heng.feng@canonical.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.39.2 
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=infinera.com;
+x-originating-ip: [88.131.87.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3c2f14a4-f35a-462f-47b2-08d8def2f64b
+x-ms-traffictypediagnostic: CY4PR10MB1480:
+x-microsoft-antispam-prvs: <CY4PR10MB14809C71CA56854B1A47A580F4979@CY4PR10MB1480.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:304;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IFcYHLcMszXZQwRCd/o0X3Vpl4tPuqx7WPk+N7QpTliuwxwUr5bNUcMdbWVStnvf6KiBiTqOOpMjJ8mlmWMvAYqxAD96LROTC1NqmT9FGYjS0TFMOa6HpequPflY3xEsb/N0sscqMC4QZal4SrVrDLF5fn9uh9ulf+jGdZ3zxZVOKU2NMmTC/GqsemXVOc0lP2y2Jnx29cNrKtFU8mgbcfKseRLFlf418EhPfzxdfih7hvtkZavqZDDOhG8ZWrgnQxGtO5KDwHeXNU+0yWBRlIZfubCuHQtl5rl4f6Vi1wGXrkmWibWSr2veaWAKvk5aXxGT1lq/F17gns4optKk7LRB/VOPVheTP+kW2X5Sm8k1KoQNC4WYPLoQx/ZYLGRntvm9e9Tbg/030Vqs2pWxS3wDUs1vhiwJkbSuBleFWBXs/EeoCFuUQkeMaljM0Chh01jRXgg9m1ZiFlEWQVp1cqzqYon4b+zlxZgQOkaljWh/uSZbu9j/VAEkjxKBjCAF1Yx0t1yoESHZSnXd7kye2g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(366004)(396003)(376002)(66446008)(66556008)(91956017)(6486002)(26005)(110136005)(4326008)(83380400001)(66476007)(54906003)(316002)(2616005)(64756008)(8936002)(5660300002)(36756003)(76116006)(71200400001)(6512007)(7416002)(6506007)(2906002)(86362001)(66946007)(8676002)(186003)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Z1RnVDN4eXdOQkR6VVN6UHdUTUNYcFdERFlmd2xvS0Y3WlpJSFdBcjNBUXc0?=
+ =?utf-8?B?UjV2K0lvK0tRWjJTZHRlaC9PNzI0aWhmL0pJSWxVa1Z1Vi9hOTZHeWJsaEpS?=
+ =?utf-8?B?bFFCZzJ6c1M2cG1LMUFleGF3NzBXUzFOeTJYbHZxcDRaTHdSSHdjMU82R3Qx?=
+ =?utf-8?B?NVcrbERxOVFoem4xYStEMVRHWnd0YmhkUGRCV0k4QW82Wmg4K3hFVGdsVGtI?=
+ =?utf-8?B?WEZMZnR5VFlvUE9hT2Y2OW93OGRZY0dONWRpM2ova1RlaVlLWUVIeFF4M3dm?=
+ =?utf-8?B?OFA5WFE1Q3VweFhaaGwzUVpVZW9JTTlVQTdYUDYyZDhTSVFtNW1sUmpFMWhv?=
+ =?utf-8?B?MFpxNnE1bEltSWJTZkFVQWlHR0N2N2dDTUNvK3N6V1VrRVA3RUFkdVZSV1o4?=
+ =?utf-8?B?TmZJalBhZXpDalVmQ0M1V2pQVWhnSmpoWGxhaXlyRFBka3VCNkZjam5NS1hh?=
+ =?utf-8?B?bDl1eW9Od3Q4UkxnQXZDU1VmbWNSZWM5UnpmMEZLQ0NpMWRqV0EwbW5RVFk4?=
+ =?utf-8?B?MEowdzlZT1dZTkl0ZjNrWkUwM0lnUXVKVkZNT0pkRWlrZENmU0VLenFyMTZL?=
+ =?utf-8?B?STYzMnlLMzZnWTI2VGMzRUMydEtRdW81NTNNS084eTFtYkdFU3JUbFFRVE1Q?=
+ =?utf-8?B?bEhJUE5zMXRXSmltY2xYSkRDUWNjSzg4ZXlXdm1QVTQxRm1KTk1EUGtpOEtG?=
+ =?utf-8?B?dXdvcHRhY05EY3RVSXlTY2NIdGp6U1JUc0hhSGJOTTQ5bzVyNG9EN09kdGNy?=
+ =?utf-8?B?eFdON0ZhSy9qaXBhNmVuV2F2QWVLaURwMTFuSko1YmxvNTdlZ3ZxS1RCdk40?=
+ =?utf-8?B?L0N1bzFEaTRJa29aWEpTMUpNajNlY29lTXRIbUFMNTB0cFg5ejlhd25YcVI3?=
+ =?utf-8?B?Mm84TXNpR1pDUFJYc3c2QW9vcjVRdlBJRWE3M2dvU3c1WHg5cC9FamdUVjNx?=
+ =?utf-8?B?ZENhSGJySDJaR25pbVJFVUovYUVKR1FFTlZXbm5GUG9UanJIOVZEbVpiNlhU?=
+ =?utf-8?B?UlVpNWZDaU9CNFZ1WXdGTkVLQ0N6K1ROWXYvbFlzRVRFWU83VXVENmxDSjVs?=
+ =?utf-8?B?U3JjLy8xQzdSd2VrRGxiWTl0cEN5c1ZGVDNhNW1Nc1IyYjFlSnF3cVRRMmVZ?=
+ =?utf-8?B?NWRtY2pSTFNaZytZMFBoM1l6SWl2RlQ3bE5MTnhaSEJhZlMvUnVHWUFaVXpq?=
+ =?utf-8?B?dUxaQjAwNmgwNEpyM2dHU3I0WGFLaGt5QUNLTTRMTEl2ZnBwMUw1Q3haSXdC?=
+ =?utf-8?B?N0F3QmEzRjNzUW1lajJ2VzR4a1MwQ1dSN1UyWmdCdWdlc2xIUFJlT0JDTHN2?=
+ =?utf-8?B?UWNuV0lrOXdxZWFtOWRjblF0eVNQd2NFYnlVV242OEVjM2JYcC9RYnVsbmcv?=
+ =?utf-8?B?bW1qSENpQWppdGJKMVEycU9DNVQ2K0o0NTRzcVhwbWVDbWpqUGtyMWl4QUZG?=
+ =?utf-8?B?OUFHVXRCaXJRcU95YWp4UW05UE5nem13VFVRRmVhSXI3WkZkUzZmdUIzelJh?=
+ =?utf-8?B?b1hoN3VqQzNnUjUyc0U0TzlZS3l5STJ1RUJRWFBGbjBJeTdnQkRPWVI5Rm0x?=
+ =?utf-8?B?ZTRZWjZRZVRCb3BoQ2hEWFNiQml6TlZ4cnl2bFFVcEt6dW0wOHFabGdLbWd5?=
+ =?utf-8?B?MndyTHAwdmxUdjNtT1BuTk5LY0Y5THFoMHM1YzFFZFlMa1didXZ2eVQ1M2Zz?=
+ =?utf-8?B?N2E0WFR4ZTlGdHNYN0dzZjhlKzVDMERVRzU5LzM5RlpGYXgxSktJOEF0ZW5m?=
+ =?utf-8?Q?x5OhxXb9/zkGEZZJGxfvUBL0ykiXWZSsPBxBbrE?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <20E75AAD507DF64B99D3D33DAD8D61CF@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c2f14a4-f35a-462f-47b2-08d8def2f64b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2021 09:50:36.7786
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VqmrRzekosWEg0Fz1x3KQnrn09zhPbwoS7TWpm6MOIp3PwNOfscTOGButzzeVrJ8pHiTVPRaGokStDxuEhMXNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1480
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Weijiang <weijiang.yang@intel.com> writes:
-
-> These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
-> read/write them and after they're changed. If CET guest entry-load bit is not
-> set by L1 guest, migrate them to L2 manaully.
->
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/kvm/cpuid.c      |  1 -
->  arch/x86/kvm/vmx/nested.c | 30 ++++++++++++++++++++++++++++++
->  arch/x86/kvm/vmx/vmx.h    |  3 +++
->  3 files changed, 33 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index d191de769093..8692f53b8cd0 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
->  		}
->  		vcpu->arch.guest_supported_xss =
->  			(((u64)best->edx << 32) | best->ecx) & supported_xss;
-> -
-
-Nitpick: stray change?
-
->  	} else {
->  		vcpu->arch.guest_supported_xss = 0;
->  	}
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 9728efd529a1..24cace55e1f9 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2516,6 +2516,13 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
->  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
->  
->  	set_cr4_guest_host_mask(vmx);
-> +
-> +	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
-> +	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
-> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
-> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
-> +	}
->  }
->  
->  /*
-> @@ -2556,6 +2563,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->  	if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
->  	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
->  		vmcs_write64(GUEST_BNDCFGS, vmx->nested.vmcs01_guest_bndcfgs);
-> +
-> +	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
-> +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE))) {
-> +		vmcs_writel(GUEST_SSP, vmx->nested.vmcs01_guest_ssp);
-> +		vmcs_writel(GUEST_S_CET, vmx->nested.vmcs01_guest_s_cet);
-> +		vmcs_writel(GUEST_INTR_SSP_TABLE,
-> +			    vmx->nested.vmcs01_guest_ssp_tbl);
-> +	}
-> +
->  	vmx_set_rflags(vcpu, vmcs12->guest_rflags);
->  
->  	/* EXCEPTION_BITMAP and CR0_GUEST_HOST_MASK should basically be the
-> @@ -3375,6 +3391,12 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->  	if (kvm_mpx_supported() &&
->  		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
->  		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> +	if (kvm_cet_supported() &&
-> +		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> +		vmx->nested.vmcs01_guest_ssp = vmcs_readl(GUEST_SSP);
-> +		vmx->nested.vmcs01_guest_s_cet = vmcs_readl(GUEST_S_CET);
-> +		vmx->nested.vmcs01_guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> +	}
->  
->  	/*
->  	 * Overwrite vmcs01.GUEST_CR3 with L1's CR3 if EPT is disabled *and*
-> @@ -4001,6 +4023,9 @@ static bool is_vmcs12_ext_field(unsigned long field)
->  	case GUEST_IDTR_BASE:
->  	case GUEST_PENDING_DBG_EXCEPTIONS:
->  	case GUEST_BNDCFGS:
-> +	case GUEST_SSP:
-> +	case GUEST_INTR_SSP_TABLE:
-> +	case GUEST_S_CET:
->  		return true;
->  	default:
->  		break;
-> @@ -4052,6 +4077,11 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
->  		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
->  	if (kvm_mpx_supported())
->  		vmcs12->guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> +	if (kvm_cet_supported()) {
-> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
-> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
-> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> +	}
->  
->  	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
->  }
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 9d3a557949ac..36dc4fdb0909 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -155,6 +155,9 @@ struct nested_vmx {
->  	/* to migrate it to L2 if VM_ENTRY_LOAD_DEBUG_CONTROLS is off */
->  	u64 vmcs01_debugctl;
->  	u64 vmcs01_guest_bndcfgs;
-> +	u64 vmcs01_guest_ssp;
-> +	u64 vmcs01_guest_s_cet;
-> +	u64 vmcs01_guest_ssp_tbl;
->  
->  	/* to migrate it to L1 if L2 writes to L1's CR8 directly */
->  	int l1_tpr_threshold;
-
--- 
-Vitaly
-
+T24gVGh1LCAyMDIxLTAzLTA0IGF0IDEyOjM0ICswODAwLCBLYWktSGVuZyBGZW5nIHdyb3RlOg0K
+PiBSZWFyIGF1ZGlvIG9uIExlbm92byBUaGlua1N0YXRpb24gUDYyMCBzdG9wcyB3b3JraW5nIGFm
+dGVyIGNvbW1pdA0KPiAxOTY1YzQzNjRiZGQgKCJBTFNBOiB1c2ItYXVkaW86IERpc2FibGUgYXV0
+b3N1c3BlbmQgZm9yIExlbm92bw0KPiBUaGlua1N0YXRpb24gUDYyMCIpOg0KPiBbICAgIDYuMDEz
+NTI2XSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIHNuZC11c2ItYXVk
+aW8NCj4gWyAgICA2LjAyMzA2NF0gdXNiIDMtNjogY2Fubm90IGdldCBjdGwgdmFsdWU6IHJlcSA9
+IDB4ODEsIHdWYWx1ZSA9IDB4MTAwLCB3SW5kZXggPSAweDAsIHR5cGUgPSAxDQo+IFsgICAgNi4w
+MjMwODNdIHVzYiAzLTY6IGNhbm5vdCBnZXQgY3RsIHZhbHVlOiByZXEgPSAweDgxLCB3VmFsdWUg
+PSAweDIwMiwgd0luZGV4ID0gMHgwLCB0eXBlID0gNA0KPiBbICAgIDYuMDIzMDkwXSB1c2IgMy02
+OiBjYW5ub3QgZ2V0IGN0bCB2YWx1ZTogcmVxID0gMHg4MSwgd1ZhbHVlID0gMHgxMDAsIHdJbmRl
+eCA9IDB4MCwgdHlwZSA9IDENCj4gWyAgICA2LjAyMzA5OF0gdXNiIDMtNjogY2Fubm90IGdldCBj
+dGwgdmFsdWU6IHJlcSA9IDB4ODEsIHdWYWx1ZSA9IDB4MjAyLCB3SW5kZXggPSAweDAsIHR5cGUg
+PSA0DQo+IFsgICAgNi4wMjMxMDNdIHVzYiAzLTY6IGNhbm5vdCBnZXQgY3RsIHZhbHVlOiByZXEg
+PSAweDgxLCB3VmFsdWUgPSAweDEwMCwgd0luZGV4ID0gMHgwLCB0eXBlID0gMQ0KPiBbICAgIDYu
+MDIzMTEwXSB1c2IgMy02OiBjYW5ub3QgZ2V0IGN0bCB2YWx1ZTogcmVxID0gMHg4MSwgd1ZhbHVl
+ID0gMHgyMDIsIHdJbmRleCA9IDB4MCwgdHlwZSA9IDQNCj4gWyAgICA2LjA0NTg0Nl0gdXNiIDMt
+NjogY2Fubm90IGdldCBjdGwgdmFsdWU6IHJlcSA9IDB4ODEsIHdWYWx1ZSA9IDB4MTAwLCB3SW5k
+ZXggPSAweDAsIHR5cGUgPSAxDQo+IFsgICAgNi4wNDU4NjZdIHVzYiAzLTY6IGNhbm5vdCBnZXQg
+Y3RsIHZhbHVlOiByZXEgPSAweDgxLCB3VmFsdWUgPSAweDIwMiwgd0luZGV4ID0gMHgwLCB0eXBl
+ID0gNA0KPiBbICAgIDYuMDQ1ODc3XSB1c2IgMy02OiBjYW5ub3QgZ2V0IGN0bCB2YWx1ZTogcmVx
+ID0gMHg4MSwgd1ZhbHVlID0gMHgxMDAsIHdJbmRleCA9IDB4MCwgdHlwZSA9IDENCj4gWyAgICA2
+LjA0NTg4Nl0gdXNiIDMtNjogY2Fubm90IGdldCBjdGwgdmFsdWU6IHJlcSA9IDB4ODEsIHdWYWx1
+ZSA9IDB4MjAyLCB3SW5kZXggPSAweDAsIHR5cGUgPSA0DQo+IFsgICAgNi4wNDU4OTRdIHVzYiAz
+LTY6IGNhbm5vdCBnZXQgY3RsIHZhbHVlOiByZXEgPSAweDgxLCB3VmFsdWUgPSAweDEwMCwgd0lu
+ZGV4ID0gMHgwLCB0eXBlID0gMQ0KPiBbICAgIDYuMDQ1OTA4XSB1c2IgMy02OiBjYW5ub3QgZ2V0
+IGN0bCB2YWx1ZTogcmVxID0gMHg4MSwgd1ZhbHVlID0gMHgyMDIsIHdJbmRleCA9IDB4MCwgdHlw
+ZSA9IDQNCj4gDQo+IEkgb3Zlcmxvb2tlZCB0aGUgaXNzdWUgYmVjYXVzZSB3aGVuIEkgd2FzIHdv
+cmtpbmcgb24gdGhlIHNhaWQgY29tbWl0LA0KPiBvbmx5IHRoZSBmcm9udCBhdWRpbyBpcyB0ZXN0
+ZWQuIEFwb2xvZ3kgZm9yIHRoYXQuDQo+IA0KPiBDaGFuZ2luZyBzdXBwb3J0c19hdXRvc3VzcGVu
+ZCBpbiBkcml2ZXIgaXMgdG9vIGxhdGUgZm9yIGRpc2FibGluZw0KPiBhdXRvc3VzcGVuZCwgYmVj
+YXVzZSBpdCB3YXMgYWxyZWFkeSB1c2VkIGJ5IFVTQiBwcm9iZSByb3V0aW5lLCBzbyBpdCBjYW4N
+Cj4gYnJlYWsgdGhlIGJhbGFuY2Ugb24gdGhlIGZvbGxvd2luZyBjb2RlIHRoYXQgZGVwZW5kcyBv
+bg0KPiBzdXBwb3J0c19hdXRvc3VzcGVuZC4NCj4gDQo+IEZpeCBpdCBieSB1c2luZyB1c2JfZGlz
+YWJsZV9hdXRvc3VzcGVuZCgpIGhlbHBlciwgYW5kIGJhbGFuY2UgdGhlDQo+IHN1c3BlbmQgY291
+bnQgaW4gZGlzY29ubmVjdCBjYWxsYmFjay4NCj4gDQo+IEZpeGVzOiAxOTY1YzQzNjRiZGQgKCJB
+TFNBOiB1c2ItYXVkaW86IERpc2FibGUgYXV0b3N1c3BlbmQgZm9yIExlbm92byBUaGlua1N0YXRp
+b24gUDYyMCIpDQo+IFNpZ25lZC1vZmYtYnk6IEthaS1IZW5nIEZlbmcgPGthaS5oZW5nLmZlbmdA
+Y2Fub25pY2FsLmNvbT4NCg0KSSBnb3QgYW4gcmVwb3J0IGZyb20gYSBjby13b3JrZXIgd2hvIGhh
+cyBubyBVU0Igc291bmQgZnJvbSBhIExlbm92byBUaGlua1BhZCBpbiBhIFVsdHJhIERvY2suDQpV
+U0IgSFMgaXMgY29ubmVjdGVkIHRvIERvY2sgVVNCIGphY2suDQpDb3VsZCB0aGlzIGJlIHRoZSBz
+YW1lIHByb2JsZW0/DQoNCiBKb2NrZQ0K
