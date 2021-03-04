@@ -2,199 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D57632D764
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4522932D769
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236425AbhCDQGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:06:16 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:22836 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236376AbhCDQF5 (ORCPT
+        id S236575AbhCDQHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236600AbhCDQGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:05:57 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124Fm8r5009927;
-        Thu, 4 Mar 2021 17:05:03 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=oLvuUpvGKibfsuzVWM/OQOO33y/CmonVA+gnsrS2MG4=;
- b=Md6unwaJjUL5SKH+MULDLNRtU508xa2sJk8MKmA8wZl3GdDQPKJf8dVjTRgI4oVaK2br
- Bu1dC5pUQ9l3Iwo8+sDGld9vXqZJ1reJ2hZhhrtGzHOJrkupOxJm4PpfTXDf4PrQyhcF
- lfsK84OhajBDVSQuSldhZGXk6CBwht5jYv42f7JWL/g6gwPbacupNcxKd7jo/TrbDHqj
- eM5oZRWc3awSx/foeic7NfidrXE7/1eFlZM5X4Qz1XytiYcOJo8yzT2OkdRHUUSdwlHP
- GrsOBMAz+ZNswq9AIxhdUxRP5mKbb2TNIyVFVBt30FBz/5FiBdl4BrUgMOUpclWsGK91 AQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36yfdyge3e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 17:05:03 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DDA3110002A;
-        Thu,  4 Mar 2021 17:05:02 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CF8082073BB;
-        Thu,  4 Mar 2021 17:05:02 +0100 (CET)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Mar 2021 17:05:02
- +0100
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [RESEND PATCH v3 2/2] phy: stm32: register usbphyc as clock provider of ck_usbo_48m clock
-Date:   Thu, 4 Mar 2021 17:04:40 +0100
-Message-ID: <20210304160440.27612-3-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210304160440.27612-1-amelie.delaunay@foss.st.com>
-References: <20210304160440.27612-1-amelie.delaunay@foss.st.com>
+        Thu, 4 Mar 2021 11:06:44 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D301CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:06:03 -0800 (PST)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28] helo=dude02.pengutronix.de.)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lHqUE-0006k0-Eb; Thu, 04 Mar 2021 17:06:02 +0100
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Subject: [PATCH] reset: axs10x: Replace GPLv2 boilerplate/reference with SPDX
+Date:   Thu,  4 Mar 2021 17:06:00 +0100
+Message-Id: <20210304160600.22459-1-p.zabel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-04_05:2021-03-03,2021-03-04 signatures=0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ck_usbo_48m is generated by usbphyc PLL and used by OTG controller
-for Full-Speed use cases with dedicated Full-Speed transceiver.
+reset-axs10x is GPL-2.0-only, add a SPDX-License-Identifier.
 
-ck_usbo_48m is available as soon as the PLL is enabled.
-
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
-No changes in v3.
-Changes in v2:
-- fix COMMON_CLK dependency issue reported by kernel test robot
----
- drivers/phy/st/Kconfig             |  1 +
- drivers/phy/st/phy-stm32-usbphyc.c | 65 ++++++++++++++++++++++++++++++
- 2 files changed, 66 insertions(+)
+ drivers/reset/reset-axs10x.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/phy/st/Kconfig b/drivers/phy/st/Kconfig
-index b32f44ff9033..3fc3d0781fb8 100644
---- a/drivers/phy/st/Kconfig
-+++ b/drivers/phy/st/Kconfig
-@@ -36,6 +36,7 @@ config PHY_STIH407_USB
- config PHY_STM32_USBPHYC
- 	tristate "STMicroelectronics STM32 USB HS PHY Controller driver"
- 	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on COMMON_CLK
- 	select GENERIC_PHY
- 	help
- 	  Enable this to support the High-Speed USB transceivers that are part
-diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index d08fbb180e43..c184f4e34584 100644
---- a/drivers/phy/st/phy-stm32-usbphyc.c
-+++ b/drivers/phy/st/phy-stm32-usbphyc.c
-@@ -7,6 +7,7 @@
+diff --git a/drivers/reset/reset-axs10x.c b/drivers/reset/reset-axs10x.c
+index a854ef41364d..ca78b859936c 100644
+--- a/drivers/reset/reset-axs10x.c
++++ b/drivers/reset/reset-axs10x.c
+@@ -1,11 +1,8 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (C) 2017 Synopsys.
+  *
+  * Synopsys AXS10x reset driver.
+- *
+- * This file is licensed under the terms of the GNU General Public
+- * License version 2. This program is licensed "as is" without any
+- * warranty of any kind, whether express or implied.
   */
- #include <linux/bitfield.h>
- #include <linux/clk.h>
-+#include <linux/clk-provider.h>
- #include <linux/delay.h>
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
-@@ -70,6 +71,7 @@ struct stm32_usbphyc {
- 	struct regulator *vdda1v1;
- 	struct regulator *vdda1v8;
- 	atomic_t n_pll_cons;
-+	struct clk_hw clk48_hw;
- 	int switch_setup;
- };
  
-@@ -295,6 +297,61 @@ static const struct phy_ops stm32_usbphyc_phy_ops = {
- 	.owner = THIS_MODULE,
- };
- 
-+static int stm32_usbphyc_clk48_prepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	return stm32_usbphyc_pll_enable(usbphyc);
-+}
-+
-+static void stm32_usbphyc_clk48_unprepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	stm32_usbphyc_pll_disable(usbphyc);
-+}
-+
-+static unsigned long stm32_usbphyc_clk48_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-+{
-+	return 48000000;
-+}
-+
-+static const struct clk_ops usbphyc_clk48_ops = {
-+	.prepare = stm32_usbphyc_clk48_prepare,
-+	.unprepare = stm32_usbphyc_clk48_unprepare,
-+	.recalc_rate = stm32_usbphyc_clk48_recalc_rate,
-+};
-+
-+static void stm32_usbphyc_clk48_unregister(void *data)
-+{
-+	struct stm32_usbphyc *usbphyc = data;
-+
-+	of_clk_del_provider(usbphyc->dev->of_node);
-+	clk_hw_unregister(&usbphyc->clk48_hw);
-+}
-+
-+static int stm32_usbphyc_clk48_register(struct stm32_usbphyc *usbphyc)
-+{
-+	struct device_node *node = usbphyc->dev->of_node;
-+	struct clk_init_data init = { };
-+	int ret = 0;
-+
-+	init.name = "ck_usbo_48m";
-+	init.ops = &usbphyc_clk48_ops;
-+
-+	usbphyc->clk48_hw.init = &init;
-+
-+	ret = clk_hw_register(usbphyc->dev, &usbphyc->clk48_hw);
-+	if (ret)
-+		return ret;
-+
-+	ret = of_clk_add_hw_provider(node, of_clk_hw_simple_get, &usbphyc->clk48_hw);
-+	if (ret)
-+		clk_hw_unregister(&usbphyc->clk48_hw);
-+
-+	return ret;
-+}
-+
- static void stm32_usbphyc_switch_setup(struct stm32_usbphyc *usbphyc,
- 				       u32 utmi_switch)
- {
-@@ -473,6 +530,12 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
- 		goto clk_disable;
- 	}
- 
-+	ret = stm32_usbphyc_clk48_register(usbphyc);
-+	if (ret) {
-+		dev_err(dev, "failed to register ck_usbo_48m clock: %d\n", ret);
-+		goto clk_disable;
-+	}
-+
- 	version = readl_relaxed(usbphyc->base + STM32_USBPHYC_VERSION);
- 	dev_info(dev, "registered rev:%lu.%lu\n",
- 		 FIELD_GET(MAJREV, version), FIELD_GET(MINREV, version));
-@@ -497,6 +560,8 @@ static int stm32_usbphyc_remove(struct platform_device *pdev)
- 		if (usbphyc->phys[port]->active)
- 			stm32_usbphyc_phy_exit(usbphyc->phys[port]->phy);
- 
-+	stm32_usbphyc_clk48_unregister(usbphyc);
-+
- 	clk_disable_unprepare(usbphyc->clk);
- 
- 	return 0;
+ #include <linux/io.h>
 -- 
-2.17.1
+2.29.2
 
