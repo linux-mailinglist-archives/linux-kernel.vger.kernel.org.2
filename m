@@ -2,203 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6940732DDCE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB1732DDD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbhCDXUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 18:20:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
+        id S233145AbhCDXUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 18:20:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233099AbhCDXUY (ORCPT
+        with ESMTP id S233099AbhCDXUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 18:20:24 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41B2C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 15:20:23 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id y67so487530pfb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 15:20:23 -0800 (PST)
+        Thu, 4 Mar 2021 18:20:33 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE6CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 15:20:32 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id q20so389400pfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 15:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1viYL6LhK+5nIQ13ju++XlarHcY6osyk1cCjbOPG1F0=;
-        b=KcWKRMcTqPHZF1q05Ce0JCzTme39nwPKHDDiT/YIqKCsscOzC9PyUbaxoEvglXFwrK
-         1w32NYPCKD9OTcIgZBeCWhzZDLKez5Sl3ufwPZjZCA9VnxgZhu0jIuSF7RZQwDPMX1lw
-         Z5a47mYCKuV+OVShTvu9KWHrGgTAPKj4pQIvMwsZNm24ziWIXPihJMDYtexedzbB1N5u
-         nyE1nYLI9TW/aaWhK7GA7d3xngcaHhqA/h6acr3mB5GPKA7G2GqQUQQXj+4luvgel37m
-         P4UBL+C8Ll6L9gUFrsn3ZL/qjxkKcuBQ2s/cwt2cj3mDi8uyuMqv3qGrJM83UhMY0Tty
-         Fa4A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BmHuJ6EbKgv6oC/dKNN76FQAZcbaEkgGB9SgRX7z29E=;
+        b=AECHJZxSqvO+H4GKfRfbmYxEEWwhR68+5jgW+7sCDf7jwXzJXGnkkpow7w+vSypoOZ
+         mZxKl1Rxqm1dyKVqStc7s0lW7M5tgeNWs/QnZENt9tDvYo8kMmVqS8h+gl3jrVX8tO+A
+         /c/zigxHkh/9WkLw1nocQtHKi43PAANebC9vo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1viYL6LhK+5nIQ13ju++XlarHcY6osyk1cCjbOPG1F0=;
-        b=r3OWDpgyIdlGMnwc+Drtr5v6oVbcHGs4BlrhS7i3SdP1Hv3J0xGKp+gEV3zlu/nfCZ
-         sy6rD1x/eNxy+i+o+pi+zV+eAvIT8qIkWLpDR011VKEp1oLx+7SeC018diTgKaiT55Y+
-         x51SBGe6SHFQwMxMlJhhsZ6OVrWkP9Iu+UH8Vpld1n13BEr+HdJo+Ikuj48rxFQqywed
-         tNm54PRAm9kGzqGzZB/JxmJeTjMBdmuGYoBghsW/JfKFUC1U2m8Pu46SryvxkICg4CAs
-         HbCADwyauSKWZRQQposQPgfaZqwSTc0MsBb/9Lzr0oQpKt0iavfFuv479FOK5EttwqgQ
-         JHFA==
-X-Gm-Message-State: AOAM532v+3HJdQ7vEBHh0TzDqjn+Nruaze76oHsS6xklp3bAKCgq4SuA
-        4F7GPMxSXgqfiv878Y5gN6eHSTeHXx288A==
-X-Google-Smtp-Source: ABdhPJw2jFY8Rq+iS4tDrmeKtrXjB9IUAoh4ZkSvegh37qen93VKtQdaq2WlbCBS2hJuKS1jzQ4vsA==
-X-Received: by 2002:aa7:8d05:0:b029:1ec:b460:f21d with SMTP id j5-20020aa78d050000b02901ecb460f21dmr6027582pfe.29.1614900023086;
-        Thu, 04 Mar 2021 15:20:23 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id u66sm429290pfc.72.2021.03.04.15.20.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BmHuJ6EbKgv6oC/dKNN76FQAZcbaEkgGB9SgRX7z29E=;
+        b=jc2XuZxyLF0VVqCXvZmYl0HK/K4yTxWBKfE40gv4T4DCJTkJfCf8OPJYBlgGgqOYol
+         wRoSx14b4jYFZZuXE2S675KdKW+Qks70jk4Rg+C0FC3o734zOG/JHpFXDEuH/95tgvjW
+         cYmu1Kh3p1NFsBrqXhhhogY9GhWKf87FPDAII6jjtXlTL+ea63THmyEhglARDyo9I72F
+         rPL5mnwforhnJrUHIfg08NppxbeeTopwZGPBAmfEZKgxFJkp9+g0ek1KlTya7VfNr+7l
+         E8qHr78oyNfgCAWZoPE93oVKn+J0pBCeQBf4fO9YSse1KU2jZPI+51L1ePMHEAJnPklv
+         00lA==
+X-Gm-Message-State: AOAM530OmwdZ8idmMcHOrxUDyVVbCJxMsFT2ch7bt1FLTF0p5qj/hSWs
+        CBJLMTy5v6U0F+pQr+fOlMoyCg==
+X-Google-Smtp-Source: ABdhPJzL95WWM3jJYkOgx7odmGkUkJlPHvcnpsTZPqC6hZXjg6GSAgg8EYiRpn+3ZgM1ClMsY/c5zg==
+X-Received: by 2002:a65:6645:: with SMTP id z5mr5434570pgv.273.1614900032448;
+        Thu, 04 Mar 2021 15:20:32 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d11sm423311pfd.43.2021.03.04.15.20.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 15:20:22 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v8 5/5] dma-buf: system_heap: Add deferred freeing to the system heap
-Date:   Thu,  4 Mar 2021 23:20:11 +0000
-Message-Id: <20210304232011.1479036-6-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210304232011.1479036-1-john.stultz@linaro.org>
-References: <20210304232011.1479036-1-john.stultz@linaro.org>
+        Thu, 04 Mar 2021 15:20:31 -0800 (PST)
+Date:   Thu, 4 Mar 2021 15:20:29 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: rebuild GCC plugins when the compiler is upgraded
+Message-ID: <202103041518.22EB819E@keescook>
+References: <20210304113708.215121-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304113708.215121-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utilize the deferred free helper library in the system heap.
+On Thu, Mar 04, 2021 at 08:37:08PM +0900, Masahiro Yamada wrote:
+> Linus reported a build error due to the GCC plugin incompatibility
+> when the compiler is upgraded. [1]
+> 
+>   cc1: error: incompatible gcc/plugin versions
+>   cc1: error: failed to initialize plugin ./scripts/gcc-plugins/stackleak_plugin.so
+> 
+> GCC plugins are tied to a particular GCC version. So, they must be
+> rebuilt when the compiler is upgraded.
+> 
+> This seems to be a long-standing flaw since the initial support of
+> GCC plugins.
+> 
+> Extend commit 8b59cd81dc5e ("kbuild: ensure full rebuild when the
+> compiler is updated"), so that GCC plugins are covered by the
+> compiler upgrade detection.
+> 
+> [1]: https://lore.kernel.org/lkml/CAHk-=wieoN5ttOy7SnsGwZv+Fni3R6m-Ut=oxih6bbZ28G+4dw@mail.gmail.com/
+> 
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-This provides a nice performance bump and puts the
-system heap performance on par with ION.
+This seems fine to me, but I want to make sure Josh has somewhere to
+actually go with this. Josh, does this get you any closer? It sounds
+like the plugins need to move to another location for packaged kernels?
 
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v2:
-* Rework deferred-free api to use reason enum as suggested by
-  Suren Baghdasaryan
-* Rework for deferred-free api change to use nr_pages rather
-  than size as suggsted by Suren Baghdasaryan
-v8:
-* Reworked to drop buffer zeroing logic, as the drm_page_pool now
-  handles that.
----
- drivers/dma-buf/heaps/Kconfig       |  1 +
- drivers/dma-buf/heaps/system_heap.c | 28 ++++++++++++++++++++++------
- 2 files changed, 23 insertions(+), 6 deletions(-)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
-index 7e28934e0def..10632ccfb4a5 100644
---- a/drivers/dma-buf/heaps/Kconfig
-+++ b/drivers/dma-buf/heaps/Kconfig
-@@ -5,6 +5,7 @@ config DMABUF_HEAPS_SYSTEM
- 	bool "DMA-BUF System Heap"
- 	depends on DMABUF_HEAPS
- 	select DRM_PAGE_POOL
-+	select DMABUF_HEAPS_DEFERRED_FREE
- 	help
- 	  Choose this option to enable the system dmabuf heap. The system heap
- 	  is backed by pages from the buddy allocator. If in doubt, say Y.
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 006271881d85..c753c82fd9f1 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -22,6 +22,7 @@
- #include <linux/vmalloc.h>
- 
- #include <drm/page_pool.h>
-+#include "deferred-free-helper.h"
- 
- static struct dma_heap *sys_heap;
- 
-@@ -33,6 +34,7 @@ struct system_heap_buffer {
- 	struct sg_table sg_table;
- 	int vmap_cnt;
- 	void *vaddr;
-+	struct deferred_freelist_item deferred_free;
- };
- 
- struct dma_heap_attachment {
-@@ -290,27 +292,41 @@ static unsigned long system_heap_free_pages(struct drm_page_pool *pool, struct p
- 	return 1 << pool->order;
- }
- 
--static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+static void system_heap_buf_free(struct deferred_freelist_item *item,
-+				 enum df_reason reason)
- {
--	struct system_heap_buffer *buffer = dmabuf->priv;
-+	struct system_heap_buffer *buffer;
- 	struct sg_table *table;
- 	struct scatterlist *sg;
- 	int i, j;
- 
-+	buffer = container_of(item, struct system_heap_buffer, deferred_free);
- 	table = &buffer->sg_table;
- 	for_each_sg(table->sgl, sg, table->nents, i) {
- 		struct page *page = sg_page(sg);
- 
--		for (j = 0; j < NUM_ORDERS; j++) {
--			if (compound_order(page) == orders[j])
--				break;
-+		if (reason == DF_UNDER_PRESSURE) {
-+			__free_pages(page, compound_order(page));
-+		} else {
-+			for (j = 0; j < NUM_ORDERS; j++) {
-+				if (compound_order(page) == orders[j])
-+					break;
-+			}
-+			drm_page_pool_add(&pools[j], page);
- 		}
--		drm_page_pool_add(&pools[j], page);
- 	}
- 	sg_free_table(table);
- 	kfree(buffer);
- }
- 
-+static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+{
-+	struct system_heap_buffer *buffer = dmabuf->priv;
-+	int npages = PAGE_ALIGN(buffer->len) / PAGE_SIZE;
-+
-+	deferred_free(&buffer->deferred_free, system_heap_buf_free, npages);
-+}
-+
- static const struct dma_buf_ops system_heap_buf_ops = {
- 	.attach = system_heap_attach,
- 	.detach = system_heap_detach,
 -- 
-2.25.1
-
+Kees Cook
