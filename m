@@ -2,154 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1468632CF63
+	by mail.lfdr.de (Postfix) with ESMTP id 60B4C32CF64
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236170AbhCDJL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:11:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
+        id S236663AbhCDJLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:11:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233126AbhCDJLI (ORCPT
+        with ESMTP id S233302AbhCDJLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:11:08 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F29DC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:10:28 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id ci14so28869215ejc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:10:28 -0800 (PST)
+        Thu, 4 Mar 2021 04:11:10 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB57C06175F;
+        Thu,  4 Mar 2021 01:10:29 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id d3so41933300lfg.10;
+        Thu, 04 Mar 2021 01:10:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gynRsFiEHgePHyaarQ8hzDU1xilkr7SD/fM6H3+AlvU=;
-        b=Ubk+98S/cBq11/zbb9HafDOhME3HEcJiiJ9bhN0cmVHvYm+yV1zUxk0XEoHEOILs2U
-         IsQvDjENTdrE5Qd6gE3jWnmlU4Bwz4XdeOL+0PXqWiisZKTwlfjlo3vM3gTcLKsBpWk+
-         Rvg2jE/LhIV2dt4MSiRaFrasfcMztTaMte5s8=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lYt7mYpM9/m04UA7Mdu92MabZprxTpAcM5FOuDuthS4=;
+        b=fmPBN3OVw4OwkdjJx8DpFvbIIja2mK2GdJqOtQW1Ioet6C2AJbxyHtAZ43/5yCOrfX
+         YIhF1TjFDL94mY63OlkM7Tq6ADqjKKprw16c8Rsl1jpf2nBbSqTnFGk2RXPVonxnt9mT
+         fptNyLQvpVUQ/TG+NGemc2z47SIYdWwdjRXzM17FTZhE5A031EofI372xV0+oqP5UZVq
+         nIyNDc0PwajjCfDf0tRpSuO0P0eR5eXRnz3KYdEiM2KwNi0pRoBf5K7MFlmaXIvBjzBt
+         Fbr9yiWSaoKtGJwoFQbveoUS5IWzzmBgTS0OU1XKvhO64UA+q/yHFcctocMAHLsJSuZB
+         DG+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gynRsFiEHgePHyaarQ8hzDU1xilkr7SD/fM6H3+AlvU=;
-        b=qSvzfdiePlj9v6jkinXnkd3aOBkj0xciyS9V00Bz/94Ly0BOWmWERGJzpijzvAyUut
-         jlZVe0z4hLubXxw0M95shGzKTb+5K0yKoPs7EEyGjw3fASr54VoI4BFhvmpz8RV49SZx
-         QR77tGrvQEV40vm052pchYzdTfgbMYEXcPsoWru1ZfLjcBZ+NhGVVE+XE5Vb+DqbfDPs
-         3mW7oCnagVHO44zIRzwuqjK72grznjbgmzhszQBJ2GIQyA9CRBU2kbSVtwYRdz0X939z
-         6iOT9szemJ9KbNiuVZM/Hn/74Ha5Ll4OUT3Ok9cPbOwQueQ7/yQiAiwjqEB9pgh7ynsy
-         ZdYA==
-X-Gm-Message-State: AOAM532KNc8BJ5enl7vPDGzMFUvQdcH0L5z6qOn+vyY74OIQgjKuFXuc
-        IRC3NQbUsmK32ZguYNbXuZicKsT3SoHbVtaThOgBRA==
-X-Google-Smtp-Source: ABdhPJzSTAn6jTvFpWH0XRgSeuhut8parDgXEnI2p1Z+Nx534TlGSdgNeTzbFxrQs/g2tJzgq9KJrXI9ySKVZuruQc4=
-X-Received: by 2002:a17:906:3fc3:: with SMTP id k3mr3172834ejj.522.1614849026928;
- Thu, 04 Mar 2021 01:10:26 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lYt7mYpM9/m04UA7Mdu92MabZprxTpAcM5FOuDuthS4=;
+        b=TdMNexNqEuHK2H5ayU55TCMRLVj/kE8KdYt3/HQiQsf9nUE2bfvdAby1f6MOKWzpGE
+         wj+HjAojFGpFdNIlhCM3C1IfFcCIid2ItVdbrfrenvbEwuEI70QEDOOg5kYsIhZDwXtN
+         l/iYiyimWGiSYEBGq4QtL4HEo3z1anVXLgTiPxnr4AhJy+WaU0oHYft5bciHXArw9HY6
+         M9gKywl8S3rRPASyCjRflPf1PLbBNBxDyGqFQK+I2E+IqIiAs5UD690S0sUDbGyE89bm
+         7lDdYvDCqLTarfeRs54oyRxK2cf6jqGA6q5Hxi44lpyBG5G9xR3SB0wm50GDZYIJfTH9
+         2HxA==
+X-Gm-Message-State: AOAM532ha5sSKb/XyPBJUxwVT3R6uVB+s4n1uvp4a5y+8GxsN76vBxJ6
+        nm957asXoFfQFTetHR16NGE=
+X-Google-Smtp-Source: ABdhPJwlzUi5evrB7tfs/CevoAu3N1l1PJFqqId94eiMubcRbH8Dlr2a1CzIcdo2ScMeyBt/EDehfA==
+X-Received: by 2002:ac2:5232:: with SMTP id i18mr1839362lfl.30.1614849028522;
+        Thu, 04 Mar 2021 01:10:28 -0800 (PST)
+Received: from mobilestation ([95.79.88.254])
+        by smtp.gmail.com with ESMTPSA id e24sm2536883lfn.62.2021.03.04.01.10.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 01:10:28 -0800 (PST)
+Date:   Thu, 4 Mar 2021 12:10:25 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Brad Larson <brad@pensando.io>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
+Message-ID: <20210304091025.ny52qjm7wbfvmjgl@mobilestation>
+References: <20210304034141.7062-1-brad@pensando.io>
+ <20210304034141.7062-2-brad@pensando.io>
+ <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210214175211.105107-1-jagan@amarulasolutions.com>
- <YCpmZWRoiWULiANx@pendragon.ideasonboard.com> <CAMty3ZDt2EDB8E2nNLx_jfqE7-ActVYVoeFo2Eso+nVuUfVL+w@mail.gmail.com>
- <YDZRFeuzsamKyIJo@pendragon.ideasonboard.com> <CAMty3ZBHKzksbrWoWapZb9h4hmbL9Lk1baqS_Lb7WPdmRr2hGQ@mail.gmail.com>
- <YEAUyUsZb+4Oe0Ye@pendragon.ideasonboard.com>
-In-Reply-To: <YEAUyUsZb+4Oe0Ye@pendragon.ideasonboard.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Thu, 4 Mar 2021 14:40:15 +0530
-Message-ID: <CAMty3ZDAz28BWUJRLW0LwmJ5v6dOPZmxRzfzseoQMiMkTVBW6Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: display: bridge: Add bindings for
- Chipone ICN6211
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-amarula <linux-amarula@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Hello Linus,
 
-On Thu, Mar 4, 2021 at 4:29 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Jagan,
->
-> On Wed, Mar 03, 2021 at 08:08:35PM +0530, Jagan Teki wrote:
-> > On Wed, Feb 24, 2021 at 6:44 PM Laurent Pinchart wrote:
-> > > On Wed, Feb 24, 2021 at 06:07:43PM +0530, Jagan Teki wrote:
-> > > > On Mon, Feb 15, 2021 at 5:48 PM Laurent Pinchart wrote:
-> > > > > On Sun, Feb 14, 2021 at 11:22:10PM +0530, Jagan Teki wrote:
-> > > > > > ICN6211 is MIPI-DSI to RGB Convertor bridge from Chipone.
-> > > > > >
-> > > > > > It has a flexible configuration of MIPI DSI signal input and
-> > > > > > produce RGB565, RGB666, RGB888 output format.
-> > > > > >
-> > > > > > Add dt-bingings for it.
-> > > > > >
-> > > > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > > > > > ---
-> > > > > > Changes for v3:
-> > > > > > - updated to new dt-bindings style
-> > > > > >
-> > > > > >  .../display/bridge/chipone,icn6211.yaml       | 90 +++++++++++++++++++
-> > > > > >  1 file changed, 90 insertions(+)
-> > > > > >  create mode 100644 Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
-> > > > > >
-> > > > > > diff --git a/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml b/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..13764f13fe46
-> > > > > > --- /dev/null
-> > > > > > +++ b/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
-> > > > > > @@ -0,0 +1,90 @@
-> > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > +%YAML 1.2
-> > > > > > +---
-> > > > > > +$id: http://devicetree.org/schemas/display/bridge/chipone,icn6211.yaml#
-> > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > +
-> > > > > > +title: Chipone ICN6211 MIPI-DSI to RGB Converter bridge
-> > > > > > +
-> > > > > > +maintainers:
-> > > > > > +  - Jagan Teki <jagan@amarulasolutions.com>
-> > > > > > +
-> > > > > > +description: |
-> > > > > > +  ICN6211 is MIPI-DSI to RGB Convertor bridge from chipone.
-> > > > > > +
-> > > > > > +  It has a flexible configuration of MIPI DSI signal input and
-> > > > > > +  produce RGB565, RGB666, RGB888 output format.
-> > > > >
-> > > > > How does one select between the output formats ? Should the output
-> > > > > connection option be described in the device tree ?
-> > > >
-> > > > I think that is a good option to select output formats via dts. what
-> > > > if it makes it a generic property like data-lanes? since it is common
-> > > > across many other bridges.
-> > >
-> > > Describing the output connection in the device tree sounds like a good
-> > > idea indeed. The bus-width property could be used for this, maybe along
-> > > the lines of
-> > > https://lore.kernel.org/dri-devel/20201013020619.GG3942@pendragon.ideasonboard.com/.
+I started reviewing from the DW APB SPI driver part of this series,
+that's why I suggested to remove the CS callback from there seeing it
+doesn't really differ much from the generic one. But after looking at
+the dts file and in this driver I think that the alterations layout
+needs to be a bit different.
+
+This module looks more like being a part of a SoC System Controller
+seeing it's just a single register. Corresponding pins seem like
+being multiplexed between SPI controller and GPO (being directly driven
+by setting a bit in the corresponding register). See the next comment.
+
+On Thu, Mar 04, 2021 at 09:29:33AM +0100, Linus Walleij wrote:
+> Hi Brad,
+> 
+> thanks for your patch!
+> 
+> On Thu, Mar 4, 2021 at 4:42 AM Brad Larson <brad@pensando.io> wrote:
+> 
+> > This GPIO driver is for the Pensando Elba SoC which
+> > provides control of four chip selects on two SPI busses.
 > >
-> > I have seen an issue by passing bus-width where the same bus-with 24
-> > can use by RGB888 and RGB666 according to
-> > mipi_dsi_pixel_format_to_bpp. Having a default RGB888 format now and
-> > update it when it supports properly, can be a good Idea I thought of.
-> > Let me know if you have any comments?
->
-> I'm fine with hardcoding a default for now. If a given bus wiring (which
-> is described in DT by bus-width) can transport different formats, that's
-> something that should be configured dynamically, either by querying what
-> format a sink (such as a panel) requires, or if both the source and the
-> sink can support different formats, possibly by involving userspace in
-> the selection.
+> > Signed-off-by: Brad Larson <brad@pensando.io>
+> (...)
+> 
+> > +#include <linux/gpio.h>
+> 
+> Use this in new drivers:
+> #include <linux/gpio/driver.h>
+> 
+> > + * pin:             3            2        |       1            0
+> > + * bit:         7------6------5------4----|---3------2------1------0
+> > + *             cs1  cs1_ovr  cs0  cs0_ovr |  cs1  cs1_ovr  cs0  cs0_ovr
+> > + *                        ssi1            |             ssi0
+> > + */
+> > +#define SPICS_PIN_SHIFT(pin)   (2 * (pin))
+> > +#define SPICS_MASK(pin)                (0x3 << SPICS_PIN_SHIFT(pin))
+> > +#define SPICS_SET(pin, val)    ((((val) << 1) | 0x1) << SPICS_PIN_SHIFT(pin))
+> 
 
-Not sure how we can get userspace involvement in DRM here, but if
-source and sink can have different formats then having precedence to
-the source would be a good option as it handles low-level
-configuration for formats.
+> So 2 bits per GPIO line in one register? (Nice doc!)
 
-Look like it is worth trying-feature. Maybe we can come up with some
-RFC and have a discussion.
+I suppose the first bit is the CS-pin-override flag. So when it's set
+the output is directly driven by the second bit, otherwise the
+corresponding DW APB SPI controller drives it. That's how the
+multiplexing is implemented here.
 
-Jagan.
+> 
+> > +struct elba_spics_priv {
+> > +       void __iomem *base;
+> > +       spinlock_t lock;
+> > +       struct gpio_chip chip;
+> > +};
+> > +
+> > +static int elba_spics_get_value(struct gpio_chip *chip, unsigned int pin)
+> > +{
+> > +       return -ENXIO;
+> > +}
+> 
+> Write a comment that the chip only supports output mode,
+> because it repurposes SPI CS pins as generic GPIO out,
+> maybe at the top of the file?
+> 
+
+> I suppose these systems also actually (ab)use the SPI cs
+> for things that are not really SPI CS?
+
+I haven't noticed that in the dts file submitted by Brad. So most
+likely these are just CS pins, which can be either automatically
+driven by the DW APB SPI controller (yeah, DW APB SPI controller
+doesn't provide a way to directly set he native CS value, it
+sets the CS value low automatically when starts SPI xfers) or can be
+manually set low/high by means of that SPI-CS register.
+
+> Because otherwise
+> this could just be part of the SPI driver (native chip select).
+
+That's what I suggested in my comment to the patch
+[PATCH 7/8] arm64: dts: Add Pensando Elba SoC support
+in this series. Although imho it's better to be done by means
+of a System Controller.
+
+-Sergey
+
+> 
+> > +static const struct of_device_id ebla_spics_of_match[] = {
+> > +       { .compatible = "pensando,elba-spics" },
+> 
+> Have you documented this?
+> 
+> Other than that this is a nice and complete driver.
+> 
+> Yours,
+> Linus Walleij
