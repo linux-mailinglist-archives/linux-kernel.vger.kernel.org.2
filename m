@@ -2,73 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B65032CA32
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A1E32CA31
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbhCDBvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:51:38 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13122 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhCDBvW (ORCPT
+        id S232394AbhCDBvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:51:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232032AbhCDBv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:51:22 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DrYgY3pcrz16G7N;
-        Thu,  4 Mar 2021 09:48:57 +0800 (CST)
-Received: from DESKTOP-2DH7KI2.china.huawei.com (10.67.102.237) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Mar 2021 09:50:29 +0800
-From:   Chengsong Ke <kechengsong@huawei.com>
-To:     <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>
-Subject: Re: [v2] ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
-Date:   Thu, 4 Mar 2021 09:50:29 +0800
-Message-ID: <20210304015029.32100-1-kechengsong@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20201223121536.6244-1-kechengsong@huawei.com>
-References: <20201223121536.6244-1-kechengsong@huawei.com>
+        Wed, 3 Mar 2021 20:51:26 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528C9C061756;
+        Wed,  3 Mar 2021 17:50:45 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrYjb2xVfz9s1l;
+        Thu,  4 Mar 2021 12:50:43 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614822643;
+        bh=Qe1m6LyRO0eXSmUZfbrC7b+yJchdnpe8rA3g9XmrT6U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qadgF2ccyXwETzB3+iHz3IgbeCjeKiUGbWM2bGMlOdW6j2/CIfXNOiE6K5YcxZ68B
+         H1ffAAGOVCvDpaVs2sDc1oF4m/Hv816EaUvuLPSjXZyZvlYPOrllcDXogdBmxdRACk
+         TiDgZEaaizylE4OqVmkJBAMuMbzXDymQF08sFrHAvTpUej89vIvsF7oJCsiglC5rtL
+         B9DNvvAU04V5yjlJzxrjAxuXPquhnsMfvUxQy0BXlNU9WB6qhLsjl3Nsfis9fHpkFz
+         /4nLcX/Yc2ncUq9JGcE8L7rXLcXneYMLRWGrrd2sDXhlvEWttKyyiCpf6S0ExJ24+N
+         3xUe7D9GgVofQ==
+Date:   Thu, 4 Mar 2021 12:50:42 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the v4l-dvb tree
+Message-ID: <20210304125042.68cc1041@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.102.237]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/OcHhWuW_duuyI40MH2WuJX.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+--Sig_/OcHhWuW_duuyI40MH2WuJX.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
->> Reproducer:
->> 0. config KASAN && apply print.patch
->> 1. mount ubifs on /root/temp
->> 2. run test.sh
-> 
-> What does test.sh do?
-Go to Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865.
-test.sh creates a very long path file test_file, and then create a 
-symbol link link_file for test_file, so ubifs inode for link_file will 
-be assigned a big value for ui->data_len.
-When we change atime for link_file, ubifs_jnl_write_inode will be 
-executed by wb_writeback. By this way, write_len could be not aligned 
-with 8 bytes.
-> 
->> 3. cd /root/temp && ls // change atime for link_file
->> 4. wait 1~2 minutes
->>
->> In order to solve the read oob problem in ubifs_wbuf_write_nolock, just align
->> the write_len to
->> 8 bytes when alloc the memory. So that this patch will not affect the use of
->> write_len in other
->> functions, such as ubifs_jnl_write_inode->make_reservation and
->> ubifs_jnl_write_inode->ubifs_node_calc_hash.
-> 
-> I gave this a second thought and I'm not so sure anymore what exactly is going on.
-> The problem is real, I fully agree with you but I need to dig deeper into
-> the journal and wbuf code to double check that we really fix the right thing
-> and not just paper other something.
-> 
-> Thanks,
-> //richard
-> .
->
+Hi all,
+
+After merging the v4l-dvb tree, today's linux-next build (htmldocs)
+produced these warnings:
+
+Documentation/userspace-api/media/v4l/hist-v4l2.rst:818: WARNING: undefined=
+ label: control-flags (if the link has no caption the label must precede a =
+section header)
+Documentation/userspace-api/media/v4l/hist-v4l2.rst:853: WARNING: undefined=
+ label: reserved-formats (if the link has no caption the label must precede=
+ a section header)
+Documentation/userspace-api/media/v4l/pixfmt-v4l2.rst:47: WARNING: undefine=
+d label: reserved-formats (if the link has no caption the label must preced=
+e a section header)
+Documentation/userspace-api/media/v4l/subdev-formats.rst:39: WARNING: undef=
+ined label: v4l2-subdev-mbus-code-flags (if the link has no caption the lab=
+el must precede a section header)
+Documentation/userspace-api/media/v4l/subdev-formats.rst:53: WARNING: undef=
+ined label: v4l2-subdev-mbus-code-flags (if the link has no caption the lab=
+el must precede a section header)
+Documentation/userspace-api/media/v4l/subdev-formats.rst:67: WARNING: undef=
+ined label: v4l2-subdev-mbus-code-flags (if the link has no caption the lab=
+el must precede a section header)
+Documentation/userspace-api/media/v4l/subdev-formats.rst:83: WARNING: undef=
+ined label: v4l2-subdev-mbus-code-flags (if the link has no caption the lab=
+el must precede a section header)
+Documentation/userspace-api/media/v4l/subdev-formats.rst:97: WARNING: undef=
+ined label: v4l2-subdev-mbus-code-flags (if the link has no caption the lab=
+el must precede a section header)
+Documentation/userspace-api/media/v4l/subdev-formats.rst:140: WARNING: unde=
+fined label: v4l2-subdev-mbus-code-flags (if the link has no caption the la=
+bel must precede a section header)
+Documentation/userspace-api/media/v4l/vidioc-decoder-cmd.rst:75: WARNING: u=
+ndefined label: decoder-cmds (if the link has no caption the label must pre=
+cede a section header)
+Documentation/userspace-api/media/v4l/vidioc-dqevent.rst:234: WARNING: unde=
+fined label: control-flags (if the link has no caption the label must prece=
+de a section header)
+Documentation/userspace-api/media/v4l/vidioc-g-dv-timings.rst:156: WARNING:=
+ undefined label: dv-bt-flags (if the link has no caption the label must pr=
+ecede a section header)
+Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst:41: WARNING: u=
+ndefined label: ctrl-class (if the link has no caption the label must prece=
+de a section header)
+Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst:246: WARNING: =
+undefined label: ctrl-class (if the link has no caption the label must prec=
+ede a section header)
+Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst:269: WARNING: =
+undefined label: ctrl-class (if the link has no caption the label must prec=
+ede a section header)
+Documentation/userspace-api/media/v4l/vidioc-g-modulator.rst:100: WARNING: =
+undefined label: modulator-txsubchans (if the link has no caption the label=
+ must precede a section header)
+Documentation/userspace-api/media/v4l/vidioc-g-tuner.rst:119: WARNING: unde=
+fined label: tuner-rxsubchans (if the link has no caption the label must pr=
+ecede a section header)
+Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst:167: WARNING: un=
+defined label: control-flags (if the link has no caption the label must pre=
+cede a section header)
+Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst:245: WARNING: un=
+defined label: control-flags (if the link has no caption the label must pre=
+cede a section header)
+Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst:396: WARNING: un=
+defined label: ctrl-class (if the link has no caption the label must preced=
+e a section header)
+Documentation/userspace-api/media/v4l/vidioc-subdev-enum-mbus-code.rst:73: =
+WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no c=
+aption the label must precede a section header)
+
+I don't know what caused this, sorry.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/OcHhWuW_duuyI40MH2WuJX.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBAPPIACgkQAVBC80lX
+0GzM/gf9HUEDBRvAvCBx/fPDu6SfnPW3ROtokbsWR0gmPrqeJxdakohP5XW7Sk0h
+dUWZ8EWn6ut5gehDGgwFkcuBmaBnQplaegGGetzCeFlHPJl9EYtHDS6JUckAg7Fj
+hR2RlR3eRgUBagyoOD5wy1McG/2zAVmLHcCuW5GTT2RZJM053ITOi7Q0aFSm8GI+
+P2llpdxeW05KQzjXlJN7urXkPBfpZ8eXUf58iQ1SxvMzLTuQed5V9qs4CXrVX4qf
+0rNY0viC/dLh7oCgGoieY6SN96gENyPZ0etkaAljA9dSb7syLM6aDk2MZ3UBmztk
+KivIIbHbCIoPhWnKyHS+o9VpBMSWnA==
+=EDNi
+-----END PGP SIGNATURE-----
+
+--Sig_/OcHhWuW_duuyI40MH2WuJX.--
