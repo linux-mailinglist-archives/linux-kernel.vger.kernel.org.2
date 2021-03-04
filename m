@@ -2,124 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4666632CCDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0A932CCE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235212AbhCDGb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 01:31:28 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38988 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235205AbhCDGbZ (ORCPT
+        id S235258AbhCDGfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 01:35:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235202AbhCDGfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:31:25 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1246DimX136014;
-        Thu, 4 Mar 2021 01:30:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=Dij8OccllGGrXisgPNHTQID91WD5IUGjxG0idlr32BM=;
- b=rgY9heFxv/hrbrkfYH0iiiHoMaOzxt0Xf0zrNvkLBnJkP2N/jSKvEaOMrm5ax9FEu6n5
- X9Vt+7GF0RRrrO9VczbuDlbe04WQYV2Z/nN+e9foaaZ0UNvP6dGAtFISPgqlvhZIT7Uq
- V/6gu4hEuo6tmHUntHpbLJoChf/T05u5zaMhktlP5yLLWh0MqbSyjj2CnTM7Dn/WgEpZ
- 05RO4JJmoRh9XZdJ35LtdAwlpVwXlHcTdtR+QUDUXbECxczjxVVsG9fj042nJ23Wfxbh
- 3rgO82GjlGsh5xMsXUSnZ6wJZdzdisG/wZ1L9tQb1gD5yv6pNTxAQTcX4V7h4pSUgFMX Rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372m800f9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 01:30:42 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1246JtCE156690;
-        Thu, 4 Mar 2021 01:30:42 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372m800f88-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 01:30:41 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1246InR4027524;
-        Thu, 4 Mar 2021 06:30:39 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3712fmjf42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 06:30:39 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1246UbsN36831678
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Mar 2021 06:30:37 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 422F952057;
-        Thu,  4 Mar 2021 06:30:37 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.37.77])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 6090B5205F;
-        Thu,  4 Mar 2021 06:30:35 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     ravi.bangoria@linux.ibm.com, jolsa@redhat.com, namhyung@kernel.org,
-        atrajeev@linux.vnet.ibm.com, kan.liang@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf report: Fix -F for branch & mem modes
-Date:   Thu,  4 Mar 2021 11:59:58 +0530
-Message-Id: <20210304062958.85465-1-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 4 Mar 2021 01:35:18 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CABC061574;
+        Wed,  3 Mar 2021 22:34:38 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id l132so25547157qke.7;
+        Wed, 03 Mar 2021 22:34:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Al7o8H/PAUlo6YV2XX1l+4Gn+Ta0Brzf54ZgHZB+/8Q=;
+        b=auDJDFWi4cCagSrTZvgDHiFzJdPnB++kGrDl13LMnxglmCm2+omDaboFCC1ZYl8kt+
+         zV738q+pzyQZPvfk+tD/oh9DIUZPs7HCBrgRZa56QEM2ZQbe6V6H+ZliPCmrgVantdTa
+         kuLxNdhd2ZOWlf42zh8YtOpZyJ/bSA2GvceW3YSqCnay3pQoXDCZ8GziCkltrsjVdznd
+         DlDLbrRXCtJUqFh6chwnNWI0vXJHFO2yWZbbkOgLyQNIclm8S8gZczmc9+2c/5QqgLyq
+         CB5XckqpfA/0B+d7gOjRjSntcRzSVrasx3AVUxKUoFrVsnTzv/DL70+i1SyeGkIwOU/h
+         WTiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Al7o8H/PAUlo6YV2XX1l+4Gn+Ta0Brzf54ZgHZB+/8Q=;
+        b=ncgBHFqFo7WtkM3SeHtcr7qGhiAT5fOrHW3dwkZ0/sWdiO3y/QGm6Z8fJTQoieq4M7
+         hMEMx6W7MjYPS2K/ygM5KtH2kOvDT3Y+dyHhILZ1ltvMwLP76KFdgNH0k8ZqvKP3YvY+
+         Q2jSAm50/h7pohcEBOQ6F4uPO74VnlEf5tbpDRbVscfks/1l4VV7nrECgq0bPTEQiSAT
+         t4a1AQ/zGxKJR9jKunyp0i3/jUzrAb9dlanas7wNhc7pKkNqQNz1Fp3OxgSzj7KhYO9u
+         m1dtf4tfFlM4/9RR8yAb1SwOb+JZ99VXK1G173HIgs6mgUTvU074xbAdHV927C9JuCSY
+         Ql7g==
+X-Gm-Message-State: AOAM530yz7mHfU1au6sdMt19/V1sN2WWveqSf7bMYcF5SPueJ6JZ5GO1
+        gXrnDVK+VazwdgCEWLuAxbM=
+X-Google-Smtp-Source: ABdhPJxHC0+79l6R/rbhvn0GHkKlmnJvq95zstP/lKKmyBwfF5kKurBl57eZ3cTV0wDZMhz9nmNyuQ==
+X-Received: by 2002:a05:620a:444a:: with SMTP id w10mr2695885qkp.294.1614839677550;
+        Wed, 03 Mar 2021 22:34:37 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id z188sm15602997qke.85.2021.03.03.22.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 22:34:36 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id AD06427C0054;
+        Thu,  4 Mar 2021 01:34:35 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 04 Mar 2021 01:34:35 -0500
+X-ME-Sender: <xms:eX9AYLiKZOhluH1nLPYGJ980OfIwfU1v-1CiCw_-g0-dHiWFSoCreg>
+    <xme:eX9AYIB8BgEWGwN6yWcGk7d9_jmLDYP-s71s98r0pxCZb6bdxXzkqE7xHmQObSvBL
+    e0yXW-3wahyNpD-HQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtfedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:eX9AYLFa_gD9DE_ptsryZGodoUeg2TW12z6QwvxKOohQYP3pHhERFg>
+    <xmx:eX9AYIQP108cewylZfN_iYSU3nI_l1tcQCW_kXBe9oOaBg2g5wLWaA>
+    <xmx:eX9AYIz3dTiQG-u67W6RvAUgjxAahIjUG6rR_t59HkxDaemy8aRQfQ>
+    <xmx:en9AYEDOJaL89faftXGENOw5HviHmSVrk3qMwdCiHRDZnraVfvz8A3-uKm4>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 46930108005F;
+        Thu,  4 Mar 2021 01:34:33 -0500 (EST)
+Date:   Thu, 4 Mar 2021 14:33:32 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <YEB/PGHs94W2l6hA@boqun-archlinux>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+ <YEA3RwYixQPt6gul@boqun-archlinux>
+ <20210304031322.GA1594980@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-04_01:2021-03-03,2021-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 adultscore=0 impostorscore=0
- malwarescore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103040025
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304031322.GA1594980@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf report fails to add valid additional fields with -F when
-used with branch or mem modes. Fix it.
+On Wed, Mar 03, 2021 at 10:13:22PM -0500, Alan Stern wrote:
+> On Thu, Mar 04, 2021 at 09:26:31AM +0800, Boqun Feng wrote:
+> > On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
+> 
+> > > Which brings us back to the case of the
+> > > 
+> > > 	dep ; rfi
+> > > 
+> > > dependency relation, where the accesses in the middle are plain and 
+> > > non-racy.  Should the LKMM be changed to allow this?
+> > > 
+> > 
+> > For this particular question, do we need to consider code as the follow?
+> > 
+> > 	r1 = READ_ONCE(x);  // f
+> > 	if (r == 1) {
+> > 		local_v = &y; // g
+> > 		do_something_a();
+> > 	}
+> > 	else {
+> > 		local_v = &y;
+> > 		do_something_b();
+> > 	}
+> > 
+> > 	r2 = READ_ONCE(*local_v); // e
+> > 
+> > , do we have the guarantee that the first READ_ONCE() happens before the
+> > second one? Can compiler optimize the code as:
+> > 
+> > 	r2 = READ_ONCE(y);
+> > 	r1 = READ_ONCE(x);
+> 
+> Well, it can't do that because the compiler isn't allowed to reorder
+> volatile accesses (which includes READ_ONCE).  But the compiler could
+> do:
+> 
+> 	r1 = READ_ONCE(x);
+> 	r2 = READ_ONCE(y);
+> 
+> > 	if (r == 1) {
+> > 		do_something_a();
+> > 	}
+> > 	else {
+> > 		do_something_b();
+> > 	}
+> > 
+> > ? Although we have:
+> > 
+> > 	f ->dep g ->rfi ->addr e
+> 
+> This would be an example of a problem Paul has described on several
+> occasions, where both arms of an "if" statement store the same value
+> (in this case to local_v).  This problem arises even when local
+> variables are not involved.  For example:
+> 
+> 	if (READ_ONCE(x) == 0) {
+> 		WRITE_ONCE(y, 1);
+> 		do_a();
+> 	} else {
+> 		WRITE_ONCE(y, 1);
+> 		do_b();
+> 	}
+> 
+> The compiler can change this to:
+> 
+> 	r = READ_ONCE(x);
+> 	WRITE_ONCE(y, 1);
+> 	if (r == 0)
+> 		do_a();
+> 	else
+> 		do_b();
+> 
+> thus allowing the marked accesses to be reordered by the CPU and
+> breaking the apparent control dependency.
+> 
+> So the answer to your question is: No, we don't have this guarantee,
+> but the reason is because of doing the same store in both arms, not
+> because of the use of local variables.
+> 
 
-Before patch:
+Right, I was thinking about something unrelated.. but how about the
+following case:
 
-  $ ./perf record -b
-  $ ./perf report -b -F +srcline_from --stdio
-  Error:
-  Invalid --fields key: `srcline_from'
+	local_v = &y;
+	r1 = READ_ONCE(*x); // f
 
-After patch:
+	if (r1 == 1) {
+		local_v = &y; // e
+	} else {
+		local_v = &z; // d
+	}
 
-  $ ./perf report -b -F +srcline_from --stdio
-  # Samples: 8K of event 'cycles'
-  # Event count (approx.): 8784
-  ...
+	p = READ_ONCE(local_v); // g
 
-Reported-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Fixes: aa6b3c99236b ("perf report: Make -F more strict like -s")
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- tools/perf/util/sort.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+	r2 = READ_ONCE(*p);   // h
 
-diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index 0d5ad42812b9..552b590485bf 100644
---- a/tools/perf/util/sort.c
-+++ b/tools/perf/util/sort.c
-@@ -3140,7 +3140,7 @@ int output_field_add(struct perf_hpp_list *list, char *tok)
- 		if (strncasecmp(tok, sd->name, strlen(tok)))
- 			continue;
- 
--		if (sort__mode != SORT_MODE__MEMORY)
-+		if (sort__mode != SORT_MODE__BRANCH)
- 			return -EINVAL;
- 
- 		return __sort_dimension__add_output(list, sd);
-@@ -3152,7 +3152,7 @@ int output_field_add(struct perf_hpp_list *list, char *tok)
- 		if (strncasecmp(tok, sd->name, strlen(tok)))
- 			continue;
- 
--		if (sort__mode != SORT_MODE__BRANCH)
-+		if (sort__mode != SORT_MODE__MEMORY)
- 			return -EINVAL;
- 
- 		return __sort_dimension__add_output(list, sd);
--- 
-2.29.2
+if r1 == 1, we definitely think we have:
 
+	f ->ctrl e ->rfi g ->addr h
+
+, and if we treat ctrl;rfi as "to-r", then we have "f" happens before
+"h". However compile can optimze the above as:
+
+	local_v = &y;
+
+	r1 = READ_ONCE(*x); // f
+
+	if (r1 != 1) {
+		local_v = &z; // d
+	}
+
+	p = READ_ONCE(local_v); // g
+
+	r2 = READ_ONCE(*p);   // h
+
+, and when this gets executed, I don't think we have the guarantee we
+have "f" happens before "h", because CPU can do optimistic read for "g"
+and "h".
+
+Part of this is because when we take plain access into consideration, we
+won't guarantee a read-from or other relations exists if compiler
+optimization happens.
+
+Maybe I'm missing something subtle, but just try to think through the
+effect of making dep; rfi as "to-r".
+
+Regards,
+Boqun
+
+> Alan
