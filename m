@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242F632C96B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E407E32C969
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353439AbhCDBDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:03:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
+        id S239880AbhCDBDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:03:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1388624AbhCDAZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:25:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BEC964EDF;
+        id S1448485AbhCDAZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:25:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86AC164EE3;
         Thu,  4 Mar 2021 00:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614817394;
-        bh=nqO6TCOJhj9m7vFGpNCgO5kA+pzLX+aLpvXtcO7bMFE=;
+        bh=ACmOLMPxBxJ21CKaJHWqFcZB8U+4BbhPAyA/yBe7XrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Li29YnL4knzKbhz4QlThEAV2niOb35zxKqlnwEW6YDoZVEssz5m1M0qeIis+BAqLN
-         tWIlQWjFr2+vCO1Z1sl06GyHWgpmpiTQbZ4CFd6oBpcRRgCFRLJusAb0xhCZLZ+JVF
-         jwlCwb9EJGiBGHL9Wcbe/gOv/tjVzWrheGyP7SYxeGPPdVWX8ld07CpiwM3ymXMgCm
-         0eDG4zWon5ABrsOpmMV+DJc3+heWIo1hmUkD3IlKwvXikaQGuA85EMkkb/krcpVF2K
-         9+WZBkX905vEZ6WVZiQAeORAs4Ry8hmRHJdiQxzzVw1ogbM0oc7H7o2PmS1/YcQy40
-         efpFV4rbTltEQ==
+        b=kdwkPSwCFv99Jf1fclwG4SQTeeORV1GkyzEKQ/Cv/G6JCO4NlAQoJZOE7ClYnxniI
+         ClQ9TBLhgrrR52ZQZgLuJ7lb4/r6goBPOHrS5n3ngARP1EU9GFPaBfh9M7yGchRNDN
+         JFtCoRP8jwy+xiIHsOzLX4lsUa1XxOobTwaYY/9+K5qiios1VXJOmBU8cMWU6mwSAx
+         0tuQg8+2TOyOvvXjAf52O3aYEIdwLtbEY6e6wDipHiL7QfDdi/gfuOBMSJV8mSngcw
+         68wougs89eqqhwYD/A8fas/di/tCn3HIRJiVOO6gU9a1gX/B4leg7yd8IKv4XeDwhP
+         XwRjcY4wYzRzA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/12] rcu/nocb: Only (re-)initialize segcblist when needed on CPU up
-Date:   Wed,  3 Mar 2021 16:23:05 -0800
-Message-Id: <20210304002311.23655-6-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/12] rcu/nocb: Rename nocb_gp_update_state to nocb_gp_update_state_deoffloading
+Date:   Wed,  3 Mar 2021 16:23:06 -0800
+Message-Id: <20210304002311.23655-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304002225.GA23492@paulmck-ThinkPad-P72>
 References: <20210304002225.GA23492@paulmck-ThinkPad-P72>
@@ -47,72 +47,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-At the start of a CPU-hotplug operation, the incoming CPU's callback
-list can be in a number of states:
+The name nocb_gp_update_state() is unenlightening, so this commit changes
+it to nocb_gp_update_state_deoffloading().  This function now does what
+its name says, updates state and returns true if the CPU corresponding to
+the specified rcu_data structure is in the process of being de-offloaded.
 
-1.	Disabled and empty.  This is the case when the boot CPU has
-	not invoked call_rcu(), when a non-boot CPU first comes online,
-	and when a non-offloaded CPU comes back online.  In this case,
-	it is both necessary and permissible to initialize ->cblist.
-	Because either the CPU is currently running with interrupts
-	disabled (boot CPU) or is not yet running at all (other CPUs),
-	it is not necessary to acquire ->nocb_lock.
-
-	In this case, initialization is required.
-
-2.	Disabled and non-empty.  This cannot occur, because early boot
-	call_rcu() invocations enable the callback list before enqueuing
-	their callback.
-
-3.	Enabled, whether empty or not.	In this case, the callback
-	list has already been initialized.  This case occurs when the
-	boot CPU has executed an early boot call_rcu() and also when
-	an offloaded CPU comes back online.  In both cases, there is
-	no need to initialize the callback list: In the boot-CPU case,
-	the CPU has not (yet) gone offline, and in the offloaded case,
-	the rcuo kthreads are taking care of business.
-
-	Because it is not necessary to initialize the callback list,
-	it is also not necessary to acquire ->nocb_lock.
-
-Therefore, checking if the segcblist is enabled suffices.  This commit
-therefore initializes the callback list at rcutree_prepare_cpu() time
-only if that list is disabled.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/rcu/tree_plugin.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ee77858..402ea36 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4084,14 +4084,13 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	rdp->dynticks_nesting = 1;	/* CPU not up, no tearing. */
- 	rcu_dynticks_eqs_online();
- 	raw_spin_unlock_rcu_node(rnp);		/* irqs remain disabled. */
-+
- 	/*
--	 * Lock in case the CB/GP kthreads are still around handling
--	 * old callbacks.
-+	 * Only non-NOCB CPUs that didn't have early-boot callbacks need to be
-+	 * (re-)initialized.
- 	 */
--	rcu_nocb_lock(rdp);
--	if (rcu_segcblist_empty(&rdp->cblist)) /* No early-boot CBs? */
-+	if (!rcu_segcblist_is_enabled(&rdp->cblist))
- 		rcu_segcblist_init(&rdp->cblist);  /* Re-enable callbacks. */
--	rcu_nocb_unlock(rdp);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 6a7f77d..93d3938 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2016,7 +2016,8 @@ static inline bool nocb_gp_enabled_cb(struct rcu_data *rdp)
+ 	return rcu_segcblist_test_flags(&rdp->cblist, flags);
+ }
+ 
+-static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_state)
++static inline bool nocb_gp_update_state_deoffloading(struct rcu_data *rdp,
++						     bool *needwake_state)
+ {
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+ 
+@@ -2026,7 +2027,7 @@ static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_sta
+ 			if (rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
+ 				*needwake_state = true;
+ 		}
+-		return true;
++		return false;
+ 	}
  
  	/*
- 	 * Add CPU to leaf rcu_node pending-online bitmask.  Any needed
+@@ -2037,7 +2038,7 @@ static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_sta
+ 	rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_GP);
+ 	if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
+ 		*needwake_state = true;
+-	return false;
++	return true;
+ }
+ 
+ 
+@@ -2075,7 +2076,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 			continue;
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+ 		rcu_nocb_lock_irqsave(rdp, flags);
+-		if (!nocb_gp_update_state(rdp, &needwake_state)) {
++		if (nocb_gp_update_state_deoffloading(rdp, &needwake_state)) {
+ 			rcu_nocb_unlock_irqrestore(rdp, flags);
+ 			if (needwake_state)
+ 				swake_up_one(&rdp->nocb_state_wq);
 -- 
 2.9.5
 
