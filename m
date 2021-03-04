@@ -2,185 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8C432D2BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A40632D2C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240410AbhCDMTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:19:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240404AbhCDMTF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:19:05 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DCDC061574;
-        Thu,  4 Mar 2021 04:18:24 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id u14so27415390wri.3;
-        Thu, 04 Mar 2021 04:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KNlstPTDN9pTEJEKpuf+h3ME6Y8QWCswm7ow88tpM0k=;
-        b=A0ZYW4QSFB86QnM5sFtGcxGb2+OQ7FAl8POI6u8LMPpLEuhBkm6f+VOiQ3KQpFT8q+
-         sRuGfdQC8wJzeEbgWLoNbpdasSVEduD2cOXvRNDNlsSomgZQ0O2BAswao5T28W25MVF+
-         VjNg73mrzXj1eYMyIxGQW+5H+uC/E9DEY9x/bvQFLKZ1ZN7YqXGw7tOtnZDx5Ol+NRPw
-         o9PQ2B3waOvnvxTnWMANfrr1+7eLEEU5sDVrIhasyXxtDHyUGrjTr5x4Yfz3kXkGDvnH
-         YNBZciYNPLco65Xi10wifn4lq6XPhIvAexoKLg8R+i/AqPZ4Ns1e7mB6CH9F3d/fKTuf
-         Oerw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KNlstPTDN9pTEJEKpuf+h3ME6Y8QWCswm7ow88tpM0k=;
-        b=rgnPT0H1ZotRDaliyq9X8lJDNbcchFnO9cYxk0j+MHHHE6KzrgiE8zN5dMx1fCyCXm
-         ry3qdJfgZ5qYInEBSXT23sG9yjQXEmZ0daZC81pWNsLGXeVO+9D6XhfHUTa+3pqZlQCt
-         GFW16ctq5V/CkSj61GmyjDXPwluYzHuMsmq3SaxTxVaYbMeKNUqOYYx9vZPmR53RMmOu
-         phwvy4Ns7ZcBgfPwBlk59cGbweJdb2EJFEbqGndIMm9fd+8XF3zkykjikMqidVFQT8r2
-         1PR+slNFPrK8JRTbp9EBDcxVUVsJqU3q2MKsAFY/+UuiNhrkGGaUp/GhccdaTMDIR54/
-         zHAA==
-X-Gm-Message-State: AOAM533P3qTtI8W/umSVYfSDvOHDMvu9wSSp0R000xZ3jn1JkToKv9Ji
-        gh5mTKgUmNgFbTbl2vnKGvgD+lW3PVx3NjSI
-X-Google-Smtp-Source: ABdhPJzwpYxSmJP2GVlgTeDei3xg+qCNoyBN4f+Kv+fT5+DSZOSJclDLtTs2GQd4aD38gQiC4pgQtg==
-X-Received: by 2002:adf:ec0b:: with SMTP id x11mr3601812wrn.175.1614860303494;
-        Thu, 04 Mar 2021 04:18:23 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id y205sm12232542wmc.18.2021.03.04.04.18.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Mar 2021 04:18:23 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v3 1/2] dt-bindings: rng: bcm2835: document reset support
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
-Date:   Thu, 4 Mar 2021 13:18:22 +0100
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        =?utf-8?B?Ik7DrWNvbGFzIEYuIFIuIEEuIFByYWRvIg==?= 
-        <nfraprado@protonmail.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-crypto@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <419CC9A9-1C14-4D44-8305-3F7DFF656C1F@gmail.com>
-References: <20210222194510.14004-1-noltari@gmail.com>
- <20210223170006.29558-1-noltari@gmail.com>
- <20210223170006.29558-2-noltari@gmail.com>
- <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        id S240436AbhCDMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:20:34 -0500
+Received: from 8bytes.org ([81.169.241.247]:57604 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240421AbhCDMUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 07:20:24 -0500
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id A4A0722E; Thu,  4 Mar 2021 13:19:42 +0100 (CET)
+Date:   Thu, 4 Mar 2021 13:19:41 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Andrey Ryabinin <arbn@yandex-team.com>
+Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        valesini@yandex-team.ru, stable@vger.kernel.org
+Subject: Re: [PATCH] iommu/amd: Fix sleeping in atomic in
+ increase_address_space()
+Message-ID: <20210304121941.GB26414@8bytes.org>
+References: <20210217143004.19165-1-arbn@yandex-team.com>
+ <20210217181002.GC4304@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217181002.GC4304@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 17, 2021 at 06:10:02PM +0000, Will Deacon wrote:
+> >  drivers/iommu/amd/iommu.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> Acked-by: Will Deacon <will@kernel.org>
 
+Applied for v5.12, thanks.
 
-> El 4 mar 2021, a las 13:07, Nicolas Saenz Julienne =
-<nsaenzjulienne@suse.de> escribi=C3=B3:
->=20
-> Hi Alvaro,
->=20
-> On Tue, 2021-02-23 at 18:00 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas =
-wrote:
->> Some devices may need to perform a reset before using the RNG, such =
-as the
->> BCM6368.
->>=20
->> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> ---
->>  v3: make resets required if brcm,bcm6368-rng.
->>  v2: document reset support.
->>=20
->>  .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 =
-+++++++++++++++++
->>  1 file changed, 17 insertions(+)
->>=20
->> diff --git a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml =
-b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
->> index c147900f9041..11c23e1f6988 100644
->> --- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
->> +++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
->> @@ -37,6 +37,21 @@ required:
->> =20
->>=20
->>  additionalProperties: false
->=20
-> I can't claim I fully understand all the meta stuff in shemas, so I =
-generally
-> just follow the patterns already available out there.
+There were some conflicts which I resolved, can you please check the
+result, Andrey? The updated patch is attached.
 
-Well, that makes two of us :).
+From 140456f994195b568ecd7fc2287a34eadffef3ca Mon Sep 17 00:00:00 2001
+From: Andrey Ryabinin <arbn@yandex-team.com>
+Date: Wed, 17 Feb 2021 17:30:04 +0300
+Subject: [PATCH] iommu/amd: Fix sleeping in atomic in increase_address_space()
 
-> That said, shoudln't this be at the end, just before the examples?
+increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
+disabled interrupts. gfp flags passed to increase_address_space() may allow
+sleeping, so it comes to this:
 
-I don=E2=80=99t know but I can move it there =C2=AF\_(=E3=83=84)_/=C2=AF
+ BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
+ in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
 
-> Maybe the cause of that odd warning
-> you got there?
+ Call Trace:
+  dump_stack+0x66/0x8b
+  ___might_sleep+0xec/0x110
+  __alloc_pages_nodemask+0x104/0x300
+  get_zeroed_page+0x15/0x40
+  iommu_map_page+0xdd/0x3e0
+  amd_iommu_map+0x50/0x70
+  iommu_map+0x106/0x220
+  vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
+  do_vfs_ioctl+0xa3/0x6f0
+  ksys_ioctl+0x66/0x70
+  __x64_sys_ioctl+0x16/0x20
+  do_syscall_64+0x4e/0x100
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Which odd warning?
-I don=E2=80=99t get any warnings when running (or at least warnings =
-related to rig, because I get warnings related to other yamls):
-make dt_binding_check =
-DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
 
->=20
->> +if:
->> +  properties:
->> +    compatible:
->> +      enum:
->> +        - brcm,bcm6368-rng
->> +then:
->> +  properties:
->> +    resets:
->> +      maxItems: 1
->> +  required:
->> +    - resets
->=20
-> I belive you can't really make a property required when the bindings =
-for
-> 'brcm,bcm6368-rng' were already defined. This will break the schema =
-for those
-> otherwise correct devicetrees.
+Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+Acked-by: Will Deacon <will@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210217143004.19165-1-arbn@yandex-team.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ drivers/iommu/amd/io_pgtable.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Why not?
-Wouldn=E2=80=99t just be required for brcm,bcm6368-rng?
+diff --git a/drivers/iommu/amd/io_pgtable.c b/drivers/iommu/amd/io_pgtable.c
+index 1c4961e05c12..bb0ee5c9fde7 100644
+--- a/drivers/iommu/amd/io_pgtable.c
++++ b/drivers/iommu/amd/io_pgtable.c
+@@ -182,6 +182,10 @@ static bool increase_address_space(struct protection_domain *domain,
+ 	bool ret = true;
+ 	u64 *pte;
+ 
++	pte = (void *)get_zeroed_page(gfp);
++	if (!pte)
++		return false;
++
+ 	spin_lock_irqsave(&domain->lock, flags);
+ 
+ 	if (address <= PM_LEVEL_SIZE(domain->iop.mode))
+@@ -191,10 +195,6 @@ static bool increase_address_space(struct protection_domain *domain,
+ 	if (WARN_ON_ONCE(domain->iop.mode == PAGE_MODE_6_LEVEL))
+ 		goto out;
+ 
+-	pte = (void *)get_zeroed_page(gfp);
+-	if (!pte)
+-		goto out;
+-
+ 	*pte = PM_LEVEL_PDE(domain->iop.mode, iommu_virt_to_phys(domain->iop.root));
+ 
+ 	domain->iop.root  = pte;
+@@ -208,10 +208,12 @@ static bool increase_address_space(struct protection_domain *domain,
+ 	 */
+ 	amd_iommu_domain_set_pgtable(domain, pte, domain->iop.mode);
+ 
++	pte = NULL;
+ 	ret = true;
+ 
+ out:
+ 	spin_unlock_irqrestore(&domain->lock, flags);
++	free_page((unsigned long)pte);
+ 
+ 	return ret;
+ }
+-- 
+2.26.2
 
-Anyway, I can omit this, since it would be the same for clocks and those =
-aren=E2=80=99t required either.
-
->=20
->> +else:
->> +  properties:
->> +    resets: false
->> +
->>  examples:
->>    - |
->>      rng@7e104000 {
->> @@ -58,4 +73,6 @@ examples:
->> =20
->>=20
->>          clocks =3D <&periph_clk 18>;
->>          clock-names =3D "ipsec";
->> +
->> +        resets =3D <&periph_rst 4>;
->>      };
->=20
-> Regards,
-> Nicolas
-
-Best regards,
-=C3=81lvaro.=
