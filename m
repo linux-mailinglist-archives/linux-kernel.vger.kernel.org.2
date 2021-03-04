@@ -2,216 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767EC32CAF5
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB1232CAF4
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhCDDnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:43:37 -0500
-Received: from mga17.intel.com ([192.55.52.151]:11266 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232804AbhCDDn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:43:27 -0500
-IronPort-SDR: 7fOSqSpIlY7exakFz/FpaisNyF1XjvtN7ibWsTuRYVcOXEkEkOJorRIcUsnHdCLv7GCPeAOYHX
- uErzh2kO1xkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="167232033"
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="167232033"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 19:42:47 -0800
-IronPort-SDR: gMHdX4xTnJtt2xkWmZ9DDC3HcwZkNeg5f2h7R3sq07bkVYL7q4oyWFdFWk181c648PzXkoV7JM
- hfNIkSdkPinQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="435645666"
-Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 03 Mar 2021 19:42:46 -0800
-Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lHesv-0001yc-DI; Thu, 04 Mar 2021 03:42:45 +0000
-Date:   Thu, 04 Mar 2021 11:42:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- 43e65ddac19c665411ed8554a21155fc0ec3a286
-Message-ID: <60405719.ga+SLmi9L8taiPll%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232831AbhCDDng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:43:36 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:50276 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232801AbhCDDnH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:43:07 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210304034225epoutp025ac5ac5841a198bcbcf2cf379f9d1471~pBrvu-9FX2491224912epoutp02S
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 03:42:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210304034225epoutp025ac5ac5841a198bcbcf2cf379f9d1471~pBrvu-9FX2491224912epoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614829345;
+        bh=B+6dMBxtcSUu6W/9okaioUJOpO8DxXMXNSJCTv2oFbY=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=CJKt2EioxIG0LQiX2TZCspntYxc9r41oeSUkkN0ReeOxFRLc2XXIO3QWsPFnf6udR
+         rxTHds8v4WdVoEQRFDoB7gh4SaNTUuN7LO6UOM6O1BezKQXfFDCvG5ZTkONYNjzRMc
+         XE1YEysbu/8fGDrtRYh+B/sl0yZ4Hpo/Ns8mP40o=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210304034225epcas1p138bb275b600ecf45204f3fefb85cea22~pBrvMgqVn2304223042epcas1p1R;
+        Thu,  4 Mar 2021 03:42:25 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.163]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DrcBQ4wqvz4x9QM; Thu,  4 Mar
+        2021 03:42:22 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3F.32.63458.E1750406; Thu,  4 Mar 2021 12:42:22 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210304034222epcas1p35c7ae7b4baae4b6c28d32ade4fe00e62~pBrseZIzG1695416954epcas1p3l;
+        Thu,  4 Mar 2021 03:42:22 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210304034222epsmtrp296082612ef95e070ed0c7a7da79482a9~pBrsduer_2714327143epsmtrp2C;
+        Thu,  4 Mar 2021 03:42:22 +0000 (GMT)
+X-AuditID: b6c32a36-c6d65a800000f7e2-04-6040571e4b12
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        31.89.08745.D1750406; Thu,  4 Mar 2021 12:42:21 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210304034221epsmtip2c45d0f3ea02e5a5d07fdafc1ce700c6d~pBrsR2JJK2508525085epsmtip25;
+        Thu,  4 Mar 2021 03:42:21 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>, <sj1557.seo@samsung.com>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+In-Reply-To: <20210302052020.63598-1-hyeongseok@gmail.com>
+Subject: RE: [PATCH v2] exfat: fix erroneous discard when clear cluster bit
+Date:   Thu, 4 Mar 2021 12:42:21 +0900
+Message-ID: <002f01d710a8$624be490$26e3adb0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQG+mIOZmBktm/oL05f7SJkQ+BJOQgN+CcSTqogt6BA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmk+LIzCtJLcpLzFFi42LZdlhTT1cu3CHBYNIlBYu/Ez8xWezZe5LF
+        4vKuOWwWW/4dYbVYsPERowOrx85Zd9k9+rasYvT4vEkugDkqxyYjNTEltUghNS85PyUzL91W
+        yTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKWSQlliTilQKCCxuFhJ386mKL+0JFUh
+        I7+4xFYptSAlp8DQoECvODG3uDQvXS85P9fK0MDAyBSoMiEnY/fC5awFXwUr5j17ytbAOI+v
+        i5GTQ0LAROLTo4uMXYxcHEICOxglbp1+zw7hfGKUaF13hhnC+cwo8evtNFaYloU3X0O17GKU
+        uHDkECuE85JR4t731SwgVWwCuhL//uxnA7FFBNwldr3rYQSxmQXiJd4v+QdWwylgJbH/3g6w
+        uLCAt8TWXdeZQGwWARWJq2s+gsV5BSwlns5axgxhC0qcnPmEBWKOvMT2t3OYIS5SkPj5dBkr
+        xC4riXd7dzBD1IhIzO5sA3tBQuAnu8S2bWuBnuMAclwklm1yhugVlnh1fAs7hC0l8fndXjaI
+        kmqJj/uhxncwSrz4bgthG0vcXL+BFaSEWUBTYv0ufYiwosTO33OhPuSTePe1hxViCq9ER5sQ
+        RImqRN+lw0wQtrREV/sH9gmMSrOQ/DULyV+zkNw/C2HZAkaWVYxiqQXFuempxYYFRshxvYkR
+        nBq1zHYwTnr7Qe8QIxMH4yFGCQ5mJRFe8Ze2CUK8KYmVValF+fFFpTmpxYcYTYEhPZFZSjQ5
+        H5ic80riDU2NjI2NLUzMzM1MjZXEeRMNHsQLCaQnlqRmp6YWpBbB9DFxcEo1MBWeEb90d9f6
+        i3duz+uy0Zq7ZNKzxuff3B6IRn4RuhBqb1q73DnkBdf0VX+zT+SaRG4xOuT2xuOix9Lc+jD7
+        3pjjB/RkMl31J0su2qFR8POsCNdjZ6OAxAVrQwv0J/s1dn22bdrxPsX5V0aPx6OvqlbMHRt0
+        K70Xh8nx3vnzJqLQXNE1Z29a7d7ZwQ7ufUaSVjtjw5hLq1JFPsnMMj31ZJGzzsLn9ndrrc7e
+        LvZgaOKwFjpkk/020bXV6Rn/192cgev26aQc8i945nZGwYNnSmvv7LvPTif4CXbNZRDc1GN9
+        6P7ZN1araz2/f31r4PrK1M/bYM3OrOoki9/OjmlMMc91nJYJc+SGmByb3sSvxFKckWioxVxU
+        nAgAIVtpBRYEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsWy7bCSvK5cuEOCQV+wxd+Jn5gs9uw9yWJx
+        edccNost/46wWizY+IjRgdVj56y77B59W1YxenzeJBfAHMVlk5Kak1mWWqRvl8CVsXvhctaC
+        r4IV8549ZWtgnMfXxcjJISFgIrHw5mvGLkYuDiGBHYwSO1fuYoJISEscO3GGuYuRA8gWljh8
+        uBii5jmjxKXXyxlBatgEdCX+/dnPBmKLCHhKrDi4ggmknlkgUeLoaweI+m5Gial/VrKC1HAK
+        WEnsv7cDrFdYwFti667rYLtYBFQkrq75CBbnFbCUeDprGTOELShxcuYTFoiZehJtG8FKmAXk
+        Jba/ncMMcaaCxM+ny1ghTrCSeLd3BzNEjYjE7M425gmMwrOQTJqFMGkWkkmzkHQsYGRZxSiZ
+        WlCcm55bbFhglJdarlecmFtcmpeul5yfu4kRHB9aWjsY96z6oHeIkYmD8RCjBAezkgiv+Evb
+        BCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYhCOiXFhe
+        R4i/eFbMlKm1b5bcpKhn+nsuvNJY4HW6qtk6VUJx7T2Og1WBlxTXmG7fax96tNcsdqW49RuL
+        X36LPuSpxxqasQXHNEhWhcT4vy3ray/mlSxa+PfNCT3zaXbG1zOXHFieOLOGgzU29dnvP2s4
+        n/zcdJKd88uuhTFnj02fdFng05xPMw49VNDMrdhTaJu9ese15+8FY01Pb5mkLnJX+kxIhcMH
+        q7K2Ey7W6rFpem0tybHNt/QM1rmWJHc2TXv2I/m8y5YtCp3Le+wYSmerbwhb78e+3mOtpI+f
+        le8Xk2sum7ym/2lIXKMs034265uS+6Hfl9+LhzEc2KNu1j9Hfc8Cgyk3zrxTP1asxFKckWio
+        xVxUnAgAMddktf4CAAA=
+X-CMS-MailID: 20210304034222epcas1p35c7ae7b4baae4b6c28d32ade4fe00e62
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210302052033epcas1p3c1bac591bdd1f94ffbef1272a3df137f
+References: <CGME20210302052033epcas1p3c1bac591bdd1f94ffbef1272a3df137f@epcas1p3.samsung.com>
+        <20210302052020.63598-1-hyeongseok@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
-branch HEAD: 43e65ddac19c665411ed8554a21155fc0ec3a286  Merge branch 'locking/core'
+> If mounted with discard option, exFAT issues discard command when clear cluster bit to remove file.
+> But the input parameter of cluster-to-sector calculation is abnormally added by reserved cluster size
+> which is 2, leading to discard unrelated sectors included in target+2 cluster.
+> With fixing this, remove the wrong comments in set/clear/find bitmap functions.
+> 
+> Fixes: 1e49a94cf707 ("exfat: add bitmap operations")
+Cc: stable@vger.kernel.org # v5.7+
+> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+> Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
+Applied. Thanks for your patch!
 
-elapsed time: 1031m
+> ---
+>  fs/exfat/balloc.c | 15 +--------------
+>  1 file changed, 1 insertion(+), 14 deletions(-)
+> 
+> diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c index 761c79c3a4ba..54f1bcbddb26 100644
+> --- a/fs/exfat/balloc.c
+> +++ b/fs/exfat/balloc.c
+> @@ -141,10 +141,6 @@ void exfat_free_bitmap(struct exfat_sb_info *sbi)
+>  	kfree(sbi->vol_amap);
+>  }
+> 
+> -/*
+> - * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
+> - * the cluster heap.
+> - */
+>  int exfat_set_bitmap(struct inode *inode, unsigned int clu)  {
+>  	int i, b;
+> @@ -162,10 +158,6 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu)
+>  	return 0;
+>  }
+> 
+> -/*
+> - * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
+> - * the cluster heap.
+> - */
+>  void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)  {
+>  	int i, b;
+> @@ -186,8 +178,7 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
+>  		int ret_discard;
+> 
+>  		ret_discard = sb_issue_discard(sb,
+> -			exfat_cluster_to_sector(sbi, clu +
+> -						EXFAT_RESERVED_CLUSTERS),
+> +			exfat_cluster_to_sector(sbi, clu),
+>  			(1 << sbi->sect_per_clus_bits), GFP_NOFS, 0);
+> 
+>  		if (ret_discard == -EOPNOTSUPP) {
+> @@ -197,10 +188,6 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
+>  	}
+>  }
+> 
+> -/*
+> - * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
+> - * the cluster heap.
+> - */
+>  unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu)  {
+>  	unsigned int i, map_i, map_b, ent_idx;
+> --
+> 2.27.0.83.g0313f36
 
-configs tested: 154
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc832x_mds_defconfig
-sh                              ul2_defconfig
-m68k                        mvme16x_defconfig
-arm                          pcm027_defconfig
-arm                      pxa255-idp_defconfig
-arm                         s5pv210_defconfig
-xtensa                           alldefconfig
-arm                       spear13xx_defconfig
-powerpc                  mpc885_ads_defconfig
-i386                             alldefconfig
-powerpc                    klondike_defconfig
-sparc                       sparc64_defconfig
-powerpc                       eiger_defconfig
-m68k                            q40_defconfig
-mips                     loongson1c_defconfig
-arm                          pxa168_defconfig
-powerpc                     skiroot_defconfig
-powerpc                       maple_defconfig
-xtensa                         virt_defconfig
-sh                          rsk7203_defconfig
-csky                             alldefconfig
-powerpc                  iss476-smp_defconfig
-sh                      rts7751r2d1_defconfig
-arm                        clps711x_defconfig
-arc                            hsdk_defconfig
-arm                         lpc32xx_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      tqm8xx_defconfig
-sh                           se7751_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                      cm5200_defconfig
-powerpc                     tqm8555_defconfig
-arm                         socfpga_defconfig
-arm                           sama5_defconfig
-sh                   secureedge5410_defconfig
-ia64                            zx1_defconfig
-mips                      maltaaprp_defconfig
-sh                             sh03_defconfig
-arc                    vdk_hs38_smp_defconfig
-microblaze                          defconfig
-sh                        sh7757lcr_defconfig
-mips                     loongson1b_defconfig
-arm                             mxs_defconfig
-sh                        sh7763rdp_defconfig
-riscv                            allmodconfig
-mips                           ip27_defconfig
-arm                            pleb_defconfig
-ia64                        generic_defconfig
-powerpc                         wii_defconfig
-sh                           sh2007_defconfig
-sh                           se7705_defconfig
-h8300                     edosk2674_defconfig
-arm                          pxa910_defconfig
-mips                        nlm_xlp_defconfig
-arm                        shmobile_defconfig
-nds32                             allnoconfig
-arm                          exynos_defconfig
-microblaze                      mmu_defconfig
-arm                        oxnas_v6_defconfig
-mips                malta_kvm_guest_defconfig
-arm                      footbridge_defconfig
-alpha                            allyesconfig
-powerpc                        cell_defconfig
-arm                         orion5x_defconfig
-arc                          axs101_defconfig
-arm                          pxa3xx_defconfig
-mips                     cu1830-neo_defconfig
-arc                        vdk_hs38_defconfig
-nds32                               defconfig
-c6x                              allyesconfig
-powerpc                      chrp32_defconfig
-arm                           tegra_defconfig
-sh                     magicpanelr2_defconfig
-xtensa                           allyesconfig
-sh                         ap325rxa_defconfig
-powerpc                     ep8248e_defconfig
-arm                        multi_v5_defconfig
-arm                        trizeps4_defconfig
-alpha                            alldefconfig
-powerpc                  storcenter_defconfig
-m68k                           sun3_defconfig
-arm                          collie_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210303
-i386                 randconfig-a003-20210303
-i386                 randconfig-a002-20210303
-i386                 randconfig-a004-20210303
-i386                 randconfig-a006-20210303
-i386                 randconfig-a001-20210303
-x86_64               randconfig-a013-20210303
-x86_64               randconfig-a016-20210303
-x86_64               randconfig-a015-20210303
-x86_64               randconfig-a014-20210303
-x86_64               randconfig-a012-20210303
-x86_64               randconfig-a011-20210303
-i386                 randconfig-a016-20210303
-i386                 randconfig-a012-20210303
-i386                 randconfig-a014-20210303
-i386                 randconfig-a013-20210303
-i386                 randconfig-a011-20210303
-i386                 randconfig-a015-20210303
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210303
-x86_64               randconfig-a001-20210303
-x86_64               randconfig-a004-20210303
-x86_64               randconfig-a002-20210303
-x86_64               randconfig-a005-20210303
-x86_64               randconfig-a003-20210303
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
