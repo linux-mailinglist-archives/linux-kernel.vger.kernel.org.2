@@ -2,152 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E7B32DDD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A5032DDD6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhCDXXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 18:23:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232741AbhCDXXF (ORCPT
+        id S233158AbhCDXXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 18:23:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34753 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233002AbhCDXXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 18:23:05 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9D3C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 15:23:03 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id x20so349286oie.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 15:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KX90TntfNSVDI/d+8xow5Mh17Q6zvuilvP5em04oWjY=;
-        b=evlkDz3tOC0PRm2yFOMRmARwNKsKxDT+D/sjkRuXV1enp+iw0RNNX7PXb0LeA4PIuk
-         a4adaa26mplL1TvI3Oa6QpU9gkZwS7NqO5vFN9NGwWQG96gOnbRstdXXREnPse4zOCSJ
-         wmClzqRUYMTOHDnkjYhUnQeri3Kv6FraqdTVDrzJ+lbM8lI+UDnw03PX3A418wQZtQcf
-         Qty0fett7YCVsVMlvaQIp+jkOWSAXv9la1FwplnqLjBg8hmMGdMAkstxUTFh25zy5YbH
-         nR6oxYgIpHy15AjyF447AWS3rjlhHbeqgPZfA0olvaACefhOKfONldoRjh0EIossCuOe
-         7fKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KX90TntfNSVDI/d+8xow5Mh17Q6zvuilvP5em04oWjY=;
-        b=nXjdzdEEnrz4GnpCwoxcC3L/ZRg/bdb9SBmDSeGP1FNEfcYQCVGEZFbdsJQCyNXLG5
-         CNpkSx5YHCyKhsFMn09BouoeJ7ufYBSEx1mNDiy11FgcsXbXJaVrxlaVMjFZDYZhXUhn
-         1OjZrFtkliP36rUOP+0PbRvPebDBfR+erE5GGvnvvMJ3AnpazdNJK+9zJQRb08/B/mOF
-         dVq5t6W9E4Sj5cE9+Ldh2PkpXhkfesOR1U6RQQf7QToJGX7bUK0zdJZPrzR+/dTs6gI8
-         fnYs/+ZsK2joYxXoLLEJsUQhqhYuSLGOMcZhQn9LetOifWY51jcXZWdIHwSqD02Tgf8X
-         djsw==
-X-Gm-Message-State: AOAM532cNbNzQE3Xc/73m2YGBZvHHp5+2N+1EuLMgY1Uxp65Y53yfmE5
-        +TWzhePxOQ4WKq7NrpCspt2f8M2orYxxOVqpajeNPw==
-X-Google-Smtp-Source: ABdhPJw5EMlZ2AtRwL99MLJuH8cQy6gfiGn2xNzO1c+09YeQxhf5xOt/ZHongEMMOoo1+Yg3FJeqgp4hisY4vJzlurE=
-X-Received: by 2002:aca:4892:: with SMTP id v140mr4795362oia.66.1614900183011;
- Thu, 04 Mar 2021 15:23:03 -0800 (PST)
+        Thu, 4 Mar 2021 18:23:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614900199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MnytmvR9EgRDtqBYT2OPErFkvJpnrPLeu+T2bLeBpMQ=;
+        b=C4M5+nrAR7JC3ILOsYdgAzOZOuEuASI81BGZX4er98vgDf2i+n2T3F3lAoFeegwA+WNYp3
+        oZ/j3qektwMYRgMICd8dDNYi6IOQwuMzI722EfOPaZHxvggCC6LaIdH1AxcDNdpNGjA9mp
+        BqQhbRZOXhbRfK9eKWPMxXoHk+uG5MM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-MogDKMT5MLqdHFaevOLoVQ-1; Thu, 04 Mar 2021 18:23:17 -0500
+X-MC-Unique: MogDKMT5MLqdHFaevOLoVQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 333A61842146;
+        Thu,  4 Mar 2021 23:23:14 +0000 (UTC)
+Received: from [10.10.112.189] (ovpn-112-189.rdu2.redhat.com [10.10.112.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2D0C639A71;
+        Thu,  4 Mar 2021 23:23:04 +0000 (UTC)
+Subject: Re: [EXT] Re: [Patch v4 1/3] lib: Restrict cpumask_local_spread to
+ houskeeping CPUs
+To:     Alex Belits <abelits@marvell.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, frederic@kernel.org,
+        juri.lelli@redhat.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        jinyuqi@huawei.com, zhangshaokun@hisilicon.com
+References: <20200625223443.2684-1-nitesh@redhat.com>
+ <20200625223443.2684-2-nitesh@redhat.com>
+ <3e9ce666-c9cd-391b-52b6-3471fe2be2e6@arm.com>
+ <20210127121939.GA54725@fuller.cnet> <87r1m5can2.fsf@nanos.tec.linutronix.de>
+ <20210128165903.GB38339@fuller.cnet> <87h7n0de5a.fsf@nanos.tec.linutronix.de>
+ <20210204181546.GA30113@fuller.cnet>
+ <cfa138e9-38e3-e566-8903-1d64024c917b@redhat.com>
+ <20210204190647.GA32868@fuller.cnet>
+ <d8884413-84b4-b204-85c5-810342807d21@redhat.com>
+ <87y2g26tnt.fsf@nanos.tec.linutronix.de>
+ <d0aed683-87ae-91a2-d093-de3f5d8a8251@redhat.com>
+ <7780ae60-efbd-2902-caaa-0249a1f277d9@redhat.com>
+ <07c04bc7-27f0-9c07-9f9e-2d1a450714ef@redhat.com>
+ <faa8d84e-db67-7fbe-891e-f4987f106b20@marvell.com>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Organization: Red Hat Inc,
+Message-ID: <250eedca-e594-e8d4-358b-4472aa9e3588@redhat.com>
+Date:   Thu, 4 Mar 2021 18:23:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210223023125.2265845-1-jiancai@google.com> <20210223023542.2287529-1-jiancai@google.com>
- <CACRpkdYC3iDD23SESM0j2=f56kr6ByKeedDQvkGwXbUC0br0fw@mail.gmail.com>
-In-Reply-To: <CACRpkdYC3iDD23SESM0j2=f56kr6ByKeedDQvkGwXbUC0br0fw@mail.gmail.com>
-From:   Jian Cai <jiancai@google.com>
-Date:   Thu, 4 Mar 2021 15:22:51 -0800
-Message-ID: <CA+SOCL+M5YfhygG=ogqvqp7y40v+32RiteGr=53THzwvdGugyA@mail.gmail.com>
-Subject: Re: [PATCH v5] ARM: Implement SLS mitigation
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        James Morse <james.morse@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <faa8d84e-db67-7fbe-891e-f4987f106b20@marvell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 7:04 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Tue, Feb 23, 2021 at 3:36 AM Jian Cai <jiancai@google.com> wrote:
->
-> > This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
-> > -mharden-sls=all, which mitigates the straight-line speculation
-> > vulnerability, speculative execution of the instruction following some
-> > unconditional jumps. Notice -mharden-sls= has other options as below,
-> > and this config turns on the strongest option.
-> >
-> > all: enable all mitigations against Straight Line Speculation that are implemented.
-> > none: disable all mitigations against Straight Line Speculation.
-> > retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-> > blr: enable the mitigation against Straight Line Speculation for BLR instructions.
->
-> I heard about compiler protection for this, so nice to see it happening!
->
-> Would you happen to know if there is any plan to do the same for GCC?
-> I know you folks at Google like LLVM, but if you know let us know.
 
-I think gcc also has these options.
-https://gcc.gnu.org/onlinedocs/gcc/AArch64-Options.html
+On 3/4/21 4:13 PM, Alex Belits wrote:
+> On 3/4/21 10:15, Nitesh Narayan Lal wrote:
+>> External Email
+>>
+>> ----------------------------------------------------------------------
+>>
+>> On 2/11/21 10:55 AM, Nitesh Narayan Lal wrote:
+>>> On 2/6/21 7:43 PM, Nitesh Narayan Lal wrote:
+>>>> On 2/5/21 5:23 PM, Thomas Gleixner wrote:
+>>>>> On Thu, Feb 04 2021 at 14:17, Nitesh Narayan Lal wrote:
+>>>>>> On 2/4/21 2:06 PM, Marcelo Tosatti wrote:
+>>>>>>>>> How about adding a new flag for isolcpus instead?
+>>>>>>>>>
+>>>>>>>> Do you mean a flag based on which we can switch the affinity mask to
+>>>>>>>> housekeeping for all the devices at the time of IRQ distribution?
+>>>>>>> Yes a new flag for isolcpus. HK_FLAG_IRQ_SPREAD or some better name.
+>>>>>> Does sounds like a nice idea to explore, lets see what Thomas thinks
+>>>>>> about it.
+>>> <snip>
+>>>
+>>>>>> When the affinity mask of the interrupt at the time when it is actually
+>>>>>> requested contains an isolated CPU then nothing prevents the kernel from
+>>>>>> steering it at an isolated CPU. But that has absolutely nothing to do
+>>>>>> with that spreading thingy.
+>>>>>>
+>>>>>> The only difference which this change makes is the fact that the
+>>>>>> affinity hint changes. Nothing else.
+>>>>>>
+>>>> Thanks for the detailed explanation.
+>>>>
+>>>> Before I posted this patch, I was doing some debugging on a setup where I
+>>>> was observing some latency issues due to the iavf IRQs that were pinned on
+>>>> the isolated CPUs.
+>>>>
+>>>> Based on some initial traces I had this impression that the affinity hint
+>>>> or cpumask_local_spread was somehow playing a role in deciding the affinity
+>>>> mask of these IRQs. Although, that does look incorrect after going through
+>>>> your explanation.
+>>>> For some reason, with a kernel that had this patch when I tried creating
+>>>> VFs iavf IRQs always ended up on the HK CPUs.
+>>>>
+>>>> The reasoning for the above is still not very clear to me. I will
+>>>> investigate
+>>>> this further to properly understand this behavior.
+>>>>
+>>>>
+>>> After a little more digging, I found out why cpumask_local_spread change
+>>> affects the general/initial smp_affinity for certain device IRQs.
+>>>
+>>> After the introduction of the commit:
+>>>
+>>>      e2e64a932 genirq: Set initial affinity in irq_set_affinity_hint()
+>>>
+>>
+>> Continuing the conversation about the above commit and adding Jesse.
+>> I was trying to understand the problem that the commit message explains
+>> "The default behavior of the kernel is somewhat undesirable as all
+>> requested interrupts end up on CPU0 after registration.", I have also been
+>> trying to reproduce this behavior without the patch but I failed in doing
+>> so, maybe because I am missing something here.
+>>
+>> @Jesse Can you please explain? FWIU IRQ affinity should be decided based on
+>> the default affinity mask.
+>>
+>> The problem with the commit is that when we overwrite the affinity mask
+>> based on the hinting mask we completely ignore the default SMP affinity
+>> mask. If we do want to overwrite the affinity based on the hint mask we
+>> should atleast consider the default SMP affinity.
+>>
+>
+> cpumask_local_spread() is used by a small number of drivers, mostly for
+> Ethernet and cryptographic devices, however it includes Cavium and Marvell
+> devices that were included in every piece of hardware that I and Yury Norov
+> worked on. Without my patch (or previous, later replaced, Yury's patch that
+> was developed before there were housekeeping CPUs), driver would completely
+> break any attempts to configure task isolation, because it would distribute
+> processing over CPUs regardless of any masks related to isolation (and later
+> housekeeping). This is why it was created, and it just happens that it also
+> makes sense for CPU isolation in general. Of course, none of it would be
+> experienced on hardware that does not include those devices, possibly
+> creating some wrong impression about its effect and purpose.
+>
+> It may be that my patch can be criticized for not accommodating CPU hotplug
+> and other runtime changes of masks. Or drivers can be criticized for their
+> behavior that relies on calling cpumask_local_spread() once on
+> initialization and then assuming that all CPUs are configured forever.
+> However as far as I can tell, currently we have no other means of
+> controlling the behavior of drivers that manage their own interrupt or
+> thread to CPU mapping, and no way to communicate any of those changes to
+> them while they are running. Drivers may have legitimate reasons for
+> maintaining permanent or semi-permanent CPU core to interrupt mapping,
+> especially on devices with very large numbers of CPU cores and built-in
+> support for parallel processing of network packets.
+>
+> If we want it to be done in some manner that accommodates current demands,
+> we should simply replace cpumask_local_spread() with something else, or,
+> maybe, add some means that will allow dynamic changes. Thankfully, there are
+> very few (IIRC, 19) places where cpumask_local_spread() is used, so it may
+> be accommodated with relatively small amount of code to write and test. Then
+> everything else will be able to switch to the same mechanism whenever
+> necessary.
+>
 
->
-> > +config HARDEN_SLS_ALL
-> > +       bool "enable SLS vulnerability hardening"
->
-> I would go in and also edit arch/arm/mm/Kconfig under:
-> config HARDEN_BRANCH_PREDICTOR add
-> select HARDEN_SLS_ALL
->
-> Because if the user wants hardening for branch prediction
-> in general then the user certainly wants this as well, if
-> available. The help text for that option literally says:
->
->  "This config option will take CPU-specific actions to harden
->    the branch predictor against aliasing attacks and may rely on
->    specific instruction sequences or control bits being set by
->    the system firmware."
->
-> Notice this only turns on for CPUs with CPU_SPECTRE
-> defined which makes sense. Also it is default y which fulfils
-> Will's request that it be turned on by default where
-> applicable. Notably it will not be turned on for pre-v7 silicon
-> which would be unhelpful as they don't suffer from
-> these bugs.
+So there are two different issues, the first issue is how the mask
+retrieved based on the cpumask_local_spread is used to set IRQ affinity.
+Ideally when a device is initialized its IRQs are distributed based on the
+default SMP affinity mask (considering irqbalance is disabled). However, it
+is not the case right now as some drivers that set their hint affinity
+using cpumask_local_spread overwrites the previously set affinity mask for
+the IRQs. So even if you configure the default_smp_affinity from the
+userspace it will not affect these device IRQs. This is precisely why your
+fix for cpumask_local_spread helped in improving the isolation.
 
-Thanks for the suggestion. I will update the patch.
+The second issue that you brought up is to balance the IRQ-specific load
+between CPUs efficiently. FWIU if you have irqbalance enabled it should
+already be doing that based on the policy that you define in the userspace.
+Is that not the case or maybe I am missing something?
 
->
-> Reading Kristofs compiler patch here:
-> https://reviews.llvm.org/rG195f44278c4361a4a32377a98a1e3a15203d3647
->
-> I take it that for affected CPUs we should also patch all assembly
-> in the kernel containing a RET, BR or BLR with
-> DSB SYS followed by ISB?
->
-> I suppose we would also need to look for any mov PC, <>
-> code...
->
-> I guess we can invent a "SB" macro to mimic what Aarch64 is
-> doing so the code is easy to read. (Thinking aloud.)
->
-> Yours,
-> Linus Walleij
+-- 
+Thanks
+Nitesh
+
