@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C008E32DCC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F3932DCD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbhCDWM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhCDWMy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:12:54 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E71C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 14:12:54 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id d13so32020187edp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 14:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UCo3mKQIbcpollGcJ9PYHtksoboB7Ro207jOYrCfzdo=;
-        b=g1Zn6sewFIleBOXnOHM71n+XqDprG9IKVcU3vrwC/LmP7RiEYZWioiuOo6u8eay8rp
-         1efpcjma6Y7hUyfQyOqliLwpMX7YVcRtMkHFwd4IttHF9G22LrA/mMggvqUZaqDgqmU1
-         133cDV7S24kpbxsZu8wG18e2IJ81VwzKnsak4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UCo3mKQIbcpollGcJ9PYHtksoboB7Ro207jOYrCfzdo=;
-        b=mftD3rgzCDUG8FczhvsY5Ckxem7tpTdhRlIazzD4FAFNXm+e+io+yMEaPRZcXJohNt
-         rgD4kPHkzqHm02zhPlQlTcKPO8lzlAbJxougjJYSziWjZPL/jJQ8BAXy0S0FqLyI2aos
-         xfhdKiUfCybqUCiLNlYB6H7HUbcL1WvpeG1d3b9y09iyxyChiWfUqfdfo7o+r8AzIlY3
-         IXxSJbSyWxGByuQrgsJFjn+PN7NJEywI5MvYqGtyNOSniT50EFJeMghGrbKffb73Llmq
-         S62fL5p3PsP0Ot1AarCjcrB2dRDJm5CKh1Ts4VSkHQ2Etlw+eD6f5KlbpNYY1lbyp4bz
-         +xVg==
-X-Gm-Message-State: AOAM5333jUGLLYADnNImhkHUUFqOcJ7AWz4jd93lg34b8mAlUvs2y8cF
-        Z4fyrdHckuEEHMFx7k/uZ8YTfAD+1Ep/lA==
-X-Google-Smtp-Source: ABdhPJzme5MAAWpf/zramDLF/Q+YNk0uNjfX+zRiBm3mY5cw1s0ZQPbrq+hYw2HTPbmIl+2U4okoLg==
-X-Received: by 2002:aa7:cd8c:: with SMTP id x12mr6809476edv.355.1614895972903;
-        Thu, 04 Mar 2021 14:12:52 -0800 (PST)
-Received: from prevas-ravi.prevas.se ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id q22sm362099ejy.5.2021.03.04.14.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 14:12:52 -0800 (PST)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <linux@roeck-us.net>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v2 3/3] watchdog: gpio_wdt: implement support for optional "delay" clock
-Date:   Thu,  4 Mar 2021 23:12:47 +0100
-Message-Id: <20210304221247.488173-4-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210304221247.488173-1-linux@rasmusvillemoes.dk>
-References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
- <20210304221247.488173-1-linux@rasmusvillemoes.dk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231985AbhCDWO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:14:26 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:53198 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230486AbhCDWOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:14:25 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614896065; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=5xQNWGzpOBIi5UGcFmdKOWjQb0d9Q/YSE/meDTlP+2k=; b=gaw+jXp4s2z4zlsAWIuYuNwdxYw6MF8iI7KKPbLe24sv6hFDR+i+rscJrxCoENYrZzeGBVj4
+ xDEzBCGjFeKSQAU8rMZxxdI/npIEMCLSNH4hZ2NLplVjhJIX4zROirgx9hGsmyXRkWuixg3B
+ ne6gaqpjVM5gLvdXGOeC7f+zIUE=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60415bb9c862e1b9fd2a8429 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Mar 2021 22:14:17
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F078BC4322F; Thu,  4 Mar 2021 22:14:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3A9BC4322A;
+        Thu,  4 Mar 2021 22:14:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3A9BC4322A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2] bus: mhi: core: Add missing checks for MMIO register entries
+Date:   Thu,  4 Mar 2021 14:14:09 -0800
+Message-Id: <1614896049-15912-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[DO NOT MERGE - see cover letter]
+As per documentation, fields marked as (required) in an MHI
+controller structure need to be populated by the controller driver
+before calling mhi_register_controller(). Ensure all required
+pointers and non-zero fields are present in the controller before
+proceeding with registration.
 
-We have a board where the reset output from the ADM706S is split in
-two: directly routed to an interrupt, and also to start a ripple
-counter, which 64 ms later than pulls the SOC's reset pin. That ripple
-counter only works if the RTC's 32kHz output is enabled, and since
-linux by default disables unused clocks, that effectively renders the
-watchdog useless.
-
-Add driver support for an optional "delay" clock, as documented in the
-preceding patch.
-
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 ---
- drivers/watchdog/gpio_wdt.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/bus/mhi/core/init.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/watchdog/gpio_wdt.c b/drivers/watchdog/gpio_wdt.c
-index 0923201ce874..f812c39bc1e8 100644
---- a/drivers/watchdog/gpio_wdt.c
-+++ b/drivers/watchdog/gpio_wdt.c
-@@ -6,6 +6,7 @@
-  */
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 272f350..fed8a25 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -879,10 +879,9 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 	u32 soc_info;
+ 	int ret, i;
  
- #include <linux/err.h>
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/gpio/consumer.h>
-@@ -111,6 +112,7 @@ static int gpio_wdt_probe(struct platform_device *pdev)
- 	enum gpiod_flags gflags;
- 	unsigned int hw_margin;
- 	const char *algo;
-+	struct clk *clk;
- 	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -164,6 +166,13 @@ static int gpio_wdt_probe(struct platform_device *pdev)
- 	if (priv->always_running)
- 		gpio_wdt_start(&priv->wdd);
- 
-+	clk = devm_clk_get_optional(dev, "delay");
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+	ret = devm_clk_prepare_enable(dev, clk);
-+	if (ret)
-+		return ret;
-+
- 	return devm_watchdog_register_device(dev, &priv->wdd);
- }
- 
+-	if (!mhi_cntrl)
+-		return -EINVAL;
+-
+-	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
++	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
++	    !mhi_cntrl->fw_image || !mhi_cntrl->irq ||
++	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
+ 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
+ 	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
+ 		return -EINVAL;
 -- 
-2.29.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
