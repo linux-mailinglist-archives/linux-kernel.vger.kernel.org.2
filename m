@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0187032CEE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1458232CEE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbhCDIxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:53:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
+        id S236956AbhCDIyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236868AbhCDIwp (ORCPT
+        with ESMTP id S236904AbhCDIxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:52:45 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D72CC061763
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 00:52:05 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 2so27818749ljr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:52:05 -0800 (PST)
+        Thu, 4 Mar 2021 03:53:54 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6657C061574;
+        Thu,  4 Mar 2021 00:53:13 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id l132so25784951qke.7;
+        Thu, 04 Mar 2021 00:53:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+0XMK2C3jkeiWB9VzQQQ0cOj8xpFdNqQrK20xkK9i1A=;
-        b=lSyQGH2WdOfmSXrtbCsBPnVj//cGCUNzQNd2nr1iLgsYdyeZ2UROgyYVda1T5m9WZv
-         jA2MSnC5sCaprR0fPW8ymMXHYN2M6dEqr2RPA8gAtydmewhOZ2GJHpCyWdQbdYAyultX
-         tneNhjNhyv3tFI63o9bv/6LGmMb3e3ExnfPvMR89aqyP8c3o6KiFKCku6legmwk0p2OO
-         UbIEc/1a1Mm6ldokUTB431l3fFt5z0lXZfiwu6LEzJiNxn+m8bhju8ijAn3XefLCtWvu
-         yMho7AlweWK+1JmlcbjdAANchs2FW3KyRGkcZxqaxQsDp5xnSQgI1upmqresIJZc7Pwq
-         /OIw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7yRX9wnbaqglQOqo35jp40oCDrn05rlNxnwnL03DlpE=;
+        b=KZp4VpCLyjq4r7v+f3wf3DEJwmNX69ZdxRoq/N35GcQfqmjHiarec+NRj7KIldoeDn
+         pZbEMbqOFxiQNvPhJdL/up4J+DHXdVPtN8l6ev1aGrjKVWrHdVUiyQ3Ne3+oN+ssrls6
+         LxnEGJ3S+kkZGcOyVXuepIbNqb1RPDtwc1GiQwhln41uDV1zNmeLCoGVCz1Zou/rv8Km
+         3zoPGw9sfJxB/GP+6HeJLHc7ZL8k/473wsXPli2Df4HTj+afRv1U+MNTSquDZmTG4vZZ
+         1GO0fzGBFPwvgzS1jPRN+1sMTk1UKbe7A2bA5z1ZcNiHFJUYu/I4XRGD4g+xai+Z2UfJ
+         P1BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+0XMK2C3jkeiWB9VzQQQ0cOj8xpFdNqQrK20xkK9i1A=;
-        b=MiIwFQKHZcn/PmuNgJmQjqSAdfC7b4KyZdOTK5vzE344DXMNcTLxrTCHwvWN5BalPz
-         Sq0Ip9yxj7nDt6+SMN9p9u6pw3aAEo565/aW+94NrS5hfbaSfpiiANbgSQTcmUzj+bCU
-         GmM5enERTAI8JR0Vjo/beLnr8yT7X09o6A1Pc4r+dT6tx0CYRB/wKbAyei3crZBK/ZjV
-         Ve5EuRPaxAucid6VdyVoVQLqF4eDrzPnObJYcfUtsRG5WphEWarKVnt8IQ7kXFhmEiKV
-         9QnpTLzwaeGGgBHdKaz6x7NvSumEfd3bydONmZv/qm6iqFYk1y5fMXokf0StxKRcgxMi
-         jV+g==
-X-Gm-Message-State: AOAM533eJg/8aw2bTj0yt01TW6unsAyltsv+BGcAcEq82E0dnJU1e90g
-        KL3ANArr4PqZ8nouotlqe5QmVFElh0wXt7kLJgLOWQ==
-X-Google-Smtp-Source: ABdhPJzbb++Rp2hEA6RLGpqIxuh+P7Z4Bnbc7cEOCh/2DXY+1S8b4BFA/vD6pDDcq1594E0+HBqctMM4/DGjkb4ej40=
-X-Received: by 2002:a2e:1649:: with SMTP id 9mr1838007ljw.74.1614847923518;
- Thu, 04 Mar 2021 00:52:03 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=7yRX9wnbaqglQOqo35jp40oCDrn05rlNxnwnL03DlpE=;
+        b=BrsrX6sXJT4Igv+0Dy4ru0hFWHRrHKS8s1CqYahfpFjv50gCTHtU17o+rIa93aOkKx
+         apfyuIMozmBdxcHZbCuU68GxH19Ns2AT31X2qK371pUoNR9V3wA7I7d4echRLgVVhqI1
+         TD8vctw2hQSAd6qcgU46GV4l4AZ08M/H86Dvi6FJQcfsF45PJYWkT1f8dDk+W5obDj8R
+         V0cs3B9puM29cVdw3MXMzuSoxX/wdLRwMF/NLA/imzA0v2vkStX/SDnOIcMAAR0VuRbA
+         gldMY/GE59QROPINJ/dV5d6DJSmFw0qfjVIltjjDaf5MHM+eDgTO3DG/Ps/GD7h8m37i
+         PYcA==
+X-Gm-Message-State: AOAM530UPQMHNuz4/4GaSR/srqejclm9+kxQnQTIOLlQEjWRd40f5e67
+        Le6felvS1iyGBxjTUCtXlAs=
+X-Google-Smtp-Source: ABdhPJxjxqpmSS1hWEgEm4NSaHKWX/oNGl1qgvhGmr20OkNkRZoYpCeiWyVlFdEF31Z6wDbKA53ELg==
+X-Received: by 2002:ae9:eb8a:: with SMTP id b132mr2828097qkg.296.1614847992933;
+        Thu, 04 Mar 2021 00:53:12 -0800 (PST)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id v145sm19926066qka.27.2021.03.04.00.53.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 00:53:12 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 4 Mar 2021 03:53:11 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     mkoutny@suse.com, rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YECf9yxMMAztYEH4@slm.duckdns.org>
+References: <20210302081705.1990283-1-vipinsh@google.com>
+ <20210302081705.1990283-2-vipinsh@google.com>
+ <YD+ubbB4Tz0ZlVvp@slm.duckdns.org>
+ <YEB6ULUgbf+s8ydd@google.com>
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-8-brad@pensando.io>
-In-Reply-To: <20210304034141.7062-8-brad@pensando.io>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 4 Mar 2021 09:51:52 +0100
-Message-ID: <CACRpkdZr8qrQ+b15z_zRP3wAntQeW7T0Z515sUv6e2gL9GzDyg@mail.gmail.com>
-Subject: Re: [PATCH 7/8] arm64: dts: Add Pensando Elba SoC support
-To:     Brad Larson <brad@pensando.io>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEB6ULUgbf+s8ydd@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 4:42 AM Brad Larson <brad@pensando.io> wrote:
+Hello,
 
-> Add Pensando common and Elba SoC specific device nodes
-> and corresponding binding documentation.
->
-> Signed-off-by: Brad Larson <brad@pensando.io>
-(...)
->  .../bindings/gpio/pensando,elba-spics.txt     |  24 ++
+On Wed, Mar 03, 2021 at 10:12:32PM -0800, Vipin Sharma wrote:
+> Right now there is no API for the caller to know total usage, unless they
+> keep their own tally, I was thinking it will be useful to add one more API
+> 
+> unsigned long misc_cg_res_total_usage(enum misc_res_type type)
+> 
+> It will return root_cg usage for "type" resource.
+> Will it be fine?
 
-Please use YAML schema for this.
+Yeah, that sounds fine.
 
-See Documentation/devicetree/writing-schema.rst
-for instructions, you need to install some python pip packages
-to test your schema.
+Thanks.
 
-Yours,
-Linus Walleij
+-- 
+tejun
