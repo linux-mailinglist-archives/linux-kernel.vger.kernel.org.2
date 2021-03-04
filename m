@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ECA32DBA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C351932DBA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237270AbhCDVPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:15:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37886 "EHLO
+        id S239293AbhCDVQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:16:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239385AbhCDVPI (ORCPT
+        with ESMTP id S237519AbhCDVPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:15:08 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F86EC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 13:14:28 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614892466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bw4qJjxKXVLh4PBNDOjMp/7CQXX7cieAxRXd2KtY/JM=;
-        b=c7Kb9ZAE+mGVXBIr81LLFHdoQilGRJAGuNHd+Ja7BalqgdlOA1LZnpFrlhwTaB8nGSoBfg
-        D8S2pFsmOX86eRXKenCfSIaIGYXzELSSSu4GGsenMkAL/8nUfGC02odu9B2tQIOLXCsdNP
-        ptKRFSDk/XKpG9V+swRM2xq5cRwjzatz29uZNJbYNgUQhPozhIFwi6uUDvi+o/o2C9eF9q
-        kNAKxL7B7lm0ubRexOjXrZQIPFhRu/63GN84DwFYeJLwHjGNcAzPVik+WEuJuWxL+QtGpA
-        Cdyhq5iNcpbalFSTtUXnBYu+OYhLmOMgbyFXw1p2yJVd+b+DFkTW6Gx6zA7yHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614892466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bw4qJjxKXVLh4PBNDOjMp/7CQXX7cieAxRXd2KtY/JM=;
-        b=yfFBAKmme33doAZag+SXQd7QwFJ9u9ZaIG8nbQ1VCq9p8tAOrbaMJYG8H2NUjsxmmZVM9C
-        Zjb7J1XRKnGj+kCw==
-To:     Oleg Nesterov <oleg@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
-In-Reply-To: <20210303153732.GC28955@redhat.com>
-References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de> <20210303153732.GC28955@redhat.com>
-Date:   Thu, 04 Mar 2021 22:14:26 +0100
-Message-ID: <87ft1a62q5.fsf@nanos.tec.linutronix.de>
+        Thu, 4 Mar 2021 16:15:53 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CDCC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 13:15:13 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id e2so27969169ljo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 13:15:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C4GiH7OsFqBXNgPH9lEXvnAS/VBedlFXUn708GSVLWs=;
+        b=HNy3dt+f1rBLexxgKM508D0xHwg6OpIpHIGpOed+5RHLqIKoVYGKTjERUIERsyQCur
+         RghFiw+842AbLBDt4WeumgW2bbCFFuIa9qbNGLWZ+j3f6wOegcZa4SwhZWdWbN0gkWuQ
+         Lq5DV+yjKFHmzW8AkALe9YvH9OYxFPaunwJPU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C4GiH7OsFqBXNgPH9lEXvnAS/VBedlFXUn708GSVLWs=;
+        b=SZhjFNbp7Fo8LTVZWCGZE0K6wRmqqZwviMV5BSkVhdQDzAWbO4WHDmZcu1h46jzF3V
+         SOsbJhq0en8aHmiHSyCAQf2VuuD+551V32FJNSvdi2e4LSZbvlUlBhW2AdztWNNiSjbM
+         HhZ0Hd/lYy6bZHxXKyxhg/ZC5JTh1q25z8O/6kczQa3zuFkoTZM4AaIRV4CJFE95JJBQ
+         6YjdJ9KUtKmtEyryjRuuwCgaRjLMLyIF+8Q8Z0bMcN/CJu9XdB7rCNyZJ420zXfHQZO1
+         Z1enjg4Lk4bTpeg/w3XEH5VPbZsBxXq+bm17Run2K7Lq5epkxyslZEEjDWoKPyQnWiGP
+         JCVw==
+X-Gm-Message-State: AOAM5338aJWIJSr1QmY9CA6reo28cIAVn80Nyew54GGwfSqceqjfJPKQ
+        O63Tbp6ERCyhrSOc+9E1LJJTg4kzmbmHCA==
+X-Google-Smtp-Source: ABdhPJzinQFoGuH+/mEHlV3ZqYsuSbF3graqEPdUu9T8kR0eFGbI1xq+AFEm2XqFUGX1OUiUszv0Mw==
+X-Received: by 2002:a05:651c:3c1:: with SMTP id f1mr3318816ljp.507.1614892511084;
+        Thu, 04 Mar 2021 13:15:11 -0800 (PST)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id y2sm59157lfs.51.2021.03.04.13.15.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 13:15:09 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id k12so26135423ljg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 13:15:08 -0800 (PST)
+X-Received: by 2002:a2e:9bd0:: with SMTP id w16mr3223231ljj.465.1614892508416;
+ Thu, 04 Mar 2021 13:15:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210302192700.399054668@linuxfoundation.org> <CA+G9fYsA7U7rzd=yGYQ=uWViY3_dXc4iY_pC-DM1K3R+gac19g@mail.gmail.com>
+ <175fac9c-ac3f-bd82-9e5d-2c2970cfc519@roeck-us.net> <CA+G9fYtkrAs=ASaVVu6-Lnck8A6Pt_LGODxnpTYouvppbw_rbQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYtkrAs=ASaVVu6-Lnck8A6Pt_LGODxnpTYouvppbw_rbQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Mar 2021 13:14:52 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgxLTur2G5mvYKCXE4DkUo90T2Dy3X526sqJgOCm0gzNA@mail.gmail.com>
+Message-ID: <CAHk-=wgxLTur2G5mvYKCXE4DkUo90T2Dy3X526sqJgOCm0gzNA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03 2021 at 16:37, Oleg Nesterov wrote:
-> On 03/03, Sebastian Andrzej Siewior wrote:
->> +static void __sigqueue_cache_or_free(struct sigqueue *q)
->> +{
->> +	struct user_struct *up;
->> +
->> +	if (q->flags & SIGQUEUE_PREALLOC)
->> +		return;
->> +
->> +	up = q->user;
->> +	if (atomic_dec_and_test(&up->sigpending))
->> +		free_uid(up);
->> +	if (!task_is_realtime(current) || !sigqueue_add_cache(current, q))
->> +		kmem_cache_free(sigqueue_cachep, q);
->> +}
+On Thu, Mar 4, 2021 at 9:56 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 >
-> Well, this duplicates __sigqueue_free... Do we really need the new helper?
-> What if we simply change __sigqueue_free() to do sigqueue_add_cache() if
-> task_is_realtime() && !PF_EXITING ? This too can simplify the patch...
+> On Thu, 4 Mar 2021 at 01:34, Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > Upstream has:
+> >
+> > e71a8d5cf4b4 tty: fix up iterate_tty_read() EOVERFLOW handling
+> > ddc5fda74561 tty: fix up hung_up_tty_read() conversion
+>
+> I have applied these two patches and the reported problem did not solve.
 
-Need to stare at all callers of __sigqueue_free() whether they are
-really happy about this. Even if not, this surely can be deduplicated.
+Hmm. Upstream has:
 
-Thanks,
+*  3342ff2698e9 ("tty: protect tty_write from odd low-level tty disciplines")
+*  a9cbbb80e3e7 ("tty: avoid using vfs_iocb_iter_write() for
+redirected console writes")
+*  17749851eb9c ("tty: fix up hung_up_tty_write() conversion")
+G  e71a8d5cf4b4 ("tty: fix up iterate_tty_read() EOVERFLOW handling")
+G  ddc5fda74561 ("tty: fix up hung_up_tty_read() conversion")
+ * c7135bbe5af2 ("tty: fix up hung_up_tty_write() conversion")
+  d7fe75cbc23c ("tty: teach the n_tty ICANON case about the new
+"cookie continuations" too")
+  15ea8ae8e03f ("tty: teach n_tty line discipline about the new
+"cookie continuations"")
+  64a69892afad ("tty: clean up legacy leftovers from n_tty line discipline")
+*  9bb48c82aced ("tty: implement write_iter")
+*  dd78b0c483e3 ("tty: implement read_iter")
+*  3b830a9c34d5 ("tty: convert tty_ldisc_ops 'read()' function to take
+a kernel pointer")
 
-        tglx
+Where those ones marked with '*' seem to be in v5.10.y, and the one
+prefixed with 'G' are the ones Guenter mentioned.
+
+(We seem to have the "tty: fix up hung_up_tty_write() conversion"
+commit twice. I'm not sure how that happened, but whatever).
+
+But that still leaves three commits that don't seem to be in 5.10.y:
+
+  d7fe75cbc23c ("tty: teach the n_tty ICANON case about the new
+"cookie continuations" too")
+  15ea8ae8e03f ("tty: teach n_tty line discipline about the new
+"cookie continuations"")
+  64a69892afad ("tty: clean up legacy leftovers from n_tty line discipline")
+
+and they might fix what are otherwise short reads. Which is allowed by
+POSIX, afaik, but ..
+
+Do those three commits fix your test-case?
+
+(And maybe my filtering and trying to figure out what is upstream and
+what is in 5.10.y is broken, and there's something else there too).
+
+                Linus
