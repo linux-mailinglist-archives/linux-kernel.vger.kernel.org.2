@@ -2,459 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDD132CBA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3450032CBA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbhCDEpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:45:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233889AbhCDEpV (ORCPT
+        id S233862AbhCDEsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:48:25 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48130 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233857AbhCDEsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:45:21 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D14C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 20:44:41 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id n195so27091308ybg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 20:44:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JYEud7KyN685NtuD+qutzxHgadIhbgT8GB+suT76Nsg=;
-        b=ps34FINLTIu5RwC5SUEzGdcRGG2rxci/L8oGH4Lj9lre+VQ8SxmWK+uboULj7o7NsD
-         BzYpwOt5VR5w6AjNz+a+3iydDgmpA9VTej3eF5I5kcGxkrB/UWDFQBZLvpx9aHgr05h0
-         UUIJCtImnY38PdnJLDtoXvNyDTrPgi8NmY6Zt9mtD7XQDgURLFAdIh2ooNZYLxpPFCh4
-         G32bWygQCAfEQ36zUXg9rJ/qKIHsUhlRHigmmzWBWFIkBXbyb2S1S4E54lHnIOZWhNhM
-         jdnbSj+9VuRkClpUobYSikFNckbyo+GnaeYMr0tARPj7l5av6XZjKP/WPu+LnvWfz5xv
-         aq3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JYEud7KyN685NtuD+qutzxHgadIhbgT8GB+suT76Nsg=;
-        b=dD4S58Eus9lFvG3u1LmMWX68mdlF/iBIZ4EFMoLOYRqVtI8uEp64JX97GbhkBs0PpB
-         kXhQR6QoxEj5KXURcqCPBra1PdY9mhb9pHnkTqkweyMABFpxKJTyVoqXxWYsoNsAAaCd
-         wIz/iwXHknmNI6t9YNMGJpJ78a1oJbSQCULQWumIBy+f/4z7krTlY8UmpnDX4VEpsMta
-         a1qLaQn7BAB9hymAdgYC5X3ziFCp/xQ8K/gH8RjS4YLQ4LQ3m34RGJpciz8QdNQx2ZWr
-         pcVWs6V2N2AiOQunyakJmhTTLkwrBp7xRgc98holMpZTamXz0RYcan8OAkMyD0R/C7QK
-         wtMA==
-X-Gm-Message-State: AOAM531/59cxGOV2Ygoht/vTNrUS7Asj5zPnk+tlSc5Zx5FUWOXpuNGX
-        ZJpj7pRxrIvwWMyS4Rr8Rw5HQsBZ2ddiwxa9YeCwog==
-X-Google-Smtp-Source: ABdhPJzqZ4LUWdnzXPcTE4/rAwAw5d+h/+48Uw2gHam59rTGYcn+dDKMejVv9auQKc01JcRAprl8IXAXccDlhB02KG0=
-X-Received: by 2002:a25:aa43:: with SMTP id s61mr4111016ybi.32.1614833080324;
- Wed, 03 Mar 2021 20:44:40 -0800 (PST)
+        Wed, 3 Mar 2021 23:48:07 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244jp9U053936;
+        Wed, 3 Mar 2021 22:45:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614833151;
+        bh=u9Fq9fIcV8m7q8E+GxjFecB7Rn7qfqMQABRRfIQPQ20=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=U7AUjuUC2GePB6TOCvKlXOErPWvIBabL0u2hKgcX4tjWItsT1YShQ5PJG6BwvLFC2
+         1a0PODXcFRL9A1MxGhkd4fuLPd0aA3/bt7fBsNqfdIQqOvTjlxlOGLmnjqGFZ4APga
+         0LXrjlI+JQScEtebPVQZALC1mT58YCwqY5OfnAP4=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244jpKF074566
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 3 Mar 2021 22:45:51 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
+ 2021 22:45:51 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 3 Mar 2021 22:45:51 -0600
+Received: from [10.250.233.159] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244jmBx090114;
+        Wed, 3 Mar 2021 22:45:49 -0600
+Subject: Re: [PATCH v2 1/9] dt-bindings: phy: ti,phy-j721e-wiz: Add bindings
+ for AM64 SERDES Wrapper
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Peter Rosin <peda@axentia.se>,
+        Swapnil Jakhade <sjakhade@cadence.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>
+References: <20210222112314.10772-1-kishon@ti.com>
+ <20210222112314.10772-2-kishon@ti.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <8fc3e9a0-573e-01b1-1054-55d3c19e42f6@ti.com>
+Date:   Thu, 4 Mar 2021 10:15:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210304035958.3657121-1-saravanak@google.com>
-In-Reply-To: <20210304035958.3657121-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 3 Mar 2021 20:44:03 -0800
-Message-ID: <CAGETcx_qO4vxTSyBtBR2k7fd_3rGJF42iBbJH37HPNw=FheDKg@mail.gmail.com>
-Subject: Re: [PATCH v2] amba: Remove deferred device addition
-To:     Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Rob Herring <robh@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210222112314.10772-2-kishon@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 8:00 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> The uevents generated for an amba device need PID and CID information
-> that's available only when the amba device is powered on, clocked and
-> out of reset. So, if those resources aren't available, the information
-> can't be read to generate the uevents. To workaround this requirement,
-> if the resources weren't available, the device addition was deferred and
-> retried periodically.
->
-> However, this deferred addition retry isn't based on resources becoming
-> available. Instead, it's retried every 5 seconds and causes arbitrary
-> probe delays for amba devices and their consumers.
->
-> Also, maintaining a separate deferred-probe like mechanism is
-> maintenance headache.
->
-> With this commit, instead of deferring the device addition, we simply
-> defer the generation of uevents for the device and probing of the device
-> (because drivers needs PID and CID to match) until the PID and CID
-> information can be read. This allows us to delete all the amba specific
-> deferring code and also avoid the arbitrary probing delays.
->
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: John Stultz <john.stultz@linaro.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+Hi Rob,
+
+On 22/02/21 4:53 pm, Kishon Vijay Abraham I wrote:
+> Add bindings for AM64 SERDES Wrapper.
+
+I've fixed all your comments provided in the previous version. Can you
+review this and give your ACKs please?
+
+Best Regards,
+Kishon
+
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 > ---
->  drivers/amba/bus.c | 293 ++++++++++++++++++---------------------------
->  1 file changed, 115 insertions(+), 178 deletions(-)
->
-> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-> index 939ca220bf78..fac4110b2f58 100644
-> --- a/drivers/amba/bus.c
-> +++ b/drivers/amba/bus.c
-> @@ -149,11 +149,101 @@ static struct attribute *amba_dev_attrs[] = {
->  };
->  ATTRIBUTE_GROUPS(amba_dev);
->
-> +static int amba_read_periphid(struct amba_device *dev)
-> +{
-> +       u32 size;
-> +       void __iomem *tmp;
-> +       u32 pid, cid;
-> +       struct reset_control *rstc;
-> +       int i, ret;
+>  .../bindings/phy/ti,phy-j721e-wiz.yaml        | 10 ++++++---
+>  include/dt-bindings/phy/phy-ti.h              | 21 +++++++++++++++++++
+>  2 files changed, 28 insertions(+), 3 deletions(-)
+>  create mode 100644 include/dt-bindings/phy/phy-ti.h
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> index c33e9bc79521..bf431f98e6ea 100644
+> --- a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> +++ b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> @@ -12,9 +12,10 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - ti,j721e-wiz-16g
+> -      - ti,j721e-wiz-10g
+> +    oneOf:
+> +      - const: ti,j721e-wiz-16g
+> +      - const: ti,j721e-wiz-10g
+> +      - const: ti,am64-wiz-10g
+>  
+>    power-domains:
+>      maxItems: 1
+> @@ -42,6 +43,9 @@ properties:
+>    "#reset-cells":
+>      const: 1
+>  
+> +  "#clock-cells":
+> +    const: 1
 > +
-> +       /*
-> +        * Dynamically calculate the size of the resource
-> +        * and use this for iomap
-> +        */
-> +       size = resource_size(&dev->res);
-> +       tmp = ioremap(dev->res.start, size);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       ret = dev_pm_domain_attach(&dev->dev, true);
-> +       if (ret)
-> +               goto err_pm;
-> +
-> +       ret = amba_get_enable_pclk(dev);
-> +       if (ret)
-> +               goto err_clk;
-> +
-> +       /*
-> +        * Find reset control(s) of the amba bus and de-assert them.
-> +        */
-> +       rstc = of_reset_control_array_get_optional_shared(dev->dev.of_node);
-> +       if (IS_ERR(rstc)) {
-> +               ret = PTR_ERR(rstc);
-> +               if (ret != -EPROBE_DEFER)
-> +                       dev_err(&dev->dev, "can't get reset: %d\n",
-> +                               ret);
-> +               goto err_reset;
-> +       }
-> +       reset_control_deassert(rstc);
-> +       reset_control_put(rstc);
-> +
-> +       /*
-> +        * Read pid and cid based on size of resource
-> +        * they are located at end of region
-> +        */
-> +       for (pid = 0, i = 0; i < 4; i++)
-> +               pid |= (readl(tmp + size - 0x20 + 4 * i) & 255) <<
-> +                       (i * 8);
-> +       for (cid = 0, i = 0; i < 4; i++)
-> +               cid |= (readl(tmp + size - 0x10 + 4 * i) & 255) <<
-> +                       (i * 8);
-> +
-> +       if (cid == CORESIGHT_CID) {
-> +               /* set the base to the start of the last 4k block */
-> +               void __iomem *csbase = tmp + size - 4096;
-> +
-> +               dev->uci.devarch =
-> +                       readl(csbase + UCI_REG_DEVARCH_OFFSET);
-> +               dev->uci.devtype =
-> +                       readl(csbase + UCI_REG_DEVTYPE_OFFSET) & 0xff;
-> +       }
-> +
-> +       amba_put_disable_pclk(dev);
-> +
-> +       if (cid == AMBA_CID || cid == CORESIGHT_CID) {
-> +               dev->periphid = pid;
-> +               dev->cid = cid;
-> +       }
-> +
-> +       if (!dev->periphid)
-> +               ret = -ENODEV;
-> +
-> +       return ret;
-> +
-> +err_reset:
-> +       amba_put_disable_pclk(dev);
-> +err_clk:
-> +       dev_pm_domain_detach(&dev->dev, true);
-> +err_pm:
-> +       iounmap(tmp);
-> +       return ret;
-> +}
-> +
->  static int amba_match(struct device *dev, struct device_driver *drv)
->  {
->         struct amba_device *pcdev = to_amba_device(dev);
->         struct amba_driver *pcdrv = to_amba_driver(drv);
->
-> +       if (!pcdev->periphid) {
-> +               int ret = amba_read_periphid(pcdev);
-> +
-> +               if (ret)
-> +                       return ret;
-> +               dev_set_uevent_suppress(dev, false);
-> +               kobject_uevent(&dev->kobj, KOBJ_ADD);
-> +       }
-> +
->         /* When driver_override is set, only bind to the matching driver */
->         if (pcdev->driver_override)
->                 return !strcmp(pcdev->driver_override, drv->name);
-> @@ -373,98 +463,43 @@ static void amba_device_release(struct device *dev)
->         kfree(d);
->  }
-
-Heh... after sending this patch I went down a rabbit hole of
-links/emails. I was wondering why the bus.match() op already supported
--EPROBE_DEFER and what bus needed it in the first place. Turns out it
-was added for AMBA [1] and there was even a patch [2] that tried to do
-what I'm doing here but wasn't complete. Looks like only [1] was
-picked up for some reason with no user. Or is there some other bus
-that returns -EPROBE_DEFER or match?
-
--Saravana
-
-[1] - https://lore.kernel.org/lkml/1443517859-30376-2-git-send-email-tomeu.vizoso@collabora.com/
-[2] - https://lore.kernel.org/lkml/1443517859-30376-3-git-send-email-tomeu.vizoso@collabora.com/
-
->
-> -static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
-> +/**
-> + *     amba_device_add - add a previously allocated AMBA device structure
-> + *     @dev: AMBA device allocated by amba_device_alloc
-> + *     @parent: resource parent for this devices resources
-> + *
-> + *     Claim the resource, and read the device cell ID if not already
-> + *     initialized.  Register the AMBA device with the Linux device
-> + *     manager.
+>    ranges: true
+>  
+>    assigned-clocks:
+> diff --git a/include/dt-bindings/phy/phy-ti.h b/include/dt-bindings/phy/phy-ti.h
+> new file mode 100644
+> index 000000000000..ad955d3a56b4
+> --- /dev/null
+> +++ b/include/dt-bindings/phy/phy-ti.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * This header provides constants for TI SERDES.
 > + */
-> +int amba_device_add(struct amba_device *dev, struct resource *parent)
->  {
-> -       u32 size;
-> -       void __iomem *tmp;
-> -       int i, ret;
-> +       int ret;
->
->         WARN_ON(dev->irq[0] == (unsigned int)-1);
->         WARN_ON(dev->irq[1] == (unsigned int)-1);
->
->         ret = request_resource(parent, &dev->res);
->         if (ret)
-> -               goto err_out;
-> -
-> -       /* Hard-coded primecell ID instead of plug-n-play */
-> -       if (dev->periphid != 0)
-> -               goto skip_probe;
-> -
-> -       /*
-> -        * Dynamically calculate the size of the resource
-> -        * and use this for iomap
-> -        */
-> -       size = resource_size(&dev->res);
-> -       tmp = ioremap(dev->res.start, size);
-> -       if (!tmp) {
-> -               ret = -ENOMEM;
-> -               goto err_release;
-> -       }
-> -
-> -       ret = dev_pm_domain_attach(&dev->dev, true);
-> -       if (ret) {
-> -               iounmap(tmp);
-> -               goto err_release;
-> -       }
-> -
-> -       ret = amba_get_enable_pclk(dev);
-> -       if (ret == 0) {
-> -               u32 pid, cid;
-> -               struct reset_control *rstc;
-> -
-> -               /*
-> -                * Find reset control(s) of the amba bus and de-assert them.
-> -                */
-> -               rstc = of_reset_control_array_get_optional_shared(dev->dev.of_node);
-> -               if (IS_ERR(rstc)) {
-> -                       ret = PTR_ERR(rstc);
-> -                       if (ret != -EPROBE_DEFER)
-> -                               dev_err(&dev->dev, "can't get reset: %d\n",
-> -                                       ret);
-> -                       goto err_reset;
-> -               }
-> -               reset_control_deassert(rstc);
-> -               reset_control_put(rstc);
-> +               return ret;
->
-> +       /* If primecell ID isn't hard-coded, figure it out */
-> +       if (dev->periphid) {
-> +               ret = amba_read_periphid(dev);
-> +               if (ret && ret != -EPROBE_DEFER)
-> +                       goto err_release;
->                 /*
-> -                * Read pid and cid based on size of resource
-> -                * they are located at end of region
-> +                * AMBA device uevents require reading its pid and cid
-> +                * registers.  To do this, the device must be on, clocked and
-> +                * out of reset.  However in some cases those resources might
-> +                * not yet be available.  If that's the case, we suppress the
-> +                * generation of uevents until we can read the pid and cid
-> +                * registers.  See also amba_match().
->                  */
-> -               for (pid = 0, i = 0; i < 4; i++)
-> -                       pid |= (readl(tmp + size - 0x20 + 4 * i) & 255) <<
-> -                               (i * 8);
-> -               for (cid = 0, i = 0; i < 4; i++)
-> -                       cid |= (readl(tmp + size - 0x10 + 4 * i) & 255) <<
-> -                               (i * 8);
-> -
-> -               if (cid == CORESIGHT_CID) {
-> -                       /* set the base to the start of the last 4k block */
-> -                       void __iomem *csbase = tmp + size - 4096;
-> -
-> -                       dev->uci.devarch =
-> -                               readl(csbase + UCI_REG_DEVARCH_OFFSET);
-> -                       dev->uci.devtype =
-> -                               readl(csbase + UCI_REG_DEVTYPE_OFFSET) & 0xff;
-> -               }
-> -
-> -               amba_put_disable_pclk(dev);
-> -
-> -               if (cid == AMBA_CID || cid == CORESIGHT_CID) {
-> -                       dev->periphid = pid;
-> -                       dev->cid = cid;
-> -               }
-> -
-> -               if (!dev->periphid)
-> -                       ret = -ENODEV;
-> +               if (ret)
-> +                       dev_set_uevent_suppress(&dev->dev, true);
->         }
->
-> -       iounmap(tmp);
-> -       dev_pm_domain_detach(&dev->dev, true);
-> -
-> -       if (ret)
-> -               goto err_release;
-> -
-> - skip_probe:
->         ret = device_add(&dev->dev);
->         if (ret)
->                 goto err_release;
-> @@ -477,106 +512,8 @@ static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
->                 return ret;
->
->         device_unregister(&dev->dev);
-> -
->   err_release:
->         release_resource(&dev->res);
-> - err_out:
-> -       return ret;
-> -
-> - err_reset:
-> -       amba_put_disable_pclk(dev);
-> -       iounmap(tmp);
-> -       dev_pm_domain_detach(&dev->dev, true);
-> -       goto err_release;
-> -}
-> -
-> -/*
-> - * Registration of AMBA device require reading its pid and cid registers.
-> - * To do this, the device must be turned on (if it is a part of power domain)
-> - * and have clocks enabled. However in some cases those resources might not be
-> - * yet available. Returning EPROBE_DEFER is not a solution in such case,
-> - * because callers don't handle this special error code. Instead such devices
-> - * are added to the special list and their registration is retried from
-> - * periodic worker, until all resources are available and registration succeeds.
-> - */
-> -struct deferred_device {
-> -       struct amba_device *dev;
-> -       struct resource *parent;
-> -       struct list_head node;
-> -};
-> -
-> -static LIST_HEAD(deferred_devices);
-> -static DEFINE_MUTEX(deferred_devices_lock);
-> -
-> -static void amba_deferred_retry_func(struct work_struct *dummy);
-> -static DECLARE_DELAYED_WORK(deferred_retry_work, amba_deferred_retry_func);
-> -
-> -#define DEFERRED_DEVICE_TIMEOUT (msecs_to_jiffies(5 * 1000))
-> -
-> -static int amba_deferred_retry(void)
-> -{
-> -       struct deferred_device *ddev, *tmp;
-> -
-> -       mutex_lock(&deferred_devices_lock);
-> -
-> -       list_for_each_entry_safe(ddev, tmp, &deferred_devices, node) {
-> -               int ret = amba_device_try_add(ddev->dev, ddev->parent);
-> -
-> -               if (ret == -EPROBE_DEFER)
-> -                       continue;
-> -
-> -               list_del_init(&ddev->node);
-> -               kfree(ddev);
-> -       }
-> -
-> -       mutex_unlock(&deferred_devices_lock);
-> -
-> -       return 0;
-> -}
-> -late_initcall(amba_deferred_retry);
-> -
-> -static void amba_deferred_retry_func(struct work_struct *dummy)
-> -{
-> -       amba_deferred_retry();
-> -
-> -       if (!list_empty(&deferred_devices))
-> -               schedule_delayed_work(&deferred_retry_work,
-> -                                     DEFERRED_DEVICE_TIMEOUT);
-> -}
-> -
-> -/**
-> - *     amba_device_add - add a previously allocated AMBA device structure
-> - *     @dev: AMBA device allocated by amba_device_alloc
-> - *     @parent: resource parent for this devices resources
-> - *
-> - *     Claim the resource, and read the device cell ID if not already
-> - *     initialized.  Register the AMBA device with the Linux device
-> - *     manager.
-> - */
-> -int amba_device_add(struct amba_device *dev, struct resource *parent)
-> -{
-> -       int ret = amba_device_try_add(dev, parent);
-> -
-> -       if (ret == -EPROBE_DEFER) {
-> -               struct deferred_device *ddev;
-> -
-> -               ddev = kmalloc(sizeof(*ddev), GFP_KERNEL);
-> -               if (!ddev)
-> -                       return -ENOMEM;
-> -
-> -               ddev->dev = dev;
-> -               ddev->parent = parent;
-> -               ret = 0;
-> -
-> -               mutex_lock(&deferred_devices_lock);
-> -
-> -               if (list_empty(&deferred_devices))
-> -                       schedule_delayed_work(&deferred_retry_work,
-> -                                             DEFERRED_DEVICE_TIMEOUT);
-> -               list_add_tail(&ddev->node, &deferred_devices);
-> -
-> -               mutex_unlock(&deferred_devices_lock);
-> -       }
->         return ret;
->  }
->  EXPORT_SYMBOL_GPL(amba_device_add);
-> --
-> 2.30.1.766.gb4fecdf3b7-goog
->
+> +
+> +#ifndef _DT_BINDINGS_TI_SERDES
+> +#define _DT_BINDINGS_TI_SERDES
+> +
+> +/* Clock index for output clocks from WIZ */
+> +
+> +/* MUX Clocks */
+> +#define TI_WIZ_PLL0_REFCLK	0
+> +#define TI_WIZ_PLL1_REFCLK	1
+> +#define TI_WIZ_REFCLK_DIG	2
+> +
+> +/* Reserve index here for future additions */
+> +
+> +/* MISC Clocks */
+> +#define TI_WIZ_PHY_EN_REFCLK	16
+> +
+> +#endif /* _DT_BINDINGS_TI_SERDES */
+> 
