@@ -2,89 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3B632D526
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D8332D527
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241888AbhCDOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        id S238233AbhCDOUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:20:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241785AbhCDOTC (ORCPT
+        with ESMTP id S231893AbhCDOT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:19:02 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F99C061756;
-        Thu,  4 Mar 2021 06:18:22 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id a4so18963467pgc.11;
-        Thu, 04 Mar 2021 06:18:22 -0800 (PST)
+        Thu, 4 Mar 2021 09:19:58 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B2BC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 06:19:17 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id v15so27855181wrx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 06:19:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=LBqlEZyPcKTt510snqgHtrJs4QRW+RndpggZVW6Cb+U=;
-        b=qtwFImKXhr7tSBAHx4h06wq7ZHcxq94ai6Fpd1sBmD+6WVbNfohmeL8bkmQZtT3Xn4
-         BPsC2/bYDPPP/cFr+PoTaySPMZ36aZFfSqKJLvhEXXMFCJscqv+qNpjHdaMiqCWQwZMg
-         4XgjY8eiphEDPWolW9izecbXkm+L5Hljb05iHeHlvKmFIOIfpun57GkrdZuJ9iAlSK7L
-         kX+DZRRVmI9C1CdyvVw4tJS8Gf/6P/lF1VPEQMWAfKUza50s28hJBCVPwbpC+LxNh4UO
-         3R2CmAi6HJEXAU3MF9SDKlr5nxP12NdSaCk6AnIpE6e0DbtA/rJ3YHHzoRGOiQSUReQB
-         g6kg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kcrepl095O1T5uPVPW1UlwuPUh4tOV7IL4VgezFFYGM=;
+        b=QdqJWT4+CdOdKxVTiBGBTKDbMPueWTyFVLyqq+GxSK2rBvyVMRDbwGmkKePbcoMV7v
+         uhl4g+40jjZAZJykXpCAd737EioUC1kkZx6PfCuVXQhCeRgSROazyPWeqEuP6usydJZZ
+         hxWFQB+I3f9D0t13+4IuskgUXWW3fACERKpuofoviTMfezRA6xNVx49OyqW8RSlZ9vCD
+         QItr3DCMiSmQ3c7k8BB9SGsHSqpzg2uPjx35T7d02uB+tfqEJt8YNdRE/nnHmJiI1+7a
+         9Rd6wL9b/MUzs+k3yR+gyMaTWe0GD0kDDV2dTcRkVq8RHBvtzAzc4fQKmHQtPyJak3kU
+         AV5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LBqlEZyPcKTt510snqgHtrJs4QRW+RndpggZVW6Cb+U=;
-        b=Tpns1et2D12YHwBPFJ289ip57QUzNI777/Mqatd3Ta5SUSUeppHBq7fiydA0jBqXeA
-         Z7gXBH/7fTeCq3NT7LLeieFCehIn1TWI/jV80EI59NngEf0nwyXR8wkE4dTEnwepilKE
-         OQLx40izqOHTuWvcCHrftyOfYyf1CbAsd0RyMzP8OVY+KUiz37bW3ngT88Ug1QfO3QTC
-         aeYueWVhlMbXZ1dmrsZEgcbuHDbjoZvSOqY2eKId5IK3CfUAwJE0nbrq/FDfNGi/rETb
-         Gz27qsPxqlkIcYrO3KTS9eW9JHIX8npmzTC8WwO5Fr6Z8mbpOqWfE8YbUo07rY0Llf1k
-         UjBw==
-X-Gm-Message-State: AOAM533K+KbuQ2IIvXOkAdb4YgiC2Wgdaf5/bGtSk2ePO0MN1opOShfa
-        Y+cAIYckYKfoBhqY5MdXSGE=
-X-Google-Smtp-Source: ABdhPJww6ZarzP1NxytLeX4O77IoK8O14A+I26ZWyCHmv/GKzvzp2A+zZQhVsCpgeb7RB9Hr2pBSbw==
-X-Received: by 2002:aa7:9711:0:b029:1ee:b2c7:ecfe with SMTP id a17-20020aa797110000b02901eeb2c7ecfemr3928358pfg.58.1614867502027;
-        Thu, 04 Mar 2021 06:18:22 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.129])
-        by smtp.gmail.com with ESMTPSA id x14sm28445213pfm.207.2021.03.04.06.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 06:18:21 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] net: mellanox: mlx5: fix error return code in mlx5_fpga_device_start()
-Date:   Thu,  4 Mar 2021 06:18:14 -0800
-Message-Id: <20210304141814.8508-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kcrepl095O1T5uPVPW1UlwuPUh4tOV7IL4VgezFFYGM=;
+        b=Ih3f1IlCinGVNGZ3ocOf5ceSmxXvGVuKBFtz+1HJlWM8xIxEjM5W098PQkovqHbzcT
+         T9ahsQ9Rs35snYji0Mq+7kf7XHDqZhRm64lg42+z4Bt7Y4JrNJr8JN7T3dmw8CUuTH/q
+         v1Ku4WWUm5A1S9199n4QROk/Fykbd6ShkXEPvuzPDLpl6jq9HBxeXHetCEDsiUZvlHVn
+         cmrOuYGlPgDtVp+wWSkTWFV0yJxIR/OhyNAr6AoZuU0V622/AHwhw3DOGAXD8w903L8F
+         V6Qvqz9eF0Dvnq14EjxQMBVggExBTRb/uyayOwIMTIbUYai+mZH8LsarLO+qOI1IJ8/x
+         Mjjg==
+X-Gm-Message-State: AOAM531uc1NZ2Xz6RHCT8wFNxePw8Cwo88Xkzue+EhVYHMaoZvJyk6wx
+        /j0sLjFGUT02I9YwUcUDCYrv0F91qWVte3iH3BDDnA==
+X-Google-Smtp-Source: ABdhPJzTm758EQPAFku3tISz1Mdj62knd7fKxFGdYNxPAQRZjekYAEsvstopWXUfQkCitpohlFSRR/cqauwOEB+OLWk=
+X-Received: by 2002:a5d:4fd0:: with SMTP id h16mr4230174wrw.178.1614867556509;
+ Thu, 04 Mar 2021 06:19:16 -0800 (PST)
+MIME-Version: 1.0
+References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-5-mike.leach@linaro.org>
+ <641a0d20-bf3d-24e2-8402-d99de9117584@arm.com>
+In-Reply-To: <641a0d20-bf3d-24e2-8402-d99de9117584@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Thu, 4 Mar 2021 14:19:05 +0000
+Message-ID: <CAJ9a7Vi5dTJTNRNC36UEwAeCayd_HF9jN8rXSggRF_4cPZ1NrA@mail.gmail.com>
+Subject: Re: [PATCH v4 04/10] coresight: etm-perf: update to handle
+ configuration selection
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Yabin Cui <yabinc@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When mlx5_is_fpga_lookaside() returns a non-zero value, no error 
-return code is assigned.
-To fix this bug, err is assigned with -EINVAL as error return code.
+Hi Suzuki,
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Thu, 4 Mar 2021 at 12:13, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>
+> On 1/28/21 5:09 PM, Mike Leach wrote:
+> > Loaded coresight configurations are registered in the cs_etm\cs_config sub
+> > directory. This extends the etm-perf code to handle these registrations,
+> > and the cs_syscfg driver to perform the registration on load.
+> >
+> > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > ---
+> >   .../hwtracing/coresight/coresight-config.h    |   5 +-
+> >   .../hwtracing/coresight/coresight-etm-perf.c  | 164 +++++++++++++++---
+> >   .../hwtracing/coresight/coresight-etm-perf.h  |   8 +
+> >   .../hwtracing/coresight/coresight-syscfg.c    |  13 +-
+> >   4 files changed, 166 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
+> > index 9d66e0071f38..98380b496046 100644
+> > --- a/drivers/hwtracing/coresight/coresight-config.h
+> > +++ b/drivers/hwtracing/coresight/coresight-config.h
+> > @@ -154,7 +154,8 @@ struct cscfg_config_feat_ref {
+> >    * @nr_presets:     Number of sets of presets supplied by this configuration.
+> >    * @nr_total_params: Sum of all parameters declared by used features
+> >    * @presets:        Array of preset values.
+> > - *
+> > + * @id_ea:   Extended attribute for perf configid value
+> > + * @event_ea:        Extended attribute for perf event value
+> >    */
+> >   struct cscfg_config_desc {
+> >       const char *name;
+> > @@ -165,6 +166,8 @@ struct cscfg_config_desc {
+> >       int nr_presets;
+> >       int nr_total_params;
+> >       const u64 *presets; /* nr_presets * nr_total_params */
+> > +     struct dev_ext_attribute *id_ea;
+> > +     struct dev_ext_attribute *event_ea;
+> >   };
+> >
+> >   /**
+> > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > index a608081bd446..e270bb1e0f7d 100644
+> > --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > @@ -18,8 +18,10 @@
+> >   #include <linux/types.h>
+> >   #include <linux/workqueue.h>
+> >
+> > +#include "coresight-config.h"
+> >   #include "coresight-etm-perf.h"
+> >   #include "coresight-priv.h"
+> > +#include "coresight-syscfg.h"
+> >
+> >   static struct pmu etm_pmu;
+> >   static bool etm_perf_up;
+> > @@ -32,8 +34,13 @@ PMU_FORMAT_ATTR(cycacc,            "config:" __stringify(ETM_OPT_CYCACC));
+> >   PMU_FORMAT_ATTR(contextid,  "config:" __stringify(ETM_OPT_CTXTID));
+> >   PMU_FORMAT_ATTR(timestamp,  "config:" __stringify(ETM_OPT_TS));
+> >   PMU_FORMAT_ATTR(retstack,   "config:" __stringify(ETM_OPT_RETSTK));
+> > +/* preset - if sink ID is used as a configuration selector */
+> > +PMU_FORMAT_ATTR(preset,              "config:0-3");
+> >   /* Sink ID - same for all ETMs */
+> >   PMU_FORMAT_ATTR(sinkid,             "config2:0-31");
+> > +/* config ID - set if a system configuration is selected */
+> > +PMU_FORMAT_ATTR(configid,    "config2:32-63");
+> > +
+> >
+> >   static struct attribute *etm_config_formats_attr[] = {
+> >       &format_attr_cycacc.attr,
+> > @@ -41,6 +48,8 @@ static struct attribute *etm_config_formats_attr[] = {
+> >       &format_attr_timestamp.attr,
+> >       &format_attr_retstack.attr,
+> >       &format_attr_sinkid.attr,
+> > +     &format_attr_preset.attr,
+> > +     &format_attr_configid.attr,
+> >       NULL,
+> >   };
+> >
+> > @@ -58,9 +67,29 @@ static const struct attribute_group etm_pmu_sinks_group = {
+> >       .attrs  = etm_config_sinks_attr,
+> >   };
+> >
+> > +static struct attribute *etm_config_cscfg_attr[] = {
+> > +     NULL,
+> > +};
+> > +
+> > +static const struct attribute_group etm_pmu_cscfg_group = {
+> > +     .name   = "configurations",
+> > +     .attrs  = etm_config_cscfg_attr,
+> > +};
+> > +
+> > +static struct attribute *etm_config_events_attr[] = {
+> > +     NULL,
+> > +};
+> > +
+> > +static const struct attribute_group etm_pmu_events_group = {
+> > +     .name   = "events",
+> > +     .attrs  = etm_config_events_attr,
+> > +};
+> > +
+> >   static const struct attribute_group *etm_pmu_attr_groups[] = {
+> >       &etm_pmu_format_group,
+> >       &etm_pmu_sinks_group,
+> > +     &etm_pmu_cscfg_group,
+> > +     &etm_pmu_events_group,
+> >       NULL,
+> >   };
+> >
+> > @@ -219,7 +248,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >       INIT_WORK(&event_data->work, free_event_data);
+> >
+> >       /* First get the selected sink from user space. */
+> > -     if (event->attr.config2) {
+> > +     if (event->attr.config2 & GENMASK_ULL(31, 0)) {
+> >               id = (u32)event->attr.config2;
+> >               sink = coresight_get_sink_by_id(id);
+> >       }
+> > @@ -537,21 +566,17 @@ static ssize_t etm_perf_sink_name_show(struct device *dev,
+> >       return scnprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)(ea->var));
+> >   }
+> >
+> > -int etm_perf_add_symlink_sink(struct coresight_device *csdev)
+> > +int etm_perf_add_symlink_group(struct device *dev,
+> > +                            struct dev_ext_attribute **ext_attr,
+> > +                            const char *name,
+> > +                            const char *group_name)
+>
+> Couple of nits:
+>
+> This could be:
+>
+> struct dev_ext_attribute *
+> etm_perf_add_to_group_hashed(struct device *dev,
+>                              const char *group,
+>                              const char *name)
+> {
+> }
+>
+>
+> This could return the ea on success avoiding the **ext_attr as argument.
+> Also the name of the function indicates what it does.
+>
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
-index 2ce4241459ce..c9e6da97126f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
-@@ -198,8 +198,10 @@ int mlx5_fpga_device_start(struct mlx5_core_dev *mdev)
- 	mlx5_fpga_info(fdev, "FPGA card %s:%u\n", mlx5_fpga_name(fpga_id), fpga_id);
- 
- 	/* No QPs if FPGA does not participate in net processing */
--	if (mlx5_is_fpga_lookaside(fpga_id))
-+	if (mlx5_is_fpga_lookaside(fpga_id)) {
-+		err = -EINVAL;
- 		goto out;
-+	}
- 
- 	mlx5_fpga_info(fdev, "%s(%d): image, version %u; SBU %06x:%04x version %d\n",
- 		       mlx5_fpga_image_name(fdev->last_oper_image),
+OK - I'll look at this.
+
+>
+> >   {
+> > -     int ret;
+> > +     struct dev_ext_attribute *ea;
+> >       unsigned long hash;
+> > -     const char *name;
+> > +     int ret;
+> >       struct device *pmu_dev = etm_pmu.dev;
+> > -     struct device *dev = &csdev->dev;
+> > -     struct dev_ext_attribute *ea;
+> >
+> > -     if (csdev->type != CORESIGHT_DEV_TYPE_SINK &&
+> > -         csdev->type != CORESIGHT_DEV_TYPE_LINKSINK)
+> > -             return -EINVAL;
+> > -
+> > -     if (csdev->ea != NULL)
+> > -             return -EINVAL;
+> > +     *ext_attr = NULL;
+> >
+> >       if (!etm_perf_up)
+> >               return -EPROBE_DEFER;
+> > @@ -560,7 +585,6 @@ int etm_perf_add_symlink_sink(struct coresight_device *csdev)
+> >       if (!ea)
+> >               return -ENOMEM;
+> >
+> > -     name = dev_name(dev);
+> >       /* See function coresight_get_sink_by_id() to know where this is used */
+> >       hash = hashlen_hash(hashlen_string(NULL, name));
+> >
+> > @@ -574,31 +598,127 @@ int etm_perf_add_symlink_sink(struct coresight_device *csdev)
+> >       ea->var = (unsigned long *)hash;
+> >
+> >       ret = sysfs_add_file_to_group(&pmu_dev->kobj,
+> > -                                   &ea->attr.attr, "sinks");
+> > -
+> > +                                   &ea->attr.attr, group_name);
+> >       if (!ret)
+> > -             csdev->ea = ea;
+> > -
+> > +             *ext_attr = ea;
+> >       return ret;
+>
+>
+>
+>
+>
+> >   }
+> >
+> > -void etm_perf_del_symlink_sink(struct coresight_device *csdev)
+> > +int etm_perf_add_symlink_sink(struct coresight_device *csdev)
+> > +{
+> > +     const char *name;
+> > +     struct device *dev = &csdev->dev;
+> > +
+> > +     if (csdev->type != CORESIGHT_DEV_TYPE_SINK &&
+> > +         csdev->type != CORESIGHT_DEV_TYPE_LINKSINK)
+> > +             return -EINVAL;
+> > +
+> > +     if (csdev->ea != NULL)
+> > +             return -EINVAL;
+> > +
+> > +     name = dev_name(dev);
+> > +     return etm_perf_add_symlink_group(dev, &csdev->ea, name, "sinks");
+> > +}
+> > +
+> > +void etm_perf_del_symlink_group(struct dev_ext_attribute *ea, const char *group_name)
+>
+> void etm_perf_del_from_group(group, ea)
+>
+> >
+> > +/* string to contain the attribute value */
+> > +#define CSCFG_EVENT_STR_SIZE 32
+> > +
+> > +static ssize_t etm_perf_cscfg_event_show(struct device *dev,
+> > +                                      struct device_attribute *dattr,
+> > +                                      char *buf)
+> > +{
+> > +     struct dev_ext_attribute *ea;
+> > +
+> > +     ea = container_of(dattr, struct dev_ext_attribute, attr);
+> > +     return scnprintf(buf, PAGE_SIZE, "%s\n", (const char *)(ea->var));
+> > +}
+>
+> "configid=0x%lx", (unsigned long)ea->var ?
+>
+
+ea->var _is_ "configid=0x%lx" due to the way perf handles the events
+sub-dir entries.
+
+> > +
+> > +static int etm_perf_add_cscfg_event(struct device *dev, struct cscfg_config_desc *cs_cfg)
+> > +{
+> > +     struct dev_ext_attribute *ea;
+> > +     unsigned long hash;
+> > +     int ret;
+> > +     struct device *pmu_dev = etm_pmu.dev;
+> > +
+> > +     ea = devm_kzalloc(dev, sizeof(*ea), GFP_KERNEL);
+> > +     if (!ea)
+> > +             return -ENOMEM;
+> > +
+> > +     hash = (unsigned long)cs_cfg->id_ea->var;
+> > +
+> > +     sysfs_attr_init(&ea->attr.attr);
+> > +     ea->attr.attr.name = devm_kstrdup(dev, cs_cfg->name, GFP_KERNEL);
+> > +     if (!ea->attr.attr.name)
+> > +             return -ENOMEM;
+> > +
+> > +     /*
+> > +      * attribute value is "configid=<hash>".
+> > +      * this will be what perf evaluates when the config name is used
+> > +      * on the command line.
+> > +      */
+> > +     ea->var = devm_kzalloc(dev, CSCFG_EVENT_STR_SIZE, GFP_KERNEL);
+> > +     if (!ea->var)
+> > +             return -ENOMEM;
+>
+> Could we drop this string and use the "hash" instead ?
+>
+
+No. My understanding is that we have added an events directory to
+cs_etm, and add the configurations in there:-
+
+cs_etm/events/autofdo
+
+Now the contents of autofdo are "configid=0x<hash-value>" - where
+hash-value is the hash of "autofdo".
+
+On the perf command line:-
+
+perf record -e cs_etm/autofdo/ .....
+
+will result in perf parsing autofdo, looking in the events dir for
+cs_etm, seeing the configid=-string, and parsing that to assign to
+configid attribute - which we have allocated to config2:63:32 - this
+will then appear as a value in the perf_event and we can load the
+configuration when starting up the event on the ETM etc.
+
+
+> > +
+> > +     scnprintf(ea->var, CSCFG_EVENT_STR_SIZE, "configid=0x%lx", hash);
+> > +     ea->attr.attr.mode = 0444;
+> > +     ea->attr.show = etm_perf_cscfg_event_show;
+> > +
+> > +     ret = sysfs_add_file_to_group(&pmu_dev->kobj,
+> > +                                   &ea->attr.attr, "events");
+> > +     if (!ret)
+> > +             cs_cfg->event_ea = ea;
+> > +     return ret;
+> > +}
+> > +
+> > +int etm_perf_add_symlink_cscfg(struct device *dev, struct cscfg_config_desc *cs_cfg)
+>
+> etm_perf_add_cscfg() ?
+>
+> > +{
+> > +     int err;
+> > +
+> > +     if (cs_cfg->id_ea != NULL)
+> > +             return 0;
+> > +
+> > +     err = etm_perf_add_symlink_group(dev, &cs_cfg->id_ea,
+> > +                                      cs_cfg->name, "configurations");
+> > +
+> > +     if (!err)
+> > +             err = etm_perf_add_cscfg_event(dev, cs_cfg);
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +void etm_perf_del_symlink_cscfg(struct cscfg_config_desc *cs_cfg)
+>
+> etm_perf_del_cscfg() ?
+>
+
+Both these seem reasonable.
+
+Regards
+
+Mike
+
+
+> Suzuki
+
+
+
 -- 
-2.17.1
-
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
