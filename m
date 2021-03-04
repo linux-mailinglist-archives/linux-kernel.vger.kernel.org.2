@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2037532CE27
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C97F32CE25
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236323AbhCDIJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:09:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41918 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236260AbhCDIJF (ORCPT
+        id S236130AbhCDIJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:09:02 -0500
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:36301 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236260AbhCDIIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:09:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614845259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2c1ILN3q9sGba/2LIo3VeOZCilzIXtGwhnmwt+QTvoc=;
-        b=fola8Tf61b+D0QdiPGy4+eCB6tIzmCSQND+4byfBRRT3ZA8q/Z7eD9p2czd8EsaKkIXVV8
-        x95IK49cbV2M0zgGP38hSqEJunxsuhw+3a/gFiaTmjN+Qq3IOdQBjNgC4b74wdkYYzdqVD
-        y/BYNxzO79+vKxfV61J9D9Ve6HzKM0A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-Zojm_bYOPQif52QJBmbxEQ-1; Thu, 04 Mar 2021 03:07:34 -0500
-X-MC-Unique: Zojm_bYOPQif52QJBmbxEQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E9AA804023;
-        Thu,  4 Mar 2021 08:07:32 +0000 (UTC)
-Received: from [10.36.113.171] (ovpn-113-171.ams2.redhat.com [10.36.113.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 99EDA614ED;
-        Thu,  4 Mar 2021 08:07:29 +0000 (UTC)
-Subject: Re: [PATCH 1/2] mm: disable LRU pagevec during the migration
- temporarily
-To:     Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
-        vbabka@suse.cz, linux-fsdevel@vger.kernel.org
-References: <20210302210949.2440120-1-minchan@kernel.org>
- <YD+F4LgPH0zMBDGW@dhcp22.suse.cz> <YD/wOq3lf9I5HK85@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <fc76eca3-f986-3980-065f-64c8dc92530a@redhat.com>
-Date:   Thu, 4 Mar 2021 09:07:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 4 Mar 2021 03:08:53 -0500
+Received: by mail-vs1-f44.google.com with SMTP id a12so7462852vsd.3;
+        Thu, 04 Mar 2021 00:08:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VIhNJJMVnzvhOohhU5+sHSGrbiWXYRzHlRt+5Fa9ZAM=;
+        b=dp9/2N97ID2W08m9XDtpLgdIenSHuAQYwynqWJ2JxBktdemD7D9+sJwGs/E9sPaPk4
+         64pW+KfwnlzrkHc32tsAIHWYUD3v/9n/3xwevaDjy0avQB4/vxOFbWIn1yuHyqMdc5nS
+         T3LiW9m4HIeiQa3JzWHq67JPdlaadDcR3lWzkjmBxAuoyVSnbaciSCGaY/KtEfoYp6a9
+         tTpklKqUeII925Hk/RNoM880kmWA3ZvJxU4EHnIIO+byI9DCNNLhvXQd9y+wWGNHlu3Z
+         3qXBfdCvUY29DktW9s+aKkQ/GSfcsn3yvCFZOTbXRF4CjcYFOSo/e3LoZSvHMOoXOd/m
+         RWxQ==
+X-Gm-Message-State: AOAM533cAzQNYHTwNwdP0YYYHUgzB3Gc+WTUYaDmo1CNYs7JQyE3cTkk
+        DYfLDzkXFrCt3SPCcbvX27kUmtVpcSCtfrd3yEU=
+X-Google-Smtp-Source: ABdhPJw0x8zdV/rT4XakBLSt5aNaEU9m6ptAA1rjZNeubRN69J3WPDnkAIu8HfFWZbRetFta0ELKelcJ5surbKmASqg=
+X-Received: by 2002:a67:fb86:: with SMTP id n6mr1779925vsr.3.1614845292063;
+ Thu, 04 Mar 2021 00:08:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YD/wOq3lf9I5HK85@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-4-aford173@gmail.com>
+In-Reply-To: <20210224115146.9131-4-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 4 Mar 2021 09:08:00 +0100
+Message-ID: <CAMuHMdXjQV7YrW5T_P4tkJk_d44NNTQ8Eu7v2ReESjg6R3tvfw@mail.gmail.com>
+Subject: Re: [PATCH V3 4/5] net: ethernet: ravb: Enable optional refclk
+To:     Adam Ford <aford173@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.03.21 21:23, Minchan Kim wrote:
-> On Wed, Mar 03, 2021 at 01:49:36PM +0100, Michal Hocko wrote:
->> On Tue 02-03-21 13:09:48, Minchan Kim wrote:
->>> LRU pagevec holds refcount of pages until the pagevec are drained.
->>> It could prevent migration since the refcount of the page is greater
->>> than the expection in migration logic. To mitigate the issue,
->>> callers of migrate_pages drains LRU pagevec via migrate_prep or
->>> lru_add_drain_all before migrate_pages call.
->>>
->>> However, it's not enough because pages coming into pagevec after the
->>> draining call still could stay at the pagevec so it could keep
->>> preventing page migration. Since some callers of migrate_pages have
->>> retrial logic with LRU draining, the page would migrate at next trail
->>> but it is still fragile in that it doesn't close the fundamental race
->>> between upcoming LRU pages into pagvec and migration so the migration
->>> failure could cause contiguous memory allocation failure in the end.
->>>
->>> To close the race, this patch disables lru caches(i.e, pagevec)
->>> during ongoing migration until migrate is done.
->>>
->>> Since it's really hard to reproduce, I measured how many times
->>> migrate_pages retried with force mode below debug code.
->>>
->>> int migrate_pages(struct list_head *from, new_page_t get_new_page,
->>> 			..
->>> 			..
->>>
->>> if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
->>>         printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), rc);
->>>         dump_page(page, "fail to migrate");
->>> }
->>>
->>> The test was repeating android apps launching with cma allocation
->>> in background every five seconds. Total cma allocation count was
->>> about 500 during the testing. With this patch, the dump_page count
->>> was reduced from 400 to 30.
->>
->> Have you seen any improvement on the CMA allocation success rate?
-> 
-> Unfortunately, the cma alloc failure rate with reasonable margin
-> of error is really hard to reproduce under real workload.
-> That's why I measured the soft metric instead of direct cma fail
-> under real workload(I don't want to make some adhoc artificial
-> benchmark and keep tunes system knobs until it could show
-> extremly exaggerated result to convice patch effect).
-> 
-> Please say if you belive this work is pointless unless there is
-> stable data under reproducible scenario. I am happy to drop it.
+Hi Adam,
 
-Do you have *some* application that triggers such a high retry count?
+On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> For devices that use a programmable clock for the AVB reference clock,
+> the driver may need to enable them.  Add code to find the optional clock
+> and enable it when available.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-I'd love to run it along with virtio-mem and report the actual 
-allocation success rate / necessary retries. That could give an 
-indication of how helpful your work would be.
+Thanks for your patch!
 
-Anything that improves the reliability of alloc_contig_range() is of 
-high interest to me. If it doesn't increase the reliability but merely 
-does some internal improvements (less retries), it might still be 
-valuable, but not that important.
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2148,6 +2148,13 @@ static int ravb_probe(struct platform_device *pdev)
+>                 goto out_release;
+>         }
+>
+> +       priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
+> +       if (IS_ERR(priv->refclk)) {
+> +               error = PTR_ERR(priv->refclk);
+> +               goto out_release;
+> +       }
+> +       clk_prepare_enable(priv->refclk);
+> +
+
+Shouldn't the reference clock be disabled in case of any failure below?
+
+>         ndev->max_mtu = 2048 - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
+>         ndev->min_mtu = ETH_MIN_MTU;
+>
+> @@ -2260,6 +2267,9 @@ static int ravb_remove(struct platform_device *pdev)
+>         if (priv->chip_id != RCAR_GEN2)
+>                 ravb_ptp_stop(ndev);
+>
+> +       if (priv->refclk)
+> +               clk_disable_unprepare(priv->refclk);
+> +
+>         dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
+>                           priv->desc_bat_dma);
+>         /* Set reset mode */
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Thanks,
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-David / dhildenb
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
