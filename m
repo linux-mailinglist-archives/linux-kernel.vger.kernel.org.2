@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C64432CF38
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED4432CF42
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbhCDJC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:02:56 -0500
-Received: from foss.arm.com ([217.140.110.172]:35436 "EHLO foss.arm.com"
+        id S237396AbhCDJFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:05:36 -0500
+Received: from mga09.intel.com ([134.134.136.24]:51654 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237100AbhCDJCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:02:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B6CD1FB;
-        Thu,  4 Mar 2021 01:02:01 -0800 (PST)
-Received: from [10.57.17.29] (unknown [10.57.17.29])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 935153F73B;
-        Thu,  4 Mar 2021 01:01:58 -0800 (PST)
-Subject: Re: [PATCH 1/8] ARM: ARMv7-M: Fix register restore corrupt after svc
- call
-To:     dillon min <dillon.minfei@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com
-References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
- <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
- <5284d390-c03a-4035-df5a-10d6cd60e47b@arm.com>
- <CAL9mu0KUhctbBzmem1ZSgEwf5CebivHOSUr9Q7VTyzib8pW=Cw@mail.gmail.com>
- <5efe3d44-8045-e376-003e-3ccbff54fb23@arm.com>
- <CAL9mu0JoHqo_wnpNN9ZqRnzzKjhOwEktZ5yPtO8-6WBh51g1BQ@mail.gmail.com>
-From:   Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <703c43f1-7b83-32ec-7c50-baab00b6bb34@arm.com>
-Date:   Thu, 4 Mar 2021 09:02:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S237369AbhCDJFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:05:08 -0500
+IronPort-SDR: AhL7EJUVuNMfM+N1tjoqftp6uCIhfDCTeoVJ4s50qXuilidqJJfntcEVNP/g6pgTMzH36gJjcC
+ yaVVL5TaKNqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="187486595"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="187486595"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 01:03:20 -0800
+IronPort-SDR: iVF34477WQOwcLzYuwmmrFrtjX0FgEqY699W1/68a9ie9vmqwrioqD7Tuk4gFtZzvNP3kZEJGV
+ IzN7qDNDxDWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="507282467"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2021 01:03:13 -0800
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ipmi: Handle device properties with software node API
+Date:   Thu,  4 Mar 2021 12:03:12 +0300
+Message-Id: <20210304090312.26827-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <CAL9mu0JoHqo_wnpNN9ZqRnzzKjhOwEktZ5yPtO8-6WBh51g1BQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 5:42 AM, dillon min wrote:
-> Okay， got it. after adding msp/psp switch code in RTOS, now the kernel
-> can be loaded normally
-> without any modification.
+The old device property API is going to be removed.
+Replacing the device_add_properties() call with the software
+node API equivalent, device_create_managed_software_node().
 
-Yay!
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+ drivers/char/ipmi/ipmi_plat_data.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> So, just drop the changes in proc-v7m.S.
+diff --git a/drivers/char/ipmi/ipmi_plat_data.c b/drivers/char/ipmi/ipmi_plat_data.c
+index 28471ff2a3a3e..747b51ae01a80 100644
+--- a/drivers/char/ipmi/ipmi_plat_data.c
++++ b/drivers/char/ipmi/ipmi_plat_data.c
+@@ -102,7 +102,7 @@ struct platform_device *ipmi_platform_add(const char *name, unsigned int inst,
+ 		goto err;
+ 	}
+  add_properties:
+-	rv = platform_device_add_properties(pdev, pr);
++	rv = device_create_managed_software_node(&pdev->dev, pr, NULL);
+ 	if (rv) {
+ 		dev_err(&pdev->dev,
+ 			"Unable to add hard-code properties: %d\n", rv);
+-- 
+2.30.1
 
-Glad to see they are not strictly necessary :)
-
-Thanks
-Vladimir
