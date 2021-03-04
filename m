@@ -2,89 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F3932DCD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4C332DCD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhCDWO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:14:26 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:53198 "EHLO z11.mailgun.us"
+        id S229861AbhCDWRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:17:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230486AbhCDWOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:14:25 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614896065; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=5xQNWGzpOBIi5UGcFmdKOWjQb0d9Q/YSE/meDTlP+2k=; b=gaw+jXp4s2z4zlsAWIuYuNwdxYw6MF8iI7KKPbLe24sv6hFDR+i+rscJrxCoENYrZzeGBVj4
- xDEzBCGjFeKSQAU8rMZxxdI/npIEMCLSNH4hZ2NLplVjhJIX4zROirgx9hGsmyXRkWuixg3B
- ne6gaqpjVM5gLvdXGOeC7f+zIUE=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60415bb9c862e1b9fd2a8429 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Mar 2021 22:14:17
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F078BC4322F; Thu,  4 Mar 2021 22:14:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S229458AbhCDWRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:17:09 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3A9BC4322A;
-        Thu,  4 Mar 2021 22:14:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3A9BC4322A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, carl.yin@quectel.com,
-        naveen.kumar@quectel.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v2] bus: mhi: core: Add missing checks for MMIO register entries
-Date:   Thu,  4 Mar 2021 14:14:09 -0800
-Message-Id: <1614896049-15912-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D58664FE4;
+        Thu,  4 Mar 2021 22:17:09 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lHwHL-00HLP8-B7; Thu, 04 Mar 2021 22:17:07 +0000
+Date:   Thu, 04 Mar 2021 22:17:06 +0000
+Message-ID: <878s72sgwt.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        James Morse <james.morse@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: arm64: Disable LTO in hyp
+In-Reply-To: <CABCJKufmjMT8+hGEnL3aJM7-OSwhYSHiJA=i8e7dHSGDWXYtsg@mail.gmail.com>
+References: <20210304184544.2014171-1-samitolvanen@google.com>
+        <87k0qmzq5u.wl-maz@kernel.org>
+        <CABCJKufmjMT8+hGEnL3aJM7-OSwhYSHiJA=i8e7dHSGDWXYtsg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: samitolvanen@google.com, maskray@google.com, ndesaulniers@google.com, james.morse@arm.com, nathan@kernel.org, keescook@chromium.org, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per documentation, fields marked as (required) in an MHI
-controller structure need to be populated by the controller driver
-before calling mhi_register_controller(). Ensure all required
-pointers and non-zero fields are present in the controller before
-proceeding with registration.
+On Thu, 04 Mar 2021 21:25:41 +0000,
+Sami Tolvanen <samitolvanen@google.com> wrote:
+> 
+> On Thu, Mar 4, 2021 at 11:15 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 04 Mar 2021 18:45:44 +0000,
+> > Sami Tolvanen <samitolvanen@google.com> wrote:
+> > >
+> > > allmodconfig + CONFIG_LTO_CLANG_THIN=y fails to build due to following
+> > > linker errors:
+> > >
+> > >   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21CC):
+> >
+> > I assume this message is only an oddity, right? Because
+> > __guest_enter() is as far as you can imagine from irqbypass.c...
+> 
+> I'm not sure what's up with the filename in the error message. Fangrui
+> or Nick probably have a better idea.
+> 
+> > >   relocation R_AARCH64_CONDBR19 out of range: 2031220 is not in
+> > >   [-1048576, 1048575]; references hyp_panic
+> > >   >>> defined in vmlinux.o
+> > >
+> > >   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21E0):
+> > >   relocation R_AARCH64_ADR_PREL_LO21 out of range: 2031200 is not in
+> > >   [-1048576, 1048575]; references hyp_panic
+> > >   >>> defined in vmlinux.o
+> > >
+> > > As LTO is not really necessary for the hypervisor code, disable it for
+> > > the hyp directory to fix the build.
+> >
+> > Can you shed some light on what the problem is exactly?
+> 
+> I assume hyp_panic() ends up being placed too far from __guest_enter()
+> when the kernel is large enough. Possibly something to do with LLVM
+> always splitting functions into separate sections with LTO. I'm not
+> sure why the linker cannot shuffle things around to make everyone
+> happy in this case, but I confirmed that this patch also fixes the
+> build issue for me:
+> 
+> diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switch.c
+> index af8e940d0f03..128197b7c794 100644
+> --- a/arch/arm64/kvm/hyp/vhe/switch.c
+> +++ b/arch/arm64/kvm/hyp/vhe/switch.c
+> @@ -214,7 +214,7 @@ static void __hyp_call_panic(u64 spsr, u64 elr, u64 par)
+>  }
+>  NOKPROBE_SYMBOL(__hyp_call_panic);
+> 
+> -void __noreturn hyp_panic(void)
+> +void __noreturn hyp_panic(void) __section(".text")
+>  {
+>         u64 spsr = read_sysreg_el2(SYS_SPSR);
+>         u64 elr = read_sysreg_el2(SYS_ELR);
+>
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/init.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+We're getting into black-magic territory here. Why wouldn't hyp_panic
+be in the .text section already?
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 272f350..fed8a25 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -879,10 +879,9 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
- 	u32 soc_info;
- 	int ret, i;
- 
--	if (!mhi_cntrl)
--		return -EINVAL;
--
--	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
-+	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
-+	    !mhi_cntrl->fw_image || !mhi_cntrl->irq ||
-+	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
- 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
- 	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
- 		return -EINVAL;
+> > >
+> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1317
+> > > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > > Tested-by: Nathan Chancellor <nathan@kernel.org>
+> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > > ---
+> > >  arch/arm64/kvm/hyp/Makefile | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/kvm/hyp/Makefile b/arch/arm64/kvm/hyp/Makefile
+> > > index 687598e41b21..e8116016e6a8 100644
+> > > --- a/arch/arm64/kvm/hyp/Makefile
+> > > +++ b/arch/arm64/kvm/hyp/Makefile
+> > > @@ -11,3 +11,6 @@ subdir-ccflags-y := -I$(incdir)                             \
+> > >                   $(DISABLE_STACKLEAK_PLUGIN)
+> > >
+> > >  obj-$(CONFIG_KVM) += vhe/ nvhe/ pgtable.o
+> > > +
+> > > +# Disable LTO for the files in this directory
+> > > +KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO), $(KBUILD_CFLAGS))
+> > >
+> > > base-commit: f69d02e37a85645aa90d18cacfff36dba370f797
+> >
+> > Can this be reduced to the nvhe part of the tree? The rest of the
+> > hypervisor should support being built with LTO, I'd expect. Or am I
+> > missing something more significant?
+> 
+> No, this error appears to be about hyp_panic() in the vhe code. While
+> I'm not sure how beneficial LTO is in hypervisor code, there shouldn't
+> be any other reason we can't use it there.
+
+The VHE part of the hypervisor is the kernel itself, and not any
+different from the rest of the code. It should be able to benefit from
+LTO. On the contrary, the nVHE part is what could do without LTO,
+given that it is essentially a separate object that happens to be
+bundled with the kernel.
+
+Thanks,
+
+	M.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Without deviation from the norm, progress is not possible.
