@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E320F32DA24
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5F932DA26
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbhCDTMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
+        id S233641AbhCDTMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbhCDTMN (ORCPT
+        with ESMTP id S231590AbhCDTMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:12:13 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D838C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:11:32 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id a4so19496372pgc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:11:32 -0800 (PST)
+        Thu, 4 Mar 2021 14:12:31 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC56C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:11:51 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id i4-20020a17090a7184b02900bfb60fbc6bso4939039pjk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:11:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V8gX6BLRp5VTtpTwGxCWHd1uYqGAa6Y56JCNNo50CEo=;
-        b=ipvXcYweUEz5TS/xc4BHVGvCyArCaLaHVI1tfvZ5BJHQyXql9vlhqf3PZTWCX9Jc6r
-         s5RxCEH5BO7F5NoKO6+sGuKvkfOYCCzweKWKQ+6JNpBhXMPP7BqHW3SwpogalD0OeRn/
-         QOCEwo0swmxcHL+e0NQIGKyNmSxHigpv4swqVTBDJpL+hNngdx5N7g/PfMBQiv/jN82k
-         oav1PrsZIdfGZJgWScHC6Dmq9rgtf0Od8PRi0L+SrZRUlmfS2kMOuh9LdIdazP0Dxw9L
-         dkbTaioQ+P6Jfm/w9Q/WE53mTfvQ6fLIcmq6YSmpf/VUf0M9LnbNQdkrVVLdf2WFr0Mu
-         UGwQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=qo7JldTnJo6GF/avOLXGrmdYjouVdk0OdVSsXFxxTyM=;
+        b=Ea4IXmaDS12tOW7BTFzuRKuEXNr+yoP6VLnxJJ4Hg5oDmXwdeX58elNPluiRgSfXzs
+         5gaTCp6dysybX/zFf/2R9YT0I4/DACygZKfBgB/T6hFxhWhHhDGCYvvGIYA4OglgVfP0
+         6x9FMusgBu5e/E/8enT+WlKh+A6h/4HeltiZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V8gX6BLRp5VTtpTwGxCWHd1uYqGAa6Y56JCNNo50CEo=;
-        b=WI1dShWkz+f6/7eybuDpj2ULNC1O5FkOOGOeVz6AKfqfzvDVNr7GbeyYABee+8Z3lm
-         g+ST96iH4M9hYaxIiQF4GRY9T0+a2Kg7z18/lLWXe376KiuW8tzpKrcXY/9Al92tLon0
-         S9++Qc13lIWPFfjMhtJvlpYeLHlNoeId2RKne94TFvhLVYUvbJdTGpKvmDnzpJdrxtf/
-         o2Pv337DdYV+R2iy1ohXF7krg3iyxA3t32o8XSrNImg7krWFl6ZPcUSC8gJe1+E9tVIR
-         UqG9lMQlYMqOqb2mGGxSUeaA/ISVPp5yl91hJ8sYF6DcTRkv4aszqeoSxCLFC8BvguVr
-         UpPQ==
-X-Gm-Message-State: AOAM531hL3b1RxJ1qwhGICo+M5jddKoPp11Focf+98X31GsoP0FitCL8
-        kOcSY3TrcSZOZwzhbVpGaqRHtQ==
-X-Google-Smtp-Source: ABdhPJyaBnKH+Hurc5YUT8rqKvUynaxhKbr/WowkCCfpFo2hdsry+fYZiqjB+V75/Hs+Yxi3DttC9g==
-X-Received: by 2002:a62:1e41:0:b029:1e6:fe13:b78e with SMTP id e62-20020a621e410000b02901e6fe13b78emr5177583pfe.26.1614885092044;
-        Thu, 04 Mar 2021 11:11:32 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id m12sm37318pjk.47.2021.03.04.11.11.31
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=qo7JldTnJo6GF/avOLXGrmdYjouVdk0OdVSsXFxxTyM=;
+        b=GQ/InZVEp3x7oPcWiO/38cPWHSyVeAJD5fH2kE/3KEAn7FZTPNupgoQTx/s3qSdEeh
+         0q5fVrrzfqMTFUhEqWIB0yvQMMd/Hl1Uzfe0RDf3RPVpPgRw+gM86x2QdvTTVdQAyGx8
+         UtmvrPnRF1y9Zf7oJaEH+UZJDT7vHBLR4d887cQsDA6gSFWTsmiXG6bZKOBi+H21tzEf
+         xVQZvuHW5aDcS7DCAcL3thF4Ku+Bc3c9KwOHBds5QnWiLDDAC+P3BTy7MZI0VHD4eUDv
+         tGcebXCMYM1ei2VVo/++Jw9ELfDqfb3Kz9jLeyZoF/0zEJHUvKgPv8rcUTiQ+QtssRLO
+         tsBA==
+X-Gm-Message-State: AOAM532n/4aI2Ep1OGTo3gdeIpa2hg/8HFpJvKl8gNNRSd6/FyKbkJqL
+        +HaUE+9HJOVspRtLfqv+TOeMpg==
+X-Google-Smtp-Source: ABdhPJxC5A0+IaAQ0PUPigRvFIHoD6yGe5Amxvl+HrMxh08Ji/XC9DG/+QThKvN9g73D+DKhAxpCzw==
+X-Received: by 2002:a17:90a:5887:: with SMTP id j7mr5971637pji.178.1614885110727;
+        Thu, 04 Mar 2021 11:11:50 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:b498:4a2d:bc34:b77e])
+        by smtp.gmail.com with ESMTPSA id y72sm158597pfg.126.2021.03.04.11.11.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 11:11:31 -0800 (PST)
-Date:   Thu, 4 Mar 2021 12:11:29 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 08/16] rpmsg: glink: add sendto and trysendto ops
-Message-ID: <20210304191129.GE3854911@xps15>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-9-arnaud.pouliquen@foss.st.com>
+        Thu, 04 Mar 2021 11:11:50 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219111501.14261-9-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210304171940.GL2723601@casper.infradead.org>
+References: <20210301174749.1269154-1-swboyd@chromium.org> <20210301174749.1269154-6-swboyd@chromium.org> <20210301214319.7e54c66f@oasis.local.home> <20210304171940.GL2723601@casper.infradead.org>
+Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org
+To:     Matthew Wilcox <willy@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Thu, 04 Mar 2021 11:11:48 -0800
+Message-ID: <161488510845.1478170.2089177121697044390@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:14:53PM +0100, Arnaud Pouliquen wrote:
-> Implement the sendto ops to support the future rpmsg_char update for the
-> vitio backend support.
+Quoting Matthew Wilcox (2021-03-04 09:19:40)
+> On Mon, Mar 01, 2021 at 09:43:19PM -0500, Steven Rostedt wrote:
+> > On Mon,  1 Mar 2021 09:47:47 -0800
+> > Stephen Boyd <swboyd@chromium.org> wrote:
+> >=20
+> > > The %pS printk format (among some others) is used to print kernel
+> > > addresses symbolically. When the kernel prints an address inside of a
+> > > module, the kernel prints the addresses' symbol name along with the
+> > > module's name that contains the address. Let's make kernel stacktraces
+> > > easier to identify on KALLSYMS builds by including the build ID of a
+> > > module when we print the address.
+> >=20
+> > Please no!
+> >=20
+> > This kills the output of tracing with offset, and can possibly break
+> > scripts. I don't want to look at traces like this!
+> >=20
+> >           <idle>-0       [004] ..s1   353.842577: ipv4_conntrack_in+0x0=
+/0x10 [nf_conntrack] (3b39eb771b2566331887f671c741f90bfba0b051) <-nf_hook_s=
+low+0x40/0xb0
+>=20
+> Would it make sense to only print the build-id if it differs from the
+> build-id of the kernel which has loaded it?
 
-Add a new line, otherwise it is very easy to read.
-
-> The use of sendto in rpmsg_char is needed as a destination address is
-> requested at least by the virtio backend.
-
-Same here and throughout the patchset.
-
-> The glink implementation does not need a destination address so ignores it.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/qcom_glink_native.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-> index d4e4dd482614..ae2c03b59c55 100644
-> --- a/drivers/rpmsg/qcom_glink_native.c
-> +++ b/drivers/rpmsg/qcom_glink_native.c
-> @@ -1332,6 +1332,20 @@ static int qcom_glink_trysend(struct rpmsg_endpoint *ept, void *data, int len)
->  	return __qcom_glink_send(channel, data, len, false);
->  }
->  
-> +static int qcom_glink_sendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst)
-> +{
-> +	struct glink_channel *channel = to_glink_channel(ept);
-> +
-> +	return __qcom_glink_send(channel, data, len, true);
-> +}
-> +
-> +static int qcom_glink_trysendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst)
-> +{
-> +	struct glink_channel *channel = to_glink_channel(ept);
-> +
-> +	return __qcom_glink_send(channel, data, len, false);
-> +}
-
-Just rename send() to sendto() and trysend() to trysendto() and ignore the
-destination address.  The same goes for the next patch.  I would fold patch 08
-and 09 into 10 to help get the big picture. 
-
-> +
->  /*
->   * Finds the device_node for the glink child interested in this channel.
->   */
-> @@ -1364,7 +1378,9 @@ static const struct rpmsg_device_ops glink_device_ops = {
->  static const struct rpmsg_endpoint_ops glink_endpoint_ops = {
->  	.destroy_ept = qcom_glink_destroy_ept,
->  	.send = qcom_glink_send,
-> +	.sendto = qcom_glink_sendto,
->  	.trysend = qcom_glink_trysend,
-> +	.trysendto = qcom_glink_trysendto,
->  };
->  
->  static void qcom_glink_rpdev_release(struct device *dev)
-> -- 
-> 2.17.1
-> 
+No. The build-id of the module is different from the kernel that loaded
+it all the time, so it would always be printed.
