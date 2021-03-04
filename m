@@ -2,177 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB47832CA05
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E894432CA03
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbhCDBVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:21:13 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13466 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236199AbhCDBUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:20:25 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DrXzq4CSJzjTZL;
-        Thu,  4 Mar 2021 09:17:59 +0800 (CST)
-Received: from [10.67.102.248] (10.67.102.248) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Mar 2021 09:19:32 +0800
-Subject: Re: [PATCH] perf record: Fix continue profiling after draining the
- buffer
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        <amistry@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>
-References: <20210205065001.23252-1-yangjihong1@huawei.com>
- <CAM9d7cgGGWtTkReghATVmMnOd=0dBrghBLgEc9AqT_PF-UP1Rg@mail.gmail.com>
- <YB0h9Gj5lpcuqndo@krava> <YC5ptbU8Mavb1a/t@kernel.org>
- <YC6fVHohih5giNf7@kernel.org>
- <5a76a82e-7ec1-d510-309e-a38a1b41027e@huawei.com>
- <YD+8r/KiCJmnoJ/f@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <b28a2b0d-99a0-88e3-873d-9963640a6fdd@huawei.com>
-Date:   Thu, 4 Mar 2021 09:19:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234402AbhCDBVF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 3 Mar 2021 20:21:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235168AbhCDBUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 20:20:18 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44B8064EEF;
+        Thu,  4 Mar 2021 01:19:34 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 20:19:32 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
+Message-ID: <20210303201932.7ac93f12@oasis.local.home>
+In-Reply-To: <161481830876.1478170.4374239517736205573@swboyd.mtv.corp.google.com>
+References: <20210301174749.1269154-1-swboyd@chromium.org>
+        <20210301174749.1269154-6-swboyd@chromium.org>
+        <YD9kNphaSRPk83KJ@alley>
+        <20210303100012.0e6e4de3@gandalf.local.home>
+        <YD+2fRo4J/ffQF8z@smile.fi.intel.com>
+        <161481830876.1478170.4374239517736205573@swboyd.mtv.corp.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YD+8r/KiCJmnoJ/f@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 03 Mar 2021 16:38:28 -0800
+Stephen Boyd <swboyd@chromium.org> wrote:
 
+> I'm starting to feel like nobody read the commit text, or I messed up
+> somehow and the commit text was confusing? :(
+> 
 
-On 2021/3/4 0:43, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Feb 22, 2021 at 09:31:51AM +0800, Yang Jihong escreveu:
->> Hello,
->>
->> On 2021/2/19 1:09, Arnaldo Carvalho de Melo wrote:
->>> Em Thu, Feb 18, 2021 at 10:20:53AM -0300, Arnaldo Carvalho de Melo escreveu:
->>>> Em Fri, Feb 05, 2021 at 11:46:12AM +0100, Jiri Olsa escreveu:
->>>>> On Fri, Feb 05, 2021 at 07:35:22PM +0900, Namhyung Kim wrote:
->>>>>> Hello,
->>>>>>
->>>>>> On Fri, Feb 5, 2021 at 3:50 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>>>>
->>>>>>> commit da231338ec9c098707c8a1e4d8a50e2400e2fe17 uses eventfd to solve rare race
->>>>>>> where the setting and checking of 'done' which add done_fd to pollfd.
->>>>>>> When draining buffer, revents of done_fd is 0 and evlist__filter_pollfd
->>>>>>> function returns a non-zero value.
->>>>>>> As a result, perf record does not stop profiling.
->>>>>>>
->>>>>>> The following simple scenarios can trigger this condition:
->>>>>>>
->>>>>>> sleep 10 &
->>>>>>> perf record -p $!
->>>>>>>
->>>>>>> After the sleep process exits, perf record should stop profiling and exit.
->>>>>>> However, perf record keeps running.
->>>>>>>
->>>>>>> If pollfd revents contains only POLLERR or POLLHUP,
->>>>>>> perf record indicates that buffer is draining and need to stop profiling.
->>>>>>> Use fdarray_flag__nonfilterable to set done eventfd to nonfilterable objects,
->>>>>>> so that evlist__filter_pollfd does not filter and check done eventfd.
->>>>>>>
->>>>>>> Fixes: da231338ec9c (perf record: Use an eventfd to wakeup when done)
->>>>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->>>>>>> ---
->>>>>>>    tools/perf/builtin-record.c | 2 +-
->>>>>>>    tools/perf/util/evlist.c    | 8 ++++++++
->>>>>>>    tools/perf/util/evlist.h    | 4 ++++
->>>>>>>    3 files changed, 13 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->>>>>>> index fd3911650612..51e593e896ea 100644
->>>>>>> --- a/tools/perf/builtin-record.c
->>>>>>> +++ b/tools/perf/builtin-record.c
->>>>>>> @@ -1663,7 +1663,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>>>>>>                   status = -1;
->>>>>>>                   goto out_delete_session;
->>>>>>>           }
->>>>>>> -       err = evlist__add_pollfd(rec->evlist, done_fd);
->>>>>>> +       err = evlist__add_wakeup_eventfd(rec->evlist, done_fd);
->>>>>>>           if (err < 0) {
->>>>>>>                   pr_err("Failed to add wakeup eventfd to poll list\n");
->>>>>>>                   status = err;
->>>>>>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->>>>>>> index 05363a7247c4..fea4c1e8010d 100644
->>>>>>> --- a/tools/perf/util/evlist.c
->>>>>>> +++ b/tools/perf/util/evlist.c
->>>>>>> @@ -572,6 +572,14 @@ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
->>>>>>>           return perf_evlist__filter_pollfd(&evlist->core, revents_and_mask);
->>>>>>>    }
->>>>>>>
->>>>>>> +#ifdef HAVE_EVENTFD_SUPPORT
->>>>>>> +int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd)
->>>>>>> +{
->>>>>>> +       return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
->>>>>>> +                                      fdarray_flag__nonfilterable);
->>>>>>> +}
->>>>>>> +#endif
->>>>>>
->>>>>> Does it build when HAVE_EVENTFD_SUPPORT is not defined?
->>>>>
->>>>> yea, I was wondering the same.. but it's called only from
->>>>> code within HAVE_EVENTFD_SUPPORT ifdef
->>>>
->>>> Yes, this can't work on systems without eventfd, it will simply not
->>>> build, and why do we have to make the definition of this function
->>>> conditional on HAVE_EVENTFD_SUPPORT?
->>>>
->>>> I'm missing something :-\
->>>>
->>>> Yeah, this whole call to evlist__add_pollfd is already surrounded by
->>>> #ifdef HAVE_EVENTFD_SUPPORT:
->>>>
->>>> 1656         if (zstd_init(&session->zstd_data, rec->opts.comp_level) < 0) {
->>>> 1657                 pr_err("Compression initialization failed.\n");
->>>> 1658                 return -1;
->>>> 1659         }
->>>> 1660 #ifdef HAVE_EVENTFD_SUPPORT
->>>> 1661         done_fd = eventfd(0, EFD_NONBLOCK);
->>>> 1662         if (done_fd < 0) {
->>>> 1663                 pr_err("Failed to create wakeup eventfd, error: %m\n");
->>>> 1664                 status = -1;
->>>> 1665                 goto out_delete_session;
->>>> 1666         }
->>>> 1667         err = evlist__add_pollfd(rec->evlist, done_fd);
->>>> 1668         if (err < 0) {
->>>> 1669                 pr_err("Failed to add wakeup eventfd to poll list\n");
->>>> 1670                 status = err;
->>>> 1671                 goto out_delete_session;
->>>> 1672         }
->>>> 1673 #endif // HAVE_EVENTFD_SUPPORT
->>>> 1674
->>>> 1675         session->header.env.comp_type  = PERF_COMP_ZSTD;
->>>> 1676         session->header.env.comp_level = rec->opts.comp_level;
->>>>
->>>> Jiri, does your Acked-by stands? Namhyung?
->>>
->>> Thanks tested and applied, together with Jiri's Tested-by,
->>>
->>> - Arnaldo
->>> .
->>>
->> Is this patch okay? Is there anything that needs to be modified?
+I read it, I'm just unfamiliar with it. I don't use pstore, and I'm not
+sure what "crashdump" is. Do you mean the kexec/kdump? in which case
+you can retrieve data within the kernel quite easily.
+
+I haven't used debuginfod (never heard of it before actually).
+
+> │ This is especially helpful for crash debugging with pstore or crashdump                                                                                                                                         
+> │ kernels. If we have the build ID for the module in the stacktrace we can                                                                                                                                        
+> │ request the debug symbols for the module from a remote debuginfod server                                                                                                                                        
+> │ or parse stacktraces at a later time with decode_stacktrace.sh by                                                                                                                                               
+> │ downloading the correct symbols based on the build ID. This cuts down on                                                                                                                                        
+> │ the amount of time and effort needed to find the correct kernel modules                                                                                                                                         
+> │ for a stacktrace by encoding that information into it.  
+
+Are you saying it's common to have modules from different builds?
+
 > 
-> It was merged:
+> In some distro (read: non-kernel dev) workflows the vmlinux isn't
+> shipped on the device and crash handling is done offline or much later.
+> Using the build ID[1] is a common way to identify the binary that's
+> running on the device. In conjunction with a debuginfod[2] server you
+> can download the symbols for a crash automatically if you have the build
+> ID information.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/tools/perf/builtin-record.c?id=e16c2ce7c5ed5de881066c1fd10ba5c09af69559
+> I can add a patch that updates decode_stacktrace.sh to show how it can
+> download the correct vmlinux/modules if it isn't provided on the
+> commandline.
+
+Are you just trying to match modules with the builds that they were
+created with?
+
 > 
-> - Arnaldo
-> .
-> Thanks.
-Yang
+> If the debug symbols are on some public server then in theory we could
+> have some robot sitting on the mailing list that looks for stacktraces
+> and automatically replies with information about the line number/file
+> and even provides the code snippet for the code that's crashing from
+> that binary, because it's all stored in the full debuginfo builds.
+
+Again, I have no idea how buildids are created or what they are used
+for. This is the first time I've even heard about them. I'm all for
+helping other people out to make their workflow easier, if it doesn't
+make a mess for everyone else.
+
+-- Steve
+
