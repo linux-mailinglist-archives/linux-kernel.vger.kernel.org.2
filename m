@@ -2,89 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6924132CAC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C5132CAC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232229AbhCDDUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:20:30 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:36533 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232178AbhCDDUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:20:25 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrbhG6z4pz9sPf;
-        Thu,  4 Mar 2021 14:19:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614827983;
-        bh=yUkzJf99TcD5TX12wKNcaiACzxJSdmXLK2gpDaBbZhI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FV4AcKCdoaGCUO+vKlCQ/2tB704S0nzFLZvML2lwENeoqnyEnQFjqRGzFAra7gzll
-         0QzW9piRI/JEtQY4bIAP0nzOq+hzMhxT3gCKX77M/obS11VlfjOcRqqbFqedtWAkts
-         +9wIumNlTDklrwHU1tSzC07V6m6BbkpMd9wgvrjdY/p7mOKktv1YZMYKgzSpJz2NsH
-         AAprIzTVeFZcqt33mqxS++1+C/9nbZwuQ4MINuPywK0Nl1iZlkkEw8p2tmDn5p+c2e
-         3ks3j+/qWq5alGTXpuMMUK+yqBQEDMZ3iCeMTO0ZMVFW49lXqp2FoVmokMRjN/pLk4
-         dMF2CnG7IbYlA==
-Date:   Thu, 4 Mar 2021 14:19:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the net tree
-Message-ID: <20210304141941.07a98dce@canb.auug.org.au>
+        id S232262AbhCDDWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:22:06 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:60499 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232234AbhCDDVm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:21:42 -0500
+Received: (qmail 1595983 invoked by uid 1000); 3 Mar 2021 22:21:01 -0500
+Date:   Wed, 3 Mar 2021 22:21:01 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210304032101.GB1594980@rowland.harvard.edu>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+ <20210303220348.GL2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wU2AgWcWDdeg6qn7qB.XbBL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303220348.GL2696@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wU2AgWcWDdeg6qn7qB.XbBL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 03, 2021 at 02:03:48PM -0800, Paul E. McKenney wrote:
+> On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
+> > On Wed, Mar 03, 2021 at 09:40:22AM -0800, Paul E. McKenney wrote:
+> > > On Wed, Mar 03, 2021 at 12:12:21PM -0500, Alan Stern wrote:
+> > 
+> > > > Local variables absolutely should be treated just like CPU registers, if 
+> > > > possible.  In fact, the compiler has the option of keeping local 
+> > > > variables stored in registers.
+> > > > 
+> > > > (Of course, things may get complicated if anyone writes a litmus test 
+> > > > that uses a pointer to a local variable,  Especially if the pointer 
+> > > > could hold the address of a local variable in one execution and a 
+> > > > shared variable in another!  Or if the pointer is itself a shared 
+> > > > variable and is dereferenced in another thread!)
+> > > 
+> > > Good point!  I did miss this complication.  ;-)
+> > 
+> > I suspect it wouldn't be so bad if herd7 disallowed taking addresses of 
+> > local variables.
+> > 
+> > > As you say, when its address is taken, the "local" variable needs to be
+> > > treated as is it were shared.  There are exceptions where the pointed-to
+> > > local is still used only by its process.  Are any of these exceptions
+> > > problematic?
+> > 
+> > Easiest just to rule out the whole can of worms.
+> 
+> Good point, given that a global can be used instead of a local for
+> any case where an address must be taken.
 
-Hi all,
+Another thing to consider: Almost all marked accesses involve using the 
+address of the storage location (for example, smp_load_acquire's first 
+argument must be a pointer).  As far as I can remember at the moment, 
+the only ones that don't are READ_ONCE and WRITE_ONCE.  So although we 
+might or might not want to allow READ_ONCE or WRITE_ONCE on a local 
+variable, we won't have to worry about any of the other kinds of marked 
+accesses.
 
-In commit
+> > > > But even if local variables are treated as non-shared storage locations, 
+> > > > we should still handle this correctly.  Part of the problem seems to lie 
+> > > > in the definition of the to-r dependency relation; the relevant portion 
+> > > > is:
+> > > > 
+> > > > 	(dep ; [Marked] ; rfi)
+> > > > 
+> > > > Here dep is the control dependency from the READ_ONCE to the 
+> > > > local-variable store, and the rfi refers to the following load of the 
+> > > > local variable.  The problem is that the store to the local variable 
+> > > > doesn't go in the Marked class, because it is notated as a plain C 
+> > > > assignment.  (And likewise for the following load.)
+> > > > 
+> > > > Should we change the model to make loads from and stores to local 
+> > > > variables always count as Marked?
+> > > 
+> > > As long as the initial (possibly unmarked) load would be properly
+> > > complained about.
+> > 
+> > Sorry, I don't understand what you mean.
+> 
+> I was thinking in terms of something like this in one of the processes:
+> 
+> 	p = gp; // Unmarked!
+> 	r1 = p;
+> 	q = r1; // Implicitly marked now?
+> 	if (q)
+> 		WRITE_ONCE(x, 1); // ctrl dep from gp???
 
-  b12422362ce9 ("net: macb: Add default usrio config to default gem config")
+I hope we won't have to worry about this!  :-)  Treating local variable 
+accesses as if they are always marked looks wrong.
 
-Fixes tag
+> > >  And I cannot immediately think of a situation where
+> > > this approach would break that would not result in a data race being
+> > > flagged.  Or is this yet another failure of my imagination?
+> > 
+> > By definition, an access to a local variable cannot participate in a 
+> > data race because all such accesses are confined to a single thread.
+> 
+> True, but its value might have come from a load from a shared variable.
 
-  Fixes: edac63861db7 ("add userio bits as platform configuration")
+Then that load could have participated in a data race.  But the store to 
+the local variable cannot.
 
-has these problem(s):
+> > However, there are other aspects to consider, in particular, the 
+> > ordering relations on local-variable accesses.  But if, as Luc says, 
+> > local variables are treated just like registers then perhaps the issue 
+> > doesn't arise.
+> 
+> Here is hoping!
+> 
+> > > > What should have happened if the local variable were instead a shared 
+> > > > variable which the other thread didn't access at all?  It seems like a 
+> > > > weak point of the memory model that it treats these two things 
+> > > > differently.
+> > > 
+> > > But is this really any different than the situation where a global
+> > > variable is only accessed by a single thread?
+> > 
+> > Indeed; it is the _same_ situation.  Which leads to some interesting 
+> > questions, such as: What does READ_ONCE(r) mean when r is a local 
+> > variable?  Should it be allowed at all?  In what way is it different 
+> > from a plain read of r?
+> > 
+> > One difference is that the LKMM doesn't allow dependencies to originate 
+> > from a plain load.  Of course, when you're dealing with a local 
+> > variable, what matters is not the load from that variable but rather the 
+> > earlier loads which determined the value that had been stored there.  
+> > Which brings us back to the case of the
+> > 
+> > 	dep ; rfi
+> > 
+> > dependency relation, where the accesses in the middle are plain and 
+> > non-racy.  Should the LKMM be changed to allow this?
+> 
+> It would be nice, give or take the potential side effects.  ;-)
+> As in it would be nice, but might not be worthwhile.
 
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
+Treating local variables like registers will automatically bring this 
+behavior.  So I think we'll be good.
 
-Maybe you meant
+> > There are other differences to consider.  For example:
+> > 
+> > 	r = READ_ONCE(x);
+> > 	smp_wmb();
+> > 	WRITE_ONCE(y, 1);
+> > 
+> > If the write to r were treated as a marked store, the smp_wmb would 
+> > order it (and consequently the READ_ONCE) before the WRITE_ONCE.  
+> > However we don't want to do this when r is a local variable.  Indeed, a 
+> > plain store wouldn't be ordered this way because the compiler might 
+> > optimize the store away entirely, leaving the smp_wmb nothing to act on.
+> 
+> Agreed, having smp_wmb() order things due to a write to a local variable
+> would not be what we want.
+> 
+> > So overall the situation is rather puzzling.  Treating local variables 
+> > as registers is probably the best answer.
+> 
+> That is sounding quite appealing at the moment.
 
-Fixes: edac63861db7 ("net: macb: add userio bits as platform configuration")
+Agreed.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wU2AgWcWDdeg6qn7qB.XbBL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBAUc0ACgkQAVBC80lX
-0Gw1fwf9F7Y5sU4xzvEKW1pXpJfBH2YSRn1fXrC3/EaZ4GGzyqjYVItGMSltU1nf
-m75rdMR+IAsszf7SNmcwEA3QHi6SJyva9EmcGxvM31n7yP0CSkPT3yNFPuQIL29y
-uKeOpjMeXtTayZDl4FVulZloFg749ejNSt1TyqcS1+83It/2tVrsSpEN0/kyNXNR
-Yv49wbOh6ROGJ8zflFVMqIMOwGpfYhC3YKsKImMN7AZZW3XhtJwiWVoHxkwrA453
-OElm58qAQpFGxt3IgiSROglqB8P0TB6n05o/NHdYhL0hzEAWquBvb6w3w20OPriw
-pEwLQasKjfgPubg+eUppJ48Ou//FtQ==
-=lD/B
------END PGP SIGNATURE-----
-
---Sig_/wU2AgWcWDdeg6qn7qB.XbBL--
+Alan
