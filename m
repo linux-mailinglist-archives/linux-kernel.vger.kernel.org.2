@@ -2,61 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A78832CE70
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 060DB32CE71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236760AbhCDI2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:28:14 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:51779 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236743AbhCDI1u (ORCPT
+        id S236770AbhCDI2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236747AbhCDI15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:27:50 -0500
-Received: by mail-il1-f200.google.com with SMTP id y11so19883335ilc.18
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:27:35 -0800 (PST)
+        Thu, 4 Mar 2021 03:27:57 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F402C06175F;
+        Thu,  4 Mar 2021 00:27:17 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id m7so415774wmq.0;
+        Thu, 04 Mar 2021 00:27:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DhzRv1HTRJYO9NRCMMcTtvQlNov3HAyWzRcE1STMvlg=;
+        b=XmhBZF8WkgUMbvr8jldDRJASiVtMHPoVVMBTL4pVdIIXQQ/b3SBhSFxizC4V/6148b
+         J6WluDCaKsmb0JSfeOXcwthX4tvbDsewIIStOwZxPTJMyQbFQA2BEdWwL3yFtfFG8z7H
+         THHrvrP5j08qEnfDG3XfuGRsZ2Qa1+iR4CcmbsfR0Q1O0rLJYMt+dbVFCd5lDqVS8yNr
+         Wx0+MShAz6NHZOdaDN0h6zep5xetCNpb/qs3OrV3jOKB51U10U4FJNTG2pZmh4bMdB2I
+         +CzGpDRQ3fH/S47UvHD4XfXK/WawownhLVfgXyiOcGTtXaW+/lEm4sgyutxAR/OlSyKD
+         A0aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=6Z9uhMMGUlxMK9WR9njyeuEFP6BA8lotMFqvBRev/Ds=;
-        b=eXJVisd4nUGHf1U5Q9IdZ26S2kGSjY++sfBMvpEUNY90fPtdNpl2w3Qcg/KgImbVUh
-         +8qawgRfpHf25MNiMsFDf6mcIbfhQBIW+Eh8IAln0kDBXD6j6CMupOGgXu3aTEwSslLc
-         2V8WOffnbn9t2L77N7gJ5gtz+bsizHVlBpc1UieNsmC8IHogMz0XGSi6h9bnSHDJeJuA
-         BPfENdaP4FOtolOE5kh+t/TJzTm4LcSWqBlMWN86uGhQaxev2K1DRsuDnxZLdFYhIip9
-         bfqNYgoDDSBhbxinlIwLnAQ2u4jEXvxLbnlwnNF+zAqdXG+qtEGBROk4hZ6MoRCEgWHA
-         sdIg==
-X-Gm-Message-State: AOAM530tVreLH7j+GIX39zrET3Bhz8qKwfREcXR5Rj1lpTTZe0CLQdaG
-        Ko/WjQNLbLourO8Rg10zdoHe0vZbVhoWU8aRwVNXl+skOpMK
-X-Google-Smtp-Source: ABdhPJwsIfXz6QM1K0WwnCEY1jn+iyk7Wg9ebm+n6fHKt4lFAt/z88NBe2s+PUYaxC9bnn3OGmJtWB1tIGvARGYbrHlRisIdqm86
-MIME-Version: 1.0
-X-Received: by 2002:a5e:c00a:: with SMTP id u10mr2646759iol.165.1614846430408;
- Thu, 04 Mar 2021 00:27:10 -0800 (PST)
-Date:   Thu, 04 Mar 2021 00:27:10 -0800
-In-Reply-To: <8494c673-180e-e0b9-4db7-04aed2aee791@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9f38005bcb1bbec@google.com>
-Subject: Re: memory leak in io_submit_sqes (2)
-From:   syzbot <syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DhzRv1HTRJYO9NRCMMcTtvQlNov3HAyWzRcE1STMvlg=;
+        b=LrwOL07jS34Tv/ZOU/RopZPwxA5XncNWx7K8ROvR3jMeN3BYx2HxYPFfUlqgd0H9GN
+         TOJz1P29Cj5lBEFkF4mFYcWlOzVFolAFEpJEyegzhJBuiMP72MW4/QaitkkVNpoiHSYE
+         GsinYlLNiai5f5wt5hl9DJJsq/kjyKCmj4eZS9793bRN9YhWO9teIUJNCPXEFGB3QKq8
+         QutAyanOcmJGbX4SWLbpf8t1Igs8j+VEKrIMETvgDMxbJfaDKsg5YImAo8f7K/aoqJzK
+         eEnSiR5+M3RorUmJVbOlO1B6Ef396mp+3HpiEw1J+sKzvu8mc129eyk5buhuAoefMxqv
+         PrUg==
+X-Gm-Message-State: AOAM531YVoZVVWV2djJtL1fibTr7PmnH+jD5z8oc4OWM5h+QcB7Ve5Xa
+        4ATYebZEm4/fiVkA65w+24s=
+X-Google-Smtp-Source: ABdhPJyRiE0O3YcYS6HVMa7afmf2uN0emAWFAp08JbnN924VA5W64J8+yJuuk6qNv2h3H2UG3kxYJA==
+X-Received: by 2002:a1c:4b11:: with SMTP id y17mr2596723wma.171.1614846435763;
+        Thu, 04 Mar 2021 00:27:15 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id c26sm36518129wrb.87.2021.03.04.00.27.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Mar 2021 00:27:15 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2] gpio: regmap: set gpio_chip of_node
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <dc9933abd720e1449f78e86e5ff10f48@walle.cc>
+Date:   Thu, 4 Mar 2021 09:27:15 +0100
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <755C66F8-6B0E-469A-8419-6EFA290DA182@gmail.com>
+References: <20210304071506.18434-1-noltari@gmail.com>
+ <dc9933abd720e1449f78e86e5ff10f48@walle.cc>
+To:     Michael Walle <michael@walle.cc>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Michael,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> El 4 mar 2021, a las 9:18, Michael Walle <michael@walle.cc> escribi=C3=B3=
+:
+>=20
+> Am 2021-03-04 08:15, schrieb =C3=81lvaro Fern=C3=A1ndez Rojas:
+>> This is needed for properly registering gpio regmap as a child of a =
+regmap
+>> pin controller.
+>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+>> Reviewed-by: Michael Walle <michael@walle.cc>
+>> ---
+>> v2: split this patch from the bcm63xx-pinctrl series
+>> drivers/gpio/gpio-regmap.c  | 1 +
+>> include/linux/gpio/regmap.h | 3 +++
+>> 2 files changed, 4 insertions(+)
+>> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+>> index fed1e269c42a..8898ab3e1d59 100644
+>> --- a/drivers/gpio/gpio-regmap.c
+>> +++ b/drivers/gpio/gpio-regmap.c
+>> @@ -249,6 +249,7 @@ struct gpio_regmap *gpio_regmap_register(const
+>> struct gpio_regmap_config *config
+>> 	chip =3D &gpio->gpio_chip;
+>> 	chip->parent =3D config->parent;
+>> +	chip->of_node =3D config->of_node ?: =
+dev_of_node(config->parent);
+>> 	chip->base =3D -1;
+>> 	chip->ngpio =3D config->ngpio;
+>> 	chip->names =3D config->names;
+>> diff --git a/include/linux/gpio/regmap.h =
+b/include/linux/gpio/regmap.h
+>> index ad76f3d0a6ba..566d76d0dbae 100644
+>> --- a/include/linux/gpio/regmap.h
+>> +++ b/include/linux/gpio/regmap.h
+>> @@ -4,6 +4,7 @@
+>> #define _LINUX_GPIO_REGMAP_H
+>> struct device;
+>> +struct device_node;
+>> struct gpio_regmap;
+>> struct irq_domain;
+>> struct regmap;
+>> @@ -15,6 +16,7 @@ struct regmap;
+>>  * struct gpio_regmap_config - Description of a generic regmap =
+gpio_chip.
+>>  * @parent:		The parent device
+>>  * @regmap:		The regmap used to access the registers
+>> + * @of_node:		(Optional) The device node
+>>  *			given, the name of the device is used
+>=20
+> Something is messed up here ;) This line should be together with
+> the one containing @regmap. While at it please add the
+> "If not given, the of_node of the parent device is used."
 
-Reported-and-tested-by: syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com
+I think I was still sleeping when I did this=E2=80=A6
+Excuse me for that :(
 
-Tested on:
+>=20
+> -michael
+>=20
+>>  * @label:		(Optional) Descriptive name for GPIO controller.
+>>  *			If not given, the name of the device is used.
+>> @@ -57,6 +59,7 @@ struct regmap;
+>> struct gpio_regmap_config {
+>> 	struct device *parent;
+>> 	struct regmap *regmap;
+>> +	struct device_node *of_node;
+>> 	const char *label;
+>> 	int ngpio;
 
-commit:         e64db150 io-wq: ensure all pending work is canceled on exit
-git tree:       git://git.kernel.dk/linux-block leak
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c43bda1f1543d72b
-dashboard link: https://syzkaller.appspot.com/bug?extid=91b4b56ead187d35c9d3
-compiler:       
-
-Note: testing is done by a robot and is best-effort only.
+Best regards,
+=C3=81lvaro.=
