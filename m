@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E4732DBAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DACF32DBB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239388AbhCDVSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:18:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51908 "EHLO mx2.suse.de"
+        id S239620AbhCDVUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:20:47 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38681 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234894AbhCDVR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:17:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614892629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/tZ880Yp/AKHzG1rpWeDp9V30VjIiNL6pvc/O/61Sck=;
-        b=nCoW2/W4dLR8+pG1rRhirVZ+Z9b+K4gJulKogHhl2KxAUI3Q1MY/2G1W7U3tCZTIOMpHPF
-        5vl7YKo1McvzNVmkXuYzU77vtyz+lrpGiKEy9WprGWE8uPhkWUWnlXAT64Z9QIcOQJ276K
-        hQIubeeMqKJtIEjp+l2+3+97NKjOUi8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 88BD6AFB0;
-        Thu,  4 Mar 2021 21:17:09 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 22:17:08 +0100
-From:   Anthony Iliopoulos <ailiop@suse.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH STABLE 5.10 5.11] swap: fix swapfile page to sector
- mapping
-Message-ID: <YEFOVDk1bTgrw6bt@technoir>
-References: <20210304150824.29878-1-ailiop@suse.com>
- <20210304150824.29878-5-ailiop@suse.com>
- <YED5ypwsrExHWD7N@kroah.com>
- <YEELCJkGx78SP34d@technoir>
- <YEERyfs8QSB5lGVz@kroah.com>
+        id S234894AbhCDVUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 16:20:37 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ds3fh0FMqz9sRR;
+        Fri,  5 Mar 2021 08:19:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614892796;
+        bh=YdmoeCR39SwTtAaIHmNjeyDqs+iEg8Lut0rnucNlbuY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fvZEUJZr0BjRdz18SvVf5aQhZVnrLxIbyA4wyHSn9Hqpbnp0cJdf9auyCIjqAj1sv
+         50saAC5tM9EUeirHoT2XpZZRWq7HP3npVaurqc5DhYTE/pCeXbaHGe6GayRmQMtyj8
+         sxqU5oH5x0NE+MtfEnI9FiZmMMF5+cUEMryKU2W8FHWlHOAJzcs3EBm54zwa7m64CW
+         Bf18hPAUb2qdueN8U2h+5p7UjhUCqeJIzl7ERYTZTD/X0ZpfUJ9kGPs8c4N7qTVkl6
+         vOrTnTZJ4v1YpEet1SCOPHRQ40VnSM2opn+tHM26eURPk+i9c2yJrXtw0pRAy0BJ8I
+         YY3WeELyiOhqw==
+Date:   Fri, 5 Mar 2021 08:19:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the block tree
+Message-ID: <20210305081954.2cfe52b5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEERyfs8QSB5lGVz@kroah.com>
+Content-Type: multipart/signed; boundary="Sig_/YQlEy4QIxL8YwlNhf6KjNE7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 05:58:49PM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Mar 04, 2021 at 05:30:00PM +0100, Anthony Iliopoulos wrote:
-> > On Thu, Mar 04, 2021 at 04:16:26PM +0100, Greg Kroah-Hartman wrote:
-> > > On Thu, Mar 04, 2021 at 04:08:24PM +0100, Anthony Iliopoulos wrote:
-> > > > commit caf6912f3f4af7232340d500a4a2008f81b93f14 upstream.
-> > > 
-> > > No, this does not look like that commit.
-> > > 
-> > > Why can I not just take caf6912f3f4a ("swap: fix swapfile read/write
-> > > offset") directly for 5.10 and 5.11?  WHat has changed to prevent that?
-> > 
-> > You're right of course, the upstream fix applies even on v5.4 so you
-> > could just take it directly for those branches if this is preferable.
-> 
-> But, that commit says it fixes 48d15436fde6 ("mm: remove get_swap_bio"),
-> which is NOT what you are saying here in these patches.
+--Sig_/YQlEy4QIxL8YwlNhf6KjNE7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It is admittedly a bit confusing as the upstream commit fixes two issues
-in one swoop:
+Hi all,
 
-- the bug which was introduced in v5.12-rc1 via 48d15436fde6 ("mm:
-  remove get_swap_bio"), which affected swapfiles running on regular
-  block devices, in addition to:
+Commits
 
-- an identical bug which up until 48d15436fde6 was only applicable to
-  swapfiles on top of blockdevs that can do page io without the block
-  layer, which was introduced with dd6bd0d9c7db ("swap: use
-  bdev_read_page() / bdev_write_page()")
+  1b40fa66ac2b ("io_uring: reliably cancel linked timeouts")
+  42699d33e969 ("io_uring: cancel-match based on flags")
 
-> So which is it?  Is there a problem in 5.11 and older kernels
-> (48d15436fde6 ("mm: remove get_swap_bio") showed up in 5.12-rc1), that
-> requires this fix, or is there nothing needed to be backported?
+are missing a Signed-off-by from their committer.
 
-The second point/bug mentioned above is present on 5.11 and all older
-kernels, so some form of this fix is required.
+--=20
+Cheers,
+Stephen Rothwell
 
-> As a note, I've been running swapfiles on 5.11 and earlier just fine for
-> a very long time now, so is this really an issue?
+--Sig_/YQlEy4QIxL8YwlNhf6KjNE7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Yes there is an issue on all kernels since v3.16-rc1 when dd6bd0d9c7db
-was introduced, but it is applicable only to setups with swapfiles on
-filesystems sitting on top of brd, zram, btt or pmem.
+-----BEGIN PGP SIGNATURE-----
 
-I can trivially reproduce this e.g. on v5.11 by creating a swapfile on
-top of a zram or pmem blockdev and pushing the system to swap out pages,
-at which point it corrupts filesystem blocks that don't belong to the
-swapfile.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBBTvoACgkQAVBC80lX
+0Gy0wQf+N8df3bRdCXMHBA7PxJq3kgLCuujJojelkeeTb4yIfaLp+wzYfgAInNjT
+Fgn5XVTzQjPUFt1Jp/tnZkT1ajKHFshqEJSqCz0229+/AWl4q2m06XtO2sVF1154
+6Miz0Gm9T8Vw9haolxtkJ4giu1v6FR54QpfL8JIfKgsilLjKbTzLfOxdg3gjnIGR
+I1BfvksYbRRs+7EErU3G7uomjgcB6sADdz8WBma2tR5N4xh3NgACWKizooIv58U2
+WrYhpYxIIyJdSbdPHePRET0p4a8KXytKAbHkX73fI2ooysKTesTl5NHr+B7MDraM
+Dl466XAuFFV3oYkwtCpA3NWAOeotQw==
+=RMAh
+-----END PGP SIGNATURE-----
 
-Regards,
-Anthony
+--Sig_/YQlEy4QIxL8YwlNhf6KjNE7--
