@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF8832DCFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79FB32DD00
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCDW2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhCDW2i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:28:38 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C10C061574;
-        Thu,  4 Mar 2021 14:28:37 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id t9so115838pjl.5;
-        Thu, 04 Mar 2021 14:28:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QGTkbMjMvhOjPNZj43kjGavXYdondmbyryts8KXSdm8=;
-        b=JqZEFh+wZYnJFc/Bu22qdeo3ii9XTxXA9kmc/tAu4o9lcuHsP3F86LIxig6PvLmgcH
-         bWPDgM00KhiBP69mezT53poyGGxvkKW7BKRpPOIaCvz+LlW/fXur4kgJGPsDf2/1lH6R
-         ZMS2V933XoGopl2K1ea/6My6k8xlhpFX2j16BizgmSJ13S7qDon8t4OpGZGyZPiSrutj
-         1N94UnlEWgynMNh6slC8dDtEPfTp7PLWu2vHtq19iEHPskcOr/E4QZIpUUugwCAIHXwU
-         5ySA8W0h92985B9g+B3iao4y+JAgQ4vXsTzIvCbM6ip8nlen4hJRxozB9RAwKvGThg73
-         nXvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QGTkbMjMvhOjPNZj43kjGavXYdondmbyryts8KXSdm8=;
-        b=n+tpmPmz1uvTNbgz5vCA0dhJKK8tGHnOcX/8x1fY/u+cSaFnzVzjTChyDF1pnKqof9
-         Q/YNDq2BrPOSFVE63v2+aRXjAhuSqxEfNxszOiYQcD3tUrvkmi966oB8VshlfNVbXyfj
-         BghsmWAug6KFKZXEUu9dT6SAigKvNfWVfHSfJSHMFlevJLf9bdb8Vfg5qkuNz9aGXURN
-         i10L/chYKEi9aEWSx1E6n3RXGV6wE3gkceYHdAy1iTRrHi8SQk/OtsnotshIHJjDxzsG
-         0oDRnp22+Z/KeMAaOxF+vXONyAxyn6CeO5RxMNcJkdyJqozOX/7eye2Z6Y+2A3iKJlqN
-         0aSQ==
-X-Gm-Message-State: AOAM53068wogM1wsNaQnKAkCYS8gxrfGJkbGPRcxq+q47ZdGUvaW+Wxd
-        CYCTMrmLvOmYPvio7JIHEzI=
-X-Google-Smtp-Source: ABdhPJzNnTx628IwTkffe4agL3F/ap6im0NJmMGXAL3JovM1xNCU6RNjhYEd7ob/2PWc3GQMCDHfCw==
-X-Received: by 2002:a17:90a:2a46:: with SMTP id d6mr6644334pjg.197.1614896917115;
-        Thu, 04 Mar 2021 14:28:37 -0800 (PST)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id o9sm369137pfh.47.2021.03.04.14.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 14:28:36 -0800 (PST)
-Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Andrew Lunn <andrew@lunn.ch>, Matt Mackall <mpm@selenic.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stijn@linux-ipv6.be, ynezz@true.cz
-References: <20210220174741.23665-1-noltari@gmail.com>
- <YDFeao/bOxvoXI9D@lunn.ch> <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
- <20210303092019.GB8134@gondor.apana.org.au>
- <66AED5A4-3227-47CA-A4A2-B5AD6A571AAC@gmail.com>
- <c76c82668142710ba5a7a8454759c9aa2423d72f.camel@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b0cf1be0-4c7c-57ee-fea5-789fe215b85d@gmail.com>
-Date:   Thu, 4 Mar 2021 14:28:34 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231406AbhCDW3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:29:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhCDW3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:29:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A024164FF4;
+        Thu,  4 Mar 2021 22:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614896962;
+        bh=ANwgarss26fhnHtMQx6kZPDetgPDjR7bGCtYWahlg/Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XQfwlPeoowQ9soQkxXtQOpFfuiwnfosGn+xFjVB8aJ/JGgfx5BhuMvaCj9VfRg9d2
+         iIHF4gmkfIG2J0MEi1JhYjHQOFzqUadDKl40wvUBLfo+p1yFeDd1hNee5c4YdBd3Jf
+         pUgDk65LdRHx5tP6CKcQOKReQMH2xqLWjqYKhBNl/sw786tXNG3BJIqTWHgMPtcxtx
+         4XfF3xGUlx36SoifC5FZVxJscC7ODiBgtiHz9mT8mJelMlrf3tQOybZDB6tjRk94dl
+         V5wjlX3EttoInTx779Z/h59tyjyz3ulpQMJrbghFayktiBRMFkW9h225/BFgt5sqZp
+         ipSzxlBDS4eKQ==
+Received: by mail-qt1-f178.google.com with SMTP id w6so245706qti.6;
+        Thu, 04 Mar 2021 14:29:22 -0800 (PST)
+X-Gm-Message-State: AOAM531sI7O7JMoLUGjnRyat6aqdhS2B7DB2xcL4r4HeZx68cOFBOP7t
+        DMHEEISGC9TcfmS7MXX4fF0+3BxGZlbnYxG4kA==
+X-Google-Smtp-Source: ABdhPJwx4d2wXbZtiOIhYLW9N+mjHTb19kz32s7JL6vHEGvP1Uq0fZcqmIA0CUEdGaXWw2o4QMKiAj+2ULAXXb0oCsE=
+X-Received: by 2002:ac8:70d1:: with SMTP id g17mr4802329qtp.380.1614896961860;
+ Thu, 04 Mar 2021 14:29:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c76c82668142710ba5a7a8454759c9aa2423d72f.camel@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210304044803.812204-2-danielwa@cisco.com> <2b0081aa-52af-a4ab-7481-6e125bd103d6@csgroup.eu>
+ <20210304212448.GK109100@zorba>
+In-Reply-To: <20210304212448.GK109100@zorba>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 4 Mar 2021 16:29:09 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJphExyTqEejMnM07NOgPyZ5hGLJunY6yXYm16WT+PGCQ@mail.gmail.com>
+Message-ID: <CAL_JsqJphExyTqEejMnM07NOgPyZ5hGLJunY6yXYm16WT+PGCQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] CMDLINE: drivers: of: ifdef out cmdline section
+To:     Daniel Walker <danielwa@cisco.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Will Deacon <will@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 7:11 AM, Nicolas Saenz Julienne wrote:
-> On Wed, 2021-03-03 at 10:29 +0100, Álvaro Fernández Rojas wrote:
->> Hi Herbert,
->>
->>> El 3 mar 2021, a las 10:20, Herbert Xu <herbert@gondor.apana.org.au> escribió:
->>>
->>> On Sat, Feb 20, 2021 at 08:12:45PM +0100, Álvaro Fernández Rojas wrote:
->>>>
->>>> I ran rngtest and this is what I got:
->>>
->>> This is meaningless except for sources that have not been whitened.
->>>
->>> Your justification needs to be based on what the hardware does or
->>> is documented to do.
->>
->> Ok, so I guess that we’re never setting that value to anything since there’s
->> no public documentation about that ¯\_(ツ)_/¯.
-> 
-> @Florian, is there a way you might be able to get the official value?
+On Thu, Mar 4, 2021 at 3:24 PM Daniel Walker <danielwa@cisco.com> wrote:
+>
+> On Thu, Mar 04, 2021 at 08:09:52AM +0100, Christophe Leroy wrote:
+> >
+> >
+> > Le 04/03/2021 =C3=A0 05:47, Daniel Walker a =C3=A9crit :
+> > > It looks like there's some seepage of cmdline stuff into
+> > > the generic device tree code. This conflicts with the
+> > > generic cmdline implementation so I remove it in the case
+> > > when that's enabled.
+> > >
+> > > Cc: xe-linux-external@cisco.com
+> > > Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
+> > > Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> > > ---
+> > >   drivers/of/fdt.c | 12 ++++++++++++
+> > >   1 file changed, 12 insertions(+)
+> > >
+> > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> > > index feb0f2d67fc5..cfe4f8d3c9f5 100644
+> > > --- a/drivers/of/fdt.c
+> > > +++ b/drivers/of/fdt.c
+> > > @@ -25,6 +25,7 @@
+> > >   #include <linux/serial_core.h>
+> > >   #include <linux/sysfs.h>
+> > >   #include <linux/random.h>
+> > > +#include <linux/cmdline.h>
+> > >   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+> > >   #include <asm/page.h>
+> > > @@ -1048,8 +1049,18 @@ int __init early_init_dt_scan_chosen(unsigned =
+long node, const char *uname,
+> > >     early_init_dt_check_for_initrd(node);
+> > > +#ifdef CONFIG_GENERIC_CMDLINE
+> > >     /* Retrieve command line */
+> > >     p =3D of_get_flat_dt_prop(node, "bootargs", &l);
+> > > +
+> > > +   /*
+> > > +    * The builtin command line will be added here, or it can overrid=
+e
+> > > +    * with the DT bootargs.
+> > > +    */
+> > > +   cmdline_add_builtin(data,
+> > > +                       ((p !=3D NULL && l > 0) ? p : NULL), /* This =
+is sanity checking */
+> >
+> > Can we do more simple ? If p is NULL, p is already NULL, so (l > 0 ? p =
+: NULL) should be enough.
+>
+>
+> I believe Rob gave me this line. Maybe he can comment on it.
 
-I will be looking into the documentation this weekend and let you know
-whether we can change the driver's quality accordingly.
--- 
-Florian
+It's an obvious improvement and LGTM.
