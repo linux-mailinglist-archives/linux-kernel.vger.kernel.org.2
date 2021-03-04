@@ -2,59 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32A532D3E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D91832D3E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241118AbhCDNID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43364 "EHLO mail.kernel.org"
+        id S241157AbhCDNJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:09:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241092AbhCDNHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:07:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFD8A64F04;
-        Thu,  4 Mar 2021 13:07:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614863228;
-        bh=PoUZt7/VmCLpDxeN+0y2s7PKMDbV1FmM7FzfAmlbCUw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gW/Blo95cl82eTLjajhQFJtbBMakAhsYmEF2OK5dqLRsqYRubId4b5pg36Cavo7dh
-         DNSExyOML/tuhOurlsWQ76UJhJ5qr0yJ2SqOUWYdNw09Z2l4VtP+IW0WfmbXfCjKOH
-         yAkGtJRDA3YX4GVKNAdKMPl8Ogmp/ZoYoS+qqfUk=
-Date:   Thu, 4 Mar 2021 14:07:05 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Ray Chi <raychi@google.com>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>
-Subject: Re: next/master bisection: baseline.login on rk3399-gru-kevin
-Message-ID: <YEDbeY03ATiiL0pa@kroah.com>
-References: <6040cc3b.1c69fb81.cba3d.5b5c@mx.google.com>
- <9ada6ed0-eef0-407b-cf9b-22d077cee578@collabora.com>
+        id S241138AbhCDNJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:09:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A3BE60200;
+        Thu,  4 Mar 2021 13:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614863318;
+        bh=2QR5McJgn4rfMKUP2x+w+ee1woXk/Fx6uAArQBOUhZk=;
+        h=Date:From:To:cc:Subject:From;
+        b=KXr20cgjKyUOLfbRMXjPhr3ZbvtClRo2LROxYyA69BgHWZgiSTBe4yeibbupe5u8n
+         3k9e6iKZlMYYk6+5SV741lDisVHEmRD2TZbj4pcZwkAe5wTVfiWZ+Cp+G3jLz/RvkY
+         Uix2yjpgKW0x1yGC1s9/CvkPDr1p3Q1//Ycn1rl5mkSRRshQe7JSN1lvvilR9qlPDU
+         Ybxh2SSD/kd2rZSiArP3/zV5s9VomvD5LbTOrCRSB3K8GRznrVxFVddmSP3aFoyNaj
+         61iCgtEudFdm7wP4LqsusR4rMlHvYGcGZ9tPdM6fbbuy0i+4GFfzZb4ms3h6gVEjOK
+         /Bq5TBP/K7COQ==
+Date:   Thu, 4 Mar 2021 14:08:34 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Lockdep report for hci_conn_get_phy()
+Message-ID: <nycvar.YFH.7.76.2103041405420.12405@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ada6ed0-eef0-407b-cf9b-22d077cee578@collabora.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 12:22:02PM +0000, Guillaume Tucker wrote:
-> Hi Ray,
-> 
-> Please see the bisection report below about a boot failure on
-> rk3399-gru-kevin on linux-next.
-> 
-> Reports aren't automatically sent to the public while we're
-> trialing new bisection features on kernelci.org but this one
-> looks valid.
-> 
-> The boot log shows a kernel panic with a NULL pointer
-> dereference:
-> 
->   https://storage.kernelci.org/next/master/next-20210304/arm64/defconfig/gcc-8/lab-collabora/baseline-rk3399-gru-kevin.html#L673
+Hi,
 
-Well known issue, fix is already in my tree, will show up in the next
-linux-next, thanks!
+I am getting the lockdep splat below with current Linus' tree (5.12-rc1). 
+I haven't yet analyzed the dependency chain and the code, but sending out 
+early in case someone has seen this before and analyzed / fixed it 
+already.
 
-greg k-h
+Thanks.
+
+ ======================================================
+ WARNING: possible circular locking dependency detected
+ 5.12.0-rc1-00026-g73d464503354 #10 Not tainted
+ ------------------------------------------------------
+ bluetoothd/1118 is trying to acquire lock:
+ ffff8f078383c078 (&hdev->lock){+.+.}-{3:3}, at: hci_conn_get_phy+0x1c/0x150 [bluetooth]
+ 
+ but task is already holding lock:
+ ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 
+
+ 
+ which lock already depends on the new lock.
+
+ 
+ the existing dependency chain (in reverse order) is:
+ 
+ -> #3 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}:
+        lock_sock_nested+0x72/0xa0
+        l2cap_sock_ready_cb+0x18/0x70 [bluetooth]
+        l2cap_config_rsp+0x27a/0x520 [bluetooth]
+        l2cap_sig_channel+0x658/0x1330 [bluetooth]
+        l2cap_recv_frame+0x1ba/0x310 [bluetooth]
+        hci_rx_work+0x1cc/0x640 [bluetooth]
+        process_one_work+0x244/0x5f0
+        worker_thread+0x3c/0x380
+        kthread+0x13e/0x160
+        ret_from_fork+0x22/0x30
+ 
+ -> #2 (&chan->lock#2/1){+.+.}-{3:3}:
+        __mutex_lock+0xa3/0xa10
+        l2cap_chan_connect+0x33a/0x940 [bluetooth]
+        l2cap_sock_connect+0x141/0x2a0 [bluetooth]
+        __sys_connect+0x9b/0xc0
+        __x64_sys_connect+0x16/0x20
+        do_syscall_64+0x33/0x80
+        entry_SYSCALL_64_after_hwframe+0x44/0xae
+ 
+ -> #1 (&conn->chan_lock){+.+.}-{3:3}:
+        __mutex_lock+0xa3/0xa10
+        l2cap_chan_connect+0x322/0x940 [bluetooth]
+        l2cap_sock_connect+0x141/0x2a0 [bluetooth]
+        __sys_connect+0x9b/0xc0
+        __x64_sys_connect+0x16/0x20
+        do_syscall_64+0x33/0x80
+        entry_SYSCALL_64_after_hwframe+0x44/0xae
+ 
+ -> #0 (&hdev->lock){+.+.}-{3:3}:
+        __lock_acquire+0x147a/0x1a50
+        lock_acquire+0x277/0x3d0
+        __mutex_lock+0xa3/0xa10
+        hci_conn_get_phy+0x1c/0x150 [bluetooth]
+        l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
+        __sys_getsockopt+0xcc/0x200
+        __x64_sys_getsockopt+0x20/0x30
+        do_syscall_64+0x33/0x80
+        entry_SYSCALL_64_after_hwframe+0x44/0xae
+ 
+ other info that might help us debug this:
+
+ Chain exists of:
+   &hdev->lock --> &chan->lock#2/1 --> sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP
+  Possible unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
+                                lock(&chan->lock#2/1);
+                                lock(sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP);
+   lock(&hdev->lock);
+ 
+  *** DEADLOCK ***
+
+ 1 lock held by bluetoothd/1118:
+  #0: ffff8f07e831d920 (sk_lock-AF_BLUETOOTH-BTPROTO_L2CAP){+.+.}-{0:0}, at: l2cap_sock_getsockopt+0x8b/0x610 [bluetooth]
+ 
+ stack backtrace:
+ CPU: 3 PID: 1118 Comm: bluetoothd Not tainted 5.12.0-rc1-00026-g73d464503354 #10
+ Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+ Call Trace:
+  dump_stack+0x7f/0xa1
+  check_noncircular+0x105/0x120
+  ? __lock_acquire+0x147a/0x1a50
+  __lock_acquire+0x147a/0x1a50
+  lock_acquire+0x277/0x3d0
+  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+  ? __lock_acquire+0x2e1/0x1a50
+  ? lock_is_held_type+0xb4/0x120
+  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+  __mutex_lock+0xa3/0xa10
+  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+  ? lock_acquire+0x277/0x3d0
+  ? mark_held_locks+0x49/0x70
+  ? mark_held_locks+0x49/0x70
+  ? hci_conn_get_phy+0x1c/0x150 [bluetooth]
+  hci_conn_get_phy+0x1c/0x150 [bluetooth]
+  l2cap_sock_getsockopt+0x5a9/0x610 [bluetooth]
+  __sys_getsockopt+0xcc/0x200
+  __x64_sys_getsockopt+0x20/0x30
+  do_syscall_64+0x33/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7fb73df33eee
+ Code: 48 8b 0d 85 0f 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 52 0f 0c 00 f7 d8 64 89 01 48
+ RSP: 002b:00007fffcfbbbf08 EFLAGS: 00000203 ORIG_RAX: 0000000000000037
+ RAX: ffffffffffffffda RBX: 0000000000000019 RCX: 00007fb73df33eee
+ RDX: 000000000000000e RSI: 0000000000000112 RDI: 0000000000000018
+ RBP: 0000000000000000 R08: 00007fffcfbbbf44 R09: 0000000000000000
+ R10: 00007fffcfbbbf3c R11: 0000000000000203 R12: 0000000000000000
+ R13: 0000000000000018 R14: 0000000000000000 R15: 0000556fcefc70d0
+
+
+-- 
+Jiri Kosina
+SUSE Labs
+
