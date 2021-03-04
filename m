@@ -2,180 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DA932D961
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274DD32D969
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234359AbhCDSYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S234408AbhCDSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234201AbhCDSXq (ORCPT
+        with ESMTP id S234201AbhCDSYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:23:46 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464B8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:23:06 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id w65so7568350oie.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:23:06 -0800 (PST)
+        Thu, 4 Mar 2021 13:24:47 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE906C061574;
+        Thu,  4 Mar 2021 10:24:06 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id j2so15879787wrx.9;
+        Thu, 04 Mar 2021 10:24:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lkt+RxNv+povx5RrP6jzx52eKkPT/gfUP+i0E22Jg6A=;
-        b=QLchrPEA+a6QS6aiRdvhoLByBQL+eA7V84XmSHtcB6WIXYzejx295qXR9hkGGCOxof
-         ygNURmcIvo45pqhjGCRVkQUEe5e1UIebSlhV1NiFQFyZ7bFAzsWFv4/kfPs3HVZvVQ8/
-         23kUMCGcdaosoC5JaOrmY89Lp1Aa2lQaD24RlG866uIx//UUg89C5KCdz+kPt6vo/TBC
-         IhBc9G4Rnk5/qAHEeCu1TDRoQ4TMxX0uYckqvkVuTltZlINktG4YjafERGWQxE7O2HjU
-         mh4hcAMgGLMFmeVo+A4sBIs/CskR1hsTt7w3CyZ7eJzU5gm6M4LlIF56gAlgJOLVtBGc
-         LfTw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zOtCkSuP3/sSeDKbXtcuyFbcQjnAEtPQvMYWbEo0RWc=;
+        b=YfKywlVxA2OwkHFlyyqrfje5azAqfgnYnUxA9d2jP0QvhjMAlxLR3r6C/Elzp9q92h
+         qyNvO+EX+nMI++2Pa08tB3EF/iDL28VoGHPvvuo83KL7wz5rIqdO4IYtJ/E2EM8HjKns
+         RTj1wCLR3uGl9uaqG3daUJn2+peqIV5Gsj4O4DYbgjLbrNCM7vrdoRaYmAhEOi1gJ0Ul
+         OIkZ50/qDGctum/YlbqL4IeRhcdDcXO+Ll0CO1+kK09Rh7em/N+JV2ZBNcbz0Sa4hHfQ
+         Pasn8ntj+5g6E+Ahcl84DTVVDaAxmkqSZX5p/SxvajryIPc639gS0VB5UWev/7NlpPao
+         Zx3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lkt+RxNv+povx5RrP6jzx52eKkPT/gfUP+i0E22Jg6A=;
-        b=LF9Xkiy9LS02lmanaFlGwcs55nCsJ+yM/GlMOZIr2L1+HbNdFrmIxHSPA3iMNFp6Aa
-         A6yiR4Xrc4Ag0EICyz42D7m3uPwGKC8G2jjfvo9uzGmQhaqUSEmt9ALrZTjJLPXYK1we
-         H2QtsoMDZvwpM0KvYINqq53oZCU8kSLbtIgwycnPWaDTypzvVCJVHjalRHh98UA/jk/f
-         z1GArSMYiJNjG0HMIwVK+EsK0CbMoMNQ8jdsFokPALMGMchWH+1eMiYq4njy3Lxryfmx
-         wdRk0rHLVr6lZEgFtyADM1mKoZNwcE5KQxprSzlry7bZMSQS9m6DVj5DdJRB4tLXwxWr
-         8E9Q==
-X-Gm-Message-State: AOAM533HowtLpPYzUZxu1eaOjFVceybdD7OdNDmYjYOmGXCDUpC/lTp7
-        tEXkEukH6SPKEDAw0miT6kbVM/pol/pciVTDCkwt0w==
-X-Google-Smtp-Source: ABdhPJyh0q8akJpCHSVQ8ANv6vpJ8HOAzihjMi3/13gzP7GpHLPwXR/wy1fi78187um6g6N+N5vR9hTDYM3y884RPgo=
-X-Received: by 2002:a05:6808:10d3:: with SMTP id s19mr3999250ois.70.1614882185258;
- Thu, 04 Mar 2021 10:23:05 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zOtCkSuP3/sSeDKbXtcuyFbcQjnAEtPQvMYWbEo0RWc=;
+        b=BueaABldXxSdpMgmg4C8ssYiArOin/qNCbEIwAdduBGxI92PaNKOJVV2PxNAjzabwT
+         NEWfpmBG9EVdWb2wB1x64TN6StxVGfBcbuwjYL2LgIdID/LPvgSEEw0CBzPCtYmmBV6+
+         kEFCS/l4DOWwLQ8ImuM6hnGQyVkJes0HThE7aJLVrApa54H7EReBtMF/2TSrOhC1Pz6T
+         DTydRewHDlKW0dphHl37kxyCyLmjEf4cLCBTLY4vqh71p/4QNWhjWIWaBImIwdBvUk4N
+         rih3M3It45uaIi56niyCOtKBDI7ak1x7tyVj0kFigjhxFugDa4doOFI8o1SCf1lj67S5
+         6zQw==
+X-Gm-Message-State: AOAM531llen+U9r2ZvBcXaMeOz/X+a9vXYauK3tGvRIRVMzmbr5MOCPt
+        FBGvUYZeLMyVgOs4bt4NW3Y=
+X-Google-Smtp-Source: ABdhPJw9IGXfIEwP2LVQ0WhlSyUoO96IZPZPEYenv21JjYYT4AGCNBo1c0TUm4fQXkse7RWu/AHxvQ==
+X-Received: by 2002:adf:a1ce:: with SMTP id v14mr5534243wrv.228.1614882244603;
+        Thu, 04 Mar 2021 10:24:04 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id w18sm143376wrr.7.2021.03.04.10.24.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 10:24:04 -0800 (PST)
+Subject: Re: [RFC v4] copy_file_range.2: Update cross-filesystem support for
+ 5.12
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-man@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Luis Henriques <lhenriques@suse.de>,
+        Steve French <sfrench@samba.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Walter Harms <wharms@bfs.de>
+References: <20210224142307.7284-1-lhenriques@suse.de>
+ <20210304093806.10589-1-alx.manpages@gmail.com>
+ <20210304171350.GC7267@magnolia>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <37df00f9-a88e-3f16-d0b4-3297248aee66@gmail.com>
+Date:   Thu, 4 Mar 2021 19:24:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
- <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
- <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu> <YD+o5QkCZN97mH8/@elver.google.com>
- <20210304145730.GC54534@C02TD0UTHF1T.local> <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
- <20210304165923.GA60457@C02TD0UTHF1T.local> <YEEYDSJeLPvqRAHZ@elver.google.com>
- <20210304180154.GD60457@C02TD0UTHF1T.local>
-In-Reply-To: <20210304180154.GD60457@C02TD0UTHF1T.local>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 4 Mar 2021 19:22:53 +0100
-Message-ID: <CANpmjNOZWuhqXATDjH3F=DMbpg2xOy0XppVJ+Wv2XjFh_crJJg@mail.gmail.com>
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        broonie@kernel.org, linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210304171350.GC7267@magnolia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 19:02, Mark Rutland <mark.rutland@arm.com> wrote:
-> On Thu, Mar 04, 2021 at 06:25:33PM +0100, Marco Elver wrote:
-> > On Thu, Mar 04, 2021 at 04:59PM +0000, Mark Rutland wrote:
-> > > On Thu, Mar 04, 2021 at 04:30:34PM +0100, Marco Elver wrote:
-> > > > On Thu, 4 Mar 2021 at 15:57, Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > > [adding Mark Brown]
-> > > > >
-> > > > > The bigger problem here is that skipping is dodgy to begin with, and
-> > > > > this is still liable to break in some cases. One big concern is that
-> > > > > (especially with LTO) we cannot guarantee the compiler will not inline
-> > > > > or outline functions, causing the skipp value to be too large or too
-> > > > > small. That's liable to happen to callers, and in theory (though
-> > > > > unlikely in practice), portions of arch_stack_walk() or
-> > > > > stack_trace_save() could get outlined too.
-> > > > >
-> > > > > Unless we can get some strong guarantees from compiler folk such that we
-> > > > > can guarantee a specific function acts boundary for unwinding (and
-> > > > > doesn't itself get split, etc), the only reliable way I can think to
-> > > > > solve this requires an assembly trampoline. Whatever we do is liable to
-> > > > > need some invasive rework.
-> > > >
-> > > > Will LTO and friends respect 'noinline'?
-> > >
-> > > I hope so (and suspect we'd have more problems otherwise), but I don't
-> > > know whether they actually so.
-> > >
-> > > I suspect even with 'noinline' the compiler is permitted to outline
-> > > portions of a function if it wanted to (and IIUC it could still make
-> > > specialized copies in the absence of 'noclone').
-> > >
-> > > > One thing I also noticed is that tail calls would also cause the stack
-> > > > trace to appear somewhat incomplete (for some of my tests I've
-> > > > disabled tail call optimizations).
-> > >
-> > > I assume you mean for a chain A->B->C where B tail-calls C, you get a
-> > > trace A->C? ... or is A going missing too?
-> >
-> > Correct, it's just the A->C outcome.
->
-> I'd assumed that those cases were benign, e.g. for livepatching what
-> matters is what can be returned to, so B disappearing from the trace
-> isn't a problem there.
->
-> Is the concern debugability, or is there a functional issue you have in
-> mind?
+Hi Darrick,
 
-For me, it's just been debuggability, and reliable test cases.
+On 3/4/21 6:13 PM, Darrick J. Wong wrote:
+> On Thu, Mar 04, 2021 at 10:38:07AM +0100, Alejandro Colomar wrote:
+>> +However, on some virtual filesystems,
+>> +the call failed to copy, while still reporting success.
+> 
+> ...success, or merely a short copy?
 
-> > > > Is there a way to also mark a function non-tail-callable?
-> > >
-> > > I think this can be bodged using __attribute__((optimize("$OPTIONS")))
-> > > on a caller to inhibit TCO (though IIRC GCC doesn't reliably support
-> > > function-local optimization options), but I don't expect there's any way
-> > > to mark a callee as not being tail-callable.
-> >
-> > I don't think this is reliable. It'd be
-> > __attribute__((optimize("-fno-optimize-sibling-calls"))), but doesn't
-> > work if applied to the function we do not want to tail-call-optimize,
-> > but would have to be applied to the function that does the tail-calling.
->
-> Yup; that's what I meant then I said you could do that on the caller but
-> not the callee.
->
-> I don't follow why you'd want to put this on the callee, though, so I
-> think I'm missing something. Considering a set of functions in different
-> compilation units:
->
->   A->B->C->D->E->F->G->H->I->J->K
+Okay.
 
-I was having this problem with KCSAN, where the compiler would
-tail-call-optimize __tsan_X instrumentation. This would mean that
-KCSAN runtime functions ended up in the trace, but the function where
-the access happened would not. However, I don't care about the runtime
-functions, and instead want to see the function where the access
-happened. In that case, I'd like to just mark __tsan_X and any other
-kcsan instrumentation functions as do-not-tail-call-optimize, which
-would solve the problem.
+> 
+> (The rest looks reasonable (at least by c_f_r standards) to me.)
 
-The solution today is that when you compile a kernel with KCSAN, every
-instrumented TU is compiled with -fno-optimize-sibling-calls. The
-better solution would be to just mark KCSAN runtime functions somehow,
-but permit tail calling other things. Although, I probably still want
-to see the full trace, and would decide that having
--fno-optimize-sibling-calls is a small price to pay in a
-debug-only-kernel to get complete traces.
+I'm curious, what does "c_f_r standards" mean? :)
 
-> ... if K were marked in this way, and J was compiled with visibility of
-> this, J would stick around, but J's callers might not, and so the a
-> trace might see:
->
->   A->J->K
->
-> ... do you just care about the final caller, i.e. you just need
-> certainty that J will be in the trace?
+Cheers,
 
-Yes. But maybe it's a special problem that only sanitizers have.
+Alex
 
-> If so, we can somewhat bodge that by having K have an __always_inline
-> wrapper which has a barrier() or similar after the real call to K, so
-> the call couldn't be TCO'd.
->
-> Otherwise I'd expect we'd probably need to disable TCO generally.
-
-Thanks,
--- Marco
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
