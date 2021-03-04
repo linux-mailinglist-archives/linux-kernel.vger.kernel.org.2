@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB99A32D919
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B3932D91D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbhCDR4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:56:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50734 "EHLO
+        id S232573AbhCDR5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 12:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232443AbhCDR4F (ORCPT
+        with ESMTP id S231789AbhCDR5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:56:05 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB7BC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:55:25 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id k2so25637198ili.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:55:25 -0800 (PST)
+        Thu, 4 Mar 2021 12:57:03 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D923C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:56:17 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id e19so219721ejt.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:56:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vVsAz+bfPua+BgXPwRsHjwhxV1PYCiqHXac39+Nd7vQ=;
-        b=Ht9DAia0wRl1APiTezDx/62uZlAr7huxBCMyzegvKENlFmWag5T1fR9wZVFYXk46AO
-         2DL45TWPor0JU6xZaBQXcGETKh5oKTaKrptllgd/4FhFJ18XAnGEvXw0aTUTO2duXocp
-         7x4zr/V9wRLKlap3fHa1n2J5KMpcQuPb5x5dMgYmDe/YCYPLjh/iliUsPsLslzLaue6G
-         s22qdLa5zOqU9l2zdn2T8PCBv3NhuZgYqX8cxNYr/2oA7TYChcRwbR2hWw8XT/Cjx2Bl
-         WAOV5OXDESvk8TndQH7H3OJgTrgveItlr2DwN6TvdL/fGPegjzTIvVJ+A7UnPGaXd08I
-         ltSg==
+         :cc:content-transfer-encoding;
+        bh=+ruJecJd7EOFEws1Yrx7o1yatnr4qLLm/7nk+06U75U=;
+        b=p5otBQGQwZYOnbYxbE1LdapAvezxmx+V5fGRlF421cgoSCo6xcD1/dmcfgI6dBVpi8
+         6/8ye2TPBofCuZmw4gCzcM6ymilKi8imi8/pjipCP32SPRILqzczclIe1Q42jRqRHzfP
+         jDu6EC4OkucFLFF0cmwtITipIlJc9qECmgI6BAG0+8h1dmwX/gBNu4fxXKrOchE1BJgG
+         IkvLr6B4mJZ89YQGuEFzS+QpLSh74OQ76HMGLMmZA1lA1VEWfeNUnwhxg4wKQ0+EfTNt
+         uK5mNMZVK9bmcVncc0Zl24PJMlUdnFoww/b4P4DvT1ffjAEtsWKLvf4krHBZdMzhPsOu
+         9Mwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vVsAz+bfPua+BgXPwRsHjwhxV1PYCiqHXac39+Nd7vQ=;
-        b=AZd/omdASEdxqUEmdok3CgoS++qhkWAinJWc5qhgIPvMKXEG2nI+tflVOXzZXaFJus
-         bhCf2ZdNEanWYaxHqL74WQirHcEiG55smWEP85BH3DgEfatl1/TVDdqLQLm829Uo0+T6
-         i6XEOJIB2hwZLn0usbwFZr0bPrxhFR8C0EcH013OH2j2WoP7JwiNQWDB76EnRjlX4eqD
-         wpzU08kzpDjDcysrTShOM+EbaX1uVjG7fIF3YXZbnitNacGZQYyvUtaa+2SEDTamcU5X
-         BNcztj08MBbU/gInCD6BsGWmKt+j283l6pKePbjf+e6TsXv/9ae7AvwzR/3q8f/WwrEz
-         i3vA==
-X-Gm-Message-State: AOAM531uW9rv7cqg+V/xNHCAIc87/Cwh077ghYmUeYFhA0XeDbT41gn3
-        c1hRVoj8VSaiYIz/WT4yEW5La8RvV+Qz9ypb/lUIrQ==
-X-Google-Smtp-Source: ABdhPJzeN4MV9/0O1RDyM6JpznHJpH9JakxKdRL8bNri8FMMO5JTAk5AqM1bavcWQdCJa3jGoi/0CCZ84UUyi1rS45Q=
-X-Received: by 2002:a92:d8d1:: with SMTP id l17mr5120394ilo.85.1614880524843;
- Thu, 04 Mar 2021 09:55:24 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+ruJecJd7EOFEws1Yrx7o1yatnr4qLLm/7nk+06U75U=;
+        b=UjlDPcBmoYOOs66gJn4rd5DUyvR7/pur6O13kTk17Y9GbqI/OOGtjHcwiiC04jx52A
+         tZbWnlyLn7EO1GWiDf9dRPI7cweFEZJyC3GP8AKJCYIWdDTG8HeqrZERB7TSeALrN7AR
+         OsTXYSH7gnmHxoCgPUYi8mVcZjkcfOQQhSOUIFTvmbNPjEZ/p2tzn+V0ZgAOpM6tSYVK
+         987oHkN6h4vqWx/Pg2fb0OU2hErYiLR1/tJLjWt3/nx5crzcjgKniltRa6weaNRcAy0r
+         PmZK6Zs+7O6q9blGQj34eDbIxfcA5bl8SvvrnmtxQijsC/ZyCtRlMJCr3M/whwVZ4ryn
+         XosQ==
+X-Gm-Message-State: AOAM5339vYfD6M0ltluRfd0I+MPk9Kq1d6v/5zU0N8UsrHMonqWv8L+X
+        a6VzhlQR74SpnBUUha28RHHBkCp73Qy0E3jeu/wW+r2fWxs5cA==
+X-Google-Smtp-Source: ABdhPJwIjY1L+21KRQRTMStDHQsUGdaStrDDtkG8oceZVy++aoNpEhRoYb+ehu9LSGDL09wN2Htg64qWKhJJVaS7m18=
+X-Received: by 2002:a17:906:229b:: with SMTP id p27mr5712013eja.287.1614880575956;
+ Thu, 04 Mar 2021 09:56:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210304163140.543171-1-peterx@redhat.com>
-In-Reply-To: <20210304163140.543171-1-peterx@redhat.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 4 Mar 2021 09:54:49 -0800
-Message-ID: <CAJHvVchMCEkjfkytajTXXUrgTjG35MA-taES_znhO-TygmPsiQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] man2: udpate mm/userfaultfd manpages to latest
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+References: <20210302192700.399054668@linuxfoundation.org> <CA+G9fYsA7U7rzd=yGYQ=uWViY3_dXc4iY_pC-DM1K3R+gac19g@mail.gmail.com>
+ <175fac9c-ac3f-bd82-9e5d-2c2970cfc519@roeck-us.net>
+In-Reply-To: <175fac9c-ac3f-bd82-9e5d-2c2970cfc519@roeck-us.net>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 4 Mar 2021 23:26:04 +0530
+Message-ID: <CA+G9fYtkrAs=ASaVVu6-Lnck8A6Pt_LGODxnpTYouvppbw_rbQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM Mailing List <linux-mm@kvack.org>
+        Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 8:31 AM Peter Xu <peterx@redhat.com> wrote:
+On Thu, 4 Mar 2021 at 01:34, Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> v2 changes:
-> - Fix wordings as suggested [MikeR]
-> - convert ".BR" to ".B" where proper for the patchset [Alex]
-> - rearrange a few lines in the last two patches where they got messed up
-> - document more things, e.g. UFFDIO_COPY_MODE_WP; and also on how to resolve a
->   wr-protect page fault.
+> On 3/3/21 8:12 AM, Naresh Kamboju wrote:
+> > On Wed, 3 Mar 2021 at 00:59, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> >>
+> >> This is the start of the stable review cycle for the 5.10.20 release.
+> >> There are 657 patches in this series, all will be posted as a response
+> >> to this one.  If anyone has any issues with these being applied, pleas=
+e
+> >> let me know.
+> >>
+> >> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> >> Anything received after that time might be too late.
+> >>
+> >> The whole patch series can be found in one patch at:
+> >>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/pat=
+ch-5.10.20-rc4.gz
+> >> or in the git tree and branch at:
+> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-sta=
+ble-rc.git linux-5.10.y
+> >> and the diffstat can be found below.
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> >
+> > Results from Linaro=E2=80=99s test farm.
+> > All our builds are getting PASS now.
+> > But,
+> > Regressions detected on all devices (arm64, arm, x86_64 and i386).
+> > LTP pty test case hangup01 failed on all devices
+> >
+> > hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > This failure is specific to stable-rc v5.10.20-rc4 and v5.11.3-rc3
+> > Test PASS on the v5.12-rc1 mainline and Linux next kernel.
+> >
+> > Following two commits caused this test failure,
+> >
+> >    Linus Torvalds <torvalds@linux-foundation.org>
+> >        tty: implement read_iter
+> >
+> >    Linus Torvalds <torvalds@linux-foundation.org>
+> >        tty: convert tty_ldisc_ops 'read()' function to take a kernel po=
+inter
+> >
 >
-> There're two features missing in current manpage, namely:
+> Upstream has:
 >
->   (1) Userfaultfd Thread-ID feature
->   (2) Userfaultfd write protect mode
+> e71a8d5cf4b4 tty: fix up iterate_tty_read() EOVERFLOW handling
+> ddc5fda74561 tty: fix up hung_up_tty_read() conversion
 >
-> There's also a 3rd one which was just contributed from Axel - Axel, I think it
-> would be great if you can add that part too, probably after the whole
-> hugetlbfs/shmem minor mode reaches the linux master branch.
+> Those are not present in v5.10.20-rc4, which may possibly
+> explain the problem.
 
-Ack, this is on my list of "todos". Agree it makes sense to wait until
-the code is in Linus' tree, then I'll send a patch for the man pages.
+I have applied these two patches and the reported problem did not solve.
 
->
-> Please review, thanks.
->
-> Peter Xu (4):
->   userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
->   userfaultfd.2: Add write-protect mode
->   ioctl_userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
->   ioctl_userfaultfd.2: Add write-protect mode docs
->
->  man2/ioctl_userfaultfd.2 |  81 ++++++++++++++++++++++++++--
->  man2/userfaultfd.2       | 111 ++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 187 insertions(+), 5 deletions(-)
->
-> --
-> 2.26.2
->
->
+- Naresh
