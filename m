@@ -2,339 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E19732DE18
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEF732DE0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 00:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhCDXxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 18:53:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        id S233370AbhCDXwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 18:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233421AbhCDXxQ (ORCPT
+        with ESMTP id S231695AbhCDXwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 18:53:16 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9734C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 15:53:15 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d11so348641plo.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 15:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UBkcnjSJ+khnFevV5/EU+jVsWROYa6jawQFKSv/QOjA=;
-        b=bs6/iOOfRH3uu3bejj01aYdHK4MlkeaFzxS8+2WErWFJ4JKdZuSxCt2JVWHrmh3Gyz
-         CDVRbbgZ+ZHo+geW7h13AG7RU7iXwV2yGjmEu1szu9vJijWWVeyf9ilsSAYNy39mVwcR
-         Xy2xfczE0Zi7SY5zEliOSZ3tIJzVm6iA0S8R8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UBkcnjSJ+khnFevV5/EU+jVsWROYa6jawQFKSv/QOjA=;
-        b=Ly/iLk5eOSAFotq56dhEgD1dCdPhAOY93/UNPoJkvsK8TCqc1vF9QXlsjHWHZE5jkh
-         kku6zSgfe40E5tZ55yfM2n8A5doqDgTv1HW5ct1BwJCdQhQTKPBFQ4aMPBEmWA98mecd
-         9kWFVS9kuOyRF2Oze9kokD5Cat6ukw3iLVjFrF7m6srUHPdD+MVh2ibwoVhFG6VYmJBl
-         GwlTgoCSrxFUwpn6bB8b93hNrNvc7VjkXtzY8t/QwB+6yMwS1qkNCMSdacwtxTZnioJh
-         dwq4YpaWGR/2Zp05fnS5DBbkpJCBXrAk5Xqe7f7sloLcuVMVrqCbaEAjky/vqr5tT1Jj
-         bD6g==
-X-Gm-Message-State: AOAM530xwmT7fF+1FjSXgJIrcYYYLSI/25yl3daQt/1tcKbVK3YASw57
-        6hUtk7tkIHUzbCVdkKSZ5+vfdg==
-X-Google-Smtp-Source: ABdhPJxFqppfaJEF9lXed5SZV/2p5ymov/y5/tX6icV4gFroYyZbkBcsPliInDUpwT2gZrhvByYN6A==
-X-Received: by 2002:a17:90a:a78a:: with SMTP id f10mr7265726pjq.101.1614901995169;
-        Thu, 04 Mar 2021 15:53:15 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:c4da:3a70:94aa:f337])
-        by smtp.gmail.com with ESMTPSA id r4sm319449pjl.15.2021.03.04.15.53.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 15:53:14 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>, linux-arm-msm@vger.kernel.org,
-        robdclark@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/bridge: ti-sn65dsi86: Properly get the EDID, but only if refclk
-Date:   Thu,  4 Mar 2021 15:52:01 -0800
-Message-Id: <20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
-References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
+        Thu, 4 Mar 2021 18:52:46 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F72C061574;
+        Thu,  4 Mar 2021 15:52:45 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ds72w53ghz9sRR;
+        Fri,  5 Mar 2021 10:52:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614901962;
+        bh=bNffpLVDpps/kOIp14nDznUZTPEd2xiR/OXEqWuSeQk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UaV45GePCesTS45KE0oE/8b/ngd3ScBL+yxuKfpHkB/OcU5VgO3MQgdHRi9xbsoLs
+         l1BdP1d14iDG30TVstJRa18rdGULa3nHTYTWAZ+heGxAbZNNydYRd4bg/uiQOdwika
+         Ug2p1EQIDM8wZzL1ZT4fHWfX9HJO7VEZm34Z4E26vsi/fsmVbSIXrtPgHI8LbkF+MZ
+         iUEkbCQ9y+g0VLNTFJhb+UKenW51cAgCW1sY4o9V/NuEKrqUT9Ge4QPtNPX58q1EsG
+         0Gtku5GNGQ5EV8AKdLoYFbt7PElteSWId4Y0oqNkrNLjQ7/1R3Ch9gHSa1bLhJc1V6
+         DpBZyYtUw0PoQ==
+Date:   Fri, 5 Mar 2021 10:52:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Daniel Wagner <dwagner@suse.de>, Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the block tree
+Message-ID: <20210305105239.377577b5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/CCjWRInJC51MwsxRC4xBDm_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over
-DDC") we attempted to make the ti-sn65dsi86 bridge properly read the
-EDID from the panel. That commit kinda worked but it had some serious
-problems.
+--Sig_/CCjWRInJC51MwsxRC4xBDm_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The problems all stem from the fact that userspace wants to be able to
-read the EDID before it explicitly enables the panel. For eDP panels,
-though, we don't actually power the panel up until the pre-enable
-stage and the pre-enable call happens right before the enable call
-with no way to interject in-between. For eDP panels, you can't read
-the EDID until you power the panel. The result was that
-ti_sn_bridge_connector_get_modes() was always failing to read the EDID
-(falling back to what drm_panel_get_modes() returned) until _after_
-the EDID was needed.
+Hi all,
 
-To make it concrete, on my system I saw this happen:
-1. We'd attach the bridge.
-2. Userspace would ask for the EDID (several times). We'd try but fail
-   to read the EDID over and over again and fall back to the hardcoded
-   modes.
-3. Userspace would decide on a mode based only on the hardcoded modes.
-4. Userspace would ask to turn the panel on.
-5. Userspace would (eventually) check the modes again (in Chrome OS
-   this happens on the handoff from the boot splash screen to the
-   browser). Now we'd read them properly and, if they were different,
-   userspace would request to change the mode.
+In commit
 
-The fact that userspace would always end up using the hardcoded modes
-at first significantly decreases the benefit of the EDID
-reading. Also: if the modes were even a tiny bit different we'd end up
-doing a wasteful modeset and at boot.
+  284e4cdb0c0b ("nvme-hwmon: Return error code when registration fails")
 
-As a side note: at least early EDID read failures were relatively
-fast. Though the old ti_sn_bridge_connector_get_modes() did call
-pm_runtime_get_sync() it didn't program the important "HPD_DISABLE"
-bit. That meant that all the AUX transfers failed pretty quickly.
+Fixes tag
 
-In any case, enough about the problem. How are we fixing it? Obviously
-we need to power the panel on _before_ reading the EDID, but how? It
-turns out that there's really no problem with just doing all the work
-of our pre_enable() function right at attach time and reading the EDID
-right away. We'll do that. It's not as easy as it sounds, though,
-because:
+  Fixes: ec420cdcfab4 ("nvme/hwmon: rework to avoid devm allocation")
 
-1. Powering the panel up and down is a pretty expensive operation. Not
-   only do we need to wait for the HPD line which seems to take up to
-   200 ms on most panels, but also most panels say that once you power
-   them off you need to wait at least 500 ms before powering them on
-   again. We really don't want to incur 700 ms of time here.
+has these problem(s):
 
-2. If we happen not to have a fixed "refclk" we've got a
-   chicken-and-egg problem. We seem to need the clock setup to read
-   the EDID. Without a fixed "refclk", though, the bridge runs with
-   the MIPI pixel clock which means you've got to use a hardcoded mode
-   for the MIPI pixel clock.
+  - Target SHA1 does not exist
 
-We'll solve problem #1 above by leaving the panel powered on for a
-little while after we read the EDID. If enough time passes and nobody
-turns the panel on then we'll undo our work. NOTE: there are no
-functional problems if someone turns the panel on after a long delay,
-it just might take a little longer to turn on.
+Maybe you meant
 
-We'll solve problem #2 by simply _always_ using a hardcoded mode (not
-reading the EDID) if a "refclk" wasn't provided. While it might be
-possible to fudge something together to support this, it's my belief
-that nobody is using this mode in real life since it's really
-inflexible. I saw it used for some really early prototype hardware
-that was thrown in the e-waste bin years ago when we realized how
-inflexible it was. In any case, if someone is using this they're in no
-worse shape than they were before the (fairly recent) commit
-58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC").
+Fixes: ed7770f66286 ("nvme-hwmon: rework to avoid devm allocation")
 
-NOTE: while this patch feels a bit hackish, I'm not sure there's much
-we can do better without a more fundamental DRM API change. After
-looking at it a bunch, it also doesn't feel as hacky to me as I first
-thought. The things that pre-enable does are well defined and well
-understood and there should be no problems with doing them early nor
-with doing them before userspace requests anything.
+--=20
+Cheers,
+Stephen Rothwell
 
-Fixes: 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+--Sig_/CCjWRInJC51MwsxRC4xBDm_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 98 ++++++++++++++++++++++++---
- 1 file changed, 88 insertions(+), 10 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 491c9c4f32d1..af3fb4657af6 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -16,6 +16,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/workqueue.h>
- 
- #include <asm/unaligned.h>
- 
-@@ -130,6 +131,12 @@
-  * @ln_assign:    Value to program to the LN_ASSIGN register.
-  * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
-  *
-+ * @pre_enabled_early: If true we did an early pre_enable at attach.
-+ * @pre_enable_timeout_work: Delayed work to undo the pre_enable from attach
-+ *                           if a normal pre_enable never came.
-+ * @pre_enable_mutex: Lock to synchronize between the pre_enable_timeout_work
-+ *                    and normal mechanisms.
-+ *
-  * @gchip:        If we expose our GPIOs, this is used.
-  * @gchip_output: A cache of whether we've set GPIOs to output.  This
-  *                serves double-duty of keeping track of the direction and
-@@ -158,6 +165,10 @@ struct ti_sn_bridge {
- 	u8				ln_assign;
- 	u8				ln_polrs;
- 
-+	bool				pre_enabled_early;
-+	struct delayed_work		pre_enable_timeout_work;
-+	struct mutex			pre_enable_mutex;
-+
- #if defined(CONFIG_OF_GPIO)
- 	struct gpio_chip		gchip;
- 	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
-@@ -272,12 +283,6 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
- 	struct edid *edid = pdata->edid;
- 	int num, ret;
- 
--	if (!edid) {
--		pm_runtime_get_sync(pdata->dev);
--		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
--		pm_runtime_put(pdata->dev);
--	}
--
- 	if (edid && drm_edid_is_valid(edid)) {
- 		ret = drm_connector_update_edid_property(connector, edid);
- 		if (!ret) {
-@@ -412,10 +417,8 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
- 	pm_runtime_put_sync(pdata->dev);
- }
- 
--static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
-+static void __ti_sn_bridge_pre_enable(struct ti_sn_bridge *pdata)
- {
--	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
--
- 	pm_runtime_get_sync(pdata->dev);
- 
- 	/* configure bridge ref_clk */
-@@ -443,6 +446,38 @@ static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
- 	drm_panel_prepare(pdata->panel);
- }
- 
-+static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
-+{
-+	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-+
-+	mutex_lock(&pdata->pre_enable_mutex);
-+	if (pdata->pre_enabled_early)
-+		/* Already done! Just mark that normal pre_enable happened */
-+		pdata->pre_enabled_early = false;
-+	else
-+		__ti_sn_bridge_pre_enable(pdata);
-+	mutex_unlock(&pdata->pre_enable_mutex);
-+}
-+
-+static void ti_sn_bridge_cancel_early_pre_enable(struct ti_sn_bridge *pdata)
-+{
-+	mutex_lock(&pdata->pre_enable_mutex);
-+	if (pdata->pre_enabled_early) {
-+		pdata->pre_enabled_early = false;
-+		ti_sn_bridge_post_disable(&pdata->bridge);
-+	}
-+	mutex_unlock(&pdata->pre_enable_mutex);
-+}
-+
-+static void ti_sn_bridge_pre_enable_timeout(struct work_struct *work)
-+{
-+	struct delayed_work *dwork = to_delayed_work(work);
-+	struct ti_sn_bridge *pdata = container_of(dwork, struct ti_sn_bridge,
-+						  pre_enable_timeout_work);
-+
-+	ti_sn_bridge_cancel_early_pre_enable(pdata);
-+}
-+
- static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- 			       enum drm_bridge_attach_flags flags)
- {
-@@ -516,6 +551,34 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- 	}
- 	pdata->dsi = dsi;
- 
-+	/*
-+	 * If we have a refclk then we can support dynamic EDID.
-+	 *
-+	 * A few notes:
-+	 * - From trial and error it appears that we need our clock setup in
-+	 *   order to read the EDID. If we don't have refclk then we
-+	 *   (presumably) need the MIPI clock on, but turning that on implies
-+	 *   knowing the pixel clock / not needing the EDID. Maybe we could
-+	 *   futz this if necessary, but for now we won't.
-+	 * - In order to read the EDID we need power on to the bridge and
-+	 *   the panel (and it has to finish booting up / assert HPD). This
-+	 *   is slow so we leave the panel powered when we're done but setup a
-+	 *   timeout so we don't leave it on forever.
-+	 * - The rest of Linux assumes that it can read the EDID without
-+	 *   (explicitly) enabling the power which is why this somewhat awkward
-+	 *   step is needed.
-+	 */
-+	if (pdata->refclk) {
-+		mutex_lock(&pdata->pre_enable_mutex);
-+
-+		pdata->pre_enabled_early = true;
-+		__ti_sn_bridge_pre_enable(pdata);
-+		pdata->edid = drm_get_edid(&pdata->connector, &pdata->aux.ddc);
-+		schedule_delayed_work(&pdata->pre_enable_timeout_work, 30 * HZ);
-+
-+		mutex_unlock(&pdata->pre_enable_mutex);
-+	}
-+
- 	return 0;
- 
- err_dsi_attach:
-@@ -525,6 +588,17 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- 	return ret;
- }
- 
-+static void ti_sn_bridge_detach(struct drm_bridge *bridge)
-+{
-+	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-+
-+	cancel_delayed_work_sync(&pdata->pre_enable_timeout_work);
-+	ti_sn_bridge_cancel_early_pre_enable(pdata);
-+
-+	kfree(pdata->edid);
-+	pdata->edid = NULL;
-+}
-+
- static void ti_sn_bridge_disable(struct drm_bridge *bridge)
- {
- 	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-@@ -863,6 +937,7 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
- 
- static const struct drm_bridge_funcs ti_sn_bridge_funcs = {
- 	.attach = ti_sn_bridge_attach,
-+	.detach = ti_sn_bridge_detach,
- 	.pre_enable = ti_sn_bridge_pre_enable,
- 	.enable = ti_sn_bridge_enable,
- 	.disable = ti_sn_bridge_disable,
-@@ -1227,6 +1302,10 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
- 	if (!pdata)
- 		return -ENOMEM;
- 
-+	mutex_init(&pdata->pre_enable_mutex);
-+	INIT_DELAYED_WORK(&pdata->pre_enable_timeout_work,
-+			  ti_sn_bridge_pre_enable_timeout);
-+
- 	pdata->regmap = devm_regmap_init_i2c(client,
- 					     &ti_sn_bridge_regmap_config);
- 	if (IS_ERR(pdata->regmap)) {
-@@ -1301,7 +1380,6 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
- 	if (!pdata)
- 		return -EINVAL;
- 
--	kfree(pdata->edid);
- 	ti_sn_debugfs_remove(pdata);
- 
- 	of_node_put(pdata->host_node);
--- 
-2.30.1.766.gb4fecdf3b7-goog
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBBcscACgkQAVBC80lX
+0Gwyxwf9FKLDYUOHkAMABBu66jz1mAIwuYRNJlWQObBFAQWdT7t0sjCUcg6ghE+f
+9KJkkXEZdtllhJDOMCbutUh2UcJg2SOP3nO0CtTsbkG3lzLMC+ZxT48i7nYWnDuu
+FDsFW1mtFGdncCJCbkp79dMRCXJ7JvjwN7aQ9tN885zSuRfOEpOYgmoJIKRlMn2e
+W/ueoNEESfM1d1OZAgmWUqsvnz9zbqUCjg60XzyIgYBZMUiXJoN21tMp4LqDZtkv
+8xOE0QKfAacWP8gj+epa8/0FU3R6K24qDv7ED4bcJbV4IX70uvRBJe9YAGzKX+L0
+nozkzVGHnegN5xMTZ6EVOgZJoePtaA==
+=m1Wg
+-----END PGP SIGNATURE-----
 
+--Sig_/CCjWRInJC51MwsxRC4xBDm_--
