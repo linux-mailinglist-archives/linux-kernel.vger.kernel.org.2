@@ -2,230 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D18332D0B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA69732D0E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238552AbhCDKbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:31:31 -0500
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:59707 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238485AbhCDKbI (ORCPT
+        id S238753AbhCDKeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:34:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35981 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238732AbhCDKeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:31:08 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id HlFOlZa1XOruFHlFRlFGfJ; Thu, 04 Mar 2021 11:30:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1614853826; bh=8dBoIGD5WJNO8NYeWqPRnVSei9pgkj34EmYskMKbeU8=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=IOpZqX7UtlTAdP472xCUC392I88rohl7tVX9+6dFEXdYfTs4gBrYINiwjBVgf/j59
-         snvndlQh+pg/Z/5x2dQkI1fO6bdxZIMC7oUIdI86yX/sbclCsvxcSbWxoQ7RaA1/Wm
-         yGlVgA46dAE++8TYLm4ZoKqutnPSvJ7KO8vIgaru9rngD+K8TigraiL+NEvfatUPmv
-         PSd7I3gViUxZe95tIFwsKqmH22rA6nepCsmdwN+T3flQ9TDq7ho6CnrcQXj8VopqCg
-         mEnPdFdQuCNz1s3DPVn6eGdpd9VXQFE8VmWpzeSIQrL33ATc9lRyTBUiL4t+M9uxHt
-         B/oWVYKJXODWA==
-Subject: Re: [PATCH] media: qcom: camss: Fix overflows in clock rate
- calculations
-To:     Vladimir Lypak <junak.pub@gmail.com>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-References: <20210210122906.3037085-1-junak.pub@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <df806bab-297a-b362-c961-a6fee7d9d1ca@xs4all.nl>
-Date:   Thu, 4 Mar 2021 11:30:22 +0100
+        Thu, 4 Mar 2021 05:34:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614853958;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aiZqplkYFpKQpRJK+Go2qo6gqDSjfUsNUqyq5r5k7eU=;
+        b=DoUkOCro1GON79/nrOEUyNQtX4hW6gduPUg4Xb7d9IQG8YI0RGW3SfQMcB5UK+l//2NCao
+        I+EkFlNauPyj3004+RbC1yEAJ+Mg4NKrTByfsaowL7Z+/+hMPY+zE5tZnyczOQ10+U6tTm
+        R9w9HkUcLMLRZWBka9bGz+jZ58czZlU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-3w1_vlQjPe-i0U51OOeStA-1; Thu, 04 Mar 2021 05:32:34 -0500
+X-MC-Unique: 3w1_vlQjPe-i0U51OOeStA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CA681005D4C;
+        Thu,  4 Mar 2021 10:32:32 +0000 (UTC)
+Received: from [10.36.113.171] (ovpn-113-171.ams2.redhat.com [10.36.113.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACDA65C1C2;
+        Thu,  4 Mar 2021 10:32:30 +0000 (UTC)
+Subject: Re: [PATCH v3 1/2] mm: Make alloc_contig_range handle free hugetlb
+ pages
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210222135137.25717-1-osalvador@suse.de>
+ <20210222135137.25717-2-osalvador@suse.de>
+ <3f071dd4-3181-f4e0-fd56-1a70f6ac72fe@redhat.com>
+ <YEC0ODM5gtEU+JqN@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4ede47fd-d01e-6d9c-288a-2ec97b5392af@redhat.com>
+Date:   Thu, 4 Mar 2021 11:32:29 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210210122906.3037085-1-junak.pub@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YEC0ODM5gtEU+JqN@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfG9Km1B3GtcTV0dg9fu7u9EoQUFciWGz3cCjBZl1JN2L+XUKBFTwxFSdDfiUuVTN7iZbPYEtJI8DEx7zUNnhKTkJs3xgHhJyxGXyZ0S+/KWBxdjLzXJe
- 6eT6UxorjILfGTno4rMNeCZWj6KchDZZdpE0OyICFbR/aQuGNCO5ETSklXHKiOdXQ8s29okRHRfrpzF8PsXWXv/XES0LeDTyiDSV5yhN7IzvHi5EoyawedRJ
- NCz/3TLZNmQ6/Xz/Y/O7e2mWzEhCtLC3x+e2Nw7nbhzuy3eDOquIKrnwa4yAinpQ2tmVMnIsp7v5hx3/NgS59s8yfTEocUhpo2Rgj1BTL/viMOTeOGxhI9ZS
- lT3roc+NraR2Oc+Zz/p7DsdggAHpLGzTVBckWrI16Mm3HOsjE5X37OzJndNwZmjNWfwePI1o8TMl/RnXRXY/Icfv6JOBUw7pAS+3fSL7YWYPqL6RKq87rEb+
- f8aNpwqJXRqOBHtVRm5FUetI2lypd1ltR+ls6qrALNnc/+t22XyZqZhGFYs=
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/02/2021 13:29, Vladimir Lypak wrote:
-> Because of u32 type being used to store pixel clock rate, expression used
-> to calculate pipeline clocks (pixel_clock * bpp) produces wrong value due
-> to integer overflow. This patch changes data type used to store, pass and
-> retrieve pixel_clock from u32 to u64 to make this mistake less likely to
-> be repeated in the future.
+>> I think we should not swallo such return values in
+>> isolate_or_dissolve_huge_page() and instead properly report esp. -ENOMEM
+>> properly up this callchain now. Otherwise we'll end up retrying / reporting
+>> -EBUSY, which is misleading.
+> 
+> I am not sure I follow you here.
+> So, atm, alloc_and_dissolve_huge_page can either generate -ENOMEM or
+> -EBUSY wrt. error codes.
+> -ENOMEM when we cannot allocate a page, and -EBUSY when we raced with
+> someone.
+> You mean to only report ENOMEM down the chain?
 
-This patch conflicts with Andrey's patch:
-
-https://patchwork.linuxtv.org/project/linux-media/patch/20210217221134.2606-4-andrey.konovalov@linaro.org/
-
-I've picked up Andrey's patch in a pull request (not yet merged in our media master tree),
-but you should rebase your patch on top of his if it is still needed.
-
-Regards,
-
-	Hans
+Yes, fatal errors.
 
 > 
-> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
-> ---
->  drivers/media/platform/qcom/camss/camss-csid.c           | 2 +-
->  drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c | 4 ++--
->  drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c | 4 ++--
->  drivers/media/platform/qcom/camss/camss-csiphy.c         | 4 ++--
->  drivers/media/platform/qcom/camss/camss-csiphy.h         | 2 +-
->  drivers/media/platform/qcom/camss/camss-vfe.c            | 4 ++--
->  drivers/media/platform/qcom/camss/camss.c                | 2 +-
->  drivers/media/platform/qcom/camss/camss.h                | 2 +-
->  8 files changed, 12 insertions(+), 12 deletions(-)
+>>  From isolate_migratepages_range()/isolate_migratepages_block() we'll keep
+>> reporting "pfn > 0".
+>>
+>> a) In isolate_migratepages_range() we'll keep iterating over pageblocks
+>> although we should just fail with -ENOMEM right away.
+>>
+>> b) In __alloc_contig_migrate_range() we'll keep retrying up to 5 times
+>> although we should just fail with -ENOMEM. We end up returning "-EBUSY"
+>> after retrying.
+>>
+>> c) In alloc_contig_range() we'll continue trying to isolate although we
+>> should just return -ENOMEM.
 > 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-> index be3fe76f3dc30..6307b889baa69 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
-> @@ -462,7 +462,7 @@ static irqreturn_t csid_isr(int irq, void *dev)
->  static int csid_set_clock_rates(struct csid_device *csid)
->  {
->  	struct device *dev = csid->camss->dev;
-> -	u32 pixel_clock;
-> +	u64 pixel_clock;
->  	int i, j;
->  	int ret;
->  
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
-> index 12bce391d71fd..ec66d1557b8b1 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
-> @@ -57,7 +57,7 @@ static void csiphy_reset(struct csiphy_device *csiphy)
->   * Return settle count value or 0 if the CSI2 pixel clock
->   * frequency is not available
->   */
-> -static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
-> +static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
->  				 u32 timer_clk_rate)
->  {
->  	u32 mipi_clock; /* Hz */
-> @@ -83,7 +83,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->  
->  static void csiphy_lanes_enable(struct csiphy_device *csiphy,
->  				struct csiphy_config *cfg,
-> -				u32 pixel_clock, u8 bpp, u8 lane_mask)
-> +				u64 pixel_clock, u8 bpp, u8 lane_mask)
->  {
->  	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
->  	u8 settle_cnt;
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-> index 97cb9de850315..cd6eb88a7c153 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-> @@ -113,7 +113,7 @@ static irqreturn_t csiphy_isr(int irq, void *dev)
->   * Return settle count value or 0 if the CSI2 pixel clock
->   * frequency is not available
->   */
-> -static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
-> +static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
->  				 u32 timer_clk_rate)
->  {
->  	u32 mipi_clock; /* Hz */
-> @@ -137,7 +137,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->  
->  static void csiphy_lanes_enable(struct csiphy_device *csiphy,
->  				struct csiphy_config *cfg,
-> -				u32 pixel_clock, u8 bpp, u8 lane_mask)
-> +				u64 pixel_clock, u8 bpp, u8 lane_mask)
->  {
->  	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
->  	u8 settle_cnt;
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> index 509c9a59c09cd..61628f55c4f63 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> @@ -102,7 +102,7 @@ static u8 csiphy_get_bpp(const struct csiphy_format *formats,
->  static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
->  {
->  	struct device *dev = csiphy->camss->dev;
-> -	u32 pixel_clock;
-> +	u64 pixel_clock;
->  	int i, j;
->  	int ret;
->  
-> @@ -238,7 +238,7 @@ static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
->  static int csiphy_stream_on(struct csiphy_device *csiphy)
->  {
->  	struct csiphy_config *cfg = &csiphy->cfg;
-> -	u32 pixel_clock;
-> +	u64 pixel_clock;
->  	u8 lane_mask = csiphy_get_lane_mask(&cfg->csi2->lane_cfg);
->  	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
->  				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
-> index f7967ef836dcc..450c8247bd533 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy.h
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
-> @@ -50,7 +50,7 @@ struct csiphy_hw_ops {
->  	void (*reset)(struct csiphy_device *csiphy);
->  	void (*lanes_enable)(struct csiphy_device *csiphy,
->  			     struct csiphy_config *cfg,
-> -			     u32 pixel_clock, u8 bpp, u8 lane_mask);
-> +			     u64 pixel_clock, u8 bpp, u8 lane_mask);
->  	void (*lanes_disable)(struct csiphy_device *csiphy,
->  			      struct csiphy_config *cfg);
->  	irqreturn_t (*isr)(int irq, void *dev);
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-> index fae2b513b2f9d..b2c95b46ce661 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-> @@ -1112,7 +1112,7 @@ static inline void vfe_isr_halt_ack(struct vfe_device *vfe)
->  static int vfe_set_clock_rates(struct vfe_device *vfe)
->  {
->  	struct device *dev = vfe->camss->dev;
-> -	u32 pixel_clock[MSM_VFE_LINE_NUM];
-> +	u64 pixel_clock[MSM_VFE_LINE_NUM];
->  	int i, j;
->  	int ret;
->  
-> @@ -1194,7 +1194,7 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
->   */
->  static int vfe_check_clock_rates(struct vfe_device *vfe)
->  {
-> -	u32 pixel_clock[MSM_VFE_LINE_NUM];
-> +	u64 pixel_clock[MSM_VFE_LINE_NUM];
->  	int i, j;
->  	int ret;
->  
-> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> index 8fefce57bc49f..eb55cf436b717 100644
-> --- a/drivers/media/platform/qcom/camss/camss.c
-> +++ b/drivers/media/platform/qcom/camss/camss.c
-> @@ -555,7 +555,7 @@ struct media_entity *camss_find_sensor(struct media_entity *entity)
->   *
->   * Return 0 on success or a negative error code otherwise
->   */
-> -int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock)
-> +int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock)
->  {
->  	struct media_entity *sensor;
->  	struct v4l2_subdev *subdev;
-> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
-> index 3a0484683cd6e..fabfce9a3496c 100644
-> --- a/drivers/media/platform/qcom/camss/camss.h
-> +++ b/drivers/media/platform/qcom/camss/camss.h
-> @@ -108,7 +108,7 @@ int camss_enable_clocks(int nclocks, struct camss_clock *clock,
->  			struct device *dev);
->  void camss_disable_clocks(int nclocks, struct camss_clock *clock);
->  struct media_entity *camss_find_sensor(struct media_entity *entity);
-> -int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
-> +int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock);
->  int camss_pm_domain_on(struct camss *camss, int id);
->  void camss_pm_domain_off(struct camss *camss, int id);
->  void camss_delete(struct camss *camss);
+> Yes, "fatal" errors get masked, and hence we treat everything as "things
+> are busy, let us try again", and this is rather unforunate.
 > 
+>> I think we have should start returning proper errors from
+>> isolate_migratepages_range()/isolate_migratepages_block() on critical issues
+>> (-EINTR, -ENOMEM) instead of going via "!pfn vs. pfn" and retrying on "pfn".
+>>
+>> So we should then fail with -ENOMEM during isolate_migratepages_range()
+>> cleanly, just as we would do when we get -ENOMEM during migrate_pages().
+> 
+> I guess we could rework the interface and make isolate_migratepages_range and
+> isolate_migratepages_block to report the right thing.
+> I yet have to check that this does not mess up a lot with the compaction
+> interface.
+> 
+> But overall I agree with your point here, and I am willing to to tackle
+> this.
+> 
+> The question is whether we want to do this as part of this series, or
+> after this series gets picked up.
+> IMHO, we could do it after, as a follow-up, unless you feel strong about
+> it.
+> 
+> What do you think?
+
+I think this is now the second fatal error we can have (-EINTR, 
+-ENOMEM), thus the current interface (return "NULL" on fatal errros) no 
+longer works properly.
+
+No strong opinion about fixing this up on top - could be it's cleaner to 
+just do it right away.
+
+-- 
+Thanks,
+
+David / dhildenb
 
