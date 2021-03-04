@@ -2,95 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAB932D98D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C51432D990
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhCDSm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:42:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbhCDSmc (ORCPT
+        id S233995AbhCDSoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:44:04 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:35732 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233130AbhCDSoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:42:32 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA63C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:41:52 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id w9so20096573edt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:41:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YGAuQa1PUoEh5FNPfeCOcSMYAZSWyrSrhiaRmAC+sLo=;
-        b=YVlyzmtAtju2fBUZIUHuYe4UO+bGNsChE/keiCLGA1MpdbuEKwlVaMdzqJal7fjdfX
-         zbn61uczeQcCx9QdLukkkpEXwKpLg/2k3sEa35kOIZ0rC51/Vm38wWFtMRVymurHPhav
-         c5RfTFHYw+hsu5hbjRFr2/fsB7YUExA0KwQsT1giezXdRQDlmdayFGgjZ+0u4MdjQsp8
-         UP1gecAhHH5aZNJNAu7fuDNJAzeHon31iQoeZG/GStrAnJUMX5t7I4LMpwxy1PfUl69L
-         ooAa2ZMeSG4TYs4+eIuppjIrjItmNKkZnYz2f08uRM/FqvncNhB5fgJGfA/Rs5ppn7fd
-         3rjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YGAuQa1PUoEh5FNPfeCOcSMYAZSWyrSrhiaRmAC+sLo=;
-        b=Ya3D5mP9CmkTCasi8+nbSc7YZVWC9qBOw3Tw6gvWIdLFO94U2S6KI6go/PLXfywj8Q
-         rvOJIkNuXExKkhulDfUN7pZdk/gRurpjHDc93ZfYoVThMkrzy+cJKZ2ZbJ/2naGGbGHj
-         YUurHixgkL6xwZPT/9a3OZCyfY3TLgoa6Sq+SGl82xUVOIEExQI+PRQkgJ0FFIEgrN0W
-         2iWxZp2dOcZo9dUdAA3uTXiml6m5H+zstJysa1UBVIqALa6oVZpA2MDlDA9hslMx2+9n
-         VTHluhRM5StEchyLzJg8Nk3KHSO8u3ScRWsO5eY6OYpZlwlmNcmsqa9qEhAXmxm3PD7X
-         wMkg==
-X-Gm-Message-State: AOAM531qYsgJUQTQ1rWUhlyIOQFuHnASj7BE6SONBbbKMp1ZtpbRMAnP
-        6Z+WfvYkQ4XCQuEsHnxlYrdZg5I7sedopDrse4T9qQ==
-X-Google-Smtp-Source: ABdhPJw51VJr6G077eQYamXJLrL3nXTygODsuW6wr3+TZzOpbk+Xd/YlahOGxDurRbb16/lu4byb+e0KjME54lb+DUA=
-X-Received: by 2002:a05:6402:2ce:: with SMTP id b14mr5984770edx.13.1614883311038;
- Thu, 04 Mar 2021 10:41:51 -0800 (PST)
+        Thu, 4 Mar 2021 13:44:01 -0500
+Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 46A1C20B83EA;
+        Thu,  4 Mar 2021 10:43:20 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 46A1C20B83EA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614883400;
+        bh=NdHnANwOeJmoKeDwgB+UDZnIe/taaytnFRBfPgEMM0o=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=seTfnNMAwhvdfuz0SYH9EkPYgaefZq1HGMeSrB2k7v8GNffHjdqIFbu2LJMeeJ48f
+         fKx5CFg8EyfcoDCUjbuLfrY2Xa8wRqMtapeom5RGrnceuJ8Wk5b3EFm5dZjZxz1Fm3
+         Y+7kfNgDyyP/rynr6SGKThKKwhera1Xg4AkHPBqU=
+Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-hyperv@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
+ <87y2fxmlmb.fsf@vitty.brq.redhat.com>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Message-ID: <194e0dad-495e-ae94-3f51-d2c95da52139@linux.microsoft.com>
+Date:   Thu, 4 Mar 2021 10:43:19 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210225182716.1402449-1-thara.gopinath@linaro.org> <20210304053027.GC25972@gondor.apana.org.au>
-In-Reply-To: <20210304053027.GC25972@gondor.apana.org.au>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Date:   Thu, 4 Mar 2021 13:41:15 -0500
-Message-ID: <CALD-y_y8qidsypp7=F-5OLitaq3B1E==c+eQgyqq7hv9t3xcmw@mail.gmail.com>
-Subject: Re: [PATCH 0/7] Add support for AEAD algorithms in Qualcomm Crypto
- Engine driver
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     davem@davemloft.net, Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Eric Biggers <ebiggers@google.com>, ardb@kernel.org,
-        sivaprak@codeaurora.org, linux-crypto@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87y2fxmlmb.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 00:30, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Thu, Feb 25, 2021 at 01:27:09PM -0500, Thara Gopinath wrote:
-> > Enable support for AEAD algorithms in Qualcomm CE driver.  The first three
-> > patches in this series are cleanups and add a few missing pieces required
-> > to add support for AEAD algorithms.  Patch 4 introduces supported AEAD
-> > transformations on Qualcomm CE.  Patches 5 and 6 implements the h/w
-> > infrastructure needed to enable and run the AEAD transformations on
-> > Qualcomm CE.  Patch 7 adds support to queue fallback algorithms in case of
-> > unsupported special inputs.
-> >
-> > This series is dependant on https://lkml.org/lkml/2021/2/11/1052.
->
-> Did this patch series pass the fuzz tests?
+On 2/9/2021 5:11 AM, Vitaly Kuznetsov wrote:
+> Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
+> 
+>> Reserve ioctl number in userpsace-api/ioctl/ioctl-number.rst
+>> Introduce MSHV_REQUEST_VERSION ioctl.
+>> Introduce documentation for /dev/mshv in Documentation/virt/mshv
+>>
+>> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> ---
+>>  .../userspace-api/ioctl/ioctl-number.rst      |  2 +
+>>  Documentation/virt/mshv/api.rst               | 62 +++++++++++++++++++
+>>  include/linux/mshv.h                          | 11 ++++
+>>  include/uapi/linux/mshv.h                     | 19 ++++++
+>>  virt/mshv/mshv_main.c                         | 49 +++++++++++++++
+>>  5 files changed, 143 insertions(+)
+>>  create mode 100644 Documentation/virt/mshv/api.rst
+>>  create mode 100644 include/linux/mshv.h
+>>  create mode 100644 include/uapi/linux/mshv.h
+>>
+>> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+>> index 55a2d9b2ce33..13a4d3ecafca 100644
+>> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+>> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+>> @@ -343,6 +343,8 @@ Code  Seq#    Include File                                           Comments
+>>  0xB5  00-0F  uapi/linux/rpmsg.h                                      <mailto:linux-remoteproc@vger.kernel.org>
+>>  0xB6  all    linux/fpga-dfl.h
+>>  0xB7  all    uapi/linux/remoteproc_cdev.h                            <mailto:linux-remoteproc@vger.kernel.org>
+>> +0xB8  all    uapi/linux/mshv.h                                       Microsoft Hypervisor root partition APIs
+>> +                                                                     <mailto:linux-hyperv@vger.kernel.org>
+>>  0xC0  00-0F  linux/usb/iowarrior.h
+>>  0xCA  00-0F  uapi/misc/cxl.h
+>>  0xCA  10-2F  uapi/misc/ocxl.h
+>> diff --git a/Documentation/virt/mshv/api.rst b/Documentation/virt/mshv/api.rst
+>> new file mode 100644
+>> index 000000000000..82e32de48d03
+>> --- /dev/null
+>> +++ b/Documentation/virt/mshv/api.rst
+>> @@ -0,0 +1,62 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +=====================================================
+>> +Microsoft Hypervisor Root Partition API Documentation
+>> +=====================================================
+>> +
+>> +1. Overview
+>> +===========
+>> +
+>> +This document describes APIs for creating and managing guest virtual machines
+>> +when running Linux as the root partition on the Microsoft Hypervisor.
+>> +
+>> +This API is not yet stable.
+>> +
+>> +2. Glossary/Terms
+>> +=================
+>> +
+>> +hv
+>> +--
+>> +Short for Hyper-V. This name is used in the kernel to describe interfaces to
+>> +the Microsoft Hypervisor.
+>> +
+>> +mshv
+>> +----
+>> +Short for Microsoft Hypervisor. This is the name of the userland API module
+>> +described in this document.
+>> +
+>> +Partition
+>> +---------
+>> +A virtual machine running on the Microsoft Hypervisor.
+>> +
+>> +Root Partition
+>> +--------------
+>> +The partition that is created and assumes control when the machine boots. The
+>> +root partition can use mshv APIs to create guest partitions.
+>> +
+>> +3. API description
+>> +==================
+>> +
+>> +The module is named mshv and can be configured with CONFIG_HYPERV_ROOT_API.
+>> +
+>> +Mshv is file descriptor-based, following a similar pattern to KVM.
+>> +
+>> +To get a handle to the mshv driver, use open("/dev/mshv").
+>> +
+>> +3.1 MSHV_REQUEST_VERSION
+>> +------------------------
+>> +:Type: /dev/mshv ioctl
+>> +:Parameters: pointer to a u32
+>> +:Returns: 0 on success
+>> +
+>> +Before issuing any other ioctls, a MSHV_REQUEST_VERSION ioctl must be called to
+>> +establish the interface version with the kernel module.
+>> +
+>> +The caller should pass the MSHV_VERSION as an argument.
+>> +
+>> +The kernel module will check which interface versions it supports and return 0
+>> +if one of them matches.
+>> +
+>> +This /dev/mshv file descriptor will remain 'locked' to that version as long as
+>> +it is open - this ioctl can only be called once per open.
+>> +
+> 
+> KVM used to have KVM_GET_API_VERSION too but this turned out to be not
+> very convenient so we use capabilities (KVM_CHECK_EXTENSION/KVM_ENABLE_CAP)
+> instead.
+> 
 
-Hi Herbert,
+The goal of MSHV_REQUEST_VERSION is to support changes to APIs in the core set.
+When we add new features/ioctls beyond the core we can use an extension/capability
+approach like KVM.
 
-Yes it did. The last patch adds fallback for unsupported cases and
-this will make it pass the fuzz tests.
-
->
-> Thanks,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
-
-
-
--- 
-Warm Regards
-Thara
+>> diff --git a/include/linux/mshv.h b/include/linux/mshv.h
+>> new file mode 100644
+>> index 000000000000..a0982fe2c0b8
+>> --- /dev/null
+>> +++ b/include/linux/mshv.h
+>> @@ -0,0 +1,11 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +#ifndef _LINUX_MSHV_H
+>> +#define _LINUX_MSHV_H
+>> +
+>> +/*
+>> + * Microsoft Hypervisor root partition driver for /dev/mshv
+>> + */
+>> +
+>> +#include <uapi/linux/mshv.h>
+>> +
+>> +#endif
+>> diff --git a/include/uapi/linux/mshv.h b/include/uapi/linux/mshv.h
+>> new file mode 100644
+>> index 000000000000..dd30fc2f0a80
+>> --- /dev/null
+>> +++ b/include/uapi/linux/mshv.h
+>> @@ -0,0 +1,19 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +#ifndef _UAPI_LINUX_MSHV_H
+>> +#define _UAPI_LINUX_MSHV_H
+>> +
+>> +/*
+>> + * Userspace interface for /dev/mshv
+>> + * Microsoft Hypervisor root partition APIs
+>> + */
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +#define MSHV_VERSION	0x0
+>> +
+>> +#define MSHV_IOCTL 0xB8
+>> +
+>> +/* mshv device */
+>> +#define MSHV_REQUEST_VERSION	_IOW(MSHV_IOCTL, 0x00, __u32)
+>> +
+>> +#endif
+>> diff --git a/virt/mshv/mshv_main.c b/virt/mshv/mshv_main.c
+>> index ecb9089761fe..62f631f85301 100644
+>> --- a/virt/mshv/mshv_main.c
+>> +++ b/virt/mshv/mshv_main.c
+>> @@ -11,25 +11,74 @@
+>>  #include <linux/module.h>
+>>  #include <linux/fs.h>
+>>  #include <linux/miscdevice.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/mshv.h>
+>>  
+>>  MODULE_AUTHOR("Microsoft");
+>>  MODULE_LICENSE("GPL");
+>>  
+>> +#define MSHV_INVALID_VERSION	0xFFFFFFFF
+>> +#define MSHV_CURRENT_VERSION	MSHV_VERSION
+>> +
+>> +static u32 supported_versions[] = {
+>> +	MSHV_CURRENT_VERSION,
+>> +};
+>> +
+>> +static long
+>> +mshv_ioctl_request_version(u32 *version, void __user *user_arg)
+>> +{
+>> +	u32 arg;
+>> +	int i;
+>> +
+>> +	if (copy_from_user(&arg, user_arg, sizeof(arg)))
+>> +		return -EFAULT;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(supported_versions); ++i) {
+>> +		if (supported_versions[i] == arg) {
+>> +			*version = supported_versions[i];
+>> +			return 0;
+>> +		}
+>> +	}
+>> +	return -ENOTSUPP;
+>> +}
+>> +
+>>  static long
+>>  mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>>  {
+>> +	u32 *version = (u32 *)filp->private_data;
+>> +
+>> +	if (ioctl == MSHV_REQUEST_VERSION) {
+>> +		/* Version can only be set once */
+>> +		if (*version != MSHV_INVALID_VERSION)
+>> +			return -EBADFD;
+>> +
+>> +		return mshv_ioctl_request_version(version, (void __user *)arg);
+>> +	}
+>> +
+>> +	/* Version must be set before other ioctls can be called */
+>> +	if (*version == MSHV_INVALID_VERSION)
+>> +		return -EBADFD;
+>> +
+>> +	/* TODO other ioctls */
+>> +
+>>  	return -ENOTTY;
+>>  }
+>>  
+>>  static int
+>>  mshv_dev_open(struct inode *inode, struct file *filp)
+>>  {
+>> +	filp->private_data = kmalloc(sizeof(u32), GFP_KERNEL);
+>> +	if (!filp->private_data)
+>> +		return -ENOMEM;
+>> +	*(u32 *)filp->private_data = MSHV_INVALID_VERSION;
+>> +
+>>  	return 0;
+>>  }
+>>  
+>>  static int
+>>  mshv_dev_release(struct inode *inode, struct file *filp)
+>>  {
+>> +	kfree(filp->private_data);
+>>  	return 0;
+>>  }
+> 
