@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4E532DD46
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 617F832DD49
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhCDWmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:42:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229982AbhCDWmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:42:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF7D764FF4;
-        Thu,  4 Mar 2021 22:42:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614897773;
-        bh=qnYCVH7kx24HUZZshVhHK698ZWbn+eQJdMYwdeGcWq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eYsnshJoXNs+g8S9T7aTiyRoV0yR8Ehs3mX5Q6zzwfnNBAJYRW6kKqPw3gRtYTjMk
-         jyEFsMVzPFKMm3Xedx1PcOQ7h8IYUSN07FvNXZ6taEoSdNtbZbfzoFUARiVa0bVjgC
-         VSbUSwfKmshPg+4n/d3zrWObdOG05ZEHw74lZUa2sAxIs5JMcY1VrqGFhtT7/cXVOE
-         aAHmLHHQCDsF2bL252guTmnUemMWkbBTfvb5hX73TyyIyTbTNrHsFQeSIWDon7v693
-         lGyQfLIvsQTV6PzG0VCZnHkzkQXXuiG5O/zRiZhgetPvnOMXfdxsmp0WpeJzQyTQrv
-         NFFwjzKElG5iw==
-Date:   Thu, 4 Mar 2021 14:42:50 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dm-devel@redhat.com,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        david@fromorbit.com, agk@redhat.com, snitzer@redhat.com,
-        rgoldwyn@suse.de, qi.fuli@fujitsu.com, y-goto@fujitsu.com
-Subject: Re: [PATCH v3 02/11] blk: Introduce ->corrupted_range() for block
- device
-Message-ID: <20210304224250.GF3419940@magnolia>
-References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com>
- <20210208105530.3072869-3-ruansy.fnst@cn.fujitsu.com>
- <20210210132139.GC30109@lst.de>
+        id S232422AbhCDWni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhCDWng (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:43:36 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76032C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 14:43:35 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id 81so27939032iou.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 14:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oETzd3MxcVSXx2y2bLw59dqUUQ72YS7d4YYmqfF/gQk=;
+        b=O0Ci5RK2xt6/MtVK/wyRasw01FyDKUybOL2HmVWRX7enGChKWlaxXTYtlGEHJz8S2G
+         Lai7CgiLpgfffuMxGM5HUr/yCqR8kBo1QkDHr1daEMgSL0BDcTx0UVulSGvGyXFG8jm7
+         5i9zhi09S1+wxCyR8gjdU2uwdtFmaKjf0wlUlaGGVXK7emed6mXOQBHAUQWW+XdJqkHh
+         3IvneXqeUYN11Mw7oTivwn96z4D1Pv9hWCtTr55L356Ke6pwVZOznTUso79KxC5ueYkl
+         gRqdtXbMEDafG3LOWBfdMW31l/aBy2hwIj0pX4xCBR9FfK/0th4Bo1rdufR4nRY1uUSg
+         AmqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oETzd3MxcVSXx2y2bLw59dqUUQ72YS7d4YYmqfF/gQk=;
+        b=E1pAwA6PoM0iQNs5TzDbUonTVyGuXU6RHz6ZOxc2pq49msolUXpnisbHqIULLb72PF
+         G91hclgIn/+z0N2a3npgG+YKJfKVf0uwEqr0R0hQKcX0LNO/cBhNnaDjeBi4HbrzxTrA
+         ciEgomziHJWEmWY/SE6XlCG74oW4oN4oDtslvnInJ70ZuymetnEw1G49/rSo7rRwVn9h
+         Xg/k+bxNhwqZGF3DIkxQTyd+ohb4VVjXqRj3j3ekfgxpZRurATekoNEdA2X3nhDLSz1x
+         brlpOiWQxSs2jBLO8otdz3MNPfh1mzBlF4XM32GSoROgWstKl991MuHAndAbJf9cvO2Q
+         odog==
+X-Gm-Message-State: AOAM530i6KYPXOgFlKzp0wrgMHnmALOPDfukiSzfvP2nJvr7+IyguK7c
+        kzAr7QkT/eSmKphQvo790p7Qe6ooiX3C/g==
+X-Google-Smtp-Source: ABdhPJzx1UrBF3ivLInjLSdfVatrZtEPKcX3hB+pjFiKgJn0Tg1jtbjSXhBKlJeV667LwZsm4Fu2Hg==
+X-Received: by 2002:a02:a606:: with SMTP id c6mr6778016jam.108.1614897814677;
+        Thu, 04 Mar 2021 14:43:34 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id b9sm346283iob.4.2021.03.04.14.43.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 14:43:34 -0800 (PST)
+Subject: Re: [PATCH net-next 0/6] net: qualcomm: rmnet: stop using C
+ bit-fields
+From:   Alex Elder <elder@linaro.org>
+To:     subashab@codeaurora.org, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210304223431.15045-1-elder@linaro.org>
+Message-ID: <cdfe3730-97e1-acb3-fa5e-7e016523eab8@linaro.org>
+Date:   Thu, 4 Mar 2021 16:43:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210132139.GC30109@lst.de>
+In-Reply-To: <20210304223431.15045-1-elder@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:21:39PM +0100, Christoph Hellwig wrote:
-> On Mon, Feb 08, 2021 at 06:55:21PM +0800, Shiyang Ruan wrote:
-> > In fsdax mode, the memory failure happens on block device.  So, it is
-> > needed to introduce an interface for block devices.  Each kind of block
-> > device can handle the memory failure in ther own ways.
+On 3/4/21 4:34 PM, Alex Elder wrote:
+> This series converts data structures defined in <linux/if_rmnet.h>
+> so they use integral field values with bitfield masks rather than
+> rely on C bit-fields.
+
+Whoops!  I forgot to check if net-next was open.  I'm very
+sorry about that...
+
+   http://vger.kernel.org/~davem/net-next.html
+
+					-Alex
+
+> I first proposed doing something like this long ago when my confusion
+> about this code (and the memory layout it was supposed to represent)
+> led me to believe it was erroneous:
+>    https://lore.kernel.org/netdev/20190520135354.18628-1-elder@linaro.org/
 > 
-> As told before: DAX operations please do not add anything to the block
-> device.  We've been working very hard to decouple DAX from the block
-> device, and while we're not done regressing the split should not happen.
+> It came up again recently, when Sharath Chandra Vurukala proposed
+> a new structure in "if_rmnet.h", again using C bit-fields.  I asked
+> whether the new structure could use field masks, and Jakub requested
+> that this be done.
+>    https://lore.kernel.org/netdev/1613079324-20166-1-git-send-email-sharathv@codeaurora.org/
+> I volunteered to convert the existing RMNet code to use bitfield
+> masks, and that is what I'm doing here.
+> 
+> The first three patches are more or less preparation work for the
+> last three.
+>    - The first marks two fields in an existing structure explicitly
+>      big endian.  They are unused by current code, so this should
+>      have no impact.
+>    - The second simplifies some code that computes the value of a
+>      field in a header in a somewhat obfuscated way.
+>    - The third eliminates some trivial accessor macros, open-coding
+>      them instead.  I believe the accessors actually do more harm
+>      than good.
+>    - The last three convert the structures defined in "if_rmnet.h"
+>      so they are defined only with integral fields, each having
+>      well-defined byte order.  Where sub-fields are needed, field
+>      masks are defined so they can be encoded or extracted using
+>      functions like be16_get_bits() or u8_encode_bits(), defined
+>      in <linux/bitfield.h>.  The three structures converted are,
+>      in order:  rmnet_map_header, rmnet_map_dl_csum_trailer, and
+>      rmnet_map_ul_csum_header.
+> 
+> 					-Alex
+> 
+> Alex Elder (6):
+>    net: qualcomm: rmnet: mark trailer field endianness
+>    net: qualcomm: rmnet: simplify some byte order logic
+>    net: qualcomm: rmnet: kill RMNET_MAP_GET_*() accessor macros
+>    net: qualcomm: rmnet: use field masks instead of C bit-fields
+>    net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum trailer
+>    net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
+> 
+>   .../ethernet/qualcomm/rmnet/rmnet_handlers.c  | 11 ++--
+>   .../net/ethernet/qualcomm/rmnet/rmnet_map.h   | 12 ----
+>   .../qualcomm/rmnet/rmnet_map_command.c        | 11 +++-
+>   .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 60 ++++++++---------
+>   include/linux/if_rmnet.h                      | 65 +++++++++----------
+>   5 files changed, 70 insertions(+), 89 deletions(-)
+> 
 
-I agree with you (Christoph) that (strictly speaking) within the scope of
-the DAX work this isn't needed; xfs should be able to consume the
-->memory_failure events directly and DTRT.
-
-My vision here, however, is to establish upcalls for /both/ types of
-stroage.
-
-Regular block devices can use ->corrupted_range to push error
-notifications upwards through the block stack to a filesystem, and we
-can finally do a teensy bit more with scsi sense data about media
-errors, or thinp wanting to warn the filesystem that it's getting low on
-space and maybe this would be an agreeable time to self-FITRIM, or raid
-noticing that a mirror is inconsistent and can the fs do something to
-resolve the dispute, etc.  Maybe we can use this mechanism to warn a
-filesystem that someone did "echo 1 > /sys/block/sda/device/delete" and
-we had better persist everything while we still can.
-
-Memory devices will use ->memory_failure to tell us about ADR errors,
-and I guess upcoming and past hotremove events.  For fsdax you'd
-probably have to send the announcement and invalidate the current ptes
-to force filesystem pagefaults and the like.
-
-Either way, I think this piece is fine, but I would change the dax
-side to send the ->memory_failure events directly to xfs.
-
-A gap here is that xfs can attach to rt/log devices but we don't
-currently plumb in enough information that get_active_super can find
-the correct filesystem.
-
-I dunno, maybe we should add this to the thread here[1]?
-
-[1] https://lore.kernel.org/linux-xfs/CAPcyv4g3ZwbdLFx8bqMcNvXyrob8y6sBXXu=xPTmTY0VSk5HCw@mail.gmail.com/T/#m55a5c67153d0d10f3ff05a69d7e502914d97ac9d
-
---D
