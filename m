@@ -2,297 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9925132D074
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E8232D07B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237213AbhCDKMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238277AbhCDKMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:12:09 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799D0C061574;
-        Thu,  4 Mar 2021 02:11:29 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id e6so18588855pgk.5;
-        Thu, 04 Mar 2021 02:11:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YO9NjeIBZ2Ofgc77T5EIVJd9wzwwHvbTsOoLkelj+3U=;
-        b=dnbKLuB8jO1h0RuiiEVATFakcs4Ii/HtyK8OhO4bQrDBMw0nNVmxR2ovPQTANH4lz9
-         q0QGvOLN+u9rVZuO/wkmNIUxmg7laPsNRI57H6pgptIVbi+RJ9kYOECWw20K+TgGkMvt
-         XalFFXUKH5CPsisFvqQ8BSnGnNIq7mb7D9dFeTPdXELh/qz+WRUIhwcR0Ab49O1LP7YS
-         GN24jsKhnlkuxAU/0o15sAVrk9MDoP98lYxZ+P8CsbE6/UXfqWKqT5cawfF+IuJD7eb9
-         ySiSTtdMLAq54MLS08t3i6G6emfCZWHS2h/RpD+lCuVH1PVBoZXZ3B9/WN2PgNxy+HUD
-         N2dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YO9NjeIBZ2Ofgc77T5EIVJd9wzwwHvbTsOoLkelj+3U=;
-        b=fWkNspklc5q2vWIesGDuAcTajjAXTsKHMVVCREWxOMW9IZhTdsVOHKV3MjD9S0B/B0
-         itTNbUebqYtIR4qFcwHoLvEdj2aGe+XhtezlnBbXTip5jedM3hrNIwCYdlPhHy5MPPLS
-         tut/r8BIPPzzcbF/s9M4ws22oi0U76wW4YbgO+y/0aRdkZ/sk6ve1Kygv+C/056D3kMe
-         hl81oCvg0c1T6PFSu+OgcMFnG/lgQkp6mwxIyTeURyUmWMaX0x/ttAhzm3i0VlwYMMTe
-         v6O8vuRykktrLnI4qSFZpPramvuonvBwS307M6qprU5nWUiIxXB0k5NDqC98hrgr05P4
-         mC6A==
-X-Gm-Message-State: AOAM5331grs8mmWyej9rHWxeiTXx/dVUVTrgv6c+AArr6+UpI+kxQ9pP
-        9Gc8Vf0IjrZlqDRJdMKiBnby/B9FmuyNxbJYUEU=
-X-Google-Smtp-Source: ABdhPJx8kHiFKMSMMj/y0bDRF0p7oZF1JsUZIBUnv62oMXDjtKf2ugKzQ7ZpIsc/eBju5hPZ9niIVliIioq6NTRosfI=
-X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
- x64-20020a627c430000b02901ef20ceba36mr2012756pfc.40.1614852688761; Thu, 04
- Mar 2021 02:11:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20210302163309.25528-1-henning.schild@siemens.com> <20210302163309.25528-2-henning.schild@siemens.com>
-In-Reply-To: <20210302163309.25528-2-henning.schild@siemens.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 4 Mar 2021 12:11:12 +0200
-Message-ID: <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
-Subject: Re: [PATCH 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
+        id S238300AbhCDKNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:13:20 -0500
+Received: from relay.sw.ru ([185.231.240.75]:39020 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238194AbhCDKMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:12:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:Mime-Version:Message-Id:Subject:From
+        :Date; bh=fO68/0Zp4a2Wcd3siPndThrbByFFZXXQ7aAdpaXX/PU=; b=IhqxV3524nHmw7p6Zg1
+        N4NjVbWpeXWe+tw/7aQkRr2uf5UeK8D8Y7JO8qvOztyjW0Po+7vRuWVTL8DBxj9bObfYGMV3gVV8K
+        7tu3Q9Kx3AGWC1SL66gAANm1RtACHzgKZA0mbEtwv8WxMUmcLTqFnQcCxq8ItJ58O2kQpQHTXhA=
+Received: from [192.168.15.37] (helo=alexm-laptop.lan)
+        by relay.sw.ru with smtp (Exim 4.94)
+        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
+        id 1lHkxB-002h3A-J4; Thu, 04 Mar 2021 13:11:33 +0300
+Date:   Thu, 4 Mar 2021 13:11:33 +0300
+From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, autofs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ross Zwisler <zwisler@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Mattias Nissler <mnissler@chromium.org>,
+        linux-fsdevel@vger.kernel.org, alexander@mihalicyn.com
+Subject: Re: [RFC PATCH] autofs: find_autofs_mount overmounted parent
+ support
+Message-Id: <20210304131133.0ad93dee12a17f41f4052bcb@virtuozzo.com>
+In-Reply-To: <832c1a384dc0b71b2902accf3091ea84381acc10.camel@themaw.net>
+References: <20210303152931.771996-1-alexander.mikhalitsyn@virtuozzo.com>
+        <832c1a384dc0b71b2902accf3091ea84381acc10.camel@themaw.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 8:36 AM Henning Schild
-<henning.schild@siemens.com> wrote:
->
-> From: Henning Schild <henning.schild@siemens.com>
->
-> This mainly implements detection of these devices and will allow
-> secondary drivers to work on such machines.
->
-> The identification is DMI-based with a vendor specific way to tell them
-> apart in a reliable way.
->
-> Drivers for LEDs and Watchdogs will follow to make use of that platform
-> detection.
+On Thu, 04 Mar 2021 14:54:11 +0800
+Ian Kent <raven@themaw.net> wrote:
 
-> Signed-off-by: Gerd Haeussler <gerd.haeussler.ext@siemens.com>
-> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> On Wed, 2021-03-03 at 18:28 +0300, Alexander Mikhalitsyn wrote:
+> > It was discovered that find_autofs_mount() function
+> > in autofs not support cases when autofs mount
+> > parent is overmounted. In this case this function will
+> > always return -ENOENT.
+> 
+> Ok, I get this shouldn't happen.
+> 
+> > 
+> > Real-life reproducer is fairly simple.
+> > Consider the following mounts on root mntns:
+> > --
+> > 35 24 0:36 / /proc/sys/fs/binfmt_misc ... shared:16 - autofs systemd-
+> > 1 ...
+> > 654 35 0:57 / /proc/sys/fs/binfmt_misc ... shared:322 - binfmt_misc
+> > ...
+> > --
+> > and some process which calls ioctl(AUTOFS_DEV_IOCTL_OPENMOUNT)
+> > $ unshare -m -p --fork --mount-proc ./process-bin
+> > 
+> > Due to "mount-proc" /proc will be overmounted and
+> > ioctl() will fail with -ENOENT
+> 
+> I think I need a better explanation ...
 
-The order is wrong taking into account the From line in the body. So,
-it's not clear who is the author, who is a co-developer, and who is
-the committer (one person may utilize few roles).
-Check for the rest of the series as well (basically this is the rule
-of thumb to recheck entire code for the comment you have got at any
-single place of it).
+Thank you for the quick reply, Ian.
+I'm sorry If my patch description was not sufficiently clear and detailed.
 
-...
+That problem connected with CRIU (Checkpoint-Restore in Userspace) project.
+In CRIU we have support of autofs mounts C/R. To acheive that we need to use
+ioctl's from /dev/autofs to get data about mounts, restore mount as catatonic
+(if needed), change pipe fd and so on. But the problem is that during CRIU
+dump we may meet situation when VFS subtree where autofs mount present was
+overmounted as whole.
 
-> +config SIEMENS_SIMATIC_IPC
-> +       tristate "Siemens Simatic IPC Class driver"
-> +       depends on PCI
-> +       help
-> +         This Simatic IPC class driver is the central of several drivers. It
-> +         is mainly used for system identification, after which drivers in other
-> +         classes will take care of driving specifics of those machines.
-> +         i.e. leds and watchdogs
+Simpliest example is /proc/sys/fs/binfmt_misc. This mount present on most
+GNU/Linux distributions by default. For instance on my Fedora 33:
 
-LEDs
-watchdog. (missed period and singular form)
+trigger automount of binfmt_misc
+$ ls /proc/sys/fs/binfmt_misc
 
-Module name?
+$ cat /proc/1/mountinfo | grep binfmt
+35 24 0:36 / /proc/sys/fs/binfmt_misc rw,relatime shared:16 - autofs systemd-1 rw,...,direct,pipe_ino=223
+632 35 0:56 / /proc/sys/fs/binfmt_misc rw,...,relatime shared:315 - binfmt_misc binfmt_misc rw
 
->  endif # X86_PLATFORM_DEVICES
+$ sudo unshare -m -p --fork --mount-proc sh
+# cat /proc/self/mountinfo | grep "/proc"
+828 809 0:23 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw
+829 828 0:36 / /proc/sys/fs/binfmt_misc rw,relatime - autofs systemd-1 rw,...,direct,pipe_ino=223
+943 829 0:56 / /proc/sys/fs/binfmt_misc rw,...,relatime - binfmt_misc binfmt_misc rw
+949 828 0:57 / /proc rw...,relatime - proc proc rw
 
-Not sure about the ordering of the section in Kconfig, but it is up to
-maintainers.
+As we can see now autofs mount /proc/sys/fs/binfmt_misc is inaccessible.
+If we do something like:
 
-...
+struct autofs_dev_ioctl *param;
+param = malloc(...);
+devfd = open("/dev/autofs", O_RDONLY);
+init_autofs_dev_ioctl(param);
+param->size = size;
+strcpy(param->path, "/proc/sys/fs/binfmt_misc");
+param->openmount.devid = 36;
+err = ioctl(devfd, AUTOFS_DEV_IOCTL_OPENMOUNT, param)
 
-> +# Siemens Simatic Industrial PCs
-> +obj-$(CONFIG_SIEMENS_SIMATIC_IPC)      += simatic-ipc.o
+now we get err = -ENOENT.
 
-Ditto.
+> 
+> What's being said here?
+> 
+> For a start your talking about direct mounts, I'm pretty sure this
+> use case can't occur with indirect mounts in the sense that the
+> indirect mount base should/must never be over mounted and IIRC that
+> base can't be /proc (but maybe that's just mounts inside proc ...),
+> can't remember now but from a common sense POV an indirect mount
+> won't/can't be on /proc.
+> 
+> And why is this ioctl be called?
 
-...
+We call this ioctl during criu dump stage to open fd from autofs
+mount dentry. This fd is used later to call ioctl(AUTOFS_IOC_CATATONIC)
+(we do that on criu dump if we see that control process of autofs mount
+is dead or pipe is dead).
 
-> + * Siemens SIMATIC IPC driver for LEDs
+> 
+> If the mount is over mounted should that prevent expiration of the
+> over mounted /proc anyway, so maybe the return is correct ... or
+> not ...
 
-It seems to be used in patch 4 which is not LED related. Also, why is
-it here if it's for LEDs?
+I agree that case with overmounted subtree with autofs mount is weird case.
+But it may be easily created by user and we in CRIU try to handle that.
 
-...
+> 
+> I get that the mount namespaces should be independent and intuitively
+> this is a bug but what is the actual use and expected result.
+> 
+> But anyway, aren't you saying that the VFS path walk isn't handling
+> mount namespaces properly or are you saying that a process outside
+> this new mount namespace becomes broken because of it?
 
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
+No-no, it's only about opening autofs mount by device id + path.
 
-Replace with SPDX
+> 
+> Either way the solution looks more complicated than I'd expect so
+> some explanation along these lines would be good.
+> 
+> Ian
 
-...
+Regards,
+Alex
 
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include <linux/platform_device.h>
-
-Ordered?
-
-> +#include <linux/platform_data/x86/simatic-ipc.h>
-
-...
-
-> +static int register_platform_devices(u32 station_id)
-> +{
-> +       int i;
-> +       u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
-> +       u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
-
-Reversed xmas tree order?
-
-> +       platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
-> +               if (device_modes[i].station_id == station_id) {
-> +                       ledmode = device_modes[i].led_mode;
-> +                       wdtmode = device_modes[i].wdt_mode;
-> +                       break;
-> +               }
-> +       }
-> +
-> +       if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
-> +               platform_data.devmode = ledmode;
-
-> +               ipc_led_platform_device = platform_device_register_data
-> +                       (NULL, KBUILD_MODNAME "_leds", PLATFORM_DEVID_NONE,
-> +                        &platform_data, sizeof(struct simatic_ipc_platform));
-
-Strange indentation (second line).
-
-> +               if (IS_ERR(ipc_led_platform_device))
-> +                       return PTR_ERR(ipc_led_platform_device);
-
-> +               pr_debug(KBUILD_MODNAME ": device=%s created\n",
-> +                        ipc_led_platform_device->name);
-
-Utilize pr_fmt() instead of adding prefixes like this.
-
-> +       }
-
-> +       if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
-> +               platform_data.devmode = wdtmode;
-> +               ipc_wdt_platform_device = platform_device_register_data
-> +                       (NULL, KBUILD_MODNAME "_wdt", PLATFORM_DEVID_NONE,
-> +                        &platform_data, sizeof(struct simatic_ipc_platform));
-> +               if (IS_ERR(ipc_wdt_platform_device))
-> +                       return PTR_ERR(ipc_wdt_platform_device);
-> +
-> +               pr_debug(KBUILD_MODNAME ": device=%s created\n",
-> +                        ipc_wdt_platform_device->name);
-> +       }
-
-Same comments as above.
-
-> +       if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
-> +           wdtmode == SIMATIC_IPC_DEVICE_NONE) {
-> +               pr_warn(KBUILD_MODNAME
-> +                       ": unsupported IPC detected, station id=%08x\n",
-> +                       station_id);
-
-Ugly indentation. With pr_fmt() in use will be much better.
-
-> +               return -EINVAL;
-
-> +       } else {
-
-Redundant.
-
-> +               return 0;
-> +       }
-> +}
-
-...
-
-> +/*
-> + * Get membase address from PCI, used in leds and wdt modul. Here we read
-> + * the bar0. The final address calculation is done in the appropriate modules
-
-bar -> BAR
-Missed period.
-
-> + */
-
-> +
-
-Unneeded blank line.
-
-> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
-> +{
-> +       u32 bar0 = 0;
-
-> +#ifdef CONFIG_PCI
-
-It's ugly besides the fact that you have a dependency.
-
-> +       struct pci_bus *bus;
-
-Missed blank line.
-
-> +       /*
-> +        * The GPIO memory is bar0 of the hidden P2SB device. Unhide the device
-> +        * to have a quick look at it, before we hide it again.
-> +        * Also grab the pci rescan lock so that device does not get discovered
-> +        * and remapped while it is visible.
-> +        * This code is inspired by drivers/mfd/lpc_ich.c
-> +        */
-> +       bus = pci_find_bus(0, 0);
-> +       pci_lock_rescan_remove();
-> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
-> +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0, &bar0);
-> +
-> +       bar0 &= ~0xf;
-> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
-> +       pci_unlock_rescan_remove();
-> +#endif /* CONFIG_PCI */
-> +       return bar0;
-> +}
-> +EXPORT_SYMBOL(simatic_ipc_get_membase0);
-
-Oy vey! I know what this is and let's do it differently. I have some
-(relatively old) patch series I can send you privately for testing.
-
-...
-
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-
-Not needed when you have SPDX.
-
-...
-
-> +#include <linux/pci.h>
-
-Wrong header. Should be types.h
-
-...
-
-> +#include <linux/dmi.h>
-> +#include <linux/platform_data/x86/simatic-ipc-base.h>
-
-Missed headers. You need to include ones that the code below is a
-direct user of.
-
-Like types.h
-
--- 
-With Best Regards,
-Andy Shevchenko
+> > 
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> > Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+> > Cc: autofs@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Alexander Mikhalitsyn <
+> > alexander.mikhalitsyn@virtuozzo.com>
+> > ---
+> >  fs/autofs/dev-ioctl.c | 127 +++++++++++++++++++++++++++++++++++++---
+> > --
+> >  fs/namespace.c        |  44 +++++++++++++++
+> >  include/linux/mount.h |   5 ++
+> >  3 files changed, 162 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/fs/autofs/dev-ioctl.c b/fs/autofs/dev-ioctl.c
+> > index 5bf781ea6d67..55edd3eba8ce 100644
+> > --- a/fs/autofs/dev-ioctl.c
+> > +++ b/fs/autofs/dev-ioctl.c
+> > @@ -10,6 +10,7 @@
+> >  #include <linux/fdtable.h>
+> >  #include <linux/magic.h>
+> >  #include <linux/nospec.h>
+> > +#include <linux/nsproxy.h>
+> >  
+> >  #include "autofs_i.h"
+> >  
+> > @@ -179,32 +180,130 @@ static int autofs_dev_ioctl_protosubver(struct
+> > file *fp,
+> >  	return 0;
+> >  }
+> >  
+> > +struct filter_autofs_data {
+> > +	char *pathbuf;
+> > +	const char *fpathname;
+> > +	int (*test)(const struct path *path, void *data);
+> > +	void *data;
+> > +};
+> > +
+> > +static int filter_autofs(const struct path *path, void *p)
+> > +{
+> > +	struct filter_autofs_data *data = p;
+> > +	char *name;
+> > +	int err;
+> > +
+> > +	if (path->mnt->mnt_sb->s_magic != AUTOFS_SUPER_MAGIC)
+> > +		return 0;
+> > +
+> > +	name = d_path(path, data->pathbuf, PATH_MAX);
+> > +	if (IS_ERR(name)) {
+> > +		err = PTR_ERR(name);
+> > +		pr_err("d_path failed, errno %d\n", err);
+> > +		return 0;
+> > +	}
+> > +
+> > +	if (strncmp(data->fpathname, name, PATH_MAX))
+> > +		return 0;
+> > +
+> > +	if (!data->test(path, data->data))
+> > +		return 0;
+> > +
+> > +	return 1;
+> > +}
+> > +
+> >  /* Find the topmost mount satisfying test() */
+> >  static int find_autofs_mount(const char *pathname,
+> >  			     struct path *res,
+> >  			     int test(const struct path *path, void
+> > *data),
+> >  			     void *data)
+> >  {
+> > -	struct path path;
+> > +	struct filter_autofs_data mdata = {
+> > +		.pathbuf = NULL,
+> > +		.test = test,
+> > +		.data = data,
+> > +	};
+> > +	struct mnt_namespace *mnt_ns = current->nsproxy->mnt_ns;
+> > +	struct path path = {};
+> > +	char *fpathbuf = NULL;
+> >  	int err;
+> >  
+> > +	/*
+> > +	 * In most cases user will provide full path to autofs mount
+> > point
+> > +	 * as it is in /proc/X/mountinfo. But if not, then we need to
+> > +	 * open provided relative path and calculate full path.
+> > +	 * It will not work in case when parent mount of autofs mount
+> > +	 * is overmounted:
+> > +	 * cd /root
+> > +	 * ./autofs_mount /root/autofs_yard/mnt
+> > +	 * mount -t tmpfs tmpfs /root/autofs_yard/mnt
+> > +	 * mount -t tmpfs tmpfs /root/autofs_yard
+> > +	 * ./call_ioctl /root/autofs_yard/mnt <- all fine here because
+> > we
+> > +	 * 					 have full path and
+> > don't
+> > +	 * 					 need to call
+> > kern_path()
+> > +	 * 					 and d_path()
+> > +	 * ./call_ioctl autofs_yard/mnt <- will fail because
+> > kern_path()
+> > +	 * 				   can't lookup
+> > /root/autofs_yard/mnt
+> > +	 * 				   (/root/autofs_yard
+> > directory is
+> > +	 * 				    empty)
+> > +	 *
+> > +	 * TO DISCUSS: we can write special algorithm for relative path
+> > case
+> > +	 * by getting cwd path combining it with relative path from
+> > user. But
+> > +	 * is it worth it? User also may use paths with symlinks in
+> > components
+> > +	 * of path.
+> > +	 *
+> > +	 */
+> >  	err = kern_path(pathname, LOOKUP_MOUNTPOINT, &path);
+> > -	if (err)
+> > -		return err;
+> > -	err = -ENOENT;
+> > -	while (path.dentry == path.mnt->mnt_root) {
+> > -		if (path.dentry->d_sb->s_magic == AUTOFS_SUPER_MAGIC) {
+> > -			if (test(&path, data)) {
+> > -				path_get(&path);
+> > -				*res = path;
+> > -				err = 0;
+> > -				break;
+> > -			}
+> > +	if (err) {
+> > +		if (pathname[0] == '/') {
+> > +			/*
+> > +			 * pathname looks like full path let's try to
+> > use it
+> > +			 * as it is when searching autofs mount
+> > +			 */
+> > +			mdata.fpathname = pathname;
+> > +			err = 0;
+> > +			pr_debug("kern_path failed on %s, errno %d.
+> > Will use path as it is to search mount\n",
+> > +				 pathname, err);
+> > +		} else {
+> > +			pr_err("kern_path failed on %s, errno %d\n",
+> > +			       pathname, err);
+> > +			return err;
+> > +		}
+> > +	} else {
+> > +		pr_debug("find_autofs_mount: let's resolve full path
+> > %s\n",
+> > +			 pathname);
+> > +
+> > +		fpathbuf = kmalloc(PATH_MAX, GFP_KERNEL);
+> > +		if (!fpathbuf) {
+> > +			err = -ENOMEM;
+> > +			goto err;
+> > +		}
+> > +
+> > +		/*
+> > +		 * We have pathname from user but it may be relative,
+> > we need to
+> > +		 * have full path because we want to compare it with
+> > mountpoints
+> > +		 * paths later.
+> > +		 */
+> > +		mdata.fpathname = d_path(&path, fpathbuf, PATH_MAX);
+> > +		if (IS_ERR(mdata.fpathname)) {
+> > +			err = PTR_ERR(mdata.fpathname);
+> > +			pr_err("d_path failed, errno %d\n", err);
+> > +			goto err;
+> >  		}
+> > -		if (!follow_up(&path))
+> > -			break;
+> >  	}
+> > +
+> > +	mdata.pathbuf = kmalloc(PATH_MAX, GFP_KERNEL);
+> > +	if (!mdata.pathbuf) {
+> > +		err = -ENOMEM;
+> > +		goto err;
+> > +	}
+> > +
+> > +	err = lookup_mount_path(mnt_ns, res, filter_autofs, &mdata);
+> > +
+> > +err:
+> >  	path_put(&path);
+> > +	kfree(fpathbuf);
+> > +	kfree(mdata.pathbuf);
+> >  	return err;
+> >  }
+> >  
+> > diff --git a/fs/namespace.c b/fs/namespace.c
+> > index 56bb5a5fdc0d..e1d006dbdfe2 100644
+> > --- a/fs/namespace.c
+> > +++ b/fs/namespace.c
+> > @@ -1367,6 +1367,50 @@ void mnt_cursor_del(struct mnt_namespace *ns,
+> > struct mount *cursor)
+> >  }
+> >  #endif  /* CONFIG_PROC_FS */
+> >  
+> > +/**
+> > + * lookup_mount_path - traverse all mounts in mount namespace
+> > + *                     and filter using test() probe callback
+> > + * As a result struct path will be provided.
+> > + * @ns: root of mount tree
+> > + * @res: struct path pointer where resulting path will be written
+> > + * @test: filter callback
+> > + * @data: will be provided as argument to test() callback
+> > + *
+> > + */
+> > +int lookup_mount_path(struct mnt_namespace *ns,
+> > +		      struct path *res,
+> > +		      int test(const struct path *mnt, void *data),
+> > +		      void *data)
+> > +{
+> > +	struct mount *mnt;
+> > +	int err = -ENOENT;
+> > +
+> > +	down_read(&namespace_sem);
+> > +	lock_ns_list(ns);
+> > +	list_for_each_entry(mnt, &ns->list, mnt_list) {
+> > +		struct path tmppath;
+> > +
+> > +		if (mnt_is_cursor(mnt))
+> > +			continue;
+> > +
+> > +		tmppath.dentry = mnt->mnt.mnt_root;
+> > +		tmppath.mnt = &mnt->mnt;
+> > +
+> > +		if (test(&tmppath, data)) {
+> > +			path_get(&tmppath);
+> > +			*res = tmppath;
+> > +			err = 0;
+> > +			break;
+> > +		}
+> > +	}
+> > +	unlock_ns_list(ns);
+> > +	up_read(&namespace_sem);
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +EXPORT_SYMBOL(lookup_mount_path);
+> > +
+> >  /**
+> >   * may_umount_tree - check if a mount tree is busy
+> >   * @mnt: root of mount tree
+> > diff --git a/include/linux/mount.h b/include/linux/mount.h
+> > index 5d92a7e1a742..a79e6392e38e 100644
+> > --- a/include/linux/mount.h
+> > +++ b/include/linux/mount.h
+> > @@ -118,6 +118,11 @@ extern unsigned int sysctl_mount_max;
+> >  
+> >  extern bool path_is_mountpoint(const struct path *path);
+> >  
+> > +extern int lookup_mount_path(struct mnt_namespace *ns,
+> > +			     struct path *res,
+> > +			     int test(const struct path *mnt, void
+> > *data),
+> > +			     void *data);
+> > +
+> >  extern void kern_unmount_array(struct vfsmount *mnt[], unsigned int
+> > num);
+> >  
+> >  #endif /* _LINUX_MOUNT_H */
+> 
