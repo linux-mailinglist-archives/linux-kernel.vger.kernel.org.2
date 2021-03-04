@@ -2,84 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC6F32D409
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDC832D40D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241247AbhCDNUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S235919AbhCDNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241235AbhCDNUt (ORCPT
+        with ESMTP id S232942AbhCDNVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:20:49 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75028C061756;
-        Thu,  4 Mar 2021 05:20:09 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id b21so18895609pgk.7;
-        Thu, 04 Mar 2021 05:20:09 -0800 (PST)
+        Thu, 4 Mar 2021 08:21:09 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31A2C06175F;
+        Thu,  4 Mar 2021 05:20:29 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id jx13so6569208pjb.1;
+        Thu, 04 Mar 2021 05:20:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=TMjI0rhKS12moabCsKX8Cy0K0eG4CRmLI3ae6IurMaA=;
-        b=h/r8pe+e3JnNENUDMnFW40r5GhCIhvAKSxM6NnKVl6MFtm3QzQb215XQfBmbYnGetU
-         CYchgQpafa62nHo8M9wxwjxYpwIDzkNfjZefcBimeqAQbHMBv4PgI13Krsihdfqvru+8
-         VGDmAMR/NJ/uCUx7GdvLe3exaXtABBvE7f4XVU2P6ln8h92o7CmFKBEbl5biorYiDOqL
-         sEIptI5vEqoQI5ndZozEo7vgakNrzQwh4gFb+kbqXp0ObHH2YBKA/jrHRuC4PZTVJFb7
-         EHWireKg2ByRsgmxbaIqu58GLwrOiTQ7qQ13LS507QYHe4UYr47BVO7J4LTnQ/WSUS8i
-         d4eQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7TuebsGZ7PfFLh+7VtFFI1adnwVCzaRy+r3d2bkdQFc=;
+        b=ezgmgckKXwMf1XnQDpICKsBKNtIMTaEjBtWq2osVrPLrJBXdavfge9eoYCtdZCCzSa
+         MCH+ayceOvwj0c2+KGgjKphFRufEr1GqkU5H20NTxwuLtZcMQ19p7e8t+y1oL4SyqoFk
+         /Werxajx3XgBNvxdAJH+WqIlW5wuRAZ8f8owXo3hBvLGqQ6wnJc5lQeEH1m3yCyvGDAY
+         0QnpMK0qOJJivxyCm8QrYhlVrFg3bt5spfQsoEZGavewM5F4hOPsIZa+8ipbGxUsZmq4
+         Asfb0undkcPDPe916S51XllzdpWRW9av5aTC/zC/vz2idEcyEdOCZ2T4nTBsWlo30r6c
+         4/6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TMjI0rhKS12moabCsKX8Cy0K0eG4CRmLI3ae6IurMaA=;
-        b=dK1iLfG3EMv8nvFvC3NVXVy8HHymitDbC35IhCWJx/vsspD/wC7e+tt+fian07tkCa
-         L/h1uW8IxEauwU1CKPCOQXN/QoXDcdh70KP+fW0Htw40cH0q28hkN+VJaKvw7SnjdeiS
-         l7ZXGqgSb2Y4pMFqSrcf+QDq8cAmYoqeirqQvuR2+p2rVJugS7zKz/Ogul9QDJey/kaI
-         Hf0yRMrd/Y3aiC9Z2tGG8vuEhAJZo7+57RR+WIJrmT17yb0hoNQdgA71Q2HNP75V6af1
-         g7XRwYy9Fsq5TNHQrmo/N7qnJPwfZdETmJ9LXydpPmPOWAzDCdb5WzLGK/jbVUyr/BXa
-         ++Fg==
-X-Gm-Message-State: AOAM532oGKM7cjyR2LVjc5LxieJq2nC9N92bPR2rPX9zU/cEhitvz/sA
-        FvTFAwuXJTo4ujhHDW4t7sQ=
-X-Google-Smtp-Source: ABdhPJy8msvN5P1vXHi7GLbrA0vGVuOuLwsW2+MCAL7LPdPRw9k/ACXwljF7FvRx7yyOVGSMluqS+A==
-X-Received: by 2002:a63:e04d:: with SMTP id n13mr3580941pgj.185.1614864009047;
-        Thu, 04 Mar 2021 05:20:09 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.129])
-        by smtp.gmail.com with ESMTPSA id g3sm2726706pfo.120.2021.03.04.05.20.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7TuebsGZ7PfFLh+7VtFFI1adnwVCzaRy+r3d2bkdQFc=;
+        b=X12+b5l5ox1mlljXQM1GTP8xD6/r2Yvw9FGWHISnWK6OPel/K7Um+4ulQM+UT7nl0T
+         NNDUbRuT+YDMTGMLs3jFCAK0ZDxWKdcFMyFGyOtfs6QT9o7kfmp759YhMEX+238cQlq2
+         fFpdIJQsTMP44q7IraoaxDC7dNHbIXUPjKnjFgaeRJUvZK8c4N1TGDkY2DZZVeglTOC0
+         /xI2xmOeX+NwE+QIkJXObWnkaH230DUlaU44zSLW9PCChpN1xuKdH3OQyvJpMr4jwPTA
+         Q6eSntJgIgDD5rDMUp0ANv4atyiQvl5oB1VRLN6xhEOofH6TVj1NAtk0QieK7xzSDtta
+         DhAQ==
+X-Gm-Message-State: AOAM53392WLCEjyMORQ3NJYOp7tskhf+ePAN7Jp1txU5XEyAx+ZthulX
+        puJ6H4BmZ1fD6AaYCxSdSC8=
+X-Google-Smtp-Source: ABdhPJw5mop7Q05iwGPVDPv/TV7muVAYEl+QpfM+dzp7wGwLuxJ9xrmHLzyFf9+5Z90KHfNnJQiWeA==
+X-Received: by 2002:a17:902:ea09:b029:e3:a720:b83 with SMTP id s9-20020a170902ea09b02900e3a7200b83mr4023689plg.51.1614864028293;
+        Thu, 04 Mar 2021 05:20:28 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id u9sm26809374pgc.59.2021.03.04.05.20.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 05:20:08 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        rydberg@bitmath.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] hid: hid-alps: fix error return code in alps_input_configured()
-Date:   Thu,  4 Mar 2021 05:19:57 -0800
-Message-Id: <20210304131957.7089-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 04 Mar 2021 05:20:27 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: zhang.yunkai@zte.com.cn
+To:     aneesh.kumar@linux.ibm.com
+Cc:     will@kernel.org, akpm@linux-foundation.org, npiggin@gmail.com,
+        peterz@infradead.org, ysato@users.sourceforge.jp, dalias@libc.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Subject: [PATCH] sh: remove duplicate include in tlb.h
+Date:   Thu,  4 Mar 2021 05:20:20 -0800
+Message-Id: <20210304132020.196811-1-zhang.yunkai@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When input_register_device() fails, no error return code is assigned.
-To fix this bug, ret is assigned with -ENOENT as error return code.
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+'asm-generic/tlb.h' included in 'asm/tlb.h' is duplicated.
+
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 ---
- drivers/hid/hid-alps.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/sh/include/asm/tlb.h | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index 3feaece13ade..6b665931147d 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -761,6 +761,7 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
+diff --git a/arch/sh/include/asm/tlb.h b/arch/sh/include/asm/tlb.h
+index 360f713d009b..aeb8915e9254 100644
+--- a/arch/sh/include/asm/tlb.h
++++ b/arch/sh/include/asm/tlb.h
+@@ -4,12 +4,11 @@
  
- 		if (input_register_device(data->input2)) {
- 			input_free_device(input2);
-+			ret = -ENOENT;
- 			goto exit;
- 		}
- 	}
+ #ifndef __ASSEMBLY__
+ #include <linux/pagemap.h>
++#include <asm-generic/tlb.h>
+ 
+ #ifdef CONFIG_MMU
+ #include <linux/swap.h>
+ 
+-#include <asm-generic/tlb.h>
+-
+ #if defined(CONFIG_CPU_SH4)
+ extern void tlb_wire_entry(struct vm_area_struct *, unsigned long, pte_t);
+ extern void tlb_unwire_entry(void);
+@@ -24,12 +23,7 @@ static inline void tlb_unwire_entry(void)
+ {
+ 	BUG();
+ }
+-#endif
+-
+-#else /* CONFIG_MMU */
+-
+-#include <asm-generic/tlb.h>
+-
++#endif /* CONFIG_CPU_SH4 */
+ #endif /* CONFIG_MMU */
+ #endif /* __ASSEMBLY__ */
+ #endif /* __ASM_SH_TLB_H */
 -- 
-2.17.1
+2.25.1
 
