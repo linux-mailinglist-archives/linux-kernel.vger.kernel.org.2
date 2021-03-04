@@ -2,108 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB00332CE4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4827532CE4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236553AbhCDIVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:21:19 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:36094 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhCDIVC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:21:02 -0500
-Received: by mail-il1-f199.google.com with SMTP id s13so19886862ilp.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:20:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/kQ8LB1u3Wuf8KE19cFcLpe+iyreLR8SuYEl8EMB9QU=;
-        b=nnxeON4XQas/gLWOZvuPHJ9fXsNxyMQk+HVVbLzqL3tiyY3qOjf57USqu35dayRsOd
-         kDGNfJlWPxlRCU19UKxJKaxdhNOH30DzSDBiZnhvFiYF4nYfxsIQg280ETR81lMF3YW+
-         RPY9xwZIeB08lpAdEQ2k6/64NoGQYMc2O3/+esyLv66I0g7fxxFPKjZ3cz1AyKqa31sI
-         tjIarXle++Zkomf1BPsEm9H0sEOl4IK+zTVslkNopvVLp9VWimqc5FoKrwfetCnx3S7r
-         +wOxrEfbyCbuSS0KvZPbZvhoDJsJusSKrElN3H4gRXOraAwwkhQxCcf5srw2VRRbtbgM
-         4Vmw==
-X-Gm-Message-State: AOAM531GaMbrkNatMsifkuYrszucsdKWryRSoSD2+1bgclQgb4Ef2GXZ
-        ytCnLKvhLqveolzvjJTzd6fMBMPhfap8dR517JCjmWxhu9uY
-X-Google-Smtp-Source: ABdhPJxaSqKef37VbLKd+0hOjeBhQ+hnlgKUZ+7qnXPmORBbCQdWwO0gd00GYYb6lIuXmKis2nlyjYPd6cTngZjuWRyhU3QyxGxO
+        id S236567AbhCDIVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:21:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41532 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236560AbhCDIVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:21:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BDC00AAC5;
+        Thu,  4 Mar 2021 08:21:06 +0000 (UTC)
+Subject: Re: [PATCH] drm/stm: ltdc: Use simple encoder
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-amarula@amarulasolutions.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20210302175700.28640-1-jagan@amarulasolutions.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <791a6f75-3603-9b84-c267-76c24fb77ee2@suse.de>
+Date:   Thu, 4 Mar 2021 09:21:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:9042:: with SMTP id y2mr3044690jaf.94.1614846021521;
- Thu, 04 Mar 2021 00:20:21 -0800 (PST)
-Date:   Thu, 04 Mar 2021 00:20:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007ad39e05bcb1a38d@google.com>
-Subject: WARNING in firmware_fallback_sysfs
-From:   syzbot <syzbot+95f2e2439b97575ec3c0@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210302175700.28640-1-jagan@amarulasolutions.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="j2ZI2tgr2HFWGwvR1rVkDX8CF1cKP4vlo"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--j2ZI2tgr2HFWGwvR1rVkDX8CF1cKP4vlo
+Content-Type: multipart/mixed; boundary="AK4xx3qya29Jz8JQWpNRhf5ZcjrKlNi2q";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Jagan Teki <jagan@amarulasolutions.com>,
+ Yannick Fertre <yannick.fertre@st.com>,
+ Philippe Cornu <philippe.cornu@st.com>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+ Vincent Abriou <vincent.abriou@st.com>
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-amarula@amarulasolutions.com,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+Message-ID: <791a6f75-3603-9b84-c267-76c24fb77ee2@suse.de>
+Subject: Re: [PATCH] drm/stm: ltdc: Use simple encoder
+References: <20210302175700.28640-1-jagan@amarulasolutions.com>
+In-Reply-To: <20210302175700.28640-1-jagan@amarulasolutions.com>
 
-syzbot found the following issue on:
+--AK4xx3qya29Jz8JQWpNRhf5ZcjrKlNi2q
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    5695e516 Merge tag 'io_uring-worker.v3-2021-02-25' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f34e46d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=90173e86f0624adc
-dashboard link: https://syzkaller.appspot.com/bug?extid=95f2e2439b97575ec3c0
-userspace arch: arm64
+Hi,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+shall I merge this patch?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+95f2e2439b97575ec3c0@syzkaller.appspotmail.com
+Am 02.03.21 um 18:57 schrieb Jagan Teki:
+> STM ltdc driver uses an empty implementation for its encoder.
+> Replace the code with the generic simple encoder.
+>=20
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+>   drivers/gpu/drm/stm/ltdc.c | 12 ++----------
+>   1 file changed, 2 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+> index 7812094f93d6..aeeb43524ca0 100644
+> --- a/drivers/gpu/drm/stm/ltdc.c
+> +++ b/drivers/gpu/drm/stm/ltdc.c
+> @@ -31,6 +31,7 @@
+>   #include <drm/drm_of.h>
+>   #include <drm/drm_plane_helper.h>
+>   #include <drm/drm_probe_helper.h>
+> +#include <drm/drm_simple_kms_helper.h>
+>   #include <drm/drm_vblank.h>
+>  =20
+>   #include <video/videomode.h>
+> @@ -1020,14 +1021,6 @@ static int ltdc_crtc_init(struct drm_device *dde=
+v, struct drm_crtc *crtc)
+>   	return ret;
+>   }
+>  =20
+> -/*
+> - * DRM_ENCODER
+> - */
+> -
+> -static const struct drm_encoder_funcs ltdc_encoder_funcs =3D {
+> -	.destroy =3D drm_encoder_cleanup,
+> -};
+> -
+>   static void ltdc_encoder_disable(struct drm_encoder *encoder)
+>   {
+>   	struct drm_device *ddev =3D encoder->dev;
+> @@ -1088,8 +1081,7 @@ static int ltdc_encoder_init(struct drm_device *d=
+dev, struct drm_bridge *bridge)
+>   	encoder->possible_crtcs =3D CRTC_MASK;
+>   	encoder->possible_clones =3D 0;	/* No cloning support */
+>  =20
+> -	drm_encoder_init(ddev, encoder, &ltdc_encoder_funcs,
+> -			 DRM_MODE_ENCODER_DPI, NULL);
+> +	drm_simple_encoder_init(ddev, encoder, DRM_MODE_ENCODER_DPI);
+>  =20
+>   	drm_encoder_helper_add(encoder, &ltdc_encoder_helper_funcs);
+>  =20
+>=20
 
-------------[ cut here ]------------
-sysfs group 'power' not found for kobject 'ueagle-atm!eagleI.fw'
-WARNING: CPU: 1 PID: 32 at fs/sysfs/group.c:279 sysfs_remove_group+0x94/0xa0 fs/sysfs/group.c:279
-Modules linked in:
-CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.11.0-syzkaller-11646-g5695e5161974 #0
-Hardware name: linux,dummy-virt (DT)
-Workqueue: events request_firmware_work_func
-pstate: 60400009 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-pc : sysfs_remove_group+0x94/0xa0 fs/sysfs/group.c:279
-lr : sysfs_remove_group+0x94/0xa0 fs/sysfs/group.c:279
-sp : ffff800013e83bb0
-x29: ffff800013e83bb0 x28: ffff800013a9de40 
-x27: f5ff00000dff3688 x26: f5ff00000dff3620 
-x25: f9ff00000b7e40a0 x24: faff00000a690b00 
-x23: f9ff00000b7e40a0 x22: 0000000000000000 
-x21: fdff00000de85808 x20: ffff8000124a9818 
-x19: 0000000000000000 x18: 00000000fffffffd 
-x17: 0000000000000000 x16: 0000000000000000 
-x15: 0000000000000020 x14: ffffffffffffffff 
-x13: 0000000000000e0b x12: ffff800013e83860 
-x11: ffff800013a0b548 x10: 00000000ffffe000 
-x9 : ffff800013a0b548 x8 : ffff80001395b548 
-x7 : ffff800013a0b548 x6 : 0000000000000000 
-x5 : ffff00007fbd7948 x4 : 0000000000015ff5 
-x3 : 0000000000000001 x2 : 0000000000000000 
-x1 : 0000000000000000 x0 : f5ff00000412eac0 
-Call trace:
- sysfs_remove_group+0x94/0xa0 fs/sysfs/group.c:279
- dpm_sysfs_remove+0x60/0x70 drivers/base/power/sysfs.c:837
- device_del+0xa4/0x384 drivers/base/core.c:3398
- fw_load_sysfs_fallback drivers/base/firmware_loader/fallback.c:543 [inline]
- fw_load_from_user_helper drivers/base/firmware_loader/fallback.c:581 [inline]
- firmware_fallback_sysfs+0x35c/0x460 drivers/base/firmware_loader/fallback.c:657
- _request_firmware+0x4c8/0x6d0 drivers/base/firmware_loader/main.c:831
- request_firmware_work_func+0x40/0xa0 drivers/base/firmware_loader/main.c:1077
- process_one_work+0x1d8/0x364 kernel/workqueue.c:2275
- worker_thread+0x70/0x434 kernel/workqueue.c:2421
- kthread+0x174/0x180 kernel/kthread.c:292
- ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:958
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+--AK4xx3qya29Jz8JQWpNRhf5ZcjrKlNi2q--
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--j2ZI2tgr2HFWGwvR1rVkDX8CF1cKP4vlo
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmBAmHEFAwAAAAAACgkQlh/E3EQov+BW
+LhAAtB/ROfja0It2G8hWcRI1jXKJrtGPKUZIpEwiBosfhFdoBUfLdpOGtOi0znaiJ4dRHDk+4khw
+wm0kT8mbAiTAT/TZhQRuoemVyZGsirZ4ICHNmw2E9h02hAtiPCkKy9rRrbu8+y1bvxZxumWjENo6
+Ci/tDyehZM1vExRGZxddNVwsU7leHcd4wCr6jNhQ0fFktMkaGhbSY/COIRg5m4yLdGNsnexEm3CT
+FOlO7DJCOysCFdsx5Uoy38H4NUxPMbM1S6Qg5pr+nEyfI/d4iitPbbY5NA83/34xMYnQzZVQIPYw
+ZCENZyrIFHOoU0eLsq37X8V0c/8tXM/mJ/GcnahFGlH8NdhG1ctBazEG/lJJgMinYHwb78gv+dgq
+SSiN73IfbtYSl14tY+62kvwlUYCythX4HchKxB8OEmrlt6wo3JQabarUViOM8/VZMAlBCz6MjOH5
+HCKgEo7IIf9ApMFSV/oSJVuuqPQy6drWK0A1umrDHedwk2Oym1cOk0/q3ca/3XGOUQM8bwol6pFN
+Sb8X8HKNay9VvUCIwOVljUmAfJUeT1ux8sdwpP7RizOLQbs8r4tLcmHV9LG71E+8AibF1FnsZeap
+Q2mhgZiG+0y0nTCqmIwUNFwYcRPc8yF8FDc8snsqhTfD9Ykp2MhmOlyH/Tv2BOkrrdRTpF5aLDRv
+Bac=
+=kdMO
+-----END PGP SIGNATURE-----
+
+--j2ZI2tgr2HFWGwvR1rVkDX8CF1cKP4vlo--
