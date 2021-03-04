@@ -2,129 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CBB32DB0A
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3DE32DB0C
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238740AbhCDUR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:17:26 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42979 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238428AbhCDUQy (ORCPT
+        id S238784AbhCDUR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238677AbhCDURP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:16:54 -0500
-Received: by mail-io1-f71.google.com with SMTP id q5so22835487iot.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 12:16:39 -0800 (PST)
+        Thu, 4 Mar 2021 15:17:15 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B54C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 12:16:34 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id v9so27585409lfa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 12:16:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YjhX4vGwI1K4CFToyjn6YznaWoJYyk/puE7QxM9iXFo=;
+        b=ctbA/bdJlwbzYgJS6nRGDxwkOD9+s6jTr3aqVwxCYv7gQh4fSGtHv3xdQnYIMoliAR
+         PLBk2cofcNBAoxciu+qka+TQZ/4qL3wtDOVyfkfdTDH24sSycsDv16pd3UrCS1YhZSJX
+         FcDKfRjQNG1zdj/NdyPu33TyznUIjlGqoumvQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=fpowfZgk8QgxLBNd0XywftjI4GcMpTYddLWckNN9y/U=;
-        b=VfyQ8A1986TKg4K3ltzuDYeJDnqZhgzoTNlb0c66lScooA1uRhUmrVy7nH2ArwXWK9
-         qO0Lpsq9jgbKydE9OLmPKd7l48LsHvdKrf5d5Z0xKLQCt9Y4n/KtRxoybKsO125gwRd9
-         QUSl4g9aUdANSW3E6tULiUK2zkmgNr14c16w24WlvIZv+ThilsMErVms1u5udaN5IqxQ
-         0RQOrK9pAp5X7V4wEYLZn3Y713fJacokK23N2AqAEK220R0QwUNH44fg47aDB04ByW5p
-         50cwoatPB2Wr+zObHgGGoay+rohEu76R0GErvReOcJtAkdra2Rb0mGhieTYw3ku+xZ+p
-         pT7Q==
-X-Gm-Message-State: AOAM530L0gppfIh6eTjnO+q7+L1/FsylWf+YvGQ+f/+vStpQB5PuZnxd
-        u/lmS0d6P8NjUVYpTc7Lv0EN84o/mlXjInuko7jv0s36dsIm
-X-Google-Smtp-Source: ABdhPJx+9h4FUOG54SXJim3dO54ry8cierVwGu+fmo3ZQPmhTpMXdaWJxAH1h2Dp3d1IIOmyCRFZ/qdjXXWTbXaDntdV0PbZM3vG
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YjhX4vGwI1K4CFToyjn6YznaWoJYyk/puE7QxM9iXFo=;
+        b=L3zKisaIR5NIpUE/T4mr4UK34HEFAtgW2PJSXPFKJXlkgHTfBMxgIV3teN9PLvbwhB
+         FRD7i3CweWUc7S4YlHims3ds9HqCeBm8EB6e0RKSMq93aQ97hZ0nsc3l1HRqY8QRzX9I
+         XgJttqrrv2JqKJ9QbxlPS45FDirK3nK+cJAUITvGnhiLfFR7TaW97MR49yaav1c9g3/9
+         5r5LryRpA82m+OGkN9uGhu/1VCZHMgsFphkl2Mdq/D11ZGILcnVSzcc2gHHUFnjFrACZ
+         gcUzwak/cxILeukKI2eKOnG6UQFemZvwniuEfC1pq1wm3Xxvi+A3dpk6mdSsMzY9iPKh
+         hryg==
+X-Gm-Message-State: AOAM531XzAwwXfPoNCt+aA35iNGtQeQk58+A02qX2ynRNB+utSL1cXX7
+        W+dEsgB8IBa3FgWbrGMY/tHI83pWpV84dQ==
+X-Google-Smtp-Source: ABdhPJwyTuj0qU6jCJ56g5jt8n4Zy1e8fCoiCd9jrGzRtvnCW7Wx37pUF1cZzbCAN8yOPcKLrV0H4A==
+X-Received: by 2002:ac2:58cf:: with SMTP id u15mr3099700lfo.397.1614888992739;
+        Thu, 04 Mar 2021 12:16:32 -0800 (PST)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id o1sm45900lfq.22.2021.03.04.12.16.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 12:16:31 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id z11so45320937lfb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 12:16:31 -0800 (PST)
+X-Received: by 2002:a05:6512:398d:: with SMTP id j13mr3168683lfu.41.1614888990923;
+ Thu, 04 Mar 2021 12:16:30 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d85:: with SMTP id h5mr5662490ila.246.1614888973969;
- Thu, 04 Mar 2021 12:16:13 -0800 (PST)
-Date:   Thu, 04 Mar 2021 12:16:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a52f4505bcbba35f@google.com>
-Subject: BUG: unable to handle kernel NULL pointer dereference in hide_cursor
-From:   syzbot <syzbot+e28df1dcd2038f11d0f1@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain> <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
+ <YDvwVlG/fqVxVYlQ@localhost.localdomain> <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
+ <877dmo10m3.fsf@tromey.com> <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
+ <4835ec1d2ecc40b285596288a0df4f47@AcuMS.aculab.com>
+In-Reply-To: <4835ec1d2ecc40b285596288a0df4f47@AcuMS.aculab.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Mar 2021 12:16:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
+Message-ID: <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
+Subject: Re: [PATCH 00/11] pragma once: treewide conversion
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Tom Tromey <tom@tromey.com>, Alexey Dobriyan <adobriyan@gmail.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Mar 4, 2021 at 5:55 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> >  (a) the traditional include guard optimization HAS NO HIDDEN SEMANTIC
+> > MEANING. It's a pure optimization that doesn't actually change
+> > anything else. If you don't do the optimization, absolutely nothing
+> > changes.
+>
+> And if the parser is well written the optimisation is probably
+> irrelevant compared to the compile time.
 
-syzbot found the following issue on:
+That's actually surprisingly not even remotely true.
 
-HEAD commit:    5695e516 Merge tag 'io_uring-worker.v3-2021-02-25' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10bc7b96d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e33ab2de74f48295
-dashboard link: https://syzkaller.appspot.com/bug?extid=e28df1dcd2038f11d0f1
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145911b0d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16123ff2d00000
+People always think that the optimization phases of a compiler are the
+expensive ones. And yes, there are certain optimizations that can be
+*really* expensive, and people just don't even do them because they
+are _so_ expensive and are exponential in time.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e28df1dcd2038f11d0f1@syzkaller.appspotmail.com
+And yes, there can be some patterns that expose bad scaling in some
+compiler algorithms, and histyorically that has often been seen when
+people use generators to automatically generate huge functions (or
+huge initializers), and then the compiler has some O(n**3) thing in it
+that is entirely unnoticeable for normal code written by a human, but
+means that a million-entry initializer takes five hours to compile.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 12e8c067 P4D 12e8c067 PUD 242de067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8335 Comm: syz-executor258 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc9000dcf7aa8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffffff8a151c78 RCX: 0000000000000007
-RDX: 0000000000000002 RSI: ffff888143df0000 RDI: ffff888010879000
-RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffffff84048b55
-R10: 0000000000000002 R11: ffff88801b115340 R12: dffffc0000000000
-R13: 1ffff1100210f27c R14: ffff8880108793e0 R15: ffff888010879000
-FS:  0000000000e5a300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000011d74000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- hide_cursor+0x7e/0x310 drivers/tty/vt/vt.c:907
- redraw_screen+0x190/0x11a0 drivers/tty/vt/vt.c:1012
- vc_do_resize+0x1178/0x1780 drivers/tty/vt/vt.c:1325
- fbcon_set_disp+0x9f2/0xf90 drivers/video/fbdev/core/fbcon.c:1402
- con2fb_init_display drivers/video/fbdev/core/fbcon.c:808 [inline]
- set_con2fb_map+0x7f6/0xe90 drivers/video/fbdev/core/fbcon.c:879
- fbcon_set_con2fb_map_ioctl+0x19e/0x280 drivers/video/fbdev/core/fbcon.c:3010
- do_fb_ioctl+0x307/0x6e0 drivers/video/fbdev/core/fbmem.c:1156
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43eed9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd3f7a18c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043eed9
-RDX: 0000000020000040 RSI: 0000000000004610 RDI: 0000000000000004
-RBP: 0000000000402ec0 R08: 0000000000400488 R09: 0000000000400488
-R10: 0000000000400488 R11: 0000000000000246 R12: 0000000000402f50
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 867c96c33860cda9 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc9000dcf7aa8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffffff8a151c78 RCX: 0000000000000007
-RDX: 0000000000000002 RSI: ffff888143df0000 RDI: ffff888010879000
-RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffffff84048b55
-R10: 0000000000000002 R11: ffff88801b115340 R12: dffffc0000000000
-R13: 1ffff1100210f27c R14: ffff8880108793e0 R15: ffff888010879000
-FS:  0000000000e5a300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000011d74000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+But in reality, on very real normal code, the *front end* of the
+compiler is often the most costly thing by far. Very much just the
+lexer and the simple parser. Things that are "simple" and people think
+are fast.
 
+But they are are often the slowest part in C style languages, because
+you have to lex and parse _everything_. You include maybe a dozen
+header files, maybe more. Those in turn often include another dozen
+support header files. You easily end up tokenizing and parsing
+hundreds of header files for even the simplest programs - and 99,.9%
+of that isn't ever *used*, and never actually generates any code that
+needs to be optimized. Think of all the complex macros and functions
+and type definitions you get when you include something basic like
+<stdio.h>. Trust me, it's a _lot_ of small details that get tokenixed,
+parsed and memoized.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+And then all you do is a 'printf("Hello world");' and the amount of
+actual code generation and optimization by the back-end is basically
+zero.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+And C++ is about an order of magnitude worse, because you really take
+this whole approach and turn it up to 11 with templates, namespaces,
+STL, and a lot of all that infrastructure that is there for all the
+possible cases, but that most files that include it only use a small
+tiny portion of.
+
+So in C-style (and particularly C++) languages, reading header files,
+tokenizing them and parsing them can _easily_ be the bulk of your
+compile time. Absolutely every single serious C/C++ compiler
+integrates tbe preprocessor _into_ the compiler, because the
+traditional model of having a separate "cpp" phase actually made the
+tokenization problem happen _twice_: once by the pre-processor, and
+then a second time by the compiler. Integrating the two phases, so
+that you can use just one tokenizer, and one single set of
+identifiers, actually speeds up compile speed _enormously_.
+
+Yes, yes, tokenization and parsing really is the simple part of a
+compiler. Good register allocation is _hard_. SSA makes a lot of the
+basic optimizations actually fairly straightforward and simple, but
+more complex transformations (loop invariant stuff, vectorization,
+various things like that) are really much much much more complex than
+the simple front-end.
+
+But that simple front end is the thing that touches absolutely
+_everything_, whether it actually generates code or not.
+
+And yes, this is mainly a C-style language problem. If you have
+hardcoded modules approach and not the "include files that describe
+all the different interfaces", you don't end up in that situation
+where you spend a lot of time parsign the possible interfaces over and
+over again.
+
+And C++ really is hugely worse, and takes this issue to another level.
+You can have simple single C++ files that end up basically having to
+parse hundreds of thousands of lines of fairly complex code, because
+they use several complex libraries, and that's how the library header
+files are set up,m with multiple levels (ie the GUI header files
+depend on, and include the lower-level object header files, which in
+turn depend on "simple" core libraries like STL and Boost.
+
+This is why pretty much every compiler out there does that include
+file header guard optimization. Because avoiding having to read and
+parse a file multiple times really does show up as a big big win. Even
+when it's all hidden behind the #ifndef/#define/#endif guarding logic,
+the cost of reading the file and lexing and parsing it enough to _see_
+those guards is not cheap. Doing it once is required and important,
+but then you memoize the fact that "oh, all the stuff I needed to
+parse was behind this macro test, so next time I see this file, if
+that macro is set, I can just ignore it".
+
+So it is actually a very important optimization. It's just that the
+optimization is better done with that explicit guard memoization than
+it is with '#pragma once'
+
+                       Linus
