@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB8F32DB84
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A9332DB8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236743AbhCDU7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        id S234766AbhCDVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236210AbhCDU67 (ORCPT
+        with ESMTP id S232783AbhCDVGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:58:59 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BA9C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 12:58:19 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614891498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=okpZzFCE+S/kjR2YiW6a2eXyNqNPc4VWZ1UoZTdt4R0=;
-        b=euDRZRTeUVy0kkR2YRYIz8iu3IYbbMcaRDR7Fw0721nXYFm6ZH0QHJRyc7ksYZQIbuN0Vl
-        NXs2UiiLx6p99lTTjd04Ss/YGagIPE+rByGqpUDHQBNRJNKqh7asfr8fbsbxTCovV2CyzX
-        aF6PL1S74HIxampQ2tqbdSgcaaBOWOt+vsUeB6vHxGvz/F/fRNjkUeDRn0mBzNmpn/jG4w
-        Jbp1jWzuanSBkavga1QU8TckKmekOUa7/GChmD64yFV2+N8S0ZAQJnQ8J8zgaP+89SNWws
-        ffizAqVy2N6Ml3ubX2oJwgKXoiR0aZSvUW+hsJdyC+7rq0zciT+38YbdEzYw2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614891498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=okpZzFCE+S/kjR2YiW6a2eXyNqNPc4VWZ1UoZTdt4R0=;
-        b=zKrAHtGAZ+33kwzte2cezMBQ5pox4xJC9EqlZyyqRztMcSOw54Sc8E80MZOEArz0jtEkQP
-        vkHFdD0YjmSYFEBA==
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
-In-Reply-To: <m11rcu7nbr.fsf@fess.ebiederm.org>
-References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de> <m1zgzj7uv2.fsf@fess.ebiederm.org> <20210304081142.digtkddajkadwwq5@linutronix.de> <87tupr55ea.fsf@nanos.tec.linutronix.de> <m11rcu7nbr.fsf@fess.ebiederm.org>
-Date:   Thu, 04 Mar 2021 21:58:17 +0100
-Message-ID: <87lfb263h2.fsf@nanos.tec.linutronix.de>
+        Thu, 4 Mar 2021 16:06:41 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB82C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 13:06:00 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id 130so14762700qkh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 13:06:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lgdkSDcMMDWh1SRt3hQoa5/TwUrpy7W6CPuK58HsLUg=;
+        b=E1DX7PZs5hFH2/Uww4LEeP0Z3hUElD/Z50FBpEidIfYNm73tdl4HxZ7ZgUGTCbOf8G
+         Cae6dxwro3QySC0N3Md6i6iwtLazR3+zhoQ++LMM/8MEFu3SqIyOxjVC9yySHR6WnLop
+         YUSxz1LtpVtp0V2gOIE68CUHxXaEP7xQv6mz/+ReaPio9y+JmYoroR+JG8aBzu6pMSdU
+         Ybav276o3MN9TyPflzCLQboFY6S0hEtDC/CrSpLpJH5J6MkMBNrSR9wADMO3AesrMEHB
+         Ofa+A99/jMNz7fLDNej/W+t3K36ZD4ADNbt4dpcDDDopRuvEOqnah44F0bmmLn9cQEmx
+         AocQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lgdkSDcMMDWh1SRt3hQoa5/TwUrpy7W6CPuK58HsLUg=;
+        b=K/Acare15tWzoDqC3RJOtRz55mjG7jcBKmaJXjRuNzDWIVpkNB73JFYGAq1BRgddEC
+         Rzhn+bJ5O/fDoyb2ROjz+aNDzFQ5OYsI2pJmGFOtkKpEpEhCMzGs7FacQ+Vh3AzH2SHX
+         jVhHOdiMUjmjUhl2x+3Nn+xDl+ig48ViHlHX2MqeRTGyyLvJWM/FLyktPWqbmHZfLesy
+         v3ni5ymqejPsGk01XsCjSZUCMlc94700qccYWOsc6F/X8Rx56EZG3naF4RaCEahS6egS
+         SGZ7+muaSxvOuEpm3Y3oKdopnX1rW3B2zFZcFuzrW+BqipGWQGEAmPGtP6UZD2P8zHXk
+         x33Q==
+X-Gm-Message-State: AOAM531b/tA81weGmEO2+x9Oqfaa/+VFNsqc0jxEg40xJFA7a79QdKsk
+        ImsPPhHWnx5MW1TBNe5yleJ7nhIYANXLbpPfu86otw==
+X-Google-Smtp-Source: ABdhPJzOwE+1Sg5OvskywxdoiGHdv7NJRbHDt9/fENzJUfNvdNmhW6cIta6mx85BXuIJsvrgTFTZ/pRK4X/+/EhYqMs=
+X-Received: by 2002:a05:620a:1353:: with SMTP id c19mr6192822qkl.392.1614891959772;
+ Thu, 04 Mar 2021 13:05:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210304205256.2162309-1-elver@google.com>
+In-Reply-To: <20210304205256.2162309-1-elver@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 4 Mar 2021 22:05:48 +0100
+Message-ID: <CAG_fn=XVAFjgkFCj8kc6Bz4rvBwCeE4HUcJPBTWQcNjrBLaT=g@mail.gmail.com>
+Subject: Re: [PATCH mm] kfence, slab: fix cache_alloc_debugcheck_after() for
+ bulk allocations
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dmitriy Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Jann Horn <jannh@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04 2021 at 13:04, Eric W. Biederman wrote:
-> Thomas Gleixner <tglx@linutronix.de> writes:
->>
->> We could of course do the caching unconditionally for all tasks.
+On Thu, Mar 4, 2021 at 9:53 PM Marco Elver <elver@google.com> wrote:
 >
-> Is there any advantage to only doing this for realtime tasks?
+> cache_alloc_debugcheck_after() performs checks on an object, including
+> adjusting the returned pointer. None of this should apply to KFENCE
+> objects. While for non-bulk allocations, the checks are skipped when we
+> allocate via KFENCE, for bulk allocations cache_alloc_debugcheck_after()
+> is called via cache_alloc_debugcheck_after_bulk().
 
-It was mostly to avoid tons of cached entries hanging around all over
-the place. So I limited it to the case which the RT users deeply cared
-about. Also related to the accounting question below.
+@Andrew, is this code used by anyone?
+As far as I understand, it cannot be enabled by any config option, so
+nobody really tests it.
+If it is still needed, shall we promote #if DEBUGs in slab.c to a
+separate config option, or maybe this code can be safely removed?
 
-> If not it probably makes sense to do the caching for all tasks.
->
-> I am wondering if we want to count the cached sigqueue structure to the
-> users rt signal rlimit?
 
-That makes some sense, but that's a user visible change as a single
-signal will up the count for a tasks lifetime while today it is removed
-from accounting again once the signal is delivered. So that needs some
-thought.
-
-Thanks,
-
-        tglx
+Alex
