@@ -2,200 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FBB32DD2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA6332DD40
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhCDWe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:34:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbhCDWel (ORCPT
+        id S232389AbhCDWka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:40:30 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:26834 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232160AbhCDWk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:34:41 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417EEC06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 14:34:41 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id f10so191358ilq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 14:34:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Na3YOPu455NEidL4GYMHGo2WvYfOyb52BffrIYZ622Y=;
-        b=ZyB5GZTDiG+3RByDMmMK/RwfcwzbDLYwmGyxtFjwC82735NihIqpaFNHK9LL+SzfyH
-         JmdwqrB3O6i2w8EyQPZyroWZyysI9spedyBP56xjlsw71kLc4h9hI//OjsCUstxWyE/n
-         M/r9eOoWzBKVv5BUgeSjNnNzc077bEOX6IeP5jmCjI59avpqbjPwByo7awNti2j2lgQ7
-         d1GNzlFYAzj8XBTD8L2ObkOyBoCnjn7efquBTh8HIfaEn5AKeHsqQ8Khcky0SLPah7TW
-         r9mx6VBSX9WEV8bNcwXYVvkLZ6pPqm9bwplN7YSkqeaU9uqmTDcCLnc2kmqfGDDJy9GT
-         jxxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Na3YOPu455NEidL4GYMHGo2WvYfOyb52BffrIYZ622Y=;
-        b=LYoRvqkHOyVVVaxd+34DgexhkRmJ4MjPULM8DzFou+QH5zZZ5yfZGu3eumQf34ERlI
-         ioQPwgJUbrXvw0aygv47HBLDUnI0/o7KpgxOJ6HAaPaRChcmhLOLnnUBFQqx4P2lNCaF
-         v5p87YPTyk5FRQ/gwPlE7zz0dzUEfo5pHXVVlZJqIkw/mvVlqGx9JBPW3T4+/8arzCwW
-         X6WdwKqAPvQgLQTgPoWG0TL7ixvUFaIqU+KtlRkW3o9d2Wib+mOuval4+vv5DCXvBkDy
-         VbzFnM3YQfbzdckWeFtuATq7psj86JGJxL8IwITCjwulUMM6ama1MRktN17vGDIl6TUU
-         Zs2Q==
-X-Gm-Message-State: AOAM532X1iWMBrXblDZgyLGBrpRw+nOQso8YTGs3FWjwjI4w4tnQHt1R
-        ovsEbe1zhMy1oYuhvap8g1LLsw==
-X-Google-Smtp-Source: ABdhPJwnz2KTlbD2EqNS64HpAwknmXvxVVgKmRePmFKEcloLjS2OD2ZetDqhnsebxbBPtuV/dh55Sw==
-X-Received: by 2002:a92:6b0f:: with SMTP id g15mr6207225ilc.144.1614897280619;
-        Thu, 04 Mar 2021 14:34:40 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id s18sm399790ilt.9.2021.03.04.14.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 14:34:40 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/6] net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
-Date:   Thu,  4 Mar 2021 16:34:31 -0600
-Message-Id: <20210304223431.15045-7-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210304223431.15045-1-elder@linaro.org>
-References: <20210304223431.15045-1-elder@linaro.org>
+        Thu, 4 Mar 2021 17:40:29 -0500
+Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124Md1HE026134;
+        Thu, 4 Mar 2021 22:40:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=rJo9KBcE3VKL3TV4/2Pn8hxYPcduH4AfACYFhzQYJ7k=;
+ b=m4GnlzRTvWQBJuDqk6CnxDrnqE+tiMrKMn865+fBA+j41TAvYIb0dtkKBrVTpJxgJ60t
+ eEpqcpEzVJ3+2HQDYW/wwnacgSHPQPaRdX/TTiTpOGrFcLRhw/I9cGulmSM3i33xs3AW
+ 695+LmdMRH5OOjCU3Z0DEZoz7ZlRnL/vtW3xPAUN7xRd6idXBcAswyJr930RyUdp5F4o
+ 4Udgriujzq4kLgSgr91QKhuexKDhcLLC+B0qDIaf+3w7Fsg5b2MhD6mpZ43/hDkfzax4
+ npsaibd3MUXsfeoNgRRprX+AGXrstS/AkAAIOPTzuM6fTXfXxZUEJe7Y8WPU1unqlJPp Gw== 
+Received: from g2t2353.austin.hpe.com (g2t2353.austin.hpe.com [15.233.44.26])
+        by mx0b-002e3701.pphosted.com with ESMTP id 3732ngk2hy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 22:40:01 +0000
+Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
+        by g2t2353.austin.hpe.com (Postfix) with ESMTP id 2CA9E82;
+        Thu,  4 Mar 2021 22:40:01 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 17C3539;
+        Thu,  4 Mar 2021 22:39:59 +0000 (UTC)
+From:   Mike Travis <mike.travis@hpe.com>
+To:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mike Travis <mike.travis@hpe.com>, Russ Anderson <rja@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/platform/uv: Add set of kernel block size for hubless arches
+Date:   Thu,  4 Mar 2021 16:39:55 -0600
+Message-Id: <20210304223955.183463-1-mike.travis@hpe.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_08:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ malwarescore=0 clxscore=1011 bulkscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103040112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the use of C bit-fields in the rmnet_map_ul_csum_header
-structure with a single two-byte (big endian) structure member,
-and use field masks to encode or get values within it.
+The commit below added a call to set the block size value that is needed
+to set the value used by the kernel.  This was done for UV Hubbed systems.
+This commit adds that same set call to hubless systems which supports the
+same NVRAMS and Intel BIOS thus the same problem occurs.
 
-Previously rmnet_map_ipv4_ul_csum_header() would update values in
-the host byte-order fields, and then forcibly fix their byte order
-using a combination of byte order operations and types.
+Fixes: bbbd2b51a2aa ...
+Add a call to the new function to "adjust" the current fixed
+UV memory block size of 2GB so it can be changed to a different
+physical boundary.  This accommodates changes in the Intel BIOS,
+and therefore UV BIOS, which now can align boundaries different
+than the previous UV standard of 2GB.
 
-Instead, just compute the value that needs to go into the new
-structure member and save it with a simple byte-order conversion.
-
-Make similar simplifications in rmnet_map_ipv6_ul_csum_header().
-
-Finally, in rmnet_map_checksum_uplink_packet() a set of assignments
-zeroes every field in the upload checksum header.  Replace that with
-a single memset() operation.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Reviewed-by: Russ Anderson <rja@hpe.com>
 ---
- .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 34 ++++++-------------
- include/linux/if_rmnet.h                      | 21 ++++++------
- 2 files changed, 21 insertions(+), 34 deletions(-)
+ arch/x86/kernel/apic/x2apic_uv_x.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-index 29d485b868a65..db76bbf000aa1 100644
---- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-+++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-@@ -198,23 +198,19 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
- 			      struct rmnet_map_ul_csum_header *ul_header,
- 			      struct sk_buff *skb)
- {
--	__be16 *hdr = (__be16 *)ul_header;
- 	struct iphdr *ip4h = iphdr;
- 	u16 offset;
-+	u16 val;
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 52bc217ca8c3..c9ddd233e32f 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -1671,6 +1671,9 @@ static __init int uv_system_init_hubless(void)
+ 	if (rc < 0)
+ 		return rc;
  
- 	offset = skb_transport_header(skb) - (unsigned char *)iphdr;
- 	ul_header->csum_start_offset = htons(offset);
- 
--	ul_header->csum_insert_offset = skb->csum_offset;
--	ul_header->csum_enabled = 1;
-+	val = be16_encode_bits(1, MAP_CSUM_UL_ENABLED_FMASK);
- 	if (ip4h->protocol == IPPROTO_UDP)
--		ul_header->udp_ind = 1;
--	else
--		ul_header->udp_ind = 0;
-+		val |= be16_encode_bits(1, MAP_CSUM_UL_UDP_FMASK);
-+	val |= be16_encode_bits(skb->csum_offset, MAP_CSUM_UL_OFFSET_FMASK);
- 
--	/* Changing remaining fields to network order */
--	hdr++;
--	*hdr = htons((__force u16)*hdr);
-+	ul_header->csum_info = htons(val);
- 
- 	skb->ip_summed = CHECKSUM_NONE;
- 
-@@ -241,24 +237,19 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
- 			      struct rmnet_map_ul_csum_header *ul_header,
- 			      struct sk_buff *skb)
- {
--	__be16 *hdr = (__be16 *)ul_header;
- 	struct ipv6hdr *ip6h = ip6hdr;
- 	u16 offset;
-+	u16 val;
- 
- 	offset = skb_transport_header(skb) - (unsigned char *)ip6hdr;
- 	ul_header->csum_start_offset = htons(offset);
- 
--	ul_header->csum_insert_offset = skb->csum_offset;
--	ul_header->csum_enabled = 1;
--
-+	val = be16_encode_bits(1, MAP_CSUM_UL_ENABLED_FMASK);
- 	if (ip6h->nexthdr == IPPROTO_UDP)
--		ul_header->udp_ind = 1;
--	else
--		ul_header->udp_ind = 0;
-+		val |= be16_encode_bits(1, MAP_CSUM_UL_UDP_FMASK);
-+	val |= be16_encode_bits(skb->csum_offset, MAP_CSUM_UL_OFFSET_FMASK);
- 
--	/* Changing remaining fields to network order */
--	hdr++;
--	*hdr = htons((__force u16)*hdr);
-+	ul_header->csum_info = htons(val);
- 
- 	skb->ip_summed = CHECKSUM_NONE;
- 
-@@ -425,10 +416,7 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
- 	}
- 
- sw_csum:
--	ul_header->csum_start_offset = 0;
--	ul_header->csum_insert_offset = 0;
--	ul_header->csum_enabled = 0;
--	ul_header->udp_ind = 0;
-+	memset(ul_header, 0, sizeof(*ul_header));
- 
- 	priv->stats.csum_sw++;
- }
-diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
-index 1fbb7531238b6..149d696feb520 100644
---- a/include/linux/if_rmnet.h
-+++ b/include/linux/if_rmnet.h
-@@ -33,17 +33,16 @@ struct rmnet_map_dl_csum_trailer {
- 
- struct rmnet_map_ul_csum_header {
- 	__be16 csum_start_offset;
--#if defined(__LITTLE_ENDIAN_BITFIELD)
--	u16 csum_insert_offset:14;
--	u16 udp_ind:1;
--	u16 csum_enabled:1;
--#elif defined (__BIG_ENDIAN_BITFIELD)
--	u16 csum_enabled:1;
--	u16 udp_ind:1;
--	u16 csum_insert_offset:14;
--#else
--#error	"Please fix <asm/byteorder.h>"
--#endif
-+	__be16 csum_info;		/* MAP_CSUM_UL_*_FMASK */
- } __aligned(1);
- 
-+/* csum_info field:
-+ *  ENABLED:	1 = checksum computation requested
-+ *  UDP:	1 = UDP checksum (zero checkum means no checksum)
-+ *  OFFSET:	where (offset in bytes) to insert computed checksum
-+ */
-+#define MAP_CSUM_UL_OFFSET_FMASK	GENMASK(13, 0)
-+#define MAP_CSUM_UL_UDP_FMASK		GENMASK(14, 14)
-+#define MAP_CSUM_UL_ENABLED_FMASK	GENMASK(15, 15)
++	/* Set section block size for current node memory */
++	set_block_size();
 +
- #endif /* !(_LINUX_IF_RMNET_H_) */
+ 	/* Create user access node */
+ 	if (rc >= 0)
+ 		uv_setup_proc_files(1);
 -- 
-2.20.1
+2.21.0
 
