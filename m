@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1B432CA17
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B36232CA19
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhCDBgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:36:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59634 "EHLO mail.kernel.org"
+        id S232066AbhCDBiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:38:06 -0500
+Received: from mga06.intel.com ([134.134.136.31]:35128 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231683AbhCDBgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:36:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 717F56523D;
-        Thu,  4 Mar 2021 01:35:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614821753;
-        bh=Qe7zGUitWIYRrO9+yOOXaqCaFvUR2e3wtBb+ql0NqIA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y7w5u5sgdSYnaZk7ektFug+FNzuWFx+BfLgvydnYyBsjboq9UDNoTmaHGrnrXDXS0
-         VxmQtz5yAf5FXliFzO5wCmNq8zsi1LYLr0VZRLB1whaigliLnrdoj0kHJOOLK6WX+K
-         52gbShNnbjmASVJYsXrSUhyGm8wWlhzXyCTHIcNtS4mk18lqIbvi4OWhoSL0q+xup2
-         1yO6hBOwA7u7lMz3Er3MamRdtIs0l9IUJBASRYX5ZpuavDYv5E7posggNyYfgbibaa
-         sD9sBXSlnA9W5OJt7JFFpSnQFS3BNpXeBpNuP1txZsKOWGshA0N/NceUjL4E3997Uu
-         nHekpx+ft246Q==
-Date:   Thu, 4 Mar 2021 09:35:49 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] USB:XHCI:Modify XHCI driver for USB2.0 controller
-Message-ID: <20210304013548.GA16596@nchen>
-References: <1614327697-1021-1-git-send-email-liulongfang@huawei.com>
- <YDizmDmu6Kh264Pv@kroah.com>
- <87cc8b54-f530-cce0-3ea2-f879436ff5f7@huawei.com>
+        id S231966AbhCDBho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 20:37:44 -0500
+IronPort-SDR: myc3WgeKLqn7vg38XKjxKv8kTcp/uayvBIvf+e3ARRYaHVNuiTVP/51EnyuX6/AfP9gKA0pnGJ
+ dUpMTqt7Dccw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="248717150"
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="248717150"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 17:37:02 -0800
+IronPort-SDR: 9RiAkg9sT3iCjF+cUaD22nwn9OPxBvcSrZKvWc6OQTj0pf0K23F21pE+2XMbGJ41Fr44SRkrEq
+ RK04pAPLwMHg==
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="407491347"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 17:36:59 -0800
+Date:   Thu, 4 Mar 2021 09:36:57 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v9 17/18] virt: acrn: Introduce an interface for Service
+ VM to control vCPU
+Message-ID: <20210304013657.GC9695@shuo-intel.sh.intel.com>
+References: <20210207031040.49576-1-shuo.a.liu@intel.com>
+ <20210207031040.49576-18-shuo.a.liu@intel.com>
+ <20210303173719.GA30356@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <87cc8b54-f530-cce0-3ea2-f879436ff5f7@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210303173719.GA30356@zn.tnic>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-27 11:31:00, liulongfang wrote:
-> On 2021/2/26 16:38, Greg KH wrote:
-> > On Fri, Feb 26, 2021 at 04:21:37PM +0800, Longfang Liu wrote:
-> >> Our current XHCI hardware controller has been customized to only
-> >> support USB 2.0 ports.
-> > 
-> > That sounds like a spec violation, right?  Why do you want to do this?
-> > 
-> > greg k-h
-> > .
-> > 
-> I hope to support a USB2.0-only mode on the XHCI controller
-> through software configuration.
-> Thanks.
+On Wed  3.Mar'21 at 18:37:19 +0100, Borislav Petkov wrote:
+>On Sun, Feb 07, 2021 at 11:10:39AM +0800, shuo.a.liu@intel.com wrote:
+>> From: Shuo Liu <shuo.a.liu@intel.com>
+>>
+>> ACRN supports partition mode to achieve real-time requirements. In
+>> partition mode, a CPU core can be dedicated to a vCPU of User VM. The
+>> local APIC of the dedicated CPU core can be passthrough to the User VM.
+>> The Service VM controls the assignment of the CPU cores.
+>>
+>> Introduce an interface for the Service VM to remove the control of CPU
+>> core from hypervisor perspective so that the CPU core can be a dedicated
+>> CPU core of User VM.
+>>
+>> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+>> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
+>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>> Cc: Zhi Wang <zhi.a.wang@intel.com>
+>> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+>> Cc: Yu Wang <yu1.wang@intel.com>
+>> Cc: Reinette Chatre <reinette.chatre@intel.com>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> ---
+>>  drivers/virt/acrn/hsm.c       | 48 +++++++++++++++++++++++++++++++++++
+>>  drivers/virt/acrn/hypercall.h | 14 ++++++++++
+>>  2 files changed, 62 insertions(+)
+>
+>This one causes:
+>
+>drivers/virt/acrn/hsm.c: In function ‘remove_cpu_store’:
+>drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function ‘remove_cpu’; did you mean ‘register_cpu’? [-Werror=implicit-function-declaration]
+>   remove_cpu(cpu);
+>   ^~~~~~~~~~
+>   register_cpu
+>drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function ‘add_cpu’; did you mean ‘task_cpu’? [-Werror=implicit-function-declaration]
+>  add_cpu(cpu);
+>  ^~~~~~~
+>  task_cpu
+>cc1: some warnings being treated as errors
+>make[3]: *** [scripts/Makefile.build:271: drivers/virt/acrn/hsm.o] Error 1
+>make[3]: *** Waiting for unfinished jobs....
+>make[2]: *** [scripts/Makefile.build:514: drivers/virt/acrn] Error 2
+>make[1]: *** [scripts/Makefile.build:514: drivers/virt] Error 2
+>make[1]: *** Waiting for unfinished jobs....
+>make: *** [Makefile:1849: drivers] Error 2
 
-If your hardware has disabled USB3 logic, when the USB3 device is plugged,
-since there are no RX signal on the bus, the device will not enable USB3
-logic, and only USB2 signals will be on the bus, there are only USB devices on
-USB2 roothub later. So, any issues you have met?
+This patchset could fix it.
+https://lore.kernel.org/lkml/20210221134339.57851-1-shuo.a.liu@intel.com/.
 
--- 
-
-Thanks,
-Peter Chen
-
+Thanks
+shuo
