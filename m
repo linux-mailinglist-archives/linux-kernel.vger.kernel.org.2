@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575DB32CB7E
+	by mail.lfdr.de (Postfix) with ESMTP id A3A8532CB7F
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhCDEnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:43:02 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36642 "EHLO
+        id S233679AbhCDEnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:43:03 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36658 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233561AbhCDEmn (ORCPT
+        with ESMTP id S233562AbhCDEmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:42:43 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244fmes101863;
-        Wed, 3 Mar 2021 22:41:48 -0600
+        Wed, 3 Mar 2021 23:42:46 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244fqBt101871;
+        Wed, 3 Mar 2021 22:41:52 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614832908;
-        bh=1m1jaw1QKhWt1my5TiZgSyHmcvod41lJIai7xVZR3M8=;
+        s=ti-com-17Q1; t=1614832912;
+        bh=+nl8LicT//augqm13+dqzPO4Zt/8O9Pq6Zxz1AFAlx0=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=zEXyKPDsiQvLiS8WD9NbOSMlZZlGKyKm+Oq5la433CSvis/TNSVGvQ0G5kXX9dO5k
-         yqtHxO+A4VKIBZn/k5CAwPOIPw1JgIomgFT34KujcDTPprqJb36fQ/tqpUtt9hoJ/Z
-         TcZW7IXT/Ww26TALOEyDI1JJrRDrjHlJ1Pi6zSPo=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244fmI2016024
+        b=jG1byoob+iIiwwXsI1shApgzPLhNsefhBe2hy/sBO5CEUFke3eMjw/fmMYLlAxRSB
+         HrFYQJZ3BwSq3QWBeWQvvaZm7H7735IDwhKmc+3oSMNCBqkN9bo0e395hcf512L8dB
+         5k7afYeYp+vkCrV3XudNhS9IYZMSkIs9kID0nFIQ=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244fqMS056042
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 3 Mar 2021 22:41:48 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 3 Mar 2021 22:41:52 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
- 2021 22:41:48 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ 2021 22:41:52 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 3 Mar 2021 22:41:48 -0600
+ Frontend Transport; Wed, 3 Mar 2021 22:41:51 -0600
 Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244fQfm042911;
-        Wed, 3 Mar 2021 22:41:45 -0600
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244fQfn042911;
+        Wed, 3 Mar 2021 22:41:48 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -45,9 +45,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Swapnil Jakhade <sjakhade@cadence.com>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v4 05/13] phy: cadence: cadence-sierra: Move all clk_get_*() to a separate function
-Date:   Thu, 4 Mar 2021 10:11:14 +0530
-Message-ID: <20210304044122.15166-6-kishon@ti.com>
+Subject: [PATCH v4 06/13] phy: cadence: cadence-sierra: Move all reset_control_get*() to a separate function
+Date:   Thu, 4 Mar 2021 10:11:15 +0530
+Message-ID: <20210304044122.15166-7-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210304044122.15166-1-kishon@ti.com>
 References: <20210304044122.15166-1-kishon@ti.com>
@@ -58,50 +58,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional change. Group all devm_clk_get_optional() to a
-separate function.
+No functional change. Group devm_reset_control_get() and
+devm_reset_control_get_optional() to a separate function.
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- drivers/phy/cadence/phy-cadence-sierra.c | 57 +++++++++++++++---------
- 1 file changed, 35 insertions(+), 22 deletions(-)
+ drivers/phy/cadence/phy-cadence-sierra.c | 36 ++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
-index f7ba0ed416bc..7bf1b4c7774a 100644
+index 7bf1b4c7774a..935f165404e4 100644
 --- a/drivers/phy/cadence/phy-cadence-sierra.c
 +++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -477,6 +477,38 @@ static int cdns_regmap_init_blocks(struct cdns_sierra_phy *sp,
+@@ -509,6 +509,28 @@ static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
  	return 0;
  }
  
-+static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
++static int cdns_sierra_phy_get_resets(struct cdns_sierra_phy *sp,
 +				      struct device *dev)
 +{
-+	struct clk *clk;
-+	int ret;
++	struct reset_control *rst;
 +
-+	clk = devm_clk_get_optional(dev, "phy_clk");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "failed to get clock phy_clk\n");
-+		return PTR_ERR(clk);
++	rst = devm_reset_control_get(dev, "sierra_reset");
++	if (IS_ERR(rst)) {
++		dev_err(dev, "failed to get reset\n");
++		return PTR_ERR(rst);
 +	}
-+	sp->clk = clk;
++	sp->phy_rst = rst;
 +
-+	clk = devm_clk_get_optional(dev, "cmn_refclk_dig_div");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "cmn_refclk_dig_div clock not found\n");
-+		ret = PTR_ERR(clk);
-+		return ret;
++	rst = devm_reset_control_get_optional(dev, "sierra_apb");
++	if (IS_ERR(rst)) {
++		dev_err(dev, "failed to get apb reset\n");
++		return PTR_ERR(rst);
 +	}
-+	sp->cmn_refclk_dig_div = clk;
-+
-+	clk = devm_clk_get_optional(dev, "cmn_refclk1_dig_div");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "cmn_refclk1_dig_div clock not found\n");
-+		ret = PTR_ERR(clk);
-+		return ret;
-+	}
-+	sp->cmn_refclk1_dig_div = clk;
++	sp->apb_rst = rst;
 +
 +	return 0;
 +}
@@ -109,52 +99,27 @@ index f7ba0ed416bc..7bf1b4c7774a 100644
  static int cdns_sierra_phy_probe(struct platform_device *pdev)
  {
  	struct cdns_sierra_phy *sp;
-@@ -487,7 +519,6 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 	unsigned int id_value;
- 	int i, ret, node = 0;
- 	void __iomem *base;
--	struct clk *clk;
- 	struct device_node *dn = dev->of_node, *child;
+@@ -559,17 +581,9 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
  
- 	if (of_get_child_count(dn) == 0)
-@@ -524,11 +555,9 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, sp);
- 
--	sp->clk = devm_clk_get_optional(dev, "phy_clk");
--	if (IS_ERR(sp->clk)) {
--		dev_err(dev, "failed to get clock phy_clk\n");
--		return PTR_ERR(sp->clk);
+-	sp->phy_rst = devm_reset_control_get(dev, "sierra_reset");
+-	if (IS_ERR(sp->phy_rst)) {
+-		dev_err(dev, "failed to get reset\n");
+-		return PTR_ERR(sp->phy_rst);
 -	}
-+	ret = cdns_sierra_phy_get_clocks(sp, dev);
+-
+-	sp->apb_rst = devm_reset_control_get_optional(dev, "sierra_apb");
+-	if (IS_ERR(sp->apb_rst)) {
+-		dev_err(dev, "failed to get apb reset\n");
+-		return PTR_ERR(sp->apb_rst);
+-	}
++	ret = cdns_sierra_phy_get_resets(sp, dev);
 +	if (ret)
 +		return ret;
  
- 	sp->phy_rst = devm_reset_control_get(dev, "sierra_reset");
- 	if (IS_ERR(sp->phy_rst)) {
-@@ -542,22 +571,6 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 		return PTR_ERR(sp->apb_rst);
- 	}
- 
--	clk = devm_clk_get_optional(dev, "cmn_refclk_dig_div");
--	if (IS_ERR(clk)) {
--		dev_err(dev, "cmn_refclk_dig_div clock not found\n");
--		ret = PTR_ERR(clk);
--		return ret;
--	}
--	sp->cmn_refclk_dig_div = clk;
--
--	clk = devm_clk_get_optional(dev, "cmn_refclk1_dig_div");
--	if (IS_ERR(clk)) {
--		dev_err(dev, "cmn_refclk1_dig_div clock not found\n");
--		ret = PTR_ERR(clk);
--		return ret;
--	}
--	sp->cmn_refclk1_dig_div = clk;
--
  	ret = clk_prepare_enable(sp->clk);
  	if (ret)
- 		return ret;
 -- 
 2.17.1
 
