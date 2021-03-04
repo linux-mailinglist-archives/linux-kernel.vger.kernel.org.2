@@ -2,118 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B4D32CA9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 03:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332F532CAA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhCDC6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 21:58:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231681AbhCDC6E (ORCPT
+        id S231681AbhCDC7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 21:59:42 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:60030 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232035AbhCDC7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 21:58:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614826599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2++HG/raBXrb2pYDlmO4aNJrzLxuw9/UCZRY3agwA7w=;
-        b=e1T70P1walt2YjnQD/sigZXRz1Q07rW8An4AFP5lDE9cZ8QoSMqxBRL0ZFKah7/uT2yYep
-        HI1m+rbnd3DVIms5UTPue1JBh3y6yQiBORbXYQZKuHtIEB6pxc1xvtA925QBAbp0OmW9Qx
-        96P3yO5lzjjs5SxIOwriiljv0sbFlqg=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-PpIf806bOeSMD7iLhvsmWg-1; Wed, 03 Mar 2021 21:56:37 -0500
-X-MC-Unique: PpIf806bOeSMD7iLhvsmWg-1
-Received: by mail-pj1-f71.google.com with SMTP id j12so6094968pjm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 18:56:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2++HG/raBXrb2pYDlmO4aNJrzLxuw9/UCZRY3agwA7w=;
-        b=XEDrKgYfk4b9vh1mzHYq85rgww/kmBigJ0hyM2K8VjuvdHjceJhMGXf5mvCzDSqnz3
-         n4Sx9nxLmb1+ith+rBflilZ7ad3XG+Qm2cj0Q7qCELAMddi07u/7+1nyAfNLGS+4NsHd
-         W5dQhEByqNGz7V1YmCIzbuXZVjiJK6tVlKTbbz00GALoTyc5PmGYV3kP0lUMh1pRRWXM
-         cMTDHjyZ4eaE54vrHlXDNsC+WTSOONJznxsnpBc3o2RtOBoi8ECdUElgIyZHnf8iv3Hr
-         wTaD+BKtZbiV8yNcSE9b0E/mpSRyGRXdyuAY98Ng1eChiLyZgIhiuClc8WmkDSXshGGw
-         Ja2A==
-X-Gm-Message-State: AOAM531I8v+HjPjabaawmGz5MX6/luzpVW5tbNB8i85GxRotxAuePVcq
-        fJF4+uY3W7y1xjvX5zKwoHncQxip1RCG+EyMUDgat4aFSnadxgb7Hvp7J1B6lHRztSGb8fG9emm
-        EQXdKi54ZOztN8zd0+SDb0je9
-X-Received: by 2002:a65:63c6:: with SMTP id n6mr1849022pgv.298.1614826596371;
-        Wed, 03 Mar 2021 18:56:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxNF3mLv9QkYWO5TGYR64AQOa8lhwTHoP+hGHz+W6OXYdSFWgzrOJ+YI8ZH1CqKqskGK1p5tg==
-X-Received: by 2002:a65:63c6:: with SMTP id n6mr1849016pgv.298.1614826596192;
-        Wed, 03 Mar 2021 18:56:36 -0800 (PST)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id gt22sm8090144pjb.35.2021.03.03.18.56.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 18:56:35 -0800 (PST)
-From:   Coiby Xu <coxu@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     kexec@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1 3/3] i40e: use minimal admin queue for kdump
-Date:   Thu,  4 Mar 2021 10:55:43 +0800
-Message-Id: <20210304025543.334912-4-coxu@redhat.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210304025543.334912-1-coxu@redhat.com>
-References: <20210304025543.334912-1-coxu@redhat.com>
+        Wed, 3 Mar 2021 21:59:11 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UQJAT7t_1614826708;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UQJAT7t_1614826708)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 04 Mar 2021 10:58:29 +0800
+Subject: Re: [PATCH] PATCH Documentation translations:translate
+ sound/hd-audio/controls to chinese
+To:     huangjianghui@uniontech.com
+Cc:     Jonathan Corbet <corbet@lwn.net>, Harry Wei <harryxiyou@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210301122019.80234-1-huangjianghui@uniontech.com>
+ <8735xe4lsb.fsf@meer.lwn.net> <20210302032220.GA938@akg>
+ <e9937016-3b09-fb43-8fbf-a6c9b21597ac@linux.alibaba.com>
+ <20210302091339.GA12203@akg>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <125f1e49-522b-1aa6-e18c-9fad90f841fe@linux.alibaba.com>
+Date:   Thu, 4 Mar 2021 10:58:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210302091339.GA12203@akg>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The minimum size of admin send/receive queue is 1 and 2 respectively.
-The admin send queue can't be set to 1 because in that case, the
-firmware would fail to init.
 
-Signed-off-by: Coiby Xu <coxu@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e.h      | 2 ++
- drivers/net/ethernet/intel/i40e/i40e_main.c | 9 +++++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index cd53981fa5e0..09217944baa4 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -66,6 +66,8 @@
- #define I40E_FDIR_RING_COUNT		32
- #define I40E_MAX_AQ_BUF_SIZE		4096
- #define I40E_AQ_LEN			256
-+#define I40E_MIN_ARQ_LEN		1
-+#define I40E_MIN_ASQ_LEN		2
- #define I40E_AQ_WORK_LIMIT		66 /* max number of VFs + a little */
- #define I40E_MAX_USER_PRIORITY		8
- #define I40E_DEFAULT_TRAFFIC_CLASS	BIT(0)
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index d6868c7aee05..5d67fb12e576 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -15327,8 +15327,13 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	i40e_check_recovery_mode(pf);
- 
--	hw->aq.num_arq_entries = I40E_AQ_LEN;
--	hw->aq.num_asq_entries = I40E_AQ_LEN;
-+	if (is_kdump_kernel()) {
-+		hw->aq.num_arq_entries = I40E_MIN_ARQ_LEN;
-+		hw->aq.num_asq_entries = I40E_MIN_ASQ_LEN;
-+	} else {
-+		hw->aq.num_arq_entries = I40E_AQ_LEN;
-+		hw->aq.num_asq_entries = I40E_AQ_LEN;
-+	}
- 	hw->aq.arq_buf_size = I40E_MAX_AQ_BUF_SIZE;
- 	hw->aq.asq_buf_size = I40E_MAX_AQ_BUF_SIZE;
- 	pf->adminq_work_limit = I40E_AQ_WORK_LIMIT;
--- 
-2.30.1
+ÔÚ 2021/3/2 ÏÂÎç5:13, huangjianghui Ð´µÀ:
+>> we usually include patch into email instead of attach it as attachment.
+>> You can try use 'git send-email' to post your patches.
+>>
+>> Thanks
+>> Alex
+>>
+>>
+> I am sorry to do those, my patch is shown below:
 
+Hi Jianghui,
+
+I cann't apply your patch:
+
+$ g am ../Re_\ \[PATCH\]\ PATCH\ Documentation\ translations_translate\ sound_hd-audio_controls\ to\ chinese.eml
+Applying: PATCH Documentation translations:translate sound/hd-audio/controls to chinese
+error: patch failed: Documentation/translations/zh_CN/index.rst:20
+error: Documentation/translations/zh_CN/index.rst: patch does not apply
+Patch failed at 0001 PATCH Documentation translations:translate sound/hd-audio/controls to chinese
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+
+
+You'd better try to use 'git am' apply your email patch from your email client,
+before send it to linux-doc.
+
+There are some process doc of how community working:
+https://landlock.io/linux-doc/landlock-v27/translations/zh_CN/process/
+
+Thanks
+Alex
