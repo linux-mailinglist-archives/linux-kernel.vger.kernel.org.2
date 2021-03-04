@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C31632CAAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBB932CAAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbhCDDCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:02:22 -0500
-Received: from nautica.notk.org ([91.121.71.147]:50898 "EHLO nautica.notk.org"
+        id S232041AbhCDDD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:03:26 -0500
+Received: from mga14.intel.com ([192.55.52.115]:17919 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232113AbhCDDCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:02:06 -0500
-X-Greylist: delayed 166961 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 22:02:05 EST
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 02BF0C020; Thu,  4 Mar 2021 04:01:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1614826884; bh=5F7Z8p6mZsz3CvMl+8iJUXJXZOmn2B81gRz2UN5/6v0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yykxb+BSKnII9f2bQitmnPBKTpaugho7q80WToHdviyQjTExF6RiKrnTChRe+4K5r
-         ub+LVSQGM2H9bj0WYCGDqQUoaS44HoPhPs5t5ZlC7JF+L9K5oGoOGe7OXSN64a1oGY
-         5JbkmmClP1uT4Zyecl5gG/X8NokPAV3eiRUIhyGxENlkU1kK/GSp1vtnpR5RX7X12N
-         I90XRfNFwItDUPk25GQkoGwKIN5bszpjRE2tS0FhsEWHbh8FxGQvWbB2w6JGbdYbfX
-         YosteMEhC012WGkzHWTqNAg6qA4Fb+r17GY6AYN5mkbE7IeetAr7IH4m0qwgD0smdK
-         YovYPZnv8YCoA==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 1936CC01B;
-        Thu,  4 Mar 2021 04:01:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1614826883; bh=5F7Z8p6mZsz3CvMl+8iJUXJXZOmn2B81gRz2UN5/6v0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lqgbDHyu5B2kFuEFvDsEwHmrwLGDI0ZTAMyOUJEqsy7GMHO2Wv83xF/EXUvt242K/
-         lI4gQyAdbuKMqbhQC9tNOCApUMhZjrlqTkCgVQTUm3V9o3bS6FkQDBiG7Yi4EkMOiL
-         8mJet03MZv3adjHukzkTVbFOAJUDcMLwGhypIhiSjY4iZpZxacWYDHJPdK5zZcfXnG
-         mQxK5JHQGYEX8tu4aP95z+Pd6pOfaA7Zxepz7BVVssrCqTQKVmNpIuJ7W3neG47KBk
-         0ZKG2hy6KqEWewRw5H2vQPYn0l4d3uGc83KCeCdOUfZY/qK/oEeeloyEm4W6H+jY4B
-         qMZkPY9ykEZyw==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id c794a0c4;
-        Thu, 4 Mar 2021 03:01:18 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 12:01:03 +0900
-From:   asmadeus@codewreck.org
-To:     davem@davemloft.net
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>, ericvh@gmail.com,
-        lucho@ionkov.net, kuba@kernel.org,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: 9p: advance iov on empty read
-Message-ID: <YEBNb6MnQa7zRApd@codewreck.org>
-References: <20210302171932.28e86231@xhacker.debian>
- <161482020724.32353.3785422808049340949.git-patchwork-notify@kernel.org>
+        id S232102AbhCDDDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:03:10 -0500
+IronPort-SDR: dvQBDC9pkS5tMZJA4Ns29E66bzQIqGTGF42ixSx5E2eQgyKPGzbYsUaB8xmk2PLKi1Mz+JauIw
+ 8VMYfn6y1K1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="186674934"
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="186674934"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 19:02:29 -0800
+IronPort-SDR: Cfmd6zW4Klj1dIlCxFCLxjPUOXywJAhceDtM7lI6c6/ciDnBy44aUlHYVa4arFRrwaMmoD83Oe
+ XLDjK2QQix+g==
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="400284153"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 19:02:25 -0800
+Subject: Re: [PATCH v3 7/9] KVM: vmx/pmu: Add Arch LBR emulation and its VMCS
+ field
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210303135756.1546253-1-like.xu@linux.intel.com>
+ <20210303135756.1546253-8-like.xu@linux.intel.com>
+ <YD/GrQAl1NMPHXFj@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <267c408c-6999-649b-d733-8d64f9cf0594@intel.com>
+Date:   Thu, 4 Mar 2021 11:02:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <161482020724.32353.3785422808049340949.git-patchwork-notify@kernel.org>
+In-Reply-To: <YD/GrQAl1NMPHXFj@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/3/4 1:26, Sean Christopherson wrote:
+> On Wed, Mar 03, 2021, Like Xu wrote:
+>> New VMX controls bits for Arch LBR are added. When bit 21 in vmentry_ctrl
+>> is set, VM entry will write the value from the "Guest IA32_LBR_CTL" guest
+>> state field to IA32_LBR_CTL. When bit 26 in vmexit_ctrl is set, VM exit
+>> will clear IA32_LBR_CTL after the value has been saved to the "Guest
+>> IA32_LBR_CTL" guest state field.
+> ...
+>
+>> @@ -2529,7 +2532,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+>>   	      VM_EXIT_LOAD_IA32_EFER |
+>>   	      VM_EXIT_CLEAR_BNDCFGS |
+>>   	      VM_EXIT_PT_CONCEAL_PIP |
+>> -	      VM_EXIT_CLEAR_IA32_RTIT_CTL;
+>> +	      VM_EXIT_CLEAR_IA32_RTIT_CTL |
+>> +	      VM_EXIT_CLEAR_IA32_LBR_CTL;
+> So, how does MSR_ARCH_LBR_CTL get restored on the host?  What if the host wants
+> to keep _its_ LBR recording active while the guest is running?
 
-patchwork-bot+netdevbpf@kernel.org wrote on Thu, Mar 04, 2021 at 01:10:07AM +0000:
-> This patch was applied to netdev/net.git
+Thank you!
 
-thanks for taking the patch, I didn't take the time to reply yesterday
-after my bisect finally finished.
+I will add "host_lbrctlmsr" field to "struct vcpu_vmx" and
+repeat the update/get_debugctlmsr() stuff.
 
-I've got the culprit now, could you add the following?
+>>   	if (adjust_vmx_controls(min, opt, MSR_IA32_VMX_EXIT_CTLS,
+>>   				&_vmexit_control) < 0)
+>>   		return -EIO;
+>> @@ -2553,7 +2557,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+>>   	      VM_ENTRY_LOAD_IA32_EFER |
+>>   	      VM_ENTRY_LOAD_BNDCFGS |
+>>   	      VM_ENTRY_PT_CONCEAL_PIP |
+>> -	      VM_ENTRY_LOAD_IA32_RTIT_CTL;
+>> +	      VM_ENTRY_LOAD_IA32_RTIT_CTL |
+>> +	      VM_ENTRY_LOAD_IA32_LBR_CTL;
+>>   	if (adjust_vmx_controls(min, opt, MSR_IA32_VMX_ENTRY_CTLS,
+>>   				&_vmentry_control) < 0)
+>>   		return -EIO;
+>> -- 
+>> 2.29.2
+>>
 
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-(or reviewed-by/tested-by, or just leave it out I'm not fussy)
-Fixes: cf03f316ad20 ("fs: 9p: add generic splice_read file operations")
-Cc: stable@vger.kernel.org # v5.11
-
-
-Cheers,
--- 
-Dominique
