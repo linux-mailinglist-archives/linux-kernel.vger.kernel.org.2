@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0D332CE96
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9237732CE9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235906AbhCDIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:36:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235829AbhCDIga (ORCPT
+        id S236002AbhCDIhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:37:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235938AbhCDIhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:36:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614846904;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0bXhR7YJ9IaSyeZ7VfID8y95/AMg+XDUasgSyE009NI=;
-        b=YfP6WUN7ImCBSGznzRgDAe9KpDYmTsmTckBhCMJjOEN/PO4GNE8VtRQeLuG90yY61pWDVi
-        7udEWoHZ0OVKZXs3380pQ3m8/FvQeOPtHA4BimhKHMs7/6KFcCQZOpZLp27clbpj1LC9vX
-        ceBgEr2SBFpmFlCYI5Dxkdjowb4LPSI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-TEysT5XLPrWNfNrk6byMxQ-1; Thu, 04 Mar 2021 03:35:03 -0500
-X-MC-Unique: TEysT5XLPrWNfNrk6byMxQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E97ED5A090;
-        Thu,  4 Mar 2021 08:35:01 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-64.pek2.redhat.com [10.72.12.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1580E5FCC8;
-        Thu,  4 Mar 2021 08:34:53 +0000 (UTC)
-Subject: Re: [RFC PATCH 01/10] vdpa: add get_config_size callback in
- vdpa_config_ops
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210216094454.82106-1-sgarzare@redhat.com>
- <20210216094454.82106-2-sgarzare@redhat.com>
- <5de4cd5b-04cb-46ca-1717-075e5e8542fd@redhat.com>
- <20210302141516.oxsdb7jogrvu75yc@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <8a3f39ab-1cee-d0c3-e4d1-dc3ec492a763@redhat.com>
-Date:   Thu, 4 Mar 2021 16:34:52 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Thu, 4 Mar 2021 03:37:08 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B97C061574;
+        Thu,  4 Mar 2021 00:36:53 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o38so18431245pgm.9;
+        Thu, 04 Mar 2021 00:36:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wN0+yJpnJV0AHl9c2ZtqFOBkFWkFdSUFj1zpgPWViM0=;
+        b=lOKRaFHSR1P8N8RKuxk7jWyJbP2uBPysGRaMX1NnlBLE2Liiwojhj2GEHmpJos3QyZ
+         kD8KeKXmz1vosiOswOJOmbJZQ4EseiVAmqLq01AEMU1e1hJpAGxs5WMO8LBR/jDybmFL
+         de40yfJaMb632r7UFvOpZv/XJ3raT4p8+BoprAp8TzmYPwK6ssWQsOhZe94QqGKL7NGh
+         /WPsC1nAUZPNfW/9iz7VOuZyYFyY2F/hKJznQ0qAfx5nmmF4pieZ1H3KMWnVl5JTKJpr
+         xIgBXDDnNRu4dpby9+1fLzeSGez2MfvEn3cXY8Kk7tW/4ObNUDfmhLH4XlOM+5DXCkKm
+         oaqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wN0+yJpnJV0AHl9c2ZtqFOBkFWkFdSUFj1zpgPWViM0=;
+        b=M6Qrj97mt3ONVX8R6pBu+ReO/s+e3SncaqY1hIdZRJnS0AqYpwnbMsP1uOyx0v8MU9
+         djcct9JbuZTQC2AX0rLmN03vlBhx1+ciHwpjHJ9WAdu/EJP2yIK4jvRXEEeh9qeD/CwP
+         Vaaxm+OfY7vdfkGnjPi4hU0CLVtVKzqhQkoVWeFrPJgg46CV8XHC27oBZMS/sw2zZ6AX
+         Uj+i4KLpqwzWGqnIuaa8beFIa5Rqx57XZvVm52xJRJdplwxzxo5EPdxbi+KOo5NhuKxP
+         l3kN8yAFv2iSYZ/w5XvAiQqkpSdUqZD0GP8D01NPkAnyMsFhos8oLZFL7VZWjWUPxJRA
+         KO9A==
+X-Gm-Message-State: AOAM533EWYEoYxohpShw8ihTEWioWOo/x5D/bY7TkJOpX+u5IYUaSvtI
+        3nVIA+fU57JNV3bO+khzef2KGDWOYLnrsz1u
+X-Google-Smtp-Source: ABdhPJy7XBa22ZhDakgenv4u4Th2RP1XVocpdj6b4KaUhdEoe4Ya6AvjhGgpnTcvZZ5HFmXVjutAXg==
+X-Received: by 2002:a62:cd:0:b029:1ef:55e:e374 with SMTP id 196-20020a6200cd0000b02901ef055ee374mr2985590pfa.31.1614847013185;
+        Thu, 04 Mar 2021 00:36:53 -0800 (PST)
+Received: from localhost.localdomain ([103.114.158.1])
+        by smtp.gmail.com with ESMTPSA id q2sm26283458pfu.215.2021.03.04.00.36.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 00:36:52 -0800 (PST)
+From:   zhaojiele <unclexiaole@gmail.com>
+To:     keescook@chromium.org, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhaojiele <unclexiaole@gmail.com>
+Subject: [PATCH] security/loadpin: Replace "kernel_read_file_str[j]" with function                   "kernel_read_file_id_str(j)".
+Date:   Thu,  4 Mar 2021 08:36:38 +0000
+Message-Id: <20210304083638.174767-1-unclexiaole@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210302141516.oxsdb7jogrvu75yc@steredhat>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Actually Linux kernel already provide function "kernel_read_file_id_str()"
+for secure access in "kernel_read_file.h".And, in "parse_exclude()"
+function, there is no need for
+"BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) <
+ARRAY_SIZE(ignore_read_file_id))"
+when access array by functon "kernel_read_file_id_str(j)".
 
-On 2021/3/2 10:15 下午, Stefano Garzarella wrote:
-> On Tue, Mar 02, 2021 at 12:14:13PM +0800, Jason Wang wrote:
->>
->> On 2021/2/16 5:44 下午, Stefano Garzarella wrote:
->>> This new callback is used to get the size of the configuration space
->>> of vDPA devices.
->>>
->>> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->>> ---
->>>  include/linux/vdpa.h              | 4 ++++
->>>  drivers/vdpa/ifcvf/ifcvf_main.c   | 6 ++++++
->>>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 6 ++++++
->>>  drivers/vdpa/vdpa_sim/vdpa_sim.c  | 9 +++++++++
->>>  4 files changed, 25 insertions(+)
->>>
->>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->>> index 4ab5494503a8..fddf42b17573 100644
->>> --- a/include/linux/vdpa.h
->>> +++ b/include/linux/vdpa.h
->>> @@ -150,6 +150,9 @@ struct vdpa_iova_range {
->>>   * @set_status:            Set the device status
->>>   *                @vdev: vdpa device
->>>   *                @status: virtio device status
->>> + * @get_config_size:        Get the size of the configuration space
->>> + *                @vdev: vdpa device
->>> + *                Returns size_t: configuration size
->>
->>
->> Rethink about this, how much we could gain by introducing a dedicated 
->> ops here? E.g would it be simpler if we simply introduce a 
->> max_config_size to vdpa device?
->
-> Mainly because in this way we don't have to add new parameters to the 
-> vdpa_alloc_device() function.
->
-> We do the same for example for 'get_device_id', 'get_vendor_id', 
-> 'get_vq_num_max'. All of these are usually static, but we have ops.
-> I think because it's easier to extend.
->
-> I don't know if it's worth adding a new structure for these static 
-> values at this point, like 'struct vdpa_config_params'.
+Signed-off-by: zhaojiele <unclexiaole@gmail.com>
+---
+ security/loadpin/loadpin.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-
-Yes, that's the point. I think for any static values, it should be set 
-during device allocation.
-
-I'm fine with both.
-
-Thanks
-
-
->
-> Thanks,
-> Stefano
->
+diff --git a/security/loadpin/loadpin.c b/security/loadpin/loadpin.c
+index b12f7d986b1e..3e8bdcd06600 100644
+--- a/security/loadpin/loadpin.c
++++ b/security/loadpin/loadpin.c
+@@ -210,8 +210,6 @@ static void __init parse_exclude(void)
+ 	 */
+ 	BUILD_BUG_ON(ARRAY_SIZE(exclude_read_files) !=
+ 		     ARRAY_SIZE(ignore_read_file_id));
+-	BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) <
+-		     ARRAY_SIZE(ignore_read_file_id));
+ 
+ 	for (i = 0; i < ARRAY_SIZE(exclude_read_files); i++) {
+ 		cur = exclude_read_files[i];
+@@ -221,9 +219,9 @@ static void __init parse_exclude(void)
+ 			continue;
+ 
+ 		for (j = 0; j < ARRAY_SIZE(ignore_read_file_id); j++) {
+-			if (strcmp(cur, kernel_read_file_str[j]) == 0) {
++			if (strcmp(cur, kernel_read_file_id_str(j)) == 0) {
+ 				pr_info("excluding: %s\n",
+-					kernel_read_file_str[j]);
++					kernel_read_file_id_str(j));
+ 				ignore_read_file_id[j] = 1;
+ 				/*
+ 				 * Can not break, because one read_file_str
+-- 
+2.25.1
 
