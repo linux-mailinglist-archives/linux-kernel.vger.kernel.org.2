@@ -2,54 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B48F32D1A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4972132D1B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239487AbhCDLUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 06:20:06 -0500
-Received: from mga02.intel.com ([134.134.136.20]:24230 "EHLO mga02.intel.com"
+        id S239522AbhCDLXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 06:23:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231703AbhCDLUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:20:00 -0500
-IronPort-SDR: cEXGGmCvqe3XP/p4USSNjHdwiy78GBBso3At+qxBFU9+t8W/plMkTM9z7BCCbIUJe/48WUX1Rg
- 6XT9wGo7Ivhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="174510230"
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="174510230"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 03:18:14 -0800
-IronPort-SDR: 0IexT2k7f9Mxr2A/jkO4XKOGEFm3Lw2y/Aosl2JEJ1Qnf0m0jAkq2AkqgzqmgV7urv9LyLtNXA
- lg/U0arftNzA==
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="384406967"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 03:18:12 -0800
-Received: by lahna (sSMTP sendmail emulation); Thu, 04 Mar 2021 13:18:09 +0200
-Date:   Thu, 4 Mar 2021 13:18:09 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1 1/1] pinctrl: intel: No need to disable IRQs in the
- handler
-Message-ID: <20210304111809.GO2542@lahna.fi.intel.com>
-References: <20210304105432.36544-1-andriy.shevchenko@linux.intel.com>
+        id S236682AbhCDLXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 06:23:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7552964E89;
+        Thu,  4 Mar 2021 11:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614856948;
+        bh=66PVh23xqYrT9713Kz/6lSpeWD37Ayis4kZMfkybk2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mC4OWMAN5SGjnvwurNTI34uR/zkeY1Rxd6Zf/Jv7fMutissa9AkmREcDA6B5a3wbe
+         JeAYvAsf2J0vRl/zqGG4wmzQ+Dib2+X/2njet8L6QIgtFE1LnQf1d0Sedw2oiIwJO4
+         kwC8zd7VReVdKaa5na6eD69EfyhQxrhmGpICg4OA=
+Date:   Thu, 4 Mar 2021 12:22:26 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.11 000/774] 5.11.3-rc2 review
+Message-ID: <YEDC8hugz6niEC0u@kroah.com>
+References: <20210301193729.179652916@linuxfoundation.org>
+ <664d3da1-9961-1a02-3f22-3f01fc7948b3@linuxfoundation.org>
+ <959e7456-f7f2-2d0b-0154-d3978191d3a3@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210304105432.36544-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <959e7456-f7f2-2d0b-0154-d3978191d3a3@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 12:54:32PM +0200, Andy Shevchenko wrote:
-> In IRQ handler interrupts are already disabled, hence no need
-> to repeat it. Even in the threaded case, which is disabled here,
-> it is not a problem because IRQ framework serializes descriptor
-> handling. Remove disabling IRQ part in the handler.
+On Mon, Mar 01, 2021 at 02:25:16PM -0700, Shuah Khan wrote:
+> On 3/1/21 2:23 PM, Shuah Khan wrote:
+> > On 3/1/21 12:38 PM, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 5.11.3 release.
+> > > There are 774 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Wed, 03 Mar 2021 19:35:23 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > >     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.3-rc2.gz
+> > > 
+> > > or in the git tree and branch at:
+> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > > linux-5.11.y
+> > > and the diffstat can be found below.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > > 
+> > 
+> > Compiled and booted on my test system. No dmesg regressions.
+> > 
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Just a note that the drm issues are sorted out and it is all good.
+> 
+> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Great, glad to hear it's working now.
+
+greg k-h
