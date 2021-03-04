@@ -2,137 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E9632CE36
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0160532CE3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236462AbhCDIO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:14:56 -0500
-Received: from mga12.intel.com ([192.55.52.136]:7418 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236410AbhCDIOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:14:45 -0500
-IronPort-SDR: ubQY8BG9kNny9ny/0huoyjh5XlzJ4RvpZzpTlcTceavIjRoDb7AtCIa+Er+MUIfC+ycCzgLhYY
- p9y9UFjA4MaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="166623979"
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="166623979"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 00:14:29 -0800
-IronPort-SDR: jnMXE6gPeFViG/ZGPK0mY1TRLxsBwF/Exx6fMMUsMNpIh/gEJME9hz7FzNSpoMJCm+nSoopBfm
- 3G+Qm4LKqgeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="407667847"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
-  by orsmga008.jf.intel.com with ESMTP; 04 Mar 2021 00:14:15 -0800
-Date:   Thu, 4 Mar 2021 16:14:14 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Andi leen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
- MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
-Message-ID: <20210304081414.GC43191@shbuild999.sh.intel.com>
-References: <YD91jTMssJUCupJm@dhcp22.suse.cz>
- <20210303120717.GA16736@shbuild999.sh.intel.com>
- <20210303121833.GB16736@shbuild999.sh.intel.com>
- <YD+BvvM/388AVnmm@dhcp22.suse.cz>
- <20210303131832.GB78458@shbuild999.sh.intel.com>
- <20210303134644.GC78458@shbuild999.sh.intel.com>
- <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
- <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
- <YD/D9hckPOA+41+D@dhcp22.suse.cz>
- <20210303172250.wbp47skyuf6r37wi@intel.com>
+        id S236378AbhCDIQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:16:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236355AbhCDIQU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:16:20 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5ADC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 00:15:40 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id q14so32236587ljp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:15:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SJyZlyEHfVnR3j+KQtSDL4OnWvfrZW9Sy7fZt9eeLfo=;
+        b=P8t+fHloRwyoIkI05NgYKdBCj+KdvhlHCPckJ8tCWVkZH2q2Hn4sfLlHhYgp7BnoeE
+         eoFoUC6WWaVF5Uhle/DtZrldalw0YHLZbr/dsqY9ONnVILQTRJhIm7kJKQNxnLf7awcZ
+         VmQRCa+UGKBxD81acuKo6BhSTroMA/vwyMVeDrOZm8bTjoUunxISbeT/rWjXcxl1drK2
+         UFv1w96BtYmz4K3KbfXWmO4lsABr2MErnhBVS7tCE4kXU6S3iFWNjTi241Cs32nzI0+6
+         9hnbpVuKoLqpwrZKCtQOzcXiifofVpgaQtcqR6RTfqCrMfSb/Mp/d0wX9ctq42TZXGK2
+         qPqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SJyZlyEHfVnR3j+KQtSDL4OnWvfrZW9Sy7fZt9eeLfo=;
+        b=la06WvUKLk+hb5BlzxImZQciAAeV3i8l/G/Q6PNLLCJM296gb4FJjCyxy9vGAVYtsI
+         IXEjoS//QtmaDfHKXLtwMZ0lhwoMwxUSky9CtXzU9C5aX2CIcet8Lr87C6g/tXOav3J9
+         FyB1qMgwUBAzDSVITPtuBNoc8X/i1spSDFJFw/oPTPO10m9fN89AfGINNH/YzR4SiDZo
+         TVqI9zT+BVTsstjTh23lqVufJ8eMjNWXmg2AS65RqjxFUrMg1D4jwNfISB1G21wfmYtE
+         /k++6mzSszqbJc9vRv+0FZDo7hk6b2lDKbYUaEykTEOGd0KsBKgpqHEAMp6dypQYvLVv
+         SavQ==
+X-Gm-Message-State: AOAM531+TTmAczNgCyVedWflUa4SwB0kLiwKxGe1/Fo5Y2y1l6LNiRSe
+        DsXm4tzsn9vFM2qlzKSdTr7sqnARiuR0B7EqyxOF9g==
+X-Google-Smtp-Source: ABdhPJytRMXDzPZQu9LPmyCokZi4HFF5dQrsReDzAH3IBF+V58SrZ/BITOlZXALmZp0DjFGB3W+fMGqSsDPtpdNrgfY=
+X-Received: by 2002:a2e:9004:: with SMTP id h4mr1678123ljg.326.1614845738903;
+ Thu, 04 Mar 2021 00:15:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303172250.wbp47skyuf6r37wi@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210303203444.3140677-1-j.neuschaefer@gmx.net>
+In-Reply-To: <20210303203444.3140677-1-j.neuschaefer@gmx.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 4 Mar 2021 09:15:28 +0100
+Message-ID: <CACRpkdbG7LJ9jwdsdAxTad8LSKH_9BqcL0N+DMhg6Sxp6Mr=uQ@mail.gmail.com>
+Subject: Re: [PATCH] docs: driver-api: gpio: consumer: Mark another line of
+ code as such
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 09:22:50AM -0800, Ben Widawsky wrote:
-> On 21-03-03 18:14:30, Michal Hocko wrote:
-> > On Wed 03-03-21 08:31:41, Ben Widawsky wrote:
-> > > On 21-03-03 14:59:35, Michal Hocko wrote:
-> > > > On Wed 03-03-21 21:46:44, Feng Tang wrote:
-> > > > > On Wed, Mar 03, 2021 at 09:18:32PM +0800, Tang, Feng wrote:
-> > > > > > On Wed, Mar 03, 2021 at 01:32:11PM +0100, Michal Hocko wrote:
-> > > > > > > On Wed 03-03-21 20:18:33, Feng Tang wrote:
-> > > > [...]
-> > > > > > > > One thing I tried which can fix the slowness is:
-> > > > > > > > 
-> > > > > > > > +	gfp_mask &= ~(__GFP_DIRECT_RECLAIM | __GFP_KSWAPD_RECLAIM);
-> > > > > > > > 
-> > > > > > > > which explicitly clears the 2 kinds of reclaim. And I thought it's too
-> > > > > > > > hacky and didn't mention it in the commit log.
-> > > > > > > 
-> > > > > > > Clearing __GFP_DIRECT_RECLAIM would be the right way to achieve
-> > > > > > > GFP_NOWAIT semantic. Why would you want to exclude kswapd as well? 
-> > > > > > 
-> > > > > > When I tried gfp_mask &= ~__GFP_DIRECT_RECLAIM, the slowness couldn't
-> > > > > > be fixed.
-> > > > > 
-> > > > > I just double checked by rerun the test, 'gfp_mask &= ~__GFP_DIRECT_RECLAIM'
-> > > > > can also accelerate the allocation much! though is still a little slower than
-> > > > > this patch. Seems I've messed some of the tries, and sorry for the confusion!
-> > > > > 
-> > > > > Could this be used as the solution? or the adding another fallback_nodemask way?
-> > > > > but the latter will change the current API quite a bit.
-> > > > 
-> > > > I haven't got to the whole series yet. The real question is whether the
-> > > > first attempt to enforce the preferred mask is a general win. I would
-> > > > argue that it resembles the existing single node preferred memory policy
-> > > > because that one doesn't push heavily on the preferred node either. So
-> > > > dropping just the direct reclaim mode makes some sense to me.
-> > > > 
-> > > > IIRC this is something I was recommending in an early proposal of the
-> > > > feature.
-> > > 
-> > > My assumption [FWIW] is that the usecases we've outlined for multi-preferred
-> > > would want more heavy pushing on the preference mask. However, maybe the uapi
-> > > could dictate how hard to try/not try.
-> > 
-> > What does that mean and what is the expectation from the kernel to be
-> > more or less cast in stone?
-> > 
-> 
-> (I'm not positive I've understood your question, so correct me if I
-> misunderstood)
-> 
-> I'm not sure there is a stone-cast way to define it nor should we. At the very
-> least though, something in uapi that has a general mapping to GFP flags
-> (specifically around reclaim) for the first round of allocation could make
-> sense.
-> 
-> In my head there are 3 levels of request possible for multiple nodes:
-> 1. BIND: Those nodes or die.
-> 2. Preferred hard: Those nodes and I'm willing to wait. Fallback if impossible.
-> 3. Preferred soft: Those nodes but I don't want to wait.
-> 
-> Current UAPI in the series doesn't define a distinction between 2, and 3. As I
-> understand the change, Feng is defining the behavior to be #3, which makes #2
-> not an option. I sort of punted on defining it entirely, in the beginning.
+On Wed, Mar 3, 2021 at 9:35 PM Jonathan Neusch=C3=A4fer
+<j.neuschaefer@gmx.net> wrote:
 
-As discussed earlier in the thread, one less hacky solution is to clear
-__GFP_DIRECT_RECLAIM bit so that it won't go into direct reclaim, but still
-wakeup the kswapd of target nodes and retry, which sits now between 'Preferred hard'
-and 'Preferred soft' :)
+> Make it so that this #include line is rendered in monospace, like other
+> code blocks.
+>
+> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
 
-For current MPOL_PREFERRED, its semantic is also 'Preferred hard', that it
-will check free memory of other nodes before entering slowpath waiting.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Thanks,
-Feng
-
+Yours,
+Linus Walleij
