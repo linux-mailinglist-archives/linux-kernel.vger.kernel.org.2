@@ -2,309 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103D632D39A
+	by mail.lfdr.de (Postfix) with ESMTP id 5B69932D39B
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236454AbhCDMwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234312AbhCDMvj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:51:39 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E566EC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:50:58 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id l12so27512550wry.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 04:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=T4drX2OHz8WsU2B+DyV2cYvNY39nMQirtfdi2mTuSOg=;
-        b=aT1zbGeyGacOaJcwjnuOmLSK6neJHxSZln7SpxKQYeYLkoMFu4fvwf2ZIQvJ8ZXsNL
-         UyrBq4ll7SJEQgIJsoZ3gq05uAYhMnOjY2YM8EiSyhlPEpOz5In6kuKRsDTeMaFbiuyU
-         aRlT+7rzGU0HqwpGo04vyPLaHPeLAbHBkApowFty6WvQ6p/IFUxKRevPINH2x7bCXPMM
-         58GD8mOxaTzQreXLjLiKGM3uREA5CgURdllKVkQxCPvTlt7OX0xe7rywzsTmogYKm6fG
-         2oPM9ZobJWjD6c2SAt2Onxh7NjxtOYeCyViyk2hlgJHkQ0MbzopK4irrvutohf941nTw
-         lEEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=T4drX2OHz8WsU2B+DyV2cYvNY39nMQirtfdi2mTuSOg=;
-        b=IOLx/YKP4kVbB8iXw2E+o8AMlqPgVL/xUsEjVu0dv4Tj9NCeZ69kXNaDC4Zkki0ouT
-         tB4DQ2onrUh5wZzJ7+3TeOVmxH3j8OUrM7JVhZZdyClvzp89EbXZJfe6tGHQmwYuHPc8
-         hhAilyXZ1eq/MJeGtx18RQnF/V628OMaH3YTDqNIIzX6rR0EnSMqureDCHEvaYNl3g2J
-         SpvaxW4SE+sT6WRoeBwzE7qlmhLxlcQROAXcQxh6Tnr9ULy+GFND0+FWo0ywapmc2vZX
-         2baxJqf3vUCx2ylFIkOmflhPU5PiiZEKRZCn6o/gawMTXWXrBCoHcILyxGkn2M7XslN7
-         uptQ==
-X-Gm-Message-State: AOAM532uaMd6E/Q12trNMZraAdTfQWr8TM41HOEaIqmM1C8VKzP4jHET
-        Fs70oSmaSK79DnepJG/LqYiQDg==
-X-Google-Smtp-Source: ABdhPJzGo4COvZK7kDu3+r40eNKlVccn5YfL70YriZdNoTBFiRhALzWFMjin8vjSY9WX/vCfmJQxIQ==
-X-Received: by 2002:a5d:620d:: with SMTP id y13mr3986716wru.88.1614862257577;
-        Thu, 04 Mar 2021 04:50:57 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
-        by smtp.gmail.com with ESMTPSA id z2sm19688850wrm.0.2021.03.04.04.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 04:50:56 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     cwchoi00@gmail.com, kyungmin.park@samsung.com,
-        myungjoo.ham@samsung.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR LIMA),
-        lima@lists.freedesktop.org (moderated list:DRM DRIVERS FOR LIMA),
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU)
-Subject: [PATCH] devfreq: Register devfreq as a cooling device
-Date:   Thu,  4 Mar 2021 13:50:33 +0100
-Message-Id: <20210304125034.28404-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        id S236782AbhCDMwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:52:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235156AbhCDMvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 07:51:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5E3A64F2B;
+        Thu,  4 Mar 2021 12:51:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614862262;
+        bh=hYB8KjRMSUPg5XdsT7IDwqO40nOgdMlmnJxLiBmXIIs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=U1RN428i+N538p6c/4QnRdrXDaCEysLdqzPPxsH4YaI8r17p00O+cEBq/C+qISk52
+         +/GSULpAsXYPyGi/JXk1cMlyXeb2ZRdxjK0vJ1D1xzEcrYqxH4pfKrZ1whRZXxlruR
+         BNzr/uNWp9hdqs05Uf7JDuXTnUWgSo7lKFag1oDZoZPZCKdK7PJgEGUugbpLS9pQz0
+         CWZSF87a5ZuEhvDsaAxvbUppLO4g7BtNCL5HZB5HF7sOxWEO033s1vZmHuAXEyUziD
+         D7S1FPFYbvsTbM6Vnwvf38WCXKxaWPBT6VfgpQsHf78HYawybkdIzX8dgRI2Up1Amb
+         WWCx2CjoRICow==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lHnRT-001zwW-QS; Thu, 04 Mar 2021 13:50:59 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: add a subsystem profile documentation
+Date:   Thu,  4 Mar 2021 13:50:58 +0100
+Message-Id: <95af047a293d8209cf80c05be2b31261cf142853.1614862252.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the default behavior is to manually having the devfreq
-backend to register themselves as a devfreq cooling device.
+Document the basic policies of the media subsystem profile.
 
-There are no so many and actually it makes more sense to register the
-devfreq device when adding it.
-
-Consequently, every devfreq becomes a cooling device like cpufreq is.
-
-Having a devfreq being registered as a cooling device can not mitigate
-a thermal zone if it is not bound to this one. Thus, the current
-configurations are not impacted by this change.
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/devfreq/devfreq.c                   |  8 ++++++++
- drivers/gpu/drm/lima/lima_devfreq.c         | 13 -------------
- drivers/gpu/drm/lima/lima_devfreq.h         |  2 --
- drivers/gpu/drm/msm/msm_gpu.c               | 11 -----------
- drivers/gpu/drm/msm/msm_gpu.h               |  2 --
- drivers/gpu/drm/panfrost/panfrost_devfreq.c | 13 -------------
- include/linux/devfreq.h                     |  3 +++
- 7 files changed, 11 insertions(+), 41 deletions(-)
+ Documentation/driver-api/media/index.rst      |   2 +
+ .../media/maintainer-entry-profile.rst        | 206 ++++++++++++++++++
+ .../maintainer/maintainer-entry-profile.rst   |   1 +
+ 3 files changed, 209 insertions(+)
+ create mode 100644 Documentation/driver-api/media/maintainer-entry-profile.rst
 
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index b6d63f02d293..19149b31b000 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -11,6 +11,7 @@
- #include <linux/kmod.h>
- #include <linux/sched.h>
- #include <linux/debugfs.h>
-+#include <linux/devfreq_cooling.h>
- #include <linux/errno.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -26,6 +27,7 @@
- #include <linux/hrtimer.h>
- #include <linux/of.h>
- #include <linux/pm_qos.h>
-+#include <linux/thermal.h>
- #include <linux/units.h>
- #include "governor.h"
+diff --git a/Documentation/driver-api/media/index.rst b/Documentation/driver-api/media/index.rst
+index c140692454b1..2ad71dfa8828 100644
+--- a/Documentation/driver-api/media/index.rst
++++ b/Documentation/driver-api/media/index.rst
+@@ -28,6 +28,8 @@ Please see:
+     :maxdepth: 5
+     :numbered:
  
-@@ -935,6 +937,10 @@ struct devfreq *devfreq_add_device(struct device *dev,
- 
- 	mutex_unlock(&devfreq_list_lock);
- 
-+	devfreq->cdev = devfreq_cooling_em_register(devfreq, NULL);
-+	if (IS_ERR(devfreq->cdev))
-+		dev_info(dev, "Failed to register devfreq cooling device\n");
++    maintainer-entry-profile
 +
- 	return devfreq;
- 
- err_init:
-@@ -960,6 +966,8 @@ int devfreq_remove_device(struct devfreq *devfreq)
- 	if (!devfreq)
- 		return -EINVAL;
- 
-+	thermal_cooling_device_unregister(devfreq->cdev);
+     v4l2-core
+     dtv-core
+     rc-core
+diff --git a/Documentation/driver-api/media/maintainer-entry-profile.rst b/Documentation/driver-api/media/maintainer-entry-profile.rst
+new file mode 100644
+index 000000000000..4c6ec6de35c9
+--- /dev/null
++++ b/Documentation/driver-api/media/maintainer-entry-profile.rst
+@@ -0,0 +1,206 @@
++Media Subsystem Profile
++=======================
 +
- 	if (devfreq->governor) {
- 		devfreq->governor->event_handler(devfreq,
- 						 DEVFREQ_GOV_STOP, NULL);
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-index 5686ad4aaf7c..a696eff1642c 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.c
-+++ b/drivers/gpu/drm/lima/lima_devfreq.c
-@@ -7,7 +7,6 @@
-  */
- #include <linux/clk.h>
- #include <linux/devfreq.h>
--#include <linux/devfreq_cooling.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
-@@ -90,11 +89,6 @@ void lima_devfreq_fini(struct lima_device *ldev)
- {
- 	struct lima_devfreq *devfreq = &ldev->devfreq;
- 
--	if (devfreq->cooling) {
--		devfreq_cooling_unregister(devfreq->cooling);
--		devfreq->cooling = NULL;
--	}
--
- 	if (devfreq->devfreq) {
- 		devm_devfreq_remove_device(ldev->dev, devfreq->devfreq);
- 		devfreq->devfreq = NULL;
-@@ -110,7 +104,6 @@ void lima_devfreq_fini(struct lima_device *ldev)
- 
- int lima_devfreq_init(struct lima_device *ldev)
- {
--	struct thermal_cooling_device *cooling;
- 	struct device *dev = ldev->dev;
- 	struct opp_table *opp_table;
- 	struct devfreq *devfreq;
-@@ -173,12 +166,6 @@ int lima_devfreq_init(struct lima_device *ldev)
- 
- 	ldevfreq->devfreq = devfreq;
- 
--	cooling = of_devfreq_cooling_register(dev->of_node, devfreq);
--	if (IS_ERR(cooling))
--		dev_info(dev, "Failed to register cooling device\n");
--	else
--		ldevfreq->cooling = cooling;
--
- 	return 0;
- 
- err_fini:
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
-index 2d9b3008ce77..c43a2069e5d3 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.h
-+++ b/drivers/gpu/drm/lima/lima_devfreq.h
-@@ -9,7 +9,6 @@
- 
- struct devfreq;
- struct opp_table;
--struct thermal_cooling_device;
- 
- struct lima_device;
- 
-@@ -17,7 +16,6 @@ struct lima_devfreq {
- 	struct devfreq *devfreq;
- 	struct opp_table *clkname_opp_table;
- 	struct opp_table *regulators_opp_table;
--	struct thermal_cooling_device *cooling;
- 
- 	ktime_t busy_time;
- 	ktime_t idle_time;
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index ab7c167b0623..d7f80ebfe9df 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -14,7 +14,6 @@
- #include <generated/utsrelease.h>
- #include <linux/string_helpers.h>
- #include <linux/devfreq.h>
--#include <linux/devfreq_cooling.h>
- #include <linux/devcoredump.h>
- #include <linux/sched/task.h>
- 
-@@ -112,14 +111,6 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
- 	}
- 
- 	devfreq_suspend_device(gpu->devfreq.devfreq);
--
--	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
--			gpu->devfreq.devfreq);
--	if (IS_ERR(gpu->cooling)) {
--		DRM_DEV_ERROR(&gpu->pdev->dev,
--				"Couldn't register GPU cooling device\n");
--		gpu->cooling = NULL;
--	}
- }
- 
- static int enable_pwrrail(struct msm_gpu *gpu)
-@@ -1056,6 +1047,4 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
- 	if (gpu->worker) {
- 		kthread_destroy_worker(gpu->worker);
- 	}
--
--	devfreq_cooling_unregister(gpu->cooling);
- }
-diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-index d7cd02cd2109..93419368bac8 100644
---- a/drivers/gpu/drm/msm/msm_gpu.h
-+++ b/drivers/gpu/drm/msm/msm_gpu.h
-@@ -155,8 +155,6 @@ struct msm_gpu {
- 	struct msm_gpu_state *crashstate;
- 	/* True if the hardware supports expanded apriv (a650 and newer) */
- 	bool hw_apriv;
--
--	struct thermal_cooling_device *cooling;
- };
- 
- static inline struct msm_gpu *dev_to_gpu(struct device *dev)
-diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-index 56b3f5935703..2cb6300de1f1 100644
---- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-@@ -3,7 +3,6 @@
- 
- #include <linux/clk.h>
- #include <linux/devfreq.h>
--#include <linux/devfreq_cooling.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
- 
-@@ -90,7 +89,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
- 	struct device *dev = &pfdev->pdev->dev;
- 	struct devfreq *devfreq;
- 	struct opp_table *opp_table;
--	struct thermal_cooling_device *cooling;
- 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
- 
- 	opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
-@@ -139,12 +137,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
- 	}
- 	pfdevfreq->devfreq = devfreq;
- 
--	cooling = devfreq_cooling_em_register(devfreq, NULL);
--	if (IS_ERR(cooling))
--		DRM_DEV_INFO(dev, "Failed to register cooling device\n");
--	else
--		pfdevfreq->cooling = cooling;
--
- 	return 0;
- 
- err_fini:
-@@ -156,11 +148,6 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
- {
- 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
- 
--	if (pfdevfreq->cooling) {
--		devfreq_cooling_unregister(pfdevfreq->cooling);
--		pfdevfreq->cooling = NULL;
--	}
--
- 	if (pfdevfreq->opp_of_table_added) {
- 		dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
- 		pfdevfreq->opp_of_table_added = false;
-diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-index 26ea0850be9b..690bd4affe18 100644
---- a/include/linux/devfreq.h
-+++ b/include/linux/devfreq.h
-@@ -198,6 +198,9 @@ struct devfreq {
- 
- 	struct srcu_notifier_head transition_notifier_list;
- 
-+	/* Pointer to the cooling device if used for thermal mitigation */
-+	struct thermal_cooling_device *cdev;
++Overview
++--------
 +
- 	struct notifier_block nb_min;
- 	struct notifier_block nb_max;
- };
++The media subsystem covers support for a variety of devices: stream
++capture, analog and digital TV streams, cameras, remote controllers, HDMI CEC
++and media pipeline control.
++
++It covers, mainly, the contents of those directories:
++
++  - drivers/media
++  - drivers/staging/media
++  - Documentation/admin-guide/media
++  - Documentation/driver-api/media
++  - Documentation/userspace-api/media
++  - Documentation/devicetree/bindings/media/\ [1]_
++  - include/media
++
++.. [1] Device tree bindings are maintained by the
++       OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS maintainers
++       (see the MAINTAINERS file). So, changes there must be reviewed
++       by them before being merged via the media subsystem's development
++       tree.
++
++Both media userspace and Kernel APIs are documented and the documentation
++must be kept in sync with the API changes. It means that all patches that
++add new features to the subsystem must also bring changes to the
++corresponding API files.
++
++Due to the size and wide scope of the media subsystem, media's
++maintainership model is to have sub-maintainers that have a broad
++knowledge of a specific aspect of the subsystem. It is the sub-maintainers'
++task to review the patches, providing feedback to users if the patches are
++following the subsystem rules and are properly using the media kernel and
++userspace APIs.
++
++Patches for the media subsystem must be sent to the media mailing list
++at linux-media@vger.kernel.org as plain text only e-mail. Emails with
++HTML will be automatically rejected by the mail server. It could be wise
++to also copy the sub-maintainer(s).
++
++Media's workflow is heavily based on Patchwork, meaning that, once a patch
++is submitted, the e-mail will first be accepted by the mailing list
++server, and, after a while, it should appear at:
++
++   - https://patchwork.linuxtv.org/project/linux-media/list/
++
++If it doesn't automatically appear there after a few minutes, then
++probably something went wrong on your submission. Please check if the
++email is in plain text\ [2]_ only and if your emailer is not mangling
++whitespaces before complaining or submitting them again.
++
++You can check if the mailing list server accepted your patch, by looking at:
++
++   - https://lore.kernel.org/linux-media/
++
++.. [2] If your email contains HTML, the mailing list server will simply
++       drop it, without any further notice.
++
++
++Media maintainers
+++++++++++++++++++
++
++At the media subsystem, we have a group of senior developers that
++are responsible for doing the code reviews at the drivers (also known as
++sub-maintainers), and another senior developer responsible for the
++subsystem as a whole. For core changes, whenever possible, multiple
++media maintainers do the review.
++
++The media maintainers that work on specific areas of the subsystem are:
++
++- Digital TV and remote controllers:
++    Sean Young <sean@mess.org>
++
++- HDMI CEC:
++    Hans Verkuil <hverkuil@xs4all.nl>
++
++- Media controller drivers:
++    Laurent Pinchart <laurent.pinchart@ideasonboard.com>
++
++- v4l2-async, v4l2-fwnode, v4l2-flash-led-class and Sensor drivers:
++    Sakari Ailus <sakari.ailus@linux.intel.com>
++
++- V4L2 drivers and core V4L2 frameworks:
++    Hans Verkuil <hverkuil@xs4all.nl>
++
++The subsystem maintainer is:
++  Mauro Carvalho Chehab <mchehab@kernel.org>
++
++Media maintainers may delegate a patch to other media maintainers as needed.
++On such case, checkpatch's ``delegate`` field indicates who's currently
++responsible for reviewing a patch.
++
++Submit Checklist Addendum
++-------------------------
++
++Patches that change the Open Firmware/Device Tree bindings must be
++reviewed by the Device Tree maintainers. So, DT maintainers should be
++Cc:ed when those are submitted via devicetree@vger.kernel.org mailing
++list.
++
++There is a set of compliance tools at https://git.linuxtv.org/v4l-utils.git/
++that should be used in order to check if the drivers are properly
++implementing the media APIs:
++
++====================	=======================================================
++Type			Tool
++====================	=======================================================
++V4L2 drivers\ [3]_	``v4l2-compliance``
++V4L2 virtual drivers	``contrib/test/test-media``
++CEC drivers		``cec-compliance``
++====================	=======================================================
++
++.. [3] The ``v4l2-compliance`` also covers the media controller usage inside
++       V4L2 drivers.
++
++Other compilance tools are under development to check other parts of the
++subsystem.
++
++Those tests need to pass before the patches go upstream.
++
++Also, please notice that we build the Kernel with::
++
++	make CF=-D__CHECK_ENDIAN__ CONFIG_DEBUG_SECTION_MISMATCH=y C=1 W=1 CHECK=check_script
++
++Where the check script is::
++
++	#!/bin/bash
++	/devel/smatch/smatch -p=kernel $@ >&2
++	/devel/sparse/sparse $@ >&2
++
++Be sure to not introduce new warnings on your patches without a
++very good reason.
++
++Style Cleanup Patches
+++++++++++++++++++++++
++
++Style cleanups are welcome when they come together with other changes
++at the files where the style changes will affect.
++
++We may accept pure standalone style cleanups, but they should ideally
++be one patch for the whole subsystem (if the cleanup is low volume),
++or at least be grouped per directory. So, for example, if you're doing a
++big cleanup change set at drivers under drivers/media, please send a single
++patch for all drivers under drivers/media/pci, another one for
++drivers/media/usb and so on.
++
++Coding Style Addendum
+++++++++++++++++++++++
++
++Media development uses ``checkpatch.pl`` on strict mode to verify the code
++style, e.g.::
++
++	$ ./scripts/checkpatch.pl --strict --max-line-length=80
++
++In principle, patches should follow the coding style rules, but exceptions
++are allowed if there are good reasons. On such case, maintainers and reviewers
++may question about the rationale for not addressing the ``checkpatch.pl``.
++
++Please notice that the goal here is to improve code readability. On
++a few cases, ``checkpatch.pl`` may actually point to something that would
++look worse. So, you should use good sense.
++
++Note that addressing one ``checkpatch.pl`` issue (of any kind) alone may lead
++to having longer lines than 80 characters per line. While this is not
++strictly prohibited, efforts should be made towards staying within 80
++characters per line. This could include using re-factoring code that leads
++to less indentation, shorter variable or function names and last but not
++least, simply wrapping the lines.
++
++In particular, we accept lines with more than 80 columns:
++
++    - on strings, as they shouldn't be broken due to line length limits;
++    - when a function or variable name need to have a big identifier name,
++      which keeps hard to honor the 80 columns limit;
++    - on arithmetic expressions, when breaking lines makes them harder to
++      read;
++    - when they avoid a line to end with an open parenthesis or an open
++      bracket.
++
++Key Cycle Dates
++---------------
++
++New submissions can be sent at any time, but if they intend to hit the
++next merge window they should be sent before -rc5, and ideally stabilized
++in the linux-media branch by -rc6.
++
++Review Cadence
++--------------
++
++Provided that your patch is at https://patchwork.linuxtv.org, it should
++be sooner or later handled, so you don't need to re-submit a patch.
++
++Except for bug fixes, we don't usually add new patches to the development
++tree between -rc6 and the next -rc1.
++
++Please notice that the media subsystem is a high traffic one, so it
++could take a while for us to be able to review your patches. Feel free
++to ping if you don't get a feedback in a couple of weeks or to ask
++other developers to publicly add Reviewed-by and, more importantly,
++``Tested-by:`` tags.
++
++Please note that we expect a detailed description for ``Tested-by:``,
++identifying what boards were used at the test and what it was tested.
+diff --git a/Documentation/maintainer/maintainer-entry-profile.rst b/Documentation/maintainer/maintainer-entry-profile.rst
+index b7a627d6c97d..5d5cc3acdf85 100644
+--- a/Documentation/maintainer/maintainer-entry-profile.rst
++++ b/Documentation/maintainer/maintainer-entry-profile.rst
+@@ -102,3 +102,4 @@ to do something different in the near future.
+    ../doc-guide/maintainer-profile
+    ../nvdimm/maintainer-entry-profile
+    ../riscv/patch-acceptance
++   ../driver-api/media/maintainer-entry-profile
 -- 
-2.17.1
+2.29.2
 
