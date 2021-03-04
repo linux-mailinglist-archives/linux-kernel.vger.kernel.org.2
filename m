@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A867232DACF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF74932DAD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237754AbhCDUEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:04:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50538 "EHLO mail.kernel.org"
+        id S237800AbhCDUGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:06:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238058AbhCDUEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:04:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 352FE64F65;
-        Thu,  4 Mar 2021 20:03:39 +0000 (UTC)
+        id S231616AbhCDUFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 15:05:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7379E64F76;
+        Thu,  4 Mar 2021 20:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614888221;
-        bh=U98Si46P9QGICBUxtNMdo2gi+WMxJtL8qV9OiXNLz/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U4gN8l38meTixs38uXpwshwzF5+yHfcTiLAS+WdCPLbxYXrlkbU8LnAcwsYLd8HZn
-         FPczhctWD+SdQO4jwsx5UhtC2onXyL5dt/nrLzLpt4CMLx+RTCAMK++uqcogKDeaPe
-         kqynj+Kb7qnAO7rJjCWuPASACOtt2/Q0m7aQSKKuBf5VvZxBh5Dl0DstNLJtBcMhJl
-         21a5SCZ83VWuZ/8+eOtKUadSKTbDPzJK7iIrYAKl2hRvY+CAmiz0wj7y+uiGLgn1VQ
-         62YQbH0sgziQWESXpm/kU5XlICQSWxeFyPeS71LfQ8uf82+/Qaj4Pco/qlfRx5dBff
-         2NqXoQCem14IA==
-Date:   Thu, 4 Mar 2021 20:03:36 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 27/32] KVM: arm64: Refactor stage2_map_set_prot_attr()
-Message-ID: <20210304200335.GG21950@willie-the-truck>
-References: <20210302150002.3685113-1-qperret@google.com>
- <20210302150002.3685113-28-qperret@google.com>
+        s=k20201202; t=1614888300;
+        bh=RUOa+jhAmK+h73T8EOU9DsvhCI2E8Dn8FH/Ia3vJc3g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Z/ZCNH1ifsYXMOqxSS+vwP879iLQBcDXyn1H/7QusIM5zsOkA7artXq5whqVPK460
+         7A8gdRsO3HwpoqhfpDCn9iGRqzvTMilw5fXHzT0b3HmP24fJAfw30dabM/sqJQvBs1
+         fFLMfhAu/Y34199XaYjzJcW8aJAwpR2Br+UMtU0KVQC0ZEQFbZXvMaUivSNKE0uO2p
+         VjkgHAjNRqucjOwH4H1+d5MljrZ1OLodWXPUpx7JFxjcmivEpct/YbbN5rw83bDZPQ
+         gJSXGku2c6Yn+AWwWafPqIIrHgnsrKILLqyJIqjZShQRaHDng7AjPyJpHk7RJOku0+
+         WT8qKoRn+iwKg==
+Received: by mail-ed1-f53.google.com with SMTP id x9so4815540edd.0;
+        Thu, 04 Mar 2021 12:05:00 -0800 (PST)
+X-Gm-Message-State: AOAM532jDliFN93BCzIL8gUF/O0+LrFQfX4rkAluzPhMj7/FIRZ5J+qQ
+        ENRQJJ8kz4cqTjxLznC44+5AFhxLpcRclaEHyw==
+X-Google-Smtp-Source: ABdhPJyT+WJus7T3jwrxrdTRd/Zm7drWY1Nq415cI9il3xyb1hXROafInBX/zusYrRdtrHQ0uWkFNttElXzFgzzJpBM=
+X-Received: by 2002:aa7:d3d8:: with SMTP id o24mr6306044edr.165.1614888299086;
+ Thu, 04 Mar 2021 12:04:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302150002.3685113-28-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612693435-31418-8-git-send-email-shengjiu.wang@nxp.com> <20210210221704.GA2894134@robh.at.kernel.org>
+ <CAA+D8ANOv91jr4381Acz1B2mZ6=Mx2J_2CMTGXmPKztv7bMjPA@mail.gmail.com>
+In-Reply-To: <CAA+D8ANOv91jr4381Acz1B2mZ6=Mx2J_2CMTGXmPKztv7bMjPA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 4 Mar 2021 14:04:33 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK1uc82hfdE4yj0ye-D6vygiqWkDVW96NOb-8kEFVqHMg@mail.gmail.com>
+Message-ID: <CAL_JsqK1uc82hfdE4yj0ye-D6vygiqWkDVW96NOb-8kEFVqHMg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
+ rpmsg machine driver
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 02:59:57PM +0000, Quentin Perret wrote:
-> In order to ease its re-use in other code paths, refactor
-> stage2_map_set_prot_attr() to not depend on a stage2_map_data struct.
-> No functional change intended.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/hyp/pgtable.c | 19 ++++++++-----------
->  1 file changed, 8 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 8e7059fcfd40..8aa01a9e2603 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -494,8 +494,7 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
->  	return vtcr;
->  }
->  
-> -static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
-> -				    struct stage2_map_data *data)
-> +static kvm_pte_t stage2_get_prot_attr(enum kvm_pgtable_prot prot)
->  {
->  	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
->  	kvm_pte_t attr = device ? PAGE_S2_MEMATTR(DEVICE_nGnRE) :
-> @@ -504,15 +503,15 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
->  
->  	if (prot & KVM_PGTABLE_PROT_NONE) {
->  		if (prot != KVM_PGTABLE_PROT_NONE)
-> -			return -EINVAL;
-> +			return 0;
+On Thu, Feb 18, 2021 at 1:23 AM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+>
+> On Thu, Feb 11, 2021 at 6:18 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Sun, Feb 07, 2021 at 06:23:55PM +0800, Shengjiu Wang wrote:
+> > > Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
+> > > core. The Cortex-M core will control the audio interface, DMA and audio
+> > > codec, setup the pipeline, the audio driver on Cortex-A core side is just
+> > > to communitcate with M core, it is a virtual sound card and don't touch
+> > > the hardware.
+> >
+> > I don't understand why there are 2 nodes for this other than you happen
+> > to want to split this into 2 Linux drivers. It's 1 h/w thing.
+>
+> This one is for the sound card machine driver.  Another one is
+> for the sound card cpu dai driver. so there are 2 nodes.
 
-Hmm, does the architecture actually say that having all these attributes
-as 0 is illegal? If not, I think it would be better to keep the int return
-code and replace the 'data' parameter with a pointer to a kvm_pte_t.
+You are explaining this to me in terms of drivers. Explain it in terms
+of h/w blocks.
 
-Does that work?
-
-Will
+Rob
