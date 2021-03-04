@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7069732CEB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60A232CE98
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236459AbhCDIoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:44:46 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:56162 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236435AbhCDIo3 (ORCPT
+        id S235959AbhCDIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235908AbhCDIgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:44:29 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A5AFD1C0B87; Thu,  4 Mar 2021 09:43:30 +0100 (CET)
-Date:   Thu, 4 Mar 2021 09:43:29 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yong Wu <yong.wu@mediatek.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 337/663] iommu: Move iotlb_sync_map out from
- __iommu_map
-Message-ID: <20210304084329.GA25188@amd>
-References: <20210301161141.760350206@linuxfoundation.org>
- <20210301161158.520692499@linuxfoundation.org>
+        Thu, 4 Mar 2021 03:36:55 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C617C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 00:36:14 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id e6so18440137pgk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:36:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tyImSAmUouBU0h3BNJjpkZEX4MBw++5drbgZz8hDIGU=;
+        b=NUQWaSsj93C5Ky69q4BObjnxtVE2K7CfrahBU5OpyXBpZGhEEZc3annbEsYt8PUuOq
+         SNjF04wsEOQEoee/uZtjDXy9SSzLuQLgT1LEnmpm9RiFQ98T89VISksoM+jESqSIcaqG
+         XYygQ0iPMmr0lKh8ZOdgWOBowFf42hsTt82UTZ0DHxxC8OnUNj3Ju/Xvu9NBuu8lsG7y
+         IZV5Ztyjmn6pqM6N8NT45aN3Btil4faQLRcjKOA2kuiAnoQA4Zy4Cd2aW0TJlc9+mkC/
+         Z6wyrI0xk+YFTKiSoFRPRyyqpDZKvXrsmtOl0bPiHTfWUDEQARg2Mbb8P1EwvBObLiWZ
+         gGTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tyImSAmUouBU0h3BNJjpkZEX4MBw++5drbgZz8hDIGU=;
+        b=Kycd28v5yi1x4lo+i3Hd8YTa1RHbZRLcjJQxmzv2Mg7EvhzjTFELWLfn+CR4vBsMLF
+         SR20Henij95wN9aegcQ+JYXzseqJsjdfBjjLv1QMu9dWXZHuK1IVnV/ryn1yF9aXQ2sJ
+         oIcsii/vPMhM1Q3AuDkNZMpCz7NzSLP4VEzX4ktJkkj1AAIArZsL9JdVD7B/SimUOeKf
+         NjGJHAfK1t00D1RVWw+8TG0JO950i/FyjTfLfZzN+Sb5A+mCJTyP4nfmTqSfxOHv2GLJ
+         Aa4HY2w+pvbqFZ2fS3sJZ0+26kE8jP3D4FiH0oX6afJfFpKq8hNZPV4ZBiGDKWkAKf/H
+         x6YA==
+X-Gm-Message-State: AOAM531y70rA88C1Xt8FOoBDC57TJMVeIjlifr5mPeMwTZL2QgFqCzpV
+        RTtxkmWU0SbwzxJnekhwwtZEakOw6+5hFDnzYZAjMw==
+X-Google-Smtp-Source: ABdhPJxQBtHw1i4ZPvEiZS8wmBt6nb5GXv5qS2vqBe355hz5013lm6CPp/mZXzgMk6I3KU5CiyHwJ/LJ9BgS22v8lQI=
+X-Received: by 2002:aa7:9341:0:b029:1ee:ee87:643a with SMTP id
+ 1-20020aa793410000b02901eeee87643amr2868608pfn.55.1614846973885; Thu, 04 Mar
+ 2021 00:36:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
-Content-Disposition: inline
-In-Reply-To: <20210301161158.520692499@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org> <1614208985-20851-4-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <1614208985-20851-4-git-send-email-bbhatt@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Thu, 4 Mar 2021 09:43:52 +0100
+Message-ID: <CAMZdPi8s8Sp1eaqjTbxUtqiNgDXFa5a+GJnp-LmrDc-8ORCOtw@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] bus: mhi: core: Process execution environment
+ changes serially
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
+        Naveen Kumar <naveen.kumar@quectel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 25 Feb 2021 at 00:23, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
+>
+> In current design, whenever the BHI interrupt is fired, the
+> execution environment is updated. This can cause race conditions
+> and impede ongoing power up/down processing. For example, if a
+> power down is in progress, MHI host updates to a local "disabled"
+> execution environment. If a BHI interrupt fires later, that value
+> gets replaced with one from the BHI EE register. This impacts the
+> controller as it does not expect multiple RDDM execution
+> environment change status callbacks as an example. Another issue
+> would be that the device can enter mission mode and the execution
+> environment is updated, while device creation for SBL channels is
+> still going on due to slower PM state worker thread run, leading
+> to multiple attempts at opening the same channel.
+>
+> Ensure that EE changes are handled only from appropriate places
+> and occur one after another and handle only PBL modes or RDDM EE
+> changes as critical events directly from the interrupt handler.
+> Simplify handling by waiting for SYS ERROR before handling RDDM.
+> This also makes sure that we use the correct execution environment
+> to notify the controller driver when the device resets to one of
+> the PBL execution environments.
+>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looking good now
 
-Hi!
-
-> [ Upstream commit d8c1df02ac7f2c802a9b2afc0f5c888c4217f1d5 ]
->=20
-> In the end of __iommu_map, It alway call iotlb_sync_map.
->=20
-> This patch moves iotlb_sync_map out from __iommu_map since it is
-> unnecessary to call this for each sg segment especially iotlb_sync_map
-> is flush tlb all currently. Add a little helper _iommu_map for this.
-
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-AFAICT this is slight performance optimalization, not a bugfix. It
-actually introduces a bug, fixed by the next patch. I'd preffer not to
-have it in stable.
-
-Best regards,
-								Pavel
-
-> @@ -2421,18 +2418,31 @@ static int __iommu_map(struct iommu_domain *domai=
-n, unsigned long iova,
-> =20
-> +static int _iommu_map(struct iommu_domain *domain, unsigned long iova,
-> +		      phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-> +{
-> +	const struct iommu_ops *ops =3D domain->ops;
-> +	int ret;
-> +
-> +	ret =3D __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
-> +	if (ret =3D=3D 0 && ops->iotlb_sync_map)
-> +		ops->iotlb_sync_map(domain);
-> +
-> +	return ret;
-> +}
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---huq684BweRXVnRxX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBAnbEACgkQMOfwapXb+vIVvACgshwz5xeQjuPBx5Me4eiCuLPc
-H2cAn0tp1BDr8V0rf+DIijdLJ4J+w/f+
-=5sHE
------END PGP SIGNATURE-----
-
---huq684BweRXVnRxX--
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
