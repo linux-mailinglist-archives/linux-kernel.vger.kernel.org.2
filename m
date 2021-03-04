@@ -2,139 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F3A32D79A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5F832D7C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbhCDQXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:23:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236863AbhCDQWy (ORCPT
+        id S237542AbhCDQZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:25:57 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24438 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236822AbhCDQZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:22:54 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78185C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:22:14 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id q204so18237147pfq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/KqSTuRGvBZZfU9/Tuxxq5dN7bLMCDTOxPwoR3kZ0qA=;
-        b=gPpDDRjjfrld0SN74QG3Msr8U0vE+ZrmZyHG+qVbIR1eTDrd5tPDPRxL8nF+vK/Jnh
-         Sy80yOeN0qY2zGLK/Zg6b9H3JFcvWa61tEVTUou3N7gJH5ekrxjY1cug+K6j28B5plFS
-         X1pSxL2cH0ESoQaHJzbz2ruLIYLkWdhAWK4PciRVdSQXtoCAVqz6IHRAmZkSHmOuMugj
-         MGrhI3TFTKvcG7zx14Zdbz0QdrKW9plETDMAuaXg2nD437O3eIK2H/SG4u3t5eOpcQJC
-         lm1B+8xhSsgBdCmZXz2FoI3UV8rmJhWaXKlSVWbO4+NDw6xlzp2yRXYY+EWGOrsWqBli
-         8BPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/KqSTuRGvBZZfU9/Tuxxq5dN7bLMCDTOxPwoR3kZ0qA=;
-        b=j9NqDx2HEeX/ZCqMMIAUvmIp3ASMKbnuqFcidiOAKHdVaTVWBnPJpZO3A7VzFC/ryC
-         o6U9GYE5V2usrIWDV+gLJ0KviEUBReflq8m4fyaZlGOCyFF0m+EqImpvd6NvD62QqqMA
-         qTlpk+afez93g6JQuBWOV56NBLX6a9LlI/uWXEtRYBVcT/yilieEf4Ga5VVyxBRmSEHY
-         4SAPTf/8nJjRCTO49Ap7yXsFpPct+2+0LQX7oYbL/k0N3nlrAJLy8HkHmgLt/GIBA2yh
-         8zVGLusjdq1rd371C5VcOFzwqpNcvBvQ8RKF1gwhew4St/uMfJGNrIPuwa8oN+QpYXPe
-         I6Mg==
-X-Gm-Message-State: AOAM533bk2O+5kSxKRD28zW4tqR5oXT5RIjH4gEA5pT1Z9ujT3ohic6m
-        X8h0qNHJGT4wFxyayJ57ofs=
-X-Google-Smtp-Source: ABdhPJzN4N4C4yfwhp0A/u6uQUgID7aRFY6103k61gbQj8BpKABeDqfrJuo7YYRvNZMWJD1G2VmyJA==
-X-Received: by 2002:a63:4442:: with SMTP id t2mr4119280pgk.23.1614874934022;
-        Thu, 04 Mar 2021 08:22:14 -0800 (PST)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id e10sm10536717pgd.63.2021.03.04.08.22.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Mar 2021 08:22:13 -0800 (PST)
-Date:   Thu, 4 Mar 2021 16:22:09 +0000
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH] perf stat: improve readability of shadow stats
-Message-ID: <20210304162208.imn4vjjaf2hevxz3@mail.google.com>
-References: <20210301172402.6794-1-changbin.du@gmail.com>
- <YD0+OAH9Ytii3b3V@krava>
+        Thu, 4 Mar 2021 11:25:50 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124GDuCT067189;
+        Thu, 4 Mar 2021 11:25:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=zocqs67l/MZY4ZkwtXWxHu4Wqu0Qn3ypuSqnvVRrCtQ=;
+ b=ZiM0NvUXeL3/GTKLGhhXJaacdHt2gUBBFLahcQwDQqrs3pUWO7EvcrnrbYO6haPEGMn8
+ F85DbgDWXxASWYrXIaDBaNuztkkUDcb++noj3PYZaX4p6D9crKxjWFFAfnPYbkEC7ZOk
+ CnOzLG8EBSOUiy6BeZoNuiZGRcR2dpvkBQLjn2pIMv8+eCaF6RlrdD7naQQ6m5dbeHRC
+ 11qbSGU0WfeGp3KNqiPnYqVe6yESMLjxE5heUSOkgZMR+G42aAh/z7qU7ftKLMTzUp6P
+ 4mdKkImWskBM9Na/zPltZGqTBef+mig/1fVoMoMS6id7z0lZrxiTHk1xap8VgX4THw42 1A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3732vs0qb0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 11:25:05 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 124GDw4T067469;
+        Thu, 4 Mar 2021 11:23:17 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3732vs0pfc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 11:23:17 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124GI2RK018473;
+        Thu, 4 Mar 2021 16:22:31 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01wdc.us.ibm.com with ESMTP id 36ydq9g0fb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 16:22:31 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124GMUZP18219434
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 16:22:30 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADE8F6E053;
+        Thu,  4 Mar 2021 16:22:30 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1AB4B6E052;
+        Thu,  4 Mar 2021 16:22:29 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.150.254])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Mar 2021 16:22:28 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+References: <20210302204322.24441-1-akrowiak@linux.ibm.com>
+ <20210302204322.24441-2-akrowiak@linux.ibm.com>
+ <20210303162332.4d227dbe.pasic@linux.ibm.com>
+ <e5cc2a81-7273-2b3e-0d4c-c6c17502bdae@linux.ibm.com>
+ <20210303204211.4c021c25.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <c623c4d6-4cda-9521-ec5e-e4d6fd978a90@linux.ibm.com>
+Date:   Thu, 4 Mar 2021 11:22:28 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YD0+OAH9Ytii3b3V@krava>
-User-Agent: NeoMutt/20180716-508-7c9a6d
+In-Reply-To: <20210303204211.4c021c25.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_05:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 adultscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103040076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 08:19:20PM +0100, Jiri Olsa wrote:
-> On Tue, Mar 02, 2021 at 01:24:02AM +0800, Changbin Du wrote:
-> > This does follow two changes:
-> >   1) Select appropriate unit between K/M/G.
-> >   2) Use 'cpu-sec' instead of 'sec' to state this is not the wall-time.
-> > 
-> > $ sudo ./perf stat -a -- sleep 1
-> > 
-> > Before: Unit 'M' is selected even the number is very small.
-> >  Performance counter stats for 'system wide':
-> > 
-> >           4,003.06 msec cpu-clock                 #    3.998 CPUs utilized
-> >             16,179      context-switches          #    0.004 M/sec
-> >                161      cpu-migrations            #    0.040 K/sec
-> >              4,699      page-faults               #    0.001 M/sec
-> >      6,135,801,925      cycles                    #    1.533 GHz                      (83.21%)
-> >      5,783,308,491      stalled-cycles-frontend   #   94.26% frontend cycles idle     (83.21%)
-> >      4,543,694,050      stalled-cycles-backend    #   74.05% backend cycles idle      (66.49%)
-> >      4,720,130,587      instructions              #    0.77  insn per cycle
-> >                                                   #    1.23  stalled cycles per insn  (83.28%)
-> >        753,848,078      branches                  #  188.318 M/sec                    (83.61%)
-> >         37,457,747      branch-misses             #    4.97% of all branches          (83.48%)
-> > 
-> >        1.001283725 seconds time elapsed
-> > 
-> > After:
-> > $ sudo ./perf stat -a -- sleep 2
-> > 
-> >  Performance counter stats for 'system wide':
-> > 
-> >           8,003.20 msec cpu-clock                 #    3.998 CPUs utilized
-> >              9,768      context-switches          #    1.221 K/cpu-sec
-> >                164      cpu-migrations            #   20.492  /cpu-sec
-> 
-> should you remove also the leading '/' in ' /cpu-sec' ?
-> 
-> 
-> SNIP
-> 
-> > @@ -1270,18 +1271,14 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
-> >  		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
-> >  				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
-> >  	} else if (runtime_stat_n(st, STAT_NSECS, cpu, &rsd) != 0) {
-> > -		char unit = 'M';
-> > +		char unit = ' ';
-> >  		char unit_buf[10];
-> >  
-> >  		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
-> > -
-> >  		if (total)
-> > -			ratio = 1000.0 * avg / total;
-> > -		if (ratio < 0.001) {
-> > -			ratio *= 1000;
-> > -			unit = 'K';
-> > -		}
-> > -		snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
-> > +			ratio = convert_unit_double(1000000000.0 * avg / total, &unit);
-> > +
-> > +		snprintf(unit_buf, sizeof(unit_buf), "%c/cpu-sec", unit);
-> >  		print_metric(config, ctxp, NULL, "%8.3f", unit_buf, ratio);
-> 
-> hum this will change -x output that people parse, so I don't think we can do that
-okay, so skip this change and keep another.
 
--- 
-Cheers,
-Changbin Du
+
+On 3/3/21 2:42 PM, Halil Pasic wrote:
+> On Wed, 3 Mar 2021 11:41:22 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>>> How do you exect userspace to react to this -ENODEV?
+>> The VFIO_DEVICE_RESET ioctl expects a return code.
+>> The vfio_ap_mdev_reset_queues() function can return -EIO or
+>> -EBUSY, so I would expect userspace to handle -ENODEV
+>> similarly to -EIO or any other non-zero return code. I also
+>> looked at all of the VFIO_DEVICE_RESET calls from QEMU to see
+>> how the return from the ioctl call is handled:
+>>
+>> * ap: reports the reset failed along with the rc
+> And carries on as if nothing happened. There is not much smart
+> userspace can do in such a situation. Therefore the reset really
+> should not fail.
+
+Regardless of what we decide to do here, there is the
+possibility that the vfio_ap_mdev_reset_queues()
+function will return an error, so your point is moot
+and maybe should be brought up as a QEMU
+implementation issue. I don't think it is encumbent
+upon the KVM code to anticipate how userspace
+will respond to a non-zero return code. I think the
+pertinent question is what return code makes sense.
+Having said that, I have other concerns which I
+discussed below.
+
+>
+> Please note that in this particular case, if the userspace would
+> opt for a retry, we would most likely end up in a retry loop.
+>
+>> * ccw: doesn't check the rc
+>> * pci: kind of hard to follow without digging deep, but definitely
+>>            handles non-zero rc.
+>>
+>> I think the caller should be notified whether the queues were
+>> successfully reset or not, and why; in this case, the answer is
+>> there are no devices to reset.
+> That is the wrong answer. The ioctl is supposed to reset the
+> ap_matrix_mdev device. The ap_matrix_mdev device still exists. Thus
+> returning -ENODEV is bugous.
+
+That makes sense and it begs the question, what does it mean to
+reset the mdev? Is resetting the queues an appropriate response
+to the VFIO_DEVICE_RESET ioctl call?
+
+The purpose of the mdev is to supply the AP configuration to a KVM
+guest. The queues themselves belong to the guest. If the guest enables
+interrupts for a queue and vfio_ap does a reset in response to the ioctl
+call, then the guest will be sitting there waiting for interrupts which
+have been disabled by the reset. It seems that as long as a guest is
+using the mdev, then management of its queues (i.e., reset) should be
+left to the guest. Unless there is something to reset as far as the
+mdev is concerned, maybe the response to the VFIO_RESET_DEVICE
+ioctl ought to be a NOP regardless of the value of ->kvm.
+
+>
+> Regards,
+> Halil
+
