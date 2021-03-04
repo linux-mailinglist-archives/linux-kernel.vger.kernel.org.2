@@ -2,129 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8A132C92B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A100832C936
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356912AbhCDBFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:05:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37486 "EHLO mail.kernel.org"
+        id S1377819AbhCDBFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:05:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1451919AbhCDAia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:38:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E40A64E2E;
-        Thu,  4 Mar 2021 00:37:50 +0000 (UTC)
+        id S1452924AbhCDAjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:39:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A2BA64E60;
+        Thu,  4 Mar 2021 00:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614818270;
-        bh=5mJSdAL1m93TawtdxGgGfy0hd3XakM/v/swDq+tcC2A=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=Ix/9s9IZksuoAZNpNZ3v6ulKtmlBLOytgzY/4YxEYlzpeiJyR9FukSYbv17e7rugh
-         6h40rWMNZs60xNiYX7rUkJDjkaiBBuX2wxVguNmvWJP7t+0eYKQaPqTCy53Nv9PFqN
-         LFYKIXusoo/lxDtliYSK6ioAWDxEfUGVBONr7jlB3Vi68bT+H4bUk4XX+aR5LmTB+J
-         8XQ2GXF+i+Chfx+eSRdwo1xi/Z4e7C/OJM5mzXECgJtNa7i7D6jqcL6cxcpVn8ozkO
-         CfcHqcOWvwkxHCyfxvx2runSZrDKyFaJKiUeX7QTK1ogyRfS/1e/++MmKv7Ke3Rcrd
-         u+XBbKBSYbL/g==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 683C23522591; Wed,  3 Mar 2021 16:37:50 -0800 (PST)
-Date:   Wed, 3 Mar 2021 16:37:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=k20201202; t=1614818294;
+        bh=J2KMfxZO5DQzJDG5W0hH05KLjhwBL0PXWzZdtf1orMQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XMXHyegzuK4OMeGL47zoatynas7JAdDe+nq/uYCR3yf/gespdOhcE6Pq/EUFq0pKe
+         XC11++DWn3NXAVsXTGRxFNx3ZFEJ4J2WFRuZ3geFth0B/MeN7VHxu5DVPiSTLptQMY
+         mt5ZWRpMfYOahWwJ3ZpvLHSh6j3w3iJmfmDaw2EDT9ZPhSu7aRyciplhejyWB82Jcj
+         W7svtP1PYbyrT8yOlU1ZQp00zkEqG1BhEtzb+2wvwJsXbQpPRSW4akUCuW37z/cqDv
+         xikY6itjf6U2Sg1vALgtwE0TW8HWB+TKo0w+asamUf6k8el0UzwAS0jkVa1/a1rfHI
+         wKbzm/9ntRbAQ==
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/28] Torture-test scripting updates for v5.13
-Message-ID: <20210304003750.GA24696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/28] torture: Move build/run synchronization files into scenario directories
+Date:   Wed,  3 Mar 2021 16:37:51 -0800
+Message-Id: <20210304003812.24833-7-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
+References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series contains updates to the torture-test scripting, perhaps most
-notably the addition of kvm-again.sh, which allows rerunning an earlier
-test without having to rebuild all the kernels.
+Currently the bN.ready and bN.wait files are placed in the
+rcutorture directory, which really is not at all a good place
+for run-specific files.  This commit therefore renames these
+files to build.ready and build.wait and then moves them into the
+scenario directories within the "res" directory, for example, into
+tools/testing/selftests/rcutorture/res/2021.02.10-15.08.23/TINY01.
 
-1.	Don't rerun failed rcutorture builds.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ .../selftests/rcutorture/bin/kvm-test-1-run.sh     | 25 +++++++++++-----------
+ tools/testing/selftests/rcutorture/bin/kvm.sh      | 10 ++++-----
+ 2 files changed, 16 insertions(+), 19 deletions(-)
 
-2.	Allow 1G of memory for torture.sh kvfree testing.
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 03c0410..91578d3 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -7,7 +7,7 @@
+ # Execute this in the source tree.  Do not run it as a background task
+ # because qemu does not seem to like that much.
+ #
+-# Usage: kvm-test-1-run.sh config builddir resdir seconds qemu-args boot_args_in
++# Usage: kvm-test-1-run.sh config resdir seconds qemu-args boot_args_in
+ #
+ # qemu-args defaults to "-enable-kvm -nographic", along with arguments
+ #			specifying the number of CPUs and other options
+@@ -35,8 +35,7 @@ mkdir $T
+ config_template=${1}
+ config_dir=`echo $config_template | sed -e 's,/[^/]*$,,'`
+ title=`echo $config_template | sed -e 's/^.*\///'`
+-builddir=${2}
+-resdir=${3}
++resdir=${2}
+ if test -z "$resdir" -o ! -d "$resdir" -o ! -w "$resdir"
+ then
+ 	echo "kvm-test-1-run.sh :$resdir: Not a writable directory, cannot store results into it"
+@@ -89,9 +88,9 @@ then
+ 	ln -s $base_resdir/Make*.out $resdir  # for kvm-recheck.sh
+ 	ln -s $base_resdir/.config $resdir  # for kvm-recheck.sh
+ 	echo Initial build failed, not running KVM, see $resdir.
+-	if test -f $builddir.wait
++	if test -f $resdir/build.wait
+ 	then
+-		mv $builddir.wait $builddir.ready
++		mv $resdir/build.wait $resdir/build.ready
+ 	fi
+ 	exit 1
+ elif kvm-build.sh $T/KcList $resdir
+@@ -118,23 +117,23 @@ else
+ 	# Build failed.
+ 	cp .config $resdir || :
+ 	echo Build failed, not running KVM, see $resdir.
+-	if test -f $builddir.wait
++	if test -f $resdir/build.wait
+ 	then
+-		mv $builddir.wait $builddir.ready
++		mv $resdir/build.wait $resdir/build.ready
+ 	fi
+ 	exit 1
+ fi
+-if test -f $builddir.wait
++if test -f $resdir/build.wait
+ then
+-	mv $builddir.wait $builddir.ready
++	mv $resdir/build.wait $resdir/build.ready
+ fi
+-while test -f $builddir.ready
++while test -f $resdir/build.ready
+ do
+ 	sleep 1
+ done
+-seconds=$4
+-qemu_args=$5
+-boot_args_in=$6
++seconds=$3
++qemu_args=$4
++boot_args_in=$5
+ 
+ if test -z "$TORTURE_BUILDONLY"
+ then
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 1de198d..7944510 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -444,7 +444,6 @@ function dump(first, pastlast, batchnum)
+ 	print "needqemurun="
+ 	jn=1
+ 	for (j = first; j < pastlast; j++) {
+-		builddir=KVM "/b" j - first + 1
+ 		cpusr[jn] = cpus[j];
+ 		if (cfrep[cf[j]] == "") {
+ 			cfr[jn] = cf[j];
+@@ -453,15 +452,15 @@ function dump(first, pastlast, batchnum)
+ 			cfrep[cf[j]]++;
+ 			cfr[jn] = cf[j] "." cfrep[cf[j]];
+ 		}
++		builddir=rd cfr[jn] "/build";
+ 		if (cpusr[jn] > ncpus && ncpus != 0)
+ 			ovf = "-ovf";
+ 		else
+ 			ovf = "";
+ 		print "echo ", cfr[jn], cpusr[jn] ovf ": Starting build. `date` | tee -a " rd "log";
+-		print "rm -f " builddir ".*";
+-		print "touch " builddir ".wait";
+ 		print "mkdir " rd cfr[jn] " || :";
+-		print "kvm-test-1-run.sh " CONFIGDIR cf[j], builddir, rd cfr[jn], dur " \"" TORTURE_QEMU_ARG "\" \"" TORTURE_BOOTARGS "\" > " rd cfr[jn]  "/kvm-test-1-run.sh.out 2>&1 &"
++		print "touch " builddir ".wait";
++		print "kvm-test-1-run.sh " CONFIGDIR cf[j], rd cfr[jn], dur " \"" TORTURE_QEMU_ARG "\" \"" TORTURE_BOOTARGS "\" > " rd cfr[jn]  "/kvm-test-1-run.sh.out 2>&1 &"
+ 		print "echo ", cfr[jn], cpusr[jn] ovf ": Waiting for build to complete. `date` | tee -a " rd "log";
+ 		print "while test -f " builddir ".wait"
+ 		print "do"
+@@ -471,7 +470,7 @@ function dump(first, pastlast, batchnum)
+ 		jn++;
+ 	}
+ 	for (j = 1; j < jn; j++) {
+-		builddir=KVM "/b" j
++		builddir=rd cfr[j] "/build";
+ 		print "rm -f " builddir ".ready"
+ 		print "if test -f \"" rd cfr[j] "/builtkernel\""
+ 		print "then"
+@@ -509,7 +508,6 @@ function dump(first, pastlast, batchnum)
+ 	print "\techo ---- No kernel runs. `date` | tee -a " rd "log";
+ 	print "fi"
+ 	for (j = 1; j < jn; j++) {
+-		builddir=KVM "/b" j
+ 		print "echo ----", cfr[j], cpusr[j] ovf ": Build/run results: | tee -a " rd "log";
+ 		print "cat " rd cfr[j]  "/kvm-test-1-run.sh.out | tee -a " rd "log";
+ 	}
+-- 
+2.9.5
 
-3.	Provide bare-metal modprobe-based advice.
-
-4.	Improve readability of the testid.txt file.
-
-5.	Disable verbose torture-test output.
-
-6.	Disable verbose torture-test output.
-
-7.	Move build/run synchronization files into scenario directories.
-
-8.	Use file-based protocol to mark batch's runs complete.
-
-9.	Use "jittering" file to control jitter.sh execution.
-
-10.	Eliminate jitter_pids file.
-
-11.	Reverse jittering and duration parameters for jitter.sh.
-
-12.	Abstract jitter.sh start/stop into scripts.
-
-13.	Record TORTURE_KCONFIG_GDB_ARG in qemu-cmd.
-
-14.	Extract kvm-test-1-run-qemu.sh from kvm-test-1-run.sh.
-
-15.	Record jitter start/stop commands.
-
-16.	Record kvm-test-1-run.sh and kvm-test-1-run-qemu.sh PIDs.
-
-17.	Remove no-mpstat error message.
-
-18.	Rename SRCU-t and SRCU-u to avoid lowercase characters.
-
-19.	Make upper-case-only no-dot no-slash scenario names official.
-
-20.	De-capitalize TORTURE_SUITE.
-
-21.	Create a "batches" file for build reuse.
-
-22.	Add kvm-again.sh to rerun a previous torture-test.
-
-23.	Add --duration argument to kvm-again.sh.
-
-24.	Make kvm-transform.sh update jitter commands.
-
-25.	Make TORTURE_TRUST_MAKE available in kvm-again.sh environment.
-
-26.	Print proper vmlinux path for kvm-again.sh runs.
-
-27.	Consolidate qemu-cmd duration editing into kvm-transform.sh.
-
-28.	Fix kvm.sh --datestamp regex check.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- bin/cpus2use.sh                   |    1 
- bin/jitter.sh                     |   16 +-
- bin/jitterstart.sh                |   37 ++++++
- bin/jitterstop.sh                 |   23 +++
- bin/kvm-again.sh                  |  213 +++++++++++++++++++++++++++++++++-
- bin/kvm-recheck.sh                |    2 
- bin/kvm-test-1-run-batch.sh       |   67 ++++++++++
- bin/kvm-test-1-run-qemu.sh        |  178 ++++++++++++++++++++++++++++-
- bin/kvm-test-1-run.sh             |  232 +++++++++++---------------------------
- bin/kvm-transform.sh              |   60 ++++++++-
- bin/kvm.sh                        |  114 +++++++++++-------
- bin/torture.sh                    |    2 
- configs/rcu/CFLIST                |    4 
- configs/rcu/SRCU-U                |    1 
- configs/rcuscale/ver_functions.sh |    2 
- configs/refscale/ver_functions.sh |    2 
- 16 files changed, 715 insertions(+), 239 deletions(-)
