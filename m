@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9237732CE9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB1E32CE9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbhCDIhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:37:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235938AbhCDIhI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:37:08 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B97C061574;
-        Thu,  4 Mar 2021 00:36:53 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id o38so18431245pgm.9;
-        Thu, 04 Mar 2021 00:36:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wN0+yJpnJV0AHl9c2ZtqFOBkFWkFdSUFj1zpgPWViM0=;
-        b=lOKRaFHSR1P8N8RKuxk7jWyJbP2uBPysGRaMX1NnlBLE2Liiwojhj2GEHmpJos3QyZ
-         kD8KeKXmz1vosiOswOJOmbJZQ4EseiVAmqLq01AEMU1e1hJpAGxs5WMO8LBR/jDybmFL
-         de40yfJaMb632r7UFvOpZv/XJ3raT4p8+BoprAp8TzmYPwK6ssWQsOhZe94QqGKL7NGh
-         /WPsC1nAUZPNfW/9iz7VOuZyYFyY2F/hKJznQ0qAfx5nmmF4pieZ1H3KMWnVl5JTKJpr
-         xIgBXDDnNRu4dpby9+1fLzeSGez2MfvEn3cXY8Kk7tW/4ObNUDfmhLH4XlOM+5DXCkKm
-         oaqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wN0+yJpnJV0AHl9c2ZtqFOBkFWkFdSUFj1zpgPWViM0=;
-        b=M6Qrj97mt3ONVX8R6pBu+ReO/s+e3SncaqY1hIdZRJnS0AqYpwnbMsP1uOyx0v8MU9
-         djcct9JbuZTQC2AX0rLmN03vlBhx1+ciHwpjHJ9WAdu/EJP2yIK4jvRXEEeh9qeD/CwP
-         Vaaxm+OfY7vdfkGnjPi4hU0CLVtVKzqhQkoVWeFrPJgg46CV8XHC27oBZMS/sw2zZ6AX
-         Uj+i4KLpqwzWGqnIuaa8beFIa5Rqx57XZvVm52xJRJdplwxzxo5EPdxbi+KOo5NhuKxP
-         l3kN8yAFv2iSYZ/w5XvAiQqkpSdUqZD0GP8D01NPkAnyMsFhos8oLZFL7VZWjWUPxJRA
-         KO9A==
-X-Gm-Message-State: AOAM533EWYEoYxohpShw8ihTEWioWOo/x5D/bY7TkJOpX+u5IYUaSvtI
-        3nVIA+fU57JNV3bO+khzef2KGDWOYLnrsz1u
-X-Google-Smtp-Source: ABdhPJy7XBa22ZhDakgenv4u4Th2RP1XVocpdj6b4KaUhdEoe4Ya6AvjhGgpnTcvZZ5HFmXVjutAXg==
-X-Received: by 2002:a62:cd:0:b029:1ef:55e:e374 with SMTP id 196-20020a6200cd0000b02901ef055ee374mr2985590pfa.31.1614847013185;
-        Thu, 04 Mar 2021 00:36:53 -0800 (PST)
-Received: from localhost.localdomain ([103.114.158.1])
-        by smtp.gmail.com with ESMTPSA id q2sm26283458pfu.215.2021.03.04.00.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 00:36:52 -0800 (PST)
-From:   zhaojiele <unclexiaole@gmail.com>
-To:     keescook@chromium.org, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhaojiele <unclexiaole@gmail.com>
-Subject: [PATCH] security/loadpin: Replace "kernel_read_file_str[j]" with function                   "kernel_read_file_id_str(j)".
-Date:   Thu,  4 Mar 2021 08:36:38 +0000
-Message-Id: <20210304083638.174767-1-unclexiaole@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S236191AbhCDIiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:38:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235938AbhCDIhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:37:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE66C64EFE;
+        Thu,  4 Mar 2021 08:37:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614847030;
+        bh=QT2ORfbTBUd5cxY+IDZbENy/xwp9khoZXS4cpegFUak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PvdOBBkBBhyRVWE2g/99cH+tHjhf1vd0QIKJdYhQgHPxIQHxx/qgZbzaUXfM0n9/l
+         cx86nfcgfooxXdYSmMn7meKQUJnJivFuG7nBqKzzyw5yC44M9sdVROGay1SzO6RMh6
+         UPiJnk1CS/gQD7fh/BN1GeJkp+m7dfHe1Ge6YbgE=
+Date:   Thu, 4 Mar 2021 09:37:07 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Qiang Ma <maqianga@uniontech.com>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] char: lp: remove redundant space
+Message-ID: <YECcMwNJiXo5D7Do@kroah.com>
+References: <20210304081752.23986-1-maqianga@uniontech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304081752.23986-1-maqianga@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Actually Linux kernel already provide function "kernel_read_file_id_str()"
-for secure access in "kernel_read_file.h".And, in "parse_exclude()"
-function, there is no need for
-"BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) <
-ARRAY_SIZE(ignore_read_file_id))"
-when access array by functon "kernel_read_file_id_str(j)".
+On Thu, Mar 04, 2021 at 04:17:52PM +0800, Qiang Ma wrote:
+> These two lines of code don't meet the kernel coding style,
+> so remove the redundant space.
+> 
+> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+> ---
+>  drivers/char/lp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/char/lp.c b/drivers/char/lp.c
+> index 862c2fd933c7..0e22e3b0a04e 100644
+> --- a/drivers/char/lp.c
+> +++ b/drivers/char/lp.c
+> @@ -546,7 +546,7 @@ static int lp_open(struct inode *inode, struct file *file)
+>  	}
+>  	/* Determine if the peripheral supports ECP mode */
+>  	lp_claim_parport_or_block(&lp_table[minor]);
+> -	if ( (lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
+> +	if ((lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
+>  	     !parport_negotiate(lp_table[minor].dev->port,
+>  				 IEEE1284_MODE_ECP)) {
+>  		printk(KERN_INFO "lp%d: ECP mode\n", minor);
+> @@ -590,7 +590,7 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
+>  		return -ENODEV;
+>  	if ((LP_F(minor) & LP_EXIST) == 0)
+>  		return -ENODEV;
+> -	switch ( cmd ) {
+> +	switch (cmd) {
+>  		case LPTIME:
+>  			if (arg > UINT_MAX / HZ)
+>  				return -EINVAL;
+> -- 
+> 2.20.1
+> 
+> 
+> 
 
-Signed-off-by: zhaojiele <unclexiaole@gmail.com>
----
- security/loadpin/loadpin.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/security/loadpin/loadpin.c b/security/loadpin/loadpin.c
-index b12f7d986b1e..3e8bdcd06600 100644
---- a/security/loadpin/loadpin.c
-+++ b/security/loadpin/loadpin.c
-@@ -210,8 +210,6 @@ static void __init parse_exclude(void)
- 	 */
- 	BUILD_BUG_ON(ARRAY_SIZE(exclude_read_files) !=
- 		     ARRAY_SIZE(ignore_read_file_id));
--	BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) <
--		     ARRAY_SIZE(ignore_read_file_id));
- 
- 	for (i = 0; i < ARRAY_SIZE(exclude_read_files); i++) {
- 		cur = exclude_read_files[i];
-@@ -221,9 +219,9 @@ static void __init parse_exclude(void)
- 			continue;
- 
- 		for (j = 0; j < ARRAY_SIZE(ignore_read_file_id); j++) {
--			if (strcmp(cur, kernel_read_file_str[j]) == 0) {
-+			if (strcmp(cur, kernel_read_file_id_str(j)) == 0) {
- 				pr_info("excluding: %s\n",
--					kernel_read_file_str[j]);
-+					kernel_read_file_id_str(j));
- 				ignore_read_file_id[j] = 1;
- 				/*
- 				 * Can not break, because one read_file_str
--- 
-2.25.1
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
