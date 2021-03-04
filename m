@@ -2,230 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761E332DA48
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5AF32DA5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbhCDTW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:22:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234242AbhCDTWW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:22:22 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5E2C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:21:41 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id p10so13771440ils.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:21:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=R5uvdWP3IXyJRb9GkUi22skzm53AYXgUrSMSuvQhHNE=;
-        b=J7EvIFn/UA7xzd5lnEBk2jqfskkcsSLAGRWrLw6IyvKIhdqCzXcbkvLB6N7EsV4JFC
-         3ZGrGucBMdsEj6Mcvzz14S/LaOzQn8QgtGFATtprYxQLiP4H2/9/F3XnoRzVu0lDNvAe
-         DlZyOrDz41O1tRISMYjGFetCK+7cytGC5F9hUN4MgYmjd9Y2MmZTrsBqExwMWa7OTXan
-         HAlvMYZifZXkdBw01nwRePO7Mp6aOzYPG+BpIepGtxoRrBdJ9gkD1+kVjD2xxAXurt4b
-         pnPlgaZyIvAzogPGXWq8j2+5t16ohare32L7NW+GWtvwiQ+9YkC/eP7KmocUvpwmXvhZ
-         AKLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=R5uvdWP3IXyJRb9GkUi22skzm53AYXgUrSMSuvQhHNE=;
-        b=EhX1exVapzFdpxKQEUAzdoeRJXRZM9tSucZ6RocHIcwmU8khvVLZcTmi6jJaZA2KQJ
-         6Ots++w0XbhWeX33tyYh0P1LkA9AwfkUr5IxOVs/YGejvasAOshy3a2TJwhORHcQE8Bz
-         vzgRgBvKUlRJaBxmR3rUHfeSx2foO96+OEQepNH8Fn/Tig0ay9ZJl1ZCg7c6lxR3WQnd
-         h8oTlqy0UeD4R9l0dG5dT/aftD70eTYpBQYIVREo3sFWNzBU4Nv/jmtD9ntLjeS/5fWw
-         G4Xk5x0O7N5H0efl7K9LWbnb7vdGhTT6RiHVBYgTxHu/i8oKsVQMRMTUuJYBU6S5Sytt
-         D/BA==
-X-Gm-Message-State: AOAM533o12REDbmph7B+JMk36+oxDvg4rWxZKOOTGLroa3eFVB5ts0iU
-        HkHvmFhr0z9Y7VEqAQ8NgxcvmZtGbr3p/emRDLk=
-X-Google-Smtp-Source: ABdhPJxFFZeMGka7A0ThckmzlKneMtP94EVDxnzXfu2Tnw+2EmKiCGTyl+GiSM0Q5gEeWusBD4HuIBLBkp/n2J8nRoU=
-X-Received: by 2002:a92:444e:: with SMTP id a14mr5157873ilm.215.1614885700730;
- Thu, 04 Mar 2021 11:21:40 -0800 (PST)
+        id S232525AbhCDT0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:26:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233627AbhCDT02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 14:26:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CD2A64F60;
+        Thu,  4 Mar 2021 19:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614885947;
+        bh=d5oyr0RbUTr11eGau8HQOa9mCj+ZMHZCRHmDN/GuD5o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eoTTgYBi5Y3qIoUH4K2ybb28vRP9ms605NREGXE9ltqXx1sIS6WNUyKEXteNnyJPy
+         eEfyhYFaf9li2Otd8xLVO7qcKq6MJIjSalFKpTMcq17zvI9cwWJKu5Vb5EFb/XYVCZ
+         2IhNMlyJJZIN8U3rm1c2NqktkoeCD+i0qn2po3eWk5i7wnVk5izKSyIF1LPV5o/s2B
+         4+q7xqXHuRHVQ0OjT47DYPDjKn2VxmZ9f8NWSo0KIZFDjJ5IHlICuwqRUoBEqS0RvA
+         8m5RZ0wJ8gGiEWFgJJycEvk9brxtFyGUFBb1kaXyBbB0CCMxFv+GreCHZ0D/QEfFtn
+         shJ9nsNOAfWxg==
+Date:   Thu, 4 Mar 2021 19:25:41 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org
+Subject: Re: [PATCH v3 16/32] KVM: arm64: Elevate hypervisor mappings
+ creation at EL2
+Message-ID: <20210304192540.GE21795@willie-the-truck>
+References: <20210302150002.3685113-1-qperret@google.com>
+ <20210302150002.3685113-17-qperret@google.com>
 MIME-Version: 1.0
-References: <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
- <20210303224653.2579656-1-joshdon@google.com> <CAKwvOdmijctJfM3gNfwEVjaQyp3LZkhnAwgsT7EBhsSBJyfLAA@mail.gmail.com>
- <CA+icZUUw0T2NpTcN4witbzYr1L7dF=rHKWq14ji_426G02QoEw@mail.gmail.com>
-In-Reply-To: <CA+icZUUw0T2NpTcN4witbzYr1L7dF=rHKWq14ji_426G02QoEw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 4 Mar 2021 20:21:03 +0100
-Message-ID: <CA+icZUVkvoAzpq383taD1Xg9F80odV-XfiTJCLF7x_b=_tGdXQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched: Optimize __calc_delta.
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Clement Courbet <courbet@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Bill Wendling <morbo@google.com>
-Content-Type: multipart/mixed; boundary="0000000000008c030c05bcbae088"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302150002.3685113-17-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000008c030c05bcbae088
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Mar 02, 2021 at 02:59:46PM +0000, Quentin Perret wrote:
+> Previous commits have introduced infrastructure to enable the EL2 code
+> to manage its own stage 1 mappings. However, this was preliminary work,
+> and none of it is currently in use.
+> 
+> Put all of this together by elevating the mapping creation at EL2 when
+> memory protection is enabled. In this case, the host kernel running
+> at EL1 still creates _temporary_ EL2 mappings, only used while
+> initializing the hypervisor, but frees them right after.
+> 
+> As such, all calls to create_hyp_mappings() after kvm init has finished
+> turn into hypercalls, as the host now has no 'legal' way to modify the
+> hypevisor page tables directly.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_mmu.h |  2 +-
+>  arch/arm64/kvm/arm.c             | 87 +++++++++++++++++++++++++++++---
+>  arch/arm64/kvm/mmu.c             | 43 ++++++++++++++--
+>  3 files changed, 120 insertions(+), 12 deletions(-)
 
-On Thu, Mar 4, 2021 at 7:24 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Thu, Mar 4, 2021 at 6:34 PM 'Nick Desaulniers' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > On Wed, Mar 3, 2021 at 2:48 PM Josh Don <joshdon@google.com> wrote:
-> > >
-> > > From: Clement Courbet <courbet@google.com>
-> > >
-> > > A significant portion of __calc_delta time is spent in the loop
-> > > shifting a u64 by 32 bits. Use `fls` instead of iterating.
-> > >
-> > > This is ~7x faster on benchmarks.
-> > >
-> > > The generic `fls` implementation (`generic_fls`) is still ~4x faster
-> > > than the loop.
-> > > Architectures that have a better implementation will make use of it. =
-For
-> > > example, on X86 we get an additional factor 2 in speed without dedica=
-ted
-> > > implementation.
-> > >
-> > > On gcc, the asm versions of `fls` are about the same speed as the
-> > > builtin. On clang, the versions that use fls are more than twice as
-> > > slow as the builtin. This is because the way the `fls` function is
-> > > written, clang puts the value in memory:
-> > > https://godbolt.org/z/EfMbYe. This bug is filed at
-> > > https://bugs.llvm.org/show_bug.cgi?id=3D49406.
-> >
-> > Hi Josh, Thanks for helping get this patch across the finish line.
-> > Would you mind updating the commit message to point to
-> > https://bugs.llvm.org/show_bug.cgi?id=3D20197?
-> >
-> > >
-> > > ```
-> > > name                                   cpu/op
-> > > BM_Calc<__calc_delta_loop>             9.57ms =C2=B112%
-> > > BM_Calc<__calc_delta_generic_fls>      2.36ms =C2=B113%
-> > > BM_Calc<__calc_delta_asm_fls>          2.45ms =C2=B113%
-> > > BM_Calc<__calc_delta_asm_fls_nomem>    1.66ms =C2=B112%
-> > > BM_Calc<__calc_delta_asm_fls64>        2.46ms =C2=B113%
-> > > BM_Calc<__calc_delta_asm_fls64_nomem>  1.34ms =C2=B115%
-> > > BM_Calc<__calc_delta_builtin>          1.32ms =C2=B111%
-> > > ```
-> > >
-> > > Signed-off-by: Clement Courbet <courbet@google.com>
-> > > Signed-off-by: Josh Don <joshdon@google.com>
-> > > ---
-> > >  kernel/sched/fair.c  | 19 +++++++++++--------
-> > >  kernel/sched/sched.h |  1 +
-> > >  2 files changed, 12 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 8a8bd7b13634..a691371960ae 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -229,22 +229,25 @@ static void __update_inv_weight(struct load_wei=
-ght *lw)
-> > >  static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct=
- load_weight *lw)
-> > >  {
-> > >         u64 fact =3D scale_load_down(weight);
-> > > +       u32 fact_hi =3D (u32)(fact >> 32);
-> > >         int shift =3D WMULT_SHIFT;
-> > > +       int fs;
-> > >
-> > >         __update_inv_weight(lw);
-> > >
-> > > -       if (unlikely(fact >> 32)) {
-> > > -               while (fact >> 32) {
-> > > -                       fact >>=3D 1;
-> > > -                       shift--;
-> > > -               }
-> > > +       if (unlikely(fact_hi)) {
-> > > +               fs =3D fls(fact_hi);
-> > > +               shift -=3D fs;
-> > > +               fact >>=3D fs;
-> > >         }
-> > >
-> > >         fact =3D mul_u32_u32(fact, lw->inv_weight);
-> > >
-> > > -       while (fact >> 32) {
-> > > -               fact >>=3D 1;
-> > > -               shift--;
-> > > +       fact_hi =3D (u32)(fact >> 32);
-> > > +       if (fact_hi) {
-> > > +               fs =3D fls(fact_hi);
-> > > +               shift -=3D fs;
-> > > +               fact >>=3D fs;
-> > >         }
-> > >
-> > >         return mul_u64_u32_shr(delta_exec, fact, shift);
-> > > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > > index 10a1522b1e30..714af71cf983 100644
-> > > --- a/kernel/sched/sched.h
-> > > +++ b/kernel/sched/sched.h
-> > > @@ -36,6 +36,7 @@
-> > >  #include <uapi/linux/sched/types.h>
-> > >
-> > >  #include <linux/binfmts.h>
-> > > +#include <linux/bitops.h>
-> >
-> > This hunk of the patch is curious.  I assume that bitops.h is needed
-> > for fls(); if so, why not #include it in kernel/sched/fair.c?
-> > Otherwise this potentially hurts compile time for all TUs that include
-> > kernel/sched/sched.h.
-> >
->
-> I have v2 as-is in my custom patchset and booted right now on bare metal.
->
-> As Nick points out moving the include makes sense to me.
-> We have a lot of include at the wrong places increasing build-time.
->
+[...]
 
-I tried with the attached patch.
+> @@ -1489,13 +1497,14 @@ static void cpu_hyp_reinit(void)
+>  	kvm_init_host_cpu_context(&this_cpu_ptr_hyp_sym(kvm_host_data)->host_ctxt);
+>  
+>  	cpu_hyp_reset();
+> -	cpu_set_hyp_vector();
+>  
+>  	if (is_kernel_in_hyp_mode())
+>  		kvm_timer_init_vhe();
+>  	else
+>  		cpu_init_hyp_mode();
+>  
+> +	cpu_set_hyp_vector();
+> +
+>  	kvm_arm_init_debug();
+>  
+>  	if (vgic_present)
+> @@ -1691,18 +1700,59 @@ static void teardown_hyp_mode(void)
+>  	}
+>  }
+>  
+> +static int do_pkvm_init(u32 hyp_va_bits)
+> +{
+> +	void *per_cpu_base = kvm_ksym_ref(kvm_arm_hyp_percpu_base);
+> +	int ret;
+> +
+> +	preempt_disable();
+> +	hyp_install_host_vector();
 
-$ LC_ALL=3DC ll kernel/sched/fair.o
--rw-r--r-- 1 dileks dileks 1.2M Mar  4 20:11 kernel/sched/fair.o
+It's a shame we need this both here _and_ on the reinit path, but it looks
+like it's necessary.
 
-- Sedat -
+> +	ret = kvm_call_hyp_nvhe(__pkvm_init, hyp_mem_base, hyp_mem_size,
+> +				num_possible_cpus(), kern_hyp_va(per_cpu_base),
+> +				hyp_va_bits);
+> +	preempt_enable();
+> +
+> +	return ret;
+> +}
 
---0000000000008c030c05bcbae088
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-sched-fair-Move-include-after-__calc_delta-optimizat.patch"
-Content-Disposition: attachment; 
-	filename="0001-sched-fair-Move-include-after-__calc_delta-optimizat.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_klv969x50>
-X-Attachment-Id: f_klv969x50
+[...]
 
-RnJvbSBhZmQ0NWNkNzhjMjE5NjBjNmU5MzcwMjFmMDk1ZTVmOGY1MWZlZjdhIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBTZWRhdCBEaWxlayA8c2VkYXQuZGlsZWtAZ21haWwuY29tPgpE
-YXRlOiBUaHUsIDQgTWFyIDIwMjEgMjA6MDU6MzAgKzAxMDAKU3ViamVjdDogW1BBVENIXSBzY2hl
-ZC9mYWlyOiBNb3ZlIGluY2x1ZGUgYWZ0ZXIgX19jYWxjX2RlbHRhIG9wdGltaXphdGlvbgogY2hh
-bmdlCgpTaWduZWQtb2ZmLWJ5OiBTZWRhdCBEaWxlayA8c2VkYXQuZGlsZWtAZ21haWwuY29tPgot
-LS0KIGtlcm5lbC9zY2hlZC9mYWlyLmMgIHwgMiArKwoga2VybmVsL3NjaGVkL3NjaGVkLmggfCAx
-IC0KIDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZm
-IC0tZ2l0IGEva2VybmVsL3NjaGVkL2ZhaXIuYyBiL2tlcm5lbC9zY2hlZC9mYWlyLmMKaW5kZXgg
-NWZkYTE3NTFmYmQxLi5iOWYxMGFlOTJlM2YgMTAwNjQ0Ci0tLSBhL2tlcm5lbC9zY2hlZC9mYWly
-LmMKKysrIGIva2VybmVsL3NjaGVkL2ZhaXIuYwpAQCAtMjAsNiArMjAsOCBAQAogICogIEFkYXB0
-aXZlIHNjaGVkdWxpbmcgZ3JhbnVsYXJpdHksIG1hdGggZW5oYW5jZW1lbnRzIGJ5IFBldGVyIFpp
-amxzdHJhCiAgKiAgQ29weXJpZ2h0IChDKSAyMDA3IFJlZCBIYXQsIEluYy4sIFBldGVyIFppamxz
-dHJhCiAgKi8KKyNpbmNsdWRlIDxsaW51eC9iaXRvcHMuaD4KKwogI2luY2x1ZGUgInNjaGVkLmgi
-CiAKIC8qCmRpZmYgLS1naXQgYS9rZXJuZWwvc2NoZWQvc2NoZWQuaCBiL2tlcm5lbC9zY2hlZC9z
-Y2hlZC5oCmluZGV4IDcxNGFmNzFjZjk4My4uMTBhMTUyMmIxZTMwIDEwMDY0NAotLS0gYS9rZXJu
-ZWwvc2NoZWQvc2NoZWQuaAorKysgYi9rZXJuZWwvc2NoZWQvc2NoZWQuaApAQCAtMzYsNyArMzYs
-NiBAQAogI2luY2x1ZGUgPHVhcGkvbGludXgvc2NoZWQvdHlwZXMuaD4KIAogI2luY2x1ZGUgPGxp
-bnV4L2JpbmZtdHMuaD4KLSNpbmNsdWRlIDxsaW51eC9iaXRvcHMuaD4KICNpbmNsdWRlIDxsaW51
-eC9ibGtkZXYuaD4KICNpbmNsdWRlIDxsaW51eC9jb21wYXQuaD4KICNpbmNsdWRlIDxsaW51eC9j
-b250ZXh0X3RyYWNraW5nLmg+Ci0tIAoyLjMwLjEKCg==
---0000000000008c030c05bcbae088--
+>  /**
+>   * Inits Hyp-mode on all online CPUs
+>   */
+>  static int init_hyp_mode(void)
+>  {
+> +	u32 hyp_va_bits;
+>  	int cpu;
+> -	int err = 0;
+> +	int err = -ENOMEM;
+> +
+> +	/*
+> +	 * The protected Hyp-mode cannot be initialized if the memory pool
+> +	 * allocation has failed.
+> +	 */
+> +	if (is_protected_kvm_enabled() && !hyp_mem_base)
+> +		return err;
+
+This skips the error message you get on the out_err path.
+
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 4d41d7838d53..9d331bf262d2 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -221,15 +221,39 @@ void free_hyp_pgds(void)
+>  	if (hyp_pgtable) {
+>  		kvm_pgtable_hyp_destroy(hyp_pgtable);
+>  		kfree(hyp_pgtable);
+> +		hyp_pgtable = NULL;
+>  	}
+>  	mutex_unlock(&kvm_hyp_pgd_mutex);
+>  }
+>  
+> +static bool kvm_host_owns_hyp_mappings(void)
+> +{
+> +	if (static_branch_likely(&kvm_protected_mode_initialized))
+> +		return false;
+> +
+> +	/*
+> +	 * This can happen at boot time when __create_hyp_mappings() is called
+> +	 * after the hyp protection has been enabled, but the static key has
+> +	 * not been flipped yet.
+> +	 */
+> +	if (!hyp_pgtable && is_protected_kvm_enabled())
+> +		return false;
+> +
+> +	WARN_ON(!hyp_pgtable);
+> +
+> +	return true;
+
+	return !(WARN_ON(!hyp_pgtable) && is_protected_kvm_enabled());
+
+?
+
+Will
