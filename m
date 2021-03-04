@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C6132CBC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578EE32CBC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCDFII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 00:08:08 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51176 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229821AbhCDFHr (ORCPT
+        id S229815AbhCDFHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 00:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229760AbhCDFHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 00:07:47 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12454YTg108576;
-        Thu, 4 Mar 2021 00:06:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=GvTvcQh8ZmGRBvcbN8FU2esn77qUwnrliGZ1mGWZUIc=;
- b=G9ZBPIHy3+Mr1swi5UO4Y4C7H7TAxx58Y095yel27yD9JK+4m55n3gGSossuMsenlruI
- PCujk4P1JdW4TtP+SG+tPuf/8yrf+HMNiGFMFZHm8ZPb0Ma7yOiM24hmUQX7SUqy+XUa
- 6MoElapT12lME5Nxe2Xqal5TNTqEkvJqmRZX0b7nMxBAW3mFZSRvJdlXZdnr+loMBBO+
- Fe6pjj/hgnHl82Z/ARHVG7UsBBL9iPrRUI8egWGA1DKadO+M6IosCTkynpQeA+R60R4T
- 1pZ83Fh+241HEIw4BWXwstgSslz2UmqEgCzoLCl9ce9x4P8by/uvs/58V7MzU/8/qfVk ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372rk4rr2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 00:06:28 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12455GJQ111830;
-        Thu, 4 Mar 2021 00:06:27 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372rk4rr25-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 00:06:27 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1244vleI032159;
-        Thu, 4 Mar 2021 05:06:25 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 37293frpwa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 05:06:25 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124568FY35127622
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 4 Mar 2021 05:06:08 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A11211C04C;
-        Thu,  4 Mar 2021 05:06:22 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E403A11C052;
-        Thu,  4 Mar 2021 05:06:19 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.37.77])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  4 Mar 2021 05:06:19 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     mpe@ellerman.id.au
-Cc:     ravi.bangoria@linux.ibm.com, oleg@redhat.com, rostedt@goodmis.org,
-        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] powerpc/uprobes: Validation for prefixed instruction
-Date:   Thu,  4 Mar 2021 10:35:29 +0530
-Message-Id: <20210304050529.59391-1-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 4 Mar 2021 00:07:05 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E826DC061574;
+        Wed,  3 Mar 2021 21:06:24 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d8so5030975plg.10;
+        Wed, 03 Mar 2021 21:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=emvx6EGccNj6Ydsl4VIT/MapySsYN/1eggzsPky2Bqg=;
+        b=AlGlq+xLEuvo/Vc+kPNJEBcVKI/sHnodi8Jx8UTm4EaWSUtECl+ig6dpsb2yNshbXH
+         P627aXAL3t6+GWqIWlyn/c76pLoZcKFxde/drVkpjKfo4fF/rkMZ394mO8FKvXGz+H4j
+         pcKhEwQR7VfbE4H2XnDVSJK4Up/gwTqx3OenSIj5l1yXSj5pZY4XIHkmh0tVuqkApwc3
+         qJZ8Bsj43FKTseZRq+ks68ssiovr2xsMWf6IF7aMD0UiwQ1WCkMsD6w6eU5drZvOKDhM
+         KfM3J8w7XzM+QfvnB9EANNKG/FYPMPsGv2IlJIlaY57KoHPhCjeb8r75fS3pVYdS5eW7
+         arTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=emvx6EGccNj6Ydsl4VIT/MapySsYN/1eggzsPky2Bqg=;
+        b=P/amwh10QL1V90mkvxaeDWV5Uir0jERBYZOOlvTgMkJyVNqoWCogCX1RbgZs8HmLnb
+         r2bFDV3YRbfL5aQYfPyKGRGIPfaBeaRuhbk1d7FOE2Hi5lRVlSto7esUQIeogNkh94Y9
+         k0xXeUHwcjWcqyGFO5bxIZuBWMdDdqYwoY3iRDtqPfJtS2a14V8jngRI016fG6A+CTzR
+         Lhze9+jHt1rzhYntkWVLQBPax/tkt8e6EM/E+h8kLx9W24wmmuDtEWQ+dOAxjrzk3jWe
+         KC80i/wHaVEAsl1qxiwj2aMOb78UThF8nX1521XdP51k4ggXe0eGJZ6racsjoZUD9yhM
+         QQjA==
+X-Gm-Message-State: AOAM532MaIQSt10ucKlTG/ngrSEHqNBrNvDBGdSFtlTH7OEGEswMuo7t
+        kbb8m0mnfsA0fMvaInVSkLY=
+X-Google-Smtp-Source: ABdhPJzjrm43e7Byowg0g5bCTtT6JJKmNM5oQ0ifxTHweqTpc+KNPB9SmA1zgtUxtn+T2FeMn1vjAQ==
+X-Received: by 2002:a17:90a:a384:: with SMTP id x4mr2648884pjp.84.1614834384259;
+        Wed, 03 Mar 2021 21:06:24 -0800 (PST)
+Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
+        by smtp.gmail.com with ESMTPSA id a3sm433368pfi.206.2021.03.03.21.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 21:06:22 -0800 (PST)
+Date:   Thu, 4 Mar 2021 16:06:19 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
+        david@redhat.com, naoya.horiguchi@nec.com,
+        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: Re: [PATCH v17 2/9] mm: hugetlb: introduce a new config
+ HUGETLB_PAGE_FREE_VMEMMAP
+Message-ID: <20210304050619.GC1223287@balbir-desktop>
+References: <20210225132130.26451-1-songmuchun@bytedance.com>
+ <20210225132130.26451-3-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-04_01:2021-03-03,2021-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 adultscore=0 malwarescore=0 clxscore=1011 suspectscore=0
- lowpriorityscore=0 spamscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103040020
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225132130.26451-3-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per ISA 3.1, prefixed instruction should not cross 64-byte
-boundary. So don't allow Uprobe on such prefixed instruction.
+On Thu, Feb 25, 2021 at 09:21:23PM +0800, Muchun Song wrote:
+> The option HUGETLB_PAGE_FREE_VMEMMAP allows for the freeing of
+> some vmemmap pages associated with pre-allocated HugeTLB pages.
+> For example, on X86_64 6 vmemmap pages of size 4KB each can be
+> saved for each 2MB HugeTLB page. 4094 vmemmap pages of size 4KB
+> each can be saved for each 1GB HugeTLB page.
+> 
+> When a HugeTLB page is allocated or freed, the vmemmap array
+> representing the range associated with the page will need to be
+> remapped. When a page is allocated, vmemmap pages are freed
+> after remapping. When a page is freed, previously discarded
+> vmemmap pages must be allocated before remapping.
+> 
+> The config option is introduced early so that supporting code
+> can be written to depend on the option. The initial version of
+> the code only provides support for x86-64.
+> 
+> Like other code which frees vmemmap, this config option depends on
+> HAVE_BOOTMEM_INFO_NODE. The routine register_page_bootmem_info() is
+> used to register bootmem info. Therefore, make sure
+> register_page_bootmem_info is enabled if HUGETLB_PAGE_FREE_VMEMMAP
+> is defined.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
 
-There are two ways probed instruction is changed in mapped pages.
-First, when Uprobe is activated, it searches for all the relevant
-pages and replace instruction in them. In this case, if that probe
-is on the 64-byte unaligned prefixed instruction, error out
-directly. Second, when Uprobe is already active and user maps a
-relevant page via mmap(), instruction is replaced via mmap() code
-path. But because Uprobe is invalid, entire mmap() operation can
-not be stopped. In this case just print an error and continue.
-
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
-v2: https://lore.kernel.org/r/20210204104703.273429-1-ravi.bangoria@linux.ibm.com
-v2->v3:
-  - Drop restriction for Uprobe on suffix of prefixed instruction.
-    It needs lot of code change including generic code but what
-    we get in return is not worth it.
-
- arch/powerpc/kernel/uprobes.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
-index e8a63713e655..c400971ebe70 100644
---- a/arch/powerpc/kernel/uprobes.c
-+++ b/arch/powerpc/kernel/uprobes.c
-@@ -41,6 +41,14 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
- 	if (addr & 0x03)
- 		return -EINVAL;
- 
-+	if (!IS_ENABLED(CONFIG_PPC64) || !cpu_has_feature(CPU_FTR_ARCH_31))
-+		return 0;
-+
-+	if (ppc_inst_prefixed(auprobe->insn) && (addr & 0x3F) == 0x3C) {
-+		pr_info_ratelimited("Cannot register a uprobe on 64 byte unaligned prefixed instruction\n");
-+		return -EINVAL;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.27.0
-
+Reviewed-by: Balbir Singh <bsingharora@gmail.com>
