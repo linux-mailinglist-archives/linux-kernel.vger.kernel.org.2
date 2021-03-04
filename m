@@ -2,60 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2081832DBAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E4732DBAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239354AbhCDVRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:17:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41532 "EHLO mail.kernel.org"
+        id S239388AbhCDVSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:18:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51908 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234894AbhCDVRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:17:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 41D8264FE9;
-        Thu,  4 Mar 2021 21:16:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614892600;
-        bh=cuT3N1LMmVnp/etZDRus0pCM8J/fko76QJcojRdcQZY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=lNaYjKM0KjilalgC8bjPRu+XoaLYbBqkngxvxDac3ww7nhqHPatJmH+mkVebyoSPA
-         6ZOqEjPKtROy5g1/fBkfDmkyHnKsYaCjmt3qC85XQSZz1pRssXQn9vKBPwK8lGAmk3
-         XI98L71b+D+OATZMkyDzhYgBcmpbysw/3XwLt1QijtaBR35HS7zWFaedUXgQMBs+5b
-         dftsvbr2V5jrRbMALESEhMiGPjRB7tzYrDmk78YpacGbVKvRy3wIQ+Ci8R4tuj/MAd
-         nRty57GbZ3zG+ehk9IoGWJ/ntMLj4o1OKZy+H6dhzj5WzJKZqxT7zQ72nL6Q06MbWw
-         y3Sh44N5cHq/g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 329B3600DF;
-        Thu,  4 Mar 2021 21:16:40 +0000 (UTC)
-Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.12-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YD+wyJzpguBWP33i@kernel.org>
-References: <YD+wyJzpguBWP33i@kernel.org>
-X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YD+wyJzpguBWP33i@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.12-rc2
-X-PR-Tracked-Commit-Id: 232a37ea3aee9cb37bbc154fb1440a66ae4743f4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3cb60ee6323968b694208c4cbd56a7176396e931
-Message-Id: <161489260014.11784.3671916755358918237.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Mar 2021 21:16:40 +0000
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
+        id S234894AbhCDVR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 16:17:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614892629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/tZ880Yp/AKHzG1rpWeDp9V30VjIiNL6pvc/O/61Sck=;
+        b=nCoW2/W4dLR8+pG1rRhirVZ+Z9b+K4gJulKogHhl2KxAUI3Q1MY/2G1W7U3tCZTIOMpHPF
+        5vl7YKo1McvzNVmkXuYzU77vtyz+lrpGiKEy9WprGWE8uPhkWUWnlXAT64Z9QIcOQJ276K
+        hQIubeeMqKJtIEjp+l2+3+97NKjOUi8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 88BD6AFB0;
+        Thu,  4 Mar 2021 21:17:09 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 22:17:08 +0100
+From:   Anthony Iliopoulos <ailiop@suse.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH STABLE 5.10 5.11] swap: fix swapfile page to sector
+ mapping
+Message-ID: <YEFOVDk1bTgrw6bt@technoir>
+References: <20210304150824.29878-1-ailiop@suse.com>
+ <20210304150824.29878-5-ailiop@suse.com>
+ <YED5ypwsrExHWD7N@kroah.com>
+ <YEELCJkGx78SP34d@technoir>
+ <YEERyfs8QSB5lGVz@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEERyfs8QSB5lGVz@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 3 Mar 2021 17:52:40 +0200:
+On Thu, Mar 04, 2021 at 05:58:49PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Mar 04, 2021 at 05:30:00PM +0100, Anthony Iliopoulos wrote:
+> > On Thu, Mar 04, 2021 at 04:16:26PM +0100, Greg Kroah-Hartman wrote:
+> > > On Thu, Mar 04, 2021 at 04:08:24PM +0100, Anthony Iliopoulos wrote:
+> > > > commit caf6912f3f4af7232340d500a4a2008f81b93f14 upstream.
+> > > 
+> > > No, this does not look like that commit.
+> > > 
+> > > Why can I not just take caf6912f3f4a ("swap: fix swapfile read/write
+> > > offset") directly for 5.10 and 5.11?  WHat has changed to prevent that?
+> > 
+> > You're right of course, the upstream fix applies even on v5.4 so you
+> > could just take it directly for those branches if this is preferable.
+> 
+> But, that commit says it fixes 48d15436fde6 ("mm: remove get_swap_bio"),
+> which is NOT what you are saying here in these patches.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.12-rc2
+It is admittedly a bit confusing as the upstream commit fixes two issues
+in one swoop:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3cb60ee6323968b694208c4cbd56a7176396e931
+- the bug which was introduced in v5.12-rc1 via 48d15436fde6 ("mm:
+  remove get_swap_bio"), which affected swapfiles running on regular
+  block devices, in addition to:
 
-Thank you!
+- an identical bug which up until 48d15436fde6 was only applicable to
+  swapfiles on top of blockdevs that can do page io without the block
+  layer, which was introduced with dd6bd0d9c7db ("swap: use
+  bdev_read_page() / bdev_write_page()")
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> So which is it?  Is there a problem in 5.11 and older kernels
+> (48d15436fde6 ("mm: remove get_swap_bio") showed up in 5.12-rc1), that
+> requires this fix, or is there nothing needed to be backported?
+
+The second point/bug mentioned above is present on 5.11 and all older
+kernels, so some form of this fix is required.
+
+> As a note, I've been running swapfiles on 5.11 and earlier just fine for
+> a very long time now, so is this really an issue?
+
+Yes there is an issue on all kernels since v3.16-rc1 when dd6bd0d9c7db
+was introduced, but it is applicable only to setups with swapfiles on
+filesystems sitting on top of brd, zram, btt or pmem.
+
+I can trivially reproduce this e.g. on v5.11 by creating a swapfile on
+top of a zram or pmem blockdev and pushing the system to swap out pages,
+at which point it corrupts filesystem blocks that don't belong to the
+swapfile.
+
+Regards,
+Anthony
