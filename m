@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB4432CB67
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A2A32CB6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233158AbhCDEdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:33:13 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:43701 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbhCDEdA (ORCPT
+        id S233208AbhCDEfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233163AbhCDEfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:33:00 -0500
-Received: by mail-io1-f69.google.com with SMTP id d8so20658462ion.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 20:32:45 -0800 (PST)
+        Wed, 3 Mar 2021 23:35:01 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F03C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 20:34:20 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q204so16960607pfq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 20:34:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2hLtjNljNetAkSmo/iHqzzoKnA6pftypZoUWx6FurU=;
+        b=rHqw52UXPF+xdckDBtcyZS3CUYmrMbR3cobcppf35CgyssREqhhCCwzCsoQZc4NiZk
+         thNRdQ4UpMHDphFBeVbcomsCvqOTzmIkp5EV5AmHo23rKGxgVtKNpQQrh7cEzlKrOw6I
+         DEANoc+W9nbATxuLvHTLq54zAAz2jQkvmUJ76Nw/RtPA/5GSq8350zOWNp4fiWBte4/u
+         uuvPjOWfas7a1qQt7pIrIdaaMM+H2o+TChOUmpOhj49HGc9KBDQkciKtQu1on9O23+8f
+         NXSz0J9ZOM3Tf5Er0EkGVlbCpOuTA3XRxI8b3KTG/oxlIRbaPvdlTqYGAkZDHIcs64nt
+         fVCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=438ryhskUK23Uad5Y6ZFyNz3as0ZaRCtJbK9Brlm7wg=;
-        b=H47TZ4G3bGcjwG5gFlX1z9tDyXnXHltd9438l8TQX7NmfQFkqGST+pgZXokK13wJSt
-         vW8RmRPfVNOWiG9S2b8ViTRxZ0+7p9NroWO0OdvIkNuHkccHI/qjjrZP3g1pxdmlbJJw
-         t2OsrRk36rEJs8NL2XMo47J9MJE9n1+p/bcL6EMTclj/w8IGHKbqJu59k5mtkq9p7fNu
-         /N9b3JgxbdIM//XAjHSyptWDkpUjYI/Z6Fl8TzPzUsccP8p1BpB2wn25IglU1MxLYHDk
-         HPhLyWCqG6R5dvvQTQX0pbLkd8Nu1/GcQloUBkb0m0HWwoW9ZbveF3/EU4+Ovcwf1ZmY
-         tHgA==
-X-Gm-Message-State: AOAM532eaLmsvXnoxgL54qG9MNsfxPWftKEik/2YL1ro1x2cIT+jWLRA
-        7NgrEG+buRlL0CIFdDbIF4MHPOS1TUP6fAzS4P5xEM0qcMs+
-X-Google-Smtp-Source: ABdhPJyU3YrzRSC8SrKnWA0f9PvpaP56ILm6xqVpMCk15bxQpZFe7WB7bWcEea3qVxtjZO0AFUGaMHAn8O4QplNojp6/I3QR2OOv
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A2hLtjNljNetAkSmo/iHqzzoKnA6pftypZoUWx6FurU=;
+        b=cEOrKqH/CW1Yqm5Z8tBaVWj5LVkUoY5NC8c0M1p74R3PvE9MVn4ksx5TGQ3gcqS3NL
+         +hXmXtOiIWPou4IwYlzaL4mM11GTxXIxxEWwXuSpc0EVRONOW0EWLYuxBWN+AyyoTBcu
+         I1gfbB4OuqzBBmvCXZTXTBqqP72Abt8AeJ2Z/pBGRixP+2I8FvT8gb6y7aGR/5W/tsxE
+         Xn7FjHDL7T3fgZAoTR7VLgNePjpIbCL4xoQFiy/DjD3o/7mFQEw+33Vy2nKUz7+jCRbv
+         acbho3cdhl7hI3Z/sdroWpo3b1GsiTxcKQ+kHXJmiVZ3XY+icn2sqZOwWMrFaZqspVYg
+         6shw==
+X-Gm-Message-State: AOAM5307eQ1fjDcl11JwUMLYU/vX2Yv9+c2yN/q04GlyZZLHyAz3+bTx
+        f+T8DCYAkA3kStiWmAGd00o=
+X-Google-Smtp-Source: ABdhPJxq/ac63Tv3Iihf95Hb63XawyRjE/7qX7mVuyui7LWCpQaK9Sh8ZV3ZihWeAmnZyTRACyOg4Q==
+X-Received: by 2002:aa7:900e:0:b029:1ee:14ea:f719 with SMTP id m14-20020aa7900e0000b02901ee14eaf719mr2115641pfo.46.1614832460444;
+        Wed, 03 Mar 2021 20:34:20 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id ha8sm7709078pjb.6.2021.03.03.20.34.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 20:34:19 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: zhang.yunkai@zte.com.cn
+To:     svaidy@linux.ibm.com
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@csgroup.eu, rppt@kernel.org,
+        akpm@linux-foundation.org, jniethe5@gmail.com,
+        elfring@users.sourceforge.net, gregkh@linuxfoundation.org,
+        aneesh.kumar@linux.ibm.com, ganeshgr@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Subject: [PATCH] arch:powerpc:kernel: remove duplicate include in setup-common
+Date:   Wed,  3 Mar 2021 20:34:12 -0800
+Message-Id: <20210304043412.190085-1-zhang.yunkai@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:cc1b:: with SMTP id n27mr2336010jap.106.1614832339741;
- Wed, 03 Mar 2021 20:32:19 -0800 (PST)
-Date:   Wed, 03 Mar 2021 20:32:19 -0800
-In-Reply-To: <000000000000de949705bc59e0f6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fb718e05bcae7372@google.com>
-Subject: Re: general protection fault in crypto_destroy_tfm
-From:   syzbot <syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, ardb@kernel.org, davem@davemloft.net,
-        ebiggers@google.com, ebiggers@kernel.org,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, paskripkin@gmail.com,
-        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-HEAD commit:    d310ec03 Merge tag 'perf-core-2021-02-17' of git://git.ker..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13e7a292d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8307379601586a
-dashboard link: https://syzkaller.appspot.com/bug?extid=12cf5fbfdeba210a89dd
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103b89b6d00000
+'asm/udbg.h' included in 'setup-common.c' is duplicated.
+It is also included in the 61th line.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+---
+ arch/powerpc/kernel/setup-common.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 0 PID: 9813 Comm: syz-executor.2 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:crypto_destroy_tfm+0x38/0x210 crypto/api.c:568
-Code: f5 53 e8 ab c9 dd fd 4d 85 ed 0f 84 a2 00 00 00 e8 9d c9 dd fd 4c 8d 75 10 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 8c 01 00 00 4c 8d 7d 08 4c 8b 65 10 48 b8 00 00
-RSP: 0018:ffffc9000adff360 EFLAGS: 00010203
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: ffffffff83951013 RDI: fffffffffffffffe
-RBP: 0000000000000006 R08: fffffffffffff000 R09: ffffffff8fa99847
-R10: ffffffff8891f97e R11: 0000000000000000 R12: ffff8880133ed000
-R13: fffffffffffffffe R14: 0000000000000016 R15: fffffffffffffffe
-FS:  00007f0265ee2700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000002631b000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- crypto_free_aead include/crypto/aead.h:191 [inline]
- llsec_key_alloc net/mac802154/llsec.c:156 [inline]
- mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
- ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
- rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
- nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2348
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2402
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2435
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465ef9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0265ee2188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 0000000000465ef9
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
-RBP: 00000000004bfa34 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
-R13: 00007fff0057718f R14: 00007f0265ee2300 R15: 0000000000022000
-Modules linked in:
----[ end trace 8a3ba3ae0abac852 ]---
-RIP: 0010:crypto_destroy_tfm+0x38/0x210 crypto/api.c:568
-Code: f5 53 e8 ab c9 dd fd 4d 85 ed 0f 84 a2 00 00 00 e8 9d c9 dd fd 4c 8d 75 10 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 8c 01 00 00 4c 8d 7d 08 4c 8b 65 10 48 b8 00 00
-RSP: 0018:ffffc9000adff360 EFLAGS: 00010203
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: ffffffff83951013 RDI: fffffffffffffffe
-RBP: 0000000000000006 R08: fffffffffffff000 R09: ffffffff8fa99847
-R10: ffffffff8891f97e R11: 0000000000000000 R12: ffff8880133ed000
-R13: fffffffffffffffe R14: 0000000000000016 R15: fffffffffffffffe
-FS:  00007f0265ee2700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000002631b000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
+index bee984b1887b..7221f11acf04 100644
+--- a/arch/powerpc/kernel/setup-common.c
++++ b/arch/powerpc/kernel/setup-common.c
+@@ -69,7 +69,6 @@
+ #include "setup.h"
+ 
+ #ifdef DEBUG
+-#include <asm/udbg.h>
+ #define DBG(fmt...) udbg_printf(fmt)
+ #else
+ #define DBG(fmt...)
+-- 
+2.25.1
 
