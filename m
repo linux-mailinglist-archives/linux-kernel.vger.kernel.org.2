@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DF032D02D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C395532D030
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238077AbhCDJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
+        id S238140AbhCDJyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238053AbhCDJxb (ORCPT
+        with ESMTP id S238143AbhCDJyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:53:31 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18FFC061761;
-        Thu,  4 Mar 2021 01:52:50 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id d11so19202675qtx.9;
-        Thu, 04 Mar 2021 01:52:50 -0800 (PST)
+        Thu, 4 Mar 2021 04:54:06 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D12C061763
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:53:25 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id b13so24751500edx.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:53:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OQqd7MKj8Re6kTuY9Kq2ebhYDPJcIlWVpSJHWhFglbs=;
-        b=L3OQXVwVYJvE4QAQvwRqbrAQi7N7F2CEtCnqPbSTyx6j6JWH7K20Uv7/Mi48ZYjTkw
-         n4sKuuR+IC0rdlKm+vbElNJtm0BVwMnlLWdE/4Rc4L7blqGSPTElVbVXqDuxcCya/uYI
-         +hpvVSmlpCCH4DG81P0mNXvYJbt4uvqO86GYY=
+        bh=OTcQ8HgK4xyfwhINSgp1y1iTr9PgQDJ2c/607cyGHGo=;
+        b=IsM7FCFoOX7Ne2WFWvbKg3XJeuCz6uhuQFOyWd7YtBYuo33lgKCxql1VghtgcyVFNA
+         XU+jKyjednPG8tBJl/lJCnxgtAGQamTleQ/CqD4pcrqfhyhaz2t1zo2tW8XR3Z3Blh/U
+         WbTiYo1+yMyCndKQWvw3+gpdX8+JbQQS5WAwqVB16b81gock5Ktq1OfvsPnOB53+MsCa
+         qSSRna6d+Ukz8LDZWSsEi4vTabbWQHjV185FbVgoP75cw2hoOXiP9M7p4nJ2b0tf8LaK
+         qReCWTuAgZUkH3lKGMzZzTYiDwxpA1bWMDBYZI5q2QbKG7ZJoKKWpyuNMg3tI9ehfKn4
+         DDYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OQqd7MKj8Re6kTuY9Kq2ebhYDPJcIlWVpSJHWhFglbs=;
-        b=G8790XOFvLNxWvjEGWmjkENwayYkBYE8rAYeDG3AY9S6dPBKncV98Vck+QdHJKLcsq
-         0+WV8pPKJw3LS/iXL7KpuWomJdzfGtNeuJJJz0PO0sAhTQasrszIweiKBF7hpRNYdCzA
-         Wnsqblpg2RK6tQ0jMfIGpw/Llw4uHjy3DgyxSipiAtAKbnHrebOgDGRIISEoBQToarU4
-         td0KGqznv6tW7S+sqml2xVBF284hMxwIRImXiufY6cxGsXohBJsSnsJ0Ne6qrQXk3gBR
-         +BqV6Cbzwj2FCgI34mGz2KOaCegIpfBC4MpShw9Vsub3t3F1BooxQoeM3BVwcGJ6v39/
-         tYrQ==
-X-Gm-Message-State: AOAM530sr/3ptafdCqmhBUgU5OJcZrJH40g4+HTmpReu5UhDbG3ZidR1
-        OIxJ3eO9wIAiKzDvppupDHpTtLsKRT+sHfMukug=
-X-Google-Smtp-Source: ABdhPJzlCKXSuOs0/05oaz9/C2tl2sY0tyAx+P0+0sxxacx9TpsnGobdQSzTM8vo+MbsrebJEgGaXVSoBRkgTtpZ6Yo=
-X-Received: by 2002:a05:622a:143:: with SMTP id v3mr3207635qtw.363.1614851569477;
- Thu, 04 Mar 2021 01:52:49 -0800 (PST)
+        bh=OTcQ8HgK4xyfwhINSgp1y1iTr9PgQDJ2c/607cyGHGo=;
+        b=rvJN5EJA3Z5/ySugLHQKd+T0N7B1pA+e8hmDt8TpN0ya8rVOjjF2Fv0XiLRHw6pMIm
+         Yb5lvE8ETYx9ckHm0al9ub4KtatFApnZo981E65KMQtx3OIVnyGC9ga1pEIALNBPWMHm
+         OYKVzWlV28u2VocvEx/eqACaYIC4dBvh3L3XDyvS8K0lI44MBKsz0XLY/N3Zbr+DnIPL
+         49mO+BWFcsza8qiA4AGUY0Sc3/p36TqFo36dxRs7SVwmnX5llwwXr4f/KkDrGN+Tj/X4
+         nOV75BZeOcVktBUcN9EwVgvwasRIOqwxJNuap2J9AomP/qUUkc2eCheNYKsG/zjxxTzW
+         k56Q==
+X-Gm-Message-State: AOAM532mfBNtet5BMBD4tR9BAKk+b7xaO9pdiq6tT8tMLaBNPKrwuS9B
+        w5B5cp+31QaN4Oh4CufMqkhF4o39OZHJdkCsoTzGtg==
+X-Google-Smtp-Source: ABdhPJz6Dj0a0IikbpQXchtVdO8tIE2nsniGPcwwE+9AaiI73lLIy5D97wzFfkMITMwrpAcRZtd/LijwTg43rmnqzWE=
+X-Received: by 2002:a05:6402:ce:: with SMTP id i14mr3439724edu.42.1614851604560;
+ Thu, 04 Mar 2021 01:53:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20210301161031.684018251@linuxfoundation.org> <20210301161034.369309830@linuxfoundation.org>
- <CACPK8XeoKfNCR9diNZoLCM04=G9BRVxY_VZhXr+XQcpq2+rCdQ@mail.gmail.com>
- <BY5PR11MB38788139CE6E4BA6A667CB84D2999@BY5PR11MB3878.namprd11.prod.outlook.com>
- <YECWglSMg0EKAhgd@kroah.com>
-In-Reply-To: <YECWglSMg0EKAhgd@kroah.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 4 Mar 2021 09:52:37 +0000
-Message-ID: <CACPK8XcCVZfi8n7v-dDwKN0PCN6sUUxXVCCBbC1c3aqR8eQJhw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 055/247] soc: aspeed: snoop: Add clock control logic
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Yoo, Jae Hyun" <jae.hyun.yoo@intel.com>,
-        John Wang <wangzhiqiang.bj@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Vernon Mauery <vernon.mauery@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
+References: <20210303144631.3175331-1-lee.jones@linaro.org> <20210303144631.3175331-19-lee.jones@linaro.org>
+In-Reply-To: <20210303144631.3175331-19-lee.jones@linaro.org>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Thu, 4 Mar 2021 10:53:13 +0100
+Message-ID: <CAMGffEkGT0tRSM51pikNc3d+w1mYJCN-oWzRxFA_wPRXE+d=Ow@mail.gmail.com>
+Subject: Re: [PATCH 18/30] scsi: pm8001: pm8001_hwi: Fix some misnamed
+ function descriptions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 08:12, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Wed, Mar 3, 2021 at 3:47 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> On Tue, Mar 02, 2021 at 12:09:21AM +0000, Yoo, Jae Hyun wrote:
-
-> > > From: Joel Stanley <joel@jms.id.au>
-
-> > > Jae, John; with this backported do we need to also provide a corresponding
-> > > device tree change for the stable tree, otherwise this driver will no longer
-> > > probe?
-> >
-> > Right. The second patch
-> > https://lore.kernel.org/linux-arm-kernel/20201208091748.1920-2-wangzhiqiang.bj@bytedance.com/
-> > John submitted should be applied to stable tree too to make this module be probed
-> > correctly.
+> Fixes the following W=1 kernel build warning(s):
 >
-> Now queued up, thanks.
-
-Thanks Jae and Greg.
+>  drivers/scsi/pm8001/pm8001_hwi.c:1183: warning: expecting prototype for pm8001_chip_interrupt_enable(). Prototype was for pm8001_chip_intx_interrupt_enable() instead
+>  drivers/scsi/pm8001/pm8001_hwi.c:1257: warning: expecting prototype for pm8001_chip_intx_interrupt_disable(). Prototype was for pm8001_chip_interrupt_disable() instead
+>  drivers/scsi/pm8001/pm8001_hwi.c:3235: warning: expecting prototype for asd_get_attached_sas_addr(). Prototype was for pm8001_get_attached_sas_addr() instead
+>  drivers/scsi/pm8001/pm8001_hwi.c:3555: warning: expecting prototype for fw_flash_update_resp(). Prototype was for pm8001_mpi_fw_flash_update_resp() instead
+>
+> Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: linux-scsi@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Thanks
+> ---
+>  drivers/scsi/pm8001/pm8001_hwi.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+> index 49bf2f70a470e..6b600e33e9e8d 100644
+> --- a/drivers/scsi/pm8001/pm8001_hwi.c
+> +++ b/drivers/scsi/pm8001/pm8001_hwi.c
+> @@ -1175,7 +1175,7 @@ void pm8001_chip_iounmap(struct pm8001_hba_info *pm8001_ha)
+>
+>  #ifndef PM8001_USE_MSIX
+>  /**
+> - * pm8001_chip_interrupt_enable - enable PM8001 chip interrupt
+> + * pm8001_chip_intx_interrupt_enable - enable PM8001 chip interrupt
+>   * @pm8001_ha: our hba card information
+>   */
+>  static void
+> @@ -1248,7 +1248,7 @@ pm8001_chip_interrupt_enable(struct pm8001_hba_info *pm8001_ha, u8 vec)
+>  }
+>
+>  /**
+> - * pm8001_chip_intx_interrupt_disable- disable PM8001 chip interrupt
+> + * pm8001_chip_interrupt_disable - disable PM8001 chip interrupt
+>   * @pm8001_ha: our hba card information
+>   * @vec: unused
+>   */
+> @@ -3219,7 +3219,7 @@ void pm8001_get_lrate_mode(struct pm8001_phy *phy, u8 link_rate)
+>  }
+>
+>  /**
+> - * asd_get_attached_sas_addr -- extract/generate attached SAS address
+> + * pm8001_get_attached_sas_addr - extract/generate attached SAS address
+>   * @phy: pointer to asd_phy
+>   * @sas_addr: pointer to buffer where the SAS address is to be written
+>   *
+> @@ -3546,7 +3546,7 @@ int pm8001_mpi_dereg_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  }
+>
+>  /**
+> - * fw_flash_update_resp - Response from FW for flash update command.
+> + * pm8001_mpi_fw_flash_update_resp - Response from FW for flash update command.
+>   * @pm8001_ha: our hba card information
+>   * @piomb: IO message buffer
+>   */
+> --
+> 2.27.0
+>
