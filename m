@@ -2,322 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D19E32D04B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DB932D04F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238118AbhCDKBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:01:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbhCDKAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:00:39 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C3AC061756;
-        Thu,  4 Mar 2021 01:59:58 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id bd6so20721510edb.10;
-        Thu, 04 Mar 2021 01:59:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QO2U8n7VLVtOJdfm5GM29eksy0RQwsKOS6VHIcEvuf4=;
-        b=Gj3sa1sI7yDqxZts7fU37dsBsaeJYgrRAPhHDAif3sg6sAkam9aXaJnhR1bNKSmns3
-         JH0+pUCYqDvMy5/afRKfdy2bKCrmErj9/fPou0e8k+wAcoZTPgUgLKMmmW9JDa7VaiTu
-         WLzOrN/w9wSX9KR5ITtgCr2a/PuKHv8WWWdlPlLv8C1T4zXjGUkgBCzL1yvZF2h/TkKs
-         +gY3eZu6zv4fNVt8Cp5Q0wyq9juOb2LLCjULPbD5WPb5br4Srp1GxHe5svdgaw3LBKl2
-         +8Qa3W/CWBh1yM+V5ufXiGh3T6IgDwDCS2/k+o3YSutnbr69F3duHm2NgibPWWgvnYxM
-         gdLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QO2U8n7VLVtOJdfm5GM29eksy0RQwsKOS6VHIcEvuf4=;
-        b=HmOkW71sagbYyNozsMUvtLG2EAdiVTwW6Xt3pNYt3qgvI+mNTU0q+RxJw3QQn3ozFA
-         KsRxj1j0BV1pfeXy552NSIjG3Yutnw2dR56BBSq+8s3GW/nMUX58BaWeRl0BMBpArM5h
-         L8WKB++et+1cRtOVuPdNJS0WO/d9Lc3AcqnUbHHIa0XlqsuSuIJE68ol5YBPSdqw3A3v
-         4ZNRPHqXM8C44h/OtxpF0zKkZZrx9EKcGWrA8bV+p0dHYy1u3bXYxGSUFjqSFG7h571E
-         T2hmNyJgJ7bzQyEjeIF/0R5xjcj9VpX8+IRxcyKWAD/a2pvtMe4aiJHORxFFHbInprGi
-         7/Hg==
-X-Gm-Message-State: AOAM530u2pIKaYAtKqBQVfKcLRFFA594HhMFD3+/lb5EDjkhTWKIeTSQ
-        K4yT0OxCSZ4eNKEfjADY4Lw=
-X-Google-Smtp-Source: ABdhPJx7Be59CS4Jz3cuhD/DDFmjxCPgjLfpLB4Nh9q9B0A/m8JGsdEev0WAmhnX7g0GLHQoaMPlDw==
-X-Received: by 2002:a50:d71e:: with SMTP id t30mr3418285edi.58.1614851997254;
-        Thu, 04 Mar 2021 01:59:57 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id be27sm8590157edb.47.2021.03.04.01.59.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Mar 2021 01:59:56 -0800 (PST)
-Message-ID: <0242e4ab10acff9a7d71c2f956ba4624bf95add2.camel@gmail.com>
-Subject: Re: [PATCH v26 4/4] scsi: ufs: Add HPB 2.0 support
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Thu, 04 Mar 2021 10:59:55 +0100
-In-Reply-To: <20210303062926epcms2p6aa6737e5ed3916eed9ab80011aad3d83@epcms2p6>
-References: <20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p2>
-         <CGME20210303062633epcms2p252227acd30ad15c1ca821d7e3f547b9e@epcms2p6>
-         <20210303062926epcms2p6aa6737e5ed3916eed9ab80011aad3d83@epcms2p6>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        id S238211AbhCDKBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:01:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54712 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237469AbhCDKAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:00:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5829AAB8C;
+        Thu,  4 Mar 2021 10:00:08 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v3 0/5] Allocate memmap from hotadded memory (per device)
+Date:   Thu,  4 Mar 2021 10:59:57 +0100
+Message-Id: <20210304100002.7740-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-03 at 15:29 +0900, Daejun Park wrote:
-> +
-> +static inline int ufshpb_get_read_id(struct ufshpb_lu *hpb)
-> +{
-> +       if (++hpb->cur_read_id >= MAX_HPB_READ_ID)
-> +               hpb->cur_read_id = 0;
-> +       return hpb->cur_read_id;
-> +}
-> +
-> +static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct
-> scsi_cmnd *cmd,
-> +                                 struct ufshpb_req *pre_req, int
-> read_id)
-> +{
-> +       struct scsi_device *sdev = cmd->device;
-> +       struct request_queue *q = sdev->request_queue;
-> +       struct request *req;
-> +       struct scsi_request *rq;
-> +       struct bio *bio = pre_req->bio;
-> +
-> +       pre_req->hpb = hpb;
-> +       pre_req->wb.lpn = sectors_to_logical(cmd->device,
-> +                                            blk_rq_pos(cmd-
-> >request));
-> +       pre_req->wb.len = sectors_to_logical(cmd->device,
-> +                                            blk_rq_sectors(cmd-
-> >request));
-> +       if (ufshpb_pre_req_add_bio_page(hpb, q, pre_req))
-> +               return -ENOMEM;
-> +
-> +       req = pre_req->req;
-> +
-> +       /* 1. request setup */
-> +       blk_rq_append_bio(req, &bio);
-> +       req->rq_disk = NULL;
-> +       req->end_io_data = (void *)pre_req;
-> +       req->end_io = ufshpb_pre_req_compl_fn;
-> +
-> +       /* 2. scsi_request setup */
-> +       rq = scsi_req(req);
-> +       rq->retries = 1;
-> +
-> +       ufshpb_set_write_buf_cmd(rq->cmd, pre_req->wb.lpn, pre_req-
-> >wb.len,
-> +                                read_id);
-> +       rq->cmd_len = scsi_command_size(rq->cmd);
-> +
-> +       if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> +               return -EAGAIN;
-> +
-> +       hpb->stats.pre_req_cnt++;
-> +
-> +       return 0;
-> +}
-> +
-> +static int ufshpb_issue_pre_req(struct ufshpb_lu *hpb, struct
-> scsi_cmnd *cmd,
-> +                               int *read_id)
-> +{
-> +       struct ufshpb_req *pre_req;
-> +       struct request *req = NULL;
-> +       struct bio *bio = NULL;
-> +       unsigned long flags;
-> +       int _read_id;
-> +       int ret = 0;
-> +
-> +       req = blk_get_request(cmd->device->request_queue,
-> +                             REQ_OP_SCSI_OUT | REQ_SYNC,
-> BLK_MQ_REQ_NOWAIT);
-> +       if (IS_ERR(req))
-> +               return -EAGAIN;
-> +
-> +       bio = bio_alloc(GFP_ATOMIC, 1);
-> +       if (!bio) {
-> +               blk_put_request(req);
-> +               return -EAGAIN;
-> +       }
-> +
-> +       spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +       pre_req = ufshpb_get_pre_req(hpb);
-> +       if (!pre_req) {
-> +               ret = -EAGAIN;
-> +               goto unlock_out;
-> +       }
-> +       _read_id = ufshpb_get_read_id(hpb);
-> +       spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +
-> +       pre_req->req = req;
-> +       pre_req->bio = bio;
-> +
-> +       ret = ufshpb_execute_pre_req(hpb, cmd, pre_req, _read_id);
-> +       if (ret)
-> +               goto free_pre_req;
-> +
-> +       *read_id = _read_id;
-> +
-> +       return ret;
-> +free_pre_req:
-> +       spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +       ufshpb_put_pre_req(hpb, pre_req);
-> +unlock_out:
-> +       spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +       bio_put(bio);
-> +       blk_put_request(req);
-> +       return ret;
-> +}
-> +
->  /*
->   * This function will set up HPB read command using host-side L2P
-> map data.
-> - * In HPB v1.0, maximum size of HPB read command is 4KB.
->   */
-> -void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> +int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
->  {
->         struct ufshpb_lu *hpb;
->         struct ufshpb_region *rgn;
-> @@ -291,26 +560,27 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> ufshcd_lrb *lrbp)
->         u64 ppn;
->         unsigned long flags;
->         int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-> +       int read_id = 0;
->         int err = 0;
->  
->         hpb = ufshpb_get_hpb_data(cmd->device);
->         if (!hpb)
-> -               return;
-> +               return -ENODEV;
->  
->         if (ufshpb_get_state(hpb) != HPB_PRESENT) {
->                 dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
->                            "%s: ufshpb state is not PRESENT",
-> __func__);
-> -               return;
-> +               return -ENODEV;
->         }
->  
->         if (!ufshpb_is_write_or_discard_cmd(cmd) &&
->             !ufshpb_is_read_cmd(cmd))
-> -               return;
-> +               return 0;
->  
->         transfer_len = sectors_to_logical(cmd->device,
->                                           blk_rq_sectors(cmd-
-> >request));
->         if (unlikely(!transfer_len))
-> -               return;
-> +               return 0;
->  
->         lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd-
-> >request));
->         ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx,
-> &srgn_offset);
-> @@ -323,18 +593,19 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> ufshcd_lrb *lrbp)
->                 ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx,
-> srgn_offset,
->                                  transfer_len);
->                 spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> -               return;
-> +               return 0;
->         }
->  
-> -       if (!ufshpb_is_support_chunk(transfer_len))
-> -               return;
-> +       if (!ufshpb_is_support_chunk(hpb, transfer_len) &&
-> +           (ufshpb_is_legacy(hba) && (transfer_len !=
-> HPB_LEGACY_CHUNK_HIGH)))
-> +               return 0;
->  
->         spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->         if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx,
-> srgn_offset,
->                                    transfer_len)) {
->                 hpb->stats.miss_cnt++;
->                 spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> -               return;
-> +               return 0;
->         }
->  
->         err = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset,
-> 1, &ppn);
-> @@ -347,28 +618,46 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> ufshcd_lrb *lrbp)
->                  * active state.
->                  */
->                 dev_err(hba->dev, "get ppn failed. err %d\n", err);
-> -               return;
-> +               return err;
-> +       }
-> +
-> +       if (!ufshpb_is_legacy(hba) &&
-> +           ufshpb_is_required_wb(hpb, transfer_len)) {
-> +               err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
-> +               if (err) {
-> +                       unsigned long timeout;
-> +
-> +                       timeout = cmd->jiffies_at_alloc +
-> msecs_to_jiffies(
-> +                                 hpb->params.requeue_timeout_ms);
-> +
-> +                       if (time_before(jiffies, timeout))
-> +                               return -EAGAIN;
-> +
-> +                       hpb->stats.miss_cnt++;
-> +                       return 0;
-> +               }
->         }
->  
-> -       ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn,
-> transfer_len);
-> +       ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn,
-> transfer_len, read_id);
->  
->         hpb->stats.hit_cnt++;
-> +       return 0;
->  }
+Hi,
 
+here is v3.
 
+Changes from v2 -> v3:
+ - Addressed feedback from David
+ - Squash former patch#4 and and patch#5 into patch#1
+ - Fix config dependency CONFIR_SPARSE_VMEMMAP vs CONFIG_SPARSE_VMEMMAP_ENABLE
+ - Simplify module parameter functions
 
-BUG!!!
+Changes from v1 -> v2
+ - Addressed feedback from David
+ - Fence off the feature in case struct page size is not
+   multiple of PMD size or pageblock alignment cannot be guaranted
+ - Tested on x86_64 small and large memory_blocks
+ - Tested on arm64 4KB and 64KB page sizes (for some reason I cannot boot
+   my VM with 16KB page size).
 
+ Arm64 with 4KB page size behaves like x86_64 after [1], which made section
+ size smaller.
+ With 64KB, the feature gets fenced off due to pageblock alignment.
 
-Please read HPB 2.0 Spec carefully, and check how to correctly use HPB
-READ ID. you are assigning 0 for HPB write buffer. how can you expect
-the HPB READ be paired???
+Changes from RFCv3 -> v1:
+ - Addressed feedback from David
+ - Re-order patches
 
+Changes from v2 -> v3 (RFC):
+ - Re-order patches (Michal)
+ - Fold "mm,memory_hotplug: Introduce MHP_MEMMAP_ON_MEMORY" in patch#1
+ - Add kernel boot option to enable this feature (Michal)
 
+Changes from v1 -> v2 (RFC):
+ - Addressed feedback provided by David
+ - Add a arch_support_memmap_on_memory to be called
+   from mhp_supports_memmap_on_memory, as atm,
+   only ARM, powerpc and x86_64 have altmat support.
 
-HPB READ ID
-• If this value is 0, then HPB READ ID mode is not used, in which case
-the physical addresses, except for the first LBA, needed to read the
-data should be calculated or searched for by the device. If this value
-is not 0, then HPB READ ID mode is used, in which case the device
-returns the data corresponding to the HPB entries that are bound to
-the HPB READ ID value.
+[1] https://lore.kernel.org/lkml/cover.1611206601.git.sudaraja@codeaurora.org/
 
-Bean
+Original cover letter:
+
+----
+
+The primary goal of this patchset is to reduce memory overhead of the
+hot-added memory (at least for SPARSEMEM_VMEMMAP memory model).
+The current way we use to populate memmap (struct page array) has two main drawbacks:
+
+a) it consumes an additional memory until the hotadded memory itself is
+   onlined and
+b) memmap might end up on a different numa node which is especially true
+   for movable_node configuration.
+c) due to fragmentation we might end up populating memmap with base
+   pages
+
+One way to mitigate all these issues is to simply allocate memmap array
+(which is the largest memory footprint of the physical memory hotplug)
+from the hot-added memory itself. SPARSEMEM_VMEMMAP memory model allows
+us to map any pfn range so the memory doesn't need to be online to be
+usable for the array. See patch 3 for more details.
+This feature is only usable when CONFIG_SPARSEMEM_VMEMMAP is set.
+
+[Overall design]:
+
+Implementation wise we reuse vmem_altmap infrastructure to override
+the default allocator used by vmemap_populate.
+memory_block structure gained a new field called nr_vmemmap_pages.
+This plays well for two reasons:
+
+ 1) {offline/online}_pages know the difference between start_pfn and
+    buddy_start_pfn, which is start_pfn + nr_vmemmap_pages.
+    In this way all isolation/migration operations are
+    done to within the right range of memory without vmemmap pages.
+    This allows us for a much cleaner handling.
+
+ 2) In try_remove_memory, we construct a new vmemap_altmap struct with the
+    right information based on memory_block->nr_vmemap_pages, so we end up
+    calling vmem_altmap_free instead of free_pagetable when removing the memory.
+
+Oscar Salvador (5):
+  mm,memory_hotplug: Allocate memmap from the added memory range
+  acpi,memhotplug: Enable MHP_MEMMAP_ON_MEMORY when supported
+  mm,memory_hotplug: Add kernel boot option to enable memmap_on_memory
+  x86/Kconfig: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+  arm64/Kconfig: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+
+ Documentation/admin-guide/kernel-parameters.txt |  14 +++
+ arch/arm64/Kconfig                              |   4 +
+ arch/x86/Kconfig                                |   4 +
+ drivers/acpi/acpi_memhotplug.c                  |   5 +-
+ drivers/base/memory.c                           |  20 +--
+ include/linux/memory.h                          |   8 +-
+ include/linux/memory_hotplug.h                  |  21 +++-
+ include/linux/memremap.h                        |   2 +-
+ include/linux/mmzone.h                          |   5 +
+ mm/Kconfig                                      |   4 +
+ mm/Makefile                                     |   5 +-
+ mm/memory_hotplug.c                             | 155 ++++++++++++++++++++----
+ mm/page_alloc.c                                 |   4 +-
+ 13 files changed, 213 insertions(+), 38 deletions(-)
+
+-- 
+2.16.3
 
