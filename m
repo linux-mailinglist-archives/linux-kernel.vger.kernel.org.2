@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4745832D51B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4D232D521
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241759AbhCDOQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:16:53 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:37842 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241720AbhCDOQr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:16:47 -0500
-Received: by mail-ot1-f45.google.com with SMTP id g8so23704890otk.4;
-        Thu, 04 Mar 2021 06:16:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pzWNIBuVfLxYj2PJbGktT8ZZ7J3vD+7LTuk7a6dg7KE=;
-        b=GdjWuaDaw9HsKp7/QeaSFXOaD7Viy9TEHCD39H+K3sskPOkyulkk19H39WPov19Xh3
-         yf9/LLJohUGCv7ceYyqbyhMZAA2sVl6S/NkXahKqQYiGsPUOuPYDM1fDYnLvTLbmNp8d
-         Dj5nwGbLQDXGJo5gcAs0j8UTo9fZEhm1K+AsREo0UFjjzskgpKfEPd0TARAKiVV5k+wu
-         LcI6tKoV7mN3PXZe9m4bY1XM8KlK6g/0AbThk7bhSg9nstibFfGkzegsEKJRXJF3ZCh6
-         AkzTRoZzjJt8n95Eb+HkEeq4fo8Cmc3CpJlayVWfTt7PgzoQzL641T5LLFoF2ipziGyw
-         jGiA==
-X-Gm-Message-State: AOAM531rJ09YIhyVvUaONuClg8/DHh6D5GEvhByw5xO8DRCjCEouhsfr
-        QDfAsQDc1G7kUR3kXRegvHQS0w7RL92ZWY4lk6w=
-X-Google-Smtp-Source: ABdhPJzuYTopDwmiC4/JX4x6XQY1NonOaPvW74gwTS1M+gyJ41qpY6KspXMC9JMHvEsJLQXK72gvFfSWL/Q8/TIcc48=
-X-Received: by 2002:a05:6830:1057:: with SMTP id b23mr3760190otp.206.1614867367021;
- Thu, 04 Mar 2021 06:16:07 -0800 (PST)
+        id S241814AbhCDOS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:18:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241785AbhCDOSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:18:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38AC164EF6;
+        Thu,  4 Mar 2021 14:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614867456;
+        bh=5SFoOpkNOISja2bka7WY1xY3Xu6DHtOUpfvK1KKO0Ho=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KmSdKQPpfL8NUZTjBgr8+DvFEaxjKTvLNf2mi07XjFMqkkhK2Wdm0PdGbpJ1Ml5uQ
+         dnNvPSaNnj9YiUrkr3hPxBKjrOs8rA1yvnUUv3ONmKgy5v87x3AASqOgqtnN02pDa2
+         z1hwXqWqpgjmYJN7O8sM35kkT/bZypmcKNvWHPqk=
+Date:   Thu, 4 Mar 2021 15:17:34 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, rppt@kernel.org, lorenzo.pieralisi@arm.com,
+        guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
+        lenb@kernel.org, song.bao.hua@hisilicon.com, ardb@kernel.org,
+        anshuman.khandual@arm.com, bhelgaas@google.com, guro@fb.com,
+        robh+dt@kernel.org, stable@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, frowand.list@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        wangkefeng.wang@huawei.com
+Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
+Message-ID: <YEDr/lYZHew88/Ip@kroah.com>
+References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
+ <YEDkmj6cchMPAq2h@kroah.com>
+ <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
 MIME-Version: 1.0
-References: <2074665.VPHYfYaQb6@kreacher> <77955b4c-eca1-afe9-5fbc-ceddc39cb397@redhat.com>
-In-Reply-To: <77955b4c-eca1-afe9-5fbc-ceddc39cb397@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 4 Mar 2021 15:15:55 +0100
-Message-ID: <CAJZ5v0iDVp3H=4ap0Mw=QCkE=zPVV21a335GA7j4OdpjJ2Q3RQ@mail.gmail.com>
-Subject: Re: [PATCH v1] platform: x86: ACPI: Get rid of ACPICA message printing
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 3:14 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 2/24/21 7:41 PM, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > A few x86 platform drivers use ACPI_DEBUG_PRINT() or ACPI_EXCEPTION()
-> > for printing messages, but that is questionable, because those macros
-> > belong to ACPICA and they should not be used elsewhere.  In addition,
-> > ACPI_DEBUG_PRINT() requires special enabling to allow it to actually
-> > print the message, which is a nuisance, and the _COMPONENT symbol
-> > generally needed for that is not defined in any of the files in
-> > question.
-> >
-> > For this reason, replace the ACPI_DEBUG_PRINT() in lg-laptop.c with
-> > pr_debug() and the one in xo15-ebook.c with acpi_handle_debug()
-> > (with the additional benefit that the source object can be identified
-> > more easily after this change), and replace the ACPI_EXCEPTION() in
-> > acer-wmi.c with pr_warn().
-> >
-> > Also drop the ACPI_MODULE_NAME() definitions that are only used by
-> > the ACPICA message printing macros from those files and from wmi.c
-> > and surfacepro3_button.c (while at it).
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Thank you.
->
-> I've merged this into my review-hans branch now, minus the
-> acer-wmi.c changes because a similar patch was already merged for those.
+On Thu, Mar 04, 2021 at 03:05:32PM +0100, Nicolas Saenz Julienne wrote:
+> Hi Greg.
+> 
+> On Thu, 2021-03-04 at 14:46 +0100, Greg KH wrote:
+> > On Wed, Mar 03, 2021 at 03:33:12PM +0800, Jing Xiangfeng wrote:
+> > > Using two distinct DMA zones turned out to be problematic. Here's an
+> > > attempt go back to a saner default.
+> > 
+> > What problem does this solve?  How does this fit into the stable kernel
+> > rules?
+> 
+> We changed the way we setup memory zones in arm64 in order to cater for
+> Raspberry Pi 4's weird DMA constraints: ZONE_DMA spans the lower 1GB of memory
+> and ZONE_DMA32 the rest of the 32bit address space. Since you can't allocate
+> memory that crosses zone boundaries, this broke crashkernel allocations on big
+> machines. This series fixes all this by parsing the HW description and checking
+> for DMA constrained buses. When not found, the unnecessary zone creation is
+> skipped.
 
-Thanks!
+What kernel/commit caused this "breakage"?
+
+thanks,
+
+greg k-h
