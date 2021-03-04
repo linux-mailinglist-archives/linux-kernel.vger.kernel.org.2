@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD4532D02E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6D832D028
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238087AbhCDJxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:53:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238062AbhCDJxe (ORCPT
+        id S238040AbhCDJxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:53:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238036AbhCDJw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:53:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614851528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NBlfUZ5qlNcwMNLTSOObyKp2FpqfhaUG207qjodcr48=;
-        b=PfpX4MvD7jdOmymlD3aNQwDAUvjA8sGZf2wzHqhOnv8LQ33zzxuHvCzxBK/lEaGtqyjpxV
-        9Nx6IYmrmRaX9HWI/zvNuOkV8EuPf8rBjjxmzopvD7NrWmj3u/8wI7vecmk5RwQ4EZkP7K
-        thBMLVih2oYNPF8Avl8OyvZ1QJ6mU3U=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-i5QejKhYOs6sdaDWjpT6LQ-1; Thu, 04 Mar 2021 04:52:07 -0500
-X-MC-Unique: i5QejKhYOs6sdaDWjpT6LQ-1
-Received: by mail-ed1-f69.google.com with SMTP id i4so13844319edt.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:52:06 -0800 (PST)
+        Thu, 4 Mar 2021 04:52:57 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CE2C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:52:17 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id mj10so28059199ejb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:52:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5kTg6Ens5xjmRIndaQA/pYHM/y3pp2HEx8+8boM0KRo=;
+        b=CLJeR8W2Qv1PDkbqKntmWArRoeT1ark+WK32hUMP3qfPy8M1GVULqRpwOXhYq7dGFB
+         2IeB1nzHK6ref41SUUYadT30KX7o7z3+tW7IAPnVHPAQwfTaC2AmLSwNuWzE1hCDXu+j
+         N6Cx8vPXFmJYiAI8aZFHBJl7h13YFCBFP0MVYUlkXXwMZIZUGEYKsIgRMwVegeIAPbtT
+         TI7zIe+K8bzZigIvbso7KRYil3ySQqgPmrjM0ntDp/eCBbE0DMwH9TkDtIS2lyectZ2r
+         8FJ5dnLnlsNZmd9dBWDCNI1vtWX5ENNFZ+rxzL5PdOrrVeNe+NWBGscWZJswNUR55r4y
+         ucIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=NBlfUZ5qlNcwMNLTSOObyKp2FpqfhaUG207qjodcr48=;
-        b=qJFkGvcbwIz4/GIU6wjs7N7s7yl4BfiHZnIMf/Zvob/O64ot+3FM1lu/8dLgHRiU/C
-         fDmVI2HGvuUno7X/qeAW+7XWTE5jPnCMG8zV3uzZ1qqi6nEVlWFBee49J5zayt8iuqpw
-         EzXpgmz9odnAPBSOQh/QDJ8vPduVxUdACeLgr2igh/qrOOtXkqg7VTOEkcGmmwjsdpnM
-         d3pRdS2r+r+QwnapRJNTw21PL++QOHCOfSI25roR4Np2u9WhopMIhjzCcN1ehKSGpyby
-         JRQdCP9cI+d4aL76PHy3EeWpc86Y9Id9kzaVs00i+rqqIr8QMvTmlw50LPAWz4iOXD9b
-         iWBg==
-X-Gm-Message-State: AOAM533PVj49vXTp06j+l/kHy52dGHnPEfhXk+rE4JVAeT4NYFeaeEIp
-        +aMfqy9eDtUt+uqFjUxbjnHe/w7SGCFmPpVbPWKqdLfs4ogzX0iy+2PhVm70k42TGsS02L9TKiy
-        dhkW++Ufy1LMiBHNOYJc50TPCcvvKaw3Ckw1PPewvLTq3fuoeN7nWLnYi6hVocQCE9VWHdWvBh2
-        H1
-X-Received: by 2002:a17:906:a016:: with SMTP id p22mr3267354ejy.456.1614851525981;
-        Thu, 04 Mar 2021 01:52:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwlo5eA6ixzk4HcXv/OUomMVtpzFZiKvWSMBnmf8YrnTG8jpRbWpN8vf4hpbLg26sZCmMjhug==
-X-Received: by 2002:a17:906:a016:: with SMTP id p22mr3267339ejy.456.1614851525798;
-        Thu, 04 Mar 2021 01:52:05 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id e18sm22793498eji.111.2021.03.04.01.52.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 01:52:05 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        seanjc@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] KVM: nVMX: Add CET entry/exit load bits to evmcs
- unsupported list
-In-Reply-To: <20210304060740.11339-4-weijiang.yang@intel.com>
-References: <20210304060740.11339-1-weijiang.yang@intel.com>
- <20210304060740.11339-4-weijiang.yang@intel.com>
-Date:   Thu, 04 Mar 2021 10:52:04 +0100
-Message-ID: <87h7lrckl7.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5kTg6Ens5xjmRIndaQA/pYHM/y3pp2HEx8+8boM0KRo=;
+        b=n6s59psyguKe6iu1D1P85RNbFC4ZUkB4LO8Z6ScnydTR0wr8P6o+N6T05jfQRcsJ84
+         MDx6Ssg/1zv7VIBdsmE8PeNQk7Ij5QwFbQgbLDvmTa26IvUUuwO51+LFtw37l+v4tmO+
+         cGKLhu6jxzbzEaGxl7cezGjXQQgAxfStFmFLpqSfpyUfcsr0uSTIyVfE0bZZ2ktWy5yi
+         alpN8Dfqr7Er3jr9axBW9WEGZ3GKcryBmIBK+eRJUnJMd4qw+qG6vbgUW9dAgf/zDWLS
+         gw3c+1qNV9jDKo2fHWXa4LnFkCDFFUC5nZuRKLsMsncWGv1Ux4hhg1Y4bYIvOc0Ovdt5
+         W3zQ==
+X-Gm-Message-State: AOAM530sr1ThONzIzu15niSGVFj8pKUDVlQqOpkkzOjvBJXK6LaNUj6i
+        1nTL0aL1M6z/+5PGJy767iTe7tuEGAsHMXedmHW6lQ==
+X-Google-Smtp-Source: ABdhPJwk91zR1792TuAEVffoOkMzkxlohAeIQth6lnexIjabM83wEHIKTNOAkP/nbZrn7TQxDDyduBjGWKyEFNYODAw=
+X-Received: by 2002:a17:906:5811:: with SMTP id m17mr3333784ejq.115.1614851536016;
+ Thu, 04 Mar 2021 01:52:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210303144631.3175331-1-lee.jones@linaro.org> <20210303144631.3175331-12-lee.jones@linaro.org>
+In-Reply-To: <20210303144631.3175331-12-lee.jones@linaro.org>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Thu, 4 Mar 2021 10:52:05 +0100
+Message-ID: <CAMGffEmN-Uv5OOdJ1RDvGVdO2Y50RnUqT7M2Zox6mKxvAT6EDw@mail.gmail.com>
+Subject: Re: [PATCH 11/30] scsi: pm8001: pm8001_sas: Provide function name
+ 'pm8001_I_T_nexus_reset()' in header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Weijiang <weijiang.yang@intel.com> writes:
-
-> Nested guest doesn't support CET when KVM is running as an intermediate
-> layer between two Hyper-Vs for now, so mask out related CET entry/exit
-> load bits. Relevant enabling patches will be posted as a separate patch
-> series.
+On Wed, Mar 3, 2021 at 3:47 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/scsi/pm8001/pm8001_sas.c:989: warning: expecting prototype for and hard reset for(). Prototype was for pm8001_I_T_nexus_reset() instead
+>
+> Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: linux-scsi@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Thanks
 > ---
->  arch/x86/kvm/vmx/evmcs.c | 4 ++--
->  arch/x86/kvm/vmx/evmcs.h | 6 ++++--
->  2 files changed, 6 insertions(+), 4 deletions(-)
+>  drivers/scsi/pm8001/pm8001_sas.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
-> index 41f24661af04..9f81db51fd8b 100644
-> --- a/arch/x86/kvm/vmx/evmcs.c
-> +++ b/arch/x86/kvm/vmx/evmcs.c
-> @@ -351,11 +351,11 @@ void nested_evmcs_filter_control_msr(u32 msr_index, u64 *pdata)
->  	switch (msr_index) {
->  	case MSR_IA32_VMX_EXIT_CTLS:
->  	case MSR_IA32_VMX_TRUE_EXIT_CTLS:
-> -		ctl_high &= ~VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
-> +		ctl_high &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
->  		break;
->  	case MSR_IA32_VMX_ENTRY_CTLS:
->  	case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
-> -		ctl_high &= ~VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
-> +		ctl_high &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
->  		break;
->  	case MSR_IA32_VMX_PROCBASED_CTLS2:
->  		ctl_high &= ~SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES;
-> diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
-> index bd41d9462355..25588694eb04 100644
-> --- a/arch/x86/kvm/vmx/evmcs.h
-> +++ b/arch/x86/kvm/vmx/evmcs.h
-> @@ -59,8 +59,10 @@ DECLARE_STATIC_KEY_FALSE(enable_evmcs);
->  	 SECONDARY_EXEC_SHADOW_VMCS |					\
->  	 SECONDARY_EXEC_TSC_SCALING |					\
->  	 SECONDARY_EXEC_PAUSE_LOOP_EXITING)
-> -#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL)
-> -#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL)
-> +#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL | \
-> +					VM_EXIT_LOAD_CET_STATE)
-> +#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | \
-> +					 VM_ENTRY_LOAD_CET_STATE)
->  #define EVMCS1_UNSUPPORTED_VMFUNC (VMX_VMFUNC_EPTP_SWITCHING)
->  
->  #if IS_ENABLED(CONFIG_HYPERV)
-
-Thanks, this should be enough for both KVM on Hyper-V and Hyper-V on KVM
-using eVMCS.
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
-
+> diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
+> index a98d4496ff8b6..742c83bc45554 100644
+> --- a/drivers/scsi/pm8001/pm8001_sas.c
+> +++ b/drivers/scsi/pm8001/pm8001_sas.c
+> @@ -981,6 +981,7 @@ void pm8001_open_reject_retry(
+>  }
+>
+>  /**
+> + * pm8001_I_T_nexus_reset()
+>    * Standard mandates link reset for ATA  (type 0) and hard reset for
+>    * SSP (type 1) , only for RECOVERY
+>    * @dev: the device structure for the device to reset.
+> --
+> 2.27.0
+>
