@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63DA32D109
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527DF32D10A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238858AbhCDKmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:42:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34804 "EHLO mail.kernel.org"
+        id S238862AbhCDKmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:42:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38790 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238843AbhCDKli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:41:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0565764F35;
-        Thu,  4 Mar 2021 10:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614854458;
-        bh=UyFQWnO6Qa/aokP/cHZO6JswbXplosdGEb6Wlbvqzjk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BpyWqa2GKXHZNqL1gzkBSU2/nGwC6XMaQkXG9cuqnxOm98f2jB91cKHqmlV8SiG+s
-         /MuNKu1gkxIT4zqmMqNFM0Snu24w1QodiA5l365cLISa8CVxdPtHWp0sxznsgC5/Qx
-         a7iABjEVDx5R44ydzUS/eu5L0ZPG5tco9xnJiTS4=
-Date:   Thu, 4 Mar 2021 11:40:56 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
-Message-ID: <YEC5OO6R3gftJY7B@kroah.com>
-References: <20210302192700.399054668@linuxfoundation.org>
- <20210303200820.GF33580@roeck-us.net>
+        id S238851AbhCDKlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:41:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E779DAAC5;
+        Thu,  4 Mar 2021 10:41:08 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 11:41:06 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] mm: Make alloc_contig_range handle free hugetlb
+ pages
+Message-ID: <YEC5QvTl6RGNbytK@localhost.localdomain>
+References: <20210222135137.25717-1-osalvador@suse.de>
+ <20210222135137.25717-2-osalvador@suse.de>
+ <3f071dd4-3181-f4e0-fd56-1a70f6ac72fe@redhat.com>
+ <YEC0ODM5gtEU+JqN@localhost.localdomain>
+ <4ede47fd-d01e-6d9c-288a-2ec97b5392af@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303200820.GF33580@roeck-us.net>
+In-Reply-To: <4ede47fd-d01e-6d9c-288a-2ec97b5392af@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 12:08:20PM -0800, Guenter Roeck wrote:
-> On Tue, Mar 02, 2021 at 08:28:49PM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.20 release.
-> > There are 657 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
-> > Anything received after that time might be too late.
-> > 
+On Thu, Mar 04, 2021 at 11:32:29AM +0100, David Hildenbrand wrote:
+> I think this is now the second fatal error we can have (-EINTR, -ENOMEM),
+> thus the current interface (return "NULL" on fatal errros) no longer works
+> properly.
 > 
-> Build results:
-> 	total: 156 pass: 156 fail: 0
-> Qemu test results:
-> 	total: 430 pass: 430 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> No strong opinion about fixing this up on top - could be it's cleaner to
+> just do it right away.
 
-thanks for testing them all and letting me know.
+Ok, I see.
 
-greg k-h
+Then I will start working on that in v4.
+
+Any more feedback to either patch#1 or patch#2?
+
+Thanks!
+
+
+-- 
+Oscar Salvador
+SUSE L3
