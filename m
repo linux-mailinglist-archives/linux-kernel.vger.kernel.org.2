@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D951B32D681
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4D232D686
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhCDPYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:24:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30428 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232435AbhCDPYc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:24:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614871386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aYTbMDYctzXTP1lGI/qs74mYbcaSxVhdB7MYXTA57UA=;
-        b=OgO4XN3EAOXrvrEJXx3UPBJIndm0X0kGMMSn/PmYNuFMtc++02qSDnqgR56FsdOjX023dl
-        gxr9fRuNoStikq1qO+yUQlkHPCBvs0/ZaKnmPawSrq4WwuYIblc5EzC76P5Rc7Cgv2or/+
-        c8PQvwO9eCB3m+p6QliirSK6z6OJrzU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-ExhyfEDbNged7uvoRwke3Q-1; Thu, 04 Mar 2021 10:23:05 -0500
-X-MC-Unique: ExhyfEDbNged7uvoRwke3Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D737F19057A4;
-        Thu,  4 Mar 2021 15:23:02 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CF1CB5C1A1;
-        Thu,  4 Mar 2021 15:23:02 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id C52FB18095CA;
-        Thu,  4 Mar 2021 15:23:01 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 10:22:59 -0500 (EST)
-From:   Bob Peterson <rpeterso@redhat.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Message-ID: <669736422.59715790.1614871379550.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1614850640-63803-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1614850640-63803-1-git-send-email-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] gfs2: make function gfs2_make_fs_ro() to void type
+        id S233546AbhCDPZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:25:41 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:26975 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232305AbhCDPZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 10:25:38 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Drvmy1RXQzB09ZZ;
+        Thu,  4 Mar 2021 16:24:50 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ho3sY1I-wauT; Thu,  4 Mar 2021 16:24:50 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Drvmx5sgGzB09ZW;
+        Thu,  4 Mar 2021 16:24:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA2E18B816;
+        Thu,  4 Mar 2021 16:24:51 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id hRFfu02BTibG; Thu,  4 Mar 2021 16:24:51 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7270C8B812;
+        Thu,  4 Mar 2021 16:24:51 +0100 (CET)
+Subject: Re: [PATCH v2] powerpc/32: remove bogus ppc_select syscall
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        halesh.sadashiv@ap.sony.com,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <2daa39fa210d971863a6f9ac7c81849764e7a261.1614862233.git.christophe.leroy@csgroup.eu>
+ <CAK8P3a2=qOG1iLhw2fi=r128bRMdfNx4BseXONiS7vrnbVvr6w@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <aca143f6-fcfc-d89f-bb00-26e90257fbf6@csgroup.eu>
+Date:   Thu, 4 Mar 2021 16:24:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.3.112.225, 10.4.195.13]
-Thread-Topic: gfs2: make function gfs2_make_fs_ro() to void type
-Thread-Index: tP8ZFycLfqsXQRyPZDKwsUS7L7wEUg==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CAK8P3a2=qOG1iLhw2fi=r128bRMdfNx4BseXONiS7vrnbVvr6w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Original Message -----
-> It fixes the following warning detected by coccinelle:
-> ./fs/gfs2/super.c:592:5-10: Unneeded variable: "error". Return "0" on
-> line 628
+
+
+Le 04/03/2021 à 16:17, Arnd Bergmann a écrit :
+> On Thu, Mar 4, 2021 at 1:51 PM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> The ppc_select function was introduced in linux-2.3.48 in order to support
+>> code confusing the legacy select() calling convention with the standard one.
+>> Even 24 years ago, all correctly built code should not have done this and
+>> could have easily been phased out. Nothing that was compiled later should
+>> actually try to use the old_select interface, and it would have been broken
+>> already on all ppc64 kernels with the syscall emulation layer.
+>>
+>> This patch brings the 32 bit compat ABI and the native 32 bit ABI for
+>> powerpc into a consistent state, by removing support for both the
+>> old_select system call number and the handler for it.
+>>
+>> The bug report triggering this came from
+>> Halesh Sadashiiv <halesh.sadashiv@ap.sony.com>, who discovered that the
+>> 32 bit implementation of ppc_select would in case of a negative number
+>> of file descriptors incorrectly return -EFAULT instead of -EINVAL.
+>> There seems to be no way to fix this problem in a way that would
+>> keep broken pre-1997 binaries running.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> Cc: Halesh Sadashiiv <halesh.sadashiv@ap.sony.com>
+>> [chleroy: Rebased and updated the number of years elapsed in the commit message]
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>> First version was in 2008, at that time it was rejected, see
+>> http://patchwork.ozlabs.org/project/linuxppc-dev/patch/200809240839.14902.arnd@arndb.de/
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  fs/gfs2/ops_fstype.c | 4 +---
->  fs/gfs2/super.c      | 9 +++------
->  fs/gfs2/super.h      | 2 +-
->  fs/gfs2/util.c       | 2 +-
->  4 files changed, 6 insertions(+), 11 deletions(-)
+> The patch from 2008 did two things:
+> 
+> - it removed the ppc32 specific 'select' syscall at #82
+> - it fixed the generic '_newselect' syscall at #142
+> 
+> Back then, the decision was to only address the second issue, which
+> got merged in commit dad2f2fb0fc7 ("powerpc: Fix wrong error code from
+> ppc32 select syscall").
+> 
+> It is probably ok to remove the old select system call now, but
+> my changelog text no longer makes sense, as the patch has nothing
+> to do with the bug that was reported back then.
+> 
 
-Thanks. Your patch is now pushed to linux-gfs2/for-next.
-I did one minor cleanup: Function gfs2_put_super in super.c no longer
-needed the variable "error" so I removed it to avoid warnings.
+I understood that the original reported bug was that calling that version of select() with a 
+negative value as first parametre would lead to a -EFAULT instead of -EINVAL. That's exactly the 
+case here, if you set n = -1 you get into this (unsigned long)n > 4096 then the buffer is at 
+0xffffffff and access_ok() won't grand access to it so the return value will be -EFAULT instead of 
+-EINVAL.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git/commit/fs/gfs2?h=for-next&id=0e787a0bfabb8be323f575d5cdda48e607840eb5
+Am I missing something ?
 
-Regards,
-
-Bob Peterson
-
+Christophe
