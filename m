@@ -2,137 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C0332D01D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A8C32D021
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238002AbhCDJwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:52:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        id S238028AbhCDJwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:52:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237846AbhCDJvt (ORCPT
+        with ESMTP id S238009AbhCDJw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:51:49 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB5AC061574;
-        Thu,  4 Mar 2021 01:51:09 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d8so5410889plg.10;
-        Thu, 04 Mar 2021 01:51:09 -0800 (PST)
+        Thu, 4 Mar 2021 04:52:29 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72666C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:51:49 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id r17so48086447ejy.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:51:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=W9jHcnwXDaxPMdEitaMFrpEp1sfjFYbFNwckX35HAk0=;
-        b=FiN5D7CN5Yd1lIwD4ahgeYb2Uy2hGkKGZ5EaGOhJfrlyhZ+eHlcTebcnzkgRe7r6ha
-         D2/mBq/GXUbuYVAv9lK6utWBTpyF4Lbes0WMnXH8NyNZqgcAVaLJmCB/yCVG+QTEhZgj
-         mwmTKSQucHq9VpEy42jFnM7j6Ymuytu21aMB3alT2iLoV6hFMTlRSXwZT+E2zDgkiMjT
-         3z/2DCTLBm82OtYXQjuK7feQ3Pkj18hhRWC9JplMZDYs9U/eTJMXd3dZfhGf3YCg2o+m
-         lLeh6SY369KWM0rAmxWmMz02CKdiPnPz3yr0AaosK+K9nIR+HYDQgfT0jHGM30CezhqU
-         agAQ==
+        bh=DyZ9u+4CQFaTUGpxZ7Y1chiIzjBwSjejYpZ2cWT/U0c=;
+        b=ieIJHxpqiINZmN5DPPQ3ti1xHrBJVvclj2lSDcenYycjgPoKiNg++ktFWoUjpJMwD9
+         vMD7CVyJm5gZiA1EO9sSBFuboVk/aCx+xT3VuxVSOyald2aStmcxRKL6q6U8Ku0+gMvR
+         xRtGLYWz9rRzdcOBPEQkZ3KdXL4OVsU1gYTSNlysmyblPTZXqK3A3u2/Auf0cf3da68L
+         07dulkSEx+2XqLxpNk51ZGJUvx/yicHkKJUbPQguIkEQbWuYNwRRKEt6xTjaPSBMd8oZ
+         cupHl2+ztWeSWrIbrsdtJF47cHUkUxQsrhCqcFMOAtYnoH0vTZh+1QLQsAuBQvx/y05B
+         P4/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=W9jHcnwXDaxPMdEitaMFrpEp1sfjFYbFNwckX35HAk0=;
-        b=HPcH446aeVbfu69a5SmroCGUbmMBcExxs4X6ExGucOT+BRf0yiu/kiTdQx37HKU9Vn
-         jVAyJOt5C0QegxUp0zTjAAQEr52WgbbfKmbEdbNc09w3/8Xj+mY/2UsfNTxbqi7dkzeV
-         WK2ybxcuFdWVqFm/vlWA8ALDzyadq6NOEvQ2sXZjov6Lg5fI6Rgmr/THG2fjtgq/xdhi
-         WrhkPtVxDDcntzHlne9A4dqQK+4YgpWFjdT4U44fzRgWYfjK28Y0/UYW1CuvqpUQgZfm
-         BFLEen3TQ+l/W2pwl8yUXDK3H7o+fEQJ/X83uC2vzJZfhDEKr+FicIbamcFfYl95xugw
-         fsRg==
-X-Gm-Message-State: AOAM531ofb3tXZSmmKTq/kSZxZZATUKqoaBlaOpkWnWKgN6kNQIxH5Nj
-        hIcebHvdj0D+lxqv7/TAh62+ubjhmxavh+pEo3s=
-X-Google-Smtp-Source: ABdhPJxUbb/E9yTMNDNFXwo9Poqb6WZSvJPzIkeSmdfHji+Jz1z4UnqLCGfAYbje7AZCj6en5/39JpFfnD79fxeTjJM=
-X-Received: by 2002:a17:902:d2c1:b029:e5:ccfe:1e93 with SMTP id
- n1-20020a170902d2c1b02900e5ccfe1e93mr3176148plc.0.1614851468698; Thu, 04 Mar
- 2021 01:51:08 -0800 (PST)
+        bh=DyZ9u+4CQFaTUGpxZ7Y1chiIzjBwSjejYpZ2cWT/U0c=;
+        b=XdbmlhMztOWRnVLA0xgluf9EQ0PydwKJ/LzLRMggqLARVKZ+h1DYuqqoLw0mMO5P/b
+         UnC74eczPGhGDmQAYzpnNl8ieBgEgkvBhcX8iVwZ38WjXlUw7h5EIkisxE5lTnBHiL4o
+         vmnZuFK6JoJRCOxheCS1xD7AJH/9BlRGi6i+OsTbS8rWCH7CatmufKbrnXes3nVXuGmf
+         gfcTFs1BffBb1qeSCvFL7PJ4DSU5miOsqhe1xpmgFH5mU9HTdNKXlcJOtI7IqUjvsuG3
+         cr0Cnh1U1t0aQ7cFqbbI9XUoKuJl5WhgiwyTntjr/3z4aXGdf3PNdyEWBCekG8MQL++/
+         +F5Q==
+X-Gm-Message-State: AOAM532NmVIchLFAOBaqy4iL6wjd+26/WNg/Yr/1rOH05lhAx1nyUu8K
+        qdQp+EipSVeBfLcDYnepUdyEGN79TLeENMVCeVxv9w==
+X-Google-Smtp-Source: ABdhPJxVXr0PLxMt5u2JDX1pQ6tBL7LfITuN2AKJDU/ek2sC14xWyumHqMqPxE9rBbsNWnHEJ+c86rMypPNk+PPv8j0=
+X-Received: by 2002:a17:906:d18e:: with SMTP id c14mr3192873ejz.62.1614851508128;
+ Thu, 04 Mar 2021 01:51:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302163309.25528-1-henning.schild@siemens.com> <20210302163309.25528-5-henning.schild@siemens.com>
-In-Reply-To: <20210302163309.25528-5-henning.schild@siemens.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 4 Mar 2021 11:50:52 +0200
-Message-ID: <CAHp75Vf1gkb+qWhv7a5Q3Bf-brDkMsOKdFo4ckSpG2e-7bqWng@mail.gmail.com>
-Subject: Re: [PATCH 4/4] platform/x86: pmc_atom: improve critclk_systems
- matching for Siemens PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Haener <michael.haener@siemens.com>
+References: <20210303144631.3175331-1-lee.jones@linaro.org> <20210303144631.3175331-9-lee.jones@linaro.org>
+In-Reply-To: <20210303144631.3175331-9-lee.jones@linaro.org>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Thu, 4 Mar 2021 10:51:37 +0100
+Message-ID: <CAMGffEmcyspgsigH3Ek-O=VR+t3Hpx2aBtw04domWQ1Snm7xpg@mail.gmail.com>
+Subject: Re: [PATCH 08/30] scsi: pm8001: pm8001_init: Provide function name
+ and fix a misspelling
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kumar Santhanam <AnandKumar.Santhanam@pmcs.com>,
+        Sangeetha Gnanasekaran <Sangeetha.Gnanasekaran@pmcs.com>,
+        Nikith Ganigarakoppal <Nikith.Ganigarakoppal@pmcs.com>,
+        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 9:27 AM Henning Schild
-<henning.schild@siemens.com> wrote:
-
-> Siemens industrial PCs unfortunately can not always be properly
-> identified the way we used to. An earlier commit introduced code that
-> allows proper identification without looking at DMI strings that could
-> differ based on product branding.
-> Switch over to that proper way and revert commits that used to collect
-> the machines based on unstable strings.
-
-> +#include <linux/platform_data/x86/simatic-ipc.h>
-
-> +static int pmc_clk_is_critical(const struct dmi_system_id *d)
-> +{
-> +       int ret = true;
-> +       u32 station_id;
-> +
-> +       if (!strcmp(d->ident, "SIEMENS AG")) {
-> +               if (dmi_walk(simatic_ipc_find_dmi_entry_helper, &station_id))
-> +                       ret = false;
-> +               else
-> +                       ret = (station_id == SIMATIC_IPC_IPC227E ||
-> +                              station_id == SIMATIC_IPC_IPC277E);
-> +       }
-> +
-> +       return ret;
-
-Much easier to rewrite it as
-
-if (strcmp(...)) // BTW, do we have a dmi_* helper for that?
-  return true;
-
-if (dmi_walk)
-  return false;
-
-return station_id == || ...;
-
-> +}
-
-Maybe instead you can rewrite it as a callback in DMI table which
-changes a (global, yeah) variable that you simply reassign...
-
-
-
->         if (d) {
-> -               clk_data->critical = true;
-> -               pr_info("%s critclks quirk enabled\n", d->ident);
-> +               clk_data->critical = pmc_clk_is_critical(d);
-> +               if (clk_data->critical)
-> +                       pr_info("%s critclks quirk enabled\n", d->ident);
->         }
-
-...somewhere here?
-
-Like
-  clk_data->critical = global_var;
-  if (...)
-    pr_info();
-
-It seems it will reduce burden on a callback by dropping strcmp() call.
-
--- 
-With Best Regards,
-Andy Shevchenko
+On Wed, Mar 3, 2021 at 3:46 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/scsi/pm8001/pm8001_init.c:192: warning: expecting prototype for tasklet for 64 msi(). Prototype was for pm8001_tasklet() instead
+>  drivers/scsi/pm8001/pm8001_init.c:872: warning: expecting prototype for pm8001_set_phy_settings_ven_117c_12Gb(). Prototype was for pm8001_set_phy_settings_ven_117c_12G() instead
+>
+> Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: Kumar Santhanam <AnandKumar.Santhanam@pmcs.com>
+> Cc: Sangeetha Gnanasekaran <Sangeetha.Gnanasekaran@pmcs.com>
+> Cc: Nikith Ganigarakoppal <Nikith.Ganigarakoppal@pmcs.com>
+> Cc: linux-scsi@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Thanks
+> ---
+>  drivers/scsi/pm8001/pm8001_init.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
+> index bd626ef876dac..bbb6b23aa6b1c 100644
+> --- a/drivers/scsi/pm8001/pm8001_init.c
+> +++ b/drivers/scsi/pm8001/pm8001_init.c
+> @@ -184,7 +184,7 @@ static void pm8001_free(struct pm8001_hba_info *pm8001_ha)
+>  #ifdef PM8001_USE_TASKLET
+>
+>  /**
+> - * tasklet for 64 msi-x interrupt handler
+> + * pm8001_tasklet() - tasklet for 64 msi-x interrupt handler
+>   * @opaque: the passed general host adapter struct
+>   * Note: pm8001_tasklet is common for pm8001 & pm80xx
+>   */
+> @@ -864,7 +864,7 @@ void pm8001_get_phy_mask(struct pm8001_hba_info *pm8001_ha, int *phymask)
+>  }
+>
+>  /**
+> - * pm8001_set_phy_settings_ven_117c_12Gb : Configure ATTO 12Gb PHY settings
+> + * pm8001_set_phy_settings_ven_117c_12G() : Configure ATTO 12Gb PHY settings
+>   * @pm8001_ha : our adapter
+>   */
+>  static
+> --
+> 2.27.0
+>
