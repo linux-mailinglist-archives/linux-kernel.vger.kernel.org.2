@@ -2,185 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2641632D933
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2323532D939
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232915AbhCDSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:04:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
+        id S232890AbhCDSFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhCDSD4 (ORCPT
+        with ESMTP id S233163AbhCDSFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:03:56 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B914C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:03:16 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id u13so1588567uap.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:03:16 -0800 (PST)
+        Thu, 4 Mar 2021 13:05:02 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B379C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:04:22 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id h13so1105380pjt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:04:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ot0pBmNC9C2X+nBkx9lvZxGNQE3VnPlcBNxjMI2kl+A=;
-        b=fG6Yc8BxmivwsyBhxPN1l4Usla51wPxUb9C+NJKw79QMnmmdMxSKukhr9vHrPDsG9S
-         0g23BMN5bI2LBgTYDB4apV4a5icGjwB5ZqPDM+aHN3H5bE+G1mzAxLxqK8pItyJ3Tngy
-         gTOWsJJVQlOhdqP328V3kJdm+R0lSBOBvQ5cIwXhEttI1D/l/hkg3O0tFsIvvp+hsKwu
-         Bh2izbfPWkw7g5fVQ2ITw2dpwZSZXzwZ0SK2z4xftMe9Drhiyg4unRjrbfqT4SLTrsx1
-         X1U7O0O/7sUUuBqLaNWWFMmi/Fwsk8FvjcZ1G10xwccF/Um6gWFn4+Bpy+oWk6n/o0oX
-         jKYg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uW/ly8R36o7aRCH1pKJ2ec9Gg0w/jrhSJacSJUXbtNI=;
+        b=OTu7Nzya+v7xOsnReQljMa7XHYwQqT19wJYcyokB+WfuGTzk2iJbe5OJYCE011NTuY
+         2ac3k9jCqbRL2xw3yEhMjIOfi+UBZ/zG3fnHjmz2vSiJF3HJ1Q9WsQaw6LKpVQY/wSvh
+         DIPJ/V74dnrx8dmK/CfZJ18HjhGqETYokIalw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ot0pBmNC9C2X+nBkx9lvZxGNQE3VnPlcBNxjMI2kl+A=;
-        b=I2lF0Nykb1IMMj1ZMXYrpvZeKveqYCaxVdfWgzT2CJsyILpjbbMP6GldQmPmdI5FcM
-         G9xKsmh1pjKKqDEBza2iBI8amzBKUej6Zr8ItnNZ9MADYjh06qqegEPtByjzv4wEIGI4
-         7ra4tEBlBm99PQDA3WBEEse4VZFi49EwcOgvSKTGsVjRwwCt0T56fsFT7WHwrmeLGlbE
-         49ZQrZaNjhIJJf36S+BGdJPLt7PGH+1luzvMShcGOnOrhKD6Wy/iu8E/NB6A+qgFRQKs
-         xda1qbRTuc6hKasLyyge7NbtAg8g3AtyD7oR3nL71KGJTeoR7BtS0g8VmvBtz1rGFS5P
-         46iQ==
-X-Gm-Message-State: AOAM533lqItIrWQtcnetqaljGeC3k+VH8gvv2BgBbswvJGmhPxXkGWKq
-        mSb/+9n9WzLX3pshijktHgiIVBNLe7J3gKuSEvLc8Q==
-X-Google-Smtp-Source: ABdhPJzytwgL73ZPP1K08fGAHeN5ehDIPgAIh1Ry5wIZKXT9Gb2rtJUPv8Stfn3sJQFKv9Ay2SrZvQYLvDwrweiH8mY=
-X-Received: by 2002:ab0:6045:: with SMTP id o5mr3525813ual.100.1614880995595;
- Thu, 04 Mar 2021 10:03:15 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uW/ly8R36o7aRCH1pKJ2ec9Gg0w/jrhSJacSJUXbtNI=;
+        b=kUHaCiVnb1ypKuKBufbdSqguOrmqshoSEtLO58IL4xml16IpuuoCaVDVknQl813mfy
+         OmvpWycNsV98any62ZBgeeCQCmmVEqQKF/WQ+uZDPGBG3IoAeh9VhOAPFjBtSByDgVxp
+         zZyqDo0T9yLBGSCeEEYtdMZcymoa5/2sF3Uh6l+5C/gIlo/tgYbp02eYw3W/k2bK6iJL
+         0j7dChveMv1BFSo3Z+g15G3OKiUUaMoHTd3urJ59RX+G7a//4+hY21o+TWQxRFdI93qH
+         Gt4VCunHZvfCsEoWsYGfHmiCkcMSZwGDzlzR40slb1f99splkYAwMul647xfdYho2E7t
+         btiQ==
+X-Gm-Message-State: AOAM533GSS7RZtz1tlLhQde0y0i8KMsYutMBlZXgSwVfAIb46iaTeaFz
+        BSmflflSMYIuIJANFqWcrlyBWQ==
+X-Google-Smtp-Source: ABdhPJxy/Z1wlG3cjYD774SKGDvUsmM+GURdyu24UUWgcBt1J2aXa6lMqUAcTHAjMFsGXqBUOB/6hQ==
+X-Received: by 2002:a17:903:31c6:b029:e5:d0a4:97cc with SMTP id v6-20020a17090331c6b02900e5d0a497ccmr4995282ple.52.1614881061745;
+        Thu, 04 Mar 2021 10:04:21 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:69fe:a9f8:ca53:af2b])
+        by smtp.gmail.com with UTF8SMTPSA id s18sm69746pfm.129.2021.03.04.10.04.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 10:04:21 -0800 (PST)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH 0/4] arm64: dts: qcom: sc7180: Disable the charger thermal zone on more trogdor boards
+Date:   Thu,  4 Mar 2021 10:04:11 -0800
+Message-Id: <20210304180415.1531430-1-mka@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-References: <20210216224252.22187-1-marten.lindahl@axis.com>
- <CAPDyKFoASx=U8b1Oqtuo6ikiM=gXfL2x1Gsz=rfAn9zxP0y_iA@mail.gmail.com>
- <20210301215923.6jfg6mg5ntorttan@axis.com> <CAPDyKFoaKfuwweaEMf1Pz+ECAPU3P9-gmCJcpq+MADH5gH1c=Q@mail.gmail.com>
- <20210304134836.xlw7wbbvkc5bqzmm@axis.com> <CAPDyKFous2oDwcUgPkZV8bZzpd+yA8m9LwC3+yk0uxqWcrJx1w@mail.gmail.com>
- <20210304145946.tnbbd4qq6nvc2mcb@axis.com>
-In-Reply-To: <20210304145946.tnbbd4qq6nvc2mcb@axis.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 4 Mar 2021 19:02:38 +0100
-Message-ID: <CAPDyKFqF3MSfatooLQyXsz3Yu_zNSpzKaGWUP0nJsQjJZ+0FGQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: Try power cycling card if command request times out
-To:     Marten Lindahl <martenli@axis.com>
-Cc:     =?UTF-8?Q?M=C3=A5rten_Lindahl?= <Marten.Lindahl@axis.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        kernel <kernel@axis.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 15:59, Marten Lindahl <martenli@axis.com> wrote:
->
-> On Thu, Mar 04, 2021 at 03:06:54PM +0100, Ulf Hansson wrote:
-> > On Thu, 4 Mar 2021 at 14:48, Marten Lindahl <martenli@axis.com> wrote:
-> > >
-> > > Hi Ulf! My apologies for the delay.
-> > >
-> > > On Tue, Mar 02, 2021 at 09:45:02AM +0100, Ulf Hansson wrote:
-> > > > On Mon, 1 Mar 2021 at 22:59, Marten Lindahl <martenli@axis.com> wro=
-te:
-> > > > >
-> > > > > Hi Ulf!
-> > > > >
-> > > > > Thank you for your comments!
-> > > > >
-> > > > > On Mon, Mar 01, 2021 at 09:50:56AM +0100, Ulf Hansson wrote:
-> > > > > > + Adrian
-> > > > > >
-> > > > > > On Tue, 16 Feb 2021 at 23:43, M=C3=A5rten Lindahl <marten.linda=
-hl@axis.com> wrote:
-> > > > > > >
-> > > > > > > Sometimes SD cards that has been run for a long time enters a=
- state
-> > > > > > > where it cannot by itself be recovered, but needs a power cyc=
-le to be
-> > > > > > > operational again. Card status analysis has indicated that th=
-e card can
-> > > > > > > end up in a state where all external commands are ignored by =
-the card
-> > > > > > > since it is halted by data timeouts.
-> > > > > > >
-> > > > > > > If the card has been heavily used for a long time it can be w=
-eared out,
-> > > > > > > and should typically be replaced. But on some tests, it shows=
- that the
-> > > > > > > card can still be functional after a power cycle, but as it r=
-equires an
-> > > > > > > operator to do it, the card can remain in a non-operational s=
-tate for a
-> > > > > > > long time until the problem has been observed by the operator=
-.
-> > > > > > >
-> > > > > > > This patch adds function to power cycle the card in case it d=
-oes not
-> > > > > > > respond to a command, and then resend the command if the powe=
-r cycle
-> > > > > > > was successful. This procedure will be tested 1 time before g=
-iving up,
-> > > > > > > and resuming host operation as normal.
-> > > > > >
-> > > > > > I assume the context above is all about the ioctl interface?
-> > > > > >
-> > > > >
-> > > > > Yes, that's correct. The problem we have seen is triggered by ioc=
-tls.
-> > > > >
-> > > > > > So, when the card enters this non functional state, have you tr=
-ied
-> > > > > > just reading a block through the regular I/O interface. Does it
-> > > > > > trigger a power cycle of the card - and then makes it functiona=
-l
-> > > > > > again?
-> > > > > >
-> > > > >
-> > > > > Yes, we have tried that, and it does trigger a power cycle, makin=
-g the card
-> > > > > operational again. But as it requires an operator to trigger it, =
-I thought
-> > > > > it might be something that could be automated here. At least once=
-.
-> > > >
-> > > > Not sure what you mean by operator here? In the end it's a userspac=
-e
-> > > > program running and I assume it can deal with error paths. :-)
-> > > >
-> > > > In any case, I understand your point.
-> > > >
-> > >
-> > > Yes, we have a userspace program. So if the userspace program will tr=
-y to
-> > > restore the card in a situation such as the one we are trying to solv=
-e
-> > > here, how shall it perform it? Is it expected that a ioctl CMD0 reque=
-st
-> > > should be enough, or is there any other support for a userspace progr=
-am to
-> > > reset the card?
-> >
-> > Correct, there is no way for userspace to reset cards through an ioctl.
-> >
-> > >
-> > > If it falls on a ioctl command to reset the card, how do we handle th=
-e case
-> > > where the ioctl times out anyway? Or is the only way for a userspace =
-program
-> > > to restore the card, to make a block transfer that fails?
-> >
-> > Yes, that is what I was thinking. According to the use case you have
-> > described, this should be possible for you to implement as a part of
-> > your userspace program, no?
->
-> Ok, I will discuss that with the people maintaining the userspace program=
- :)
->
-> But would it be of interest to review a patch introducing a more clean ca=
-rd
-> reset request, without block transfers?
+We already disabled the charger thermal zone for lazor to avoid
+bogus temperature readings from an unsupported thermistor. Some
+revisions of other trogdor boards that are added by Doug's
+'arm64: dts: qcom: Update sc7180-trogdor variants from downstream'
+series have the same problem. Disable the charger thermal zone for
+them too.
 
-Well, if you can solve it with block transfers that's the preferred
-option, in my opinion.
+This series is based on v2 of the 'arm64: dts: qcom: Update
+sc7180-trogdor variants from downstream' series
+(https://patchwork.kernel.org/project/linux-arm-msm/list/?series=440315)
 
-As I stated earlier, my main issue with the HW reset through the ioctl
-interface, is that we don't know what combination of
-request/command/response we should be doing a reset for.
 
-Kind regards
-Uffe
+Matthias Kaehlcke (4):
+  arm64: dts: qcom: sc7180: lazor: Simplify disabling of charger thermal
+    zone
+  arm64: dts: qcom: sc7180: Add pompom rev3
+  arm64: dts: qcom: sc7180: pompom: Disable charger thermal zone for
+    rev1 and rev2
+  arm64: dts: qcom: sc7180: Disable charger thermal zone for coachz rev1
+    and rev2
+
+ .../dts/qcom/sc7180-trogdor-coachz-r1.dts     |  9 ++++
+ .../dts/qcom/sc7180-trogdor-coachz-r2.dts     |  9 ++++
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r0.dts |  9 ----
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r1.dts |  9 ----
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r3.dts |  9 ----
+ .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  9 ++++
+ .../dts/qcom/sc7180-trogdor-pompom-r1.dts     |  9 ++++
+ .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  4 +-
+ .../dts/qcom/sc7180-trogdor-pompom-r2.dts     | 13 +++++-
+ .../dts/qcom/sc7180-trogdor-pompom-r3-lte.dts | 14 ++++++
+ .../dts/qcom/sc7180-trogdor-pompom-r3.dts     | 46 +++++++++++++++++++
+ 11 files changed, 109 insertions(+), 31 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
