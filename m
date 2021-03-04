@@ -2,180 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012B132D49D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEE132D49B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241615AbhCDNvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:51:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38853 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241612AbhCDNvh (ORCPT
+        id S241621AbhCDNvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241608AbhCDNvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:51:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614865811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8dKD6EMo2YP510AzFfioC+1u/tF8yICEAGoshmqfTsM=;
-        b=D2dNWJukvwk5vX1JqdDPwKNpS8BBGKlxbpoURU8idTkzH5BBJMao2+Lo4SmUy+lg/vTDff
-        KA6NcaNveDD6BjCkUsZuSafZdW8HkZc/MGxvmGutgDPDYFGztkSSy3KTvUprsc03BLDBRF
-        SBbQSMsSDe2R9WzN2Ev+D7lFi0FOnFE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-ZZNokqHgORCQ1jjP6EJ2mA-1; Thu, 04 Mar 2021 08:50:10 -0500
-X-MC-Unique: ZZNokqHgORCQ1jjP6EJ2mA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1275874998;
-        Thu,  4 Mar 2021 13:50:08 +0000 (UTC)
-Received: from gondolin (ovpn-114-163.ams2.redhat.com [10.36.114.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A28D60244;
-        Thu,  4 Mar 2021 13:50:03 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 14:50:00 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        virtio-dev@lists.oasis-open.org
-Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
- reset to zero
-Message-ID: <20210304145000.149706ae.cohuck@redhat.com>
-In-Reply-To: <1b5b3f9b-41d7-795c-c677-c45f1d5a774e@redhat.com>
-References: <20210223041740-mutt-send-email-mst@kernel.org>
-        <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
-        <20210223110430.2f098bc0.cohuck@redhat.com>
-        <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
-        <20210223115833.732d809c.cohuck@redhat.com>
-        <8355f9b3-4cda-cd2e-98df-fed020193008@redhat.com>
-        <20210224121234.0127ae4b.cohuck@redhat.com>
-        <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
-        <20210225135229-mutt-send-email-mst@kernel.org>
-        <0f8eb381-cc98-9e05-0e35-ccdb1cbd6119@redhat.com>
-        <20210228162306-mutt-send-email-mst@kernel.org>
-        <cdd72199-ac7b-cc8d-2c40-81e43162c532@redhat.com>
-        <20210302130812.6227f176.cohuck@redhat.com>
-        <5f6972fe-7246-b622-958d-9cab8dd98e21@redhat.com>
-        <20210303092905.677eb66c.cohuck@redhat.com>
-        <1b5b3f9b-41d7-795c-c677-c45f1d5a774e@redhat.com>
-Organization: Red Hat GmbH
+        Thu, 4 Mar 2021 08:51:35 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCE4C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 05:50:55 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id g68so4537562vkb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:50:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WfBNuUrd/opuKzkgtwMeHEBHTqndp4QteWKqmlqjrkk=;
+        b=EV27IFZ+KtpLSZGMRFgQ2JSb1S+71I7aezbRUK4i7JX7v1rbFFIQgMMOECEg7IfmR0
+         tYC91rQ8L8/j0Yi6kQnpdJPFcEPrgrxMX4oUpgxzqPbbDskKkGVfAWiaN37YULwZZeoP
+         wGQD5UlgQ9UVfP3EwqZmkxddmqr4bh4/67/pGcb54zeJgmMFDoAjkxYsAf2hWlCvFB9H
+         em07LWlHSICrZLayhSEhVU9+BhBujQavIswpkSB4DHMY0aVg3121uTr4z1cNIYe0gIQD
+         TugaTLqaw2uog3ICI37ePDFDGGIufKtYzKdPYIJEnqUy+GKyE9S2TZ6Wj/PTq4RbbveV
+         lCcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WfBNuUrd/opuKzkgtwMeHEBHTqndp4QteWKqmlqjrkk=;
+        b=eI6T+YwiqDYqdA58o8A6BFaV7Cr/Cvx9aNkyNRCFs90B7p18cxmnzQ4+LyWnoYwnXD
+         kXTaxHm872DHpPRY88mKBGw5KhDD0w2vX18fHztY9kwdukzfHenrljPf7KfMr7WRi0mA
+         qcwbHpef48yDIYdCCjHFjHjnhOIx6zS12moAW6/I7b5/Ng3ySYETeTqXrrz+yaczFD4f
+         ZTjnbq8QphTLKpB8y9aVxpd04zuA4DYTdedsaBbYJNAit+PzesW9P97/El/AjaS4Owf2
+         3/JkEdA9c4+n5EdnbeX3vTcFW24XCjJchzlEXGbteLmAvgAXlmsT6XAGQRE9felUUdhM
+         Xa5w==
+X-Gm-Message-State: AOAM5312A11etb/UJ+T50FXkTu2o/srmyOUJXHO3YEgicz9xE/w/H8Qh
+        qoODUX3rXPa5Zq4dBakqQve8hAspX2F22t+DcayC3w==
+X-Google-Smtp-Source: ABdhPJyOw8Ivbs5I2MbmiW7PCGlUo1so5zhUDrOfGB44xQi6GqIBDItt+f25Di8kQdBmoZJFN0vhArCpH9GkQGXWNz4=
+X-Received: by 2002:a1f:a68d:: with SMTP id p135mr2712297vke.6.1614865854678;
+ Thu, 04 Mar 2021 05:50:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210303174248.542175-1-Frank.Li@nxp.com>
+In-Reply-To: <20210303174248.542175-1-Frank.Li@nxp.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 4 Mar 2021 14:50:18 +0100
+Message-ID: <CAPDyKFoHRfvKHS6NWrkkLD4Ek6DyXPyPd2ey5zhsWMCY=cCOZw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mmc: cqhci: fix random crash when remove mmc module
+To:     Frank Li <lznuaa@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Harjani Ritesh <riteshh@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Haibo Chen <haibo.chen@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 16:24:16 +0800
-Jason Wang <jasowang@redhat.com> wrote:
+On Wed, 3 Mar 2021 at 18:42, Frank Li <lznuaa@gmail.com> wrote:
+>
+> [ 6684.493350] Unable to handle kernel paging request at virtual address =
+ffff800011c5b0f0
+> [ 6684.498531] mmc0: card 0001 removed
+> [ 6684.501556] Mem abort info:
+> [ 6684.509681]   ESR =3D 0x96000047
+> [ 6684.512786]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> [ 6684.518394]   SET =3D 0, FnV =3D 0
+> [ 6684.521707]   EA =3D 0, S1PTW =3D 0
+> [ 6684.524998] Data abort info:
+> [ 6684.528236]   ISV =3D 0, ISS =3D 0x00000047
+> [ 6684.532986]   CM =3D 0, WnR =3D 1
+> [ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000081b2=
+2000
+> [ 6684.543923] [ffff800011c5b0f0] pgd=3D00000000bffff003, p4d=3D00000000b=
+ffff003, pud=3D00000000bfffe003, pmd=3D00000000900e1003, pte=3D000000000000=
+0000
+> [ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
+> [ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cq=
+hci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc ca=
+amalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_d=
+ev caam error [last unloaded: mmc_core]
+> [ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01=
+410-g3ba33182767b-dirty #10
+> [ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
+> [ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
+>
+> [ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
+> [ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
+> ^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr=
+ : cqhci_request+0x314/0x4e8 [cqhci]
+> [ 6684.626734] sp : ffff80001243b9f0
+> [ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
+> [ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
+> [ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
+> [ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
+> [ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
+> [ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
+> [ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
+> [ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
+> [ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
+> [ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
+> [ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
+> [ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
+> [ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
+> [ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
+> [ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
+> [ 6684.709854] Call trace:
+> [ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
+> [ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
+> [ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
+> [ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
+>
+> cqhci_request was called after cqhci_disable.
+>
+> cqhci_disable                                 cqhci_request
+> {                                             {
+>         dmam_free_coherent();  (1) free
+>                                                   if(!cq_host->enable)
+>                                                        return
+>                                          (2) pass check here
+>         cq_host->enable =3D false;
+>
+>                                                   task_desc=3D get_desc(c=
+q_host,tag);
+>                                                              ^^^^ crash h=
+ere
+>                                          (3) access memory which is alrea=
+dy free
+>
+> }                                             }
+>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-> On 2021/3/3 4:29 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote:
-> > On Wed, 3 Mar 2021 12:01:01 +0800
-> > Jason Wang <jasowang@redhat.com> wrote:
-> > =20
-> >> On 2021/3/2 8:08 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote: =20
-> >>> On Mon, 1 Mar 2021 11:51:08 +0800
-> >>> Jason Wang <jasowang@redhat.com> wrote:
-> >>>    =20
-> >>>> On 2021/3/1 5:25 =E4=B8=8A=E5=8D=88, Michael S. Tsirkin wrote: =20
-> >>>>> On Fri, Feb 26, 2021 at 04:19:16PM +0800, Jason Wang wrote: =20
-> >>>>>> On 2021/2/26 2:53 =E4=B8=8A=E5=8D=88, Michael S. Tsirkin wrote: =20
-> >>>>>>> Confused. What is wrong with the above? It never reads the
-> >>>>>>> field unless the feature has been offered by device. =20
-> >>>>>> So the spec said:
-> >>>>>>
-> >>>>>> "
-> >>>>>>
-> >>>>>> The following driver-read-only field, max_virtqueue_pairs only exi=
-sts if
-> >>>>>> VIRTIO_NET_F_MQ is set.
-> >>>>>>
-> >>>>>> "
-> >>>>>>
-> >>>>>> If I read this correctly, there will be no max_virtqueue_pairs fie=
-ld if the
-> >>>>>> VIRTIO_NET_F_MQ is not offered by device? If yes the offsetof() vi=
-olates
-> >>>>>> what spec said.
-> >>>>>>
-> >>>>>> Thanks =20
-> >>>>> I think that's a misunderstanding. This text was never intended to
-> >>>>> imply that field offsets change beased on feature bits.
-> >>>>> We had this pain with legacy and we never wanted to go back there.
-> >>>>>
-> >>>>> This merely implies that without VIRTIO_NET_F_MQ the field
-> >>>>> should not be accessed. Exists in the sense "is accessible to drive=
-r".
-> >>>>>
-> >>>>> Let's just clarify that in the spec, job done. =20
-> >>>> Ok, agree. That will make things more eaiser. =20
-> >>> Yes, that makes much more sense.
-> >>>
-> >>> What about adding the following to the "Basic Facilities of a Virtio
-> >>> Device/Device Configuration Space" section of the spec:
-> >>>
-> >>> "If an optional configuration field does not exist, the corresponding
-> >>> space is still present, but reserved." =20
-> >>
-> >> This became interesting after re-reading some of the qemu codes.
-> >>
-> >> E.g in virtio-net.c we had:
-> >>
-> >> *static VirtIOFeature feature_sizes[] =3D {
-> >>   =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_MAC,
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, ma=
-c)},
-> >>   =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_STATUS,
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, st=
-atus)},
-> >>   =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_MQ,
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, ma=
-x_virtqueue_pairs)},
-> >>   =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_MTU,
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, mt=
-u)},
-> >>   =C2=A0=C2=A0=C2=A0 {.flags =3D 1ULL << VIRTIO_NET_F_SPEED_DUPLEX,
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, du=
-plex)},
-> >>   =C2=A0=C2=A0=C2=A0 {.flags =3D (1ULL << VIRTIO_NET_F_RSS) | (1ULL <<
-> >> VIRTIO_NET_F_HASH_REPORT),
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0 .end =3D endof(struct virtio_net_config, su=
-pported_hash_types)},
-> >>   =C2=A0=C2=A0=C2=A0 {}
-> >> };*
-> >>
-> >> *It has a implict dependency chain. E.g MTU doesn't presnet if
-> >> DUPLEX/RSS is not offered ...
-> >> * =20
-> > But I think it covers everything up to the relevant field, no? So MTU
-> > is included if we have the feature bit, even if we don't have
-> > DUPLEX/RSS.
-> >
-> > Given that a config space may be shorter (but must not collapse
-> > non-existing fields), maybe a better wording would be:
-> >
-> > "If an optional configuration field does not exist, the corresponding
-> > space will still be present if it is not at the end of the
-> > configuration space (i.e., further configuration fields exist.) =20
->=20
->=20
-> This should work but I think we need to define the end of configuration=20
-> space first?
+Applied for fixes, thanks! I added a fixes tag and a stable tag.
 
-What about sidestepping this:
+Kind regards
+Uffe
 
-"...the corresponding space will still be present, unless no further
-configuration fields exist."
 
-?
-
->=20
-> > This
-> > implies that a given field, if it exists, is always at the same offset
-> > from the beginning of the configuration space."
-
+> ---
+>
+> Change from v1 to v2
+>  - use Adrian Hunter suggested method to fix this problem
+>
+>  drivers/mmc/core/bus.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+> index c2e70b757dd1..4383c262b3f5 100644
+> --- a/drivers/mmc/core/bus.c
+> +++ b/drivers/mmc/core/bus.c
+> @@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
+>         mmc_remove_card_debugfs(card);
+>  #endif
+>
+> -       if (host->cqe_enabled) {
+> -               host->cqe_ops->cqe_disable(host);
+> -               host->cqe_enabled =3D false;
+> -       }
+> -
+>         if (mmc_card_present(card)) {
+>                 if (mmc_host_is_spi(card->host)) {
+>                         pr_info("%s: SPI card removed\n",
+> @@ -416,6 +411,10 @@ void mmc_remove_card(struct mmc_card *card)
+>                 of_node_put(card->dev.of_node);
+>         }
+>
+> +       if (host->cqe_enabled) {
+> +               host->cqe_ops->cqe_disable(host);
+> +               host->cqe_enabled =3D false;
+> +       }
+> +
+>         put_device(&card->dev);
+>  }
+> -
+> --
+> 2.25.1
+>
