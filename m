@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F1032CFCF
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEE232CFCE
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237710AbhCDJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:37:37 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2618 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237692AbhCDJhX (ORCPT
+        id S237700AbhCDJhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:37:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23157 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237673AbhCDJhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:37:23 -0500
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Drlwd2XNSz67vMY;
-        Thu,  4 Mar 2021 17:30:57 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 4 Mar 2021 10:36:41 +0100
-Received: from [10.210.170.213] (10.210.170.213) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 4 Mar 2021 09:36:40 +0000
-Subject: Re: [PATCH v7 2/4] perf tools: Add lexical definition of event name
-To:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>, <will@kernel.org>,
-        <mathieu.poirier@linaro.org>, <leo.yan@linaro.org>,
-        <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210304032610.3112996-1-nakamura.shun@fujitsu.com>
- <20210304032610.3112996-3-nakamura.shun@fujitsu.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <74955041-45ab-10df-e044-5d64898c81d9@huawei.com>
-Date:   Thu, 4 Mar 2021 09:34:44 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Thu, 4 Mar 2021 04:37:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614850556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P1qJfzyEGRuuV0eDxn3pbmVD8vuajk2myHnjwQFS5/s=;
+        b=E+xwZUUSx2KwIqA1crISHXF6y/2MNTqXMvXjgXw0ePI+T51xMt888Yv4ZOOElC1grD4+mJ
+        1XSWTm0Gj6yFh7oxUfD8jIT9nhx1UpSHHEeGVM7U196oB5zbRM8UXjQkMuYp5UEwyFJQji
+        dVeuYDYhsAkJUpEJV1jEsuBSk9N02Oo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-q6eMNokkMuyGV7rcPv2jCQ-1; Thu, 04 Mar 2021 04:35:52 -0500
+X-MC-Unique: q6eMNokkMuyGV7rcPv2jCQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22852108BD0E;
+        Thu,  4 Mar 2021 09:35:51 +0000 (UTC)
+Received: from [10.36.113.171] (ovpn-113-171.ams2.redhat.com [10.36.113.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B27470911;
+        Thu,  4 Mar 2021 09:35:49 +0000 (UTC)
+Subject: Re: [PATCH] mm/hugetlb: suppress wrong warning info when alloc
+ gigantic page
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Chen Wandun <chenwandun@huawei.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210219123909.13130-1-chenwandun@huawei.com>
+ <46e76ac3-def1-80d4-14f1-61f7cd00d033@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <cf79e9a4-72ba-8fa0-0710-5e82a5b5e4d5@redhat.com>
+Date:   Thu, 4 Mar 2021 10:35:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210304032610.3112996-3-nakamura.shun@fujitsu.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <46e76ac3-def1-80d4-14f1-61f7cd00d033@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.170.213]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/03/2021 03:26, Shunsuke Nakamura wrote:
-> From: Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
+On 19.02.21 20:14, Mike Kravetz wrote:
+> On 2/19/21 4:39 AM, Chen Wandun wrote:
+>> If hugetlb_cma is enabled, it will skip boot time allocation
+>> when allocating gigantic page, that doesn't means allocation
+>> failure, so suppress this warning info.
+>>
 > 
-> Add the lexical definition of event name so that the numbers are recognizable.
+> Normally the addition of warning messages is discouraged.  However, in
+> this case the additional message provides value.  Why?
+> 
+> Prior to the commit cf11e85fc08c, one could have a kernel command line
+> that contains:
+> 
+> hugepagesz=1G hugepages=16
+> 
+> This would allocate 16 1G pages at boot time.
+> 
+> After the commit, someone could specify a command line containing:
+> 
+> hugepagesz=1G hugepages=16 hugetlb_cma=16G
+> 
+> In this case, 16G of CMA will be reserved for 1G huge page allocations
+> after boot time.  The parameter 'hugepages=16' is ignored, and the warning
+> message is logged.  The warning message should only be logged when the
+> kernel parameter 'hugepages=' is ignored.
+> 
+> IMO, it make sense to log a warning if ignoring a user specified parameter.
+> The user should not be attempting boot time allocation and CMA reservation
+> for 1G pages.
+> 
+> I do not think we should drop the warning as the it tells the user thay
+> have specified two incompatible allocation options.
 > 
 
-Sorry for the hassle, but it's not clear that we got a definitive 
-conclusion on this patch from v6 series:
+I agree. It has value.
 
-https://lore.kernel.org/lkml/YCuo01Wxxe%2FMCrC5@krava/
+-- 
+Thanks,
 
-Would it be so much worse for you to change format of these event names 
-to not start with a numberic?
-
-Thanks
-
-
-
-> A64FX defines an event name that starts with a number.
->   - 0inst_commit
->   - 1inst_commit
->   - 2inst_commit
->   - 3inst_commit
->   - 4inst_commit
-> 
-> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-> Acked-by: John Garry <john.garry@huawei.com>
-> ---
->   tools/perf/util/parse-events.l | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-> index 0b36285a9435..33f627187415 100644
-> --- a/tools/perf/util/parse-events.l
-> +++ b/tools/perf/util/parse-events.l
-> @@ -205,7 +205,7 @@ bpf_source	[^,{}]+\.c[a-zA-Z0-9._]*
->   num_dec		[0-9]+
->   num_hex		0x[a-fA-F0-9]+
->   num_raw_hex	[a-fA-F0-9]+
-> -name		[a-zA-Z_*?\[\]][a-zA-Z0-9_*?.\[\]]*
-> +name		[a-zA-Z0-9_*?\[\]][a-zA-Z0-9_*?.\[\]]*
->   name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
->   name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
->   drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
-> 
+David / dhildenb
 
