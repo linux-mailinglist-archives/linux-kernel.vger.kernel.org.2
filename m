@@ -2,182 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F0832DB15
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7529932DB19
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238849AbhCDUTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:19:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57293 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236405AbhCDUTZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:19:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614889079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NcEeIM4rSQOyEW+04ey55syfNFH6fXFOkJ0byNZRhLc=;
-        b=JP+q9C4wzOq9DtvS0ep5EHBNun3hf1zBVg76i7x9BnDbkqAwVktndhVvdfvP/o/q8XsceR
-        H6WFwUNz9/vV9wM9qnQfbEmhoRfo1g56/bGyQrV3bfgLgPd0QJumA9Af/LbeoWumAUIgKZ
-        9Jh09UFgQOXBPaEYPLo5a1QCzoXBzk8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-yGDbhkT-PQKrKN2212R9TQ-1; Thu, 04 Mar 2021 15:17:55 -0500
-X-MC-Unique: yGDbhkT-PQKrKN2212R9TQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3690883DD21;
-        Thu,  4 Mar 2021 20:17:54 +0000 (UTC)
-Received: from krava (unknown [10.40.196.20])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 193ED100164C;
-        Thu,  4 Mar 2021 20:17:51 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 21:17:51 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH] perf pmu: Validate raw event with sysfs exported format
- bits
-Message-ID: <YEFAb7Q7yhkw6g9s@krava>
-References: <20210303051736.26974-1-yao.jin@linux.intel.com>
+        id S238999AbhCDUUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:20:06 -0500
+Received: from mga05.intel.com ([192.55.52.43]:6280 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239044AbhCDUTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 15:19:47 -0500
+IronPort-SDR: +Cav2cRedfECRZpSM1QkUegtnvB8nk+IfCN/YbXBWjG5S3pMg5T0qQyKfzLLBvMKnNsumlojX8
+ /dPWbUJCnyKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="272504381"
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="272504381"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 12:19:06 -0800
+IronPort-SDR: 8IHLP432SVJfpEPtW/B8iO9EiS88EjkED9rCFG5tHm21VS10ACysIMBbq6/KSSpgZMsG8e92Hf
+ /hvZwcnYUSeA==
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="407966663"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 12:19:06 -0800
+Date:   Thu, 4 Mar 2021 12:19:06 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v3 04/11] x86/kthread,dumpstack: Set
+ task_pt_regs->cs.RPL=3 for kernel threads
+Message-ID: <20210304201906.GM3014244@iweiny-DESK2.sc.intel.com>
+References: <cover.1614884673.git.luto@kernel.org>
+ <c70a1a4632b976171ca5f3381ef84d40fd028861.1614884673.git.luto@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303051736.26974-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <c70a1a4632b976171ca5f3381ef84d40fd028861.1614884673.git.luto@kernel.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 01:17:36PM +0800, Jin Yao wrote:
-
-SNIP
-
-> The set bits in 'bits' indicate the invalid bits used in config.
-> Finally use strbuf to report the invalid bits.
+On Thu, Mar 04, 2021 at 11:05:57AM -0800, Andy Lutomirski wrote:
+> For kernel threads, task_pt_regs is currently all zeros, a valid user state
+> (if kernel_execve() has been called), or some combination thereof during
+> execution of kernel_execve().  If a stack trace is printed, the unwinder
+> might get confused and treat task_pt_regs as a kernel state.  Indeed,
+> forcing a stack dump results in an attempt to display _kernel_ code bytes
+> from a bogus address at the very top of kernel memory.
 > 
-> Some architectures may not export supported bits through sysfs,
-> so if masks is 0, perf_pmu__config_valid just returns true.
+> Fix the confusion by setting cs=3 so that user_mode(task_pt_regs(...)) ==
+> true for kernel threads.
 > 
-> After:
+> Also improve the error when failing to fetch code bytes to show which type
+> of fetch failed.  This makes it much easier to understand what's happening.
 > 
-> Single event:
-> 
->   # ./perf stat -e cpu/r031234/ -a -- sleep 1
->   WARNING: event config '31234' not valid (bits 16 17 not supported by kernel)!
-> 
->    Performance counter stats for 'system wide':
-> 
->                    0      cpu/r031234/
-> 
->          1.001403757 seconds time elapsed
-> 
-> Multiple events:
-> 
->   # ./perf stat -e cpu/rf01234/,cpu/r031234/ -a -- sleep 1
->   WARNING: event config 'f01234' not valid (bits 20 22 not supported by kernel)!
->   WARNING: event config '31234' not valid (bits 16 17 not supported by kernel)!
-
-right, seems useful
-
-> 
->    Performance counter stats for 'system wide':
-> 
->                    0      cpu/rf01234/
->                    0      cpu/r031234/
-> 
-> The warning is reported for invalid bits.
-> 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 > ---
->  tools/perf/util/parse-events.c | 11 ++++++++++
->  tools/perf/util/pmu.c          | 38 ++++++++++++++++++++++++++++++++++
->  tools/perf/util/pmu.h          |  4 ++++
->  3 files changed, 53 insertions(+)
+>  arch/x86/kernel/dumpstack.c |  4 ++--
+>  arch/x86/kernel/process.c   | 13 +++++++++++++
+>  2 files changed, 15 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 42c84adeb2fb..1820b2c0a241 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -356,6 +356,17 @@ __add_event(struct list_head *list, int *idx,
->  	struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
->  			       cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
->  
-
-if we want it just for raw/numeric, we could add it earlier on,
-like to parse_events_add_numeric call
-
-but perhaps it might be helpful to check any pmu event,
-could perhaps reveal some broken format 
-
-> +	if (pmu && attr->type == PERF_TYPE_RAW) {
-> +		struct strbuf buf = STRBUF_INIT;
-> +
-> +		if (!perf_pmu__config_valid(pmu, attr->config, &buf)) {
-> +			pr_warning("WARNING: event config '%llx' not valid ("
-> +				   "bits%s not supported by kernel)!\n",
-> +				   attr->config, buf.buf);
-> +		}
-> +		strbuf_release(&buf);
-> +	}
-> +
->  	if (init_attr)
->  		event_attr_init(attr);
->  
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 44ef28302fc7..5e361adb2698 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1812,3 +1812,41 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
->  
->  	return nr_caps;
+> diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+> index 55cf3c8325c6..9b7b69bb12e5 100644
+> --- a/arch/x86/kernel/dumpstack.c
+> +++ b/arch/x86/kernel/dumpstack.c
+> @@ -128,8 +128,8 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+>  		/* No access to the user space stack of other tasks. Ignore. */
+>  		break;
+>  	default:
+> -		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
+> -		       loglvl, prologue);
+> +		printk("%sCode: Unable to access %s opcode bytes at RIP 0x%lx.\n",
+> +		       loglvl, user_mode(regs) ? "user" : "kernel", prologue);
+>  		break;
+>  	}
 >  }
+> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> index 145a7ac0c19a..f6f16df04cb9 100644
+> --- a/arch/x86/kernel/process.c
+> +++ b/arch/x86/kernel/process.c
+> @@ -163,6 +163,19 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+>  	/* Kernel thread ? */
+>  	if (unlikely(p->flags & PF_KTHREAD)) {
+>  		memset(childregs, 0, sizeof(struct pt_regs));
 > +
-> +bool perf_pmu__config_valid(struct perf_pmu *pmu, __u64 config,
-> +			    struct strbuf *buf)
-> +{
-> +	struct perf_pmu_format *format;
-> +	__u64 masks = 0, bits;
-> +	int i;
-> +
-> +	list_for_each_entry(format, &pmu->format, list)	{
 > +		/*
-> +		 * Skip extra configs such as config1/config2.
+> +		 * Even though there is no real user state here, these
+> +		 * are were user regs belong, and kernel_execve() will
+                       ^^^^^
+                       where?
+
+Ira
+
+> +		 * overwrite them with user regs.  Put an obviously
+> +		 * invalid value that nonetheless causes user_mode(regs)
+> +		 * to return true in CS.
+> +		 *
+> +		 * This also prevents the unwinder from thinking that there
+> +		 * is invalid kernel state at the top of the stack.
 > +		 */
-> +		if (format->value > 0)
-> +			continue;
+> +		childregs->cs = 3;
 > +
-> +		for_each_set_bit(i, format->bits, PERF_PMU_FORMAT_BITS)
-> +			masks |= 1ULL << i;
-> +	}
-> +
-> +	/*
-> +	 * Kernel doesn't export any valid format bits.
-> +	 */
-> +	if (masks == 0)
-> +		return true;
-> +
-> +	bits = config & ~masks;
-> +	if (bits == 0)
-> +		return true;
-
-so in here you now that there's something wrong, so why
-bother with the outside strbuf, when we can easily just
-do all the printing in here?
-
-> +
-> +	for (i = 0; i < PERF_PMU_FORMAT_BITS; i++) {
-> +		if (bits & 0x1)
-> +			strbuf_addf(buf, " %d", i);
-> +
-> +		bits >>= 1;
-
-could you use the for_each_set_bit in here?
-
-thanks,
-jirka
-
+>  		kthread_frame_init(frame, sp, arg);
+>  		return 0;
+>  	}
+> -- 
+> 2.29.2
+> 
