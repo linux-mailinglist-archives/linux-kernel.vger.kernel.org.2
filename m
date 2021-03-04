@@ -2,200 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72D932D38F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 103D632D39A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbhCDMtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:49:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        id S236454AbhCDMwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhCDMte (ORCPT
+        with ESMTP id S234312AbhCDMvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:49:34 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D34C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:48:54 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id i9so7951804wml.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 04:48:54 -0800 (PST)
+        Thu, 4 Mar 2021 07:51:39 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E566EC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:50:58 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id l12so27512550wry.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 04:50:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=tLUSBdXqsZoskjTYTdXu1BqIlUPP/WrZ7mFGxUMCU0I=;
-        b=mXbcH1kPTs6JSHEVOCy+0mhZ4P4dTLu3meBMOJGoaRR86OVwKoIBEKCXpkpD/fKAyP
-         2YTSqNf5sIcN/Bonf5jzBjXTpf+/t8mv4btXE2YKTLgDBO/KBosKQmcyQzKOyrn3sAhZ
-         Fu+KmncqhtIScyDzHF5PTydi49B7l8m4+vwN/Va3F/+GzumhXvZWobD/NFPIVKS7RS4b
-         WlND1d/P86vFRjwPOaHf75Ci0W3EKZzqtL6J2KhdxF96pIZ434+ZhGxyg+weUbuT54ic
-         xHR6sjhoH0aky5jd2frAokdyQ+cVLvXZvY5hYKdCJdGGaJ3vskr5RrLDh3YljgD9pFEe
-         U9kg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=T4drX2OHz8WsU2B+DyV2cYvNY39nMQirtfdi2mTuSOg=;
+        b=aT1zbGeyGacOaJcwjnuOmLSK6neJHxSZln7SpxKQYeYLkoMFu4fvwf2ZIQvJ8ZXsNL
+         UyrBq4ll7SJEQgIJsoZ3gq05uAYhMnOjY2YM8EiSyhlPEpOz5In6kuKRsDTeMaFbiuyU
+         aRlT+7rzGU0HqwpGo04vyPLaHPeLAbHBkApowFty6WvQ6p/IFUxKRevPINH2x7bCXPMM
+         58GD8mOxaTzQreXLjLiKGM3uREA5CgURdllKVkQxCPvTlt7OX0xe7rywzsTmogYKm6fG
+         2oPM9ZobJWjD6c2SAt2Onxh7NjxtOYeCyViyk2hlgJHkQ0MbzopK4irrvutohf941nTw
+         lEEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=tLUSBdXqsZoskjTYTdXu1BqIlUPP/WrZ7mFGxUMCU0I=;
-        b=Tc1sEwj9iPZr3QsHxEGG33f7LTC71T3AEzXLz6YccF/2shf8vkHvDZD1e3TkaUnWSn
-         GqoV7n5mWyHI6MywdQdOpoRASbNu5AIY3vPabuH4aZICJCb2hgVjbRxePWGxlIt25b1O
-         +L6g46+KZH+11xX8UGfG/yHl2FTNThrkDnoUFVXbMSXK29vAH0NgSORsfuY874uqpiJb
-         W+sAw33elpifWsnz5yaTjiXuUsJAmmcxNlbnc+Q9ba5mmhTjgZ/oGhg8tVk/t4XPelYN
-         jt7j6reYMmXZM4+M5UObNRrT/3YBU+GcV0Q1u/87cSX9B22WrVCmGnZn4xGSAf9jM1iQ
-         dWYA==
-X-Gm-Message-State: AOAM532zo01zBgd2oXhVzHRz9kRwP2nt67SlQWwIniosoEf3qYPpgko7
-        N8MkQ2d1nJ41eu1cH0e/YLLl0w==
-X-Google-Smtp-Source: ABdhPJx42ffsx6t3vXywl/vSnKIFFNJx9RXE5JrQUOddSStzLAxgkV7PNsyFoqZKNBC70+T2V/e7LQ==
-X-Received: by 2002:a7b:cf2f:: with SMTP id m15mr3718425wmg.177.1614862132881;
-        Thu, 04 Mar 2021 04:48:52 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:e426:34b7:f237:f8d3])
-        by smtp.gmail.com with ESMTPSA id z21sm9778125wma.29.2021.03.04.04.48.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=T4drX2OHz8WsU2B+DyV2cYvNY39nMQirtfdi2mTuSOg=;
+        b=IOLx/YKP4kVbB8iXw2E+o8AMlqPgVL/xUsEjVu0dv4Tj9NCeZ69kXNaDC4Zkki0ouT
+         tB4DQ2onrUh5wZzJ7+3TeOVmxH3j8OUrM7JVhZZdyClvzp89EbXZJfe6tGHQmwYuHPc8
+         hhAilyXZ1eq/MJeGtx18RQnF/V628OMaH3YTDqNIIzX6rR0EnSMqureDCHEvaYNl3g2J
+         SpvaxW4SE+sT6WRoeBwzE7qlmhLxlcQROAXcQxh6Tnr9ULy+GFND0+FWo0ywapmc2vZX
+         2baxJqf3vUCx2ylFIkOmflhPU5PiiZEKRZCn6o/gawMTXWXrBCoHcILyxGkn2M7XslN7
+         uptQ==
+X-Gm-Message-State: AOAM532uaMd6E/Q12trNMZraAdTfQWr8TM41HOEaIqmM1C8VKzP4jHET
+        Fs70oSmaSK79DnepJG/LqYiQDg==
+X-Google-Smtp-Source: ABdhPJzGo4COvZK7kDu3+r40eNKlVccn5YfL70YriZdNoTBFiRhALzWFMjin8vjSY9WX/vCfmJQxIQ==
+X-Received: by 2002:a5d:620d:: with SMTP id y13mr3986716wru.88.1614862257577;
+        Thu, 04 Mar 2021 04:50:57 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.gmail.com with ESMTPSA id z2sm19688850wrm.0.2021.03.04.04.50.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 04:48:52 -0800 (PST)
-Date:   Thu, 4 Mar 2021 13:48:39 +0100
-From:   Marco Elver <elver@google.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-Message-ID: <YEDXJ5JNkgvDFehc@elver.google.com>
-References: <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
- <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
- <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
- <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu>
- <CANpmjNOnVzei7frKcMzMHxaDXh5NvTA-Wpa29C2YC1GUxyKfhQ@mail.gmail.com>
- <f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu>
- <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
- <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+        Thu, 04 Mar 2021 04:50:56 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     cwchoi00@gmail.com, kyungmin.park@samsung.com,
+        myungjoo.ham@samsung.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR LIMA),
+        lima@lists.freedesktop.org (moderated list:DRM DRIVERS FOR LIMA),
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU)
+Subject: [PATCH] devfreq: Register devfreq as a cooling device
+Date:   Thu,  4 Mar 2021 13:50:33 +0100
+Message-Id: <20210304125034.28404-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 12:48PM +0100, Christophe Leroy wrote:
-> Le 04/03/2021 à 12:31, Marco Elver a écrit :
-> > On Thu, 4 Mar 2021 at 12:23, Christophe Leroy
-> > <christophe.leroy@csgroup.eu> wrote:
-> > > Le 03/03/2021 à 11:56, Marco Elver a écrit :
-> > > > 
-> > > > Somewhat tangentially, I also note that e.g. show_regs(regs) (which
-> > > > was printed along the KFENCE report above) didn't include the top
-> > > > frame in the "Call Trace", so this assumption is definitely not
-> > > > isolated to KFENCE.
-> > > > 
-> > > 
-> > > Now, I have tested PPC64 (with the patch I sent yesterday to modify save_stack_trace_regs()
-> > > applied), and I get many failures. Any idea ?
-> > > 
-> > > [   17.653751][   T58] ==================================================================
-> > > [   17.654379][   T58] BUG: KFENCE: invalid free in .kfence_guarded_free+0x2e4/0x530
-> > > [   17.654379][   T58]
-> > > [   17.654831][   T58] Invalid free of 0xc00000003c9c0000 (in kfence-#77):
-> > > [   17.655358][   T58]  .kfence_guarded_free+0x2e4/0x530
-> > > [   17.655775][   T58]  .__slab_free+0x320/0x5a0
-> > > [   17.656039][   T58]  .test_double_free+0xe0/0x198
-> > > [   17.656308][   T58]  .kunit_try_run_case+0x80/0x110
-> > > [   17.656523][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> > > [   17.657161][   T58]  .kthread+0x18c/0x1a0
-> > > [   17.659148][   T58]  .ret_from_kernel_thread+0x58/0x70
-> > > [   17.659869][   T58]
-[...]
-> > 
-> > Looks like something is prepending '.' to function names. We expect
-> > the function name to appear as-is, e.g. "kfence_guarded_free",
-> > "test_double_free", etc.
-> > 
-> > Is there something special on ppc64, where the '.' is some convention?
-> > 
-> 
-> I think so, see https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html#FUNC-DES
-> 
-> Also see commit https://github.com/linuxppc/linux/commit/02424d896
+Currently the default behavior is to manually having the devfreq
+backend to register themselves as a devfreq cooling device.
 
-Thanks -- could you try the below patch? You'll need to define
-ARCH_FUNC_PREFIX accordingly.
+There are no so many and actually it makes more sense to register the
+devfreq device when adding it.
 
-We think, since there are only very few architectures that add a prefix,
-requiring <asm/kfence.h> to define something like ARCH_FUNC_PREFIX is
-the simplest option. Let me know if this works for you.
+Consequently, every devfreq becomes a cooling device like cpufreq is.
 
-There an alternative option, which is to dynamically figure out the
-prefix, but if this simpler option is fine with you, we'd prefer it.
+Having a devfreq being registered as a cooling device can not mitigate
+a thermal zone if it is not bound to this one. Thus, the current
+configurations are not impacted by this change.
 
-Thanks,
--- Marco
-
------- >8 ------
-
-From d118080eb9552073f5dcf1f86198f3d86d5ea850 Mon Sep 17 00:00:00 2001
-From: Marco Elver <elver@google.com>
-Date: Thu, 4 Mar 2021 13:15:51 +0100
-Subject: [PATCH] kfence: fix reports if constant function prefixes exist
-
-Some architectures prefix all functions with a constant string ('.' on
-ppc64). Add ARCH_FUNC_PREFIX, which may optionally be defined in
-<asm/kfence.h>, so that get_stack_skipnr() can work properly.
-
-Link: https://lkml.kernel.org/r/f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu
-Reported-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- mm/kfence/report.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ drivers/devfreq/devfreq.c                   |  8 ++++++++
+ drivers/gpu/drm/lima/lima_devfreq.c         | 13 -------------
+ drivers/gpu/drm/lima/lima_devfreq.h         |  2 --
+ drivers/gpu/drm/msm/msm_gpu.c               | 11 -----------
+ drivers/gpu/drm/msm/msm_gpu.h               |  2 --
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c | 13 -------------
+ include/linux/devfreq.h                     |  3 +++
+ 7 files changed, 11 insertions(+), 41 deletions(-)
 
-diff --git a/mm/kfence/report.c b/mm/kfence/report.c
-index 519f037720f5..e3f71451ad9e 100644
---- a/mm/kfence/report.c
-+++ b/mm/kfence/report.c
-@@ -20,6 +20,11 @@
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index b6d63f02d293..19149b31b000 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -11,6 +11,7 @@
+ #include <linux/kmod.h>
+ #include <linux/sched.h>
+ #include <linux/debugfs.h>
++#include <linux/devfreq_cooling.h>
+ #include <linux/errno.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+@@ -26,6 +27,7 @@
+ #include <linux/hrtimer.h>
+ #include <linux/of.h>
+ #include <linux/pm_qos.h>
++#include <linux/thermal.h>
+ #include <linux/units.h>
+ #include "governor.h"
  
- #include "kfence.h"
+@@ -935,6 +937,10 @@ struct devfreq *devfreq_add_device(struct device *dev,
  
-+/* May be overridden by <asm/kfence.h>. */
-+#ifndef ARCH_FUNC_PREFIX
-+#define ARCH_FUNC_PREFIX ""
-+#endif
+ 	mutex_unlock(&devfreq_list_lock);
+ 
++	devfreq->cdev = devfreq_cooling_em_register(devfreq, NULL);
++	if (IS_ERR(devfreq->cdev))
++		dev_info(dev, "Failed to register devfreq cooling device\n");
 +
- extern bool no_hash_pointers;
+ 	return devfreq;
  
- /* Helper function to either print to a seq_file or to console. */
-@@ -67,8 +72,9 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
- 	for (skipnr = 0; skipnr < num_entries; skipnr++) {
- 		int len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skipnr]);
+ err_init:
+@@ -960,6 +966,8 @@ int devfreq_remove_device(struct devfreq *devfreq)
+ 	if (!devfreq)
+ 		return -EINVAL;
  
--		if (str_has_prefix(buf, "kfence_") || str_has_prefix(buf, "__kfence_") ||
--		    !strncmp(buf, "__slab_free", len)) {
-+		if (str_has_prefix(buf, ARCH_FUNC_PREFIX "kfence_") ||
-+		    str_has_prefix(buf, ARCH_FUNC_PREFIX "__kfence_") ||
-+		    !strncmp(buf, ARCH_FUNC_PREFIX "__slab_free", len)) {
- 			/*
- 			 * In case of tail calls from any of the below
- 			 * to any of the above.
-@@ -77,10 +83,10 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
- 		}
++	thermal_cooling_device_unregister(devfreq->cdev);
++
+ 	if (devfreq->governor) {
+ 		devfreq->governor->event_handler(devfreq,
+ 						 DEVFREQ_GOV_STOP, NULL);
+diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
+index 5686ad4aaf7c..a696eff1642c 100644
+--- a/drivers/gpu/drm/lima/lima_devfreq.c
++++ b/drivers/gpu/drm/lima/lima_devfreq.c
+@@ -7,7 +7,6 @@
+  */
+ #include <linux/clk.h>
+ #include <linux/devfreq.h>
+-#include <linux/devfreq_cooling.h>
+ #include <linux/device.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_opp.h>
+@@ -90,11 +89,6 @@ void lima_devfreq_fini(struct lima_device *ldev)
+ {
+ 	struct lima_devfreq *devfreq = &ldev->devfreq;
  
- 		/* Also the *_bulk() variants by only checking prefixes. */
--		if (str_has_prefix(buf, "kfree") ||
--		    str_has_prefix(buf, "kmem_cache_free") ||
--		    str_has_prefix(buf, "__kmalloc") ||
--		    str_has_prefix(buf, "kmem_cache_alloc"))
-+		if (str_has_prefix(buf, ARCH_FUNC_PREFIX "kfree") ||
-+		    str_has_prefix(buf, ARCH_FUNC_PREFIX "kmem_cache_free") ||
-+		    str_has_prefix(buf, ARCH_FUNC_PREFIX "__kmalloc") ||
-+		    str_has_prefix(buf, ARCH_FUNC_PREFIX "kmem_cache_alloc"))
- 			goto found;
+-	if (devfreq->cooling) {
+-		devfreq_cooling_unregister(devfreq->cooling);
+-		devfreq->cooling = NULL;
+-	}
+-
+ 	if (devfreq->devfreq) {
+ 		devm_devfreq_remove_device(ldev->dev, devfreq->devfreq);
+ 		devfreq->devfreq = NULL;
+@@ -110,7 +104,6 @@ void lima_devfreq_fini(struct lima_device *ldev)
+ 
+ int lima_devfreq_init(struct lima_device *ldev)
+ {
+-	struct thermal_cooling_device *cooling;
+ 	struct device *dev = ldev->dev;
+ 	struct opp_table *opp_table;
+ 	struct devfreq *devfreq;
+@@ -173,12 +166,6 @@ int lima_devfreq_init(struct lima_device *ldev)
+ 
+ 	ldevfreq->devfreq = devfreq;
+ 
+-	cooling = of_devfreq_cooling_register(dev->of_node, devfreq);
+-	if (IS_ERR(cooling))
+-		dev_info(dev, "Failed to register cooling device\n");
+-	else
+-		ldevfreq->cooling = cooling;
+-
+ 	return 0;
+ 
+ err_fini:
+diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
+index 2d9b3008ce77..c43a2069e5d3 100644
+--- a/drivers/gpu/drm/lima/lima_devfreq.h
++++ b/drivers/gpu/drm/lima/lima_devfreq.h
+@@ -9,7 +9,6 @@
+ 
+ struct devfreq;
+ struct opp_table;
+-struct thermal_cooling_device;
+ 
+ struct lima_device;
+ 
+@@ -17,7 +16,6 @@ struct lima_devfreq {
+ 	struct devfreq *devfreq;
+ 	struct opp_table *clkname_opp_table;
+ 	struct opp_table *regulators_opp_table;
+-	struct thermal_cooling_device *cooling;
+ 
+ 	ktime_t busy_time;
+ 	ktime_t idle_time;
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index ab7c167b0623..d7f80ebfe9df 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -14,7 +14,6 @@
+ #include <generated/utsrelease.h>
+ #include <linux/string_helpers.h>
+ #include <linux/devfreq.h>
+-#include <linux/devfreq_cooling.h>
+ #include <linux/devcoredump.h>
+ #include <linux/sched/task.h>
+ 
+@@ -112,14 +111,6 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
  	}
- 	if (fallback < num_entries)
+ 
+ 	devfreq_suspend_device(gpu->devfreq.devfreq);
+-
+-	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
+-			gpu->devfreq.devfreq);
+-	if (IS_ERR(gpu->cooling)) {
+-		DRM_DEV_ERROR(&gpu->pdev->dev,
+-				"Couldn't register GPU cooling device\n");
+-		gpu->cooling = NULL;
+-	}
+ }
+ 
+ static int enable_pwrrail(struct msm_gpu *gpu)
+@@ -1056,6 +1047,4 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
+ 	if (gpu->worker) {
+ 		kthread_destroy_worker(gpu->worker);
+ 	}
+-
+-	devfreq_cooling_unregister(gpu->cooling);
+ }
+diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+index d7cd02cd2109..93419368bac8 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.h
++++ b/drivers/gpu/drm/msm/msm_gpu.h
+@@ -155,8 +155,6 @@ struct msm_gpu {
+ 	struct msm_gpu_state *crashstate;
+ 	/* True if the hardware supports expanded apriv (a650 and newer) */
+ 	bool hw_apriv;
+-
+-	struct thermal_cooling_device *cooling;
+ };
+ 
+ static inline struct msm_gpu *dev_to_gpu(struct device *dev)
+diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+index 56b3f5935703..2cb6300de1f1 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
++++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+@@ -3,7 +3,6 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/devfreq.h>
+-#include <linux/devfreq_cooling.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_opp.h>
+ 
+@@ -90,7 +89,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+ 	struct device *dev = &pfdev->pdev->dev;
+ 	struct devfreq *devfreq;
+ 	struct opp_table *opp_table;
+-	struct thermal_cooling_device *cooling;
+ 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
+ 
+ 	opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
+@@ -139,12 +137,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+ 	}
+ 	pfdevfreq->devfreq = devfreq;
+ 
+-	cooling = devfreq_cooling_em_register(devfreq, NULL);
+-	if (IS_ERR(cooling))
+-		DRM_DEV_INFO(dev, "Failed to register cooling device\n");
+-	else
+-		pfdevfreq->cooling = cooling;
+-
+ 	return 0;
+ 
+ err_fini:
+@@ -156,11 +148,6 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
+ {
+ 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
+ 
+-	if (pfdevfreq->cooling) {
+-		devfreq_cooling_unregister(pfdevfreq->cooling);
+-		pfdevfreq->cooling = NULL;
+-	}
+-
+ 	if (pfdevfreq->opp_of_table_added) {
+ 		dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
+ 		pfdevfreq->opp_of_table_added = false;
+diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
+index 26ea0850be9b..690bd4affe18 100644
+--- a/include/linux/devfreq.h
++++ b/include/linux/devfreq.h
+@@ -198,6 +198,9 @@ struct devfreq {
+ 
+ 	struct srcu_notifier_head transition_notifier_list;
+ 
++	/* Pointer to the cooling device if used for thermal mitigation */
++	struct thermal_cooling_device *cdev;
++
+ 	struct notifier_block nb_min;
+ 	struct notifier_block nb_max;
+ };
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+2.17.1
+
