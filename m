@@ -2,450 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93A632CD8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A08E32CD94
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236320AbhCDHXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:23:42 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4645 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236311AbhCDHXg (ORCPT
+        id S230210AbhCDH0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:26:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230414AbhCDH0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:23:36 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Drj344qf8zYFfP;
-        Thu,  4 Mar 2021 15:21:20 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 4 Mar 2021 15:22:53 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 4 Mar 2021 15:22:52 +0800
-Subject: Re: [RFC PATCH 3/4] KVM: arm64: Install the block entry before
- unmapping the page mappings
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "Gavin Shan" <gshan@redhat.com>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210208112250.163568-1-wangyanan55@huawei.com>
- <20210208112250.163568-4-wangyanan55@huawei.com>
- <33a9999e-2cc5-52ca-3da8-38f7e7702529@arm.com>
- <93c13a04-6fcc-7544-d6ed-2ebb81d209fe@huawei.com>
- <1b8be8a3-2fb9-be8a-a052-44872355f8cb@arm.com>
- <b84f41b8-3555-9c8a-126e-34d97643fc95@huawei.com>
-Message-ID: <22f279ce-a655-7f1f-68c8-40bdaaf19102@huawei.com>
-Date:   Thu, 4 Mar 2021 15:22:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 4 Mar 2021 02:26:08 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD39C061574;
+        Wed,  3 Mar 2021 23:25:28 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id d3so41494375lfg.10;
+        Wed, 03 Mar 2021 23:25:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nk4Sm/a2W5mKT2nJYes9ly+Sao6uPhVPqbljVOlCzEA=;
+        b=YGe1pLbcDy9iGlLPxpGgiMve+O6mIeQu6LznERUOxaibs69e9Rx9UgdFjeav4z9gSk
+         0zSsvGS986wHchDcnvHaMaU4T5Nx4dt4hYlype6tTLag/YY72cDdd7WsOwrSUBhf2KNG
+         qB4NK0FyfaziqiyeDm2tfOry1iOq/jTFFS3eGI1Dp0V3ZnJOqBqXrHfEvYubbKwL7RwX
+         JhqIba5HS6MhXrPYJP1qhrWZuvNwQUo8wx0Fj849ZOKXHrcEDeHH7A+JYa25jL5s/zBs
+         aXE+6p7KNcyB4y5MAIEW53IEpuylhzE+OA8Nzg63BoorfQMXqnoBq+eILmhlHYXauyfc
+         Yb1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nk4Sm/a2W5mKT2nJYes9ly+Sao6uPhVPqbljVOlCzEA=;
+        b=eLgtcYyAIHKjl7q6IC+25mKNh9Zt2rWUkL490SGFH7nAnVs2MB9SOrSxnts+qXn11J
+         V2rVyyXHldaJxhk5YhuzhntZF7iusX/UL3iItwUob//buj3cdEemoaR+BSKmKqmmiQxz
+         1KiCqb7dgpI4HIJhSw58srkZ91GRHnN+Sw8b4M50SFKdfHkE3/UxQhEA8F3aCx8ERZkK
+         cFCzNDUtqKfURn31vnqoGCZxjAuVLGs5ydyygs4Hu1uKERDZtX/qG3dDTFg/BEXJzrc3
+         QV07oE4yYpc3HByjlYmDd9cp830yK0H0RtjnNhUTELO5ViZuEbPmWb0eUsQp4d+A8YHl
+         xuPQ==
+X-Gm-Message-State: AOAM530jxZs+yDCsxgY3R/OUNkPQskheESr2mZh6idxzTf181EDPzEQQ
+        vsfo0iU7Ut59RqaimrMiMm0=
+X-Google-Smtp-Source: ABdhPJz2khWmNxscc0ERLdSOh2Q+id8b975F4AJmiGMFSOHorOtt/PpqniUqDP7ooPDk43ChftDQDA==
+X-Received: by 2002:ac2:5e9d:: with SMTP id b29mr1519869lfq.31.1614842726984;
+        Wed, 03 Mar 2021 23:25:26 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id q3sm1105989lfp.233.2021.03.03.23.25.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 23:25:26 -0800 (PST)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH mips/linux.git] firmware: bcm47xx_nvram: refactor finding & reading NVRAM
+Date:   Thu,  4 Mar 2021 08:23:57 +0100
+Message-Id: <20210304072357.31108-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <b84f41b8-3555-9c8a-126e-34d97643fc95@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafał Miłecki <rafal@milecki.pl>
 
-On 2021/3/4 15:07, wangyanan (Y) wrote:
-> Hi Alex,
->
-> On 2021/3/4 1:27, Alexandru Elisei wrote:
->> Hi Yanan,
->>
->> On 3/3/21 11:04 AM, wangyanan (Y) wrote:
->>> Hi Alex,
->>>
->>> On 2021/3/3 1:13, Alexandru Elisei wrote:
->>>> Hello,
->>>>
->>>> On 2/8/21 11:22 AM, Yanan Wang wrote:
->>>>> When KVM needs to coalesce the normal page mappings into a block 
->>>>> mapping,
->>>>> we currently invalidate the old table entry first followed by 
->>>>> invalidation
->>>>> of TLB, then unmap the page mappings, and install the block entry 
->>>>> at last.
->>>>>
->>>>> It will cost a long time to unmap the numerous page mappings, 
->>>>> which means
->>>>> there will be a long period when the table entry can be found 
->>>>> invalid.
->>>>> If other vCPUs access any guest page within the block range and 
->>>>> find the
->>>>> table entry invalid, they will all exit from guest with a 
->>>>> translation fault
->>>>> which is not necessary. And KVM will make efforts to handle these 
->>>>> faults,
->>>>> especially when performing CMOs by block range.
->>>>>
->>>>> So let's quickly install the block entry at first to ensure 
->>>>> uninterrupted
->>>>> memory access of the other vCPUs, and then unmap the page mappings 
->>>>> after
->>>>> installation. This will reduce most of the time when the table 
->>>>> entry is
->>>>> invalid, and avoid most of the unnecessary translation faults.
->>>> I'm not convinced I've fully understood what is going on yet, but 
->>>> it seems to me
->>>> that the idea is sound. Some questions and comments below.
->>> What I am trying to do in this patch is to adjust the order of 
->>> rebuilding block
->>> mappings from page mappings.
->>> Take the rebuilding of 1G block mappings as an example.
->>> Before this patch, the order is like:
->>> 1) invalidate the table entry of the 1st level(PUD)
->>> 2) flush TLB by VMID
->>> 3) unmap the old PMD/PTE tables
->>> 4) install the new block entry to the 1st level(PUD)
->>>
->>> So entry in the 1st level can be found invalid by other vcpus in 1), 
->>> 2), and 3),
->>> and it's a long time in 3) to unmap
->>> the numerous old PMD/PTE tables, which means the total time of the 
->>> entry being
->>> invalid is long enough to
->>> affect the performance.
->>>
->>> After this patch, the order is like:
->>> 1) invalidate the table ebtry of the 1st level(PUD)
->>> 2) flush TLB by VMID
->>> 3) install the new block entry to the 1st level(PUD)
->>> 4) unmap the old PMD/PTE tables
->>>
->>> The change ensures that period of entry in the 1st level(PUD) being 
->>> invalid is
->>> only in 1) and 2),
->>> so if other vcpus access memory within 1G, there will be less chance 
->>> to find the
->>> entry invalid
->>> and as a result trigger an unnecessary translation fault.
->> Thank you for the explanation, that was my understand of it also, and 
->> I believe
->> your idea is correct. I was more concerned that I got some of the 
->> details wrong,
->> and you have kindly corrected me below.
->>
->>>>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->>>>> ---
->>>>>    arch/arm64/kvm/hyp/pgtable.c | 26 ++++++++++++--------------
->>>>>    1 file changed, 12 insertions(+), 14 deletions(-)
->>>>>
->>>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c 
->>>>> b/arch/arm64/kvm/hyp/pgtable.c
->>>>> index 78a560446f80..308c36b9cd21 100644
->>>>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>>>> @@ -434,6 +434,7 @@ struct stage2_map_data {
->>>>>        kvm_pte_t            attr;
->>>>>          kvm_pte_t            *anchor;
->>>>> +    kvm_pte_t            *follow;
->>>>>          struct kvm_s2_mmu        *mmu;
->>>>>        struct kvm_mmu_memory_cache    *memcache;
->>>>> @@ -553,15 +554,14 @@ static int stage2_map_walk_table_pre(u64 
->>>>> addr, u64 end,
->>>>> u32 level,
->>>>>        if (!kvm_block_mapping_supported(addr, end, data->phys, 
->>>>> level))
->>>>>            return 0;
->>>>>    -    kvm_set_invalid_pte(ptep);
->>>>> -
->>>>>        /*
->>>>> -     * Invalidate the whole stage-2, as we may have numerous leaf
->>>>> -     * entries below us which would otherwise need invalidating
->>>>> -     * individually.
->>>>> +     * If we need to coalesce existing table entries into a block 
->>>>> here,
->>>>> +     * then install the block entry first and the sub-level page 
->>>>> mappings
->>>>> +     * will be unmapped later.
->>>>>         */
->>>>> -    kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
->>>>>        data->anchor = ptep;
->>>>> +    data->follow = kvm_pte_follow(*ptep);
->>>>> +    stage2_coalesce_tables_into_block(addr, level, ptep, data);
->>>> Here's how stage2_coalesce_tables_into_block() is implemented from 
->>>> the previous
->>>> patch (it might be worth merging it with this patch, I found it 
->>>> impossible to
->>>> judge if the function is correct without seeing how it is used and 
->>>> what is
->>>> replacing):
->>> Ok, will do this if v2 is going to be post.
->>>> static void stage2_coalesce_tables_into_block(u64 addr, u32 level,
->>>>                             kvm_pte_t *ptep,
->>>>                             struct stage2_map_data *data)
->>>> {
->>>>       u64 granule = kvm_granule_size(level), phys = data->phys;
->>>>       kvm_pte_t new = kvm_init_valid_leaf_pte(phys, data->attr, 
->>>> level);
->>>>
->>>>       kvm_set_invalid_pte(ptep);
->>>>
->>>>       /*
->>>>        * Invalidate the whole stage-2, as we may have numerous leaf 
->>>> entries
->>>>        * below us which would otherwise need invalidating 
->>>> individually.
->>>>        */
->>>>       kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
->>>>       smp_store_release(ptep, new);
->>>>       data->phys += granule;
->>>> }
->>>>
->>>> This works because __kvm_pgtable_visit() saves the *ptep value 
->>>> before calling the
->>>> pre callback, and it visits the next level table based on the 
->>>> initial pte value,
->>>> not the new value written by stage2_coalesce_tables_into_block().
->>> Right. So before replacing the initial pte value with the new value, 
->>> we have to use
->>> *data->follow = kvm_pte_follow(*ptep)* in 
->>> stage2_map_walk_table_pre() to save
->>> the initial pte value in advance. And data->follow will be used 
->>> when  we start to
->>> unmap the old sub-level tables later.
->> Right, stage2_map_walk_table_post() will use data->follow to free the 
->> table page
->> which is no longer needed because we've replaced the entire next 
->> level table with
->> a block mapping.
->>
->>>> Assuming the first patch in the series is merged ("KVM: arm64: Move 
->>>> the clean of
->>>> dcache to the map handler"), this function is missing the CMOs from
->>>> stage2_map_walker_try_leaf().
->>> Yes, the CMOs are not performed in 
->>> stage2_coalesce_tables_into_block() currently,
->>> because I thought they were not needed when we rebuild the block 
->>> mappings from
->>> normal page mappings.
->> This assumes that the *only* situation when we replace a table entry 
->> with a block
->> mapping is when the next level table (or tables) is *fully* 
->> populated. Is there a
->> way to prove that this is true? I think it's important to prove it 
->> unequivocally,
->> because if there's a corner case where this doesn't happen and we 
->> remove the
->> dcache maintenance, we can end up with hard to reproduce and hard to 
->> diagnose
->> errors in a guest.
-> So there is still one thing left about this patch to determine, and 
-> that is whether we can straightly
-> discard CMOs in stage2_coalesce_tables_into_block() or we should 
-> distinguish different situations.
->
-> Now we know that the situation you have described won't happen, then I 
-> think we will only end up
-> in stage2_coalesce_tables_into_block() in the following situation:
-> 1) KVM create a new block mapping in stage2_map_walker_try_leaf() for 
-> the first time, if guest accesses
->     memory backed by a THP/HUGETLB huge page. And CMOs will be 
-> performed here.
-> 2) KVM split this block mapping in dirty logging, and build only one 
-> new page mapping.
-> 3) KVM will build other new page mappings in dirty logging lazily, if 
-> guest access any other pages
->     within the block. *In this stage, pages in this block may be fully 
-> mapped, or may be not.*
-> 4) After dirty logging is disabled, KVM decides to rebuild the block 
-> mapping.
->
-> Do we still have to perform CMOs when rebuilding the block mapping in 
-> step 4, if pages in the block
-> were not fully mapped in step 3 ? I'm not completely sure about this.
->
-Hi Marc,
-Could you please have an answer for above confusion :) ?
+1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
+   of e.g. "iobase", "end")
+2. Always operate on "offset" instead of mix of start, end, size, etc.
+3. Add helper checking for NVRAM to avoid duplicating code
+4. Use "found" variable instead of goto
+5. Use simpler checking of offsets and sizes (2 nested loops with
+   trivial check instead of extra function)
 
-Thanks,
+This change has been tested on BCM4706. Updated code checks the same
+offsets as before. Driver still finds & copies NVRAM content.
 
-Yanan
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ drivers/firmware/broadcom/bcm47xx_nvram.c | 111 ++++++++++++----------
+ 1 file changed, 63 insertions(+), 48 deletions(-)
 
+diff --git a/drivers/firmware/broadcom/bcm47xx_nvram.c b/drivers/firmware/broadcom/bcm47xx_nvram.c
+index 835ece9c00f1..7cfe857b3e98 100644
+--- a/drivers/firmware/broadcom/bcm47xx_nvram.c
++++ b/drivers/firmware/broadcom/bcm47xx_nvram.c
+@@ -34,26 +34,47 @@ static char nvram_buf[NVRAM_SPACE];
+ static size_t nvram_len;
+ static const u32 nvram_sizes[] = {0x6000, 0x8000, 0xF000, 0x10000};
+ 
+-static u32 find_nvram_size(void __iomem *end)
++/**
++ * bcm47xx_nvram_validate - check for a valid NVRAM at specified memory
++ */
++static bool bcm47xx_nvram_is_valid(void __iomem *nvram)
+ {
+-	struct nvram_header __iomem *header;
+-	int i;
++	return ((struct nvram_header *)nvram)->magic == NVRAM_MAGIC;
++}
+ 
+-	for (i = 0; i < ARRAY_SIZE(nvram_sizes); i++) {
+-		header = (struct nvram_header *)(end - nvram_sizes[i]);
+-		if (header->magic == NVRAM_MAGIC)
+-			return nvram_sizes[i];
++/**
++ * bcm47xx_nvram_copy - copy NVRAM to internal buffer
++ */
++static void bcm47xx_nvram_copy(void __iomem *nvram_start, size_t res_size)
++{
++	struct nvram_header __iomem *header = nvram_start;
++	size_t copy_size;
++
++	copy_size = header->len;
++	if (copy_size > res_size) {
++		pr_err("The nvram size according to the header seems to be bigger than the partition on flash\n");
++		copy_size = res_size;
++	}
++	if (copy_size >= NVRAM_SPACE) {
++		pr_err("nvram on flash (%zu bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
++		       copy_size, NVRAM_SPACE - 1);
++		copy_size = NVRAM_SPACE - 1;
+ 	}
+ 
+-	return 0;
++	__ioread32_copy(nvram_buf, nvram_start, DIV_ROUND_UP(copy_size, 4));
++	nvram_buf[NVRAM_SPACE - 1] = '\0';
++	nvram_len = copy_size;
+ }
+ 
+-/* Probe for NVRAM header */
+-static int nvram_find_and_copy(void __iomem *iobase, u32 lim)
++/**
++ * bcm47xx_nvram_find_and_copy - find NVRAM on flash mapping & copy it
++ */
++static int bcm47xx_nvram_find_and_copy(void __iomem *flash_start, size_t res_size)
+ {
+-	struct nvram_header __iomem *header;
+-	u32 off;
+-	u32 size;
++	size_t flash_size;
++	size_t offset;
++	bool found;
++	int i;
+ 
+ 	if (nvram_len) {
+ 		pr_warn("nvram already initialized\n");
+@@ -61,49 +82,43 @@ static int nvram_find_and_copy(void __iomem *iobase, u32 lim)
+ 	}
+ 
+ 	/* TODO: when nvram is on nand flash check for bad blocks first. */
+-	off = FLASH_MIN;
+-	while (off <= lim) {
+-		/* Windowed flash access */
+-		size = find_nvram_size(iobase + off);
+-		if (size) {
+-			header = (struct nvram_header *)(iobase + off - size);
+-			goto found;
++
++	found = false;
++
++	/* Try every possible flash size and check for NVRAM at its end */
++	for (flash_size = FLASH_MIN; flash_size <= res_size; flash_size <<= 1) {
++		for (i = 0; i < ARRAY_SIZE(nvram_sizes); i++) {
++			offset = flash_size - nvram_sizes[i];
++			if (bcm47xx_nvram_is_valid(flash_start + offset)) {
++				found = true;
++				break;
++			}
+ 		}
+-		off <<= 1;
++
++		if (found)
++			break;
+ 	}
+ 
+ 	/* Try embedded NVRAM at 4 KB and 1 KB as last resorts */
+-	header = (struct nvram_header *)(iobase + 4096);
+-	if (header->magic == NVRAM_MAGIC) {
+-		size = NVRAM_SPACE;
+-		goto found;
+-	}
+ 
+-	header = (struct nvram_header *)(iobase + 1024);
+-	if (header->magic == NVRAM_MAGIC) {
+-		size = NVRAM_SPACE;
+-		goto found;
++	if (!found) {
++		offset = 4096;
++		if (bcm47xx_nvram_is_valid(flash_start + offset))
++			found = true;
+ 	}
+ 
+-	pr_err("no nvram found\n");
+-	return -ENXIO;
+-
+-found:
+-	__ioread32_copy(nvram_buf, header, sizeof(*header) / 4);
+-	nvram_len = ((struct nvram_header *)(nvram_buf))->len;
+-	if (nvram_len > size) {
+-		pr_err("The nvram size according to the header seems to be bigger than the partition on flash\n");
+-		nvram_len = size;
++	if (!found) {
++		offset = 1024;
++		if (bcm47xx_nvram_is_valid(flash_start + offset))
++			found = true;
+ 	}
+-	if (nvram_len >= NVRAM_SPACE) {
+-		pr_err("nvram on flash (%zu bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
+-		       nvram_len, NVRAM_SPACE - 1);
+-		nvram_len = NVRAM_SPACE - 1;
++
++	if (!found) {
++		pr_err("no nvram found\n");
++		return -ENXIO;
+ 	}
+-	/* proceed reading data after header */
+-	__ioread32_copy(nvram_buf + sizeof(*header), header + 1,
+-			DIV_ROUND_UP(nvram_len, 4));
+-	nvram_buf[NVRAM_SPACE - 1] = '\0';
++
++	bcm47xx_nvram_copy(flash_start + offset, res_size - offset);
+ 
+ 	return 0;
+ }
+@@ -124,7 +139,7 @@ int bcm47xx_nvram_init_from_mem(u32 base, u32 lim)
+ 	if (!iobase)
+ 		return -ENOMEM;
+ 
+-	err = nvram_find_and_copy(iobase, lim);
++	err = bcm47xx_nvram_find_and_copy(iobase, lim);
+ 
+ 	iounmap(iobase);
+ 
+-- 
+2.26.2
 
-> Thanks,
->
-> Yanan
->>> At least, they are not needed if we rebuild the block mappings 
->>> backed by hugetlbfs
->>> pages, because we must have built the new block mappings for the 
->>> first time before
->>> and now need to rebuild them after they were split in dirty logging. 
->>> Can we
->>> agree on this?
->>> Then let's see the following situation.
->>>> I can think of the following situation where they
->>>> are needed:
->>>>
->>>> 1. The 2nd level (PMD) table that will be turned into a block is 
->>>> mapped at stage 2
->>>> because one of the pages in the 3rd level (PTE) table it points to 
->>>> is accessed by
->>>> the guest.
->>>>
->>>> 2. The kernel decides to turn the userspace mapping into a 
->>>> transparent huge page
->>>> and calls the mmu notifier to remove the mapping from stage 2. The 
->>>> 2nd level table
->>>> is still valid.
->>> I have a question here. Won't the PMD entry been invalidated too in 
->>> this case?
->>> If remove of the stage2 mapping by mmu notifier is an unmap 
->>> operation of a range,
->>> then it's correct and reasonable to both invalidate the PMD entry 
->>> and free the
->>> PTE table.
->>> As I know, kvm_pgtable_stage2_unmap() does so when unmapping a range.
->>>
->>> And if I was right about this, we will not end up in
->>> stage2_coalesce_tables_into_block()
->>> like step 3 describes, but in stage2_map_walker_try_leaf() instead. 
->>> Because the
->>> PMD entry
->>> is invalid, so KVM will create the new 2M block mapping.
->> Looking at the code for stage2_unmap_walker(), I believe you are 
->> correct. After
->> the entire PTE table has been unmapped, the function will mark the 
->> PMD entry as
->> invalid. In the situation I described, at step 3 we would end up in 
->> the leaf
->> mapper function because the PMD entry is invalid. My example was wrong.
->>
->>> If I'm wrong about this, then I think this is a valid situation.
->>>> 3. Guest accesses a page which is not the page it accessed at step 
->>>> 1, which causes
->>>> a translation fault. KVM decides we can use a PMD block mapping to 
->>>> map the address
->>>> and we end up in stage2_coalesce_tables_into_block(). We need CMOs 
->>>> in this case
->>>> because the guest accesses memory it didn't access before.
->>>>
->>>> What do you think, is that a valid situation?
->>>>>        return 0;
->>>>>    }
->>>>>    @@ -614,20 +614,18 @@ static int stage2_map_walk_table_post(u64 
->>>>> addr, u64
->>>>> end, u32 level,
->>>>>                          kvm_pte_t *ptep,
->>>>>                          struct stage2_map_data *data)
->>>>>    {
->>>>> -    int ret = 0;
->>>>> -
->>>>>        if (!data->anchor)
->>>>>            return 0;
->>>>>    -    free_page((unsigned long)kvm_pte_follow(*ptep));
->>>>> -    put_page(virt_to_page(ptep));
->>>>> -
->>>>> -    if (data->anchor == ptep) {
->>>>> +    if (data->anchor != ptep) {
->>>>> +        free_page((unsigned long)kvm_pte_follow(*ptep));
->>>>> +        put_page(virt_to_page(ptep));
->>>>> +    } else {
->>>>> +        free_page((unsigned long)data->follow);
->>>>>            data->anchor = NULL;
->>>>> -        ret = stage2_map_walk_leaf(addr, end, level, ptep, data);
->>>> stage2_map_walk_leaf() -> stage2_map_walk_table_post calls 
->>>> put_page() and
->>>> get_page() once in our case (valid old mapping). It looks to me 
->>>> like we're missing
->>>> a put_page() call when the function is called for the anchor. Have 
->>>> you found the
->>>> call to be unnecessary?
->>> Before this patch:
->>> When we find data->anchor == ptep, put_page() has been called once 
->>> in advance
->>> for the anchor
->>> in stage2_map_walk_table_post(). Then we call stage2_map_walk_leaf() ->
->>> stage2_map_walker_try_leaf()
->>> to install the block entry, and only get_page() will be called once in
->>> stage2_map_walker_try_leaf().
->>> There is a put_page() followed by a get_page() for the anchor, and 
->>> there will
->>> not be a problem about
->>> page_counts.
->> This is how I'm reading the code before your patch:
->>
->> - stage2_map_walk_table_post() returns early if there is no anchor.
->>
->> - stage2_map_walk_table_pre() sets the anchor and marks the entry as 
->> invalid. The
->> entry was a table so the leaf visitor is not called in 
->> __kvm_pgtable_visit().
->>
->> - __kvm_pgtable_visit() visits the next level table.
->>
->> - stage2_map_walk_table_post() calls put_page(), calls 
->> stage2_map_walk_leaf() ->
->> stage2_map_walker_try_leaf(). The old entry was invalidated by the 
->> pre visitor, so
->> it only calls get_page() (and not put_page() + get_page().
->>
->> I agree with your conclusion, I didn't realize that because the pre 
->> visitor marks
->> the entry as invalid, stage2_map_walker_try_leaf() will not call 
->> put_page().
->>
->>> After this patch:
->>> Before we find data->anchor == ptep and after it, there is not a 
->>> put_page() call
->>> for the anchor.
->>> This is because that we didn't call get_page() either in
->>> stage2_coalesce_tables_into_block() when
->>> install the block entry. So I think there will not be a problem too.
->> I agree, the refcount will be identical.
->>
->>> Is above the right answer for your point?
->> Yes, thank you clearing that up for me.
->>
->> Thanks,
->>
->> Alex
->>
->>>>>        }
->>>>>    -    return ret;
->>>>> +    return 0;
->>>> I think it's correct for this function to succeed unconditionally. 
->>>> The error was
->>>> coming from stage2_map_walk_leaf() -> stage2_map_walker_try_leaf(). 
->>>> The function
->>>> can return an error code if block mapping is not supported, which 
->>>> we know is
->>>> supported because we have an anchor, and if only the permissions 
->>>> are different
->>>> between the old and the new entry, but in our case we've changed 
->>>> both the valid
->>>> and type bits.
->>> Agreed. Besides, we will definitely not end up updating an old valid 
->>> entry for
->>> the anchor
->>> in stage2_map_walker_try_leaf(), because *anchor has already been 
->>> invalidated in
->>> stage2_map_walk_table_pre() before set the anchor, so it will look 
->>> like a build
->>> of new mapping.
->>>
->>> Thanks,
->>>
->>> Yanan
->>>> Thanks,
->>>>
->>>> Alex
->>>>
->>>>>    }
->>>>>      /*
->>>> .
->> .
