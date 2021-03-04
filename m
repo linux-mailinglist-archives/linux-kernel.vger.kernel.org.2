@@ -2,173 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3905D32CB23
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9188332CB1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbhCDDpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:45:12 -0500
-Received: from mga17.intel.com ([192.55.52.151]:11266 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233032AbhCDDor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:44:47 -0500
-IronPort-SDR: pzfjg/hFb2M+itgWDyKc3+dUO/5QqxuVmlZG2v7J9nwLfEjHWsXEiKUirZ1n3zRLmkYbSpBszZ
- xDbu4dAhwCNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="167232054"
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="167232054"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 19:43:15 -0800
-IronPort-SDR: GWymfTxRVoqXNB056u0rdKA7QLkuLPbBV+Ukh/yzGWb4LHrTzzbSexekVNR8QcoUJlhajFcjAV
- CMAb4/MC6yUA==
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="400389470"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 19:43:12 -0800
-Subject: Re: [PATCH v3 9/9] KVM: x86: Add XSAVE Support for Architectural LBRs
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-10-like.xu@linux.intel.com>
- <YD/PYp0DtZaw2HYh@google.com>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <b6b3476b-3278-9a40-33a9-0014fed9bbfb@linux.intel.com>
-Date:   Thu, 4 Mar 2021 11:43:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233085AbhCDDon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:44:43 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:21392 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233023AbhCDDoU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:44:20 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210304034338epoutp046e9e23e9287da24e3ee7aa84408fee53~pBszVRgxb2909929099epoutp04k
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 03:43:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210304034338epoutp046e9e23e9287da24e3ee7aa84408fee53~pBszVRgxb2909929099epoutp04k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614829418;
+        bh=xz/N1IYmDAPJsmtztTVuH+rwAP7Ga3ZX6IrYa8UqZfI=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=c6xsDoab+2E/OD4Jxa5NFWdP8eWaI3QFkf1O2R3NDBuAYtesZMbRDr1aPULu+K0ej
+         ZtrCNUmA7CthfiAGO3CAwPyy+HDsL3+V3zq6V/DdwQ3OBePYAeq6eDaeiOzPNawtHC
+         WW1SPSew4d8/V05Bpug+VmiOprobus++eOAFiBnE=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210304034337epcas1p4a7ec01be07efbf298d5b883af9dbf803~pBszDRTBT0309603096epcas1p4n;
+        Thu,  4 Mar 2021 03:43:37 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DrcCr6t9Pz4x9Pv; Thu,  4 Mar
+        2021 03:43:36 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DD.ED.10463.86750406; Thu,  4 Mar 2021 12:43:36 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210304034336epcas1p3d36927ab291bc5814a43f75a3f5ef9eb~pBsx2yd2J1226012260epcas1p3C;
+        Thu,  4 Mar 2021 03:43:36 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210304034336epsmtrp2f0cfc05d96b145b356c4858bc2a9fff3~pBsx2NNCB2741027410epsmtrp2y;
+        Thu,  4 Mar 2021 03:43:36 +0000 (GMT)
+X-AuditID: b6c32a38-f11ff700000028df-d0-604057686c2d
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        40.99.08745.86750406; Thu,  4 Mar 2021 12:43:36 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210304034336epsmtip24bce12b84e298e9bc97270a44af9999d~pBsxqU6qm2398223982epsmtip2K;
+        Thu,  4 Mar 2021 03:43:36 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>, <sj1557.seo@samsung.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+In-Reply-To: <20210302050521.6059-1-hyeongseok@gmail.com>
+Subject: RE: [PATCH v4 0/2] Add FITRIM ioctl support for exFAT filesystem
+Date:   Thu, 4 Mar 2021 12:43:36 +0900
+Message-ID: <003001d710a8$8eb27850$ac1768f0$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <YD/PYp0DtZaw2HYh@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJHsQEWbOBopBEJvn3/+Fchao77+gGcWnf6qYUL/RA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDKsWRmVeSWpSXmKPExsWy7bCmrm5GuEOCwdYuC4u/Ez8xWezZe5LF
+        4vKuOWwWW/4dYXVg8dg56y67R9+WVYwenzfJBTBH5dhkpCampBYppOYl56dk5qXbKnkHxzvH
+        m5oZGOoaWlqYKynkJeam2iq5+AToumXmAG1TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gq
+        pRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZDxZ+IC9oJW74t2F3+wNjDc5uhg5OSQE
+        TCSWTzzOCGILCexglHg9j7mLkQvI/sQo0fP8KiuE85lR4su7HcwwHS3/+qESuxgluq7cZ4Jw
+        XjJKbH+6kh2kik1AV+Lfn/1sILaIgLvErnc9YDuYBZwlOi+eZgWxOQUsJZY9Pw5Uz8EhLOAp
+        0bFeG8RkEVCROH3PH6SCF6hiac8ndghbUOLkzCcsEFPkJba/nQN1j4LEz6fLWCE2WUm0ztrJ
+        BFEjIjG7sw3sGwmBj+wSj/bsYINocJF48O0JK4QtLPHq+BZ2CFtK4vO7vWwgN0gIVEt83A81
+        v4NR4sV3WwjbWOLm+g2sICXMApoS63fpQ4QVJXb+ngv1IJ/Eu689rBBTeCU62oQgSlQl+i4d
+        ZoKwpSW62j+wT2BUmoXksVlIHpuF5IFZCMsWMLKsYhRLLSjOTU8tNiwwQY7pTYzgZKhlsYNx
+        7tsPeocYmTgYDzFKcDArifCKv7RNEOJNSaysSi3Kjy8qzUktPsRoCgzpicxSosn5wHScVxJv
+        aGpkbGxsYWJmbmZqrCTOm2TwIF5IID2xJDU7NbUgtQimj4mDU6qBifH/+m3beWdf/PW7OZgj
+        59Em1eWSHw8eK7rusj1q+uPCyZunet9ZJd+1pVmteU1HNXfrObt/7yOD+FbbTHOe9qk/h//Z
+        kajXaX9SD89QKHzQ2W1otiprb2DxpgfGu94n/AyYwXOmxW1x62v5P6vfrt4zuegLN/P/3ONC
+        19dvXsA776RIu0mtlmsBJ1dV9tnXP6ZqxbztEPvw56bGOe3Lyjvtnk3VqHYSSXih6jT9UU38
+        oi07d0xn8jWu/md8S9ZPe/3u42fq4l+2eAWeVJauu+a1VHOX7bRnHhwb33myp8sWMSTv51x5
+        Vlkv9tDM+8HFj6eGxSxQj6owyYlU5unQMrto8XPdTle2g/ob+Rk2zlJiKc5INNRiLipOBAAa
+        3wXXDwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRmVeSWpSXmKPExsWy7bCSvG5GuEOCwftdchZ/J35istiz9ySL
+        xeVdc9gstvw7wurA4rFz1l12j74tqxg9Pm+SC2CO4rJJSc3JLEst0rdL4Mp4svABe0Erd8W7
+        C7/ZGxhvcnQxcnJICJhItPzrZ+1i5OIQEtjBKPGj5yU7REJa4tiJM8xdjBxAtrDE4cPFEDXP
+        GSValy5mBqlhE9CV+PdnPxuILSLgKbHi4AomEJtZwFWi7cURqKFdjBIt/+8xgiQ4BSwllj0/
+        zg4yVBiooWO9NojJIqAicfqeP0gFL1DF0p5P7BC2oMTJmU9YQEqYBfQk2jYyQkyXl9j+dg4z
+        xJUKEj+fLmOFuMBKonXWTqgLRCRmd7YxT2AUnoVk0iyESbOQTJqFpGMBI8sqRsnUguLc9Nxi
+        wwKjvNRyveLE3OLSvHS95PzcTYzgqNDS2sG4Z9UHvUOMTByMhxglOJiVRHjFX9omCPGmJFZW
+        pRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cBUonB9cmbr69ddE6+x
+        M3NY9r6IPZww6fDn1Qd8f1+T+F311O/j3qi1M3nX8FXN6NR42PAn/u6uDb+kDV43SPWWMeY9
+        sZkqnHbG7tGLp/l57dtulTFPOf3kWwUvx52ICcduCCya++7OhOOMK+czfd8hyz3L3nqDinSl
+        47dJ06sfVoqtkH9x4OF0qZBXBh5XNh09EPzDwbqFu/5YrPdbS80MRQafLRNvFwdPNPw4hdFT
+        O31uoW0Kiz+j8NzNmqVchjkiz1PX5CuouxoEac3VrDqTbMC2VadvY08TT2bDooOLnrv1Jgkc
+        P9ohoRYmPvO0ndkjdZnn11esFH75y0NekH1vfVvZHGeWOwtumHGmVrIrsRRnJBpqMRcVJwIA
+        +upXtvkCAAA=
+X-CMS-MailID: 20210304034336epcas1p3d36927ab291bc5814a43f75a3f5ef9eb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210302050548epcas1p2ccec84f5de16f0971fc0479abe64ec3e
+References: <CGME20210302050548epcas1p2ccec84f5de16f0971fc0479abe64ec3e@epcas1p2.samsung.com>
+        <20210302050521.6059-1-hyeongseok@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/4 2:03, Sean Christopherson wrote:
-> On Wed, Mar 03, 2021, Like Xu wrote:
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 034708a3df20..ec4593e0ee6d 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -7268,6 +7268,8 @@ static __init void vmx_set_cpu_caps(void)
->>   	supported_xss = 0;
->>   	if (!cpu_has_vmx_xsaves())
->>   		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
->> +	else if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
->> +		supported_xss |= XFEATURE_MASK_LBR;
->>   
->>   	/* CPUID 0x80000001 */
->>   	if (!cpu_has_vmx_rdtscp())
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index d773836ceb7a..bca2e318ff24 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -10433,6 +10433,8 @@ int kvm_arch_hardware_setup(void *opaque)
->>   
->>   	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
->>   		supported_xss = 0;
->> +	else
->> +		supported_xss &= host_xss;
+> This is for adding FITRIM ioctl functionality to exFAT filesystem.
+> Firstly, because the fstrim is long operation, introduce bitmap_lock to narrow the lock range to
+> prevent read operation stall.
+> After that, add generic ioctl function and FITRIM handler.
 > 
-> Not your fault by any means, but I would prefer to have matching logic for XSS
-> and XCR0.  The existing clearing of supported_xss here is pointless.  E.g. I'd
-> prefer something like the following, though Paolo may have a different opinion.
-
-I have no preference for where to do rdmsrl() in kvm_arch_init()
-or kvm_arch_hardware_setup().
-
-It's true the assignment of supported_xss in the kvm/intel
-tree is redundant and introducing KVM_SUPPORTED_XSS is also fine to me.
-
+> Changelog
+> =========
+> v3->v4:
+> - Introduce bitmap_lock mutex to narrow the lock range for bitmap access
+>   and change to use bitmap_lock instead of s_lock in FITRIM handler to
+>   prevent read stall while ongoing fstrim.
+> - Minor code style fix
+> 
+> v2->v3:
+> - Remove unnecessary local variable
+> - Merge all changes to a single patch
+> 
+> v1->v2:
+> - Change variable declaration order as reverse tree style.
+> - Return -EOPNOTSUPP from sb_issue_discard() just as it is.
+> - Remove cond_resched() in while loop.
+> - Move ioctl related code into it's helper function.
+> 
+> Hyeongseok Kim (2):
+>   exfat: introduce bitmap_lock for cluster bitmap access
+>   exfat: add support ioctl and FITRIM function
+Applied. Thanks for your patches!
 
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 6d7e760fdfa0..c781034463e5 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7244,12 +7244,15 @@ static __init void vmx_set_cpu_caps(void)
->                  kvm_cpu_cap_clear(X86_FEATURE_INVPCID);
->          if (vmx_pt_mode_is_host_guest())
->                  kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
-> +       if (!cpu_has_vmx_arch_lbr()) {
-> +               kvm_cpu_cap_clear(X86_FEATURE_ARCH_LBR);
-> +               supported_xss &= ~XFEATURE_MASK_LBR;
-> +       }
+>  fs/exfat/balloc.c   | 80 +++++++++++++++++++++++++++++++++++++++++++++
+>  fs/exfat/dir.c      |  5 +++
+>  fs/exfat/exfat_fs.h |  5 +++
+>  fs/exfat/fatent.c   | 37 ++++++++++++++++-----
+>  fs/exfat/file.c     | 53 ++++++++++++++++++++++++++++++
+>  fs/exfat/super.c    |  1 +
+>  6 files changed, 173 insertions(+), 8 deletions(-)
 > 
+> --
+> 2.27.0.83.g0313f36
 
-I will move the above part to the LBR patch
-and leave the left part as a pre-patch for Paolo's review.
-
->          if (vmx_umip_emulated())
->                  kvm_cpu_cap_set(X86_FEATURE_UMIP);
-> 
->          /* CPUID 0xD.1 */
-> -       supported_xss = 0;
->          if (!cpu_has_vmx_xsaves())
->                  kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
-
-if (!cpu_has_vmx_xsaves())
-	supported_xss = 0;
-	kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
-
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 7b0adebec1ef..5f9eb1f5b840 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -205,6 +205,8 @@ static struct kvm_user_return_msrs __percpu *user_return_msrs;
->                                  | XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
->                                  | XFEATURE_MASK_PKRU)
-> 
-> +#define KVM_SUPPORTED_XSS      XFEATURE_MASK_LBR
-> +
->   u64 __read_mostly host_efer;
->   EXPORT_SYMBOL_GPL(host_efer);
-> 
-> @@ -8037,6 +8039,11 @@ int kvm_arch_init(void *opaque)
->                  supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
->          }
-> 
-> +       if (boot_cpu_has(X86_FEATURE_XSAVES))
-
-{
-
-> +               rdmsrl(MSR_IA32_XSS, host_xss);
-> +               supported_xss = host_xss & KVM_SUPPORTED_XSS;
-> +       }
-> +
->          if (pi_inject_timer == -1)
->                  pi_inject_timer = housekeeping_enabled(HK_FLAG_TIMER);
->   #ifdef CONFIG_X86_64
-> @@ -10412,9 +10419,6 @@ int kvm_arch_hardware_setup(void *opaque)
-> 
->          rdmsrl_safe(MSR_EFER, &host_efer);
-> 
-> -       if (boot_cpu_has(X86_FEATURE_XSAVES))
-> -               rdmsrl(MSR_IA32_XSS, host_xss);
-> -
->          r = ops->hardware_setup();
->          if (r != 0)
->                  return r;
-> @@ -10422,9 +10426,6 @@ int kvm_arch_hardware_setup(void *opaque)
->          memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
->          kvm_ops_static_call_update();
-> 
-> -       if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
-> -               supported_xss = 0;
-> -
->   #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
->          cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
->   #undef __kvm_cpu_cap_has
-> 
 
