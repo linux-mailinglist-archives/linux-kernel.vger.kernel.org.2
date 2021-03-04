@@ -2,51 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1F532CE6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A78832CE70
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236746AbhCDI2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:28:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233025AbhCDI1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:27:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD85264EEC;
-        Thu,  4 Mar 2021 08:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614846429;
-        bh=h2BcgeGmCIH5OV0KnmVpjP1ukfYz9GMQmLRR1QPhBd0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I2FG0yfrM8gi/8X6Xy4jPA1wgrSMXtDE/xq5GckyAtFXgI2tg0wfZgo3UezKgCeW8
-         /BdMvmfEJhJxmLR4O6b14h4GXzvRnOKl4emANlXDLhMYvguhot0jrM5oWLqejvhnHW
-         hTsgcKfcY8eCAqPacCUa65IsrfqhrxdegjOJ8Uuk=
-Date:   Thu, 4 Mar 2021 09:27:06 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] parport: Introduce module_parport_driver() and
- use it
-Message-ID: <YECZ2oITT4sUptYF@kroah.com>
-References: <20210303091642.23929-1-andriy.shevchenko@linux.intel.com>
- <20210303202432.GD5027@sirena.org.uk>
+        id S236760AbhCDI2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:28:14 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:51779 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236743AbhCDI1u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:27:50 -0500
+Received: by mail-il1-f200.google.com with SMTP id y11so19883335ilc.18
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:27:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=6Z9uhMMGUlxMK9WR9njyeuEFP6BA8lotMFqvBRev/Ds=;
+        b=eXJVisd4nUGHf1U5Q9IdZ26S2kGSjY++sfBMvpEUNY90fPtdNpl2w3Qcg/KgImbVUh
+         +8qawgRfpHf25MNiMsFDf6mcIbfhQBIW+Eh8IAln0kDBXD6j6CMupOGgXu3aTEwSslLc
+         2V8WOffnbn9t2L77N7gJ5gtz+bsizHVlBpc1UieNsmC8IHogMz0XGSi6h9bnSHDJeJuA
+         BPfENdaP4FOtolOE5kh+t/TJzTm4LcSWqBlMWN86uGhQaxev2K1DRsuDnxZLdFYhIip9
+         bfqNYgoDDSBhbxinlIwLnAQ2u4jEXvxLbnlwnNF+zAqdXG+qtEGBROk4hZ6MoRCEgWHA
+         sdIg==
+X-Gm-Message-State: AOAM530tVreLH7j+GIX39zrET3Bhz8qKwfREcXR5Rj1lpTTZe0CLQdaG
+        Ko/WjQNLbLourO8Rg10zdoHe0vZbVhoWU8aRwVNXl+skOpMK
+X-Google-Smtp-Source: ABdhPJwsIfXz6QM1K0WwnCEY1jn+iyk7Wg9ebm+n6fHKt4lFAt/z88NBe2s+PUYaxC9bnn3OGmJtWB1tIGvARGYbrHlRisIdqm86
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303202432.GD5027@sirena.org.uk>
+X-Received: by 2002:a5e:c00a:: with SMTP id u10mr2646759iol.165.1614846430408;
+ Thu, 04 Mar 2021 00:27:10 -0800 (PST)
+Date:   Thu, 04 Mar 2021 00:27:10 -0800
+In-Reply-To: <8494c673-180e-e0b9-4db7-04aed2aee791@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d9f38005bcb1bbec@google.com>
+Subject: Re: memory leak in io_submit_sqes (2)
+From:   syzbot <syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 08:24:32PM +0000, Mark Brown wrote:
-> On Wed, Mar 03, 2021 at 11:16:39AM +0200, Andy Shevchenko wrote:
-> > Introduce module_parport_driver() and use it.
-> > Greg or Mark, since we have this series tagged, can somebody of you pick it up?
-> 
-> Greg, are you OK with me applying this?
+Hello,
 
-Yup, just sent a reviewed-by for it, thanks.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-greg k-h
+Reported-and-tested-by: syzbot+91b4b56ead187d35c9d3@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         e64db150 io-wq: ensure all pending work is canceled on exit
+git tree:       git://git.kernel.dk/linux-block leak
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c43bda1f1543d72b
+dashboard link: https://syzkaller.appspot.com/bug?extid=91b4b56ead187d35c9d3
+compiler:       
+
+Note: testing is done by a robot and is best-effort only.
