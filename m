@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9DB32CE18
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B09732CE20
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235299AbhCDIFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:05:20 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:44336 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235412AbhCDIFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:05:00 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr_BwlEBgYTwUAA--.9025S2;
-        Thu, 04 Mar 2021 16:04:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3] MIPS: Make MIPS32_O32 depends on !CC_IS_CLANG
-Date:   Thu,  4 Mar 2021 16:04:00 +0800
-Message-Id: <1614845040-12995-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxr_BwlEBgYTwUAA--.9025S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr4rtr17JF4kKF1rWry8Zrb_yoW8XF1rp3
-        ykKa1DKrs8GFyrJFWkWrykWr1av3ykJayFvF9ayw17ZasrZa409r1SkF1IvFW7Ars2qay0
-        grZ3W347JayjyFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUSeHgUUU
-        UU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S236056AbhCDIH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233616AbhCDIHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:07:01 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DDCC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 00:06:20 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id m22so41698396lfg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xhWBUgqe/0B8aWSBIXErOIoObcIFR5qF3dYFs5KNKag=;
+        b=Q/8FIlfJhpDigw0JCabQmUyD6otiO8c7tobvJhzbqIC7XhhCO898BD1IiN835UivRn
+         ko+MaLdDs6Uq4NM0VF6kiKuN4SMdplo+Z4slOU6pqvgMMxxWlPyhrSLDE9cAjv+gx2XE
+         mT8Q1h2bQiUAE389ft+aW/FRvsSk3yOcbMyK75XWRgxDQoWphDPJbeBNyD74J29TJSQT
+         VC8UI+eWZNiHUiqOPjrYb33OZd3wZYRIygzN6yvAwUNufEweF54jEQXARFyui69bkGxg
+         T+Yo4Fsm/4RP0J/a5q3VggDhnmgT4F8HEo8EEo9BSIg4NgCcxTQ18oDJm5keAf/eFJDQ
+         XL+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xhWBUgqe/0B8aWSBIXErOIoObcIFR5qF3dYFs5KNKag=;
+        b=GyOyJWmCzJraCpEb7XXMp2vxz7NzOi1Xil5cCXtgGkbxGicyCWGm5U7ABv1bg4oepN
+         yX93kxXWgMVAezMSr3JC4VzG5gUY/y3Mff7TaQFnryElOYSoj8P4DbYBzXDDYj2wbuds
+         C6nQxig5h62+UAplNc967gJxLMDZ7LypMEkF+OmFPYNVzSbQDLfhVThfCLMyeFMwDSZo
+         2vXEAs64tYY0OBFjn+7uDMQzgtB/Jzpw0QOax5ZzVv6VcAlWJ9oEeaQPvyIAOueDloUl
+         ksGhzr0Q7mFz68Ls/3wbnW5vrklVhIfXhk7ExLvQemnc7VsOTyLJWEfQvDDezcOYIvqM
+         dS/w==
+X-Gm-Message-State: AOAM531sC+HMVKs7RyuBYD7TNemDoxTz+WnRgk34NBmH63XVoYf/p+8+
+        +AYGLXut8D7tVY03uNJ1PnlpoybDt3bRnTFOXVVoZg==
+X-Google-Smtp-Source: ABdhPJzLTVA9gdRENm5ldKEbbb30Qq4mQjQpTBWVD6msTYk9Yb3g81iBN/tBzprb/oLKQXiHSMAMOa8AXyzr9kWiIyo=
+X-Received: by 2002:ac2:4d95:: with SMTP id g21mr1693734lfe.29.1614845179473;
+ Thu, 04 Mar 2021 00:06:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
+ <20210302153451.50593-4-andriy.shevchenko@linux.intel.com>
+ <CACRpkdYjs7y=YMoQmFc2iXoMEtSAk7S+zYsz1Y=yPYw=97T+Nw@mail.gmail.com> <YD9YTGnFbmcnJKsR@smile.fi.intel.com>
+In-Reply-To: <YD9YTGnFbmcnJKsR@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 4 Mar 2021 09:06:08 +0100
+Message-ID: <CACRpkdYEd+zv36Ghet2WxNavV=1-RkR06c3OxBEoxCqXoAY3Zg@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] gpiolib: Reuse device's fwnode to create IRQ domain
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with Clang [1]:
+On Wed, Mar 3, 2021 at 10:35 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Wed, Mar 03, 2021 at 10:22:02AM +0100, Linus Walleij wrote:
 
-$ make CC=clang loongson3_defconfig
-$ make CC=clang
+> > But this:
+> >
+> > > @@ -1504,15 +1497,14 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
+> > >                         return ret;
+> > >         } else {
+> > >                 /* Some drivers provide custom irqdomain ops */
+> > > -               if (gc->irq.domain_ops)
+> > > -                       ops = gc->irq.domain_ops;
+> > > -
+> > > -               if (!ops)
+> > > -                       ops = &gpiochip_domain_ops;
+> > > -               gc->irq.domain = irq_domain_add_simple(np,
+> > > -                       gc->ngpio,
+> > > -                       gc->irq.first,
+> > > -                       ops, gc);
+> > > +               ops = gc->irq.domain_ops ?: &gpiochip_domain_ops;
+> > > +               if (gc->irq.first)
+> > > +                       gc->irq.domain = irq_domain_create_legacy(fwnode, gc->ngpio,
+> > > +                                                                 gc->irq.first, 0,
+> > > +                                                                 ops, gc);
+> > > +               else
+> > > +                       gc->irq.domain = irq_domain_create_linear(fwnode, gc->ngpio,
+> > > +                                                                 ops, gc);
+> >
+> > This looks like a refactoring and reimplementation of irq_domain_add_simple()?
+>
+> If you named it as irq_domain_create_simple(), then yes, but the problem is
+> that we don't have irq_domain_create_simple() API right now.
+>
+> > Why, and should it rather be a separate patch?
+>
+> Nope.
 
-there exists the following error:
+OK I looked closer at irq_domain_add_simple(), and what it does different
+is to call irq_alloc_descs() for all lines if using sparse IRQs and then
+associate them. irq_domain_create_linear|legacy() does not allocate IRQ
+descriptors because it assumes something like DT or ACPI will do that
+on-demand when drivers request IRQs.
 
-  Checking missing-syscalls for O32
-  CALL    scripts/checksyscalls.sh
-error: ABI 'o32' is not supported on CPU 'mips64r2'
-make[1]: *** [Kbuild:48: missing-syscalls] Error 1
-make: *** [arch/mips/Makefile:419: archprepare] Error 2
+This may be dangerous because some old platforms do not resolve IRQs
+at runtime and you will get NULL pointer exceptions.
 
-This is a known bug [2] with Clang, as Simon Atanasyan said,
-"There is no plan on support O32 for MIPS64 due to lack of
-resources".
+We then need to make sure all callers do what is done in e.g.
+drivers/gpio/gpio-omap.c in the #ifdef CONFIG_ARCH_OMAP1 clause:
+they need to be augmented to call irq_alloc_descs() explicitly,
+and I don't think all of them do it as nicely for us as OMAP1.
 
-It is not a good idea to remove CONFIG_MIPS32_O32=y directly
-in defconfig because GCC works, as Nathan said, the config
-should not even be selectable when building with Clang, so
-just make MIPS32_O32 depends on !CC_IS_CLANG.
+I might be overly cautious though, however that is why this code
+uses irq_domain_add_simple(), came in commit
+commit 2854d167cc545d0642277bf8b77f972a91146fc6
 
-[1] https://www.kernel.org/doc/html/latest/kbuild/llvm.html
-[2] https://bugs.llvm.org/show_bug.cgi?id=38063
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Nathan Chancellor <nathan@kernel.org>
----
-
-v3: Update the commit message suggested by Nathan, thank you!
-
- arch/mips/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 3a38d27..f6ba59f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3318,6 +3318,8 @@ config SYSVIPC_COMPAT
- config MIPS32_O32
- 	bool "Kernel support for o32 binaries"
- 	depends on 64BIT
-+	# https://bugs.llvm.org/show_bug.cgi?id=38063
-+	depends on !CC_IS_CLANG
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT
- 	select MIPS32_COMPAT
--- 
-2.1.0
-
+Yours,
+Linus Walleij
