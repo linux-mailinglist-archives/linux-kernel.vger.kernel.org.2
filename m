@@ -2,247 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD19C32D865
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6696D32D86D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239060AbhCDRMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239043AbhCDRLv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:11:51 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97F8C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:11:10 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id r5so19375919pfh.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:11:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IjgJ9/3K5CRSSHL4CLYVhM+GUoIM3xtOH0lXjMHAB0M=;
-        b=dii//ITjUsKowFowTTP1E1LTWtEwmiRgmEVICDDCTkCkHpBu6r78JazS81hW6s7TEj
-         UCnyLKnc3+fhGcCIKh7C+VydZ9yMjrCKv+yKQqOZ4S10waVwLLX7YlPCXFk9FHqOotKd
-         V3knGRwFCOU1Xr7Nmg66ibThdSjEVXGDuWEPwqaED8FDsPsucGzdVMqgPoWMJ7nLB8tN
-         /T0CX+GPSWXe2hXC7fY3NMLY7Sq+StSpMnkLt5iGqixPu0n4af9myrLnZVJWOibG/Zom
-         2di+VPSS9R4vmLowHIIPK6RWKDYOycT50yRTvUh23tVYLxnNjtuH3y+YTH+GnrlJiN4i
-         gU1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=IjgJ9/3K5CRSSHL4CLYVhM+GUoIM3xtOH0lXjMHAB0M=;
-        b=S1r2UJSm2Wc+upzvsddGLtnu8NRJm0TmvhK7Afl1fo8yQ6eaxV/NOMrNZrznWPonJ7
-         b+2ytIAdDHqAt6cR+4khyxmqWprV/2DqgWFu8JQkI9HKUOjbxtn2uV4i8FQ4k/7Augpz
-         1CW0AWPBIJHHfM1yLnNaWCGErs8qzJYiSoIYM68PmMjGNmARrA2QSebx0Yi1ZvwpjNjr
-         21plO9hVkH/0MFwkOT8IRg3tZd8wBbOZlsggCZJjHfJQu8Gn+w8rReqAlhZJaVL/Vn7Y
-         6CTigLQpb4jNYAZ19/xDC27aWui6od9lXytMX3KDYR+p4afgp5BrXtvqkN3V0sWIH83V
-         gVKw==
-X-Gm-Message-State: AOAM532NTeyGVGfJjQC6I21Jq+me4bThOSJOlXveXlqcE47p4IlcOp+3
-        pyUCE9CyWvgcjt9jhDfjLT0=
-X-Google-Smtp-Source: ABdhPJxnqcDGOXICXrUSCd8uAqGBd7VyTluejhYthAxalBG8eT6LGXDqc9qerjryCBjJn7KAfIji4A==
-X-Received: by 2002:a65:62cd:: with SMTP id m13mr4439422pgv.108.1614877870398;
-        Thu, 04 Mar 2021 09:11:10 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:edb1:8010:5c27:a8cc])
-        by smtp.gmail.com with ESMTPSA id l12sm11179pfd.33.2021.03.04.09.11.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 09:11:09 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 4 Mar 2021 09:11:07 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YEEUq8ZRn4WyYWVx@google.com>
-References: <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
- <YC402s1vqvC4q041@dhcp22.suse.cz>
- <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
- <YC6TpqT26dSy11fU@google.com>
- <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
- <YD50pcPuwV456vwm@google.com>
- <YEEES/K8cNi8qOJe@google.com>
- <d83a03dd-fdff-ed62-a2ad-77b25d8249f0@redhat.com>
- <YEEJf0itS/8vn8Iy@google.com>
- <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
+        id S239123AbhCDRN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 12:13:57 -0500
+Received: from foss.arm.com ([217.140.110.172]:41858 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239072AbhCDRNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 12:13:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6110231B;
+        Thu,  4 Mar 2021 09:12:38 -0800 (PST)
+Received: from [10.57.19.206] (unknown [10.57.19.206])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 427663F7D7;
+        Thu,  4 Mar 2021 09:12:34 -0800 (PST)
+Subject: Re: [PATCH] devfreq: Register devfreq as a cooling device
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     cwchoi00@gmail.com, kyungmin.park@samsung.com,
+        myungjoo.ham@samsung.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        "open list:DRM DRIVERS FOR LIMA" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DRM DRIVERS FOR LIMA" <lima@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+References: <20210304125034.28404-1-daniel.lezcano@linaro.org>
+ <5f06e0c5-b2d9-5e11-01b6-fdd0dac635a7@arm.com>
+ <8d153937-c5fc-1de2-d510-d3f91f7a9724@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <71bc8b07-ea0e-17a9-8c7f-d20669e9da12@arm.com>
+Date:   Thu, 4 Mar 2021 17:12:32 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
+In-Reply-To: <8d153937-c5fc-1de2-d510-d3f91f7a9724@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 05:28:32PM +0100, David Hildenbrand wrote:
-> On 04.03.21 17:23, Minchan Kim wrote:
-> > On Thu, Mar 04, 2021 at 05:10:52PM +0100, David Hildenbrand wrote:
-> > > On 04.03.21 17:01, Minchan Kim wrote:
-> > > > On Tue, Mar 02, 2021 at 09:23:49AM -0800, Minchan Kim wrote:
-> > > > > On Fri, Feb 19, 2021 at 10:28:12AM +0100, Michal Hocko wrote:
-> > > > > > On Thu 18-02-21 08:19:50, Minchan Kim wrote:
-> > > > > > > On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
-> > > > > > > > On 18.02.21 10:35, Michal Hocko wrote:
-> > > > > > > > > On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
-> > > > > > > > > > On 18.02.21 09:56, Michal Hocko wrote:
-> > > > > > > > > > > On Wed 17-02-21 08:36:03, Minchan Kim wrote:
-> > > > > > > > > > > > alloc_contig_range is usually used on cma area or movable zone.
-> > > > > > > > > > > > It's critical if the page migration fails on those areas so
-> > > > > > > > > > > > dump more debugging message like memory_hotplug unless user
-> > > > > > > > > > > > specifiy __GFP_NOWARN.
-> > > > > > > > > > > 
-> > > > > > > > > > > I agree with David that this has a potential to generate a lot of output
-> > > > > > > > > > > and it is not really clear whether it is worth it. Page isolation code
-> > > > > > > > > > > already has REPORT_FAILURE mode which currently used only for the memory
-> > > > > > > > > > > hotplug because this was just too noisy from the CMA path - d381c54760dc
-> > > > > > > > > > > ("mm: only report isolation failures when offlining memory").
-> > > > > > > > > > > 
-> > > > > > > > > > > Maybe migration failures are less likely to fail but still.
-> > > > > > > > > > 
-> > > > > > > > > > Side note: I really dislike that uncontrolled error reporting on memory
-> > > > > > > > > > offlining path we have enabled as default. Yeah, it might be useful for
-> > > > > > > > > > ZONE_MOVABLE in some cases, but otherwise it's just noise.
-> > > > > > > > > > 
-> > > > > > > > > > Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
-> > > > > > > > > 
-> > > > > > > > > Anyway we can discuss this in a separate thread but I think this is not
-> > > > > > > > > a representative workload.
-> > > > > > > > 
-> > > > > > > > Sure, but the essence is "this is noise", and we'll have more noise on
-> > > > > > > > alloc_contig_range() as we see these calls more frequently. There should be
-> > > > > > > > an explicit way to enable such *debug* messages.
-> > > > > > > 
-> > > > > > > alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
-> > > > > > > Why shouldn't people use it if they don't care the failure?
-> > > > > > > Semantically, it makes sense to me.
-> > > > > 
-> > > > > Sorry for the late response.
-> > > > > 
-> > > > > > 
-> > > > > > Well, alloc_contig_range doesn't really have to implement all the gfp
-> > > > > > flags. This is a matter of practicality. alloc_contig_range is quite
-> > > > > > different from the page allocator because it is to be expected that it
-> > > > > > can fail the request. This is avery optimistic allocation request. That
-> > > > > > would suggest that complaining about allocation failures is rather
-> > > > > > noisy.
-> > > > > 
-> > > > > That was why I'd like to approach for per-call site indicator with
-> > > > > __GFP_NOWARN. Even though it was allocation from CMA, some of them
-> > > > > wouldn't be critical for the failure so those wouldn't care of
-> > > > > the failure. cma_alloc already has carried on "bool no_warn"
-> > > > > which was changed into gfp_t recently. What alloc_contig_range
-> > > > > should do is to take care of the request.
-> > > > > 
-> > > > > > 
-> > > > > > Now I do understand that some users would like to see why those
-> > > > > > allocations have failed. The question is whether that information is
-> > > > > > generally useful or it is more of a debugging aid. The amount of
-> > > > > > information is also an important aspect. It would be rather unfortunate
-> > > > > > to dump thousands of pages just because they cannot be migrated.
-> > > > > 
-> > > > > Totally, agree dumping thounds of pages as debugging aid are bad.
-> > > > > Couldn't we simply ratelimit them like other places?
-> > > > > 
-> > > > > > 
-> > > > > > I do not have a strong opinion here. We can make all alloc_contig_range
-> > > > > > users use GFP_NOWARN by default and only skip the flag from the cma
-> > > > > > allocator but I am slowly leaning towards (ab)using dynamic debugging
-> > > > > 
-> > > > > I agree the rest of the places are GFP_NOWARN by default except CMA
-> > > > > if they expect alloc_contig_range are optimistic allocation request.
-> > > > > However, I'd like to tweak it for CMA - accept gfp_t from cma_alloc
-> > > > > and take care of the __GFP_NOWARN since some sites of CMA could be
-> > > > > fault tolerant so no need to get the warning.
-> > > > 
-> > > > Any thought to proceed?
-> > > 
-> > > IMHO, add some proper debug mechanisms and don't try squeezing debug
-> > > messages into "WARN" semantics.
-> > > 
-> > > Any alloc_contig_range() user can benefit from that.
-> > 
-> > So the point is how we could add proper debug mechanism here.
-> > Think about call site A is not critical for the failure but
-> > called very frquently. Call site B is critical for the failure
-> > but called very rarely so turns on system wide dynamic debugging.
-> > You could see a lot of debug message from A even though we
-> > dont't want it. Even, it could hide B's debugging message
-> > by ratelimiting.
-> 
-> Do you have a real life example how this would be an issue? This sounds like
-> a purely theoretical construct.
 
-I don't have sepcific a example at this moment but it would be not hard
-to think about the usecase. Someone want to use big contiguous memory
-to perform better their job but it's not necessary since they have
-fallback options with working order-0 pages. In the case, it's not
-critical for the failure. However, the other user uses big contiguous
-memory to enable some feature for enduser in the mobile phone.
-In the case, the allocation failure is significant so really looking
-for clues.
+
+On 3/4/21 4:53 PM, Daniel Lezcano wrote:
+> 
+> Hi Lukasz,
+> 
+> thanks for commenting this patch,
+> 
+> On 04/03/2021 14:47, Lukasz Luba wrote:
+>> Hi Daniel,
+>>
+>> On 3/4/21 12:50 PM, Daniel Lezcano wrote:
+>>> Currently the default behavior is to manually having the devfreq
+>>> backend to register themselves as a devfreq cooling device.
+>>>
+>>> There are no so many and actually it makes more sense to register the
+>>> devfreq device when adding it.
+>>>
+>>> Consequently, every devfreq becomes a cooling device like cpufreq is.
+>>>
+>>> Having a devfreq being registered as a cooling device can not mitigate
+>>> a thermal zone if it is not bound to this one. Thus, the current
+>>> configurations are not impacted by this change.
+>>
+>> There are also different type of devices, which register into devfreq
+>> framework like NoC buses, UFS/eMMC, jpeg and video accelerators, ISP,
+>> etc.
+>> In some platforms there are plenty of those devices and they all would
+>> occupy memory due to private freq_table in devfreq_cooling, function:
+>> devfreq_cooling_gen_tables().
+>>
+>> IIRC in OdroidXU4 there are ~20 devfreq devs for NoC buses.
+> 
+> I'm curious, do you have a pointer to such kernels having all those
+> devfreq ?
+
+Sure, it's mainline code, you can build it with exynos_defconfig.
+You can check the DT files to find them arch/arm/boot/dts/exynos*.
+(this particular OdroidXU4 is Exynos5422, but it grabs some generic dt
+files).
+
+Here is the mainline kernel content of /sys/class/devfreq/
+----------------------------------------------------------
+sys/class/devfreq /
+10c20000.memory-controller  soc:bus-g2d          soc:bus-mfc
+11800000.gpu                soc:bus-g2d-acp      soc:bus-mscl
+soc:bus-disp1               soc:bus-gen          soc:bus-noc
+soc:bus-disp1-fimd          soc:bus-gscl-scaler  soc:bus-peri
+soc:bus-fsys-apb            soc:bus-jpeg         soc:bus-wcore
+soc:bus-fsys2               soc:bus-jpeg-apb
+----------------------------------------------------------
+
+IIRC some Odroid kernel maintained by Hardkernel had more devices
+in this dir.
+
+
+Here is how these bus devices print themselves during boot:
+----------------------------------------------------------
+[    8.674840] exynos-bus: new bus device registered: soc:bus-wcore ( 
+88700 KHz ~ 532000 KHz)
+[    8.686412] exynos-bus: new bus device registered: soc:bus-noc ( 
+66600 KHz ~ 111000 KHz)
+[    8.696080] exynos-bus: new bus device registered: soc:bus-fsys-apb 
+(111000 KHz ~ 222000 KHz)
+[    8.706590] exynos-bus: new bus device registered: soc:bus-fsys2 ( 
+75000 KHz ~ 200000 KHz)
+[    8.717661] exynos-bus: new bus device registered: soc:bus-mfc ( 
+83250 KHz ~ 333000 KHz)
+[    8.728139] exynos-bus: new bus device registered: soc:bus-gen ( 
+88700 KHz ~ 266000 KHz)
+[    8.737551] exynos-bus: new bus device registered: soc:bus-peri ( 
+66600 KHz ~  66600 KHz)
+[    8.748625] exynos-bus: new bus device registered: soc:bus-g2d ( 
+83250 KHz ~ 333000 KHz)
+[    8.759427] exynos-bus: new bus device registered: soc:bus-g2d-acp ( 
+66500 KHz ~ 266000 KHz)
+[    8.770366] exynos-bus: new bus device registered: soc:bus-jpeg ( 
+75000 KHz ~ 300000 KHz)
+[    8.781135] exynos-bus: new bus device registered: soc:bus-jpeg-apb ( 
+83250 KHz ~ 166500 KHz)
+[    8.791366] exynos-bus: new bus device registered: soc:bus-disp1-fimd 
+(120000 KHz ~ 200000 KHz)
+[    8.802418] exynos-bus: new bus device registered: soc:bus-disp1 
+(120000 KHz ~ 300000 KHz)
+[    8.813050] exynos-bus: new bus device registered: 
+soc:bus-gscl-scaler (150000 KHz ~ 300000 KHz)
+[    8.825308] exynos-bus: new bus device registered: soc:bus-mscl ( 
+84000 KHz ~ 666000 KHz)
+
+----------------------------------------------------------
+
 
 > 
-> You want to debug something, so you try triggering it and capturing debug
-> data. There are not that many alloc_contig_range() users such that this
-> would really be an issue to isolate ...
-
-cma_alloc uses alloc_contig_range and cma_alloc has lots of users.
-Even, it is expoerted by dmabuf so any userspace would trigger the
-allocation by their own. Some of them could be tolerant for the failure,
-rest of them could be critical. We should't expect it by limited kernel
-usecase.
-
+>> It's true that they will not affect thermal zones, but unnecessarily,
+>> they all will show up in the /sys/class/thermal/ as
+>> thermal-devfreq-X
+>>
+>>
+>> IMO the devfreq shouldn't be tight with devfreq cooling thermal.
 > 
-> Strictly speaking: any allocation failure on ZONE_MOVABLE or CMA is
-> problematic (putting aside NORETRY logic and similar aside). So any such
-> page you hit is worth investigating and, therefore, worth getting logged for
-> debugging purposes.
+> The energy model is tied with a cooling device initialization.
+> 
+> So if we want to do power limitation, the energy model must be
+> initialized with the device, thus the cooling device also.
+> 
+> That is the reason why I'm ending up with this change. Chanwoo
+> suggestion makes sense and that will allow to move the initialization to
+> devfreq which is more sane but it does not solve the initial problem
+> with the energy model.
 
-If you believe the every alloc_contig_range failure is problematic
-and there is no such realy example I menionted above in the world,
-I am happy to put this chunk to support dynamic debugging.
-Okay?
+Make sense, the 'is_cooling_device' does the job.
 
-+#if defined(CONFIG_DYNAMIC_DEBUG) || \
-+        (defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-+static DEFINE_RATELIMIT_STATE(alloc_contig_ratelimit_state,
-+               DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST);
-+int alloc_contig_ratelimit(void)
-+{
-+       return __ratelimit(&alloc_contig_ratelimit_state);
-+}
-+
-+void dump_migrate_failure_pages(struct list_head *page_list)
-+{
-+       DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
-+                       "migrate failure");
-+       if (DYNAMIC_DEBUG_BRANCH(descriptor) &&
-+                       alloc_contig_ratelimit()) {
-+               struct page *page;
-+
-+               WARN(1, "failed callstack");
-+               list_for_each_entry(page, page_list, lru)
-+                       dump_page(page, "migration failure");
-+       }
-+}
-+#else
-+static inline void dump_migrate_failure_pages(struct list_head *page_list)
-+{
-+}
-+#endif
-+
- /* [start, end) must belong to a single zone. */
- static int __alloc_contig_migrate_range(struct compact_control *cc,
-                                        unsigned long start, unsigned long end)
-@@ -8496,6 +8522,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
-                                NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
-        }
-        if (ret < 0) {
-+               dump_migrate_failure_pages(&cc->migratepages);
-                putback_movable_pages(&cc->migratepages);
-                return ret;
-        }
-
-
+Regards,
+Lukasz
