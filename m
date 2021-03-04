@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551C032D7A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEBE32D7B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237168AbhCDQYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:24:24 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:39522 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237012AbhCDQYG (ORCPT
+        id S237379AbhCDQYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:24:36 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:28326 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237036AbhCDQYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:24:06 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124GBHJ1003785;
-        Thu, 4 Mar 2021 17:23:17 +0100
+        Thu, 4 Mar 2021 11:24:09 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124GCAAK025864;
+        Thu, 4 Mar 2021 17:23:18 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=SjDCRvLNvCvRh7LGL+F6JAoKAAhnKtu1+jdqaFqpzsM=;
- b=D/067wg+6Gyi60dQiQnF+quPXhpINaNi8Y1NXsslT6fk3GVAbwJu8E0MnK1ToEmbbhml
- a+YrO8EW2NviadvkaOGdVPP/bP9mmg8Vhu+Q/jr27KXAJpslS5rW2w5CniqtkIIllDtu
- I8ByQT9YLUlPEeVHr6dzu5KrdPI8r30lyPDXZ/fVhYjNDxKAXG8It7KoQATjrXjrEWfn
- NCvD/HFjBvEzQcTHbITQozRcgQ4OAqrnUG9y210twutcZZnY+cYf1PXRFW5iSXeo7Ztl
- 4xJArgW4GjgQj6UzsryfTHI5JdmbQQSDjQV3TmM/xKH1hWIrsl0I+r5SAQP6LIALmAXc NA== 
+ bh=pZPL4ia9b1JWX6EFamiyxgymffaer//iLAiGCcHKsL0=;
+ b=SuaMZF+XzpchtvPy4OBL4hxkGyiXk15sXWDDUp0CAmGKnT6gzrgMZOEPKMxlyIuRglCF
+ ljXLHPkBO7kTDiWBKqaSSh9q7Wo+3QvhKWR1PB2NC2wJtc88vL5AS5gJaHUhKOAfM+Jl
+ WTN9QCe3VMGy3pWt7wiYf6BNbQRsxpeiO2qNSxl52hrHEW3b7QT+mqKbljpSiiCDiSR9
+ iuK1yRNy+ooB7t0d9PPycQC6VSqZx9YpqESuWgnXi69MyrZYzyd+svCx2zbXJDrwcssf
+ f9QNqasUTMs4XxWxgV94RwngU5/LMLgW/vc7zuUKUA+7NH9O2MeSReXeZeJXWGL31U/j 1w== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 370xej5ayb-1
+        by mx07-00178001.pphosted.com with ESMTP id 36yfdygh3n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 17:23:17 +0100
+        Thu, 04 Mar 2021 17:23:18 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 36321100034;
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E203B10002A;
         Thu,  4 Mar 2021 17:23:17 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 28E2320741B;
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D549D20741B;
         Thu,  4 Mar 2021 17:23:17 +0100 (CET)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Mar 2021 17:23:16
+Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Mar 2021 17:23:17
  +0100
 From:   Erwan Le Ray <erwan.leray@foss.st.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,16 +49,16 @@ CC:     <linux-serial@vger.kernel.org>,
         Erwan Le Ray <erwan.leray@foss.st.com>,
         Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
         Valentin Caron <valentin.caron@foss.st.com>
-Subject: [PATCH v2 07/13] serial: stm32: fix a deadlock in set_termios
-Date:   Thu, 4 Mar 2021 17:23:02 +0100
-Message-ID: <20210304162308.8984-8-erwan.leray@foss.st.com>
+Subject: [PATCH v2 08/13] serial: stm32: fix tx dma completion, release channel
+Date:   Thu, 4 Mar 2021 17:23:03 +0100
+Message-ID: <20210304162308.8984-9-erwan.leray@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210304162308.8984-1-erwan.leray@foss.st.com>
 References: <20210304162308.8984-1-erwan.leray@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-04_05:2021-03-03,2021-03-04 signatures=0
@@ -66,60 +66,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CTS/RTS GPIOs support that has been added recently to STM32 UART driver has
-introduced scheduled code in a set_termios part protected by a spin lock.
-This generates a potential deadlock scenario:
+This patch add a proper release of dma channels when completing dma tx.
 
-Chain exists of:
-&irq_desc_lock_class --> console_owner --> &port_lock_key
-
-Possible unsafe locking scenario:
-
-     CPU0                    CPU1
-     ----                    ----
-lock(&port_lock_key);
-                           lock(console_owner);
-                           lock(&port_lock_key);
-lock(&irq_desc_lock_class);
-
-*** DEADLOCK ***
-4 locks held by stty/766:
-
-Move the scheduled code after the spinlock.
-
-Fixes: 6cf61b9bd7cc ("tty: serial: Add modem control gpio support for STM32 UART")
+Fixes: 3489187204eb ("serial: stm32: adding dma support")
 Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
 diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 326f300dd410..a381ee52168a 100644
+index a381ee52168a..74046ae3a412 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -829,12 +829,6 @@ static void stm32_usart_set_termios(struct uart_port *port,
- 		cr3 |= USART_CR3_CTSE | USART_CR3_RTSE;
- 	}
+@@ -292,6 +292,7 @@ static void stm32_usart_tx_dma_complete(void *arg)
+ 	struct stm32_port *stm32port = to_stm32_port(port);
+ 	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
  
--	/* Handle modem control interrupts */
--	if (UART_ENABLE_MS(port, termios->c_cflag))
--		stm32_usart_enable_ms(port);
--	else
--		stm32_usart_disable_ms(port);
--
- 	usartdiv = DIV_ROUND_CLOSEST(port->uartclk, baud);
++	dmaengine_terminate_async(stm32port->tx_ch);
+ 	stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_DMAT);
+ 	stm32port->tx_dma_busy = false;
  
- 	/*
-@@ -916,6 +910,12 @@ static void stm32_usart_set_termios(struct uart_port *port,
- 
- 	stm32_usart_set_bits(port, ofs->cr1, BIT(cfg->uart_enable_bit));
- 	spin_unlock_irqrestore(&port->lock, flags);
-+
-+	/* Handle modem control interrupts */
-+	if (UART_ENABLE_MS(port, termios->c_cflag))
-+		stm32_usart_enable_ms(port);
-+	else
-+		stm32_usart_disable_ms(port);
- }
- 
- static const char *stm32_usart_type(struct uart_port *port)
 -- 
 2.17.1
 
