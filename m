@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D1032CC59
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5157532CC69
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234500AbhCDGI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 01:08:27 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:33750 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234038AbhCDGIM (ORCPT
+        id S234635AbhCDGJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 01:09:34 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2826 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234557AbhCDGI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:08:12 -0500
-Received: from mail-lf1-f70.google.com ([209.85.167.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lHh90-0005I5-KF
-        for linux-kernel@vger.kernel.org; Thu, 04 Mar 2021 06:07:30 +0000
-Received: by mail-lf1-f70.google.com with SMTP id a9so5536724lfb.19
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 22:07:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P0f+eYtATsSsjrMI9K7JVfhIQMfZEx2gHGl9xTr7UQQ=;
-        b=Qn9cwOZmu9EXVPlp6EdkdYuge/NQh+aUR3ZUN5C32QnX7yrm0koIheo3v5G3S60XWc
-         xzuObJFcniCiZpxaEX6AmGX+SpCC0za21AbcTLW3HPYhotvthsRlESLuExrSZxKu2KVT
-         CHSC0PJAC7N4b1JCd7KoKzb8WAxNMqL55a4ZA9eVpJq4nE/ev2r3yON8XuEWqzTBX36B
-         QyZIqFjaliY+YVeoFXs512X8LX2m94uTne/nbAIN+pdnxsRUML1jdO1xxfugeyVVkVOE
-         i0XqeXFM8l4IbSLZrMw0t2Makpk5/HCUc26tjTqX8lb68tXwXsTOpNyVsS2y/Wp7l8dy
-         JJJQ==
-X-Gm-Message-State: AOAM531uMzpEeNI2b2Rv9Yh2W7c1lxbDT29ae46AbPt2lNctnsY67eJS
-        Iw2wl+qq1rpvnx6lQtwtZ2O4OSBfB6qqtzCzd3x8prO5nX2odUQN1vfDVezQEF+o3V185BP/PYV
-        qqd4L42T2eIm5H5FTq5kFcc7HzZR5Kg6161474R8MyMhGcItsoFpjUfWLlg==
-X-Received: by 2002:a19:6d09:: with SMTP id i9mr1290801lfc.425.1614838049991;
-        Wed, 03 Mar 2021 22:07:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx9QfkXxjtv37O7vKRgjQ/96zOmvvA9rGg54zz6NkOWiL9NrVaiztc+aQ9BpHPZU7Pt9TK7skvHryZUiXUt98o=
-X-Received: by 2002:a19:6d09:: with SMTP id i9mr1290788lfc.425.1614838049726;
- Wed, 03 Mar 2021 22:07:29 -0800 (PST)
+        Thu, 4 Mar 2021 01:08:57 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B604079500002>; Wed, 03 Mar 2021 22:08:16 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Mar
+ 2021 06:08:16 +0000
+Received: from skomatineni-linux.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 4 Mar 2021 06:08:15 +0000
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <skomatineni@nvidia.com>, <daniel.lezcano@linaro.org>,
+        <robh+dt@kernel.org>
+CC:     <ksitaraman@nvidia.com>, <sanjayc@nvidia.com>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v1 0/5] Add cpuidle support for Tegra194
+Date:   Wed, 3 Mar 2021 22:08:07 -0800
+Message-ID: <1614838092-30398-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <6db9e75e-52a7-4316-bfd8-cf44b4875f44@gmail.com> <20210226181656.GA143072@bjorn-Precision-5520>
-In-Reply-To: <20210226181656.GA143072@bjorn-Precision-5520>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 4 Mar 2021 14:07:18 +0800
-Message-ID: <CAAd53p62zy64gsmdNYSuV1sxOiB1Hye5R0WkY-gNFf+CKbG12A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] PCI: Convert rtw88 power cycle quirk to shutdown quirk
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Yan-Hsuan Chuang <tony0620emma@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614838096; bh=Tm0rjLZy4rE/8LLZIWcUvLj0vz1UXzrKC2AfwxMiOoc=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=lhjieTAyEclx3YJdE8KX2vVwtCt4TWYusD43JZ+DBqKCNRJhGbB8aWMyKppvSHvtW
+         i0ER0/vsv6HCoWiybdH4nfOA+cO4YFlq3mrLIbpIvvxNvO7Gp/pvD1JXfE6G7UB5T/
+         YG/1bzNg9FMDjbUDF0cg/rnrzzU8qbgghQ2nmqVaJP+TgHN4gJC4FSBqRiuvg970M4
+         aSDTEfzHgo37oPogfH1d57lxA+eWa3BXRYM+oCYxgK8+DQBWxN6R7Y8yzqUmt7IONb
+         Is5W2AUxy5VmWcX+u9zmA8BUyTNNNWwGwnglgnPml2o2GAM+/tJWON/jKeBvhke6u8
+         Url2R3HciPvug==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 2:17 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Fri, Feb 26, 2021 at 02:31:31PM +0100, Heiner Kallweit wrote:
-> > On 26.02.2021 13:18, Kai-Heng Feng wrote:
-> > > On Fri, Feb 26, 2021 at 8:10 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> > >>
-> > >> On 26.02.2021 08:12, Kalle Valo wrote:
-> > >>> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
-> > >>>
-> > >>>> Now we have a generic D3 shutdown quirk, so convert the original
-> > >>>> approach to a PCI quirk.
-> > >>>>
-> > >>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > >>>> ---
-> > >>>>  drivers/net/wireless/realtek/rtw88/pci.c | 2 --
-> > >>>>  drivers/pci/quirks.c                     | 6 ++++++
-> > >>>>  2 files changed, 6 insertions(+), 2 deletions(-)
-> > >>>
-> > >>> It would have been nice to CC linux-wireless also on patches 1-2. I only
-> > >>> saw patch 3 and had to search the rest of patches from lkml.
-> > >>>
-> > >>> I assume this goes via the PCI tree so:
-> > >>>
-> > >>> Acked-by: Kalle Valo <kvalo@codeaurora.org>
-> > >>
-> > >> To me it looks odd to (mis-)use the quirk mechanism to set a device
-> > >> to D3cold on shutdown. As I see it the quirk mechanism is used to work
-> > >> around certain device misbehavior. And setting a device to a D3
-> > >> state on shutdown is a normal activity, and the shutdown() callback
-> > >> seems to be a good place for it.
-> > >> I miss an explanation what the actual benefit of the change is.
-> > >
-> > > To make putting device to D3 more generic, as there are more than one
-> > > device need the quirk.
-> > >
-> > > Here's the discussion:
-> > > https://lore.kernel.org/linux-usb/00de6927-3fa6-a9a3-2d65-2b4d4e8f0012@linux.intel.com/
-> > >
-> >
-> > Thanks for the link. For the AMD USB use case I don't have a strong opinion,
-> > what's considered the better option may be a question of personal taste.
-> > For rtw88 however I'd still consider it over-engineering to replace a simple
-> > call to pci_set_power_state() with a PCI quirk.
-> > I may be biased here because I find it sometimes bothering if I want to
-> > look up how a device is handled and in addition to checking the respective
-> > driver I also have to grep through quirks.c whether there's any special
-> > handling.
->
-> I haven't looked at these patches carefully, but in general, I agree
-> that quirks should be used to work around hardware defects in the
-> device.  If the device behaves correctly per spec, we should use a
-> different mechanism so the code remains generic and all devices get
-> the benefit.
->
-> If we do add quirks, the commit log should explain what the device
-> defect is.
+This series adds cpuidle support for Tegra194 carmel CPUs.
 
-So maybe it's reasonable to put all PCI devices to D3 at shutdown?
+MCE firmware is responsible for deciding on CPU idle power state
+based on state information and MCE firmware background work.
 
-Kai-Heng
+Tegra MCE ARI driver is the interface driver to communicate with
+MCE firmware from the kernel.
 
->
-> Bjorn
+CPU idle driver passes idle state information to MCE through Tegra
+MCE driver and requests idle state transition to MCE happens through
+PSCI CPU suspend.
+
+This series includes below patches
+- Add CPUIDLE section to MAINTAINERS
+- Add Tegra MCE ARI driver to communicate with MCE firmware from kernel
+- Add dt-bindings for Tegra194 cpu idle states
+- Add cpuidle driver to support Tegra194 CPUs idle state management
+- Update Tegra194 device tree with cpuidle support to Tegra194 CPUs.
+
+
+Sowjanya Komatineni (5):
+  MAINTAINERS: Add Tegra CPUIDLE driver section
+  firmware: tegra: Add Tegra194 MCE ARI driver
+  dt-bindings: arm: Add cpu-idle-states to Tegra194 CPU nodes
+  cpuidle: Add Tegra194 cpuidle driver
+  arm64: dts: tegra194: Add CPU idle states
+
+ .../bindings/arm/nvidia,tegra194-ccplex.yaml       |  53 ++++
+ MAINTAINERS                                        |  12 +
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |  28 ++
+ drivers/cpuidle/Kconfig.arm                        |  10 +
+ drivers/cpuidle/Makefile                           |   1 +
+ drivers/cpuidle/cpuidle-tegra194.c                 | 319 +++++++++++++++++++++
+ drivers/firmware/tegra/Kconfig                     |  11 +
+ drivers/firmware/tegra/Makefile                    |   4 +
+ drivers/firmware/tegra/mce-tegra194.c              | 155 ++++++++++
+ drivers/firmware/tegra/mce.c                       |  88 ++++++
+ include/soc/tegra/mce.h                            |  32 +++
+ include/soc/tegra/t194_nvg.h                       |  56 ++++
+ 12 files changed, 769 insertions(+)
+ create mode 100644 drivers/cpuidle/cpuidle-tegra194.c
+ create mode 100644 drivers/firmware/tegra/mce-tegra194.c
+ create mode 100644 drivers/firmware/tegra/mce.c
+ create mode 100644 include/soc/tegra/mce.h
+ create mode 100644 include/soc/tegra/t194_nvg.h
+
+-- 
+2.7.4
+
