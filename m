@@ -2,174 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B4C32CF64
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F2932CF6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236663AbhCDJLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:11:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbhCDJLK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:11:10 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB57C06175F;
-        Thu,  4 Mar 2021 01:10:29 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id d3so41933300lfg.10;
-        Thu, 04 Mar 2021 01:10:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lYt7mYpM9/m04UA7Mdu92MabZprxTpAcM5FOuDuthS4=;
-        b=fmPBN3OVw4OwkdjJx8DpFvbIIja2mK2GdJqOtQW1Ioet6C2AJbxyHtAZ43/5yCOrfX
-         YIhF1TjFDL94mY63OlkM7Tq6ADqjKKprw16c8Rsl1jpf2nBbSqTnFGk2RXPVonxnt9mT
-         fptNyLQvpVUQ/TG+NGemc2z47SIYdWwdjRXzM17FTZhE5A031EofI372xV0+oqP5UZVq
-         nIyNDc0PwajjCfDf0tRpSuO0P0eR5eXRnz3KYdEiM2KwNi0pRoBf5K7MFlmaXIvBjzBt
-         Fbr9yiWSaoKtGJwoFQbveoUS5IWzzmBgTS0OU1XKvhO64UA+q/yHFcctocMAHLsJSuZB
-         DG+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lYt7mYpM9/m04UA7Mdu92MabZprxTpAcM5FOuDuthS4=;
-        b=TdMNexNqEuHK2H5ayU55TCMRLVj/kE8KdYt3/HQiQsf9nUE2bfvdAby1f6MOKWzpGE
-         wj+HjAojFGpFdNIlhCM3C1IfFcCIid2ItVdbrfrenvbEwuEI70QEDOOg5kYsIhZDwXtN
-         l/iYiyimWGiSYEBGq4QtL4HEo3z1anVXLgTiPxnr4AhJy+WaU0oHYft5bciHXArw9HY6
-         M9gKywl8S3rRPASyCjRflPf1PLbBNBxDyGqFQK+I2E+IqIiAs5UD690S0sUDbGyE89bm
-         7lDdYvDCqLTarfeRs54oyRxK2cf6jqGA6q5Hxi44lpyBG5G9xR3SB0wm50GDZYIJfTH9
-         2HxA==
-X-Gm-Message-State: AOAM532ha5sSKb/XyPBJUxwVT3R6uVB+s4n1uvp4a5y+8GxsN76vBxJ6
-        nm957asXoFfQFTetHR16NGE=
-X-Google-Smtp-Source: ABdhPJwlzUi5evrB7tfs/CevoAu3N1l1PJFqqId94eiMubcRbH8Dlr2a1CzIcdo2ScMeyBt/EDehfA==
-X-Received: by 2002:ac2:5232:: with SMTP id i18mr1839362lfl.30.1614849028522;
-        Thu, 04 Mar 2021 01:10:28 -0800 (PST)
-Received: from mobilestation ([95.79.88.254])
-        by smtp.gmail.com with ESMTPSA id e24sm2536883lfn.62.2021.03.04.01.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 01:10:28 -0800 (PST)
-Date:   Thu, 4 Mar 2021 12:10:25 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Brad Larson <brad@pensando.io>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-Message-ID: <20210304091025.ny52qjm7wbfvmjgl@mobilestation>
-References: <20210304034141.7062-1-brad@pensando.io>
- <20210304034141.7062-2-brad@pensando.io>
- <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
+        id S234513AbhCDJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:15:17 -0500
+Received: from mout.gmx.net ([212.227.15.18]:47865 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237660AbhCDJOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:14:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614849177;
+        bh=8xkDQhRbXDIKJkE9Bu6qvOnT1kfHnnGbUW0lasJbK3c=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=LKiK4UOcGmShqNWnqOzj4DGO3nTjVijTy3a9iBz1nKgaWJooD69Iq0hOagixMggA5
+         9rwIuFZbtD47WPygBjJh3jCbJxtBIPuwzl6xztH588kNm50qHdzr3T21/DZj6JgOZ8
+         Bp84cBMUd6hpRS+/iEY3U81BR5ZN3OPtPE1Ni+2c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.219.128]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ygO-1lNo2p0cMg-0069ef; Thu, 04
+ Mar 2021 10:12:57 +0100
+Message-ID: <5d9c74ad033e898111e5a1e931b266912487b595.camel@gmx.de>
+Subject: Re: futex breakage in 4.9 stable branch
+From:   Mike Galbraith <efault@gmx.de>
+To:     Ben Hutchings <ben@decadent.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>, lwn@lwn.net,
+        jslaby@suse.cz, Thomas Gleixner <tglx@linutronix.de>
+Date:   Thu, 04 Mar 2021 10:12:56 +0100
+In-Reply-To: <YD0kkNH+I4xyoTwy@decadent.org.uk>
+References: <161408880177110@kroah.com>
+         <66826ac72356b00814f51487dd1008298e52ed9b.camel@decadent.org.uk>
+         <YDygp3WYafzcgt+s@kroah.com> <YD0kkNH+I4xyoTwy@decadent.org.uk>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tHbckRnynUxA5tqlBOhhA8J+V8zcD7voddSk2nnY5g12A5gfcXR
+ xB2kMnVWoC+V6O1v/QQEQumneEZad+s5XI52VP/x4N+qx/g56VA8wvZTSoVD6l6Pe0E9hzK
+ I77CCtITR/f0TFO+yf6GvVYYf2OQJ2sBjdpXEgVt4gP7yZqozuDad+cS+h/IKDRvdeQNEfC
+ kKXutpND0XaP7uyAjjxlw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:spPeGLxciHw=:gJdpKxnMrESlWJPgp6zWwC
+ nPZznwT6nkxC97k4X20aqId1yPggsjzIvnvS4qKlKRAxFh23kh0PMELNPoP1Wq/dFS2+S5ldG
+ 96PUWBkih2/ds+03cLCB7WkPDTfvdZj2qlla79Njfzy9czmGGrcD3/u1gAb79GD70G4mqoh9/
+ S+3NG7qsHYzP+YXHwa/qBGfIojibQMc8mmWOg2R5edbaUHpsdGQiulMFL75lt0KgVbV1zzyGR
+ KUcmW7m6gsSyaIXQmUdNZoVOzmp19HnAf5Jt/Gk335Huj/H3aPOpFwt+CemW8/hNO/4XLzWWT
+ 0jGc1gs1IAg9SCrwjLY63g3iCkenqesZ24dHfYgKiozK44gQQHPuDThikHhmGESwWfH0ZBYkz
+ TnTRg5Fff7Owc+W42mBsnjd+PJ22zrgjvbZwuEly8iFEXXNaLAbtiIzACvlaV02kfBoqJSXZL
+ aiqMxTeDMDs3UQBeddl3jpq4MSplmwX2dxgm5WKrBbJ/I2gbcpNjj8sOI+9rSzcaUqR1rd139
+ f/8C/DqE8vAVJcQ8T9afiyCGyNYg3La2pPk6AZBFOI1tB3qs3LyjOQ8tnmdJ2OYm5yF7wZiXw
+ ReUa/HvyuX8s7Uwis4Anyb3Y6C802c/a6GQ6G/ZIk8GnPjDEutSIIAdkWXSXDhUnKO77DUXoZ
+ 6z8uxf0o0wMgzy5CHIqyoNXsOmhVtqvuQsWiBDW9W//CU+57CGnzpQEqdDHG3mPGNX3/Yb+1Y
+ LCS5LQanjd4RI2+9egsmJTmNCPb/80wRsY6U1k4dbAOwO+q4SyL7GaerzFUh43B3Hr4i0Agh0
+ mytJFykGdnDAwFaP5f/10vABy48fQzMmalQqyy7MJNbBI5yhy7TczNQCD7V5mUY1SVJgCh8jD
+ VJ0lrNWo/tl9ZV1oJTTw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
-
-I started reviewing from the DW APB SPI driver part of this series,
-that's why I suggested to remove the CS callback from there seeing it
-doesn't really differ much from the generic one. But after looking at
-the dts file and in this driver I think that the alterations layout
-needs to be a bit different.
-
-This module looks more like being a part of a SoC System Controller
-seeing it's just a single register. Corresponding pins seem like
-being multiplexed between SPI controller and GPO (being directly driven
-by setting a bit in the corresponding register). See the next comment.
-
-On Thu, Mar 04, 2021 at 09:29:33AM +0100, Linus Walleij wrote:
-> Hi Brad,
-> 
-> thanks for your patch!
-> 
-> On Thu, Mar 4, 2021 at 4:42 AM Brad Larson <brad@pensando.io> wrote:
-> 
-> > This GPIO driver is for the Pensando Elba SoC which
-> > provides control of four chip selects on two SPI busses.
+On Mon, 2021-03-01 at 18:29 +0100, Ben Hutchings wrote:
+> On Mon, Mar 01, 2021 at 09:07:03AM +0100, Greg Kroah-Hartman wrote:
+> > On Mon, Mar 01, 2021 at 01:13:08AM +0100, Ben Hutchings wrote:
+> > > On Tue, 2021-02-23 at 15:00 +0100, Greg Kroah-Hartman wrote:
+> > > > I'm announcing the release of the 4.9.258 kernel.
+> > > >
+> > > > All users of the 4.9 kernel series must upgrade.
+> > > >
+> > > > The updated 4.9.y git tree can be found at:
+> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux=
+-stable.git linux-4.9.y
+> > > > and can be browsed at the normal kernel.org git web browser:
+> > > >
+> > >
+> > > The backported futex fixes are still incomplete/broken in this versi=
+on.
+> > > If I enable lockdep and run the futex self-tests (from 5.10):
+> > >
+> > > - on 4.9.246, they pass with no lockdep output
+> > > - on 4.9.257 and 4.9.258, they pass but futex_requeue_pi trigers a
+> > >   lockdep splat
+> > >
+> > > I have a local branch that essentially updates futex and rtmutex in
+> > > 4.9-stable to match 4.14-stable.  With this, the tests pass and lock=
+dep
+> > > is happy.
+> > >
+> > > Unfortunately, that branch has about another 60 commits.
+>
+> I have now rebased that on top of 4.9.258, and there are "only" 39
+> commits.
+>
+> > > Further, the
+> > > more we change futex in 4.9, the more difficult it is going to be to
+> > > update the 4.9-rt branch.  But I don't see any better option availab=
+le
+> > > at the moment.
+> > >
+> > > Thoughts?
 > >
-> > Signed-off-by: Brad Larson <brad@pensando.io>
-> (...)
-> 
-> > +#include <linux/gpio.h>
-> 
-> Use this in new drivers:
-> #include <linux/gpio/driver.h>
-> 
-> > + * pin:             3            2        |       1            0
-> > + * bit:         7------6------5------4----|---3------2------1------0
-> > + *             cs1  cs1_ovr  cs0  cs0_ovr |  cs1  cs1_ovr  cs0  cs0_ovr
-> > + *                        ssi1            |             ssi0
-> > + */
-> > +#define SPICS_PIN_SHIFT(pin)   (2 * (pin))
-> > +#define SPICS_MASK(pin)                (0x3 << SPICS_PIN_SHIFT(pin))
-> > +#define SPICS_SET(pin, val)    ((((val) << 1) | 0x1) << SPICS_PIN_SHIFT(pin))
-> 
+> > There were some posted futex fixes for 4.9 (and 4.4) on the stable lis=
+t
+> > that I have not gotten to yet.
+> >
+> > Hopefully after these are merged (this week), these issues will be
+> > resolved.
+>
+> I'm afraid they are not sufficient.
+>
+> > If not, then yes, they need to be fixed and any help you can provide
+> > would be appreciated.
+> >
+> > As for "difficulty", yes, it's rough, but the changes backported were
+> > required, for obvious reasons :(
+>
+> I had another look at the locking bug and I was able to make a series
+> of 7 commits (on top of the 2 already queued) that is sufficient to
+> make lockdep happy.  But I am not very confident that there won't be
+> other regressions.  I'll send that over shortly.
 
-> So 2 bits per GPIO line in one register? (Nice doc!)
+This is all I had to do to make 4.4-stable a happy camper again.
 
-I suppose the first bit is the CS-pin-override flag. So when it's set
-the output is directly driven by the second bit, otherwise the
-corresponding DW APB SPI controller drives it. That's how the
-multiplexing is implemented here.
+futex: fix 4.4-stable 34c8e1c2c025 backport inspired lockdep complaint
 
-> 
-> > +struct elba_spics_priv {
-> > +       void __iomem *base;
-> > +       spinlock_t lock;
-> > +       struct gpio_chip chip;
-> > +};
-> > +
-> > +static int elba_spics_get_value(struct gpio_chip *chip, unsigned int pin)
-> > +{
-> > +       return -ENXIO;
-> > +}
-> 
-> Write a comment that the chip only supports output mode,
-> because it repurposes SPI CS pins as generic GPIO out,
-> maybe at the top of the file?
-> 
+1. 34c8e1c2c025 "futex: Provide and use pi_state_update_owner()" was backp=
+orted
+to stable, leading to the therein assertion that pi_state->pi_mutex.wait_l=
+ock
+be held triggering in 4.4-stable.  Fixing that leads to lockdep moan part =
+2.
 
-> I suppose these systems also actually (ab)use the SPI cs
-> for things that are not really SPI CS?
+2: b4abf91047cf "rtmutex: Make wait_lock irq safe" is absent in 4.4-stable=
+, but
+wake_futex_pi() nonetheless managed to acquire an unbalanced raw_spin_lock=
+()
+raw_spin_inlock_irq() pair, which inspires lockdep to moan after aforement=
+ioned
+assert has been appeased.
 
-I haven't noticed that in the dts file submitted by Brad. So most
-likely these are just CS pins, which can be either automatically
-driven by the DW APB SPI controller (yeah, DW APB SPI controller
-doesn't provide a way to directly set he native CS value, it
-sets the CS value low automatically when starts SPI xfers) or can be
-manually set low/high by means of that SPI-CS register.
+With this applied, futex tests pass, and no longer inspire lockdep gripeag=
+e.
 
-> Because otherwise
-> this could just be part of the SPI driver (native chip select).
+Not-Signed-off-by: Mike Galbraith <efault@gmx.de>
+=2D--
+ kernel/futex.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-That's what I suggested in my comment to the patch
-[PATCH 7/8] arm64: dts: Add Pensando Elba SoC support
-in this series. Although imho it's better to be done by means
-of a System Controller.
+=2D-- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -874,8 +874,12 @@ static void free_pi_state(struct futex_p
+ 	 * and has cleaned up the pi_state already
+ 	 */
+ 	if (pi_state->owner) {
++		unsigned long flags;
++
++		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
+ 		pi_state_update_owner(pi_state, NULL);
+ 		rt_mutex_proxy_unlock(&pi_state->pi_mutex);
++		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
+ 	}
 
--Sergey
+ 	if (current->pi_state_cache)
+@@ -1406,7 +1410,7 @@ static int wake_futex_pi(u32 __user *uad
+ 	if (pi_state->owner !=3D current)
+ 		return -EINVAL;
 
-> 
-> > +static const struct of_device_id ebla_spics_of_match[] = {
-> > +       { .compatible = "pensando,elba-spics" },
-> 
-> Have you documented this?
-> 
-> Other than that this is a nice and complete driver.
-> 
-> Yours,
-> Linus Walleij
+-	raw_spin_lock(&pi_state->pi_mutex.wait_lock);
++	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
+ 	new_owner =3D rt_mutex_next_owner(&pi_state->pi_mutex);
+
+ 	/*
+
