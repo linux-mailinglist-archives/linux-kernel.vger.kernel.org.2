@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D90D32DB78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C7132DB7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhCDUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:53:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232977AbhCDUxm (ORCPT
+        id S233854AbhCDU52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:57:28 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42618 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhCDU5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:53:42 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079FDC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 12:53:02 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id p15so12969wre.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 12:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=4CjcEvJ61GkUIoAFgSTKRu5Tq1H6wn08RVLBK2Lt0I0=;
-        b=kQcOCQ/cMB/X2WRSuwsg8LBq8X+nEul9d6IKcKn7tPT4uxnd5PINYXXdeMrZdAE3Ej
-         zqbHl++wLZTRVvYlU6lwOasPy3DOcMt0FVu+/aCX6o2vfuEpE1DFuOUHZh4FoD0sx7MW
-         dgZQizaqek8333Yq8IIeacWBNyot8v6B/FdhLhlW8Aju/OFuVbxcPdSIkysxPYTK6KdC
-         ceAmKMO0lt/2+V3pFnTKJRcKZRgFbg0XO5rCQKb8OkxZRW2o/I0qYJnCezuIQiYNe3dz
-         6xinkRvy1YAnPfeZjNGHpn2UaEQw67OZisxF6BqziY46z7vtzn27GihW4JeIN601IeB+
-         jtAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=4CjcEvJ61GkUIoAFgSTKRu5Tq1H6wn08RVLBK2Lt0I0=;
-        b=FZEQNN8s1ZcJYCpqteykVDlZdu95dB3/p17uux46AyW/+HnIB0lMRh7e1LoPDcuWCk
-         hUtAX3iqjfhl0fPnVS69OA0vCQvsC5m4g013srV1u5C8oHFrEKeHoi5mdHD5jgz7zu/p
-         oxhuMLIHs51oa2eiesR5i5j4Er1GhDPXWWy4INw2wxmZ7dZphDf4DVZ0S/SsuBW92Iz3
-         MbDHB6vu3BJFqF50YwNQ754ZBKgDwytie7sHgLY1qac+mh4pJ5WlpjBFSfEEHJzzCww4
-         q82bxHk52GhYGBb8AvhcJt46/mEAv+rc74YsUkH7kFd9IB8IBGCIGyZvof4Y4a78DxxG
-         x3wg==
-X-Gm-Message-State: AOAM531vblGQxor67Low/cx2AmzAygOb0HEp8DlfaD/qcX4Ff3TVp2d4
-        ofXLeVeVdHYtg+PBs9ZpH2GHtIKiZA==
-X-Google-Smtp-Source: ABdhPJx7HwfiRm3Q+u5arI/IWcJ3KLG5rJXKgeoYlpazKcjtB/gExGHlBdBa1ZrXsLoc4m0JMTrmb82jKg==
-Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:adef:40fb:49ed:5ab6])
- (user=elver job=sendgmr) by 2002:a7b:c18e:: with SMTP id y14mr1459027wmi.1.1614891179563;
- Thu, 04 Mar 2021 12:52:59 -0800 (PST)
-Date:   Thu,  4 Mar 2021 21:52:56 +0100
-Message-Id: <20210304205256.2162309-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH mm] kfence, slab: fix cache_alloc_debugcheck_after() for bulk allocations
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, akpm@linux-foundation.org
-Cc:     glider@google.com, dvyukov@google.com, andreyknvl@google.com,
-        jannh@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 4 Mar 2021 15:57:13 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 124Ku0we019009;
+        Thu, 4 Mar 2021 14:56:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614891360;
+        bh=KQoevqNLdq6Vcqe7xjay1VRDOuM0RiWmMq8okhEq7ic=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=fgb3unhSTrmmj9vU82YIe5gyRn1s4ROHL06A7F8wBnz4lc81erEHp5foT8ybuC3HM
+         zTAn1Irg0HB8YInd71KpwuDfCgiRycEoLyPOzjjKqF62oy5Y9czpZWJ37x9ornf3e/
+         I4NENCXn1IFyO8RyKHSJxcsUndxnixe9400ykAAg=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 124Ku0Dm009620
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 4 Mar 2021 14:56:00 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
+ 2021 14:55:59 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 4 Mar 2021 14:55:59 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 124KtvkN009698;
+        Thu, 4 Mar 2021 14:55:58 -0600
+Subject: Re: [PATCH 2/3] clocksource/drivers/timer-ti-dm: Remove extra
+ of_node_put()
+To:     Tony Lindgren <tony@atomide.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     Keerthy <j-keerthy@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210304072135.52712-1-tony@atomide.com>
+ <20210304072135.52712-3-tony@atomide.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <4c23ce3e-3304-b10d-5054-f421822b5dc2@ti.com>
+Date:   Thu, 4 Mar 2021 22:55:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210304072135.52712-3-tony@atomide.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cache_alloc_debugcheck_after() performs checks on an object, including
-adjusting the returned pointer. None of this should apply to KFENCE
-objects. While for non-bulk allocations, the checks are skipped when we
-allocate via KFENCE, for bulk allocations cache_alloc_debugcheck_after()
-is called via cache_alloc_debugcheck_after_bulk().
 
-Fix it by skipping cache_alloc_debugcheck_after() for KFENCE objects.
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- mm/slab.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 04/03/2021 09:21, Tony Lindgren wrote:
+> We have of_translate_address() already do of_node_put() as needed.
+> I probably looked at __of_translate_address() earlier by accident
+> that of_translate_address() uses.
 
-diff --git a/mm/slab.c b/mm/slab.c
-index 51fd424e0d6d..ae651bf540b7 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -2992,7 +2992,7 @@ static void *cache_alloc_debugcheck_after(struct kmem_cache *cachep,
- 				gfp_t flags, void *objp, unsigned long caller)
- {
- 	WARN_ON_ONCE(cachep->ctor && (flags & __GFP_ZERO));
--	if (!objp)
-+	if (!objp || is_kfence_address(objp))
- 		return objp;
- 	if (cachep->flags & SLAB_POISON) {
- 		check_poison_obj(cachep, objp);
+I do not see of_node_put() in of_translate_address() and
+  __of_translate_address() is doing of_node_get(dev);
+?
+
+> 
+> Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>   drivers/clocksource/timer-ti-dm-systimer.c | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
+> --- a/drivers/clocksource/timer-ti-dm-systimer.c
+> +++ b/drivers/clocksource/timer-ti-dm-systimer.c
+> @@ -265,7 +265,6 @@ static void __init dmtimer_systimer_assign_alwon(void)
+>   				    pa == 0x48318000)
+>   					continue;
+>   
+> -				of_node_put(np);
+>   				break;
+>   			}
+>   		}
+> @@ -300,7 +299,6 @@ static u32 __init dmtimer_systimer_find_first_available(void)
+>   				continue;
+>   			}
+>   
+> -			of_node_put(np);
+>   			break;
+>   		}
+>   	}
+> 
+
 -- 
-2.30.1.766.gb4fecdf3b7-goog
-
+Best regards,
+grygorii
