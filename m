@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79FB32DD00
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D870B32DD31
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhCDW3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:29:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhCDW3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:29:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A024164FF4;
-        Thu,  4 Mar 2021 22:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614896962;
-        bh=ANwgarss26fhnHtMQx6kZPDetgPDjR7bGCtYWahlg/Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XQfwlPeoowQ9soQkxXtQOpFfuiwnfosGn+xFjVB8aJ/JGgfx5BhuMvaCj9VfRg9d2
-         iIHF4gmkfIG2J0MEi1JhYjHQOFzqUadDKl40wvUBLfo+p1yFeDd1hNee5c4YdBd3Jf
-         pUgDk65LdRHx5tP6CKcQOKReQMH2xqLWjqYKhBNl/sw786tXNG3BJIqTWHgMPtcxtx
-         4XfF3xGUlx36SoifC5FZVxJscC7ODiBgtiHz9mT8mJelMlrf3tQOybZDB6tjRk94dl
-         V5wjlX3EttoInTx779Z/h59tyjyz3ulpQMJrbghFayktiBRMFkW9h225/BFgt5sqZp
-         ipSzxlBDS4eKQ==
-Received: by mail-qt1-f178.google.com with SMTP id w6so245706qti.6;
-        Thu, 04 Mar 2021 14:29:22 -0800 (PST)
-X-Gm-Message-State: AOAM531sI7O7JMoLUGjnRyat6aqdhS2B7DB2xcL4r4HeZx68cOFBOP7t
-        DMHEEISGC9TcfmS7MXX4fF0+3BxGZlbnYxG4kA==
-X-Google-Smtp-Source: ABdhPJwx4d2wXbZtiOIhYLW9N+mjHTb19kz32s7JL6vHEGvP1Uq0fZcqmIA0CUEdGaXWw2o4QMKiAj+2ULAXXb0oCsE=
-X-Received: by 2002:ac8:70d1:: with SMTP id g17mr4802329qtp.380.1614896961860;
- Thu, 04 Mar 2021 14:29:21 -0800 (PST)
+        id S231512AbhCDWgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:36:11 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13859 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhCDWgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:36:11 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ds5Jf3Zllz8snL;
+        Fri,  5 Mar 2021 06:34:26 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.200.82) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Mar 2021 06:35:59 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <valentin.schneider@arm.com>, <vincent.guittot@linaro.org>,
+        <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <dietmar.eggemann@arm.com>,
+        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH] sched/topology: remove redundant cpumask_and in init_overlap_sched_group
+Date:   Fri, 5 Mar 2021 11:29:44 +1300
+Message-ID: <20210304222944.32504-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-References: <20210304044803.812204-2-danielwa@cisco.com> <2b0081aa-52af-a4ab-7481-6e125bd103d6@csgroup.eu>
- <20210304212448.GK109100@zorba>
-In-Reply-To: <20210304212448.GK109100@zorba>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 4 Mar 2021 16:29:09 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJphExyTqEejMnM07NOgPyZ5hGLJunY6yXYm16WT+PGCQ@mail.gmail.com>
-Message-ID: <CAL_JsqJphExyTqEejMnM07NOgPyZ5hGLJunY6yXYm16WT+PGCQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] CMDLINE: drivers: of: ifdef out cmdline section
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Will Deacon <will@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.200.82]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 3:24 PM Daniel Walker <danielwa@cisco.com> wrote:
->
-> On Thu, Mar 04, 2021 at 08:09:52AM +0100, Christophe Leroy wrote:
-> >
-> >
-> > Le 04/03/2021 =C3=A0 05:47, Daniel Walker a =C3=A9crit :
-> > > It looks like there's some seepage of cmdline stuff into
-> > > the generic device tree code. This conflicts with the
-> > > generic cmdline implementation so I remove it in the case
-> > > when that's enabled.
-> > >
-> > > Cc: xe-linux-external@cisco.com
-> > > Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-> > > Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> > > ---
-> > >   drivers/of/fdt.c | 12 ++++++++++++
-> > >   1 file changed, 12 insertions(+)
-> > >
-> > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > > index feb0f2d67fc5..cfe4f8d3c9f5 100644
-> > > --- a/drivers/of/fdt.c
-> > > +++ b/drivers/of/fdt.c
-> > > @@ -25,6 +25,7 @@
-> > >   #include <linux/serial_core.h>
-> > >   #include <linux/sysfs.h>
-> > >   #include <linux/random.h>
-> > > +#include <linux/cmdline.h>
-> > >   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> > >   #include <asm/page.h>
-> > > @@ -1048,8 +1049,18 @@ int __init early_init_dt_scan_chosen(unsigned =
-long node, const char *uname,
-> > >     early_init_dt_check_for_initrd(node);
-> > > +#ifdef CONFIG_GENERIC_CMDLINE
-> > >     /* Retrieve command line */
-> > >     p =3D of_get_flat_dt_prop(node, "bootargs", &l);
-> > > +
-> > > +   /*
-> > > +    * The builtin command line will be added here, or it can overrid=
-e
-> > > +    * with the DT bootargs.
-> > > +    */
-> > > +   cmdline_add_builtin(data,
-> > > +                       ((p !=3D NULL && l > 0) ? p : NULL), /* This =
-is sanity checking */
-> >
-> > Can we do more simple ? If p is NULL, p is already NULL, so (l > 0 ? p =
-: NULL) should be enough.
->
->
-> I believe Rob gave me this line. Maybe he can comment on it.
+mask is built in build_balance_mask() by for_each_cpu(i, sg_span), so
+it must be a subset of sched_group_span(sg). Though cpumask_first_and
+doesn't lead to a wrong result of balance cpu, it is pointless to do
+cpumask_and again.
 
-It's an obvious improvement and LGTM.
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ kernel/sched/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 12f8058..45f3db2 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -934,7 +934,7 @@ static void init_overlap_sched_group(struct sched_domain *sd,
+ 	int cpu;
+ 
+ 	build_balance_mask(sd, sg, mask);
+-	cpu = cpumask_first_and(sched_group_span(sg), mask);
++	cpu = cpumask_first(mask);
+ 
+ 	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+ 	if (atomic_inc_return(&sg->sgc->ref) == 1)
+-- 
+1.8.3.1
+
