@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5C732D0DB
+	by mail.lfdr.de (Postfix) with ESMTP id 8957932D0DC
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238700AbhCDKcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
+        id S238716AbhCDKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:32:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238659AbhCDKcI (ORCPT
+        with ESMTP id S238662AbhCDKcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Mar 2021 05:32:08 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A1AC0613E5
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 02:30:13 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id j2so14171144wrx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 02:30:13 -0800 (PST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E44C0613E8
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 02:30:14 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id o7-20020a05600c4fc7b029010a0247d5f0so4254192wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 02:30:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zgmBZ3NhwrAFJO5K/6mUJqd+FqbPtvHWFuPSvB1rVno=;
-        b=PkWRHiRLD+YMkJpjEQ+Auf3+aLRwhQw3pzL+dX7Olf+ktGDhvHpbFJzjIWK/lgsb7F
-         iCIq5HbuqX7xOk8gIOL4B2oDf/kyb8pGKDNSb22rvwqmnq9uuLje5Hts6OzUKkuQuNFL
-         gyPZz7WQL5e/Qg3Ypp/G/J40mGn8azHs8XsFCTBMIUtyPY2/gIplOlFxzyFAUvSfLLa+
-         HNn1YxF18H9EOZ0XAVu+A/FJVNZUMqT2RQe/QBp0sht0RT1z4Qz3s1bxE3fuxw93QP3S
-         ToR6tfdbQ8k1j5PEGTRYK0puO9BliZ3qGUEg/rjMGxaywcb/mi9xJAmijZk/Itsy4Ki5
-         58nA==
+        bh=ileJ8i8PtBYWO//WNWntFWU//j32QRx+BmjBpxepfLE=;
+        b=tvmTdM0p73GfZuWLxHXiv2yDFa9iCw2qZ0WMOdYVQ/xrH0Detz9DXMI1vZ78cqq1rO
+         FZJgQ1pFkmXtA7oDm61oRVjhgnQxG2Bexztzb171OBm6ll3JleAgBNUD54+Cux9bGGMs
+         w4pUH0+gyWw7SI92E9v5XI+vV2rN+HRndqDl8PYgpzd2PPemcplAzZqeQS4grAknekbo
+         YD74HYtEFaDRFtYPjGjI1ryuN4UTY9hJuj7q/fG3KkbN+37Jtr+QRay7IZdlw8mdNHn8
+         BAzK3GoQf2cHJBO2XYoITa9Y3dyPQG411MRIiW2wOmfsXPVqVFbjcnNDqPYVRY4rroxa
+         0gww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zgmBZ3NhwrAFJO5K/6mUJqd+FqbPtvHWFuPSvB1rVno=;
-        b=kcibjnwsv95PMgbpC1uLBwBCjeHSCMt8T6hKh0dsSw/JqA4sTEGOJQq1M6/ldZabfN
-         5TrJO6sFFBewaAJYR1qkq0zkYz9z+D3a/syrF33RF7YfBAufVt3N34btzbRiIPYAlbFe
-         z5LpoKReFmF2BIzLJezYXOedEni+QqbHa+brCHXohy4YiVUi6jRKYe6E7hkifVkIbx+4
-         AP1F1+w82RPb0rQS7+JtQxA/tJTBZ1Z+PmxyHOaMCRySrE7jNfY0zyaegfMgEfOj9E9W
-         fkgI+1EzYHRZHp3mzZlpblLAEYZZ3XiYUDgHBW6P9BCrqteCD9nfcMb4DzRUEKXACYDN
-         Ediw==
-X-Gm-Message-State: AOAM532JCsrYCr/x8XzCHQV1PNVIW4gu7Io+6NIVoFY+dIZTujy7/73Z
-        uNjqMy+NVDTBy6FL3I61IrZMMQ==
-X-Google-Smtp-Source: ABdhPJz9p7+9VIFUiU1DyC4PUnukE4hXhlfIEHq7OqPG6JVs8r3iYqSvgeNYXWJPTUXk95fiSH71Sw==
-X-Received: by 2002:adf:b60e:: with SMTP id f14mr3247833wre.99.1614853812430;
-        Thu, 04 Mar 2021 02:30:12 -0800 (PST)
+        bh=ileJ8i8PtBYWO//WNWntFWU//j32QRx+BmjBpxepfLE=;
+        b=DAJhMJZpqvj+gOVU2NWZ+r/hVy9EMMWNdOvNywlItZkocvimhfk206C7DJvh8kIxB1
+         sAqqKuRZYq55AIvU8oyyszLlfUsmwT3RkHSDsboY62icZ96rLAFNJUhXC2MXrS2WnQkB
+         S5LzciW51+M8Wet4A8pihxtAFGs1p/VPDfI3jeHemjkj5Ri7peodEAEkI9D7yXQcBnTt
+         VI07s3r7gV5d8F2pQ/txC8BadRU9EiHvYy/Tk8O7FcwlPLyfZqULzkgdfh29m7r+ZEs+
+         vp7ZKwfSpyug7Yv3pvDf94R5YUea9+NspUG6q4/6Xt47Cgg9hv1cJBt02pqOr6eddBlN
+         +dOg==
+X-Gm-Message-State: AOAM5312avbjlDUI+7YCHwo/ntQ8gO9z2pGxZeUF+6jatO2dg22b0lSc
+        o+zdfI9QTLb0EtMwCaa6XVtexw==
+X-Google-Smtp-Source: ABdhPJwkM34kJi5nQesphQNuYENooFAw7OGpfBJegp+yS/GnfmJ1rzXhNx1/ymXUxz5/gZVJNcl9WQ==
+X-Received: by 2002:a1c:2e8f:: with SMTP id u137mr3197705wmu.178.1614853813151;
+        Thu, 04 Mar 2021 02:30:13 -0800 (PST)
 Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id f7sm35501854wre.78.2021.03.04.02.30.11
+        by smtp.gmail.com with ESMTPSA id f7sm35501854wre.78.2021.03.04.02.30.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 04 Mar 2021 02:30:12 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
@@ -61,9 +61,9 @@ To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 07/12] lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
-Date:   Thu,  4 Mar 2021 11:24:47 +0100
-Message-Id: <20210304102452.21726-8-brgl@bgdev.pl>
+Subject: [PATCH v2 08/12] drivers: export device_is_bound()
+Date:   Thu,  4 Mar 2021 11:24:48 +0100
+Message-Id: <20210304102452.21726-9-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20210304102452.21726-1-brgl@bgdev.pl>
 References: <20210304102452.21726-1-brgl@bgdev.pl>
@@ -75,93 +75,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Provide managed variants of bitmap_alloc() and bitmap_zalloc().
+Export the symbol for device_is_bound() so that we can use it in gpio-sim
+to check if the simulated GPIO chip is bound before fetching its driver
+data from configfs callbacks in order to retrieve the name of the GPIO
+chip device.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- include/linux/bitmap.h | 10 ++++++++++
- lib/bitmap.c           | 33 +++++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+)
+ drivers/base/dd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index 3282db97e06c..e41c622db1b8 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -9,6 +9,8 @@
- #include <linux/string.h>
- #include <linux/types.h>
- 
-+struct device;
-+
- /*
-  * bitmaps provide bit arrays that consume one or more unsigned
-  * longs.  The bitmap interface and available operations are listed
-@@ -122,6 +124,14 @@ unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
- unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
- void bitmap_free(const unsigned long *bitmap);
- 
-+/*
-+ * Managed variants of the above.
-+ */
-+unsigned long *devm_bitmap_alloc(struct device *dev,
-+				 unsigned int nbits, gfp_t flags);
-+unsigned long *devm_bitmap_zalloc(struct device *dev,
-+				  unsigned int nbits, gfp_t flags);
-+
- /*
-  * lib/bitmap.c provides these functions:
-  */
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 78f70d9007ad..b4fd7fd084c6 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -8,6 +8,7 @@
- #include <linux/bitops.h>
- #include <linux/bug.h>
- #include <linux/ctype.h>
-+#include <linux/device.h>
- #include <linux/errno.h>
- #include <linux/export.h>
- #include <linux/kernel.h>
-@@ -1263,6 +1264,38 @@ void bitmap_free(const unsigned long *bitmap)
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 9179825ff646..c62c02e3490a 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
+ {
+ 	return dev->p && klist_node_attached(&dev->p->knode_driver);
  }
- EXPORT_SYMBOL(bitmap_free);
++EXPORT_SYMBOL_GPL(device_is_bound);
  
-+static void devm_bitmap_free(void *data)
-+{
-+	unsigned long *bitmap = data;
-+
-+	bitmap_free(bitmap);
-+}
-+
-+unsigned long *devm_bitmap_alloc(struct device *dev,
-+				 unsigned int nbits, gfp_t flags)
-+{
-+	unsigned long *bitmap;
-+	int ret;
-+
-+	bitmap = bitmap_alloc(nbits, flags);
-+	if (!bitmap)
-+		return NULL;
-+
-+	ret = devm_add_action_or_reset(dev, devm_bitmap_free, bitmap);
-+	if (ret)
-+		return NULL;
-+
-+	return bitmap;
-+}
-+EXPORT_SYMBOL(devm_bitmap_alloc);
-+
-+unsigned long *devm_bitmap_zalloc(struct device *dev,
-+				  unsigned int nbits, gfp_t flags)
-+{
-+	return devm_bitmap_alloc(dev, nbits, flags | __GFP_ZERO);
-+}
-+EXPORT_SYMBOL(devm_bitmap_zalloc);
-+
- #if BITS_PER_LONG == 64
- /**
-  * bitmap_from_arr32 - copy the contents of u32 array of bits to bitmap
+ static void driver_bound(struct device *dev)
+ {
 -- 
 2.29.1
 
