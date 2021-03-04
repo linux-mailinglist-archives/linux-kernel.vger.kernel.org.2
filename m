@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C97F32CE25
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B205732CE2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236130AbhCDIJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:09:02 -0500
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:36301 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236260AbhCDIIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:08:53 -0500
-Received: by mail-vs1-f44.google.com with SMTP id a12so7462852vsd.3;
-        Thu, 04 Mar 2021 00:08:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VIhNJJMVnzvhOohhU5+sHSGrbiWXYRzHlRt+5Fa9ZAM=;
-        b=dp9/2N97ID2W08m9XDtpLgdIenSHuAQYwynqWJ2JxBktdemD7D9+sJwGs/E9sPaPk4
-         64pW+KfwnlzrkHc32tsAIHWYUD3v/9n/3xwevaDjy0avQB4/vxOFbWIn1yuHyqMdc5nS
-         T3LiW9m4HIeiQa3JzWHq67JPdlaadDcR3lWzkjmBxAuoyVSnbaciSCGaY/KtEfoYp6a9
-         tTpklKqUeII925Hk/RNoM880kmWA3ZvJxU4EHnIIO+byI9DCNNLhvXQd9y+wWGNHlu3Z
-         3qXBfdCvUY29DktW9s+aKkQ/GSfcsn3yvCFZOTbXRF4CjcYFOSo/e3LoZSvHMOoXOd/m
-         RWxQ==
-X-Gm-Message-State: AOAM533cAzQNYHTwNwdP0YYYHUgzB3Gc+WTUYaDmo1CNYs7JQyE3cTkk
-        DYfLDzkXFrCt3SPCcbvX27kUmtVpcSCtfrd3yEU=
-X-Google-Smtp-Source: ABdhPJw0x8zdV/rT4XakBLSt5aNaEU9m6ptAA1rjZNeubRN69J3WPDnkAIu8HfFWZbRetFta0ELKelcJ5surbKmASqg=
-X-Received: by 2002:a67:fb86:: with SMTP id n6mr1779925vsr.3.1614845292063;
- Thu, 04 Mar 2021 00:08:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-4-aford173@gmail.com>
-In-Reply-To: <20210224115146.9131-4-aford173@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 4 Mar 2021 09:08:00 +0100
-Message-ID: <CAMuHMdXjQV7YrW5T_P4tkJk_d44NNTQ8Eu7v2ReESjg6R3tvfw@mail.gmail.com>
-Subject: Re: [PATCH V3 4/5] net: ethernet: ravb: Enable optional refclk
-To:     Adam Ford <aford173@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S236173AbhCDILJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:11:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56644 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233819AbhCDILD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:11:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9861EAC1F;
+        Thu,  4 Mar 2021 08:10:22 +0000 (UTC)
+Date:   Thu, 04 Mar 2021 09:10:22 +0100
+Message-ID: <s5hh7lrbaq9.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        Olivia Mackintosh <livvy@base.nu>,
+        Dylan Robinson <dylan_robinson@motu.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chris Wulff <crwulff@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>,
+        Dmitry Panchenko <dmitry@d-systems.ee>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()
+In-Reply-To: <20210304043419.287191-1-kai.heng.feng@canonical.com>
+References: <20210304043419.287191-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+On Thu, 04 Mar 2021 05:34:16 +0100,
+Kai-Heng Feng wrote:
+> 
+> Rear audio on Lenovo ThinkStation P620 stops working after commit
+> 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo
+> ThinkStation P620"):
+> [    6.013526] usbcore: registered new interface driver snd-usb-audio
+> [    6.023064] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> [    6.023083] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> [    6.023090] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> [    6.023098] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> [    6.023103] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> [    6.023110] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> [    6.045846] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> [    6.045866] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> [    6.045877] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> [    6.045886] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> [    6.045894] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> [    6.045908] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> 
+> I overlooked the issue because when I was working on the said commit,
+> only the front audio is tested. Apology for that.
+> 
+> Changing supports_autosuspend in driver is too late for disabling
+> autosuspend, because it was already used by USB probe routine, so it can
+> break the balance on the following code that depends on
+> supports_autosuspend.
+> 
+> Fix it by using usb_disable_autosuspend() helper, and balance the
+> suspend count in disconnect callback.
+> 
+> Fixes: 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo ThinkStation P620")
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
-> For devices that use a programmable clock for the AVB reference clock,
-> the driver may need to enable them.  Add code to find the optional clock
-> and enable it when available.
->
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+Thanks, applied.
 
-Thanks for your patch!
 
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2148,6 +2148,13 @@ static int ravb_probe(struct platform_device *pdev)
->                 goto out_release;
->         }
->
-> +       priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
-> +       if (IS_ERR(priv->refclk)) {
-> +               error = PTR_ERR(priv->refclk);
-> +               goto out_release;
-> +       }
-> +       clk_prepare_enable(priv->refclk);
-> +
-
-Shouldn't the reference clock be disabled in case of any failure below?
-
->         ndev->max_mtu = 2048 - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
->         ndev->min_mtu = ETH_MIN_MTU;
->
-> @@ -2260,6 +2267,9 @@ static int ravb_remove(struct platform_device *pdev)
->         if (priv->chip_id != RCAR_GEN2)
->                 ravb_ptp_stop(ndev);
->
-> +       if (priv->refclk)
-> +               clk_disable_unprepare(priv->refclk);
-> +
->         dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
->                           priv->desc_bat_dma);
->         /* Set reset mode */
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Takashi
