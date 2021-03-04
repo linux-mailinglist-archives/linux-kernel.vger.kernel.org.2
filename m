@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CB932C977
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2811832C975
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381443AbhCDBFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:05:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39052 "EHLO mail.kernel.org"
+        id S1379412AbhCDBFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:05:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452927AbhCDAji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1452929AbhCDAji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:39:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E657F64F1B;
-        Thu,  4 Mar 2021 00:38:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DE2864EEF;
+        Thu,  4 Mar 2021 00:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614818295;
-        bh=t3b+JENtvhgq7J65/4gvBuSgDEFuwJbKZZUFVbmC6AA=;
+        bh=KfXM0DW7KYgjw/O5KS3hZHg4hxXYqcazZaelpCiy2IA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y3gmxkGHX3YNCciuBkKgKL9xf8lT4PIomZWpFsfy5uyNvVYUOYUaLSbdwqZR9ihBE
-         OfeDpeD9PHyjsegwLC5ko2IPKcUqiCEXNW1x/685FsMjHp0ngDlDvwRUweUU4aN+lE
-         +vlZuscgynphSGbLUzlyhGXBsEwZe3BzPdf2ufUu++SZctM32kdlNroigxiZ0Tlhnp
-         zjko2JE3KQHTC0nmz9asPTc2FimWKWGl/o1yx8OWrqCG/Fn8A2aHFA3kShSvr3n1DZ
-         cb21dB74U8C4HPVvo3UuAvX6VLg9bHeA5FCHfAVc5+/aOb10P/EkVagJrIvj7uCCKJ
-         O/NwVFkxn+J4g==
+        b=qUSDpSn4Iq9rco7f2iAmNNa7oup0xaB0UWaGl9kPhp3HMNuUwFTnUZ9oz+9UDih72
+         zt2YXHalVsQRev6DYraul2B6h5CvhLAGu8C9cEt7+tJEQQld5yy102ddDaF+PTEjQG
+         V6tweN2knPen1ieviU7hUFhd1h10YXt4JH/ICbitsZm2rFaBTeY2OYjvGMfZ43q1x3
+         UDSmClpu31dLZdAb8XgaqEXVytfW1pRb3Bv3Ujn6U5vYzIoTsq/EkeR7e5ES89YF0z
+         gdakUK6bVUkjO90KCoGs2YqLKr6Fljyr95BKjYJV1SHI32J4TFRdkNGCOtjWTiQaHX
+         /moHPmT3G6Sag==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 09/28] torture: Use "jittering" file to control jitter.sh execution
-Date:   Wed,  3 Mar 2021 16:37:53 -0800
-Message-Id: <20210304003812.24833-9-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/28] torture: Eliminate jitter_pids file
+Date:   Wed,  3 Mar 2021 16:37:54 -0800
+Message-Id: <20210304003812.24833-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
@@ -44,83 +44,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, jitter.sh execution is controlled by a time limit and by the
-"kill" command.  The former allowed jitter.sh to run uselessly past
-the end of a set of runs that panicked during boot, and the latter is
-vulnerable to PID reuse.  This commit therefore introduces a "jittering"
-file in the date-stamp directory within "res" that must be present for
-the jitter.sh scripts to continue executing.  The time limit is still
-in place in order to avoid disturbing runs featuring large trace dumps,
-but the removal of the "jittering" file handles the panic-during-boot
-scenario without relying on PIDs.
+Now that there is a reliable way to convince the jitter.sh scripts to
+stop, the jitter_pids file is not needed, nor is the code that kills all
+the PIDs contained in this file.  This commit therefore eliminates this
+file and the code using it.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/jitter.sh | 10 ++++++----
- tools/testing/selftests/rcutorture/bin/kvm.sh    |  5 ++++-
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 14 --------------
+ tools/testing/selftests/rcutorture/bin/kvm.sh            |  5 +----
+ 2 files changed, 1 insertion(+), 18 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
-index 188b864..ed0ea86 100755
---- a/tools/testing/selftests/rcutorture/bin/jitter.sh
-+++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
-@@ -5,10 +5,11 @@
- # of this script is to inflict random OS jitter on a concurrently running
- # test.
- #
--# Usage: jitter.sh me duration [ sleepmax [ spinmax ] ]
-+# Usage: jitter.sh me duration jittering-path [ sleepmax [ spinmax ] ]
- #
- # me: Random-number-generator seed salt.
- # duration: Time to run in seconds.
-+# jittering-path: Path to file whose removal will stop this script.
- # sleepmax: Maximum microseconds to sleep, defaults to one second.
- # spinmax: Maximum microseconds to spin, defaults to one millisecond.
- #
-@@ -18,8 +19,9 @@
- 
- me=$(($1 * 1000))
- duration=$2
--sleepmax=${3-1000000}
--spinmax=${4-1000}
-+jittering=$3
-+sleepmax=${4-1000000}
-+spinmax=${5-1000}
- 
- n=1
- 
-@@ -47,7 +49,7 @@ do
- 	fi
- 
- 	# Check for stop request.
--	if test -f "$TORTURE_STOPFILE"
-+	if ! test -f "$jittering"
- 	then
- 		exit 1;
- 	fi
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index fed6f10..eb5346b 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -270,20 +270,6 @@ do
+ 				echo "ps -fp $killpid" >> $resdir/Warnings 2>&1
+ 				ps -fp $killpid >> $resdir/Warnings 2>&1
+ 			fi
+-			# Reduce probability of PID reuse by allowing a one-minute buffer
+-			if test $((kruntime + 60)) -lt $seconds && test -s "$resdir/../jitter_pids"
+-			then
+-				awk < "$resdir/../jitter_pids" '
+-				NF > 0 {
+-					pidlist = pidlist " " $1;
+-					n++;
+-				}
+-				END {
+-					if (n > 0) {
+-						print "kill " pidlist;
+-					}
+-				}' | sh
+-			fi
+ 		else
+ 			echo ' ---' `date`: "Kernel done"
+ 		fi
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 1f5f872..48da4cd 100755
+index 48da4cd..de93802 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -503,14 +503,17 @@ function dump(first, pastlast, batchnum)
+@@ -502,12 +502,9 @@ function dump(first, pastlast, batchnum)
+ 	print "if test -n \"$needqemurun\""
  	print "then"
  	print "\techo ---- Starting kernels. `date` | tee -a " rd "log";
- 	print "\techo > " rd "jitter_pids"
-+	print "\ttouch " rd "jittering"
- 	for (j = 0; j < njitter; j++) {
--		print "\tjitter.sh " j " " dur " " ja[2] " " ja[3] "&"
-+		print "\tjitter.sh " j " " dur " " rd "jittering " ja[2] " " ja[3] "&"
- 		print "\techo $! >> " rd "jitter_pids"
- 	}
+-	print "\techo > " rd "jitter_pids"
+ 	print "\ttouch " rd "jittering"
+-	for (j = 0; j < njitter; j++) {
++	for (j = 0; j < njitter; j++)
+ 		print "\tjitter.sh " j " " dur " " rd "jittering " ja[2] " " ja[3] "&"
+-		print "\techo $! >> " rd "jitter_pids"
+-	}
  	print "\twhile ls $runfiles > /dev/null 2>&1"
  	print "\tdo"
  	print "\t\t:"
- 	print "\tdone"
-+	print "\trm -f " rd "jittering"
-+	print "\twait"
- 	print "\techo ---- All kernel runs complete. `date` | tee -a " rd "log";
- 	print "else"
- 	print "\twait"
 -- 
 2.9.5
 
