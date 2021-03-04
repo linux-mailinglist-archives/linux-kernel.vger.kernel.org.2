@@ -2,238 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C144432D76A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641AB32D76F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236623AbhCDQHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:07:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236557AbhCDQGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:06:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74B0864E60;
-        Thu,  4 Mar 2021 16:06:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614873967;
-        bh=WuHCKLP5wY6nsJ5N5BNZGlMI/BSlkIjvE+maQ2G/X8s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MEn6o5oBGlD4A4riivyLcNIFYYpldljlgSTJrjflanELreNALkB6Jb/9XCXKEbof6
-         0e1JHwMKYMU7NfrMlJizj2pgJzxa61k80JDB+1lpJ4NN4eF5NlsUlrrXWxgMSyXrfB
-         4X6iK2qEn7YySqrJj68ZIc8ZOVWpfqc9prz2wJAxDYWX3kg6NNKbMYvNTjoOzgk+Dm
-         3BoAHBYNKDxCmG17rrM7+SE7nxMVC9ggApyOSF+2A+6GvN73BOC4xP7EXBBNaDtBUR
-         zwc3Wnl/kxAjXYCUvAmGIh/CdOhKZYMlCQV0GoWeyIrfuyXGaUT65lvq2fTjKLkZ0y
-         viifx6cMmPA4Q==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lHqUH-0023dZ-2Q; Thu, 04 Mar 2021 17:06:05 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] media: v4l docs: move some cross-reference identifiers
-Date:   Thu,  4 Mar 2021 17:06:04 +0100
-Message-Id: <f14d3f1c7d7794df01743334c1bb52b7a04fa565.1614873960.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233392AbhCDQJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:09:25 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:47377 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236552AbhCDQI4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 11:08:56 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 990DA5C00C3;
+        Thu,  4 Mar 2021 11:07:50 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 04 Mar 2021 11:07:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=eHQ4QqGgtqjhOexEwbL14ScFJ6g
+        3yh7pxR25VkwY/Ic=; b=MJ1Ws7L8OmyqfpEGlRpTCOdfktu/g5jU69MoTBcnvZ3
+        kYpXIuwrfhfLSzTzaokp5ImgTiT6VMeh7YZG6o7zfvcRoyvrAIPkKB83UnSMSd9C
+        Zu7qMfRZmOWXUFLsU10DqSsY8PJ25jp+I/1ox6aDg/XNoA8n+A+yS0Wlkol0Oute
+        sFOas2vZxRsFHT1ZuwylfvJzr0aJg3IE2iWy0sCG6ljDc5xJ+fFIwxWYb0IQxa4/
+        o4yr2vB60vmzaOY6J2tyjAFFluPekv8v8Qa6XZ2cn/Y4XzikoQYiTb1fbzMw/PDa
+        TJUXIMjvb9tanIPVtEvvGaLzdXtRybto5PxuBhdpiTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=eHQ4Qq
+        GgtqjhOexEwbL14ScFJ6g3yh7pxR25VkwY/Ic=; b=CpXGbfw3qk0WrcVJuPZYWT
+        wrriOMSYc7Tl1AHHNzLDc24DhAX5E4rBB3TPr9mG1FUYAGD0gtDA1IEb5zQ93R86
+        7w+JTfKrntPFzfDW3MrEay9ZT97S2VavMUrJf+IiavbSOWG7d7Ep9WG3Wms35PqJ
+        dqKCGO9DRuP0+uu1HzNKiOzJQM9Jq9VFWfOYrdDXROvXk5kaP0xeCRYzsFT9SABt
+        W81gffk55HRPqAOWMSJ3TyJCoy0dx5rn43sYJjPkYat88PcZ5dINYgJKrZEAKUXc
+        mtrzKSyJxeJaU+d4AkpBL/2boWJYnNtKmPRqkpNWhMsDEVgArYCNdrzwkbf0dDCQ
+        ==
+X-ME-Sender: <xms:1QVBYCu8GocI-DiQtchUMZC8z6PoaBountsJg9dxZ6cHfknrF3rmYw>
+    <xme:1QVBYHfcCpX87i9H0GJf1f90va3CyPfv9WtKZjYnD4sUNBUhQtcXmVmzrmMZyuXQs
+    -OtdoWjlIA3cmSARC8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtgedgjeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
+    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:1QVBYNwgx55SbUkruUWRzuObz5GnLdHseN9kFg5F3WB-ybqH34ryCQ>
+    <xmx:1QVBYNMRAtqXg3LluksfKyLGzC01q_XxNlRHef2NBiVMQRNESnlCdw>
+    <xmx:1QVBYC_trFO-o5iuTTymg7DZXg8gCYlh4m6L6csmksN08zBvJks_0w>
+    <xmx:1gVBYJlKoHCbxFdZLzpxs7j8oKe6H_Pmml8Cwp5K1tVIaKNGh7A5qA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 347991080059;
+        Thu,  4 Mar 2021 11:07:49 -0500 (EST)
+Date:   Thu, 4 Mar 2021 17:07:47 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Ban Tao <fengzheng923@gmail.com>
+Cc:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        lee.jones@linaro.org, wens@csie.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/2] pwm: sunxi: Add Allwinner SoC PWM controller
+ driver
+Message-ID: <20210304160747.pblbugvgsa2oueqi@gilmour>
+References: <20210302123737.1867-1-fengzheng923@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7riidxa4uwozvogo"
+Content-Disposition: inline
+In-Reply-To: <20210302123737.1867-1-fengzheng923@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sphinx doesn't allow placing those cross-reference identifies
-everywhere. Misplacing them cause those warnings:
 
-  Documentation/userspace-api/media/v4l/hist-v4l2.rst:818: WARNING: undefined label: control-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/hist-v4l2.rst:853: WARNING: undefined label: reserved-formats (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/pixfmt-v4l2.rst:47: WARNING: undefined label: reserved-formats (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/subdev-formats.rst:39: WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/subdev-formats.rst:53: WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/subdev-formats.rst:67: WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/subdev-formats.rst:83: WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/subdev-formats.rst:97: WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/subdev-formats.rst:140: WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-decoder-cmd.rst:75: WARNING: undefined label: decoder-cmds (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-dqevent.rst:234: WARNING: undefined label: control-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-g-dv-timings.rst:156: WARNING: undefined label: dv-bt-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst:41: WARNING: undefined label: ctrl-class (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst:246: WARNING: undefined label: ctrl-class (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst:269: WARNING: undefined label: ctrl-class (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-g-modulator.rst:100: WARNING: undefined label: modulator-txsubchans (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-g-tuner.rst:119: WARNING: undefined label: tuner-rxsubchans (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst:167: WARNING: undefined label: control-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst:245: WARNING: undefined label: control-flags (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst:396: WARNING: undefined label: ctrl-class (if the link has no caption the label must precede a section header)
-  Documentation/userspace-api/media/v4l/vidioc-subdev-enum-mbus-code.rst:73: WARNING: undefined label: v4l2-subdev-mbus-code-flags (if the link has no caption the label must precede a section header)
+--7riidxa4uwozvogo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/userspace-api/media/v4l/pixfmt-reserved.rst     | 4 ++--
- Documentation/userspace-api/media/v4l/vidioc-decoder-cmd.rst  | 4 ++--
- Documentation/userspace-api/media/v4l/vidioc-g-dv-timings.rst | 4 ++--
- Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst  | 4 ++--
- Documentation/userspace-api/media/v4l/vidioc-g-modulator.rst  | 4 ++--
- Documentation/userspace-api/media/v4l/vidioc-g-tuner.rst      | 4 ++--
- Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst    | 4 ++--
- .../userspace-api/media/v4l/vidioc-subdev-enum-mbus-code.rst  | 4 ++--
- 8 files changed, 16 insertions(+), 16 deletions(-)
+Hi,
 
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-index 253e4bcc949d..0b879c0da713 100644
---- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-+++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
-@@ -19,12 +19,12 @@ please make a proposal on the linux-media mailing list.
- 
- .. tabularcolumns:: |p{6.6cm}|p{2.2cm}|p{8.5cm}|
- 
--.. _reserved-formats:
--
- .. raw:: latex
- 
-     \small
- 
-+.. _reserved-formats:
-+
- .. flat-table:: Reserved Image Formats
-     :header-rows:  1
-     :stub-columns: 0
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-decoder-cmd.rst b/Documentation/userspace-api/media/v4l/vidioc-decoder-cmd.rst
-index 7a8f490131d8..7ccae3b91616 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-decoder-cmd.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-decoder-cmd.rst
-@@ -129,12 +129,12 @@ introduced in Linux 3.3. They are, however, mandatory for stateful mem2mem decod
-       -
- 
- 
--.. _decoder-cmds:
--
- .. tabularcolumns:: |p{5.6cm}|p{0.6cm}|p{11.1cm}|
- 
- .. cssclass:: longtable
- 
-+.. _decoder-cmds:
-+
- .. flat-table:: Decoder Commands
-     :header-rows:  0
-     :stub-columns: 0
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-dv-timings.rst b/Documentation/userspace-api/media/v4l/vidioc-g-dv-timings.rst
-index dfc45427ea23..6518d857c131 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-dv-timings.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-dv-timings.rst
-@@ -240,12 +240,12 @@ EPERM
- 	There are no horizontal syncs/porches at all in this format.
- 	Total blanking timings must be set in hsync or vsync fields only.
- 
--_dv-bt-flags:
--
- .. tabularcolumns:: |p{7.7cm}|p{9.8cm}|
- 
- .. cssclass:: longtable
- 
-+.. _dv-bt-flags:
-+
- .. flat-table:: DV BT Timing flags
-     :header-rows:  0
-     :stub-columns: 0
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-index a90c433e430c..01773f01c4a7 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-@@ -342,12 +342,12 @@ still cause this situation.
- 
- 	Ignored if ``count`` equals zero.
- 
--.. _ctrl-class:
--
- .. tabularcolumns:: |p{7.3cm}|p{2.0cm}|p{8.0cm}|
- 
- .. cssclass:: longtable
- 
-+.. _ctrl-class:
-+
- .. flat-table:: Control classes
-     :header-rows:  0
-     :stub-columns: 0
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-modulator.rst b/Documentation/userspace-api/media/v4l/vidioc-g-modulator.rst
-index e73d24f12054..6bdf925f9a4a 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-modulator.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-modulator.rst
-@@ -119,12 +119,12 @@ To change the radio frequency the
- 
- 	Drivers and applications must set the array to zero.
- 
--.. _modulator-txsubchans:
--
- .. tabularcolumns:: |p{6.0cm}|p{2.0cm}|p{9.3cm}|
- 
- .. cssclass:: longtable
- 
-+.. _modulator-txsubchans:
-+
- .. flat-table:: Modulator Audio Transmission Flags
-     :header-rows:  0
-     :stub-columns: 0
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-tuner.rst b/Documentation/userspace-api/media/v4l/vidioc-g-tuner.rst
-index d392e37f080d..b0522f1ff7a4 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-tuner.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-tuner.rst
-@@ -296,10 +296,10 @@ To change the radio frequency the
- 	instead of 62.5 kHz.
- 
- 
-+.. tabularcolumns:: |p{6.6cm}|p{2.2cm}|p{8.5cm}|
-+
- .. _tuner-rxsubchans:
- 
--.. tabularcolumns:: |p{6.6cm}|p{2.2cm}|p{8.5cm}|
--
- .. flat-table:: Tuner Audio Reception Flags
-     :header-rows:  0
-     :stub-columns: 0
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-index 583fa551f0a1..9af43f913694 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-@@ -494,12 +494,12 @@ See also the examples in :ref:`control`.
- 
-    \normalsize
- 
--.. _control-flags:
--
- .. tabularcolumns:: |p{7.3cm}|p{1.8cm}|p{8.2cm}|
- 
- .. cssclass:: longtable
- 
-+.. _control-flags:
-+
- .. flat-table:: Control Flags
-     :header-rows:  0
-     :stub-columns: 0
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-subdev-enum-mbus-code.rst b/Documentation/userspace-api/media/v4l/vidioc-subdev-enum-mbus-code.rst
-index 4c8d5a15fd29..417f1a19bcc4 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-subdev-enum-mbus-code.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-subdev-enum-mbus-code.rst
-@@ -79,14 +79,14 @@ information about the try formats.
- 
- 
- 
--.. _v4l2-subdev-mbus-code-flags:
--
- .. raw:: latex
- 
-    \footnotesize
- 
- .. tabularcolumns:: |p{8.8cm}|p{2.2cm}|p{6.3cm}|
- 
-+.. _v4l2-subdev-mbus-code-flags:
-+
- .. flat-table:: Subdev Media Bus Code Enumerate Flags
-     :header-rows:  0
-     :stub-columns: 0
--- 
-2.29.2
+On Tue, Mar 02, 2021 at 08:37:37PM +0800, Ban Tao wrote:
+> From: Ban Tao <fengzheng923@gmail.com>
+>=20
+> The Allwinner R818, A133, R329, V536 and V833 has a new PWM controller
+> IP compared to the older Allwinner SoCs.
+>=20
+> Signed-off-by: Ban Tao <fengzheng923@gmail.com>
 
+Thanks for sending an update.
+
+Like I said in the previous version though, without proper SoC support
+upstream, that driver would effectively be dead code
+
+Maxime
+
+--7riidxa4uwozvogo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHQEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYEEF0wAKCRDj7w1vZxhR
+xWg3APIDan8axufR1ZCgDgHwNEkc0R0qwAUGJ5edYjZDlUbEAQC8ZUuURKbh+QZB
+RalYcFqwjPRNeDHlKWHmKqik2tVDAA==
+=V0ju
+-----END PGP SIGNATURE-----
+
+--7riidxa4uwozvogo--
