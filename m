@@ -2,184 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D85A32CC1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0229632CC2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhCDFny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 00:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
+        id S234310AbhCDFqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 00:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234216AbhCDFnr (ORCPT
+        with ESMTP id S234246AbhCDFpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 00:43:47 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BF0C061574;
-        Wed,  3 Mar 2021 21:43:07 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id z13so28459477iox.8;
-        Wed, 03 Mar 2021 21:43:07 -0800 (PST)
+        Thu, 4 Mar 2021 00:45:43 -0500
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2106FC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 21:45:03 -0800 (PST)
+Received: by mail-ua1-x929.google.com with SMTP id 62so8844909uar.13
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 21:45:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=posk.io; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=a+Oav42c1HOCCRMgaozVb9Gm8OFZUHNfLbYCK2+bU1w=;
-        b=XIG2QobFS1KqxGmKjapup5ZoCxXETYCmErSLolTk7Hcog7ZhSw8W3I6DBZqX3o6+RU
-         vxgWHyb+lLuEi5kNWGS/SVduSgZfN9dZqTCXV2BP9pJMKqAX7rcvW9kuPA//Rs2zExy6
-         4gb5urKkrKfJSoVjGaWLBO5ZAyEU7ouR4qzjCGMrxryDD+FkonY782t8A5RB4nLxts4N
-         OSaXjl7K3fBWxulpbTOJ90Eb621pKfI2Njs6ZWgsf5S49szaZVvlKkkrjmhwn+3cp0Nd
-         Y0Z8+uHX53CC6O8PgDRS6KedKX9i+70YOJQCJkHhjChjaFF/jV0V79glvc84PGTxtiRH
-         LFug==
+        bh=PY+WEM/VlXd9pM78il9qIrlAGjifsQA5uRqkeR5T3bo=;
+        b=bPC5WtKiQl5R4z7pCgPbMiXyamid23edLNu+a4WWCpPE17zWJxaBiVUK4XLj8frUfM
+         1zy7+SxIiN7uyoEiQHvF8FbOufiVcMoUyijSI0Bws8W9gKndb71yS5x6vBQ4E38z9pVy
+         qpebQkdfUcbj5pqDzeLmj6hTJCia/I5zNxkzVi6+AZWeyZ6dsfX/P9TbjRaSnFBYGa24
+         j2zz73u0hSb/QyGSdfXr1vEmF6RF9chpIBn7Snc9Ir1mYtmkofG9R5ZSo/Om637PM85A
+         9Sr2PgBMgAHIOOc5fAf2PtejHZtSvbzZHBV3RMIvr3yPe4l0xRIbSlZy44driv2+L+YN
+         hsmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=a+Oav42c1HOCCRMgaozVb9Gm8OFZUHNfLbYCK2+bU1w=;
-        b=n7D7ZMf97q1B1GKpTbt/75NmuUWYddlymLI4fwY5eT+Qawcs+L4VyNtHooj9nRA4EB
-         m3mK8VJrvEyZ+ZrYvGX+Z+jDFVeqTSjD0tfry2JFvvuLejSEs9juTQz0+kSk49/MSlwi
-         x8PF7UCirGjEAcoWy9AfIQKsgymxtzhtE+L1IFBLpkN4O5+UZutMv9b/rGrI59zfZqz9
-         QWYiHQ4KT31zmCqxSDD7O0z28Z+R8yAyayOXR1u+8JXFQvw5qyQxxjsoBXRkehycl0VE
-         BzqbkDbtBh63j8PW3H3HKUjYxFuntzqqGj45XYt8h0kIw9sMXHFqz1nQMplpKA8eI9A/
-         wHgg==
-X-Gm-Message-State: AOAM530tU4YTqPYA/IoVYgR4ihdIC6siM4c5SycihPKgBFU782MSKkE6
-        eaFHn5/u+QRB3XgGAjyUuJwZgSvXI1d6DafMJfgCsnVNbmc=
-X-Google-Smtp-Source: ABdhPJyOqaEjluM4fpjA/jSUFcjs5N4iiwvyANhz3BbXknSEZx5uEIr07uovuUygdxM372Ed1UJ4CcqqjBDtrX4KOGw=
-X-Received: by 2002:a05:6638:e93:: with SMTP id p19mr2578361jas.10.1614836586605;
- Wed, 03 Mar 2021 21:43:06 -0800 (PST)
+        bh=PY+WEM/VlXd9pM78il9qIrlAGjifsQA5uRqkeR5T3bo=;
+        b=jDcr61mV9zysjPGOcHr6kBN67ym3nA2WpkNgKbVzv1SSPZQHJiGJME+0qsM8chI8b8
+         03U8HjMJnM3Sqm4iDzDsaiLMfoPcvD5sXvyblArPOC9jfNJAJFYsUOxGo+KhS+lzC17g
+         J4UK0dwiD+zztT6AKd16DAGsxrByOZDax6BY/pbG5HwNkMBiZe9lHMUOVXwihDzhCXK9
+         qv5Q56+u5ohAved8ClX7vvQ1ZF3jIZ+zAnyFC06A0rZO+MsJZ1HzO/OvLZeyaHKn0WpJ
+         envk/AExa/HZHybT1H8LBUEmzLv8dTwJMr5nBdCsZhOpJHpthXSM9Q08UhhGe5M3Q+j4
+         jHCg==
+X-Gm-Message-State: AOAM53274IPKUyBE2O/aHyaFwtHnXyfxUvCnJTALj9PQRkw4hnVYbJta
+        7ohZa9/r961G8FW2VVqzLBpmNxssc50y+KlbRPU2HA==
+X-Google-Smtp-Source: ABdhPJxBCh1so86IeSEksOTHkREeACqrYxAJ5MWydhl9Q3d9ZxvK8ERNVW1GMO4sGC1hd7+1VUQFnEOKxBj3BGdbUJ8=
+X-Received: by 2002:ab0:16d3:: with SMTP id g19mr1420813uaf.17.1614836701437;
+ Wed, 03 Mar 2021 21:45:01 -0800 (PST)
 MIME-Version: 1.0
-References: <1614758717-18223-1-git-send-email-dillon.minfei@gmail.com>
- <1614758717-18223-2-git-send-email-dillon.minfei@gmail.com>
- <5284d390-c03a-4035-df5a-10d6cd60e47b@arm.com> <CAL9mu0KUhctbBzmem1ZSgEwf5CebivHOSUr9Q7VTyzib8pW=Cw@mail.gmail.com>
- <5efe3d44-8045-e376-003e-3ccbff54fb23@arm.com>
-In-Reply-To: <5efe3d44-8045-e376-003e-3ccbff54fb23@arm.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Thu, 4 Mar 2021 13:42:30 +0800
-Message-ID: <CAL9mu0JoHqo_wnpNN9ZqRnzzKjhOwEktZ5yPtO8-6WBh51g1BQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] ARM: ARMv7-M: Fix register restore corrupt after svc call
-To:     Vladimir Murzin <vladimir.murzin@arm.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <20210304004219.134051-1-andrealmeid@collabora.com>
+In-Reply-To: <20210304004219.134051-1-andrealmeid@collabora.com>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Wed, 3 Mar 2021 21:44:49 -0800
+Message-ID: <CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/13] Add futex2 syscall
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux@armlinux.org.uk, afzal.mohd.ma@gmail.com
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, Jonathan Corbet <corbet@lwn.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 10:19 PM Vladimir Murzin <vladimir.murzin@arm.com> w=
-rote:
+On Wed, Mar 3, 2021 at 5:22 PM Andr=C3=A9 Almeida <andrealmeid@collabora.co=
+m> wrote:
 >
-> On 3/3/21 1:35 PM, dillon min wrote:
-> > Hi Vladimir,
-> >
-> > Thanks for the review.
-> >
-> > On Wed, Mar 3, 2021 at 5:52 PM Vladimir Murzin <vladimir.murzin@arm.com=
-> wrote:
-> >>
-> >> On 3/3/21 8:05 AM, dillon.minfei@gmail.com wrote:
-> >>> From: dillon min <dillon.minfei@gmail.com>
-> >>>
-> >>> For some case, kernel not boot by u-boot(single thread),
-> >>> but by rtos , as most rtos use pendsv to do context switch.
-> >>
-> >>
-> >> Hmm, does it mean that it starts kernel from process context?
-> >    Yes, kernel might be started from process context, since u-boot not
-> > switch context, so kernel always startup under msp.
-> >>
-> >> I'd assume that it is not only kernel who expects MSP. So, what
-> >> if RTOS you mentioned want to boot other RTOS (even itself)? What
-> >> if you have no access to the source code for those RTOS(es) to
-> >> patch MSP/PSP switch?
-> >
-> > My case is a little complicated.
-> > stm32h7 only have 128Kbytes internal flash, can't store u-boot.bin (>20=
-0K),
-> > so, set a bootloader (rt-thread rtos) to internal flash, load
-> > linux/u-boot from serial port via ymodem
-> > store to qspi flash(8Mbytes), then jump to u-boot.
-> >
-> > qspi flash layout:
-> > 0 - 512K:    u-boot
-> > 512K- 8M : kernel(xip)
-> >
-> > load process : rt-thread -> u-boot -> linux
-> >
-> > before add psp/msp check after svc call, register restore corrupt.
-> > add a printhex8 around svc call, found the sp stack is 0x24040000c0ffcf=
-f8
-> > it should be 0xc0ffcdf8c0ffcff8. 0x24040000 is the sp stack address
-> > assigned by u-boot
-> > i've no idea how it's become to u-boot's sp.
-> >
-> > I have the rtos code, and will try to fix it on the rtos side.
+> Hi,
 >
-> That would be great!
+> This patch series introduces the futex2 syscalls.
 >
-> >
-> > Can you give more explanation about why linux relies on MSP ? thanks
+> * What happened to the current futex()?
 >
-> MSP is what set from boot, thus it is natural assumption that boot code
-> would preserve that illusion.
+> For some years now, developers have been trying to add new features to
+> futex, but maintainers have been reluctant to accept then, given the
+> multiplexed interface full of legacy features and tricky to do big
+> changes. Some problems that people tried to address with patchsets are:
+> NUMA-awareness[0], smaller sized futexes[1], wait on multiple futexes[2].
+> NUMA, for instance, just doesn't fit the current API in a reasonable
+> way. Considering that, it's not possible to merge new features into the
+> current futex.
 >
-> I'd guess that kernel is in line in such assumption across different
-> (RT)OS capable to run on M-class cores (please, note that some variants
-> might not have two stack pointers)
+>  ** The NUMA problem
 >
-Okay=EF=BC=8C got it. after adding msp/psp switch code in RTOS, now the ker=
-nel
-can be loaded normally
-without any modification.
+>  At the current implementation, all futex kernel side infrastructure is
+>  stored on a single node. Given that, all futex() calls issued by
+>  processors that aren't located on that node will have a memory access
+>  penalty when doing it.
+>
+>  ** The 32bit sized futex problem
+>
+>  Embedded systems or anything with memory constrains would benefit of
+>  using smaller sizes for the futex userspace integer. Also, a mutex
+>  implementation can be done using just three values, so 8 bits is enough
+>  for various scenarios.
+>
+>  ** The wait on multiple problem
+>
+>  The use case lies in the Wine implementation of the Windows NT interface
+>  WaitMultipleObjects. This Windows API function allows a thread to sleep
+>  waiting on the first of a set of event sources (mutexes, timers, signal,
+>  console input, etc) to signal.  Considering this is a primitive
+>  synchronization operation for Windows applications, being able to quickl=
+y
+>  signal events on the producer side, and quickly go to sleep on the
+>  consumer side is essential for good performance of those running over Wi=
+ne.
+>
+> [0] https://lore.kernel.org/lkml/20160505204230.932454245@linutronix.de/
+> [1] https://lore.kernel.org/lkml/20191221155659.3159-2-malteskarupke@web.=
+de/
+> [2] https://lore.kernel.org/lkml/20200213214525.183689-1-andrealmeid@coll=
+abora.com/
+>
+> * The solution
+>
+> As proposed by Peter Zijlstra and Florian Weimer[3], a new interface
+> is required to solve this, which must be designed with those features in
+> mind. futex2() is that interface. As opposed to the current multiplexed
+> interface, the new one should have one syscall per operation. This will
+> allow the maintainability of the API if it gets extended, and will help
+> users with type checking of arguments.
+>
+> In particular, the new interface is extended to support the ability to
+> wait on any of a list of futexes at a time, which could be seen as a
+> vectored extension of the FUTEX_WAIT semantics.
+>
+> [3] https://lore.kernel.org/lkml/20200303120050.GC2596@hirez.programming.=
+kicks-ass.net/
+>
+> * The interface
+>
+> The new interface can be seen in details in the following patches, but
+> this is a high level summary of what the interface can do:
+>
+>  - Supports wake/wait semantics, as in futex()
+>  - Supports requeue operations, similarly as FUTEX_CMP_REQUEUE, but with
+>    individual flags for each address
+>  - Supports waiting for a vector of futexes, using a new syscall named
+>    futex_waitv()
+>  - Supports variable sized futexes (8bits, 16bits and 32bits)
+>  - Supports NUMA-awareness operations, where the user can specify on
+>    which memory node would like to operate
+>
+> * Implementation
+>
+> The internal implementation follows a similar design to the original fute=
+x.
+> Given that we want to replicate the same external behavior of current
+> futex, this should be somewhat expected. For some functions, like the
+> init and the code to get a shared key, I literally copied code and
+> comments from kernel/futex.c. I decided to do so instead of exposing the
+> original function as a public function since in that way we can freely
+> modify our implementation if required, without any impact on old futex.
+> Also, the comments precisely describes the details and corner cases of
+> the implementation.
+>
+> Each patch contains a brief description of implementation, but patch 6
+> "docs: locking: futex2: Add documentation" adds a more complete document
+> about it.
+>
+> * The patchset
+>
+> This patchset can be also found at my git tree:
+>
+> https://gitlab.collabora.com/tonyk/linux/-/tree/futex2-dev
+>
+>   - Patch 1: Implements wait/wake, and the basics foundations of futex2
+>
+>   - Patches 2-4: Implement the remaining features (shared, waitv, requeue=
+).
+>
+>   - Patch 5:  Adds the x86_x32 ABI handling. I kept it in a separated
+>     patch since I'm not sure if x86_x32 is still a thing, or if it should
+>     return -ENOSYS.
+>
+>   - Patch 6: Add a documentation file which details the interface and
+>     the internal implementation.
+>
+>   - Patches 7-13: Selftests for all operations along with perf
+>     support for futex2.
+>
+>   - Patch 14: While working on porting glibc for futex2, I found out
+>     that there's a futex_wake() call at the user thread exit path, if
+>     that thread was created with clone(..., CLONE_CHILD_SETTID, ...). In
+>     order to make pthreads work with futex2, it was required to add
+>     this patch. Note that this is more a proof-of-concept of what we
+>     will need to do in future, rather than part of the interface and
+>     shouldn't be merged as it is.
+>
+> * Testing:
+>
+> This patchset provides selftests for each operation and their flags.
+> Along with that, the following work was done:
+>
+>  ** Stability
+>
+>  To stress the interface in "real world scenarios":
+>
+>  - glibc[4]: nptl's low level locking was modified to use futex2 API
+>    (except for robust and PI things). All relevant nptl/ tests passed.
+>
+>  - Wine[5]: Proton/Wine was modified in order to use futex2() for the
+>    emulation of Windows NT sync mechanisms based on futex, called "fsync"=
+.
+>    Triple-A games with huge CPU's loads and tons of parallel jobs worked
+>    as expected when compared with the previous FUTEX_WAIT_MULTIPLE
+>    implementation at futex(). Some games issue 42k futex2() calls
+>    per second.
+>
+>  - Full GNU/Linux distro: I installed the modified glibc in my host
+>    machine, so all pthread's programs would use futex2(). After tweaking
+>    systemd[6] to allow futex2() calls at seccomp, everything worked as
+>    expected (web browsers do some syscall sandboxing and need some
+>    configuration as well).
+>
+>  - perf: The perf benchmarks tests can also be used to stress the
+>    interface, and they can be found in this patchset.
+>
+>  ** Performance
+>
+>  - For comparing futex() and futex2() performance, I used the artificial
+>    benchmarks implemented at perf (wake, wake-parallel, hash and
+>    requeue). The setup was 200 runs for each test and using 8, 80, 800,
+>    8000 for the number of threads, Note that for this test, I'm not using
+>    patch 14 ("kernel: Enable waitpid() for futex2") , for reasons explain=
+ed
+>    at "The patchset" section.
+>
+>  - For the first three ones, I measured an average of 4% gain in
+>    performance. This is not a big step, but it shows that the new
+>    interface is at least comparable in performance with the current one.
+>
+>  - For requeue, I measured an average of 21% decrease in performance
+>    compared to the original futex implementation. This is expected given
+>    the new design with individual flags. The performance trade-offs are
+>    explained at patch 4 ("futex2: Implement requeue operation").
+>
+> [4] https://gitlab.collabora.com/tonyk/glibc/-/tree/futex2
+> [5] https://gitlab.collabora.com/tonyk/wine/-/tree/proton_5.13
+> [6] https://gitlab.collabora.com/tonyk/systemd
+>
+> * FAQ
+>
+>  ** "Where's the code for NUMA and FUTEX_8/16?"
+>
+>  The current code is already complex enough to take some time for
+>  review, so I believe it's better to split that work out to a future
+>  iteration of this patchset. Besides that, this RFC is the core part of t=
+he
+>  infrastructure, and the following features will not pose big design
+>  changes to it, the work will be more about wiring up the flags and
+>  modifying some functions.
+>
+>  ** "And what's about FUTEX_64?"
+>
+>  By supporting 64 bit futexes, the kernel structure for futex would
+>  need to have a 64 bit field for the value, and that could defeat one of
+>  the purposes of having different sized futexes in the first place:
+>  supporting smaller ones to decrease memory usage. This might be
+>  something that could be disabled for 32bit archs (and even for
+>  CONFIG_BASE_SMALL).
+>
+>  Which use case would benefit for FUTEX_64? Does it worth the trade-offs?
 
-So, just drop the changes in proc-v7m.S.
+The ability to store a pointer value on 64bit platforms is an
+important use case.
+Imagine a simple producer/consumer scenario, with the producer updating
+some shared memory data and waking the consumer. Storing the pointer
+in the futex makes it so that only one shared memory location needs to be
+accessed "atomically", etc. With two atomics synchronization becomes
+more involved (=3D slower).
 
-Thanks.
-> Cheers
-> Vladimir
 >
-> >
-> >>
-> >> I'd very much prefer to keep stack switching logic outside kernel,
-> >> say, in some shim which RTOS/bootloader can maintain.
-> >>
-> >> Cheers
-> >> Vladimir
-> >>
-> >>>
-> >>> So, we need add an lr check after svc call, to find out should
-> >>> use psp or msp. else register restore after svc call might be
-> >>> corrupted.
-> >>>
-> >>> Fixes: b70cd406d7fe ("ARM: 8671/1: V7M: Preserve registers across swi=
-tch from Thread to Handler mode")
-> >>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> >>> ---
-> >>>  arch/arm/mm/proc-v7m.S | 5 ++++-
-> >>>  1 file changed, 4 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/arch/arm/mm/proc-v7m.S b/arch/arm/mm/proc-v7m.S
-> >>> index 84459c1d31b8..c93d2757312d 100644
-> >>> --- a/arch/arm/mm/proc-v7m.S
-> >>> +++ b/arch/arm/mm/proc-v7m.S
-> >>> @@ -137,7 +137,10 @@ __v7m_setup_cont:
-> >>>  1:   cpsid   i
-> >>>       /* Calculate exc_ret */
-> >>>       orr     r10, lr, #EXC_RET_THREADMODE_PROCESSSTACK
-> >>> -     ldmia   sp, {r0-r3, r12}
-> >>> +     tst     lr, #EXC_RET_STACK_MASK
-> >>> +     mrsne   r4, psp
-> >>> +     moveq   r4, sp
-> >>> +     ldmia   r4!, {r0-r3, r12}
-> >>>       str     r5, [r12, #11 * 4]      @ restore the original SVC vect=
-or entry
-> >>>       mov     lr, r6                  @ restore LR
-> >>>
-> >>>
-> >>
-> >
+>  ** "Where's the PI/robust stuff?"
+>
+>  As said by Peter Zijlstra at [3], all those new features are related to
+>  the "simple" futex interface, that doesn't use PI or robust. Do we want
+>  to have this complexity at futex2() and if so, should it be part of
+>  this patchset or can it be future work?
+>
+> Thanks,
+>         Andr=C3=A9
+>
+> * Changelog
+>
+> Changes from v1:
+> - Unified futex_set_timer_and_wait and __futex_wait code
+> - Dropped _carefull from linked list function calls
+> - Fixed typos on docs patch
+> - uAPI flags are now added as features are introduced, instead of all fla=
+gs
+>   in patch 1
+> - Removed struct futex_single_waiter in favor of an anon struct
+> v1: https://lore.kernel.org/lkml/20210215152404.250281-1-andrealmeid@coll=
+abora.com/
+>
+>
+> Andr=C3=A9 Almeida (13):
+>   futex2: Implement wait and wake functions
+>   futex2: Add support for shared futexes
+>   futex2: Implement vectorized wait
+>   futex2: Implement requeue operation
+>   futex2: Add compatibility entry point for x86_x32 ABI
+>   docs: locking: futex2: Add documentation
+>   selftests: futex2: Add wake/wait test
+>   selftests: futex2: Add timeout test
+>   selftests: futex2: Add wouldblock test
+>   selftests: futex2: Add waitv test
+>   selftests: futex2: Add requeue test
+>   perf bench: Add futex2 benchmark tests
+>   kernel: Enable waitpid() for futex2
+>
+>  Documentation/locking/futex2.rst              |  198 +++
+>  Documentation/locking/index.rst               |    1 +
+>  MAINTAINERS                                   |    2 +-
+>  arch/arm/tools/syscall.tbl                    |    4 +
+>  arch/arm64/include/asm/unistd.h               |    2 +-
+>  arch/arm64/include/asm/unistd32.h             |    8 +
+>  arch/x86/entry/syscalls/syscall_32.tbl        |    4 +
+>  arch/x86/entry/syscalls/syscall_64.tbl        |    4 +
+>  fs/inode.c                                    |    1 +
+>  include/linux/compat.h                        |   23 +
+>  include/linux/fs.h                            |    1 +
+>  include/linux/syscalls.h                      |   18 +
+>  include/uapi/asm-generic/unistd.h             |   14 +-
+>  include/uapi/linux/futex.h                    |   31 +
+>  init/Kconfig                                  |    7 +
+>  kernel/Makefile                               |    1 +
+>  kernel/fork.c                                 |    2 +
+>  kernel/futex2.c                               | 1239 +++++++++++++++++
+>  kernel/sys_ni.c                               |    6 +
+>  tools/arch/x86/include/asm/unistd_64.h        |   12 +
+>  tools/include/uapi/asm-generic/unistd.h       |   11 +-
+>  .../arch/x86/entry/syscalls/syscall_64.tbl    |    4 +
+>  tools/perf/bench/bench.h                      |    4 +
+>  tools/perf/bench/futex-hash.c                 |   24 +-
+>  tools/perf/bench/futex-requeue.c              |   57 +-
+>  tools/perf/bench/futex-wake-parallel.c        |   41 +-
+>  tools/perf/bench/futex-wake.c                 |   37 +-
+>  tools/perf/bench/futex.h                      |   47 +
+>  tools/perf/builtin-bench.c                    |   18 +-
+>  .../selftests/futex/functional/.gitignore     |    3 +
+>  .../selftests/futex/functional/Makefile       |    8 +-
+>  .../futex/functional/futex2_requeue.c         |  164 +++
+>  .../selftests/futex/functional/futex2_wait.c  |  209 +++
+>  .../selftests/futex/functional/futex2_waitv.c |  157 +++
+>  .../futex/functional/futex_wait_timeout.c     |   58 +-
+>  .../futex/functional/futex_wait_wouldblock.c  |   33 +-
+>  .../testing/selftests/futex/functional/run.sh |    6 +
+>  .../selftests/futex/include/futex2test.h      |  121 ++
+>  38 files changed, 2527 insertions(+), 53 deletions(-)
+>  create mode 100644 Documentation/locking/futex2.rst
+>  create mode 100644 kernel/futex2.c
+>  create mode 100644 tools/testing/selftests/futex/functional/futex2_reque=
+ue.c
+>  create mode 100644 tools/testing/selftests/futex/functional/futex2_wait.=
+c
+>  create mode 100644 tools/testing/selftests/futex/functional/futex2_waitv=
+.c
+>  create mode 100644 tools/testing/selftests/futex/include/futex2test.h
+>
+> --
+> 2.30.1
 >
