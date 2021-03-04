@@ -2,171 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB1232CAF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3905D32CB23
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232831AbhCDDng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:43:36 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:50276 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232801AbhCDDnH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:43:07 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210304034225epoutp025ac5ac5841a198bcbcf2cf379f9d1471~pBrvu-9FX2491224912epoutp02S
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 03:42:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210304034225epoutp025ac5ac5841a198bcbcf2cf379f9d1471~pBrvu-9FX2491224912epoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614829345;
-        bh=B+6dMBxtcSUu6W/9okaioUJOpO8DxXMXNSJCTv2oFbY=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=CJKt2EioxIG0LQiX2TZCspntYxc9r41oeSUkkN0ReeOxFRLc2XXIO3QWsPFnf6udR
-         rxTHds8v4WdVoEQRFDoB7gh4SaNTUuN7LO6UOM6O1BezKQXfFDCvG5ZTkONYNjzRMc
-         XE1YEysbu/8fGDrtRYh+B/sl0yZ4Hpo/Ns8mP40o=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210304034225epcas1p138bb275b600ecf45204f3fefb85cea22~pBrvMgqVn2304223042epcas1p1R;
-        Thu,  4 Mar 2021 03:42:25 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DrcBQ4wqvz4x9QM; Thu,  4 Mar
-        2021 03:42:22 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3F.32.63458.E1750406; Thu,  4 Mar 2021 12:42:22 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210304034222epcas1p35c7ae7b4baae4b6c28d32ade4fe00e62~pBrseZIzG1695416954epcas1p3l;
-        Thu,  4 Mar 2021 03:42:22 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210304034222epsmtrp296082612ef95e070ed0c7a7da79482a9~pBrsduer_2714327143epsmtrp2C;
-        Thu,  4 Mar 2021 03:42:22 +0000 (GMT)
-X-AuditID: b6c32a36-c6d65a800000f7e2-04-6040571e4b12
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        31.89.08745.D1750406; Thu,  4 Mar 2021 12:42:21 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210304034221epsmtip2c45d0f3ea02e5a5d07fdafc1ce700c6d~pBrsR2JJK2508525085epsmtip25;
-        Thu,  4 Mar 2021 03:42:21 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>, <sj1557.seo@samsung.com>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-In-Reply-To: <20210302052020.63598-1-hyeongseok@gmail.com>
-Subject: RE: [PATCH v2] exfat: fix erroneous discard when clear cluster bit
-Date:   Thu, 4 Mar 2021 12:42:21 +0900
-Message-ID: <002f01d710a8$624be490$26e3adb0$@samsung.com>
+        id S233135AbhCDDpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:45:12 -0500
+Received: from mga17.intel.com ([192.55.52.151]:11266 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233032AbhCDDor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:44:47 -0500
+IronPort-SDR: pzfjg/hFb2M+itgWDyKc3+dUO/5QqxuVmlZG2v7J9nwLfEjHWsXEiKUirZ1n3zRLmkYbSpBszZ
+ xDbu4dAhwCNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="167232054"
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="167232054"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 19:43:15 -0800
+IronPort-SDR: GWymfTxRVoqXNB056u0rdKA7QLkuLPbBV+Ukh/yzGWb4LHrTzzbSexekVNR8QcoUJlhajFcjAV
+ CMAb4/MC6yUA==
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="400389470"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 19:43:12 -0800
+Subject: Re: [PATCH v3 9/9] KVM: x86: Add XSAVE Support for Architectural LBRs
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210303135756.1546253-1-like.xu@linux.intel.com>
+ <20210303135756.1546253-10-like.xu@linux.intel.com>
+ <YD/PYp0DtZaw2HYh@google.com>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <b6b3476b-3278-9a40-33a9-0014fed9bbfb@linux.intel.com>
+Date:   Thu, 4 Mar 2021 11:43:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <YD/PYp0DtZaw2HYh@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQG+mIOZmBktm/oL05f7SJkQ+BJOQgN+CcSTqogt6BA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmk+LIzCtJLcpLzFFi42LZdlhTT1cu3CHBYNIlBYu/Ez8xWezZe5LF
-        4vKuOWwWW/4dYbVYsPERowOrx85Zd9k9+rasYvT4vEkugDkqxyYjNTEltUghNS85PyUzL91W
-        yTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaKWSQlliTilQKCCxuFhJ386mKL+0JFUh
-        I7+4xFYptSAlp8DQoECvODG3uDQvXS85P9fK0MDAyBSoMiEnY/fC5awFXwUr5j17ytbAOI+v
-        i5GTQ0LAROLTo4uMXYxcHEICOxglbp1+zw7hfGKUaF13hhnC+cwo8evtNFaYloU3X0O17GKU
-        uHDkECuE85JR4t731SwgVWwCuhL//uxnA7FFBNwldr3rYQSxmQXiJd4v+QdWwylgJbH/3g6w
-        uLCAt8TWXdeZQGwWARWJq2s+gsV5BSwlns5axgxhC0qcnPmEBWKOvMT2t3OYIS5SkPj5dBkr
-        xC4riXd7dzBD1IhIzO5sA3tBQuAnu8S2bWuBnuMAclwklm1yhugVlnh1fAs7hC0l8fndXjaI
-        kmqJj/uhxncwSrz4bgthG0vcXL+BFaSEWUBTYv0ufYiwosTO33OhPuSTePe1hxViCq9ER5sQ
-        RImqRN+lw0wQtrREV/sH9gmMSrOQ/DULyV+zkNw/C2HZAkaWVYxiqQXFuempxYYFRshxvYkR
-        nBq1zHYwTnr7Qe8QIxMH4yFGCQ5mJRFe8Ze2CUK8KYmVValF+fFFpTmpxYcYTYEhPZFZSjQ5
-        H5ic80riDU2NjI2NLUzMzM1MjZXEeRMNHsQLCaQnlqRmp6YWpBbB9DFxcEo1MBWeEb90d9f6
-        i3duz+uy0Zq7ZNKzxuff3B6IRn4RuhBqb1q73DnkBdf0VX+zT+SaRG4xOuT2xuOix9Lc+jD7
-        3pjjB/RkMl31J0su2qFR8POsCNdjZ6OAxAVrQwv0J/s1dn22bdrxPsX5V0aPx6OvqlbMHRt0
-        K70Xh8nx3vnzJqLQXNE1Z29a7d7ZwQ7ufUaSVjtjw5hLq1JFPsnMMj31ZJGzzsLn9ndrrc7e
-        LvZgaOKwFjpkk/020bXV6Rn/192cgev26aQc8i945nZGwYNnSmvv7LvPTif4CXbNZRDc1GN9
-        6P7ZN1araz2/f31r4PrK1M/bYM3OrOoki9/OjmlMMc91nJYJc+SGmByb3sSvxFKckWioxVxU
-        nAgAIVtpBRYEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsWy7bCSvK5cuEOCQV+wxd+Jn5gs9uw9yWJx
-        edccNost/46wWizY+IjRgdVj56y77B59W1YxenzeJBfAHMVlk5Kak1mWWqRvl8CVsXvhctaC
-        r4IV8549ZWtgnMfXxcjJISFgIrHw5mvGLkYuDiGBHYwSO1fuYoJISEscO3GGuYuRA8gWljh8
-        uBii5jmjxKXXyxlBatgEdCX+/dnPBmKLCHhKrDi4ggmknlkgUeLoaweI+m5Gial/VrKC1HAK
-        WEnsv7cDrFdYwFti667rYLtYBFQkrq75CBbnFbCUeDprGTOELShxcuYTFoiZehJtG8FKmAXk
-        Jba/ncMMcaaCxM+ny1ghTrCSeLd3BzNEjYjE7M425gmMwrOQTJqFMGkWkkmzkHQsYGRZxSiZ
-        WlCcm55bbFhglJdarlecmFtcmpeul5yfu4kRHB9aWjsY96z6oHeIkYmD8RCjBAezkgiv+Evb
-        BCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYhCOiXFhe
-        R4i/eFbMlKm1b5bcpKhn+nsuvNJY4HW6qtk6VUJx7T2Og1WBlxTXmG7fax96tNcsdqW49RuL
-        X36LPuSpxxqasQXHNEhWhcT4vy3ray/mlSxa+PfNCT3zaXbG1zOXHFieOLOGgzU29dnvP2s4
-        n/zcdJKd88uuhTFnj02fdFng05xPMw49VNDMrdhTaJu9ese15+8FY01Pb5mkLnJX+kxIhcMH
-        q7K2Ey7W6rFpem0tybHNt/QM1rmWJHc2TXv2I/m8y5YtCp3Le+wYSmerbwhb78e+3mOtpI+f
-        le8Xk2sum7ym/2lIXKMs034265uS+6Hfl9+LhzEc2KNu1j9Hfc8Cgyk3zrxTP1asxFKckWio
-        xVxUnAgAMddktf4CAAA=
-X-CMS-MailID: 20210304034222epcas1p35c7ae7b4baae4b6c28d32ade4fe00e62
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210302052033epcas1p3c1bac591bdd1f94ffbef1272a3df137f
-References: <CGME20210302052033epcas1p3c1bac591bdd1f94ffbef1272a3df137f@epcas1p3.samsung.com>
-        <20210302052020.63598-1-hyeongseok@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If mounted with discard option, exFAT issues discard command when clear cluster bit to remove file.
-> But the input parameter of cluster-to-sector calculation is abnormally added by reserved cluster size
-> which is 2, leading to discard unrelated sectors included in target+2 cluster.
-> With fixing this, remove the wrong comments in set/clear/find bitmap functions.
+On 2021/3/4 2:03, Sean Christopherson wrote:
+> On Wed, Mar 03, 2021, Like Xu wrote:
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index 034708a3df20..ec4593e0ee6d 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -7268,6 +7268,8 @@ static __init void vmx_set_cpu_caps(void)
+>>   	supported_xss = 0;
+>>   	if (!cpu_has_vmx_xsaves())
+>>   		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+>> +	else if (kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR))
+>> +		supported_xss |= XFEATURE_MASK_LBR;
+>>   
+>>   	/* CPUID 0x80000001 */
+>>   	if (!cpu_has_vmx_rdtscp())
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index d773836ceb7a..bca2e318ff24 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -10433,6 +10433,8 @@ int kvm_arch_hardware_setup(void *opaque)
+>>   
+>>   	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+>>   		supported_xss = 0;
+>> +	else
+>> +		supported_xss &= host_xss;
 > 
-> Fixes: 1e49a94cf707 ("exfat: add bitmap operations")
-Cc: stable@vger.kernel.org # v5.7+
-> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
-> Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
-Applied. Thanks for your patch!
+> Not your fault by any means, but I would prefer to have matching logic for XSS
+> and XCR0.  The existing clearing of supported_xss here is pointless.  E.g. I'd
+> prefer something like the following, though Paolo may have a different opinion.
 
-> ---
->  fs/exfat/balloc.c | 15 +--------------
->  1 file changed, 1 insertion(+), 14 deletions(-)
-> 
-> diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c index 761c79c3a4ba..54f1bcbddb26 100644
-> --- a/fs/exfat/balloc.c
-> +++ b/fs/exfat/balloc.c
-> @@ -141,10 +141,6 @@ void exfat_free_bitmap(struct exfat_sb_info *sbi)
->  	kfree(sbi->vol_amap);
->  }
-> 
-> -/*
-> - * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-> - * the cluster heap.
-> - */
->  int exfat_set_bitmap(struct inode *inode, unsigned int clu)  {
->  	int i, b;
-> @@ -162,10 +158,6 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu)
->  	return 0;
->  }
-> 
-> -/*
-> - * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-> - * the cluster heap.
-> - */
->  void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)  {
->  	int i, b;
-> @@ -186,8 +178,7 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
->  		int ret_discard;
-> 
->  		ret_discard = sb_issue_discard(sb,
-> -			exfat_cluster_to_sector(sbi, clu +
-> -						EXFAT_RESERVED_CLUSTERS),
-> +			exfat_cluster_to_sector(sbi, clu),
->  			(1 << sbi->sect_per_clus_bits), GFP_NOFS, 0);
-> 
->  		if (ret_discard == -EOPNOTSUPP) {
-> @@ -197,10 +188,6 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
->  	}
->  }
-> 
-> -/*
-> - * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-> - * the cluster heap.
-> - */
->  unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu)  {
->  	unsigned int i, map_i, map_b, ent_idx;
-> --
-> 2.27.0.83.g0313f36
+I have no preference for where to do rdmsrl() in kvm_arch_init()
+or kvm_arch_hardware_setup().
 
+It's true the assignment of supported_xss in the kvm/intel
+tree is redundant and introducing KVM_SUPPORTED_XSS is also fine to me.
+
+
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 6d7e760fdfa0..c781034463e5 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7244,12 +7244,15 @@ static __init void vmx_set_cpu_caps(void)
+>                  kvm_cpu_cap_clear(X86_FEATURE_INVPCID);
+>          if (vmx_pt_mode_is_host_guest())
+>                  kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
+> +       if (!cpu_has_vmx_arch_lbr()) {
+> +               kvm_cpu_cap_clear(X86_FEATURE_ARCH_LBR);
+> +               supported_xss &= ~XFEATURE_MASK_LBR;
+> +       }
+> 
+
+I will move the above part to the LBR patch
+and leave the left part as a pre-patch for Paolo's review.
+
+>          if (vmx_umip_emulated())
+>                  kvm_cpu_cap_set(X86_FEATURE_UMIP);
+> 
+>          /* CPUID 0xD.1 */
+> -       supported_xss = 0;
+>          if (!cpu_has_vmx_xsaves())
+>                  kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+
+if (!cpu_has_vmx_xsaves())
+	supported_xss = 0;
+	kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 7b0adebec1ef..5f9eb1f5b840 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -205,6 +205,8 @@ static struct kvm_user_return_msrs __percpu *user_return_msrs;
+>                                  | XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
+>                                  | XFEATURE_MASK_PKRU)
+> 
+> +#define KVM_SUPPORTED_XSS      XFEATURE_MASK_LBR
+> +
+>   u64 __read_mostly host_efer;
+>   EXPORT_SYMBOL_GPL(host_efer);
+> 
+> @@ -8037,6 +8039,11 @@ int kvm_arch_init(void *opaque)
+>                  supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
+>          }
+> 
+> +       if (boot_cpu_has(X86_FEATURE_XSAVES))
+
+{
+
+> +               rdmsrl(MSR_IA32_XSS, host_xss);
+> +               supported_xss = host_xss & KVM_SUPPORTED_XSS;
+> +       }
+> +
+>          if (pi_inject_timer == -1)
+>                  pi_inject_timer = housekeeping_enabled(HK_FLAG_TIMER);
+>   #ifdef CONFIG_X86_64
+> @@ -10412,9 +10419,6 @@ int kvm_arch_hardware_setup(void *opaque)
+> 
+>          rdmsrl_safe(MSR_EFER, &host_efer);
+> 
+> -       if (boot_cpu_has(X86_FEATURE_XSAVES))
+> -               rdmsrl(MSR_IA32_XSS, host_xss);
+> -
+>          r = ops->hardware_setup();
+>          if (r != 0)
+>                  return r;
+> @@ -10422,9 +10426,6 @@ int kvm_arch_hardware_setup(void *opaque)
+>          memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
+>          kvm_ops_static_call_update();
+> 
+> -       if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+> -               supported_xss = 0;
+> -
+>   #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
+>          cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
+>   #undef __kvm_cpu_cap_has
+> 
 
