@@ -2,304 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A914032D6B2
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9F032D6B1
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234907AbhCDPbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:31:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbhCDPb0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:31:26 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F568C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 07:30:46 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id f26so6675416oog.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 07:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YsbrBjQ4ejiQFiBXd0K2I2t5lmeYk0KLBpHXPT2nL3g=;
-        b=ZbSTgcxFwVsXX8cacvNImXqBk6nL/JKSCQkK8scwbdaJ7P4GYL5DdRitYj772F3UVb
-         nHY0yD6KlXNqJE+L9Pi7OVrD3aQQIplqSeILnDuA84nAGcWj/AxOngi3I6P1vRiwv+hW
-         idOi6ga0uJkAuYZMCZZgt1W49Wd8gkdaZum+jYs97edYqkMZqdpehf5Hx9yVUsmISKa1
-         NLIoME0vYh8Js3r4lhGvxJkgX2lazM75fPrd0jIvoYaeAqTv2SaEUimY7MOjszdisZ6o
-         zftRIiWcuRRMDCB8Qim3QODe0HfKi/AelrXYsQEIVw7szPOcXJDLEyCsJiR+U14eGnBb
-         IMqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YsbrBjQ4ejiQFiBXd0K2I2t5lmeYk0KLBpHXPT2nL3g=;
-        b=QEg2lol2IPvfRMH4qB2mwpCjJkX2TYN8dtoydvH9JD7jvY8K3fgqJCmpdr1aqMs2bn
-         BZA2wConw1+mUuaWcniVS6fwLDBwFb1AMYNWPvp34bgNPZsAv8XNDnm2ZdaCVx31gxdk
-         e7to8sdRPS/EVYeZaEj1DCL7quRz0dIatdA2zVFGGeXZ9AsyEDZrPPi1yzYxfNx9A8SJ
-         PJwIRt4y3+2BkqcpvKciRd06yY+PKKkSyKQn/7djW6/2KzM1tR3meoho/G+OGqDwr4q5
-         KmhywXoCzszwAjbRN5PpBVDaiLFztDnxP4llMisCSLzch4w3zvOqiC93nSexmw93Pxbs
-         LNtg==
-X-Gm-Message-State: AOAM530p/RhWfAJlQFZ3+EHB7/cFaDdaeTPbU1FqOzm382/KrD2PmurS
-        u/+o45PnA+iWXYJ9DYGVwf9FjG4+koe1xZwedM+J4gwDbjY=
-X-Google-Smtp-Source: ABdhPJxwWfhCLZ/Ry11Sw8qKBy3AkxAR0n0dJiFMrBMUt5ATFagcLEL89wFGXjzG8+FRsArb8luNHCOKKV+KiQWPxL8=
-X-Received: by 2002:a4a:a105:: with SMTP id i5mr3765483ool.54.1614871845744;
- Thu, 04 Mar 2021 07:30:45 -0800 (PST)
+        id S234867AbhCDPbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:31:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232171AbhCDPbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 10:31:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F057A64F21;
+        Thu,  4 Mar 2021 15:30:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614871842;
+        bh=zcvP/xRNovmcUNqEXMV6SKPJwphc6KAygaqAb/6nSsM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LADuN40EQStLkH6O6LUzMIxhc/aLZYRwZKhO9mkajUqlnhNqVCpweEwDTWfe/rlFO
+         1uQCI+qt3ZZN1DOkNmnQe1WEpAOpg+1xC++v9qwF9uND09qh5dh9soS9HnTO9ml74b
+         b19FJ4Ma/0z5HrqtqOZrTUhKPKI4qgfRfgkAnyix0VgknVwyKyMu04vrSE44IXyPCg
+         BmPKyobfvS7+/1bL+Ue+5VOJAyrGb4U1Im9vvRkmZkXTxt6xqmXsmb9bncj+iQeQnP
+         WgKxC+ZQ7pQPsKNNYzx7rkiyzoluF2q4M3OwXSoy8LrssD3fUB8E4IrcEcf4ZCzi3V
+         zhLZ8/pyh3I3A==
+Date:   Thu, 4 Mar 2021 15:30:36 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org
+Subject: Re: [PATCH v3 12/32] KVM: arm64: Introduce a Hyp buddy page allocator
+Message-ID: <20210304153036.GA21507@willie-the-truck>
+References: <20210302150002.3685113-1-qperret@google.com>
+ <20210302150002.3685113-13-qperret@google.com>
 MIME-Version: 1.0
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
- <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
- <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu> <YD+o5QkCZN97mH8/@elver.google.com>
- <20210304145730.GC54534@C02TD0UTHF1T.local>
-In-Reply-To: <20210304145730.GC54534@C02TD0UTHF1T.local>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 4 Mar 2021 16:30:34 +0100
-Message-ID: <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302150002.3685113-13-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 15:57, Mark Rutland <mark.rutland@arm.com> wrote:
-> [adding Mark Brown]
->
-> On Wed, Mar 03, 2021 at 04:20:43PM +0100, Marco Elver wrote:
-> > On Wed, Mar 03, 2021 at 03:52PM +0100, Christophe Leroy wrote:
-> > > Le 03/03/2021 =C3=AF=C2=BF=C2=BD 15:38, Marco Elver a =C3=AF=C2=BF=C2=
-=BDcrit=C3=AF=C2=BF=C2=BD:
-> > > > On Wed, 3 Mar 2021 at 15:09, Christophe Leroy
-> > > > <christophe.leroy@csgroup.eu> wrote:
-> > > > >
-> > > > > It seems like all other sane architectures, namely x86 and arm64
-> > > > > at least, include the running function as top entry when saving
-> > > > > stack trace.
-> > > > >
-> > > > > Functionnalities like KFENCE expect it.
-> > > > >
-> > > > > Do the same on powerpc, it allows KFENCE to properly identify the=
- faulting
-> > > > > function as depicted below. Before the patch KFENCE was identifyi=
-ng
-> > > > > finish_task_switch.isra as the faulting function.
-> > > > >
-> > > > > [   14.937370] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > > [   14.948692] BUG: KFENCE: invalid read in test_invalid_access+0=
-x54/0x108
-> > > > > [   14.948692]
-> > > > > [   14.956814] Invalid read at 0xdf98800a:
-> > > > > [   14.960664]  test_invalid_access+0x54/0x108
-> > > > > [   14.964876]  finish_task_switch.isra.0+0x54/0x23c
-> > > > > [   14.969606]  kunit_try_run_case+0x5c/0xd0
-> > > > > [   14.973658]  kunit_generic_run_threadfn_adapter+0x24/0x30
-> > > > > [   14.979079]  kthread+0x15c/0x174
-> > > > > [   14.982342]  ret_from_kernel_thread+0x14/0x1c
-> > > > > [   14.986731]
-> > > > > [   14.988236] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G  =
-  B             5.12.0-rc1-01537-g95f6e2088d7e-dirty #4682
-> > > > > [   14.999795] NIP:  c016ec2c LR: c02f517c CTR: c016ebd8
-> > > > > [   15.004851] REGS: e2449d90 TRAP: 0301   Tainted: G    B       =
-       (5.12.0-rc1-01537-g95f6e2088d7e-dirty)
-> > > > > [   15.015274] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER=
-: 00000000
-> > > > > [   15.022043] DAR: df98800a DSISR: 20000000
-> > > > > [   15.022043] GPR00: c02f517c e2449e50 c1142080 e100dd24 c084b13=
-c 00000008 c084b32b c016ebd8
-> > > > > [   15.022043] GPR08: c0850000 df988000 c0d10000 e2449eb0 2200028=
-8
-> > > > > [   15.040581] NIP [c016ec2c] test_invalid_access+0x54/0x108
-> > > > > [   15.046010] LR [c02f517c] kunit_try_run_case+0x5c/0xd0
-> > > > > [   15.051181] Call Trace:
-> > > > > [   15.053637] [e2449e50] [c005a68c] finish_task_switch.isra.0+0x=
-54/0x23c (unreliable)
-> > > > > [   15.061338] [e2449eb0] [c02f517c] kunit_try_run_case+0x5c/0xd0
-> > > > > [   15.067215] [e2449ed0] [c02f648c] kunit_generic_run_threadfn_a=
-dapter+0x24/0x30
-> > > > > [   15.074472] [e2449ef0] [c004e7b0] kthread+0x15c/0x174
-> > > > > [   15.079571] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/=
-0x1c
-> > > > > [   15.085798] Instruction dump:
-> > > > > [   15.088784] 8129d608 38e7ebd8 81020280 911f004c 39000000 995f0=
-024 907f0028 90ff001c
-> > > > > [   15.096613] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 390=
-8adb0 812a4b98 3d40c02f
-> > > > > [   15.104612] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > >
-> > > > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > > >
-> > > > Acked-by: Marco Elver <elver@google.com>
-> > > >
-> > > > Thank you, I think this looks like the right solution. Just a quest=
-ion below:
-> > > >
-> > > ...
-> > >
-> > > > > @@ -59,23 +70,26 @@ void save_stack_trace(struct stack_trace *tra=
-ce)
-> > > > >
-> > > > >          sp =3D current_stack_frame();
-> > > > >
-> > > > > -       save_context_stack(trace, sp, current, 1);
-> > > > > +       save_context_stack(trace, sp, (unsigned long)save_stack_t=
-race, current, 1);
-> > > >
-> > > > This causes ip =3D=3D save_stack_trace and also below for
-> > > > save_stack_trace_tsk. Does this mean save_stack_trace() is included=
- in
-> > > > the trace? Looking at kernel/stacktrace.c, I think the library want=
-s
-> > > > to exclude itself from the trace, as it does '.skip =3D skipnr + 1'=
- (and
-> > > > '.skip   =3D skipnr + (current =3D=3D tsk)' for the _tsk variant).
-> > > >
-> > > > If the arch-helper here is included, should this use _RET_IP_ inste=
-ad?
-> > > >
-> > >
-> > > Don't really know, I was inspired by arm64 which has:
-> > >
-> > > void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cook=
-ie,
-> > >                  struct task_struct *task, struct pt_regs *regs)
-> > > {
-> > >     struct stackframe frame;
-> > >
-> > >     if (regs)
-> > >             start_backtrace(&frame, regs->regs[29], regs->pc);
-> > >     else if (task =3D=3D current)
-> > >             start_backtrace(&frame,
-> > >                             (unsigned long)__builtin_frame_address(0)=
-,
-> > >                             (unsigned long)arch_stack_walk);
-> > >     else
-> > >             start_backtrace(&frame, thread_saved_fp(task),
-> > >                             thread_saved_pc(task));
-> > >
-> > >     walk_stackframe(task, &frame, consume_entry, cookie);
-> > > }
-> > >
-> > > But looking at x86 you may be right, so what should be done really ?
-> >
-> > x86:
-> >
-> > [    2.843292] calling stack_trace_save:
-> > [    2.843705]  test_func+0x6c/0x118
-> > [    2.844184]  do_one_initcall+0x58/0x270
-> > [    2.844618]  kernel_init_freeable+0x1da/0x23a
-> > [    2.845110]  kernel_init+0xc/0x166
-> > [    2.845494]  ret_from_fork+0x22/0x30
-> >
-> > [    2.867525] calling stack_trace_save_tsk:
-> > [    2.868017]  test_func+0xa9/0x118
-> > [    2.868530]  do_one_initcall+0x58/0x270
-> > [    2.869003]  kernel_init_freeable+0x1da/0x23a
-> > [    2.869535]  kernel_init+0xc/0x166
-> > [    2.869957]  ret_from_fork+0x22/0x30
-> >
-> > arm64:
-> >
-> > [    3.786911] calling stack_trace_save:
-> > [    3.787147]  stack_trace_save+0x50/0x78
-> > [    3.787443]  test_func+0x84/0x13c
-> > [    3.787738]  do_one_initcall+0x5c/0x310
-> > [    3.788099]  kernel_init_freeable+0x214/0x294
-> > [    3.788363]  kernel_init+0x18/0x164
-> > [    3.788585]  ret_from_fork+0x10/0x30
-> >
-> > [    3.803615] calling stack_trace_save_tsk:
-> > [    3.804266]  stack_trace_save_tsk+0x9c/0x100
-> > [    3.804541]  test_func+0xc4/0x13c
-> > [    3.804803]  do_one_initcall+0x5c/0x310
-> > [    3.805031]  kernel_init_freeable+0x214/0x294
-> > [    3.805284]  kernel_init+0x18/0x164
-> > [    3.805505]  ret_from_fork+0x10/0x30
-> >
-> > +Cc arm64 folks.
-> >
-> > So I think the arm64 version also has a bug, because I think a user of
-> > <linux/stacktrace.h> really doesn't care about the library function
-> > itself. And from reading kernel/stacktrace.c I think it wants to exclud=
-e
-> > itself entirely.
-> >
-> > It's a shame that <linux/stacktrace.h> isn't better documented, but I'm
-> > pretty sure that including the library functions in the trace is not
-> > useful.
->
-> I agree this behaviour isn't desireable, and that the lack of
-> documentation is unfortunate.
->
-> It looks like GCC is happy to give us the function-entry-time FP if we us=
-e
-> __builtin_frame_address(1), and assuming clang is similarly happy we can =
-do:
->
-> | diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktr=
-ace.c
-> | index ad20981dfda4..5dfbf915eb7f 100644
-> | --- a/arch/arm64/kernel/stacktrace.c
-> | +++ b/arch/arm64/kernel/stacktrace.c
-> | @@ -203,8 +203,8 @@ void arch_stack_walk(stack_trace_consume_fn consume=
-_entry, void *cookie,
-> |                 start_backtrace(&frame, regs->regs[29], regs->pc);
-> |         else if (task =3D=3D current)
-> |                 start_backtrace(&frame,
-> | -                               (unsigned long)__builtin_frame_address(=
-0),
-> | -                               (unsigned long)arch_stack_walk);
-> | +                               (unsigned long)__builtin_frame_address(=
-1),
-> | +                               (unsigned long)__builtin_return_address=
-(0));
-> |         else
-> |                 start_backtrace(&frame, thread_saved_fp(task),
-> |                                 thread_saved_pc(task));
->
-> ... such that arch_stack_walk() will try to avoid including itself in a
-> trace, and so the existing skipping should (w/ caveats below) skip
-> stack_trace_save() or stack_trace_save_tsk().
+On Tue, Mar 02, 2021 at 02:59:42PM +0000, Quentin Perret wrote:
+> When memory protection is enabled, the hyp code will require a basic
+> form of memory management in order to allocate and free memory pages at
+> EL2. This is needed for various use-cases, including the creation of hyp
+> mappings or the allocation of stage 2 page tables.
+> 
+> To address these use-case, introduce a simple memory allocator in the
+> hyp code. The allocator is designed as a conventional 'buddy allocator',
+> working with a page granularity. It allows to allocate and free
+> physically contiguous pages from memory 'pools', with a guaranteed order
+> alignment in the PA space. Each page in a memory pool is associated
+> with a struct hyp_page which holds the page's metadata, including its
+> refcount, as well as its current order, hence mimicking the kernel's
+> buddy system in the GFP infrastructure. The hyp_page metadata are made
+> accessible through a hyp_vmemmap, following the concept of
+> SPARSE_VMEMMAP in the kernel.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/hyp/include/nvhe/gfp.h    |  55 +++++++
+>  arch/arm64/kvm/hyp/include/nvhe/memory.h |  28 ++++
+>  arch/arm64/kvm/hyp/nvhe/Makefile         |   2 +-
+>  arch/arm64/kvm/hyp/nvhe/page_alloc.c     | 195 +++++++++++++++++++++++
+>  4 files changed, 279 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/gfp.h
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/page_alloc.c
 
-Thank you! Yes, that works.
+[...]
 
-> If that works for you, I can spin that as a patch, though we'll need to
-> check that doesn't introduce a new fencepost error elsewhere.
->
-> The bigger problem here is that skipping is dodgy to begin with, and
-> this is still liable to break in some cases. One big concern is that
-> (especially with LTO) we cannot guarantee the compiler will not inline
-> or outline functions, causing the skipp value to be too large or too
-> small. That's liable to happen to callers, and in theory (though
-> unlikely in practice), portions of arch_stack_walk() or
-> stack_trace_save() could get outlined too.
->
-> Unless we can get some strong guarantees from compiler folk such that we
-> can guarantee a specific function acts boundary for unwinding (and
-> doesn't itself get split, etc), the only reliable way I can think to
-> solve this requires an assembly trampoline. Whatever we do is liable to
-> need some invasive rework.
+> +static void __hyp_attach_page(struct hyp_pool *pool,
+> +			      struct hyp_page *p)
+> +{
+> +	unsigned int order = p->order;
+> +	struct hyp_page *buddy;
+> +
+> +	memset(hyp_page_to_virt(p), 0, PAGE_SIZE << p->order);
+> +
+> +	/*
+> +	 * Only the first struct hyp_page of a high-order page (otherwise known
+> +	 * as the 'head') should have p->order set. The non-head pages should
+> +	 * have p->order = HYP_NO_ORDER. Here @p may no longer be the head
+> +	 * after coallescing, so make sure to mark it HYP_NO_ORDER proactively.
+> +	 */
+> +	p->order = HYP_NO_ORDER;
+> +	for (; (order + 1) < pool->max_order; order++) {
+> +		buddy = __find_buddy_avail(pool, p, order);
+> +		if (!buddy)
+> +			break;
+> +
+> +		/* Take the buddy out of its list, and coallesce with @p */
+> +		list_del_init(&buddy->node);
+> +		buddy->order = HYP_NO_ORDER;
+> +		p = (p < buddy) ? p : buddy;
 
-Will LTO and friends respect 'noinline'? One thing I also noticed is
-that tail calls would also cause the stack trace to appear somewhat
-incomplete (for some of my tests I've disabled tail call
-optimizations). Is there a way to also mark a function
-non-tail-callable? But I'm also not sure if with all that we'd be
-guaranteed the code we want, even though in practice it might.
+nit: this is min()
 
-Thanks,
--- Marco
+> +	}
+> +
+> +	/* Mark the new head, and insert it */
+> +	p->order = order;
+> +	list_add_tail(&p->node, &pool->free_area[order]);
+> +}
+> +
+> +static void hyp_attach_page(struct hyp_page *p)
+> +{
+> +	struct hyp_pool *pool = hyp_page_to_pool(p);
+> +
+> +	hyp_spin_lock(&pool->lock);
+> +	__hyp_attach_page(pool, p);
+> +	hyp_spin_unlock(&pool->lock);
+> +}
+> +
+> +static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
+> +					   struct hyp_page *p,
+> +					   unsigned int order)
+> +{
+> +	struct hyp_page *buddy;
+> +
+> +	list_del_init(&p->node);
+> +	while (p->order > order) {
+> +		/*
+> +		 * The buddy of order n - 1 currently has HYP_NO_ORDER as it
+> +		 * is covered by a higher-level page (whose head is @p). Use
+> +		 * __find_buddy_nocheck() to find it and inject it in the
+> +		 * free_list[n - 1], effectively splitting @p in half.
+> +		 */
+> +		p->order--;
+> +		buddy = __find_buddy_nocheck(pool, p, p->order);
+> +		buddy->order = p->order;
+> +		list_add_tail(&buddy->node, &pool->free_area[buddy->order]);
+> +	}
+> +
+> +	return p;
+> +}
+> +
+> +void hyp_put_page(void *addr)
+> +{
+> +	struct hyp_page *p = hyp_virt_to_page(addr);
+> +
+> +	if (hyp_page_ref_dec_and_test(p))
+> +		hyp_attach_page(p);
+> +}
+> +
+> +void hyp_get_page(void *addr)
+> +{
+> +	struct hyp_page *p = hyp_virt_to_page(addr);
+> +
+> +	hyp_page_ref_inc(p);
+> +}
+> +
+> +void *hyp_alloc_pages(struct hyp_pool *pool, unsigned int order)
+> +{
+> +	unsigned int i = order;
+> +	struct hyp_page *p;
+> +
+> +	hyp_spin_lock(&pool->lock);
+> +
+> +	/* Look for a high-enough-order page */
+> +	while (i < pool->max_order && list_empty(&pool->free_area[i]))
+> +		i++;
+> +	if (i >= pool->max_order) {
+> +		hyp_spin_unlock(&pool->lock);
+> +		return NULL;
+> +	}
+> +
+> +	/* Extract it from the tree at the right order */
+> +	p = list_first_entry(&pool->free_area[i], struct hyp_page, node);
+> +	p = __hyp_extract_page(pool, p, order);
+> +
+> +	hyp_spin_unlock(&pool->lock);
+> +	hyp_page_ref_inc(p);
+
+I find this a little scary, as we momentarily drop the lock. It think
+it's ok because the reference count on the page must be 0 at this point,
+but actually then I think it would be clearer to have a
+hyp_page_ref_init() function which could take the lock, check that the
+refcount is indeed 0 and then set it to 1.
+
+What do you think?
+
+Will
