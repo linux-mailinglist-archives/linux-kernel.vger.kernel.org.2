@@ -2,64 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9B432D728
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E37432D730
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbhCDPx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233232AbhCDPxX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:53:23 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3D8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 07:52:43 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 2so29415463ljr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 07:52:43 -0800 (PST)
+        id S236004AbhCDPzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:55:01 -0500
+Received: from mail-bn8nam11on2070.outbound.protection.outlook.com ([40.107.236.70]:12644
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235997AbhCDPys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 10:54:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I/e27UoTSyhR6GN9QtZMf698STwBn7m9Pug+VrbrRTjb9itblGYVqqiHP5+57dCi6Ik2RPz6dazw5anyJGVMqor7CpkPzH358u/+WvrX/d15vZ1N2gnN5JpLEsJu8ucNh2gyP7ByIIz0r5oLNFeblsrHTfWbyKDVmQGThuBP5zoIerPFQSsOickROfV7GygyUv/lLBCESS0CrPW3huBHpOVC2DMxAvVkbTqHJFesycw0zpLQWUOxlpckz39MIXvrc/iGp3JR7O0Xh/UY8VT4YIpVmYDPesvMbMzL2Ur948jp1CV2RH/ST+Y7dF0Hca7nb+7tEGunqO88ua94yGS2sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6arrU01ZhUc80J2vbzfPV5GSY/ah929O+XCUmn/gQC4=;
+ b=Ib/AsRvXa7U266kV2jQu+EQDdsUPBnnAlQt9igMMwduoxWjKQswJvRRzsrOZ0VdWRWVgnEcLw924H9aPL85Tx7gKBL07j1aDN+JLia/GNvPMnHBlhd70wgQSJUK/OEoffNB1LbSDck6FTunix9q2hEnEmzyH3IGkEUMOqrjAeKWS5xK4AvHaoNtee35iSFK7Ta+xr61egDu77yO4XDLr3jIULSki286Kcj6c4m5BCrRtehjyUByq6/mcncOVPWEtbI3mzrduxUlJchlEKMIglvVW9GbQISlJ/V6OZil0VOP1L0/py5DAXM0qL2OhkrLFmZeUA12+8VkOpgUqG1PFHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.dk smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Yb23tfe2HZqW4Mrzq25BtEzvT4YGwtXRySMxvl4LoHc=;
-        b=R59ndyIWaUCbVT3qCb7VKifiuFgdaEfDlL4lxSpB8yw6rq8lg0BKGh9fiWUkLuYn4k
-         XSY8Fe7qUZGOa5Nw99tVg1KLnZGX6KoVw0LUaJXvM4dIuB5avhy3uFMvQM2AmVNk9No5
-         ex4E7OWi3IYXrTpwkXzRQ8lTe+lnerpY6taFesQ+6ddb1L/G2XrVpUqv1sASXoEj2am7
-         Vg16Jm6QN/yyQiz9uzXhj/c1XQagKryyHeZW4uoM+cabt0VmIgNgJOuWGz+tpbRSIaXS
-         or30UthC6DZq4zh/yZPOgqqUStzCPRSFJwTreUXW5QlW/S4mWbU06IUKbAfcbcNTUEYA
-         fv3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Yb23tfe2HZqW4Mrzq25BtEzvT4YGwtXRySMxvl4LoHc=;
-        b=feivBGJmvvc4yuoz7TpMeU8d3VsPC6wSGYWiaZ88im+Gdi+p232c7mEsD+HAE+Nkic
-         r6AoqMEoViLxnskTW/aTNJ8j3CjFvn6DIEAU5h+ieLUsxcFd58fkRRH7LR4Cmr2XvfFz
-         B8sWDBQA2QQVlSrH/FhGi7qFpCCittAz06IbHcUtyI/5exdQt8c2cK7bHY85MmNaqrRH
-         /ToyCmviptugMLh4tGyfHnHiA2eB5wG3mmL5aLSMdo1qh2R9B56ZfF/ZaD1yTzCyPO0+
-         OOZi7HHzx4LGiS/JUbmsLhDNsT4Ly7JIFu15ZdcdNlnxYeZ91EniQQHXM+x9bx+vlC4e
-         6NAQ==
-X-Gm-Message-State: AOAM530MhtJiYGgRPmYfZk7ovkem/Da20Bbm0JX11y2mMmtW8XwPulXp
-        EbecELRm3dEFXjB3QL0n5VsDeTLvTrv3OrTEmps=
-X-Google-Smtp-Source: ABdhPJybaoJUN2xH3VmSGSjYP6rfYu9IUIrFRZnafBgNjc7YBxH6LBzF9mqogh6zjnYQSlXq+i1PGU0s8CBriZyVvXg=
-X-Received: by 2002:a2e:b8c9:: with SMTP id s9mr2667010ljp.187.1614873161890;
- Thu, 04 Mar 2021 07:52:41 -0800 (PST)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6arrU01ZhUc80J2vbzfPV5GSY/ah929O+XCUmn/gQC4=;
+ b=GdpjKXbK+YJXjkWxE+kAcdWAz/Abt9cHg7QvRKtisZnSMS1iC2yrMsC75HD4lZ7dwJIEbe7FVJSCWO2sy53XY0XS7jPVWBHsnioY9sks37NxEVEIqAHscU1MENdQoCWUhDkm8b0XrrXl+m9/XBrokvroMPtC9UEKZRRG5RBdANA=
+Received: from MN2PR20CA0019.namprd20.prod.outlook.com (2603:10b6:208:e8::32)
+ by BL0PR02MB4852.namprd02.prod.outlook.com (2603:10b6:208:52::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Thu, 4 Mar
+ 2021 15:53:56 +0000
+Received: from BL2NAM02FT054.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:e8:cafe::2a) by MN2PR20CA0019.outlook.office365.com
+ (2603:10b6:208:e8::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Thu, 4 Mar 2021 15:53:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.dk; dkim=none (message not signed)
+ header.d=none;kernel.dk; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT054.mail.protection.outlook.com (10.152.77.107) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3890.19 via Frontend Transport; Thu, 4 Mar 2021 15:53:56 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 4 Mar 2021 07:53:28 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Thu, 4 Mar 2021 07:53:28 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ axboe@kernel.dk,
+ linux-ide@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [10.140.6.6] (port=38532 helo=xhdappanad40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <piyush.mehta@xilinx.com>)
+        id 1lHqI3-00044o-GR; Thu, 04 Mar 2021 07:53:27 -0800
+From:   Piyush Mehta <piyush.mehta@xilinx.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>, <sgoud@xilinx.com>, <michal.simek@xilinx.com>,
+        Piyush Mehta <piyush.mehta@xilinx.com>
+Subject: [PATCH] ata: ahci: ceva: Updated code by using dev_err_probe()
+Date:   Thu, 4 Mar 2021 21:23:08 +0530
+Message-ID: <20210304155309.17878-1-piyush.mehta@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:ab3:4a12:0:0:0:0:0 with HTTP; Thu, 4 Mar 2021 07:52:41 -0800 (PST)
-Reply-To: sgtannkisner@gmail.com
-From:   sgtannkisner <sanandpeter864@gmail.com>
-Date:   Thu, 4 Mar 2021 16:52:41 +0100
-Message-ID: <CADcLJ8O+Ub73G0gZZe+9egs8KQ_+43B2Pwp1izpL5MbooT2HLQ@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d38fbfcf-d06a-495e-a4a5-08d8df25b7bf
+X-MS-TrafficTypeDiagnostic: BL0PR02MB4852:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB48523DFB0DFBA86AB6889327D4979@BL0PR02MB4852.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:131;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LKC0alTxsU/PsazTTuaKqOGldGHA9y+Jr+hAlhb1fQP8IMEu9lEfB8kmpfSOu3VlOf7EwBeGD3PPkqo6nx/jILZixHANFSymI7VXESK8l06OByIfxQjupE2i/LnNUFLMCz6jVixOAKEVPmEW10cmzGaPJssVyWurtN5nSlf4y/96SvlLsuBtz7E5+33boFcAKnsnQ15FXIrWa9Dy0i4nHUZEWU4Ywifqg7aEcjj/S1u9XD8M17rWQFFOauKoVH3doBT/15SrywsCn3RkDO8CXMLST6BjHuBUMJXpvSEo3EWe4JD5P1KKaRjxI3mB9OrQd05w4w5SyhtmG74Ga6z2k7j9WCf6fyaeFi8Gvgw5d7MJpsof4cI2vmDGd9kgYUBLybqz2syaA13fAV3sCGFNkjj7EpJGoPH5LNhh4ulc7D9W2PPXIxPV478hRYpfPgZPr6kKWpjDvlk3ViN1U1GSfLY3F2ULYpoLGymOq9rAzvDt0RoaMr+M0U6pzIziHAKi4SQM9altHmrjJcqWePnG9n6fwynDmcVWvbkflzyG/99kuetxDMDTYmlCXmPp6vluBCDhrCZJEQZWEIMB5gApHk3vIm2Ll6Gui0awZhNATcBCfFjZhBEh4lCNMzAhWLBsYBniT1eWjrNkHheLF9DP3MaUG3/hKYUxVrmgkMDz2F4KsE8v3Bg5DWGigOCeKGPAxmy/gZmU4AW84ypL4nupNlWvntZhLpcuyxH9fVdth2HRc3F44tItjLEGYwRz0oUQeSyKtRMaQaKeRx5kkDNLvQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(46966006)(36840700001)(36860700001)(44832011)(7696005)(107886003)(426003)(1076003)(8676002)(316002)(478600001)(82740400003)(8936002)(36906005)(336012)(9786002)(2616005)(4326008)(36756003)(54906003)(966005)(70206006)(70586007)(186003)(82310400003)(356005)(6916009)(2906002)(15650500001)(47076005)(5660300002)(26005)(6666004)(83380400001)(7636003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2021 15:53:56.1081
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d38fbfcf-d06a-495e-a4a5-08d8df25b7bf
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT054.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4852
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-Good morning, I am sgt Ann kisner from united states of America, Please i
-have Something very important thing to share with you,Please contact me on
-my email; ( sgtannkisner@gmail.com ).
-thanks
-Yours Miss
-SgtAnn
+Updated code with already prepared dev_err_probe(). It reduces code size
+and simplifies EPROBE_DEFER handling.
+
+Also, unify message format for similar error cases.
+
+Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+---
+This patch is based on ahci-ceva patches:
+https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=5542fabd9e07d6c49c07862e73070c325f93d390
+
+Tree: https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/tree/?h=for-next
+---
+ drivers/ata/ahci_ceva.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
+index b980218..a935209 100644
+--- a/drivers/ata/ahci_ceva.c
++++ b/drivers/ata/ahci_ceva.c
+@@ -207,9 +207,8 @@ static int ceva_ahci_probe(struct platform_device *pdev)
+ 	cevapriv->rst = devm_reset_control_get_optional_exclusive(&pdev->dev,
+ 								  NULL);
+ 	if (IS_ERR(cevapriv->rst)) {
+-		if (PTR_ERR(cevapriv->rst) != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "failed to get reset: %ld\n",
+-				PTR_ERR(cevapriv->rst));
++		dev_err_probe(&pdev->dev, PTR_ERR(cevapriv->rst),
++			      "failed to get reset\n");
+ 	}
+ 
+ 	hpriv = ahci_platform_get_resources(pdev, 0);
+-- 
+1.7.1
+
