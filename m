@@ -2,95 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A3D32C9F4
+	by mail.lfdr.de (Postfix) with ESMTP id E5AF832C9F6
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbhCDBRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:17:02 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:37894 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232727AbhCDBQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:16:41 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz_HBNEBgqhQUAA--.8724S2;
-        Thu, 04 Mar 2021 09:15:45 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] MIPS: Add comment about CONFIG_MIPS32_O32 in loongson3_defconfig when build with Clang
-Date:   Thu,  4 Mar 2021 09:15:44 +0800
-Message-Id: <1614820544-10686-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxz_HBNEBgqhQUAA--.8724S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr4rtr17JF4kKF1rWry8Zrb_yoW8XFyfpw
-        48Ja1DKrWrGr1rGF4kuryDWr4FyFZxJFyxXw4UJr15ZasxZayUZrnakF17ZrW7WrZaya18
-        urZ3Gr17Jay7C3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
-        6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbLiSPUUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S233994AbhCDBS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233410AbhCDBRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 20:17:54 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA2BC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 17:17:13 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id z5so2267510plg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 17:17:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=2TAf8k6Ig0ciYPCpcXPefokItLr+h4pwCG+DZ2d4HtA=;
+        b=GokP+w94J7qVIriivv1TRTOzXjUUcic+ER1JpuQwo1O6JPJTGn1hMeJIAzgwOXrNkb
+         rkVsCubA3OipEZvioUcX+h0GPy3HMSmrbkWq8+jGrpHB7QMBdObK3jRSSm0P1aUJb7eX
+         kBRIpnbk1+BtSA3663a2+hROq1em6tGHrp/gQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=2TAf8k6Ig0ciYPCpcXPefokItLr+h4pwCG+DZ2d4HtA=;
+        b=jhmSJMKXVHLxk4t5kcfMQ9e7Gk3Jud55pm0L7Am+Pa37WCsRzsO8/wkLyxxf/yi907
+         YRtWdf+ku/EGPDmNqYVmntboIuCOOOOuy63D9almpDa0GU0bnsZb00qB020pfPdj2ZAa
+         DsnyMopXj2EUWgVr0rbV/ggjR4h36HnwCGqotWIJOBonJhdqRoZmKE2cxBl9W3J4sVdf
+         /QTKI8/+rejJdEIC//2H0P+J2g7LhfhRh7RgMfYKcP3I4RPlJd2p54vwlTGEL1sLMbFT
+         jS9zybeTTP/KFwBq+Zr7TBsnf2WHjVSdVqsUfyUz1+pxIAcvBrC/12sLQ8KRm82GKJSq
+         XUMw==
+X-Gm-Message-State: AOAM532HgJZFQsK8lKBV7H1t7QV7F2S9vao7FHKzPfmfrs1OV4/JMAtO
+        vocfoSCT4Lh2PPha4p+9IRhplQ==
+X-Google-Smtp-Source: ABdhPJxOIkh393N/c7QHUbI8FJ84dUaLM3VQE6xzatayaSXtfjTbojXwkOPq/0uPCGmkQms/8kuQrQ==
+X-Received: by 2002:a17:902:207:b029:e4:471d:82a with SMTP id 7-20020a1709020207b02900e4471d082amr1707367plc.24.1614820633142;
+        Wed, 03 Mar 2021 17:17:13 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
+        by smtp.gmail.com with ESMTPSA id gt22sm7971248pjb.35.2021.03.03.17.17.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 17:17:12 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YD9kNphaSRPk83KJ@alley>
+References: <20210301174749.1269154-1-swboyd@chromium.org> <20210301174749.1269154-6-swboyd@chromium.org> <YD9kNphaSRPk83KJ@alley>
+Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org
+To:     Petr Mladek <pmladek@suse.com>
+Date:   Wed, 03 Mar 2021 17:17:11 -0800
+Message-ID: <161482063102.1478170.7873749258069095068@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When build kernel with Clang [1]:
+Quoting Petr Mladek (2021-03-03 02:25:58)
+> On Mon 2021-03-01 09:47:47, Stephen Boyd wrote:
+> > The %pS printk format (among some others) is used to print kernel
+> > addresses symbolically. When the kernel prints an address inside of a
+> > module, the kernel prints the addresses' symbol name along with the
+> > module's name that contains the address. Let's make kernel stacktraces
+> > easier to identify on KALLSYMS builds by including the build ID of a
+> > module when we print the address.
+> >=20
+> > This is especially helpful for crash debugging with pstore or crashdump
+> > kernels. If we have the build ID for the module in the stacktrace we can
+> > request the debug symbols for the module from a remote debuginfod server
+>=20
+> I have read the thread so for. IMHO, all mentioned variants complicate
+> the logs a lot. Either the backtrace lines are hard to parse.
+> Or the OOps/panic blocks gets too long when the ID is mentioned
+> for every loaded module. IMHO, neither proposed solution
+> is acceptable to be always used.
 
-$ make CC=clang loongson3_defconfig
-$ make CC=clang
+The modules line is already pretty hard to read once it gets beyond 8 or
+10 modules. Probably it should be broken up into multiple lines just so
+it can be read more easily. I find myself having to hunt in there
+already even without the build ID encoded there. I've also seen folks
+cut out that line in commit text and when posting to the mailing list
+because it's just long and noisy already.
 
-there exists the following error:
+>=20
+> First, I think that only I some developers would actually use
+> this information. Many of them either know what module was
+> used or they do not have an easy way to get the debugging
+> information by the ID. So, it should be configurable
+> at minimum.
 
-  Checking missing-syscalls for O32
-  CALL    scripts/checksyscalls.sh
-error: ABI 'o32' is not supported on CPU 'mips64r2'
-make[1]: *** [Kbuild:48: missing-syscalls] Error 1
-make: *** [arch/mips/Makefile:419: archprepare] Error 2
+It should be configurable because it isn't used or is hard to use?
+Wouldn't a config variable limit the uptake of this information and
+further reinforce the fact that nobody will use it? If we always exposed
+it then maybe we would get new users. I imagine that we could have a
+robot search crash reports and find the "crashiest" places in the kernel
+all the way down to the line level and poke kernel developers to look
+and see why it crashes so much there. If the information is behind a
+config then the benefit of that analysis will be limited.
 
-This is a known bug [2] with Clang, as Simon Atanasyan said,
-"There is no plan on support O32 for MIPS64 due to lack of
-resources".
+>=20
+> Second, I am not sure that it should be part of each OOps/panic blob.
+> One solution would be to print the ID by the module loader when
+> the module gets loaded. It would be mentioned earlier in the log
+> then.
 
-It is not a good idea to remove this config due to GCC works
-well, so add comment to point out this bug and suggest the
-users to remove CONFIG_MIPS32_O32=y in defconfig when build
-kernel with Clang.
+Please no. The kernel log could wrap around before an oops/panic happens
+and then the ID would be lost.
 
-[1] https://www.kernel.org/doc/html/latest/kbuild/llvm.html
-[2] https://bugs.llvm.org/show_bug.cgi?id=38063
+>=20
+> Or we could make it available, for example, via /proc. It is a kind
+> of information that might be gathered later on a rebooted system.
+> SUSE has "supportconfig" command that allows to gather a lot
+> of similar information about the system. We use it when
+> analyzing crashdumps and kernel bugs in general.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/configs/loongson3_defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+Please no. The build ID is already available via
+/sys/module/<modulename>/sections/<sectionname> and /sys/kernel/notes
+(for vmlinux) but that won't help for panics that reboot. If a panic
+happens and a new kernel is booted then post processing on the modules
+and vmlinux could all be incorrect. Furthermore, the modules will have
+to be found and parsed by some userspace crash processing tool after the
+reboot.
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 0e79f81..cacf9dd 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -35,6 +35,9 @@ CONFIG_NUMA=y
- CONFIG_SMP=y
- CONFIG_HZ_256=y
- CONFIG_KEXEC=y
-+# Please remove CONFIG_MIPS32_O32=y when build with Clang
-+# due to "ABI 'o32' is not supported on CPU 'mips64r2'",
-+# https://bugs.llvm.org/show_bug.cgi?id=38063
- CONFIG_MIPS32_O32=y
- CONFIG_MIPS32_N32=y
- CONFIG_VIRTUALIZATION=y
--- 
-2.1.0
+I'd really prefer to rely on the standard build ID vs. a per-distro
+bespoke solution to finding the information about the binaries the
+kernel was running. It's just simpler to not need to find out this sort
+of information about the system when the kernel knows what binary is
+running already. This is the same reason coredump_filter exists to let
+coredumping code figure out the build ID of the process that crashes vs.
+connecting that to some system information daemon.
+=20
+>=20
+> Anyway, I consider this a very detailed information that is not
+> suitable for everyone. It should be availabe on request, like
+> for example, backtraces from all CPUs, list of tasks, memory info.
 
+I suppose I can make a config option for this module printing stuff in
+the "Modules linked in:" line. Then we can remove it if most distros
+decide to enable it? I'm slightly disappointed that it can't just be
+printed all the time for every stacktrace but if there isn't opposition
+if it's all behind a config option then I will be happy to get 99% of
+the code upstream.
