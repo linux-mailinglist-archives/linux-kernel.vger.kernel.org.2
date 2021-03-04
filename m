@@ -2,158 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CBC32CEC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743BC32CEC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236799AbhCDIuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:50:06 -0500
-Received: from mga11.intel.com ([192.55.52.93]:38899 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236749AbhCDIt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:49:58 -0500
-IronPort-SDR: jaTi+g1pYuCyg2T5tr4S1ckPCcbKpOe0eYnUVpuTIBsfALPfzzAc4vcS+iN9IV49TRoCP3Ehen
- LOXAOV6nQAgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="183999187"
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="183999187"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 00:49:18 -0800
-IronPort-SDR: YJYWRzoZkkWYKJ//guBJU839q8sAmgTE3uDpcoA85qXeDI6QVSwY+7My++IExE9Ow+6GJQMeWK
- JghC3RqEHjAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="586677403"
-Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 04 Mar 2021 00:49:16 -0800
-Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lHjfX-00026Y-PG; Thu, 04 Mar 2021 08:49:15 +0000
-Date:   Thu, 04 Mar 2021 16:48:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- e190f6b118ef75189455a9642bf2e1be2614050e
-Message-ID: <60409ed2.+FrPPxkgymFMqU7V%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S236615AbhCDIvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:51:10 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:15824 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236479AbhCDIux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:50:53 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1248m3Ze014700;
+        Thu, 4 Mar 2021 09:49:57 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=FVNy8tJa/zBb6Dg12zoReyCjkz82aSQwtAndHZjvGrI=;
+ b=U4rIj9FWvU3QrNu8eC7iMsPaO5M3+VYijeR/qKqVEbkIfB7bFhgMVHqzx2bQhAM41bx1
+ uy0xUuy6JQNL5m8T8+Is/l3X+nj4KssdJO7kbSkQz3itCywduFAAiz8a/B3A3NTBfP68
+ zGwDozSj3w34/pGoCMkvRsQW4Fe+9K5JxWvV8RVYkK2Xyg2r97vQ+kfpohr2FoLRcsJ9
+ lddIy1QAgdQZFazh2hzvpvxniYNTTl4JNBYwNy1Mmsp1OgYG+vZu2AyiP7kJcJkvxye8
+ 8jhPiss1zGvUcgoAJz4IqG4BY0qMqHItC1/pW9qwjxl2ig1TdNB+IqOR90DiwcNuuEXN Dg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfdye49s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 09:49:57 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9FEEF10002A;
+        Thu,  4 Mar 2021 09:49:56 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 74D7A228C23;
+        Thu,  4 Mar 2021 09:49:56 +0100 (CET)
+Received: from lmecxl0951.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Mar
+ 2021 09:49:55 +0100
+Subject: Re: [PATCH] drm/stm: ltdc: Use simple encoder
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-amarula@amarulasolutions.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210302175700.28640-1-jagan@amarulasolutions.com>
+ <791a6f75-3603-9b84-c267-76c24fb77ee2@suse.de>
+From:   yannick Fertre <yannick.fertre@foss.st.com>
+Message-ID: <1d6ff4e2-9213-6e13-214d-b1705199610e@foss.st.com>
+Date:   Thu, 4 Mar 2021 09:49:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <791a6f75-3603-9b84-c267-76c24fb77ee2@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_02:2021-03-03,2021-03-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: e190f6b118ef75189455a9642bf2e1be2614050e  Merge branch 'linus'
+Hi Thomas,
+I wait a few days before merging it.
+Thank you for your help.
 
-elapsed time: 722m
+Best regards
 
-configs tested: 96
-configs skipped: 2
+Yannick
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                            q40_defconfig
-mips                     loongson1c_defconfig
-arm                          pxa168_defconfig
-powerpc                     skiroot_defconfig
-arm                         socfpga_defconfig
-arm                           sama5_defconfig
-sh                   secureedge5410_defconfig
-ia64                            zx1_defconfig
-mips                      maltaaprp_defconfig
-sh                             sh03_defconfig
-arc                    vdk_hs38_smp_defconfig
-microblaze                          defconfig
-sh                        sh7757lcr_defconfig
-powerpc                       maple_defconfig
-mips                      malta_kvm_defconfig
-h8300                    h8300h-sim_defconfig
-sh                          lboxre2_defconfig
-arm                         bcm2835_defconfig
-parisc                           alldefconfig
-arm                            lart_defconfig
-arm                          lpd270_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210303
-i386                 randconfig-a003-20210303
-i386                 randconfig-a002-20210303
-i386                 randconfig-a004-20210303
-i386                 randconfig-a006-20210303
-i386                 randconfig-a001-20210303
-x86_64               randconfig-a013-20210303
-x86_64               randconfig-a016-20210303
-x86_64               randconfig-a015-20210303
-x86_64               randconfig-a014-20210303
-x86_64               randconfig-a012-20210303
-x86_64               randconfig-a011-20210303
-i386                 randconfig-a016-20210304
-i386                 randconfig-a012-20210304
-i386                 randconfig-a013-20210304
-i386                 randconfig-a014-20210304
-i386                 randconfig-a011-20210304
-i386                 randconfig-a015-20210304
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210303
-x86_64               randconfig-a001-20210303
-x86_64               randconfig-a004-20210303
-x86_64               randconfig-a002-20210303
-x86_64               randconfig-a005-20210303
-x86_64               randconfig-a003-20210303
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On 3/4/21 9:21 AM, Thomas Zimmermann wrote:
+> Hi,
+> 
+> shall I merge this patch?
+> 
+> Am 02.03.21 um 18:57 schrieb Jagan Teki:
+>> STM ltdc driver uses an empty implementation for its encoder.
+>> Replace the code with the generic simple encoder.
+>>
+>> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+>> ---
+>>   drivers/gpu/drm/stm/ltdc.c | 12 ++----------
+>>   1 file changed, 2 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+>> index 7812094f93d6..aeeb43524ca0 100644
+>> --- a/drivers/gpu/drm/stm/ltdc.c
+>> +++ b/drivers/gpu/drm/stm/ltdc.c
+>> @@ -31,6 +31,7 @@
+>>   #include <drm/drm_of.h>
+>>   #include <drm/drm_plane_helper.h>
+>>   #include <drm/drm_probe_helper.h>
+>> +#include <drm/drm_simple_kms_helper.h>
+>>   #include <drm/drm_vblank.h>
+>>   #include <video/videomode.h>
+>> @@ -1020,14 +1021,6 @@ static int ltdc_crtc_init(struct drm_device 
+>> *ddev, struct drm_crtc *crtc)
+>>       return ret;
+>>   }
+>> -/*
+>> - * DRM_ENCODER
+>> - */
+>> -
+>> -static const struct drm_encoder_funcs ltdc_encoder_funcs = {
+>> -    .destroy = drm_encoder_cleanup,
+>> -};
+>> -
+>>   static void ltdc_encoder_disable(struct drm_encoder *encoder)
+>>   {
+>>       struct drm_device *ddev = encoder->dev;
+>> @@ -1088,8 +1081,7 @@ static int ltdc_encoder_init(struct drm_device 
+>> *ddev, struct drm_bridge *bridge)
+>>       encoder->possible_crtcs = CRTC_MASK;
+>>       encoder->possible_clones = 0;    /* No cloning support */
+>> -    drm_encoder_init(ddev, encoder, &ltdc_encoder_funcs,
+>> -             DRM_MODE_ENCODER_DPI, NULL);
+>> +    drm_simple_encoder_init(ddev, encoder, DRM_MODE_ENCODER_DPI);
+>>       drm_encoder_helper_add(encoder, &ltdc_encoder_helper_funcs);
+>>
+> 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
