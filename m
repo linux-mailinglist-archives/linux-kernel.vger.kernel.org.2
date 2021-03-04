@@ -2,99 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FE032DB8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C958E32DB95
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236171AbhCDVIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:08:43 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:51564 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234921AbhCDVId (ORCPT
+        id S238693AbhCDVJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238317AbhCDVJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:08:33 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Ds3NF6Zhxz1qs10;
-        Thu,  4 Mar 2021 22:07:24 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Ds3ND3k9kz1qqkJ;
-        Thu,  4 Mar 2021 22:07:24 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id NF9l6MSuqCwo; Thu,  4 Mar 2021 22:07:22 +0100 (CET)
-X-Auth-Info: /bjdHCSRRBO1hy/kHQ3KWZ31WRCi0CyJyL23VTq/CMI=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu,  4 Mar 2021 22:07:22 +0100 (CET)
-Subject: Re: [PATCH AUTOSEL 5.10 050/217] rsi: Fix TX EAPOL packet handling
- against iwlwifi AP
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Angus Ainslie <angus@akkea.ca>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin Kepplinger <martink@posteo.de>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-References: <20201223021626.2790791-1-sashal@kernel.org>
- <20201223021626.2790791-50-sashal@kernel.org>
- <68699f8a-2fcd-3b3d-f809-afa54790e9f9@denx.de> <YEFHULdbXVVxORn9@sashalap>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <d4b4f1d1-8041-3563-708a-850fe95549b8@denx.de>
-Date:   Thu, 4 Mar 2021 22:07:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 4 Mar 2021 16:09:10 -0500
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C35AC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 13:08:30 -0800 (PST)
+Received: by mail-oo1-xc33.google.com with SMTP id l5so6939754ooj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 13:08:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=J50JP3psap6N5U8PJK0VaCpx/DyKv1Z4rwk0hsyasT8=;
+        b=ShyKNcNe0s0B6TrwHg0Wrd8VbmCyL1Xz57elLS6JF0EdStg0/ngISbRwFn1CLIPeLQ
+         YVvSUGEXyQEVCph+woW0FUxzpLDFcTabpL6xX2i6/WRjXhXFGlDskORQ9B0mQPxYtg2t
+         YBOAb+kBsnKPty8uVhU13LF9HCQXVeE1A3sfx5Rd0lPsTBk5mKU6u9mDI6SUQaYc3hev
+         ux40KnR+33BvAXJuy2pCJQPqGqlQnNh22/SGf8FykKSMx5xvrUF5toRcH3XbkFQ4C94h
+         Oa3J5nicZhpc/BfNjgNlE84ecbz4LPkHu1RRHzgVIMGV7bkFr9233JD85rsrbV1cRosI
+         qROw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=J50JP3psap6N5U8PJK0VaCpx/DyKv1Z4rwk0hsyasT8=;
+        b=noFycInWpBJJOzlY3RxiIdnMBHllMmCfYm4kO35U7Pf9p5oY8+5R2EGXaYYKAlwGky
+         3FYEVVZPzt3e88QsbXDD0YI6ulk9tz/rUtxydqXuNjoXqBpPmCvicZtuttT54Aza9met
+         Q/u2v8wUVdmryawAVteWKn1beAmQZ2zW8GlaAqFvwbnefZ3GE38NSvQuVLW/MT+h02ve
+         zVzsFgR/APwqzEd8frbxfaVO1ufLx5cQFnsGSwgNGX+bsA1DmcYi21Rc00jWsZVRBUIX
+         QYW8wD5g0VMkZ6D3IOnJKJvM44P0NWOv4b71vK0b7lGwF+ENTKB8TSMjriZTq6vDU+W2
+         AxgA==
+X-Gm-Message-State: AOAM531qDWrxh/ezUH4u9hVLrSj6SF5HkbVAWowjV1CgsThtn+xofEv1
+        uNa88kmRMOlhDFjKZqGGAMz2y83NpFQx33YzyuM=
+X-Google-Smtp-Source: ABdhPJzWucZnTdO/uERt2VBCoCRe2xsIaNV+ExSTp8LMx7Rb5gJc0pZ8OQWp63VN1VXTBobe38tUdQ==
+X-Received: by 2002:a4a:9019:: with SMTP id i25mr4896429oog.8.1614892108728;
+        Thu, 04 Mar 2021 13:08:28 -0800 (PST)
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com. [209.85.167.177])
+        by smtp.gmail.com with ESMTPSA id n11sm66378oij.51.2021.03.04.13.08.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 13:08:28 -0800 (PST)
+Received: by mail-oi1-f177.google.com with SMTP id f3so31663539oiw.13;
+        Thu, 04 Mar 2021 13:08:28 -0800 (PST)
+X-Received: by 2002:aca:4fd3:: with SMTP id d202mr4233275oib.11.1614892107343;
+ Thu, 04 Mar 2021 13:08:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YEFHULdbXVVxORn9@sashalap>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210303135500.24673-1-alex.bennee@linaro.org> <20210303135500.24673-3-alex.bennee@linaro.org>
+In-Reply-To: <20210303135500.24673-3-alex.bennee@linaro.org>
+From:   Arnd Bergmann <arnd@linaro.org>
+Date:   Thu, 4 Mar 2021 22:08:11 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2e3zNqMJSN-LAAjYmy8Gr=wjn5MMDMinxawOWcMgo7Ww@mail.gmail.com>
+Message-ID: <CAK8P3a2e3zNqMJSN-LAAjYmy8Gr=wjn5MMDMinxawOWcMgo7Ww@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/5] char: rpmb: provide a user space interface
+To:     =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        ruchika.gupta@linaro.org,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Avri Altman <avri.altman@sandisk.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 9:47 PM, Sasha Levin wrote:
-> On Tue, Mar 02, 2021 at 08:25:49PM +0100, Marek Vasut wrote:
->> On 12/23/20 3:13 AM, Sasha Levin wrote:
->>
->> Hello Sasha,
->>
->>> From: Marek Vasut <marex@denx.de>
->>>
->>> [ Upstream commit 65277100caa2f2c62b6f3c4648b90d6f0435f3bc ]
->>>
->>> In case RSI9116 SDIO WiFi operates in STA mode against Intel 9260 in 
->>> AP mode,
->>> the association fails. The former is using wpa_supplicant during 
->>> association,
->>> the later is set up using hostapd:
->>
->> [...]
->>
->> Was this patch possibly missed from 5.10.y ?
-> 
-> I'm not sure what happened there, but I can queue it up.
+On Wed, Mar 3, 2021 at 2:54 PM Alex Benn=C3=A9e <alex.bennee@linaro.org> wr=
+ote:
+>
+> +       /* the rpmb is single open! */
+> +       if (test_and_set_bit(RPMB_DEV_OPEN, &rdev->status))
+> +               return -EBUSY;
 
-Thank you
+open counters on device nodes are fundamentally broken, because
+they do not stop you from using dup() or sharing the file descriptor
+across a fork. Just remove this.
 
->> Also, while at it, I think it might make sense to pick the following 
->> two patches as well, they dramatically reduce interrupt rate of the 
->> RSI WiFi device, so it stops overloading lower-end devices:
->> 287431463e786 ("rsi: Move card interrupt handling to RX thread")
-> 
-> And this one too.
+> +static long rpmb_ioctl_ver_cmd(struct rpmb_dev *rdev,
+> +                              struct rpmb_ioc_ver_cmd __user *ptr)
+> +{
+> +       struct rpmb_ioc_ver_cmd ver =3D {
+> +               .api_version =3D RPMB_API_VERSION,
+> +       };
+> +
+> +       return copy_to_user(ptr, &ver, sizeof(ver)) ? -EFAULT : 0;
+> +}
 
-Thanks
+Similarly, API versions are fundamentally flawed, as the kernel requires
+us to keep compatibility with existing user space. Remove this as well.
 
->> abd131a19f6b8 ("rsi: Clean up loop in the interrupt handler")
-> 
-> But not this one, it looks like just a cleanup. Why is it needed?
+> +static long rpmb_ioctl_cap_cmd(struct rpmb_dev *rdev,
+> +                              struct rpmb_ioc_cap_cmd __user *ptr)
+> +{
+> +       struct rpmb_ioc_cap_cmd cap;
 
-Now I got confused, yes, please skip abd131a19f6b8, thanks for spotting 
-it. (I still have one more patch for the RSI wifi which I need to send 
-out, but that's for later)
+Better do a memset() here to ensure this does not leak kernel
+stack data to user space.
+
+
+> +static const struct file_operations rpmb_fops =3D {
+> +       .open           =3D rpmb_open,
+> +       .release        =3D rpmb_release,
+> +       .unlocked_ioctl =3D rpmb_ioctl,
+> +       .owner          =3D THIS_MODULE,
+> +       .llseek         =3D noop_llseek,
+> +};
+
+Add
+
+       .compat_ioctl =3D compat_ptr_ioctl
+
+to make it work for 32-bit user space on 64-bit kernels.
+
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 */
+> +/*
+> + * Copyright (C) 2015-2018 Intel Corp. All rights reserved
+> + */
+> +#ifdef CONFIG_RPMB_INTF_DEV
+> +int __init rpmb_cdev_init(void);
+> +void __exit rpmb_cdev_exit(void);
+> +void rpmb_cdev_prepare(struct rpmb_dev *rdev);
+> +void rpmb_cdev_add(struct rpmb_dev *rdev);
+> +void rpmb_cdev_del(struct rpmb_dev *rdev);
+> +#else
+> +static inline int __init rpmb_cdev_init(void) { return 0; }
+
+I don't think it's necessary to make the user interface optional,
+I'd just always provide these.
+
+>
+> +#define RPMB_API_VERSION 0x80000001
+
+Remove this
+
+> + */
+> +struct rpmb_ioc_ver_cmd {
+> +       __u32 api_version;
+> +} __packed;
+
+And this
+
+> +
+> +enum rpmb_auth_method {
+> +       RPMB_HMAC_ALGO_SHA_256 =3D 0,
+> +};
+> +
+> +/**
+> + * struct rpmb_ioc_cap_cmd - rpmb capabilities
+> + *
+> + * @target: rpmb target/region within RPMB partition.
+> + * @capacity: storage capacity (in units of 128K)
+> + * @block_size: storage data block size (in units of 256B)
+> + * @wr_cnt_max: maximal number of block that can be written in a single =
+request.
+> + * @rd_cnt_max: maximal number of block that can be read in a single req=
+uest.
+> + * @auth_method: authentication method: currently always HMAC_SHA_256
+> + * @reserved: reserved to align to 4 bytes.
+> + */
+> +struct rpmb_ioc_cap_cmd {
+> +       __u16 target;
+> +       __u16 capacity;
+> +       __u16 block_size;
+> +       __u16 wr_cnt_max;
+> +       __u16 rd_cnt_max;
+> +       __u16 auth_method;
+> +       __u16 reserved;
+> +} __attribute__((packed));
+> +
+
+Remove the packed attribute, it does not change the structure layout but
+just makes it less efficient to access on architectures that turn unaligned
+loads and stores into byte accesses.
+
+> +/**
+> + * struct rpmb_ioc_blocks_cmd - read/write blocks to/from RPMB
+> + *
+> + * @keyid: key_serial_t of key to use
+> + * @addr: index into device (units of 256B blocks)
+> + * @count: number of 256B blocks
+> + * @data: pointer to data to write/read
+> + */
+> +struct rpmb_ioc_blocks_cmd {
+> +       __s32 key; /* key_serial_t */
+> +       __u32 addr;
+> +       __u32 count;
+> +       __u8 __user *data;
+> +} __attribute__((packed));
+
+ioctl structures should generally not have pointers in them. If this can be=
+ done
+one block at a time, you can have the 256 bytes as part of the structure.
+
+This probably needs a redesign anyway based on Tomas' feedback though.
+
+If you end up needing a pointer, use a __u64 member  with
+u64_to_user_ptr() as described in Documentation/driver-api/ioctl.rst
+
+> +#define RPMB_IOC_VER_CMD     _IOR(0xB8, 80, struct rpmb_ioc_ver_cmd)
+> +#define RPMB_IOC_CAP_CMD     _IOR(0xB8, 81, struct rpmb_ioc_cap_cmd)
+> +#define RPMB_IOC_PKEY_CMD    _IOW(0xB8, 82, key_serial_t)
+> +#define RPMB_IOC_COUNTER_CMD _IOR(0xB8, 84, int)
+> +#define RPMB_IOC_WBLOCKS_CMD _IOW(0xB8, 85, struct rpmb_ioc_blocks_cmd)
+> +#define RPMB_IOC_RBLOCKS_CMD _IOR(0xB8, 86, struct rpmb_ioc_blocks_cmd)
+
+The last one should be _IOWR(), not _IOR(), since you write the metadata an=
+d
+read the data.
+
+      Arnd
