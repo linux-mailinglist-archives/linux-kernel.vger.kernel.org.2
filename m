@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A7032CE80
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C3932CE88
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236795AbhCDIa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:30:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236778AbhCDIaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:30:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 089CD64F07;
-        Thu,  4 Mar 2021 08:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614846612;
-        bh=p+LFYEJoTZPD5guFNbCgjfsD5MOV4lQEg1/noCdx6g0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aqbhMAJqfzqZVNTk+HxCq0YEvH0DlWywVMMT/vsKEPxai5Qtx1O+yKb2Ksqh7dQKG
-         6AD7bDyRoGLMbuJCHL7uaQ5HgWT+d1aLTr9ZlQt1D4xG8XzjwlifHkll8KNnKy9rsX
-         qi4pjB7WF6HR4m6pQZA3UxngjOZ/q5LtCGfqg4dOgD4K9j62aNAJHk9R8DkHWmSRX0
-         zx9xfelM+0ZSkreqNUN8HmUoCoACjFg6Ce0bLEjJA7/6r6JEihanJag0QOpWKsH0yU
-         LO2HMTF+hCfaHxIqIiUXHRNpMYNk3KpYaUWgPk4jz/pHqDo2Ypfkgo37omLL0Agl/K
-         xVaQ8q8ktMNnQ==
-Received: by mail-ot1-f47.google.com with SMTP id h10so15809737otm.1;
-        Thu, 04 Mar 2021 00:30:11 -0800 (PST)
-X-Gm-Message-State: AOAM530qgVfIVCXiABhjdGdPmrH+UEoJ1K1YJBrcryEesfTdgecV3usG
-        Lbe4eZtqp7HFJA6xeJDtkfveeT/e0AB0AcO3ufY=
-X-Google-Smtp-Source: ABdhPJxYBMJoudqekui521vRf42I2gPjyAMXoSs0/ZyckrKw0z9xkv8aYatVKNS2gMQxPwrCckGCNDLcWKAwPEzBhXw=
-X-Received: by 2002:a9d:7512:: with SMTP id r18mr2646719otk.90.1614846611398;
- Thu, 04 Mar 2021 00:30:11 -0800 (PST)
+        id S233125AbhCDIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234605AbhCDIbl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 03:31:41 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131D2C061574;
+        Thu,  4 Mar 2021 00:31:01 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id d9so27648506ybq.1;
+        Thu, 04 Mar 2021 00:31:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TBUtXor9JHig51XwOk2hKqYVPwMBdbUM5CT6K0S4ndc=;
+        b=Podv25yUm88aY+8mEUWBOnr7ph6i86M9YgHhCbaqEq1+ciSnQ4CGjjNmHjNc2RzeTr
+         aaQS6ot9VEQZ/i6l7rnzI6+Mtu3I0p9XyLD6Q6yA0mZLQ+quxvFQ5ScOyVXW3FMHmZiC
+         drSHvhQraY61uCEBdDRm/72oRpjmqT1+MhWT5i2Zxgf2P4okcqdk7Pj+JTGw6ALqqVYP
+         L9395H+E6IRqthsuZM8dmObEB3z3PzHnFDMeae5IHm50h3QfloLbDqjCNeIqZ7c7nMcN
+         2IS6BZuB0IPOAWXYLlVCUQL92jtKYdioEWJdYzG0xvcdRQ9nfysMd9+AS7lsmUfkPvu7
+         u8FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TBUtXor9JHig51XwOk2hKqYVPwMBdbUM5CT6K0S4ndc=;
+        b=N2yySH4DMegZu8X+GfBE+Mz6ZR2xQzQl7Bx/liiuQAsVAI9rTOF1MBCg8qfdL9i5vA
+         9SjKd6LbofjusPU4jTeXEK7AZ6cbnXnJB4RXxgH+x42ToF7GwgXLlB/vwoGk+waZ3Ah0
+         kV+mzzjcPHANo3Uwrx1u1QKQCtbYJujxMMy7gbRbpkvQU/YOrd1YxUljLBCTfG2BAwLx
+         YMkBMbHp66Ndrp1OqHvfModmR+9ponYaKcQ5VfRYFotjuyqV9gDIsYtPdnnAZTZrqQzI
+         GsaO5PIooX7zXseDy5B0GZZzDWkXaamBCiJtLkE64jgNSmo7Cx+zFVg1wtOauXNWZoq2
+         n0bg==
+X-Gm-Message-State: AOAM533aciS9nSw/6IpQi4/Y6HIfc/9fMHg0HKCUbMPCqydNu7stvpbg
+        oUyGhFs9GZi2CByHT6SlHZNBX/7DYGxBMiCPwG4=
+X-Google-Smtp-Source: ABdhPJwueHAY695LaUUFe5cSJfYyxtyB+83dn4Q/EVZ6w477nyX3CpA7IBDWq8xAbPTmbwv9XmtGCbOEOKV5EiUYbiI=
+X-Received: by 2002:a25:d4d0:: with SMTP id m199mr5066850ybf.26.1614846660505;
+ Thu, 04 Mar 2021 00:31:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20210304082837.22262-1-heikki.krogerus@linux.intel.com>
-In-Reply-To: <20210304082837.22262-1-heikki.krogerus@linux.intel.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 4 Mar 2021 09:30:00 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHXOGidWqueyxmxSQOQ6+1DW4trTg600roLF20Zh0_Z2g@mail.gmail.com>
-Message-ID: <CAMj1kXHXOGidWqueyxmxSQOQ6+1DW4trTg600roLF20Zh0_Z2g@mail.gmail.com>
-Subject: Re: [PATCH] efi/apple-properties: Handle device properties with
- software node API
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210301160102.2884774-1-almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210301160102.2884774-1-almaz.alexandrovich@paragon-software.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 4 Mar 2021 09:30:49 +0100
+Message-ID: <CANiq72nRpxe5M5rsBdWe_2tEpGju7Oe0bBhOdwMBa6MHkHi_Qg@mail.gmail.com>
+Subject: Re: [PATCH v22 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>, pali@kernel.org,
+        dsterba@suse.cz, aaptel@suse.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joe Perches <joe@perches.com>, mark@harmstone.com,
+        nborisov@suse.com, linux-ntfs-dev@lists.sourceforge.net,
+        anton@tuxera.com, Dan <dan.carpenter@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, ebiggers@kernel.org,
+        andy.lavr@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ Lukas)
+On Thu, Mar 4, 2021 at 1:09 AM Konstantin Komarov
+<almaz.alexandrovich@paragon-software.com> wrote:
+>
+> - use clang-format 11.0 instead of 10.0 to format code
 
-On Thu, 4 Mar 2021 at 09:28, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> The old device property API is going to be removed.
-> Replacing the device_add_properties() call with the software
-> node API equivalent, device_create_managed_software_node().
->
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
->  drivers/firmware/efi/apple-properties.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/efi/apple-properties.c b/drivers/firmware/efi/apple-properties.c
-> index e1926483ae2fd..4c3201e290e29 100644
-> --- a/drivers/firmware/efi/apple-properties.c
-> +++ b/drivers/firmware/efi/apple-properties.c
-> @@ -157,7 +157,7 @@ static int __init unmarshal_devices(struct properties_header *properties)
->                 if (!entry[0].name)
->                         goto skip_device;
->
-> -               ret = device_add_properties(dev, entry); /* makes deep copy */
-> +               ret = device_create_managed_software_node(dev, entry, NULL);
->                 if (ret)
->                         dev_err(dev, "error %d assigning properties\n", ret);
->
-> --
-> 2.30.1
->
+Out of curiosity: was this due to some specific reason? i.e. have you
+found it provides better output? (it is useful to know this to justify
+later an increase of the minimum version etc.)
+
+Thanks!
+
+Cheers,
+Miguel
