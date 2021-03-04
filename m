@@ -2,96 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D2032CB16
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB37432CAED
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 04:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhCDDol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 22:44:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233013AbhCDDoO (ORCPT
+        id S232689AbhCDDnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 22:43:03 -0500
+Received: from mail-ej1-f54.google.com ([209.85.218.54]:35314 "EHLO
+        mail-ej1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232685AbhCDDml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:44:14 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA15AC0613A8
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 19:42:35 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id j6so1789000plx.6
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 19:42:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9Zk1ArnKgiQng2MWBVvqO/05T1WJkKR0dBPbHxZP+Xc=;
-        b=WCI7rfGobOQo7ZIRzOvOR8E6h4m8BYK0/i2nOSBcXEiOL+UHoQjYcgaOqgrziZEXnu
-         AUmIGYvHDDpMWD7ThHSCaT643Ylq/G3hx4fR3zsPHCRTihQ0JcxB2UMyDpWvRiPZCOEq
-         3Px52NRCItEH/LPP8x6f98azKYLL0kHP4sJy0UcXyXA4vxmvawFSM1kOBfB0oE/G7J1s
-         imANFYLtJI7tmoub7Or1RTo1f09mjHtXdq3gdqfOH32zcsPcuCu8C6zmqe69JMJqRA9K
-         BfeOiF6xdiUD8j/nCWQsLxe42qy/PCevHlSYhNq8R6stq5OPHAKrkcjo3A2PE2f8KsnH
-         GYzQ==
+        Wed, 3 Mar 2021 22:42:41 -0500
+Received: by mail-ej1-f54.google.com with SMTP id dx17so19047137ejb.2;
+        Wed, 03 Mar 2021 19:42:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=9Zk1ArnKgiQng2MWBVvqO/05T1WJkKR0dBPbHxZP+Xc=;
-        b=lAdQBsiKD/bSEHaNCveozwyX5a8CFcmjiLXy+OWM/iypLRnk8x/XnuKzY9Bvl0snkJ
-         Tz1aekRVlMMYHM2BkigtTGudBaMjTdspyJtVJMbXSQCFJLipCQDB8HLBpwFK20mgryJ4
-         KWIzWGluyoHgDnFoqFX3SqCT0vrzXa6pIv9yV0pHM8hvYX3tilwpxSzb6kaNXM5b2FEi
-         1K2cTGfIGr8v1Q4RgIXaUpF9L5W3PUEQYWcfn0ORJw9JSDo9TRFCK0UeD24+WPZH93/n
-         eUgqdKBeTfBcv0+zhTJXnHSbe+Zl4XY9aC7GyuLmFBYb3NhnlyY2Q38xxkEibV1cQDgp
-         f1xQ==
-X-Gm-Message-State: AOAM533kg15+Umfci9x0Vy66XgjNLkqejVU99SporexscUVm/Xlk1LwE
-        f30DHEpunKsnT8KYuMFoSORuOQ==
-X-Google-Smtp-Source: ABdhPJzsnDrq+NKB04Vh8VktiH3DxPrBoZQLqc5w7qlpjTTBX7YkMv4Q9TC2pA6f066JihQfHzhZhg==
-X-Received: by 2002:a17:902:c789:b029:e3:dcbd:843b with SMTP id w9-20020a170902c789b02900e3dcbd843bmr2062178pla.61.1614829355389;
-        Wed, 03 Mar 2021 19:42:35 -0800 (PST)
-Received: from platform-dev1.pensando.io ([12.226.153.42])
-        by smtp.gmail.com with ESMTPSA id h17sm2403989pfc.211.2021.03.03.19.42.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 19:42:35 -0800 (PST)
-From:   Brad Larson <brad@pensando.io>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     arnd@arndb.de, linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        broonie@kernel.org, fancer.lancer@gmail.com,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org, olof@lixom.net,
-        brad@pensando.io, linux-gpio@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] MAINTAINERS: Add entry for PENSANDO
-Date:   Wed,  3 Mar 2021 19:41:41 -0800
-Message-Id: <20210304034141.7062-9-brad@pensando.io>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210304034141.7062-1-brad@pensando.io>
-References: <20210304034141.7062-1-brad@pensando.io>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UWjGkxRM9xTK3Oxe58Zk6wy2u5TkskdEma3Q5K5bnV0=;
+        b=cD7KcsD92IHbazc0lPeiBdZNyecvbUMGh6T4AT5Ww5ZjSnyQ7olr5MnXwCgA20HxxP
+         pRCi/eTd2nI831PqpWghqlX2ZV+7uRnrfbgzzUZAECt/24nISAuKD1GOHRgHBnDwGQQc
+         a5hIFvfN4/tOlgAF8OyFT16/V8rESVYr/FYY9o1kXKxK8R+s2jYz0yi9bPrBc532J71V
+         ZfxFzPUZ37WAeYBHc7alLsDFnS3AsZR95crQx90jiOE6cDPy5HMegcA9YWFKQoT+qm3R
+         WiQ3hellC7Vu2dSgbhtNbowxQud8YJs+oU5OCG2L/hOMKge3M8k6DCXn3syr5LsX0R7Z
+         28eA==
+X-Gm-Message-State: AOAM530CVS1IBghEPH2HTBfVo8wfVwEv/5FevtYByKnRePpJmgaG26wn
+        x0xRnyS4m7zGA0RKO1nEGnTFZSytejcr+P9XAqk=
+X-Google-Smtp-Source: ABdhPJxNs0kWsKEcqBHTKza6uK/Ep/qWjS3ZdqweJtG+HT6UWS0Gk+XXDm3Bpf4w8Um9XD1M4IEnWzBuIES5LJ9aCGk=
+X-Received: by 2002:a17:907:76b3:: with SMTP id jw19mr1991870ejc.202.1614829319883;
+ Wed, 03 Mar 2021 19:41:59 -0800 (PST)
+MIME-Version: 1.0
+References: <xmqqr1kwk0h9.fsf@gitster.c.googlers.com>
+In-Reply-To: <xmqqr1kwk0h9.fsf@gitster.c.googlers.com>
+From:   Eric Sunshine <sunshine@sunshineco.com>
+Date:   Wed, 3 Mar 2021 22:41:49 -0500
+Message-ID: <CAPig+cRqED-d_hFN80UuPhS+77k6qw_G9Q-m9tWUZsNynQfVvA@mail.gmail.com>
+Subject: Re: [ANNOUNCE] Git v2.31.0-rc1
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     Git List <git@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entry for PENSANDO maintainer and files.
+On Wed, Mar 3, 2021 at 7:23 PM Junio C Hamano <gitster@pobox.com> wrote:
+> Eric Sunshine (3):
+>       worktree: teach `repair` to fix multi-directional breakage
 
-Signed-off-by: Brad Larson <brad@pensando.io>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+The merge message associated with this change is:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 973a937386fa..3f2eebda2396 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2246,6 +2246,15 @@ S:	Maintained
- W:	http://hackndev.com
- F:	arch/arm/mach-pxa/palmz72.*
- 
-+ARM/PENSANDO SUPPORT
-+M:	Brad Larson <brad@pensando.io>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/*/pensando*
-+F:	arch/arm64/boot/dts/pensando/
-+F:	drivers/gpio/gpio-elba-spics.c
-+F:	drivers/mmc/host/sdhci-cadence-elba.c
-+
- ARM/PLEB SUPPORT
- M:	Peter Chubb <pleb@gelato.unsw.edu.au>
- S:	Maintained
--- 
-2.17.1
+    "git worktree repair" learned to deal with the case where both the
+    repository and the worktree moved.
 
+which seems worth mentioning in the v2.31.0 release notes, so it's a
+bit surprising that it is not mentioned anywhere. I haven't
+investigated how the release notes are generated from the merge
+messages, so it is unclear if this is a mere oversight, an intentional
+omission, or a tooling error.
