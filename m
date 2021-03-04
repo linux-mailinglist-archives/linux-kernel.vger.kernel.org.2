@@ -2,108 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1661632D4E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5569F32D4EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbhCDOHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:07:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239549AbhCDOGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:06:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E38AB64EEC;
-        Thu,  4 Mar 2021 14:06:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614866768;
-        bh=1dXhPHcdLiOgxzEHJx0A7ZK7YsqkFUlqYImM4D6WVdg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NlGpZRnGSxPTSr+AY8pgAiSms8x+YYKquffA2x0ApYgl6yRgalGYhrmrc37OzlIzp
-         VZ2GtuxlvDh6p9HWHthhiPHMU0iIZ3SvZdMa3NP70IeJpkoKEPAdVh9+ZSR/eK9UV1
-         iv5u1/Lh692rC4Lb0j4PJvNC0anvYYeEXaTlFNkM7m8fbX1lWrYBQX/gfqqvrXOBfv
-         9BB0kxeL3AfbJ1jApFr0Q8sUP0dwn7Tyl2stprU0dST8dGjtdlLlo4Eh3++eXZ2MB6
-         872gei5nFmauoLJYvc1deoe8SvrJMPjWQrpfBRVajyPmOU6MFyMJAJzaMobejqYHuk
-         RRRgyPIJzCFTw==
-Date:   Thu, 4 Mar 2021 14:06:02 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 06/32] KVM: arm64: Factor memory allocation out of
- pgtable.c
-Message-ID: <20210304140602.GC21229@willie-the-truck>
-References: <20210302150002.3685113-1-qperret@google.com>
- <20210302150002.3685113-7-qperret@google.com>
+        id S234166AbhCDOIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237908AbhCDOIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:08:12 -0500
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5CFC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 06:07:31 -0800 (PST)
+Received: by mail-ua1-x92a.google.com with SMTP id c44so9272810uad.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 06:07:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9dTkEDAWuipSwEUEz6FUWxAZBayw5+HD87LY50xpX7E=;
+        b=n7WG4bsvdGds89CSDqh7alsOK4tO2O6WdIVFrvKschtHWXCulKHfmabgoQTUqHZwdj
+         CbLSQUEi5VqtNp9TeB00YVeml+W2pQer42tO8VPu4xHfmz0ZZoSKX1ksA0utLlR8o2xt
+         ejSJkDkp0SabO6ZPNo8hRWBlPvWk2w0RqtYEtO0IBRcsLbLnV8u/YnT7w2kot12eM2aS
+         2L3Y+8/3YVznVYanQRK69AZK6/r0QDFJNjz2+iNOZnFbJhky/wZh8nf/CI9LNmbEXR7C
+         xFvE6ID7acgHDeX5L4L4VkLvaBhptgRXbEIhBewl0dliCtXn3psFmux/alD0rcdssRKt
+         9sJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9dTkEDAWuipSwEUEz6FUWxAZBayw5+HD87LY50xpX7E=;
+        b=JiZyCx3LKwJxxHWeR2yE+BiEeY0PBz3zH9G4mN4F0TfOtcle1AcDSANVnN70/buEsV
+         fCWqu7/cQLIpXIhq7UlgQRpDFNqNZvnUoPnb5KLXjVB7J6czTd3vTeqsF2AnzjSIGRUq
+         KCLHXmoCGdQglWx/49yKIw31nk2ngGCV8uMDj0ooZYVmueM/OfXjdzbwpM3YIfqskvR+
+         9EwjoV3shdUMQ3i9IEbDbrowacb3riN3hM3+sXD8IZk6HBTWms/XRgJkVJ9Ann6a2ezi
+         Kny5+2Vv1K+F4S70OBtkmtQMCMcbzfA5NJBI1qxTLcmgX6Xvx3sS/NYXzCzjCUFVNa5Z
+         +nWA==
+X-Gm-Message-State: AOAM533Z64qEXm/AZG047LxNgjvwd4kaqL9fgGY+VuE3IGtF6vDIcQwT
+        6chxTIJxKeeWy4PR+ikbbgCkcL0H1mjkx1wIH2qVKQ==
+X-Google-Smtp-Source: ABdhPJwK19dXZ6vaYcFXhCp6tF7d+VYkikOlrtYmzgvLCNoBqDo76kYh1DilPZxUZWHeFyejjvMv8zkkPpS4I6C5HIM=
+X-Received: by 2002:ab0:1581:: with SMTP id i1mr2245315uae.15.1614866851042;
+ Thu, 04 Mar 2021 06:07:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302150002.3685113-7-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210216224252.22187-1-marten.lindahl@axis.com>
+ <CAPDyKFoASx=U8b1Oqtuo6ikiM=gXfL2x1Gsz=rfAn9zxP0y_iA@mail.gmail.com>
+ <20210301215923.6jfg6mg5ntorttan@axis.com> <CAPDyKFoaKfuwweaEMf1Pz+ECAPU3P9-gmCJcpq+MADH5gH1c=Q@mail.gmail.com>
+ <20210304134836.xlw7wbbvkc5bqzmm@axis.com>
+In-Reply-To: <20210304134836.xlw7wbbvkc5bqzmm@axis.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 4 Mar 2021 15:06:54 +0100
+Message-ID: <CAPDyKFous2oDwcUgPkZV8bZzpd+yA8m9LwC3+yk0uxqWcrJx1w@mail.gmail.com>
+Subject: Re: [PATCH] mmc: Try power cycling card if command request times out
+To:     Marten Lindahl <martenli@axis.com>
+Cc:     =?UTF-8?Q?M=C3=A5rten_Lindahl?= <Marten.Lindahl@axis.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        kernel <kernel@axis.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 02:59:36PM +0000, Quentin Perret wrote:
-> In preparation for enabling the creation of page-tables at EL2, factor
-> all memory allocation out of the page-table code, hence making it
-> re-usable with any compatible memory allocator.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_pgtable.h | 41 +++++++++++-
->  arch/arm64/kvm/hyp/pgtable.c         | 98 +++++++++++++++++-----------
->  arch/arm64/kvm/mmu.c                 | 66 ++++++++++++++++++-
->  3 files changed, 163 insertions(+), 42 deletions(-)
+On Thu, 4 Mar 2021 at 14:48, Marten Lindahl <martenli@axis.com> wrote:
+>
+> Hi Ulf! My apologies for the delay.
+>
+> On Tue, Mar 02, 2021 at 09:45:02AM +0100, Ulf Hansson wrote:
+> > On Mon, 1 Mar 2021 at 22:59, Marten Lindahl <martenli@axis.com> wrote:
+> > >
+> > > Hi Ulf!
+> > >
+> > > Thank you for your comments!
+> > >
+> > > On Mon, Mar 01, 2021 at 09:50:56AM +0100, Ulf Hansson wrote:
+> > > > + Adrian
+> > > >
+> > > > On Tue, 16 Feb 2021 at 23:43, M=C3=A5rten Lindahl <marten.lindahl@a=
+xis.com> wrote:
+> > > > >
+> > > > > Sometimes SD cards that has been run for a long time enters a sta=
+te
+> > > > > where it cannot by itself be recovered, but needs a power cycle t=
+o be
+> > > > > operational again. Card status analysis has indicated that the ca=
+rd can
+> > > > > end up in a state where all external commands are ignored by the =
+card
+> > > > > since it is halted by data timeouts.
+> > > > >
+> > > > > If the card has been heavily used for a long time it can be weare=
+d out,
+> > > > > and should typically be replaced. But on some tests, it shows tha=
+t the
+> > > > > card can still be functional after a power cycle, but as it requi=
+res an
+> > > > > operator to do it, the card can remain in a non-operational state=
+ for a
+> > > > > long time until the problem has been observed by the operator.
+> > > > >
+> > > > > This patch adds function to power cycle the card in case it does =
+not
+> > > > > respond to a command, and then resend the command if the power cy=
+cle
+> > > > > was successful. This procedure will be tested 1 time before givin=
+g up,
+> > > > > and resuming host operation as normal.
+> > > >
+> > > > I assume the context above is all about the ioctl interface?
+> > > >
+> > >
+> > > Yes, that's correct. The problem we have seen is triggered by ioctls.
+> > >
+> > > > So, when the card enters this non functional state, have you tried
+> > > > just reading a block through the regular I/O interface. Does it
+> > > > trigger a power cycle of the card - and then makes it functional
+> > > > again?
+> > > >
+> > >
+> > > Yes, we have tried that, and it does trigger a power cycle, making th=
+e card
+> > > operational again. But as it requires an operator to trigger it, I th=
+ought
+> > > it might be something that could be automated here. At least once.
+> >
+> > Not sure what you mean by operator here? In the end it's a userspace
+> > program running and I assume it can deal with error paths. :-)
+> >
+> > In any case, I understand your point.
+> >
+>
+> Yes, we have a userspace program. So if the userspace program will try to
+> restore the card in a situation such as the one we are trying to solve
+> here, how shall it perform it? Is it expected that a ioctl CMD0 request
+> should be enough, or is there any other support for a userspace program t=
+o
+> reset the card?
 
-Just a few nits:
+Correct, there is no way for userspace to reset cards through an ioctl.
 
-> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> index 8886d43cfb11..3c306f90f7da 100644
-> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> @@ -13,17 +13,50 @@
->  
->  typedef u64 kvm_pte_t;
->  
-> +/**
-> + * struct kvm_pgtable_mm_ops - Memory management callbacks.
-> + * @zalloc_page:	Allocate a single zeroed memory page. The @arg parameter
-> + *			can be used by the walker to pass a memcache. The
-> + *			initial refcount of the page is 1.
-> + * @zalloc_pages_exact:	Allocate an exact number of zeroed memory pages. The
-> + *			@size parameter is in bytes, it is automatically rounded
-> + *			to PAGE_SIZE and the resulting allocation is physically
-> + *			contiguous.
+>
+> If it falls on a ioctl command to reset the card, how do we handle the ca=
+se
+> where the ioctl times out anyway? Or is the only way for a userspace prog=
+ram
+> to restore the card, to make a block transfer that fails?
 
-It's not clear to me whether "it is automatically rounded to PAGE_SIZE"
-means that the caller or the callee does the rounding. If it's the caller,
-maybe it would be better to pass the number of pages as an 'npages' argument
-instead of the size in bytes?
+Yes, that is what I was thinking. According to the use case you have
+described, this should be possible for you to implement as a part of
+your userspace program, no?
 
-> + * @free_pages_exact:	Free an exact number of memory pages, to free memory
-> + *			allocated with zalloc_pages_exact.
+[...]
 
-"Free an exact number of memory pages previously allocated by
- zalloc_pages_exact()"
-
-
-> + * @get_page:		Increment the refcount on a page.
-> + * @put_page:		Decrement the refcount on a page. When the refcount
-> + *			reaches 0 the page is automatically freed.
-> + * @page_count:		Return the refcount of a page.
-> + * @phys_to_virt:	Convert a physical address into a virtual address as
-> + *			accessible in the current context.
-
-s/as accessible/mapped/
-
-With those changes:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
+Kind regards
+Uffe
