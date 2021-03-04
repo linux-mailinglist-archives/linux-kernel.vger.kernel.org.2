@@ -2,153 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DC332D1F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B11332D1F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239688AbhCDLlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 06:41:04 -0500
-Received: from mail-eopbgr150045.outbound.protection.outlook.com ([40.107.15.45]:21486
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239595AbhCDLkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:40:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lgwiTwe093N75q4U1uz6Ue6MCj8K0cZiaRTTmdz3eZdiE5S13MEWFwsFFZ1JJhbHa0erTyhCeWnv9tIMbZc85ashMzg3Fi/SqK5528bseiw60YG6Oa3y+x8zhVvm2ZBCM3Q0d2syxHiEvQoJUdNoguwWLIUBPk3S5WE9XNSwUUeBjzCcs1YqepsjCJ++ZTA3PgWpOa+zTiTgeU2uxV8OheIDUhWeuF11DZ5KWTSZN54yf7/qpm8c9CmEwUrmWHZyLxBNmNfvFdQ91yN+E0gEexjvb4MsUYCTKymm3FXp1WYR3zHM9x/6PI5x+bFO7D9Du3s093vtWO16CxBf+JcliQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MOZrsSKj6M+AfuMmiebhOtH3GWmgQjd056uaTG9EMLI=;
- b=PUdagiWswPl1ABASKVay9BPMWmZ8WTZ5FiYtdrNT+ZUG2IFGCylHQec112MRVTriul+X7epUvuP391ou4cvUAhkCAPOyQtNoElh37rlYwqpeMpM3pJulEMWkLszJuhnC9i945IMslgIxljRrp4w1Dl7eJdPfGT/gwAGYCLCddHXwFKGzQUAirEOE7EvBYhy7vweU3UHDFmZlSFHP4CdKDPcuka6PoGLgEnjuovpvATJsrNQygpdRwppYMIYyZ6YkSWDNQw00wBgrXYBMbsG8xnRBaG+m6UJ8CoWUA84R8R6L5VLzhWAWsWQNE1xNBFd03fl3kvAlcgOINLAAmnGQrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MOZrsSKj6M+AfuMmiebhOtH3GWmgQjd056uaTG9EMLI=;
- b=oIAQIgdRBLuDJsf6276oSGQIftTcnzWkTnrqbZgQ1dwMfM0B1nLGe5y75Q1hndPiFjxmtHejthGIOb+ySW0GfcTwyslIpYIMpeI1UKwUFRldTcHnznYuY/+4/bc3zLmodxUT7RC1rX8zbfcrgl4FRQpYKhIgY6ptkt00ttPwgL8=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DBBPR04MB6249.eurprd04.prod.outlook.com (2603:10a6:10:c6::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Thu, 4 Mar
- 2021 11:40:06 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::7d13:2d65:d6f7:b978]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::7d13:2d65:d6f7:b978%4]) with mapi id 15.20.3890.029; Thu, 4 Mar 2021
- 11:40:06 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S239699AbhCDLoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 06:44:16 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16040 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230260AbhCDLns (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 06:43:48 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124BYZxm183680;
+        Thu, 4 Mar 2021 06:42:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=S5xMN4F2cFngk7lJxYCi6Zu3/hRwQl3My/bALauGrcc=;
+ b=sZoH5V6ewivRz/D7uY9QQanGjlAZ7xcrBTWiB8Yr3Jeb/dNsFun/dwo51trS/XhQeGrk
+ 4ZiDHlg1220Ph/eTyI4ziHi5hqhe5dKa8mxiWm9ADlzu0Ytc2PkAhEog79Xc3nfJZAnp
+ uciJdDpMTdNFKUGXeAbCuacXO877qo7kq7bWBqh5DnFEhuiO5/GvUFFuPwA5n/gBoQD1
+ TlG4/zrxg89nQ2uiapcjd50ac2LpGDvYSLmj5F5jSgaHhPYVsN99+GqusCh1RwdQN+4A
+ bAshZqLFGSbzFgOC+afvw8/RraRO1TfVfgXivr0ZO40y5Hof/9n6YUywcraJiaVeDq9b qg== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372x7n17y0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 06:42:47 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124Bg0Mk012874;
+        Thu, 4 Mar 2021 11:42:46 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 370atn20vh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 11:42:45 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124BggnV40174006
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 11:42:42 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA1DBA4065;
+        Thu,  4 Mar 2021 11:42:42 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 486AAA405C;
+        Thu,  4 Mar 2021 11:42:42 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.34.129])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Mar 2021 11:42:42 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     nathanl@linux.ibm.com, cheloha@linux.ibm.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V1] arm64: dts: imx8mp: fix FEC can't work when attached to generic phy driver
-Date:   Thu,  4 Mar 2021 19:40:13 +0800
-Message-Id: <20210304114013.18494-1-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: HK2PR02CA0143.apcprd02.prod.outlook.com
- (2603:1096:202:16::27) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+Subject: [PATCH] powerpc/pseries: export LPAR security flavor in lparcfg
+Date:   Thu,  4 Mar 2021 12:42:40 +0100
+Message-Id: <20210304114240.54112-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by HK2PR02CA0143.apcprd02.prod.outlook.com (2603:1096:202:16::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 4 Mar 2021 11:40:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 351d0d29-cad9-4af8-1f9e-08d8df024222
-X-MS-TrafficTypeDiagnostic: DBBPR04MB6249:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB6249371F1F86CCBCCF6104F2E6979@DBBPR04MB6249.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HsMqW+Vrq60CVbSylEAM9yPmNt5hluEk09RcydEjQJ9fI2cPfnhxT6iPUQv/4InnoKjV7Kh719aaKRmKJ/ILSmg53pMffnO80HUzBWxb0cgzEFPr6QeZmJlu7gyaAqHqi5W3/f5vgA3xEQC9+7NfYBkp/s6CXN9GTsMEE+FTzk0NpUqcMAIeo1ePhTxVxMQVOL0eXagzkrCDEJVSVmezWB5MkvfSy6l4+Ywtoszj1ZTr5cQV6V3mBg3N7R4PvqTQTXu81vuiMDaF81SODxDfIeMxpItPp6ZnepAO1cTZxKcjNv2IX0NxMgQgaOjLNFXk3j7TOz9xtjE70O+r7BnM3Wh01o/54Yw/8lezMiLscsyP5EfqHAk9XfGJYEg4bmAv3ztRj6PtiFlbqTXXTnTVNhWYOxAt5mrCULiGf9+Kp4fE9gRyPVVCAjcuYBpE76Gpff4IR53Gw376id3VYYbeRUysBeGDWXAQaLUjGlnMejRg6331DIJDhBjKsSchjfD5l0olYBAlf2e8AC0yWOHSBipsJLgNRQOStUOFL6cwTTG4V7zYxCnPNdSxnK/DddmIw5RGz3Z8Ccn5Y+AKmPYtgzmE88DYihY/w6a/cZFZ3i95XSbqyeeEskIoPU12YdkA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(376002)(396003)(366004)(136003)(346002)(186003)(2616005)(956004)(66476007)(16526019)(8676002)(66556008)(8936002)(6666004)(2906002)(26005)(6486002)(66946007)(4326008)(83380400001)(52116002)(5660300002)(1076003)(36756003)(6506007)(478600001)(316002)(69590400012)(6512007)(86362001)(41533002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?w3DZWfivA5KAwwZk7DvdrJCa0nmJEadrt4C+Wx8wDC7nQ7zAQvuDfQSrzaUS?=
- =?us-ascii?Q?mQogvZfbX9Am8bXhR5n1e1vUWxSzgzAPueYUKhtU9vx8Z//JVziAkLw5xXuM?=
- =?us-ascii?Q?Oxpsl/CpYdxI/UqoIg5TyMt4mTVfxMvr/N+fqG5F/iihJsO0npTPfMAaLsYY?=
- =?us-ascii?Q?c+bLOi2EUN+xVpJjzw1Q/mn4QCs6BDx2m0Sx+Rwh1AJI7kx02xCUt0nvdbah?=
- =?us-ascii?Q?GXDi7LlICZkq//N6sS08ZJiqrH2c3pnim4QPvFWyDvy6QNjMH7vNbM8AOCYM?=
- =?us-ascii?Q?wMVN+WHgrya6odHkUgMOfV2C+KCaKmIzrBj7qJ+gbVbOQlB4FMXY2r8PhW0R?=
- =?us-ascii?Q?cAvqHgB222RtgIB/oSIUkPa9cJdbZtnjT6gHWMoG3LEX9XN1/ADlDucdRnBT?=
- =?us-ascii?Q?SSt5GetattjK+pL+QikLoTbtYfTpS4zxVUgGRzNQRZOaz2CJRjhMOUp8LU8U?=
- =?us-ascii?Q?zMR8FBjQSrAZX9y9equXj91JgDzhm9B/zg9rBkpeeKtiGydPWgWK0jdYk+v1?=
- =?us-ascii?Q?Vj+ygM1uLCri/BzYbq/0bQXAjvS37Z/FN3TrJTMviMdFVTfft6Wv6U/MzxKi?=
- =?us-ascii?Q?Yvp3dXEadx1fsHpCBDNKnk12bA7Ewqs3f0vvXp4WvCDH3y1MfZO0gmjByMkZ?=
- =?us-ascii?Q?4msHFLWDnOpf2BfGIJqAfvKId8OdLxf+1SCsuQYpPCe2eESJYrETajcBW8xF?=
- =?us-ascii?Q?Ez2WxBHsYPd3YQs1Da5tggIAdIzfY0Cy2nl3SBPPMofXgfBhZtJO2LS6npgi?=
- =?us-ascii?Q?Q13+eXm1QA5oVWSBGtJCsAS72VsbQ6oSPuuDe766Jq40TkJwaAKiGd5W3VCW?=
- =?us-ascii?Q?wI+s0LfDRLX+KWD5dW39WKxfYP1bPble7TV2x8ZI650XdP80gmK7qu6LDQk8?=
- =?us-ascii?Q?7Cyv0ADzfideUnE3sPMPnVhjGwzOPqxFTRt3kslFJNHECeu36qW34PZyx99P?=
- =?us-ascii?Q?3dObkxmPZ51OYR447wxEI+nrIOH8ZzdiI86kov9zLozavZ3ItDPJLtra1rjA?=
- =?us-ascii?Q?YDgMYTacrwsrr0gGfFYQQYYlO3yqgLVc92Q333dojxq4G+2G7HYsw2x4zbcg?=
- =?us-ascii?Q?sm4oJZMryiM3B8tC8K+S14NlR2kl0o0pAQ4iEyuoTj5tfVz/MMFaqV8IT1N0?=
- =?us-ascii?Q?0daK65ks5Aj+agQUkRMNaF4riNhm4Mq6TTwomcac84Uu8+NDrAlt4rnbXtjL?=
- =?us-ascii?Q?DsRFhPJx/KVy2KMfbXSdJoBR4Mfd6BLM+YkwBfxccF1gmc7wg5ggUS8lJ1r2?=
- =?us-ascii?Q?Fe+kJt5KE6Jj3tyLzSy8e4Bw5T+S06QpUMkVobAfVT5r5SAKSyhId7jQkhUc?=
- =?us-ascii?Q?Zi0k7g8nczPZHi/JVjLha2V1?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 351d0d29-cad9-4af8-1f9e-08d8df024222
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2021 11:40:06.7327
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: INMNMRqBgXlzlFrFL+uG2e6NUxP8dXY3oeoBwDApm8Yxaa7y8Ciq06Hx7b47LP1vf5y1PHIXahB0iq8QRR09GA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB6249
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_03:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 priorityscore=1501
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103040054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some users report that FEC can't work on i.MX8MP EVK board, it brings
-inconvenience. The root cause should be FEC controller attached to
-generic phy driver, as Realtek phy driver is built as module in the
-defconfig file (CONFIG_REALTEK_PHY=m), so it is unavailable. If provide
-"reset-gpios" property, it will reset phy when probed, and no way to
-re-config phy since we use the generic phy dirver, which leads FEC can't
-work.
+This is helpful to read the security flavor from inside the LPAR.
 
-There are two ways to let FEC work:
+Export it like this in /proc/powerpc/lparcfg:
 
-1. If you want to use generic phy dirver, please delete "reset-gpios"
-property, keep power-on strapping pins configurations.
+$ grep security_flavor /proc/powerpc/lparcfg
+security_flavor=1
 
-2. If you want to use Realtek phy driver, please buildin driver
-(CONFIG_REALTEK_PHY=y), and had better add another two reset
-properties:
-	reset-assert-us = <20000>;
-	reset-deassert-us = <150000>;
-According to  RTL8211 serials PHY datasheet, for a complete PHY reset,
-reset pin must be asserted low for at least 10ms for internal regulator.
-Wait for at least 72ms (for internal circuits settling time) before
-accessing the PHY register.
+Value means:
+0 Speculative execution fully enabled
+1 Speculative execution controls to mitigate user-to-kernel attacks
+2 Speculative execution controls to mitigate user-to-kernel and
+  user-to-user side-channel attacks
 
-This patch selects method 1, since users may waste time to find out FEC
-failure, in most cases, they just want to use networking to debug other
-modules.
-
-Fixs: commit 9e847693c6f34 ("arm64: dts: freescale: Add i.MX8MP EVK board support")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 1 -
- 1 file changed, 1 deletion(-)
+ arch/powerpc/include/asm/hvcall.h        | 1 +
+ arch/powerpc/platforms/pseries/lparcfg.c | 2 ++
+ arch/powerpc/platforms/pseries/pseries.h | 1 +
+ arch/powerpc/platforms/pseries/setup.c   | 8 ++++++++
+ 4 files changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-index 7db4273cc88b..4f5c2fb33eda 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-@@ -97,7 +97,6 @@
- 			compatible = "ethernet-phy-ieee802.3-c22";
- 			reg = <1>;
- 			eee-broken-1000t;
--			reset-gpios = <&gpio4 2 GPIO_ACTIVE_LOW>;
- 		};
- 	};
- };
+diff --git a/arch/powerpc/include/asm/hvcall.h b/arch/powerpc/include/asm/hvcall.h
+index ed6086d57b22..455e188da26d 100644
+--- a/arch/powerpc/include/asm/hvcall.h
++++ b/arch/powerpc/include/asm/hvcall.h
+@@ -389,6 +389,7 @@
+ #define H_CPU_BEHAV_FAVOUR_SECURITY	(1ull << 63) // IBM bit 0
+ #define H_CPU_BEHAV_L1D_FLUSH_PR	(1ull << 62) // IBM bit 1
+ #define H_CPU_BEHAV_BNDS_CHK_SPEC_BAR	(1ull << 61) // IBM bit 2
++#define H_CPU_BEHAV_FAVOUR_SECURITY_H	(1ull << 60) // IBM bit 3
+ #define H_CPU_BEHAV_FLUSH_COUNT_CACHE	(1ull << 58) // IBM bit 5
+ #define H_CPU_BEHAV_FLUSH_LINK_STACK	(1ull << 57) // IBM bit 6
+ 
+diff --git a/arch/powerpc/platforms/pseries/lparcfg.c b/arch/powerpc/platforms/pseries/lparcfg.c
+index e278390ab28d..35f6c4929fbd 100644
+--- a/arch/powerpc/platforms/pseries/lparcfg.c
++++ b/arch/powerpc/platforms/pseries/lparcfg.c
+@@ -169,6 +169,7 @@ static void show_gpci_data(struct seq_file *m)
+ 	kfree(buf);
+ }
+ 
++
+ static unsigned h_pic(unsigned long *pool_idle_time,
+ 		      unsigned long *num_procs)
+ {
+@@ -537,6 +538,7 @@ static int pseries_lparcfg_data(struct seq_file *m, void *v)
+ 	parse_em_data(m);
+ 	maxmem_data(m);
+ 
++	seq_printf(m, "security_flavor=%u\n", pseries_security_flavor);
+ 	return 0;
+ }
+ 
+diff --git a/arch/powerpc/platforms/pseries/pseries.h b/arch/powerpc/platforms/pseries/pseries.h
+index 4fe48c04c6c2..a25517dc2515 100644
+--- a/arch/powerpc/platforms/pseries/pseries.h
++++ b/arch/powerpc/platforms/pseries/pseries.h
+@@ -111,6 +111,7 @@ static inline unsigned long cmo_get_page_size(void)
+ 
+ int dlpar_workqueue_init(void);
+ 
++extern u32 pseries_security_flavor;
+ void pseries_setup_security_mitigations(void);
+ void pseries_lpar_read_hblkrm_characteristics(void);
+ 
+diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
+index 46e1540abc22..59080413a269 100644
+--- a/arch/powerpc/platforms/pseries/setup.c
++++ b/arch/powerpc/platforms/pseries/setup.c
+@@ -85,6 +85,7 @@ EXPORT_SYMBOL(CMO_PageSize);
+ 
+ int fwnmi_active;  /* TRUE if an FWNMI handler is present */
+ int ibm_nmi_interlock_token;
++u32 pseries_security_flavor;
+ 
+ static void pSeries_show_cpuinfo(struct seq_file *m)
+ {
+@@ -534,9 +535,16 @@ static void init_cpu_char_feature_flags(struct h_cpu_char_result *result)
+ 	/*
+ 	 * The features below are enabled by default, so we instead look to see
+ 	 * if firmware has *disabled* them, and clear them if so.
++	 * H_CPU_BEHAV_FAVOUR_SECURITY_H could be set only if
++	 * H_CPU_BEHAV_FAVOUR_SECURITY is.
+ 	 */
+ 	if (!(result->behaviour & H_CPU_BEHAV_FAVOUR_SECURITY))
+ 		security_ftr_clear(SEC_FTR_FAVOUR_SECURITY);
++	else if (result->behaviour & H_CPU_BEHAV_FAVOUR_SECURITY_H)
++		pseries_security_flavor = 1;
++	else
++		pseries_security_flavor = 2;
++
+ 
+ 	if (!(result->behaviour & H_CPU_BEHAV_L1D_FLUSH_PR))
+ 		security_ftr_clear(SEC_FTR_L1D_FLUSH_PR);
 -- 
-2.17.1
+2.30.1
 
