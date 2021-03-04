@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F46F32C942
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2498232C93C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387982AbhCDBGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:06:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39416 "EHLO mail.kernel.org"
+        id S1382415AbhCDBGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:06:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452956AbhCDAj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:39:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7724664F39;
+        id S1452940AbhCDAjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:39:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA5D764F25;
         Thu,  4 Mar 2021 00:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614818296;
-        bh=n6LhP0Y12SLSBIwlyZzUt0iEBJge2w42uCMwLkPnLj8=;
+        bh=2POJFiyU+T/PAOvZ5cD53kP7TvVhTud6nR2QKxJoiUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XKEubHRjs7ZXP27q45SqHOMUF7oBRkwSd5BlRhtn4AKmkNWdDBbVGi4mmmekcpBaK
-         Mgrjd7MIpPkUCt+OqR3zf3EzAJPtQ4VDpjTfpNlWyCR4NTR7ZG1TnZSjbq5FKJnaLq
-         j2L8ANt8FOZ7n0NvEr5hWrKbHrSMdvvCEyZfff0qVaalrn4s7mQkiNpWZC0SZh0ywa
-         O3A5TIzsqGMgLihW15l/EuMZXwg6UQJ5HBhhp8gv5iReNFvbQ55HC63s0aOOLZ/cMK
-         6xuM0GAgPJTbmqdk1n4jC+TOnW2cJ9xHDthj0mJJUOe72IOM6mgvsjtmjMok6DM0EC
-         ggBnEUtsCKMoQ==
+        b=rXZ8v/es3a/+asNzIwmxwEAOrlmZcbs7RBMYL9Htz0zoiRebWr8vlOCM9whgbZwTA
+         GFG0UEYU6MK/6RNI/rAE3LbmMGYt/Zw416srxcP4UnuIna9KPq6MrjiQZM9Sy++oE4
+         CV7OZl42HifkzwimMJg2aGQ0p7jdmZxZRRSZpWWddK22bgyxS57Z2XL8OuDbpjm1OU
+         Ufu3Fnz0QLy04dRx2tDqoNaAH061msKMPZcqfttkj3cN17c/5Rf1r11yAltxJ2Znj6
+         gG5oI0ztIJuJP+EqnUtOe8ygJxzhlucJwW8lDdL+4i9YCw0XpwgzfxO022xI4KX33r
+         nt6k4n8dGKW4A==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 17/28] torture: Remove no-mpstat error message
-Date:   Wed,  3 Mar 2021 16:38:01 -0800
-Message-Id: <20210304003812.24833-17-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 18/28] torture: Rename SRCU-t and SRCU-u to avoid lowercase characters
+Date:   Wed,  3 Mar 2021 16:38:02 -0800
+Message-Id: <20210304003812.24833-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
@@ -44,30 +44,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The cpus2use.sh script complains if the mpstat command is not available,
-and instead uses all available CPUs.  Unfortunately, this complaint
-goes to stdout, where it confuses invokers who expect a single number.
-This commit removes this error message in order to avoid this confusion.
-The tendency of late has been to give rcutorture a full system, so this
-should not cause issues.
+The convention that scenario names are all uppercase has two exceptions,
+SRCU-t and SRCU-u.  This commit therefore renames them to SRCU-T and
+SRCU-U, respectively, to bring them in line with this convention.  This in
+turn permits tighter argument checking in the torture-test scripting.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/cpus2use.sh | 1 -
- 1 file changed, 1 deletion(-)
+ tools/testing/selftests/rcutorture/configs/rcu/CFLIST                 | 4 ++--
+ tools/testing/selftests/rcutorture/configs/rcu/{SRCU-t => SRCU-T}     | 0
+ .../selftests/rcutorture/configs/rcu/{SRCU-t.boot => SRCU-T.boot}     | 0
+ tools/testing/selftests/rcutorture/configs/rcu/{SRCU-u => SRCU-U}     | 0
+ .../selftests/rcutorture/configs/rcu/{SRCU-u.boot => SRCU-U.boot}     | 0
+ 5 files changed, 2 insertions(+), 2 deletions(-)
+ rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-t => SRCU-T} (100%)
+ rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-t.boot => SRCU-T.boot} (100%)
+ rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-u => SRCU-U} (100%)
+ rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-u.boot => SRCU-U.boot} (100%)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/cpus2use.sh b/tools/testing/selftests/rcutorture/bin/cpus2use.sh
-index 1dbfb62..6bb9930 100755
---- a/tools/testing/selftests/rcutorture/bin/cpus2use.sh
-+++ b/tools/testing/selftests/rcutorture/bin/cpus2use.sh
-@@ -21,7 +21,6 @@ then
- 		awk -v ncpus=$ncpus '{ print ncpus * ($7 + $NF) / 100 }'`
- else
- 	# No mpstat command, so use all available CPUs.
--	echo The mpstat command is not available, so greedily using all CPUs.
- 	idlecpus=$ncpus
- fi
- awk -v ncpus=$ncpus -v idlecpus=$idlecpus < /dev/null '
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+index f2b20db..98b6175 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
+@@ -7,8 +7,8 @@ TREE07
+ TREE09
+ SRCU-N
+ SRCU-P
+-SRCU-t
+-SRCU-u
++SRCU-T
++SRCU-U
+ TINY01
+ TINY02
+ TASKS01
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
+similarity index 100%
+rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
+rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T.boot
+similarity index 100%
+rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-t.boot
+rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-T.boot
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
+similarity index 100%
+rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
+rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U.boot
+similarity index 100%
+rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-u.boot
+rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-U.boot
 -- 
 2.9.5
 
