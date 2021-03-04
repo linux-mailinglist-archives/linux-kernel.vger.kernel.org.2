@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643A232D2E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D986A32D36A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240572AbhCDM2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:28:34 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:21218 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240540AbhCDM2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:28:14 -0500
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 124CRL6O022357;
-        Thu, 4 Mar 2021 21:27:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 124CRL6O022357
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614860842;
-        bh=K1n8abg19tbJt4HLdCItAkYqr2CXKH4BHG6ea09tldY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=id7zM4g1tb7as+yaQD1bXa1YI/8i3Jnp+q1nZoBhyC1TWZSytotVDAY6vioem5XMl
-         FJEGn+q1HriH2uWetSR6ld2pUrRw1RmetI1+SNZgFyJZofNad160OVqqh8sWtOIR3S
-         In9D62w2vuayvNC1vRfBwXqbJHcPgtN9vXh4/kvbibm9q/aGSylcJAiRDGmWs2Armp
-         SHmMerbwtSBx/fKI5/71XUxYvWT7s4cASNwsegEra1h8xdMOPfiCkNLQZCOmpkaMMZ
-         iPmUiycn0/QOYXCfuaNIRZj24zIeGTLPPPCVypqerp/IGNVAUQlmVu1qrTL6bJlP5f
-         ISnfX7AnvOzbg==
-X-Nifty-SrcIP: [209.85.215.173]
-Received: by mail-pg1-f173.google.com with SMTP id t25so18811673pga.2;
-        Thu, 04 Mar 2021 04:27:22 -0800 (PST)
-X-Gm-Message-State: AOAM533OqQmp1AJWjUXi7Om8Mp5MERBTbLIOOiIz8V+Ww671mFvCjDh5
-        HakpTJNzMLgsLgH0iosu0ZRyQZycL3kkEfm63nA=
-X-Google-Smtp-Source: ABdhPJydaxOVDIRSR3zkg2rR/wPg+9722gh5UJfR9yVEU8tak6XmKRI1oL2RgrEk/19rvxp6xN8MaXsrnOggaoeZe28=
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr3423612pgq.7.1614860841381;
- Thu, 04 Mar 2021 04:27:21 -0800 (PST)
+        id S240306AbhCDMIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:08:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53830 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234686AbhCDMIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 07:08:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D80BFAAC5;
+        Thu,  4 Mar 2021 12:07:38 +0000 (UTC)
+Message-ID: <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
+Subject: Re: [PATCH v3 1/2] dt-bindings: rng: bcm2835: document reset support
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     =?ISO-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        =?ISO-8859-1?Q?N=EDcolas?= "F. R. A. Prado" 
+        <nfraprado@protonmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Thu, 04 Mar 2021 13:07:36 +0100
+In-Reply-To: <20210223170006.29558-2-noltari@gmail.com>
+References: <20210222194510.14004-1-noltari@gmail.com>
+         <20210223170006.29558-1-noltari@gmail.com>
+         <20210223170006.29558-2-noltari@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-ECKm3qOS91U+uJWquTGZ"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <20210302232649.y2tutffhxsblwqlb@treble> <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
- <20210303191516.6ksxmng4pis7ue4p@treble>
-In-Reply-To: <20210303191516.6ksxmng4pis7ue4p@treble>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 4 Mar 2021 21:26:43 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS5h2s5ZDx3xOiE2upyGXtPf44f5A76YYUeM1Tk93QXNg@mail.gmail.com>
-Message-ID: <CAK7LNAS5h2s5ZDx3xOiE2upyGXtPf44f5A76YYUeM1Tk93QXNg@mail.gmail.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 4:15 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Mar 04, 2021 at 03:49:35AM +0900, Masahiro Yamada wrote:
-> > > This problem is becoming more prevalent.  We will need to fix it one way
-> > > or another, if we want to support distro adoption of these GCC
-> > > plugin-based features.
-> > >
-> > > Frank suggested a possibly better idea: always rebuild the plugins when
-> > > the GCC version changes.
-> >
-> >
-> > That is just another form of the previous patch,
-> > which was already rejected.
-> >
-> >
-> > - That is a hack just for external modules
-> > - Our consensus is, use the same version for the kernel and external modules
-> >
-> >
-> >
-> > I use Ubuntu, and I do not see such a problem.
-> > (I have never seen it on Debian either, except sid.)
-> >
-> > I see Fedora providing GCC whose version is different
-> > from the one used for building the kernel.
-> > That is a problem on the distribution side.
->
-> I don't understand.  Are you suggesting that a distro should always
-> release GCC and kernel updates simultaneously?
 
-Well, as Greg says, given that GCC is less frequently upgraded
-than the kernel, this should not be a big deal.
+--=-ECKm3qOS91U+uJWquTGZ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-https://lore.kernel.org/lkml/YBBML2eB%2FIXcTvcn@kroah.com/
+Hi Alvaro,
+
+On Tue, 2021-02-23 at 18:00 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
+> Some devices may need to perform a reset before using the RNG, such as th=
+e
+> BCM6368.
+>=20
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> ---
+> =C2=A0v3: make resets required if brcm,bcm6368-rng.
+> =C2=A0v2: document reset support.
+>=20
+> =C2=A0.../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 ++++++++++++++=
++++
+> =C2=A01 file changed, 17 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml b/Do=
+cumentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> index c147900f9041..11c23e1f6988 100644
+> --- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> +++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> @@ -37,6 +37,21 @@ required:
+> =C2=A0
+>=20
+> =C2=A0additionalProperties: false
+
+I can't claim I fully understand all the meta stuff in shemas, so I general=
+ly
+just follow the patterns already available out there. That said, shoudln't =
+this
+be at the end, just before the examples? Maybe the cause of that odd warnin=
+g
+you got there?
+
+> +if:
+> +  properties:
+> +    compatible:
+> +      enum:
+> +        - brcm,bcm6368-rng
+> +then:
+> +  properties:
+> +    resets:
+> +      maxItems: 1
+> +  required:
+> +    - resets
+
+I belive you can't really make a property required when the bindings for
+'brcm,bcm6368-rng' were already defined. This will break the schema for tho=
+se
+otherwise correct devicetrees.
+
+> +else:
+> +  properties:
+> +    resets: false
+> +
+> =C2=A0examples:
+> =C2=A0=C2=A0=C2=A0- |
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0rng@7e104000 {
+> @@ -58,4 +73,6 @@ examples:
+> =C2=A0
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0clocks =3D <&periph=
+_clk 18>;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0clock-names =3D "ip=
+sec";
+> +
+> +        resets =3D <&periph_rst 4>;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0};
+
+Regards,
+Nicolas
 
 
+--=-ECKm3qOS91U+uJWquTGZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-> How is this problem specific to Fedora?  Please be specific about what
-> Ubuntu and Debian do, which Fedora doesn't do.
+-----BEGIN PGP SIGNATURE-----
 
-I do not know what they exactly do. Looking at only the result,
-Ubuntu and Debian do proper engineering, which Fedora doesn't.
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBAzYgACgkQlfZmHno8
+x/4dVQf+JZcSZkUQMTFgFCfh820ujn+nyaM6c0hQgaTUCslzyj5MXBafaxVb8YQ9
+Nt8RP4jv+QcG50qoeIHzu25DghMGv9KvJE9IJ6DJ8ZWOA5OlLN46pq6YkuhFVhgn
+LODAnXDiAmrFA1/mB6r9sQkZWJUbsIBujImMHvC2Rh2W+/capocznMXAw6Ts1xwW
+dcxmgjOT1pmm+rFhggzluwGcbcYNPibwo16mRc1Gft7K/IrLxus+ySJ4eutSWDKt
+hU8iD92fuYKwlCJzvpLnEo2nUAA20Y9knhzyX/ah0rm3R6f8nVFU/lR2s/WCkCwF
+X6OFwW541Y94/FDEWOPXENCdl9sLVw==
+=BoaX
+-----END PGP SIGNATURE-----
 
+--=-ECKm3qOS91U+uJWquTGZ--
 
-
-
->
-> Adding Linus, who indicated in another thread that we shouldn't force
-> exact GCC versions because there's no technical reason to do so.
->
-> --
-> Josh
->
-
-
--- 
-Best Regards
-Masahiro Yamada
