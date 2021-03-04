@@ -2,67 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C7D32D2A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAD632D2A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240349AbhCDMJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:09:22 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48058 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240369AbhCDMJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:09:16 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 39FCF1C0B8A; Thu,  4 Mar 2021 13:08:34 +0100 (CET)
-Date:   Thu, 4 Mar 2021 13:08:33 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     qiuxiaojin <qxj511mail@gmail.com>
-Cc:     dmurphy@ti.com, qiuxiaojin@cvte.com, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH] leds: add touch screen LED triggers
-Message-ID: <20210304120833.GA21533@duo.ucw.cz>
-References: <20210304120449.10441-1-qiuxiaojin@cvte.com>
+        id S240358AbhCDMJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:09:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54274 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240373AbhCDMJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 07:09:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CAF82AE47;
+        Thu,  4 Mar 2021 12:08:37 +0000 (UTC)
+Message-ID: <4da2069125bb6ae52f0e786d67994966e299ebd1.camel@suse.de>
+Subject: Re: [PATCH v5 1/2] dt-bindings: rng: bcm2835: document reset support
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     =?ISO-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Thu, 04 Mar 2021 13:08:36 +0100
+In-Reply-To: <20210304073308.25906-2-noltari@gmail.com>
+References: <20210304073308.25906-1-noltari@gmail.com>
+         <20210304073308.25906-2-noltari@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-tjGlIJA8Bhhn95v4z4X8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
-Content-Disposition: inline
-In-Reply-To: <20210304120449.10441-1-qiuxiaojin@cvte.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---45Z9DzgjV8m4Oswq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-tjGlIJA8Bhhn95v4z4X8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu 2021-03-04 20:04:49, qiuxiaojin wrote:
-> Some LED devices support touch screen.
-> This patch enables direct LED trigger controls by the driver.
-> touch screen or pressure can be done simply by other driver space.
-> Two trigger APIs are added, ledtrig_touch_panel_ctrl()
-> and ledtrig_touch_pressure_ctrl().
+Sorry Alvaro I missed you sent a v5 already. See my comments in v3.
 
-Why?
+Regards,
+Nicolas
 
-> Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
+On Thu, 2021-03-04 at 08:33 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
+> Some devices may need to perform a reset before using the RNG, such as th=
+e
+> BCM6368.
+>=20
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> ---
+> =C2=A0v5: no changes.
+> =C2=A0v4: pass dt_binding_check.
+> =C2=A0v3: make resets required if brcm,bcm6368-rng.
+> =C2=A0v2: document reset support.
+>=20
+> =C2=A0.../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 ++++++++++++++=
++++
+> =C2=A01 file changed, 17 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml b/Do=
+cumentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> index c147900f9041..11c23e1f6988 100644
+> --- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> +++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+> @@ -37,6 +37,21 @@ required:
+> =C2=A0
+>=20
+> =C2=A0additionalProperties: false
+> =C2=A0
+>=20
+> +if:
+> +  properties:
+> +    compatible:
+> +      enum:
+> +        - brcm,bcm6368-rng
+> +then:
+> +  properties:
+> +    resets:
+> +      maxItems: 1
+> +  required:
+> +    - resets
+> +else:
+> +  properties:
+> +    resets: false
+> +
+> =C2=A0examples:
+> =C2=A0=C2=A0=C2=A0- |
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0rng@7e104000 {
+> @@ -58,4 +73,6 @@ examples:
+> =C2=A0
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0clocks =3D <&periph=
+_clk 18>;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0clock-names =3D "ip=
+sec";
+> +
+> +        resets =3D <&periph_rst 4>;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0};
 
-Need real name and matching from: and signed-off.
 
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
 
---45Z9DzgjV8m4Oswq
+--=-tjGlIJA8Bhhn95v4z4X8
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEDNwQAKCRAw5/Bqldv6
-8n1SAJwPWRhbl4PXRt1PDqC298S+XkcWZwCglsC+Asqf1nPmvk4GnZgL8FeDXRk=
-=txmO
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBAzcQACgkQlfZmHno8
+x/4I5QgAqH8iPmySuMTTr17Uc7Kg3HHpkc4jS9fYAyfPB4SX1CD88wXXht5VqyGp
+Te/xNXA5pqvsYl0Ui66pM8Rd87f7vjW1RynmKSFeFbIwBs8tEZQ6r8aMm6pt3cXd
+g0+ZVBpVb/sYsM6Cmbc25EWoJYfzvEHMa+zuVJEVxOyaQFdlVPaKsCI4oEbIUz8+
+4s3yam2oVipTN5GzYh7aSM+l5GUK1b/kZtpxxlk3a4C9HVyNi/FfCEOTeYmRi054
+wJL4CvERNbFuX+3C/IJCHUuTBJT7lT8WmevEcJ8uv+hL2iRkNMVeMMgf5x38ViWo
+IDAUGeat55U8qCLNHShDNJrq4f+Dlg==
+=QEvf
 -----END PGP SIGNATURE-----
 
---45Z9DzgjV8m4Oswq--
+--=-tjGlIJA8Bhhn95v4z4X8--
+
