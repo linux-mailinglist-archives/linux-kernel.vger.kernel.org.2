@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC1132D0C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3F432D0D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238608AbhCDKcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
+        id S238663AbhCDKcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:32:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238544AbhCDKb3 (ORCPT
+        with ESMTP id S238581AbhCDKb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:31:29 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C75C0613DB
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 02:30:10 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id j2so14170993wrx.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 02:30:10 -0800 (PST)
+        Thu, 4 Mar 2021 05:31:56 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B50C0613DF
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 02:30:12 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id m7so798472wmq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 02:30:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Bs0N+b7IbNFBoZCqiL+fVI6wVQVsEVA2VSnx/V3f4QI=;
-        b=i+Zvg25xWRRu3Q+3OHqNie0KuSOiMHg6Had86XZY/5pU4nj64JjnzVPBvlXb100DOY
-         55fH5/xUvZDflCQt+qb9eJwDxrAMVcc7VTXf6LvuhVwMt1UI4r2jr3FJBwU3JDkwv7Wj
-         HHaBp+Fcl37uh7LYBMPHYBrlascVC/XfrppRxQlYnItNZNgWlwOr6g4cybI0E7r+GYzS
-         +3o5/Tdy1Xuc+yp9ld87CGZnogyIBpZpBLyYcUQQQ4UKcKjieo7ocJtNtt4mVUjHveiP
-         2bV+S5MkgpN53kZtGLSaMR+WRRpxvc3iOwYVGB0xQNFRR04gtt+9fr5q+r/0HBpEtkmV
-         lAwg==
+        bh=pCe90PiqGmxROg4pfqFFTH25K7JQCv+JP3yxH8AOnKc=;
+        b=EnueNiX6NpYKxBrj0wY36yyGp38a1izgQNX8Hx89b9vCl82p35QuJoeFi0PlgUEKdu
+         adhL2KupJr9zBnoE0Qj3UPOk5DXG8PTYa5do55m2LDWTrih9GhieMQGmMBel92zrhQMP
+         SCOQ89LyCAgrDjvE/GGe6WITNj68OMGsE2uQ/aHKJvaYrYVEBdBMJ1ro6OAp/GkchOFM
+         QLTa526fTJMiNYEzS4msmOreeOBYRGRZoGlmYhUax5bQZNM+bFN17TIrx4urSvta/XbJ
+         cgxuZAvzP/tJdV8HivrZ+Tq3Op8aL12FAm2laj/AgEFHrerOZpyLfbUC1dbjTcSrQ0FY
+         CEZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Bs0N+b7IbNFBoZCqiL+fVI6wVQVsEVA2VSnx/V3f4QI=;
-        b=FWYzD9oDrpqmfnDBlb76VFV5+ZeN5nmx9OoNyDbKnd+0674CNIaEe6G/kCljFXsOUB
-         0f7HgdxBBO1Ga0KTGaZsyCuD68taY+A9dQWnOyMe2zG2Z4n4WzuyaaRBAZyPjx+Pi4lN
-         BI+BB3XcY3z1HxMvOfIeK1C89Be34VrZXqjvrKMPzz/nB+X9/yJ7wTlyOYRHKI4wf5CR
-         Hg0sRXid9BTSNMfGcx1b/9OJanj/QXiz53SKDMvsE2xgRTmUBQVEJ0NZdx0Tzq/cIWH5
-         rejk49EV0w0C+XradS70xXWKlq7SC+2Tr/WN1IdroGhyRUVz1c3Oz0Em99lT6DYBausB
-         njdA==
-X-Gm-Message-State: AOAM531tTL42YzfAoENyulw8+GjJOMv8g8B2jzK1u3c9kRU7tcRMAG26
-        824QyZ2/lP+CGDQFHFFYaPrwu0AgcFvSoA==
-X-Google-Smtp-Source: ABdhPJzIhX1GD3MT99SO7tV3rh3J1lUvbyMcRtszgrTHe6AQgZOwY8ko4EmIITwwTNLJc76mCCH0Uw==
-X-Received: by 2002:adf:d236:: with SMTP id k22mr3317611wrh.144.1614853809697;
-        Thu, 04 Mar 2021 02:30:09 -0800 (PST)
+        bh=pCe90PiqGmxROg4pfqFFTH25K7JQCv+JP3yxH8AOnKc=;
+        b=pdJSzZx44vdqwmPbycR8xkHEhfUem5xrDO3NPdZ1vnLUykre6wA+9/BYyKfUWd9msY
+         0KZzn4ecYrL6b4h7mUmZsLmfVpXlbcKW5eBg24EuZaSHhlM8V1q5vsjUpyj9aMpciyL9
+         93y2WfDN9QUWbdbNQBQCLnXAjI+XQnOOuJTVdrtPskTR6977U2cMDgc5X3mlzd1ngMZ2
+         3B8KGeNE/Q5/R7bYkX4uZqHGANaXzXamC8I10OOCtxGzQVDfkZvz6KR/lKWNm1rw9ram
+         4Iro6vz/Y+09I41etMayRkIzp3ZtqdtiEdC4oHbdVsWnqZcpZceknPZMxNDUFODYj2tq
+         RITA==
+X-Gm-Message-State: AOAM532XO6DX89VEkuE8DRyUnYogbP/iS0pQPMn1f9qpS0p+u9IRSMVQ
+        NUnzXD/qUTYLxzydZfeM0R3evA==
+X-Google-Smtp-Source: ABdhPJzXMkznue5E1BXwSAv/5Jnk3qYctYhg0S8yF4gHZKgRkHzuNTIh1oPe4Fqhe5HmfeqXk9SRtA==
+X-Received: by 2002:a1c:2016:: with SMTP id g22mr3213575wmg.137.1614853810754;
+        Thu, 04 Mar 2021 02:30:10 -0800 (PST)
 Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id f7sm35501854wre.78.2021.03.04.02.30.08
+        by smtp.gmail.com with ESMTPSA id f7sm35501854wre.78.2021.03.04.02.30.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 02:30:09 -0800 (PST)
+        Thu, 04 Mar 2021 02:30:10 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
         Shuah Khan <shuah@kernel.org>,
@@ -61,9 +61,9 @@ To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 04/12] samples: configfs: add a committable group
-Date:   Thu,  4 Mar 2021 11:24:44 +0100
-Message-Id: <20210304102452.21726-5-brgl@bgdev.pl>
+Subject: [PATCH v2 05/12] lib: bitmap: remove the 'extern' keyword from function declarations
+Date:   Thu,  4 Mar 2021 11:24:45 +0100
+Message-Id: <20210304102452.21726-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20210304102452.21726-1-brgl@bgdev.pl>
 References: <20210304102452.21726-1-brgl@bgdev.pl>
@@ -75,189 +75,173 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Add an example of using committable items to configfs samples. Each
-config item has two attributes: read-write 'storeme' which works
-similarly to other examples in this file and a read-only 'committed'
-attribute which changes its value between false and true depending on
-whether it's committed or not at the moment.
+The 'extern' keyword doesn't have any benefits in header files. Remove it.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- samples/configfs/configfs_sample.c | 153 +++++++++++++++++++++++++++++
- 1 file changed, 153 insertions(+)
+ include/linux/bitmap.h | 115 ++++++++++++++++++++---------------------
+ 1 file changed, 57 insertions(+), 58 deletions(-)
 
-diff --git a/samples/configfs/configfs_sample.c b/samples/configfs/configfs_sample.c
-index f9008be7a8a1..9bef74e4369d 100644
---- a/samples/configfs/configfs_sample.c
-+++ b/samples/configfs/configfs_sample.c
-@@ -315,6 +315,158 @@ static struct configfs_subsystem group_children_subsys = {
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 70a932470b2d..6939a8983026 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -118,54 +118,53 @@
+  * Allocation and deallocation of bitmap.
+  * Provided in lib/bitmap.c to avoid circular dependency.
+  */
+-extern unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
+-extern unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
+-extern void bitmap_free(const unsigned long *bitmap);
++unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
++unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
++void bitmap_free(const unsigned long *bitmap);
  
- /* ----------------------------------------------------------------- */
- 
-+/*
-+ * 04-committable-children
-+ *
-+ * This is an example of a committable group.  It's similar to the simple
-+ * children example but each config_item has an additional 'committed'
-+ * attribute which is read-only and is only modified when the config_item
-+ * is moved from the 'pending' to the 'live' directory.
-+ */
-+
-+struct committable_child {
-+	struct config_item item;
-+	int storeme;
-+	bool committed;
-+};
-+
-+static inline struct committable_child *
-+to_committable_child(struct config_item *item)
-+{
-+	return container_of(item, struct committable_child, item);
-+}
-+
-+static ssize_t
-+committable_child_storeme_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page, "%d\n", to_committable_child(item)->storeme);
-+}
-+
-+static ssize_t committable_child_storeme_store(struct config_item *item,
-+					       const char *page, size_t count)
-+{
-+	struct committable_child *child = to_committable_child(item);
-+	int ret;
-+
-+	if (child->committed)
-+		return -EPERM;
-+
-+	ret = kstrtoint(page, 10, &child->storeme);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+CONFIGFS_ATTR(committable_child_, storeme);
-+
-+static ssize_t
-+committable_child_committed_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page, "%s\n",
-+		to_committable_child(item)->committed ? "true" : "false");
-+}
-+
-+CONFIGFS_ATTR_RO(committable_child_, committed);
-+
-+static struct configfs_attribute *committable_child_attrs[] = {
-+	&committable_child_attr_storeme,
-+	&committable_child_attr_committed,
-+	NULL,
-+};
-+
-+static void committable_child_release(struct config_item *item)
-+{
-+	kfree(to_committable_child(item));
-+}
-+
-+static struct configfs_item_operations committable_child_item_ops = {
-+	.release	= committable_child_release,
-+};
-+
-+static const struct config_item_type committable_child_type = {
-+	.ct_item_ops	= &committable_child_item_ops,
-+	.ct_attrs	= committable_child_attrs,
-+	.ct_owner	= THIS_MODULE,
-+};
-+
-+struct committable_children {
-+	struct config_group group;
-+};
-+
-+static struct config_item *
-+committable_children_make_item(struct config_group *group, const char *name)
-+{
-+	struct committable_child *child;
-+
-+	child = kzalloc(sizeof(*child), GFP_KERNEL);
-+	if (!child)
-+		return ERR_PTR(-ENOMEM);
-+
-+	config_item_init_type_name(&child->item, name, &committable_child_type);
-+
-+	return &child->item;
-+}
-+
-+static ssize_t
-+committable_children_description_show(struct config_item *item, char *page)
-+{
-+	return sprintf(page,
-+"[04-committable-children]\n"
-+"\n"
-+"This subsystem allows creation of committable config_items.  The subsystem\n"
-+"has two subdirectories: pending and live.  New config_items can only be\n"
-+"created in pending/ and they have one writable and readable attribute as\n"
-+"well as a single read-only attribute.  The latter is only changed once the\n"
-+"item is 'committed'.  This is done by moving the config_item (using\n"
-+"rename()) to the live/ directory.  In this example, the storeme attribute\n"
-+"becomes 'read-only' once committed.\n");
-+}
-+
-+CONFIGFS_ATTR_RO(committable_children_, description);
-+
-+static struct configfs_attribute *committable_children_attrs[] = {
-+	&committable_children_attr_description,
-+	NULL,
-+};
-+
-+static int committable_children_commit_item(struct config_item *item)
-+{
-+	to_committable_child(item)->committed = true;
-+
-+	return 0;
-+}
-+
-+static int committable_children_uncommit_item(struct config_item *item)
-+{
-+	to_committable_child(item)->committed = false;
-+
-+	return 0;
-+}
-+
-+static struct configfs_group_operations committable_children_group_ops = {
-+	.make_item	= committable_children_make_item,
-+	.commit_item	= committable_children_commit_item,
-+	.uncommit_item	= committable_children_uncommit_item,
-+};
-+
-+static const struct config_item_type committable_children_type = {
-+	.ct_group_ops	= &committable_children_group_ops,
-+	.ct_attrs	= committable_children_attrs,
-+	.ct_owner	= THIS_MODULE,
-+};
-+
-+static struct configfs_subsystem committable_children_subsys = {
-+	.su_group = {
-+		.cg_item = {
-+			.ci_namebuf = "04-committable-children",
-+			.ci_type = &committable_children_type,
-+		},
-+	},
-+};
-+
-+/* ----------------------------------------------------------------- */
-+
  /*
-  * We're now done with our subsystem definitions.
-  * For convenience in this module, here's a list of them all.  It
-@@ -326,6 +478,7 @@ static struct configfs_subsystem *example_subsys[] = {
- 	&childless_subsys.subsys,
- 	&simple_children_subsys,
- 	&group_children_subsys,
-+	&committable_children_subsys,
- 	NULL,
- };
+  * lib/bitmap.c provides these functions:
+  */
  
+-extern int __bitmap_equal(const unsigned long *bitmap1,
+-			  const unsigned long *bitmap2, unsigned int nbits);
+-extern bool __pure __bitmap_or_equal(const unsigned long *src1,
+-				     const unsigned long *src2,
+-				     const unsigned long *src3,
+-				     unsigned int nbits);
+-extern void __bitmap_complement(unsigned long *dst, const unsigned long *src,
+-			unsigned int nbits);
+-extern void __bitmap_shift_right(unsigned long *dst, const unsigned long *src,
+-				unsigned int shift, unsigned int nbits);
+-extern void __bitmap_shift_left(unsigned long *dst, const unsigned long *src,
+-				unsigned int shift, unsigned int nbits);
+-extern void bitmap_cut(unsigned long *dst, const unsigned long *src,
+-		       unsigned int first, unsigned int cut,
+-		       unsigned int nbits);
+-extern int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
++int __bitmap_equal(const unsigned long *bitmap1,
++		   const unsigned long *bitmap2, unsigned int nbits);
++bool __pure __bitmap_or_equal(const unsigned long *src1,
++			      const unsigned long *src2,
++			      const unsigned long *src3,
++			      unsigned int nbits);
++void __bitmap_complement(unsigned long *dst, const unsigned long *src,
++			 unsigned int nbits);
++void __bitmap_shift_right(unsigned long *dst, const unsigned long *src,
++			  unsigned int shift, unsigned int nbits);
++void __bitmap_shift_left(unsigned long *dst, const unsigned long *src,
++			 unsigned int shift, unsigned int nbits);
++void bitmap_cut(unsigned long *dst, const unsigned long *src,
++		unsigned int first, unsigned int cut, unsigned int nbits);
++int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
++		 const unsigned long *bitmap2, unsigned int nbits);
++void __bitmap_or(unsigned long *dst, const unsigned long *bitmap1,
++		 const unsigned long *bitmap2, unsigned int nbits);
++void __bitmap_xor(unsigned long *dst, const unsigned long *bitmap1,
++		  const unsigned long *bitmap2, unsigned int nbits);
++int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
++		    const unsigned long *bitmap2, unsigned int nbits);
++void __bitmap_replace(unsigned long *dst,
++		      const unsigned long *old, const unsigned long *new,
++		      const unsigned long *mask, unsigned int nbits);
++int __bitmap_intersects(const unsigned long *bitmap1,
+ 			const unsigned long *bitmap2, unsigned int nbits);
+-extern void __bitmap_or(unsigned long *dst, const unsigned long *bitmap1,
+-			const unsigned long *bitmap2, unsigned int nbits);
+-extern void __bitmap_xor(unsigned long *dst, const unsigned long *bitmap1,
+-			const unsigned long *bitmap2, unsigned int nbits);
+-extern int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
+-			const unsigned long *bitmap2, unsigned int nbits);
+-extern void __bitmap_replace(unsigned long *dst,
+-			const unsigned long *old, const unsigned long *new,
+-			const unsigned long *mask, unsigned int nbits);
+-extern int __bitmap_intersects(const unsigned long *bitmap1,
+-			const unsigned long *bitmap2, unsigned int nbits);
+-extern int __bitmap_subset(const unsigned long *bitmap1,
+-			const unsigned long *bitmap2, unsigned int nbits);
+-extern int __bitmap_weight(const unsigned long *bitmap, unsigned int nbits);
+-extern void __bitmap_set(unsigned long *map, unsigned int start, int len);
+-extern void __bitmap_clear(unsigned long *map, unsigned int start, int len);
+-
+-extern unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
+-						    unsigned long size,
+-						    unsigned long start,
+-						    unsigned int nr,
+-						    unsigned long align_mask,
+-						    unsigned long align_offset);
++int __bitmap_subset(const unsigned long *bitmap1,
++		    const unsigned long *bitmap2, unsigned int nbits);
++int __bitmap_weight(const unsigned long *bitmap, unsigned int nbits);
++void __bitmap_set(unsigned long *map, unsigned int start, int len);
++void __bitmap_clear(unsigned long *map, unsigned int start, int len);
++
++unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
++					     unsigned long size,
++					     unsigned long start,
++					     unsigned int nr,
++					     unsigned long align_mask,
++					     unsigned long align_offset);
+ 
+ /**
+  * bitmap_find_next_zero_area - find a contiguous aligned zero area
+@@ -190,33 +189,33 @@ bitmap_find_next_zero_area(unsigned long *map,
+ 					      align_mask, 0);
+ }
+ 
+-extern int bitmap_parse(const char *buf, unsigned int buflen,
++int bitmap_parse(const char *buf, unsigned int buflen,
+ 			unsigned long *dst, int nbits);
+-extern int bitmap_parse_user(const char __user *ubuf, unsigned int ulen,
++int bitmap_parse_user(const char __user *ubuf, unsigned int ulen,
+ 			unsigned long *dst, int nbits);
+-extern int bitmap_parselist(const char *buf, unsigned long *maskp,
++int bitmap_parselist(const char *buf, unsigned long *maskp,
+ 			int nmaskbits);
+-extern int bitmap_parselist_user(const char __user *ubuf, unsigned int ulen,
++int bitmap_parselist_user(const char __user *ubuf, unsigned int ulen,
+ 			unsigned long *dst, int nbits);
+-extern void bitmap_remap(unsigned long *dst, const unsigned long *src,
++void bitmap_remap(unsigned long *dst, const unsigned long *src,
+ 		const unsigned long *old, const unsigned long *new, unsigned int nbits);
+-extern int bitmap_bitremap(int oldbit,
++int bitmap_bitremap(int oldbit,
+ 		const unsigned long *old, const unsigned long *new, int bits);
+-extern void bitmap_onto(unsigned long *dst, const unsigned long *orig,
++void bitmap_onto(unsigned long *dst, const unsigned long *orig,
+ 		const unsigned long *relmap, unsigned int bits);
+-extern void bitmap_fold(unsigned long *dst, const unsigned long *orig,
++void bitmap_fold(unsigned long *dst, const unsigned long *orig,
+ 		unsigned int sz, unsigned int nbits);
+-extern int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order);
+-extern void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order);
+-extern int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order);
++int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order);
++void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order);
++int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order);
+ 
+ #ifdef __BIG_ENDIAN
+-extern void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int nbits);
++void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int nbits);
+ #else
+ #define bitmap_copy_le bitmap_copy
+ #endif
+-extern unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
+-extern int bitmap_print_to_pagebuf(bool list, char *buf,
++unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
++int bitmap_print_to_pagebuf(bool list, char *buf,
+ 				   const unsigned long *maskp, int nmaskbits);
+ 
+ #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+@@ -265,9 +264,9 @@ static inline void bitmap_copy_clear_tail(unsigned long *dst,
+  * therefore conversion is not needed when copying data from/to arrays of u32.
+  */
+ #if BITS_PER_LONG == 64
+-extern void bitmap_from_arr32(unsigned long *bitmap, const u32 *buf,
++void bitmap_from_arr32(unsigned long *bitmap, const u32 *buf,
+ 							unsigned int nbits);
+-extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
++void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
+ 							unsigned int nbits);
+ #else
+ #define bitmap_from_arr32(bitmap, buf, nbits)			\
 -- 
 2.29.1
 
