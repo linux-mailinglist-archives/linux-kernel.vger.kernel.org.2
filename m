@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A4632D997
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6E332D99A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhCDSqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:46:47 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:59602 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234697AbhCDSqm (ORCPT
+        id S234769AbhCDSqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233130AbhCDSqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:46:42 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124IWCCx016648;
-        Thu, 4 Mar 2021 12:45:16 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=9YnOQSjZf3bbcOgBfkersI4f1qMN4YhWlYOh/26S/JE=;
- b=LYe1luI6zW5yjuK19/Gm5UTOpk2Pe2yyIg8ljE+UgJ8C7KLnHR4dDEzEW6LgYHMpFGTF
- alU+pjZbppWp6MYQnR2DMqPR7H52UlgkwVtXm5BR45rS30Vk0DWH37i0TPx+3j2KtGpr
- 7vux2BwTOEwsegrh6Zp1aPyFYjprCS02TMrONyNB7ENMY+xQO94xz6E9r37R6a62hF2U
- j8q5V10bzTy72gpF8LdRLlsPvfPK2pfgmOcp/aqAb8PqPTXcDHKhoNzxHeUlLEW2e++k
- Mm6tXZ/fj6K1jUGbyuJEHEQQumgBcalYtmUamzUmKpIf7gNWfXkaP9/8/+iyZcqzbdX+ lQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6y49m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 04 Mar 2021 12:45:16 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 4 Mar 2021
- 18:45:14 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Thu, 4 Mar 2021 18:45:14 +0000
-Received: from [198.90.238.45] (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DF55711D0;
-        Thu,  4 Mar 2021 18:45:13 +0000 (UTC)
-Subject: Re: [PATCH 4/4] ALSA: hda/cirrus: Add Headphone and Headset MIC
- Volume Control
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-References: <20210303182959.5322-1-vitalyr@opensource.cirrus.com>
- <20210303182959.5322-5-vitalyr@opensource.cirrus.com>
- <s5h5z279ggk.wl-tiwai@suse.de>
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Message-ID: <d2b64cb9-895e-f6ab-d95d-8c2d5962d64c@opensource.cirrus.com>
-Date:   Thu, 4 Mar 2021 18:45:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 4 Mar 2021 13:46:12 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566EEC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:45:32 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id bj7so356409pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:45:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AfzYA4MYm4o0NBs3+MWAkCalbICVDep2WzlX9v2I+F8=;
+        b=cvbIZzFy4tKSoioTDRDvsehbKvgBr8wpI09lcjS9KYeFH47NqnzM5VHMUMDWwo8kK7
+         Gsuuj01NzyWNLBzuRsHc9wjcr6EsLet7kLPllDQ5MIjKS0nMuafzRfFlv7w5LXctv9Us
+         Qc6j8tsi0K70HjsTxooAwecliEJYSExLL5kxoesnuRqXBspMfcAEpd9l7VH6oaQqRAxE
+         qheBgIn1LYST2OZkjpeMkCgPGmVcWlOcWlLsmiVRZPUeCZUXDkgwObM9hI7w3ti/A0jc
+         DymPvg2DkNqp1CDNFP0jEnfN3QKOE+E+R6fXLSZvCTZHTAwRCJqD8uHBHFBeSTxm5vII
+         vkkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AfzYA4MYm4o0NBs3+MWAkCalbICVDep2WzlX9v2I+F8=;
+        b=hoFSYECdy7H6vrXRzTJOJ4RLhq+baLE7+wFFbbHJD84AEyJNpVCUDXwuDMmIyJyQxp
+         Hk0kitP+Ex6p22aRaTUTuSG417UtpqHUWcGLdEht9v7gYWID0m+Gou8e3f+9pjDe+2kn
+         xbAw+FuoFu/SQVxdWH++dlrCMlzBObQ+VpyPTpmlwrQUve1/Z30okWIfwRSVW4v7eq0c
+         xCRVAjr37SosTWhWiXxgZeKR6Xr9BO70BxOAhiJCGlkQUZ9qLmdq6bS4w94qgGdGJZwM
+         x2fTHl14WuUQbGaJe60lNVcN3hvRwdbqLGA+kiu8oFOVefjd9ud29hxjfH4GshPrE8yq
+         xz5Q==
+X-Gm-Message-State: AOAM530pUMy4P2ZywcseuXhgXmb3XgYos9WQgWxTzdBeFT/lhXsqHiMH
+        Tr6Qz6k4haC1p13ottaUg0keuw==
+X-Google-Smtp-Source: ABdhPJwL3EYl86r8faI7gQK72idH6mIl1cI7i334/cvnu7Kb7ruGlHdt3+2DWYhNx+nSRWRUiL6y1Q==
+X-Received: by 2002:a17:902:b941:b029:e3:1628:97b7 with SMTP id h1-20020a170902b941b02900e3162897b7mr5296349pls.60.1614883531870;
+        Thu, 04 Mar 2021 10:45:31 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 68sm131267pfd.75.2021.03.04.10.45.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 10:45:31 -0800 (PST)
+Date:   Thu, 4 Mar 2021 11:45:29 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v5 16/16] rpmsg: char: return an error if device already
+ open
+Message-ID: <20210304184529.GB3854911@xps15>
+References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
+ <20210219111501.14261-17-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <s5h5z279ggk.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1015 suspectscore=0
- adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=975 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103040088
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219111501.14261-17-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/03/2021 1:49 pm, Takashi Iwai wrote:
-> On Wed, 03 Mar 2021 19:29:59 +0100,
-> Vitaly Rodionov wrote:
->> +static int cs8409_cs42l42_volume_get(struct snd_kcontrol *kcontrol,
->> +				 struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
->> +	hda_nid_t nid = get_amp_nid(kcontrol);
->> +	int chs = get_amp_channels(kcontrol);
->> +	long *valp = ucontrol->value.integer.value;
->> +	char vol = 0;
->> +
->> +	codec_dbg(codec, "%s() nid: %d\n", __func__, nid);
->> +	snd_hda_power_up(codec);
->> +	switch (nid) {
->> +	case CS8409_CS42L42_HP_PIN_NID:
->> +		mutex_lock(&cs8409_i2c_mux);
->> +		if (chs & 1) {
->> +			vol = -(cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
->> +				CS8409_CS42L42_REG_HS_VOLUME_CHA, 1));
-> Better to cache the values instead of i2c read at each time?
-> Then the unnecessary power up/down sequence can be avoided, too.
-Yes, agree. Will be fixed in next version of patch.
->
->
-> thanks,
->
-> Takashi
+On Fri, Feb 19, 2021 at 12:15:01PM +0100, Arnaud Pouliquen wrote:
+> The rpmsg_create_ept function is invoked when the device is opened.
+> As only one endpoint must be created per device. It is not possible to
+> open the same device twice. But there is nothing to prevent multi open.
 
-Thank you,
+s/multi/multiple
 
-Vitaly
+> Return -EBUSY when device is already opened to have a generic error
+> instead of relying on the back-end to potentially detect the error.
+> 
+> Without this patch for instance the GLINK driver return -EBUSY while
+> the virtio bus return -ENOSPC.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 8d3f9d6c20ad..4cd5b79559f0 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -116,6 +116,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+>  	struct device *dev = &eptdev->dev;
+>  	u32 addr = eptdev->chinfo.src;
+>  
+> +	if (eptdev->ept)
+> +		return -EBUSY;
+> +
 
+It would be nice to return the same error code regardless of the backend but at
+the same time I feel like it isn't the right place to do this.  I need to think
+about this one but for now we can keep it.
+
+>  	get_device(dev);
+>  
+>  	/*
+> -- 
+> 2.17.1
+> 
