@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D7932C91C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF4432C91F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356409AbhCDBEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:04:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54734 "EHLO mail.kernel.org"
+        id S1356482AbhCDBEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:04:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1451174AbhCDAak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:30:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B21164EF4;
-        Thu,  4 Mar 2021 00:29:57 +0000 (UTC)
+        id S1386545AbhCDAbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:31:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58C3F64E67;
+        Thu,  4 Mar 2021 00:30:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614817797;
-        bh=5LqAc5v3vAiyIyBEf5zKjssRCh70Z9FmZPs7b9Jz4JM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J8IRZk6qPmyZJxPNEGzQIx3PRSLjs+5ORKsZurhoHq/A8yJ+c2ahUggdyMii8ITR2
-         8rCpfJ2rsKRVcCjTrtWgJVZna1x1gJCm1vhJ+UOf9QRiGeXg+nSNkbYR0kkze/ekCq
-         sLfvHStuSmB2dc/dJWnm1JamwNUSH87v1oDRlxxIWdCflUJYzKftx4r7vMKCzDkkX3
-         2rB3GsO1ooiD0xS/6vjqxyXfqhwcMnIAo+6ya69h2eVh6pLR9L2Tre487Nm9tVfd30
-         rhcSF4FZhSb03G/67nk5Dioc/f80ZOCD3OP044uo9hgqr8lOUd6enN/DGMR6ldk74i
-         rWm3sYxGUkSjQ==
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 5/5] torture: Make jitter.sh handle large systems
-Date:   Wed,  3 Mar 2021 16:29:55 -0800
-Message-Id: <20210304002955.24132-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210304002919.GA24003@paulmck-ThinkPad-P72>
-References: <20210304002919.GA24003@paulmck-ThinkPad-P72>
+        s=k20201202; t=1614817859;
+        bh=cG2NMExV7RKwp4loVOfSt61stR3Ekjm51xkrLH9YtKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mYbLPZ8ppcXg7nNOUTIPI93C6nUkkEjnZiT4kEfVyjSbF90gVFNd+gS8MucV4OzxR
+         aE5FL8fbIs2Sptm5uiWb1dgHctrZbql6xBb1DOJ9R4hfcTA0SVxbOrJcYCeIu28iLE
+         PEp/vOZjFgeHM1fv20FYZCuXfUzvK16AY6S/AClduuy/oaFDzY2jH5uXDaZyJ0Mv7A
+         Js8m2/1q7wibXLjKZU7kGOQLkOKxsEaawBIuX8eO6vKMX9C+bmqOkS+oRCqI4JZx5T
+         6tUb5PAecLGyGltgGHenPki9CGDxaD8HJbDmvf8r/1kJSu6KxetlieFgAPPMN3SNvV
+         WQL2aFp5JVIpg==
+Date:   Wed, 3 Mar 2021 17:30:55 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] kbuild: dwarf: use AS_VERSION instead of
+ test_dwarf5_support.sh
+Message-ID: <20210304003055.tsrqewikdekbhhax@archlinux-ax161>
+References: <20210303183333.46543-1-masahiroy@kernel.org>
+ <20210303183333.46543-4-masahiroy@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303183333.46543-4-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Mar 04, 2021 at 03:33:33AM +0900, Masahiro Yamada wrote:
+> The test code in scripts/test_dwarf5_support.sh is somewhat difficult
+> to understand, but after all, we want to check binutils >= 2.35.2
+> 
+> >From the former discussion, the requrement for generating DRAWF v5 from
+> C code is as follows:
+> 
+>  - gcc + binutils as     -> requires gcc 5.0+ (but 7.0+ for full support)
+>  - clang + binutils as   -> requires binutils 2.35.2+
+>  - clang + integrated as -> OK
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-The current jitter.sh script expects cpumask bits to fit into whatever
-the awk interpreter uses for an integer, which clearly does not hold for
-even medium-sized systems these days.  This means that on a large system,
-only the first 32 or 64 CPUs (depending) are subjected to jitter.sh
-CPU-time perturbations.  This commit therefore computes a given CPU's
-cpumask using text manipulation rather than arithmetic shifts.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/testing/selftests/rcutorture/bin/jitter.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
-index 188b864..3a856ec 100755
---- a/tools/testing/selftests/rcutorture/bin/jitter.sh
-+++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
-@@ -67,10 +67,10 @@ do
- 		srand(n + me + systime());
- 		ncpus = split(cpus, ca);
- 		curcpu = ca[int(rand() * ncpus + 1)];
--		mask = lshift(1, curcpu);
--		if (mask + 0 <= 0)
--			mask = 1;
--		printf("%#x\n", mask);
-+		z = "";
-+		for (i = 1; 4 * i <= curcpu; i++)
-+			z = z "0";
-+		print "0x" 2 ^ (curcpu % 4) z;
- 	}' < /dev/null`
- 	n=$(($n+1))
- 	if ! taskset -p $cpumask $$ > /dev/null 2>&1
--- 
-2.9.5
-
+> ---
+> 
+>  lib/Kconfig.debug              | 3 +--
+>  scripts/test_dwarf5_support.sh | 8 --------
+>  2 files changed, 1 insertion(+), 10 deletions(-)
+>  delete mode 100755 scripts/test_dwarf5_support.sh
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 2779c29d9981..f3337a38925d 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -284,8 +284,7 @@ config DEBUG_INFO_DWARF4
+>  
+>  config DEBUG_INFO_DWARF5
+>  	bool "Generate DWARF Version 5 debuginfo"
+> -	depends on GCC_VERSION >= 50000 || CC_IS_CLANG
+> -	depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+> +	depends on GCC_VERSION >= 50000 || (CC_IS_CLANG && AS_IS_GNU && AS_VERSION >= 23502) || (CC_IS_CLANG && AS_IS_LLVM)
+>  	depends on !DEBUG_INFO_BTF
+>  	help
+>  	  Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5.0+ (gcc
+> diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
+> deleted file mode 100755
+> index c46e2456b47a..000000000000
+> --- a/scripts/test_dwarf5_support.sh
+> +++ /dev/null
+> @@ -1,8 +0,0 @@
+> -#!/bin/sh
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
+> -# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
+> -# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
+> -echo '.file 0 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' | \
+> -  $* -gdwarf-5 -Wno-unused-command-line-argument -c -x assembler -o /dev/null -
+> -- 
+> 2.27.0
+> 
