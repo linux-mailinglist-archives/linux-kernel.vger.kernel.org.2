@@ -2,211 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E0032CBB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDE132CBBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhCDFE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 00:04:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhCDFEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 00:04:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8507C64EDF;
-        Thu,  4 Mar 2021 05:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614834247;
-        bh=n/FJ5Ej7z9LFFSAb4luZ8Y9JEPqogDVcunu/yI2101E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FKt9DSodqml3rcOgnWYKBA1KWT3ERXDWCJD3oYpbtLdxbbkDyD/XTcYjrDiKxkEyK
-         VkyfQETjUg+We0BRgjDNnBBfkg9oyuTjbTLMqxJDFchCFFCRAmBHCw7+BCXfYf5HAK
-         gTI2IsuS7CZxg6/8tsukp/cctUbTFgtyDAnaovohJbXRBJeM7t2u1YN9MePT8PyH66
-         KvKdF38WtjdCgHc+L/VA3RJkug2+2H5B+YngtZrK7X1j2hW7N3NwUpVMGBG35ARbVc
-         +P5nX1Uk+kis/8c91MVm/LoMLQy23zdMynsN9gpglpR0VvruR/ahjmDxT6LUGWPGge
-         ZyVk+Ef6CYsEg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5142A352274A; Wed,  3 Mar 2021 21:04:07 -0800 (PST)
-Date:   Wed, 3 Mar 2021 21:04:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210304050407.GN2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <20210303220348.GL2696@paulmck-ThinkPad-P72>
- <20210304032101.GB1594980@rowland.harvard.edu>
+        id S229750AbhCDFHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 00:07:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23456 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229494AbhCDFGe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 00:06:34 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12453eGY101193;
+        Thu, 4 Mar 2021 00:05:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=H6L0IwF+DrlSp51mAanCqv2skXmdljWhEakgyYnPHF4=;
+ b=Vj+mB9IC/QhwRYZkkKRfnhnjlIOU/u59t4S41RL8d731ofJ7BdmtxjVepOSpqoIUw+Zl
+ uo3Ntt+jT/abXbpFRicUxdEDf6+c4lGjaySxtXwd33GpiWOn/rGrXTyuFvN/Yy4zl5Gw
+ 0vHI/UBW3FqDWEYuizuDfiJVJBzIAeN1uIXjPO3F0u6hALuV0ts6c8vGCID5XctZlPew
+ k6LtAqsKtevXHGfl0Jxi7J28RsM4Ks0ZpiAAZVjotrgIq8why0eZUgD8LeqOxWWA/SNx
+ 4o5pSZvbSuJyGB+PL5NImFWJ0hlJs2TEJh6kQ4B8sJrjypzrHYtU1htt7Q91gnCdkfLz /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372qpy1vw1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 00:05:20 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12454IE4103308;
+        Thu, 4 Mar 2021 00:05:20 -0500
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372qpy1vuj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 00:05:20 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1244wWPY015382;
+        Thu, 4 Mar 2021 05:05:18 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma05wdc.us.ibm.com with ESMTP id 371b0192vr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 05:05:18 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12455IHD26870200
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 05:05:18 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00AB978081;
+        Thu,  4 Mar 2021 05:05:18 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0AD23780C6;
+        Thu,  4 Mar 2021 05:05:13 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.79.210.254])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Mar 2021 05:05:13 +0000 (GMT)
+Subject: Re: [PATCH v3 1/2] powerpc/perf: Use PVR rather than oprofile field
+ to determine CPU version
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rashmica Gupta <rashmica.g@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>
+Cc:     "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <50ad16925a66ac53890286ceafbf84f6fc324baa.1614600516.git.christophe.leroy@csgroup.eu>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <a8982899-8ee8-75e8-7921-5cb5a92fe210@linux.ibm.com>
+Date:   Thu, 4 Mar 2021 10:35:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304032101.GB1594980@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <50ad16925a66ac53890286ceafbf84f6fc324baa.1614600516.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_01:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 phishscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103040020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 10:21:01PM -0500, Alan Stern wrote:
-> On Wed, Mar 03, 2021 at 02:03:48PM -0800, Paul E. McKenney wrote:
-> > On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
-> > > On Wed, Mar 03, 2021 at 09:40:22AM -0800, Paul E. McKenney wrote:
-> > > > On Wed, Mar 03, 2021 at 12:12:21PM -0500, Alan Stern wrote:
-> > > 
-> > > > > Local variables absolutely should be treated just like CPU registers, if 
-> > > > > possible.  In fact, the compiler has the option of keeping local 
-> > > > > variables stored in registers.
-> > > > > 
-> > > > > (Of course, things may get complicated if anyone writes a litmus test 
-> > > > > that uses a pointer to a local variable,  Especially if the pointer 
-> > > > > could hold the address of a local variable in one execution and a 
-> > > > > shared variable in another!  Or if the pointer is itself a shared 
-> > > > > variable and is dereferenced in another thread!)
-> > > > 
-> > > > Good point!  I did miss this complication.  ;-)
-> > > 
-> > > I suspect it wouldn't be so bad if herd7 disallowed taking addresses of 
-> > > local variables.
-> > > 
-> > > > As you say, when its address is taken, the "local" variable needs to be
-> > > > treated as is it were shared.  There are exceptions where the pointed-to
-> > > > local is still used only by its process.  Are any of these exceptions
-> > > > problematic?
-> > > 
-> > > Easiest just to rule out the whole can of worms.
-> > 
-> > Good point, given that a global can be used instead of a local for
-> > any case where an address must be taken.
+
+
+On 3/1/21 5:39 PM, Christophe Leroy wrote:
+> From: Rashmica Gupta <rashmica.g@gmail.com>
 > 
-> Another thing to consider: Almost all marked accesses involve using the 
-> address of the storage location (for example, smp_load_acquire's first 
-> argument must be a pointer).  As far as I can remember at the moment, 
-> the only ones that don't are READ_ONCE and WRITE_ONCE.  So although we 
-> might or might not want to allow READ_ONCE or WRITE_ONCE on a local 
-> variable, we won't have to worry about any of the other kinds of marked 
-> accesses.
-
-Good point!
-
-> > > > > But even if local variables are treated as non-shared storage locations, 
-> > > > > we should still handle this correctly.  Part of the problem seems to lie 
-> > > > > in the definition of the to-r dependency relation; the relevant portion 
-> > > > > is:
-> > > > > 
-> > > > > 	(dep ; [Marked] ; rfi)
-> > > > > 
-> > > > > Here dep is the control dependency from the READ_ONCE to the 
-> > > > > local-variable store, and the rfi refers to the following load of the 
-> > > > > local variable.  The problem is that the store to the local variable 
-> > > > > doesn't go in the Marked class, because it is notated as a plain C 
-> > > > > assignment.  (And likewise for the following load.)
-> > > > > 
-> > > > > Should we change the model to make loads from and stores to local 
-> > > > > variables always count as Marked?
-> > > > 
-> > > > As long as the initial (possibly unmarked) load would be properly
-> > > > complained about.
-> > > 
-> > > Sorry, I don't understand what you mean.
-> > 
-> > I was thinking in terms of something like this in one of the processes:
-> > 
-> > 	p = gp; // Unmarked!
-> > 	r1 = p;
-> > 	q = r1; // Implicitly marked now?
-> > 	if (q)
-> > 		WRITE_ONCE(x, 1); // ctrl dep from gp???
+> Currently the perf CPU backend drivers detect what CPU they're on using
+> cur_cpu_spec->oprofile_cpu_type.
 > 
-> I hope we won't have to worry about this!  :-)  Treating local variable 
-> accesses as if they are always marked looks wrong.
-
-Good, that is where I was also heading.  ;-)
-
-> > > >  And I cannot immediately think of a situation where
-> > > > this approach would break that would not result in a data race being
-> > > > flagged.  Or is this yet another failure of my imagination?
-> > > 
-> > > By definition, an access to a local variable cannot participate in a 
-> > > data race because all such accesses are confined to a single thread.
-> > 
-> > True, but its value might have come from a load from a shared variable.
+> Although that works, it's a bit crufty to be using oprofile related fields,
+> especially seeing as oprofile is more or less unused these days.
 > 
-> Then that load could have participated in a data race.  But the store to 
-> the local variable cannot.
-
-Agreed.  My thought was that if the ordering from the initial (non-local)
-load mattered, then that initial load must have participated in a
-data race.  Is that true, or am I failing to perceive some corner case?
-
-> > > However, there are other aspects to consider, in particular, the 
-> > > ordering relations on local-variable accesses.  But if, as Luc says, 
-> > > local variables are treated just like registers then perhaps the issue 
-> > > doesn't arise.
-> > 
-> > Here is hoping!
-> > 
-> > > > > What should have happened if the local variable were instead a shared 
-> > > > > variable which the other thread didn't access at all?  It seems like a 
-> > > > > weak point of the memory model that it treats these two things 
-> > > > > differently.
-> > > > 
-> > > > But is this really any different than the situation where a global
-> > > > variable is only accessed by a single thread?
-> > > 
-> > > Indeed; it is the _same_ situation.  Which leads to some interesting 
-> > > questions, such as: What does READ_ONCE(r) mean when r is a local 
-> > > variable?  Should it be allowed at all?  In what way is it different 
-> > > from a plain read of r?
-> > > 
-> > > One difference is that the LKMM doesn't allow dependencies to originate 
-> > > from a plain load.  Of course, when you're dealing with a local 
-> > > variable, what matters is not the load from that variable but rather the 
-> > > earlier loads which determined the value that had been stored there.  
-> > > Which brings us back to the case of the
-> > > 
-> > > 	dep ; rfi
-> > > 
-> > > dependency relation, where the accesses in the middle are plain and 
-> > > non-racy.  Should the LKMM be changed to allow this?
-> > 
-> > It would be nice, give or take the potential side effects.  ;-)
-> > As in it would be nice, but might not be worthwhile.
+> It also means perf is reliant on the fragile logic in setup_cpu_spec()
+> which detects when we're using a logical PVR and copies back the PMU
+> related fields from the raw CPU entry. So lets check the PVR directly.
 > 
-> Treating local variables like registers will automatically bring this 
-> behavior.  So I think we'll be good.
+> Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: Rashmica Gupta <rashmica.g@gmail.com>
+> Reviewed-by: Madhavan Srinivasan <maddy@linux.vnet.ibm.com>
+> [chleroy: Added power10 and fixed checkpatch issues]
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Sounds good.
+Patch looks good to me.
 
-> > > There are other differences to consider.  For example:
-> > > 
-> > > 	r = READ_ONCE(x);
-> > > 	smp_wmb();
-> > > 	WRITE_ONCE(y, 1);
-> > > 
-> > > If the write to r were treated as a marked store, the smp_wmb would 
-> > > order it (and consequently the READ_ONCE) before the WRITE_ONCE.  
-> > > However we don't want to do this when r is a local variable.  Indeed, a 
-> > > plain store wouldn't be ordered this way because the compiler might 
-> > > optimize the store away entirely, leaving the smp_wmb nothing to act on.
-> > 
-> > Agreed, having smp_wmb() order things due to a write to a local variable
-> > would not be what we want.
-> > 
-> > > So overall the situation is rather puzzling.  Treating local variables 
-> > > as registers is probably the best answer.
-> > 
-> > That is sounding quite appealing at the moment.
+Reviewed-and-tested-By: Kajol Jain<kjain@linux.ibm.com> [For 24x7 side changes]
+
+Thanks,
+Kajol Jain
+
+> ---
+>  arch/powerpc/perf/e500-pmu.c    | 9 +++++----
+>  arch/powerpc/perf/e6500-pmu.c   | 5 +++--
+>  arch/powerpc/perf/hv-24x7.c     | 6 +++---
+>  arch/powerpc/perf/mpc7450-pmu.c | 5 +++--
+>  arch/powerpc/perf/power10-pmu.c | 6 ++----
+>  arch/powerpc/perf/power5+-pmu.c | 6 +++---
+>  arch/powerpc/perf/power5-pmu.c  | 5 +++--
+>  arch/powerpc/perf/power6-pmu.c  | 5 +++--
+>  arch/powerpc/perf/power7-pmu.c  | 7 ++++---
+>  arch/powerpc/perf/power8-pmu.c  | 5 +++--
+>  arch/powerpc/perf/power9-pmu.c  | 4 +---
+>  arch/powerpc/perf/ppc970-pmu.c  | 7 ++++---
+>  12 files changed, 37 insertions(+), 33 deletions(-)
 > 
-> Agreed.
-
-							Thanx, Paul
+> diff --git a/arch/powerpc/perf/e500-pmu.c b/arch/powerpc/perf/e500-pmu.c
+> index a59c33bed32a..e3e1a68eb1d5 100644
+> --- a/arch/powerpc/perf/e500-pmu.c
+> +++ b/arch/powerpc/perf/e500-pmu.c
+> @@ -118,12 +118,13 @@ static struct fsl_emb_pmu e500_pmu = {
+>  
+>  static int init_e500_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type)
+> -		return -ENODEV;
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+>  
+> -	if (!strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/e500mc"))
+> +	/* ec500mc */
+> +	if (PVR_VER(pvr) == PVR_VER_E500MC || PVR_VER(pvr) == PVR_VER_E5500)
+>  		num_events = 256;
+> -	else if (strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/e500"))
+> +	/* e500 */
+> +	else if (PVR_VER(pvr) != PVR_VER_E500V1 && PVR_VER(pvr) != PVR_VER_E500V2)
+>  		return -ENODEV;
+>  
+>  	return register_fsl_emb_pmu(&e500_pmu);
+> diff --git a/arch/powerpc/perf/e6500-pmu.c b/arch/powerpc/perf/e6500-pmu.c
+> index 44ad65da82ed..bd779a2338f8 100644
+> --- a/arch/powerpc/perf/e6500-pmu.c
+> +++ b/arch/powerpc/perf/e6500-pmu.c
+> @@ -107,8 +107,9 @@ static struct fsl_emb_pmu e6500_pmu = {
+>  
+>  static int init_e6500_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -		strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/e6500"))
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+> +
+> +	if (PVR_VER(pvr) != PVR_VER_E6500)
+>  		return -ENODEV;
+>  
+>  	return register_fsl_emb_pmu(&e6500_pmu);
+> diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
+> index e5eb33255066..f3f2472fa1c6 100644
+> --- a/arch/powerpc/perf/hv-24x7.c
+> +++ b/arch/powerpc/perf/hv-24x7.c
+> @@ -1718,16 +1718,16 @@ static int hv_24x7_init(void)
+>  {
+>  	int r;
+>  	unsigned long hret;
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+>  	struct hv_perf_caps caps;
+>  
+>  	if (!firmware_has_feature(FW_FEATURE_LPAR)) {
+>  		pr_debug("not a virtualized system, not enabling\n");
+>  		return -ENODEV;
+> -	} else if (!cur_cpu_spec->oprofile_cpu_type)
+> -		return -ENODEV;
+> +	}
+>  
+>  	/* POWER8 only supports v1, while POWER9 only supports v2. */
+> -	if (!strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power8"))
+> +	if (PVR_VER(pvr) == PVR_POWER8)
+>  		interface_version = 1;
+>  	else {
+>  		interface_version = 2;
+> diff --git a/arch/powerpc/perf/mpc7450-pmu.c b/arch/powerpc/perf/mpc7450-pmu.c
+> index e39b15b79a83..552d51a925d3 100644
+> --- a/arch/powerpc/perf/mpc7450-pmu.c
+> +++ b/arch/powerpc/perf/mpc7450-pmu.c
+> @@ -417,8 +417,9 @@ struct power_pmu mpc7450_pmu = {
+>  
+>  static int __init init_mpc7450_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc/7450"))
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+> +
+> +	if (PVR_VER(pvr) != PVR_7450)
+>  		return -ENODEV;
+>  
+>  	return register_power_pmu(&mpc7450_pmu);
+> diff --git a/arch/powerpc/perf/power10-pmu.c b/arch/powerpc/perf/power10-pmu.c
+> index a901c1348cad..d1395844a329 100644
+> --- a/arch/powerpc/perf/power10-pmu.c
+> +++ b/arch/powerpc/perf/power10-pmu.c
+> @@ -566,12 +566,10 @@ int init_power10_pmu(void)
+>  	unsigned int pvr;
+>  	int rc;
+>  
+> -	/* Comes from cpu_specs[] */
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power10"))
+> +	pvr = mfspr(SPRN_PVR);
+> +	if (PVR_VER(pvr) != PVR_POWER10)
+>  		return -ENODEV;
+>  
+> -	pvr = mfspr(SPRN_PVR);
+>  	/* Add the ppmu flag for power10 DD1 */
+>  	if ((PVR_CFG(pvr) == 1))
+>  		power10_pmu.flags |= PPMU_P10_DD1;
+> diff --git a/arch/powerpc/perf/power5+-pmu.c b/arch/powerpc/perf/power5+-pmu.c
+> index 18732267993a..a79eae40ef6d 100644
+> --- a/arch/powerpc/perf/power5+-pmu.c
+> +++ b/arch/powerpc/perf/power5+-pmu.c
+> @@ -679,9 +679,9 @@ static struct power_pmu power5p_pmu = {
+>  
+>  int init_power5p_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    (strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power5+")
+> -	     && strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power5++")))
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+> +
+> +	if (PVR_VER(pvr) != PVR_POWER5p)
+>  		return -ENODEV;
+>  
+>  	return register_power_pmu(&power5p_pmu);
+> diff --git a/arch/powerpc/perf/power5-pmu.c b/arch/powerpc/perf/power5-pmu.c
+> index cb611c1e7abe..35a9d7f3b4b9 100644
+> --- a/arch/powerpc/perf/power5-pmu.c
+> +++ b/arch/powerpc/perf/power5-pmu.c
+> @@ -620,8 +620,9 @@ static struct power_pmu power5_pmu = {
+>  
+>  int init_power5_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power5"))
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+> +
+> +	if (PVR_VER(pvr) != PVR_POWER5)
+>  		return -ENODEV;
+>  
+>  	return register_power_pmu(&power5_pmu);
+> diff --git a/arch/powerpc/perf/power6-pmu.c b/arch/powerpc/perf/power6-pmu.c
+> index 69ef38216418..8aa220c712a7 100644
+> --- a/arch/powerpc/perf/power6-pmu.c
+> +++ b/arch/powerpc/perf/power6-pmu.c
+> @@ -541,8 +541,9 @@ static struct power_pmu power6_pmu = {
+>  
+>  int init_power6_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power6"))
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+> +
+> +	if (PVR_VER(pvr) != PVR_POWER6)
+>  		return -ENODEV;
+>  
+>  	return register_power_pmu(&power6_pmu);
+> diff --git a/arch/powerpc/perf/power7-pmu.c b/arch/powerpc/perf/power7-pmu.c
+> index 894c17f9a762..ca7373143b02 100644
+> --- a/arch/powerpc/perf/power7-pmu.c
+> +++ b/arch/powerpc/perf/power7-pmu.c
+> @@ -447,11 +447,12 @@ static struct power_pmu power7_pmu = {
+>  
+>  int init_power7_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power7"))
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+> +
+> +	if (PVR_VER(pvr) != PVR_POWER7 && PVR_VER(pvr) != PVR_POWER7p)
+>  		return -ENODEV;
+>  
+> -	if (pvr_version_is(PVR_POWER7p))
+> +	if (PVR_VER(pvr) == PVR_POWER7p)
+>  		power7_pmu.flags |= PPMU_SIAR_VALID;
+>  
+>  	return register_power_pmu(&power7_pmu);
+> diff --git a/arch/powerpc/perf/power8-pmu.c b/arch/powerpc/perf/power8-pmu.c
+> index 5282e8415ddf..5a396ba8bf58 100644
+> --- a/arch/powerpc/perf/power8-pmu.c
+> +++ b/arch/powerpc/perf/power8-pmu.c
+> @@ -381,9 +381,10 @@ static struct power_pmu power8_pmu = {
+>  int init_power8_pmu(void)
+>  {
+>  	int rc;
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+>  
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power8"))
+> +	if (PVR_VER(pvr) != PVR_POWER8E && PVR_VER(pvr) != PVR_POWER8NVL &&
+> +	    PVR_VER(pvr) != PVR_POWER8)
+>  		return -ENODEV;
+>  
+>  	rc = register_power_pmu(&power8_pmu);
+> diff --git a/arch/powerpc/perf/power9-pmu.c b/arch/powerpc/perf/power9-pmu.c
+> index 2a57e93a79dc..28ba1e98f93d 100644
+> --- a/arch/powerpc/perf/power9-pmu.c
+> +++ b/arch/powerpc/perf/power9-pmu.c
+> @@ -444,9 +444,7 @@ int init_power9_pmu(void)
+>  	int rc = 0;
+>  	unsigned int pvr = mfspr(SPRN_PVR);
+>  
+> -	/* Comes from cpu_specs[] */
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power9"))
+> +	if (PVR_VER(pvr) != PVR_POWER9)
+>  		return -ENODEV;
+>  
+>  	/* Blacklist events */
+> diff --git a/arch/powerpc/perf/ppc970-pmu.c b/arch/powerpc/perf/ppc970-pmu.c
+> index 1f8263785286..39a0a4d7841c 100644
+> --- a/arch/powerpc/perf/ppc970-pmu.c
+> +++ b/arch/powerpc/perf/ppc970-pmu.c
+> @@ -491,9 +491,10 @@ static struct power_pmu ppc970_pmu = {
+>  
+>  int init_ppc970_pmu(void)
+>  {
+> -	if (!cur_cpu_spec->oprofile_cpu_type ||
+> -	    (strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/970")
+> -	     && strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/970MP")))
+> +	unsigned int pvr = mfspr(SPRN_PVR);
+> +
+> +	if (PVR_VER(pvr) != PVR_970 && PVR_VER(pvr) != PVR_970MP &&
+> +	    PVR_VER(pvr) != PVR_970FX && PVR_VER(pvr) != PVR_970GX)
+>  		return -ENODEV;
+>  
+>  	return register_power_pmu(&ppc970_pmu);
+> 
