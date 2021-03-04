@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C4C32CE9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF01D32CEBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236221AbhCDIiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:38:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236132AbhCDIiK (ORCPT
+        id S236431AbhCDIqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:46:55 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50690 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236429AbhCDIqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:38:10 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF48C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 00:37:30 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id e6so18442243pgk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 00:37:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=keh6OiRMgDYdb2Jzt12hTBHP6AvsQSIJUPBUhidAE5E=;
-        b=q0rmadOj3+os+jAn+FFEx2+UnH86CtD/4Mw0Fx0bhYACOOADZLOy9w9orLYUuh0SoT
-         075x376LmAqhfGRWhbIcflFuuOtO28qSXSJXkN2YhxZcsuhYitwmPwTlfQ7tGoRExiKj
-         t4Hkmcg+6rd+UVx5P3BDfOMUxhmCI6/PErw2AAB17pYLEh0cLmLy2B8N+1vm7HoagBPw
-         TzEW/RfjlB+2RlL4C2onY9vI4hAv40TpbEqU+o+8Hv6x1/5BRzmAT9AhVeG54Fta4OY/
-         SQPQEV/UfapL994gVfHMx1mJ17G8+hVQfKhZ17xdPAijCEOtmf4nS4+sdEXlxv/jd6lz
-         yaoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=keh6OiRMgDYdb2Jzt12hTBHP6AvsQSIJUPBUhidAE5E=;
-        b=Est4aeSf/g9FAjWFMd/kBU4uY5LdsY7fC3tYDIQbMDE2o9tyVFycGtsMl/6qWsAnNH
-         XPTZSRcdVRjkooy6kITefvMYAi9ETqwNwWUVd+DrhyNOVEbb+/nbaYrAxiTMbOSFxma3
-         eUoKf5VLdiUx/OI1vDhVwK0zfCtfeJezqfSazwTG4RM2KntzDg+EtiCrtQKazn3t3E+y
-         alR9CcVj3I48FtHvcyL/tdrFw1csr26p+D48QgD7MH2veqxRtGwhciwQU6ZFwD0s7YQ7
-         vnEpWz/wXratLDkruXz94x0Aws8tetpO2DEPhFRZJWd4L4XhaMqIVBkOzJVfDQjINT0+
-         Lk+Q==
-X-Gm-Message-State: AOAM531UDz9zpRVOJwZBhAGkJ7ynpeiq6es63YlHRneCmTVoYpuzkLsH
-        cVbSR+dOcTXvqA5aXIi+bO/LgQPDT/NFBotonP016Q==
-X-Google-Smtp-Source: ABdhPJxADAz1pIyFAKke1f6Dq/YG/J8D4tBhi0KWLFosqYQFUcv///dPEIuKgJ913D6vRXuDgkv1wxwLMbxv+n2LRNs=
-X-Received: by 2002:a65:6a02:: with SMTP id m2mr2699051pgu.443.1614847049718;
- Thu, 04 Mar 2021 00:37:29 -0800 (PST)
+        Thu, 4 Mar 2021 03:46:49 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1248jJhr016367;
+        Thu, 4 Mar 2021 02:45:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614847519;
+        bh=I+QMqMp5VoK7+KQ+kqBL4wJ7n8inPaoTdGPsJ+uf6IQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=SvIJY3OnU2ATIK/gJlczx05VA3Cehw4UePgKrLZHEDlNYg+PwM434Tz5DLf3DWY+k
+         OUjvtq8wW8+0Lm/RxGHW2FGm8Z/0IcX3ZUOa+DtBJtnklOT04aQi9TYRj0jGWtfUjj
+         pQOI4X8hoJ5oOQfqRaAGle5GZZx4ly1IcxmExOSQ=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1248jJ84066456
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 4 Mar 2021 02:45:19 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
+ 2021 02:45:19 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 4 Mar 2021 02:45:19 -0600
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1248jGQJ103372;
+        Thu, 4 Mar 2021 02:45:16 -0600
+Subject: Re: [PATCH 0/4] arm64: dts: ti: am642x: add CPSW3g DT nodes
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tero Kristo <kristo@kernel.org>
+References: <20210303192114.12292-1-grygorii.strashko@ti.com>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <72de97eb-81c6-54e6-bbd8-f972226f7a90@ti.com>
+Date:   Thu, 4 Mar 2021 14:15:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org> <1614208985-20851-5-git-send-email-bbhatt@codeaurora.org>
-In-Reply-To: <1614208985-20851-5-git-send-email-bbhatt@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 4 Mar 2021 09:45:08 +0100
-Message-ID: <CAMZdPi8dk24Taq4GNvdFdE93-xUnAceTa-kuN2dOsmsnKko+vg@mail.gmail.com>
-Subject: Re: [PATCH v6 4/4] bus: mhi: core: Update debug prints to include
- local device state
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
-        Naveen Kumar <naveen.kumar@quectel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210303192114.12292-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 at 00:23, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
->
-> Update debug prints to include local device in the BHI interrupt
-> handler. This helps show transitions better between MHI states.
->
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+
+On 04/03/21 12:51 am, Grygorii Strashko wrote:
+> Hi
+> 
+> This series adds corresponding AM642x CPSW3g nodes required to enable networking
+> on TI am642-evm/sk platforms and adds required pinmux/PHY nodes in corresponding
+> board files.
+> 
+> Kernel Boot Log: 
+> EVM: https://pastebin.ubuntu.com/p/6Qkbw35Jg3/
+> SK: https://pastebin.ubuntu.com/p/Pd3xxP9J9K/
+
+Except for the minor comment. Series
+
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+
+Thanks and regards,
+Lokesh
+
+> 
+> 
+> Grygorii Strashko (1):
+>   arm64: dts: ti: k3-am64-main: add main CPTS entry
+> 
+> Vignesh Raghavendra (3):
+>   arm64: dts: ti: am64-main: Add CPSW DT node
+>   arm64: dts: ti: k3-am642-evm: add CPSW3g DT nodes
+>   arm64: dts: ti: k3-am642-sk: Add CPSW DT nodes
+> 
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 89 +++++++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-am64.dtsi      |  2 +
+>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  | 93 ++++++++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-am642-sk.dts   | 73 +++++++++++++++++++
+>  4 files changed, 257 insertions(+)
+> 
