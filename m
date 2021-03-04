@@ -2,199 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FD432CBA8
+	by mail.lfdr.de (Postfix) with ESMTP id ACB7E32CBA9
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbhCDEta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:49:30 -0500
-Received: from rcdn-iport-8.cisco.com ([173.37.86.79]:45152 "EHLO
-        rcdn-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233920AbhCDEs4 (ORCPT
+        id S233989AbhCDEvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233963AbhCDEub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:48:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=4760; q=dns/txt; s=iport;
-  t=1614833336; x=1616042936;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tQ2KjkNmJ1N6aeJwFCAC+GVVOXowsaBAtY9t5Zi/wUA=;
-  b=RVizpOYK1h345inY1JRkPPahV9P0psnFWtvBHml8QS1uYLQwyihZ4zis
-   9cCA9Y4gUMTLNYAxBXEduUe73cLKkr8lrnbMINLZAOqDx/f9VXR8wnb2u
-   eJDDjfTk21pnV/6EYs0PTaEou4uuv6Q3tRuKj4GrWBDnomXgiRNeeIi8g
-   o=;
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0DCAAAUZkBg/40NJK1iHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQGBfgQBAQsBgiqBTAE5MZYbiieSJwsBAQEPNAQBAYRNgXwCJTc?=
- =?us-ascii?q?GDgIDAQELAQEFAQEBAgEGBHGFboZ9ATgOgQI8ARKCcIJWAy+uHIIoiDANYoF?=
- =?us-ascii?q?EFIEkAYhbdIQZHIFJQoERg1iCGogZBIJGAXUZAQolAYFUgRuQHgYEgm2KLoE?=
- =?us-ascii?q?cmgRbgwaBH5VVhR0PIqNWlFWOP5QHgWokgVczGggbFYMkUBkNjisWjWoBXCA?=
- =?us-ascii?q?DLzgCBgoBAQMJjBMBAQ?=
-X-IronPort-AV: E=Sophos;i="5.81,221,1610409600"; 
-   d="scan'208";a="868193958"
-Received: from alln-core-8.cisco.com ([173.36.13.141])
-  by rcdn-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 04 Mar 2021 04:48:15 +0000
-Received: from zorba.cisco.com ([10.24.7.178])
-        by alln-core-8.cisco.com (8.15.2/8.15.2) with ESMTP id 1244m4X1015988;
-        Thu, 4 Mar 2021 04:48:13 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        ob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Subject: [PATCH 5/5] CMDLINE: x86: convert to generic builtin command line
-Date:   Wed,  3 Mar 2021 20:48:02 -0800
-Message-Id: <20210304044803.812204-5-danielwa@cisco.com>
+        Wed, 3 Mar 2021 23:50:31 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E110C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 20:49:51 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id b21so18094654pgk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 20:49:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9XcVy6AJTokIzTljF0EFRLCvXqasp1w3tskzqtsRk4=;
+        b=LJzlu1eACs+yu7D22SxzqAvbQTTf4LAtrRt/ALmphbrNE41CSxb/XjQevN0zaJ0KTl
+         NAcSuPj5r2p/jrgVJiGZsAGkjm6KzzCu11Do9yXIiJc5fB/vQDTQGIMHTgBy4MWb3n7U
+         m5+350HJtNS0VhfaMtfdotbbHebO0ufp8TojtSfe5MkegdsD/GW6pPMtvKBEC0GFZvJl
+         EMqmKMb6FPIMrJ57B+Uq3jqPDCWtYL//V/yyZqXl95SqnkIZo451kB2KoS/ij45QU6QW
+         iCcJk70vXHAH96B4hRlzq6DHYF15szNy+8y5I3y2EuZxSPzA0r3eDcsxc65T9NH5n4Tb
+         Gqrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9XcVy6AJTokIzTljF0EFRLCvXqasp1w3tskzqtsRk4=;
+        b=NKV+oSONwvGLDnH2RZFdgXAXMIYAYVVTmFOHxuYQ5qucCrnJp/mNMCcWcMcbK/RbUd
+         UgXffrOFRvycPIf0AvCpyxclEn+JAWWjQF9EBo0aFXToYXYg4qqW1lCQvnl/K1wzm6OQ
+         7v78FJuk0v/EbTSuJf3P+JKEgyGdx1oDmFygjyzUqeZ4IzLpnWeJ65UAOdEbjArtai0i
+         DDq0KMj9e5wyxHfKO0db2HXpsFXwjOhL596Nkt4hLBBMIIPrz6RAjrb4r7n6Miw7koqH
+         +Pom8VyInuuaOD4VASjehfmRs8kBJy/7mtNj3YFA5Vt4GHdkn9uHtZkluB0XsK3Nygha
+         raQA==
+X-Gm-Message-State: AOAM532zHxYU87xUhfYKAhb51X7ETjjRw2plgKp9dxFfiqO/4qyQLZ0T
+        CcRr3hxH/HLQCJds+pnVE+o=
+X-Google-Smtp-Source: ABdhPJzzlPflua+YuDG5NPzQvi4HwYJUunChRht3+FWKm6EVAa8quJ9p90kR3WPEmIw0jqWWIInq2Q==
+X-Received: by 2002:a63:1648:: with SMTP id 8mr2177585pgw.392.1614833391144;
+        Wed, 03 Mar 2021 20:49:51 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id a2sm25736950pfi.64.2021.03.03.20.49.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 20:49:50 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: zhang.yunkai@zte.com.cn
+To:     npiggin@gmail.com
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@csgroup.eu, alistair@popple.id.au,
+        jniethe5@gmail.com, gregkh@linuxfoundation.org,
+        peterz@infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Subject: [PATCH] arch:powerpc:kernel: remove duplicate include in traps.c
+Date:   Wed,  3 Mar 2021 20:49:43 -0800
+Message-Id: <20210304044943.190613-1-zhang.yunkai@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.7.178, [10.24.7.178]
-X-Outbound-Node: alln-core-8.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This updates the x86 code to use the CONFIG_GENERIC_CMDLINE
-option.
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
+'asm/tm.h' included in 'traps.c' is duplicated.
+It is also included in the 62th line.
+
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 ---
- arch/x86/Kconfig                        | 44 +------------------------
- arch/x86/kernel/setup.c                 | 18 ++--------
- drivers/firmware/efi/libstub/x86-stub.c |  2 +-
- 3 files changed, 4 insertions(+), 60 deletions(-)
+ arch/powerpc/kernel/traps.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 21f851179ff0..3950f9bf9855 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -115,6 +115,7 @@ config X86
- 	select EDAC_SUPPORT
- 	select GENERIC_CLOCKEVENTS_BROADCAST	if X86_64 || (X86_32 && X86_LOCAL_APIC)
- 	select GENERIC_CLOCKEVENTS_MIN_ADJUST
-+	select GENERIC_CMDLINE
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
-@@ -2368,49 +2369,6 @@ choice
- 
- endchoice
- 
--config CMDLINE_BOOL
--	bool "Built-in kernel command line"
--	help
--	  Allow for specifying boot arguments to the kernel at
--	  build time.  On some systems (e.g. embedded ones), it is
--	  necessary or convenient to provide some or all of the
--	  kernel boot arguments with the kernel itself (that is,
--	  to not rely on the boot loader to provide them.)
--
--	  To compile command line arguments into the kernel,
--	  set this option to 'Y', then fill in the
--	  boot arguments in CONFIG_CMDLINE.
--
--	  Systems with fully functional boot loaders (i.e. non-embedded)
--	  should leave this option set to 'N'.
--
--config CMDLINE
--	string "Built-in kernel command string"
--	depends on CMDLINE_BOOL
--	default ""
--	help
--	  Enter arguments here that should be compiled into the kernel
--	  image and used at boot time.  If the boot loader provides a
--	  command line at boot time, it is appended to this string to
--	  form the full kernel command line, when the system boots.
--
--	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
--	  change this behavior.
--
--	  In most cases, the command line (whether built-in or provided
--	  by the boot loader) should specify the device for the root
--	  file system.
--
--config CMDLINE_OVERRIDE
--	bool "Built-in command line overrides boot loader arguments"
--	depends on CMDLINE_BOOL && CMDLINE != ""
--	help
--	  Set this option to 'Y' to have the kernel ignore the boot loader
--	  command line, and use ONLY the built-in command line.
--
--	  This is used to work around broken boot loaders.  This should
--	  be set to 'N' under normal conditions.
--
- config MODIFY_LDT_SYSCALL
- 	bool "Enable the LDT (local descriptor table)" if EXPERT
- 	default y
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 740f3bdb3f61..e748c3e5c1ae 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -48,6 +48,7 @@
- #include <asm/unwind.h>
- #include <asm/vsyscall.h>
- #include <linux/vmalloc.h>
-+#include <linux/cmdline.h>
- 
- /*
-  * max_low_pfn_mapped: highest directly mapped pfn < 4 GB
-@@ -162,9 +163,6 @@ unsigned long saved_video_mode;
- #define RAMDISK_LOAD_FLAG		0x4000
- 
- static char __initdata command_line[COMMAND_LINE_SIZE];
--#ifdef CONFIG_CMDLINE_BOOL
--static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
--#endif
- 
- #if defined(CONFIG_EDD) || defined(CONFIG_EDD_MODULE)
- struct edd edd;
-@@ -884,19 +882,7 @@ void __init setup_arch(char **cmdline_p)
- 	bss_resource.start = __pa_symbol(__bss_start);
- 	bss_resource.end = __pa_symbol(__bss_stop)-1;
- 
--#ifdef CONFIG_CMDLINE_BOOL
--#ifdef CONFIG_CMDLINE_OVERRIDE
--	strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--#else
--	if (builtin_cmdline[0]) {
--		/* append boot loader cmdline to builtin */
--		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
--		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--	}
--#endif
--#endif
--
-+	cmdline_add_builtin(boot_command_line, NULL, COMMAND_LINE_SIZE);
- 	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
- 	*cmdline_p = command_line;
- 
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index f14c4ff5839f..9538c9d4a0bc 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -736,7 +736,7 @@ unsigned long efi_main(efi_handle_t handle,
- 	}
- 
- #ifdef CONFIG_CMDLINE_BOOL
--	status = efi_parse_options(CONFIG_CMDLINE);
-+	status = efi_parse_options(CONFIG_CMDLINE_PREPEND " " CONFIG_CMDLINE_APPEND);
- 	if (status != EFI_SUCCESS) {
- 		efi_err("Failed to parse options\n");
- 		goto fail;
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index 1583fd1c6010..dcdb93588828 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -53,7 +53,6 @@
+ #ifdef CONFIG_PPC64
+ #include <asm/firmware.h>
+ #include <asm/processor.h>
+-#include <asm/tm.h>
+ #endif
+ #include <asm/kexec.h>
+ #include <asm/ppc-opcode.h>
 -- 
 2.25.1
 
