@@ -2,143 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421DD32DB83
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB8F32DB84
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236564AbhCDU7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:59:04 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33932 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhCDU6i (ORCPT
+        id S236743AbhCDU7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236210AbhCDU67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:58:38 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 124KvUS0069529;
-        Thu, 4 Mar 2021 14:57:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614891450;
-        bh=7EsRPtM7ZM2gT07lEoewcPHopX7Slw9tPNibNpx45xs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Ocw9pZeLd2sdoKP4SRVD87N3USu/oAGAE1o03ksr3GrAY6WQQxFRRgO3T4v1dSfXf
-         kpmQvlik1z6y+82D2Xccw8eLlKaQw1CSCEps2PkmwsKbK11BFRKk8reegslaZYur1k
-         yvaIg7cUs3TM/X5afWzavWLss2zf400cc/FL1QqM=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 124KvUlv012323
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 4 Mar 2021 14:57:30 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
- 2021 14:57:29 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Mar 2021 14:57:29 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 124KvRVu058496;
-        Thu, 4 Mar 2021 14:57:27 -0600
-Subject: Re: [PATCH 1/3] clocksource/drivers/timer-ti-dm: Fix posted mode
- status check order
-To:     Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     Keerthy <j-keerthy@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210304072135.52712-1-tony@atomide.com>
- <20210304072135.52712-2-tony@atomide.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <bd551701-da42-8f9f-ad49-5d87baa9beec@ti.com>
-Date:   Thu, 4 Mar 2021 22:57:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 4 Mar 2021 15:58:59 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BA9C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 12:58:19 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614891498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=okpZzFCE+S/kjR2YiW6a2eXyNqNPc4VWZ1UoZTdt4R0=;
+        b=euDRZRTeUVy0kkR2YRYIz8iu3IYbbMcaRDR7Fw0721nXYFm6ZH0QHJRyc7ksYZQIbuN0Vl
+        NXs2UiiLx6p99lTTjd04Ss/YGagIPE+rByGqpUDHQBNRJNKqh7asfr8fbsbxTCovV2CyzX
+        aF6PL1S74HIxampQ2tqbdSgcaaBOWOt+vsUeB6vHxGvz/F/fRNjkUeDRn0mBzNmpn/jG4w
+        Jbp1jWzuanSBkavga1QU8TckKmekOUa7/GChmD64yFV2+N8S0ZAQJnQ8J8zgaP+89SNWws
+        ffizAqVy2N6Ml3ubX2oJwgKXoiR0aZSvUW+hsJdyC+7rq0zciT+38YbdEzYw2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614891498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=okpZzFCE+S/kjR2YiW6a2eXyNqNPc4VWZ1UoZTdt4R0=;
+        b=zKrAHtGAZ+33kwzte2cezMBQ5pox4xJC9EqlZyyqRztMcSOw54Sc8E80MZOEArz0jtEkQP
+        vkHFdD0YjmSYFEBA==
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>
+Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
+In-Reply-To: <m11rcu7nbr.fsf@fess.ebiederm.org>
+References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de> <m1zgzj7uv2.fsf@fess.ebiederm.org> <20210304081142.digtkddajkadwwq5@linutronix.de> <87tupr55ea.fsf@nanos.tec.linutronix.de> <m11rcu7nbr.fsf@fess.ebiederm.org>
+Date:   Thu, 04 Mar 2021 21:58:17 +0100
+Message-ID: <87lfb263h2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210304072135.52712-2-tony@atomide.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 04 2021 at 13:04, Eric W. Biederman wrote:
+> Thomas Gleixner <tglx@linutronix.de> writes:
+>>
+>> We could of course do the caching unconditionally for all tasks.
+>
+> Is there any advantage to only doing this for realtime tasks?
 
+It was mostly to avoid tons of cached entries hanging around all over
+the place. So I limited it to the case which the RT users deeply cared
+about. Also related to the accounting question below.
 
-On 04/03/2021 09:21, Tony Lindgren wrote:
-> When the timer is configured in posted mode, we need to check the write-
-> posted status register (TWPS) before writing to the register.
-> 
-> We now check TWPS after the write starting with commit 52762fbd1c47
-> ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource
-> support").
-> 
-> For example, in the TRM for am571x the following is documented in chapter
-> "22.2.4.13.1.1 Write Posting Synchronization Mode":
-> 
-> "For each register, a status bit is provided in the timer write-posted
->   status (TWPS) register. In this mode, it is mandatory that software check
->   this status bit before any write access. If a write is attempted to a
->   register with a previous access pending, the previous access is discarded
->   without notice."
-> 
-> The regression happened when I updated the code to use standard read/write
-> accessors for the driver instead of using __omap_dm_timer_load_start().
-> We have__omap_dm_timer_load_start() check the TWPS status correctly using
-> __omap_dm_timer_write().
-> 
-> Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->   drivers/clocksource/timer-ti-dm-systimer.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
-> --- a/drivers/clocksource/timer-ti-dm-systimer.c
-> +++ b/drivers/clocksource/timer-ti-dm-systimer.c
-> @@ -449,13 +449,13 @@ static int dmtimer_set_next_event(unsigned long cycles,
->   	struct dmtimer_systimer *t = &clkevt->t;
->   	void __iomem *pend = t->base + t->pend;
->   
-> -	writel_relaxed(0xffffffff - cycles, t->base + t->counter);
->   	while (readl_relaxed(pend) & WP_TCRR)
->   		cpu_relax();
-> +	writel_relaxed(0xffffffff - cycles, t->base + t->counter);
->   
-> -	writel_relaxed(OMAP_TIMER_CTRL_ST, t->base + t->ctrl);
->   	while (readl_relaxed(pend) & WP_TCLR)
->   		cpu_relax();
-> +	writel_relaxed(OMAP_TIMER_CTRL_ST, t->base + t->ctrl);
+> If not it probably makes sense to do the caching for all tasks.
+>
+> I am wondering if we want to count the cached sigqueue structure to the
+> users rt signal rlimit?
 
-It seems static [and inline] helper here could be better solution. no?
+That makes some sense, but that's a user visible change as a single
+signal will up the count for a tasks lifetime while today it is removed
+from accounting again once the signal is delivered. So that needs some
+thought.
 
->   
->   	return 0;
->   }
-> @@ -490,18 +490,18 @@ static int dmtimer_set_periodic(struct clock_event_device *evt)
->   	dmtimer_clockevent_shutdown(evt);
->   
->   	/* Looks like we need to first set the load value separately */
-> -	writel_relaxed(clkevt->period, t->base + t->load);
->   	while (readl_relaxed(pend) & WP_TLDR)
->   		cpu_relax();
-> +	writel_relaxed(clkevt->period, t->base + t->load);
->   
-> -	writel_relaxed(clkevt->period, t->base + t->counter);
->   	while (readl_relaxed(pend) & WP_TCRR)
->   		cpu_relax();
-> +	writel_relaxed(clkevt->period, t->base + t->counter);
->   
-> -	writel_relaxed(OMAP_TIMER_CTRL_AR | OMAP_TIMER_CTRL_ST,
-> -		       t->base + t->ctrl);
->   	while (readl_relaxed(pend) & WP_TCLR)
->   		cpu_relax();
-> +	writel_relaxed(OMAP_TIMER_CTRL_AR | OMAP_TIMER_CTRL_ST,
-> +		       t->base + t->ctrl);
->   
->   	return 0;
->   }
-> 
+Thanks,
 
--- 
-Best regards,
-grygorii
+        tglx
