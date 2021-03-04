@@ -2,82 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226EE32CD90
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2983032CD8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhCDHYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:24:45 -0500
-Received: from lucky1.263xmail.com ([211.157.147.132]:39324 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231710AbhCDHYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:24:37 -0500
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C772AF2FD3;
-        Thu,  4 Mar 2021 15:21:54 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P19727T140185228531456S1614842509960455_;
-        Thu, 04 Mar 2021 15:21:55 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <a1a171b876f5606bfe1a7465d5d77f7f>
-X-RL-SENDER: maqianga@uniontech.com
-X-SENDER: maqianga@uniontech.com
-X-LOGIN-NAME: maqianga@uniontech.com
-X-FST-TO: arnd@arndb.de
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   maqiang <maqianga@uniontech.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, maqiang <maqianga@uniontech.com>
-Subject: [PATCH] char: lp: remove redundant space
-Date:   Thu,  4 Mar 2021 15:21:47 +0800
-Message-Id: <20210304072147.10354-1-maqianga@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        id S236302AbhCDHXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:23:12 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:21764 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236296AbhCDHXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:23:06 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Drj4H0dHjz9v1DN;
+        Thu,  4 Mar 2021 08:22:23 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 4-HQ5vnGd-Fz; Thu,  4 Mar 2021 08:22:23 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Drj4G45TMz9v1DM;
+        Thu,  4 Mar 2021 08:22:22 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DDE638B7F6;
+        Thu,  4 Mar 2021 08:22:23 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id X-M_5o0sT4hk; Thu,  4 Mar 2021 08:22:23 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E4A288B773;
+        Thu,  4 Mar 2021 08:22:22 +0100 (CET)
+Subject: Re: [PATCH 3/5] CMDLINE: powerpc: convert to generic builtin command
+ line
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        ob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-kernel@vger.kernel.org
+References: <20210304044803.812204-3-danielwa@cisco.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <e6775d72-2454-437e-a28f-895c9adba9aa@csgroup.eu>
+Date:   Thu, 4 Mar 2021 08:22:21 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210304044803.812204-3-danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These two lines of code don't meet the kernel coding style,
-so remove the redundant space.
-
-Signed-off-by: Qiang Ma <maqianga@uniontech.com>
-Signed-off-by: maqiang <maqianga@uniontech.com>
----
- drivers/char/lp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/char/lp.c b/drivers/char/lp.c
-index 862c2fd933c7..0e22e3b0a04e 100644
---- a/drivers/char/lp.c
-+++ b/drivers/char/lp.c
-@@ -546,7 +546,7 @@ static int lp_open(struct inode *inode, struct file *file)
- 	}
- 	/* Determine if the peripheral supports ECP mode */
- 	lp_claim_parport_or_block(&lp_table[minor]);
--	if ( (lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
-+	if ((lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
- 	     !parport_negotiate(lp_table[minor].dev->port,
- 				 IEEE1284_MODE_ECP)) {
- 		printk(KERN_INFO "lp%d: ECP mode\n", minor);
-@@ -590,7 +590,7 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
- 		return -ENODEV;
- 	if ((LP_F(minor) & LP_EXIST) == 0)
- 		return -ENODEV;
--	switch ( cmd ) {
-+	switch (cmd) {
- 		case LPTIME:
- 			if (arg > UINT_MAX / HZ)
- 				return -EINVAL;
--- 
-2.20.1
 
 
+Le 04/03/2021 à 05:48, Daniel Walker a écrit :
+> This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
+> option.
 
+Should be split in two patches. The change of strcpy to strlcpy should go in a first patch.
+
+> 
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
+> Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>   arch/powerpc/Kconfig            | 37 +--------------------------------
+>   arch/powerpc/kernel/prom.c      |  1 +
+>   arch/powerpc/kernel/prom_init.c | 31 +++++++++++++++------------
+>   3 files changed, 20 insertions(+), 49 deletions(-)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 107bb4319e0e..276b06d5c961 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -167,6 +167,7 @@ config PPC
+>   	select EDAC_SUPPORT
+>   	select GENERIC_ATOMIC64			if PPC32
+>   	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
+> +	select GENERIC_CMDLINE
+>   	select GENERIC_CMOS_UPDATE
+>   	select GENERIC_CPU_AUTOPROBE
+>   	select GENERIC_CPU_VULNERABILITIES	if PPC_BARRIER_NOSPEC
+> @@ -906,42 +907,6 @@ config PPC_DENORMALISATION
+>   	  Add support for handling denormalisation of single precision
+>   	  values.  Useful for bare metal only.  If unsure say Y here.
+>   
+> -config CMDLINE
+> -	string "Initial kernel command string"
+> -	default ""
+> -	help
+> -	  On some platforms, there is currently no way for the boot loader to
+> -	  pass arguments to the kernel. For these platforms, you can supply
+> -	  some command-line options at build time by entering them here.  In
+> -	  most cases you will need to specify the root device here.
+> -
+> -choice
+> -	prompt "Kernel command line type" if CMDLINE != ""
+> -	default CMDLINE_FROM_BOOTLOADER
+> -
+> -config CMDLINE_FROM_BOOTLOADER
+> -	bool "Use bootloader kernel arguments if available"
+> -	help
+> -	  Uses the command-line options passed by the boot loader. If
+> -	  the boot loader doesn't provide any, the default kernel command
+> -	  string provided in CMDLINE will be used.
+> -
+> -config CMDLINE_EXTEND
+> -	bool "Extend bootloader kernel arguments"
+> -	help
+> -	  The command-line arguments provided by the boot loader will be
+> -	  appended to the default kernel command string.
+> -
+> -config CMDLINE_FORCE
+> -	bool "Always use the default kernel command string"
+> -	help
+> -	  Always use the default kernel command string, even if the boot
+> -	  loader passes other arguments to the kernel.
+> -	  This is useful if you cannot or don't want to change the
+> -	  command-line options your boot loader passes to the kernel.
+> -
+> -endchoice
+> -
+>   config EXTRA_TARGETS
+>   	string "Additional default image types"
+>   	help
+> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> index ae3c41730367..96d0a01be1b4 100644
+> --- a/arch/powerpc/kernel/prom.c
+> +++ b/arch/powerpc/kernel/prom.c
+> @@ -27,6 +27,7 @@
+>   #include <linux/irq.h>
+>   #include <linux/memblock.h>
+>   #include <linux/of.h>
+> +#include <linux/cmdline.h>
+>   #include <linux/of_fdt.h>
+>   #include <linux/libfdt.h>
+>   #include <linux/cpu.h>
+> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+> index e9d4eb6144e1..d752be688b62 100644
+> --- a/arch/powerpc/kernel/prom_init.c
+> +++ b/arch/powerpc/kernel/prom_init.c
+> @@ -27,6 +27,7 @@
+>   #include <linux/initrd.h>
+>   #include <linux/bitops.h>
+>   #include <linux/pgtable.h>
+> +#include <linux/cmdline.h>
+>   #include <asm/prom.h>
+>   #include <asm/rtas.h>
+>   #include <asm/page.h>
+> @@ -242,15 +243,6 @@ static int __init prom_strcmp(const char *cs, const char *ct)
+>   	return 0;
+>   }
+>   
+> -static char __init *prom_strcpy(char *dest, const char *src)
+> -{
+> -	char *tmp = dest;
+> -
+> -	while ((*dest++ = *src++) != '\0')
+> -		/* nothing */;
+> -	return tmp;
+> -}
+> -
+>   static int __init prom_strncmp(const char *cs, const char *ct, size_t count)
+>   {
+>   	unsigned char c1, c2;
+> @@ -276,6 +268,19 @@ static size_t __init prom_strlen(const char *s)
+>   	return sc - s;
+>   }
+>   
+> +static size_t __init prom_strlcpy(char *dest, const char *src, size_t size)
+> +{
+> +	size_t ret = prom_strlen(src);
+> +
+> +	if (size) {
+> +		size_t len = (ret >= size) ? size - 1 : ret;
+> +		memcpy(dest, src, len);
+> +		dest[len] = '\0';
+> +	}
+> +	return ret;
+> +}
+> +
+> +
+>   static int __init prom_memcmp(const void *cs, const void *ct, size_t count)
+>   {
+>   	const unsigned char *su1, *su2;
+> @@ -778,9 +783,9 @@ static void __init early_cmdline_parse(void)
+>   	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && (long)prom.chosen > 0)
+
+You have removed CONFIG_CMDLINE_FORCE and the generic cmdline doesn't provide it.
+
+>   		l = prom_getprop(prom.chosen, "bootargs", p, COMMAND_LINE_SIZE-1);
+>   
+> -	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) || l <= 0 || p[0] == '\0')
+> -		prom_strlcat(prom_cmd_line, " " CONFIG_CMDLINE,
+> -			     sizeof(prom_cmd_line));
+> +	if (l <= 0 || p[0] == '\0') /* dbl check */
+
+So it means cmdline_add_builtin_custom() is only called when bootloader does not provide bootargs ?
+
+> +		cmdline_add_builtin_custom(prom_cmd_line, NULL, sizeof(prom_cmd_line),
+> +					__prombss, &prom_strlcpy, &prom_strlcat);
+>   
+>   	prom_printf("command line: %s\n", prom_cmd_line);
+>   
+> @@ -2706,7 +2711,7 @@ static void __init flatten_device_tree(void)
+>   
+>   	/* Add "phandle" in there, we'll need it */
+>   	namep = make_room(&mem_start, &mem_end, 16, 1);
+> -	prom_strcpy(namep, "phandle");
+> +	prom_strlcpy(namep, "phandle", 8);
+>   	mem_start = (unsigned long)namep + prom_strlen(namep) + 1;
+>   
+>   	/* Build string array */
+> 
