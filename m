@@ -2,66 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3626432D127
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7516D32D12B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239028AbhCDKuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:50:10 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:55158 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239011AbhCDKtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:49:40 -0500
-Received: from zn.tnic (p200300ec2f0f5900e15878ab9d7a3926.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:5900:e158:78ab:9d7a:3926])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F88B1EC0328;
-        Thu,  4 Mar 2021 11:48:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614854939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=usPlPnG+TN8B9j8SKK3AZ5P+yKgh8QbuCpr8oNtt/9c=;
-        b=rIKxU3cBVWWwveyYBANFdA8RuzM/g2Wz0eVDSGL6Hdvzsx/rODREuX0DUsIZYytPTzf/aO
-        9+4D+rVlBXCc7YDRz8+Yzr24CQ1PhGv53NqnkLbAn7dZxHzgRniOnvaciSS2d4IZxeu7dL
-        ttQx1/rd6FdNcpoUZ50Celouk6PVHJo=
-Date:   Thu, 4 Mar 2021 11:48:53 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Subject: Re: [PATCH] x86/vdso: Use proper modifier for len's printf in extract
-Message-ID: <20210304104853.GA15496@zn.tnic>
-References: <20210303064357.17056-1-jslaby@suse.cz>
- <20210303183650.GG22305@zn.tnic>
- <1804463d-bb45-ea75-b4b0-1238c35638a0@suse.cz>
+        id S238921AbhCDKvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235138AbhCDKup (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:50:45 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015C8C061574;
+        Thu,  4 Mar 2021 02:50:05 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id x24so1407880pfn.5;
+        Thu, 04 Mar 2021 02:50:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FoGsnOzXi7H9nz19W/bgb/1Kxx0meiyadtP/QvxkNiA=;
+        b=n53vzKHXuqPKNk87GMWTNa2nfV96TlDoPYmjDgzqyo8kcAWpEOU6OhiwMfLVeo/qf2
+         pyjk16yl/13dlOsHu5T3E2PzqDcGryW6gjBTdeA99cZm0dp452DOUH2E84CvTqOSJul9
+         mPFfdH0ASp/msC5XRsUr0CLBhjO0o6J7dMG8/0X1uTFZdYJX9skqHIIyjFRIteJnQa/S
+         /r5eWnNud0OqXJ3jGdt/96Th4uZDK/NPoTKSjRqVT9fCkw4IVc/eoE4HoCA+Ge37X7ED
+         aKTuI9TdwZddRXhrkVPFbNO4zmy/YPz03Dv6OnJ2mgSySDmjEh6jnHvG1cHqR2mrGvm3
+         knNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FoGsnOzXi7H9nz19W/bgb/1Kxx0meiyadtP/QvxkNiA=;
+        b=ShtlVHSOQCsGU7NIKVfN996S3l1Qok5athbKuuxCdVZd5SjpfeHI4nCdjEeX33fs0y
+         0OuHE+Yu6EXC4LbxemzC5xKnwXNP5FpMODQcQXR1S9e1ErNYoAZfiujV5rH8UxwNS+HK
+         3KuHRnYy7yOrq04oGt+4UGSKrk8A9N1qvVepAhyklzNfTVPpxtC+F5AzT7txkSDs0PA1
+         xltWOD6gEXBZ3/bYinV0teDoLObT12vMMyQjYTIIxsbDGvpg0r5DSEBwMgpqkwQ/gyR5
+         aTXovzGyteHCZFZht/zAxpEMX9w804R7IsjbkS5zYKWT2RMrd8E4ivIGdtZsgIb6ITqI
+         hTIg==
+X-Gm-Message-State: AOAM532W+v5ZzSN9boaC9gj9koKAWkrtMZrEZNS9zgs/JxCfjEJhvhOO
+        2QcwT4MSSA5KNE9S2SNg477TSdHKZVFUOHwnVv8=
+X-Google-Smtp-Source: ABdhPJy2flX7Ea1zvFciNHtUD9op+hNlZxpNVpbA5cITJj9ODh1I6pHXRdOeEnWrzVfiJdLABTAKr4UQrRue03M70aQ=
+X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
+ x64-20020a627c430000b02901ef20ceba36mr2144918pfc.40.1614855004451; Thu, 04
+ Mar 2021 02:50:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1804463d-bb45-ea75-b4b0-1238c35638a0@suse.cz>
+References: <20210304085710.7128-1-noltari@gmail.com> <20210304085710.7128-6-noltari@gmail.com>
+In-Reply-To: <20210304085710.7128-6-noltari@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 4 Mar 2021 12:49:48 +0200
+Message-ID: <CAHp75Vc8Gk0ZVjfQH71-Du1ZB1HT5qrgbT6HZgXQd-C6xE05ZQ@mail.gmail.com>
+Subject: Re: [PATCH v4 05/15] pinctrl: add a pincontrol driver for BCM6328
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 06:18:25AM +0100, Jiri Slaby wrote:
-> It's built with gcc 10 from tumbleweed and it's a standard config from
-> kerncvs:
-> https://github.com/openSUSE/kernel-source/blob/stable/config/i386/pae
+On Thu, Mar 4, 2021 at 10:57 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
+>
+> Add a pincontrol driver for BCM6328. BCM628 supports muxing 32 pins as
+> GPIOs, as LEDs for the integrated LED controller, or various other
+> functions. Its pincontrol mux registers also control other aspects, like
+> switching the second USB port between host and device mode.
 
-Nope, can't trigger with that one either. :-\
+...
 
-Anyway, it is obvious enough so applied.
+> +static inline unsigned int bcm6328_mux_off(unsigned int pin)
+> +{
+> +       static const unsigned int bcm6328_mux[] =3D {
+> +               BCM6328_MUX_LO_REG,
+> +               BCM6328_MUX_HI_REG,
 
-Thx.
+> +               BCM6328_MUX_OTHER_REG
 
--- 
-Regards/Gruss,
-    Boris.
+When it's not terminator add a comma, otherwise remove a comma.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Also, why is it inside a function? It's anyway global and constant.
+
+> +       };
+
+...
+
+> +       regmap_update_bits(pc->regs, bcm6328_mux_off(pin),
+> +                          3UL << ((pin % 16) * 2),
+
+3UL =3D> #define BLABLA  GENMASK(1, 0)
+
+> +                          mux << ((pin % 16) * 2));
+
+...
+
+> +static const struct of_device_id bcm6328_pinctrl_match[] =3D {
+> +       { .compatible =3D "brcm,bcm6328-pinctrl", },
+> +       { },
+
+No comma.
+
+> +};
+
+Above comments to all your patches.
+
+--=20
+With Best Regards,
+Andy Shevchenko
