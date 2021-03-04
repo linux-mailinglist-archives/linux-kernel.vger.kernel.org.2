@@ -2,131 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D220832CB6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E9B32CB6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhCDEfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:35:53 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:58586 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233203AbhCDEfV (ORCPT
+        id S233203AbhCDEg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233173AbhCDEgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:35:21 -0500
-Received: from 36-229-232-16.dynamic-ip.hinet.net ([36.229.232.16] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lHfgz-0007xv-3k; Thu, 04 Mar 2021 04:34:30 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     tiwai@suse.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Chris Wulff <crwulff@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Panchenko <dmitry@d-systems.ee>,
-        Olivia Mackintosh <livvy@base.nu>,
-        Dylan Robinson <dylan_robinson@motu.com>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()
-Date:   Thu,  4 Mar 2021 12:34:16 +0800
-Message-Id: <20210304043419.287191-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 3 Mar 2021 23:36:38 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E21C061574;
+        Wed,  3 Mar 2021 20:35:58 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d11so18787303qtx.9;
+        Wed, 03 Mar 2021 20:35:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y5ZDSbOSmDJWCd8UPozkSUVXTXAnLCAZLMFl/S0V2rA=;
+        b=Nxsy4/8ZuQmZjbjQyS3MOZOjxVgdPNHFGnoZzPpck42X11cegW7QFCcAicctguL7sz
+         nFgECtIiMEykoWQDNDlfsEpEYhDbyHYP2BuGrFRd28ynL5ZDAkoUUfDj8r7eQ1k0Qz59
+         fxVeaeKHCi+O+2qDkX6W807O+MmtS5P3GMjqwh/RRjCRGriy8i1F+F75AgimI7Qfb+H3
+         4jESFV4jbmh5g8M+sZqPtY/KbA9RbV6OVMLquhBRKBr+DeL/IohI9xzJ62jaBFcTv83n
+         u5+i7thSvgLMd5pWhobahweA9f1q+x6DtYYKQTnRnxO4Vu23Wspbr5/SsVxgOgbBHKls
+         eVfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y5ZDSbOSmDJWCd8UPozkSUVXTXAnLCAZLMFl/S0V2rA=;
+        b=iDc8IdjNwwnI7r4v5ObICqTUTt0mbuWHjVi4ZfCulkdbJxLhPNniEf/sM2S3xLLDrJ
+         4I732NDI9SkhnzNmMHWFeEa8+E5TqqWG14M1k8oZro9cvRx65g91GQDfrsHB6j3kjoDa
+         gp8vNa9L7364/m4BoupZhOl8ngkLpol7MlCHIx4K4hKU2VcO7Cg3YwLRqaO10ydU0D5f
+         KcyqelPBIa0yLqBZ1JJiiR0crHLH4e9IeZ9QDePUbdU/v4J03K2UETdFsWZob6x7BJRV
+         PzhPjkTnrfvNWD4a+5p0GNhpcQj6AnUnt3Ohj1qK/eMU/A0zpNmjClswGgqBhA/6IUmR
+         yPKA==
+X-Gm-Message-State: AOAM530hJ7wCpwC2W9c7kjZstJH201gnr9mH0V9Q5FHdmnXTbnqD7jPX
+        EXnaC8VUOnU0ZLC6d2z5e9KKRfKTd9d+f7wC
+X-Google-Smtp-Source: ABdhPJyDa4e4BhcLLnLxEyPyyX3AvqaL5olVUOhU2RWEcEQQ5Qf3l6Ht4QKRHiE/2h6mr5gp7pxvVA==
+X-Received: by 2002:ac8:740a:: with SMTP id p10mr2426052qtq.273.1614832557787;
+        Wed, 03 Mar 2021 20:35:57 -0800 (PST)
+Received: from smtp.gmail.com ([2804:14c:73:9e91:8b8:81b4:5ef9:821d])
+        by smtp.gmail.com with ESMTPSA id g74sm15468421qke.3.2021.03.03.20.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 20:35:57 -0800 (PST)
+Date:   Thu, 4 Mar 2021 01:35:54 -0300
+From:   Lucas Stankus <lucas.p.stankus@gmail.com>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] kunit: fix checkpatch warning
+Message-ID: <20210304043554.jysk6qms4h4hue4i@smtp.gmail.com>
+References: <20210303020350.4sahuojkqnkcxquf@smtp.gmail.com>
+ <CAFd5g47rjt7i7JXWsYarqX_dShHiqSg8StKb7KCqOye3=eyZDg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFd5g47rjt7i7JXWsYarqX_dShHiqSg8StKb7KCqOye3=eyZDg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rear audio on Lenovo ThinkStation P620 stops working after commit
-1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo
-ThinkStation P620"):
-[    6.013526] usbcore: registered new interface driver snd-usb-audio
-[    6.023064] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-[    6.023083] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-[    6.023090] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-[    6.023098] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-[    6.023103] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-[    6.023110] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-[    6.045846] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-[    6.045866] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-[    6.045877] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-[    6.045886] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-[    6.045894] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-[    6.045908] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+On Wed, Mar 03, 2021 at 12:56:05PM -0800, Brendan Higgins wrote:
+> Did you change anything other than fixing the Signed-off-by that Shuah
+> requested?
 
-I overlooked the issue because when I was working on the said commit,
-only the front audio is tested. Apology for that.
+No, I only fixed the Signed-off-by warning.
 
-Changing supports_autosuspend in driver is too late for disabling
-autosuspend, because it was already used by USB probe routine, so it can
-break the balance on the following code that depends on
-supports_autosuspend.
+> Generally when you make a small change after receiving a Reviewed-by
+> (especially one so small as here), you are supposed to include the
+> Reviewed-by with the other git commit message footers directly below
+> the "Signed-off-by". Please remember to do so in the future.
+> 
+> Also, when you make a change to a patch and send out a subsequent
+> revision, it is best practice to make note explaining the changes you
+> made since the last revision in the "comment section" [1] of the
+> git-diff, right after the three dashes and before the change log as
+> you can see in this example [2] (note that everything after
+> "Signed-off-by: David Gow <davidgow@google.com>\n ---" and before
+> "tools/testing/kunit/configs/broken_on_uml.config | 2 ++" is discarded
+> by git am).
 
-Fix it by using usb_disable_autosuspend() helper, and balance the
-suspend count in disconnect callback.
-
-Fixes: 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo ThinkStation P620")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/usb/card.c     | 5 +++++
- sound/usb/quirks.c   | 2 +-
- sound/usb/usbaudio.h | 1 +
- 3 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 85ed8507e41a..08c794883299 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -830,6 +830,8 @@ static int usb_audio_probe(struct usb_interface *intf,
- 		snd_media_device_create(chip, intf);
- 	}
- 
-+	chip->quirk_type = quirk->type;
-+
- 	usb_chip[chip->index] = chip;
- 	chip->intf[chip->num_interfaces] = intf;
- 	chip->num_interfaces++;
-@@ -912,6 +914,9 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 	} else {
- 		mutex_unlock(&register_mutex);
- 	}
-+
-+	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
-+		usb_enable_autosuspend(interface_to_usbdev(intf));
- }
- 
- /* lock the shutdown (disconnect) task and autoresume */
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 9ba4682ebc48..ef5ee899db26 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -547,7 +547,7 @@ static int setup_disable_autosuspend(struct snd_usb_audio *chip,
- 				       struct usb_driver *driver,
- 				       const struct snd_usb_audio_quirk *quirk)
- {
--	driver->supports_autosuspend = 0;
-+	usb_disable_autosuspend(interface_to_usbdev(iface));
- 	return 1;	/* Continue with creating streams and mixer */
- }
- 
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 215c1771dd57..60b9dd7df6bb 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -27,6 +27,7 @@ struct snd_usb_audio {
- 	struct snd_card *card;
- 	struct usb_interface *intf[MAX_CARD_INTERFACES];
- 	u32 usb_id;
-+	uint16_t quirk_type;
- 	struct mutex mutex;
- 	unsigned int system_suspend;
- 	atomic_t active;
--- 
-2.30.0
-
+Sorry for the incovenience regarding best practices, I'll keep that
+noted for further contributions.
