@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAC432C500
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCE132C505
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 01:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345702AbhCDASy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S1376874AbhCDAS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 19:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1392547AbhCDAO4 (ORCPT
+        with ESMTP id S1392546AbhCDAO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:14:56 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658A5C0613DB
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 16:12:15 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id q204so16452968pfq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 16:12:15 -0800 (PST)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763ADC0613DE
+        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 16:13:26 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id z11so40082526lfb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 16:13:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=zrZaRySN+9uvnnWf26Ar1YrONmr8qtTnIcY5RCO/cMw=;
-        b=AFbG0vNF10pAZ+e9ePDz/jZ+K2PhqZIKN0imVriWbB//y+kS5qAaLe5oNaVfbLvJOQ
-         T3pzSHyGp3wWwnGKn211iWlN1nChhHj3tL59KvZ6s0RQAYDcqgJbqxsCTD4S23eMlXHf
-         ItteAgk3+sC14VDZ0g9+Z81t451nCxJBZsA9k=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OKu9rvgBil0k6tR4pYyiR6wjoHr0+cu17RpPhjhwkTc=;
+        b=IpjtF+K+hruehTwmwGiSLec3MXobzKIJ30Y6ZmWQJunyXLeup+LmOCVT5Nxumb+LXq
+         qIRGRRxLUv+vvqSMVM5R9D6dxubkhFTO6ayZNQiAMtwEzLbswTymeuz7Ozkv4oCczk6L
+         CGKaTot0aoO4H5QxO/3lg7K/snPxuWNCpZgTFKt9efgx5VmtbYn+223I0yjuc6ElJuPU
+         +NqBvtxU4Fd36vrsMJUY/djET0UEYnRbDdxCcq8eA8dcqpZvIerGhwjHFU6iNyiN/wcM
+         Dfz7xc117A/msLNFmaaR9w9LEAC7eSVn0DOmpNIbhZkJuce2a4LijAnAwOJRk8s14UWG
+         rKJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=zrZaRySN+9uvnnWf26Ar1YrONmr8qtTnIcY5RCO/cMw=;
-        b=HSTmpn5RKkt4t9PDMprFdMVKIngbW0CliJ1u4DurjhMUTBp0CxjGCQtriaLL8Ipkb0
-         op/aZE23VyWyXFS37Gn3qjFLKCGxAIifY8X+tB7OTizy7lThnP8ykbQkzpmIzrO5Vz/r
-         2HiY1Ud40tpXsaLhIDqugFFFxFezKRF5LGhrrzX+k3y+pgx06TlLUVUL/OW9xqdYyAr2
-         bjcWRDdE/yxFa6N6u1Gs1wkFX4osYiCPwWiAb+m5Xrvhyl3RDRBW8dJyOEfzBECRkqFh
-         jomYsT40qqPyk9IWuJu4iiErdwYM/dBJJBJRIC5pUDwpqTwtttZ85BbbBxCVK2AdCn68
-         u1LQ==
-X-Gm-Message-State: AOAM531D7KFZusKZiLeCy2tBsIkq5Fpyu/E/YWUTFNjriY3a+okFCDVS
-        mcekz9jUMWXzItGPonZe5VlwIw==
-X-Google-Smtp-Source: ABdhPJzPaqYplfJzoHe2p00Q429Svrwvd0rrUs/LcKn5Qok0Uf0FqCrAMwhWaI4VItI1BmUuFtyAKw==
-X-Received: by 2002:a05:6a00:15cc:b029:1ba:5282:3ab8 with SMTP id o12-20020a056a0015ccb02901ba52823ab8mr1268929pfu.77.1614816734882;
-        Wed, 03 Mar 2021 16:12:14 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id o4sm25339685pfg.107.2021.03.03.16.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 16:12:14 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OKu9rvgBil0k6tR4pYyiR6wjoHr0+cu17RpPhjhwkTc=;
+        b=S8P7PjSHa83jREkLphfHQi086n7jVIxFg1FYv8ItNier/DawejjYGvKMuwkyp6jC64
+         +PkwWoJ7i6REG6VZ2ujr7CfqP4B3G0iNLkMI/hroOMHKjD2ls1Nm5ylop/izKy2xttZN
+         5jbNQJq9R/AkFMdAS/DK1phbYdu0vXOL7i/DLOEzoGiGtc2lcyImKHQ7evGn/eifW/l6
+         6SHQ/TmE0irQwUEjunOIcYU8oRNNH5Khu2LZb7JNWSmlaKfq2EgNhxE375tM7s7VNU01
+         lTkp0a0sC/ITYMovOoyzCkSjDttRfbdV7UfFdFVackA0RnmJPaY2Lo5sGMzzj43dczRf
+         9PWw==
+X-Gm-Message-State: AOAM532KWFlknczNaqwPLTwQQfUf7INQ9qtYlz13jIFJFQWcgH2uWAn6
+        I1K46wLTgrRWYFO7gjK+wlC2378/rpaCEhZfhq2WxQ==
+X-Google-Smtp-Source: ABdhPJwUF1F8cAZ3I10nUfVKg6JQz8+hWV9fUNGUsjQoMGB56CK2zNgX/OcKAfDexLsxS2Tm4fxqKsRx+PeSf7Mqulg=
+X-Received: by 2002:a05:6512:74a:: with SMTP id c10mr709694lfs.586.1614816804951;
+ Wed, 03 Mar 2021 16:13:24 -0800 (PST)
 MIME-Version: 1.0
+References: <20210303142310.6371-1-noltari@gmail.com> <CACRpkdbi77SBsssMOnx43fP9RgqnzkUUw=TXaE2_LDexpE2WEg@mail.gmail.com>
+ <D875EBA4-F881-4F1E-A251-78CEF8E6A40B@gmail.com>
+In-Reply-To: <D875EBA4-F881-4F1E-A251-78CEF8E6A40B@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 4 Mar 2021 01:13:13 +0100
+Message-ID: <CACRpkdYPMT_D=pKau1c9Df7rq9gwVGtA8ZYvPHDYU6zO-y+SgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/14] pinctrl: add BCM63XX pincontrol support
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1614773878-8058-13-git-send-email-rnayak@codeaurora.org>
-References: <1614773878-8058-1-git-send-email-rnayak@codeaurora.org> <1614773878-8058-13-git-send-email-rnayak@codeaurora.org>
-Subject: Re: [PATCH v2 12/14] arm64: dts: qcom: sc7280: Add SPMI PMIC arbiter device for SC7280
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, satya priya <skakit@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Date:   Wed, 03 Mar 2021 16:12:12 -0800
-Message-ID: <161481673286.1478170.13034581527644587648@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajendra Nayak (2021-03-03 04:17:56)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
-com/sc7280.dtsi
-> index fe4fdb9..aa6f847 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -239,6 +239,25 @@
->                         interrupt-controller;
->                 };
-> =20
-> +               spmi_bus: spmi@c440000 {
-> +                       compatible =3D "qcom,spmi-pmic-arb";
-> +                       reg =3D <0 0x0c440000 0 0x1100>,
-> +                             <0 0x0c600000 0 0x2000000>,
-> +                             <0 0x0e600000 0 0x100000>,
-> +                             <0 0x0e700000 0 0xa0000>,
-> +                             <0 0x0c40a000 0 0x26000>;
-> +                       reg-names =3D "core", "chnls", "obsrvr", "intr", =
-"cnfg";
-> +                       interrupt-names =3D "periph_irq";
-> +                       interrupts-extended =3D <&pdc 1 IRQ_TYPE_LEVEL_HI=
-GH>;
-> +                       qcom,ee =3D <0>;
-> +                       qcom,channel =3D <0>;
-> +                       #address-cells =3D <1>;
-> +                       #size-cells =3D <1>;
+On Wed, Mar 3, 2021 at 5:23 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
+ail.com> wrote:
 
-I see the binding says these should be 2 instead of 1 but I suspect that
-is incorrect.
+> Or maybe we could guard these lines of gpio-regmap.c with #ifdef GPIOLIB_=
+IRQCHIP:
+> https://github.com/torvalds/linux/blob/f69d02e37a85645aa90d18cacfff36dba3=
+70f797/drivers/gpio/gpio-regmap.c#L282-L286
 
-> +                       interrupt-controller;
-> +                       #interrupt-cells =3D <4>;
-> +                       cell-index =3D <0>;
+That's the best approach. I wasn't a big fan of this ability to insert
+an external
+irqdomain in the first place, so it should be as optional as possible.
 
-Is cell-index used? Please remove as I don't see it used anywhere and
-not in the binding.
-
-> +               };
-> +
->                 tlmm: pinctrl@f100000 {
->                         compatible =3D "qcom,sc7280-pinctrl";
->                         reg =3D <0 0x0f100000 0 0x1000000>;
+Yours,
+Linus Walleij
