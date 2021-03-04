@@ -2,241 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2621732D9A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D5B32D9A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbhCDSsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:48:53 -0500
-Received: from mail-eopbgr750082.outbound.protection.outlook.com ([40.107.75.82]:25486
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235167AbhCDSsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:48:37 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cg4+5imIluMaBvSH5yFfoshG1f/iiLodRUPkYN/lXTswn6WFjw3GRo1Z7Jcc9bvXaLu5wbejxiAvOo7EDpIpeLwJvTaI3fVSOsTd4Ld6ugMvMGYBojzl9DYDY9/mqfzpBfMOiBUa7QM/0cweGLbNjVYKRarMUW4KAL4hSUlpvRMxmxmd/2Dm7ZZkqGgJBCths1rkb6OWm9TMZNRipDfMpq3OLrnI76ZTi5Gz3AqOwde/Nae1n4f8UJ7UmIYu1A5u1sjfwE3TziDFAxYMq2cU0wGLpCIJbyv8hk5nWSETuz/3J2tFQzE842TaoWMOeYAk1D8mepQQmlYiCkn35cctJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BipIAdY8QxQQP9r6vHHu+nKM1rymChBcqHijC+nbeCA=;
- b=RMHxy+DeqeWrvEpYm+I3UB/xxmtS3TII7qhtC6vA+aHfKfxD4KXrkbXLluVqBxLOVAFw7OAEM7PCWOQuqVxqnuiqbVlmnH+rMH7acZ3fU4AR5vCQIrJOXBkRODfMw57NQr6QgywDd1OJvjEkqvSob7Dn1HQS9Lnx5px43y7VwgqyBsuxkWPNjuXjkTRmASoTiFrA3G0bsLsWqwGSMUerUqLB5CVPxSvo7WcuXYwHECau4Dzy3UE+ybtaL3UjKDqKO677OuyTsGTYJnycM0uQLMvvpTykbStg/CGH+oIPqZXGL+yzt1V0DxqLuPtvXKxDvcrphfovy4H5249h7ct9tg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BipIAdY8QxQQP9r6vHHu+nKM1rymChBcqHijC+nbeCA=;
- b=Ys4/evoBToQxjsqvA/ahZwbN2aNWrExJnd7xb1ydvFWoMQvqiyVNYm7jOcJmMkxTJTjSD2K+XL7Zqz2Ir3FjS33ZwozcGq1kT0J9vVR8Hzd52vo1GKomCF0k2HGDZcPb38WF9t9gJWeiSjILNLXRwySANbuWWWpCiqapjo0LNW8=
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com (2603:10b6:208:d8::18)
- by MN2PR05MB6125.namprd05.prod.outlook.com (2603:10b6:208:ca::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.9; Thu, 4 Mar
- 2021 18:47:43 +0000
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::88de:ad34:82d7:a02e]) by MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::88de:ad34:82d7:a02e%6]) with mapi id 15.20.3912.017; Thu, 4 Mar 2021
- 18:47:43 +0000
-From:   Zack Rusin <zackr@vmware.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "spice-devel@lists.freedesktop.org" 
-        <spice-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
-Subject: Re: [patch 2/7] drm/vmgfx: Replace kmap_atomic()
-Thread-Topic: [patch 2/7] drm/vmgfx: Replace kmap_atomic()
-Thread-Index: AQHXEQkLtX7XWO+vPk2wGitdZqo3uKp0K5sA
-Date:   Thu, 4 Mar 2021 18:47:43 +0000
-Message-ID: <66B6DD38-3BE5-4B94-A15C-8A1B1D417754@vmware.com>
-References: <20210303132023.077167457@linutronix.de>
- <20210303132711.487711828@linutronix.de>
-In-Reply-To: <20210303132711.487711828@linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.40.0.2.32)
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [71.175.59.246]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d81edded-bcea-45f9-f99b-08d8df3dfef9
-x-ms-traffictypediagnostic: MN2PR05MB6125:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR05MB6125484484510E5027259DC8CE979@MN2PR05MB6125.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l6yWHHBuxV8YJRmdyaUbgkKzCLKdQoJpyqKB8CqV17BBJlzKVnhb1uMlqU8W2keYa+XVz+8o2u5Iil4oDiBMbRe0+5slc+hZQ6Lq5bzkTIOgAj9m49gyrkSegqNvFk4qluXekjg1PVOT0VV3THj/9KdSkaKEBxpSEaRzVD6d1XwWWcoHmI4AIC+fvYwNlgApvPeOQFJJ2fT/OaWrZlROSYclq2ZtJuJLYIwSUXIQxzcSA3FCiTMSSazom4SGjeQ72Szg/Jfw04r9NNgmQDaEH3+w5uhnnA0Noi0KTSee+2YuY3gAaotCxhis6lEGxmKogbxxb/EAPcnoEhv3+KNRGuCifWHAkJjFtfj79ME9iginQYs6wKHlsO2t4d4z9YO3aZLdQrcizD8iQbm87oSnESjfuUjahEwtzGbCu+ZRDs78zCx8hFDfSewIApdx9LATcOtIoYXtfaFHBjW/08cXW06wLjgCD8+hgHT8erDtRmGljdvXRJ/c0qcrq5xVYcuNlikz/EZSio7sqpNGE0fomfn4o2/T6IRoW1gkotyQYEe7rbvCaGh3vs755L1CrpxiItiYScrld8ldPixOT7evwg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR05MB6624.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(39860400002)(366004)(66556008)(36756003)(83380400001)(4326008)(71200400001)(6512007)(6486002)(64756008)(478600001)(26005)(66446008)(186003)(66946007)(316002)(7416002)(66476007)(76116006)(54906003)(5660300002)(2616005)(8936002)(6916009)(53546011)(6506007)(33656002)(2906002)(8676002)(86362001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?eq87qIr1HBOFvLSlJue1w71kyUaFeWgVttgXvOKpqXZCAuT96fSaRqRiBdwf?=
- =?us-ascii?Q?VHQZw8r6Xbqm9N4Q8roodmhLric0CGKCGsecOusVd/lR8BF0uWSLr6NMWSYX?=
- =?us-ascii?Q?l5nNMmAqfHsH+XeDaHDp/ht4JA/f4CF2ULkXir+daX7xMLUcrnzuE47doIa9?=
- =?us-ascii?Q?6phadXu9IM392jZHBeAxBivi8AqqSBFuz/uMez8vvkq/2dySNiJL2R1c/hgB?=
- =?us-ascii?Q?CkxsKFcP3r0/FoY0wlhqBp21LQTz1pKFQN+CBD2X6zn3IVahqKGrz8svtI6f?=
- =?us-ascii?Q?pcCj5ok6hNWjsAu1mXLUznKm9ZQASlk5H4+f1Bt0WcV/svpHerdX8066uw/C?=
- =?us-ascii?Q?RCS5Q6LzHhsPBPmzd8Cqu9f+su6K+jyBiYGo9ZjHeltjOTqgdRzi4c9YA7+E?=
- =?us-ascii?Q?liAV4Fqn00lFOJu9nPy1R9kPczbflsLsHxpCEV1TqZGr5mshcx+Y58QouO/U?=
- =?us-ascii?Q?jMj8463Dp5JuxD/+QC4Tl/YINnzj6ZAjOOyEef80P9Lc62K3NWLSInSEQ1pd?=
- =?us-ascii?Q?GT/kW1dczeixs9tT0MCdqatkJnN2fw+fLIOjIfic0cSUEtdgQLEgIzV1yZbv?=
- =?us-ascii?Q?KNr1boFYna9j/JDIAVTo0n26uogUu9Ie6H1pYgmmzJKd4CLHxU1M+Y7EAaGc?=
- =?us-ascii?Q?AXehVIRvOyru5SkAkiBIyCWMq13MtlDCscnscRZrthenJcoYEBM6HM+esj9P?=
- =?us-ascii?Q?i+HTl4Ab4jWIkynQGytIqcgmb/r3g8GI5h+eTGEGXd+7S8AyU6O5W9Hqic0e?=
- =?us-ascii?Q?bmWfzcg5QqHTUzMvKSvO4N/unVHe5W/hbUaszZvGgZKJvOYrGh6dyaewZUG1?=
- =?us-ascii?Q?54SqQ9jTHcz1CvDLGM64q7Dngsr/+6J81w383OxW1yl+21S5RUtxzl+x1XR9?=
- =?us-ascii?Q?07EMtoxWs3QdDOCtHvD8pD60CyfeGef9v3z/VfqkFp0ZSFLxMr1iv1omU1kM?=
- =?us-ascii?Q?jbXwOWyc3QWxbWgP+Xo/a3tsAhvHev3aLjLk8kwjrq4RKQkHyeuN2Th0rc3Z?=
- =?us-ascii?Q?Hdah1sr++AltbQH+SAASvUstP8OUUPQhiqXO9i8GEMUeLHWSiXqaaMiqib9w?=
- =?us-ascii?Q?7o7YlqAbofgU2j/Q0vCsF2uvFK3U5l9PvHHS59XaV4Y0KyJAUqXZhn4A0w/r?=
- =?us-ascii?Q?WpMFi2PCmcpmxZQcFARg/+RaCRdjeBTh5ctblg4KCJvZTcBBc2KKQrX02Byu?=
- =?us-ascii?Q?JeSL45ccYgM4dbRdoHB8+tf6OClVgquxhVWfOpUQ7atjW9avsEMx7Xdilyxh?=
- =?us-ascii?Q?gH7+RWYlWYtkf83xoGtJJrNdDoTxZJOhTHTer1++A0d1mko02TsRnwgf9T/5?=
- =?us-ascii?Q?OjKI0kMMvYnZUffK8rIEFSaB?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7EE4BFD3EF0A8644B48E47036134F532@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S235203AbhCDSu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:50:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13934 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235111AbhCDSuI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 13:50:08 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124IYT4b165664;
+        Thu, 4 Mar 2021 13:49:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NQ12GuvXHspGybmK53e54xawvK/ZlV9uYf88vxw3ECM=;
+ b=odAqV6or4D/XdgCrvQUjHalBUcDTF5nSWvzxVozT8X1MDwUzCBKCO6ViQQ93a0nMT1m8
+ XV3m8abckFQpvCYUqf3o3GtNjz4ZQ0P61pIyIabuQgjkzF1rAZgoS4A95u/a75taixHu
+ T7ZcMZpWel17o55s5b3HAyr+5/QXkR2dXeXX34yC/rw8pIpPzXARd+OrSqd0A+7xT062
+ Q+iKc862/loSOLXam4gLacTsJf5+2Ia5J7WSg6Iy6tGslMqUCMpndt0MO43QePinmGZ2
+ ys7gcoYTF3p08ZObYs9JuJLNjQJOVno4x6Uv/05Xk9i9duGSeGoVMr7L6bhsrHiuUh8Z cA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3734nss34u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 13:49:02 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 124IYdmT166313;
+        Thu, 4 Mar 2021 13:49:02 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3734nss33v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 13:49:02 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124IWGrU005854;
+        Thu, 4 Mar 2021 18:49:01 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03dal.us.ibm.com with ESMTP id 3720r0s3ty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 18:49:01 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124Imxle30277932
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 18:49:00 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E2BC0BE051;
+        Thu,  4 Mar 2021 18:48:59 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1D03CBE054;
+        Thu,  4 Mar 2021 18:48:58 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Mar 2021 18:48:57 +0000 (GMT)
+Subject: Re: [PATCH] scsi: ibmvfc: Switch to using the new API kobj_to_dev()
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <1614850124-54111-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <87514c42-eb5a-ee68-ff21-49d08bd42a4e@linux.ibm.com>
+Date:   Thu, 4 Mar 2021 10:48:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR05MB6624.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d81edded-bcea-45f9-f99b-08d8df3dfef9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2021 18:47:43.4460
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yfiT4G+ZB/Ef0pgYDKS0QJ2U7yAeQXQkiXvzB2LIMClOOE/hQzrO7KbdxwnjdBt2fY6WMBU3x83emiFK0gE4qQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB6125
+In-Reply-To: <1614850124-54111-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_05:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103040088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/4/21 1:28 AM, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./drivers/scsi/ibmvscsi/ibmvfc.c:3483:60-61: WARNING opportunity for
+> kobj_to_dev().
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-> On Mar 3, 2021, at 08:20, Thomas Gleixner <tglx@linutronix.de> wrote:
->=20
-> From: Thomas Gleixner <tglx@linutronix.de>
->=20
-> There is no reason to disable pagefaults and preemption as a side effect =
-of
-> kmap_atomic_prot().
->=20
-> Use kmap_local_page_prot() instead and document the reasoning for the
-> mapping usage with the given pgprot.
->=20
-> Remove the NULL pointer check for the map. These functions return a valid
-> address for valid pages and the return was bogus anyway as it would have
-> left preemption and pagefaults disabled.
->=20
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
-> Cc: Roland Scheidegger <sroland@vmware.com>
-> Cc: Zack Rusin <zackr@vmware.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
+Acked-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+
 > ---
-> drivers/gpu/drm/vmwgfx/vmwgfx_blit.c |   30 ++++++++++++-----------------=
--
-> 1 file changed, 12 insertions(+), 18 deletions(-)
->=20
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
-> @@ -375,12 +375,12 @@ static int vmw_bo_cpu_blit_line(struct v
-> 		copy_size =3D min_t(u32, copy_size, PAGE_SIZE - src_page_offset);
->=20
-> 		if (unmap_src) {
-> -			kunmap_atomic(d->src_addr);
-> +			kunmap_local(d->src_addr);
-> 			d->src_addr =3D NULL;
-> 		}
->=20
-> 		if (unmap_dst) {
-> -			kunmap_atomic(d->dst_addr);
-> +			kunmap_local(d->dst_addr);
-> 			d->dst_addr =3D NULL;
-> 		}
->=20
-> @@ -388,12 +388,8 @@ static int vmw_bo_cpu_blit_line(struct v
-> 			if (WARN_ON_ONCE(dst_page >=3D d->dst_num_pages))
-> 				return -EINVAL;
->=20
-> -			d->dst_addr =3D
-> -				kmap_atomic_prot(d->dst_pages[dst_page],
-> -						 d->dst_prot);
-> -			if (!d->dst_addr)
-> -				return -ENOMEM;
-> -
-> +			d->dst_addr =3D kmap_local_page_prot(d->dst_pages[dst_page],
-> +							   d->dst_prot);
-> 			d->mapped_dst =3D dst_page;
-> 		}
->=20
-> @@ -401,12 +397,8 @@ static int vmw_bo_cpu_blit_line(struct v
-> 			if (WARN_ON_ONCE(src_page >=3D d->src_num_pages))
-> 				return -EINVAL;
->=20
-> -			d->src_addr =3D
-> -				kmap_atomic_prot(d->src_pages[src_page],
-> -						 d->src_prot);
-> -			if (!d->src_addr)
-> -				return -ENOMEM;
-> -
-> +			d->src_addr =3D kmap_local_page_prot(d->src_pages[src_page],
-> +							   d->src_prot);
-> 			d->mapped_src =3D src_page;
-> 		}
-> 		diff->do_cpy(diff, d->dst_addr + dst_page_offset,
-> @@ -436,8 +428,10 @@ static int vmw_bo_cpu_blit_line(struct v
->  *
->  * Performs a CPU blit from one buffer object to another avoiding a full
->  * bo vmap which may exhaust- or fragment vmalloc space.
-> - * On supported architectures (x86), we're using kmap_atomic which avoid=
-s
-> - * cross-processor TLB- and cache flushes and may, on non-HIGHMEM system=
-s
-> + *
-> + * On supported architectures (x86), we're using kmap_local_prot() which
-> + * avoids cross-processor TLB- and cache flushes. kmap_local_prot() will
-> + * either map a highmem page with the proper pgprot on HIGHMEM=3Dy syste=
-ms or
->  * reference already set-up mappings.
->  *
->  * Neither of the buffer objects may be placed in PCI memory
-> @@ -500,9 +494,9 @@ int vmw_bo_cpu_blit(struct ttm_buffer_ob
-> 	}
-> out:
-> 	if (d.src_addr)
-> -		kunmap_atomic(d.src_addr);
-> +		kunmap_local(d.src_addr);
-> 	if (d.dst_addr)
-> -		kunmap_atomic(d.dst_addr);
-> +		kunmap_local(d.dst_addr);
->=20
-> 	return ret;
-> }
-
-
-Looks good. Thanks.
-
-Reviewed-by: Zack Rusin <zackr@vmware.com>
-
-z
+>  drivers/scsi/ibmvscsi/ibmvfc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index 755313b..e5f1ca7 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -3480,7 +3480,7 @@ static ssize_t ibmvfc_read_trace(struct file *filp, struct kobject *kobj,
+>  				 struct bin_attribute *bin_attr,
+>  				 char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  	struct Scsi_Host *shost = class_to_shost(dev);
+>  	struct ibmvfc_host *vhost = shost_priv(shost);
+>  	unsigned long flags = 0;
+> 
 
