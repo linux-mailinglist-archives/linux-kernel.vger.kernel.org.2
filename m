@@ -2,157 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F82832CCD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4666632CCDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 07:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235190AbhCDG0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 01:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235180AbhCDG0R (ORCPT
+        id S235212AbhCDGb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 01:31:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38988 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235205AbhCDGbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:26:17 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B5EC06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 22:25:36 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id o10so18253535pgg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 22:25:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=073Z4Ekpyix60DxdcQ0lkwFMZDm8uQOxmFSCevG2kWk=;
-        b=cb1ec1aEuoM+7PjiNajI1/sLiAALO9yi9D5ViMZhYuQJxNEyoFW7sqMH290M3xSSZj
-         n8lcaI5XWtLl5KS0s1BuhLdRL6O8LavDUYa6iWCCMfb1oNU6/xvkja8msl1mmLDyBXCw
-         q9jlky749vTKv/aFc0Vy46iVsEX/myGzDKsLI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=073Z4Ekpyix60DxdcQ0lkwFMZDm8uQOxmFSCevG2kWk=;
-        b=C9EBNPB+qF2GY5h/wX3Rfc4rllIXsMEcAoIMsmdQ2g5nG/YZKxQCObxqKa+aoDt+op
-         y+jm6UGzg6PhsyywdemjSabHTKGHQA9yAtwy15rxfGdOQ8ucoG3Xp2IBXEkXNvQI8XCg
-         uTgisS8mULp+DbC5NlgmxJ8h8NzJJSVoMgZrq53tWkL2KLj2g/oco9z0DOgaRN9pNCrI
-         ey8i/1qkNjpFRLb1E5I9h8KDwFQiXan7QqOGlRuqkAK0xrc1KZKSg1Vmw546gqQCIa8z
-         BM2xmwQq51e3wbkwAmGt5ENrvyNXFZj2/oWgelekybbehpHi+9n9PTK71zpB70YPx0vE
-         4I2w==
-X-Gm-Message-State: AOAM531SceUKGPGCHUL+/u6zDBPfJcg1aTOCCb9zoPfDz61Tmf44ESFu
-        V6hzWxpT8Khqoh03O85w6qgguA==
-X-Google-Smtp-Source: ABdhPJyFv2llFJu54mc6Zpz1YiCVRlV5qW2dcbMGm7JCAnoHGYXULLL4+cFoWiJD3TEPTeSqGimQmg==
-X-Received: by 2002:aa7:92c7:0:b029:1ee:75b2:2dab with SMTP id k7-20020aa792c70000b02901ee75b22dabmr2689365pfa.61.1614839136388;
-        Wed, 03 Mar 2021 22:25:36 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2510:ab07:78a:7d78])
-        by smtp.gmail.com with ESMTPSA id s27sm24917409pgk.77.2021.03.03.22.25.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 22:25:35 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 4 Mar 2021 01:31:25 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1246DimX136014;
+        Thu, 4 Mar 2021 01:30:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Dij8OccllGGrXisgPNHTQID91WD5IUGjxG0idlr32BM=;
+ b=rgY9heFxv/hrbrkfYH0iiiHoMaOzxt0Xf0zrNvkLBnJkP2N/jSKvEaOMrm5ax9FEu6n5
+ X9Vt+7GF0RRrrO9VczbuDlbe04WQYV2Z/nN+e9foaaZ0UNvP6dGAtFISPgqlvhZIT7Uq
+ V/6gu4hEuo6tmHUntHpbLJoChf/T05u5zaMhktlP5yLLWh0MqbSyjj2CnTM7Dn/WgEpZ
+ 05RO4JJmoRh9XZdJ35LtdAwlpVwXlHcTdtR+QUDUXbECxczjxVVsG9fj042nJ23Wfxbh
+ 3rgO82GjlGsh5xMsXUSnZ6wJZdzdisG/wZ1L9tQb1gD5yv6pNTxAQTcX4V7h4pSUgFMX Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372m800f9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 01:30:42 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1246JtCE156690;
+        Thu, 4 Mar 2021 01:30:42 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 372m800f88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 01:30:41 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1246InR4027524;
+        Thu, 4 Mar 2021 06:30:39 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3712fmjf42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 06:30:39 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1246UbsN36831678
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 06:30:37 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 422F952057;
+        Thu,  4 Mar 2021 06:30:37 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.37.77])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 6090B5205F;
+        Thu,  4 Mar 2021 06:30:35 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     acme@kernel.org
+Cc:     ravi.bangoria@linux.ibm.com, jolsa@redhat.com, namhyung@kernel.org,
+        atrajeev@linux.vnet.ibm.com, kan.liang@linux.intel.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf report: Fix -F for branch & mem modes
+Date:   Thu,  4 Mar 2021 11:59:58 +0530
+Message-Id: <20210304062958.85465-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210303201932.7ac93f12@oasis.local.home>
-References: <20210301174749.1269154-1-swboyd@chromium.org> <20210301174749.1269154-6-swboyd@chromium.org> <YD9kNphaSRPk83KJ@alley> <20210303100012.0e6e4de3@gandalf.local.home> <YD+2fRo4J/ffQF8z@smile.fi.intel.com> <161481830876.1478170.4374239517736205573@swboyd.mtv.corp.google.com> <20210303201932.7ac93f12@oasis.local.home>
-Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org
-To:     Steven Rostedt <rostedt@goodmis.org>
-Date:   Wed, 03 Mar 2021 22:25:32 -0800
-Message-ID: <161483913296.1478170.8327557921301152076@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_01:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 adultscore=0 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103040025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Steven Rostedt (2021-03-03 17:19:32)
-> On Wed, 03 Mar 2021 16:38:28 -0800
-> Stephen Boyd <swboyd@chromium.org> wrote:
->=20
-> > I'm starting to feel like nobody read the commit text, or I messed up
-> > somehow and the commit text was confusing? :(
-> >=20
->=20
-> I read it, I'm just unfamiliar with it. I don't use pstore, and I'm not
-> sure what "crashdump" is. Do you mean the kexec/kdump? in which case
-> you can retrieve data within the kernel quite easily.
+perf report fails to add valid additional fields with -F when
+used with branch or mem modes. Fix it.
 
-Right, I meant kexec/kdump. Given that it is easy to retrieve it in
-kdump (presumably with some scripting?) I can remove this motivation
-from the commit text.
+Before patch:
 
->=20
-> I haven't used debuginfod (never heard of it before actually).
+  $ ./perf record -b
+  $ ./perf report -b -F +srcline_from --stdio
+  Error:
+  Invalid --fields key: `srcline_from'
 
-Got it. Hopefully the links I provided were good enough? I will provide
-a link next time.
+After patch:
 
->=20
-> > =E2=94=82 This is especially helpful for crash debugging with pstore or=
- crashdump                                                                 =
-                                                                       =20
-> > =E2=94=82 kernels. If we have the build ID for the module in the stackt=
-race we can                                                                =
-                                                                       =20
-> > =E2=94=82 request the debug symbols for the module from a remote debugi=
-nfod server                                                                =
-                                                                       =20
-> > =E2=94=82 or parse stacktraces at a later time with decode_stacktrace.s=
-h by                                                                       =
-                                                                       =20
-> > =E2=94=82 downloading the correct symbols based on the build ID. This c=
-uts down on                                                                =
-                                                                       =20
-> > =E2=94=82 the amount of time and effort needed to find the correct kern=
-el modules                                                                 =
-                                                                       =20
-> > =E2=94=82 for a stacktrace by encoding that information into it. =20
->=20
-> Are you saying it's common to have modules from different builds?
+  $ ./perf report -b -F +srcline_from --stdio
+  # Samples: 8K of event 'cycles'
+  # Event count (approx.): 8784
+  ...
 
-No.
+Reported-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Fixes: aa6b3c99236b ("perf report: Make -F more strict like -s")
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+ tools/perf/util/sort.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->=20
-> >=20
-> > In some distro (read: non-kernel dev) workflows the vmlinux isn't
-> > shipped on the device and crash handling is done offline or much later.
-> > Using the build ID[1] is a common way to identify the binary that's
-> > running on the device. In conjunction with a debuginfod[2] server you
-> > can download the symbols for a crash automatically if you have the build
-> > ID information.
-> >=20
-> > I can add a patch that updates decode_stacktrace.sh to show how it can
-> > download the correct vmlinux/modules if it isn't provided on the
-> > commandline.
->=20
-> Are you just trying to match modules with the builds that they were
-> created with?
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index 0d5ad42812b9..552b590485bf 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -3140,7 +3140,7 @@ int output_field_add(struct perf_hpp_list *list, char *tok)
+ 		if (strncasecmp(tok, sd->name, strlen(tok)))
+ 			continue;
+ 
+-		if (sort__mode != SORT_MODE__MEMORY)
++		if (sort__mode != SORT_MODE__BRANCH)
+ 			return -EINVAL;
+ 
+ 		return __sort_dimension__add_output(list, sd);
+@@ -3152,7 +3152,7 @@ int output_field_add(struct perf_hpp_list *list, char *tok)
+ 		if (strncasecmp(tok, sd->name, strlen(tok)))
+ 			continue;
+ 
+-		if (sort__mode != SORT_MODE__BRANCH)
++		if (sort__mode != SORT_MODE__MEMORY)
+ 			return -EINVAL;
+ 
+ 		return __sort_dimension__add_output(list, sd);
+-- 
+2.29.2
 
-Not exactly. I don't have a mapping of modules to the kernel they're
-built/used with. I could create a mapping, but then that's something
-else to maintain vs. what I have right now which is just a big database
-of debuginfo mapped to build IDs (i.e. a debuginfod server).
-
->=20
-> >=20
-> > If the debug symbols are on some public server then in theory we could
-> > have some robot sitting on the mailing list that looks for stacktraces
-> > and automatically replies with information about the line number/file
-> > and even provides the code snippet for the code that's crashing from
-> > that binary, because it's all stored in the full debuginfo builds.
->=20
-> Again, I have no idea how buildids are created or what they are used
-> for. This is the first time I've even heard about them. I'm all for
-> helping other people out to make their workflow easier, if it doesn't
-> make a mess for everyone else.
->=20
->=20
-
-Makes sense and sounds good. Thanks.
