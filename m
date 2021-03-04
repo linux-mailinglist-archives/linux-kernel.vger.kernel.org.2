@@ -2,265 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECEF32D239
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D239432D23F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239837AbhCDMEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
+        id S239844AbhCDMFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236806AbhCDMDm (ORCPT
+        with ESMTP id S239848AbhCDMFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:03:42 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E99C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:03:02 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id o3so29790913oic.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 04:03:02 -0800 (PST)
+        Thu, 4 Mar 2021 07:05:18 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659D5C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:04:38 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id lr13so48867471ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 04:04:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FH7ph6cwSCi93IJHohvQ0RuLXYukCCGdk/pW1zQYl0k=;
-        b=RJPO8rPq0Qp+et88d/xPSuUyCvz2SNC2e05EPAwzRHG+IiIhFv28Iwn1MpVGR4PA/Z
-         HVV3dKm5Jm0AYKbpTQFb+J925XFh7Da00YkfzWY2L2aQkXPkAEHx5kbKab3zhR7EaAMc
-         L5Tm7hjtDMt0gcJkHOI/xjlfSsRaDZk3JObfMO3C/ibLN0yKOpssn3ghlFKQ8ppjz9zL
-         cjOs2Uw8ROQIK+zZ+OstIEBKtV3KFKesdaZL66D8QXvo/SgjZfs8Trb86dP5dG8vr2mK
-         xknriQIPeSvIVnHiXDD38/fx3SwXKmYNqjvFOIPDH7qt53NowYG4fbw7PaJsmEhXGxk1
-         R2FA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QP1/x9snU1LCNLiXpn1pwFVJ6HIyLKKcgrv8t9uRcMA=;
+        b=sZQl+ZfwumBEN/b0V5Cwzdr7c8DnvJ5cSx23o6sRg4m2wp9RGSHXUZKfxJ+TIb8fY7
+         Kg3GFO8AOgHPyiLjQKKhtWTN8r3aPmNYjFlyRWhFl4d5RKO2pFDWheecELAC6U2hx0Vn
+         S0mGZdtPZxAmsuXtMVvudzeW3MbbH08O8ezgMndduj/x4jmolCQlu/wJv9JyBBXrjT0U
+         ery436XJTjKT6B2UYB+EynATfhlZIcpuo39LM43eLMWQvYqxySqRhBBriXwxL8das9ON
+         HvccqQhMu8vBRSCwWUo55Br6fd8w6KQJPDe+Gq3dKH0VLGGDPgusvN13tlVxHzE4V6HL
+         Z1dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FH7ph6cwSCi93IJHohvQ0RuLXYukCCGdk/pW1zQYl0k=;
-        b=tOsYsoTTvoF+tQHwpv9jVAJPjAa81vdxeEexy90NDazbpXgq3BhbvOJVxRztx8fM0x
-         VXcMdQUSV6ERtSkJ0NnX9llndO/uHMVmTtPT0YyJYI5wrBQEti58sVsGD/988KOYY0Fn
-         dgnLyuivyXnTYhFVvncP7z0wrk42CdyqJEJHCpogUMNMnaSodW2KFgkopPtgCYb2Ee3u
-         sdJ8sbPmnajCgwFDIe7OY/KLu1Ebp846EuCDbc8uaeSN3mws4f2bi/BLkBaOgzXZ1Y8K
-         ZldjtyWncyG2Mohks5wdwrqvOu31jdVGGwlRrXwX3ZdFu/iOkd8n5Bl5NZXVnYaK9BBu
-         dUmA==
-X-Gm-Message-State: AOAM53149aZCoMtg2h8FOweCkx/C2NvLHZwvASzqgxyc0aSj+Ub6a/qO
-        9mO1r6rtwDpMpjDyg8L0q5bf7BCl5Wo6XHIJq8kEEA==
-X-Google-Smtp-Source: ABdhPJxieJxdcrOfBvmvuzYZ7PWQeAtqTlHO5JCRm3oJlmfNl2HjWfDoS/9qbD1KReADl5Ebd3+gxF+Vof18AsM9ikY=
-X-Received: by 2002:a05:6808:10d3:: with SMTP id s19mr2772884ois.70.1614859381258;
- Thu, 04 Mar 2021 04:03:01 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QP1/x9snU1LCNLiXpn1pwFVJ6HIyLKKcgrv8t9uRcMA=;
+        b=a189mAttgc9QldX3cAMLzkVOSOPAfYytKq8lGN9De9H6/WBvYoDulrCzTlNFslBXTW
+         e3g9jkLCvS5zSg/Tw94CBCaZuneSJFDTwhwtsca+0g0OASiGlfhAFmXnxYMrBAXCuyNc
+         9WtzAdgPSSc8oNGyzP8JhzfsorGvSk4ey+EXayPujVwZ2/FbSTrwGesatLN95jS4Vle2
+         BoXQ2GXA/cGR1NRYkHv9kLa8C+GICeGyw7tpSYiLr555TbJz/h+orYrQ3FDs+/BojOyJ
+         4Ypdip5AsRS3mHPverDzWaZ+niYnL0dcWNhyAlAdm96QS6m+3i4+co/OaneboncIB0i4
+         uEJg==
+X-Gm-Message-State: AOAM533EDdxwGeN/QLN30nFxD4fXxr034Qm2hRlh5r7CW7uLVc16t2qY
+        0if9zYihyrPe6HfJLKqyfdNABA==
+X-Google-Smtp-Source: ABdhPJy5JL98ENBeRN4iUzbVNg92fq+Vrvr6LSt3mSOAulrZLrLSZEAAHb4HxZSSsF/1bDugH6/vLg==
+X-Received: by 2002:a17:907:3e8b:: with SMTP id hs11mr3799113ejc.117.1614859477033;
+        Thu, 04 Mar 2021 04:04:37 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:470a:340b:1b:29dd])
+        by smtp.gmail.com with ESMTPSA id cf6sm20464447edb.92.2021.03.04.04.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 04:04:36 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
+        robh+dt@kernel.org, angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: [PATCH v6 00/22] Add support for the SDM845 Camera Subsystem
+Date:   Thu,  4 Mar 2021 13:03:05 +0100
+Message-Id: <20210304120326.153966-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
- <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
- <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu> <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu> <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu> <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
- <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu> <CANpmjNOnVzei7frKcMzMHxaDXh5NvTA-Wpa29C2YC1GUxyKfhQ@mail.gmail.com>
- <f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu> <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
- <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu> <72e31c34-e947-1084-2bd2-f5b80786f827@csgroup.eu>
-In-Reply-To: <72e31c34-e947-1084-2bd2-f5b80786f827@csgroup.eu>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 4 Mar 2021 13:02:49 +0100
-Message-ID: <CANpmjNNzTGN1xa5Egf2e+twd9n0LgEVUS_sG9nOCzb50NPTKpg@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 13:00, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 04/03/2021 =C3=A0 12:48, Christophe Leroy a =C3=A9crit :
-> >
-> >
-> > Le 04/03/2021 =C3=A0 12:31, Marco Elver a =C3=A9crit :
-> >> On Thu, 4 Mar 2021 at 12:23, Christophe Leroy
-> >> <christophe.leroy@csgroup.eu> wrote:
-> >>> Le 03/03/2021 =C3=A0 11:56, Marco Elver a =C3=A9crit :
-> >>>>
-> >>>> Somewhat tangentially, I also note that e.g. show_regs(regs) (which
-> >>>> was printed along the KFENCE report above) didn't include the top
-> >>>> frame in the "Call Trace", so this assumption is definitely not
-> >>>> isolated to KFENCE.
-> >>>>
-> >>>
-> >>> Now, I have tested PPC64 (with the patch I sent yesterday to modify s=
-ave_stack_trace_regs()
-> >>> applied), and I get many failures. Any idea ?
-> >>>
-> >>> [   17.653751][   T58] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >>> [   17.654379][   T58] BUG: KFENCE: invalid free in .kfence_guarded_f=
-ree+0x2e4/0x530
-> >>> [   17.654379][   T58]
-> >>> [   17.654831][   T58] Invalid free of 0xc00000003c9c0000 (in kfence-=
-#77):
-> >>> [   17.655358][   T58]  .kfence_guarded_free+0x2e4/0x530
-> >>> [   17.655775][   T58]  .__slab_free+0x320/0x5a0
-> >>> [   17.656039][   T58]  .test_double_free+0xe0/0x198
-> >>> [   17.656308][   T58]  .kunit_try_run_case+0x80/0x110
-> >>> [   17.656523][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> >>> [   17.657161][   T58]  .kthread+0x18c/0x1a0
-> >>> [   17.659148][   T58]  .ret_from_kernel_thread+0x58/0x70
-> >>> [   17.659869][   T58]
-> >>> [   17.663954][   T58] kfence-#77 [0xc00000003c9c0000-0xc00000003c9c0=
-01f, size=3D32, cache=3Dkmalloc-32]
-> >>> allocated by task 58:
-> >>> [   17.666113][   T58]  .__kfence_alloc+0x1bc/0x510
-> >>> [   17.667069][   T58]  .__kmalloc+0x280/0x4f0
-> >>> [   17.667452][   T58]  .test_alloc+0x19c/0x430
-> >>> [   17.667732][   T58]  .test_double_free+0x88/0x198
-> >>> [   17.667971][   T58]  .kunit_try_run_case+0x80/0x110
-> >>> [   17.668283][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> >>> [   17.668553][   T58]  .kthread+0x18c/0x1a0
-> >>> [   17.669315][   T58]  .ret_from_kernel_thread+0x58/0x70
-> >>> [   17.669711][   T58]
-> >>> [   17.669711][   T58] freed by task 58:
-> >>> [   17.670116][   T58]  .kfence_guarded_free+0x3d0/0x530
-> >>> [   17.670421][   T58]  .__slab_free+0x320/0x5a0
-> >>> [   17.670603][   T58]  .test_double_free+0xb4/0x198
-> >>> [   17.670827][   T58]  .kunit_try_run_case+0x80/0x110
-> >>> [   17.671073][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> >>> [   17.671410][   T58]  .kthread+0x18c/0x1a0
-> >>> [   17.671618][   T58]  .ret_from_kernel_thread+0x58/0x70
-> >>> [   17.671972][   T58]
-> >>> [   17.672638][   T58] CPU: 0 PID: 58 Comm: kunit_try_catch Tainted: =
-G    B
-> >>> 5.12.0-rc1-01540-g0783285cc1b8-dirty #4685
-> >>> [   17.673768][   T58] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >>> [   17.677031][   T58]     # test_double_free: EXPECTATION FAILED at =
-mm/kfence/kfence_test.c:380
-> >>> [   17.677031][   T58]     Expected report_matches(&expect) to be tru=
-e, but is false
-> >>> [   17.684397][    T1]     not ok 7 - test_double_free
-> >>> [   17.686463][   T59]     # test_double_free-memcache: setup_test_ca=
-che: size=3D32, ctor=3D0x0
-> >>> [   17.688403][   T59]     # test_double_free-memcache: test_alloc: s=
-ize=3D32, gfp=3Dcc0, policy=3Dany,
-> >>> cache=3D1
-> >>
-> >> Looks like something is prepending '.' to function names. We expect
-> >> the function name to appear as-is, e.g. "kfence_guarded_free",
-> >> "test_double_free", etc.
-> >>
-> >> Is there something special on ppc64, where the '.' is some convention?
-> >>
-> >
-> > I think so, see https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf6=
-4abi.html#FUNC-DES
-> >
-> > Also see commit https://github.com/linuxppc/linux/commit/02424d896
-> >
->
-> But I'm wondering, if the dot is the problem, how so is the following one=
- ok ?
->
-> [   79.574457][   T75]     # test_krealloc: test_alloc: size=3D32, gfp=3D=
-cc0, policy=3Dany, cache=3D0
-> [   79.682728][   T75] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   79.684017][   T75] BUG: KFENCE: use-after-free read in .test_krealloc=
-+0x4fc/0x5b8
-> [   79.684017][   T75]
-> [   79.684955][   T75] Use-after-free read at 0xc00000003d060000 (in kfen=
-ce-#130):
-> [   79.687581][   T75]  .test_krealloc+0x4fc/0x5b8
-> [   79.688216][   T75]  .test_krealloc+0x4e4/0x5b8
-> [   79.688824][   T75]  .kunit_try_run_case+0x80/0x110
-> [   79.689737][   T75]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> [   79.690335][   T75]  .kthread+0x18c/0x1a0
-> [   79.691092][   T75]  .ret_from_kernel_thread+0x58/0x70
-> [   79.692081][   T75]
-> [   79.692671][   T75] kfence-#130 [0xc00000003d060000-0xc00000003d06001f=
-, size=3D32,
-> cache=3Dkmalloc-32] allocated by task 75:
-> [   79.700977][   T75]  .__kfence_alloc+0x1bc/0x510
-> [   79.701812][   T75]  .__kmalloc+0x280/0x4f0
-> [   79.702695][   T75]  .test_alloc+0x19c/0x430
-> [   79.703051][   T75]  .test_krealloc+0xa8/0x5b8
-> [   79.703276][   T75]  .kunit_try_run_case+0x80/0x110
-> [   79.703693][   T75]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> [   79.704223][   T75]  .kthread+0x18c/0x1a0
-> [   79.704586][   T75]  .ret_from_kernel_thread+0x58/0x70
-> [   79.704968][   T75]
-> [   79.704968][   T75] freed by task 75:
-> [   79.705756][   T75]  .kfence_guarded_free+0x3d0/0x530
-> [   79.706754][   T75]  .__slab_free+0x320/0x5a0
-> [   79.708575][   T75]  .krealloc+0xe8/0x180
-> [   79.708970][   T75]  .test_krealloc+0x1c8/0x5b8
-> [   79.709606][   T75]  .kunit_try_run_case+0x80/0x110
-> [   79.710204][   T75]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> [   79.710639][   T75]  .kthread+0x18c/0x1a0
-> [   79.710996][   T75]  .ret_from_kernel_thread+0x58/0x70
-> [   79.711349][   T75]
-> [   79.717435][   T75] CPU: 0 PID: 75 Comm: kunit_try_catch Tainted: G   =
- B
-> 5.12.0-rc1-01540-g0783285cc1b8-dirty #4685
-> [   79.718124][   T75] NIP:  c000000000468a40 LR: c000000000468a28 CTR: 0=
-000000000000000
-> [   79.727741][   T75] REGS: c000000007dd3830 TRAP: 0300   Tainted: G    =
-B
-> (5.12.0-rc1-01540-g0783285cc1b8-dirty)
-> [   79.733377][   T75] MSR:  8000000002009032 <SF,VEC,EE,ME,IR,DR,RI>  CR=
-: 28000440  XER: 00000000
-> [   79.738770][   T75] CFAR: c000000000888c7c DAR: c00000003d060000 DSISR=
-: 40000000 IRQMASK: 0
-> [   79.738770][   T75] GPR00: c000000000468a28 c000000007dd3ad0 c00000000=
-1eaad00 c0000000073c3988
-> [   79.738770][   T75] GPR04: c000000007dd3b60 0000000000000001 000000000=
-0000000 c00000003d060000
-> [   79.738770][   T75] GPR08: 00000000000002c8 0000000000000001 c00000000=
-11bb410 c00000003fe903d8
-> [   79.738770][   T75] GPR12: 0000000028000440 c0000000020f0000 c00000000=
-01a6460 c00000000724bb80
-> [   79.738770][   T75] GPR16: 0000000000000000 c00000000731749f c00000000=
-11bb278 c00000000731749f
-> [   79.738770][   T75] GPR20: 00000001000002c1 0000000000000000 c00000000=
-11bb278 c0000000011bb3b8
-> [   79.738770][   T75] GPR24: c0000000073174a0 c0000000011aa7b8 c00000000=
-1e35328 c00000000208ad00
-> [   79.738770][   T75] GPR28: 0000000000000000 c0000000011bb0b8 c00000000=
-73c3988 c000000007dd3ad0
-> [   79.751744][   T75] NIP [c000000000468a40] .test_krealloc+0x4fc/0x5b8
-> [   79.752243][   T75] LR [c000000000468a28] .test_krealloc+0x4e4/0x5b8
-> [   79.752699][   T75] Call Trace:
-> [   79.753027][   T75] [c000000007dd3ad0] [c000000000468a28] .test_kreall=
-oc+0x4e4/0x5b8 (unreliable)
-> [   79.753878][   T75] [c000000007dd3c40] [c0000000008886d0] .kunit_try_r=
-un_case+0x80/0x110
-> [   79.754641][   T75] [c000000007dd3cd0] [c00000000088a808]
-> .kunit_generic_run_threadfn_adapter+0x38/0x50
-> [   79.755494][   T75] [c000000007dd3d50] [c0000000001a65ec] .kthread+0x1=
-8c/0x1a0
-> [   79.757254][   T75] [c000000007dd3e10] [c00000000000dd68] .ret_from_ke=
-rnel_thread+0x58/0x70
-> [   79.775521][   T75] Instruction dump:
-> [   79.776890][   T75] 68a50001 9b9f00c8 fbdf0090 fbbf00a0 fb5f00b8 48420=
-1cd 60000000 e8ff0080
-> [   79.783146][   T75] 3d42ff31 390002c8 394a0710 39200001 <88e70000> 38a=
-00000 fb9f00a8 e8fbe80e
-> [   79.787563][   T75] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   79.804667][    T1]     ok 24 - test_krealloc
+This series implements support for the camera subsystem found in
+the SDM845 SOCs and the Titan 170 ISP. The support is partial
+in that it implements CSIPHY, CSID, and partial VFE support.
 
-This one is using pt_regs, and therefore isn't trying to determine how
-many entries we can skip in the stack trace to avoid showing
-internals. I'll reply with a potential solution you can test shortly.
+The Titan generation of the ISP diverges a fair amount from the
+design of the previous architecture generation, CAMSS. As a result
+some pretty invasive refactoring is done in this series. It also
+means that at this time we're unable to implement support for all
+of the IP blocks contained. This is due to a combination of legal
+considerations with respect to the IP and its owner Qualcomm and
+time & man hour constrains on the Linaro side.
 
-Thanks,
--- Marco
+The CSIPHY (CSI Physical Layer) & CSID (CSI Decoder) support is
+complete, but the VFE (Video Front End, which is referred to as IFE
+(Image Front End) in the Titan generation of ISPs) only has support
+for the RDI (Raw Dump Interface) which allows the raw output of
+the CSID to be written to memory.
+
+The 2nd interface implemented in the VFE silicon is the PIX
+interface, and camss does not support it for this generation of ISPs.
+The reason for this is that the PIX interface is used for sending
+image data to the BPS (Bayer Processing Section) & IPE (Image
+Processing Engine), but both of these units are beyond the scope
+of enabling basic ISP functionality for the SDM845.
+
+Since the Titan architecture generation diverges quite a bit from
+the CAMSS generation, a lot of pretty major refactoring is carried
+out in this series. Both the CSID & VFE core paths are made more
+general and hardware version specific parts are broken out.
+The CSIPHY didn't require quite as radical changes and therefore
+keeps its current form.
+
+Tested on:
+ - Qcom RB3 / db845c + camera mezzanine, which is SDM845 based
+ - db410c + D3 Camera mezzanine, which is APQ8016 based
+ 
+Branch:
+ - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v1
+ - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v2
+ - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v3
+ - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v4
+ - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v5
+ - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v6
+
+
+Due to the dt-bindings supporting sdm660-camss, this series depends
+the sdm660 clock driver being upstreamed. I've linked this series below.
+
+SDM630/660 Multimedia and GPU clock controllers
+https://patchwork.kernel.org/project/linux-arm-msm/list/?series=366077
+
+
+Robert Foss (22):
+  media: camss: Fix vfe_isr_comp_done() documentation
+  media: camss: Fix vfe_isr comment typo
+  media: camss: Replace trace_printk() with dev_dbg()
+  media: camss: Add CAMSS_845 camss version
+  media: camss: Make ISPIF subdevice optional
+  media: camss: Refactor VFE HW version support
+  media: camss: Add support for VFE hardware version Titan 170
+  media: camss: Add missing format identifiers
+  media: camss: Refactor CSID HW version support
+  media: camss: Add support for CSID hardware version Titan 170
+  media: camss: Add support for CSIPHY hardware version Titan 170
+  media: camss: Remove per VFE power domain toggling
+  media: camss: Enable SDM845
+  dt-bindings: media: camss: Add qcom,msm8916-camss binding
+  dt-bindings: media: camss: Add qcom,msm8996-camss binding
+  dt-bindings: media: camss: Add qcom,sdm660-camss binding
+  dt-bindings: media: camss: Add qcom,sdm845-camss binding
+  MAINTAINERS: Change CAMSS documentation to use dtschema bindings
+  media: dt-bindings: media: Remove qcom,camss documentation
+  arm64: dts: sdm845: Add CAMSS ISP node
+  arm64: dts: sdm845-db845c: Configure regulators for camss node
+  arm64: dts: sdm845-db845c: Enable ov8856 sensor and connect to ISP
+
+ .../devicetree/bindings/media/qcom,camss.txt  |  236 ----
+ .../bindings/media/qcom,msm8916-camss.yaml    |  256 ++++
+ .../bindings/media/qcom,msm8996-camss.yaml    |  387 ++++++
+ .../bindings/media/qcom,sdm660-camss.yaml     |  398 ++++++
+ .../bindings/media/qcom,sdm845-camss.yaml     |  371 +++++
+ MAINTAINERS                                   |    2 +-
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts    |   23 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  135 ++
+ drivers/media/platform/qcom/camss/Makefile    |    6 +
+ .../platform/qcom/camss/camss-csid-170.c      |  601 +++++++++
+ .../platform/qcom/camss/camss-csid-4-1.c      |  329 +++++
+ .../platform/qcom/camss/camss-csid-4-7.c      |  405 ++++++
+ .../platform/qcom/camss/camss-csid-gen1.h     |   27 +
+ .../platform/qcom/camss/camss-csid-gen2.h     |   39 +
+ .../media/platform/qcom/camss/camss-csid.c    |  621 +--------
+ .../media/platform/qcom/camss/camss-csid.h    |  165 ++-
+ .../qcom/camss/camss-csiphy-3ph-1-0.c         |  181 ++-
+ .../media/platform/qcom/camss/camss-csiphy.c  |   66 +-
+ .../media/platform/qcom/camss/camss-ispif.c   |  119 +-
+ .../media/platform/qcom/camss/camss-ispif.h   |    3 +-
+ .../media/platform/qcom/camss/camss-vfe-170.c |  806 +++++++++++
+ .../media/platform/qcom/camss/camss-vfe-4-1.c |  144 +-
+ .../media/platform/qcom/camss/camss-vfe-4-7.c |  277 ++--
+ .../media/platform/qcom/camss/camss-vfe-4-8.c | 1200 +++++++++++++++++
+ .../platform/qcom/camss/camss-vfe-gen1.c      |  763 +++++++++++
+ .../platform/qcom/camss/camss-vfe-gen1.h      |  110 ++
+ drivers/media/platform/qcom/camss/camss-vfe.c |  847 +-----------
+ drivers/media/platform/qcom/camss/camss-vfe.h |  129 +-
+ .../media/platform/qcom/camss/camss-video.c   |   52 +
+ drivers/media/platform/qcom/camss/camss.c     |  407 +++++-
+ drivers/media/platform/qcom/camss/camss.h     |   15 +-
+ 31 files changed, 7071 insertions(+), 2049 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/qcom,camss.txt
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,msm8916-camss.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-170.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-1.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-7.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-gen1.h
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-gen2.h
+ create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-170.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-4-8.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-gen1.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-gen1.h
+
+-- 
+2.27.0
+
