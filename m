@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C36F32D05D
+	by mail.lfdr.de (Postfix) with ESMTP id F2B5532D05F
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238281AbhCDKFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:05:20 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:38026 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230507AbhCDKEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:04:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614852275; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=kcRoAX9wKUGCY2tUhMsy4I/AJ378Sfygc6B2YBdp//M=; b=WQGbPulk/ssD14MyJaO98HrmuecZJKb8qR4n25K4pchzrEUja22+zj+ofD4wC1yOchKvrFgi
- Da7LHrpeB2jNJcyOF7SFkNJC46qvPTQis4kEIjtelynP4hKjYpAejwNCKb5j8uj6b2zv/drF
- XinG0mzx5B2ZQX0X8rRthZfm8xo=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6040b0927b648e2436afaaeb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 04 Mar 2021 10:04:02
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 61E50C433C6; Thu,  4 Mar 2021 10:04:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-498.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6324FC433CA;
-        Thu,  4 Mar 2021 10:03:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6324FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pintu@codeaurora.org
-From:   Pintu Kumar <pintu@codeaurora.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        pintu@codeaurora.org, iamjoonsoo.kim@lge.com, sh_def@163.com,
-        mateusznosek0@gmail.com, bhe@redhat.com, nigupta@nvidia.com,
-        vbabka@suse.cz, yzaikin@google.com, keescook@chromium.org,
-        mcgrof@kernel.org, mgorman@techsingularity.net
-Cc:     pintu.ping@gmail.com
-Subject: [PATCH v2] mm/compaction: remove unused variable sysctl_compact_memory
-Date:   Thu,  4 Mar 2021 15:33:44 +0530
-Message-Id: <1614852224-14671-1-git-send-email-pintu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <c99eb67f67e4e24b4df1a78a583837b1@codeaurora.org>
-References: <c99eb67f67e4e24b4df1a78a583837b1@codeaurora.org>
+        id S238247AbhCDKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:05:21 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:39590 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238249AbhCDKFD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:05:03 -0500
+Received: from mail-lf1-f70.google.com ([209.85.167.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lHkqD-0005dM-U7
+        for linux-kernel@vger.kernel.org; Thu, 04 Mar 2021 10:04:22 +0000
+Received: by mail-lf1-f70.google.com with SMTP id m16so9752224lfg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 02:04:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kc1YX2+moqNEiChJAD0LkzYPFpZ2rIkojhEfMRM4GEY=;
+        b=KBAhv1aSvFjjH9Vb3QVvXG1ITdT0s2DyyIkDiaaYrCaBzuwrZTIJacZpCm8semeQeF
+         HpTeBXhl0HClKqM62xy1HVrF9hcYsJ+A+/h9nxyPUdqqlinGLvDA+jj/ASTuAwOiuZU6
+         0/8XCa1Iush/kozjISP7FHA6u9Bl7GV+C2guTIJGZHszTHNtYpahUtEaSbtlWHUPLSc8
+         rKgChN1M/2Yk51kxo2m7XSjJZ/jr+mHuO0rrBF/7Rwyx+03yLkyXyd8/CkhOqfkW3UTX
+         qht0mJc49g+AlJwni6NbV2rf/3TJOxtSJKeSbEFR6V9Pv9kPOQTo3IrPzHHh4YeCahOs
+         p48A==
+X-Gm-Message-State: AOAM533yGS6yfwyIUK2lmPRhZLejD9K4x+V/Z/tzmdcUXIJ2l+UIJRaR
+        6tKhi/kRtnCx83vjOl3YK+uBDyJ/hEc5pIzq64MOEnurLuhe8JCXccfGdZw2TYo6/ZhX3oTw6d2
+        5ej7rv9cTFM2ZrDZeedwplAV4tBQHRn1tUwH/+LKBquemnDvVhouK/LGCfQ==
+X-Received: by 2002:a2e:88cc:: with SMTP id a12mr1836049ljk.402.1614852261297;
+        Thu, 04 Mar 2021 02:04:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJgfxRSqWNtEd/UIukeBG9yHv0tOB/7Oe2lBuCbbPpt6R/MMqcocY1/4GzTVByQ103C6iKqJh8upDmQ9IF2vg=
+X-Received: by 2002:a2e:88cc:: with SMTP id a12mr1836033ljk.402.1614852261095;
+ Thu, 04 Mar 2021 02:04:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20210304043419.287191-1-kai.heng.feng@canonical.com> <1ece75aa13b1ab161473dd153598256e58289dec.camel@infinera.com>
+In-Reply-To: <1ece75aa13b1ab161473dd153598256e58289dec.camel@infinera.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 4 Mar 2021 18:04:09 +0800
+Message-ID: <CAAd53p5n1xqzgmAj9A3oag88m3BSeK+NTP-u-VrJnP2uSh0tRA@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()
+To:     Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc:     "tiwai@suse.com" <tiwai@suse.com>,
+        "crwulff@gmail.com" <crwulff@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "dylan_robinson@motu.com" <dylan_robinson@motu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dmitry@d-systems.ee" <dmitry@d-systems.ee>,
+        "livvy@base.nu" <livvy@base.nu>,
+        "joe@perches.com" <joe@perches.com>,
+        "alexander@tsoy.me" <alexander@tsoy.me>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sysctl_compact_memory is mostly unused in mm/compaction.c
-It just acts as a place holder for sysctl to store .data.
+Hi Joakim,
 
-But the .data itself is not needed here.
-So we can get ride of this variable completely and make .data as NULL.
-This will also eliminate the extern declaration from header file.
-No functionality is broken or changed this way.
+On Thu, Mar 4, 2021 at 5:50 PM Joakim Tjernlund
+<Joakim.Tjernlund@infinera.com> wrote:
+>
+> On Thu, 2021-03-04 at 12:34 +0800, Kai-Heng Feng wrote:
+> > Rear audio on Lenovo ThinkStation P620 stops working after commit
+> > 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo
+> > ThinkStation P620"):
+> > [    6.013526] usbcore: registered new interface driver snd-usb-audio
+> > [    6.023064] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> > [    6.023083] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> > [    6.023090] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> > [    6.023098] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> > [    6.023103] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> > [    6.023110] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> > [    6.045846] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> > [    6.045866] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> > [    6.045877] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> > [    6.045886] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> > [    6.045894] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
+> > [    6.045908] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> >
+> > I overlooked the issue because when I was working on the said commit,
+> > only the front audio is tested. Apology for that.
+> >
+> > Changing supports_autosuspend in driver is too late for disabling
+> > autosuspend, because it was already used by USB probe routine, so it can
+> > break the balance on the following code that depends on
+> > supports_autosuspend.
+> >
+> > Fix it by using usb_disable_autosuspend() helper, and balance the
+> > suspend count in disconnect callback.
+> >
+> > Fixes: 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo ThinkStation P620")
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
+> I got an report from a co-worker who has no USB sound from a Lenovo ThinkPad in a Ultra Dock.
+> USB HS is connected to Dock USB jack.
+> Could this be the same problem?
 
-Signed-off-by: Pintu Kumar <pintu@codeaurora.org>
-Signed-off-by: Pintu Agarwal <pintu.ping@gmail.com>
----
-v2: completely get rid of this variable and set .data to NULL
-    Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+It's a different issue. Please file a separate bug report.
 
- include/linux/compaction.h | 1 -
- kernel/sysctl.c            | 2 +-
- mm/compaction.c            | 3 ---
- 3 files changed, 1 insertion(+), 5 deletions(-)
+Kai-Heng
 
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index ed4070e..4221888 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -81,7 +81,6 @@ static inline unsigned long compact_gap(unsigned int order)
- }
- 
- #ifdef CONFIG_COMPACTION
--extern int sysctl_compact_memory;
- extern unsigned int sysctl_compaction_proactiveness;
- extern int sysctl_compaction_handler(struct ctl_table *table, int write,
- 			void *buffer, size_t *length, loff_t *ppos);
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index c9fbdd8..07ef240 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2856,7 +2856,7 @@ static struct ctl_table vm_table[] = {
- #ifdef CONFIG_COMPACTION
- 	{
- 		.procname	= "compact_memory",
--		.data		= &sysctl_compact_memory,
-+		.data		= NULL,
- 		.maxlen		= sizeof(int),
- 		.mode		= 0200,
- 		.proc_handler	= sysctl_compaction_handler,
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 190ccda..ede2886 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2650,9 +2650,6 @@ static void compact_nodes(void)
- 		compact_node(nid);
- }
- 
--/* The written value is actually unused, all memory is compacted */
--int sysctl_compact_memory;
--
- /*
-  * Tunable for proactive compaction. It determines how
-  * aggressively the kernel should compact memory in the
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+>
+>  Jocke
