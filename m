@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AFD32D29D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C7D32D2A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240342AbhCDMIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:08:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232094AbhCDMIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:08:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A151E64F21;
-        Thu,  4 Mar 2021 12:07:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614859674;
-        bh=gjxv/xP6fgrZipSRb/XpuixmfFS/0RYDIbRg11vSQzM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oZX912+jy4D8W11NOugu8EnzChBAO4qOlyDy+bpNy0qVVTWanQ9bE8P79S0jLQPqA
-         KQ3mUpiOC+dn+bglWUzCgSw2zxyFzyHA3Jk408puozn7SEBqCw69mueVvGyzHOxPFK
-         yTSlm/gc/V/It3/DCS4eSHmstDYMWtveB7Ytx5PFKkrIDxW10ogKEK8OwiFI0Uguo1
-         wWrleO1tHrcyrd+ZghBOH0EkXnYqMEWWmoSP+7I79AMRfN7ZJR+jkrX5yHoGcsLZrI
-         zONmhgXDlSuwSUV6moxeuVR14hThPQhz8Q/NoqHPITgQB7ZOKOW2a8/xVtmwA6evVr
-         ID/7m9dZSux6Q==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 0/4] Clean the mlx5 MR deregistration logic
-Date:   Thu,  4 Mar 2021 14:07:41 +0200
-Message-Id: <20210304120745.1090751-1-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S240349AbhCDMJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:09:22 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48058 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240369AbhCDMJQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 07:09:16 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 39FCF1C0B8A; Thu,  4 Mar 2021 13:08:34 +0100 (CET)
+Date:   Thu, 4 Mar 2021 13:08:33 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     qiuxiaojin <qxj511mail@gmail.com>
+Cc:     dmurphy@ti.com, qiuxiaojin@cvte.com, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH] leds: add touch screen LED triggers
+Message-ID: <20210304120833.GA21533@duo.ucw.cz>
+References: <20210304120449.10441-1-qiuxiaojin@cvte.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Content-Disposition: inline
+In-Reply-To: <20210304120449.10441-1-qiuxiaojin@cvte.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
 
-Hi,
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The following patchset is a cleanup of mlx5_ib_mr dereg logic.
+On Thu 2021-03-04 20:04:49, qiuxiaojin wrote:
+> Some LED devices support touch screen.
+> This patch enables direct LED trigger controls by the driver.
+> touch screen or pressure can be done simply by other driver space.
+> Two trigger APIs are added, ledtrig_touch_panel_ctrl()
+> and ledtrig_touch_pressure_ctrl().
 
-Thanks
+Why?
 
-Jason Gunthorpe (4):
-  RDMA/mlx5: Zero out ODP related items in the mlx5_ib_mr
-  RDMA/mlx5: Use a union inside mlx5_ib_mr
-  RDMA/mlx5: Consolidate MR destruction to mlx5_ib_dereg_mr()
-  RDMA/mlx5: Rename mlx5_mr_cache_invalidate() to revoke_mr()
+> Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
 
- drivers/infiniband/core/umem_dmabuf.c |   4 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h  | 106 +++++++++--------
- drivers/infiniband/hw/mlx5/mr.c       | 157 ++++++++++++--------------
- drivers/infiniband/hw/mlx5/odp.c      | 152 ++++---------------------
- 4 files changed, 160 insertions(+), 259 deletions(-)
+Need real name and matching from: and signed-off.
 
---
-2.29.2
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEDNwQAKCRAw5/Bqldv6
+8n1SAJwPWRhbl4PXRt1PDqC298S+XkcWZwCglsC+Asqf1nPmvk4GnZgL8FeDXRk=
+=txmO
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
