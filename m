@@ -2,93 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB7E32CBA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E0032CBB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbhCDEvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:51:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbhCDEub (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:50:31 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E110C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 20:49:51 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id b21so18094654pgk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 20:49:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z9XcVy6AJTokIzTljF0EFRLCvXqasp1w3tskzqtsRk4=;
-        b=LJzlu1eACs+yu7D22SxzqAvbQTTf4LAtrRt/ALmphbrNE41CSxb/XjQevN0zaJ0KTl
-         NAcSuPj5r2p/jrgVJiGZsAGkjm6KzzCu11Do9yXIiJc5fB/vQDTQGIMHTgBy4MWb3n7U
-         m5+350HJtNS0VhfaMtfdotbbHebO0ufp8TojtSfe5MkegdsD/GW6pPMtvKBEC0GFZvJl
-         EMqmKMb6FPIMrJ57B+Uq3jqPDCWtYL//V/yyZqXl95SqnkIZo451kB2KoS/ij45QU6QW
-         iCcJk70vXHAH96B4hRlzq6DHYF15szNy+8y5I3y2EuZxSPzA0r3eDcsxc65T9NH5n4Tb
-         Gqrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z9XcVy6AJTokIzTljF0EFRLCvXqasp1w3tskzqtsRk4=;
-        b=NKV+oSONwvGLDnH2RZFdgXAXMIYAYVVTmFOHxuYQ5qucCrnJp/mNMCcWcMcbK/RbUd
-         UgXffrOFRvycPIf0AvCpyxclEn+JAWWjQF9EBo0aFXToYXYg4qqW1lCQvnl/K1wzm6OQ
-         7v78FJuk0v/EbTSuJf3P+JKEgyGdx1oDmFygjyzUqeZ4IzLpnWeJ65UAOdEbjArtai0i
-         DDq0KMj9e5wyxHfKO0db2HXpsFXwjOhL596Nkt4hLBBMIIPrz6RAjrb4r7n6Miw7koqH
-         +Pom8VyInuuaOD4VASjehfmRs8kBJy/7mtNj3YFA5Vt4GHdkn9uHtZkluB0XsK3Nygha
-         raQA==
-X-Gm-Message-State: AOAM532zHxYU87xUhfYKAhb51X7ETjjRw2plgKp9dxFfiqO/4qyQLZ0T
-        CcRr3hxH/HLQCJds+pnVE+o=
-X-Google-Smtp-Source: ABdhPJzzlPflua+YuDG5NPzQvi4HwYJUunChRht3+FWKm6EVAa8quJ9p90kR3WPEmIw0jqWWIInq2Q==
-X-Received: by 2002:a63:1648:: with SMTP id 8mr2177585pgw.392.1614833391144;
-        Wed, 03 Mar 2021 20:49:51 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id a2sm25736950pfi.64.2021.03.03.20.49.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 20:49:50 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     npiggin@gmail.com
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        christophe.leroy@csgroup.eu, alistair@popple.id.au,
-        jniethe5@gmail.com, gregkh@linuxfoundation.org,
-        peterz@infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: [PATCH] arch:powerpc:kernel: remove duplicate include in traps.c
-Date:   Wed,  3 Mar 2021 20:49:43 -0800
-Message-Id: <20210304044943.190613-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S229642AbhCDFE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 00:04:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhCDFEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 00:04:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8507C64EDF;
+        Thu,  4 Mar 2021 05:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614834247;
+        bh=n/FJ5Ej7z9LFFSAb4luZ8Y9JEPqogDVcunu/yI2101E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FKt9DSodqml3rcOgnWYKBA1KWT3ERXDWCJD3oYpbtLdxbbkDyD/XTcYjrDiKxkEyK
+         VkyfQETjUg+We0BRgjDNnBBfkg9oyuTjbTLMqxJDFchCFFCRAmBHCw7+BCXfYf5HAK
+         gTI2IsuS7CZxg6/8tsukp/cctUbTFgtyDAnaovohJbXRBJeM7t2u1YN9MePT8PyH66
+         KvKdF38WtjdCgHc+L/VA3RJkug2+2H5B+YngtZrK7X1j2hW7N3NwUpVMGBG35ARbVc
+         +P5nX1Uk+kis/8c91MVm/LoMLQy23zdMynsN9gpglpR0VvruR/ahjmDxT6LUGWPGge
+         ZyVk+Ef6CYsEg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5142A352274A; Wed,  3 Mar 2021 21:04:07 -0800 (PST)
+Date:   Wed, 3 Mar 2021 21:04:07 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210304050407.GN2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+ <20210303220348.GL2696@paulmck-ThinkPad-P72>
+ <20210304032101.GB1594980@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304032101.GB1594980@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Wed, Mar 03, 2021 at 10:21:01PM -0500, Alan Stern wrote:
+> On Wed, Mar 03, 2021 at 02:03:48PM -0800, Paul E. McKenney wrote:
+> > On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
+> > > On Wed, Mar 03, 2021 at 09:40:22AM -0800, Paul E. McKenney wrote:
+> > > > On Wed, Mar 03, 2021 at 12:12:21PM -0500, Alan Stern wrote:
+> > > 
+> > > > > Local variables absolutely should be treated just like CPU registers, if 
+> > > > > possible.  In fact, the compiler has the option of keeping local 
+> > > > > variables stored in registers.
+> > > > > 
+> > > > > (Of course, things may get complicated if anyone writes a litmus test 
+> > > > > that uses a pointer to a local variable,  Especially if the pointer 
+> > > > > could hold the address of a local variable in one execution and a 
+> > > > > shared variable in another!  Or if the pointer is itself a shared 
+> > > > > variable and is dereferenced in another thread!)
+> > > > 
+> > > > Good point!  I did miss this complication.  ;-)
+> > > 
+> > > I suspect it wouldn't be so bad if herd7 disallowed taking addresses of 
+> > > local variables.
+> > > 
+> > > > As you say, when its address is taken, the "local" variable needs to be
+> > > > treated as is it were shared.  There are exceptions where the pointed-to
+> > > > local is still used only by its process.  Are any of these exceptions
+> > > > problematic?
+> > > 
+> > > Easiest just to rule out the whole can of worms.
+> > 
+> > Good point, given that a global can be used instead of a local for
+> > any case where an address must be taken.
+> 
+> Another thing to consider: Almost all marked accesses involve using the 
+> address of the storage location (for example, smp_load_acquire's first 
+> argument must be a pointer).  As far as I can remember at the moment, 
+> the only ones that don't are READ_ONCE and WRITE_ONCE.  So although we 
+> might or might not want to allow READ_ONCE or WRITE_ONCE on a local 
+> variable, we won't have to worry about any of the other kinds of marked 
+> accesses.
 
-'asm/tm.h' included in 'traps.c' is duplicated.
-It is also included in the 62th line.
+Good point!
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- arch/powerpc/kernel/traps.c | 1 -
- 1 file changed, 1 deletion(-)
+> > > > > But even if local variables are treated as non-shared storage locations, 
+> > > > > we should still handle this correctly.  Part of the problem seems to lie 
+> > > > > in the definition of the to-r dependency relation; the relevant portion 
+> > > > > is:
+> > > > > 
+> > > > > 	(dep ; [Marked] ; rfi)
+> > > > > 
+> > > > > Here dep is the control dependency from the READ_ONCE to the 
+> > > > > local-variable store, and the rfi refers to the following load of the 
+> > > > > local variable.  The problem is that the store to the local variable 
+> > > > > doesn't go in the Marked class, because it is notated as a plain C 
+> > > > > assignment.  (And likewise for the following load.)
+> > > > > 
+> > > > > Should we change the model to make loads from and stores to local 
+> > > > > variables always count as Marked?
+> > > > 
+> > > > As long as the initial (possibly unmarked) load would be properly
+> > > > complained about.
+> > > 
+> > > Sorry, I don't understand what you mean.
+> > 
+> > I was thinking in terms of something like this in one of the processes:
+> > 
+> > 	p = gp; // Unmarked!
+> > 	r1 = p;
+> > 	q = r1; // Implicitly marked now?
+> > 	if (q)
+> > 		WRITE_ONCE(x, 1); // ctrl dep from gp???
+> 
+> I hope we won't have to worry about this!  :-)  Treating local variable 
+> accesses as if they are always marked looks wrong.
 
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index 1583fd1c6010..dcdb93588828 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -53,7 +53,6 @@
- #ifdef CONFIG_PPC64
- #include <asm/firmware.h>
- #include <asm/processor.h>
--#include <asm/tm.h>
- #endif
- #include <asm/kexec.h>
- #include <asm/ppc-opcode.h>
--- 
-2.25.1
+Good, that is where I was also heading.  ;-)
 
+> > > >  And I cannot immediately think of a situation where
+> > > > this approach would break that would not result in a data race being
+> > > > flagged.  Or is this yet another failure of my imagination?
+> > > 
+> > > By definition, an access to a local variable cannot participate in a 
+> > > data race because all such accesses are confined to a single thread.
+> > 
+> > True, but its value might have come from a load from a shared variable.
+> 
+> Then that load could have participated in a data race.  But the store to 
+> the local variable cannot.
+
+Agreed.  My thought was that if the ordering from the initial (non-local)
+load mattered, then that initial load must have participated in a
+data race.  Is that true, or am I failing to perceive some corner case?
+
+> > > However, there are other aspects to consider, in particular, the 
+> > > ordering relations on local-variable accesses.  But if, as Luc says, 
+> > > local variables are treated just like registers then perhaps the issue 
+> > > doesn't arise.
+> > 
+> > Here is hoping!
+> > 
+> > > > > What should have happened if the local variable were instead a shared 
+> > > > > variable which the other thread didn't access at all?  It seems like a 
+> > > > > weak point of the memory model that it treats these two things 
+> > > > > differently.
+> > > > 
+> > > > But is this really any different than the situation where a global
+> > > > variable is only accessed by a single thread?
+> > > 
+> > > Indeed; it is the _same_ situation.  Which leads to some interesting 
+> > > questions, such as: What does READ_ONCE(r) mean when r is a local 
+> > > variable?  Should it be allowed at all?  In what way is it different 
+> > > from a plain read of r?
+> > > 
+> > > One difference is that the LKMM doesn't allow dependencies to originate 
+> > > from a plain load.  Of course, when you're dealing with a local 
+> > > variable, what matters is not the load from that variable but rather the 
+> > > earlier loads which determined the value that had been stored there.  
+> > > Which brings us back to the case of the
+> > > 
+> > > 	dep ; rfi
+> > > 
+> > > dependency relation, where the accesses in the middle are plain and 
+> > > non-racy.  Should the LKMM be changed to allow this?
+> > 
+> > It would be nice, give or take the potential side effects.  ;-)
+> > As in it would be nice, but might not be worthwhile.
+> 
+> Treating local variables like registers will automatically bring this 
+> behavior.  So I think we'll be good.
+
+Sounds good.
+
+> > > There are other differences to consider.  For example:
+> > > 
+> > > 	r = READ_ONCE(x);
+> > > 	smp_wmb();
+> > > 	WRITE_ONCE(y, 1);
+> > > 
+> > > If the write to r were treated as a marked store, the smp_wmb would 
+> > > order it (and consequently the READ_ONCE) before the WRITE_ONCE.  
+> > > However we don't want to do this when r is a local variable.  Indeed, a 
+> > > plain store wouldn't be ordered this way because the compiler might 
+> > > optimize the store away entirely, leaving the smp_wmb nothing to act on.
+> > 
+> > Agreed, having smp_wmb() order things due to a write to a local variable
+> > would not be what we want.
+> > 
+> > > So overall the situation is rather puzzling.  Treating local variables 
+> > > as registers is probably the best answer.
+> > 
+> > That is sounding quite appealing at the moment.
+> 
+> Agreed.
+
+							Thanx, Paul
