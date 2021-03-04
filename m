@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDD832C922
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF9732C921
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356630AbhCDBE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:04:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59522 "EHLO mail.kernel.org"
+        id S1356586AbhCDBE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:04:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346602AbhCDAd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1355337AbhCDAd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:33:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8DDB64E51;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D561D64EE4;
         Thu,  4 Mar 2021 00:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614817966;
-        bh=lP+g7j87U/ghOyT47Wf3gQv0BrQsVDF8bR8GwOA50eY=;
+        bh=kTKBnDf6S5oQSLVubizC3D3zva8T+YonBRP+hWWdGXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m/3kz6lBYbh6KyRzqF+Sg4CFVAwnZLc0el6tk36jTEKZ4UekIFi6++tgUXjdGH1uR
-         +5WdP2GWmrq35gZovhw67xcHHxXr45g7S4+r0r/H35Rsndwbr0x930ag7VZ19qeMWe
-         Ie3c7dloOmf6zc+dwyXvlDkaxqn4nN6aS0iD8eZx+G4qJeElWz/Xjv6g+zyJFaaTEu
-         m/gOoUQXNQZQ9PSZ8XcOMVKY2n37rTXfg8q20fI4v//RtNXYhGfap72jWk1CmkspXm
-         iR8mzbvTNyhHMRZmGIH7ecJX4irdww0GjtYCQkkpDXUjshRSTTKMo/TFnw/2ROQZM1
-         dnpXCYR7H/XfA==
+        b=WgrxnXhgchztLRPFUzBr0yyTNHw3Xs+Q8Vi7IQKinIyRbCtyB4oIFPcAQ1Tt3tIXE
+         JMKt1OytcF5xZQjgbIwwSulLaw37chNb1zR2ClbjBRqYJcdkBaGHV+uo4m4EcNAtoG
+         SM5zbgFfTFyeq+TM3zsNiTWzaTUrWjuk3hZtiy8OXujwwJymJNXuMbFSqotr1LY4p/
+         mhQYiB4vngDFSKFeuWa+pn7vvOfNGRNGz/4Ubgzk6t71sqvDT+noMeoDTXsMCsi1dq
+         A1rDtqlwOUucaIQPL+c8UCuEoPigoZz3OqOudf60a1iTwCFhqTqJNz1S787XiUIF1l
+         Lx4/ye310oAvQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,11 +31,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 1/2] rcu-tasks: Rectify kernel-doc for struct rcu_tasks
-Date:   Wed,  3 Mar 2021 16:32:44 -0800
-Message-Id: <20210304003245.24327-1-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 2/2] rcu-tasks: Add block comment laying out RCU Tasks Trace design
+Date:   Wed,  3 Mar 2021 16:32:45 -0800
+Message-Id: <20210304003245.24327-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003226.GA24261@paulmck-ThinkPad-P72>
 References: <20210304003226.GA24261@paulmck-ThinkPad-P72>
@@ -43,42 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The command 'find ./kernel/rcu/ | xargs ./scripts/kernel-doc -none'
-reported an issue with the kernel-doc of struct rcu_tasks.
+This commit adds a block comment that gives a high-level overview of
+how RCU tasks trace grace periods progress.  It also adds a note about
+how exiting tasks are handled, plus it gives an overview of the memory
+ordering.
 
-This commit rectifies the kernel-doc, such that no issues remain for
-./kernel/rcu/.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Reported-by: Peter Zijlstra <peterz@infradead.org>
+Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+[ paulmck: Fix commit log per Mathieu Desnoyers feedback. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index af7c194..17c8ebe 100644
+index 17c8ebe..f818357 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -20,7 +20,7 @@ typedef void (*holdouts_func_t)(struct list_head *hop, bool ndrpt, bool *frptp);
- typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+@@ -726,6 +726,42 @@ EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
+ // flavors, rcu_preempt and rcu_sched.  The fact that RCU Tasks Trace
+ // readers can operate from idle, offline, and exception entry/exit in no
+ // way allows rcu_preempt and rcu_sched readers to also do so.
++//
++// The implementation uses rcu_tasks_wait_gp(), which relies on function
++// pointers in the rcu_tasks structure.  The rcu_spawn_tasks_trace_kthread()
++// function sets these function pointers up so that rcu_tasks_wait_gp()
++// invokes these functions in this order:
++//
++// rcu_tasks_trace_pregp_step():
++//	Initialize the count of readers and block CPU-hotplug operations.
++// rcu_tasks_trace_pertask(), invoked on every non-idle task:
++//	Initialize per-task state and attempt to identify an immediate
++//	quiescent state for that task, or, failing that, attempt to set
++//	that task's .need_qs flag so that that task's next outermost
++//	rcu_read_unlock_trace() will report the quiescent state (in which
++//	case the count of readers is incremented).  If both attempts fail,
++//	the task is added to a "holdout" list.
++// rcu_tasks_trace_postscan():
++//	Initialize state and attempt to identify an immediate quiescent
++//	state as above (but only for idle tasks), unblock CPU-hotplug
++//	operations, and wait for an RCU grace period to avoid races with
++//	tasks that are in the process of exiting.
++// check_all_holdout_tasks_trace(), repeatedly until holdout list is empty:
++//	Scans the holdout list, attempting to identify a quiescent state
++//	for each task on the list.  If there is a quiescent state, the
++//	corresponding task is removed from the holdout list.
++// rcu_tasks_trace_postgp():
++//	Wait for the count of readers do drop to zero, reporting any stalls.
++//	Also execute full memory barriers to maintain ordering with code
++//	executing after the grace period.
++//
++// The exit_tasks_rcu_finish_trace() synchronizes with exiting tasks.
++//
++// Pre-grace-period update-side code is ordered before the grace
++// period via the ->cbs_lock and barriers in rcu_tasks_kthread().
++// Pre-grace-period read-side code is ordered before the grace period by
++// atomic_dec_and_test() of the count of readers (for IPIed readers) and by
++// scheduler context-switch ordering (for locked-down non-running readers).
  
- /**
-- * Definition for a Tasks-RCU-like mechanism.
-+ * struct rcu_tasks - Definition for a Tasks-RCU-like mechanism.
-  * @cbs_head: Head of callback list.
-  * @cbs_tail: Tail pointer for callback list.
-  * @cbs_wq: Wait queue allowning new callback to get kthread's attention.
-@@ -38,7 +38,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @pregp_func: This flavor's pre-grace-period function (optional).
-  * @pertask_func: This flavor's per-task scan function (optional).
-  * @postscan_func: This flavor's post-task scan function (optional).
-- * @holdout_func: This flavor's holdout-list scan function (optional).
-+ * @holdouts_func: This flavor's holdout-list scan function (optional).
-  * @postgp_func: This flavor's post-grace-period function (optional).
-  * @call_func: This flavor's call_rcu()-equivalent function.
-  * @name: This flavor's textual name.
+ // The lockdep state must be outside of #ifdef to be useful.
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
 -- 
 2.9.5
 
