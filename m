@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C3932CE88
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FA732CE8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbhCDIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        id S233221AbhCDIca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:32:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234605AbhCDIbl (ORCPT
+        with ESMTP id S234849AbhCDIcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:31:41 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131D2C061574;
-        Thu,  4 Mar 2021 00:31:01 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id d9so27648506ybq.1;
-        Thu, 04 Mar 2021 00:31:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TBUtXor9JHig51XwOk2hKqYVPwMBdbUM5CT6K0S4ndc=;
-        b=Podv25yUm88aY+8mEUWBOnr7ph6i86M9YgHhCbaqEq1+ciSnQ4CGjjNmHjNc2RzeTr
-         aaQS6ot9VEQZ/i6l7rnzI6+Mtu3I0p9XyLD6Q6yA0mZLQ+quxvFQ5ScOyVXW3FMHmZiC
-         drSHvhQraY61uCEBdDRm/72oRpjmqT1+MhWT5i2Zxgf2P4okcqdk7Pj+JTGw6ALqqVYP
-         L9395H+E6IRqthsuZM8dmObEB3z3PzHnFDMeae5IHm50h3QfloLbDqjCNeIqZ7c7nMcN
-         2IS6BZuB0IPOAWXYLlVCUQL92jtKYdioEWJdYzG0xvcdRQ9nfysMd9+AS7lsmUfkPvu7
-         u8FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TBUtXor9JHig51XwOk2hKqYVPwMBdbUM5CT6K0S4ndc=;
-        b=N2yySH4DMegZu8X+GfBE+Mz6ZR2xQzQl7Bx/liiuQAsVAI9rTOF1MBCg8qfdL9i5vA
-         9SjKd6LbofjusPU4jTeXEK7AZ6cbnXnJB4RXxgH+x42ToF7GwgXLlB/vwoGk+waZ3Ah0
-         kV+mzzjcPHANo3Uwrx1u1QKQCtbYJujxMMy7gbRbpkvQU/YOrd1YxUljLBCTfG2BAwLx
-         YMkBMbHp66Ndrp1OqHvfModmR+9ponYaKcQ5VfRYFotjuyqV9gDIsYtPdnnAZTZrqQzI
-         GsaO5PIooX7zXseDy5B0GZZzDWkXaamBCiJtLkE64jgNSmo7Cx+zFVg1wtOauXNWZoq2
-         n0bg==
-X-Gm-Message-State: AOAM533aciS9nSw/6IpQi4/Y6HIfc/9fMHg0HKCUbMPCqydNu7stvpbg
-        oUyGhFs9GZi2CByHT6SlHZNBX/7DYGxBMiCPwG4=
-X-Google-Smtp-Source: ABdhPJwueHAY695LaUUFe5cSJfYyxtyB+83dn4Q/EVZ6w477nyX3CpA7IBDWq8xAbPTmbwv9XmtGCbOEOKV5EiUYbiI=
-X-Received: by 2002:a25:d4d0:: with SMTP id m199mr5066850ybf.26.1614846660505;
- Thu, 04 Mar 2021 00:31:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20210301160102.2884774-1-almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20210301160102.2884774-1-almaz.alexandrovich@paragon-software.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 4 Mar 2021 09:30:49 +0100
-Message-ID: <CANiq72nRpxe5M5rsBdWe_2tEpGju7Oe0bBhOdwMBa6MHkHi_Qg@mail.gmail.com>
-Subject: Re: [PATCH v22 00/10] NTFS read-write driver GPL implementation by
- Paragon Software
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>, pali@kernel.org,
-        dsterba@suse.cz, aaptel@suse.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joe Perches <joe@perches.com>, mark@harmstone.com,
-        nborisov@suse.com, linux-ntfs-dev@lists.sourceforge.net,
-        anton@tuxera.com, Dan <dan.carpenter@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, ebiggers@kernel.org,
-        andy.lavr@gmail.com
+        Thu, 4 Mar 2021 03:32:11 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4EBC06175F;
+        Thu,  4 Mar 2021 00:31:31 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lHjO1-00BY6u-PZ; Thu, 04 Mar 2021 09:31:09 +0100
+Message-ID: <fcf796892ce3e1b469a1f29ba1763a1652d72044.camel@sipsolutions.net>
+Subject: Re: BUG: soft lockup in ieee80211_tasklet_handler
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+27df43cf7ae73de7d8ee@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Date:   Thu, 04 Mar 2021 09:30:52 +0100
+In-Reply-To: <CACT4Y+ahrV-L8vV8Jm8XP=KwjWivFj445GULY1fbRN9t7buMGw@mail.gmail.com> (sfid-20210302_200147_707197_23EAE1A3)
+References: <00000000000039404305bc049fa5@google.com>
+         <20210224023026.3001-1-hdanton@sina.com>
+         <0a0573f07a7e1468f83d52afcf8f5ba356725740.camel@sipsolutions.net>
+         <CACT4Y+ahrV-L8vV8Jm8XP=KwjWivFj445GULY1fbRN9t7buMGw@mail.gmail.com>
+         (sfid-20210302_200147_707197_23EAE1A3)
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 1:09 AM Konstantin Komarov
-<almaz.alexandrovich@paragon-software.com> wrote:
->
-> - use clang-format 11.0 instead of 10.0 to format code
+On Tue, 2021-03-02 at 20:01 +0100, Dmitry Vyukov wrote:
+> 
+> Looking at the reproducer that mostly contains just perf_event_open,
+> It may be the old known issue of perf_event_open with some extreme
+> parameters bringing down kernel.
+> +perf maintainers
+> And as far as I remember +Peter had some patch to restrict
+> perf_event_open parameters.
+> 
+> r0 = perf_event_open(&(0x7f000001d000)={0x1, 0x70, 0x0, 0x0, 0x0, 0x0,
+> 0x0, 0x3ff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+> 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+> 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xfffffffe, 0x0, @perf_config_ext}, 0x0,
+> 0x0, 0xffffffffffffffff, 0x0)
 
-Out of curiosity: was this due to some specific reason? i.e. have you
-found it provides better output? (it is useful to know this to justify
-later an increase of the minimum version etc.)
+Oh! Thanks for looking.
 
-Thanks!
+Seems that also applies to
 
-Cheers,
-Miguel
+https://syzkaller.appspot.com/bug?extid=d6219cf21f26bdfcc22e
+
+FWIW. I was still tracking that one, but never had a chance to look at
+it (also way down the list since it was reported as directly in hwsim)
+
+johannes
+
