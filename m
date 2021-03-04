@@ -2,119 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274DD32D969
+	by mail.lfdr.de (Postfix) with ESMTP id 724E832D96A
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhCDSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234201AbhCDSYr (ORCPT
+        id S234502AbhCDSZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:25:18 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:33452 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234367AbhCDSYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:24:47 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE906C061574;
-        Thu,  4 Mar 2021 10:24:06 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id j2so15879787wrx.9;
-        Thu, 04 Mar 2021 10:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zOtCkSuP3/sSeDKbXtcuyFbcQjnAEtPQvMYWbEo0RWc=;
-        b=YfKywlVxA2OwkHFlyyqrfje5azAqfgnYnUxA9d2jP0QvhjMAlxLR3r6C/Elzp9q92h
-         qyNvO+EX+nMI++2Pa08tB3EF/iDL28VoGHPvvuo83KL7wz5rIqdO4IYtJ/E2EM8HjKns
-         RTj1wCLR3uGl9uaqG3daUJn2+peqIV5Gsj4O4DYbgjLbrNCM7vrdoRaYmAhEOi1gJ0Ul
-         OIkZ50/qDGctum/YlbqL4IeRhcdDcXO+Ll0CO1+kK09Rh7em/N+JV2ZBNcbz0Sa4hHfQ
-         Pasn8ntj+5g6E+Ahcl84DTVVDaAxmkqSZX5p/SxvajryIPc639gS0VB5UWev/7NlpPao
-         Zx3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zOtCkSuP3/sSeDKbXtcuyFbcQjnAEtPQvMYWbEo0RWc=;
-        b=BueaABldXxSdpMgmg4C8ssYiArOin/qNCbEIwAdduBGxI92PaNKOJVV2PxNAjzabwT
-         NEWfpmBG9EVdWb2wB1x64TN6StxVGfBcbuwjYL2LgIdID/LPvgSEEw0CBzPCtYmmBV6+
-         kEFCS/l4DOWwLQ8ImuM6hnGQyVkJes0HThE7aJLVrApa54H7EReBtMF/2TSrOhC1Pz6T
-         DTydRewHDlKW0dphHl37kxyCyLmjEf4cLCBTLY4vqh71p/4QNWhjWIWaBImIwdBvUk4N
-         rih3M3It45uaIi56niyCOtKBDI7ak1x7tyVj0kFigjhxFugDa4doOFI8o1SCf1lj67S5
-         6zQw==
-X-Gm-Message-State: AOAM531llen+U9r2ZvBcXaMeOz/X+a9vXYauK3tGvRIRVMzmbr5MOCPt
-        FBGvUYZeLMyVgOs4bt4NW3Y=
-X-Google-Smtp-Source: ABdhPJw9IGXfIEwP2LVQ0WhlSyUoO96IZPZPEYenv21JjYYT4AGCNBo1c0TUm4fQXkse7RWu/AHxvQ==
-X-Received: by 2002:adf:a1ce:: with SMTP id v14mr5534243wrv.228.1614882244603;
-        Thu, 04 Mar 2021 10:24:04 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id w18sm143376wrr.7.2021.03.04.10.24.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 10:24:04 -0800 (PST)
-Subject: Re: [RFC v4] copy_file_range.2: Update cross-filesystem support for
- 5.12
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-man@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Luis Henriques <lhenriques@suse.de>,
-        Steve French <sfrench@samba.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Walter Harms <wharms@bfs.de>
-References: <20210224142307.7284-1-lhenriques@suse.de>
- <20210304093806.10589-1-alx.manpages@gmail.com>
- <20210304171350.GC7267@magnolia>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <37df00f9-a88e-3f16-d0b4-3297248aee66@gmail.com>
-Date:   Thu, 4 Mar 2021 19:24:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thu, 4 Mar 2021 13:24:51 -0500
+Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
+        by linux.microsoft.com (Postfix) with ESMTPSA id DD34120B83EA;
+        Thu,  4 Mar 2021 10:24:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DD34120B83EA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614882251;
+        bh=ynKto1RG0dL+YYFYClojs4qYol2ZvGeOMIWzdVDe7yE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=MdQDDbTKTdzR/UdFeJLZAVvg5Lc1FDo304Wkdg0OZkGeTb8giRhWaro95Rf6QOdfA
+         tnO2at0WFncfbRtFfBOiHQ7IRDJpsaDnmmCEp23b5cIzw5pFKV0E8UlGNJ7Z5kThBy
+         MuefZeYMhm+arjUnGA2PYlmIyFzsKe+XVIV3aWhM=
+Subject: Re: [RFC PATCH 01/18] x86/hyperv: convert hyperv statuses to linux
+ error codes
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-hyperv@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-2-git-send-email-nunodasneves@linux.microsoft.com>
+ <871rdpo0is.fsf@vitty.brq.redhat.com>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Message-ID: <6bc7d41d-2dfc-39ae-6508-b85a78e8e7fa@linux.microsoft.com>
+Date:   Thu, 4 Mar 2021 10:24:10 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210304171350.GC7267@magnolia>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <871rdpo0is.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Darrick,
-
-On 3/4/21 6:13 PM, Darrick J. Wong wrote:
-> On Thu, Mar 04, 2021 at 10:38:07AM +0100, Alejandro Colomar wrote:
->> +However, on some virtual filesystems,
->> +the call failed to copy, while still reporting success.
+On 2/9/2021 5:04 AM, Vitaly Kuznetsov wrote:
+> Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
 > 
-> ...success, or merely a short copy?
-
-Okay.
-
+>> Return linux-friendly error codes from hypercall wrapper functions.
+>> This will be needed in the mshv module.
+>>
+>> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> ---
+>>  arch/x86/hyperv/hv_proc.c         | 30 ++++++++++++++++++++++++++---
+>>  arch/x86/include/asm/mshyperv.h   |  1 +
+>>  include/asm-generic/hyperv-tlfs.h | 32 +++++++++++++++++++++----------
+>>  3 files changed, 50 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/arch/x86/hyperv/hv_proc.c b/arch/x86/hyperv/hv_proc.c
+>> index 0fd972c9129a..8f86f8e86748 100644
+>> --- a/arch/x86/hyperv/hv_proc.c
+>> +++ b/arch/x86/hyperv/hv_proc.c
+>> @@ -18,6 +18,30 @@
+>>  #define HV_DEPOSIT_MAX_ORDER (8)
+>>  #define HV_DEPOSIT_MAX (1 << HV_DEPOSIT_MAX_ORDER)
+>>  
+>> +int hv_status_to_errno(int hv_status)
+>> +{
+>> +	switch (hv_status) {
+>> +	case HV_STATUS_SUCCESS:
+>> +		return 0;
+>> +	case HV_STATUS_INVALID_PARAMETER:
+>> +	case HV_STATUS_UNKNOWN_PROPERTY:
+>> +	case HV_STATUS_PROPERTY_VALUE_OUT_OF_RANGE:
+>> +	case HV_STATUS_INVALID_VP_INDEX:
+>> +	case HV_STATUS_INVALID_REGISTER_VALUE:
+>> +	case HV_STATUS_INVALID_LP_INDEX:
+>> +		return EINVAL;
+>> +	case HV_STATUS_ACCESS_DENIED:
+>> +	case HV_STATUS_OPERATION_DENIED:
+>> +		return EACCES;
+>> +	case HV_STATUS_NOT_ACKNOWLEDGED:
+>> +	case HV_STATUS_INVALID_VP_STATE:
+>> +	case HV_STATUS_INVALID_PARTITION_STATE:
+>> +		return EBADFD;
+>> +	}
+>> +	return ENOTRECOVERABLE;
+>> +}
+>> +EXPORT_SYMBOL_GPL(hv_status_to_errno);
+>> +
+>>  /*
+>>   * Deposits exact number of pages
+>>   * Must be called with interrupts enabled
+>> @@ -99,7 +123,7 @@ int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages)
+>>  
+>>  	if (status != HV_STATUS_SUCCESS) {
+>>  		pr_err("Failed to deposit pages: %d\n", status);
+>> -		ret = status;
+>> +		ret = -hv_status_to_errno(status);
 > 
-> (The rest looks reasonable (at least by c_f_r standards) to me.)
+> "-hv_status_to_errno" looks weird, could we just return
+> '-EINVAL'/'-EACCES'/... from hv_status_to_errno() instead?
+> 
 
-I'm curious, what does "c_f_r standards" mean? :)
+Yes, good idea.
 
-Cheers,
-
-Alex
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+>>  		goto err_free_allocations;
+>>  	}
+>>  
+>> @@ -155,7 +179,7 @@ int hv_call_add_logical_proc(int node, u32 lp_index, u32 apic_id)
+>>  			if (status != HV_STATUS_SUCCESS) {
+>>  				pr_err("%s: cpu %u apic ID %u, %d\n", __func__,
+>>  				       lp_index, apic_id, status);
+>> -				ret = status;
+>> +				ret = -hv_status_to_errno(status);
+>>  			}
+>>  			break;
+>>  		}
+>> @@ -203,7 +227,7 @@ int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
+>>  			if (status != HV_STATUS_SUCCESS) {
+>>  				pr_err("%s: vcpu %u, lp %u, %d\n", __func__,
+>>  				       vp_index, flags, status);
+>> -				ret = status;
+>> +				ret = -hv_status_to_errno(status);
+>>  			}
+>>  			break;
+>>  		}
+>> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+>> index cbee72550a12..eb75faa4d4c5 100644
+>> --- a/arch/x86/include/asm/mshyperv.h
+>> +++ b/arch/x86/include/asm/mshyperv.h
+>> @@ -243,6 +243,7 @@ int hyperv_flush_guest_mapping_range(u64 as,
+>>  int hyperv_fill_flush_guest_mapping_list(
+>>  		struct hv_guest_mapping_flush_list *flush,
+>>  		u64 start_gfn, u64 end_gfn);
+>> +int hv_status_to_errno(int hv_status);
+>>  
+>>  extern bool hv_root_partition;
+>>  
+>> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+>> index dd385c6a71b5..445244192fa4 100644
+>> --- a/include/asm-generic/hyperv-tlfs.h
+>> +++ b/include/asm-generic/hyperv-tlfs.h
+>> @@ -181,16 +181,28 @@ enum HV_GENERIC_SET_FORMAT {
+>>  #define HV_HYPERCALL_REP_START_MASK	GENMASK_ULL(59, 48)
+>>  
+>>  /* hypercall status code */
+>> -#define HV_STATUS_SUCCESS			0
+>> -#define HV_STATUS_INVALID_HYPERCALL_CODE	2
+>> -#define HV_STATUS_INVALID_HYPERCALL_INPUT	3
+>> -#define HV_STATUS_INVALID_ALIGNMENT		4
+>> -#define HV_STATUS_INVALID_PARAMETER		5
+>> -#define HV_STATUS_OPERATION_DENIED		8
+>> -#define HV_STATUS_INSUFFICIENT_MEMORY		11
+>> -#define HV_STATUS_INVALID_PORT_ID		17
+>> -#define HV_STATUS_INVALID_CONNECTION_ID		18
+>> -#define HV_STATUS_INSUFFICIENT_BUFFERS		19
+>> +#define HV_STATUS_SUCCESS			0x0
+>> +#define HV_STATUS_INVALID_HYPERCALL_CODE	0x2
+>> +#define HV_STATUS_INVALID_HYPERCALL_INPUT	0x3
+>> +#define HV_STATUS_INVALID_ALIGNMENT		0x4
+>> +#define HV_STATUS_INVALID_PARAMETER		0x5
+>> +#define HV_STATUS_ACCESS_DENIED			0x6
+>> +#define HV_STATUS_INVALID_PARTITION_STATE	0x7
+>> +#define HV_STATUS_OPERATION_DENIED		0x8
+>> +#define HV_STATUS_UNKNOWN_PROPERTY		0x9
+>> +#define HV_STATUS_PROPERTY_VALUE_OUT_OF_RANGE	0xA
+>> +#define HV_STATUS_INSUFFICIENT_MEMORY		0xB
+>> +#define HV_STATUS_INVALID_PARTITION_ID		0xD
+>> +#define HV_STATUS_INVALID_VP_INDEX		0xE
+>> +#define HV_STATUS_NOT_FOUND			0x10
+>> +#define HV_STATUS_INVALID_PORT_ID		0x11
+>> +#define HV_STATUS_INVALID_CONNECTION_ID		0x12
+>> +#define HV_STATUS_INSUFFICIENT_BUFFERS		0x13
+>> +#define HV_STATUS_NOT_ACKNOWLEDGED		0x14
+>> +#define HV_STATUS_INVALID_VP_STATE		0x15
+>> +#define HV_STATUS_NO_RESOURCES			0x1D
+>> +#define HV_STATUS_INVALID_LP_INDEX		0x41
+>> +#define HV_STATUS_INVALID_REGISTER_VALUE	0x50
+>>  
+>>  /*
+>>   * The Hyper-V TimeRefCount register and the TSC
+> 
