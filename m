@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E407E32C969
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD2232C968
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239880AbhCDBDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:03:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48826 "EHLO mail.kernel.org"
+        id S241456AbhCDBDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:03:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448485AbhCDAZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1448484AbhCDAZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:25:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86AC164EE3;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E65B364E67;
         Thu,  4 Mar 2021 00:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614817394;
-        bh=ACmOLMPxBxJ21CKaJHWqFcZB8U+4BbhPAyA/yBe7XrM=;
+        s=k20201202; t=1614817395;
+        bh=TtJbQpgH9nZfTHCrjhHp+Tq+zDCTjyv92rxpD0H+L50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kdwkPSwCFv99Jf1fclwG4SQTeeORV1GkyzEKQ/Cv/G6JCO4NlAQoJZOE7ClYnxniI
-         ClQ9TBLhgrrR52ZQZgLuJ7lb4/r6goBPOHrS5n3ngARP1EU9GFPaBfh9M7yGchRNDN
-         JFtCoRP8jwy+xiIHsOzLX4lsUa1XxOobTwaYY/9+K5qiios1VXJOmBU8cMWU6mwSAx
-         0tuQg8+2TOyOvvXjAf52O3aYEIdwLtbEY6e6wDipHiL7QfDdi/gfuOBMSJV8mSngcw
-         68wougs89eqqhwYD/A8fas/di/tCn3HIRJiVOO6gU9a1gX/B4leg7yd8IKv4XeDwhP
-         XwRjcY4wYzRzA==
+        b=mby3q7MRHkNPqovc3cbVbBT1jQDE12CuxaZF3yp0AlkQmAM2kd5P7v6+FTz3stYda
+         Bhppo0GPjr3UTXMFYRaJWB7PFm4hnQFYrer4OloDcc5uViH9cZdk5LRdQmoImQ9Kv8
+         x4jZfHx0XqkoqZs3BUioz2GvYwssenAypyVkzBlVKNGw6J25iEA1yVoNsF6ChIdwmq
+         zkMTNCwdzTBvGJuTYmhKPjJOiS0BPeNsIhRH+UypSQ9xTtT+0tz33QvcBRPbGveH/l
+         aNKfDytztO9WKQlllAPZCWaBF1hN0vjIFTGBmvqwK5XagAeHPE2oB7UUahXnTrOdNI
+         P9CoimAJlaSuQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,13 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 07/12] rcu/nocb: Rename nocb_gp_update_state to nocb_gp_update_state_deoffloading
-Date:   Wed,  3 Mar 2021 16:23:06 -0800
-Message-Id: <20210304002311.23655-7-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 08/12] rcu: Make nocb_nobypass_lim_per_jiffy static
+Date:   Wed,  3 Mar 2021 16:23:07 -0800
+Message-Id: <20210304002311.23655-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304002225.GA23492@paulmck-ThinkPad-P72>
 References: <20210304002225.GA23492@paulmck-ThinkPad-P72>
@@ -45,66 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-The name nocb_gp_update_state() is unenlightening, so this commit changes
-it to nocb_gp_update_state_deoffloading().  This function now does what
-its name says, updates state and returns true if the CPU corresponding to
-the specified rcu_data structure is in the process of being de-offloaded.
+RCU triggerse the following sparse warning:
 
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+kernel/rcu/tree_plugin.h:1497:5: warning: symbol
+'nocb_nobypass_lim_per_jiffy' was not declared. Should it be static?
+
+This commit therefore makes this variable static.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 6a7f77d..93d3938 100644
+index 93d3938..a1a17ad 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -2016,7 +2016,8 @@ static inline bool nocb_gp_enabled_cb(struct rcu_data *rdp)
- 	return rcu_segcblist_test_flags(&rdp->cblist, flags);
- }
+@@ -1556,7 +1556,7 @@ early_param("rcu_nocb_poll", parse_rcu_nocb_poll);
+  * After all, the main point of bypassing is to avoid lock contention
+  * on ->nocb_lock, which only can happen at high call_rcu() rates.
+  */
+-int nocb_nobypass_lim_per_jiffy = 16 * 1000 / HZ;
++static int nocb_nobypass_lim_per_jiffy = 16 * 1000 / HZ;
+ module_param(nocb_nobypass_lim_per_jiffy, int, 0);
  
--static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_state)
-+static inline bool nocb_gp_update_state_deoffloading(struct rcu_data *rdp,
-+						     bool *needwake_state)
- {
- 	struct rcu_segcblist *cblist = &rdp->cblist;
- 
-@@ -2026,7 +2027,7 @@ static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_sta
- 			if (rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
- 				*needwake_state = true;
- 		}
--		return true;
-+		return false;
- 	}
- 
- 	/*
-@@ -2037,7 +2038,7 @@ static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_sta
- 	rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_GP);
- 	if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
- 		*needwake_state = true;
--	return false;
-+	return true;
- }
- 
- 
-@@ -2075,7 +2076,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
- 			continue;
- 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
- 		rcu_nocb_lock_irqsave(rdp, flags);
--		if (!nocb_gp_update_state(rdp, &needwake_state)) {
-+		if (nocb_gp_update_state_deoffloading(rdp, &needwake_state)) {
- 			rcu_nocb_unlock_irqrestore(rdp, flags);
- 			if (needwake_state)
- 				swake_up_one(&rdp->nocb_state_wq);
+ /*
 -- 
 2.9.5
 
