@@ -2,124 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4687532D487
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF62232D486
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241550AbhCDNtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:49:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24043 "EHLO
+        id S241570AbhCDNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:49:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58862 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241486AbhCDNsn (ORCPT
+        by vger.kernel.org with ESMTP id S241538AbhCDNtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:48:43 -0500
+        Thu, 4 Mar 2021 08:49:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614865637;
+        s=mimecast20190719; t=1614865660;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hNSJeU6DHgk1JDrXPc6wXwBH7UNAGKwi0d2+igWtU6Y=;
-        b=IlCdif604/TTZmoELwdR98IdQN3RUDdD6x5dwiJJSOGHBxMaMEfkAyLaFRTokCVVJJsHkR
-        Kji+jw/u9j5BvNckMlcq4lsiFfQzYVLQg6e4FGdJ3bg9RbG2mebsIC4GzsusHByvxI1Jqr
-        pRp/byz14sXvfz5a3lYcpTsC8hhNc1k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-hcFeYL5qNHGg6spmwsZ5Zw-1; Thu, 04 Mar 2021 08:47:13 -0500
-X-MC-Unique: hcFeYL5qNHGg6spmwsZ5Zw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76E8BEC1A3;
-        Thu,  4 Mar 2021 13:47:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-66.rdu2.redhat.com [10.10.112.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D08AD5C1A1;
-        Thu,  4 Mar 2021 13:47:05 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <2653261.1614813611@warthog.procyon.org.uk>
-References: <2653261.1614813611@warthog.procyon.org.uk>
-To:     linux-cachefs@redhat.com
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: fscache: Redesigning the on-disk cache - LRU handling
+        bh=vckiuo5o0lbsf+iCp4TD+mlnrNoZKeBTtEoYHD3gcKU=;
+        b=iROoJwYGXbQuylKgDZkOvEZYeaGf+zO9eL9e9i6dYvPHyOFdk0SOwExoANu7lPtfgJTcNg
+        RXEtbrCy3EsqTDQ17Bzob+HWImDejXdAFXq94A5lB5wRG4vLs0HRNMUx2wkHyngKqa8vUq
+        gdTmvL2xdD77luvxIqi72vYR13gwUIg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-rCl8BRpOOiWy_rwcwZG4xA-1; Thu, 04 Mar 2021 08:47:38 -0500
+X-MC-Unique: rCl8BRpOOiWy_rwcwZG4xA-1
+Received: by mail-ej1-f69.google.com with SMTP id gv58so5916870ejc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:47:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vckiuo5o0lbsf+iCp4TD+mlnrNoZKeBTtEoYHD3gcKU=;
+        b=ugvLsaSsdrsQJsjx2tgu8XHP1fIg2ZlBk7OFJI4J0kpDYvh0tHxV3V9aHtiZ4Vt0Cg
+         oyJ/cC3a1sA8EQdvqw0DgGpep0Paz+bOlVXxfCUIo0PuleAOO/N0wBSmaagKQNynhKlT
+         MlNjjaQh203T5KzTASUFLV3B+zQLhPYgTIu/pTYGxsqbnXTWJBRKNpge32tG5lJfwtA6
+         vX+a8WDg+t1xIdBYcwXSQfEIQ0Y8AcvEkrAAleax2EXXePFUWEFflvkIycUiDsV26nap
+         7Uxaldo3Y9Uk+XDH0lJASy+FBNC+eB1NO4q+tRhNkpeTj8nnR0SiRYng0IMeQMk/ae6v
+         K0hw==
+X-Gm-Message-State: AOAM531wPsYmVFL55YIlKy7ZblzTUnx6nFYLLokHAPh18M0B37Uadg3n
+        kl+UUPXDlnWiKMTCisl2ATka+/v9kBaqW1PnwzoEAihd5UJLdzku9uuYQ1sHAgIeB8n5tGm6ZNj
+        t3YK8qm31M449buptcvQtgz56
+X-Received: by 2002:aa7:c450:: with SMTP id n16mr4333424edr.16.1614865657198;
+        Thu, 04 Mar 2021 05:47:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx3J+jtz/N74ECvDEpaxRsank0/rYMS/bHniqXvZ9EmFDKyhJ0wsME+zu5fV5pVHJDTZTQ1Gg==
+X-Received: by 2002:aa7:c450:: with SMTP id n16mr4333397edr.16.1614865656987;
+        Thu, 04 Mar 2021 05:47:36 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ld19sm1373084ejb.102.2021.03.04.05.47.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 05:47:36 -0800 (PST)
+Subject: Re: [PATCH 1/4] platform/x86: simatic-ipc: add main driver for
+ Siemens devices
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Henning Schild <henning.schild@siemens.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Pavel Machek <pavel@ucw.cz>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+ <20210302163309.25528-2-henning.schild@siemens.com>
+ <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <2fad304a-9e1e-c83d-7a9e-02b35ed22418@redhat.com>
+Date:   Thu, 4 Mar 2021 14:47:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2973222.1614865624.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 04 Mar 2021 13:47:04 +0000
-Message-ID: <2973223.1614865624@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+Hi,
 
-> =
+On 3/4/21 11:11 AM, Andy Shevchenko wrote:
+> On Thu, Mar 4, 2021 at 8:36 AM Henning Schild
+> <henning.schild@siemens.com> wrote:
+>>
+>> From: Henning Schild <henning.schild@siemens.com>
+>>
+>> This mainly implements detection of these devices and will allow
+>> secondary drivers to work on such machines.
+>>
+>> The identification is DMI-based with a vendor specific way to tell them
+>> apart in a reliable way.
+>>
+>> Drivers for LEDs and Watchdogs will follow to make use of that platform
+>> detection.
+> 
+>> Signed-off-by: Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+>> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> 
+> The order is wrong taking into account the From line in the body. So,
+> it's not clear who is the author, who is a co-developer, and who is
+> the committer (one person may utilize few roles).
+> Check for the rest of the series as well (basically this is the rule
+> of thumb to recheck entire code for the comment you have got at any
+> single place of it).
+> 
+> ...
+> 
+>> +config SIEMENS_SIMATIC_IPC
+>> +       tristate "Siemens Simatic IPC Class driver"
+>> +       depends on PCI
+>> +       help
+>> +         This Simatic IPC class driver is the central of several drivers. It
+>> +         is mainly used for system identification, after which drivers in other
+>> +         classes will take care of driving specifics of those machines.
+>> +         i.e. leds and watchdogs
+> 
+> LEDs
+> watchdog. (missed period and singular form)
+> 
+> Module name?
+> 
+>>  endif # X86_PLATFORM_DEVICES
+> 
+> Not sure about the ordering of the section in Kconfig, but it is up to
+> maintainers.
+> 
+> ...
+> 
+>> +# Siemens Simatic Industrial PCs
+>> +obj-$(CONFIG_SIEMENS_SIMATIC_IPC)      += simatic-ipc.o
+> 
+> Ditto.
+> 
+> ...
+> 
+>> + * Siemens SIMATIC IPC driver for LEDs
+> 
+> It seems to be used in patch 4 which is not LED related. Also, why is
+> it here if it's for LEDs?
+> 
+> ...
+> 
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License version 2 as
+>> + * published by the Free Software Foundation.
+> 
+> Replace with SPDX
+> 
+> ...
+> 
+>> +#include <linux/module.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/platform_device.h>
+> 
+> Ordered?
+> 
+>> +#include <linux/platform_data/x86/simatic-ipc.h>
+> 
+> ...
+> 
+>> +static int register_platform_devices(u32 station_id)
+>> +{
+>> +       int i;
+>> +       u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
+>> +       u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
+> 
+> Reversed xmas tree order?
+> 
+>> +       platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
+>> +               if (device_modes[i].station_id == station_id) {
+>> +                       ledmode = device_modes[i].led_mode;
+>> +                       wdtmode = device_modes[i].wdt_mode;
+>> +                       break;
+>> +               }
+>> +       }
+>> +
+>> +       if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
+>> +               platform_data.devmode = ledmode;
+> 
+>> +               ipc_led_platform_device = platform_device_register_data
+>> +                       (NULL, KBUILD_MODNAME "_leds", PLATFORM_DEVID_NONE,
+>> +                        &platform_data, sizeof(struct simatic_ipc_platform));
+> 
+> Strange indentation (second line).
+> 
+>> +               if (IS_ERR(ipc_led_platform_device))
+>> +                       return PTR_ERR(ipc_led_platform_device);
+> 
+>> +               pr_debug(KBUILD_MODNAME ": device=%s created\n",
+>> +                        ipc_led_platform_device->name);
+> 
+> Utilize pr_fmt() instead of adding prefixes like this.
+> 
+>> +       }
+> 
+>> +       if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
+>> +               platform_data.devmode = wdtmode;
+>> +               ipc_wdt_platform_device = platform_device_register_data
+>> +                       (NULL, KBUILD_MODNAME "_wdt", PLATFORM_DEVID_NONE,
+>> +                        &platform_data, sizeof(struct simatic_ipc_platform));
+>> +               if (IS_ERR(ipc_wdt_platform_device))
+>> +                       return PTR_ERR(ipc_wdt_platform_device);
+>> +
+>> +               pr_debug(KBUILD_MODNAME ": device=%s created\n",
+>> +                        ipc_wdt_platform_device->name);
+>> +       }
+> 
+> Same comments as above.
+> 
+>> +       if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
+>> +           wdtmode == SIMATIC_IPC_DEVICE_NONE) {
+>> +               pr_warn(KBUILD_MODNAME
+>> +                       ": unsupported IPC detected, station id=%08x\n",
+>> +                       station_id);
+> 
+> Ugly indentation. With pr_fmt() in use will be much better.
+> 
+>> +               return -EINVAL;
+> 
+>> +       } else {
+> 
+> Redundant.
+> 
+>> +               return 0;
+>> +       }
+>> +}
+> 
+> ...
+> 
+>> +/*
+>> + * Get membase address from PCI, used in leds and wdt modul. Here we read
+>> + * the bar0. The final address calculation is done in the appropriate modules
+> 
+> bar -> BAR
+> Missed period.
+> 
+>> + */
+> 
+>> +
+> 
+> Unneeded blank line.
+> 
+>> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
+>> +{
+>> +       u32 bar0 = 0;
+> 
+>> +#ifdef CONFIG_PCI
+> 
+> It's ugly besides the fact that you have a dependency.
+> 
+>> +       struct pci_bus *bus;
+> 
+> Missed blank line.
+> 
+>> +       /*
+>> +        * The GPIO memory is bar0 of the hidden P2SB device. Unhide the device
+>> +        * to have a quick look at it, before we hide it again.
+>> +        * Also grab the pci rescan lock so that device does not get discovered
+>> +        * and remapped while it is visible.
+>> +        * This code is inspired by drivers/mfd/lpc_ich.c
+>> +        */
+>> +       bus = pci_find_bus(0, 0);
+>> +       pci_lock_rescan_remove();
+>> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
+>> +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0, &bar0);
+>> +
+>> +       bar0 &= ~0xf;
+>> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
+>> +       pci_unlock_rescan_remove();
+>> +#endif /* CONFIG_PCI */
+>> +       return bar0;
+>> +}
+>> +EXPORT_SYMBOL(simatic_ipc_get_membase0);
+> 
+> Oy vey! I know what this is and let's do it differently. I have some
+> (relatively old) patch series I can send you privately for testing.
 
->  (3) OpenAFS-style format.  One index file to look up {file_key,block#} =
-and an
->      array of data files, each holding one block (e.g. a 256KiB-aligned =
-chunk
->      of a file).  Each index entry has valid start/end offsets for easy
->      truncation.
-> =
+This bit stood out the most to me too, it would be good if we can this fixed
+in some cleaner work. So I'm curious how things will look with Andy's work
+integrated.
 
->      The index has a hash to facilitate the lookup and an LRU that allow=
-s a
->      block to be recycled at any time.
+Also I don't think this should be exported. Instead this (or its replacement)
+should be used to get the address for an IOMEM resource to add the platform 
+devices when they are instantiated. Then the platform-dev drivers can just
+use the regular functions to get their resources instead of relying on this
+module.
 
-The LRU would probably have to be a doubly-linked list so that entries can=
- be
-removed from it easily.  This means typically touching two other entries,
-which might not be in the same page; further, if the entry is being freed,
-we'd need to excise it from the hash chain also, necessitating touching ma=
-ybe
-two more entries - which might also be in different pages.
+Regards,
 
-Maybe the LRU idea plus a free block bitmap could be combined, however.
+Hans
 
- (1) Say that there's a bit-pair map, with one bit pair per block.  The pa=
-ir
-     is set to 0 when the block is free.  When the block is accessed, the =
-pair
-     is set to 3.
 
- (2) When we run out of free blocks (ie. pairs that are zero), we decremen=
-t
-     all the pairs and then look again.
 
- (3) Excision from the old hash chain would need to be done at allocation,
-     though it does give a block whose usage has been reduced to 0 the cha=
-nce
-     to be resurrected.
 
-Possible variations on the theme could be:
-
- (*) Set the pair to 2, not 3 when accessed.  Set the block to 3 to pin it=
-;
-     the process of decrementing all the pairs would leave it at 3.
-
- (*) Rather than decrementing all pairs at once, have a rotating window th=
-at
-     does a part of the map at once.
-
- (*) If a round of decrementing doesn't reduce any pairs to zero, reject a
-     request for space.
-
-This would also work for a file index.
-
-David
+> 
+> ...
+> 
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License version 2 as
+>> + * published by the Free Software Foundation.
+> 
+> Not needed when you have SPDX.
+> 
+> ...
+> 
+>> +#include <linux/pci.h>
+> 
+> Wrong header. Should be types.h
+> 
+> ...
+> 
+>> +#include <linux/dmi.h>
+>> +#include <linux/platform_data/x86/simatic-ipc-base.h>
+> 
+> Missed headers. You need to include ones that the code below is a
+> direct user of.
+> 
+> Like types.h
+> 
 
