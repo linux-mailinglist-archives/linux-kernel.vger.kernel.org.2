@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A0A32DA17
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38DD32DA1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238204AbhCDTIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:08:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232710AbhCDTHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:07:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E0E64F67;
-        Thu,  4 Mar 2021 19:07:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614884828;
-        bh=/l5VRbFrTvmvmZN6qivrMkjUAbW4Ls8Cqu5YjvGDB4s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZpRJN5aOV7cObKde1Ofpz6SLKUmpDsDsfxvxkDLHqsaMBZ18Kb0OzKC2NUxOF/33l
-         kJj4G4ziC9D02NkcLaZyLofnNDUGUGWqXQE51ZwMRNBddHbIm1LJp97QtjPovhzd6r
-         6CbtVxH72i2iXg9Gd4g1FZhppIb7KkOYzBjSC8z7/ITrN3ws6rJDv5AAAqfJdyP20e
-         pRWQoxELUvus4zQ+JSHCH9y6jjDf6qTiNnMK1QC9IzutbXX564JJ+GQj5z3DbGIN87
-         ticul84ntHTmODQ57k/JTRDdX28G/Ddq82dxj9LxWpnIilQ6ua1pGWOSZbwFaY5ZqE
-         l3ofPf5Y8OdTA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 67E613520831; Thu,  4 Mar 2021 11:07:08 -0800 (PST)
-Date:   Thu, 4 Mar 2021 11:07:08 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     maranget <luc.maranget@inria.fr>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        "Alglave, Jade" <j.alglave@ucl.ac.uk>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>, joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210304190708.GT2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <EF3F87BF-2AA1-4F96-A2A0-EA8A9D6FC8F7@inria.fr>
+        id S232910AbhCDTLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:11:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231544AbhCDTLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 14:11:21 -0500
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BDBC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 11:10:40 -0800 (PST)
+Received: by mail-vs1-xe29.google.com with SMTP id t23so15193283vsk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 11:10:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rhbazE44Fq5VfyWjKwf9zuQsAn8On7g+SsZ62Ovv5F8=;
+        b=C+c/9+vwbzsfKbij8AjOmUq58ukoKryzZ43Oi4y+MSpEXBwS2iKiuF+8DoMQ+gzvEP
+         J4mgYFdtljDghVEszECgjhT1F+i0bS/c/Jz8FGOfU9RvZcFXCjjeVCiYP5J440IBAC+Q
+         ztcBQwtSlOe8xzxT8QjD/N7PtwkjqCCJ37ZG4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rhbazE44Fq5VfyWjKwf9zuQsAn8On7g+SsZ62Ovv5F8=;
+        b=Z+/w5TVPBM6bti0T2pkfgAZFG69IPJWeIFqlge3CGEAoPFxufcxgcpDHdi/8MnhfWA
+         YZKyMMlAeSzG2Wf/mcM9+fL1b9JeNeM9V/Q3Bh07QI6w9TzDJJXH4NYexhOimni6mADk
+         lklkQ37F6mIYbtrpIqFOwSQkiuyDWi2mztCsbEvLTyReU6exVqQaYXk3DHuaswVSqrXs
+         tPDZbk8XV9o/DMhoS4+2wbDxmbBVOczQ0eXloNLcIH75j11amw5oio8BOYiBBmCbL3Oj
+         Y4dpKOWsjWuNxLEJBkxTMPBYKGsxO7IuhhUNPZE19QxgQJOa8vroRBXNdF62WIoUovTI
+         7Mow==
+X-Gm-Message-State: AOAM533RTgagR9YCOMGj3Ut8KLXFz6ftNUMAqkZEPl9cFZIz8gsb4lqn
+        p8ON+UZKCeJfKBegsP/RyxokgVZ/qJK8rtoKlH53Bw==
+X-Google-Smtp-Source: ABdhPJzOfYmlSd897wkaIlC3GKlPTrkwUgr/BtnE3lesEsza2dlfKCvpLHqpP58/+PghdbiU/GxyNp1kUjFuDYhiKL0=
+X-Received: by 2002:a05:6102:ac2:: with SMTP id m2mr3757112vsh.52.1614885039545;
+ Thu, 04 Mar 2021 11:10:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <EF3F87BF-2AA1-4F96-A2A0-EA8A9D6FC8F7@inria.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210120011208.3768105-1-grundler@chromium.org>
+ <0a5e1dad04494f16869b44b8457f0980@realtek.com> <20210120090438.0f5bba6e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210120090438.0f5bba6e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Grant Grundler <grundler@chromium.org>
+Date:   Thu, 4 Mar 2021 19:10:28 +0000
+Message-ID: <CANEJEGuBe3pN_erZZhNjfS+zP-qQnz=TaNO2jWkGhD3jUx0fOg@mail.gmail.com>
+Subject: Re: [PATCH net] net: usb: cdc_ncm: don't spew notifications
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Hayes Wang <hayeswang@realtek.com>,
+        Grant Grundler <grundler@chromium.org>,
+        Oliver Neukum <oliver@neukum.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        nic_swsd <nic_swsd@realtek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 04:44:34PM +0100, maranget wrote:
-> 
-> 
-> > On 3 Mar 2021, at 21:22, Alan Stern <stern@rowland.harvard.edu> wrote:
-> > 
-> >>> 
-> >>> Local variables absolutely should be treated just like CPU registers, if 
-> >>> possible.  In fact, the compiler has the option of keeping local 
-> >>> variables stored in registers.
-> >>> 
-> >>> (Of course, things may get complicated if anyone writes a litmus test 
-> >>> that uses a pointer to a local variable,  Especially if the pointer 
-> >>> could hold the address of a local variable in one execution and a 
-> >>> shared variable in another!  Or if the pointer is itself a shared 
-> >>> variable and is dereferenced in another thread!)
-> >> 
-> >> Good point!  I did miss this complication.  ;-)
-> > 
-> > I suspect it wouldn't be so bad if herd7 disallowed taking addresses of 
-> > local variables.
-> 
-> Herd7 does disallow taking addresses of local variables.
+On Wed, Jan 20, 2021 at 5:04 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 20 Jan 2021 03:38:32 +0000 Hayes Wang wrote:
+> > Grant Grundler <grundler@chromium.org>
+> > > Sent: Wednesday, January 20, 2021 9:12 AM
+> > > Subject: [PATCH net] net: usb: cdc_ncm: don't spew notifications
+> > >
+> > > RTL8156 sends notifications about every 32ms.
+> > > Only display/log notifications when something changes.
+> > >
+> > > This issue has been reported by others:
+> > >     https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1832472
+> > >     https://lkml.org/lkml/2020/8/27/1083
+> > >
+> > > Chrome OS cannot support RTL8156 until this is fixed.
+> > >
+> > > Signed-off-by: Grant Grundler <grundler@chromium.org>
+> >
+> > Reviewed-by: Hayes Wang <hayeswang@realtek.com>
+>
+> Applied, thanks!
+>
+> net should be merged back into net-next by the end of the day, so
+> if the other patches depend on this one to apply cleanly please keep
+> an eye and post after that happens. If there is no conflict you can
+> just post them with [PATCH net-next] now.
 
-Good to know, and thank you!
+Jakub, sorry, I "dropped the ball" on this one. I'll repost with
+"net-next" a bit later today.
 
-> However, such  tests can still be run on machine, provided function bodies are accepted by the C compiler.
-
-True, but that would be outside of the LKMM proper, correct?
-
-							Thanx, Paul
+cheers,
+grant
