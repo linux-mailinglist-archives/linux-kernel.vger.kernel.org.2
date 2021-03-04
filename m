@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B3932C97A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2185032C934
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1388290AbhCDBGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:06:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39398 "EHLO mail.kernel.org"
+        id S1359548AbhCDBFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:05:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452953AbhCDAj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:39:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14A2F64F2B;
+        id S1452919AbhCDAjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:39:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4395064F2D;
         Thu,  4 Mar 2021 00:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614818296;
-        bh=w9pB+wrg4FHKROMwMhZxKW3mYIoH604FwI7t7RmTR1s=;
+        bh=S2/1hpx6p5g3yHCL8olMJbs2OKj7VmbYH1e0mv3W3R4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZdFXd/F/PHLayVTJUSAk0XIzIgtthMTutkicnYHhqJmxqzycfBXZvL+O49BJ5oo0F
-         VPLA9EXBSw6tlgNYAFIuGSLlBXNIglZ+5EcMw8j1FWVaZh6QbH/5DKUkguzsLL37dq
-         A4fKrtHL9QK7S3Qw12tcc5hsZIcgSqUqeRdBmrlP5ajVJIInTiby501Ikcco2zURKR
-         uUF9xrBVMn1W7tY1s0JIhFAridtclPKm0x+c7IjYo2ZT08BwJNa8lWYMIsdkiQ/1lW
-         G3ogRG6bZHuaKshYxKPbJ7/x5JMSb8P3SvyOdLUPYgQoq+krASWkQnb11Ku3mEB/+O
-         BEjZV6WrQnGNw==
+        b=V6pHvmPADIEwpAS7Qv76HbufxT+IcrZZ8+m/PHUUTj0R+wZe0gbn2gBfJiaOXeV//
+         /ZRZbXqlyM5zZ335JlyhXNnv1tkkz5vYY+JpR/MbaIeR+YEBSpAeFU5UY5Ppb61gSD
+         uHVwNiJRy8z4QyyxWNR1/ShJo8PLY5etiZmaYd6iusRQtMCGr4QpRXG/GmL9waXLqY
+         osWJiab5/H1WUes2VFA6/btxZmXyiu031J3CUgz73XtkKf8TRnkjB2/KzanCZGXupD
+         f7243Nh8LB1fejBTpVC74pqiwTjGt+DCuLneYPDeO3jK8RniGN0QMk3m8MoPDjIaVr
+         P9V7BCkoZDNOA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 15/28] torture: Record jitter start/stop commands
-Date:   Wed,  3 Mar 2021 16:37:59 -0800
-Message-Id: <20210304003812.24833-15-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 16/28] torture: Record kvm-test-1-run.sh and kvm-test-1-run-qemu.sh PIDs
+Date:   Wed,  3 Mar 2021 16:38:00 -0800
+Message-Id: <20210304003812.24833-16-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
@@ -44,94 +44,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Distributed runs of rcutorture will need to start and stop jittering on
-the remote hosts, which means that the commands must be communicated to
-those hosts.  The commit therefore causes kvm.sh to place these commands
-in new TORTURE_JITTER_START and TORTURE_JITTER_STOP environment variables
-to communicate them to the scripts that will set this up.  In addition,
-this commit causes kvm-test-1-run.sh to append these commands to each
-generated qemu-cmd file, which allows any remotely executing script to
-extract the needed commands from this file.
+This commit records the process IDs of the kvm-test-1-run.sh and
+kvm-test-1-run-qemu.sh scripts to ease monitoring of remotely running
+instances of these scripts.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-test-1-run.sh     |  2 ++
- tools/testing/selftests/rcutorture/bin/kvm.sh      | 24 +++++++++++++---------
- 2 files changed, 16 insertions(+), 10 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh | 2 ++
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh      | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
+index 6b0d71b..576a9b7 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
+@@ -33,6 +33,8 @@ then
+ 	exit 1
+ fi
+ 
++echo ' ---' `date`: Starting kernel, PID $$
++
+ # Obtain settings from the qemu-cmd file.
+ grep '^#' $resdir/qemu-cmd | sed -e 's/^# //' > $T/qemu-cmd-settings
+ . $T/qemu-cmd-settings
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index f3d2ded..a69f8ae 100755
+index a69f8ae..a386ca8d 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -202,6 +202,8 @@ echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_appen
- echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
- echo "# seconds=$seconds" >> $resdir/qemu-cmd
- echo "# TORTURE_KCONFIG_GDB_ARG=\"$TORTURE_KCONFIG_GDB_ARG\"" >> $resdir/qemu-cmd
-+echo "# TORTURE_JITTER_START=\"$TORTURE_JITTER_START\"" >> $resdir/qemu-cmd
-+echo "# TORTURE_JITTER_STOP=\"$TORTURE_JITTER_STOP\"" >> $resdir/qemu-cmd
+@@ -41,7 +41,7 @@ then
+ 	echo "kvm-test-1-run.sh :$resdir: Not a writable directory, cannot store results into it"
+ 	exit 1
+ fi
+-echo ' ---' `date`: Starting build
++echo ' ---' `date`: Starting build, PID $$
+ echo ' ---' Kconfig fragment at: $config_template >> $resdir/log
+ touch $resdir/ConfigFragment.input
  
- if test -n "$TORTURE_BUILDONLY"
- then
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index d6973e4..efcbd12 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -35,6 +35,8 @@ TORTURE_KCONFIG_ARG=""
- TORTURE_KCONFIG_GDB_ARG=""
- TORTURE_BOOT_GDB_ARG=""
- TORTURE_QEMU_GDB_ARG=""
-+TORTURE_JITTER_START=""
-+TORTURE_JITTER_STOP=""
- TORTURE_KCONFIG_KASAN_ARG=""
- TORTURE_KCONFIG_KCSAN_ARG=""
- TORTURE_KMAKE_ARG=""
-@@ -443,6 +445,16 @@ function dump(first, pastlast, batchnum)
- 	print "echo ----Start batch " batchnum ": `date` | tee -a " rd "log";
- 	print "needqemurun="
- 	jn=1
-+	njitter = 0;
-+	split(jitter, ja);
-+	if (ja[1] == -1 && ncpus == 0)
-+		njitter = 1;
-+	else if (ja[1] == -1)
-+		njitter = ncpus;
-+	else
-+		njitter = ja[1];
-+	print "TORTURE_JITTER_START=\". jitterstart.sh " njitter " " rd " " dur " " ja[2] " " ja[3] "\"; export TORTURE_JITTER_START";
-+	print "TORTURE_JITTER_STOP=\". jitterstop.sh " rd " \"; export TORTURE_JITTER_STOP"
- 	for (j = first; j < pastlast; j++) {
- 		cpusr[jn] = cpus[j];
- 		if (cfrep[cf[j]] == "") {
-@@ -484,14 +496,6 @@ function dump(first, pastlast, batchnum)
- 		print "\tneedqemurun=1"
- 		print "fi"
- 	}
--	njitter = 0;
--	split(jitter, ja);
--	if (ja[1] == -1 && ncpus == 0)
--		njitter = 1;
--	else if (ja[1] == -1)
--		njitter = ncpus;
--	else
--		njitter = ja[1];
- 	if (TORTURE_BUILDONLY && njitter != 0) {
- 		njitter = 0;
- 		print "echo Build-only run, so suppressing jitter | tee -a " rd "log"
-@@ -502,12 +506,12 @@ function dump(first, pastlast, batchnum)
- 	print "if test -n \"$needqemurun\""
- 	print "then"
- 	print "\techo ---- Starting kernels. `date` | tee -a " rd "log";
--	print "\t. jitterstart.sh " njitter " " rd " " dur " " ja[2] " " ja[3]
-+	print "\t$TORTURE_JITTER_START";
- 	print "\twhile ls $runfiles > /dev/null 2>&1"
- 	print "\tdo"
- 	print "\t\t:"
- 	print "\tdone"
--	print "\t. jitterstop.sh " rd
-+	print "\t$TORTURE_JITTER_STOP";
- 	print "\techo ---- All kernel runs complete. `date` | tee -a " rd "log";
- 	print "else"
- 	print "\twait"
 -- 
 2.9.5
 
