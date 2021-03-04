@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB9B32C927
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7088332C929
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356790AbhCDBFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:05:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1451144AbhCDAf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:35:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7E6C64F49;
-        Thu,  4 Mar 2021 00:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614818115;
-        bh=EZvf9vO7Ukk1beVFHjJwsml2KTzNj/L49Ra8sQECFfg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rxGnz2dkH/K5YMJ6rloNBV5qGWrPa5P2iC6KgC2ZlWcGh08CkDEKlExf4t3P5VSkH
-         LR7hBboj2WZH8qCgAnLWuh3qvreIPQtlDbyk6Zg09cQ4EYofvGztp8jL0dUeHgt/3m
-         bp4dESdr1T+l/rjc+yEe++HjJk6+4+yEadO/42P15vKop8sKYC14LA0SUgvWK3pTGb
-         yhAhM06qtWQEKl2znn9pz10s18ERKMGAn9fqdIzRUmHB8LfprLFolmyo+WPxnwLjTc
-         TFRSH7HDFn66RqBf7uZ/IJF23teGK/4iPZkaOjIg7FxAXdb+NeduBHtLhVMWRpZBSV
-         zdtvvdR8QVtFA==
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Stephen Zhang <stephenzhangzsd@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/2] rcutorture: Replace rcu_torture_stall string with %s
-Date:   Wed,  3 Mar 2021 16:35:13 -0800
-Message-Id: <20210304003513.24488-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210304003431.GA24413@paulmck-ThinkPad-P72>
-References: <20210304003431.GA24413@paulmck-ThinkPad-P72>
+        id S1356868AbhCDBFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:05:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1451777AbhCDAiF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:38:05 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B377CC0613E6;
+        Wed,  3 Mar 2021 16:35:32 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id j12so17525402pfj.12;
+        Wed, 03 Mar 2021 16:35:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NzpsCCGXP4ItyQsT4XoNqFxXYXsUAk2E6LWEAjyLuuo=;
+        b=tXZgkVEN2lrE004AVMareVAbW5CSpAXGQHu4TYul0hUvEIt3U77pNG1Y3h2bMU2scU
+         dHy75x5mdr30iW5JFblz0qIPTdqqvDYSoakbHvxmQAJbO6sTvwoFuktUGTAyHGqRa9kh
+         ekBnqEWsPRIl+wbQCGa8ssHhpoyr9ryrhCDfMLoMwsRmd17+P+owjb0q5D+YpDf1ZUmF
+         N6Im/b+xicod/UGSxvCoaTOnNsDyJ2A3SA4+hK/LIaZ+2d1+o3aoB2kwURaO0DnXXOum
+         HDQ9LyaxEU3F2PNrs818HgChWT3JjV2mxYpkJ2ZpP6x51CQdOBnLY/bWH+O4j8qxVA2Z
+         g7bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NzpsCCGXP4ItyQsT4XoNqFxXYXsUAk2E6LWEAjyLuuo=;
+        b=a62baNkijeWU/3XywiGQU6l+Jh/tqEtrEmXaWBq9n5NTINMqiXHwN1kK7VLJ3VM7Sm
+         dNGJPLhhfxrDLjpCZ3TzJ/SZkjpUfWeN/tlDMS+BxBVgS1geFl6fVJL0flhncodB9Jpa
+         EpamShn0dAD+25OegysVw6/yDUwpp4HWsbEesFZHVxxJQYwkRgnptK4V05DtkV08TgA/
+         aobe2846CQhCtmdOaqsE3bX+9oPleK3UrCoROyTTpA5567VxIaOpTSO+nX+onO8KBlct
+         Z5mIduClHFI1ek1iqqGfH/V61ENAuiCQ3hkqawQQvXBkknl86d/Q618Fn/H7sYWoHh4P
+         vVBA==
+X-Gm-Message-State: AOAM532KTsWRvdMH1Zgz81t67Aa7mK442fmHg3k4HmVLPaCb3RPQBF4g
+        GJqwGZpO8WazZZRLOAoW5uGgPnKttfk=
+X-Google-Smtp-Source: ABdhPJzrDCJsduLA3BLhJ/QQO6D0co84IVwpPVmwEn29+QHuww5vNQPL75DG4pm1u+B1hQG6ngiLqw==
+X-Received: by 2002:aa7:83cf:0:b029:1ee:f550:7d48 with SMTP id j15-20020aa783cf0000b02901eef5507d48mr1342108pfn.12.1614818132055;
+        Wed, 03 Mar 2021 16:35:32 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id e185sm26316479pfe.117.2021.03.03.16.35.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 16:35:31 -0800 (PST)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v2] KVM: LAPIC: Advancing the timer expiration on guest initiated write
+Date:   Thu,  4 Mar 2021 08:35:18 +0800
+Message-Id: <1614818118-965-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Zhang <stephenzhangzsd@gmail.com>
+From: Wanpeng Li <wanpengli@tencent.com>
 
-This commit replaces a hard-coded "rcu_torture_stall" string in a
-pr_alert() format with "%s" and __func__.
+Advancing the timer expiration should only be necessary on guest initiated 
+writes. When we cancel the timer and clear .pending during state restore, 
+clear expired_tscdeadline as well.
 
-Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 ---
- kernel/rcu/rcutorture.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+v1 -> v2:
+ * update patch description
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 99657ff..271726e 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1971,8 +1971,8 @@ static int rcu_torture_stall(void *args)
- 			local_irq_disable();
- 		else if (!stall_cpu_block)
- 			preempt_disable();
--		pr_alert("rcu_torture_stall start on CPU %d.\n",
--			 raw_smp_processor_id());
-+		pr_alert("%s start on CPU %d.\n",
-+			  __func__, raw_smp_processor_id());
- 		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
- 				    stop_at))
- 			if (stall_cpu_block)
-@@ -1983,7 +1983,7 @@ static int rcu_torture_stall(void *args)
- 			preempt_enable();
- 		cur_ops->readunlock(idx);
- 	}
--	pr_alert("rcu_torture_stall end.\n");
-+	pr_alert("%s end.\n", __func__);
- 	torture_shutdown_absorb("rcu_torture_stall");
- 	while (!kthread_should_stop())
- 		schedule_timeout_interruptible(10 * HZ);
+ arch/x86/kvm/lapic.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 45d40bf..f2b6e79 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -2595,6 +2595,7 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
+ 
+ 	apic_update_ppr(apic);
+ 	hrtimer_cancel(&apic->lapic_timer.timer);
++	apic->lapic_timer.expired_tscdeadline = 0;
+ 	apic_update_lvtt(apic);
+ 	apic_manage_nmi_watchdog(apic, kvm_lapic_get_reg(apic, APIC_LVT0));
+ 	update_divide_count(apic);
 -- 
-2.9.5
+2.7.4
 
