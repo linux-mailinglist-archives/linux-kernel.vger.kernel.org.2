@@ -2,93 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9787032C982
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F0D32C960
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1453215AbhCDBHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:07:42 -0500
-Received: from mga02.intel.com ([134.134.136.20]:7525 "EHLO mga02.intel.com"
+        id S1452190AbhCDBH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:07:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1387983AbhCDA4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:56:08 -0500
-IronPort-SDR: Lb90IAeWt+xlCYeDEQrYTUo58WPnd/cTykHEGEl/keqhx9M/DH7Tu9I9rFFH6AsE+xb8x5xs4E
- BpPGpD4i2ORw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="174429218"
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="174429218"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 16:51:51 -0800
-IronPort-SDR: I2X4uxUlLiP/qzBmatJaeum5L1yPq6ARmdFneTWBMImvMy0V6gEB+zwpwGtWHZVMyPng99cy84
- 00b3rhGOImTg==
-X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
-   d="scan'208";a="407478569"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 16:51:49 -0800
-Subject: Re: [kbuild-all] Re: COPYING CREDITS Documentation Kbuild Kconfig
- LICENSES MAINTAINERS Makefile README arch block certs crypto drivers fs
- include init ipc kernel lib mm net samples scripts security sound tools usr
- virt No rule to make target 'arch/c6x/Makefile'.
-To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <202103040304.DTElvlrq-lkp@intel.com>
- <CAK8P3a3x+JnCDVsNpCn0sSChXG41hCKmQMVAOuiLovGJSStUgA@mail.gmail.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <6afc4b44-58fb-414b-b7c0-53959cc19c9b@intel.com>
-Date:   Thu, 4 Mar 2021 08:51:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3x+JnCDVsNpCn0sSChXG41hCKmQMVAOuiLovGJSStUgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1354723AbhCDAyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:54:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3D3364FED;
+        Thu,  4 Mar 2021 00:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614819202;
+        bh=k3BIxfi+L1YBlW8Mtw5C8sYz1WXfklRN1Yk9lexwAH0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cnP7jgpY5bzMScON1VlS9N+UWFfUqfEzAbQxpiTBJU2pk3kyF/pxB0mCOH5sPZUpb
+         BY0luTQ71VQ/s+hU0JriNIm9RC7odDzFJnCraDj669G7OatvVNohjPKeAHOQwJi47o
+         uypiACueXrdKTeBFRDsftJUeVuIn/4UNXLN8Z1Z3C8FwbyPc80MYbk20xRZtb7Rj/9
+         jGbTmAvjeCUpNfh/N52yK/Iyynp342TURgtR3TNmiqAYO8MEQEN+kZvwVWhRe6qN6x
+         TgLgh0pclTmTllOOKDC4RqmPJjz4a4oBVI4dC/Nxop1AmkXutWxNhoH24gHJyGL4vQ
+         U2WxC4cChYLnA==
+From:   paulmck@kernel.org
+To:     linux-kernel@vger.kernel.org
+Cc:     john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
+        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
+        kernel-team@fb.com, neeraju@codeaurora.org, ak@linux.intel.com,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH kernel/time 1/5] clocksource: Provide module parameters to inject delays in watchdog
+Date:   Wed,  3 Mar 2021 16:53:16 -0800
+Message-Id: <20210304005320.25834-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210304004931.GA25461@paulmck-ThinkPad-P72>
+References: <20210304004931.GA25461@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
+When the clocksource watchdog marks a clock as unstable, this might be due
+to that clock being unstable or it might be due to delays that happen to
+occur between the reads of the two clocks.  Yes, interrupts are disabled
+across those two reads, but there are no shortage of things that can
+delay interrupts-disabled regions of code ranging from SMI handlers to
+vCPU preemption.  It would be good to have some indication as to why
+the clock was marked unstable.
 
-On 3/4/21 4:07 AM, Arnd Bergmann wrote:
-> On Wed, Mar 3, 2021 at 8:44 PM kernel test robot <lkp@intel.com> wrote:
->> Hi Arnd,
->>
->> FYI, the error/warning still remains.
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   f69d02e37a85645aa90d18cacfff36dba370f797
->> commit: a579fcfa8e49cc77ad59211bb18bc5004133e6a0 c6x: remove architecture
->> date:   6 weeks ago
->> config: c6x-randconfig-r026-20210303 (attached as .config)
->> compiler: c6x-elf-gcc (GCC) 9.3.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a579fcfa8e49cc77ad59211bb18bc5004133e6a0
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout a579fcfa8e49cc77ad59211bb18bc5004133e6a0
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=c6x
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     Makefile:681: arch/c6x/Makefile: No such file or directory
-> Yes, arch/c6x is gone and unlikely to return. Please fix the 0day scripts
-> to no longer build it on v5.12-rc1 or higher.
+The first step is a way of injecting such delays, and this
+commit therefore provides a clocksource.inject_delay_freq and
+clocksource.inject_delay_run kernel boot parameters that specify that
+sufficient delay be injected to cause the clocksource_watchdog()
+function to mark a clock unstable.  This delay is injected every
+Nth set of M calls to clocksource_watchdog(), where N is the value
+specified for the inject_delay_freq boot parameter and M is the value
+specified for the inject_delay_run boot parameter.  Values of zero or
+less for either parameter disable delay injection, and the default for
+clocksource.inject_delay_freq is zero, that is, disabled.  The default for
+clocksource.inject_delay_run is the value one, that is single-call runs.
 
-Hi Arnd,
+This facility is intended for diagnostic use only, and should be avoided
+on production systems.
 
-Thanks for the warning, we have removed the related tests.
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mark Rutland <Mark.Rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+[ paulmck: Apply Rik van Riel feedback. ]
+Reported-by: Chris Mason <clm@fb.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 22 ++++++++++++++++++++
+ kernel/time/clocksource.c                       | 27 +++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
 
-Best Regards,
-Rong Chen
-
->          Arnd
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0454572..fc57952 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -583,6 +583,28 @@
+ 			loops can be debugged more effectively on production
+ 			systems.
+ 
++	clocksource.inject_delay_freq= [KNL]
++			Number of runs of calls to clocksource_watchdog()
++			before delays are injected between reads from the
++			two clocksources.  Values less than or equal to
++			zero disable this delay injection.  These delays
++			can cause clocks to be marked unstable, so use
++			of this parameter should therefore be avoided on
++			production systems.  Defaults to zero (disabled).
++
++	clocksource.inject_delay_run= [KNL]
++			Run lengths of clocksource_watchdog() delay
++			injections.  Specifying the value 8 will result
++			in eight consecutive delays followed by eight
++			times the value specified for inject_delay_freq
++			of consecutive non-delays.
++
++	clocksource.max_read_retries= [KNL]
++			Number of clocksource_watchdog() retries due to
++			external delays before the clock will be marked
++			unstable.  Defaults to three retries, that is,
++			four attempts to read the clock under test.
++
+ 	clearcpuid=BITNUM[,BITNUM...] [X86]
+ 			Disable CPUID feature X for the kernel. See
+ 			arch/x86/include/asm/cpufeatures.h for the valid bit
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index cce484a..4be4391 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -14,6 +14,7 @@
+ #include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
+ #include <linux/tick.h>
+ #include <linux/kthread.h>
++#include <linux/delay.h>
+ 
+ #include "tick-internal.h"
+ #include "timekeeping_internal.h"
+@@ -184,6 +185,31 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ }
+ 
++static int inject_delay_freq;
++module_param(inject_delay_freq, int, 0644);
++static int inject_delay_run = 1;
++module_param(inject_delay_run, int, 0644);
++static int max_read_retries = 3;
++module_param(max_read_retries, int, 0644);
++
++static void clocksource_watchdog_inject_delay(void)
++{
++	int i;
++	static int injectfail = -1;
++
++	if (inject_delay_freq <= 0 || inject_delay_run <= 0)
++		return;
++	if (injectfail < 0 || injectfail > INT_MAX / 2)
++		injectfail = inject_delay_run;
++	if (!(++injectfail / inject_delay_run % inject_delay_freq)) {
++		pr_warn("%s(): Injecting delay.\n", __func__);
++		for (i = 0; i < 2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC; i++)
++			udelay(1000);
++		pr_warn("%s(): Done injecting delay.\n", __func__);
++	}
++	WARN_ON_ONCE(injectfail < 0);
++}
++
+ static void clocksource_watchdog(struct timer_list *unused)
+ {
+ 	struct clocksource *cs;
+@@ -208,6 +234,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 
+ 		local_irq_disable();
+ 		csnow = cs->read(cs);
++		clocksource_watchdog_inject_delay();
+ 		wdnow = watchdog->read(watchdog);
+ 		local_irq_enable();
+ 
+-- 
+2.9.5
 
