@@ -2,105 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C7132DB7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7ED32DB80
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbhCDU52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:57:28 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42618 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhCDU5N (ORCPT
+        id S234356AbhCDU6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:58:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhCDU5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:57:13 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 124Ku0we019009;
-        Thu, 4 Mar 2021 14:56:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614891360;
-        bh=KQoevqNLdq6Vcqe7xjay1VRDOuM0RiWmMq8okhEq7ic=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fgb3unhSTrmmj9vU82YIe5gyRn1s4ROHL06A7F8wBnz4lc81erEHp5foT8ybuC3HM
-         zTAn1Irg0HB8YInd71KpwuDfCgiRycEoLyPOzjjKqF62oy5Y9czpZWJ37x9ornf3e/
-         I4NENCXn1IFyO8RyKHSJxcsUndxnixe9400ykAAg=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 124Ku0Dm009620
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 4 Mar 2021 14:56:00 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
- 2021 14:55:59 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Mar 2021 14:55:59 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 124KtvkN009698;
-        Thu, 4 Mar 2021 14:55:58 -0600
-Subject: Re: [PATCH 2/3] clocksource/drivers/timer-ti-dm: Remove extra
- of_node_put()
-To:     Tony Lindgren <tony@atomide.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     Keerthy <j-keerthy@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210304072135.52712-1-tony@atomide.com>
- <20210304072135.52712-3-tony@atomide.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <4c23ce3e-3304-b10d-5054-f421822b5dc2@ti.com>
-Date:   Thu, 4 Mar 2021 22:55:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 4 Mar 2021 15:57:32 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B89C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 12:56:42 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id x20so31615195oie.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 12:56:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lBfTd3oDp2KFnFnmSKQxa1nC+FsiGtIxnlk+/Kblz0k=;
+        b=Zu1gFLVGQxh8fZR3srbK2UHHspUpnBkj9DkPdzrVHRSDrMG+OnqxjB1qxqA9u3LYDv
+         1g1xcntTCYr1DMx+ym/8enYaviBH6YDPfgqPB5aCd5U4m8X1ZIfeeD4L1xm+K0HHX2lA
+         EYj9CJXioEGlVxjjh4NaJjR8UT1zHeKadqsj23LtdWzdEfevIt5n03xjn67Qaa19Y9s7
+         wCKEPApxuavczhGwe/VYa7zQkIl//+0tYUEt3pTGd151AY/FLTRUpBCdKtG0LiykW0Ov
+         C3MuQisaxZ0Xw1dNcy+tqgvfjR0a9WgkAO910K+DctQlsz8g1XRtGoJUjCY+1HAZFDvq
+         uILg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lBfTd3oDp2KFnFnmSKQxa1nC+FsiGtIxnlk+/Kblz0k=;
+        b=RXhCO90ogNG5cOQ8WCFMO124mz3wzCZdVqDPdl8z9sL0P7X0Sgv08Uo858TO9pAQlR
+         jK6rWbUbhwYLW3YPd2i4axzLtB3Twry5jOXSDwUIGrCkxTu+nkJyO3zOepNJuTpPxxBP
+         TcYhEOwQWtqJ6a5fiQRNPqwjHfdUYHVoURMc0PVVjC7NWArnUDIjspQ/DOTdZXJrVmwv
+         xoq/Y8Dx4RrhB0OGjuCOisrTLvFKG7RZ1DG/vW8pj6FR3CaJjFPjosiP92vMBw6zHtiI
+         MIi8RfFnG4ieW1olgtcPtqpSNT7GRGtltE6hRvHVJpO2g68hS6uqEujKujaSP94jZfVh
+         Uk3w==
+X-Gm-Message-State: AOAM532n0EXJ99GNhNrtqDvnvIYKm2uRWhuGhtrAMJYZXiZIxakTIHUO
+        o8ij8CHSFTC1TlHaeZVXoUA4ZCfxKAUIeCtKVCw=
+X-Google-Smtp-Source: ABdhPJzOBvaVFSRgVt+//TfqyyS1JKpi+aQ6WdfahlQHMA5Vr9VSpFQYTuQ8h84jmUBwahv6OCCr8Q==
+X-Received: by 2002:a05:6808:a8d:: with SMTP id q13mr4341622oij.29.1614891401568;
+        Thu, 04 Mar 2021 12:56:41 -0800 (PST)
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com. [209.85.210.41])
+        by smtp.gmail.com with ESMTPSA id w9sm66357oia.46.2021.03.04.12.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 12:56:40 -0800 (PST)
+Received: by mail-ot1-f41.google.com with SMTP id 97so1753436otf.13;
+        Thu, 04 Mar 2021 12:56:40 -0800 (PST)
+X-Received: by 2002:a9d:12e1:: with SMTP id g88mr1612888otg.305.1614891400360;
+ Thu, 04 Mar 2021 12:56:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210304072135.52712-3-tony@atomide.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210303135500.24673-1-alex.bennee@linaro.org> <20210303135500.24673-2-alex.bennee@linaro.org>
+In-Reply-To: <20210303135500.24673-2-alex.bennee@linaro.org>
+From:   Arnd Bergmann <arnd@linaro.org>
+Date:   Thu, 4 Mar 2021 21:56:24 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+Message-ID: <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To:     =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        ruchika.gupta@linaro.org,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 3, 2021 at 2:54 PM Alex Benn=C3=A9e <alex.bennee@linaro.org> wr=
+ote:
+>
+> A number of storage technologies support a specialised hardware
+> partition designed to be resistant to replay attacks. The underlying
+> HW protocols differ but the operations are common. The RPMB partition
+> cannot be accessed via standard block layer, but by a set of specific
+> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+> partition provides authenticated and replay protected access, hence
+> suitable as a secure storage.
+>
+> The RPMB layer aims to provide in-kernel API for Trusted Execution
+> Environment (TEE) devices that are capable to securely compute block
+> frame signature. In case a TEE device wishes to store a replay
+> protected data, requests the storage device via RPMB layer to store
+> the data.
+>
+> A TEE device driver can claim the RPMB interface, for example, via
+> class_interface_register(). The RPMB layer provides a series of
+> operations for interacting with the device.
+>
+>   * program_key - a one time operation for setting up a new device
+>   * get_capacity - introspect the device capacity
+>   * get_write_count - check the write counter
+>   * write_blocks - write a series of blocks to the RPMB device
+>   * read_blocks - read a series of blocks from the RPMB device
 
+Based on the discussion we had today in a meeting, it seems the
+main change that is needed is to get back to the original model
+of passing the encrypted data to the kernel instead of cleartext
+data, as the main use case we know of is to have the key inside of
+the TEE device and not available to the kernel or user space.
 
-On 04/03/2021 09:21, Tony Lindgren wrote:
-> We have of_translate_address() already do of_node_put() as needed.
-> I probably looked at __of_translate_address() earlier by accident
-> that of_translate_address() uses.
+This is also required to be able to forward the encrypted data
+through the same interface on a KVM host, when the guest
+uses virtio-rpmb, and the host forwards the data into an mmc or
+ufs device.
 
-I do not see of_node_put() in of_translate_address() and
-  __of_translate_address() is doing of_node_get(dev);
-?
+That said, I can also imagine use cases where we do want to
+store the key in the kernel's keyring, so maybe we end up needing
+both.
 
-> 
-> Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> The detailed operation of implementing the access is left to the TEE
+> device driver itself.
+>
+> [This is based-on Thomas Winkler's proposed API from:
+>
+>   https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-toma=
+s.winkler@intel.com/
+>
+> The principle difference is the framing details and HW specific
+> bits (JDEC vs NVME frames) are left to the lower level TEE driver to
+> worry about. The eventual userspace ioctl interface will aim to be
+> similarly generic. This is an RFC to follow up on:
+>
+>   Subject: RPMB user space ABI
+>   Date: Thu, 11 Feb 2021 14:07:00 +0000
+>   Message-ID: <87mtwashi4.fsf@linaro.org>]
+>
+> Signed-off-by: Alex Benn=C3=A9e <alex.bennee@linaro.org>
+> Cc: Tomas Winkler <tomas.winkler@intel.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Linus  Walleij <linus.walleij@linaro.org>
+> Cc: Arnd Bergmann <arnd.bergmann@linaro.org>
+> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 > ---
->   drivers/clocksource/timer-ti-dm-systimer.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
-> --- a/drivers/clocksource/timer-ti-dm-systimer.c
-> +++ b/drivers/clocksource/timer-ti-dm-systimer.c
-> @@ -265,7 +265,6 @@ static void __init dmtimer_systimer_assign_alwon(void)
->   				    pa == 0x48318000)
->   					continue;
->   
-> -				of_node_put(np);
->   				break;
->   			}
->   		}
-> @@ -300,7 +299,6 @@ static u32 __init dmtimer_systimer_find_first_available(void)
->   				continue;
->   			}
->   
-> -			of_node_put(np);
->   			break;
->   		}
->   	}
-> 
+>  MAINTAINERS                |   7 +
+>  drivers/char/Kconfig       |   2 +
+>  drivers/char/Makefile      |   1 +
+>  drivers/char/rpmb/Kconfig  |  11 +
+>  drivers/char/rpmb/Makefile |   7 +
+>  drivers/char/rpmb/core.c   | 429 +++++++++++++++++++++++++++++++++++++
+>  include/linux/rpmb.h       | 163 ++++++++++++++
 
--- 
-Best regards,
-grygorii
+
+My feeling is that it should be a top-level subsystem, in drivers/rpmb
+rather than drivers/char/rpmb, as you implement an abstraction layer
+that other drivers can plug into, rather than a simple driver.
+
+       Arnd
