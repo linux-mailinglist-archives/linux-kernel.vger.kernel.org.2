@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552E932DCC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7515632DCCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbhCDWM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
+        id S232615AbhCDWNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbhCDWMy (ORCPT
+        with ESMTP id S231157AbhCDWMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:12:54 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A283C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 14:12:52 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id mj10so32416915ejb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 14:12:52 -0800 (PST)
+        Thu, 4 Mar 2021 17:12:53 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69424C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 14:12:53 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id dm26so13472166edb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 14:12:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rasmusvillemoes.dk; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IxSjyHvfhJ/CRzXpd7kM65mxSitdSKejDB4yVJ8QdLI=;
-        b=SGDVknug8AsUYWYZSGdHKwErk1ohZtG+21USh8vDWbvcM6aFt8ZKYPoHP34FY7/Or4
-         RqoAtJe0dwn1Bch/dFzWvOCOo/dEqgcOjFOFMzAB0e2Vh5Kw37/tNktSN79n3iIUqm/j
-         jWI2HYdntIV9Dpa68IH6OENLdI+eeMvCb2PM0=
+        bh=v/pPDOAIiRjR7lEs29siBxnpMbhMpFCg4qL6RvapyuQ=;
+        b=ZvgjxCFdW+xEIJQRTSrZL9RG99WKcuzdTurrplaWC8+EC8MZwlMwU+OBT9Nm8QNzO5
+         NdOoYpYInzinJHNu6McP1uHtYkzgOrhNUi32Us+kUjDel5XCS1sga1lOsHnl9S6lAqYl
+         N+2auUjyYr0kuUMvKyhGGBAlXCZ08f4U1dgJY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IxSjyHvfhJ/CRzXpd7kM65mxSitdSKejDB4yVJ8QdLI=;
-        b=SW89AHG991dPv+1kKBqwWL/PXskdUOq3G54QcALKYzw3cvyO4uLOodW/+lEFHAjr4b
-         ygMyCC2Te9FFRSRcsZZ2iQfZAFXd7G5RlSmBnokIJeEYl3lgL4Abhx3BAfLwZCe+VB3e
-         KWalmdJqEKy9SYwjq07DB6TUhiT21BB160lyazvkb1WZbYgyfPkW9EkVM6XTnWiPzzgy
-         URzGDWOrFoonkPtclmltIBpmjuWM6MUwLmhxtTKqH5MSbU1EQAJDVMLttzDmAXJNK793
-         P1SJsMv5WzyhpsouoqNHZ869F5l4GQbIyS8PWPWy6yUtbPtySUJdNWHio7e+c/EV/JWY
-         AyZQ==
-X-Gm-Message-State: AOAM531XGjSUg+tAr5J1XqxipV6mt5ORknidyq0pTnKv18VcMTMh0SAY
-        4i1wg4Sxw10leVqyqZt+5Y4C5Q==
-X-Google-Smtp-Source: ABdhPJwVN0AcFGjBUTQ8VzGydpnWSzRyWvOOXLUP2ekeX/od+/cEZvBhl2UzMVMC2N0PmxVQKV+mMg==
-X-Received: by 2002:a17:906:3acc:: with SMTP id z12mr6648419ejd.494.1614895971264;
-        Thu, 04 Mar 2021 14:12:51 -0800 (PST)
+        bh=v/pPDOAIiRjR7lEs29siBxnpMbhMpFCg4qL6RvapyuQ=;
+        b=MKpwa20dm6zBjPEDU+qZ9z6j3ZxpcMP+4CtGDIzUlVzXl+0evRb+v16Miove3wdwRE
+         hC/YZ5S6E8sHCzRXtRIDzcZfh9bYbgsf35+2WPbFTVh9IYK7Py58TDYjxC8N0NL2Rk33
+         2xnLvoLUWf8QY5NWnEN4QVeVpwI0YbThgpL+SQ+7N9H33+wBWLahPORSlWObZfCzeX3Y
+         v9kh4FEuNhOvPVc4ujkMS5Q3CiNHfW48zSyEAfM0v/L5sXVQ+6zff3tegfACSZ3Sgz5l
+         j7TFpi8ypROtJkp0vkpz2GNrzrX6AnC7u1f6urBpzLoVp4yPaR4E3cVtpHWjKogAZyxJ
+         7BhQ==
+X-Gm-Message-State: AOAM530ZtIrRixKcOI3vPsOi4W8L0fwFknE5+FKGQKUiBmFrItHGsCQ7
+        YaOBLSFREA3nZ/hz9DMstgg53g==
+X-Google-Smtp-Source: ABdhPJy3H4qGxTqJAT6Dy3t671giI6caxeE5c2SF84vG2D259IJR/Gin3MwbgSzzwbdGCsregOluwQ==
+X-Received: by 2002:aa7:c889:: with SMTP id p9mr6615207eds.82.1614895972167;
+        Thu, 04 Mar 2021 14:12:52 -0800 (PST)
 Received: from prevas-ravi.prevas.se ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id q22sm362099ejy.5.2021.03.04.14.12.50
+        by smtp.gmail.com with ESMTPSA id q22sm362099ejy.5.2021.03.04.14.12.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 14:12:50 -0800 (PST)
+        Thu, 04 Mar 2021 14:12:51 -0800 (PST)
 From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
 To:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <linux@roeck-us.net>,
         Stephen Boyd <sboyd@kernel.org>
 Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-watchdog@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v2 1/3] clk: add devm_clk_prepare_enable() helper
-Date:   Thu,  4 Mar 2021 23:12:45 +0100
-Message-Id: <20210304221247.488173-2-linux@rasmusvillemoes.dk>
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH v2 2/3] dt-bindings: watchdog: add optional "delay" clock to gpio-wdt binding
+Date:   Thu,  4 Mar 2021 23:12:46 +0100
+Message-Id: <20210304221247.488173-3-linux@rasmusvillemoes.dk>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210304221247.488173-1-linux@rasmusvillemoes.dk>
 References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
@@ -65,88 +66,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a managed wrapper for clk_prepare_enable().
+[DO NOT MERGE - see cover letter]
 
+We have a board where the reset output from the ADM706S is split in
+two: directly routed to an interrupt, and also to start a ripple
+counter, which 64 ms later than pulls the SOC's reset pin. That ripple
+counter only works if the RTC's 32kHz output is enabled, and since
+linux by default disables unused clocks, that effectively renders the
+watchdog useless. So add an optional "delay" clock binding.
+
+Suggested-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 ---
- .../driver-api/driver-model/devres.rst        |  1 +
- drivers/clk/clk-devres.c                      | 29 +++++++++++++++++++
- include/linux/clk.h                           | 13 +++++++++
- 3 files changed, 43 insertions(+)
+ Documentation/devicetree/bindings/watchdog/gpio-wdt.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-index cd8b6e657b94..8ee2557f9ad7 100644
---- a/Documentation/driver-api/driver-model/devres.rst
-+++ b/Documentation/driver-api/driver-model/devres.rst
-@@ -253,6 +253,7 @@ CLOCK
-   devm_clk_hw_register()
-   devm_of_clk_add_hw_provider()
-   devm_clk_hw_register_clkdev()
-+  devm_clk_prepare_enable()
+diff --git a/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt b/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+index 198794963786..527be6b30451 100644
+--- a/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
++++ b/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+@@ -17,6 +17,10 @@ Optional Properties:
+ - always-running: If the watchdog timer cannot be disabled, add this flag to
+   have the driver keep toggling the signal without a client. It will only cease
+   to toggle the signal when the device is open and the timeout elapsed.
++- clock-names: May contain the entry "delay" if the board has logic
++  that delays the reset signal from the watchdog and which requires an
++  external signal to function.
++- clocks: Phandles corresponding to the clock-names.
  
- DMA
-   dmaenginem_async_device_register()
-diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
-index be160764911b..d5bfa8cd7347 100644
---- a/drivers/clk/clk-devres.c
-+++ b/drivers/clk/clk-devres.c
-@@ -156,3 +156,32 @@ struct clk *devm_get_clk_from_child(struct device *dev,
- 	return clk;
- }
- EXPORT_SYMBOL(devm_get_clk_from_child);
-+
-+static void devm_clk_disable_unprepare(struct device *dev, void *res)
-+{
-+	clk_disable_unprepare(*(struct clk **)res);
-+}
-+
-+int devm_clk_prepare_enable(struct device *dev, struct clk *clk)
-+{
-+	struct clk **ptr;
-+	int ret;
-+
-+	if (!clk)
-+		return 0;
-+
-+	ptr = devres_alloc(devm_clk_disable_unprepare, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return -ENOMEM;
-+
-+	ret = clk_prepare_enable(clk);
-+	if (!ret) {
-+		*ptr = clk;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(devm_clk_prepare_enable);
-diff --git a/include/linux/clk.h b/include/linux/clk.h
-index 266e8de3cb51..04d135520480 100644
---- a/include/linux/clk.h
-+++ b/include/linux/clk.h
-@@ -485,6 +485,19 @@ struct clk *devm_clk_get_optional(struct device *dev, const char *id);
-  */
- struct clk *devm_get_clk_from_child(struct device *dev,
- 				    struct device_node *np, const char *con_id);
-+/**
-+ * devm_clk_prepare_enable - prepare and enable a clock source
-+ * @dev: device for clock "consumer"
-+ * @clk: clock source
-+ *
-+ * This function calls clk_prepare_enable() on @clk, and ensures the
-+ * clock will automatically be disabled and unprepared when the device
-+ * is unbound from the bus.
-+ *
-+ * Must not be called from within atomic context.
-+ */
-+int devm_clk_prepare_enable(struct device *dev, struct clk *clk);
-+
- /**
-  * clk_rate_exclusive_get - get exclusivity over the rate control of a
-  *                          producer
+ Example:
+ 	watchdog: watchdog {
+@@ -25,4 +29,6 @@ Example:
+ 		gpios = <&gpio3 9 GPIO_ACTIVE_LOW>;
+ 		hw_algo = "toggle";
+ 		hw_margin_ms = <1600>;
++		clock-names = "delay";
++		clocks = <&rtc 1>;
+ 	};
 -- 
 2.29.2
 
