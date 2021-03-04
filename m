@@ -2,80 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2D932D823
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0B032D824
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238632AbhCDQyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
+        id S238695AbhCDQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:54:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238613AbhCDQxv (ORCPT
+        with ESMTP id S238654AbhCDQyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:53:51 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AA6C061756;
-        Thu,  4 Mar 2021 08:53:11 -0800 (PST)
-Received: from Q.local (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 01AD527A;
-        Thu,  4 Mar 2021 17:53:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1614876789;
-        bh=EgoIjy06XpRjO0qHELBlmd9eCc8NGIkomXCVGwX+OBA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AWyqLiu9HO5G3vqleQdWaJm0GLAfmCDxU8LhuKPgl5d5cI0ynQlv6CItMPnc2Dcj3
-         sFtI3O7J/sb4+DGPU7wCERszr4vyrbRLWeI+IQ6h9dm8fG4JsvFi+whTEyaPrcwT0w
-         eLrkP59SndDQ/8X+8NmB7vzY6NsRIo0J4VAro0WI=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     Geert Uytterhoeven <geert@glider.be>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Subject: [PATCH] arm64: dts: renesas: falcon: Add GP LEDs
-Date:   Thu,  4 Mar 2021 16:53:00 +0000
-Message-Id: <20210304165300.295952-1-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 4 Mar 2021 11:54:10 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44D5C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:53:29 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id u16so10402634wrt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:53:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YnxlDtU5po5D1M53NldIE72sMInCUbrZRLnykBeu2V8=;
+        b=Ewxi+OReE6dJAiv1zXYkq05geSl/fq+jZkRgzrMwoyzv7/mX7eQzNkoXLfZA/H4WjA
+         dLxCRUQXjLaUaurQNnE2V1uuSVtL1ssUBtAdfk47+VjVE3TodqBAoyI+HNZr9jaugwih
+         QozPefxrDjjzljWSRoqtM5xVlGU9Pye4vHHgjW0WwQ5jmtTxzIbIessoty315fsV3Pto
+         3rUuogs9lyEX7c3FT883rgCuhQlAV95l3Ki/0K1GkqZhT2pUmINFxC/lBZLVmiOR6r0I
+         /mSml0hG8PHwm/dAmJQhv/t8QNpecklP1K6I1reeFu194Rh1icR2BB1MMK/v7koexmb3
+         k6ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YnxlDtU5po5D1M53NldIE72sMInCUbrZRLnykBeu2V8=;
+        b=J4j5Vj74nRYuuaHfEkppMyg17ZqS8nHrZNne8vluyanurWUv+jVqIeG2QVW+5bTtf4
+         EWc1+tmwhmDFaZw+t1K2bOC1k4H8rM8P/VYIep29B47V51wTNuxgjASU+Yeh8zGKuuyi
+         1dwSPIN6elQEGVNlRUvEOq8n9L9CyDBOwpxWRF8gyjD7Qxxz2WjTpS+CRHb9nG5pPCyn
+         i9ug4ek8ROQTTzYxTjxlzgmHZrrxSpN82oB63BSfJKHUE4UldSdO0YKuj3kzehMRFkRi
+         77YwWpKw6C7NrEuG2YBizTxaPgOtveMJpRJ6gDrLljbAX6rK5b/+13kD9HlIZX2yfcnV
+         wGqQ==
+X-Gm-Message-State: AOAM530ePWSQ9T33Nl4or+i32fT6AC6W8Cn357LC5/mkjz/yb3c/OprT
+        P6ds+aa7qb2GJeP2jPVE7gG6Ng==
+X-Google-Smtp-Source: ABdhPJxucLioKZo95wCuntF7BE0hNv7s/6tGhLvI6FsbewLBgkboHJnD6mezrJaZmVK15Kbq98zepg==
+X-Received: by 2002:adf:d1c2:: with SMTP id b2mr4922891wrd.424.1614876808222;
+        Thu, 04 Mar 2021 08:53:28 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.googlemail.com with ESMTPSA id b15sm36807595wrr.47.2021.03.04.08.53.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 08:53:27 -0800 (PST)
+Subject: Re: [PATCH] devfreq: Register devfreq as a cooling device
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     cwchoi00@gmail.com, kyungmin.park@samsung.com,
+        myungjoo.ham@samsung.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        "open list:DRM DRIVERS FOR LIMA" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DRM DRIVERS FOR LIMA" <lima@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+References: <20210304125034.28404-1-daniel.lezcano@linaro.org>
+ <5f06e0c5-b2d9-5e11-01b6-fdd0dac635a7@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <8d153937-c5fc-1de2-d510-d3f91f7a9724@linaro.org>
+Date:   Thu, 4 Mar 2021 17:53:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <5f06e0c5-b2d9-5e11-01b6-fdd0dac635a7@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three general purpose LEDs are provided on the Falcon CPU board.
 
-Connect GP_LED1, GP_LED2, and GP_LED3 to the gpio-leds frameworks.
-These LEDs are arranged in a block of four LEDs on the board itself, but
-the fourth LED is as yet unidentified.
+Hi Lukasz,
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
----
- arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+thanks for commenting this patch,
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-index 5617b81dd7dc..a18f84128fe1 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-@@ -20,6 +20,20 @@ aliases {
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led1 {
-+			gpios = <&gpio4 18 GPIO_ACTIVE_HIGH>;
-+		};
-+		led2 {
-+			gpios = <&gpio4 19 GPIO_ACTIVE_HIGH>;
-+		};
-+		led3 {
-+			gpios = <&gpio4 20 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
- };
- 
- &rwdt {
+On 04/03/2021 14:47, Lukasz Luba wrote:
+> Hi Daniel,
+> 
+> On 3/4/21 12:50 PM, Daniel Lezcano wrote:
+>> Currently the default behavior is to manually having the devfreq
+>> backend to register themselves as a devfreq cooling device.
+>>
+>> There are no so many and actually it makes more sense to register the
+>> devfreq device when adding it.
+>>
+>> Consequently, every devfreq becomes a cooling device like cpufreq is.
+>>
+>> Having a devfreq being registered as a cooling device can not mitigate
+>> a thermal zone if it is not bound to this one. Thus, the current
+>> configurations are not impacted by this change.
+> 
+> There are also different type of devices, which register into devfreq
+> framework like NoC buses, UFS/eMMC, jpeg and video accelerators, ISP,
+> etc.
+> In some platforms there are plenty of those devices and they all would
+> occupy memory due to private freq_table in devfreq_cooling, function:
+> devfreq_cooling_gen_tables().
+> 
+> IIRC in OdroidXU4 there are ~20 devfreq devs for NoC buses.
+
+I'm curious, do you have a pointer to such kernels having all those
+devfreq ?
+
+> It's true that they will not affect thermal zones, but unnecessarily,
+> they all will show up in the /sys/class/thermal/ as
+> thermal-devfreq-X
+>
+>
+> IMO the devfreq shouldn't be tight with devfreq cooling thermal.
+
+The energy model is tied with a cooling device initialization.
+
+So if we want to do power limitation, the energy model must be
+initialized with the device, thus the cooling device also.
+
+That is the reason why I'm ending up with this change. Chanwoo
+suggestion makes sense and that will allow to move the initialization to
+devfreq which is more sane but it does not solve the initial problem
+with the energy model.
+
+
+
+
 -- 
-2.25.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
