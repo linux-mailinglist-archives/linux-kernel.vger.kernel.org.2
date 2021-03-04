@@ -2,137 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00A532D296
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E3C32D297
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240287AbhCDMHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
+        id S240297AbhCDMHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:07:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240110AbhCDMHH (ORCPT
+        with ESMTP id S240115AbhCDMHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Mar 2021 07:07:07 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAA0C061225
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 04:06:09 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id w17so975679ejc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 04:06:09 -0800 (PST)
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AA9C061574;
+        Thu,  4 Mar 2021 04:06:21 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id a188so1354134pfb.4;
+        Thu, 04 Mar 2021 04:06:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L6kqHVgRXcGTejXZV+UwM9uyGX3tx7DzRfC3/Q/v2WM=;
-        b=A8YAAwJbPf/mDfZEPle56kQyjHalh7PJYSM0ijYG4qQwZk5lPRSAhvvIx8CWCahSIr
-         gjPmVtDOkfy7eOaiDJfdJLdI2yhdyKVVTKAbNZLT9Mg4EyD9G6S2fXRT9zxqfwp9jpYT
-         2IXKAiwfWaucGDGv1F4q5l++eipR134GvwLn1s2Rfh0TYSFsqI0pUTDd3LSBozATZHwS
-         XfH7ThGKIG5bAQ20eFxqutHCbtBOXiCaNYezOBt/y++QHLXO440cGmL5AAajQ2xN5c+S
-         dN3UiLcXw1P4sMUEqyp7Ml1leVxPUx/YFhLYp0c8xT2cJ1gUAt6xdOlzfRLXltLeMxJg
-         NZJQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EswTFml0EovRZwvm7N+4Am/tWxHry/QaP9co8emx5Hk=;
+        b=a0HrgnIAEDY/HQ8da6220TFE87D1clxuZAAav1yXnUxnd6wYjuWpKakktdDaNYZ4sD
+         t3AC67kg4N7+tBHJ00LN1x0sbN17PILZqRwzjflRzC9Nh6tGyTCYNDgy4RRksZHAbgLH
+         1ATI2C1B989SHO2v2xbklkuATe4YFg/g/JNcNk3ElG8oajobYuzsX9k8MTFsxDoOcTmV
+         mnIYy4Vpm0qfGJ3Axu0ouhmCQZc68YsAep+YYfVFKCKHHBzHizk9pTaglrqgNZ1mXlbW
+         6bAmIW5PVYWP65BsOocs+FaIO12FC6vKuNMTGv+Zh/Iqs4X5tobSSu7P/dcX/SQJzpz8
+         tmyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L6kqHVgRXcGTejXZV+UwM9uyGX3tx7DzRfC3/Q/v2WM=;
-        b=DlsM9Ox3BNn2j09B5CnDUzDL71fPkooMktmNEnJ40bc8/k18leIRrFH3lAjplfY5g5
-         lZByYFYGuiDvfHMaeXStAxsuKzP0Jnd444hrabhDLWuoP4jdBfAdyK9qPIAE9TTNllVD
-         5VmGMTc2uU+tdlBBjq6hlBM/djFk8WzHcJdkIjvha2nN6BwKTcbDHfiak4gaX7gzAjuX
-         M4VMitPA6rvX5zuaduX3sJKou90mKDc5wWEqimrd4c5stHpn2mRhz4+5H8dGxRPB7pDs
-         x9vzkj6o80WMRMTm2aC7joUKRFbv7P3Lf+kuPrGMMqnq2Vl6AkbBYthZ6NB4l55DNUI2
-         oJ+g==
-X-Gm-Message-State: AOAM5315SMLKvA3D3grfmPLYZhvVZ+/hNJmtXfTo24XXGp/0DvhUlTSM
-        LUTw5nVGuf26IRvGb+sGCZ0C8Q==
-X-Google-Smtp-Source: ABdhPJxZkDF6mr/G1/aQr7MK5ipPu4ir8YUy583pJz1UQL5iuV/1jAqlQga3cHnYIh9ezZKtKH6fwA==
-X-Received: by 2002:a17:906:f9db:: with SMTP id lj27mr3881177ejb.399.1614859568051;
-        Thu, 04 Mar 2021 04:06:08 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:102f:d6a:470a:340b:1b:29dd])
-        by smtp.gmail.com with ESMTPSA id cf6sm20464447edb.92.2021.03.04.04.06.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 04:06:07 -0800 (PST)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
-        robh+dt@kernel.org, angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: [PATCH v6 22/22] arm64: dts: sdm845-db845c: Enable ov8856 sensor and connect to ISP
-Date:   Thu,  4 Mar 2021 13:03:28 +0100
-Message-Id: <20210304120326.153966-23-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210304120326.153966-1-robert.foss@linaro.org>
-References: <20210304120326.153966-1-robert.foss@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EswTFml0EovRZwvm7N+4Am/tWxHry/QaP9co8emx5Hk=;
+        b=olqinUmF2FR6yqRYJL4H9NIjGZzPr6IjZCHpIpD5NvwHR2EuFz2lf8Te0dkT3Vbixh
+         Ik0I/bou9R650XPl95n6aIWB6zoiJHmuPveAKQfoJfuzfqmXX52wM5FLnllNvlUF/gcB
+         6TkErRZKpqbM2CRZJQnotw3ek2SRCsLrchhVwq1A9bNYYlVitfLhSZi8GBfhWrqhZ4hQ
+         1SCj/46BLxtrOwBQZTpJhl0XQKQeH6y8QpcgM1jB8mVjt8mXLwkuEmcfWg1zDOdQYxvv
+         xEIUPbSs5SM9LKjXlXcOdi9cZA58nEmpasamrXG9QukqqchxUJan5fLluGG7kp7vrapl
+         qsKg==
+X-Gm-Message-State: AOAM533pDN3z5dnYlOhK0cPbMY1BoiYHKqi57xzeMPJLbOURLP+WYniW
+        vFzL+kRsMNT7Bi8DyuvL4JDl1pDhBgta1Q==
+X-Google-Smtp-Source: ABdhPJyB5OMTWYjVcHiJk1EjQDyf+fDP7suWATkGBTtwT30EHbJ1Uf93hTaQKuLVG01M3MUAczs+SA==
+X-Received: by 2002:a63:ee4b:: with SMTP id n11mr3497058pgk.265.1614859581174;
+        Thu, 04 Mar 2021 04:06:21 -0800 (PST)
+Received: from localhost.localdomain ([203.90.233.36])
+        by smtp.gmail.com with ESMTPSA id y72sm28082394pfg.126.2021.03.04.04.06.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Mar 2021 04:06:20 -0800 (PST)
+From:   qiuxiaojin <qxj511mail@gmail.com>
+X-Google-Original-From: qiuxiaojin <qiuxiaojin@cvte.com>
+To:     pavel@ucw.cz, dmurphy@ti.com, qiuxiaojin@cvte.com
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: [PATCH] leds: add touch screen LED triggers
+Date:   Thu,  4 Mar 2021 20:04:49 +0800
+Message-Id: <20210304120449.10441-1-qiuxiaojin@cvte.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable camss & ov8856 DT nodes.
+Some LED devices support touch screen.
+This patch enables direct LED trigger controls by the driver.
+touch screen or pressure can be done simply by other driver space.
+Two trigger APIs are added, ledtrig_touch_panel_ctrl()
+and ledtrig_touch_pressure_ctrl().
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
 ---
+ drivers/leds/trigger/Kconfig                |  6 +++
+ drivers/leds/trigger/Makefile               |  1 +
+ drivers/leds/trigger/ledtrig-touch-screen.c | 56 +++++++++++++++++++++
+ include/linux/leds.h                        |  8 +++
+ 4 files changed, 71 insertions(+)
+ create mode 100644 drivers/leds/trigger/ledtrig-touch-screen.c
 
-
-Changes since v5
- - Andrey: Add r-b
- - Change CSI clock & data pins
-
-
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 5842ab65789c..ca00be42fe67 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -1108,6 +1108,21 @@ &cci {
+diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
+index ce9429ca6dde..e0802a71c4c2 100644
+--- a/drivers/leds/trigger/Kconfig
++++ b/drivers/leds/trigger/Kconfig
+@@ -144,4 +144,10 @@ config LEDS_TRIGGER_AUDIO
+ 	  the audio mute and mic-mute changes.
+ 	  If unsure, say N
  
- &camss {
- 	vdda-supply = <&vreg_l1a_0p875>;
++config LEDS_TRIGGER_TOUCH_SCREEN
++	tristate "LED Touch Screen Trigger"
++	help
++	  This allows LEDs to be controlled as a touch screen device.
++	  This enables direct touch on/off by the driver, kernel space.
++	  If unsure, say Y
+ endif # LEDS_TRIGGERS
+diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
+index 733a83e2a718..ff659f56f9ad 100644
+--- a/drivers/leds/trigger/Makefile
++++ b/drivers/leds/trigger/Makefile
+@@ -15,3 +15,4 @@ obj-$(CONFIG_LEDS_TRIGGER_PANIC)	+= ledtrig-panic.o
+ obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
+ obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
+ obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
++obj-$(CONFIG_LEDS_TRIGGER_TOUCH_SCREEN)	+= ledtrig-touch-screen.o
+diff --git a/drivers/leds/trigger/ledtrig-touch-screen.c b/drivers/leds/trigger/ledtrig-touch-screen.c
+new file mode 100644
+index 000000000000..9a80e9991f45
+--- /dev/null
++++ b/drivers/leds/trigger/ledtrig-touch-screen.c
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Touch Screen Control Trigger
++ *
++ * based on ledtrig-camera.c
++ *
++ * Copyright 2013 Texas Instruments
++ *
++ * Author: Milo(Woogyom) Kim <milo.kim@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
 +
-+	status = "ok";
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/leds.h>
 +
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			csiphy0_ep: endpoint {
-+				clock-lanes = <7>;
-+				data-lanes = <0 1 2 3>;
-+				remote-endpoint = <&ov8856_ep>;
-+			};
-+		};
-+	};
- };
++DEFINE_LED_TRIGGER(ledtrig_touch_panel);
++DEFINE_LED_TRIGGER(ledtrig_touch_pressure);
++
++void ledtrig_touch_panel_ctrl(bool on)
++{
++	enum led_brightness brt = on ? LED_FULL : LED_OFF;
++
++	led_trigger_event(ledtrig_touch_panel, brt);
++}
++EXPORT_SYMBOL_GPL(ledtrig_touch_panel_ctrl);
++
++void ledtrig_touch_pressure_ctrl(enum led_brightness brt)
++{
++	led_trigger_event(ledtrig_touch_pressure, brt);
++}
++EXPORT_SYMBOL_GPL(ledtrig_touch_pressure_ctrl);
++
++static int __init ledtrig_touch_screen_init(void)
++{
++	led_trigger_register_simple("ts_touch", &ledtrig_touch_panel);
++	led_trigger_register_simple("ts_pressure", &ledtrig_touch_pressure);
++	return 0;
++}
++module_init(ledtrig_touch_screen_init);
++
++static void __exit ledtrig_touch_screen_exit(void)
++{
++	led_trigger_unregister_simple(ledtrig_touch_pressure);
++	led_trigger_unregister_simple(ledtrig_touch_panel);
++}
++module_exit(ledtrig_touch_screen_exit);
++
++MODULE_DESCRIPTION("LED Trigger for Touch Screen Control");
++MODULE_AUTHOR("qiuxiaojin");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/leds.h b/include/linux/leds.h
+index 6a8d6409c993..cd1a4bd73185 100644
+--- a/include/linux/leds.h
++++ b/include/linux/leds.h
+@@ -481,6 +481,14 @@ static inline void ledtrig_flash_ctrl(bool on) {}
+ static inline void ledtrig_torch_ctrl(bool on) {}
+ #endif
  
- &cci_i2c0 {
-@@ -1139,7 +1154,7 @@ camera@10 {
- 		avdd-supply = <&cam0_avdd_2v8>;
- 		dvdd-supply = <&cam0_dvdd_1v2>;
- 
--		status = "disable";
-+		status = "ok";
- 
- 		port {
- 			ov8856_ep: endpoint {
-@@ -1147,7 +1162,7 @@ ov8856_ep: endpoint {
- 				link-frequencies = /bits/ 64
- 					<360000000 180000000>;
- 				data-lanes = <1 2 3 4>;
--//				remote-endpoint = <&csiphy0_ep>;
-+				remote-endpoint = <&csiphy0_ep>;
- 			};
- 		};
- 	};
++#if defined(CONFIG_LEDS_TRIGGER_TOUCH_SCREEN)
++extern void ledtrig_touch_panel_ctrl(bool on);
++extern void ledtrig_touch_pressure_ctrl(enum led_brightness brt);
++#else
++static inline void ledtrig_touch_panel_ctrl(bool on) {}
++static inline void ledtrig_touch_pressure_ctrl(enum led_brightness brt)
++#endif
++
+ /*
+  * Generic LED platform data for describing LED names and default triggers.
+  */
 -- 
-2.27.0
+2.21.0
 
