@@ -2,122 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D267632D6AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A914032D6B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234927AbhCDP30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:29:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        id S234907AbhCDPbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234896AbhCDP26 (ORCPT
+        with ESMTP id S234006AbhCDPb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:28:58 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A49C061574;
-        Thu,  4 Mar 2021 07:28:18 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id z7so16321162plk.7;
-        Thu, 04 Mar 2021 07:28:17 -0800 (PST)
+        Thu, 4 Mar 2021 10:31:26 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F568C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 07:30:46 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id f26so6675416oog.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 07:30:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=voTkZrGlRSJCOLgRJZZiHDWi2Mrxpand3AmKOnkZ67U=;
-        b=r40jKJTs8vzxnGzg4I9RQx/Am38K9HVQ0N/bND9UlFACT+lUDRa8hHKBNacwVOHeTs
-         Z+9Gf1W4ZXDmpjfON1G3l2Ju9Ip4ofe9Wza5Vo758clD3u1U6By40R3vxd4mCMVC/WEq
-         ljYgHwfpA3DgaEWJc3mb9NNaG9gkTy0R+1fctqoe9Ox9JRpszXI6vjQO2E4FsR1D1Z8c
-         8KUstw5knkjGDrecGqdF3zj/NcRuV8VW0pHnpEm9RypvPob2Hf1JN5bdYhYz+/c2Ed03
-         lfi/G0Lss/6EaKj3fRpd7Secb2xFLGhlQ8MV1wye+BvPUo8Fqf8QFeNEKHuFwq/C52MD
-         SXpg==
+        bh=YsbrBjQ4ejiQFiBXd0K2I2t5lmeYk0KLBpHXPT2nL3g=;
+        b=ZbSTgcxFwVsXX8cacvNImXqBk6nL/JKSCQkK8scwbdaJ7P4GYL5DdRitYj772F3UVb
+         nHY0yD6KlXNqJE+L9Pi7OVrD3aQQIplqSeILnDuA84nAGcWj/AxOngi3I6P1vRiwv+hW
+         idOi6ga0uJkAuYZMCZZgt1W49Wd8gkdaZum+jYs97edYqkMZqdpehf5Hx9yVUsmISKa1
+         NLIoME0vYh8Js3r4lhGvxJkgX2lazM75fPrd0jIvoYaeAqTv2SaEUimY7MOjszdisZ6o
+         zftRIiWcuRRMDCB8Qim3QODe0HfKi/AelrXYsQEIVw7szPOcXJDLEyCsJiR+U14eGnBb
+         IMqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=voTkZrGlRSJCOLgRJZZiHDWi2Mrxpand3AmKOnkZ67U=;
-        b=IWwA5uJTEgyiEo8PmFdr/+QIGkFnsy1EtxU14JFO5f3rtd+dFCPP16lR5aqWGO9E8v
-         oVWkz4zY9cCXyIIV1GSiNKA9z6AaX0EWjsTQ6C7wtPbRGaAQ39o5UEHAAHB8S226kw0U
-         M9BJmiBN56L6SnBeUmpISIWHk7TLteRPX4zAciPkbgwgD5H2XTO/kbEEVh2109LUMzac
-         eU4SnguN2yYl0ZKhXEvxoXRJw1nL1pImJB7yBC4igsgsq8q4qP9AU47FnLhOSLm8pUOg
-         rwb489JfgfVNe1m6IeL0Xd3WG33u3sRUBEDQ6Gzwpk5+UJ6RSeKc+icHMX2BfIjNeHlg
-         zxMA==
-X-Gm-Message-State: AOAM530maPcjF/roh7/Q+XC+Hmcq/LuZMMXwBLuMXXBLEL6Qpc9iR79Z
-        iDge0NsE4OE+cn4Y17JRN9NlvozAvvcKZiynxDg=
-X-Google-Smtp-Source: ABdhPJxKEeUzPdwe0f5tmVUofXEupPB53AcS5fgkw8fRL/2PAPZuNrqdpzm+dsbulsNvn30KlUqd/bxPCejSdhBKPIk=
-X-Received: by 2002:a17:902:a710:b029:e3:b18:7e5b with SMTP id
- w16-20020a170902a710b02900e30b187e5bmr4260601plq.17.1614871697595; Thu, 04
- Mar 2021 07:28:17 -0800 (PST)
+        bh=YsbrBjQ4ejiQFiBXd0K2I2t5lmeYk0KLBpHXPT2nL3g=;
+        b=QEg2lol2IPvfRMH4qB2mwpCjJkX2TYN8dtoydvH9JD7jvY8K3fgqJCmpdr1aqMs2bn
+         BZA2wConw1+mUuaWcniVS6fwLDBwFb1AMYNWPvp34bgNPZsAv8XNDnm2ZdaCVx31gxdk
+         e7to8sdRPS/EVYeZaEj1DCL7quRz0dIatdA2zVFGGeXZ9AsyEDZrPPi1yzYxfNx9A8SJ
+         PJwIRt4y3+2BkqcpvKciRd06yY+PKKkSyKQn/7djW6/2KzM1tR3meoho/G+OGqDwr4q5
+         KmhywXoCzszwAjbRN5PpBVDaiLFztDnxP4llMisCSLzch4w3zvOqiC93nSexmw93Pxbs
+         LNtg==
+X-Gm-Message-State: AOAM530p/RhWfAJlQFZ3+EHB7/cFaDdaeTPbU1FqOzm382/KrD2PmurS
+        u/+o45PnA+iWXYJ9DYGVwf9FjG4+koe1xZwedM+J4gwDbjY=
+X-Google-Smtp-Source: ABdhPJxwWfhCLZ/Ry11Sw8qKBy3AkxAR0n0dJiFMrBMUt5ATFagcLEL89wFGXjzG8+FRsArb8luNHCOKKV+KiQWPxL8=
+X-Received: by 2002:a4a:a105:: with SMTP id i5mr3765483ool.54.1614871845744;
+ Thu, 04 Mar 2021 07:30:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20210304085710.7128-1-noltari@gmail.com> <20210304085710.7128-3-noltari@gmail.com>
- <CAHp75VcpGNaQDR5puEX3nTGOQC0vHNjCje3MLLynoBHdjEi0_w@mail.gmail.com>
- <9A8A595D-2556-4493-AA96-41A3C3E39292@gmail.com> <CAHp75VdJGh=Vy=kJr2CemPbSa-amYykNoYd0-jaz0utdC_bkbg@mail.gmail.com>
- <0504ADC2-0DD5-4E9E-B7DF-353B4EBAB6B4@gmail.com>
-In-Reply-To: <0504ADC2-0DD5-4E9E-B7DF-353B4EBAB6B4@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 4 Mar 2021 17:28:01 +0200
-Message-ID: <CAHp75VdkCxBeh_cWwN9dKRpEMntMp22yVjWRCuYumhMzrWi+SA@mail.gmail.com>
-Subject: Re: [PATCH v4 02/15] gpio: regmap: set gpio_chip of_node
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
+ <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
+ <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu> <YD+o5QkCZN97mH8/@elver.google.com>
+ <20210304145730.GC54534@C02TD0UTHF1T.local>
+In-Reply-To: <20210304145730.GC54534@C02TD0UTHF1T.local>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 4 Mar 2021 16:30:34 +0100
+Message-ID: <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
+Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
+ save_stack_trace() and friends
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        broonie@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 5:24 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
-ail.com> wrote:
-> > El 4 mar 2021, a las 16:17, Andy Shevchenko <andy.shevchenko@gmail.com>=
- escribi=C3=B3:
-> > On Thu, Mar 4, 2021 at 5:06 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltar=
-i@gmail.com> wrote:
-> >>> El 4 mar 2021, a las 11:35, Andy Shevchenko <andy.shevchenko@gmail.co=
-m> escribi=C3=B3:
-> >>> On Thu, Mar 4, 2021 at 10:57 AM =C3=81lvaro Fern=C3=A1ndez Rojas
-> >>> <noltari@gmail.com> wrote:
-> >
-> >>>> + * @of_node:           (Optional) The device node
-> >>>
-> >>>> +       struct device_node *of_node;
-> >>>
-> >>> Can we use fwnode from day 1, please?
-> >>
-> >> Could you explain this? I haven=E2=80=99t dealt with fwnode never :$
-> >> BTW, this is done to fix this check when parsing gpio ranges:
-> >> https://github.com/torvalds/linux/blob/f69d02e37a85645aa90d18cacfff36d=
-ba370f797/drivers/gpio/gpiolib-of.c#L933-L934
-> >
-> > Use struct fwnode_handle pointer instead of OF-specific one.
+On Thu, 4 Mar 2021 at 15:57, Mark Rutland <mark.rutland@arm.com> wrote:
+> [adding Mark Brown]
 >
-> But is that compatible with the current gpiolib-of code? :$
-
-Yes (after a bit of amendment I have sent today as v2:
-https://lore.kernel.org/linux-gpio/20210304150215.80652-1-andriy.shevchenko=
-@linux.intel.com/T/#u).
-
-> > Also here is the question, why do you need to have that field in the
-> > regmap config structure and can't simply use the parent's fwnode?
-> > Also I'm puzzled why it's not working w/o this patch: GPIO library
-> > effectively assigns parent's fwnode (okay, of_node right now).
+> On Wed, Mar 03, 2021 at 04:20:43PM +0100, Marco Elver wrote:
+> > On Wed, Mar 03, 2021 at 03:52PM +0100, Christophe Leroy wrote:
+> > > Le 03/03/2021 =C3=AF=C2=BF=C2=BD 15:38, Marco Elver a =C3=AF=C2=BF=C2=
+=BDcrit=C3=AF=C2=BF=C2=BD:
+> > > > On Wed, 3 Mar 2021 at 15:09, Christophe Leroy
+> > > > <christophe.leroy@csgroup.eu> wrote:
+> > > > >
+> > > > > It seems like all other sane architectures, namely x86 and arm64
+> > > > > at least, include the running function as top entry when saving
+> > > > > stack trace.
+> > > > >
+> > > > > Functionnalities like KFENCE expect it.
+> > > > >
+> > > > > Do the same on powerpc, it allows KFENCE to properly identify the=
+ faulting
+> > > > > function as depicted below. Before the patch KFENCE was identifyi=
+ng
+> > > > > finish_task_switch.isra as the faulting function.
+> > > > >
+> > > > > [   14.937370] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > [   14.948692] BUG: KFENCE: invalid read in test_invalid_access+0=
+x54/0x108
+> > > > > [   14.948692]
+> > > > > [   14.956814] Invalid read at 0xdf98800a:
+> > > > > [   14.960664]  test_invalid_access+0x54/0x108
+> > > > > [   14.964876]  finish_task_switch.isra.0+0x54/0x23c
+> > > > > [   14.969606]  kunit_try_run_case+0x5c/0xd0
+> > > > > [   14.973658]  kunit_generic_run_threadfn_adapter+0x24/0x30
+> > > > > [   14.979079]  kthread+0x15c/0x174
+> > > > > [   14.982342]  ret_from_kernel_thread+0x14/0x1c
+> > > > > [   14.986731]
+> > > > > [   14.988236] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G  =
+  B             5.12.0-rc1-01537-g95f6e2088d7e-dirty #4682
+> > > > > [   14.999795] NIP:  c016ec2c LR: c02f517c CTR: c016ebd8
+> > > > > [   15.004851] REGS: e2449d90 TRAP: 0301   Tainted: G    B       =
+       (5.12.0-rc1-01537-g95f6e2088d7e-dirty)
+> > > > > [   15.015274] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER=
+: 00000000
+> > > > > [   15.022043] DAR: df98800a DSISR: 20000000
+> > > > > [   15.022043] GPR00: c02f517c e2449e50 c1142080 e100dd24 c084b13=
+c 00000008 c084b32b c016ebd8
+> > > > > [   15.022043] GPR08: c0850000 df988000 c0d10000 e2449eb0 2200028=
+8
+> > > > > [   15.040581] NIP [c016ec2c] test_invalid_access+0x54/0x108
+> > > > > [   15.046010] LR [c02f517c] kunit_try_run_case+0x5c/0xd0
+> > > > > [   15.051181] Call Trace:
+> > > > > [   15.053637] [e2449e50] [c005a68c] finish_task_switch.isra.0+0x=
+54/0x23c (unreliable)
+> > > > > [   15.061338] [e2449eb0] [c02f517c] kunit_try_run_case+0x5c/0xd0
+> > > > > [   15.067215] [e2449ed0] [c02f648c] kunit_generic_run_threadfn_a=
+dapter+0x24/0x30
+> > > > > [   15.074472] [e2449ef0] [c004e7b0] kthread+0x15c/0x174
+> > > > > [   15.079571] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/=
+0x1c
+> > > > > [   15.085798] Instruction dump:
+> > > > > [   15.088784] 8129d608 38e7ebd8 81020280 911f004c 39000000 995f0=
+024 907f0028 90ff001c
+> > > > > [   15.096613] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 390=
+8adb0 812a4b98 3d40c02f
+> > > > > [   15.104612] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > >
+> > > > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > > >
+> > > > Acked-by: Marco Elver <elver@google.com>
+> > > >
+> > > > Thank you, I think this looks like the right solution. Just a quest=
+ion below:
+> > > >
+> > > ...
+> > >
+> > > > > @@ -59,23 +70,26 @@ void save_stack_trace(struct stack_trace *tra=
+ce)
+> > > > >
+> > > > >          sp =3D current_stack_frame();
+> > > > >
+> > > > > -       save_context_stack(trace, sp, current, 1);
+> > > > > +       save_context_stack(trace, sp, (unsigned long)save_stack_t=
+race, current, 1);
+> > > >
+> > > > This causes ip =3D=3D save_stack_trace and also below for
+> > > > save_stack_trace_tsk. Does this mean save_stack_trace() is included=
+ in
+> > > > the trace? Looking at kernel/stacktrace.c, I think the library want=
+s
+> > > > to exclude itself from the trace, as it does '.skip =3D skipnr + 1'=
+ (and
+> > > > '.skip   =3D skipnr + (current =3D=3D tsk)' for the _tsk variant).
+> > > >
+> > > > If the arch-helper here is included, should this use _RET_IP_ inste=
+ad?
+> > > >
+> > >
+> > > Don't really know, I was inspired by arm64 which has:
+> > >
+> > > void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cook=
+ie,
+> > >                  struct task_struct *task, struct pt_regs *regs)
+> > > {
+> > >     struct stackframe frame;
+> > >
+> > >     if (regs)
+> > >             start_backtrace(&frame, regs->regs[29], regs->pc);
+> > >     else if (task =3D=3D current)
+> > >             start_backtrace(&frame,
+> > >                             (unsigned long)__builtin_frame_address(0)=
+,
+> > >                             (unsigned long)arch_stack_walk);
+> > >     else
+> > >             start_backtrace(&frame, thread_saved_fp(task),
+> > >                             thread_saved_pc(task));
+> > >
+> > >     walk_stackframe(task, &frame, consume_entry, cookie);
+> > > }
+> > >
+> > > But looking at x86 you may be right, so what should be done really ?
+> >
+> > x86:
+> >
+> > [    2.843292] calling stack_trace_save:
+> > [    2.843705]  test_func+0x6c/0x118
+> > [    2.844184]  do_one_initcall+0x58/0x270
+> > [    2.844618]  kernel_init_freeable+0x1da/0x23a
+> > [    2.845110]  kernel_init+0xc/0x166
+> > [    2.845494]  ret_from_fork+0x22/0x30
+> >
+> > [    2.867525] calling stack_trace_save_tsk:
+> > [    2.868017]  test_func+0xa9/0x118
+> > [    2.868530]  do_one_initcall+0x58/0x270
+> > [    2.869003]  kernel_init_freeable+0x1da/0x23a
+> > [    2.869535]  kernel_init+0xc/0x166
+> > [    2.869957]  ret_from_fork+0x22/0x30
+> >
+> > arm64:
+> >
+> > [    3.786911] calling stack_trace_save:
+> > [    3.787147]  stack_trace_save+0x50/0x78
+> > [    3.787443]  test_func+0x84/0x13c
+> > [    3.787738]  do_one_initcall+0x5c/0x310
+> > [    3.788099]  kernel_init_freeable+0x214/0x294
+> > [    3.788363]  kernel_init+0x18/0x164
+> > [    3.788585]  ret_from_fork+0x10/0x30
+> >
+> > [    3.803615] calling stack_trace_save_tsk:
+> > [    3.804266]  stack_trace_save_tsk+0x9c/0x100
+> > [    3.804541]  test_func+0xc4/0x13c
+> > [    3.804803]  do_one_initcall+0x5c/0x310
+> > [    3.805031]  kernel_init_freeable+0x214/0x294
+> > [    3.805284]  kernel_init+0x18/0x164
+> > [    3.805505]  ret_from_fork+0x10/0x30
+> >
+> > +Cc arm64 folks.
+> >
+> > So I think the arm64 version also has a bug, because I think a user of
+> > <linux/stacktrace.h> really doesn't care about the library function
+> > itself. And from reading kernel/stacktrace.c I think it wants to exclud=
+e
+> > itself entirely.
+> >
+> > It's a shame that <linux/stacktrace.h> isn't better documented, but I'm
+> > pretty sure that including the library functions in the trace is not
+> > useful.
 >
-> Because gpio regmap a child node of the pin controller, which is the one =
-probed (gpio regmap is probed from the pin controller).
-> Therefore the parent=E2=80=99s fwnode is useless, since the correct gpio_=
-chip node is the child's one (we have pin-ranges declared in the child node=
-, referencing the parent pinctrl node).
+> I agree this behaviour isn't desireable, and that the lack of
+> documentation is unfortunate.
+>
+> It looks like GCC is happy to give us the function-entry-time FP if we us=
+e
+> __builtin_frame_address(1), and assuming clang is similarly happy we can =
+do:
+>
+> | diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktr=
+ace.c
+> | index ad20981dfda4..5dfbf915eb7f 100644
+> | --- a/arch/arm64/kernel/stacktrace.c
+> | +++ b/arch/arm64/kernel/stacktrace.c
+> | @@ -203,8 +203,8 @@ void arch_stack_walk(stack_trace_consume_fn consume=
+_entry, void *cookie,
+> |                 start_backtrace(&frame, regs->regs[29], regs->pc);
+> |         else if (task =3D=3D current)
+> |                 start_backtrace(&frame,
+> | -                               (unsigned long)__builtin_frame_address(=
+0),
+> | -                               (unsigned long)arch_stack_walk);
+> | +                               (unsigned long)__builtin_frame_address(=
+1),
+> | +                               (unsigned long)__builtin_return_address=
+(0));
+> |         else
+> |                 start_backtrace(&frame, thread_saved_fp(task),
+> |                                 thread_saved_pc(task));
+>
+> ... such that arch_stack_walk() will try to avoid including itself in a
+> trace, and so the existing skipping should (w/ caveats below) skip
+> stack_trace_save() or stack_trace_save_tsk().
 
-I see. Can you point me out to the code where we get the node and
-where it's being retrieved / filled?
+Thank you! Yes, that works.
 
---=20
-With Best Regards,
-Andy Shevchenko
+> If that works for you, I can spin that as a patch, though we'll need to
+> check that doesn't introduce a new fencepost error elsewhere.
+>
+> The bigger problem here is that skipping is dodgy to begin with, and
+> this is still liable to break in some cases. One big concern is that
+> (especially with LTO) we cannot guarantee the compiler will not inline
+> or outline functions, causing the skipp value to be too large or too
+> small. That's liable to happen to callers, and in theory (though
+> unlikely in practice), portions of arch_stack_walk() or
+> stack_trace_save() could get outlined too.
+>
+> Unless we can get some strong guarantees from compiler folk such that we
+> can guarantee a specific function acts boundary for unwinding (and
+> doesn't itself get split, etc), the only reliable way I can think to
+> solve this requires an assembly trampoline. Whatever we do is liable to
+> need some invasive rework.
+
+Will LTO and friends respect 'noinline'? One thing I also noticed is
+that tail calls would also cause the stack trace to appear somewhat
+incomplete (for some of my tests I've disabled tail call
+optimizations). Is there a way to also mark a function
+non-tail-callable? But I'm also not sure if with all that we'd be
+guaranteed the code we want, even though in practice it might.
+
+Thanks,
+-- Marco
