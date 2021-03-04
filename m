@@ -2,140 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11CE32D8F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AA732D8EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240096AbhCDRrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:47:31 -0500
-Received: from mga03.intel.com ([134.134.136.65]:29565 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238885AbhCDRrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:47:16 -0500
-IronPort-SDR: X1zaUizYHujaNnDwhrb1aZT5qTgFJI1/epypBMovzeMCqkdtCx8bmefoKEFEiTDKythBVxKptS
- eGbXFr5qAI+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="187517195"
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="187517195"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 09:43:47 -0800
-IronPort-SDR: mAlWpKOZKEpvY0SmGMBDm5RRe6QJJdnh0KUxB8DpjbEG7MHIzGWbj1rly16CjcOejbx4bxe9LP
- bGhX6pFCtY4w==
-X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
-   d="scan'208";a="368260744"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 09:43:47 -0800
-Date:   Thu, 4 Mar 2021 09:46:03 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
-Message-ID: <20210304094603.4ab6c1c4@jacob-builder>
-In-Reply-To: <YECtMZNqSgh7jkGP@myrica>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
-        <YD+u3CXhwOi2LC+4@slm.duckdns.org>
-        <20210303131726.7a8cb169@jacob-builder>
-        <20210303160205.151d114e@jacob-builder>
-        <YECtMZNqSgh7jkGP@myrica>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S240017AbhCDRrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 12:47:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239608AbhCDRqg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 12:46:36 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C32AC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:45:26 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id l22so8849572wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:45:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rXaJslfVGFd4I1PVUecAya+J9M63qQzcgrFaUeqS3G4=;
+        b=poIaEQhPZD7c97Ta/89fLbRAqxE/l89mKOqvE1YNyap6A1vnRsTYPN8jrCQSGU7QaE
+         ntIVgtj2PKU4lY2Jso2EDiL7qSPDA2It/LDLru2j0Yo0y/gw8HybtGU5KZLAQ2dzZpZW
+         e7T/bT2TQkpDST5xyOYltrtBTignnGYUNSllXb7aJ5cO64U4bv8IiaoXUERkMeC2hRnz
+         xCMUs0dyiVr7R6AGPLk7aBuGY7RNqQhTr5dMzJToZj0yZi/hBKKJk9J7AoP4X0FCekaA
+         j3mZHJnXiF4lvQExiACTenvElYT8VrrupGjHJRsqxN0Uiyjg2ejZIXsOn0oeSB5mokki
+         cHSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rXaJslfVGFd4I1PVUecAya+J9M63qQzcgrFaUeqS3G4=;
+        b=rGmF66dGENGUq9467kYqVBTMUyJj00PdFeVw5h8sF/wrDD0BG67j4c8c5G6yLLlJwe
+         5mGhY8frdFPDo3vh1T6+SnLGCYTAOgr8tzh9NyAeOuhJ/cKxKSWsNsyfQ07+CcDCfPUd
+         XthZsA2rtzFIsGQxosmjVtwd78f2JpzYYWRi3tN+51BAFY31r3tSDK8QO61oH1likqLE
+         tzfo7NG4eRL9ujwH4KJTSXqsbP3L0EpGIwavh1Za6YjHLk5m+CUZdYNHtPhXYen8min3
+         BBiPr5n3+3PUE3YrwWWPqe0FvzbhFgdPaTGn8xptNAdzaR/XCXj9nk1aWYpxPiwlaXQk
+         MFow==
+X-Gm-Message-State: AOAM531nsGWqXx95NGhzXef7LTODeqTaVJ5pBdhQ8GNmUYMfUFYEhhe7
+        fDNAuTsSenUo/SEB6t+3zS7gSA==
+X-Google-Smtp-Source: ABdhPJwiBl226sC48a8NyG5YjwNz/OiBuc8bTc64WtoijosTkoWHfL2y9wF7qfDCJVv6CcbrPsHlyA==
+X-Received: by 2002:a1c:2ed4:: with SMTP id u203mr5182877wmu.45.1614879924889;
+        Thu, 04 Mar 2021 09:45:24 -0800 (PST)
+Received: from localhost.localdomain ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id a21sm271023wmb.5.2021.03.04.09.45.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Mar 2021 09:45:24 -0800 (PST)
+From:   Paolo Valente <paolo.valente@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Valente <paolo.valente@linaro.org>
+Subject: [PATCH BUGFIX/IMPROVEMENT V2 0/6] revised version of third and last batch of patches
+Date:   Thu,  4 Mar 2021 18:46:21 +0100
+Message-Id: <20210304174627.161-1-paolo.valente@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jean-Philippe,
+Hi,
+this is the V2 for the third and last batches of patches that I
+proposed recently [1].
 
-On Thu, 4 Mar 2021 10:49:37 +0100, Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
+I've tried to address all issues raised in [1].
 
-> On Wed, Mar 03, 2021 at 04:02:05PM -0800, Jacob Pan wrote:
-> > Hi Jacob,
-> > 
-> > On Wed, 3 Mar 2021 13:17:26 -0800, Jacob Pan
-> > <jacob.jun.pan@linux.intel.com> wrote:
-> >   
-> > > Hi Tejun,
-> > > 
-> > > On Wed, 3 Mar 2021 10:44:28 -0500, Tejun Heo <tj@kernel.org> wrote:
-> > >   
-> > > > On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:    
-> > > > > IOASIDs are used to associate DMA requests with virtual address
-> > > > > spaces. They are a system-wide limited resource made available to
-> > > > > the userspace applications. Let it be VMs or user-space device
-> > > > > drivers.
-> > > > > 
-> > > > > This RFC patch introduces a cgroup controller to address the
-> > > > > following problems:
-> > > > > 1. Some user applications exhaust all the available IOASIDs thus
-> > > > > depriving others of the same host.
-> > > > > 2. System admins need to provision VMs based on their needs for
-> > > > > IOASIDs, e.g. the number of VMs with assigned devices that perform
-> > > > > DMA requests with PASID.      
-> > > > 
-> > > > Please take a look at the proposed misc controller:
-> > > > 
-> > > >  http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
-> > > > 
-> > > > Would that fit your bill?    
-> > > The interface definitely can be reused. But IOASID has a different
-> > > behavior in terms of migration and ownership checking. I guess SEV key
-> > > IDs are not tied to a process whereas IOASIDs are. Perhaps this can be
-> > > solved by adding
-> > > +	.can_attach	= ioasids_can_attach,
-> > > +	.cancel_attach	= ioasids_cancel_attach,
-> > > Let me give it a try and come back.
-> > >   
-> > While I am trying to fit the IOASIDs cgroup in to the misc cgroup
-> > proposal. I'd like to have a direction check on whether this idea of
-> > using cgroup for IOASID/PASID resource management is viable.  
-> 
-> Yes, even for host SVA it would be good to have a cgroup. Currently the
-> number of shared address spaces is naturally limited by number of
-> processes, which can be controlled with rlimit and cgroup. But on Arm the
-> hardware limit on shared address spaces is 64k (number of ASIDs), easily
-> exhausted with the default PASID and PID limits. So a cgroup for managing
-> this resource is more than welcome.
-> 
-> It looks like your current implementation is very dependent on
-> IOASID_SET_TYPE_MM?  I'll need to do more reading about cgroup to see how
-> easily it can be adapted to host SVA which uses IOASID_SET_TYPE_NULL.
-> 
-Right, I was assuming have three use cases of IOASIDs:
-1. host supervisor SVA (not a concern, just one init_mm to bind)
-2. host user SVA, either one IOASID per process or perhaps some private
-IOASID for private address space
-3. VM use for guest SVA, each IOASID is bound to a guest process
-
-My current cgroup proposal applies to #3 with IOASID_SET_TYPE_MM, which is
-allocated by the new /dev/ioasid interface.
-
-For #2, I was thinking you can limit the host process via PIDs cgroup? i.e.
-limit fork. So the host IOASIDs are currently allocated from the system pool
-with quota of chosen by iommu_sva_init() in my patch, 0 means unlimited use
-whatever is available. https://lkml.org/lkml/2021/2/28/18
-
-
-> Thanks,
-> Jean
-
+In more detail, main changes for V1 are:
+1. I've improved code as requested in "block, bfq: merge bursts of
+newly-created queues"
+2. I've improved comments as requested in "block, bfq: put reqs of
+waker and woken in dispatch list"
 
 Thanks,
+Paolo
 
-Jacob
+[1] https://www.spinics.net/lists/linux-block/msg64333.html
+
+Paolo Valente (6):
+  block, bfq: always inject I/O of queues blocked by wakers
+  block, bfq: put reqs of waker and woken in dispatch list
+  block, bfq: make shared queues inherit wakers
+  block, bfq: fix weight-raising resume with !low_latency
+  block, bfq: keep shared queues out of the waker mechanism
+  block, bfq: merge bursts of newly-created queues
+
+ block/bfq-cgroup.c  |   2 +
+ block/bfq-iosched.c | 399 +++++++++++++++++++++++++++++++++++++++++---
+ block/bfq-iosched.h |  15 ++
+ block/bfq-wf2q.c    |   8 +
+ 4 files changed, 402 insertions(+), 22 deletions(-)
+
+--
+2.20.1
