@@ -2,91 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022B932D88B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5350A32D897
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239255AbhCDRZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:25:11 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:37729 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235312AbhCDRY5 (ORCPT
+        id S238292AbhCDR0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 12:26:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239321AbhCDRZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:24:57 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 140B022234;
-        Thu,  4 Mar 2021 18:24:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614878655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8leGGOIllg2Pcj6YAxzqPRQC7qBgzYYE3S5qurTfY54=;
-        b=srDRU9NNYJH4B+t8TOFUb5PW7UcEAjU98lrAXmgbkznEudWIwmObRJsvwekZn7YgZMLH+7
-        clIfjZWB0StdARntUPAVDUhjiHk7yFLYJUBp4f8fLWihVRcYe0yp6Kw+zqhekFJdcVLylm
-        eqdsc4ojmqpvjJbxcuqUSbX/Lzxn6xo=
+        Thu, 4 Mar 2021 12:25:50 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DA4C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:25:09 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id dm26so12358128edb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:25:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dd7KDNO7pXIdpuZcWLRKydfKVZxOAkBI513NtjiUXYg=;
+        b=Mm9ylSDEP1rqfd0aVL1Di4z7YCAEZYd/dpG3P6vR3IkqX8ZMMiFfgYAKG3A43crKUc
+         wf1HqeMvDdrAxM00Ku1xpoPGq5dxO8bnXVjID5DBG5NsoHu2LeFZQdDhG4DEOZayGpEm
+         yU+2tmol8R+C7UYNI4+rBwOBDEW4CpIDfRb/KKjXZiH+c6ukV80gPtKr4wfOSPewRDue
+         NFSRfJaRRY3TKHLizFYcOSszDHS5zA7o+NiLkWIr65TG8+RPZwFir8s9xrPjxFg4exSU
+         dXLrzbLNpiHV1moyridKAushV2o6onEzhTsdoAX7VBQpoosJFMpzHNvzklAohMguka07
+         w5Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dd7KDNO7pXIdpuZcWLRKydfKVZxOAkBI513NtjiUXYg=;
+        b=fm4Cag1TdHFCt1Vg3i9UTAZdU4R2gcDevfHD9SPeIwLuiIiJOqB3yBXbBrj0HpXzrC
+         lV1FSBFM1V35CSkS7S01ROJSeDw/+bX1fYjbbO94MIj4ijJK+YaXPC+enf+EIOFxAI0A
+         1ecoOqn+KLHzk7kW9I1iHVGrY4nZNUD14DdGWgT3LeYjeJwYqu2eycjGpC4kmtjTTt+D
+         vn3uOmwABnbLSOV4xBb0dJzfZzUqS56jGPJB+kSioPOt0KgFzz0DmNK3wf+EX9LdVXum
+         Aywmu1BBLu2+vNp8dQ/L0yPE1dC+RWkSAOumodadUTCI75WMnL6iDvELuUc1yC+BCExG
+         uR/w==
+X-Gm-Message-State: AOAM531edkYyEe7riuD+tDLsLPCysUqkmD4nKlR/ozgDdkPqFIjRAHkw
+        1pGck5rnhe25vVDoE9eMaKRMHIKb1bu8PelQTMTgSA==
+X-Google-Smtp-Source: ABdhPJysnDIHieJcbdfHeNgL/sMVb+rIR8ooa1wFRpFL2X9KykSKEnKjaXWf1t6w7e5hqXA2FugzD+PsQVjqmfHVstE=
+X-Received: by 2002:aa7:dd99:: with SMTP id g25mr5459320edv.230.1614878707950;
+ Thu, 04 Mar 2021 09:25:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 04 Mar 2021 18:24:12 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 02/15] gpio: regmap: set gpio_chip of_node
-In-Reply-To: <CAHp75Ve9uW6+kpNmsG2BaaOymoAKXPdebNCfRnxUpAZoQnfZ0Q@mail.gmail.com>
-References: <20210304085710.7128-1-noltari@gmail.com>
- <20210304085710.7128-3-noltari@gmail.com>
- <CAHp75VcpGNaQDR5puEX3nTGOQC0vHNjCje3MLLynoBHdjEi0_w@mail.gmail.com>
- <9A8A595D-2556-4493-AA96-41A3C3E39292@gmail.com>
- <CAHp75VdJGh=Vy=kJr2CemPbSa-amYykNoYd0-jaz0utdC_bkbg@mail.gmail.com>
- <0504ADC2-0DD5-4E9E-B7DF-353B4EBAB6B4@gmail.com>
- <CAHp75VdkCxBeh_cWwN9dKRpEMntMp22yVjWRCuYumhMzrWi+SA@mail.gmail.com>
- <68F60F3F-33DD-4183-84F9-8D62BFA8A8F1@gmail.com>
- <CAHp75VdJ0=EewuHW2Ja5MQ=e9q0njGun8iN5Q6JWUxe=CLB=MQ@mail.gmail.com>
- <CAHp75Ve9uW6+kpNmsG2BaaOymoAKXPdebNCfRnxUpAZoQnfZ0Q@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <4839e31730b22004f1ebe9510d3823ce@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210222115149.3606776-1-raychi@google.com> <20210222115149.3606776-2-raychi@google.com>
+In-Reply-To: <20210222115149.3606776-2-raychi@google.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 4 Mar 2021 22:54:56 +0530
+Message-ID: <CA+G9fYvVdQ7t3AkguKXJDG5iNEpSXfF=U189ZPVz21tWQ3r+dg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] usb: dwc3: add a power supply for current control
+To:     Ray Chi <raychi@google.com>, linux-mips@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>, kyletso@google.com,
+        badhri@google.com, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-04 17:46, schrieb Andy Shevchenko:
-> On Thu, Mar 4, 2021 at 6:33 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->> On Thu, Mar 4, 2021 at 5:44 PM Álvaro Fernández Rojas 
->> <noltari@gmail.com> wrote:
-> 
-> Let me summarize what we can do this independently on any of my
-> patches and be okay with.
-> 
-> In the regmap GPIO configuration you supply struct fwnode_handle 
-> *fwnode.
-> You can you fwnode API in the actual GPIO controller driver.
-> Inside gpio-regmap simply do this for now
-> 
-> gc->of_node = to_of_node(config->fwnode);
+While building linux next 20210304 the following builds failed,
+ - mips (cavium_octeon_defconfig) with gcc-8
+ - mips (cavium_octeon_defconfig) with gcc-9
+ - mips (cavium_octeon_defconfig) with gcc-10
 
-If doing so, can we please have a comment saying that config->fwnode
-might be NULL in which case the fwnode of the parent is used?
+On Mon, 22 Feb 2021 at 17:24, Ray Chi <raychi@google.com> wrote:
+>
+> Currently, VBUS draw callback does no action when the
+> generic PHYs are used. This patch adds an additional
+> path to control charging current through power supply
+> interface.
+>
+> Signed-off-by: Ray Chi <raychi@google.com>
+> ---
+>  drivers/usb/dwc3/core.c | 15 +++++++++++++++
+>  drivers/usb/dwc3/core.h |  4 ++++
+>  2 files changed, 19 insertions(+)
+>
+> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> index f2448d0a9d39..d15f065849cd 100644
+> --- a/drivers/usb/dwc3/core.c
+> +++ b/drivers/usb/dwc3/core.c
+> @@ -1238,6 +1238,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>         u8                      rx_max_burst_prd;
+>         u8                      tx_thr_num_pkt_prd;
+>         u8                      tx_max_burst_prd;
+> +       const char              *usb_psy_name;
+> +       int                     ret;
+>
+>         /* default to highest possible threshold */
+>         lpm_nyet_threshold = 0xf;
+> @@ -1263,6 +1265,13 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>         else
+>                 dwc->sysdev = dwc->dev;
+>
+> +       ret = device_property_read_string(dev, "usb-psy-name", &usb_psy_name);
+> +       if (ret >= 0) {
+> +               dwc->usb_psy = power_supply_get_by_name(usb_psy_name);
+> +               if (!dwc->usb_psy)
+> +                       dev_err(dev, "couldn't get usb power supply\n");
+> +       }
+> +
+>         dwc->has_lpm_erratum = device_property_read_bool(dev,
+>                                 "snps,has-lpm-erratum");
+>         device_property_read_u8(dev, "snps,lpm-nyet-threshold",
+> @@ -1619,6 +1628,9 @@ static int dwc3_probe(struct platform_device *pdev)
+>  assert_reset:
+>         reset_control_assert(dwc->reset);
+>
+> +       if (!dwc->usb_psy)
+> +               power_supply_put(dwc->usb_psy);
+> +
+>         return ret;
+>  }
+>
+> @@ -1641,6 +1653,9 @@ static int dwc3_remove(struct platform_device *pdev)
+>         dwc3_free_event_buffers(dwc);
+>         dwc3_free_scratch_buffers(dwc);
+>
+> +       if (!dwc->usb_psy)
+> +               power_supply_put(dwc->usb_psy);
 
-> The last part is an amendment I have told about, but it can be done
-> later on by switching the entire GPIO chip to use fwnode instead of
-> of_node.
+# to reproduce this build locally:
+
+ tuxmake --target-arch=mips --kconfig=cavium_octeon_defconfig
+--toolchain=gcc-8 --wrapper=sccache
+--environment=SCCACHE_BUCKET=sccache.tuxbuild.com --runtime=podman
+--image=public.ecr.aws/tuxmake/mips_gcc-8 config default kernel
+xipkernel modules dtbs dtbs-legacy debugkernel headers
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
+CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
+'HOSTCC=sccache gcc' cavium_octeon_defconfig
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
+CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+kernel/sched/fair.c:8384:13: warning: 'update_nohz_stats' defined but
+not used [-Wunused-function]
+ static bool update_nohz_stats(struct rq *rq)
+             ^~~~~~~~~~~~~~~~~
+mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_remove':
+drivers/usb/dwc3/core.c:1657: undefined reference to `power_supply_put'
+mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_get_properties':
+drivers/usb/dwc3/core.c:1270: undefined reference to `power_supply_get_by_name'
+mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_probe':
+drivers/usb/dwc3/core.c:1632: undefined reference to `power_supply_put'
+
+Build link,
+https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/1071668201#L146
 
 -- 
--michael
+Linaro LKFT
+https://lkft.linaro.org
