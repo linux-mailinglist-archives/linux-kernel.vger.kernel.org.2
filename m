@@ -2,145 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1A132D960
+	by mail.lfdr.de (Postfix) with ESMTP id 76DA932D961
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 19:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbhCDSXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 13:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
+        id S234359AbhCDSYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 13:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhCDSXg (ORCPT
+        with ESMTP id S234201AbhCDSXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 13:23:36 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC341C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:22:55 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id g4so19462996pgj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:22:55 -0800 (PST)
+        Thu, 4 Mar 2021 13:23:46 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464B8C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 10:23:06 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id w65so7568350oie.7
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 10:23:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r4hMSKBkNtrRITzzBe+cMqUl3cO3UFDjYwJAXk9K9SE=;
-        b=iqJV8iPDKudZQtDxcUCimb3iPY6xqF9k/f6jUMMW5GwvCT1YYo6xmfN6X9f7NvMxHH
-         u+VXMjUXW4fLrAD6xu+3BRaUj6Xjc5Xi1ZZBOUIpL3jdiZ+Ttlo5LgHYbaDW9keTV/h8
-         2EPX+Bq4BVb9R3/iPMS/I5rct4S9ToTdA46XgIW34wpMvZCFhitQq2rRBGFTKM5QLNQR
-         zhBv55y5Gd13HtQ1nR/WxigglGM2zy6Su6IOXQFZN6FWdHqS3mfGFsxxfLYayLQCrxrg
-         mzB+LtEwDEkEi4Mg7KYjSXI9PJj45auYKBBDg1r8n5mJpvmyd3z7PQejuOHKTB5goBKG
-         G1Hw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lkt+RxNv+povx5RrP6jzx52eKkPT/gfUP+i0E22Jg6A=;
+        b=QLchrPEA+a6QS6aiRdvhoLByBQL+eA7V84XmSHtcB6WIXYzejx295qXR9hkGGCOxof
+         ygNURmcIvo45pqhjGCRVkQUEe5e1UIebSlhV1NiFQFyZ7bFAzsWFv4/kfPs3HVZvVQ8/
+         23kUMCGcdaosoC5JaOrmY89Lp1Aa2lQaD24RlG866uIx//UUg89C5KCdz+kPt6vo/TBC
+         IhBc9G4Rnk5/qAHEeCu1TDRoQ4TMxX0uYckqvkVuTltZlINktG4YjafERGWQxE7O2HjU
+         mh4hcAMgGLMFmeVo+A4sBIs/CskR1hsTt7w3CyZ7eJzU5gm6M4LlIF56gAlgJOLVtBGc
+         LfTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=r4hMSKBkNtrRITzzBe+cMqUl3cO3UFDjYwJAXk9K9SE=;
-        b=FD0O2B2vyJiNJ4BHu7p/L8jiuFCFux9jC6+VcuR4u8HzQzPkkf/FFWpL/IFsmIuwWz
-         DKHIFqPhKcZic2xf0RGi+oMpILag7GXL7HJ3jUCpclJHSM0y7T5v9o904/9O5Ci6FyVJ
-         zF0CqH42ajlxoPJFGELoNcPolintZnBG3L1BipKKTYx/ReTfSyQljmfYQfehtc7wuFbP
-         duw85v4IHQAYP5rpS2BpM9mHeSxVBGLkZZq5TmnrM2oRj+tU6cha9/E/X9ax3GjyA8y9
-         8mbafDyo5+ddSi4EHIhArwCP3XHD8y1aX8gIs3hapliCbywhNQ8jgznHNXoloTouthpY
-         Qnfw==
-X-Gm-Message-State: AOAM530LSTktU6odg5FwCjA/PB+KN44aWApw0bHBapTzAb+mGCKCdyvW
-        DWy/auS2Wm94yiahPhgZyRs=
-X-Google-Smtp-Source: ABdhPJxeqoZxYxdmo5120knr6cW1UDMzeLOpdCT5XxG7B8H6LSIWljM+JxlXDSgixlLhOsESPgVyNA==
-X-Received: by 2002:aa7:9281:0:b029:1ec:48b2:811c with SMTP id j1-20020aa792810000b02901ec48b2811cmr5005240pfa.18.1614882175190;
-        Thu, 04 Mar 2021 10:22:55 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:edb1:8010:5c27:a8cc])
-        by smtp.gmail.com with ESMTPSA id w128sm106609pfw.86.2021.03.04.10.22.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 10:22:53 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 4 Mar 2021 10:22:51 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YEEle5xBAc7FUDNI@google.com>
-References: <YC6TpqT26dSy11fU@google.com>
- <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
- <YD50pcPuwV456vwm@google.com>
- <YEEES/K8cNi8qOJe@google.com>
- <d83a03dd-fdff-ed62-a2ad-77b25d8249f0@redhat.com>
- <YEEJf0itS/8vn8Iy@google.com>
- <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
- <YEEUq8ZRn4WyYWVx@google.com>
- <c08662f3-6ae1-4fb5-1c4f-840a70fad035@redhat.com>
- <YEEi1+TREGBElE5H@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lkt+RxNv+povx5RrP6jzx52eKkPT/gfUP+i0E22Jg6A=;
+        b=LF9Xkiy9LS02lmanaFlGwcs55nCsJ+yM/GlMOZIr2L1+HbNdFrmIxHSPA3iMNFp6Aa
+         A6yiR4Xrc4Ag0EICyz42D7m3uPwGKC8G2jjfvo9uzGmQhaqUSEmt9ALrZTjJLPXYK1we
+         H2QtsoMDZvwpM0KvYINqq53oZCU8kSLbtIgwycnPWaDTypzvVCJVHjalRHh98UA/jk/f
+         z1GArSMYiJNjG0HMIwVK+EsK0CbMoMNQ8jdsFokPALMGMchWH+1eMiYq4njy3Lxryfmx
+         wdRk0rHLVr6lZEgFtyADM1mKoZNwcE5KQxprSzlry7bZMSQS9m6DVj5DdJRB4tLXwxWr
+         8E9Q==
+X-Gm-Message-State: AOAM533HowtLpPYzUZxu1eaOjFVceybdD7OdNDmYjYOmGXCDUpC/lTp7
+        tEXkEukH6SPKEDAw0miT6kbVM/pol/pciVTDCkwt0w==
+X-Google-Smtp-Source: ABdhPJyh0q8akJpCHSVQ8ANv6vpJ8HOAzihjMi3/13gzP7GpHLPwXR/wy1fi78187um6g6N+N5vR9hTDYM3y884RPgo=
+X-Received: by 2002:a05:6808:10d3:: with SMTP id s19mr3999250ois.70.1614882185258;
+ Thu, 04 Mar 2021 10:23:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEEi1+TREGBElE5H@google.com>
+References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
+ <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
+ <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu> <YD+o5QkCZN97mH8/@elver.google.com>
+ <20210304145730.GC54534@C02TD0UTHF1T.local> <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
+ <20210304165923.GA60457@C02TD0UTHF1T.local> <YEEYDSJeLPvqRAHZ@elver.google.com>
+ <20210304180154.GD60457@C02TD0UTHF1T.local>
+In-Reply-To: <20210304180154.GD60457@C02TD0UTHF1T.local>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 4 Mar 2021 19:22:53 +0100
+Message-ID: <CANpmjNOZWuhqXATDjH3F=DMbpg2xOy0XppVJ+Wv2XjFh_crJJg@mail.gmail.com>
+Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
+ save_stack_trace() and friends
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        broonie@kernel.org, linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 10:11:35AM -0800, Minchan Kim wrote:
-> On Thu, Mar 04, 2021 at 06:23:09PM +0100, David Hildenbrand wrote:
-> > > > You want to debug something, so you try triggering it and capturing debug
-> > > > data. There are not that many alloc_contig_range() users such that this
-> > > > would really be an issue to isolate ...
-> > > 
-> > > cma_alloc uses alloc_contig_range and cma_alloc has lots of users.
-> > > Even, it is expoerted by dmabuf so any userspace would trigger the
-> > > allocation by their own. Some of them could be tolerant for the failure,
-> > > rest of them could be critical. We should't expect it by limited kernel
-> > > usecase.
-> > 
-> > Assume you are debugging allocation failures. You either collect the data
-> > yourself or ask someone to send you that output. You care about any
-> > alloc_contig_range() allocation failures that shouldn't happen, don't you?
-> > 
-> > > 
-> > > > 
-> > > > Strictly speaking: any allocation failure on ZONE_MOVABLE or CMA is
-> > > > problematic (putting aside NORETRY logic and similar aside). So any such
-> > > > page you hit is worth investigating and, therefore, worth getting logged for
-> > > > debugging purposes.
-> > > 
-> > > If you believe the every alloc_contig_range failure is problematic
-> > 
-> > Every one where we should have guarantees I guess: ZONE_MOVABLE or
-> > MIGRAT_CMA. On ZONE_NORMAL, there are no guarantees.
-> 
-> Indeed.
+On Thu, 4 Mar 2021 at 19:02, Mark Rutland <mark.rutland@arm.com> wrote:
+> On Thu, Mar 04, 2021 at 06:25:33PM +0100, Marco Elver wrote:
+> > On Thu, Mar 04, 2021 at 04:59PM +0000, Mark Rutland wrote:
+> > > On Thu, Mar 04, 2021 at 04:30:34PM +0100, Marco Elver wrote:
+> > > > On Thu, 4 Mar 2021 at 15:57, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > [adding Mark Brown]
+> > > > >
+> > > > > The bigger problem here is that skipping is dodgy to begin with, and
+> > > > > this is still liable to break in some cases. One big concern is that
+> > > > > (especially with LTO) we cannot guarantee the compiler will not inline
+> > > > > or outline functions, causing the skipp value to be too large or too
+> > > > > small. That's liable to happen to callers, and in theory (though
+> > > > > unlikely in practice), portions of arch_stack_walk() or
+> > > > > stack_trace_save() could get outlined too.
+> > > > >
+> > > > > Unless we can get some strong guarantees from compiler folk such that we
+> > > > > can guarantee a specific function acts boundary for unwinding (and
+> > > > > doesn't itself get split, etc), the only reliable way I can think to
+> > > > > solve this requires an assembly trampoline. Whatever we do is liable to
+> > > > > need some invasive rework.
+> > > >
+> > > > Will LTO and friends respect 'noinline'?
+> > >
+> > > I hope so (and suspect we'd have more problems otherwise), but I don't
+> > > know whether they actually so.
+> > >
+> > > I suspect even with 'noinline' the compiler is permitted to outline
+> > > portions of a function if it wanted to (and IIUC it could still make
+> > > specialized copies in the absence of 'noclone').
+> > >
+> > > > One thing I also noticed is that tail calls would also cause the stack
+> > > > trace to appear somewhat incomplete (for some of my tests I've
+> > > > disabled tail call optimizations).
+> > >
+> > > I assume you mean for a chain A->B->C where B tail-calls C, you get a
+> > > trace A->C? ... or is A going missing too?
+> >
+> > Correct, it's just the A->C outcome.
+>
+> I'd assumed that those cases were benign, e.g. for livepatching what
+> matters is what can be returned to, so B disappearing from the trace
+> isn't a problem there.
+>
+> Is the concern debugability, or is there a functional issue you have in
+> mind?
 
-How about this?
+For me, it's just been debuggability, and reliable test cases.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 238d0fc232aa..489e557b9390 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8481,7 +8481,8 @@ static inline void dump_migrate_failure_pages(struct list_head *page_list)
+> > > > Is there a way to also mark a function non-tail-callable?
+> > >
+> > > I think this can be bodged using __attribute__((optimize("$OPTIONS")))
+> > > on a caller to inhibit TCO (though IIRC GCC doesn't reliably support
+> > > function-local optimization options), but I don't expect there's any way
+> > > to mark a callee as not being tail-callable.
+> >
+> > I don't think this is reliable. It'd be
+> > __attribute__((optimize("-fno-optimize-sibling-calls"))), but doesn't
+> > work if applied to the function we do not want to tail-call-optimize,
+> > but would have to be applied to the function that does the tail-calling.
+>
+> Yup; that's what I meant then I said you could do that on the caller but
+> not the callee.
+>
+> I don't follow why you'd want to put this on the callee, though, so I
+> think I'm missing something. Considering a set of functions in different
+> compilation units:
+>
+>   A->B->C->D->E->F->G->H->I->J->K
 
- /* [start, end) must belong to a single zone. */
- static int __alloc_contig_migrate_range(struct compact_control *cc,
--                                       unsigned long start, unsigned long end)
-+                                       unsigned long start, unsigned long end,
-+                                       bool nofail)
- {
-        /* This function is based on compact_zone() from compaction.c. */
-        unsigned int nr_reclaimed;
-@@ -8522,7 +8523,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
-                                NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
-        }
-        if (ret < 0) {
--               dump_migrate_failure_pages(&cc->migratepages);
-+               if (ret == -EBUSY && nofail)
-+                       dump_migrate_failure_pages(&cc->migratepages);
-                putback_movable_pages(&cc->migratepages);
-                return ret;
-        }
-@@ -8610,7 +8612,9 @@ int alloc_contig_range(unsigned long start, unsigned long end,
-         * allocated.  So, if we fall through be sure to clear ret so that
-         * -EBUSY is not accidentally used or returned to caller.
-         */
--       ret = __alloc_contig_migrate_range(&cc, start, end);
-+       ret = __alloc_contig_migrate_range(&cc, start, end,
-+                                       migratetype == CMA ||
-+                                       zone_idx(cc.zone) == ZONE_MOVABLE);
-        if (ret && ret != -EBUSY)
-                goto done;
-        ret =0;
+I was having this problem with KCSAN, where the compiler would
+tail-call-optimize __tsan_X instrumentation. This would mean that
+KCSAN runtime functions ended up in the trace, but the function where
+the access happened would not. However, I don't care about the runtime
+functions, and instead want to see the function where the access
+happened. In that case, I'd like to just mark __tsan_X and any other
+kcsan instrumentation functions as do-not-tail-call-optimize, which
+would solve the problem.
 
+The solution today is that when you compile a kernel with KCSAN, every
+instrumented TU is compiled with -fno-optimize-sibling-calls. The
+better solution would be to just mark KCSAN runtime functions somehow,
+but permit tail calling other things. Although, I probably still want
+to see the full trace, and would decide that having
+-fno-optimize-sibling-calls is a small price to pay in a
+debug-only-kernel to get complete traces.
+
+> ... if K were marked in this way, and J was compiled with visibility of
+> this, J would stick around, but J's callers might not, and so the a
+> trace might see:
+>
+>   A->J->K
+>
+> ... do you just care about the final caller, i.e. you just need
+> certainty that J will be in the trace?
+
+Yes. But maybe it's a special problem that only sanitizers have.
+
+> If so, we can somewhat bodge that by having K have an __always_inline
+> wrapper which has a barrier() or similar after the real call to K, so
+> the call couldn't be TCO'd.
+>
+> Otherwise I'd expect we'd probably need to disable TCO generally.
+
+Thanks,
+-- Marco
