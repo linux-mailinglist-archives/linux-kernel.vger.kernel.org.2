@@ -2,231 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681AF32CDDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D135D32CDE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbhCDHoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:44:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37016 "EHLO mx2.suse.de"
+        id S234008AbhCDHob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:44:31 -0500
+Received: from mga07.intel.com ([134.134.136.100]:56889 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233631AbhCDHni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:43:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 004ADAAC5;
-        Thu,  4 Mar 2021 07:42:56 +0000 (UTC)
-Subject: Re: drm/ttm: ttm_bo_release called without lock
-To:     Petr Mladek <pmladek@suse.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Huang Rui <ray.huang@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>
-References: <YD+eYcMMcdlXB8PY@alley> <YD+mGFJ5KYWwrJHH@alley>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <a53377ae-9b33-9030-f9a6-0b620a9cc71f@suse.de>
-Date:   Thu, 4 Mar 2021 08:42:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234004AbhCDHoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:44:00 -0500
+IronPort-SDR: MUJUc5zc91o06FwILsUcVMVJpC+q0PbIaYfYkPSGcvv3TdWzfOK4Kwr0tKlDmlfcNQzfEaMSc/
+ Mu5cVIs2vpsQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="251405986"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="251405986"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 23:43:19 -0800
+IronPort-SDR: X+lhFq2jE+49MOKqh2RIFvZwLNhxxmnjr9k13r76rSJlphJS74pH23BZEbSdSEfN7v3CfqWU38
+ 4ie11g8/cfXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="507259809"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
+  by fmsmga001.fm.intel.com with ESMTP; 03 Mar 2021 23:43:17 -0800
+Date:   Thu, 4 Mar 2021 15:43:16 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Qais Yousef <qais.yousef@arm.com>, andi.kleen@intel.com
+Subject: Re: [PATCH] clocksource: don't run watchdog forever
+Message-ID: <20210304074316.GA43191@shbuild999.sh.intel.com>
+References: <1614653665-20905-1-git-send-email-feng.tang@intel.com>
+ <YD4CdQqX5Lea1rB5@hirez.programming.kicks-ass.net>
+ <20210302120634.GB76460@shbuild999.sh.intel.com>
+ <875z286xtk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YD+mGFJ5KYWwrJHH@alley>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="iQRcrfuf26u3qYVWW6X9eRHuHnCH7fX8H"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875z286xtk.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---iQRcrfuf26u3qYVWW6X9eRHuHnCH7fX8H
-Content-Type: multipart/mixed; boundary="jGjoDVEYYgdS4gu89Aj7w8unBUuryqcxn";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Petr Mladek <pmladek@suse.com>, =?UTF-8?Q?Christian_K=c3=b6nig?=
- <christian.koenig@amd.com>
-Cc: David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Huang Rui <ray.huang@amd.com>,
- Dave Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>
-Message-ID: <a53377ae-9b33-9030-f9a6-0b620a9cc71f@suse.de>
-Subject: Re: drm/ttm: ttm_bo_release called without lock
-References: <YD+eYcMMcdlXB8PY@alley> <YD+mGFJ5KYWwrJHH@alley>
-In-Reply-To: <YD+mGFJ5KYWwrJHH@alley>
+Hi Thomas,
 
---jGjoDVEYYgdS4gu89Aj7w8unBUuryqcxn
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 03, 2021 at 04:50:31PM +0100, Thomas Gleixner wrote:
+> On Tue, Mar 02 2021 at 20:06, Feng Tang wrote:
+> > On Tue, Mar 02, 2021 at 10:16:37AM +0100, Peter Zijlstra wrote:
+> >> On Tue, Mar 02, 2021 at 10:54:24AM +0800, Feng Tang wrote:
+> >> > clocksource watchdog runs every 500ms, which creates some OS noise.
+> >> > As the clocksource wreckage (especially for those that has per-cpu
+> >> > reading hook) usually happens shortly after CPU is brought up or
+> >> > after system resumes from sleep state, so add a time limit for
+> >> > clocksource watchdog to only run for a period of time, and make
+> >> > sure it run at least twice for each CPU.
+> >> > 
+> >> > Regarding performance data, there is no improvement data with the
+> >> > micro-benchmarks we have like hackbench/netperf/fio/will-it-scale
+> >> > etc. But it obviously reduces periodic timer interrupts, and may
+> >> > help in following cases:
+> >> > * When some CPUs are isolated to only run scientific or high
+> >> >   performance computing tasks on a NOHZ_FULL kernel, where there
+> >> >   is almost no interrupts, this could make it more quiet
+> >> > * On a cluster which runs a lot of systems in parallel with
+> >> >   barriers there are always enough systems which run the watchdog
+> >> >   and make everyone else wait
+> >> > 
+> >> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> >> 
+> >> Urgh.. so this hopes and prays that the TSC wrackage happens in the
+> >> first 10 minutes after boot.
+> 
+> which is wishful thinking....
+> 
+> > Yes, the 10 minutes part is only based on our past experience and we
+> > can make it longer. But if there was real case that the wrackage happened
+> > long after CPU is brought up like days, then this patch won't help
+> > much.
+> 
+> It really depends on the BIOS wreckage. On one of my machine it takes up
+> to a day depending on the workload.
 
-(cc'ing Gerd)
+Thanks for sharing the info.
 
-This might be related to the recent clean-up patches for the BO handling =
+> Anything pre TSC_ADJUST wants the watchdog on. With TSC ADJUST available
+> we can probably avoid it.
+> 
+> There is a caveat though. If the machine never goes idle then TSC adjust
+> is not able to detect a potential wreckage. OTOH, most of the broken
+> BIOSes tweak TSC only by a few cycles and that is usually detectable
+> during boot. So we might be clever about it and schedule a check every
+> hour when during the first 10 minutes a modification of TSC adjust is
+> seen on any CPU.
 
-in qxl.
+I don't have much experience with tsc_adjust, and try to understand it:
+The 'modification of TSC' here has 2 cases: ? 
+* First read of 'TSC_ADJUST' MSR of a just boot CPU returns non-zero value
+* Following read of 'TSC_ADJUST' doesn't equal to the 'tsc_adjust' value
+  saved in per-cpu data.
 
-Am 03.03.21 um 16:07 schrieb Petr Mladek:
-> On Wed 2021-03-03 15:34:09, Petr Mladek wrote:
->> Hi,
->>
->> the following warning is filling my kernel log buffer
->> with 5.12-rc1+ kernels:
->>
->> [  941.070598] WARNING: CPU: 0 PID: 11 at drivers/gpu/drm/ttm/ttm_bo.c=
-:139 ttm_bo_move_to_lru_tail+0x1ba/0x210
->> [  941.070601] Modules linked in:
->> [  941.070603] CPU: 0 PID: 11 Comm: kworker/0:1 Kdump: loaded Tainted:=
- G        W         5.12.0-rc1-default+ #81
->> [  941.070605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIO=
-S rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
->> [  941.070606] Workqueue: events qxl_gc_work
->> [  941.070609] RIP: 0010:ttm_bo_move_to_lru_tail+0x1ba/0x210
->> [  941.070610] Code: 93 e8 02 00 00 48 89 0a e9 00 ff ff ff 48 8b 87 3=
-8 01 00 00 be ff ff ff ff 48 8d 78 70 e8 8e 7d 46 00 85 c0 0f 85 6f fe ff=
- ff <0f> 0b 8b 93 fc 02 00 00 85 d2 0f 84 6d fe ff ff 48 89 df 5b 5d 41
->> [  941.070612] RSP: 0018:ffffbddf4008fd38 EFLAGS: 00010246
->> [  941.070614] RAX: 0000000000000000 RBX: ffff95ae485bac00 RCX: 000000=
-0000000002
->> [  941.070615] RDX: 0000000000000000 RSI: ffff95ae485badb0 RDI: ffff95=
-ae40305108
->> [  941.070616] RBP: 0000000000000000 R08: 0000000000000001 R09: 000000=
-0000000001
->> [  941.070617] R10: ffffbddf4008fc10 R11: ffffffffa5401580 R12: ffff95=
-ae42a94e90
->> [  941.070618] R13: ffff95ae485bae70 R14: ffff95ae485bac00 R15: ffff95=
-ae455d1800
->> [  941.070620] FS:  0000000000000000(0000) GS:ffff95aebf600000(0000) k=
-nlGS:0000000000000000
->> [  941.070621] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [  941.070622] CR2: 00007f8ffb2f8000 CR3: 0000000102c5e005 CR4: 000000=
-0000370ef0
->> [  941.070624] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000=
-0000000000
->> [  941.070626] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000=
-0000000400
->> [  941.070627] Call Trace:
->> [  941.070630]  ttm_bo_release+0x551/0x600
->> [  941.070635]  qxl_bo_unref+0x3a/0x50
->> [  941.070638]  qxl_release_free_list+0x62/0xc0
->> [  941.070643]  qxl_release_free+0x76/0xe0
->> [  941.070646]  qxl_garbage_collect+0xd9/0x190
->> [  941.080241]  process_one_work+0x2b0/0x630
->> [  941.080249]  ? process_one_work+0x630/0x630
->> [  941.080251]  worker_thread+0x39/0x3f0
->> [  941.080255]  ? process_one_work+0x630/0x630
->> [  941.080257]  kthread+0x13a/0x150
->> [  941.080260]  ? kthread_create_worker_on_cpu+0x70/0x70
->> [  941.080265]  ret_from_fork+0x1f/0x30
->> [  941.080277] irq event stamp: 757191
->> [  941.080278] hardirqs last  enabled at (757197): [<ffffffffa217431f>=
-] vprintk_emit+0x27f/0x2c0
->> [  941.080280] hardirqs last disabled at (757202): [<ffffffffa21742dc>=
-] vprintk_emit+0x23c/0x2c0
->> [  941.080281] softirqs last  enabled at (755768): [<ffffffffa300030f>=
-] __do_softirq+0x30f/0x432
->> [  941.080284] softirqs last disabled at (755763): [<ffffffffa20eb0aa>=
-] irq_exit_rcu+0xea/0xf0
->=20
-> I have just realized that it actually prints two warnings over and
-> over again. The 2nd one is:
->=20
-> [  186.078790] WARNING: CPU: 0 PID: 146 at drivers/gpu/drm/ttm/ttm_bo.c=
-:512 ttm_bo_release+0x533/0x600
-> [  186.078794] Modules linked in:
-> [  186.078795] CPU: 0 PID: 146 Comm: kworker/0:2 Kdump: loaded Tainted:=
- G        W         5.12.0-rc1-default+ #81
-> [  186.078797] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
- rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-> [  186.078799] Workqueue: events qxl_gc_work
-> [  186.078801] RIP: 0010:ttm_bo_release+0x533/0x600
-> [  186.078803] Code: e9 c6 fb ff ff 4c 8b 7d d0 b9 4c 1d 00 00 31 d2 be=
- 01 00 00 00 49 8b bf d0 fe ff ff e8 86 f1 04 00 49 8b
-> 47 e0 e9 2b ff ff ff <0f> 0b 48 8b 45 d0 31 d2 4c 89 f7 48 8d 70 08 c7 =
-80 94 00 00 00 00
-> [  186.078805] RSP: 0018:ffffa22a402e3d60 EFLAGS: 00010202
-> [  186.078807] RAX: 0000000000000001 RBX: ffff9334cd8f5668 RCX: 0000000=
-000001180
-> [  186.078808] RDX: ffff93353f61a7c0 RSI: ffffffffa6401580 RDI: ffff933=
-4c44f9588
-> [  186.078810] RBP: ffffa22a402e3d90 R08: 0000000000000001 R09: 0000000=
-000000001
-> [  186.078811] R10: ffffa22a402e3c10 R11: ffffffffa6401580 R12: ffff933=
-4c48fa300
-> [  186.078812] R13: ffff9334c0f24e90 R14: ffff9334cd8f5400 R15: ffff933=
-4c4528000
-> [  186.078813] FS:  0000000000000000(0000) GS:ffff93353f600000(0000) kn=
-lGS:0000000000000000
-> [  186.078814] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  186.078816] CR2: 00007f1908079860 CR3: 0000000021824004 CR4: 0000000=
-000370ef0
-> [  186.078818] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> [  186.078819] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> [  186.078821] Call Trace:
-> [  186.078826]  qxl_bo_unref+0x3a/0x50
-> [  186.078829]  qxl_release_free_list+0x62/0xc0
-> [  186.078834]  qxl_release_free+0x76/0xe0
-> [  186.078837]  qxl_garbage_collect+0xd9/0x190
-> [  186.078843]  process_one_work+0x2b0/0x630
-> [  186.078850]  ? process_one_work+0x630/0x630
-> [  186.078853]  worker_thread+0x39/0x3f0
-> [  186.078857]  ? process_one_work+0x630/0x630
-> [  186.078859]  kthread+0x13a/0x150
-> [  186.078861]  ? kthread_create_worker_on_cpu+0x70/0x70
-> [  186.078866]  ret_from_fork+0x1f/0x30
-> [  186.078879] irq event stamp: 619687
-> [  186.091417] hardirqs last  enabled at (619761): [<ffffffffa317293b>]=
- console_unlock+0x45b/0x570
-> [  186.091421] hardirqs last disabled at (619766): [<ffffffffa31742dc>]=
- vprintk_emit+0x23c/0x2c0
-> [  186.091423] softirqs last  enabled at (617742): [<ffffffffa400030f>]=
- __do_softirq+0x30f/0x432
-> [  186.091425] softirqs last disabled at (617737): [<ffffffffa30eb0aa>]=
- irq_exit_rcu+0xea/0xf0
-> [  186.091427] ---[ end trace ac74376b06d2036c ]---
->=20
->=20
-> Tke kernel is based on Linus' tree and the last commit
-> f69d02e37a85645aa90d1 ("Merge tag 'misc-5.12-2021-03-02' of
-> git://git.kernel.dk/linux-block").
->=20
-> Best Regards,
-> Petr
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
+Also, does the patch ("x86/tsc: mark tsc reliable for qualified platforms")
+need to wait till this caveat case is solved? 
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Thanks,
+Feng
 
 
---jGjoDVEYYgdS4gu89Aj7w8unBUuryqcxn--
 
---iQRcrfuf26u3qYVWW6X9eRHuHnCH7fX8H
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmBAj38FAwAAAAAACgkQlh/E3EQov+D2
-GBAAvv1ZzUBzKGy/8j5Jb/qCRPC4neMQpGYdPF19DtoxUQ/oykdoRP05H/PEBSQecTPXZaPV/2ZT
-AwHUtgHu5ib+XxNAHQ08YyuUxsfsE5oD2TOH2DTzyJYGYd2c/kffSux5v/xFGZQqqsyRtA7KPEyM
-eF2MjaNZqggBy+YY692YIH5BP2plu+7HGPp/jxMsZSQ28HQ4qkF8u8FEQabe2+XRre8RFc5LM4kk
-AEXu1KeKTyQ+0cvNBli1qaRLbo11gn9cCK6bjYke5J+GajITVWRq4VrPq6lUVO1LbCuVj/JV1Mo/
-PvRAzN2Gm4/ajotI0kyJs1N7XOQqF3dTrczp9D17r9qVfXyU/Qzr+7fi91JbdKU7b7qQlpyjoeDo
-RBHmQincLNd5flXTBjrjikgeDOxvw6ja2U7XVI49U+zqfmsfGFweBErMT0mQ+OAe9CheOrY0poZd
-nX17su26YB3P061Kb3B03vqtHQQcNsm7zr+IIDaokAH8DJfLlsqHKDFZ4YqSXC3EXRJFrS1mMwbW
-xB+7LD1DgQJlf7l9ItXeyvWK/Gq+Rx4Yi5m4aszLfk9HXyqcGN0wc4St1KvCbhwXzVhC8B+bv9qV
-hhL278wnsoPo+GWSP5ME/jQqDne5q2mz5V9HmZy8BMb+fF/re/X8fpQhIfMVrYlE43SeGrRy4s97
-8qA=
-=jCOQ
------END PGP SIGNATURE-----
-
---iQRcrfuf26u3qYVWW6X9eRHuHnCH7fX8H--
+> 
+> Where is this TSC_DISABLE_WRITE bit again?
+> 
+> Thanks,
+> 
+>         tglx
+> 
