@@ -2,133 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003FB32DABE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F50B32DAC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237227AbhCDT7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:59:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49582 "EHLO mail.kernel.org"
+        id S237405AbhCDUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:01:24 -0500
+Received: from mga18.intel.com ([134.134.136.126]:5002 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237162AbhCDT7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:59:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E1064F73;
-        Thu,  4 Mar 2021 19:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614887916;
-        bh=5eVG1QojNvi5xJz0510TStz08VpthyxwTc2HsKYiG14=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FRzQI6ByFfv7SALpWHRZwcT0PxN9SvISIr0q2GP73qW+ZMo4nWYdj5J6KWG+6V603
-         DCOBlq+BjwjCFkKCDkLVjyZe+40VKpIfgmG+ZxGnu3YdHFSyoWeBWP+fIBDYKiUryi
-         E7XrH1hOPD2hsLW8wKuRs2rLMPkwCwlITleYeWgbUJanxe7VdfaDK6uOCaXm1UljQ7
-         zW/qW8Tne2Z464Utz4YUolea9a3KD++b74/P66ts/w7R0neAfMz9ms7wT5HAOvNGox
-         tMgf/QzsJhau867OniE3kL4IzvmQ4A0xWZUYvNhGeP+7VPEBUuTAnY0le8srzTx4sJ
-         D+mB1OcKYgEQg==
-Received: by mail-ej1-f45.google.com with SMTP id w17so3906636ejc.6;
-        Thu, 04 Mar 2021 11:58:36 -0800 (PST)
-X-Gm-Message-State: AOAM533bD06rfF2eKeJ35M5iQ/QaQWEQ0XFgeL4f2dJdN+TGv+y6lCFd
-        aCCBX0ZGm9IDk3tfru0N0GMvTIr0JIN2+prXNg==
-X-Google-Smtp-Source: ABdhPJzzk280RX8Y/hNoVgVVF7BJlQJEkkZZ8rREmHwhKb7GjB7zG9V1c/YqRPom6zwb7aD5tDoPwk42uNMvar/us/c=
-X-Received: by 2002:a17:906:c405:: with SMTP id u5mr6110312ejz.341.1614887914676;
- Thu, 04 Mar 2021 11:58:34 -0800 (PST)
+        id S236436AbhCDUAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 15:00:52 -0500
+IronPort-SDR: FFtnBEmkJbgWTP6Qlm6SOH00t0xe4p/wgGnXgEJVqp9EQyHReVmULEtRwsGV3hWL21ZgPepURb
+ k+k81HNUGklg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="175125353"
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="175125353"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 11:59:06 -0800
+IronPort-SDR: D3DTZrbThlWBnXNSvA3kUTKRJ4GZ7ZoI1FThV+majRRy54gGnc32w/Zs/23DnxNdKFnV593bgw
+ xq+5vG7zjhIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="428792917"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Mar 2021 11:59:05 -0800
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 25CAD302859; Thu,  4 Mar 2021 11:59:05 -0800 (PST)
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCHv2 0/4] perf/core: Add support to exclude kernel mode PMU tracing
+References: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org>
+Date:   Thu, 04 Mar 2021 11:59:05 -0800
+In-Reply-To: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org> (Sai
+        Prakash Ranjan's message of "Tue, 2 Mar 2021 00:34:14 +0530")
+Message-ID: <871rcuvgfq.fsf@linux.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20210222194510.14004-1-noltari@gmail.com> <20210223170006.29558-1-noltari@gmail.com>
- <20210223170006.29558-2-noltari@gmail.com> <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
-In-Reply-To: <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 4 Mar 2021 13:58:21 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+o73atGxyj2Xpwb8rFj5m0AEQrvJWEyEU1UCXqnm5k1A@mail.gmail.com>
-Message-ID: <CAL_Jsq+o73atGxyj2Xpwb8rFj5m0AEQrvJWEyEU1UCXqnm5k1A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: rng: bcm2835: document reset support
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@protonmail.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, devicetree@vger.kernel.org,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 6:07 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
+Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> writes:
 >
-> Hi Alvaro,
->
-> On Tue, 2021-02-23 at 18:00 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas wrote=
-:
-> > Some devices may need to perform a reset before using the RNG, such as =
-the
-> > BCM6368.
-> >
-> > Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> > ---
-> >  v3: make resets required if brcm,bcm6368-rng.
-> >  v2: document reset support.
-> >
-> >  .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml b/=
-Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
-> > index c147900f9041..11c23e1f6988 100644
-> > --- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
-> > +++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
-> > @@ -37,6 +37,21 @@ required:
-> >
-> >
-> >  additionalProperties: false
->
-> I can't claim I fully understand all the meta stuff in shemas, so I gener=
-ally
-> just follow the patterns already available out there. That said, shoudln'=
-t this
-> be at the end, just before the examples? Maybe the cause of that odd warn=
-ing
-> you got there?
+> "Consider a system where disk contents are encrypted and the encryption
+> key is set up by the user when mounting the file system. From that point
+> on the encryption key resides in the kernel. It seems reasonable to
+> expect that the disk encryption key be protected from exfiltration even
+> if the system later suffers a root compromise (or even against insiders
+> that have root access), at least as long as the attacker doesn't
+> manage to compromise the kernel."
 
-Yes, 'resets' needs to be defined under 'properties' as
-additionalProperties can't 'see' into if/then schemas. The top level
-needs to define everything and then if/then schema just add additional
-constraints.
+Normally disk encryption is in specialized work queues. It's total
+overkill to restrict all of the kernel if you just want to restrict
+those work queues.
 
->
-> > +if:
-> > +  properties:
-> > +    compatible:
-> > +      enum:
-> > +        - brcm,bcm6368-rng
-> > +then:
-> > +  properties:
-> > +    resets:
-> > +      maxItems: 1
-> > +  required:
-> > +    - resets
->
-> I belive you can't really make a property required when the bindings for
-> 'brcm,bcm6368-rng' were already defined. This will break the schema for t=
-hose
-> otherwise correct devicetrees.
+I would suggest some more analysis where secrets are actually stored
+and handled first.
 
-Right, unless not having the property meant the device never would have wor=
-ked.
-
-Rob
+-Andi
