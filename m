@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6944F32CE4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B698A32CE45
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 09:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236442AbhCDIUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 03:20:46 -0500
-Received: from lucky1.263xmail.com ([211.157.147.134]:51212 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhCDIUd (ORCPT
+        id S236533AbhCDITm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 03:19:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236537AbhCDITj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 03:20:33 -0500
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C39EEC769A;
-        Thu,  4 Mar 2021 16:17:59 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P32470T140679651546880S1614845876146115_;
-        Thu, 04 Mar 2021 16:18:01 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <dc80bfafc7abf267d8c78af64f6cc592>
-X-RL-SENDER: maqianga@uniontech.com
-X-SENDER: maqianga@uniontech.com
-X-LOGIN-NAME: maqianga@uniontech.com
-X-FST-TO: arnd@arndb.de
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Qiang Ma <maqianga@uniontech.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Qiang Ma <maqianga@uniontech.com>
-Subject: [PATCH] char: lp: remove redundant space
-Date:   Thu,  4 Mar 2021 16:17:52 +0800
-Message-Id: <20210304081752.23986-1-maqianga@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 4 Mar 2021 03:19:39 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA2EC061756;
+        Thu,  4 Mar 2021 00:18:59 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 848BD2223A;
+        Thu,  4 Mar 2021 09:18:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1614845934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MfywzyUqUPoR5W08pnkRZKWTrsP3h7iFAaQ7aCMj9j4=;
+        b=c4eEpz1ehDo6Qsk+A+2plrzggirFsu0fCKoBSqsJl7MoKNOBJ8RRA2K0HtSmMflcAvnaRD
+        ec/99tYROr3HUwLcgcnwCXowmVQ8pTmSorsE/ZkPBAMeZYIL6R7L+Wk8E1RH5OdRd7bqaz
+        inKhkI3uUjtKGLLvK6t4AFTntwufDP8=
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Thu, 04 Mar 2021 09:18:53 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] gpio: regmap: set gpio_chip of_node
+In-Reply-To: <20210304071506.18434-1-noltari@gmail.com>
+References: <20210304071506.18434-1-noltari@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <dc9933abd720e1449f78e86e5ff10f48@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These two lines of code don't meet the kernel coding style,
-so remove the redundant space.
+Am 2021-03-04 08:15, schrieb Álvaro Fernández Rojas:
+> This is needed for properly registering gpio regmap as a child of a 
+> regmap
+> pin controller.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+> ---
+>  v2: split this patch from the bcm63xx-pinctrl series
+> 
+>  drivers/gpio/gpio-regmap.c  | 1 +
+>  include/linux/gpio/regmap.h | 3 +++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+> index fed1e269c42a..8898ab3e1d59 100644
+> --- a/drivers/gpio/gpio-regmap.c
+> +++ b/drivers/gpio/gpio-regmap.c
+> @@ -249,6 +249,7 @@ struct gpio_regmap *gpio_regmap_register(const
+> struct gpio_regmap_config *config
+> 
+>  	chip = &gpio->gpio_chip;
+>  	chip->parent = config->parent;
+> +	chip->of_node = config->of_node ?: dev_of_node(config->parent);
+>  	chip->base = -1;
+>  	chip->ngpio = config->ngpio;
+>  	chip->names = config->names;
+> diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
+> index ad76f3d0a6ba..566d76d0dbae 100644
+> --- a/include/linux/gpio/regmap.h
+> +++ b/include/linux/gpio/regmap.h
+> @@ -4,6 +4,7 @@
+>  #define _LINUX_GPIO_REGMAP_H
+> 
+>  struct device;
+> +struct device_node;
+>  struct gpio_regmap;
+>  struct irq_domain;
+>  struct regmap;
+> @@ -15,6 +16,7 @@ struct regmap;
+>   * struct gpio_regmap_config - Description of a generic regmap 
+> gpio_chip.
+>   * @parent:		The parent device
+>   * @regmap:		The regmap used to access the registers
+> + * @of_node:		(Optional) The device node
+>   *			given, the name of the device is used
 
-Signed-off-by: Qiang Ma <maqianga@uniontech.com>
----
- drivers/char/lp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Something is messed up here ;) This line should be together with
+the one containing @regmap. While at it please add the
+"If not given, the of_node of the parent device is used."
 
-diff --git a/drivers/char/lp.c b/drivers/char/lp.c
-index 862c2fd933c7..0e22e3b0a04e 100644
---- a/drivers/char/lp.c
-+++ b/drivers/char/lp.c
-@@ -546,7 +546,7 @@ static int lp_open(struct inode *inode, struct file *file)
- 	}
- 	/* Determine if the peripheral supports ECP mode */
- 	lp_claim_parport_or_block(&lp_table[minor]);
--	if ( (lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
-+	if ((lp_table[minor].dev->port->modes & PARPORT_MODE_ECP) &&
- 	     !parport_negotiate(lp_table[minor].dev->port,
- 				 IEEE1284_MODE_ECP)) {
- 		printk(KERN_INFO "lp%d: ECP mode\n", minor);
-@@ -590,7 +590,7 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
- 		return -ENODEV;
- 	if ((LP_F(minor) & LP_EXIST) == 0)
- 		return -ENODEV;
--	switch ( cmd ) {
-+	switch (cmd) {
- 		case LPTIME:
- 			if (arg > UINT_MAX / HZ)
- 				return -EINVAL;
--- 
-2.20.1
+-michael
 
-
-
+>   * @label:		(Optional) Descriptive name for GPIO controller.
+>   *			If not given, the name of the device is used.
+> @@ -57,6 +59,7 @@ struct regmap;
+>  struct gpio_regmap_config {
+>  	struct device *parent;
+>  	struct regmap *regmap;
+> +	struct device_node *of_node;
+> 
+>  	const char *label;
+>  	int ngpio;
