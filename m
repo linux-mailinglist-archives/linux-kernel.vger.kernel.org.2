@@ -2,269 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C3632CD3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA5C32CD47
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbhCDG7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 01:59:42 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50126 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236517AbhCDG73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:59:29 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1246wNDH102724;
-        Thu, 4 Mar 2021 00:58:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614841103;
-        bh=4ud8kZ1bZeikUJSDGbMVvjTvW9JdEr9/2XJ/vMSr4dI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=NKA2DlLHddlpjapdYttVJUPapQ5C5yTqCsPa3tf52qcSM5DsSMnoIPt7NKYcrfAUm
-         b4oIbfV/RDtCMilyLYRb1VnLw+RAsHqQAVeF6gs/zmWwCOyDc7HNUzMGZARxZpTFjI
-         bWppFgFW/OmBg9KYEzXFn6TgoNCgw0+Yqy34vacg=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1246wNUP044152
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 4 Mar 2021 00:58:23 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
- 2021 00:58:22 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Mar 2021 00:58:22 -0600
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1246wJBO032193;
-        Thu, 4 Mar 2021 00:58:20 -0600
-Subject: Re: [PATCH v2 3/4] arm64: dts: ti: Add support for Siemens IOT2050
- boards
-To:     Jan Kiszka <jan.kiszka@siemens.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Le Jin <le.jin@siemens.com>
-References: <cover.1613071976.git.jan.kiszka@siemens.com>
- <0c64b6ad43e7a691c1547524da4a9fd33e61c70c.1613071976.git.jan.kiszka@siemens.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <95e4231c-6bee-ba64-412f-87d257df61c4@ti.com>
-Date:   Thu, 4 Mar 2021 12:28:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232362AbhCDHBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:01:51 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:48165 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233314AbhCDHBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:01:37 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DrhbP2wMDz9v1Mh;
+        Thu,  4 Mar 2021 08:00:49 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id q2gLmLW1LtAi; Thu,  4 Mar 2021 08:00:49 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrhbP1M63z9v1Mg;
+        Thu,  4 Mar 2021 08:00:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6390D8B7F5;
+        Thu,  4 Mar 2021 08:00:50 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id CsaKbGkrdrkk; Thu,  4 Mar 2021 08:00:50 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2E7348B773;
+        Thu,  4 Mar 2021 08:00:49 +0100 (CET)
+Subject: Re: [PATCH 1/5] CMDLINE: add generic builtin command line
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        ob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     xe-linux-external@cisco.com, Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-kernel@vger.kernel.org
+References: <20210304044803.812204-1-danielwa@cisco.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <da33aa9e-ffd8-b012-0f2d-c9ad05f32b8f@csgroup.eu>
+Date:   Thu, 4 Mar 2021 08:00:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <0c64b6ad43e7a691c1547524da4a9fd33e61c70c.1613071976.git.jan.kiszka@siemens.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210304044803.812204-1-danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 2/12/21 1:02 AM, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
+
+Le 04/03/2021 à 05:47, Daniel Walker a écrit :
+> This code allows architectures to use a generic builtin command line.
+> The state of the builtin command line options across architecture is
+> diverse. On x86 and mips they have pretty much the same code and the
+> code prepends the builtin command line onto the boot loader provided
+> one. On powerpc there is only a builtin override and nothing else.
+
+This is not exact. powerpc has:
+CONFIG_FROM_BOOTLOADER
+CONFIG_EXTEND
+CONFIG_FORCE
+
 > 
-> Add support for two Siemens SIMATIC IOT2050 variants, Basic and
-> Advanced. They are based on the TI AM6528 GP and AM6548 SOCs HS, thus
-> differ in their number of cores and availability of security features.
-> Furthermore the Advanced version comes with more RAM, an eMMC and a few
-> internal differences.
+> The code in this commit unifies the code into a generic
+> header file under the CONFIG_GENERIC_CMDLINE option. When this
+> option is enabled the architecture can call the cmdline_add_builtin()
+> to add the builtin command line.
 > 
-> Based on original version by Le Jin.
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>   include/linux/cmdline.h | 75 +++++++++++++++++++++++++++++++++++++++++
+>   init/Kconfig            | 68 +++++++++++++++++++++++++++++++++++++
+>   2 files changed, 143 insertions(+)
+>   create mode 100644 include/linux/cmdline.h
 > 
-> Link: https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-> Link: https://github.com/siemens/meta-iot2050
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+> new file mode 100644
+> index 000000000000..f44011d1a9ee
+> --- /dev/null
+> +++ b/include/linux/cmdline.h
+> @@ -0,0 +1,75 @@
 
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+Missing the SPDX Licence Identifier
 
-Few minor comments below:
+> +#ifndef _LINUX_CMDLINE_H
+> +#define _LINUX_CMDLINE_H
+> +
+> +/*
+> + *
+> + * Copyright (C) 2006,2021. Cisco Systems, Inc.
+> + *
+> + * Generic Append/Prepend cmdline support.
+> + */
+> +
+> +#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_CMDLINE_BOOL)
 
-[...]
+I think it would be better if we can avoid the CONFIG_CMDLINE_BOOL.
+By making the CMDLINEs default to "" at all time, I think we can about that BOOL.
 
 > +
-> +&mcu_i2c0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcu_i2c0_pins_default>;
-> +	clock-frequency = <400000>;
-> +
-> +	psu: tps62363@60 {
+> +#ifndef CONFIG_CMDLINE_OVERRIDE
+> +/*
+> + * This function will append or prepend a builtin command line to the command
 
-Please use generic node names:
+As far as I understand, it doesn't "append _or_ prepend" but it does "append _and_ prepend"
 
-	psu: regulator@60 { ... };
+> + * line provided by the bootloader. Kconfig options can be used to alter
+> + * the behavior of this builtin command line.
+> + * @dest: The destination of the final appended/prepended string
+> + * @src: The starting string or NULL if there isn't one.
+> + * @tmp: temporary space used for prepending
+> + * @length: the maximum length of the strings above.
 
-> +		compatible = "ti,tps62363";
-> +		reg =  <0x60>;
-> +		regulator-name = "tps62363-vout";
-> +		regulator-min-microvolt = <500000>;
-> +		regulator-max-microvolt = <1500000>;
-> +		regulator-boot-on;
-> +		ti,vsel0-state-high;
-> +		ti,vsel1-state-high;
-> +		ti,enable-vout-discharge;
-> +	};
-> +
-> +	/* D4200 */
-> +	pcal9535_1: gpio@20 {
-> +		compatible = "nxp,pcal9535";
-> +		reg = <0x20>;
-> +		#gpio-cells = <2>;
-> +		gpio-controller;
-> +		gpio-line-names =
-> +			"A0-pull", "A1-pull", "A2-pull", "A3-pull", "A4-pull",
-> +			"A5-pull", "", "",
-> +			"IO14-enable", "IO15-enable", "IO16-enable",
-> +			"IO17-enable", "IO18-enable", "IO19-enable";
-> +	};
-> +
-> +	/* D4201 */
-> +	pcal9535_2: gpio@21 {
-> +		compatible = "nxp,pcal9535";
-> +		reg = <0x21>;
-> +		#gpio-cells = <2>;
-> +		gpio-controller;
-> +		gpio-line-names =
-> +			"IO0-direction", "IO1-direction", "IO2-direction",
-> +			"IO3-direction", "IO4-direction", "IO5-direction",
-> +			"IO6-direction", "IO7-direction",
-> +			"IO8-direction", "IO9-direction", "IO10-direction",
-> +			"IO11-direction", "IO12-direction", "IO13-direction",
-> +			"IO19-direction";
-> +	};
-> +
-> +	/* D4202 */
-> +	pcal9535_3: gpio@25 {
-> +		compatible = "nxp,pcal9535";
-> +		reg = <0x25>;
-> +		#gpio-cells = <2>;
-> +		gpio-controller;
-> +		gpio-line-names =
-> +			"IO0-pull", "IO1-pull", "IO2-pull", "IO3-pull",
-> +			"IO4-pull", "IO5-pull", "IO6-pull", "IO7-pull",
-> +			"IO8-pull", "IO9-pull", "IO10-pull", "IO11-pull",
-> +			"IO12-pull", "IO13-pull";
-> +	};
-> +};
+Missing some parameters here, but I think we should avoid those 'strlcpy' and 'strlcat', see later 
+comment.
 
-[...]
+> + */
+> +static inline void
+> +__cmdline_add_builtin(char *dest, const char *src, char *tmp, unsigned long length,
+> +		size_t (*strlcpy)(char *dest, const char *src, size_t size),
+> +		size_t (*strlcat)(char *dest, const char *src, size_t count)
 
-> +&dwc3_0 {
-> +	status = "okay";
-> +};
-> +
-> +&usb0_phy {
-> +	status = "okay";
-> +};
-> +
+Don't use names that overide names of existing functions.
 
-These nodes are enabled by default right? Above is redundant.
+'count' is __kernel_size_t not size_t
 
-> +&usb0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&usb0_pins_default>;
-> +	dr_mode = "host";
-> +};
-> +
-> +&dwc3_1 {
-> +	status = "okay";
-> +};
-> +
-> +&usb1_phy {
-> +	status = "okay";
-> +};
-> +
+> +		)
+> +{
+> +	if (src != dest && src != NULL) {
+> +		strlcpy(dest, " ", length);
 
-Same here...
+Why do you need a space up front in that case ? Why not just copy the source to the destination ?
 
-> +&usb1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&usb1_pins_default>;
-> +	dr_mode = "host";
-> +};
+> +		strlcat(dest, src, length);
+> +	}
 > +
+> +	if (sizeof(CONFIG_CMDLINE_APPEND) > 1)
+> +		strlcat(dest, " " CONFIG_CMDLINE_APPEND, length);
+> +
+> +	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) {
+> +		strlcpy(tmp, CONFIG_CMDLINE_PREPEND " ", length);
+> +		strlcat(tmp, dest, length);
+> +		strlcpy(dest, tmp, length);
 
-[...]
+Could we use memmove(), or implement strmove() and avoid the temporary buffer at all ?
 
-> +&mcu_spi0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcu_spi0_pins_default>;
+> +	}
+> +}
 > +
-> +	#address-cells = <1>;
-> +	#size-cells= <0>;
-> +	ti,pindir-d0-out-d1-in = <1>;
-> +
-> +	spidev@0 {
-> +		compatible = "rohm,dh2228fv";
-> +		spi-max-frequency = <20000000>;
-> +		reg = <0>;
-> +	};
+> +#define cmdline_add_builtin_custom(dest, src, length, label, strlcpy, strlcat) 			\
 
-Is the device really dh2228fv?
+It is misleading to call parameters 'strlcpy' or 'strlcat', it hides that they are overriden.
 
-> +};
-> +
-> +&tscadc0 {
-> +	status = "disabled";
-> +};
-> +
-> +&tscadc1 {
-> +	adc {
-> +		ti,adc-channels = <0 1 2 3 4 5>;
-> +	};
-> +};
-> +
-> +&ospi0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-> +
-> +	flash@0 {
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0x0>;
-> +		spi-tx-bus-width = <1>;
-> +		spi-rx-bus-width = <1>;
-> +		spi-max-frequency = <50000000>;
-> +		cdns,tshsl-ns = <60>;
-> +		cdns,tsd2d-ns = <60>;
-> +		cdns,tchsh-ns = <60>;
-> +		cdns,tslch-ns = <60>;
-> +		cdns,read-delay = <2>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +	};
-> +};
-> +
-> +&dss {
-> +	status = "okay";
-> +
+> +{ 												\
+> +	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) { 						\
+> +		static label char cmdline_tmp_space[length]; 					\
 
-Node is enabled by default. Please drop above line for consistency.
+Let the architecture define the temporary space when using the custom variant instead of just asking 
+the architecture to provide the name of the section to use. powerpc already have prom_scratch for that.
 
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&dss_vout1_pins_default>;
-> +
-> +	assigned-clocks = <&k3_clks 67 2>;
-> +	assigned-clock-parents = <&k3_clks 67 5>;
-> +};
-> +
-> +&dss_ports {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	port@1 {
-> +		reg = <1>;
-> +
-> +		dpi_out: endpoint {
-> +			remote-endpoint = <&bridge_in>;
-> +		};
-> +	};
-> +};
-> +
+> +		__cmdline_add_builtin(dest, src, cmdline_tmp_space, length, strlcpy, strlcat); 	\
+> +	} else if (sizeof(CONFIG_CMDLINE_APPEND) > 1) { 					\
+> +		__cmdline_add_builtin(dest, src, NULL, length, strlcpy, strlcat); 		\
+> +	} 											\
 
-[...]
+Ah, so if I understand correctly, the user can set both CONFIG_CMDLINE_PREPEND and 
+CONFIG_CMDLINE_APPEND but one of them is silently ignored.
 
-Regards
-Vignesh
+Then I think we should just offer the user to set one, name it CONFIG_CMDLINE then ask him to choose 
+between FORCE, APPEND or PREPEND.
+
+> +}
+> +#define cmdline_add_builtin(dest, src, length)	                           \
+> +	cmdline_add_builtin_custom(dest, src, length, __initdata, &strlcpy, &strlcat)
+> +#else
+> +#define cmdline_add_builtin(dest, src, length)				   \
+> +{								  	   \
+> +	strlcpy(dest, CONFIG_CMDLINE_PREPEND " " CONFIG_CMDLINE_APPEND,    \
+> +		length);		   				   \
+> +}
+> +#endif /* !CONFIG_CMDLINE_OVERRIDE */
+> +
+> +#else
+> +#define cmdline_add_builtin_custom(dest, src, length, label, strlcpy, strlcat) { \
+> +	if (src != NULL) 							 \
+> +		strlcpy(dest, src, length);	 				 \
+> +}
+> +
+> +#define cmdline_add_builtin(dest, src, length) { 				\
+> +	cmdline_add_builtin_custom(dest, src, length, strlcpy, strlcat); 	\
+> +}
+> +#endif /* CONFIG_GENERIC_CMDLINE */
+
+I'd rather avoid all those macros and use static inline functions instead.
+
+For the strlcpy() and strlcat(), use another name, for instance cmdline_strlcpy and cmdline_strlcat. 
+Then at the begining of the file, define them as strlcpy ad strlcat unless they are already defined 
+to something else (by the architecture before including cmdline.h).
+
+> +
+> +
+> +#endif /* _LINUX_CMDLINE_H */
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 29ad68325028..28363ab07cd4 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -2032,6 +2032,74 @@ config PROFILING
+>   config TRACEPOINTS
+>   	bool
+>   
+> +config GENERIC_CMDLINE
+> +	bool
+> +
+> +if GENERIC_CMDLINE
+> +
+> +config CMDLINE_BOOL
+> +	bool "Built-in kernel command line"
+
+We don't need the CMDLINE_BOOL, just have CMDLINE always "" by default.
+
+> +	help
+> +	  Allow for specifying boot arguments to the kernel at
+> +	  build time.  On some systems (e.g. embedded ones), it is
+> +	  necessary or convenient to provide some or all of the
+> +	  kernel boot arguments with the kernel itself (that is,
+> +	  to not rely on the boot loader to provide them.)
+> +
+> +	  To compile command line arguments into the kernel,
+> +	  set this option to 'Y', then fill in the
+> +	  the boot arguments in CONFIG_CMDLINE.
+> +
+> +	  Systems with fully functional boot loaders (i.e. non-embedded)
+> +	  should leave this option set to 'N'.
+> +
+> +config CMDLINE_APPEND
+
+As far as I understand, the generic code will only take CMDLINE_APPEND into account if 
+CMDLINE_PREPEND doesn't exist, otherwise it will silently ignore it.
+
+Only offer one string: CONFIG_CMDLINE, and make the use choose between APPEND, EXTEND or OVERRIDE
+
+> +	string "Built-in kernel command string append"
+> +	depends on CMDLINE_BOOL
+> +	default ""
+> +	help
+> +	  Enter arguments here that should be compiled into the kernel
+> +	  image and used at boot time.  If the boot loader provides a
+> +	  command line at boot time, this string is appended to it to
+> +	  form the full kernel command line, when the system boots.
+> +
+> +	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
+> +	  change this behavior.
+> +
+> +	  In most cases, the command line (whether built-in or provided
+> +	  by the boot loader) should specify the device for the root
+> +	  file system.
+> +
+> +config CMDLINE_PREPEND
+> +	string "Built-in kernel command string prepend"
+> +	depends on CMDLINE_BOOL
+> +	default ""
+> +	help
+> +	  Enter arguments here that should be compiled into the kernel
+> +	  image and used at boot time.  If the boot loader provides a
+> +	  command line at boot time, this string is prepended to it to
+> +	  form the full kernel command line, when the system boots.
+> +
+> +	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
+> +	  change this behavior.
+> +
+> +	  In most cases, the command line (whether built-in or provided
+> +	  by the boot loader) should specify the device for the root
+> +	  file system.
+> +
+> +config CMDLINE_OVERRIDE
+> +	bool "Built-in command line overrides boot loader arguments"
+> +	depends on CMDLINE_BOOL
+> +	help
+> +	  Set this option to 'Y' to have the kernel ignore the boot loader
+> +	  command line, and use ONLY the built-in command line. In this case
+> +	  append and prepend strings are concatenated to form the full
+> +	  command line.
+> +
+> +	  This is used to work around broken boot loaders.  This should
+> +	  be set to 'N' under normal conditions.
+> +endif
+> +
+>   endmenu		# General setup
+>   
+>   source "arch/Kconfig"
+> 
+
+Christophe
