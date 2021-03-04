@@ -2,331 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBDA32D2B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1048332D2B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240490AbhCDMOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:14:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:37588 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240494AbhCDMOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:14:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5F1F31B;
-        Thu,  4 Mar 2021 04:13:54 -0800 (PST)
-Received: from [10.57.63.81] (unknown [10.57.63.81])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E92363F7D7;
-        Thu,  4 Mar 2021 04:13:51 -0800 (PST)
-Subject: Re: [PATCH v4 04/10] coresight: etm-perf: update to handle
- configuration selection
-To:     Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, linux-doc@vger.kernel.org
-Cc:     yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-References: <20210128170936.9222-1-mike.leach@linaro.org>
- <20210128170936.9222-5-mike.leach@linaro.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <641a0d20-bf3d-24e2-8402-d99de9117584@arm.com>
-Date:   Thu, 4 Mar 2021 12:13:48 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S240504AbhCDMPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:15:45 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:36582 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238810AbhCDMPl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 07:15:41 -0500
+Received: by mail-ot1-f44.google.com with SMTP id t16so7474757ott.3;
+        Thu, 04 Mar 2021 04:15:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6C1ZutBSyK6kqUR+ByrPHry2A5Xu5UnDxFmzQsZQ8F0=;
+        b=fOQxoDSX9zXVXn9II/yVJnosbPMDAsJ3UA3R6LUE3cFzQGycgM0oaApfTJ9z+U/Nlj
+         rRhf50Pn7Mqen2a3QvlQ+ALNi3Uajf29M+V53aXRiwEia50w1kHXfGMJFuHcjYfOdZvX
+         9SZSGwt9FZnXMC627jZXl22G91UuJprPO6Gqzz85P06rpKd8XkGN1RL6p60bDUD/1Ypc
+         /0gIAPeX5K/22IQNY07cPenZLwGNe9HijlSh+FCUs9khqyyhiLEexfW9t7FQj79mp2qn
+         GttpALG/U3fp6porUh6SzW+s/zwbG1ayulVGo4kCqTfy7Jwd2hF/K/k0Ee6I7JOQ1FDC
+         Rd6w==
+X-Gm-Message-State: AOAM532vtzs9Bpy+IWa/fPlRU/OpOvkPVd0Nf8EoZkptci2Um2fSXawS
+        il7jgBtavbiytF8YFY+DFRM0Fv6ItuUlrUf4/dQ=
+X-Google-Smtp-Source: ABdhPJy98h8ozgdO0m0No+u1zxOVZo7NAoKFN15Arj0BKyQ2mtdeexjpzGxgb2cv+nG9IityJHPwqzMBgAFeBV/AztY=
+X-Received: by 2002:a05:6830:1057:: with SMTP id b23mr3365157otp.206.1614860100740;
+ Thu, 04 Mar 2021 04:15:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210128170936.9222-5-mike.leach@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
+In-Reply-To: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 4 Mar 2021 13:14:49 +0100
+Message-ID: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 5:09 PM, Mike Leach wrote:
-> Loaded coresight configurations are registered in the cs_etm\cs_config sub
-> directory. This extends the etm-perf code to handle these registrations,
-> and the cs_syscfg driver to perform the registration on load.
-> 
-> Signed-off-by: Mike Leach <mike.leach@linaro.org>
+On Thu, Mar 4, 2021 at 2:22 AM George Kennedy <george.kennedy@oracle.com> wrote:
+>
+> Since commit 7fef431be9c9 ("mm/page_alloc: place pages to tail
+> in __free_pages_core()") the following use after free occurs
+> intermittently when acpi tables are accessed.
+>
+> BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
+> Read of size 4 at addr ffff8880be453004 by task swapper/0/1
+> CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-7a7fd0d #1
+> Call Trace:
+>  dump_stack+0xf6/0x158
+>  print_address_description.constprop.9+0x41/0x60
+>  kasan_report.cold.14+0x7b/0xd4
+>  __asan_report_load_n_noabort+0xf/0x20
+>  ibft_init+0x134/0xc49
+>  do_one_initcall+0xc4/0x3e0
+>  kernel_init_freeable+0x5af/0x66b
+>  kernel_init+0x16/0x1d0
+>  ret_from_fork+0x22/0x30
+>
+> ACPI tables mapped via kmap() do not have their mapped pages
+> reserved and the pages can be "stolen" by the buddy allocator.
+
+What do you mean by this?
+
+> Use memblock_reserve() to reserve all the ACPI table pages.
+
+How is this going to help?
+
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 > ---
->   .../hwtracing/coresight/coresight-config.h    |   5 +-
->   .../hwtracing/coresight/coresight-etm-perf.c  | 164 +++++++++++++++---
->   .../hwtracing/coresight/coresight-etm-perf.h  |   8 +
->   .../hwtracing/coresight/coresight-syscfg.c    |  13 +-
->   4 files changed, 166 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
-> index 9d66e0071f38..98380b496046 100644
-> --- a/drivers/hwtracing/coresight/coresight-config.h
-> +++ b/drivers/hwtracing/coresight/coresight-config.h
-> @@ -154,7 +154,8 @@ struct cscfg_config_feat_ref {
->    * @nr_presets:	Number of sets of presets supplied by this configuration.
->    * @nr_total_params: Sum of all parameters declared by used features
->    * @presets:	Array of preset values.
-> - *
-> + * @id_ea:	Extended attribute for perf configid value
-> + * @event_ea:	Extended attribute for perf event value
->    */
->   struct cscfg_config_desc {
->   	const char *name;
-> @@ -165,6 +166,8 @@ struct cscfg_config_desc {
->   	int nr_presets;
->   	int nr_total_params;
->   	const u64 *presets; /* nr_presets * nr_total_params */
-> +	struct dev_ext_attribute *id_ea;
-> +	struct dev_ext_attribute *event_ea;
->   };
->   
->   /**
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index a608081bd446..e270bb1e0f7d 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -18,8 +18,10 @@
->   #include <linux/types.h>
->   #include <linux/workqueue.h>
->   
-> +#include "coresight-config.h"
->   #include "coresight-etm-perf.h"
->   #include "coresight-priv.h"
-> +#include "coresight-syscfg.h"
->   
->   static struct pmu etm_pmu;
->   static bool etm_perf_up;
-> @@ -32,8 +34,13 @@ PMU_FORMAT_ATTR(cycacc,		"config:" __stringify(ETM_OPT_CYCACC));
->   PMU_FORMAT_ATTR(contextid,	"config:" __stringify(ETM_OPT_CTXTID));
->   PMU_FORMAT_ATTR(timestamp,	"config:" __stringify(ETM_OPT_TS));
->   PMU_FORMAT_ATTR(retstack,	"config:" __stringify(ETM_OPT_RETSTK));
-> +/* preset - if sink ID is used as a configuration selector */
-> +PMU_FORMAT_ATTR(preset,		"config:0-3");
->   /* Sink ID - same for all ETMs */
->   PMU_FORMAT_ATTR(sinkid,		"config2:0-31");
-> +/* config ID - set if a system configuration is selected */
-> +PMU_FORMAT_ATTR(configid,	"config2:32-63");
-> +
->   
->   static struct attribute *etm_config_formats_attr[] = {
->   	&format_attr_cycacc.attr,
-> @@ -41,6 +48,8 @@ static struct attribute *etm_config_formats_attr[] = {
->   	&format_attr_timestamp.attr,
->   	&format_attr_retstack.attr,
->   	&format_attr_sinkid.attr,
-> +	&format_attr_preset.attr,
-> +	&format_attr_configid.attr,
->   	NULL,
->   };
->   
-> @@ -58,9 +67,29 @@ static const struct attribute_group etm_pmu_sinks_group = {
->   	.attrs  = etm_config_sinks_attr,
->   };
->   
-> +static struct attribute *etm_config_cscfg_attr[] = {
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group etm_pmu_cscfg_group = {
-> +	.name   = "configurations",
-> +	.attrs  = etm_config_cscfg_attr,
-> +};
-> +
-> +static struct attribute *etm_config_events_attr[] = {
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group etm_pmu_events_group = {
-> +	.name   = "events",
-> +	.attrs  = etm_config_events_attr,
-> +};
-> +
->   static const struct attribute_group *etm_pmu_attr_groups[] = {
->   	&etm_pmu_format_group,
->   	&etm_pmu_sinks_group,
-> +	&etm_pmu_cscfg_group,
-> +	&etm_pmu_events_group,
->   	NULL,
->   };
->   
-> @@ -219,7 +248,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->   	INIT_WORK(&event_data->work, free_event_data);
->   
->   	/* First get the selected sink from user space. */
-> -	if (event->attr.config2) {
-> +	if (event->attr.config2 & GENMASK_ULL(31, 0)) {
->   		id = (u32)event->attr.config2;
->   		sink = coresight_get_sink_by_id(id);
->   	}
-> @@ -537,21 +566,17 @@ static ssize_t etm_perf_sink_name_show(struct device *dev,
->   	return scnprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)(ea->var));
->   }
->   
-> -int etm_perf_add_symlink_sink(struct coresight_device *csdev)
-> +int etm_perf_add_symlink_group(struct device *dev,
-> +			       struct dev_ext_attribute **ext_attr,
-> +			       const char *name,
-> +			       const char *group_name)
+>  arch/x86/kernel/setup.c        | 3 +--
+>  drivers/acpi/acpica/tbinstal.c | 4 ++++
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index d883176..97deea3 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -1046,6 +1046,7 @@ void __init setup_arch(char **cmdline_p)
+>         cleanup_highmap();
+>
+>         memblock_set_current_limit(ISA_END_ADDRESS);
+> +       acpi_boot_table_init();
 
-Couple of nits:
+This cannot be moved before the acpi_table_upgrade() invocation AFAICS.
 
-This could be:
+Why exactly do you want to move it?
 
-struct dev_ext_attribute *
-etm_perf_add_to_group_hashed(struct device *dev,
-			     const char *group,
-			     const char *name)
-{
-}
-						
-
-This could return the ea on success avoiding the **ext_attr as argument.
-Also the name of the function indicates what it does.
-
-
->   {
-> -	int ret;
-> +	struct dev_ext_attribute *ea;
->   	unsigned long hash;
-> -	const char *name;
-> +	int ret;
->   	struct device *pmu_dev = etm_pmu.dev;
-> -	struct device *dev = &csdev->dev;
-> -	struct dev_ext_attribute *ea;
->   
-> -	if (csdev->type != CORESIGHT_DEV_TYPE_SINK &&
-> -	    csdev->type != CORESIGHT_DEV_TYPE_LINKSINK)
-> -		return -EINVAL;
+>         e820__memblock_setup();
+>
+>         /*
+> @@ -1139,8 +1140,6 @@ void __init setup_arch(char **cmdline_p)
+>         /*
+>          * Parse the ACPI tables for possible boot-time SMP configuration.
+>          */
+> -       acpi_boot_table_init();
 > -
-> -	if (csdev->ea != NULL)
-> -		return -EINVAL;
-> +	*ext_attr = NULL;
->   
->   	if (!etm_perf_up)
->   		return -EPROBE_DEFER;
-> @@ -560,7 +585,6 @@ int etm_perf_add_symlink_sink(struct coresight_device *csdev)
->   	if (!ea)
->   		return -ENOMEM;
->   
-> -	name = dev_name(dev);
->   	/* See function coresight_get_sink_by_id() to know where this is used */
->   	hash = hashlen_hash(hashlen_string(NULL, name));
->   
-> @@ -574,31 +598,127 @@ int etm_perf_add_symlink_sink(struct coresight_device *csdev)
->   	ea->var = (unsigned long *)hash;
->   
->   	ret = sysfs_add_file_to_group(&pmu_dev->kobj,
-> -				      &ea->attr.attr, "sinks");
-> -
-> +				      &ea->attr.attr, group_name);
->   	if (!ret)
-> -		csdev->ea = ea;
-> -
-> +		*ext_attr = ea;
->   	return ret;
+>         early_acpi_boot_init();
+>
+>         initmem_init();
+> diff --git a/drivers/acpi/acpica/tbinstal.c b/drivers/acpi/acpica/tbinstal.c
+> index 8d1e5b5..4e32b22 100644
+> --- a/drivers/acpi/acpica/tbinstal.c
+> +++ b/drivers/acpi/acpica/tbinstal.c
+> @@ -8,6 +8,7 @@
+>   *****************************************************************************/
+>
+>  #include <acpi/acpi.h>
+> +#include <linux/memblock.h>
+>  #include "accommon.h"
+>  #include "actables.h"
+>
+> @@ -58,6 +59,9 @@
+>                                       new_table_desc->flags,
+>                                       new_table_desc->pointer);
+>
+> +       memblock_reserve(new_table_desc->address,
+> +                        PAGE_ALIGN(new_table_desc->pointer->length));
+> +
 
+Why do you want to do this here in the first place?
 
+Things like that cannot be done in the ACPICA code in general.
 
-
-
->   }
->   
-> -void etm_perf_del_symlink_sink(struct coresight_device *csdev)
-> +int etm_perf_add_symlink_sink(struct coresight_device *csdev)
-> +{
-> +	const char *name;
-> +	struct device *dev = &csdev->dev;
-> +
-> +	if (csdev->type != CORESIGHT_DEV_TYPE_SINK &&
-> +	    csdev->type != CORESIGHT_DEV_TYPE_LINKSINK)
-> +		return -EINVAL;
-> +
-> +	if (csdev->ea != NULL)
-> +		return -EINVAL;
-> +
-> +	name = dev_name(dev);
-> +	return etm_perf_add_symlink_group(dev, &csdev->ea, name, "sinks");
-> +}
-> +
-> +void etm_perf_del_symlink_group(struct dev_ext_attribute *ea, const char *group_name)
-
-void etm_perf_del_from_group(group, ea)
-
->   
-> +/* string to contain the attribute value */
-> +#define CSCFG_EVENT_STR_SIZE	32
-> +
-> +static ssize_t etm_perf_cscfg_event_show(struct device *dev,
-> +					 struct device_attribute *dattr,
-> +					 char *buf)
-> +{
-> +	struct dev_ext_attribute *ea;
-> +
-> +	ea = container_of(dattr, struct dev_ext_attribute, attr);
-> +	return scnprintf(buf, PAGE_SIZE, "%s\n", (const char *)(ea->var));
-> +}
-
-"configid=0x%lx", (unsigned long)ea->var ?
-
-> +
-> +static int etm_perf_add_cscfg_event(struct device *dev, struct cscfg_config_desc *cs_cfg)
-> +{
-> +	struct dev_ext_attribute *ea;
-> +	unsigned long hash;
-> +	int ret;
-> +	struct device *pmu_dev = etm_pmu.dev;
-> +
-> +	ea = devm_kzalloc(dev, sizeof(*ea), GFP_KERNEL);
-> +	if (!ea)
-> +		return -ENOMEM;
-> +
-> +	hash = (unsigned long)cs_cfg->id_ea->var;
-> +
-> +	sysfs_attr_init(&ea->attr.attr);
-> +	ea->attr.attr.name = devm_kstrdup(dev, cs_cfg->name, GFP_KERNEL);
-> +	if (!ea->attr.attr.name)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * attribute value is "configid=<hash>".
-> +	 * this will be what perf evaluates when the config name is used
-> +	 * on the command line.
-> +	 */
-> +	ea->var = devm_kzalloc(dev, CSCFG_EVENT_STR_SIZE, GFP_KERNEL);
-> +	if (!ea->var)
-> +		return -ENOMEM;
-
-Could we drop this string and use the "hash" instead ?
-
-> +
-> +	scnprintf(ea->var, CSCFG_EVENT_STR_SIZE, "configid=0x%lx", hash);
-> +	ea->attr.attr.mode = 0444;
-> +	ea->attr.show = etm_perf_cscfg_event_show;
-> +
-> +	ret = sysfs_add_file_to_group(&pmu_dev->kobj,
-> +				      &ea->attr.attr, "events");
-> +	if (!ret)
-> +		cs_cfg->event_ea = ea;
-> +	return ret;
-> +}
-> +
-> +int etm_perf_add_symlink_cscfg(struct device *dev, struct cscfg_config_desc *cs_cfg)
-
-etm_perf_add_cscfg() ?
-
-> +{
-> +	int err;
-> +
-> +	if (cs_cfg->id_ea != NULL)
-> +		return 0;
-> +
-> +	err = etm_perf_add_symlink_group(dev, &cs_cfg->id_ea,
-> +					 cs_cfg->name, "configurations");
-> +
-> +	if (!err)
-> +		err = etm_perf_add_cscfg_event(dev, cs_cfg);
-> +
-> +	return err;
-> +}
-> +
-> +void etm_perf_del_symlink_cscfg(struct cscfg_config_desc *cs_cfg)
-
-etm_perf_del_cscfg() ?
-
-Suzuki
+>         acpi_tb_print_table_header(new_table_desc->address,
+>                                    new_table_desc->pointer);
+>
+> --
