@@ -2,68 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33C632DCA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECF132DCB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241184AbhCDWBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:01:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50950 "EHLO mail.kernel.org"
+        id S241365AbhCDWGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:06:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240113AbhCDWAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:00:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id E1B8B64FF1;
-        Thu,  4 Mar 2021 22:00:07 +0000 (UTC)
+        id S241291AbhCDWGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:06:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AFE364FE4;
+        Thu,  4 Mar 2021 22:05:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614895207;
-        bh=kAdRuXURO3FsVryQQBu91lpf91+JpUniHKNGNZGdp58=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JZe44fmlbPyZ5i6qefRl8w9bK2nfuRbE2yu0eueaWtvNpajUnFPxf5cR/1FuW/Ehd
-         H0CXcC8gk/dtcZjeGWXhDy4LxnI4z94CtwlqUpR8TdehL9jgWJp3c5y0HVL9/P0Eeq
-         YGCB7iAIKg2xUfvFxG81YGpfzk32HebWxuIVWyJoJCkNZfZ9AoaQOWv/hdzo6OeSN6
-         732rZ7dSsYbkgqSaliR8Brbzm3ncOMhZVs4tSAUgsZQ6W+qjXGDfFuvlL8x7nTQYwj
-         kUQqFaXyZpwIxea4vATZ7NfXzUm7UTnL/pdV6Mb0JU7QrMBF4K1sQSLmvKhJEhGEtX
-         k6sAsIW2BR7YA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D5DE360139;
-        Thu,  4 Mar 2021 22:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1614895530;
+        bh=suBm0AczXfyXCs3/V7HzIWZ/odWc295qpMNQ8Wvt/jU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IGCHvZtMqr9FWLNaUf3U3CLqpuMkFZmqx9pzimcS24Un+XK1z+RP8IlHZI0VsCMsm
+         UsADwtFH8pXcjSha+vSakj937JdgrFTpv5zE9AtP7h2wsRYIvkQk8uZpikyUQM2Wq5
+         A0yUX+fq102C4k5bBJ7nbnAguFaVyLg2d9U6fe+af2Da7ocP73VGWXDa7ItfJrmz6c
+         uL9CCDbdtxUFAzmI/Gysu3q864E9Rkkee8PwaixZ1M0bX7uRz6u75pP+4eyfuvtOq1
+         /9dBNUamy3lW1n3aGHX+J5+ZneXzOGcHNbUTMMuOp0Wvf8VWl+jjpbfDAEP1EHJbMY
+         wbFt1OgbApewg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id EC2953522B62; Thu,  4 Mar 2021 14:05:29 -0800 (PST)
+Date:   Thu, 4 Mar 2021 14:05:29 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210304220529.GW2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+ <20210303220348.GL2696@paulmck-ThinkPad-P72>
+ <20210304032101.GB1594980@rowland.harvard.edu>
+ <20210304050407.GN2696@paulmck-ThinkPad-P72>
+ <20210304153524.GA1612307@rowland.harvard.edu>
+ <20210304190515.GS2696@paulmck-ThinkPad-P72>
+ <20210304212753.GB14408@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: sctp: trivial: fix typo in comment
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161489520787.31844.6061045890075653097.git-patchwork-notify@kernel.org>
-Date:   Thu, 04 Mar 2021 22:00:07 +0000
-References: <20210304055548.56829-1-drew@beagleboard.org>
-In-Reply-To: <20210304055548.56829-1-drew@beagleboard.org>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     vyasevich@gmail.com, nhorman@tuxdriver.com,
-        marcelo.leitner@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gustavoars@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304212753.GB14408@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Wed,  3 Mar 2021 21:55:49 -0800 you wrote:
-> Fix typo of 'overflow' for comment in sctp_tsnmap_check().
+On Thu, Mar 04, 2021 at 04:27:53PM -0500, Alan Stern wrote:
+> On Thu, Mar 04, 2021 at 11:05:15AM -0800, Paul E. McKenney wrote:
+> > On Thu, Mar 04, 2021 at 10:35:24AM -0500, Alan Stern wrote:
+> > > On Wed, Mar 03, 2021 at 09:04:07PM -0800, Paul E. McKenney wrote:
+> > > > On Wed, Mar 03, 2021 at 10:21:01PM -0500, Alan Stern wrote:
+> > > > > On Wed, Mar 03, 2021 at 02:03:48PM -0800, Paul E. McKenney wrote:
+> > > > > > On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
+> > > 
+> > > > > > > >  And I cannot immediately think of a situation where
+> > > > > > > > this approach would break that would not result in a data race being
+> > > > > > > > flagged.  Or is this yet another failure of my imagination?
+> > > > > > > 
+> > > > > > > By definition, an access to a local variable cannot participate in a 
+> > > > > > > data race because all such accesses are confined to a single thread.
+> > > > > > 
+> > > > > > True, but its value might have come from a load from a shared variable.
+> > > > > 
+> > > > > Then that load could have participated in a data race.  But the store to 
+> > > > > the local variable cannot.
+> > > > 
+> > > > Agreed.  My thought was that if the ordering from the initial (non-local)
+> > > > load mattered, then that initial load must have participated in a
+> > > > data race.  Is that true, or am I failing to perceive some corner case?
+> > > 
+> > > Ordering can matter even when no data race is involved.  Just think
+> > > about how much of the memory model is concerned with ordering of
+> > > marked accesses, which don't participate in data races unless there is
+> > > a conflicting plain access somewhere.
+> > 
+> > Fair point.  Should I have instead said "then that initial load must
+> > have run concurrently with a store to that same variable"?
 > 
-> Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
->  net/sctp/tsnmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I'm losing track of the point you were originally trying to make.
+> 
+> Does ordering matter when there are no conflicting accesses?  Sure.  
+> Consider this:
+> 
+> 	A: r1 = READ_ONCE(x);
+> 	B: WRITE_ONCE(y, r1);
+> 	   smp_wmb();
+> 	C: WRITE_ONCE(z, 1);
+> 
+> Even if there are no other accesses to y at all (let alone any 
+> conflicting ones), the mere existence of B forces A to be ordered before 
+> C, and this is easily detectable by a litmus test.
 
-Here is the summary with links:
-  - net: sctp: trivial: fix typo in comment
-    https://git.kernel.org/netdev/net/c/d93ef301644e
+Given that herd7 treats all local variables as registers (including
+forbidding taking their addresses), and given that we are not thinking of
+treating local-variable accesses as if they were marked, this is likely
+all moot.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+But just in case...
 
+I was trying to figure out if there was a litmus test of the following
+form where it might make a difference if local-variable accesses were
+treated as if they were marked.  So is there something like this:
 
+	r1 = x;
+	if (r1)
+	   	WRITE_ONCE(y, 1);
+
+where implicitly treating the accesses to r1 as marked would make a
+difference.  I was thinking that any such example would have to result
+in LKMM flagging the load from x as a data race.  However, your example
+inserting the smp_wmb() does shed some doubt on that theory.
+
+This of course is moot unless we come back to treating local-variable
+accesses as if they were marked.
+
+							Thanx, Paul
