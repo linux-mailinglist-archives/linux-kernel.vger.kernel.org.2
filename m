@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A9332DB8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FE032DB8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234766AbhCDVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:07:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232783AbhCDVGl (ORCPT
+        id S236171AbhCDVIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:08:43 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:51564 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234921AbhCDVId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:06:41 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB82C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 13:06:00 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id 130so14762700qkh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 13:06:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lgdkSDcMMDWh1SRt3hQoa5/TwUrpy7W6CPuK58HsLUg=;
-        b=E1DX7PZs5hFH2/Uww4LEeP0Z3hUElD/Z50FBpEidIfYNm73tdl4HxZ7ZgUGTCbOf8G
-         Cae6dxwro3QySC0N3Md6i6iwtLazR3+zhoQ++LMM/8MEFu3SqIyOxjVC9yySHR6WnLop
-         YUSxz1LtpVtp0V2gOIE68CUHxXaEP7xQv6mz/+ReaPio9y+JmYoroR+JG8aBzu6pMSdU
-         Ybav276o3MN9TyPflzCLQboFY6S0hEtDC/CrSpLpJH5J6MkMBNrSR9wADMO3AesrMEHB
-         Ofa+A99/jMNz7fLDNej/W+t3K36ZD4ADNbt4dpcDDDopRuvEOqnah44F0bmmLn9cQEmx
-         AocQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lgdkSDcMMDWh1SRt3hQoa5/TwUrpy7W6CPuK58HsLUg=;
-        b=K/Acare15tWzoDqC3RJOtRz55mjG7jcBKmaJXjRuNzDWIVpkNB73JFYGAq1BRgddEC
-         Rzhn+bJ5O/fDoyb2ROjz+aNDzFQ5OYsI2pJmGFOtkKpEpEhCMzGs7FacQ+Vh3AzH2SHX
-         jVhHOdiMUjmjUhl2x+3Nn+xDl+ig48ViHlHX2MqeRTGyyLvJWM/FLyktPWqbmHZfLesy
-         v3ni5ymqejPsGk01XsCjSZUCMlc94700qccYWOsc6F/X8Rx56EZG3naF4RaCEahS6egS
-         SGZ7+muaSxvOuEpm3Y3oKdopnX1rW3B2zFZcFuzrW+BqipGWQGEAmPGtP6UZD2P8zHXk
-         x33Q==
-X-Gm-Message-State: AOAM531b/tA81weGmEO2+x9Oqfaa/+VFNsqc0jxEg40xJFA7a79QdKsk
-        ImsPPhHWnx5MW1TBNe5yleJ7nhIYANXLbpPfu86otw==
-X-Google-Smtp-Source: ABdhPJzOwE+1Sg5OvskywxdoiGHdv7NJRbHDt9/fENzJUfNvdNmhW6cIta6mx85BXuIJsvrgTFTZ/pRK4X/+/EhYqMs=
-X-Received: by 2002:a05:620a:1353:: with SMTP id c19mr6192822qkl.392.1614891959772;
- Thu, 04 Mar 2021 13:05:59 -0800 (PST)
+        Thu, 4 Mar 2021 16:08:33 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4Ds3NF6Zhxz1qs10;
+        Thu,  4 Mar 2021 22:07:24 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4Ds3ND3k9kz1qqkJ;
+        Thu,  4 Mar 2021 22:07:24 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id NF9l6MSuqCwo; Thu,  4 Mar 2021 22:07:22 +0100 (CET)
+X-Auth-Info: /bjdHCSRRBO1hy/kHQ3KWZ31WRCi0CyJyL23VTq/CMI=
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu,  4 Mar 2021 22:07:22 +0100 (CET)
+Subject: Re: [PATCH AUTOSEL 5.10 050/217] rsi: Fix TX EAPOL packet handling
+ against iwlwifi AP
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Angus Ainslie <angus@akkea.ca>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Siva Rebbagondla <siva8118@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+References: <20201223021626.2790791-1-sashal@kernel.org>
+ <20201223021626.2790791-50-sashal@kernel.org>
+ <68699f8a-2fcd-3b3d-f809-afa54790e9f9@denx.de> <YEFHULdbXVVxORn9@sashalap>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <d4b4f1d1-8041-3563-708a-850fe95549b8@denx.de>
+Date:   Thu, 4 Mar 2021 22:07:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210304205256.2162309-1-elver@google.com>
-In-Reply-To: <20210304205256.2162309-1-elver@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 4 Mar 2021 22:05:48 +0100
-Message-ID: <CAG_fn=XVAFjgkFCj8kc6Bz4rvBwCeE4HUcJPBTWQcNjrBLaT=g@mail.gmail.com>
-Subject: Re: [PATCH mm] kfence, slab: fix cache_alloc_debugcheck_after() for
- bulk allocations
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dmitriy Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Jann Horn <jannh@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YEFHULdbXVVxORn9@sashalap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 9:53 PM Marco Elver <elver@google.com> wrote:
->
-> cache_alloc_debugcheck_after() performs checks on an object, including
-> adjusting the returned pointer. None of this should apply to KFENCE
-> objects. While for non-bulk allocations, the checks are skipped when we
-> allocate via KFENCE, for bulk allocations cache_alloc_debugcheck_after()
-> is called via cache_alloc_debugcheck_after_bulk().
+On 3/4/21 9:47 PM, Sasha Levin wrote:
+> On Tue, Mar 02, 2021 at 08:25:49PM +0100, Marek Vasut wrote:
+>> On 12/23/20 3:13 AM, Sasha Levin wrote:
+>>
+>> Hello Sasha,
+>>
+>>> From: Marek Vasut <marex@denx.de>
+>>>
+>>> [ Upstream commit 65277100caa2f2c62b6f3c4648b90d6f0435f3bc ]
+>>>
+>>> In case RSI9116 SDIO WiFi operates in STA mode against Intel 9260 in 
+>>> AP mode,
+>>> the association fails. The former is using wpa_supplicant during 
+>>> association,
+>>> the later is set up using hostapd:
+>>
+>> [...]
+>>
+>> Was this patch possibly missed from 5.10.y ?
+> 
+> I'm not sure what happened there, but I can queue it up.
 
-@Andrew, is this code used by anyone?
-As far as I understand, it cannot be enabled by any config option, so
-nobody really tests it.
-If it is still needed, shall we promote #if DEBUGs in slab.c to a
-separate config option, or maybe this code can be safely removed?
+Thank you
 
+>> Also, while at it, I think it might make sense to pick the following 
+>> two patches as well, they dramatically reduce interrupt rate of the 
+>> RSI WiFi device, so it stops overloading lower-end devices:
+>> 287431463e786 ("rsi: Move card interrupt handling to RX thread")
+> 
+> And this one too.
 
-Alex
+Thanks
+
+>> abd131a19f6b8 ("rsi: Clean up loop in the interrupt handler")
+> 
+> But not this one, it looks like just a cleanup. Why is it needed?
+
+Now I got confused, yes, please skip abd131a19f6b8, thanks for spotting 
+it. (I still have one more patch for the RSI wifi which I need to send 
+out, but that's for later)
