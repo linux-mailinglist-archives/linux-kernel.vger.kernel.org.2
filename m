@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72F632D4B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4253B32D4C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhCDN5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:57:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237751AbhCDN4r (ORCPT
+        id S234114AbhCDOAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:00:52 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54618 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232591AbhCDOAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:56:47 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5B9C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 05:56:06 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id v13so18499847edw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:56:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zNqt364yKc9AWMgU3gsE1glWEHnIX0hXdX9QnycDgAE=;
-        b=h2MDWr0x+l/RRdWo87aMtBHYHL/EZs/ptnrUUCflnO+hIHY6vAI41jyhBF0syGZn/p
-         Op3XhjCGwMm/0GobwqzZwPc69RXJUMVBpaN54DUECA4S9O2T7SxDqu9P5GR5Jr7JAbBi
-         3xonWuM81lIInxPJBH7AABQqrezhq0wiLKqZ3ZlAe+DGtoWj1MDjKFDuYmVNT7cnvCPF
-         T0rSDDmILzCUYwmNsoKGMDS9ZJL5wEpQlVfEbc3MQ7EJiBMu/tmUiZ8qVGTACDpnUggm
-         P3z4cHSInsJnZ/lId4G3SFSzObh7UJ/sVc/zw8IB+ofkt/INH7XSoSiqfsvpVZu6L36d
-         KfUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zNqt364yKc9AWMgU3gsE1glWEHnIX0hXdX9QnycDgAE=;
-        b=asgAjll4y/CewT5WSKm85htngJ/rcjYfWfiT5ZWNSMKMkZSa2OqANjUrCfv8UvYucE
-         DWo90O1bTdNZVB2ZfXSPXMEasd3LcCJMCSmkUCwbhh3POGbFrWQ3hD9K/JKEhMk/D10I
-         tK3Fg5nWwgTmj8EVfHduGNYWkN2s/tKwIStoaQEq7VMDnNfsZX20Y97Kixg8KDliskvr
-         zTZQhff2sIaEr0qjXMin9FcpuPbq2ZUBu52lfDjKxUMXtksvqhZUUYCYgqUEV4FS5aHw
-         ChjszLcRTPV3b6CtY9tJMGGaZhZYxGn0fro+6a8hNjf3Hu7hGpwGCM2ZM1t46wW1ZDB6
-         UYIw==
-X-Gm-Message-State: AOAM532v23QZtAVVCB3fcRtURa2pODrZOKCrlNchQxbo2VwEXNADRNuo
-        NzwoiVCCo7xD08Tn73aCtsrjsGXpnLs=
-X-Google-Smtp-Source: ABdhPJxABD1m4RfAtGxcmIh/kkkBtCNGxrk9fSq31TJd+X1XVylEf4N1lO0Gw/OMnZNhjkrQ0stQlw==
-X-Received: by 2002:a05:6402:27d3:: with SMTP id c19mr4493523ede.129.1614866165218;
-        Thu, 04 Mar 2021 05:56:05 -0800 (PST)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
-        by smtp.gmail.com with ESMTPSA id r5sm24155280ejx.96.2021.03.04.05.56.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 05:56:04 -0800 (PST)
-Received: by mail-wr1-f52.google.com with SMTP id v15so27765432wrx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:56:04 -0800 (PST)
-X-Received: by 2002:adf:fa08:: with SMTP id m8mr4317031wrr.12.1614866163865;
- Thu, 04 Mar 2021 05:56:03 -0800 (PST)
+        Thu, 4 Mar 2021 09:00:31 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 124DcIPr170802;
+        Thu, 4 Mar 2021 08:59:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=AR0H8gw8Jtn8ZcHHNn5tbGNJ1AS3AbzB1oQc+pxjvo0=;
+ b=EqcZb7u8cIbQ2KuK2xSkb3wW+sqm3m0vdgQQmd3EbAOzLEWmJmnIHilCJwnFAR56ltlI
+ XEKQgVzXPfK0u9mbYKUfyzIQ+Fp6cF7NN8/I3jZ3PBK1l8X575SvdiiETJqrSUFJvzmd
+ Awidpml/HJy9bEhOwGkOOJMRZ0nCDSP6pRNg/Gdg+OQawn8p6YqfJopSXUi7ZcMf3yOo
+ Raz/FHejtDXE72uAZ7UwhlcHk0B+PA/W2kiJGz0s2/om7++5aUs3jvLsg1l2GVCFd/LL
+ xpPw6fdZmCjxSIqPH/AwHMnWBilZfZBO3WL4JvUR9tFRqygBu6tYSU1vlnPCWhd1Niko nw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 372yd9au0f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 08:59:38 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 124DcMcR171101;
+        Thu, 4 Mar 2021 08:59:37 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 372yd9atyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 08:59:37 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 124DwHEk031000;
+        Thu, 4 Mar 2021 13:59:37 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03dal.us.ibm.com with ESMTP id 3720r0pjwr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 13:59:37 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 124DxaK87996006
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 13:59:36 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4647AAE062;
+        Thu,  4 Mar 2021 13:59:36 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 35E89AE05C;
+        Thu,  4 Mar 2021 13:59:36 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  4 Mar 2021 13:59:36 +0000 (GMT)
+Subject: Re: [PATCH v9 6/9] crypto: Add NIST P384 curve parameters
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Saulo Alessandre <saulo.alessandre@tse.jus.br>
+References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
+ <20210225160802.2478700-7-stefanb@linux.vnet.ibm.com>
+ <20210304052809.GB25972@gondor.apana.org.au>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <37e5c232-11e8-0533-ab3e-676829091d19@linux.ibm.com>
+Date:   Thu, 4 Mar 2021 08:59:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210304064046.6232-1-hxseverything@gmail.com>
-In-Reply-To: <20210304064046.6232-1-hxseverything@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 4 Mar 2021 08:55:26 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSc3W9jcL97OF+ctRWLhFoUdNxb3P0MyPm9k7W8nTvWX0Q@mail.gmail.com>
-Message-ID: <CA+FuTSc3W9jcL97OF+ctRWLhFoUdNxb3P0MyPm9k7W8nTvWX0Q@mail.gmail.com>
-Subject: Re: [PATCH/v5] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
-To:     Xuesen Huang <hxseverything@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Xuesen Huang <huangxuesen@kuaishou.com>,
-        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
-        Li Wang <wangli09@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210304052809.GB25972@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_03:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103040063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 1:41 AM Xuesen Huang <hxseverything@gmail.com> wrote:
->
-> From: Xuesen Huang <huangxuesen@kuaishou.com>
->
-> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
-> encapsulation. But that is not appropriate when pushing Ethernet header.
->
-> Add an option to further specify encap L2 type and set the inner_protocol
-> as ETH_P_TEB.
->
-> Suggested-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
-> Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
-> Signed-off-by: Li Wang <wangli09@kuaishou.com>
+On 3/4/21 12:28 AM, Herbert Xu wrote:
+> On Thu, Feb 25, 2021 at 11:07:59AM -0500, Stefan Berger wrote:
+>> From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+>>
+>> * crypto/ecc_curve_defs.h
+>>    - add nist_p384 params
+>>
+>> * include/crypto/ecdh.h
+>>    - add ECC_CURVE_NIST_P384
+>>
+>> Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+>> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
+>>   crypto/ecc_curve_defs.h | 32 ++++++++++++++++++++++++++++++++
+>>   include/crypto/ecdh.h   |  1 +
+>>   2 files changed, 33 insertions(+)
+> Can you reorder the patches so that the crypto patches come first
+> and then I can apply them?
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+Yes, sounds good.
+
+Are you going to take the other patches as well, except for maybe 9/9, 
+which depends on Nayan's patch series. Mimi suggested to me to ask you 
+whether you could create a topic branch where we can apply other patches 
+to, such as Nayna's?
+
+The NIST P384 patch temporarily introduces this warning, which goes away 
+when the immediately following patch (current 7/9) is applied. Is this 
+an issue or should I squash Saulo's patches or put the top hunk from 7/9 
+into 6/9?
+
+
+In file included from crypto/ecc.c:38:
+crypto/ecc_curve_defs.h:76:25: warning: ?nist_p384? defined but not used 
+[-Wunused-variable]
+    76 | static struct ecc_curve nist_p384 = {
+       |                         ^~~~~~~~~
+
+    Stefan
+
+
+>
+> Thanks,
+
+
