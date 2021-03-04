@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3B632CBD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A27032CC03
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 06:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234125AbhCDFV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 00:21:59 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13814 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234013AbhCDFVi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 00:21:38 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60406e3a0000>; Wed, 03 Mar 2021 21:20:58 -0800
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Mar
- 2021 05:20:56 +0000
-Received: from nvdebian.localnet (172.20.145.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Mar 2021
- 05:20:54 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
-        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
-        <daniel@ffwll.ch>
-Subject: Re: [PATCH v3 5/8] mm: Device exclusive memory access
-Date:   Thu, 4 Mar 2021 16:20:52 +1100
-Message-ID: <2083651.v4LkQjjfQp@nvdebian>
-In-Reply-To: <20210302124152.GF4247@nvidia.com>
-References: <20210226071832.31547-1-apopple@nvidia.com> <2758096.Z30Q8iEM0t@nvdebian> <20210302124152.GF4247@nvidia.com>
+        id S234150AbhCDF32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 00:29:28 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:48220 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234113AbhCDF3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 00:29:10 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lHgWw-0006UG-3x; Thu, 04 Mar 2021 16:28:11 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 04 Mar 2021 16:28:09 +1100
+Date:   Thu, 4 Mar 2021 16:28:09 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Saulo Alessandre <saulo.alessandre@tse.jus.br>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v9 6/9] crypto: Add NIST P384 curve parameters
+Message-ID: <20210304052809.GB25972@gondor.apana.org.au>
+References: <20210225160802.2478700-1-stefanb@linux.vnet.ibm.com>
+ <20210225160802.2478700-7-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614835258; bh=9xq8FfvlXkYAk6gs2678CTOmYbDE3Qd9No1oNQX9mU8=;
-        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-         MIME-Version:Content-Transfer-Encoding:Content-Type:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=pdZOZqStw2k9kfUFThuG08SuNOI+mxN+x8dJw3XY+pM3XOS0KNusvlx7Jc8OmFDTP
-         1yLQwxTNBqHauziGi82t9z4NolEGpl064lNuH+GMljlF7shSZzhkX0cOxfFgsigt6T
-         xTZCkHQHNCzFRImpRR2ildShmJcGlzmD9S2WSCmPGvQz1AuZIgLx2/B/LWMWl3Uygq
-         22c/GzkFoGtVRvbdCQ/ffN0LnSmAmIJ4CxK9n7vAY+aaqagzn/7jl6GH6UwXw4Y54x
-         fg7uzjwBKZt6NGVv2TKGuIXUv2P0JIZsIRJkaFC//mQiZr15JDiQyleyVMMn4J8u0M
-         pFKBKhvcVbdbQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225160802.2478700-7-stefanb@linux.vnet.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 2 March 2021 11:41:52 PM AEDT Jason Gunthorpe wrote:
-> > However try_to_protect() scans the PTEs again under the PTL so checking 
-the 
-> > mapping of interest actually gets replaced during the rmap walk seems like 
-a 
-> > reasonable solution. Thanks for the comments.
+On Thu, Feb 25, 2021 at 11:07:59AM -0500, Stefan Berger wrote:
+> From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
 > 
-> It does seem cleaner if you can manage it, the notifier will still be
-> needd to program the HW though
+> * crypto/ecc_curve_defs.h
+>   - add nist_p384 params
+> 
+> * include/crypto/ecdh.h
+>   - add ECC_CURVE_NIST_P384
+> 
+> Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  crypto/ecc_curve_defs.h | 32 ++++++++++++++++++++++++++++++++
+>  include/crypto/ecdh.h   |  1 +
+>  2 files changed, 33 insertions(+)
 
-Checking during the rmap walk wasn't hard but ultimately pointless. As you say 
-a range notifier and lock is required to program the hardware, which requires 
-checking the mappings with a mmu notifier sequence anyway.
+Can you reorder the patches so that the crypto patches come first
+and then I can apply them?
 
- - Alistair
-
-
-
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
