@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC1232CA55
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 03:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D34032CA63
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 03:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhCDCDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 21:03:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232327AbhCDCD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 21:03:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE8FC65032;
-        Thu,  4 Mar 2021 02:02:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614823369;
-        bh=DrYX2qaJ9dvf1qQJvkrG1HtM2hWEUOPp/Y+12r4zZCg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pTADc1lpgDGV9isZh76J0naVDGMaKZbfBfwku5J8vI0Q/p5S5tS1bqYoNoMyEyeVx
-         tpdEctVmzjgP2Beg1meSAjAVdLVmSvf1Q4/o3soT5YTYCO8zbVfS+8vvLFNNH8/0H6
-         3k/FQgKn1UDX3SIEvO03XcpCB1CTnOvjQxiBgGVd9aEjflZ7q6rK79xiYYQgDWHu+X
-         E9xFpmaU2zKuIfIOmqoyBu7pOGy5oqGJYmKwTRee+HgsQs3TTP89/HYCXlZp2ya5WL
-         PY9442mX4ijTepCwEOyNMmGRJ3awLhAVsXFkG76NgdVEjPmUOsRfT0DhuA4F3QxHX2
-         E9SZXJr1Uye+Q==
-Date:   Wed, 3 Mar 2021 19:02:44 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS: Add comment about CONFIG_MIPS32_O32 in
- loongson3_defconfig when build with Clang
-Message-ID: <20210304020244.pza6xd4ixziysrom@archlinux-ax161>
-References: <1614820544-10686-1-git-send-email-yangtiezhu@loongson.cn>
+        id S229801AbhCDCRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 21:17:49 -0500
+Received: from mail.kingsoft.com ([114.255.44.145]:13107 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230424AbhCDCRj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 21:17:39 -0500
+X-AuditID: 0a580155-713ff700000550c6-09-60403bcad8b4
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id BE.22.20678.ACB30406; Thu,  4 Mar 2021 09:45:46 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 4 Mar 2021
+ 10:16:53 +0800
+Date:   Thu, 4 Mar 2021 10:16:53 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        <yaoaili@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210304101653.546a9da1@alex-virtual-machine>
+In-Reply-To: <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
+References: <20210224151619.67c29731@alex-virtual-machine>
+        <20210224103105.GA16368@linux>
+        <20210225114329.4e1a41c6@alex-virtual-machine>
+        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
+        <20210225113930.GA7227@localhost.localdomain>
+        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
+        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
+        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
+        <20210226105915.6cf7d2b8@alex-virtual-machine>
+        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
+        <20210303115710.2e9f8e23@alex-virtual-machine>
+        <20210303163912.3d508e0f@alex-virtual-machine>
+        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614820544-10686-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsXCFcGooHvK2iHB4FWnrMWc9WvYLD5v+Mdm
+        8XX9L2aLaRvFLS6camCyuLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
+        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
+        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJXR96OPvWC/YMX+jqfsDYw/uLsYOTkkBEwkvr3/xdTF
+        yMUhJDCdSWLGv/3sEM5LRonnp74zdjFycLAIqEicvBgJ0sAmoCqx694sVhBbREBN4tLiB8wg
+        9cwCs1klTk0+ywySEBbwkvhyfy0jiM0rYCWxYsZfsDingKXEz/VvoLYBNXTe3MQEkuAXEJPo
+        vfKfCeIke4m2LYugmgUlTs58wgJiMwvoSJxYdYwZwpaX2P52DpgtJKAocXjJL3aIXiWJI90z
+        2CDsWIll816xTmAUnoVk1Cwko2YhGbWAkXkVI0txbrrRJkZIBIbuYJzR9FHvECMTB+MhRgkO
+        ZiURXvGXtglCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeaduNUkQEkhPLEnNTk0tSC2CyTJxcEo1
+        MPX+PfFjZ+ga8br65GORFZczBDyEv7noFk4sXmVpvfNf79S5+47tm8m1LWLWshnXt/5jVS5d
+        03uKId1+8qV3axIEGGPVL5paPzc+btnOVj1JKsGgXLTCJttZM4+RtyHs4G71znWVFZ4en39r
+        Hzec4inXtSJT+KVB6rK1Fjw228/fPDnTm3PCZYNHSU8Epjx/Xr6+MWqq4pG318T2M/5yrHkR
+        XXGlrHnmn7uOZ2fO3xF4cqX3Vks966OLZx4Vu6n98Vl3/ddX/Gxbinlkdpy/86D9T/zSOSL+
+        Vjezu6tnyUxWqZjZH6O3Z8KaUEfPn8nnDCXP7/hnNbHuhyR3pNj+xlm5NskHTjXo9fwr+S70
+        9bsSS3FGoqEWc1FxIgCi3gyMLwMAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 09:15:44AM +0800, Tiezhu Yang wrote:
-> When build kernel with Clang [1]:
-> 
-> $ make CC=clang loongson3_defconfig
-> $ make CC=clang
-> 
-> there exists the following error:
-> 
->   Checking missing-syscalls for O32
->   CALL    scripts/checksyscalls.sh
-> error: ABI 'o32' is not supported on CPU 'mips64r2'
-> make[1]: *** [Kbuild:48: missing-syscalls] Error 1
-> make: *** [arch/mips/Makefile:419: archprepare] Error 2
-> 
-> This is a known bug [2] with Clang, as Simon Atanasyan said,
-> "There is no plan on support O32 for MIPS64 due to lack of
-> resources".
-> 
-> It is not a good idea to remove this config due to GCC works
-> well, so add comment to point out this bug and suggest the
-> users to remove CONFIG_MIPS32_O32=y in defconfig when build
-> kernel with Clang.
-> 
-> [1] https://www.kernel.org/doc/html/latest/kbuild/llvm.html
-> [2] https://bugs.llvm.org/show_bug.cgi?id=38063
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/configs/loongson3_defconfig | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-> index 0e79f81..cacf9dd 100644
-> --- a/arch/mips/configs/loongson3_defconfig
-> +++ b/arch/mips/configs/loongson3_defconfig
-> @@ -35,6 +35,9 @@ CONFIG_NUMA=y
->  CONFIG_SMP=y
->  CONFIG_HZ_256=y
->  CONFIG_KEXEC=y
-> +# Please remove CONFIG_MIPS32_O32=y when build with Clang
-> +# due to "ABI 'o32' is not supported on CPU 'mips64r2'",
-> +# https://bugs.llvm.org/show_bug.cgi?id=38063
->  CONFIG_MIPS32_O32=y
->  CONFIG_MIPS32_N32=y
->  CONFIG_VIRTUALIZATION=y
-> -- 
-> 2.1.0
-> 
+On Wed, 3 Mar 2021 15:41:35 +0000
+"Luck, Tony" <tony.luck@intel.com> wrote:
 
-I think this might be a better solution. I know that I personally never
-read defconfig files if a build fails.
+> > For error address with sigbus, i think this is not an issue resulted by the patch i post, before my patch, the issue is already there.
+> > I don't find a realizable way to get the correct address for same reason --- we don't know whether the page mapping is there or not when
+> > we got to kill_me_maybe(), in some case, we may get it, but there are a lot of parallel issue need to consider, and if failed we have to fallback
+> > to the error brach again, remaining current code may be an easy option;  
+> 
+> My RFC patch from yesterday removes the uncertainty about whether the page is there or not. After it walks the page
+> tables we know that the poison page isn't mapped (note that patch is RFC for a reason ... I'm 90% sure that it should
+> do a bit more that just clear the PRESENT bit).
+> 
+> So perhaps memory_failure() has queued a SIGBUS for this task, if so, we take it when we return from kill_me_maybe()
+> 
+> If not, we will return to user mode and re-execute the failing instruction ... but because the page is unmapped we will take a #PF
 
-If CONFIG_MIPS32_O32 is broken with clang and the MIPS backend
-maintainer has said that it will not be supported due to lack of
-resources, then the config should not even be selectable in my opinion.
+Got this, I have some error thoughts here.
 
-Cheers,
-Nathan
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..ed35318a759d 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3315,6 +3315,8 @@ config SYSVIPC_COMPAT
- config MIPS32_O32
- 	bool "Kernel support for o32 binaries"
- 	depends on 64BIT
-+	# https://bugs.llvm.org/show_bug.cgi?id=38063
-+	depends on $(success,$(CC) $(CLANG_FLAGS) -march=mips64 -o32 -c -x c /dev/null -o /dev/null)
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT
- 	select MIPS32_COMPAT
+> The x86 page fault handler will see that the page for this physical address is marked HWPOISON, and it will send the SIGBUS
+> (just like it does if the page had been removed by an earlier UCNA/SRAO error).
+
+if your methods works, should it be like this?
+
+1582                         pteval = swp_entry_to_pte(make_hwpoison_entry(subpage));
+1583                         if (PageHuge(page)) {
+1584                                 hugetlb_count_sub(compound_nr(page), mm);
+1585                                 set_huge_swap_pte_at(mm, address,
+1586                                                      pvmw.pte, pteval,
+1587                                                      vma_mmu_pagesize(vma));
+1588                         } else {
+1589                                 dec_mm_counter(mm, mm_counter(page));
+1590                                 set_pte_at(mm, address, pvmw.pte, pteval);
+1591                         }
+
+the page fault check if it's a poison page using is_hwpoison_entry(),
+
+-- 
+Thanks!
+Aili Yao
