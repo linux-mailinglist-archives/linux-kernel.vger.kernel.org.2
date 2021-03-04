@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C2632DD5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF87B32DD5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 23:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhCDWs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 17:48:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37466 "EHLO mail.kernel.org"
+        id S232299AbhCDWum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 17:50:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231736AbhCDWsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 17:48:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D15E6501C;
-        Thu,  4 Mar 2021 22:48:54 +0000 (UTC)
+        id S229505AbhCDWul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 17:50:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E909F65017;
+        Thu,  4 Mar 2021 22:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614898134;
-        bh=GrerDAoTAovyyWNYvvC+zs2BPxmDLs2XKLKb4mqZLDY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fl2hoAYr4FyvTGzDjQer3murYeBpxPsKxixW9QAs3SiMjkbVs1F6FyKCasSDdBKDp
-         zms401sqEExyK82KF2BP0C5B1QnWwF8GmIE9Rht6pQkWowXTn1Xp/S3LL6Oba5r0nQ
-         fULHUIHs0N1ZDiSWS/9Zyac6uOLCmzYZvxglLV5bpA286cjBBokgvz4c8AJFxjB8+8
-         ORBXxQ3v1FqOKOS7oGjPWBs5NziUFCirD/ZmwTFS5WzWJCCMITmC37DONZR5KN48R3
-         e6ZhYA4UocjazvhXkVhggBXfwbffEMI3He5G+faTJl3AjHo03NKinnRCBxeqmKF4nP
-         Hg7CymCsevq4g==
-Received: by mail-ej1-f46.google.com with SMTP id w1so52703037ejf.11;
-        Thu, 04 Mar 2021 14:48:53 -0800 (PST)
-X-Gm-Message-State: AOAM532shjaGSfTJW3GVXYwzHU4fQjeVzgcy307Wk6xGu3GgzPg52dMO
-        B/S9rGWEGcN73G4U1+Tcoq7lauTljwHNT175ng==
-X-Google-Smtp-Source: ABdhPJwsSfTpWjPL+cZrEMvosQ1IPs0l8gQZ/vIA9NHMjVhs68GFDG/L9SRf5PtvlaFJJ8yVPqheQ48Al0kdk2WAF/c=
-X-Received: by 2002:a17:906:380b:: with SMTP id v11mr6717737ejc.183.1614898132557;
- Thu, 04 Mar 2021 14:48:52 -0800 (PST)
+        s=k20201202; t=1614898241;
+        bh=1iZ9TyYhSOsOAEvo+owEj3X/A/iYgQ6h90Ez4CDNoJU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KxyzA4mBdpOLXAVYipIuTCvYvOotR1rDSbFeFPkZPWPpPSJ2xHNBVoP6K30eVRftD
+         00PbGFYSacfe9gIvJy4p+c+7kz1crn5sHOcf+8EymQn/1s+J73oryJJ1Nb6iWJ/wRw
+         6HjtHx5iiRfsQiHEfjkjpfrSnJZILGuYbNvERt7xKLA3lRIBZTQ4gMJcrbP/6VOk45
+         gnfAg/APLwlSwEiqtjI16JbPQSyowkyfeJ7/mV5KrFSmUUtfMWJGD0ItnlgxFF7WLW
+         Bfc/OQURCzV69jf/qEeUVMEKhu0zhfLt5cUfInhsLufV2dZOO2GD6K1oxdw5UWJRfH
+         wnDDwSHFkpGUA==
+Date:   Thu, 4 Mar 2021 16:50:39 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 042/141] net: 3c509: Fix fall-through warnings for Clang
+Message-ID: <20210304225039.GA105908@embeddedor>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <56f997b3e97326076d16930901a4089056e8b6c6.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-References: <1614222604-27066-1-git-send-email-peng.fan@oss.nxp.com> <1614222604-27066-5-git-send-email-peng.fan@oss.nxp.com>
-In-Reply-To: <1614222604-27066-5-git-send-email-peng.fan@oss.nxp.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 4 Mar 2021 16:48:40 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKAOUKnVLvu-VNeDVg0ShXPy56wxhCQv38+rO2k961v+g@mail.gmail.com>
-Message-ID: <CAL_JsqKAOUKnVLvu-VNeDVg0ShXPy56wxhCQv38+rO2k961v+g@mail.gmail.com>
-Subject: Re: [PATCH V3 4/5] dt-bindings: mmc: fsl-imx-esdhc: add clock bindings
-To:     peng.fan@oss.nxp.com
-Cc:     Stephen Boyd <sboyd@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56f997b3e97326076d16930901a4089056e8b6c6.1605896059.git.gustavoars@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 9:23 PM <peng.fan@oss.nxp.com> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> Add clock bindings for fsl-imx-esdhc yaml
->
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Hi all,
+
+It's been more than 3 months; who can take this, please? :)
+
+Thanks
+--
+Gustavo
+
+On Fri, Nov 20, 2020 at 12:30:56PM -0600, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of just letting the code
+> fall through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml        | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-
-Looks like this landed in linux-next and introduces warnings:
-
-/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml:
-mmc@5b010000: clock-names:1: 'ahb' was expected
- From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.example.dt.yaml:
-mmc@5b010000: clock-names:2: 'per' was expected
- From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+>  drivers/net/ethernet/3com/3c509.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/3com/3c509.c b/drivers/net/ethernet/3com/3c509.c
+> index 667f38c9e4c6..676cdc6900b5 100644
+> --- a/drivers/net/ethernet/3com/3c509.c
+> +++ b/drivers/net/ethernet/3com/3c509.c
+> @@ -1052,6 +1052,7 @@ el3_netdev_get_ecmd(struct net_device *dev, struct ethtool_link_ksettings *cmd)
+>  		break;
+>  	case 3:
+>  		cmd->base.port = PORT_BNC;
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> -- 
+> 2.27.0
+> 
