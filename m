@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DBC32DA6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBCA32DA76
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 20:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236574AbhCDTbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 14:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
+        id S232729AbhCDTfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 14:35:16 -0500
+Received: from mga14.intel.com ([192.55.52.115]:14203 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236055AbhCDTb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 14:31:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7581C64F65;
-        Thu,  4 Mar 2021 19:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614886249;
-        bh=h9qPn2Kx11kI8Hp/+bCOBWOPD7CmEbnAbLKNeWgZZ/g=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=NtowSFvzeJtS+xVoUuyPIp4gffquDzcQ9qPKmrvuFBHqzlag0FEnqljEVSVqDeisc
-         6QeXIzebgrYvVCHjVtu8gC0GFPyngFSyy6RgceRo/G2RKV1KytqyLbFowe7LcfMKiY
-         xj7vzNc1SapCNk7uil7eiKaJj7I9zJtDNd4kppnFZKV9UHKC1yrFK/7V1aIgBARw+u
-         7KL7oEZVpz2EKoPs/8ORVVU8OxTt7WBO61lEHXZJ7ruZzGEnJdJDm2FABM7tmhV7k6
-         19HTl80xj7obrq7bDnLggfjZYffXC847OAAnDP1B7BBbWO/qpleZgzRzAKAMvi1W7z
-         iP8lKyMkImgZA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6B461600DF;
-        Thu,  4 Mar 2021 19:30:49 +0000 (UTC)
-Subject: Re: [GIT PULL] sound fixes for 5.12-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5h35xbb648.wl-tiwai@suse.de>
-References: <s5h35xbb648.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5h35xbb648.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc2
-X-PR-Tracked-Commit-Id: 26af17722a07597d3e556eda92c6fce8d528bc9f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 43df5242af4ed67e8811257ab1bfe6a07e4a5858
-Message-Id: <161488624943.28500.8177618805608265586.pr-tracker-bot@kernel.org>
-Date:   Thu, 04 Mar 2021 19:30:49 +0000
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S231827AbhCDTfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 14:35:06 -0500
+IronPort-SDR: tnMbW7JWeGCkTOv3+kJUsslwGkD1R22z7JgLuin9PuUzb9alhaTdbu3NAjzK9Z11+WRHc2nAln
+ 7jrXxaFulYzA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="186842212"
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="186842212"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 11:33:20 -0800
+IronPort-SDR: JviQkSzYEuA6/b+ZnYdrqMsQXla0p5WcLi7AplNp1NtmclUWiHTNgCzm8dYK8yY3WkMPGXSzBO
+ Z8gvROMo81uA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="597026979"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Mar 2021 11:33:20 -0800
+Received: from [10.252.141.30] (kliang2-MOBL.ccr.corp.intel.com [10.252.141.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 388105808B1;
+        Thu,  4 Mar 2021 11:33:19 -0800 (PST)
+Subject: Re: [perf] perf_fuzzer causes unchecked MSR access error
+To:     Vince Weaver <vincent.weaver@maine.edu>
+Cc:     Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <61a56699-aab4-ef6-ed8d-a22b6bf532d@maine.edu>
+ <7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu>
+ <YCVE8q4MlbcU4fnV@hirez.programming.kicks-ass.net>
+ <32888c33-c286-c600-66cb-8b1b03beeb8b@linux.intel.com>
+ <6c1f8e-f81-a781-e594-368e7adef0c0@maine.edu>
+ <CABPqkBRp17EMqgoO3LTC-hTkpbv2njFO-Kkf-RifrSksdGfEaA@mail.gmail.com>
+ <9df5f72d-a959-fe46-400a-7dca6c596478@linux.intel.com>
+ <a8cebd2-a0fe-2ade-30d6-d592b3423db@maine.edu>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <473aff30-5e4f-394f-1c75-9bae66e37bbc@linux.intel.com>
+Date:   Thu, 4 Mar 2021 14:33:17 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <a8cebd2-a0fe-2ade-30d6-d592b3423db@maine.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 04 Mar 2021 10:49:59 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc2
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/43df5242af4ed67e8811257ab1bfe6a07e4a5858
+On 3/3/2021 3:22 PM, Vince Weaver wrote:
+> On Wed, 3 Mar 2021, Liang, Kan wrote:
+> 
+>> We never use bit 58. It should be a new issue.
 
-Thank you!
+Actually, KVM uses it. They create a fake event called VLBR_EVENT, which 
+uses bit 58. It's introduced from the commit 097e4311cda9 ("perf/x86: 
+Add constraint to create guest LBR event without hw counter").
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Since it's a fake event, it doesn't support PEBS. Perf should reject it 
+if it sets the precise_ip.
+
+The below patch should fix the MSR access error.
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 5bac48d..1ea3c67 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3659,6 +3659,10 @@ static int intel_pmu_hw_config(struct perf_event 
+*event)
+  		return ret;
+
+  	if (event->attr.precise_ip) {
++
++		if ((event->attr.config & INTEL_ARCH_EVENT_MASK) == 
+INTEL_FIXED_VLBR_EVENT)
++			return -EINVAL;
++
+  		if (!(event->attr.freq || (event->attr.wakeup_events && 
+!event->attr.watermark))) {
+  			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
+  			if (!(event->attr.sample_type &
+
+Thanks,
+Kan
