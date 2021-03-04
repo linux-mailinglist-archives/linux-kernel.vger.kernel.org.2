@@ -2,135 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2255532CFFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A35832D020
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 10:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbhCDJqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 04:46:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237932AbhCDJqJ (ORCPT
+        id S238016AbhCDJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 04:52:33 -0500
+Received: from regular1.263xmail.com ([211.150.70.201]:40264 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238007AbhCDJwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 04:46:09 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F79AC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 01:45:29 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id n10so18540329pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 01:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=MuNPzfsWJUyRk+KPgWKVHnHgzpGFaFQwGMRZkE6IW4A=;
-        b=ptxStdrvnHB0B14UwfcoHGQ+2IjoBNcw9mNmsn7ZWL8WSZgiQPzbWXdAGWzipC4YkL
-         dF6kGlS3o7qz7qFlewXUgOA8dPpdjpeWaHTv/RdgB9OoqNN9HQ6vBomIJEIabEdTdcOv
-         AoFkyrVKGZ4uY0/gB5FgtnFZVnUEHMa21+yDT33f9T4sTWJ8hzhrYRztz+0O1lbZK1Bi
-         MPp6cI5SZHrBfWpKGrCn9S0zvq13Or3ruYEBBff+iqNXlcVox8X57byd8cBojmAonFhq
-         VtWIj1y/hHTwb6V7QQZBcDQDQrzYPd6CpH3bTPe+lNRUhqHdO3tcZZTg/5b6I+baqYjJ
-         kDBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=MuNPzfsWJUyRk+KPgWKVHnHgzpGFaFQwGMRZkE6IW4A=;
-        b=uSRQRZz5oR/8FS1XPpynIajIowSS8DXDRkiob6RSvVPvieuwQXm6dDF9JY7NKkWuzB
-         Gycb/nrugVuvER+yT+iaX2P5TS8EMT5Tao4jgD+Ku5rZtIiW/wfMcjW2waUFnQue+sLB
-         3va+zp8+YefBMpjtaTXGNdlTgXJzZtftpUL/f9XG9+dnm4lXO9xyoVAGsMGeMJaNCEqX
-         4pocQyHWN7bMs9g9I1scwVTP7qQtVhbTFqEJ86mTDPrY+u6E4GY2J2NNn7Lfu/K45TYL
-         DTwqejPJraMnm7l+Ls++ZqM70i+4ofrvJ0G4/EisXl4HxmL8vy75t3mHHiA2CLaFWfpv
-         LZ5A==
-X-Gm-Message-State: AOAM531eXCrc5VjFhCMCgcpTnCBgTszhg/7gOwc+TAmT/yZKv9kJKLvy
-        U4NsLBw6xBoBeT42qcztJPx6AqIwDIQ=
-X-Google-Smtp-Source: ABdhPJzfswaya9YgU4DlSmX0SeW5tvmE8VTdyMYk67yzz3KJcAm2JQKjrEz7gbB9z9oEn4wPBnMxDw==
-X-Received: by 2002:a63:f808:: with SMTP id n8mr3010545pgh.115.1614851128570;
-        Thu, 04 Mar 2021 01:45:28 -0800 (PST)
-Received: from cosmos ([103.113.142.250])
-        by smtp.gmail.com with ESMTPSA id i20sm6043111pgg.65.2021.03.04.01.45.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Mar 2021 01:45:28 -0800 (PST)
-Date:   Thu, 4 Mar 2021 15:15:24 +0530
-From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] tracing: fix memory leaks in __create_synth_event()
-Message-ID: <20210304094521.GA1826@cosmos>
+        Thu, 4 Mar 2021 04:52:21 -0500
+Received: from localhost (unknown [192.168.167.235])
+        by regular1.263xmail.com (Postfix) with ESMTP id 6137CDF0;
+        Thu,  4 Mar 2021 17:46:02 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P19729T140185353447168S1614851161349091_;
+        Thu, 04 Mar 2021 17:46:02 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <3cea0d218c0c385e8890b1a7b73b21c4>
+X-RL-SENDER: huangjianghui@uniontech.com
+X-SENDER: huangjianghui@uniontech.com
+X-LOGIN-NAME: huangjianghui@uniontech.com
+X-FST-TO: corbet@lwn.net
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   hjh <huangjianghui@uniontech.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Harry Wei <harryxiyou@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] PATCH Documentation translations:translate sound/hd-audio/controls to chinese
+Date:   Thu,  4 Mar 2021 17:45:55 +0800
+Message-Id: <20210304094556.5858-1-huangjianghui@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report:
-unreferenced object 0xc5a6f708 (size 8):
-  comm "ftracetest", pid 1209, jiffies 4294911500 (age 6.816s)
-  hex dump (first 8 bytes):
-    00 c1 3d 60 14 83 1f 8a                          ..=`....
-  backtrace:
-    [<f0aa4ac4>] __kmalloc_track_caller+0x2a6/0x460
-    [<7d3d60a6>] kstrndup+0x37/0x70
-    [<45a0e739>] argv_split+0x1c/0x120
-    [<c17982f8>] __create_synth_event+0x192/0xb00
-    [<0708b8a3>] create_synth_event+0xbb/0x150
-    [<3d1941e1>] create_dyn_event+0x5c/0xb0
-    [<5cf8b9e3>] trace_parse_run_command+0xa7/0x140
-    [<04deb2ef>] dyn_event_write+0x10/0x20
-    [<8779ac95>] vfs_write+0xa9/0x3c0
-    [<ed93722a>] ksys_write+0x89/0xc0
-    [<b9ca0507>] __ia32_sys_write+0x15/0x20
-    [<7ce02d85>] __do_fast_syscall_32+0x45/0x80
-    [<cb0ecb35>] do_fast_syscall_32+0x29/0x60
-    [<2467454a>] do_SYSENTER_32+0x15/0x20
-    [<9beaa61d>] entry_SYSENTER_32+0xa9/0xfc
-unreferenced object 0xc5a6f078 (size 8):
-  comm "ftracetest", pid 1209, jiffies 4294911500 (age 6.816s)
-  hex dump (first 8 bytes):
-    08 f7 a6 c5 00 00 00 00                          ........
-  backtrace:
-    [<bbac096a>] __kmalloc+0x2b6/0x470
-    [<aa2624b4>] argv_split+0x82/0x120
-    [<c17982f8>] __create_synth_event+0x192/0xb00
-    [<0708b8a3>] create_synth_event+0xbb/0x150
-    [<3d1941e1>] create_dyn_event+0x5c/0xb0
-    [<5cf8b9e3>] trace_parse_run_command+0xa7/0x140
-    [<04deb2ef>] dyn_event_write+0x10/0x20
-    [<8779ac95>] vfs_write+0xa9/0x3c0
-    [<ed93722a>] ksys_write+0x89/0xc0
-    [<b9ca0507>] __ia32_sys_write+0x15/0x20
-    [<7ce02d85>] __do_fast_syscall_32+0x45/0x80
-    [<cb0ecb35>] do_fast_syscall_32+0x29/0x60
-    [<2467454a>] do_SYSENTER_32+0x15/0x20
-    [<9beaa61d>] entry_SYSENTER_32+0xa9/0xfc
-
-In __create_synth_event(),while iterating field/type arguments, the
-argv_split() will return array of atleast 2 elements even when zero
-arguments(argc=0) are passed. for e.g. when there is double delimiter
-or string ends with delimiter
-
-To fix call argv_free() even when argc=0.
-
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Signed-off-by: hjh <huangjianghui@uniontech.com>
 ---
- kernel/trace/trace_events_synth.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/translations/zh_CN/index.rst    |   1 +
+ .../zh_CN/sound/hd-audio/controls.rst         | 102 ++++++++++++++++++
+ .../zh_CN/sound/hd-audio/index.rst            |  14 +++
+ .../translations/zh_CN/sound/index.rst        |  22 ++++
+ 4 files changed, 139 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/controls.rst
+ create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/index.rst
+ create mode 100644 Documentation/translations/zh_CN/sound/index.rst
 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 2979a96595b4..8d71e6c83f10 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -1225,8 +1225,10 @@ static int __create_synth_event(const char *name, const char *raw_fields)
- 			goto err;
- 		}
+diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+index be6f11176200..2767dacfe86d 100644
+--- a/Documentation/translations/zh_CN/index.rst
++++ b/Documentation/translations/zh_CN/index.rst
+@@ -20,6 +20,7 @@
+    process/index
+    filesystems/index
+    arm64/index
++   sound/index
  
--		if (!argc)
-+		if (!argc) {
-+			argv_free(argv);
- 			continue;
-+		}
- 
- 		n_fields_this_loop = 0;
- 		consumed = 0;
+ 目录和表格
+ ----------
+diff --git a/Documentation/translations/zh_CN/sound/hd-audio/controls.rst b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
+new file mode 100644
+index 000000000000..54c028ab9a40
+--- /dev/null
++++ b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
+@@ -0,0 +1,102 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++Chinese translator: Huang Jianghui <huangjianghui@uniontech.com>
++---------------------------------------------------------------------
++.. include:: ../../disclaimer-zh_CN.rst
++以下为正文
++---------------------------------------------------------------------
++======================================
++高清音频编解码器特定混音器控件
++======================================
++
++
++此文件解释特定于编解码器的混音器控件.
++
++瑞昱编解码器
++------------
++
++声道模式
++  这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道打开时显示出现。
++  它给出要使用的通道数:"2ch","4ch","6ch"，和"8ch"。根据配置，这还控
++  制多I/O插孔的插孔重分配。
++
++自动静音模式
++  这是一个枚举控件，用于更改耳机和线路输出插孔的自动静音行为。如果内
++  置扬声器、耳机和/或线路输出插孔在机器上可用，则显示该控件。当只有
++  耳机或者线路输出的时候，它给出”禁用“和”启用“状态。当启用后，插孔插
++  入后扬声器会自动静音。
++
++  当耳机和线路输出插孔都存在时，它给出”禁用“、”仅扬声器“和”线路输出+扬
++  声器“。当”仅扬声器“被选择，插入耳机或者线路输出插孔可使扬声器静音，
++  但不会使线路输出静音。当线路输出+扬声器被选择，插入耳机插孔会同时使扬
++  声器和线路输出静音。
++
++
++矽玛特编解码器
++--------------
++
++模拟环回
++   此控件启用/禁用模拟环回电路。只有在编解码器提示中将”lookback“设置为真
++   时才会出现(见HD-Audio.txt)。请注意，在某些编解码器上，模拟环回和正常
++   PCM播放是独占的,即当此选项打开时，您将听不到任何PCM流。
++
++交换中置/低频
++   交换中置和低频通道顺序，通常情况下，左侧对应中置，右侧对应低频,启动此
++   项后，左边低频，右边中置。
++
++耳机作为线路输出
++   当此控制开启时，将耳机视为线路输出插孔。也就是说，耳机不会自动静音其他
++   线路输出，没有耳机放大器被设置到引脚上。
++
++麦克风插口模式、线路插孔模式等
++   这些枚举控制输入插孔引脚的方向和偏置。根据插孔类型，它可以设置为”麦克风
++   输入“和”线路输入“以确定输入偏置,或者当引脚是环绕声道的多I/O插孔时，它
++   可以设置为”线路输出“。
++
++
++威盛编解码器
++------------
++
++智能5.1
++   一个枚举控件，用于为环绕输出重新分配多个I/O插孔的任务。当它打开时，相应
++   的输入插孔（通常是线路输入和麦克风输入）被切换为环绕和中央低频输出插孔。
++
++独立耳机
++   启用此枚举控制时，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
++   如果耳机DAC与侧边或中央低频通道DAC共享，则DAC将自动切换到耳机。
++
++环回混合
++   一个用于确定是否启动了模拟环回路由的枚举控件。当它启用后，模拟环回路由到
++   前置通道。同样，耳机与扬声器输出也采用相同的路径。作为一个副作用，当设置
++   此模式后，单个音量控制将不再适用于耳机和扬声器，因为只有一个DAC连接到混
++   音器小部件。
++
++动态电源控制
++   此控件决定是否启动每个插孔的动态电源控制检测。启用时，根据插孔的插入情况
++   动态更改组件的电源状态（D0/D3）以节省电量消耗。但是，如果您的系统没有提
++   供正确的插孔检测，这将无法工作;在这种情况下，请关闭此控件。
++
++插孔检测
++   此控件仅为VT1708编解码器提供，它不会为每个插孔插拔提供适当的未请求事件。
++   当此控件打开，驱动将轮询插孔检测，以便耳机自动静音可以工作，而关闭此控
++   件将降低功耗。
++
++
++科胜讯编解码器
++--------------
++
++自动静音模式
++   见瑞昱解码器
++
++
++
++模拟编解码器
++------------
++
++通道模式
++   这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道可用时显示。它提供了能
++   被使用的通道数:”2ch“、”4ch“和”6ch“。根据配置，这还控制多I/O插孔的插孔重
++   分配。
++
++独立耳机
++   启动此枚举控制后，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
+diff --git a/Documentation/translations/zh_CN/sound/hd-audio/index.rst b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
+new file mode 100644
+index 000000000000..d9885d53b069
+--- /dev/null
++++ b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
+@@ -0,0 +1,14 @@
++.. SPDX-License-Identifier: GPL-2.0
++.. include:: ../../disclaimer-zh_CN.rst
++
++:Original: :doc:`../../../../sound/hd-audio/index`
++:Translator: Huang Jianghui <huangjianghui@uniontech.com>
++
++
++高清音频
++========
++
++.. toctree::
++   :maxdepth: 2
++
++   controls
+diff --git a/Documentation/translations/zh_CN/sound/index.rst b/Documentation/translations/zh_CN/sound/index.rst
+new file mode 100644
+index 000000000000..28d5dca34a63
+--- /dev/null
++++ b/Documentation/translations/zh_CN/sound/index.rst
+@@ -0,0 +1,22 @@
++.. SPDX-License-Identifier: GPL-2.0
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :doc:`../../../sound/index`
++:Translator: Huang Jianghui <huangjianghui@uniontech.com>
++
++
++====================
++Linux 声音子系统文档
++====================
++
++.. toctree::
++   :maxdepth: 2
++
++   hd-audio/index
++
++.. only::  subproject and html
++
++   Indices
++   =======
++
++   * :ref:`genindex`
 -- 
-2.17.1
+2.20.1
+
+
 
