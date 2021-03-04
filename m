@@ -2,232 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC3F32D5BF
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6CA32D5BE
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 15:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbhCDO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 09:58:31 -0500
-Received: from foss.arm.com ([217.140.110.172]:39434 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232710AbhCDO6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 09:58:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B40671FB;
-        Thu,  4 Mar 2021 06:57:36 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.53.210])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E80F43F766;
-        Thu,  4 Mar 2021 06:57:33 -0800 (PST)
-Date:   Thu, 4 Mar 2021 14:57:30 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, broonie@kernel.org
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-Message-ID: <20210304145730.GC54534@C02TD0UTHF1T.local>
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
- <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
- <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
- <YD+o5QkCZN97mH8/@elver.google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YD+o5QkCZN97mH8/@elver.google.com>
+        id S232717AbhCDO6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 09:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232674AbhCDO6S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:58:18 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56455C061574;
+        Thu,  4 Mar 2021 06:57:38 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id f12so24179875wrx.8;
+        Thu, 04 Mar 2021 06:57:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=VoPx2Cdxwn60O0M6Vi5u1Ygt08JDUk/3AjCskxZyugQ=;
+        b=Rxnisa3mPdPHv7NNTjmf51YPOHNbAi/xTRBJeTM5zxCilomemS7p+h8DW66PIzPBoQ
+         7wwKbiZLOLdV7XBMCg3txRoFf+emEUV2RJhnggO3ZfOO8bHeU9/AmsWHX3ceoVhZkYyT
+         rYeJYyHgeYY6iPqr4QTOcjut4W8SrBVjq1xPc5DhWbXd1mXXdA+gKpZmds+52zcd8h3y
+         Yy1NNo2hWDMMmazgiBuCfKBHuINfSOgUSL0X0hdFGD3uK4S4+m2pgZ0JmQswinbHPhgt
+         pb4n6t9ED8V1pFJgG7k+drVBjmyyEwnMbF/9zIO60elVwZWD3PTyJigSfv+Pu4EKKBi2
+         4jkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=VoPx2Cdxwn60O0M6Vi5u1Ygt08JDUk/3AjCskxZyugQ=;
+        b=nj9+Nkbm2tFwUVOVGQxcUu0fvSW/yhfTQCv/1IL4irHHiy/3Y227fwlf0JSQyxKscA
+         Npj3Lr/AennbQjJRyzzNMBrZHkVgRZkFY+WLrVPAR7TmMyXdcwTUxAV/Ah/i8F4WuOd/
+         wHxLZnmRUO/xi2jaQY//uSDjfVItrVumVG2V35YXOyfJBHBB5rvghezQ7QRn9HjxxQ7Y
+         3SkG50cbZxb3QudhQ2G2zI6b9FtAGTnsDuwjRG3n+HJ49edGf3ekSduCRqQ0nB92rSZr
+         yOirGyvjehISyqOC7sbRR3hT7m3jnw5bBWCcvndc8nqkSmvsnxh6XlLAj5eq++IM35x8
+         8e8g==
+X-Gm-Message-State: AOAM532QcIJoElUIKtxKh/Km4gpCni8hRQZbGLgMNecrbOIsiX7smlW6
+        WuyxNbQSigICTCMJ1JH31R8=
+X-Google-Smtp-Source: ABdhPJyBS18SvzoNqUADJrKfF34ApnOWPmd4o1EiF+kk+KM0ZRbpeTw7Dm3eUpT8m8TD4tPcEqyPbw==
+X-Received: by 2002:adf:ff8c:: with SMTP id j12mr4370114wrr.297.1614869857011;
+        Thu, 04 Mar 2021 06:57:37 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id s83sm1236045wmf.26.2021.03.04.06.57.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Mar 2021 06:57:36 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v3 1/2] dt-bindings: rng: bcm2835: document reset support
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <c750ae9f6c55011c07868ba563ac8e5af3e01a2a.camel@suse.de>
+Date:   Thu, 4 Mar 2021 15:57:36 +0100
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nfraprado@protonmail.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <91B364C3-022E-4FB8-905C-C5B6EB74E784@gmail.com>
+References: <20210222194510.14004-1-noltari@gmail.com>
+ <20210223170006.29558-1-noltari@gmail.com>
+ <20210223170006.29558-2-noltari@gmail.com>
+ <d6e5b3be7e2add03b8d00a931b7fe254cd39077e.camel@suse.de>
+ <419CC9A9-1C14-4D44-8305-3F7DFF656C1F@gmail.com>
+ <c750ae9f6c55011c07868ba563ac8e5af3e01a2a.camel@suse.de>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[adding Mark Brown]
+Hi Nicolas,
 
-On Wed, Mar 03, 2021 at 04:20:43PM +0100, Marco Elver wrote:
-> On Wed, Mar 03, 2021 at 03:52PM +0100, Christophe Leroy wrote:
-> > Le 03/03/2021 ï¿½ 15:38, Marco Elver a ï¿½critï¿½:
-> > > On Wed, 3 Mar 2021 at 15:09, Christophe Leroy
-> > > <christophe.leroy@csgroup.eu> wrote:
-> > > > 
-> > > > It seems like all other sane architectures, namely x86 and arm64
-> > > > at least, include the running function as top entry when saving
-> > > > stack trace.
-> > > > 
-> > > > Functionnalities like KFENCE expect it.
-> > > > 
-> > > > Do the same on powerpc, it allows KFENCE to properly identify the faulting
-> > > > function as depicted below. Before the patch KFENCE was identifying
-> > > > finish_task_switch.isra as the faulting function.
-> > > > 
-> > > > [   14.937370] ==================================================================
-> > > > [   14.948692] BUG: KFENCE: invalid read in test_invalid_access+0x54/0x108
-> > > > [   14.948692]
-> > > > [   14.956814] Invalid read at 0xdf98800a:
-> > > > [   14.960664]  test_invalid_access+0x54/0x108
-> > > > [   14.964876]  finish_task_switch.isra.0+0x54/0x23c
-> > > > [   14.969606]  kunit_try_run_case+0x5c/0xd0
-> > > > [   14.973658]  kunit_generic_run_threadfn_adapter+0x24/0x30
-> > > > [   14.979079]  kthread+0x15c/0x174
-> > > > [   14.982342]  ret_from_kernel_thread+0x14/0x1c
-> > > > [   14.986731]
-> > > > [   14.988236] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B             5.12.0-rc1-01537-g95f6e2088d7e-dirty #4682
-> > > > [   14.999795] NIP:  c016ec2c LR: c02f517c CTR: c016ebd8
-> > > > [   15.004851] REGS: e2449d90 TRAP: 0301   Tainted: G    B              (5.12.0-rc1-01537-g95f6e2088d7e-dirty)
-> > > > [   15.015274] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
-> > > > [   15.022043] DAR: df98800a DSISR: 20000000
-> > > > [   15.022043] GPR00: c02f517c e2449e50 c1142080 e100dd24 c084b13c 00000008 c084b32b c016ebd8
-> > > > [   15.022043] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
-> > > > [   15.040581] NIP [c016ec2c] test_invalid_access+0x54/0x108
-> > > > [   15.046010] LR [c02f517c] kunit_try_run_case+0x5c/0xd0
-> > > > [   15.051181] Call Trace:
-> > > > [   15.053637] [e2449e50] [c005a68c] finish_task_switch.isra.0+0x54/0x23c (unreliable)
-> > > > [   15.061338] [e2449eb0] [c02f517c] kunit_try_run_case+0x5c/0xd0
-> > > > [   15.067215] [e2449ed0] [c02f648c] kunit_generic_run_threadfn_adapter+0x24/0x30
-> > > > [   15.074472] [e2449ef0] [c004e7b0] kthread+0x15c/0x174
-> > > > [   15.079571] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
-> > > > [   15.085798] Instruction dump:
-> > > > [   15.088784] 8129d608 38e7ebd8 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
-> > > > [   15.096613] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
-> > > > [   15.104612] ==================================================================
-> > > > 
-> > > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > > 
-> > > Acked-by: Marco Elver <elver@google.com>
-> > > 
-> > > Thank you, I think this looks like the right solution. Just a question below:
-> > > 
-> > ...
-> > 
-> > > > @@ -59,23 +70,26 @@ void save_stack_trace(struct stack_trace *trace)
-> > > > 
-> > > >          sp = current_stack_frame();
-> > > > 
-> > > > -       save_context_stack(trace, sp, current, 1);
-> > > > +       save_context_stack(trace, sp, (unsigned long)save_stack_trace, current, 1);
-> > > 
-> > > This causes ip == save_stack_trace and also below for
-> > > save_stack_trace_tsk. Does this mean save_stack_trace() is included in
-> > > the trace? Looking at kernel/stacktrace.c, I think the library wants
-> > > to exclude itself from the trace, as it does '.skip = skipnr + 1' (and
-> > > '.skip   = skipnr + (current == tsk)' for the _tsk variant).
-> > > 
-> > > If the arch-helper here is included, should this use _RET_IP_ instead?
-> > > 
-> > 
-> > Don't really know, I was inspired by arm64 which has:
-> > 
-> > void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-> > 		     struct task_struct *task, struct pt_regs *regs)
-> > {
-> > 	struct stackframe frame;
-> > 
-> > 	if (regs)
-> > 		start_backtrace(&frame, regs->regs[29], regs->pc);
-> > 	else if (task == current)
-> > 		start_backtrace(&frame,
-> > 				(unsigned long)__builtin_frame_address(0),
-> > 				(unsigned long)arch_stack_walk);
-> > 	else
-> > 		start_backtrace(&frame, thread_saved_fp(task),
-> > 				thread_saved_pc(task));
-> > 
-> > 	walk_stackframe(task, &frame, consume_entry, cookie);
-> > }
-> > 
-> > But looking at x86 you may be right, so what should be done really ?
-> 
-> x86:
-> 
-> [    2.843292] calling stack_trace_save:
-> [    2.843705]  test_func+0x6c/0x118
-> [    2.844184]  do_one_initcall+0x58/0x270
-> [    2.844618]  kernel_init_freeable+0x1da/0x23a
-> [    2.845110]  kernel_init+0xc/0x166
-> [    2.845494]  ret_from_fork+0x22/0x30
-> 
-> [    2.867525] calling stack_trace_save_tsk:
-> [    2.868017]  test_func+0xa9/0x118
-> [    2.868530]  do_one_initcall+0x58/0x270
-> [    2.869003]  kernel_init_freeable+0x1da/0x23a
-> [    2.869535]  kernel_init+0xc/0x166
-> [    2.869957]  ret_from_fork+0x22/0x30
-> 
-> arm64:
-> 
-> [    3.786911] calling stack_trace_save:
-> [    3.787147]  stack_trace_save+0x50/0x78
-> [    3.787443]  test_func+0x84/0x13c
-> [    3.787738]  do_one_initcall+0x5c/0x310
-> [    3.788099]  kernel_init_freeable+0x214/0x294
-> [    3.788363]  kernel_init+0x18/0x164
-> [    3.788585]  ret_from_fork+0x10/0x30
-> 
-> [    3.803615] calling stack_trace_save_tsk:
-> [    3.804266]  stack_trace_save_tsk+0x9c/0x100
-> [    3.804541]  test_func+0xc4/0x13c
-> [    3.804803]  do_one_initcall+0x5c/0x310
-> [    3.805031]  kernel_init_freeable+0x214/0x294
-> [    3.805284]  kernel_init+0x18/0x164
-> [    3.805505]  ret_from_fork+0x10/0x30
-> 
-> +Cc arm64 folks.
-> 
-> So I think the arm64 version also has a bug, because I think a user of
-> <linux/stacktrace.h> really doesn't care about the library function
-> itself. And from reading kernel/stacktrace.c I think it wants to exclude
-> itself entirely.
->
-> It's a shame that <linux/stacktrace.h> isn't better documented, but I'm
-> pretty sure that including the library functions in the trace is not
-> useful.
+> El 4 mar 2021, a las 14:30, Nicolas Saenz Julienne =
+<nsaenzjulienne@suse.de> escribi=C3=B3:
+>=20
+> On Thu, 2021-03-04 at 13:18 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas =
+wrote:
+>>=20
+>>> El 4 mar 2021, a las 13:07, Nicolas Saenz Julienne =
+<nsaenzjulienne@suse.de> escribi=C3=B3:
+>>>=20
+>>> Hi Alvaro,
+>>>=20
+>>> On Tue, 2021-02-23 at 18:00 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas =
+wrote:
+>>>> Some devices may need to perform a reset before using the RNG, such =
+as the
+>>>> BCM6368.
+>>>>=20
+>>>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+>>>> ---
+>>>>  v3: make resets required if brcm,bcm6368-rng.
+>>>>  v2: document reset support.
+>>>>=20
+>>>>  .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 =
++++++++++++++++++
+>>>>  1 file changed, 17 insertions(+)
+>>>>=20
+>>>> diff --git =
+a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml =
+b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+>>>> index c147900f9041..11c23e1f6988 100644
+>>>> --- a/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+>>>> +++ b/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+>>>> @@ -37,6 +37,21 @@ required:
+>>>> =20
+>>>>=20
+>>>>=20
+>>>>  additionalProperties: false
+>>>=20
+>>> I can't claim I fully understand all the meta stuff in shemas, so I =
+generally
+>>> just follow the patterns already available out there.
+>>=20
+>> Well, that makes two of us :).
+>>=20
+>>> That said, shoudln't this be at the end, just before the examples?
+>>=20
+>> I don=E2=80=99t know but I can move it there =C2=AF\_(=E3=83=84)_/=C2=AF=
 
-I agree this behaviour isn't desireable, and that the lack of
-documentation is unfortunate.
+>=20
+> Yes please do. See commit 7f464532b05 ("dt-bindings: Add missing
+> 'additionalProperties: false'") which expands on why it is needed, and =
+why it
+> should be at the end.
+>=20
+>>> Maybe the cause of that odd warning
+>>> you got there?
+>>=20
+>> Which odd warning?
+>=20
+> The one pointed out by Rob Herring's script, which I can reproduce too =
+BTW. On
+> the other hand I can't really tell what's wrong right away.
 
-It looks like GCC is happy to give us the function-entry-time FP if we use
-__builtin_frame_address(1), and assuming clang is similarly happy we can do:
+Well, I can=E2=80=99t reproduce that locally and I don=E2=80=99t know =
+what=E2=80=99s wrong either, I think that the best option is to remove =
+the full if block.
 
-| diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-| index ad20981dfda4..5dfbf915eb7f 100644
-| --- a/arch/arm64/kernel/stacktrace.c
-| +++ b/arch/arm64/kernel/stacktrace.c
-| @@ -203,8 +203,8 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-|                 start_backtrace(&frame, regs->regs[29], regs->pc);
-|         else if (task == current)
-|                 start_backtrace(&frame,
-| -                               (unsigned long)__builtin_frame_address(0),
-| -                               (unsigned long)arch_stack_walk);
-| +                               (unsigned long)__builtin_frame_address(1),
-| +                               (unsigned long)__builtin_return_address(0));
-|         else
-|                 start_backtrace(&frame, thread_saved_fp(task),
-|                                 thread_saved_pc(task));
+>=20
+>> I don=E2=80=99t get any warnings when running (or at least warnings =
+related to rig, because I get warnings related to other yamls):
+>> make dt_binding_check =
+DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/rng/brcm,bcm2835.yaml
+>>=20
+>>>=20
+>>>> +if:
+>>>> +  properties:
+>>>> +    compatible:
+>>>> +      enum:
+>>>> +        - brcm,bcm6368-rng
+>>>> +then:
+>>>> +  properties:
+>>>> +    resets:
+>>>> +      maxItems: 1
+>>>> +  required:
+>>>> +    - resets
+>>>=20
+>>> I belive you can't really make a property required when the bindings =
+for
+>>> 'brcm,bcm6368-rng' were already defined. This will break the schema =
+for those
+>>> otherwise correct devicetrees.
+>>=20
+>> Why not?
+>> Wouldn=E2=80=99t just be required for brcm,bcm6368-rng?
+>=20
+> Well, do all 'brcm,bcm6368-rng' users absolutely need the reset =
+controller? If
+> so, the original binding is wrong, which should be mentioned and a =
+'Fixes:' tag
+> should be added to the commit message. Otherwise, the requirement is =
+optional.
 
-... such that arch_stack_walk() will try to avoid including itself in a
-trace, and so the existing skipping should (w/ caveats below) skip
-stack_trace_save() or stack_trace_save_tsk().
+I=E2=80=99m not sure about this...
 
-If that works for you, I can spin that as a patch, though we'll need to
-check that doesn't introduce a new fencepost error elsewhere.
+>=20
+> Regards,
+> Nicolas
 
-The bigger problem here is that skipping is dodgy to begin with, and
-this is still liable to break in some cases. One big concern is that
-(especially with LTO) we cannot guarantee the compiler will not inline
-or outline functions, causing the skipp value to be too large or too
-small. That's liable to happen to callers, and in theory (though
-unlikely in practice), portions of arch_stack_walk() or
-stack_trace_save() could get outlined too.
-
-Unless we can get some strong guarantees from compiler folk such that we
-can guarantee a specific function acts boundary for unwinding (and
-doesn't itself get split, etc), the only reliable way I can think to
-solve this requires an assembly trampoline. Whatever we do is liable to
-need some invasive rework.
-
-Thanks,
-Mark.
+Best regards,
+=C3=81lvaro.=
