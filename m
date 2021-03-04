@@ -2,90 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1D532D1B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7513E32D1A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbhCDLXU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 4 Mar 2021 06:23:20 -0500
-Received: from smtp-out4.electric.net ([192.162.216.192]:59466 "EHLO
-        smtp-out4.electric.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239501AbhCDLXE (ORCPT
+        id S239532AbhCDLSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 06:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235497AbhCDLSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:23:04 -0500
-X-Greylist: delayed 347 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Mar 2021 06:23:04 EST
-Received: from 1lHlvq-0001KT-TV by out4a.electric.net with emc1-ok (Exim 4.94)
-        (envelope-from <aaron.jones@ftdichip.com>)
-        id 1lHlvr-0001Qv-Ut; Thu, 04 Mar 2021 03:14:15 -0800
-Received: by emcmailer; Thu, 04 Mar 2021 03:14:15 -0800
-Received: from [188.39.184.230] (helo=glaexch1.ftdichip.com)
-        by out4a.electric.net with esmtps  (TLS1) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
-        (Exim 4.94)
-        (envelope-from <aaron.jones@ftdichip.com>)
-        id 1lHlvq-0001KT-TV; Thu, 04 Mar 2021 03:14:14 -0800
-Received: from ftdi-VirtualBox.ftdi.local (172.16.3.24) by GLAEXCH1.ftdi.local
- (172.16.0.121) with Microsoft SMTP Server id 14.3.487.0; Thu, 4 Mar 2021
- 11:14:13 +0000
-From:   Aaron Jones <aaron.jones@ftdichip.com>
-To:     <michael.zaidman@gmail.com>, <jikos@kernel.org>,
-        <benjamin.tissoires@redhat.com>, <wsa@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, Aaron Jones <aaron.jones@ftdichip.com>
-Subject: Re: [PATCHv2 1/1] HID: ft260: add usb hid to i2c host bridge driver
-Date:   Thu, 4 Mar 2021 11:14:06 +0000
-Message-ID: <20210304111406.3482-1-aaron.jones@ftdichip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210219163644.2811-2-michael.zaidman@gmail.com>
-References: <20210219163644.2811-2-michael.zaidman@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain
-X-Antivirus: AVG (VPS 210303-8, 03/03/2021), Outbound message
-X-Antivirus-Status: Clean
-X-Outbound-IP: 188.39.184.230
-X-Env-From: aaron.jones@ftdichip.com
-X-Proto: esmtps
-X-Revdns: glaexch1.ftdichip.com
-X-HELO: glaexch1.ftdichip.com
-X-TLS:  TLS1:ECDHE-RSA-AES256-SHA:256
-X-Authenticated_ID: 
-X-Virus-Status: Scanned by VirusSMART (c)
-X-Virus-Status: Scanned by VirusSMART (b)
-X-PolicySMART: 10711027
-X-PolicySMART: 10711027
-X-PolicySMART: 10711027
-X-PolicySMART: 10711027
-X-PolicySMART: 10711027
-X-PolicySMART: 10711027
-X-PolicySMART: 10711027
+        Thu, 4 Mar 2021 06:18:05 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8410C061574;
+        Thu,  4 Mar 2021 03:17:24 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id u187so7674027wmg.4;
+        Thu, 04 Mar 2021 03:17:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=sg4X2WmQd8EM6o7lSCEfOiMlSMhswJ/nBH0wn23Elg0=;
+        b=peKNmi0+SkcWFdvcwmG7LXbeMlWR5q0OmqXVk+RODGONYCQWox1eM6Kygf0KXDAB35
+         eAWNUnFTn/I5IS0TcpJW5Cn/zJH2S84KN5Bzj0snGIlhPqIe7KJyO+lMBJvuFYOotwqX
+         +54FATI+WUxUlJL383n99OBDxDNgzpk+roo+qmWZ/yLkwsYX+7Jvr43KAP0bJqB5YbTn
+         ibnpmgjwpmmDuBOx0CSFQreLAazeGXpv1bJ0jsuOfDXvxAzWkjdsOaQjXdb2lPGra0Xc
+         IDIlGIw018KBEv2v8rTlAoA932mu3g5AX6F8M28LXnuBj9bzAHHReLGO0JeFv3fmX9wc
+         q1xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=sg4X2WmQd8EM6o7lSCEfOiMlSMhswJ/nBH0wn23Elg0=;
+        b=E60d4o9CsVD7zqcmSFCOJMWpnK7GVE8QsWIU57hM+F2jg6P2jTafYzV6pswZbIbsaw
+         1Hm3NbqZop0DwXJ3iPtfrr10y4gmVh2Ss9lEKCqmMqlpgjYzF48v51sFvC9VQGaUiwHs
+         HhFvWxoIHB08UN3iq7mNkOWBKwmClb1glXCylcAqSscGptJBy79SbOdmibOhMhP8woFd
+         Zuet1Pdq9+0t1vdCmzIwSRUMj5zYeiUQby0H2LCpwlzcMRMmmFUmrjz6qkqtkEL7m9t1
+         fhAFxAX6/N3vk/X2jJghwOmTt4LV5h05vIi3EorS8OHDsBhP4dqZUCO/xC5r5V6EkkfI
+         V9qg==
+X-Gm-Message-State: AOAM5336+2HTzdWrUejGzJKOoLxnfYSIjS6bJt2zxkQyNcS6TJuyWhLe
+        tbDX3XhcLod71XG0Y+OU8t4=
+X-Google-Smtp-Source: ABdhPJy1rLNwixI3SFJIIEbvfatSStuUgVI4okBsQ7m4dgfypNGuTr3Ifvf6koRHTqLdvrDiV7z7kQ==
+X-Received: by 2002:a1c:dc42:: with SMTP id t63mr3398802wmg.153.1614856643611;
+        Thu, 04 Mar 2021 03:17:23 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id q20sm8885069wmc.14.2021.03.04.03.17.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Mar 2021 03:17:23 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v4 03/15] pinctrl: bcm: add bcm63xx base code
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <CAHp75Vc_v5M9XjWei09KzXo_oo95b2WQSamMjdQvxkCzNXrSXg@mail.gmail.com>
+Date:   Thu, 4 Mar 2021 12:17:22 +0100
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <667E0AEF-B453-4CC7-9514-5E72BEF4B0E3@gmail.com>
+References: <20210304085710.7128-1-noltari@gmail.com>
+ <20210304085710.7128-4-noltari@gmail.com>
+ <CAHp75Vc_v5M9XjWei09KzXo_oo95b2WQSamMjdQvxkCzNXrSXg@mail.gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Jones(FTDI-UK) <aaron.jones@ftdichip.com>
+Hi Andy
 
-On Fri, Feb 19, 2021 at 06:36:44PM +0200, Michael Zaidman wrote:
-> The FTDI FT260 chip implements USB to I2C/UART bridges through two
-> USB HID class interfaces. The first - for I2C, and the second for UART.
-> Each interface is independent, and the kernel detects it as a separate
-> USB hidraw device.
->
-> This commitadds I2C host adapter support.
->
-> Signed-off-by:Michael Zaidman <michael.zaidman@gmail.com>
+> El 4 mar 2021, a las 11:43, Andy Shevchenko =
+<andy.shevchenko@gmail.com> escribi=C3=B3:
+>=20
+> On Thu, Mar 4, 2021 at 10:57 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+> <noltari@gmail.com> wrote:
+>>=20
+>> Add a helper for registering BCM63XX pin controllers.
+>>=20
+>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+>> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+>=20
+> This SoB is in a strange place.
 
-I've applied the patch, ran some tests with a UMFT260EV1A evaluation board, and found no issues with the functionality it provides.
+Why?
+Can=E2=80=99t we both sign the patches?
 
-Tested-by: Aaron Jones (FTDI-UK) <aaron.jones@ftdichip.com>
-Registered in Scotland No 136640
-This message contains confidential information and is intended only for the individual named. If you are not the named addressee you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately by e-mail if you have received this e-mail by mistake and delete this e-mail from your system. E-mail transmission cannot be guaranteed to be secure or error-free as information could be intercepted, lost, destroyed, arrive late or incomplete. The sender therefore does not accept liability for any errors or omissions in the contents of this message, which arise as a result of e-mail transmission. Future Technology Devices International Ltd has taken every reasonable precaution to ensure that any attachment to this e-mail has been swept for viruses. However, we cannot accept liability for any damage sustained as a result of software viruses and would advise that you carry out your own virus checks before opening any attachment.
+>=20
+> The order is wrong taking into account the =46rom header (committer). =
+So,
+> it's not clear who is the author, who is a co-developer, and who is
+> the committer (one person may utilize few roles).
+> Check for the rest of the series as well (basically this is the rule
+> of thumb to recheck entire code for the comment you have got at any
+> single place of it).
 
-Please note FTDI have updated their Privacy Policy.
+Jonas was the original author of this patches (sent back in 2016) and =
+I=E2=80=99m just continuing his work and trying to get those patches =
+upstreamed.
+I don=E2=80=99t know how to do it correctly, so a little hint would be =
+appreciated.
 
-Please click on the following link to access and review.
+>=20
+> ...
+>=20
+>> +static const struct of_device_id bcm63xx_gpio_of_match[] =3D {
+>> +       { .compatible =3D "brcm,bcm6318-gpio", },
+>> +       { .compatible =3D "brcm,bcm6328-gpio", },
+>> +       { .compatible =3D "brcm,bcm6358-gpio", },
+>> +       { .compatible =3D "brcm,bcm6362-gpio", },
+>> +       { .compatible =3D "brcm,bcm6368-gpio", },
+>> +       { .compatible =3D "brcm,bcm63268-gpio", },
+>=20
+>> +       { /* sentinel */ },
+>=20
+> Comma is not needed in terminator line
 
-FTDI Privacy Policy<http://www.ftdichip.com/Corporate/PrivacyPolicy.htm>
+Ok, I will remove it.
 
--- 
-This email has been checked for viruses by AVG.
-https://www.avg.com
+>=20
+>> +};
+>=20
+> ...
+>=20
+>> +       dev_info(dev, "registered\n");
+>=20
+> Unneeded noise.
+
+Ok, I will remove it.
+
+>=20
+> ...
+>=20
+>> +#include <linux/pinctrl/pinctrl.h>
+>> +#include <linux/regmap.h>
+>=20
+> The rule of thumb is to include only the headers that the below code
+> is direct user of.
+
+Ok, so I will move them to pinctrl-bcm63xx.c.
+I added them because they were needed for pinctrl_desc.
+
+>=20
+> The above are not used anyhow, while missed types.h and several
+> forward declarations.
+
+=E2=80=A6 so I should include linux/types.h and I don=E2=80=99t know =
+what you mean by =E2=80=9Cseveral forward declarations=E2=80=9D=E2=80=A6
+
+>=20
+>> +#include "../core.h"
+>=20
+> Seems the same.
+
+Ok, I will move it to pinctrl-bcm63xx.c.
+
+>=20
+>> +#define BCM63XX_BANK_GPIOS 32
+>> +
+>> +struct bcm63xx_pinctrl_soc {
+>> +       struct pinctrl_ops *pctl_ops;
+>> +       struct pinmux_ops *pmx_ops;
+>> +
+>> +       const struct pinctrl_pin_desc *pins;
+>> +       unsigned npins;
+>> +
+>> +       unsigned int ngpios;
+>> +};
+>> +
+>> +struct bcm63xx_pinctrl {
+>> +       struct device *dev;
+>> +       struct regmap *regs;
+>> +
+>> +       struct pinctrl_desc pctl_desc;
+>> +       struct pinctrl_dev *pctl_dev;
+>> +
+>> +       void *driver_data;
+>> +};
+>=20
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+Best regards,
+=C3=81lvaro.
 
