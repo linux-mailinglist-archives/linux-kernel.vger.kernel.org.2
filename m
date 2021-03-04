@@ -2,329 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF62232D486
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D3132D481
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 14:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241570AbhCDNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 08:49:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241538AbhCDNtF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:49:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614865660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vckiuo5o0lbsf+iCp4TD+mlnrNoZKeBTtEoYHD3gcKU=;
-        b=iROoJwYGXbQuylKgDZkOvEZYeaGf+zO9eL9e9i6dYvPHyOFdk0SOwExoANu7lPtfgJTcNg
-        RXEtbrCy3EsqTDQ17Bzob+HWImDejXdAFXq94A5lB5wRG4vLs0HRNMUx2wkHyngKqa8vUq
-        gdTmvL2xdD77luvxIqi72vYR13gwUIg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-rCl8BRpOOiWy_rwcwZG4xA-1; Thu, 04 Mar 2021 08:47:38 -0500
-X-MC-Unique: rCl8BRpOOiWy_rwcwZG4xA-1
-Received: by mail-ej1-f69.google.com with SMTP id gv58so5916870ejc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 05:47:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vckiuo5o0lbsf+iCp4TD+mlnrNoZKeBTtEoYHD3gcKU=;
-        b=ugvLsaSsdrsQJsjx2tgu8XHP1fIg2ZlBk7OFJI4J0kpDYvh0tHxV3V9aHtiZ4Vt0Cg
-         oyJ/cC3a1sA8EQdvqw0DgGpep0Paz+bOlVXxfCUIo0PuleAOO/N0wBSmaagKQNynhKlT
-         MlNjjaQh203T5KzTASUFLV3B+zQLhPYgTIu/pTYGxsqbnXTWJBRKNpge32tG5lJfwtA6
-         vX+a8WDg+t1xIdBYcwXSQfEIQ0Y8AcvEkrAAleax2EXXePFUWEFflvkIycUiDsV26nap
-         7Uxaldo3Y9Uk+XDH0lJASy+FBNC+eB1NO4q+tRhNkpeTj8nnR0SiRYng0IMeQMk/ae6v
-         K0hw==
-X-Gm-Message-State: AOAM531wPsYmVFL55YIlKy7ZblzTUnx6nFYLLokHAPh18M0B37Uadg3n
-        kl+UUPXDlnWiKMTCisl2ATka+/v9kBaqW1PnwzoEAihd5UJLdzku9uuYQ1sHAgIeB8n5tGm6ZNj
-        t3YK8qm31M449buptcvQtgz56
-X-Received: by 2002:aa7:c450:: with SMTP id n16mr4333424edr.16.1614865657198;
-        Thu, 04 Mar 2021 05:47:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx3J+jtz/N74ECvDEpaxRsank0/rYMS/bHniqXvZ9EmFDKyhJ0wsME+zu5fV5pVHJDTZTQ1Gg==
-X-Received: by 2002:aa7:c450:: with SMTP id n16mr4333397edr.16.1614865656987;
-        Thu, 04 Mar 2021 05:47:36 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id ld19sm1373084ejb.102.2021.03.04.05.47.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 05:47:36 -0800 (PST)
-Subject: Re: [PATCH 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
- <20210302163309.25528-2-henning.schild@siemens.com>
- <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2fad304a-9e1e-c83d-7a9e-02b35ed22418@redhat.com>
-Date:   Thu, 4 Mar 2021 14:47:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S241476AbhCDNsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 08:48:35 -0500
+Received: from foss.arm.com ([217.140.110.172]:38514 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238758AbhCDNsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:48:30 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30CE731B;
+        Thu,  4 Mar 2021 05:47:44 -0800 (PST)
+Received: from [10.57.19.206] (unknown [10.57.19.206])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAF7F3F766;
+        Thu,  4 Mar 2021 05:47:39 -0800 (PST)
+Subject: Re: [PATCH] devfreq: Register devfreq as a cooling device
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     cwchoi00@gmail.com, kyungmin.park@samsung.com,
+        myungjoo.ham@samsung.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        "open list:DRM DRIVERS FOR LIMA" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DRM DRIVERS FOR LIMA" <lima@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+References: <20210304125034.28404-1-daniel.lezcano@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <5f06e0c5-b2d9-5e11-01b6-fdd0dac635a7@arm.com>
+Date:   Thu, 4 Mar 2021 13:47:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210304125034.28404-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Daniel,
 
-On 3/4/21 11:11 AM, Andy Shevchenko wrote:
-> On Thu, Mar 4, 2021 at 8:36 AM Henning Schild
-> <henning.schild@siemens.com> wrote:
->>
->> From: Henning Schild <henning.schild@siemens.com>
->>
->> This mainly implements detection of these devices and will allow
->> secondary drivers to work on such machines.
->>
->> The identification is DMI-based with a vendor specific way to tell them
->> apart in a reliable way.
->>
->> Drivers for LEDs and Watchdogs will follow to make use of that platform
->> detection.
+On 3/4/21 12:50 PM, Daniel Lezcano wrote:
+> Currently the default behavior is to manually having the devfreq
+> backend to register themselves as a devfreq cooling device.
 > 
->> Signed-off-by: Gerd Haeussler <gerd.haeussler.ext@siemens.com>
->> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> There are no so many and actually it makes more sense to register the
+> devfreq device when adding it.
 > 
-> The order is wrong taking into account the From line in the body. So,
-> it's not clear who is the author, who is a co-developer, and who is
-> the committer (one person may utilize few roles).
-> Check for the rest of the series as well (basically this is the rule
-> of thumb to recheck entire code for the comment you have got at any
-> single place of it).
+> Consequently, every devfreq becomes a cooling device like cpufreq is.
 > 
-> ...
-> 
->> +config SIEMENS_SIMATIC_IPC
->> +       tristate "Siemens Simatic IPC Class driver"
->> +       depends on PCI
->> +       help
->> +         This Simatic IPC class driver is the central of several drivers. It
->> +         is mainly used for system identification, after which drivers in other
->> +         classes will take care of driving specifics of those machines.
->> +         i.e. leds and watchdogs
-> 
-> LEDs
-> watchdog. (missed period and singular form)
-> 
-> Module name?
-> 
->>  endif # X86_PLATFORM_DEVICES
-> 
-> Not sure about the ordering of the section in Kconfig, but it is up to
-> maintainers.
-> 
-> ...
-> 
->> +# Siemens Simatic Industrial PCs
->> +obj-$(CONFIG_SIEMENS_SIMATIC_IPC)      += simatic-ipc.o
-> 
-> Ditto.
-> 
-> ...
-> 
->> + * Siemens SIMATIC IPC driver for LEDs
-> 
-> It seems to be used in patch 4 which is not LED related. Also, why is
-> it here if it's for LEDs?
-> 
-> ...
-> 
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License version 2 as
->> + * published by the Free Software Foundation.
-> 
-> Replace with SPDX
-> 
-> ...
-> 
->> +#include <linux/module.h>
->> +#include <linux/kernel.h>
->> +#include <linux/platform_device.h>
-> 
-> Ordered?
-> 
->> +#include <linux/platform_data/x86/simatic-ipc.h>
-> 
-> ...
-> 
->> +static int register_platform_devices(u32 station_id)
->> +{
->> +       int i;
->> +       u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
->> +       u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
-> 
-> Reversed xmas tree order?
-> 
->> +       platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
->> +
->> +       for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
->> +               if (device_modes[i].station_id == station_id) {
->> +                       ledmode = device_modes[i].led_mode;
->> +                       wdtmode = device_modes[i].wdt_mode;
->> +                       break;
->> +               }
->> +       }
->> +
->> +       if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
->> +               platform_data.devmode = ledmode;
-> 
->> +               ipc_led_platform_device = platform_device_register_data
->> +                       (NULL, KBUILD_MODNAME "_leds", PLATFORM_DEVID_NONE,
->> +                        &platform_data, sizeof(struct simatic_ipc_platform));
-> 
-> Strange indentation (second line).
-> 
->> +               if (IS_ERR(ipc_led_platform_device))
->> +                       return PTR_ERR(ipc_led_platform_device);
-> 
->> +               pr_debug(KBUILD_MODNAME ": device=%s created\n",
->> +                        ipc_led_platform_device->name);
-> 
-> Utilize pr_fmt() instead of adding prefixes like this.
-> 
->> +       }
-> 
->> +       if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
->> +               platform_data.devmode = wdtmode;
->> +               ipc_wdt_platform_device = platform_device_register_data
->> +                       (NULL, KBUILD_MODNAME "_wdt", PLATFORM_DEVID_NONE,
->> +                        &platform_data, sizeof(struct simatic_ipc_platform));
->> +               if (IS_ERR(ipc_wdt_platform_device))
->> +                       return PTR_ERR(ipc_wdt_platform_device);
->> +
->> +               pr_debug(KBUILD_MODNAME ": device=%s created\n",
->> +                        ipc_wdt_platform_device->name);
->> +       }
-> 
-> Same comments as above.
-> 
->> +       if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
->> +           wdtmode == SIMATIC_IPC_DEVICE_NONE) {
->> +               pr_warn(KBUILD_MODNAME
->> +                       ": unsupported IPC detected, station id=%08x\n",
->> +                       station_id);
-> 
-> Ugly indentation. With pr_fmt() in use will be much better.
-> 
->> +               return -EINVAL;
-> 
->> +       } else {
-> 
-> Redundant.
-> 
->> +               return 0;
->> +       }
->> +}
-> 
-> ...
-> 
->> +/*
->> + * Get membase address from PCI, used in leds and wdt modul. Here we read
->> + * the bar0. The final address calculation is done in the appropriate modules
-> 
-> bar -> BAR
-> Missed period.
-> 
->> + */
-> 
->> +
-> 
-> Unneeded blank line.
-> 
->> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
->> +{
->> +       u32 bar0 = 0;
-> 
->> +#ifdef CONFIG_PCI
-> 
-> It's ugly besides the fact that you have a dependency.
-> 
->> +       struct pci_bus *bus;
-> 
-> Missed blank line.
-> 
->> +       /*
->> +        * The GPIO memory is bar0 of the hidden P2SB device. Unhide the device
->> +        * to have a quick look at it, before we hide it again.
->> +        * Also grab the pci rescan lock so that device does not get discovered
->> +        * and remapped while it is visible.
->> +        * This code is inspired by drivers/mfd/lpc_ich.c
->> +        */
->> +       bus = pci_find_bus(0, 0);
->> +       pci_lock_rescan_remove();
->> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
->> +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0, &bar0);
->> +
->> +       bar0 &= ~0xf;
->> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
->> +       pci_unlock_rescan_remove();
->> +#endif /* CONFIG_PCI */
->> +       return bar0;
->> +}
->> +EXPORT_SYMBOL(simatic_ipc_get_membase0);
-> 
-> Oy vey! I know what this is and let's do it differently. I have some
-> (relatively old) patch series I can send you privately for testing.
+> Having a devfreq being registered as a cooling device can not mitigate
+> a thermal zone if it is not bound to this one. Thus, the current
+> configurations are not impacted by this change.
 
-This bit stood out the most to me too, it would be good if we can this fixed
-in some cleaner work. So I'm curious how things will look with Andy's work
-integrated.
+There are also different type of devices, which register into devfreq
+framework like NoC buses, UFS/eMMC, jpeg and video accelerators, ISP,
+etc.
+In some platforms there are plenty of those devices and they all would
+occupy memory due to private freq_table in devfreq_cooling, function:
+devfreq_cooling_gen_tables().
 
-Also I don't think this should be exported. Instead this (or its replacement)
-should be used to get the address for an IOMEM resource to add the platform 
-devices when they are instantiated. Then the platform-dev drivers can just
-use the regular functions to get their resources instead of relying on this
-module.
+IIRC in OdroidXU4 there are ~20 devfreq devs for NoC buses.
+
+It's true that they will not affect thermal zones, but unnecessarily,
+they all will show up in the /sys/class/thermal/ as
+thermal-devfreq-X.
+
+IMO the devfreq shouldn't be tight with devfreq cooling thermal.
+
+CpuFreq is different because it handles only CPUs. Here we have
+many different devices.
 
 Regards,
-
-Hans
-
-
-
-
-> 
-> ...
-> 
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License version 2 as
->> + * published by the Free Software Foundation.
-> 
-> Not needed when you have SPDX.
-> 
-> ...
-> 
->> +#include <linux/pci.h>
-> 
-> Wrong header. Should be types.h
-> 
-> ...
-> 
->> +#include <linux/dmi.h>
->> +#include <linux/platform_data/x86/simatic-ipc-base.h>
-> 
-> Missed headers. You need to include ones that the code below is a
-> direct user of.
-> 
-> Like types.h
-> 
-
+Lukasz
