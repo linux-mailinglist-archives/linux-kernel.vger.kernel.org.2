@@ -2,138 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEC132D731
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B529232D736
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236036AbhCDPzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:55:02 -0500
-Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:9921
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236006AbhCDPyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:54:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Po0nNWXAe1pAYQaueQxFL9krBmR56jfnVepokciwVeDkzLk0lD9lFRjBLCdIt5dy1TotYHEO+3Xg7x5XsQQC+kzFOPJ37SNMHuPievh9p6pDNJ5RoPyQmiK/RwkjQt783SOj6dTHFAjHUJRmKHn0dOrVME6cqJl8qFUtMxvPuLlRDieETLkD5oGT97OXC/+NZuOE1nmd4HKxwfWU02SaJcNwnCkMf9dqGKKnmpCXmeRA5tcJQ+Fejv7JhIUcRpQA1bLCnvghw1o7aBVyZKguC0xGquRa04RqcKeVmJHaOALhE6vYXCWb6EXjAjHQJV+yBR8bMr37oKXitpo9xxmiQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6arrU01ZhUc80J2vbzfPV5GSY/ah929O+XCUmn/gQC4=;
- b=nnrSjkqn6VFOaj1gWsPU5tzPv3b5cRJTceR0XL1YeAwprnJKJ6m51M06wRRk4R5xYR/f9kgfKbVGlL1RDaaIGS7ePHLmWTCXwngeQLQQ/TjvNXsuz10Wq3xwFiQH9RwooGl30OZvEPpOVBn1gIosVD3T6MaIRYMluEMgDLg/19rUbH58CXnV5X0ZMuXtyBXYuVHqQlN9mgRaipWITfSlqLurP9vXGQ08MCV+YE4BOKLBOCbHHbWE49vRR2UiuZnqY5s9X8QqXe6xTxstdG6WL1YhCuNjJ99WTba+djYiLAKNcEzd2vgyvWnLyQYxy5Y+li2LXGB6ZZSD4eFO9VhoNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.dk smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6arrU01ZhUc80J2vbzfPV5GSY/ah929O+XCUmn/gQC4=;
- b=Xz4OxE55qY4g/MwEJIzKfFbANZQDV3cM5beH4HAVd/YpH32LY0TklbRTCJusnynUw8CGLEvmrzOzt5HVa1XdIdI1yJ4quNUK3lnRtY6XVjHzSCz6BY19v2bcmRil0iYpkrj7O2RzYbMa94OmBrksrcmYBtyKiiYFfYHcU7v3elQ=
-Received: from BLAPR03CA0082.namprd03.prod.outlook.com (2603:10b6:208:329::27)
- by BY5PR02MB6961.namprd02.prod.outlook.com (2603:10b6:a03:23b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18; Thu, 4 Mar
- 2021 15:53:57 +0000
-Received: from BL2NAM02FT043.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:329:cafe::57) by BLAPR03CA0082.outlook.office365.com
- (2603:10b6:208:329::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Thu, 4 Mar 2021 15:53:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- BL2NAM02FT043.mail.protection.outlook.com (10.152.77.95) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3890.19 via Frontend Transport; Thu, 4 Mar 2021 15:53:57 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Thu, 4 Mar 2021 07:53:31 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Thu, 4 Mar 2021 07:53:31 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- axboe@kernel.dk,
- linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Received: from [10.140.6.6] (port=38532 helo=xhdappanad40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <piyush.mehta@xilinx.com>)
-        id 1lHqI5-00044o-RB; Thu, 04 Mar 2021 07:53:30 -0800
-From:   Piyush Mehta <piyush.mehta@xilinx.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, <sgoud@xilinx.com>, <michal.simek@xilinx.com>,
-        Piyush Mehta <piyush.mehta@xilinx.com>
-Subject: [PATCH] ata: ahci: ceva: Updated code by using dev_err_probe()
-Date:   Thu, 4 Mar 2021 21:23:09 +0530
-Message-ID: <20210304155309.17878-2-piyush.mehta@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210304155309.17878-1-piyush.mehta@xilinx.com>
-References: <20210304155309.17878-1-piyush.mehta@xilinx.com>
+        id S235991AbhCDPzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:55:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43389 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236062AbhCDPzN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 10:55:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614873227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AInNnjMguHDerAYue5jzJjfxuItC8i8L4zsZ48EhHbA=;
+        b=GRj2fCxZjdciHxuyBm45ew2x1atz8ZuakIXJP0g6stuI42pxkD/zMvTcbvQ1Ftv+75LwrX
+        hOs5VWb0RzeCXwbVE2lW8YdbAxhEKxorQUuKnxiUqnvLlg+aYII/n5cHL10EupAJRfG/BX
+        P1RE5CkTUfF38KrOaOhON0J/Gnud/38=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-7uo3CnBVM3ycFgwdPZo20w-1; Thu, 04 Mar 2021 10:53:45 -0500
+X-MC-Unique: 7uo3CnBVM3ycFgwdPZo20w-1
+Received: by mail-qv1-f70.google.com with SMTP id e10so19672418qvr.17
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 07:53:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AInNnjMguHDerAYue5jzJjfxuItC8i8L4zsZ48EhHbA=;
+        b=flrkLdmYm20qOk7mLQN3iNPZPCxBa/NpED98prD26axwpZ9rDvRqT5xqFkbJg2gk6A
+         jb3k0nzO2xvSKRysxyAnB6CDPEK1oOQNnvxdYkpnovpb0yH46Krbu59hTSzwoj3MAH+T
+         A2uZ7YkrVWFKgr4uqzHzZ/ilrIid3IZtXoOzaYV+DTa7sAI6tWiEd5Bv8GRcosy3hIan
+         A9Zg5YQ8wuX6jjBrGHFiCTI4q9VuPDbcHGlkDA4hWP0pjEHW8virvp+e0JBCNPTLB3Oa
+         56yXtf+nS/HJIKkfaze1ZGFLolidalhOJ8jvYgx+/Tgrfbnrc2B07bpMa1sm1gYHRCN2
+         dYqA==
+X-Gm-Message-State: AOAM530nDCoCz9WYGGrwkF4h0ipqEaEz9vtyFEAZOXuS7Sn167GHK3ZP
+        v/S+xKm0N93eWbTIBswH16UWpFKPRmMDL0v15J5ER4t4XeF/4v9gsEUzhQ+zWkrDhuye/o9oR5/
+        mvo7Cjt3NeIRdQGeoWCXK/WI9
+X-Received: by 2002:a0c:b7a1:: with SMTP id l33mr4442587qve.17.1614873225466;
+        Thu, 04 Mar 2021 07:53:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxj3betVE9M6Fb3f0nr2xiIAAJvEDxTdPk1N7+r3GfIZ84WE+jiOi4ZUO6tlsHyuUmJqEgpkQ==
+X-Received: by 2002:a0c:b7a1:: with SMTP id l33mr4442575qve.17.1614873225263;
+        Thu, 04 Mar 2021 07:53:45 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
+        by smtp.gmail.com with ESMTPSA id v4sm17665062qtp.72.2021.03.04.07.53.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 07:53:44 -0800 (PST)
+Date:   Thu, 4 Mar 2021 10:53:42 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     linux-man@vger.kernel.org, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linux MM Mailing List <linux-mm@kvack.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH 1/4] userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
+Message-ID: <20210304155342.GY397383@xz-x1>
+References: <20210304015947.517713-1-peterx@redhat.com>
+ <20210304015947.517713-2-peterx@redhat.com>
+ <YECAUdnf1Xw5qKb8@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6d87905c-17d2-4c5b-be12-08d8df25b885
-X-MS-TrafficTypeDiagnostic: BY5PR02MB6961:
-X-Microsoft-Antispam-PRVS: <BY5PR02MB6961C40F504F49DF62424F99D4979@BY5PR02MB6961.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:131;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TH11xYn6PN7Egu8aINkb5My6lTkLQq/++duKqgYiLvD9qK5MLeCRuuYQY6V3J3LbVG+IsJ/L0RyvKMex8BGENQXPkVWAnoBxCG2s91/+D6aFy2C8cm6cwE0w3L+PnrmLjk9zD5TsE+/HhRb/8S3iX3Kpm9t4SU8PCBLYCAa8LwL3Cd6Pyq3hKoUIOTZd7h6nXwW+1LqIL/9xRd20cKOwHmIkOopPoKz1HV6L0FXxqP4UZKyvkjZvLJlP01VshiuiI79OW1WG/lrR2x0ZeFojq4mrC9ORTy6WJEmVXM857uzlsQrp7OrpFJS12nJMo1WO7OhUp4gD5IGO8fPlYo+61frd8tfnsylOGZOo0jsNsD1RwJ8P6WVGqIYB+iiZuXr8RJrQbBHa8oVUZOH18m7foStZxenWm+utpEs1aMG5jSGfeEOoYVxKKAA3UtZBxAP/nlh1RKiry1PSuDtg3uLRjVmqodLFMAMHaMK6Ltt7LOepS4HxdMXhERiqG0jH2dbuwG3Db8jPA4LN7exi7yK+O8rYEt1nbot0DToMVxqFN4ebr/wz9eFUEAk4XSoH/1H0dph2BZxjZgfdS8JTDroJFIUhrCNPPgLzq/ChqsttSICcotSHFZvYloMpvh9BeA8tIEVPDlbs7/mYTFRIb8p0SaIhOcNerRCuuQa9/wRff/fKuHxfITVJtN24O4I6Cvs22Oz7AG5T3I9gQfSjsLxSs5H+ayiCEeozUumipKhy/0zMs6+XAV0WVtKz9zsV3jv6+LplhNzyX9efmOBHb762tg==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(36840700001)(46966006)(70586007)(5660300002)(8936002)(7636003)(70206006)(8676002)(426003)(356005)(107886003)(36906005)(82310400003)(4326008)(316002)(36860700001)(6916009)(6666004)(9786002)(44832011)(36756003)(83380400001)(47076005)(7696005)(2906002)(15650500001)(2616005)(82740400003)(966005)(336012)(54906003)(186003)(478600001)(1076003)(26005)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2021 15:53:57.4072
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d87905c-17d2-4c5b-be12-08d8df25b885
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT043.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6961
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YECAUdnf1Xw5qKb8@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updated code with already prepared dev_err_probe(). It reduces code size
-and simplifies EPROBE_DEFER handling.
+On Thu, Mar 04, 2021 at 08:38:09AM +0200, Mike Rapoport wrote:
+> On Wed, Mar 03, 2021 at 08:59:44PM -0500, Peter Xu wrote:
+> > UFFD_FEATURE_THREAD_ID is supported since Linux 4.14.
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  man2/userfaultfd.2 | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> > 
+> > diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+> > index e7dc9f813..2d14effc6 100644
+> > --- a/man2/userfaultfd.2
+> > +++ b/man2/userfaultfd.2
+> > @@ -77,6 +77,12 @@ When the last file descriptor referring to a userfaultfd object is closed,
+> >  all memory ranges that were registered with the object are unregistered
+> >  and unread events are flushed.
+> >  .\"
+> > +.PP
+> > +Since Linux 4.14, userfaultfd page fault message can selectively embed fault
+> 
+>                                                           Maybe faulting? ^
 
-Also, unify message format for similar error cases.
+Ok.
 
-Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
----
-This patch is based on ahci-ceva patches:
-https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=5542fabd9e07d6c49c07862e73070c325f93d390
+> 
+> > +thread ID information into the fault message.  One needs to enable this feature
+> > +explicitly using the
+> > +.BR UFFD_FEATURE_THREAD_ID
+> > +feature bit when initializing the userfaultfd context, otherwise disabled.
+> 
+>              "... otherwise thread ID reporting is disabled" ^
 
-Tree: https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/tree/?h=for-next
----
- drivers/ata/ahci_ceva.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+I changed to "... By default, thread ID reporting is diabled."
 
-diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
-index b980218..a935209 100644
---- a/drivers/ata/ahci_ceva.c
-+++ b/drivers/ata/ahci_ceva.c
-@@ -207,9 +207,8 @@ static int ceva_ahci_probe(struct platform_device *pdev)
- 	cevapriv->rst = devm_reset_control_get_optional_exclusive(&pdev->dev,
- 								  NULL);
- 	if (IS_ERR(cevapriv->rst)) {
--		if (PTR_ERR(cevapriv->rst) != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "failed to get reset: %ld\n",
--				PTR_ERR(cevapriv->rst));
-+		dev_err_probe(&pdev->dev, PTR_ERR(cevapriv->rst),
-+			      "failed to get reset\n");
- 	}
- 
- 	hpriv = ahci_platform_get_resources(pdev, 0);
+Thanks!
+
 -- 
-1.7.1
+Peter Xu
 
