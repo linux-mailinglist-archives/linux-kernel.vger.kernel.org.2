@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC23932CB73
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FA032CB8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 05:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhCDEjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 23:39:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233601AbhCDEjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 23:39:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EB1B64EF6;
-        Thu,  4 Mar 2021 04:38:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614832703;
-        bh=VhpGH1pQ0eQ+uq0bM0wtZiGMW7Rptxx0e6s1vM9/0qM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CSSeT0hqSoxoii1c6CWl404vTG3F40T9e+YWoeF/KMqazNy3OKpA4n3mSoRZecYLq
-         P6PetNJ97safnk5tJj5WhFQ9xElCoPQZRhhESfRB1qUHcmghajaQ/Ci52P0DrsV2vv
-         WIkqGQrxidGH28/xs32h8OD1l0EUV6xTiS5olaZk9SU3urIXzBuYH8WIJYJT4i/8m1
-         /BlFencs5Hj0wc5oCaeaLvYh/l4RNc7qkee5Khp0oNqwazeWw++lr0jSBBSUoZsr7w
-         F+aeU4UE3K2LKvZmoBqmeP6VSLxioZPtuQc5HtM+d13TeIjhsO63CFrKObQfapfccb
-         YVaFrqnO8kdaw==
-Date:   Thu, 4 Mar 2021 06:38:02 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     rdunlap@infradead.org, dhowells@redhat.com, dwmw2@infradead.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] certs: Fix wrong kconfig option used for
- x509_revocation_list
-Message-ID: <YEBkKlxZOgUxtQEm@kernel.org>
-References: <20210303034418.106762-1-eric.snowberg@oracle.com>
+        id S233768AbhCDEnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 23:43:35 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36590 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233698AbhCDEnO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 23:43:14 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1244fV4P101783;
+        Wed, 3 Mar 2021 22:41:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614832891;
+        bh=g5+aTTWp+7oIxei7wR77xO2oMY4/n+0nCu4fMGvEBw8=;
+        h=From:To:CC:Subject:Date;
+        b=FQtiF9PcP5I4NoL7GyvHRFGe9OG7oibRzQzVwOKXccdrsQ367Z35/HUaH1kpssmoq
+         2CenFGGkIiSjuonj6N1k4mTXRhRyPwY5zv0f+a21pWUI7AhzuaovIzw+JZSlaF2P12
+         mLlKtQiMBlNllBAqy+tXGMukq+uw1MaYYwm1XUJA=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1244fUds067894
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 3 Mar 2021 22:41:31 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 3 Mar
+ 2021 22:41:30 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 3 Mar 2021 22:41:30 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1244fQfh042911;
+        Wed, 3 Mar 2021 22:41:27 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Swapnil Jakhade <sjakhade@cadence.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH v4 00/13] PHY: Add support in Sierra to use external clock
+Date:   Thu, 4 Mar 2021 10:11:09 +0530
+Message-ID: <20210304044122.15166-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303034418.106762-1-eric.snowberg@oracle.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 10:44:18PM -0500, Eric Snowberg wrote:
-> This fixes a build issue when x509_revocation_list is not defined.
+Patch series adds support in Sierra driver to use external clock.
 
-"Fix a"
+v1 of the patch series can be found @ [1]
+v2 of the patch series can be found @ [2]
+v3 of the patch series can be found @ [3]
 
-Let's stick to the imperative form in commit messages.
+Changes from v3:
+1) Instead of adding separate subnodes for each clock, just add
+#clock-cells in Sierra SERDES nodes and model the clocks. This is
+in alignment with Rob's comment for a different series [4]
+2) Removed device tree changes from the series.
 
-> 
-> $ make ARCH=x86_64 O=build64 all
-> 
->  EXTRACT_CERTS   ../
-> At main.c:154:
-> - SSL error:0909006C:PEM routines:get_name:no start line: crypto/pem/pem_lib.c:745
-> extract-cert: ../: Is a directory
-> make[2]: [../certs/Makefile:119: certs/x509_revocation_list] Error 1 (ignored)
-> 
-> When the new CONFIG_SYSTEM_REVOCATION_LIST was added [1], it was not carried
-> into the code for preloading the revocation certificates [2].  Change from
-> using the original CONFIG_SYSTEM_BLACKLIST_KEYRING  to the new
-> CONFIG_SYSTEM_REVOCATION_LIST.
-> 
-> [1] https://lore.kernel.org/keyrings/EDA280F9-F72D-4181-93C7-CDBE95976FF7@oracle.com/T/#m562c1b27bf402190e7bb573ad20eff5b6310d08f
-> [2] https://lore.kernel.org/keyrings/EDA280F9-F72D-4181-93C7-CDBE95976FF7@oracle.com/T/#m07e258bf019ccbac23820fad5192ceffa74fc6ab
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> ---
->  certs/Makefile    | 7 +++++--
->  certs/blacklist.c | 4 ++++
->  2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/certs/Makefile b/certs/Makefile
-> index e3f4926fd21e..3bc43c88a6d2 100644
-> --- a/certs/Makefile
-> +++ b/certs/Makefile
-> @@ -4,7 +4,10 @@
->  #
->  
->  obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o common.o
-> -obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist.o revocation_certificates.o common.o
-> +obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist.o common.o
-> +ifeq ($(CONFIG_SYSTEM_REVOCATION_LIST),y)
-> +obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += revocation_certificates.o
-> +endif
->  ifneq ($(CONFIG_SYSTEM_BLACKLIST_HASH_LIST),"")
->  obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist_hashes.o
->  else
-> @@ -105,7 +108,7 @@ $(obj)/signing_key.x509: scripts/extract-cert $(X509_DEP) FORCE
->  	$(call if_changed,extract_certs,$(MODULE_SIG_KEY_SRCPREFIX)$(CONFIG_MODULE_SIG_KEY))
->  endif # CONFIG_MODULE_SIG
->  
-> -ifeq ($(CONFIG_SYSTEM_BLACKLIST_KEYRING),y)
-> +ifeq ($(CONFIG_SYSTEM_REVOCATION_LIST),y)
->  
->  $(eval $(call config_filename,SYSTEM_REVOCATION_KEYS))
->  
-> diff --git a/certs/blacklist.c b/certs/blacklist.c
-> index 723b19c96256..c9a435b15af4 100644
-> --- a/certs/blacklist.c
-> +++ b/certs/blacklist.c
-> @@ -21,8 +21,10 @@
->  
->  static struct key *blacklist_keyring;
->  
-> +#ifdef CONFIG_SYSTEM_REVOCATION_LIST
->  extern __initconst const u8 revocation_certificate_list[];
->  extern __initconst const unsigned long revocation_certificate_list_size;
-> +#endif
->  
->  /*
->   * The description must be a type prefix, a colon and then an even number of
-> @@ -225,6 +227,7 @@ static int __init blacklist_init(void)
->   */
->  device_initcall(blacklist_init);
->  
-> +#ifdef CONFIG_SYSTEM_REVOCATION_LIST
->  /*
->   * Load the compiled-in list of revocation X.509 certificates.
->   */
-> @@ -237,3 +240,4 @@ static __init int load_revocation_certificate_list(void)
->  				     blacklist_keyring);
->  }
->  late_initcall(load_revocation_certificate_list);
-> +#endif
-> -- 
-> 2.18.4
-> 
-> 
+Changes from v2:
+1) Add depends on COMMON_CLK in Sierra
+2) Add modelling PLL_CMNLC and PLL_CMNLC1 as clocks into a separate
+patch
+3) Disable clocks in Sierra driver remove
 
-Code change looks good.
+Changes from v1:
+1) Remove the part that prevents configuration if the SERDES is already
+   configured and focus only on using external clock and the associated
+   cleanups
+2) Change patch ordering
+3) Use exclusive reset control APIs
+4) Fix error handling code
+5) Include DT patches in this series (I can send this separately to DT
+MAINTAINER once the driver patches are merged)
 
-/Jarkko
+[1] -> http://lore.kernel.org/r/20201103035556.21260-1-kishon@ti.com
+[2] -> http://lore.kernel.org/r/20201222070520.28132-1-kishon@ti.com
+[3] -> http://lore.kernel.org/r/20201224111627.32590-1-kishon@ti.com
+[4] -> http://lore.kernel.org/r/20210108025943.GA1790601@robh.at.kernel.org
+
+Kishon Vijay Abraham I (13):
+  phy: cadence: Sierra: Fix PHY power_on sequence
+  phy: ti: j721e-wiz: Invoke wiz_init() before
+    of_platform_device_create()
+  phy: cadence: cadence-sierra: Create PHY only for "phy" or "link"
+    sub-nodes
+  phy: ti: j721e-wiz: Get PHY properties only for "phy" or "link"
+    subnode
+  phy: cadence: cadence-sierra: Move all clk_get_*() to a separate
+    function
+  phy: cadence: cadence-sierra: Move all reset_control_get*() to a
+    separate function
+  phy: cadence: cadence-sierra: Explicitly request exclusive reset
+    control
+  phy: cadence-torrent: Use a common header file for Cadence SERDES
+  phy: cadence: cadence-sierra: Add array of input clocks in "struct
+    cdns_sierra_phy"
+  phy: cadence: cadence-sierra: Add missing clk_disable_unprepare() in
+    .remove callback
+  dt-bindings: phy: phy-cadence-sierra: Add binding to model Sierra as
+    clock provider
+  phy: cadence: phy-cadence-sierra: Model PLL_CMNLC and PLL_CMNLC1 as
+    clocks (mux clocks)
+  phy: cadence: phy-cadence-sierra: Enable pll_cmnlc and pll_cmnlc1
+    clocks
+
+ .../bindings/phy/phy-cadence-sierra.yaml      |  17 +-
+ drivers/phy/cadence/Kconfig                   |   1 +
+ drivers/phy/cadence/phy-cadence-sierra.c      | 419 ++++++++++++++++--
+ drivers/phy/cadence/phy-cadence-torrent.c     |   2 +-
+ drivers/phy/ti/phy-j721e-wiz.c                |  21 +-
+ include/dt-bindings/phy/phy-cadence-torrent.h |  15 -
+ include/dt-bindings/phy/phy-cadence.h         |  20 +
+ 7 files changed, 428 insertions(+), 67 deletions(-)
+ delete mode 100644 include/dt-bindings/phy/phy-cadence-torrent.h
+ create mode 100644 include/dt-bindings/phy/phy-cadence.h
+
+-- 
+2.17.1
+
