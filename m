@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06A432C97B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F9732C987
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354599AbhCDBDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:03:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S1343870AbhCDBDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:03:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448487AbhCDAZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1448491AbhCDAZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 3 Mar 2021 19:25:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 349D464EBD;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66AA464EEE;
         Thu,  4 Mar 2021 00:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614817395;
-        bh=FAZG03zSoIbEYQ+G/Ef9ono8IzzxV7GIMyktvPk563g=;
+        bh=gu8YZFAz7kL4KL+4QRifWNJCAsuV026Hq+FZDTnpYOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JyMwjSXtopsX1BrIHqc2M77tJJdjSL18gVYYSMlEBYaKOCKUpfXdmtKK3sXeSFD+2
-         8B+wNmz4+EMEWoa4/UYSRXVc4ykFr0ZdnHsVIgHZuvchTxWOdreg3/57Brjo5J51qB
-         pv+6KOWwHU+qC99Nh8YoRBzlsNu10E7Roup3Zp2Kujx2djDzo49bSlXFWAK5gYPUYA
-         K0I3cU11lD65L7Ttv4HMDZzlvKZ5qMfj/jOC6SfoUDwLkKMvdDP1bJ1wNZKfRBpjEJ
-         NIL9WXcURYnRbUgt2ZDrDBJIbzNf+avAoZfU9IVty0R5OSDiMgw+MKlrgzzgPIYaGk
-         3SzxccJm5PtZQ==
+        b=rHngxzlMQMWphj4c79/9lBKK74k/bqgIEZsmBRlqf0Pfd1k2Nk89IYeXi9suLOLOu
+         DxrkIkhwgiz0v8s8Y1NzXvXYcOTX3sTbqP/C+nhoHLl0rmVKxyRHLFpo7tqoZ9jBd4
+         LpIBRwEcoe3ZtJUEU91OihpcaOiZaWXnrrP4S9AfJrK19bOJBqQ6EKue6X27BRNMeL
+         rKJJ4RvsiIyT4NppUD6jxAF5uAHbbyTsBmG270qqPYjKZVnh5eERsCjhr5rHAmIY+x
+         JxxrpPUBbYWzAkbdGf8E+R9NT3sBf+J7wr1L0CVkkRmHxHz9c4FiLkz3Y5DSbjcJfN
+         YrqK6u9KuNH2A==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,11 +32,12 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         Frederic Weisbecker <frederic@kernel.org>,
-        stable@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 09/12] rcu/nocb: Fix missed nocb_timer requeue
-Date:   Wed,  3 Mar 2021 16:23:08 -0800
-Message-Id: <20210304002311.23655-9-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/12] rcu/nocb: Disable bypass when CPU isn't completely offloaded
+Date:   Wed,  3 Mar 2021 16:23:09 -0800
+Message-Id: <20210304002311.23655-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304002225.GA23492@paulmck-ThinkPad-P72>
 References: <20210304002225.GA23492@paulmck-ThinkPad-P72>
@@ -46,119 +47,135 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-This sequence of events can lead to a failure to requeue a CPU's
-->nocb_timer:
+Currently, the bypass is flushed at the very last moment in the
+deoffloading procedure.  However, this approach leads to a larger state
+space than would be preferred.  This commit therefore disables the
+bypass at soon as the deoffloading procedure begins, then flushes it.
+This guarantees that the bypass remains empty and thus out of the way
+of the deoffloading procedure.
 
-1.	There are no callbacks queued for any CPU covered by CPU 0-2's
-	->nocb_gp_kthread.  Note that ->nocb_gp_kthread is associated
-	with CPU 0.
+Symmetrically, this commit waits to enable the bypass until the offloading
+procedure has completed.
 
-2.	CPU 1 enqueues its first callback with interrupts disabled, and
-	thus must defer awakening its ->nocb_gp_kthread.  It therefore
-	queues its rcu_data structure's ->nocb_timer.  At this point,
-	CPU 1's rdp->nocb_defer_wakeup is RCU_NOCB_WAKE.
-
-3.	CPU 2, which shares the same ->nocb_gp_kthread, also enqueues a
-	callback, but with interrupts enabled, allowing it to directly
-	awaken the ->nocb_gp_kthread.
-
-4.	The newly awakened ->nocb_gp_kthread associates both CPU 1's
-	and CPU 2's callbacks with a future grace period and arranges
-	for that grace period to be started.
-
-5.	This ->nocb_gp_kthread goes to sleep waiting for the end of this
-	future grace period.
-
-6.	This grace period elapses before the CPU 1's timer fires.
-	This is normally improbably given that the timer is set for only
-	one jiffy, but timers can be delayed.  Besides, it is possible
-	that kernel was built with CONFIG_RCU_STRICT_GRACE_PERIOD=y.
-
-7.	The grace period ends, so rcu_gp_kthread awakens the
-	->nocb_gp_kthread, which in turn awakens both CPU 1's and
-	CPU 2's ->nocb_cb_kthread.  Then ->nocb_gb_kthread sleeps
-	waiting for more newly queued callbacks.
-
-8.	CPU 1's ->nocb_cb_kthread invokes its callback, then sleeps
-	waiting for more invocable callbacks.
-
-9.	Note that neither kthread updated any ->nocb_timer state,
-	so CPU 1's ->nocb_defer_wakeup is still set to RCU_NOCB_WAKE.
-
-10.	CPU 1 enqueues its second callback, this time with interrupts
- 	enabled so it can wake directly	->nocb_gp_kthread.
-	It does so with calling wake_nocb_gp() which also cancels the
-	pending timer that got queued in step 2. But that doesn't reset
-	CPU 1's ->nocb_defer_wakeup which is still set to RCU_NOCB_WAKE.
-	So CPU 1's ->nocb_defer_wakeup and its ->nocb_timer are now
-	desynchronized.
-
-11.	->nocb_gp_kthread associates the callback queued in 10 with a new
-	grace period, arranges for that grace period to start and sleeps
-	waiting for it to complete.
-
-12.	The grace period ends, rcu_gp_kthread awakens ->nocb_gp_kthread,
-	which in turn wakes up CPU 1's ->nocb_cb_kthread which then
-	invokes the callback queued in 10.
-
-13.	CPU 1 enqueues its third callback, this time with interrupts
-	disabled so it must queue a timer for a deferred wakeup. However
-	the value of its ->nocb_defer_wakeup is RCU_NOCB_WAKE which
-	incorrectly indicates that a timer is already queued.  Instead,
-	CPU 1's ->nocb_timer was cancelled in 10.  CPU 1 therefore fails
-	to queue the ->nocb_timer.
-
-14.	CPU 1 has its pending callback and it may go unnoticed until
-	some other CPU ever wakes up ->nocb_gp_kthread or CPU 1 ever
-	calls an explicit deferred wakeup, for example, during idle entry.
-
-This commit fixes this bug by resetting rdp->nocb_defer_wakeup everytime
-we delete the ->nocb_timer.
-
-It is quite possible that there is a similar scenario involving
-->nocb_bypass_timer and ->nocb_defer_wakeup.  However, despite some
-effort from several people, a failure scenario has not yet been located.
-However, that by no means guarantees that no such scenario exists.
-Finding a failure scenario is left as an exercise for the reader, and the
-"Fixes:" tag below relates to ->nocb_bypass_timer instead of ->nocb_timer.
-
-Fixes: d1b222c6be1f (rcu/nocb: Add bypass callback queueing)
-Cc: <stable@vger.kernel.org>
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ include/linux/rcu_segcblist.h |  7 ++++---
+ kernel/rcu/tree_plugin.h      | 38 +++++++++++++++++++++++++++++---------
+ 2 files changed, 33 insertions(+), 12 deletions(-)
 
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index 8afe886..3db96c4 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -109,7 +109,7 @@ struct rcu_cblist {
+  *  |                           SEGCBLIST_KTHREAD_GP                           |
+  *  |                                                                          |
+  *  |   Kthreads handle callbacks holding nocb_lock, local rcu_core() stops    |
+- *  |   handling callbacks.                                                    |
++ *  |   handling callbacks. Enable bypass queueing.                            |
+  *  ----------------------------------------------------------------------------
+  */
+ 
+@@ -125,7 +125,7 @@ struct rcu_cblist {
+  *  |                           SEGCBLIST_KTHREAD_GP                           |
+  *  |                                                                          |
+  *  |   CB/GP kthreads handle callbacks holding nocb_lock, local rcu_core()    |
+- *  |   ignores callbacks.                                                     |
++ *  |   ignores callbacks. Bypass enqueue is enabled.                          |
+  *  ----------------------------------------------------------------------------
+  *                                      |
+  *                                      v
+@@ -134,7 +134,8 @@ struct rcu_cblist {
+  *  |                           SEGCBLIST_KTHREAD_GP                           |
+  *  |                                                                          |
+  *  |   CB/GP kthreads and local rcu_core() handle callbacks concurrently      |
+- *  |   holding nocb_lock. Wake up CB and GP kthreads if necessary.            |
++ *  |   holding nocb_lock. Wake up CB and GP kthreads if necessary. Disable    |
++ *  |   bypass enqueue.                                                        |
+  *  ----------------------------------------------------------------------------
+  *                                      |
+  *                                      v
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index a1a17ad..e392bd1 100644
+index e392bd1..b08564b 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -1708,7 +1708,11 @@ static bool wake_nocb_gp(struct rcu_data *rdp, bool force,
- 		rcu_nocb_unlock_irqrestore(rdp, flags);
- 		return false;
- 	}
--	del_timer(&rdp->nocb_timer);
+@@ -1830,11 +1830,22 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 	unsigned long j = jiffies;
+ 	long ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+ 
++	lockdep_assert_irqs_disabled();
 +
-+	if (READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT) {
-+		WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
-+		del_timer(&rdp->nocb_timer);
++	// Pure softirq/rcuc based processing: no bypassing, no
++	// locking.
+ 	if (!rcu_rdp_is_offloaded(rdp)) {
+ 		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
++		return false;
 +	}
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
- 	if (force || READ_ONCE(rdp_gp->nocb_gp_sleep)) {
-@@ -2335,7 +2339,6 @@ static bool do_nocb_deferred_wakeup_common(struct rcu_data *rdp)
- 		return false;
++
++	// In the process of (de-)offloading: no bypassing, but
++	// locking.
++	if (!rcu_segcblist_completely_offloaded(&rdp->cblist)) {
++		rcu_nocb_lock(rdp);
++		*was_alldone = !rcu_segcblist_pend_cbs(&rdp->cblist);
+ 		return false; /* Not offloaded, no bypassing. */
  	}
- 	ndw = READ_ONCE(rdp->nocb_defer_wakeup);
--	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
- 	ret = wake_nocb_gp(rdp, ndw == RCU_NOCB_WAKE_FORCE, flags);
- 	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("DeferredWake"));
+-	lockdep_assert_irqs_disabled();
+ 
+ 	// Don't use ->nocb_bypass during early boot.
+ 	if (rcu_scheduler_active != RCU_SCHEDULER_RUNNING) {
+@@ -2416,7 +2427,16 @@ static long rcu_nocb_rdp_deoffload(void *arg)
+ 	pr_info("De-offloading %d\n", rdp->cpu);
+ 
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+-
++	/*
++	 * Flush once and for all now. This suffices because we are
++	 * running on the target CPU holding ->nocb_lock (thus having
++	 * interrupts disabled), and because rdp_offload_toggle()
++	 * invokes rcu_segcblist_offload(), which clears SEGCBLIST_OFFLOADED.
++	 * Thus future calls to rcu_segcblist_completely_offloaded() will
++	 * return false, which means that future calls to rcu_nocb_try_bypass()
++	 * will refuse to put anything into the bypass.
++	 */
++	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
+ 	ret = rdp_offload_toggle(rdp, false, flags);
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+ 			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
+@@ -2428,21 +2448,21 @@ static long rcu_nocb_rdp_deoffload(void *arg)
+ 	del_timer_sync(&rdp->nocb_timer);
+ 
+ 	/*
+-	 * Flush bypass. While IRQs are disabled and once we set
+-	 * SEGCBLIST_SOFTIRQ_ONLY, no callback is supposed to be
+-	 * enqueued on bypass.
++	 * Theoretically we could set SEGCBLIST_SOFTIRQ_ONLY with CB unlocked
++	 * and IRQs disabled but let's be paranoid.
+ 	 */
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+-	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
+ 	rcu_segcblist_set_flags(cblist, SEGCBLIST_SOFTIRQ_ONLY);
+ 	/*
+ 	 * With SEGCBLIST_SOFTIRQ_ONLY, we can't use
+-	 * rcu_nocb_unlock_irqrestore() anymore. Theoretically we
+-	 * could set SEGCBLIST_SOFTIRQ_ONLY with cb unlocked and IRQs
+-	 * disabled now, but let's be paranoid.
++	 * rcu_nocb_unlock_irqrestore() anymore.
+ 	 */
+ 	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 
++	/* Sanity check */
++	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
++
++
+ 	return ret;
+ }
  
 -- 
 2.9.5
