@@ -2,727 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5E632D0E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC49F32D0E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 11:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238763AbhCDKek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 05:34:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:36388 "EHLO foss.arm.com"
+        id S238772AbhCDKfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 05:35:14 -0500
+Received: from mga18.intel.com ([134.134.136.126]:28804 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232347AbhCDKeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 05:34:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B00531FB;
-        Thu,  4 Mar 2021 02:33:20 -0800 (PST)
-Received: from [10.57.63.81] (unknown [10.57.63.81])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D2A03F73B;
-        Thu,  4 Mar 2021 02:33:17 -0800 (PST)
-Subject: Re: [PATCH v4 02/10] coresight: syscfg: Add registration and feature
- loading for cs devices
-To:     Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, linux-doc@vger.kernel.org
-Cc:     yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-References: <20210128170936.9222-1-mike.leach@linaro.org>
- <20210128170936.9222-3-mike.leach@linaro.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <6e905366-46a8-2e1e-8122-87cba4abff86@arm.com>
-Date:   Thu, 4 Mar 2021 10:33:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S238867AbhCDKey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 05:34:54 -0500
+IronPort-SDR: 45fi5LfXqqHUUCXnzNztO5FSMvuTDEqkGLpbmyHwnEBBCwru3AY+N2YRSNfoawutHUrcNUW46t
+ /JK8oJnpkmdQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="175021664"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="175021664"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 02:34:27 -0800
+IronPort-SDR: K+iakJSHEw6+n7aFTl2itL45ZTvIsPub3dm0H8I0dynVJvV99IVw0YwABO28PbmFJF/9P7FI8w
+ bAkAA02BAwlA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="428617805"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Mar 2021 02:34:27 -0800
+Received: from lcsmsx602.ger.corp.intel.com (10.109.210.11) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 4 Mar 2021 02:34:26 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX602.ger.corp.intel.com (10.109.210.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 4 Mar 2021 12:34:24 +0200
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2106.013;
+ Thu, 4 Mar 2021 12:34:24 +0200
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     =?utf-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maxim.uvarov@linaro.org" <maxim.uvarov@linaro.org>,
+        "joakim.bech@linaro.org" <joakim.bech@linaro.org>,
+        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
+        "arnd@linaro.org" <arnd@linaro.org>,
+        "ruchika.gupta@linaro.org" <ruchika.gupta@linaro.org>,
+        "Huang, Yang" <yang.huang@intel.com>,
+        "Zhu, Bing" <bing.zhu@intel.com>,
+        "Matti.Moell@opensynergy.com" <Matti.Moell@opensynergy.com>,
+        "hmo@opensynergy.com" <hmo@opensynergy.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        Avri Altman <avri.altman@sandisk.com>
+Subject: RE: [RFC PATCH  2/5] char: rpmb: provide a user space interface
+Thread-Topic: [RFC PATCH  2/5] char: rpmb: provide a user space interface
+Thread-Index: AQHXEDTT25yAi+/ZF0eKGUVirNKsxapzZSEQgAA6NFiAAACVkA==
+Date:   Thu, 4 Mar 2021 10:34:24 +0000
+Message-ID: <590e0157d6c44d55aa166ccad6355db5@intel.com>
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+        <20210303135500.24673-3-alex.bennee@linaro.org>
+        <ff78164cc13b4855911116c2d48929a2@intel.com> <87eegvgr0w.fsf@linaro.org>
+In-Reply-To: <87eegvgr0w.fsf@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210128170936.9222-3-mike.leach@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike
-
-There are some minor comments on the naming scheme of the structures,
-which I think might improve the code readability.
-
-e.g, in general anything that is associated with a csdev could be named
-as such csdev_*, rather than cscfg_*_csdev. The latter kind of implies
-"cscfg" is the "primary" object, while it is the csdev where we track
-this.
-
-Feel free to ignore.
-
-On 1/28/21 5:09 PM, Mike Leach wrote:
-> API for individual devices to register with the syscfg management
-> system is added.
-> 
-> Devices register with matching information, and any features or
-> configurations that match will be loaded into the device.
-> 
-> The feature and configuration loading is extended so that on load these
-> are loaded into any currently registered devices. This allows
-> configuration loading after devices have been registered.
-> 
-> Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> ---
->   .../hwtracing/coresight/coresight-config.h    |  98 +++++
->   .../hwtracing/coresight/coresight-syscfg.c    | 348 ++++++++++++++++++
->   .../hwtracing/coresight/coresight-syscfg.h    |  20 +
->   include/linux/coresight.h                     |   5 +
->   4 files changed, 471 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
-> index 3fedf8ab3cee..75ecdecf7013 100644
-> --- a/drivers/hwtracing/coresight/coresight-config.h
-> +++ b/drivers/hwtracing/coresight/coresight-config.h
-> @@ -164,4 +164,102 @@ struct cscfg_config_desc {
->   	const u64 *presets; /* nr_presets * nr_total_params */
->   };
->   
-> +/**
-> + * config register instance - part of a loaded feature.
-> + *                            maps register values to csdev driver structures
-> + *
-> + * @value:	value to use when setting feature on device / store for
-> + *		readback of volatile values.
-> + * @drv_store:	pointer to internal driver element used to set the value
-> + *		in hardware.
-> + */
-> +struct cscfg_reg_csdev {
-
-minor nit: csdev_csfg_reg ?
-
-> +	struct cscfg_regval_desc value;
-> +	void *drv_store;
-> +};
-
-I am not sure if it helps to move this drv_store field into csfg_regval_desc
-as "void *private". I haven't looked at the following patches. That way we
-have less number of structures to deal with.
-
-> +
-> +/**
-> + * config parameter instance - part of a loaded feature.
-> + *
-> + * @feat:		parent feature
-> + * @reg:		register value updated by this parameter.
-> + * @current_value:	current value of parameter - may be set by user via
-> + *			sysfs, or modified during device operation.
-> + * @val64:		true if 64 bit value
-> + */
-> +struct cscfg_parameter_csdev {
-
-nit: cscdev_cfg_parameter ?
-
-> +	struct cscfg_feature_csdev *feat;
-
-nit: s/feat/cscfg_feat ?
-
-> +	struct cscfg_reg_csdev *reg;
-
-nit: s/reg/cscfg_reg/ ?
-
-> +	u64 current_value;
-> +	bool val64;
-> +};
-> +
-> +/**
-> + * Feature instance loaded into a CoreSight device.
-> + *
-> + * When a feature is loaded into a specific device, then this structure holds
-> + * the connections between the register / parameter values used and the
-> + * internal data structures that are written when the feature is enabled.
-> + *
-> + * Since applying a feature modifies internal data structures in the device,
-> + * then we have a reference to the device spinlock to protect access to these
-> + * structures (@csdev_spinlock).
-> + *
-> + * @desc:		pointer to the static descriptor for this feature.
-> + * @csdev:		parent CoreSight device instance.
-> + * @node:		list entry into feature list for this device.
-> + * @csdev_spinlock:	device spinlock from csdev instance..
-> + * @nr_params:		number of parameters.
-> + * @params:		current parameter values on this device
-> + * @nr_regs:		number of registers to be programmed.
-> + * @regs:		Programming details for the registers
-> + */
-> +struct cscfg_feature_csdev {
-> +	const struct cscfg_feature_desc *desc;
-
-nit: s/desc/cscfg_feat_desc ?
-
-> +	struct coresight_device *csdev;
-> +	struct list_head node;
-> +	spinlock_t *csdev_spinlock;
-
-Why do we need this explicitly here when we have access to csdev ?
-
-> +	int nr_params;
-> +	struct cscfg_parameter_csdev *params;
-
-nit: s/params/cscfg_params/ ?
-
-> +	int nr_regs;
-> +	struct cscfg_reg_csdev *regs;
-
-nit: cscfg_regs ?
-
-> +};
-> +
-> +/**
-> + * Configuration instance when loaded into a CoreSight device.
-> + *
-> + * The instance contains references to loaded features on this device that are
-> + * used by the configuration.
-> + *
-> + * @desc:	reference to the descriptor for this configuration
-> + * @csdev:	parent coresight device for this configuration instance.
-> + * @node:	list entry within the coresight device
-> + * @nr_feat:	Number of features on this device that are used in the
-> + *		 configuration.
-> + * @feats:	reference to the device features to enable.
-> + * @enabled:	true if configuration is enabled on this device.
-> + */
-> +struct cscfg_config_csdev {
-
-nit: csdev_cscfg_config ?
-
-> +	const struct cscfg_config_desc *desc;
-> +	struct coresight_device *csdev;
-> +	struct list_head node;
-> +	int nr_feat;
-> +	struct cscfg_feature_csdev **feats;
-> +	bool enabled;
-> +};
-
-If you rearrange the fields a bit like below, you could optimize the
-allocations:
-
-struct cscfg_config_csdev {
-	bool				enabled;
- > +	const struct cscfg_config_desc 	*desc;
- > +	struct coresight_device 	*csdev;
- > +	struct list_head 		node;
-	int				nr_feat;
-	struct cscfg_feature_csdev	*cscfg_feats[0]
-};
-
-cscfg_config = devm_kzalloc(dev,
-			    offsetof(struct cscfg_config_csdev, cscfg_feats[nr_feat]),
-			    GFP_KERNEL);
-
-Instead of additional allocation for the array below.
-							
-> +
-> +/**
-> + * Coresight device operations.
-> + *
-> + * Registered coresight devices provide these operations to manage feature
-> + * instances compatible with the device hardware and drivers
-> + *
-> + * @load_feat:	Pass a feature descriptor into the device and create the
-> + *		loaded feature instance (struct cscfg_feature_csdev).
-> + */
-> +struct cscfg_csdev_feat_ops {
-> +	int (*load_feat)(struct coresight_device *csdev,
-> +			 struct cscfg_feature_csdev *feat);
-> +};
-> +
->   #endif /* _CORESIGHT_CORESIGHT_CONFIG_H */
-> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-> index f7e396a5f9cb..c04cea0c1db2 100644
-> --- a/drivers/hwtracing/coresight/coresight-syscfg.c
-> +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-> @@ -25,6 +25,212 @@ static struct cscfg_manager *cscfg_mgr;
->   
->   /* load features and configuations into the lists */
->   
-> +/* protect the cfg lists in the csdev instances */
-> +static DEFINE_MUTEX(cscfg_csdev_mutex);
-> +
-> +/* get name feature instance from a coresight device list of features */
-> +static struct cscfg_feature_csdev *
-> +cscfg_get_feat_csdev(struct coresight_device *csdev, const char *name)
-> +{
-> +	struct cscfg_feature_csdev *feat = NULL;
-> +
-> +	list_for_each_entry(feat, &csdev->feature_csdev_list, node) {
-> +		if (strcmp(feat->desc->name, name) == 0)
-> +			return feat;
-> +	}
-> +	return NULL;
-> +}
-> +
-> +/* allocate the device config instance - with max number of used features */
-> +static struct cscfg_config_csdev *
-> +cscfg_alloc_csdev_cfg(struct coresight_device *csdev, int nr_feats)
-> +{
-> +	struct cscfg_config_csdev *dev_cfg = NULL;
-> +	struct device *dev = csdev->dev.parent;
-> +
-> +	/* this is being allocated using the devm for the coresight device */
-> +	dev_cfg = devm_kzalloc(dev, sizeof(struct cscfg_config_csdev), GFP_KERNEL);
-> +	if (!dev_cfg)
-> +		return NULL;
-
-Please see my comment above struct field re-organization and ease of allocation above.
-> +
-> +	dev_cfg->csdev = csdev;
-> +	dev_cfg->feats = devm_kcalloc(dev, nr_feats,
-> +				      sizeof(struct cscfg_feature_csdev *),
-> +				      GFP_KERNEL);
-> +	if (!dev_cfg->feats)
-> +		dev_cfg = NULL;
-> +	return dev_cfg;
-> +}
-> +
-> +/* check match info between used feature from the config and a regisered device */
-> +static bool cscfg_match_feat_info(struct cscfg_match_desc *used_cmp,
-
-minor nit: s/used_cmp/feat_match ?
-
-> +				  struct cscfg_match_desc *reg_dev)
-
-s/reg_dev/
-> +{
-> +	/* if flags don't match then fail early */
-> +	if (!(used_cmp->match_flags & reg_dev->match_flags))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +/* Load a config into a device if there are feature matches between config and device  */
-> +static int cscfg_add_csdev_cfg(struct coresight_device *csdev,
-> +			       struct cscfg_match_desc *match_info,
-> +			       struct cscfg_config_desc *cfg_desc)
-
-Why not pass struct cscfg_csdev_register * instead of the first two parameters ?
-That way, it is easier to follow what we do here too.
-
-> +{
-> +	struct cscfg_config_csdev *dev_cfg = NULL;
-> +	struct cscfg_config_feat_ref *feat_ref;
-> +	struct cscfg_feature_csdev *feat;
-> +	int checked;
-
-super minor nit: s/checked/i ?
-
-> +
-> +	/* look at each required feature and see if it matches any feature on the device */
-> +	for (checked = 0; checked < cfg_desc->nr_refs; checked++) {
-> +		feat_ref = &cfg_desc->refs[checked];
-> +		if (cscfg_match_feat_info(&feat_ref->match, match_info)) {
-> +			/* device matched - get the feature */
-> +			feat = cscfg_get_feat_csdev(csdev, feat_ref->name);
-> +			if (!feat)
-> +				return -EINVAL;
-> +			if (!dev_cfg) {
-> +				dev_cfg = cscfg_alloc_csdev_cfg(csdev, cfg_desc->nr_refs);
-> +				if (!dev_cfg)
-> +					return -ENOMEM;
-> +				dev_cfg->desc = cfg_desc;
-> +			}
-> +			dev_cfg->feats[dev_cfg->nr_feat++] = feat;
-> +		}
-> +	}
-
-I understand we don't have dynamic unloading of the features yet, but it would
-be good to do the above step with the mutex held to protect us when we add the
-unloading, to prevent a config deleted while we are adding it here.
-
-> +	/* if matched features, add config to device.*/
-> +	if (dev_cfg) {
-> +		mutex_lock(&cscfg_csdev_mutex);
-> +		list_add(&dev_cfg->node, &csdev->config_csdev_list);
-> +		mutex_unlock(&cscfg_csdev_mutex);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Add the config to the set of registered devices - call with mutex locked.
-> + * Iterates through devices - any device that matches one or more of the
-> + * configuration features will load it, the others will ignore it.
-> + */
-> +static int cscfg_add_cfg_to_csdevs(struct cscfg_config_desc *cfg_desc)
-> +{
-> +	struct cscfg_csdev_register *curr_item;
-
-minor nit: s/curr_item/csdev_reg
-
-> +	int err;
-> +
-> +	list_for_each_entry(curr_item, &cscfg_mgr->data.csdev_desc_list, item) {
-> +		err = cscfg_add_csdev_cfg(curr_item->csdev, &curr_item->match_info, cfg_desc);
-
-Could we not make this
-
-		err = cscfg_add_csdev_cfg(cscfg_csdev, cfg_desc); ?
-
-Which easily implies, load cfg_desc to a csdev.
-
-
-
-> +		if (err)
-> +			return err;
-> +	}
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Allocate a feature object for load into a csdev.
-> + * memory allocated using the csdev->dev object using devm managed allocator.
-> + */
-> +static struct cscfg_feature_csdev *
-> +cscfg_alloc_csdev_feat(struct coresight_device *csdev, struct cscfg_feature_desc *feat_desc)
-> +{
-> +	struct cscfg_feature_csdev *feat = NULL;
-> +	struct device *dev = csdev->dev.parent;
-> +	int i;
-> +
-> +	feat = devm_kzalloc(dev, sizeof(struct cscfg_feature_csdev), GFP_KERNEL);
-> +	if (!feat)
-> +		return NULL;
-> +
-> +	/* parameters are optional - could be 0 */
-> +	feat->nr_params = feat_desc->nr_params;
-> +
-> +	/*
-> +	 * if we need parameters, zero alloc the space here, the load routine in
-> +	 * the csdev device driver will fill out some information according to
-> +	 * feature descriptor.
-> +	 */
-> +	if (feat->nr_params) {
-> +		feat->params = devm_kcalloc(dev, feat->nr_params,
-> +					    sizeof(struct cscfg_parameter_csdev),
-> +					    GFP_KERNEL);
-> +		if (!feat->params)
-> +			return NULL;
-> +
-> +		/*
-> +		 * fill in the feature reference in the param - other fields
-> +		 * handled by loader in csdev.
-> +		 */
-> +		for (i = 0; i < feat->nr_params; i++)
-> +			feat->params[i].feat = feat;
-> +	}
-> +
-> +	/*
-> +	 * Always have registers to program - again the load routine in csdev device
-> +	 * will fill out according to feature descriptor and device requirements.
-> +	 */
-> +	feat->nr_regs = feat_desc->nr_regs;
-> +	feat->regs = devm_kcalloc(dev, feat->nr_regs,
-> +				  sizeof(struct cscfg_reg_csdev), GFP_KERNEL);
-> +	if (!feat->regs)
-> +		return NULL;
-> +
-> +	/* load the feature default values */
-> +	feat->desc = feat_desc;
-> +	feat->csdev = csdev;
-> +
-> +	return feat;
-> +}
-> +
-> +/* load one feature into one coresight device */
-> +static int cscfg_load_feat_csdev(struct coresight_device *csdev,
-> +				 struct cscfg_feature_desc *feat_desc,
-> +				 struct cscfg_csdev_feat_ops *ops)
-> +{
-> +	struct cscfg_feature_csdev *feat_csdev;
-> +	int err;
-> +
-> +	if (!ops->load_feat)
-> +		return -EINVAL;
-> +
-> +	feat_csdev = cscfg_alloc_csdev_feat(csdev, feat_desc);
-> +	if (!feat_csdev)
-> +		return -ENOMEM;
-> +
-> +	/* load the feature into the device - may modify default ops*/
-> +	err = ops->load_feat(csdev, feat_csdev);
-> +	if (err)
-> +		return err;
-> +
-> +	/* add to internal csdev feature list */
-> +	mutex_lock(&cscfg_csdev_mutex);
-> +	list_add(&feat_csdev->node, &csdev->feature_csdev_list);
-> +	mutex_unlock(&cscfg_csdev_mutex);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Add feature to any matching devices - call with mutex locked.
-> + * Iterates through devices - any device that matches the feature will be
-> + * called to load it.
-> + */
-> +static int cscfg_add_feat_to_csdevs(struct cscfg_feature_desc *feat_desc)
-> +{
-> +	struct cscfg_csdev_register *curr_item;
-> +	int err;
-> +
-> +	list_for_each_entry(curr_item, &cscfg_mgr->data.csdev_desc_list, item) {
-> +		if (curr_item->match_info.match_flags & feat_desc->match_flags) {
-> +			err = cscfg_load_feat_csdev(curr_item->csdev, feat_desc, &curr_item->ops);
-> +			if (err)
-> +				return err;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
->   /* check feature list for a named feature - call with mutex locked. */
->   static bool cscfg_match_list_feat(const char *name)
->   {
-> @@ -53,6 +259,13 @@ static int cscfg_check_feat_for_cfg(struct cscfg_config_desc *cfg_desc)
->    */
->   static int cscfg_load_feat(struct cscfg_feature_desc *feat_desc)
->   {
-> +	int err;
-> +
-> +	/* add feature to any matching registered devices */
-> +	err = cscfg_add_feat_to_csdevs(feat_desc);
-> +	if (err)
-> +		return err;
-> +
->   	list_add(&feat_desc->item, &cscfg_mgr->data.feat_desc_list);
->   
->   	return 0;
-> @@ -71,6 +284,11 @@ static int cscfg_load_config(struct cscfg_config_desc *cfg_desc)
->   	if (err)
->   		return err;
->   
-> +	/* add config to any matching registered device */
-> +	err = cscfg_add_cfg_to_csdevs(cfg_desc);
-> +	if (err)
-> +		return err;
-> +
->   	list_add(&cfg_desc->item, &cscfg_mgr->data.config_desc_list);
->   
->   	return 0;
-> @@ -122,6 +340,136 @@ int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
->   }
->   EXPORT_SYMBOL_GPL(cscfg_load_config_sets);
->   
-> +/* Handle coresight device registration and add configs and features to devices */
-> +
-> +/* iterate through config lists and load matching configs to device */
-> +static int cscfg_add_cfgs_csdev(struct coresight_device *csdev,
-> +				struct cscfg_match_desc *info)
-> +{
-> +	struct cscfg_config_desc *curr_item;
-> +	int err = 0;
-> +
-> +	list_for_each_entry(curr_item, &cscfg_mgr->data.config_desc_list, item) {
-> +		err = cscfg_add_csdev_cfg(csdev, info, curr_item);
-> +		if (err)
-> +			break;
-> +	}
-> +	return err;
-> +}
-> +
-> +/* iterate through feature lists and load matching features to device */
-> +static int cscfg_add_feats_csdev(struct coresight_device *csdev,
-> +				 struct cscfg_match_desc *info,
-> +				 struct cscfg_csdev_feat_ops *ops)
-> +{
-> +	struct cscfg_feature_desc *curr_item;
-> +	int err = 0;
-> +
-> +	if (!ops->load_feat)
-> +		return -EINVAL;
-> +
-> +	list_for_each_entry(curr_item, &cscfg_mgr->data.feat_desc_list, item) {
-> +		if (curr_item->match_flags & info->match_flags) {
-> +			err = cscfg_load_feat_csdev(csdev, curr_item, ops);
-> +			if (err)
-> +				break;
-> +		}
-> +	}
-> +	return err;
-> +}
-> +
-> +/* Add coresight device to list and copy its matching info */
-> +static int cscfg_list_add_csdev(struct coresight_device *csdev,
-> +				struct cscfg_match_desc *info,
-> +				struct cscfg_csdev_feat_ops *ops)
-> +{
-> +	struct cscfg_csdev_register *list_entry;
-> +
-> +	/* allocate the list entry structure */
-> +	list_entry = kzalloc(sizeof(struct cscfg_csdev_register), GFP_KERNEL);
-> +	if (!list_entry)
-> +		return -ENOMEM;
-> +
-> +	list_entry->csdev = csdev;
-> +	list_entry->match_info.match_flags = info->match_flags;
-> +	list_entry->ops.load_feat = ops->load_feat;
-> +	list_add(&list_entry->item, &cscfg_mgr->data.csdev_desc_list);
-> +
-> +	INIT_LIST_HEAD(&csdev->feature_csdev_list);
-> +	INIT_LIST_HEAD(&csdev->config_csdev_list);
-> +	cscfg_mgr->data.nr_csdev++;
-> +
-> +	return 0;
-> +}
-> +
-> +/* remove a coresight device from the list and free data */
-> +static void cscfg_list_remove_csdev(struct coresight_device *csdev)
-> +{
-> +	struct cscfg_csdev_register *curr_item, *tmp;
-> +
-> +	list_for_each_entry_safe(curr_item, tmp, &cscfg_mgr->data.csdev_desc_list, item) {
-> +		if (curr_item->csdev == csdev) {
-> +			list_del(&curr_item->item);
-> +			kfree(curr_item);
-> +			cscfg_mgr->data.nr_csdev--;
-> +			break;
-> +		}
-> +	}
-> +}
-> +
-> +/* register a coresight device with the syscfg api */
-> +int cscfg_register_csdev(struct coresight_device *csdev,
-> +			 struct cscfg_match_desc *info,
-> +			 struct cscfg_csdev_feat_ops *ops)
-> +{
-> +	int ret = 0;
-> +
-> +	mutex_lock(&cscfg_mutex);
-> +
-> +	/* add device to list of registered devices  */
-> +	ret = cscfg_list_add_csdev(csdev, info, ops);
-> +	if (ret)
-> +		goto reg_csdev_unlock;
-> +
-> +	/* now load any registered features and configs matching the device. */
-> +	ret = cscfg_add_feats_csdev(csdev, info, ops);
-> +	if (ret) {
-> +		cscfg_list_remove_csdev(csdev);
-> +		goto reg_csdev_unlock;
-> +	}
-> +
-> +	ret = cscfg_add_cfgs_csdev(csdev, info);
-> +	if (ret) {
-> +		cscfg_list_remove_csdev(csdev);
-> +		goto reg_csdev_unlock;
-> +	}
-> +
-> +	pr_info("CSCFG registered %s", dev_name(&csdev->dev));
-> +
-> +reg_csdev_unlock:
-> +	mutex_unlock(&cscfg_mutex);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cscfg_register_csdev);
-> +
-> +/* remove coresight device and update counts - syscfg device at 0 */
-> +void cscfg_unregister_csdev(struct coresight_device *csdev)
-> +{
-> +	struct cscfg_csdev_register *curr_item, *tmp;
-
-s/curr_item/cscfg_csdev/ or something similar. Using generic names
-makes the field dereferencing bit suspicious.
-
-> +
-> +	mutex_lock(&cscfg_mutex);
-> +	list_for_each_entry_safe(curr_item, tmp, &cscfg_mgr->data.csdev_desc_list, item) {
-> +		if (curr_item->csdev == csdev) {
-> +			list_del(&curr_item->item);
-> +			kfree(curr_item);
-> +			cscfg_mgr->data.nr_csdev--;
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&cscfg_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
-> +
->   /* Initialise system configuration management device. */
->   
->   struct device *to_device_cscfg(void)
-> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
-> index 907ba8d3efea..ebf5e1491d86 100644
-> --- a/drivers/hwtracing/coresight/coresight-syscfg.h
-> +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
-> @@ -26,6 +26,22 @@ struct cscfg_api_data {
->   	int nr_csdev;
->   };
->   
-> +/**
-> + * List entry for Coresight devices that are registered as supporting complex
-> + * config operations.
-> + *
-> + * @csdev:	The registered device.
-> + * @match_info: The matching type information.
-> + * @ops:	Operations supported by the registered device.
-> + * @item:	list entry.
-> + */
-> +struct cscfg_csdev_register {
-> +	struct coresight_device *csdev;
-> +	struct cscfg_match_desc match_info;
-> +	struct cscfg_csdev_feat_ops ops;
-> +	struct list_head item;
-> +};
-
-If a device is only registered once :
-
-Could we inline this struct into the coresight_device removing
-the csdev ? We should be able to use container_of() to get to the
-coresight_device from the "item" and then get to the match_info
-and feat_ops.
-
-That might simplify the code a little bit, in terms of the
-number of different structures that we keep track of and
-makes it easier to follow the code.
-
-
-> +
->   /* internal core operations for cscfg */
->   int __init cscfg_init(void);
->   void __exit cscfg_exit(void);
-> @@ -33,6 +49,10 @@ void __exit cscfg_exit(void);
->   /* syscfg manager external API */
->   int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
->   			   struct cscfg_feature_desc **feat_descs);
-> +int cscfg_register_csdev(struct coresight_device *csdev,
-> +			 struct cscfg_match_desc *info,
-> +			 struct cscfg_csdev_feat_ops *ops);
-
-Yet to see how this will be invoked, but I feel like the csdev
-might be all you need here. I will look at the following patches.
-
-> +void cscfg_unregister_csdev(struct coresight_device *csdev);
->   
->   /**
->    * System configuration manager device.
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index 976ec2697610..d0126ed326a6 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -219,6 +219,8 @@ struct coresight_sysfs_link {
->    * @nr_links:   number of sysfs links created to other components from this
->    *		device. These will appear in the "connections" group.
->    * @has_conns_grp: Have added a "connections" group for sysfs links.
-> + * @feature_csdev_list: List of complex feature programming added to the device.
-> + * @config_csdev_list:  List of system configurations added to the device.
->    */
->   struct coresight_device {
->   	struct coresight_platform_data *pdata;
-> @@ -240,6 +242,9 @@ struct coresight_device {
->   	int nr_links;
->   	bool has_conns_grp;
->   	bool ect_enabled; /* true only if associated ect device is enabled */
-> +	/* system configuration and feature lists */
-> +	struct list_head feature_csdev_list;
-> +	struct list_head config_csdev_list;
->   };
-
->   
->   /*
-> 
-
+DQo+ICJXaW5rbGVyLCBUb21hcyIgPHRvbWFzLndpbmtsZXJAaW50ZWwuY29tPiB3cml0ZXM6DQo+
+IA0KPiA+PiBUaGUgdXNlciBzcGFjZSBBUEkgaXMgYWNoaWV2ZWQgdmlhIGEgbnVtYmVyIG9mIHN5
+bmNocm9ub3VzIElPQ1RMcy4NCj4gPj4NCj4gPj4gICAqIFJQTUJfSU9DX1ZFUl9DTUQgLSBzaW1w
+bGUgdmVyc2lvbmluZyBBUEkNCj4gPj4gICAqIFJQTUJfSU9DX0NBUF9DTUQgLSBxdWVyeSBvZiB1
+bmRlcmx5aW5nIGNhcGFiaWxpdGllcw0KPiA+PiAgICogUlBNQl9JT0NfUEtFWV9DTUQgLSBvbmUg
+dGltZSBwcm9ncmFtbWluZyBvZiBhY2Nlc3Mga2V5DQo+ID4+ICAgKiBSUE1CX0lPQ19DT1VOVEVS
+X0NNRCAtIHF1ZXJ5IHRoZSB3cml0ZSBjb3VudGVyDQo+ID4+ICAgKiBSUE1CX0lPQ19XQkxPQ0tT
+X0NNRCAtIHdyaXRlIGJsb2NrcyB0byBkZXZpY2UNCj4gPj4gICAqIFJQTUJfSU9DX1JCTE9DS1Nf
+Q01EIC0gcmVhZCBibG9ja3MgZnJvbSBkZXZpY2UNCj4gPj4NCj4gPj4gVGhlIGtleXMgdXNlZCBm
+b3IgcHJvZ3JhbW1pbmcgYW5kIHdyaXRpbmcgYmxvY2tzIHRvIHRoZSBkZXZpY2UgYXJlDQo+ID4+
+IGtleV9zZXJpYWxfdCBoYW5kbGVzIGFzIHByb3ZpZGVkIGJ5IHRoZSBrZXljdGwoKSBpbnRlcmZh
+Y2UuDQo+ID4+DQo+ID4+IFtBSkI6IGhlcmUgdGhlcmUgYXJlIHR3byBrZXkgZGlmZmVyZW5jZXMg
+YmV0d2VlbiB0aGlzIGFuZCB0aGUNCj4gPj4gb3JpZ2luYWwgcHJvcG9zYWwuIFRoZSBmaXJzdCBp
+cyB0aGUgZHJvcHBpbmcgb2YgdGhlIHNlcXVlbmNlIG9mDQo+ID4+IHByZWZvcm1hdGVkIGZyYW1l
+cyBpbiBmYXZvdXIgb2YgZXhwbGljaXQgYWN0aW9ucy4gVGhlIHNlY29uZCBpcyB0aGUNCj4gPj4g
+aW50cm9kdWN0aW9uIG9mIGtleV9zZXJpYWxfdCBhbmQgdGhlIGtleXJpbmcgQVBJIGZvciByZWZl
+cmVuY2luZyB0aGUNCj4gPj4ga2V5IHRvIHVzZV0NCj4gPg0KPiA+IFB1dHRpbmcgaXQgZ2VudGx5
+IEknbSBub3Qgc3VyZSB0aGlzIGlzIGdvb2QgaWRlYSwgZnJvbSB0aGUgc2VjdXJpdHkgcG9pbnQg
+b2YNCj4gdmlldy4NCj4gPiBUaGUga2V5IGhhcyB0byBiZSBwb3NzZXNzaW9uIG9mIHRoZSBvbmUg
+dGhhdCBzaWducyB0aGUgZnJhbWVzIGFzIHRoZXkgYXJlLA0KPiBpdCBkb2Vzbid0IG1lYW4gaXQg
+aXMgbGludXgga2VybmVsIGtleXJpbmcsIGl0IGNhbiBiZSBvdGhlciBwYXJ0eSBvbiBkaWZmZXJl
+bnQNCj4gc3lzdGVtLg0KPiA+IFdpdGggdGhpcyBhcHByb2FjaCB5b3Ugd2lsbCBtYWtlIHRoZSBv
+dGhlciB1c2VjYXNlcyBub3QgYXBwbGljYWJsZS4gSXQNCj4gPiBpcyBsZXNzIHRoZW4gdHJpdmlh
+bCB0byBtb3ZlIGtleSBzZWN1cmVseSBmcm9tIG9uZSBzeXN0ZW0gdG8gYW5vdGhlci4NCj4gDQo+
+IE9LIEkgY2FuIHVuZGVyc3RhbmQgdGhlIGRlc2lyZSBmb3Igc3VjaCBhIHVzZS1jYXNlIGJ1dCBp
+dCBkb2VzIGNvbnN0cmFpbiB0aGUNCj4gaW50ZXJmYWNlIG9uIHRoZSBrZXJuZWwgd2l0aCBhY2Nl
+c3MgdG8gdGhlIGhhcmR3YXJlIHRvIHB1cmVseSBwcm92aWRpbmcgYQ0KPiBwaXBlIHRvIHRoZSBy
+YXcgaGFyZHdhcmUgd2hpbGUgYWxzbyBoYXZpbmcgdG8gZXhwb3NlIHRoZSBkZXRhaWxzIG9mIHRo
+ZSBIVw0KPiB0byB1c2Vyc3BhY2UuIA0KVGhpcyBpcyB0aGUgdXNlIGNhc2UgaW4gQW5kcm9pZC4g
+VGhlIGtleSBpcyBpbiB0aGUgInRydXN0eSIgd2hpY2ggZGlmZmVyZW50IG9zIHJ1bm5pbmcgaW4g
+YSAJIHZpcnR1YWwgZW52aXJvbm1lbnQuIFRoZSBmaWxlIHN0b3JhZ2UgYWJzdHJhY3Rpb24gaXMg
+aW1wbGVtZW50ZWQgdGhlcmUuDQpJJ20gbm90IHN1cmUgdGhlIHBvaW50IG9mIGNvbnN0cmFpbmlu
+ZyB0aGUga2VybmVsLCBjYW4geW91IHBsZWFzZSBlbGFib3JhdGUgb24gdGhhdC4NCg0KQWxzbyBk
+b2Vzbid0IHRoaXMgYnJlYWsgZG93biBhZnRlciBhIFBST0dSQU1fS0VZIGV2ZW50IGFzDQo+IHRo
+ZSBrZXkgd2lsbCBoYXZlIGhhZCB0byB0cmF2ZXJzZSBpbnRvIHRoZSAidW50cnVzdGVkIiBrZXJu
+ZWw/DQoNClRoaXMgaXMgb25lIGluIGEgbGlmZSBldmVudCBvZiB0aGUgY2FyZCBoYXBwZW5pbmcg
+b24gdGhlIG1hbnVmYWN0dXJpbmcgZmxvb3IsIG1heWJlIGV2ZW4gbm90IHBlcmZvcm1lZCBvbiBM
+aW51eC4NCg0KPiBJIHdvbmRlciBpZiB2aXJ0aW8tcnBtYiBtYXkgYmUgb2YgaGVscCBoZXJlPyBZ
+b3UgY291bGQgd3JhcCB1cCB1cCB0aGUgZnJvbnQtDQo+IGVuZCBpbiB0aGUgc2VjdXJpdHkgZG9t
+YWluIHRoYXQgaGFzIHRoZSBrZXlzIGFsdGhvdWdoIEkgZG9uJ3Qga25vdyBob3cgZWFzeQ0KPiBp
+dCB3b3VsZCBiZSBmb3IgYSBiYWNrZW5kIHRvIHdvcmsgd2l0aCByZWFsIGhhcmR3YXJlPw0KDQpJ
+J20gb3BlbiB0byBzZWUgYW55IHByb3Bvc2FsLCBub3Qgc3VyZSBJIGNhbiB3cmFwIG1heSBoZWFk
+IGFib3V0IGl0IHJpZ2h0IG5vdy4gDQoNCkFueXdheSBJIHdhcyBhYm91dCB0byBzZW5kIHRoZSBu
+ZXcgcm91bmQgb2YgbXkgY29kZSwgIGJ1dCBsZXQncyBjb21lIHRvIGNvbW1vbiBncm91bmQgZmly
+c3QuIA0KDQpUaGFua3MNClRvbWFzDQoNCj4gDQo+ID4gV2UgYWxsIHdpc2hlZCBpdCBjYW4gYmUg
+YWJzdHJhY3RlZCBtb3JlIGJ1dCB0aGUgZnJhbWVzIGhhcyB0byBjb21lDQo+IGFscmVhZHkgc2ln
+bmVkLCBhbmQgdGhlIGtleSBtYXRlcmlhbCBpcyBpbnNpZGUgdGhlIGZyYW1lLg0KPiA+IFRoYW5r
+cw0KPiA+IFRvbWFzDQo+ID4NCj4gPg0KPiA+Pg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4IEJl
+bm7DqWUgPGFsZXguYmVubmVlQGxpbmFyby5vcmc+DQo+ID4+IENjOiBVbGYgSGFuc3NvbiA8dWxm
+LmhhbnNzb25AbGluYXJvLm9yZz4NCj4gPj4gQ2M6IExpbnVzICBXYWxsZWlqIDxsaW51cy53YWxs
+ZWlqQGxpbmFyby5vcmc+DQo+ID4+IENjOiBBcm5kIEJlcmdtYW5uIDxhcm5kLmJlcmdtYW5uQGxp
+bmFyby5vcmc+DQo+ID4+IENjOiBJbGlhcyBBcGFsb2RpbWFzIDxpbGlhcy5hcGFsb2RpbWFzQGxp
+bmFyby5vcmc+DQo+ID4+IENjOiBUb21hcyBXaW5rbGVyIDx0b21hcy53aW5rbGVyQGludGVsLmNv
+bT4NCj4gPj4gQ2M6IEFsZXhhbmRlciBVc3lza2luIDxhbGV4YW5kZXIudXN5c2tpbkBpbnRlbC5j
+b20+DQo+ID4+IENjOiBBdnJpIEFsdG1hbiA8YXZyaS5hbHRtYW5Ac2FuZGlzay5jb20+DQo+ID4+
+IC0tLQ0KPiA+PiAgLi4uL3VzZXJzcGFjZS1hcGkvaW9jdGwvaW9jdGwtbnVtYmVyLnJzdCAgICAg
+IHwgICAxICsNCj4gPj4gIE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgMSArDQo+ID4+ICBkcml2ZXJzL2NoYXIvcnBtYi9LY29uZmlnICAgICAgICAgICAg
+ICAgICAgICAgfCAgIDcgKw0KPiA+PiAgZHJpdmVycy9jaGFyL3JwbWIvTWFrZWZpbGUgICAgICAg
+ICAgICAgICAgICAgIHwgICAxICsNCj4gPj4gIGRyaXZlcnMvY2hhci9ycG1iL2NkZXYuYyAgICAg
+ICAgICAgICAgICAgICAgICB8IDI0NiArKysrKysrKysrKysrKysrKysNCj4gPj4gIGRyaXZlcnMv
+Y2hhci9ycG1iL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArLQ0KPiA+PiAgZHJp
+dmVycy9jaGFyL3JwbWIvcnBtYi1jZGV2LmggICAgICAgICAgICAgICAgIHwgIDE3ICsrDQo+ID4+
+ICBpbmNsdWRlL2xpbnV4L3JwbWIuaCAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTAgKw0K
+PiA+PiAgaW5jbHVkZS91YXBpL2xpbnV4L3JwbWIuaCAgICAgICAgICAgICAgICAgICAgIHwgIDY4
+ICsrKysrDQo+ID4+ICA5IGZpbGVzIGNoYW5nZWQsIDM1NyBpbnNlcnRpb25zKCspLCA0IGRlbGV0
+aW9ucygtKSAgY3JlYXRlIG1vZGUNCj4gPj4gMTAwNjQ0IGRyaXZlcnMvY2hhci9ycG1iL2NkZXYu
+YyAgY3JlYXRlIG1vZGUgMTAwNjQ0DQo+ID4+IGRyaXZlcnMvY2hhci9ycG1iL3JwbWItIGNkZXYu
+aCAgY3JlYXRlIG1vZGUgMTAwNjQ0DQo+ID4+IGluY2x1ZGUvdWFwaS9saW51eC9ycG1iLmgNCj4g
+Pj4NCj4gPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vdXNlcnNwYWNlLWFwaS9pb2N0bC9p
+b2N0bC1udW1iZXIucnN0DQo+ID4+IGIvRG9jdW1lbnRhdGlvbi91c2Vyc3BhY2UtYXBpL2lvY3Rs
+L2lvY3RsLW51bWJlci5yc3QNCj4gPj4gaW5kZXggYTRjNzVhMjhjODM5Li4wZmYyZDRkODFiYjAg
+MTAwNjQ0DQo+ID4+IC0tLSBhL0RvY3VtZW50YXRpb24vdXNlcnNwYWNlLWFwaS9pb2N0bC9pb2N0
+bC1udW1iZXIucnN0DQo+ID4+ICsrKyBiL0RvY3VtZW50YXRpb24vdXNlcnNwYWNlLWFwaS9pb2N0
+bC9pb2N0bC1udW1iZXIucnN0DQo+ID4+IEBAIC0zNDQsNiArMzQ0LDcgQEAgQ29kZSAgU2VxIyAg
+ICBJbmNsdWRlIEZpbGUNCj4gPj4gQ29tbWVudHMNCj4gPj4gIDB4QjUgIDAwLTBGICB1YXBpL2xp
+bnV4L3JwbXNnLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxtYWlsdG86
+bGludXgtDQo+ID4+IHJlbW90ZXByb2NAdmdlci5rZXJuZWwub3JnPg0KPiA+PiAgMHhCNiAgYWxs
+ICAgIGxpbnV4L2ZwZ2EtZGZsLmgNCj4gPj4gIDB4QjcgIGFsbCAgICB1YXBpL2xpbnV4L3JlbW90
+ZXByb2NfY2Rldi5oICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxtYWlsdG86bGludXgtDQo+
+ID4+IHJlbW90ZXByb2NAdmdlci5rZXJuZWwub3JnPg0KPiA+PiArMHhCOCAgODAtOEYgIHVhcGkv
+bGludXgvcnBtYi5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPG1haWx0
+bzpsaW51eC0NCj4gPj4gbW1jQHZnZXIua2VybmVsLm9yZz4NCj4gPj4gIDB4QzAgIDAwLTBGICBs
+aW51eC91c2IvaW93YXJyaW9yLmgNCj4gPj4gIDB4Q0EgIDAwLTBGICB1YXBpL21pc2MvY3hsLmgN
+Cj4gPj4gIDB4Q0EgIDEwLTJGICB1YXBpL21pc2Mvb2N4bC5oDQo+ID4+IGRpZmYgLS1naXQgYS9N
+QUlOVEFJTkVSUyBiL01BSU5UQUlORVJTIGluZGV4DQo+ID4+IDA3NmYzOTgzNTI2Yy4uYzYwYjQx
+YjZlNmJkIDEwMDY0NA0KPiA+PiAtLS0gYS9NQUlOVEFJTkVSUw0KPiA+PiArKysgYi9NQUlOVEFJ
+TkVSUw0KPiA+PiBAQCAtMTUzNzQsNiArMTUzNzQsNyBAQCBNOgk/DQo+ID4+ICBMOglsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+ID4+ICBTOglTdXBwb3J0ZWQNCj4gPj4gIEY6CWRyaXZl
+cnMvY2hhci9ycG1iLyoNCj4gPj4gK0Y6CWluY2x1ZGUvdWFwaS9saW51eC9ycG1iLmgNCj4gPj4g
+IEY6CWluY2x1ZGUvbGludXgvcnBtYi5oDQo+ID4+DQo+ID4+ICBSVEwyODMwIE1FRElBIERSSVZF
+Ug0KPiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jaGFyL3JwbWIvS2NvbmZpZyBiL2RyaXZlcnMv
+Y2hhci9ycG1iL0tjb25maWcNCj4gPj4gaW5kZXggNDMxYzI4MjNjZjcwLi45MDY4NjY0YTM5OWEg
+MTAwNjQ0DQo+ID4+IC0tLSBhL2RyaXZlcnMvY2hhci9ycG1iL0tjb25maWcNCj4gPj4gKysrIGIv
+ZHJpdmVycy9jaGFyL3JwbWIvS2NvbmZpZw0KPiA+PiBAQCAtOSwzICs5LDEwIEBAIGNvbmZpZyBS
+UE1CDQo+ID4+ICAJICBhY2Nlc3MgUlBNQiBwYXJ0aXRpb24uDQo+ID4+DQo+ID4+ICAJICBJZiB1
+bnN1cmUsIHNlbGVjdCBOLg0KPiA+PiArDQo+ID4+ICtjb25maWcgUlBNQl9JTlRGX0RFVg0KPiA+
+PiArCWJvb2wgIlJQTUIgY2hhcmFjdGVyIGRldmljZSBpbnRlcmZhY2UgL2Rldi9ycG1iTiINCj4g
+Pj4gKwlkZXBlbmRzIG9uIFJQTUIgJiYgS0VZUw0KPiA+PiArCWhlbHANCj4gPj4gKwkgIFNheSB5
+ZXMgaGVyZSBpZiB5b3Ugd2FudCB0byBhY2Nlc3MgUlBNQiBmcm9tIHVzZXIgc3BhY2UNCj4gPj4g
+KwkgIHZpYSBjaGFyYWN0ZXIgZGV2aWNlIGludGVyZmFjZSAvZGV2L3JwbWIlZA0KPiA+PiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9jaGFyL3JwbWIvTWFrZWZpbGUgYi9kcml2ZXJzL2NoYXIvcnBtYi9N
+YWtlZmlsZQ0KPiA+PiBpbmRleCAyNGQ0NzUyYTlhNTMuLmY1NGIzZjMwNTE0YiAxMDA2NDQNCj4g
+Pj4gLS0tIGEvZHJpdmVycy9jaGFyL3JwbWIvTWFrZWZpbGUNCj4gPj4gKysrIGIvZHJpdmVycy9j
+aGFyL3JwbWIvTWFrZWZpbGUNCj4gPj4gQEAgLTMsNSArMyw2IEBADQo+ID4+DQo+ID4+ICBvYmot
+JChDT05GSUdfUlBNQikgKz0gcnBtYi5vDQo+ID4+ICBycG1iLW9ianMgKz0gY29yZS5vDQo+ID4+
+ICtycG1iLSQoQ09ORklHX1JQTUJfSU5URl9ERVYpICs9IGNkZXYubw0KPiA+Pg0KPiA+PiAgY2Nm
+bGFncy15ICs9IC1EX19DSEVDS19FTkRJQU5fXw0KPiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9j
+aGFyL3JwbWIvY2Rldi5jIGIvZHJpdmVycy9jaGFyL3JwbWIvY2Rldi5jIG5ldw0KPiA+PiBmaWxl
+IG1vZGUgMTAwNjQ0IGluZGV4IDAwMDAwMDAwMDAwMC4uNTVmNjY3MjBmZDAzDQo+ID4+IC0tLSAv
+ZGV2L251bGwNCj4gPj4gKysrIGIvZHJpdmVycy9jaGFyL3JwbWIvY2Rldi5jDQo+ID4+IEBAIC0w
+LDAgKzEsMjQ2IEBADQo+ID4+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0K
+PiA+PiArLyoNCj4gPj4gKyAqIENvcHlyaWdodChjKSAyMDE1IC0gMjAxOSBJbnRlbCBDb3Jwb3Jh
+dGlvbi4NCj4gPj4gKyAqLw0KPiA+PiArI2RlZmluZSBwcl9mbXQoZm10KSBLQlVJTERfTU9ETkFN
+RSAiOiAiIGZtdA0KPiA+PiArDQo+ID4+ICsjaW5jbHVkZSA8bGludXgvZnMuaD4NCj4gPj4gKyNp
+bmNsdWRlIDxsaW51eC91YWNjZXNzLmg+DQo+ID4+ICsjaW5jbHVkZSA8bGludXgvY29tcGF0Lmg+
+DQo+ID4+ICsjaW5jbHVkZSA8bGludXgvc2xhYi5oPg0KPiA+PiArI2luY2x1ZGUgPGxpbnV4L2Nh
+cGFiaWxpdHkuaD4NCj4gPj4gKw0KPiA+PiArI2luY2x1ZGUgPGxpbnV4L3JwbWIuaD4NCj4gPj4g
+Kw0KPiA+PiArI2luY2x1ZGUgInJwbWItY2Rldi5oIg0KPiA+PiArDQo+ID4+ICtzdGF0aWMgZGV2
+X3QgcnBtYl9kZXZ0Ow0KPiA+PiArI2RlZmluZSBSUE1CX01BWF9ERVZTICBNSU5PUk1BU0sNCj4g
+Pj4gKw0KPiA+PiArI2RlZmluZSBSUE1CX0RFVl9PUEVOICAgIDAgIC8qKiBzaW5nbGUgb3BlbiBi
+aXQgKHBvc2l0aW9uKSAqLw0KPiA+PiArDQo+ID4+ICsvKioNCj4gPj4gKyAqIHJwbWJfb3BlbiAt
+IHRoZSBvcGVuIGZ1bmN0aW9uDQo+ID4+ICsgKg0KPiA+PiArICogQGlub2RlOiBwb2ludGVyIHRv
+IGlub2RlIHN0cnVjdHVyZQ0KPiA+PiArICogQGZwOiBwb2ludGVyIHRvIGZpbGUgc3RydWN0dXJl
+DQo+ID4+ICsgKg0KPiA+PiArICogUmV0dXJuOiAwIG9uIHN1Y2Nlc3MsIDwwIG9uIGVycm9yICAq
+LyBzdGF0aWMgaW50IHJwbWJfb3BlbihzdHJ1Y3QNCj4gPj4gK2lub2RlICppbm9kZSwgc3RydWN0
+IGZpbGUgKmZwKSB7DQo+ID4+ICsJc3RydWN0IHJwbWJfZGV2ICpyZGV2Ow0KPiA+PiArDQo+ID4+
+ICsJcmRldiA9IGNvbnRhaW5lcl9vZihpbm9kZS0+aV9jZGV2LCBzdHJ1Y3QgcnBtYl9kZXYsIGNk
+ZXYpOw0KPiA+PiArCWlmICghcmRldikNCj4gPj4gKwkJcmV0dXJuIC1FTk9ERVY7DQo+ID4+ICsN
+Cj4gPj4gKwkvKiB0aGUgcnBtYiBpcyBzaW5nbGUgb3BlbiEgKi8NCj4gPj4gKwlpZiAodGVzdF9h
+bmRfc2V0X2JpdChSUE1CX0RFVl9PUEVOLCAmcmRldi0+c3RhdHVzKSkNCj4gPj4gKwkJcmV0dXJu
+IC1FQlVTWTsNCj4gPj4gKw0KPiA+PiArCW11dGV4X2xvY2soJnJkZXYtPmxvY2spOw0KPiA+PiAr
+DQo+ID4+ICsJZnAtPnByaXZhdGVfZGF0YSA9IHJkZXY7DQo+ID4+ICsNCj4gPj4gKwltdXRleF91
+bmxvY2soJnJkZXYtPmxvY2spOw0KPiA+PiArDQo+ID4+ICsJcmV0dXJuIG5vbnNlZWthYmxlX29w
+ZW4oaW5vZGUsIGZwKTsgfQ0KPiA+PiArDQo+ID4+ICsvKioNCj4gPj4gKyAqIHJwbWJfcmVsZWFz
+ZSAtIHRoZSBjZGV2IHJlbGVhc2UgZnVuY3Rpb24NCj4gPj4gKyAqDQo+ID4+ICsgKiBAaW5vZGU6
+IHBvaW50ZXIgdG8gaW5vZGUgc3RydWN0dXJlDQo+ID4+ICsgKiBAZnA6IHBvaW50ZXIgdG8gZmls
+ZSBzdHJ1Y3R1cmUNCj4gPj4gKyAqDQo+ID4+ICsgKiBSZXR1cm46IDAgYWx3YXlzLg0KPiA+PiAr
+ICovDQo+ID4+ICtzdGF0aWMgaW50IHJwbWJfcmVsZWFzZShzdHJ1Y3QgaW5vZGUgKmlub2RlLCBz
+dHJ1Y3QgZmlsZSAqZnApIHsNCj4gPj4gKwlzdHJ1Y3QgcnBtYl9kZXYgKnJkZXYgPSBmcC0+cHJp
+dmF0ZV9kYXRhOw0KPiA+PiArDQo+ID4+ICsJY2xlYXJfYml0KFJQTUJfREVWX09QRU4sICZyZGV2
+LT5zdGF0dXMpOw0KPiA+PiArDQo+ID4+ICsJcmV0dXJuIDA7DQo+ID4+ICt9DQo+ID4+ICsNCj4g
+Pj4gK3N0YXRpYyBsb25nIHJwbWJfaW9jdGxfdmVyX2NtZChzdHJ1Y3QgcnBtYl9kZXYgKnJkZXYs
+DQo+ID4+ICsJCQkgICAgICAgc3RydWN0IHJwbWJfaW9jX3Zlcl9jbWQgX191c2VyICpwdHIpIHsN
+Cj4gPj4gKwlzdHJ1Y3QgcnBtYl9pb2NfdmVyX2NtZCB2ZXIgPSB7DQo+ID4+ICsJCS5hcGlfdmVy
+c2lvbiA9IFJQTUJfQVBJX1ZFUlNJT04sDQo+ID4+ICsJfTsNCj4gPj4gKw0KPiA+PiArCXJldHVy
+biBjb3B5X3RvX3VzZXIocHRyLCAmdmVyLCBzaXplb2YodmVyKSkgPyAtRUZBVUxUIDogMDsgfQ0K
+PiA+PiArDQo+ID4+ICtzdGF0aWMgbG9uZyBycG1iX2lvY3RsX2NhcF9jbWQoc3RydWN0IHJwbWJf
+ZGV2ICpyZGV2LA0KPiA+PiArCQkJICAgICAgIHN0cnVjdCBycG1iX2lvY19jYXBfY21kIF9fdXNl
+ciAqcHRyKSB7DQo+ID4+ICsJc3RydWN0IHJwbWJfaW9jX2NhcF9jbWQgY2FwOw0KPiA+PiArDQo+
+ID4+ICsJY2FwLnRhcmdldCAgICAgID0gcmRldi0+dGFyZ2V0Ow0KPiA+PiArCWNhcC5ibG9ja19z
+aXplICA9IHJkZXYtPm9wcy0+YmxvY2tfc2l6ZTsNCj4gPj4gKwljYXAud3JfY250X21heCAgPSBy
+ZGV2LT5vcHMtPndyX2NudF9tYXg7DQo+ID4+ICsJY2FwLnJkX2NudF9tYXggID0gcmRldi0+b3Bz
+LT5yZF9jbnRfbWF4Ow0KPiA+PiArCWNhcC5hdXRoX21ldGhvZCA9IHJkZXYtPm9wcy0+YXV0aF9t
+ZXRob2Q7DQo+ID4+ICsJY2FwLmNhcGFjaXR5ICAgID0gcnBtYl9nZXRfY2FwYWNpdHkocmRldik7
+DQo+ID4+ICsJY2FwLnJlc2VydmVkICAgID0gMDsNCj4gPj4gKw0KPiA+PiArCXJldHVybiBjb3B5
+X3RvX3VzZXIocHRyLCAmY2FwLCBzaXplb2YoY2FwKSkgPyAtRUZBVUxUIDogMDsgfQ0KPiA+PiAr
+DQo+ID4+ICtzdGF0aWMgbG9uZyBycG1iX2lvY3RsX3BrZXlfY21kKHN0cnVjdCBycG1iX2RldiAq
+cmRldiwga2V5X3NlcmlhbF90DQo+ID4+ICtfX3VzZXIgKmspIHsNCj4gPj4gKwlrZXlfc2VyaWFs
+X3Qga2V5aWQ7DQo+ID4+ICsNCj4gPj4gKwlpZiAoZ2V0X3VzZXIoa2V5aWQsIGspKQ0KPiA+PiAr
+CQlyZXR1cm4gLUVGQVVMVDsNCj4gPj4gKwllbHNlDQo+ID4+ICsJCXJldHVybiBycG1iX3Byb2dy
+YW1fa2V5KHJkZXYsIGtleWlkKTsgfQ0KPiA+PiArDQo+ID4+ICtzdGF0aWMgbG9uZyBycG1iX2lv
+Y3RsX2NvdW50ZXJfY21kKHN0cnVjdCBycG1iX2RldiAqcmRldiwgaW50IF9fdXNlcg0KPiA+PiAr
+KnB0cikgew0KPiA+PiArCWludCBjb3VudCA9IHJwbWJfZ2V0X3dyaXRlX2NvdW50KHJkZXYpOw0K
+PiA+PiArDQo+ID4+ICsJaWYgKGNvdW50ID4gMCkNCj4gPj4gKwkJcmV0dXJuIHB1dF91c2VyKGNv
+dW50LCBwdHIpOw0KPiA+PiArCWVsc2UNCj4gPj4gKwkJcmV0dXJuIGNvdW50Ow0KPiA+PiArfQ0K
+PiA+PiArDQo+ID4+ICtzdGF0aWMgbG9uZyBycG1iX2lvY3RsX3dibG9ja3NfY21kKHN0cnVjdCBy
+cG1iX2RldiAqcmRldiwNCj4gPj4gKwkJCQkgICBzdHJ1Y3QgcnBtYl9pb2NfYmxvY2tzX2NtZCBf
+X3VzZXIgKnB0cikgew0KPiA+PiArCXN0cnVjdCBycG1iX2lvY19ibG9ja3NfY21kIHdibG9ja3M7
+DQo+ID4+ICsJaW50IHN6Ow0KPiA+PiArCWxvbmcgcmV0Ow0KPiA+PiArCXU4ICpkYXRhOw0KPiA+
+PiArDQo+ID4+ICsJaWYgKGNvcHlfZnJvbV91c2VyKCZ3YmxvY2tzLCBwdHIsIHNpemVvZihzdHJ1
+Y3QNCj4gPj4gcnBtYl9pb2NfYmxvY2tzX2NtZCkpKQ0KPiA+PiArCQlyZXR1cm4gLUVGQVVMVDsN
+Cj4gPj4gKw0KPiA+PiArCS8qIERvbid0IHdyaXRlIG1vcmUgYmxvY2tzIGRldmljZSBzdXBwb3J0
+cyAqLw0KPiA+PiArCWlmICh3YmxvY2tzLmNvdW50ID4gcmRldi0+b3BzLT53cl9jbnRfbWF4KQ0K
+PiA+PiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPj4gKw0KPiA+PiArCXN6ID0gd2Jsb2Nrcy5jb3Vu
+dCAqIDI1NjsNCj4gPj4gKwlkYXRhID0ga21hbGxvYyhzeiwgR0ZQX0tFUk5FTCk7DQo+ID4+ICsN
+Cj4gPj4gKwlpZiAoIWRhdGEpDQo+ID4+ICsJCXJldHVybiAtRU5PTUVNOw0KPiA+PiArDQo+ID4+
+ICsJaWYgKGNvcHlfZnJvbV91c2VyKGRhdGEsIHdibG9ja3MuZGF0YSwgc3opKQ0KPiA+PiArCQly
+ZXQgPSAtRUZBVUxUOw0KPiA+PiArCWVsc2UNCj4gPj4gKwkJcmV0ID0gcnBtYl93cml0ZV9ibG9j
+a3MocmRldiwgd2Jsb2Nrcy5rZXksIHdibG9ja3MuYWRkciwNCj4gPj4gK3dibG9ja3MuY291bnQs
+IGRhdGEpOw0KPiA+PiArDQo+ID4+ICsJa2ZyZWUoZGF0YSk7DQo+ID4+ICsJcmV0dXJuIHJldDsN
+Cj4gPj4gK30NCj4gPj4gKw0KPiA+PiArc3RhdGljIGxvbmcgcnBtYl9pb2N0bF9yYmxvY2tzX2Nt
+ZChzdHJ1Y3QgcnBtYl9kZXYgKnJkZXYsDQo+ID4+ICsJCQkJICAgc3RydWN0IHJwbWJfaW9jX2Js
+b2Nrc19jbWQgX191c2VyICpwdHIpIHsNCj4gPj4gKwlzdHJ1Y3QgcnBtYl9pb2NfYmxvY2tzX2Nt
+ZCByYmxvY2tzOw0KPiA+PiArCWludCBzejsNCj4gPj4gKwlsb25nIHJldDsNCj4gPj4gKwl1OCAq
+ZGF0YTsNCj4gPj4gKw0KPiA+PiArCWlmIChjb3B5X2Zyb21fdXNlcigmcmJsb2NrcywgcHRyLCBz
+aXplb2Yoc3RydWN0DQo+ID4+IHJwbWJfaW9jX2Jsb2Nrc19jbWQpKSkNCj4gPj4gKwkJcmV0dXJu
+IC1FRkFVTFQ7DQo+ID4+ICsNCj4gPj4gKwlpZiAocmJsb2Nrcy5jb3VudCA+IHJkZXYtPm9wcy0+
+cmRfY250X21heCkNCj4gPj4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ID4+ICsNCj4gPj4gKwlzeiA9
+IHJibG9ja3MuY291bnQgKiAyNTY7DQo+ID4+ICsJZGF0YSA9IGttYWxsb2Moc3osIEdGUF9LRVJO
+RUwpOw0KPiA+PiArDQo+ID4+ICsJaWYgKCFkYXRhKQ0KPiA+PiArCQlyZXR1cm4gLUVOT01FTTsN
+Cj4gPj4gKw0KPiA+PiArCXJldCA9IHJwbWJfcmVhZF9ibG9ja3MocmRldiwgcmJsb2Nrcy5hZGRy
+LCByYmxvY2tzLmNvdW50LCBkYXRhKTsNCj4gPj4gKw0KPiA+PiArCWlmIChyZXQgPT0gMCkNCj4g
+Pj4gKwkJcmV0ID0gY29weV90b191c2VyKHJibG9ja3MuZGF0YSwgZGF0YSwgc3opOw0KPiA+PiAr
+DQo+ID4+ICsJa2ZyZWUoZGF0YSk7DQo+ID4+ICsJcmV0dXJuIHJldDsNCj4gPj4gK30NCj4gPj4g
+Kw0KPiA+PiArLyoqDQo+ID4+ICsgKiBycG1iX2lvY3RsIC0gcnBtYiBpb2N0bCBkaXNwYXRjaGVy
+DQo+ID4+ICsgKg0KPiA+PiArICogQGZwOiBhIGZpbGUgcG9pbnRlcg0KPiA+PiArICogQGNtZDog
+aW9jdGwgY29tbWFuZCBSUE1CX0lPQ19TRVFfQ01EIFJQTUJfSU9DX1ZFUl9DTUQNCj4gPj4gK1JQ
+TUJfSU9DX0NBUF9DTUQNCj4gPj4gKyAqIEBhcmc6IGlvY3RsIGRhdGE6IHJwbWJfaW9jX3Zlcl9j
+bWQgcnBtYl9pb2NfY2FwX2NtZA0KPiA+PiBwbWJfaW9jX3NlcV9jbWQNCj4gPj4gKyAqDQo+ID4+
+ICsgKiBSZXR1cm46IDAgb24gc3VjY2VzczsgPCAwIG9uIGVycm9yICAqLyBzdGF0aWMgbG9uZw0K
+PiA+PiArcnBtYl9pb2N0bChzdHJ1Y3QgZmlsZSAqZnAsIHVuc2lnbmVkIGludCBjbWQsIHVuc2ln
+bmVkIGxvbmcNCj4gPj4gK2FyZykgew0KPiA+PiArCXN0cnVjdCBycG1iX2RldiAqcmRldiA9IGZw
+LT5wcml2YXRlX2RhdGE7DQo+ID4+ICsJdm9pZCBfX3VzZXIgKnB0ciA9ICh2b2lkIF9fdXNlciAq
+KWFyZzsNCj4gPj4gKw0KPiA+PiArCXN3aXRjaCAoY21kKSB7DQo+ID4+ICsJY2FzZSBSUE1CX0lP
+Q19WRVJfQ01EOg0KPiA+PiArCQlyZXR1cm4gcnBtYl9pb2N0bF92ZXJfY21kKHJkZXYsIHB0cik7
+DQo+ID4+ICsJY2FzZSBSUE1CX0lPQ19DQVBfQ01EOg0KPiA+PiArCQlyZXR1cm4gcnBtYl9pb2N0
+bF9jYXBfY21kKHJkZXYsIHB0cik7DQo+ID4+ICsJY2FzZSBSUE1CX0lPQ19QS0VZX0NNRDoNCj4g
+Pj4gKwkJcmV0dXJuIHJwbWJfaW9jdGxfcGtleV9jbWQocmRldiwgcHRyKTsNCj4gPj4gKwljYXNl
+IFJQTUJfSU9DX0NPVU5URVJfQ01EOg0KPiA+PiArCQlyZXR1cm4gcnBtYl9pb2N0bF9jb3VudGVy
+X2NtZChyZGV2LCBwdHIpOw0KPiA+PiArCWNhc2UgUlBNQl9JT0NfV0JMT0NLU19DTUQ6DQo+ID4+
+ICsJCXJldHVybiBycG1iX2lvY3RsX3dibG9ja3NfY21kKHJkZXYsIHB0cik7DQo+ID4+ICsJY2Fz
+ZSBSUE1CX0lPQ19SQkxPQ0tTX0NNRDoNCj4gPj4gKwkJcmV0dXJuIHJwbWJfaW9jdGxfcmJsb2Nr
+c19jbWQocmRldiwgcHRyKTsNCj4gPj4gKwlkZWZhdWx0Og0KPiA+PiArCQlkZXZfZXJyKCZyZGV2
+LT5kZXYsICJ1bnN1cHBvcnRlZCBpb2N0bCAweCV4LlxuIiwgY21kKTsNCj4gPj4gKwkJcmV0dXJu
+IC1FTk9JT0NUTENNRDsNCj4gPj4gKwl9DQo+ID4+ICt9DQo+ID4+ICsNCj4gPj4gK3N0YXRpYyBj
+b25zdCBzdHJ1Y3QgZmlsZV9vcGVyYXRpb25zIHJwbWJfZm9wcyA9IHsNCj4gPj4gKwkub3BlbiAg
+ICAgICAgICAgPSBycG1iX29wZW4sDQo+ID4+ICsJLnJlbGVhc2UgICAgICAgID0gcnBtYl9yZWxl
+YXNlLA0KPiA+PiArCS51bmxvY2tlZF9pb2N0bCA9IHJwbWJfaW9jdGwsDQo+ID4+ICsJLm93bmVy
+ICAgICAgICAgID0gVEhJU19NT0RVTEUsDQo+ID4+ICsJLmxsc2VlayAgICAgICAgID0gbm9vcF9s
+bHNlZWssDQo+ID4+ICt9Ow0KPiA+PiArDQo+ID4+ICt2b2lkIHJwbWJfY2Rldl9wcmVwYXJlKHN0
+cnVjdCBycG1iX2RldiAqcmRldikgew0KPiA+PiArCXJkZXYtPmRldi5kZXZ0ID0gTUtERVYoTUFK
+T1IocnBtYl9kZXZ0KSwgcmRldi0+aWQpOw0KPiA+PiArCXJkZXYtPmNkZXYub3duZXIgPSBUSElT
+X01PRFVMRTsNCj4gPj4gKwljZGV2X2luaXQoJnJkZXYtPmNkZXYsICZycG1iX2ZvcHMpOyB9DQo+
+ID4+ICsNCj4gPj4gK3ZvaWQgcnBtYl9jZGV2X2FkZChzdHJ1Y3QgcnBtYl9kZXYgKnJkZXYpIHsN
+Cj4gPj4gKwljZGV2X2FkZCgmcmRldi0+Y2RldiwgcmRldi0+ZGV2LmRldnQsIDEpOyB9DQo+ID4+
+ICsNCj4gPj4gK3ZvaWQgcnBtYl9jZGV2X2RlbChzdHJ1Y3QgcnBtYl9kZXYgKnJkZXYpIHsNCj4g
+Pj4gKwlpZiAocmRldi0+ZGV2LmRldnQpDQo+ID4+ICsJCWNkZXZfZGVsKCZyZGV2LT5jZGV2KTsN
+Cj4gPj4gK30NCj4gPj4gKw0KPiA+PiAraW50IF9faW5pdCBycG1iX2NkZXZfaW5pdCh2b2lkKQ0K
+PiA+PiArew0KPiA+PiArCWludCByZXQ7DQo+ID4+ICsNCj4gPj4gKwlyZXQgPSBhbGxvY19jaHJk
+ZXZfcmVnaW9uKCZycG1iX2RldnQsIDAsIFJQTUJfTUFYX0RFVlMsDQo+ID4+ICJycG1iIik7DQo+
+ID4+ICsJaWYgKHJldCA8IDApDQo+ID4+ICsJCXByX2VycigidW5hYmxlIHRvIGFsbG9jYXRlIGNo
+YXIgZGV2IHJlZ2lvblxuIik7DQo+ID4+ICsNCj4gPj4gKwlyZXR1cm4gcmV0Ow0KPiA+PiArfQ0K
+PiA+PiArDQo+ID4+ICt2b2lkIF9fZXhpdCBycG1iX2NkZXZfZXhpdCh2b2lkKQ0KPiA+PiArew0K
+PiA+PiArCXVucmVnaXN0ZXJfY2hyZGV2X3JlZ2lvbihycG1iX2RldnQsIFJQTUJfTUFYX0RFVlMp
+OyB9DQo+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2NoYXIvcnBtYi9jb3JlLmMgYi9kcml2ZXJz
+L2NoYXIvcnBtYi9jb3JlLmMNCj4gPj4gaW5kZXgNCj4gPj4gYTJlMjFjMTQ5ODZhLi5lMjZkNjA1
+ZTQ4ZTEgMTAwNjQ0DQo+ID4+IC0tLSBhL2RyaXZlcnMvY2hhci9ycG1iL2NvcmUuYw0KPiA+PiAr
+KysgYi9kcml2ZXJzL2NoYXIvcnBtYi9jb3JlLmMNCj4gPj4gQEAgLTEyLDYgKzEyLDcgQEANCj4g
+Pj4gICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+DQo+ID4+DQo+ID4+ICAjaW5jbHVkZSA8bGludXgv
+cnBtYi5oPg0KPiA+PiArI2luY2x1ZGUgInJwbWItY2Rldi5oIg0KPiA+Pg0KPiA+PiAgc3RhdGlj
+IERFRklORV9JREEocnBtYl9pZGEpOw0KPiA+Pg0KPiA+PiBAQCAtMjc3LDYgKzI3OCw3IEBAIGlu
+dCBycG1iX2Rldl91bnJlZ2lzdGVyKHN0cnVjdCBycG1iX2RldiAqcmRldikNCj4gPj4gIAkJcmV0
+dXJuIC1FSU5WQUw7DQo+ID4+DQo+ID4+ICAJbXV0ZXhfbG9jaygmcmRldi0+bG9jayk7DQo+ID4+
+ICsJcnBtYl9jZGV2X2RlbChyZGV2KTsNCj4gPj4gIAlkZXZpY2VfZGVsKCZyZGV2LT5kZXYpOw0K
+PiA+PiAgCW11dGV4X3VubG9jaygmcmRldi0+bG9jayk7DQo+ID4+DQo+ID4+IEBAIC0zNzEsOSAr
+MzczLDYgQEAgc3RydWN0IHJwbWJfZGV2ICpycG1iX2Rldl9yZWdpc3RlcihzdHJ1Y3QNCj4gZGV2
+aWNlDQo+ID4+ICpkZXYsIHU4IHRhcmdldCwNCj4gPj4gIAlpZiAoIW9wcy0+cmVhZF9ibG9ja3Mp
+DQo+ID4+ICAJCXJldHVybiBFUlJfUFRSKC1FSU5WQUwpOw0KPiA+Pg0KPiA+PiAtCWlmIChvcHMt
+PnR5cGUgPT0gUlBNQl9UWVBFX0FOWSB8fCBvcHMtPnR5cGUgPg0KPiA+PiBSUE1CX1RZUEVfTUFY
+KQ0KPiA+PiAtCQlyZXR1cm4gRVJSX1BUUigtRUlOVkFMKTsNCj4gPj4gLQ0KPiA+PiAgCXJkZXYg
+PSBremFsbG9jKHNpemVvZigqcmRldiksIEdGUF9LRVJORUwpOw0KPiA+PiAgCWlmICghcmRldikN
+Cj4gPj4gIAkJcmV0dXJuIEVSUl9QVFIoLUVOT01FTSk7DQo+ID4+IEBAIC0zOTYsNiArMzk1LDgg
+QEAgc3RydWN0IHJwbWJfZGV2ICpycG1iX2Rldl9yZWdpc3RlcihzdHJ1Y3QNCj4gZGV2aWNlDQo+
+ID4+ICpkZXYsIHU4IHRhcmdldCwNCj4gPj4gIAlpZiAocmV0KQ0KPiA+PiAgCQlnb3RvIGV4aXQ7
+DQo+ID4+DQo+ID4+ICsJcnBtYl9jZGV2X2FkZChyZGV2KTsNCj4gPj4gKw0KPiA+PiAgCWRldl9k
+YmcoJnJkZXYtPmRldiwgInJlZ2lzdGVyZWQgZGV2aWNlXG4iKTsNCj4gPj4NCj4gPj4gIAlyZXR1
+cm4gcmRldjsNCj4gPj4gQEAgLTQxMiwxMSArNDEzLDEyIEBAIHN0YXRpYyBpbnQgX19pbml0IHJw
+bWJfaW5pdCh2b2lkKSAgew0KPiA+PiAgCWlkYV9pbml0KCZycG1iX2lkYSk7DQo+ID4+ICAJY2xh
+c3NfcmVnaXN0ZXIoJnJwbWJfY2xhc3MpOw0KPiA+PiAtCXJldHVybiAwOw0KPiA+PiArCXJldHVy
+biBycG1iX2NkZXZfaW5pdCgpOw0KPiA+PiAgfQ0KPiA+Pg0KPiA+PiAgc3RhdGljIHZvaWQgX19l
+eGl0IHJwbWJfZXhpdCh2b2lkKQ0KPiA+PiAgew0KPiA+PiArCXJwbWJfY2Rldl9leGl0KCk7DQo+
+ID4+ICAJY2xhc3NfdW5yZWdpc3RlcigmcnBtYl9jbGFzcyk7DQo+ID4+ICAJaWRhX2Rlc3Ryb3ko
+JnJwbWJfaWRhKTsNCj4gPj4gIH0NCj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2hhci9ycG1i
+L3JwbWItY2Rldi5oIGIvZHJpdmVycy9jaGFyL3JwbWIvcnBtYi0NCj4gPj4gY2Rldi5oIG5ldyBm
+aWxlIG1vZGUgMTAwNjQ0IGluZGV4IDAwMDAwMDAwMDAwMC4uZTU5ZmYwYzA1ZTlkDQo+ID4+IC0t
+LSAvZGV2L251bGwNCj4gPj4gKysrIGIvZHJpdmVycy9jaGFyL3JwbWIvcnBtYi1jZGV2LmgNCj4g
+Pj4gQEAgLTAsMCArMSwxNyBAQA0KPiA+PiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEJT
+RC0zLUNsYXVzZSBPUiBHUEwtMi4wICovDQo+ID4+ICsvKg0KPiA+PiArICogQ29weXJpZ2h0IChD
+KSAyMDE1LTIwMTggSW50ZWwgQ29ycC4gQWxsIHJpZ2h0cyByZXNlcnZlZCAgKi8NCj4gPj4gKyNp
+ZmRlZiBDT05GSUdfUlBNQl9JTlRGX0RFViBpbnQgX19pbml0IHJwbWJfY2Rldl9pbml0KHZvaWQp
+OyB2b2lkDQo+ID4+ICtfX2V4aXQgcnBtYl9jZGV2X2V4aXQodm9pZCk7IHZvaWQgcnBtYl9jZGV2
+X3ByZXBhcmUoc3RydWN0DQo+IHJwbWJfZGV2DQo+ID4+ICsqcmRldik7IHZvaWQgcnBtYl9jZGV2
+X2FkZChzdHJ1Y3QgcnBtYl9kZXYgKnJkZXYpOyB2b2lkDQo+ID4+ICtycG1iX2NkZXZfZGVsKHN0
+cnVjdCBycG1iX2RldiAqcmRldik7ICNlbHNlIHN0YXRpYyBpbmxpbmUgaW50IF9faW5pdA0KPiA+
+PiArcnBtYl9jZGV2X2luaXQodm9pZCkgeyByZXR1cm4gMDsgfSBzdGF0aWMgaW5saW5lIHZvaWQg
+X19leGl0DQo+ID4+ICtycG1iX2NkZXZfZXhpdCh2b2lkKSB7fSBzdGF0aWMgaW5saW5lIHZvaWQg
+cnBtYl9jZGV2X3ByZXBhcmUoc3RydWN0DQo+ID4+ICtycG1iX2RldiAqcmRldikge30gc3RhdGlj
+IGlubGluZSB2b2lkIHJwbWJfY2Rldl9hZGQoc3RydWN0IHJwbWJfZGV2DQo+ID4+ICsqcmRldikg
+e30gc3RhdGljIGlubGluZSB2b2lkIHJwbWJfY2Rldl9kZWwoc3RydWN0IHJwbWJfZGV2ICpyZGV2
+KSB7fQ0KPiA+PiArI2VuZGlmIC8qDQo+ID4+IENPTkZJR19SUE1CX0lOVEZfREVWDQo+ID4+ICsq
+Lw0KPiA+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9ycG1iLmggYi9pbmNsdWRlL2xpbnV4
+L3JwbWIuaCBpbmRleA0KPiA+PiA3MThiYTdjOTFlY2QuLmZlNDRmNjBlZmUzMSAxMDA2NDQNCj4g
+Pj4gLS0tIGEvaW5jbHVkZS9saW51eC9ycG1iLmgNCj4gPj4gKysrIGIvaW5jbHVkZS9saW51eC9y
+cG1iLmgNCj4gPj4gQEAgLTgsOSArOCwxMyBAQA0KPiA+Pg0KPiA+PiAgI2luY2x1ZGUgPGxpbnV4
+L3R5cGVzLmg+DQo+ID4+ICAjaW5jbHVkZSA8bGludXgvZGV2aWNlLmg+DQo+ID4+ICsjaW5jbHVk
+ZSA8bGludXgvY2Rldi5oPg0KPiA+PiArI2luY2x1ZGUgPHVhcGkvbGludXgvcnBtYi5oPg0KPiA+
+PiAgI2luY2x1ZGUgPGxpbnV4L2tyZWYuaD4NCj4gPj4gICNpbmNsdWRlIDxsaW51eC9rZXkuaD4N
+Cj4gPj4NCj4gPj4gKyNkZWZpbmUgUlBNQl9BUElfVkVSU0lPTiAweDgwMDAwMDAxDQo+ID4+ICsN
+Cj4gPj4gIC8qKg0KPiA+PiAgICogc3RydWN0IHJwbWJfb3BzIC0gUlBNQiBvcHMgdG8gYmUgaW1w
+bGVtZW50ZWQgYnkgdW5kZXJseWluZyBibG9jaw0KPiA+PiBkZXZpY2UNCj4gPj4gICAqDQo+ID4+
+IEBAIC01MSw2ICs1NSw4IEBAIHN0cnVjdCBycG1iX29wcyB7DQo+ID4+ICAgKiBAZGV2ICAgICAg
+ICA6IGRldmljZQ0KPiA+PiAgICogQGlkICAgICAgICAgOiBkZXZpY2UgaWQNCj4gPj4gICAqIEB0
+YXJnZXQgICAgIDogUlBNQiB0YXJnZXQvcmVnaW9uIHdpdGhpbiB0aGUgcGh5c2ljYWwgZGV2aWNl
+DQo+ID4+ICsgKiBAY2RldiAgICAgICA6IGNoYXJhY3RlciBkZXYNCj4gPj4gKyAqIEBzdGF0dXMg
+ICAgIDogZGV2aWNlIHN0YXR1cw0KPiA+PiAgICogQG9wcyAgICAgICAgOiBvcGVyYXRpb24gZXhw
+b3J0ZWQgYnkgYmxvY2sgbGF5ZXINCj4gPj4gICAqLw0KPiA+PiAgc3RydWN0IHJwbWJfZGV2IHsN
+Cj4gPj4gQEAgLTU4LDYgKzY0LDEwIEBAIHN0cnVjdCBycG1iX2RldiB7DQo+ID4+ICAJc3RydWN0
+IGRldmljZSBkZXY7DQo+ID4+ICAJaW50IGlkOw0KPiA+PiAgCXU4IHRhcmdldDsNCj4gPj4gKyNp
+ZmRlZiBDT05GSUdfUlBNQl9JTlRGX0RFVg0KPiA+PiArCXN0cnVjdCBjZGV2IGNkZXY7DQo+ID4+
+ICsJdW5zaWduZWQgbG9uZyBzdGF0dXM7DQo+ID4+ICsjZW5kaWYgLyogQ09ORklHX1JQTUJfSU5U
+Rl9ERVYgKi8NCj4gPj4gIAljb25zdCBzdHJ1Y3QgcnBtYl9vcHMgKm9wczsNCj4gPj4gIH07DQo+
+ID4+DQo+ID4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvbGludXgvcnBtYi5oIGIvaW5jbHVk
+ZS91YXBpL2xpbnV4L3JwbWIuaA0KPiA+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NCBpbmRleCAwMDAw
+MDAwMDAwMDAuLjM5NTdiNzg1Y2RkNQ0KPiA+PiAtLS0gL2Rldi9udWxsDQo+ID4+ICsrKyBiL2lu
+Y2x1ZGUvdWFwaS9saW51eC9ycG1iLmgNCj4gPj4gQEAgLTAsMCArMSw2OCBAQA0KPiA+PiArLyog
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6ICgoR1BMLTIuMCBXSVRIIExpbnV4LXN5c2NhbGwtbm90
+ZSkgT1INCj4gPj4gK0JTRC0zLUNsYXVzZSkgKi8NCj4gPj4gKy8qDQo+ID4+ICsgKiBDb3B5cmln
+aHQgKEMpIDIwMTUtMjAxOCBJbnRlbCBDb3JwLiBBbGwgcmlnaHRzIHJlc2VydmVkDQo+ID4+ICsg
+KiBDb3B5cmlnaHQgKEMpIDIwMjEgTGluYXJvIEx0ZA0KPiA+PiArICovDQo+ID4+ICsjaWZuZGVm
+IF9VQVBJX0xJTlVYX1JQTUJfSF8NCj4gPj4gKyNkZWZpbmUgX1VBUElfTElOVVhfUlBNQl9IXw0K
+PiA+PiArDQo+ID4+ICsjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4NCj4gPj4gKw0KPiA+PiArLyoq
+DQo+ID4+ICsgKiBzdHJ1Y3QgcnBtYl9pb2NfdmVyX2NtZCAtIHJwbWIgYXBpIHZlcnNpb24NCj4g
+Pj4gKyAqDQo+ID4+ICsgKiBAYXBpX3ZlcnNpb246IHJwbWIgQVBJIHZlcnNpb24uDQo+ID4+ICsg
+Ki8NCj4gPj4gK3N0cnVjdCBycG1iX2lvY192ZXJfY21kIHsNCj4gPj4gKwlfX3UzMiBhcGlfdmVy
+c2lvbjsNCj4gPj4gK30gX19wYWNrZWQ7DQo+ID4+ICsNCj4gPj4gK2VudW0gcnBtYl9hdXRoX21l
+dGhvZCB7DQo+ID4+ICsJUlBNQl9ITUFDX0FMR09fU0hBXzI1NiA9IDAsDQo+ID4+ICt9Ow0KPiA+
+PiArDQo+ID4+ICsvKioNCj4gPj4gKyAqIHN0cnVjdCBycG1iX2lvY19jYXBfY21kIC0gcnBtYiBj
+YXBhYmlsaXRpZXMNCj4gPj4gKyAqDQo+ID4+ICsgKiBAdGFyZ2V0OiBycG1iIHRhcmdldC9yZWdp
+b24gd2l0aGluIFJQTUIgcGFydGl0aW9uLg0KPiA+PiArICogQGNhcGFjaXR5OiBzdG9yYWdlIGNh
+cGFjaXR5IChpbiB1bml0cyBvZiAxMjhLKQ0KPiA+PiArICogQGJsb2NrX3NpemU6IHN0b3JhZ2Ug
+ZGF0YSBibG9jayBzaXplIChpbiB1bml0cyBvZiAyNTZCKQ0KPiA+PiArICogQHdyX2NudF9tYXg6
+IG1heGltYWwgbnVtYmVyIG9mIGJsb2NrIHRoYXQgY2FuIGJlIHdyaXR0ZW4gaW4gYQ0KPiA+PiAr
+c2luZ2xlDQo+ID4+IHJlcXVlc3QuDQo+ID4+ICsgKiBAcmRfY250X21heDogbWF4aW1hbCBudW1i
+ZXIgb2YgYmxvY2sgdGhhdCBjYW4gYmUgcmVhZCBpbiBhIHNpbmdsZQ0KPiA+PiByZXF1ZXN0Lg0K
+PiA+PiArICogQGF1dGhfbWV0aG9kOiBhdXRoZW50aWNhdGlvbiBtZXRob2Q6IGN1cnJlbnRseSBh
+bHdheXMNCj4gPj4gSE1BQ19TSEFfMjU2DQo+ID4+ICsgKiBAcmVzZXJ2ZWQ6IHJlc2VydmVkIHRv
+IGFsaWduIHRvIDQgYnl0ZXMuDQo+ID4+ICsgKi8NCj4gPj4gK3N0cnVjdCBycG1iX2lvY19jYXBf
+Y21kIHsNCj4gPj4gKwlfX3UxNiB0YXJnZXQ7DQo+ID4+ICsJX191MTYgY2FwYWNpdHk7DQo+ID4+
+ICsJX191MTYgYmxvY2tfc2l6ZTsNCj4gPj4gKwlfX3UxNiB3cl9jbnRfbWF4Ow0KPiA+PiArCV9f
+dTE2IHJkX2NudF9tYXg7DQo+ID4+ICsJX191MTYgYXV0aF9tZXRob2Q7DQo+ID4+ICsJX191MTYg
+cmVzZXJ2ZWQ7DQo+ID4+ICt9IF9fYXR0cmlidXRlX18oKHBhY2tlZCkpOw0KPiA+PiArDQo+ID4+
+ICsvKioNCj4gPj4gKyAqIHN0cnVjdCBycG1iX2lvY19ibG9ja3NfY21kIC0gcmVhZC93cml0ZSBi
+bG9ja3MgdG8vZnJvbSBSUE1CDQo+ID4+ICsgKg0KPiA+PiArICogQGtleWlkOiBrZXlfc2VyaWFs
+X3Qgb2Yga2V5IHRvIHVzZQ0KPiA+PiArICogQGFkZHI6IGluZGV4IGludG8gZGV2aWNlICh1bml0
+cyBvZiAyNTZCIGJsb2NrcykNCj4gPj4gKyAqIEBjb3VudDogbnVtYmVyIG9mIDI1NkIgYmxvY2tz
+DQo+ID4+ICsgKiBAZGF0YTogcG9pbnRlciB0byBkYXRhIHRvIHdyaXRlL3JlYWQgICovIHN0cnVj
+dA0KPiA+PiArcnBtYl9pb2NfYmxvY2tzX2NtZCB7DQo+ID4+ICsJX19zMzIga2V5OyAvKiBrZXlf
+c2VyaWFsX3QgKi8NCj4gPj4gKwlfX3UzMiBhZGRyOw0KPiA+PiArCV9fdTMyIGNvdW50Ow0KPiA+
+PiArCV9fdTggX191c2VyICpkYXRhOw0KPiA+PiArfSBfX2F0dHJpYnV0ZV9fKChwYWNrZWQpKTsN
+Cj4gPj4gKw0KPiA+PiArDQo+ID4+ICsjZGVmaW5lIFJQTUJfSU9DX1ZFUl9DTUQgICAgIF9JT1Io
+MHhCOCwgODAsIHN0cnVjdA0KPiBycG1iX2lvY192ZXJfY21kKQ0KPiA+PiArI2RlZmluZSBSUE1C
+X0lPQ19DQVBfQ01EICAgICBfSU9SKDB4QjgsIDgxLCBzdHJ1Y3QNCj4gcnBtYl9pb2NfY2FwX2Nt
+ZCkNCj4gPj4gKyNkZWZpbmUgUlBNQl9JT0NfUEtFWV9DTUQgICAgX0lPVygweEI4LCA4Miwga2V5
+X3NlcmlhbF90KQ0KPiA+PiArI2RlZmluZSBSUE1CX0lPQ19DT1VOVEVSX0NNRCBfSU9SKDB4Qjgs
+IDg0LCBpbnQpICNkZWZpbmUNCj4gPj4gK1JQTUJfSU9DX1dCTE9DS1NfQ01EIF9JT1coMHhCOCwg
+ODUsIHN0cnVjdA0KPiBycG1iX2lvY19ibG9ja3NfY21kKQ0KPiA+PiAjZGVmaW5lDQo+ID4+ICtS
+UE1CX0lPQ19SQkxPQ0tTX0NNRCBfSU9SKDB4QjgsIDg2LCBzdHJ1Y3QNCj4gcnBtYl9pb2NfYmxv
+Y2tzX2NtZCkNCj4gPj4gKw0KPiA+PiArI2VuZGlmIC8qIF9VQVBJX0xJTlVYX1JQTUJfSF8gKi8N
+Cj4gPj4gLS0NCj4gPj4gMi4yMC4xDQo+ID4NCj4gDQo+IC0tDQo+IEFsZXggQmVubsOpZQ0K
