@@ -2,138 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC0E32D66D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2E032D68C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhCDPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
+        id S234306AbhCDP0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbhCDPUT (ORCPT
+        with ESMTP id S232758AbhCDPZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:20:19 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40465C061574;
-        Thu,  4 Mar 2021 07:19:39 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id q204so18105558pfq.10;
-        Thu, 04 Mar 2021 07:19:39 -0800 (PST)
+        Thu, 4 Mar 2021 10:25:51 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42885C061756;
+        Thu,  4 Mar 2021 07:25:11 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id q25so23608421lfc.8;
+        Thu, 04 Mar 2021 07:25:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=K6ks9PYI9xqw17y1VnrD3Lh0rpwIlhxRiJrkiavk3io=;
-        b=NLqzvYYUrzawjMn5Vc3yQoL7NDsyfvkVG2/hdYC+z2UR9fOUItDO5ccUguTm5TOjEo
-         1kA+PPGu+5c/Y2a/EuEYDzyd12dUBX0c7iI9YznbyE2GQmFWDOBpf3IAzg9ExkUOs8YY
-         7iP4JnW51MyXalCs+2ywv+nXujmZ3+OyWL+U+UBXjw4Kvn/n74+/2NJblDXyNLRPtcz9
-         2y8NZ4SBetl79H9ywIyC3UAjvB3Bpfwmoc3caYlIAE1DK3ZnRfDX8NeZSq8peVL22CaT
-         HVo6KeiqQoJEecYeeow/wvnDLAOcNLosc8d+R6Gsa0+5R7f1Bd8u7Gk0RPmgVXsnEmmL
-         +70w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aeN2LKdORXb0lZrwnrlpd8qrBTJtdHVZ+ffDq501Us8=;
+        b=i+DknTjhTVuXq7MZUlypiuq2JeQK4/edGuiLVDG8YUHG3exXaY/yG8yLBtjp1r6zwu
+         xBCfPXSbY5SpQFOAV5/at+WrDVti0dDvr/nmHTeoNuGKcqwQTb9WyzERXzyjKwjcl65l
+         bTmQDbzaUFJFusDofGxg4vdMrRxa5XT2maO4+dFgSbuV8fXD9kp+tFctJm2jhtYsdp7W
+         S8HGt333upLNPULnrmgk55nDQT+Ij37chqPpzuj2xfYsTNts9Ah1/lAAoP+MbP4uovbN
+         BtesAzVJ/OW95zoaLiVJFxkR9KR5PuhF2TfQQ1sDbD9+wBteNpPr1N8wmkUkzBIOYP2f
+         PcBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=K6ks9PYI9xqw17y1VnrD3Lh0rpwIlhxRiJrkiavk3io=;
-        b=dW2qjQb8sa3deokDR8HC1s2wnkDeQCJXC2EynMA2tTNrh/EqGOJ9YgCwXmRH6Gby58
-         r5MY4DDovAv+t1CIQRZl+PuxBOmItjXLJyCFaUfRms7JLT8ZonfM1PpklhYKVH2ZRovN
-         YoBqkelNmSYbtebaO6QCeN1eQ40EgoI3gPuTtPP07jPvw8VHlKYPNJgh7WmMac4p2FHv
-         heXtlTasVA70A8ZWFJH+6kBfNRwuhlDQlFGhGRDl7Bvoxpm2Z8if5/a9p2CaRyYv1wUQ
-         k+wVvF4uj6fuT0/Ox2rLD4icsYZwQNtgcRpr+XCI+llbmiHlrVnD+kdIs72NTGnmNt1T
-         ysHg==
-X-Gm-Message-State: AOAM531haeRZFvkBOnc3pHOaMQkDWH5kEUyllw9IwR2vAEEiY/R/HFqt
-        ceo+4MPf8iAboW5Vckt1y8mUqzul1quRsOWLaHI=
-X-Google-Smtp-Source: ABdhPJx9rHrzH9c1WswtKF8auBnvg9rXoD3A8Ai3atUtkXxbamiwweGnfVZq22pkmC0k3BLvIs9R/4oB/wcHhvGzaS8=
-X-Received: by 2002:a63:ce15:: with SMTP id y21mr4147564pgf.4.1614871178698;
- Thu, 04 Mar 2021 07:19:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aeN2LKdORXb0lZrwnrlpd8qrBTJtdHVZ+ffDq501Us8=;
+        b=KDS8v07OXXQ0s/HyfICTfv67Dec+R++3AFUSrhmcPFgFmAmwfgp0gA/93V2i7IYDCE
+         BS9RbAlaO+d2/5RP+PdvkCGTRL+i/hl+lGI3NmjUfhYMSEppvEJOntZqzeO0gb4NYYZb
+         lBrsOuRzCluPryJ4v3uvLUYMPRMDpOGQTFyhUCyxgcRpCr+vM+aQkgx8uSV0DHY0+hgs
+         EWQyyUqj64/adoumDVSPtrcFsXPGCvk6X8pYvLwM6XSuzEwZhCS3fslkxziXX8QD5DiK
+         ZGVRRK1DA7a1f1YdBHxpxCMvGTWMxNapcfxjGEFiO9nLSj1pxH6j8W8ukKM8S4YKZiF7
+         ZKtQ==
+X-Gm-Message-State: AOAM533QFicX6Hs3i8oh3nl4uIl+M9DcJLX8nDIsSt5SlQZ8gFaDmuiU
+        39pwL41ZETDtZmRionxbLbv64X2gtMFJDNTVGak=
+X-Google-Smtp-Source: ABdhPJwKMUQh9PtBYqbGI/8c5OxKmNVwr0F+4JArX5VTcw9L9vOFzh/5/DLlV1N2jv4ludGo8Dkv0w==
+X-Received: by 2002:a05:6512:906:: with SMTP id e6mr2644644lft.224.1614871509714;
+        Thu, 04 Mar 2021 07:25:09 -0800 (PST)
+Received: from localhost.localdomain ([94.103.235.167])
+        by smtp.gmail.com with ESMTPSA id d8sm467647ljc.129.2021.03.04.07.25.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 07:25:09 -0800 (PST)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     alex.aring@gmail.com, stefan@datenfreihafen.org,
+        davem@davemloft.net
+Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
+Subject: [PATCH v2] net: mac802154: Fix general protection fault
+Date:   Thu,  4 Mar 2021 18:21:25 +0300
+Message-Id: <20210304152125.1052825-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAB_54W7v1Dk9KjytfO8hAGfiqPJ6qO0SdgwDQ-s4ybA2yvuoCg@mail.gmail.com>
+References: <CAB_54W7v1Dk9KjytfO8hAGfiqPJ6qO0SdgwDQ-s4ybA2yvuoCg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210304085710.7128-1-noltari@gmail.com> <20210304085710.7128-4-noltari@gmail.com>
- <CAHp75Vc_v5M9XjWei09KzXo_oo95b2WQSamMjdQvxkCzNXrSXg@mail.gmail.com>
- <667E0AEF-B453-4CC7-9514-5E72BEF4B0E3@gmail.com> <CAHp75VdzgSyz24xtDiniM40-tjRjKipzdtFvd=Fq=-Xbvr-amw@mail.gmail.com>
- <3E07960B-BB4B-4647-A1FD-E291F9FD6D74@gmail.com>
-In-Reply-To: <3E07960B-BB4B-4647-A1FD-E291F9FD6D74@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 4 Mar 2021 17:19:22 +0200
-Message-ID: <CAHp75VfPihSaZ+L6yOzb5ZGYmXfT3NLgu3HQuwiW8bsUjjoLdw@mail.gmail.com>
-Subject: Re: [PATCH v4 03/15] pinctrl: bcm: add bcm63xx base code
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 2:28 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
-ail.com> wrote:
-> > El 4 mar 2021, a las 13:09, Andy Shevchenko <andy.shevchenko@gmail.com>=
- escribi=C3=B3:
-> > On Thu, Mar 4, 2021 at 1:17 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltar=
-i@gmail.com> wrote:
-> >>> El 4 mar 2021, a las 11:43, Andy Shevchenko <andy.shevchenko@gmail.co=
-m> escribi=C3=B3:
-> >>> On Thu, Mar 4, 2021 at 10:57 AM =C3=81lvaro Fern=C3=A1ndez Rojas
-> >>> <noltari@gmail.com> wrote:
-> >>>>
-> >>>> Add a helper for registering BCM63XX pin controllers.
-> >>>>
-> >>>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
-> >>>> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> >>>
-> >>> This SoB is in a strange place.
-> >>
-> >> Why?
-> >> Can=E2=80=99t we both sign the patches?
-> >
-> > You can, but you have to follow the rules (see chapters 11-13 in the [1=
-]).
-> >
-> >>> The order is wrong taking into account the From header (committer). S=
-o,
-> >>> it's not clear who is the author, who is a co-developer, and who is
-> >>> the committer (one person may utilize few roles).
-> >>> Check for the rest of the series as well (basically this is the rule
-> >>> of thumb to recheck entire code for the comment you have got at any
-> >>> single place of it).
-> >>
-> >> Jonas was the original author of this patches (sent back in 2016) and =
-I=E2=80=99m just continuing his work and trying to get those patches upstre=
-amed.
-> >> I don=E2=80=99t know how to do it correctly, so a little hint would be=
- appreciated.
-> >
-> > There are two ways (depends on the amount of work you have done):
-> > - leave him as an original author (so Author field will have his name,
-> > not yours) and apply yours with Co-developed-by tag and SoB since you
-> > are co-developed and committed
-> > - other way around
->
-> So I will move his SoB to the top, add a Co-developed-by referencing him =
-before that and then leave my SoB as the last one.
+syzbot found general protection fault in crypto_destroy_tfm()[1].
+It was caused by wrong clean up loop in llsec_key_alloc().
+If one of the tfm array members is in IS_ERR() range it will
+cause general protection fault in clean up function [1].
 
-Yes, if it is what you, guys, agreed on and want to have.
-Something like this.
+Call Trace:
+ crypto_free_aead include/crypto/aead.h:191 [inline] [1]
+ llsec_key_alloc net/mac802154/llsec.c:156 [inline]
+ mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
+ ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
+ rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
+ nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Co-developed-by: Jonas
-SoB: Jonas
-SoB: you (and From in the email should be yours as one who submitted the ch=
-ange)
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
+Change-Id: I29f7ac641a039096d63d1e6070bb32cb5a3beb07
+---
+ net/mac802154/llsec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> @Jonas are you OK with that?
+diff --git a/net/mac802154/llsec.c b/net/mac802154/llsec.c
+index 585d33144c33..55550ead2ced 100644
+--- a/net/mac802154/llsec.c
++++ b/net/mac802154/llsec.c
+@@ -152,7 +152,7 @@ llsec_key_alloc(const struct ieee802154_llsec_key *template)
+ 	crypto_free_sync_skcipher(key->tfm0);
+ err_tfm:
+ 	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
+-		if (key->tfm[i])
++		if (!IS_ERR_OR_NULL(key->tfm[i]))
+ 			crypto_free_aead(key->tfm[i]);
+ 
+ 	kfree_sensitive(key);
+-- 
+2.25.1
 
-> > [1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.=
-html#sign-your-work-the-developer-s-certificate-of-origin
-
-
---=20
-With Best Regards,
-Andy Shevchenko
