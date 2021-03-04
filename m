@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706D232CA79
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 03:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C09432CA7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 03:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhCDC13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 21:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbhCDC1O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 21:27:14 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9121C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 18:26:33 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id u11so15236720plg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 18:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jg9i1mPUq1K1Wcc5GInzffq6do0Ck3ej7ZHTvXvymaQ=;
-        b=iwyZr437AFeZuoHsMpAywvQ7EexOwWoAL9bPOiX8EFjQymmFy/flAiAB6qSlKVJBLT
-         Vpf6odJvr44WSLiAKN2koccO4JbjOxJxByBLRtDFzQAUAaB/rJ/f/sGdi1tpGSzp+965
-         kjDbiv4wz5B+v5TF1sn1U+CGegHxTrhTXdko1J19OnjwcUxK6Xj6RLfxfJq61pYV1JSa
-         FaxS0vRfQpQ1JgtlOPCOuof5YuWDzBZd1YMZdr5yhFBaHZZ5Ei32FgT1Zg0/c9LCfUo7
-         AgnxvRka0D6ll2q2P66NwcESGNBa4CHWDY4IlMXx2PopWK+bU5A5PTA4rVNxBaI1JwUN
-         TNNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=jg9i1mPUq1K1Wcc5GInzffq6do0Ck3ej7ZHTvXvymaQ=;
-        b=NKtunUfKPIF0x9XP9K/WarXAeO6FVIpJMATcbR2rHsjeWb/8Tl5XezcQJcrlL2ttFI
-         /NASgJ56U0HjTzmbullv3mSL5O9bXjl4rAIOwGUc5r3NreFDzOAvKR9Igkuevwh0L0An
-         H1kIUB4aYWkbhOmIIYfv9XFLo3sGAjAN+E9DFmv8o3OwvICmFr/GFEaHV6io0iRgb4Xw
-         TKgq+TMHlsM8kvkmAm5AgF6LvwfCcuWG8pw9a/SIlV+uN1sAqqXKu4HNsqMHA0F+hVX7
-         STCOrQPRirNMD1XlQUJ3OH7FXNMrnk5Am8T9FOa82SBTLPdYykwkw/YbbC5QH8EzZzOA
-         60DA==
-X-Gm-Message-State: AOAM533kaacPd4vzaOAdhw30lQBLJFwYTVv9tlR0Xxbd15TIuMz/qJbt
-        MGXXJvohuvM6C0ZVYhBDERddEQ==
-X-Google-Smtp-Source: ABdhPJxwx9njZKYS6LhVNn0HXdr1kMTRLK9xUdhIxjnFvsH7nM6Grh2Lg7goB5XLHYbemCIyNs6ZNA==
-X-Received: by 2002:a17:902:a714:b029:e3:1cd:a033 with SMTP id w20-20020a170902a714b02900e301cda033mr1819123plq.27.1614824793472;
-        Wed, 03 Mar 2021 18:26:33 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 184sm27495857pfc.176.2021.03.03.18.26.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 18:26:32 -0800 (PST)
-Date:   Wed, 03 Mar 2021 18:26:32 -0800 (PST)
-X-Google-Original-Date: Wed, 03 Mar 2021 18:26:29 PST (-0800)
-Subject:     Re: [PATCH] Documentation/admin-guide: kernel-parameters: correct the architectures for numa_balancing
-In-Reply-To: <20210302084159.33688-1-song.bao.hua@hisilicon.com>
-CC:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        song.bao.hua@hisilicon.com, mgorman@suse.de,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, paulmck@kernel.org, rdunlap@infradead.org,
-        akpm@linux-foundation.org, tglx@linutronix.de,
-        mchehab+huawei@kernel.org, viresh.kumar@linaro.org,
-        mike.kravetz@oracle.com, peterz@infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     song.bao.hua@hisilicon.com
-Message-ID: <mhng-a06d1543-65b7-49fa-87c7-f437ec1d85ea@penguin>
-Mime-Version: 1.0 (MHng)
+        id S231247AbhCDCb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 21:31:57 -0500
+Received: from mga07.intel.com ([134.134.136.100]:37210 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231180AbhCDCbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 21:31:24 -0500
+IronPort-SDR: oF86+uJZZZSkqH3OisORiQXPx0WGdwk903EZuRIJ11dZxF9r3Nsdl/n8TY/SP6NnC87H4QQKiE
+ fApPXlOHv/2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="251371877"
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="251371877"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 18:30:43 -0800
+IronPort-SDR: XCTwrekLR25oUgm7t70oHJjwYrie2cMryVBSuuk6F0IM31TEET4e9GmZaANhm/dtGQLYb707Hh
+ 0MSP+iEAnDxg==
+X-IronPort-AV: E=Sophos;i="5.81,221,1610438400"; 
+   d="scan'208";a="400276290"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 18:30:38 -0800
+Subject: Re: [PATCH v3 5/9] KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for
+ Arch LBR
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210303135756.1546253-1-like.xu@linux.intel.com>
+ <20210303135756.1546253-6-like.xu@linux.intel.com>
+ <YD/APUcINwvP53VZ@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <890a6f34-812a-5937-8761-d448a04f67d7@intel.com>
+Date:   Thu, 4 Mar 2021 10:30:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <YD/APUcINwvP53VZ@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Mar 2021 00:41:59 PST (-0800), song.bao.hua@hisilicon.com wrote:
-> X86 isn't the only architecture supporting NUMA_BALANCING. ARM64, PPC,
-> S390 and RISCV also support it:
->
-> arch$ git grep NUMA_BALANCING
-> arm64/Kconfig:  select ARCH_SUPPORTS_NUMA_BALANCING
-> arm64/configs/defconfig:CONFIG_NUMA_BALANCING=y
-> arm64/include/asm/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> powerpc/configs/powernv_defconfig:CONFIG_NUMA_BALANCING=y
-> powerpc/configs/ppc64_defconfig:CONFIG_NUMA_BALANCING=y
-> powerpc/configs/pseries_defconfig:CONFIG_NUMA_BALANCING=y
-> powerpc/include/asm/book3s/64/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> powerpc/include/asm/book3s/64/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> powerpc/include/asm/book3s/64/pgtable.h:#endif /* CONFIG_NUMA_BALANCING */
-> powerpc/include/asm/book3s/64/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> powerpc/include/asm/book3s/64/pgtable.h:#endif /* CONFIG_NUMA_BALANCING */
-> powerpc/include/asm/nohash/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> powerpc/include/asm/nohash/pgtable.h:#endif /* CONFIG_NUMA_BALANCING */
-> powerpc/platforms/Kconfig.cputype:      select ARCH_SUPPORTS_NUMA_BALANCING
-> riscv/Kconfig:  select ARCH_SUPPORTS_NUMA_BALANCING
-> riscv/include/asm/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> s390/Kconfig:   select ARCH_SUPPORTS_NUMA_BALANCING
-> s390/configs/debug_defconfig:CONFIG_NUMA_BALANCING=y
-> s390/configs/defconfig:CONFIG_NUMA_BALANCING=y
-> s390/include/asm/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> x86/Kconfig:    select ARCH_SUPPORTS_NUMA_BALANCING     if X86_64
-> x86/include/asm/pgtable.h:#ifdef CONFIG_NUMA_BALANCING
-> x86/include/asm/pgtable.h:#endif /* CONFIG_NUMA_BALANCING */
->
-> On the other hand, setup_numabalancing() is implemented in mm/mempolicy.c
-> which doesn't depend on architectures.
->
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.rst | 1 +
->  Documentation/admin-guide/kernel-parameters.txt | 3 ++-
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> index 1132796a8d96..24302cad174a 100644
-> --- a/Documentation/admin-guide/kernel-parameters.rst
-> +++ b/Documentation/admin-guide/kernel-parameters.rst
-> @@ -140,6 +140,7 @@ parameter is applicable::
->  	PPT	Parallel port support is enabled.
->  	PS2	Appropriate PS/2 support is enabled.
->  	RAM	RAM disk support is enabled.
-> +	RISCV	RISCV architecture is enabled.
->  	RDT	Intel Resource Director Technology.
->  	S390	S390 architecture is enabled.
->  	SCSI	Appropriate SCSI support is enabled.
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 04545725f187..371a02ae1e21 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3472,7 +3472,8 @@
->
->  	nr_uarts=	[SERIAL] maximum number of UARTs to be registered.
->
-> -	numa_balancing=	[KNL,X86] Enable or disable automatic NUMA balancing.
-> +	numa_balancing=	[KNL,ARM64,PPC,RISCV,S390,X86] Enable or disable automatic
-> +			NUMA balancing.
->  			Allowed values are enable and disable
->
->  	numa_zonelist_order= [KNL, BOOT] Select zonelist order for NUMA.
+Hi Sean,
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Thanks for your detailed review on the patch set.
+
+On 2021/3/4 0:58, Sean Christopherson wrote:
+> On Wed, Mar 03, 2021, Like Xu wrote:
+>> @@ -348,10 +352,26 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
+>>   	return true;
+>>   }
+>>   
+>> +/*
+>> + * Check if the requested depth values is supported
+>> + * based on the bits [0:7] of the guest cpuid.1c.eax.
+>> + */
+>> +static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
+>> +{
+>> +	struct kvm_cpuid_entry2 *best;
+>> +
+>> +	best = kvm_find_cpuid_entry(vcpu, 0x1c, 0);
+>> +	if (best && depth && !(depth % 8))
+> This is still wrong, it fails to weed out depth > 64.
+
+How come ? The testcases depth = {65, 127, 128} get #GP as expected.
+
+>
+> Not that this is a hot path, but it's probably worth double checking that the
+> compiler generates simple code for "depth % 8", e.g. it can be "depth & 7)".
+
+Emm, the "%" operation is quite normal over kernel code.
+
+if (best && depth && !(depth % 8))
+    10659:       48 85 c0                test   rax,rax
+    1065c:       74 c7                   je     10625 <intel_pmu_set_msr+0x65>
+    1065e:       4d 85 e4                test   r12,r12
+    10661:       74 c2                   je     10625 <intel_pmu_set_msr+0x65>
+    10663:       41 f6 c4 07             test   r12b,0x7
+    10667:       75 bc                   jne    10625 <intel_pmu_set_msr+0x65>
+
+It looks like the compiler does the right thing.
+Do you see the room for optimization ？
+
+>
+>> +		return (best->eax & 0xff) & (1ULL << (depth / 8 - 1));
+>> +
+>> +	return false;
+>> +}
+>> +
+
