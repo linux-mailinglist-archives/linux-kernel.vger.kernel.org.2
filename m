@@ -2,232 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB2232CDCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC8132CDCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233187AbhCDHir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:38:47 -0500
-Received: from muru.com ([72.249.23.125]:39352 "EHLO muru.com"
+        id S233348AbhCDHjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:39:42 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:3576 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232725AbhCDHi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:38:28 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 8783F81A7;
-        Thu,  4 Mar 2021 07:38:25 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Keerthy <j-keerthy@ti.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tero Kristo <kristo@kernel.org>
-Subject: [PATCH 2/2] clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
-Date:   Thu,  4 Mar 2021 09:37:37 +0200
-Message-Id: <20210304073737.15810-3-tony@atomide.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210304073737.15810-1-tony@atomide.com>
-References: <20210304073737.15810-1-tony@atomide.com>
+        id S233254AbhCDHjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:39:21 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DrjQx2mZjz9tvrS;
+        Thu,  4 Mar 2021 08:38:33 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id DHqGWtfSMOLu; Thu,  4 Mar 2021 08:38:33 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DrjQx0RNtz9tvrL;
+        Thu,  4 Mar 2021 08:38:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 78A6D8B7F6;
+        Thu,  4 Mar 2021 08:38:34 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 0KzNR-gx8ayW; Thu,  4 Mar 2021 08:38:34 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7B1D18B773;
+        Thu,  4 Mar 2021 08:38:33 +0100 (CET)
+Subject: Re: [PATCH 3/5] CMDLINE: powerpc: convert to generic builtin command
+ line
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        ob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-kernel@vger.kernel.org
+References: <20210304044803.812204-3-danielwa@cisco.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <29d9fd14-7910-e0d6-1ee5-c95e643f7a00@csgroup.eu>
+Date:   Thu, 4 Mar 2021 08:38:32 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210304044803.812204-3-danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a timer wrap issue on dra7 for the ARM architected timer.
-In a typical clock configuration the timer fails to wrap after 388 days.
 
-To work around the issue, we need to use timer-ti-dm percpu timers instead.
 
-Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
-the issue if the dtb is not configured properly.
+Le 04/03/2021 à 05:48, Daniel Walker a écrit :
+> This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
+> option.
 
-Let's do this as a single patch so it can be backported to v5.8 and later
-kernels easily. Note that this patch depends on earlier timer-ti-dm
-systimer posted mode fixes, and a preparatory clockevent patch
-"clocksource/drivers/timer-ti-dm: Prepare to handle dra7 timer wrap issue".
+In file included from arch/powerpc/kernel/prom_init.c:30:
+arch/powerpc/kernel/prom_init.c: In function 'early_cmdline_parse':
+arch/powerpc/kernel/prom_init.c:788:17: error: lvalue required as unary '&' operand
+   788 |      __prombss, &prom_strlcpy, &prom_strlcat);
+       |                 ^
+./include/linux/cmdline.h:66:3: note: in definition of macro 'cmdline_add_builtin_custom'
+    66 |   strlcpy(dest, src, length);       \
+       |   ^~~~~~~
+At top level:
+arch/powerpc/kernel/prom_init.c:312:22: error: 'prom_strlcat' defined but not used 
+[-Werror=unused-function]
+   312 | static size_t __init prom_strlcat(char *dest, const char *src, size_t count)
+       |                      ^~~~~~~~~~~~
+cc1: all warnings being treated as errors
+make[2]: *** [scripts/Makefile.build:279: arch/powerpc/kernel/prom_init.o] Error 1
+make[1]: *** [scripts/Makefile.build:496: arch/powerpc/kernel] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1805: arch/powerpc] Error 2
+make: *** Waiting for unfinished jobs....
 
-For more information, please see the errata for "AM572x Sitara Processors
-Silicon Revisions 1.1, 2.0":
-
-https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
-
-The concept is based on earlier reference patches done by Tero Kristo and
-Keerthy.
-
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- arch/arm/boot/dts/dra7-l4.dtsi             |  4 +-
- arch/arm/boot/dts/dra7.dtsi                | 20 ++++++
- drivers/clocksource/timer-ti-dm-systimer.c | 76 ++++++++++++++++++++++
- include/linux/cpuhotplug.h                 |  1 +
- 4 files changed, 99 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
---- a/arch/arm/boot/dts/dra7-l4.dtsi
-+++ b/arch/arm/boot/dts/dra7-l4.dtsi
-@@ -1168,7 +1168,7 @@ timer2: timer@0 {
- 			};
- 		};
- 
--		target-module@34000 {			/* 0x48034000, ap 7 46.0 */
-+		timer3_target: target-module@34000 {	/* 0x48034000, ap 7 46.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			reg = <0x34000 0x4>,
- 			      <0x34010 0x4>;
-@@ -1195,7 +1195,7 @@ timer3: timer@0 {
- 			};
- 		};
- 
--		target-module@36000 {			/* 0x48036000, ap 9 4e.0 */
-+		timer4_target: target-module@36000 {	/* 0x48036000, ap 9 4e.0 */
- 			compatible = "ti,sysc-omap4-timer", "ti,sysc";
- 			reg = <0x36000 0x4>,
- 			      <0x36010 0x4>;
-diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -46,6 +46,7 @@ aliases {
- 
- 	timer {
- 		compatible = "arm,armv7-timer";
-+		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
-@@ -1241,3 +1242,22 @@ timer@0 {
- 		assigned-clock-parents = <&sys_32k_ck>;
- 	};
- };
-+
-+/* Local timers, see ARM architected timer wrap erratum i940 */
-+&timer3_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER3_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
-+
-+&timer4_target {
-+	ti,no-reset-on-init;
-+	ti,no-idle;
-+	timer@0 {
-+		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER4_CLKCTRL 24>;
-+		assigned-clock-parents = <&timer_sys_clk_div>;
-+	};
-+};
-diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
---- a/drivers/clocksource/timer-ti-dm-systimer.c
-+++ b/drivers/clocksource/timer-ti-dm-systimer.c
-@@ -2,6 +2,7 @@
- #include <linux/clk.h>
- #include <linux/clocksource.h>
- #include <linux/clockchips.h>
-+#include <linux/cpuhotplug.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
-@@ -634,6 +635,78 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
- 	return error;
- }
- 
-+/* Dmtimer as percpu timer. See dra7 ARM architected timer wrap erratum i940 */
-+static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
-+
-+static int __init dmtimer_percpu_timer_init(struct device_node *np, int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt;
-+	int error;
-+
-+	if (!cpu_possible(cpu))
-+		return -EINVAL;
-+
-+	if (!of_property_read_bool(np->parent, "ti,no-reset-on-init") ||
-+	    !of_property_read_bool(np->parent, "ti,no-idle"))
-+		pr_warn("Incomplete dtb for percpu dmtimer %pOF\n", np->parent);
-+
-+	clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+
-+	error = dmtimer_clkevt_init_common(clkevt, np, CLOCK_EVT_FEAT_ONESHOT,
-+					   cpumask_of(cpu), "percpu-dmtimer",
-+					   500);
-+	if (error)
-+		return error;
-+
-+	return 0;
-+}
-+
-+/* See TRM for timer internal resynch latency */
-+static int omap_dmtimer_starting_cpu(unsigned int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+	struct clock_event_device *dev = &clkevt->dev;
-+	struct dmtimer_systimer *t = &clkevt->t;
-+
-+	clockevents_config_and_register(dev, t->rate, 3, ULONG_MAX);
-+	irq_force_affinity(dev->irq, cpumask_of(cpu));
-+
-+	return 0;
-+}
-+
-+static int __init dmtimer_percpu_timer_startup(void)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, 0);
-+	struct dmtimer_systimer *t = &clkevt->t;
-+
-+	if (t->sysc) {
-+		cpuhp_setup_state(CPUHP_AP_TI_GP_TIMER_STARTING,
-+				  "clockevents/omap/gptimer:starting",
-+				  omap_dmtimer_starting_cpu, NULL);
-+	}
-+
-+	return 0;
-+}
-+subsys_initcall(dmtimer_percpu_timer_startup);
-+
-+static int __init dmtimer_percpu_quirk_init(struct device_node *np, u32 pa)
-+{
-+	struct device_node *arm_timer;
-+
-+	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
-+	if (of_device_is_available(arm_timer)) {
-+		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
-+		return 0;
-+	}
-+
-+	if (pa == 0x48034000)		/* dra7 dmtimer3 */
-+		return dmtimer_percpu_timer_init(np, 0);
-+	else if (pa == 0x48036000)	/* dra7 dmtimer4 */
-+		return dmtimer_percpu_timer_init(np, 1);
-+
-+	return 0;
-+}
-+
- /* Clocksource */
- static struct dmtimer_clocksource *
- to_dmtimer_clocksource(struct clocksource *cs)
-@@ -767,6 +840,9 @@ static int __init dmtimer_systimer_init(struct device_node *np)
- 	if (clockevent == pa)
- 		return dmtimer_clockevent_init(np);
- 
-+	if (of_machine_is_compatible("ti,dra7"))
-+		return dmtimer_percpu_quirk_init(np, pa);
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -135,6 +135,7 @@ enum cpuhp_state {
- 	CPUHP_AP_RISCV_TIMER_STARTING,
- 	CPUHP_AP_CLINT_TIMER_STARTING,
- 	CPUHP_AP_CSKY_TIMER_STARTING,
-+	CPUHP_AP_TI_GP_TIMER_STARTING,
- 	CPUHP_AP_HYPERV_TIMER_STARTING,
- 	CPUHP_AP_KVM_STARTING,
- 	CPUHP_AP_KVM_ARM_VGIC_INIT_STARTING,
--- 
-2.30.1
+> 
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
+> Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>   arch/powerpc/Kconfig            | 37 +--------------------------------
+>   arch/powerpc/kernel/prom.c      |  1 +
+>   arch/powerpc/kernel/prom_init.c | 31 +++++++++++++++------------
+>   3 files changed, 20 insertions(+), 49 deletions(-)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 107bb4319e0e..276b06d5c961 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -167,6 +167,7 @@ config PPC
+>   	select EDAC_SUPPORT
+>   	select GENERIC_ATOMIC64			if PPC32
+>   	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
+> +	select GENERIC_CMDLINE
+>   	select GENERIC_CMOS_UPDATE
+>   	select GENERIC_CPU_AUTOPROBE
+>   	select GENERIC_CPU_VULNERABILITIES	if PPC_BARRIER_NOSPEC
+> @@ -906,42 +907,6 @@ config PPC_DENORMALISATION
+>   	  Add support for handling denormalisation of single precision
+>   	  values.  Useful for bare metal only.  If unsure say Y here.
+>   
+> -config CMDLINE
+> -	string "Initial kernel command string"
+> -	default ""
+> -	help
+> -	  On some platforms, there is currently no way for the boot loader to
+> -	  pass arguments to the kernel. For these platforms, you can supply
+> -	  some command-line options at build time by entering them here.  In
+> -	  most cases you will need to specify the root device here.
+> -
+> -choice
+> -	prompt "Kernel command line type" if CMDLINE != ""
+> -	default CMDLINE_FROM_BOOTLOADER
+> -
+> -config CMDLINE_FROM_BOOTLOADER
+> -	bool "Use bootloader kernel arguments if available"
+> -	help
+> -	  Uses the command-line options passed by the boot loader. If
+> -	  the boot loader doesn't provide any, the default kernel command
+> -	  string provided in CMDLINE will be used.
+> -
+> -config CMDLINE_EXTEND
+> -	bool "Extend bootloader kernel arguments"
+> -	help
+> -	  The command-line arguments provided by the boot loader will be
+> -	  appended to the default kernel command string.
+> -
+> -config CMDLINE_FORCE
+> -	bool "Always use the default kernel command string"
+> -	help
+> -	  Always use the default kernel command string, even if the boot
+> -	  loader passes other arguments to the kernel.
+> -	  This is useful if you cannot or don't want to change the
+> -	  command-line options your boot loader passes to the kernel.
+> -
+> -endchoice
+> -
+>   config EXTRA_TARGETS
+>   	string "Additional default image types"
+>   	help
+> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> index ae3c41730367..96d0a01be1b4 100644
+> --- a/arch/powerpc/kernel/prom.c
+> +++ b/arch/powerpc/kernel/prom.c
+> @@ -27,6 +27,7 @@
+>   #include <linux/irq.h>
+>   #include <linux/memblock.h>
+>   #include <linux/of.h>
+> +#include <linux/cmdline.h>
+>   #include <linux/of_fdt.h>
+>   #include <linux/libfdt.h>
+>   #include <linux/cpu.h>
+> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+> index e9d4eb6144e1..d752be688b62 100644
+> --- a/arch/powerpc/kernel/prom_init.c
+> +++ b/arch/powerpc/kernel/prom_init.c
+> @@ -27,6 +27,7 @@
+>   #include <linux/initrd.h>
+>   #include <linux/bitops.h>
+>   #include <linux/pgtable.h>
+> +#include <linux/cmdline.h>
+>   #include <asm/prom.h>
+>   #include <asm/rtas.h>
+>   #include <asm/page.h>
+> @@ -242,15 +243,6 @@ static int __init prom_strcmp(const char *cs, const char *ct)
+>   	return 0;
+>   }
+>   
+> -static char __init *prom_strcpy(char *dest, const char *src)
+> -{
+> -	char *tmp = dest;
+> -
+> -	while ((*dest++ = *src++) != '\0')
+> -		/* nothing */;
+> -	return tmp;
+> -}
+> -
+>   static int __init prom_strncmp(const char *cs, const char *ct, size_t count)
+>   {
+>   	unsigned char c1, c2;
+> @@ -276,6 +268,19 @@ static size_t __init prom_strlen(const char *s)
+>   	return sc - s;
+>   }
+>   
+> +static size_t __init prom_strlcpy(char *dest, const char *src, size_t size)
+> +{
+> +	size_t ret = prom_strlen(src);
+> +
+> +	if (size) {
+> +		size_t len = (ret >= size) ? size - 1 : ret;
+> +		memcpy(dest, src, len);
+> +		dest[len] = '\0';
+> +	}
+> +	return ret;
+> +}
+> +
+> +
+>   static int __init prom_memcmp(const void *cs, const void *ct, size_t count)
+>   {
+>   	const unsigned char *su1, *su2;
+> @@ -778,9 +783,9 @@ static void __init early_cmdline_parse(void)
+>   	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && (long)prom.chosen > 0)
+>   		l = prom_getprop(prom.chosen, "bootargs", p, COMMAND_LINE_SIZE-1);
+>   
+> -	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) || l <= 0 || p[0] == '\0')
+> -		prom_strlcat(prom_cmd_line, " " CONFIG_CMDLINE,
+> -			     sizeof(prom_cmd_line));
+> +	if (l <= 0 || p[0] == '\0') /* dbl check */
+> +		cmdline_add_builtin_custom(prom_cmd_line, NULL, sizeof(prom_cmd_line),
+> +					__prombss, &prom_strlcpy, &prom_strlcat);
+>   
+>   	prom_printf("command line: %s\n", prom_cmd_line);
+>   
+> @@ -2706,7 +2711,7 @@ static void __init flatten_device_tree(void)
+>   
+>   	/* Add "phandle" in there, we'll need it */
+>   	namep = make_room(&mem_start, &mem_end, 16, 1);
+> -	prom_strcpy(namep, "phandle");
+> +	prom_strlcpy(namep, "phandle", 8);
+>   	mem_start = (unsigned long)namep + prom_strlen(namep) + 1;
+>   
+>   	/* Build string array */
+> 
