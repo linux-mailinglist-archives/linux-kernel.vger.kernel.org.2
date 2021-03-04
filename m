@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E826C32D627
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEF632D630
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 16:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhCDPKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 10:10:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55732 "EHLO mx2.suse.de"
+        id S233847AbhCDPMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 10:12:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57906 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234201AbhCDPKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:10:12 -0500
+        id S233928AbhCDPMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 10:12:34 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 07974AAC5;
-        Thu,  4 Mar 2021 15:09:31 +0000 (UTC)
-Message-ID: <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
+        by mx2.suse.de (Postfix) with ESMTP id CA401AEBE;
+        Thu,  4 Mar 2021 15:11:52 +0000 (UTC)
+Message-ID: <c76c82668142710ba5a7a8454759c9aa2423d72f.camel@suse.de>
+Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, rppt@kernel.org, lorenzo.pieralisi@arm.com,
-        guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        lenb@kernel.org, song.bao.hua@hisilicon.com, ardb@kernel.org,
-        anshuman.khandual@arm.com, bhelgaas@google.com, guro@fb.com,
-        robh+dt@kernel.org, stable@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, frowand.list@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        wangkefeng.wang@huawei.com
-Date:   Thu, 04 Mar 2021 16:09:28 +0100
-In-Reply-To: <YEDr/lYZHew88/Ip@kroah.com>
-References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
-         <YEDkmj6cchMPAq2h@kroah.com>
-         <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
-         <YEDr/lYZHew88/Ip@kroah.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     =?ISO-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Lunn <andrew@lunn.ch>, Matt Mackall <mpm@selenic.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stijn@linux-ipv6.be, ynezz@true.cz
+Date:   Thu, 04 Mar 2021 16:11:50 +0100
+In-Reply-To: <66AED5A4-3227-47CA-A4A2-B5AD6A571AAC@gmail.com>
+References: <20210220174741.23665-1-noltari@gmail.com>
+         <YDFeao/bOxvoXI9D@lunn.ch> <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
+         <20210303092019.GB8134@gondor.apana.org.au>
+         <66AED5A4-3227-47CA-A4A2-B5AD6A571AAC@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-MTEftY67Mi99IToWhxLf"
+        protocol="application/pgp-signature"; boundary="=-tF7nKy1ApkUrE/NT/hRA"
 User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
 Precedence: bulk
@@ -46,61 +44,53 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-MTEftY67Mi99IToWhxLf
+--=-tF7nKy1ApkUrE/NT/hRA
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2021-03-04 at 15:17 +0100, Greg KH wrote:
-> On Thu, Mar 04, 2021 at 03:05:32PM +0100, Nicolas Saenz Julienne wrote:
-> > Hi Greg.
-> >=20
-> > On Thu, 2021-03-04 at 14:46 +0100, Greg KH wrote:
-> > > On Wed, Mar 03, 2021 at 03:33:12PM +0800, Jing Xiangfeng wrote:
-> > > > Using two distinct DMA zones turned out to be problematic. Here's a=
-n
-> > > > attempt go back to a saner default.
-> > >=20
-> > > What problem does this solve?  How does this fit into the stable kern=
-el
-> > > rules?
-> >=20
-> > We changed the way we setup memory zones in arm64 in order to cater for
-> > Raspberry Pi 4's weird DMA constraints: ZONE_DMA spans the lower 1GB of=
- memory
-> > and ZONE_DMA32 the rest of the 32bit address space. Since you can't all=
-ocate
-> > memory that crosses zone boundaries, this broke crashkernel allocations=
- on big
-> > machines. This series fixes all this by parsing the HW description and =
-checking
-> > for DMA constrained buses. When not found, the unnecessary zone creatio=
-n is
-> > skipped.
+On Wed, 2021-03-03 at 10:29 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
+> Hi Herbert,
 >=20
-> What kernel/commit caused this "breakage"?
+> > El 3 mar 2021, a las 10:20, Herbert Xu <herbert@gondor.apana.org.au> es=
+cribi=C3=B3:
+> >=20
+> > On Sat, Feb 20, 2021 at 08:12:45PM +0100, =C3=81lvaro Fern=C3=A1ndez Ro=
+jas wrote:
+> > >=20
+> > > I ran rngtest and this is what I got:
+> >=20
+> > This is meaningless except for sources that have not been whitened.
+> >=20
+> > Your justification needs to be based on what the hardware does or
+> > is documented to do.
+>=20
+> Ok, so I guess that we=E2=80=99re never setting that value to anything si=
+nce there=E2=80=99s
+> no public documentation about that =C2=AF\_(=E3=83=84)_/=C2=AF.
 
-1a8e1cef7603 arm64: use both ZONE_DMA and ZONE_DMA32
+@Florian, is there a way you might be able to get the official value?
 
 Regards,
 Nicolas
 
 
---=-MTEftY67Mi99IToWhxLf
+
+--=-tF7nKy1ApkUrE/NT/hRA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBA+CgACgkQlfZmHno8
-x/5JVgf/eqHD1C2EmaD/V/HHrBczhUaM9DPc5otgTDC5gKnYF8FgdBOH4oJyh2Hb
-l9M2tznHD8hHoxowOw0BcxY+WOGYwZXRx8R5pNPb/NKZqFDCQ3Dgw1eMt8uYNg+5
-oPS7JE5ldh3siUgaLV32wueyIqbx3A8WbSLouwSPz0TVK2DqVKd+SkLAS68qwTc4
-QO9ikKdB7rg7RXvm6YOaP2uzWMn/PJgAEX/LMwv/CjfU+DVUE3uyqyXdsRby8nE8
-tzXJi5AvfsGaUXsqQShCqdAAGuuQ6raG/r0oKfvUfAypKd4d46JFfdGlJ5iT7w8s
-NlfFKZ2ZWHdwif+tNt2Lipct8pelxw==
-=RW7q
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBA+LYACgkQlfZmHno8
+x/4mpQgAtv3mCg9PtALi+43qvHdRpWuxh2In743JgcDCQZy8dF9b8SeAynKQE58x
+ejixPpOGqzJb1DBuw0Y07w5AsUBDos7ciO5KNtcaW+IqetkIJ9O47gqqe6u+VEui
+X9uAG/lUtn1VdUtQp1ybUyqWkxTdu2nO/IUO8Jb0ZUXbFt5JI/zEfhoJGdnf+Mct
+fWK132jWOFvxakd++IoCntKsUnim7nyz0fjPWvDYhhUptvdjBn60S2aWaauzk6MA
+i04ek+sOycamBbg94IcFvMcXmO1L6xLL2YpBn6Rfd5gvvE3QEyEq7tOER4VoO0t9
+8Cw+oBf2QT6W+62KOG5Uf25d+U1qKQ==
+=k9q4
 -----END PGP SIGNATURE-----
 
---=-MTEftY67Mi99IToWhxLf--
+--=-tF7nKy1ApkUrE/NT/hRA--
 
