@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DD332DBC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 774DF32DBBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 22:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239456AbhCDV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 16:28:48 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:34359 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S239444AbhCDV2e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:28:34 -0500
-Received: (qmail 15607 invoked by uid 1000); 4 Mar 2021 16:27:53 -0500
-Date:   Thu, 4 Mar 2021 16:27:53 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210304212753.GB14408@rowland.harvard.edu>
-References: <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <20210303220348.GL2696@paulmck-ThinkPad-P72>
- <20210304032101.GB1594980@rowland.harvard.edu>
- <20210304050407.GN2696@paulmck-ThinkPad-P72>
- <20210304153524.GA1612307@rowland.harvard.edu>
- <20210304190515.GS2696@paulmck-ThinkPad-P72>
+        id S239135AbhCDV1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 16:27:42 -0500
+Received: from mga03.intel.com ([134.134.136.65]:46354 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237839AbhCDV1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 16:27:40 -0500
+IronPort-SDR: ay2YA9k2DmLcJTf5v8ZyRlwRmAVn8f+u0uD6c0gEJHOVbXvgXksVF2votuNLeWRRmPL+mbiu20
+ i8fB+ayvg3jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="187565543"
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="187565543"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 13:25:53 -0800
+IronPort-SDR: MQ7Ih7H0p2xK1hWg7n4AeoanVjOPZRwTjBXJnjrogCBsf4jtzESf6/D/mAX8KKNBeg8DF+etxU
+ JJCkaD1zIg3A==
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="384637280"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 13:25:53 -0800
+Date:   Thu, 4 Mar 2021 13:28:09 -0800
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        <iommu@lists.linux-foundation.org>, <cgroups@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
+Message-ID: <20210304132809.75b3fa55@jacob-builder>
+In-Reply-To: <20210304190253.GL4247@nvidia.com>
+References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+        <YD+u3CXhwOi2LC+4@slm.duckdns.org>
+        <20210303131726.7a8cb169@jacob-builder>
+        <20210303160205.151d114e@jacob-builder>
+        <YECtMZNqSgh7jkGP@myrica>
+        <20210304094603.4ab6c1c4@jacob-builder>
+        <20210304175402.GG4247@nvidia.com>
+        <20210304110144.39ef0941@jacob-builder>
+        <20210304190253.GL4247@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304190515.GS2696@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 11:05:15AM -0800, Paul E. McKenney wrote:
-> On Thu, Mar 04, 2021 at 10:35:24AM -0500, Alan Stern wrote:
-> > On Wed, Mar 03, 2021 at 09:04:07PM -0800, Paul E. McKenney wrote:
-> > > On Wed, Mar 03, 2021 at 10:21:01PM -0500, Alan Stern wrote:
-> > > > On Wed, Mar 03, 2021 at 02:03:48PM -0800, Paul E. McKenney wrote:
-> > > > > On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
-> > 
-> > > > > > >  And I cannot immediately think of a situation where
-> > > > > > > this approach would break that would not result in a data race being
-> > > > > > > flagged.  Or is this yet another failure of my imagination?
-> > > > > > 
-> > > > > > By definition, an access to a local variable cannot participate in a 
-> > > > > > data race because all such accesses are confined to a single thread.
-> > > > > 
-> > > > > True, but its value might have come from a load from a shared variable.
-> > > > 
-> > > > Then that load could have participated in a data race.  But the store to 
-> > > > the local variable cannot.
-> > > 
-> > > Agreed.  My thought was that if the ordering from the initial (non-local)
-> > > load mattered, then that initial load must have participated in a
-> > > data race.  Is that true, or am I failing to perceive some corner case?
-> > 
-> > Ordering can matter even when no data race is involved.  Just think
-> > about how much of the memory model is concerned with ordering of
-> > marked accesses, which don't participate in data races unless there is
-> > a conflicting plain access somewhere.
+Hi Jason,
+
+On Thu, 4 Mar 2021 15:02:53 -0400, Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Thu, Mar 04, 2021 at 11:01:44AM -0800, Jacob Pan wrote:
 > 
-> Fair point.  Should I have instead said "then that initial load must
-> have run concurrently with a store to that same variable"?
+> > > For something like qemu I'd expect to put the qemu process in a cgroup
+> > > with 1 PASID. Who cares what qemu uses the PASID for, or how it was
+> > > allocated?  
+> > 
+> > For vSVA, we will need one PASID per guest process. But that is up to
+> > the admin based on whether or how many SVA capable devices are directly
+> > assigned.  
+> 
+> I hope the virtual IOMMU driver can communicate the PASID limit and
+> the cgroup machinery in the guest can know what the actual limit is.
+> 
+For VT-d, emulated vIOMMU can communicate with the guest IOMMU driver on how
+many PASID bits are supported (extended cap reg PASID size fields). But it
+cannot communicate how many PASIDs are in the pool(host cgroup capacity).
 
-I'm losing track of the point you were originally trying to make.
+The QEMU process may not be the only one in a cgroup so it cannot give hard
+guarantees. I don't see a good way to communicate accurately at runtime as
+the process migrates or limit changes.
 
-Does ordering matter when there are no conflicting accesses?  Sure.  
-Consider this:
+We were thinking to adopt the "Limits" model as defined in the cgroup-v2
+doc.
+"
+Limits
+------
 
-	A: r1 = READ_ONCE(x);
-	B: WRITE_ONCE(y, r1);
-	   smp_wmb();
-	C: WRITE_ONCE(z, 1);
+A child can only consume upto the configured amount of the resource.
+Limits can be over-committed - the sum of the limits of children can
+exceed the amount of resource available to the parent.
+"
 
-Even if there are no other accesses to y at all (let alone any 
-conflicting ones), the mere existence of B forces A to be ordered before 
-C, and this is easily detectable by a litmus test.
+So the guest cgroup would still think it has full 20 bits of PASID at its
+disposal. But PASID allocation may fail before reaching the full 20 bits
+(2M).
+Similar on the host side, we only enforce the limit set by the cgroup but
+not guarantee it.
 
-Alan
+> I was thinking of a case where qemu is using a single PASID to setup
+> the guest kVA or similar
+> 
+got it.
+
+> Jason
+
+
+Thanks,
+
+Jacob
