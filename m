@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9888A32D16C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EBE32D17D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 12:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239172AbhCDLBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 06:01:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58864 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239126AbhCDLBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:01:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614855654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=WXqHPe+Ifnv5Vf7F0Ne6BsKMUPRrUe3g+NOcm0DY8Po=;
-        b=Wb2k58m2tPyw8HJWGN4OpsnluwahwTkXLlCH83ups3omce9KolKDdUZKnr/01mnQARefe6
-        zdjprHYQ/al8PYmwTYY3Rq8ttMQj/0SNMlm663huu2nT5pLiph5X/3ZaxSkSR750/lMIrJ
-        7ERgKTScfUWv8MxgMKMRzBnsI93uAhQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2F411AE1F;
-        Thu,  4 Mar 2021 11:00:54 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.12-rc2
-Date:   Thu,  4 Mar 2021 12:00:53 +0100
-Message-Id: <20210304110053.8787-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S239377AbhCDLCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 06:02:32 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:59742 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239165AbhCDLBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 06:01:50 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_DpvUBgUFAUAA--.3851S2;
+        Thu, 04 Mar 2021 19:00:58 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] some cleanup code
+Date:   Thu,  4 Mar 2021 19:00:55 +0800
+Message-Id: <20210304110057.22144-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxn_DpvUBgUFAUAA--.3851S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrGFykuF4xtF1UZF1DCryfWFg_yoWxWFgEka
+        42qFWkGryxAa4xJayUXr17XrW2gFWkG3Z8CFn8JrZ0va4Sv3sxAFy8Ar4UWFnrXr4Yvr1r
+        XrW8ur18A3Z7XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26F4j6r4UJwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcxwIDUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+These patches clean up some code about Loongson64.
 
-Please git pull the following tag:
+Qing Zhang (2):
+  MIPS: Loongson64: Remove unused sysconf members
+  MIPS: Loongson64: Move loongson_system_configuration to loongson.h
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.12b-rc2-tag
+ .../include/asm/mach-loongson64/boot_param.h  | 27 ------------
+ .../include/asm/mach-loongson64/loongson.h    | 18 ++++++++
+ arch/mips/loongson64/Makefile                 |  2 +-
+ arch/mips/loongson64/env.c                    | 20 ---------
+ arch/mips/loongson64/platform.c               | 42 -------------------
+ drivers/irqchip/irq-loongson-liointc.c        |  2 +-
+ 6 files changed, 20 insertions(+), 91 deletions(-)
+ delete mode 100644 arch/mips/loongson64/platform.c
 
-xen: branch for v5.12-rc2
+-- 
+2.20.1
 
-It contains fixes for 2 security issues (XSA-367 and XSA-369).
-
-
-Thanks.
-
-Juergen
-
- arch/arm/xen/p2m.c                | 35 ++++++++++++++++++++++---
- arch/x86/include/asm/xen/page.h   | 12 +++++++++
- arch/x86/xen/p2m.c                | 54 ++++++++++++++++++++++++++++++++++-----
- arch/x86/xen/setup.c              | 25 +++---------------
- drivers/net/xen-netback/netback.c | 12 ++++++++-
- 5 files changed, 104 insertions(+), 34 deletions(-)
-
-Jan Beulich (2):
-      Xen/gnttab: handle p2m update errors on a per-slot basis
-      xen-netback: respect gnttab_map_refs()'s return value
-
-Juergen Gross (1):
-      xen: fix p2m size in dom0 for disabled memory hotplug case
