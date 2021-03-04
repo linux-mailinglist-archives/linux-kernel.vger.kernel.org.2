@@ -2,143 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0B032D824
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5413032D82C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 17:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238695AbhCDQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 11:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238654AbhCDQyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 11:54:10 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44D5C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 08:53:29 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id u16so10402634wrt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 08:53:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YnxlDtU5po5D1M53NldIE72sMInCUbrZRLnykBeu2V8=;
-        b=Ewxi+OReE6dJAiv1zXYkq05geSl/fq+jZkRgzrMwoyzv7/mX7eQzNkoXLfZA/H4WjA
-         dLxCRUQXjLaUaurQNnE2V1uuSVtL1ssUBtAdfk47+VjVE3TodqBAoyI+HNZr9jaugwih
-         QozPefxrDjjzljWSRoqtM5xVlGU9Pye4vHHgjW0WwQ5jmtTxzIbIessoty315fsV3Pto
-         3rUuogs9lyEX7c3FT883rgCuhQlAV95l3Ki/0K1GkqZhT2pUmINFxC/lBZLVmiOR6r0I
-         /mSml0hG8PHwm/dAmJQhv/t8QNpecklP1K6I1reeFu194Rh1icR2BB1MMK/v7koexmb3
-         k6ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YnxlDtU5po5D1M53NldIE72sMInCUbrZRLnykBeu2V8=;
-        b=J4j5Vj74nRYuuaHfEkppMyg17ZqS8nHrZNne8vluyanurWUv+jVqIeG2QVW+5bTtf4
-         EWc1+tmwhmDFaZw+t1K2bOC1k4H8rM8P/VYIep29B47V51wTNuxgjASU+Yeh8zGKuuyi
-         1dwSPIN6elQEGVNlRUvEOq8n9L9CyDBOwpxWRF8gyjD7Qxxz2WjTpS+CRHb9nG5pPCyn
-         i9ug4ek8ROQTTzYxTjxlzgmHZrrxSpN82oB63BSfJKHUE4UldSdO0YKuj3kzehMRFkRi
-         77YwWpKw6C7NrEuG2YBizTxaPgOtveMJpRJ6gDrLljbAX6rK5b/+13kD9HlIZX2yfcnV
-         wGqQ==
-X-Gm-Message-State: AOAM530ePWSQ9T33Nl4or+i32fT6AC6W8Cn357LC5/mkjz/yb3c/OprT
-        P6ds+aa7qb2GJeP2jPVE7gG6Ng==
-X-Google-Smtp-Source: ABdhPJxucLioKZo95wCuntF7BE0hNv7s/6tGhLvI6FsbewLBgkboHJnD6mezrJaZmVK15Kbq98zepg==
-X-Received: by 2002:adf:d1c2:: with SMTP id b2mr4922891wrd.424.1614876808222;
-        Thu, 04 Mar 2021 08:53:28 -0800 (PST)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
-        by smtp.googlemail.com with ESMTPSA id b15sm36807595wrr.47.2021.03.04.08.53.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Mar 2021 08:53:27 -0800 (PST)
-Subject: Re: [PATCH] devfreq: Register devfreq as a cooling device
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     cwchoi00@gmail.com, kyungmin.park@samsung.com,
-        myungjoo.ham@samsung.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        "open list:DRM DRIVERS FOR LIMA" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DRM DRIVERS FOR LIMA" <lima@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
-References: <20210304125034.28404-1-daniel.lezcano@linaro.org>
- <5f06e0c5-b2d9-5e11-01b6-fdd0dac635a7@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8d153937-c5fc-1de2-d510-d3f91f7a9724@linaro.org>
-Date:   Thu, 4 Mar 2021 17:53:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S238743AbhCDQzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 11:55:48 -0500
+Received: from mga12.intel.com ([192.55.52.136]:50044 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238718AbhCDQzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 11:55:19 -0500
+IronPort-SDR: pWZAOHngWH25nAyoyu2X8UVxUH7wSgPIDH0aTmdwUQv/5/JbKp1hlr1Abgb/Foy37NjfLS4vP5
+ tiTb5WTNe01A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="166712476"
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="166712476"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 08:53:41 -0800
+IronPort-SDR: s5Z30VFK8gVq0YQkVUQ23+yR46psCJF5tzIAwYnqhkLBFxXV9GCNtNfKpRnDgkjmPdcyklVPWT
+ chPGT95/3bwA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,222,1610438400"; 
+   d="scan'208";a="445795887"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga001.jf.intel.com with SMTP; 04 Mar 2021 08:53:38 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 04 Mar 2021 18:53:37 +0200
+Date:   Thu, 4 Mar 2021 18:53:37 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [Intel-gfx] [WARNING] v5.12-rc1 in intel_pipe_disable tracepoint
+Message-ID: <YEEQkT0DZWyZgvAL@intel.com>
+References: <20210301115946.295279c1@gandalf.local.home>
+ <YD0ie6qcKBgGgcNW@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <5f06e0c5-b2d9-5e11-01b6-fdd0dac635a7@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YD0ie6qcKBgGgcNW@intel.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Lukasz,
-
-thanks for commenting this patch,
-
-On 04/03/2021 14:47, Lukasz Luba wrote:
-> Hi Daniel,
+On Mon, Mar 01, 2021 at 07:20:59PM +0200, Ville Syrjälä wrote:
+> On Mon, Mar 01, 2021 at 11:59:46AM -0500, Steven Rostedt wrote:
+> > 
+> > On my test box with latest v5.12-rc1, running with all trace events
+> > enabled, I consistently trigger this warning.
+> > 
+> > It appears to get triggered by the trace_intel_pipe_disable() code.
+> > 
+> > -- Steve
+> > 
+> >  ------------[ cut here ]------------
+> >  i915 0000:00:02.0: drm_WARN_ON_ONCE(drm_drv_uses_atomic_modeset(dev))
+> >  WARNING: CPU: 7 PID: 1258 at drivers/gpu/drm/drm_vblank.c:728 drm_crtc_vblank_helper_get_vblank_timestamp_internal+0x319/0x330 [drm]
+> >  Modules linked in: ebtable_filter ebtables bridge stp llc vsock vmw_vmci ipt_REJECT nf_reject_ipv4 iptable_filter ip6t_REJECT nf_reject_ipv6 xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip6table_filter ip6_tables snd_hda_codec_hdmi snd_h
+> > ek snd_hda_codec_generic ledtrig_audio snd_hda_intel snd_intel_dspcfg snd_hda_codec joydev snd_hwdep intel_rapl_msr snd_hda_core hp_wmi i915 iTCO_wdt snd_seq intel_rapl_common iTCO_vendor_support wmi_bmof sparse_keymap snd_seq_device rfkill snd_pcm x86_pkg_t
+> > d_timer i2c_algo_bit drm_kms_helper mei_me intel_powerclamp snd mei soundcore i2c_i801 drm coretemp lpc_ich e1000e kvm_intel i2c_smbus kvm irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel serio_raw ghash_clmulni_intel video tpm_infineon wmi ip_tables
+> >  CPU: 7 PID: 1258 Comm: Xorg Tainted: G        W         5.12.0-rc1-test+ #12
+> >  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
+> >  RIP: 0010:drm_crtc_vblank_helper_get_vblank_timestamp_internal+0x319/0x330 [drm]
+> >  Code: 4c 8b 6f 50 4d 85 ed 75 03 4c 8b 2f e8 60 92 45 c2 48 c7 c1 28 a5 3c c0 4c 89 ea 48 c7 c7 15 5a 3c c0 48 89 c6 e8 1f e7 7b c2 <0f> 0b e9 e2 fe ff ff e8 fb 6c 81 c2 66 66 2e 0f 1f 84 00 00 00 00
+> >  RSP: 0018:ffffb77580ea7920 EFLAGS: 00010082
+> >  RAX: 0000000000000000 RBX: ffff8afe500c0000 RCX: 0000000000000000
+> >  RDX: 0000000000000004 RSI: ffffffff833c86b8 RDI: 0000000000000001
+> >  RBP: ffffb77580ea7990 R08: 000000700c782173 R09: 0000000000000000
+> >  R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
+> >  R13: ffff8afe41c7eff0 R14: ffffffffc05e0410 R15: ffff8afe456a2bf8
+> >  FS:  00007f8f91869f00(0000) GS:ffff8afe5aa00000(0000) knlGS:0000000000000000
+> >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >  CR2: 00007f9523a6cad0 CR3: 0000000001b78002 CR4: 00000000001706e0
+> >  Call Trace:
+> >   drm_get_last_vbltimestamp+0xaa/0xc0 [drm]
+> >   drm_update_vblank_count+0x90/0x2d0 [drm]
+> >   drm_crtc_accurate_vblank_count+0x3e/0xc0 [drm]
+> >   intel_crtc_get_vblank_counter+0x43/0x50 [i915]
+> >   trace_event_raw_event_intel_pipe_disable+0x87/0x110 [i915]
+> >   intel_disable_pipe+0x1a8/0x210 [i915]
 > 
-> On 3/4/21 12:50 PM, Daniel Lezcano wrote:
->> Currently the default behavior is to manually having the devfreq
->> backend to register themselves as a devfreq cooling device.
->>
->> There are no so many and actually it makes more sense to register the
->> devfreq device when adding it.
->>
->> Consequently, every devfreq becomes a cooling device like cpufreq is.
->>
->> Having a devfreq being registered as a cooling device can not mitigate
->> a thermal zone if it is not bound to this one. Thus, the current
->> configurations are not impacted by this change.
+> Hmm. Yeah we do vblank_off() before pipe_disable() which wants
+> to still grab the frame counter in the tracepoint. I think we
+> could reorder those two without causing any problems. Either
+> that or we put the tracepoint before vblank_off().
 > 
-> There are also different type of devices, which register into devfreq
-> framework like NoC buses, UFS/eMMC, jpeg and video accelerators, ISP,
-> etc.
-> In some platforms there are plenty of those devices and they all would
-> occupy memory due to private freq_table in devfreq_cooling, function:
-> devfreq_cooling_gen_tables().
+> >   ilk_crtc_disable+0x85/0x390 [i915]
 > 
-> IIRC in OdroidXU4 there are ~20 devfreq devs for NoC buses.
+> But this part is confusing me. intel_crtc_get_vblank_counter() is
+> only supposed to do drm_crtc_accurate_vblank_count() fallback when
+> the hardware lacks a working frame counter, and that should only
+> be the case for ancient gen2 or semi-ancient i965gm TV output,
+> ilk_crtc_disable() is not the function we should be calling in
+> either of those cases.
 
-I'm curious, do you have a pointer to such kernels having all those
-devfreq ?
-
-> It's true that they will not affect thermal zones, but unnecessarily,
-> they all will show up in the /sys/class/thermal/ as
-> thermal-devfreq-X
->
->
-> IMO the devfreq shouldn't be tight with devfreq cooling thermal.
-
-The energy model is tied with a cooling device initialization.
-
-So if we want to do power limitation, the energy model must be
-initialized with the device, thus the cooling device also.
-
-That is the reason why I'm ending up with this change. Chanwoo
-suggestion makes sense and that will allow to move the initialization to
-devfreq which is more sane but it does not solve the initial problem
-with the energy model.
-
-
-
+OK, figured this out. It can happen on any platform due to
+never initializing .max_vblank_count for pipes that were
+disabled at boot. Also spotted some other issues in this
+code that needs fixing. I'll mail out some patches...
 
 -- 
-<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Ville Syrjälä
+Intel
