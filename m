@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8394B32DB5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959E532DB5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 21:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhCDUsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 15:48:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233144AbhCDUsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 15:48:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB0DC64F78;
-        Thu,  4 Mar 2021 20:47:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614890833;
-        bh=fbItLtW0McjQ6cGOGdvkwgGtFHROSfMYY+UFxruVygw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FQssWwEajlQ0NQ6yLH/zQF/vR0g8Aq6xV6z/yjciuQMwxLEznjkoNTUPOUin08pqr
-         RkwDP9a928JPk8Y8lDrkLCoB+8paRFpHaabDHnRD1JBarrqDx0hFqV4kYAK52B57uY
-         kF8A4fUaNUZo2mixUOQYkgFEHXB6Ahd8/46j0df8F7iByPix8+15V06xOGhlyzfhB5
-         reT8WkbVlXOVD7XAwi5ncZ2OyeuH5JTynK7BhLCt08ijnOMKQm+kRaKD1gLPgzduKn
-         TG4oh9jpjIIDSYlfrI+n1HBCGnqwbczFVvhrQd3tz+jAecRvPcJjSiMDQgsSZxngSR
-         X3E+TXoL5N5Vg==
-Date:   Thu, 4 Mar 2021 15:47:12 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Marek Vasut <marex@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Angus Ainslie <angus@akkea.ca>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin Kepplinger <martink@posteo.de>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 050/217] rsi: Fix TX EAPOL packet handling
- against iwlwifi AP
-Message-ID: <YEFHULdbXVVxORn9@sashalap>
-References: <20201223021626.2790791-1-sashal@kernel.org>
- <20201223021626.2790791-50-sashal@kernel.org>
- <68699f8a-2fcd-3b3d-f809-afa54790e9f9@denx.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <68699f8a-2fcd-3b3d-f809-afa54790e9f9@denx.de>
+        id S235237AbhCDUs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 15:48:26 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:38830 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233528AbhCDUsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 15:48:12 -0500
+Received: by mail-ot1-f46.google.com with SMTP id a17so3989840oto.5;
+        Thu, 04 Mar 2021 12:47:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=NbeMtBQiE3kffLypkBD6RcFRyGfZub8d74bpmkMkLts=;
+        b=ag+FGpkaBLFmRAo9sExLZ45PLg87ZSd4bzd9+yBlI+In3qM1o3G7qPS4wpxuEb/UEG
+         Li20UaHlLGhJ31wD262HW55EbHbQm/IaaO5x1ICx39DIItM07bXEAsNCr5p4HVyzvr0w
+         J4I1gmeWmG81Mb0Kr++A8OLuz4xKUr7UhbSLsThRjEskILbvJIQdpHfna+SLHGJ7OWeW
+         jvjebjsyuw5QEGbxotwtc+7YOjKiYf/iL+u7om2unZzkoRkUmQg4HvT4eQO06Yev+eGC
+         1VGPfGbOaSABqVJZWmDzTUy9Or4da5qD69Nol/esd1v7w1bP1oOQMq9EaSCnalE68fCk
+         yA6Q==
+X-Gm-Message-State: AOAM530d5Ixsftep4dSmRt87rvPxK4HWgoFbBEPQOclXJR+cXxXg1fWj
+        +0M5tDrjtlLIizB8HeTL5ZLbUNyQpg==
+X-Google-Smtp-Source: ABdhPJwIl2l7nLvpxXrcDxLfvNin9yGFjw49oUR2S1ec31zo0UEznVu5/tJZ7VnvEzPfLmFT6jPN5Q==
+X-Received: by 2002:a05:6830:3152:: with SMTP id c18mr4914113ots.191.1614890852137;
+        Thu, 04 Mar 2021 12:47:32 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r20sm146415otd.26.2021.03.04.12.47.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 12:47:30 -0800 (PST)
+Received: (nullmailer pid 2778950 invoked by uid 1000);
+        Thu, 04 Mar 2021 20:47:28 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <20210303062434.22280-7-zhangqing@loongson.cn>
+References: <20210303062434.22280-1-zhangqing@loongson.cn> <20210303062434.22280-7-zhangqing@loongson.cn>
+Subject: Re: [PATCH v2 6/7] dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+Date:   Thu, 04 Mar 2021 14:47:28 -0600
+Message-Id: <1614890848.971360.2778949.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:25:49PM +0100, Marek Vasut wrote:
->On 12/23/20 3:13 AM, Sasha Levin wrote:
->
->Hello Sasha,
->
->>From: Marek Vasut <marex@denx.de>
->>
->>[ Upstream commit 65277100caa2f2c62b6f3c4648b90d6f0435f3bc ]
->>
->>In case RSI9116 SDIO WiFi operates in STA mode against Intel 9260 in AP mode,
->>the association fails. The former is using wpa_supplicant during association,
->>the later is set up using hostapd:
->
->[...]
->
->Was this patch possibly missed from 5.10.y ?
+On Wed, 03 Mar 2021 14:24:33 +0800, Qing Zhang wrote:
+> Add liointc-2.0 properties support, so update the maxItems and description.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+> 
+> v2:
+> - Add new patch
+> 
+>  .../bindings/interrupt-controller/loongson,liointc.yaml  | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
 
-I'm not sure what happened there, but I can queue it up.
+My bot found errors running 'make dt_binding_check' on your patch:
 
->Also, while at it, I think it might make sense to pick the following 
->two patches as well, they dramatically reduce interrupt rate of the 
->RSI WiFi device, so it stops overloading lower-end devices:
->287431463e786 ("rsi: Move card interrupt handling to RX thread")
+yamllint warnings/errors:
 
-And this one too.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.example.dt.yaml: interrupt-controller@3ff01400: reg: [[1072698368, 100]] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
 
->abd131a19f6b8 ("rsi: Clean up loop in the interrupt handler")
+See https://patchwork.ozlabs.org/patch/1446855
 
-But not this one, it looks like just a cleanup. Why is it needed?
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
--- 
-Thanks,
-Sasha
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
