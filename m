@@ -2,149 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867B132CD58
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB9432CD64
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 08:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236042AbhCDHKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 02:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236031AbhCDHKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:10:15 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72DCC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  3 Mar 2021 23:09:35 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 131so2749764ybp.16
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Mar 2021 23:09:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=6SYKOly+jweugIylMFB95EbkQpY3TPkXyF08BjG+EYk=;
-        b=pir1oZAyUls7R39beNX8rUtSrLX+skRk3aAi9rhfDi6PNKwuxwKaRzM0Ya1ou874d+
-         IyYZK/KjNBF0Hnqi+7bLNQRLxdcBm8x9+sJ0tSrz+HNiBzSRrUrWYWufOi6eGzpqN7Jl
-         d61BDFGS84Cbr8fIHfU9IxEkb8EUYDY1PXna0XKvZXmmauWLVeJjcxXr7xqT8/T7C7vK
-         TFQf9LzKiVsBxALCf1XZcuAWWLzpATs1YEU0VgFkmA408cuHQMAb3yOOPTo9vWWSzpUs
-         8nxpwlmRGU+NNMnJbWz4fdykIPQjo5yOCdz+uCEGrxfALeSO7CpWEmA2S71q2pqDi1hq
-         d96w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=6SYKOly+jweugIylMFB95EbkQpY3TPkXyF08BjG+EYk=;
-        b=FFoiSkA5slVwnC1qIGXqIEE79MI6amfTMbqTed0x9QmpdKAj8fmjnvpTizMmnbMvoP
-         iG9Y/ageC8Rgvj03ffDCw4X93Lr+GviPJjNQ2YfroZ06Wkng7BR1PJ83u8KGSLA6FQze
-         o2u3YT9SUZEWNtNTWnteOfCoA8yr4aLiLH5E3n77iTWLL5yVoC0bNcqGl78cgx/mf10+
-         2GGv44x6RtoYQWxSSM31HtEuzkuMQnOJqJ92doIzD42GjC0Uxv0/356QNsH8P30pH8BF
-         XzKBb21FDOxag6gJtmjLFi7klx72nFFLvq94AtOYXsCgBO3f6kFAXOssszg7EDStNHwS
-         1BQw==
-X-Gm-Message-State: AOAM5314JfKHzaQkdQ+VYzbAQeVM8ZiDGZdwLEKt2+f8WWYaP1Hjcf0T
-        qPLcUU8BJRJLiRgVs/mTiJPqmi+rxZE=
-X-Google-Smtp-Source: ABdhPJwz9/qlY/4sHrDsgAhu1Tjex6y12rlx/rEieWUpOFcszT7Bqn0mNl1TPE0F5Xsf6YGYIDDa7h2Saps=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:543f:67ae:599c:e076])
- (user=badhri job=sendgmr) by 2002:a25:c006:: with SMTP id c6mr4556819ybf.353.1614841775027;
- Wed, 03 Mar 2021 23:09:35 -0800 (PST)
-Date:   Wed,  3 Mar 2021 23:09:31 -0800
-Message-Id: <20210304070931.1947316-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v1] usb: typec: tcpci: Check ROLE_CONTROL while interpreting CC_STATUS
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236066AbhCDHK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 02:10:57 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:62641 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235953AbhCDHKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 02:10:40 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Drhnr3xRRz9v1Mj;
+        Thu,  4 Mar 2021 08:09:52 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id O2PkTkGHV1vi; Thu,  4 Mar 2021 08:09:52 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Drhnr1f4vz9v1Mh;
+        Thu,  4 Mar 2021 08:09:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9307E8B7F7;
+        Thu,  4 Mar 2021 08:09:53 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Lxx4YMro9UFv; Thu,  4 Mar 2021 08:09:53 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 771458B773;
+        Thu,  4 Mar 2021 08:09:52 +0100 (CET)
+Subject: Re: [PATCH 2/5] CMDLINE: drivers: of: ifdef out cmdline section
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        ob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210304044803.812204-2-danielwa@cisco.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <2b0081aa-52af-a4ab-7481-6e125bd103d6@csgroup.eu>
+Date:   Thu, 4 Mar 2021 08:09:52 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210304044803.812204-2-danielwa@cisco.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While interpreting CC_STATUS, ROLE_CONTROL has to be read to make
-sure that CC1/CC2 is not forced presenting Rp/Rd.
 
-From the TCPCI spec:
 
-4.4.5.2 ROLE_CONTROL (Normative):
-The TCPM shall write B6 (DRP) = 0b and B3..0 (CC1/CC2) if it wishes
-to control the Rp/Rd directly instead of having the TCPC perform
-DRP toggling autonomously. When controlling Rp/Rd directly, the
-TCPM writes to B3..0 (CC1/CC2) each time it wishes to change the
-CC1/CC2 values. This control is used for TCPM-TCPC implementing
-Source or Sink only as well as when a connection has been detected
-via DRP toggling but the TCPM wishes to attempt Try.Src or Try.Snk.
+Le 04/03/2021 à 05:47, Daniel Walker a écrit :
+> It looks like there's some seepage of cmdline stuff into
+> the generic device tree code. This conflicts with the
+> generic cmdline implementation so I remove it in the case
+> when that's enabled.
+> 
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>   drivers/of/fdt.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index feb0f2d67fc5..cfe4f8d3c9f5 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -25,6 +25,7 @@
+>   #include <linux/serial_core.h>
+>   #include <linux/sysfs.h>
+>   #include <linux/random.h>
+> +#include <linux/cmdline.h>
+>   
+>   #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+>   #include <asm/page.h>
+> @@ -1048,8 +1049,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+>   
+>   	early_init_dt_check_for_initrd(node);
+>   
+> +#ifdef CONFIG_GENERIC_CMDLINE
+>   	/* Retrieve command line */
+>   	p = of_get_flat_dt_prop(node, "bootargs", &l);
+> +
+> +	/*
+> +	 * The builtin command line will be added here, or it can override
+> +	 * with the DT bootargs.
+> +	 */
+> +	cmdline_add_builtin(data,
+> +			    ((p != NULL && l > 0) ? p : NULL), /* This is sanity checking */
 
-Table 4-22. CC_STATUS Register Definition:
-If (ROLE_CONTROL.CC1 = Rd) or ConnectResult=1)
-00b: SNK.Open (Below maximum vRa)
-01b: SNK.Default (Above minimum vRd-Connect)
-10b: SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp-1.5A
-11b: SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp-3.0A
+Can we do more simple ? If p is NULL, p is already NULL, so (l > 0 ? p : NULL) should be enough.
 
-If (ROLE_CONTROL.CC2=Rd) or (ConnectResult=1)
-00b: SNK.Open (Below maximum vRa)
-01b: SNK.Default (Above minimum vRd-Connect)
-10b: SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp 1.5A
-11b: SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp 3.0A
+> +			    COMMAND_LINE_SIZE);
+> +#else
 
-Fixes: 74e656d6b0551 ("staging: typec: Type-C Port Controller
-Interface driver (tcpci)")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
- drivers/usb/typec/tcpm/tcpci.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+What does p contains now that "p = of_get_flat_dt_prop(node, "bootargs", &l);" is only called when 
+CONFIG_GENERIC_CMDLINE is defined ?
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index a27deb0b5f03..027afd7dfdce 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -24,6 +24,15 @@
- #define	AUTO_DISCHARGE_PD_HEADROOM_MV		850
- #define	AUTO_DISCHARGE_PPS_HEADROOM_MV		1250
- 
-+#define tcpc_presenting_cc1_rd(reg) \
-+	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
-+	 (((reg) & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) == \
-+	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC1_SHIFT)))
-+#define tcpc_presenting_cc2_rd(reg) \
-+	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
-+	 (((reg) & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) == \
-+	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC2_SHIFT)))
-+
- struct tcpci {
- 	struct device *dev;
- 
-@@ -178,19 +187,25 @@ static int tcpci_get_cc(struct tcpc_dev *tcpc,
- 			enum typec_cc_status *cc1, enum typec_cc_status *cc2)
- {
- 	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
--	unsigned int reg;
-+	unsigned int reg, role_control;
- 	int ret;
- 
-+	ret = regmap_read(tcpci->regmap, TCPC_ROLE_CTRL, &role_control);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = regmap_read(tcpci->regmap, TCPC_CC_STATUS, &reg);
- 	if (ret < 0)
- 		return ret;
- 
- 	*cc1 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC1_SHIFT) &
- 				 TCPC_CC_STATUS_CC1_MASK,
--				 reg & TCPC_CC_STATUS_TERM);
-+				 reg & TCPC_CC_STATUS_TERM ||
-+				 tcpc_presenting_cc1_rd(role_control));
- 	*cc2 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC2_SHIFT) &
- 				 TCPC_CC_STATUS_CC2_MASK,
--				 reg & TCPC_CC_STATUS_TERM);
-+				 reg & TCPC_CC_STATUS_TERM ||
-+				 tcpc_presenting_cc2_rd(role_control));
- 
- 	return 0;
- }
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+>   	if (p != NULL && l > 0)
+>   		strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
+>   
+> @@ -1070,6 +1081,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+>   		strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+>   #endif
+>   #endif /* CONFIG_CMDLINE */
+> +#endif /* CONFIG_GENERIC_CMDLINE */
+>   
+>   	pr_debug("Command line is: %s\n", (char *)data);
+>   
+> 
