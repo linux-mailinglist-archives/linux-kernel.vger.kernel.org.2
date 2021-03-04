@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C924232D310
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA97832D318
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 13:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240717AbhCDMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 07:31:48 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12688 "EHLO
+        id S240778AbhCDMcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 07:32:21 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12693 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240722AbhCDMbc (ORCPT
+        with ESMTP id S240765AbhCDMcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 07:31:32 -0500
+        Thu, 4 Mar 2021 07:32:13 -0500
 Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Drqsh6Mb3zlShP;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Drqsh6cT0zlShR;
         Thu,  4 Mar 2021 20:28:40 +0800 (CST)
 Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
  (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 4 Mar 2021
- 20:30:39 +0800
+ 20:30:40 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>
 CC:     <riel@redhat.com>, <kirill.shutemov@linux.intel.com>,
         <ebru.akagunduz@gmail.com>, <dan.carpenter@oracle.com>,
         <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         <linmiaohe@huawei.com>
-Subject: [PATCH 0/5] Cleanup and fixup for khugepaged
-Date:   Thu, 4 Mar 2021 07:30:08 -0500
-Message-ID: <20210304123013.23560-1-linmiaohe@huawei.com>
+Subject: [PATCH 1/5] khugepaged: remove unneeded return value of khugepaged_collapse_pte_mapped_thps()
+Date:   Thu, 4 Mar 2021 07:30:09 -0500
+Message-ID: <20210304123013.23560-2-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20210304123013.23560-1-linmiaohe@huawei.com>
+References: <20210304123013.23560-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -37,26 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-This series contains cleanups to remove unneeded return value, use
-helper function and so on. And there is one fix to correct the wrong
-result value for trace_mm_collapse_huge_page_isolate().
+The return value of khugepaged_collapse_pte_mapped_thps() is never checked
+since it's introduced. We should remove such unneeded return value.
 
-More details can be found in the respective changelogs. Thanks!
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ mm/khugepaged.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Miaohe Lin (5):
-  khugepaged: remove unneeded return value of
-    khugepaged_collapse_pte_mapped_thps()
-  khugepaged: reuse the smp_wmb() inside __SetPageUptodate()
-  khugepaged: use helper khugepaged_test_exit() in __khugepaged_enter()
-  khugepaged: remove unnecessary mem_cgroup_uncharge() in
-    collapse_[file|huge_page]
-  khugepaged: fix wrong result value for
-    trace_mm_collapse_huge_page_isolate()
-
- mm/khugepaged.c | 47 ++++++++++++++++++++---------------------------
- 1 file changed, 20 insertions(+), 27 deletions(-)
-
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index a7d6cb912b05..d43812c5ce16 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1533,16 +1533,16 @@ void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
+ 	goto drop_hpage;
+ }
+ 
+-static int khugepaged_collapse_pte_mapped_thps(struct mm_slot *mm_slot)
++static void khugepaged_collapse_pte_mapped_thps(struct mm_slot *mm_slot)
+ {
+ 	struct mm_struct *mm = mm_slot->mm;
+ 	int i;
+ 
+ 	if (likely(mm_slot->nr_pte_mapped_thp == 0))
+-		return 0;
++		return;
+ 
+ 	if (!mmap_write_trylock(mm))
+-		return -EBUSY;
++		return;
+ 
+ 	if (unlikely(khugepaged_test_exit(mm)))
+ 		goto out;
+@@ -1553,7 +1553,6 @@ static int khugepaged_collapse_pte_mapped_thps(struct mm_slot *mm_slot)
+ out:
+ 	mm_slot->nr_pte_mapped_thp = 0;
+ 	mmap_write_unlock(mm);
+-	return 0;
+ }
+ 
+ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
+@@ -2057,9 +2056,8 @@ static void khugepaged_scan_file(struct mm_struct *mm,
+ 	BUILD_BUG();
+ }
+ 
+-static int khugepaged_collapse_pte_mapped_thps(struct mm_slot *mm_slot)
++static void khugepaged_collapse_pte_mapped_thps(struct mm_slot *mm_slot)
+ {
+-	return 0;
+ }
+ #endif
+ 
 -- 
 2.19.1
 
