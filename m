@@ -2,132 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3DB32D88D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDED132D892
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 18:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239209AbhCDRZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 12:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbhCDRYm (ORCPT
+        id S239306AbhCDRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 12:25:42 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:62467 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239270AbhCDRZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 12:24:42 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A2FC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 09:24:02 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id b15so7015283pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 09:24:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yEg9qQ9+Lh0kR3V9SEuUm28SfP2oct9m6aZdQ9sZc1A=;
-        b=THVuTBpyCwu9YWCG7jYg5nbREA0QwBvrWEpolfxArJG8WKP/h0Fip0usH3PXPRiD0o
-         urV33e+liUCmzCtbRedmIoP4mHUsv/urfbj9pv7aLfnJFzS5t3e9fRoLO7c2KWbaMaPg
-         bvWLThStTEpHZccm+y8InV7sBBxcYcCm26SOfjw4q7CWouHaDSYBkqbB/hDLPkgjRIsI
-         LyZdzYfQnOKwwD+EVHmwKi5kgqOOyrhpHqXLfb1X5wUwxCCafswD92lHLng71bJj77Bl
-         15yn8iykRH4rieDrN2+99t/fQPU7rY9rC3P6xr6zdZiEWWpKesq7VTDP/yUraV3Hxoeq
-         +0JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yEg9qQ9+Lh0kR3V9SEuUm28SfP2oct9m6aZdQ9sZc1A=;
-        b=Tw27MTICiEWLi1G990KBwZUnvq5yea6S7N7PNg4xsDtx0C19E4PT53QO/W5dZEn6av
-         xs3ExaH9fmjziQKg2WY8zJnGExMsa/DjzE1MdB8dzpkxOSgrOzBbwVfeS/nSxojQOKyh
-         CON2K6WlS/bbwcFAAE51sfKd8+duGotJm8VsZsUYgWZvZ8P3e56cgEeMOoO429X4dHQE
-         pubZnVtWD9pY//xd1p8/xKQySz2lLqzptXuPPjAusPxcEYCWH6TbarwqyHAv2aBxRFWD
-         i3vkIPjXjQPbXgSlzzbvIIZ0vAuO4izhgsicvZk1zWFumiPtHlbY472owkT6RrmKOrgZ
-         IKVQ==
-X-Gm-Message-State: AOAM530MIYvFyqP3Vz5nXOEtmklgURdWRrQ23IDsFB4S7x6ZbNJyPxm3
-        z9alPyu0fgNa9AahlHplgP1lYw==
-X-Google-Smtp-Source: ABdhPJwfPFA7trtIGjUv1OTpERHQQL1X64kdEtO6Bt2U6eyu5H/RMinMlpabgpREF29EKOOiK9ukIQ==
-X-Received: by 2002:a17:90a:ff15:: with SMTP id ce21mr5631029pjb.172.1614878641748;
-        Thu, 04 Mar 2021 09:24:01 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
-        by smtp.gmail.com with ESMTPSA id q4sm19465pfq.103.2021.03.04.09.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 09:24:01 -0800 (PST)
-Date:   Thu, 4 Mar 2021 09:23:53 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Xu, Like" <like.xu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-Subject: Re: [PATCH v3 7/9] KVM: vmx/pmu: Add Arch LBR emulation and its VMCS
- field
-Message-ID: <YEEXqf3b4uaSdNKv@google.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-8-like.xu@linux.intel.com>
- <YD/GrQAl1NMPHXFj@google.com>
- <267c408c-6999-649b-d733-8d64f9cf0594@intel.com>
+        Thu, 4 Mar 2021 12:25:34 -0500
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 124HOfuh025391;
+        Fri, 5 Mar 2021 02:24:42 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 124HOfuh025391
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614878682;
+        bh=mH77c3uCs2Oa4931LLCRe0DKKGZoiw45kjLV/2Rm9TQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TCG6Yq6GhZj9b2FWRqK43nagOgRfrJ4kO13obLagiZMw4a4kU0BxifTmq5zpmLKNk
+         WsB464WeZDUbeZjhOdAZrEwINt1AItuC/jF6bwgKdWDvuQAX8KAdQfktWZg6Ybchk9
+         laMnhAiOo7IJSYvDqcmohQiJOpS/PIJ32EtLKVxCmQW/cOUR4/hxLuXRz12w+Pdkhp
+         mm9MjbbHmcP+yKq9iDTttDe2zAy1V6kePurZryQjIWEWQ00FG+xa6i3HQiOwiqiUGz
+         0WusAepr/7dgAFEaGpjjEACYmp6BNedWueooPKEDjAkvQtRFOfyAwSC2xTp98V2JZ7
+         O7xmV6fARIstA==
+X-Nifty-SrcIP: [209.85.214.173]
+Received: by mail-pl1-f173.google.com with SMTP id s16so16521590plr.9;
+        Thu, 04 Mar 2021 09:24:42 -0800 (PST)
+X-Gm-Message-State: AOAM531PwthnxxdG0JmQ8M6Cb2s7KT00cng93jIWYBUlBjqaMIwielnQ
+        +PwTOYcp5yBxsBXbgaZuo4gM6n02VvEFuRit4Jo=
+X-Google-Smtp-Source: ABdhPJxnIzlps3JGsu1ohACE3In8kpfFOXaGZCpfKV7VTFjK/2ZnHNKfjnP2tPbcZ4XGXyszzsz3Fnow0Py5cbmO9P0=
+X-Received: by 2002:a17:902:8687:b029:e1:601e:bd29 with SMTP id
+ g7-20020a1709028687b02900e1601ebd29mr4822528plo.47.1614878681465; Thu, 04 Mar
+ 2021 09:24:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <267c408c-6999-649b-d733-8d64f9cf0594@intel.com>
+References: <42e0adf2-dbf5-9c1b-a18d-05bf5f1960a1@arm.com>
+In-Reply-To: <42e0adf2-dbf5-9c1b-a18d-05bf5f1960a1@arm.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 5 Mar 2021 02:24:04 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASX-Rx_fxcuqQ_vFHQwQ+RJq9XCW9_dL=jFCuoEJ0vF3Q@mail.gmail.com>
+Message-ID: <CAK7LNASX-Rx_fxcuqQ_vFHQwQ+RJq9XCW9_dL=jFCuoEJ0vF3Q@mail.gmail.com>
+Subject: Re: Possible regression due to 269a535ca931 "modpost: generate
+ vmlinux.symvers and reuse it for the second modpost"
+To:     Vladimir Murzin <vladimir.murzin@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021, Xu, Like wrote:
-> On 2021/3/4 1:26, Sean Christopherson wrote:
-> > On Wed, Mar 03, 2021, Like Xu wrote:
-> > > New VMX controls bits for Arch LBR are added. When bit 21 in vmentry_ctrl
-> > > is set, VM entry will write the value from the "Guest IA32_LBR_CTL" guest
-> > > state field to IA32_LBR_CTL. When bit 26 in vmexit_ctrl is set, VM exit
-> > > will clear IA32_LBR_CTL after the value has been saved to the "Guest
-> > > IA32_LBR_CTL" guest state field.
-> > ...
-> > 
-> > > @@ -2529,7 +2532,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
-> > >   	      VM_EXIT_LOAD_IA32_EFER |
-> > >   	      VM_EXIT_CLEAR_BNDCFGS |
-> > >   	      VM_EXIT_PT_CONCEAL_PIP |
-> > > -	      VM_EXIT_CLEAR_IA32_RTIT_CTL;
-> > > +	      VM_EXIT_CLEAR_IA32_RTIT_CTL |
-> > > +	      VM_EXIT_CLEAR_IA32_LBR_CTL;
-> > So, how does MSR_ARCH_LBR_CTL get restored on the host?  What if the host wants
-> > to keep _its_ LBR recording active while the guest is running?
-> 
-> Thank you!
-> 
-> I will add "host_lbrctlmsr" field to "struct vcpu_vmx" and
-> repeat the update/get_debugctlmsr() stuff.
+On Fri, Mar 5, 2021 at 1:21 AM Vladimir Murzin <vladimir.murzin@arm.com> wrote:
+[  snip long description ]
 
-I am not remotely confident that tracking LBRCTL via vcpu_vmx is correct, and
-I'm far less confident that the existing DEBUGCTL logic is correct.  As Jim
-pointed out[*], intel_pmu_handle_irq() can run at any time, and it's not at all
-clear to me that the DEBUGCTL coming out of the NMI handler is guaranteed to be
-the same value going in.  Ditto for LBRCTL.
+>
+> Does that make sense? What I'm missing?
+>
+> P.S.
+> I've also checked v5.12-rc1 and see the same symptoms
 
-Actually, NMIs aside, KVM's DEBUGCTL handling is provably broken since writing
-/sys/devices/cpu/freeze_on_smi is propagated to other CPUs via IRQ, and KVM
-snapshots DEBUCTL on vCPU load, i.e. runs with IRQs enabled long after grabbing
-the value.
+Since you ran "make allnoconfig",
+the module feature was disabled.
+(CONFIG_MODULES=n)
 
-  WARNING: CPU: 5 PID: 0 at arch/x86/events/intel/core.c:4066 flip_smm_bit+0xb/0x30
-  RIP: 0010:flip_smm_bit+0xb/0x30
-  Call Trace:
-   <IRQ>
-   flush_smp_call_function_queue+0x118/0x1a0
-   __sysvec_call_function+0x2c/0x90
-   asm_call_irq_on_stack+0x12/0x20
-   </IRQ>
+That is why you cannot build external modules.
 
 
-So, rather than pile on more MSR handling that is at best dubious, and at worst
-broken, I would like to see KVM properly integrate with perf to ensure KVM
-restores the correct, fresh values of all MSRs that are owned by perf.  Or at
-least add something that guarantees that intel_pmu_handle_irq() preserves the
-MSRs.  As is, it's impossible to review these KVM changes without deep, deep
-knowledge of what perf is doing.
 
-https://lkml.kernel.org/r/20210209225653.1393771-1-jmattson@google.com
+> Cheers
+> Vladimir
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
