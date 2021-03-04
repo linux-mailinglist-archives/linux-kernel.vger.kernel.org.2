@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2498232C93C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBE732C943
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Mar 2021 02:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382415AbhCDBGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 20:06:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38780 "EHLO mail.kernel.org"
+        id S1388523AbhCDBGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 20:06:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1452940AbhCDAjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:39:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA5D764F25;
+        id S1452964AbhCDAkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:40:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB4F864F3A;
         Thu,  4 Mar 2021 00:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614818296;
-        bh=2POJFiyU+T/PAOvZ5cD53kP7TvVhTud6nR2QKxJoiUQ=;
+        s=k20201202; t=1614818297;
+        bh=DsKsFb/8dh3oKwr/8mj4az+50XgJLWM6GPaVeFRti6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rXZ8v/es3a/+asNzIwmxwEAOrlmZcbs7RBMYL9Htz0zoiRebWr8vlOCM9whgbZwTA
-         GFG0UEYU6MK/6RNI/rAE3LbmMGYt/Zw416srxcP4UnuIna9KPq6MrjiQZM9Sy++oE4
-         CV7OZl42HifkzwimMJg2aGQ0p7jdmZxZRRSZpWWddK22bgyxS57Z2XL8OuDbpjm1OU
-         Ufu3Fnz0QLy04dRx2tDqoNaAH061msKMPZcqfttkj3cN17c/5Rf1r11yAltxJ2Znj6
-         gG5oI0ztIJuJP+EqnUtOe8ygJxzhlucJwW8lDdL+4i9YCw0XpwgzfxO022xI4KX33r
-         nt6k4n8dGKW4A==
+        b=gw2WweuT6P+kXJ7JZgFywa14yx3IP3kIqUHTe4NjchuhQSxc5sDqMQgljKoN2TV8V
+         y+L1vKKSEJwrRvlMphFgJWnp0fvfzdGO5ybD/NAP+cPB8AEcCzKQ8rlMwkNYe6u3KU
+         5ltPOCmNslOW489WGUYBx/9rqlhn25vZmLr9ByYZb8xYHAu4112MtKZIN7FGL2lkWP
+         p7FMP1XXYyvkgdkwL6S+wHpr8ZcNNw8CwW023QnoHB22y2+nkIXpNv9L21XokMOMgy
+         rhIidG6EIEuR6Ac/vMUFA2WATaQCdIqlmRB/Kasw52E8qCMXeVD6cvcLLRdIi0lxBt
+         M+w9B4bhi8cOA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 18/28] torture: Rename SRCU-t and SRCU-u to avoid lowercase characters
-Date:   Wed,  3 Mar 2021 16:38:02 -0800
-Message-Id: <20210304003812.24833-18-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 19/28] torture: Make upper-case-only no-dot no-slash scenario names official
+Date:   Wed,  3 Mar 2021 16:38:03 -0800
+Message-Id: <20210304003812.24833-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210304003750.GA24696@paulmck-ThinkPad-P72>
 References: <20210304003750.GA24696@paulmck-ThinkPad-P72>
@@ -44,55 +44,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The convention that scenario names are all uppercase has two exceptions,
-SRCU-t and SRCU-u.  This commit therefore renames them to SRCU-T and
-SRCU-U, respectively, to bring them in line with this convention.  This in
-turn permits tighter argument checking in the torture-test scripting.
+This commit enforces the defacto restriction on scenario names, which is
+that they contain neither "/", ".", nor lowercase alphabetic characters.
+This restriction avoids collisions between scenario names and the torture
+scripting's files and directories.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/CFLIST                 | 4 ++--
- tools/testing/selftests/rcutorture/configs/rcu/{SRCU-t => SRCU-T}     | 0
- .../selftests/rcutorture/configs/rcu/{SRCU-t.boot => SRCU-T.boot}     | 0
- tools/testing/selftests/rcutorture/configs/rcu/{SRCU-u => SRCU-U}     | 0
- .../selftests/rcutorture/configs/rcu/{SRCU-u.boot => SRCU-U.boot}     | 0
- 5 files changed, 2 insertions(+), 2 deletions(-)
- rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-t => SRCU-T} (100%)
- rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-t.boot => SRCU-T.boot} (100%)
- rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-u => SRCU-U} (100%)
- rename tools/testing/selftests/rcutorture/configs/rcu/{SRCU-u.boot => SRCU-U.boot} (100%)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-index f2b20db..98b6175 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-@@ -7,8 +7,8 @@ TREE07
- TREE09
- SRCU-N
- SRCU-P
--SRCU-t
--SRCU-u
-+SRCU-T
-+SRCU-U
- TINY01
- TINY02
- TASKS01
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-t
-rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-T
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-t.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-T.boot
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-t.boot
-rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-T.boot
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-u
-rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-U
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-u.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-U.boot
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/rcu/SRCU-u.boot
-rename to tools/testing/selftests/rcutorture/configs/rcu/SRCU-U.boot
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index efcbd12..03364f4 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -104,7 +104,7 @@ do
+ 		TORTURE_BUILDONLY=1
+ 		;;
+ 	--configs|--config)
+-		checkarg --configs "(list of config files)" "$#" "$2" '^[^/]\+$' '^--'
++		checkarg --configs "(list of config files)" "$#" "$2" '^[^/.a-z]\+$' '^--'
+ 		configs="$configs $2"
+ 		shift
+ 		;;
 -- 
 2.9.5
 
