@@ -2,159 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB0332E4AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DB332E4B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhCEJWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:22:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
+        id S229723AbhCEJWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:22:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbhCEJWO (ORCPT
+        with ESMTP id S229669AbhCEJWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:22:14 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762E6C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 01:22:14 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so438079wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:22:14 -0800 (PST)
+        Fri, 5 Mar 2021 04:22:21 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361AAC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 01:22:21 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id x29so958445pgk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:22:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=URqG5L18cDBBwa4eOeQoxnZ8Y3fXypRiyHuYJ5+QuzE=;
-        b=HoyGLNY7ohPCLRBEGZb5FPIUYBtc9xzKJZYixoFjiDRS45I46wdSoaCL7GNgYVFZg+
-         E7JWOrqne/UdPWudNYXxJlC2G3q7mwUrsa3Txpk0aMKuaL++bi/QrJds6gHZf6LaqaZD
-         Lxu7QP+OT5diVZWtlQcW2RG21ghUvUMmPgZ80myqMStadnBdoZeyTpgcyXmkRNU6SeQu
-         FcG/dV7NUqO24jxHQb37R/y2VCP0/4h/M/uk0hfDMUAvPKIC4yOsEI0WQPwCYFHZ1VIC
-         670r7GtkPT3gR1JlNNehohXTuHpFT7JGbLpUsPL06lM5Ywtss/1xuTmaesYQVbMybt54
-         2/tA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m2Q6KIs5amBgu/hMc+Rzg+zGlMbW3gQUxIbh9qBKo+U=;
+        b=q3HjWY/tNgwaMddH4Zu9n1APFR2hYgjJoJozFO672vMnxL3fi2uuC2eZB69E/nOEZM
+         AFQt+TtJDlv0tNPGqigE0JlieI/FfBvVpsyj4xNljRxnh7gZvz9AX56Xv+CcrIYTCKUC
+         vDf1gMbgF9VlctY8YsosHlBm7bTaF27rMZ8uz9kBgUB7Cn3aG9ghxtORTuV75PX4HWKs
+         OHGo1aSCLY768VUWwDUtLgi/rfDPpMP6emXXjYygaKdGoKhIzu8Li48Ir2aGxOExe6sx
+         nPEigfpxz9dUen3deXagLQvNKbZI4IQvqskNdD2b2U+53RAcVueeE9boY4FzcLzW0wDj
+         50jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=URqG5L18cDBBwa4eOeQoxnZ8Y3fXypRiyHuYJ5+QuzE=;
-        b=uVQKhvNizuXIDIOHCWV5K23mvads/h+1PgD1gPUMhc5a5P8PnVXmvp1aw/WpnbcLSy
-         VqQxJFWB2rfBCzwXcdlaueUxCG2zQqktkqgbNaD0oXHjQCQWMb636OcymTqmdLx7nJuq
-         swzb9IzbGhiYNNUuGyO/OpuBUJSAo/ZAa0hba6Kv6Ln3p2VT4ZXveDvFKgS8iVpyKF1M
-         F0xrY/TB97wdST8BlS2v/y75nnSXupHNb1dKShPPnADIdYSIHEkJEVPHuJ9Hmn/HIFeJ
-         HlDfFh5aU4CRP/2El5C4WDE/tsnAtqvNHICWrrAHCOmwObMT29CWTJB2J02nqGIGWbo/
-         FIJw==
-X-Gm-Message-State: AOAM530qqpResrH6IdP5RFcVUtjXA9MOXxd6zPvQ+xE9n/swrrRGjoEJ
-        D9mxgrBAZJNfoSHfOJXeCvCxeFrK0QkO2g==
-X-Google-Smtp-Source: ABdhPJwUyzXYupqpsGjWfl+dJhKYsjoKpRJUNtYpHzgqcAwJq4jNK52aor5/UOe45LmnyozCUn5UWw==
-X-Received: by 2002:a7b:c209:: with SMTP id x9mr7839461wmi.92.1614936132969;
-        Fri, 05 Mar 2021 01:22:12 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id d204sm3565418wmc.17.2021.03.05.01.22.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Mar 2021 01:22:12 -0800 (PST)
-Subject: Re: [PATCH] ASoC: codecs: lpass-va-macro: mute/unmute all active
- decimators
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "moderated list:QCOM AUDIO (ASoC) DRIVERS" 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210304215646.17956-1-jonathan@marek.ca>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <32f49fa9-136c-91a5-5790-373651719fda@linaro.org>
-Date:   Fri, 5 Mar 2021 09:22:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        bh=m2Q6KIs5amBgu/hMc+Rzg+zGlMbW3gQUxIbh9qBKo+U=;
+        b=uBjIheJziSYOS75IVPiRBJsKm+VI4lMD2x/wMFe7CQ6DWOCHn/YKNVEdiHF+qaFbwz
+         UrKmcKKHdO0i48EYuujHajcWfd4ASg6jAXIMhfXwLDrKNaHSeHhQa2tBDZNCDzokklSJ
+         pwLj2BXHbMVeBo/jMsdG6H6AFcgmDr3RWvVHQjosZ3NlyOfd6OcWTMs3M2P9WAjaenb+
+         IAHHOSENAqNrabHIHym5xmroikeUXzwHewjFdQay0R4km4fsp8iTPdaYOsBwTQOZ1Hu2
+         cC8BdvhshATrIrdK0659LuL+bfO28adD8z3VPyXohF5egFpN/MZml/EjbO34DXRGbtRC
+         JVrw==
+X-Gm-Message-State: AOAM5313k9DnW5sOBUqXVRJjHcqwBQQGE14k7eD2o6Me1AtLgyZePHcA
+        HX7Km6mJKwv4Wzb4dce7D4Y=
+X-Google-Smtp-Source: ABdhPJw7dT2wFRyLFSn5lD5wGY8NnQq5XIj9kU6lEH/exU15d2GI5nY8fTQXtuiFvt+BYJUwb8EGWg==
+X-Received: by 2002:a63:2214:: with SMTP id i20mr7401533pgi.189.1614936140753;
+        Fri, 05 Mar 2021 01:22:20 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id p190sm1754580pga.78.2021.03.05.01.22.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 01:22:20 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: xiong.zhenwu@zte.com.cn
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, irogers@google.com, xiong.zhenwu@zte.com.cn,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] tool/perf/bench: fix misspellings using codespell 
+Date:   Fri,  5 Mar 2021 01:22:12 -0800
+Message-Id: <20210305092212.204923-1-xiong.zhenwu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210304215646.17956-1-jonathan@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Jonathan for testing and fixing this use case!
+From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
 
+$ codespell ./tool/perf/bench
+tools/perf/bench/inject-buildid.c:375: tihs  ==> this 
 
-On 04/03/2021 21:56, Jonathan Marek wrote:
-> An interface can have multiple decimators enabled, so loop over all active
-> decimators. Otherwise only one channel will be unmuted, and other channels
-> will be zero. This fixes recording from dual DMIC as a single two channel
-> stream.
+Fix a typo found by codespell.
 
-> 
-> Also remove the now unused "active_decimator" field.
-> 
-> Fixes: 908e6b1df26e ("ASoC: codecs: lpass-va-macro: Add support to VA Macro")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
+Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+---
+ tools/perf/bench/inject-buildid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-LGTM,
+diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
+index 280227e3ffd7..55d373b75791 100644
+--- a/tools/perf/bench/inject-buildid.c
++++ b/tools/perf/bench/inject-buildid.c
+@@ -372,7 +372,7 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
+ 			len += synthesize_flush(data);
+ 	}
+ 
+-	/* tihs makes the child to finish */
++	/* this makes the child to finish */
+ 	close(data->input_pipe[1]);
+ 
+ 	wait4(data->pid, &status, 0, &rusage);
+-- 
+2.25.1
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-
---srini
->   sound/soc/codecs/lpass-va-macro.c | 28 +++++++++++++---------------
->   1 file changed, 13 insertions(+), 15 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-> index 91e6890d6efcb..3d6976a3d9e42 100644
-> --- a/sound/soc/codecs/lpass-va-macro.c
-> +++ b/sound/soc/codecs/lpass-va-macro.c
-> @@ -189,7 +189,6 @@ struct va_macro {
->   	struct device *dev;
->   	unsigned long active_ch_mask[VA_MACRO_MAX_DAIS];
->   	unsigned long active_ch_cnt[VA_MACRO_MAX_DAIS];
-> -	unsigned long active_decimator[VA_MACRO_MAX_DAIS];
->   	u16 dmic_clk_div;
->   
->   	int dec_mode[VA_MACRO_NUM_DECIMATORS];
-> @@ -549,11 +548,9 @@ static int va_macro_tx_mixer_put(struct snd_kcontrol *kcontrol,
->   	if (enable) {
->   		set_bit(dec_id, &va->active_ch_mask[dai_id]);
->   		va->active_ch_cnt[dai_id]++;
-> -		va->active_decimator[dai_id] = dec_id;
->   	} else {
->   		clear_bit(dec_id, &va->active_ch_mask[dai_id]);
->   		va->active_ch_cnt[dai_id]--;
-> -		va->active_decimator[dai_id] = -1;
->   	}
->   
->   	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, enable, update);
-> @@ -880,18 +877,19 @@ static int va_macro_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
->   	struct va_macro *va = snd_soc_component_get_drvdata(component);
->   	u16 tx_vol_ctl_reg, decimator;
->   
-> -	decimator = va->active_decimator[dai->id];
-> -
-> -	tx_vol_ctl_reg = CDC_VA_TX0_TX_PATH_CTL +
-> -				VA_MACRO_TX_PATH_OFFSET * decimator;
-> -	if (mute)
-> -		snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-> -					      CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-> -					      CDC_VA_TX_PATH_PGA_MUTE_EN);
-> -	else
-> -		snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-> -					      CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-> -					      CDC_VA_TX_PATH_PGA_MUTE_DISABLE);
-> +	for_each_set_bit(decimator, &va->active_ch_mask[dai->id],
-> +			 VA_MACRO_DEC_MAX) {
-> +		tx_vol_ctl_reg = CDC_VA_TX0_TX_PATH_CTL +
-> +					VA_MACRO_TX_PATH_OFFSET * decimator;
-> +		if (mute)
-> +			snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-> +					CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-> +					CDC_VA_TX_PATH_PGA_MUTE_EN);
-> +		else
-> +			snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-> +					CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-> +					CDC_VA_TX_PATH_PGA_MUTE_DISABLE);
-> +	}
->   
->   	return 0;
->   }
-> 
